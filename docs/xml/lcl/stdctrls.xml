@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <fpdoc-descriptions>
-  <package name="lcl">
+  <package name="LCL">
     <!--
   ====================================================================
     StdCtrls
   ====================================================================
 -->
     <module name="StdCtrls">
-      <short>Contains Class definitions of several Standard Controls used in the Lazarus IDE</short>
+      <short/>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -58,12 +58,6 @@
         <seealso/>
       </element>
       <!-- unresolved type reference Visibility: default -->
-      <element name="GraphMath">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
       <element name="ExtendedStrings">
         <short/>
         <descr/>
@@ -99,6 +93,42 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Menus">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TEditCharCase">
+        <short>Determines the case of text displayed in the edit box or combobox.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEditCharCase.ecNormal">
+        <short>Character case according to what the user types.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEditCharCase.ecUppercase">
+        <short>Converts every character that the user types into upper case characters.</short>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEditCharCase.ecLowerCase">
+        <short>Converts every character that the user types into lower case characters.</short>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TEchoMode">
+        <short>TEchoMode: Determines how strings in the edit box is displayed.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEchoMode.emNormal"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEchoMode.emNone"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TEchoMode.emPassword"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollStyle">
         <short/>
@@ -121,44 +151,68 @@
       <element name="TScrollStyle.ssAutoBoth"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TScrollCode">
-        <short/>
+        <short>The scroll action type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scLineUp"><short/></element>
+      <element name="TScrollCode.scLineUp">
+        <short>Scroll one line up.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scLineDown"><short/></element>
+      <element name="TScrollCode.scLineDown">
+        <short>Scroll one line down.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPageUp"><short/></element>
+      <element name="TScrollCode.scPageUp">
+        <short>Scroll one page up.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPageDown"><short/></element>
+      <element name="TScrollCode.scPageDown">
+        <short>Scroll one page down.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scPosition"><short/></element>
+      <element name="TScrollCode.scPosition">
+        <short>Scroll to the specified position.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scTrack"><short/></element>
+      <element name="TScrollCode.scTrack">
+        <short>Scroll tracking to the specified position.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scTop"><short/></element>
+      <element name="TScrollCode.scTop">
+        <short>Scroll to the top.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scBottom"><short/></element>
+      <element name="TScrollCode.scBottom">
+        <short>Scroll to the bottom.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TScrollCode.scEndScroll"><short/></element>
+      <element name="TScrollCode.scEndScroll">
+        <short>Scroll ends.</short>
+      </element>
       <!-- procedure type Visibility: default -->
       <element name="TScrollEvent">
-        <short/>
+        <short>The scroll event.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TScrollEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TScrollEvent.ScrollCode"><short/></element>
+      <element name="TScrollEvent.ScrollCode">
+        <short>Determines the scroll action.</short>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TScrollEvent.ScrollPos"><short/></element>
+      <element name="TScrollEvent.ScrollPos">
+        <short>Contains the current scroll position.</short>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
         <short>Custom Scroll Bar</short>
         <descr>Custom Scroll Bar:  the base type from which Control Bars are derived</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomScrollBar.FKind">
@@ -355,14 +409,23 @@
       <element name="TCustomScrollBar.Scroll.ScrollPos"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomScrollBar.Create">
-        <short><i>TCustomScrollBar</i> constructor</short>
-        <descr><i>TCustomScrollBar</i> constructor - <b>override</b> definition, so supplied method can supersede any inherited method. It sets up a few defaults which can be modified by the application programmer</descr>
+        <short>
+          <i>TCustomScrollBar</i>
+        </short>
+        <descr>
+          <i>TCustomScrollBar</i>
+        </descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomScrollBar.SetParams">
         <short>Defines the Max and Min values, the size of the page and the position of the scroller</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.APosition"><short/></element>
@@ -370,55 +433,74 @@
       <element name="TCustomScrollBar.SetParams.AMin"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomScrollBar.SetParams.AMax"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomScrollBar.SetParams.APageSize"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Kind">
         <short>Whether Horizontal or Vertical</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.LargeChange">
         <short>The size of the step to be taken by the scroller for a large change</short>
         <descr>A large change is produced by the user clicking on the blank are above or below the scroller; it is rather analogous to the Page Down or Page Up functions of the Keyboard and typically moves the scroller and the contents of the page or canvas by a whole paragralph or half a page or a full page.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Max">
         <short>The maximum value (for bottom of the scroll bar or the right-most extent)</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Min">
         <short>the minimum value, for the top of the scroll bar or its left-most extent</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.PageSize">
         <short>the size of the page on which this scrollbar is found</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Position">
         <short>The position of the scrollbar on the current page</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.SmallChange">
         <short>The size of the step to be taken by the scroller for a small change</short>
         <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effet of using the up or down arrows on the keyboard, and typically produces a movement of a few pixels or a single line of text</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.TabStop">
         <short>Whether the scrollbar can be reached by use of the Tab key - default is True</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnChange">
         <short>Event handler for any change in position of the scroller or other mouse movement or keyboard event associated with the scrollbar</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnScroll">
         <short>Handler for a scrolling event</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollBar">
-        <short>Scroll Bar</short>
-        <descr>Scroll Bar for Text Box or Memo. Can be none, horizontal, vertical or both. May appear automatically when the text goes outside the window. <br/>
-Scroll codes may be line up or down, page up or down, track the mouse, top of panel, bottom of panel, or end scroll.
-<br/><br/>
-Inherits several properties from ancestor classes, and many properties can be adjusted with the Object Inspector and the Form Designer</descr>
+        <short>Control for scrolling a page thumb in specified range.</short>
+        <descr>Scroll Bar is a control that allows user to scroll its page thumb in specified range. Can be horizontal or vertical.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.Align">
@@ -428,6 +510,12 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TScrollBar.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -476,7 +564,7 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.Kind">
-        <short/>
+        <short>Determines whether Scroll Bar is verical or horizontal.</short>
         <descr/>
         <seealso/>
       </element>
@@ -500,6 +588,12 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.PageSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TScrollBar.ParentBidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -560,9 +654,9 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnChange">
-        <short/>
+        <short>The OnChange event is called when the Position is changed.</short>
         <descr/>
-        <seealso/>
+        <seealso><link id="TScrollBar.OnScroll"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnDragDrop">
@@ -614,9 +708,9 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnScroll">
-        <short/>
+        <short>The OnScroll event is called when user scrolls the page thumb.</short>
         <descr/>
-        <seealso/>
+        <seealso><link id="TScrollBar.OnChange"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnStartDrag">
@@ -628,7 +722,18 @@ Inherits several properties from ancestor classes, and many properties can be ad
       <element name="TCustomGroupBox">
         <short>Custom Group Box</short>
         <descr>Custom Group Box: the base type from which Group Box and related components are derived.</descr>
+        <errors/>
+        <seealso/>
       </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomGroupBox.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomGroupBox.GetControlClassDefaultSize.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomGroupBox.Create">
         <short/>
@@ -638,23 +743,14 @@ Inherits several properties from ancestor classes, and many properties can be ad
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGroupBox.Create.AOwner"><short/></element>
-      <!-- function Visibility: public -->
-      <element name="TCustomGroupBox.CanTab">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TCustomGroupBox.CanTab.Result"><short/></element>
       <!-- object Visibility: default -->
       <element name="TGroupBox">
         <short>Group Box</short>
         <descr>Group Box. Allows a number of objects to be grouped physically and conceptually
 on the form; they can be moved around together and have certain properties in
-common. <br/>They share the same scope for several variables, which are hidden from
-objects outside the group. <br/>They can interact with one another, for example
-radio buttons will be mutually exclusive within the group.</descr>
+common. </descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TGroupBox.Align">
@@ -664,6 +760,18 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TGroupBox.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TGroupBox.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TGroupBox.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -753,6 +861,12 @@ radio buttons will be mutually exclusive within the group.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TGroupBox.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TGroupBox.ParentColor">
         <short/>
         <descr/>
@@ -802,6 +916,12 @@ radio buttons will be mutually exclusive within the group.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TGroupBox.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TGroupBox.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
@@ -956,12 +1076,13 @@ Defines the behavior of the AutoComplete feature.
       <element name="TComboBoxAutoCompleteText">
         <short>TComboBoxAutoCompleteText = set of TComboBoxAutoCompleteTextOption;</short>
         <descr/>
-        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;</seealso>
+        <seealso><link id="TComboBoxAutoCompleteTextOption"/></seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TComboBoxStyle">
         <short>ComboBox Style</short>
         <descr>ComboBox Style: may be Simple, a Drop-Down or a drop-down list, or some version drawn by the Owner</descr>
+        <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TComboBoxStyle.csDropDown"><short/></element>
@@ -1009,6 +1130,8 @@ Defines the behavior of the AutoComplete feature.
       <element name="TCustomComboBox">
         <short>Custom Combo Box</short>
         <descr>Custom Combination Box: the base class from which Combo Box is derived.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FCharCase">
@@ -1096,7 +1219,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomComboBox.fMaxLength">
+      <element name="TCustomComboBox.FMaxLength">
         <short/>
         <descr/>
         <seealso/>
@@ -1130,13 +1253,17 @@ False is set when the edit or combobox control looses focus.
         <short/>
         <descr>
           <short>Combo Box</short>
-          <descr>Combo box. A simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.
-</descr>
         </descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FOnSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomComboBox.FReadOnly">
         <short/>
         <descr/>
         <seealso/>
@@ -1178,6 +1305,15 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- function Visibility: private -->
+      <element name="TCustomComboBox.GetAutoComplete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetAutoComplete.Result"><short/></element>
+      <!-- function Visibility: private -->
       <element name="TCustomComboBox.GetDroppedDown">
         <short/>
         <descr/>
@@ -1195,6 +1331,15 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomComboBox.GetItemWidth.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.SetAutoComplete">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetAutoComplete.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.SetItemWidth">
         <short/>
@@ -1223,6 +1368,24 @@ False is set when the edit or combobox control looses focus.
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.LMDrawListItem.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.LMMeasureItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.LMMeasureItem.TheMessage"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.LMSelChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.LMSelChange.TheMessage"><short/></element>
+      <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.CNCommand">
         <short/>
         <descr/>
@@ -1231,6 +1394,15 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.CNCommand.TheMessage"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.SetReadOnly">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetReadOnly.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomComboBox.UpdateSorted">
         <short/>
@@ -1247,8 +1419,26 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.SetArrowKeysTraverseList.Value"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.WMChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.WMChar.Message"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomComboBox.SetCharCase">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SetCharCase.eccCharCase"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.CreateWnd">
+      <element name="TCustomComboBox.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
@@ -1256,6 +1446,20 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.DestroyWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.DoEnter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.DoExit">
         <short/>
         <descr/>
         <errors/>
@@ -1274,15 +1478,24 @@ False is set when the edit or combobox control looses focus.
       <element name="TCustomComboBox.DrawItem.ARect"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.DrawItem.State"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomComboBox.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.GetControlClassDefaultSize.Result"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.LMChange">
+      <element name="TCustomComboBox.LMChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.LMChange.msg"><short/></element>
+      <element name="TCustomComboBox.LMChanged.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.Change">
         <short/>
@@ -1381,24 +1594,15 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomComboBox.GetMaxLength.Result"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomComboBox.InitializeWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- function Visibility: protected -->
-      <element name="TCustomComboBox.SelectItem">
+      <element name="TCustomComboBox.IsReadOnlyStored">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomComboBox.SelectItem.Result"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.SelectItem.AnItem"><short/></element>
+      <element name="TCustomComboBox.IsReadOnlyStored.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.SetDropDownCount">
         <short/>
@@ -1490,6 +1694,15 @@ False is set when the edit or combobox control looses focus.
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.SetStyle.Val"><short/></element>
       <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.RealSetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.RealSetText.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
       <element name="TCustomComboBox.KeyDown">
         <short/>
         <descr/>
@@ -1500,6 +1713,52 @@ False is set when the edit or combobox control looses focus.
       <element name="TCustomComboBox.KeyDown.Key"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.KeyDown.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.KeyUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.KeyUp.Key"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.KeyUp.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.KeyPress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.KeyPress.Key"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomComboBox.MouseUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.MouseUp.Button"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.MouseUp.Shift"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.MouseUp.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.MouseUp.Y"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomComboBox.SelectItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomComboBox.SelectItem.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomComboBox.SelectItem.AnItem"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.DropDownCount">
         <short/>
@@ -1561,6 +1820,12 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
+      <element name="TCustomComboBox.ParentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
       <element name="TCustomComboBox.Sorted">
         <short/>
         <descr/>
@@ -1608,23 +1873,8 @@ False is set when the edit or combobox control looses focus.
       <element name="TCustomComboBox.AddHistoryItem.SetAsText"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.CaseSensitive"><short/></element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomComboBox.AddHistoryItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.Item"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.AnObject"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.MaxHistoryCount"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.SetAsText"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomComboBox.AddHistoryItem.CaseSensitive"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.Clear">
         <short/>
@@ -1639,6 +1889,7 @@ False is set when the edit or combobox control looses focus.
         <errors/>
         <seealso/>
       </element>
+      <!-- property Visibility: public -->
       <element name="TCustomComboBox.CharCase">
         <short>property CharCase: TEditCharCase</short>
         <descr>Indicates how text is displayed in a text editing control in the following ways:
@@ -1680,7 +1931,7 @@ False is set when the edit or combobox control looses focus.
         <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
         <descr>Options for behavior of the Auto-Complete feature.
 </descr>
-        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;</seealso>
+        <seealso><link id="TComboBoxAutoCompleteTextOption"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoDropDown">
@@ -1731,6 +1982,12 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: public -->
+      <element name="TCustomComboBox.ReadOnly">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
         <short/>
         <descr/>
@@ -1770,11 +2027,7 @@ False is set when the edit or combobox control looses focus.
       <element name="TComboBox">
         <short>Combo Box</short>
         <descr>Combo box. A simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</descr>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TComboBox.ItemIndex">
-        <short/>
-        <descr/>
+        <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1807,9 +2060,7 @@ False: Turns off auto-complete feature.</descr>
         <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
         <descr>Options for behavior of the Auto-Complete feature.
 </descr>
-        <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;
-&lt;link id="TComboBoxAutoCompleteText"/&gt;
-</seealso>
+        <seealso><link id="TComboBoxAutoCompleteTextOption"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TComboBox.AutoDropDown">
@@ -1822,6 +2073,12 @@ False: Turns off auto-complete feature.</descr>
         <short>property AutoSelected: Boolean</short>
         <descr>When True, the edit control will select all its text when:
 &lt;ul&gt;&lt;li&gt;It recieves focus&lt;/li&gt;&lt;li&gt;The Enter key is pressed.&lt;/li&gt;&lt;li&gt;A new item is selected.&lt;/li&gt;&lt;/ul&gt;</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.BidiMode">
+        <short/>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1838,7 +2095,25 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.Ctl3D">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.DragMode">
         <short/>
         <descr/>
         <seealso/>
@@ -1863,6 +2138,12 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TComboBox.ItemHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.ItemIndex">
         <short/>
         <descr/>
         <seealso/>
@@ -1910,7 +2191,31 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.OnDblClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.OnDrawItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -1958,6 +2263,12 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.OnMeasureItem">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.OnMouseDown">
         <short/>
         <descr/>
@@ -1976,7 +2287,25 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.OnSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.ParentColor">
         <short/>
         <descr/>
         <seealso/>
@@ -2000,6 +2329,18 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TComboBox.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TComboBox.ReadOnly">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TComboBox.ShowHint">
         <short/>
         <descr/>
@@ -2015,11 +2356,7 @@ False: Turns off auto-complete feature.</descr>
       <element name="TComboBox.Style">
         <short/>
         <descr/>
-        <seealso>
-          <descr>Options for behavior of the Auto-Complete feature.
-</descr>
-          <seealso>&lt;link id="TComboBoxAutoCompleteTextOption"/&gt;&lt;link id="TComboBoxAutoCompleteText"/&gt;</seealso>
-        </seealso>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TComboBox.TabOrder">
@@ -2071,6 +2408,14 @@ False: Turns off auto-complete feature.</descr>
       <element name="TCustomListBox">
         <short>Custom List Box</short>
         <descr>Custom List Box: the base type from which List Box is derived.</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomListBox.FCacheValid">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomListBox.FCanvas">
@@ -2085,25 +2430,25 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
+      <element name="TCustomListBox.FClickTriggeredBySelectionChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomListBox.FColumns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
       <element name="TCustomListBox.FExtendedSelect">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomListBox.FMultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
       <element name="TCustomListBox.FIntegralHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomListBox.FItems">
         <short/>
         <descr/>
         <seealso/>
@@ -2121,7 +2466,19 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
+      <element name="TCustomListBox.FItems">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
       <element name="TCustomListBox.FLockSelectionChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomListBox.FMultiSelect">
         <short/>
         <descr/>
         <seealso/>
@@ -2162,12 +2519,15 @@ False: Turns off auto-complete feature.</descr>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomListBox.FCacheValid">
+      <!-- function Visibility: private -->
+      <element name="TCustomListBox.GetCount">
         <short/>
         <descr/>
+        <errors/>
         <seealso/>
       </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomListBox.GetCount.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomListBox.GetTopIndex">
         <short/>
@@ -2177,6 +2537,15 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomListBox.GetTopIndex.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomListBox.SetColumns">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomListBox.SetColumns.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.SetTopIndex">
         <short/>
@@ -2210,6 +2579,15 @@ False: Turns off auto-complete feature.</descr>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.LMDrawListItem.TheMessage"><short/></element>
       <!-- procedure Visibility: private -->
+      <element name="TCustomListBox.LMMeasureItem">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomListBox.LMMeasureItem.TheMessage"><short/></element>
+      <!-- procedure Visibility: private -->
       <element name="TCustomListBox.LMSelChange">
         <short/>
         <descr/>
@@ -2218,6 +2596,15 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.LMSelChange.TheMessage"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomListBox.WMLButtonUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomListBox.WMLButtonUp.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomListBox.SendItemSelected">
         <short/>
@@ -2259,19 +2646,28 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.CreateHandle">
+      <element name="TCustomListBox.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomListBox.DestroyHandle">
+      <element name="TCustomListBox.FinalizeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomListBox.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomListBox.GetControlClassDefaultSize.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListBox.CheckIndex">
         <short/>
@@ -2476,6 +2872,15 @@ False: Turns off auto-complete feature.</descr>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.GetIndexAtY.Y"><short/></element>
       <!-- function Visibility: public -->
+      <element name="TCustomListBox.GetSelectedText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomListBox.GetSelectedText.Result"><short/></element>
+      <!-- function Visibility: public -->
       <element name="TCustomListBox.ItemAtPos">
         <short/>
         <descr/>
@@ -2560,6 +2965,13 @@ False: Turns off auto-complete feature.</descr>
         <errors/>
         <seealso/>
       </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomListBox.Click">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Align">
         <short/>
@@ -2591,7 +3003,19 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
+      <element name="TCustomListBox.Columns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TCustomListBox.Constraints">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomListBox.Count">
         <short/>
         <descr/>
         <seealso/>
@@ -2830,6 +3254,8 @@ False: Turns off auto-complete feature.</descr>
       <element name="TListBox">
         <short>List Box</short>
         <descr>List Box: a simple drop-down list from which a choice is made</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TListBox.Align">
@@ -2839,6 +3265,12 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListBox.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -2862,13 +3294,43 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TListBox.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.Columns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TListBox.Constraints">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TListBox.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.DragMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TListBox.ExtendedSelect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.Enabled">
         <short/>
         <descr/>
         <seealso/>
@@ -2922,6 +3384,18 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TListBox.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TListBox.OnDrawItem">
         <short/>
         <descr/>
@@ -2929,6 +3403,12 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListBox.OnEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -3018,6 +3498,24 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TListBox.OnShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TListBox.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TListBox.ParentShowHint">
         <short/>
         <descr/>
@@ -3077,41 +3575,14 @@ False: Turns off auto-complete feature.</descr>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TEditCharCase">
-        <short>Determines the case of text displayed in the edit box or combobox.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEditCharCase.ecNormal">
-        <short>Character case according to what the user types.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEditCharCase.ecUppercase">
-        <short>Converts every character that the user types into upper case characters.</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEditCharCase.ecLowerCase">
-        <short>Converts every character that the user types into lower case characters.</short>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TEchoMode">
-        <short>TEchoMode: Determines how strings in the edit box is displayed.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emNormal"><short/></element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emNone"><short/></element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TEchoMode.emPassword"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomEdit">
         <short>Custom Edit</short>
         <descr>Custom Edit: the base type from which Edit Box is derived.</descr>
+        <errors/>
+        <seealso/>
       </element>
+      <!-- variable Visibility: private -->
       <element name="TCustomEdit.FAutoSelect">
         <short>FAutoSelect: Boolean</short>
         <descr>Private variable for property AutoSelect.
@@ -3254,6 +3725,8 @@ Indicates how text is displayed in a text editing control in the following ways:
       <element name="TCustomEdit.CalculatePreferredSize.PreferredWidth"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.CalculatePreferredSize.PreferredHeight"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.CalculatePreferredSize.WithThemeSpace"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.CreateWnd">
         <short/>
@@ -3262,16 +3735,28 @@ Indicates how text is displayed in a text editing control in the following ways:
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.CMTextChanged">
+      <element name="TCustomEdit.TextChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomEdit.CMTextChanged.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.Change">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomEdit.DoEnter">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomEdit.DoExit">
         <short/>
         <descr/>
         <errors/>
@@ -3304,13 +3789,6 @@ Indicates how text is displayed in a text editing control in the following ways:
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomEdit.GetSelText.Result"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomEdit.InitializeWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.SetEchoMode">
         <short/>
@@ -3367,6 +3845,15 @@ Indicates how text is displayed in a text editing control in the following ways:
       <element name="TCustomEdit.ChildClassAllowed.Result"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.ChildClassAllowed.ChildClass"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomEdit.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomEdit.GetControlClassDefaultSize.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomEdit.KeyUp">
         <short/>
@@ -3378,6 +3865,30 @@ Indicates how text is displayed in a text editing control in the following ways:
       <element name="TCustomEdit.KeyUp.Key"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.KeyUp.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomEdit.WMChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.WMChar.Message"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomEdit.MouseUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.MouseUp.Button"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.MouseUp.Shift"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.MouseUp.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomEdit.MouseUp.Y"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomEdit.AutoSelect">
         <short>property AutoSelect: Boolean</short>
@@ -3399,30 +3910,60 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomEdit.Create">
-        <short><i>CustomEdit</i> constructor</short>
-        <descr><i>CustomEdit</i> constructor,  supplied code will <b>override</b> declarations by ancestor classes</descr>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomEdit.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
+      <element name="TCustomEdit.Clear">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
       <element name="TCustomEdit.SelectAll">
-        <short>Selects all text in buffer, in preparation for an operation such as Copy or Clear</short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.ClearSelection">
-        <short>Clears selected portion of Text</short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.CopyToClipboard">
-        <short>Copies selected text to the clipboard</short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.CutToClipboard">
-        <short>Cuts selected text (ie removes it) and stores it in the clipboard</short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomEdit.PasteFromClipboard">
-        <short>Pastes the contents of the clipboard into the current position in <i>Text</i></short>
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomEdit.BorderStyle">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
@@ -3433,20 +3974,21 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.EchoMode">
-        <short><i>EchoMode</i>: how the typed characters are to appear on the screen</short>
-        <descr><i>EchoMode</i>: can be None (no character appears); Normal (the character typed is shown directly); Password (a series of *** or other chosen characters are displayed instead of the typed characters). <br/>
-Reads or writes a flag to determine the mode<br/>
-Default is normal</descr>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.MaxLength">
         <short>Max Length</short>
         <descr>Max Length: maximum length allowed for text string</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Modified">
         <short>Modified</short>
         <descr>Modified: has the text been modified since creation?</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.OnChange">
@@ -3458,6 +4000,7 @@ Default is normal</descr>
       <element name="TCustomEdit.PasswordChar">
         <short>Password Character</short>
         <descr>Password Character: the character which appears in the Edit box replacing and masking the actual character typed. Typically used in password input, to prevent the typed characters from being seen by passers-by or casual observers (or even malicious observers!)</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.PopupMenu">
@@ -3475,16 +4018,19 @@ Default is normal</descr>
       <element name="TCustomEdit.SelLength">
         <short>Sel Length</short>
         <descr>Sel Length: the length (in characters) of the text that has been selected for editing</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelStart">
         <short>Sel Start</short>
         <descr>Sel Start: the index of the character from which selection (for editing) begins</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelText">
         <short>Sel Text</short>
         <descr>Sel Text: the text of the actual string that has been selected for editing</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.TabOrder">
@@ -3500,8 +4046,9 @@ Default is normal</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Text">
-        <short><i>Text</i>: the character string contained in the Edit Box</short>
-        <descr>Most of the operations (such as <i>Select</i>, <i>Clear</i>, <i>Cut</i>, <i>Copy</i> are performed in this part of the object, which holds the actual string being edited</descr>
+        <short>Text</short>
+        <descr>Text: the character string contained in the Edit Box</descr>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemoScrollbar">
@@ -3574,6 +4121,14 @@ Default is normal</descr>
       <element name="TCustomMemo">
         <short>Custom Memo</short>
         <descr>Custom Memo: the base type from which Memo is derived</descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomMemo.FAlignment">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomMemo.FHorzScrollBar">
@@ -3595,6 +4150,18 @@ Default is normal</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomMemo.FVertScrollBar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomMemo.FWantReturns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomMemo.FWantTabs">
         <short/>
         <descr/>
         <seealso/>
@@ -3633,6 +4200,58 @@ Default is normal</descr>
       <!-- function result Visibility: default -->
       <element name="TCustomMemo.StoreScrollBars.Result"><short/></element>
       <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.CreateHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.DestroyHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomMemo.RealGetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomMemo.RealGetText.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.RealSetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.RealSetText.Value"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomMemo.GetCachedText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomMemo.GetCachedText.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.GetCachedText.CachedText"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.SetAlignment">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.SetAlignment.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetLines">
         <short/>
         <descr/>
@@ -3641,6 +4260,33 @@ Default is normal</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.SetLines.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.SetSelText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.SetSelText.Val"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.SetWantReturns">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.SetWantReturns.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.SetWantTabs">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.SetWantTabs.NewWantTabs"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.SetWordWrap">
         <short/>
@@ -3659,13 +4305,6 @@ Default is normal</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.SetScrollBars.Value"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomMemo.InitializeWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMemo.Loaded">
         <short/>
@@ -3693,49 +4332,60 @@ Default is normal</descr>
       <element name="TCustomMemo.ControlKeyDown.Key"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.ControlKeyDown.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomMemo.CNChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.CNChar.Message"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomMemo.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomMemo.GetControlClassDefaultSize.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomMemo.Create">
-        <short><i>CustomMemo</i> constructor</short>
-        <descr><i>CustomMemo</i> constructor. Supplied code will <b>override</b> definition in ancestor classes</descr>
+        <short>Create</short>
+        <descr>Create the Custom memo widget</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomMemo.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomMemo.Destroy">
-        <short><i>CustomMemo</i> destructor</short>
-        <descr><i>CustomMemo</i> destructor. Supplied code will <b>override</b> definitions from ancestor classes</descr>
+        <short>Destroy</short>
+        <descr>Destroy the CustomMemo widget when you have finished with it</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMemo.Append">
-        <short><i>Append</i> a line of text to the <i>CustomMemo</i></short>
-        <descr><i>Append</i> a line of text to the <i>CustomMemo</i>. The <i>Value</i> is an explicit string to be passed to the procedure for insertion at the end of the text buffer <i>Lines</i></descr>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomMemo.Append.Value">
-        <short><i>Value</i>: the string to be added to <i>Lines</i></short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomMemo.Clear">
         <short/>
         <descr/>
         <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomMemo.Append.Value"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TCustomMemo.Alignment">
+        <short/>
+        <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.Lines">
         <short>Lines</short>
         <descr>Lines: an array of strings (representing single lines of characters) which contains the textual material held or being entered in the Memo.</descr>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomMemo.ScrollBars">
-        <short/>
-        <descr/>
         <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomMemo.WordWrap">
-        <short>Word Wrap</short>
-        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word nears the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMemo.HorzScrollBar">
@@ -3749,11 +4399,37 @@ Default is normal</descr>
         <descr/>
         <seealso/>
       </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomMemo.ScrollBars">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomMemo.WantReturns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomMemo.WantTabs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomMemo.WordWrap">
+        <short>Word Wrap</short>
+        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word nears the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
+        <seealso/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TEdit">
         <short>Edit Box</short>
         <descr>Edit Box: for entry or display of a single line of text.
-<br/>Inherits most of its properties from TCustomEdit</descr>
+</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TEdit.AutoSelected">
@@ -3764,17 +4440,20 @@ Default is normal</descr>
       <!-- property Visibility: published -->
       <element name="TEdit.Action">
         <short>Action</short>
-        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. <br/>This should point to a user-defined procedure or function or an item on an action list.</descr>
+        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Align">
         <short>Align</short>
         <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Anchors">
         <short>Anchors</short>
         <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.AutoSize">
@@ -3789,7 +4468,19 @@ Default is normal</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TEdit.BidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TEdit.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.Color">
         <short/>
         <descr/>
         <seealso/>
@@ -3797,16 +4488,20 @@ Default is normal</descr>
       <!-- property Visibility: published -->
       <element name="TEdit.Constraints">
         <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
-
-If a control is resized the new dimensions are always within the ranges given here. <br/>
-
-You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.CharCase">
         <short>Char Case</short>
         <descr>Character Case: the default character case (Upper or Lower case) to be used in the Edit Box. Can, of course, be over-ridden by use of the [shift] key.</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.DragMode">
@@ -3824,6 +4519,13 @@ You should take care when setting these options that they do not conflict with t
       <element name="TEdit.Enabled">
         <short>Enabled</short>
         <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.Font">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.MaxLength">
@@ -3832,64 +4534,112 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TEdit.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TEdit.OnChange">
         <short>On Change - Action</short>
-        <descr>On Change - Action to be taken when any of the properties of the control change (especially the textual content).<br/> User-defined Procedure</descr>
+        <descr>On Change - Action to be taken when any of the properties of the control change (especially the textual content).</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnChangeBounds">
         <short>On Change Bounds - Action</short>
-        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/> User-defined Procedure.</descr>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnClick">
         <short>On Click - Action</short>
         <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.OnEditingDone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.OnEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnEnter">
         <short>On Entry - Action</short>
         <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnExit">
         <short>On Exit - Action</short>
         <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyDown">
         <short>On Key Down - Action</short>
-        <descr>On Key Down - Action to be taken if a key is down while focus is in this control. Subtly different from On Key Pressed - for example the key might already have been down when focus entered this control, whereas On Key Pressed requires the key to become pressed while focus is in the control. <br/>User-defined Procedure</descr>
+        <descr>On Key Down - Action to be taken if a key is down while focus is in this control. Subtly different from On Key Pressed - for example the key might already have been down when focus entered this control, whereas On Key Pressed requires the key to become pressed while focus is in the control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyPress">
         <short>On Key Press - Action</short>
-        <descr>On Key Press - Action to be taken if a key becomes pressed while focus is in this control. Subtly different from On Key Down, which simply responds to a key being down, whether or not it was already down when focus was given to this control. On Key Press requires that a key becomes pressed while focus in in this control.<br/>User-defined Procedure</descr>
+        <descr>On Key Press - Action to be taken if a key becomes pressed while focus is in this control. Subtly different from On Key Down, which simply responds to a key being down, whether or not it was already down when focus was given to this control. On Key Press requires that a key becomes pressed while focus in in this control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnKeyUp">
         <short>On Key Up - Action</short>
-        <descr>On Key Up - Action to be taken if a key is up (ie not pressed) while focus is in this control.<br/>User-defined Procedure</descr>
+        <descr>On Key Up - Action to be taken if a key is up (ie not pressed) while focus is in this control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseDown">
         <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>User-defined Procedure</descr>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseMove">
         <short>On Mouse Move - Action</short>
-        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. <br/>User-defined Procedure</descr>
+        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnMouseUp">
         <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.<br/>User -defined Procedure</descr>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.OnResize">
         <short>On Resize - Action</short>
-        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. <br/>User-defined Procedure</descr>
+        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TEdit.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ParentFont">
@@ -3906,22 +4656,26 @@ You should take care when setting these options that they do not conflict with t
       <!-- property Visibility: published -->
       <element name="TEdit.PasswordChar">
         <short>Password Character</short>
-        <descr>Password Character - defines which character should appear in the edit box when a password is being typed. <br/>A security feature to prevent casual onlookers fom seeing the password that is being entered. <br/>Most often an asterisk * but could be any user-selected character.</descr>
+        <descr>Password Character - defines which character should appear in the edit box when a password is being typed. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.PopupMenu">
         <short>Popup Menu</short>
         <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ReadOnly">
         <short>Read Only</short>
         <descr>Read Only - a flag that signifies that users can view the contents of this control but are not allowed to modify it.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.ShowHint">
         <short>Show Hint</short>
         <descr>Show Hint - allows a small box containing helpful text to be displayed while the mouse cursor 'hovers' over the control</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.TabStop">
@@ -3939,16 +4693,20 @@ You should take care when setting these options that they do not conflict with t
       <element name="TEdit.Text">
         <short>Text</short>
         <descr>Text - the actual character string that represents the contents of the control. May be edited if ReadOnly property is not set</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TEdit.Visible">
         <short>Visible</short>
         <descr>Visible - determines whether or not the control can be seen</descr>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemo">
         <short>Memo Box</short>
-        <descr>Memo box: for entry or display of multiple lines of text.<br/>Inherits most of its properties from TCustomMemo</descr>
+        <descr>Memo box: for entry or display of multiple lines of text.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.Align">
@@ -3957,7 +4715,19 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TMemo.Alignment">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TMemo.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -3981,6 +4751,24 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TMemo.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.DragMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TMemo.Font">
         <short/>
         <descr/>
@@ -3990,14 +4778,58 @@ You should take care when setting these options that they do not conflict with t
       <element name="TMemo.Lines">
         <short>Lines</short>
         <descr>Lines: an array of strings (representing single lines of characters) which contains the textual material held or being entered in the Memo.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.MaxLength">
         <short>Max Length</short>
         <descr>Max Length: the maximum permitted length for the textual material in the memo</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMemo.OnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnDblClick">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnEditingDone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.OnEndDrag">
         <short/>
         <descr/>
         <seealso/>
@@ -4063,6 +4895,12 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TMemo.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TMemo.ParentFont">
         <short/>
         <descr/>
@@ -4105,345 +4943,411 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TMemo.WantReturns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TMemo.WantTabs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TMemo.WordWrap">
         <short>Word Wrap</short>
         <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word nears the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
+        <seealso/>
       </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TStaticBorderStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TStaticBorderStyle.sbsNone"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TStaticBorderStyle.sbsSingle"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TStaticBorderStyle.sbsSunken"><short/></element>
       <!-- object Visibility: default -->
-      <element name="TCustomLabel">
-        <short>Custom Label</short>
-        <descr>Custom label: the base type from which Label is derived.</descr>
+      <element name="TCustomStaticText">
+        <short>Custom Static Text</short>
+        <descr>Custom Static Text: the base type from which Static Text is derived.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomLabel.FAlignment">
+      <element name="TCustomStaticText.FAlignment">
+        <short>FAutoSelected: Boolean</short>
+        <descr>Private variable for property AutoSelected.
+
+True indicate that the edit or combobox control has just performed
+an AutoSelect operation so that subsequent mouse-clicks and keystrokes
+proceeds normally without selecting the text.
+
+False is set when the edit or combobox control looses focus.
+</descr>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomStaticText.FFocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomLabel.FWordWrap">
+      <element name="TCustomStaticText.FShowAccelChar">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomLabel.FLayout">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomLabel.FFocusControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomLabel.FShowAccelChar">
+      <element name="TCustomStaticText.FStaticBorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomLabel.SetAlignment">
+      <element name="TCustomStaticText.SetAlignment">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetAlignment.Value"><short/></element>
+      <element name="TCustomStaticText.SetAlignment.Value"><short/></element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomLabel.SetLayout">
+      <element name="TCustomStaticText.SetStaticBorderStyle">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetLayout.Value"><short/></element>
+      <element name="TCustomStaticText.SetStaticBorderStyle.Value"><short/></element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomLabel.SetWordWrap">
+      <element name="TCustomStaticText.WMActivate">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetWordWrap.Value"><short/></element>
-      <!-- procedure Visibility: private -->
-      <element name="TCustomLabel.WMActivate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomLabel.WMActivate.Message"><short/></element>
+      <element name="TCustomStaticText.WMActivate.Message"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomLabel.GetLabelText">
+      <element name="TCustomStaticText.GetLabelText">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomLabel.GetLabelText.Result"><short/></element>
+      <element name="TCustomStaticText.GetLabelText.Result"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.RealSetText">
+      <element name="TCustomStaticText.RealSetText">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.RealSetText.AValue"><short/></element>
+      <element name="TCustomStaticText.RealSetText.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.Notification">
+      <element name="TCustomStaticText.Notification">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Notification.AComponent"><short/></element>
+      <element name="TCustomStaticText.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Notification.Operation"><short/></element>
+      <element name="TCustomStaticText.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.SetFocusControl">
+      <element name="TCustomStaticText.SetFocusControl">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetFocusControl.Val"><short/></element>
+      <element name="TCustomStaticText.SetFocusControl.Val"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.SetShowAccelChar">
+      <element name="TCustomStaticText.SetShowAccelChar">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.SetShowAccelChar.Val"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomLabel.DoAutoSize">
+      <element name="TCustomStaticText.SetShowAccelChar.Val"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomStaticText.DialogChar">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomStaticText.DialogChar.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomStaticText.DialogChar.Message"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomStaticText.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomStaticText.GetControlClassDefaultSize.Result"><short/></element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomLabel.Create">
+      <element name="TCustomStaticText.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabel.Create.AOwner"><short/></element>
+      <element name="TCustomStaticText.Create.AOwner"><short/></element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.Alignment">
+      <element name="TCustomStaticText.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.FocusControl">
+      <element name="TCustomStaticText.BorderStyle">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.Layout">
+      <element name="TCustomStaticText.FocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomLabel.ShowAccelChar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TCustomLabel.WordWrap">
+      <element name="TCustomStaticText.ShowAccelChar">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
-      <element name="TLabel">
-        <short>Label</short>
-        <descr>Label: a brief text label to be placed in the Form near any object that needs to be identified.
-<br/>
-Can also be used for displaying text messages, eg
-<br/>
-... <br/>
-  Label.Caption := 'Please select one of these options'; <br/>
-... <br/>
-
-or the message may be changed dynamically, eg <br/>
-
-  var Lies: boolean; <br/>
-... <br/>
-  if (Lies=true) then Label.caption := 'Lies are true'  <br/>
-  else Label.caption := 'Lies are false'; <br/>
-...</descr>
+      <element name="TStaticText">
+        <short>Static Text</short>
+        <descr>Static Text: a box to display a Constant Text String</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Align">
+      <element name="TStaticText.Align">
         <short>Align</short>
-        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
+        <descr>Align: Is used to align a Static Text box to a border of a parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Alignment">
+      <element name="TStaticText.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Anchors">
+      <element name="TStaticText.Anchors">
         <short>Anchors</short>
-        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
+        <descr>Anchors:  keep the edges of a static text box a defined distance from certain borders of the parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.AutoSize">
+      <element name="TStaticText.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.BorderSpacing">
+      <element name="TStaticText.BidiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Caption">
+      <element name="TStaticText.BorderSpacing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.BorderStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.Caption">
         <short>Caption</short>
-        <descr>Caption - the text string that represents the contents of the label</descr>
+        <descr>Caption: the text that actually appears with the Static Text Box</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Color">
+      <element name="TStaticText.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Constraints">
+      <element name="TStaticText.Constraints">
         <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
-
-
-If a control is resized the new dimensions are always within the ranges given here. <br/>
-
-
-You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.FocusControl">
+      <element name="TStaticText.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Font">
+      <element name="TStaticText.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Layout">
+      <element name="TStaticText.FocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnChangeBounds">
-        <short>On Change Bounds</short>
-        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/>
- User-defined Procedure.</descr>
+      <element name="TStaticText.Font">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnClick">
-        <short>On Click</short>
+      <element name="TStaticText.OnChangeBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.OnClick">
+        <short>On Click - Action</short>
         <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnDblClick">
-        <short>On Double-click</short>
-        <descr>On Double-click - Action to be taken when the mouse button is double-clicked with the cursor over this control. <br/>User-defined Procedure</descr>
+      <element name="TStaticText.OnDblClick">
+        <short>On Double-click - Action</short>
+        <descr>On Double-click - Action to be taken when the mouse button is double-clicked while the cursor is over the control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseDown">
+      <element name="TStaticText.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.OnEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.OnMouseDown">
         <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>
-User-defined Procedure</descr>
+        <descr>On Mouse Down - Action to be taken when the mouse button is down while the cursor is over this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseEnter">
-        <short>On Mouse Entry</short>
+      <element name="TStaticText.OnMouseEnter">
+        <short>On Mouse Entry - Action</short>
         <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseLeave">
-        <short>On Mouse Leaving</short>
+      <element name="TStaticText.OnMouseLeave">
+        <short>On Mouse Leaving - Action</short>
         <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseMove">
+      <element name="TStaticText.OnMouseMove">
         <short>On Mouse Movement - Action</short>
-        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves while within the bounds of this control. User-defined Procedure</descr>
+        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves within the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseUp">
-        <short>On Mouse Up</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. <br/>
-Implies that the mouse button was previously down and has been released. The case where the cursor enters the control but the mouse button has not yet been pressed is covered by OnMouseEnter.<br/>
-User-defined Procedure</descr>
+      <element name="TStaticText.OnMouseUp">
+        <short>On Mouse Up - Action</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnResize">
+      <element name="TStaticText.OnResize">
         <short>On Resize - Action</short>
         <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ParentFont">
+      <element name="TStaticText.OnStartDrag">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.ShowAccelChar">
+      <element name="TStaticText.ParentBidiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Visible">
+      <element name="TStaticText.ParentFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.ShowAccelChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.TabOrder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.TabStop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TStaticText.Visible">
         <short>Visible</short>
         <descr>Visible - determines whether or not the control can be seen</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TLabel.WordWrap">
-        <short>Word Wrap</short>
-        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word is near the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonControl">
         <short>Button Control</short>
-        <descr>Button Control:  Base Type for the Button (including Radio Button) and Check Box types ;<br/>
-
-processes the detection of clicks and changes, and the checked/unchecked state of the component.<br/>
-
-
-A rectangular button, whose shape can be specified,
-and which usually has an informative caption. <br/>
-It is designed to be pressed or selected by the mouse cursor, and usually initiates some activity with the OnClick Event. <br/>
-
-Properties can include [Checked], [Click] (mouse clicks on button) and the actions to be taken on a change in a property.<br/>Typically, clicking on the box will cause the box to be checked (or unchecked if it is already checked) as well as initiating any other action associated with the box.<br/>The programmer is responsible for ensuring that the appropriate actions and changes in checked status are performed.</descr>
+        <descr>Button Control:  Base Type for the Button (including Radio Button) and Check Box types ;</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TButtonControl.FClicksDisabled">
@@ -4561,18 +5465,71 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- constructor Visibility: public -->
       <element name="TButtonControl.Create">
-        <short><i>TButtonControl</i> constructor</short>
+        <short>
+          <i>TButtonControl</i>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TButtonControl.Create.TheOwner"><short/></element>
-      <!-- range type Visibility: default -->
+      <!-- object Visibility: default -->
+      <element name="TButtonActionLink">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TButtonActionLink.FClientButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TButtonActionLink.AssignClient">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TButtonActionLink.AssignClient.AClient"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TButtonActionLink.IsCheckedLinked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TButtonActionLink.IsCheckedLinked.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TButtonActionLink.SetChecked">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TButtonActionLink.SetChecked.Value"><short/></element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TButtonActionLinkClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomButton">
-        <short><i>TCustomButton</i> - the ancestor class for <i>TButton</i></short>
-        <descr><i>TCustomButton</i> is the ancestor for <i>TButton</i><br/>
-		This class defines several of the methods to be used by descendant classes such as <i>TButton</i><br/>
-		Use this class if you want to derive your own Button Class
-	</descr>
+        <short>
+          <i>TCustomButton</i>
+        </short>
+        <descr>
+          <i>TCustomButton</i>
+        </descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomButton.FCancel">
@@ -4582,6 +5539,12 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomButton.FDefault">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomButton.FActive">
         <short/>
         <descr/>
         <seealso/>
@@ -4626,6 +5589,15 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       <!-- argument Visibility: default -->
       <element name="TCustomButton.SetModalResult.AValue"><short/></element>
       <!-- procedure Visibility: private -->
+      <element name="TCustomButton.CMUIActivate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomButton.CMUIActivate.Message"><short/></element>
+      <!-- procedure Visibility: private -->
       <element name="TCustomButton.WMDefaultClicked">
         <short/>
         <descr/>
@@ -4634,6 +5606,15 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomButton.WMDefaultClicked.Message"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TCustomButton.WMKillFocus">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomButton.WMKillFocus.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.Click">
         <short/>
@@ -4643,13 +5624,6 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomButton.CreateWnd">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.DoSendBtnDefault">
         <short/>
         <descr/>
         <errors/>
@@ -4686,15 +5660,17 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomButton.SetParent.AParent"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomButton.RealSetText">
+      <!-- function Visibility: protected -->
+      <element name="TCustomButton.DialogChar">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomButton.DialogChar.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomButton.RealSetText.Value"><short/></element>
+      <element name="TCustomButton.DialogChar.Message"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomButton.ChildClassAllowed">
         <short/>
@@ -4706,23 +5682,78 @@ Properties can include [Checked], [Click] (mouse clicks on button) and the actio
       <element name="TCustomButton.ChildClassAllowed.Result"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomButton.ChildClassAllowed.ChildClass"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomButton.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomButton.GetControlClassDefaultSize.Result"><short/></element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomButton.ParentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomButton.UseRightToLeftAlignment">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomButton.UseRightToLeftAlignment.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomButton.WSSetDefault">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomButton.WSSetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomButton.WSSetText.AText"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomButton.Create">
         <short>Creates a new instance of the TCustomButton class</short>
-        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.<br/>
-However, if you create the component by code don´t forget to free it when it is no longer needed.<br/><br/>
-Constructors allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</descr>
+        <descr>If you drop a component on the form editor you don´t need to add code to explicitly create it. The component is automatically created together with the the form, and destroyed when the form is destroyed.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomButton.Create.TheOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomButton.ExecuteDefaultAction">
         <short>Performs the action associated with the button if it is the Default button</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomButton.ExecuteCancelAction">
         <short>Performs the action associated with the button if it is a Cancel button or if 'Escape' was pressed</short>
+        <descr/>
+        <errors/>
+        <seealso/>
       </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomButton.ActiveDefaultControlChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomButton.ActiveDefaultControlChanged.NewControl"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomButton.UpdateRolesForForm">
         <short/>
@@ -4731,119 +5762,156 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomButton.Color">
-        <short>What Colour is the button? (default is the same as all other button faces)</short>
+      <element name="TCustomButton.Active">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Default">
         <short>Is this the Default button? (default setting is False)</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.ModalResult">
         <short>Is a Modal Result awaited? (default is false)</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Cancel">
         <short>Is this the Cancel button? (default setting is False)</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomButton.Color">
+        <short>What Colour is the button? (default is the same as all other button faces)</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.TabStop">
         <short>Is the Button included in the TabStop list? (default setting is True)</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TButton">
         <short>The most basic button component</short>
         <descr>Button: Base type for all Buttons. A push button control. The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TButton.Click">
         <short>Click, calling this method will invoke the OnClick event of the button</short>
         <descr>If you want to programmatically Click on a button you can call its Click method. This will have the same effect as a user clicking on the button.</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Action">
         <short>The action executed when the user clicks the button.</short>
-        <descr>If you assign an action from an ActionList to a TButton.Action the corresponding execute-method is assigned to the OnClick event of the button. <br/>
-Assigning an action sets other properties of the button as well, like Enabled and Caption.</descr>
+        <descr>If you assign an action from an ActionList to a TButton.Action the corresponding execute-method is assigned to the OnClick event of the button. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Align">
-        <descr><br/><br/>
-
-
-		Possible values fo Align are:<br/>
-
-
-		alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
-
-
-		alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
-
-
-		alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
-
-
-		alRight: Like alLeft but on the right side of the parent control.<br/>
-
-
-		alNone: The control can be placed anywhere on the parent control.<br/>
-
-
-		alClient: The control takes all available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
+        <short/>
+        <descr><br/></descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Anchors">
         <short>Anchors are used to keep a button on a defined distance to certain borders of the parent control.</short>
-        <descr>Anchors can be used to keep control at a certain distance from a side of its parent control, when the parent control is resized.<br/>
-For instance setting Anchors to [akBottom, akRight] will keep the control at a constant distance to the bottom right corner.</descr>
+        <descr>Anchors can be used to keep control at a certain distance from a side of its parent control, when the parent control is resized.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.AutoSize">
-        <short>Autosize in <i>TButton</i> has no function.</short>
-        <descr>If this property is set to true, the control will automatically adapt its size to be able to accomodate its content. <br/>
-This property is not used in Buttons.</descr>
+        <short>Autosize in </short>
+        <descr>If this property is set to true, the control will automatically adapt its size to be able to accomodate its content. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.BidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.BorderSpacing">
         <short>The fixed spacing around the border of the Button</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Cancel">
         <short>Setting this property will make the OnClick event executed when the user hits ESC.</short>
         <descr>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Caption">
         <short>Sets the text displayed on the button.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.Color">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Constraints">
         <short>Constraints can be used to give a control certain minimum and or maximum dimensions.</short>
         <descr>Sets the minimum and maximum sizes for a control. If a control is resized the new dimensions are allways within the ranges given here. You should take care when setting these options that they do not conflict with the Anchors en Allign settings.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Default">
         <short>Setting this property will make the OnClick event executed when the user hits ENTER</short>
         <descr>Defines if a button is the default on a form. That is, pressing enter will execute its onClick wether the control has focus or not!</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.DragMode">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Enabled">
         <short>Determines if the button reacts to a click.</short>
-        <descr>Setting this property determines if the control can be used. <br/>
-If Enabled is false a button cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.<br/>
-If an Action has been assigned to the button and this action is disabled then the enabled property is set to false as well.</descr>
+        <descr>Setting this property determines if the control can be used. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Font">
         <short>Font is used to set the font of the caption of the Button.</short>
         <descr>Font is used to set the font of the caption of the Button.</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.ModalResult">
         <short>If the button gets clicked, the ModalResult of the form will be set to this value.</short>
-        <descr>Setting ModalResult of a button makes closing a form easy.<br/>
-Just set this property to a value different from mrNone and a click on this button will set the modalresult of the form it is placed on to this value. <br/>
-Setting the ModalResult of a form will make it close.</descr>
+        <descr>Setting ModalResult of a button makes closing a form easy.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnChangeBounds">
@@ -4855,16 +5923,37 @@ Setting the ModalResult of a form will make it close.</descr>
       <element name="TButton.OnClick">
         <short>The OnClick event is triggered when a user clicks on the button</short>
         <descr>The OnClick event is triggered when a user clicks on the button. It can also be invoked by calling the Click method.</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.OnDragDrop">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.OnEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnEnter">
         <short>The OnEnter event is triggered when the button gets focus.</short>
         <descr>The OnEnter event is triggered when the button gets focus.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnExit">
         <short>The OnExit event is triggered when the button loses focus.</short>
         <descr>The OnExit event is triggered when the button loses focus.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnKeyDown">
@@ -4921,6 +6010,18 @@ Setting the ModalResult of a form will make it close.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TButton.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TButton.ParentFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TButton.ParentShowHint">
         <short/>
         <descr/>
@@ -4941,42 +6042,47 @@ Setting the ModalResult of a form will make it close.</descr>
       <!-- property Visibility: published -->
       <element name="TButton.TabOrder">
         <short>TabOrder - an integer value to show where the button lies in the Tab Order for this Form</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.TabStop">
         <short>Boolean to determine whether the Button is associated with a Tab Stop in the Tab Order for the form</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.Visible">
         <short>Determines whether the Button is visible.</short>
+        <descr/>
+        <seealso/>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
         <short>Check Box State</short>
-        <descr>Check Box State: a set of constants defining the possible states of a Check Box - <br/>
-
-Checked, meaning it has been selected; <br/>
-
-Unchecked meaning irt has not been selected or has been deselected; <br/>
-
-Grayed meaning it has been rendered inoperative or unable to be selected and appears grey or faintly visible on the Form</descr>
+        <descr>Check Box State: a set of constants defining the possible states of a Check Box - </descr>
+        <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbUnchecked">
+        <short/>
         <descr>The check box has no check mark, indicating that the user has not selected the option.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbChecked">
+        <short/>
         <descr>The check box has a check mark in it, indicating that the user has selected the option.</descr>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TCheckBoxState.cbGrayed">
+        <short/>
         <descr>The check box has a check mark in it, but it is grayed.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomCheckBox">
         <short>TCustomCheckBox is the ancestor of all check-box components.</short>
         <descr>Custom Check Box: The base (abstract) class from which the TCheckBox is derived.  Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</descr>
+        <errors/>
         <seealso><link id="TCheckBox"/></seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -5024,6 +6130,13 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCheckBox.DoChange.Msg"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomCheckBox.Click">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TCustomCheckBox.RetrieveState">
         <short/>
@@ -5047,6 +6160,17 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <errors/>
         <seealso/>
       </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomCheckBox.DialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomCheckBox.DialogChar.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomCheckBox.DialogChar.Message"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomCheckBox.GetChecked">
         <short/>
@@ -5081,6 +6205,31 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <errors/>
         <seealso/>
       </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomCheckBox.GetControlClassDefaultSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomCheckBox.GetControlClassDefaultSize.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomCheckBox.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomCheckBox.WSSetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomCheckBox.WSSetText.AText"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomCheckBox.Create">
         <short/>
@@ -5091,15 +6240,23 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
       <!-- argument Visibility: default -->
       <element name="TCustomCheckBox.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
+      <element name="TCustomCheckBox.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
       <element name="TCustomCheckBox.AllowGrayed">
         <short>Determines whether the check box can be in a "grayed" state.</short>
         <descr>If AllowGrayed is set to True, the check box has three possible states: checked, unchecked and grayed. If AllowGrayed is set to False, the check box has only two possible states: checked and unchecked.</descr>
+        <seealso/>
         <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.State">
         <short>Indicates whether the check box is selected, deselected or grayed.</short>
         <descr>See TCheckBoxState for possible values of State.</descr>
+        <seealso/>
         <example file="stdctrls/tcustomcheckbox_allowgrayed.pas"/>
       </element>
       <!-- property Visibility: public -->
@@ -5108,6 +6265,7 @@ Grayed meaning it has been rendered inoperative or unable to be selected and app
         <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
 
 If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.UseOnChange">
@@ -5124,38 +6282,42 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       <!-- object Visibility: default -->
       <element name="TCheckBox">
         <short>Check Box</short>
-        <descr>Check Box: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a Caption that describes its function. <br/>
-Toggles between being checked and unchecked on successive clicks of the mouse, and usually initiates some action associated with OnChecked.</descr>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCheckBox.DoAutoSize">
-        <short/>
-        <descr/>
+        <descr>Check Box: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a Caption that describes its function. </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Action">
         <short>Action</short>
-        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. <br/>This should point to a user-defined procedure or function or an item on an action list.</descr>
+        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Align">
         <short>Align</short>
         <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AllowGrayed">
         <short>Allow Grayed</short>
-        <descr>Allow Grayed: a flag to show whether the box is allowed to be Greyed out, <br/>ie it is still visible, but appears faint and cannot be selected or activated with the mouse cursor or keyboard</descr>
+        <descr>Allow Grayed: a flag to show whether the box is allowed to be Greyed out, </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Anchors">
         <short>Anchors</short>
         <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -5170,16 +6332,25 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       <element name="TCheckBox.Caption">
         <short>Caption</short>
         <descr>Caption: a brief description appearing near the check box, usually stating the function of the box or what action will be taken if it becomes checked.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Checked">
         <short>Checked</short>
         <descr>Checked - shows whether or not the box has been checked (ie selected)</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.Color">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Constraints">
         <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>If a control is resized the new dimensions are always within the ranges given here. <br/>You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.DragCursor">
@@ -5203,28 +6374,37 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       <element name="TCheckBox.Enabled">
         <short>Enabled</short>
         <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.Font">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Hint">
         <short>Hint</short>
-        <descr>Hint: a short piece of pop-up text that appears if the mouse-cursor hovers over the check box; <br/>it should give further details of the function of the box</descr>
+        <descr>Hint: a short piece of pop-up text that appears if the mouse-cursor hovers over the check box; </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnChange">
         <short>On Change</short>
-        <descr>On Change - Action to be taken when any of the properties of the control change.<br/>
- User-defined Procedure</descr>
+        <descr>On Change - Action to be taken when any of the properties of the control change.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnChangeBounds">
         <short>On Change Bounds</short>
-        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. <br/>
- User-defined Procedure.</descr>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnClick">
         <short>On Click - Action</short>
-        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. <br/>User-defined Procedure</descr>
+        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnDragDrop">
@@ -5239,6 +6419,12 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TCheckBox.OnEditingDone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TCheckBox.OnEndDrag">
         <short/>
         <descr/>
@@ -5248,37 +6434,64 @@ Toggles between being checked and unchecked on successive clicks of the mouse, a
       <element name="TCheckBox.OnEnter">
         <short>On Entry - Action</short>
         <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnExit">
-        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. <br/>User-defined Procedure</descr>
+        <short/>
+        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseDown">
         <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. <br/>
-User-defined Procedure</descr>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.OnMouseEnter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.OnMouseLeave">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseMove">
         <short>On Mouse Move - Action</short>
-        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. <br/>
-User-defined Procedure</descr>
+        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseUp">
         <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.<br/>
-User -defined Procedure</descr>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnResize">
         <short>On Resize - Action</short>
-        <descr>On Resize - Action to be taken when the control is resized. Might include selection of a different font size etc. <br/>
-User-defined Procedure</descr>
+        <descr>On Resize - Action to be taken when the control is resized. Might include selection of a different font size etc. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.ParentColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCheckBox.ParentFont">
         <short/>
         <descr/>
         <seealso/>
@@ -5290,14 +6503,22 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TCheckBox.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TCheckBox.PopupMenu">
         <short>Popup Menu</short>
         <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.ShowHint">
         <short>Show Hint</short>
         <descr>Show Hint: a flag to show whether or not the hint is to be shown when the mouse cursor hovers over the box.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.State">
@@ -5327,11 +6548,14 @@ User-defined Procedure</descr>
       <element name="TCheckBox.Visible">
         <short>Visible</short>
         <descr>Visible - determines whether or not the control can be seen</descr>
+        <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TToggleBox">
         <short>Toggle Box</short>
-        <descr>Toggle Box: a labelled box capable of being checked (when it becomes recessed) or unchecked (when it is raised). <br/>The 'state' property can be tested for cbUnchecked or cbChecked and actions can be associated with mouse clicks or other movements</descr>
+        <descr>Toggle Box: a labelled box capable of being checked (when it becomes recessed) or unchecked (when it is raised). </descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TToggleBox.Create">
@@ -5350,6 +6574,12 @@ User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToggleBox.Anchors">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TToggleBox.AutoSize">
         <short/>
         <descr/>
         <seealso/>
@@ -5519,8 +6749,21 @@ User-defined Procedure</descr>
       <!-- object Visibility: default -->
       <element name="TRadioButton">
         <short>Radio Button</short>
-        <descr>Radio Button: a button which works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected. <br/>Several radio buttons are usually grouped together in a Group Box or Radio Group. When a button is selected, the actions associated with that button are initiated.</descr>
+        <descr>Radio Button: a button which works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected. </descr>
+        <errors/>
+        <seealso/>
       </element>
+      <!-- function Visibility: protected -->
+      <element name="TRadioButton.DialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TRadioButton.DialogChar.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TRadioButton.DialogChar.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TRadioButton.RealSetText">
         <short/>
@@ -5531,7 +6774,7 @@ User-defined Procedure</descr>
       <!-- argument Visibility: default -->
       <element name="TRadioButton.RealSetText.Value"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TRadioButton.DoAutoSize">
+      <element name="TRadioButton.ApplyChanges">
         <short/>
         <descr/>
         <errors/>
@@ -5566,6 +6809,12 @@ User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioButton.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TRadioButton.BidiMode">
         <short/>
         <descr/>
         <seealso/>
@@ -5614,6 +6863,12 @@ User-defined Procedure</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioButton.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TRadioButton.Font">
         <short/>
         <descr/>
         <seealso/>
@@ -5715,6 +6970,18 @@ User-defined Procedure</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TRadioButton.ParentBidiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TRadioButton.ParentFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
       <element name="TRadioButton.ParentShowHint">
         <short/>
         <descr/>
@@ -5762,381 +7029,624 @@ User-defined Procedure</descr>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TStaticBorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsNone"><short/></element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsSingle"><short/></element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TStaticBorderStyle.sbsSunken"><short/></element>
       <!-- object Visibility: default -->
-      <element name="TCustomStaticText">
-        <short>Custom Static Text</short>
-        <descr>Custom Static Text: the base type from which Static Text is derived.</descr>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCustomStaticText.FAlignment">
-        <short>FAutoSelected: Boolean</short>
-        <descr>Private variable for property AutoSelected.
-
-True indicate that the edit or combobox control has just performed
-an AutoSelect operation so that subsequent mouse-clicks and keystrokes
-proceeds normally without selecting the text.
-
-False is set when the edit or combobox control looses focus.
-</descr>
+      <element name="TCustomLabel">
+        <short>Custom Label</short>
+        <descr>Custom label: the base type from which Label is derived.</descr>
+        <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomStaticText.FStaticBorderStyle">
+      <element name="TCustomLabel.FAlignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomStaticText.FFocusControl">
+      <element name="TCustomLabel.FFocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomStaticText.FShowAccelChar">
+      <element name="TCustomLabel.FOptimalFill">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLabel.FShowAccelChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLabel.FWordWrap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomLabel.FLayout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomStaticText.FontChange">
+      <element name="TCustomLabel.SetOptimalFill">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.FontChange.Sender"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.DoAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.CMTextChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.CMTextChanged.Message"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.WMActivate">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.WMActivate.Message"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.Notification">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Notification.AComponent"><short/></element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Notification.Operation"><short/></element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.SetAlignment">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetAlignment.Value"><short/></element>
+      <element name="TCustomLabel.SetOptimalFill.AValue"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.GetAlignment">
+      <element name="TCustomLabel.CanTab">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetAlignment.Result"><short/></element>
+      <element name="TCustomLabel.CanTab.Result"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.SetStaticBorderStyle">
+      <element name="TCustomLabel.DoMeasureTextPosition">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetStaticBorderStyle.Value"><short/></element>
+      <element name="TCustomLabel.DoMeasureTextPosition.TextTop"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.DoMeasureTextPosition.TextLeft"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.GetStaticBorderStyle">
+      <element name="TCustomLabel.HasMultiLine">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetStaticBorderStyle.Result"><short/></element>
+      <element name="TCustomLabel.HasMultiLine.Result"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.SetFocusControl">
+      <element name="TCustomLabel.CalcSize">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetFocusControl.Value"><short/></element>
+      <element name="TCustomLabel.CalcSize.AWidth"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcSize.AHeight"><short/></element>
       <!-- procedure Visibility: protected -->
-      <element name="TCustomStaticText.SetShowAccelChar">
+      <element name="TCustomLabel.DoAutoSize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLabel.DialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.DialogChar.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.DialogChar.Message"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.TextChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.Resize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.FontChanged">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.SetShowAccelChar.Value"><short/></element>
+      <element name="TCustomLabel.FontChanged.Sender"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.GetShowAccelChar">
+      <element name="TCustomLabel.GetControlClassDefaultSize">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.GetShowAccelChar.Result"><short/></element>
+      <element name="TCustomLabel.GetControlClassDefaultSize.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.WMActivate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.WMActivate.Message"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.Notification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.Notification.AComponent"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.Notification.Operation"><short/></element>
       <!-- function Visibility: protected -->
-      <element name="TCustomStaticText.CanTab">
+      <element name="TCustomLabel.GetShowAccelChar">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomStaticText.CanTab.Result"><short/></element>
+      <element name="TCustomLabel.GetShowAccelChar.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLabel.GetAlignment">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.GetAlignment.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLabel.GetLabelText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.GetLabelText.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TCustomLabel.GetTransparent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.GetTransparent.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetAlignment">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetAlignment.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetColor.NewColor"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetFocusControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetFocusControl.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetLayout">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetLayout.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetShowAccelChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetShowAccelChar.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetTransparent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetTransparent.NewTransparent"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.SetWordWrap">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.SetWordWrap.Value"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.Loaded">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomStaticText.Alignment">
+      <element name="TCustomLabel.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomStaticText.BorderStyle">
+      <element name="TCustomLabel.FocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomStaticText.FocusControl">
+      <element name="TCustomLabel.Layout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
-      <element name="TCustomStaticText.ShowAccelChar">
+      <element name="TCustomLabel.ShowAccelChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomLabel.Transparent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomLabel.WordWrap">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCustomLabel.OptimalFill">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomStaticText.Create">
+      <element name="TCustomLabel.Create">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomStaticText.Create.AOwner"><short/></element>
-      <!-- procedure Visibility: public -->
-      <element name="TCustomStaticText.Paint">
+      <element name="TCustomLabel.Create.TheOwner"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TCustomLabel.CalcFittingFontHeight">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.TheText"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.MaxWidth"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.MaxHeight"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.FontHeight"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.NeededWidth"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalcFittingFontHeight.NeededHeight"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TCustomLabel.ColorIsStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.ColorIsStored.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TCustomLabel.AdjustFontForOptimalFill">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCustomLabel.AdjustFontForOptimalFill.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomLabel.Paint">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLabel.AutoSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCustomLabel.Color">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <!-- object Visibility: default -->
-      <element name="TStaticText">
-        <short>Static Text</short>
-        <descr>Static Text: a box to display a Constant Text String</descr>
+      <element name="TLabel">
+        <short>Label</short>
+        <descr>Label: a brief text label to be placed in the Form near any object that needs to be identified.
+</descr>
+        <errors/>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Align">
+      <element name="TLabel.Align">
         <short>Align</short>
-        <descr>Align: Is used to align a Static Text box to a border of a parent control.</descr>
+        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Alignment">
+      <element name="TLabel.Alignment">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Anchors">
+      <element name="TLabel.Anchors">
         <short>Anchors</short>
-        <descr>Anchors:  keep the edges of a static text box a defined distance from certain borders of the parent control.</descr>
+        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.AutoSize">
+      <element name="TLabel.AutoSize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.BorderSpacing">
+      <element name="TLabel.BidiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.BorderStyle">
+      <element name="TLabel.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Caption">
+      <element name="TLabel.Caption">
         <short>Caption</short>
-        <descr>Caption: the text that actually appears with the Static Text Box</descr>
+        <descr>Caption - the text string that represents the contents of the label</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Color">
+      <element name="TLabel.Color">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Constraints">
+      <element name="TLabel.Constraints">
         <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. <br/>
-If a control is resized the new dimensions are always within the ranges given here. <br/>
-You should take care when setting these options that they do not conflict with the Anchors and Align settings.</descr>
+        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Enabled">
-        <short>Enabled</short>
-        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.FocusControl">
+      <element name="TLabel.DragCursor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Font">
+      <element name="TLabel.DragMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentColor">
+      <element name="TLabel.Enabled">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentFont">
+      <element name="TLabel.FocusControl">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ParentShowHint">
+      <element name="TLabel.Font">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.PopupMenu">
-        <short>Popup Menu</short>
-        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.ShowAccelChar">
+      <element name="TLabel.Layout">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.ShowHint">
-        <short>Show Hint</short>
-        <descr>Show Hint - allows a small box containing helpful text to be displayed while the mouse cursor 'hovers' over the control</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.TabOrder">
+      <element name="TLabel.ParentBidiMode">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.TabStop">
+      <element name="TLabel.ParentColor">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.Visible">
+      <element name="TLabel.ParentFont">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.ParentShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.PopupMenu">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.ShowAccelChar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.ShowHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.Transparent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.Visible">
         <short>Visible</short>
         <descr>Visible - determines whether or not the control can be seen</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnClick">
-        <short>On Click - Action</short>
+      <element name="TLabel.WordWrap">
+        <short>Word Wrap</short>
+        <descr>Word Wrap: a logical flag to show whether or not word-wrap is enabled, ie if a word is near the end of a line and is going to be too long for the line, it is wrapped down to the next line</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnClick">
+        <short>On Click</short>
         <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnDblClick">
-        <short>On Double-click - Action</short>
-        <descr>On Double-click - Action to be taken when the mouse button is double-clicked while the cursor is over the control. User-defined Procedure</descr>
+      <element name="TLabel.OnDblClick">
+        <short>On Double-click</short>
+        <descr>On Double-click - Action to be taken when the mouse button is double-clicked with the cursor over this control. </descr>
+        <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseDown">
-        <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken when the mouse button is down while the cursor is over this control. User-defined Procedure</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseMove">
-        <short>On Mouse Movement - Action</short>
-        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves within the bounds of this control. User-defined Procedure</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseUp">
-        <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. <br/>Implies that the mouse button was previously down and has been released. The case where the cursor enters the control but the mouse button has not yet been pressed is covered by OnMouseEnter.<br/>User-defined Procedure</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseEnter">
-        <short>On Mouse Entry - Action</short>
-        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.OnMouseLeave">
-        <short>On Mouse Leaving - Action</short>
-        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TStaticText.OnChangeBounds">
+      <element name="TLabel.OnDragDrop">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TStaticText.OnResize">
+      <element name="TLabel.OnDragOver">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnEndDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnMouseDown">
+        <short>On Mouse Down - Action</short>
+        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnMouseMove">
+        <short>On Mouse Movement - Action</short>
+        <descr>On Mouse Movement - Action to be taken if the mouse cursor moves while within the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnMouseUp">
+        <short>On Mouse Up</short>
+        <descr>On Mouse Up - Action to be taken if the mouse button is up while the cursor is over this control. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnMouseEnter">
+        <short>On Mouse Entry</short>
+        <descr>On Mouse Entry - Action to be taken when the mouse cursor enters the bounds of this control. User-defined Procedure</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnMouseLeave">
+        <short>On Mouse Leaving</short>
+        <descr>On Mouse Leaving - Action to be taken when the mouse cursor leaves the boundaries of this control. User-defined Procedure.</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnChangeBounds">
+        <short>On Change Bounds</short>
+        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnResize">
         <short>On Resize - Action</short>
         <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. User-defined Procedure</descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OnStartDrag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TLabel.OptimalFill">
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <!-- variable Visibility: default -->
       <element name="DefaultButtonControlUseOnChange">
@@ -6152,81 +7662,11 @@ You should take care when setting these options that they do not conflict with t
         <seealso/>
       </element>
       <topic name="HowToUseStdCtrls">
-	      <short>How to use <i>StdCtrls</i>, <i>ComCtrls</i> or <i>ExtCtrls</i></short>
-	      <descr>
-		      <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
-		      <p>Many of the final target controls that the application developer wants to use, such as <i>TButton</i>, <i>TMemo</i>, <i>TScrollBar</i> etc, have a corresponding ancestor class such as <i>TCustomButton</i>, <i>TCustomMemo</i> or <i>TCustomScrollBar</i>. Many of the properties and methods relevant to the final target control are defined (and explained) more fully in the <i>TCustomXXX</i> class, and are <b>inherited</b> by the final target control.</p><br/>
-		      <p>If you drop a component on the form editor you don't need to add code explicitly to create it. The component is automatically created by the IDE together with the form, and destroyed when the form is destroyed.</p>
-		      <p>However, if you create the component yourself by code don't forget to free it when it is no longer needed.</p>
-		      <br/>
-		      <p>If you place a component on the Form Designer and look at the Object Inspector, you can observe the properties change as you move the component around.</p>
-		      <p>For example, if you place a button (TButton) on the form, click on it to select it, then move it around the form with the mouse, you can watch the values of Top and Left change in the Object Inspector to reflect the new position. If you use the object's re-sizing bars to adjust its size, you can watch the Height and Width properties change as well.</p>
-		      <p>On the other hand, by using the Object Inspector, you can select the value associated with a property such as height, and type in a new value; you can watch the size of the object on the form change to reflect the new value.</p>
-		      <p>You can also explicitly change the properties of the object in code by typing (in the appropriate Implementation section of the Source editor), for example</p><br/>
-		      <code>           Form1.Button1.Height := 48;</code><br/>
-		      <p>If you type this new value into the Source Editor and then look back at the Form Designer, you will see that the button on the Form has taken the new size. The new value will also be shown in the Object Inspector.</p><br/>
-		      <p>In summary, there are usually about three different ways to determine each property of an object:</p> 
-		      <ul>
-			      <li>by using the mouse,</li>
-			      <li>by setting the values in the Object Inspector,</li>
-			      <li>or explicitly by writing code.</li>
-		      </ul><br>
-			      <p>The components defined in these Units have several properties that are common to most of them, and other properties that are specific to the individual components. We shall describe the most common ones here. Unusual or control-specific properties will be described for the individual controls. </p>
-			      <p>Additional Help can always be obtained by selecting a property or keyword,  in either the Object Inspector or the Source Editor, and pressing F1. You will be taken by your Help browser to the appropriate page in the documentation. </p>
-			      <p>If the description of a property on that page is insufficient, you can navigate to the corresponding description in the ancestor classes, by selecting the links in the Inheritance listing or by selecting the ancestor Type in the declaration of the object.</p>
-			      
-			      <p><i>Constructors</i> such as <i>Create</i> allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</p>
-			      <p><i>Destructors:</i> If you call <i>Destroy</i> for an object which hasn't being initialized yet it will generate an error. Always use the <i>Free</i> method to deallocate objects, because it checks whether an object's value is <b>nil</b> before invoking <i>Destroy</i>.</p>
-			      <p>Take the following precautions when creating your own <i>Destroy</i> method:</p>
-			      <ul>
-				      <li>* Declare <i>Destroy</i> with the <b>override</b> directive, because it is a <b>virtual</b> method.</li>
-				      <li>* Always call '<i>inherited Destroy;</i>' as the last thing on the destructor code.</li>
-				      <li>* Be aware that an <i>exception</i> may be raised on the <i>constructor</i> in case there is not enought memory to create an object, or something else goes wrong. If the <i>exception</i> is not handled inside the constructor, the object will be only partially built. In this case <i>Destroy</i> will be called when you weren't expecting it, so your destructor must check if the resources were really allocated before disposing of them.</li>
-				      <li>* Remember to call <i>Free</i> for all objects created on the constructor.</li>
-			      </ul><br/>
-			      <table>
-				      <caption>Some commonly listed properties</caption>
-				      <th><td>Property</td><td>Meaning</td></th>
-				      <tr><td>Action</td><td>The main action or event associated with the object. For example selecting an 'Exit' Button might cause the 'Close' action</td></tr>
-				      <tr><td>Align</td><td>Defines the way in which an object is to be lined up with the parent object. Possible values are alTop (placed at the top and using the full available width), alBottom, alLeft (placed at the left and using the full available height), alRight. alNone (place anywhere on parent control) or alClient (takes all available space next to controls aligned to top, bottom, left or right)</td></tr>
-				      <tr><td>Anchor</td><td>Used to keep a control a certain distance from the defined edges of a parent control, when the parent is resized. For example <b>[akBottom, akRight]</b> will keep thc control a fixed distance from the bottom right corner.</td></tr>
-				      <tr><td>BorderSpacing</td><td>The space around the edge between an <i>Anchored</i> control and its parent.</td></tr>
-				      <tr><td>Caption</td><td>The text that is displayed on or near the control; it should preferably give some clue as to the function of the control, or an instruction such as 'C;ose' or 'Execute'. By default Caption is set to be the same as the 'Name' property, and the application programmer should take steps to substitute meaningful text instead of the default values.</td></tr>
-				      <tr><td>Color</td><td>The Colour to be used to draw the control or to write the text it contains.</td></tr>
-				      <tr><td>Enabled</td><td>A Boolean property to determine whether or not a control is capable of being selected and performing an action. If it is not <i>Enabled</i>, it is often <b>Grayed</b> out on the Form.</td></tr>
-				      <tr><td>Font</td><td>The Font to be used for writing the text associated with the control - either the caption or label, or the text-strings contained within the control.</td></tr>
-				      <tr><td>Items</td><td>The list of 'Things' that the object contains, such as a group of images, a series of lines of text, a number of actions in an actionlist, etc</td></tr>
-				      <tr><td>Name</td><Td>The identifier by which the control is known in the programme. The IDE gives it a default name based on the underlying type, for example successive instances of TBitButton would be named Form1.BitBitton1 and Form1.BitButton2; it is up to the application programmer to give them more meaningful names such as Form1.ExitButton or Form1.OKButton. By default the Name of the control is applied to the Caption for the control, but the text of the Caption may be changed separately.</td></tr>
-				      <tr><td>PopUpMenu</td><td>A window containing context-sensitive menu information that pops up when the right mouse button is clicked on the object.</td></tr>
-				      <tr><td>Position (or Top, Left)</td><td>Determines where the control is located on the parent form or window</td></tr>
-				      <tr><td>ReadOnly</td><td>Boolean property which, if True, signifies that the contents of the control can be read by the user or the calling routine, but cannot be written or changed.</td></tr>
-				      <tr><td>ShowHint</td><td>Allows a small window containing a context-sensitive Help or other description to be displayed when the mouse cursor 'hovers' over the control.</td></tr>
-				      <tr><td>Size (or Height and Width)</td><td>The dimensions of the control</td></tr>
-				      <tr><td>Style</td><td>The options available for Style depend upon the sort of Control being considered: for instance the Style may be defined by TFormStyle, TBorderStyle, TButtonStyle etc.</td></tr>
-				      <tr><td>TabOrder</td><td>Integer defining where in the sequence of tabs on the Form this control is to lie</td></tr>
-				      <tr><td>TabStop</td><td>Boolean property which if True places this control in the sequence of objects that the user can reach by successively pressing the Tab key</td></tr>
-				      <tr><td>Text</td><td>The String of Text that represents the actual data that this control contains. Applies particularly to Text, Memo and StringList types of object</td></tr>
-				      <tr><td>Visible</td><td>If true, the object can be seen on the Form; if False, object is hidden</td></tr>
-			      </table>
-			      <p>Many actions are commonly listed in the 'Events' tab of the Object Inspector. If you select an entry in the list, a ComboBox appears with a DropDown list showing any actions that have aleady been defined, and allowing you to choose one to be associated with this event. Alternatively you can select the ellipsis (three dots ...) and you will be taken to an area of the Source Editor where you can begin typing your own action instructions for the selected event.</p>
-			      <p>While there is a large number of available events for any given control, in practice it is only necessary to populate a few of them. For most controls, it is sufficient to provide coding for 'OnClick'; for more complex controls it may be necessary also to provide for 'OnEntry' (when the mouse cursor enters the Control and gives it focus) and 'OnExit' (when the mouse cursor leaves the Control; or you may need to write an event handler for 'OnChange' or 'OnScroll', depending on the nature of the particular control with which you are dealing.</p>
-			      <p>A common strategy in Object-Oriented programming is to provide an <link id="ActnList.TActionList">ActionList</link> with a number of pre-defined actions from which the most appropriate can be selected to use in any particular instance.
-				      <table>
-					      <caption>Some commonly listed Actions</caption>
-					      <th><td>Action</td><td>Meaning</td></th>
-					      <tr><td>OnChange</td><td>Action to be taken if <u>any</u> change is deteted (eg mouse move, mode click, key press, edit text, alter picture, etc)</td></tr>
-					      <tr><td>OnClick</td><td>Action to be taken when the left mouse button is clicked. This is usually the main or default action of the control; for example clicking on a button or checkbox initiates the action associated with the checkbox. It may alternatively initate a process of selection, for instance in a TextBox or Memo, or signal the beginning of painting with a Pen or Brush.</td></tr>
-					      <tr><td>Click</td><td>A method to emulate in code the effect of clicking on a control. This method is most often found in Button-type controls (TButton, TBitBtn, TSpeedButton etc).<br/>
-					      A procedure can be written that calls the same code as the OnClick action. This facility can be particularly useful if the activation of one control by clicking initiates a cascade of other controls being activated, and the Click method can be used to initiate the action rather than having the user explicitly click on a lot of controls.
-					      <tr><td>OnDragDrop</td><td>Action to be taken during Drag-Drop manoeuvres, ie when the mouse is osed to 'capture' an item or some text etc and move it around the screen to a new location.</td></tr>
-					      <tr><td>OnEntry</td><td>Action to be taken when the mouse cursor enters the area occupied by the object, usually transfering focus to that object. This might include changes in the appearance of the object such as highlighting or raising the border.</td></tr>
-					      <tr><td>OnExit</td><td>Action to be taken when the mouse moves out of the area of the object, usually transferring focus out of the object.</td></tr>
-					      <tr><td>OnKeyPress</td><td>Action to be taken for any key-press</td></tr>
-					      <tr><td>OnMouseMove</td><td>Action to be taken for any movement of the mouse</td></tr>
-				      </table>
-				      
-			      </descr>
-		      </topic>
+        <short>How to use </short>
+        <descr>
+          <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
+        </descr>
+      </topic>
     </module>
     <!-- StdCtrls -->
   </package>
