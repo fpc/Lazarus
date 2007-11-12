@@ -1,23 +1,24 @@
 object FormMove: TFormMove
   Left = 299
-  Height = 235
+  Height = 471
   Top = 153
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 234
+  Width = 559
+  HorzScrollBar.Page = 558
+  VertScrollBar.Page = 470
   ActiveControl = ButtonYes
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Move Element'
   ChildSizing.LeftRightSpacing = 10
   ChildSizing.TopBottomSpacing = 10
-  ClientHeight = 235
-  ClientWidth = 400
+  ClientHeight = 471
+  ClientWidth = 559
   object LabelSrc: TLabel
     Left = 10
     Height = 42
     Top = 66
-    Width = 379
+    Width = 538
+    Anchors = [akTop, akLeft, akRight]
     AutoSize = False
     ParentColor = False
   end
@@ -31,16 +32,16 @@ object FormMove: TFormMove
   end
   object LabelSrcElement: TLabel
     Left = 10
-    Height = 18
+    Height = 20
     Top = 120
-    Width = 42
+    Width = 44
     Font.Style = [fsBold]
     ParentColor = False
   end
   object ButtonYes: TButton
-    Left = 66
+    Left = 384
     Height = 25
-    Top = 199
+    Top = 438
     Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -49,9 +50,9 @@ object FormMove: TFormMove
     TabOrder = 0
   end
   object ButtonNo: TButton
-    Left = 150
+    Left = 473
     Height = 25
-    Top = 199
+    Top = 438
     Width = 75
     Anchors = [akRight, akBottom]
     BorderSpacing.InnerBorder = 4
@@ -63,30 +64,32 @@ object FormMove: TFormMove
     Left = 10
     Height = 42
     Top = 10
-    Width = 380
+    Width = 539
     Align = alTop
     Caption = 'The following FPDoc element is not present in the skeleton. Move its contents into different one?'
     Color = clBtnFace
     Font.Style = [fsBold]
   end
-  object ComboBoxDest: TComboBox
-    Left = 132
-    Height = 21
-    Top = 150
-    Width = 258
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
-    Style = csDropDownList
+  object ListBoxDest: TListBox
+    Left = 10
+    Height = 246
+    Top = 180
+    Width = 538
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    OnDrawItem = ListBoxDestDrawItem
+    Style = lbOwnerDrawFixed
     TabOrder = 2
   end
-  object ButtonMove: TButton
-    Left = 234
-    Height = 25
-    Top = 199
-    Width = 155
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Move to another file...'
-    OnClick = ButtonMoveClick
+  object ComboBoxJump: TComboBox
+    Left = 240
+    Height = 21
+    Top = 153
+    Width = 309
+    Anchors = [akTop, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    OnSelect = ComboBoxJumpSelect
+    Style = csDropDownList
     TabOrder = 3
   end
 end

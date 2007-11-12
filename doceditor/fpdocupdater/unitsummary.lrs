@@ -1,0 +1,15 @@
+LazarusResources.Add('TFormSummary','FORMDATA',[
+  'TPF0'#12'TFormSummary'#11'FormSummary'#4'Left'#3''''#1#6'Height'#3#17#1#3'To'
+  +'p'#3#156#0#5'Width'#3'/'#1#18'HorzScrollBar.Page'#3'.'#1#18'VertScrollBar.P'
+  +'age'#3#16#1#13'ActiveControl'#7#7'Button1'#7'Caption'#6#14'Update Summary'
+  +#12'ClientHeight'#3#17#1#11'ClientWidth'#3'/'#1#0#6'TLabel'#13'LabelFileName'
+  +#4'Left'#2#10#6'Height'#2#14#3'Top'#2#11#5'Width'#2'E'#7'Caption'#6#13'Label'
+  +'FileName'#11'ParentColor'#8#0#0#9'TPaintBox'#8'PaintBox'#4'Left'#2#12#6'Hei'
+  +'ght'#3#190#0#3'Top'#2'*'#5'Width'#3#26#1#7'Anchors'#11#5'akTop'#6'akLeft'#7
+  +'akRight'#8'akBottom'#0#7'OnPaint'#7#13'PaintBoxPaint'#0#0#7'TButton'#7'Butt'
+  +'on1'#4'Left'#3#137#0#6'Height'#2#25#3'Top'#3#243#0#5'Width'#2'K'#7'Anchors'
+  +#11#7'akRight'#8'akBottom'#0#7'Caption'#6#2'OK'#11'ModalResult'#2#1#8'TabOrd'
+  +'er'#2#0#0#0#7'TButton'#7'Button2'#4'Left'#3#221#0#6'Height'#2#25#3'Top'#3
+  +#243#0#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#6'Cancel'#9#7'Ca'
+  +'ption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#0#0#0
+]);

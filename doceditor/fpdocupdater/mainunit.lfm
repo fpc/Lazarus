@@ -1,15 +1,15 @@
-object Form1: TForm1
+object FormMain: TFormMain
   Left = 253
-  Height = 484
+  Height = 527
   Top = 156
-  Width = 531
-  HorzScrollBar.Page = 530
-  VertScrollBar.Page = 483
+  Width = 504
+  HorzScrollBar.Page = 503
+  VertScrollBar.Page = 526
   ActiveControl = EditDocs
   Caption = 'FPDoc Updater'
-  ClientHeight = 484
-  ClientWidth = 531
-  Constraints.MinHeight = 464
+  ClientHeight = 527
+  ClientWidth = 504
+  Constraints.MinHeight = 525
   Constraints.MinWidth = 300
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -31,16 +31,16 @@ object Form1: TForm1
     ParentColor = False
   end
   object LabelBackup: TLabel
-    Left = 395
+    Left = 380
     Height = 14
-    Top = 246
+    Top = 252
     Width = 89
     Anchors = [akTop, akRight]
     Caption = 'Backup extension:'
     ParentColor = False
   end
   object LabelPackage: TLabel
-    Left = 395
+    Left = 368
     Height = 14
     Top = 161
     Width = 45
@@ -68,34 +68,32 @@ object Form1: TForm1
     Left = 126
     Height = 23
     Top = 12
-    Width = 347
+    Width = 320
     Directory = 'D:\Projects\Lazarus\Docs\xml\lcl\'
-    OnAcceptDirectory = EditDocsAcceptDirectory
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     ParentColor = False
     TabOrder = 0
-    OnEditingDone = EditDocsEditingDone
+    OnChange = EditDocsChange
   end
   object EditUnits: TDirectoryEdit
     Left = 126
     Height = 23
     Top = 48
-    Width = 347
+    Width = 320
     Directory = 'D:\Projects\Lazarus\LCL\'
-    OnAcceptDirectory = EditUnitsAcceptDirectory
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     ParentColor = False
     TabOrder = 1
-    OnEditingDone = EditDocsEditingDone
+    OnChange = EditUnitsChange
   end
   object ButtonUpdate: TButton
-    Left = 395
+    Left = 362
     Height = 25
-    Top = 354
+    Top = 396
     Width = 122
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
@@ -104,9 +102,9 @@ object Form1: TForm1
     TabOrder = 2
   end
   object ButtonUpdateAll: TButton
-    Left = 395
+    Left = 362
     Height = 25
-    Top = 426
+    Top = 468
     Width = 122
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
@@ -115,9 +113,9 @@ object Form1: TForm1
     TabOrder = 3
   end
   object ButtonUpdateNew: TButton
-    Left = 395
+    Left = 362
     Height = 25
-    Top = 390
+    Top = 432
     Width = 122
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
@@ -127,9 +125,9 @@ object Form1: TForm1
     TabOrder = 4
   end
   object ButtonRefresh: TButton
-    Left = 395
+    Left = 362
     Height = 25
-    Top = 312
+    Top = 354
     Width = 122
     Anchors = [akTop, akRight]
     BorderSpacing.InnerBorder = 4
@@ -138,10 +136,10 @@ object Form1: TForm1
     TabOrder = 5
   end
   object ListBox: TListBox
-    Left = 12
-    Height = 295
+    Left = 11
+    Height = 338
     Top = 156
-    Width = 371
+    Width = 344
     Anchors = [akTop, akLeft, akRight, akBottom]
     MultiSelect = True
     OnDrawItem = ListBoxDrawItem
@@ -149,10 +147,10 @@ object Form1: TForm1
     TabOrder = 6
   end
   object CheckBoxBackup: TCheckBox
-    Left = 395
-    Height = 13
+    Left = 362
+    Height = 19
     Top = 222
-    Width = 114
+    Width = 120
     Anchors = [akTop, akRight]
     Caption = 'Backup FPDoc files'
     Checked = True
@@ -160,16 +158,16 @@ object Form1: TForm1
     TabOrder = 7
   end
   object EditBackup: TEdit
-    Left = 407
+    Left = 380
     Height = 23
-    Top = 270
+    Top = 276
     Width = 80
     Anchors = [akTop, akRight]
     TabOrder = 8
     Text = 'bak'
   end
   object EditPackage: TEdit
-    Left = 407
+    Left = 380
     Height = 23
     Top = 186
     Width = 80
@@ -181,7 +179,7 @@ object Form1: TForm1
     Left = 125
     Height = 23
     Top = 120
-    Width = 347
+    Width = 320
     FileName = 'D:\Projects\fpcbeta\bin\i386-win32\makeskel'
     ButtonWidth = 45
     NumGlyphs = 1
@@ -193,21 +191,30 @@ object Form1: TForm1
     Left = 125
     Height = 23
     Top = 84
-    Width = 348
+    Width = 321
     Directory = 'D:\Projects\Lazarus\LCL\Include'
-    OnAcceptDirectory = EditIncludeAcceptDirectory
     ButtonWidth = 45
     NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     ParentColor = False
     TabOrder = 11
-    OnEditingDone = EditDocsEditingDone
   end
   object StatusBar: TStatusBar
     Height = 20
-    Top = 464
-    Width = 531
+    Top = 507
+    Width = 504
     Panels = <>
+  end
+  object CheckBoxShowSummary: TCheckBox
+    Left = 362
+    Height = 19
+    Top = 312
+    Width = 97
+    Anchors = [akTop, akRight]
+    Caption = 'Show summary'
+    Checked = True
+    State = cbChecked
+    TabOrder = 12
   end
   object OpenDialog: TOpenDialog
     Title = 'Open FPDoc file'

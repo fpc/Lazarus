@@ -28,22 +28,24 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls;
+  ExtCtrls, LCLType, LCLIntf;
 
 type
 
   { TFormMove }
 
   TFormMove = class(TForm)
-    ButtonMove: TButton;
     ButtonYes: TButton;
     ButtonNo: TButton;
-    ComboBoxDest: TComboBox;
+    ComboBoxJump: TComboBox;
     LabelSrcElement: TLabel;
     LabelDest: TLabel;
     LabelSrc: TLabel;
+    ListBoxDest: TListBox;
     StaticText: TStaticText;
-    procedure ButtonMoveClick(Sender: TObject);
+    procedure ComboBoxJumpSelect(Sender: TObject);
+    procedure ListBoxDestDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+      State: TOwnerDrawState);
   private
     { private declarations }
   public
@@ -57,9 +59,32 @@ implementation
 
 { TFormMove }
 
-procedure TFormMove.ButtonMoveClick(Sender: TObject);
+procedure TFormMove.ListBoxDestDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
+  State: TOwnerDrawState);
 begin
-  ModalResult := mrCancel;
+  if (Index < 0) or (Index >= ListBoxDest.Items.Count) then Exit;
+
+  with ListBoxDest.Canvas do
+  begin
+    if odSelected in State then
+      Brush.Color := clHighlight
+    else
+    begin
+      Brush.Color := ListBoxDest.Color;
+      case Integer(ListBoxDest.Items.Objects[Index]) of
+      0: SetTextColor(ListBoxDest.Canvas.Handle, ListBoxDest.Canvas.Font.Color); // empty
+      1: SetTextColor(ListBoxDest.Canvas.Handle, clRed);                         // nonempty
+      end;
+    end;
+
+    FillRect(ARect);
+    TextRect(ARect, ARect.Left + 8, ARect.Top + 2, ListBoxDest.Items[Index]);
+  end;
+end;
+
+procedure TFormMove.ComboBoxJumpSelect(Sender: TObject);
+begin
+  ListBoxDest.ItemIndex := ListBoxDest.Items.IndexOf(ComboBoxJump.Text);
 end;
 
 initialization

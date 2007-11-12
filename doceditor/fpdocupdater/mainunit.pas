@@ -29,17 +29,18 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   FPDocFiles, StdCtrls, ComCtrls, Masks, FileUtil, ExtCtrls,
-  LCLIntf, LCLType, LCLProc, Process, EditBtn, XMLCfg;
+  LCLIntf, LCLType, LCLProc, Process, EditBtn, Laz_XMLCfg;
 
 type
 
-  { TForm1 }
+  { TFormMain }
 
-  TForm1 = class(TForm)
+  TFormMain = class(TForm)
     ButtonRefresh: TButton;
     ButtonUpdateNew: TButton;
     ButtonUpdate: TButton;
     ButtonUpdateAll: TButton;
+    CheckBoxShowSummary: TCheckBox;
     CheckBoxBackup: TCheckBox;
     EditInclude: TDirectoryEdit;
     EditMakeSkel: TFileNameEdit;
@@ -61,10 +62,8 @@ type
     procedure ButtonUpdateAllClick(Sender: TObject);
     procedure ButtonUpdateClick(Sender: TObject);
     procedure ButtonUpdateNewClick(Sender: TObject);
-    procedure EditDocsAcceptDirectory(Sender: TObject; var Value: String);
-    procedure EditDocsEditingDone(Sender: TObject);
-    procedure EditIncludeAcceptDirectory(Sender: TObject; var Value: String);
-    procedure EditUnitsAcceptDirectory(Sender: TObject; var Value: String);
+    procedure EditDocsChange(Sender: TObject);
+    procedure EditUnitsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -82,18 +81,18 @@ type
     
     procedure MoveElement(const SrcPackage: TFPDocPackage;
       const SrcModule: TFPDocModule; const Src: TFPDocElement;
-      const DestList: TStrings; var Dest: String);
+      const DestList: TStrings; var Dest: Integer);
   end; 
 
 var
-  Form1: TForm1; 
+  FormMain: TFormMain;
   XMLConfig: TXMLConfig;
   BackupList: TStringList;
 
 implementation
 
 uses
-  UnitMove;
+  UnitMove, UnitSummary;
 
 function FindFiles(const Path, Mask: String; WithPath: Boolean = True;
   WithExt: Boolean = True): TStringList;
@@ -124,14 +123,14 @@ begin
   end;
 end;
 
-{ TForm1 }
+{ TFormMain }
 
-procedure TForm1.FormShow(Sender: TObject);
+procedure TFormMain.FormShow(Sender: TObject);
 begin
   UpdateList;
 end;
 
-procedure TForm1.ListBoxDrawItem(Control: TWinControl; Index: Integer;
+procedure TFormMain.ListBoxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 begin
   if (Index < 0) or (Index >= ListBox.Items.Count) then Exit;
@@ -150,18 +149,18 @@ begin
     end;
       
     FillRect(ARect);
-    TextRect(ARect, ARect.Left + 8, ARect.Top, ExtractFileNameOnly(ListBox.Items[Index]));
+    TextRect(ARect, ARect.Left + 8, ARect.Top + 2, ExtractFileNameOnly(ListBox.Items[Index]));
   end;
 end;
 
-procedure TForm1.BeginUpdate;
+procedure TFormMain.BeginUpdate;
 begin
   BackupList := TStringList.Create;
   BackupList.Sorted := True;
   WriteStatus('Updating started.');
 end;
 
-procedure TForm1.EndUpdate;
+procedure TFormMain.EndUpdate;
 begin
   BackupList.Free;
   UpdateList;
@@ -170,12 +169,12 @@ begin
   WriteStatus('');
 end;
 
-procedure TForm1.ButtonRefreshClick(Sender: TObject);
+procedure TFormMain.ButtonRefreshClick(Sender: TObject);
 begin
   UpdateList;
 end;
 
-procedure TForm1.ButtonUpdateAllClick(Sender: TObject);
+procedure TFormMain.ButtonUpdateAllClick(Sender: TObject);
 var
   I: Integer;
 begin
@@ -188,7 +187,7 @@ begin
   end;
 end;
 
-procedure TForm1.ButtonUpdateClick(Sender: TObject);
+procedure TFormMain.ButtonUpdateClick(Sender: TObject);
 var
   I: Integer;
 begin
@@ -201,7 +200,7 @@ begin
   end;
 end;
 
-procedure TForm1.ButtonUpdateNewClick(Sender: TObject);
+procedure TFormMain.ButtonUpdateNewClick(Sender: TObject);
 var
   I: Integer;
 begin
@@ -214,50 +213,33 @@ begin
   end;
 end;
 
-procedure TForm1.EditDocsAcceptDirectory(Sender: TObject; var Value: String);
+procedure TFormMain.EditDocsChange(Sender: TObject);
 begin
-  EditDocs.Directory := AppendPathDelim(Value);
-  EditDocs.SetFocus;
-  UpdateList;
-  Value := '';
+  if DirectoryExists(EditDocs.Text) then UpdateList;
 end;
 
-procedure TForm1.EditDocsEditingDone(Sender: TObject);
+procedure TFormMain.EditUnitsChange(Sender: TObject);
 begin
-  UpdateList;
+  if DirectoryExists(EditUnits.Text) then UpdateList;
 end;
 
-procedure TForm1.EditIncludeAcceptDirectory(Sender: TObject; var Value: String);
+procedure TFormMain.FormCreate(Sender: TObject);
 begin
-  Value := AppendPathDelim(Value);
-end;
+  XMLConfig := TXMLConfig.Create('FPDocUpdater.xml');
 
-procedure TForm1.EditUnitsAcceptDirectory(Sender: TObject; var Value: String);
-begin
-  EditUnits.Directory := AppendPathDelim(Value);
-  EditUnits.SetFocus;
-  UpdateList;
-  Value := '';
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  XMLConfig := TXMLConfig.Create(nil);
-  XMLConfig.RootName := 'Config';
-  XMLConfig.Filename := 'FPDocUpdater.xml';
-
-  EditDocs.Directory := XMLConfig.GetValue('FPDocsPath/Value', 'D:\Projects\lazarus\docs\xml\lcl\');
-  EditUnits.Directory := XMLConfig.GetValue('UnitsPath/Value', 'D:\Projects\lazarus\lcl\');
-  EditInclude.Directory := XMLConfig.GetValue('IncludePath/Value', 'D:\Projects\lazarus\lcl\include\');
-  EditMakeSkel.FileName := XMLConfig.GetValue('MakeSkelPath/Value', 'D:\Projects\fpcbeta\bin\i386-win32\makeskel.exe');
+  EditDocs.Directory := XMLConfig.GetValue('FPDocsPath/Value', 'E:\lazarus\docs\xml\lcl\');
+  EditUnits.Directory := XMLConfig.GetValue('UnitsPath/Value', 'E:\lazarus\lcl\');
+  EditInclude.Directory := XMLConfig.GetValue('IncludePath/Value', 'E:\lazarus\lcl\include\');
+  EditMakeSkel.FileName := XMLConfig.GetValue('MakeSkelPath/Value', 'E:\lazarus\fpc\2.2.1\bin\i386-win32\makeskel.exe');
   CheckBoxBackup.Checked := XMLConfig.GetValue('BackupFPDocs/Value', True);
   EditBackup.Text := XMLConfig.GetValue('BackupExt/Value', 'bak');
   EditPackage.Text := XMLConfig.GetValue('Package/Value', 'LCL');
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TFormMain.FormDestroy(Sender: TObject);
 begin
   XMLConfig.Clear;
+  
   XMLConfig.SetValue('FPDocsPath/Value', EditDocs.Directory);
   XMLConfig.SetValue('UnitsPath/Value', EditUnits.Directory);
   XMLConfig.SetValue('IncludePath/Value', EditInclude.Directory);
@@ -269,9 +251,10 @@ begin
   XMLConfig.Free;
 end;
 
-procedure TForm1.UpdateList;
+procedure TFormMain.UpdateList;
 var
   Docs, Units: TStringList;
+  DocsPath, UnitsPath: String;
   I: Integer;
   N: String;
   State: Integer;
@@ -279,9 +262,12 @@ begin
   ListBox.Items.BeginUpdate;
   try
     ListBox.Items.Clear;
-
-    Docs := FindFiles(EditDocs.Directory, '*.xml', False, False);
-    Units := FindFiles(EditUnits.Directory, '*.pas;*.pp');
+    
+    DocsPath := AppendPathDelim(EditDocs.Directory);
+    UnitsPath := AppendPathDelim(EditUnits.Directory);
+    
+    Docs := FindFiles(DocsPath, '*.xml', False, False);
+    Units := FindFiles(UnitsPath, '*.pas;*.pp');
     try
       Units.Sorted := True;
       for I := 0 to Units.Count - 1 do
@@ -301,7 +287,6 @@ begin
   finally
     ListBox.Items.EndUpdate;
   end;
-  ListBox.SetFocus;
 end;
 
 procedure ShowError(const S: String);
@@ -310,7 +295,7 @@ begin
   raise Exception.Create(S);
 end;
 
-procedure TForm1.UpdateFile(const AFileName: String);
+procedure TFormMain.UpdateFile(const AFileName: String);
 var
   DocFileName: String;
   MakeSkelPath: String;
@@ -334,7 +319,7 @@ begin
   if not FileIsExecutable(MakeSkelPath) then
     ShowError('Unable to find MakeSkel tool executable "' + EditMakeSkel.Text +'"!');
   
-  DocFileName := EditDocs.Directory + ExtractFileNameOnly(AFileName) + '.xml';
+  DocFileName := AppendPathDelim(EditDocs.Directory) + ExtractFileNameOnly(AFileName) + '.xml';
   
   if CheckBoxBackup.Checked then BackupFile(DocFileName);
   
@@ -367,6 +352,11 @@ begin
     M.SetSize(BytesRead);
 
     AStringList.LoadFromStream(M);
+    
+    while (AStringList.Count > 0) and
+      (AStringList.Strings[AStringList.Count - 1] = '') do
+      AStringList.Delete(AStringList.Count - 1);
+      
     if AStringList.Strings[AStringList.Count - 1] <> 'Done.' then
     begin
       ShowError('Update ' + AFileName + ' failed! ' + AStringList.Strings[AStringList.Count - 1]);
@@ -383,15 +373,42 @@ begin
     NewDoc := TFPDocFile.Create(M);
     if FileExists(DocFileName) then OldDoc := TFPDocFile.Create(DocFileName)
     else OldDoc := nil;
+    
     try
-      if OldDoc <> nil then OldDoc.AssignToSkeleton(NewDoc, @MoveElement);
-      NewDoc.SaveToFile(DocFileName);
+      if OldDoc <> nil then
+      begin
+        FormSummary.OldInfo := OldDoc.GetInfo;
+        OldDoc.AssignToSkeleton(NewDoc, @MoveElement);
+        FormSummary.NewInfo := NewDoc.GetInfo;
+      end
+      else
+      begin
+        FormSummary.OldInfo := EmptyFPDocInfo;
+        FormSummary.NewInfo := NewDoc.GetInfo;
+      end;
+      
+      if CheckBoxShowSummary.Checked then
+      begin
+        FormSummary.LabelFileName.Caption := DocFileName;
+        if FormSummary.ShowModal = mrOk then
+        begin
+          NewDoc.SaveToFile(DocFileName);
+          WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' succeeds!');
+        end
+        else
+          WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' cancelled!');
+      end
+      else
+      begin
+        NewDoc.SaveToFile(DocFileName);
+        WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' succeeds!');
+      end;
+      
     finally
       if OldDoc <> nil then OldDoc.Free;
       NewDoc.Free;
     end;
-
-    WriteStatus('Update ' + AFileName + ' in ' + DocFileName + ' succeeds!');
+    
   finally
     M.Free;
     AStringList.Free;
@@ -399,7 +416,7 @@ begin
   end;
 end;
 
-procedure TForm1.BackupFile(const AFileName: String);
+procedure TFormMain.BackupFile(const AFileName: String);
 var
   BackupFileName: String;
 begin
@@ -419,52 +436,47 @@ begin
   end;
 end;
 
-procedure TForm1.WriteStatus(const S: String);
+procedure TFormMain.WriteStatus(const S: String);
 begin
   DebugLn(S);
   StatusBar.SimpleText := S;
 end;
 
-procedure TForm1.MoveElement(const SrcPackage: TFPDocPackage;
+procedure TFormMain.MoveElement(const SrcPackage: TFPDocPackage;
   const SrcModule: TFPDocModule; const Src: TFPDocElement;
-  const DestList: TStrings; var Dest: String);
+  const DestList: TStrings; var Dest: Integer);
 var
-  F: TFPDocFile;
+  JumpList: TStringList;
+  I: Integer;
+  Prefix: String;
 begin
   FormMove.LabelSrc.Caption := Format('Package: %sModule: %s',
     [SrcPackage.Name + LineEnding, SrcModule.Name]);
   FormMove.LabelSrcElement.Caption := 'Element: ' + Src.Name;
 
-  FormMove.ComboBoxDest.Items.Assign(DestList);
-  FormMove.ComboBoxDest.Sorted := True;
+  JumpList := TStringList.Create;
+  try
+    for I := 0 to DestList.Count - 1 do
+    begin
+      if Pos('.', DestList[I]) = 0 then Continue;
+      Prefix := Copy(DestList[I], 1, LastDelimiter('.', DestList[I]) - 1);
+      if JumpList.IndexOf(Prefix) = -1 then JumpList.Add(Prefix);
+    end;
+    
+    FormMove.ComboBoxJump.Items.Assign(JumpList);
+  finally
+    JumpList.Free;
+  end;
+  
+  FormMove.ListBoxDest.Items.Assign(DestList);
   
   case FormMove.ShowModal of
-  mrYes:
-    Dest := FormMove.ComboBoxDest.Text;
-  mrCancel:
-    begin // Move to another file
-      OpenDialog.InitialDir := ExtractFileDir(EditDocs.Directory);
-      if OpenDialog.Execute then
-      begin
-        if CheckBoxBackup.Checked then BackupFile(OpenDialog.FileName);
-        
-        F := TFPDocFile.Create(OpenDialog.FileName);
-        try
-          F.PackagesByName[EditPackage.Text].Modules[0].Add(Src);
-          F.SaveToFile(OpenDialog.FileName);
-          
-          WriteStatus('Move Element: ' + SrcPackage.Name + '\' + SrcModule.Name +
-            '\' + Src.Name + ' Dest file: ' + OpenDialog.FileName);
-          Exit;
-        finally
-          F.Free;
-        end;
-      end;
-    end;
+    mrYes: Dest := FormMove.ListBoxDest.ItemIndex;
   end;
-    
-  WriteStatus('Move Element: ' + SrcPackage.Name + '\' + SrcModule.Name + '\' + Src.Name +
-    ' Dest: ' + Dest);
+  
+  if Dest <> -1 then
+    WriteStatus('Move Element: ' + SrcPackage.Name + '\' + SrcModule.Name + '\' + Src.Name +
+      ' Dest: ' + DestList[Dest]);
 end;
 
 initialization

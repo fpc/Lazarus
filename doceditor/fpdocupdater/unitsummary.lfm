@@ -1,0 +1,49 @@
+object FormSummary: TFormSummary
+  Left = 295
+  Height = 273
+  Top = 156
+  Width = 303
+  HorzScrollBar.Page = 302
+  VertScrollBar.Page = 272
+  ActiveControl = Button1
+  Caption = 'Update Summary'
+  ClientHeight = 273
+  ClientWidth = 303
+  object LabelFileName: TLabel
+    Left = 10
+    Height = 14
+    Top = 11
+    Width = 69
+    Caption = 'LabelFileName'
+    ParentColor = False
+  end
+  object PaintBox: TPaintBox
+    Left = 12
+    Height = 190
+    Top = 42
+    Width = 282
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    OnPaint = PaintBoxPaint
+  end
+  object Button1: TButton
+    Left = 137
+    Height = 25
+    Top = 243
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 221
+    Height = 25
+    Top = 243
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+end
