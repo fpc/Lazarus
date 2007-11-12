@@ -7,9 +7,9 @@
   <key>CFBundleExecutable</key>
   <string>lazarus</string>
   <key>CFBundleDisplayName</key>
-  <string>Lazarus IDE</string>
+  <string>Lazarus</string>
   <key>CFBundleName</key>
-  <string>Lazarus IDE</string>
+  <string>Lazarus</string>
   <key>CFBundleIconFile</key>
   <string>lazarus</string>
   <key>CFBundleInfoDictionaryVersion</key>
