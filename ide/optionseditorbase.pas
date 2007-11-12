@@ -96,6 +96,10 @@ implementation
 uses
   IDEContextHelpEdit;
 
+type
+  TCustomNotebookAccess = class(TCustomNotebook)
+  end;
+
 { TOptionsEditorForm }
 
 procedure TOptionsEditorForm.RecusiveControlsIndex(const Item: TWinControl; const ItemName: String
@@ -222,7 +226,10 @@ begin
   end;
   LastControl:= SectionList.Items.Objects[selIndex] as TWinControl;
   SectionTitleLabel.Caption:= SectionList.Items[selIndex];
-  LastControl.Visible:=True;
+  if (LastControl.Parent is TCustomNotebook) and (LastControl is TCustomPage) then
+    TCustomNotebookAccess(LastControl.Parent).ActivePageComponent := TCustomPage(LastControl)
+  else
+    LastControl.Visible:=True;
 end;
 
 procedure TOptionsEditorForm.DoFilter;
