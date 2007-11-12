@@ -3437,10 +3437,10 @@ end;
 {$ifdef EnableNewDialogs}
 procedure TMainIDE.mnuProjectCompilerSettingsClicked_new(Sender: TObject);
 var
-  frmCompilerOptions: CompilerOptionsDlg_new.TfrmCompilerOptions;
+  frmCompilerOptions: TfrmCompilerOptionsNew;
   NewCaption: String;
 begin
-  frmCompilerOptions:=CompilerOptionsDlg_new.TfrmCompilerOptions.Create(nil);
+  frmCompilerOptions:=TfrmCompilerOptionsNew.Create(nil);
   try
     NewCaption:=Project1.Title;
     if NewCaption='' then
@@ -3713,7 +3713,7 @@ procedure TMainIDE.mnuEnvGeneralOptionsClicked_new(Sender: TObject);
   // so I copied the whole routine. This shouldn't be long here anyway (MWE)
 
 var
-  EnvironmentOptionsDialog: EnvironmentOpts_new.TEnvironmentOptionsDialog;
+  EnvironmentOptionsDialog: TEnvironmentOptionsDialogNew;
   MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
   OldCompilerFilename: string;
   OldLanguage: String;
@@ -3757,7 +3757,7 @@ var
   end;
 
 begin
-  EnvironmentOptionsDialog:=EnvironmentOpts_new.TEnvironmentOptionsDialog.Create(nil);
+  EnvironmentOptionsDialog:=TEnvironmentOptionsDialogNew.Create(nil);
   try
     EnvironmentOptionsDialog.CategoryPage:=eodpFiles;
     // update EnvironmentOptions (save current window positions)
@@ -3989,9 +3989,9 @@ End;
 {$ifdef EnableNewDialogs}
 procedure TMainIDE.mnuEnvEditorOptionsClicked_new(Sender: TObject);
 var
-  EditorOptionsForm: EditorOptions_new.TEditorOptionsForm;
+  EditorOptionsForm: TEditorOptionsFormNew;
 begin
-  EditorOptionsForm:=EditorOptions_new.TEditorOptionsForm.Create(nil);
+  EditorOptionsForm:=TEditorOptionsFormNew.Create(nil);
   try
     Project1.UpdateCustomHighlighter;
     if EditorOptionsForm.ShowModal=mrOk

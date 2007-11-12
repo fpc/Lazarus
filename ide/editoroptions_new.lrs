@@ -1,22 +1,20 @@
-{ This is an automatically generated lazarus resource file }
-
-LazarusResources.Add('TEditorOptionsForm','FORMDATA',[
-  'TPF0'#241#18'TEditorOptionsForm'#17'EditorOptionsForm'#4'Left'#3#150#1#6'Hei'
-  +'ght'#3'^'#2#3'Top'#3#141#0#5'Width'#3#235#2#18'HorzScrollBar.Page'#3#234#2
-  +#18'VertScrollBar.Page'#3']'#2#13'ActiveControl'#7#8'OkButton'#7'Caption'#6
-  +#17'EditorOptionsForm'#12'ClientHeight'#3'^'#2#11'ClientWidth'#3#235#2#20'Co'
-  +'nstraints.MinWidth'#3#144#1#8'Position'#7#14'poScreenCenter'#0#241#6'TPanel'
-  +#11'BottomPanel'#3'Top'#3','#2#5'Width'#3#235#2#11'ClientWidth'#3#235#2#8'Ta'
-  +'bOrder'#2#3#0#241#6'TPanel'#13'OKCancelPanel'#4'Left'#3'0'#2#0#241#7'TBitBt'
-  +'n'#9'btnCancel'#0#0#241#7'TBitBtn'#5'btnOK'#0#0#0#241#7'TBitBtn'#10'HelpBut'
-  +'ton'#0#0#0#241#6'TPanel'#15'CategoriesPanel'#5'Width'#3#235#2#11'ClientWidt'
-  +'h'#3#235#2#8'TabOrder'#2#4#0#241#6'TLabel'#17'SectionTitleLabel'#0#0#241#6
-  +'TLabel'#11'SearchLabel'#4'Left'#3#167#1#0#0#241#7'TBitBtn'#17'ClearFilterBu'
-  +'tton'#4'Left'#3#191#2#0#0#241#5'TEdit'#10'FilterEdit'#4'Left'#3#8#2#0#0#0
-  +#241#6'TPanel'#17'SectionsTreePanel'#6'Height'#3#222#1#12'ClientHeight'#3#222
-  +#1#8'TabOrder'#2#1#0#241#8'TListBox'#11'SectionList'#6'Height'#3#222#1#0#0#0
-  +#241#9'TSplitter'#12'MainSplitter'#6'Height'#3#222#1#0#0#241#6'TPanel'#16'Op'
-  +'tionsAreaPanel'#6'Height'#3#222#1#5'Width'#3'P'#2#12'ClientHeight'#3#222#1
+LazarusResources.Add('TEditorOptionsFormNew','FORMDATA',[
+  'TPF0'#241#21'TEditorOptionsFormNew'#20'EditorOptionsFormNew'#4'Left'#3#150#1
+  +#6'Height'#3'^'#2#3'Top'#3#141#0#5'Width'#3#235#2#18'HorzScrollBar.Page'#3
+  +#234#2#18'VertScrollBar.Page'#3']'#2#13'ActiveControl'#7#8'OkButton'#7'Capti'
+  +'on'#6#17'EditorOptionsForm'#12'ClientHeight'#3'^'#2#11'ClientWidth'#3#235#2
+  +#20'Constraints.MinWidth'#3#144#1#8'Position'#7#14'poScreenCenter'#0#241#6'T'
+  +'Panel'#11'BottomPanel'#3'Top'#3','#2#5'Width'#3#235#2#11'ClientWidth'#3#235
+  +#2#8'TabOrder'#2#3#0#241#6'TPanel'#13'OKCancelPanel'#4'Left'#3'0'#2#0#241#7
+  +'TBitBtn'#9'btnCancel'#0#0#241#7'TBitBtn'#5'btnOK'#0#0#0#241#7'TBitBtn'#10'H'
+  +'elpButton'#0#0#0#241#6'TPanel'#15'CategoriesPanel'#5'Width'#3#235#2#11'Clie'
+  +'ntWidth'#3#235#2#8'TabOrder'#2#4#0#241#6'TLabel'#17'SectionTitleLabel'#0#0
+  +#241#6'TLabel'#11'SearchLabel'#4'Left'#3#167#1#0#0#241#7'TBitBtn'#17'ClearFi'
+  +'lterButton'#4'Left'#3#191#2#0#0#241#5'TEdit'#10'FilterEdit'#4'Left'#3#8#2#0
+  +#0#0#241#6'TPanel'#17'SectionsTreePanel'#6'Height'#3#222#1#12'ClientHeight'#3
+  +#222#1#8'TabOrder'#2#1#0#241#8'TListBox'#11'SectionList'#6'Height'#3#222#1#0
+  +#0#0#241#9'TSplitter'#12'MainSplitter'#6'Height'#3#222#1#0#0#241#6'TPanel'#16
+  +'OptionsAreaPanel'#6'Height'#3#222#1#5'Width'#3'P'#2#12'ClientHeight'#3#222#1
   +#11'ClientWidth'#3'P'#2#8'TabOrder'#2#2#0#9'TNotebook'#8'Notebook'#24'Anchor'
   +'SideBottom.Control'#7#8'BtnPanel'#6'Height'#3#216#1#5'Width'#3'P'#2#5'Align'
   +#7#8'alClient'#20'BorderSpacing.Bottom'#2#6#9'PageIndex'#2#3#8'ShowTabs'#8#8

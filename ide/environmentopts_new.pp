@@ -49,7 +49,7 @@ uses
 
   { TEnvironmentOptionsDialog }
 type
-  TEnvironmentOptionsDialog = class(TOptionsEditorForm)
+  TEnvironmentOptionsDialogNew = class(TOptionsEditorForm)
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
@@ -257,9 +257,6 @@ type
   end;
 
 
-var
-  EnvironmentOptions: TEnvironmentOptions;
-
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileAction;
@@ -411,9 +408,9 @@ const
   EnvOptsConfFileName='environmentoptions.xml';
   BakMaxCounterInfiniteTxt = 'infinite';
 
-{ TEnvironmentOptionsDialog }
+{ TEnvironmentOptionsDialogNew }
 
-constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
+constructor TEnvironmentOptionsDialogNew.Create(TheOwner: TComponent);
 var
   Title: string;
   i: Integer;
@@ -444,12 +441,12 @@ begin
   end
 end;
 
-destructor TEnvironmentOptionsDialog.Destroy;
+destructor TEnvironmentOptionsDialogNew.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupDesktopPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupDesktopPage(Page: integer);
 var
   i: Integer;
   LangID: String;
@@ -492,7 +489,7 @@ begin
   MsgViewDblClickJumpsCheckBox.Caption:=lisEnvDoubleClickOnMessagesJumpsOtherwiseSingleClick;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupWindowsPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := dlgWindows;
 
@@ -525,7 +522,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupBackupPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupBackupPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := dlgEnvBckup;
 
@@ -632,7 +629,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupFilesPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := dlgEnvFiles;
 
@@ -680,7 +677,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetCategoryPage(
+procedure TEnvironmentOptionsDialogNew.SetCategoryPage(
   const AValue: TEnvOptsDialogPage);
 var
   p: Integer;
@@ -697,7 +694,7 @@ begin
   Notebook.PageIndex:=p;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupFormEditorPage(Page: integer);
 
   procedure SetupGridGroupBox;
   begin
@@ -762,7 +759,7 @@ begin
   SetupMiscGroupBox;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupNamingPage(Page: integer);
 var
   pe: TPascalExtType;
 begin
@@ -805,7 +802,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupLazDocPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupLazDocPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := lisLazDoc;
   
@@ -816,7 +813,7 @@ begin
   LazDocPathEdit.Clear;
 end;
 
-procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.BakTypeRadioGroupClick(Sender: TObject);
 var i: integer;
 begin
   i:=TRadioGroup(Sender).ItemIndex;
@@ -833,7 +830,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.FilesButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.FilesButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -874,7 +871,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.DirectoriesButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.DirectoriesButtonClick(Sender: TObject);
 var
   OpenDialog: TSelectDirectoryDialog;
   ADirectoryName: string;
@@ -917,7 +914,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.FormEditorPageResize(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.FormEditorPageResize(Sender: TObject);
 var
   w: Integer;
 begin
@@ -926,48 +923,48 @@ begin
   FormEditMiscGroupBox.Width:=GridGroupBox.Width;
 end;
 
-procedure TEnvironmentOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.LazDocAddPathButtonClick(Sender: TObject);
 begin
   if LazDocPathEdit.Text <> '' then
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
-procedure TEnvironmentOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.LazDocBrowseButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
     LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
 end;
 
-procedure TEnvironmentOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject
+procedure TEnvironmentOptionsDialogNew.LazDocDeletePathButtonClick(Sender: TObject
   );
 begin
   LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
-procedure TEnvironmentOptionsDialog.NotebookChangeBounds(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.NotebookChangeBounds(Sender: TObject);
 begin
 
 end;
 
-procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.OkButtonClick(Sender: TObject);
 begin
   if not CheckValues then exit;
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrOk;
 end;
 
-procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
+procedure TEnvironmentOptionsDialogNew.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 
-procedure TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick(
+procedure TEnvironmentOptionsDialogNew.SaveDesktopSettingsToFileButtonClick(
   Sender: TObject);
 var AnEnvironmentOptions: TEnvironmentOptions;
   SaveDialog: TSaveDialog;
 begin
-  debugln('TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick A');
+  debugln('TEnvironmentOptionsDialogNew.SaveDesktopSettingsToFileButtonClick A');
   SaveDialog:=TSaveDialog.Create(nil);
   try
     try
@@ -990,7 +987,7 @@ begin
       InputHistories.StoreFileDialogSettings(SaveDialog);
     except
       on E: Exception do begin
-        DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ',E.Message);
+        DebugLn('ERROR: [TEnvironmentOptionsDialogNew.SaveDesktopSettingsToFileButtonClick] ',E.Message);
       end;
     end;
   finally
@@ -998,12 +995,12 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick(
+procedure TEnvironmentOptionsDialogNew.LoadDesktopSettingsFromFileButtonClick(
   Sender: TObject);
 var AnEnvironmentOptions: TEnvironmentOptions;
   OpenDialog: TOpenDialog;
 begin
-  debugln('TEnvironmentOptionsDialog.LoadDesktopSettingsFromFileButtonClick A');
+  debugln('TEnvironmentOptionsDialogNew.LoadDesktopSettingsFromFileButtonClick A');
   OpenDialog:=TOpenDialog.Create(nil);
   try
     try
@@ -1026,21 +1023,21 @@ begin
       InputHistories.StoreFileDialogSettings(OpenDialog);
     except
       // ToDo
-      DebugLn('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
+      DebugLn('ERROR: [TEnvironmentOptionsDialogNew.SaveDesktopSettingsToFileButtonClick]');
     end;
   finally
     OpenDialog.Free;
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.ReadSettings(
+procedure TEnvironmentOptionsDialogNew.ReadSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
 var i: integer;
 begin
   with AnEnvironmentOptions do begin
     // language
     LanguageComboBox.ItemIndex:=LazarusTranslations.IndexOf(LanguageID);
-    //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'"');
+    //debugln('TEnvironmentOptionsDialogNew.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'"');
 
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
@@ -1183,7 +1180,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.WriteSettings(
+procedure TEnvironmentOptionsDialogNew.WriteSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
 begin
   with AnEnvironmentOptions do begin
@@ -1191,7 +1188,7 @@ begin
     if (LanguageComboBox.ItemIndex>=0)
     and (LanguageComboBox.ItemIndex<LazarusTranslations.Count) then
       LanguageID:=LazarusTranslations[LanguageComboBox.ItemIndex].ID;
-    //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' ',dbgs(LanguageComboBox.HandleAllocated));
+    //debugln('TEnvironmentOptionsDialogNew.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' ',dbgs(LanguageComboBox.HandleAllocated));
 
     // auto save
     AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
@@ -1327,7 +1324,7 @@ begin
   end;
 end;
 
-procedure TEnvironmentOptionsDialog.SetupObjectInspectorPage(Page: integer);
+procedure TEnvironmentOptionsDialogNew.SetupObjectInspectorPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := dlgObjInsp;
 
@@ -1344,13 +1341,13 @@ begin
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
 end;
 
-procedure TEnvironmentOptionsDialog.WindowPositionsListBoxMouseUp(
+procedure TEnvironmentOptionsDialogNew.WindowPositionsListBoxMouseUp(
   Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   SetWindowPositionsItem(WindowPositionsListBox.ItemIndex);
 end;
 
-procedure TEnvironmentOptionsDialog.SetWindowPositionsItem(Index: integer);
+procedure TEnvironmentOptionsDialogNew.SetWindowPositionsItem(Index: integer);
 begin
   if WindowPositionsBox.Layout<>nil then
     WindowPositionsBox.Save;
@@ -1370,7 +1367,7 @@ begin
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
-function TEnvironmentOptionsDialog.CheckLazarusDir: boolean;
+function TEnvironmentOptionsDialogNew.CheckLazarusDir: boolean;
 var
   NewLazarusDir: string;
   StopChecking: boolean;
@@ -1391,7 +1388,7 @@ begin
   Result:=true;
 end;
 
-function TEnvironmentOptionsDialog.IsFPCSourceDir: boolean;
+function TEnvironmentOptionsDialogNew.IsFPCSourceDir: boolean;
 var
   NewFPCSrcDir: string;
   StopChecking: boolean;
@@ -1410,7 +1407,7 @@ begin
   Result:=true;
 end;
 
-function TEnvironmentOptionsDialog.CheckTestDir: boolean;
+function TEnvironmentOptionsDialogNew.CheckTestDir: boolean;
 var
   NewTestDir: string;
   StopChecking: boolean;
@@ -1421,7 +1418,7 @@ begin
   if (not Result) or StopChecking then exit;
 end;
 
-function TEnvironmentOptionsDialog.CheckValues: boolean;
+function TEnvironmentOptionsDialogNew.CheckValues: boolean;
 begin
   Result:=false;
   // check lazarus directory

@@ -48,7 +48,7 @@ type
 
   { TProjectOptionsDialog }
 
-  TProjectOptionsDialog = class(TOptionsEditorForm)
+  TProjectOptionsDialogNew = class(TOptionsEditorForm)
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
     PoOutDirLabel: TLabel;
@@ -181,15 +181,12 @@ function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage): string
 function LocalizedNameToProjectSessionStorage(
                                        const s: string): TProjectSessionStorage;
 
-var
-  ProjectOptionsDialog: TProjectOptionsDialog;
-
 implementation
 
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 begin
-  with TProjectOptionsDialog.Create(Nil) do
+  with TProjectOptionsDialogNew.Create(Nil) do
     try
       Project := AProject;
       Result  := ShowModal;
@@ -220,9 +217,9 @@ begin
 end;
 
 
-{ TProjectOptionsDialog }
+{ TProjectOptionsDialogNew }
 
-constructor TProjectOptionsDialog.Create(TheOwner: TComponent);
+constructor TProjectOptionsDialogNew.Create(TheOwner: TComponent);
 var
   i: Integer;
   Title: string;
@@ -252,7 +249,7 @@ begin
   end
 end;
 
-procedure TProjectOptionsDialog.SetupApplicationPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupApplicationPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOApplication;
 
@@ -268,7 +265,7 @@ begin
   UseXPManifestCheckBox.Checked := False;
 end;
 
-procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupLazDocPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := lisLazDoc;
 
@@ -279,7 +276,7 @@ begin
   LazDocPathEdit.Clear;
 end;
 
-procedure TProjectOptionsDialog.SetupSavePage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupSavePage(PageIndex: Integer);
 var
   s: TProjectSessionStorage;
 begin
@@ -293,7 +290,7 @@ begin
                                        ProjectSessionStorageToLocalizedName(s));
 end;
 
-procedure TProjectOptionsDialog.SetupFormsPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupFormsPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOFroms;
 
@@ -302,7 +299,7 @@ begin
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
 end;
 
-procedure TProjectOptionsDialog.SetupMiscPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupMiscPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOMisc;
 
@@ -314,7 +311,7 @@ begin
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
 end;
 
-procedure TProjectOptionsDialog.SetupVersionInfoPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupVersionInfoPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := VersionInfoTitle;
   UseVersionInfoCheckBox.Caption := rsIncludeVersionInfoInExecutable;
@@ -333,7 +330,7 @@ begin
   AdditionalInfoButton.Caption := rsAdditionalInfo;
 end;
 
-procedure TProjectOptionsDialog.SetupI18NPage(PageIndex: Integer);
+procedure TProjectOptionsDialogNew.SetupI18NPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := dlgPOI18n;
 
@@ -342,7 +339,7 @@ begin
   PoOutDirLabel.Caption := rsPOOutputDirectory;
 end;
 
-procedure TProjectOptionsDialog.EnableVersionInfo(UseVersionInfo: boolean);
+procedure TProjectOptionsDialogNew.EnableVersionInfo(UseVersionInfo: boolean);
 begin
   VersionInfoGroupBox.Enabled := UseVersionInfo;
   VersionLabel.Enabled := UseVersionInfo;
@@ -369,12 +366,12 @@ begin
   AdditionalInfoButton.Enabled := UseVersionInfo;
 end;
 
-procedure TProjectOptionsDialog.Enablei18nInfo(Usei18n: boolean);
+procedure TProjectOptionsDialogNew.Enablei18nInfo(Usei18n: boolean);
 begin
   I18NGroupBox.Enabled := Usei18n;
 end;
 
-procedure TProjectOptionsDialog.SetProject(AProject: TProject);
+procedure TProjectOptionsDialogNew.SetProject(AProject: TProject);
 var
   AFilename: String;
 begin
@@ -444,7 +441,7 @@ begin
   CopyrightEdit.Text := Project.VersionInfo.CopyrightString;
 end;
 
-procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
+procedure TProjectOptionsDialogNew.ProjectOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 var
   NewFlags: TProjectFlags;
@@ -525,18 +522,18 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TProjectOptionsDialog.LazDocAddPathButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.LazDocAddPathButtonClick(Sender: TObject);
 begin
   if LazDocPathEdit.Text <> '' then
     LazDocListBox.Items.Add(LazDocPathEdit.Text);
 end;
 
-procedure TProjectOptionsDialog.HelpButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TProjectOptionsDialog.FormsPageResize(Sender: TObject);
+procedure TProjectOptionsDialogNew.FormsPageResize(Sender: TObject);
 begin
   with FormsAutoCreatedListBox do
   begin
@@ -547,7 +544,7 @@ begin
     Left := FormsAvailFormsListBox.Left;
 end;
 
-procedure TProjectOptionsDialog.AdditionalInfoButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.AdditionalInfoButtonClick(Sender: TObject);
 var
   InfoModified: Boolean;
 begin
@@ -557,24 +554,24 @@ begin
       Project.Modified:=InfoModified;
 end;
 
-procedure TProjectOptionsDialog.EnableI18NCheckBoxChange(Sender: TObject);
+procedure TProjectOptionsDialogNew.EnableI18NCheckBoxChange(Sender: TObject);
 begin
    Enablei18nInfo(EnableI18NCheckBox.Checked);
 end;
 
-procedure TProjectOptionsDialog.LazDocBrowseButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.LazDocBrowseButtonClick(Sender: TObject);
 begin
   if SelectDirectoryDialog.Execute then
     LazDocPathEdit.Text := SelectDirectoryDialog.FileName;
 end;
 
-procedure TProjectOptionsDialog.LazDocDeletePathButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.LazDocDeletePathButtonClick(Sender: TObject);
 begin
   if (LazDocListBox.ItemIndex >= 0) then
     LazDocListBox.Items.Delete(LazDocListBox.ItemIndex);
 end;
 
-function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
+function TProjectOptionsDialogNew.GetAutoCreatedFormsList: TStrings;
 var
   i, j: Integer;
 begin
@@ -597,7 +594,7 @@ begin
     Result := Nil;
 end;
 
-function TProjectOptionsDialog.GetProjectTitle: String;
+function TProjectOptionsDialogNew.GetProjectTitle: String;
 begin
   Result := '';
   if (FProject = Nil) or (FProject.MainUnitID < 0) then
@@ -606,7 +603,7 @@ begin
                                           FProject.MainUnitInfo.Source, Result);
 end;
 
-procedure TProjectOptionsDialog.FillAutoCreateFormsListbox;
+procedure TProjectOptionsDialogNew.FillAutoCreateFormsListbox;
 var
   sl: TStrings;
 begin
@@ -621,7 +618,7 @@ begin
   FormsAutoCreatedListBox.Items.EndUpdate;
 end;
 
-procedure TProjectOptionsDialog.FillAvailFormsListBox;
+procedure TProjectOptionsDialogNew.FillAvailFormsListBox;
 var
   sl: TStringList;
   i:  Integer;
@@ -647,7 +644,7 @@ begin
   FormsAvailFormsListBox.Items.EndUpdate;
 end;
 
-function TProjectOptionsDialog.IndexOfAutoCreateForm(FormName:
+function TProjectOptionsDialogNew.IndexOfAutoCreateForm(FormName:
   String): Integer;
 var
   p: Integer;
@@ -668,7 +665,7 @@ begin
   end;
 end;
 
-function TProjectOptionsDialog.FirstAutoCreateFormSelected: Integer;
+function TProjectOptionsDialogNew.FirstAutoCreateFormSelected: Integer;
 begin
   Result := 0;
   while (Result < FormsAutoCreatedListBox.Items.Count) and
@@ -678,7 +675,7 @@ begin
     Result := -1;
 end;
 
-function TProjectOptionsDialog.FirstAvailFormSelected: Integer;
+function TProjectOptionsDialogNew.FirstAvailFormSelected: Integer;
 begin
   Result := 0;
   while (Result < FormsAvailFormsListBox.Items.Count) and
@@ -688,7 +685,7 @@ begin
     Result := -1;
 end;
 
-procedure TProjectOptionsDialog.FormsAddToAutoCreatedFormsBtnClick(
+procedure TProjectOptionsDialogNew.FormsAddToAutoCreatedFormsBtnClick(
   Sender: TObject);
 var
   i: Integer;
@@ -713,7 +710,7 @@ begin
   FormsAutoCreatedListBox.Items.EndUpdate;
 end;
 
-procedure TProjectOptionsDialog.FormsRemoveFromAutoCreatedFormsBtnClick(
+procedure TProjectOptionsDialogNew.FormsRemoveFromAutoCreatedFormsBtnClick(
   Sender: TObject);
 var
   i, NewPos, cmp: Integer;
@@ -747,7 +744,7 @@ begin
   FormsAutoCreatedListBox.Items.EndUpdate;
 end;
 
-procedure TProjectOptionsDialog.FormsMoveAutoCreatedFormUpBtnClick(
+procedure TProjectOptionsDialogNew.FormsMoveAutoCreatedFormUpBtnClick(
   Sender: TObject);
 var
   i: Integer;
@@ -767,7 +764,7 @@ begin
   SelectOnlyThisAutoCreateForm(i - 1);
 end;
 
-procedure TProjectOptionsDialog.FormsMoveAutoCreatedFormDownBtnClick(
+procedure TProjectOptionsDialogNew.FormsMoveAutoCreatedFormDownBtnClick(
   Sender: TObject);
 var
   i: Integer;
@@ -787,7 +784,7 @@ begin
   SelectOnlyThisAutoCreateForm(i + 1);
 end;
 
-procedure TProjectOptionsDialog.POOutDirButtonClick(Sender: TObject);
+procedure TProjectOptionsDialogNew.POOutDirButtonClick(Sender: TObject);
 var
   NewDirectory: string;
 begin
@@ -798,12 +795,12 @@ begin
   POOutDirEdit.Text:=NewDirectory;
 end;
 
-procedure TProjectOptionsDialog.UseVersionInfoCheckBoxChange(Sender: TObject);
+procedure TProjectOptionsDialogNew.UseVersionInfoCheckBoxChange(Sender: TObject);
 begin
   EnableVersionInfo(UseVersionInfoCheckBox.Checked);
 end;
 
-procedure TProjectOptionsDialog.SelectOnlyThisAutoCreateForm(Index: Integer);
+procedure TProjectOptionsDialogNew.SelectOnlyThisAutoCreateForm(Index: Integer);
 var
   i: Integer;
 begin
@@ -812,7 +809,7 @@ begin
       Selected[i] := (i = Index);
 end;
 
-function TProjectOptionsDialog.SetAutoCreateForms: Boolean;
+function TProjectOptionsDialogNew.SetAutoCreateForms: Boolean;
 var
   i: Integer;
   OldList: TStrings;
@@ -851,7 +848,7 @@ begin
   end;
 end;
 
-function TProjectOptionsDialog.SetProjectTitle: Boolean;
+function TProjectOptionsDialogNew.SetProjectTitle: Boolean;
 var
   OldTitle: String;
 begin

@@ -1,4 +1,4 @@
-inherited EditorOptionsForm: TEditorOptionsForm
+inherited EditorOptionsFormNew: TEditorOptionsFormNew
   Left = 406
   Height = 606
   Top = 141

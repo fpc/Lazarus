@@ -1,4 +1,4 @@
-inherited frmCompilerOptions: TfrmCompilerOptions
+inherited frmCompilerOptionsNew: TfrmCompilerOptionsNew
   Left = 440
   Height = 528
   Top = 357

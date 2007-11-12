@@ -1,4 +1,4 @@
-inherited ProjectOptionsDialog: TProjectOptionsDialog
+inherited ProjectOptionsDialogNew: TProjectOptionsDialogNew
   Left = 262
   Height = 455
   Top = 209

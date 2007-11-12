@@ -61,7 +61,7 @@ type
 
   { TEditorOptionsForm }
 
-  TEditorOptionsForm = class(TOptionsEditorForm)
+  TEditorOptionsFormNew = class(TOptionsEditorForm)
     ForeGroundLabel: TLabel;
     BackGroundLabel: TLabel;
     EditorOptionsGroupBox: TCheckGroup;
@@ -287,9 +287,9 @@ begin
   Dest.Style      := Src.Style;
 end;
 
-{ TEditorOptionsForm }
+{ TEditorOptionsFormNew }
 
-constructor TEditorOptionsForm.Create(TheOwner: TComponent);
+constructor TEditorOptionsFormNew.Create(TheOwner: TComponent);
 var
   a: Integer;
   s: String;
@@ -375,7 +375,7 @@ begin
   end
 end;
 
-destructor TEditorOptionsForm.Destroy;
+destructor TEditorOptionsFormNew.Destroy;
 begin
   ClearHighlighters;
   fColorSchemes.Free;
@@ -387,7 +387,7 @@ end;
 
 // general
 
-procedure TEditorOptionsForm.GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
+procedure TEditorOptionsFormNew.GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
 var
   a: Integer;
   NewColor: TColor;
@@ -400,7 +400,7 @@ var
   begin
     i:=EditorOptionsGroupBox.Items.IndexOf(CheckBoxName);
     if i<0 then begin
-      DebugLn(['TEditorOptionsForm.GeneralCheckBoxOnChange.SetOption i<0']);
+      DebugLn(['TEditorOptionsFormNew.GeneralCheckBoxOnChange.SetOption i<0']);
       exit;
     end;
     for a := Low(PreviewEdits) to High(PreviewEdits) do
@@ -551,13 +551,13 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.chkCodeFoldingEnabledChange(Sender: TObject);
+procedure TEditorOptionsFormNew.chkCodeFoldingEnabledChange(Sender: TObject);
 begin
   lblDividerDrawLevel.Enabled := chkCodeFoldingEnabled.Checked;
   edDividerDrawLevel.Enabled  := chkCodeFoldingEnabled.Checked;
 end;
 
-procedure TEditorOptionsForm.EditorFontComboBoxEditingDone(Sender: TObject);
+procedure TEditorOptionsFormNew.EditorFontComboBoxEditingDone(Sender: TObject);
 var
   i: Integer;
 begin
@@ -566,7 +566,7 @@ begin
       PreviewEdits[i].Font.Name:=EditorFontComboBox.Text;
 end;
 
-procedure TEditorOptionsForm.ColorButtonColorChanged(Sender: TObject);
+procedure TEditorOptionsFormNew.ColorButtonColorChanged(Sender: TObject);
 var
   a: Integer;
 begin
@@ -601,7 +601,7 @@ begin
       end;
 end;
 
-procedure TEditorOptionsForm.FontDialogNameToFont(FontDialogName: String;
+procedure TEditorOptionsFormNew.FontDialogNameToFont(FontDialogName: String;
   AFont: TFont);
 var
   TmpFont: TFont;
@@ -635,7 +635,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.FontDialogApplyClicked(Sender: TObject);
+procedure TEditorOptionsFormNew.FontDialogApplyClicked(Sender: TObject);
 var
   a: Integer;
 begin
@@ -647,7 +647,7 @@ begin
                   IntToStr(DisplayPreview.Font.Height));
 end;
 
-procedure TEditorOptionsForm.EditorFontButtonClick(Sender: TObject);
+procedure TEditorOptionsFormNew.EditorFontButtonClick(Sender: TObject);
 var
   FontDialog: TFontDialog;
 begin
@@ -667,7 +667,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.KeyMappingChooseSchemeButtonClick(
+procedure TEditorOptionsFormNew.KeyMappingChooseSchemeButtonClick(
   Sender: TObject);
 var
   NewScheme: String;
@@ -678,7 +678,7 @@ begin
   FillKeyMappingTreeView;
 end;
 
-procedure TEditorOptionsForm.ComboBoxOnExit(Sender: TObject);
+procedure TEditorOptionsFormNew.ComboBoxOnExit(Sender: TObject);
 var
   NewVal, a: Integer;
   Box: TComboBox;
@@ -783,13 +783,13 @@ begin
     else
     if Sender = FileExtensionsComboBox then
     begin
-      //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Old="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
+      //DebugLn(['TEditorOptionsFormNew.ComboBoxOnExit Box.Text="',Box.Text,'" Old="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
       if Box.Text <> GetCurFileExtensions(PreviewSyn.LanguageName) then
       begin
         SetCurFileExtensions(PreviewSyn.LanguageName, Box.Text);
         SetComboBoxText(Box, Box.Text);
       end;
-      //DebugLn(['TEditorOptionsForm.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
+      //DebugLn(['TEditorOptionsFormNew.ComboBoxOnExit Box.Text="',Box.Text,'" Now="',GetCurFileExtensions(PreviewSyn.LanguageName),'" PreviewSyn.LanguageName=',PreviewSyn.LanguageName]);
     end
     else
     if Sender = LanguageComboBox then
@@ -826,14 +826,14 @@ begin
   ;
 end;
 
-procedure TEditorOptionsForm.ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
+procedure TEditorOptionsFormNew.ComboBoxOnKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (ssCtrl in Shift) and (Key = VK_S) then
     ComboBoxOnExit(Sender);
 end;
 
-procedure TEditorOptionsForm.ComboBoxOnChange(Sender: TObject);
+procedure TEditorOptionsFormNew.ComboBoxOnChange(Sender: TObject);
 var
   ComboBox: TComboBox;
 begin
@@ -842,7 +842,7 @@ begin
     ComboBoxOnExit(Sender);
 end;
 
-procedure TEditorOptionsForm.FindCurHighlightElement;
+procedure TEditorOptionsFormNew.FindCurHighlightElement;
 var
   a, i: Integer;
   Old:  TSynHighlightElement;
@@ -867,7 +867,7 @@ begin
     ShowCurAttribute;
 end;
 
-procedure TEditorOptionsForm.InvalidatePreviews;
+procedure TEditorOptionsFormNew.InvalidatePreviews;
 var
   a: Integer;
 begin
@@ -876,7 +876,7 @@ begin
       PreviewEdits[a].Invalidate;
 end;
 
-procedure TEditorOptionsForm.SetPreviewSynInAllPreviews;
+procedure TEditorOptionsFormNew.SetPreviewSynInAllPreviews;
 var
   a: Integer;
 begin
@@ -888,7 +888,7 @@ begin
         PreviewEdits[a].Highlighter := Nil;
 end;
 
-procedure TEditorOptionsForm.ShowCurAttribute;
+procedure TEditorOptionsFormNew.ShowCurAttribute;
 begin
   if (CurHighlightElement = Nil) or UpdatingColor then
     exit;
@@ -915,7 +915,7 @@ begin
   UpdatingColor := False;
 end;
 
-procedure TEditorOptionsForm.KeyMappingTreeViewMouseUp(Sender: TObject;
+procedure TEditorOptionsFormNew.KeyMappingTreeViewMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   i: Integer;
@@ -987,7 +987,7 @@ begin
   ModalResult := mrOk;
 end;
 
-procedure TEditorOptionsForm.KeyMappingConsistencyCheckButtonClick(
+procedure TEditorOptionsFormNew.KeyMappingConsistencyCheckButtonClick(
   Sender: TObject);
 var
   Protocol: TStringList;
@@ -1019,14 +1019,14 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.ColorElementListBoxSelectionChange(
+procedure TEditorOptionsFormNew.ColorElementListBoxSelectionChange(
   Sender: TObject;
   User: Boolean);
 begin
   FindCurHighlightElement;
 end;
 
-procedure TEditorOptionsForm.FillColorElementListBox;
+procedure TEditorOptionsFormNew.FillColorElementListBox;
 var
   i: Integer;
 begin
@@ -1047,7 +1047,7 @@ begin
   FindCurHighlightElement;
 end;
 
-procedure TEditorOptionsForm.ColorPreviewMouseUp(Sender: TObject;
+procedure TEditorOptionsFormNew.ColorPreviewMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   NewIndex: Integer;
@@ -1082,7 +1082,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.OnSpecialLineColors(Sender: TObject;
+procedure TEditorOptionsFormNew.OnSpecialLineColors(Sender: TObject;
   Line: Integer; var Special: Boolean; var FG, BG: TColor);
 var
   e: TSynHighlightElement;
@@ -1115,7 +1115,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.RightMarginColorButtonColorChanged(Sender: TObject
+procedure TEditorOptionsFormNew.RightMarginColorButtonColorChanged(Sender: TObject
   );
 var
   a: Integer;
@@ -1125,18 +1125,18 @@ begin
       PreviewEdits[a].RightEdgeColor:=RightMarginColorButton.ButtonColor;
 end;
 
-procedure TEditorOptionsForm.SetAttributeToDefaultButtonClick(Sender: TObject);
+procedure TEditorOptionsFormNew.SetAttributeToDefaultButtonClick(Sender: TObject);
 begin
   SetColorElementsToDefaults(True);
 end;
 
-procedure TEditorOptionsForm.SetAllAttributesToDefaultButtonClick(
+procedure TEditorOptionsFormNew.SetAllAttributesToDefaultButtonClick(
   Sender: TObject);
 begin
   SetColorElementsToDefaults(False);
 end;
 
-procedure TEditorOptionsForm.SetColorElementsToDefaults(OnlySelected: Boolean);
+procedure TEditorOptionsFormNew.SetColorElementsToDefaults(OnlySelected: Boolean);
 var
   DefaultSyn: TCustomSyn;
   PascalSyn: TPreviewPasSyn;
@@ -1173,7 +1173,7 @@ begin
   ShowCurAttribute;
 end;
 
-function TEditorOptionsForm.GetCurColorScheme(
+function TEditorOptionsFormNew.GetCurColorScheme(
   const LanguageName: String): String;
 begin
   if fColorSchemes = Nil then
@@ -1184,7 +1184,7 @@ begin
     Result := EditorOpts.ReadColorScheme(LanguageName);
 end;
 
-procedure TEditorOptionsForm.SetCurColorScheme(
+procedure TEditorOptionsFormNew.SetCurColorScheme(
   const LanguageName, ColorScheme: String);
 begin
   if fColorSchemes = Nil then
@@ -1192,7 +1192,7 @@ begin
   fColorSchemes.Values[LanguageName] := ColorScheme;
 end;
 
-procedure TEditorOptionsForm.SaveAllColorSchemes;
+procedure TEditorOptionsFormNew.SaveAllColorSchemes;
 var
   i: Integer;
 begin
@@ -1203,7 +1203,7 @@ begin
       fColorSchemes.Values[fColorSchemes.Names[i]]);
 end;
 
-function TEditorOptionsForm.GetCurFileExtensions(
+function TEditorOptionsFormNew.GetCurFileExtensions(
   const LanguageName: String): String;
 var
   i: Integer;
@@ -1220,16 +1220,16 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.SetCurFileExtensions(
+procedure TEditorOptionsFormNew.SetCurFileExtensions(
   const LanguageName, FileExtensions: String);
 begin
   if fFileExtensions = Nil then
     fFileExtensions := TStringList.Create;
   fFileExtensions.Values[LanguageName] := FileExtensions;
-  //DebugLn(['TEditorOptionsForm.SetCurFileExtensions ',LanguageName,'=',FileExtensions]);
+  //DebugLn(['TEditorOptionsFormNew.SetCurFileExtensions ',LanguageName,'=',FileExtensions]);
 end;
 
-procedure TEditorOptionsForm.SaveAllFileExtensions;
+procedure TEditorOptionsFormNew.SaveAllFileExtensions;
 var
   i, j: Integer;
 begin
@@ -1241,12 +1241,12 @@ begin
     if j >= 0 then begin
       EditorOpts.HighlighterList[j].FileExtensions :=
         fFileExtensions.ValueFromIndex[i];
-      //DebugLn(['TEditorOptionsForm.SaveAllFileExtensions ',fFileExtensions.Names[i],'=',fFileExtensions.ValueFromIndex[i],' -> ',EditorOpts.HighlighterList[j].FileExtensions]);
+      //DebugLn(['TEditorOptionsFormNew.SaveAllFileExtensions ',fFileExtensions.Names[i],'=',fFileExtensions.ValueFromIndex[i],' -> ',EditorOpts.HighlighterList[j].FileExtensions]);
     end;
   end;
 end;
 
-function TEditorOptionsForm.GetHighlighter(SynClass: TCustomSynClass;
+function TEditorOptionsFormNew.GetHighlighter(SynClass: TCustomSynClass;
   const ColorScheme: String; CreateIfNotExists: Boolean): TCustomSyn;
 var
   i: Integer;
@@ -1270,7 +1270,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.ClearHighlighters;
+procedure TEditorOptionsFormNew.ClearHighlighters;
 var
   i: Integer;
 begin
@@ -1281,7 +1281,7 @@ begin
   fHighlighterList.Free;
 end;
 
-procedure TEditorOptionsForm.SaveAllHighlighters;
+procedure TEditorOptionsFormNew.SaveAllHighlighters;
 var
   i: Integer;
   Syn: TCustomSyn;
@@ -1297,12 +1297,12 @@ end;
 
 // keymapping ------------------------------------------------------------------
 
-function TEditorOptionsForm.KeyMappingRelationToString(Index: Integer): String;
+function TEditorOptionsFormNew.KeyMappingRelationToString(Index: Integer): String;
 begin
   Result := KeyMappingRelationToString(EditingKeyMap.Relations[Index]);
 end;
 
-function TEditorOptionsForm.KeyMappingRelationToString(
+function TEditorOptionsFormNew.KeyMappingRelationToString(
   KeyRelation: TKeyCommandRelation): String;
 var
   s: String;
@@ -1333,7 +1333,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.FillKeyMappingTreeView;
+procedure TEditorOptionsFormNew.FillKeyMappingTreeView;
 var
   i, j: Integer;
   NewCategoryNode, NewKeyNode: TTreeNode;
@@ -1382,7 +1382,7 @@ end;
 
 // useful functions
 
-procedure TEditorOptionsForm.SetComboBoxText(AComboBox: TComboBox;
+procedure TEditorOptionsFormNew.SetComboBoxText(AComboBox: TComboBox;
   const AText: String);
 var
   a: Integer;
@@ -1397,7 +1397,7 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.SetupGeneralPage(Page: Integer);
+procedure TEditorOptionsFormNew.SetupGeneralPage(Page: Integer);
 begin
   NoteBook.Page[Page].Caption := lisMenuInsertGeneral;
 
@@ -1473,7 +1473,7 @@ begin
     Checked[Items.IndexOf(dlgShowScrollHint)] :=
                                   eoShowScrollHint in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgSmartTabs)] := eoSmartTabs in EditorOpts.SynEditOptions;
-    //DebugLn(['TEditorOptionsForm.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
+    //DebugLn(['TEditorOptionsFormNew.SetupGeneralPage ',Checked[Items.IndexOf(dlgSmartTabs)],' ',Items.IndexOf(dlgSmartTabs),' ',eoSmartTabs in EditorOpts.SynEditOptions]);
     Checked[Items.IndexOf(dlgTabsToSpaces)] :=
                                     eoTabsToSpaces in EditorOpts.SynEditOptions;
     Checked[Items.IndexOf(dlgTabIndent)]    := eoTabIndent in EditorOpts.SynEditOptions;
@@ -1510,7 +1510,7 @@ begin
   TabWidthsLabel.Caption := dlgTabWidths;
 end;
 
-procedure TEditorOptionsForm.SetupDisplayPage(Page: Integer);
+procedure TEditorOptionsFormNew.SetupDisplayPage(Page: Integer);
 begin
   NoteBook.Page[Page].Caption := dlgEdDisplay;
 
@@ -1573,7 +1573,7 @@ begin
   ExtraLineSpacingLabel.Caption := dlgExtraLineSpacing;
 end;
 
-procedure TEditorOptionsForm.SetupKeyMappingsPage(Page: Integer);
+procedure TEditorOptionsFormNew.SetupKeyMappingsPage(Page: Integer);
 begin
   NoteBook.Page[Page].Caption := dlgKeyMapping;
 
@@ -1584,7 +1584,7 @@ begin
   KeyMappingHelpLabel.Caption := dlgEdHintCommand;
 end;
 
-procedure TEditorOptionsForm.SetupColorPage(Page: Integer);
+procedure TEditorOptionsFormNew.SetupColorPage(Page: Integer);
 var
   a: Integer;
 begin
@@ -1599,7 +1599,7 @@ begin
       for a := 0 to EditorOpts.HighlighterList.Count - 1 do
         Add(EditorOpts.HighlighterList[a].SynClass.GetLanguageName);
       //for a:=0 to EditorOpts.HighlighterList.Count-1 do
-      //  writeln('TEditorOptionsForm.SetupColorPage ',a,' ',EditorOpts.HighlighterList[a].SynClass.GetLanguageName
+      //  writeln('TEditorOptionsFormNew.SetupColorPage ',a,' ',EditorOpts.HighlighterList[a].SynClass.GetLanguageName
       //  ,' ',EditorOpts.HighlighterList[a].SynClass.ClassName);
       EndUpdate;
     end;
@@ -1654,7 +1654,7 @@ begin
   TextUnderlineCheckBox.Caption := dlgEdUnder;
 end;
 
-procedure TEditorOptionsForm.SetupCodeToolsPage(Page: Integer);
+procedure TEditorOptionsFormNew.SetupCodeToolsPage(Page: Integer);
 begin
   NoteBook.Page[Page].Caption := dlgCodeToolsTab;
 
@@ -1690,7 +1690,7 @@ begin
   AutoDelayMaxLabel.Caption := '4.0 ' + dlgTimeSecondUnit;
 end;
 
-procedure TEditorOptionsForm.SetupCodeFoldingPage(Page: integer);
+procedure TEditorOptionsFormNew.SetupCodeFoldingPage(Page: integer);
 begin
   NoteBook.Page[Page].Caption := dlgUseCodeFolding;
   chkCodeFoldingEnabled.Caption   := dlgUseCodeFolding;
@@ -1700,7 +1700,7 @@ begin
   edDividerDrawLevel.Value        := EditorOpts.CFDividerDrawLevel;
 end;
 
-procedure TEditorOptionsForm.SetupButtonBar;
+procedure TEditorOptionsFormNew.SetupButtonBar;
 begin
   CancelButton.Caption := dlgCancel;
 
@@ -1709,7 +1709,7 @@ begin
   OkButton.Caption := lisOk;
 end;
 
-procedure TEditorOptionsForm.OkButtonClick(Sender: TObject);
+procedure TEditorOptionsFormNew.OkButtonClick(Sender: TObject);
 var
   SynOptions: TSynEditorOptions;
   i: Integer;
@@ -1785,7 +1785,7 @@ begin
   ModalResult := mrOk;
 end;
 
-procedure TEditorOptionsForm.CancelButtonClick(Sender: TObject);
+procedure TEditorOptionsFormNew.CancelButtonClick(Sender: TObject);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
   EditorOpts.Load;

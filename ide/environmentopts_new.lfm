@@ -1,4 +1,4 @@
-inherited EnvironmentOptionsDialog: TEnvironmentOptionsDialog
+inherited EnvironmentOptionsDialogNew: TEnvironmentOptionsDialogNew
   Left = 299
   Height = 547
   Top = 169

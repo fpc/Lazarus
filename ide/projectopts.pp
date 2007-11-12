@@ -185,9 +185,6 @@ function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage): string
 function LocalizedNameToProjectSessionStorage(
                                        const s: string): TProjectSessionStorage;
 
-var
-  ProjectOptionsDialog: TProjectOptionsDialog;
-
 implementation
 
 

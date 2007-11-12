@@ -57,7 +57,7 @@ type
   
   { TfrmCompilerOptions }
 
-  TfrmCompilerOptions = class(TOptionsEditorForm)
+  TfrmCompilerOptionsNew = class(TOptionsEditorForm)
     Notebook: TNotebook;
     BtnPanel: TPanel;
 
@@ -278,9 +278,9 @@ type
   PInheritedNodeData = ^TInheritedNodeData;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions Constructor
+  TfrmCompilerOptionsNew Constructor
 ------------------------------------------------------------------------------}
-constructor TfrmCompilerOptions.Create(TheOwner: TComponent);
+constructor TfrmCompilerOptionsNew.Create(TheOwner: TComponent);
 var 
   Page: integer;
   I: Integer;
@@ -330,23 +330,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions Destructor
+  TfrmCompilerOptionsNew Destructor
 ------------------------------------------------------------------------------}
-destructor TfrmCompilerOptions.Destroy;
+destructor TfrmCompilerOptionsNew.Destroy;
 begin
   ClearInheritedTree;
   inherited Destroy;
 end;
 
-procedure TfrmCompilerOptions.GetCompilerOptions;
+procedure TfrmCompilerOptionsNew.GetCompilerOptions;
 begin
   GetCompilerOptions(nil);
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonOKClicked                                         }
+{  TfrmCompilerOptionsNew ButtonOKClicked                                         }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonOKClicked(Sender: TObject);
+procedure TfrmCompilerOptionsNew.ButtonOKClicked(Sender: TObject);
 begin
   // Accept any changes
   Assert(False, 'Trace:Accept compiler options changes');
@@ -357,9 +357,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions ButtonCheckClicked
+  TfrmCompilerOptionsNew ButtonCheckClicked
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
+procedure TfrmCompilerOptionsNew.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
   if not PutCompilerOptions(ccomlHints) then exit;
@@ -374,18 +374,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions ButtonShowOptionsClicked
+  TfrmCompilerOptionsNew ButtonShowOptionsClicked
      This function is for testing the MakeOptionsString function only. Remove
      this function and its button when the function is working correctly.
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonShowOptionsClicked(Sender: TObject);
+procedure TfrmCompilerOptionsNew.ButtonShowOptionsClicked(Sender: TObject);
 begin
   // Test MakeOptionsString function
   if not PutCompilerOptions(ccomlWarning) then exit;
   ShowCompilerOptionsDialog(CompilerOpts);
 end;
 
-procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
+procedure TfrmCompilerOptionsNew.FileBrowseBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   DefaultFilename: String;
@@ -425,16 +425,16 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.FormResize(Sender: TObject);
+procedure TfrmCompilerOptionsNew.FormResize(Sender: TObject);
 begin
 end;
 
-procedure TfrmCompilerOptions.HelpButtonClick(Sender: TObject);
+procedure TfrmCompilerOptionsNew.HelpButtonClick(Sender: TObject);
 begin
   ShowContextHelpForIDE(Self);
 end;
 
-procedure TfrmCompilerOptions.InhTreeViewSelectionChanged(Sender: TObject);
+procedure TfrmCompilerOptionsNew.InhTreeViewSelectionChanged(Sender: TObject);
 var
   ANode: TTreeNode;
   ChildData: PInheritedNodeData;
@@ -454,16 +454,16 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.ButtonLoadSaveClick(Sender: TObject);
+procedure TfrmCompilerOptionsNew.ButtonLoadSaveClick(Sender: TObject);
 begin
   if Assigned(OnImExportCompilerOptions) then
     OnImExportCompilerOptions(Self);
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions GetCompilerOptions
+  TfrmCompilerOptionsNew GetCompilerOptions
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.GetCompilerOptions(
+procedure TfrmCompilerOptionsNew.GetCompilerOptions(
   SrcCompilerOptions: TBaseCompilerOptions);
 var
   i: integer;
@@ -702,9 +702,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions PutCompilerOptions
+  TfrmCompilerOptionsNew PutCompilerOptions
 ------------------------------------------------------------------------------}
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptionsNew.PutCompilerOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl;
   DestCompilerOptions: TBaseCompilerOptions): boolean;
 
@@ -991,13 +991,13 @@ begin
   OldCompOpts.Free;
 end;
 
-function TfrmCompilerOptions.PutCompilerOptions(
+function TfrmCompilerOptionsNew.PutCompilerOptions(
   CheckAndWarn: TCheckCompileOptionsMsgLvl): boolean;
 begin
   Result:=PutCompilerOptions(CheckAndWarn,nil);
 end;
 
-procedure TfrmCompilerOptions.UpdateInheritedTab;
+procedure TfrmCompilerOptionsNew.UpdateInheritedTab;
 var
   OptionsList: TFPList;
   i: Integer;
@@ -1091,7 +1091,7 @@ begin
   InhTreeView.EndUpdate;
 end;
 
-procedure TfrmCompilerOptions.ClearInheritedTree;
+procedure TfrmCompilerOptionsNew.ClearInheritedTree;
 var
   i: Integer;
   ChildData: PInheritedNodeData;
@@ -1111,9 +1111,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupParsingTab
+  TfrmCompilerOptionsNew SetupParsingTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupParsingTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupParsingTab(Page: integer);
 begin
   Notebook.Page[Page].Caption:= dlgCOParsing;
 
@@ -1151,9 +1151,9 @@ end;
 
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupCodeGenerationTab
+  TfrmCompilerOptionsNew SetupCodeGenerationTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
   NoteBook.Page[Page].Caption:= dlgCodeGeneration;
@@ -1246,9 +1246,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupLinkingTab
+  TfrmCompilerOptionsNew SetupLinkingTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupLinkingTab(Page: integer);
 begin
   NoteBook.Page[Page].Caption:= dlgCOLinking;
 
@@ -1278,9 +1278,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupMessagesTab
+  TfrmCompilerOptionsNew SetupMessagesTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupMessagesTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupMessagesTab(Page: integer);
 begin
   // Setup the Messages Tab
   NoteBook.Page[Page].Caption:= dlgCOMessages;
@@ -1315,7 +1315,7 @@ begin
   edtErrorCnt.Text := '';
 end;
 
-procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupOtherTab(Page: integer);
 begin
   NoteBook.Page[Page].Caption:= dlgCOOther;
 
@@ -1328,9 +1328,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
+  procedure TfrmCompilerOptionsNew.SetupInheritedTab(Page: integer);
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupInheritedTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupInheritedTab(Page: integer);
 begin
   NoteBook.Page[Page].Caption:= dlgCOInherited;
 
@@ -1345,7 +1345,7 @@ begin
   InhItemMemo.Text:=lisSelectANode;
 end;
 
-procedure TfrmCompilerOptions.SetupCompilationTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupCompilationTab(Page: integer);
 // the real edit width is calculated in the groupbox resize
 // here the controls are given initial sizes to avoid jumpy controls
 
@@ -1389,9 +1389,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupSearchPathsTab
+  TfrmCompilerOptionsNew SetupSearchPathsTab
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupSearchPathsTab(Page: integer);
+procedure TfrmCompilerOptionsNew.SetupSearchPathsTab(Page: integer);
 var
   LCLInterface: TLCLPlatform;
 begin
@@ -1529,9 +1529,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TfrmCompilerOptions SetupButtonBar
+  TfrmCompilerOptionsNew SetupButtonBar
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupButtonBar;
+procedure TfrmCompilerOptionsNew.SetupButtonBar;
 begin
   // Setup the Button Bar
   btnOK.Caption := lisOkBtn;
@@ -1543,12 +1543,12 @@ begin
   btnLoadSave.Caption := '...';
 end;
 
-procedure TfrmCompilerOptions.chkCustomConfigFileClick(Sender: TObject);
+procedure TfrmCompilerOptionsNew.chkCustomConfigFileClick(Sender: TObject);
 begin
   edtConfigPath.Enabled:=chkCustomConfigFile.Checked;
 end;
 
-procedure TfrmCompilerOptions.PathEditBtnClick(Sender: TObject);
+procedure TfrmCompilerOptionsNew.PathEditBtnClick(Sender: TObject);
 var AButton: TPathEditorButton;
   OldPath, Templates: string;
 begin
@@ -1595,7 +1595,7 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.PathEditBtnExecuted(Sender: TObject);
+procedure TfrmCompilerOptionsNew.PathEditBtnExecuted(Sender: TObject);
 var AButton: TPathEditorButton;
   NewPath: string;
 begin
@@ -1623,13 +1623,13 @@ begin
   end;
 end;
 
-procedure TfrmCompilerOptions.frmCompilerOptionsClose(Sender: TObject;
+procedure TfrmCompilerOptionsNew.frmCompilerOptionsClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
-procedure TfrmCompilerOptions.grpOptimizationsResize(Sender: TObject);
+procedure TfrmCompilerOptionsNew.grpOptimizationsResize(Sender: TObject);
 var
   x: Integer;
 begin
@@ -1638,7 +1638,7 @@ begin
   chkOptUncertain.Left:=x;
 end;
 
-procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);
+procedure TfrmCompilerOptionsNew.SetReadOnly(const AValue: boolean);
 begin
   if FReadOnly=AValue then exit;
   FReadOnly:=AValue;
