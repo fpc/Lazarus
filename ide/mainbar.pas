@@ -217,7 +217,13 @@ type
       //itmProjectWindowSection: TIDEMenuSection;
         itmProjectInspector: TIDEMenuCommand;
         itmProjectOptions: TIDEMenuCommand;
+        {$ifdef EnableNewDialogs}
+        itmProjectOptions_new: TIDEMenuCommand;
+        {$endif}
         itmProjectCompilerOptions: TIDEMenuCommand;
+        {$ifdef EnableNewDialogs}
+        itmProjectCompilerOptions_new: TIDEMenuCommand;
+        {$endif}
         itmProjectViewToDos: TIDEMenuCommand;
       //itmProjectAddRemoveSection: TIDEMenuSection;
         itmProjectAddTo: TIDEMenuCommand;
@@ -292,7 +298,13 @@ type
     //mnuEnvironment: TIDEMenuSection;
       //itmOptionsDialogs: TIDEMenuSection;
         itmEnvGeneralOptions: TIDEMenuCommand;
+        {$ifdef EnableNewDialogs}
+        itmEnvGeneralOptions_new: TIDEMenuCommand;
+        {$endif}
         itmEnvEditorOptions: TIDEMenuCommand;
+        {$ifdef EnableNewDialogs}
+        itmEnvEditorOptions_new: TIDEMenuCommand;
+        {$endif}
         itmEnvCodeTemplates: TIDEMenuCommand;
         itmEnvDebuggerOptions: TIDEMenuCommand;
         itmEnvCodeToolsOptions: TIDEMenuCommand;

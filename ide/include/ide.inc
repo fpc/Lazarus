@@ -26,5 +26,9 @@
 
 { $DEFINE IDE_DEBUG}
 
+{$ifndef DisableNewDialogs}
+{$define EnableNewDialogs}
+{$endif}
+
 // end.
 
