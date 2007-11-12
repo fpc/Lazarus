@@ -915,7 +915,7 @@ var
 begin
   if Context.Node.Desc in AllPascalStatements then begin
     AddCompilerProcedure('SetLength','array of type; NewLength: integer');
-    AddCompilerProcedure('Copy','const s: string; FromPosition, ToPosition: integer');
+    AddCompilerProcedure('Copy','const s: string; FromPosition, Count: integer');
     AddCompilerProcedure('Write','Args : Arguments');
     AddCompilerProcedure('WriteLn','Args : Arguments');
     AddCompilerProcedure('Read','');
