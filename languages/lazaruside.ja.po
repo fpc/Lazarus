@@ -256,9 +256,9 @@ msgstr "ツール(&T)"
 msgid "&View"
 msgstr "表示(&V)"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "ウィンドウ(&W)"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -651,6 +651,10 @@ msgstr "曖昧なファイルが見つかりました。 %s%s%s%sこのファイ
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "曖昧なファイルが見つかりました"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2844,6 +2848,10 @@ msgstr "実行を停止しました"
 msgid "Execution stopped%s"
 msgstr "実行を一時停止しました%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "終了"
@@ -3652,6 +3660,10 @@ msgstr "ヘルプ選択"
 msgid "Hide IDE windows on run"
 msgstr "実行中はIDEウィンドウを隠す"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "ヒント： \"リソース文字列作成\"機能は文字列を定数として扱います。%s文字列表現のみを選択し、再び試してみて下さい。"
@@ -3720,6 +3732,10 @@ msgstr ""
 msgid "IDE Options:"
 msgstr "IDE オプション"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr ""
@@ -3779,6 +3795,10 @@ msgstr "無視"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "空白を無視"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4848,6 +4868,10 @@ msgstr "選択部を小文字化"
 msgid "Lowercase, first letter up"
 msgstr "頭文字以外を小文字に"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "マクロ"
@@ -5492,6 +5516,10 @@ msgstr "オンラインヘルプ"
 msgid "Online Help not yet implemented"
 msgstr "オンラインヘルプはまだ実装されていません。"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "単語全体についてのみ検索"
@@ -5784,6 +5812,10 @@ msgstr "パッケージグラフ ..."
 msgid "Package Info"
 msgstr "パッケージ情報"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "パッケージ名"
@@ -5835,6 +5867,10 @@ msgstr "パッケージは読み込み専用です"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "パッケージが要求されています"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7456,6 +7492,10 @@ msgstr "実行ファイル情報を表示(Win32のみ)"
 msgid "Show general info"
 msgstr "一般的な情報を表示"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "グリッドを表示"
@@ -7511,6 +7551,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "用いられたファイルを表示"
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8391,6 +8435,10 @@ msgstr "リソース文字列%s%s%sは既に存在しています。%s他の名�
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "rootコンポーネントは削除できません。"
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9327,6 +9375,10 @@ msgstr "ユニットを使用"
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "ウィンドウマネージャーの設定を使う"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"

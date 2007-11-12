@@ -259,9 +259,9 @@ msgstr "&Werkzeuge"
 msgid "&View"
 msgstr "&Ansicht"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "&Fenster"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -654,6 +654,10 @@ msgstr "Doppelte Datei gefunden: %s%s%s%sDiese Datei kann mit %s%s%s%s%sverwechs
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Mehrdeutige Dateien gefunden"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2847,6 +2851,10 @@ msgstr "Ausführung angehalten"
 msgid "Execution stopped%s"
 msgstr "Ausführung angehalten%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Beenden"
@@ -3655,6 +3663,10 @@ msgstr "Hilfe-Wähler"
 msgid "Hide IDE windows on run"
 msgstr "IDE-Fenster beim Start verstecken"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Anmerkung: Die Funktion \"Make Resourcestring\" erwartet eine Zeichenkettenkonstante.%s Bitte wählen Sie nur einen Zeichenkettenausdruck und versuchen Sie es noch einmal."
@@ -3723,6 +3735,10 @@ msgstr "IDE-Schnittstelle"
 msgid "IDE Options:"
 msgstr "IDE-Einstellungen"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "Einfg"
@@ -3782,6 +3798,10 @@ msgstr "Ignorieren"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Leerzeichen übergehen"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4851,6 +4871,10 @@ msgstr "Auswahl kleinschreiben"
 msgid "Lowercase, first letter up"
 msgstr "Kleinbuchstaben, erster Buchstabe groß"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "Makros"
@@ -5495,6 +5519,10 @@ msgstr "Onlinehilfe"
 msgid "Online Help not yet implemented"
 msgstr "Onlinehilfe noch nicht implementiert"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Nur Suche nach ganzen Worten"
@@ -5787,6 +5815,10 @@ msgstr "Package-Graph ..."
 msgid "Package Info"
 msgstr "Package-Info"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Package-Name"
@@ -5838,6 +5870,10 @@ msgstr "Package ist schreibgeschützt"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "Package wird benötigt"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7459,6 +7495,10 @@ msgstr "Executable-Info anzeigen (nur für Win32)"
 msgid "Show general info"
 msgstr "Allgemeine Informationen anzeigen"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Gitter anzeigen"
@@ -7514,6 +7554,10 @@ msgstr "Units anzeigen"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Verwendete Dateien anzeigen"
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8394,6 +8438,10 @@ msgstr "Der Ressourcenstring %s%s%s ist bereits angelegt.%sBitte wählen Sie ein
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Die Ursprungskomponente kann nicht gelöscht werden."
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9330,6 +9378,10 @@ msgstr "Verwende Unit"
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Angabe des Windowmanagers verwenden"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"

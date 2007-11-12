@@ -257,9 +257,9 @@ msgstr "&Инструменты"
 msgid "&View"
 msgstr "П&росмотр"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "Ок&на"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -652,6 +652,10 @@ msgstr "Найден неправильный файл: %s%s%s%sОн может 
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Найдены разные файлы"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2845,6 +2849,10 @@ msgstr "Выполнение остановлено"
 msgid "Execution stopped%s"
 msgstr "Выполнение остановлено %s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Выход"
@@ -3653,6 +3661,10 @@ msgstr "Выбор справки..."
 msgid "Hide IDE windows on run"
 msgstr "Скрыть окна IDE при пуске"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Подсказка: функция Создать строку ресурсов требует строковой константы.%sВыберите только строковое выражение и попробуйте снова."
@@ -3721,6 +3733,10 @@ msgstr "Интерфейс IDE"
 msgid "IDE Options:"
 msgstr "Настройки IDE:"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ВСТ"
@@ -3780,6 +3796,10 @@ msgstr "Пропуск"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Игнорировать пробелы"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4849,6 +4869,10 @@ msgstr "Нижний регистр выделения"
 msgid "Lowercase, first letter up"
 msgstr "Только 1я буква заглавная"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "Макросы"
@@ -5493,6 +5517,10 @@ msgstr "Оперативная справка"
 msgid "Online Help not yet implemented"
 msgstr "Контекстная справка ещё не реализована"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Поиск только целых слов"
@@ -5785,6 +5813,10 @@ msgstr "Диаграмма пакетов ..."
 msgid "Package Info"
 msgstr "Информация о пакете"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Имя пакета"
@@ -5836,6 +5868,10 @@ msgstr "Пакет только для чтения"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "Требуется пакет"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7457,6 +7493,10 @@ msgstr "Показать информацию об exe (только Win32)"
 msgid "Show general info"
 msgstr "Показать общие сведения"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Показать сетку"
@@ -7512,6 +7552,10 @@ msgstr "Показывать модули"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Показать используемые файлы"
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8392,6 +8436,10 @@ msgstr "Строка ресурсов %s%s%s уже есть. %sВыберите
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Компонент верхнего уровня не может быть удалён."
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9328,6 +9376,10 @@ msgstr "Использовать модуль"
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Взять настройки дисп. окон"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"

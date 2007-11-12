@@ -274,8 +274,8 @@ msgstr ""
 msgid "E&nvironment"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuhelp
@@ -344,6 +344,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
+msgstr ""
+
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
 msgstr ""
 
 #: lazarusidestrconsts:liskmcloseall
@@ -776,6 +788,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenunewproject
@@ -1670,6 +1690,22 @@ msgstr ""
 msgid "Unable to create backup directory %s%s%s."
 msgstr ""
 
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
 msgstr ""
@@ -2280,6 +2316,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmclassic
 msgid "Classic"
+msgstr ""
+
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
 msgstr ""
 
 #: lazarusidestrconsts:lispefilename
@@ -4194,6 +4234,10 @@ msgstr ""
 msgid "Origin"
 msgstr ""
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfromcursor
 msgid "From Cursor"
 msgstr ""
@@ -4320,6 +4364,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
+msgstr ""
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
 msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
@@ -10444,5 +10492,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
+msgstr ""
+
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
 msgstr ""
 

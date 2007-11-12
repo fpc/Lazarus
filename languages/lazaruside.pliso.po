@@ -257,9 +257,9 @@ msgstr "&Narzêdzia"
 msgid "&View"
 msgstr "&Widok"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "&Okna"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -652,6 +652,10 @@ msgstr "Znalaz³em dwuznaczn± nazwê pliku: %s%s%s%sTen plik mo¿e byæ pomylony z %
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Znalaz³em nietypowy plik"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2845,6 +2849,10 @@ msgstr "Wykonanie zatrzymane"
 msgid "Execution stopped%s"
 msgstr "Wykonanie zatrzymane%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Wyjd¼"
@@ -3653,6 +3661,10 @@ msgstr ""
 msgid "Hide IDE windows on run"
 msgstr "Ukryj okna IDE przy uruchomieniu"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Wskazówka: funkcja Utwórz napis zasobów oczekuje sta³ej napisowej%sWybierz wyra¿enie i spróbuj ponownie."
@@ -3721,6 +3733,10 @@ msgstr ""
 msgid "IDE Options:"
 msgstr "IDE Options:"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "WST"
@@ -3780,6 +3796,10 @@ msgstr "Ignoruj"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Ignoruj odstêpy"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4849,6 +4869,10 @@ msgstr "Zaznaczenie ma³ymi literami"
 msgid "Lowercase, first letter up"
 msgstr "Ma³ymi Literami, Pierwsza Du¿a"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "Makra"
@@ -5493,6 +5517,10 @@ msgstr ""
 msgid "Online Help not yet implemented"
 msgstr "Pomoc sieciowa jeszcze nie dzia³a"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr ""
@@ -5785,6 +5813,10 @@ msgstr "Lista pakietów ..."
 msgid "Package Info"
 msgstr ""
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Nazwa pakietu"
@@ -5836,6 +5868,10 @@ msgstr "Pakiet jest dostêpny tylko do odczytu"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "Pakiet jest wymagany"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7457,6 +7493,10 @@ msgstr ""
 msgid "Show general info"
 msgstr ""
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Poka¿ siatkê"
@@ -7511,6 +7551,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
+msgstr ""
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
 msgstr ""
 
 #: lazarusidestrconsts:lissibling
@@ -8391,6 +8435,10 @@ msgstr "Resourcestring %s%s%s ju¿ istnieje.%sWybierz inn± nazw±.%sU¿yj Ignoruj a
 
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
+msgstr ""
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9328,6 +9376,10 @@ msgstr ""
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "U¿yj ustawieñ menad¿era okien"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"

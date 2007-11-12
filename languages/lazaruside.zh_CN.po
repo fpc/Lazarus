@@ -260,9 +260,9 @@ msgstr "工具(&T)"
 msgid "&View"
 msgstr "查看(&V)"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "窗口(&W)"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -655,6 +655,10 @@ msgstr "发现可疑文件: %s%s%s%s这个文件可能与 %s%s%s%s%s混淆,删�
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "发现可疑文件"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2848,6 +2852,10 @@ msgstr "停止执行"
 msgid "Execution stopped%s"
 msgstr "停止执行 %s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "退出"
@@ -3656,6 +3664,10 @@ msgstr "帮助选择器"
 msgid "Hide IDE windows on run"
 msgstr "运行时隐藏 IDE 窗口"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "提示: 编译资源预期得到一个字符串常量.%s请选择一个字符串表达式并再次尝试."
@@ -3724,6 +3736,10 @@ msgstr ""
 msgid "IDE Options:"
 msgstr "IDE 选项:"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "插入"
@@ -3783,6 +3799,10 @@ msgstr "忽略"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "忽略空格"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4852,6 +4872,10 @@ msgstr "转换选区为小写"
 msgid "Lowercase, first letter up"
 msgstr "转换为小写, 首字母大写"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "宏"
@@ -5496,6 +5520,10 @@ msgstr "在线帮助"
 msgid "Online Help not yet implemented"
 msgstr "在线帮助还没有实现"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "仅搜索整个单词"
@@ -5788,6 +5816,10 @@ msgstr "包图表 ..."
 msgid "Package Info"
 msgstr "包信息"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "包名"
@@ -5839,6 +5871,10 @@ msgstr "包为只读"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "需要包"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7460,6 +7496,10 @@ msgstr "显示可执行程序信息 (只适用于 Win32 平台)"
 msgid "Show general info"
 msgstr "显示基本信息 "
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "显示网格"
@@ -7515,6 +7555,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "显示 used 文件"
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8395,6 +8439,10 @@ msgstr "资源字符串 %s%s%s 已经存在%s请选择另一个名字.%s忽略�
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "根组件无法删除."
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9331,6 +9379,10 @@ msgstr "使用单元"
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "使用窗口管理器设置"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"

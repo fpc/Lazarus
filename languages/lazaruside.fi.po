@@ -246,9 +246,9 @@ msgstr "&Työkalut"
 msgid "&View"
 msgstr "&Näytä"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "&Ikkunat"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -641,6 +641,10 @@ msgstr ""
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Epäselviä (tai moniselitteisiä) tiedostoja löytyi"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2834,6 +2838,10 @@ msgstr "Ohjelman suoritus on pysäytetty"
 msgid "Execution stopped%s"
 msgstr "Ohjelman suoritus on pysäytetty%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Lopeta"
@@ -3642,6 +3650,10 @@ msgstr "Ohjeen valinta"
 msgid "Hide IDE windows on run"
 msgstr "Pienennä Lazaruksen käyttöliittymä ohjelmaa suorittaessa "
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr ""
@@ -3710,6 +3722,10 @@ msgstr ""
 msgid "IDE Options:"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "Lisää"
@@ -3769,6 +3785,10 @@ msgstr "Ohita"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Jätä välilyönnit huomiotta"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4838,6 +4858,10 @@ msgstr "Muuta pieniksi kirjaimiksi"
 msgid "Lowercase, first letter up"
 msgstr "Ensimmäinen kirjain iso muut pieniä"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr ""
@@ -5482,6 +5506,10 @@ msgstr ""
 msgid "Online Help not yet implemented"
 msgstr "Avustusta ei ole vielä tehty"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Esittävä sana ei voi olla osa toista sanaa"
@@ -5774,6 +5802,10 @@ msgstr ""
 msgid "Package Info"
 msgstr ""
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Komponenttipaketin nimi"
@@ -5824,6 +5856,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -7446,6 +7482,10 @@ msgstr ""
 msgid "Show general info"
 msgstr ""
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Näytä apupisteet"
@@ -7500,6 +7540,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
+msgstr ""
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
 msgstr ""
 
 #: lazarusidestrconsts:lissibling
@@ -8380,6 +8424,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
+msgstr ""
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9316,6 +9364,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
+msgstr ""
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst

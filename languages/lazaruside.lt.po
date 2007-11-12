@@ -259,9 +259,9 @@ msgstr "Įra&nkiai"
 msgid "&View"
 msgstr "&Rodymas"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "&Langai"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -654,6 +654,10 @@ msgstr "Rastas neaiškus failas: %s%s%s%sŠis failas gali būti supainiotas su %
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Rastas neaiškus failas"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -2851,6 +2855,10 @@ msgstr "Veika sustabdyta"
 msgid "Execution stopped%s"
 msgstr "Veika sustabdyta%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Išeiti"
@@ -3659,6 +3667,10 @@ msgstr "Žinyno parinktys"
 msgid "Hide IDE windows on run"
 msgstr "Startuojant programą slėpti IKA langus"
 
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
+
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr "Užuomina: funkcijai \"Kurti resursų eilutę\" reikia eilutės konstantos.%sPažymėkite tik eilutės reiškinį ir bandykite vėl."
@@ -3727,6 +3739,10 @@ msgstr "IKA interfeisas"
 msgid "IDE Options:"
 msgstr "IKA parinktys:"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ĮTERPTI"
@@ -3786,6 +3802,10 @@ msgstr "Ignoruoti"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Tarpai nesvarbūs"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -4857,6 +4877,10 @@ msgstr "Pažymėjime visas raides mažosiomis"
 msgid "Lowercase, first letter up"
 msgstr "Mažosiomis raidėmis, pirmoji - didžioji"
 
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
 msgstr "Makrokomandos"
@@ -5501,6 +5525,10 @@ msgstr "Internetinis žinynas"
 msgid "Online Help not yet implemented"
 msgstr "Kontekstinis žinynas dar neįgyvendintas"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Ieškoti tik ištisų žodžių"
@@ -5793,6 +5821,10 @@ msgstr "Paketų grafas..."
 msgid "Package Info"
 msgstr "Informacija apie paketą"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Paketo vardas"
@@ -5844,6 +5876,10 @@ msgstr "Paketas tik skaitymui"
 #: lazarusidestrconsts:lispkgmangpackageisrequired
 msgid "Package is required"
 msgstr "Paketas reikalingas"
+
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -7467,6 +7503,10 @@ msgstr "Rodyti vykdomosios bylos informaciją (tik Win32)"
 msgid "Show general info"
 msgstr "Rodyti pagrindinę informaciją"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Rodyti tinklelį"
@@ -7522,6 +7562,10 @@ msgstr "Rodyti modulius"
 #: lazarusidestrconsts:dlgshowusedfiles
 msgid "Show used files"
 msgstr "Rodyti naudojamus failus"
+
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8404,6 +8448,10 @@ msgstr "Tokia resursų eilutė %s%s%s jau yra.%sParinkite kitokį vardą.%sNorin
 #: lazarusidestrconsts:listherootcomponentcannotbedeleted
 msgid "The root component can not be deleted."
 msgstr "Šakninio komponento negalima Pašalinti."
+
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9350,6 +9398,10 @@ msgstr "Naudoti modulį"
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
 msgstr "Naudoti langų tvarkytuvės nuostatas"
+
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"
