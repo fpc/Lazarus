@@ -460,7 +460,7 @@ begin
 end;
 
 initialization
-  {$I optionseditorformunit.lrs}
+  {$I optionseditorbase.lrs}
 end.
 
 
