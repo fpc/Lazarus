@@ -581,6 +581,10 @@ msgstr "Все пакеты"
 msgid "All projects"
 msgstr "Все проекты"
 
+#: lazarusidestrconsts:lisccotestssuccess
+msgid "All tests succeeded."
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr "Разрешить LABEL и GOTO"
@@ -636,6 +640,10 @@ msgstr "Найден модуль с тем же именем"
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Найден дополнительный файл настроек компилятора с тем же именем"
+
+#: lazarusidestrconsts:lisccoambiguouscompiler
+msgid "Ambiguous compiler"
+msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
@@ -1180,6 +1188,10 @@ msgstr "Проверять изменения на диске при загру�
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Целостность?"
+
+#: lazarusidestrconsts:dlgccocaption
+msgid "Checking compiler options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -1865,6 +1877,10 @@ msgstr "Копировать из унаследованного"
 msgid "Copy method name to the clipboard"
 msgstr "Копировать имя метода в буфер обмена"
 
+#: lazarusidestrconsts:lisccocopyoutputtocliboard
+msgid "Copy output to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
 msgstr "Копировать выбранные компоненты в буфер обмена"
@@ -2517,6 +2533,10 @@ msgstr "В&ключить все"
 msgid "E&nvironment"
 msgstr "Окру&жение"
 
+#: lazarusidestrconsts:lisccoerrormsg
+msgid "ERROR: "
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
 msgstr "Правка"
@@ -2669,7 +2689,7 @@ msgstr "Команды меню Окружение"
 msgid "Environment options ..."
 msgstr "Настройки окружения ..."
 
-#: lazarusidestrconsts:liscodetemplerror
+#: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
 msgstr "Ошибка"
 
@@ -2956,6 +2976,10 @@ msgstr "Каталог исходного кода FPC"
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
 msgstr "Каталог исходного кода FPC \"%s\" не найден."
+
+#: lazarusidestrconsts:lisccofpcunitpathhassource
+msgid "FPC unit path contains a source: "
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3592,6 +3616,10 @@ msgstr "Цвет поля (лев)"
 #: lazarusidestrconsts:dlggutterwidth
 msgid "Gutter width"
 msgstr "Ширина поля (лев)"
+
+#: lazarusidestrconsts:lisccohintmsg
+msgid "HINT: "
+msgstr ""
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
@@ -4265,6 +4293,10 @@ msgstr "Некорректный идентификатор Паскаля"
 msgid "Invalid Resourcestring section"
 msgstr "Неправильная секция Resourcestring"
 
+#: lazarusidestrconsts:lisccoinvalidtestdir
+msgid "Invalid Test Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
 msgstr "Неправильное имя модуля"
@@ -4276,6 +4308,10 @@ msgstr "Неправильное имя модуля: %s"
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
 msgstr "Неправильная команда"
+
+#: lazarusidestrconsts:lisccoinvalidcompiler
+msgid "Invalid compiler"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
 msgid "Invalid compiler filename"
@@ -4380,6 +4416,10 @@ msgstr "Неправильное имя проц-ры"
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
 msgstr "Неправильное имя файла проекта"
+
+#: lazarusidestrconsts:lisccoinvalidsearchpath
+msgid "Invalid search path"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
@@ -5028,6 +5068,10 @@ msgstr "Отсутствующие события"
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
 msgstr "Отсутствующие пакеты"
+
+#: lazarusidestrconsts:lisccomissingunit
+msgid "Missing unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -6005,6 +6049,10 @@ msgstr "Приостановить программу"
 msgid "Persistent caret"
 msgstr "Неподвижный курсор"
 
+#: lazarusidestrconsts:lisccochecktestdir
+msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgstr ""
+
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Проверьте имя компилятора"
@@ -6668,6 +6716,10 @@ msgstr "Восстановить геометрию окна"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Восстановить размер окна"
+
+#: lazarusidestrconsts:dlgccoresults
+msgid "Results"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
@@ -7581,6 +7633,10 @@ msgstr "Размер"
 msgid "Size:"
 msgstr "Размер:"
 
+#: lazarusidestrconsts:lisccoskip
+msgid "Skip"
+msgstr ""
+
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
 msgstr "Пропуск вызова компилятора"
@@ -7949,7 +8005,7 @@ msgstr "Имя файла шаблона"
 msgid "Templates"
 msgstr "Шаблоны"
 
-#: lazarusidestrconsts:liscomptest
+#: lazarusidestrconsts:dlgccotest
 msgid "Test"
 msgstr "Тест"
 
@@ -7960,6 +8016,38 @@ msgstr "Каталог проб"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "Каталог проб \"%s\" не найден."
+
+#: lazarusidestrconsts:dlgccotestcheckingcompiler
+msgid "Test: Checking compiler ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingcompilerconfig
+msgid "Test: Checking compiler configuration ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilerdate
+msgid "Test: Checking compiler date ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingfpcconfigs
+msgid "Test: Checking fpc configs ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestmissingppu
+msgid "Test: Checking missing fpc ppu ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestsrcinppupaths
+msgid "Test: Checking sources in fpc ppu search paths ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotesttoolcompilingemptyfile
+msgid "Test: Compiling an empty file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilingemptyfile
+msgid "Test: Compiling an empty file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
@@ -8117,6 +8205,14 @@ msgstr "Команда после %s%s%s"
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "Команда после опубликования некорректна:%s%s%s%s"
 
+#: lazarusidestrconsts:lisccoppunotfounddetailed
+msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
+msgstr ""
+
+#: lazarusidestrconsts:lisccocompilernotanexe
+msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
 msgstr "Файл компилятора \"%s\" не исполняемый."
@@ -8164,6 +8260,10 @@ msgstr "Текущий шрифт редактора не поддерживае
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
 msgstr "Текущий путь модуля для файла %s%s%s%s - %s%s%s%s.%s%sПуть к модулям LCL %s%s%s отсутствует.%s%sПодсказка для новичков:%sСоздайте приложение lazarus и поместите файл в каталог проекта."
+
+#: lazarusidestrconsts:lisccodatesdiffer
+msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgstr ""
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
@@ -8501,9 +8601,17 @@ msgstr "Во всплывающем меню больше функций"
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "В каталоге есть и другие файлы с таким же именем,%sотличающиеся только регистром:%s%s%sУдалить их?"
 
+#: lazarusidestrconsts:lisccoseveralcompilers
+msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgstr "Есть два модуля с одинаковым именем:%s%s1. %s%s%s из %s%s2. %s%s%s из %s%s%s"
+
+#: lazarusidestrconsts:lisccoppuolderthancompiler
+msgid "There is a .ppu file older than the compiler itself:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -8849,6 +8957,14 @@ msgstr "Не могу скопировать файл %s%s%s%sв %s%s%s"
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr "Не могу скопировать файл %s%s%s%sв %s%s%s."
 
+#: lazarusidestrconsts:lisccounabletocreatetestfile
+msgid "Unable to create Test File"
+msgstr ""
+
+#: lazarusidestrconsts:lisccounabletocreatetestpascalfile
+msgid "Unable to create Test pascal file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
 msgstr "Не могу создать резервный каталог %s%s%s."
@@ -8948,6 +9064,10 @@ msgstr "Невозможно найти модуль класса компоне
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "Невозможно определить изменения в редакторе."
+
+#: lazarusidestrconsts:lisccounabletogetfiledate
+msgid "Unable to get file date of %s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
@@ -9637,9 +9757,17 @@ msgstr "Видимое поле (лев)"
 msgid "Visible right margin"
 msgstr "Правая видимая граница"
 
+#: lazarusidestrconsts:lisccowarningmsg
+msgid "WARNING: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "Предупр. при компиляции"
+
+#: lazarusidestrconsts:lisccowarningcaption
+msgid "Warning"
+msgstr ""
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
@@ -9829,6 +9957,10 @@ msgstr "цвет слева сверху"
 msgid "color for right, bottom"
 msgstr "цвет справа снизу"
 
+#: lazarusidestrconsts:lisccomsgppunotfound
+msgid "compiled FPC unit not found: %s.ppu"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
 msgstr "настройки компилятора"
@@ -9845,6 +9977,10 @@ msgstr "файл настроек сборки"
 msgid "contains"
 msgstr "содержит"
 
+#: lazarusidestrconsts:lisccocontains
+msgid "contains "
+msgstr ""
+
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
 msgstr "параметры пользователя"
@@ -9852,6 +9988,10 @@ msgstr "параметры пользователя"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "по умолчанию (%s)"
+
+#: lazarusidestrconsts:lisccoenglishmessagefilemissing
+msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecevaluate
 msgid "evaluate/modify"
@@ -9953,6 +10093,14 @@ msgstr "отсутствует"
 msgid "modified"
 msgstr "изменён"
 
+#: lazarusidestrconsts:lisccomultiplecfgfound
+msgid "multiple compiler configs found: "
+msgstr ""
+
+#: lazarusidestrconsts:lisccohasnewline
+msgid "new line symbols"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "нет"
@@ -9960,6 +10108,14 @@ msgstr "нет"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "Без автопереименования"
+
+#: lazarusidestrconsts:liscconocfgfound
+msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:lisccononascii
+msgid "non ASCII"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
@@ -9997,6 +10153,10 @@ msgstr "приостановить программу"
 msgid "please select a macro"
 msgstr "пожалуйста, выберите макрос"
 
+#: lazarusidestrconsts:lisccoppuexiststwice
+msgid "ppu exists twice: %s, %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "первичный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию - "
@@ -10008,6 +10168,10 @@ msgstr "быстрая компиляция, без связывания"
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "только чтение"
+
+#: lazarusidestrconsts:lisccorelunitpathfoundincfg
+msgid "relative unit path found in fpc cfg: %s"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
@@ -10089,6 +10253,14 @@ msgstr "Включить RANGECHECKS"
 msgid "space"
 msgstr "пробела"
 
+#: lazarusidestrconsts:lisccospaces
+msgid "spaces"
+msgstr ""
+
+#: lazarusidestrconsts:lisccospecialcharacters
+msgid "special characters"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "файл настроек статических пакетов"
@@ -10113,6 +10285,10 @@ msgstr "путь модуля"
 msgid "unknown editor command"
 msgstr "неизвестная команда редактора"
 
+#: lazarusidestrconsts:lisccounusualchars
+msgid "unusual characters"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
 msgstr "использовать модуль HeapTrc"
@@ -10124,6 +10300,10 @@ msgstr "использовать модуль LineInfo"
 #: lazarusidestrconsts:lisautomaticallyonwordend
 msgid "word end"
 msgstr "конца слова"
+
+#: lazarusidestrconsts:lisccowrongpathdelimiter
+msgid "wrong path delimiter"
+msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"

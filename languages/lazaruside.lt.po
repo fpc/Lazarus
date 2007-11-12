@@ -583,6 +583,10 @@ msgstr "Visi paketai"
 msgid "All projects"
 msgstr "Visi projektai"
 
+#: lazarusidestrconsts:lisccotestssuccess
+msgid "All tests succeeded."
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr "Galimi LABEL ir GOTO"
@@ -638,6 +642,10 @@ msgstr "Rastas neaiškus modulis"
 #: lazarusidestrconsts:liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
 msgstr "Neaiškus papildomas kompiliatoriaus nustatymų failas"
+
+#: lazarusidestrconsts:lisccoambiguouscompiler
+msgid "Ambiguous compiler"
+msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
@@ -1186,6 +1194,10 @@ msgstr "Įkeliant ieškoti pasikeitimų diske"
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Tikrinti darną"
+
+#: lazarusidestrconsts:dlgccocaption
+msgid "Checking compiler options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -1871,6 +1883,10 @@ msgstr "Kopijuoti iš paveldo"
 msgid "Copy method name to the clipboard"
 msgstr "Metodo vardą kopijuoti į iškarpinę"
 
+#: lazarusidestrconsts:lisccocopyoutputtocliboard
+msgid "Copy output to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
 msgstr "Kopijuoti pažymėtas komponentes į iškarpinę"
@@ -2523,6 +2539,10 @@ msgstr "Įgali&nti visus"
 msgid "E&nvironment"
 msgstr "&Aplinka"
 
+#: lazarusidestrconsts:lisccoerrormsg
+msgid "ERROR: "
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
 msgstr "Keisti"
@@ -2675,7 +2695,7 @@ msgstr "Meniu \"Aplinka\" komandos"
 msgid "Environment options ..."
 msgstr "Aplinkos parinktys..."
 
-#: lazarusidestrconsts:liscodetemplerror
+#: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
 msgstr "Klaida"
 
@@ -2962,6 +2982,10 @@ msgstr "FPC pirminio kodo katalogas"
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
 msgstr "Nerastas FPC pirminio kodo katalogas \"%s\"."
+
+#: lazarusidestrconsts:lisccofpcunitpathhassource
+msgid "FPC unit path contains a source: "
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3598,6 +3622,10 @@ msgstr "Kairiosios paraštės spalva"
 #: lazarusidestrconsts:dlggutterwidth
 msgid "Gutter width"
 msgstr "Kairiosios paraštės plotis"
+
+#: lazarusidestrconsts:lisccohintmsg
+msgid "HINT: "
+msgstr ""
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
@@ -4271,6 +4299,10 @@ msgstr "Klaidingas paskalio identifikatorius"
 msgid "Invalid Resourcestring section"
 msgstr "Klaidinga resursų eilutės sekcija"
 
+#: lazarusidestrconsts:lisccoinvalidtestdir
+msgid "Invalid Test Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
 msgstr "Klaidingas modulio vardas"
@@ -4282,6 +4314,10 @@ msgstr "Klaidingas modulio vardas: %s"
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
 msgstr "Klaidinga komanda"
+
+#: lazarusidestrconsts:lisccoinvalidcompiler
+msgid "Invalid compiler"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
 msgid "Invalid compiler filename"
@@ -4386,6 +4422,10 @@ msgstr "Klaidingas procedūros vardas"
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
 msgstr "Klaidingas projekto failo vardas"
+
+#: lazarusidestrconsts:lisccoinvalidsearchpath
+msgid "Invalid search path"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
@@ -5036,6 +5076,10 @@ msgstr "Trūksta įvykių"
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
 msgstr "Trūksta paketų"
+
+#: lazarusidestrconsts:lisccomissingunit
+msgid "Missing unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -6013,6 +6057,10 @@ msgstr "Pristabdyti veiką"
 msgid "Persistent caret"
 msgstr "Nuolatinis žymeklis"
 
+#: lazarusidestrconsts:lisccochecktestdir
+msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgstr ""
+
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Patikrinkite kompiliatoriaus vardą"
@@ -6676,6 +6724,10 @@ msgstr "Atstatyti lango geometriją"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Atstatyti lango dydį"
+
+#: lazarusidestrconsts:dlgccoresults
+msgid "Results"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
@@ -7591,6 +7643,10 @@ msgstr "Dydis"
 msgid "Size:"
 msgstr "Dydis:"
 
+#: lazarusidestrconsts:lisccoskip
+msgid "Skip"
+msgstr ""
+
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
 msgstr "Nešaukti kompiliatoriaus"
@@ -7961,7 +8017,7 @@ msgstr "Šablono failo vardas"
 msgid "Templates"
 msgstr "Šablonai"
 
-#: lazarusidestrconsts:liscomptest
+#: lazarusidestrconsts:dlgccotest
 msgid "Test"
 msgstr "Testas"
 
@@ -7972,6 +8028,38 @@ msgstr "Testo katalogas"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "Nerastas testo katalogas \"%s\"."
+
+#: lazarusidestrconsts:dlgccotestcheckingcompiler
+msgid "Test: Checking compiler ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingcompilerconfig
+msgid "Test: Checking compiler configuration ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilerdate
+msgid "Test: Checking compiler date ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingfpcconfigs
+msgid "Test: Checking fpc configs ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestmissingppu
+msgid "Test: Checking missing fpc ppu ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestsrcinppupaths
+msgid "Test: Checking sources in fpc ppu search paths ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotesttoolcompilingemptyfile
+msgid "Test: Compiling an empty file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilingemptyfile
+msgid "Test: Compiling an empty file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
@@ -8129,6 +8217,14 @@ msgstr "Komanda esanti po %s%s%s nėra vykdomasis failas."
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "Komanda esanti po paskelbimo yra klaidinga:%s%s%s%s"
 
+#: lazarusidestrconsts:lisccoppunotfounddetailed
+msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
+msgstr ""
+
+#: lazarusidestrconsts:lisccocompilernotanexe
+msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
 msgstr "Kompiliatoriaus failas \"%s\" nėra paleidžiamasis."
@@ -8176,6 +8272,10 @@ msgstr "Dabartinis redaktoriaus šriftas nėra suderintas su UTF-8 koduote, o  j
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
 msgstr "Dabartinis failo%s%s%s%s modulio kelias yra%s%s%s%s.%s%sTrūksta įrašo apie kelią iki LCL modulių %s%s%s.%s%sUžuomina naujokams:%ssukurkite Lazarus programą ir patalpinkite failą projekto kataloge."
+
+#: lazarusidestrconsts:lisccodatesdiffer
+msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgstr ""
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
@@ -8513,9 +8613,17 @@ msgstr "Daugiau funkcijų yra iškylančiame menių"
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Kataloge yra failų, kurių vardai%sskiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
 
+#: lazarusidestrconsts:lisccoseveralcompilers
+msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgstr "Rasti du moduliai tuo pačiu vardu:%s%s1. %s%s%s iš %s%s2. %s%s%s iš %s%s%s"
+
+#: lazarusidestrconsts:lisccoppuolderthancompiler
+msgid "There is a .ppu file older than the compiler itself:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -8871,6 +8979,14 @@ msgstr "Nepavyko kopijuoti failą %s%s%s%sį %s%s%s"
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr "Nepavyko kopijuoti failą %s%s%s%sį %s%s%s."
 
+#: lazarusidestrconsts:lisccounabletocreatetestfile
+msgid "Unable to create Test File"
+msgstr ""
+
+#: lazarusidestrconsts:lisccounabletocreatetestpascalfile
+msgid "Unable to create Test pascal file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
 msgstr "Nepavyko sukurti atsarginių kopijų katalogo %s%s%s."
@@ -8970,6 +9086,10 @@ msgstr "Nepavyko rasti komponentės klasės %s%s%s modulio."
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "Nepavyko susekti pokyčių redaktoriuje."
+
+#: lazarusidestrconsts:lisccounabletogetfiledate
+msgid "Unable to get file date of %s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
@@ -9659,9 +9779,17 @@ msgstr "Kairioji paraštė matoma"
 msgid "Visible right margin"
 msgstr "Dešinioji paraštė matoma"
 
+#: lazarusidestrconsts:lisccowarningmsg
+msgid "WARNING: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "Perspėti prieš kompiliuojant"
+
+#: lazarusidestrconsts:lisccowarningcaption
+msgid "Warning"
+msgstr ""
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
@@ -9851,6 +9979,10 @@ msgstr "Apatinės bei viršutinės spalva"
 msgid "color for right, bottom"
 msgstr "Kairiosios bei dešiniosios spalva"
 
+#: lazarusidestrconsts:lisccomsgppunotfound
+msgid "compiled FPC unit not found: %s.ppu"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
 msgstr "kompiliatoriaus parinktys"
@@ -9867,6 +9999,10 @@ msgstr "Derinti failo darytuvę"
 msgid "contains"
 msgstr "yra"
 
+#: lazarusidestrconsts:lisccocontains
+msgid "contains "
+msgstr ""
+
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
 msgstr "naudotojo parinktys"
@@ -9874,6 +10010,10 @@ msgstr "naudotojo parinktys"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "numatytas (%s)"
+
+#: lazarusidestrconsts:lisccoenglishmessagefilemissing
+msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecevaluate
 msgid "evaluate/modify"
@@ -9975,6 +10115,14 @@ msgstr "trūksta"
 msgid "modified"
 msgstr "pakeistas"
 
+#: lazarusidestrconsts:lisccomultiplecfgfound
+msgid "multiple compiler configs found: "
+msgstr ""
+
+#: lazarusidestrconsts:lisccohasnewline
+msgid "new line symbols"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "ne"
@@ -9982,6 +10130,14 @@ msgstr "ne"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "Automatiškai nepervardyti"
+
+#: lazarusidestrconsts:liscconocfgfound
+msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:lisccononascii
+msgid "non ASCII"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
@@ -10019,6 +10175,10 @@ msgstr "pristabdyti programos veiką"
 msgid "please select a macro"
 msgstr "pažymėkite makrokomandą"
 
+#: lazarusidestrconsts:lisccoppuexiststwice
+msgid "ppu exists twice: %s, %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "Pirminis katalogas nustatymamų failams, kuriame Lazarus laikys savo nustatymų failus. Numatytasis yra"
@@ -10030,6 +10190,10 @@ msgstr "kompiliuoti greitai, nesaistyti"
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "tik skaitymui"
+
+#: lazarusidestrconsts:lisccorelunitpathfoundincfg
+msgid "relative unit path found in fpc cfg: %s"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
@@ -10111,6 +10275,14 @@ msgstr "Įjungti RANGECHECKS"
 msgid "space"
 msgstr ""
 
+#: lazarusidestrconsts:lisccospaces
+msgid "spaces"
+msgstr ""
+
+#: lazarusidestrconsts:lisccospecialcharacters
+msgid "special characters"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "statinio paketo nustatymų failas"
@@ -10135,6 +10307,10 @@ msgstr "kelias iki modulio"
 msgid "unknown editor command"
 msgstr "nežinoma redaktoriaus komana"
 
+#: lazarusidestrconsts:lisccounusualchars
+msgid "unusual characters"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
 msgstr "naudoti HeapTrc modulį"
@@ -10145,6 +10321,10 @@ msgstr "naudoti LineInfo modulį"
 
 #: lazarusidestrconsts:lisautomaticallyonwordend
 msgid "word end"
+msgstr ""
+
+#: lazarusidestrconsts:lisccowrongpathdelimiter
+msgid "wrong path delimiter"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidyes
