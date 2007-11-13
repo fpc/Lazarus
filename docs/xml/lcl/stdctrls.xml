@@ -7659,9 +7659,198 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <topic name="HowToUseStdCtrls">
-        <short>How to use </short>
+        <short>How to use StdCtrls, ComCtrls or ExtCtrls</short>
         <descr>
           <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
+          <p>Many of the final target controls that the application developer wants to use, such as <i>TButton</i>, <i>TMemo</i>, <i>TScrollBar</i> etc, have a corresponding ancestor class such as <i>TCustomButton</i>, <i>TCustomMemo</i> or <i>TCustomScrollBar</i>. Many of the properties and methods relevant to the final target control are defined (and explained) more fully in the <i>TCustomXXX</i> class, and are <b>inherited</b> by the final target control.</p>
+          <br/>
+          <p>If you drop a component on the form editor you don't need to add code explicitly to create it. The component is automatically created by the IDE together with the form, and destroyed when the form is destroyed.</p>
+          <p>However, if you create the component yourself by code don't forget to free it when it is no longer needed.</p>
+          <br/>
+          <p>If you place a component on the Form Designer and look at the Object Inspector, you can observe the properties change as you move the component around.</p>
+          <p>For example, if you place a button (TButton) on the form, click on it to select it, then move it around the form with the mouse, you can watch the values of Top and Left change in the Object Inspector to reflect the new position. If you use the object's re-sizing bars to adjust its size, you can watch the Height and Width properties change as well.</p>
+          <p>On the other hand, by using the Object Inspector, you can select the value associated with a property such as height, and type in a new value; you can watch the size of the object on the form change to reflect the new value.</p>
+          <p>You can also explicitly change the properties of the object in code by typing (in the appropriate Implementation section of the Source editor), for example</p>
+          <br/>
+          <code>Form1.Button1.Height := 48;</code>
+          <br/>
+          <p>If you type this new value into the Source Editor and then look back at the Form Designer, you will see that the button on the Form has taken the new size. The new value will also be shown in the Object Inspector.</p>
+          <br/>
+          <p>In summary, there are usually about three different ways to determine each property of an object:</p>
+          <ul>
+            <li>by using the mouse,</li>
+            <li>by setting the values in the Object Inspector,</li>
+            <li>or explicitly by writing code.</li>
+          </ul>
+          <br/>
+          <p>The components defined in these Units have several properties that are common to most of them, and other properties that are specific to the individual components. We shall describe the most common ones here. Unusual or control-specific properties will be described for the individual controls. </p>
+          <p>Additional Help can always be obtained by selecting a property or keyword,  in either the Object Inspector or the Source Editor, and pressing F1. You will be taken by your Help browser to the appropriate page in the documentation. </p>
+          <p>If the description of a property on that page is insufficient, you can navigate to the corresponding description in the ancestor classes, by selecting the links in the Inheritance listing or by selecting the ancestor Type in the declaration of the object.</p>
+          <br/>
+          <p><i>Constructors</i> such as <i>Create</i> allocate memory and system resources needed by the object. They also call the constructor of any sub-objects present in the class.</p>
+          <p><i>Destructors:</i> remove the object and de-allocate memory and other resources. If you call <i>Destroy</i> for an object which hasn't being initialized yet it will generate an error. Always use the <i>Free</i> method to deallocate objects, because it checks whether an object's value is <b>nil</b> before invoking <i>Destroy</i>.</p>
+          <p>Take the following precautions when creating your own <i>Destroy</i> method:</p>
+          <ul>
+            <li>* Declare <i>Destroy</i> with the <b>override</b> directive, because it is a <b>virtual</b> method.</li>
+            <li>* Always call '<i>inherited Destroy;</i>' as the last thing on the destructor code.</li>
+            <li>* Be aware that an <i>exception</i> may be raised on the <i>constructor</i> in case there is not enought memory to create an object, or something else goes wrong. If the <i>exception</i> is not handled inside the constructor, the object will be only partially built. In this case <i>Destroy</i> will be called when you weren't expecting it, so your destructor must check if the resources were really allocated before disposing of them.</li>
+            <li>* Remember to call <i>Free</i> for all objects created on the constructor.</li>
+          </ul>
+          <br/>
+          <table>
+            <caption>Some commonly listed properties</caption>
+            <th>
+              <td>Property</td>
+              <td>Meaning</td>
+            </th>
+            <tr>
+              <td>Action</td>
+              <td>The main action or event associated with the object. For example selecting an 'Exit' Button might cause the 'Close' action</td>
+            </tr>
+            <tr>
+              <td>Align</td>
+              <td>Defines the way in which an object is to be lined up with the parent object. Possible values are alTop (placed at the top and using the full available width), alBottom, alLeft (placed at the left and using the full available height), alRight. alNone (place anywhere on parent control) or alClient (takes all available space next to controls aligned to top, bottom, left or right)</td>
+            </tr>
+            <tr>
+              <td>Anchor</td>
+              <td>Used to keep a control a certain distance from the defined edges of a parent control, when the parent is resized. For example <b>[akBottom, akRight]</b> will keep the control a fixed distance from the bottom right corner.</td>
+            </tr>
+            <tr>
+              <td>BorderSpacing</td>
+              <td>The space around the edge between an <i>Anchored</i> control and its parent.</td>
+            </tr>
+            <tr>
+              <td>Caption</td>
+              <td>The text that is displayed on or near the control; it should preferably give some clue as to the function of the control, or an instruction such as 'Close' or 'Execute'. By default Caption is set to be the same as the 'Name' property, and the application programmer should substitute meaningful text instead of the default values.</td>
+            </tr>
+            <tr>
+              <td>Constraints</td>
+              <td>Sets the minimum and maximum sizes for a control. If a control is resized the new dimensions are always within the ranges given here. You should take care when setting these options that they do not conflict with the Anchors and Align settings.</td>
+            </tr>
+            <tr>
+              <td>Color</td>
+              <td>The Colour to be used to draw the control or to write the text it contains.</td>
+            </tr>
+            <tr>
+              <td>Enabled</td>
+              <td>A Boolean property to determine whether or not a control is capable of being selected and performing an action. If it is not <i>Enabled</i>, it is often <b>Grayed</b> out on the Form.</td>
+            </tr>
+            <tr>
+              <td>Font</td>
+              <td>The Font to be used for writing the text associated with the control - either the caption or label, or the text-strings contained within the control. The entry on the Object Inspector usually has a + box to the left, and selecting this box reveals further options such as character set, colour and size.</td>
+            </tr>
+            <tr>
+              <td>Items</td>
+              <td>The list of 'Things' that the object contains, such as a group of images, a series of lines of text, a number of actions in an actionlist, etc</td>
+            </tr>
+            <tr>
+              <td>Name</td>
+              <td>The identifier by which the control is known in the program. The IDE gives it a default name based on the underlying type, for example successive instances of TBitButton would be named Form1.BitBitton1 and Form1.BitButton2; it is up to the application programmer to give them more meaningful names such as ExitButton or OKButton. By default the Name of the control is applied to the Caption for the control, but the text of the Caption may be changed separately.</td>
+            </tr>
+            <tr>
+              <td>PopUpMenu</td>
+              <td>A window containing context-sensitive menu information that pops up when the right mouse button is clicked on the object.</td>
+            </tr>
+            <tr>
+              <td>Position (or Top, Left)</td>
+              <td>Determines where the control is located on the parent form or window</td>
+            </tr>
+            <tr>
+              <td>ReadOnly</td>
+              <td>Boolean property which, if True, signifies that the contents of the control can be read by the user or the calling routine, but cannot be written or changed.</td>
+            </tr>
+            <tr>
+              <td>ShowHint</td>
+              <td>Allows a small window containing a context-sensitive Help or other description to be displayed when the mouse cursor 'hovers' over the control.</td>
+            </tr>
+            <tr>
+              <td>Size (or Height and Width)</td>
+              <td>The dimensions of the control</td>
+            </tr>
+            <tr>
+              <td>Style</td>
+              <td>The options available for Style depend upon the sort of Control being considered: for instance the Style may be defined by TFormStyle, TBorderStyle, TButtonStyle etc.</td>
+            </tr>
+            <tr>
+              <td>TabOrder</td>
+              <td>Integer defining where in the sequence of tabs on the Form this control is to lie</td>
+            </tr>
+            <tr>
+              <td>TabStop</td>
+              <td>Boolean property which if True places this control in the sequence of objects that the user can reach by successively pressing the Tab key</td>
+            </tr>
+            <tr>
+              <td>Text</td>
+              <td>The String of Text that represents the actual data that this control contains. Applies particularly to Text, Memo and StringList types of object. Most of the editing operations (such as <i>Select</i>, <i>Clear</i>, <i>Cut</i>, <i>Copy</i> are performed in this part of the object, which holds the actual string being edited</td>
+            </tr>
+            <tr>
+              <td>Visible</td>
+              <td>If true, the object can be seen on the Form; if False, object is hidden</td>
+            </tr>
+          </table>
+          <p>Many actions are commonly listed in the 'Events' tab of the Object Inspector. If you select an entry in the list, a ComboBox appears with a DropDown list showing any actions that have aleady been defined, and allowing you to choose one to be associated with this event. Alternatively you can select the ellipsis (three dots ...) and you will be taken to an area of the Source Editor where you can begin typing your own action instructions for the selected event.</p>
+          <p>While there is a large number of available events for any given control, in practice it is only necessary to populate a few of them. For most controls, it is sufficient to provide coding for 'OnClick'; for more complex controls it may be necessary also to provide for 'OnEntry' (when the mouse cursor enters the Control and gives it focus) and 'OnExit' (when the mouse cursor leaves the Control; or you may need to write an event handler for 'OnChange' or 'OnScroll', depending on the nature of the particular control with which you are dealing.</p>
+          <p>A common strategy in Object-Oriented programming is to provide an <link id="ActnList.TActionList">ActionList</link> with a number of pre-defined actions from which the most appropriate can be selected to use in any particular instance.</p>
+          <table>
+            <caption>Some commonly listed Actions</caption>
+            <th>
+              <td>Action</td>
+              <td>Meaning</td>
+            </th>
+            <tr>
+              <td>OnChange</td>
+              <td>Action to be taken if <u>any</u> change is detected (eg mouse move, mode click, key press, edit text, alter picture, etc)</td>
+            </tr>
+            <tr>
+              <td>OnClick</td>
+              <td>Action to be taken when the left mouse button is clicked. This is usually the main or default action of the control; for example clicking on a button or checkbox initiates the action associated with the checkbox. It may alternatively initate a process of selection, for instance in a TextBox or Memo, or signal the beginning of painting with a Pen or Brush.</td>
+            </tr>
+            <tr>
+              <td>Click</td>
+              <td>A method to emulate in code the effect of clicking on a control. This method is most often found in Button-type controls (TButton, TBitBtn, TSpeedButton etc).
+				      A procedure can be written that calls the same code as the OnClick action. This facility can be particularly useful if the activation of one control by clicking initiates a cascade of other controls being activated, and the Click method can be used to initiate the action rather than having the user explicitly click on a lot of controls.</td>
+            </tr>
+            <tr>
+              <td>OnDragDrop</td>
+              <td>Action to be taken during Drag-Drop manoeuvres, ie when the mouse is used to 'capture' an item or some text etc and move it around the screen to a new location.</td>
+            </tr>
+            <tr>
+              <td>OnEntry</td>
+              <td>Action to be taken when the mouse cursor enters the area occupied by the object, usually transfering focus to that object. This might include changes in the appearance of the object such as highlighting or raising the border.</td>
+            </tr>
+            <tr>
+              <td>OnExit</td>
+              <td>Action to be taken when the mouse moves out of the area of the object, usually transferring focus out of the object.</td>
+            </tr>
+            <tr>
+              <td>OnKeyPress</td>
+              <td>Action to be taken for any key-press. Subtly different from OnKeyDown, which simply responds to a key being down, whether or not it was already down when focus was given to this control. OnKeyPress requires that a key becomes pressed while focus in in this control.</td>
+            </tr>
+            <tr>
+              <td>OnKeyDown</td>
+              <td>Action to be taken if a key is down while focus is in this control. Subtly different from OnKeyPress - for example the key might already have been down when focus entered this control, whereas OnKeyPress requires the key to become pressed while focus is in the control.</td>
+            </tr>
+            <tr>
+              <td>On Key Up</td>
+              <td>Action to be taken if a key is up (ie not pressed) while focus is in this control.</td>
+            </tr>
+            <tr>
+              <td>OnMouseMove</td>
+              <td>On Mouse Down - Action to be taken if the mouse cursor moves while focus is in this control.</td>
+            </tr>
+            <tr>
+              <td>OnMouseDown</td>
+              <td>Action to be taken if the mouse button is down while focus is in this control.</td>
+            </tr>
+            <tr>
+              <td>OnMouseUp</td>
+              <td>Action to be taken if the mouse button is up while the cursor is over this control. Implies that the mouse button was previously down and has been released. The case where the cursor enters the control but the mouse button has not yet been pressed is covered by OnEntry or OnMouseEnter.</td>
+            </tr>
+            <tr>
+              <td>OnResize</td>
+              <td>Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc.</td>
+            </tr>
+          </table>
         </descr>
       </topic>
     </module>
