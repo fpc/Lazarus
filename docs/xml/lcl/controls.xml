@@ -5748,6 +5748,10 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <!-- procedure Visibility: public -->
       <element name="TControl.Hide">
         <short>Hide this control</short>
+		<seealso>
+		  <link id="TControl.Visible"/>
+		  <link id="TControl.Show"/>
+		</seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Refresh">
@@ -5940,10 +5944,13 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       <element name="TControl.ControlToScreen.APoint"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Show">
-        <short/>
+        <short>Makes the control visible.</short>
         <descr/>
         <errors/>
-        <seealso/>
+        <seealso>
+		  <link id="TControl.Visible"/>
+		  <link id="TControl.Hide"/>
+		</seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Update">
@@ -6251,7 +6258,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
-          Setting Visible to True is equivalent to calling Show method.
+          Calling Show sets, among others, Visible to True.
           Setting Visible to False is equivalent to calling Hide method.</pre>
           <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
         </descr>
