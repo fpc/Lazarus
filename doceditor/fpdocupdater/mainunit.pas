@@ -165,7 +165,7 @@ begin
   BackupList.Free;
   UpdateList;
   WriteStatus('Updating done.');
-  Sleep(1000);
+  Sleep(5000);
   WriteStatus('');
 end;
 
@@ -233,7 +233,7 @@ begin
   EditMakeSkel.FileName := XMLConfig.GetValue('MakeSkelPath/Value', 'E:\lazarus\fpc\2.2.1\bin\i386-win32\makeskel.exe');
   CheckBoxBackup.Checked := XMLConfig.GetValue('BackupFPDocs/Value', True);
   EditBackup.Text := XMLConfig.GetValue('BackupExt/Value', 'bak');
-  EditPackage.Text := XMLConfig.GetValue('Package/Value', 'LCL');
+  EditPackage.Text := XMLConfig.GetValue('Package/Value', 'lcl');
 end;
 
 procedure TFormMain.FormDestroy(Sender: TObject);
@@ -304,6 +304,7 @@ var
   M: TMemoryStream;
   N, BytesRead: LongInt;
   OldDoc, NewDoc: TFPDocFile;
+  Error: String;
 const
    READ_BYTES = 2048;
    
@@ -354,18 +355,21 @@ begin
     AStringList.LoadFromStream(M);
     
     while (AStringList.Count > 0) and
-      (AStringList.Strings[AStringList.Count - 1] = '') do
+      (AStringList[AStringList.Count - 1] = '') do
       AStringList.Delete(AStringList.Count - 1);
       
-    if AStringList.Strings[AStringList.Count - 1] <> 'Done.' then
-    begin
-      ShowError('Update ' + AFileName + ' failed! ' + AStringList.Strings[AStringList.Count - 1]);
-      Exit;
-    end;
+    if AStringList.Count > 0 then
+      Error := AStringList[AStringList.Count - 1];
       
     while (AStringList.Count > 0) and
       (AStringList.Strings[AStringList.Count - 1] <> '</fpdoc-descriptions>') do
       AStringList.Delete(AStringList.Count - 1);
+      
+    if AStringList.Count = 0 then
+    begin
+      ShowError('Update ' + AFileName + ' failed! ' + Error);
+      Exit;
+    end;
 
     M.Clear;
     AStringList.SaveToStream(M);
@@ -440,6 +444,7 @@ procedure TFormMain.WriteStatus(const S: String);
 begin
   DebugLn(S);
   StatusBar.SimpleText := S;
+  StatusBar.Update;
 end;
 
 procedure TFormMain.MoveElement(const SrcPackage: TFPDocPackage;

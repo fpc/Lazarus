@@ -173,7 +173,7 @@ object FormMain: TFormMain
     Width = 80
     Anchors = [akTop, akRight]
     TabOrder = 9
-    Text = 'LCL'
+    Text = 'lcl'
   end
   object EditMakeSkel: TFileNameEdit
     Left = 125
