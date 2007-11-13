@@ -327,7 +327,8 @@ begin
       DeviceImg.Free;
       ListImg.Free;
     end;
-    ImgDC := CreateCompatibleDC(0);
+    
+    ImgDC := CreateCompatibleDC(ADC);
     OldBmp := SelectObject(ImgDC, ImgHandle);
     WidgetSet.StretchMaskBlt(ADC, ABounds.Left, ABounds.Top, ABounds.Right, ABounds.Bottom,
       ImgDC, 0, 0, ABounds.Right, ABounds.Bottom, MskHandle, 0, 0, SRCCOPY);
