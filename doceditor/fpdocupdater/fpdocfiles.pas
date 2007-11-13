@@ -330,6 +330,7 @@ function TFPDocNode.GetDOMNodeValue(const AName: String): String;
 var
   N: TDOMNode;
   S: TStringStream;
+  D: TDOMNode;
 begin
   Result := '';
   N := FDOMNode.FindNode(AName);
@@ -338,7 +339,13 @@ begin
   
   S := TStringStream.Create('');
   try
-    WriteXML(N.FirstChild, S);
+    D := N.FirstChild;
+    while D <> nil do
+    begin
+      WriteXML(D, S);
+      D := D.NextSibling;
+    end;
+    
     Result := S.DataString;
   finally
     S.Free;
