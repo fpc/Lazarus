@@ -2172,13 +2172,21 @@ begin
             ' HasVScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
             ' HasHScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
             ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
-            ' NewClientSize=',R.Right,',',R.Bottom);
+            ' NewClientSize=',R.Right,',',R.Bottom,
+            ' ');
           {$ENDIF}
           if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
               or lWinControl.ClientRectNeedsInterfaceUpdate then
           begin
             lWinControl.InvalidateClientRectCache(true);
             lWinControl.DoAdjustClientRectChange;
+            if (lWinControl is TCustomPage)
+            and (lWinControl.Parent is TCustomNotebook) then
+            begin
+              // the TPage size is the ClientRect size of the parent
+              // => invalidate the Parent.ClientRect
+              lWinControl.Parent.InvalidateClientRectCache(false);
+            end;
           end;
         end;
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
