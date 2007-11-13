@@ -476,7 +476,11 @@ begin
   ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
   Windows.ReleaseDC(0, DC);
 
-  if ABitmap = 0 then Exit;
+  if ABitmap = 0 then 
+  begin
+    DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+    Exit;
+  end;
   if BitsPtr = nil then Exit;
 
   // copy the image data
@@ -492,6 +496,8 @@ begin
   if ASkipMask then Exit(True);
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  if AMask = 0 then  
+    DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
   Result := AMask <> 0;
   //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;
