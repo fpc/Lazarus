@@ -545,15 +545,12 @@ begin
   ADesc.ByteOrder := riboLSBFirst;
   ADesc.LineOrder := riloTopToBottom;
   ADesc.LineEnd := rileDWordBoundary;
+  ADesc.BitsPerPixel := ADesc.Depth;
 
   if (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0
   then begin
     // has palette
-    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
-    ADesc.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES);
-  end
-  else begin
-    ADesc.BitsPerPixel := ADesc.Depth;
+    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, NUMCOLORS);
   end;
   
   if ADC = 0
