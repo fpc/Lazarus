@@ -80,12 +80,26 @@ type
 
 var
   BaseConfigExportForm: TBaseConfigExportForm;
-  
+
+Function ShowBaseExportConfig (AExporter : TCustomDatasetExporter) : Boolean;
+
 Procedure RegisterBaseExportConfigForm;
 
 implementation
 
 uses typinfo,lcltype;
+
+Function ShowBaseExportConfig (AExporter : TCustomDatasetExporter) : Boolean;
+
+begin
+  With TBaseConfigExportForm.Create(Application) do
+    Try
+      Exporter:=AExporter;
+      Result:=(ShowModal=mrOK);
+    Finally
+      Free;
+    end;
+end;
 
 Type
 
@@ -100,14 +114,9 @@ Type
 
 function TShowBaseConfigDialog.ShowConfig(AExporter: TCustomDatasetExporter
   ): Boolean;
+  
 begin
-  With TBaseConfigExportForm.Create(Application) do
-    Try
-      Exporter:=AExporter;
-      Result:=(ShowModal=mrOK);
-    Finally
-      Free;
-    end;
+  Result:=ShowBaseExportConfig(AExporter);
 end;
 
 Var
@@ -196,6 +205,7 @@ end;
 Function TBaseConfigExportForm.MoveFieldUp : Boolean;
 
 begin
+  Result:=false;
   With CLBFields do
     If (ItemIndex>0) then
       begin

@@ -62,7 +62,9 @@ uses
   fpfixedexport,
   fpsimplexmlexport,
   fpsimplejsonexport,
+  fptexexport,
   fpsqlexport,
+  fprtfexport,
   fpdbfexport;
 
 { TDataExporterComponentEditor }
@@ -113,9 +115,6 @@ end;
 
 procedure TDataExporterComponentEditor.ExecuteVerb(Index: Integer);
 
-Var
-  E : TFPDataExporter;
-
 begin
   Case Index of
     0 : ExecuteExporter(GetComponent as TFPDataExporter);
@@ -146,6 +145,8 @@ begin
                                     TSimpleXMLExporter,
                                     TSimpleJSONExporter,
                                     TFPDBFExport,
+                                    TTexExporter,
+                                    TRTFExporter,
                                     TStandardExportFormats,
                                     TFPDataExporter]);
   RegisterPropertyEditor(TypeInfo(string), TExportFieldItem, 'FieldName', TExportFieldProperty);
