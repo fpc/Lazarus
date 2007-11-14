@@ -134,7 +134,7 @@ type
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotResize; cdecl;
-    procedure SlotContextMenu; cdecl;
+    procedure SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
     procedure Activate;
@@ -879,7 +879,8 @@ type
   TQtMenu = class(TQtWidget)
   private
     FIcon: QIconH;
-    FActionHook: QAction_hookH;
+    FTriggeredHook: QAction_hookH;
+    FAboutToHideHook: QMenu_hookH;
     FActionHandle: QActionH;
     FMenuItem: TMenuItem;
   protected
@@ -891,6 +892,7 @@ type
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     
+    procedure SlotAboutToHide; cdecl;
     procedure SlotDestroy; cdecl;
     procedure SlotTriggered(checked: Boolean = False); cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1469,7 +1471,7 @@ begin
         if FHasPaint then
           SlotPaint(Sender, Event);
       end;
-    QEventContextMenu: SlotContextMenu;
+    QEventContextMenu: SlotContextMenu(Sender, Event);
     QEventLCLMessage:
       begin
         SlotLCLMessage(Sender, Event);
@@ -1598,14 +1600,14 @@ procedure TQtWidget.SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMessage;
   MouseMsg: TLMMouseMove absolute Msg;
-  MousePos: PQtPoint;
+  MousePos: TQtPoint;
 begin
   if QApplication_mouseButtons() = 0 then // in other case MouseMove will be hooked
   begin
     FillChar(Msg, SizeOf(Msg), #0);
 
-    MousePos := QHoverEvent_pos(QHoverEventH(Event));
-    OffsetMousePos(MousePos);
+    MousePos := QHoverEvent_pos(QHoverEventH(Event))^;
+    OffsetMousePos(@MousePos);
 
     case QEvent_type(Event) of
       QEventHoverEnter : Msg.Msg := CM_MOUSEENTER;
@@ -1613,8 +1615,8 @@ begin
       QEventHoverMove  :
         begin
           MouseMsg.Msg := LM_MOUSEMOVE;
-          MouseMsg.XPos := SmallInt(MousePos^.X);
-          MouseMsg.YPos := SmallInt(MousePos^.Y);
+          MouseMsg.XPos := SmallInt(MousePos.X);
+          MouseMsg.YPos := SmallInt(MousePos.Y);
         end;
     end;
     NotifyApplicationUserInput(Msg.Msg);
@@ -1817,7 +1819,7 @@ const
   );
 var
   Msg: TLMMouse;
-  MousePos: PQtPoint;
+  MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
 
@@ -1831,8 +1833,8 @@ var
 
     function LastClickAtSamePosition: boolean;
     begin
-      Result:= (Abs(MousePos^.X-LastMouse.MousePos.X) <= DblClickThreshold) and
-               (Abs(MousePos^.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
+      Result:= (Abs(MousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
+               (Abs(MousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
     end;
 
     function LastClickInTime: boolean;
@@ -1879,7 +1881,7 @@ var
     end;
 
     LastMouse.TheTime := Now;
-    LastMouse.MousePos := MousePos^;
+    LastMouse.MousePos := MousePos;
     LastMouse.Widget := Sender;
 
     Result := MSGKIND[AButton][LastMouse.ClickCount];
@@ -1893,14 +1895,14 @@ begin
 
   FillChar(Msg, SizeOf(Msg), #0);
   
-  MousePos := QMouseEvent_pos(QMouseEventH(Event));
-  OffsetMousePos(MousePos);
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  OffsetMousePos(@MousePos);
 
   Modifiers := QInputEvent_modifiers(QInputEventH(Event));
   Msg.Keys := QtKeyModifiersToKeyState(Modifiers);
 
-  Msg.XPos := SmallInt(MousePos^.X);
-  Msg.YPos := SmallInt(MousePos^.Y);
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
   
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
@@ -1921,7 +1923,7 @@ begin
    QEventMouseButtonRelease:
    begin
      LastMouse.Widget := Sender;
-     LastMouse.MousePos := MousePos^;
+     LastMouse.MousePos := MousePos;
      Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
      case MButton of
        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
@@ -1994,15 +1996,15 @@ end;
 procedure TQtWidget.SlotMouseMove(Event: QEventH); cdecl;
 var
   Msg: TLMMouseMove;
-  MousePos: PQtPoint;
+  MousePos: TQtPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   
-  MousePos := QMouseEvent_pos(QMouseEventH(Event));
-  OffsetMousePos(MousePos);
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  OffsetMousePos(@MousePos);
 
-  Msg.XPos := SmallInt(MousePos^.X);
-  Msg.YPos := SmallInt(MousePos^.Y);
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
   
   Msg.Keys := QtButtonsToLCLButtons(QmouseEvent_Buttons(QMouseEventH(Event)));
 
@@ -2025,20 +2027,20 @@ end;
 procedure TQtWidget.SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
 var
   Msg: TLMMouseEvent;
-  MousePos: PQtPoint;
+  MousePos: TQtPoint;
 begin
   FillChar(Msg, SizeOf(Msg), #0);
 
-  MousePos := QWheelEvent_pos(QWheelEventH(Event));
-  OffsetMousePos(MousePos);
+  MousePos := QWheelEvent_pos(QWheelEventH(Event))^;
+  OffsetMousePos(@MousePos);
 
   LastMouse.Widget := Sender;
-  LastMouse.MousePos := MousePos^;
+  LastMouse.MousePos := MousePos;
   
   Msg.Msg := LM_MOUSEWHEEL;
 
-  Msg.X := SmallInt(MousePos^.X);
-  Msg.Y := SmallInt(MousePos^.Y);
+  Msg.X := SmallInt(MousePos.X);
+  Msg.Y := SmallInt(MousePos.Y);
 
   Msg.WheelDelta := QWheelEvent_delta(QWheelEventH(Event)) div 120;
   
@@ -2049,7 +2051,7 @@ end;
 procedure TQtWidget.SlotMove(Event: QEventH); cdecl;
 var
   Msg: TLMMove;
-  Pos: PQtPoint;
+  Pos: TQtPoint;
   FrameRect, WindowRect: TRect;
 begin
   {$ifdef VerboseQt}
@@ -2065,12 +2067,12 @@ begin
 
   Msg.MoveType := Msg.MoveType or Move_SourceIsInterface;
 
-  Pos := QMoveEvent_pos(QMoveEventH(Event));
+  Pos := QMoveEvent_pos(QMoveEventH(Event))^;
   FrameRect := getFrameGeometry;
   WindowRect := getGeometry;
 
-  Msg.XPos := Pos^.x - (WindowRect.Left - FrameRect.Left);
-  Msg.YPos := Pos^.y - (WindowRect.Top - FrameRect.Top);
+  Msg.XPos := Pos.x - (WindowRect.Left - FrameRect.Left);
+  Msg.YPos := Pos.y - (WindowRect.Top - FrameRect.Top);
 
   DeliverMessage(Msg);
 end;
@@ -2172,10 +2174,23 @@ begin
   DeliverMessage(Msg);
 end;
 
-procedure TQtWidget.SlotContextMenu; cdecl;
+procedure TQtWidget.SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  Msg: TLMMouse;
+  Modifiers: QtKeyboardModifiers;
+  MousePos: TQtPoint;
 begin
-  if Assigned(LCLObject.PopupMenu) then
-   LCLObject.PopupMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
+  FillChar(Msg, SizeOf(Msg), #0);
+  MousePos := QContextMenuEvent_pos(QContextMenuEventH(Event))^;
+  OffsetMousePos(@MousePos);
+  Modifiers := QInputEvent_modifiers(QInputEventH(Event));
+
+  Msg.Msg := LM_CONTEXTMENU;
+  Msg.Keys := QtKeyModifiersToKeyState(Modifiers);
+  Msg.XPos := SmallInt(MousePos.X);
+  Msg.YPos := SmallInt(MousePos.Y);
+
+  DeliverMessage(Msg);
 end;
 
 procedure TQtWidget.SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
@@ -6325,24 +6340,42 @@ procedure TQtMenu.AttachEvents;
 var
   Method: TMethod;
 begin
-  FActionHook := QAction_hook_create(ActionHandle);
+  FTriggeredHook := QAction_hook_create(ActionHandle);
+  FAboutToHideHook := QMenu_hook_create(Widget);
   FEventHook := QObject_hook_create(Widget);
 
   QAction_triggered_Event(Method) := @SlotTriggered;
-  QAction_hook_hook_triggered(FActionHook, Method);
+  QAction_hook_hook_triggered(FTriggeredHook, Method);
+  TEventFilterMethod(Method) := @EventFilter;
+
+  QMenu_aboutToHide_Event(Method) := @SlotAboutToHide;
+  QMenu_hook_hook_aboutToHide(FAboutToHideHook, Method);
+
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FEventHook, Method);
 end;
 
 procedure TQtMenu.DetachEvents;
 begin
-  if FActionHook <> nil then
+  if FTriggeredHook <> nil then
   begin
-    QAction_hook_destroy(FActionHook);
-    FActionHook := nil;
+    QAction_hook_destroy(FTriggeredHook);
+    FTriggeredHook := nil;
+  end;
+
+  if FAboutToHideHook <> nil then
+  begin
+    QMenu_hook_destroy(FAboutToHideHook);
+    FAboutToHideHook := nil;
   end;
 
   inherited DetachEvents;
+end;
+
+procedure TQtMenu.SlotAboutToHide; cdecl;
+begin
+  // only for debug some staff
+  // DumpStack;
 end;
 
 procedure TQtMenu.SlotDestroy; cdecl;
