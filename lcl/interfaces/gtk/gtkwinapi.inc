@@ -1953,6 +1953,39 @@ begin
   Result := HPALETTE(PtrUInt(GObject));
 end;
 
+function TGTKWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  GObject: PGdiObject;
+begin
+  {$IFDEF DebugGDKTraps}
+  BeginGDKErrorTrap;
+  {$ENDIF}
+
+  GObject := NewGDIObject(gdiBrush);
+  try
+    {$IFDEF DebugGDIBrush}
+    DebugLn('[TGtkWidgetSet.CreatePatternBrush] ',DbgS(GObject));
+    {$ENDIF}
+    GObject^.IsNullBrush := False;
+    GObject^.GDIBrushFill := GDK_STIPPLED;
+    GObject^.GDIBrushPixmap := nil;
+    if PGdiObject(ABitmap)^.GDIType = gdiBitmap then
+      case PGdiObject(ABitmap)^.GDIBitmapType of
+        gbBitmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIBitmapObject;
+        gbPixmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIPixmapObject.Image;
+      end;
+    //GObject^.GDIBrushFill := GDK_TILED;
+    {$IFDEF DebugGDKTraps}
+    EndGDKErrorTrap;
+    {$ENDIF}
+    Result := HBRUSH(PtrUInt(GObject));
+  except
+    Result:=0;
+    DisposeGDIObject(GObject);
+    DebugLn('TGtkWidgetSet.CreateBrushIndirect failed');
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: CreatePenIndirect
   Params:  none
