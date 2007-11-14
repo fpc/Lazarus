@@ -55,6 +55,7 @@ function CreateCursor(ACursorInfo: PIconInfo): hCursor; Override;
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; Override;
 function CreateFontIndirect(Const LogFont: TLogFont): HFONT; Override;
+function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(Const LogPen: TLogPen): HPEN; Override;
 { Creates a bitmap from raw pixmap data }
 function CreatePixmapIndirect(Const Data: Pointer; Const TransColor: LongInt): HBITMAP; Override;

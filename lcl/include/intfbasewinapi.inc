@@ -166,6 +166,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := 0;

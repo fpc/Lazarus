@@ -807,6 +807,11 @@ Begin
   Result := Windows.CreateFontIndirect(@TempLogFont);
 End;
 
+function TWin32WidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+begin
+  Result := Windows.CreatePatternBrush(ABitmap);
+end;
+
 {------------------------------------------------------------------------------
   Method:  CreatePenIndirect
   Params:  LogPen - record that defines the style, width, and color of a pen

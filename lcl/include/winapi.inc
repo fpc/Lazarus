@@ -136,6 +136,11 @@ begin
   Result := WidgetSet.CreatePalette(LogPalette);
 end;
 
+function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+begin
+  Result := WidgetSet.CreatePatternBrush(ABitmap);
+end;
+
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;
 begin
   Result := WidgetSet.CreatePenIndirect(LogPen);

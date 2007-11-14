@@ -328,6 +328,11 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+var
+  Format: QImageFormat;
+  NewBits: Pointer;
+  NewBitsSize: PtrUInt;
+  ARowStride, RSS: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI CreateBitmap]',
@@ -338,8 +343,32 @@ begin
      ' BitmapBits: ', dbgs(BitmapBits));
   {$endif}
 
-  Result := HBitmap(TQtImage.Create(BitmapBits, Width,
-   Height, QImageFormat_ARGB32));
+  // for win32 data is aligned to WORD
+  // for qt we must realign data to DWORD
+
+  case BitCount of
+    1: Format := QImageFormat_Mono;
+    15, 16: Format := QImageFormat_RGB16;
+    24: Format := QImageFormat_RGB32;
+    32: Format := QImageFormat_ARGB32;
+  else
+    Format := QImageFormat_ARGB32;
+  end;
+  
+  RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
+  if BitmapBits <> nil then
+  begin
+    if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Rect(0, 0, Width, Height),
+      riloBottomToTop, riloBottomToTop, rileDWordBoundary, NewBits, NewBitsSize) then
+    begin
+      ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
+      NewBits := AllocMem(ARowStride);
+      Move(BitmapBits^, NewBits^, RSS);
+    end;
+  end
+  else
+    NewBits := nil;
+  Result := HBitmap(TQtImage.Create(NewBits, Width, Height, Format, True));
    
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
@@ -570,6 +599,16 @@ begin
   finally
     Result := HFONT(QtFont);
   end;
+end;
+
+function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  QtBrush: TQtBrush;
+begin
+  Result := 0;
+  QtBrush := TQtBrush.Create(True);
+  QtBrush.setTextureImage(TQtImage(ABitmap).Handle);
+  Result := HBRUSH(QtBrush);
 end;
 
 {------------------------------------------------------------------------------

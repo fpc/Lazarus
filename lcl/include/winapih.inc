@@ -66,6 +66,7 @@ function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; {$IFDEF IF_BASE_MEMBE
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePalette(const LogPalette: TLogPalette): HPalette; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreatePen --> independent
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

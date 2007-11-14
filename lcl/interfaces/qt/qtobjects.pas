@@ -179,6 +179,8 @@ type
     constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
     procedure setStyle(style: QtBrushStyle);
+    procedure setTexture(pixmap: QPixmapH);
+    procedure setTextureImage(image: QImageH);
   end;
 
   { TQtPen }
@@ -1074,6 +1076,16 @@ end;
 procedure TQtBrush.setStyle(style: QtBrushStyle);
 begin
   QBrush_setStyle(Widget, style);
+end;
+
+procedure TQtBrush.setTexture(pixmap: QPixmapH);
+begin
+  QBrush_setTexture(Widget, pixmap);
+end;
+
+procedure TQtBrush.setTextureImage(image: QImageH);
+begin
+  QBrush_setTextureImage(Widget, image);
 end;
 
 { TQtPen }
