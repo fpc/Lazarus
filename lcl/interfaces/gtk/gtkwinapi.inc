@@ -3237,6 +3237,9 @@ begin
   if Boolean(Result)
   then with TDeviceContext(DC) do
   begin
+    if Count = -1 then
+      Count := StrLen(Str);
+
     Result := 0;
     Lines := nil;
     NumLines := 0;
