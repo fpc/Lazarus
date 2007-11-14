@@ -1974,6 +1974,8 @@ begin
         gbBitmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIBitmapObject;
         gbPixmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIPixmapObject.Image;
       end;
+    if GObject^.GDIBrushPixmap <> nil then
+      gdk_pixmap_ref(GObject^.GDIBrushPixmap);
     //GObject^.GDIBrushFill := GDK_TILED;
     {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
