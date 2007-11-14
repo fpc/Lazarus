@@ -1017,7 +1017,8 @@ var
 begin
   StartPos:=FilenameLen-1;
   while (StartPos>=0) and (Filename[StartPos]<>'.') do dec(StartPos);
-  if StartPos<0 then exit(false);
+  if StartPos<=0 then exit(false);
+  // check extension
   ExtLen:=FilenameLen-StartPos;
   for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
     if (CTPascalExtension[e]='') or (length(CTPascalExtension[e])<>ExtLen) then
@@ -1036,7 +1037,17 @@ begin
         inc(p);
       end;
     end;
-    if i=ExtLen then exit(true);
+    if i=ExtLen then begin
+      // check name is identifier
+      i:=0;
+      if not (Filename[i] in ['a'..'z','A'..'Z','_']) then exit(false);
+      inc(i);
+      while i<StartPos do begin
+        if not (Filename[i] in ['a'..'z','A'..'Z','_','0'..'9']) then exit(false);
+        inc(i);
+      end;
+      exit(true);
+    end;
   end;
   Result:=false;
 end;
