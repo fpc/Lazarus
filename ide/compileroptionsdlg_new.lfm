@@ -24,8 +24,8 @@ inherited frmCompilerOptionsNew: TfrmCompilerOptionsNew
       inherited btnCancel: TBitBtn
       end
       inherited btnOK: TBitBtn
-        Left = 7
-        OnClick = btnTestClicked
+        ModalResult = 0
+        OnClick = ButtonOKClicked       
       end
     end
     inherited HelpButton: TBitBtn

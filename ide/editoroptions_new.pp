@@ -78,7 +78,6 @@ type
     BlockIndentComboBox: TComboBox;
     BlockIndentLabel: TLabel;
     CodeFolding: TPage;
-    BtnPanel: TPanel;
     UndoLimitComboBox: TComboBox;
     UndoLimitLabel: TLabel;
     TabWidthsComboBox: TComboBox;
@@ -152,10 +151,6 @@ type
     chkCodeFoldingEnabled: TCheckBox;
     lblDividerDrawLevel: TLabel;
     edDividerDrawLevel: TSpinEdit;
-
-    // buttons at bottom
-    OkButton: TButton;
-    CancelButton: TButton;
 
     // general
     procedure GeneralCheckBoxOnChange(Sender: TObject; Index: integer);
@@ -1702,11 +1697,10 @@ end;
 
 procedure TEditorOptionsFormNew.SetupButtonBar;
 begin
-  CancelButton.Caption := dlgCancel;
+  btnOk.Caption := lisOk;
+  btnCancel.Caption := dlgCancel;
 
-  CancelControl := CancelButton;
-
-  OkButton.Caption := lisOk;
+  CancelControl := btnCancel;
 end;
 
 procedure TEditorOptionsFormNew.OkButtonClick(Sender: TObject);

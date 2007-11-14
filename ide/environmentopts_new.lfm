@@ -5,7 +5,7 @@ inherited EnvironmentOptionsDialogNew: TEnvironmentOptionsDialogNew
   Width = 768
   HorzScrollBar.Page = 767
   VertScrollBar.Page = 546
-  ActiveControl = OkButton
+  ActiveControl = btnOK
   Caption = 'EnvironmentOptionsDialog'
   ClientHeight = 547
   ClientWidth = 768
@@ -19,8 +19,13 @@ inherited EnvironmentOptionsDialogNew: TEnvironmentOptionsDialogNew
       Left = 581
       inherited btnCancel: TBitBtn
         Cancel = False
+        ModalResult = 0
+        OnClick = CancelButtonClick
       end
       inherited btnOK: TBitBtn
+        Default = True
+        ModalResult = 0
+        OnClick = OkButtonClick
       end
     end
     inherited HelpButton: TBitBtn
@@ -1698,47 +1703,6 @@ inherited EnvironmentOptionsDialogNew: TEnvironmentOptionsDialogNew
           end
         end
       end
-    end
-  end
-  object EODBtnPanel: TPanel
-    Height = 38
-    Top = 459
-    Width = 768
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 768
-    TabOrder = 0
-    object OkButton: TButton
-      AnchorSideBottom.Side = asrBottom
-      Left = 600
-      Height = 26
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'Ok'
-      Constraints.MinWidth = 75
-      Default = True
-      OnClick = OkButtonClick
-      TabOrder = 0
-    end
-    object CancelButton: TButton
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 681
-      Height = 26
-      Top = 6
-      Width = 81
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'CancelButton'
-      Constraints.MinWidth = 75
-      OnClick = CancelButtonClick
-      TabOrder = 1
     end
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog

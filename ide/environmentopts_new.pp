@@ -53,7 +53,6 @@ type
     NoteBook: TNoteBook;
     FilesPage: TPage;
     DesktopPage: TPage;
-    EODBtnPanel: TPanel;
     WindowsPage: TPage;
     FormEditorPage: TPage;
     ObjectInspectorPage: TPage;
@@ -201,10 +200,6 @@ type
     CharCaseFileActionRadioGroup: TRadioGroup;
     AmbiguousFileActionRadioGroup: TRadioGroup;
 
-    // buttons at bottom
-    OkButton: TButton;
-    CancelButton: TButton;
-    
     procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
@@ -430,8 +425,8 @@ begin
   SetupNamingPage(6);
   SetupLazDocPage(7);
 
-  CancelButton.Caption:=dlgCancel;
-  CancelControl:=CancelButton;
+  btnCancel.Caption:=dlgCancel;
+  CancelControl:=btnCancel;
   
   //Indexing item
   for i:= 0 to NoteBook.PageCount-1 do

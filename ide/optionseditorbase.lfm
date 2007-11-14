@@ -49,7 +49,6 @@ object OptionsEditorForm: TOptionsEditorForm
         Kind = bkCancel
         ModalResult = 2
         NumGlyphs = 0
-        OnClick = btnCancelClick
         TabOrder = 0
       end
       object btnOK: TBitBtn
@@ -66,8 +65,8 @@ object OptionsEditorForm: TOptionsEditorForm
         Constraints.MinHeight = 25
         Constraints.MinWidth = 75
         Kind = bkOK
+        ModalResult = 1
         NumGlyphs = 0
-        OnClick = btnOKClick
         TabOrder = 1
       end
     end

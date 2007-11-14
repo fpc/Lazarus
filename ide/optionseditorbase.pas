@@ -52,8 +52,6 @@ type
     OKCancelPanel: TPanel;
     CategoriesPanel: TPanel;
     MainSplitter: TSplitter;
-    procedure btnCancelClick(Sender: TObject);
-    procedure btnOKClick(Sender: TObject);
     procedure ClearFilterButtonClick(Sender: TObject);
     procedure FilterEditChange(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);
@@ -163,19 +161,9 @@ begin
   DoFilter;
 end;
 
-procedure TOptionsEditorForm.btnOKClick(Sender: TObject);
-begin
-
-end;
-
 procedure TOptionsEditorForm.ClearFilterButtonClick(Sender: TObject);
 begin
   FilterEdit.Text:= '';
-end;
-
-procedure TOptionsEditorForm.btnCancelClick(Sender: TObject);
-begin
-  Close;
 end;
 
 procedure TOptionsEditorForm.FilterEditEnter(Sender: TObject);

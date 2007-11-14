@@ -5,7 +5,7 @@ inherited EditorOptionsFormNew: TEditorOptionsFormNew
   Width = 747
   HorzScrollBar.Page = 746
   VertScrollBar.Page = 605
-  ActiveControl = OkButton
+  ActiveControl = btnOK
   Caption = 'EditorOptionsForm'
   ClientHeight = 606
   ClientWidth = 747
@@ -19,8 +19,12 @@ inherited EditorOptionsFormNew: TEditorOptionsFormNew
     inherited OKCancelPanel: TPanel
       Left = 560
       inherited btnCancel: TBitBtn
+        ModalResult = 0
+        OnClick = CancelButtonClick
       end
       inherited btnOK: TBitBtn
+        ModalResult = 0
+        OnClick = OkButtonClick
       end
     end
     inherited HelpButton: TBitBtn
@@ -1564,46 +1568,6 @@ inherited EditorOptionsFormNew: TEditorOptionsFormNew
           Value = 1
         end
       end
-    end
-  end
-  object BtnPanel: TPanel
-    Height = 38
-    Top = 518
-    Width = 747
-    Align = alBottom
-    AutoSize = True
-    BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 747
-    TabOrder = 0
-    object OkButton: TButton
-      AnchorSideBottom.Side = asrBottom
-      Left = 579
-      Height = 26
-      Top = 6
-      Width = 75
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'OkButton'
-      Constraints.MinWidth = 75
-      OnClick = OkButtonClick
-      TabOrder = 0
-    end
-    object CancelButton: TButton
-      AnchorSideRight.Side = asrBottom
-      AnchorSideBottom.Side = asrBottom
-      Left = 660
-      Height = 26
-      Top = 6
-      Width = 81
-      Align = alRight
-      AutoSize = True
-      BorderSpacing.Around = 6
-      Caption = 'CancelButton'
-      Constraints.MinWidth = 75
-      OnClick = CancelButtonClick
-      TabOrder = 1
     end
   end
   object ImageList: TImageList
