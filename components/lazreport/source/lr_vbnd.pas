@@ -69,7 +69,6 @@ begin
     b := False;
     if Pos(';', s) = 0 then
       b := True;
-    writeln('ShowEditor() s="'+s+'"');
     with frDesigner.Page do
     begin
       for i := 0 to Objects.Count - 1 do
