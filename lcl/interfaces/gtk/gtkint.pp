@@ -235,7 +235,7 @@ type
       SelWidget: PGtkWidget); virtual;
 
     // misc
-    Function GetCaption(Sender : TObject) : String; virtual;
+    function GetCaption(Sender : TObject) : String; virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
 
@@ -253,7 +253,7 @@ type
     procedure SetWidgetColor(const AWidget : PGtkWidget;
                              const FGColor,BGColor : TColor;
                              const Mask : tGtkStateEnum);
-    procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont); virtual;
+    procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont); virtual; abstract;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject; Direct: boolean); virtual;
     procedure SetCallbackDirect(const AMsg: LongInt; const AGTKObject: PGTKObject;
@@ -367,7 +367,7 @@ uses
 
 {$I gtklistsl.inc}
 {$I gtkfiledialogutils.inc}
-{$I gtk1object.inc}
+{$I gtkwidgetset.inc}
 {$I gtkwinapi.inc}
 {$I gtklclintf.inc}
 

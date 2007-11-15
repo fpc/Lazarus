@@ -170,6 +170,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TGtkWidgetSet.Create;
 begin
+  if ClassType = TGtkWidgetSet
+  then raise EInvalidOperation.Create('Cannot create the base gtkwidgetset, use gtk1 or gtk2 instead');
+
   inherited Create;
 
   // DCs, GDIObjects
@@ -1091,37 +1094,6 @@ begin
   {$IFDEF Gtk1}
   gtk_widget_set_style(aWidget,windowStyle);
   {$ENDIF}
-end;
-
-
-procedure TGtkWidgetSet.SetWidgetFont(const AWidget : PGtkWidget;
-  const AFont: TFont);
-{$IFDEF GTK1}
-var
-  WindowStyle: PGtkStyle;
-  FontGdiObject: PGdiObject;
-
-begin
-  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then begin
-    // the GTKAPIWidget is self drawn, so no use to change the widget style.
-    exit;
-  end;
-
-  if (GTK_WIDGET_REALIZED(AWidget)) then begin
-    WindowStyle := gtk_style_copy(gtk_widget_get_style (AWidget));
-  end else begin
-    WindowStyle := gtk_style_copy(gtk_rc_get_style (AWidget));
-  end;
-  if (Windowstyle = nil)  then begin
-     Windowstyle := gtk_style_new ;
-  end;
-
-  FontGdiObject:=PGdiObject(AFont.Handle);
-  windowstyle^.font:=pointer(FontGdiObject^.GdiFontObject);
-  gtk_widget_set_style(aWidget,windowStyle);
-{$ELSE}
-begin
-{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------

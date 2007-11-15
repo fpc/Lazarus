@@ -37,10 +37,10 @@ uses
 implementation
 
 uses 
-  GTKInt, Forms;
+  GTK1Int, Forms;
 
 initialization
-  WidgetSet:= TGTKWidgetSet.Create;
+  WidgetSet := TGTK1WidgetSet.Create;
 
 finalization
   FreeWidgetSet;

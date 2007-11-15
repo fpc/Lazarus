@@ -64,7 +64,6 @@ type
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
-    procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont); override;
 
     procedure InitializeFileDialog(FileDialog: TFileDialog;
       var SelWidget: PGtkWidget; Title: PChar); override;
@@ -79,8 +78,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    
+
     function LCLPlatform: TLCLPlatform; override;
+    
+    procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
     function AppHandle: Thandle; override;
     {$I gtk2winapih.inc}
@@ -178,7 +179,7 @@ uses
 ////////////////////////////////////////////////////
   gtkProc;
 
-{$include gtk2object.inc}
+{$include gtk2widgetset.inc}
 {$include gtk2winapi.inc}
 {$include gtk2lclintf.inc}
 
