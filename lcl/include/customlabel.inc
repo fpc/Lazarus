@@ -41,9 +41,10 @@ begin
     OldFont:=SelectObject(DC, Font.Handle);
     Flags:=DT_CalcRect;
     if WordWrap then
-      inc(Flags,DT_WordBreak)
-    else if not HasMultiLine then
-      inc(Flags,DT_SingleLine);
+      inc(Flags, DT_WordBreak)
+    else
+    if not HasMultiLine then
+      inc(Flags, DT_SingleLine);
 
     LabelText:=GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
@@ -64,16 +65,16 @@ end;
 
 class function TCustomLabel.GetControlClassDefaultSize: TPoint;
 begin
-  Result.X:=65;
-  Result.Y:=17;
+  Result.X := 65;
+  Result.Y := 17;
 end;
 
 function TCustomLabel.HasMultiLine: boolean;
 var
   s: String;
 begin
-  s:=GetLabelText;
-  result:=(pos(#10,s)>0) or (pos(#13,s)>0);
+  s := GetLabelText;
+  result := (pos(#10, s) > 0) or (pos(#13, s) > 0);
 end;
 
 procedure TCustomLabel.DoAutoSize;
@@ -82,7 +83,8 @@ var
   CurAnchors: TAnchors;
 begin
   //debugln('TCustomLabel.DoAutoSize ',DbgSName(Self),' AutoSizing=',dbgs(AutoSizing),' AutoSize=',dbgs(AutoSize),' Parent=',DbgSName(Parent),' csLoading=',dbgs(csLoading in ComponentState),' Parnet.HandleAllocated=',dbgs((Parent<>nil) and (Parent.HandleAllocated)));
-  if OptimalFill and (not AutoSize) then begin
+  if OptimalFill and (not AutoSize) then
+  begin
     AdjustFontForOptimalFill;
     exit;
   end;
@@ -112,7 +114,8 @@ end;
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
 begin
   //debugln('TCustomLabel.SetAlignment Old=',dbgs(ord(Alignment)),' New=',dbgs(ord(Value)),' csLoading=',dbgs(csLoading in ComponentState));
-  if FAlignment <> Value then begin
+  if FAlignment <> Value then
+  begin
     FAlignment := Value;
     Invalidate;
   end;
@@ -127,9 +130,11 @@ end;
 
 procedure TCustomLabel.SetFocusControl(Value : TWinControl);
 begin
-  if Value <> FFocusControl then begin
+  if Value <> FFocusControl then
+  begin
     FFocusControl:= Value;
-    if Value <> nil then Value.FreeNotification(Self);
+    if Value <> nil then
+      Value.FreeNotification(Self);
   end;
 end;
 
@@ -151,7 +156,8 @@ end;
 
 Procedure TCustomLabel.SetShowAccelChar(Value : Boolean);
 begin
-  If FShowAccelChar <> Value then begin
+  If FShowAccelChar <> Value then
+  begin
     FShowAccelChar := Value;
     Invalidate;
   end;
@@ -187,9 +193,11 @@ var
   lTextWidth: integer;
 begin
   TextLeft := 0;
-  if Layout = tlTop then begin
+  if Layout = tlTop then
+  begin
     TextTop := 0;
-  end else begin
+  end else
+  begin
     CalcSize(lTextWidth, lTextHeight);
     case Layout of
       tlCenter: TextTop := (Height - lTextHeight) div 2;
@@ -232,7 +240,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomLabel.SetLayout(Value: TTextLayout);
 begin
-  if FLayout <> Value then begin
+  if FLayout <> Value then
+  begin
     FLayout:= Value;
     Invalidate;
   end;
@@ -240,11 +249,13 @@ end;
 
 procedure TCustomLabel.SetTransparent(NewTransparent: boolean);
 begin
-  if Transparent=NewTransparent then exit;
+  if Transparent = NewTransparent then
+    exit;
   if NewTransparent then
     Color := clNone
-  else if Color = clNone then
-    Color:=clBackground;
+  else
+  if Color = clNone then
+    Color := clBackground;
 end;
 
 {------------------------------------------------------------------------------
@@ -383,7 +394,7 @@ begin
   Result:=OldFontHeight<>Font.Height;
 end;
 
-Procedure TCustomLabel.Paint;
+procedure TCustomLabel.Paint;
 var
   TR : TTextStyle;
   R : TRect;
@@ -429,7 +440,8 @@ begin
     //Brush.Color:=clRed;
     //FillRect(R);
     FillChar(TR,SizeOf(TR),0);
-    With TR do begin
+    with TR do
+    begin
       Alignment := Self.Alignment;
       WordBreak := wordWrap;
       SingleLine:= not WordWrap and not HasMultiLine;
@@ -441,7 +453,8 @@ begin
     DoMeasureTextPosition(TextTop, TextLeft);
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     LabelText := GetLabelText;
-    if not Enabled then begin
+    if not Enabled then
+    begin
       Font.Color := clBtnHighlight;
       TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);
       Font.color := clBtnShadow;
