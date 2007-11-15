@@ -607,6 +607,22 @@ begin
   end;
 end;
 
+procedure TGtk2WidgetSet.SetWidgetFont(const AWidget: PGtkWidget; const AFONT: tFont);
+var
+  FontDesc: PPangoFontDescription;
+  UseFont: PPangoLayout;
+begin
+  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then begin
+    // the GTKAPIWidget is self drawn, so no use to change the widget style.
+    exit;
+  end;
+
+
+  UseFont := PGdiObject(AFont.Handle)^.GDIFontObject;
+  FontDesc := pango_layout_get_font_description(UseFont);
+  gtk_widget_modify_font(AWidget, FontDesc);
+end;
+
 (*
 {------------------------------------------------------------------------------
   function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer

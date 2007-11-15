@@ -1119,34 +1119,8 @@ begin
   FontGdiObject:=PGdiObject(AFont.Handle);
   windowstyle^.font:=pointer(FontGdiObject^.GdiFontObject);
   gtk_widget_set_style(aWidget,windowStyle);
-
 {$ELSE}
-var
-  PangoDescStr: String;
-  DescOpts: String;
-  font_desc: PPangoFontDescription;
 begin
-  if GtkWidgetIsA(AWidget,GTKAPIWidget_GetType) then begin
-    // the GTKAPIWidget is self drawn, so no use to change the widget style.
-    exit;
-  end;
-
-  PangoDescStr := AFont.Name;
-  DescOpts := '';
-  if FSBold in AFont.Style then
-    DescOpts := DescOpts + ' bold';
-  if FSItalic in AFont.Style then
-    DescOpts := DescOpts + ' italic';
-  if FSUnderline in AFont.Style then
-    DescOpts := DescOpts + ' underline';
-  if FSStrikeOut in AFont.Style then
-    DescOpts := DescOpts + ' strikethrough';
-
-  PangoDescStr := PangoDescStr+DescOpts+' '+IntToStr(AFont.Size);
-  //DebugLn('TGtkWidgetSet.SetWidgetFont PangoDescStr="',PangoDescStr,'"');
-  font_desc:=pango_font_description_from_string(PChar(PangoDescStr));
-  gtk_widget_modify_font(AWidget,font_desc);
-  pango_font_description_free(font_desc);
 {$ENDIF}
 end;
 

@@ -253,7 +253,7 @@ type
     procedure SetWidgetColor(const AWidget : PGtkWidget;
                              const FGColor,BGColor : TColor;
                              const Mask : tGtkStateEnum);
-    procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont);
+    procedure SetWidgetFont(const AWidget : PGtkWidget;const AFONT : tFont); virtual;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject; Direct: boolean); virtual;
     procedure SetCallbackDirect(const AMsg: LongInt; const AGTKObject: PGTKObject;
