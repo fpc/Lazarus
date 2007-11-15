@@ -5716,10 +5716,14 @@ begin
     EnsureGCColor(DC, dccGDIBrushColor, GetBrush^.GDIBrushFill = GDK_Solid, False);//Brush Color
 
     if GetBrush^.GDIBrushFill <> GDK_Solid then
-      if GetBrush^.GDIBrushPixmap <> nil then begin
+      if GetBrush^.GDIBrushPixmap <> nil then
+      begin
         gdk_gc_set_fill(GC, GetBrush^.GDIBrushFill);
-        gdk_gc_set_Stipple(GC, GetBrush^.GDIBrushPixmap);
-        gdk_gc_get_values(GC,@GCValues);
+        if GetBrush^.GDIBrushFill = GDK_STIPPLED then
+          gdk_gc_set_stipple(GC, GetBrush^.GDIBrushPixmap)
+        else
+          gdk_gc_set_tile(GC, GetBrush^.GDIBrushPixmap);
+        gdk_gc_get_values(GC, @GCValues);
       end
   end;
   DevCon.SelectedColors := dcscBrush;

@@ -59,7 +59,6 @@ function CreateCursor(ACursorInfo: PIconInfo): hCursor; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
 function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
-function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
 Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;

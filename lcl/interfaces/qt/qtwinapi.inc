@@ -435,30 +435,30 @@ begin
       BS_PATTERN,        // Pattern brush defined by a memory bitmap.
       BS_PATTERN8X8:     // Same as BS_PATTERN.
       begin
+        QtBrush.setTextureImage(TQtImage(LogBrush.lbHatch).Handle);
       end;
     else
       WriteLn(Format('Unsupported Style %d',[LogBrush.lbStyle]));
     end;
 
-    {   Other non-utilized Qt brushes:
-
-    QtDense1Pattern,
-    QtDense2Pattern,
-    QtDense3Pattern,
-    QtDense4Pattern,
-    QtDense5Pattern,
-    QtDense6Pattern,
-    QtDense7Pattern,
-    QtLinearGradientPattern,
-    QtRadialGradientPattern,
-    QtConicalGradientPattern,
-    QtTexturePattern = 24 );}
+    {
+      Other non-utilized Qt brushes:
+        QtDense1Pattern,
+        QtDense2Pattern,
+        QtDense3Pattern,
+        QtDense4Pattern,
+        QtDense5Pattern,
+        QtDense6Pattern,
+        QtDense7Pattern,
+        QtLinearGradientPattern,
+        QtRadialGradientPattern,
+        QtConicalGradientPattern
+    }
     
     // set brush color
     Color := QBrush_Color(QtBrush.Widget)^;
     ColorRefToTQColor(ColorToRGB(logBrush.lbColor), Color);
     QBrush_setColor(QtBrush.Widget, @Color);
-    
   except
     {$ifdef VerboseQtWinAPI}
       WriteLn('[WinAPI CreateBrushIndirect] Failed');
@@ -599,16 +599,6 @@ begin
   finally
     Result := HFONT(QtFont);
   end;
-end;
-
-function TQtWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
-var
-  QtBrush: TQtBrush;
-begin
-  Result := 0;
-  QtBrush := TQtBrush.Create(True);
-  QtBrush.setTextureImage(TQtImage(ABitmap).Handle);
-  Result := HBRUSH(QtBrush);
 end;
 
 {------------------------------------------------------------------------------

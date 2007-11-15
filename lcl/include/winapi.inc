@@ -137,8 +137,13 @@ begin
 end;
 
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
+var
+  LogBrush: TLogBrush;
 begin
-  Result := WidgetSet.CreatePatternBrush(ABitmap);
+  LogBrush.lbStyle := BS_PATTERN;
+  LogBrush.lbColor := 0;
+  LogBrush.lbHatch := ABitmap;
+  Result := WidgetSet.CreateBrushIndirect(LogBrush);
 end;
 
 function CreatePenIndirect(const LogPen: TLogPen): HPEN;

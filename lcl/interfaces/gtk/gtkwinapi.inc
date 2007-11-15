@@ -1046,15 +1046,27 @@ begin
         BS_PATTERN,        // Pattern brush defined by a memory bitmap.
         BS_PATTERN8X8:     // Same as BS_PATTERN.
           begin
-            GObject^.GDIBrushFill := GDK_TILED;
-            if IsValidGDIObject(lbHatch)
-            and (PGdiObject(lbHatch)^.GDIType = gdiBitmap)
-            then
-              GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
+            GObject^.GDIBrushPixmap := nil;
+            if IsValidGDIObject(lbHatch) and (PGdiObject(lbHatch)^.GDIType = gdiBitmap) then
+            begin
+              case PGdiObject(lbHatch)^.GDIBitmapType of
+                gbBitmap:
+                begin
+                  GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject;
+                  GObject^.GDIBrushFill := GDK_STIPPLED;
+                end;
+                gbPixmap:
+                begin
+                  GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIPixmapObject.Image;
+                  GObject^.GDIBrushFill := GDK_TILED;
+                end;
+              end
+            end
             else
               RaiseGDBException('unsupported bitmap');
+            if GObject^.GDIBrushPixmap <> nil then
+              gdk_pixmap_ref(GObject^.GDIBrushPixmap);
           end;
-
         else
           RaiseGDBException(Format('unsupported Style %d',[lbStyle]));
       end;
@@ -1953,41 +1965,6 @@ begin
   Result := HPALETTE(PtrUInt(GObject));
 end;
 
-function TGTKWidgetSet.CreatePatternBrush(ABitmap: HBITMAP): HBRUSH;
-var
-  GObject: PGdiObject;
-begin
-  {$IFDEF DebugGDKTraps}
-  BeginGDKErrorTrap;
-  {$ENDIF}
-
-  GObject := NewGDIObject(gdiBrush);
-  try
-    {$IFDEF DebugGDIBrush}
-    DebugLn('[TGtkWidgetSet.CreatePatternBrush] ',DbgS(GObject));
-    {$ENDIF}
-    GObject^.IsNullBrush := False;
-    GObject^.GDIBrushFill := GDK_STIPPLED;
-    GObject^.GDIBrushPixmap := nil;
-    if PGdiObject(ABitmap)^.GDIType = gdiBitmap then
-      case PGdiObject(ABitmap)^.GDIBitmapType of
-        gbBitmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIBitmapObject;
-        gbPixmap: GObject^.GDIBrushPixmap := PGdiObject(ABitmap)^.GDIPixmapObject.Image;
-      end;
-    if GObject^.GDIBrushPixmap <> nil then
-      gdk_pixmap_ref(GObject^.GDIBrushPixmap);
-    //GObject^.GDIBrushFill := GDK_TILED;
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-    Result := HBRUSH(PtrUInt(GObject));
-  except
-    Result:=0;
-    DisposeGDIObject(GObject);
-    DebugLn('TGtkWidgetSet.CreateBrushIndirect failed');
-  end;
-end;
-
 {------------------------------------------------------------------------------
   Function: CreatePenIndirect
   Params:  none
@@ -2519,8 +2496,8 @@ begin
           debugln('TGtkWidgetSet.DeleteObject gdiBrush: ',DbgS(GdiObject));
           //if Cardinal(GdiObject)=$404826F4 then RaiseGDBException('');
           {$ENDIF}
-          if (GDIBrushPixmap <> nil)
-          then gdk_bitmap_unref(GDIBrushPixmap);
+          if (GDIBrushPixmap <> nil) then
+            gdk_pixmap_unref(GDIBrushPixmap);
           {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;
           {$ENDIF}
