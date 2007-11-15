@@ -391,16 +391,19 @@ var
   LabelText: string;
 begin
   R := Rect(0,0,Width,Height);
-  With Canvas do begin
-    if Enabled then  Color := Self.Color
-               else  Color := clNone;
+  with Canvas do
+  begin
+    if Enabled then
+      Brush.Color := Self.Color
+    else
+      Brush.Color := clNone;
     Font := Self.Font;
-    if (Color<>clNone) and not Transparent then begin
+    if (Color<>clNone) and not Transparent then
+    begin
       Brush.Style:=bsSolid;
       FillRect(R);
-    end else begin
+    end else
       Brush.Style:=bsClear;
-    end;
 {
     If BorderStyle <> sbsNone then begin
       InflateRect(R,-2,-2);
