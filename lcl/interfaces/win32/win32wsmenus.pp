@@ -250,17 +250,38 @@ begin
   end;
 end;
 
+function GetSizeOfItemBitmap(AMenuItem: TMenuItem): TSize;
+var
+  AImageList: TCustomImageList;
+begin
+  if AMenuItem.HasIcon then
+  begin
+    AImageList := aMenuItem.GetImageList;
+    if AImageList <> nil then
+    begin
+      Result.cx := AImageList.Width;
+      Result.cy := AImageList.Height;
+    end
+    else
+    begin
+      Result.cx := AMenuItem.Bitmap.Width;
+      Result.cy := AMenuItem.Bitmap.Height;
+    end;
+  end
+  else
+    FillChar(Result, SizeOf(Result), 0);
+end;
+
 function MenuIconWidth(const AMenuItem: TMenuItem): integer;
 var
   SiblingMenuItem : TMenuItem;
-  i : integer;
-  RequiredWidth: integer;
+  i, RequiredWidth: integer;
 begin
   Result := 0;
+
   if AMenuItem.IsInMenuBar then
   begin
-    if AMenuItem.HasIcon then
-      Result := AMenuItem.Bitmap.Width;
+    Result := GetSizeOfItemBitmap(AMenuItem).cx;
   end
   else
   begin
@@ -269,7 +290,7 @@ begin
       SiblingMenuItem := AMenuItem.Parent.Items[i];
       if SiblingMenuItem.HasIcon then
       begin
-        RequiredWidth := SiblingMenuItem.Bitmap.Width;
+        RequiredWidth := GetSizeOfItemBitmap(SiblingMenuItem).cx;
         if RequiredWidth > Result then
           Result := RequiredWidth;
       end;
@@ -277,21 +298,44 @@ begin
   end;
 end;
 
+function LeftCaptionPosition(const AMenuItem: TMenuItem): integer;
+var
+  ImageWidth: Integer;
+begin
+  // If we have Check and Icon then we use only width of Icon
+  // we draw our MenuItem so: space Image space Caption
+  ImageWidth := MenuIconWidth(AMenuItem);
+  if ImageWidth = 0 then
+    ImageWidth := CheckSpace(aMenuItem);
+
+  Result := SpaceBetweenIcons;
+
+  inc(Result, ImageWidth);
+
+  if not aMenuItem.IsInMenuBar or (ImageWidth <> 0) then
+    inc(Result, SpaceBetweenIcons);
+end;
+
+function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
+begin
+  Result := (aMenuItemHeight - anElementHeight) div 2;
+end;
+
 function MenuItemSize(aMenuItem: TMenuItem; aHDC: HDC): TSize;
 var
   decoration: TCaptionFlagsSet;
-  minimumHeight, IconWidth: Integer;
+  minimumHeight: Integer;
 begin
   if aMenuItem.Default then
     decoration := [cfBold]
   else
     decoration := [];
+    
   Result := StringSize(CompleteMenuItemCaption(aMenuItem), aHDC, decoration);
+  inc(Result.cx, LeftCaptionPosition(aMenuItem));
 
-  inc(Result.cx, CheckSpace(aMenuItem));
-  IconWidth := MenuIconWidth(aMenuItem);
-  if not aMenuItem.IsInMenuBar or (IconWidth <> 0) then
-    Inc(Result.cx,  IconWidth + (2 * spaceBetweenIcons));
+  if not aMenuItem.IsInMenuBar then
+    inc(Result.cx, SpaceBetweenIcons);
 
   if aMenuItem.ShortCut <> scNone then
     Inc(Result.cx, spaceBetweenIcons);
@@ -303,28 +347,12 @@ begin
     Result.cy := 10 // it is a separator
   else
   begin
-    if aMenuItem.hasIcon and (aMenuItem.bitmap.height > Result.cy) then
-      Result.cy := aMenuItem.bitmap.height;
+    if aMenuItem.hasIcon then
+      Result.cy := Max(Result.cy, GetSizeOfItemBitmap(aMenuItem).cy);
     Inc(Result.cy, 2);
     if Result.cy < minimumHeight then
       Result.cy := minimumHeight;
   end;
-end;
-
-function LeftCaptionPosition(const aMenuItemLength: integer; const anElementLength: integer; const AMenuItem: TMenuItem): integer;
-var
-  IconWidth: Integer;
-begin
-  IconWidth := MenuIconWidth(AMenuItem);
-  Result := CheckSpace(aMenuItem) + SpaceBetweenIcons;
-
-  if not aMenuItem.IsInMenuBar or (IconWidth <> 0) then
-    inc(Result, IconWidth + SpaceBetweenIcons);
-end;
-
-function TopPosition(const aMenuItemHeight: integer; const anElementHeight: integer): integer;
-begin
-  Result := (aMenuItemHeight - anElementHeight) div 2;
 end;
 
 function BackgroundColorMenu(const aSelected: boolean; const aInMainMenu: boolean): COLORREF;
@@ -383,13 +411,15 @@ begin
   checkMarkRect.top := 0;
   checkMarkRect.right := checkMarkWidth;
   checkMarkRect.bottom := checkMarkHeight;
-  if aMenuItem.RadioItem then checkMarkShape := DFCS_MENUBULLET
-  else checkMarkShape := DFCS_MENUCHECK;
+  if aMenuItem.RadioItem then
+    checkMarkShape := DFCS_MENUBULLET
+  else
+    checkMarkShape := DFCS_MENUCHECK;
   DrawFrameControl(hdcMem, @checkMarkRect, DFC_MENU, checkMarkShape);
   if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - checkMarkWidth
+    x := aRect.Right - checkMarkWidth - spaceBetweenIcons
   else
-    x := aRect.left;
+    x := aRect.left + spaceBetweenIcons;
   BitBlt(aHDC, x, aRect.top + topPosition(aRect.bottom - aRect.top, checkMarkRect.bottom - checkMarkRect.top), checkMarkWidth, checkMarkHeight, hdcMem, 0, 0, SRCCOPY);
   SelectObject(hdcMem, oldBitmap);
   DeleteObject(monoBitmap);
@@ -455,9 +485,9 @@ begin
 {$endif}
 
   if IsRightToLeft then
-    Dec(aRect.Right, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem))
+    Dec(aRect.Right, leftCaptionPosition(aMenuItem))
   else
-    Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
+    Inc(aRect.Left, leftCaptionPosition(aMenuItem));
   Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
 
 {$ifdef WindowsUnicodeSupport}
@@ -508,13 +538,16 @@ begin
   DeleteObject(newFont);
 end;
 
-procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
+procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC;
+  const aRect: Windows.RECT; const aSelected, aChecked: boolean);
 var
   x: Integer;
   AEffect: TGraphicsDrawEffect;
   AImageList: TCustomImageList;
   FreeImageList: Boolean;
   AImageIndex: Integer;
+  ImageRect: TRect;
+  Brush: HBRUSH;
 begin
   AImageList := aMenuItem.GetImageList;
   if AImageList = nil then
@@ -540,14 +573,23 @@ begin
     AEffect := gdeNormal;
 
   if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - CheckSpace(aMenuItem) - AImageList.Width - spaceBetweenIcons
+    x := aRect.Right - AImageList.Width - spaceBetweenIcons
   else
-    x := aRect.Left + CheckSpace(aMenuItem) + spaceBetweenIcons;
+    x := aRect.Left + spaceBetweenIcons;
 
+  ImageRect := Rect(x, aRect.top + TopPosition(aRect.bottom - aRect.top, AImageList.Height),
+                    AImageList.Width, AImageList.Height);
+      
+  if aChecked then // draw rectangle around
+  begin
+    Brush := CreateSolidBrush(GetSysColor(COLOR_HIGHLIGHT));
+    FrameRect(aHDC, Rect(ImageRect.Left - 1, ImageRect.Top - 1, ImageRect.Left + ImageRect.Right + 1, ImageRect.Top + ImageRect.Bottom + 1), Brush);
+    DeleteObject(Brush);
+  end;
+  
   if AImageIndex < AImageList.Count then
     TWin32WSCustomImageList.DrawToDC(AImageList, AImageIndex, aHDC,
-      Rect(x, aRect.top + TopPosition(aRect.bottom - aRect.top, AImageList.Height),
-      AImageList.Width, AImageList.Height), AImageList.BkColor, AImageList.BlendColor,
+      ImageRect, AImageList.BkColor, AImageList.BlendColor,
       AEffect, AImageList.DrawingStyle, AImageList.ImageType);
   if FreeImageList then
     AImageList.Free;
@@ -560,10 +602,10 @@ begin
   else
   begin
     DrawMenuItemText(aMenuItem, aHDC, aRect, aSelected);
+    if aMenuItem.hasIcon then
+      DrawMenuItemIcon(aMenuItem, aHDC, aRect, aSelected, aMenuItem.Checked) else
     if aMenuItem.Checked then
       DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
-    if aMenuItem.hasIcon then
-      DrawMenuItemIcon(aMenuItem, aHDC, aRect, aSelected);
   end;
 end;
 
