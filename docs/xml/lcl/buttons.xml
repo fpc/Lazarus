@@ -105,41 +105,25 @@
         <short>A set of constants to define the position of a glyph on a button.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphLeft">
-        <short/>
-      </element>
+      <element name="TButtonLayout.blGlyphLeft"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphRight">
-        <short/>
-      </element>
+      <element name="TButtonLayout.blGlyphRight"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphTop">
-        <short/>
-      </element>
+      <element name="TButtonLayout.blGlyphTop"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphBottom">
-        <short/>
-      </element>
+      <element name="TButtonLayout.blGlyphBottom"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TButtonState">
         <short>A set of constants to define the state of a SpeedButton.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsUp">
-        <short/>
-      </element>
+      <element name="TButtonState.bsUp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsDisabled">
-        <short/>
-      </element>
+      <element name="TButtonState.bsDisabled"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsDown">
-        <short/>
-      </element>
+      <element name="TButtonState.bsDown"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsExclusive">
-        <short/>
-      </element>
+      <element name="TButtonState.bsExclusive"><short/></element>
       <!-- range type Visibility: default -->
       <element name="TNumGlyphs">
         <short/>
@@ -177,9 +161,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.SetGlyph.Value">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.SetGlyph.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TButtonGlyph.SetNumGlyphs">
         <short/>
@@ -188,9 +170,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.SetNumGlyphs.Value">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.SetNumGlyphs.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonGlyph.GlyphChanged">
         <short/>
@@ -199,9 +179,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.GlyphChanged.Sender">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.GlyphChanged.Sender"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TButtonGlyph.Create">
         <short>Creates a new instance of the TButtonGlyph class</short>
@@ -238,33 +216,19 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonGlyph.Draw.Result">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Canvas">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.Canvas"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Client">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.Client"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Offset">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.Offset"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.State">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.State"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Transparent">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.Transparent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.BiDiFlags">
-        <short/>
-      </element>
+      <element name="TButtonGlyph.Draw.BiDiFlags"><short/></element>
       <!-- property Visibility: public -->
       <element name="TButtonGlyph.Glyph">
         <short/>
@@ -288,57 +252,31 @@ Take the following precautions when creating your own Destroy method:
         <short>A set of possible types for BitButtons.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkCustom">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkCustom"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkOK">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkOK"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkCancel">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkCancel"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkHelp">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkHelp"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkYes">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkYes"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkNo">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkNo"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkClose">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkClose"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkAbort">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkAbort"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkRetry">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkRetry"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkIgnore">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkIgnore"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkAll">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkAll"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkNoToAll">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkNoToAll"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkYesToAll">
-        <short/>
-      </element>
+      <element name="TBitBtnKind.bkYesToAll"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TBitBtnKinds"/>
       <!-- object Visibility: default -->
@@ -384,9 +322,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetGlyph.Result">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.GetGlyph.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomBitBtn.GetNumGlyphs">
         <short/>
@@ -395,9 +331,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetNumGlyphs.Result">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.GetNumGlyphs.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomBitBtn.IsGlyphStored">
         <short/>
@@ -406,9 +340,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.IsGlyphStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.IsGlyphStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetGlyph">
         <short/>
@@ -417,9 +349,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetGlyph.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetGlyph.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetKind">
         <short/>
@@ -428,9 +358,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetKind.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetKind.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetLayout">
         <short/>
@@ -439,9 +367,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetLayout.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetLayout.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetMargin">
         <short/>
@@ -450,9 +376,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetMargin.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetMargin.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetNumGlyphs">
         <short/>
@@ -461,9 +385,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetNumGlyphs.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetNumGlyphs.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetSpacing">
         <short/>
@@ -472,9 +394,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetSpacing.AValue">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.SetSpacing.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.RealizeKind">
         <short/>
@@ -490,13 +410,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetCaptionOfKind.Result">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.GetCaptionOfKind.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.GetCaptionOfKind.aKind">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.GetCaptionOfKind.aKind"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.ActionChange">
         <short/>
@@ -505,13 +421,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.ActionChange.Sender">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.ActionChange.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.ActionChange.CheckDefaults">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.ActionChange.CheckDefaults"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.Click">
         <short/>
@@ -527,9 +439,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.GlyphChanged.Sender">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.GlyphChanged.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.InitializeWnd">
         <short/>
@@ -549,9 +459,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomBitBtn.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomBitBtn.Destroy">
         <short>Deallocates an object</short>
@@ -609,6 +517,7 @@ Take the following precautions when creating your own Destroy method:
       <element name="TBitBtn">
         <short>A Button with a small image attached</short>
         <descr>Bit Button: a push button control on a toolbar causing a particular action to be executed. It often displays a glyph or small graphic to denote its function.</descr>
+        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Action">
@@ -819,9 +728,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.AssignClient.AClient">
-        <short/>
-      </element>
+      <element name="TSpeedButtonActionLink.AssignClient.AClient"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TSpeedButtonActionLink.IsCheckedLinked">
         <short/>
@@ -830,9 +737,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
-        <short/>
-      </element>
+      <element name="TSpeedButtonActionLink.IsCheckedLinked.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TSpeedButtonActionLink.IsGroupIndexLinked">
         <short/>
@@ -841,9 +746,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
-        <short/>
-      </element>
+      <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TSpeedButtonActionLink.SetGroupIndex">
         <short/>
@@ -852,9 +755,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.SetGroupIndex.Value">
-        <short/>
-      </element>
+      <element name="TSpeedButtonActionLink.SetGroupIndex.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TSpeedButtonActionLink.SetChecked">
         <short/>
@@ -863,9 +764,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TSpeedButtonActionLink.SetChecked.Value"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomSpeedButton">
         <short>The ancestor class for TSpeedButton</short>
@@ -963,9 +862,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetGlyph.Result">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.GetGlyph.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.UpdateExclusive">
         <short/>
@@ -981,9 +878,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetAllowAllUp.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetAllowAllUp.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetGlyph">
         <short/>
@@ -992,9 +887,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetGlyph.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetGlyph.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetLayout">
         <short/>
@@ -1003,9 +896,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetLayout.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetLayout.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetTransparent">
         <short/>
@@ -1014,9 +905,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetTransparent.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetTransparent.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.CMButtonPressed">
         <short/>
@@ -1025,9 +914,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.CMButtonPressed.Message">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.CMButtonPressed.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.MouseEnter">
         <short/>
@@ -1050,9 +937,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.CMEnabledChanged.Message">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.CMEnabledChanged.Message"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TCustomSpeedButton.FState">
         <short/>
@@ -1067,9 +952,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetNumGlyphs.Result">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.GetNumGlyphs.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.GlyphChanged">
         <short/>
@@ -1078,9 +961,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.GlyphChanged.Sender">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.GlyphChanged.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseDown">
         <short/>
@@ -1089,21 +970,13 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Button">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseDown.Button"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseDown.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.X">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseDown.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Y">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseDown.Y"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseMove">
         <short/>
@@ -1112,17 +985,11 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseMove.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.X">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseMove.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.Y">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseMove.Y"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseUp">
         <short/>
@@ -1131,21 +998,13 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Button">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseUp.Button"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseUp.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.X">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseUp.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Y">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.MouseUp.Y"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.Paint">
         <short/>
@@ -1161,9 +1020,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetDown.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetDown.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetGroupIndex">
         <short/>
@@ -1172,9 +1029,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetGroupIndex.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetGroupIndex.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetFlat">
         <short/>
@@ -1183,9 +1038,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetFlat.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetFlat.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetMargin">
         <short/>
@@ -1194,9 +1047,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetMargin.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetMargin.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetNumGlyphs">
         <short/>
@@ -1205,9 +1056,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetNumGlyphs.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetNumGlyphs.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetSpacing">
         <short/>
@@ -1216,9 +1065,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetSpacing.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.SetSpacing.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.RealSetText">
         <short/>
@@ -1227,9 +1074,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.RealSetText.Value">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.RealSetText.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.UpdateState">
         <short/>
@@ -1238,9 +1083,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.UpdateState.InvalidateOnChange">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.UpdateState.InvalidateOnChange"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomSpeedButton.GetDrawFlags">
         <short/>
@@ -1249,9 +1092,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetDrawFlags.Result">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.GetDrawFlags.Result"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomSpeedButton.MouseInControl">
         <short/>
@@ -1266,13 +1107,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.ActionChange.Sender">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.ActionChange.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.ActionChange.CheckDefaults"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomSpeedButton.GetActionLinkClass">
         <short/>
@@ -1281,9 +1118,7 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetActionLinkClass.Result">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.GetActionLinkClass.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.Loaded">
         <short/>
@@ -1303,9 +1138,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomSpeedButton.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomSpeedButton.Destroy">
         <short>Deallocates an object</short>
@@ -1394,7 +1227,9 @@ Take the following precautions when creating your own Destroy method:
       <element name="TSpeedButton">
         <short>A Button used to represent states (checked or not, etc)</short>
         <descr>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>
+
 When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
+        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">
