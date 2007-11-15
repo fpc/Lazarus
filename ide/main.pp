@@ -5471,6 +5471,7 @@ var
   begin
     Result:=false;
     TheModalResult:=mrCancel;
+    if not FilenameIsPascalUnit(UnitFilename) then exit;
     
     CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     if (CurUnitInfo<>nil) and (CurUnitInfo.Component<>nil) then
@@ -5512,7 +5513,7 @@ var
       end;
     end;
 
-    //debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
+    debugln('TMainIDE.DoLoadComponentDependencyHidden ',AnUnitInfo.Filename,' Loading ancestor unit ',UnitFilename);
     // load unit source
     TheModalResult:=LoadCodeBuffer(UnitCode,UnitFilename,[lbfCheckIfText]);
     if TheModalResult<>mrOk then begin
