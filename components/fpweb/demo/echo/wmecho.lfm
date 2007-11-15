@@ -1,0 +1,10 @@
+object EchoModule: TEchoModule
+  Actions = <>
+  OnRequest = EchoModuleRequest
+  left = 302
+  top = 190
+  Height = 0
+  HorizontalOffset = 0
+  VerticalOffset = 0
+  Width = 0
+end

@@ -1,0 +1,25 @@
+object SessionModule: TSessionModule
+  Actions = <  
+    item
+      Name = 'NewSession'
+      OnRequest = NewSessionRequest
+    end  
+    item
+      Name = 'InSession'
+      Default = True
+      OnRequest = InSessionRequest
+    end  
+    item
+      Name = 'EndSession'
+      OnRequest = EndSessionRequest
+    end>
+  ActionVar = 'DemoSession'
+  CreateSession = True
+  OnNewSession = SessionModuleNewSession
+  left = 302
+  top = 190
+  Height = 0
+  HorizontalOffset = 0
+  VerticalOffset = 0
+  Width = 0
+end

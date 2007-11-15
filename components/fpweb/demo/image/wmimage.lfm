@@ -1,0 +1,19 @@
+object FPWebModule1: TFPWebModule1
+  Actions = <  
+    item
+      Name = 'Pie'
+      Default = True
+      OnRequest = PieRequest
+    end  
+    item
+      Name = 'File'
+      OnRequest = FileRequest
+    end>
+  ActionVar = 'Action'
+  left = 272
+  top = 230
+  Height = 0
+  HorizontalOffset = 0
+  VerticalOffset = 0
+  Width = 0
+end

@@ -289,7 +289,7 @@ end;
 function TFileDescWebDataModule.GetInterfaceUsesSection: string;
 begin
   Result:=inherited GetInterfaceUsesSection;
-  Result:=Result+',LResources,HTTPDefs, websession, fpHTTP,fpWeb';
+  Result:=Result+',HTTPDefs, websession, fpHTTP,fpWeb';
 end;
 
 function TFileDescWebDataModule.GetLocalizedName: string;
