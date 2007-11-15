@@ -273,6 +273,7 @@ type
     { Qt functions }
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+    procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
     procedure drawText(x,y,w,h,flags: Integer; s:PWideString); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
@@ -1541,6 +1542,11 @@ begin
   writeln('TQtDeviceContext.drawRect() x1: ',x1,' y1: ',y1,' w: ',w,' h: ',h);
   {$endif}
   QPainter_drawRect(Widget, x1, y1, w, h);
+end;
+
+procedure TQtDeviceContext.drawRoundRect(x, y, w, h, rx, ry: Integer);
+begin
+  QPainter_drawRoundRect(Widget, x, y, w, h, rx, ry);
 end;
 
 {------------------------------------------------------------------------------

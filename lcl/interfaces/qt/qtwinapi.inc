@@ -3762,8 +3762,6 @@ begin
 end;
 
 function TQtWidgetSet.RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
-var
-  Painter: QPainterH;
 begin
   Result := False;
   if not IsValidDC(DC) then
@@ -3774,8 +3772,7 @@ begin
     exit;
   end;
 
-  Painter := TQtDeviceContext(Dc).Widget;
-  QPainter_drawRoundRect(Painter, X1, Y1, X2, Y2, RX, RY);
+  TQtDeviceContext(Dc).drawRoundRect(X1, Y1, X2 - X1 - 1, Y2 - Y1 - 1, RX, RY);
   Result := True;
 end;
 {------------------------------------------------------------------------------
