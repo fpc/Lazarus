@@ -165,30 +165,34 @@ begin
       if FBitmap <> nil
       then begin
         lbStyle := BS_PATTERN;
-        //FBrushData.Bitmap.HandleType := bmDDB;
         lbHatch := FBitmap.Handle;
       end else
       begin
-        lbHatch := 0;
-        case Style of
-          bsSolid: lbStyle := BS_SOLID;
-          bsClear: lbStyle := BS_HOLLOW;
-        else
-          lbStyle := BS_HATCHED;
-          lbHatch := Ord(Style) - Ord(bsHorizontal);
+      lbHatch := 0;
+      case Style of
+        bsSolid: lbStyle := BS_SOLID;
+        bsClear: lbStyle := BS_HOLLOW;
+      else
+        lbStyle := BS_HATCHED;
+        lbHatch := Ord(Style) - Ord(bsHorizontal);
         end;
       end;
       lbColor := ColorRef(FColor);
     end;
-    CachedBrush:=BrushResourceCache.FindDescriptor(@LogBrush);
-    if CachedBrush<>nil then begin
+    CachedBrush := BrushResourceCache.FindDescriptor(@LogBrush);
+    if CachedBrush <> nil then
+    begin
       CachedBrush.Item.IncreaseRefCount;
       FHandle := CachedBrush.Item.Handle;
-    end else begin
-      FHandle := CreateBrushIndirect(LogBrush);
+    end else
+    begin
+      if LogBrush.lbStyle <> BS_PATTERN then
+        FHandle := CreateBrushIndirect(LogBrush)
+      else
+        FHandle := CreatePatternBrush(LogBrush.lbHatch);
       BrushResourceCache.AddResource(FHandle,@LogBrush);
     end;
-    FBrushHandleCached:=true;
+    FBrushHandleCached := True;
   end;
 
   Result := FHandle;
