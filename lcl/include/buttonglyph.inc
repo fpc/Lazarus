@@ -21,7 +21,6 @@
 constructor TButtonGlyph.Create;
 begin
   FOriginal := TBitmap.Create;
-  FOriginal.Handle := 0;
   FOriginal.OnChange := @GlyphChanged;
   FImages := TCustomImageList.Create(nil);
 end;
