@@ -143,9 +143,8 @@ type
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
 
     // create and destroy
-    {$IFDEF GTK1}
-    function CreateComboBox(ComboBoxObject: TObject): Pointer;
-    {$ENDIF}
+    function CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String
+      ): PGtkWidget; virtual; // temporary solution till all are created through createhandle
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
@@ -304,7 +303,7 @@ type
                              ConvertAmpersandsToUnderScores: Boolean) : PChar;
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override;
+    function CreateComponent(Sender: TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;

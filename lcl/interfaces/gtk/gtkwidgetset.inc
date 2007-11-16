@@ -4483,49 +4483,6 @@ begin
   InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
-{$IFDEF GTK1}
-{-------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreateComboBox(ComboBoxObject: TObject): Pointer;
--------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateComboBox(ComboBoxObject: TObject): Pointer;
-var
-  Widget: PGtkCombo;
-  ItemList: TGtkListStringList;
-  ComboBox: TComboBox;
-  GtkList: PGtkList;
-begin
-  ComboBox:=TComboBox(ComboBoxObject);
-  Result:= gtk_combo_new();
-  Widget:= PGTKCombo(Result);
-
-  SetMainWidget(Result, Widget^.entry);
-
-  gtk_combo_disable_activate(Widget);
-  gtk_combo_set_case_sensitive(Widget, GdkTrue);
-  
-  // Prevents the OnSelect event be fired after inserting the first item
-  // or deleting the selected item
-  GtkList:=PGtkList(Widget^.List);
-  if GtkList^.selection=nil then
-    gtk_list_set_selection_mode(GtkList,GTK_SELECTION_SINGLE)
-  else
-    gtk_list_set_selection_mode(GtkList,GTK_SELECTION_BROWSE);
-
-  // Items
-  ItemList:= TGtkListStringList.Create(GtkList,ComboBox,False);
-  gtk_object_set_data(PGtkObject(Widget), GtkListItemLCLListTag, ItemList);
-  ItemList.Assign(ComboBox.Items);
-  ItemList.Sorted:= ComboBox.Sorted;
-
-  // ItemIndex
-  if ComboBox.ItemIndex >= 0 then
-    gtk_list_select_item(GtkList, ComboBox.ItemIndex);
-
-  // MaxLength
-  gtk_entry_set_max_length(PGtkEntry(Widget^.entry),guint16(ComboBox.MaxLength));
-end;
-{$ENDIF}
-
 
 procedure TGtkWidgetSet.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer);
 begin
@@ -4784,21 +4741,22 @@ begin
   gtk_widget_show(Result);
 end;
 
+
 {------------------------------------------------------------------------------
-  Function: TGtkWidgetSet.CreateComponent
-  Params:   sender - object for which to create visual representation
+  Function: TGtkWidgetSet.CreateComponentWidget
+  Params:   Ssender - object for which to create visual representation
+            CompStyle - componentstyle (type) of GtkWidget which will be created
+            Caption - the caption of "Sender"
   Returns:  nothing
 
   Tells GTK Engine to create a widget
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateComponent(Sender : TObject): THandle;
+function TGTKWidgetSet.CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String): PGtkWidget;
 var
-  Caption : ansistring;          // the caption of "Sender"
-  StrTemp : PChar;               // same as "caption" but as PChar
+  p: Pointer absolute Result;
+  
   TempWidget,
   TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
-  p          : pointer;          // ptr to the newly created GtkWidget
-  CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
 
   Box       : Pointer;           // currently only used for MainMenu
@@ -4806,15 +4764,9 @@ var
   Adjustment: PGtkAdjustment;
   LabelWidget: PGtkLabel;
 begin
-  p := nil;
+  Result := nil;
 
-  CompStyle := GetCompStyle(Sender);
-  Caption   := GetCaption(Sender);
-
-  strTemp := StrAlloc(length(Caption) + 1);
-  StrPCopy(strTemp, Caption);
-
-  case CompStyle of
+  case ACompStyle of
   csAlignment :
     begin
       p := gtk_alignment_new(0.5,0.5,0,0);
@@ -4830,9 +4782,6 @@ begin
       gtk_object_set_data(P, 'arrow', TempWidget);
     end;
 
-  csBitBtn,
-  csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
-
   csCalendar :
     begin
       p := gtk_frame_new(nil);
@@ -4845,56 +4794,13 @@ begin
 
   csCheckbox :
     begin
-      p := gtk_check_button_new_with_label(strTemp);
+      p := gtk_check_button_new_with_label(PChar(ACaption));
     end;
 
-  csClistBox :
-    {$IFdef GTK2}
-    begin
-      p:= gtk_scrolled_window_new(nil, nil);//give something just in case
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-
-      DebugLn('TODO: TGtkWidgetSet.CreateComponent csCListBox');
-    end;
-    {$Else}
-    begin
-      p:= gtk_scrolled_window_new(nil, nil);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-
-      with TCListBox(Sender)
-      do begin
-        TempWidget:= gtk_clist_new(ListColumns);
-        //gtk_container_add(PGtkContainer(p), TempWidget);
-        for TempInt := 0 to ListColumns - 1 do
-          gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt,
-                                             (Max(0,Width-10)) div ListColumns);
-      end;
-      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
-      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-                    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-                    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-      gtk_widget_show(TempWidget);
-
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-      SetSelectionMode(Sender,p,TCListBox(Sender).MultiSelect,
-                       TCListBox(Sender).ExtendedSelect)
-    end;
-    {$EndIf}
 
   csColorDialog :
     begin
-      P := gtk_color_selection_dialog_new(StrTemp);
+      P := gtk_color_selection_dialog_new(PChar(ACaption));
       g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button),
         'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
       g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button),
@@ -4902,84 +4808,21 @@ begin
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
 
-  {$IFDEF GTK1}
-  csComboBox :
-    p:=CreateComboBox(TComboBox(Sender));
-  {$ENDIF}
-
-  csEdit :
-    RaiseGDBException('obsolete call to CreateComponent');
 
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog:
-    InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
+    InitializeFileDialog(TFileDialog(Sender),p,PChar(ACaption));
 
   csFontDialog :
-    InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
+    InitializeFontDialog(TFontDialog(Sender),p,PChar(ACaption));
 
   csWinControl:
     p:=CreateAPIWidget(TWinControl(Sender));
 
-  csForm:
-    RaiseGDBException('obsolete call to CreateComponent');
-
-(*
-  csFrame :
-    begin
-      P := gtk_frame_new(' ');
-      gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
-    end;
-*)
-  csGroupBox:
-    RaiseGDBException('obsolete call to CreateComponent');
-
-  csHintWindow :
-    RaiseGDBException('obsolete call to CreateComponent');
 
   csImage :
-    Begin
+    begin
       p := gtk_image_new();
-    end;
-
-  csListBox, csCheckListBox:
-    {$IFdef GTK2}
-    begin
-      p:= gtk_scrolled_window_new(nil, nil);//give something just in case
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-
-      DebugLn('TODO: TGtkWidgetSet.CreateComponent csListBox, csCheckListBox');
-    end;
-    {$Else}
-    begin
-      p:= gtk_scrolled_window_new(nil, nil);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      gtk_widget_show(p);
-      TempWidget:= gtk_list_new;
-      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
-      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-                   gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-                   gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-      gtk_widget_show(TempWidget);
-
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-      if Sender is TCustomListBox then
-        SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
-                         TCustomListBox(Sender).ExtendedSelect);
-    end;
-   {$EndIf}
-
-  csListView :
-    Begin
-      DebugLn('[WARNING] Obsolete call to TGTKObject.CreateComponent for ', Sender.ClassName);
     end;
 
   csMainMenu:
@@ -4998,37 +4841,6 @@ begin
       gtk_widget_show(p);
     end;
 
-  {$IfDef GTK1}
-  csMemo :
-    begin
-      P := gtk_scrolled_window_new(nil, nil);
-      TempWidget := gtk_text_new(nil, nil);
-      gtk_container_add(p, TempWidget);
-
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
-      gtk_text_set_adjustments(PGtkText(TempWidget),
-        gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)),
-        gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-
-      gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(Sender).ReadOnly);
-      if TCustomMemo(Sender).WordWrap then
-        gtk_text_set_line_wrap(PGtkText(TempWidget), GdkTrue)
-      else
-        gtk_text_set_line_wrap(PGtkText(TempWidget), GdkFalse);
-      gtk_text_set_word_wrap(PGtkText(TempWidget), GdkTrue);
-
-      gtk_widget_show_all(P);
-      DebugLn(['TGtkWidgetSet.CreateComponent ',DbgSName(Sender),' ',GetWidgetDebugReport(p)]);
-    end;
-  {$EndIF}
-
   csMenuBar :
     begin
        P := gtk_menu_bar_new();
@@ -5038,8 +4850,6 @@ begin
        gtk_widget_show(p);
     end;
 
-  csMenuItem :
-    RaiseGDBException('obsolete call');
 
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender,true);
@@ -5050,14 +4860,8 @@ begin
   csPairSplitterSide:
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
-  csPanel:
-    begin
-      RaiseGDBException('obsolete call to CreateComponent '+DbgSName(Sender));
-    end;
-
   csPopupMenu :
-    with (TPopupMenu(Sender)) do
-      P := gtk_menu_new();
+    P := gtk_menu_new();
 
   csPreviewFileControl:
     P:=CreateSimpleClientAreaWidget(Sender,true);
@@ -5090,7 +4894,7 @@ begin
       else
         P:= gtk_radio_button_new_with_label(nil, '');
       LabelWidget:=pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(P)^.Button)));
-      GtkWidgetSet.SetLabelCaption(LabelWidget, StrTemp
+      SetLabelCaption(LabelWidget, PChar(ACaption)
          {$IFDEF Gtk1}, TWinControl(Sender),PGtkWidget(p), 'clicked'{$ENDIF});
     end;
 
@@ -5115,14 +4919,8 @@ begin
 
   csSpeedButton:
     Begin
-      p := gtk_button_new_with_label(StrTemp);
+      p := gtk_button_new_with_label(PChar(ACaption));
     end;
-
-  csSpinEdit :
-    RaiseGDBException('obsolete call to CreateComponent');
-
-  csStaticText:
-    RaiseGDBException('obsolete call to CreateComponent');
 
   csStatusBar :
     begin
@@ -5131,7 +4929,7 @@ begin
 
   csToggleBox :
     begin
-      P := gtk_toggle_button_new_with_label(StrTemp);
+      P := gtk_toggle_button_new_with_label(PChar(ACaption));
     end;
 
   csToolbar:
@@ -5172,7 +4970,7 @@ begin
                                      GTK_POLICY_NEVER);
 
       gtk_object_set_data(P,odnScrollArea, TempWidget);
-      
+
       Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(TempWidget));
       if Adjustment <> nil
       then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
@@ -5191,8 +4989,44 @@ begin
 
     end;
 
+  // All obsoletes (some of them may still be in use for gtk1/gtk2, they are overridden there)
+  csClistBox, csListBox, csCheckListBox,
+  csComboBox,
+  csMemo,
+  csSpinEdit,
+  csStaticText,
+  csPanel,
+  csMenuItem,
+  csListView,
+  csHintWindow,
+  csGroupBox,
+  csForm,
+  csEdit,
+  csBitBtn,
+  csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
+  
   end; //end case
-  StrDispose(StrTemp);
+end;
+
+
+{------------------------------------------------------------------------------
+  Function: TGtkWidgetSet.CreateComponent
+  Params:   sender - object for which to create visual representation
+  Returns:  nothing
+
+  Tells GTK Engine to create a widget
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.CreateComponent(Sender : TObject): THandle;
+var
+  Caption: string;     // the caption of "Sender"
+  p: pointer;          // ptr to the newly created GtkWidget
+  CompStyle: Integer;  // componentstyle (type) of GtkWidget which will be created
+begin
+  CompStyle := GetCompStyle(Sender);
+  Caption   := GetCaption(Sender);
+
+  p := CreateComponentWidget(Sender, CompStyle, Caption);
+
   FinishComponentCreate(Sender, P);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(Sender));

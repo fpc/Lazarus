@@ -327,10 +327,6 @@ begin
   end;
 end;
 
-function TGtk2WidgetSet.CreateComponent(Sender : TObject): THandle;
-begin
-  Result:=Inherited CreateComponent(Sender);
-end;
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
 var
@@ -889,6 +885,46 @@ begin
   im_context:=gtk_im_multicontext_new;
   g_signal_connect (G_OBJECT (im_context), 'commit',
     G_CALLBACK (@gtk_commit_cb), nil);
+end;
+
+function TGtk2WidgetSet.CreateCListBox(Sender: TObject): PGtkWidget;
+var
+  ScrolledWnd: PGtkScrolledWindow absolute Result;
+begin
+  Result := gtk_scrolled_window_new(nil, nil);//give something just in case
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(ScrolledWnd, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_show(Result);
+
+  DebugLn('TODO: TGtkWidgetSet.CreateComponent csCListBox');
+end;
+
+function TGtk2WidgetSet.CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String): PGtkWidget;
+begin
+  case ACompstyle of
+    csListBox, csCheckListBox:
+      Result := CreateListBox(Sender);
+
+    csCListBox:
+      Result := CreateCListBox(Sender);
+
+  else
+    Result := inherited CreateComponentWidget(Sender, ACompStyle, ACaption);
+  end;
+end;
+
+function TGtk2WidgetSet.CreateListBox(Sender: TObject): PGtkWidget;
+var
+  ScrolledWnd: PGtkScrolledWindow absolute Result;
+begin
+  Result := gtk_scrolled_window_new(nil, nil);//give something just in case
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(ScrolledWnd, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_show(Result);
+
+  DebugLn('TODO: TGtkWidgetSet.CreateComponent csListBox, csCheckListBox');
 end;
 
 destructor TGtk2WidgetSet.Destroy;

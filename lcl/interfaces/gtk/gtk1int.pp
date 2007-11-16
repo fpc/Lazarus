@@ -66,10 +66,17 @@ uses
 
 type
 
-  { TGTKWidgetSet }
+  { TGTK1WidgetSet }
 
   TGTK1WidgetSet = class(TGTKWidgetSet)
+  private
+    function CreateComboBox(ComboBoxObject: TObject): PGtkWidget;
+    function CreateCListBox(Sender: TObject): PGtkWidget;
+    function CreateListBox(Sender: TObject): PGtkWidget;
+    function CreateMemo(Sender: TObject): PGtkWidget;
   protected
+    function CreateComponentWidget(Sender: TObject; ACompStyle: Integer;
+             const ACaption: String): PGtkWidget; override; // temporary solution till all are created through createhandle
   public
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
   end;
@@ -113,6 +120,7 @@ uses
 // Gtk1WSToolwin,
 // Gtk1Themes,
 ////////////////////////////////////////////////////
+  StdCtrls, CListBox,
   GTKWinApiWindow;
 
 {$include gtk1widgetset.inc}

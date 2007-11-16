@@ -55,9 +55,15 @@ type
   { TGtk2WidgetSet }
 
   TGtk2WidgetSet = class(TGtkWidgetSet)
+  private
+    function CreateCListBox(Sender: TObject): PGtkWidget;
+    function CreateListBox(Sender: TObject): PGtkWidget;
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
-    function CreateComponent(Sender : TObject): THandle; override;
+
+    function CreateComponentWidget(Sender: TObject; ACompStyle: Integer;
+             const ACaption: String): PGtkWidget; override; // temporary solution till all are created through createhandle
+
     function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
