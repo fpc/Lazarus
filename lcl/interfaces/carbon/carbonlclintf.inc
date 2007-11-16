@@ -617,6 +617,23 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetTextFractional
+  Params:  ACanvas - LCL Canvas
+
+  Sets canvas text fractional enabled
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);
+begin
+   {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.SetTextFractional ACanvas: ' + DbgS(ACanvas) + ' AEnabled: ' + DbgS(AEnabled));
+  {$ENDIF}
+  
+  if not CheckDC(ACanvas.Handle, 'SetTextFractional') then Exit;
+  
+  TCarbonDeviceContext(ACanvas.Handle).TextFractional := AEnabled;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 // included by carbonint.pas

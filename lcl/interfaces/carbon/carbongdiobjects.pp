@@ -167,6 +167,7 @@ type
   TCarbonBitmap = class(TCarbonGDIObject)
   private
     FData: Pointer;
+    FAlignment: TCarbonBitmapAlignment;
     FFreeData: Boolean;
     FDataSize: Integer;
     FBytesPerRow: Integer;
@@ -183,6 +184,7 @@ type
     constructor Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer;
       AAlignment: TCarbonBitmapAlignment; AType: TCarbonBitmapType;
       AData: Pointer; ACopyData: Boolean = True);
+    constructor Create(ABitmap: TCarbonBitmap);
     destructor Destroy; override;
     procedure Update;
     function CreateSubImage(const ARect: TRect): CGImageRef;
@@ -289,6 +291,10 @@ var
   StockNullBrush: TCarbonBrush;
   WhiteBrush: TCarbonBrush;
   BlackPen: TCarbonPen;
+  
+  DefaultFont: TCarbonFont;
+  DefaultBrush: TCarbonBrush;
+  DefaultPen: TCarbonPen;
 
   DefaultBitmap: TCarbonBitmap; // 1 x 1 bitmap for default context
   
@@ -636,6 +642,7 @@ end;
 procedure TCarbonRegion.Apply(ADC: TCarbonContext);
 begin
   if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
   
   if OSError(HIShapeReplacePathInCGContext(FShape, ADC.CGContext),
     Self, 'Apply', 'HIShapeReplacePathInCGContext') then Exit;
@@ -960,6 +967,7 @@ var
   AROP2: Integer;
 begin
   if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
 
   if UseROP2 then AROP2 := (ADC as TCarbonDeviceContext).ROP2
   else AROP2 := R2_COPYPEN;
@@ -1027,6 +1035,7 @@ var
   AROP2: Integer;
 begin
   if ADC = nil then Exit;
+  if ADC.CGContext = nil then Exit;
 
   if UseROP2 then AROP2 := (ADC as TCarbonDeviceContext).ROP2
   else AROP2 := R2_COPYPEN;
@@ -1100,7 +1109,7 @@ end;
   Params:  AWidth        - Bitmap width
            AHeight       - Bitmap height
            ADepth        - Significant bits per pixel
-           ABitsPerPixel - The number of allocated bits per pixel (can be larget that depth)
+           ABitsPerPixel - The number of allocated bits per pixel (can be larger than depth)
            AAlignment    - Alignment of the data for each row
            ABytesPerRow  - The number of bytes between rows
            ACopyData     - Copy supplied bitmap data (OPTIONAL)
@@ -1113,8 +1122,7 @@ constructor TCarbonBitmap.Create(AWidth, AHeight, ADepth, ABitsPerPixel: Integer
 const
   ALIGNBITS: array[TCarbonBitmapAlignment] of Integer = (0, 1, 3, 7, $F);
 var
-  m: Integer;
-
+  M: Integer;
 begin
   inherited Create(False);
   
@@ -1127,11 +1135,11 @@ begin
   FDepth := ADepth;
   FBitsPerPixel := ABitsPerPixel;
   FType := AType;
+  FAlignment := AAlignment;
 
   FBytesPerRow := ((AWidth * ABitsPerPixel) + 7) shr 3;
-  m := FBytesPerRow and ALIGNBITS[AAlignment];
-  if m <> 0
-  then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - m);
+  M := FBytesPerRow and ALIGNBITS[AAlignment];
+  if M <> 0 then Inc(FBytesPerRow, ALIGNBITS[AAlignment] + 1 - M);
 
   FDataSize := FBytesPerRow * FHeight;
   
@@ -1155,6 +1163,18 @@ begin
   Update;
   
   //DbgDumpImage(FCGImage, 'TCarbonBitmap.Create');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.Create
+  Params:  ABitmap - Source bitmap
+
+  Creates Carbon bitmap as a copy of specified bitmap
+ ------------------------------------------------------------------------------}
+constructor TCarbonBitmap.Create(ABitmap: TCarbonBitmap);
+begin
+  Create(ABitmap.Width, ABitmap.Height, ABitmap.Depth, ABitmap.FBitsPerPixel,
+    ABitmap.FAlignment, ABitmap.FType, ABitmap.Data);
 end;
 
 {------------------------------------------------------------------------------
@@ -1577,6 +1597,11 @@ initialization
   WhiteBrush := TCarbonBrush.Create(True);
   BlackPen := TCarbonPen.Create(True);
   
+  DefaultFont := TCarbonFont.Create(True);
+
+  DefaultBrush := TCarbonBrush.Create(True);
+  DefaultPen := TCarbonPen.Create(True);
+  
   DefaultContext := TCarbonBitmapContext.Create;
   DefaultBitmap := TCarbonBitmap.Create(1, 1, 32, 32, cbaDQWord, cbtARGB, nil);
   DefaultContext.Bitmap := DefaultBitmap;
@@ -1587,6 +1612,11 @@ initialization
 finalization
   DefaultContext.Free;
   ScreenContext.Free;
+  
+  DefaultBrush.Free;
+  DefaultPen.Free;
+  
+  DefaultFont.Free;
   
   BlackPen.Free;
   WhiteBrush.Free;

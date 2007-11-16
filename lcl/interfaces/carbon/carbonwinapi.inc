@@ -286,8 +286,7 @@ end;
   Creates new logical brush that has the specified style, color, and pattern
   TODO: patterns
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush
-  ): HBRUSH;
+function TCarbonWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 begin
   {$IFDEF VerboseWinAPI}
     DebugLn('TCarbonWidgetSet.CreateBrushIndirect');
@@ -296,10 +295,29 @@ begin
   Result := HBRUSH(TCarbonBrush.Create(LogBrush));
 end;
 
-function TCarbonWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; width,
-  Height: Integer): Boolean;
+{------------------------------------------------------------------------------
+  Method:  CreateCaret
+  Params:  Handle - handle to owner window
+           Bitmap - handle to bitmap for caret shape
+           Width  - caret width
+           Height - caret height
+  Returns: If the function succeeded
+
+  Creates a new shape for the system caret and assigns ownership of the caret
+  to the specified window
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.CreateCaret(Handle: HWND; Bitmap: hBitmap; Width, Height: Integer): Boolean;
 begin
-  Result:=inherited CreateCaret(Handle, Bitmap, width, Height);
+  Result := True;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.CreateCaret Handle: ' + DbgS(Handle) + ' Bitmap: ' + DbgS(Bitmap),
+      ' W: ' + DbgS(Width), ' H: ' + DbgS(Height));
+  {$ENDIF}
+  if not CheckWidget(Handle, 'CreateCaret') then Exit;
+  if Bitmap > 1 then
+    if not CheckBitmap(Bitmap, 'CreateCaret') then Exit;
+  
+  Result := CarbonCaret.CreateCaret(TCarbonWidget(Handle), Bitmap, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -538,9 +556,22 @@ begin
   Result := True;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  DestroyCaret
+  Params:  Handle - handle to the window with a caret (IGNORED)
+  Returns: If the function succeeds
+
+  Destroys the caret but doesn't free the bitmap.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
-  Result:=inherited DestroyCaret(Handle);
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.DestroyCaret Handle: ' + DbgS(Handle));
+  {$ENDIF}
+  
+  Result := CarbonCaret.DestroyCaret;
 end;
 
 {------------------------------------------------------------------------------
@@ -990,9 +1021,20 @@ begin
   Result := FCaptureWidget;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  GetCaretPos
+  Params:  LPPoint - record to receive coordinates
+  Returns: If the function succeeds
+
+  Gets the caret's position, in client coordinates.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
-  Result:=inherited GetCaretPos(lpPoint);
+  Result := CarbonCaret.GetCaretPos(lpPoint);
+  
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.GetCaretPos Point: ' + DbgS(lpPoint), ' Result: ' + DbgS(Result));
+  {$ENDIF}
 end;
 
 function TCarbonWidgetSet.GetCaretRespondToFocus(handle: HWND;
@@ -1079,8 +1121,7 @@ begin
   if not CheckDC(DC, 'GetClipBox') then Exit;
   
   if lpRect <> nil then
-    lpRect^ := CGRectToRect(
-      CGContextGetClipBoundingBox(TCarbonDeviceContext(DC).CGContext));
+    lpRect^ := TCarbonDeviceContext(DC).GetClipRect;
 
   Result := COMPLEXREGION;
   
@@ -1848,9 +1889,22 @@ begin
     Mode);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  HideCaret
+  Params:  HWnd - handle to the window with the caret
+  Returns: Whether the window owns the caret
+
+  Removes the caret from the screen.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.HideCaret(hWnd: HWND): Boolean;
 begin
-  Result:=inherited HideCaret(hWnd);
+  Result := False;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.HideCaret Handle: ' + DbgS(hWnd));
+  {$ENDIF}
+  if not CheckWidget(hWnd, 'HideCaret') then Exit;
+
+  Result := CarbonCaret.HideCaret(TCarbonWidget(hWnd));
 end;
 
 {------------------------------------------------------------------------------
@@ -2623,14 +2677,38 @@ begin
   Result:=inherited SetCapture(AHandle);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetCaretPos
+  Params:  X, Y - Caret pos
+  Returns: If the function succeeds
+
+  Moves the caret to the specified coordinates.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result:=inherited SetCaretPos(X, Y);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetCaretPos X: ' + DbgS(X) + ' Y: ' + DbgS(Y));
+  {$ENDIF}
+  
+  Result := CarbonCaret.SetCaretPos(X, Y);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  SetCaretPosEx
+  Params:  Handle - handle of window
+           X      - Horizontal caret coordinate
+           Y      - Vertical caret coordinate
+  Returns: If the function succeeds
+
+  Moves the caret to the specified coordinates in the specified window.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result:=inherited SetCaretPosEx(Handle, X, Y);
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.SetCaretPosEx X: ' + DbgS(X) + ' Y: ' + DbgS(Y));
+  {$ENDIF}
+  
+  Result := CarbonCaret.SetCaretPos(X, Y);
 end;
 
 function TCarbonWidgetSet.SetCaretRespondToFocus(handle: HWND;
@@ -2908,9 +2986,22 @@ begin
   Result:=inherited SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  ShowCaret
+  Params:  HWnd - Handle of window with caret
+  Returns: if the function succeeds
+
+  Makes the caret visible on the screen at the caret's current position.
+ ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
-  Result:=inherited ShowCaret(hWnd);
+  Result := False;
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCarbonWidgetSet.ShowCaret Handle: ' + DbgS(hWnd));
+  {$ENDIF}
+  if not CheckWidget(hWnd, 'ShowCaret') then Exit;
+
+  Result := CarbonCaret.ShowCaret(TCarbonWidget(hWnd));
 end;
 
 function TCarbonWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;

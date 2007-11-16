@@ -713,7 +713,7 @@ end;
 function TCarbonComboBox.SetItemIndex(AIndex: Integer): Boolean;
 begin
   Result := False;
-  DebugLn('TCarbonComboBox.SetItemIndex New: ' + DbgS(AIndex) + ' Prev: ' + DbgS(FItemIndex));
+  //DebugLn('TCarbonComboBox.SetItemIndex New: ' + DbgS(AIndex) + ' Prev: ' + DbgS(FItemIndex));
   if AIndex <> FItemIndex then
   begin
     if FReadOnly then SetValue(AIndex + 1)

@@ -198,12 +198,15 @@ type
     FScrollPageSize: TPoint;
     FMulX: Single; // multiply x coords to fit real page size
     FMulY: Single; // multiply y coords to fit real page size
+    FTextFractional: Boolean;
   protected
     procedure RegisterEvents; override;
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetFrame(Index: Integer): ControlRef; override;
-  public
+    public
+    class function GetValidEvents: TCarbonControlEvents; override;
+    procedure Draw; override;
     procedure GetInfo(out AImageSize, AViewSize, ALineSize: HISize; out AOrigin: HIPoint); virtual;
     procedure ScrollTo(const ANewOrigin: HIPoint); virtual;
   public
@@ -211,6 +214,8 @@ type
     procedure SetFont(const AFont: TFont); override;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); override;
     function SetScrollInfo(SBStyle: Integer; const ScrollInfo: TScrollInfo): Integer; override;
+
+    property TextFractional: Boolean read FTextFractional write FTextFractional;
   end;
   
   { TCarbonScrollingWinControl }
@@ -271,7 +276,7 @@ function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
 implementation
 
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
-  CarbonWSStdCtrls, CarbonCanvas;
+  CarbonWSStdCtrls, CarbonCanvas, CarbonCaret;
 
 {------------------------------------------------------------------------------
   Name:    RaiseCreateWidgetError
@@ -690,6 +695,11 @@ begin
   FScrollOrigin := GetHIPoint(0, 0);
   FMulX := 1;
   FMulY := 1;
+  
+  if LCLObject.ClassType.ClassNameIs('TSynEdit') then
+     FTextFractional := False
+  else
+    FTextFractional := True;
     
   inherited;
 end;
@@ -714,6 +724,30 @@ end;
 function TCarbonCustomControl.GetFrame(Index: Integer): ControlRef;
 begin
   Result := FScrollView;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.GetValidEvents
+  Returns: Set of events with installed handlers
+ ------------------------------------------------------------------------------}
+class function TCarbonCustomControl.GetValidEvents: TCarbonControlEvents;
+begin
+  Result := [cceDraw];
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonCustomControl.Draw
+
+  Draw event handler
+ ------------------------------------------------------------------------------}
+procedure TCarbonCustomControl.Draw;
+begin
+  if Context <> nil then
+  begin
+    (Context as TCarbonDeviceContext).TextFractional := TextFractional;
+    if LCLObject.Color <> clBtnFace then
+      with (Context as TCarbonDeviceContext) do FillRect(GetClipRect, CurrentBrush);
+  end;
 end;
 
 {------------------------------------------------------------------------------

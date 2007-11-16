@@ -81,6 +81,7 @@ type
     FClipRegion: TCarbonRegion;
     
     FSavedDCList: TFPObjectList;
+    FTextFractional: Boolean;
 
     procedure SetBkColor(const AValue: TColor);
     procedure SetBkMode(const AValue: Integer);
@@ -116,8 +117,10 @@ type
     function ExtTextOut(X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
     procedure FillRect(Rect: TRect; Brush: TCarbonBrush);
     procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
+    function GetClipRect: TRect;
     function GetTextExtentPoint(Str: PChar; Count: Integer; var Size: TSize): Boolean;
     function GetTextMetrics(var TM: TTextMetric): Boolean;
+    procedure InvertRectangle(X1, Y1, X2, Y2: Integer);
     procedure LineTo(X, Y: Integer);
     procedure PolyBezier(Points: PPoint; NumPts: Integer; Filled, Continuous: boolean);
     procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean);
@@ -144,6 +147,8 @@ type
 
     property ROP2: Integer read FROP2 write SetROP2;
     property PenPos: TPoint read FPenPos write FPenPos;
+    
+    property TextFractional: Boolean read FTextFractional write FTextFractional;
   end;
 
   { TCarbonScreenContext }
@@ -164,6 +169,7 @@ type
     function GetSize: TPoint; override;
   public
     constructor Create(AOwner: TCarbonWidget);
+    procedure Reset; override;
   end;
 
   { TCarbonBitmapContext }
@@ -389,17 +395,19 @@ begin
   FBkBrush := TCarbonBrush.Create(False);
   FTextBrush := TCarbonBrush.Create(False);
   
-  FCurrentPen := BlackPen;
+  FCurrentPen := DefaultPen;
   FCurrentPen.Select;
-  FCurrentBrush := WhiteBrush;
+  FCurrentBrush := DefaultBrush;
   FCurrentBrush.Select;
-  FCurrentFont := StockSystemFont;
+  FCurrentFont := DefaultFont;
   FCurrentFont.Select;
   
   FClipRegion := TCarbonRegion.Create;
 
   FCurrentRegion := FClipRegion;
   FCurrentRegion.Select;
+  
+  FTextFractional := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -446,7 +454,7 @@ begin
   // set raster operation to copy
   FROP2 := R2_COPYPEN;
 
-  CurrentFont := StockSystemFont;
+  CurrentFont := DefaultFont;
   
   if CGContext <> nil then
   begin
@@ -458,8 +466,8 @@ begin
     CGContextSetShouldAntialias(CGContext, 1);
     
     // set initial pen, brush and font
-    CurrentPen := BlackPen;
-    CurrentBrush := WhiteBrush;
+    CurrentPen := DefaultPen;
+    CurrentBrush := DefaultBrush;
   end;
 end;
 
@@ -645,16 +653,18 @@ begin
   if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
     Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
 
-  // disable fractional positions of glyphs in layout
-  Tag := kATSULineLayoutOptionsTag;
-  DataSize := SizeOf(ATSLineLayoutOptions);
+  if not TextFractional then
+  begin
+    // disable fractional positions of glyphs in layout
+    Tag := kATSULineLayoutOptionsTag;
+    DataSize := SizeOf(ATSLineLayoutOptions);
 
-  Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
-    kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
-  PValue := @Options;
-  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
-    Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
-
+    Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
+      kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
+    PValue := @Options;
+    if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+      Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
+  end;
 
   // set layout context
   Tag := kATSUCGContextTag;
@@ -836,6 +846,8 @@ const
   SName = 'ExtTextOut';
 begin
   Result := False;
+  //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
+  //  ' S: ' + Str + ' C: ' + DbgS(Count));
   
   if not BeginTextRender(Str, Count, TextLayout) then
   begin
@@ -930,8 +942,6 @@ var
 const
   SName = 'Frame3D';
 begin
-  if CurrentBrush.Solid then FillRect(ARect, CurrentBrush);
-
   if Style = bvRaised then
   begin
     D := GetCarbonThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, 1);
@@ -951,6 +961,15 @@ begin
       InflateRect(ARect, -D, -D);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.GetClipRect
+  Returns: Clipping rectangle
+ ------------------------------------------------------------------------------}
+function TCarbonDeviceContext.GetClipRect: TRect;
+begin
+  Result := CGRectToRect(CGContextGetClipBoundingBox(CGContext));
 end;
 
 {------------------------------------------------------------------------------
@@ -1068,6 +1087,29 @@ begin
   TM.tmCharSet := DEFAULT_CHARSET;
 
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.InvertRectangle
+  Params:  X1 - X-coordinate of bounding rectangle's upper-left corner
+           Y1 - Y-coordinate of bounding rectangle's upper-left corner
+           X2 - X-coordinate of bounding rectangle's lower-right corner
+           Y2 - Y-coordinate of bounding rectangle's lower-right corner
+
+  Draws an inverted rectangle.
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.InvertRectangle(X1, Y1, X2, Y2: Integer);
+begin
+  // save dest context
+  CGContextSaveGState(CGContext);
+  try
+    WhiteBrush.Apply(Self, False);
+    CGContextSetBlendMode(CGContext, kCGBlendModeDifference);
+    
+    CGContextFillRect(CGContext, GetCGRectSorted(X1, Y1, X2, Y2));
+  finally
+    CGContextRestoreGState(CGContext);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1421,6 +1463,30 @@ begin
 
   FOwner := AOwner;
   Reset;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlContext.Reset
+
+  Resets the control context properties to defaults (pen, brush, ...)
+ ------------------------------------------------------------------------------}
+procedure TCarbonControlContext.Reset;
+begin
+  inherited Reset;
+  
+  if CGContext <> nil then
+    if CurrentBrush <> nil then // apply control background color
+    begin
+      if FOwner.LCLObject.Color <> clBtnFace then
+        CurrentBrush.SetColor(FOwner.LCLObject.Color, True)
+      else
+        CurrentBrush.SetColor(FOwner.LCLObject.Color, False);
+        
+      CurrentBrush.Apply(Self, False);
+    end;
+  
+  if FOwner.LCLObject.Font.Handle <> 0 then
+    CurrentFont := TCarbonFont(FOwner.LCLObject.Font.Handle);
 end;
 
 { TCarbonBitmapContext }

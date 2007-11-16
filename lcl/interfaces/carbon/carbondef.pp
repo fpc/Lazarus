@@ -64,6 +64,8 @@ type
   private
     FProperties: TStringList;
     FCursor: HCURSOR;
+    FHasCaret: Boolean;
+    function GetPainting: Boolean;
     function GetProperty(AIndex: String): Pointer;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
   protected
@@ -121,6 +123,8 @@ type
      - processes track and draw event                  }
     property Content: ControlRef read GetContent;
     property Cursor: HCURSOR read FCursor;
+    property HasCaret: Boolean read FHasCaret write FHasCaret;
+    property Painting: Boolean read GetPainting;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
   end;
   
@@ -149,7 +153,7 @@ function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUP
 implementation
 
 uses
-  CarbonProc, CarbonDbgConsts, CarbonUtils;
+  CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCaret;
 
 {------------------------------------------------------------------------------
   Name:    CheckHandle
@@ -340,6 +344,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidget.GetPainting
+  Returns: If the widget is being repaint
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.GetPainting: Boolean;
+begin
+  Result := Context <> nil;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidget.SetProperty
   Params:  AIndex - Property name
            AValue - Property data, nil means remove the property
@@ -497,6 +510,7 @@ begin
   FProperties := nil;
   Widget := nil;
   Context := nil;
+  FHasCaret := False;
   
   CreateWidget(AParams);
   
@@ -523,14 +537,16 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonWidget.Destroy;
 begin
-  DestroyWidget;
-  
-  FProperties.Free;
-
   {$IFDEF VerboseWidget}
     DebugLn('TCarbonWidget.Destroy ', ClassName, ' ', LCLObject.Name, ': ',
       LCLObject.ClassName);
   {$ENDIF}
+  
+  DestroyWidget;
+  
+  FProperties.Free;
+  
+  if HasCaret then DestroyCaret;
 
   inherited Destroy;
 end;

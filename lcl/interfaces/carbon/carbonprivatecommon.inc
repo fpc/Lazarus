@@ -40,7 +40,6 @@ function CarbonCommon_Draw(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   AStruct: PPaintStruct;
-  //EraseMsg: TLMEraseBkgnd;
 begin
   {$IFDEF VerbosePaint}
     Debugln('CarbonCommon_Draw ', DbgSName(AWidget.LCLObject));
@@ -55,10 +54,7 @@ begin
         SizeOf(CGContextRef), nil, @(AWidget.Context.CGContext)),
       'CarbonCommon_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
 
-    // erase background
-    {EraseMsg.Msg := LM_ERASEBKGND;
-    EraseMsg.DC := HDC(AWidget.Context);
-    DeliverMessage(AWidget.LCLObject, EraseMsg);}
+    AWidget.Context.Reset;
 
     // let carbon draw/update
     Result := CallNextEventHandler(ANextHandler, AEvent);
@@ -78,6 +74,8 @@ begin
     finally
       Dispose(AStruct);
     end;
+    
+    if AWidget.HasCaret then DrawCaret;
   finally
     FreeAndNil(AWidget.Context);
   end;

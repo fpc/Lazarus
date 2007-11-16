@@ -115,6 +115,7 @@ type
     property MainMenu: TMainMenu read FMainMenu;
   public
     procedure SetCaptureWidget(const AWidget: HWND);
+    procedure SetTextFractional(ACanvas: TCanvas; AEnabled: Boolean);
   end;
   
 const
@@ -162,7 +163,7 @@ uses
   { these can/should go up }
   CarbonDef, CarbonPrivate, CarbonMenus, CarbonButtons, CarbonBars, CarbonEdits,
   CarbonListViews, CarbonTabs,
-  CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard,
+  CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard, CarbonCaret,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
   Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
