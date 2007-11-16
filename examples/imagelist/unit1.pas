@@ -18,10 +18,12 @@ type
     GroupBox2: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
+    GroupBox5: TGroupBox;
     Image1: TImage;
     Image2: TImage;
     Image3: TImage;
     Image4: TImage;
+    Image5: TImage;
     ImageList1: TImageList;
     ListBox1: TListBox;
     OpenPictureDialog1: TOpenPictureDialog;
@@ -83,6 +85,9 @@ begin
     gdeDisabled: Result := Image2;
     gdeHighlighted: Result := Image3;
     gdeShadowed: Result := Image4;
+    gde1Bit: Result := Image5;
+  else
+    Result := nil;
   end;
 end;
 
@@ -101,7 +106,8 @@ begin
   begin
     Bmp := TBitmap.Create;
     ImageList1.GetBitmap(AIndex, Bmp, AEffect);
-    ImageMap[AEffect].Picture.Assign(Bmp);
+    if ImageMap[AEffect] <> nil then
+      ImageMap[AEffect].Picture.Assign(Bmp);
     Bmp.Free;
   end;
 end;
