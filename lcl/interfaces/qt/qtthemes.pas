@@ -37,6 +37,7 @@ type
   end;
 
   { TQtThemeServices }
+  
   TQtThemeServices = class(TThemeServices)
   private
     FStyle: QStyleH;
@@ -237,8 +238,9 @@ begin
     
   // specific states
 
-  // define splitter orientation
-  if (Details.Element = teRebar) and (Details.Part = RP_GRIPPER) then
+  // define orientations
+  if ((Details.Element = teRebar) and (Details.Part = RP_GRIPPER)) or
+     ((Details.Element = teToolBar) and (Details.Part = TP_SEPARATOR)) then
     Result := Result or QStyleState_Horizontal;
 end;
 
@@ -298,10 +300,25 @@ begin
       end;
     teToolBar:
       begin
-        if Details.Part = TP_BUTTON then
-        begin
-          Result.DrawVariant := qdvPrimitive;
-          Result.PrimitiveElement := QStylePE_PanelButtonTool;
+        case Details.Part of
+          TP_BUTTON,
+          TP_DROPDOWNBUTTON,
+          TP_SPLITBUTTON: // there is another positibility to draw TP_SPLITBUTTON by CC_ToolButton
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_PanelButtonTool;
+            end;
+          TP_SPLITBUTTONDROPDOWN:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_IndicatorButtonDropDown;
+            end;
+          TP_SEPARATOR,
+          TP_SEPARATORVERT:
+            begin
+              Result.DrawVariant := qdvPrimitive;
+              Result.PrimitiveElement := QStylePE_IndicatorToolBarSeparator;
+            end;
         end;
       end;
     teRebar:
