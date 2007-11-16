@@ -49,7 +49,7 @@ type
     class procedure SetBounds(const AWinControl: TWinControl;
           const ALeft, ATop, AWidth, AHeight: integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -464,7 +464,7 @@ end;
 class procedure TWinCEWSBitBtn.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: integer);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   TWinCEWSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
   if TCustomBitBtn(AWinControl).Spacing = -1 then
@@ -478,7 +478,7 @@ end;
 class procedure TWinCEWSBitBtn.SetFont(const AWinControl: TWinControl;
   const AFont: TFont);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   TWinCEWSWinControl.SetFont(AWinControl, AFont);
   pwCaption := StringToPWideChar(AWinControl.Caption);
@@ -487,9 +487,9 @@ begin
 end;
 
 class procedure TWinCEWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TBitmap);
+  const AValue: TButtonGlyph);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
@@ -499,7 +499,7 @@ end;
 class procedure TWinCEWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
@@ -509,7 +509,7 @@ end;
 class procedure TWinCEWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
@@ -519,7 +519,7 @@ end;
 class procedure TWinCEWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   pwCaption := StringToPWideChar(ABitBtn.Caption);
   DrawBitBtnImage(ABitBtn, pwCaption);
@@ -528,7 +528,7 @@ end;
 
 class procedure TWinCEWSBitBtn.SetText(const AWinControl: TWinControl; const AText: string);
 var
-pwCaption : PWideChar;
+  pwCaption : PWideChar;
 begin
   pwCaption := StringToPWideChar(AText);
   DrawBitBtnImage(TCustomBitBtn(AWinControl), pwCaption);

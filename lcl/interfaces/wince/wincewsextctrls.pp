@@ -469,8 +469,10 @@ var
   lPage: TCustomPage;
 begin
   WinHandle := ANotebook.Handle;
+
   // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
   LCLIntf.GetClientRect(WinHandle, R);
+  
   for I := 0 to ANotebook.PageCount - 1 do
   begin
     lPage := ANotebook.Page[I];
@@ -563,24 +565,10 @@ begin
   end;
 end;
 
+{ Nothing can be done here because WinCE only supports tabs on the bottom }
 class procedure TWinCEWSCustomNotebook.SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition);
-var
-  NotebookHandle: HWND;
-  WindowStyle: dword;
 begin
-  NotebookHandle := ANotebook.Handle;
-  WindowStyle := Windows.GetWindowLong(NotebookHandle, GWL_STYLE);
-  case ATabPosition of
-    tpTop:
-      WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-    tpBottom:
-      WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-    tpLeft:
-      WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-    tpRight:
-      WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-  end;
-  Windows.SetWindowLong(NotebookHandle, GWL_STYLE, WindowStyle);
+
 end;
 
 class procedure TWinCEWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
