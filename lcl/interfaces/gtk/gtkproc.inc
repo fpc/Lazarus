@@ -8276,6 +8276,11 @@ begin
         end
         else
 {$endif}
+        if lgs=lgsToolButton then
+        begin
+          /// already on a toolbar => nothing to do
+        end
+        else
         begin
           StyleWindowWidget:=GetStyleWidget(lgsWindow);
           // add widget on client area of form
