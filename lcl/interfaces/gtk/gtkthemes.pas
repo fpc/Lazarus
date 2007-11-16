@@ -35,7 +35,8 @@ type
     gptHandle,
     gptExpander,
     gptResizeGrip,
-    gptFocus
+    gptFocus,
+    gptArrow
   );
 
   TGtkStyleParams = record
@@ -48,6 +49,8 @@ type
     Shadow     : TGtkShadowType;  // Shadow
     Detail     : String;          // Detail (button, checkbox, ...)
     Orientation: TGtkOrientation; // Orientation (horizontal/vertical)
+    ArrowType  : TGtkArrowType;   // type of arrow
+    Fill       : Boolean;         // fill inside area
 {$ifdef gtk2}
     Expander   : TGtkExpanderStyle; // treeview expander
     Edge       : TGdkWindowEdge;
@@ -63,7 +66,8 @@ type
   private
   protected
     function GdkRectFromRect(R: TRect): TGdkRectangle;
-    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails): TGtkStyleParams; virtual;
+    function GetParamsCount(Details: TThemedElementDetails): Integer;
+    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; virtual;
 
     function InitThemes: Boolean; override;
     function UseThemes: Boolean; override;
@@ -92,7 +96,7 @@ const
 { pressed           } GTK_STATE_ACTIVE,
 { disabled          } GTK_STATE_INSENSITIVE,
 { defaulted/checked } GTK_STATE_ACTIVE,
-{ hot + checked     } GTK_STATE_INSENSITIVE // PRELIGHT IS TOO LIGHT
+{ hot + checked     } GTK_STATE_ACTIVE
   );
   GtkRadioCheckBoxMap: array[0..12] of TGtkStateType =
   (
@@ -127,8 +131,16 @@ begin
   end;
 end;
 
+function TGtkThemeServices.GetParamsCount(Details: TThemedElementDetails
+  ): Integer;
+begin
+  Result := 1;
+  if (Details.Element = teToolBar) and (Details.Part = TP_SPLITBUTTONDROPDOWN) then
+    inc(Result); // + Arrow
+end;
+
 function TGtkThemeServices.GetGtkStyleParams(DC: HDC;
-  Details: TThemedElementDetails): TGtkStyleParams;
+  Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
 var
   ClientWidget: PGtkWidget;
 begin
@@ -151,6 +163,8 @@ begin
       Result.State := GTK_STATE_NORMAL;
       Result.Detail := '';
       Result.Shadow := GTK_SHADOW_NONE;
+      Result.ArrowType := GTK_ARROW_UP;
+      Result.Fill := False;
       Result.IsHot := False;
 
       case Details.Element of
@@ -215,25 +229,49 @@ begin
         teToolBar:
           begin
             case Details.Part of
-              TP_BUTTON:
+              TP_BUTTON,
+              TP_DROPDOWNBUTTON,
+              TP_SPLITBUTTON,
+              TP_SPLITBUTTONDROPDOWN:
                 begin
-                  Result.Widget := GetStyleWidget(lgsButton);
-                  Result.State := GtkButtonMap[Details.State];
-                  if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
-                    Result.Shadow := GTK_SHADOW_IN
+                  if (Details.Part = TP_SPLITBUTTONDROPDOWN) and (AIndex = 1) then
+                  begin
+                    Result.Detail := 'arrow';
+                    Result.ArrowType := GTK_ARROW_DOWN;
+                    Result.Fill := True;
+                    Result.Painter := gptArrow;
+                  end
                   else
-                  if Details.State in [TS_HOT] then
-                    Result.Shadow := GTK_SHADOW_ETCHED_IN
-                  else
-                    Result.Shadow := GTK_SHADOW_NONE;
+                  begin
+                    Result.Widget := GetStyleWidget(lgsToolButton);
+                    Result.State := GtkButtonMap[Details.State];
+                    if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
+                      Result.Shadow := GTK_SHADOW_IN
+                    else
+                    if Details.State in [TS_HOT] then
+                      Result.Shadow := GTK_SHADOW_ETCHED_IN
+                    else
+                      Result.Shadow := GTK_SHADOW_NONE;
 
-                  Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
+                    Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
 
-                  Result.Detail := 'togglebutton';
-                  if Result.Shadow = GTK_SHADOW_NONE then
-                    Result.Painter := gptNone
+                    Result.Detail := 'button';
+                    if Result.Shadow = GTK_SHADOW_NONE then
+                      Result.Painter := gptNone
+                    else
+                      Result.Painter := gptBox;
+                  end;
+                end;
+              TP_SEPARATOR,
+              TP_SEPARATORVERT:
+                begin
+                  Result.State := GTK_STATE_NORMAL;
+                  Result.Shadow := GTK_SHADOW_NONE;
+                  Result.Detail := 'toolbar';
+                  if Details.Part = TP_SEPARATOR then
+                    Result.Painter := gptVLine
                   else
-                    Result.Painter := gptBox;
+                    Result.Painter := gptHLine;
                 end;
             end;
           end;
@@ -301,7 +339,7 @@ var
   StyleParams: TGtkStyleParams;
 begin
   Result := BoundingRect;
-  StyleParams := GetGtkStyleParams(DC, Details);
+  StyleParams := GetGtkStyleParams(DC, Details, 0);
   if StyleParams.Style <> nil then
     InflateRect(Result,
       -StyleParams.Style^.{$ifndef gtk2}klass^.{$endif}xthickness,
@@ -313,100 +351,112 @@ procedure TGtkThemeServices.DrawElement(DC: HDC;
 var
   Area: TGdkRectangle;
   StyleParams: TGtkStyleParams;
+  i: integer;
 begin
-  StyleParams := GetGtkStyleParams(DC, Details);
-  if StyleParams.Style <> nil then
+  for i := 0 to GetParamsCount(Details) - 1 do
   begin
-    if ClipRect <> nil then
-      Area := GdkRectFromRect(ClipRect^)
-    else
-      Area := GdkRectFromRect(R);
-
-    inc(Area.x, StyleParams.Origin.x);
-    inc(Area.y, StyleParams.Origin.y);
-
-    with StyleParams do
+    StyleParams := GetGtkStyleParams(DC, Details, i);
+    if StyleParams.Style <> nil then
     begin
-      case Painter of
-        gptBox,
-        gptDefault: gtk_paint_box(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptHLine  : gtk_paint_hline(
-            Style, Window,
-            State, @Area,
-            Widget, PChar(Detail),
-            Area.x, Area.x + Area.Width, Area.y);
-        gptVLine  : gtk_paint_vline(
-            Style, Window,
-            State, @Area,
-            Widget, PChar(Detail),
-            Area.y, Area.y + Area.Height, Area.x);
-        gptShadow : gtk_paint_shadow(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptFlatBox: gtk_paint_flat_box(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptCheck  : gtk_paint_check(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptOption : gtk_paint_option(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptTab    : gtk_paint_tab(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-        gptSlider : gtk_paint_slider(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height,
-            Orientation);
-        gptHandle : gtk_paint_handle(
-            Style, Window,
-            State, Shadow,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height,
-            Orientation);
-{$ifdef gtk2}
-        gptExpander: gtk_paint_expander(
-            Style, Window, State,
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Expander);
-        gptResizeGrip: gtk_paint_resize_grip(
-            Style, Window, State,
-            @Area, Widget,
-            PChar(Detail), Edge,
-            Area.x, Area.y,
-            Area.Width, Area.Height);
-{$endif}
-        gptFocus : gtk_paint_focus(
-            Style, Window, {$ifdef gtk2}State,{$endif}
-            @Area, Widget, PChar(Detail),
-            Area.x, Area.y,
-            Area.Width, Area.Height);
+      if ClipRect <> nil then
+        Area := GdkRectFromRect(ClipRect^)
+      else
+        Area := GdkRectFromRect(R);
+
+      // move to origin
+      inc(Area.x, StyleParams.Origin.x);
+      inc(Area.y, StyleParams.Origin.y);
+      
+      with StyleParams do
+      begin
+        case Painter of
+          gptBox,
+          gptDefault: gtk_paint_box(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptHLine  : gtk_paint_hline(
+              Style, Window,
+              State, @Area,
+              Widget, PChar(Detail),
+              Area.x, Area.x + Area.Width, Area.y);
+          gptVLine  : gtk_paint_vline(
+              Style, Window,
+              State, @Area,
+              Widget, PChar(Detail),
+              Area.y, Area.y + Area.Height, Area.x);
+          gptShadow : gtk_paint_shadow(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptFlatBox: gtk_paint_flat_box(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptCheck  : gtk_paint_check(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptOption : gtk_paint_option(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptTab    : gtk_paint_tab(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptSlider : gtk_paint_slider(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height,
+              Orientation);
+          gptHandle : gtk_paint_handle(
+              Style, Window,
+              State, Shadow,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height,
+              Orientation);
+  {$ifdef gtk2}
+          gptExpander: gtk_paint_expander(
+              Style, Window, State,
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Expander);
+          gptResizeGrip: gtk_paint_resize_grip(
+              Style, Window, State,
+              @Area, Widget,
+              PChar(Detail), Edge,
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+  {$endif}
+          gptFocus : gtk_paint_focus(
+              Style, Window, {$ifdef gtk2}State,{$endif}
+              @Area, Widget, PChar(Detail),
+              Area.x, Area.y,
+              Area.Width, Area.Height);
+          gptArrow: gtk_paint_arrow(
+             Style, Window,
+             State, Shadow,
+             @Area, Widget, PChar(Detail),
+             ArrowType, Fill,
+             Area.x, Area.y, Area.width, Area.height
+           );
+        end;
       end;
     end;
   end;
@@ -453,7 +503,7 @@ var
   P: PChar;
   tmpRect: TRect;
 begin
-  StyleParams := GetGtkStyleParams(DC, Details);
+  StyleParams := GetGtkStyleParams(DC, Details, 0);
   if StyleParams.Style <> nil then
     with StyleParams do
     begin

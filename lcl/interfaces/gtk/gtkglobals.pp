@@ -122,7 +122,9 @@ type
     lgsHScale,
     lgsVScale,
     lgsGroupBox,
-    lgsTreeView, // for gtk2
+    lgsTreeView,      // for gtk2
+    lgsToolBar,       // toolbar
+    lgsToolButton,    // button placed on toolbar
     // user defined
     lgsUserDefined
     );
@@ -151,6 +153,8 @@ const
     'vscale',
     'groupbox',
     'treeview',
+    'toolbar',
+    'toolbutton',
     ''
     );
 

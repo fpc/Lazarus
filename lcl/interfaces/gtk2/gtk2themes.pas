@@ -19,7 +19,7 @@ type
 
   TGtk2ThemeServices = class(TGtkThemeServices)
   protected
-    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails): TGtkStyleParams; override;
+    function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; override;
   public
     function GetDetailSize(Details: TThemedElementDetails): Integer; override;
   end;
@@ -29,9 +29,9 @@ implementation
 { TGtk2ThemeServices }
 
 function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
-  Details: TThemedElementDetails): TGtkStyleParams;
+  Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
 begin
-  Result := inherited GetGtkStyleParams(DC, Details);
+  Result := inherited GetGtkStyleParams(DC, Details, AIndex);
   
   // override some styles
   if Result.Style <> nil then

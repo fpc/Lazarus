@@ -8204,6 +8204,16 @@ begin
       end
 {$endif}
     else
+      If CompareText(WName,LazGtkStyleNames[lgsToolBar])=0 then begin
+        lgs:=lgsToolBar;
+        StyleObject^.Widget := gtk_toolbar_new;
+      end
+    else
+      If CompareText(WName,LazGtkStyleNames[lgsToolButton])=0 then begin
+        lgs:=lgsToolButton;
+        StyleObject^.Widget := gtk_toolbar_append_item(PGtkToolBar(GetStyleWidget(lgsToolBar)), 'B', nil, nil, nil, nil, nil);
+      end
+    else
       If CompareText(WName,LazGtkStyleNames[lgsGTK_Default])=0 then begin
         lgs:=lgsGTK_Default;
         AddToStyleWindow:=false;
@@ -8227,19 +8237,27 @@ begin
       gtk_widget_ref(StyleObject^.Widget);
 
       // put style widget on style window, so that it can be realized
-      if AddToStyleWindow then begin
+      if AddToStyleWindow then
+      begin
         gtk_widget_show_all(StyleObject^.Widget);
-        if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then begin
+        if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU) then
+        begin
           StyleWindowWidget:=GetStyleWidget(lgsWindow);
           // add menu above the forms client area (fixed widget)
           VBox:=PGTKWidget(
                      gtk_object_get_data(PGtkObject(StyleWindowWidget),'vbox'));
           DebugLn(['GetStyleWithName adding menu to form']);
           gtk_box_pack_start(PGTKBox(VBox), StyleObject^.Widget, false, True, 0);
-        end else if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_BAR) then begin
+        end
+        else
+        if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_BAR) then
+        begin
           DebugLn(['GetStyleWithName adding menubar to menu']);
           gtk_menu_append(GetStyleWidget(lgsMenu),StyleObject^.Widget);
-        end else if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then begin
+        end
+        else
+        if GtkWidgetIsA(StyleObject^.Widget,GTK_TYPE_MENU_ITEM) then
+        begin
           DebugLn(['GetStyleWithName adding menuitem to menubar']);
           gtk_menu_bar_append({$IFDEF Gtk1}
                               PGtkMenuBar(GetStyleWidget(lgsMenuBar)),
@@ -8247,13 +8265,25 @@ begin
                               GetStyleWidget(lgsMenuBar),
                               {$ENDIF}
                               StyleObject^.Widget);
-        end else begin
+        end
+        else
+{$ifdef gtk2}
+        if GtkWidgetIsA(StyleObject^.Widget, GTK_TYPE_TOOL_BUTTON) then
+        begin
+          //gtk_toolbar_insert();
+          gtk_toolbar_append_widget(GTK_TOOLBAR(GetStyleWidget(lgsToolBar)),
+            StyleObject^.Widget, nil, nil);
+        end
+        else
+{$endif}
+        begin
           StyleWindowWidget:=GetStyleWidget(lgsWindow);
           // add widget on client area of form
           WindowFixedWidget:=PGTKWidget(
                  gtk_object_get_data(PGtkObject(StyleWindowWidget),'fixedwidget'));
           //DebugLn('GetStyleWithName adding on hidden stylewindow ',WName,' ',GetWidgetDebugReport(StyleObject^.Widget));
-          gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
+          if WindowFixedWidget <> nil then
+            gtk_fixed_put(PGtkFixed(WindowFixedWidget),StyleObject^.Widget,10,10);
         end;
       end;
 
