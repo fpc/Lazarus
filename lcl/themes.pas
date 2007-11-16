@@ -48,7 +48,7 @@ interface
 uses
   // no Graphics or Controls can be used here to prevent circular references
   //
-  Types, Classes, LCLType, TmSchema;
+  Types, Math, Classes, LCLType, TmSchema;
   
 type
   // These are all elements which can be themed.
@@ -415,16 +415,17 @@ type
 
     function InternalColorToRGB(Details: TThemedElementDetails; Color: LongInt): LongInt; virtual;
     procedure InternalDrawParentBackground(Window: HWND; Target: HDC; Bounds: PRect); virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure IntfDoOnThemeChange; virtual;
 
+    // state helpers
     function IsDisabled(Details: TThemedElementDetails): Boolean;
     function IsPushed(Details: TThemedElementDetails): Boolean;
     function IsHot(Details: TThemedElementDetails): Boolean;
     function IsChecked(Details: TThemedElementDetails): Boolean;
     function IsMixed(Details: TThemedElementDetails): Boolean;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure IntfDoOnThemeChange; virtual;
 
     function GetElementDetails(Detail: TThemedButton): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedClock): TThemedElementDetails; overload;
@@ -1790,6 +1791,46 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure TThemeServices.DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect = nil);
+
+  procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
+  var
+    ArrowRect: TRect;
+    Points: array[1..3] of TPoint;
+    OldBrush, Brush: HBrush;
+  begin
+    ArrowRect := DropDownButtonRect;
+    ArrowRect.Left:=DropDownButtonRect.Left+2;
+    ArrowRect.Right:=Max(DropDownButtonRect.Right - 3, ArrowRect.Left);
+    ArrowRect.Top:=(DropDownButtonRect.Top+DropDownButtonRect.Bottom
+                    +ArrowRect.Left-ArrowRect.Right) div 2;
+    ArrowRect.Bottom:=ArrowRect.Top-ArrowRect.Left+ArrowRect.Right;
+    Points[1] := Point(ArrowRect.Left,ArrowRect.Top);
+    Points[2] := Point((ArrowRect.Left+ArrowRect.Right) div 2,ArrowRect.Bottom);
+    Points[3] := Point(ArrowRect.Right,ArrowRect.Top);
+    Brush := CreateSolidBrush(clBlack);
+    OldBrush := SelectObject(DC, Brush);
+    Polygon(Dc, @Points[1], 3, false);
+    DeleteObject(SelectObject(DC, OldBrush));
+  end;
+  
+  procedure DrawVLine(ARect: TRect);
+  begin
+    ARect.Left := ((ARect.Left + ARect.Right) div 2) - 1;
+    ARect.Right := ARect.Left + 2;
+    inc(ARect.Top, 2);
+    inc(ARect.Bottom, 2);
+    LCLIntf.DrawEdge(DC, ARect, EDGE_ETCHED, BF_LEFT);
+  end;
+
+  procedure DrawHLine(ARect: TRect);
+  begin
+    ARect.Top := ((ARect.Top + ARect.Bottom) div 2) - 1;
+    ARect.Bottom := ARect.Top + 2;
+    inc(ARect.Left, 2);
+    inc(ARect.Right, 2);
+    LCLIntf.DrawEdge(DC, ARect, EDGE_ETCHED, BF_LEFT);
+  end;
+
 var
   ADrawFlags: DWord;
   Bevel: TGraphicsBevelCut;
@@ -1835,15 +1876,39 @@ begin
       end;
     teToolBar:
       begin
-        if IsPushed(Details) or IsChecked(Details) then
-          Bevel := bvLowered
-        else
-        if IsHot(Details) then
-          Bevel := bvRaised
-        else
-          Bevel := bvNone;
+        case Details.Part of
+          TP_BUTTON,
+          TP_DROPDOWNBUTTON,
+          TP_SPLITBUTTON:
+            begin
+              if IsPushed(Details) or IsChecked(Details) then
+                Bevel := bvLowered
+              else
+              if IsHot(Details) then
+                Bevel := bvRaised
+              else
+                Bevel := bvNone;
 
-        Frame3D(DC, ARect, 1, Bevel);
+              Frame3D(DC, ARect, 1, Bevel);
+            end;
+          TP_SPLITBUTTONDROPDOWN:
+            begin
+              if IsPushed(Details) or IsChecked(Details) then
+                Bevel := bvLowered
+              else
+              if IsHot(Details) then
+                Bevel := bvRaised
+              else
+                Bevel := bvNone;
+
+              Frame3D(DC, ARect, 1, Bevel);
+              DrawDropDownArrow(ARect);
+            end;
+          TP_SEPARATOR:
+            DrawVline(ARect);
+          TP_SEPARATORVERT:
+            DrawHline(ARect);
+        end;
       end
   end;
 end;
