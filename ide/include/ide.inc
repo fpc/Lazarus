@@ -30,5 +30,9 @@
 {$define EnableNewDialogs}
 {$endif}
 
+{$IFDEF VER2_0}
+{$DEFINE DisableFakeMethods}
+{$ENDIF}
+
 // end.
 
