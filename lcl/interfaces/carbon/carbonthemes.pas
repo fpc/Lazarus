@@ -41,7 +41,7 @@ type
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawEdge(DC: HDC; Details: TThemedElementDetails; const R: TRect; Edge, Flags: Cardinal; AContentRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -399,7 +399,7 @@ end;
   Draws the passed text with native Carbon look
  ------------------------------------------------------------------------------}
 procedure TCarbonThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
-  const S: WideString; R: TRect; Flags, Flags2: Cardinal);
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
 begin
   //
 end;

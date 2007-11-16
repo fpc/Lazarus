@@ -45,9 +45,9 @@ type
       const P: TPoint; AImageList: TPersistent; Index: Integer); override;
 
     procedure DrawText(DC: HDC; Details: TThemedElementDetails;
-      const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+      const S: String; R: TRect; Flags, Flags2: Cardinal); override;
     procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails;
-      const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+      const S: String; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -286,17 +286,17 @@ begin
 end;
 
 procedure TWin32ThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
-  const S: WideString; R: TRect; Flags, Flags2: Cardinal);
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
 begin
   if ThemesEnabled then
     with Details do
-      DrawThemeText(Theme[Element], DC, Part, State, PWideChar(S), Length(S), Flags, Flags2, R)
+      DrawThemeText(Theme[Element], DC, Part, State, PWideChar(WideString(S)), Length(S), Flags, Flags2, R)
   else
     inherited;
 end;
 
 procedure TWin32ThemeServices.DrawText(ACanvas: TPersistent;
-  Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
+  Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 begin
   if ThemesEnabled then

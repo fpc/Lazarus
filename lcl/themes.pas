@@ -462,8 +462,8 @@ type
     procedure DrawIcon(ACanvas: TPersistent; Details: TThemedElementDetails; const P: TPoint; AImageList: TPersistent; Index: Integer); virtual; overload;
     procedure DrawParentBackground(Window: HWND; Target: HDC; Details: PThemedElementDetails; OnlyIfTransparent: Boolean;
       Bounds: PRect = nil);
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
-    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
+    procedure DrawText(ACanvas: TPersistent; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); virtual; overload;
 
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; virtual;
     procedure PaintBorder(Control: TObject; EraseLRCorner: Boolean); virtual;
@@ -1895,7 +1895,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-procedure TThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
+procedure TThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 begin
   // overrided in TWin32ThemeServices (for compatability with Delphi)
@@ -1976,7 +1976,7 @@ begin
 end;
 
 procedure TThemeServices.DrawText(ACanvas: TPersistent;
-  Details: TThemedElementDetails; const S: WideString; R: TRect; Flags,
+  Details: TThemedElementDetails; const S: String; R: TRect; Flags,
   Flags2: Cardinal);
 var
   Canvas: TCanvas absolute ACanvas;

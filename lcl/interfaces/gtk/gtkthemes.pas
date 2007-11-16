@@ -76,7 +76,7 @@ type
     
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
     procedure DrawIcon(DC: HDC; Details: TThemedElementDetails; const R: TRect; himl: HIMAGELIST; Index: Integer); override;
-    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: WideString; R: TRect; Flags, Flags2: Cardinal); override;
+    procedure DrawText(DC: HDC; Details: TThemedElementDetails; const S: String; R: TRect; Flags, Flags2: Cardinal); override;
 
     function ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect; override;
     function HasTransparentParts(Details: TThemedElementDetails): Boolean; override;
@@ -447,7 +447,7 @@ begin
 end;
 
 procedure TGtkThemeServices.DrawText(DC: HDC; Details: TThemedElementDetails;
-  const S: WideString; R: TRect; Flags, Flags2: Cardinal);
+  const S: String; R: TRect; Flags, Flags2: Cardinal);
 var
   StyleParams: TGtkStyleParams;
   P: PChar;
@@ -457,7 +457,7 @@ begin
   if StyleParams.Style <> nil then
     with StyleParams do
     begin
-      P := PChar(String(S));
+      P := PChar(S);
       tmpRect := R;
       Widgetset.DrawText(DC, P, Length(S), tmpRect, Flags);
       // TODO: parse flags
