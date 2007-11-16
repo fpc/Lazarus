@@ -535,6 +535,9 @@ resourcestring
     +'Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file %s%s%s';
+  lisAddToUnitSearchPath = 'Add to unit search path?';
+  lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory = 'The new unit is not '
+    +'yet in the unit search path.%sAdd directory %s?';
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from project';
   lisCreateAProjectFirst = 'Create a project first!';

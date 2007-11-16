@@ -4973,7 +4973,7 @@ begin
   and (OldFilePath<>'') then begin
     //DebugLn('TMainIDE.DoRenameUnit OldFilePath="',OldFilePath,'" SourceDirs="',Project1.SourceDirectories.CreateSearchPathFromAllFiles,'"');
     if (SearchDirectoryInSearchPath(
-       Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
+      Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
     then begin
       //DebugLn('TMainIDE.DoRenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
       if (SearchDirectoryInSearchPath(
@@ -7995,11 +7995,13 @@ var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
+  CurUnitPath: String;
+  CurDirectory: String;
 begin
   Result:=mrCancel;
   if BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[])
     and (ActiveUnitInfo<>nil) then begin
-    if ActiveUnitInfo.IsPartOfProject=false then begin
+    if not ActiveUnitInfo.IsPartOfProject then begin
       if not ActiveUnitInfo.IsVirtual then
         s:='"'+ActiveUnitInfo.Filename+'"'
       else
@@ -8015,13 +8017,16 @@ begin
         if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
           mbCancel], 0) in [mrOk,mrYes]
         then begin
-          Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
-          if Result=mrIgnore then Result:=mrOk;
-          if Result<>mrOk then begin
-            debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-            exit;
+          if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then begin
+            Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
+            if Result=mrIgnore then Result:=mrOk;
+            if Result<>mrOk then begin
+              debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+              exit;
+            end;
           end;
           ActiveUnitInfo.IsPartOfProject:=true;
+          Project1.Modified:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
           and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
           then begin
@@ -8034,7 +8039,22 @@ begin
                 Project1.MainUnitInfo.Modified:=true;
             end;
           end;
-          Project1.Modified:=true;
+          if not ActiveUnitInfo.IsVirtual then begin
+            CurUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
+            CurDirectory:=ActiveUnitInfo.GetDirectory;
+            if SearchDirectoryInSearchPath(CurUnitPath,CurDirectory)<1 then
+            begin
+              if MessageDlg(lisAddToUnitSearchPath,
+                Format(lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory, [
+                  #13, CurDirectory]),
+                mtConfirmation,[mbYes,mbNo],0)=mrYes
+              then begin
+                Project1.CompilerOptions.OtherUnitFiles:=
+                      MergeSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
+                                       CurDirectory);
+              end;
+            end;
+          end;
         end;
       end;
     end else begin
