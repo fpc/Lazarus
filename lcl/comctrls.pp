@@ -1320,11 +1320,6 @@ type
     FGrouped: Boolean;
     FImageIndex: Integer;
     FIndeterminate: Boolean;
-    {$ifdef UseThemes}
-    FLastButtonDrawDetail: TThemedToolBar;
-    {$else}
-    FLastButtonDrawFlags: Integer;
-    {$endif}
     FMarked: Boolean;
     FMenuItem: TMenuItem;
     FMouseInControl: boolean;
@@ -1373,11 +1368,7 @@ type
     procedure RefreshControl; virtual;
     procedure SetToolBar(NewToolBar: TToolBar);
     procedure UpdateControl; virtual;
-    {$ifdef UseThemes}
-    function GetButtonDrawDetail: TThemedToolBar; virtual;
-    {$else}
-    function GetButtonDrawFlags: integer; virtual;
-    {$endif}
+    function GetButtonDrawDetail: TThemedElementDetails; virtual;
     procedure SetParent(AParent: TWinControl); override;
     procedure UpdateVisibleToolbar;
     function GroupAllUpAllowed: boolean;

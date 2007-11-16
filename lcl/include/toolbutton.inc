@@ -135,40 +135,18 @@ end;
 
 procedure TToolButton.Paint;
 
-{$ifndef UseThemes}
-  procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
-  var
-    ArrowRect: TRect;
-    Points: array[1..3] of TPoint;
-  begin
-    ArrowRect:=DropDownButtonRect;
-    ArrowRect.Left:=DropDownButtonRect.Left+2;
-    ArrowRect.Right:=Max(DropDownButtonRect.Right-3,ArrowRect.Left);
-    ArrowRect.Top:=(DropDownButtonRect.Top+DropDownButtonRect.Bottom
-                    +ArrowRect.Left-ArrowRect.Right) div 2;
-    ArrowRect.Bottom:=ArrowRect.Top-ArrowRect.Left+ArrowRect.Right;
-    Points[1]:=Point(ArrowRect.Left,ArrowRect.Top);
-    Points[2]:=Point((ArrowRect.Left+ArrowRect.Right) div 2,ArrowRect.Bottom);
-    Points[3]:=Point(ArrowRect.Right,ArrowRect.Top);
-    Canvas.Brush.Color:=clBlack;
-    Canvas.Pen.Color:=clBlack;
-    Canvas.Polygon(@Points[1],3,false);
-  end;
-{$else}
-  procedure DrawDropDownArrow(const DropDownButtonRect: TRect);
+  procedure DrawDropDownArrow(OwnerDetails: TThemedElementDetails; const DropDownButtonRect: TRect);
   var
     Details: TThemedElementDetails;
   begin
     Details := ThemeServices.GetElementDetails(
-      TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + ord(FLastButtonDrawDetail) - ord(ttbSplitButtonNormal)));
+      TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1));
     ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
   end;
-{$endif}
 
 var
   PaintRect: TRect;
   ButtonRect: TRect;
-  DividerRect: TRect;
   DropDownButtonRect: TRect;
   TextSize: TSize;
   TextPos: TPoint;
@@ -177,112 +155,106 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
   TS: TTextStyle;
-{$ifdef UseThemes}
   Details: TThemedElementDetails;
-{$endif}
 begin
   //DebugLn(['TToolButton.Paint A ',DbgSName(Self),' FToolBar=',DbgSName(FToolBar),' ',ClientWidth,',',ClientHeight,' ',ord(Style)]);
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then
   begin
-    PaintRect:=ClientRect; // the whole paint area
+    PaintRect := ClientRect; // the whole paint area
 
     // calculate button area(s)
-    ButtonRect:=PaintRect;
-  {$ifdef UseThemes}
-    FLastButtonDrawDetail := GetButtonDrawDetail;
-    Details := ThemeServices.GetElementDetails(FLastButtonDrawDetail);
-  {$else}
-    FLastButtonDrawFlags := GetButtonDrawFlags;
-    if (FLastButtonDrawFlags and DFCS_PUSHED) <> 0 then
-      OffsetRect(ButtonRect, 1, 1);
-  {$endif}
+    ButtonRect := PaintRect;
+    Details := GetButtonDrawDetail;
 
-    if Style=tbsDropDown then
+    if Style = tbsDropDown then
     begin
-      DropDownButtonRect:=ButtonRect;
-      DropDownButtonRect.Left:=
-                        Max(0,DropDownButtonRect.Right-FToolBar.FDropDownWidth);
-      ButtonRect.Right:=DropDownButtonRect.Left;
+      DropDownButtonRect := ButtonRect;
+      DropDownButtonRect.Left :=
+                        Max(0, DropDownButtonRect.Right - FToolBar.FDropDownWidth);
+      ButtonRect.Right := DropDownButtonRect.Left;
     end;
 
     // calculate text size
     TextSize.cx:=0;
     TextSize.cy:=0;
-    if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    and (FToolBar.ShowCaptions) then begin
-      if (Caption<>'') then begin
-        TextSize:=Canvas.TextExtent(Caption);
-      end;
-    end;
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) and
+       (FToolBar.ShowCaptions) and
+       (Caption <> '') then
+      TextSize := Canvas.TextExtent(Caption);
 
     // calculate icon size
-    IconSize:=Point(0,0);
-    GetCurrentIcon(ImgList,ImgIndex);
-    if (ImgList<>nil) then begin
-      IconSize:=Point(ImgList.Width,ImgList.Height);
-      if IconSize.y<=0 then IconSize.X:=0;
+    IconSize := Point(0,0);
+    GetCurrentIcon(ImgList, ImgIndex);
+    if (ImgList<>nil) then
+    begin
+      IconSize := Point(ImgList.Width, ImgList.Height);
+      if IconSize.y <= 0 then
+        IconSize.X := 0;
     end;
 
     // calculate text and icon position
     TextPos:=Point(0,0);
     IconPos:=Point(0,0);
-    if TextSize.cx>0 then begin
-      if IconSize.X>0 then begin
-        if FToolBar.List then begin
+    if TextSize.cx > 0 then
+    begin
+      if IconSize.X > 0 then
+      begin
+        if FToolBar.List then
+        begin
           // icon left of text
           IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cx-2) div 2;
           IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
           TextPos.X:=IconPos.X+IconSize.X+2;
           TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
-        end else begin
+        end else
+        begin
           // icon above text
           IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
           IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y-TextSize.cy-2) div 2;
           TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
           TextPos.Y:=IconPos.Y+IconSize.Y+2;
         end;
-      end else begin
+      end else
+      begin
         // only text
         TextPos.X:=(ButtonRect.Left+ButtonRect.Right-TextSize.cx) div 2;
         TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
       end;
-    end else if IconSize.x>0 then begin
+    end else
+    if IconSize.x>0 then
+    begin
       // only icon
       IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x) div 2;
       IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
     end;
 
     // draw button
-    if (Style in [tbsButton,tbsDropDown,tbsCheck{$ifdef UseThemes},tbsSeparator{$endif}])
-    {$ifndef UseThemes} and (FLastButtonDrawFlags and DFCS_FLAT = 0){$endif} then
+    if (Style in [tbsButton, tbsDropDown, tbsCheck, tbsDivider]) then
     begin
-      {$ifdef UseThemes}
-      ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-         Details, PaintRect);
-      PaintRect := ThemeServices.ContentRect(Canvas.Handle, Details, PaintRect);
-      {$else}
-       DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-        PaintRect, DFC_BUTTON, FLastButtonDrawFlags);
-       InflateRect(PaintRect, -2, -2);
-      {$endif}
+      ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
+         Details, ButtonRect);
+      ButtonRect := ThemeServices.ContentRect(Canvas.Handle, Details, ButtonRect);
     end;
 
     // draw dropdown button
     if Style in [tbsDropDown] then
-    begin
-      //DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-      //  DropDownButtonRect, DFC_BUTTON, FLastButtonDrawFlags);
-      DrawDropDownArrow(DropDownButtonRect);
-    end;
+      DrawDropDownArrow(Details, DropDownButtonRect);
 
     // draw icon
     if (ImgList<>nil) then
     begin
+      if ThemeServices.IsPushed(Details) then
+      begin
+        inc(IconPos.X);
+        inc(IconPos.Y);
+      end;
+      
       ImgList.Draw(Canvas, IconPos.X, IconPos.Y, ImgIndex, Enabled);
     end;
 
     // draw text
-    if (TextSize.cx>0) then begin
+    if (TextSize.cx>0) then
+    begin
       TS := Canvas.TextStyle;
       TS.Alignment:= taLeftJustify;
       TS.Layout:= tlTop;
@@ -292,26 +264,17 @@ begin
       TS.ShowPrefix:=true;
       TS.Wordbreak:=false;
       //DebugLn(['TToolButton.Paint Caption="',DbgStr(Caption),'" TextPos=',dbgs(TextPos),' PaintRect=',dbgs(PaintRect)]);
-      Canvas.TextRect(PaintRect, TextPos.X, TextPos.Y, Caption, TS);
+      Canvas.TextRect(ButtonRect, TextPos.X, TextPos.Y, Caption, TS);
     end;
 
     // draw separator (at runtime: just space, at designtime: a rectangle)
-    if (Style in [tbsSeparator,tbsDivider])
-    and (csDesigning in ComponentState) then begin
-      Canvas.Brush.Color:=clBackground;
-      Canvas.Pen.Color:=clBlack;
+    if (Style in [tbsSeparator,tbsDivider]) and (csDesigning in ComponentState) then
+    begin
+      Canvas.Brush.Color := clBackground;
+      Canvas.Pen.Color := clBlack;
       dec(PaintRect.Right);
       dec(PaintRect.Bottom);
       Canvas.FrameRect(PaintRect);
-    end;
-    
-    // draw divider
-    if (Style in [tbsDivider]) then begin
-      DividerRect.Left:=((ButtonRect.Left+ButtonRect.Right) div 2)-1;
-      DividerRect.Right:=DividerRect.Left+2;
-      DividerRect.Top:=2;
-      DividerRect.Bottom:=Max(DividerRect.Top,PaintRect.Bottom-2);
-      DrawEdge(Canvas.Handle,DividerRect,EDGE_ETCHED,BF_LEFT);
     end;
   end;
   
@@ -677,53 +640,42 @@ begin
   end;
 end;
 
-{$ifdef UseThemes}
-function TToolButton.GetButtonDrawDetail: TThemedToolBar;
+function TToolButton.GetButtonDrawDetail: TThemedElementDetails;
+var
+  IsFlat: Boolean;
+  ToolDetail: TThemedToolBar;
 begin
+  IsFlat := (FToolBar <> nil) and (FToolBar.Flat);
+  
   if Style = tbsDropDown then
-    Result := ttbSplitButtonNormal
+    ToolDetail := ttbSplitButtonNormal
   else
-  if Style = tbsSeparator then
-    Result := ttbSeparatorNormal
+  if Style = tbsDivider then
+    ToolDetail := ttbSeparatorNormal
   else
-    Result := ttbButtonNormal;
+    ToolDetail := ttbButtonNormal;
     
   if not Enabled then
-    inc(Result, 3) // ttbButtonDisabled
+    inc(ToolDetail, 3) // ttbButtonDisabled
   else
   begin
     if Down then
     begin // checked states
       if FMouseInControl then
-        inc(Result, 5) // ttbButtonCheckedHot
+        inc(ToolDetail, 5) // ttbButtonCheckedHot
       else
-        inc(Result, 4) // ttbButtonChecked
+        inc(ToolDetail, 4) // ttbButtonChecked
     end
     else
     begin
       if (tbfPressed in FToolButtonFlags) and FMouseInControl then
-        inc(Result, 2) else // ttbButtonPressed
-      if FMouseInControl then
-        inc(Result, 1); // ttbButtonHot
+        inc(ToolDetail, 2) else // ttbButtonPressed
+      if FMouseInControl or not IsFlat then
+        inc(ToolDetail, 1); // ttbButtonHot
     end;
   end;
+  Result := ThemeServices.GetElementDetails(ToolDetail);
 end;
-{$else}
-function TToolButton.GetButtonDrawFlags: integer;
-begin
-  Result := DFCS_BUTTONPUSH;
-  if not Enabled then
-    inc(Result, DFCS_INACTIVE)
-  else
-  if FDown or ((tbfPressed in FToolButtonFlags) and FMouseInControl) then
-    inc(Result, DFCS_PUSHED);
-
-  if (FToolBar <> nil) and FToolBar.Flat
-  and (not (csDesigning in ComponentState)) and (((not FMouseInControl)
-  and (not FDown)) or not Enabled) then
-    inc(Result, DFCS_FLAT);
-end;
-{$endif}
 
 procedure TToolButton.SetParent(AParent: TWinControl);
 var
@@ -862,18 +814,12 @@ begin
     //DebugLn(['TToolButton.CalculatePreferredSize Preferred=',PreferredWidth,',',PreferredHeight,' Icon=',IconPos.Y,'+',IconSize.Y,' Text=',TextPos.Y,'+',TextSize.cy]);
 
     // add button frame
-    {$ifdef UseThemes}
-    FLastButtonDrawDetail := GetButtonDrawDetail;
-    {$else}
-    FLastButtonDrawFlags := GetButtonDrawFlags;
-    {$endif}
-    if (Style in [tbsButton,tbsDropDown,tbsCheck])
-    {$ifndef UseThemes} and (FLastButtonDrawFlags and DFCS_FLAT = 0){$endif} then
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
-      inc(PreferredWidth,4);
-      inc(PreferredHeight,4);
+      inc(PreferredWidth, 4);
+      inc(PreferredHeight, 4);
     end;
-    if Style=tbsDropDown then
+    if Style = tbsDropDown then
     begin
       inc(PreferredWidth, FToolBar.FDropDownWidth);
     end;
