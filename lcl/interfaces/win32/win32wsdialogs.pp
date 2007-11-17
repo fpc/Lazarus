@@ -332,6 +332,7 @@ var
   FileNameWideBuffer: PWideChar;
   FileNameBufferSize: Integer;
   FilterBuffer: WideString;
+  TitleBuffer: WideString;
 begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
@@ -397,7 +398,9 @@ begin
       lpStrFilter := GetMem(Length(FilterBuffer) * 2 + 2);
       Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
 
-      lpStrTitle := PChar(PWideChar(Utf8Decode(AOpenDialog.Title)));
+      TitleBuffer := Utf8Decode(AOpenDialog.Title);
+      lpStrTitle := GetMem(Length(TitleBuffer) * 2 + 2);
+      Move(TitleBuffer[1], lpStrTitle^, Length(TitleBuffer) * 2 + 2);
     end
     else
     begin
@@ -406,7 +409,8 @@ begin
       lpStrFilter := StrAlloc(Length(Filter)+1);
       StrPCopy(lpStrFilter, Utf8ToAnsi(Filter));
 
-      lpStrTitle := PChar(Utf8ToAnsi(AOpenDialog.Title));
+      lpStrTitle := StrAlloc(Length(AOpenDialog.Title)+1);
+      StrPCopy(lpStrTitle, Utf8ToAnsi(AOpenDialog.Title));
     end;
   {$else}
     lpStrFile := FileNameBuffer;
@@ -584,8 +588,12 @@ begin
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
 
   {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then FreeMem(OpenFile^.lpStrFilter)
-    else StrDispose(OpenFile^.lpStrFilter);
+    if UnicodeEnabledOS then
+      FreeMem(OpenFile^.lpStrFilter)
+    else
+      StrDispose(OpenFile^.lpStrFilter);
+
+    FreeMem(OpenFile^.lpStrTitle);
   {$else}
     StrDispose(OpenFile^.lpStrFilter);
   {$endif}
