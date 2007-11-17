@@ -203,8 +203,7 @@ var
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
 begin
-  tmpRect.right := 0;
-  tmpRect.left := 0;
+  FillChar(tmpRect, SizeOf(tmpRect), 0);
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
 {$ifdef WindowsUnicodeSupport}
@@ -335,11 +334,13 @@ begin
   inc(Result.cx, LeftCaptionPosition(aMenuItem));
 
   if not aMenuItem.IsInMenuBar then
-    inc(Result.cx, SpaceBetweenIcons);
+    inc(Result.cx, SpaceBetweenIcons)
+  else
+    dec(Result.cx, SpaceBetweenIcons);
 
-  if aMenuItem.ShortCut <> scNone then
+  if (aMenuItem.ShortCut <> scNone) then
     Inc(Result.cx, spaceBetweenIcons);
-	
+
   minimumHeight := GetSystemMetrics(SM_CYMENU);
   if not aMenuItem.IsInMenuBar then
     Dec(minimumHeight, 2);
