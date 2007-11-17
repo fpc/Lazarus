@@ -49,14 +49,31 @@ type
     destructor Destroy; override;
   end;
   
+  TLazDocChangeEvent =
+              procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
+  
+  TLazDocManagerHandler = (
+    ldmhDocChanging,
+    ldmhDocChanged
+    );
+  
   { TLazDocManager }
 
   TLazDocManager = class
   private
     FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
+    FHandlers: array[TLazDocManagerHandler] of TMethodList;
+    procedure AddHandler(HandlerType: TLazDocManagerHandler;
+                         const AMethod: TMethod; AsLast: boolean = false);
+    procedure RemoveHandler(HandlerType: TLazDocManagerHandler;
+                            const AMethod: TMethod);
+    procedure CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
+                                  Doc: TLazFPDocFile);
   public
     constructor Create;
     destructor Destroy; override;
+    procedure FreeDocs;
+    
     function FindFPDocFile(const Filename: string): TLazFPDocFile;
     function LoadFPDocFile(const Filename: string;
                            UpdateFromDisk, Revert: Boolean;
@@ -65,9 +82,17 @@ type
                                        Context: TPascalHelpContextList): string;
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean): string;
-    procedure FreeDocs;
+  public
+    // Event lists
+    procedure RemoveAllHandlersOfObject(AnObject: TObject);
+    procedure AddHandlerOnChanging(const OnDocChangingEvent: TLazDocChangeEvent;
+                                   AsLast: boolean = false);
+    procedure RemoveHandlerOnChanging(const OnDocChangingEvent: TLazDocChangeEvent);
+    procedure AddHandlerOnChanged(const OnDocChangedEvent: TLazDocChangeEvent;
+                                  AsLast: boolean = false);
+    procedure RemoveHandlerOnChanged(const OnDocChangedEvent: TLazDocChangeEvent);
   end;
-  
+
 var
   LazDocBoss: TLazDocManager = nil;// set by the IDE
   
@@ -94,6 +119,30 @@ destructor TLazFPDocFile.Destroy;
 begin
   FreeAndNil(Doc);
   inherited Destroy;
+end;
+
+procedure TLazDocManager.AddHandler(HandlerType: TLazDocManagerHandler;
+  const AMethod: TMethod; AsLast: boolean);
+begin
+  if FHandlers[HandlerType]=nil then
+    FHandlers[HandlerType]:=TMethodList.Create;
+  FHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TLazDocManager.RemoveHandler(HandlerType: TLazDocManagerHandler;
+  const AMethod: TMethod);
+begin
+  FHandlers[HandlerType].Remove(AMethod);
+end;
+
+procedure TLazDocManager.CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
+  Doc: TLazFPDocFile);
+var
+  i: LongInt;
+begin
+  i:=FHandlers[HandlerType].Count;
+  while FHandlers[HandlerType].NextDownIndex(i) do
+    TLazDocChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
 end;
 
 constructor TLazDocManager.Create;
@@ -145,6 +194,7 @@ begin
   end;
   
   DebugLn(['TLazDocManager.LoadFPDocFile parsing ',ADocFile.Filename]);
+  CallDocChangeEvents(ldmhDocChanging,ADocFile);
 
   // parse XML
   ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
@@ -154,10 +204,14 @@ begin
   try
     ADocFile.CodeBuffer.SaveToStream(MemStream);
     MemStream.Position:=0;
+    Result:=false;
     ReadXMLFile(ADocFile.Doc, MemStream);
     Result:=true;
   finally
-    MemStream.Free;;
+    if not Result then
+      FreeAndNil(ADocFile.Doc);
+    MemStream.Free;
+    CallDocChangeEvents(ldmhDocChanging,ADocFile);
   end;
 end;
 
@@ -296,6 +350,39 @@ procedure TLazDocManager.FreeDocs;
 begin
   FDocs.FreeAndClear;
 end;
+
+procedure TLazDocManager.RemoveAllHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TLazDocManagerHandler;
+begin
+  for HandlerType:=Low(TLazDocManagerHandler) to High(TLazDocManagerHandler) do
+    FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
+procedure TLazDocManager.AddHandlerOnChanging(
+  const OnDocChangingEvent: TLazDocChangeEvent; AsLast: boolean);
+begin
+  AddHandler(ldmhDocChanging,TMethod(OnDocChangingEvent),AsLast);
+end;
+
+procedure TLazDocManager.RemoveHandlerOnChanging(
+  const OnDocChangingEvent: TLazDocChangeEvent);
+begin
+  RemoveHandler(ldmhDocChanging,TMethod(OnDocChangingEvent));
+end;
+
+procedure TLazDocManager.AddHandlerOnChanged(
+  const OnDocChangedEvent: TLazDocChangeEvent; AsLast: boolean);
+begin
+  AddHandler(ldmhDocChanged,TMethod(OnDocChangedEvent),AsLast);
+end;
+
+procedure TLazDocManager.RemoveHandlerOnChanged(
+  const OnDocChangedEvent: TLazDocChangeEvent);
+begin
+  RemoveHandler(ldmhDocChanged,TMethod(OnDocChangedEvent));
+end;
+
 
 end.
 
