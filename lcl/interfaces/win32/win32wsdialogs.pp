@@ -328,9 +328,19 @@ var
   FileName: string;
   InitialDir: String;
   FileNameBuffer: PChar;
+  FileNameWide: WideString;
+  FileNameWideBuffer: PWideChar;
   FilterBuffer: WideString;
 begin
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    FileNameWideBuffer := AllocMem(FileNameBufferLen * 2 + 2)
+  else
+    FileNameBuffer := AllocMem(FileNameBufferLen + 1);
+{$else}
   FileNameBuffer := AllocMem(FileNameBufferLen + 1);
+{$endif}
+
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
   if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
@@ -340,8 +350,25 @@ begin
     InitialDir := Copy(FileName,1, Length(FileName)-1);
     FileName := '';
   end;
-  StrLCopy(FileNameBuffer, PChar(FileName), FileNameBufferLen);
-  if AOpenDialog.Filter <> '' then 
+
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      FileNameWide := UTF8Decode(FileName);
+
+      { StrLCopy is a PChar function, so it won't create a proper 2-byte
+        sized ending and we ensure that it's there by cleaning the string }
+      FillChar(FileNameWideBuffer^, FileNameBufferLen * 2 + 2, #0);
+
+      StrLCopy(PChar(FileNameWideBuffer), PChar(PWideChar(FileNameWide)), FileNameBufferLen * 2);
+    end
+    else
+      StrLCopy(FileNameBuffer, PChar(UTF8ToAnsi(FileName)), FileNameBufferLen);
+  {$else}
+    StrLCopy(FileNameBuffer, PChar(FileName), FileNameBufferLen);
+  {$endif}
+
+  if AOpenDialog.Filter <> '' then
   begin
     Filter := AOpenDialog.Filter;
     ReplacePipe(Filter);
@@ -357,11 +384,12 @@ begin
     hInstance := System.hInstance;
 
     nFilterIndex := AOpenDialog.FilterIndex;
-    lpStrFile := FileNameBuffer;
 
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
+      lpStrFile := PChar(FileNameWideBuffer);
+
       FilterBuffer := Utf8Decode(Filter);
       lpStrFilter := GetMem(Length(FilterBuffer) * 2 + 2);
       Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
@@ -370,12 +398,16 @@ begin
     end
     else
     begin
+      lpStrFile := FileNameBuffer;
+
       lpStrFilter := StrAlloc(Length(Filter)+1);
       StrPCopy(lpStrFilter, Utf8ToAnsi(Filter));
 
       lpStrTitle := PChar(Utf8ToAnsi(AOpenDialog.Title));
     end;
   {$else}
+    lpStrFile := FileNameBuffer;
+
     lpStrFilter := StrAlloc(Length(Filter)+1);
     StrPCopy(lpStrFilter, Filter);
 
@@ -404,7 +436,46 @@ var
   var
     I: integer;
     pName: PChar;
+    PWideName: PWideChar;
   begin
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+    begin
+      PWideName := PWideChar(OpenFile^.lpStrFile);
+      I:=Length(PWideName);
+      if I < OpenFile^.nFileOffset then
+      begin
+        Inc(PWideName, I * 2 + 2);
+        I:=Length(PWideName);
+        while I > 0 do
+        begin
+          AFiles.Add(ExpandFileName(Utf8Encode(PWideName)));
+          Inc(PWideName, I * 2 + 2);
+          I:=Length(PWideName);
+        end;
+      end
+      else
+        AFiles.Add(Utf8Encode(PWideName));
+    end
+    else
+    begin
+      pName := OpenFile^.lpStrFile;
+      I:=Length(pName);
+      if I < OpenFile^.nFileOffset then
+      begin
+        Inc(pName,Succ(I));
+        I:=Length(pName);
+        while I > 0 do
+        begin
+          AFiles.Add(ExpandFileName(StrPas(pName)));
+          Inc(pName,Succ(I));
+          I:=Length(pName);
+        end;
+      end
+      else
+        AFiles.Add(StrPas(pName));
+    end;
+  {$else}
     pName := OpenFile^.lpStrFile;
     I:=Length(pName);
     if I < OpenFile^.nFileOffset then
@@ -420,6 +491,7 @@ var
     end
     else
       AFiles.Add(StrPas(pName));
+  {$endif}
   end;
 
   procedure SetFilesPropertyCustomFiles(AFiles:TStrings);
@@ -475,22 +547,20 @@ begin
   if BufferTooSmall then
     UserResult := true;
   SetDialogResult(AOpenDialog, UserResult);
-  with AOpenDialog do
+
+  AOpenDialog.Files.Clear;
+  if UserResult then
   begin
-    Files.Clear;
-    if UserResult then
-    begin
-      AOpenDialog.FilterIndex := OpenFile^.nFilterIndex;
-      if (ofOldStyleDialog in Options) then
-        SetFilesPropertyForOldStyle(Files)
-      else if BufferTooSmall then
-        SetFilesPropertyCustomFiles(Files)
-      else
-        SetFilesProperty(Files);
-      FileName := Files[0];
-    end else
-      FileName := '';
-  end;
+    AOpenDialog.FilterIndex := OpenFile^.nFilterIndex;
+    if (ofOldStyleDialog in AOpenDialog.Options) then
+      SetFilesPropertyForOldStyle(AOpenDialog.Files)
+    else if BufferTooSmall then
+      SetFilesPropertyCustomFiles(AOpenDialog.Files)
+    else
+      SetFilesProperty(AOpenDialog.Files);
+    AOpenDialog.FileName := AOpenDialog.Files[0];
+  end else
+    AOpenDialog.FileName := '';
 end;
 
 { TWin32WSSaveDialog }
