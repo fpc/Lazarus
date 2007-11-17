@@ -854,20 +854,11 @@ begin
 end;
 
 function TRawImageDescription.AsString: string;
-
-  function BoolStr(b: boolean): string;
-  begin
-    if b then
-      Result:='true'
-    else
-      Result:='false';
-  end;
-
 begin
   Result:=
      ' Format='+RawImageColorFormatNames[Format]
-    +' HasPalette->'+BoolStr(PaletteColorCount <> 0)
-    +' HasMask->'+BoolStr(PaletteColorCount <> 0)
+    +' HasPalette->'+BoolToStr(PaletteColorCount <> 0, True)
+    +' HasMask->'+BoolToStr(PaletteColorCount <> 0, True)
     +' Depth='+IntToStr(Depth)
     +' Width='+IntToStr(Width)
     +' Height='+IntToStr(Height)
@@ -1173,11 +1164,11 @@ begin
     (PaletteSize = AImage.PaletteSize);
 
   if Result then
-    Result := Result and CompareMem(Data, AImage.Data, DataSize);
+    Result := CompareMem(Data, AImage.Data, DataSize);
   if Result then
-    Result := Result and CompareMem(Mask, AImage.Mask, MaskSize);
+    Result := CompareMem(Mask, AImage.Mask, MaskSize);
   if Result then
-    Result := Result and CompareMem(Palette, AImage.Palette, PaletteSize);
+    Result := CompareMem(Palette, AImage.Palette, PaletteSize);
 end;
 
 procedure TRawImage.ReleaseData;
