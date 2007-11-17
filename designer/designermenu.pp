@@ -197,7 +197,7 @@ var
   
   index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
   
-  XMLConfig: TXMLConfig;
+  XMLConfig: TXMLConfig = nil;
 
 function TDesignerMainMenu.GetDesigner: TComponentEditorDesigner;
 begin
@@ -2256,5 +2256,8 @@ begin
 end;
 
 initialization
+
+finalization
+  XMLConfig.Free;
 
 end.
