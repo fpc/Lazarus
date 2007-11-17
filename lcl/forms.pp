@@ -116,7 +116,7 @@ type
     procedure SetSmooth(const Value: Boolean); virtual;
     procedure SetVisible(const Value: Boolean); virtual;
     procedure UpdateScrollBar; virtual;
-    procedure InvalidateScollInfo;
+    procedure InvalidateScrollInfo;
   {$ifdef VerboseScrollingWinControl}
     function DebugCondition: Boolean;
   {$endif}

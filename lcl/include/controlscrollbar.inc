@@ -74,7 +74,7 @@ begin
   // check that the new position is also set on the scrollbar
   if HandleAllocated and (GetScrollPos(ControlHandle, IntfBarKind[Kind]) <> FPosition) then
   begin
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
     {$IFDEF VerboseScrollingWinControl}
     if DebugCondition then
       DebugLn(['TControlScrollBar.SetPosition FPosition=',FPosition]);
@@ -102,7 +102,7 @@ begin
   begin
     ScrollInfo.fMask := SIF_PAGE;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
     FPage := ScrollInfo.nPage;
   end;
   Result := FPage;
@@ -116,7 +116,7 @@ begin
   begin
     ScrollInfo.fMask := SIF_POS;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
     FPosition := ScrollInfo.nPos;
   end;
   Result := FPosition;
@@ -130,7 +130,7 @@ begin
   begin
     ScrollInfo.fMask := SIF_Range + SIF_Page;
     GetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo);
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
     FRange := ScrollInfo.nMax - ScrollInfo.nMin - integer(ScrollInfo.nPage);
   end;
   Result := FRange;
@@ -145,7 +145,7 @@ function TControlScrollBar.GetVisible: Boolean;
 begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then
   begin
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
     FVisible := GetScrollbarVisible(Controlhandle, IntfBarKind[Kind]);
   end;
   Result := FVisible;
@@ -180,7 +180,7 @@ begin
   if HandleAllocated then
   begin
     Result := LCLIntf.GetScrollBarSize(ControlHandle,KindID);
-    InvalidateScollInfo;
+    InvalidateScrollInfo;
   end else
     Result := GetSystemMetrics(KindID);
 end;
@@ -318,7 +318,7 @@ begin
   end;
 end;
 
-procedure TControlScrollBar.InvalidateScollInfo;
+procedure TControlScrollBar.InvalidateScrollInfo;
 begin
   FOldScrollInfoValid:=false;
 end;
@@ -372,7 +372,7 @@ begin
     NewPos := 0;
   if NewPos > FRange then
     NewPos := FRange;
-  InvalidateScollInfo;
+  InvalidateScrollInfo;
   SetPosition(NewPos);
 end;
 
