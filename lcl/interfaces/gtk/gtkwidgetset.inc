@@ -1990,7 +1990,7 @@ var
     pixels: pguchar;
   begin
     // create pixbuf with alpha channel first
-    Pixbuf := CreatePixbufFromDrawable(ADrawable, gdk_colormap_get_system, True, ARect.Left, ARect.Top, 0, 0, ADesc.Width, ADesc.Height);
+    Pixbuf := CreatePixbufFromDrawable(ADrawable, nil, True, ARect.Left, ARect.Top, 0, 0, ADesc.Width, ADesc.Height);
     try
       pixels := gdk_pixbuf_get_pixels(Pixbuf);
       
@@ -2519,7 +2519,7 @@ var
 
       Result := ScalePixmapAndMask(GC, ScaleMethod,
                             SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight,
-                            gdk_colormap_get_system, SrcMaskBitmap,
+                            nil, SrcMaskBitmap,
                             Width, Height, TempPixmap, TempMaskBitmap);
       if not Result
       then DebugLn('WARNING: ScaleAndROP ScalePixmap for pixmap failed');
