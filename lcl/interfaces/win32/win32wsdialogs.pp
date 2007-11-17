@@ -330,6 +330,7 @@ var
   FileNameBuffer: PChar;
   FileNameWide: WideString;
   FileNameWideBuffer: PWideChar;
+  FileNameBufferSize: Integer;
   FilterBuffer: WideString;
 begin
 {$ifdef WindowsUnicodeSupport}
@@ -356,11 +357,13 @@ begin
     begin
       FileNameWide := UTF8Decode(FileName);
 
-      { StrLCopy is a PChar function, so it won't create a proper 2-byte
-        sized ending and we ensure that it's there by cleaning the string }
       FillChar(FileNameWideBuffer^, FileNameBufferLen * 2 + 2, #0);
 
-      StrLCopy(PChar(FileNameWideBuffer), PChar(PWideChar(FileNameWide)), FileNameBufferLen * 2);
+      if Length(FileNameWide) > FileNameBufferLen then
+       FileNameBufferSize := FileNameBufferLen
+      else FileNameBufferSize := Length(FileNameWide);
+
+      Move(FileNameWide[1], FileNameWideBuffer^, FileNameBufferSize * 2);
     end
     else
       StrLCopy(FileNameBuffer, PChar(UTF8ToAnsi(FileName)), FileNameBufferLen);
