@@ -2580,6 +2580,7 @@ lcl/graphmath.pp svneol=native#text/pascal
 lcl/graphtype.pp svneol=native#text/pascal
 lcl/grids.pas svneol=native#text/pascal
 lcl/helpintfs.pas svneol=native#text/plain
+lcl/imagelistcache.pas svneol=native#text/pascal
 lcl/images/README.txt svneol=native#text/plain
 lcl/images/btncalccancel.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcimg.xpm -text svneol=native#image/x-xpixmap

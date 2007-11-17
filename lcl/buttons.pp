@@ -40,7 +40,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
-  Themes, Menus{for ShortCut procedures}, LResources;
+  Themes, Menus{for ShortCut procedures}, LResources, ImageListCache;
 
 type
   { TButton }
@@ -73,15 +73,26 @@ type
 
   { TButtonGlyph }
 
-  TButtonGlyph = class
+  TButtonGlyph = class(TObject, IUnknown, IImageCacheListener)
   private
+    FImageIndexes: array[TButtonState] of Integer;
     FImages: TCustomImageList;
     FOriginal: TBitmap;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
+    FImagesCache: TImageListCache;
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
   protected
+    // IUnknown
+    function QueryInterface(const iid: tguid; out obj): longint; stdcall;
+    function _AddRef: longint; stdcall;
+    function _Release: longint; stdcall;
+
+    // IImageCacheListener
+    procedure CacheSetImageList(AImageList: TCustomImageList);
+    procedure CacheSetImageIndex(AIndex, AImageIndex: Integer);
+
     procedure GlyphChanged(Sender: TObject);
   public
     constructor Create;
