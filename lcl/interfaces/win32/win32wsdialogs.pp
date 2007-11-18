@@ -361,8 +361,9 @@ begin
       FillChar(FileNameWideBuffer^, FileNameBufferLen * 2 + 2, #0);
 
       if Length(FileNameWide) > FileNameBufferLen then
-       FileNameBufferSize := FileNameBufferLen
-      else FileNameBufferSize := Length(FileNameWide);
+        FileNameBufferSize := FileNameBufferLen
+      else
+        FileNameBufferSize := Length(FileNameWide);
 
       Move(FileNameWide[1], FileNameWideBuffer^, FileNameBufferSize * 2);
     end
@@ -409,7 +410,7 @@ begin
       lpStrFilter := StrAlloc(Length(Filter)+1);
       StrPCopy(lpStrFilter, Utf8ToAnsi(Filter));
 
-      lpStrTitle := StrAlloc(Length(AOpenDialog.Title)+1);
+      lpStrTitle := GetMem(Length(AOpenDialog.Title)+1);
       StrPCopy(lpStrTitle, Utf8ToAnsi(AOpenDialog.Title));
     end;
   {$else}
@@ -418,7 +419,8 @@ begin
     lpStrFilter := StrAlloc(Length(Filter)+1);
     StrPCopy(lpStrFilter, Filter);
 
-    lpStrTitle := PChar(AOpenDialog.Title);
+    lpStrTitle := GetMem(Length(AOpenDialog.Title)+1);
+    StrPCopy(lpStrTitle, AOpenDialog.Title);
   {$endif}
 
     lpStrInitialDir := PChar(InitialDir);
@@ -592,13 +594,12 @@ begin
       FreeMem(OpenFile^.lpStrFilter)
     else
       StrDispose(OpenFile^.lpStrFilter);
-
-    FreeMem(OpenFile^.lpStrTitle);
   {$else}
     StrDispose(OpenFile^.lpStrFilter);
   {$endif}
 
     FreeMem(OpenFile^.lpStrFile);
+    FreeMem(OpenFile^.lpStrTitle);
     FreeMem(OpenFile);
   end;
 end;
@@ -639,13 +640,16 @@ begin
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
 
   {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then FreeMem(OpenFile^.lpStrFilter)
-    else StrDispose(OpenFile^.lpStrFilter);
+    if UnicodeEnabledOS then
+      FreeMem(OpenFile^.lpStrFilter)
+    else
+      StrDispose(OpenFile^.lpStrFilter);
   {$else}
     StrDispose(OpenFile^.lpStrFilter);
   {$endif}
 
     FreeMem(OpenFile^.lpStrFile);
+    FreeMem(OpenFile^.lpStrTitle);
     FreeMem(OpenFile);
   end;
 end;
