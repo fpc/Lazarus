@@ -10,6 +10,7 @@ object Form1: TForm1
   ClientHeight = 334
   ClientWidth = 781
   OnCreate = FormCreate
+  Position = poScreenCenter
   object ListBox1: TListBox
     AnchorSideLeft.Control = GroupBox1
     AnchorSideTop.Control = GroupBox1
