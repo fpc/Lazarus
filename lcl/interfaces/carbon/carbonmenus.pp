@@ -334,6 +334,8 @@ begin
   FRoot := True;
   
   OSError(SetRootMenu(Menu), Self, 'AttachToMenuBar', 'SetRootMenu');
+  
+  InvalMenuBar;
 end;
 
 {------------------------------------------------------------------------------

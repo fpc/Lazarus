@@ -743,10 +743,23 @@ end;
 procedure TCarbonCustomControl.Draw;
 begin
   if Context <> nil then
+  with (Context as TCarbonDeviceContext) do
   begin
-    (Context as TCarbonDeviceContext).TextFractional := TextFractional;
-    if LCLObject.Color <> clBtnFace then
-      with (Context as TCarbonDeviceContext) do FillRect(GetClipRect, CurrentBrush);
+    if CGContext <> nil then
+    begin
+      if CurrentBrush <> nil then // apply control background color
+      begin
+        if LCLObject.Color <> clBtnFace then
+          CurrentBrush.SetColor(LCLObject.Color, True)
+        else
+          CurrentBrush.SetColor(LCLObject.Color, False);
+
+        CurrentBrush.Apply(Context, False);
+        if LCLObject.Color <> clBtnFace then FillRect(GetClipRect, CurrentBrush);
+      end;
+    end;
+  
+    TextFractional := TextFractional;
   end;
 end;
 

@@ -169,7 +169,6 @@ type
     function GetSize: TPoint; override;
   public
     constructor Create(AOwner: TCarbonWidget);
-    procedure Reset; override;
   end;
 
   { TCarbonBitmapContext }
@@ -1463,30 +1462,6 @@ begin
 
   FOwner := AOwner;
   Reset;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonControlContext.Reset
-
-  Resets the control context properties to defaults (pen, brush, ...)
- ------------------------------------------------------------------------------}
-procedure TCarbonControlContext.Reset;
-begin
-  inherited Reset;
-  
-  if CGContext <> nil then
-    if CurrentBrush <> nil then // apply control background color
-    begin
-      if FOwner.LCLObject.Color <> clBtnFace then
-        CurrentBrush.SetColor(FOwner.LCLObject.Color, True)
-      else
-        CurrentBrush.SetColor(FOwner.LCLObject.Color, False);
-        
-      CurrentBrush.Apply(Self, False);
-    end;
-  
-  if FOwner.LCLObject.Font.Handle <> 0 then
-    CurrentFont := TCarbonFont(FOwner.LCLObject.Font.Handle);
 end;
 
 { TCarbonBitmapContext }
