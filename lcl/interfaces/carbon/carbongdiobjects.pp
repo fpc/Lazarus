@@ -86,6 +86,7 @@ type
     constructor Create(ALogFont: TLogFont; const AFaceName: String);
     function CreateStyle(ALogFont: TLogFont; const AFaceName: String): ATSUStyle;
     destructor Destroy; override;
+    procedure SetColor(AColor: TColor);
   public
     property LineRotation: Fixed read FLineRotation;
     property Style: ATSUStyle read FStyle;
@@ -818,6 +819,28 @@ begin
     OSError(ATSUDisposeStyle(FStyle), Self, SDestroy, SCreateStyle);
 
   inherited;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonFont.SetColor
+  Params:  AColor  - Font color
+
+  Chnage font style color
+ ------------------------------------------------------------------------------}
+procedure TCarbonFont.SetColor(AColor: TColor);
+var
+  Attr: ATSUAttributeTag;
+  S: ByteCount;
+  A: ATSUAttributeValuePtr;
+  C: RGBColor;
+begin
+  C := ColorToRGBColor(AColor);
+
+  Attr := kATSUColorTag;
+  A := @C;
+  S := SizeOf(C);
+  OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
+    'ATSUSetAttributes', 'kATSUSizeTag');
 end;
 
 { TCarbonColorObject }

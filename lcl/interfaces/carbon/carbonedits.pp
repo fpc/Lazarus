@@ -1368,6 +1368,8 @@ begin
  Attrs[2].size := kTXNQDFontSizeAttributeSize;
  Attrs[2].data.dataValue := AFont.Size;
 
+ TCarbonFont(AFont.Handle).SetColor(AFont.Color);
+
  // font style
  Attrs[3].tag := kTXNATSUIStyle;
  Attrs[3].size := kTXNATSUIStyleSize;
