@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil,
-  CodeToolManager, CodeCache, FileProcs, AvgLvlTree,
+  CodeTree, CodeToolManager, CodeCache, FileProcs, AvgLvlTree,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, LazIDEIntf,
   IDEProcs, PackageDefs, EnvironmentOpts;
@@ -47,6 +47,9 @@ type
     ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was build
     CodeBuffer: TCodeBuffer;
     destructor Destroy; override;
+    function GetModuleNode: TDOMNode;
+    function GetFirstElement: TDOMNode;
+    function GetElementWithName(const ElementName: string): TDOMNode;
   end;
   
   TLazDocChangeEvent =
@@ -82,6 +85,7 @@ type
                                        Context: TPascalHelpContextList): string;
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean): string;
+    function CodeNodeToElementName(Tool: TCodeTool; CodeNode: TCodeTreeNode): string;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -119,6 +123,49 @@ destructor TLazFPDocFile.Destroy;
 begin
   FreeAndNil(Doc);
   inherited Destroy;
+end;
+
+function TLazFPDocFile.GetModuleNode: TDOMNode;
+begin
+  Result:=nil;
+  if Doc=nil then exit;
+
+  // get first node
+  Result := Doc.FindNode('fpdoc-descriptions');
+  if Result=nil then exit;
+
+  // proceed to package
+  Result := Result.FirstChild;
+  if Result=nil then exit;
+
+  // proceed to module
+  Result := Result.FirstChild;
+  while (Result<>nil) and (Result.NodeName <> 'module') do
+    Result := Result.NextSibling;
+end;
+
+function TLazFPDocFile.GetFirstElement: TDOMNode;
+begin
+  //get first module node
+  Result := GetModuleNode;
+  if Result=nil then exit;
+
+  //proceed to element
+  Result := Result.FirstChild;
+  while Result.NodeName <> 'element' do
+    Result := Result.NextSibling;
+end;
+
+function TLazFPDocFile.GetElementWithName(const ElementName: string): TDOMNode;
+begin
+  Result:=GetFirstElement;
+  while Result<>nil do begin
+    if (Result is TDomElement)
+    and (CompareText(TDomElement(Result).GetAttribute('name'),ElementName)=0)
+    then
+      exit;
+    Result:=Result.NextSibling;
+  end;
 end;
 
 procedure TLazDocManager.AddHandler(HandlerType: TLazDocManagerHandler;
@@ -346,8 +393,40 @@ begin
   Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
 end;
 
-procedure TLazDocManager.FreeDocs;
+function TLazDocManager.CodeNodeToElementName(Tool: TCodeTool;
+  CodeNode: TCodeTreeNode): string;
+var
+  NodeName: String;
 begin
+  Result:='';
+  while CodeNode<>nil do begin
+    case CodeNode.Desc of
+    ctnVarDefinition, ctnConstDefinition, ctnTypeDefinition, ctnGenericType:
+      NodeName:=Tool.ExtractDefinitionName(CodeNode);
+    ctnProperty:
+      NodeName:=Tool.ExtractPropName(CodeNode,false);
+    ctnProcedure:
+      NodeName:=Tool.ExtractProcName(CodeNode,[]);
+    else NodeName:='';
+    end;
+    if NodeName<>'' then begin
+      if Result<>'' then
+        Result:='.'+Result;
+      Result:=NodeName+Result;
+    end;
+    CodeNode:=CodeNode.Parent;
+  end;
+end;
+
+procedure TLazDocManager.FreeDocs;
+var
+  AVLNode: TAvgLvlTreeNode;
+begin
+  AVLNode:=FDocs.FindLowest;
+  while AVLNode<>nil do begin
+    CallDocChangeEvents(ldmhDocChanging,TLazFPDocFile(AVLNode.Data));
+    AVLNode:=FDocs.FindSuccessor(AVLNode);
+  end;
   FDocs.FreeAndClear;
 end;
 

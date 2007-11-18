@@ -212,7 +212,7 @@ begin
     GetMem(FormatList,SizeOf(TClipboardFormat)*FCount);
     for i:=0 to FCount-1 do
       FormatList[i]:=FData[i].FormatID;
-    //DebugLn('[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
+    //DebugLn(['[TClipboard.GetOwnerShip] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated]);
     FAllocated:=true;
     if not ClipboardGetOwnerShip(ClipboardType,@InternalOnRequest,FCount,
                                  FormatList)
