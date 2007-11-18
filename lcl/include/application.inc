@@ -724,8 +724,8 @@ begin
     HideHint;
 
   {$ifdef DebugHintWindow}
-    DebugLn('TApplication.ShowHintWindow Info.ControlHasHint=',
-      BoolToStr(Info.ControlHasHint), ' Type=', IntToStr(ord(FHintTimerType)));
+    DebugLn(['TApplication.ShowHintWindow Info.ControlHasHint=',
+      Info.ControlHasHint, ' Type=', ord(FHintTimerType)]);
   {$endif}
 end;
 

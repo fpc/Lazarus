@@ -3914,7 +3914,7 @@ begin
   inherited DragOver(Source,X,Y,State,Accept);
   Node := GetNodeAt(X, Y);
   {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.DragOver ',Name,':',ClassName,' ',BoolToStr(Node<>nil),' ',BoolToStr(Node <> DropTarget),' ',BoolToStr(Node = FLastDropTarget));
+  DebugLn(['TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget]);
   {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
@@ -4418,7 +4418,7 @@ begin
         // mousedown occured in text or icon
         // -> select node and begin drag operation
         {$IFDEF VerboseDrag}
-        DebugLn('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',BoolToStr(MouseCapture));
+        DebugLn(['TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture]);
         {$ENDIF}
         if MouseCapture then
           Include(FStates,tvsMouseCapture);

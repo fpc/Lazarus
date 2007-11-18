@@ -5608,8 +5608,8 @@ var
   R: TRect;
 begin
   {$IfDef dbgPaint}
-    DebugLn('InvalidateCell  Col=',IntToStr(aCol),
-      ' Row=',IntToStr(aRow),' Redraw=', BoolToStr(Redraw));
+    DebugLn(['InvalidateCell  Col=',aCol,
+      ' Row=',aRow,' Redraw=', Redraw]);
   {$Endif}
   if not HandleAllocated then Exit;
   R:=CellRect(aCol, aRow);

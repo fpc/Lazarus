@@ -6928,7 +6928,7 @@ function TMainIDE.DoOpenMainUnit(Flags: TOpenFlags): TModalResult;
 var MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
-  debugln('[TMainIDE.DoOpenMainUnit] A ProjectLoading=',BoolToStr((ofProjectLoading in Flags)),' MainUnitID=',IntToStr(Project1.MainUnitID));
+  debugln(['[TMainIDE.DoOpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
   {$ENDIF}
   Result:=mrCancel;
   if Project1.MainUnitID<0 then exit;

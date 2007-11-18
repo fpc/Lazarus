@@ -44,10 +44,10 @@ end;
 
 procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
 begin
-  DebugLn('TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',
+  DebugLn(['TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',
     TToolButton(FClient).Name,' IsImageIndexLinked=',
-    BoolToStr(IsImageIndexLinked),' Old=',
-    IntToStr(TToolButton(FClient).ImageIndex),' New=',IntToStr(Value));
+    IsImageIndexLinked,' Old=',
+    TToolButton(FClient).ImageIndex,' New=',Value]);
   if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
 end;
 

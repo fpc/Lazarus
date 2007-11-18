@@ -29,7 +29,7 @@ unit GraphType;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc;
+  FPCAdds, Classes, SysUtils, LCLType, LCLProc;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -857,8 +857,8 @@ function TRawImageDescription.AsString: string;
 begin
   Result:=
      ' Format='+RawImageColorFormatNames[Format]
-    +' HasPalette->'+BoolToStr(PaletteColorCount <> 0, True)
-    +' HasMask->'+BoolToStr(PaletteColorCount <> 0, True)
+    +' HasPalette->'+dbgs(PaletteColorCount <> 0)
+    +' HasMask->'+dbgs(PaletteColorCount <> 0)
     +' Depth='+IntToStr(Depth)
     +' Width='+IntToStr(Width)
     +' Height='+IntToStr(Height)

@@ -1494,7 +1494,7 @@ begin
   FCurUnknownProperty:='';
   
   DebugLn('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-  DebugLn('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',BoolToStr(Handled));
+  DebugLn(['[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',Handled]);
   DebugLn('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 end;
 
