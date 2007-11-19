@@ -52,6 +52,13 @@ type
     function GetElementWithName(const ElementName: string): TDOMNode;
   end;
   
+  TLDSourceToFPDocFile = class
+  public
+    SourceFilename: string;
+    FPDocFilename: string;
+    FPDocFilenameTimeStamp: integer;
+  end;
+  
   TLazDocChangeEvent =
               procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
   
@@ -61,7 +68,7 @@ type
     );
     
   TLazDocParseResult = (
-    ldprParsing,
+    ldprParsing, // not yet completed
     ldprFailed,
     ldprSuccess
     );
@@ -86,15 +93,18 @@ type
     function FindFPDocFile(const Filename: string): TLazFPDocFile;
     function LoadFPDocFile(const Filename: string;
                            UpdateFromDisk, Revert: Boolean;
-                           out ADocFile: TLazFPDocFile): Boolean;
+                           out ADocFile: TLazFPDocFile;
+                           out UsedCache: boolean): Boolean;
     function GetFPDocFilenameForHelpContext(
-                                       Context: TPascalHelpContextList): string;
+                                       Context: TPascalHelpContextList;
+                                       out UsedCache: boolean): string;
     function GetFPDocFilenameForSource(SrcFilename: string;
-                                       ResolveIncludeFiles: Boolean): string;
+                                       ResolveIncludeFiles: Boolean;
+                                       out UsedCache: boolean): string;
     function CodeNodeToElementName(Tool: TCodeTool; CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
-                          out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode
-                          ): TLazDocParseResult;
+                          out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
+                          out UsedCache: boolean): TLazDocParseResult;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -225,11 +235,12 @@ begin
 end;
 
 function TLazDocManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
-  Revert: Boolean; out ADocFile: TLazFPDocFile): Boolean;
+  Revert: Boolean; out ADocFile: TLazFPDocFile; out UsedCache: boolean): Boolean;
 var
   MemStream: TMemoryStream;
 begin
   Result:=false;
+  UsedCache:=true;
   ADocFile:=FindFPDocFile(Filename);
   if ADocFile=nil then begin
     ADocFile:=TLazFPDocFile.Create;
@@ -248,6 +259,7 @@ begin
     // no update needed
     exit(true);
   end;
+  UsedCache:=false;
   
   DebugLn(['TLazDocManager.LoadFPDocFile parsing ',ADocFile.Filename]);
   CallDocChangeEvents(ldmhDocChanging,ADocFile);
@@ -272,23 +284,24 @@ begin
 end;
 
 function TLazDocManager.GetFPDocFilenameForHelpContext(
-  Context: TPascalHelpContextList): string;
+  Context: TPascalHelpContextList; out UsedCache: boolean): string;
 var
   i: Integer;
   SrcFilename: String;
 begin
   Result:='';
+  UsedCache:=true;
   if Context=nil then exit;
   for i:=0 to Context.Count-1 do begin
     if Context.Items[i].Descriptor<>pihcFilename then continue;
     SrcFilename:=Context.Items[i].Context;
-    Result:=GetFPDocFilenameForSource(SrcFilename,true);
+    Result:=GetFPDocFilenameForSource(SrcFilename,true,UsedCache);
     exit;
   end;
 end;
 
 function TLazDocManager.GetFPDocFilenameForSource(SrcFilename: string;
-  ResolveIncludeFiles: Boolean): string;
+  ResolveIncludeFiles: Boolean; out UsedCache: boolean): string;
 var
   FPDocName: String;
   SearchPath: String;
@@ -357,6 +370,7 @@ var
   CodeBuf: TCodeBuffer;
 begin
   Result:='';
+  UsedCache:=false;
   
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
@@ -409,8 +423,8 @@ begin
 end;
 
 function TLazDocManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
-  Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode
-  ): TLazDocParseResult;
+  Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
+  out UsedCache: boolean): TLazDocParseResult;
 var
   SrcFilename: String;
   FPDocFilename: String;
@@ -418,15 +432,18 @@ var
 begin
   FPDocFile:=nil;
   DOMNode:=nil;
+  UsedCache:=true;
   
   // find corresponding FPDoc file
   SrcFilename:=Tool.MainFilename;
-  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false);
+  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,UsedCache);
   if FPDocFilename='' then exit(ldprFailed);
+  if (not UsedCache) and (not Complete) then exit(ldprParsing);
 
   // load FPDoc file
-  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile) then
+  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile,UsedCache) then
     exit(ldprFailed);
+  if (not UsedCache) and (not Complete) then exit(ldprParsing);
 
   // find FPDoc node
   ElementName:=CodeNodeToElementName(Tool,CodeNode);

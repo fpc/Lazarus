@@ -740,6 +740,7 @@ var
   i: Integer;
   Entry: TLazDocInheritedEntry;
   CurInheritedEntry: TLazDocInheritedEntry;
+  UsedCache: boolean;
 begin
   if fUpdateLock>0 then begin
     Include(FFlags,ldffInheritedEntriesNeedUpdate);
@@ -755,7 +756,7 @@ begin
       if not Entry.DocFilenameValid then begin
         Entry.DocFilenameValid:=true;
         Entry.DocFilename:=
-                   LazDocBoss.GetFPDocFilenameForSource(Entry.SrcFilename,true);
+            LazDocBoss.GetFPDocFilenameForSource(Entry.SrcFilename,true,UsedCache);
         //DebugLn(['TLazDocForm.UpdateInheritedEntries Source=',Entry.SrcFilename,' -> FPDoc=',Entry.DocFilename]);
         if not All then exit;
       end;
@@ -765,7 +766,7 @@ begin
         //DebugLn(['TLazDocForm.UpdateInheritedEntries Parsing ',Entry.DocFilename,' ...']);
         if (Entry.DocFilename<>'') then begin
           if not LazDocBoss.LoadFPDocFile(Entry.DocFilename,true,false,
-                                          Entry.DocFile)
+                                          Entry.DocFile,UsedCache)
           then
             Entry.DocFile:=nil;
           if not All then exit;
@@ -882,6 +883,7 @@ var
   NewElement: TPascalHelpContextList;
   DocFilename: String;
   DocFileChanged: Boolean;
+  UsedCache: boolean;
 begin
   // save the current changes to documentation
   Save;
@@ -900,7 +902,7 @@ begin
 
       // search the fpdoc xml file for this unit
       // Note: if this is an include file, find the unit
-      DocFilename:=LazDocBoss.GetFPDocFilenameForSource(SrcFilename,true);
+      DocFilename:=LazDocBoss.GetFPDocFilenameForSource(SrcFilename,true,UsedCache);
       if (DocFile=nil) or (CompareFilenames(DocFile.Filename,DocFilename)<>0)
       then begin
         // DocFile changed
@@ -911,7 +913,7 @@ begin
           try
             //DebugLn(['TLazDocForm.UpdateLazDoc DocFilename=',DocFilename]);
             if LazDocBoss.LoadFPDocFile(DocFilename,true,false,
-              fEntry.DocFile)
+              fEntry.DocFile,UsedCache)
             then begin
               fEntry.DocFileValid:=true;
             end else begin

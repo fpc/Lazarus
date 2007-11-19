@@ -90,6 +90,7 @@ var
   Item: TIdentifierListItem;
   Code: TCodeBuffer;
   DocFilename: String;
+  UsedCache: boolean;
 begin
   if (SourceEditorWindow=nil) or (CodeToolBoss=nil)
   or (CodeToolBoss.IdentifierList=nil) then
@@ -103,7 +104,7 @@ begin
     if (Item.Tool.Scanner=nil) then exit;
     Code:=TCodeBuffer(Item.Tool.Scanner.MainCode);
     if Code=nil then exit;
-    DocFilename:=LazDocBoss.GetFPDocFilenameForSource(Code.Filename,false);
+    DocFilename:=LazDocBoss.GetFPDocFilenameForSource(Code.Filename,false,UsedCache);
     if DocFilename='' then exit;
     DebugLn(['TLazDocHintProvider.ReadLazDocData DocFilename=',DocFilename]);
   end else begin
