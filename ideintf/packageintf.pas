@@ -67,6 +67,12 @@ const
     );
 
 type
+  TPkgIntfOwnerSearchFlag = (
+    piosfExcludeOwned, // file must not be marked as part of project/package
+    piosfIncludeSourceDirectories
+    );
+  TPkgIntfOwnerSearchFlags = set of TPkgIntfOwnerSearchFlag;
+
   { TPackageEditingInterface }
 
   TPackageEditingInterface = class(TComponent)
@@ -83,6 +89,8 @@ type
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; virtual; abstract;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); virtual; abstract;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; virtual; abstract;
+    function GetPossibleOwnersOfUnit(const UnitFilename: string;
+                                     Flags: TPkgIntfOwnerSearchFlags): TFPList; virtual; abstract;
   end;
   
 var

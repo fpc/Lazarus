@@ -46,7 +46,7 @@ uses
   MemCheck,
 {$ENDIF}
   // FPC + LCL
-  Classes, SysUtils, FileUtil, LCLProc, Forms, Controls, Dialogs,
+  Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   // codetools
   AVL_Tree, Laz_XMLCfg, DefineTemplates, CodeCache, BasicCodeTools,
   CodeToolManager,
@@ -202,6 +202,9 @@ type
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted,
                                 FindNewFile: boolean): TPkgFile;
+    procedure FindPossibleOwnersOfUnit(const TheFilename: string;
+                                       OwnerList: TFPList;
+                                       ResolveLinks: boolean);
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindNodeOfDependency(Dependency: TPkgDependency;
@@ -873,6 +876,38 @@ begin
     if Result<>nil then exit;
   end;
   Result:=nil;
+end;
+
+procedure TLazPackageGraph.FindPossibleOwnersOfUnit(const TheFilename: string;
+  OwnerList: TFPList; ResolveLinks: boolean);
+var
+  Cnt: Integer;
+  i: Integer;
+  AFilename: string;
+  APackage: TLazPackage;
+  PkgDirs: String;
+  SrcDir: String;
+begin
+  if not FilenameIsAbsolute(TheFilename) then exit;
+  Cnt:=Count;
+  AFilename:=TheFilename;
+  if ResolveLinks then begin
+    AFilename:=ReadAllLinks(TheFilename,false);
+    if AFilename='' then AFilename:=TheFilename;
+  end;
+  SrcDir:=ExtractFilePath(TheFilename);
+  for i:=0 to Cnt-1 do begin
+    APackage:=Packages[i];
+    if APackage.IsVirtual then continue;
+    // source directories + unit path + base directory
+    PkgDirs:=APackage.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false);
+    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.SourceDirectories.CreateSearchPathFromAllFiles);
+    PkgDirs:=MergeSearchPaths(PkgDirs,APackage.Directory);
+    if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+      PChar(PkgDirs),length(PkgDirs))<>nil
+    then
+      OwnerList.Add(APackage);
+  end;
 end;
 
 function TLazPackageGraph.FindPackageWithFilename(const TheFilename: string;

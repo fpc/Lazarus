@@ -59,6 +59,12 @@ type
     ldmhDocChanging,
     ldmhDocChanged
     );
+    
+  TLazDocParseResult = (
+    ldprParsing,
+    ldprFailed,
+    ldprSuccess
+    );
   
   { TLazDocManager }
 
@@ -86,6 +92,9 @@ type
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean): string;
     function CodeNodeToElementName(Tool: TCodeTool; CodeNode: TCodeTreeNode): string;
+    function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
+                          out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode
+                          ): TLazDocParseResult;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -281,7 +290,6 @@ end;
 function TLazDocManager.GetFPDocFilenameForSource(SrcFilename: string;
   ResolveIncludeFiles: Boolean): string;
 var
-  SrcDir: String;
   FPDocName: String;
   SearchPath: String;
   
@@ -293,50 +301,33 @@ var
     SearchPath:=SearchPath+';'+Paths;
   end;
   
-  procedure CheckIfInProject(AProject: TLazProject);
-  var
-    ProjectDirs: String;
-    BaseDir: String;
-    Add: Boolean;
-  begin
-    if AProject=nil then exit;
-    if AProject.LazDocPaths='' then exit;
-    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-    if BaseDir='' then exit;
-
-    Add:=false;
-    // search in project files
-    if (AProject.FindFile(SrcFilename,[pfsfOnlyProjectFiles])<>nil) then begin
-      Add:=true;
-    end;
-    if (not Add) and FilenameIsAbsolute(SrcFilename) then begin
-      // search in project directories
-      ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
-      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
-      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-        PChar(ProjectDirs),length(ProjectDirs))<>nil
-      then
-        Add:=true;
-    end;
-    if Add then
-      AddSearchPath(AProject.LazDocPaths,BaseDir);
-  end;
-  
-  procedure CheckIfInAPackage;
+  procedure CheckUnitOwners(CheckSourceDirectories: boolean);
   var
     PkgList: TFPList;
     i: Integer;
     APackage: TLazPackage;
     BaseDir: String;
+    AProject: TLazProject;
   begin
     if not FilenameIsAbsolute(SrcFilename) then exit;
     
+    if CheckSourceDirectories then begin
+      PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
+    end else begin
+      PkgList:=PackageEditingInterface.GetPossibleOwnersOfUnit(SrcFilename,[]);
+    end;
     // get all packages owning the file
-    PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
     if PkgList=nil then exit;
     try
       for i:=0 to PkgList.Count-1 do begin
-        if TObject(PkgList[i]) is TLazPackage then begin
+        if TObject(PkgList[i]) is TLazProject then begin
+          AProject:=TLazProject(PkgList[i]);
+          if AProject.LazDocPaths='' then continue;
+          BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+          if BaseDir='' then continue;
+          // add lazdoc paths of project
+          AddSearchPath(AProject.LazDocPaths,BaseDir);
+        end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
           if APackage.LazDocPaths='' then continue;
           BaseDir:=APackage.Directory;
@@ -379,15 +370,14 @@ begin
   
   if not FilenameIsPascalSource(SrcFilename) then exit;
 
-  SrcDir:=ExtractFilePath(SrcFilename);
-
+  // first check if the file is owned by any project/package
   SearchPath:='';
-  CheckIfInProject(LazarusIDE.ActiveProject);
-  CheckIfInAPackage;
+  CheckUnitOwners(false);
+  CheckUnitOwners(true);
   CheckIfInLazarus;
-  // finally add default paths
+  
+  // finally add the default paths
   AddSearchPath(EnvironmentOptions.LazDocPaths,'');
-
   FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
   DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
   Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
@@ -416,6 +406,35 @@ begin
     end;
     CodeNode:=CodeNode.Parent;
   end;
+end;
+
+function TLazDocManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
+  Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode
+  ): TLazDocParseResult;
+var
+  SrcFilename: String;
+  FPDocFilename: String;
+  ElementName: String;
+begin
+  FPDocFile:=nil;
+  DOMNode:=nil;
+  
+  // find corresponding FPDoc file
+  SrcFilename:=Tool.MainFilename;
+  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false);
+  if FPDocFilename='' then exit(ldprFailed);
+
+  // load FPDoc file
+  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile) then
+    exit(ldprFailed);
+
+  // find FPDoc node
+  ElementName:=CodeNodeToElementName(Tool,CodeNode);
+  if ElementName='' then exit(ldprFailed);
+  DOMNode:=FPDocFile.GetElementWithName(ElementName);
+  if DOMNode=nil then exit(ldprFailed);
+  
+  Result:=ldprSuccess;
 end;
 
 procedure TLazDocManager.FreeDocs;

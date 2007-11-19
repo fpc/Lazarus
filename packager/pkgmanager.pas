@@ -45,10 +45,10 @@ uses
   MemCheck,
   {$ENDIF}
   // FCL, LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
+  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   StringHashList, Translations,
   // codetools
-  CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates,
+  CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates, FileProcs,
   AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
@@ -208,6 +208,8 @@ type
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; override;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
+    function GetPossibleOwnersOfUnit(const UnitFilename: string;
+                                     Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor: TPkgFile;
     function AddDependencyToOwners(OwnerList: TFPList; APackage: TLazPackage;
                    OnlyTestIfPossible: boolean = false): TModalResult; override;
@@ -345,7 +347,7 @@ begin
     OpenDialog.Title:=lisOpenPackageFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
     OpenDialog.Filter:=lisLazarusPackage+' (*.lpk)|*.lpk'
-                     +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
+                     +'|'+dlgAllFiles+' ('+FileMask+')|'+FileMask;
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[pofAddToRecent];
       For I := 0 to OpenDialog.Files.Count-1 do
@@ -2697,7 +2699,8 @@ begin
     for i:=0 to PkgList.Count-1 do begin
       APackage:=TLazPackage(PkgList[i]);
       IncPath:=APackage.CompilerOptions.GetIncludePath(false);
-      Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',[]);
+      Result:=SearchFileInPath(Filename,APackage.Directory,IncPath,';',
+                               ctsfcDefault);
       if Result<>'' then exit;
     end;
   finally
@@ -2982,23 +2985,8 @@ begin
 end;
 
 function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TFPList;
-var
-  PkgFile: TPkgFile;
 begin
-  Result:=TFPList.Create;
-  // check if unit is part of project
-  if Project1<>nil then begin
-    if Project1.UnitInfoWithFilename(UnitFilename,
-      [pfsfResolveFileLinks,pfsfOnlyProjectFiles])<>nil
-    then
-      Result.Add(Project1);
-  end;
-  // find all packages owning file
-  PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true,true);
-  if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
-    Result.Add(PkgFile.LazPackage);
-  if Result.Count=0 then
-    FreeThenNil(Result);
+  Result:=GetPossibleOwnersOfUnit(UnitFilename,[]);
 end;
 
 procedure TPkgManager.ExtendOwnerListWithUsedByOwners(OwnerList: TFPList);
@@ -3084,6 +3072,65 @@ begin
       end;
     end;
   end;
+end;
+
+function TPkgManager.GetPossibleOwnersOfUnit(const UnitFilename: string;
+  Flags: TPkgIntfOwnerSearchFlags): TFPList;
+var
+  SrcDir: String;// ExtractFilePath(UnitFilename);
+
+  procedure SearchInProject(AProject: TProject);
+  var
+    BaseDir: String;
+    ProjectDirs: String;
+    Add: Boolean;
+  begin
+    if AProject=nil then exit;
+    if AProject.LazDocPaths='' then exit;
+    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+    if BaseDir='' then exit;
+    Add:=false;
+    if not (piosfExcludeOwned in Flags) then begin
+      if AProject.UnitInfoWithFilename(UnitFilename,
+        [pfsfResolveFileLinks,pfsfOnlyProjectFiles])<>nil
+      then
+        Add:=true;
+    end;
+    if (piosfIncludeSourceDirectories in Flags)
+    and FilenameIsAbsolute(UnitFilename) then begin
+      // search in project source directories
+      ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
+      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
+      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+        PChar(ProjectDirs),length(ProjectDirs))<>nil
+      then
+        Add:=true;
+    end;
+    if Add then
+      Result.Add(AProject);
+  end;
+
+var
+  PkgFile: TPkgFile;
+begin
+  Result:=TFPList.Create;
+
+  SrcDir:=ExtractFilePath(UnitFilename);
+
+  SearchInProject(Project1);
+  
+  // find all packages owning file
+  if piosfIncludeSourceDirectories in Flags then begin
+    PackageGraph.FindPossibleOwnersOfUnit(UnitFilename,Result,false);
+  end else if not (piosfExcludeOwned in Flags) then begin
+    PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true,true);
+    if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
+      Result.Add(PkgFile.LazPackage);
+  end;
+
+  // clean up
+  if Result.Count=0 then
+    FreeThenNil(Result);
 end;
 
 function TPkgManager.GetPackageOfCurrentSourceEditor: TPkgFile;
