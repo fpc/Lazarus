@@ -9127,11 +9127,10 @@ begin
 
   MainWidget:=PGtkWidget(AWinControl.Handle);
   FixWidget:=GetFixedWidget(MainWidget);
-  If (FixWidget <> nil) and (FixWidget<>MainWidget) then
+  if (FixWidget <> nil) and (FixWidget <> MainWidget) then
     Widget := FixWidget
-  else begin
+  else
     Widget := MainWidget;
-  end;
 
   RCStyle:=nil;
   FreeFontName:=false;
@@ -9140,8 +9139,9 @@ begin
     // set default background
     if (AWinControl.Color=clNone) then begin
       // clNone => remove default background
-      if (FixWidget<>nil) and (FixWidget^.Window<>nil) then begin
-        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
+      if (FixWidget<>nil) and (FixWidget^.Window<>nil) then
+      begin
+        gdk_window_set_back_pixmap(FixWidget^.Window, nil, GdkFalse);
       end;
     end
     else
