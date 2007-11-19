@@ -168,6 +168,7 @@ end;
 procedure TCustomLabel.TextChanged;
 begin
   Invalidate;
+  InvalidatePreferredSize;
   AdjustSize;
 end;
 
