@@ -8206,6 +8206,7 @@ begin
       If CompareText(WName,LazGtkStyleNames[lgsTreeView])=0 then begin
         lgs:=lgsTreeView;
         StyleObject^.Widget := gtk_tree_view_new;
+        gtk_tree_view_append_column(PGtkTreeView(StyleObject^.Widget), gtk_tree_view_column_new);
       end
 {$endif}
     else
@@ -8281,9 +8282,9 @@ begin
         end
         else
 {$endif}
-        if lgs=lgsToolButton then
+        if lgs = lgsToolButton then
         begin
-          /// already on a toolbar => nothing to do
+          // already on a parent => nothing to do
         end
         else
         begin

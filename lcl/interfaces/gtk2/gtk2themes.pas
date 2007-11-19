@@ -26,6 +26,20 @@ type
 
 implementation
 
+function GetColumnButtonFromTreeView(AWidget: PGtkWidget): PGtkWidget;
+var
+  AColumn: PGtkTreeViewColumn;
+begin
+  Result := nil;
+  if not GTK_IS_TREE_VIEW(AWidget) then
+    exit;
+
+  AColumn := gtk_tree_view_get_column(PGtkTreeView(AWidget), 0);
+  if AColumn = nil then
+    Exit;
+  Result := AColumn^.button;
+end;
+
 { TGtk2ThemeServices }
 
 function TGtk2ThemeServices.GetGtkStyleParams(DC: HDC;
@@ -38,7 +52,9 @@ begin
     case Details.Element of
       teHeader:
         begin
-          Result.Widget := GetStyleWidget(lgsTreeView);
+          Result.Widget := GetColumnButtonFromTreeView(GetStyleWidget(lgsTreeView));
+          if Result.Widget = nil then
+            Result.Widget := GetStyleWidget(lgsTreeView);
           Result.State := GtkButtonMap[Details.State];
           if Details.State = PBS_PRESSED then
             Result.Shadow := GTK_SHADOW_IN
@@ -47,7 +63,7 @@ begin
 
           Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
 
-          Result.Detail := 'treeview';
+          Result.Detail := 'button';
           Result.Painter := gptBox;
         end;
       teRebar:
