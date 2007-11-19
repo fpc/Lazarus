@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-02 17:21+0300\n"
+"PO-Revision-Date: 2007-11-18 00:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -791,7 +791,7 @@ msgstr "Только целые слова"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr "Да для &Всех"
+msgstr "Да для &всех"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

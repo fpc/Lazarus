@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-21 20:12+0300\n"
+"PO-Revision-Date: 2007-11-18 00:30+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -11,5 +11,5 @@ msgstr ""
 
 #: synunireg:sedituni
 msgid "Edit..."
-msgstr "Редактировать..."
+msgstr "Правка..."
 

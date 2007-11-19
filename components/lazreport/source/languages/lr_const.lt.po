@@ -1,5 +1,3 @@
-# translation of lr_const.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
