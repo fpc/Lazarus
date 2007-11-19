@@ -26,7 +26,8 @@
 
 }
 
-procedure TCustomLabel.CalcSize(var AWidth, AHeight: integer);
+procedure TCustomLabel.CalculatePreferredSize(
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 // assumes: (Parent <> nil) and Parent.HandleAllocated
 var
   R : TRect;
@@ -35,6 +36,7 @@ var
   OldFont: HGDIOBJ;
   LabelText: string;
 begin
+  if (Parent=nil) or (not Parent.HandleAllocated) then exit;
   DC := GetDC(Parent.Handle);
   try
     R := Rect(0,0, Width, Height);
@@ -50,8 +52,8 @@ begin
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
-    AWidth := R.Right - R.Left + 1;
-    AHeight := R.Bottom - R.Top + 1;
+    PreferredWidth := R.Right - R.Left + 1;
+    PreferredHeight := R.Bottom - R.Top + 1;
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
@@ -93,7 +95,7 @@ begin
     exit;
   BeginAutoSizing;
   try
-    CalcSize(NewWidth, NewHeight);
+    GetPreferredSize(NewWidth, NewHeight);
     //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
     CurAnchors:=[];
     if Align in [alLeft,alRight,alBottom,alTop,alClient] then
@@ -198,7 +200,7 @@ begin
     TextTop := 0;
   end else
   begin
-    CalcSize(lTextWidth, lTextHeight);
+    GetPreferredSize(lTextWidth, lTextHeight);
     case Layout of
       tlCenter: TextTop := (Height - lTextHeight) div 2;
       tlBottom: TextTop := Height - lTextHeight;
