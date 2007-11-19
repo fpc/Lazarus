@@ -1030,6 +1030,12 @@ begin
   Result := false;
 end;
 
+function TWidgetSet.IsHelpKey(Key: Word; Shift: TShiftState): Boolean;
+{ Asks if the passed key is determined by widgetset to show help }
+begin
+  Result := (Shift = []) and (Key = VK_F1);
+end;
+
 function TWidgetSet.AppHandle: Thandle;
 begin
   DebugLn('Warning: AppHandle is not implemented for this widgetset yet');

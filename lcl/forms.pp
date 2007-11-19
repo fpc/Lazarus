@@ -1033,7 +1033,7 @@ type
     function HelpKeyword(Sender: TObject; const Position: TPoint;
                          const Keyword: String): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
-    procedure ShowHelpForObjecct(Sender: TObject);
+    procedure ShowHelpForObject(Sender: TObject);
     procedure HideAllFormsWithStayOnTop;
     function IsWaiting: boolean;
     procedure CancelHint;

@@ -93,6 +93,7 @@ type
     procedure SetDesigning(AComponent: TComponent); virtual; abstract;
 
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
+    function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; virtual;
 
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; virtual; abstract;

@@ -978,7 +978,7 @@ begin
   Result:=HelpKeyword(nil,Point(0,0),Keyword);
 end;
 
-procedure TApplication.ShowHelpForObjecct(Sender: TObject);
+procedure TApplication.ShowHelpForObject(Sender: TObject);
 begin
   if Sender is TControl then begin
     TControl(Sender).ShowHelp;
@@ -1293,8 +1293,8 @@ begin
   i:=FApplicationHandlers[ahtKeyDownAfter].Count;
   while FApplicationHandlers[ahtKeyDownAfter].NextDownIndex(i) do
     TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Sender,Key,Shift);
-  if (Shift=[]) and (Key=VK_F1) then
-    ShowHelpForObjecct(Sender);
+  if WidgetSet.IsHelpKey(Key, Shift) then
+    ShowHelpForObject(Sender);
 end;
 
 procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
