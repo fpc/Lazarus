@@ -494,6 +494,10 @@ msgstr "Додати до пакунку"
 msgid "Add to project"
 msgstr "Додати до проекту"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Додати модуль до операторної частини uses пакунку. Унеможливити це тільки для модулів, які в жодному випадку не треба компілювати"
@@ -4678,10 +4682,6 @@ msgstr "Налаштування стільниці Lazarus"
 msgid "Lazarus Directory"
 msgstr "Тека Lazarus"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Редактор Lazarus v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Файл Lazarus"
@@ -4690,13 +4690,13 @@ msgstr "Файл Lazarus"
 msgid "Lazarus IDE"
 msgstr "Графічна оболонка Lazarus"
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Файл Info проекту Lazarus"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Текстовий Редактор Lazarus"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -8413,6 +8413,10 @@ msgstr "Назва %s%s%s є неправильним ідентифікатор
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Слово \"%s\" є неправильним ідентифікатором мови паскаль."
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."

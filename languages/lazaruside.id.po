@@ -505,6 +505,10 @@ msgstr "Tambah file ke paket"
 msgid "Add to project"
 msgstr "Tambah ke proyek"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Tambah unit ke klausul uses dari paket. Matikan ini hanya untuk unit yang seharusnya tidak dikompilasi dalam semua kasus."
@@ -4689,10 +4693,6 @@ msgstr "Seting Desktop Lazarus"
 msgid "Lazarus Directory"
 msgstr "Direktori Lazarus"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Editor Lazarus v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "File Lazarus"
@@ -4701,13 +4701,13 @@ msgstr "File Lazarus"
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "File Info Proyek Lazarus"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Editor Sumber Lazarus"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -8424,6 +8424,10 @@ msgstr "Nama %s%s%s bukan pengenal pascal yang benar."
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Nama \"%s\" bukan pengenal pascal yang benar."
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."

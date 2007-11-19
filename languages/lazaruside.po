@@ -1610,6 +1610,14 @@ msgstr ""
 msgid "The file %s%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr ""
@@ -1747,7 +1755,7 @@ msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDe
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
+msgid "Lazarus IDE v%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisnewproject
@@ -3395,7 +3403,7 @@ msgid "Add assignment operator :="
 msgstr ""
 
 #: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
+msgid "Source Editor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcompileroptions

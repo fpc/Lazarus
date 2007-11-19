@@ -507,6 +507,10 @@ msgstr "Įdėti į paketą"
 msgid "Add to project"
 msgstr "Įdėti į projektą"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Pridėti modulį prie paketo naudojamų modulių. Pasyvinkite tik tiems moduliams, kurių jokiu būdu nereikia kompiliuoti."
@@ -4695,10 +4699,6 @@ msgstr "Lazarus darbastalio nuostatos"
 msgid "Lazarus Directory"
 msgstr "Lazarus katalogas"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Lazarus redaktorius v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Lazarus failas"
@@ -4707,13 +4707,13 @@ msgstr "Lazarus failas"
 msgid "Lazarus IDE"
 msgstr "Lazarus IKA"
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Lazarus projekto informacinis failas"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Lazarus pirminio kodo redaktorius"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -8436,6 +8436,10 @@ msgstr "Vardas %s%s%s nėra paskalio identifikatorius."
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Vardas \"%s\" nėra paskalio identifikatorius."
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."

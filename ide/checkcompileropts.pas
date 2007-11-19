@@ -539,7 +539,7 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
     AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[Unitname]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
-      if MessageDlg('Missing unit',
+      if MessageDlg(lisCCOMissingUnit,
         Format(lisCCOPPUNotFoundDetailed,[Unitname, #13]),
         mtError,[mbIgnore,mbAbort],0)=mrIgnore then
           Result:=true;

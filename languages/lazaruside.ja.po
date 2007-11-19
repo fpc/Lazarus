@@ -504,6 +504,10 @@ msgstr "パッケージに追加"
 msgid "Add to project"
 msgstr "プロジェクトに追加"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "パッケージのuses節にユニットを追加してください。全ての場合にコンパイルされるべきではないユニットについてのみ無効化してください。 "
@@ -4688,10 +4692,6 @@ msgstr "Lazarusデスクトップ設定"
 msgid "Lazarus Directory"
 msgstr "Lazarusディレクトリ"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Lazarus エディター v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Lazarusファイル"
@@ -4700,13 +4700,13 @@ msgstr "Lazarusファイル"
 msgid "Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Lazarusプロジェクト情報ファイル"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Lazarusソースエディタ"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -8423,6 +8423,10 @@ msgstr "その名前%s%s%sは有効なpascal識別子ではありません。"
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "その名前\"%s\"は有効なpascal識別子ではありません。"
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."

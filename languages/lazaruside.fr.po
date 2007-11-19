@@ -507,6 +507,10 @@ msgstr "Ajouter au paquet"
 msgid "Add to project"
 msgstr "Ajouter au projet"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Ajouter une unité à la clause uses du paquet. Désactivez ceci seulement pour les unités qui ne seraient pas compilés dans tous les cas."
@@ -4691,10 +4695,6 @@ msgstr "Paramêtres du bureau Lazarus"
 msgid "Lazarus Directory"
 msgstr "Répertoire Lazarus"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Editeur Lazarus v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Fichier Lazarus"
@@ -4703,13 +4703,13 @@ msgstr "Fichier Lazarus"
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "fichier d'information du projet Lazarus"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Editeur de sources Lazarus"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -8426,6 +8426,10 @@ msgstr "Le nom %s%s%s n'est pas un identificateur Pascal valide."
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Le nom \"%s\" n'est pas un identificateur Pascal valide."
+
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
