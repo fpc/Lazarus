@@ -31,7 +31,10 @@ end;
 destructor TButtonGlyph.Destroy;
 begin
   if FImagesCache <> nil then
+  begin
     FImagesCache.UnregisterListener(Self);
+    FImagesCache := nil; // cache can free on unregister
+  end;
   FOriginal.Free;
   FOriginal := nil;
   inherited Destroy;
@@ -99,7 +102,10 @@ end;
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 begin
   if FImagesCache <> nil then
+  begin
     FImagesCache.UnregisterListener(Self);
+    FImagesCache := nil; // cache can free on unregister
+  end;
 
   if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
   begin

@@ -181,7 +181,10 @@ begin
     FListeners.Remove(AListener);
   end;
   if FListeners.Count = 0 then
+  begin
+    FImageListCache := nil;
     Free;
+  end;
 end;
 
 procedure TImageListCache.RegisterBitmap(AListener: IImageCacheListener; ABitmap: TBitmap; ABitmapCount: Integer = 1);
