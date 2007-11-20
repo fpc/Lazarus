@@ -38,8 +38,8 @@ unit ProjectInspector;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, Menus, Dialogs, Graphics, FileUtil,
+  Classes, SysUtils, LCLProc, AvgLvlTree, LResources, Forms, Controls, Buttons,
+  ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
   IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs;
@@ -118,6 +118,8 @@ type
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    function ProjectFileToNodeText(AFile: TUnitInfo): string;
+    function CompareUnitInfos(Tree: TAvgLvlTree; UnitInfo1, UnitInfo2: Pointer): integer;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -446,22 +448,30 @@ var
   CurNode: TTreeNode;
   NodeText: String;
   NextNode: TTreeNode;
+  Tree: TAvgLvlTree;
+  AVLNode: TAvgLvlTreeNode;
 begin
   ItemsTreeView.BeginUpdate;
   if LazProject<>nil then begin
+    Tree:=TAvgLvlTree.CreateObjectCompare(@CompareUnitInfos);
     CurFile:=LazProject.FirstPartOfProject;
-    CurNode:=FilesNode.GetFirstChild;
     while CurFile<>nil do begin
-      NodeText:=
-        CreateRelativePath(CurFile.Filename,LazProject.ProjectDirectory);
+      Tree.Add(CurFile);
+      CurFile:=CurFile.NextPartOfProject;
+    end;
+    AVLNode:=Tree.FindLowest;
+    CurNode:=FilesNode.GetFirstChild;
+    while AVLNode<>nil do begin
+      CurFile:=TUnitInfo(AVLNode.Data);
+      NodeText:=ProjectFileToNodeText(CurFile);
       if CurNode=nil then
         CurNode:=ItemsTreeView.Items.AddChild(FilesNode,NodeText)
       else
         CurNode.Text:=NodeText;
       CurNode.ImageIndex:=GetImageIndexOfFile(CurFile);
       CurNode.SelectedIndex:=CurNode.ImageIndex;
-      CurFile:=CurFile.NextPartOfProject;
       CurNode:=CurNode.GetNextSibling;
+      AVLNode:=Tree.FindSuccessor(AVLNode);
     end;
     while CurNode<>nil do begin
       NextNode:=CurNode.GetNextSibling;
@@ -469,6 +479,7 @@ begin
       CurNode:=NextNode;
     end;
     FilesNode.Expanded:=true;
+    Tree.Free;
   end else begin
     // delete file nodes
     FilesNode.HasChildren:=false;
@@ -589,20 +600,38 @@ begin
   ExecuteIDEShortCut(Self,Key,Shift,nil);
 end;
 
+function TProjectInspectorForm.ProjectFileToNodeText(AFile: TUnitInfo): string;
+begin
+  Result:=CreateRelativePath(AFile.Filename,LazProject.ProjectDirectory);
+end;
+
+function TProjectInspectorForm.CompareUnitInfos(Tree: TAvgLvlTree;
+  UnitInfo1, UnitInfo2: Pointer): integer;
+var
+  ShortFilename1: String;
+  ShortFilename2: String;
+begin
+  ShortFilename1:=CreateRelativePath(TUnitInfo(UnitInfo1).Filename,
+                                     LazProject.ProjectDirectory);
+  ShortFilename2:=CreateRelativePath(TUnitInfo(UnitInfo2).Filename,
+                                     LazProject.ProjectDirectory);
+  Result:=CompareFilenames(ShortFilename1,ShortFilename2);
+end;
+
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
 var
   CurNode: TTreeNode;
-  NodeIndex: Integer;
+  NodeText: String;
 begin
   Result:=nil;
   if LazProject=nil then exit;
   CurNode:=ItemsTreeView.Selected;
   if (CurNode=nil) or (CurNode.Parent<>FilesNode) then exit;
-  NodeIndex:=CurNode.Index;
   Result:=LazProject.FirstPartOfProject;
-  while (NodeIndex>0) and (Result<>nil) do begin
+  while (Result<>nil) do begin
+    NodeText:=ProjectFileToNodeText(Result);
+    if NodeText=CurNode.Text then exit;
     Result:=Result.NextPartOfProject;
-    dec(NodeIndex);
   end;
 end;
 
