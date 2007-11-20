@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <CONFIG>
     <Version
-        Lazarus="0.9.23"
-        FPC_Release="2.0.4"
-        FPC_Fixes="2.1.5"
+        Lazarus="0.9.25"
+        FPC_Release="2.2.0"
+        FPC_Fixes="2.2.1"
         FPC_Devel="2.3.1"
     />
     <Server Type="ftp" Name="Snapshot on scenergy">
