@@ -291,10 +291,10 @@ type
       ExceptionClass: ECodeToolErrors); virtual;
     procedure RaiseException(const AMessage: string); virtual;
     procedure RaiseExceptionFmt(const AMessage: string;
-      const args : array of const);
+      const args: array of const);
     procedure SaveRaiseException(const AMessage: string); virtual;
     procedure SaveRaiseExceptionFmt(const AMessage: string;
-      const args : array of const);
+      const args: array of const);
     property IgnoreErrorAfter: TCodePosition
       read FIgnoreErrorAfter write SetIgnoreErrorAfter;
     procedure ClearIgnoreErrorAfter;
@@ -318,8 +318,19 @@ type
   
 var
   RaiseUnhandableExceptions: boolean;
+  GlobalCodeNodeTreeChangeStep: integer = 0;
+
+procedure IncreaseGlobalCodeNodeTreeChangeStep;
 
 implementation
+
+procedure IncreaseGlobalCodeNodeTreeChangeStep;
+begin
+  if GlobalCodeNodeTreeChangeStep=High(integer) then
+    GlobalCodeNodeTreeChangeStep:=Low(integer)
+  else
+    inc(GlobalCodeNodeTreeChangeStep);
+end;
 
 
 { TCustomCodeTool }
@@ -1923,6 +1934,7 @@ begin
     FTreeChangeStep:=Low(integer)
   else
     inc(FTreeChangeStep);
+  IncreaseGlobalCodeNodeTreeChangeStep;
 end;
 
 procedure TCustomCodeTool.RaiseExceptionInstance(TheException: ECodeToolError);

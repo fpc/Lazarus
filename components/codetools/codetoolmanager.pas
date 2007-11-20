@@ -108,6 +108,7 @@ type
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
+    function GetGlobalCodeNodeTreeChangeStep: integer;
     function OnScannerGetInitValues(Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
@@ -167,6 +168,7 @@ type
     procedure DeactivateWriteLock;
     property ChangeStep: integer read FChangeStep;
     procedure IncreaseChangeStep;
+    property GlobalCodeNodeTreeChangeStep: integer read GetGlobalCodeNodeTreeChangeStep;
 
     // file handling
     property SourceExtensions: string
@@ -2718,8 +2720,8 @@ end;
 
 function TCodeToolManager.CreatePrivateMethod(Code: TCodeBuffer;
   const AClassName, NewMethodName: string; ATypeInfo: PTypeInfo;
-  UseTypeInfoForParameters: boolean;
-  const APropertyUnitName, APropertyPath: string): boolean;
+  UseTypeInfoForParameters: boolean; const APropertyUnitName: string;
+  const APropertyPath: string): boolean;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.CreatePrivateMethod A');
@@ -4103,6 +4105,11 @@ begin
     Result:=DefineTree.GetDefinesForVirtualDirectory;
 end;
 
+function TCodeToolManager.GetGlobalCodeNodeTreeChangeStep: integer;
+begin
+  Result:=CustomCodeTool.GlobalCodeNodeTreeChangeStep;
+end;
+
 procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;
   const VariableName: string; var Value: string; var Handled: boolean);
 begin
@@ -4386,10 +4393,10 @@ end;
 
 procedure TCodeToolManager.IncreaseChangeStep;
 begin
-  if FChangeStep<>$7fffffff then
+  if FChangeStep<>High(Integer) then
     inc(FChangeStep)
   else
-    FChangeStep:=-$7fffffff;
+    FChangeStep:=Low(Integer);
 end;
 
 procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
@@ -4397,7 +4404,7 @@ procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
 begin
   WriteLockIsSet:=FWriteLockCount>0;
   WriteLockStep:=FWriteLockStep;
-//DebugLn(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
+  //DebugLn(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
 end;
 
 function TCodeToolManager.GetResourceTool: TResourceCodeTool;

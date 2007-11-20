@@ -491,7 +491,7 @@ type
                var IsDefined: boolean);
     procedure CodeToolBossPrepareTree(Sender: TObject);
     function CTMacroFunctionProject(Data: Pointer): boolean;
-    procedure OnCompilerGraphStampIncreased;
+    procedure OnCompilerParseStampIncreased;
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender: TObject);
@@ -3427,7 +3427,7 @@ begin
     if frmCompilerOptions.ShowModal=mrOk then begin
       MainBuildBoss.RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
-      IncreaseCompilerGraphStamp;
+      IncreaseCompilerParseStamp;
     end;
   finally
     frmCompilerOptions.Free;
@@ -3454,7 +3454,7 @@ begin
     if frmCompilerOptions.ShowModal=mrOk then begin
       MainBuildBoss.RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
-      IncreaseCompilerGraphStamp;
+      IncreaseCompilerParseStamp;
     end;
   finally
     frmCompilerOptions.Free;
@@ -10867,7 +10867,7 @@ begin
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);
 
-  CompilerGraphStampIncreased:=@OnCompilerGraphStampIncreased;
+  CompilerParseStampIncreased:=@OnCompilerParseStampIncreased;
 
   // codetools consistency check
   c:=CodeToolBoss.ConsistencyCheck;
@@ -11028,7 +11028,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnCompilerGraphStampIncreased;
+procedure TMainIDE.OnCompilerParseStampIncreased;
 begin
   FRebuildingCompilerGraphCodeToolsDefinesNeeded:=true;
 end;

@@ -2358,7 +2358,7 @@ begin
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
   Clear;
-  FUsageOptions.ParsedOpts.InvalidateGraphOnChange:=true;
+  FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
 end;
 
 destructor TLazPackage.Destroy;

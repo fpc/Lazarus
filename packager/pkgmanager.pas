@@ -910,7 +910,7 @@ end;
 procedure TPkgManager.PackageGraphEndUpdate(Sender: TObject;
   GraphChanged: boolean);
 begin
-  if GraphChanged then IncreaseCompilerGraphStamp;
+  if GraphChanged then IncreaseCompilerParseStamp;
   if PackageGraphExplorer<>nil then begin
     if GraphChanged then PackageGraphExplorer.UpdateAll;
     PackageGraphExplorer.EndUpdate;

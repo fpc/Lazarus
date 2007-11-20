@@ -32,10 +32,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil,
-  CodeTree, CodeToolManager, CodeCache, FileProcs, AvgLvlTree,
+  CodeAtom, CodeTree, CodeToolManager, CodeCache, CacheCodeTools,
+  FileProcs, AvgLvlTree,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, LazIDEIntf,
-  IDEProcs, PackageDefs, EnvironmentOpts;
+  CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts;
 
 type
   { TLazFPDocFile }
@@ -52,6 +53,8 @@ type
     function GetElementWithName(const ElementName: string): TDOMNode;
   end;
   
+  { TLDSourceToFPDocFile - cache item for source to FPDoc file mapping }
+
   TLDSourceToFPDocFile = class
   public
     SourceFilename: string;
@@ -79,6 +82,8 @@ type
   private
     FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
     FHandlers: array[TLazDocManagerHandler] of TMethodList;
+    FSrcToDocMap: TAvgLvlTree; // tree of TLDSourceToFPDocFile sorted for SourceFilename
+    FDeclarationCache: TDeclarationInheritanceCache;
     procedure AddHandler(HandlerType: TLazDocManagerHandler;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TLazDocManagerHandler;
@@ -89,22 +94,23 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure FreeDocs;
+    procedure ClearSrcToDocMap;
     
     function FindFPDocFile(const Filename: string): TLazFPDocFile;
     function LoadFPDocFile(const Filename: string;
                            UpdateFromDisk, Revert: Boolean;
                            out ADocFile: TLazFPDocFile;
-                           out UsedCache: boolean): Boolean;
+                           out CacheWasUsed: boolean): Boolean;
     function GetFPDocFilenameForHelpContext(
                                        Context: TPascalHelpContextList;
-                                       out UsedCache: boolean): string;
+                                       out CacheWasUsed: boolean): string;
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean;
-                                       out UsedCache: boolean): string;
+                                       out CacheWasUsed: boolean): string;
     function CodeNodeToElementName(Tool: TCodeTool; CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
-                          out UsedCache: boolean): TLazDocParseResult;
+                          out CacheWasUsed: boolean): TLazDocParseResult;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -121,9 +127,12 @@ var
   
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
+function CompareLDSrc2DocSrcFilenames(Data1, Data2: Pointer): integer;
+function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 
 
 implementation
+
 
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 begin
@@ -134,6 +143,17 @@ end;
 function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
 begin
   Result:=CompareFilenames(AnsiString(Key),TLazFPDocFile(Data).Filename);
+end;
+
+function CompareLDSrc2DocSrcFilenames(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenames(TLDSourceToFPDocFile(Data1).SourceFilename,
+                           TLDSourceToFPDocFile(Data2).SourceFilename);
+end;
+
+function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
+begin
+  Result:=CompareFilenames(AnsiString(Key),TLDSourceToFPDocFile(Data).SourceFilename);
 end;
 
 { TLazFPDocFile }
@@ -214,12 +234,18 @@ end;
 constructor TLazDocManager.Create;
 begin
   FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
+  FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
+  FDeclarationCache:=TDeclarationInheritanceCache.Create(
+                                                @CodeToolBoss.FindDeclarationAndOverload);
 end;
 
 destructor TLazDocManager.Destroy;
 begin
+  ClearSrcToDocMap;
   FreeDocs;
   FreeAndNil(FDocs);
+  FreeAndNil(FSrcToDocMap);
+  FreeAndNil(FDeclarationCache);
   inherited Destroy;
 end;
 
@@ -235,12 +261,12 @@ begin
 end;
 
 function TLazDocManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
-  Revert: Boolean; out ADocFile: TLazFPDocFile; out UsedCache: boolean): Boolean;
+  Revert: Boolean; out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean): Boolean;
 var
   MemStream: TMemoryStream;
 begin
   Result:=false;
-  UsedCache:=true;
+  CacheWasUsed:=true;
   ADocFile:=FindFPDocFile(Filename);
   if ADocFile=nil then begin
     ADocFile:=TLazFPDocFile.Create;
@@ -259,7 +285,7 @@ begin
     // no update needed
     exit(true);
   end;
-  UsedCache:=false;
+  CacheWasUsed:=false;
   
   DebugLn(['TLazDocManager.LoadFPDocFile parsing ',ADocFile.Filename]);
   CallDocChangeEvents(ldmhDocChanging,ADocFile);
@@ -284,24 +310,24 @@ begin
 end;
 
 function TLazDocManager.GetFPDocFilenameForHelpContext(
-  Context: TPascalHelpContextList; out UsedCache: boolean): string;
+  Context: TPascalHelpContextList; out CacheWasUsed: boolean): string;
 var
   i: Integer;
   SrcFilename: String;
 begin
   Result:='';
-  UsedCache:=true;
+  CacheWasUsed:=true;
   if Context=nil then exit;
   for i:=0 to Context.Count-1 do begin
     if Context.Items[i].Descriptor<>pihcFilename then continue;
     SrcFilename:=Context.Items[i].Context;
-    Result:=GetFPDocFilenameForSource(SrcFilename,true,UsedCache);
+    Result:=GetFPDocFilenameForSource(SrcFilename,true,CacheWasUsed);
     exit;
   end;
 end;
 
 function TLazDocManager.GetFPDocFilenameForSource(SrcFilename: string;
-  ResolveIncludeFiles: Boolean; out UsedCache: boolean): string;
+  ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean): string;
 var
   FPDocName: String;
   SearchPath: String;
@@ -368,9 +394,11 @@ var
 
 var
   CodeBuf: TCodeBuffer;
+  AVLNode: TAvgLvlTreeNode;
+  MapEntry: TLDSourceToFPDocFile;
 begin
   Result:='';
-  UsedCache:=false;
+  CacheWasUsed:=true;
   
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
@@ -383,6 +411,18 @@ begin
   end;
   
   if not FilenameIsPascalSource(SrcFilename) then exit;
+  
+  // first try cache
+  MapEntry:=nil;
+  AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),@CompareAnsistringWithLDSrc2DocSrcFile);
+  if AVLNode<>nil then begin
+    MapEntry:=TLDSourceToFPDocFile(AVLNode.Data);
+    if MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp then begin
+      Result:=MapEntry.FPDocFilename;
+      exit;
+    end;
+  end;
+  CacheWasUsed:=false;
 
   // first check if the file is owned by any project/package
   SearchPath:='';
@@ -395,6 +435,15 @@ begin
   FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
   DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
   Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
+  
+  // save to cache
+  if MapEntry=nil then begin
+    MapEntry:=TLDSourceToFPDocFile.Create;
+    MapEntry.SourceFilename:=SrcFilename;
+    FSrcToDocMap.Add(MapEntry);
+  end;
+  MapEntry.FPDocFilename:=Result;
+  MapEntry.FPDocFilenameTimeStamp:=CompilerParseStamp;
 end;
 
 function TLazDocManager.CodeNodeToElementName(Tool: TCodeTool;
@@ -424,7 +473,7 @@ end;
 
 function TLazDocManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
   Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
-  out UsedCache: boolean): TLazDocParseResult;
+  out CacheWasUsed: boolean): TLazDocParseResult;
 var
   SrcFilename: String;
   FPDocFilename: String;
@@ -432,18 +481,18 @@ var
 begin
   FPDocFile:=nil;
   DOMNode:=nil;
-  UsedCache:=true;
+  CacheWasUsed:=true;
   
   // find corresponding FPDoc file
   SrcFilename:=Tool.MainFilename;
-  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,UsedCache);
+  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
   if FPDocFilename='' then exit(ldprFailed);
-  if (not UsedCache) and (not Complete) then exit(ldprParsing);
+  if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
 
   // load FPDoc file
-  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile,UsedCache) then
+  if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile,CacheWasUsed) then
     exit(ldprFailed);
-  if (not UsedCache) and (not Complete) then exit(ldprParsing);
+  if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
 
   // find FPDoc node
   ElementName:=CodeNodeToElementName(Tool,CodeNode);
@@ -464,6 +513,11 @@ begin
     AVLNode:=FDocs.FindSuccessor(AVLNode);
   end;
   FDocs.FreeAndClear;
+end;
+
+procedure TLazDocManager.ClearSrcToDocMap;
+begin
+  FSrcToDocMap.FreeAndClear;
 end;
 
 procedure TLazDocManager.RemoveAllHandlersOfObject(AnObject: TObject);

@@ -158,7 +158,7 @@ type
   TParsedCompilerOptions = class
   private
     FGetWritableOutputDirectory: TGetWritableOutputDirectory;
-    FInvalidateGraphOnChange: boolean;
+    FInvalidateParseOnChange: boolean;
     FOnLocalSubstitute: TLocalSubstitutionEvent;
   public
     UnparsedValues: array[TParsedCompilerOptString] of string;
@@ -185,8 +185,8 @@ type
   public
     property OnLocalSubstitute: TLocalSubstitutionEvent read FOnLocalSubstitute
                                                        write FOnLocalSubstitute;
-    property InvalidateGraphOnChange: boolean read FInvalidateGraphOnChange
-                                              write FInvalidateGraphOnChange;
+    property InvalidateParseOnChange: boolean read FInvalidateParseOnChange
+                                              write FInvalidateParseOnChange;
     property GetWritableOutputDirectory: TGetWritableOutputDirectory
              read FGetWritableOutputDirectory write FGetWritableOutputDirectory;
   end;
@@ -265,7 +265,6 @@ type
     FDefaultMakeOptionsFlags: TCompilerCmdLineOptions;
     fInheritedOptions: TInheritedCompOptsParseTypesStrings;
     fInheritedOptParseStamps: integer;
-    fInheritedOptGraphStamps: integer;
     fLoaded: Boolean;
     fOptionsString: String;
     FParsedOpts: TParsedCompilerOptions;
@@ -454,20 +453,18 @@ const
     );
 
 type
-  TCompilerGraphStampIncreasedEvent = procedure of object;
+  TCompilerParseStampIncreasedEvent = procedure of object;
   TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
                 ACompilerOptions: TBaseCompilerOptions): TModalResult of object;
 
 var
   CompilerParseStamp: integer; // TimeStamp of base value for macros
-  CompilerGraphStamp: integer; // TimeStamp of IDE graph (e.g. packages)
   OnParseString: TParseStringEvent = nil;
-  CompilerGraphStampIncreased: TCompilerGraphStampIncreasedEvent = nil;
+  CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
   
   RunCompilerWithOptions: TRunCompilerWithOptions = nil;
 
 procedure IncreaseCompilerParseStamp;
-procedure IncreaseCompilerGraphStamp;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
@@ -506,16 +503,8 @@ begin
     inc(CompilerParseStamp)
   else
     CompilerParseStamp:=MinParseStamp;
-end;
-
-procedure IncreaseCompilerGraphStamp;
-begin
-  if CompilerGraphStamp<MaxParseStamp then
-    inc(CompilerGraphStamp)
-  else
-    CompilerGraphStamp:=MinParseStamp;
-  if Assigned(CompilerGraphStampIncreased) then
-    CompilerGraphStampIncreased();
+  if Assigned(CompilerParseStampIncreased) then
+    CompilerParseStampIncreased();
 end;
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -1334,7 +1323,7 @@ var
   p: TCompilerOptionsParseType;
 begin
   fInheritedOptParseStamps:=InvalidParseStamp;
-  fInheritedOptGraphStamps:=InvalidParseStamp;
+  //QWE fInheritedOptGraphStamps:=InvalidParseStamp;
   for p:=Low(TCompilerOptionsParseType) to High(TCompilerOptionsParseType) do
     for i:=Low(TInheritedCompilerOption) to High(TInheritedCompilerOption) do
     begin
@@ -1428,7 +1417,7 @@ var
   p: TCompilerOptionsParseType;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
-  or (fInheritedOptGraphStamps<>CompilerGraphStamp)
+  //QWE or (fInheritedOptGraphStamps<>CompilerGraphStamp)
   then begin
     // update inherited options
     ClearInheritedOptions;
@@ -1442,7 +1431,7 @@ begin
       OptionsList.Free;
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
-    fInheritedOptGraphStamps:=CompilerGraphStamp;
+    //QWE fInheritedOptGraphStamps:=CompilerGraphStamp;
   end;
   Result:=fInheritedOptions[Parsed][Option];
   if RelativeToBaseDir then begin
@@ -2816,7 +2805,7 @@ procedure TParsedCompilerOptions.SetUnparsedValue(
   Option: TParsedCompilerOptString; const NewValue: string);
 begin
   if NewValue=UnparsedValues[Option] then exit;
-  if InvalidateGraphOnChange then IncreaseCompilerGraphStamp;
+  if InvalidateParseOnChange then IncreaseCompilerParseStamp;
   if Option=pcosBaseDir then
     InvalidateFiles
   else begin
@@ -3124,8 +3113,7 @@ end;
 
 initialization
   CompilerParseStamp:=1;
-  CompilerGraphStamp:=1;
-  CompilerGraphStampIncreased:=nil;
+  CompilerParseStampIncreased:=nil;
 
 end.
 
