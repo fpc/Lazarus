@@ -376,7 +376,7 @@ function FindFixedLastChildListItem(ParentFixed: PGtkFixed): PGList;
 function GetFixedChildListWidget(Item: PGList): PGtkWidget;
 
 // fixed widgets
-function CreateFixedClientWidget: PGTKWidget;
+function CreateFixedClientWidget(WithWindow: Boolean = True): PGTKWidget;
 Procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 Procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 

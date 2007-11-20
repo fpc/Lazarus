@@ -55,6 +55,8 @@ procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgch
 
 // gtk 2.4
 procedure gtk_toolbar_insert(toolbar: PGtkToolBar; item: PGtkToolItem; pos: gint); cdecl; external gtklib name 'gtk_toolbar_insert';
+procedure gtk_event_box_set_visible_window(event_box: PGtkEventBox; visible_window: gboolean); cdecl; external gtklib name 'gtk_event_box_set_visible_window';
+procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; visible_window: gboolean); cdecl; external gtklib name 'gtk_event_box_set_above_child';
 
 // gtk 2.6
 function gtk_cell_view_get_displayed_row(cell_view: Pointer): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';

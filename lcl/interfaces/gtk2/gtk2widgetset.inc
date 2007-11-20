@@ -364,9 +364,9 @@ var
   Info: PWidgetInfo;
 begin
   if (ALCLObject is TWinControl) then
-     Begin
-       inherited HookSignals(AGTKObject,ALCLObject);
-     End;
+  begin
+    inherited HookSignals(AGTKObject,ALCLObject);
+  end;
 
   if (ALCLObject is TControl) then begin
     Info:=GetWidgetInfo(AGTKObject,false);
@@ -504,7 +504,7 @@ begin
     end;
 
   else
-    Inherited SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);
+    inherited SetCallbackEx(AMsg, AGTKObject, ALCLObject, Direct);
   end;
 end;
 

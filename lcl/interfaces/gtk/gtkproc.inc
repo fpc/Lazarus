@@ -3938,11 +3938,11 @@ begin
   Result:=nil;
 end;
 
-function CreateFixedClientWidget: PGTKWidget;
+function CreateFixedClientWidget(WithWindow: Boolean = True): PGTKWidget;
 begin
   Result := gtk_fixed_new();
   {$IFDEF GTK2}
-  gtk_fixed_set_has_window(PGtkFixed(Result), True);
+  gtk_fixed_set_has_window(PGtkFixed(Result), WithWindow);
   {$ENDIF}
 end;
 
@@ -7993,7 +7993,7 @@ var
     Result:=gtk_notebook_new;
     NoteBookWidget := PGtkNoteBook(Result);
     //NoteBookPageWidget := gtk_hbox_new(false, 0);
-    NoteBookPageClientAreaWidget := CreateFixedClientWidget;
+    NoteBookPageClientAreaWidget := CreateFixedClientWidget(False);
     gtk_widget_show(NoteBookPageClientAreaWidget);
     //gtk_container_add(GTK_CONTAINER(NoteBookPageWidget),
     //                  NoteBookPageClientAreaWidget);

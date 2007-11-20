@@ -3209,7 +3209,8 @@ begin
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
     gFixed := PGTKObject(GetFixedWidget(gObject));
-    if gFixed = nil then gFixed := gObject;
+    if gFixed = nil then
+      gFixed := gObject;
 
     // gCore is the working widget (e.g. TListBox has a scrolling widget (=main widget) and a tree widget (=core widget))
     Info:=GetWidgetInfo(gObject, True);
@@ -3219,10 +3220,20 @@ begin
       gMain:=gObject;
     if (gMain<>gObject) then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gObject<>MainWidget ',DbgSName(ALCLObject)]);
-    if gFixed<>gMain then
-      gMouse:=gFixed
+
+    if (gFixed <> gMain) then
+      gMouse := gFixed
     else
-      gMouse:=gCore;
+      gMouse := gCore;
+      
+    {$ifdef gtk2}
+    if GTK_IS_FIXED(gMouse) and not gtk_fixed_get_has_window(PGtkFixed(gMouse)) then
+    begin
+      DebugLn(gtk_type_name(g_object_type(gFixed)) + ' => ' + gtk_type_name(g_object_type(gCore)));
+      gMouse := gCore;
+    end;
+    {$endif}
+      
     if gMouse=nil then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
 
@@ -4852,7 +4863,7 @@ begin
 
 
   csPage:    // TCustomPage - Notebook page
-    P:=CreateSimpleClientAreaWidget(Sender,true);
+    P:=CreateSimpleClientAreaWidget(Sender, true);
 
   csPairSplitter:
     p:=CreatePairSplitter(Sender);
