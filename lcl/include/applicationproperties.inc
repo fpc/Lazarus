@@ -230,7 +230,6 @@ begin
   end;
   FShowMainForm := true;
 
-  FOnIdle := nil;
   FOnException := nil;
   FOnIdle := nil;
   FOnIdleEnd := nil;
@@ -240,6 +239,32 @@ begin
   FOnUserInput := nil;
   FOnEndSession := nil;
   FOnQueryEndSession := nil;
+end;
+
+destructor TApplicationProperties.Destroy;
+begin
+  If not (csDesigning in ComponentState) then begin
+    if Application.OnException=FOnException then
+      Application.OnException:=nil;
+    if Application.OnIdle=FOnIdle then
+      Application.OnIdle:=nil;
+    if Application.OnIdleEnd=FOnIdleEnd then
+      Application.OnIdleEnd:=nil;
+    if Application.OnHelp=FOnHelp then
+      Application.OnHelp:=nil;
+    if Application.OnHint=FOnHint then
+      Application.OnHint:=nil;
+    if Application.OnShowHint=FOnShowHint then
+      Application.OnShowHint:=nil;
+    if Application.OnUserInput=FOnUserInput then
+      Application.OnUserInput:=nil;
+    if Application.OnEndSession=FOnEndSession then
+      Application.OnEndSession:=nil;
+    if Application.OnQueryEndSession=FOnQueryEndSession then
+      Application.OnQueryEndSession:=nil;
+  end;
+
+  inherited Destroy;
 end;
 
 // included by forms.pp

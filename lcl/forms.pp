@@ -1184,6 +1184,7 @@ type
     Procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
   public
     Constructor Create(AOwner: TComponent); Override;
+    destructor Destroy; override;
   published
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
