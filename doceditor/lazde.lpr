@@ -6,7 +6,7 @@ uses
   interfaces, // this includes the LCL widgetset
   forms, frmmain, frmOptions, frmNewNode, frmmakeskel,
   frmLink, frmTable, frmabout, pkeditor, eleditor, fpdeutil, frmexample,
-  frmbuild;
+  frmbuild, fmmakeskel, frmsource, lazdemsg, lazdeopts, pgeditor;
 
 begin
   Application.Title:='Lazarus Documentation Editor';

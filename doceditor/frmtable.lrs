@@ -17,9 +17,9 @@ LazarusResources.Add('TTableForm','FORMDATA',[
   +#3'Top'#2'('#5'Width'#2'K'#0#0#9'TCheckBox'#14'CBUseHeaderRow'#11'AllowGraye'
   +'d'#9#22'BorderSpacing.OnChange'#13#7'Caption'#6#15'Use &header row'#8'TabOr'
   +'der'#2#2#4'Left'#2'H'#6'Height'#2#26#3'Top'#2#8#5'Width'#2's'#0#0#9'TSpinEd'
-  +'it'#6'SERows'#22'BorderSpacing.OnChange'#13#9'ClimbRate'#2#1#8'MaxValue'#2
+  +'it'#6'SERows'#22'BorderSpacing.OnChange'#13#9'Increment'#2#1#8'MaxValue'#2
   +'d'#8'TabOrder'#2#3#4'Left'#2'H'#6'Height'#2#20#3'Top'#2' '#5'Width'#2'A'#0#0
-  +#9'TSpinEdit'#9'SEColumns'#22'BorderSpacing.OnChange'#13#9'ClimbRate'#2#1#8
+  +#9'TSpinEdit'#9'SEColumns'#22'BorderSpacing.OnChange'#13#9'Increment'#2#1#8
   +'MaxValue'#2'd'#8'TabOrder'#2#4#4'Left'#2'H'#6'Height'#2#20#3'Top'#2'8'#5'Wi'
   +'dth'#2'A'#0#0#0
 ]);

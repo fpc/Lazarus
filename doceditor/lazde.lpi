@@ -2,12 +2,12 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveEditorIndexAtStart Value="1"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,18 +31,173 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="19">
       <Unit0>
         <Filename Value="lazde.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="27" Y="4"/>
+        <CursorPos X="65" Y="9"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="eleditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="eleditor"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="fmmakeskel.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="fmmakeskel.lrs"/>
+        <UnitName Value="fmmakeskel"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="fpdeutil.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="fpdeutil"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="frmabout.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmabout.lrs"/>
+        <UnitName Value="frmabout"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="frmbuild.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmbuild.lrs"/>
+        <UnitName Value="frmbuild"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="frmexample.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmexample.lrs"/>
+        <UnitName Value="frmexample"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="frmlink.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmlink.lrs"/>
+        <UnitName Value="frmlink"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="frmmain.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmain.lrs"/>
+        <UnitName Value="frmmain"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="frmmakeskel.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmakeskel.lrs"/>
+        <UnitName Value="frmmakeskel"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="frmnewnode.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmnewnode.lrs"/>
+        <UnitName Value="frmnewnode"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="frmoptions.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmoptions.lrs"/>
+        <UnitName Value="frmoptions"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="frmsource.pas"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmsource.lrs"/>
+        <UnitName Value="frmsource"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="frmtable.pp"/>
+        <HasResources Value="True"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmtable.lrs"/>
+        <UnitName Value="frmtable"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="lazdemsg.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazdemsg"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="lazdeopts.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="lazdeopts"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="pgeditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pgeditor"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="pkedit.pp"/>
+        <UnitName Value="PkEdit"/>
+        <CursorPos X="36" Y="30"/>
+        <TopLine Value="17"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="pkeditor.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="pkeditor"/>
+        <UsageCount Value="20"/>
+        <SyntaxHighlighter Value="Text"/>
+      </Unit18>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="pkedit.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position1>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
