@@ -3190,7 +3190,7 @@ procedure TGtkWidgetSet.SetCallbackEx(const AMsg: LongInt;
   end;
 
 var
-  gObject, gFixed, gCore, Adjustment: PGTKObject;
+  gObject, gFixed, gCore, gTemp, Adjustment: PGTKObject;
   Info: PWidgetInfo;
   gMain: PGtkObject;
   gMouse: PGtkObject;
@@ -3226,20 +3226,20 @@ begin
     else
       gMouse := gCore;
       
-    {$ifdef gtk2}
-    if GTK_IS_FIXED(gMouse) and not gtk_fixed_get_has_window(PGtkFixed(gMouse)) then
-    begin
-      DebugLn(gtk_type_name(g_object_type(gFixed)) + ' => ' + gtk_type_name(g_object_type(gCore)));
-      gMouse := gCore;
-    end;
-    {$endif}
-      
     if gMouse=nil then
       DebugLn(['TGtkWidgetSet.SetCallback WARNING: gMouseWidget=nil ',DbgSName(ALCLObject)]);
 
     {$IFDEF GTK1}
     if ALCLObject is TCustomListBox then
       gMouse:=gMain;
+    {$ELSE}
+    if GTK_IS_FIXED(gMouse) and not gtk_fixed_get_has_window(PGtkFixed(gMouse)) then
+    begin
+      gTemp := PGtkObject(gtk_widget_get_parent(PGtkWidget(gMouse)));
+      //DebugLn(gtk_type_name(g_object_type(gMouse)) + ' => ' + gtk_type_name(g_object_type(gTemp)));
+      if GTK_IS_EVENT_BOX(gTemp) then
+        gMouse := gTemp;
+    end;
     {$ENDIF}
   end;
   //DebugLn(['TGtkWidgetSet.SetCallbackSmart MouseWidget=',GetWidgetDebugReport(PGtkWidget(gMouse))]);
@@ -4669,8 +4669,18 @@ var
   TempWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
 begin
+  {$ifdef gtk1}
+    {$undef GtkNoWindowFixed}
+  {$endif}
+
+  {$ifndef GtkNoWindowFixed}
   Result := gtk_hbox_new(false, 0);
   TempWidget := CreateFixedClientWidget;
+  {$else}
+  Result := gtk_event_box_new;
+  gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
+  TempWidget := CreateFixedClientWidget(False);
+  {$endif}
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
   if NotOnParentsClientArea then
