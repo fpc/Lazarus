@@ -83,14 +83,14 @@ type
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
 
-    procedure SetBkColor(const AValue: TColor);
+    procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(const AValue: Integer);
     procedure SetCurrentBrush(const AValue: TCarbonBrush);
     procedure SetCurrentFont(const AValue: TCarbonFont);
     procedure SetCurrentPen(const AValue: TCarbonPen);
     procedure SetCurrentRegion(const AValue: TCarbonRegion);
     procedure SetROP2(const AValue: Integer);
-    procedure SetTextColor(const AValue: TColor);
+    procedure SetTextColor(AValue: TColor);
   protected
     function GetSize: TPoint; virtual; abstract;
     function SaveDCData: TCarbonDCData; virtual;
@@ -233,13 +233,11 @@ end;
 
   Sets the background color
  ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.SetBkColor(const AValue: TColor);
+procedure TCarbonDeviceContext.SetBkColor(AValue: TColor);
 begin
-  if FBkColor <> AValue then
-  begin
-    FBkColor := AValue;
-    FBkBrush.SetColor(ColorToRGB(AValue), BkMode = OPAQUE);
-  end;
+  AValue := ColorToRGB(AValue);
+  FBkColor := AValue;
+  FBkBrush.SetColor(AValue, BkMode = OPAQUE);
 end;
 
 {------------------------------------------------------------------------------
@@ -253,7 +251,7 @@ begin
   if FBkMode <> AValue then
   begin
     FBkMode := AValue;
-    FBkBrush.SetColor(ColorToRGB(BkColor), FBkMode = OPAQUE);
+    FBkBrush.SetColor(FBkColor, FBkMode = OPAQUE);
   end;
 end;
 
@@ -375,13 +373,11 @@ end;
 
   Sets the text color
  ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.SetTextColor(const AValue: TColor);
+procedure TCarbonDeviceContext.SetTextColor(AValue: TColor);
 begin
-  if FTextColor <> AValue then
-  begin
-    FTextColor := AValue;
-    TextBrush.SetColor(ColorToRGB(AValue), True);
-  end;
+  AValue := ColorToRGB(AValue);
+  FTextColor := AValue;
+  TextBrush.SetColor(AValue, True);
 end;
 
 {------------------------------------------------------------------------------
@@ -841,6 +837,7 @@ var
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
   MX, MY: ATSUTextMeasurement;
   A: Single;
+  R: CGRect;
 const
   SName = 'ExtTextOut';
 begin
@@ -848,18 +845,14 @@ begin
   //DebugLn('TCarbonDeviceContext.ExtTextOut ' + DbgS(X) + ', ' + DbgS(Y) + ' R: ' + DbgS(Rect^) +
   //  ' S: ' + Str + ' C: ' + DbgS(Count));
   
-  if not BeginTextRender(Str, Count, TextLayout) then
+  if Rect <> nil then
   begin
-    // It is possible that the background should be filled even without text;
-    if (Options and ETO_OPAQUE) > 0 then
-    begin
-      BkBrush.Apply(Self, False); // do not use ROP2
-      CGContextFillRect(CGContext, GetCGRectSorted(Rect^.Left, Rect^.Top,
-       Rect^.Right, Rect^.Bottom));
-    end;
-  
-    Exit;
+    // fill background
+    if (Options and ETO_OPAQUE) > 0 then  FillRect(Rect^, BkBrush);
+    //DebugLn('TCarbonDeviceContext.ExtTextOut fill ' + DbgS(Rect^));
   end;
+  
+  if not BeginTextRender(Str, Count, TextLayout) then Exit;
   
   try
     // get text ascent
@@ -880,11 +873,12 @@ begin
       MY := 0;
 
       // fill drawed text background
-      if (Options and ETO_OPAQUE) > 0 then
+      if (Rect = nil) and ((Options and ETO_OPAQUE) > 0) then
       begin
         BkBrush.Apply(Self, False); // do not use ROP2
-        CGContextFillRect(CGContext, GetCGRectSorted(X - RoundFixed(TextBefore),
-          -Y, X + RoundFixed(TextAfter), -Y - RoundFixed(Ascent + Descent)));
+        R := GetCGRectSorted(X - RoundFixed(TextBefore),
+          -Y, X + RoundFixed(TextAfter), -Y - RoundFixed(Ascent + Descent));
+        CGContextFillRect(CGContext, R);
       end;
     end;
 
@@ -911,17 +905,12 @@ end;
   bottom borders of the rectangle!
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.FillRect(Rect: TRect; Brush: TCarbonBrush);
-var
-  SavedBrush: TCarbonBrush;
 begin
-  SavedBrush := FCurrentBrush;
-  
   Brush.Apply(Self, False); // do not use ROP2
   try
     CGContextFillRect(CGContext, GetCGRectSorted(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom));
   finally
-    FCurrentBrush := SavedBrush;
-    CurrentBrush.Apply(Self); // ensure that saved brush is applied
+    CurrentBrush.Apply(Self); // apply current brush
   end;
 end;
 
@@ -1273,6 +1262,7 @@ procedure TCarbonDeviceContext.Rectangle(X1, Y1, X2, Y2: Integer);
 var
   R: CGRect;
 begin
+  //DebugLn('TCarbonDeviceContext.Rectangle ' + DbgS(Classes.Rect(X1, Y1, X2, Y2)));
   if (X1 = X2) or (Y1 = Y2) then Exit;
   
   R := GetCGRectSorted(X1, Y1, X2, Y2);

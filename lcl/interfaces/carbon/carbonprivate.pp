@@ -695,8 +695,8 @@ begin
   FScrollOrigin := GetHIPoint(0, 0);
   FMulX := 1;
   FMulY := 1;
-  
-  if LCLObject.ClassType.ClassNameIs('TSynEdit') then
+
+  if LCLObject.ClassNameIs('TSynEdit') then
      FTextFractional := False
   else
     FTextFractional := True;
@@ -741,25 +741,28 @@ end;
   Draw event handler
  ------------------------------------------------------------------------------}
 procedure TCarbonCustomControl.Draw;
+var
+  DC: TCarbonDeviceContext;
 begin
   if Context <> nil then
-  with (Context as TCarbonDeviceContext) do
   begin
-    if CGContext <> nil then
+    DC := (Context as TCarbonDeviceContext);
+    
+    if DC.CGContext <> nil then
     begin
-      if CurrentBrush <> nil then // apply control background color
+      if DC.CurrentBrush <> nil then // apply control background color
       begin
         if LCLObject.Color <> clBtnFace then
-          CurrentBrush.SetColor(LCLObject.Color, True)
+          DC.CurrentBrush.SetColor(LCLObject.Color, True)
         else
-          CurrentBrush.SetColor(LCLObject.Color, False);
+          DC.CurrentBrush.SetColor(LCLObject.Color, False);
 
-        CurrentBrush.Apply(Context, False);
-        if LCLObject.Color <> clBtnFace then FillRect(GetClipRect, CurrentBrush);
+        DC.CurrentBrush.Apply(DC, False);
+        if LCLObject.Color <> clBtnFace then DC.FillRect(DC.GetClipRect, DC.CurrentBrush);
       end;
     end;
-  
-    TextFractional := TextFractional;
+    
+    DC.TextFractional := TextFractional;
   end;
 end;
 

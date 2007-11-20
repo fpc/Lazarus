@@ -39,7 +39,7 @@
 
 {$DEFINE VerboseWidget}    // Carbon widget
 {off $DEFINE VerboseAppEvent}  // Carbon application event handlers
-{$DEFINE VerboseControlEvent}  // Carbon control event handlers
+{off $DEFINE VerboseControlEvent}  // Carbon control event handlers
 {$DEFINE VerboseWindowEvent}   // Carbon window event handlers
 {$DEFINE VerboseCommonEvent}   // Carbon common event handlers
 
