@@ -2564,6 +2564,7 @@ type
 function HiWord(i: integer): word;
 function LoWord(i: integer): word;
 Function Char2VK(C : Char) : Word;
+function MathRound(AValue: ValReal): Int64;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
 function CharSetToString(const Charset: Integer): String;
@@ -2583,7 +2584,7 @@ begin
   Result:=Lo(i);
 end;
 
-Function Char2VK(C : Char) : Word;
+function Char2VK(C : Char) : Word;
 begin
   Case C of
     '0'..'9' :Result := VK_0 + Ord(C) - Ord('0');
@@ -2594,9 +2595,20 @@ begin
   end;
 end;
 
+function MathRound(AValue: ValReal): Int64; inline;
+begin
+  if AValue >= 0 then
+    Result := Trunc(AValue + 0.5)
+  else
+    Result := Trunc(AValue - 0.5);
+end;
+
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 begin
-  Result:=(int64(nNumber)*int64(nNumerator)) div nDenominator;
+  if nDenominator = 0 then
+    Result := -1
+  else
+    Result := MathRound(int64(nNumber) * int64(nNumerator) / nDenominator);
 end;
 
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
