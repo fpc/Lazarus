@@ -513,7 +513,7 @@ begin
   if FDeclarationCache.FindDeclarations(Code,X,Y,ListOfPCodeXYPosition,
     CacheWasUsed)
   then
-    Result:=ldprSuccess;
+    Result:=ldprSuccess
   else
     Result:=ldprFailed;
 end;
