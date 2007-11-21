@@ -57,13 +57,14 @@ begin
   if Source is TBitmap
   then begin
     // TBitmap can share image data
+    
     // -> check if already shared
     if SrcBitmap.FImage=FImage then exit;// already sharing
 
     // MWE: dont call ChangingAll, since it will create a new image,
     // which we will replace anyway.
     // ChangingAll(Self);
-    
+
     //DebugLn(['TBitMap.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
     FTransparent := SrcBitmap.Transparent;
 
@@ -76,9 +77,18 @@ begin
     // share FImage with assigned graphic
     FImage := SrcBitmap.FImage;
     FImage.Reference;
+
+    // Paul: we can share image data only is ClassTypes are the same
+    // if ClassTypes are differ then we should create copy of data and free save stream
+    if Source.ClassType <> ClassType then
+    begin
+      UnshareImage(True);
+      FreeSaveStream;
+    end;
+
     //DebugLn(['TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
     Changed(Self);
-    
+
     Exit;
   end;
 
