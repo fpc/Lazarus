@@ -822,7 +822,7 @@ mrLast=mrYesToAll=10</descr>
         <seealso>
           <link id="TGraphicControl"/>
           <link id="TCustomControl"/>
-          <link id="Graphics.TCanvas">TCanvas</link>
+          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -2909,7 +2909,7 @@ the way actions should occur in response to various events, <br/>
 
 and the way the Control should be drawn.<br/></descr>
         <seealso>
-          <link id="lclClasses.TLCLComponent"/>
+          <link id="#lcl.lclClasses.TLCLComponent"/>
           <link id="#rtl.Classes.TComponent"/>
         </seealso>
       </element>
@@ -6152,7 +6152,7 @@ Reads the width of the client control or sets the value. Sets flag if value is s
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads the value for colour, or stores the value, and sets a flag if the colour is stored. <br/>
 The default colour is the same as the window in which the control is located.</descr>
-        <seealso><link id="Graphics.TColor"/></seealso>
+        <seealso><link id="#lcl.Graphics.TColor"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Constraints">
@@ -6191,7 +6191,7 @@ Reads value for the Origin (top left pixel) of this control. (read-only)</descr>
         <descr>// standard properties, which should be supported by all descendants<br/>
 Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so.<br/>
 The properties of Font are defined in the parent class TFont</descr>
-        <seealso><link id="Graphics.TFont"/></seealso>
+        <seealso><link id="#lcl.Graphics.TFont"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.IsControl">
@@ -6244,7 +6244,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <element name="TControl.PopupMenu">
         <short>Gets or writes the pop-up menu associated with this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/> Reads the details of the pop-up menu, or stores them.<br/>Properties are defined in the parent class TPopupMenu</descr>
-        <seealso><link id="Menus.TPopupMenu"/></seealso>
+        <seealso><link id="#lcl.Menus.TPopupMenu"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ShowHint">
@@ -6274,7 +6274,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
         <descr>// standard properties, which should be supported by all descendants<br/>Reads message from flag area, or stores a message</descr>
         <seealso>
           <link id="TWndMethod"/>
-          <link id="LMessages.TLMessage"/>
+          <link id="#lcl.LMessages.TLMessage"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -8487,7 +8487,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <element name="TWinControl.Brush">
         <short>Find which type of brush to use for drawing the control</short>
         <descr>// properties which are supported by all descendants</descr>
-        <seealso><link id="graphics.TBrush"/></seealso>
+        <seealso><link id="#lcl.graphics.TBrush"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.CachedClientHeight">
@@ -9140,7 +9140,7 @@ paint requests received by the parent control.</pre>
         </descr>
         <seealso>
           <link id="TWinControl"/>
-          <link id="Graphics.TCanvas">TCanvas</link>
+          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -9188,7 +9188,7 @@ paint requests received by the parent control.</pre>
 getting the parent control's Canvas dimensions. To get the dimensions of the 
 TGraphicControl, you must query the ClientRect.</p>
         </descr>
-        <seealso><link id="TGraphicControl.FCanvas">FCanvas</link></seealso>
+        <seealso><link id="#lcl.Graphics.TCanvas">FCanvas</link></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
@@ -9261,7 +9261,7 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TCustomControl.Canvas">
         <short>The area of a control on which its components are drawn or painted</short>
         <descr>The Canvas is the area of screen on which the various components are drawn. <br/>This inherits its properties from TCanvas, <br/>and that description should be read to understand their definitions more fully.</descr>
-        <seealso><link id="Graphics.TCanvas"/></seealso>
+        <seealso><link id="#lcl.Graphics.TCanvas"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomControl.BorderStyle">
@@ -9663,7 +9663,7 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="TDockTree">
         <short>A tree of dock zones - every docked window has one tree</short>
         <descr>
-          <code>{ TDockTree - a tree of TDockZones - Every docked window has one tree
+          <pre> TDockTree - a tree of TDockZones - Every docked window has one tree
 
   
     This is an abstract class. The real implementation is in ldocktree.pas.
@@ -9677,7 +9677,7 @@ TGraphicControl, you must query the ClientRect.</p>
     Example1: Docking "A" (source window) left to "B" (target window)
     
        +---+    +----+
-       | A | -&gt; | B  |
+       | A | -> | B  |
        +---+    |    |
                 +----+
       Result: A new docktree will be created. Height of "A" will be resized to
@@ -9711,7 +9711,7 @@ TGraphicControl, you must query the ClientRect.</p>
     Example2: Docking A into B
                 +-----+
        +---+    |     |
-       | A | ---+-&gt; B |
+       | A | ---+-> B |
        +---+    |     |
                 +-----+
 
@@ -9746,8 +9746,8 @@ TGraphicControl, you must query the ClientRect.</p>
     ResetBounds - TODO for Delphi compatibility
     SetReplacingControl - TODO for Delphi compatibility
     PaintSite - TODO for Delphi compatibility
-}
-</code>
+
+</pre>
         </descr>
         <seealso><link id="TDockManager"/></seealso>
       </element>
