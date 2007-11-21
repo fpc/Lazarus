@@ -43,7 +43,7 @@ var
 
   SrcImg, DstImg: TLazIntfImage;
   SrcHasAlpha, KeepAlpha: Boolean;
-  l, r: integer;
+  ALeft, ATop: integer;
 begin
   SrcHasAlpha := SrcImage.Description.AlphaPrec > 0;
   KeepAlpha := SrcHasAlpha;
@@ -89,9 +89,9 @@ begin
   end;
 
   DstImg := TLazIntfImage.Create(RawImage, False);
-  l := (RawImage.Description.Width - SrcImage.Description.Width) div 2;
-  r := (RawImage.Description.Height - SrcImage.Description.Height) div 2;
-  DstImg.CopyPixels(SrcImg, l, r);
+  ALeft := (RawImage.Description.Width - SrcImage.Description.Width) div 2;
+  ATop := (RawImage.Description.Height - SrcImage.Description.Height) div 2;
+  DstImg.CopyPixels(SrcImg, ALeft, ATop);
   if not SrcHasAlpha
   then begin
     DstImg.AlphaFromMask;
@@ -124,6 +124,7 @@ begin
   InternalSetImage(RawImg, SrcImage);
 
   // force output png with colorformat = 4
+  // to do this we need halftone alpha
   if PRGBAQuad(RawImg.Data)[0].Alpha = 0 then
     PRGBAQuad(RawImg.Data)[0].Alpha := $01
   else
