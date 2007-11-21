@@ -732,6 +732,9 @@ type
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
+    function FindDeclarationNodeAndOverload(const CursorPos: TCodeXYPosition;
+      out ListOfPFindContext: TFPList;
+      Flags: TFindDeclarationListFlags): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList): boolean;
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
@@ -3368,9 +3371,93 @@ begin
       on E: ELinkScannerError do ;
     end;
   finally
-    DeactivateGlobalWriteLock;
     FreeListOfPCodeXYPosition(OldPositions);
     NodeList.Free;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationNodeAndOverload(
+  const CursorPos: TCodeXYPosition; out ListOfPFindContext: TFPList;
+  Flags: TFindDeclarationListFlags): boolean;
+var
+  NewContext: TFindContext;
+  OldPositions: TFPList;
+  NodeList: TFPList;
+
+  procedure AddPos;
+  begin
+    AddFindContext(OldPositions,NewContext);
+    if (NodeList.IndexOf(NewContext.Node)>=0) then
+      exit;
+    NodeList.Add(NewContext.Node);
+
+    if (fdlfWithoutEmptyProperties in Flags)
+    and (NewContext.Node.Desc=ctnProperty)
+    and (NewContext.Tool.PropNodeIsTypeLess(NewContext.Node)) then
+      exit;
+    if (fdlfWithoutForwards in Flags) then begin
+      if (NewContext.Node.Desc in [ctnTypeDefinition,ctnGenericType])
+      and NewContext.Tool.NodeIsForwardDeclaration(NewContext.Node)
+      then
+        exit;
+      if (NewContext.Node.Desc=ctnProcedure)
+      and ((NewContext.Node.SubDesc and ctnsForwardDeclaration)>0) then
+        exit;
+    end;
+    AddFindContext(ListOfPFindContext,NewContext);
+  end;
+
+var
+  CurCursorPos: TCodeXYPosition;
+  CurTool: TFindDeclarationTool;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+  CleanPos: integer;
+begin
+  Result:=true;
+  ListOfPFindContext:=nil;
+  NewContext:=CleanFindContext;
+  OldPositions:=nil;
+  NodeList:=nil;
+
+  ActivateGlobalWriteLock;
+  try
+    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
+
+    NodeList:=TFPList.Create;
+    NewContext.Tool:=Self;
+    NewContext.Node:=FindDeepestExpandedNodeAtPos(CleanPos,true);
+    AddPos;
+
+    CurCursorPos:=CursorPos;
+    CurTool:=Self;
+    try
+      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags
+        +[fsfSearchSourceName],
+        NewContext.Tool,NewContext.Node,NewPos,NewTopLine) do
+      begin
+        if IndexOfFindContext(OldPositions,@NewContext)>=0 then break;
+        AddPos;
+        CurCursorPos:=NewPos;
+        CurTool:=NewContext.Tool;
+        debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
+          ' Self="',MainFilename,'" ');
+        if CurCursorPos.Code<>nil then
+          debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
+        if CurTool<>nil then
+          debugln('  CurTool=',CurTool.MainFilename);
+        if (CurTool=nil) then exit;
+      end;
+    except
+      // ignore normal errors
+      on E: ECodeToolError do ;
+      on E: ELinkScannerError do ;
+    end;
+  finally
+    FreeListOfPFindContext(OldPositions);
+    NodeList.Free;
+    DeactivateGlobalWriteLock;
   end;
 end;
 

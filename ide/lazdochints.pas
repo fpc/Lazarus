@@ -89,8 +89,9 @@ var
   Position: LongInt;
   Item: TIdentifierListItem;
   Code: TCodeBuffer;
-  DocFilename: String;
-  UsedCache: boolean;
+  CacheWasUsed: boolean;
+  Chain: TLazDocElementChain;
+  Y,X: integer;
 begin
   if (SourceEditorWindow=nil) or (CodeToolBoss=nil)
   or (CodeToolBoss.IdentifierList=nil) then
@@ -100,15 +101,31 @@ begin
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
   DebugLn(['TLazDocHintProvider.ReadLazDocData Identifier=',GetIdentifier(Item.Identifier)]);
-  if (Item.Node<>nil) then begin
-    if (Item.Tool.Scanner=nil) then exit;
-    Code:=TCodeBuffer(Item.Tool.Scanner.MainCode);
-    if Code=nil then exit;
-    DocFilename:=LazDocBoss.GetFPDocFilenameForSource(Code.Filename,false,UsedCache);
-    if DocFilename='' then exit;
-    DebugLn(['TLazDocHintProvider.ReadLazDocData DocFilename=',DocFilename]);
-  end else begin
+  Chain:=nil;
+  try
+    if (Item.Node<>nil) then begin
+      if (Item.Tool.Scanner=nil) then exit;
+      Code:=TCodeBuffer(Item.Tool.Scanner.MainCode);
+      if Code=nil then begin
+        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED Tool without MainCode']);
+        exit;
+      end;
+      Code.AbsoluteToLineCol(Item.Node.StartPos,Y,X);
+      if (Y<1) or (X<1) then begin
+        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED X=',X,' Y=',Y]);
+        exit;
+      end;
+      LazDocBoss.GetElementChain(Code,X,Y,true,Chain,CacheWasUsed);
+      DebugLn(['TLazDocHintProvider.ReadLazDocData Chain=',Chain<>nil]);
+      if Chain=nil then begin
+        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED Chain=nil']);
+        exit;
+      end;
+    end else begin
 
+    end;
+  finally
+    Chain.Free;
   end;
 end;
 
