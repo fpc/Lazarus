@@ -45,7 +45,7 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics,
+  Classes, SysUtils, LCLProc, LResources, Graphics, 
   AVL_Tree, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
   FileUtil,
@@ -3408,7 +3408,11 @@ end;
 
 function TPkgComponent.GetIconCopy: TBitMap;
 begin
-  Result := LoadBitmapFromLazarusResource(ComponentClass.ClassName);
+  if LazarusResources.Find(ComponentClass.ClassName) <> nil then
+    Result := LoadBitmapFromLazarusResource(ComponentClass.ClassName)
+  else
+    Result := nil;
+
   if Result = nil then
     Result := LoadBitmapFromLazarusResource('default');
 end;
