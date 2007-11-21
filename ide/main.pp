@@ -11942,8 +11942,10 @@ begin
   if ActiveUnitInfo = nil then Exit;
 
   UpdateSaveMenuItemsAndButtons(false);
-  MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component)
-                                          or (ActiveUnitInfo.ComponentName<>'');
+  MainIDEBar.ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Component);
+  MainIDEBar.itmViewToggleFormUnit.Enabled := Assigned(ActiveUnitInfo.Component)
+                                           or (ActiveUnitInfo.ComponentName<>'');
+  MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -12609,14 +12611,19 @@ begin
   FormEditor1.PaintAllDesignerItems;
   GetCurrentUnit(SrcEdit,AnUnitInfo);
   UpdateSaveMenuItemsAndButtons(true);
-  if Screen.ActiveForm<>nil then begin
+  if Screen.ActiveForm<>nil then 
+  begin
     AnIDesigner:=Screen.ActiveForm.Designer;
-    if AnIDesigner is TDesigner then begin
-      MainIDEBar.ToggleFormSpeedBtn.Enabled:=true;
-    end else begin
-      MainIDEBar.ToggleFormSpeedBtn.Enabled:=(AnUnitInfo<>nil)
+    if AnIDesigner is TDesigner then 
+    begin
+      MainIDEBar.itmViewToggleFormUnit.Enabled := true;
+    end 
+    else 
+    begin
+      MainIDEBar.itmViewToggleFormUnit.Enabled := (AnUnitInfo<>nil)
                                              and AnUnitInfo.HasResources;
     end;
+    MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
   end;
 
   if FCheckFilesOnDiskNeeded then
