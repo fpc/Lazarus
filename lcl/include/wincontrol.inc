@@ -31,7 +31,7 @@
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
-const CheckPostionName = 'xxxBakProjTypeRadioGroup';
+const CheckPostionName = 'Edit2';
 const CheckPostionParentName = 'EnvVarsPage';
 
 function CheckPosition(AControl: TControl): boolean;
@@ -2692,7 +2692,7 @@ var
     I: Integer;
     Control: TControl;
   begin
-    //DebugLn(['DoAlign ',DbgSName(Self),' ',dbgs(ClientRect)]);
+    //DebugLn(['DoAlign ',DbgSName(Self),' ',dbgs(AALign),' ClientRect=',dbgs(ClientRect),' ControlCount=',ControlCount]);
     CreateControlAlignList(AAlign,AlignList,AControl);
     {$IFDEF CHECK_POSITION}
     if CheckPosition(Self) then
@@ -2754,25 +2754,23 @@ var
 begin
   if wcfAligningControls in FWinControlFlags then exit;
   Include(FWinControlFlags,wcfAligningControls);
-  //debugln('TWinControl.AlignControls ',DbgSName(Self));
-
-  // call delayed autosize
-  for i:=ControlCount-1 downto 0 do begin
-    ChildControl:=Controls[i];
-    if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
-      //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' autosize needed for child ',DbgSName(ChildControl)]);
-      ChildControl.AdjustSize;
-    end;
-  end;
-
-  // unset all align needed flags
-  Exclude(FWinControlFlags,wcfReAlignNeeded);
-  for i:=ControlCount-1 downto 0 do begin
-    ChildControl:=Controls[i];
-    Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
-  end;
-
   try
+    // call delayed autosize
+    for i:=ControlCount-1 downto 0 do begin
+      ChildControl:=Controls[i];
+      if cfAutoSizeNeeded in ChildControl.FControlFlags then begin
+        //DebugLn(['TWinControl.AlignControls ',DbgSName(Self),' autosize needed for child ',DbgSName(ChildControl)]);
+        ChildControl.AdjustSize;
+      end;
+    end;
+
+    // unset all align needed flags
+    Exclude(FWinControlFlags,wcfReAlignNeeded);
+    for i:=ControlCount-1 downto 0 do begin
+      ChildControl:=Controls[i];
+      Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
+    end;
+
     //if csDesigning in ComponentState then begin
       //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',NeedAlignWork,' ControlCount=',ControlCount);
       //if AControl<>nil then DebugLn('  AControl=',AControl.Name,':',AControl.ClassName);
@@ -6886,16 +6884,6 @@ procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
 begin
   if (FChildSizing=AValue) then exit;
   FChildSizing.Assign(AValue);
-end;
-
-procedure TWinControl.SetClientHeight(const AValue: Integer);
-begin
-
-end;
-
-procedure TWinControl.SetClientWidth(const AValue: Integer);
-begin
-
 end;
 
 {------------------------------------------------------------------------------

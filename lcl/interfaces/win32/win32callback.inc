@@ -2183,7 +2183,7 @@ begin
             if (lWinControl is TCustomPage)
             and (lWinControl.Parent is TCustomNotebook) then
             begin
-              // the TPage size is the ClientRect size of the parent
+              // the TCustomPage size is the ClientRect size of the parent
               // => invalidate the Parent.ClientRect
               lWinControl.Parent.InvalidateClientRectCache(false);
             end;

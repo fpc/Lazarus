@@ -111,6 +111,9 @@ type
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
                           out CacheWasUsed: boolean): TLazDocParseResult;
+    function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
+                                 out ListOfPCodeXYPosition: TFPList;
+                                 out CacheWasUsed: boolean): TLazDocParseResult;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -501,6 +504,18 @@ begin
   if DOMNode=nil then exit(ldprFailed);
   
   Result:=ldprSuccess;
+end;
+
+function TLazDocManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
+  out ListOfPCodeXYPosition: TFPList; out CacheWasUsed: boolean
+  ): TLazDocParseResult;
+begin
+  if FDeclarationCache.FindDeclarations(Code,X,Y,ListOfPCodeXYPosition,
+    CacheWasUsed)
+  then
+    Result:=ldprSuccess;
+  else
+    Result:=ldprFailed;
 end;
 
 procedure TLazDocManager.FreeDocs;

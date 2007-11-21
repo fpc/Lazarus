@@ -2250,7 +2250,7 @@ end;
 procedure TControl.SetClientHeight(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    {$IFDEF DisableLoadedClientSize}
+    {$IFNDEF DisableLoadedClientSize}
     FLoadedClientSize.Y:=Value;
     Include(FControlFlags,cfClientHeightLoaded);
     {$ENDIF}
@@ -2280,7 +2280,7 @@ end;
 procedure TControl.SetClientWidth(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    {$IFDEF DisableLoadedClientSize}
+    {$IFNDEF DisableLoadedClientSize}
     FLoadedClientSize.X:=Value;
     Include(FControlFlags,cfClientWidthLoaded);
     {$ENDIF}
@@ -2841,14 +2841,13 @@ begin
   then exit;
   //if csDesigning in ComponentState then
   {$IFDEF CHECK_POSITION}
-  if CheckPosition(Self) then begin
+  if CheckPosition(Self) then
     DebugLn(['TControl.UpdateBaseBounds '+DbgSName(Self),
     ' OldBounds='+dbgs(FBaseBounds),
     ' OldClientSize='+dbgs(FBaseParentClientSize),
     ' NewBounds='+dbgs(NewBaseBounds),
     ' NewClientSize='+dbgs(NewBaseParentClientSize),
     '']);
-  end;
   {$ENDIF}
   FBaseBounds:=NewBaseBounds;
   Include(FControlFlags,cfBaseBoundsValid);

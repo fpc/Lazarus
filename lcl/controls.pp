@@ -1561,8 +1561,6 @@ type
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
     procedure SetChildSizing(const AValue: TControlChildSizing);
-    procedure SetClientHeight(const AValue: Integer);
-    procedure SetClientWidth(const AValue: Integer);
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
