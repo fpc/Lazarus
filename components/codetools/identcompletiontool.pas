@@ -492,7 +492,11 @@ begin
       {$IFDEF ShowFilteredIdents}
       DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
       {$ENDIF}
-      FFilteredList.Add(CurItem);
+      if length(Prefix)=GetIdentLen(CurItem.Identifier) then
+        // put exact matches at the beginning
+        FFilteredList.Insert(0,CurItem)
+      else
+        FFilteredList.Add(CurItem);
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
