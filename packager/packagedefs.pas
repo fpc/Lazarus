@@ -3407,19 +3407,10 @@ begin
 end;
 
 function TPkgComponent.GetIconCopy: TBitMap;
-var
-  ResName: string;
-  res: TLResource;
 begin
-  Result:=TBitmap.Create;
-  ResName:=ComponentClass.ClassName;
-  res:=LazarusResources.Find(ResName);
-  if (res<>nil) and (res.Value<>'')
-  and Result.LazarusResourceTypeValid(res.ValueType) then begin
-    Result.LoadFromLazarusResource(ResName);
-  end else begin
-    Result.LoadFromLazarusResource('default');
-  end;
+  Result := LoadBitmapFromLazarusResource(ComponentClass.ClassName);
+  if Result = nil then
+    Result := LoadBitmapFromLazarusResource('default');
 end;
 
 function TPkgComponent.HasIcon: boolean;

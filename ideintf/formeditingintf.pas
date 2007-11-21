@@ -25,8 +25,8 @@ uses
   Classes, SysUtils, TypInfo, Forms, Controls, ProjectIntf, ComponentEditors;
   
 const
-  ComponentPaletteBtnWidth  = 25;
-  ComponentPaletteBtnHeight = 25;
+  ComponentPaletteBtnWidth  = 26;
+  ComponentPaletteBtnHeight = 26;
 
 type
   { TIComponentInterface }
