@@ -952,7 +952,8 @@ var
 begin
   SrcHasAlpha := AImage.Description.AlphaPrec > 0;
   KeepAlpha := SrcHasAlpha;
-  if not SrcHasAlpha and (Desc.BitsPerPixel = 32) and (Desc.Depth = 24)
+  if not SrcHasAlpha and (Desc.BitsPerPixel = 32) and (Desc.Depth = 24) and
+    (AImage.Mask <> nil) and (Desc.MaskBitsPerPixel > 0)
   then begin
     // Try to squeeze Aplha channel in some unused bits
     if  (Desc.RedShift >= 8)

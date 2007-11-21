@@ -1466,18 +1466,20 @@ var
   StartScan: Integer;
 begin
   SrcLineOrder := GetBitmapOrder(AWinBmp, ABitmap);
+  SrcLineBytes := (AWinBmp.bmWidthBytes + 3) and not 3;
 
   if AWinBmp.bmBits <> nil
   then begin
     // this is bitmapsection data :) we can just copy the bits
 
+    // We cannot trust windows with bmWidthBytes. Use SrcLineBytes which takes
+    // DWORD alignment into consideration
     with AWinBmp do
-      Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, SrcLineOrder, ALineOrder, ALineEnd, AData, ADataSize);
+      Result := CopyImageData(bmWidth, bmHeight, SrcLineBytes, bmBitsPixel, bmBits, ARect, SrcLineOrder, ALineOrder, ALineEnd, AData, ADataSize);
     Exit;
   end;
 
   // retrieve the data though GetDIBits
-  SrcLineBytes := (AWinBmp.bmWidthBytes + 3) and not 3;
 
   // initialize bitmapinfo structure
   Info.Header.biSize := sizeof(Info.Header);

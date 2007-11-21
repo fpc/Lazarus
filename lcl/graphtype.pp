@@ -387,7 +387,7 @@ begin
     FillByte(DstPtr[0], ASize, 0);
   end
   else begin
-    LineBytes := RS;
+    LineBytes := Min(RS, ARowStride);
     if H <> LineCount
     then FillByte(DstPtr[0], ASize, 0);
   end;
