@@ -8336,7 +8336,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
           <p>On the other hand, by using the Object Inspector, you can select the value associated with a property such as height, and type in a new value; you can watch the size of the object on the form change to reflect the new value.</p>
           <p>You can also explicitly change the properties of the object in code by typing (in the appropriate Implementation section of the Source editor), for example</p>
           <br/>
-          <code>Form1.Button1.Height := 48;</code>
+          <code>	Form1.Button1.Height := 48;</code>
           <br/>
           <p>If you type this new value into the Source Editor and then look back at the Form Designer, you will see that the button on the Form has taken the new size. The new value will also be shown in the Object Inspector.</p>
           <br/>
@@ -8494,7 +8494,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
           </table>
           <p>Many actions are commonly listed in the 'Events' tab of the Object Inspector. If you select an entry in the list, a ComboBox appears with a DropDown list showing any actions that have aleady been defined, and allowing you to choose one to be associated with this event. Alternatively you can select the ellipsis (three dots ...) and you will be taken to an area of the Source Editor where you can begin typing your own action instructions for the selected event.</p>
           <p>While a large number of events is available for any given control, in practice it is only necessary to populate a few of them. For most controls, it is sufficient to provide coding for 'OnClick'; for more complex controls it may be necessary also to provide for 'OnEntry' (when the mouse cursor enters the Control and gives it focus) and 'OnExit' (when the mouse cursor leaves the Control; or you may need to write an event handler for 'OnChange' or 'OnScroll', depending on the nature of the particular control with which you are dealing.</p>
-          <p>A common strategy in Object-Oriented programming is to provide an <link id="ActnList.TActionList">ActionList</link> with a number of pre-defined actions from which the most appropriate can be selected to use in any particular instance.</p>
+	  <p>The pop-up menu that appears when you right-click an object in the Form Designer has, as its first item: 'Create default event' and selecting this option will have the same effect as selecting the ellipsis in the Object Inspector for the default event, usually OnClick: you are taken to the Implementation area of the Source Editor where you can type the code for the event handler.</p>
+          <p>A common strategy in Object-Oriented programming is to provide an <link id="#lcl.ActnList.TActionList">ActionList</link> with the facility for entering, removing or editing a number of pre-defined actions from which the most appropriate can be selected to use in any particular instance.</p>
           <table>
             <caption>Some commonly listed Actions</caption>
             <th>
