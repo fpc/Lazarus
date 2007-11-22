@@ -24,11 +24,12 @@
 unit ImageListCache;
 
 {$mode objfpc}{$H+}
+{ $DEFINE VerboseImageListCache}
 
 interface
 
 uses
-  Classes, SysUtils, Graphics, ImgList;
+  Classes, SysUtils, Graphics, ImgList, LCLProc;
 
 type
   // interface that cache user should have to listen for cache changes
@@ -87,7 +88,11 @@ implementation
 
 const
   // number of cache changes that can happen w/o rebuild
+{$IFDEF VerboseImageListCache}
   ImageListCacheRebuildThreashold = 1;
+{$ELSE}
+  ImageListCacheRebuildThreashold = 20;
+{$ENDIF}
 
 var
   FImageListCache: TImageListCache = nil;
@@ -125,7 +130,11 @@ begin
   begin
     Width := AWidth;
     Height := AHeight;
-    //WriteLn('Creating new imagelist in cache for Width=',Width,' Height=', Height, ' Count = ', FImages.Count);
+{$IFDEF VerboseImageListCache}
+    WriteLn('Creating new imagelist in cache for Width=',Width,' Height=', Height, ' Count = ', FImages.Count);
+    if (Width <> 16) and (Width <> 24) then
+      DumpStack;
+{$ENDIF}
   end;
 end;
 
