@@ -3027,80 +3027,84 @@ function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
 var
   TM: TTextmetric;
   theRect: TRect;
-  AHeight: Integer;
   Lines: PPChar;
   I, NumLines: Longint;
   TempDC: HDC;
   TempPen: HPEN;
   TempBrush: HBRUSH;
 
-  Function LeftOffset : Longint;
+  function LeftOffset : Longint;
   begin
-    If (Flags and DT_Right) = DT_Right then
-      Result := DT_Right
+    if (Flags and DT_RIGHT) = DT_RIGHT then
+      Result := DT_RIGHT
     else
-      If (Flags and DT_CENTER) = DT_CENTER then
+      if (Flags and DT_CENTER) = DT_CENTER then
         Result := DT_CENTER
     else
       Result := DT_LEFT;
   end;
 
-  Function TopOffset : Longint;
+  function TopOffset : Longint;
   begin
-    If (Flags and DT_BOTTOM) = DT_BOTTOM then
+    if (Flags and DT_BOTTOM) = DT_BOTTOM then
       Result := DT_BOTTOM
     else
-      If (Flags and DT_VCENTER) = DT_VCENTER then
+      if (Flags and DT_VCENTER) = DT_VCENTER then
         Result := DT_VCENTER
     else
-      Result := DT_Top;
+      Result := DT_TOP;
   end;
 
-  Function CalcRect : Boolean;
+  function CalcRect : Boolean;
   begin
-    Result := (Flags and DT_CalcRect) = DT_CalcRect;
+    Result := (Flags and DT_CALCRECT) = DT_CALCRECT;
   end;
 
-  Procedure DoCalcRect;
+  procedure DoCalcRect;
   var
-    AP : TSize;
+    AP: TSize;
     J, MaxWidth,
-    LineWidth : Integer;
+    LineWidth: Integer;
   begin
     theRect := Rect;
 
     MaxWidth := theRect.Right - theRect.Left;
 
-    If (Flags and DT_SingleLine) > 0 then begin
+    if (Flags and DT_SINGLELINE) > 0 then
+    begin
       // ignore word and line breaks
       GetTextExtentPoint(DC, Str, Count, AP);
-      if (Flags and DT_CalcRect)<>0 then
+      if (Flags and DT_CALCRECT)<>0 then
         theRect.Right := theRect.Left +  AP.cX
       else
         theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
       theRect.Bottom := theRect.Top + TM.tmHeight;
     end
-    else begin
+    else
+    begin
       // consider line breaks
-      If (Flags and DT_WordBreak) = 0 then begin
+      if (Flags and DT_WORDBREAK) = 0 then
+      begin
         // do not break at word boundaries
         GetTextExtentPoint(DC, Str, Count, AP);
         MaxWidth := AP.cX;
       end;
       Self.WordWrap(DC, Str, MaxWidth, Lines, NumLines);
 
-      if (Flags and DT_CalcRect)<>0 then begin
+      if (Flags and DT_CALCRECT)<>0 then
+      begin
         LineWidth := 0;
-        if (Lines <> nil) then begin
-          For J := 0 to NumLines - 1 do begin
+        if (Lines <> nil) then
+        begin
+          for J := 0 to NumLines - 1 do
+          begin
             GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
             LineWidth := Max(LineWidth, AP.cX);
           end;
         end;
         LineWidth := Min(MaxWidth, LineWidth);
-      end else begin
-        LineWidth:=MaxWidth;
-      end;
+      end else
+        LineWidth := MaxWidth;
 
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
@@ -3110,57 +3114,58 @@ var
       //debugln('TGtkWidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
     end;
 
-    If not CalcRect then
-      Case LeftOffset of
-        DT_CENTER :
+    if not CalcRect then
+      case LeftOffset of
+        DT_CENTER:
           OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
-        DT_Right :
+        DT_RIGHT:
           OffsetRect(theRect, Rect.Right - theRect.Right, 0);
       end;
   end;
 
-  Procedure DrawLineRaw(theLine : PChar; LineLength, TopPos : Longint);
+  procedure DrawLineRaw(theLine : PChar; LineLength, TopPos : Longint);
   var
-    Points : Array[0..1] of TSize;
-    LeftPos : Longint;
+    Points: array[0..1] of TSize;
+    LeftPos: Longint;
   begin
-    If LeftOffset <> DT_Left then
+    if LeftOffset <> DT_LEFT then
       GetTextExtentPoint(DC, theLine, LineLength, Points[0]);
 
-    If TempBrush = HBRUSH(-1) then
+    if TempBrush = HBRUSH(-1) then
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
-    Case LeftOffset of
-      DT_Left:
+    case LeftOffset of
+      DT_LEFT:
         LeftPos := theRect.Left;
-      DT_Center:
+      DT_CENTER:
         LeftPos := theRect.Left + (theRect.Right - theRect.Left) div 2
                  - Points[0].cX div 2;
-      DT_Right:
+      DT_RIGHT:
         LeftPos := theRect.Right - Points[0].cX;
     end;
 
-    {Draw line of Text}
+    // Draw line of Text
     TextUtf8Out(DC, LeftPos, TopPos, theLine, lineLength);
   end;
 
-
-  Procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
+  procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
   var
-    Points : Array[0..1] of TSize;
-    LogP : TLogPen;
-    pIndex : Longint;
-    AStr : String;
-    LeftPos : Longint;
+    Points: array[0..1] of TSize;
+    LogP: TLogPen;
+    pIndex: Longint;
+    AStr: String;
+    LeftPos: Longint;
   begin
     AStr := Copy(String(theLine), 1, LineLength);
 
-    if (Flags and DT_NoPrefix) <> DT_NoPrefix then begin
+    if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
+    begin
       pIndex := DeleteAmpersands(aStr);
       if Length(aStr) = 0 then
         Exit; // String consists of '&' only
       if pIndex > Length(aStr) then
         pIndex := -1; // String ended in '&', which was deleted
-    end else
+    end
+    else
       pIndex := -1;
 
     if TempBrush = HBRUSH(-1) then
@@ -3170,22 +3175,24 @@ var
       GetTextExtentPoint(DC, PChar(aStr), Length(aStr), Points[0]);
 
     case LeftOffset of
-      DT_Left:
+      DT_LEFT:
         LeftPos := theRect.Left;
-      DT_Center:
+      DT_CENTER:
         LeftPos := theRect.Left + (theRect.Right - theRect.Left) div 2
                  - Points[0].cX div 2;
-      DT_Right:
+      DT_RIGHT:
         LeftPos := theRect.Right - Points[0].cX;
     end;
 
-    {Draw line of Text}
+    // Draw line of Text
     TextUtf8Out(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
 
-    {Draw Prefix}
-    if pIndex > 0 then begin
-      {Create & select pen of font color}
-      if TempPen = HPEN(-1) then begin
+    // Draw Prefix
+    if pIndex > 0 then
+    begin
+      // Create & select pen of font color
+      if TempPen = HPEN(-1) then
+      begin
         LogP.lopnStyle := PS_SOLID;
         LogP.lopnWidth.X := 1;
         LogP.lopnColor := GetTextColor(DC);
@@ -3207,7 +3214,8 @@ var
   end;
 
 begin
-  if (Str=nil) or (Str[0]=#0) then exit;
+  if (Str=nil) or (Str[0]=#0) then
+    exit;
   Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
@@ -3228,9 +3236,9 @@ begin
 
       Result := Rect.Bottom - Rect.Top;
       
-      if (Flags and (DT_SINGLELINE or DT_CALCRECT or Dt_NOPREFIX or DT_NOCLIP))
-        = (DT_SINGLELINE or Dt_NOPREFIX or DT_NOCLIP)
-      then begin
+      if (Flags and (DT_SINGLELINE or DT_CALCRECT or Dt_NOPREFIX or DT_NOCLIP)) =
+         (DT_SINGLELINE or Dt_NOPREFIX or DT_NOCLIP) then
+      begin
         //DebugLn(['TGtkWidgetSet.DrawText Calc single line']);
         CopyRect(theRect, Rect);
         DrawLineRaw(Str, Count, Rect.Top);
@@ -3268,12 +3276,12 @@ begin
         DrawLine(Str, Count, theRect.Top);
       end
       else
-      If (Lines <> nil) and (NumLines <> 0) then
+      if (Lines <> nil) and (NumLines <> 0) then
       begin
         //DebugLn(['TGtkWidgetSet.DrawText Draw multiline']);
         for I := 0 to NumLines - 1 do
         begin
-          if I>0 then
+          if I > 0 then
             Inc(theRect.Top, TM.tmDescent);// space between lines
 
           if (((Flags and DT_EditControl) = DT_EditControl) and
