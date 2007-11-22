@@ -65,15 +65,6 @@ const
   GtkComboLCLItemIndexTag = 'LCLItemIndex';
   
 
-  {$if Declared(TOldStyleCustomImageList)}
-    {$define IMGLIST_OLDSTYLE}
-  {$else}
-    {$note TODO: remove me}
-  {$endif}
-
-  
-
-  
 type
   PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
   PWaitHandleEventHandler = ^TWaitHandleEventHandler;

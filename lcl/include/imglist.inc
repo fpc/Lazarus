@@ -62,54 +62,9 @@ end;
 
 function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
 begin
-  {$ifdef IMGLIST_OLDSTYLE}
-  Result:=AddCopy(Image,Mask);
-  {$else}
   Result := Count;
   Insert(Result, Image, Mask);
-  {$endif}
 end;
-
-{$ifdef IMGLIST_OLDSTYLE}
-function TCustomImageList.AddDirect(Image, Mask: TBitmap): Integer;
-begin
-  try
-    Result := Count;
-    Insert(Result, Image, Mask);
-  except
-    on E: Exception do begin
-      DebugLn('TCustomImageList.Add ',E.Message);
-      Result := -1; // Ignore exceptions, just return -1
-    end;
-  end;
-end;
-{$endif}
-
-{$ifdef IMGLIST_OLDSTYLE}
-function TCustomImageList.AddCopy(SrcImage, SrcMask: TBitmap): Integer;
-var
-  NewImage: TBitmap;
-  NewMask: TBitmap;
-begin
-  NewImage:=nil;
-  NewMask:=nil;
-  try
-    NewImage := TBitmap.Create;
-    NewImage.Assign(SrcImage);
-    if Assigned(SrcMask) 
-    then begin
-      NewMask := TBitmap.Create;
-      NewMask.Assign(SrcMask);
-    end;
-    Result:=AddDirect(NewImage, NewMask);
-    NewImage:=nil;
-    NewMask:=nil;
-  finally
-    NewImage.Free;
-    NewMask.Free;
-  end;
-end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Function: TCustomImageList.AddIcon
@@ -137,37 +92,12 @@ end;
 procedure TCustomImageList.AddImages(AValue: TCustomImageList);
 var
   n: Integer;
-  {$ifdef IMGLIST_OLDSTYLE}
-  SrcImage: TBitmap;
-  SrcMask: TBitmap;
-  NewImage: TBitmap;
-  NewMask: TBitmap;
-  {$else}
   p: PRGBAQuad;
   DataSize: Integer;
   OldCount: Integer;
-  {$endif}
 begin
   if (AValue = nil) or (AValue=Self) then exit;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  BeginUpdate;
-  for n := 0 to AValue.Count - 1 do begin
-    SrcImage:=TBitmap(AValue.FImageList[n]);
-    if SrcImage<>nil then begin
-      NewImage:=TBitmap.Create;
-      NewImage.Assign(SrcImage);
-      SrcMask:=TBitmap(AValue.FMaskList[n]);
-      if SrcMask<>nil then begin
-        NewMask:=TBitmap.Create;
-        NewMask.Assign(SrcMask);
-      end else
-        NewMask:=nil;
-      AddDirect(NewImage,NewMask);
-    end;
-  end;
-  EndUpdate;
-  {$else}
   AllocData(FCount + AValue.FCount);
   if (AValue.FWidth = FWidth) and (AValue.FHeight = FHeight)
   then begin
@@ -188,7 +118,6 @@ begin
   else begin
   {$note implement}
   end;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -228,44 +157,17 @@ begin
   if MaskColor <> clNone then
     Bmp.TransparentColor := MaskColor;
   Bmp.LoadFromLazarusResource(ResourceName);
-  {$ifdef IMGLIST_OLDSTYLE}
-  Result := AddDirect(Bmp, nil);
-  {$else}
   Result := Add(Bmp, nil);
   Bmp.Free;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.AllocBitmap
-  Params:  Amount: the amount of free image position which should be availabe 
+  Method:  TCustomImageList.AllocData
+  Params:  ACount: the amount of images
   Returns: Nothing
 
-  Checks if there is enough space for Amount images,  increases the internal 
-  list if necessary .
+  Allocates data for ACount images
  ------------------------------------------------------------------------------}
-{$ifdef IMGLIST_OLDSTYLE}
-procedure TCustomImageList.AllocBitmap(Amount: Integer);
-var
-  n: Integer;
-begin
-  Assert(FAllocCount >= FCount, 'Less space allocated than images');
-  if FAllocCount >= FCount + Amount
-  then Exit;
-
-  // calculate number of blocks, add an extra block for the remainder.
-  n := Amount mod FAllocBy;
-  if n <> 0
-  then Inc(Amount, FAllocBy - n);
-
-  if FBitMap<>nil then
-    FBitMap.Height := FBitMap.Height + Amount * FHeight;
-  if FMaskBitmap<>nil then
-    FMaskBitmap.Height := FBitMap.Height;
-
-  Inc(FAllocCount, Amount);
-end;
-{$else}
 procedure TCustomImageList.AllocData(ACount: Integer);
 var
   n: Integer;
@@ -284,6 +186,16 @@ begin
   Inc(FAllocCount, ACount);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCustomImageList.InternalInsert
+  Params:  AIndex: Index to insert images
+           AImage, AMask: handles of Image and Mask
+           AWidth, AHeight: Width and Height of AImage and AMask
+  Returns: Nothing
+
+  Insert bitmap (with split if necessary) into position AIndex with shifting other
+  images
+ ------------------------------------------------------------------------------}
 procedure TCustomImageList.InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
   AWidth, AHeight: Integer);
 var
@@ -321,8 +233,6 @@ begin
   FChanged := true;
   Change;
 end;
-
-{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Assign
@@ -414,18 +324,11 @@ end;
 procedure TCustomImageList.Clear;
 begin
   if FCount = 0 then Exit;
-  {$ifdef IMGLIST_OLDSTYLE}
-  while Count>0 do
-    Delete(0);
-  FImageList.Clear;
-  FMaskList.Clear;
-  {$else}
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Clear(Self);
   SetLength(FData, 0);
   FAllocCount := 0;
-  {$endif}
-  
+
   FCount := 0;
   Change;
 end;
@@ -443,10 +346,6 @@ begin
   FHeight := 16;
   FWidth := 16;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  FImageList := TList.Create;  //shane
-  FMaskList := TList.Create;
-  {$endif}
   Initialize;
 end;
 
@@ -464,10 +363,6 @@ begin
   inherited Create(nil);
   FHeight := AHeight;
   FWidth := AWidth;
-  {$ifdef IMGLIST_OLDSTYLE}
-  FImageList := TList.Create;  //shane
-  FMaskList := TList.Create;
-  {$endif}
   Initialize;
 end;
 {.$endif}
@@ -507,10 +402,6 @@ end;
   Deletes the image identified by Index. An index of -1 deletes all
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Delete(AIndex: Integer);
-{$ifdef IMGLIST_OLDSTYLE}
-var
-  Obj : TObject;
-{$ENDIF}
 begin
   if AIndex = -1
   then begin
@@ -520,25 +411,11 @@ begin
   
   CheckIndex(AIndex);
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  Obj:=TObject(fImageList.Items[AIndex]);
-  If Assigned(Obj) then
-    Obj.Free;
-  fImageList.Delete(AIndex);
-  Obj:=TObject(fMaskList.Items[AIndex]);
-  If Assigned(Obj) then
-    Obj.Free;
-  fMaskList.Delete(AIndex);
-//  ShiftImages(FBitmap.Canvas, Index, 1);
-//  ShiftImages(FMaskBitmap.Canvas, Index, 1);
-  FCount := fImageList.Count;
-  {$else}
   InternalMove(AIndex, FCount - 1, True);
   Dec(FCount);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Delete(Self, AIndex);
   // TODO: adjust allocated data
-  {$endif}
   FChanged := true;
   Change;
 end;
@@ -551,21 +428,7 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TCustomImageList.Destroy;
-{$ifdef IMGLIST_OLDSTYLE}
-var
-  i: integer;
-{$ENDIF}
 begin
-  {$ifdef IMGLIST_OLDSTYLE}
-  FBitmap.Free;
-  FBitmap:=nil;
-  FMaskBitmap.Free;
-  FMaskBitmap:=nil;
-  for i:=0 to FImageList.Count-1 do TObject(FImageList[i]).Free;
-  for i:=0 to FMaskList.Count-1 do TObject(FMaskList[i]).Free;
-  FreeThenNil(FImageList);
-  FreeThenNil(FMaskList);
-  {$endif}
   inherited Destroy;
   while FChangeLinkList.Count>0 do
     UnregisterChanges(TChangeLink(FChangeLinkList[0]));
@@ -597,21 +460,12 @@ end;
 
 procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
   ADrawEffect: TGraphicsDrawEffect);
-{$ifdef IMGLIST_OLDSTYLE}
-var
-  aBitmap: TBitmap;
-{$ENDIF}
 begin
   if (FCount = 0) or (AIndex >= FCount) then Exit;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  aBitmap := TBitmap(FImageList[AIndex]);
-  ACanvas.Draw(AX, AY, aBitmap);
-  {$else}
   HandleNeeded;
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
                           BkColor, BlendColor, ADrawEffect, DrawingStyle, ImageType);
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -675,18 +529,13 @@ end;
 
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap;
   AEffect: TGraphicsDrawEffect);
-{$ifndef IMGLIST_OLDSTYLE}
 var
   RawImg: TRawImage;
   ListImg, DeviceImg: TLazIntfImage;
   ImgHandle, MskHandle: HBitmap;
-{$endif}
 begin
   if (FCount = 0) or (Image = nil) then Exit;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  Image.Assign(TBitMap(FImageList.Items[Index]));
-  {$else}
   GetRawImage(Index, RawImg);
   
   RawImg.PerformEffect(AEffect, True);
@@ -706,8 +555,6 @@ begin
   Image.SetHandles(ImgHandle, MskHandle);
 
   RawImg.FreeData;
-
-  {$endif}
 end;
 
 procedure TCustomImageList.GetRawImage(Index: Integer; out Image: TRawImage);
@@ -778,35 +625,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetImages(Index: Integer; const Image, Mask: TBitmap);
 begin
-{$ifdef IMGLIST_OLDSTYLE}
-  with Image do FBitmap.Canvas.CopyRect(
-    Rect(0, 0, Width, Height),
-    Canvas,
-    Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight)
-  );
-  with Mask do FMaskBitmap.Canvas.CopyRect(
-    Rect(0, 0, Width, Height),
-    Canvas,
-    Rect(0, Index * FHeight, FWidth, (Index + 1) * FHeight)
-  );
-{$else}
 {$note implement}
-{$endif}
 end;
-
-{------------------------------------------------------------------------------
-  Function: TCustomImageList.HandleAllocated
-  Params:   None
-  Returns:  True if a handle is allocated
-
-  This function checks if the internal image is allocated
- ------------------------------------------------------------------------------}
-{$ifdef IMGLIST_OLDSTYLE}
-function TCustomImageList.HandleAllocated: Boolean;
-begin
-  Result := (FBitmap <> nil);
-end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Initialize
@@ -827,20 +647,6 @@ begin
 
   if (Height < 1) or (Height > 32768) or (Width < 1) 
   then raise EInvalidOperation.Create(SInvalidImageSize);
-
-  {$ifdef IMGLIST_OLDSTYLE}
-  FBitmap := TBitmap.Create;
-  FBitmap.Height := Height;
-  FBitmap.Width := Width;
-  FMaskBitmap := TBitmap.Create;
-  with FMaskBitmap do
-  begin
-    Height := Height;
-    Width := Width;
-    Canvas.Brush.Color := clWhite;
-    Monochrome := True;
-  end;
-  {$endif}
 end;
 
 procedure TCustomImageList.SetWidthHeight(NewWidth, NewHeight: integer);
@@ -848,11 +654,6 @@ begin
   if (FHeight=NewHeight) and (FWidth=NewWidth) then exit;
   FHeight := NewHeight;
   FWidth := NewWidth;
-  {$ifdef IMGLIST_OLDSTYLE}
-  FBitMap.Width := 0;
-  FBitMap.Height := 0;
-  AllocBitmap(0);
-  {$endif}
   Clear;
 end;
 
@@ -898,9 +699,7 @@ begin
   if (Index < 0) then Index := 0;
   
   //No Icon Support yet
-  {$ifndef IMGLIST_OLDSTYLE}
   {$note implement}
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -941,7 +740,6 @@ end;
   Moves an image from the CurIndex'th location to NewIndex'th location
   without notifying the widgetset
  ------------------------------------------------------------------------------}
-{$ifndef IMGLIST_OLDSTYLE}
 procedure TCustomImageList.InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
 var
   ImgSize, DataSize: Cardinal;
@@ -969,7 +767,6 @@ begin
     FreeMem(p);
   end;
 end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.InternalSetImage
@@ -979,7 +776,6 @@ end;
 
   Copies the imagedata into the FData array and then frees the image.
  ------------------------------------------------------------------------------}
-{$ifndef IMGLIST_OLDSTYLE}
 function TCustomImageList.InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
 var
   Desc: TRawImageDescription absolute AImage.Description;
@@ -1050,7 +846,6 @@ begin
   DstImg.Free;
   SrcImg.Free;
 end;
-{$endif}
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Move
@@ -1069,14 +864,9 @@ begin
   if ACurIndex < 0 then ACurIndex := 0;
   if ANewIndex < 0 then ANewIndex := 0;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  FImageList.Move(ACurIndex,ANewIndex);
-  FMaskList.Move(ACurIndex,ANewIndex);
-  {$else}
   InternalMove(ACurIndex, ANewIndex, False);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Move(Self, ACurIndex, ANewIndex);
-  {$endif}
 
   FChanged := true;
   Change;
@@ -1108,18 +898,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.WriteData(AStream: TStream);
 var
-  {$ifdef IMGLIST_OLDSTYLE}
-  CurImage: TBitMap;
-  i: Integer;
-  {$ENDIF}
   Signature: TImageListSignature;
 begin
   //Write signature
-  {$ifdef IMGLIST_OLDSTYLE}
-  Signature:=SIG_LAZ2;
-  {$else}
   Signature:=SIG_LAZ3;
-  {$endif}
   AStream.Write(Signature,SizeOf(Signature));
 
   //Count of image
@@ -1128,16 +910,7 @@ begin
   WriteLRSInteger(AStream,Height);
 
   //images
-  {$ifdef IMGLIST_OLDSTYLE}
-  for i:=0 to Count-1 do
-  begin
-    CurImage:=TBitmap(FImageList[i]);
-    //DebugLn('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
-    CurImage.WriteNativeStream(AStream,true,bnXPixmap);
-  end;
-  {$else}
   AStream.Write(FData[0], FWidth * FHeight * FCount * SizeOf(FData[0]));
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1165,12 +938,8 @@ var
       Size:=ReadLRSInteger(AStream);
       bmp.ReadStream(AStream, True, Size);
       bmp.Transparent := True;
-      {$ifdef IMGLIST_OLDSTYLE}
-      AddDirect(bmp, nil);
-      {$else}
       Add(bmp, nil);
       bmp.Free;
-      {$endif}
     end;
   end;
 
@@ -1191,12 +960,8 @@ var
       Size:=ReadLRSCardinal(AStream);
       //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
       bmp.ReadStream(AStream, True, Size);
-      {$ifdef IMGLIST_OLDSTYLE}
-      AddDirect(bmp, nil);
-      {$else}
       Add(bmp, nil);
       bmp.Free;
-      {$endif}
     end;
   end;
   
@@ -1206,12 +971,8 @@ var
     FWidth := ReadLRSCardinal(AStream);
     FHeight := ReadLRSCardinal(AStream);
     
-    {$ifdef IMGLIST_OLDSTYLE}
-    AStream.Seek(FWidth * FHeight * FCount * 4, soCurrent);
-    {$else}
     AllocData(FCount);
     AStream.ReadBuffer(FData[0], FWidth * FHeight * FCount *  SizeOf(FData[0])) ;
-    {$endif}
 
     FChanged := true;
     Change;
@@ -1250,12 +1011,8 @@ var
           Img := TBitmap.Create;
           Img.SetHandles(ImgHandle, MaskHandle);
 
-          {$ifdef IMGLIST_OLDSTYLE}
-          AddDirect(Img, nil);
-          {$else}
           Add(Img, nil);
           Img.Free;
-          {$endif}
           //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
           Img := nil;
           Dec(NewCount);
@@ -1416,26 +1173,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TBitmap);
 var
-  {$ifdef IMGLIST_OLDSTYLE}
-  DestinationRect, SourceRect: TRect;
-  {$else}
   RawImage: TRawImage;
   R: TRect;
   ImgData: PRGBAQuad;
   msk: THandle;
-  {$endif}
 begin
   if (AIndex < 0) then AIndex := 0;
   CheckIndex(AIndex);
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  DestinationRect := Rect(0, AIndex * FHeight, FWidth, (AIndex + 1) * FHeight);
-  SourceRect := Rect(0, 0, FWidth, FHeight);
-  CopyImage(FBitmap.Canvas, AImage.Canvas, DestinationRect, SourceRect);
-  if AMask <> nil
-  then CopyImage(FMaskBitmap.Canvas, AMask.Canvas, DestinationRect, SourceRect)
-  else FMaskBitmap.Canvas.FillRect(DestinationRect);
-  {$else}
   if AMask = nil
   then msk := 0
   else msk := AMask.Handle;
@@ -1444,7 +1189,6 @@ begin
   ImgData := InternalSetImage(AIndex, RawImage);
   if HandleAllocated
   then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
-  {$endif}
 
   FChanged := true;
   Change;
@@ -1466,9 +1210,7 @@ begin
   if (Index < 0) then Index := 0;
 
   // No Icon suppport yet
-  {$ifndef IMGLIST_OLDSTYLE}
   {$note implement}
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1488,9 +1230,7 @@ begin
 
   if (Index < 0) then Index := 0;
 
-  {$ifndef IMGLIST_OLDSTYLE}
   {$note implement}
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -1554,66 +1294,18 @@ begin
   SetWidthHeight(Value,Height);
 end;
 
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.ShiftImages
-  Params:  Source: source canvas on which the images are moved
-           Start: start of the image to shift 
-           Shift: number of images to shift
-  Returns: Nothing
-
-  Internal routine to move images on the internal image list.
- ------------------------------------------------------------------------------}
-{$ifdef IMGLIST_OLDSTYLE}
-procedure TCustomImageList.ShiftImages(const Source: TCanvas;
-  Start, Shift: Integer);
-var
-  FMoveBitmap: TBitmap;
-begin
-  try
-    FMoveBitmap := TBitmap.Create;
-    with FMoveBitmap do
-    begin
-      Width := FWidth;
-      Height := (1 + FCount - Start) * FHeight;
-    end;
-    FMoveBitmap.Canvas.CopyRect(
-      Rect(0, 0, FWidth, FMoveBitmap.Height),
-      Source,
-      Rect(0, Start * FHeight, FWidth, (FCount + 1) * FHeight)
-    );
-    Source.CopyRect(
-      Rect(0, (Start + Shift) * FHeight, FWidth, (FCount + Shift + 1) * FHeight),
-      FMoveBitmap.Canvas,
-      Rect(0, 0, FWidth, FMoveBitmap.Height)
-    );
-  finally
-    FMoveBitmap.Free;
-  end;
-end;
-{$endif}
-
 procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean);
 var
   bmp: TBitmap;
-  {$ifdef IMGLIST_OLDSTYLE}
-  msk: TBitmap;
-  {$ENDIF}
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
 
-  {$ifdef IMGLIST_OLDSTYLE}
-  bmp := TBitmap(FImageList[Index]);
-  msk := TBitmap(FMaskList[Index]);
-  StretchMaskBlt(Canvas.Handle, ARect.Left, ARect.Top, ARect.Right - ARect.Left,
-    ARect.Bottom - ARect.Top, bmp.Handle, 0, 0, FWidth, FHeight, msk.Handle, 0, 0, SRCCOPY);
-  {$else}
   {$note implement}
   // temp workaround
   bmp := TBitmap.Create;
   GetBitmap(Index, bmp);
   Canvas.StretchDraw(ARect,  bmp);
   bmp.Free;
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
