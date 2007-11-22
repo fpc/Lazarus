@@ -3025,13 +3025,14 @@ end;
 function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
 var
-  TM : TTextmetric;
-  theRect     : TRect;
-  Lines : PPChar;
-  I, NumLines : Longint;
-  TempDC : HDC;
-  TempPen : HPEN;
-  TempBrush : HBRUSH;
+  TM: TTextmetric;
+  theRect: TRect;
+  AHeight: Integer;
+  Lines: PPChar;
+  I, NumLines: Longint;
+  TempDC: HDC;
+  TempPen: HPEN;
+  TempBrush: HBRUSH;
 
   Function LeftOffset : Longint;
   begin
@@ -3210,22 +3211,25 @@ begin
   Assert(False, Format('trace:> [TGtkWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
-  Result := Longint(IsValidDC(DC));
-  if Boolean(Result)
-  then with TDeviceContext(DC) do
+  Result := 0;
+  if IsValidDC(DC) then
+  with TDeviceContext(DC) do
   begin
-    if Count = -1 then
-      Count := StrLen(Str);
-
-    Result := 0;
     Lines := nil;
     NumLines := 0;
     TempDC := HDC(-1);
     TempPen := HPEN(-1);
     TempBrush := HBRUSH(-1);
     try
-      if (Flags and (DT_SingleLine+DT_CalcRect+Dt_NoPrefix+DT_NOClip))
-        =(DT_SingleLine+Dt_NoPrefix+Dt_NoClip)
+      if Count <> -1 then
+        Count := Min(StrLen(Str), Count)
+      else
+        Count := StrLen(Str);
+
+      Result := Rect.Bottom - Rect.Top;
+      
+      if (Flags and (DT_SINGLELINE or DT_CALCRECT or Dt_NOPREFIX or DT_NOCLIP))
+        = (DT_SINGLELINE or Dt_NOPREFIX or DT_NOCLIP)
       then begin
         //DebugLn(['TGtkWidgetSet.DrawText Calc single line']);
         CopyRect(theRect, Rect);
@@ -3233,22 +3237,23 @@ begin
         exit;
       end;
 
-      Count := Min(StrLen(Str), Count);
-
       GetTextMetrics(DC, TM);
 
       DoCalcRect;
 
-      if (Flags and DT_CalcRect) = DT_CalcRect then begin
+      Result := theRect.Bottom - theRect.Top;
+
+      if (Flags and DT_CALCRECT) = DT_CALCRECT then
+      begin
         //DebugLn(['TGtkWidgetSet.DrawText Complex Calc']);
         CopyRect(Rect, theRect);
-        Result := 1;
         exit;
       end;
 
       TempDC := SaveDC(DC);
 
-      if (Flags and DT_NOCLIP) <> DT_NOCLIP then begin
+      if (Flags and DT_NOCLIP) <> DT_NOCLIP then
+      begin
         if theRect.Right > Rect.Right then
           theRect.Right := Rect.Right;
         if theRect.Bottom > Rect.Bottom then
@@ -3257,14 +3262,17 @@ begin
           theRect.Right, theRect.Bottom);
       end;
 
-      if (Flags and DT_SingleLine) = DT_SingleLine then begin
+      if (Flags and DT_SINGLELINE) = DT_SINGLELINE then
+      begin
         //DebugLn(['TGtkWidgetSet.DrawText Draw single line']);
         DrawLine(Str, Count, theRect.Top);
-        Result := 1;
       end
-      else If (Lines <> nil) and (NumLines <> 0) then begin
+      else
+      If (Lines <> nil) and (NumLines <> 0) then
+      begin
         //DebugLn(['TGtkWidgetSet.DrawText Draw multiline']);
-        for I := 0 to NumLines - 1 do begin
+        for I := 0 to NumLines - 1 do
+        begin
           if I>0 then
             Inc(theRect.Top, TM.tmDescent);// space between lines
 
@@ -3279,7 +3287,6 @@ begin
 
           Inc(theRect.Top, TM.tmHeight);
         end;
-        Result := 1;
       end;
 
     finally
