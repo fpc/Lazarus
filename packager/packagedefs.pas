@@ -3407,9 +3407,13 @@ begin
 end;
 
 function TPkgComponent.GetIconCopy: TBitMap;
+var
+  ResHandle: TLResource;
 begin
-  if LazarusResources.Find(ComponentClass.ClassName) <> nil then
-    Result := LoadBitmapFromLazarusResource(ComponentClass.ClassName)
+  // prevent raising exception and speedup a bit search/load
+  ResHandle := LazarusResources.Find(ComponentClass.ClassName);
+  if ResHandle <> nil then
+    Result := LoadBitmapFromLazarusResourceHandle(ResHandle)
   else
     Result := nil;
 

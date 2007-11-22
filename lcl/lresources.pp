@@ -81,6 +81,7 @@ type
   public
     constructor Create(const ResName: string; ResType: PChar);
     constructor CreateFromID(ResID: Integer; ResType: PChar);
+    constructor CreateFromHandle(AHandle: TLResource);
     function Write(const Buffer; Count: Longint): Longint; override;
     property Res: TLResource read FRes;
   end;
@@ -4522,6 +4523,13 @@ constructor TLazarusResourceStream.CreateFromID(ResID: Integer; ResType: PChar);
 begin
   inherited Create;
   Initialize(PChar(PtrInt(ResID)), ResType);
+end;
+
+constructor TLazarusResourceStream.CreateFromHandle(AHandle: TLResource);
+begin
+  inherited Create;
+  FRes := AHandle;
+  SetPointer(PChar(FRes.Value), Length(FRes.Value));
 end;
 
 function TLazarusResourceStream.Write(const Buffer; Count: Longint): Longint;
