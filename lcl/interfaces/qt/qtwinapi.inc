@@ -1223,7 +1223,7 @@ begin
   
   
   //TODO: result should be different when DT_VCENTER or DT_BOTTOM is set
-  Result := QtDC.font.Metrics.height;
+  Result := R.Bottom - R.Top;
 
   if (Flags and DT_CALCRECT) = DT_CALCRECT then
   begin
