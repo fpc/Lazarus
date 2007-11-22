@@ -7263,6 +7263,15 @@ begin
     // widget is not on a normal client area. e.g. TPage
     Left:=0;
     Top:=0;
+  end
+  else
+  if (aWidget^.parent<>nil)
+  and GtkWidgetIsA(aWidget^.parent,GTK_TYPE_FIXED)
+  and not gtk_fixed_get_has_window(PGtkFixed(aWidget^.parent))
+  then begin
+    // widget on a fixed, but fixed w/o window
+    Dec(Left, PGtkWidget(aWidget^.parent)^.allocation.x);
+    Dec(Top, PGtkWidget(aWidget^.parent)^.allocation.y);
   end;
   {$ENDIF}
   if GtkWidgetIsA(aWidget,GTK_TYPE_WINDOW) then begin
