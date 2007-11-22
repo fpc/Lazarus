@@ -865,7 +865,7 @@ begin
     then msk := AImage.MaskHandle
     else msk := 0;
   end
-  else msk := AMask.Handle;
+  else msk := AMask.MaskHandle;
 
   R := Rect(0, 0, FWidth, FHeight);
   for i := 0 to ACount - 1 do
