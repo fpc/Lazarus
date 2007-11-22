@@ -144,6 +144,8 @@ type
     {$endif}
     
     {$ifndef IMGLIST_OLDSTYLE}
+    procedure InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
+      AWidth, AHeight: Integer);
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
     function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
     {$endif}
@@ -211,7 +213,7 @@ type
     {$endif}
     procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
     procedure InsertIcon(Index: Integer; Image: TIcon);
-    procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
+    procedure InsertMasked(Index: Integer; AImage: TBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Replace(AIndex: Integer; AImage, AMask: TBitmap);
     procedure ReplaceIcon(Index: Integer; Image: TIcon);

@@ -283,6 +283,45 @@ begin
 
   Inc(FAllocCount, ACount);
 end;
+
+procedure TCustomImageList.InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
+  AWidth, AHeight: Integer);
+var
+  RawImg: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+  i, ACount: Integer;
+begin
+  CheckIndex(AIndex, True);
+  if (AIndex < 0) then
+    AIndex := 0;
+
+  ACount := AWidth div Width;
+  if ACount = 0 then
+    ACount := 1;
+  Inc(FCount, ACount);
+  AllocData(FCount);
+  if AIndex < FCount - ACount then
+  begin
+    for i := 0 to ACount - 1 do
+      InternalMove(FCount - i - 1, AIndex + i, True);
+  end;
+
+  R := Rect(0, 0, FWidth, FHeight);
+  for i := 0 to ACount - 1 do
+  begin
+    RawImage_FromBitmap(RawImg, AImage, AMask, R);
+    ImgData := InternalSetImage(AIndex + i, RawImg);
+    if HandleAllocated
+    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
+    inc(R.Left, FWidth);
+    inc(R.Right, FWidth);
+  end;
+
+  FChanged := true;
+  Change;
+end;
+
 {$endif}
 
 {------------------------------------------------------------------------------
@@ -828,36 +867,10 @@ end;
   at the index'th position.  If Mask is nil, the image has no transparent parts.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TBitmap);
-{$ifndef IMGLIST_OLDSTYLE}
 var
-  RawImg: TRawImage;
-  R: TRect;
-  ImgData: PRGBAQuad;
   msk: THandle;
-  i, ACount: Integer;
-{$endif}
 begin
   if AImage = nil then Exit;
-
-  CheckIndex(AIndex, True);
-
-  if (AIndex < 0) then AIndex := 0;
-
-  {$ifdef IMGLIST_OLDSTYLE}
-  FImageList.Insert(AIndex,AImage);
-  FMaskList.Insert(AIndex,AMask);
-  FCount := FImageList.Count;
-  {$else}
-  ACount := AImage.Width div Width;
-  if ACount = 0 then
-    ACount := 1;
-  Inc(FCount, ACount);
-  AllocData(FCount);
-  if AIndex < FCount - ACount then
-  begin
-    for i := 0 to ACount - 1 do
-      InternalMove(FCount - i - 1, AIndex + i, True);
-  end;
   
   if AMask = nil
   then begin
@@ -865,22 +878,9 @@ begin
     then msk := AImage.MaskHandle
     else msk := 0;
   end
-  else msk := AMask.MaskHandle;
-
-  R := Rect(0, 0, FWidth, FHeight);
-  for i := 0 to ACount - 1 do
-  begin
-    RawImage_FromBitmap(RawImg, AImage.Handle, msk, R);
-    ImgData := InternalSetImage(AIndex + i, RawImg);
-    if HandleAllocated
-    then TWSCustomImageListClass(WidgetSetClass).Insert(Self, AIndex + i, ImgData);
-    inc(R.Left, FWidth);
-    inc(R.Right, FWidth);
-  end;
-  {$endif}
-
-  FChanged := true;
-  Change;
+  else msk := AMask.Handle;
+  
+  InternalInsert(AIndex, AImage.Handle, msk, AImage.Width, AImage.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -906,30 +906,30 @@ end;
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.InsertMasked
   Params:  Index: the index of the inserted image
-           Image: A bitmap to be inserted
+           AImage: A bitmap to be inserted
            MaskColor: The color acting as transparant color
   Returns: Nothing
 
   Adds one or more (bitmap width / imagelist width) bitmaps to the list. 
   Every occurance of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.InsertMasked(Index: Integer; Image: TBitmap;
+procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TBitmap;
   MaskColor: TColor);
 var
-  Mask: TBitmap;
+  AMask: TBitmap;
 begin
-  Mask := TBitmap.Create;
-  with Mask do
+  if AImage = nil then Exit;
+
+  AMask := TBitmap.Create;
+  with AMask do
   begin
-    Height := Image.Height;
-    Width := Image.Width;
-    Assign(Image);
+    Height := AImage.Height;
+    Width := AImage.Width;
+    Assign(AImage);
     Mask(MaskColor);
   end;
-  Insert(Index, Image, Mask);
-  {$ifndef IMGLIST_OLDSTYLE}
-  Mask.Free;
-  {$endif}
+  InternalInsert(Index, AImage.Handle, AMask.MaskHandle, AImage.Width, AImage.Height);
+  AMask.Free;
 end;
 
 {------------------------------------------------------------------------------
