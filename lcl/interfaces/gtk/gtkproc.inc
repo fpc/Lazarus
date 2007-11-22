@@ -7162,6 +7162,14 @@ begin
   end;
 
   {$IFDEF Gtk2}
+  if (Widget^.parent<>nil)
+  and GtkWidgetIsA(Widget^.parent,GTK_TYPE_FIXED)
+  and not gtk_fixed_get_has_window(PGtkFixed(Widget^.parent))
+  then begin
+    inc(LCLLeft, Widget^.parent^.allocation.x);
+    inc(LCLTop, Widget^.parent^.allocation.y);
+  end;
+  
   // commit size and position
   allocation:=Widget^.allocation;
   allocation.x:=LCLLeft;
