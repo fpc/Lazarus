@@ -1621,9 +1621,10 @@ begin
   FillChar(MessE,SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
   case event^.direction of
-  GDK_SCROLL_UP: MessE.WheelDelta:=-1;
-  GDK_SCROLL_DOWN: MessE.WheelDelta:=1;
-  else exit;
+    GDK_SCROLL_UP: MessE.WheelDelta := 1;
+    GDK_SCROLL_DOWN: MessE.WheelDelta := -1;
+  else
+    exit;
   end;
   MessE.X := MappedXY.X;
   MessE.Y := MappedXY.Y;
