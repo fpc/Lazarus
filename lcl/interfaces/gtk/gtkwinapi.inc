@@ -6826,9 +6826,7 @@ var
   FromY: Integer;
   ToX: Integer;
   ToY: Integer;
-  OldCapStyle: TGdkCapStyle;
   CurValues: TGdkGCValues;
-  OldLineWidth: LongInt;
   AdjustAttrib: Boolean;
 begin
   Assert(False, Format('trace:> [TGtkWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
