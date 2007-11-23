@@ -10149,7 +10149,7 @@ TGraphicControl, you must query the ClientRect.</p>
 		<br/>
 		<p>Handle can also be a child handle, and does not need to be the Handle
 		property of the Result.</p>
-		<p>IMPORTANT: So, in most cases: Result.Handle <> Handle in the params.</p>
+		<p>IMPORTANT: So, in most cases: Result.Handle &lt;&gt; Handle in the params.</p>
 	</descr>
    
         <errors/>
@@ -10167,7 +10167,7 @@ TGraphicControl, you must query the ClientRect.</p>
 		<br/>
 		<p>Returns the TWinControl owning the Handle. Handle can also be a child handle,</p>
 		<p>and does not need to be the Handle property of the Result.</p>
-		<p>IMPORTANT: Therefore, in most cases: parameter Handle <> Result.Handle</p>
+		<p>IMPORTANT: Therefore, in most cases: parameter Handle &lt;&gt; Result.Handle</p>
 	</descr>
 
         <errors/>
