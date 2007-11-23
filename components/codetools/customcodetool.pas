@@ -123,6 +123,7 @@ type
   private
     FLastProgressPos: integer;
     FLastScannerChangeStep: integer;
+    FNodesDeletedChangeStep: integer;
     FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
     FOnParserProgress: TOnParserProgress;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
@@ -184,8 +185,9 @@ type
     property Scanner: TLinkScanner read FScanner write SetScanner;
     function MainFilename: string;
     property TreeChangeStep: integer read FTreeChangeStep;
+    property NodesDeletedChangeStep: integer read FNodesDeletedChangeStep;
     property OnTreeChange: TCodeTreeChangeEvent read FOnTreeChange
-                                                 write FOnTreeChange;
+                                                write FOnTreeChange;
     
     function FindDeepestNodeAtPos(P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
@@ -1934,6 +1936,12 @@ begin
     FTreeChangeStep:=Low(integer)
   else
     inc(FTreeChangeStep);
+  if NodesDeleting then begin
+    if FNodesDeletedChangeStep=High(integer) then
+      FNodesDeletedChangeStep:=Low(integer)
+    else
+      inc(FNodesDeletedChangeStep);
+  end;
   if FOnTreeChange<>nil then
     FOnTreeChange(Self,NodesDeleting);
 end;
