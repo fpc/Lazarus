@@ -182,6 +182,7 @@ var
   AColor: TColor;
   ANode: TCodeTreeNode;
   BackgroundColor: TColor;
+  ItemNode: TCodeTreeNode;
 begin
   Result.X := 0;
   Result.Y := ACanvas.TextHeight('W');
@@ -266,7 +267,7 @@ begin
 
     SetFontColor(clBlack);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
-    s:=GetIdentifier(IdentItem.Identifier);
+    s:=IdentItem.Identifier;
     if MeasureOnly then
       Inc(Result.X, 1+ACanvas.TextWidth(s))
     else begin
@@ -278,12 +279,13 @@ begin
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
     
     s:='';
-    if IdentItem.Node<>nil then begin
-      case IdentItem.Node.Desc of
+    ItemNode:=IdentItem.Node;
+    if ItemNode<>nil then begin
+      case ItemNode.Desc of
 
       ctnProcedure:
         begin
-          s:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
+          s:=IdentItem.Tool.ExtractProcHead(ItemNode,
             [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
              phpWithOfObject]);
@@ -291,38 +293,38 @@ begin
 
       ctnProperty:
         begin
-          s:=IdentItem.Tool.ExtractProperty(IdentItem.Node,
+          s:=IdentItem.Tool.ExtractProperty(ItemNode,
             [phpWithoutName,phpWithVarModifiers,
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType]);
         end;
 
       ctnVarDefinition:
         begin
-          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
           s:=' : '+IdentItem.Tool.ExtractNode(ANode,[]);
         end;
 
       ctnTypeDefinition:
         begin
-          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
           s:=' = '+IdentItem.Tool.ExtractNode(ANode,[]);
         end;
 
       ctnConstDefinition:
         begin
-          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(ItemNode);
           if ANode<>nil then
             s:=' = '+IdentItem.Tool.ExtractNode(ANode,[])
           else begin
-            s:=IdentItem.Tool.ExtractCode(IdentItem.Node.StartPos+length(s),
-                                          IdentItem.Node.EndPos,[]);
+            s:=IdentItem.Tool.ExtractCode(ItemNode.StartPos+length(s),
+                                          ItemNode.EndPos,[]);
           end;
           s:=copy(s,1,50);
         end;
 
       ctnRecordCase:
         begin
-          s:=' : '+IdentItem.Tool.ExtractRecordCaseType(IdentItem.Node);
+          s:=' : '+IdentItem.Tool.ExtractRecordCaseType(ItemNode);
         end;
 
       end;
@@ -390,12 +392,12 @@ function FindUnitName(IdentList: TIdentifierList;
 var
   CodeBuf: TCodeBuffer;
 begin
-  Result:=GetIdentifier(IdentItem.Identifier);
+  Result:=IdentItem.Identifier;
   CodeBuf:=CodeToolBoss.FindUnitSource(IdentList.StartContextPos.Code,Result,'');
   if CodeBuf=nil then exit;
   Result:=CodeToolBoss.GetSourceName(CodeBuf,true);
   if Result='' then
-    Result:=GetIdentifier(IdentItem.Identifier);
+    Result:=IdentItem.Identifier;
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
@@ -424,7 +426,7 @@ begin
     exit;
   end;
 
-  Result:=GetIdentifier(IdentItem.Identifier);
+  Result:=IdentItem.Identifier;
 
   //DebugLn(['GetIdentCompletionValue ',NodeDescriptionAsString(IdentItem.GetDesc)]);
   case IdentItem.GetDesc of

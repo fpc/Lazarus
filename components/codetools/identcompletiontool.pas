@@ -79,24 +79,36 @@ type
     iliIsFunctionValid,
     iliIsAbstractMethod,
     iliIsAbstractMethodValid,
-    iliParamListValid
+    iliParamListValid,
+    iliNodeValid
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
+  { TIdentifierListSearchItem }
+
+  TIdentifierListSearchItem = class
+  public
+    Identifier: PChar;
+    ParamList: string;
+  end;
+
   { TIdentifierListItem }
 
   TIdentifierListItem = class
   private
     FNext: TIdentifierListItem;
     FParamList: string;
+    FNode: TCodeTreeNode;
+    FToolNodesDeletedStep: integer;// only valid if iliNodeValid
+    function GetNode: TCodeTreeNode;
     function GetParamList: string;
+    procedure SetNode(const AValue: TCodeTreeNode);
     procedure SetParamList(const AValue: string);
   public
     Compatibility: TIdentifierCompatibility;
     HistoryIndex: integer;
-    Identifier: PChar;
+    Identifier: string;
     Level: integer;
-    Node: TCodeTreeNode;
     Tool: TFindDeclarationTool;
     DefaultDesc: TCodeTreeNodeDesc;
     Flags: TIdentListItemFlags;
@@ -118,8 +130,10 @@ type
     function IsAbstractMethod: boolean;
     procedure Clear;
     function CompareParamList(CompareItem: TIdentifierListItem): integer;
+    function CompareParamList(CompareItem: TIdentifierListSearchItem): integer;
   public
     property ParamList: string read GetParamList write SetParamList;
+    property Node: TCodeTreeNode read GetNode write SetNode;
   end;
   
   TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
@@ -148,7 +162,7 @@ type
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
     FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
-    FIdentSearchItem: TIdentifierListItem;
+    FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
     procedure SetContextFlags(const AValue: TIdentifierListContextFlags);
@@ -335,7 +349,7 @@ begin
   end;
 
   // then sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(Item2.Identifier,Item1.Identifier);
+  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
   if Result<>0 then exit;
   
   // then sort for ParamList (lower is better)
@@ -351,11 +365,27 @@ begin
   Item2:=TIdentifierListItem(Data2);
 
   // sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(Item2.Identifier,Item1.Identifier);
+  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
   Result:=Item2.CompareParamList(Item1);
+end;
+
+function CompareIdentListSearchWithItems(SearchItem, Item: Pointer): integer;
+var
+  TheSearchItem: TIdentifierListSearchItem;
+  TheItem: TIdentifierListItem;
+begin
+  TheSearchItem:=TIdentifierListSearchItem(SearchItem);
+  TheItem:=TIdentifierListItem(Item);
+
+  // sort alpabetically (lower is better)
+  Result:=CompareIdentifierPtrs(Pointer(TheItem.Identifier),TheSearchItem.Identifier);
+  if Result<>0 then exit;
+
+  // then sort for ParamList (lower is better)
+  Result:=TheItem.CompareParamList(TheSearchItem);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
@@ -383,8 +413,8 @@ begin
   IdentItem:=TIdentifierListItem(Data1);
   HistItem:=TIdentHistListItem(Data2);
 
-  Result:=CompareIdentifiers(PChar(Pointer(HistItem.Identifier)),
-                             IdentItem.Identifier);
+  Result:=CompareIdentifierPtrs(Pointer(HistItem.Identifier),
+                                Pointer(IdentItem.Identifier));
   if Result<>0 then exit;
 
   //debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
@@ -487,12 +517,13 @@ begin
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
-    if (CurItem.Identifier<>nil)
-    and ComparePrefixIdent(PChar(Pointer(Prefix)),CurItem.Identifier) then begin
+    if (CurItem.Identifier<>'')
+    and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
+    then begin
       {$IFDEF ShowFilteredIdents}
-      DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
+      DebugLn('::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier);
       {$ENDIF}
-      if length(Prefix)=GetIdentLen(CurItem.Identifier) then
+      if length(Prefix)=length(CurItem.Identifier) then
         // put exact matches at the beginning
         FFilteredList.Insert(0,CurItem)
       else
@@ -533,8 +564,7 @@ begin
   FFlags:=[ilfFilteredListNeedsUpdate];
   FItems:=TAVLTree.Create(@CompareIdentListItems);
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
-  FIdentSearchItem:=TIdentifierListItem.Create(icompUnknown,
-      false,0,nil,0,nil,nil,ctnNone);
+  FIdentSearchItem:=TIdentifierListSearchItem.Create;
   FCreatedIdentifiers:=TFPList.Create;
 end;
 
@@ -606,7 +636,7 @@ begin
   FIdentSearchItem.Identifier:=Identifier;
   FIdentSearchItem.ParamList:='';
   Result:=FIdentView.FindKey(FIdentSearchItem,
-                             @CompareIdentListItemsForIdents)<>nil;
+                             @CompareIdentListSearchWithItems)<>nil;
 end;
 
 function TIdentifierList.FindCreatedIdentifier(const Ident: string): integer;
@@ -664,19 +694,20 @@ begin
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
-    if (CurItem.Identifier<>nil)
-    and ComparePrefixIdent(PChar(Pointer(Prefix)),CurItem.Identifier) then begin
+    if (CurItem.Identifier<>'')
+    and ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
+    then begin
       if not FoundFirst then begin
-        Result:=GetIdentifier(CurItem.Identifier);
+        Result:=CurItem.Identifier;
         FoundFirst:=true;
       end else begin
-        SamePos:=length(Prefix);
-        while (SamePos<length(Result))
-        and (UpChars[CurItem.Identifier[SamePos]]=UpChars[Result[SamePos+1]])
+        SamePos:=length(Prefix)+1;
+        while (SamePos<=length(Result))
+        and (UpChars[CurItem.Identifier[SamePos]]=UpChars[Result[SamePos]])
         do
           inc(SamePos);
-        if SamePos<length(Result) then begin
-          Result:=copy(Result,1,SamePos);
+        if SamePos<=length(Result) then begin
+          Result:=copy(Result,1,SamePos-1);
           if length(Result)=length(Prefix) then exit;
         end;
       end;
@@ -1575,20 +1606,54 @@ end;
 { TIdentifierListItem }
 
 function TIdentifierListItem.GetParamList: string;
+var
+  CurNode: TCodeTreeNode;
 begin
   if not (iliParamListValid in Flags) then begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
-    if (Node<>nil) and (Node.Desc=ctnProcedure) then begin
-      FParamList:=Tool.ExtractProcHead(Node,
+    CurNode:=Node;
+    if (CurNode<>nil) and (CurNode.Desc=ctnProcedure) then begin
+      FParamList:=Tool.ExtractProcHead(CurNode,
          [phpWithoutClassKeyword,phpWithoutClassName,
           phpWithoutName,phpInUpperCase]);
-      //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(Node.StartPos));
+      //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
     end else
       FParamList:='';
     Include(Flags,iliParamListValid);
   end;
   Result:=FParamList;
+end;
+
+function TIdentifierListItem.GetNode: TCodeTreeNode;
+begin
+  if (not (iliNodeValid in Flags)) or (Tool=nil) then begin
+    Result:=nil;
+    exit;
+  end else begin
+    if FToolNodesDeletedStep=Tool.NodesDeletedChangeStep then begin
+      Result:=FNode;
+    end else begin
+      DebugLn(['TIdentifierListItem.GetNode node is gone from ',Tool.MainFilename]);
+      FNode:=nil;
+    end;
+  end;
+end;
+
+procedure TIdentifierListItem.SetNode(const AValue: TCodeTreeNode);
+
+  procedure RaiseToolMissing;
+  begin
+    raise Exception.Create('TIdentifierListItem.SetNode Node without Tool');
+  end;
+
+begin
+  FNode:=AValue;
+  Include(Flags,iliNodeValid);
+  if (FNode<>nil) and (Tool=nil) then
+    RaiseToolMissing;
+  if (Tool<>nil) then
+    FToolNodesDeletedStep:=Tool.NodesDeletedChangeStep;
 end;
 
 procedure TIdentifierListItem.SetParamList(const AValue: string);
@@ -1598,6 +1663,8 @@ begin
 end;
 
 function TIdentifierListItem.AsString: string;
+var
+  CurNode: TCodeTreeNode;
 begin
   Result:=IdentifierCompatibilityNames[Compatibility];
   if HasChilds then
@@ -1605,19 +1672,23 @@ begin
   else
     Result:=Result+' HasNoChilds';
   Result:=Result+' History='+IntToStr(HistoryIndex);
-  Result:=Result+' Ident='+GetIdentifier(Identifier);
+  Result:=Result+' Ident='+Identifier;
   Result:=Result+' Lvl='+IntToStr(Level);
   if Tool<>nil then
     Result:=Result+' File='+Tool.MainFilename;
-  if Node<>nil then
-    Result:=Result+' Node='+Node.DescAsString
-      +' "'+StringToPascalConst(copy(Tool.Src,Node.StartPos,50))+'"';
+  CurNode:=Node;
+  if CurNode<>nil then
+    Result:=Result+' Node='+CurNode.DescAsString
+      +' "'+StringToPascalConst(copy(Tool.Src,CurNode.StartPos,50))+'"';
 end;
 
 function TIdentifierListItem.GetDesc: TCodeTreeNodeDesc;
+var
+  CurNode: TCodeTreeNode;
 begin
-  if Node<>nil then
-    Result:=Node.Desc
+  CurNode:=Node;
+  if CurNode<>nil then
+    Result:=CurNode.Desc
   else
     Result:=DefaultDesc;
 end;
@@ -1631,33 +1702,42 @@ begin
   Compatibility:=NewCompatibility;
   if NewHasChilds then Include(FLags,iliHasChilds);
   HistoryIndex:=NewHistoryIndex;
-  Identifier:=NewIdentifier;
+  Identifier:=GetIdentifier(NewIdentifier);
   Level:=NewLevel;
-  Node:=NewNode;
   Tool:=NewTool;
+  Node:=NewNode;
   DefaultDesc:=NewDefaultDesc;
   BaseExprType:=CleanExpressionType;
 end;
 
 function TIdentifierListItem.IsProcNodeWithParams: boolean;
+var
+  CurNode: TCodeTreeNode;
 begin
-  Result:=(Node<>nil) and Tool.ProcNodeHasParamList(Node);
+  CurNode:=Node;
+  Result:=(CurNode<>nil) and Tool.ProcNodeHasParamList(CurNode);
 end;
 
 function TIdentifierListItem.IsPropertyWithParams: boolean;
+var
+  CurNode: TCodeTreeNode;
 begin
-  Result:=(Node<>nil) and Tool.PropertyNodeHasParamList(Node);
+  CurNode:=Node;
+  Result:=(CurNode<>nil) and Tool.PropertyNodeHasParamList(CurNode);
 end;
 
 function TIdentifierListItem.CheckHasChilds: boolean;
 // returns true if test was successful
+var
+  CurNode: TCodeTreeNode;
 begin
   Result:=false;
   if GetDesc in [ctnClass,ctnRecordType,ctnClassInterface] then begin
     Result:=true;
     exit;
   end;
-  if Node=nil then exit;
+  CurNode:=Node;
+  if CurNode=nil then exit;
   UpdateBaseContext;
   if (BaseExprType.Desc=xtContext)
     and (BaseExprType.Context.Node<>nil)
@@ -1668,14 +1748,17 @@ begin
 end;
 
 function TIdentifierListItem.CanBeAssigned: boolean;
+var
+  CurNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (Node=nil) then exit;
+  CurNode:=Node;
+  if (CurNode=nil) then exit;
   if (GetDesc=ctnVarDefinition) then
     Result:=true;
-  if (Node.Desc in [ctnProperty,ctnGlobalProperty]) then begin
-    if Tool.PropertyHasSpecifier(Node,'write') then exit(true);
-    if Tool.PropNodeIsTypeLess(Node) then begin
+  if (CurNode.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+    if Tool.PropertyHasSpecifier(CurNode,'write') then exit(true);
+    if Tool.PropNodeIsTypeLess(CurNode) then begin
       exit(true);// ToDo: search the real property definition
     end;
   end;
@@ -1684,15 +1767,17 @@ end;
 procedure TIdentifierListItem.UpdateBaseContext;
 var
   Params: TFindDeclarationParams;
+  CurNode: TCodeTreeNode;
 begin
   if (iliBaseExprTypeValid in Flags) then exit;
   BaseExprType:=CleanExpressionType;
   BaseExprType.Desc:=xtNone;
-  if (Node<>nil) and (Tool<>nil) then begin
+  CurNode:=Node;
+  if (CurNode<>nil) and (Tool<>nil) then begin
     Tool.ActivateGlobalWriteLock;
     Params:=TFindDeclarationParams.Create;
     try
-      BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,Node);
+      BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,CurNode);
       if (BaseExprType.Context.Node<>nil) then
         BaseExprType.Desc:=xtContext;
     finally
@@ -1709,10 +1794,12 @@ begin
 end;
 
 function TIdentifierListItem.IsFunction: boolean;
+var
+  CurNode: TCodeTreeNode;
 begin
   if not (iliIsFunctionValid in Flags) then begin
-    if (Node<>nil)
-    and Tool.NodeIsFunction(Node) then
+    CurNode:=Node;
+    if (CurNode<>nil) and Tool.NodeIsFunction(CurNode) then
       Include(Flags,iliIsFunction);
     Include(Flags,iliIsFunctionValid);
   end;
@@ -1720,10 +1807,13 @@ begin
 end;
 
 function TIdentifierListItem.IsAbstractMethod: boolean;
+var
+  CurNode: TCodeTreeNode;
 begin
   if not (iliIsAbstractMethodValid in Flags) then begin
-    if (Node<>nil)
-    and Tool.MoveCursorToProcSpecifier(Node,psABSTRACT) then
+    CurNode:=Node;
+    if (CurNode<>nil)
+    and Tool.MoveCursorToProcSpecifier(CurNode,psABSTRACT) then
       Include(Flags,iliIsAbstractMethod);
     Include(Flags,iliIsAbstractMethodValid);
   end;
@@ -1735,9 +1825,9 @@ begin
   FParamList:='';
   Compatibility:=icompUnknown;
   HistoryIndex:=0;
-  Identifier:=nil;
+  Identifier:='';
   Level:=0;
-  Node:=nil;
+  FNode:=nil;
   Tool:=nil;
   DefaultDesc:=ctnNone;
   Flags:=[];
@@ -1746,12 +1836,17 @@ end;
 
 function TIdentifierListItem.CompareParamList(CompareItem: TIdentifierListItem
   ): integer;
+var
+  CurNode: TCodeTreeNode;
+  CmpNode: TCodeTreeNode;
 begin
   Result:=0;
   if Self=CompareItem then exit;
-  if (Node=CompareItem.Node) then exit;
-  if (Node=nil) or (CompareItem.Node=nil) then exit;
-  if (Node.Desc<>ctnProcedure) or (CompareItem.Node.Desc<>ctnProcedure) then
+  CurNode:=Node;
+  CmpNode:=CompareItem.Node;
+  if (CurNode=CmpNode) then exit;
+  if (CurNode=nil) or (CmpNode=nil) then exit;
+  if (CurNode.Desc<>ctnProcedure) or (CmpNode.Desc<>ctnProcedure) then
     exit;
   {DbgOut('TIdentifierListItem.CompareParamList ',GetIdentifier(Identifier),'=',GetIdentifier(CompareItem.Identifier));
   if Node<>nil then
@@ -1759,7 +1854,15 @@ begin
   if CompareItem.Node<>nil then
     DbgOut(' Other=',CompareItem.Tool.MainFilename,' ',dbgs(CompareItem.Node.StartPos));
   debugln('');}
-  Result:=SysUtils.CompareText(ParamList,CompareItem.ParamList);
+  Result:=CompareTextIgnoringSpace(ParamList,CompareItem.ParamList,false);
+end;
+
+function TIdentifierListItem.CompareParamList(
+  CompareItem: TIdentifierListSearchItem): integer;
+begin
+  if (ParamList='') and (CompareItem.ParamList='') then
+    exit(0);
+  Result:=CompareTextIgnoringSpace(ParamList,CompareItem.ParamList,false);
 end;
 
 { TIdentifierHistoryList }
@@ -1824,7 +1927,7 @@ begin
   end else begin
     // create a new history item
     NewHistItem:=TIdentHistListItem.Create;
-    NewHistItem.Identifier:=GetIdentifier(NewItem.Identifier);
+    NewHistItem.Identifier:=NewItem.Identifier;
     NewHistItem.NodeDesc:=NewItem.GetDesc;
     NewHistItem.ParamList:=NewItem.ParamList;
     AdjustIndex:=0;

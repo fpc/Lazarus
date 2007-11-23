@@ -100,7 +100,7 @@ begin
   if (Position<0) or (Position>=CodeToolBoss.IdentifierList.GetFilteredCount) then
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
-  DebugLn(['TLazDocHintProvider.ReadLazDocData Identifier=',GetIdentifier(Item.Identifier)]);
+  DebugLn(['TLazDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
   Chain:=nil;
   try
     if (Item.Node<>nil) then begin
