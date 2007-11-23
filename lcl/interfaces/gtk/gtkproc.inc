@@ -1215,51 +1215,9 @@ begin
   Result := True;
 end;
 
-{$ifdef IMGLIST_OLDSTYLE}
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; DestWidget: PGTKWidget;
-  CenterHorizontally, CenterVertically: boolean;
-  DestLeft, DestTop: integer);
-// draw icon of imagelist centered on gdkwindow
-var
-  Bitmap, MaskBitmap: TBitmap;
-  ImageRect: TRect;
-  ImageWidth: Integer;
-  ImageHeight: Integer;
-  WindowWidth, WindowHeight: integer;
-  DestDC: HDC;
-begin
-  //DebugLn('DrawImageListIconOnWidget A ',ImgList.Name,':',ImgList.ClassName,
-  //  ' Index=',Index,
-  //  ' DestWindow=[',GetWidgetDebugReport(DestWidget),']');
-  if ImgList=nil then exit;
-  if (Index<0) or (Index>=ImgList.Count) then exit;
-  if (DestWidget=nil) then exit;
-  ImgList.GetInternalImage(Index,Bitmap,MaskBitmap,ImageRect);
-  ImageWidth:=ImageRect.Right-ImageRect.Left;
-  ImageHeight:=ImageRect.Bottom-ImageRect.Top;
-  if (ImageWidth<1) or (ImageHeight<1) then exit;
-
-  WindowWidth:=DestWidget^.allocation.width;
-  WindowHeight:=DestWidget^.allocation.height;
-  if CenterHorizontally then
-    DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
-  if CenterVertically then
-    DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
-  DestDC:=GetDC(HDC(DestWidget));
-
-  //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
-  //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
-  //  ' SrcRect=',ImageRect.Left,',',ImageRect.Top,',',ImageWidth,'x',ImageHeight);
-  StretchBlt(DestDC, DestLeft,DestTop, ImageWidth, ImageHeight,
-    Bitmap.Canvas.Handle,ImageRect.Left,ImageRect.Top,ImageWidth,ImageHeight,
-    SRCCOPY);
-  ReleaseDC(HDC(DestWidget),DestDC);
-end;
-{$else}
 {$note remove when gtk native imagelist will be ready}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; DestWidget: PGTKWidget;
+  Index: integer; AEffect: TGraphicsDrawEffect; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
 // draw icon of imagelist centered on gdkwindow
@@ -1276,7 +1234,7 @@ begin
   ImageWidth:=ImgList.Width;
   ImageHeight:=ImgList.Height;
   Bitmap := TBitmap.Create;
-  ImgList.GetBitmap(Index, Bitmap);
+  ImgList.GetBitmap(Index, Bitmap, AEffect);
   if (ImageWidth<1) or (ImageHeight<1) then exit;
 
   WindowWidth:=DestWidget^.allocation.width;
@@ -1296,12 +1254,11 @@ begin
   ReleaseDC(HDC(PtrUInt(DestWidget)),DestDC);
   Bitmap.Free;
 end;
-{$endif}
 
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
 begin
-  DrawImageListIconOnWidget(ImgList,Index,DestWidget,true,true,0,0);
+  DrawImageListIconOnWidget(ImgList, Index, gdeNormal, DestWidget, true, true, 0, 0);
 end;
 
 function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
@@ -5835,12 +5792,16 @@ procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
 var
   Widget: PGtkWidget;
   Container: PgtkContainer;
-  ALeft, ATop, dx, dy, BorderWidth: gint;
+  ALeft, ATop, BorderWidth: gint;
   LCLMenuItem: TMenuItem;
-  IconImg, IconMask: PGdkPixmap;
   AWindow: PGdkWindow;
   IconWidth, IconHeight: integer;
   IconSize: TPoint;
+
+  AEffect: TGraphicsDrawEffect;
+  AImageList: TCustomImageList;
+  FreeImageList: Boolean;
+  AImageIndex: Integer;
 begin
   if (MenuItem=nil) then
     exit;
@@ -5874,35 +5835,36 @@ begin
   ALeft := (BorderWidth + gtk_widget_get_xthickness(gtk_widget_get_style(Widget)) + 2)
            +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
 
-{$Ifdef GTK2}
-  dx := Widget^.Allocation.x;
-{$else}
-  dx := 0;
-{$EndIf}
-
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
-  
-{$Ifdef GTK2}
-  dy := Widget^.Allocation.y;
-{$else}
-  dy := 0;
-{$EndIf}
 
   // draw icon
-  if (LCLMenuItem.HasBitmap) then
+  AImageList := LCLMenuItem.GetImageList;
+  if AImageList = nil then
   begin
-    GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
-    gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, IconMask);
-    gdk_gc_set_clip_origin(gtk_widget_get_style(Widget)^.Black_gc,ALeft+dx,ATop+dy);
-    gdk_draw_pixmap(AWindow,gtk_widget_get_style(Widget)^.Black_gc,
-       IconImg,0,0,ALeft+dx,ATop+dy,-1,-1);
-    gdk_gc_set_clip_mask(gtk_widget_get_style(Widget)^.Black_gc, nil);
-  end else
+    AImageList := TImageList.Create(nil);
+    AImageList.Width := LCLMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
+    AImageList.Height := LCLMenuItem.Bitmap.Height;
+    AImageIndex := AImageList.Add(LCLMenuItem.Bitmap, nil);
+    FreeImageList := True;
+  end
+  else
   begin
-    {$note reimplement}
-    DrawImageListIconOnWidget(LCLMenuItem.GetImageList, LCLMenuItem.ImageIndex,
-      Widget, false, false, ALeft, ATop);
+    FreeImageList := False;
+    AImageIndex := LCLMenuItem.ImageIndex;
   end;
+
+  if not LCLMenuItem.Enabled then
+    AEffect := gdeDisabled
+  else
+    AEffect := gdeNormal;
+
+  if AImageIndex < AImageList.Count then
+    {$note reimplement}
+    DrawImageListIconOnWidget(AImageList, AImageIndex, AEffect,
+      Widget, false, false, ALeft, ATop);
+
+  if FreeImageList then
+    AImageList.Free;
 end;
 
 {------------------------------------------------------------------------------

@@ -249,28 +249,6 @@ begin
   end;
 end;
 
-function GetSizeOfItemBitmap(AMenuItem: TMenuItem): TSize;
-var
-  AImageList: TCustomImageList;
-begin
-  if AMenuItem.HasIcon then
-  begin
-    AImageList := aMenuItem.GetImageList;
-    if AImageList <> nil then
-    begin
-      Result.cx := AImageList.Width;
-      Result.cy := AImageList.Height;
-    end
-    else
-    begin
-      Result.cx := AMenuItem.Bitmap.Width;
-      Result.cy := AMenuItem.Bitmap.Height;
-    end;
-  end
-  else
-    FillChar(Result, SizeOf(Result), 0);
-end;
-
 function MenuIconWidth(const AMenuItem: TMenuItem): integer;
 var
   SiblingMenuItem : TMenuItem;
@@ -280,7 +258,7 @@ begin
 
   if AMenuItem.IsInMenuBar then
   begin
-    Result := GetSizeOfItemBitmap(AMenuItem).cx;
+    Result := AMenuItem.GetIconSize.x;
   end
   else
   begin
@@ -289,7 +267,7 @@ begin
       SiblingMenuItem := AMenuItem.Parent.Items[i];
       if SiblingMenuItem.HasIcon then
       begin
-        RequiredWidth := GetSizeOfItemBitmap(SiblingMenuItem).cx;
+        RequiredWidth := SiblingMenuItem.GetIconSize.x;
         if RequiredWidth > Result then
           Result := RequiredWidth;
       end;
@@ -349,7 +327,7 @@ begin
   else
   begin
     if aMenuItem.hasIcon then
-      Result.cy := Max(Result.cy, GetSizeOfItemBitmap(aMenuItem).cy);
+      Result.cy := Max(Result.cy, aMenuItem.GetIconSize.y);
     Inc(Result.cy, 2);
     if Result.cy < minimumHeight then
       Result.cy := minimumHeight;

@@ -35,12 +35,8 @@ begin
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
   if TabWidget=nil then exit;
-  {$ifdef IMGLIST_OLDSTYLE}
-  DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
-  {$else}
   {$note reimplement}
   DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
-  {$endif}
 end;
 
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;

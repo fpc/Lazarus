@@ -844,15 +844,24 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.GetIconSize: TPoint;
 var
-  TheImgList: TCustomImageList;
+  AImageList: TCustomImageList;
 begin
-  Result:=Point(0,0);
-  if FBitmap<>nil then begin
-    Result:=Point(FBitmap.Width,FBitmap.Height);
-  end else if (FImageIndex>=0) then begin
-    TheImgList:=GetImageList;
-    if (TheImgList<>nil) and (FImageIndex<TheImgList.Count) then
-      Result:=Point(TheImgList.Width,TheImgList.Height);
+  FillChar(Result, SizeOf(Result), 0);
+  if HasIcon then
+  begin
+    AImageList := GetImageList;
+    if AImageList <> nil then
+    begin
+      if (FImageIndex < 0) or (FImageIndex >= AImageList.Count) then
+        exit;
+      Result.x := AImageList.Width;
+      Result.y := AImageList.Height;
+    end
+    else
+    begin
+      Result.x := Bitmap.Width;
+      Result.y := Bitmap.Height;
+    end;
   end;
 end;
 

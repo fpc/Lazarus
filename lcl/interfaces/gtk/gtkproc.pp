@@ -664,16 +664,7 @@ function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
   ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
-{$ifdef IMGLIST_OLDSTYLE}
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; DestWidget: PGTKWidget);
-procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; DestWidget: PGTKWidget;
-  CenterHorizontally, CenterVertically: boolean;
-  DestLeft, DestTop: integer);
-{$else}
 {$note TODO: Remove me}
-{$endif}
 function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 function CreateGdkMaskBitmap(AImage, AMask: HBITMAP): PGdkBitmap;
 function CreateGdkMaskBitmap(AImageMask, AMask: PGdkBitmap): PGdkBitmap;
