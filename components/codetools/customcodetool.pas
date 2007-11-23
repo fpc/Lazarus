@@ -321,6 +321,7 @@ type
     function NodeSubDescToStr(Desc, SubDesc: integer): string;
     function ConsistencyCheck: integer; virtual; // 0 = ok
     procedure WriteDebugTreeReport;
+    procedure CheckNodeTool(Node: TCodeTreeNode);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -563,6 +564,7 @@ function TCustomCodeTool.CompareNodeIdentChars(ANode: TCodeTreeNode;
   const AnUpperIdent: string): integer;
 var AnIdentLen, i, NodeSrcLen, MinLen, p: integer;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   if (ANode.StartPos<=SrcLen) and (ANode.EndPos<=SrcLen+1)
   and (ANode.StartPos>=1) then begin
     AnIdentLen:=length(AnUpperIdent);
@@ -1784,6 +1786,7 @@ end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   MoveCursorToCleanPos(ANode.StartPos);
   CurNode:=ANode;
 end;
@@ -1932,6 +1935,7 @@ end;
 
 procedure TCustomCodeTool.IncreaseTreeChangeStep(NodesDeleting: boolean);
 begin
+  //DebugLn(['TCustomCodeTool.IncreaseTreeChangeStep ',DbgSName(Self),' NodesDeleting=',NodesDeleting]);
   if FTreeChangeStep=High(integer) then
     FTreeChangeStep:=Low(integer)
   else
@@ -2045,6 +2049,21 @@ begin
   WriteSubTree(Tree.Root,'  ');
 end;
 
+procedure TCustomCodeTool.CheckNodeTool(Node: TCodeTreeNode);
+
+  procedure RaiseForeignNode;
+  begin
+    RaiseCatchableException('TCustomCodeTool.CheckNodeTool '+DbgSName(Self)+' '+Node.DescAsString);
+  end;
+
+begin
+  if Node=nil then exit;
+  while Node.Parent<>nil do Node:=Node.Parent;
+  while Node.PriorBrother<>nil do Node:=Node.PriorBrother;
+  if (Tree=nil) or (Tree.Root<>Node) then
+    RaiseForeignNode;
+end;
+
 function TCustomCodeTool.FindDeepestNodeAtPos(P: integer;
   ExceptionOnNotFound: boolean): TCodeTreeNode;
 begin
@@ -2064,6 +2083,7 @@ var
   ChildNode: TCodeTreeNode;
   Brother: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   Result:=nil;
   while StartNode<>nil do begin
 //DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),

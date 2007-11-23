@@ -41,7 +41,7 @@ type
   TDeclarationInheritanceCacheItem = class
   public
     CodePos: TCodePosition;
-    ListOfPFindContext: TFPList;
+    ListOfPCodeXYPosition: TFPList;
     destructor Destroy; override;
   end;
 
@@ -56,7 +56,7 @@ type
   end;
   
   TOnFindDeclarations = function(Code: TCodeBuffer; X,Y: integer;
-          out ListOfPFindContext: TFPList;
+          out ListOfPCodeXYPosition: TFPList;
           Flags: TFindDeclarationListFlags): boolean of object;
 
   TDeclarationInheritanceCache = class
@@ -73,7 +73,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function FindDeclarations(Code: TCodeBuffer; X,Y: integer;
-          out ListOfPFindContext: TFPList;
+          out ListOfPCodeXYPosition: TFPList;
           out CacheWasUsed: boolean): boolean;
     property OnFindDeclarations: TOnFindDeclarations read FOnFindDeclarations
                                                      write FOnFindDeclarations;
@@ -165,7 +165,7 @@ begin
 end;
 
 function TDeclarationInheritanceCache.FindDeclarations(Code: TCodeBuffer; X,
-  Y: integer; out ListOfPFindContext: TFPList; out CacheWasUsed: boolean
+  Y: integer; out ListOfPCodeXYPosition: TFPList; out CacheWasUsed: boolean
   ): boolean;
 var
   CodePos: TCodePosition;
@@ -173,7 +173,7 @@ var
   Item: TDeclarationInheritanceCacheItem;
 begin
   Result:=false;
-  ListOfPFindContext:=nil;
+  ListOfPCodeXYPosition:=nil;
   CacheWasUsed:=true;
   if Code=nil then exit;
   CodePos.Code:=Code;
@@ -192,8 +192,8 @@ begin
     AVLNode:=FCurrent.FindKey(@CodePos,@ComparePCodePosWithDeclInhCacheItem);
     if AVLNode<>nil then begin
       Item:=TDeclarationInheritanceCacheItem(AVLNode.Data);
-      ListOfPFindContext:=Item.ListOfPFindContext;
-      Result:=ListOfPFindContext<>nil;
+      ListOfPCodeXYPosition:=Item.ListOfPCodeXYPosition;
+      Result:=ListOfPCodeXYPosition<>nil;
       exit;
     end;
   end;
@@ -203,28 +203,35 @@ begin
   DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
 
   // ask the codetools
-  if OnFindDeclarations(Code,X,Y,ListOfPFindContext,[])
-  and (ListOfPFindContext<>nil)
-  and (ListOfPFindContext.Count>0) then begin
+  if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
+  and (ListOfPCodeXYPosition<>nil)
+  and (ListOfPCodeXYPosition.Count>0) then begin
     Result:=true;
   end else begin
-    FreeAndNil(ListOfPFindContext);
+    FreeAndNil(ListOfPCodeXYPosition);
     Result:=false;
   end;
 
   // save to cache
   Item:=TDeclarationInheritanceCacheItem.Create;
   Item.CodePos:=CodePos;
-  Item.ListOfPFindContext:=ListOfPFindContext;
+  Item.ListOfPCodeXYPosition:=ListOfPCodeXYPosition;
   CheckCurrentIsValid;
   if FCurrent=nil then begin
     FCurrent:=TDeclarationInheritanceCacheTree.CreateDeclInhTree;
     OnGetNodesDeletedStep(FCurrent.CodeToolsChangeStep);
   end;
   FCurrent.Add(Item);
+  
+  if ListOfPCodeXYPosition<>nil then
+    DebugLn(['TDeclarationInheritanceCache.FindDeclarations ',ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition)]);
 
   // clean up cache a bit
   CleanCache(5);
+  
+  // consistency check
+  AVLNode:=FCurrent.FindKey(@CodePos,@ComparePCodePosWithDeclInhCacheItem);
+  if Item<>TDeclarationInheritanceCacheItem(AVLNode.Data) then raise Exception.Create('');
 end;
 
 constructor TDeclarationInheritanceCacheTree.CreateDeclInhTree;
@@ -242,8 +249,8 @@ end;
 
 destructor TDeclarationInheritanceCacheItem.Destroy;
 begin
-  FreeListOfPFindContext(ListOfPFindContext);
-  ListOfPFindContext:=nil;
+  FreeListOfPFindContext(ListOfPCodeXYPosition);
+  ListOfPCodeXYPosition:=nil;
   inherited Destroy;
 end;
 

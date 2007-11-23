@@ -145,6 +145,8 @@ type
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function ExtractDefinitionNodeType(DefinitionNode: TCodeTreeNode): string;
     function ExtractDefinitionName(DefinitionNode: TCodeTreeNode): string;
+    function PositionInDefinitionName(DefinitionNode: TCodeTreeNode;
+                                      CleanPos: integer): boolean;
     function MoveCursorToParameterSpecifier(DefinitionNode: TCodeTreeNode
                                             ): boolean;
 
@@ -1500,6 +1502,22 @@ begin
   end else begin
     Result:=GetIdentifier(@Src[DefinitionNode.StartPos]);
   end;
+end;
+
+function TPascalReaderTool.PositionInDefinitionName(
+  DefinitionNode: TCodeTreeNode; CleanPos: integer): boolean;
+var
+  StartPos: LongInt;
+begin
+  if DefinitionNode.Desc=ctnGenericType then begin
+    if DefinitionNode.FirstChild<>nil then
+      StartPos:=DefinitionNode.FirstChild.StartPos
+    else
+      StartPos:=0;
+  end else begin
+    StartPos:=DefinitionNode.StartPos;
+  end;
+  Result:=(CleanPos>=StartPos) and (CleanPos<StartPos+GetIdentLen(@Src[StartPos]));
 end;
 
 function TPascalReaderTool.MoveCursorToParameterSpecifier(

@@ -954,6 +954,7 @@ begin
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
+    ANode.Clear;// clear the node, so that dangling pointers can be spotted early
     ANode.Free;
     {$IFDEF DebugCTMemManager}
     inc(FFreedCount);

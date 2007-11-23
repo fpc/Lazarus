@@ -732,9 +732,6 @@ type
     function FindDeclarationAndOverload(const CursorPos: TCodeXYPosition;
       out ListOfPCodeXYPosition: TFPList;
       Flags: TFindDeclarationListFlags): boolean;
-    function FindDeclarationNodeAndOverload(const CursorPos: TCodeXYPosition;
-      out ListOfPFindContext: TFPList;
-      Flags: TFindDeclarationListFlags): boolean;
     function FindClassAndAncestors(ClassNode: TCodeTreeNode;
       out ListOfPFindContext: TFPList): boolean;
     function FindContextClassAndAncestors(const CursorPos: TCodeXYPosition;
@@ -1679,6 +1676,7 @@ begin
   {$IFDEF ShowTriedContexts}
   DebugLn('TFindDeclarationTool.FindDeclarationInUsesSection A');
   {$ENDIF}
+  {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   // reparse uses section
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom;
@@ -1966,6 +1964,7 @@ var
   FindContext: TFindContext;
   Params: TFindDeclarationParams;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   Result:=false;
   if (ANode=nil) then exit;
   ActivateGlobalWriteLock;
@@ -2065,6 +2064,7 @@ var
   Identifier: PChar;
   Node: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ContextNode);{$ENDIF}
   // find declaration of identifier
   Identifier:=@Src[IdentAtom.StartPos];
   //DebugLn(['TFindDeclarationTool.IdentifierIsDefined ',GetIdentifier(Identifier),' ',CompareIdentifiers(Identifier,'Result'),' ',]);
@@ -2932,6 +2932,7 @@ var
   end;
 
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result.Node:=Node;
   Result.Tool:=Self;
   Exclude(Params.Flags,fdfTopLvlResolving);
@@ -3344,7 +3345,10 @@ begin
     NewTool:=Self;
     NewNode:=FindDeepestExpandedNodeAtPos(CleanPos,true);
     NewPos:=CursorPos;
-    AddPos;
+    if (NewNode.Desc in AllIdentifierDefinitions)
+    and (PositionInDefinitionName(NewNode,CleanPos)) then begin
+      AddPos;
+    end;
 
     CurCursorPos:=CursorPos;
     CurTool:=Self;
@@ -3377,90 +3381,6 @@ begin
   end;
 end;
 
-function TFindDeclarationTool.FindDeclarationNodeAndOverload(
-  const CursorPos: TCodeXYPosition; out ListOfPFindContext: TFPList;
-  Flags: TFindDeclarationListFlags): boolean;
-var
-  NewContext: TFindContext;
-  OldPositions: TFPList;
-  NodeList: TFPList;
-
-  procedure AddPos;
-  begin
-    AddFindContext(OldPositions,NewContext);
-    if (NodeList.IndexOf(NewContext.Node)>=0) then
-      exit;
-    NodeList.Add(NewContext.Node);
-
-    if (fdlfWithoutEmptyProperties in Flags)
-    and (NewContext.Node.Desc=ctnProperty)
-    and (NewContext.Tool.PropNodeIsTypeLess(NewContext.Node)) then
-      exit;
-    if (fdlfWithoutForwards in Flags) then begin
-      if (NewContext.Node.Desc in [ctnTypeDefinition,ctnGenericType])
-      and NewContext.Tool.NodeIsForwardDeclaration(NewContext.Node)
-      then
-        exit;
-      if (NewContext.Node.Desc=ctnProcedure)
-      and ((NewContext.Node.SubDesc and ctnsForwardDeclaration)>0) then
-        exit;
-    end;
-    AddFindContext(ListOfPFindContext,NewContext);
-  end;
-
-var
-  CurCursorPos: TCodeXYPosition;
-  CurTool: TFindDeclarationTool;
-  NewPos: TCodeXYPosition;
-  NewTopLine: integer;
-  CleanPos: integer;
-begin
-  Result:=true;
-  ListOfPFindContext:=nil;
-  NewContext:=CleanFindContext;
-  OldPositions:=nil;
-  NodeList:=nil;
-
-  ActivateGlobalWriteLock;
-  try
-    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanPos,[]);
-
-    NodeList:=TFPList.Create;
-    NewContext.Tool:=Self;
-    NewContext.Node:=FindDeepestExpandedNodeAtPos(CleanPos,true);
-    AddPos;
-
-    CurCursorPos:=CursorPos;
-    CurTool:=Self;
-    try
-      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags
-        +[fsfSearchSourceName],
-        NewContext.Tool,NewContext.Node,NewPos,NewTopLine) do
-      begin
-        if IndexOfFindContext(OldPositions,@NewContext)>=0 then break;
-        AddPos;
-        CurCursorPos:=NewPos;
-        CurTool:=NewContext.Tool;
-        debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
-          ' Self="',MainFilename,'" ');
-        if CurCursorPos.Code<>nil then
-          debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
-        if CurTool<>nil then
-          debugln('  CurTool=',CurTool.MainFilename);
-        if (CurTool=nil) then exit;
-      end;
-    except
-      // ignore normal errors
-      on E: ECodeToolError do ;
-      on E: ELinkScannerError do ;
-    end;
-  finally
-    FreeListOfPFindContext(OldPositions);
-    NodeList.Free;
-    DeactivateGlobalWriteLock;
-  end;
-end;
-
 function TFindDeclarationTool.FindClassAndAncestors(ClassNode: TCodeTreeNode;
   out ListOfPFindContext: TFPList): boolean;
 var
@@ -3468,6 +3388,7 @@ var
   CurTool: TFindDeclarationTool;
   Params: TFindDeclarationParams;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   Result:=true;
   ListOfPFindContext:=nil;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (ClassNode.Parent=nil)
@@ -3921,6 +3842,7 @@ function TFindDeclarationTool.CleanPosIsDeclarationIdentifier(CleanPos: integer;
   end;
 
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=false;
   if Node=nil then exit;
   case Node.Desc of
@@ -3970,6 +3892,7 @@ function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
 var
   JumpPos: LongInt;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ANode);{$ENDIF}
   Result:=false;
   if (ANode=nil) or (ANode.StartPos<1) then exit;
   JumpPos:=ANode.StartPos;
@@ -4050,6 +3973,7 @@ function TFindDeclarationTool.NodeIsForwardDeclaration(Node: TCodeTreeNode
 var
   TypeNode: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=false;
   if (Node=nil) or (not (Node.Desc in [ctnTypeDefinition,ctnGenericType])) then
     exit;
@@ -4071,6 +3995,7 @@ function TFindDeclarationTool.FindIdentifierInProcContext(
 var
   NameAtom: TAtomPosition;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ProcContextNode);{$ENDIF}
   Result:=ifrProceedSearch;
   // if proc is a method body, search in class
   // -> find class name
@@ -4107,6 +4032,7 @@ var
   OldInput: TFindDeclarationInput;
   ClassContext: TFindContext;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ProcContextNode);{$ENDIF}
   Result:=false;
   // if proc is a method, search in class
   // -> find class name
@@ -4184,6 +4110,7 @@ var
   ClassContext: TFindContext;
   CurClassNode: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ProcNode);{$ENDIF}
   {$IFDEF ShowTriedContexts}
   DebugLn('[TFindDeclarationTool.FindClassOfMethod] A ');
   {$ENDIF}
@@ -4254,6 +4181,7 @@ var AncestorAtom: TAtomPosition;
   SearchBaseClass: boolean;
   AncestorContext: TFindContext;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
   if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
   then
     RaiseException('[TFindDeclarationTool.FindAncestorOfClass] '
@@ -4378,6 +4306,7 @@ begin
   ' WithStart=',StringToPascalConst(copy(Src,WithVarNode.StartPos,15))
   );
   {$ENDIF}
+  {$IFDEF CheckNodeTool}CheckNodeTool(WithVarNode);{$ENDIF}
   Result:=false;
   // find the base type of the with variable
   // move cursor to start of with-variable
@@ -4646,6 +4575,7 @@ var
   NewCodeTool: TFindDeclarationTool;
   OldFlags: TFindDeclarationFlags;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(UsesNode);{$ENDIF}
   Result:=false;
   MoveCursorToUsesEnd(UsesNode);
   repeat
@@ -4841,6 +4771,7 @@ end;
 function TFindDeclarationTool.CompareNodeIdentifier(Node: TCodeTreeNode;
   Params: TFindDeclarationParams): boolean;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=false;
   if Node=nil then exit;
   if Node.Desc in AllSourceTypes then begin
@@ -5900,6 +5831,7 @@ var
   BaseContext: TFindContext;
   OldInput: TFindDeclarationInput;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
   ' Node=',Node.DescAsString);
@@ -6311,6 +6243,7 @@ var
   ParamCompatibility: TTypeCompatibility;
   CompatibilityListCount: LongInt;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(FirstTargetParameterNode);{$ENDIF}
   // quick check: parameter count
   ParamNode:=FirstTargetParameterNode;
   MinParamCnt:=0;
@@ -6404,8 +6337,9 @@ var
   ParamCompatibility: TTypeCompatibility;
   SourceExprType: TExpressionType;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(FirstSourceParameterNode);{$ENDIF}
+  
   // quick check: parameter count
-
   MinParamCnt:=0;
   ParamNode:=FirstSourceParameterNode;
   while (ParamNode<>nil) do begin
@@ -6477,6 +6411,7 @@ var
   OldFlags: TFindDeclarationFlags;
   i: integer;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(FirstTargetParameterNode);{$ENDIF}
   // quick check: parameter count
   CurParamNode1:=FirstTargetParameterNode;
   CurParamNode2:=FirstSourceParameterNode;
@@ -6518,6 +6453,7 @@ end;
 function TFindDeclarationTool.GetParameterNode(Node: TCodeTreeNode
   ): TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=Node;
   if Result<>nil then begin
     if (Result.Desc=ctnProperty) then
@@ -6776,6 +6712,7 @@ function TFindDeclarationTool.DoOnIdentifierFound(
 // this internal function is called, whenever an identifier is found
 var IsTopLvlIdent: boolean;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(FoundNode);{$ENDIF}
   IsTopLvlIdent:=(fdfTopLvlResolving in Params.Flags);
   if Assigned(Params.OnIdentifierFound) then
     Result:=Params.OnIdentifierFound(Params,CreateFindContext(Self,FoundNode))
@@ -6793,6 +6730,7 @@ var TargetContext: TFindContext;
   OldInput: TFindDeclarationInput;
   NodeExprType: TExpressionType;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(TargetNode);{$ENDIF}
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsCompatible] A Node=',TargetNode.DescAsString,
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
@@ -6991,6 +6929,7 @@ var
   ExprType: TExpressionType;
   ParamNode: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(ProcNode);{$ENDIF}
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CreateParamExprListFromProcNode] ',
   '"',copy(Src,ProcNode.StartPos,40),'" Context=',ProcNode.DescAsString);
@@ -7311,6 +7250,7 @@ function TFindDeclarationTool.CheckParameterSyntax(CursorNode: TCodeTreeNode;
   end;
 
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:=false;
   //DebugLn('TFindDeclarationTool.CheckParameterSyntax START');
 
@@ -7338,6 +7278,7 @@ var
   ParameterNode: TCodeTreeNode;
   i: Integer;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=nil;
   if Node=nil then exit;
   if Node.Desc in [ctnProcedure] then begin
@@ -7622,6 +7563,7 @@ end;
 function TFindDeclarationTool.GetNodeCache(Node: TCodeTreeNode;
   CreateIfNotExists: boolean): TCodeTreeNodeCache;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   while (Node<>nil) and (not (Node.Desc in AllNodeCacheDescs)) do
     Node:=Node.Parent;
   if Node<>nil then begin
@@ -7668,6 +7610,7 @@ var Node: TCodeTreeNode;
   
   {$ENDIF}
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   if StartNode=nil then exit;
   if Params.NewNode<>nil then begin
     // identifier found
@@ -7795,6 +7738,7 @@ end;
 function TFindDeclarationTool.CreateNewNodeCache(
   Node: TCodeTreeNode): TCodeTreeNodeCache;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=NodeCacheMemManager.NewNodeCache(Node);
   Result.Next:=FFirstNodeCache;
   FFirstNodeCache:=Result;
@@ -7803,6 +7747,7 @@ end;
 function TFindDeclarationTool.CreateNewBaseTypeCache(Node: TCodeTreeNode
   ): TBaseTypeCache;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   Result:=BaseTypeCacheMemManager.NewBaseTypeCache(Node);
   Result.Next:=FFirstBaseTypeCache;
   FFirstBaseTypeCache:=Result;
@@ -7874,6 +7819,7 @@ var
   FindContext: TFindContext;
   ANode: TCodeTreeNode;
 begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
   Params.ContextNode:=CursorNode;
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
@@ -8153,6 +8099,7 @@ begin
   ClearResult(true);
   NewCodeTool:=ANewCodeTool;
   NewNode:=ANewNode;
+  {$IFDEF CheckNodeTool}if NewCodeTool<>nil then NewCodeTool.CheckNodeTool(NewNode);{$ENDIF}
 end;
 
 procedure TFindDeclarationParams.SetResult(ANewCodeTool: TFindDeclarationTool;
@@ -8162,6 +8109,7 @@ begin
   NewCodeTool:=ANewCodeTool;
   NewNode:=ANewNode;
   NewCleanPos:=ANewCleanPos;
+  {$IFDEF CheckNodeTool}if NewCodeTool<>nil then NewCodeTool.CheckNodeTool(NewNode);{$ENDIF}
 end;
 
 procedure TFindDeclarationParams.ConvertResultCleanPosToCaretPos;

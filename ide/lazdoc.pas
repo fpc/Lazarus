@@ -39,6 +39,16 @@ uses
   CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts;
 
 type
+  TFPDocItem = (
+    fpdiShort,
+    fpdiDescription,
+    fpdiErrors,
+    fpdiSeeAlso,
+    fpdiExample
+    );
+
+  TFPDocNode = array [TFPDocItem] of String;
+
   { TLazFPDocFile }
 
   TLazFPDocFile = class
@@ -51,6 +61,8 @@ type
     function GetModuleNode: TDOMNode;
     function GetFirstElement: TDOMNode;
     function GetElementWithName(const ElementName: string): TDOMNode;
+    function GetFirstChildValue(Node: TDOMNode): String;
+    function GetValuesFromNode(Node: TDOMNode): TFPDocNode;
   end;
   
   { TLDSourceToFPDocFile - cache item for source to FPDoc file mapping }
@@ -142,11 +154,14 @@ type
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
                           out CacheWasUsed: boolean): TLazDocParseResult;
     function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
-                                 out ListOfPFindContext: TFPList;
+                                 out ListOfPCodeXYPosition: TFPList;
                                  out CacheWasUsed: boolean): TLazDocParseResult;
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TLazDocElementChain;
                              out CacheWasUsed: boolean): TLazDocParseResult;
+    function GetHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
+                     out Hint: string;
+                     out CacheWasUsed: boolean): TLazDocParseResult;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -243,6 +258,45 @@ begin
   end;
 end;
 
+function TLazFPDocFile.GetFirstChildValue(Node: TDOMNode): String;
+begin
+  if Assigned(Node.FirstChild) then
+    Result := Node.FirstChild.NodeValue
+  else
+    Result := '';
+end;
+
+function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocNode;
+var
+  S: String;
+begin
+  Node := Node.FirstChild;
+  while Assigned(Node) do
+  begin
+    if (Node.NodeType = ELEMENT_NODE) then
+    begin
+      S := Node.NodeName;
+
+      if S = 'short' then
+        Result[fpdiShort] := GetFirstChildValue(Node);
+
+      if S = 'descr' then
+        Result[fpdiDescription] := GetFirstChildValue(Node);
+
+      if S = 'errors' then
+        Result[fpdiErrors] := GetFirstChildValue(Node);
+
+      if S = 'seealso' then
+        Result[fpdiSeeAlso] := GetFirstChildValue(Node);
+
+      if S = 'example' then begin
+        Result[fpdiExample] := Node.Attributes.GetNamedItem('file').NodeValue;
+      end;
+    end;
+    Node := Node.NextSibling;
+  end;
+end;
+
 procedure TLazDocManager.AddHandler(HandlerType: TLazDocManagerHandler;
   const AMethod: TMethod; AsLast: boolean);
 begin
@@ -272,7 +326,7 @@ begin
   FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
   FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
   FDeclarationCache:=TDeclarationInheritanceCache.Create(
-                                  @CodeToolBoss.FindDeclarationNodeAndOverload,
+                                  @CodeToolBoss.FindDeclarationAndOverload,
                                   @CodeToolBoss.GetCodeTreeNodesDeletedStep);
 end;
 
@@ -543,10 +597,10 @@ begin
 end;
 
 function TLazDocManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
-  out ListOfPFindContext: TFPList; out CacheWasUsed: boolean
+  out ListOfPCodeXYPosition: TFPList; out CacheWasUsed: boolean
   ): TLazDocParseResult;
 begin
-  if FDeclarationCache.FindDeclarations(Code,X,Y,ListOfPFindContext,
+  if FDeclarationCache.FindDeclarations(Code,X,Y,ListOfPCodeXYPosition,
     CacheWasUsed)
   then
     Result:=ldprSuccess
@@ -558,36 +612,75 @@ function TLazDocManager.GetElementChain(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out Chain: TLazDocElementChain; out CacheWasUsed: boolean
   ): TLazDocParseResult;
 var
-  ListOfPFindContext: TFPList;
+  ListOfPCodeXYPosition: TFPList;
   i: Integer;
-  CodeContext: PFindContext;
+  CodePos: PCodeXYPosition;
+  CurTool: TCodeTool;
+  CleanPos: integer;
   LDElement: TLazDocElement;
   SrcFilename: String;
   FPDocFilename: String;
+  Node: TCodeTreeNode;
 begin
   Chain:=nil;
-  ListOfPFindContext:=nil;
+  ListOfPCodeXYPosition:=nil;
   try
     DebugLn(['TLazDocManager.GetElementChain GetDeclarationChain...']);
     // get the declaration chain
-    Result:=GetDeclarationChain(Code,X,Y,ListOfPFindContext,CacheWasUsed);
+    Result:=GetDeclarationChain(Code,X,Y,ListOfPCodeXYPosition,CacheWasUsed);
     if Result<>ldprSuccess then exit;
     if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
     
-    DebugLn(['TLazDocManager.GetElementChain init the element chain: ListOfPFindContext.Count=',ListOfPFindContext.Count,' ...']);
+    DebugLn(['TLazDocManager.GetElementChain init the element chain: ListOfPCodeXYPosition.Count=',ListOfPCodeXYPosition.Count,' ...']);
     // init the element chain
     Result:=ldprParsing;
     Chain:=TLazDocElementChain.Create;
     Chain.CodePos.Code:=Code;
     Code.LineColToPosition(Y,X,Chain.CodePos.P);
     // fill the element chain
-    for i:=0 to ListOfPFindContext.Count-1 do begin
-      LDElement:=Chain.Add;
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
       // get source position of declaration
-      CodeContext:=PFindContext(ListOfPFindContext[i]);
-      LDElement.CodeContext:=CodeContext^;
-      DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
+      CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+      DebugLn(['TLazDocManager.GetElementChain i=',i,' X=',CodePos^.X,' Y=',CodePos^.Y]);
+      if (CodePos=nil) or (CodePos^.Code=nil) or (CodePos^.X<1) or (CodePos^.Y<1)
+      then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' invalid CodePos']);
+        continue;
+      end;
+
+      // build CodeTree and find node
+      if not CodeToolBoss.Explore(CodePos^.Code,CurTool,false,true) then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' explore failed']);
+        continue;
+      end;
+      if CurTool.CaretToCleanPos(CodePos^,CleanPos)<>0 then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' invalid CodePos']);
+        continue;
+      end;
       
+      Node:=CurTool.FindDeepestNodeAtPos(CleanPos,false);
+      if Node=nil then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' node not found']);
+        continue;
+      end;
+
+      // use only definition nodes
+      if not (Node.Desc in (AllIdentifierDefinitions+[ctnProperty,ctnProcedure]))
+      then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' ignoring node ',Node.DescAsString]);
+        continue;
+      end;
+      if (CurTool.NodeIsForwardDeclaration(Node)) then begin
+        DebugLn(['TLazDocManager.GetElementChain i=',i,' ignoring forward']);
+        continue;
+      end;
+
+      // add element
+      LDElement:=Chain.Add;
+      LDElement.CodeContext.Tool:=CurTool;
+      LDElement.CodeContext.Node:=Node;
+      DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
+
       // find corresponding FPDoc file
       SrcFilename:=LDElement.CodeContext.Tool.MainFilename;
       FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
@@ -619,9 +712,64 @@ begin
 
     Result:=ldprSuccess;
   finally
-    FreeListOfPFindContext(ListOfPFindContext);
+    FreeListOfPFindContext(ListOfPCodeXYPosition);
     if Result<>ldprSuccess then
       FreeAndNil(Chain);
+  end;
+end;
+
+function TLazDocManager.GetHint(Code: TCodeBuffer; X, Y: integer;
+  Complete: boolean; out Hint: string; out CacheWasUsed: boolean
+  ): TLazDocParseResult;
+  
+  function EndNow(var LastResult: TLazDocParseResult): boolean;
+  begin
+    if LastResult<>ldprSuccess then begin
+      Result:=true;
+      if Hint<>'' then
+        LastResult:=ldprSuccess
+      else
+        LastResult:=ldprFailed;
+      exit;
+    end;
+    if (not CacheWasUsed) and (not Complete) then begin
+      Result:=true;
+      LastResult:=ldprParsing;
+    end;
+    Result:=false;
+  end;
+  
+var
+  Chain: TLazDocElementChain;
+  i: Integer;
+  Item: TLazDocElement;
+  NodeValues: TFPDocNode;
+begin
+  DebugLn(['TLazDocManager.GetHint ',Code.Filename,' ',X,',',Y]);
+  Hint:=CodeToolBoss.FindSmartHint(Code,X,Y);
+
+  CacheWasUsed:=true;
+  Chain:=nil;
+  try
+    DebugLn(['TLazDocManager.GetHint GetElementChain...']);
+    Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
+    if EndNow(Result) then exit;
+
+    if Chain<>nil then begin
+      for i:=0 to Chain.Count-1 do begin
+        Item:=Chain[i];
+        DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
+        if Item.ElementNode=nil then continue;
+        NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
+        if NodeValues[fpdiShort]<>'' then begin
+          Hint:=Hint+#13#13+Item.ElementName+#13
+                +NodeValues[fpdiShort];
+        end;
+      end;
+    end;
+    Result:=ldprFailed;
+  finally
+    Chain.Free;
   end;
 end;
 

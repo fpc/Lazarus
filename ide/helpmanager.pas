@@ -33,13 +33,17 @@ unit HelpManager;
 interface
 
 uses
+  // FCL+LCL
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   ExtCtrls, LResources, FileUtil,
+  // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
+  // IDEIntf
   PropEdits, ObjectInspector, FormEditingIntf, ProjectIntf,
   LazHelpIntf, LazHelpHTML, HelpFPDoc, MacroIntf, IDEWindowIntf, IDEMsgIntf,
   LazIDEIntf, HelpIntfs, IDEHelpIntf,
+  // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, LazDoc,
@@ -880,13 +884,21 @@ function THelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
   const CodePos: TPoint; out Hint: string): TShowHelpResult;
 var
   Code: TCodeBuffer;
+  {$IFDEF EnableLazDocHint}
+  CacheWasUsed: boolean;
+  {$ENDIF}
 begin
   Hint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit;
+  {$IFDEF EnableLazDocHint}
+  if LazDocBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=ldprSuccess
+  then
+    exit(shrSuccess);
+  {$ENDIF}
   Hint:=CodeToolBoss.FindSmartHint(Code,CodePos.X,CodePos.Y);
   CodeToolBoss.Abortable:=false;
-
+  Result:=shrSuccess;
 end;
 
 function THelpManager.ConvertSourcePosToPascalHelpContext(

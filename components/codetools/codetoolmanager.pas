@@ -366,9 +366,6 @@ type
     function FindDeclarationAndOverload(Code: TCodeBuffer; X,Y: integer;
           out ListOfPCodeXYPosition: TFPList;
           Flags: TFindDeclarationListFlags): boolean;
-    function FindDeclarationNodeAndOverload(Code: TCodeBuffer; X,Y: integer;
-          out ListOfPFindContext: TFPList;
-          Flags: TFindDeclarationListFlags): boolean;
     function FindMainDeclaration(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
@@ -1780,34 +1777,6 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclarationAndOverload END ');
-  {$ENDIF}
-end;
-
-function TCodeToolManager.FindDeclarationNodeAndOverload(Code: TCodeBuffer; X,
-  Y: integer; out ListOfPFindContext: TFPList; Flags: TFindDeclarationListFlags
-  ): boolean;
-var
-  CursorPos: TCodeXYPosition;
-begin
-  Result:=false;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationNodeAndOverload A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
-  {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=X;
-  CursorPos.Y:=Y;
-  CursorPos.Code:=Code;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationNodeAndOverload B ',dbgs(FCurCodeTool.Scanner<>nil));
-  {$ENDIF}
-  try
-    Result:=FCurCodeTool.FindDeclarationNodeAndOverload(CursorPos,
-                                                        ListOfPFindContext,Flags);
-  except
-    on e: Exception do Result:=HandleException(e);
-  end;
-  {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclarationNodeAndOverload END ');
   {$ENDIF}
 end;
 

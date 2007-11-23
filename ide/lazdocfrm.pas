@@ -53,16 +53,6 @@ uses
   IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, LazDoc;
 
 type
-  TFPDocItem = (
-    fpdiShort,
-    fpdiDescription,
-    fpdiErrors,
-    fpdiSeeAlso,
-    fpdiExample
-    );
-
-  TFPDocNode = array [TFPDocItem] of String;
-  
   TLazDocFormFlag = (
     ldffCaptionNeedsUpdate,
     ldffInheritedNeedsUpdate,
