@@ -34,6 +34,7 @@ interface
 uses Classes, Forms, LCLProc, Controls, LMessages, LCLType;
 
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
+function SendSimpleMessage(const Target: TControl; Msg: Cardinal): PtrInt;
 
 function LCLSendActivateMsg(const Target: TControl; Active: Boolean; Minimized: Boolean; ActiveWindow: HWND = 0): PtrInt;
 function LCLSendSetFocusMsg(const Target: TControl): PtrInt;
@@ -112,6 +113,18 @@ begin
   Result := TLMessage(AMessage).Result;
 end;
 
+{******************************************************************************
+ *                                                                            *
+ *  SendSimpleMessage                                                         *
+ *                                                                            *
+ *  Returns     : 0 to accept the message, non-zero to reject the message     *
+ *                                                                            *
+ *  Params                                                                    *
+ *                                                                            *
+ *  Target      : The Control that will recieve the simple message            *
+ *  Msg         : Message type constant                                       *
+ *                                                                            *
+ ******************************************************************************}
 function SendSimpleMessage(const Target: TControl; Msg: Cardinal): PtrInt;
 var
   Mess : TLMessage;
