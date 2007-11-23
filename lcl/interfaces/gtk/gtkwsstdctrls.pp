@@ -1644,7 +1644,7 @@ var
   p          : pointer;          // ptr to the newly created GtkWidget
 begin
   P := gtk_frame_new (AParams.Caption);
-  TempWidget := CreateFixedClientWidget{$IFDEF GtkNoWindowFixed}(false){$ENDIF};
+  TempWidget := CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
   gtk_container_add(GTK_CONTAINER(p), TempWidget);
   gtk_widget_show(TempWidget);
   SetFixedWidget(p, TempWidget);

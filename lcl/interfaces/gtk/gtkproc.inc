@@ -7861,7 +7861,7 @@ var
     Result:=gtk_notebook_new;
     NoteBookWidget := PGtkNoteBook(Result);
     //NoteBookPageWidget := gtk_hbox_new(false, 0);
-    NoteBookPageClientAreaWidget := CreateFixedClientWidget{$IFDEF GtkNoWindowFixed}(false){$ENDIF};
+    NoteBookPageClientAreaWidget := CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
     gtk_widget_show(NoteBookPageClientAreaWidget);
     //gtk_container_add(GTK_CONTAINER(NoteBookPageWidget),
     //                  NoteBookPageClientAreaWidget);
@@ -8064,7 +8064,7 @@ begin
       If CompareText(WName,LazGtkStyleNames[lgsGroupBox])=0 then begin
         lgs:=lgsGroupBox;
         StyleObject^.Widget := gtk_frame_new('GroupBox');
-        WindowFixedWidget:=CreateFixedClientWidget{$IFDEF GtkNoWindowFixed}(false){$ENDIF};
+        WindowFixedWidget:=CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
         gtk_widget_show(WindowFixedWidget);
         gtk_container_add(PGtkContainer(StyleObject^.Widget), WindowFixedWidget);
         gtk_object_set_data(PGtkObject(StyleObject^.Widget),'fixedwidget',WindowFixedWidget);

@@ -4628,18 +4628,17 @@ var
   TempWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
 begin
-  {$ifdef gtk1}
-    {$undef GtkNoWindowFixed}
-  {$endif}
-
-  {$ifdef GtkNoWindowFixed}
+  {$if defined(gtk1) or defined(GtkFixedWithWindow)}
+  // Fixed + GdkWindow
+  Result := gtk_hbox_new(false, 0);
+  TempWidget := CreateFixedClientWidget;
+  {$else}
+  // Fixed w/o GdkWindow
   Result := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
   TempWidget := CreateFixedClientWidget(False);
-  {$else}
-  Result := gtk_hbox_new(false, 0);
-  TempWidget := CreateFixedClientWidget;
-  {$endif}
+  {$ifend}
+  
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
   if NotOnParentsClientArea then
@@ -5272,7 +5271,7 @@ begin
     // -> add a dummy page
     DummyWidget := gtk_hbox_new(false, 0);
     {$IFDEF Gtk}
-    AWidget := CreateFixedClientWidget{$IFDEF GtkNoWindowFixed}(false){$ENDIF};
+    AWidget := CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
     gtk_widget_show(AWidget);
     //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
     gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);
