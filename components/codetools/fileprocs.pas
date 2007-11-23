@@ -54,7 +54,7 @@ const
   {$ifdef MSWindows}
   {$define CaseInsensitiveFilenames}
   {$endif}
-
+  
 type
   TCTSearchFileCase = (
     ctsfcDefault,  // e.g. case insensitive on windows

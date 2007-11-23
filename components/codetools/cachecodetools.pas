@@ -64,10 +64,12 @@ type
     FCurrent: TDeclarationInheritanceCacheTree;
     FOldTrees: TFPList; // list of TDeclarationInheritanceCacheTree
     FOnFindDeclarations: TOnFindDeclarations;
+    FOnGetNodesDeletedStep: TGetChangeStepEvent;
     procedure CheckCurrentIsValid;
     procedure CleanCache(FreeItemCount: integer);
   public
-    constructor Create(const TheOnFindDeclarations: TOnFindDeclarations);
+    constructor Create(const TheOnFindDeclarations: TOnFindDeclarations;
+                       const TheOnGetNodesDeletedStep: TGetChangeStepEvent);
     destructor Destroy; override;
     procedure Clear;
     function FindDeclarations(Code: TCodeBuffer; X,Y: integer;
@@ -75,6 +77,8 @@ type
           out CacheWasUsed: boolean): boolean;
     property OnFindDeclarations: TOnFindDeclarations read FOnFindDeclarations
                                                      write FOnFindDeclarations;
+    property OnGetNodesDeletedStep: TGetChangeStepEvent read FOnGetNodesDeletedStep
+                                                   write FOnGetNodesDeletedStep;
   end;
 
 function CompareDeclInhCacheItems(Data1, Data2: Pointer): integer;
@@ -99,14 +103,16 @@ begin
 end;
 
 procedure TDeclarationInheritanceCache.CheckCurrentIsValid;
+var
+  NodesDeletedStep: integer;
 begin
-  if (FCurrent<>nil)
-  and (FCurrent.CodeToolsChangeStep<>GlobalCodeNodeTreeChangeStep) then begin
-    // the current cache is invalid => move to old
-    if FOldTrees=nil then FOldTrees:=TFPList.Create;
-    FOldTrees.Add(FCurrent);
-    FCurrent:=nil;
-  end;
+  if FCurrent=nil then exit;
+  OnGetNodesDeletedStep(NodesDeletedStep);
+  if (FCurrent.CodeToolsChangeStep=NodesDeletedStep) then exit;
+  // the current cache is invalid => move to old
+  if FOldTrees=nil then FOldTrees:=TFPList.Create;
+  FOldTrees.Add(FCurrent);
+  FCurrent:=nil;
 end;
 
 procedure TDeclarationInheritanceCache.CleanCache(FreeItemCount: integer);
@@ -132,9 +138,11 @@ begin
 end;
 
 constructor TDeclarationInheritanceCache.Create(
-  const TheOnFindDeclarations: TOnFindDeclarations);
+  const TheOnFindDeclarations: TOnFindDeclarations;
+  const TheOnGetNodesDeletedStep: TGetChangeStepEvent);
 begin
   OnFindDeclarations:=TheOnFindDeclarations;
+  OnGetNodesDeletedStep:=TheOnGetNodesDeletedStep;
 end;
 
 destructor TDeclarationInheritanceCache.Destroy;
@@ -211,7 +219,7 @@ begin
   CheckCurrentIsValid;
   if FCurrent=nil then begin
     FCurrent:=TDeclarationInheritanceCacheTree.CreateDeclInhTree;
-    FCurrent.CodeToolsChangeStep:=GlobalCodeNodeTreeChangeStep;
+    OnGetNodesDeletedStep(FCurrent.CodeToolsChangeStep);
   end;
   FCurrent.Add(Item);
 

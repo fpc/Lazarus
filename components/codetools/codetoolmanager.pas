@@ -79,6 +79,7 @@ type
     FCatchExceptions: boolean;
     FChangeStep: integer;
     FCheckFilesOnDisk: boolean;
+    FCodeNodeTreeChangeStep: integer;
     FCompleteProperties: boolean;
     FCurCodeTool: TCodeTool; // current codetool
     FCurDirectivesTool: TDirectivesTool;
@@ -89,6 +90,7 @@ type
     FErrorLine: integer;
     FErrorMsg: string;
     FErrorTopLine: integer;
+    FCodeTreeNodesDeletedStep: integer;
     FIndentSize: integer;
     FJumpCentered: boolean;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
@@ -108,7 +110,6 @@ type
     FWriteExceptions: boolean;
     FWriteLockCount: integer;// Set/Unset counter
     FWriteLockStep: integer; // current write lock ID
-    function GetGlobalCodeNodeTreeChangeStep: integer;
     function OnScannerGetInitValues(Code: Pointer;
       out AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
@@ -142,6 +143,7 @@ type
     procedure OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;
       out WriteLockStep: integer);
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
+    procedure OnToolTreeChange(Tool: TCustomCodeTool; NodesDeleting: boolean);
     function OnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
     function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
@@ -168,7 +170,9 @@ type
     procedure DeactivateWriteLock;
     property ChangeStep: integer read FChangeStep;
     procedure IncreaseChangeStep;
-    property GlobalCodeNodeTreeChangeStep: integer read GetGlobalCodeNodeTreeChangeStep;
+    property CodeNodeTreeChangeStep: integer read FCodeNodeTreeChangeStep;// nodes altered, added, deleted
+    property CodeTreeNodesDeletedStep: integer read FCodeTreeNodesDeletedStep;// nodes deleted
+    procedure GetCodeTreeNodesDeletedStep(out NodesDeletedStep: integer);// use this for events
 
     // file handling
     property SourceExtensions: string
@@ -4115,6 +4119,21 @@ begin
   Result:=not OnCheckAbort();
 end;
 
+procedure TCodeToolManager.OnToolTreeChange(Tool: TCustomCodeTool;
+  NodesDeleting: boolean);
+begin
+  if FCodeNodeTreeChangeStep<>High(integer) then
+    inc(FCodeNodeTreeChangeStep)
+  else
+    FCodeNodeTreeChangeStep:=Low(Integer);
+  if NodesDeleting then begin
+    if FCodeTreeNodesDeletedStep<>High(integer) then
+      inc(FCodeTreeNodesDeletedStep)
+    else
+      FCodeTreeNodesDeletedStep:=Low(Integer);
+  end;
+end;
+
 function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;
 begin
   Result:=true;
@@ -4135,11 +4154,6 @@ begin
       ExtractFilePath(TCodeBuffer(Code).Filename),false)
   else
     Result:=DefineTree.GetDefinesForVirtualDirectory;
-end;
-
-function TCodeToolManager.GetGlobalCodeNodeTreeChangeStep: integer;
-begin
-  Result:=CustomCodeTool.GlobalCodeNodeTreeChangeStep;
 end;
 
 procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;
@@ -4295,6 +4309,7 @@ begin
     TCodeTool(Result).OnGetMethodName:=@OnInternalGetMethodName;
     Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
     Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+    Result.OnTreeChange:=@OnToolTreeChange;
     TCodeTool(Result).OnParserProgress:=@OnParserProgress;
   end;
   with TCodeTool(Result) do begin
@@ -4429,6 +4444,12 @@ begin
     inc(FChangeStep)
   else
     FChangeStep:=Low(Integer);
+end;
+
+procedure TCodeToolManager.GetCodeTreeNodesDeletedStep(out
+  NodesDeletedStep: integer);
+begin
+  NodesDeletedStep:=FCodeTreeNodesDeletedStep;
 end;
 
 procedure TCodeToolManager.OnToolGetWriteLockInfo(out WriteLockIsSet: boolean;

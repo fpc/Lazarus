@@ -110,6 +110,9 @@ type
 
   // types for user aborts
   TOnParserProgress = function(Tool: TCustomCodeTool): boolean of object;
+  TCodeTreeChangeEvent = procedure(Tool: TCustomCodeTool;
+                                   NodesDeleting: boolean) of object;
+  TGetChangeStepEvent = procedure(out ChangeStep: integer) of object;
 
   EParserAbort = class(ECodeToolError)
   end;
@@ -124,6 +127,7 @@ type
     FOnParserProgress: TOnParserProgress;
     FOnSetGlobalWriteLock: TOnSetWriteLock;
     FScanner: TLinkScanner;
+    FOnTreeChange: TCodeTreeChangeEvent;
     FTreeChangeStep: integer;
   protected
     FIgnoreErrorAfter: TCodePosition;
@@ -139,7 +143,7 @@ type
     procedure RaiseBracketCloseExpectedButAtomFound;
     procedure RaiseUndoImpossible;
     procedure SetIgnoreErrorAfter(const AValue: TCodePosition); virtual;
-    procedure IncreaseTreeChangeStep;
+    procedure IncreaseTreeChangeStep(NodesDeleting: boolean);
   protected
     LastErrorMessage: string;
     LastErrorCurPos: TAtomPosition;
@@ -150,7 +154,8 @@ type
     CurrentPhase: integer;
     procedure ClearLastError;
     procedure RaiseLastError;
-    procedure DoProgress;
+    procedure DoProgress; inline;
+    procedure NotifyAboutProgress;
     // dirty/dead source
     procedure LoadDirtySource(const CursorPos: TCodeXYPosition);
   public
@@ -179,6 +184,8 @@ type
     property Scanner: TLinkScanner read FScanner write SetScanner;
     function MainFilename: string;
     property TreeChangeStep: integer read FTreeChangeStep;
+    property OnTreeChange: TCodeTreeChangeEvent read FOnTreeChange
+                                                 write FOnTreeChange;
     
     function FindDeepestNodeAtPos(P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
@@ -318,20 +325,8 @@ type
   
 var
   RaiseUnhandableExceptions: boolean;
-  GlobalCodeNodeTreeChangeStep: integer = 0;
-
-procedure IncreaseGlobalCodeNodeTreeChangeStep;
 
 implementation
-
-procedure IncreaseGlobalCodeNodeTreeChangeStep;
-begin
-  if GlobalCodeNodeTreeChangeStep=High(integer) then
-    GlobalCodeNodeTreeChangeStep:=Low(integer)
-  else
-    inc(GlobalCodeNodeTreeChangeStep);
-end;
-
 
 { TCustomCodeTool }
 
@@ -412,10 +407,15 @@ end;
 
 procedure TCustomCodeTool.DoProgress;
 begin
-  // Check every 10.000 chars
-  if (FLastProgressPos-CurPos.StartPos)<10000 then exit;
+  // Check every 1.000.000 chars
+  if (FLastProgressPos-CurPos.StartPos)<1000000 then exit;
+  NotifyAboutProgress;
+end;
+
+procedure TCustomCodeTool.NotifyAboutProgress;
+begin
   FLastProgressPos:=CurPos.StartPos;
-  
+
   if Assigned(OnParserProgress) then begin
     if OnParserProgress(Self) then exit;
     // abort the parsing process
@@ -1928,13 +1928,14 @@ begin
     Scanner.SetIgnoreErrorAfter(IgnoreErrorAfter.P,IgnoreErrorAfter.Code);
 end;
 
-procedure TCustomCodeTool.IncreaseTreeChangeStep;
+procedure TCustomCodeTool.IncreaseTreeChangeStep(NodesDeleting: boolean);
 begin
   if FTreeChangeStep=High(integer) then
     FTreeChangeStep:=Low(integer)
   else
     inc(FTreeChangeStep);
-  IncreaseGlobalCodeNodeTreeChangeStep;
+  if FOnTreeChange<>nil then
+    FOnTreeChange(Self,NodesDeleting);
 end;
 
 procedure TCustomCodeTool.RaiseExceptionInstance(TheException: ECodeToolError);
@@ -2404,8 +2405,10 @@ end;
 
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
-  Tree.Clear;
-  IncreaseTreeChangeStep;
+  if Tree.Root<>nil then begin
+    Tree.Clear;
+    IncreaseTreeChangeStep(true);
+  end;
 end;
 
 procedure TCustomCodeTool.RaiseIdentExpectedButAtomFound;

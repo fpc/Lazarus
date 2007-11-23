@@ -272,7 +272,8 @@ begin
   FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
   FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
   FDeclarationCache:=TDeclarationInheritanceCache.Create(
-                                            @CodeToolBoss.FindDeclarationNodeAndOverload);
+                                  @CodeToolBoss.FindDeclarationNodeAndOverload,
+                                  @CodeToolBoss.GetCodeTreeNodesDeletedStep);
 end;
 
 destructor TLazDocManager.Destroy;
