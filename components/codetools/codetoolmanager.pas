@@ -1919,6 +1919,7 @@ begin
   DebugLn('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
+  if IdentifierList<>nil then IdentifierList.Clear;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;

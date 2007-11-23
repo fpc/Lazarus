@@ -4632,13 +4632,13 @@ begin
     {$undef GtkNoWindowFixed}
   {$endif}
 
-  {$ifndef GtkNoWindowFixed}
-  Result := gtk_hbox_new(false, 0);
-  TempWidget := CreateFixedClientWidget;
-  {$else}
+  {$ifdef GtkNoWindowFixed}
   Result := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
   TempWidget := CreateFixedClientWidget(False);
+  {$else}
+  Result := gtk_hbox_new(false, 0);
+  TempWidget := CreateFixedClientWidget;
   {$endif}
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
@@ -5272,7 +5272,7 @@ begin
     // -> add a dummy page
     DummyWidget := gtk_hbox_new(false, 0);
     {$IFDEF Gtk}
-    AWidget := CreateFixedClientWidget;
+    AWidget := CreateFixedClientWidget{$IFDEF GtkNoWindowFixed}(false){$ENDIF};
     gtk_widget_show(AWidget);
     //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
     gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);
