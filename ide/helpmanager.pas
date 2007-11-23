@@ -101,6 +101,9 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
+    function GetHintForSourcePosition(const ExpandedFilename: string;
+                                      const CodePos: TPoint;
+                                      out Hint: string): TShowHelpResult;
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                const Filename: string): TPascalHelpContextList; override;
@@ -871,6 +874,19 @@ begin
       ShowContextHelpForIDE(AnInspector);
     end;
   end;
+end;
+
+function THelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
+  const CodePos: TPoint; out Hint: string): TShowHelpResult;
+var
+  Code: TCodeBuffer;
+begin
+  Hint:='';
+  Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
+  if Code=nil then exit;
+  Hint:=CodeToolBoss.FindSmartHint(Code,CodePos.X,CodePos.Y);
+  CodeToolBoss.Abortable:=false;
+
 end;
 
 function THelpManager.ConvertSourcePosToPascalHelpContext(

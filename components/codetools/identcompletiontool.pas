@@ -116,10 +116,10 @@ type
     function AsString: string;
     function GetDesc: TCodeTreeNodeDesc;
     constructor Create(NewCompatibility: TIdentifierCompatibility;
-      NewHasChilds: boolean; NewHistoryIndex: integer;
-      NewIdentifier: PChar; NewLevel: integer;
-      NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
-      NewDefaultDesc: TCodeTreeNodeDesc);
+                       NewHasChilds: boolean; NewHistoryIndex: integer;
+                       NewIdentifier: PChar; NewLevel: integer;
+                       NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
+                       NewDefaultDesc: TCodeTreeNodeDesc);
     function IsProcNodeWithParams: boolean;
     function IsPropertyWithParams: boolean;
     function CheckHasChilds: boolean;
