@@ -10140,8 +10140,18 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="FindLCLWindow.ScreenPos"><short/></element>
       <!-- function Visibility: default -->
       <element name="FindControl">
-        <short/>
-        <descr/>
+        <short>Find the Handle for the specified Control</short>
+        <descr>
+		<p>FindControl</p>
+		<br/>
+		<p>Returns the TWinControl associated with the Handle.</p>
+		<p>This is very interface specific. Better use FindOwnerControl.</p>
+		<br/>
+		<p>Handle can also be a child handle, and does not need to be the Handle
+		property of the Result.</p>
+		<p>IMPORTANT: So, in most cases: Result.Handle <> Handle in the params.</p>
+	</descr>
+   
         <errors/>
         <seealso/>
       </element>
@@ -10151,8 +10161,15 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="FindControl.Handle"><short/></element>
       <!-- function Visibility: default -->
       <element name="FindOwnerControl">
-        <short/>
-        <descr/>
+        <short>Find the Handle for the specified Owner Control</short>
+        <descr>
+		<p>FindOwnerControl</p>
+		<br/>
+		<p>Returns the TWinControl owning the Handle. Handle can also be a child handle,</p>
+		<p>and does not need to be the Handle property of the Result.</p>
+		<p>IMPORTANT: Therefore, in most cases: parameter Handle <> Result.Handle</p>
+	</descr>
+
         <errors/>
         <seealso/>
       </element>
@@ -10262,13 +10279,15 @@ TGraphicControl, you must query the ClientRect.</p>
       </element>
       <!-- function Visibility: default -->
       <element name="CursorToString">
-        <short/>
-        <descr/>
+        <short>Returns a string for the name of the cursor as identified by an integer constant</short>
+        <descr>Calls CursorToIdent to find correct entry in look-up table</descr>
         <errors/>
-        <seealso/>
+        <seealso><link id="CursorToIdent"/></seealso>
       </element>
       <!-- function result Visibility: default -->
-      <element name="CursorToString.Result"><short/></element>
+      <element name="CursorToString.Result">
+	      <short>Returns a string with the name of the cursor type corresponding to the integer constant</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="CursorToString.Cursor"><short/></element>
       <!-- function Visibility: default -->
@@ -10293,13 +10312,15 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="GetCursorValues.Proc"><short/></element>
       <!-- function Visibility: default -->
       <element name="CursorToIdent">
-        <short/>
+        <short>Uses look-up table to find cursor identifier corresponding to integer cursor constant</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="CursorToIdent.Result"><short/></element>
+      <element name="CursorToIdent.Result">
+	      <short>Returns true if a valid entry is found in the look-up table</short>
+      </element>
       <!-- argument Visibility: default -->
       <element name="CursorToIdent.Cursor"><short/></element>
       <!-- argument Visibility: default -->
@@ -10328,8 +10349,15 @@ TGraphicControl, you must query the ClientRect.</p>
       <element name="GetKeyShiftState.Result"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="AdjustBorderSpace">
-        <short/>
-        <descr/>
+        <short>Adjust space round border of this control</short>
+	<descr><p>RemainingClientRect: remaining clientrect without CurBorderSpace</p>
+		<p>CurBorderSpace: current borderspace around RemainingClientRect</p>
+		<p>Left, Top, Right, Bottom: apply these borderspaces to CurBorderSpace</p>
+		<br/>
+		<p>CurBorderSpace will be set to the maximum of CurBorderSpace and Left, Top, Right, Bottom.</p>
+		<p>RemainingClientRect will shrink.</p>
+		<p>RemainingClientRect will not shrink to negative size.</p>
+	</descr>
         <errors/>
         <seealso/>
       </element>
