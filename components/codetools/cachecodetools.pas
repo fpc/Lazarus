@@ -200,7 +200,7 @@ begin
 
   CacheWasUsed:=false;
 
-  DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
+  //DebugLn(['TDeclarationInheritanceCache.FindDeclarations searching ',Code.Filename,'(X=',X,',Y=',Y,')']);
 
   // ask the codetools
   if OnFindDeclarations(Code,X,Y,ListOfPCodeXYPosition,[])
@@ -223,8 +223,7 @@ begin
   end;
   FCurrent.Add(Item);
   
-  if ListOfPCodeXYPosition<>nil then
-    DebugLn(['TDeclarationInheritanceCache.FindDeclarations ',ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition)]);
+  if ListOfPCodeXYPosition<>nil then DebugLn(['TDeclarationInheritanceCache.FindDeclarations ',ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition)]);
 
   // clean up cache a bit
   CleanCache(5);
@@ -249,7 +248,7 @@ end;
 
 destructor TDeclarationInheritanceCacheItem.Destroy;
 begin
-  FreeListOfPFindContext(ListOfPCodeXYPosition);
+  FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
   ListOfPCodeXYPosition:=nil;
   inherited Destroy;
 end;

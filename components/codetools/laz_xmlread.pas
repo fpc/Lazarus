@@ -34,8 +34,8 @@ type
 
 procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String); overload;
 procedure ReadXMLFile(var ADoc: TXMLDocument; var f: File); overload;
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream); overload;
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String); overload;
+procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream); overload;
+procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream; const AFilename: String); overload;
 
 procedure ReadXMLFragment(AParentNode: TDOMNode; const AFilename: String); overload;
 procedure ReadXMLFragment(AParentNode: TDOMNode; var f: File); overload;
@@ -1376,7 +1376,7 @@ begin
   end;
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream; const AFilename: String);
+procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream; const AFilename: String);
 var
   reader: TXMLReader;
   buf: PChar;
@@ -1400,7 +1400,7 @@ begin
   end;
 end;
 
-procedure ReadXMLFile(var ADoc: TXMLDocument; var f: TStream);
+procedure ReadXMLFile(var ADoc: TXMLDocument; f: TStream);
 begin
   ReadXMLFile(ADoc, f, '<Stream>');
 end;

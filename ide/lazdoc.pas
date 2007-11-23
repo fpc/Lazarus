@@ -48,6 +48,17 @@ type
     );
 
   TFPDocNode = array [TFPDocItem] of String;
+  
+const
+  FPDocItemNames: array[TFPDocItem] of shortstring = (
+      'short',
+      'descr',
+      'errors',
+      'seealso',
+      'example'
+    );
+
+type
 
   { TLazFPDocFile }
 
@@ -625,7 +636,7 @@ begin
   Chain:=nil;
   ListOfPCodeXYPosition:=nil;
   try
-    DebugLn(['TLazDocManager.GetElementChain GetDeclarationChain...']);
+    //DebugLn(['TLazDocManager.GetElementChain GetDeclarationChain...']);
     // get the declaration chain
     Result:=GetDeclarationChain(Code,X,Y,ListOfPCodeXYPosition,CacheWasUsed);
     if Result<>ldprSuccess then exit;
@@ -641,7 +652,7 @@ begin
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
       // get source position of declaration
       CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-      DebugLn(['TLazDocManager.GetElementChain i=',i,' X=',CodePos^.X,' Y=',CodePos^.Y]);
+      //DebugLn(['TLazDocManager.GetElementChain i=',i,' X=',CodePos^.X,' Y=',CodePos^.Y]);
       if (CodePos=nil) or (CodePos^.Code=nil) or (CodePos^.X<1) or (CodePos^.Y<1)
       then begin
         DebugLn(['TLazDocManager.GetElementChain i=',i,' invalid CodePos']);
@@ -679,12 +690,12 @@ begin
       LDElement:=Chain.Add;
       LDElement.CodeContext.Tool:=CurTool;
       LDElement.CodeContext.Node:=Node;
-      DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
+      //DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
 
       // find corresponding FPDoc file
       SrcFilename:=LDElement.CodeContext.Tool.MainFilename;
       FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
-      DebugLn(['TLazDocManager.GetElementChain FPDocFilename=',FPDocFilename]);
+      //DebugLn(['TLazDocManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
 
       if FPDocFilename<>'' then begin
@@ -701,18 +712,17 @@ begin
       // get fpdoc element path
       LDElement.ElementName:=CodeNodeToElementName(LDElement.CodeContext.Tool,
                                                    LDElement.CodeContext.Node);
-      DebugLn(['TLazDocManager.GetElementChain i=',i,' Element=',LDElement.ElementName]);
+      //DebugLn(['TLazDocManager.GetElementChain i=',i,' Element=',LDElement.ElementName]);
       // get fpdoc node
       if (LDElement.FPDocFile<>nil) and (LDElement.ElementName<>'') then begin
         LDElement.ElementNode:=
                   LDElement.FPDocFile.GetElementWithName(LDElement.ElementName);
       end;
-      DebugLn(['TLazDocManager.GetElementChain ElementNode=',LDElement.ElementNode<>nil]);
+      //DebugLn(['TLazDocManager.GetElementChain ElementNode=',LDElement.ElementNode<>nil]);
     end;
 
     Result:=ldprSuccess;
   finally
-    FreeListOfPFindContext(ListOfPCodeXYPosition);
     if Result<>ldprSuccess then
       FreeAndNil(Chain);
   end;
@@ -744,14 +754,15 @@ var
   i: Integer;
   Item: TLazDocElement;
   NodeValues: TFPDocNode;
+  f: TFPDocItem;
 begin
-  DebugLn(['TLazDocManager.GetHint ',Code.Filename,' ',X,',',Y]);
+  //DebugLn(['TLazDocManager.GetHint ',Code.Filename,' ',X,',',Y]);
   Hint:=CodeToolBoss.FindSmartHint(Code,X,Y);
 
   CacheWasUsed:=true;
   Chain:=nil;
   try
-    DebugLn(['TLazDocManager.GetHint GetElementChain...']);
+    //DebugLn(['TLazDocManager.GetHint GetElementChain...']);
     Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
     if EndNow(Result) then exit;
 
@@ -761,16 +772,20 @@ begin
         DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
         if Item.ElementNode=nil then continue;
         NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
+        for f:=Low(TFPDocItem) to High(TFPDocItem) do
+          DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
         if NodeValues[fpdiShort]<>'' then begin
           Hint:=Hint+#13#13+Item.ElementName+#13
                 +NodeValues[fpdiShort];
         end;
       end;
     end;
-    Result:=ldprFailed;
+    Result:=ldprSuccess;
   finally
     Chain.Free;
   end;
+  
+  DebugLn(['TLazDocManager.GetHint END Hint="',Hint,'"']);
 end;
 
 procedure TLazDocManager.FreeDocs;
