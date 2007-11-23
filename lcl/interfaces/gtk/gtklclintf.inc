@@ -42,8 +42,8 @@ var
   IsDBCSFont: Boolean;
   NewCount: Integer;
 begin
-  UpdateDCTextMetric(TDeviceContext(DC));
-  IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+  UpdateDCTextMetric(TGtkDeviceContext(DC));
+  IsDBCSFont:=TGtkDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
   if IsDBCSFont then begin
     NewCount:=Count*2;
     if FExtUTF8OutCacheSize<NewCount then begin
@@ -63,8 +63,8 @@ var
   IsDBCSFont: Boolean;
   NewCount: Integer;
 begin
-  UpdateDCTextMetric(TDeviceContext(DC));
-  IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+  UpdateDCTextMetric(TGtkDeviceContext(DC));
+  IsDBCSFont:=TGtkDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
   if IsDBCSFont then begin
     NewCount:=Count*2;
     if FExtUTF8OutCacheSize<NewCount then begin
@@ -407,7 +407,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescription): boolean;
 var
-  DevCon: TDeviceContext absolute ADC;
+  DevCon: TGtkDeviceContext absolute ADC;
 
   Drawable: PGdkDrawable;
   UseAlpha: Boolean;
@@ -511,7 +511,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): boolean;
 var
-  DevCon: TDeviceContext absolute ADC;
+  DevCtx: TGtkDeviceContext absolute ADC;
   DCOrigin: TPoint;
   R: TRect;
   Drawable: PGdkDrawable;
@@ -520,26 +520,24 @@ begin
   if not IsValidDC(ADC)
   then begin
     DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
-    exit;
+    Exit(False);
   end;
 
-  DCOrigin := GetDCOffset(TDeviceContext(ADC));
+  DCOrigin := DevCtx.Offset;
   {$IFDEF VerboseRawImage}
   DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',dbgs(DCOrigin.X),',',dbgs(DCOrigin.Y),' SrcRect=',dbgs(ARect.Left),',',dbgs(ARect.Top),',',dbgs(ARect.Right),',',dbgs(ARect.Bottom));
   {$ENDIF}
   R := ARect;
   OffSetRect(R, DCOrigin.x, DCOrigin.y);
 
-  if DevCon.DCWidget <> nil
+  Drawable := DevCtx.Drawable;
+  if Drawable = nil
   then begin
-    Drawable := DevCon.Drawable;
-  end
-  else begin
     // get screen shot
     {$IFDEF Gtk1}
     exit;
     {$ELSE}
-      Drawable := gdk_screen_get_root_window(gdk_screen_get_default);
+    Drawable := gdk_screen_get_root_window(gdk_screen_get_default);
     {$ENDIF}
   end;
   Result := RawImage_FromDrawable(ARawImage, Drawable, nil, R);

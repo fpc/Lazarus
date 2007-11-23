@@ -179,6 +179,11 @@ begin
   DebugLn(['TGtkWidgetSet.CreateComponent ',DbgSName(Sender),' ',GetWidgetDebugReport(p)]);
 end;
 
+function TGTK1WidgetSet.GetDeviceContextClass: TGtkDeviceContextClass;
+begin
+  Result := TGtk1DeviceContext;
+end;
+
 {------------------------------------------------------------------------------
   procedure SetWidgetFont
     AWidget : PGtkWidget; const AFont: TFont

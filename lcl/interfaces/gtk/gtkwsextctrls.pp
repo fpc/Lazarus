@@ -521,7 +521,7 @@ var
   Area: TGdkRectangle;
   Style: PGtkStyle;
   AWindow: PGdkWindow;
-  DevContext: TDeviceContext;
+  DevContext: TGtkDeviceContext;
   ARect: TRect;
   {$IFDEF Gtk1}
   Detail: PChar;
@@ -530,7 +530,7 @@ var
   {$ENDIF}
 begin
   if not ASplitter.HandleAllocated then exit;
-  DevContext:=TDeviceContext(ASplitter.Canvas.Handle);
+  DevContext:=TGtkDeviceContext(ASplitter.Canvas.Handle);
   Widget:=PGtkWidget(ASplitter.Handle);
   ClientWidget:=GetFixedWidget(Widget);
   if ClientWidget<>nil then
@@ -541,7 +541,7 @@ begin
   if Style = nil then
     Style:=GetStyle(lgsButton);
 
-  DCOrigin:=GetDCOffset(DevContext);
+  DCOrigin := DevContext.Offset;
   Area.X:=DCOrigin.X;
   Area.Y:=DCOrigin.Y;
   Area.Width:=ASplitter.Width;

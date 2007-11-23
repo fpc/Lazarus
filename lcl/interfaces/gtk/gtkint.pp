@@ -123,8 +123,11 @@ type
     FExtUTF8OutCache: Pointer;
     FExtUTF8OutCacheSize: integer;
     FGlobalCursor: HCursor;
+    
+    FDCManager: TDeviceContextMemManager;
 
     function CreateThemeServices: TThemeServices; override;
+    function GetDeviceContextClass: TGtkDeviceContextClass; virtual; abstract;
   public
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
@@ -163,17 +166,11 @@ type
 
     // device contexts
     function IsValidDC(const DC: HDC): Boolean;virtual;
-    function NewDC: TDeviceContext;virtual;
-    function FindDCWithGDIObject(GDIObject: PGdiObject): TDeviceContext;virtual;
-    procedure DisposeDC(aDC: TDeviceContext);virtual;
-    function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow;
-      WithChildWindows: boolean): HDC;
-    procedure OnCreateGCForDC(DC: TDeviceContext);
-    procedure OnCreateGDIObjectForDC(DC: TDeviceContext; aGDIType: TGDIType);
-    procedure OnCreateFontForDC(DC: TDeviceContext);
-    procedure OnCreateBrushForDC(DC: TDeviceContext);
-    procedure OnCreatePenForDC(DC: TDeviceContext);
-    procedure OnCreateGDIBitmapForDC(DC: TDeviceContext);
+    function NewDC: TGtkDeviceContext;virtual;
+    function FindDCWithGDIObject(GDIObject: PGdiObject): TGtkDeviceContext;virtual;
+    procedure DisposeDC(aDC: TGtkDeviceContext);virtual;
+    function CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
+                               AWithChildWindows: Boolean; ADoubleBuffer: PgdkDrawable = nil): HDC;
     function GetDoubleBufferedDC(Handle: HWND): HDC;
 
     // GDIObjects
@@ -182,19 +179,16 @@ type
                                   const GDIType: TGDIType): Boolean;virtual;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;virtual;
     procedure DisposeGDIObject(GdiObject: PGdiObject);virtual;
-    procedure SelectGDKBrushProps(DC: HDC);virtual;
-    procedure SelectGDKTextProps(DC: HDC);virtual;
-    procedure SelectGDKPenProps(DC: HDC);virtual;
     function CreateDefaultBrush: PGdiObject;virtual;
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
     function CreateDefaultGDIBitmap: PGdiObject;virtual;
-    procedure UpdateDCTextMetric(DC: TDeviceContext); virtual;
+    procedure UpdateDCTextMetric(DC: TGtkDeviceContext); virtual;
     {$Ifdef GTK2}
     function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
     {$Endif}
     function GetDefaultGtkFont(IncreaseReferenceCount: boolean): TGtkIntfFont;
-    function GetGtkFont(DC: TDeviceContext): TGtkIntfFont;
+    function GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
     function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;
     function DCClipRegionValid(DC: HDC): boolean; override;
     function CreateEmptyRegion: hRGN; override;
@@ -240,8 +234,6 @@ type
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
-    function ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
-    function gdkFunctionToROP2Mode(const aFunction: TGdkFunction): Integer;
 
     // for gtk specific components:
     procedure SetLabelCaption(const ALabel: PGtkLabel; const ACaption: String

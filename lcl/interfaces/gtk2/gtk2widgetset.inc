@@ -298,6 +298,8 @@ begin
 end;
 {$EndIf}
 
+{ TGtk2WidgetSet }
+
 {------------------------------------------------------------------------------
   procedure TGtk2WidgetSet.AppendText(Sender: TObject; Str: PChar);
  ------------------------------------------------------------------------------}
@@ -327,6 +329,10 @@ begin
   end;
 end;
 
+function TGtk2WidgetSet.GetDeviceContextClass: TGtkDeviceContextClass;
+begin
+  Result := TGtk2DeviceContext;
+end;
 
 function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
 var

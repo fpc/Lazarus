@@ -62,7 +62,7 @@ uses
   // widgetset
   GtkInt,
   GtkDebug,
-  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
+  GtkFontCache, GtkDef, Gtk1Def, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
 
 type
 
@@ -77,6 +77,7 @@ type
   protected
     function CreateComponentWidget(Sender: TObject; ACompStyle: Integer;
              const ACaption: String): PGtkWidget; override; // temporary solution till all are created through createhandle
+    function GetDeviceContextClass: TGtkDeviceContextClass; override;
   public
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
   end;

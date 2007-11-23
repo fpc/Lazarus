@@ -98,65 +98,6 @@ procedure ResetDefaultIMContext;
 var
   LastFileSelectRow : gint;
 
-// styles -------------------------------------------------------------------
-type
-  TLazGtkStyle = (
-    lgsGTK_Default, // without anything
-    lgsDefault,     // with rc file
-    lgsButton,
-    lgsLabel,
-    lgsWindow,
-    lgsCheckbox,
-    lgsRadiobutton,
-    lgsMenu,
-    lgsMenuBar,
-    lgsMenuitem,
-    lgsList,
-    lgsVerticalScrollbar,
-    lgsHorizontalScrollbar,
-    lgsTooltip,
-    lgsVerticalPaned,
-    lgsHorizontalPaned,
-    lgsNotebook,
-    lgsStatusBar,
-    lgsHScale,
-    lgsVScale,
-    lgsGroupBox,
-    lgsTreeView,      // for gtk2
-    lgsToolBar,       // toolbar
-    lgsToolButton,    // button placed on toolbar
-    // user defined
-    lgsUserDefined
-    );
-
-const
-  LazGtkStyleNames: array[TLazGtkStyle] of string = (
-    'gtk_default',
-    'default',
-    'button',
-    'label',
-    'window',
-    'checkbox',
-    'radiobutton',
-    'menu',
-    'menubar',
-    'menuitem',
-    'list',
-    'vertical scrollbar',
-    'horizontal scrollbar',
-    'tooltip',
-    'vertical paned',
-    'horizontal paned',
-    'statusbar',
-    'notebook',
-    'hscale',
-    'vscale',
-    'groupbox',
-    'treeview',
-    'toolbar',
-    'toolbutton',
-    ''
-    );
 
 var
   Styles : TStrings;

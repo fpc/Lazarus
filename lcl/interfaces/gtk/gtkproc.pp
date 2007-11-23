@@ -401,14 +401,8 @@ function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
 procedure FinalizePaintMessage(Msg: PLMessage);
 procedure FinalizePaintTagMsg(Msg: PMsg);
 
-// DC
-function GetDCOffset(DC: TDeviceContext): TPoint;
-function CopyDCData(SourceDC, DestinationDC: TDeviceContext;
-                    ClearSource, MoveGDIOwnerShip: boolean): Boolean;
-
 // region
 Function RegionType(RGN: PGDKRegion): Longint;
-Procedure SelectGDIRegion(const DC: HDC);
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 function GDKRegionAsString(RGN: PGDKRegion): string;
 
@@ -662,11 +656,10 @@ function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap;
 procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
   out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
 Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
-Procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
+Procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
   var NewClipMask: PGdkBitmap);
-procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
 function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;

@@ -24,7 +24,7 @@
 }
 
 
-unit GTKDef;
+unit GtkDef;
  
 {$mode objfpc} 
 {$LONGSTRINGS ON}
@@ -38,7 +38,7 @@ uses
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
   Classes, SysUtils, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
-  GraphType;
+  GraphType, GtkExtra;
   
 {$ifdef TraceGdiCalls}
 const
@@ -49,6 +49,68 @@ type
   PCallBacksArray = ^TCallBacksArray;
 {$endif}
 
+
+// styles -------------------------------------------------------------------
+type
+  TLazGtkStyle = (
+    lgsGTK_Default, // without anything
+    lgsDefault,     // with rc file
+    lgsButton,
+    lgsLabel,
+    lgsWindow,
+    lgsCheckbox,
+    lgsRadiobutton,
+    lgsMenu,
+    lgsMenuBar,
+    lgsMenuitem,
+    lgsList,
+    lgsVerticalScrollbar,
+    lgsHorizontalScrollbar,
+    lgsTooltip,
+    lgsVerticalPaned,
+    lgsHorizontalPaned,
+    lgsNotebook,
+    lgsStatusBar,
+    lgsHScale,
+    lgsVScale,
+    lgsGroupBox,
+    lgsTreeView,      // for gtk2
+    lgsToolBar,       // toolbar
+    lgsToolButton,    // button placed on toolbar
+    // user defined
+    lgsUserDefined
+    );
+
+const
+  LazGtkStyleNames: array[TLazGtkStyle] of string = (
+    'gtk_default',
+    'default',
+    'button',
+    'label',
+    'window',
+    'checkbox',
+    'radiobutton',
+    'menu',
+    'menubar',
+    'menuitem',
+    'list',
+    'vertical scrollbar',
+    'horizontal scrollbar',
+    'tooltip',
+    'vertical paned',
+    'horizontal paned',
+    'statusbar',
+    'notebook',
+    'hscale',
+    'vscale',
+    'groupbox',
+    'treeview',
+    'toolbar',
+    'toolbutton',
+    ''
+    );
+
+
 const
   // drag target type for on drop files event invoking
   FileDragTarget: TGtkTargetEntry = (target: 'text/uri-list'; flags: 0; info: 0;);
@@ -57,7 +119,7 @@ type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap{obsolete:, gbImage});
 
-  TDeviceContext = class;
+  TGtkDeviceContext = class;
 
   {$IFDEF Gtk1}
   TGtkIntfFont = PGDKFont;
@@ -72,15 +134,6 @@ type
     Blue: Byte;
   end;
 
-  {obsolete:
-  PGDI_RGBImage = ^TGDI_RGBImage;
-  TGDI_RGBImage = record
-    Height,
-    Width: Integer;
-    Depth: Byte;
-    Data: array[0..0] of TGDIRGB;
-  end;}
-  
   TGDIColorFlag = (cfColorAllocated);
   TGDIColorFlags = set of TGDIColorFlag;
   
@@ -99,7 +152,7 @@ type
   TGDIObject = record
     RefCount: integer;
     DCCount: integer; // number of DeviceContexts using this GDIObject
-    Owner: TDeviceContext;
+    Owner: TGtkDeviceContext;
     {$ifdef TraceGdiCalls}
     StackAddrs: TCallBacksArray;
     {$endif}
@@ -115,7 +168,6 @@ type
           gbPixmap: (GDIPixmapObject: record // normal pixmap
                       Image: PGdkPixmap;     // imagedata
                       Mask: PGdkBitmap;      // the mask for images with 1 bit alpha and pixmap not supporting alpha
-                      {$note check the need for mask} //MWE: at theismoment I cant oversee is we will set it from the LCL
                     end);
       );
       gdiBrush: ( 
@@ -198,10 +250,14 @@ type
     dcscFont
     );
     
-  { TDeviceContext }
 
-  TDeviceContext = class
+  { TGtkDeviceContext }
+
+
+  TGtkDeviceContextClass = class of TGtkDeviceContext;
+  TGtkDeviceContext = class
   private
+
     FClipRegion: PGdiObject;
     FCurrentBitmap: PGdiObject;
     FCurrentBrush: PGdiObject;
@@ -209,9 +265,30 @@ type
     FCurrentPalette: PGdiObject;
     FCurrentPen: PGdiObject;
     FGC: pgdkGC;
+    FGCValues: TGdkGCValues;
 
-    fOwnedGDIObjects: array[TGDIType] of PGdiObject;
+    
+    FDrawable: PGDKDrawable; // either the gdk_window of the owner
+                             // or the gdk_bitmap/pixmap of the selected image
+                             // or the double buffer (OriginalDrawable will hold the original)
+
+    FOriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
+
+
+    FWidget: PGtkWidget;     // the owner (in case of a windowDC)
+    
+    FWithChildWindows: boolean;// this DC covers sub gdkwindows
+    FOrigin: TPoint;
+    FSpecialOrigin: Boolean;
+
+    FFlags: TDeviceContextsFlags;
+    FSelectedColors: TDevContextSelectedColorsType;
+
+
+    FOwnedGDIObjects: array[TGDIType] of PGdiObject;
+
     function GetGDIObjects(ID: TGDIType): PGdiObject;
+    function GetOffset: TPoint;
     function GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
     procedure SetClipRegion(const AValue: PGdiObject);
     procedure SetCurrentBitmap(const AValue: PGdiObject);
@@ -223,24 +300,54 @@ type
                               const NewValue: PGdiObject);
     procedure SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
     procedure SetOwnedGDIObjects(ID: TGDIType; const AValue: PGdiObject);
+    procedure SetSelectedColors(AValue: TDevContextSelectedColorsType);
+
     function GetGC: pgdkGC;
-  public
-    WithChildWindows: boolean;// this DC covers sub gdkwindows
-  
-    // device handles
-    DCWidget: PGtkWidget; // the owner
-    Drawable: PGDKDrawable;
-    OriginalDrawable: PGDKDrawable; // only set if dcfDoubleBuffer in DCFlags
-    GCValues: TGdkGCValues;
+  private
+    // winapi
+    function  GetROP2: Integer;
+    procedure SetROP2(AROP: Integer);
+  protected
+    function CreateGC: PGdkGC; virtual;
+
+    procedure CreateFont; virtual;
+    procedure CreateBrush; virtual;
+    procedure CreatePen; virtual;
+    procedure CreateBitmap; virtual;
     
+    function GetFunction: TGdkFunction; virtual; abstract;
+
+    property GCValues: TGdkGCValues read FGCValues;
+  protected
+    // winapi
+    function SelectBitmap(AGdiObject: PGdiObject): PGdiObject; virtual;
+    function SelectPen(AGdiObject: PGdiObject): PGdiObject; virtual;
+  public
+    procedure CreateGDIObject(AGDIType: TGDIType);
+    procedure SelectBrushProps; virtual;
+    procedure SelectTextProps; virtual;
+    procedure SelectPenProps; virtual;
+    
+    procedure SelectRegion;
+  public
+
+    // device handles
+
+    procedure SetWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
+                        AWithChildWindows: Boolean; ADoubleBuffer: PGdkDrawable = nil);
+    property Drawable: PGDKDrawable read FDrawable;
+    property Widget: PGtkWidget read FWidget; // the owner
+
     property GC: pgdkGC read GetGC write FGC;
     function HasGC: Boolean;
+    procedure ResetGCClipping;
 
 
     // origins
-    Origin: TPoint;
-    SpecialOrigin: boolean;
+    property Origin: TPoint read FOrigin write FOrigin;
     PenPos: TPoint;
+    
+    property Offset: TPoint read GetOffset;
     
     {$ifdef TraceGdiCalls}
     StackAddrs: TCallBacksArray;
@@ -259,9 +366,10 @@ type
     DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
     
     // control
-    SelectedColors: TDevContextSelectedColorsType;
-    SavedContext: TDeviceContext; // linked list of saved DCs
-    DCFlags: TDeviceContextsFlags;
+    property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
+    SavedContext: TGtkDeviceContext; // linked list of saved DCs
+    property Flags: TDeviceContextsFlags read FFlags;
+    procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
     property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
 
     procedure Clear;
@@ -273,7 +381,31 @@ type
     function IsNullBrush: boolean;
     function IsNullPen: boolean;
 
+    function CopyDataFrom(ASource: TGtkDeviceContext; AClearSource, AMoveGDIOwnerShip, ARestore: Boolean): Boolean;
+  public
+    // winapi
+    function SelectObject(AGdiObject: PGdiObject): PGdiObject;
+    
+    property ROP2: Integer read GetRop2 write SetRop2;
+    
   end;
+
+  // memory system for TDeviceContext(s) ---------------------------------------------
+
+  { TDeviceContextMemManager }
+
+  TDeviceContextMemManager = class(TLCLMemManager)
+  private
+    FDeviceContextClass: TGtkDeviceContextClass;
+  protected
+    procedure FreeFirstItem; override;
+  public
+    constructor Create(AClass: TGtkDeviceContextClass);
+    procedure DisposeDeviceContext(ADeviceContext: TGtkDeviceContext);
+    function NewDeviceContext: TGtkDeviceContext;
+  end;
+
+
   
   
   TWidgetInfoFlag = (
@@ -441,15 +573,6 @@ const
 function InternalNewPGDIObject: PGDIObject;
 procedure InternalDisposePGDIObject(GDIObject: PGdiObject);
 
-function NewDeviceContext: TDeviceContext;
-procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
-
-type
-  TCreateGCForDC = procedure(DC: TDeviceContext) of object;
-  TCreateGDIObjectForDC = procedure(DC: TDeviceContext; aGDIType: TGDIType) of object;
-var
-  CreateGCForDC: TCreateGCForDC = nil;
-  CreateGDIObjectForDC: TCreateGDIObjectForDC = nil;
 
 {$IFDEF DebugLCLComponents}
 var
@@ -467,8 +590,13 @@ function dbgs(r: PGDKRectangle): string; overload;
 
 implementation
 
+uses
+  // until all code is transfered to objects, these circles are needed;
+  gtkint, gtkproc, GtkFontCache, GTKWinApiWindow;
 
 {$IFOpt R+}{$Define RangeChecksOn}{$Endif}
+
+{$i gtkdevicecontext.inc}
 
 // memory system for PGDIObject(s) ---------------------------------------------
 type
@@ -560,46 +688,14 @@ begin
 end;
 
 
-// memory system for TDeviceContext(s) ---------------------------------------------
-type
-  TDeviceContextMemManager = class(TLCLMemManager)
-  protected
-    procedure FreeFirstItem; override;
-  public
-    procedure DisposeDeviceContext(ADeviceContext: TDeviceContext);
-    function NewDeviceContext: TDeviceContext;
-  end;
-
-const
-  DeviceContextMemManager: TDeviceContextMemManager = nil;
-
-function NewDeviceContext: TDeviceContext;
-begin
-  if DeviceContextMemManager=nil then begin
-    DeviceContextMemManager:=TDeviceContextMemManager.Create;
-    DeviceContextMemManager.MinimumFreeCount:=1000;
-  end;
-  Result:=DeviceContextMemManager.NewDeviceContext;
-  {$IFDEF DebugLCLComponents}
-  DebugDeviceContexts.MarkCreated(Result,'NewDeviceContext');
-  {$ENDIF}
-end;
-
-procedure DisposeDeviceContext(DeviceContext: TDeviceContext);
-begin
-  {$IFDEF DebugLCLComponents}
-  DebugDeviceContexts.MarkDestroyed(DeviceContext);
-  {$ENDIF}
-  DeviceContextMemManager.DisposeDeviceContext(DeviceContext);
-end;
 
 { TDeviceContextMemManager }
 
 procedure TDeviceContextMemManager.FreeFirstItem;
-var ADeviceContext: TDeviceContext;
+var ADeviceContext: TGtkDeviceContext;
 begin
-  ADeviceContext:=TDeviceContext(FFirstFree);
-  TDeviceContext(FFirstFree):=ADeviceContext.SavedContext;
+  ADeviceContext:=TGtkDeviceContext(FFirstFree);
+  TGtkDeviceContext(FFirstFree):=ADeviceContext.SavedContext;
   //DebugLn('TDeviceContextMemManager.FreeFirstItem FFreedCount=',FFreedCount);
   ADeviceContext.Free;
   {$R-}
@@ -607,16 +703,23 @@ begin
   {$IfDef RangeChecksOn}{$R+}{$Endif}
 end;
 
-procedure TDeviceContextMemManager.DisposeDeviceContext(
-  ADeviceContext: TDeviceContext);
+constructor TDeviceContextMemManager.Create(AClass: TGtkDeviceContextClass);
 begin
-  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
-  begin
+  inherited Create;
+  FDeviceContextClass := AClass;
+end;
+
+procedure TDeviceContextMemManager.DisposeDeviceContext(
+  ADeviceContext: TGtkDeviceContext);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio))
+  then begin
     // add ADeviceContext to Free list
-    ADeviceContext.SavedContext:=TDeviceContext(FFirstFree);
-    TDeviceContext(FFirstFree):=ADeviceContext;
+    ADeviceContext.SavedContext:=TGtkDeviceContext(FFirstFree);
+    TGtkDeviceContext(FFirstFree):=ADeviceContext;
     inc(FFreeCount);
-  end else begin
+  end
+  else begin
     // free list full -> free the ANode
     //DebugLn('TDeviceContextMemManager.DisposeDeviceContext FFreedCount=',FFreedCount);
     ADeviceContext.Free;
@@ -627,207 +730,29 @@ begin
   dec(FCount);
 end;
 
-function TDeviceContextMemManager.NewDeviceContext: TDeviceContext;
+function TDeviceContextMemManager.NewDeviceContext: TGtkDeviceContext;
 begin
-  if FFirstFree<>nil then begin
+  if FFirstFree <> nil
+  then begin
     // take from free list
-    Result:=TDeviceContext(FFirstFree);
-    TDeviceContext(FFirstFree):=Result.SavedContext;
-    dec(FFreeCount);
-  end else begin
+    Result := TGtkDeviceContext(FFirstFree);
+    TGtkDeviceContext(FFirstFree) := Result.SavedContext;
+    Dec(FFreeCount);
+    Result.Clear;
+  end
+  else begin
     // free list empty -> create new node
-    Result:=TDeviceContext.Create;
+    Result := FDeviceContextClass.Create;
     //DebugLn('TDeviceContextMemManager.NewDeviceContext FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
   end;
-  Result.Clear;
-  inc(FCount);
+  Inc(FCount);
 end;
 
 
 //------------------------------------------------------------------------------
-
-{ TDeviceContext }
-
-procedure TDeviceContext.SetClipRegion(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(fClipRegion,AValue);
-end;
-
-function TDeviceContext.GetGDIObjects(ID: TGDIType): PGdiObject;
-begin
-  case ID of
-  gdiBitmap: Result:=CurrentBitmap;
-  gdiFont: Result:=CurrentFont;
-  gdiBrush: Result:=CurrentBrush;
-  gdiPen: Result:=CurrentPen;
-  gdiPalette: Result:=CurrentPalette;
-  gdiRegion: Result:=ClipRegion;
-  end;
-end;
-
-function TDeviceContext.GetOwnedGDIObjects(ID: TGDIType): PGdiObject;
-begin
-  Result:=fOwnedGDIObjects[ID];
-end;
-
-procedure TDeviceContext.SetCurrentBitmap(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(FCurrentBitmap,AValue);
-end;
-
-procedure TDeviceContext.SetCurrentBrush(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(FCurrentBrush,AValue);
-end;
-
-procedure TDeviceContext.SetCurrentFont(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(FCurrentFont,AValue);
-end;
-
-procedure TDeviceContext.SetCurrentPalette(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(FCurrentPalette,AValue);
-end;
-
-procedure TDeviceContext.SetCurrentPen(const AValue: PGdiObject);
-begin
-  ChangeGDIObject(FCurrentPen,AValue);
-end;
-
-procedure TDeviceContext.ChangeGDIObject(var GDIObject: PGdiObject;
-  const NewValue: PGdiObject);
-begin
-  if GdiObject=NewValue then exit;
-  if GdiObject<>nil then begin
-    dec(GdiObject^.DCCount);
-    if GdiObject^.DCCount<0 then
-      RaiseGDBException('');
-  end;
-  //if GdiObject<>nil then
-  //  DebugLn(['TDeviceContext.ChangeGDIObject DC=',dbgs(Self),' OldGDIObject=',dbgs(GdiObject),' Old.DCCount=',GdiObject^.DCCount]);
-  GdiObject:=NewValue;
-  if GdiObject<>nil then
-    inc(GdiObject^.DCCount);
-  //if GdiObject<>nil then
-  //  DebugLn(['TDeviceContext.ChangeGDIObject DC=',dbgs(Self),' NewGDIObject=',dbgs(GdiObject),' New.DCCount=',GdiObject^.DCCount]);
-end;
-
-procedure TDeviceContext.SetGDIObjects(ID: TGDIType; const AValue: PGdiObject);
-begin
-  case ID of
-  gdiBitmap:  ChangeGDIObject(fCurrentBitmap,AValue);
-  gdiFont:    ChangeGDIObject(fCurrentFont,AValue);
-  gdiBrush:   ChangeGDIObject(fCurrentBrush,AValue);
-  gdiPen:     ChangeGDIObject(fCurrentPen,AValue);
-  gdiPalette: ChangeGDIObject(fCurrentPalette,AValue);
-  gdiRegion:  ChangeGDIObject(fClipRegion,AValue);
-  end;
-end;
-
-procedure TDeviceContext.SetOwnedGDIObjects(ID: TGDIType;
-  const AValue: PGdiObject);
-begin
-  if fOwnedGDIObjects[ID]=AValue then exit;
-  if fOwnedGDIObjects[ID]<>nil then
-    fOwnedGDIObjects[ID]^.Owner:=nil;
-  fOwnedGDIObjects[ID]:=AValue;
-  if fOwnedGDIObjects[ID]<>nil then
-    fOwnedGDIObjects[ID]^.Owner:=Self;
-end;
-
-procedure TDeviceContext.Clear;
-var
-  g: TGDIType;
-  
-  procedure WarnOwnedGDIObject;
-  begin
-    DebugLn(['TDeviceContext.Clear ',dbghex(PtrInt(Self)),' OwnedGDIObjects[',ord(g),']<>nil']);
-  end;
-  
-begin
-  DCWidget:=nil;
-  Drawable:=nil;
-  GC:=nil;
-  FillChar(GCValues, SizeOf(GCValues), #0);
-
-  Origin.X:=0;
-  Origin.Y:=0;
-  SpecialOrigin:=false;
-  PenPos.X:=0;
-  PenPos.Y:=0;
-  
-  CurrentBitmap:=nil;
-  CurrentFont:=nil;
-  CurrentPen:=nil;
-  CurrentBrush:=nil;
-  CurrentPalette:=nil;
-  ClipRegion:=nil;
-  FillChar(CurrentTextColor,SizeOf(CurrentTextColor),0);
-  FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
-
-  SelectedColors:=dcscCustom;
-  SavedContext:=nil;
-  DCFlags:=[];
-  
-  for g:=Low(TGDIType) to high(TGDIType) do
-    if OwnedGDIObjects[g]<>nil then
-      WarnOwnedGDIObject;
-end;
-
-function TDeviceContext.GetGC: pgdkGC;
-begin
-  if FGC = nil then
-    CreateGCForDC(Self);
-  Result := FGC;
-end;
-
-function TDeviceContext.GetFont: PGdiObject;
-begin
-  if CurrentFont=nil then
-    CreateGDIObjectForDC(Self,gdiFont);
-  Result:=CurrentFont;
-end;
-
-function TDeviceContext.GetBrush: PGdiObject;
-begin
-  if CurrentBrush=nil then
-    CreateGDIObjectForDC(Self,gdiBrush);
-  Result:=CurrentBrush;
-end;
-
-function TDeviceContext.GetPen: PGdiObject;
-begin
-  if CurrentPen = nil then
-    CreateGDIObjectForDC(Self, gdiPen);
-  Result := CurrentPen;
-end;
-
-function TDeviceContext.HasGC: Boolean;
-begin
-  Result := FGC <> nil;
-end;
-
-function TDeviceContext.IsNullBrush: boolean;
-begin
-  Result := (FCurrentBrush <> nil) and (FCurrentBrush^.IsNullBrush);
-end;
-
-
-function TDeviceContext.IsNullPen: boolean;
-begin
-  Result := (FCurrentPen <> nil) and (FCurrentPen^.IsNullPen);
-end;
-
-function TDeviceContext.GetBitmap: PGdiObject;
-begin
-  if CurrentBitmap=nil then
-    CreateGDIObjectForDC(Self,gdiBitmap);
-  Result:=CurrentBitmap;
-end;
 
 procedure GtkDefInit;
 begin
@@ -842,8 +767,6 @@ procedure GtkDefDone;
 begin
   GDIObjectMemManager.Free;
   GDIObjectMemManager:=nil;
-  DeviceContextMemManager.Free;
-  DeviceContextMemManager:=nil;
   {$IFDEF DebugLCLComponents}
   FreeAndNil(DebugGtkWidgets);
   FreeAndNil(DebugGdiObjects);

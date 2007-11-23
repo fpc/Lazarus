@@ -178,8 +178,6 @@ begin
   // DCs, GDIObjects
   FDeviceContexts := TDynHashArray.Create(-1);
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
-  CreateGCForDC:=@OnCreateGCForDC;
-  CreateGDIObjectForDC:=@OnCreateGDIObjectForDC;
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
 
@@ -364,9 +362,6 @@ var
   QueueItem  : TGtkMessageQueueItem;
   NextQueueItem : TGtkMessageQueueItem;
 begin
-  CreateGCForDC:=nil;
-  CreateGDIObjectForDC:=nil;
-
   ReAllocMem(FExtUTF8OutCache,0);
   FExtUTF8OutCacheSize:=0;
 
@@ -524,6 +519,7 @@ begin
   FTimerData.Free;
   
   GtkDefDone;
+  FreeAndNil(FDCManager);
 
   // finally remove our loghandler
   g_log_remove_handler(nil, FLogHandlerID);
@@ -2453,8 +2449,8 @@ function TGtkWidgetSet.StretchCopyArea(DestDC: HDC; X, Y, Width, Height: Integer
   Mask: HBITMAP; XMask, YMask: Integer;
   Rop: Cardinal): Boolean;
 var
-  SrcDevContext: TDeviceContext absolute SrcDC;
-  DstDevContext: TDeviceContext absolute DestDC;
+  SrcDevContext: TGtkDeviceContext absolute SrcDC;
+  DstDevContext: TGtkDeviceContext absolute DestDC;
   TempPixmap: PGdkPixmap;
   TempMaskBitmap: PGdkBitmap;
   SizeChange, ROpIsSpecial: Boolean;
@@ -2559,7 +2555,7 @@ var
     {$IFDEF VerboseStretchCopyArea}
     DebugLn('ROPFillBuffer ROp='+dbgs(ROp));
     {$ENDIF}
-    with TDeviceContext(DC) do
+    with TGtkDeviceContext(DC) do
     begin
       // Temporarily hold the old brush to
       // replace it with the given brush
@@ -2570,15 +2566,13 @@ var
       else
         Brush := GetStockObject(BLACK_BRUSH);
       CurrentBrush := PGdiObject(Brush);
-      SelectedColors := dcscCustom;
-      SelectGDKBrushProps(DC);
+      SelectedColors := dcscBrush;
 
       if not IsNullBrush
       then begin
         gdk_draw_rectangle(TempPixmap, GC, 1, 0, 0, Width, Height);
       end;
       // Restore current brush
-      SelectedColors := dcscCustom;
       CurrentBrush := OldCurrentBrush;
     end;
   end;
@@ -2618,7 +2612,6 @@ var
       {$ENDIF}
       gdk_window_copy_area(DstDevContext.Drawable, DstDevContext.GC, X, Y,
         SrcPixmap, XSrc, YSrc, Width, Height);
-
       Exit;
     end;
 
@@ -2674,7 +2667,7 @@ var
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
     // unset clipping mask for transparency
-    ResetGCClipping(DestDC, DstDevContext.GC);
+    DstDevContext.ResetGCClipping;
     if ClipMask <> nil
     then gdk_bitmap_unref(ClipMask);
 
@@ -2700,39 +2693,9 @@ var
     Result:=SrcDevBitmapToDrawable;
   end;
 
-  function ImageToImage: Boolean;
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToImage unimplemented!');
-    Result:=false;
-  end;
-
-  function ImageToDrawable: Boolean;
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToDrawable unimplemented!');
-    Result:=false;
-  end;
-
-  function ImageToBitmap: Boolean;
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] ImageToBitmap unimplemented!');
-    Result:=false;
-  end;
-
-  function PixmapToImage: Boolean;
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] PixmapToImage unimplemented!');
-    Result:=false;
-  end;
-
   function PixmapToBitmap: Boolean;
   begin
     DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] PixmapToBitmap unimplemented!');
-    Result:=false;
-  end;
-
-  function BitmapToImage: Boolean;
-  begin
-    DebugLn('WARNING: [TGtkWidgetSet.StretchCopyArea] BitmapToImage unimplemented!');
     Result:=false;
   end;
 
@@ -2793,7 +2756,7 @@ var
 
   procedure RaiseSrcDrawableNil;
   begin
-    DebugLn(['RaiseSrcDrawableNil ',GetWidgetDebugReport(SrcDevContext.DCWidget)]);
+    DebugLn(['RaiseSrcDrawableNil ',GetWidgetDebugReport(SrcDevContext.Widget)]);
     RaiseGDBException(Format('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]));
   end;
 
@@ -2823,30 +2786,25 @@ begin
   SizeChange := (Width <> SrcWidth) or (Height <> SrcHeight);
   ROpIsSpecial := (ROp <> SRCCOPY);
 
-  SrcDCOrigin := GetDCOffset(SrcDevContext);
-  with SrcDevContext do
-  begin
-    Inc(XSrc, SrcDCOrigin.X);
-    Inc(YSrc, SrcDCOrigin.Y);
-    if Drawable = nil then RaiseSrcDrawableNil;
-    gdk_window_get_size(PGdkWindow(Drawable), @SrcWholeWidth, @SrcWholeHeight);
-  end;
+  SrcDCOrigin := SrcDevContext.Offset;
+  Inc(XSrc, SrcDCOrigin.X);
+  Inc(YSrc, SrcDCOrigin.Y);
+  if SrcDevContext.Drawable = nil then RaiseSrcDrawableNil;
+  gdk_window_get_size(PGdkWindow(SrcDevContext.Drawable), @SrcWholeWidth, @SrcWholeHeight);
 
-  DstDCOrigin := GetDCOffset(DstDevContext);
-  with DstDevContext do
-  begin
-    Inc(X, DstDCOrigin.X);
-    Inc(Y, DstDCOrigin.Y);
-    if Drawable = nil then RaiseDestDrawableNil;
-    gdk_window_get_size(PGdkWindow(Drawable), @DstWholeWidth, @DstWholeHeight);
-  end;
+
+  DstDCOrigin := DstDevContext.Offset;
+  Inc(X, DstDCOrigin.X);
+  Inc(Y, DstDCOrigin.Y);
+  if DstDevContext.Drawable = nil then RaiseDestDrawableNil;
+  gdk_window_get_size(PGdkWindow(DstDevContext.Drawable), @DstWholeWidth, @DstWholeHeight);
 
   {$IFDEF VerboseStretchCopyArea}
   DebugLn('TGtkWidgetSet.StretchCopyArea BEFORE CLIPPING X='+dbgs(X),' Y='+dbgs(Y),' Width='+dbgs(Width),' Height='+dbgs(Height),
     ' XSrc='+dbgs(XSrc)+' YSrc='+dbgs(YSrc)+' SrcWidth='+dbgs(SrcWidth)+' SrcHeight='+dbgs(SrcHeight),
-    ' SrcDrawable=',DbgS(TDeviceContext(SrcDC).Drawable),
+    ' SrcDrawable=',DbgS(TGtkDeviceContext(SrcDC).Drawable),
     ' SrcOrigin='+dbgs(SrcDCOrigin),
-    ' DestDrawable='+DbgS(TDeviceContext(DestDC).Drawable),
+    ' DestDrawable='+DbgS(TGtkDeviceContext(DestDC).Drawable),
     ' DestOrigin='+dbgs(DestDCOrigin),
     ' Mask='+DbgS(Mask)+' XMask='+dbgs(XMask)+' YMask='+dbgs(YMask),
     ' SizeChange='+dbgs(SizeChange)+' ROpIsSpecial='+dbgs(ROpIsSpecial),
@@ -2958,6 +2916,7 @@ begin
   end;
   {$ENDIF}
 
+  {$note tode remove, earlier checks require drawable <> nil}
   if SrcDevContext.Drawable = nil
   then begin
     if DstDevContext.Drawable = nil
@@ -5338,22 +5297,21 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor);
 var
-  aDC     : TDeviceContext;
+  DC     : TGtkDeviceContext absolute CanvasHandle;
   DCOrigin: TPoint;
   GDKColor: TGDKColor;
 begin
-  aDC := TDeviceContext(CanvasHandle);
-  if (aDC = nil) or (aDC.Drawable = nil) then exit;
+  if (DC = nil) or (DC.Drawable = nil) then exit;
 
-  DCOrigin:=GetDCOffset(aDC);
+  DCOrigin := DC.Offset;
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
-  aDC.SelectedColors := dcscCustom;
-  GDKColor:=AllocGDKColor(AColor);
-  gdk_gc_set_foreground(aDC.GC, @GDKColor);
+  DC.SelectedColors := dcscCustom;
+  GDKColor := AllocGDKColor(AColor);
+  gdk_gc_set_foreground(DC.GC, @GDKColor);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  gdk_draw_point(aDC.Drawable, aDC.GC, X, Y);
+  gdk_draw_point(DC.Drawable, DC.GC, X, Y);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
@@ -5395,7 +5353,7 @@ end;
  ------------------------------------------------------------------------------}
 function  TGtkWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 var
-  aDC    : TDeviceContext;
+  DC    : TGtkDeviceContext absolute CanvasHandle;
   Image  : pGDKImage;
   GDKColor: TGDKColor;
   Colormap : PGDKColormap;
@@ -5404,30 +5362,29 @@ var
   Pixel: LongWord;
 begin
   Result := clNone;
-  aDC := TDeviceContext(CanvasHandle);
-  if (aDC = nil) or (aDC.Drawable = nil) then exit;
+  if (DC = nil) or (DC.Drawable = nil) then Exit;
 
-  DCOrigin:=GetDCOffset(TDeviceContext(aDC));
+  DCOrigin := DC.Offset;
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
-  gdk_drawable_get_size(aDC.Drawable, @MaxX, @MaxY);
+  gdk_drawable_get_size(DC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
 
-  Image := gdk_drawable_get_image(aDC.Drawable,X,Y,1,1);
+  Image := gdk_drawable_get_image(DC.Drawable,X,Y,1,1);
   if Image = nil then exit;
 
   {$ifdef Gtk1}
   // previously gdk_image_get_colormap(image) was used, implementation
   // was casting GdkImage to GdkWindow which is not valid and cause AVs
-  if gdk_window_get_type(PGdkWindow(aDC.Drawable))= GDK_WINDOW_PIXMAP then
+  if gdk_window_get_type(PGdkWindow(DC.Drawable))= GDK_WINDOW_PIXMAP then
     colormap := nil // pixmaps are created with null colormap, get system one instead
   else
-    colormap := gdk_window_get_colormap(PGdkWindow(aDC.Drawable));
+    colormap := gdk_window_get_colormap(PGdkWindow(DC.Drawable));
   {$else}
   colormap := gdk_image_get_colormap(image);
   if colormap = nil then
-    colormap := gdk_drawable_get_colormap(aDC.Drawable);
+    colormap := gdk_drawable_get_colormap(DC.Drawable);
   {$endif}
 
 
@@ -5435,7 +5392,7 @@ begin
     colormap := gdk_colormap_get_system;
 
   Pixel:=gdk_image_get_pixel(Image,0,0);
-  FillChar(GDKColor,SizeOf(GDKColor),0);
+  FillChar(GDKColor, SizeOf(GDKColor),0);
   // does not work with TBitmap.Canvas
   gdk_colormap_query_color(colormap, Pixel, @GDKColor);
 
@@ -5494,130 +5451,7 @@ begin
             and (PGdiObject(GDIObject)^.GDIType = GDIType);
 end;
 
-{------------------------------------------------------------------------------
-  Procedure: TGtkWidgetSet.SelectGDKBrushProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
 
-  Sets the forecolor and fill according to the brush
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SelectGDKBrushProps(DC: HDC);
-var
-  DevCon: TDeviceContext absolute DC;
-begin
-  if (DevCon.SelectedColors=dcscBrush) or DevCon.IsNullBrush
-  then
-    exit;
-
-  with DevCon do
-  begin
-    //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting BKColor ...');
-    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-    //DebugLn('TGtkWidgetSet.SelectGDKBrushProps Setting Brush Color ...');
-    EnsureGCColor(DC, dccGDIBrushColor, GetBrush^.GDIBrushFill = GDK_Solid, False);//Brush Color
-
-    if GetBrush^.GDIBrushFill <> GDK_Solid then
-      if GetBrush^.GDIBrushPixmap <> nil then
-      begin
-        gdk_gc_set_fill(GC, GetBrush^.GDIBrushFill);
-        if GetBrush^.GDIBrushFill = GDK_STIPPLED then
-          gdk_gc_set_stipple(GC, GetBrush^.GDIBrushPixmap)
-        else
-          gdk_gc_set_tile(GC, GetBrush^.GDIBrushPixmap);
-        gdk_gc_get_values(GC, @GCValues);
-      end
-  end;
-  DevCon.SelectedColors := dcscBrush;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: TGtkWidgetSet.SelectGDKTextProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the Textcolor
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SelectGDKTextProps(DC: HDC);
-begin
-  if TDeviceContext(DC).SelectedColors=dcscFont then exit;
-
-  with TDeviceContext(DC) do
-  begin
-    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, dccCurrentTextColor, False, False);//Font Color
-  end;
-  TDeviceContext(DC).SelectedColors:=dcscFont;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: TGtkWidgetSet.TGtkWidgetSet.SelectGDKPenProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the pen
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SelectGDKPenProps(DC: HDC);
-const
-{$ifdef windows}
-  OS_multiplier = 1;
-{$else}
-  OS_multiplier = 3;
-{$endif}
-  
-var
-  DevCon: TDeviceContext absolute DC;
-
-  procedure SetDashes(const Dashes: array of gint8);
-  begin
-    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    laz_gdk_gc_set_dashes(DevCon.GC,0,Pgint8(@Dashes[Low(Dashes)]),
-      High(Dashes)-Low(Dashes)+1);
-    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  end;
-
-begin
-  if DevCon.SelectedColors<>dcscPen
-  then begin
-    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
-    DevCon.SelectedColors:=dcscPen;
-  end;
-
-  if dcfPenSelected in Devcon.DCFlags then Exit;
-  Exclude(DevCon.DCFlags,dcfPenInvalid);
-  if DevCon.GC = nil then Exit;
-  
-  with DevCon, GetPen^ do
-  begin
-    IsNullPen := GDIPenStyle = PS_NULL;
-    if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
-    then begin
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-    end
-    else begin
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_ON_OFF_DASH, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-      
-      // Paul Ishenin: I comparet patterns with windows and changed numbers to make them the same
-      // but under linux dot is thinner than in windows, so I added os_multiplier to make them the same
-      // in resulting image
-      
-      case GDIPenStyle of
-        PS_DASH:       SetDashes([6*OS_multiplier,2*OS_multiplier]);
-        PS_DOT:        SetDashes([1*OS_multiplier,1*OS_multiplier]);
-        PS_DASHDOT:    SetDashes([3*OS_multiplier,2*OS_multiplier,1*OS_multiplier,2*OS_multiplier]);
-        PS_DASHDOTDOT: SetDashes([3*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier,1*OS_multiplier]);
-        //This is DEADLY!!!
-        //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
-      end;
-      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-    end;
-    gdk_gc_get_values(GC,@GCValues);
-  end;
-  Include(DevCon.DCFlags,dcfPenSelected);
-end;
 
 {------------------------------------------------------------------------------
   Function: NewDC
@@ -5628,11 +5462,22 @@ end;
   
   Used internally by: CreateCompatibleDC, CreateDCForWidget and SaveDC
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.NewDC: TDeviceContext;
+function TGtkWidgetSet.NewDC: TGtkDeviceContext;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.NewDC]', []));
-  Result:=NewDeviceContext;
+  
+  if FDCManager = nil
+  then begin
+    FDCManager := TDeviceContextMemManager.Create(GetDeviceContextClass);
+    FDCManager.MinimumFreeCount := 1000;
+  end;
+  Result := FDCManager.NewDeviceContext;
+  {$IFDEF DebugLCLComponents}
+  DebugDeviceContexts.MarkCreated(Result,'TGtkWidgetSet.NewDC');
+  {$ENDIF}
+
   FDeviceContexts.Add(Result);
+  
   {$ifdef TraceGdiCalls}
   FillStackAddrs(get_caller_frame(get_frame), @Result.StackAddrs);
   {$endif}
@@ -5641,10 +5486,10 @@ begin
 end;
 
 function TGTKWidgetSet.FindDCWithGDIObject(GDIObject: PGdiObject
-  ): TDeviceContext;
+  ): TGtkDeviceContext;
 var
   HashItem: PDynHashArrayItem;
-  DC: TDeviceContext;
+  DC: TGtkDeviceContext;
   g: TGDIType;
   Cnt: Integer;
 begin
@@ -5653,7 +5498,7 @@ begin
   HashItem:=FDeviceContexts.FirstHashItem;
   Cnt:=0;
   while HashItem<>nil do begin
-    DC:=TDeviceContext(HashItem^.Item);
+    DC:=TGtkDeviceContext(HashItem^.Item);
     for g:=Low(TGDIType) to High(TGDIType) do
       if DC.GDIObjects[g]=GdiObject then exit(DC);
     inc(Cnt);
@@ -5668,12 +5513,16 @@ end;
 
   Disposes a DC
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.DisposeDC(aDC: TDeviceContext);
+procedure TGtkWidgetSet.DisposeDC(aDC: TGtkDeviceContext);
 begin
-  if FDeviceContexts.Contains(aDC) then begin
-    FDeviceContexts.Remove(aDC);
-    GtkDef.DisposeDeviceContext(aDC);
-  end;
+  if not FDeviceContexts.Contains(aDC) then Exit;
+  
+  FDeviceContexts.Remove(aDC);
+  
+  {$IFDEF DebugLCLComponents}
+  DebugDeviceContexts.MarkDestroyed(ADC);
+  {$ENDIF}
+  FDCManager.DisposeDeviceContext(ADC);
 end;
 
 {------------------------------------------------------------------------------
@@ -5682,194 +5531,15 @@ end;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateDCForWidget(TheWidget: PGtkWidget;
-  TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
-
-  procedure RaiseWidgetWithoutClientArea;
-  begin
-    RaiseGDBException('TGtkWidgetSet.CreateWindowDC widget '
-      +DbgS(TheWidget)+' has no client area');
-  end;
-  
-  procedure WriteWidgetNotRealized(aWidget: PGtkWidget);
-  begin
-    {DebugLn(['NOTE: TGtkWidgetSet.CreateDCForWidget: ',
-    'creating a DC for a widget, which has not been realized yet: ',
-    GetWidgetDebugReport(aWidget),'. ',
-    'This means normally you do a visual operation on a control, that is not yet on any screen. ',
-    'Forcing .... ']);}
-    //DumpStack;
-  end;
+function TGtkWidgetSet.CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
+  AWithChildWindows: Boolean; ADoubleBuffer: PGdkDrawable): HDC;
 
 var
-  aDC: TDeviceContext;
-  ClientWidget: PGtkWidget;
+  DC: TGtkDeviceContext absolute Result;
+
 begin
-  aDC := nil;
-
-  aDC := NewDC;
-  aDC.WithChildWindows := WithChildWindows;
-  aDC.DCWidget := TheWidget;
-
-  ClientWidget := nil;
-
-  if TheWidget = nil
-  then begin
-    // screen: ToDo: multiple desktops
-  end
-  else begin
-    // create a new devicecontext for this window
-    if TheWindow=nil then begin
-      ClientWidget := GetFixedWidget(TheWidget);
-      if ClientWidget = nil then RaiseWidgetWithoutClientArea;
-      TheWindow:=GetControlWindow(ClientWidget);
-      if TheWindow=nil then begin
-        //force creation
-        if not GTK_WIDGET_REALIZED(ClientWidget) then
-          WriteWidgetNotRealized(ClientWidget);
-        gtk_widget_realize(ClientWidget);
-        TheWindow := GetControlWindow(ClientWidget);
-        if TheWindow=nil then
-          RaiseGDBException('TGtkWidgetSet.CreateDCForWidget: Unable to realize GdkWindow');
-      end;
-    end else
-      ClientWidget:=TheWidget;
-    aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
-    aDC.Drawable := TheWindow;
-    {$IFDEF Gtk1}
-    {$note todo: check if this is still needed} // now gc is a property
-    aDC.GC;
-    {$ELSE}
-    // GC is created on demand
-    {$ENDIF}
-  end;
-
-  with aDC do
-  begin
-    gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
-    BuildColorRefFromGDKColor(CurrentTextColor);
-    gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
-    BuildColorRefFromGDKColor(CurrentBackColor);
-  end;
-
-  {$Ifdef GTK1}
-  aDC.GetFont;
-  aDC.GetBrush;
-  aDC.GetPen;
-  {$ELSE}
-  // font, brush, pen are created on demand
-  {$EndIf}
-
-  Result := HDC(aDC);
-  Assert(False, Format('trace:< [TGtkWidgetSet.CreateDCForWidget] Got 0x%x', [Result]));
-end;
-
-procedure TGTKWidgetSet.OnCreateGCForDC(DC: TDeviceContext);
-{$IFDEF Gtk1}
-var
-  CurWidget: PGtkWidget;
-  CurWindow: PGdkWindow;
-{$ENDIF}
-begin
-  if DC.HasGC
-  then begin
-    debugLN('[WARNING] OnCreateGCForDC called while GC exists');
-    Exit;
-  end;
-
-  // create GC
-  if DC.Drawable<>nil then begin
-    if DC.WithChildWindows then begin
-      FillChar(DC.GCValues, SizeOf(DC.GCValues), #0);
-      DC.GCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
-      DC.GC:=gdk_gc_new_with_values(DC.Drawable,
-                                 @DC.GCValues,GDK_GC_FUNCTION or GDK_GC_SUBWINDOW);
-    end else begin
-      DC.GC:=gdk_gc_new(DC.Drawable);
-    end;
-  end else begin
-    // create default GC
-    {$IFDEF Gtk1}
-    CurWidget:=GetStyleWidget(lgsWindow);
-    CurWindow:=CurWidget^.window;
-    DC.GC:=gdk_gc_new(CurWindow);
-    {$ELSE}
-    DC.GC:=gdk_gc_new(gdk_screen_get_root_window(gdk_screen_get_default));
-    {$ENDIF}
-  end;
-  if DC.HasGC
-  then begin
-    gdk_gc_set_function(DC.GC, GDK_COPY);
-    gdk_gc_get_values(DC.GC, @DC.GCValues);
-  end;
-end;
-
-procedure TGTKWidgetSet.OnCreateGDIObjectForDC(DC: TDeviceContext;
-  aGDIType: TGDIType);
-begin
-  case aGDIType of
-  gdiFont: OnCreateFontForDC(DC);
-  gdiBrush: OnCreateBrushForDC(DC);
-  gdiPen: OnCreatePenForDC(DC);
-  gdiBitmap: OnCreateGDIBitmapForDC(DC);
-  else RaiseGDBException('TGTKWidgetSet.OnCreateGDIObjectForDC');
-  end;
-end;
-
-procedure TGTKWidgetSet.OnCreateFontForDC(DC: TDeviceContext);
-{$IFDEF Gtk2}
-var
-  ClientWidget: PGtkWidget;
-{$ENDIF}
-begin
-  if DC.CurrentFont<>nil then exit;
-
-  // create font
-  {$IFDEF Gtk1}
-  if DC.GCValues.Font <> nil then begin
-    DC.CurrentFont:=NewGDIObject(gdiFont);
-    DC.CurrentFont^.GDIFontObject := DC.GCValues.Font;
-    FontCache.Reference(DC.CurrentFont^.GDIFontObject);
-  end else
-    DC.CurrentFont:=CreateDefaultFont;
-  {$ELSE}
-  if DC.DCWidget<>nil then begin
-    ClientWidget:=GetFixedWidget(DC.DCWidget);
-    //DebugLn(['TGTKWidgetSet.OnCreateFontForDC ClientWidget=',GetWidgetDebugReport(ClientWidget)]);
-    DC.CurrentFont:=NewGDIObject(gdiFont);
-    DC.CurrentFont^.GDIFontObject:=
-                               gtk_widget_create_pango_layout(ClientWidget,nil);
-    if FontCache.FindGTKFont(GetGtkFont(DC))<>nil then
-      RaiseGDBException('inconsistency: font already in cache, maybe freed, but not removed from cache');
-    FontCache.AddWithoutName(DC.CurrentFont^.GDIFontObject);
-    if FontCache.FindGTKFont(GetGtkFont(DC))=nil then
-      RaiseGDBException('inconsistency: font added to cache, but can not be found');
-  end else
-    DC.CurrentFont:=CreateDefaultFont;
-  //DebugLn(['TGTKWidgetSet.OnCreateFontForDC DC=',dbghex(PtrInt(DC)),' Font=',dbghex(PtrInt(DC.CurrentFont)),' DC.DCWidget=',GetWidgetDebugReport(DC.DCWidget)]);
-  {$ENDIF}
-  DC.OwnedGDIObjects[gdiFont]:=DC.CurrentFont;
-end;
-
-procedure TGTKWidgetSet.OnCreateBrushForDC(DC: TDeviceContext);
-begin
-  if DC.CurrentBrush<>nil then exit;
-  DC.CurrentBrush := CreateDefaultBrush;
-  DC.OwnedGDIObjects[gdiBrush]:=DC.CurrentBrush;
-end;
-
-procedure TGTKWidgetSet.OnCreatePenForDC(DC: TDeviceContext);
-begin
-  if DC.CurrentPen<>nil then exit;
-  DC.CurrentPen := CreateDefaultPen;
-  DC.OwnedGDIObjects[gdiPen]:=DC.CurrentPen;
-end;
-
-procedure TGTKWidgetSet.OnCreateGDIBitmapForDC(DC: TDeviceContext);
-begin
-  if DC.CurrentBitmap<>nil then exit;
-  DC.CurrentBitmap := CreateDefaultGDIBitmap;
-  DC.OwnedGDIObjects[gdiBitmap]:=DC.CurrentBitmap;
+  DC := NewDC;
+  DC.SetWidget(AWidget, AWindow, AWithChildWindows, ADoubleBuffer);
 end;
 
 {------------------------------------------------------------------------------
@@ -5884,7 +5554,7 @@ var
   BufferWidth, BufferHeight: integer;
   DoubleBuffer: PGdkPixmap;
   BufferCreated: Boolean;
-  DevContext: TDeviceContext absolute Result;
+  DevContext: TGtkDeviceContext absolute Result;
   CaretWasVisible: Boolean;
   MainWidget: PGtkWidget;
   GC: PGdkGC;
@@ -5930,17 +5600,16 @@ begin
       ' Width=',Width,' Height=',Height);
     {$ENDIF}
     DoubleBuffer:=gdk_pixmap_new(AWindow,Width,Height,-1);
-    WidgetInfo^.DoubleBuffer:=DoubleBuffer;
+    WidgetInfo^.DoubleBuffer := DoubleBuffer;
     BufferCreated:=true;
   end;
 
   // create DC for double buffer
-  Result:=CreateDCForWidget(Widget,PGDKWindow(DoubleBuffer),false);
+  Result := CreateDCForWidget(Widget, Widget^.Window, False, DoubleBuffer);
 
-  DevContext.OriginalDrawable:=Widget^.Window;
-  Include(DevContext.DCFlags,dcfDoubleBuffer);
 
-  if BufferCreated then begin
+  if BufferCreated
+  then begin
     // create GC
     GC:=DevContext.GC;
     // copy old context to buffer
@@ -6077,11 +5746,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
+  procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TGtkDeviceContext);
 
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
+procedure TGtkWidgetSet.UpdateDCTextMetric(DC: TGtkDeviceContext);
 const
   TestString: array[boolean] of string = (
     // single byte char font
@@ -6108,12 +5777,12 @@ var
   aRect: TPangoRectangle;
   {$ENDIF}
 begin
-  with TDeviceContext(DC) do begin
-    if dcfTextMetricsValid in DCFlags then begin
+  with TGtkDeviceContext(DC) do begin
+    if dcfTextMetricsValid in Flags then begin
       // cache valid
       exit;
     end;
-    UseFont:=GetGtkFont(TDeviceContext(DC));
+    UseFont:=GetGtkFont(TGtkDeviceContext(DC));
     FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
     CachedFont:=FontCache.FindGTKFont(UseFont);
     if (CachedFont=nil) and (UseFont <> GetDefaultGtkFont(false)) then begin
@@ -6165,7 +5834,7 @@ begin
         TextMetric.tmMaxCharWidth:=TextMetric.tmAveCharWidth;
       {$ELSE Gtk2}
       // get pango context (= association to a widget)
-      AWidget:=DCWidget;
+      AWidget:=Widget;
       if AWidget=nil then
         AWidget:=GetStyleWidget(lgsLabel);
       APangoContext := gtk_widget_get_pango_context(AWidget);
@@ -6236,7 +5905,7 @@ begin
         CachedFont.MetricsValid:=true;
       end;
     end;
-    Include(DCFlags,dcfTextMetricsValid);
+    Include(Flags,dcfTextMetricsValid);
   end;
 end;
 
@@ -6277,7 +5946,7 @@ begin
     ReferenceGtkIntfFont(Result); // mark again
 end;
 
-function TGTKWidgetSet.GetGtkFont(DC: TDeviceContext): TGtkIntfFont;
+function TGTKWidgetSet.GetGtkFont(DC: TGtkDeviceContext): TGtkIntfFont;
 begin
   {$IFDEF Gtk}
   if (DC.CurrentFont = nil) or (DC.CurrentFont^.GDIFontObject = nil)
@@ -6308,7 +5977,7 @@ var
 begin
   Result:=false;
   if not IsValidDC(DC) then exit;
-  CurClipRegion:=HRGN(PtrUInt(TDeviceContext(DC).ClipRegion));
+  CurClipRegion:=HRGN(PtrUInt(TGtkDeviceContext(DC).ClipRegion));
   if (CurClipRegion<>0) and (not IsValidGDIObject(CurClipRegion)) then exit;
   Result:=true;
 end;
@@ -6589,7 +6258,7 @@ var
 
   procedure InitFont;
   begin
-    UseFont:=GetGtkFont(TDeviceContext(DC));
+    UseFont:=GetGtkFont(TGtkDeviceContext(DC));
   end;
 
 var
@@ -6666,53 +6335,6 @@ begin
   CurLineEntry[i shr 1]:=nil;
 
   LinesList.Free;
-end;
-
-function TGtkWidgetSet.ROP2ModeToGdkFunction(Mode: Integer): TGdkFunction;
-begin
-  case Mode of
-    R2_COPYPEN:     result := GDK_COPY;
-    R2_NOT:         result := GDK_INVERT;
-    R2_XORPEN:      result := GDK_XOR;
-    R2_BLACK:       result := GDK_CLEAR;
-    R2_MASKPEN:     result := GDK_AND;
-    R2_MASKPENNOT:  result := GDK_AND_REVERSE;
-    R2_MASKNOTPEN:  result := GDK_AND_INVERT;
-    R2_NOP:         result := GDK_NOOP;
-    R2_MERGEPEN:    result := GDK_OR;
-    R2_NOTXORPEN:   result := GDK_EQUIV;
-    R2_MERGEPENNOT: result := GDK_OR_REVERSE;
-    R2_NOTCOPYPEN:  result := GDK_COPY_INVERT;
-    R2_NOTMASKPEN:  result := GDK_NAND;
-    //R2_NOTMERGEPEN: result := GDK_NOR;
-    R2_WHITE:       result := GDK_SET;
-    else
-      result := GDK_COPY;
-  end;
-end;
-
-function TGtkWidgetSet.GdkFunctionToROP2Mode(const aFunction: TGdkFunction
-  ): Integer;
-begin
-  case aFunction of
-    GDK_COPY:         result := R2_COPYPEN;
-    GDK_INVERT:       result := R2_NOT;
-    GDK_XOR:          result := R2_XORPEN;
-    GDK_CLEAR:        result := R2_BLACK;
-    GDK_AND:          result := R2_MASKPEN;
-    GDK_AND_REVERSE:  result := R2_MASKPENNOT;
-    GDK_AND_INVERT:   result := R2_MASKNOTPEN;
-    GDK_NOOP:         result := R2_NOP;
-    GDK_OR:           result := R2_MERGEPEN;
-    GDK_EQUIV:        result := R2_NOTXORPEN;
-    GDK_OR_REVERSE:   result := R2_MERGEPENNOT;
-    GDK_COPY_INVERT:  result := R2_NOTCOPYPEN;
-    GDK_NAND:         result := R2_NOTMASKPEN;
-    //GDK_NOR:          result := R2_NOTMERGEPEN;
-    GDK_SET:          result := R2_WHITE;
-    else
-      result := R2_COPYPEN;
-  end;
 end;
 
 function TGtkWidgetSet.ForceLineBreaks(DC: hDC; Src: PChar;

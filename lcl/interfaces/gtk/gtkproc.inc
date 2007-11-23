@@ -966,16 +966,16 @@ end;
 procedure FinalizePaintMessage(Msg: PLMessage);
 var
   PS : PPaintStruct;
-  DC : TDeviceContext;
+  DC : TGtkDeviceContext;
 begin
   if (Msg^.Msg=LM_PAINT) or (Msg^.Msg=LM_INTERNALPAINT) then begin
     If Msg^.LParam <> 0 then begin
        PS := PPaintStruct(Msg^.LParam);
        If Msg^.WParam<>0 then
-         DC := TDeviceContext(Msg^.WParam)
+         DC := TGtkDeviceContext(Msg^.WParam)
        else
-         DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(PtrUInt(DC.DCWidget)), PS^);
+         DC := TGtkDeviceContext(PS^.hdc);
+       EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -993,16 +993,16 @@ end;
 procedure FinalizePaintTagMsg(Msg: PMsg);
 var
   PS : PPaintStruct;
-  DC : TDeviceContext;
+  DC : TGtkDeviceContext;
 begin
   if (Msg^.Message=LM_PAINT) or (Msg^.Message=LM_INTERNALPAINT) then begin
     If Msg^.LParam <> 0 then begin
        PS := PPaintStruct(Msg^.LParam);
        If Msg^.WParam<>0 then
-         DC := TDeviceContext(Msg^.WParam)
+         DC := TGtkDeviceContext(Msg^.WParam)
        else
-         DC := TDeviceContext(PS^.hdc);
-       EndPaint(THandle(PtrUInt(DC.DCWidget)), PS^);
+         DC := TGtkDeviceContext(PS^.hdc);
+       EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
        Dispose(PS);
        Msg^.LParam:=0;
        Msg^.WParam:=0;
@@ -1047,7 +1047,7 @@ begin
   end;
 end;
 
-procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
+procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X, Y, Width, Height: integer; ClipMergeMask: PGdkPixmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
   var NewClipMask: PGdkPixmap);
@@ -1069,7 +1069,7 @@ begin
   {$ENDIF}
 
   // activate clipping region of destination
-  SelectGDIRegion(HDC(DestinationDC));
+  DestinationDC.SelectRegion;
   NewClipMask := nil;
   if (ClipMergeMask = nil) then exit;
 
@@ -1125,15 +1125,6 @@ begin
   // position.
   gdk_gc_set_clip_mask(DestinationGC, NewClipMask);
   gdk_gc_set_clip_origin(DestinationGC, x, y);
-  EndGDKErrorTrap;
-end;
-
-procedure ResetGCClipping(DC: HDC; GC: PGDKGC);
-begin
-  BeginGDKErrorTrap;
-  gdk_gc_set_clip_mask(GC, nil);
-  gdk_gc_set_clip_origin (GC, 0,0);
-  SelectGDIRegion(DC);
   EndGDKErrorTrap;
 end;
 
@@ -1546,83 +1537,6 @@ begin
   {$ENDIF}
 end;
 
-{------------------------------------------------------------------------------
-  Function: CopyDCData - used by RestoreDC and SaveDC
-  Params:  DestinationDC:  a dc to copy data to
-           SourceDC: a dc to copy data from
-           ClearSource: set true to make a move operation
-           MoveGDIOwnerShip: set true to pass the ownership of the GDI objects
-                             to Destination
-  Returns: True if succesful
-
-  Creates a copy DC from the given DC
- ------------------------------------------------------------------------------}
-function CopyDCData(SourceDC, DestinationDC: TDeviceContext;
-  ClearSource, MoveGDIOwnerShip: boolean): Boolean;
-var
-  g: TGDIType;
-  CurGDIObject: PGDIObject;
-begin
-  //  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
-  Result := (DestinationDC <> nil) and (SourceDC <> nil);
-  if Result
-  then begin
-    with DestinationDC do
-    begin
-      DCWidget := SourceDC.DCWidget;
-      WithChildWindows := SourceDC.WithChildWindows;
-      Drawable := SourceDC.Drawable;
-      OriginalDrawable := SourceDC.OriginalDrawable;
-      if GC<>nil then begin
-        // free old GC
-        BeginGDKErrorTrap;
-        gdk_gc_unref(GC);
-        EndGDKErrorTrap;
-        GC:=nil;
-        DCFlags:=DCFlags-[dcfPenSelected];
-      end;
-      if (SourceDC.GC <> nil) and (Drawable <> nil) then begin
-        {$IFDEF DebugGDK} BeginGDKErrorTrap; {$ENDIF}
-        gdk_gc_get_values(SourceDC.GC, @GCValues);
-        GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
-        {$IFDEF DebugGDK} EndGDKErrorTrap; {$ENDIF}
-        DCFlags:=DCFlags-[dcfPenSelected];
-      end;
-      
-      Origin := SourceDC.Origin;
-      SpecialOrigin := SourceDC.SpecialOrigin;
-      PenPos := SourceDC.PenPos;
-      
-      if (dcfTextMetricsValid in SourceDC.DCFlags) then begin
-        Include(DCFlags,dcfTextMetricsValid);
-        DCTextMetric := SourceDC.DCTextMetric;
-      end else
-        Exclude(DCFlags,dcfTextMetricsValid);
-        
-      for g:=Low(TGDIType) to High(TGDIType) do begin
-        GDIObjects[g]:=SourceDC.GDIObjects[g];
-        if ClearSource then
-          SourceDC.GDIObjects[g]:=nil;
-        if MoveGDIOwnerShip then begin
-          if OwnedGDIObjects[g]<>nil then begin
-            DeleteObject(HGDIOBJ(PtrUInt(OwnedGDIObjects[g])));
-          end;
-          CurGDIObject:=SourceDC.OwnedGDIObjects[g];
-          if CurGDIObject<>nil then begin
-            SourceDC.OwnedGDIObjects[g]:=nil;
-            OwnedGDIObjects[g]:=CurGDIObject;
-          end;
-        end;
-      end;
-      CopyGDIColor(SourceDC.CurrentTextColor,CurrentTextColor);
-      CopyGDIColor(SourceDC.CurrentBackColor,CurrentBackColor);
-
-      SelectedColors := dcscCustom;
-      SavedContext := nil;
-    end;
-  end;
-//  Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
-end;
 
 Function RegionType(RGN: PGDKRegion) : Longint;
 var
@@ -1651,34 +1565,6 @@ begin
   {$ENDIF}
 end;
 
-{------------------------------------------------------------------------------
-  Procedure SelectGDIRegion(const DC: HDC);
-
-  Applies the current clipping region of the DC (DeviceContext) to the
-  gc (GDK Graphic context - pgdkGC)
- ------------------------------------------------------------------------------}
-Procedure SelectGDIRegion(const DC: HDC);
-var
-  RGNType : Longint;
-begin
-  with TDeviceContext(DC) do
-  begin
-    {$IFDEF DebugGDK}
-    BeginGDKErrorTrap;
-    {$ENDIF}
-    gdk_gc_set_clip_region(GC,  nil);
-    gdk_gc_set_clip_rectangle (GC,  nil);
-    If (ClipRegion <> nil) then begin
-      RGNType := RegionType(ClipRegion^.GDIRegionObject);
-      If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        gdk_gc_set_clip_region(GC,  ClipRegion^.GDIRegionObject);
-      end;
-    end;
-    {$IFDEF DebugGDK}
-    EndGDKErrorTrap;
-    {$ENDIF}
-   end;
-end;
 
 function GDKRegionAsString(RGN: PGDKRegion): string;
 var
@@ -1745,7 +1631,7 @@ begin
       Pixel := 0;
     end;
 
-    {with TDeviceContext(DC) do
+    {with TGtkDeviceContext(DC) do
       If CurrentPalette <> nil then
         GDIColor.Colormap := CurrentPalette^.PaletteColormap
       else}
@@ -1763,7 +1649,7 @@ begin
   Include(GDIColor.ColorFlags,cfColorAllocated);
 end;
 
-Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
+procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush, AsBackground: Boolean);
 var
   GC: PGDKGC;
@@ -1780,14 +1666,14 @@ var
       );
   end;
 
-  Procedure EnsureAsGCValues;
+  procedure EnsureAsGCValues;
   var
     AllocFG : Boolean;
     SysGCValues: TGdkGCValues;
   begin
     FreeGDIColor(GDIColor);
     SysGCValues:=GetSysGCValues(GDIColor^.ColorRef,
-                                TDeviceContext(DC).DCWidget);
+                                TGtkDeviceContext(DC).Widget);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     With SysGCValues do begin
       gdk_gc_set_fill(GC, fill);
@@ -1835,9 +1721,9 @@ var
   end;
 
 begin
-  GC:=TDeviceContext(DC).GC;
+  GC:=TGtkDeviceContext(DC).GC;
   GDIColor:=nil;
-  with TDeviceContext(DC) do
+  with TGtkDeviceContext(DC) do
   begin
     case ColorType of
     dccCurrentBackColor: GDIColor:=@CurrentBackColor;
@@ -4115,42 +4001,6 @@ begin
     RaiseGDBException('GetControlWindow Widget=nil');
 end;
 
-{------------------------------------------------------------------------------
-  function GetDCOffset(DC: TDeviceContext): TPoint;
-
-  Returns the DC offset for the DC Origin.
- ------------------------------------------------------------------------------}
-function GetDCOffset(DC: TDeviceContext): TPoint;
-var
-  Fixed : PGTKWIdget;
-  Adjustment: PGtkAdjustment;
-begin
-  if (DC<>nil) then begin
-    Result:=DC.Origin;
-    {$Ifdef GTK2}
-      if (DC.DCWidget<>nil) and GTK_WIDGET_NO_WINDOW(DC.DCWidget)
-        and (not GtkWidgetIsA(DC.DCWidget,GTKAPIWidget_GetType))
-      then begin
-        Inc(Result.X, DC.DCWidget^.Allocation.x);
-        Inc(Result.y, DC.DCWidget^.Allocation.y);
-      end;
-    {$EndIf}
-    if (DC.SpecialOrigin) and (DC.DCWidget<>nil) then begin
-      Fixed := GetFixedWidget(DC.DCWidget);
-      if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
-        Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
-        if Adjustment<>nil then
-          dec(Result.X,TruncToInt(Adjustment^.Value-Adjustment^.Lower));
-        Adjustment:=gtk_layout_get_vadjustment(PGtkLayout(Fixed));
-        if Adjustment<>nil then
-          dec(Result.Y,TruncToInt(Adjustment^.Value-Adjustment^.Lower));
-      end;
-    end;
-  end else begin
-    Result.X:=0;
-    Result.Y:=0;
-  end;
-end;
 
 
 
@@ -9806,7 +9656,7 @@ begin
 end;
 
 function GetTextHeight(DCTextMetric: TDevContextTextMetric): integer;
-// IMPORTANT: Before this call:  UpdateDCTextMetric(TDeviceContext(DC));
+// IMPORTANT: Before this call:  UpdateDCTextMetric(TGtkDeviceContext(DC));
 begin
   {$IfDef Win32}
   Result := DCTextMetric.TextMetric.tmHeight div 2;

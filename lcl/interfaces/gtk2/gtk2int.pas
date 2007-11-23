@@ -48,7 +48,7 @@ uses
   GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,
   {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
-  gtkDef, gtkFontCache, gtkInt, GtkExtra;
+  GtkDef, Gtk2Def, GtkFontCache, GtkInt, GtkExtra;
 
 type
 
@@ -81,6 +81,7 @@ type
       PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
 
     function CreateThemeServices: TThemeServices; override;
+    function GetDeviceContextClass: TGtkDeviceContextClass; override;
   public
     constructor Create;
     destructor Destroy; override;

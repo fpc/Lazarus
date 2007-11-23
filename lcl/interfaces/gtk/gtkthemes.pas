@@ -142,180 +142,179 @@ end;
 function TGtkThemeServices.GetGtkStyleParams(DC: HDC;
   Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams;
 var
+  DevCtx: TGtkDeviceContext absolute DC;
   ClientWidget: PGtkWidget;
 begin
   Result.Style := nil;
   
-  if GTKWidgetSet.IsValidDC(DC) then
-    with TDeviceContext(DC) do
-    begin
-      Result.Widget := DCWidget;
-      ClientWidget := GetFixedWidget(Result.Widget);
-      if ClientWidget <> nil then
-        Result.Widget := ClientWidget;
-      Result.Window := Drawable;
-      Result.Origin := GetDCOffset(TDeviceContext(DC));
-      Result.Style := gtk_widget_get_style(Result.Widget);
-      if Result.Style = nil then
-        Result.Style := gtk_widget_get_default_style();
+  if not GTKWidgetSet.IsValidDC(DC) then Exit;
+  
+  Result.Widget := DevCtx.Widget;
+  ClientWidget := GetFixedWidget(Result.Widget);
+  if ClientWidget <> nil then
+    Result.Widget := ClientWidget;
+  Result.Window := DevCtx.Drawable;
+  Result.Origin := DevCtx.Offset;
+  Result.Style := gtk_widget_get_style(Result.Widget);
+  if Result.Style = nil then
+    Result.Style := gtk_widget_get_default_style();
 
-      Result.Painter := gptDefault;
-      Result.State := GTK_STATE_NORMAL;
-      Result.Detail := '';
-      Result.Shadow := GTK_SHADOW_NONE;
-      Result.ArrowType := GTK_ARROW_UP;
-      Result.Fill := False;
-      Result.IsHot := False;
+  Result.Painter := gptDefault;
+  Result.State := GTK_STATE_NORMAL;
+  Result.Detail := '';
+  Result.Shadow := GTK_SHADOW_NONE;
+  Result.ArrowType := GTK_ARROW_UP;
+  Result.Fill := False;
+  Result.IsHot := False;
 
-      case Details.Element of
-        teButton:
-          begin
-            case Details.Part of
-              BP_PUSHBUTTON:
-                begin
-                  Result.Widget := GetStyleWidget(lgsButton);
-                  Result.State := GtkButtonMap[Details.State];
-                  if Details.State = PBS_PRESSED then
-                    Result.Shadow := GTK_SHADOW_IN
-                  else
-                    Result.Shadow := GTK_SHADOW_OUT;
-                    
-                  Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
+  case Details.Element of
+    teButton:
+      begin
+        case Details.Part of
+          BP_PUSHBUTTON:
+            begin
+              Result.Widget := GetStyleWidget(lgsButton);
+              Result.State := GtkButtonMap[Details.State];
+              if Details.State = PBS_PRESSED then
+                Result.Shadow := GTK_SHADOW_IN
+              else
+                Result.Shadow := GTK_SHADOW_OUT;
+                
+              Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
 
-                  Result.Detail := 'button';
+              Result.Detail := 'button';
+              Result.Painter := gptBox;
+            end;
+          BP_RADIOBUTTON:
+            begin
+              Result.Widget := GetStyleWidget(lgsRadiobutton);
+              Result.State := GtkRadioCheckBoxMap[Details.State];
+              if Details.State >= RBS_CHECKEDNORMAL then
+                Result.Shadow := GTK_SHADOW_IN
+              else
+                Result.Shadow := GTK_SHADOW_OUT;
+              Result.Detail := 'radiobutton';
+              Result.Painter := gptOption;
+            end;
+          BP_CHECKBOX:
+            begin
+              Result.Widget := GetStyleWidget(lgsCheckbox);
+              Result.State := GtkRadioCheckBoxMap[Details.State];
+              Result.Detail := 'checkbutton';
+              if Details.State >= CBS_MIXEDNORMAL then
+                result.Shadow := GTK_SHADOW_ETCHED_IN
+              else
+              if Details.State >= CBS_CHECKEDNORMAL then
+                Result.Shadow := GTK_SHADOW_IN
+              else
+                Result.Shadow := GTK_SHADOW_OUT;
+              Result.Painter := gptCheck;
+            end;
+        end;
+      end;
+    teHeader:
+      begin
+        Result.Widget := GetStyleWidget(lgsButton);
+        Result.State := GtkButtonMap[Details.State];
+        if Details.State = PBS_PRESSED then
+          Result.Shadow := GTK_SHADOW_IN
+        else
+          Result.Shadow := GTK_SHADOW_OUT;
+
+        Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
+
+        Result.Detail := 'button';
+        Result.Painter := gptBox;
+      end;
+    teToolBar:
+      begin
+        case Details.Part of
+          TP_BUTTON,
+          TP_DROPDOWNBUTTON,
+          TP_SPLITBUTTON,
+          TP_SPLITBUTTONDROPDOWN:
+            begin
+              if (Details.Part = TP_SPLITBUTTONDROPDOWN) and (AIndex = 1) then
+              begin
+                Result.Detail := 'arrow';
+                Result.ArrowType := GTK_ARROW_DOWN;
+                Result.Fill := True;
+                Result.Painter := gptArrow;
+              end
+              else
+              begin
+                Result.Widget := GetStyleWidget(lgsToolButton);
+                Result.State := GtkButtonMap[Details.State];
+                if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
+                  Result.Shadow := GTK_SHADOW_IN
+                else
+                if Details.State in [TS_HOT] then
+                  Result.Shadow := GTK_SHADOW_ETCHED_IN
+                else
+                  Result.Shadow := GTK_SHADOW_NONE;
+
+                Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
+
+                Result.Detail := 'button';
+                if Result.Shadow = GTK_SHADOW_NONE then
+                  Result.Painter := gptNone
+                else
                   Result.Painter := gptBox;
-                end;
-              BP_RADIOBUTTON:
-                begin
-                  Result.Widget := GetStyleWidget(lgsRadiobutton);
-                  Result.State := GtkRadioCheckBoxMap[Details.State];
-                  if Details.State >= RBS_CHECKEDNORMAL then
-                    Result.Shadow := GTK_SHADOW_IN
-                  else
-                    Result.Shadow := GTK_SHADOW_OUT;
-                  Result.Detail := 'radiobutton';
-                  Result.Painter := gptOption;
-                end;
-              BP_CHECKBOX:
-                begin
-                  Result.Widget := GetStyleWidget(lgsCheckbox);
-                  Result.State := GtkRadioCheckBoxMap[Details.State];
-                  Result.Detail := 'checkbutton';
-                  if Details.State >= CBS_MIXEDNORMAL then
-                    result.Shadow := GTK_SHADOW_ETCHED_IN
-                  else
-                  if Details.State >= CBS_CHECKEDNORMAL then
-                    Result.Shadow := GTK_SHADOW_IN
-                  else
-                    Result.Shadow := GTK_SHADOW_OUT;
-                  Result.Painter := gptCheck;
-                end;
+              end;
             end;
-          end;
-        teHeader:
-          begin
-            Result.Widget := GetStyleWidget(lgsButton);
-            Result.State := GtkButtonMap[Details.State];
-            if Details.State = PBS_PRESSED then
-              Result.Shadow := GTK_SHADOW_IN
-            else
-              Result.Shadow := GTK_SHADOW_OUT;
-
-            Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
-
-            Result.Detail := 'button';
-            Result.Painter := gptBox;
-          end;
-        teToolBar:
-          begin
-            case Details.Part of
-              TP_BUTTON,
-              TP_DROPDOWNBUTTON,
-              TP_SPLITBUTTON,
-              TP_SPLITBUTTONDROPDOWN:
-                begin
-                  if (Details.Part = TP_SPLITBUTTONDROPDOWN) and (AIndex = 1) then
-                  begin
-                    Result.Detail := 'arrow';
-                    Result.ArrowType := GTK_ARROW_DOWN;
-                    Result.Fill := True;
-                    Result.Painter := gptArrow;
-                  end
-                  else
-                  begin
-                    Result.Widget := GetStyleWidget(lgsToolButton);
-                    Result.State := GtkButtonMap[Details.State];
-                    if Details.State in [TS_PRESSED, TS_CHECKED, TS_HOTCHECKED] then
-                      Result.Shadow := GTK_SHADOW_IN
-                    else
-                    if Details.State in [TS_HOT] then
-                      Result.Shadow := GTK_SHADOW_ETCHED_IN
-                    else
-                      Result.Shadow := GTK_SHADOW_NONE;
-
-                    Result.IsHot := Details.State in [TS_HOT, TS_HOTCHECKED];
-
-                    Result.Detail := 'button';
-                    if Result.Shadow = GTK_SHADOW_NONE then
-                      Result.Painter := gptNone
-                    else
-                      Result.Painter := gptBox;
-                  end;
-                end;
-              TP_SEPARATOR,
-              TP_SEPARATORVERT:
-                begin
-                  Result.State := GTK_STATE_NORMAL;
-                  Result.Shadow := GTK_SHADOW_NONE;
-                  Result.Detail := 'toolbar';
-                  if Details.Part = TP_SEPARATOR then
-                    Result.Painter := gptVLine
-                  else
-                    Result.Painter := gptHLine;
-                end;
+          TP_SEPARATOR,
+          TP_SEPARATORVERT:
+            begin
+              Result.State := GTK_STATE_NORMAL;
+              Result.Shadow := GTK_SHADOW_NONE;
+              Result.Detail := 'toolbar';
+              if Details.Part = TP_SEPARATOR then
+                Result.Painter := gptVLine
+              else
+                Result.Painter := gptHLine;
             end;
-          end;
-        teRebar:
-          begin
-            case Details.Part of
-              RP_GRIPPER, RP_GRIPPERVERT:
-                begin
-                  Result.State := GTK_STATE_NORMAL;
-                  Result.Shadow := GTK_SHADOW_NONE;
+        end;
+      end;
+    teRebar:
+      begin
+        case Details.Part of
+          RP_GRIPPER, RP_GRIPPERVERT:
+            begin
+              Result.State := GTK_STATE_NORMAL;
+              Result.Shadow := GTK_SHADOW_NONE;
 { This code has problems with some (is not most) of gtk1 themes.
-  But at least Ubuntu >= 6.10 works fine. So it is commented out and switched
-  to alternate splitter painting}
+But at least Ubuntu >= 6.10 works fine. So it is commented out and switched
+to alternate splitter painting}
 
-                  if Details.Part = RP_GRIPPER then
-                  begin
-                    Result.Detail := 'hpaned';
-                    Result.Widget := GetStyleWidget(lgsHorizontalPaned);
-                  end
-                  else
-                  begin
-                    Result.Detail := 'vpaned';
-                    Result.Widget := GetStyleWidget(lgsVerticalPaned);
-                  end;
-                  Result.Painter := gptBox;
+              if Details.Part = RP_GRIPPER then
+              begin
+                Result.Detail := 'hpaned';
+                Result.Widget := GetStyleWidget(lgsHorizontalPaned);
+              end
+              else
+              begin
+                Result.Detail := 'vpaned';
+                Result.Widget := GetStyleWidget(lgsVerticalPaned);
+              end;
+              Result.Painter := gptBox;
 
 {                  Result.Detail := 'paned';
-                  Result.Painter := gptHandle;
-                  if Details.Part = RP_GRIPPER then
-                    Result.Orientation := GTK_ORIENTATION_VERTICAL
-                  else
-                    Result.Orientation := GTK_ORIENTATION_HORIZONTAL;}
-                end;
-              RP_BAND:
-                begin
-                  Result.State := GtkButtonMap[Details.State];
-                  Result.Shadow := GTK_SHADOW_NONE;
-                  Result.Detail := 'paned';
-                  Result.Painter := gptFlatBox;
-                end;
+              Result.Painter := gptHandle;
+              if Details.Part = RP_GRIPPER then
+                Result.Orientation := GTK_ORIENTATION_VERTICAL
+              else
+                Result.Orientation := GTK_ORIENTATION_HORIZONTAL;}
             end;
-          end;
+          RP_BAND:
+            begin
+              Result.State := GtkButtonMap[Details.State];
+              Result.Shadow := GTK_SHADOW_NONE;
+              Result.Detail := 'paned';
+              Result.Painter := gptFlatBox;
+            end;
+        end;
       end;
-    end;
+  end;
 end;
 
 function TGtkThemeServices.InitThemes: Boolean;

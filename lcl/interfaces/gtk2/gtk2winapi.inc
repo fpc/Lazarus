@@ -35,32 +35,35 @@
 //##apiwiz##sps##   // Do not remove
 
 
-function TGtk2WidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+function TGtk2WidgetSet.BeginPaint(Handle: hWnd; var PS : TPaintStruct) : hdc;
 var
   paintrect : TGDKRectangle;
   Control: TWinControl;
 begin
-  result := Inherited BeginPaint(Handle, PS);
+  result := inherited BeginPaint(Handle, PS);
   
-  if Handle <> 0 then Control := TWinControl(GetLCLObject(Pointer(Handle)))
+  if Handle <> 0
+  then Control := TWinControl(GetLCLObject(Pointer(Handle)))
   else Control := nil;
 
-  If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle))))
-  and (Control.DoubleBuffered)
+  if (Control <> nil)
+  and Control.DoubleBuffered
+  and not GTK_WIDGET_DOUBLE_BUFFERED(PGTKWidget(Handle))
   then begin
     //DebugLn(['TGtk2WidgetSet.BeginPaint ',DbgSName(Control)]);
     paintrect.x := PS.rcPaint.Left;
     paintrect.y := PS.rcPaint.Top;
     paintrect.width := PS.rcPaint.Right- PS.rcPaint.Left;
     paintrect.height := PS.rcPaint.Bottom - PS.rcPaint.Top;
-    if (paintrect.width <= 0) or (paintrect.height <=0) then begin
+    if (paintrect.width <= 0) or (paintrect.height <=0)
+    then begin
       paintrect.x := 0;
       paintrect.y := 0;
-      gdk_drawable_get_size(TDeviceContext(Result).Drawable,
+      gdk_drawable_get_size(TGtkDeviceContext(Result).Drawable,
                             @paintrect.width, @paintrect.height);
     end;
-    gdk_window_freeze_updates(TDeviceContext(Result).Drawable);
-    gdk_window_begin_paint_rect (TDeviceContext(Result).Drawable, @paintrect);
+    gdk_window_freeze_updates(TGtkDeviceContext(Result).Drawable);
+    gdk_window_begin_paint_rect (TGtkDeviceContext(Result).Drawable, @paintrect);
   end;
 end;
 
@@ -311,8 +314,8 @@ begin
   If (Control <> nil) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) and (Control.DoubleBuffered) then
   begin
     if PS.HDC <> 0 then begin
-      gdk_window_thaw_updates(TDeviceContext(PS.HDC).Drawable);
-      gdk_window_end_paint (TDeviceContext(PS.HDC).Drawable);
+      gdk_window_thaw_updates(TGtkDeviceContext(PS.HDC).Drawable);
+      gdk_window_end_paint (TGtkDeviceContext(PS.HDC).Drawable);
     end;
   end;
 
@@ -329,6 +332,8 @@ end;
 function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
+  DevCtx: TGtkDeviceContext absolute DC;
+  
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
   TopY, LineLen, LineHeight: Integer;
@@ -341,12 +346,11 @@ var
 
   procedure DoTextOut(X,Y : Integer; Str: Pchar; CurCount: Integer);
   var
-    DevCtx: TDeviceContext;
     CurScreenX: LongInt;
     CharLen: LongInt;
   begin
-    DevCtx:=TDeviceContext(DC);
-    if (Dx<>nil) then begin
+    if (Dx<>nil)
+    then begin
       CurScreenX:=X;
       while CurCount>0 do begin
         CharLen:=UTF8CharacterLength(CurStr);
@@ -360,7 +364,8 @@ var
         inc(CurStr,CharLen);
         dec(CurCount,CharLen);
       end;
-    end else begin
+    end
+    else begin
       pango_layout_set_text(UseFont, Str, Count);
       gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC, X, Y, UseFont,
                                   Foreground, nil);
@@ -371,80 +376,81 @@ begin
   //DebugLn(['TGtk2WidgetSet.ExtTextOut X=',X,' Y=',Y,' Str="',copy(Str,1,Count),'" Count=',Count,' DX=',dbgs(DX)]);
   Assert(False, Format('trace:> [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC <> nil then; // create GC
-    if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
-    and (Rect=nil) then begin
-      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
-      Result := False;
-      exit;
-    end;
+  if not Result then Exit;
+  
+  if DevCtx.GC <> nil then; // create GC
 
-    UseFont:=GetGtkFont(TDeviceContext(DC));
-
-    // to reduce flickering calculate first and then paint
-    
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
-
-    if (Options and ETO_CLIPPED) <> 0 then begin
-      X := Rect^.Left;
-      Y := Rect^.Top;
-      IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                        Rect^.Right, Rect^.Bottom);
-    end;
-
-    LineLen := FindLineLen(Str,Count);
-    TopY := Y;
-    UpdateDCTextMetric(TDeviceContext(DC));
-    TxtPt.X := X + DCOrigin.X;
-    LineHeight := DCTextMetric.TextMetric.tmHeight;
-    TxtPt.Y := TopY + DCOrigin.Y;
-
-    SelectedColors := dcscCustom;
-
-    if ((Options and ETO_OPAQUE) <> 0) then
-    begin
-      Width := Rect^.Right - Rect^.Left;
-      Height := Rect^.Bottom - Rect^.Top;
-      EnsureGCColor(DC, dccCurrentBackColor, True, False);
-      gdk_draw_rectangle(Drawable, GC, 1,
-                         Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                         Width, Height);
-    end;
-
-    EnsureGCColor(DC, dccCurrentTextColor, True, False);
-    Foreground := nil;//StyleForegroundColor(CurrentTextColor.ColorRef, nil);
-
-    CurDx:=Dx;
-    CurStr:=Str;
-    LineStart:=Str;
-    if LineLen < 0 then begin
-      LineLen:=Count;
-      if Count> 0 then
-        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-    end else
-    Begin  //write multiple lines
-      StrEnd:=Str+Count;
-      while LineStart < StrEnd do begin
-        LineEnd:=LineStart+LineLen;
-        if LineLen>0 then
-          DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-        inc(TxtPt.Y,LineHeight);
-        LineStart:=LineEnd+1; // skip #13
-        if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
-        and (LineStart^ <> LineEnd^) then
-          inc(LineStart); // skip #10
-        Count:=StrEnd-LineStart;
-        LineLen:=FindLineLen(LineStart,Count);
-        if LineLen<0 then
-          LineLen:=Count;
-      end;
-    end;
-
-    Result := True;
+  if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
+  and (Rect=nil)
+  then begin
+    DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
+    Result := False;
+    exit;
   end;
+
+  UseFont:=GetGtkFont(DevCtx);
+
+  // to reduce flickering calculate first and then paint
+  
+  DCOrigin:=DevCtx.Offset;
+
+  if (Options and ETO_CLIPPED) <> 0
+  then begin
+    X := Rect^.Left;
+    Y := Rect^.Top;
+    IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                      Rect^.Right, Rect^.Bottom);
+  end;
+
+  LineLen := FindLineLen(Str,Count);
+  TopY := Y;
+  UpdateDCTextMetric(DevCtx);
+  TxtPt.X := X + DCOrigin.X;
+  LineHeight := DevCtx.DCTextMetric.TextMetric.tmHeight;
+  TxtPt.Y := TopY + DCOrigin.Y;
+
+  DevCtx.SelectedColors := dcscCustom;
+
+  if ((Options and ETO_OPAQUE) <> 0) then
+  begin
+    Width := Rect^.Right - Rect^.Left;
+    Height := Rect^.Bottom - Rect^.Top;
+    EnsureGCColor(DC, dccCurrentBackColor, True, False);
+    gdk_draw_rectangle(DevCtx.Drawable, DevCtx.GC, 1,
+                       Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                       Width, Height);
+  end;
+
+  EnsureGCColor(DC, dccCurrentTextColor, True, False);
+  Foreground := nil;//StyleForegroundColor(CurrentTextColor.ColorRef, nil);
+
+  CurDx:=Dx;
+  CurStr:=Str;
+  LineStart:=Str;
+  if LineLen < 0 then begin
+    LineLen:=Count;
+    if Count> 0 then
+      DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
+  end else
+  Begin  //write multiple lines
+    StrEnd:=Str+Count;
+    while LineStart < StrEnd do begin
+      LineEnd:=LineStart+LineLen;
+      if LineLen>0 then
+        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
+      inc(TxtPt.Y,LineHeight);
+      LineStart:=LineEnd+1; // skip #13
+      if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
+      and (LineStart^ <> LineEnd^) then
+        inc(LineStart); // skip #10
+      Count:=StrEnd-LineStart;
+      LineLen:=FindLineLen(LineStart,Count);
+      if LineLen<0 then
+        LineLen:=Count;
+    end;
+  end;
+
+  Result := True;
   Assert(False, Format('trace:< [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
@@ -472,19 +478,17 @@ var
 begin
   //inherited GetTextExtentPoint;
   Result := IsValidDC(DC);
-  if Result and (Count>0)
-  then with TDeviceContext(DC) do
-  begin
-    UseFont:=GetGtkFont(TDeviceContext(DC));
+  if not Result then Exit;
+  if COunt <= 0 then Exit;
 
-    UpdateDCTextMetric(TDeviceContext(DC));
+  UseFont:=GetGtkFont(TGtkDeviceContext(DC));
 
-    pango_layout_set_text(UseFont, Str, Count);
-    pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
-    //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
+  UpdateDCTextMetric(TGtkDeviceContext(DC));
 
-    Result := True;
-  end;
+  pango_layout_set_text(UseFont, Str, Count);
+  pango_layout_get_pixel_size(UseFont, @Size.cX, @Size.cY);
+  //DebugLn(['TGtk2WidgetSet.GetTextExtentPoint Str="',copy(Str,1,Count),' Count=',Count,' X=',Size.cx,' Y=',Size.cY]);
+
 end;
 
 function TGtk2WidgetSet.SetCursorPos(X, Y: Integer): Boolean;
@@ -548,38 +552,35 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 var
+  DevCtx: TGtkDeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
   UseFont: PPangoLayout;
 begin
   Result := IsValidDC(DC);
-  if Result and (Count>0)
-  then with TDeviceContext(DC) do
-  begin
-    UseFont:=GetGtkFont(TDeviceContext(DC));
-
-    UpdateDCTextMetric(TDeviceContext(DC));
-
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
-    with DCTextMetric.TextMetric do
-      yOffset:= tmHeight-tmDescent-tmAscent;
-    if yOffset<0 then yOffset:=0;
+  if not Result then Exit;
+  if Count <= 0 then Exit;
+  
+  UseFont := GetGtkFont(DevCtx);
+  UpdateDCTextMetric(DevCtx);
+  DCOrigin := DevCtx.Offset;
+  
+  with DevCtx.DCTextMetric.TextMetric do
+    yOffset:= tmHeight-tmDescent-tmAscent;
+  if yOffset<0 then yOffset:=0;
     
-    SelectedColors := dcscCustom;
-    EnsureGCColor(DC, dccCurrentTextColor, True, False);
+  DevCtx.SelectedColors := dcscCustom;
+  EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-    pango_layout_set_text(UseFont, Str, Count);
-    EnsureGCColor(DC, dccCurrentTextColor, True, False);
+  pango_layout_set_text(UseFont, Str, Count);
+  EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
     //DebugLn(['TGtk2WidgetSet.TextOut Str="',copy(Str,1,Count),'" X=',X+DCOrigin.X,',',Y+DCOrigin.Y+yOffset]);
-    gdk_draw_layout_with_colors(drawable, GC,
+  gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC,
                         X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
-
-    Result := True;
-  end;
 end;
 
 function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;
