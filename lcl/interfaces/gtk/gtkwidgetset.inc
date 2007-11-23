@@ -5905,7 +5905,7 @@ begin
         CachedFont.MetricsValid:=true;
       end;
     end;
-    Include(Flags,dcfTextMetricsValid);
+    Flags := Flags + [dcfTextMetricsValid];
   end;
 end;
 

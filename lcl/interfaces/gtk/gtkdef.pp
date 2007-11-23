@@ -368,7 +368,7 @@ type
     // control
     property SelectedColors: TDevContextSelectedColorsType read FSelectedColors write SetSelectedColors;
     SavedContext: TGtkDeviceContext; // linked list of saved DCs
-    property Flags: TDeviceContextsFlags read FFlags;
+    property Flags: TDeviceContextsFlags read FFlags write FFlags;
     procedure SetTextMetricsValid(AValid: Boolean); // temp helper, to allow flag manipulation
     property OwnedGDIObjects[ID: TGDIType]: PGdiObject read GetOwnedGDIObjects write SetOwnedGDIObjects;
 
