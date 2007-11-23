@@ -5445,18 +5445,17 @@ Reads logical (boolean) flag to see whether auto-sizing is to be operated, or wr
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
+	      <short>Smart way to DoAutoSize</short>
         <descr>
-          <pre>{------------------------------------------------------------------------------
-  TControl.AdjustSize
-
-  Calls DoAutoSize smart.
+          <pre>
+  <i>TControl.AdjustSize</i> calls <i>DoAutoSize</i> smart.
   During loading and handle creation the calls are delayed.
 
-  This method does the same as TWinControl.DoAutoSize at the beginning.
-  But since DoAutoSize is commonly overriden by existing Delphi components,
-  they do not all tests, which can result in too much overhead. To reduce this
+  This method initially does the same as TWinControl.DoAutoSize.
+  But since DoAutoSize is commonly overriden by descendant components,
+  it is not useful to perform all tests, which can result in too much overhead. To reduce this
   the LCL calls AdjustSize instead.
-------------------------------------------------------------------------------}
+
 </pre>
         </descr>
       </element>
