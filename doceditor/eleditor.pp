@@ -242,6 +242,7 @@ begin
     OnEnter:=@OnEnterControl;
     OnChange:=@OnTextModified;
     Height:=150;
+    ScrollBars:=ssAutoBoth;
     end;
   FSPlit1:=TSplitter.Create(Self);
   With FSplit1 do
@@ -275,6 +276,7 @@ begin
     Height:=50;
     OnEnter:=@OnEnterControl;
     OnChange:=@OnTextModified;
+    ScrollBars:=ssAutoBoth;
     end;
   FSPlit2:=TSplitter.Create(Self);
   With FSplit2 do
