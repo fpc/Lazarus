@@ -46,7 +46,7 @@ type
     CancelButton: TButton;
     TodoLabel: TLabel;
     TodoMemo: TMemo;
-    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure PriorityEditKeyPress(Sender: TObject; var Key: char);
   private
     { private declarations }
@@ -54,13 +54,10 @@ type
     { public declarations }
   end;
   
-  Function ExecuteTodoDialog: TTodoItem;
+Function ExecuteTodoDialog: TTodoItem;
 
 
 implementation
-
-{ TTodoDialog }
-
 
 { TTodoDialog }
 
@@ -70,9 +67,9 @@ begin
     Key := #0;
 end;
 
-procedure TTodoDialog.FormShow(Sender: TObject);
+procedure TTodoDialog.FormCreate(Sender: TObject);
 begin
-  TodoMemo.SetFocus;
+  ActiveControl:=TodoMemo;
 end;
 
 function ExecuteTodoDialog: TTodoItem;
@@ -94,7 +91,7 @@ begin
     if TryStrToInt(aTodoDialog.PriorityEdit.Text, aPriority) then
       Result.Priority  := aPriority;
   end;
-  aTodoDialog.Release;
+  aTodoDialog.Free;
 end;
 
 initialization

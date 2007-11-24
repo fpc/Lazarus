@@ -9,37 +9,37 @@ object TodoDialog: TTodoDialog
   Caption = 'Insert Todo'
   ClientHeight = 248
   ClientWidth = 483
-  OnShow = FormShow
+  OnCreate = FormCreate
   object TodoLabel: TLabel
     Left = 8
-    Height = 14
+    Height = 20
     Top = 8
-    Width = 27
+    Width = 30
     Caption = 'Text:'
     FocusControl = TodoMemo
     ParentColor = False
   end
   object PriorityLabel: TLabel
     Left = 10
-    Height = 14
+    Height = 20
     Top = 167
-    Width = 35
+    Width = 45
     Caption = 'Priority'
     ParentColor = False
   end
   object OwnerLabel: TLabel
     Left = 56
-    Height = 14
+    Height = 20
     Top = 168
-    Width = 33
+    Width = 41
     Caption = 'Owner'
     ParentColor = False
   end
   object CategoryLabel: TLabel
     Left = 248
-    Height = 14
+    Height = 20
     Top = 168
-    Width = 46
+    Width = 59
     Caption = 'Category'
     ParentColor = False
   end

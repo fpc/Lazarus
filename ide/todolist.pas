@@ -62,10 +62,12 @@ unit TodoList;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources,
-  ExtCtrls, ComCtrls, Menus, Buttons, GraphType,
-  StdCtrls, mPasLex, LCLIntf, LCLType,
-  CodeCache, CodeToolManager, LazarusIDEStrConsts, ActnList;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList,
+  StdCtrls, mPasLex, LCLIntf, LCLType, FileUtil,
+  CodeCache, CodeToolManager, LazarusIDEStrConsts,
+  Project;
+
 
 Const
   cTodoFlag = '#todo';
@@ -79,6 +81,7 @@ type
 
 
   { TTodoItem: Class to hold TODO item information }
+
   TTodoItem = Class(TObject)
   private
     FAltNotation: boolean;
@@ -153,11 +156,6 @@ var
 
 implementation
 
-uses
-  Project,
-  StrUtils,
-  FileUtil;
-
 { TfrmTodo }
 
 constructor TfrmTodo.Create(AOwner: TComponent);
@@ -179,7 +177,7 @@ end;
 procedure TfrmTodo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
-    Close;
+    ModalResult:=mrCancel;
 end;
 
 procedure TfrmTodo.lvTodoClick(Sender: TObject);
@@ -397,8 +395,8 @@ begin
           try
             for i:=0 to UsedInterfaceFilenames.Count-1 do
             begin
-              if AnsiCompareStr(ExtractFileName(UsedInterfaceFileNames[i]),
-                                CurFileName) = 0 then
+              if CompareFilenames(ExtractFileName(UsedInterfaceFileNames[i]),
+                                  CurFileName) = 0 then
               begin
                 CurFileName:= UsedInterFaceFileNames[i];
                 Found:= true;
@@ -409,7 +407,7 @@ begin
             begin
               for i:=0 to UsedImplementationFilenames.Count-1 do
               begin
-                if AnsiCompareStr(ExtractFileName
+                if CompareFilenames(ExtractFileName
                 (UsedImplementationFilenames[i]), CurFileName) = 0 then
                 begin
                   CurFileName:= UsedImplementationFilenames[i];
