@@ -1,5 +1,4 @@
-(*
-/***************************************************************************
+(***************************************************************************
                              todolist.pp
                              --------------------
 
@@ -41,9 +40,18 @@
            yyy..yy is the text of todo
            
    you can create an file naming projectname.todo and add list of todo
+
+*)
+(*
+Modified by Gerard Visent <gerardusmercator@gmail.com> on 5/11/2007
+- Extended to recognize Delphi syntax.
+- It works now with the folowing tags:
+  #todo, #done, TODO, DONE
+- Owner and Category tags are also processed and displayed
+  Syntax is -oXXXXX for the owner and -cXXXXX for the category
+- Info on the todo items is also stored in a TTodoItem object, for more flexibility
 *)
 
-{#todo goto line of selected unit}
 {#todo options }
 {#todo print an todo report }
 
@@ -57,20 +65,52 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources,
   ExtCtrls, ComCtrls, Menus, Buttons, GraphType,
   StdCtrls, mPasLex, LCLIntf, LCLType,
-  CodeCache, CodeToolManager, LazarusIDEStrConsts;
+  CodeCache, CodeToolManager, LazarusIDEStrConsts, ActnList;
 
 Const
   cTodoFlag = '#todo';
+  cDoneFlag = '#done';
   cAltTodoFLag = 'TODO';
+  cAltDoneFLag = 'DONE';
 
 type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
                           const LineNumber: integer) of object;
 
+
+  { TTodoItem: Class to hold TODO item information }
+  TTodoItem = Class(TObject)
+  private
+    FAltNotation: boolean;
+    FCategory: string;
+    FDone: boolean;
+    FLineNumber: integer;
+    FModule: string;
+    FOwner: string;
+    FPriority: integer;
+    FText: string;
+    function GetAsComment: string;
+    function GetAsString: string;
+  published
+    property AltNotation: boolean read FAltNotation write FAltNotation;
+    property Category: string read FCategory write FCategory;
+    property Done: boolean read FDone write FDone;
+    property LineNumber: integer read FLineNumber write FLineNumber;
+    property Module: string read FModule write FModule;
+    property Owner: string read FOwner write FOwner;
+    property Priority: integer read FPriority write FPriority;
+    property Text: string read FText write FText;
+    property AsString: string read GetAsString;
+    property AsComment: string read GetAsComment;
+  end;
+
   { TfrmTodo }
 
   TfrmTodo = class(TForm)
-    ImageList1: TImageList;
+    acGoto: TAction;
+    acRefresh: TAction;
+    ActionList: TActionList;
+    ImageList: TImageList;
     lvTodo: TListView;
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
@@ -78,10 +118,11 @@ type
     tbOptions: TToolButton;
     tbPrint: TToolButton;
     tbRefresh: TToolButton;
+    procedure acGotoExecute(Sender: TObject);
+    procedure acRefreshExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure tbGotoClick(Sender: TObject);
-    procedure tbRefreshClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
+    procedure lvTodoClick(Sender: TObject);
   private
     { private declarations }
     fBuild       : Boolean;
@@ -92,11 +133,12 @@ type
 
     procedure SetFileName(const AValue: String);
 
-    procedure ParseComment(const aFileName: string; const SComment, EComment: string;
-        const TokenString: string; LineNumber: Integer);
+    Function  GetToDoItem(const aFileName: string; const SComment, EComment: string;
+        const TokenString: string; LineNumber: Integer): TTodoItem ;
     procedure ParseDirective(aDirective : String);
+    procedure AddListItem(aTodoItem: TTodoItem);
     
-    procedure LoadFile(const aFileName : string);
+    procedure LoadFile(aFileName : string);
   public
     { public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -112,6 +154,7 @@ var
 implementation
 
 uses
+  Project,
   StrUtils,
   FileUtil;
 
@@ -123,14 +166,269 @@ begin
 end;
 
 destructor TfrmTodo.Destroy;
+var
+  i: integer;
 begin
   fScannedFile.Free;
-
+  for i := 0 to lvTodo.Items.Count-1 do
+    if Assigned(lvTodo.Items[i].Data) then
+      TTodoItem(lvTodo.Items[i].Data).Free;
   inherited Destroy;
 end;
 
-//Load project main file and scan all files for find the syntax todo
-procedure TfrmTodo.tbRefreshClick(Sender: TObject);
+procedure TfrmTodo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key=VK_ESCAPE then
+    Close;
+end;
+
+procedure TfrmTodo.lvTodoClick(Sender: TObject);
+begin
+  acGoto.Execute;
+end;
+
+//Initialise the todo project and find them
+procedure TfrmTodo.SetFileName(const AValue: String);
+begin
+  if fFileName=AValue then exit;
+  fFileName:=AValue;
+  acRefresh.Execute;
+end;
+
+function TfrmTodo.GetToDoItem(const aFileName: string; const SComment,
+  EComment: string; const TokenString: string; LineNumber: Integer): TTodoItem;
+var
+  N,Strlen    : Integer;
+  TempStr       : string;
+  ParsingString : string;
+  IsAltNotation,
+  IsDone        : boolean;
+  aChar         : char;
+  
+const
+  cSemiColon  = ':';
+  cWhiteSpace = ' ';
+  
+  Procedure SetItemFields(aItem: TTodoItem; aStr: String);
+  var
+     aPriority: integer;
+  begin
+    if aStr <> '' then
+    begin
+      // Category
+      if pos('-c', aStr) = 1 then
+        aItem.Category := Copy(aStr, 3, Length(aStr)-2)
+      else
+      begin
+        // Owner
+        if pos('-o', aStr) = 1 then
+          aItem.Owner := Copy(aStr, 3, Length(aStr)-2)
+        else
+        begin
+          // Priority
+          if TryStrToInt(aStr, aPriority) then
+            aItem.Priority := aPriority;
+        end;
+      end;
+    end;
+  end;
+
+begin
+
+  Result := nil;
+  
+  ParsingString:= Trim(TokenString);
+  
+  // Remove the beginning comment chars from input string
+  Delete(ParsingString, 1, Length(SComment));
+
+  // Remove leading and trailing blanks from input
+  ParsingString := Trim(ParsingString);
+
+  // See if it's a TODO or DONE item
+  if (Pos(cTodoFlag, ParsingString) = 1) then
+  begin
+    IsDone := False;
+    IsAltNotation := False;
+  end
+  else
+  begin
+    if (Pos(cAltTodoFLag, ParsingString) = 1) then
+    begin
+      IsDone := False;
+      IsAltNotation := True;
+    end
+    else
+    begin
+      if (Pos(cDoneFlag, ParsingString) = 1) then
+      begin
+        IsDone := True;
+        IsAltNotation := False;
+      end
+      else
+      begin
+        if (Pos(cAltDoneFLag, ParsingString) = 1) then
+        begin
+          IsDone := True;
+          IsAltNotation := True;
+        end
+        else
+          // Not a Todo/Done item, leave
+          Exit;
+      end;
+    end;
+  end;
+  
+  // Remove the ending comment chars from input string
+  if (eComment<>'') and (Pos(EComment, ParsingString)=Length(ParsingString)- Length(EComment)+1) then
+    ParsingString := Copy(ParsingString, 1, Length(ParsingString)-Length(eComment));
+  
+  // Remove Todo/Done flag from input string
+  if isAltNotation then
+    Delete(ParsingString, 1, 4)
+  else
+    Delete(ParsingString, 1, 5);
+
+  Result := TTodoItem.Create;
+  Result.Done := IsDone;
+  Result.AltNotation := IsAltNotation;
+  Result.LineNumber  := LineNumber;
+  Result.Module      := aFileName;
+
+  n := 1;
+  TempStr := '';
+  Strlen  := Length(ParsingString);
+  
+  // Parse priority, owner and category
+  while (n <= StrLen) and (ParsingString[n]<>cSemiColon) do
+  begin
+  
+    aChar := ParsingString[n];
+
+    // Add char to temporary string
+    if (aChar<>cSemiColon) and (aChar<>cWhiteSpace) then
+      TempStr := TempStr + aChar
+
+    // Process temporary string
+    else
+    begin
+      SetItemFields(Result, TempStr);
+      TempStr := '';;
+    end;
+       
+    inc(N);
+
+  end;//while
+  
+  SetItemFields(Result, TempStr);
+  
+  Delete(ParsingString, 1, n);
+  
+  // Set item text
+  Result.Text := ParsingString;
+  
+end;
+
+
+procedure TfrmTodo.FormCreate(Sender: TObject);
+begin
+  fBuild:=False;
+  fScannedFile:=TStringList.Create;
+
+  Caption := lisTodoListCaption;
+
+  acRefresh.Hint  := lisTodolistRefresh;
+  acGoto.Hint  := listodoListGotoLine;
+  tbPrint.Hint   :=listodoListPrintList;
+  tbOptions.Hint  :=  lisToDoListOptions;
+
+  tbOptions.Caption:=dlgFROpts;
+  tbPrint.Caption:=srVK_PRINT;
+  tbRefresh.Caption:=dlgUnitDepRefresh;
+  tbGoto.Caption:=lisToDoGoto;
+
+  with lvTodo do
+  begin
+    Column[0].Caption := 'Done';
+    Column[0].Width   := 45;
+    Column[1].Caption := lisToDoLDescription;
+    Column[1].Width   := 150;
+    Column[2].Caption := lisToDoLPriority;
+    Column[2].Width   := 45;
+    Column[3].Caption := lisToDoLFile;
+    Column[3].Width   := 80;
+    Column[4].Caption := lisToDoLLine;
+    Column[4].Width   := 40;
+    Column[5].Caption := lisToDoLOwner;
+    Column[5].Width   := 50;
+    Column[6].Caption := listToDoLCategory;
+    Column[6].Width   := 80;
+  end;
+end;
+
+procedure TfrmTodo.acGotoExecute(Sender: TObject);
+var
+  CurFilename: String;
+  aTodoItem: TTodoItem;
+  aListItem: TListItem;
+  TheLine: integer;
+  UsedInterfaceFilenames: TStrings;
+  UsedImplementationFilenames: TStrings;
+  i: integer;
+  Found: boolean;
+begin
+  CurFilename:='';
+  aListItem:= lvtodo.Selected;
+  Found:= false;
+  if Assigned(aListItem) and Assigned(aListItem.Data) then
+  begin
+    aTodoItem := TTodoItem(aListItem.Data);
+    CurFileName := aTodoItem.Module;
+    TheLine     := aTodoItem.LineNumber;
+    if not FileNameIsAbsolute(CurFileName) then
+    begin
+      if Assigned(CodeToolBoss) then
+      begin
+        fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
+        if not Assigned(fRootCBuffer) then Exit;
+        if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
+                                          UsedImplementationFilenames) then
+        begin
+          try
+            for i:=0 to UsedInterfaceFilenames.Count-1 do
+            begin
+              if AnsiCompareStr(ExtractFileName(UsedInterfaceFileNames[i]),
+                                CurFileName) = 0 then
+              begin
+                CurFileName:= UsedInterFaceFileNames[i];
+                Found:= true;
+                break;
+              end;
+            end;
+            if not Found then
+            begin
+              for i:=0 to UsedImplementationFilenames.Count-1 do
+              begin
+                if AnsiCompareStr(ExtractFileName
+                (UsedImplementationFilenames[i]), CurFileName) = 0 then
+                begin
+                  CurFileName:= UsedImplementationFilenames[i];
+                  break;
+                end;
+              end;
+            end;
+          finally
+            UsedImplementationFilenames.Free;
+            UsedInterfaceFilenames.Free;
+          end;
+        end;
+      end;
+    end;
+    if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
+  end;
+end;
+
+procedure TfrmTodo.acRefreshExecute(Sender: TObject);
 var
   UsedInterfaceFilenames,
   UsedImplementationFilenames: TStrings;
@@ -177,110 +475,6 @@ begin
   end;
 end;
 
-procedure TfrmTodo.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-begin
-  if Key=VK_ESCAPE then
-    Close;
-end;
-
-//Initialise then todo project and find them
-procedure TfrmTodo.SetFileName(const AValue: String);
-begin
-  if fFileName=AValue then exit;
-  fFileName:=AValue;
-  tbRefreshClick(nil);
-end;
-
-procedure TfrmTodo.tbGotoClick(Sender: TObject);
-var
-  CurFilename: String;
-  TheItem: TListItem;
-  TheLine: integer;
-  UsedInterfaceFilenames: TStrings;
-  UsedImplementationFilenames: TStrings;
-  i: integer;
-  Found: boolean;
-begin
-  CurFilename:='';
-  TheItem:= lvtodo.Selected;
-  Found:= false;
-  if Assigned(TheItem) then
-  begin
-    CurFileName:= TheItem.SubItems[1];
-    TheLine:= StrToInt(TheItem.SubItems[2]);
-    if not FileNameIsAbsolute(CurFileName) then
-    begin
-      if Assigned(CodeToolBoss) then
-      begin
-        fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
-        if not Assigned(fRootCBuffer) then Exit;
-        if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
-                                          UsedImplementationFilenames) then
-        begin
-          try
-            for i:=0 to UsedInterfaceFilenames.Count-1 do
-            begin
-              if AnsiCompareStr(ExtractFileName(UsedInterfaceFileNames[i]),
-                                CurFileName) = 0 then
-              begin
-                CurFileName:= UsedInterFaceFileNames[i];
-                Found:= true;
-                break;
-              end;
-            end;
-            if not Found then
-            begin
-              for i:=0 to UsedImplementationFilenames.Count-1 do
-              begin
-                if AnsiCompareStr(ExtractFileName
-                (UsedImplementationFilenames[i]), CurFileName) = 0 then
-                begin
-                  CurFileName:= UsedImplementationFilenames[i];
-                  break;
-                end;
-              end;
-            end;
-          finally
-            UsedImplementationFilenames.Free;
-            UsedInterfaceFilenames.Free;
-          end;
-        end;
-      end;
-    end;
-    if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
-  end;
-end;
-
-procedure TfrmTodo.FormCreate(Sender: TObject);
-begin
-  fBuild:=False;
-  fScannedFile:=TStringList.Create;
-
-  Caption := lisTodoListCaption;
-
-  tbRefresh.Hint  := lisTodolistRefresh;
-  tbGoto.Hint  := listodoListGotoLine;
-  tbPrint.Hint   :=listodoListPrintList;
-  tbOptions.Hint  :=  lisToDoListOptions;
-
-  tbOptions.Caption:=dlgFROpts;
-  tbPrint.Caption:=srVK_PRINT;
-  tbRefresh.Caption:=dlgUnitDepRefresh;
-  tbGoto.Caption:=lisToDoGoto;
-
-  with lvTodo do
-  begin
-    Column[0].Caption := ' !';
-    Column[0].Width   := 25;
-    Column[1].Caption := lisToDoLDescription;
-    Column[1].Width   := 250;
-    Column[2].Caption := lisToDoLFile;
-    Column[2].Width := 150;
-    Column[3].Caption := lisToDoLLine;
-    Column[3].Width := 50;
-  end;
-end;
-
 //Find the {$I filename} directive. If exists, call LoadFile()
 procedure TfrmTodo.ParseDirective(aDirective : String);
 Var N             : Integer;
@@ -298,100 +492,57 @@ begin
   end;
 end;
 
-//Find in comment the ToDo message
-procedure TfrmTodo.ParseComment(const aFileName: string;
-  const SComment, EComment: string;
-  const TokenString: string; LineNumber: Integer);
-Var
-  N,J           : Integer;
-  ParsingString : string;
-  CListItem     : TListItem;
-  TodoFlag      : string;
-  
-  function IsTodoFlag(const Flag: string): boolean;
-  begin
-    TodoFLag := Flag;
-    Result := Pos(UpperCase(Flag),UpperCase(TokenString)) > 1;
-  end;
-  
+procedure TfrmTodo.AddListItem(aTodoItem: TTodoItem);
+var
+   aListItem: TListItem;
 begin
-  if IsTodoFlag(cTodoFlag) or IsTodoFlag(cAltTodoFlag) then
+  if Assigned(aTodoItem) then
   begin
-    // We found a token that looks like a TODO comment. Now
-    // verify that it *is* one: either a white-space or the
-    // comment token need to be in front of the TODO item
-
-    // Remove comment characters
-    ParsingString := TokenString;
-    Delete(ParsingString, 1, Length(SComment));
-
-    // Remove white-space left and right
-    ParsingString := Trim(ParsingString);
-
-    // The TODO token should be at the beginning of the comment
-    N:=Pos(UpperCase(TodoFlag),UpperCase(ParsingString));
-    if N=1 then
-    begin
-      // Remove token from string
-      Delete(ParsingString, 1, Length(TodoFlag));
-      ParsingString := TrimRight(ParsingString);
-
-      if EComment<>'' then
-      begin
-        N:=Pos(EComment,ParsingString);
-        // Remove end comment from string
-        Delete(ParsingString, N, Length(EComment));
-        ParsingString := TrimRight(ParsingString);
-      end;
-
-      CListItem := lvToDo.Items.Add;
-
-      // Identify numeric priority (if there is one)
-      j := 0;
-      while j < Length(ParsingString) do
-      begin
-        if not (ParsingString[j + 1] in ['0'..'9']) then
-          Break;
-        Inc(j);
-      end;
-      N:=StrToIntDef(Copy(ParsingString, 1, j), 0);
-      ClistItem.Caption:=IntToStr(N);
-      Delete(ParsingString, 1, j);
-      ParsingString := TrimLeft(ParsingString);
-      if (j=0) and AnsiStartsText(':', ParsingString) then begin
-        { Remove Leading : from comment }
-        Delete(ParsingString, 1, 1);
-        ParsingString := TrimLeft(ParsingString);
-      end;
-
-      ClistItem.SubItems.Add(ParsingString);
-      ClistItem.SubItems.Add(ExtractFileName(aFileName));
-      ClistItem.SubItems.Add(IntToStr(LineNumber));
-     // CListItem.ImageIndex := Ord(Info.Priority);
-    end;
+    aListitem := lvTodo.Items.Add;
+    aListitem.Data := aTodoItem;
+    if aTodoItem.Done then
+      aListItem.Caption := 'X'
+    else
+      aListItem.Caption := ' ';
+    aListitem.SubItems.Add(aTodoItem.Text);
+    aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
+    aListitem.SubItems.Add(aTodoItem.Module);
+    aListitem.SubItems.Add(IntToStr(aTodoItem.LineNumber));
+    aListitem.SubItems.Add(aTodoItem.Owner);
+    aListitem.SubItems.Add(aTodoItem.Category);
   end;
 end;
 
-//Load an FileName and find {#todox yyyyyy} where
-// x is the priority (0 by default)
-// yyyy it's the message one line only
-procedure TfrmTodo.LoadFile(const aFileName: string);
+
+procedure TfrmTodo.LoadFile(aFileName: string);
 var
   Parser   : TmwPasLex;
   EStream  : TMemoryStream;
   ST       : String;
+  aTodoItem: TTodoItem;
+  
 begin
   St:=ExtractFileName(aFileName);
-  //Quit this method if we have already scan this file
-  if fScannedFile.IndexOf(St)<>-1 then Exit;
-  StatusBar.SimpleText :=aFileName;// St;
-  StatusBar.Repaint;
+
+  // Abort if this file has already been scanned
+  if fScannedFile.IndexOf(St)<>-1 then
+    Exit;
+    
+  // Add file name to list of scanned files
   fScannedFile.Add(St);
+
+  // Display file name being processed
+  //StatusBar.SimpleText := aFileName;
+  //StatusBar.Repaint;
+
 
   EStream := TMemoryStream.Create;
   try
     //Echange of stream
     Try
+      if not FileExists(aFileName) then
+        if Assigned(Project1) then
+          aFileName := AppendPathDelim(Project1.ProjectDirectory)+aFileName;
       EStream.LoadFromFile(aFileName);
       EStream.Position := EStream.Size;
       EStream.WriteByte(0); // Terminate string for TmwPasLex
@@ -411,13 +562,15 @@ begin
           the strategy ought to be to read the complete comment and only then
           start parsing. Also it would be better to move deleting of the comment
           tokens out of the parser }
+        aTodoItem := nil;
         case Parser.TokenID of
-          tkBorComment: ParseComment(aFileName, '{', '}', Parser.Token, Parser.LineNumber + 1);
-          tkAnsiComment: ParseComment(aFileName, '(*', '*)', Parser.Token, Parser.LineNumber + 1);
+          tkBorComment: aTodoItem := GetToDoItem(aFileName, '{', '}', Parser.Token, Parser.LineNumber + 1);
+          tkAnsiComment: aTodoItem := GetToDoItem(aFileName, '(*', '*)', Parser.Token, Parser.LineNumber + 1);
           // Slash comments in CPP files should work if they are not in a {}
-          tkSlashesComment: ParseComment(aFileName, '//', '', Parser.Token, Parser.LineNumber + 1);
+          tkSlashesComment: aTodoItem := GetToDoItem(aFileName, '//', '', Parser.Token, Parser.LineNumber + 1);
           tkCompDirect : ParseDirective(Parser.Token);
         end;
+        AddListItem(aTodoItem);
         Parser.Next;
       end;
     finally
@@ -427,6 +580,43 @@ begin
     EStream.Free;
     Self.Update;
   end;
+end;
+
+{ TTodoItem }
+
+function TTodoItem.GetAsString: string;
+begin
+  // Todo/Done in two notations
+  if AltNotation then
+  begin
+   if Done then
+     Result := 'DONE'
+   else
+     Result := 'TODO';
+  end
+  else
+  begin
+    if Done then
+      Result := '#done'
+    else
+      Result := '#todo';
+  end;
+  // Priority
+  if Priority > 0 then
+    Result := Result + ' '+IntToStr(Priority);
+  // Owner
+  if Owner <> '' then
+    Result := Result + ' -o'+Owner;
+  // Category
+  if Category <> '' then
+    Result := Result + ' -c'+Category;
+  // Text
+  Result := Result + ' : ' + Text;
+end;
+
+function TTodoItem.GetAsComment: string;
+begin
+  Result := '{ '+AsString+' }';
 end;
 
 initialization

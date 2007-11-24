@@ -57,11 +57,11 @@ uses
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm, CodeHelpForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
-  CodeTemplatesDlg,
+  CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
   LazDocHints, LazDocFrm,
-  BaseDebugManager, Debugger, MainIntf, TodoDlg;
+  BaseDebugManager, Debugger, MainIntf;
 
 type
   TSourceNotebook = class;
@@ -1918,13 +1918,13 @@ end;
 
 procedure TSourceEditor.InsertTodo;
 Var
-  TodoMsg: TStrings;
+  aTodoItem: TTodoItem;
 begin
   if ReadOnly then Exit;
-  TodoMsg:= TStringList.Create;
-  if ShowTodoDialog(TodoMsg) then
-    FEditor.SelText:=CommentText('TODO: '+TodoMsg.Text, comtPascal);
-  TodoMsg.Free;
+  aTodoItem := ExecuteTodoDialog;
+  if Assigned(aTodoItem) then
+    FEditor.SelText := aTodoItem.AsComment;
+  aTodoItem.Free;
 end;
 
 procedure TSourceEditor.InsertDateTime;
