@@ -4101,7 +4101,7 @@ var
   i: Integer;
   b: Byte;
 begin
-  //writeln('TLRSObjectWriter.WriteInteger Value=',Value);
+  //debugln('TLRSObjectWriter.WriteInteger Value=',Value);
   // Use the smallest possible integer type for the given value:
   if (Value >= -128) and (Value <= 127) then
   begin
@@ -4484,13 +4484,13 @@ begin
     ComponentSize:=AStream.Size;
     WriteLRSInt64MB(AStream,ComponentSize);
     LengthSize:=AStream.Size-ComponentSize;
-    //writeln('TCustomLazComponentQueue.ConvertComponentAsString ComponentSize=',ComponentSize,' LengthSize=',LengthSize);
+    //debugln('TCustomLazComponentQueue.ConvertComponentAsString ComponentSize=',ComponentSize,' LengthSize=',LengthSize);
 
     SetLength(Result,AStream.Size);
     // write size
     AStream.Position:=ComponentSize;
     AStream.Read(Result[1],LengthSize);
-    //writeln('TCustomLazComponentQueue.ConvertComponentAsString ',hexstr(ord(Result[1]),2),' ',hexstr(ord(Result[2]),2),' ',hexstr(ord(Result[3]),2),' ',hexstr(ord(Result[4]),2));
+    //debugln('TCustomLazComponentQueue.ConvertComponentAsString ',hexstr(ord(Result[1]),2),' ',hexstr(ord(Result[2]),2),' ',hexstr(ord(Result[3]),2),' ',hexstr(ord(Result[4]),2));
     // write component
     AStream.Position:=0;
     AStream.Read(Result[LengthSize+1],ComponentSize);

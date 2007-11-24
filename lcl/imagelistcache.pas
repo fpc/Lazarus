@@ -131,7 +131,7 @@ begin
     Width := AWidth;
     Height := AHeight;
 {$IFDEF VerboseImageListCache}
-    WriteLn('Creating new imagelist in cache for Width=',Width,' Height=', Height, ' Count = ', FImages.Count);
+    debugln('Creating new imagelist in cache for Width=',Width,' Height=', Height, ' Count = ', FImages.Count);
     if (Width <> 16) and (Width <> 24) then
       DumpStack;
 {$ENDIF}

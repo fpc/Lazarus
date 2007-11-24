@@ -1085,7 +1085,6 @@ begin
       Result := gtk_editable_get_position(PGtkEditable(Entry))
     else
       Result := Min(AStart, AEnd);
-    WriteLn('SelStart = ', Result);
   end;
 end;
 
@@ -1196,7 +1195,6 @@ begin
     Start := GetSelStart(ACustomComboBox);
     gtk_editable_select_region(PGtkEditable(Entry), Start, Start + NewLength);
   end;
-  WriteLn('Setting Sel Bounds: ', Start, ' to ', NewLength);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetItemIndex(

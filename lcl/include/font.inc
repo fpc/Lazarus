@@ -30,10 +30,10 @@ type
 function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName; Desc: TFontHandleCacheDescriptor): integer;
 begin
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
-  //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
+  //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
   if Result=0 then
     Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
-  //writeln('CompareLogFontAndNameWithResDesc END Result=',Result);
+  //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
 end;
 
 procedure TFontHandleCache.RemoveItem(Item: TResourceCacheItem);

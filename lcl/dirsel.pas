@@ -82,7 +82,7 @@ begin
   begin
     FCurrentDir := AppendPathDelim(Dir);
     FCurrentDir := FCurrentDir + GetAllFilesMask;
-//    writeln('FCurrentDir=' + FCurrentDir);
+//    debugln('FCurrentDir=' + FCurrentDir);
     try
       if SysUtils.FindFirst(FCurrentDir, faAnyFile, FileInfo)=0 then
       begin

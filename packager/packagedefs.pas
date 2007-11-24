@@ -2458,13 +2458,13 @@ begin
     PkgFile:=Files[i];
     PkgFile.AutoReferenceSourceDir:=true;
     PkgFile.UpdateSourceDirectoryReference;
-    //writeln('TLazPackage.UpdateSourceDirectories A ',PkgFile.Filename,' ',
+    //debugln('TLazPackage.UpdateSourceDirectories A ',PkgFile.Filename,' ',
     //  ' ',PkgFileTypeNames[PkgFile.FileType],' ',PkgFile.Removed,
     //  ' HasPkg=',dbgs(PkgFile.LazPackage=Self),
     //  ' Need=',PkgFile.FSourceDirNeedReference,
     //  ' Is=',PkgFile.FSourceDirectoryReferenced);
   end;
-  //writeln('TLazPackage.UpdateSourceDirectories B ',IDAsString,' ',FFiles.Count,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
+  //debugln('TLazPackage.UpdateSourceDirectories B ',IDAsString,' ',FFiles.Count,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
 end;
 
 procedure TLazPackage.VersionChanged(Sender: TObject);

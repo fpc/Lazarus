@@ -85,7 +85,7 @@ end;
 constructor TMenuItem.Create(TheOwner: TComponent);
 begin
   //DebugLn('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
-  //if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
+  //if not assigned (TheOwner) then debugln ('**SH: Warn: creating MenuItem with Owner = nil');
 
   Inherited Create(TheOwner);
 
