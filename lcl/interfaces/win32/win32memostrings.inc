@@ -120,14 +120,14 @@ end;
 
 procedure TWin32MemoStrings.Delete(Index: integer);
 var
-LineStart,
-LineEnd: Integer;
+  LineStart,
+  LineEnd: Integer;
 begin
- LineStart := GetLineStart(Index);
- LineEnd := GetLineStart(Index+1);
- if LineEnd < 0 then LineEnd := LineStart+GetLineLength(Index);
- SendMessage(fHandle, EM_SETSEL, LineStart, LineEnd);
- SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar('')));
+  LineStart := GetLineStart(Index);
+  LineEnd := GetLineStart(Index+1);
+  if LineEnd < 0 then LineEnd := LineStart+GetLineLength(Index);
+  SendMessage(fHandle, EM_SETSEL, LineStart, LineEnd);
+  SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar('')));
 end;
 
 procedure TWin32MemoStrings.Insert(Index: integer; const S: string);
@@ -136,14 +136,22 @@ var
   NewLine: String;
 begin
   LineStart := GetLineStart(Index);
-  if Index < GetRealCount then begin
+  if Index < GetRealCount then
+  begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(NewLine)));
+{$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS
+    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
+    else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
+{$else}
+    SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
+{$endif}
   end
-  else begin
+  else
+  begin
     //append with a preceding LineEnding
     LineStart := GetLineStart(Index-1)+GetLineLength(Index-1);
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
@@ -151,7 +159,13 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PChar(NewLine)));
+{$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS
+    then SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
+    else SendMessage(fHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
+{$else}
+    SendMessage(fHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
+{$endif}
   end;
 end;
 
