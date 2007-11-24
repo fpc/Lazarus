@@ -571,6 +571,7 @@ begin
       CommentEnd:=FindCommentEnd(Src,p,NestedComment);
       Tool.CleanPosToCaret(p,CodeXYPosition);
       CommentStr:=copy(Src,p,CommentEnd-p);
+      //DebugLn(['TfrmTodo.LoadFile CommentStr="',CommentStr,'"']);
       if Src[p]='/' then
         aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
       else if Src[p]='{' then

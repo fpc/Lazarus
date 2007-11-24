@@ -4228,7 +4228,7 @@ begin
     // no ancestor class specified
     // check class name
     if (ClassIdentNode=nil)
-    or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericType])) then
+    or (not (ClassIdentNode.Desc in [ctnTypeDefinition,ctnGenericName])) then
     begin
       MoveCursorToNodeStart(ClassNode);
       RaiseException('class without name');
