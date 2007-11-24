@@ -478,6 +478,7 @@ begin
   
   // create custom view above all others
   GetClientRect(R);
+  OffsetRect(R, -R.Left, -R.Top);
   FDesignControl := CreateCustomHIView(RectToCGRect(R));
   
   OSError(
@@ -565,6 +566,7 @@ var
   R: TRect;
 begin
   GetClientRect(R);
+  OffsetRect(R, -R.Left, -R.Top);
 
   if FDesignBitmap <> nil then
     if (R.Right - R.Left = FDesignBitmap.Width) and (R.Bottom - R.Top = FDesignBitmap.Height) then

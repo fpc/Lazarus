@@ -99,6 +99,8 @@ type
     procedure DCRedraw(CanvasHandle: HDC); override;
     procedure SetDesigning(AComponent: TComponent); override;
 
+    function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; override;
+
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;

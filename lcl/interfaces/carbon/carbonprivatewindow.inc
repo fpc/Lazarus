@@ -527,7 +527,13 @@ const
     else KeyMsg.Msg := CN_KEYDOWN;
     KeyMsg.KeyData := KeyData;
     KeyMsg.CharCode := VKKeyCode;
-
+    
+    // is the key combination help key (Cmd + ?)
+    if SendChar and IsSysKey and (UTF8Character = '?') then
+    begin // TODO: this does not function, we can't get shifted key in Cmd combination
+      Application.ShowHelpForObject(Widget.LCLObject);
+    end;
+    
     //Send message to LCL
     if VKKeyCode<>VK_UNKNOWN then
     begin
@@ -905,11 +911,6 @@ begin
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetFocusPart);
   InstallControlEventHandler(Content,
     RegisterEventHandler(@CarbonCommon_SetFocusPart),
-    1, @TmpSpec, Pointer(Self), nil);
-
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
-  InstallControlEventHandler(Content,
-    RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
     1, @TmpSpec, Pointer(Self), nil);
     
   // cursor set

@@ -83,6 +83,45 @@ begin
   (AWidget as TCarbonControl).IndicatorMoved;
 end;
 
+{------------------------------------------------------------------------------
+  Name:  CarbonControl_CommandProcess
+  Handles copy/paste... commands
+ ------------------------------------------------------------------------------}
+function CarbonControl_CommandProcess(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  Command: HICommandExtended;
+const SName = 'CarbonControl_CommandProcess';
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonControl_CommandProcess ' + DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  if not OSError(
+    GetEventParameter(AEvent, kEventParamDirectObject,
+      typeHICommand, nil, SizeOf(HICommand), nil, @Command),
+    SName, 'GetEventParameter') then
+  begin
+    {$IFDEF VerboseControlEvent}
+      DebugLn('CarbonControl_CommandProcess ID: ' + DbgS(Command.commandID) + ' Target: ' +
+        DbgSName(AWidget.LCLObject));
+    {$ENDIF}
+
+    case Command.commandID of
+      kHICommandUndo:;
+      kHICommandRedo:;
+      kHICommandCut: SendSimpleMessage(AWidget.LCLObject, LM_CUTTOCLIP);
+      kHICommandCopy: SendSimpleMessage(AWidget.LCLObject, LM_COPYTOCLIP);
+      kHICommandPaste: SendSimpleMessage(AWidget.LCLObject, LM_PASTEFROMCLIP);
+      kHICommandClear: SendSimpleMessage(AWidget.LCLObject, LM_CLEARSEL);
+      kHICommandSelectAll:;
+    end;
+  end;
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
 { TCarbonControl }
 
 {------------------------------------------------------------------------------
@@ -209,6 +248,11 @@ begin
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
   InstallControlEventHandler(Content,
     RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
+    1, @TmpSpec, Pointer(Self), nil);
+    
+  TmpSpec := MakeEventSpec(kEventClassCommand, kEventCommandProcess);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonControl_CommandProcess),
     1, @TmpSpec, Pointer(Self), nil);
     
 // cursor set

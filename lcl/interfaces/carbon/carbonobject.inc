@@ -154,13 +154,13 @@ end;
 
 {------------------------------------------------------------------------------
   Name:  CarbonApp_CommandProcess
-  Handles menu commands
+  Handles main menu and context menus commands
  ------------------------------------------------------------------------------}
 function CarbonApp_CommandProcess(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  Command: HICommand;
+  Command: HICommandExtended;
   CarbonMenu: TCarbonMenu;
   Msg: TLMessage;
   S: LongWord;
@@ -170,7 +170,6 @@ begin
     DebugLn('CarbonApp_CommandProcess');
   {$ENDIF}
   
-  // check command and send "click" message to menu item
   if not OSError(
     GetEventParameter(AEvent, kEventParamDirectObject,
       typeHICommand, nil, SizeOf(HICommand), nil, @Command),
@@ -182,6 +181,7 @@ begin
          ' Attrs: ' + DbgS(Command.attributes));
     {$ENDIF}
       
+    // check command and send "click" message to menu item
     if (Command.commandID = MENU_FOURCC) and
       (Command.attributes and kHICommandFromMenu > 0) and
       (Command.menuRef <> nil) then
@@ -962,6 +962,17 @@ end;
 procedure TCarbonWidgetSet.SetDesigning(AComponent: TComponent);
 begin
 
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.IsHelpKey
+  Params:  Key   -
+           Shift -
+  Returns: If the specified key is determined to show help in Carbon
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.IsHelpKey(Key: Word; Shift: TShiftState): Boolean;
+begin
+  Result := False; // help key is Cmd + ?, will be called directly on key press
 end;
 
 {------------------------------------------------------------------------------
