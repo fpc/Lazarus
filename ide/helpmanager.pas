@@ -884,21 +884,15 @@ function THelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
   const CodePos: TPoint; out Hint: string): TShowHelpResult;
 var
   Code: TCodeBuffer;
-  {$IFDEF EnableLazDocHint}
   CacheWasUsed: boolean;
-  {$ENDIF}
 begin
   Hint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit;
-  {$IFDEF EnableLazDocHint}
   if LazDocBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=ldprSuccess
   then
     exit(shrSuccess);
-  {$ENDIF}
-  Hint:=CodeToolBoss.FindSmartHint(Code,CodePos.X,CodePos.Y);
-  CodeToolBoss.Abortable:=false;
-  Result:=shrSuccess;
+  Result:=shrHelpNotFound;
 end;
 
 function THelpManager.ConvertSourcePosToPascalHelpContext(
