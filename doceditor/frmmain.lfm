@@ -19,17 +19,18 @@ object MainForm: TMainForm
     ButtonHeight = 28
     ButtonWidth = 28
     Caption = 'TBMain'
+    Flat = True
     Images = ILMain
     TabOrder = 0
     TabStop = True
     object TBNewModule: TToolButton
-      Left = 128
+      Left = 118
       Hint = 'Insert a new module'
       Top = 2
       Action = AInsertModule
     end
     object TBNewPackage: TToolButton
-      Left = 100
+      Left = 90
       Hint = 'Insert a new package'
       Top = 2
       Action = AInsertPackage
@@ -41,75 +42,75 @@ object MainForm: TMainForm
       Action = ANew
     end
     object TBNewTopic: TToolButton
-      Left = 156
+      Left = 146
       Hint = 'Insert a new topic'
       Top = 2
       Action = AInsertTopic
     end
     object ToolButton5: TToolButton
-      Left = 212
+      Left = 202
       Top = 2
-      Width = 11
+      Width = 5
       Caption = 'ToolButton5'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object ToolButton6: TToolButton
-      Left = 223
+      Left = 207
       Hint = 'Format selection bold'
       Top = 2
       Action = AFormatBold
     end
     object ToolButton7: TToolButton
-      Left = 279
+      Left = 263
       Hint = 'Format selection underline'
       Top = 2
       Action = AFormatUnderline
     end
     object ToolButton8: TToolButton
-      Left = 251
+      Left = 235
       Hint = 'Format selection italic'
       Top = 2
       Action = AFormatItalic
     end
     object TBNewElement: TToolButton
-      Left = 184
+      Left = 174
       Hint = 'Insert a new element'
       Top = 2
       Action = AInsertElement
     end
     object ToolButton1: TToolButton
-      Left = 391
+      Left = 375
       Top = 2
       Width = 22
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButton2: TToolButton
-      Left = 307
+      Left = 291
       Hint = 'Format selection as variable'
       Top = 2
       Action = AFormatVariable
     end
     object ToolButton3: TToolButton
-      Left = 335
+      Left = 319
       Hint = 'Format selection as paragraph'
       Top = 2
       Action = AFormatParagraph
     end
     object ToolButton4: TToolButton
-      Left = 413
+      Left = 397
       Hint = 'Insert a new table'
       Top = 2
       Action = AInsertTable
     end
     object ToolButton9: TToolButton
-      Left = 441
+      Left = 425
       Hint = 'Insert a new link'
       Top = 2
       Action = AInsertLink
     end
     object ToolButton10: TToolButton
-      Left = 363
+      Left = 347
       Hint = 'Format selection as remark'
       Top = 2
       Action = AFormatRemark
@@ -129,12 +130,12 @@ object MainForm: TMainForm
     object ToolButton13: TToolButton
       Left = 85
       Top = 2
-      Width = 15
+      Width = 5
       Caption = 'ToolButton13'
-      Style = tbsSeparator
+      Style = tbsDivider
     end
     object ToolButton11: TToolButton
-      Left = 469
+      Left = 453
       Hint = 'Insert a Short Description link'
       Top = 2
       Action = AInsertPrintShort
@@ -260,8 +261,8 @@ object MainForm: TMainForm
   end
   object ALMain: TActionList
     Images = ILMain
-    left = 80
-    top = 16
+    left = 48
+    top = 64
     object ANew: TAction
       Category = 'File'
       Caption = '&New'
