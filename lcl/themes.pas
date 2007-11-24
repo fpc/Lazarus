@@ -48,7 +48,7 @@ interface
 uses
   // no Graphics or Controls can be used here to prevent circular references
   //
-  Types, Math, Classes, LCLType, TmSchema;
+  Types, Math, Classes, LCLProc, LCLType, TmSchema;
   
 type
   // These are all elements which can be themed.
@@ -1856,7 +1856,6 @@ begin
           ADrawFlags := ADrawFlags or DFCS_PUSHED else
         if IsHot(Details) then
           ADrawFlags := ADrawFlags or DFCS_HOT;
-
         if IsChecked(Details) then
           ADrawFlags := ADrawFlags or DFCS_CHECKED;
 

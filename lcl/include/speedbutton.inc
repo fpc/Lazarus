@@ -621,7 +621,6 @@ end;
           Shift:
           X, Y:
   Returns:  nothing
-
  ------------------------------------------------------------------------------}
 procedure TCustomSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);

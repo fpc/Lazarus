@@ -3328,6 +3328,21 @@ var
     end;
     AddCodePosition(ListOfPCodeXYPosition,NewPos);
   end;
+  
+  function StartPositionAtDefinition: boolean;
+  begin
+    if (NewNode.Desc in AllIdentifierDefinitions)
+    and (PositionInDefinitionName(NewNode,CleanPos)) then
+      Result:=true
+    else if (NewNode.Desc=ctnProcedure)
+    and (PositionInProcName(NewNode,false,CleanPos)) then
+      Result:=true
+    else if (NewNode.Desc=ctnProperty)
+    and (PositionInPropertyName(NewNode,CleanPos)) then
+      Result:=true
+    else
+      Result:=false;
+  end;
 
 begin
   Result:=true;
@@ -3345,10 +3360,8 @@ begin
     NewTool:=Self;
     NewNode:=FindDeepestExpandedNodeAtPos(CleanPos,true);
     NewPos:=CursorPos;
-    if (NewNode.Desc in AllIdentifierDefinitions)
-    and (PositionInDefinitionName(NewNode,CleanPos)) then begin
+    if StartPositionAtDefinition then
       AddPos;
-    end;
 
     CurCursorPos:=CursorPos;
     CurTool:=Self;

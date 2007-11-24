@@ -146,7 +146,6 @@ var
   ClientWidget: PGtkWidget;
 begin
   Result.Style := nil;
-  
   if not GTKWidgetSet.IsValidDC(DC) then Exit;
   
   Result.Widget := DevCtx.Widget;
@@ -181,7 +180,6 @@ begin
                 Result.Shadow := GTK_SHADOW_OUT;
                 
               Result.IsHot:= Result.State = GTK_STATE_PRELIGHT;
-
               Result.Detail := 'button';
               Result.Painter := gptBox;
             end;

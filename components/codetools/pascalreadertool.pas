@@ -76,6 +76,8 @@ type
                              Attr: TProcHeadAttributes): string;
     function GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
     function GetPropertyTypeIdentifier(PropNode: TCodeTreeNode): PChar;
+    function PositionInPropertyName(PropNode: TCodeTreeNode;
+                                    CleanPos: integer): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
@@ -101,6 +103,8 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     procedure MoveCursorToProcName(ProcNode: TCodeTreeNode;
         SkipClassName: boolean);
+    function PositionInProcName(ProcNode: TCodeTreeNode;
+                                SkipClassName: boolean; CleanPos: integer): boolean;
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
@@ -733,6 +737,43 @@ begin
   end;
 end;
 
+function TPascalReaderTool.PositionInProcName(ProcNode: TCodeTreeNode;
+  SkipClassName: boolean; CleanPos: integer): boolean;
+var
+  InFirstAtom: Boolean;
+begin
+  if (ProcNode.Desc=ctnProcedure) and (ProcNode.FirstChild<>nil)
+  and (ProcNode.FirstChild.Desc=ctnProcedureHead) then
+    ProcNode:=ProcNode.FirstChild;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if (ProcNode.Desc=ctnProcedure) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
+    ReadNextAtom; // skip proc keyword
+  end;
+  if CurPos.Flag<>cafWord then exit(false);
+  // now CurPos is either the classname or the procname
+  InFirstAtom:=(CleanPos>=CurPos.StartPos) and (CleanPos<=CurPos.EndPos);
+  ReadNextAtom;
+  // read point
+  if CurPos.Flag<>cafPoint then begin
+    // procname without classname
+    exit(InFirstAtom);
+  end;
+  // there is a classname
+  if (CleanPos>=CurPos.StartPos) and (CleanPos<=CurPos.EndPos)
+  and (not SkipClassName) then
+    exit(true); // position at point
+  // now read the procname
+  ReadNextAtom;
+  if CurPos.Flag<>cafWord then exit(false); // no valid procname
+  if (CleanPos>=CurPos.StartPos) and (CleanPos<=CurPos.EndPos) then
+    exit(true); // position at procname
+  if (not SkipClassName) and InFirstAtom then
+    exit(true); // position at classname
+  Result:=false;
+end;
+
 function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode
   ): boolean;
 begin
@@ -896,7 +937,7 @@ begin
   if PropNode=nil then exit;
   MoveCursorToNodeStart(PropNode);
   if (PropNode.Desc=ctnProperty) then begin
-    ReadNextAtom; // read 'propery'
+    ReadNextAtom; // read 'property'
   end;
   ReadNextAtom; // read name
   Result:=@Src[CurPos.StartPos];
@@ -912,6 +953,19 @@ begin
   if PropNode=nil then exit;
   if not MoveCursorToPropType(PropNode) then exit;
   Result:=@Src[CurPos.StartPos];
+end;
+
+function TPascalReaderTool.PositionInPropertyName(PropNode: TCodeTreeNode;
+  CleanPos: integer): boolean;
+begin
+  if PropNode=nil then exit(false);
+  MoveCursorToNodeStart(PropNode);
+  if (PropNode.Desc=ctnProperty) then begin
+    ReadNextAtom; // read 'property'
+  end;
+  ReadNextAtom; // read name
+  Result:=(CurPos.Flag=cafWord)
+          and (CleanPos>=CurPos.StartPos) and (CleanPos<=CurPos.EndPos);
 end;
 
 function TPascalReaderTool.ExtractIdentCharsFromStringConstant(StartPos,
