@@ -186,6 +186,7 @@ procedure TDBMemo.KeyPress(var Key: Char);
   end;
 begin
   inherited KeyPress(Key);
+  
   case key of
     #32..#255: // alphabetic characters
       CheckValidChar;
@@ -197,10 +198,14 @@ begin
         FDatalink.Reset
       else
         Key:=#0;
-    ^X,^V, #8: // special keys
+    // Verifyes if we are in edit mode for special keys may change the text
+    // Ctrl+I = Tab
+    // Ctrl+J = LineFeed
+    // Ctrl+H = Backspace
+    ^X, ^V, ^Z, ^I, ^J, ^H:
       CheckEditingKey;
-    else
-      Key := #0;
+    // Don't do anything for special keys that don't change the text
+    // Like Ctrl+C for example
   end;
 end;
 
