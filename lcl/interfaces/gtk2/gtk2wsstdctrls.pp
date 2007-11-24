@@ -1073,6 +1073,7 @@ class function TGtk2WSCustomComboBox.GetSelStart(
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkEntry;
+  AStart, AEnd: gint;
 begin
   Result := 0;
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
@@ -1080,7 +1081,11 @@ begin
   // if the combo is an editable ...
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    Result := Min(Entry^.current_pos, Entry^.selection_bound);
+    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = False then
+      Result := gtk_editable_get_position(PGtkEditable(Entry))
+    else
+      Result := Min(AStart, AEnd);
+    WriteLn('SelStart = ', Result);
   end;
 end;
 
@@ -1089,6 +1094,7 @@ class function TGtk2WSCustomComboBox.GetSelLength(
 var
   WidgetInfo: PWidgetInfo;
   Entry: PGtkEntry;
+  AStart, AEnd: gint;
 begin
   Result := 0;
   WidgetInfo := GetWidgetInfo(Pointer(ACustomComboBox.Handle));
@@ -1096,7 +1102,9 @@ begin
   // if the combo is an editable ...
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    Result := ABS(Entry^.current_pos - Entry^.selection_bound);
+    if gtk_editable_get_selection_bounds(PGtkEditable(Entry), @AStart, @AEnd) = False then
+      Exit(gtk_editable_get_position(PGtkEditable(Entry)));
+    Result := ABS(AStart - AEnd);
   end;
 end;
 
@@ -1169,7 +1177,8 @@ begin
   
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
-    gtk_entry_select_region(Entry, NewStart, NewStart);
+    //gtk_entry_select_region(Entry, NewStart, NewStart);
+    gtk_editable_set_position(PGtkEditable(Entry), NewStart);
   end;
 end;
 
@@ -1185,8 +1194,9 @@ begin
   Entry := GetComboBoxEntry(WidgetInfo^.CoreWidget);
   if Entry<>nil then begin
     Start := GetSelStart(ACustomComboBox);
-    gtk_entry_select_region(Entry, Start, NewLength);
+    gtk_editable_select_region(PGtkEditable(Entry), Start, Start + NewLength);
   end;
+  WriteLn('Setting Sel Bounds: ', Start, ' to ', NewLength);
 end;
 
 class procedure TGtk2WSCustomComboBox.SetItemIndex(
