@@ -209,21 +209,12 @@ begin
 end;
 
 Procedure TEditorPage.SaveToFile(FN : String);
-
 begin
-  If (not FileExists(FN)) or MakeBackup(FN) then
-    begin
-    
-    if (FN<>FFileName) then
-      SetFileName(FN);
-
-    If FElement.Modified then
-      FElement.Save;
-
-    WriteXMLFile(FDocument,FN);
-    Modified:=False;
-
-    end;
+  MakeBackup(FN);
+  if FN <> FFileName then SetFileName(FN);
+  If FElement.Modified then FElement.Save;
+  WriteXMLFile(FDocument, FN);
+  Modified :=False;
 end;
 
 Procedure TEditorPage.DisplayDocument;

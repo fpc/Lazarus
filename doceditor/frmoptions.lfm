@@ -1,209 +1,212 @@
 object OptionsForm: TOptionsForm
+  Left = 350
+  Height = 337
+  Top = 262
+  Width = 398
+  HorzScrollBar.Page = 397
+  VertScrollBar.Page = 336
+  ActiveControl = CBConfirmDelete
   BorderStyle = bsDialog
   Caption = 'Options'
   ClientHeight = 337
   ClientWidth = 398
   OnShow = OptionsFormShow
-  PixelsPerInch = 75
-  HorzScrollBar.Page = 397
-  VertScrollBar.Page = 336
-  Left = 253
-  Height = 337
-  Top = 60
-  Width = 398
   object PageControl1: TPageControl
-    ActivePage = tabGeneral
-    Align = alClient
-    BorderSpacing.OnChange = nil
-    TabIndex = 0
-    TabOrder = 0
     Height = 287
     Width = 398
+    ActivePage = tabGeneral
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 257
-      ClientWidth = 394
-      Left = 2
-      Height = 257
-      Top = 28
-      Width = 394
+      ClientHeight = 261
+      ClientWidth = 390
       object LEBackupExtension: TLabel
+        Left = 6
+        Height = 14
+        Top = 130
+        Width = 85
         Alignment = taRightJustify
         Caption = 'Backup extension'
         FocusControl = EBackupExtension
         Layout = tlCenter
-        ParentColor = True
-        Left = 6
-        Height = 19
-        Top = 130
-        Width = 105
+        ParentColor = False
       end
       object LEMaxMRU: TLabel
+        Left = 6
+        Height = 14
+        Top = 153
+        Width = 85
         Alignment = taRightJustify
         Caption = 'Max. recent used'
         Layout = tlCenter
-        ParentColor = True
-        Left = 6
-        Height = 23
-        Top = 153
-        Width = 105
+        ParentColor = False
       end
       object LEDefaultExtension: TLabel
+        Left = 6
+        Height = 14
+        Top = 104
+        Width = 86
         Alignment = taRightJustify
         Caption = 'Default extension'
         Layout = tlCenter
-        ParentColor = True
-        Left = 6
-        Height = 17
-        Top = 104
-        Width = 104
+        ParentColor = False
       end
       object LFEMakeskel: TLabel
+        Left = 6
+        Height = 14
+        Top = 186
+        Width = 87
         Alignment = taRightJustify
         Caption = 'makeskel program'
-        Color = clNone
         FocusControl = FEMakeSkel
         Layout = tlCenter
-        Left = 8
-        Height = 23
-        Top = 186
-        Width = 103
+        ParentColor = False
       end
       object LFEfpdoc: TLabel
+        Left = 6
+        Height = 14
+        Top = 220
+        Width = 71
         Alignment = taRightJustify
         Caption = 'fpdoc program'
-        Color = clNone
         Layout = tlCenter
-        Left = 9
-        Height = 23
-        Top = 220
-        Width = 102
+        ParentColor = False
       end
       object CBConfirmDelete: TCheckBox
+        Left = 6
+        Height = 19
+        Top = 6
+        Width = 98
         AllowGrayed = True
         Caption = 'C&onfirm deletes'
         TabOrder = 0
-        Left = 14
-        Height = 23
-        Top = 6
-        Width = 136
       end
       object CBCreateBackup: TCheckBox
+        Left = 6
+        Height = 19
+        Top = 34
+        Width = 101
         AllowGrayed = True
         Caption = 'Create &backups'
         TabOrder = 1
-        Left = 14
-        Height = 23
-        Top = 34
-        Width = 134
       end
       object CBSkipEmptyNodes: TCheckBox
+        Left = 6
+        Height = 19
+        Top = 66
+        Width = 173
         AllowGrayed = True
         Caption = '&Skip empty nodes when saving'
         TabOrder = 2
-        Left = 14
-        Height = 23
-        Top = 66
-        Width = 227
       end
       object EBackupExtension: TEdit
-        TabOrder = 3
         Left = 120
         Height = 23
         Top = 130
         Width = 80
+        TabOrder = 3
       end
       object SEMaxRecentUsed: TSpinEdit
-        MaxValue = 100
-        TabOrder = 4
         Left = 120
         Height = 20
         Top = 154
         Width = 81
+        TabOrder = 4
       end
       object EDefaultExtension: TEdit
-        TabOrder = 7
         Left = 120
         Height = 23
         Top = 104
         Width = 80
+        TabOrder = 7
       end
       object FEMakeSkel: TFileNameEdit
+        Left = 120
+        Height = 23
+        Top = 186
+        Width = 244
         DialogTitle = 'Select skeleton generator'
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
+        ParentColor = False
         TabOrder = 5
-        Anchors = [akTop, akLeft, akRight]
-        TabOrder = 5
-        Left = 120
-        Height = 23
-        Top = 186
-        Width = 248
       end
       object FEfpdoc: TFileNameEdit
+        Left = 120
+        Height = 23
+        Top = 212
+        Width = 244
         DialogTitle = 'Select documentation generator'
         ButtonWidth = 23
         NumGlyphs = 1
         Anchors = [akTop, akLeft, akRight]
+        ParentColor = False
         TabOrder = 6
-        Anchors = [akTop, akLeft, akRight]
-        TabOrder = 6
-        Left = 120
-        Height = 23
-        Top = 212
-        Width = 248
+      end
+      object CBStartMaximized: TCheckBox
+        Left = 200
+        Height = 19
+        Top = 6
+        Width = 99
+        Caption = 'Start maximized'
+        TabOrder = 8
+      end
+      object CBReopenLast: TCheckBox
+        Left = 200
+        Height = 19
+        Top = 34
+        Width = 149
+        Caption = 'Reopen last file on startup'
+        TabOrder = 9
       end
     end
     object tabDesktop: TTabSheet
       Caption = 'Desktop'
-      ClientHeight = 257
-      ClientWidth = 394
-      Left = 2
-      Height = 257
-      Top = 28
-      Width = 394
+      ClientHeight = 261
+      ClientWidth = 390
       object CBShowHints: TCheckBox
-        BorderSpacing.OnChange = nil
+        Left = 14
+        Height = 19
+        Top = 12
+        Width = 80
         Caption = 'Show Hints'
         TabOrder = 0
-        Left = 14
-        Height = 23
-        Top = 12
-        Width = 144
       end
     end
   end
   object Panel1: TPanel
+    Height = 50
+    Top = 287
+    Width = 398
     Align = alBottom
     ClientHeight = 50
     ClientWidth = 398
     FullRepaint = False
     TabOrder = 1
-    Height = 50
-    Top = 287
-    Width = 398
     object BOK: TButton
+      Left = 198
+      Height = 25
+      Top = 12
+      Width = 88
       Caption = '&OK'
       Default = True
       ModalResult = 1
       OnClick = BOKClick
       TabOrder = 0
-      Left = 198
-      Height = 25
-      Top = 12
-      Width = 88
     end
     object BCancel: TButton
-      Cancel = True
-      Caption = '&Cancel'
-      ModalResult = 2
-      TabOrder = 1
       Cursor = crAppStart
       Left = 294
       Height = 25
       Top = 12
       Width = 88
+      Cancel = True
+      Caption = '&Cancel'
+      ModalResult = 2
+      TabOrder = 1
     end
   end
 end

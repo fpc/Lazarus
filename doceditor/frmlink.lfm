@@ -1,80 +1,78 @@
 object LinkForm: TLinkForm
-  Caption = 'LinkForm'
-  ClientHeight = 81
-  ClientWidth = 395
-  PixelsPerInch = 90
-  Position = poScreenCenter
-  HorzScrollBar.Page = 394
   Left = 333
   Height = 81
   Top = 149
   Width = 395
+  HorzScrollBar.Page = 394
+  ActiveControl = CBTarget
+  Caption = 'LinkForm'
+  ClientHeight = 81
+  ClientWidth = 395
+  Position = poScreenCenter
   object LLinkTarget: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = '&Link target'
-    Color = clNone
-    FocusControl = CBTarget
-    Layout = tlCenter
     AnchorSideTop.Control = CBTarget
     AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 12
-    Top = 13
-    Width = 67
+    Height = 14
+    Top = 11
+    Width = 52
+    Caption = '&Link target'
+    FocusControl = CBTarget
+    Layout = tlCenter
+    ParentColor = False
   end
   object LELinkText: TLabel
-    BorderSpacing.OnChange = nil
-    Caption = 'LELinkText'
-    Color = clNone
-    Layout = tlCenter
     AnchorSideTop.Control = ELinkText
     AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 12
-    Top = 45
-    Width = 61
+    Height = 14
+    Top = 44
+    Width = 52
+    Caption = 'LELinkText'
+    Layout = tlCenter
+    ParentColor = False
   end
   object CBTarget: TComboBox
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    MaxLength = 0
-    TabOrder = 0
     Left = 96
-    Height = 23
+    Height = 21
     Top = 8
     Width = 183
+    Anchors = [akTop, akLeft, akRight]
+    AutoComplete = True
+    AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
+    MaxLength = 0
+    Sorted = True
+    TabOrder = 0
   end
   object BOK: TButton
+    Left = 291
+    Height = 25
+    Top = 8
+    Width = 96
     Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
     Caption = '&OK'
     Default = True
     ModalResult = 1
     TabOrder = 1
-    Left = 291
-    Height = 25
-    Top = 8
-    Width = 96
   end
   object BCancel: TButton
+    Left = 291
+    Height = 25
+    Top = 40
+    Width = 96
     Anchors = [akTop, akRight]
-    BorderSpacing.OnChange = nil
     Cancel = True
     Caption = '&Cancel'
     ModalResult = 2
     TabOrder = 3
-    Left = 291
-    Height = 25
-    Top = 40
-    Width = 96
   end
   object ELinkText: TEdit
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.OnChange = nil
-    TabOrder = 2
     Left = 96
     Height = 23
     Top = 40
     Width = 183
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 2
   end
 end

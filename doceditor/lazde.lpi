@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
+    <PathDelim Value="\"/>
     <Version Value="6"/>
     <General>
+      <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
-      <Language Value=""/>
-      <CharSet Value=""/>
     </VersionInfo>
     <PublishOptions>
       <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
       <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
@@ -23,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -31,38 +31,28 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="19">
+    <Units Count="18">
       <Unit0>
         <Filename Value="lazde.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="65" Y="9"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="eleditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="eleditor"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="ElEditor"/>
       </Unit1>
       <Unit2>
         <Filename Value="fmmakeskel.pp"/>
+        <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="fmmakeskel.lrs"/>
-        <UnitName Value="fmmakeskel"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="fmMakeskel"/>
       </Unit2>
       <Unit3>
         <Filename Value="fpdeutil.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="fpdeutil"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="FPDEUtil"/>
       </Unit3>
       <Unit4>
         <Filename Value="frmabout.pp"/>
@@ -70,144 +60,108 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmabout.lrs"/>
         <UnitName Value="frmabout"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
       </Unit4>
       <Unit5>
         <Filename Value="frmbuild.pp"/>
+        <ComponentName Value="BuildForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmbuild.lrs"/>
-        <UnitName Value="frmbuild"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="frmBuild"/>
       </Unit5>
       <Unit6>
         <Filename Value="frmexample.pp"/>
+        <ComponentName Value="ExampleForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmexample.lrs"/>
-        <UnitName Value="frmexample"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="FrmExample"/>
       </Unit6>
       <Unit7>
         <Filename Value="frmlink.pp"/>
+        <ComponentName Value="LinkForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmlink.lrs"/>
-        <UnitName Value="frmlink"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="FrmLink"/>
       </Unit7>
       <Unit8>
         <Filename Value="frmmain.pp"/>
+        <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmmain.lrs"/>
-        <UnitName Value="frmmain"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="FrmMain"/>
       </Unit8>
       <Unit9>
         <Filename Value="frmmakeskel.pp"/>
+        <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmmakeskel.lrs"/>
-        <UnitName Value="frmmakeskel"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="FrmMakeSkel"/>
       </Unit9>
       <Unit10>
         <Filename Value="frmnewnode.pp"/>
+        <ComponentName Value="NewNodeForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmnewnode.lrs"/>
-        <UnitName Value="frmnewnode"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="frmNewNode"/>
       </Unit10>
       <Unit11>
         <Filename Value="frmoptions.pp"/>
+        <ComponentName Value="OptionsForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmoptions.lrs"/>
-        <UnitName Value="frmoptions"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="frmOptions"/>
       </Unit11>
       <Unit12>
         <Filename Value="frmsource.pas"/>
+        <ComponentName Value="SourceForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmsource.lrs"/>
-        <UnitName Value="frmsource"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="frmSource"/>
       </Unit12>
       <Unit13>
         <Filename Value="frmtable.pp"/>
+        <ComponentName Value="TableForm"/>
         <HasResources Value="True"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmtable.lrs"/>
-        <UnitName Value="frmtable"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="frmTable"/>
       </Unit13>
       <Unit14>
         <Filename Value="lazdemsg.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazdemsg"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
       </Unit14>
       <Unit15>
         <Filename Value="lazdeopts.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazdeopts"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="LazDEOpts"/>
       </Unit15>
       <Unit16>
         <Filename Value="pgeditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pgeditor"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
+        <UnitName Value="pgEditor"/>
       </Unit16>
       <Unit17>
-        <Filename Value="pkedit.pp"/>
-        <UnitName Value="PkEdit"/>
-        <CursorPos X="36" Y="30"/>
-        <TopLine Value="17"/>
-        <EditorIndex Value="1"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-      </Unit17>
-      <Unit18>
         <Filename Value="pkeditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pkeditor"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Text"/>
-      </Unit18>
+        <UnitName Value="PkEditor"/>
+      </Unit17>
     </Units>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="pkedit.pp"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
-      </Position1>
-    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)/;$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)/;$(LazarusDir)/components/custom/;$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)/"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/;$(LazarusDir)/components/synedit/;$(LazarusDir)/components/codetools/"/>
+      <OtherUnitFiles Value="$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\lcl\units\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)\;$(LazarusDir)\components\codetools\units\$(TargetCPU)-$(TargetOS)\;$(LazarusDir)\components\custom\;$(LazarusDir)\packager\units\$(TargetCPU)-$(TargetOS)\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\;$(LazarusDir)\components\synedit\;$(LazarusDir)\components\codetools\"/>
     </SearchPaths>
-    <CodeGeneration>
-      <Generate Value="Faster"/>
-    </CodeGeneration>
     <Linking>
       <Options>
         <Win32>
@@ -216,17 +170,10 @@
       </Options>
     </Linking>
     <Other>
+      <ConfigFile>
+        <StopAfterErrCount Value="10"/>
+      </ConfigFile>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

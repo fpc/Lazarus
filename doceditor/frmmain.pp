@@ -64,6 +64,7 @@ type
     ILMain: TImageList;
     LIBuild: TMenuItem;
     MenuItem1: TMenuItem;
+    QuickLink: TMenuItem;
     MISeparate: TMenuItem;
     MISaveAs: TMenuItem;
     MISave: TMenuItem;
@@ -136,6 +137,7 @@ type
     procedure MainFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure MainFormCreate(Sender: TObject);
     procedure MainFormDestroy(Sender: TObject);
+    procedure QuickLinkClick(Sender: TObject);
   private
     FRecent : TStringList;
     FRecentBuildSettingsFile: String;
@@ -225,6 +227,10 @@ begin
   LoadCommandLine;
   LoadOptions;
   LoadRecent;
+  if StartMaximized then
+    WindowState := wsMaximized;
+  if ReopenLast and (FRecent.Count>0) then
+    OpenFile(FRecent[0]);
   ApplyOptions;
 end;
 
@@ -427,6 +433,18 @@ begin
   FreeAndNil(FRecent);
 end;
 
+procedure TMainForm.QuickLinkClick(Sender: TObject);
+var
+  Selection : string;
+begin
+  if Assigned(CurrentEditor) then begin
+    Selection := CurrentEditor.CurrentSelection;
+    if Selection <> '' then
+      CurrentEditor.InsertLink(CurrentEditor.CurrentElement['name'] + '.' + Selection, Selection)
+    else
+      ShowMessage('Select some text');
+  end;
+end;
 
 procedure TMainForm.BuildReopenList;
 
@@ -799,7 +817,7 @@ begin
           CBTarget.Items.EndUpdate;
         end;
         If ShowModal=mrOK Then
-          CurrentEditor.InsertLink(CBTarget.Text,ELinkText.Text);
+          CurrentEditor.InsertLink(CBTarget.Text, ELinkText.Text);
       Finally
         free;
       end;
@@ -892,4 +910,5 @@ initialization
   {$I frmmain.lrs}
 
 end.
+
 

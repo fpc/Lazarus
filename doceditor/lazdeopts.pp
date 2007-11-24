@@ -33,6 +33,8 @@ Var
   ConfirmDelete    : Boolean;
   CreateBackup     : Boolean;
   ShowHelpHints    : Boolean;
+  StartMaximized   : Boolean;
+  ReopenLast       : Boolean;
   MaxRecentUsed    : Integer;
   BackupExtension  : String;  
   DefaultExtension : String;
@@ -105,6 +107,8 @@ begin
       ConfirmDelete:=ReadBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);
       CreateBackup:=ReadBool(SecPrefs,KeyCreateBackup,CreateBackup);
       ShowHelpHints:=ReadBool(SecPrefs,KeyShowHints,ShowHelpHints);
+      StartMaximized := ReadBool(SecPrefs, 'StartMaximized', StartMaximized);
+      ReopenLast := ReadBool(SecPrefs, 'ReopenLast', ReopenLast);
       BackupExtension:=ReadString(SecPrefs,KeyBackupExtension,BackupExtension);
       DefaultExtension:=ReadString(SecPrefs,KeyDefaultExtension,DefaultExtension);
       CmdMakeSkel:=ReadString(SecPrefs,KeyCmdMakeSkel,cmdMakeSkel);
@@ -123,6 +127,8 @@ begin
       WriteBool(SecPrefs,KeyConfirmDelete,ConfirmDelete);
       WriteBool(SecPrefs,KeyCreateBackup,CreateBackup);
       WriteBool(SecPrefs,KeyShowHints,ShowHelpHints);
+      WriteBool(SecPrefs, 'StartMaximized', StartMaximized);
+      WriteBool(SecPrefs, 'ReopenLast', ReopenLast);
       WriteString(SecPrefs,KeyBackupExtension,BackupExtension);
       WriteString(SecPrefs,KeyDefaultExtension,DefaultExtension);
       WriteString(SecPrefs,KeyCmdMakeSkel,cmdMakeSkel);
@@ -137,6 +143,8 @@ Initialization
   SkipEmptyNodes   := True;
   ConfirmDelete    := True;
   CreateBackup     := True;
+  StartMaximized   := true;
+  ReopenLast       := true;
   BackupExtension  := '.~xml';
   DefaultExtension := '.xml';
   MaxRecentUSed    := 10;

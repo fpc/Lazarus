@@ -137,7 +137,7 @@ Type
 
 implementation
 
-uses frmexample,frmLink;
+uses frmexample,frmLink, StrUtils;
 
 { TCustomElementEditor }
 
@@ -211,6 +211,7 @@ begin
   With L do
     begin
     L.Parent:=P0;
+    Top := 15;
     L.Align:=alTop;
     L.Caption:=SShortDescription;
     end;
@@ -218,6 +219,7 @@ begin
   With FShortEntry do
     begin
     Parent:=P0;
+    Top := 35;
     Align:=alTop;
     height:=24;
     OnEnter:=@OnEnterControl;
@@ -235,6 +237,7 @@ begin
   With FDescrMemo do
     begin
     Parent:=Self;
+    Top := 80;
     Align:=alTop;
     OnEnter:=@OnEnterControl;
     OnChange:=@OnTextModified;
@@ -244,12 +247,14 @@ begin
   With FSplit1 do
     begin
     Parent:=Self;
+    Top := 85;
     Align:=alTop;
     end;
   P1:=TPanel.Create(Self);
   With P1 do
     begin
     Parent:=Self;
+    Top := 90;
     Align:=alClient;
     BevelOuter:=bvNone;
     end;
@@ -265,6 +270,7 @@ begin
   With FErrorsMemo do
     begin
     Parent:=P1;
+    Top := 15;
     Align:=alTop;
     Height:=50;
     OnEnter:=@OnEnterControl;
@@ -274,6 +280,7 @@ begin
   With FSplit2 do
     begin
     Parent:=P1;
+    Top := 70;
     Align:=alTop;
     end;
   // See Also
@@ -281,6 +288,7 @@ begin
   With P2 do
     begin
     Parent:=P1;
+    Top := 75;
     Align:=alClient;
     BevelOuter:=bvNone;
     end;
@@ -344,6 +352,7 @@ begin
   With FSplit3 do
     begin
     Parent:=P2;
+    Top := 55;
     Align:=alTop;
     end;
   // Examples.
@@ -436,6 +445,35 @@ end;
 
 Procedure TElementEditor.Refresh;
 
+  function RemoveLFAfterTags(S : String) : String;
+  
+    function RemoveLF(S, Tag : string; LenTag : integer) : string;
+    var
+      Remove : Integer;
+    begin
+      Remove := pos(Tag, S);
+      while Remove <> 0 do begin
+        inc(Remove, LenTag);
+        while S[Remove] in [#10, #13] do
+          delete(S, Remove, 1);
+        Remove := PosEx(Tag, S, Remove);
+      end;
+      Result := S;
+    end;
+    
+  const
+    Link = '</link>' + LineEnding;
+    LenLink = length(Link) - length(LineEnding);
+    Parag = '<p/>' + LineEnding;
+    LenParag = length(Parag);
+    Bold = '</b>' + LineEnding;
+    LenBold = length(Bold);
+  begin
+    Result := RemoveLF(S, Link, LenLink);
+    Result := RemoveLF(Result, Parag, LenParag);
+    Result := RemoveLF(Result, Bold, LenBold);
+  end;
+
 Var
   S : TSTringStream;
 
@@ -457,7 +495,7 @@ Var
         WriteXml(N,S);
         N:=N.NextSibling;
         end;
-      Result:=S.Datastring;
+      Result:=RemoveLFAfterTags(S.Datastring);
     end;
   end;
 
@@ -909,4 +947,5 @@ initialization
   {$i icons.lrs}
 
 end.
+
 

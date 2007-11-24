@@ -287,6 +287,7 @@ begin
   With FModuleTree do
     begin
     Parent:=Self;
+    Top := 25;
     Align:=AlTop;
     Height:=150;
     Images:=FImageList;
@@ -297,12 +298,14 @@ begin
   With FSplitter do
     begin
     Parent:=Self;
+    Top := 180;
     align:=alTop;
     end;
   FPElements:=TPanel.Create(Self);
   With FPElements do
     begin
     Parent:=Self;
+    Top := 185;
     align:=AlClient;
     end;
   FLElements:=Tlabel.Create(Self);
@@ -317,6 +320,7 @@ begin
   With FElementTree do
     begin
     Parent:=FpElements;
+    Top := 25;
     Align:=AlClient;
     Images:=FImageList;
     OnChange:=@ElementChange;
@@ -1122,4 +1126,5 @@ begin
 end;
 
 end.
+
 

@@ -41,6 +41,8 @@ type
     CBCreateBackup: TCheckBox;
     CBSkipEmptyNodes: TCheckBox;
     CBShowHints: TCheckBox;
+    CBStartMaximized: TCheckBox;
+    CBReopenLast: TCheckBox;
     EBackupExtension: TEdit;
     EDefaultExtension: TEdit;
     FEMakeSkel: TFileNameEdit;
@@ -97,6 +99,8 @@ begin
   FEMakeskel.Text:=cmdMakeSkel;
   FEFPDoc.Text:=cmdfpdoc;
   CBShowHints.Checked:=ShowHelpHints;
+  CBStartMaximized.Checked := StartMaximized;
+  CBReopenLast.Checked := ReopenLast;
 end;
 
 procedure TOptionsForm.FormToOptions;
@@ -110,6 +114,8 @@ begin
   cmdMakeSkel:=FEMakeskel.Text;
   cmdfpdoc:=FEFPDoc.Text;
   ShowHelpHints:=CBShowHints.Checked;
+  StartMaximized := CBStartMaximized.Checked;
+  ReopenLast := CBReopenLast.Checked;
   SaveOptions;
 end;
 
@@ -117,4 +123,5 @@ initialization
   {$I frmoptions.lrs}
 
 end.
+
 
