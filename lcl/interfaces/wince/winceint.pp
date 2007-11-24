@@ -165,6 +165,8 @@ type
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
 
+    // thread synchronize support
+    procedure HandleWakeMainThread(Sender: TObject);
 
 
     {$I wincewinapih.inc}

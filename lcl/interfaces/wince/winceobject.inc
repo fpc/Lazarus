@@ -142,7 +142,7 @@ begin
     FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
   end;
 
-  // Create parent of all windows, `button on taskbar'
+  // Create parent of all windows, 'button on taskbar'
 //does this work on wince?!
   FAppHandle := CreateWindow(@ClsName, StringToPWideChar(Application.Title),
   WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
@@ -173,9 +173,8 @@ begin
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(Handle, DC);
 
-  //roozbeh:what is this?!!
   // Thread.Synchronize support
-  //WakeMainThread := @HandleWakeMainThread;
+  WakeMainThread := @HandleWakeMainThread;
 end;
 
 {------------------------------------------------------------------------------
@@ -494,7 +493,11 @@ begin
   Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
 end;
 
-
+procedure TWinCEWidgetSet.HandleWakeMainThread(Sender: TObject);
+begin
+  // wake up GUI thread by sending a message to it
+  Windows.PostMessage(AppHandle, WM_NULL, 0, 0);
+end;
 
 procedure TWinCEWidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 var
