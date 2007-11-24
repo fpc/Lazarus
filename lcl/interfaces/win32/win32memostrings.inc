@@ -34,7 +34,7 @@ type
 
 function TWin32MemoStrings.GetLineLength(Index: Integer): Integer;
 begin
-  Result := SendMessage(fHandle, EM_LINELENGTH, SendMessage(fHandle, EM_LINEINDEX, Index, 0),0);
+  Result := SendMessage(fHandle, EM_LINELENGTH, SendMessage(fHandle, EM_LINEINDEX, Index, 0), 0);
 end;
 
 function TWin32MemoStrings.GetLineStart(Index: Integer): Integer;
@@ -70,17 +70,38 @@ end;
 function TWin32MemoStrings.Get(Index: Integer): string;
 var
   len: Integer;
+  WideBuffer: WideString;
+  AnsiBuffer: string;
 begin
   len := GetLineLength(Index);
+
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    Setlength(WideBuffer, len);
+    len := SendMessageW(fHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
+
+    Result := Utf8Encode(WideBuffer);
+  end
+  else
+  begin
+    Setlength(AnsiBuffer, len);
+    len := SendMessage(fHandle, EM_GETLINE, Index, lparam(PChar(AnsiBuffer)));
+
+    Result := AnsiToUtf8(AnsiBuffer);
+  end;
+{$else}
   Setlength(Result, len);
   if len = 0 then Exit;
-  
+
   // no need for temp buf and moving
   // the result is without null terminator.
   PWord(@Result[1])^ := len+1;
   len := SendMessage(fHandle, EM_GETLINE, Index, lparam(pchar(Result)));
-  // readjust length in case something went wrong
+
+  // read just length in case something went wrong
   Setlength(Result, len);
+{$endif}
 end;
 
 procedure TWin32MemoStrings.SetUpdateState(Updating: Boolean);
