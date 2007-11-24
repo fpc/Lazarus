@@ -63,10 +63,10 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
-  StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList,
-  StdCtrls, mPasLex, LCLIntf, LCLType, FileUtil,
-  CodeCache, CodeToolManager, LazarusIDEStrConsts,
-  Project;
+  StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
+  StdCtrls, LCLIntf, LCLType,
+  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
+  LazarusIDEStrConsts, Project;
 
 
 Const
@@ -106,6 +106,14 @@ type
     property AsString: string read GetAsString;
     property AsComment: string read GetAsComment;
   end;
+  
+  { TTLScannedFiles }
+
+  TTLScannedFiles = class
+  public
+    Filename: string; // = Tool.MainFilename
+    CodeChangeStep: integer; // = Tool.Scanner.ChangeStep
+  end;
 
   { TfrmTodo }
 
@@ -132,13 +140,12 @@ type
     fFileName    : String;
     FOnOpenFile  : TOnOpenFile;
     fRootCBuffer : TCodeBuffer;
-    fScannedFile : TStringList;
+    fScannedFiles: TAvgLvlTree;// tree of TTLScannedFiles
 
     procedure SetFileName(const AValue: String);
 
     Function  GetToDoItem(const aFileName: string; const SComment, EComment: string;
         const TokenString: string; LineNumber: Integer): TTodoItem ;
-    procedure ParseDirective(aDirective : String);
     procedure AddListItem(aTodoItem: TTodoItem);
     
     procedure LoadFile(aFileName : string);
@@ -156,6 +163,18 @@ var
 
 implementation
 
+function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareFilenames(TTLScannedFiles(Data1).Filename,
+                           TTLScannedFiles(Data2).Filename);
+end;
+
+function CompareAnsiStringWithTLScannedFile(Filename, ScannedFile: Pointer): integer;
+begin
+  Result:=CompareFilenames(AnsiString(Filename),
+                           TTLScannedFiles(ScannedFile).Filename);
+end;
+
 { TfrmTodo }
 
 constructor TfrmTodo.Create(AOwner: TComponent);
@@ -167,10 +186,12 @@ destructor TfrmTodo.Destroy;
 var
   i: integer;
 begin
-  fScannedFile.Free;
-  for i := 0 to lvTodo.Items.Count-1 do
-    if Assigned(lvTodo.Items[i].Data) then
-      TTodoItem(lvTodo.Items[i].Data).Free;
+  fScannedFiles.FreeAndClear;
+  FreeAndNil(fScannedFiles);
+  for i := 0 to lvTodo.Items.Count-1 do begin
+    TTodoItem(lvTodo.Items[i].Data).Free;
+    lvTodo.Items[i].Data:=nil;
+  end;
   inherited Destroy;
 end;
 
@@ -331,7 +352,7 @@ end;
 procedure TfrmTodo.FormCreate(Sender: TObject);
 begin
   fBuild:=False;
-  fScannedFile:=TStringList.Create;
+  fScannedFiles:=TAvgLvlTree.Create(@CompareTLScannedFiles);
 
   Caption := lisTodoListCaption;
 
@@ -439,7 +460,6 @@ begin
   Try
     fBuild:=True;
     lvTodo.Items.Clear;
-    fScannedFile.Clear;
     //Find an '.todo' filename
     St:=ChangeFileExt(fFileName,'.todo');
     If FileExists(St) then
@@ -473,23 +493,6 @@ begin
   end;
 end;
 
-//Find the {$I filename} directive. If exists, call LoadFile()
-procedure TfrmTodo.ParseDirective(aDirective : String);
-Var N             : Integer;
-    ParsingString : string;
-begin
-  N:=Pos('{$I ',UpperCase(aDirective));
-  if N<>0 then
-  begin
-    //we found a token that looks like an include directive. now extract
-    //the file name
-    ParsingString:=Trim(Copy(aDirective,N+Length('{$I '),MaxInt));
-    ParsingString:=Trim(Copy(ParsingString,1,Pos('}',ParsingString)-1));
-    {#ToDo: search in include path}
-    LoadFile(ParsingString);
-  end;
-end;
-
 procedure TfrmTodo.AddListItem(aTodoItem: TTodoItem);
 var
    aListItem: TListItem;
@@ -514,68 +517,71 @@ end;
 
 procedure TfrmTodo.LoadFile(aFileName: string);
 var
-  Parser   : TmwPasLex;
-  EStream  : TMemoryStream;
-  ST       : String;
+  ExpandedFilename: String;
   aTodoItem: TTodoItem;
-  
+  AVLNode: TAvgLvlTreeNode;
+  Tool: TCodeTool;
+  Code: TCodeBuffer;
+  Item: TTLScannedFiles;
+  Src: String;
+  p: Integer;
+  NestedComment: Boolean;
+  CommentEnd: LongInt;
+  CommentStr: String;
+  CodeXYPosition: TCodeXYPosition;
 begin
-  St:=ExtractFileName(aFileName);
+  DebugLn(['TfrmTodo.LoadFile ',aFileName]);
+  if not FileNameIsAbsolute(aFileName) then
+    aFileName:=AppendPathDelim(Project1.ProjectDirectory)+aFileName;
+  ExpandedFilename:=CleanAndExpandFilename(aFileName);
+  if not FilenameIsPascalUnit(ExpandedFilename) then exit;
 
-  // Abort if this file has already been scanned
-  if fScannedFile.IndexOf(St)<>-1 then
-    Exit;
-    
+  Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
+  if Code=nil then exit;
+  CodeToolBoss.Explore(Code,Tool,false,false); // ignore the result
+  if (Tool=nil) or (Tool.Scanner=nil) then exit;
+
+  AVLNode:=fScannedFiles.FindKey(Pointer(Tool.MainFilename),
+                                 @CompareAnsiStringWithTLScannedFile);
+  Item:=nil;
+  if AVLNode<>nil then begin
+    Item:=TTLScannedFiles(AVLNode.Data);
+    // Abort if this file has already been scanned
+    if Item.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
+  end;
+
   // Add file name to list of scanned files
-  fScannedFile.Add(St);
+  if Item=nil then begin
+    Item:=TTLScannedFiles.Create;
+    Item.Filename:=Tool.MainFilename;
+    Item.CodeChangeStep:=Tool.Scanner.ChangeStep;
+  end;
 
   // Display file name being processed
   //StatusBar.SimpleText := aFileName;
   //StatusBar.Repaint;
 
-
-  EStream := TMemoryStream.Create;
   try
-    //Echange of stream
-    Try
-      if not FileExists(aFileName) then
-        if Assigned(Project1) then
-          aFileName := AppendPathDelim(Project1.ProjectDirectory)+aFileName;
-      EStream.LoadFromFile(aFileName);
-      EStream.Position := EStream.Size;
-      EStream.WriteByte(0); // Terminate string for TmwPasLex
-    Except
-      FreeAndNil(EStream);
-    End;
-    if not Assigned(EStream) then Exit; // Silently ignore failed reads
-
-    EStream.Position := 0;
-
-    Parser := TmwPasLex.Create;
-    try
-      Parser.Origin := EStream.Memory;
-      while Parser.TokenID <> tkNull do
-      begin
-        { TODO 3 -oStefan -cIssue: This needs to be fixed for multiline comments;
-          the strategy ought to be to read the complete comment and only then
-          start parsing. Also it would be better to move deleting of the comment
-          tokens out of the parser }
-        aTodoItem := nil;
-        case Parser.TokenID of
-          tkBorComment: aTodoItem := GetToDoItem(aFileName, '{', '}', Parser.Token, Parser.LineNumber + 1);
-          tkAnsiComment: aTodoItem := GetToDoItem(aFileName, '(*', '*)', Parser.Token, Parser.LineNumber + 1);
-          // Slash comments in CPP files should work if they are not in a {}
-          tkSlashesComment: aTodoItem := GetToDoItem(aFileName, '//', '', Parser.Token, Parser.LineNumber + 1);
-          tkCompDirect : ParseDirective(Parser.Token);
-        end;
+    Src:=Tool.Src;
+    p:=1;
+    NestedComment:=true;
+    repeat
+      p:=FindNextComment(Src,p,NestedComment);
+      if p>length(Src) then break;
+      CommentEnd:=FindCommentEnd(Src,p,NestedComment);
+      Tool.CleanPosToCaret(p,CodeXYPosition);
+      CommentStr:=copy(Src,p,CommentEnd-p);
+      if Src[p]='/' then
+        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
+      else if Src[p]='{' then
+        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
+      else if Src[p]='(' then
+        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
+      if aTodoItem<>nil then
         AddListItem(aTodoItem);
-        Parser.Next;
-      end;
-    finally
-      Parser.Free;
-    end;
+      p:=CommentEnd;
+    until false;
   finally
-    EStream.Free;
     Self.Update;
   end;
 end;
