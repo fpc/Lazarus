@@ -10143,10 +10143,10 @@ TGraphicControl, you must query the ClientRect.</p>
         <short>Find the Handle for the specified Control</short>
         <descr>
 		<p>FindControl</p>
-		<br/>
+		
 		<p>Returns the TWinControl associated with the Handle.</p>
 		<p>This is very interface specific. Better use FindOwnerControl.</p>
-		<br/>
+		
 		<p>Handle can also be a child handle, and does not need to be the Handle
 		property of the Result.</p>
 		<p>IMPORTANT: So, in most cases: Result.Handle &lt;&gt; Handle in the params.</p>
@@ -10164,7 +10164,7 @@ TGraphicControl, you must query the ClientRect.</p>
         <short>Find the Handle for the specified Owner Control</short>
         <descr>
 		<p>FindOwnerControl</p>
-		<br/>
+		
 		<p>Returns the TWinControl owning the Handle. Handle can also be a child handle,</p>
 		<p>and does not need to be the Handle property of the Result.</p>
 		<p>IMPORTANT: Therefore, in most cases: parameter Handle &lt;&gt; Result.Handle</p>
@@ -10353,7 +10353,7 @@ TGraphicControl, you must query the ClientRect.</p>
 	<descr><p>RemainingClientRect: remaining clientrect without CurBorderSpace</p>
 		<p>CurBorderSpace: current borderspace around RemainingClientRect</p>
 		<p>Left, Top, Right, Bottom: apply these borderspaces to CurBorderSpace</p>
-		<br/>
+		
 		<p>CurBorderSpace will be set to the maximum of CurBorderSpace and Left, Top, Right, Bottom.</p>
 		<p>RemainingClientRect will shrink.</p>
 		<p>RemainingClientRect will not shrink to negative size.</p>
