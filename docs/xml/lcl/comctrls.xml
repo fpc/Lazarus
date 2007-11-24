@@ -2900,10 +2900,12 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TListItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>TListItem - the ancestor class for TCustomListView and TListView</short>
+        <descr>Most properties are inherited from ancestors, TPersistent and TObject</descr>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent"/>
+          <link id="#rtl.Objects.TObject"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TListItem.FOwner">
@@ -3081,10 +3083,7 @@ cdsIndeterminate</descr>
       <element name="TListItem.IsEqual.AItem"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TListItem.Assign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <seealso><link id="#rtl.Classes.TPersistent.Assign"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListItem.Assign.ASource"><short/></element>
@@ -3122,21 +3121,15 @@ cdsIndeterminate</descr>
       <element name="TListItem.MakeVisible.PartialOK"><short/></element>
       <!-- property Visibility: public -->
       <element name="TListItem.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Caption</i> - the name given to this item on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Cut">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Cut</i> this item from the list (but can be placed on clipboard)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Data">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Pointer to the Data asociated with this item</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.DropTarget">
@@ -3146,21 +3139,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Focused">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Property is true if this item has Focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Index">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The index of this item in the list (integer)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The index of the image associated with this Iitem in the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Owner">
@@ -3190,10 +3177,9 @@ cdsIndeterminate</descr>
       <element name="TListItem.SubItemImages.AIndex"><short/></element>
       <!-- object Visibility: default -->
       <element name="TListItems">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A list of items with a cache of the last accessed item</short>
+        <descr><i>TListitems</i>
+ has a built-in cache of the last accessed item. This will speed up interface updates since Item.Index is   often used for the same item updating more properties.  If FCacheIndex = -1 then the cache is not valid.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TListItems.FOwner">
@@ -5384,7 +5370,9 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TProgressBar">
         <short>Progress Bar</short>
         <descr>Progress Bar: a control that appears at or near the bottom of form or window. It depicts the progress of a process, or what proportion of the progress is complete. A series of coloured rectangles appears in the control, filling it from left to right or from top to bottom as the process progresses</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TProgressBar.Align">
@@ -8305,7 +8293,9 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TTrackBar">
         <short>Track Bar</short>
         <descr>Track Bar: a device that appears at the  bottom of  a window or panel or form, showing the progress of a process or allowing the user to select (with the mouse pointer) a value denoting how much of a procedure  is to be accepted.</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TTrackBar.Align">
@@ -8963,7 +8953,9 @@ Const
       <element name="TTreeNode">
         <short>TTreeNode is a single item that holds data in TTreeView</short>
         <descr>A TTreeNode is parst of a TTreeView and is used to store data in. This can be done by using the Caption property or for more complex data the Data property can be used. Each node can have sibling or child items associated with it.</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNode.FOwner">
@@ -12916,7 +12908,9 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TTreeView">
         <short>TTreeview is a control that displays a hierarchical list of items</short>
         <descr>Use a TTreeview to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Align">
