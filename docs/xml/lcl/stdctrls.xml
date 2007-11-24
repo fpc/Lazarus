@@ -2204,9 +2204,14 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ItemIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>property ItemIndex: Integer</short>
+        <descr>Indicates the currently selected item. The first item has number 0,
+the second has number 1, the third number 2, etc. In case no item is selected, ItemIndex
+has value -1.</descr>
+        <seealso>
+          <link id="TCustomComboBox"/>
+          <link id="TCustomComboBox.Items"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ReadOnly">
@@ -3390,9 +3395,16 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ItemIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>property ItemIndex: Integer</short>
+        <descr>Indicates the currently selected item. The first item has number 0,
+the second has number 1, the third number 2, etc. In case no item is selected, ItemIndex
+has value -1. If MultiSelect is True, ItemIndex represents the item which has focus, which
+tipically has a different color then the other items.</descr>
+        <seealso>
+          <link id="TCustomListBox"/>
+          <link id="TCustomListBox.Items"/>
+          <link id="TCustomListBox.MultiSelect"/>
+        </seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Items">
