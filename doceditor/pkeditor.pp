@@ -26,7 +26,7 @@ unit PkEditor;
 
 interface
 
-uses SysUtils, Classes, DOM, XmlWrite, Forms, Controls, ExtCtrls, ComCtrls,
+uses SysUtils, Classes, DOM, Forms, Controls, ExtCtrls, ComCtrls,
      StdCtrls, Dialogs, Menus, FPDEUtil, LazDEMsg, LazDEOpts;
 
 Type
