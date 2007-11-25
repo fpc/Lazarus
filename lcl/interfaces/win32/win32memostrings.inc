@@ -47,13 +47,18 @@ var
   CapLen: dword;
   Caption: PChar;
 begin
+{$ifdef WindowsUnicodeSupport}
+  Result := win32proc.GetControlText(fHandle);
+{$else}
   Result := '';
+
   // TODO: this can be made shorter probably, using SetLength(AText, ...)
   CapLen := GetWindowTextLength(fHandle);
   Caption := StrAlloc(CapLen + 1);
   GetWindowText(fHandle, Caption, CapLen + 1);
   Result := StrPas(Caption);
   StrDispose(Caption);
+{$endif}
 end;
 
 function TWin32MemoStrings.GetRealCount: integer;
