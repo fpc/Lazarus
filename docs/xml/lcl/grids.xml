@@ -1139,10 +1139,39 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomGrid">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>The base class for all grid controls</short>
+        <descr>A grid is a collection of cells that are organized in columns and rows. 
+Grids are adequate to show data that have tabular nature, for example tables in a database.  
+<p/><b>Key properties:</b><p/>
+
+The <link id="TCustomGrid.ColCount">ColCount</link> and  <link id="TCustomGrid.RowCount">RowCount</link> properties contain the column and row count of the grid. <p/>
+
+The <link id="TCustomGrid.FixedCols">FixedCols</link> and <link id="TCustomGrid.FixedRows">FixedRows</link> properties specify the count of fixed columns or rows that are used for headings. <p/>
+
+The column widths and row heights of the grid are accessible with the <link id="TCustomGrid.ColWidths">ColWidths</link> and <link id="TCustomGrid.RowHeights">RowHeights</link> properties. <p/>
+
+The <link id="TCustomGrid.DefaultColWidth">DefaultColWidth</link> and DefaultRowHeight properties are used to specify default column widths or row heights respectively. <p/>
+
+The colors of the cells and the grid elements are specified with the <link id="TCustomGrid.AlternateColor">AlternateColor</link>, <link id="TCustomGrid.BorderColor">BorderColor</link>, <link id="TCustomGrid.FixedColor">FixedColor</link>, <link id="TCustomGrid.FixedHotColor">FixedHotColor</link>, <link id="TCustomGrid.FocusColor">FocusColor</link>, <link id="TCustomGrid.GridLineColor">GridLineColor</link> and <link id="TCustomGrid.SelectedColor">SelectedColor</link>   properties. The <link id="TCustomGrid.GridWidth">GridWidth</link> and <link id="TCustomGrid.GridHeight">GridHeight</link> properties contain the dimension of the entire grid.<p/>
+ 
+The <link id="TCustomGrid.ScrollBars">ScrollBars</link> property controls the creation of scrollbars for the grid. <p/>
+
+The <link id="TCustomGrid.LeftCol">LeftCol</link>, <link id="TCustomGrid.TopRow">TopRow</link>, <link id="TCustomGrid.VisibleColCount">VisibleColCount</link> and <link id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain information about the visible area of the grid. <p/>
+
+The <link id="TCustomGrid.Options">Options</link> property controls options for the grid. 
+<p/><p/><b>Key methods and events:</b><p/>
+
+If the user highlights a cell of the grid, the <link id="TCustomGrid.SelectCell">SelectCell</link> method is called that triggers the <link id="TCustomGrid.OnSelectCell">OnSelectCell</link> event. The position of the highlighted cell is stored within the <link id="TCustomGrid.Col">Col</link> and <link id="TCustomGrid.Row">Row</link> property.<p/>
+
+The <link id="TCustomGrid.MouseToCell">MouseToCell</link> method calculates a grid cell from a given screen position.<p/>
+
+Huge changes to the grid should be encapsulated in calls to <link id="TCustomGrid.BeginUpdate">BeginUpdate</link> and <link id="TCustomGrid.EndUpdate">EndUpdate</link> to speed up the application. <p/>
+
+Component developers must override the <link id="TCustomGrid.DrawCell">DrawCell</link> method in customized grids.</descr>
+        <seealso>
+          <link id="TStringGrid"/>
+          <link id="TDrawGrid"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomGrid.FAutoAdvance">
@@ -2168,14 +2197,12 @@
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.BeforeMoveSelection">
         <short>Before move selection method.</short>
-        <descr>This method is called from TCustomGrid.MoveExtend method.
-
-This method is called whenever the current grid cursor location is about to change, the destination column and row are specified in DCol and DRow parameters respectively. 
+        <descr>This method is called from <i>TCustomGrid.MoveExtend</i> method whenever the current grid cursor location is about to change. The destination column and row are specified in <i>DCol</i> and <i>DRow</i> parameters respectively. 
 
 The new location is known to be a valid selectable cell (see <link id="TCustomGrid.SelectCell"/>
  ), and is given in absolute cell coordinates. At this point the current grid location has not changed and can be retrieved with Col and Row properties.
 
-The purpose of this method in TCustomGrid is to call event handler OnBeforeSelection.</descr>
+The purpose of this method is to call event handler <i>OnBeforeSelection</i>.</descr>
         <seealso>
           <link id="TCustomGrid.MoveExtend"/>
           <link id="TCustomDrawGrid.OnBeforeSelection"/>
@@ -2912,10 +2939,11 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.SelectCell">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Is called if a grid cell is highlighted.</short>
+        <descr>The SelectCell  method is called if a grid cell will be highlighted.<p/>
+The <i>aCol</i> and <i>aRow</i> parameters contain the column and the row of the highlighted cell. <p/>
+Component developers may use the <i>SelectCell</i> method to react on focus changes. The <i>Result</i> is true if the cell is allowed to be selected.
+Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectCell">OnSelectCell</link> event instead.</descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomGrid.SelectCell.Result"><short/></element>
@@ -3083,28 +3111,38 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.ColCount">
-        <short>Number of columns.</short>
+        <short>Number of columns of the grid.</short>
         <descr>This is the number of columns in the grid, including fixed and normal columns.</descr>
+        <seealso>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.FixedCols"/>
+          <link id="TCustomGrid.ColWidths"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.ColWidths">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Column widths for the grid.</short>
+        <descr>The column is specified with the <i>aCol</i> parameter. The <i>aCol</i> parameter must fall within the valid index range of 0 to <link id="TCustomGrid.ColWidths.ColCoun">ColCount</link>-1. <p/>
+The return value of the property is the width of this column, measured in pixels. <p/>
+The initial width of a newly created column is specified with the <link id="TCustomGrid.ColWidths.DefaultColWidth">DefaultColWidth</link> property. After that the user may redefine this value. <p/>
+If the <link id="TCustomGrid.ColWidths.Options">Options</link> property includes the appropriate value, the column width may also be changed by the user at runtime.</descr>
+        <seealso><link id="TCustomGrid.RowHeights"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.ColWidths.aCol"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultColWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Default value for the width of newly created grid columns.</short>
+        <descr>If new columns of the grid are created by changing the <link id="TCustomGrid.DefaultColWidth.ColCount">ColCount</link> property, the width of these new columns will be set to the value of the <i>DefaultColWidth</i> property. <p/>
+After that the user may redefine this value. If the <link id="TCustomGrid.DefaultColWidth.Options">Options</link> property includes the appropriate value, the column width may also be changed by the user at runtime.</descr>
+        <seealso><link id="TCustomGrid.DefaultRowHeight"/></seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultRowHeight">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Default value for the height of newly created grid rows.</short>
+        <descr>If new rows of the grid are created by changing the <link id="TCustomGrid.DefaultRowHeight.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. <p/>
+After that the user may redefine this value. If the <link id="TCustomGrid.DefaultRowHeight.Options">Options</link> property includes the appropriate value, the row height may also be changed by the user at runtime.</descr>
+        <seealso><link id="TCustomGrid.DefaultColWidth"/></seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultDrawing">
@@ -3150,21 +3188,32 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedCols">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Number of the fixed columns of the grid.</short>
+        <descr>Contains the fixed column count of a grid. <p/>
+Fixed columns are normally used for headings.</descr>
+        <seealso>
+          <link id="TCustomGrid.FixedRows"/>
+          <link id="TCustomGrid.ColCount"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedRows">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Number of the fixed rows of the grid.</short>
+        <descr>Contains the fixed row count of a grid. <p/>
+Fixed rows are normally used for headings.</descr>
+        <seealso>
+          <link id="TCustomGrid.RowCount"/>
+          <link id="TCustomGrid.FixedCols"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedColor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The color for the fixed cells of the grid.</short>
+        <descr>The color used by headings.</descr>
+        <seealso>
+          <link id="TCustomGrid.FixedColor"/>
+          <link id="TCustomGrid.FixedRows"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Flat">
@@ -3240,15 +3289,21 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.RowCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Number of rows in the grid</short>
+        <descr>This is the number of rows in the grid, including fixed and normal rows.</descr>
+        <seealso>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.RowHeights"/>
+          <link id="TCustomGrid.RowCount"/>
+        </seealso>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.RowHeights">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The row heights for the grid.</short>
+        <descr>The row is specified with the <i>aRow</i> parameter. The <i>aRow</i> parameter must fall within the valid index range of 0 to <link id="TCustomGrid.RowHeights.RowCount">RowCount</link>-1.<p/>
+The return value of the property is the height of this row, measured in pixels.<p/> 
+The initial height of a newly created row is specified with the <link id="TCustomGrid.RowHeights.DefaultRowHeight">DefaultRowHeight</link> property. After that the user may redefine this value. If the <link id="TCustomGrid.RowHeights.Options">Options</link> property includes the appropriate value, the row height may also be changed by the user at runtime.</descr>
+        <seealso><link id="TCustomGrid.ColWidths"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomGrid.RowHeights.aRow"><short/></element>
@@ -3326,9 +3381,10 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnSelection">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is called after a grid cell is highlighted.</short>
+        <descr>The Col and Row parameters contain the column and the row of the highlighted cell. 
+
+Application developers may use the OnSelection and OnBeforeSelection events to react on focus changes. Component developers should use the <link id="TCustomGrid.OnSelection.SelectCell">SelectCell</link> method instead.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnSelectEditor">
@@ -3397,7 +3453,7 @@ The purpose of this method in TCustomGrid is to call event handler OnBeforeSelec
         <short>clear all cells from the grid.</short>
         <descr>Reset Column and Row counts to 0. Grid is completely emptied.
 
-Compatibility: This is a Lazarus grids only property, under Delphi/Kylix a grid can't be completly emptied.</descr>
+Compatibility: This property applies to Lazarus grids only , under Delphi/Kylix a grid can't be completly emptied.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.DeleteColRow">
