@@ -678,7 +678,8 @@ begin
       end;
 
       // use only definition nodes
-      if not (Node.Desc in (AllIdentifierDefinitions+[ctnProperty,ctnProcedure]))
+      if not (Node.Desc in
+        (AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnEnumIdentifier]))
       then begin
         DebugLn(['TLazDocManager.GetElementChain i=',i,' ignoring node ',Node.DescAsString]);
         continue;
