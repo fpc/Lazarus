@@ -3788,12 +3788,17 @@ begin
   // find node
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
+  if (ANode.Desc=ctnProcedureHead)
+  and (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnProcedure) then
+    ANode:=ANode.Parent;
+
   NextNode:=ANode.Next;
   if NextNode<>nil then
     EndPos:=NextNode.StartPos
   else
     EndPos:=ANode.EndPos;
 
+  //DebugLn(['TStandardCodeTool.GetPasDocComments ',copy(Src,ANode.StartPos,ANode.EndPos-ANode.StartPos)]);
   // read comments (start in front of node)
   p:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos,true);
   while p<EndPos do begin

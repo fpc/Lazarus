@@ -678,6 +678,9 @@ begin
       end;
 
       // use only definition nodes
+      if (Node.Desc=ctnProcedureHead)
+      and (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
+        Node:=Node.Parent;
       if not (Node.Desc in
         (AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnEnumIdentifier]))
       then begin
@@ -784,15 +787,16 @@ begin
         Item:=Chain[i];
         ItemAdded:=false;
         DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
-        if Item.ElementNode=nil then continue;
-        NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
-        for f:=Low(TFPDocItem) to High(TFPDocItem) do
-          DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
-        if NodeValues[fpdiShort]<>'' then begin
-          Hint:=Hint+#13#13
-                +Item.ElementName+#13
-                +NodeValues[fpdiShort];
-          ItemAdded:=true;
+        if Item.ElementNode<>nil then begin
+          NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
+          for f:=Low(TFPDocItem) to High(TFPDocItem) do
+            DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
+          if NodeValues[fpdiShort]<>'' then begin
+            Hint:=Hint+#13#13
+                  +Item.ElementName+#13
+                  +NodeValues[fpdiShort];
+            ItemAdded:=true;
+          end;
         end;
         
         // Add comments
