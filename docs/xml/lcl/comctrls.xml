@@ -7028,7 +7028,7 @@ To add, change or delete a column use the Columns property.</descr>
         </descr>
         <seealso>
           <link id="TToolButton"/>
-          <link id="#lcl/stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
         </seealso>
         <example file="comctrls/ttoolbutton.pas"/>
       </element>
