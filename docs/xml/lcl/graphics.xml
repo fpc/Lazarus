@@ -238,9 +238,8 @@
         <descr>New TFont instances are initialized with the values in this structure.<br/>
 About font default values: The default font is chosen by the interfaces depending on the context. <br/>
 For example, there can be a different default font for a button and a groupbox.</descr>
-        <seealso><link id="TFontData">TFontDAta (In same Unit)</link>
-	<link id="Graphics.TFontData">TFontData (With Unit tag)</link>
-<link id="#lcl.Graphics.TFontData">TFontData (with Project and Unit tags)</link></seealso>
+        <seealso><link id="TFontData">TFontData </link>
+	</seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
@@ -1907,7 +1906,7 @@ Copies the logfont or source settings to itself</descr>
         <short><i>Pitch</i> type of the <i>Font</i></short>
         <descr>Fixed or variable pitch, or Default<br/>
 Reads or writes a flag to determine pitch type</descr>
-        <seealso><link id="TPitch"/></seealso>
+        <seealso><link id="TFontPitch"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Size">
@@ -2328,8 +2327,7 @@ Default is psSolid</descr>
       <element name="TRegion">
         <short>A defined <i>Region</i> on the screen, in which text is written</short>
         <seealso><link id="TRegionData">TRegionData (in same Unit)</link>
-	<link id="Graphics.TRegionData">TRegionData (with Unit tag)</link>
-<link id="#lcl.Graphics.TRegionData">TRegionData (with Project, Unit tags)</link></seealso>
+	</seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TRegion.FRegionData">
@@ -2397,13 +2395,11 @@ Default is psSolid</descr>
       <!-- property Visibility: public -->
       <element name="TRegion.Handle">
         <short>Operating System <i>Handle</i>  for this <i>Region</i></short>
-        <seealso>
-          <link id="#lcl.lcltypes.HRGN">HRGN (with Project, Unit tags)</link>
-	  <link id="lcltypes.HRGN">HRGN (with Unit tag)</link>
-	  <link id="HRGN">HRGN (with no project or unit tags)</link>
-          <link id="#rtl.sysutils.thandle">THandle (with project and unit tags)</link>
-	  <link id="sysutils.thandle">THandle (without project tag)</link>
-	  <link id="THandle">THandle (without project or unit tags)</link>
+	<seealso>
+          <link id="#lcl.lcltype.HRGN">HRGN </link>
+	  
+          <link id="#rtl.sysutils.thandle">THandle </link>
+
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3968,7 +3964,7 @@ Use <i>Ellipse</i>
       <element name="TCanvas.MoveTo.Y1"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
-        <seealso><link id="Pie"/></seealso>
+        <seealso><link id="TCanvas.Pie"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.RadialPie.x"><short/></element>
@@ -4300,7 +4296,7 @@ To draw a polygon on the canvas, without filling it, use the <i>Polyline</i>
 
 
  method,  specifying the first point a second time at the end.</descr>
-        <seealso><link id="PolyLine"/></seealso>
+        <seealso><link id="TCanvas.PolyLine"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.Polygon.Points"><short/></element>
@@ -4447,8 +4443,8 @@ Calling the <i>MoveTo</i>
 
 .</descr>
         <seealso>
-          <link id="MoveTo"/>
-          <link id="LineTo"/>
+          <link id="TCanvas.MoveTo"/>
+          <link id="TCanvas.LineTo"/>
         </seealso>
       </element>
       <!-- argument Visibility: default -->
@@ -4924,7 +4920,7 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
 The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files).<br/>
 When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <i>Handle</i> is interface dependent.<br/>
 To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
-        <seealso><link id="IntfGraphics.TLazIntfImage"/></seealso>
+        <seealso><link id="#lcl.IntfGraphics.TLazIntfImage"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBitmap.FCanvas">
@@ -5398,7 +5394,7 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
         <short><i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream</short>
         <descr><i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream<br/>
 Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream</i> to acquire the data</descr>
-        <seealso><link id="LoadFromStream"/></seealso>
+        <seealso><link id="TBitmap.LoadFromStream"/></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromLazarusResource.ResName"><short/></element>

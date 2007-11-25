@@ -2583,7 +2583,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
 		could stay on top or could be a 'Splash' form.<br/>
 
 		FormStyle is a set, could take zero or more of these values.</descr>
-        <seealso><link id="TFormStyle"/></seealso>
+        <seealso><link id="#lcl.Controls.TFormStyle"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.HelpFile">
@@ -2608,7 +2608,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.Menu">
         <short>Specifies a MainMenu for this form</short>
         <descr>Drop a TMainMenu on the form and select it here to show it on the form.<br/></descr>
-        <seealso><link id="TMainMenu"/></seealso>
+        <seealso><link id="#lcl.Menus.TMainMenu"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ModalResult">
@@ -2724,9 +2724,9 @@ Most of the properties are inherited from the ancestors</descr>
         <seealso>
           <link id="TCustomForm"/>
           <link id="TScrollingWinControl"/>
-          <link id="TCustomControl"/>
-          <link id="TWinControl"/>
-          <link id="TControl"/>
+          <link id="#lcl.Controls.TCustomControl"/>
+          <link id="#lcl.Controls.TWinControl"/>
+          <link id="#lcl.Controls.TControl"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
