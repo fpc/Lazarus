@@ -1126,10 +1126,10 @@ common.</descr>
       <element name="TComboBoxAutoCompleteTextOption">
         <short>Defines the behavior of the <i>AutoComplete</i> feature in a combobox control.</short>
         <descr>
-          <i>TComboBoxAutoCompleteTextOption</i>
+         <p> <i>TComboBoxAutoCompleteTextOption</i>
 
 
- defines the behavior of the <i>AutoComplete</i> feature.
+ defines the behavior of the <i>AutoComplete</i> feature.</p>
 <ul><li>cbactEnabled: Enable Auto-Completion feature.</li><li>cbactEndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li><li>cbactRetainPrefixCase: Retains the case of characters user has typed. (This option has no effect if cbactEndOfLineComplete is False)</li><li>cbactSearchCaseSensitive: Search completion string with case sensitivity.</li><li>cbactSearchAscending: Search completion string in accending order. (False will search in descending order)</li></ul></descr>
         <seealso/>
       </element>
@@ -1258,9 +1258,9 @@ Options for behavior of the Auto-Complete feature.
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FAutoSelect">
         <short>FAutoSelect: Boolean</short>
-        <descr>Private variable for property AutoSelect.
+        <descr><p>Private variable for property AutoSelect.
 
-When True, the edit control will select all its text when:
+When True, the edit control will select all its text when:</p>
 <ul><li>It receives focus</li><li>The Enter key is pressed.</li><li>A new item is selected.</li></ul></descr>
         <seealso/>
       </element>
@@ -2113,7 +2113,7 @@ False is set when the edit or combobox control loses focus.
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.CharCase">
         <short>property CharCase: TEditCharCase</short>
-        <descr>Indicates how text is displayed in a text editing control in the following ways:
+        <descr><p>Indicates how text is displayed in a text editing control in the following ways:</p>
 <ul><li>Normal case letters</li><li>Upper case letters</li><li>Lower case letters</li></ul></descr>
         <seealso/>
       </element>
@@ -2169,7 +2169,7 @@ False is set when the edit or combobox control loses focus.
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelect">
         <short>property AutoSelect: Boolean</short>
-        <descr>When True, the edit control will select all its text when:
+        <descr><p>When True, the edit control will select all its text when:</p>
 <ul><li>It receives focus</li><li>The Enter key is pressed.</li><li>A new item is selected.</li></ul></descr>
         <seealso/>
       </element>
@@ -2306,7 +2306,7 @@ False: Turns off auto-complete feature.</descr>
       <!-- property Visibility: published -->
       <element name="TComboBox.AutoSelect">
         <short>property AutoSelected: Boolean</short>
-        <descr>When True, the edit control will select all its text when:
+        <descr><p>When True, the edit control will select all its text when:</p>
 <ul><li>It receives focus</li><li>The Enter key is pressed.</li><li>A new item is selected.</li></ul></descr>
         <seealso/>
       </element>
@@ -2325,7 +2325,7 @@ False: Turns off auto-complete feature.</descr>
       <!-- property Visibility: published -->
       <element name="TComboBox.CharCase">
         <short>property CharCase: TEditCharCase</short>
-        <descr>Indicates how text is displayed in a text editing control in the following ways:
+        <descr><p>Indicates how text is displayed in a text editing control in the following ways:</p>
 <ul><li>Normal case letters</li><li>Upper case letters</li><li>Lower case letters</li></ul></descr>
         <seealso/>
       </element>
@@ -3944,8 +3944,8 @@ tipically has a different color then the other items.</descr>
       <!-- variable Visibility: private -->
       <element name="TCustomEdit.FAutoSelect">
         <short>FAutoSelect: Boolean</short>
-        <descr>Private variable for property AutoSelect.<br/>
-		When True, the edit control will select all its text when:
+        <descr><p>Private variable for property AutoSelect.</p>
+		<p>When True, the edit control will select all its text when:</p>
 <ul><li>It receives focus</li><li>The Enter key is pressed.</li><li>A new item is selected.</li></ul></descr>
         <seealso/>
       </element>
@@ -3964,9 +3964,9 @@ False is set when the edit or combobox control loses focus.</descr>
       <!-- variable Visibility: private -->
       <element name="TCustomEdit.FCharCase">
         <short>FCharCase: TEditCharCase</short>
-        <descr>Private variable for property CharCase.
+        <descr><p>Private variable for property CharCase.
 
-Indicates how text is displayed in a text editing control.
+Indicates how text is displayed in a text editing control.</p>
 <ul><li>Normal case letters</li><li>Upper case letters</li><li>Lower case letters</li></ul></descr>
         <seealso>
           <link id="TEditCharCase"/>
@@ -4387,7 +4387,7 @@ False is set when the edit or combobox control loses focus.
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
         <short>property CharCase: TEditCharCase</short>
-        <descr>Indicates how text is displayed in a text editing control in the following ways:
+        <descr><p>Indicates how text is displayed in a text editing control in the following ways:</p>
 <ul><li>Normal case letters</li><li>Upper case letters</li><li>Lower case letters</li></ul></descr>
         <seealso/>
       </element>
@@ -8339,30 +8339,30 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <descr>
           <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
           <p>Many of the final target controls that the application developer wants to use, such as <i>TButton</i>, <i>TMemo</i>, <i>TScrollBar</i> etc, have a corresponding ancestor class such as <i>TCustomButton</i>, <i>TCustomMemo</i> or <i>TCustomScrollBar</i>. Several of the properties and methods relevant to the final target control are defined (and explained) more fully in the <i>TCustomXXX</i> class, and are <b>inherited</b> by the final target control.</p>
-          <br/>
+          
           <p>If you drop a component on the form editor you don't need to add code explicitly to create it. The component is automatically created by the IDE together with the form, and destroyed when the form is destroyed.</p>
           <p>However, if you create the component yourself by code don't forget to free it when it is no longer needed.</p>
-          <br/>
+          
           <p>If you place a component on the Form Designer and look at the Object Inspector, you can observe the properties change as you move the component around.</p>
           <p>For example, if you place a button (TButton) on the form, click on it to select it, then move it around the form with the mouse, you can watch the values of Top and Left change in the Object Inspector to reflect the new position. If you use the object's re-sizing bars to adjust its size, you can watch the Height and Width properties change as well.</p>
           <p>On the other hand, by using the Object Inspector, you can select the value associated with a property such as height, and type in a new value; you can watch the size of the object on the form change to reflect the new value.</p>
           <p>You can also explicitly change the properties of the object in code by typing (in the appropriate Implementation section of the Source editor), for example</p>
-          <br/>
+          
           <code>	Form1.Button1.Height := 48;</code>
-          <br/>
+         
           <p>If you type this new value into the Source Editor and then look back at the Form Designer, you will see that the button on the Form has taken the new size. The new value will also be shown in the Object Inspector.</p>
-          <br/>
+         
           <p>In summary, there are usually about three different ways to determine each property of an object:</p>
           <ul>
             <li>by using the mouse,</li>
             <li>by setting the values in the Object Inspector,</li>
             <li>or explicitly by writing code.</li>
           </ul>
-          <br/>
+         
           <p>The components defined in these Units have several properties that are common to most of them, and other properties that are specific to the individual components. We shall describe the most common ones here. Unusual or control-specific properties will be described for the individual controls. </p>
           <p>Additional Help can always be obtained by selecting a property or keyword,  in either the Object Inspector or the Source Editor, and pressing <b>F1</b>. You will be taken by your Help browser to the appropriate page in the documentation. </p>
           <p>If the description of a property on that page is insufficient, you can navigate to the corresponding description in the ancestor classes, by selecting the links in the Inheritance listing or by selecting the ancestor Type in the declaration of the object.</p>
-          <br/>
+         
           <p>
             <i>Constructors</i>
 
@@ -8388,7 +8388,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
             <li>Be aware that an <i>exception</i> may be raised on the <i>constructor</i> in case there is not enought memory to create an object, or something else goes wrong. If the <i>exception</i> is not handled inside the constructor, the object will be only partially built. In this case <i>Destroy</i> will be called when you weren't expecting it, so your destructor must check if the resources were really allocated before disposing of them.</li>
             <li>Remember to call <i>Free</i> for all objects created on the constructor.</li>
           </ul>
-          <br/>
+      
           <table>
             <caption>Some commonly listed properties</caption>
             <th>
