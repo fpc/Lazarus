@@ -846,7 +846,7 @@ end;
 procedure TSynRange.SetCaseSensitive(const Value: boolean);
 begin
  FCaseSensitive:=Value;
- if not Value then
+ if Value then // DiBo33 Removed not so correct function is set
  begin
    ////TL Added @ prefix
    CaseFunct:=@UpCase;
