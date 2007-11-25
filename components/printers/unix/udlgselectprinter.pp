@@ -121,52 +121,28 @@ type
 
 var
   dlgSelectPrinter: TdlgSelectPrinter;
-
-function GMTToLocalDateTime(aDate : TDateTime) : TDateTime;
-function LocalToGMTDateTime(aDate : TDateTime) : TDateTime;
-function LapseLocalToGMT : integer;
-
+  
 implementation
 
 uses
-  {$IF DEFINED(darwin) OR DEFINED(freebsd)}
-  miniCupsLibc,
-  {$ELSE}
-  Libc,
-  {$ENDIF}
   uDlgPropertiesPrinter;
 
 Type
   THackCUPSPrinter = Class(TCUPSPrinter);
-  
-{----------- Utile date/time convertion ------------}
-//Return the lapse time in second
-//beetween localtime and gmt time with daylight
-function LapseLocalToGMT : integer;
-var TT : ttime_t;
-    LOC: PTm;
-begin
-  TT :=__time(nil);
-  LOC:=localtime(TT);
-  if Assigned(LOC) then
-    Result:=Loc^.tm_gmtoff
-  else
-    Result:=0;
-end;
 
 //Convert an local date & time to a GMT(UTC) Date & Time
 function LocalToGMTDateTime(aDate : TDateTime) : TDateTime;
 begin
-  Result:=aDate-((TDateTime(LapseLocalToGMT)/3600)/24);
+  //TODO: Adjust for time zone and DayLight saving time
+  result := aDate;
 end;
 
 //Convert an GMT(UTC) Date & Time to local date & time
 function GMTToLocalDateTime(aDate : TDateTime) : TDateTime;
 begin
-  Result:=aDate+((TDateTime(LapseLocalToGMT)/3600)/24);
+  //TODO: Adjust for time zone and DayLight saving time
+  result := aDate;
 end;
-
-{---------------------------------------------------}
 
 { TdlgSelectPrinter }
 
