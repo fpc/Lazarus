@@ -564,9 +564,9 @@ begin
   try
     Src:=Tool.Src;
     p:=1;
-    NestedComment:=true;
+    NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
     repeat
-      p:=FindNextComment(Src,p,NestedComment);
+      p:=FindNextComment(Src,p);
       if p>length(Src) then break;
       CommentEnd:=FindCommentEnd(Src,p,NestedComment);
       Tool.CleanPosToCaret(p,CodeXYPosition);

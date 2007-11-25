@@ -892,6 +892,7 @@ begin
   if LazDocBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=ldprSuccess
   then
     exit(shrSuccess);
+  DebugLn(['THelpManager.GetHintForSourcePosition not found']);
   Result:=shrHelpNotFound;
 end;
 

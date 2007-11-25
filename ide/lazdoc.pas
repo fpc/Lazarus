@@ -32,7 +32,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil,
-  CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, CodeCache, CacheCodeTools,
+  CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
+  CodeCache, CacheCodeTools,
   FileProcs, AvgLvlTree,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, LazIDEIntf,
@@ -90,6 +91,7 @@ type
   TLazDocElement = class
   public
     CodeContext: TFindContext;
+    CodeXYPos: TCodeXYPosition;
     ElementName: string;
     ElementNode: TDOMNode;
     FPDocFile: TLazFPDocFile;
@@ -262,7 +264,7 @@ begin
   Result:=GetFirstElement;
   while Result<>nil do begin
     if (Result is TDomElement)
-    and (CompareText(TDomElement(Result).GetAttribute('name'),ElementName)=0)
+    and (SysUtils.CompareText(TDomElement(Result).GetAttribute('name'),ElementName)=0)
     then
       exit;
     Result:=Result.NextSibling;
@@ -688,6 +690,7 @@ begin
 
       // add element
       LDElement:=Chain.Add;
+      LDElement.CodeXYPos:=CodePos^;
       LDElement.CodeContext.Tool:=CurTool;
       LDElement.CodeContext.Node:=Node;
       //DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
@@ -755,12 +758,21 @@ var
   Item: TLazDocElement;
   NodeValues: TFPDocNode;
   f: TFPDocItem;
+  ListOfPCodeXYPosition: TFPList;
+  CodeXYPos: PCodeXYPosition;
+  CommentStart: integer;
+  NestedComments: Boolean;
+  CommentStr: String;
+  ItemAdded: Boolean;
+  CommentCode: TCodeBuffer;
+  j: Integer;
 begin
   //DebugLn(['TLazDocManager.GetHint ',Code.Filename,' ',X,',',Y]);
   Hint:=CodeToolBoss.FindSmartHint(Code,X,Y);
 
   CacheWasUsed:=true;
   Chain:=nil;
+  ListOfPCodeXYPosition:=nil;
   try
     //DebugLn(['TLazDocManager.GetHint GetElementChain...']);
     Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
@@ -769,19 +781,53 @@ begin
     if Chain<>nil then begin
       for i:=0 to Chain.Count-1 do begin
         Item:=Chain[i];
+        ItemAdded:=false;
         DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
         if Item.ElementNode=nil then continue;
         NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
         for f:=Low(TFPDocItem) to High(TFPDocItem) do
           DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
         if NodeValues[fpdiShort]<>'' then begin
-          Hint:=Hint+#13#13+Item.ElementName+#13
+          Hint:=Hint+#13#13
+                +Item.ElementName+#13
                 +NodeValues[fpdiShort];
+          ItemAdded:=true;
+        end;
+        
+        // Add comments
+        if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
+          Item.CodeXYPos.X,Item.CodeXYPos.Y,ListOfPCodeXYPosition)
+        and (ListOfPCodeXYPosition<>nil) then
+        begin
+          NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(
+                                                  Item.CodeXYPos.Code.Filename);
+          for j:=0 to ListOfPCodeXYPosition.Count-1 do begin
+            CodeXYPos:=PCodeXYPosition(ListOfPCodeXYPosition[j]);
+            CommentCode:=CodeXYPos^.Code;
+            CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
+            if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
+            then
+              continue;
+            CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
+                                              NestedComments,true,true);
+            if CommentStr<>'' then begin
+              if not ItemAdded then begin
+                Hint:=Hint+#13#13
+                      +Item.ElementName+#13
+                      +CommentStr;
+              end else begin
+                Hint:=Hint+#13
+                      +CommentStr;
+              end;
+              ItemAdded:=true;
+            end;
+          end;
         end;
       end;
     end;
     Result:=ldprSuccess;
   finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     Chain.Free;
   end;
   

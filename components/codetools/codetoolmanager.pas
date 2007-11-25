@@ -333,6 +333,8 @@ type
     // keywords and comments
     function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
     function ExtractCodeWithoutComments(Code: TCodeBuffer): string;
+    function GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
+                               out ListOfPCodeXYPosition: TFPList): boolean;
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
@@ -2528,6 +2530,32 @@ function TCodeToolManager.ExtractCodeWithoutComments(Code: TCodeBuffer): string;
 begin
   Result:=CleanCodeFromComments(Code.Source,
                                 GetNestedCommentsFlagForFile(Code.Filename));
+end;
+
+function TCodeToolManager.GetPasDocComments(Code: TCodeBuffer; X, Y: integer;
+  out ListOfPCodeXYPosition: TFPList): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetPasDocComments A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetPasDocComments B ',dbgs(FCurCodeTool.Scanner<>nil));
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.GetPasDocComments(CursorPos,true,ListOfPCodeXYPosition);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.GetPasDocComments END ');
+  {$ENDIF}
 end;
 
 function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;

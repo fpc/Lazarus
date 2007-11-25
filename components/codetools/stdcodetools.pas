@@ -291,6 +291,9 @@ type
           out CommentStart, CommentEnd: TCodeXYPosition): boolean;
     function CommentCode(const StartPos, EndPos: integer;
           SourceChangeCache: TSourceChangeCache; Apply: boolean): boolean;
+    function GetPasDocComments(const StartPos: TCodeXYPosition;
+                               InvokeBuildTree: boolean;
+                               out ListOfPCodeXYPosition: TFPList): boolean;
   end;
 
 
@@ -3719,6 +3722,98 @@ begin
     Result:=SourceChangeCache.Apply
   else
     Result:=true;
+end;
+
+function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
+  InvokeBuildTree: boolean; out ListOfPCodeXYPosition: TFPList): boolean;
+// Comments are normally in front.
+// { Description of TMyClass. }
+//  TMyClass = class
+//
+// Comments can be behind in the same line
+// property Color; // description of Color
+//
+// Comments can be in the following line if started with <
+
+  function CommentBelongsToPrior(CommentStart: integer): boolean;
+  var
+    p: Integer;
+  begin
+    if (CommentStart<SrcLen) and (Src[CommentStart]='{')
+    and (Src[CommentStart+1]='<') then
+      Result:=true
+    else if (CommentStart+2<=SrcLen) and (Src[CommentStart]='(')
+    and (Src[CommentStart+1]='*') and (Src[CommentStart+2]='<') then
+      Result:=true
+    else if (CommentStart+2<=SrcLen) and (Src[CommentStart]='/')
+    and (Src[CommentStart+1]='/') and (Src[CommentStart+2]='<') then
+      Result:=true
+    else begin
+      p:=CommentStart-1;
+      while (p>=1) and (Src[p] in [' ',#9]) do dec(p);
+      if (p<1) or (Src[p] in [#10,#13]) then
+        Result:=false
+      else
+        Result:=true; // there is code in the same line in front of the comment
+    end;
+  end;
+  
+  procedure Add(CleanPos: integer);
+  var
+    CodePos: TCodeXYPosition;
+  begin
+    if ListOfPCodeXYPosition=nil then
+      ListOfPCodeXYPosition:=TFPList.Create;
+    if not CleanPosToCaret(CleanPos,CodePos) then exit;
+    AddCodePosition(ListOfPCodeXYPosition,CodePos);
+  end;
+
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+  p: LongInt;
+  NextNode: TCodeTreeNode;
+  EndPos: LongInt;
+begin
+  ListOfPCodeXYPosition:=nil;
+  Result:=false;
+  
+  // parse source and find clean positions
+  if InvokeBuildTree then
+    BuildTreeAndGetCleanPos(trAll,StartPos,CleanCursorPos,[])
+  else
+    if CaretToCleanPos(StartPos,CleanCursorPos)<>0 then
+      exit;
+
+  // find node
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+  NextNode:=ANode.Next;
+  if NextNode<>nil then
+    EndPos:=NextNode.StartPos
+  else
+    EndPos:=ANode.EndPos;
+
+  // read comments (start in front of node)
+  p:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos,true);
+  while p<EndPos do begin
+    p:=FindNextComment(Src,p,EndPos);
+    if p>=EndPos then break;
+    if (p<ANode.StartPos) then begin
+      // comment in front of node
+      if not CommentBelongsToPrior(p) then
+        Add(p);
+    end else if (p<ANode.EndPos) then begin
+      // comment in the middle
+      Add(p);
+    end else begin
+      // comment behind
+      if CommentBelongsToPrior(p) then
+        Add(p);
+    end;
+    p:=FindCommentEnd(Src,p,Scanner.NestedComments);
+  end;
+  Result:=true;
 end;
 
 function TStandardCodeTool.GatherResourceStringsWithValue(

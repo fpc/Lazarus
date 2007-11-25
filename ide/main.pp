@@ -11999,10 +11999,8 @@ begin
       writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
       {$ENDIF}
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
-      {$IFDEF EnableLazDocHint}
       THelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
                                             CaretPos,SmartHintStr);
-      {$ENDIF}
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
     end;
     itDebugger: begin

@@ -45,7 +45,7 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
 function FindNextComment(const ASource: string;
-    StartPos: integer; NestedComments: boolean): integer;
+    StartPos: integer; MaxPos: integer = 0): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
@@ -59,6 +59,9 @@ function FindNextIDEDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean; EndPos: integer = 0): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
+function ExtractCommentContent(const ASource: string; CommentStart: integer;
+    NestedComments: boolean;
+    TrimStart: boolean = false; TrimEnd: boolean = false): string;
 function FindMainUnitHint(const ASource: string; var Filename: string): boolean;
 
 // indent
@@ -1096,11 +1099,10 @@ begin
 end;
 
 function FindNextComment(const ASource: string; StartPos: integer;
-  NestedComments: boolean): integer;
-var
-  MaxPos: integer;
+  MaxPos: integer): integer;
 begin
-  MaxPos:=length(ASource);
+  if (MaxPos>length(ASource)) or (MaxPos<1) then
+    MaxPos:=length(ASource);
   Result:=StartPos;
   while (Result<=MaxPos) do begin
     case ASource[Result] of
@@ -2688,6 +2690,51 @@ begin
     end;
   end;
   SetLength(Result,CleanPos-1);
+end;
+
+function ExtractCommentContent(const ASource: string; CommentStart: integer;
+  NestedComments: boolean; TrimStart: boolean; TrimEnd: boolean): string;
+var
+  CommentEnd: LongInt;
+  StartPos: LongInt;
+  EndPos: LongInt;
+begin
+  Result:='';
+  if (CommentStart<1) or (CommentStart>length(ASource)) then exit;
+  CommentEnd:=FindCommentEnd(ASource,CommentStart,NestedComments);
+  StartPos:=CommentStart;
+  EndPos:=CommentEnd;
+  if (ASource[StartPos]='/') then begin
+    inc(StartPos);
+    if (StartPos<=length(ASource)) and (ASource[StartPos]='/') then
+      inc(StartPos);
+    if (EndPos<=length(ASource)) then begin
+      while (EndPos>StartPos) and (ASource[EndPos-1] in [#10,#13]) do
+        dec(EndPos);
+    end;
+  end else if (ASource[StartPos]='{') then begin
+    inc(StartPos);
+    if (EndPos<=length(ASource)) and (ASource[EndPos-1]='}') then
+      dec(EndPos);
+  end else if (ASource[StartPos]='(') then begin
+    inc(StartPos);
+    if (StartPos<=length(ASource)) and (ASource[StartPos]='*') then
+      inc(StartPos);
+    if (EndPos<=length(ASource)) and (ASource[EndPos-1]=')') then begin
+      dec(EndPos);
+      if (ASource[EndPos-1]='*') then
+        dec(EndPos);
+    end;
+  end;
+  if TrimStart then begin
+    while (StartPos<EndPos) and (ASource[StartPos] in [' ',#9,#10,#13]) do
+      inc(StartPos);
+  end;
+  if TrimEnd then begin
+    while (StartPos<EndPos) and (ASource[Endpos-1] in [' ',#9,#10,#13]) do
+      dec(EndPos);
+  end;
+  Result:=copy(ASource,StartPos,EndPos-StartPos);
 end;
 
 function FindMainUnitHint(const ASource: string; var Filename: string
