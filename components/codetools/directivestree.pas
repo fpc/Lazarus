@@ -38,7 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
+  KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
   CodeToolMemManager, CodeTree;
 
 type
@@ -180,6 +180,12 @@ type
                                    FindDefNodes: boolean);
     procedure FixMissingH2PasDirectives(var Changed: boolean);
     
+    function NodeStartToCodePos(Node: TCodeTreeNode;
+                                out CodePos: TCodeXYPosition): boolean;
+    function FindResourceDirective(const Filename: string = '';
+                                   StartPos: integer = 1): TCodeTreeNode;
+    function IsResourceDirective(Node: TCodeTreeNode;
+                                 const Filename: string = ''): boolean;
     function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
@@ -372,7 +378,7 @@ begin
   cdnsLongSwitch  : Result:='LongSwitch';
   cdnsMode        : Result:='Mode';
   cdnsThreading   : Result:='Threading';
-  cdnsOther       : Result:='?';
+  cdnsOther       : Result:='Other';
   else              Result:='?';
   end;
 end;
@@ -540,7 +546,10 @@ function TCompilerDirectivesTree.ShortSwitchDirective: boolean;
 // example: {$H+} or {$H+, R- comment}
 begin
   Result:=true;
-  CreateChildNode(cdnDefine,cdnsShortSwitch);
+  if Src[AtomStart+3] in ['+','-'] then
+    CreateChildNode(cdnDefine,cdnsShortSwitch)
+  else
+    CreateChildNode(cdnDefine,cdnsOther);
   AtomStart:=SrcPos;
   EndChildNode;
 end;
@@ -2205,6 +2214,51 @@ begin
       Changed:=true;
       Parse(Code,NestedComments);
     end;
+  end;
+end;
+
+function TCompilerDirectivesTree.NodeStartToCodePos(Node: TCodeTreeNode; out
+  CodePos: TCodeXYPosition): boolean;
+begin
+  CodePos.Code:=nil;
+  CodePos.Y:=0;
+  CodePos.X:=0;
+  if (Node=nil) or (Code=nil) then exit(false);
+  CodePos.Code:=Code;
+  Code.AbsoluteToLineCol(Node.StartPos,CodePos.Y,CodePos.X);
+  Result:=true;
+end;
+
+function TCompilerDirectivesTree.FindResourceDirective(const Filename: string;
+  StartPos: integer): TCodeTreeNode;
+begin
+  if Tree=nil then exit(nil);
+  Result:=Tree.Root;
+  while Result<>nil do begin
+    if (Result.StartPos>=StartPos)
+    and IsResourceDirective(Result,Filename) then exit;
+    Result:=Result.Next;
+  end;
+end;
+
+function TCompilerDirectivesTree.IsResourceDirective(Node: TCodeTreeNode;
+  const Filename: string): boolean;
+// search for {$R filename}
+// if filename='' then search for any {$R } directive
+// Beware: do not find {$R+}
+var
+  p: LongInt;
+begin
+  Result:=false;
+  if (Node=nil) or (Node.Desc<>cdnDefine) or (Node.SubDesc<>cdnsOther) then exit;
+  p:=Node.StartPos;
+  if (Node.EndPos-p>=5) and (Src[p]='{') and (Src[p+1]='$') and (Src[p+2]='R')
+  and IsSpaceChar[Src[p+3]] then
+  begin
+    if (Filename='') then exit(true);
+    inc(p,4);
+    while (p<Node.EndPos) and IsSpaceChar[Src[p]] do inc(p);
+    if CompareFilenames(Filename,copy(Src,p,Node.EndPos-p-1))=0 then exit(true);
   end;
 end;
 
