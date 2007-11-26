@@ -2250,10 +2250,8 @@ end;
 procedure TControl.SetClientHeight(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    {$IFNDEF DisableLoadedClientSize}
     FLoadedClientSize.Y:=Value;
     Include(FControlFlags,cfClientHeightLoaded);
-    {$ENDIF}
   end else begin
     // during loading the ClientHeight is not used to set the Height of the
     // control, but only to restore autosizing. For example Anchors=[akBottom]
@@ -2280,10 +2278,8 @@ end;
 procedure TControl.SetClientWidth(Value: Integer);
 begin
   if csLoading in ComponentState then begin
-    {$IFNDEF DisableLoadedClientSize}
     FLoadedClientSize.X:=Value;
     Include(FControlFlags,cfClientWidthLoaded);
-    {$ENDIF}
   end else begin
     // during loading the ClientWidth is not used to set the Width of the
     // control, but only to restore autosizing. For example Anchors=[akRight]

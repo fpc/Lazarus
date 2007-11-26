@@ -6608,6 +6608,7 @@ var
   i: Integer;
   AChild: TControl;
   LoadedClientSize: TPoint;
+  CurControl: TWinControl;
 begin
   DisableAlign;
   DisableAutoSizing;
@@ -6616,16 +6617,26 @@ begin
     if cfClientWidthLoaded in FControlFlags then
       LoadedClientSize.X:=FLoadedClientSize.X
     else begin
-      LoadedClientSize.X:=ClientWidth;
-      if LoadedClientSize.X<=0 then
-        LoadedClientSize.X:=Width;
+      CurControl:=Self;
+      while CurControl<>nil do begin
+        LoadedClientSize.X:=CurControl.ClientWidth;
+        if LoadedClientSize.X>0 then break;
+        LoadedClientSize.X:=CurControl.Width;
+        if LoadedClientSize.X>0 then break;
+        CurControl:=CurControl.Parent;
+      end;
     end;
     if cfClientHeightLoaded in FControlFlags then
       LoadedClientSize.Y:=FLoadedClientSize.Y
     else begin
-      LoadedClientSize.Y:=ClientHeight;
-      if LoadedClientSize.Y<=0 then
-        LoadedClientSize.Y:=Height;
+      CurControl:=Self;
+      while CurControl<>nil do begin
+        LoadedClientSize.Y:=CurControl.ClientHeight;
+        if LoadedClientSize.Y>0 then break;
+        LoadedClientSize.Y:=CurControl.Height;
+        if LoadedClientSize.Y>0 then break;
+        CurControl:=CurControl.Parent;
+      end;
     end;
     for i:=0 to ControlCount-1 do begin
       AChild:=Controls[i];
