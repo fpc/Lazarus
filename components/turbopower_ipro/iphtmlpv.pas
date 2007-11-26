@@ -267,7 +267,9 @@ end;
 procedure TIpHTMLPreview.SetZoom(const Value: Integer);
 var
   Scale1, Scale2, Scale0: double;
+  {$IFDEF IP_LAZARUS}
   ClientHeightDbl, ClientWidthDbl: double;
+  {$ENDIF}
 begin
   FZoom := Value;
   {$IFDEF IP_LAZARUS}

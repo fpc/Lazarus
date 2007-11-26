@@ -1007,6 +1007,20 @@ components/tdbf/registerdbf.pas svneol=native#text/pascal
 components/tdbf/tdbf.xpm -text svneol=native#image/x-xpixmap
 components/turbopower_ipro/Makefile svneol=native#text/plain
 components/turbopower_ipro/Makefile.fpc svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp1.lfm svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp1.lrs svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp1.pas svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp2.lfm svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp2.lrs svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexp2.pas svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexplorer1.lpi svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexplorer1.lpr svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexplorer2.lpi svneol=native#text/plain
+components/turbopower_ipro/examples/htmfileexplorer2.lpr svneol=native#text/plain
+components/turbopower_ipro/examples/index.html svneol=native#text/plain
+components/turbopower_ipro/examples/simplepage2.html svneol=native#text/plain
+components/turbopower_ipro/for_delphi/ipHtml.dcr -text
+components/turbopower_ipro/for_delphi/iphtml.res -text
 components/turbopower_ipro/ipanim.pas svneol=native#text/pascal
 components/turbopower_ipro/ipconst.pas svneol=native#text/pascal
 components/turbopower_ipro/ipdefct.inc svneol=native#text/pascal
