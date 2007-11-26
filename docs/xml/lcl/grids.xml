@@ -1159,7 +1159,7 @@ Grids are adequate to show data that have tabular nature, for example tables in 
 <p>The <link id="TCustomGrid.LeftCol">LeftCol</link>, <link id="TCustomGrid.TopRow">TopRow</link>, <link id="TCustomGrid.VisibleColCount">VisibleColCount</link> and <link id="TCustomGrid.VisibleRowCount">VisibleRowCount</link> properties contain information about the visible area of the grid. </p>
 
 <p>The <link id="TCustomGrid.Options">Options</link> property controls options for the grid. 
-</p><br/><p><b>Key methods and events:</b></p>
+</p><p><b>Key methods and events:</b></p>
 
 <p>If the user highlights a cell of the grid, the <link id="TCustomGrid.SelectCell">SelectCell</link> method is called that triggers the <link id="TCustomGrid.OnSelectCell">OnSelectCell</link> event. The position of the highlighted cell is stored within the <link id="TCustomGrid.Col">Col</link> and <link id="TCustomGrid.Row">Row</link> property.</p>
 
