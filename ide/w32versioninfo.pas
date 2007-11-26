@@ -796,28 +796,46 @@ end;
  TProjectVersionInfo UpdateMainSourceFile
 -----------------------------------------------------------------------------}
 function TProjectVersionInfo.UpdateMainSourceFile(const AFilename: string
-   ): TModalResult;
+  ): TModalResult;
 var
-   NewX, NewY, NewTopLine: integer;
-   VersionInfoCodeBuf: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  VersionInfoCodeBuf: TCodeBuffer;
+  Filename: String;
+  NewCode: TCodeBuffer;
 begin
-   Result := mrCancel;
-   VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
-   if VersionInfoCodeBuf=nil then exit;
-   SetFileNames(AFilename);
-   if not CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
-                               VersionInfoCodeBuf,NewX,NewY,
-                               NewTopLine,ExtractFileName(resFilename)) then
-   begin
-     if not CodeToolBoss.AddResourceDirective(VersionInfoCodeBuf,
-                                              ExtractFileName(resFilename)) then
-        begin
-           VersionInfoMessages.Add('Could not add "{$R '
-                           + ExtractFileName(resFilename)+'}" to main source!');
-           exit;
-        end
-   end;
-   Result:=mrOk;
+  Result := mrCancel;
+  VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
+  if VersionInfoCodeBuf=nil then exit;
+  SetFileNames(AFilename);
+  Filename:=ExtractFileName(resFilename);
+  //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile ',Filename,' UseVersionInfo=',UseVersionInfo]);
+  if CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
+                               NewCode,NewX,NewY,
+                               NewTopLine,Filename,false) then
+  begin
+    if not UseVersionInfo then begin
+      //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile removing ',NewCode.Filename,' X=',NewX,' Y=',NewY]);
+      if not CodeToolBoss.RemoveDirective(NewCode,NewX,NewY,true) then
+      begin
+        DebugLn(['TProjectVersionInfo.UpdateMainSourceFile FAILED removing']);
+        VersionInfoMessages.Add('Could not emove "{$R '
+                             + Filename+'}" from main source!');
+        exit;
+      end
+    end;
+  end else if UseVersionInfo then begin
+    //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile adding ',AFilename]);
+    if not CodeToolBoss.AddResourceDirective(VersionInfoCodeBuf,
+      Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
+    begin
+      DebugLn(['TProjectVersionInfo.UpdateMainSourceFile FAILED adding']);
+      VersionInfoMessages.Add('Could not add "{$R '
+                           + Filename+'}" to main source!');
+      exit;
+    end
+  end;
+  //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile ',VersionInfoCodeBuf.Source]);
+  Result:=mrOk;
 end;
 
 {-----------------------------------------------------------------------------

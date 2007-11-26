@@ -515,7 +515,7 @@ begin
     Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
-    if Project.VersionInfo.UseVersionInfo and Project.VersionInfo.Modified then
+    if Project.VersionInfo.Modified then
       Project.VersionInfo.UpdateMainSourceFile(Project.MainFilename);
   end;
 

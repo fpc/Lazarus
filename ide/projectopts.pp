@@ -461,7 +461,7 @@ begin
       TargetFilename := TargetFileEdit.Text;
       UseAppBundle := UseAppBundleCheckBox.Checked;
       XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
-      Project.XPManifest.UpdateMainSourceFile(Project.MainFilename);
+      XPManifest.UpdateMainSourceFile(Project.MainFilename);
     end;
 
     // flags
@@ -511,7 +511,7 @@ begin
     Project.VersionInfo.CopyrightString:=CopyrightEdit.Text;
     Project.VersionInfo.HexLang:=MSLanguageToHex(LanguageSelectionComboBox.Text);
     Project.VersionInfo.HexCharSet:=MSCharacterSetToHex(CharacterSetComboBox.Text);
-    if Project.VersionInfo.UseVersionInfo and Project.VersionInfo.Modified then
+    if Project.VersionInfo.Modified then
       Project.VersionInfo.UpdateMainSourceFile(Project.MainFilename);
   end;
 

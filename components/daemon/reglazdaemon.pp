@@ -10,19 +10,17 @@
  *                                                                           *
  *****************************************************************************
 }
-unit reglazdaemon;
+unit RegLazDaemon;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, FormEditingIntf, projectintf,newitemintf, lazideintf,
-  controls, forms;
+  Classes, SysUtils, FormEditingIntf, ProjectIntf, NewItemIntf, LazIDEIntf,
+  Controls, Forms;
 
 Type
-
-  { TDaemonFileDescriptor }
 
   { TDaemonMapperDescriptor }
 
@@ -35,6 +33,8 @@ Type
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
   end;
   
+  { TDaemonFileDescriptor }
+
   TDaemonFileDescriptor = Class(TFileDescPascalUnitWithResource)
   Public
     Constructor Create; override;

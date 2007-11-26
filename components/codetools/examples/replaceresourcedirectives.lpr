@@ -45,7 +45,7 @@ begin
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
-    
+
   if not CodeToolBoss.AddResourceDirective(Code,'*.res',false,
     '{$IFDEF SomePlatform}{$R *.res}{$ENDIF}')
   then begin
@@ -58,16 +58,28 @@ begin
   if not CodeToolBoss.FindResourceDirective(Code,1,1,
     NewCode,NewX,NewY,NewTopLine,'',false) then
   begin
-    writeln('FAILED: did not find the resource');
+    writeln('FAILED: did not find any resource directive');
     if CodeToolBoss.ErrorMessage<>'' then
       writeln('CodeToolBoss.ErrorMessage=',CodeToolBoss.ErrorMessage);
     halt;
   end;
   
+  // write the new source:
+  writeln('---------BEFORE REMOVE-------------');
+  writeln(Code.Source);
+  writeln('-----------------------------------');
+
   writeln(NewCode.Filename,' X=',NewX,' Y=',NewY);
+  
+  if not CodeToolBoss.RemoveDirective(NewCode,NewX,NewY,true) then begin
+    writeln('FAILED to remove resource directive');
+    if CodeToolBoss.ErrorMessage<>'' then
+      writeln('CodeToolBoss.ErrorMessage=',CodeToolBoss.ErrorMessage);
+    halt;
+  end;
 
   // write the new source:
-  writeln('-----------------------------------');
+  writeln('---------AFTER REMOVE---------------');
   writeln(Code.Source);
   writeln('-----------------------------------');
 end.

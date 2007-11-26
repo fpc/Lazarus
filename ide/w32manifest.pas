@@ -118,45 +118,39 @@ end;
 function TProjectXPManifest.UpdateMainSourceFile(const AFilename: string): TModalResult;
 var
   NewX, NewY, NewTopLine: integer;
-  ManifestCodeBuf: TCodeBuffer;
-  CodePos: TCodeXYPosition;
+  ManifestCodeBuf, NewCode: TCodeBuffer;
+  Filename: String;
 begin
   Result := mrCancel;
   ManifestCodeBuf := CodeToolBoss.LoadFile(AFilename,false,false);
   if ManifestCodeBuf <> nil then
   begin
     SetFileNames(AFilename);
-    if not CodeToolBoss.FindResourceDirective(ManifestCodeBuf, 1, 1,
-                               ManifestCodeBuf, NewX, NewY,
-                               NewTopLine, ExtractFileName(resFileName)) then
+    Filename:=ExtractFileName(resFileName);
+    DebugLn(['TProjectXPManifest.UpdateMainSourceFile ',Filename]);
+    if CodeToolBoss.FindResourceDirective(ManifestCodeBuf, 1, 1,
+                               NewCode, NewX, NewY,
+                               NewTopLine, Filename, false) then
     begin
-      if UseManifest then
-      begin
-        if not CodeToolBoss.AddResourceDirective(ManifestCodeBuf, ExtractFileName(resFileName)) then
+      // there is a resource directive in the source
+      if not UseManifest then begin
+        if not CodeToolBoss.RemoveDirective(NewCode, NewX,NewY,true) then
         begin
-          Messages.Add('Could not add "{$R'+ ExtractFileName(resFileName) +'"} to main source!');
+          Messages.Add('Could not remove "{$R'+ Filename +'"} from main source!');
           exit;
         end;
       end;
-    end else
-    if not UseManifest then
+    end else if UseManifest then
     begin
-      with CodeToolBoss.CurCodeTool do
+      if not CodeToolBoss.AddResourceDirective(ManifestCodeBuf,
+        Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
       begin
-        CodeToolBoss.SourceChangeCache.MainScanner := Scanner;
-        CodePos.Code := ManifestCodeBuf;
-        CodePos.X := NewX;
-        CodePos.Y := NewY;
-        CaretToCleanPos(CodePos, NewX);
-        if CodeToolBoss.SourceChangeCache.Replace(gtNone, gtNone, NewX, NewX + Length(ExtractFileName(resFileName)) + 5, '') then
-        begin
-          if not CodeToolBoss.SourceChangeCache.Apply then
-            exit;
-        end else
-          exit;
+        Messages.Add('Could not add "{$R'+ Filename +'"} to main source!');
+        exit;
       end;
     end;
   end;
+  DebugLn(['TProjectXPManifest.UpdateMainSourceFile END ',ManifestCodeBuf.Source]);
   Result := mrOk;
 end;
 

@@ -323,6 +323,8 @@ type
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string;
           SearchInCleanSrc: boolean = true; const NewSrc: string = ''): boolean;
+    function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
+          RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
           out MissingIncludeFilesCodeXYPos: TFPList): boolean;
     function FixMissingH2PasDirectives(Code: TCodeBuffer;
@@ -2439,6 +2441,41 @@ begin
     except
       on e: Exception do Result:=HandleException(e);
     end;
+  end;
+end;
+
+function TCodeToolManager.RemoveDirective(Code: TCodeBuffer; NewX,
+  NewY: integer; RemoveEmptyIFs: boolean): boolean;
+var
+  Tree: TCompilerDirectivesTree;
+  p: integer;
+  Node: TCodeTreeNode;
+  Changed: boolean;
+  ParentNode: TCodeTreeNode;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveDirective A ',Code.Filename);
+  {$ENDIF}
+  try
+    Code.LineColToPosition(NewY,NewX,p);
+    if (p<1) or (p>Code.SourceLength) then exit;
+    Tree:=TCompilerDirectivesTree.Create;
+    try
+      Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
+      Node:=Tree.FindNodeAtPos(p);
+      if Node=nil then exit;
+      ParentNode:=Node.Parent;
+      Changed:=false;
+      Tree.DisableNode(Node,Changed,true);
+      if RemoveEmptyIFs and (ParentNode<>nil) and Tree.NodeIsEmpty(ParentNode) then
+        Tree.DisableNode(ParentNode,Changed,true);
+      Result:=Changed;
+    finally
+      Tree.Free;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 
