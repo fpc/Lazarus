@@ -1649,9 +1649,9 @@ end;
 class function TGtkWSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-{$IFNDEF GtkFixedWithWindow}
+{$if not defined(gtk1) and not defined(GtkFixedWithWindow)}
   EventBox: PGtkWidget;
-{$ENDIF}
+{$endif}
   TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p         : pointer;          // ptr to the newly created GtkWidget
   Allocation: TGTKAllocation;
@@ -1662,7 +1662,13 @@ begin
   else
     P := gtk_frame_new(nil);
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
-  {$IFNDEF GtkFixedWithWindow}
+  {$if defined(gtk1) or defined(GtkFixedWithWindow)}
+  TempWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(p), TempWidget);
+  WidgetInfo^.ClientWidget := TempWidget;
+  WidgetInfo^.CoreWidget := TempWidget;
+  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
+  {$else}
   EventBox := gtk_event_box_new;
   gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
   TempWidget := CreateFixedClientWidget(false);
@@ -1673,13 +1679,7 @@ begin
   WidgetInfo^.CoreWidget := EventBox;
   gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
   gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
-  {$ELSE}
-  TempWidget := CreateFixedClientWidget;
-  gtk_container_add(GTK_CONTAINER(p), TempWidget);
-  WidgetInfo^.ClientWidget := TempWidget;
-  WidgetInfo^.CoreWidget := TempWidget;
-  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
-  {$ENDIF}
+  {$endif}
   gtk_widget_show(TempWidget);
   gtk_widget_show(P);
 
