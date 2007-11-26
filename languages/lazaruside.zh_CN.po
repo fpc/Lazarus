@@ -164,6 +164,18 @@ msgstr "添加(&A)"
 msgid "&Add Breakpoint"
 msgstr "添加断点(&A)"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "关闭(&C)"
@@ -188,13 +200,33 @@ msgstr "编辑(&E)"
 msgid "&Enabled"
 msgstr "激活(&E)"
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "文件(&F)"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "查找声明(&F)"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -203,6 +235,14 @@ msgstr "跳到书签(&G) "
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "帮助(&H)"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -220,12 +260,28 @@ msgstr "在光标处打开文件(&O)"
 msgid "&Project"
 msgstr "工程(&P)"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "属性(&P)"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
@@ -244,6 +300,10 @@ msgstr "运行到光标(&R)"
 msgid "&Search"
 msgstr "查找(&S)"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "设置书签(&S)"
@@ -259,6 +319,18 @@ msgstr "工具(&T)"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "查看(&V)"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -864,10 +936,6 @@ msgstr "备份"
 msgid "Backup file failed"
 msgstr "备份文件失败"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "向后查找"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "在方法后"
@@ -1112,17 +1180,13 @@ msgstr "跳过选择区域的^符号"
 msgid "Case Insensitive"
 msgstr "大小写不敏感"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "大小写敏感"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "大小写敏感"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "西班牙语"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2504,6 +2568,10 @@ msgstr "文件条目不存在"
 msgid "Domain"
 msgstr "域"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "双击行"
@@ -2679,10 +2747,6 @@ msgstr "输入运行参数"
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr "输入翻译的语言"
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "整个范围"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2996,7 +3060,7 @@ msgstr "运行工具失败"
 msgid "Faster Code"
 msgstr "更快的代码"
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "文件"
 
@@ -3164,10 +3228,6 @@ msgstr "查找前一个(&P)"
 msgid "Find &in files ..."
 msgstr "在文件中查找(&I) ..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "查找 ..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "在光标处查找声明"
@@ -3320,10 +3380,6 @@ msgstr "窗体..."
 msgid "Forward one"
 msgstr "前进一个"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "向前查找"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascal 编译器未找到"
@@ -3343,10 +3399,6 @@ msgstr "Free pascal 源代码目录"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "法语"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "从光标处"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3419,10 +3471,6 @@ msgstr "德语"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "得到位置"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "全局"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5096,7 +5144,7 @@ msgstr ""
 msgid "Modified: %s"
 msgstr "已更改: %s"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "模块"
 
@@ -5255,14 +5303,6 @@ msgstr "移动到前面"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "多选"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5820,6 +5860,10 @@ msgstr "覆盖磁盘上的文件"
 msgid "Overwrite file?"
 msgstr "覆盖文件?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
@@ -6148,6 +6192,10 @@ msgstr "打印 todo 项目"
 msgid "Prior"
 msgstr "优先"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr ""
@@ -6303,10 +6351,6 @@ msgstr "工程菜单命令"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr "工程: %s"
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "快速替换"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6488,14 +6532,6 @@ msgstr "注册插件"
 msgid "Registration Error"
 msgstr "注册错误"
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "正则表达式"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "正则表达式"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "关连路径"
@@ -6643,10 +6679,6 @@ msgstr "替换"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "替换所有(&A)"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "替换 ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7315,10 +7347,6 @@ msgstr ""
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "选择节点:"
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "所选文本"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9632,10 +9660,6 @@ msgstr "查看工程单元"
 msgid "View Search Results"
 msgstr "查看查找结果"
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "查看源代码"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "查看源程序 (.lfm)"
@@ -9812,14 +9836,6 @@ msgstr ""
 msgid "Where"
 msgstr "位置"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "整个单词"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "整个单词"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "宽度:"
@@ -9995,6 +10011,10 @@ msgstr "自定义选项"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "默认 (%s)"
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -10212,17 +10232,17 @@ msgstr "保存所有更改的文件"
 msgid "save current editor file"
 msgstr "保存当前编辑器的文件"
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "在工程的所有文件中间查找"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "在所有打开的文件中查找"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "在目录中查找"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10275,10 +10295,6 @@ msgstr "静态包配置文件"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "停止程序"
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
-msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"

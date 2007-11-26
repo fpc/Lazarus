@@ -164,6 +164,18 @@ msgstr "Voeg by"
 msgid "&Add Breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "Sluit"
@@ -188,12 +200,32 @@ msgstr "&Redigeer"
 msgid "&Enabled"
 msgstr ""
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "&Lêer"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
+msgstr ""
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
 msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
@@ -203,6 +235,14 @@ msgstr "&Gaan na Boekmerke"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "&Hulp"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -220,12 +260,28 @@ msgstr ""
 msgid "&Project"
 msgstr "&Projek"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "&Eienskappe"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
@@ -244,6 +300,10 @@ msgstr ""
 msgid "&Search"
 msgstr "&Deursoek"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr ""
@@ -259,6 +319,18 @@ msgstr "&Nutsgoed"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "&Aansig"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -864,10 +936,6 @@ msgstr ""
 msgid "Backup file failed"
 msgstr ""
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr ""
@@ -1112,16 +1180,12 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr ""
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr ""
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
+msgstr ""
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
@@ -2504,6 +2568,10 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr ""
@@ -2678,10 +2746,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
-msgstr ""
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
 msgstr ""
 
 #: lazarusidestrconsts:dlgrunoenvironment
@@ -2996,7 +3060,7 @@ msgstr ""
 msgid "Faster Code"
 msgstr ""
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr ""
 
@@ -3164,10 +3228,6 @@ msgstr ""
 msgid "Find &in files ..."
 msgstr ""
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr ""
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr ""
@@ -3320,10 +3380,6 @@ msgstr ""
 msgid "Forward one"
 msgstr ""
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr ""
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr ""
@@ -3342,10 +3398,6 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
-msgstr ""
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
@@ -3419,10 +3471,6 @@ msgstr "Duits"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "Kry posisie"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr ""
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5096,7 +5144,7 @@ msgstr ""
 msgid "Modified: %s"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr ""
 
@@ -5254,14 +5302,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
-msgstr ""
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -5820,6 +5860,10 @@ msgstr ""
 msgid "Overwrite file?"
 msgstr ""
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
@@ -6148,6 +6192,10 @@ msgstr ""
 msgid "Prior"
 msgstr "Vorige"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr ""
@@ -6302,10 +6350,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
-msgstr ""
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
 msgstr ""
 
 #: lazarusidestrconsts:lispromptforvalue
@@ -6488,14 +6532,6 @@ msgstr ""
 msgid "Registration Error"
 msgstr ""
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr ""
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr ""
@@ -6643,10 +6679,6 @@ msgstr ""
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Vervang Alles"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr ""
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7314,10 +7346,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
-msgstr ""
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
 msgstr ""
 
 #: lazarusidestrconsts:lispckexplisrequiredby
@@ -9632,10 +9660,6 @@ msgstr ""
 msgid "View Search Results"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr ""
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr ""
@@ -9812,14 +9836,6 @@ msgstr ""
 msgid "Where"
 msgstr ""
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "Heel worde alleenlik"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr ""
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Weite:"
@@ -9994,6 +10010,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
 msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
@@ -10212,16 +10232,16 @@ msgstr ""
 msgid "save current editor file"
 msgstr ""
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
+#: lazarusidestrconsts:lisfindfilesearchallopenfiles
+msgid "search all &open files"
 msgstr ""
 
-#: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
+msgid "search in &directories"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
@@ -10274,10 +10294,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage

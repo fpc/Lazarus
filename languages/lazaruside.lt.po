@@ -163,6 +163,18 @@ msgstr "Pri&dėti"
 msgid "&Add Breakpoint"
 msgstr "Padėti st&abdos tašką"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "&Užverti"
@@ -187,13 +199,33 @@ msgstr "&Keisti"
 msgid "&Enabled"
 msgstr "Į&galintas"
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "&Failas"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "Ieškoti kur &paskelbta"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -202,6 +234,14 @@ msgstr "&Rodyti žymę"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "Žin&ynas"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -219,13 +259,29 @@ msgstr "Atverti ties žymekliu nurodytą &failą"
 msgid "&Project"
 msgstr "Projek&tas"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "&Savybės"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
 msgstr "&Pašalinti"
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -243,6 +299,10 @@ msgstr "S&tartuoti iki žymeklio"
 msgid "&Search"
 msgstr "&Paieška"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "Pa&dėti žymę"
@@ -258,6 +318,18 @@ msgstr "Įra&nkiai"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "&Rodymas"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -863,10 +935,6 @@ msgstr "Atsarginė kopija"
 msgid "Backup file failed"
 msgstr "Nepavyko padaryti failo atsarginę kopiją"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "Iekoti atgal"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "Po metodų"
@@ -1115,17 +1183,13 @@ msgstr "Nuo žymėjimo atitrūkstantis žymeklis"
 msgid "Case Insensitive"
 msgstr "Skirti didžiąsias ir mažąsias raides"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "Paisyti raidžių lygio"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "Svarbu raidžių lygis"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "Katalanų"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2507,6 +2571,10 @@ msgstr "Dokumento įrašas neegzistuoja"
 msgid "Domain"
 msgstr "Sritis"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "Spragtelėjus dukart pažymima visa eilutė"
@@ -2682,10 +2750,6 @@ msgstr "Įveskite starto parametrus"
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr "Įveskite vertimo kalbą"
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "Visoje srityje"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2999,7 +3063,7 @@ msgstr "Nepavyko startuoti įrankį"
 msgid "Faster Code"
 msgstr "Greitesnį kodą"
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "Failas"
 
@@ -3167,10 +3231,6 @@ msgstr "Ieškoti an&kstesnio"
 msgid "Find &in files ..."
 msgstr "&Ieškoti failuose..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "Ieškoti..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Ieškoti ties žymekliu nurodytojo paskelbimo"
@@ -3323,10 +3383,6 @@ msgstr "Formos..."
 msgid "Forward one"
 msgstr "Vienu pirmyn"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "Ieškoti pirmyn"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Nerastas FreePascal kompiliatorius"
@@ -3346,10 +3402,6 @@ msgstr "FreePascal pirminio kodo katalogas"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "Prancūzų"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "Nuo žymeklio"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3422,10 +3474,6 @@ msgstr "Vokiečių"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "Sužinoti poziciją"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "Globaliai"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5101,7 +5149,7 @@ msgstr "Modifikuotas LGPL raštas"
 msgid "Modified: %s"
 msgstr "Pakeista: %s"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "Modulis"
 
@@ -5260,14 +5308,6 @@ msgstr "Perkelti į priekį"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Pažymėti kelis"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr "Kelios eilutės"
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr "Kelių eilučių modelis"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5825,6 +5865,10 @@ msgstr "Perrašyti failą diske"
 msgid "Overwrite file?"
 msgstr "Perrašyti failą?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "PO išvesties katalogas:"
@@ -6153,6 +6197,10 @@ msgstr "Spauzdinti ToDo sąrašą"
 msgid "Prior"
 msgstr "Prior"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr "Private"
@@ -6308,10 +6356,6 @@ msgstr "Menių \"Projektas\" komandos"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr "Projektui: %s"
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "Reikalauti patvirtinimo"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6493,14 +6537,6 @@ msgstr "Registruoti įskiepiai"
 msgid "Registration Error"
 msgstr "Klaida registruojant"
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "Reguliarusis reiškinys"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "Reguliarusis reiškinys"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "Santykiniai keliai"
@@ -6648,10 +6684,6 @@ msgstr "Pakeisti"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Pakeisti &visus"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "Pakeisti..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7322,10 +7354,6 @@ msgstr "Pažymėti žodį dešinėje"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Pažymėtas mazgas:"
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "Pažymėtame tekste"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9651,10 +9679,6 @@ msgstr "Projekto moduliai"
 msgid "View Search Results"
 msgstr "Rodyti ieškos rezultatus"
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "Rodyti pirminį kodą"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Rodyti pirminį kodą (.lfm)"
@@ -9831,14 +9855,6 @@ msgstr "Kai šis failas pirminio kodo redaktoriuje aktyvus..."
 msgid "Where"
 msgstr "Kur"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "Tik ištisų žodžių"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "Tik visų žodžių"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Plotis:"
@@ -10014,6 +10030,10 @@ msgstr "naudotojo parinktys"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "numatytas (%s)"
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -10231,17 +10251,17 @@ msgstr "Išsaugoti visus pakeistus failus"
 msgid "save current editor file"
 msgstr "Išsaugoti dabartinį redaktoriaus failą"
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "ieškoti visuose projekto failuose"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "ieškoti visuose atvertuose failuose"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "ieškoti kataloguose"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10294,10 +10314,6 @@ msgstr "statinio paketo nustatymų failas"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "sustabdyti programos veiką"
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
-msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"

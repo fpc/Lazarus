@@ -225,12 +225,12 @@ resourcestring
 
   lisMenuFind = 'Find';
   lisMenuFindNext = 'Find &Next';
-  lisMenuFind2 = 'Find ...';
+  lisMenuFind2 = '&Find ...';
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in files ...';
   lisMenuReplace = 'Replace';
   lisMenuIncrementalFind = 'Incremental Find';
-  lisMenuReplace2 = 'Replace ...';
+  lisMenuReplace2 = '&Replace ...';
   lisMenuGotoLine = 'Goto line ...';
   lisMenuJumpBack = 'Jump back';
   lisMenuJumpForward = 'Jump forward';
@@ -295,7 +295,7 @@ resourcestring
   lisKMViewProjectToDoList = 'View project ToDo list';
   lisMenuAddToProject = 'Add editor file to Project';
   lisMenuRemoveFromProject = 'Remove from Project ...';
-  lisMenuViewSource = 'View Source';
+  lisMenuViewSource = '&View Source';
   lisMenuViewProjectTodos = 'View ToDo List ...';
   lisMenuProjectOptions = 'Project Options ...';
   
@@ -1433,22 +1433,22 @@ resourcestring
   lisBFOnRunProjectExecuteTheRunFileCommandInstead = 'On run project execute '
     +'the Run File command instead';
   lisCEFilter = '(Filter)';
-  dlgCaseSensitive = 'Case Sensitive';
+  dlgCaseSensitive = '&Case Sensitive';
   lisDistinguishBigAndSmallLettersEGAAndA = 'Distinguish big and small '
     +'letters e.g. A and a';
-  dlgWholeWordsOnly = 'Whole Words Only';
+  dlgWholeWordsOnly = '&Whole Words Only';
   lisOnlySearchForWholeWords = 'Only search for whole words';
-  dlgRegularExpressions = 'Regular Expressions';
+  dlgRegularExpressions = '&Regular Expressions';
   lisActivateRegularExpressionSyntaxForTextAndReplaceme = 'Activate regular '
     +'expression syntax for text and replacement (pretty much like perl)';
-  dlgMultiLine = 'Multiline';
+  dlgMultiLine = '&Multiline';
   lisAllowSearchingForMultipleLines = 'Allow searching for multiple lines';
-  dlgPromptOnReplace = 'Prompt On Replace';
+  dlgPromptOnReplace = '&Prompt On Replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
   lisPLDExists = 'Exists';
-  dlgFromCursor = 'From Cursor';
-  dlgEntireScope = 'Entire Scope';
+  dlgFromCursor = '&From Cursor';
+  dlgEntireScope = '&Entire Scope';
   dlgScope = 'Scope';
   lisWithRequiredPackages = 'With required packages';
   lisLevels = 'Levels';
@@ -1479,12 +1479,12 @@ resourcestring
     +'current unit';
   lisFRIinAllOpenPackagesAndProjects = 'in all open packages and projects';
   lisFRIRenameAllReferences = 'Rename all References';
-  dlgGlobal = 'Global';
+  dlgGlobal = '&Global';
   lisPLDUser = 'User';
-  dlgSelectedText = 'Selected Text';
+  dlgSelectedText = '&Selected Text';
   dlgDirection = 'Direction';
-  lisFRForwardSearch = 'Forward search';
-  lisFRBackwardSearch = 'Backward search';
+  lisFRForwardSearch = '&Forward search';
+  lisFRBackwardSearch = '&Backward search';
   dlgUpWord = 'Up';
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace &All';
@@ -2372,7 +2372,7 @@ resourcestring
   lisSortSelWords = 'Words';
   lisSortSelParagraphs = 'Paragraphs';
   lisSortSelOptions = 'Options';
-  lisSortSelCaseSensitive = 'Case Sensitive';
+  lisSortSelCaseSensitive = '&Case Sensitive';
   lisSortSelIgnoreSpace = 'Ignore Space';
   lisSortSelSort = 'Accept';
   lisSortSelCancel = 'Cancel';
@@ -2602,14 +2602,14 @@ resourcestring
     
   // find in files dialog
   lisFindFileTextToFind = 'Text to find:';
-  lisFindFileCaseSensitive = 'Case sensitive';
-  lisFindFileWholeWordsOnly = 'Whole words only';
-  lisFindFileRegularExpressions = 'Regular expressions';
-  lisFindFileMultiLine = 'Multiline pattern';
+  lisFindFileCaseSensitive = '&Case sensitive';
+  lisFindFileWholeWordsOnly = '&Whole words only';
+  lisFindFileRegularExpressions = '&Regular expressions';
+  lisFindFileMultiLine = '&Multiline pattern';
   lisFindFileWhere = 'Where';
-  lisFindFilesearchAllFilesInProject = 'search all files in project';
-  lisFindFilesearchAllOpenFiles = 'search all open files';
-  lisFindFilesearchInDirectories = 'search in directories';
+  lisFindFilesearchAllFilesInProject = 'search all files in &project';
+  lisFindFilesearchAllOpenFiles = 'search all &open files';
+  lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectoryOptions = 'Directory options';
   lisFindFileFileMaskBak = 'File mask (*;*.*;*.bak?)';
   lisFindFileIncludeSubDirectories = 'Include sub directories';

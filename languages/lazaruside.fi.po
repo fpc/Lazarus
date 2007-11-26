@@ -150,6 +150,18 @@ msgstr ""
 msgid "&Add Breakpoint"
 msgstr ""
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "&Sulje"
@@ -174,13 +186,33 @@ msgstr "&Muokkaa"
 msgid "&Enabled"
 msgstr ""
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "&Tiedosto"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Etsi määrittely"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -189,6 +221,14 @@ msgstr "&Siirry kirjaimerkkiin"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "&Ohje"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -206,12 +246,28 @@ msgstr "&Avaa kohdistimen osoittama tiedosto"
 msgid "&Project"
 msgstr "&Projekti"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr ""
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
@@ -230,6 +286,10 @@ msgstr ""
 msgid "&Search"
 msgstr "&Etsi"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "&Merkitse kirjainmerkiksi"
@@ -245,6 +305,18 @@ msgstr "&Työkalut"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "&Näytä"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -850,10 +922,6 @@ msgstr "Varmistus"
 msgid "Backup file failed"
 msgstr "Varmuuskopiointi epäonnistui"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "Taaksepäin"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr ""
@@ -1098,17 +1166,13 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr "Kirjaimen koolla ei väliä"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "Sama kirjainkoko"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "Sama kirjainkoko"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "katalaani"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2490,6 +2554,10 @@ msgstr ""
 msgid "Domain"
 msgstr "Lajittelu peruste"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "Kaksoisklikkaus valitsee koko rivin"
@@ -2665,10 +2733,6 @@ msgstr ""
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr ""
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "Ulottuvuuden alkukohta"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2982,7 +3046,7 @@ msgstr ""
 msgid "Faster Code"
 msgstr ""
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "Tiedosto"
 
@@ -3150,10 +3214,6 @@ msgstr "Etsi &Edellinen"
 msgid "Find &in files ..."
 msgstr "Etsi tiedostoista ..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "Etsi ..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Etsi kohdistimen osoittaman kohdan määrittely"
@@ -3306,10 +3366,6 @@ msgstr "Lomakkeet..."
 msgid "Forward one"
 msgstr "Yksi eteenpäin"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "Eteenpäin"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr ""
@@ -3329,10 +3385,6 @@ msgstr ""
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "ranska"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "Kohdistimen osoittama kohta"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3405,10 +3457,6 @@ msgstr "saksa"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "Hae sijainti"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "Kaikki"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5082,7 +5130,7 @@ msgstr ""
 msgid "Modified: %s"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr ""
 
@@ -5241,14 +5289,6 @@ msgstr "Siirrä päällimmäksi"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Monivalinta"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5806,6 +5846,10 @@ msgstr "Korvaa tällä tiedostolla"
 msgid "Overwrite file?"
 msgstr "Korvataanko tiedosto?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
@@ -6134,6 +6178,10 @@ msgstr ""
 msgid "Prior"
 msgstr ""
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr ""
@@ -6289,10 +6337,6 @@ msgstr "Projektivalikon komennot"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr ""
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "Kysy vielä muutoksille vahvistusta"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6474,14 +6518,6 @@ msgstr ""
 msgid "Registration Error"
 msgstr ""
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "Säännölliset lausekkeet"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "Säännölliset lausekkeet"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr ""
@@ -6629,10 +6665,6 @@ msgstr "Etsi ja korvaa"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Korvaa kaikki"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "Etsi ja korvaa ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7301,10 +7333,6 @@ msgstr ""
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr ""
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "Valittu teksti"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9618,10 +9646,6 @@ msgstr ""
 msgid "View Search Results"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "Näytä pääohjelma"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Näytä lomakkeen koodi (.lfm)"
@@ -9798,14 +9822,6 @@ msgstr ""
 msgid "Where"
 msgstr "Mistä"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "Etsi vain kokonaisia sanoja"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "Etsi vain kokonaisia sanoja"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Leveys:"
@@ -9980,6 +9996,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
+msgstr ""
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
 msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
@@ -10198,17 +10218,17 @@ msgstr ""
 msgid "save current editor file"
 msgstr ""
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "Hae projektin kaikista tiedostoista"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "Hae kaikista avoinna olevista tiedostoista"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "Etsi kansioista"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10260,10 +10280,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
-msgstr ""
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage

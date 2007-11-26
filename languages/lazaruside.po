@@ -591,7 +591,7 @@ msgid "Find &Next"
 msgstr ""
 
 #: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
+msgid "&Find ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenufindprevious
@@ -611,7 +611,7 @@ msgid "Incremental Find"
 msgstr ""
 
 #: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
+msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
@@ -859,7 +859,7 @@ msgid "Remove from Project ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
+msgid "&View Source"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewprojecttodos
@@ -4387,7 +4387,7 @@ msgid "(Filter)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
+msgid "&Case Sensitive"
 msgstr ""
 
 #: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
@@ -4395,7 +4395,7 @@ msgid "Distinguish big and small letters e.g. A and a"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
+msgid "&Whole Words Only"
 msgstr ""
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
@@ -4403,7 +4403,7 @@ msgid "Only search for whole words"
 msgstr ""
 
 #: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
+msgid "&Regular Expressions"
 msgstr ""
 
 #: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
@@ -4411,7 +4411,7 @@ msgid "Activate regular expression syntax for text and replacement (pretty much 
 msgstr ""
 
 #: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
+msgid "&Multiline"
 msgstr ""
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
@@ -4419,7 +4419,7 @@ msgid "Allow searching for multiple lines"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
+msgid "&Prompt On Replace"
 msgstr ""
 
 #: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
@@ -4435,11 +4435,11 @@ msgid "Exists"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
+msgid "&From Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
+msgid "&Entire Scope"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscope
@@ -4559,7 +4559,7 @@ msgid "Rename all References"
 msgstr ""
 
 #: lazarusidestrconsts:dlgglobal
-msgid "Global"
+msgid "&Global"
 msgstr ""
 
 #: lazarusidestrconsts:lisplduser
@@ -4567,7 +4567,7 @@ msgid "User"
 msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
+msgid "&Selected Text"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdirection
@@ -4575,11 +4575,11 @@ msgid "Direction"
 msgstr ""
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
+msgid "&Forward search"
 msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
+msgid "&Backward search"
 msgstr ""
 
 #: lazarusidestrconsts:dlgupword
@@ -7230,20 +7230,36 @@ msgstr ""
 msgid "ToDo options..."
 msgstr ""
 
-#: lazarusidestrconsts:listodoldescription
-msgid "Description"
-msgstr ""
-
 #: lazarusidestrconsts:lisctinsertmacro
 msgid "Insert Macro"
 msgstr ""
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
+#: lazarusidestrconsts:listodoldescription
+msgid "Description"
+msgstr ""
+
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:listodolfile
-msgid "File"
+msgid "Module"
 msgstr ""
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
+msgstr ""
+
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeunit
@@ -7459,7 +7475,7 @@ msgid "Options"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselcasesensitive
-msgid "Case Sensitive"
+msgid "&Case Sensitive"
 msgstr ""
 
 #: lazarusidestrconsts:lissortselignorespace
@@ -8075,19 +8091,19 @@ msgid "Text to find:"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
+msgid "&Case sensitive"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
+msgid "&Whole words only"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
+msgid "&Regular expressions"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
+msgid "&Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilewhere
@@ -8095,15 +8111,15 @@ msgid "Where"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
+msgid "search all files in &project"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
+msgid "search all &open files"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
+msgid "search in &directories"
 msgstr ""
 
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
@@ -10682,8 +10698,8 @@ msgstr ""
 msgid "word end"
 msgstr ""
 
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages

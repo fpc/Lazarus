@@ -161,6 +161,18 @@ msgstr "&Добавить"
 msgid "&Add Breakpoint"
 msgstr "&Добавить точку останова"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "&Закрыть"
@@ -185,13 +197,33 @@ msgstr "&Правка"
 msgid "&Enabled"
 msgstr "&Включить"
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "&Файл"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "&Найти объявление"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -200,6 +232,14 @@ msgstr "&Переход по закладке"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "&Справка"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -217,13 +257,29 @@ msgstr "&Открыть файл у курсора"
 msgid "&Project"
 msgstr "Про&ект"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "&Свойства"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
 msgstr "&Удалить"
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -241,6 +297,10 @@ msgstr "&Пуск до курсора"
 msgid "&Search"
 msgstr "П&оиск"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "&Установить закладку"
@@ -256,6 +316,18 @@ msgstr "Се&рвис"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "&Вид"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -861,10 +933,6 @@ msgstr "Резервирование"
 msgid "Backup file failed"
 msgstr "Резервирование не удалось"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "Обратный поиск"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "После методов"
@@ -1109,17 +1177,13 @@ msgstr "Курсор пропускает выделенное"
 msgid "Case Insensitive"
 msgstr "Нечувствительный к регистру"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "С учетом регистра"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "С учётом регистра"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "Каталанский"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2501,6 +2565,10 @@ msgstr "Записи в документации не существует"
 msgid "Domain"
 msgstr "Домен"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "Выделить строку дв. щелчком"
@@ -2676,10 +2744,6 @@ msgstr "Введите параметры запуска"
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr "Введите язык перевода"
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "С начала"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2993,7 +3057,7 @@ msgstr "Не удалось запустить средство"
 msgid "Faster Code"
 msgstr "Быстрый код"
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "Файл"
 
@@ -3161,10 +3225,6 @@ msgstr "Найти предыдущее"
 msgid "Find &in files ..."
 msgstr "Поиск в файлах ..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "Найти ..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Найти объявление под курсором"
@@ -3317,10 +3377,6 @@ msgstr "Формы..."
 msgid "Forward one"
 msgstr "Один вперёд"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "Поиск вперёд"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Компилятор FreePascal не найден"
@@ -3340,10 +3396,6 @@ msgstr "Каталог исходного кода FreePascal"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "Французский"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "От курсора"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3416,10 +3468,6 @@ msgstr "Немецкий"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "Принять позицию"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "Везде"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5093,7 +5141,7 @@ msgstr "Заметка о модифицированной LGPL"
 msgid "Modified: %s"
 msgstr "Изменён: %s"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "Модуль"
 
@@ -5252,14 +5300,6 @@ msgstr "Переместить вперёд"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Множественное выделение"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr "Многострочный"
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr "Многострочный шаблон"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5817,6 +5857,10 @@ msgstr "Перезаписать файл на диске"
 msgid "Overwrite file?"
 msgstr "Переписать файл?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr "Каталог вывода файлов PO:"
@@ -6145,6 +6189,10 @@ msgstr "Распечатать элементы todo"
 msgid "Prior"
 msgstr "Page Up"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr "Private"
@@ -6300,10 +6348,6 @@ msgstr "Команды меню Проект"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr "Проект: %s"
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "Подтверждать замену"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6485,14 +6529,6 @@ msgstr "Зарегистрированные дополнения"
 msgid "Registration Error"
 msgstr "Ошибка регистрации"
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "Целые выражения"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "Регулярное выражение"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "Относительные пути"
@@ -6640,10 +6676,6 @@ msgstr "Замена"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Заменить &Все"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "Замена ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7312,10 +7344,6 @@ msgstr "Выделить слово справа"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Выделить элемент:"
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "В выделенном"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9629,10 +9657,6 @@ msgstr "Показать модули проекта"
 msgid "View Search Results"
 msgstr "Показать результаты поиска"
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "Просмотр исходного кода"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Показать исходный текст  (.lfm)"
@@ -9809,14 +9833,6 @@ msgstr "Когда этот файл является текущим в реда
 msgid "Where"
 msgstr "Где"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "Только целые слова"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "Только целые слова"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ширина:"
@@ -9992,6 +10008,10 @@ msgstr "параметры пользователя"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "по умолчанию (%s)"
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -10209,17 +10229,17 @@ msgstr "сохранить все измененные файлы"
 msgid "save current editor file"
 msgstr "сохранить текущий файл редактора"
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "поиск во всех файлах проекта"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "поиск во всех открытых файлах"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "поиск в каталогах"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10272,10 +10292,6 @@ msgstr "файл настроек статических пакетов"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "остановить программу"
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
-msgstr "символа"
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"

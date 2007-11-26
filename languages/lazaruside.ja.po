@@ -160,6 +160,18 @@ msgstr "追加(&A)"
 msgid "&Add Breakpoint"
 msgstr "ブレークポイント追加"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "閉じる(&C)"
@@ -184,13 +196,33 @@ msgstr "編集(&E)"
 msgid "&Enabled"
 msgstr "有効にする(&E)"
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "ファイル(&F)"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "宣言の検索(&F)"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -199,6 +231,14 @@ msgstr "ブックマークへ移動(&G)"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "ヘルプ(&H)"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -216,12 +256,28 @@ msgstr "カーソルのファイルを開く(&O)"
 msgid "&Project"
 msgstr "プロジェクト(&P)"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "プロパティ(&P)"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
+msgstr ""
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
 msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
@@ -240,6 +296,10 @@ msgstr "カーソルまで実行(&R)"
 msgid "&Search"
 msgstr "検索(&S)"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "ブックマークを入れる"
@@ -255,6 +315,18 @@ msgstr "ツール(&T)"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "表示(&V)"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -860,10 +932,6 @@ msgstr "バックアップ"
 msgid "Backup file failed"
 msgstr "バックアップファイル失敗"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "後方検索"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "メソッドの後方へ"
@@ -1108,17 +1176,13 @@ msgstr "選択範囲内でキャレットをスキップ"
 msgid "Case Insensitive"
 msgstr "大文字と小文字を区別しない"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "大文字と小文字を区別する"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "大文字と小文字を区別する"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "カタロニア語"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2500,6 +2564,10 @@ msgstr "ドキュメントエントリーがありません"
 msgid "Domain"
 msgstr "領域"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "行をダブルクリック"
@@ -2675,10 +2743,6 @@ msgstr "実行時引数を入力してください"
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr "翻訳言語を入力してください"
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "全範囲"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2992,7 +3056,7 @@ msgstr "ツールの実行に失敗"
 msgid "Faster Code"
 msgstr "より高速なコード"
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "ファイル"
 
@@ -3160,10 +3224,6 @@ msgstr "前を検索(&P)"
 msgid "Find &in files ..."
 msgstr "ファイルの中を検索(&i) ..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "検索 ..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "カーソル位置の変数の宣言を検索"
@@ -3316,10 +3376,6 @@ msgstr "フォーム..."
 msgid "Forward one"
 msgstr "前方に一つ進む"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "前方検索"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Free Pascalコンパイラが見つかりません"
@@ -3339,10 +3395,6 @@ msgstr "FreePascalソースディレクトリ"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "フランス語"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "カーソル位置から"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3415,10 +3467,6 @@ msgstr "ドイツ語"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "位置を取得"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "グローバル"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5092,7 +5140,7 @@ msgstr "修正LGPL覚え書き"
 msgid "Modified: %s"
 msgstr "修正済: %s"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "モジュール"
 
@@ -5251,14 +5299,6 @@ msgstr "前に移動"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "複数選択"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr "複数行"
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr "複数行パターン"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5816,6 +5856,10 @@ msgstr "ディスク上のファイルを上書き"
 msgid "Overwrite file?"
 msgstr "ファイルを上書きしますか?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
@@ -6144,6 +6188,10 @@ msgstr "ToDo項目を印刷"
 msgid "Prior"
 msgstr "前の"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr ""
@@ -6299,10 +6347,6 @@ msgstr "プロジェクトメニューコマンド"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr "プロジェクト: %s"
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "置換を促す"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6484,14 +6528,6 @@ msgstr "登録されたプラグイン"
 msgid "Registration Error"
 msgstr "登録エラー"
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "正規表現"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "正規表現"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "相対パス"
@@ -6639,10 +6675,6 @@ msgstr "置換"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "すべて置換(&A)"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "置換 ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7311,10 +7343,6 @@ msgstr "右側の語を選択"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "選択されたノード:"
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "選択されたテキスト:"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9628,10 +9656,6 @@ msgstr "プロジェクトユニットを表示"
 msgid "View Search Results"
 msgstr "検索結果を表示"
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "ソースを表示"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "ソース(.lfm)を表示"
@@ -9808,14 +9832,6 @@ msgstr "このファイルがソースエディタでアクティブなとき.."
 msgid "Where"
 msgstr "どこに"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "単語単位で探す"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "単語単位で探す"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "幅:"
@@ -9991,6 +10007,10 @@ msgstr "カスタムオプション"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "デフォルト(%s)"
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -10208,17 +10228,17 @@ msgstr "すべての変更されたファイルを保存"
 msgid "save current editor file"
 msgstr "現在のエディタファイルを保存"
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "プロジェクトの全てのファイルを検索"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "全ての開いているファイルを検索"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "ディレクトリ内を検索"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10271,10 +10291,6 @@ msgstr "静的パッケージ設定ファイル"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "プログラムを停止"
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
-msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"

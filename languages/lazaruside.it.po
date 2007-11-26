@@ -162,6 +162,18 @@ msgstr "&Aggiungi"
 msgid "&Add Breakpoint"
 msgstr "&Aggiungi breakpoint"
 
+#: lazarusidestrconsts:lisfrbackwardsearch
+msgid "&Backward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcasesensitive
+msgid "&Case Sensitive"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilecasesensitive
+msgid "&Case sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
 msgstr "&Chiudi"
@@ -186,13 +198,33 @@ msgstr "&Modifica"
 msgid "&Enabled"
 msgstr "&Abilitato"
 
+#: lazarusidestrconsts:dlgentirescope
+msgid "&Entire Scope"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr "&File"
 
+#: lazarusidestrconsts:lismenufind2
+msgid "&Find ..."
+msgstr ""
+
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
 msgstr "Trova dichiarazione"
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "&Forward search"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfromcursor
+msgid "&From Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgglobal
+msgid "&Global"
+msgstr ""
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -201,6 +233,14 @@ msgstr "Vai al segnalibro"
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr "&Aiuto"
+
+#: lazarusidestrconsts:dlgmultiline
+msgid "&Multiline"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilemultiline
+msgid "&Multiline pattern"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistobjects
 msgid "&Objects"
@@ -218,13 +258,29 @@ msgstr "Apri il file al cursore"
 msgid "&Project"
 msgstr "&Progetto"
 
+#: lazarusidestrconsts:dlgpromptonreplace
+msgid "&Prompt On Replace"
+msgstr ""
+
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
 msgstr "&Propriet‡"
 
+#: lazarusidestrconsts:dlgregularexpressions
+msgid "&Regular Expressions"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfileregularexpressions
+msgid "&Regular expressions"
+msgstr ""
+
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
 msgstr "&Rimuovi"
+
+#: lazarusidestrconsts:lismenureplace2
+msgid "&Replace ..."
+msgstr ""
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -242,6 +298,10 @@ msgstr "Esegui fino al cu&rsore"
 msgid "&Search"
 msgstr "&Cerca"
 
+#: lazarusidestrconsts:dlgselectedtext
+msgid "&Selected Text"
+msgstr ""
+
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
 msgstr "Imposta segnalibro"
@@ -257,6 +317,18 @@ msgstr "S&trumenti"
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
 msgstr "&Visualizza"
+
+#: lazarusidestrconsts:lismenuviewsource
+msgid "&View Source"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwholewordsonly
+msgid "&Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilewholewordsonly
+msgid "&Whole words only"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -862,10 +934,6 @@ msgstr "Backup"
 msgid "Backup file failed"
 msgstr "Backup file fallito"
 
-#: lazarusidestrconsts:lisfrbackwardsearch
-msgid "Backward search"
-msgstr "Ricerca all'indietro"
-
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
 msgstr "Dietro ai metodi"
@@ -1110,17 +1178,13 @@ msgstr "Il cursore salta la selezione"
 msgid "Case Insensitive"
 msgstr "Indifferente alle maiuscole/minuscole"
 
-#: lazarusidestrconsts:dlgcasesensitive
-msgid "Case Sensitive"
-msgstr "Controllo maiuscole/minuscole"
-
-#: lazarusidestrconsts:lisfindfilecasesensitive
-msgid "Case sensitive"
-msgstr "Differenzia tra maiuscole e minuscole"
-
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
 msgstr "Catalano"
+
+#: lazarusidestrconsts:listtodolcategory
+msgid "Category"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
@@ -2502,6 +2566,10 @@ msgstr "La documentazione per questo elemento non esiste"
 msgid "Domain"
 msgstr "Dominio"
 
+#: lazarusidestrconsts:listodoldone
+msgid "Done"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "Riga a doppio click"
@@ -2677,10 +2745,6 @@ msgstr "Inserire i parametri di esecuzione"
 #: lazarusidestrconsts:lisentertransla
 msgid "Enter translation language"
 msgstr "Inserire la lingua"
-
-#: lazarusidestrconsts:dlgentirescope
-msgid "Entire Scope"
-msgstr "Intero campo di validit√†"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2994,7 +3058,7 @@ msgstr "Fallita l'esecuzione d'uno strumento"
 msgid "Faster Code"
 msgstr "Codice pi√π veloce"
 
-#: lazarusidestrconsts:listodolfile
+#: lazarusidestrconsts:lismenutemplatefile
 msgid "File"
 msgstr "File"
 
@@ -3162,10 +3226,6 @@ msgstr "Trova &precedente"
 msgid "Find &in files ..."
 msgstr "Trova &nei file ..."
 
-#: lazarusidestrconsts:lismenufind2
-msgid "Find ..."
-msgstr "Trova ..."
-
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Trova dichiarazione al cursore"
@@ -3318,10 +3378,6 @@ msgstr "Form..."
 msgid "Forward one"
 msgstr "Avanti di uno"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "Forward search"
-msgstr "Ricerca in avanti"
-
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
 msgstr "Compilatore Free Pascal non trovato"
@@ -3341,10 +3397,6 @@ msgstr "Directory sorgente del Freepascal"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "Francese"
-
-#: lazarusidestrconsts:dlgfromcursor
-msgid "From Cursor"
-msgstr "Dal cursore"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3417,10 +3469,6 @@ msgstr "Tedesco"
 #: lazarusidestrconsts:dlggetposition
 msgid "Get position"
 msgstr "Ottieni la posizione"
-
-#: lazarusidestrconsts:dlgglobal
-msgid "Global"
-msgstr "Globale"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5094,7 +5142,7 @@ msgstr "Licenza LGPL modificata"
 msgid "Modified: %s"
 msgstr "Modificato: %s"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmmodule
+#: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "Modulo"
 
@@ -5253,14 +5301,6 @@ msgstr "Sposta in primo piano"
 #: lazarusidestrconsts:dlgmultiselect
 msgid "Multi Select"
 msgstr "Multi Selezione"
-
-#: lazarusidestrconsts:dlgmultiline
-msgid "Multiline"
-msgstr "Multilinea"
-
-#: lazarusidestrconsts:lisfindfilemultiline
-msgid "Multiline pattern"
-msgstr "Disegno multilinea"
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -5818,6 +5858,10 @@ msgstr "Sovrascrivi il file su disco"
 msgid "Overwrite file?"
 msgstr "Sovrascrivere il file?"
 
+#: lazarusidestrconsts:listodolowner
+msgid "Owner"
+msgstr ""
+
 #: lazarusidestrconsts:rspooutputdirectory
 msgid "PO Output Directory:"
 msgstr ""
@@ -6146,6 +6190,10 @@ msgstr "Stampa voci todo"
 msgid "Prior"
 msgstr "Precedente"
 
+#: lazarusidestrconsts:listodolpriority
+msgid "Priority"
+msgstr ""
+
 #: lazarusidestrconsts:lisprivate
 msgid "Private"
 msgstr "Privato"
@@ -6301,10 +6349,6 @@ msgstr "Comandi per il menu progetto"
 #: lazarusidestrconsts:lispkgmangproject
 msgid "Project: %s"
 msgstr "Progetto: %s"
-
-#: lazarusidestrconsts:dlgpromptonreplace
-msgid "Prompt On Replace"
-msgstr "Avvisa prima di sostituire"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -6486,14 +6530,6 @@ msgstr "Plugin registrati"
 msgid "Registration Error"
 msgstr "Errore di registrazione"
 
-#: lazarusidestrconsts:dlgregularexpressions
-msgid "Regular Expressions"
-msgstr "Espressioni regolari"
-
-#: lazarusidestrconsts:lisfindfileregularexpressions
-msgid "Regular expressions"
-msgstr "Espressione regolare"
-
 #: lazarusidestrconsts:lisrelativepaths
 msgid "Relative paths"
 msgstr "Percorsi relativi"
@@ -6641,10 +6677,6 @@ msgstr "Rimpiazza"
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace &All"
 msgstr "Rimpiazza &Tutto"
-
-#: lazarusidestrconsts:lismenureplace2
-msgid "Replace ..."
-msgstr "Rimpiazza ..."
 
 #: lazarusidestrconsts:lispkgmangreplacefile
 msgid "Replace File"
@@ -7313,10 +7345,6 @@ msgstr "Seleziona la parola a destra"
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
 msgstr "Seleziona nodo"
-
-#: lazarusidestrconsts:dlgselectedtext
-msgid "Selected Text"
-msgstr "Testo selezionato"
 
 #: lazarusidestrconsts:lispckexplisrequiredby
 msgid "Selected package is required by:"
@@ -9630,10 +9658,6 @@ msgstr "Mostra unit del progetto"
 msgid "View Search Results"
 msgstr "Mostra risultati della ricerca"
 
-#: lazarusidestrconsts:lismenuviewsource
-msgid "View Source"
-msgstr "Visualizza sorgente"
-
 #: lazarusidestrconsts:lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Visualizza il sorgente (.lfm)"
@@ -9810,14 +9834,6 @@ msgstr "Quando questo file Ë attivo nell'editor dei sorgenti ..."
 msgid "Where"
 msgstr "Dove"
 
-#: lazarusidestrconsts:dlgwholewordsonly
-msgid "Whole Words Only"
-msgstr "Solo parole intere"
-
-#: lazarusidestrconsts:lisfindfilewholewordsonly
-msgid "Whole words only"
-msgstr "Solo parole intere"
-
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ampiezza:"
@@ -9993,6 +10009,10 @@ msgstr "opzioni personalizzate"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "predefinito (%s)"
+
+#: lazarusidestrconsts:lisautomaticallyremovecharacter
+msgid "do not add character"
+msgstr ""
 
 #: lazarusidestrconsts:lisccoenglishmessagefilemissing
 msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
@@ -10210,17 +10230,17 @@ msgstr "salva tutti i file modificati"
 msgid "save current editor file"
 msgstr "salva file dell'editor corrente"
 
-#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
-msgid "search all files in project"
-msgstr "cerca tutti i file nel progetto"
-
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
-msgid "search all open files"
-msgstr "cerca tutti i file aperti"
+msgid "search all &open files"
+msgstr ""
+
+#: lazarusidestrconsts:lisfindfilesearchallfilesinproject
+msgid "search all files in &project"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
-msgid "search in directories"
-msgstr "cerca nelle directory"
+msgid "search in &directories"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
@@ -10273,10 +10293,6 @@ msgstr "file configurazione pacchetti statici"
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
 msgstr "blocca il programma"
-
-#: lazarusidestrconsts:lisautomaticallyonaddsymbol
-msgid "symbol"
-msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
 msgid "this help message"
