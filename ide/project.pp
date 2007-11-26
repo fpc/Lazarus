@@ -158,11 +158,13 @@ type
     fUnitName: String;
     fUsageCount: extended;
     fUserReadOnly:  Boolean;
+    fSourceChangeStep: LongInt;
     FSourceDirectoryReferenced: boolean;
     FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
 
     function GetHasResources:boolean;
+    function GetModified: boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
     function GetNextLoadedUnit: TUnitInfo;
     function GetNextPartOfProject: TUnitInfo;
@@ -179,6 +181,7 @@ type
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
     procedure SetLoaded(const AValue: Boolean);
+    procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSessionModified(const AValue: boolean);
@@ -272,7 +275,7 @@ type
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
-    property Modified: boolean read fModified write fModified;// not Session data
+    property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read FSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
@@ -970,8 +973,8 @@ begin
   FIgnoreFileDateOnDiskValid := false;
   fAutoReferenceSourceDir := true;
   inherited SetIsPartOfProject(false);
-  fModified := false;
-  FSessionModified := false;
+  Modified := false;
+  SessionModified := false;
   FRunFileIfActive:=false;
   fSyntaxHighlighter := lshText;
   fTopLine := -1;
@@ -1366,6 +1369,7 @@ begin
   fSource:=ABuffer;
   FIgnoreFileDateOnDiskValid:=false;
   if (fSource<>nil) then begin
+    fSourceChangeStep:=FSource.ChangeStep;
     if IsAutoRevertLocked then
       fSource.LockAutoDiskRevert;
     SetInternalFilename(fSource.FileName);
@@ -1403,6 +1407,13 @@ end;
 function TUnitInfo.GetHasResources:boolean;
 begin
   Result:=fHasResources or (ComponentName<>'');
+end;
+
+function TUnitInfo.GetModified: boolean;
+begin
+  if (not fModified) and (Source<>nil) then
+    fModified:=Source.ChangeStep<>fSourceChangeStep;
+  Result:=fModified;
 end;
 
 function TUnitInfo.GetNextAutoRevertLockedUnit: TUnitInfo;
@@ -1521,6 +1532,16 @@ begin
     UpdateUsageCount(uuIsLoaded,0);
   end else begin
     DecreaseAutoRevertLock;
+  end;
+end;
+
+procedure TUnitInfo.SetModified(const AValue: boolean);
+begin
+  if fModified=AValue then exit;
+  fModified:=AValue;
+  if not fModified then begin
+    if Source<>nil then
+      fSourceChangeStep:=Source.ChangeStep;
   end;
 end;
 
@@ -2516,6 +2537,7 @@ begin
     CompilerOptions.Modified:=false;
     SessionModified:=false;
     VersionInfo.Modified:=false;
+    XPManifest.Modified:=false;
   end;
 end;
 
@@ -2524,10 +2546,6 @@ begin
   if AValue=SessionModified then exit;
   inherited SetSessionModified(AValue);
 end;
-
-//function TProject.GetVersionInfo: TVersionInfo;
-//begin
-//end;
 
 function TProject.UnitCount:integer;
 begin

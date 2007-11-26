@@ -43,6 +43,7 @@ type
   TProjectXPManifest = class(TObject)
   private
     FMessages: TStrings;
+    FModified: boolean;
     FUseManifest: boolean;
     resFilename: string;
     procedure SetUseManifest(const AValue: boolean);
@@ -57,6 +58,7 @@ type
 
     property Messages: TStrings read FMessages;
     property UseManifest: boolean read FUseManifest write SetUseManifest;
+    property Modified: boolean read FModified write FModified;
   end;
 
 implementation
@@ -109,7 +111,9 @@ end;
 
 procedure TProjectXPManifest.SetUseManifest(const AValue: boolean);
 begin
+  if FUseManifest = AValue then exit;
   FUseManifest := AValue;
+  Modified:=true;
 end;
 
 {-----------------------------------------------------------------------------

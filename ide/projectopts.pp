@@ -455,14 +455,12 @@ begin
   if ModalResult = mrOk then
   begin
 
-    with Project do
-    begin
-      Title := TitleEdit.Text;
-      TargetFilename := TargetFileEdit.Text;
-      UseAppBundle := UseAppBundleCheckBox.Checked;
-      XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
-      XPManifest.UpdateMainSourceFile(Project.MainFilename);
-    end;
+    Project.Title := TitleEdit.Text;
+    Project.TargetFilename := TargetFileEdit.Text;
+    Project.UseAppBundle := UseAppBundleCheckBox.Checked;
+    Project.XPManifest.UseManifest := UseXPManifestCheckBox.Checked;
+    if Project.XPManifest.Modified then
+      Project.XPManifest.UpdateMainSourceFile(Project.MainFilename);
 
     // flags
     NewFlags := Project.Flags;
@@ -544,10 +542,10 @@ procedure TProjectOptionsDialog.AdditionalInfoButtonClick(Sender: TObject);
 var
   InfoModified: Boolean;
 begin
-   InfoModified:=false;
-   ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
-   if InfoModified then
-      Project.Modified:=InfoModified;
+  InfoModified:=false;
+  ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
+  if InfoModified then
+    Project.Modified:=true;
 end;
 
 procedure TProjectOptionsDialog.EnableI18NCheckBoxChange(Sender: TObject);
