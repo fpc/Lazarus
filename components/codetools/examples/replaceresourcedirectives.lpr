@@ -37,6 +37,7 @@ var
   NewCode: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
+  aResY
   // load the file
   if ParamCount>=1 then
     Filename:=ExpandFileName(ParamStr(1))

@@ -2120,15 +2120,26 @@ var
   Line: String;
   CatName: String;
   SrcToken: String;
+  IdChars: TSynIdentChars;
+  WordToken: String;
 begin
   Result:=false;
   Line:=GetLineText;
   p:=GetCursorTextXY;
   if (p.x>length(Line)+1) or (Line='') then exit;
   CatName:=AutoCompleteOptionNames[Category];
+  WordToken:=FEditor.GetWordAtRowCol(p);
+  if Assigned(FEditor.Highlighter) then
+    IdChars := FEditor.Highlighter.IdentChars
+  else
+    IdChars := ['a'..'z', 'A'..'Z'];
   for i:=0 to FCodeTemplates.Completions.Count-1 do begin
     AToken:=FCodeTemplates.Completions[i];
-    SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
+    if AToken='' then continue;
+    if AToken[1] in IdChars then
+      SrcToken:=WordToken
+    else
+      SrcToken:=copy(Line,length(Line)-length(AToken)+1,length(AToken));
     //DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)]);
     if (AnsiCompareText(AToken,SrcToken)=0)
     and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)>=0)
