@@ -29,7 +29,7 @@ unit ImageListCache;
 interface
 
 uses
-  Classes, SysUtils, Graphics, ImgList, LCLProc;
+  Classes, SysUtils, Graphics, ImgList, LCLProc, Forms;
 
 type
   // interface that cache user should have to listen for cache changes
@@ -109,7 +109,7 @@ end;
 
 procedure TImageListCache.CheckRebuildNeed;
 begin
-  if FObsoletedCount >= ImageListCacheRebuildThreashold then
+  if (FObsoletedCount >= ImageListCacheRebuildThreashold) and not Application.Terminated then
     Rebuild;
 end;
 
