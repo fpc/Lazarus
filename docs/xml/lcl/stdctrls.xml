@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="StdCtrls">
-      <short/>
+      <short>Several standard controls used in most Lazarus forms</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">

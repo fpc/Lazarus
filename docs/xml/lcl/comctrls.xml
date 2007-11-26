@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="ComCtrls">
-      <short/>
+      <short>Several controls commonly used in Lazarus forms</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils">
@@ -7961,10 +7961,8 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TTrackBarScalePos.trBottom"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomTrackBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomTrackBar</i> - the base class for <i>TTrackBar</i></short>
+        <descr><i>TCustomTrackBar</i> defines many of the properties inherited by <i>TTrackBar</i>, a control for graphically displaying the progress of a process</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTrackBar.FOrientation">
@@ -8204,10 +8202,7 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TCustomTrackBar.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTrackBar.SetTick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>SetTick</i> - set the interval for ticks on the taskbar (integer)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTrackBar.SetTick.Value"><short/></element>
@@ -8237,15 +8232,11 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Action to be taken on change in the process being tracked</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Orientation">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>TTrackBarOrientation</i> - horizontal or vertical</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.PageSize">
@@ -8951,11 +8942,9 @@ Const
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNode">
-        <short>TTreeNode is a single item that holds data in TTreeView</short>
-        <descr>A TTreeNode is parst of a TTreeView and is used to store data in. This can be done by using the Caption property or for more complex data the Data property can be used. Each node can have sibling or child items associated with it.</descr>
-        <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
-        </seealso>
+        <short><i>TTreeNode</i> is a single item that holds data in <i>TTreeView</i></short>
+        <descr>A <i>TTreeNode</i> is part of a <i>TTreeView</i> and is used for storing data. This can be done by using the <i>Caption</i> property or for more complex data the <i>Data</i> property can be used. Each node can have sibling or child items associated with it.</descr>
+        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNode.FOwner">
@@ -10203,10 +10192,7 @@ Const
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNodes">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>A collection or list of <i>TTreeNode</i></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNodes.FCount">
@@ -10933,10 +10919,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TTreeViewInsertMarkType.tvimAsPrevSibling"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomTreeView">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomTreeView</i> - ancestor class for <i>TTreeView</i></short>
+        <descr><i>TCustomTreeView</i> - ancestor class for <i>TTreeView</i>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by children classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTreeView.FBackgroundColor">
@@ -12906,10 +12890,12 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeView">
-        <short>TTreeview is a control that displays a hierarchical list of items</short>
-        <descr>Use a TTreeview to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
+        <short><i>TTreeView</i>  is a control that displays a hierarchical list of items</short>
+        <descr>Use a <i>TTreeView</i>
+ to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
         <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls"/>
+          <link id="TCustomTreeView"/>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -13028,9 +13014,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Images">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Bitmap image associated with each item in the display</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Indent">
@@ -13370,9 +13354,7 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Items to be displayed in the tree view - ie the actual data</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TTreeView.TreeLineColor">
