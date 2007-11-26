@@ -905,10 +905,10 @@ begin
       TToolButton(Components[i]).ShowHint:=ShowHelpHints;
 end;
 
-
 initialization
   {$I frmmain.lrs}
 
 end.
+
 
 

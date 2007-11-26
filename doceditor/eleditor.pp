@@ -440,7 +440,6 @@ begin
 end;
 
 Procedure TElementEditor.DeleteElement;
-
 begin
   Element:=Nil;
 end;
@@ -456,7 +455,7 @@ Procedure TElementEditor.Refresh;
       Remove := pos(Tag, S);
       while Remove <> 0 do begin
         inc(Remove, LenTag);
-        while S[Remove] in [#10, #13] do
+        while (Remove <= length(S)) and (S[Remove] in [#10, #13]) do
           delete(S, Remove, 1);
         Remove := PosEx(Tag, S, Remove);
       end;
@@ -949,5 +948,6 @@ initialization
   {$i icons.lrs}
 
 end.
+
 
 
