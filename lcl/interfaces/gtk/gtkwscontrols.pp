@@ -565,7 +565,10 @@ begin
       end;
     end;
 
-  csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
+  csGroupBox    : if AText <> '' then
+                    gtk_frame_set_label(pgtkFrame(P), pLabel)
+                  else
+                    gtk_frame_set_label(pgtkFrame(P), nil);
 
   csEdit        : begin
                     LockOnChange(PGtkObject(p),+1);

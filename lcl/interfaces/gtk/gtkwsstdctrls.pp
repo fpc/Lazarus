@@ -55,6 +55,7 @@ type
   TGtkWSCustomGroupBox = class(TWSCustomGroupBox)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -1117,6 +1118,7 @@ begin
 
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AStaticText, AParams);
   WidgetInfo^.CoreWidget := EventBox;
+  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
 
   Allocation.X := AParams.X;
   Allocation.Y := AParams.Y;
@@ -1176,6 +1178,7 @@ begin
     Widgetset.DeleteDC(DC);
     GtkWidgetSet.SetLabelCaption(LblWidget, ALabel
        {$IFDEF Gtk1}, AWinControl, PGtkWidget(FrameWidget), 'grab_focus'{$ENDIF});
+    StrDispose(ALabel);
   end else
   begin
     gtk_label_set_text(LblWidget, PChar(AText));
@@ -1637,25 +1640,58 @@ end;
 
 { TGtkWSCustomGroupBox }
 
+class procedure TGtkWSCustomGroupBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
 class function TGtkWSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
-  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
-  p          : pointer;          // ptr to the newly created GtkWidget
+{$IFNDEF GtkFixedWithWindow}
+  EventBox: PGtkWidget;
+{$ENDIF}
+  TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+  p         : pointer;          // ptr to the newly created GtkWidget
+  Allocation: TGTKAllocation;
+  WidgetInfo: PWidgetInfo;
 begin
-  P := gtk_frame_new (AParams.Caption);
-  TempWidget := CreateFixedClientWidget{$IFNDEF GtkFixedWithWindow}(false){$ENDIF};
+  if AParams.Caption <> '' then
+    P := gtk_frame_new(AParams.Caption)
+  else
+    P := gtk_frame_new(nil);
+  WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
+  {$IFNDEF GtkFixedWithWindow}
+  EventBox := gtk_event_box_new;
+  gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
+  TempWidget := CreateFixedClientWidget(false);
+  gtk_container_add(GTK_CONTAINER(EventBox), TempWidget);
+  gtk_container_add(GTK_CONTAINER(p), EventBox);
+  gtk_widget_show(EventBox);
+  WidgetInfo^.ClientWidget := TempWidget;
+  WidgetInfo^.CoreWidget := EventBox;
+  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
+  gtk_object_set_data(PGtkObject(EventBox), 'widgetinfo', WidgetInfo);
+  {$ELSE}
+  TempWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(p), TempWidget);
-  gtk_widget_show(TempWidget);
-  SetFixedWidget(p, TempWidget);
-  SetMainWidget(p, TempWidget);
-  gtk_widget_show (P);
-
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  WidgetInfo^.ClientWidget := TempWidget;
+  WidgetInfo^.CoreWidget := TempWidget;
+  gtk_object_set_data(PGtkObject(TempWidget), 'widgetinfo', WidgetInfo);
   {$ENDIF}
+  gtk_widget_show(TempWidget);
+  gtk_widget_show(P);
+
   Result := TLCLIntfHandle(PtrUInt(P));
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
 class procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
