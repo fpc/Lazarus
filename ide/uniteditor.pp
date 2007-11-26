@@ -2146,8 +2146,8 @@ begin
     then begin
       Result:=true;
       FCodeTemplates.ExecuteCompletion(AToken,FEditor);
-      AddChar:=FCodeTemplates.CompletionAttributes[i].IndexOfName(
-                                        AutoCompleteOptionNames[acoAddChar])>=0;
+      AddChar:=not FCodeTemplates.CompletionAttributes[i].IndexOfName(
+                                     AutoCompleteOptionNames[acoRemoveChar])>=0;
       exit;
     end;
   end;
