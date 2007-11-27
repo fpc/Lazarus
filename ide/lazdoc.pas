@@ -915,6 +915,7 @@ end;
 destructor TLazDocElementChain.Destroy;
 begin
   Clear;
+  FItems.Free;
   inherited Destroy;
 end;
 
