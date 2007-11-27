@@ -114,6 +114,7 @@ type
     procedure Clear;
     property Items[Index: integer]: TLazDocElement read GetItems; default;
     property Count: integer read GetCount;
+    function IsValid: boolean;
   end;
   
   TLazDocChangeEvent =
@@ -664,6 +665,8 @@ begin
     Result:=ldprParsing;
     Chain:=TLazDocElementChain.Create;
     Chain.CodePos.Code:=Code;
+    Chain.IDEChangeStep:=CompilerParseStamp;
+    Chain.CodetoolsChangeStep:=CodeToolBoss.CodeTreeNodesDeletedStep;
     Code.LineColToPosition(Y,X,Chain.CodePos.P);
     // fill the element chain
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
@@ -940,6 +943,12 @@ var
 begin
   for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
   FItems.Clear;
+end;
+
+function TLazDocElementChain.IsValid: boolean;
+begin
+  Result:=(IDEChangeStep=CompilerParseStamp)
+    and (CodetoolsChangeStep=CodeToolBoss.CodeTreeNodesDeletedStep);
 end;
 
 end.

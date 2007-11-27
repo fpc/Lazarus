@@ -3086,11 +3086,11 @@ var
   SrcEdit: TSourceEditor;
   CaretPos: TPoint;
 begin
-  if LazDocForm = nil then exit;
+  if LazDocEditForm = nil then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   CaretPos := SrcEdit.EditorComponent.CaretXY;
-  LazDocForm.UpdateLazDoc(SrcEdit.Filename,CaretPos);
+  LazDocEditForm.UpdateLazDoc(SrcEdit.Filename,CaretPos);
 end;
 
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;

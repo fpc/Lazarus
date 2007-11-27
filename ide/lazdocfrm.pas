@@ -79,9 +79,9 @@ type
     destructor Destroy; override;
   end;
     
-  { TLazDocForm }
+  { TLazDocEditForm }
 
-  TLazDocForm = class(TForm)
+  TLazDocEditForm = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
     CopyFromInheritedButton: TButton;
@@ -169,25 +169,25 @@ type
   end;
 
 var
-  LazDocForm: TLazDocForm = nil;
+  LazDocEditForm: TLazDocEditForm = nil;
 
 procedure DoShowLazDoc;
 
 implementation
 
-{ TLazDocForm }
+{ TLazDocEditForm }
 
 procedure DoShowLazDoc;
 begin
-  if LazDocForm = Nil then begin
-    Application.CreateForm(TLazDocForm, LazDocForm);
+  if LazDocEditForm = Nil then begin
+    Application.CreateForm(TLazDocEditForm, LazDocEditForm);
     EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwLazDocName).Apply;
   end;
 
-  LazDocForm.Show;
+  LazDocEditForm.Show;
 end;
 
-function TLazDocForm.GetModuleNode(ADoc: TXMLdocument): TDOMNode;
+function TLazDocEditForm.GetModuleNode(ADoc: TXMLdocument): TDOMNode;
 var
   n: TDOMNode;
 begin
@@ -210,7 +210,7 @@ begin
   Result := n;
 end;
 
-function TLazDocForm.GetFirstElement(ADoc: TXMLdocument): TDOMNode;
+function TLazDocEditForm.GetFirstElement(ADoc: TXMLdocument): TDOMNode;
 var
   Node: TDOMNode;
 begin
@@ -225,7 +225,7 @@ begin
   Result := Node;
 end;
 
-procedure TLazDocForm.UpdateLinkIdComboBox;
+procedure TLazDocEditForm.UpdateLinkIdComboBox;
 // fills LinkIdComboBox.Items
 var
   n: TDOMNode;
@@ -260,7 +260,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.FormCreate(Sender: TObject);
+procedure TLazDocEditForm.FormCreate(Sender: TObject);
 begin
   fEntry:=TLazDocInheritedEntry.Create;
   
@@ -300,19 +300,19 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 end;
 
-procedure TLazDocForm.FormDestroy(Sender: TObject);
+procedure TLazDocEditForm.FormDestroy(Sender: TObject);
 begin
   ClearInherited(false);
   Application.RemoveAllHandlersOfObject(Self);
   FreeAndNil(fEntry);
 end;
 
-procedure TLazDocForm.FormResize(Sender: TObject);
+procedure TLazDocEditForm.FormResize(Sender: TObject);
 begin
   LinkIdComboBox.Width := (AddLinkButton.Left - LinkIdComboBox.Left - 8) div 2;
 end;
 
-procedure TLazDocForm.FormatButtonClick(Sender: TObject);
+procedure TLazDocEditForm.FormatButtonClick(Sender: TObject);
 
   procedure InsertTag(starttag, endtag: String);
   begin
@@ -345,7 +345,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.LinkChange(Sender: TObject);
+procedure TLazDocEditForm.LinkChange(Sender: TObject);
 begin
   if LinkListBox.ItemIndex<0 then
     Exit;
@@ -353,7 +353,7 @@ begin
   LinkListBox.Items.Strings[LinkListBox.ItemIndex] := MakeLink;
 end;
 
-procedure TLazDocForm.LinkListBoxClick(Sender: TObject);
+procedure TLazDocEditForm.LinkListBoxClick(Sender: TObject);
 var
   strTmp: String;
   intTmp: Integer;
@@ -381,7 +381,7 @@ begin
     LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
 end;
 
-procedure TLazDocForm.ApplicationIdle(Sender: TObject; var Done: Boolean);
+procedure TLazDocEditForm.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   if ldffInheritedNeedsUpdate in FFlags then
     UpdateInherited
@@ -389,7 +389,7 @@ begin
     UpdateInheritedEntries(false);
 end;
 
-procedure TLazDocForm.MoveToInheritedButtonClick(Sender: TObject);
+procedure TLazDocEditForm.MoveToInheritedButtonClick(Sender: TObject);
 var
   i: Integer;
   Entry: TLazDocInheritedEntry;
@@ -448,7 +448,7 @@ begin
   end;
 end;
 
-function TLazDocForm.NodeByPascalContext(ADoc: TXMLdocument;
+function TLazDocEditForm.NodeByPascalContext(ADoc: TXMLdocument;
   const AContext: TPascalHelpContextList): TDOMNode;
 var
   Node: TDOMNode;
@@ -486,7 +486,7 @@ begin
   Result := Node;
 end;
 
-function TLazDocForm.GetContextTitle(const AContext: TPascalHelpContextList
+function TLazDocEditForm.GetContextTitle(const AContext: TPascalHelpContextList
   ): string;
 // get codetools path. for fpdiExample: TButton.Align
 var
@@ -512,7 +512,7 @@ begin
   end;
 end;
 
-function TLazDocForm.GetFirstChildValue(n: TDOMNode): String;
+function TLazDocEditForm.GetFirstChildValue(n: TDOMNode): String;
 begin
   if Assigned(n.FirstChild) then
   begin
@@ -534,7 +534,7 @@ begin
   end;
 end;
 
-function TLazDocForm.GetValuesFromNode(Node: TDOMNode): TFPDocNode;
+function TLazDocEditForm.GetValuesFromNode(Node: TDOMNode): TFPDocNode;
 var
   S: String;
 begin
@@ -566,7 +566,7 @@ begin
   end;
 end;
 
-function TLazDocForm.GetDoc: TXMLdocument;
+function TLazDocEditForm.GetDoc: TXMLdocument;
 begin
   if DocFile<>nil then
     Result:=DocFile.Doc
@@ -574,12 +574,12 @@ begin
     Result:=nil;
 end;
 
-function TLazDocForm.GetDocFile: TLazFPDocFile;
+function TLazDocEditForm.GetDocFile: TLazFPDocFile;
 begin
   Result:=fEntry.DocFile;
 end;
 
-function TLazDocForm.GetSourceContext(const SrcFilename: string;
+function TLazDocEditForm.GetSourceContext(const SrcFilename: string;
   const CaretPos: TPoint): TPascalHelpContextList;
 begin
   Result:=LazarusHelp.ConvertSourcePosToPascalHelpContext(CaretPos,SrcFilename);
@@ -587,12 +587,12 @@ begin
   //  DebugLn('TLazDocForm.GetNearestSourceElement Result=',Result.AsString);
 end;
 
-function TLazDocForm.GetSourceFilename: string;
+function TLazDocEditForm.GetSourceFilename: string;
 begin
   Result:=fEntry.SrcFilename;
 end;
 
-procedure TLazDocForm.UpdateCaption;
+procedure TLazDocEditForm.UpdateCaption;
 var
   strCaption: String;
 begin
@@ -616,7 +616,7 @@ begin
   DebugLn(['TLazDocForm.UpdateCaption ',Caption]);
 end;
 
-procedure TLazDocForm.UpdateValueControls;
+procedure TLazDocEditForm.UpdateValueControls;
 var
   EnabledState: Boolean;
 begin
@@ -655,7 +655,7 @@ begin
   BrowseExampleButton.Enabled := EnabledState;
 end;
 
-procedure TLazDocForm.UpdateInheritedControls;
+procedure TLazDocEditForm.UpdateInheritedControls;
 var
   Entry: TLazDocInheritedEntry;
 begin
@@ -677,7 +677,7 @@ begin
   CopyFromInheritedButton.Enabled:=(Entry<>nil);
 end;
 
-procedure TLazDocForm.UpdateInherited;
+procedure TLazDocEditForm.UpdateInherited;
 var
   ListOfPCodeXYPosition: TFPList;
   CurCodePos: PCodeXYPosition;
@@ -725,7 +725,7 @@ begin
   Include(FFlags,ldffInheritedEntriesNeedUpdate);
 end;
 
-procedure TLazDocForm.UpdateInheritedEntries(All: Boolean);
+procedure TLazDocEditForm.UpdateInheritedEntries(All: Boolean);
 var
   i: Integer;
   Entry: TLazDocInheritedEntry;
@@ -794,7 +794,7 @@ begin
   Exclude(FFlags,ldffInheritedEntriesNeedUpdate);
 end;
 
-procedure TLazDocForm.ClearInherited(UpdateControls: Boolean);
+procedure TLazDocEditForm.ClearInherited(UpdateControls: Boolean);
 var
   i: Integer;
 begin
@@ -808,7 +808,7 @@ begin
     UpdateInheritedControls;
 end;
 
-function TLazDocForm.FindInheritedEntry: TLazDocInheritedEntry;
+function TLazDocEditForm.FindInheritedEntry: TLazDocInheritedEntry;
 var
   i: Integer;
 begin
@@ -822,7 +822,7 @@ begin
   Result:=nil;
 end;
 
-procedure TLazDocForm.MoveToInherited(DestEntry: TLazDocInheritedEntry);
+procedure TLazDocEditForm.MoveToInherited(DestEntry: TLazDocInheritedEntry);
 begin
   DebugLn(['TLazDocForm.MoveToInherited ',DestEntry.PascalContext.AsString]);
   if not fEntry.ValuesValid then begin
@@ -845,7 +845,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.Reset;
+procedure TLazDocEditForm.Reset;
 begin
   ClearInherited(true);
   FreeAndNil(FEntry.PascalContext);
@@ -867,7 +867,7 @@ begin
   FChanged := False;
 end;
 
-procedure TLazDocForm.UpdateLazDoc(const SrcFilename: string;
+procedure TLazDocEditForm.UpdateLazDoc(const SrcFilename: string;
   const Caret: TPoint);
 var
   NewElement: TPascalHelpContextList;
@@ -976,12 +976,12 @@ begin
   end;
 end;
 
-procedure TLazDocForm.BeginUpdate;
+procedure TLazDocEditForm.BeginUpdate;
 begin
   inc(fUpdateLock);
 end;
 
-procedure TLazDocForm.EndUpdate;
+procedure TLazDocEditForm.EndUpdate;
 begin
   dec(fUpdateLock);
   if fUpdateLock<0 then RaiseGDBException('');
@@ -990,7 +990,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.ClearEntry(DoSave: Boolean);
+procedure TLazDocEditForm.ClearEntry(DoSave: Boolean);
 begin
   FChanged:=true;
   ShortEdit.Text:='';
@@ -1024,7 +1024,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.Save;
+procedure TLazDocEditForm.Save;
 var
   DocNode: TFPDocNode;
 begin
@@ -1044,7 +1044,7 @@ begin
   end;
 end;
 
-function TLazDocForm.WriteNode(Entry: TLazDocInheritedEntry;
+function TLazDocEditForm.WriteNode(Entry: TLazDocInheritedEntry;
   DocNode: TFPDocNode; Interactive: Boolean): Boolean;
 var
   Node: TDOMNode;
@@ -1209,12 +1209,12 @@ begin
   end;
 end;
 
-procedure TLazDocForm.DocumentationTagChange(Sender: TObject);
+procedure TLazDocEditForm.DocumentationTagChange(Sender: TObject);
 begin
   FChanged := True;
 end;
 
-function TLazDocForm.MakeLink: String;
+function TLazDocEditForm.MakeLink: String;
 begin
   if Trim(LinkTextEdit.Text) = '' then
     Result := '<link id="' + Trim(LinkIdComboBox.Text) + '"/>'
@@ -1223,7 +1223,7 @@ begin
       LinkTextEdit.Text + '</link>';
 end;
 
-procedure TLazDocForm.AddLinkButtonClick(Sender: TObject);
+procedure TLazDocEditForm.AddLinkButtonClick(Sender: TObject);
 begin
   if Trim(LinkIdComboBox.Text) <> '' then
   begin
@@ -1232,7 +1232,7 @@ begin
   end;
 end;
 
-procedure TLazDocForm.BrowseExampleButtonClick(Sender: TObject);
+procedure TLazDocEditForm.BrowseExampleButtonClick(Sender: TObject);
 begin
   if Doc=nil then exit;
   if OpenDialog.Execute then
@@ -1240,7 +1240,7 @@ begin
       ExtractFilePath(DocFile.Filename), OpenDialog.FileName));
 end;
 
-procedure TLazDocForm.CopyFromInheritedButtonClick(Sender: TObject);
+procedure TLazDocEditForm.CopyFromInheritedButtonClick(Sender: TObject);
 var
   InhEntry: TLazDocInheritedEntry;
 begin
@@ -1261,7 +1261,7 @@ begin
   FChanged:=true;
 end;
 
-procedure TLazDocForm.DeleteLinkButtonClick(Sender: TObject);
+procedure TLazDocEditForm.DeleteLinkButtonClick(Sender: TObject);
 begin
   if LinkListBox.ItemIndex >= 0 then begin
     LinkListBox.Items.Delete(LinkListBox.ItemIndex);

@@ -1,4 +1,4 @@
-object LazDocForm: TLazDocForm
+object LazDocEditForm: TLazDocEditForm
   Left = 205
   Height = 117
   Top = 511
@@ -172,7 +172,7 @@ object LazDocForm: TLazDocForm
       ClientHeight = 86
       ClientWidth = 732
       object InheritedShortLabel: TLabel
-        Height = 14
+        Height = 20
         Top = 2
         Width = 732
         Align = alTop
@@ -187,7 +187,7 @@ object LazDocForm: TLazDocForm
         AnchorSideRight.Control = InheritedTabSheet
         AnchorSideRight.Side = asrBottom
         Height = 23
-        Top = 18
+        Top = 24
         Width = 732
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 2
@@ -196,9 +196,9 @@ object LazDocForm: TLazDocForm
         Text = 'InheritedShortEdit'
       end
       object MoveToInheritedButton: TButton
-        Height = 25
+        Height = 29
         Top = 54
-        Width = 140
+        Width = 158
         AutoSize = True
         Caption = 'MoveToInheritedButton'
         OnClick = MoveToInheritedButtonClick
@@ -209,10 +209,10 @@ object LazDocForm: TLazDocForm
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = MoveToInheritedButton
         AnchorSideTop.Side = asrCenter
-        Left = 150
-        Height = 25
+        Left = 168
+        Height = 29
         Top = 54
-        Width = 147
+        Width = 175
         AutoSize = True
         BorderSpacing.Left = 10
         Caption = 'CopyFromInheritedButton'
