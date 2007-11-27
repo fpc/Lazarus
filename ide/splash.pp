@@ -62,9 +62,15 @@ var
 implementation
 
 constructor TSplashForm.Create(AOwner: TComponent);
+var
+  B: TBitmap;
 begin
   inherited Create(AOwner);
 
+  B := LoadBitmapFromLazarusResource('splash_logo');
+  Image.Picture.Graphic := B;
+  B.Free;
+  
   Application.OnIdle := @ApplicationOnIdle;
 end;
 
@@ -85,5 +91,6 @@ end;
 
 initialization
   {$I splash.lrs}
+  {$I ../images/splash_logo.lrs}
 
 end.

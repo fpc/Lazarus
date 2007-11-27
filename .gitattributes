@@ -2487,6 +2487,8 @@ images/sourceeditor/bookmark6.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark7.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark8.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/bookmark9.xpm -text svneol=native#image/x-xpixmap
+images/splash_logo.bat svneol=native#text/plain
+images/splash_logo.lrs svneol=native#text/pascal
 images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/template.png -text svneol=unset#image/png
 images/todo_goto.bmp -text
