@@ -40,7 +40,8 @@ uses
   Graphics,
   LResources,
   StdCtrls,
-  SysUtils;
+  SysUtils,
+  AboutFrm;
 
 type
 
@@ -49,6 +50,7 @@ type
   TSplashForm = class(TForm)
     Image: TImage;
     procedure ApplicationOnIdle(Sender: TObject; var Done: boolean);
+    procedure ImagePaint(Sender: TObject);
   private
   protected
   public
@@ -61,6 +63,28 @@ var
 
 implementation
 
+{.$define SplashDrawVersion}
+
+{$ifdef SplashDrawVersion}
+const
+  VersionPos: TPoint = (X:407; Y:281);
+  VersionStyle: TTextStyle =
+    (
+      Alignment  : taCenter;
+      Layout     : tlCenter;
+      SingleLine : True;
+      Clipping   : True;
+      ExpandTabs : False;
+      ShowPrefix : False;
+      Wordbreak  : False;
+      Opaque     : False;
+      SystemFont : False;
+      RightToLeft: False
+    );
+  VersionFontStyle: TFontStyles = [fsBold];
+  VersionFontColor: TColor = clBlue;
+{$endif}
+
 constructor TSplashForm.Create(AOwner: TComponent);
 var
   B: TBitmap;
@@ -70,7 +94,7 @@ begin
   B := LoadBitmapFromLazarusResource('splash_logo');
   Image.Picture.Graphic := B;
   B.Free;
-  
+
   Application.OnIdle := @ApplicationOnIdle;
 end;
 
@@ -87,6 +111,26 @@ end;
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: boolean);
 begin
   Hide;
+end;
+
+procedure TSplashForm.ImagePaint(Sender: TObject);
+
+{$ifdef SplashDrawVersion}
+var
+  ATextRect: TRect;
+{$endif}
+
+begin
+
+{$ifdef SplashDrawVersion}
+  // GetLazarusVersionString is too long => use LazarusVersionStr
+  ATextRect.TopLeft := VersionPos;
+  ATextRect.BottomRight := Point(Image.Picture.Width, Image.Picture.Height);
+  Image.Canvas.Font.Style := VersionFontStyle;
+  Image.Canvas.Font.Color := VersionFontColor;
+  Image.Canvas.TextRect(ATextRect, VersionPos.X, VersionPos.Y, LazarusVersionStr, VersionStyle);
+{$endif}
+
 end;
 
 initialization

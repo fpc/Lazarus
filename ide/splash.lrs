@@ -6,5 +6,6 @@ LazarusResources.Add('TSplashForm','FORMDATA',[
   +#3'T'#1#8'AutoSize'#9#11'BorderStyle'#7#6'bsNone'#7'Caption'#6#7'Lazarus'#12
   +'ClientHeight'#3'U'#1#11'ClientWidth'#3#173#1#9'FormStyle'#7#11'fsStayOnTop'
   +#8'Position'#7#14'poScreenCenter'#0#6'TImage'#5'Image'#6'Height'#3'U'#1#5'Wi'
-  +'dth'#3#173#1#5'Align'#7#8'alClient'#8'AutoSize'#9#11'Transparent'#8#0#0#0
+  +'dth'#3#173#1#5'Align'#7#8'alClient'#8'AutoSize'#9#7'OnPaint'#7#10'ImagePain'
+  +'t'#11'Transparent'#8#0#0#0
 ]);

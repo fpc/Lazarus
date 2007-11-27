@@ -17,6 +17,7 @@ object SplashForm: TSplashForm
     Width = 429
     Align = alClient
     AutoSize = True
+    OnPaint = ImagePaint
     Transparent = False
   end
 end
