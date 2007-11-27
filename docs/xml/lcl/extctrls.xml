@@ -106,13 +106,9 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPageFlag.pfAdded">
-        <short/>
-      </element>
+      <element name="TPageFlag.pfAdded"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPageFlag.pfRemoving">
-        <short/>
-      </element>
+      <element name="TPageFlag.pfRemoving"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TPageFlags">
         <short/>
@@ -121,8 +117,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomPage">
-        <short>Custom Page</short>
-        <descr>Custom Page: The base type for Page</descr>
+        <short><i>TCustomPage</i>: The base type for <i>Page</i></short>
+        <descr><i>TCustomPage</i>: The base type for the tabbed pages found in notebooks</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPage.FFlags">
@@ -144,9 +140,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPage.GetTabVisible.Result">
-        <short/>
-      </element>
+      <element name="TCustomPage.GetTabVisible.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPage.SetImageIndex">
         <short/>
@@ -155,9 +149,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetImageIndex.AValue">
-        <short/>
-      </element>
+      <element name="TCustomPage.SetImageIndex.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPage.SetTabVisible">
         <short/>
@@ -166,9 +158,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetTabVisible.AValue">
-        <short/>
-      </element>
+      <element name="TCustomPage.SetTabVisible.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.WMPaint">
         <short/>
@@ -177,9 +167,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.WMPaint.Msg">
-        <short/>
-      </element>
+      <element name="TCustomPage.WMPaint.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.SetParent">
         <short/>
@@ -188,9 +176,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetParent.AParent">
-        <short/>
-      </element>
+      <element name="TCustomPage.SetParent.AParent"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomPage.Flags">
         <short/>
@@ -205,9 +191,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.CMHitTest.Message">
-        <short/>
-      </element>
+      <element name="TCustomPage.CMHitTest.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.DestroyHandle">
         <short/>
@@ -223,9 +207,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPage.GetPageIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomPage.GetPageIndex.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPage.SetPageIndex">
         <short/>
@@ -234,9 +216,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.SetPageIndex.AValue">
-        <short/>
-      </element>
+      <element name="TCustomPage.SetPageIndex.AValue"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomPage.TabVisible">
         <short/>
@@ -245,9 +225,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.PageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>PageIndex </i>- integer index value for this page in the notebook</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomPage.Create">
@@ -257,9 +235,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomPage.Create.TheOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomPage.AdjustClientRect">
         <short/>
@@ -268,20 +244,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPage.AdjustClientRect.ARect">
-        <short/>
-      </element>
+      <element name="TCustomPage.AdjustClientRect.ARect"><short/></element>
       <!-- function Visibility: public -->
-      <element name="TCustomPage.CanTab">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomPage.CanTab"/>
       <!-- function result Visibility: default -->
-      <element name="TCustomPage.CanTab.Result">
-        <short/>
-      </element>
+      <element name="TCustomPage.CanTab.Result"/>
       <!-- function Visibility: public -->
       <element name="TCustomPage.IsVisible">
         <short/>
@@ -290,14 +257,10 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPage.IsVisible.Result">
-        <short/>
-      </element>
+      <element name="TCustomPage.IsVisible.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ImageIndex</i> - integer index value for the image associated with this page</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.Left">
@@ -337,8 +300,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TNBPages">
-        <short>NB Pages</short>
-        <descr>NB Pages: The set of instances of Notebook Page</descr>
+        <short>NoteBook Pages - an array of strings containing the names of the pages</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TNBPages.FPageList">
@@ -360,13 +322,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TNBPages.Get.Result">
-        <short/>
-      </element>
+      <element name="TNBPages.Get.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Get.Index">
-        <short/>
-      </element>
+      <element name="TNBPages.Get.Index"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TNBPages.GetCount">
         <short/>
@@ -375,9 +333,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TNBPages.GetCount.Result">
-        <short/>
-      </element>
+      <element name="TNBPages.GetCount.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TNBPages.GetObject">
         <short/>
@@ -386,13 +342,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TNBPages.GetObject.Result">
-        <short/>
-      </element>
+      <element name="TNBPages.GetObject.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.GetObject.Index">
-        <short/>
-      </element>
+      <element name="TNBPages.GetObject.Index"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TNBPages.Put">
         <short/>
@@ -401,13 +353,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Put.Index">
-        <short/>
-      </element>
+      <element name="TNBPages.Put.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Put.S">
-        <short/>
-      </element>
+      <element name="TNBPages.Put.S"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TNBPages.Create">
         <short/>
@@ -416,13 +364,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Create.thePageList">
-        <short/>
-      </element>
+      <element name="TNBPages.Create.thePageList"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Create.theNotebook">
-        <short/>
-      </element>
+      <element name="TNBPages.Create.theNotebook"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TNBPages.Clear">
         <short/>
@@ -438,9 +382,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Delete.Index">
-        <short/>
-      </element>
+      <element name="TNBPages.Delete.Index"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TNBPages.Insert">
         <short/>
@@ -449,13 +391,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Insert.Index">
-        <short/>
-      </element>
+      <element name="TNBPages.Insert.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Insert.S">
-        <short/>
-      </element>
+      <element name="TNBPages.Insert.S"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TNBPages.Move">
         <short/>
@@ -464,13 +402,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Move.CurIndex">
-        <short/>
-      </element>
+      <element name="TNBPages.Move.CurIndex"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNBPages.Move.NewIndex">
-        <short/>
-      </element>
+      <element name="TNBPages.Move.NewIndex"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TTabChangingEvent">
         <short/>
@@ -478,13 +412,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TTabChangingEvent.Sender">
-        <short/>
-      </element>
+      <element name="TTabChangingEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TTabChangingEvent.AllowChange">
-        <short/>
-      </element>
+      <element name="TTabChangingEvent.AllowChange"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TTabPosition">
         <short/>
@@ -492,21 +422,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpTop">
-        <short/>
-      </element>
+      <element name="TTabPosition.tpTop"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpBottom">
-        <short/>
-      </element>
+      <element name="TTabPosition.tpBottom"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpLeft">
-        <short/>
-      </element>
+      <element name="TTabPosition.tpLeft"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabPosition.tpRight">
-        <short/>
-      </element>
+      <element name="TTabPosition.tpRight"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TTabStyle">
         <short/>
@@ -514,17 +436,11 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsTabs">
-        <short/>
-      </element>
+      <element name="TTabStyle.tsTabs"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsButtons">
-        <short/>
-      </element>
+      <element name="TTabStyle.tsButtons"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TTabStyle.tsFlatButtons">
-        <short/>
-      </element>
+      <element name="TTabStyle.tsFlatButtons"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TTabGetImageEvent">
         <short/>
@@ -532,17 +448,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.Sender">
-        <short/>
-      </element>
+      <element name="TTabGetImageEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.TabIndex">
-        <short/>
-      </element>
+      <element name="TTabGetImageEvent.TabIndex"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TTabGetImageEvent.ImageIndex">
-        <short/>
-      </element>
+      <element name="TTabGetImageEvent.ImageIndex"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TNoteBookOption">
         <short/>
@@ -550,13 +460,9 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboShowCloseButtons">
-        <short/>
-      </element>
+      <element name="TNoteBookOption.nboShowCloseButtons"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TNoteBookOption.nboMultiLine">
-        <short/>
-      </element>
+      <element name="TNoteBookOption.nboMultiLine"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TNoteBookOptions">
         <short/>
@@ -565,8 +471,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomNotebook">
-        <short>Custom Notebook</short>
-        <descr>Custom Notebook: The base type for Notebook</descr>
+        <short><i>TCustom Notebook</i> : The base type for <i>TNotebook</i></short>
+        <descr>
+          <p><i>TCustom Notebook</i>: The base type for <i>TNotebook</i></p>
+          <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected for display by clicking its tab </p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomNotebook.FAccess">
@@ -660,9 +569,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.CNNotify.Message">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.CNNotify.Message"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.DoSendPageIndex">
         <short/>
@@ -692,9 +599,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetActivePage.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetActivePage.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomNotebook.GetActivePageComponent">
         <short/>
@@ -703,9 +608,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetActivePageComponent.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetActivePageComponent.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomNotebook.GetPage">
         <short/>
@@ -714,13 +617,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPage.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetPage.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.GetPage.aIndex">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetPage.aIndex"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomNotebook.GetPageCount">
         <short/>
@@ -729,9 +628,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPageCount.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetPageCount.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomNotebook.GetPageIndex">
         <short/>
@@ -740,9 +637,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetPageIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetPageIndex.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.InsertPage">
         <short/>
@@ -751,13 +646,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.InsertPage.APage">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.InsertPage.APage"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.InsertPage.Index">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.InsertPage.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomNotebook.IsStoredActivePage">
         <short/>
@@ -766,9 +657,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.IsStoredActivePage.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.IsStoredActivePage.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.MoveTab">
         <short/>
@@ -777,13 +666,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.MoveTab.Sender">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.MoveTab.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.MoveTab.NewIndex">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.MoveTab.NewIndex"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.WSMovePage">
         <short/>
@@ -792,13 +677,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.WSMovePage.APage">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.WSMovePage.APage"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.WSMovePage.NewIndex">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.WSMovePage.NewIndex"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.RemovePage">
         <short/>
@@ -807,9 +688,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.RemovePage.Index">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.RemovePage.Index"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetActivePage">
         <short/>
@@ -818,9 +697,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetActivePage.Value">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetActivePage.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetActivePageComponent">
         <short/>
@@ -829,9 +706,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetActivePageComponent.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetActivePageComponent.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetImages">
         <short/>
@@ -840,9 +715,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetImages.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetImages.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetOptions">
         <short/>
@@ -851,9 +724,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetOptions.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetOptions.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetPageIndex">
         <short/>
@@ -862,9 +733,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetPageIndex.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetPageIndex.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetPages">
         <short/>
@@ -873,9 +742,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetPages.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetPages.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetShowTabs">
         <short/>
@@ -884,9 +751,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetShowTabs.AValue">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetShowTabs.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.SetTabPosition">
         <short/>
@@ -895,9 +760,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.SetTabPosition.tabPos">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.SetTabPosition.tabPos"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomNotebook.ShowCurrentPage">
         <short/>
@@ -920,9 +783,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.UpdateDesignerFlags.APageIndex">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.UpdateDesignerFlags.APageIndex"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TCustomNotebook.PageClass">
         <short/>
@@ -965,9 +826,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ReadState.Reader">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.ReadState.Reader"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomNotebook.ShowControl">
         <short/>
@@ -976,9 +835,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ShowControl.APage">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.ShowControl.APage"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomNotebook.UpdateTabProperties">
         <short/>
@@ -994,13 +851,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.ChildClassAllowed.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.ChildClassAllowed.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.ChildClassAllowed.ChildClass">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.ChildClassAllowed.ChildClass"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomNotebook.ActivePageComponent">
         <short/>
@@ -1021,9 +874,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomNotebook.Destroy">
         <short/>
@@ -1039,13 +890,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.TabIndexAtClientPos.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.TabIndexAtClientPos.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.TabIndexAtClientPos.ClientPos">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.TabIndexAtClientPos.ClientPos"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.CanTab">
         <short/>
@@ -1054,9 +901,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CanTab.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.CanTab.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetImageIndex">
         <short/>
@@ -1065,13 +910,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetImageIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetImageIndex.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.GetImageIndex.ThePageIndex">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetImageIndex.ThePageIndex"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.IndexOf">
         <short/>
@@ -1080,13 +921,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.IndexOf.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.IndexOf.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.IndexOf.APage">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.IndexOf.APage"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.CustomPage">
         <short/>
@@ -1095,13 +932,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CustomPage.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.CustomPage.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.CustomPage.Index">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.CustomPage.Index"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.CanChangePageIndex">
         <short/>
@@ -1110,9 +943,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.CanChangePageIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.CanChangePageIndex.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetMinimumTabWidth">
         <short/>
@@ -1121,9 +952,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetMinimumTabWidth.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetMinimumTabWidth.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomNotebook.GetMinimumTabHeight">
         <short/>
@@ -1132,9 +961,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomNotebook.GetMinimumTabHeight.Result">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.GetMinimumTabHeight.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomNotebook.DoCloseTabClicked">
         <short/>
@@ -1143,9 +970,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.DoCloseTabClicked.APage">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.DoCloseTabClicked.APage"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.Images">
         <short/>
@@ -1189,9 +1014,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomNotebook.Page.Index">
-        <short/>
-      </element>
+      <element name="TCustomNotebook.Page.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomNotebook.PageCount">
         <short/>
@@ -1236,8 +1059,12 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPage">
-        <short>Page</short>
-        <descr>Page: One of the pages in a tabbed Notebook</descr>
+        <short><i>TPage</i> : One of the pages in a tabbed Notebook</short>
+        <descr>
+          <p><i>TPage</i>: One of the pages in a tabbed Notebook</p>
+          <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomPage">TCustomPage</link></p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TPage.Caption">
@@ -1367,8 +1194,13 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TNotebook">
-        <short>Notebook</short>
-        <descr>Notebook: A series of tabbed pages placed together to make a notebook</descr>
+        <short><i>TNotebook</i> : A series of tabbed <i>pages</i>  placed together to make a notebook</short>
+        <descr>
+          <p><i>TNotebook</i>: A series of tabbed <i>pages</i> placed together to make a notebook</p>
+          <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
+          <p>Inherits most of its properties from <link id="#lcl.StdCtrls.TCustomNotebook">TCustomNoteBook</link></p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
       </element>
       <!-- function Visibility: private -->
       <element name="TNotebook.GetActiveNotebookPageComponent">
@@ -1378,9 +1210,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TNotebook.GetActiveNotebookPageComponent.Result">
-        <short/>
-      </element>
+      <element name="TNotebook.GetActiveNotebookPageComponent.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TNotebook.GetNoteBookPage">
         <short/>
@@ -1389,13 +1219,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TNotebook.GetNoteBookPage.Result">
-        <short/>
-      </element>
+      <element name="TNotebook.GetNoteBookPage.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TNotebook.GetNoteBookPage.Index">
-        <short/>
-      </element>
+      <element name="TNotebook.GetNoteBookPage.Index"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TNotebook.SetActiveNotebookPageComponent">
         <short/>
@@ -1404,9 +1230,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNotebook.SetActiveNotebookPageComponent.AValue">
-        <short/>
-      </element>
+      <element name="TNotebook.SetActiveNotebookPageComponent.AValue"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TNotebook.Create">
         <short/>
@@ -1415,9 +1239,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNotebook.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TNotebook.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TNotebook.Page">
         <short/>
@@ -1425,9 +1247,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TNotebook.Page.Index">
-        <short/>
-      </element>
+      <element name="TNotebook.Page.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TNotebook.ActivePageComponent">
         <short/>
@@ -1578,17 +1398,11 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TIdleTimerAutoEvent.itaOnIdle">
-        <short/>
-      </element>
+      <element name="TIdleTimerAutoEvent.itaOnIdle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TIdleTimerAutoEvent.itaOnIdleEnd">
-        <short/>
-      </element>
+      <element name="TIdleTimerAutoEvent.itaOnIdleEnd"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TIdleTimerAutoEvent.itaOnUserInput">
-        <short/>
-      </element>
+      <element name="TIdleTimerAutoEvent.itaOnUserInput"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TIdleTimerAutoEvents">
         <short/>
@@ -1639,9 +1453,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.SetAutoEndEvent.AValue">
-        <short/>
-      </element>
+      <element name="TIdleTimer.SetAutoEndEvent.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TIdleTimer.SetAutoStartEvent">
         <short/>
@@ -1650,9 +1462,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.SetAutoStartEvent.AValue">
-        <short/>
-      </element>
+      <element name="TIdleTimer.SetAutoStartEvent.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.SetAutoEnabled">
         <short/>
@@ -1661,9 +1471,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.SetAutoEnabled.AValue">
-        <short/>
-      </element>
+      <element name="TIdleTimer.SetAutoEnabled.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnIdle">
         <short/>
@@ -1672,9 +1480,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.DoOnIdle.Sender">
-        <short/>
-      </element>
+      <element name="TIdleTimer.DoOnIdle.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnIdleEnd">
         <short/>
@@ -1683,9 +1489,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.DoOnIdleEnd.Sender">
-        <short/>
-      </element>
+      <element name="TIdleTimer.DoOnIdleEnd.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.DoOnUserInput">
         <short/>
@@ -1694,13 +1498,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.DoOnUserInput.Sender">
-        <short/>
-      </element>
+      <element name="TIdleTimer.DoOnUserInput.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.DoOnUserInput.Msg">
-        <short/>
-      </element>
+      <element name="TIdleTimer.DoOnUserInput.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TIdleTimer.Loaded">
         <short/>
@@ -1716,9 +1516,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TIdleTimer.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TIdleTimer.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TIdleTimer.Destroy">
         <short/>
@@ -1751,37 +1549,21 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stRectangle">
-        <short/>
-      </element>
+      <element name="TShapeType.stRectangle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stSquare">
-        <short/>
-      </element>
+      <element name="TShapeType.stSquare"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stRoundRect">
-        <short/>
-      </element>
+      <element name="TShapeType.stRoundRect"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stRoundSquare">
-        <short/>
-      </element>
+      <element name="TShapeType.stRoundSquare"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stEllipse">
-        <short/>
-      </element>
+      <element name="TShapeType.stEllipse"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stCircle">
-        <short/>
-      </element>
+      <element name="TShapeType.stCircle"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stSquaredDiamond">
-        <short/>
-      </element>
+      <element name="TShapeType.stSquaredDiamond"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TShapeType.stDiamond">
-        <short/>
-      </element>
+      <element name="TShapeType.stDiamond"><short/></element>
       <!-- object Visibility: default -->
       <element name="TShape">
         <short>Shape</short>
@@ -1813,9 +1595,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShape.SetBrush.Value">
-        <short/>
-      </element>
+      <element name="TShape.SetBrush.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TShape.SetPen">
         <short/>
@@ -1824,9 +1604,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShape.SetPen.Value">
-        <short/>
-      </element>
+      <element name="TShape.SetPen.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TShape.SetShape">
         <short/>
@@ -1835,9 +1613,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShape.SetShape.Value">
-        <short/>
-      </element>
+      <element name="TShape.SetShape.Value"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TShape.Create">
         <short/>
@@ -1846,9 +1622,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShape.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TShape.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TShape.Destroy">
         <short/>
@@ -1871,9 +1645,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShape.StyleChanged.Sender">
-        <short/>
-      </element>
+      <element name="TShape.StyleChanged.Sender"><short/></element>
       <!-- property Visibility: published -->
       <element name="TShape.Align">
         <short/>
@@ -1995,21 +1767,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TResizeStyle.rsLine">
-        <short/>
-      </element>
+      <element name="TResizeStyle.rsLine"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TResizeStyle.rsNone">
-        <short/>
-      </element>
+      <element name="TResizeStyle.rsNone"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TResizeStyle.rsPattern">
-        <short/>
-      </element>
+      <element name="TResizeStyle.rsPattern"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TResizeStyle.rsUpdate">
-        <short/>
-      </element>
+      <element name="TResizeStyle.rsUpdate"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="TCanResizeEvent">
         <short/>
@@ -2017,17 +1781,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCanResizeEvent.Sender">
-        <short/>
-      </element>
+      <element name="TCanResizeEvent.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCanResizeEvent.NewSize">
-        <short/>
-      </element>
+      <element name="TCanResizeEvent.NewSize"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCanResizeEvent.Accept">
-        <short/>
-      </element>
+      <element name="TCanResizeEvent.Accept"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomSplitter">
         <short>Custom Splitter</short>
@@ -2095,9 +1853,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetAutoSnap.AValue">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetAutoSnap.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSplitter.SetBeveled">
         <short/>
@@ -2106,9 +1862,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetBeveled.AValue">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetBeveled.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSplitter.SetMinSize">
         <short/>
@@ -2117,9 +1871,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetMinSize.AValue">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetMinSize.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSplitter.SetResizeStyle">
         <short/>
@@ -2128,9 +1880,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetResizeStyle.AValue">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetResizeStyle.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.StartSplitterMove">
         <short/>
@@ -2139,13 +1889,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.StartSplitterMove.Restart">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.StartSplitterMove.Restart"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.StartSplitterMove.MouseXY">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.StartSplitterMove.MouseXY"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.MouseDown">
         <short/>
@@ -2154,21 +1900,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseDown.Button">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseDown.Button"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseDown.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseDown.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseDown.X">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseDown.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseDown.Y">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseDown.Y"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.MouseMove">
         <short/>
@@ -2177,17 +1915,11 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseMove.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseMove.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseMove.X">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseMove.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseMove.Y">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseMove.Y"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.MouseUp">
         <short/>
@@ -2196,21 +1928,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseUp.Button">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseUp.Button"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseUp.Shift">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseUp.Shift"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseUp.X">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseUp.X"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.MouseUp.Y">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.MouseUp.Y"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomSplitter.FindAlignControl">
         <short/>
@@ -2219,9 +1943,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSplitter.FindAlignControl.Result">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.FindAlignControl.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.SetAlign">
         <short/>
@@ -2230,9 +1952,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetAlign.Value">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetAlign.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.SetAnchors">
         <short/>
@@ -2241,9 +1961,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.SetAnchors.AValue">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.SetAnchors.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.CheckAlignment">
         <short/>
@@ -2259,13 +1977,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSplitter.CheckNewSize.Result">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.CheckNewSize.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.CheckNewSize.NewSize">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.CheckNewSize.NewSize"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSplitter.Paint">
         <short/>
@@ -2281,9 +1995,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSplitter.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomSplitter.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.Align">
         <short/>
@@ -2478,9 +2190,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TPaintBox.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TPaintBox.Create.AOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TPaintBox.Canvas">
         <short/>
@@ -2634,13 +2344,10 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       <!-- object Visibility: default -->
       <element name="TCustomImage">
         <short>Custom Image</short>
-        <descr>
-          <i>TCustomImage</i>
+        <descr><i>TCustomImage</i>
 
 : The base type for <i>TImage</i>. This is a control of the class <i>TGraphicControl</i>, designed to be lightweight and fast</descr>
-        <seealso>
-          <link id="#lcl.Controls.TGraphicControl"/>
-        </seealso>
+        <seealso><link id="#lcl.Controls.TGraphicControl"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImage.FPicture">
@@ -2680,9 +2387,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.SetPicture.AValue">
-        <short/>
-      </element>
+      <element name="TCustomImage.SetPicture.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.SetCenter">
         <short/>
@@ -2691,9 +2396,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.SetCenter.Value">
-        <short/>
-      </element>
+      <element name="TCustomImage.SetCenter.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.SetProportional">
         <short/>
@@ -2702,9 +2405,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.SetProportional.AValue">
-        <short/>
-      </element>
+      <element name="TCustomImage.SetProportional.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.SetStretch">
         <short/>
@@ -2713,9 +2414,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.SetStretch.Value">
-        <short/>
-      </element>
+      <element name="TCustomImage.SetStretch.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.SetTransparent">
         <short/>
@@ -2724,9 +2423,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.SetTransparent.Value">
-        <short/>
-      </element>
+      <element name="TCustomImage.SetTransparent.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomImage.PictureChanged">
         <short/>
@@ -2735,9 +2432,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.PictureChanged.SEnder">
-        <short/>
-      </element>
+      <element name="TCustomImage.PictureChanged.SEnder"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomImage.DestRect">
         <short/>
@@ -2746,9 +2441,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomImage.DestRect.Result">
-        <short/>
-      </element>
+      <element name="TCustomImage.DestRect.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomImage.DoAutoSize">
         <short/>
@@ -2771,9 +2464,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomImage.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomImage.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomImage.Destroy">
         <short/>
@@ -2806,8 +2497,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomImage.Picture">
-        <short>
-          <i>Picture </i>
+        <short><i>Picture </i>
 
 - the actual image for display</short>
       </element>
@@ -2857,18 +2547,14 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       <element name="TImage">
         <short>Image - a graphic image placed on the form; usually loaded from a picture file.</short>
         <descr>
-          <p>
-            <i>TImage</i>
+          <p><i>TImage</i>
 
 
 : a graphic image placed on the form; usually loaded from a picture file.</p>
           <p>The actual image is found in <i>Picture</i> or <i>Canvas</i></p>
-
-
- <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link></p></descr>
-        <seealso>
-          <link id="#lcl.StdCtrls.HowToUseStdCtrls"/>
-        </seealso>
+          <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link></p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TImage.Align">
@@ -2993,13 +2679,9 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelStyle.bsLowered">
-        <short/>
-      </element>
+      <element name="TBevelStyle.bsLowered"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelStyle.bsRaised">
-        <short/>
-      </element>
+      <element name="TBevelStyle.bsRaised"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TBevelShape">
         <short/>
@@ -3007,39 +2689,26 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsBox">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsBox"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsFrame">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsFrame"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsTopLine">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsTopLine"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsBottomLine">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsBottomLine"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsLeftLine">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsLeftLine"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBevelShape.bsRightLine">
-        <short/>
-      </element>
+      <element name="TBevelShape.bsRightLine"><short/></element>
       <!-- object Visibility: default -->
       <element name="TBevel">
         <short>A bevel placed around the edge of buttons and other components</short>
         <descr>
-          <p>
-            <i>TBevel</i>
+          <p><i>TBevel</i>
 
  - a bevel placed around the edge of buttons and other components.</p>
-
- <p>Its appearance is governed by <link id="TBevelShape">TBevelShape</link>, <link id="TBevelStyle">TBevelStyle</link> and <link id="TBevelwidth">TBevelwidth</link></p></descr>
+          <p>Its appearance is governed by <link id="TBevelShape">TBevelShape</link>, <link id="TBevelStyle">TBevelStyle</link> and <link id="TBevelwidth">TBevelwidth</link></p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBevel.FStyle">
@@ -3061,9 +2730,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBevel.GetStyle.Result">
-        <short/>
-      </element>
+      <element name="TBevel.GetStyle.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TBevel.SetStyle">
         <short/>
@@ -3072,9 +2739,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBevel.SetStyle.aStyle">
-        <short/>
-      </element>
+      <element name="TBevel.SetStyle.aStyle"><short/></element>
       <!-- function Visibility: private -->
       <element name="TBevel.GetShape">
         <short/>
@@ -3083,9 +2748,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TBevel.GetShape.Result">
-        <short/>
-      </element>
+      <element name="TBevel.GetShape.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TBevel.SetShape">
         <short/>
@@ -3094,9 +2757,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBevel.SetShape.aShape">
-        <short/>
-      </element>
+      <element name="TBevel.SetShape.aShape"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TBevel.Paint">
         <short/>
@@ -3112,9 +2773,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBevel.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TBevel.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TBevel.Destroy">
         <short/>
@@ -3244,13 +2903,9 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TColumnLayout.clHorizontalThenVertical">
-        <short/>
-      </element>
+      <element name="TColumnLayout.clHorizontalThenVertical"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TColumnLayout.clVerticalThenHorizontal">
-        <short/>
-      </element>
+      <element name="TColumnLayout.clVerticalThenHorizontal"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomRadioGroup">
         <short>Custom Radio Group</short>
@@ -3318,9 +2973,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.ItemsChanged.Sender">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.ItemsChanged.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomRadioGroup.Clicked">
         <short/>
@@ -3329,9 +2982,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.Clicked.Sender">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.Clicked.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomRadioGroup.DoPositionButtons">
         <short/>
@@ -3347,9 +2998,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.SetColumnLayout.AValue">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.SetColumnLayout.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.UpdateRadioButtonStates">
         <short/>
@@ -3365,9 +3014,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.ReadState.Reader">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.ReadState.Reader"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetItem">
         <short/>
@@ -3376,9 +3023,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.SetItem.Value">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.SetItem.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetColumns">
         <short/>
@@ -3387,9 +3032,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.SetColumns.Value">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.SetColumns.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.SetItemIndex">
         <short/>
@@ -3398,9 +3041,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.SetItemIndex.Value">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.SetItemIndex.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomRadioGroup.GetItemIndex">
         <short/>
@@ -3409,9 +3050,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomRadioGroup.GetItemIndex.Result">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.GetItemIndex.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomRadioGroup.Resize">
         <short/>
@@ -3457,9 +3096,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomRadioGroup.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomRadioGroup.Destroy">
         <short/>
@@ -3475,9 +3112,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomRadioGroup.CanModify.Result">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.CanModify.Result"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomRadioGroup.CreateWnd">
         <short/>
@@ -3493,9 +3128,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomRadioGroup.Rows.Result">
-        <short/>
-      </element>
+      <element name="TCustomRadioGroup.Rows.Result"><short/></element>
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
         <short>Radio Group</short>
@@ -3695,13 +3328,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCheckGroupClicked.Sender">
-        <short/>
-      </element>
+      <element name="TCheckGroupClicked.Sender"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCheckGroupClicked.Index">
-        <short/>
-      </element>
+      <element name="TCheckGroupClicked.Index"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomCheckGroup">
         <short>Custom Check Group</short>
@@ -3751,13 +3380,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckGroup.GetChecked.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.GetChecked.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.GetChecked.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.GetChecked.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomCheckGroup.GetCheckEnabled">
         <short/>
@@ -3766,13 +3391,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckGroup.GetCheckEnabled.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.GetCheckEnabled.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.GetCheckEnabled.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.GetCheckEnabled.Index"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.Clicked">
         <short/>
@@ -3781,9 +3402,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.Clicked.Sender">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.Clicked.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.DoClick">
         <short/>
@@ -3792,9 +3411,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.DoClick.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.DoClick.Index"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.DoPositionButtons">
         <short/>
@@ -3810,9 +3427,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.ItemsChanged.Sender">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.ItemsChanged.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.SetChecked">
         <short/>
@@ -3821,13 +3436,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetChecked.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetChecked.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetChecked.AValue">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetChecked.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.SetCheckEnabled">
         <short/>
@@ -3836,13 +3447,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetCheckEnabled.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetCheckEnabled.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetCheckEnabled.AValue">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetCheckEnabled.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.SetColumnLayout">
         <short/>
@@ -3851,9 +3458,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetColumnLayout.AValue">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetColumnLayout.AValue"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomCheckGroup.UpdateItems">
         <short/>
@@ -3869,9 +3474,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetItems.Value">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetItems.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.SetColumns">
         <short/>
@@ -3880,9 +3483,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.SetColumns.Value">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.SetColumns.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.DefineProperties">
         <short/>
@@ -3891,9 +3492,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.DefineProperties.Filer">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.DefineProperties.Filer"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.ReadData">
         <short/>
@@ -3902,9 +3501,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.ReadData.Stream">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.ReadData.Stream"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.WriteData">
         <short/>
@@ -3913,9 +3510,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.WriteData.Stream">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.WriteData.Stream"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCheckGroup.Loaded">
         <short/>
@@ -3938,9 +3533,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomCheckGroup.Destroy">
         <short/>
@@ -3956,9 +3549,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckGroup.Rows.Result">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.Rows.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Items">
         <short/>
@@ -3972,9 +3563,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.Checked.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.Checked.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.CheckEnabled">
         <short/>
@@ -3982,9 +3571,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomCheckGroup.CheckEnabled.Index">
-        <short/>
-      </element>
+      <element name="TCustomCheckGroup.CheckEnabled.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Columns">
         <short/>
@@ -4206,9 +3793,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TBoundLabel.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TBoundLabel.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TBoundLabel.FocusControl">
         <short/>
@@ -4347,27 +3932,18 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TLabelPosition.lpAbove">
-        <short/>
-      </element>
+      <element name="TLabelPosition.lpAbove"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TLabelPosition.lpBelow">
-        <short/>
-      </element>
+      <element name="TLabelPosition.lpBelow"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TLabelPosition.lpLeft">
-        <short/>
-      </element>
+      <element name="TLabelPosition.lpLeft"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TLabelPosition.lpRight">
-        <short/>
-      </element>
+      <element name="TLabelPosition.lpRight"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomLabeledEdit">
         <short>Custom Labelled Edit</short>
         <descr>
-          <p>
-            <i>TCustomLabeledEdit</i>
+          <p><i>TCustomLabeledEdit</i>
 
 : The base type for <i>LabeledEdit</i>.</p>
           <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
@@ -4403,9 +3979,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.SetLabelPosition.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.SetLabelPosition.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomLabeledEdit.SetLabelSpacing">
         <short/>
@@ -4414,9 +3988,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.SetLabelSpacing.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.SetLabelSpacing.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.SetParent">
         <short/>
@@ -4425,9 +3997,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.SetParent.AParent">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.SetParent.AParent"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.SetName">
         <short/>
@@ -4436,9 +4006,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.SetName.Value">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.SetName.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.DoSetBounds">
         <short/>
@@ -4447,21 +4015,13 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.DoSetBounds.ALeft">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.DoSetBounds.ALeft"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.DoSetBounds.ATop">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.DoSetBounds.ATop"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.DoSetBounds.AWidth">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.DoSetBounds.AWidth"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.DoSetBounds.AHeight">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.DoSetBounds.AHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.DoPositionLabel">
         <short/>
@@ -4477,13 +4037,9 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.CMVisibleChanged">
         <short/>
@@ -4492,9 +4048,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.CMVisibleChanged.Msg">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.CMVisibleChanged.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.CMEnabledChanged">
         <short/>
@@ -4503,9 +4057,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.CMEnabledChanged.Msg">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.CMEnabledChanged.Msg"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomLabeledEdit.CreateInternalLabel">
         <short/>
@@ -4521,9 +4073,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomLabeledEdit.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomLabeledEdit.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.EditLabel">
         <short/>
@@ -4532,15 +4082,13 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelPosition">
-        <short>
-          <i>LabelPosition </i>
+        <short><i>LabelPosition </i>
 
 - whether above, below, to the left or to the right of the Edit box</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelSpacing">
-        <short>
-          <i>LabelSpacing</i>
+        <short><i>LabelSpacing</i>
 
  - the distance between the Label and the Edit box</short>
       </element>
@@ -4548,13 +4096,11 @@ requiring the user to select one af a set of alternatives</descr>
       <element name="TLabeledEdit">
         <short>Labelled Edit: An Edit Box with a permanently attached Label</short>
         <descr>
-          <p>
-            <i>TLabeledEdit</i>
+          <p><i>TLabeledEdit</i>
 
 : An Edit Box with a permanently attached Label</p>
-
-
-<p>Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited</p></descr>
+          <p>Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited</p>
+        </descr>
         <seealso>
           <link id="#lcl.StdCtrls.TCustomEdit"/>
           <link id="#lcl.ExtCtrls.TBoundLabel"/>
@@ -4676,8 +4222,7 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Text">
-        <short>
-          <i>Text</i>
+        <short><i>Text</i>
 
 : the text-string being entered or edited in the Labelled Edit box</short>
       </element>
@@ -4814,9 +4359,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.SetAlignment.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.SetAlignment.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPanel.SetBevelInner">
         <short/>
@@ -4825,9 +4368,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.SetBevelInner.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.SetBevelInner.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPanel.SetBevelOuter">
         <short/>
@@ -4836,9 +4377,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.SetBevelOuter.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.SetBevelOuter.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPanel.SetBevelWidth">
         <short/>
@@ -4847,9 +4386,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.SetBevelWidth.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.SetBevelWidth.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomPanel.SetBorderWidth">
         <short/>
@@ -4858,9 +4395,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.SetBorderWidth.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.SetBorderWidth.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPanel.AdjustClientRect">
         <short/>
@@ -4869,9 +4404,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.AdjustClientRect.Rect">
-        <short/>
-      </element>
+      <element name="TCustomPanel.AdjustClientRect.Rect"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPanel.RealSetText">
         <short/>
@@ -4880,9 +4413,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.RealSetText.Value">
-        <short/>
-      </element>
+      <element name="TCustomPanel.RealSetText.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomPanel.Paint">
         <short/>
@@ -4898,9 +4429,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPanel.ParentColorIsStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomPanel.ParentColorIsStored.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomPanel.CanTab">
         <short/>
@@ -4909,9 +4438,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomPanel.CanTab.Result">
-        <short/>
-      </element>
+      <element name="TCustomPanel.CanTab.Result"><short/></element>
       <!-- constructor Visibility: public -->
       <element name="TCustomPanel.Create">
         <short/>
@@ -4920,9 +4447,7 @@ requiring the user to select one af a set of alternatives</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPanel.Create.TheOwner">
-        <short/>
-      </element>
+      <element name="TCustomPanel.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.Align">
         <short/>
