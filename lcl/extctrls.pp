@@ -569,7 +569,7 @@ type
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
   public
-    Property Align;
+    property Align;
     property AutoSize;
     property Center: Boolean read FCenter write SetCenter;
     property Constraints;

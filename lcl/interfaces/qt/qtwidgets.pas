@@ -133,7 +133,7 @@ type
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMove(Event: QEventH); cdecl;
     procedure SlotPaint(Sender: QObjectH; Event: QEventH); cdecl;
-    procedure SlotResize; cdecl;
+    procedure SlotResize(Event: QEventH); cdecl;
     procedure SlotContextMenu(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
   public
@@ -1465,7 +1465,7 @@ begin
         SlotMouseWheel(Sender, Event);
       end;
     QEventMove: SlotMove(Event);
-    QEventResize: SlotResize;
+    QEventResize: SlotResize(Event);
     QEventPaint:
       begin
         if FHasPaint then
@@ -2146,13 +2146,23 @@ end;
 
   Sends a LM_SIZE message to the LCL.
  ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotResize; cdecl;
+procedure TQtWidget.SlotResize(Event: QEventH); cdecl;
 var
   Msg: TLMSize;
+  NewSize: TSize;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotResize');
   {$endif}
+  
+  NewSize := QResizeEvent_size(QResizeEventH(Event))^;
+
+  if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
+     (LCLObject.ClientRectNeedsInterfaceUpdate) then
+  begin
+    LCLObject.InvalidateClientRectCache(true);
+    LCLObject.DoAdjustClientRectChange;
+  end;
 
   FillChar(Msg, SizeOf(Msg), #0);
 
@@ -2168,8 +2178,8 @@ begin
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
-  Msg.Width := getWidth;
-  Msg.Height := getHeight;
+  Msg.Width := NewSize.cx;
+  Msg.Height := NewSize.cy;
 
   DeliverMessage(Msg);
 end;
