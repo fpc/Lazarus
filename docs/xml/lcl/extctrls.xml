@@ -117,8 +117,18 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomPage">
-        <short><i>TCustomPage</i>: The base type for <i>Page</i></short>
-        <descr><i>TCustomPage</i>: The base type for the tabbed pages found in notebooks</descr>
+        <short><i>TCustomPage</i>
+
+
+
+
+: The base type for <i>Page</i></short>
+        <descr><i>TCustomPage</i>
+
+
+
+
+: The base type for the tabbed pages found in notebooks</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPage.FFlags">
@@ -225,7 +235,12 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.PageIndex">
-        <short><i>PageIndex </i>- integer index value for this page in the notebook</short>
+        <short><i>PageIndex </i>
+
+
+
+
+- integer index value for this page in the notebook</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomPage.Create">
@@ -260,7 +275,12 @@
       <element name="TCustomPage.IsVisible.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.ImageIndex">
-        <short><i>ImageIndex</i> - integer index value for the image associated with this page</short>
+        <short><i>ImageIndex</i>
+
+
+
+
+ - integer index value for the image associated with this page</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPage.Left">
@@ -471,9 +491,14 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomNotebook">
-        <short><i>TCustom Notebook</i> : The base type for <i>TNotebook</i></short>
+        <short><i>TCustomNotebook</i>       : The base type for <i>TNotebook</i></short>
         <descr>
-          <p><i>TCustom Notebook</i>: The base type for <i>TNotebook</i></p>
+          <p><i>TCustom Notebook</i>
+
+
+
+
+: The base type for <i>TNotebook</i></p>
           <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected for display by clicking its tab </p>
         </descr>
       </element>
@@ -508,11 +533,7 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element name="TCustomNotebook.FOnCloseTabClicked">
-        <short>True if you can see through the image</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomNotebook.FOnCloseTabClicked"/>
       <!-- variable Visibility: private -->
       <element name="TCustomNotebook.FOnGetImageIndex">
         <short/>
@@ -894,12 +915,7 @@
       <!-- argument Visibility: default -->
       <element name="TCustomNotebook.TabIndexAtClientPos.ClientPos"><short/></element>
       <!-- function Visibility: public -->
-      <element name="TCustomNotebook.CanTab">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TCustomNotebook.CanTab"/>
       <!-- function result Visibility: default -->
       <element name="TCustomNotebook.CanTab.Result"><short/></element>
       <!-- function Visibility: public -->
@@ -1059,9 +1075,19 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TPage">
-        <short><i>TPage</i> : One of the pages in a tabbed Notebook</short>
+        <short><i>TPage</i>
+
+
+
+
+ : One of the pages in a tabbed Notebook</short>
         <descr>
-          <p><i>TPage</i>: One of the pages in a tabbed Notebook</p>
+          <p><i>TPage</i>
+
+
+
+
+: One of the pages in a tabbed Notebook</p>
           <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomPage">TCustomPage</link></p>
         </descr>
         <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
@@ -1194,9 +1220,19 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TNotebook">
-        <short><i>TNotebook</i> : A series of tabbed <i>pages</i>  placed together to make a notebook</short>
+        <short><i>TNotebook</i>
+
+
+
+
+ : A series of tabbed <i>pages</i>  placed together to make a notebook</short>
         <descr>
-          <p><i>TNotebook</i>: A series of tabbed <i>pages</i> placed together to make a notebook</p>
+          <p><i>TNotebook</i>
+
+
+
+
+: A series of tabbed <i>pages</i> placed together to make a notebook</p>
           <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
           <p>Inherits most of its properties from <link id="#lcl.StdCtrls.TCustomNotebook">TCustomNoteBook</link></p>
         </descr>
@@ -2346,6 +2382,11 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <short>Custom Image</short>
         <descr><i>TCustomImage</i>
 
+
+
+
+
+
 : The base type for <i>TImage</i>. This is a control of the class <i>TGraphicControl</i>, designed to be lightweight and fast</descr>
         <seealso><link id="#lcl.Controls.TGraphicControl"/></seealso>
       </element>
@@ -2499,6 +2540,11 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       <element name="TCustomImage.Picture">
         <short><i>Picture </i>
 
+
+
+
+
+
 - the actual image for display</short>
       </element>
       <!-- property Visibility: public -->
@@ -2548,6 +2594,11 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <short>Image - a graphic image placed on the form; usually loaded from a picture file.</short>
         <descr>
           <p><i>TImage</i>
+
+
+
+
+
 
 
 : a graphic image placed on the form; usually loaded from a picture file.</p>
@@ -2705,6 +2756,11 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <short>A bevel placed around the edge of buttons and other components</short>
         <descr>
           <p><i>TBevel</i>
+
+
+
+
+
 
  - a bevel placed around the edge of buttons and other components.</p>
           <p>Its appearance is governed by <link id="TBevelShape">TBevelShape</link>, <link id="TBevelStyle">TBevelStyle</link> and <link id="TBevelwidth">TBevelwidth</link></p>
@@ -2903,7 +2959,9 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TColumnLayout.clHorizontalThenVertical"><short/></element>
+      <element name="TColumnLayout.clHorizontalThenVertical">
+        <short>NoteBook Pages - an array of strings containing the names of the pages</short>
+      </element>
       <!-- enumeration value Visibility: default -->
       <element name="TColumnLayout.clVerticalThenHorizontal"><short/></element>
       <!-- object Visibility: default -->
@@ -3945,6 +4003,11 @@ requiring the user to select one af a set of alternatives</descr>
         <descr>
           <p><i>TCustomLabeledEdit</i>
 
+
+
+
+
+
 : The base type for <i>LabeledEdit</i>.</p>
           <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
         </descr>
@@ -4084,11 +4147,21 @@ requiring the user to select one af a set of alternatives</descr>
       <element name="TCustomLabeledEdit.LabelPosition">
         <short><i>LabelPosition </i>
 
+
+
+
+
+
 - whether above, below, to the left or to the right of the Edit box</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelSpacing">
         <short><i>LabelSpacing</i>
+
+
+
+
+
 
  - the distance between the Label and the Edit box</short>
       </element>
@@ -4097,6 +4170,11 @@ requiring the user to select one af a set of alternatives</descr>
         <short>Labelled Edit: An Edit Box with a permanently attached Label</short>
         <descr>
           <p><i>TLabeledEdit</i>
+
+
+
+
+
 
 : An Edit Box with a permanently attached Label</p>
           <p>Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited</p>
@@ -4223,6 +4301,11 @@ requiring the user to select one af a set of alternatives</descr>
       <!-- property Visibility: published -->
       <element name="TLabeledEdit.Text">
         <short><i>Text</i>
+
+
+
+
+
 
 : the text-string being entered or edited in the Labelled Edit box</short>
       </element>
