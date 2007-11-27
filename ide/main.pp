@@ -8399,7 +8399,7 @@ begin
 
     // handle versioninfo
     VersionInfo := Project1.VersionInfo;
-    Result := VersionInfo.CompileRCFile(Project1.MainFilename,
+    Result := VersionInfo.CreateRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
 
     for Count := 1 to VersionInfo.VersionInfoMessages.Count do
@@ -8408,7 +8408,7 @@ begin
     if Result <> mrOk then exit;
 
     // handle manifest
-    Result := Project1.XPManifest.CompileRCFile(Project1.MainFilename,
+    Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
     for Count := 1 to Project1.XPManifest.Messages.Count do
       MessagesView.AddMsg(Format(Project1.XPManifest.Messages[Count - 1],

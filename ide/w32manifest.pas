@@ -45,14 +45,14 @@ type
     FMessages: TStrings;
     FModified: boolean;
     FUseManifest: boolean;
-    resFilename: string;
+    rcFilename: string;
     procedure SetUseManifest(const AValue: boolean);
     procedure SetFileNames(const MainFilename: string);
   public
     constructor Create;
     destructor Destroy; override;
     
-    function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
+    function CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
     function CreateManifest: Boolean;
     function UpdateMainSourceFile(const AFilename: string): TModalResult;
 
@@ -63,13 +63,39 @@ type
 
 implementation
 
+const
+  sManifest: String =
+    '#define RT_MANIFEST  24'#$D#$A+
+    '#define CREATEPROCESS_MANIFEST_RESOURCE_ID 1'#$D#$A+
+    '#define ISOLATIONAWARE_MANIFEST_RESOURCE_ID 2'#$D#$A+
+    '#define ISOLATIONAWARE_NOSTATICIMPORT_MANIFEST_RESOURCE_ID 3'#$D#$A#$D#$A+
+    'CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MOVEABLE PURE'#$D#$A+
+    '{'#$D#$A+
+    ' "<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>"'#$D#$A+
+    ' "<assembly xmlns=""urn:schemas-microsoft-com:asm.v1"" manifestVersion=""1.0"">"'#$D#$A+
+    ' "<assemblyIdentity version=""1.0.0.0"" processorArchitecture=""*"" name=""CompanyName.ProductName.YourApp"" type=""win32""/>"'#$D#$A+
+    ' "<description>Your application description here.</description>"'#$D#$A+
+    ' "<dependency>"'#$D#$A+
+    ' "<dependentAssembly>"'#$D#$A+
+    ' "<assemblyIdentity type=""win32"" name=""Microsoft.Windows.Common-Controls"" version=""6.0.0.0"" processorArchitecture=""*"" publicKeyToken=""6595b64144ccf1df"" language=""*""/>"'#$D#$A+
+    ' "</dependentAssembly>"'#$D#$A+
+    ' "</dependency>"'#$D#$A+
+    ' "<trustInfo xmlns=""urn:schemas-microsoft-com:asm.v3"">"'#$D#$A+
+    ' "<security>"'#$D#$A+
+    ' "<requestedPrivileges>"'#$D#$A+
+    ' "<requestedExecutionLevel level=""asInvoker"" uiAccess=""false""/>"'#$D#$A+
+    ' "</requestedPrivileges>"'#$D#$A+
+    ' "</security>"'#$D#$A+
+    ' "</trustInfo>"'#$D#$A+
+    ' "</assembly>"'#$D#$A+
+    '}';
+
 {-----------------------------------------------------------------------------
- TProjectXPManifest CompileRCFile
+ TProjectXPManifest CreateRCFile
 -----------------------------------------------------------------------------}
-function TProjectXPManifest.CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
+function TProjectXPManifest.CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
 begin
   // in future we will compile manifest from rc, but now we just add our template
-  
   Result := mrOk;
   SetFileNames(MainFilename);
   if (TargetOS = 'win32') and UseManifest then
@@ -81,31 +107,15 @@ end;
 
 function TProjectXPManifest.CreateManifest: Boolean;
 var
-  Res: TLResource;
   Stream: TStream;
 begin
-  // here will be better to compile res from rc, but we will only extract
-  // precompiled res from lazarus resource due to error in windres.
-  
-  // Error description:
-  // if we compile manifest by windres then we will not link our project if we
-  // have other res files before manifest (I tested with version info resource)
-  // But if we compile that manifest.rc with other resource compiler then we have
-  // not such errors. So at this moment we decided to extract precompiled res insted
-  // of have problems with rc compilation and further linking
-  
   Result := False;
-  Res := LazarusResources.Find('manifest');
-  if (Res <> nil) and (Res.Value <> '') and (Res.ValueType = 'RES') then
-  begin
-    Stream := nil;
-    try
-      Stream := TFileStream.Create(resFileName, fmCreate);
-      Stream.Write(Res.Value[1], length(Res.Value));
-      Result := True;
-    finally
-      Stream.Free;
-    end;
+  try
+    Stream := TFileStream.Create(rcFileName, fmCreate);
+    Stream.Write(sManifest[1], length(sManifest));
+    Result := True;
+  finally
+    Stream.Free;
   end;
 end;
 
@@ -130,7 +140,7 @@ begin
   if ManifestCodeBuf <> nil then
   begin
     SetFileNames(AFilename);
-    Filename:=ExtractFileName(resFileName);
+    Filename:=ExtractFileName(rcFileName);
     DebugLn(['TProjectXPManifest.UpdateMainSourceFile ',Filename]);
     if CodeToolBoss.FindResourceDirective(ManifestCodeBuf, 1, 1,
                                NewCode, NewX, NewY,
@@ -163,7 +173,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectXPManifest.SetFileNames(const MainFilename: string);
 begin
-  resFilename := ExtractFilePath(MainFilename) + 'manifest.res';
+  rcFilename := ExtractFilePath(MainFilename) + 'manifest.rc';
 end;
 
 constructor TProjectXPManifest.Create;
@@ -177,7 +187,5 @@ begin
   inherited Destroy;
 end;
 
-initialization
-  {$i manifest.lrs}
 end.
 
