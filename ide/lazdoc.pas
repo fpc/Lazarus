@@ -73,7 +73,7 @@ type
     function GetModuleNode: TDOMNode;
     function GetFirstElement: TDOMNode;
     function GetElementWithName(const ElementName: string): TDOMNode;
-    function GetFirstChildValue(Node: TDOMNode): String;
+    function GetChildValuesAsString(Node: TDOMNode): String;
     function GetValuesFromNode(Node: TDOMNode): TFPDocNode;
   end;
   
@@ -235,22 +235,27 @@ begin
 
   // get first node
   Result := Doc.FindNode('fpdoc-descriptions');
-  if Result=nil then exit;
+  if Result=nil then begin
+    //DebugLn(['TLazFPDocFile.GetModuleNode fpdoc-descriptions not found']);
+    exit;
+  end;
 
   // proceed to package
-  Result := Result.FirstChild;
-  if Result=nil then exit;
+  Result := Result.FindNode('package');
+  if Result=nil then begin
+    //DebugLn(['TLazFPDocFile.GetModuleNode fpdoc-descriptions has no package']);
+    exit;
+  end;
 
   // proceed to module
-  Result := Result.FirstChild;
-  while (Result<>nil) and (Result.NodeName <> 'module') do
-    Result := Result.NextSibling;
+  Result := Result.FindNode('module');
 end;
 
 function TLazFPDocFile.GetFirstElement: TDOMNode;
 begin
   //get first module node
   Result := GetModuleNode;
+  //DebugLn(['TLazFPDocFile.GetFirstElement GetModuleNode=',GetModuleNode<>nil]);
   if Result=nil then exit;
 
   //proceed to element
@@ -262,7 +267,10 @@ end;
 function TLazFPDocFile.GetElementWithName(const ElementName: string): TDOMNode;
 begin
   Result:=GetFirstElement;
+  //DebugLn(['TLazFPDocFile.GetElementWithName ',ElementName,' GetFirstElement=',GetFirstElement<>nil]);
   while Result<>nil do begin
+    //DebugLn(['TLazFPDocFile.GetElementWithName ',dbgsName(Result)]);
+    //if Result is TDomElement then DebugLn(['TLazFPDocFile.GetElementWithName ',TDomElement(Result).GetAttribute('name')]);
     if (Result is TDomElement)
     and (SysUtils.CompareText(TDomElement(Result).GetAttribute('name'),ElementName)=0)
     then
@@ -271,15 +279,22 @@ begin
   end;
 end;
 
-function TLazFPDocFile.GetFirstChildValue(Node: TDOMNode): String;
+function TLazFPDocFile.GetChildValuesAsString(Node: TDOMNode): String;
+var
+  Child: TDOMNode;
 begin
-  if Assigned(Node.FirstChild) then
-    Result := Node.FirstChild.NodeValue
-  else
-    Result := '';
+  Result:='';
+  Child:=Node.FirstChild;
+  while Child<>nil do begin
+    //DebugLn(['TLazFPDocFile.GetChildValuesAsString ',dbgsName(Child)]);
+    if Child is TDOMText then
+      Result:=Result+TDOMText(Child).Data;
+    Child:=Child.NextSibling;
+  end;
 end;
 
 function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocNode;
+// simple function to return the values as string
 var
   S: String;
 begin
@@ -291,16 +306,16 @@ begin
       S := Node.NodeName;
 
       if S = 'short' then
-        Result[fpdiShort] := GetFirstChildValue(Node);
+        Result[fpdiShort] := GetChildValuesAsString(Node);
 
       if S = 'descr' then
-        Result[fpdiDescription] := GetFirstChildValue(Node);
+        Result[fpdiDescription] := GetChildValuesAsString(Node);
 
       if S = 'errors' then
-        Result[fpdiErrors] := GetFirstChildValue(Node);
+        Result[fpdiErrors] := GetChildValuesAsString(Node);
 
       if S = 'seealso' then
-        Result[fpdiSeeAlso] := GetFirstChildValue(Node);
+        Result[fpdiSeeAlso] := GetChildValuesAsString(Node);
 
       if S = 'example' then begin
         Result[fpdiExample] := Node.Attributes.GetNamedItem('file').NodeValue;
@@ -535,7 +550,7 @@ begin
   CheckUnitOwners(false);
   CheckUnitOwners(true);
   CheckIfInLazarus;
-  
+
   // finally add the default paths
   AddSearchPath(EnvironmentOptions.LazDocPaths,'');
   FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
@@ -915,7 +930,7 @@ end;
 destructor TLazDocElementChain.Destroy;
 begin
   Clear;
-  FItems.Free;
+  FreeAndNil(FItems);
   inherited Destroy;
 end;
 
