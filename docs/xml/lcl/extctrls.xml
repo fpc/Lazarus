@@ -1090,7 +1090,7 @@
 : One of the pages in a tabbed Notebook</p>
           <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomPage">TCustomPage</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TPage.Caption">
@@ -1236,7 +1236,7 @@
           <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
           <p>Inherits most of its properties from <link id="#lcl.StdCtrls.TCustomNotebook">TCustomNoteBook</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- function Visibility: private -->
       <element name="TNotebook.GetActiveNotebookPageComponent">
@@ -1824,8 +1824,12 @@
       <element name="TCanResizeEvent.Accept"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomSplitter">
-        <short>Custom Splitter</short>
-        <descr>Custom Splitter: the base type for Splitter</descr>
+        <short><i>TCustomSplitter</i>: the base type for <i>TSplitter</i></short>
+        <descr>
+          <p><i>TCustomSplitter</i>: the base type for <i>TSplitter</i></p>
+          <p>A Splitter is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
+          <p>This class defines many of the basic properties for the children classes, such as positioning, sizing and alignment</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomSplitter.FAutoSnap">
@@ -2046,15 +2050,12 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.AutoSnap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>AutoSnap - automatically snaps to a grid point or grid line in the Form designer</short>
+        <descr>Boolean property, true if snapping to grid positions</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.Beveled">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Whether the edges of the splitter bar are bevelled</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.MinSize">
@@ -2088,9 +2089,12 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TSplitter">
-        <short>Splitter</short>
-        <descr>Splitter: A vertical or horizontal bar that can be placed on a panel or form,
-to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</descr>
+        <short><i>TSplitter</i>: A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally</short>
+        <descr>
+          <p><i>TSplitter</i>: A vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
+          <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user with the ResizeControl property</p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TSplitter.Align">
@@ -2202,8 +2206,11 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
       </element>
       <!-- object Visibility: default -->
       <element name="TPaintBox">
-        <short>Paint Box</short>
-        <descr>Paint Box: A tool for generating pictures</descr>
+        <short><i>TPaintBox</i>: a painted rectangular box with defined size and color</short>
+        <descr>
+          <p><i>TPaintBox</i>: a painted rectangular box with defined size and colour</p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPaintBox.FOnPaint">
@@ -2605,7 +2612,7 @@ to separate sub-panels functionally and allow re-sizing of the constituent sub-p
           <p>The actual image is found in <i>Picture</i> or <i>Canvas</i></p>
           <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls"/></seealso>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TImage.Align">
@@ -4395,8 +4402,12 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomPanel">
-        <short>Custom Panel</short>
-        <descr>Custom Panel: The base type for Panel</descr>
+        <short><i>TCustomPanel</i>: The base type for <i>TPanel</i></short>
+        <descr>
+          <p><i>TCustomPanel</i>: The base type for <i>TPanel</i></p>
+          <p>A Panel is a defined rectangular area of the form into which other components can be placed to group them functionally and geographically.</p>
+          <p><i>TCustomPanel </i>defines the positioning and bevelling properties of any descendant classes, and provides methods for painting and writing text to the panel.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomPanel.FBevelInner">
@@ -4599,9 +4610,13 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPanel">
-        <short>Panel</short>
-        <descr>Panel: A defined rectangular area of the form into which other components
-can be placed to group them functionally and geographically</descr>
+        <short><i>TPanel</i>: A defined rectangular area of the form into which other components can be placed</short>
+        <descr>
+          <p><i>TPanel</i>: A defined rectangular area of the form into which other components can be placed to group them functionally and geographically</p>
+          <p>Most of the properties are defined in ancestor classes including <link id="#lcl.ExtCtrls.TCustomPanel">TCustomPanel</link>, <link id="#lcl.Controls.TCustomControl">TCustomControl</link> and <link id="#lcl.Controls.TWinControl">TWinControl</link></p>
+          <p>Any controls such as buttons or check boxes that are placed inside the panel become its children, and inherit many of its properties. If the Panel is moved, the child controls move with it. Any part of a child control that falls outside the panel becomes invisible.</p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.Align">
