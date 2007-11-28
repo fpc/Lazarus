@@ -37,7 +37,7 @@ uses
   Windows,WinCEInt, Forms;
 
 initialization
-  WidgetSet := TWinCEWidgetSet.Create;
+  CreateWidgetset(TWinCEWidgetSet);
 
 finalization
   FreeWidgetSet;

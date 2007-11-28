@@ -90,7 +90,7 @@ type
     procedure AppSetTitle(const ATitle: string); override;
     procedure AttachMenuToWindow(AMenuObject: TComponent); override;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

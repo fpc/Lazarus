@@ -38,11 +38,9 @@ uses
   qtint, Forms;
 
 initialization
-
-  WidgetSet := TQtWidgetSet.Create;
+  CreateWidgetset(TQtWidgetSet);
 
 finalization
-
   FreeWidgetset;
 
 end.

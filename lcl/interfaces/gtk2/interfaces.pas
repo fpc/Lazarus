@@ -36,7 +36,7 @@ uses
   Gtk2Int, Forms;
 
 initialization
-  WidgetSet := TGtk2WidgetSet.Create;
+  CreateWidgetset(TGtk2WidgetSet);
 
 finalization
   FreeWidgetSet;

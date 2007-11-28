@@ -77,7 +77,7 @@ type
 
     procedure RegisterEvents;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;

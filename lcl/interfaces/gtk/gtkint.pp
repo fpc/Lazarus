@@ -277,7 +277,7 @@ type
     // notebook
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure SendCachedLCLMessages; override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;

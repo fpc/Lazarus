@@ -146,6 +146,8 @@ procedure FreeThenNil(var AnObject: TObject);
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
   be registered here. }
+procedure RegisterInterfaceInitializationHandler(p: TProcedure);
+procedure CallInterfaceInitializationHandlers;
 procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
 procedure CallInterfaceFinalizationHandlers;
 
@@ -329,6 +331,7 @@ implementation
 
 
 var
+  InterfaceInitializationHandlers,
   InterfaceFinalizationHandlers: TFPList;
   DebugTextAllocated: boolean;
   DebugText: ^Text;
@@ -609,6 +612,19 @@ begin
     AnObject.Free;
     AnObject:=nil;
   end;
+end;
+
+procedure RegisterInterfaceInitializationHandler(p: TProcedure);
+begin
+  InterfaceInitializationHandlers.Add(p);
+end;
+
+procedure CallInterfaceInitializationHandlers;
+var
+  i: Integer;
+begin
+  for i:=0 to InterfaceInitializationHandlers.Count-1 do
+    TProcedure(InterfaceInitializationHandlers[i])();
 end;
 
 procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
@@ -3303,11 +3319,14 @@ end;
 
 initialization
   InitializeDebugOutput;
-  InterfaceFinalizationHandlers:=TFPList.Create;
+  InterfaceInitializationHandlers := TFPList.Create;
+  InterfaceFinalizationHandlers := TFPList.Create;
   {$IFDEF DebugLCLComponents}
   DebugLCLComponents:=TDebugLCLItems.Create;
   {$ENDIF}
 finalization
+  InterfaceInitializationHandlers.Free;
+  InterfaceInitializationHandlers:=nil;
   InterfaceFinalizationHandlers.Free;
   InterfaceFinalizationHandlers:=nil;
   {$IFDEF DebugLCLComponents}

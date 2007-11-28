@@ -38,11 +38,9 @@ uses
   fpguiint, Forms;
 
 initialization
-
-  WidgetSet := TFpGuiWidgetSet.Create;
+  CreateWidgetset(TFpGuiWidgetSet);
 
 finalization
-
-  WidgetSet.Free;
+  FreeWidgetset;
 
 end.

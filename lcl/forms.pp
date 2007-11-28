@@ -1348,6 +1348,7 @@ const
      [biSystemMenu, biMinimize, biMaximize]);   // bsSizeToolWin
      
 
+procedure CreateWidgetset(AWidgetsetClass: TWidgetsetClass);
 procedure FreeWidgetSet;
 
 procedure Register;
@@ -1571,6 +1572,13 @@ begin
   if I = 0 then
     Result := Hint else
     Result := Copy(Hint, I + 1, Maxint);
+end;
+
+procedure CreateWidgetset(AWidgetsetClass: TWidgetsetClass);
+begin
+  //debugln('CreateWidgetset');
+  CallInterfaceInitializationHandlers;
+  WidgetSet := AWidgetsetClass.Create;
 end;
 
 procedure FreeWidgetSet;

@@ -40,7 +40,7 @@ uses
   CarbonInt, Forms;
 
 initialization
-  WidgetSet:= TCarbonWidgetSet.Create;
+  CreateWidgetset(TCarbonWidgetSet);
 
 finalization
   FreeWidgetSet;

@@ -135,9 +135,9 @@ type
     Procedure RemoveCallbacks(Sender: TObject); virtual;
 
     { Constructor of the class }
-    Constructor Create;
+    constructor Create; override;
     { Destructor of the class }
-    Destructor Destroy; Override;
+    destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
 

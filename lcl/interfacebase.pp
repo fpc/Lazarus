@@ -72,7 +72,7 @@ type
     procedure PassCmdLineOptions; virtual;
     function CreateThemeServices: TThemeServices; virtual;
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
 
     procedure AppInit(var ScreenInfo: TScreenInfo); virtual; abstract;
@@ -108,6 +108,7 @@ type
     
     property ThemeServices: TThemeServices read FThemeServices;
   end;
+  TWidgetSetClass = class of TWidgetSet;
 
 type
   EInterfaceException = class(Exception);

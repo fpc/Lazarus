@@ -2078,6 +2078,14 @@ begin
   Result := RGBToColor(R, G, B);
 end;
 
+procedure InterfaceInit;
+begin
+  //debugln('Graphics.InterfaceInit');
+  FontResourceCache:=TFontHandleCache.Create;
+  PenResourceCache:=TPenHandleCache.Create;
+  BrushResourceCache:=TBrushHandleCache.Create;
+end;
+
 procedure InterfaceFinal;
 begin
   //debugln('Graphics.InterfaceFinal');
@@ -2087,11 +2095,9 @@ begin
 end;
 
 initialization
-  FontResourceCache:=TFontHandleCache.Create;
-  PenResourceCache:=TPenHandleCache.Create;
-  BrushResourceCache:=TBrushHandleCache.Create;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
+  RegisterInterfaceInitializationHandler(@InterfaceInit);
   RegisterInterfaceFinalizationHandler(@InterfaceFinal);
 
 finalization

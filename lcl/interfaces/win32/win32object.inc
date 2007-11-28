@@ -28,9 +28,9 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-Constructor TWin32WidgetSet.Create;
-Begin
-  Inherited Create;
+constructor TWin32WidgetSet.Create;
+begin
+  inherited Create;
   FTimerData  := TList.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
   FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
@@ -42,7 +42,7 @@ Begin
   OnClipBoardRequest := nil;
   Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle(comctl32), 'InitCommonControlsEx');
   FCommonControlsVersion := GetFileVersion(comctl32);
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.Destroy
@@ -51,11 +51,11 @@ End;
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TWin32WidgetSet.Destroy;
+destructor TWin32WidgetSet.Destroy;
 var
   n: integer;
   TimerInfo : PWin32TimerInfo;
-Begin
+begin
   Assert(False, 'Trace:TWin32WidgetSet is being destroyed');
 
   n := FTimerData.Count;
@@ -78,7 +78,7 @@ Begin
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
   inherited Destroy;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppInit

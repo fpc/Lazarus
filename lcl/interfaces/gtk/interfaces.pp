@@ -40,7 +40,7 @@ uses
   GTK1Int, Forms;
 
 initialization
-  WidgetSet := TGTK1WidgetSet.Create;
+  CreateWidgetset(TGTK1WidgetSet);
 
 finalization
   FreeWidgetSet;
