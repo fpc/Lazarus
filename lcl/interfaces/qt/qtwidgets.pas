@@ -587,6 +587,7 @@ type
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
     function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
+    function getTabPosition: QTabWidgetTabPosition;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
@@ -2158,8 +2159,8 @@ begin
   
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
 
-{
-  if LCLObject is TTabSheet then
+
+{  if LCLObject is TTabSheet then
     WriteLn('SlotResize: ', dbgsName(LCLObject), ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy);
 }
 
@@ -4862,17 +4863,32 @@ end;
 
 function TQtTabWidget.getClientBounds: TRect;
 var
+  ATabSize: TSize;
   option: QStyleOptionTabWidgetFrameH;
 begin
   option := QStyleOptionTabWidgetFrame_create();
   QStyleOption_initFrom(QStyleOptionH(option), Widget);
   QStyle_subElementRect(QWidget_style(Widget), @Result, QStyleSE_TabWidgetTabContents, option, Widget);
   QStyleOptionTabWidgetFrame_destroy(option);
+
+  QWidget_size(TabBar, @ATabSize);
+  case getTabPosition of
+    QTabWidgetNorth: inc(Result.Top, ATabSize.cy);
+    QTabWidgetSouth: dec(Result.Bottom, ATabSize.cy);
+    QTabWidgetWest : inc(Result.Left, ATabSize.cx);
+    QTabWidgetEast : dec(Result.Right, ATabSize.cx);
+  end;
+  //WriteLn(dbgs(Result));
 end;
 
 function TQtTabWidget.getCurrentIndex: Integer;
 begin
   Result := QTabWidget_currentIndex(QTabWidgetH(Widget));
+end;
+
+function TQtTabWidget.getTabPosition: QTabWidgetTabPosition;
+begin
+  Result := QTabWidget_tabPosition(QTabWidgetH(Widget));
 end;
 
 procedure TQtTabWidget.removeTab(AIndex: Integer);
