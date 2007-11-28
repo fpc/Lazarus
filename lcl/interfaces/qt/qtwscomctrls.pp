@@ -463,7 +463,7 @@ begin
   if (AControl is TStatusBar) and WSCheckHandleAllocated(TStatusBar(AControl), 'AddControl') then
   begin
     TQtWSWinControl.AddControl(AControl);
-    
+
     QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
 
     Parent := TQtWidget(AControl.Parent.Handle);
@@ -480,27 +480,12 @@ class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const
 var
   AStatusBar: TStatusBar absolute AWinControl;
   QtStatusBar: TQtStatusBar;
-  QtParent: TQtWidget;
-  w: QStatusBarH;
   Str: WideString;
   i: Integer;
   R: TRect;
 begin
-
-  if Assigned(AWinControl.Parent) then
-    QtParent := TQtWidget(AWinControl.Parent.Handle);
-    
-  if Assigned(QtParent) and
-    (QtParent is TQtMainWindow) and
-    TQtMainWindow(QtParent).IsMainForm then
-  begin
-    w := QMainWindow_statusBar(QMainWindowH(TQtMainWindow(QtParent).Widget));
-    QWidget_geometry(w, @R);
-    QtStatusBar := TQtStatusBar.CreateFrom(AWinControl, w);
-    AWinControl.SetInitialBounds(R.Left, R.Top, R.Right, R.Bottom);
-  end else
-    QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
-
+  QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
+  
   if AStatusBar.SimplePanel then
   begin
     Str := GetUtf8String(AStatusBar.SimpleText);

@@ -104,7 +104,6 @@ type
 
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetHasCaret(const AValue: Boolean);
-    procedure SetGeometry; virtual; overload;
   public
     AVariant: QVariantH;
     LCLObject: TWinControl;
@@ -1137,8 +1136,6 @@ begin
 
   fillchar(FPaintData, sizeOf(FPaintData), 0);
   
-  SetGeometry;
-  
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
   begin
@@ -1173,7 +1170,6 @@ begin
   fillchar(FPaintData, sizeOf(FPaintData), 0);
 
   // Sets it's initial properties
-  SetGeometry;
 
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
@@ -2158,12 +2154,12 @@ begin
   {$endif}
   
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
-
-
-{  if LCLObject is TTabSheet then
-    WriteLn('SlotResize: ', dbgsName(LCLObject), ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy);
+{
+  WriteLn('SlotResize: ', dbgsName(LCLObject),
+    ' AOldWidth = ', LCLObject.Width, ' AOldHeight = ', LCLObject.Height,
+    ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy
+  );
 }
-
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
   begin
@@ -2445,8 +2441,9 @@ end;
 procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
 begin
 {
-  if LCLObject is TTabSheet then
-    WriteLn('Resize: ', dbgsName(LCLObject), ' ANewWidth = ', ANewWidth, ' ANewHeight = ', ANewHeight);
+  WriteLn('Resize: ', dbgsName(LCLObject),
+    ' AOldWidth = ', LCLObject.Width, ' AOldHeight = ', LCLObject.Height,
+    ' ANewWidth = ', ANewWidth, ' ANewHeight = ', ANewHeight);
 }
   QWidget_resize(Widget, ANewWidth, ANewHeight);
 end;
@@ -3043,12 +3040,6 @@ begin
   Result := Widget;
 end;
 
-procedure TQtWidget.SetGeometry;
-begin
-  if LCLObject <> nil then
-    setGeometry(LCLObject.BoundsRect);
-end;
-
 { TQtAbstractButton }
 
 {------------------------------------------------------------------------------
@@ -3257,7 +3248,6 @@ const
 var
   W: WideString;
   AMetrics: QFontMetricsH;
-  ARect: TRect;
   AIcon: QIconH;
   ASize: TSize;
 begin
@@ -4955,12 +4945,9 @@ begin
   QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
 end;
 
-
 { TQtComboBox }
 
 function TQtComboBox.GetLineEdit: QLineEditH;
-var
-  Method: TMethod;
 begin
   if not getEditable then
   begin
@@ -6915,25 +6902,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtAbstractScrollArea.setHorizontalScrollBar(AScrollBar: TQtScrollBar);
-var
-  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.setHorizontalScrollBar');
   {$endif}
   FHScrollbar := AScrollBar;
   if Assigned(FHScrollBar) then
-  begin
     QAbstractScrollArea_setHorizontalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FHScrollBar.Widget));
-    {$note WORKAROUND}
-    if not (csDesigning in LCLObject.ComponentState) then
-    begin
-      i := getHeight;
-      QWidget_resize(Widget,getWidth,i + GetSystemMetrics(SM_CYHSCROLL));
-      QWidget_update(Widget);
-      QWidget_resize(Widget,getWidth, i);
-    end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6942,25 +6917,13 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtAbstractScrollArea.setVerticalScrollBar(AScrollBar: TQtScrollBar);
-var
-  i: Integer;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.setVerticalScrollBar');
   {$endif}
   FVScrollBar := AScrollBar;
   if Assigned(FVScrollBar) then
-  begin
     QAbstractScrollArea_setVerticalScrollBar(QAbstractScrollAreaH(Widget), QScrollBarH(FVScrollBar.Widget));
-    {$note WORKAROUND}
-    if not (csDesigning in LCLObject.ComponentState) then
-    begin
-      i := getWidth;
-      QWidget_resize(Widget,i + GetSystemMetrics(SM_CXVSCROLL), getHeight);
-      QWidget_update(Widget);
-      QWidget_resize(Widget,i, GetHeight);
-    end;
-  end;
 end;
 
 procedure TQtAbstractScrollArea.setVisible(visible: Boolean);
