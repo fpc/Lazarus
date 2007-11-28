@@ -201,7 +201,7 @@ begin
     TextTop := 0;
   end else
   begin
-    GetPreferredSize(lTextWidth, lTextHeight);
+    GetPreferredSize(lTextWidth, lTextHeight, True);
     case Layout of
       tlCenter: TextTop := (Height - lTextHeight) div 2;
       tlBottom: TextTop := Height - lTextHeight;
