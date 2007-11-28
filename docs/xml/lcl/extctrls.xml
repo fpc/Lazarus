@@ -1090,7 +1090,9 @@
 : One of the pages in a tabbed Notebook</p>
           <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomPage">TCustomPage</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TPage.Caption">
@@ -1220,12 +1222,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TNotebook">
-        <short><i>TNotebook</i>
-
-
-
-
- : A series of tabbed <i>pages</i>  placed together to make a notebook</short>
+        <short><i>TNotebook</i>       : A series of tabbed <i>pages</i>   placed together to make a notebook</short>
         <descr>
           <p><i>TNotebook</i>
 
@@ -1234,9 +1231,12 @@
 
 : A series of tabbed <i>pages</i> placed together to make a notebook</p>
           <p>A notebook consists of several <i>Pages</i>, usually of similar type and kept indexed. They may contain <i>Images</i> listed in a table. One page is displayed at a time, but the other pages are indicated by tabs which may have their names on them, and a different page can be selected by clicking its tab </p>
-          <p>Inherits most of its properties from <link id="#lcl.StdCtrls.TCustomNotebook">TCustomNoteBook</link></p>
+          <p>Inherits most of its properties from <link id="#lcl.ExtCtrls.TCustomNotebook">TCustomNoteBook</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.ExtCtrls.TPage">TPage</link>
+        </seealso>
       </element>
       <!-- function Visibility: private -->
       <element name="TNotebook.GetActiveNotebookPageComponent">
@@ -1424,8 +1424,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TTimer">
-        <short>Timer</short>
-        <descr>Timer: An elapsed timer useful in many applications</descr>
+        <short><i>TTimer</i>: An elapsed timer useful in many applications</short>
+        <descr>
+          <p><i>TTimer</i>: An elapsed timer useful in many applications</p>
+          <p>Inherits most of its properties from <link id="#lcl.CustomTimer.TCustomTimer">TCustomTimer</link></p>
+        </descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TIdleTimerAutoEvent">
@@ -1447,8 +1450,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TIdleTimer">
-        <short>Idle Timer</short>
-        <descr>Idle Timer: A timer to measure idle time between processes</descr>
+        <short><i>TIdleTimer</i> : A timer to measure idle time between processes</short>
+        <descr>
+          <p><i>TIdleTimer</i>: A timer to measure idle time between processes</p>
+          <p>Inherits most of its properties from <link id="#lcl.CustomTimer.TCustomTimer">TCustomTimer</link></p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TIdleTimer.FAutoEnabled">
@@ -2089,10 +2095,10 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TSplitter">
-        <short><i>TSplitter</i>: A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally</short>
+        <short><i>TSplitter</i> : A vertical or horizontal bar placed on a panel or form, to separate sub-panels functionally</short>
         <descr>
           <p><i>TSplitter</i>: A vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
-          <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user with the ResizeControl property</p>
+          <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user by moving the whole control with the mouse, and its size can be adjusted using the sizing bars and with the <i>ResizeAnchor</i> property </p>
         </descr>
         <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
@@ -2210,7 +2216,9 @@
         <descr>
           <p><i>TPaintBox</i>: a painted rectangular box with defined size and colour</p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPaintBox.FOnPaint">
@@ -2386,7 +2394,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomImage">
-        <short>Custom Image</short>
+        <short><i>TCustomImage</i> - the base type for <i>TImage</i></short>
         <descr><i>TCustomImage</i>
 
 
@@ -2394,8 +2402,11 @@
 
 
 
-: The base type for <i>TImage</i>. This is a control of the class <i>TGraphicControl</i>, designed to be lightweight and fast</descr>
-        <seealso><link id="#lcl.Controls.TGraphicControl"/></seealso>
+
+: The base type for <i>TImage</i>
+. This is a control of the class <i>TGraphicControl</i>
+, designed to be lightweight and fast</descr>
+        <seealso><link id="#lcl.Controls.TGraphicControl">TGraphicControl</link></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImage.FPicture">
@@ -2598,7 +2609,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TImage">
-        <short>Image - a graphic image placed on the form; usually loaded from a picture file.</short>
+        <short><i>TImage</i> - a graphic image placed on the form; usually loaded from a picture file.</short>
         <descr>
           <p><i>TImage</i>
 
@@ -2966,15 +2977,18 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TColumnLayout.clHorizontalThenVertical">
-        <short>NoteBook Pages - an array of strings containing the names of the pages</short>
-      </element>
+      <element name="TColumnLayout.clHorizontalThenVertical"/>
       <!-- enumeration value Visibility: default -->
       <element name="TColumnLayout.clVerticalThenHorizontal"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomRadioGroup">
-        <short>Custom Radio Group</short>
-        <descr>Custom Radio Group: the base type for Radio Group</descr>
+        <short><i>TCustomRadioGroup:</i>   the base type for <i>TRadioGroup</i></short>
+        <descr>
+          <p><i>TCustomRadioGroup:</i> the base type for <i>TRadioGroup</i></p>
+          <p>A group of related but mutually exclusive radio buttons,
+requiring the user to select one af a set of alternatives</p>
+          <p>This class defines <i>Items</i>, where the captions for individual radio boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the radio boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomRadioGroup.FButtonList">
@@ -3131,9 +3145,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i> - a string list containing the captions for the radio boxes</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.Columns">
@@ -3143,9 +3155,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.ColumnLayout">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ColumnLayout</i>  - <i>HorizontalThenVertical </i> or vice versa</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.OnClick">
@@ -3196,9 +3206,13 @@
       <element name="TCustomRadioGroup.Rows.Result"><short/></element>
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
-        <short>Radio Group</short>
-        <descr>Radio Group: A group of related but mutually exclusive radio buttons,
-requiring the user to select one af a set of alternatives</descr>
+        <short><i>TRadioGroup</i>  : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
+        <descr>
+          <p><i>TRadioGroup</i>: A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
+          <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
+          <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></p>
+        </descr>
+        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Align">
@@ -3220,9 +3234,7 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Caption </i>- the text string appearing above the whole RadioGroup box</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.ChildSizing">
@@ -3274,9 +3286,13 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i> - a string list containing the captions of the radio boxes</short>
+        <descr>
+          <p><i>Items</i> - a string list containing the captions of the radio boxes</p>
+          <p>
+            Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties</i>
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.OnChangeBounds">
@@ -3398,8 +3414,9 @@ requiring the user to select one af a set of alternatives</descr>
       <element name="TCheckGroupClicked.Index"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomCheckGroup">
-        <short>Custom Check Group</short>
-        <descr>Custom Check Group: The base type for Check Group</descr>
+        <short><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></short>
+        <descr><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i><p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p></descr>
+        <seealso><link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomCheckGroup.FButtonList">
@@ -3617,9 +3634,7 @@ requiring the user to select one af a set of alternatives</descr>
       <element name="TCustomCheckGroup.Rows.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i> - a string list for the captions of the check boxes</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Checked">
@@ -3645,9 +3660,7 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.ColumnLayout">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ColumnLayout</i> - <i>HorizontalThenVertical </i>or vice versa</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.OnItemClick">
@@ -3657,8 +3670,17 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCheckGroup">
-        <short>Check Group</short>
-        <descr>Checck Group: A group of Check Boxes physically and logically grouped together on a form</descr>
+        <short><i>TCheckGroup</i>  : A group of Check Boxes physically and logically grouped together on a form</short>
+        <descr>
+          <p><i>TCheckGroup</i>: A group of Check Boxes physically and logically grouped together on a form</p>
+          <p>To Use this control, place it in the required position on the form, then
+either right-click on the control to see the pop-up CheckGroup editor, or in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. In either case, type in the captions to accompany each check box, then close the string or CheckGroup editor and you will see a series of boxes with their captions displayed beside them.</p>
+          <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomCheckGroup">TCustomCheckGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></p>
+        </descr>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Align">
@@ -3680,8 +3702,10 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Caption">
-        <short>Caption</short>
-        <descr>Caption: the string which appears as a caption to describe the function of the Check Group</descr>
+        <short><i>Caption</i>: the string which appears at the top of the Check Group Box</short>
+        <descr>
+          <p><i>Caption</i>: the string which appears as a caption at the top of the Check Group Box to describe the function of the Check Group as a whole</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.ChildSizing">
@@ -3727,9 +3751,11 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i>  - a string list containing the captions of the check boxes</short>
+        <descr>
+          <p><i>Items</i> - a string list containing the captions of the check boxes</p>
+          <p>Use the String List editor or the CheckGroup editor (opened by right-clicking on the control in the Form) to insert the captions for the check boxes, and determine their order and layout</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckGroup.OnChangeBounds">
@@ -3847,8 +3873,9 @@ requiring the user to select one af a set of alternatives</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TBoundLabel">
-        <short>Bound Label</short>
-        <descr>Bound Label: A label bound to another object, for example in Labelled Edit</descr>
+        <short><i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i></short>
+        <descr><i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i></descr>
+        <seealso><link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link></seealso>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBoundLabel.Create">
@@ -4019,8 +4046,8 @@ requiring the user to select one af a set of alternatives</descr>
           <p>Note particularly the <link id="TCustomLabeledEdit.EditLabel">EditLabel</link> property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains the label attached to the Edit control.</p>
         </descr>
         <seealso>
-          <link id="#lcl.StdCtrls.TCustomEdit"/>
-          <link id="#lcl.StdCtrls.TCustomLabel"/>
+          <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
+          <link id="#lcl.StdCtrls.TCustomLabel">TCustomLabel</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -4187,8 +4214,8 @@ requiring the user to select one af a set of alternatives</descr>
           <p>Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited</p>
         </descr>
         <seealso>
-          <link id="#lcl.StdCtrls.TCustomEdit"/>
-          <link id="#lcl.ExtCtrls.TBoundLabel"/>
+          <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
+          <link id="#lcl.ExtCtrls.TBoundLabel">TBoundLabel</link>
         </seealso>
       </element>
       <!-- property Visibility: published -->
@@ -4616,7 +4643,9 @@ requiring the user to select one af a set of alternatives</descr>
           <p>Most of the properties are defined in ancestor classes including <link id="#lcl.ExtCtrls.TCustomPanel">TCustomPanel</link>, <link id="#lcl.Controls.TCustomControl">TCustomControl</link> and <link id="#lcl.Controls.TWinControl">TWinControl</link></p>
           <p>Any controls such as buttons or check boxes that are placed inside the panel become its children, and inherit many of its properties. If the Panel is moved, the child controls move with it. Any part of a child control that falls outside the panel becomes invisible.</p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.Align">
