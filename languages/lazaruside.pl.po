@@ -9709,6 +9709,10 @@ msgstr ""
 msgid "View component palette"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Pokaż wyjście debuggera"

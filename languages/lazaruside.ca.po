@@ -9705,6 +9705,10 @@ msgstr ""
 msgid "View component palette"
 msgstr "Vore paleta de components"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Mostra la sortida del depurador"

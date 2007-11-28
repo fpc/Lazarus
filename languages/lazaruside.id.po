@@ -9705,6 +9705,10 @@ msgstr "Lihat browser kode"
 msgid "View component palette"
 msgstr "Lihat palet komponen"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Lihat output debugger"

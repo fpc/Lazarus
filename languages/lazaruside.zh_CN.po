@@ -9708,6 +9708,10 @@ msgstr ""
 msgid "View component palette"
 msgstr "查看组件面板"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "查看调试器输出"

@@ -180,6 +180,7 @@ type
         itmViewCodeExplorer: TIDEMenuCommand;
         itmViewLazDoc: TIDEMenuCommand;
         itmViewCodeBrowser: TIDEMenuCommand;
+        itmViewComponents: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;
         itmViewForms: TIDEMenuCommand;

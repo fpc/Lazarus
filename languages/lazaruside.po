@@ -690,6 +690,10 @@ msgstr ""
 msgid "Code Browser"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewcomponents
+msgid "&Components"
+msgstr ""
+
 #: lazarusidestrconsts:lismenujumpto
 msgid "Jump to"
 msgstr ""
@@ -5632,6 +5636,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies

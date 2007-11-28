@@ -251,6 +251,7 @@ resourcestring
   lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewCodeBrowser = 'Code Browser';
+  lisMenuViewComponents = '&Components';
   lisMenuJumpTo = 'Jump to';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
@@ -1781,6 +1782,7 @@ resourcestring
   srkmecTogglecallStack           = 'View call stack';
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
+  srkmecViewComponents            = 'View components';
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';

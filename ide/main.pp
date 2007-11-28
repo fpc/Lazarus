@@ -100,8 +100,8 @@ uses
   // help manager
   IDEContextHelpEdit, HelpManager,
   // designer
-  JITForm, JITForms, ComponentPalette, ComponentReg, ObjInspExt,
-  Designer, FormEditor, CustomFormEditor,
+  JITForm, JITForms, ComponentPalette, FindPaletteComp, ComponentReg,
+  ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
@@ -236,6 +236,7 @@ type
     procedure mnuViewLazDocClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
+    procedure mnuViewComponentsClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
@@ -685,6 +686,7 @@ type
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
+    procedure DoShowComponents;
     procedure DoShowLazDoc;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
@@ -2059,6 +2061,7 @@ begin
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
     itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
+    itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewLazDoc.OnClick := @mnuViewLazDocClicked;  //DBlaszijk 5-sep-05
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
@@ -2584,6 +2587,9 @@ begin
   ecToggleCodeBrowser:
     DoShowCodeBrowser;
 
+  ecViewComponents:
+    DoShowComponents;
+    
   ecToggleLazDoc:
     DoShowLazDoc;
 
@@ -3096,6 +3102,11 @@ end;
 Procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
 begin
   DoShowCodeBrowser;
+end;
+
+Procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
+begin
+  DoShowComponents;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -7144,6 +7155,13 @@ begin
   end;
 
   CodeBrowserView.ShowOnTop;
+end;
+
+procedure TMainIDE.DoShowComponents;
+var AComponent: TRegisteredComponent;
+begin
+  if ShowFindPaletteComponentDlg(AComponent) = mrOk
+  then TComponentPalette(IDEComponentPalette).Selected := AComponent;
 end;
 
 procedure TMainIDE.DoShowLazDoc;

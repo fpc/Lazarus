@@ -9727,6 +9727,10 @@ msgstr "Rodyti kodo naršyklę"
 msgid "View component palette"
 msgstr "Rodyti komponenčių paletę"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Rodyti derintuvės išvestį"

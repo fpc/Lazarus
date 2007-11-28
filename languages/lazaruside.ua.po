@@ -9694,6 +9694,10 @@ msgstr "Браузер коду програми"
 msgid "View component palette"
 msgstr "Переглянути палітру компонетів"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Переглядання виводу налагоджувача"

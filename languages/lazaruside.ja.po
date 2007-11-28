@@ -9704,6 +9704,10 @@ msgstr "コードブラウザを表示"
 msgid "View component palette"
 msgstr "コンポーネントパレットを表示"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "デバッガ出力を表示"
