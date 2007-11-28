@@ -1836,8 +1836,9 @@ begin
 
   ARect := TQtWidget(handle).getClientBounds;
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  //WriteLn('ClientRect: ', dbgsName(TQtWidget(handle).LCLObject), ' Width = ', ARect.Right, ' Height = ', ARect.Bottom);
 
-  Result:=true;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

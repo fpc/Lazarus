@@ -153,7 +153,6 @@ type
     function getEnabled: Boolean;
     function getFocusPolicy: QtFocusPolicy;
     function getFrameGeometry: TRect;
-    function getThickness: TSize;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
     function getText: WideString; virtual;
@@ -586,12 +585,14 @@ type
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
     function insertTab(index: Integer; page: QWidgetH; icon: QIconH; p2: WideString): Integer; overload;
+    function getClientBounds: TRect; override;
     function getCurrentIndex: Integer;
     procedure removeTab(AIndex: Integer);
     procedure setCurrentIndex(AIndex: Integer);
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabText(index: Integer; p2: WideString);
+
     property TabBar: QTabBarH read getTabBar;
   end;
 
@@ -2157,6 +2158,11 @@ begin
   
   NewSize := QResizeEvent_size(QResizeEventH(Event))^;
 
+{
+  if LCLObject is TTabSheet then
+    WriteLn('SlotResize: ', dbgsName(LCLObject), ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy);
+}
+
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
   begin
@@ -2363,16 +2369,6 @@ begin
   QWidget_frameGeometry(Widget, @Result);
 end;
 
-function TQtWidget.getThickness: TSize;
-var
-  AFrameRect, ARect: TRect;
-begin
-  QWidget_frameGeometry(Widget, @AFrameRect);
-  QWidget_geometry(Widget, @ARect);
-  Result.cx := (AFrameRect.Right - AFrameRect.Left) - (ARect.Right - ARect.Left);
-  Result.cy := (AFrameRect.Bottom - AFrameRect.Top) - (ARect.Bottom - ARect.Top);
-end;
-
 function TQtWidget.getGeometry: TRect;
 begin
   QWidget_geometry(Widget, @Result);
@@ -2447,6 +2443,10 @@ end;
 
 procedure TQtWidget.resize(ANewWidth, ANewHeight: Integer);
 begin
+{
+  if LCLObject is TTabSheet then
+    WriteLn('Resize: ', dbgsName(LCLObject), ' ANewWidth = ', ANewWidth, ' ANewHeight = ', ANewHeight);
+}
   QWidget_resize(Widget, ANewWidth, ANewHeight);
 end;
 
@@ -4860,6 +4860,16 @@ begin
     Result := QTabWidget_insertTab(QTabWidgetH(Widget), index, page, @p2);
 end;
 
+function TQtTabWidget.getClientBounds: TRect;
+var
+  option: QStyleOptionTabWidgetFrameH;
+begin
+  option := QStyleOptionTabWidgetFrame_create();
+  QStyleOption_initFrom(QStyleOptionH(option), Widget);
+  QStyle_subElementRect(QWidget_style(Widget), @Result, QStyleSE_TabWidgetTabContents, option, Widget);
+  QStyleOptionTabWidgetFrame_destroy(option);
+end;
+
 function TQtTabWidget.getCurrentIndex: Integer;
 begin
   Result := QTabWidget_currentIndex(QTabWidgetH(Widget));
@@ -5120,12 +5130,18 @@ begin
   if not AValue then
     FLineEdit := nil
   else
+  begin
     QWidget_setFocusPolicy(LineEdit, getFocusPolicy);
+    setText(FText);
+  end;
 end;
 
 procedure TQtComboBox.setText(const W: WideString);
 begin
-  QComboBox_setEditText(QComboBoxH(Widget), @W);
+  if FLineEdit = nil then
+    FText := W
+  else
+    QComboBox_setEditText(QComboBoxH(Widget), @W);
 end;
 
 procedure TQtComboBox.removeItem(AIndex: Integer);
@@ -6984,7 +7000,6 @@ begin
 
   if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
     dec(Result.Bottom, FHScrollBar.getHeight);
-
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
