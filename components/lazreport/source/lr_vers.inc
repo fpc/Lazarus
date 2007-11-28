@@ -36,6 +36,11 @@
 //{$DEFINE IBX}
 
 //------------------- LazReport Options
+//
+// Enabling following define allow initialization of global localization
+// variables using libc. This is not supported in all platforms, see readme.txt
+//{$DEFINE UseLibC}
+//
 // Controls the modal behaviour of Report Designer, modal by default.
 {$DEFINE MODALDESIGNER}
 //

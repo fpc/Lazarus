@@ -41,7 +41,11 @@ interface
 
 {$IFDEF LINUX}
 uses
-  Classes, SysUtils,LibC;
+  Classes, SysUtils
+  {$IFDEF UseLibC}
+  ,LibC
+  {$ENDIF}
+  ;
 {$ENDIF}
 
 implementation
@@ -57,9 +61,11 @@ Var i      : Integer;
    Function ConvertLinuxDateFormatToFp(Fmt,Dflt : String):string;
    begin
      try
+       {$IFDEF UseLibC}
        Fmt:=StringReplace(Fmt,'%x',nl_langinfo(D_FMT),[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%X',nl_langinfo(T_FMT),[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%r',nl_langinfo(T_FMT_AMPM),[rfReplaceAll]);
+       {$ENDIF}
 
        Fmt:=StringReplace(Fmt,'%a','ddd',[rfReplaceAll]);
        Fmt:=StringReplace(Fmt,'%A','dddd',[rfReplaceAll]);
@@ -166,6 +172,8 @@ Var i      : Integer;
    end;
 
 begin
+
+  {$IFDEF UseLibC}
   //Months
   for i:=1 to 12 do
   begin
@@ -208,11 +216,13 @@ begin
     end;
   end;
   ShortDateFormat:=StringReplace(ShortDateFormat,DateSeparator,'/',[rfReplaceAll]);
+  {$ENDIF}
 
   //KDE config
   if DirectoryExists(ExpandFileName('~/.kde/share/config')) then
   begin
-    Lg:=Copy(GetEnv('LANG'),1,2); //Langue
+
+    Lg:=Copy(GetEnvironmentVariable('LANG'),1,2); //Langue
     LstKde:=TStringList.Create;
     try
       ReadKdeFileConfig(Format('/usr/share/locale/l10n/%s/entry.desktop',[Lg]),'[KCM Locale]',LstKde);
