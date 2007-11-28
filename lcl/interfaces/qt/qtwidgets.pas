@@ -2160,6 +2160,8 @@ begin
     ' ANewWidth = ', NewSize.cx, ' ANewHeight = ', NewSize.cy
   );
 }
+  if not Assigned(LCLObject) then exit;
+  
   if (NewSize.cx <> LCLObject.Width) or (NewSize.cy <> LCLObject.Height) or
      (LCLObject.ClientRectNeedsInterfaceUpdate) then
   begin
