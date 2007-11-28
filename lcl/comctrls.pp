@@ -1082,6 +1082,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnResize;
     property OnSelectItem;
     property OnStartDrag;
   end;
