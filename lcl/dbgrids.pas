@@ -1336,6 +1336,7 @@ begin
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged INIT'); {$endif}
   if UpdateGridCounts=0 then
     EmptyGrid;
+  UpdateScrollbarRange;
   RestoreEditor;
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
 end;
