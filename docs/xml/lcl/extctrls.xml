@@ -3290,7 +3290,7 @@ requiring the user to select one af a set of alternatives</p>
         <descr>
           <p><i>Items</i> - a string list containing the captions of the radio boxes</p>
           <p>
-            Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties</i>
+            Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties
           </p>
         </descr>
       </element>
@@ -3415,7 +3415,7 @@ requiring the user to select one af a set of alternatives</p>
       <!-- object Visibility: default -->
       <element name="TCustomCheckGroup">
         <short><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></short>
-        <descr><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i><p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p></descr>
+        <descr><p><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></p><p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p></descr>
         <seealso><link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></seealso>
       </element>
       <!-- variable Visibility: private -->
