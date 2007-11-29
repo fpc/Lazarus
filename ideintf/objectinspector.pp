@@ -39,7 +39,7 @@ uses
   LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, LMessages,
   LResources, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
-  ComponentTreeView, ComponentEditors;
+  ComponentTreeView, ComponentEditors, IDEImagesIntf;
 
 const
   OIOptionsFileVersion = 2;
@@ -3058,11 +3058,12 @@ end;
 constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
 
   procedure AddPopupMenuItem(var NewMenuItem: TMenuItem;
-    ParentMenuItem: TMenuItem; const AName, ACaption, AHint: string;
+    ParentMenuItem: TMenuItem; const AName, ACaption, AHint, AResourceName: string;
     AnOnClick: TNotifyEvent; CheckedFlag, EnabledFlag, VisibleFlag: boolean);
   begin
     NewMenuItem:=TMenuItem.Create(Self);
-    with NewMenuItem do begin
+    with NewMenuItem do 
+    begin
       Name:=AName;
       Caption:=ACaption;
       Hint:=AHint;
@@ -3070,6 +3071,8 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       Checked:=CheckedFlag;
       Enabled:=EnabledFlag;
       Visible:=VisibleFlag;
+      if AResourceName <> '' then
+        ImageIndex := IDEImages.LoadImage(16, AResourceName);
     end;
     if ParentMenuItem<>nil then
       ParentMenuItem.Add(NewMenuItem)
@@ -3107,47 +3110,49 @@ begin
   Caption := oisObjectInspector;
   StatusBar.SimpleText:=oisAll;
 
+  MainPopupMenu.Images := IDEImages.Images_16;
+
   AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
-     'Set to Default value','Set property value to Default',
+     'Set to Default value','Set property value to Default', '',
      @OnSetDefaultPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(AddToFavoritesPopupMenuItem,nil,'AddToFavoritePopupMenuItem',
-     oisAddtofavorites,'Add property to favorites properties',
+     oisAddtofavorites,'Add property to favorites properties', '',
      @OnAddToFavoritesPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(RemoveFromFavoritesPopupMenuItem,nil,
      'RemoveFromFavoritesPopupMenuItem',
-     oisRemovefromfavorites,'Remove property from favorites properties',
+     oisRemovefromfavorites,'Remove property from favorites properties', '',
      @OnRemoveFromFavoritesPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
-     oisUndo,'Set property value to last valid value',
+     oisUndo,'Set property value to last valid value', '',
      @OnUndoPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(FindDeclarationPopupmenuItem,nil,'FindDeclarationPopupmenuItem',
-     oisFinddeclaration,'Jump to declaration of property',
+     oisFinddeclaration,'Jump to declaration of property', '',
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
-     oisCutComponents,'Cut selected item',
+     oisCutComponents,'Cut selected item', 'menu_edit_cut',
      @OnCutPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
-     oisCopyComponents,'Copy selected item',
+     oisCopyComponents,'Copy selected item', 'menu_edit_copy',
      @OnCopyPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
-     oisPasteComponents,'Paste selected item',
+     oisPasteComponents,'Paste selected item', 'menu_edit_paste',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
-     oisDeleteComponents,'Delete selected item',
+     oisDeleteComponents,'Delete selected item', '',
      @OnDeletePopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(OptionsSeparatorMenuItem2,nil,'',
-     '-','',nil,false,true,true);
+  AddPopupMenuItem(OptionsSeparatorMenuItem2,nil, '', 
+     '-','','',nil,false,true,true);
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
-     ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints'
+     ,'ShowHintPopupMenuItem',oisShowHints,'Grid hints', ''
      ,@OnShowHintPopupMenuItemClick,false,true,true);
   ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
   AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
-     ,'ShowComponentTreePopupMenuItem',oisShowComponentTree,''
+     ,'ShowComponentTreePopupMenuItem',oisShowComponentTree, '', ''
      ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
   ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
-     ,'ShowOptionsPopupMenuItem',oisOptions,''
+     ,'ShowOptionsPopupMenuItem',oisOptions,'', 'menu_environment_options'
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
 
   // combobox at top (filled with available persistents)
