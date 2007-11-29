@@ -205,7 +205,7 @@ begin
   Cat:=IDECommandList.FindCategoryByName(CommandCategoryToolMenuName);
   CmdH2PasTool := RegisterIDECommand(Cat                 ,
          h2pH2Pas, h2pCreateUnitsFromCHeaderFiles, Key, nil, @ExecuteH2PasTool);
-  RegisterIDEMenuCommand(itmSecondaryTools, h2pH2PasTool, h2pH2Pas, nil, nil,
+  RegisterIDEMenuCommand(itmSecondaryTools, h2pH2PasTool, h2pH2Pas, '', nil, nil,
                          CmdH2PasTool);
 
   // register text converter tools
@@ -836,7 +836,7 @@ begin
   // selection or line of the source editor.
   fSrcEditAddSearchReplaceMenuItem:=RegisterIDEMenuCommand(SrcEditSection,
       'Add "search and replace" tool before h2pas',
-      'Add "search and replace" tool before h2pas',
+      'Add "search and replace" tool before h2pas', '',
       @OnAddSearchAndReplaceBeforeH2PasClick);
 end;
 

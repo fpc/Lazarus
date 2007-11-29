@@ -54,22 +54,27 @@ begin
   CmdFormatFile:=RegisterIDECommand(Cat,
                                     SCmdPFFile,
                                     SDescrPFFile,
+                                    '',
                                     Key,nil,@PrettyPrintFile);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFSelection,
                          SDescrPFSelection,
+                         '',
                          Nil,nil,CmdFormatSelection);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFFile,
                          SDescrPFFile,
+                         '',
                          Nil,nil,CmdFormatFile);
   RegisterIDEMenuCommand(itmEditBlockIndentation,
                          SCmdPFSelection,
                          SDescrPFSelection,
+                         '',
                          Nil,nil,CmdFormatSelection);
   RegisterIDEMenuCommand(itmEditBlockIndentation,
                          SCmdPFFile,
                          SDescrPFFile,
+                         '',
                          Nil,nil,CmdFormatFile);
 end;
 

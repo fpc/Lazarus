@@ -56,23 +56,26 @@ begin
 {$endif}
   CmdFormatSelection:=RegisterIDECommand(Cat,
                                          'PrintSelection',
-                                         SDescrPFSelection,
+                                         SDescrPFSelection, 
                                          Key,nil,@PrintFile);
 
   //file main menu item
   RegisterIDEMenuCommand(itmFileDirectories,
                          'PrintSelection',
-                         SDescrPFSelection,
+                         SDescrPFSelection, 
+                         '',
                          nil,nil,CmdFormatSelection);
 
   //source editor popup
   RegisterIDEMenuCommand(SrcEditMenuSectionMovePage,
                          '-',
-                         '-',
+                         '-', 
+                         '',
                          nil,nil,nil);
   RegisterIDEMenuCommand(SrcEditMenuSectionMovePage,
                          'PrintSelection',
-                         SDescrPFSelection,
+                         SDescrPFSelection, 
+                         '',
                          nil,nil,CmdFormatSelection);
 end;
 
