@@ -73,7 +73,7 @@ type
     procedure ClearLinks;
     procedure IteratePackages(APackage: TLazPackageID);
   public
-    { public declarations }
+    destructor Destroy; override;
   end; 
 
 function ShowPackageLinks: TModalResult;
@@ -190,6 +190,12 @@ begin
   NewLink.Assign(APackage);
   NewLink.Origin:=FCollectingOrigin;
   FLinks.Add(NewLink);
+end;
+
+destructor TPackageLinksDialog.Destroy;
+begin
+  ClearLinks;
+  inherited Destroy;
 end;
 
 { TPkgLinkInfo }
