@@ -83,7 +83,7 @@ type
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; override;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
