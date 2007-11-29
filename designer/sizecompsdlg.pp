@@ -42,6 +42,7 @@ type
     HeightRadioGroup: TRadioGroup;
     WidthEdit: TEdit;
     HeightEdit: TEdit;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormResize(Sender: TObject);
   public
     constructor Create(AOwner: TComponent);  override;
@@ -73,6 +74,12 @@ begin
   WidthRadioGroup.Width := ClientWidth div 2 - 9;
   HeightRadioGroup.Left := WidthRadioGroup.Width + 12;
   HeightRadioGroup.Width := ClientWidth div 2 - 9;
+end;
+
+procedure TSizeComponentsDialog.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  CloseAction := caFree;
 end;
 
 constructor TSizeComponentsDialog.Create(AOwner: TComponent);
