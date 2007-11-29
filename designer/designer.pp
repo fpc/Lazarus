@@ -2533,6 +2533,7 @@ begin
     NewMenuCmd:=RegisterIDEMenuCommand(DesignerMenuSectionComponentEditor,
       'ComponentEditorVerMenuItem'+IntToStr(i),
       AComponentEditor.GetVerb(i),
+      '',
       @OnComponentEditorVerbMenuItemClick);
     if NewMenuCmd.MenuItem<>nil then
       AComponentEditor.PrepareItem(i,NewMenuCmd.MenuItem);
