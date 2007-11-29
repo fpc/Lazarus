@@ -603,7 +603,7 @@ var i: integer;
   Dir: string;
 begin
   DoDirSeparators(DirectoryName);
-  DirectoryName:=IncludeTrailingPathDelimiter(DirectoryName);
+  DirectoryName:=AppendPathDelim(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
     if DirectoryName[i]=PathDelim then begin
