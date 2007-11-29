@@ -2426,8 +2426,11 @@ var
           NewLeft:=NewRight-NewWidth;
         end else begin
           // do not anchor to the right
-          // -> keep new width and center horizontally
-          NewLeft:=(ParentClientWidth-NewWidth) div 2;
+          // -> keep new width and scale center position.
+          NewLeft:=MulDiv(ParentClientWidth,
+                          (CurBaseBounds.Left+CurBaseBounds.Right) div 2,
+                          ParentBaseClientSize.X)
+                   -(NewWidth div 2);
         end;
       end;
 
@@ -2460,8 +2463,11 @@ var
           NewTop:=NewBottom-NewHeight;
         end else begin
           // do not anchor to the bottom
-          // -> keep new height and center vertically
-          NewTop:=(ParentClientHeight-NewHeight) div 2;
+          // -> keep new height and scale center position.
+          NewTop:=MulDiv(ParentClientHeight,
+                         (CurBaseBounds.Top+CurBaseBounds.Bottom) div 2,
+                         ParentBaseClientSize.Y)
+                  -(NewHeight div 2);
         end;
       end;
       {$IFDEF CHECK_POSITION}
