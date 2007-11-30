@@ -147,8 +147,7 @@ begin
     RegisterProjectDescriptor(ProjDesc,STemplateCategory);
     ProjMenu:=RegisterIDEMenuCommand(itmFileNewFromTemplate,
                                      SItmtemplate+Atemplate.Name,
-                                     ATemplate.Name,
-                                     '',
+                                     ATemplate.Name,                                     
                                      Nil,@DoProject,Nil);
     MenuList.Add(TIDEObject.Create(ProjDesc,ProjMenu));
     end;
@@ -191,7 +190,7 @@ end;
 procedure Register;
 
 begin
-  RegisterIdeMenuCommand(itmCustomTools,STemplateSettings,SProjectTemplateSettings,'',nil,@ChangeSettings);
+  RegisterIdeMenuCommand(itmCustomTools,STemplateSettings,SProjectTemplateSettings,nil,@ChangeSettings);
   itmFileNewFromTemplate:=RegisterIDESubMenu(itmFileNew,
                                              'itmFileFromtemplate',
                                              SNewFromTemplate);

@@ -408,11 +408,11 @@ begin
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                            'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Cut',lisMenuCut, 'menu_edit_cut');
+                                            'Cut',lisMenuCut, nil, nil, nil, 'menu_edit_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Copy',lisMenuCopy, 'menu_edit_copy');
+                                            'Copy',lisMenuCopy, nil, nil, nil, 'menu_edit_copy');
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Paste',lisMenuPaste, 'menu_edit_paste');
+                                            'Paste',lisMenuPaste, nil, nil, nil, 'menu_edit_paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                          'Delete selection',fdmDeleteSelection);
 
@@ -438,7 +438,7 @@ begin
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                'Snap to guide lines',fdmSnapToGuideLinesOption);
     DesignerMenuShowOptions:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
-                                                 'Show options',fdmShowOptions, 'menu_environment_options');
+                                                 'Show options',fdmShowOptions, nil, nil, nil, 'menu_environment_options');
 end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
@@ -2533,7 +2533,6 @@ begin
     NewMenuCmd:=RegisterIDEMenuCommand(DesignerMenuSectionComponentEditor,
       'ComponentEditorVerMenuItem'+IntToStr(i),
       AComponentEditor.GetVerb(i),
-      '',
       @OnComponentEditorVerbMenuItemClick);
     if NewMenuCmd.MenuItem<>nil then
       AComponentEditor.PrepareItem(i,NewMenuCmd.MenuItem);

@@ -420,16 +420,16 @@ function RegisterIDESubMenu(const Path, Name, Caption: string;
                             ): TIDEMenuSection; overload;
 function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const Name, Caption: string;
-                                const ResourceName: String = '';
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand; overload;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
-                                const ResourceName: String = '';
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand; overload;
 
 implementation
@@ -485,10 +485,10 @@ end;
 
 function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const Name, Caption: string;
-                                const ResourceName: String = '';
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand;
 begin
   Result := TIDEMenuCommand.Create(Name);
@@ -501,18 +501,18 @@ begin
 end;
 
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
-                                const ResourceName: String = '';
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand;
 var
   Parent: TIDEMenuSection;
 begin
   //debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
   Parent := IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
-  Result := RegisterIDEMenuCommand(Parent, Name, Caption, ResourceName,
-    OnClickMethod, OnClickProc, Command);
+  Result := RegisterIDEMenuCommand(Parent, Name, Caption,
+    OnClickMethod, OnClickProc, Command, ResourceName);
 end;
 
 { TIDEMenuItem }

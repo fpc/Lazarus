@@ -886,7 +886,6 @@ begin
       RegisterIDEMenuCommand(MsgQuickFixIDEMenuSection,
                              QuickFixItem.Name,
                              QuickFixItem.Caption,
-                             '',
                              @OnQuickFixClick);
     end;
   end;

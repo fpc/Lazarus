@@ -63,19 +63,16 @@ begin
   RegisterIDEMenuCommand(itmFileDirectories,
                          'PrintSelection',
                          SDescrPFSelection, 
-                         '',
                          nil,nil,CmdFormatSelection);
 
   //source editor popup
   RegisterIDEMenuCommand(SrcEditMenuSectionMovePage,
                          '-',
                          '-', 
-                         '',
                          nil,nil,nil);
   RegisterIDEMenuCommand(SrcEditMenuSectionMovePage,
                          'PrintSelection',
                          SDescrPFSelection, 
-                         '',
                          nil,nil,CmdFormatSelection);
 end;
 
