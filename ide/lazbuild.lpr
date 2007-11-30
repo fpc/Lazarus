@@ -437,6 +437,9 @@ begin
   
   if Project1.MainUnitInfo=nil then
     Error(ErrorBuildFailed,'project has no main unit');
+    
+  Project1.CompilerOptions.TargetOS:=OSOverride;
+  Project1.CompilerOptions.LCLWidgetType:=WidgetSetOverride;
 
   if not SkipDependencies then begin
     // compile required packages
