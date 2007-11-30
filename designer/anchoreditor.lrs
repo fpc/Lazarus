@@ -72,9 +72,9 @@ LazarusResources.Add('TAnchorDesigner','FORMDATA',[
   +'eteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#9'MaxLeng'
   +'th'#2#0#8'OnChange'#7#21'SiblingComboBoxChange'#14'ParentShowHint'#8#8'Show'
   +'Hint'#9#8'TabOrder'#2#1#4'Text'#6#21'BottomSiblingComboBox'#0#0#0#9'TGroupB'
-  +'ox'#13'RightGroupBox'#4'Left'#3'l'#1#6'Height'#3#129#0#3'Top'#2'@'#5'Width'
+  +'ox'#13'RightGroupBox'#4'Left'#3'l'#1#6'Height'#3#136#0#3'Top'#2'<'#5'Width'
   +#3#150#0#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#7'Caption'#6#13'Righ'
-  +'tGroupBox'#12'ClientHeight'#2'n'#11'ClientWidth'#3#146#0#8'TabOrder'#2#3#0
+  +'tGroupBox'#12'ClientHeight'#2'u'#11'ClientWidth'#3#146#0#8'TabOrder'#2#3#0
   +#12'TSpeedButton'#23'RightRefLeftSpeedButton'#4'Left'#2#5#6'Height'#2#30#3'T'
   +'op'#2'Q'#5'Width'#2#30#5'Color'#7#9'clBtnFace'#10'GroupIndex'#2#4#9'NumGlyp'
   +'hs'#2#0#11'Transparent'#8#7'OnClick'#7#26'ReferenceSideButtonClicked'#8'Sho'
@@ -95,8 +95,8 @@ LazarusResources.Add('TAnchorDesigner','FORMDATA',[
   +'mplete'#20'cbactSearchAscending'#0#9'MaxLength'#2#0#8'OnChange'#7#21'Siblin'
   +'gComboBoxChange'#14'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#1#4'Text'
   +#6#20'RightSiblingComboBox'#0#0#0#9'TGroupBox'#12'LeftGroupBox'#4'Left'#2#8#6
-  +'Height'#3#129#0#3'Top'#2'@'#5'Width'#3#150#0#7'Anchors'#11#5'akTop'#6'akLef'
-  +'t'#8'akBottom'#0#7'Caption'#6#12'LeftGroupBox'#12'ClientHeight'#2'n'#11'Cli'
+  +'Height'#3#136#0#3'Top'#2'<'#5'Width'#3#150#0#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#8'akBottom'#0#7'Caption'#6#12'LeftGroupBox'#12'ClientHeight'#2'u'#11'Cli'
   +'entWidth'#3#146#0#8'TabOrder'#2#4#0#12'TSpeedButton'#22'LeftRefLeftSpeedBut'
   +'ton'#4'Left'#2#5#6'Height'#2#30#3'Top'#2'Q'#5'Width'#2#30#5'Color'#7#9'clBt'
   +'nFace'#10'GroupIndex'#2#2#9'NumGlyphs'#2#0#11'Transparent'#8#7'OnClick'#7#26

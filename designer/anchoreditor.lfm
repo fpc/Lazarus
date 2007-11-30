@@ -244,12 +244,12 @@ object AnchorDesigner: TAnchorDesigner
   end
   object RightGroupBox: TGroupBox
     Left = 364
-    Height = 129
-    Top = 64
+    Height = 136
+    Top = 60
     Width = 150
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'RightGroupBox'
-    ClientHeight = 110
+    ClientHeight = 117
     ClientWidth = 146
     TabOrder = 3
     object RightRefLeftSpeedButton: TSpeedButton
@@ -325,12 +325,12 @@ object AnchorDesigner: TAnchorDesigner
   end
   object LeftGroupBox: TGroupBox
     Left = 8
-    Height = 129
-    Top = 64
+    Height = 136
+    Top = 60
     Width = 150
     Anchors = [akTop, akLeft, akBottom]
     Caption = 'LeftGroupBox'
-    ClientHeight = 110
+    ClientHeight = 117
     ClientWidth = 146
     TabOrder = 4
     object LeftRefLeftSpeedButton: TSpeedButton

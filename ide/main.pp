@@ -6611,7 +6611,13 @@ begin
   debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
-  if ActiveUnitInfo=nil then exit;
+  if ActiveUnitInfo=nil then begin
+    // we need to close the page anyway or else we might enter a loop
+    DebugLn('TMainIDE.DoCloseEditorFile INCONSISTENCY: NO ActiveUnitInfo');
+    SourceNoteBook.CloseFile(PageIndex);
+    Result:=mrOk;
+    exit;
+  end;
   if (ActiveUnitInfo.Component<>nil)
   and (FLastFormActivated<>nil)
   and (TDesigner(FLastFormActivated.Designer).LookupRoot=ActiveUnitInfo.Component)
