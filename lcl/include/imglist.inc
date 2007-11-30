@@ -768,6 +768,26 @@ begin
   end;
 end;
 
+procedure TCustomImageList.InternalReplace(AIndex: Integer; AImage,
+  AMask: HBitmap);
+var
+  RawImage: TRawImage;
+  R: TRect;
+  ImgData: PRGBAQuad;
+begin
+  if (AIndex < 0) then AIndex := 0;
+  CheckIndex(AIndex);
+
+  R := Rect(0, 0, FWidth, FHeight);
+  RawImage_FromBitmap(RawImage, AImage, AMask, R);
+  ImgData := InternalSetImage(AIndex, RawImage);
+  if HandleAllocated
+  then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
+
+  FChanged := true;
+  Change;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.InternalSetImage
   Params:  AIndex: the index of the location where the image should be set
@@ -1173,25 +1193,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TBitmap);
 var
-  RawImage: TRawImage;
-  R: TRect;
-  ImgData: PRGBAQuad;
   msk: THandle;
 begin
-  if (AIndex < 0) then AIndex := 0;
-  CheckIndex(AIndex);
-
+  if AImage = nil then Exit;
+  
   if AMask = nil
   then msk := 0
   else msk := AMask.Handle;
-  R := Rect(0, 0, FWidth, FHeight);
-  RawImage_FromBitmap(RawImage, AImage.Handle, msk, R);
-  ImgData := InternalSetImage(AIndex, RawImage);
-  if HandleAllocated
-  then TWSCustomImageListClass(WidgetSetClass).Replace(Self, AIndex, ImgData);
-
-  FChanged := true;
-  Change;
+  InternalReplace(AIndex, AImage.Handle, msk);
 end;
 
 {------------------------------------------------------------------------------
@@ -1224,13 +1233,22 @@ end;
   Every occurance of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
+var
+  AMask: TBitmap;
 begin
-  if (Index >= FCount)
-  then raise EInvalidOperation.Create(SInvalidIndex);
+  if NewImage = nil then Exit;
 
-  if (Index < 0) then Index := 0;
+  AMask := TBitmap.Create;
+  with AMask do
+  begin
+    Height := NewImage.Height;
+    Width := NewImage.Width;
+    Assign(NewImage);
+    Mask(MaskColor);
+  end;
 
-  {$note implement}
+  InternalReplace(Index, NewImage.Handle, AMask.Handle);
+  AMask.Free;
 end;
 
 {------------------------------------------------------------------------------

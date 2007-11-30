@@ -128,6 +128,7 @@ type
     procedure InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
       AWidth, AHeight: Integer);
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+    procedure InternalReplace(AIndex: Integer; AImage, AMask: HBitmap);
     function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
