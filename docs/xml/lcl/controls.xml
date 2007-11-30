@@ -4039,15 +4039,16 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.ConstrainedResize.MaxHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
-        <short><i>CalculatePreferredSize</i>  - find default/preferred height and width</short>
+        <short><i>CalculatePreferredSize</i>   - find default/preferred height and width</short>
         <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><pre>procedure TControl.CalculatePreferredSize 
         (var PreferredWidth, PreferredHeight: integer; 
           WithThemeSpace: Boolean);</pre><p>Calculates the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.</p><p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
-  See <link id="#lcl.Controls.TWinControl.GetPreferredSize">TWinControlGetPreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passes to the widgetset</p>
+
 .</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -4998,15 +4999,13 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.WndProc.TheMessage"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFormHandleInitialized">
-        <short>ParentFormHandleInitialized - called by ChildHandlesCreated of parent form</short>
+        <short><i>ParentFormHandleInitialized </i>- called by <i>ChildHandlesCreated</i> of parent form</short>
         <descr>
-          <pre>// The form is a real connection to the target screen. For example, the gtk
-  // under X gathers some screen information, but not before form creation.
-  // But this information is needed to create DeviceContexts, which
-  // are needed to calculate Text Size and such stuff needed for AutoSizing.
-  // That's why AdjustSize delays AutoSizing till this moment. Now do the
-  // AutoSize.
-</pre>
+          <p>The form is a real connection to the target screen.</p>
+          <p>For example, the gtk under X gathers some screen information, but not before form creation. </p>
+          <p>But this information is needed to create DeviceContexts, which are needed to calculate Text Size and such stuff needed for AutoSizing. </p>
+          <p>That's why AdjustSize delays AutoSizing till this moment. </p>
+          <p>Now do the AutoSize.</p>
         </descr>
       </element>
       <!-- procedure Visibility: protected -->
@@ -5155,9 +5154,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragCursor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragKind">
@@ -5167,9 +5164,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragMode">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>DragMode </i>- whether manual or automatic</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.MouseCapture">
@@ -5179,21 +5174,15 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentFont">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentColor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><p>ParentShowHint </p>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.SessionProperties">
@@ -5203,9 +5192,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.Text">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Text </i>- the character string in the name or caption of the control</short>
+        <descr>
+          <p><i>Text </i>- the character string in the name or caption of the control</p>
+          <p>But BEWARE: <i>Text</i> is used in another context in editing controls such as <link id="#lcl.StdCtrls.TEdit">TEdit</link> and <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnConstrainedResize">
@@ -5235,7 +5226,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnDragDrop">
-        <short>Event handler for the drag-Drop manoeuvre</short>
+        <short>Event handler for the Drag-Drop manoeuvre</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.OnDragOver">
@@ -5565,7 +5556,7 @@ mrLast=mrYesToAll=10</descr>
           <p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passes to the widgetset</p>
           <p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
-  See <link id="#lcl.Controls.TWinControl.GetPreferredSize">TWinControl.GetPreferredSize</link> for more information.</p>
+  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -6343,15 +6334,11 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Left">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Left</i> - the coordinate of the left edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Height</i> - the vertical dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Hint">
@@ -6361,15 +6348,11 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Top">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Top</i> - the coordinates of the top edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Width </i>- the horizontal dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.HelpType">
@@ -8589,21 +8572,27 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+        <descr>
+          <p><i>OnKeyDown</i> - event handler for instance when key is down while control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyPress">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+        <descr>
+          <p><i>OnKeyPress</i> - event controller for a key being pressed while the control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <descr>
+          <p><i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</p>
+          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnMouseWheel">

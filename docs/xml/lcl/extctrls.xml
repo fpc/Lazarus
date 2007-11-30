@@ -2100,7 +2100,9 @@
           <p><i>TSplitter</i>: A vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
           <p>The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user by moving the whole control with the mouse, and its size can be adjusted using the sizing bars and with the <i>ResizeAnchor</i> property </p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TSplitter.Align">
@@ -2406,7 +2408,9 @@
 : The base type for <i>TImage</i>
 . This is a control of the class <i>TGraphicControl</i>
 , designed to be lightweight and fast</descr>
-        <seealso><link id="#lcl.Controls.TGraphicControl">TGraphicControl</link></seealso>
+        <seealso>
+          <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomImage.FPicture">
@@ -2623,7 +2627,9 @@
           <p>The actual image is found in <i>Picture</i> or <i>Canvas</i></p>
           <p>Inherits most of its properties from its ancestors, <link id="TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TImage.Align">
@@ -3212,7 +3218,9 @@ requiring the user to select one af a set of alternatives</p>
           <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
           <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></p>
         </descr>
-        <seealso><link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Align">
@@ -3289,8 +3297,7 @@ requiring the user to select one af a set of alternatives</p>
         <short><i>Items</i> - a string list containing the captions of the radio boxes</short>
         <descr>
           <p><i>Items</i> - a string list containing the captions of the radio boxes</p>
-          <p>
-            Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties
+          <p>Use the String List editor, opened by selecting <i>Items</i> and the ellipsis (...) in the Object Inspector, to insert the captions for the radio boxes, and determine their order and layout using the <i>Rows</i>, <i>Columns</i> and <i>ColumnLayout</i> properties
           </p>
         </descr>
       </element>
@@ -3415,8 +3422,13 @@ requiring the user to select one af a set of alternatives</p>
       <!-- object Visibility: default -->
       <element name="TCustomCheckGroup">
         <short><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></short>
-        <descr><p><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></p><p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p></descr>
-        <seealso><link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></seealso>
+        <descr>
+          <p><i>TCustomCheckGroup</i>: The base type for <i>TCheckGroup</i></p>
+          <p>This class defines <i>Items</i>, where the captions for individual check boxes are stored, <i>Rows</i> and <i>Columns</i> for arranging the check boxes, and ColumnLayout to determine whether the data are arranged down the columns first, or across the rows first.</p>
+        </descr>
+        <seealso>
+          <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomCheckGroup.FButtonList">
@@ -3875,7 +3887,9 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <element name="TBoundLabel">
         <short><i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i></short>
         <descr><i>TBoundLabel</i>: A label bound to another object, for example in <i>TLabeledEdit</i></descr>
-        <seealso><link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link></seealso>
+        <seealso>
+          <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link>
+        </seealso>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBoundLabel.Create">
@@ -4173,9 +4187,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       <element name="TCustomLabeledEdit.Create.TheOwner"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.EditLabel">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>EditLabel </i>- the label attached to the edit box</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabeledEdit.LabelPosition">
@@ -4577,34 +4589,22 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.Alignment">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Alignment</i> - whether text is left or right justified, or centered</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelInner">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>BevelInner</i> - determines the nature of the Inner Bevel of the panel (whether raised, lowered etc)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelOuter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>BevelOuter</i>  - determines the nature of the Outer Bevel of the panel (whether raised, lowered etc)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.BevelWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>BevelWidth </i>- the Width of the panel's bevel in pixels</short>
       </element>
       <!-- property Visibility: public -->
-      <element name="TCustomPanel.BorderWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomPanel.BorderWidth"/>
       <!-- property Visibility: public -->
       <element name="TCustomPanel.Color">
         <short/>
@@ -4847,15 +4847,11 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnEnter</i>  - event handler for mouse entering the control or the control getting focus</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnExit </i>- event handler for mouse leaving the control or the control losing focus</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TPanel.OnMouseDown">
