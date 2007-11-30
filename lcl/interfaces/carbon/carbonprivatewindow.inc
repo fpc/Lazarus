@@ -64,7 +64,6 @@ var
                           // or the window's widgetinfo if none found
 const
   SName = 'CarbonWindow_MouseProc';
-  AGetEvent = 'GetEventParameter';
                                 
 //
 // helper functions used commonly
@@ -78,7 +77,7 @@ const
     if OSError(
       GetEventParameter(AEvent, kEventParamClickCount, typeUInt32, nil,
         SizeOf(ClickCount), nil, @ClickCount),
-      SName, AGetEvent, 'kEventParamClickCount') then Exit;
+      SName, SGetEvent, 'kEventParamClickCount') then Exit;
 
     Result := ClickCount;
     //debugln('GetClickCount ClickCount=',dbgs(ClickCount));
@@ -94,7 +93,7 @@ const
     if OSError(
       GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
         SizeOf(MouseButton), nil, @MouseButton),
-      SName, AGetEvent, 'kEventParamMouseButton') then Exit;
+      SName, SGetEvent, 'kEventParamMouseButton') then Exit;
 
     Result := MouseButton;
   end;
@@ -106,7 +105,7 @@ const
     if OSError(
       GetEventParameter(AEvent, kEventParamWindowMouseLocation, typeHIPoint, nil,
         SizeOf(MousePoint), nil, @MousePoint),
-      SName, AGetEvent, 'kEventParamWindowMouseLocation') then Exit;
+      SName, SGetEvent, 'kEventParamWindowMouseLocation') then Exit;
     
     OSError(HIViewConvertPoint(MousePoint, nil, Widget.Content), SName, SViewConvert);
     Result.X := Trunc(MousePoint.X);
@@ -122,7 +121,7 @@ const
     if OSError(
       GetEventParameter(AEvent, kEventParamMouseWheelDelta, typeSInt32, nil,
         SizeOf(WheelDelta), nil, @WheelDelta),
-      SName, AGetEvent, 'kEventParamMouseWheelDelta') then Exit;
+      SName, SGetEvent, 'kEventParamMouseWheelDelta') then Exit;
       
     Result := WheelDelta;
     {$IFDEF VerboseMouse}
@@ -251,9 +250,19 @@ var
     Extra: array[0..20] of Byte; // some messages are a bit larger, make some room
   end;  
   EventKind: UInt32;
+  Part: WindowPartCode;
   
 begin
   Result := EventNotHandledErr;
+  
+  // check window part code
+  if not OSError(
+    GetEventParameter(AEvent, kEventParamWindowPartCode, typeWindowPartCode, nil,
+      SizeOf(WindowPartCode), nil, @Part),
+    SName, SGetEvent, 'kEventParamWindowPartCode') then
+  begin
+    if Part <> inContent then Exit;
+  end;
   
   //Find out which control the mouse event should occur for
   Control := nil;
@@ -286,7 +295,9 @@ begin
   
   // Msg is set in the Appropriate HandleMousexxx procedure
   if DeliverMessage(Widget.LCLObject, Msg) = 0 then
+  begin
     Result := EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
+  end
   else
     // the LCL does not want the event propagated
     Result := noErr;
@@ -1233,6 +1244,7 @@ begin
   Result := False;
   
   BeginUpdate(WindowRef(Widget));
+  Resizing := True;
   try
     // set window width, height
     if OSError(FPCMacOSAll.SetWindowBounds(WindowRef(Widget), kWindowContentRgn,
@@ -1241,6 +1253,7 @@ begin
     if OSError(MoveWindowStructure(WindowRef(Widget), ARect.Left, ARect.Top),
       Self, SName, 'MoveWindowStructure') then Exit;
   finally
+    Resizing := False;
     EndUpdate(WindowRef(Widget));
   end;
   

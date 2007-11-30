@@ -156,9 +156,9 @@ const
   SName = 'CarbonCommon_Track';
   SControlAction = 'kEventParamControlAction';
 begin
-  {$IFDEF VerboseMouse}
+  //{$IFDEF VerboseMouse}
     DebugLn('CarbonCommon_Track ', DbgSName(AWidget.LCLObject));
-  {$ENDIF}
+  //{$ENDIF}
   if OSError(
     GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
       nil, SizeOf(ActionUPP), nil, @OldActionUPP), SName, SGetEvent,

@@ -241,7 +241,7 @@ class procedure TCarbonWSCustomPage.UpdateProperties(const ACustomPage: TCustomP
 begin
   if not CheckHandle(ACustomPage, Self, 'UpdateProperties') then Exit;
   
-  TCarbonTab(ACustomPage.Handle).Update;
+  TCarbonTab(ACustomPage.Handle).UpdateTab;
 end;
 
 { TCarbonWSCustomNotebook }

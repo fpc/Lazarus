@@ -65,6 +65,7 @@ type
     FProperties: TStringList;
     FCursor: HCURSOR;
     FHasCaret: Boolean;
+    FResizing: Boolean;
     function GetPainting: Boolean;
     function GetProperty(AIndex: String): Pointer;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
@@ -126,6 +127,7 @@ type
     property HasCaret: Boolean read FHasCaret write FHasCaret;
     property Painting: Boolean read GetPainting;
     property Properties[AIndex: String]: Pointer read GetProperty write SetProperty;
+    property Resizing: Boolean read FResizing write FResizing;
   end;
   
 type
@@ -422,8 +424,10 @@ var
   WidgetClient,
 {$ENDIF}
   WidgetBounds, OldBounds: TRect;
-  Resized, ClientResized: Boolean;
+  Resized, ClientResized, Moved: Boolean;
+  PosMsg: TLMWindowPosChanged;
 begin
+  if FResizing then Exit;
   {$IFDEF VerboseBounds}
     DebugLn('TCarbonWidget.BoundsChanged ' + LCLObject.Name);
   {$ENDIF}
@@ -439,20 +443,38 @@ begin
     DebugLn('TCarbonWidget.BoundsChanged LCL old client: ' + DbgS(LCLObject.ClientRect));
   {$ENDIF}
   
-  Resized := False;
+  Resized :=
+    (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
+    (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top);
+  Moved :=
+    (OldBounds.Left <> WidgetBounds.Left) or
+    (OldBounds.Top <> WidgetBounds.Top);
   ClientResized := False;
   
-  // then send a LM_SIZE message
-  if (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
-     (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) then
+  // send window pos changed
+  if Resized or Moved then
   begin
-    LCLSendSizeMsg(LCLObject, WidgetBounds.Right - WidgetBounds.Left,
-      WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
-    
-    Resized := True;
+    PosMsg.Msg := LM_WINDOWPOSCHANGED;
+    PosMsg.Result := 0;
+    New(PosMsg.WindowPos);
+    try
+      with PosMsg.WindowPos^ do
+      begin
+        hWndInsertAfter := 0;
+        x := WidgetBounds.Left;
+        y := WidgetBounds.Right;
+        cx := WidgetBounds.Right - WidgetBounds.Left;
+        cy := WidgetBounds.Bottom - WidgetBounds.Top;
+        flags := 0;
+      end;
+      DeliverMessage(LCLObject, PosMsg);
+    finally
+      Dispose(PosMsg.WindowPos);
+    end;
   end;
   
-  if Resized or LCLObject.ClientRectNeedsInterfaceUpdate then
+  // update client rect
+  //if Resized or LCLObject.ClientRectNeedsInterfaceUpdate then
   begin
     {$IFDEF VerboseBounds}
       DebugLn('TCarbonWidget.BoundsChanged Update client rects cache');
@@ -461,10 +483,16 @@ begin
     LCLObject.DoAdjustClientRectChange;
     ClientResized := True;
   end;
+  
+  // then send a LM_SIZE message
+  if Resized then
+  begin
+    LCLSendSizeMsg(LCLObject, WidgetBounds.Right - WidgetBounds.Left,
+      WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
+  end;
 
   // then send a LM_MOVE message
-  if (OldBounds.Left <> WidgetBounds.Left) or
-     (OldBounds.Top <> WidgetBounds.Top) then
+  if Moved then
   begin
     LCLSendMoveMsg(LCLObject, WidgetBounds.Left,
       WidgetBounds.Top, Move_SourceIsInterface);
@@ -511,8 +539,12 @@ begin
   Widget := nil;
   Context := nil;
   FHasCaret := False;
+  FResizing := False;
   
+
   CreateWidget(AParams);
+  
+  BoundsChanged;
   
   {$IFDEF VerboseWidget}
     DebugLn('TCarbonWidget.Create ', ClassName, ' ', LCLObject.Name, ': ',
@@ -520,9 +552,6 @@ begin
   {$ENDIF}
   
   RegisterEvents;
-    
-  LCLObject.InvalidateClientRectCache(True);
-  BoundsChanged;
   
   {$IFDEF VerboseBounds}
     DebugLn('TCarbonWidget.Create LCL bounds: ' + DbgS(LCLObject.BoundsRect));
