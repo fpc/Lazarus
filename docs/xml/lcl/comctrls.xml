@@ -452,7 +452,7 @@
           <p>However if <i>SimplePanel</i> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <i>Panels</i>.</p>
           <p>The property <i>SimpleString</i> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
         </descr>
-        <example file="ExtCtrls/StatusBar.pas"/>
+        <example file="extctrls/statusbar.pas"/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TStatusBar.FCanvas">
