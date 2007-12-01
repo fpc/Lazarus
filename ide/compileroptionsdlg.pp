@@ -1347,7 +1347,7 @@ begin
 
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
 
-  ExecuteAfterGroupBox.Caption := lisCOExecuteBefore;
+  ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
   chkExecBeforeBuild.Caption := lisCOCallOnBuild;
   chkExecBeforeCompile.Caption := lisCOCallOnCompile;
   chkExecBeforeRun.Caption := lisCOCallOnRun;
@@ -1369,7 +1369,7 @@ begin
   lblCompiler.Caption:=lisCOCommand;
   lblRunIfCompiler.Caption := lisCOCallOn;
 
-  ExecuteBeforeGroupBox.Caption := lisCOExecuteAfter;
+  ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
   chkExecAfterBuild.Caption := lisCOCallOnBuild;
   chkExecAfterCompile.Caption := lisCOCallOnCompile;
   chkExecAfterRun.Caption := lisCOCallOnRun;
