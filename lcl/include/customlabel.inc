@@ -403,6 +403,7 @@ var
   R : TRect;
   TextLeft, TextTop: integer;
   LabelText: string;
+  OldFontColor: TColor;
 begin
   R := Rect(0,0,Width,Height);
   with Canvas do
@@ -456,13 +457,15 @@ begin
     DoMeasureTextPosition(TextTop, TextLeft);
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
     LabelText := GetLabelText;
+    OldFontColor := Font.Color;
     if not Enabled then
     begin
       Font.Color := clBtnHighlight;
       TextRect(R, TextLeft + 1, TextTop + 1, LabelText, TR);
-      Font.color := clBtnShadow;
+      Font.Color := clBtnShadow;
     end;
-    TextRect(R, TextLeft, TextTop, LabelText, TR)
+    TextRect(R, TextLeft, TextTop, LabelText, TR);
+    Font.Color := OldFontColor;
   end;
 end;
 
