@@ -256,10 +256,11 @@ begin
   Result := EventNotHandledErr;
   
   // check window part code
+  Part := inContent;
   if not OSError(
     GetEventParameter(AEvent, kEventParamWindowPartCode, typeWindowPartCode, nil,
       SizeOf(WindowPartCode), nil, @Part),
-    SName, SGetEvent, 'kEventParamWindowPartCode') then
+    SName, SGetEvent, 'kEventParamWindowPartCode', eventParameterNotFoundErr) then
   begin
     if Part <> inContent then Exit;
   end;

@@ -46,6 +46,8 @@ function OSError(AResult: OSStatus; const AClass: TClass; const AMethodName, ACa
   const AText: String = ''): Boolean;
 function OSError(AResult: OSStatus; const AObject: TObject; const AMethodName, ACallName: String;
   const AText: String; AValidResult: OSStatus): Boolean;
+function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
+  const AText: String; AValidResult: OSStatus): Boolean;
   
 var
   DefaultTextStyle: ATSUStyle; // default Carbon text style
@@ -207,6 +209,27 @@ begin
   begin
     Result := True;
     DebugLn(AObject.ClassName + '.' + AMethodName + ' Error: ' + ACallName +
+      ' ' + AText + ' failed with result ' + DbgS(AResult));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    OSError
+  Params:  AResult      - Result of Carbon function call
+           AMethodName  - Parent method name
+           ACallName    - The Carbon function name
+           AText        - Another text useful for debugging (param value, ...)
+           AValidResult - Another result code that is valid like noErr
+  Returns: If an error was the result of calling the specified Carbon function
+ ------------------------------------------------------------------------------}
+function OSError(AResult: OSStatus; const AMethodName, ACallName: String;
+  const AText: String; AValidResult: OSStatus): Boolean;
+begin
+  if (AResult = noErr) or (AResult = AValidResult) then Result := False
+  else
+  begin
+    Result := True;
+    DebugLn(AMethodName + ' Error: ' + ACallName +
       ' ' + AText + ' failed with result ' + DbgS(AResult));
   end;
 end;
