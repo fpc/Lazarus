@@ -335,7 +335,9 @@ begin
   
   OSError(SetRootMenu(Menu), Self, 'AttachToMenuBar', 'SetRootMenu');
   
-  InvalMenuBar;
+  HiliteMenu(0);
+  //DrawMenuBar;
+  //InvalMenuBar;
 end;
 
 {------------------------------------------------------------------------------
