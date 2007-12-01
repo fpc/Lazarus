@@ -2298,7 +2298,7 @@ begin
   AddDefault(C,'Procedure List ...',srkmecProcedureList,ecProcedureList);
 
   // marker - without menu items in the IDE bar
-  C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEdit)];
+  C:=Categories[AddCategory('Marker',srkmCatMarker,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Set free Bookmark', lisKMSetFreeBookmark, ecSetFreeBookmark);
   AddDefault(C, 'Previous Bookmark', srkmecPrevBookmark, ecPrevBookmark);
   AddDefault(C, 'Next Bookmark', srkmecNextBookmark, ecNextBookmark);
@@ -2324,7 +2324,7 @@ begin
   AddDefault(C, 'Set marker 9', lisKMSetMarker9, ecSetMarker9);
 
   // codetools
-  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEdit)];
+  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,IDECmdScopeSrcEditOnly)];
   AddDefault(C, 'Code template completion', srkmecAutoCompletion,
     ecAutoCompletion);
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);

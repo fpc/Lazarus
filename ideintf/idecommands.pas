@@ -11,9 +11,6 @@
  *****************************************************************************
 
  Abstract:
-   Under construction by Mattias
- 
- 
    Interface unit for IDE commands.
    IDE commands are functions like open file, save, build, ... .
    
@@ -52,9 +49,6 @@ const
      3. Add it to EditorCommandToDescriptionString to define the description
      4. Add it to TKeyCommandRelationList.CreateDefaultMapping to define the
         category.
-
-   IDE experts: They are handled in the IDE interface units.
-
   }
   ecNone                    = 0;
   
