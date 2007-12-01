@@ -4496,6 +4496,11 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
     if ClientWidget^.window<>nil then begin
       // get the position of the current page
       gdk_window_get_origin(ClientWidget^.window,@Result.X,@Result.Y);
+      if GTK_WIDGET_NO_WINDOW(ClientWidget)
+      then begin
+        Inc(Result.X, ClientWidget^.Allocation.X);
+        Inc(Result.Y, ClientWidget^.Allocation.Y);
+      end;
     end else begin
       // use defaults
       Result:=GetWidgetOrigin(TheWidget);

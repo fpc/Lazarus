@@ -3149,7 +3149,10 @@ procedure TGtkWidgetSet.SetCallbackEx(const AMsg: LongInt;
   end;
 
 var
-  gObject, gFixed, gCore, gTemp, Adjustment: PGTKObject;
+  gObject, gFixed, gCore, Adjustment: PGTKObject;
+  {$IFDEF GTK2}
+  gTemp: PGTKObject;
+  {$ENDIF}
   Info: PWidgetInfo;
   gMain: PGtkObject;
   gMouse: PGtkObject;

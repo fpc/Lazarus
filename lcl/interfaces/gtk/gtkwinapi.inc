@@ -237,7 +237,6 @@ Begin
     Position:=GetWidgetClientOrigin(PGtkWidget(Handle));
   end;
 
-  // Todo: calculate offset, since platform specific
   Inc(P.X, Position.X);
   Inc(P.Y, Position.Y);
 
@@ -5178,6 +5177,7 @@ var
   DCScreenOrigin: TPoint;
   WindowScreenOrigin: TPoint;
   Widget: PGtkWidget;
+  DCWindow: PGdkWindow;
 begin
   Result := false;
   OriginDiff := Point(0,0);
@@ -5185,7 +5185,8 @@ begin
   
   DCOrigin := DevCtx.Offset;
 
-  gdk_window_get_origin(PGdkWindow(DevCtx.Drawable), @(DCScreenOrigin.X), @(DCScreenOrigin.Y));
+  DCWindow:=PGdkWindow(DevCtx.Drawable);
+  gdk_window_get_origin(DCWindow, @(DCScreenOrigin.X), @(DCScreenOrigin.Y));
   inc(DCScreenOrigin.X, DCOrigin.X);
   inc(DCScreenOrigin.Y, DCOrigin.Y);
 
@@ -5198,6 +5199,7 @@ begin
   OriginDiff.X := DCScreenOrigin.X-WindowScreenOrigin.X;
   OriginDiff.Y := DCScreenOrigin.Y-WindowScreenOrigin.Y;
   Result := true;
+  //DebugLn(['TGtkWidgetSet.GetDCOriginRelativeToWindow DCScreenOrigin=',dbgs(DCScreenOrigin),' WindowScreenOrigin=',dbgs(WindowScreenOrigin),' OriginDiff=',dbgs(OriginDiff)]);
 end;
 
 {------------------------------------------------------------------------------

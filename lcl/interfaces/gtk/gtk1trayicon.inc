@@ -80,15 +80,16 @@ end;
 function TGtk1TrayIconHandle.NotifyExpose(Event: PGdkEventExpose;
   Widget: PGtkWidget): Boolean; cdecl;
 begin
+  Result:=false;
   PaintForm(fTrayIcon);
 end;
 
 function TGtk1TrayIconHandle.NotifyMouseMove(Event: PGdkEventMotion;
   Widget: PGtkWidget): Boolean; cdecl;
 begin
+  Result:=false;
   if Assigned(fTrayIcon.OnMouseMove) then
      fTrayIcon.OnMouseMove(fTrayIcon, [], Trunc(Event^.x), Trunc(Event^.y));
-
 end;
 
 function TGtk1TrayIconHandle.NotifyMouseDown(Event: PGdkEventButton;
@@ -96,6 +97,7 @@ function TGtk1TrayIconHandle.NotifyMouseDown(Event: PGdkEventButton;
 var
   Button: TMouseButton;
 begin
+  Result:=false;
   case  Event^.button of
     GDK_RIGHTBUTTON: Button := mbRight;
     GDK_MIDDLEBUTTON: Button := mbMiddle;
@@ -111,6 +113,7 @@ function TGtk1TrayIconHandle.NotifyMouseUp(Event: PGdkEventButton;
 var
   Button: TMouseButton;
 begin
+  Result:=false;
   case  Event^.button of
     3: Button := mbRight;
     2: Button := mbMiddle;
@@ -220,8 +223,6 @@ end;
 procedure TGtk1TrayIconHandle.SetEmbedded;
 var
   old_error: TXErrorHandler;
-  buf: array [0..32] of char;
-  selection_atom : TAtom;
 begin
   fEmbedded := False;
   if TrayParent = None then
@@ -356,8 +357,6 @@ end;
 class function TGtkWSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   TrayIconHandle: TGtk1TrayIconHandle;
-  EventObject: PGtkObject;
-  WidgetInfo : PWidgetInfo;
 begin
   Result := False;
 
