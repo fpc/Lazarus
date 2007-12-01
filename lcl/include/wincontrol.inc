@@ -6050,7 +6050,9 @@ var
   NewBoundsRealized: TRect;
 begin
   {$IFDEF VerboseSizeMsg}
+  {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
+  {$ENDIF}
   DebugLn(['TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',dbgs(FBoundsRealized),' FromIntf=',(Message.SizeType and Size_SourceIsInterface)>0]);
   {$ENDIF}
