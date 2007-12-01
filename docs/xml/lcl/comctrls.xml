@@ -445,10 +445,14 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TStatusBar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TStatusBar</i> - a strip along the bottom of a form for displaying information on current status</short>
+        <descr>
+          <p><i>TStatusBar</i> - a strip along the bottom of a form for displaying information on current status</p>
+          <p>The bar may consist of a single <i>SimplePanel</i>, in which case the displayed text is contained in <i>SimpleText</i>.</p>
+          <p>However if <i>SimplePanel</i> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <i>Panels</i>.</p>
+          <p>The property <i>SimpleString</i> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
+        </descr>
+        <example file="ExtCtrls/StatusBar.pas"/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TStatusBar.FCanvas">
@@ -631,15 +635,20 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimpleText">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SimpleText</i> - a character string containing the information to be displayed in the Status Bar</short>
+        <descr>
+          <p><i>SimpleText</i> - a character string containing the information to be displayed in the Status Bar</p>
+          <p>This is displayed if SimplePanel is true; otherwise the information in Panels is displayed.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimplePanel">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>SimplePanel - boolean. Is there just one continuous panel, or several sub-panels?</short>
+        <descr>
+          <p><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</p>
+          <p>If true, the value of <i>SimpleText</i> is displayed; if false, the contents of <i>Panels</i> is displayed. </p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> is selected and allows insertion orf arbitrary number of sub-panels with their own strings</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.Visible">

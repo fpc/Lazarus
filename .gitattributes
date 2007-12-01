@@ -1295,6 +1295,7 @@ docs/index.html svneol=native#text/html
 docs/lazbuild.1 svneol=native#text/plain
 docs/xml/README.txt svneol=native#text/plain
 docs/xml/find_cvs_fpdoc_files.pl -text svneol=native#application/x-perl
+docs/xml/lcl/ExtCtrls/StatusBar.pas -text
 docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
