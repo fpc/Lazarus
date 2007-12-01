@@ -105,25 +105,21 @@ fi
 # architecture dependent stuff 
 
 Arch=`dpkg --print-architecture` 
-if [  "$Arch" = i386 ]; then
-  ppcbin=ppc386
-else
-  if [ "$Arch" = amd64 ]; then
-    ppcbin=ppcx64
-  else
-    if [  "$Arch" = powerpc ]; then
-      ppcbin=ppcppc
-    else
-      if [  "$Arch" = sparc ]; then
-        ppcbin=ppcsparc
-      else
-        echo "$Arch is not supported."
-        exit -1
-      fi
-    fi
-  fi
-fi 
- 
+CPU_TARGET="${CPU_TARGET:-$Arch}"
+case "$CPU_TARGET" in
+ i386) ppcbin=ppc386;;
+ amd64) ppcbin=ppcx64;;
+ powerpc) ppcbin=ppcppc;;
+ sparc) ppcbin=ppcsparc;;
+ arm) ppcbin=ppcarm;;
+ *) echo "$CPU_TARGET is not supported."
+ exit -1;;
+esac
+
+if [ "$CPU_TARGET" != "$Arch" ]
+then TARGET_SUFFIX="$CPU_TARGET-"
+fi
+
 #------------------------------------------------------------------------------
 # setup variables
 
