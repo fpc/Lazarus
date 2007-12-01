@@ -1708,9 +1708,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Brush">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Brush to be used for colouring this shape</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Constraints">
@@ -1750,9 +1748,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Pen">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Pen to be ussed for drawing this shape</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.OnChangeBounds">
@@ -1786,9 +1782,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.Shape">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Which Shape? (Rectangle, Square, RoundRect, RoundSquare, Ellipse, Circle,  SquaredDiamond, Diamond)</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TShape.ShowHint">
@@ -1830,11 +1824,20 @@
       <element name="TCanResizeEvent.Accept"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomSplitter">
-        <short><i>TCustomSplitter</i>: the base type for <i>TSplitter</i></short>
+        <short><i>TCustomSplitter</i> : the base type for <i>TSplitter</i></short>
         <descr>
           <p><i>TCustomSplitter</i>: the base type for <i>TSplitter</i></p>
           <p>A Splitter is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels</p>
           <p>This class defines many of the basic properties for the children classes, such as positioning, sizing and alignment</p>
+          <pre>{ TCustomSplitter is a control for interactively resizing another control.
+    It is a vertical or horizontal bar anchored to a side of a control.
+    You can either set the Align property to alLeft (alRight,alTop,alBottom),
+    then it will become a vertical bar, aligned to the left and when the user
+    moves it with the mouse, the control to the left with the same Align=alLeft
+    will be resized.
+    The second more flexible possibility is to set the properties Align=alNone,
+    AnchorSides and ResizeAnchor.
+    }   </pre>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -2050,9 +2053,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.ResizeStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Style for resizing - as a line, a pattern, full update, or none</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.AutoSnap">
@@ -2065,21 +2066,15 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.MinSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Minimum size for splitter - default 30 pixels</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.OnCanResize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for receiving permission to resize</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.OnMoved">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for occasion when splitter has moved</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSplitter.Width">
@@ -2912,9 +2907,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Shape">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Shape</i>  - whether a box, a frame or a line along one of the edges</short>
+        <seealso><link id="#lcl.ExtCtrls.TBevelShape"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Top">
@@ -2924,9 +2918,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Style</i> - whether raised or lowered</short>
+        <seealso><link id="#lcl.ExtCtrls.TBevelStyle"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Visible">
@@ -3155,9 +3148,7 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.Columns">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Columns</i>  - the number of columns in which the <i>Items</i>  (radio buttons) are to be arranges</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomRadioGroup.ColumnLayout">
@@ -3203,13 +3194,12 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomRadioGroup.Rows">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Rows </i>- the number of rows in which Items (radio boxes) are held</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomRadioGroup.Rows.Result"><short/></element>
+      <element name="TCustomRadioGroup.Rows.Result">
+        <short>Number of rows</short>
+      </element>
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
         <short><i>TRadioGroup</i>  : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
@@ -3637,13 +3627,12 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomCheckGroup.Rows">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Rows</i> - the number of rows in which the Items (check boxes) are arranged</short>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomCheckGroup.Rows.Result"><short/></element>
+      <element name="TCustomCheckGroup.Rows.Result">
+        <short>The number of rows holding items</short>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Items">
         <short><i>Items</i> - a string list for the captions of the check boxes</short>
@@ -3666,9 +3655,7 @@ requiring the user to select one af a set of alternatives</p>
       <element name="TCustomCheckGroup.CheckEnabled.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.Columns">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Columns</i>  - the number of columns in which the <i>Items</i>  (check boxes) are to be arranges</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.ColumnLayout">
@@ -3676,9 +3663,7 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckGroup.OnItemClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnItemClick</i> - event handler for mouse click on one of the Items in the Check Group</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCheckGroup">

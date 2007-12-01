@@ -9103,19 +9103,16 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       <element name="TWinControl.IntfUTF8KeyPress.RepeatCount"><short/></element>
       <!-- object Visibility: default -->
       <element name="TGraphicControl">
-        <short>TGraphicControl is the base class for all lightweight controls.</short>
+        <short><i>TGraphicControl</i> is the base class for all lightweight controls.</short>
         <descr>
-          <pre>TGraphicControl supports simple lightweight controls that do not 
-need the ability to accept keyboard input or contain other controls.  Since 
-lightweight controls do not wrap GUI screen objects, they are faster and use 
-fewer resources than controls based on TWinControl.
-          TGraphicControl provides a Canvas property for access to the 
-control's drawing surface and a virtual Paint method called in response to 
-paint requests received by the parent control.</pre>
+          <p><i>TGraphicControl</i> supports simple lightweight controls that do not 
+need the ability to accept keyboard input or contain other controls. </p>
+          <p>Since lightweight controls do not wrap GUI screen objects, they are faster and use fewer resources than controls based on <i>TWinControl</i>.</p>
+          <p><i>TGraphicControl</i> provides a <i>Canvas</i> property for access to the control's drawing surface and a virtual <i>Paint</i> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
           <link id="TWinControl"/>
-          <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+          <link id="#lcl.Graphics.TCanvas"/>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -9140,10 +9137,8 @@ paint requests received by the parent control.</pre>
       <element name="TGraphicControl.WMPaint.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.Paint">
-        <short>Virtual Paint method called in response to paint requests.</short>
-        <descr>Virtual Paint method called in response to paint requests received by the parent control.</descr>
-        <errors/>
-        <seealso/>
+        <short>Virtual <i>Paint</i> method called in response to paint requests.</short>
+        <descr>Virtual <i>Paint</i> method called in response to paint requests received by the parent control.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TGraphicControl.Create">
@@ -9159,20 +9154,16 @@ paint requests received by the parent control.</pre>
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
         <descr>
-          <p>The TGraphicsControl.Canvas is a clipping window to the parent canvas.<br/><br/>
-          If you ask for the Canvas.Width or Canvas.Height, you are actually 
-getting the parent control's Canvas dimensions. To get the dimensions of the 
-TGraphicControl, you must query the ClientRect.</p>
+          <p><i>The TGraphicsControl.Canvas</i> is a clipping window to the parent canvas.</p>
+          <p>If you ask for the <i>Canvas.Width</i> or <i>Canvas.Height</i>, you are actually 
+getting the parent control's Canvas dimensions.</p>
+          <p>To get the dimensions of the <i>TGraphicControl,</i> you must query the <i>ClientRect</i>.</p>
         </descr>
-        <seealso>
-          <link id="#lcl.Graphics.TCanvas">FCanvas</link>
-        </seealso>
+        <seealso><link id="#lcl.Graphics.TCanvas"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnPaint</i> - event handler for request to paint canvas</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomControl">
