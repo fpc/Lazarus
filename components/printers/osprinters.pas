@@ -37,8 +37,11 @@ interface
 
 {$IFDEF UNIX}
   {$IFDEF LCLCarbon}
-    {.$I carbonprinters_h.inc}
-    {$I cupsprinters_h.inc}
+    {$IFNDEF NativePrint}
+      {$I cupsprinters_h.inc}
+    {$ELSE}
+      {$I carbonprinters_h.inc}
+    {$ENDIF}
   {$ELSE}
     {$I cupsprinters_h.inc}
   {$ENDIF}
@@ -52,8 +55,11 @@ implementation
 
 {$IFDEF UNIX}
   {$IFDEF LCLCarbon}    
-    {.$I carbonprinters.inc}
-    {$I cupsprinters.inc}
+    {$IFNDEF NativePrint}
+      {$I cupsprinters.inc}
+    {$ELSE}
+      {$I carbonprinters.inc}
+    {$ENDIF}
   {$ELSE}
     {$I cupsprinters.inc}
   {$ENDIF}

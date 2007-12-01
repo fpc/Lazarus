@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package Version="2">
+  <Package Version="3">
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
@@ -9,12 +9,14 @@
         <IncludeFiles Value="unix/;win32/;carbon/"/>
         <OtherUnitFiles Value="unix/;win32/;carbon/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <LCLWidgetType Value="carbon"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
       <Other>
         <CustomOptions Value="-dUseCache
+
 "/>
         <CompilerPath Value="$(CompPath)"/>
         <CreateMakefileOnBuild Value="True"/>
@@ -25,7 +27,7 @@
     <License Value="LGPL
 "/>
     <Version Minor="5"/>
-    <Files Count="27">
+    <Files Count="28">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -128,27 +130,31 @@
         <Type Value="Include"/>
       </Item24>
       <Item25>
-        <Filename Value="unix/minicupslibc.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="MiniCUPSLibc"/>
+        <Filename Value="carbon/carbonprinters.inc"/>
+        <Type Value="Include"/>
       </Item25>
       <Item26>
-        <Filename Value="carbon/carbonprinters.inc"/>
+        <Filename Value="carbon/carbonprinters_h.inc"/>
         <Type Value="Include"/>
       </Item26>
       <Item27>
-        <Filename Value="carbon/carbonprinters_h.inc"/>
+        <Filename Value="carbon/carbonprndialogs.inc"/>
         <Type Value="Include"/>
       </Item27>
+      <Item28>
+        <Filename Value="carbon/carbonprinting.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CarbonPrinting"/>
+      </Item28>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="LCL"/>
-      </Item1>
-      <Item2>
         <PackageName Value="FCL"/>
         <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
       </Item2>
     </RequiredPkgs>
     <UsageOptions>

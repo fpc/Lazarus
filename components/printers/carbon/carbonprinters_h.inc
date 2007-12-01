@@ -1,12 +1,47 @@
 {%MainUnit ../osprinters.pas}
 uses
-  Classes,SysUtils,Printers,LCLType;
+  FPCMacOSAll, Classes, SysUtils, Printers, LCLType, CarbonCanvas, CarbonPrinting;
 
 type
+  { TCarbonPrinterContext }
+  
+  TCarbonPrinterContext = class(TCarbonDeviceContext)
+  protected
+    function GetSize: TPoint; override;
+  public
+    procedure Release;
+    procedure Reset; override;
+  end;
+
   { TCarbonPrinter }
 
   TCarbonPrinter = class(TPrinter)
   private
+    FPrintSession: PMPrintSession;
+    FPrintSettings: PMPrintSettings;
+    FPageFormat: PMPageFormat;
+    FBeginDocumentStatus: OSStatus;
+    FNewPageStatus: OSStatus;
+    FPrinterContext: TCarbonPrinterContext;
+    FPrinterArray: CFArrayRef;
+    FPaperArray: CFArrayRef;
+    
+    procedure CreatePrintSession;
+    procedure CreatePrintSettings;
+    function GetCurrentPrinter: PMPrinter;
+    
+    function CreatePageFormat(APaper: String): PMPageFormat;
+    
+    function ValidatePageFormat: Boolean;
+    function ValidatePrintSettings: Boolean;
+
+    procedure BeginPage;
+    procedure EndPage;
+    
+    procedure BeginEnumPrinters(Lst: TStrings);
+    procedure EndEnumPrinters;
+    procedure BeginEnumPapers(Lst: TStrings);
+    procedure EndEnumPapers;
   protected
     procedure DoBeginDoc; override;
     procedure DoNewPage; override;
@@ -35,16 +70,18 @@ type
     function DoGetPrinterState: TPrinterState;override;
     function GetCanPrint: Boolean;override;
     function GetCanRenderCopies : Boolean;override;
-    function GetHandlePrinter : HDC;
-    procedure SetHandlePrinter(aValue : HDC);
     procedure RawModeChanging; override;
+  public
+    procedure Validate;
   public
     constructor Create; override;
     destructor Destroy; override;
     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
-    //Warning not portable functions here
-    //Warning it is a not potable property
-    property Handle : HDC read GetHandlePrinter write SetHandlePrinter;
+    // Warning not portable functions here
+    property PrintSession: PMPrintSession read FPrintSession;
+    property PrintSettings: PMPrintSettings read FPrintSettings;
+    property PageFormat: PMPageFormat read FPageFormat;
+    // Warning it is a not portable property
+    property Handle: TCarbonPrinterContext read FPrinterContext;
   end;
-
 

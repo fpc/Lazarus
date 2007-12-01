@@ -74,19 +74,32 @@ procedure Register;
 implementation
 
 {$IFDEF UNIX}
-{$IFDEF LCLCarbon}
+  {$IFDEF LCLCarbon}
+    {$IFNDEF NativePrint}
+    
 // add units as needed for carbon, for the moment use cups ones.
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$I cupsprndialogs.inc}
-{$ELSE}
+
+    {$ELSE}
+    
+uses Controls, CarbonProc, FPCMacOSAll;
+{$I carbonprndialogs.inc}
+
+    {$ENDIF}
+  {$ELSE}
+  
 uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 {$I cupsprndialogs.inc}
-{$ENDIF}
+
+  {$ENDIF}
 {$ENDIF}
 
 {$IFDEF MSWindows}
+
 uses Windows, WinUtilPrn, InterfaceBase, LCLIntf, LCLType, WinVer;
 {$I winprndialogs.inc}
+
 {$ENDIF}
 
 constructor TPageSetupDialog.Create(TheOwner: TComponent);
