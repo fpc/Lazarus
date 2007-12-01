@@ -80,6 +80,10 @@ var
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
+
+  if not Assigned(AValue.Images) then
+    exit;
+    
   APixmap := QPixmap_create();
 
   AGlyph := TBitmap.Create;
