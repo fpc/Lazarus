@@ -1771,6 +1771,19 @@ var
   Shift : TShiftState;
   Command: word;
   Handled: boolean;
+  
+  procedure Nudge(x, y: integer);
+  begin
+    if (ssCtrl in Shift) then begin
+      if ssShift in Shift then begin
+        x:=x*GetGridSizeX;
+        y:=y*GetGridSizeY;
+      end;
+      NudgePosition(x,y)
+    end else if (ssShift in Shift) then
+      NudgeSize(x,y);
+  end;
+  
 Begin
   {$IFDEF VerboseDesigner}
   DebugLn(['TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData]);
@@ -1793,28 +1806,16 @@ Begin
         DoDeleteSelectedPersistents;
 
     VK_UP:
-      if (ssCtrl in Shift) then
-        NudgePosition(0,-1)
-      else if (ssShift in Shift) then
-        NudgeSize(0,-1);
+      Nudge(0,-1);
 
     VK_DOWN:
-      if (ssCtrl in Shift) then
-        NudgePosition(0,1)
-      else if (ssShift in Shift) then
-        NudgeSize(0,1);
+      Nudge(0,1);
 
     VK_RIGHT:
-      if (ssCtrl in Shift) then
-        NudgePosition(1,0)
-      else if (ssShift in Shift) then
-        NudgeSize(1,0);
+      Nudge(1,0);
 
     VK_LEFT:
-      if (ssCtrl in Shift) then
-        NudgePosition(-1,0)
-      else if (ssShift in Shift) then
-        NudgeSize(-1,0);
+      Nudge(-1,0);
 
     else
       Handled:=false;
