@@ -2141,8 +2141,8 @@ begin
         end;
         if lWinControl <> nil then begin
           {$IFDEF VerboseSizeMsg}
-          writeln('Win32CallBack WM_MOVE ',lWinControl.Name,':',lWinControl.ClassName,
-            ' NewPos=',XPos,',',YPos);
+          DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
+            ' NewPos=',dbgs(XPos),',',dbgs(YPos));
           {$ENDIF}
           if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
             exit;
@@ -2167,13 +2167,12 @@ begin
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
-            ' NewSize=',Width,',',Height,
-            ' HasVScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
-            ' HasHScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-            ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
-            ' NewClientSize=',R.Right,',',R.Bottom,
-            ' ');
+          DebugLn('Win32Callback: WM_SIZE '+ dbgsName(lWinControl)+
+            ' NewSize=', dbgs(Width)+','+dbgs(Height)+
+            ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
+            ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
+            ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
+            ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
           if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
               or lWinControl.ClientRectNeedsInterfaceUpdate then

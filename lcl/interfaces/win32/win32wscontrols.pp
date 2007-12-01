@@ -38,7 +38,7 @@ uses
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { TODO: needs to move }
   Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType,
-  InterfaceBase, LCLIntf, LCLType;
+  InterfaceBase, LCLIntf, LCLType, LCLProc;
 
 type
   { TWin32WSDragImageList }
@@ -188,7 +188,8 @@ begin
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     SetStdBiDiModeParams(AWinControl, Params);
     {$IFDEF VerboseSizeMsg}
-    writeln('TWin32WidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
+    DebugLn('TWin32WidgetSet.CreateComponent A ' + dbgsName(AWinControl) + ' ' +
+      Format('%d, %d, %d, %d', [Left, Top, Width, Height]));
     {$ENDIF}
 
     Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
@@ -444,10 +445,10 @@ begin
   IntfWidth := AWidth; IntfHeight := AHeight;
   LCLBoundsToWin32Bounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight);
   {$IFDEF VerboseSizeMsg}
-  writeln('TWin32WSWinControl.ResizeWindow A ',AWinControl.Name,':',AWinControl.ClassName,
-    ' LCL=',ALeft,',',ATop,',',AWidth,',',AHeight,
-    ' Win32=',IntfLeft,',',IntfTop,',',IntfWidth,',',IntfHeight,
-    '');
+  DebugLn('TWin32WSWinControl.ResizeWindow A ', dbgsName(AWinControl),
+    ' LCL=',Format('%d, %d, %d, %d', [ALeft,ATop,AWidth,AHeight]),
+    ' Win32=',Format('%d, %d, %d, %d', [IntfLeft,IntfTop,IntfWidth,IntfHeight])
+    );
   {$ENDIF}
   suppressMove := false;
   AdaptBounds(AWinControl, IntfLeft, IntfTop, IntfWidth, IntfHeight, suppressMove);
