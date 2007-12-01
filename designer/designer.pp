@@ -535,7 +535,7 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
-  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
+  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
 
   if ControlSelection.LookupRootSelected then begin
     SelectOnlyThisComponent(FLookupRoot);
@@ -670,7 +670,7 @@ var
 begin
   Result := false;
   if ControlSelection.Count = 0 then exit;
-  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
+  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
 
   AllComponentsStream:=TMemoryStream.Create;
   try
@@ -1789,7 +1789,7 @@ Begin
     Handled:=true;
     case TheMessage.CharCode of
     VK_DELETE:
-      if not ControlSelection.OnlyInvisiblePersistensSelected then
+      if not ControlSelection.OnlyInvisiblePersistentsSelected then
         DoDeleteSelectedPersistents;
 
     VK_UP:
@@ -2795,7 +2795,7 @@ begin
                         and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
   OnlyNonVisualsAreSelected := ControlSelection.OnlyNonVisualPersistentsSelected;
-  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistensSelected;
+  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistentsSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
   OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;

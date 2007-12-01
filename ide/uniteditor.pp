@@ -4363,6 +4363,7 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex+1
   else
     NoteBook.PageIndex := 0;
+  NotebookPageChanged(Self);
 End;
 
 Procedure TSourceNotebook.PrevEditor;
@@ -4372,6 +4373,7 @@ Begin
     Notebook.PageIndex := Notebook.PageIndex-1
   else
     NoteBook.PageIndex := NoteBook.PageCount-1;
+  NotebookPageChanged(Self);
 End;
 
 procedure TSourceNotebook.MoveEditor(OldPageIndex, NewPageIndex: integer);

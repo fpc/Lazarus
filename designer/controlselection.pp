@@ -399,7 +399,7 @@ type
     function ParentLevel: integer;
     function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
-    function OnlyInvisiblePersistensSelected: boolean;
+    function OnlyInvisiblePersistentsSelected: boolean;
     function OnlyBoundLessComponentsSelected: boolean;
     function LookupRootSelected: boolean;
 
@@ -436,7 +436,7 @@ type
     procedure InvalidateGuideLinesCache;
 
     // grabbers and markers
-    property GrabberSize:integer read FGrabberSize write SetGrabberSize;
+    property GrabberSize: integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read GetGrabberColor;
     procedure DrawGrabbers(DC: TDesignerDeviceContext);
     function GrabberAtPos(X,Y: integer):TGrabber;
@@ -1121,6 +1121,7 @@ begin
   if FControls.Count>=1 then begin
     Items[0].GetFormRelativeBounds(FRealLeft,FRealTop,FRealWidth,FRealHeight,
                                    true);
+    //DebugLn(['TControlSelection.UpdateRealBounds ',FRealLeft,',',FRealTop]);
     for i:=1 to FControls.Count-1 do begin
       Items[i].GetFormRelativeBounds(
                     NextRealLeft,NextRealTop,NextRealWidth,NextRealHeight,true);
@@ -2144,17 +2145,16 @@ var
       RestoreBrush:=true;
     end;
     DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
+    //DC.Canvas.TextOut(RLeft,RTop,dbgs(ord(g)));
   end;
 
 begin
   if (Count=0) or (FForm=nil) or LookupRootSelected
-  or OnlyInvisiblePersistensSelected then exit;
+  or OnlyInvisiblePersistentsSelected then exit;
 
   Diff:=DC.FormOrigin;
 
-  {writeln('[DrawGrabbers] '
-   ,' DC=',Diff.X,',',Diff.Y
-   ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top);}
+  //debugln(['[DrawGrabbers] ',' DC=',Diff.X,',',Diff.Y,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top]);
 
   RestoreBrush:=false;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do
@@ -2499,7 +2499,7 @@ begin
     Result:=cssOnlyVisualNeedsSelected in FStates;
 end;
 
-function TControlSelection.OnlyInvisiblePersistensSelected: boolean;
+function TControlSelection.OnlyInvisiblePersistentsSelected: boolean;
 var i: integer;
 begin
   if cssOnlyInvisibleNeedsUpdate in FStates then begin
