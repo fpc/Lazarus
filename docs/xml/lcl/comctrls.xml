@@ -450,7 +450,7 @@
           <p><i>TStatusBar</i> - a strip along the bottom of a form for displaying information on current status</p>
           <p>The bar may consist of a single <i>SimplePanel</i>, in which case the displayed text is contained in <i>SimpleText</i>.</p>
           <p>However if <i>SimplePanel</i> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <i>Panels</i>.</p>
-          <p>The property <i>SimpleString</i> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
+          <p>The property <i>SimpleText</i> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
         </descr>
         <example file="extctrls/statusbar.pas"/>
       </element>
@@ -629,9 +629,11 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.Panels">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Panels</i> - the list of strings to be placed in the sub-panels of <i>TStatusBar</i></short>
+        <descr>
+          <p>If SimplePanel is false, the contents of <i>Panels</i> is displayed. </p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> in the Object Inspector is selected and allows insertion orf arbitrary number of sub-panels with their own strings</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimpleText">
@@ -643,7 +645,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimplePanel">
-        <short>SimplePanel - boolean. Is there just one continuous panel, or several sub-panels?</short>
+        <short><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</short>
         <descr>
           <p><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</p>
           <p>If true, the value of <i>SimpleText</i> is displayed; if false, the contents of <i>Panels</i> is displayed. </p>
@@ -6808,9 +6810,7 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TToolButton.GetCurrentIcon.TheIndex"><short/></element>
       <!-- property Visibility: public -->
       <element name="TToolButton.Index">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Index </i>- the sequence number of the current button in the list of buttons</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Action">
@@ -6838,9 +6838,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Down">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is this button <i>Down</i> (ie has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.DragCursor">
@@ -6862,9 +6860,11 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.DropdownMenu">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A <i>DropDownMenu</i> that appears when this button is selected</short>
+        <descr>
+          <p>A <i>DropDownMenu</i> that appears when this button is selected</p>
+          <p>It uses the same code as a <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>, and offers a series of additional menu choices.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Enabled">
@@ -6874,9 +6874,11 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Grouped">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is this button a member of a group? Default false</short>
+        <descr>
+          <p>Is this button a member of a group?</p>
+          <p>This would mean behaviour similar to the radio buttons in a <link id="#lcl.ExtCtrls.TRadioGroup">TRadioGroup</link>, where only one button in the group can be selected, or the check boxes in a <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link> where more than one item can be selected but the members of the group interact in some way.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Height">
@@ -6886,9 +6888,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><p>ImageIndex </p>- the index value of the image from the imagelist to be used with this button</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Indeterminate">
@@ -6898,15 +6898,15 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Marked">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is this button <i>Marked</i> (ie has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.MenuItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The item on the Main Menu with which this tool button is associated</short>
+        <descr>
+          <p>The item on the Main Menu with which this tool button is associated</p>
+          <p>Typically, the buttons on the toolbar would each point to an entry on the menu action list, which could also be accessed by using the Main Menu</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.ParentShowHint">
@@ -6922,9 +6922,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Wrap">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Has this button been wrapped to the next row?</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.ShowHint">
@@ -6946,11 +6944,7 @@ To add, change or delete a column use the Columns property.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TToolButton.Width">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TToolButton.Width"/>
       <!-- property Visibility: published -->
       <element name="TToolButton.OnClick">
         <short/>
@@ -7670,9 +7664,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.DisabledImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Images on the Image List that are NOT selected for display</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.DragCursor">
@@ -7718,9 +7710,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Flat">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Should the toolbuttons be displayed Flat (rather than in relief)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Font">
@@ -7736,27 +7726,19 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.HotImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Images on the Image list that are selected for display</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Images">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Images</i> to be displayed on the buttons</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Indent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Indent</i> - the amount by which the buttons should be indented Default is 1</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.List">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Should the contents of the toolbar be displayed as a <i>List</i>? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ParentColor">
@@ -7820,9 +7802,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Wrapable">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Wrapable</i> - enables wrapping buttons to the next row if there are too many for the current row</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.OnClick">
