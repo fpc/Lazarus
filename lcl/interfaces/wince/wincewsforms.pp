@@ -236,6 +236,7 @@ class function TWinCEWSCustomForm.CreateHandle(const AWinControl: TWinControl;
 var
   Params: TCreateWindowExParams;
   LForm : TCustomForm;
+  BorderStyle: TFormBorderStyle;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSCustomForm.CreateHandle');
@@ -254,10 +255,17 @@ begin
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     SubClassWndProc := nil;
     Parent := 0;
-    Left:=CW_USEDEFAULT;
-    Top:=CW_USEDEFAULT;
-    Height:=CW_USEDEFAULT;
-    Width:=CW_USEDEFAULT;
+    BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
+    if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
+    begin
+      Left:=CW_USEDEFAULT;
+      Top:=CW_USEDEFAULT;
+      Height:=CW_USEDEFAULT;
+      Width:=CW_USEDEFAULT;
+    end
+    else
+      //TODO:little bit dirty but works, why the captionbar height is taken from height ? what flag does that ?
+      Height := Height+25;
   end;
   
   // create window

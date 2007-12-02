@@ -1080,10 +1080,12 @@ end;
 
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 begin
+  Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
   case Application.ApplicationType of
+  { Under Desktop or Handheld mode we get an application which
+    looks similar to a desktop one, with sizable windows }
   atDesktop,atHandheld:
     begin
-      Result := WS_CLIPCHILDREN or WS_CLIPSIBLINGS;
       case Style of
       bsSizeable, bsSizeToolWin:
         Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
@@ -1095,9 +1097,18 @@ begin
         Result := Result or WS_POPUP;
       end;
     end;
+  { Under PDA or Smartphone modes most windows are enlarged to fit the screen
+    Dialogs and borderless windows are exceptions }
   atPDA,atSmartphone,atDefault:
     begin
-      Result := WS_VISIBLE;
+      case Style of
+      bsDialog:
+        Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
+      bsNone:
+        Result := Result or WS_POPUP;
+      else
+        Result := WS_VISIBLE;
+      end;
     end;
   end;
 end;
@@ -1117,10 +1128,13 @@ begin
     end;
   atPDA,atSmartphone,atDefault:
     begin
+{     This code is comented because the OK button wasn't being handled
+      and it's hard to know if the dialog actually needs an OK button
+
       case Style of
       bsDialog:
         Result := WS_EX_CAPTIONOKBTN;
-      end;
+      end;}
     end;
   end;
 end;
@@ -1329,6 +1343,8 @@ finalization
   ChangedMenus.Free;
 
 end.
+
+
 
 
 
