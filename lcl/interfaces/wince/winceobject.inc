@@ -328,13 +328,6 @@ Begin
 
     end
     else
-    if retVal = WAIT_TIMEOUT then
-    begin
-      // check for pending to-be synchronized methods
-      CheckSynchronize;
-      CheckPipeEvents;
-      break;
-    end else
     if retVal = $FFFFFFFF then
     begin
       DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));

@@ -985,6 +985,11 @@ begin
 //  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
 
   Case Msg Of
+    WM_NULL:
+    Begin
+      CheckSynchronize;
+      TWinCEWidgetset(Widgetset).CheckPipeEvents;
+    End;
     WM_ACTIVATE:
     Begin
       Case Lo(WParam) Of
