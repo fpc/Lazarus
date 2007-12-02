@@ -4008,6 +4008,10 @@ msgstr "印度尼西亚语"
 msgid "Information about %s"
 msgstr "关于 %s 的信息"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "继承的"
@@ -4919,6 +4923,10 @@ msgstr "连接器"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "链接"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -6007,6 +6015,10 @@ msgstr "页面名称太长"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "颜料设计器项目只在空闲时启用 (为运行速度慢的计算机减轻负担)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"

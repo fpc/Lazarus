@@ -100,7 +100,7 @@ uses
   // help manager
   IDEContextHelpEdit, HelpManager,
   // designer
-  JITForm, JITForms, ComponentPalette, FindPaletteComp, ComponentReg,
+  JITForm, JITForms, ComponentPalette, ComponentList, ComponentReg,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
   {$DEFINE UseNewMenuEditor}
@@ -686,7 +686,7 @@ type
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
-    procedure DoShowComponents;
+    procedure DoShowComponentList;
     procedure DoShowLazDoc;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
@@ -1193,6 +1193,7 @@ begin
     FreeThenNil(TheControlSelection);
   end;
 
+  FreeAndNil(ComponentListForm);
   FreeThenNil(ProjInspector);
   FreeThenNil(CodeExplorerView);
   FreeThenNil(CodeBrowserView);
@@ -2588,7 +2589,7 @@ begin
     DoShowCodeBrowser;
 
   ecViewComponents:
-    DoShowComponents;
+    DoShowComponentList;
     
   ecToggleLazDoc:
     DoShowLazDoc;
@@ -3106,7 +3107,7 @@ end;
 
 Procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
-  DoShowComponents;
+  DoShowComponentList;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -7163,11 +7164,11 @@ begin
   CodeBrowserView.ShowOnTop;
 end;
 
-procedure TMainIDE.DoShowComponents;
-var AComponent: TRegisteredComponent;
+procedure TMainIDE.DoShowComponentList;
 begin
-  if ShowFindPaletteComponentDlg(AComponent) = mrOk
-  then TComponentPalette(IDEComponentPalette).Selected := AComponent;
+  if not Assigned(ComponentListForm)
+  then ComponentListForm := TComponentListForm.Create(Self);
+  ComponentListForm.Show;
 end;
 
 procedure TMainIDE.DoShowLazDoc;

@@ -4011,6 +4011,10 @@ msgstr "Indoneziečių"
 msgid "Information about %s"
 msgstr "Informacija apie modulį %s"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Paveldėta"
@@ -4924,6 +4928,10 @@ msgstr "Saistyklė"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Saistymas"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -6012,6 +6020,10 @@ msgstr "Perilgas vardas"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Piešti tik IKA esančius konstruktoriaus elementus (sumažina lėtų kompiuterių apkrovą)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"

@@ -9186,14 +9186,6 @@ msgstr ""
 msgid "%s, Page: %s"
 msgstr ""
 
-#: lazarusidestrconsts:lisfpfindpalettecomponent
-msgid "Find palette component"
-msgstr ""
-
-#: lazarusidestrconsts:lisfpcomponents
-msgid "Components"
-msgstr ""
-
 #: lazarusidestrconsts:lispckeditremovefile2
 msgid "Remove file?"
 msgstr ""
@@ -9544,6 +9536,30 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojinspprojectinspector
 msgid "Project Inspector - %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpfindpalettecomponent
+msgid "Find palette component"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpcomponents
+msgid "Components"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstcomponents
+msgid "Components"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditormenueditor

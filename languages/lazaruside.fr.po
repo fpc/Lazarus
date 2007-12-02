@@ -4007,6 +4007,10 @@ msgstr "Indonésien"
 msgid "Information about %s"
 msgstr "Informations sur %s"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Hérité"
@@ -4918,6 +4922,10 @@ msgstr "Editeur de liens"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Edition des liens"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -6006,6 +6014,10 @@ msgstr "Nom de page trop long"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Dessiner les éléments du designer seulement quand inactif (réduit la charge sur ordinateurs lents)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"

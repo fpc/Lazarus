@@ -4005,6 +4005,10 @@ msgstr "Indonesian"
 msgid "Information about %s"
 msgstr "Informasi tentang %s"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Diturunkan"
@@ -4916,6 +4920,10 @@ msgstr "Linker"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Penggabungan"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -6004,6 +6012,10 @@ msgstr "Nama Halaman terlalu panjang"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Gambar item pendesain hanya saat menganggur (mengurangi kelebihan beban untuk komputer lambat)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"

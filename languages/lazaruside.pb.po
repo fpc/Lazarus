@@ -3997,6 +3997,10 @@ msgstr ""
 msgid "Information about %s"
 msgstr "Informação sobre %s"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Herdado"
@@ -4908,6 +4912,10 @@ msgstr "Vinculador"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Vinculando"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -5996,6 +6004,10 @@ msgstr "Nome da Página muito longo"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Pintura dos items do 'designer' somente em 'idle' (reduzir gasto para computadores lentos)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"

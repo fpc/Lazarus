@@ -1850,6 +1850,9 @@ ide/compileroptionsdlg.pp svneol=native#text/pascal
 ide/compileroptionsdlg_new.lfm -text
 ide/compileroptionsdlg_new.lrs -text
 ide/compileroptionsdlg_new.pp svneol=native#text/pascal
+ide/componentlist.lfm svneol=native#text/pascal
+ide/componentlist.lrs svneol=native#text/pascal
+ide/componentlist.pas svneol=native#text/pascal
 ide/componentpalette.pas svneol=native#text/pascal
 ide/condef.lfm svneol=native#text/plain
 ide/condef.lrs svneol=native#text/pascal

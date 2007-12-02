@@ -3032,8 +3032,6 @@ resourcestring
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '
     +'package?';
   lisPckEditPage = '%s, Page: %s';
-  lisFPFindPaletteComponent = 'Find palette component';
-  lisFPComponents = 'Components';
   lisPckEditRemoveFile2 = 'Remove file?';
   lisPckEditRemoveFileFromPackage = 'Remove file %s%s%s%sfrom package %s%s%s?';
   lisPckEditRemoveDependency2 = 'Remove Dependency?';
@@ -3148,6 +3146,16 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
+  // Find palette component dialog
+  lisFPFindPaletteComponent = 'Find palette component';
+  lisFPComponents = 'Components';
+  
+  // components list form
+  lisCmpLstComponents = 'Components';
+  lisCmpLstList = 'List';
+  lisCmpLstPalette = 'Palette';
+  lisCmpLstInheritance = 'Inheritance';
+
   // menu editor
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorSelectMenu = 'Select Menu:';

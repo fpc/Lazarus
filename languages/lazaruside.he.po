@@ -4005,6 +4005,10 @@ msgstr ""
 msgid "Information about %s"
 msgstr ""
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr ""
@@ -4915,6 +4919,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
@@ -6003,6 +6011,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage

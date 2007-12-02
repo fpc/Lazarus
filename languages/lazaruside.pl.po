@@ -4009,6 +4009,10 @@ msgstr "indonezyjski"
 msgid "Information about %s"
 msgstr "Informacja o %s"
 
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
 msgstr "Inherited"
@@ -4920,6 +4924,10 @@ msgstr "Linker"
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
 msgstr "Łączenie"
+
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -6007,6 +6015,10 @@ msgstr "Nazwa zakładki jest zbyt długa"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
+msgstr ""
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
