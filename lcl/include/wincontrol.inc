@@ -2643,28 +2643,28 @@ var
     case AAlign of
       alTop:
         begin
-          RemainingClientRect.Top:=NewTop+NewHeight;
+          RemainingClientRect.Top:=Min(NewTop+NewHeight,RemainingClientRect.Bottom);
           RemainingBorderSpace.Top:=0;
           AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
             0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Bottom),0,0);
         end;
       alBottom:
         begin
-          RemainingClientRect.Bottom:=NewTop;
+          RemainingClientRect.Bottom:=Max(NewTop,RemainingClientRect.Top);
           RemainingBorderSpace.Bottom:=0;
           AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
             0,0,0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Top));
         end;
       alLeft:
         begin
-          RemainingClientRect.Left:=NewLeft+NewWidth;
+          RemainingClientRect.Left:=Min(NewLeft+NewWidth,RemainingClientRect.Right);
           RemainingBorderSpace.Left:=0;
           AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
             Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
         end;
       alRight:
         begin
-          RemainingClientRect.Right:=NewLeft;
+          RemainingClientRect.Right:=Max(NewLeft,RemainingClientRect.Left);
           RemainingBorderSpace.Right:=0;
           AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
             0,0,Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Left),0);
@@ -2672,12 +2672,23 @@ var
       alClient:
         begin
           // VCL is tricking here.
-          // For alClients with Constraints do the same as for alLeft
-          {debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
-            RemainingClientRect.Left:=NewLeft+NewWidth;
+          // For alClients with Constraints do the same as for alLeft/alTop
+          //debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
+          if (RemainingClientRect.Right-RemainingClientRect.Left-NewWidth)
+           > (RemainingClientRect.Bottom-RemainingClientRect.Top-NewHeight)
+          then begin
+            // use alLeft strategy
+            RemainingClientRect.Left:=Min(NewLeft+NewWidth,RemainingClientRect.Right);
             RemainingBorderSpace.Left:=0;
             AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-              Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);}
+              Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
+          end else begin
+            // use alTop strategy
+            RemainingClientRect.Top:=Min(NewTop+NewHeight,RemainingClientRect.Bottom);
+            RemainingBorderSpace.Top:=0;
+            AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+              0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Bottom),0,0);
+          end;
         end;
     end;
 
