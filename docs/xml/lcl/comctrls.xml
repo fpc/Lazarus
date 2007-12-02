@@ -632,7 +632,7 @@
         <short><i>Panels</i> - the list of strings to be placed in the sub-panels of <i>TStatusBar</i></short>
         <descr>
           <p>If SimplePanel is false, the contents of <i>Panels</i> is displayed. </p>
-          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> in the Object Inspector is selected and allows insertion orf arbitrary number of sub-panels with their own strings</p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> in the Object Inspector is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -649,7 +649,7 @@
         <descr>
           <p><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</p>
           <p>If true, the value of <i>SimpleText</i> is displayed; if false, the contents of <i>Panels</i> is displayed. </p>
-          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> is selected and allows insertion orf arbitrary number of sub-panels with their own strings</p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
