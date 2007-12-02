@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.53 }
+{ Version : 1.55 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -190,7 +190,9 @@ QIconEngineH = class(TObject) end;
 QImageIOHandlerH = class(TObject) end;
 QImageReaderH = class(TObject) end;
 QImageWriterH = class(TObject) end;
+QItemEditorCreatorBaseH = class(TObject) end;
 QItemEditorFactoryH = class(TObject) end;
+QItemSelectionRangeH = class(TObject) end;
 QKeySequenceH = class(TObject) end;
 QLatin1StringH = class(TObject) end;
 QLayoutItemH = class(TObject) end;
@@ -468,6 +470,8 @@ QTableView_hookH = class(QAbstractItemView_hookH) end;
 QTableWidgetSelectionRange_hookH = class(QObject_hookH) end;
 QTableWidgetItem_hookH = class(QObject_hookH) end;
 QTableWidget_hookH = class(QTableView_hookH) end;
+QItemSelectionRange_hookH = class(QObject_hookH) end;
+QItemSelectionModel_hookH = class(QObject_hookH) end;
 QDialog_hookH = class(QWidget_hookH) end;
 QFileDialog_hookH = class(QDialog_hookH) end;
 QProgressDialog_hookH = class(QDialog_hookH) end;
@@ -480,6 +484,11 @@ QIODevice_hookH = class(QObject_hookH) end;
 
 QLCLItemDelegate_sizeHint_Override = procedure (option: QStyleOptionViewItemH; index: QModelIndexH; Size: PSize) of object cdecl;
 QLCLItemDelegate_paint_Override = procedure (painter : QPainterH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
+QLCLItemDelegate_createEditor_Override = procedure (parent : QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH; out editor: QWidgetH) of object cdecl; 
+QLCLItemDelegate_setEditorData_Override = procedure (editor : QWidgetH; index: QModelIndexH) of object cdecl;
+QLCLItemDelegate_setModelData_Override = procedure (editor : QWidgetH; model: QAbstractItemModelH; index: QModelIndexH) of object cdecl;
+QLCLItemDelegate_updateEditorGeometry_Override = procedure (editor : QWidgetH; option: QStyleOptionViewItemH; index: QModelIndexH) of object cdecl;
+QLCLItemDelegate_editorEvent_Override = procedure (event : QEventH; model: QAbstractItemModelH; option: QStyleOptionViewItemH; index: QModelIndexH; retval: PBoolean) of object cdecl;
 QLCLAbstractScrollArea_viewportEvent_Override = procedure (event: QEventH; retval: PBoolean) of object cdecl;
 function QtPoint(X,Y:integer): TQtPoint;
 function QObject_hook_create(handle : QObjectH) : QObject_hookH; cdecl; external QtIntf name 'QObject_hook_create';
@@ -7656,10 +7665,91 @@ type
   QTableWidget_currentCellChanged_Event = procedure (currentRow: Integer; currentColumn: Integer; previousRow: Integer; previousColumn: Integer) of object cdecl;
 
 
+function QItemEditorCreatorBase_createWidget(handle: QItemEditorCreatorBaseH; parent: QWidgetH): QWidgetH; cdecl; external QtIntf name 'QItemEditorCreatorBase_createWidget';
+procedure QItemEditorCreatorBase_valuePropertyName(handle: QItemEditorCreatorBaseH; retval: QByteArrayH); cdecl; external QtIntf name 'QItemEditorCreatorBase_valuePropertyName';
+
+function QItemEditorFactory_create(): QItemEditorFactoryH; cdecl; external QtIntf name 'QItemEditorFactory_create';
+procedure QItemEditorFactory_destroy(handle: QItemEditorFactoryH); cdecl; external QtIntf name 'QItemEditorFactory_destroy'; 
+function QItemEditorFactory_createEditor(handle: QItemEditorFactoryH; _type: QVariantType; parent: QWidgetH): QWidgetH; cdecl; external QtIntf name 'QItemEditorFactory_createEditor';
+procedure QItemEditorFactory_valuePropertyName(handle: QItemEditorFactoryH; retval: QByteArrayH; _type: QVariantType); cdecl; external QtIntf name 'QItemEditorFactory_valuePropertyName';
+procedure QItemEditorFactory_registerEditor(handle: QItemEditorFactoryH; _type: QVariantType; creator: QItemEditorCreatorBaseH); cdecl; external QtIntf name 'QItemEditorFactory_registerEditor';
+function QItemEditorFactory_defaultFactory(): QItemEditorFactoryH; cdecl; external QtIntf name 'QItemEditorFactory_defaultFactory';
+procedure QItemEditorFactory_setDefaultFactory(factory: QItemEditorFactoryH); cdecl; external QtIntf name 'QItemEditorFactory_setDefaultFactory';
+
+type
+  QItemSelectionModelSelectionFlag = cardinal; //  QItemSelectionModel::SelectionFlag (4)
+  QItemSelectionModelSelectionFlags = QItemSelectionModelSelectionFlag; // QFlags<>
+
+const
+    QItemSelectionModelNoUpdate = 0 { $0 };
+    QItemSelectionModelClear = 1 { $1 };
+    QItemSelectionModelSelect = 2 { $2 };
+    QItemSelectionModelDeselect = 4 { $4 };
+    QItemSelectionModelToggle = 8 { $8 };
+    QItemSelectionModelCurrent = 16 { $10 };
+    QItemSelectionModelRows = 32 { $20 };
+    QItemSelectionModelColumns = 64 { $40 };
+    QItemSelectionModelSelectCurrent = 18 { $12 };
+    QItemSelectionModelToggleCurrent = 24 { $18 };
+    QItemSelectionModelClearAndSelect = 3 { $3 };
+
+
+function QItemSelectionRange_create(): QItemSelectionRangeH; overload; cdecl; external QtIntf name 'QItemSelectionRange_create';
+procedure QItemSelectionRange_destroy(handle: QItemSelectionRangeH); cdecl; external QtIntf name 'QItemSelectionRange_destroy'; 
+function QItemSelectionRange_create(other: QItemSelectionRangeH): QItemSelectionRangeH; overload; cdecl; external QtIntf name 'QItemSelectionRange_create2';
+function QItemSelectionRange_create(topLeft: QModelIndexH; bottomRight: QModelIndexH): QItemSelectionRangeH; overload; cdecl; external QtIntf name 'QItemSelectionRange_create3';
+function QItemSelectionRange_create(index: QModelIndexH): QItemSelectionRangeH; overload; cdecl; external QtIntf name 'QItemSelectionRange_create4';
+function QItemSelectionRange_top(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_top';
+function QItemSelectionRange_left(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_left';
+function QItemSelectionRange_bottom(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_bottom';
+function QItemSelectionRange_right(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_right';
+function QItemSelectionRange_width(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_width';
+function QItemSelectionRange_height(handle: QItemSelectionRangeH): Integer; cdecl; external QtIntf name 'QItemSelectionRange_height';
+procedure QItemSelectionRange_topLeft(handle: QItemSelectionRangeH; retval: QModelIndexH); cdecl; external QtIntf name 'QItemSelectionRange_topLeft';
+procedure QItemSelectionRange_bottomRight(handle: QItemSelectionRangeH; retval: QModelIndexH); cdecl; external QtIntf name 'QItemSelectionRange_bottomRight';
+procedure QItemSelectionRange_parent(handle: QItemSelectionRangeH; retval: QModelIndexH); cdecl; external QtIntf name 'QItemSelectionRange_parent';
+function QItemSelectionRange_model(handle: QItemSelectionRangeH): QAbstractItemModelH; cdecl; external QtIntf name 'QItemSelectionRange_model';
+function QItemSelectionRange_contains(handle: QItemSelectionRangeH; index: QModelIndexH): Boolean; overload; cdecl; external QtIntf name 'QItemSelectionRange_contains';
+function QItemSelectionRange_contains(handle: QItemSelectionRangeH; row: Integer; column: Integer; parentIndex: QModelIndexH): Boolean; overload; cdecl; external QtIntf name 'QItemSelectionRange_contains2';
+function QItemSelectionRange_intersects(handle: QItemSelectionRangeH; other: QItemSelectionRangeH): Boolean; cdecl; external QtIntf name 'QItemSelectionRange_intersects';
+procedure QItemSelectionRange_intersect(handle: QItemSelectionRangeH; retval: QItemSelectionRangeH; other: QItemSelectionRangeH); cdecl; external QtIntf name 'QItemSelectionRange_intersect';
+procedure QItemSelectionRange_intersected(handle: QItemSelectionRangeH; retval: QItemSelectionRangeH; other: QItemSelectionRangeH); cdecl; external QtIntf name 'QItemSelectionRange_intersected';
+function QItemSelectionRange_isValid(handle: QItemSelectionRangeH): Boolean; cdecl; external QtIntf name 'QItemSelectionRange_isValid';
+
+function QItemSelectionModel_create(model: QAbstractItemModelH): QItemSelectionModelH; overload; cdecl; external QtIntf name 'QItemSelectionModel_create';
+procedure QItemSelectionModel_destroy(handle: QItemSelectionModelH); cdecl; external QtIntf name 'QItemSelectionModel_destroy'; 
+function QItemSelectionModel_create(model: QAbstractItemModelH; parent: QObjectH): QItemSelectionModelH; overload; cdecl; external QtIntf name 'QItemSelectionModel_create2';
+procedure QItemSelectionModel_currentIndex(handle: QItemSelectionModelH; retval: QModelIndexH); cdecl; external QtIntf name 'QItemSelectionModel_currentIndex';
+function QItemSelectionModel_isSelected(handle: QItemSelectionModelH; index: QModelIndexH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_isSelected';
+function QItemSelectionModel_isRowSelected(handle: QItemSelectionModelH; row: Integer; parent: QModelIndexH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_isRowSelected';
+function QItemSelectionModel_isColumnSelected(handle: QItemSelectionModelH; column: Integer; parent: QModelIndexH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_isColumnSelected';
+function QItemSelectionModel_rowIntersectsSelection(handle: QItemSelectionModelH; row: Integer; parent: QModelIndexH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_rowIntersectsSelection';
+function QItemSelectionModel_columnIntersectsSelection(handle: QItemSelectionModelH; column: Integer; parent: QModelIndexH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_columnIntersectsSelection';
+function QItemSelectionModel_hasSelection(handle: QItemSelectionModelH): Boolean; cdecl; external QtIntf name 'QItemSelectionModel_hasSelection';
+function QItemSelectionModel_model(handle: QItemSelectionModelH): QAbstractItemModelH; cdecl; external QtIntf name 'QItemSelectionModel_model';
+procedure QItemSelectionModel_setCurrentIndex(handle: QItemSelectionModelH; index: QModelIndexH; command: QItemSelectionModelSelectionFlags); cdecl; external QtIntf name 'QItemSelectionModel_setCurrentIndex';
+procedure QItemSelectionModel_select(handle: QItemSelectionModelH; index: QModelIndexH; command: QItemSelectionModelSelectionFlags); cdecl; external QtIntf name 'QItemSelectionModel_select';
+procedure QItemSelectionModel_clear(handle: QItemSelectionModelH); cdecl; external QtIntf name 'QItemSelectionModel_clear';
+procedure QItemSelectionModel_reset(handle: QItemSelectionModelH); cdecl; external QtIntf name 'QItemSelectionModel_reset';
+procedure QItemSelectionModel_clearSelection(handle: QItemSelectionModelH); cdecl; external QtIntf name 'QItemSelectionModel_clearSelection';
+
+
+type
+  QItemSelectionModel_currentChanged_Event = procedure (current: QModelIndexH; previous: QModelIndexH) of object cdecl;
+  QItemSelectionModel_currentRowChanged_Event = procedure (current: QModelIndexH; previous: QModelIndexH) of object cdecl;
+  QItemSelectionModel_currentColumnChanged_Event = procedure (current: QModelIndexH; previous: QModelIndexH) of object cdecl;
+
+
 function QLCLItemDelegate_create(parent: QObjectH = nil): QLCLItemDelegateH; cdecl; external QtIntf name 'QLCLItemDelegate_create';
 procedure QLCLItemDelegate_destroy(handle: QLCLItemDelegateH); cdecl; external QtIntf name 'QLCLItemDelegate_destroy'; 
 procedure QLCLItemDelegate_override_sizeHint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_sizeHint';
 procedure QLCLItemDelegate_override_paint(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_paint';
+function QLCLItemDelegate_override_createEditor(handle: QLCLItemDelegateH; hook: QHookH): QWidgetH; cdecl; external QtIntf name 'QLCLItemDelegate_override_createEditor';
+procedure QLCLItemDelegate_override_setEditorData(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_setEditorData';
+procedure QLCLItemDelegate_override_setModelData(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_setModelData';
+procedure QLCLItemDelegate_override_updateEditorGeometry(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_updateEditorGeometry';
+procedure QLCLItemDelegate_override_editorEvent(handle: QLCLItemDelegateH; hook: QHookH); cdecl; external QtIntf name 'QLCLItemDelegate_override_editorEvent';
+function QLCLItemDelegate_InheritedEditorEvent(handle: QLCLItemDelegateH; event: QEventH; model: QAbstractItemModelH; option: QStyleOptionViewItemH; index: QModelIndexH): Boolean; cdecl; external QtIntf name 'QLCLItemDelegate_InheritedEditorEvent';
 
 
 type
@@ -9938,6 +10028,15 @@ procedure QTableWidget_hook_hook_cellActivated(handle: QTableWidget_hookH; hook:
 procedure QTableWidget_hook_hook_cellEntered(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellEntered';
 procedure QTableWidget_hook_hook_cellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_cellChanged';
 procedure QTableWidget_hook_hook_currentCellChanged(handle: QTableWidget_hookH; hook: QHookH); cdecl; external QtIntf name 'QTableWidget_hook_hook_currentCellChanged';
+
+function QItemSelectionRange_hook_create(handle: QObjectH): QItemSelectionRange_hookH; cdecl; external QtIntf name 'QItemSelectionRange_hook_create';
+procedure QItemSelectionRange_hook_destroy(handle: QItemSelectionRange_hookH); cdecl; external QtIntf name 'QItemSelectionRange_hook_destroy'; 
+
+function QItemSelectionModel_hook_create(handle: QObjectH): QItemSelectionModel_hookH; cdecl; external QtIntf name 'QItemSelectionModel_hook_create';
+procedure QItemSelectionModel_hook_destroy(handle: QItemSelectionModel_hookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_destroy'; 
+procedure QItemSelectionModel_hook_hook_currentChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentChanged';
+procedure QItemSelectionModel_hook_hook_currentRowChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentRowChanged';
+procedure QItemSelectionModel_hook_hook_currentColumnChanged(handle: QItemSelectionModel_hookH; hook: QHookH); cdecl; external QtIntf name 'QItemSelectionModel_hook_hook_currentColumnChanged';
 
 function QDialog_hook_create(handle: QObjectH): QDialog_hookH; cdecl; external QtIntf name 'QDialog_hook_create';
 procedure QDialog_hook_destroy(handle: QDialog_hookH); cdecl; external QtIntf name 'QDialog_hook_destroy'; 
