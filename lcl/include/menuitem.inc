@@ -371,21 +371,17 @@ begin
   if FBitmap = nil then
   begin
     FBitmap := TBitmap.Create;
-    FBitmapIsValid := False;
-  end;
 
-  if not FBitmapIsValid then
-  begin
     if ImageIndex >= 0
     then begin
       iml := GetImageList;
       if (iml <> nil) and (ImageIndex < iml.Count)
       then iml.GetBitmap(ImageIndex, FBitmap);
     end;
-    FBitmap.Transparent := True;
-    FBitmapIsValid := True;
+    
+    FBitmap.OnChange := @BitmapChange;
   end;
-  
+
   Result := FBitmap;
 end;
 
@@ -441,8 +437,10 @@ end;
 
 function TMenuItem.IsBitmapStored: boolean;
 begin
-  Result:=(FBitmap<>nil) and (not FBitmap.Empty)
-          and (FBitmap.Width>0) and (FBitmap.Height>0);
+  Result :=
+    FBitmapIsValid and
+    (FBitmap<>nil) and (not FBitmap.Empty) and
+    (FBitmap.Width>0) and (FBitmap.Height>0);
 end;
 
 {------------------------------------------------------------------------------
@@ -594,12 +592,10 @@ function TMenuItem.HasIcon: boolean;
 var
   AImageList: TCustomImageList;
 begin
-  Result := (FBitmap <> nil);
+  AImageList := GetImageList;
+  Result := (AImageList <> nil) and (ImageIndex >= 0) and (ImageIndex < AImageList.Count);
   if not Result then
-  begin
-    AImageList := GetImageList;
-    Result := (AImageList <> nil) and (ImageIndex >= 0) and (ImageIndex < AImageList.Count);
-  end;
+    Result := (FBitmap <> nil) and not FBitmap.Empty;
 end;
 
 {------------------------------------------------------------------------------
@@ -1026,17 +1022,13 @@ begin
   if (FBitmap = AValue) or ((GetImageList <> nil) and (ImageIndex <> -1)) then
     exit;
 
-  if AValue <> nil then
+  FBitmapIsValid := True;
+  if (AValue <> nil) then
     Bitmap.Assign(AValue)
   else
     FreeAndNil(FBitmap);
 
-  if HandleAllocated then
-    if HasIcon then // prevent creating bitmap
-      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, Bitmap)
-    else
-      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
-
+  UpdateWSIcon;
   MenuChanged(False);
 end;
 
@@ -1140,9 +1132,6 @@ begin
     FSubMenuImages.FreeNotification(Self);
   end;
   UpdateImages;
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
-    // ToDo: Update images
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1156,22 +1145,19 @@ procedure TMenuItem.SetImageIndex(Value: Integer);
 var
   AImageList: TCustomImageList;
 begin
-  if FImageIndex = Value then
+  if (FImageIndex = Value) then
     exit;
   //debugln('TMenuItem.SetImageIndex A ',Name,' Old=',FImageIndex,' New=',Value);
-  FBitmapIsValid := False;
-  FImageIndex := Value;
-
   AImageList := GetImageList;
+  FImageIndex := Value;
+  if AImageList = nil then
+    exit;
+    
+  FBitmapIsValid := False;
   if (FImageIndex < 0) or (AImageList = nil) or (FImageIndex >= AImageList.Count) then
     FreeAndNil(FBitmap);
     
-  if HandleAllocated then
-    if HasIcon then // prevent creating bitmap
-      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, Bitmap)
-    else
-      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
-
+  UpdateWSIcon;
   MenuChanged(False);
 end;
 
@@ -1268,16 +1254,58 @@ begin
   end;
 end;
 
-procedure TMenuItem.UpdateImages;
+procedure TMenuItem.UpdateImage;
+var
+  ImgList: TCustomImageList;
 begin
-  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
-    // ToDo: Update images
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  begin
+    ImgList := GetImageList;
+    if FBitmapIsValid then // Bitmap is assigned through Bitmap property
+    begin
+      if (ImgList <> nil) and (ImageIndex <> -1) then
+      begin
+        FreeAndNil(FBitmap);
+        FBitmapIsValid := False;
+      end;
+    end
+    else
+    begin
+      if (ImgList = nil) or (ImageIndex = -1) then
+      begin
+        FreeAndNil(FBitmap);
+        FBitmapIsValid := True;
+      end;
+    end;
+    UpdateWSIcon;
   end;
+end;
+
+procedure TMenuItem.UpdateImages;
+var
+  i: integer;
+begin
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
+  begin
+    UpdateImage;
+    for i := 0 to Count - 1 do
+      Items[i].UpdateImages;
+  end;
+end;
+
+procedure TMenuItem.UpdateWSIcon;
+begin
+  if HandleAllocated then
+    if HasIcon then // prevent creating bitmap
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, Bitmap)
+    else
+      TWSMenuItemClass(WidgetSetClass).UpdateMenuIcon(Self, HasIcon, nil);
 end;
 
 procedure TMenuItem.ImageListChange(Sender: TObject);
 begin
-  if Sender = SubMenuImages then UpdateImages;
+  if Sender = SubMenuImages then
+    UpdateImages;
 end;
 
 {------------------------------------------------------------------------------
@@ -1357,6 +1385,11 @@ begin
     end
   end else
     inherited AssignTo(Dest);
+end;
+
+procedure TMenuItem.BitmapChange(Sender: TObject);
+begin
+  UpdateImage;
 end;
 
 // included by menus.pp

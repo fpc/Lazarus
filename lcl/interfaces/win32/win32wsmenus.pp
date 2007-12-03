@@ -55,6 +55,7 @@ type
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: Graphics.TBitmap); override;
   end;
 
   { TWin32WSMenu }
@@ -624,6 +625,8 @@ procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
   MenuInfo: MENUITEMINFO;
 begin
+  if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
+    exit;
   with MenuInfo do
   begin
     cbsize := menuiteminfosize;
@@ -759,6 +762,11 @@ begin
   Result := ChangeMenuFlag(AMenuItem, MFT_RIGHTJUSTIFY, Justified);
 end;
 
+class procedure TWin32WSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
+  const HasIcon: Boolean; const AIcon: Graphics.TBitmap);
+begin
+  UpdateCaption(AMenuItem, aMenuItem.Caption);
+end;
 
 { TWin32WSMenu }
 

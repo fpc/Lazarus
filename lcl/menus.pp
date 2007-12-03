@@ -123,6 +123,8 @@ type
     FShowAlwaysCheckable: boolean;
     FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
+    // True => Bitmap property indicates assigned Bitmap.
+    // False => Bitmap property is not assigned but can represent imagelist bitmap
     FBitmapIsValid: Boolean;
     FMenuItemHandlers: array[TMenuItemHandlerType] of TMethodList;
     function GetBitmap: TBitmap;
@@ -159,6 +161,7 @@ type
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure AssignTo(Dest: TPersistent); override;
+    procedure BitmapChange(Sender: TObject);
     function GetAction: TBasicAction;
     function GetActionLinkClass: TMenuActionLinkClass; dynamic;
     function GetHandle: HMenu;
@@ -178,7 +181,9 @@ type
     procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
+    procedure UpdateImage;
     procedure UpdateImages;
+    procedure UpdateWSIcon;
     procedure ImageListChange(Sender: TObject);
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
@@ -294,6 +299,8 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure MenuChanged(Sender: TObject; Source: TMenuItem;
                           Rebuild: Boolean); virtual;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     procedure ParentBidiModeChanged;
     procedure ParentBidiModeChanged(AOwner:TComponent);//used in Create constructor
     procedure SetChildOrder(Child: TComponent; Order: Integer); override;
