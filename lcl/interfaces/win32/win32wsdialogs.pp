@@ -454,12 +454,12 @@ var
       I:=Length(PWideName);
       if I < OpenFile^.nFileOffset then
       begin
-        Inc(PWideName, I * 2 + 2);
+        Inc(PWideName, Succ(I));
         I:=Length(PWideName);
         while I > 0 do
         begin
           AFiles.Add(ExpandFileName(Utf8Encode(PWideName)));
-          Inc(PWideName, I * 2 + 2);
+          Inc(PWideName,Succ(I));
           I:=Length(PWideName);
         end;
       end
