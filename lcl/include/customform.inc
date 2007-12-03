@@ -908,6 +908,7 @@ begin
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
           end;
+          exit;
         end;
       end;
     CM_EXIT:
