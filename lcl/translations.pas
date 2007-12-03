@@ -74,6 +74,7 @@ type
     FItems: TFPList;// list of TPOFileItem
     FIdentifierToItem: TStringHashList;
     FOriginalToItem: TStringHashList;
+    FCharSet: String;
   public
     constructor Create(const AFilename: String);
     constructor Create(AStream: TStream);
@@ -81,6 +82,7 @@ type
     procedure ReadPOText(const s: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue: string);
     function Translate(const Identifier, OriginalValue: String): String;
+    Property CharSet: String read FCharSet;
   end;
 
   EPOFileError = class(Exception);
@@ -260,6 +262,7 @@ msgstr ""
 }
 const
   sCommentIdentifier: PChar = '#: ';
+  sCharSetIdentifier: PChar = '"Content-Type: text/plain; charset=';
   sMsgID: PChar = 'msgid "';
   sMsgStr: PChar = 'msgstr "';
 var
@@ -291,6 +294,8 @@ begin
         //MsgStr:=copy(s,LineStart-p+9,LineLen-9);
         MsgStr:=UTF8CStringToUTF8String(LineStart+8,LineLen-9);
         Add(Identifier,MsgID,MsgStr);
+      end else if CompareMem(LineStart,sCharSetIdentifier,35) then begin
+        FCharSet:=copy(LineStart, 35,LineLen-37);
       end;
     end;
     LineStart:=LineEnd+1;
