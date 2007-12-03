@@ -4606,7 +4606,7 @@ Begin
     begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
       {$IFDEF VerboseFocus}
-      DebugLn('TWinControl.WndProc LM_SetFocus ',Name,':',ClassName);
+      DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
       {$ENDIF}
       if not (csDestroyingHandle in ControlState) then begin
         Form := GetParentForm(Self);

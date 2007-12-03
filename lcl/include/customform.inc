@@ -881,6 +881,7 @@ begin
           Exit;
         if (Msg = LM_SETFOCUS) and not (csDesigning in ComponentState) then
         begin
+          //DebugLn(['TCustomForm.WndProc ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl)]);
           FocusHandle := 0;
 
           if FormStyle = fsMDIFORM then
@@ -907,8 +908,8 @@ begin
             DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName);
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
+            exit;
           end;
-          exit;
         end;
       end;
     CM_EXIT:
@@ -1612,11 +1613,13 @@ end;
 function TCustomForm.SetFocusedControl(Control: TWinControl): Boolean;
 var
   ParentForm: TCustomForm;
+  CurControl: TWinControl;
 begin
   Result := False;
   if (csDestroying in Control.ComponentState) then exit;
 
   if (Parent<>nil) then begin
+    // delegate to topmost form
     ParentForm:=GetParentForm(Self);
     if ParentForm<>nil then
       ParentForm.SetFocusedControl(Control);
@@ -1651,72 +1654,22 @@ begin
     // prevent looping
     Control.ControlState := Control.ControlState + [csFocusing];
     try
-      // change focus
-
+      // update ActiveControls of all parent forms
+      CurControl:=Control.Parent;
+      while CurControl<>nil do begin
+        if CurControl is TCustomForm then
+          TCustomForm(CurControl).FActiveControl:=Control;
+        CurControl:=CurControl.Parent;
+      end;
     finally
       Control.ControlState := Control.ControlState - [csFocusing];
     end;
   end;
-
-  {
-  Inc(FocusCount);
-
-  // prevent looping
-  if (csFocusing in Control.ControlState) then exit;
-  Control.ControlState := Control.ControlState + [csFocusing];
-  try
-
-    if Screen.FFocusedForm <> Self then
-    begin
-      if Screen.FFocusedForm <> nil then
-      begin
-        FocusHandle := Screen.FFocusedForm.Handle;
-        Screen.FFocusedForm := nil;
-        if not SendFocusMessage(FocusHandle, CM_DEACTIVATE) then Exit;
-      end;
-      Screen.FFocusedForm := Self;
-      if not SendFocusMessage(Handle, CM_ACTIVATE) then Exit;
-    end;
-    if FFocusedWinControl = nil then FFocusedWinControl := Self;
-    if FFocusedWinControl <> Control then
-    begin
-      while (FFocusedWinControl <> nil) and not
-        FFocusedWinControl.ContainsControl(Control) do
-      begin
-        FocusHandle := FFocusedWinControl.Handle;
-        FFocusedWinControl := FFocusedWinControl.Parent;
-        if not SendFocusMessage(FocusHandle, CM_EXIT) then Exit;
-      end;
-      while FFocusedControl <> Control do
-      begin
-        TempControl := Control;
-        while TempControl.Parent <> FFocusedControl do
-          TempControl := TempControl.Parent;
-        FFocusedControl := TempControl;
-        if not SendFocusMessage(TempControl.Handle, CM_ENTER) then Exit;
-      end;
-      TempControl := Control.Parent;
-      while TempControl <> nil do
-      begin
-        if TempControl is TScrollingWinControl then
-          TScrollingWinControl(TempControl).AutoScrollInView(Control);
-        TempControl := TempControl.Parent;
-      end;
-      Perform(CM_FOCUSCHANGED, 0, LParam(Control));
-      if (FActiveOleControl <> nil) and (FActiveOleControl <> Control) then
-        FActiveOleControl.Perform(CM_UIDEACTIVATE, 0, 0);
-    end;
-  finally
-    Control.ControlState := Control.ControlState - [csFocusing];
-  end;
-  Screen.UpdateLastActive;
-  Result := True;
-  }
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method WantChildKey            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm Method WantChildKey
+------------------------------------------------------------------------------}
 function TCustomForm.WantChildKey(Child : TControl;
   var Message : TLMessage):Boolean;
 begin
