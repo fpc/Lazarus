@@ -43,10 +43,9 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, FormEditingIntf, LazarusIDEStrConsts, ExtCtrls, ComCtrls,
   ComponentPalette, ComponentReg, PackageDefs, ExtDlgs, FormEditor, PropEdits,
-  LCLType;
+  LCLType, Menus;
 
 type
-
   { TComponentListForm }
 
   TComponentListForm = class(TForm)
@@ -69,10 +68,9 @@ type
     TabSheetInheritance: TTabSheet;
     procedure CloseButtonClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure ListboxComponentsDblClick(Sender: TObject);
     procedure TreeInheritanceDblClick ( Sender: TObject ) ;
-    procedure TreePalletteCollapsing(Sender: TObject; Node: TTreeNode;
-      var AllowCollapse: Boolean);
     procedure TreePalletteDblClick(Sender: TObject);
     procedure UpdateComponentSelection(Sender: TObject);
   private
@@ -106,6 +104,8 @@ begin
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
   
+  //PLEASE add a defaultpage property in TPagecontrol
+  PageControl.ActivePage := TabSheetListBox;
 
   FindAllLazarusComponents;
   UpdateComponentSelection(nil);
@@ -198,6 +198,7 @@ begin
 
 
     //Third tabsheet (component inheritence)
+    List := TStringlist.Create;
     AClassList:= TStringlist.Create;
     TreeInheritance.Items.BeginUpdate;
     try
@@ -206,50 +207,51 @@ begin
       AClassList.CaseSensitive := false;
       AClassList.Duplicates := dupIgnore;
 
-      List := TStringlist.Create;
       for i := 0 to FComponentList.Count-1 do
       begin
         AComponent := TRegisteredComponent(FComponentList[i]);
-        if not AComponent.Visible then continue;
         AClassName := AComponent.ComponentClass.ClassName;
-        if (AFilter <> '') and (Pos(AFilter, UpperCase(AClassName)) = 0) then Continue;
-
-        // walk down to parent, stop on tcomponent, since components are at least
-        // a tcomponent descendant
-        List.Clear;
-        AClass := AComponent.ComponentClass;
-        while (AClass.ClassInfo <> nil) and (AClass.ClassType <> TComponent.ClassType) do
+        if (AFilter='') or (Pos(AFilter, UpperCase(AClassName))>0)then
         begin
-          List.AddObject(AClass.ClassName, TObject(AClass));
-          AClass := AClass.ClassParent;
-        end;
-        
-        //build the tree
-        for j := List.Count - 1 downto 0 do
-        begin
-          AClass := TClass(List.Objects[j]);
-          AClassName := List[j];
 
-          if not AClassList.Find(AClassName, AIndex)
-          then begin
-            //find out parent position
-            if Assigned(AClass.ClassParent) and AClassList.Find(AClass.ClassParent.ClassName, AIndex)
-            then ANode := TTreeNode(AClassList.Objects[AIndex])
-            else ANode := nil;
+          // walk down to parent, stop on tcomponent, since components are at least
+          // a tcomponent descendant
+          List.Clear;
+          AClass := AComponent.ComponentClass;
+          while (AClass.ClassInfo <> nil) and (AClass.ClassType <> TComponent.ClassType) do
+          begin
+            List.AddObject(AClass.ClassName, TObject(AClass));
+            AClass := AClass.ClassParent;
+          end;
 
-            //add the item
-            if AClassName <> AComponent.ComponentClass.ClassName
-            then ANode := TreeInheritance.Items.AddChild(ANode, AClassName)
-            else ANode := TreeInheritance.Items.AddChildObject(ANode, AClassName, AComponent);
-            AClassList.AddObject(AClassName, ANode);
+          //build the tree
+          for j := List.Count - 1 downto 0 do
+          begin
+            AClass := TClass(List.Objects[j]);
+            AClassName := List[j];
+
+            if not AClassList.Find(AClassName, AIndex)
+            then begin
+              //find out parent position
+              if Assigned(AClass.ClassParent) and AClassList.Find(AClass.ClassParent.ClassName, AIndex)
+              then ANode := TTreeNode(AClassList.Objects[AIndex])
+              else ANode := nil;
+
+              //add the item
+              if AClassName <> AComponent.ComponentClass.ClassName
+              then ANode := TreeInheritance.Items.AddChild(ANode, AClassName)
+              else ANode := TreeInheritance.Items.AddChildObject(ANode, AClassName, AComponent);
+              AClassList.AddObject(AClassName, ANode);
+            end;
           end;
         end;
       end;
-      FreeAndNil(List);
+
 
       TreeInheritance.AlphaSort;
       TreeInheritance.FullExpand;
     finally
+      List.Free;
       AClassList.Free;
       TreeInheritance.Items.EndUpdate;
     end;
@@ -267,10 +269,10 @@ var
   TypeClass: TComponentClass;
   X, Y: integer;
 begin
-  //TComponentPalette(IDEComponentPalette).Selected := AComponent;
   if not Assigned(AComponent) then Exit;
   if not Assigned(FormEditingHook) then Exit;
-  
+  //TComponentPalette(IDEComponentPalette).Selected := AComponent;
+
   TypeClass:=AComponent.ComponentClass;
   ParentCI:=FormEditingHook.GetDefaultComponentParent(TypeClass);
   if ParentCI=nil then exit;
@@ -314,21 +316,22 @@ begin
   AddSelectedComponent(AComponent);
 end;
 
-
 procedure TComponentListForm.CloseButtonClick(Sender: TObject);
 begin
   Close;
 end;
 
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+//Close form on Esc (Not really needed but nice behaviour)
 begin
   if Key=VK_ESCAPE
   then Close;
 end;
 
-procedure TComponentListForm.TreePalletteCollapsing(Sender: TObject; Node: TTreeNode; var AllowCollapse: Boolean);
+procedure TComponentListForm.FormShow(Sender: TObject);
 begin
-  AllowCollapse:=false;
+  if PatternEdit.Canfocus
+  then PatternEdit.SetFocus;
 end;
 
 
