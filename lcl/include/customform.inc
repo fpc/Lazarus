@@ -888,9 +888,9 @@ begin
           if (FActiveControl = nil) and (Parent=nil) then begin
             // automatically choose a control to focus
             SetFocusedControl(FindDefaultForActiveControl);
-            { $IFDEF VerboseFocus}
+            {$IFDEF VerboseFocus}
             DebugLn('TCustomForm.WndProc Set FActiveControl := ',DbgSName(FActiveControl));
-            { $ENDIF}
+            {$ENDIF}
           end;
 
           if FormStyle = fsMDIFORM then
@@ -1625,7 +1625,8 @@ var
   CurControl: TWinControl;
 begin
   Result := False;
-  if (csDestroying in Control.ComponentState) then exit;
+  if (Control<>nil)
+  and (csDestroying in Control.ComponentState) then exit;
 
   if (Parent<>nil) then begin
     // delegate to topmost form
@@ -1644,22 +1645,25 @@ begin
 
   // update Screen object
   Screen.FActiveControl := Control;
-  Screen.FActiveCustomForm := Self;
-  Screen.MoveFormToFocusFront(Self);
-  if Self is TForm then
-    Screen.FActiveForm := TForm(Self)
-  else
-    Screen.FActiveForm := nil;
+  if Control<>nil then begin
+    Screen.FActiveCustomForm := Self;
+    Screen.MoveFormToFocusFront(Self);
+    if Self is TForm then
+      Screen.FActiveForm := TForm(Self)
+    else
+      Screen.FActiveForm := nil;
+  end;
 
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.SetFocusedControl Self=',DbgSName(Self));
-  DbgOut(' Control=',DbgSName(Control),' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
+  if Control<>nil then
+    DbgOut(' Control=',DbgSName(Control),' Control.HandleAllocated=',dbgs(Control.HandleAllocated));
   DebugLn();
   {$ENDIF}
 
   Result:=true;
 
-  if not (csFocusing in Control.ControlState) then begin
+  if (Control<>nil) and (not (csFocusing in Control.ControlState)) then begin
     // prevent looping
     Control.ControlState := Control.ControlState + [csFocusing];
     try
