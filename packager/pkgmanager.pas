@@ -2136,6 +2136,7 @@ var
   NewDependency: TPkgDependency;
 begin
   Result:=mrCancel;
+
   // check if the dependency is already there
   if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
     APackage.Name)<>nil
@@ -2147,6 +2148,7 @@ begin
   if PackageGraph.FindPackageProvidingName(AProject.FirstRequiredDependency,
     APackage.Name)<>nil then
   begin
+    DebugLn(['TPkgManager.AddProjectDependency ',APackage.Name,' is already provided by another package']);
     // package is already provided by another package
     Result:=mrCancel;
     exit;
@@ -2756,7 +2758,7 @@ var
           UnitNames.Add(NewUnitName);
           // find package
           PkgFile:=PackageGraph.FindUnitInAllPackages(NewUnitName,true);
-          //DebugLn(['CollectNeededUnitnamesAndPackages BBB1 PkgFile=',PkgFile<>nil]);
+          //DebugLn(['CollectNeededUnitnamesAndPackages AAA2 PkgFile=',PkgFile<>nil]);
           if (PkgFile=nil) and (RegComp is TPkgComponent) then begin
             PkgFile:=TPkgComponent(RegComp).PkgFile;
             if (PkgFile<>nil) and (PkgFile.LazPackage<>nil)
@@ -3086,7 +3088,6 @@ var
     Add: Boolean;
   begin
     if AProject=nil then exit;
-    if AProject.LazDocPaths='' then exit;
     BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
     if BaseDir='' then exit;
     Add:=false;
