@@ -179,8 +179,10 @@ begin
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
-    If (ABitmap <> nil) and not ABitmap.Empty then begin
-      With TheDialog.Preview.Picture.Bitmap do begin
+    If (ABitmap <> nil) then 
+    begin
+      with TheDialog.Preview.Picture.Bitmap do 
+      begin
         Width := ABitmap.Width;
         Height := ABitmap.Height;
         Canvas.Brush.Color := clWhite;
