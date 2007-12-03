@@ -374,29 +374,6 @@ end;
   ShowWindow event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
-
-  function FindFirstControl: TWinControl;
-  var
-    List: TFPList;
-    I: Integer;
-  begin
-    List := TFPList.Create;
-    Result := nil;
-    try
-      GetTabOrderList(List);
-      for I := 0 to List.Count - 1 do
-      begin
-        if TObject(List.Items[0]) is TWinControl then
-        begin
-          Result := TWinControl(List.Items[0]);
-          exit;
-        end;
-      end;
-    finally
-      List.Free;
-    end;
-  end;
-
 begin
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.WMShowWindow A ',Name,':'+ClassName+' fsShowing='+dbgs(fsShowing in FFormState)+' Msg.Show='+dbgs(Message.Show));
@@ -416,16 +393,18 @@ begin
       if Message.Show then begin
         if (FActiveControl = nil) and (Parent=nil) then begin
           // automatically choose a control to focus
-          FActiveControl := FindFirstControl;
+          SetFocusedControl(FindDefaultForActiveControl);
           {$IFDEF VerboseFocus}
-          DebugLn('TCustomForm.WMShowWindow Set FActiveControl := FindFirstControl = ',DbgSName(FActiveControl));
+          DebugLn('TCustomForm.WMShowWindow Set FActiveControl := ',DbgSName(FActiveControl));
           {$ENDIF}
         end;
         if ([csLoading,csDestroying]*ComponentState=[])
+        and (Parent=nil)
         and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-        and FActiveControl.Visible and FActiveControl.Enabled then begin
+        and FActiveControl.Visible and FActiveControl.Enabled
+        then begin
           {$IFDEF VerboseFocus}
-          DebugLn('TCustomForm.WMShowWindow SetFocus ',DbgSName(FActiveControl));
+          DebugLn('TCustomForm.WMShowWindow ',DbgSName(Self),' SetFocus ',DbgSName(FActiveControl));
           {$ENDIF}
           LCLIntf.SetFocus(FActiveControl.Handle);
         end;
@@ -611,6 +590,28 @@ procedure TCustomForm.RemoveHandler(HandlerType: TFormHandlerType;
   const Handler: TMethod);
 begin
   FFormHandlers[HandlerType].Remove(Handler);
+end;
+
+function TCustomForm.FindDefaultForActiveControl: TWinControl;
+var
+  List: TFPList;
+  I: Integer;
+begin
+  List := TFPList.Create;
+  Result := nil;
+  try
+    GetTabOrderList(List);
+    for I := 0 to List.Count - 1 do
+    begin
+      if TObject(List.Items[0]) is TWinControl then
+      begin
+        Result := TWinControl(List.Items[0]);
+        exit;
+      end;
+    end;
+  finally
+    List.Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -883,6 +884,14 @@ begin
         begin
           //DebugLn(['TCustomForm.WndProc ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl)]);
           FocusHandle := 0;
+
+          if (FActiveControl = nil) and (Parent=nil) then begin
+            // automatically choose a control to focus
+            SetFocusedControl(FindDefaultForActiveControl);
+            { $IFDEF VerboseFocus}
+            DebugLn('TCustomForm.WndProc Set FActiveControl := ',DbgSName(FActiveControl));
+            { $ENDIF}
+          end;
 
           if FormStyle = fsMDIFORM then
           begin
@@ -1754,7 +1763,8 @@ begin
 
   // activate focus if visible
   if Visible then begin
-    if (FActiveControl<>nil) and FActiveControl.HandleAllocated
+    if (Parent=nil)
+    and (FActiveControl<>nil) and FActiveControl.HandleAllocated
     and FActiveControl.Visible and FActiveControl.Enabled
     and ([csLoading,csDestroying]*ComponentState=[]) then begin
       {$IFDEF VerboseFocus}

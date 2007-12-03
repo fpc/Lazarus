@@ -434,6 +434,7 @@ type
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
                             const Handler: TMethod);
+    function FindDefaultForActiveControl: TWinControl;
   protected
     FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
