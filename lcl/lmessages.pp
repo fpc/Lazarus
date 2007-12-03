@@ -111,7 +111,7 @@ const
   LM_DRAWLISTITEM   = LM_User+80;
 
   LM_SETCURSOR      = LM_User+81;
-  
+
   LM_CONTEXTMENU    = LM_User+82;
 
   LM_INTERNALPAINT  = LM_User + 90;
@@ -718,17 +718,17 @@ type
     case Integer of
       0 : (
         WParam: LclType.WPARAM;
-      	LParam: LclType.LPARAM;
-      	Result: LclType.LRESULT);
+        LParam: LclType.LPARAM;
+        Result: LclType.LRESULT);
       {$IFNDEF CPU64}
       // on a 64 bit platform these make no sense
       1 : (
-      	WParamLo: Word;
-      	WParamHi: Word;
-      	LParamLo: Word;
-      	LParamHi: Word;
-      	ResultLo: Word;
-      	ResultHi: Word);
+        WParamLo: Word;
+        WParamHi: Word;
+        LParamLo: Word;
+        LParamHi: Word;
+        ResultLo: Word;
+        ResultHi: Word);
       {$endif}
     end;
 {$else}
@@ -851,7 +851,7 @@ begin
   // RECEIVED from the interface, here are no defines
   // of messages send to the interface
   //-------------
-  
+
   LM_ACTIVATE        : Result:='LM_ACTIVATE';
   LM_SETFOCUS        : Result:='LM_SETFOCUS';
   LM_KILLFOCUS       : Result:='LM_KILLFOCUS';

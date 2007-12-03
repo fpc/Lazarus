@@ -907,7 +907,6 @@ begin
             DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName);
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
-            Exit;
           end;
         end;
       end;
