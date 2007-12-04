@@ -358,9 +358,10 @@ begin
     ' HndAlloc=',dbgs(NewFocusControl.HandleAllocated));
   {$ENDIF}
   if (not NewFocusControl.HandleAllocated)
-  or (not NewFocusControl.Visible)
+  or (not NewFocusControl.IsVisible)
   or (not NewFocusControl.Enabled) then
     exit;
+  //DebugLn(['TCustomForm.SetWindowFocus ',DbgSName(Self),' NewFocusControl',DbgSName(NewFocusControl)]);
   LCLIntf.SetFocus(NewFocusControl.Handle);
   if GetFocus = NewFocusControl.Handle then
     NewFocusControl.Perform(CM_UIACTIVATE, 0, 0);
@@ -374,6 +375,8 @@ end;
   ShowWindow event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
+var
+  NewFocusControl: TWinControl;
 begin
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.WMShowWindow A ',Name,':'+ClassName+' fsShowing='+dbgs(fsShowing in FFormState)+' Msg.Show='+dbgs(Message.Show));
@@ -391,22 +394,28 @@ begin
     if Message.Status = 0 then
     begin
       if Message.Show then begin
-        if (FActiveControl = nil) and (Parent=nil) then begin
+        if (ActiveControl = nil) and (not (csDesigning in ComponentState))
+        and (Parent=nil) then begin
           // automatically choose a control to focus
-          SetFocusedControl(FindDefaultForActiveControl);
           {$IFDEF VerboseFocus}
-          DebugLn('TCustomForm.WMShowWindow Set FActiveControl := ',DbgSName(FActiveControl));
+          DebugLn('TCustomForm.WMShowWindow ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
           {$ENDIF}
+          ActiveControl := FindDefaultForActiveControl;
         end;
         if ([csLoading,csDestroying]*ComponentState=[])
-        and (Parent=nil)
-        and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-        and FActiveControl.Visible and FActiveControl.Enabled
-        then begin
-          {$IFDEF VerboseFocus}
-          DebugLn('TCustomForm.WMShowWindow ',DbgSName(Self),' SetFocus ',DbgSName(FActiveControl));
-          {$ENDIF}
-          LCLIntf.SetFocus(FActiveControl.Handle);
+        and (Parent=nil) then begin
+          NewFocusControl:=FActiveControl;
+          if (NewFocusControl=nil)
+          or (not NewFocusControl.CanFocus)
+          then
+            NewFocusControl:=Self;
+          if NewFocusControl.HandleAllocated and NewFocusControl.IsVisible
+          then begin
+            {$IFDEF VerboseFocus}
+            DebugLn('TCustomForm.WMShowWindow ',DbgSName(Self),' SetFocus NewFocusControl=',DbgSName(NewFocusControl),' FActiveControl=',DbgSName(FActiveControl));
+            {$ENDIF}
+            LCLIntf.SetFocus(NewFocusControl.Handle);
+          end;
         end;
       end;
     end;
@@ -593,25 +602,8 @@ begin
 end;
 
 function TCustomForm.FindDefaultForActiveControl: TWinControl;
-var
-  List: TFPList;
-  I: Integer;
 begin
-  List := TFPList.Create;
-  Result := nil;
-  try
-    GetTabOrderList(List);
-    for I := 0 to List.Count - 1 do
-    begin
-      if TObject(List.Items[0]) is TWinControl then
-      begin
-        Result := TWinControl(List.Items[0]);
-        exit;
-      end;
-    end;
-  finally
-    List.Free;
-  end;
+  Result:=FindNextControl(nil, True, True, False)
 end;
 
 {------------------------------------------------------------------------------
@@ -688,7 +680,7 @@ begin
   if FActive then
   begin
     if (ActiveControl = nil) and not (csDesigning in ComponentState) then
-      ActiveControl := FindNextControl(nil, True, True, False);
+      ActiveControl := FindDefaultForActiveControl;
     //MergeMenu(True);
     SetWindowFocus;
   end;
@@ -885,12 +877,13 @@ begin
           //DebugLn(['TCustomForm.WndProc ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl)]);
           FocusHandle := 0;
 
-          if (FActiveControl = nil) and (Parent=nil) then begin
+          if (ActiveControl = nil) and (not (csDesigning in ComponentState))
+          and (Parent=nil) then begin
             // automatically choose a control to focus
-            SetFocusedControl(FindDefaultForActiveControl);
             {$IFDEF VerboseFocus}
-            DebugLn('TCustomForm.WndProc Set FActiveControl := ',DbgSName(FActiveControl));
+            DebugLn('TCustomForm.WndProc ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
             {$ENDIF}
+            ActiveControl := FindDefaultForActiveControl;
           end;
 
           if FormStyle = fsMDIFORM then
@@ -900,7 +893,7 @@ begin
           else
           begin
             if (FActiveControl <> nil) and (FActiveControl <> Self)
-            and FActiveControl.Visible and FActiveControl.Enabled
+            and FActiveControl.IsVisible and FActiveControl.Enabled
             and ([csLoading,csDestroying]*ComponentState=[])
             and not FActiveControl.ParentDestroyingHandle
             then begin
@@ -913,8 +906,9 @@ begin
           TheMessage.Result:=0;
           if FocusHandle <> 0
           then begin
+            // redirect focus to child
             {$IFDEF VerboseFocus}
-            DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName);
+            DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName,' FActiveControl=',DbgSName(FActiveControl));
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
             exit;
@@ -1637,11 +1631,12 @@ begin
   end;
 
   // update FActiveControl
-  if (FDesigner = nil) and (not (csLoading in ComponentState)) then
+  if (FDesigner = nil) and (not (csLoading in ComponentState)) then begin
     if Control <> Self then
       FActiveControl := Control
     else
       FActiveControl := nil;
+  end;
 
   // update Screen object
   Screen.FActiveControl := Control;
@@ -1665,17 +1660,12 @@ begin
 
   if (Control<>nil) and (not (csFocusing in Control.ControlState)) then begin
     // prevent looping
-    Control.ControlState := Control.ControlState + [csFocusing];
-    try
-      // update ActiveControls of all parent forms
-      CurControl:=Control.Parent;
-      while CurControl<>nil do begin
-        if CurControl is TCustomForm then
-          TCustomForm(CurControl).FActiveControl:=Control;
-        CurControl:=CurControl.Parent;
-      end;
-    finally
-      Control.ControlState := Control.ControlState - [csFocusing];
+    // update ActiveControls of all parent forms
+    CurControl:=Control.Parent;
+    while CurControl<>nil do begin
+      if CurControl is TCustomForm then
+        TCustomForm(CurControl).FActiveControl:=Control;
+      CurControl:=CurControl.Parent;
     end;
   end;
 end;
@@ -1767,12 +1757,20 @@ begin
 
   // activate focus if visible
   if Visible then begin
+    if (ActiveControl = nil) and (not (csDesigning in ComponentState))
+    and (Parent=nil) then begin
+      // automatically choose a control to focus
+      {$IFDEF VerboseFocus}
+      DebugLn('TCustomForm.CreateWnd ',DbgSName(Self),' Set ActiveControl := ',DbgSName(FindDefaultForActiveControl));
+      {$ENDIF}
+      ActiveControl := FindDefaultForActiveControl;
+    end;
     if (Parent=nil)
     and (FActiveControl<>nil) and FActiveControl.HandleAllocated
-    and FActiveControl.Visible and FActiveControl.Enabled
-    and ([csLoading,csDestroying]*ComponentState=[]) then begin
+    and FActiveControl.CanFocus
+    and ([csLoading,csDestroying,csDesigning]*ComponentState=[]) then begin
       {$IFDEF VerboseFocus}
-      DebugLn('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
+      DebugLn('TCustomForm.CreateWnd A ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl));
       {$ENDIF}
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;

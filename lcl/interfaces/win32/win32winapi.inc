@@ -2974,8 +2974,10 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetFocus(HWnd: HWND): HWND;
 begin
-  //DebugLn(['TWin32WidgetSet.SetFocus ']);
-  //DumpStack;
+  {if Windows.GetFocus<>HWnd then begin
+    DebugLn(['TWin32WidgetSet.SetFocus ']);
+    DumpStack;
+  end;}
   Result := Windows.SetFocus(HWnd);
 end;
 
