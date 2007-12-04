@@ -63,11 +63,11 @@ var
 
 implementation
 
-{.$define SplashDrawVersion}
+{$define SplashDrawVersion}
 
 {$ifdef SplashDrawVersion}
 const
-  VersionPos: TPoint = (X:407; Y:281);
+  VersionPos: TPoint = (X:397; Y:281);
   VersionStyle: TTextStyle =
     (
       Alignment  : taCenter;

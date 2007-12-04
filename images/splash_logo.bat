@@ -1,1 +1,1 @@
-..\tools\lazres splash_logo.lrs splash_logo.xpm
+..\tools\lazres splash_logo.lrs splash_logo.png
