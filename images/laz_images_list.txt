@@ -23,7 +23,11 @@ actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
 actions/delete.png
+items/item_form.png
 items/item_library.png
+items/item_package.png
+items/item_project.png
+items/item_unit.png
 menu/menu_abort_build.png
 menu/menu_build.png
 menu/menu_build_all.png
@@ -54,14 +58,11 @@ menu/menu_help.png
 menu/menu_indent.png
 menu/menu_information.png
 menu/menu_new.png
-menu/item_form.png
-menu/item_unit.png
 menu/menu_open.png
 menu/menu_pause.png
 menu/menu_project_add.png
 menu/menu_project_close.png
 menu/menu_project_inspector.png
-menu/item_project.png
 menu/menu_project_open.png
 menu/menu_project_options.png
 menu/menu_project_remove.png
@@ -147,6 +148,5 @@ packages/pkg_graph.png
 packages/pkg_inherited.png
 packages/pkg_installed.png
 packages/pkg_open.png
-packages/item_package.png
 packages/pkg_properties.png
 packages/pkg_required.png
