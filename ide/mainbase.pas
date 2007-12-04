@@ -334,7 +334,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
 
-    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'menu_open');
+    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
@@ -351,7 +351,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
 
-    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'menu_restart_16');
+    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'refresh');
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit, 'menu_exit');
   end;
 end;
