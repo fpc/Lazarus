@@ -293,7 +293,7 @@ begin
 
     IDEDialogLayoutList.ApplyLayout(Self,550,450);
 
-    ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
+    ImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
     ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
     ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
 

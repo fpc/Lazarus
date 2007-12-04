@@ -731,8 +731,8 @@ begin
   AddResImg(Imagelist1,'ce_class',ImgIDClass);
   AddResImg(Imagelist1,'ce_procedure',ImgIDProc);
   AddResImg(Imagelist1,'ce_property',ImgIDProperty);
-  AddResImg(Imagelist1,'pkg_package',ImgIDPackage);
-  AddResImg(Imagelist1,'pkg_project',ImgIDProject);
+  AddResImg(Imagelist1,'item_package',ImgIDPackage);
+  AddResImg(Imagelist1,'item_project',ImgIDProject);
 end;
 
 procedure TCodeBrowserView.SetScannedBytes(const AValue: PtrInt);

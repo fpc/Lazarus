@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   Graphics, LCLType, FileUtil, LResources, LCLProc,
   CodeToolManager, CodeCache,
-  IDECommands,
+  IDECommands, IDEImagesIntf,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;
   
 type
@@ -162,7 +162,6 @@ type
   TUnitDependenciesView = class(TForm)
     CloseButton: TBitBtn;
     ToolbarImageList: TImageList;
-    SrcTypeImageList: TImageList;
     ToolBar: TToolBar;
     RefreshButton: TToolButton;
     ShowProjectButton: TToolButton;
@@ -224,7 +223,7 @@ type
   end;
   
 var
-  UnitDependenciesView: TUnitDependenciesView;
+  UnitDependenciesView: TUnitDependenciesView = nil;
 
 implementation
 
@@ -428,6 +427,7 @@ begin
   RefreshButton.Caption:=dlgUnitDepRefresh;
   ShowProjectButton.Caption:=dlgEnvProject;
   CloseButton.Caption:=lisClose;
+  UnitTreeView.Images := IDEImages.Images_16;
 end;
 
 destructor TUnitDependenciesView.Destroy;
@@ -753,28 +753,29 @@ end;
 
 function TUnitNode.ImageIndex: integer;
 begin
-  if not (unfCircle in FFlags) then begin
+  if not (unfCircle in FFlags) then 
+  begin
     case SourceType of
-    unstUnit:    Result:=1;
-    unstProgram: Result:=2;
-    unstLibrary: Result:=3;
-    unstPackage: Result:=4;
+      unstUnit:    Result := IDEImages.LoadImage(16, 'item_unit');
+      unstProgram: Result := IDEImages.LoadImage(16, 'item_project');
+      unstLibrary: Result := IDEImages.LoadImage(16, 'item_library');
+      unstPackage: Result := IDEImages.LoadImage(16, 'item_package');
     else
       begin
         if unfFileNotFound in Flags then
-          Result:=5
+          Result := IDEImages.LoadImage(16, 'state_not_found')
         else if unfParseError in Flags then
-          Result:=6
+          Result := IDEImages.LoadImage(16, 'state_error')
         else
-          Result:=0;
+          Result := IDEImages.LoadImage(16, 'state_unknnown');
       end;
     end;
-  end else begin
-    if unfForbiddenCircle in Flags then begin
-      Result:=7;
-    end else begin
-      Result:=8;
-    end;
+  end else 
+  begin
+    if unfForbiddenCircle in Flags then 
+      Result := IDEImages.LoadImage(16, 'state_circular_reference')
+    else 
+      Result := IDEImages.LoadImage(16, 'state_unit_circular_reference');
   end;
 end;
 
@@ -887,7 +888,6 @@ begin
 end;
 
 initialization
-  UnitDependenciesView:=nil;
   {$I unitdependencies.lrs}
 
 end.
