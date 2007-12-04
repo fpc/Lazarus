@@ -1155,9 +1155,40 @@ begin
   MaximumSize[asboVertical]:=Control.Constraints.EffectiveMaxHeight;
   Control.GetPreferredSize(PreferredSize[asboHorizontal],
                            PreferredSize[asboVertical],
-                           false, // with constraints
+                           true, // without constraints
                            true  // with theme space
                            );
+  // apply constraints
+  if PreferredSize[asboHorizontal]>0 then
+    PreferredSize[asboHorizontal]:=
+      Control.Constraints.MinMaxWidth(PreferredSize[asboHorizontal]);
+  if PreferredSize[asboVertical]>0 then
+    PreferredSize[asboVertical]:=
+      Control.Constraints.MinMaxHeight(PreferredSize[asboVertical]);
+
+  if (Control.AutoSize or (Control.BorderSpacing.CellAlignHorizontal<>ccaFill))
+  and (PreferredSize[asboHorizontal]>0)
+  then begin
+    // the control.width is fixed to its preferred width
+    MinimumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
+    MaximumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
+  end;
+  if (Control.AutoSize or (Control.BorderSpacing.CellAlignVertical<>ccaFill))
+  and (PreferredSize[asboVertical]>0)
+  then begin
+    // the control.height is fixed to its preferred height
+    MinimumSize[asboVertical]:=PreferredSize[asboVertical];
+    MaximumSize[asboVertical]:=PreferredSize[asboVertical];
+  end;
+
+  // if no preferred size is valid use the class defaults
+  if PreferredSize[asboHorizontal]<=0 then
+    PreferredSize[asboHorizontal]:=
+      Control.Constraints.MinMaxWidth(Control.GetControlClassDefaultSize.X);
+  if PreferredSize[asboVertical]<=0 then
+    PreferredSize[asboVertical]:=
+      Control.Constraints.MinMaxHeight(Control.GetControlClassDefaultSize.X);
+
   //DebugLn(['TAutoSizeBox.SetControl ',DbgSName(Control),' ',PreferredSize[asboHorizontal]]);
   Control.BorderSpacing.GetSpaceAround(Border);
   BorderLeftTop[asboHorizontal]:=Border.Left;
