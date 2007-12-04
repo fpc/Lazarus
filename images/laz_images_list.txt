@@ -23,6 +23,7 @@ actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
 actions/delete.png
+actions/open.png
 actions/refresh.png
 items/item_form.png
 items/item_library.png
@@ -59,7 +60,6 @@ menu/menu_help.png
 menu/menu_indent.png
 menu/menu_information.png
 menu/menu_new.png
-menu/open.png
 menu/menu_pause.png
 menu/menu_project_add.png
 menu/menu_project_close.png
