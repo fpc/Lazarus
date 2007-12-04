@@ -8560,15 +8560,11 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyDown">

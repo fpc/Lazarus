@@ -5827,8 +5827,9 @@ False is set when the edit or combobox control looses focus.
       <!-- property Visibility: public -->
       <element name="TCustomButton.Default">
         <short>Is this the Default button? (default setting is False)</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>Defines if a button is the <i>Default</i> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.ModalResult">
@@ -5839,8 +5840,9 @@ False is set when the edit or combobox control looses focus.
       <!-- property Visibility: public -->
       <element name="TCustomButton.Cancel">
         <short>Is this the Cancel button? (default setting is False)</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomButton.Color">
@@ -5869,29 +5871,13 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Action">
-        <short>The action executed when the user clicks the button.</short>
-        <descr>If you assign an action from an ActionList to a TButton.Action the corresponding execute-method is assigned to the OnClick event of the button. </descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Action"/>
       <!-- property Visibility: published -->
-      <element name="TButton.Align">
-        <short/>
-        <descr><br/></descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Align"/>
       <!-- property Visibility: published -->
-      <element name="TButton.Anchors">
-        <short>Anchors are used to keep a button on a defined distance to certain borders of the parent control.</short>
-        <descr>Anchors can be used to keep control at a certain distance from a side of its parent control, when the parent control is resized.</descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Anchors"/>
       <!-- property Visibility: published -->
-      <element name="TButton.AutoSize">
-        <short>Autosize in </short>
-        <descr>If this property is set to true, the control will automatically adapt its size to be able to accomodate its content. </descr>
-        <seealso/>
-      </element>
+      <element name="TButton.AutoSize"/>
       <!-- property Visibility: published -->
       <element name="TButton.BidiMode">
         <short/>
@@ -5899,17 +5885,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.BorderSpacing">
-        <short>The fixed spacing around the border of the Button</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TButton.BorderSpacing"/>
       <!-- property Visibility: published -->
-      <element name="TButton.Cancel">
-        <short>Setting this property will make the OnClick event executed when the user hits ESC.</short>
-        <descr>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Cancel"/>
       <!-- property Visibility: published -->
       <element name="TButton.Caption">
         <short>Sets the text displayed on the button.</short>
@@ -5930,11 +5908,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Default">
-        <short>Setting this property will make the OnClick event executed when the user hits ENTER</short>
-        <descr>Defines if a button is the default on a form. That is, pressing enter will execute its onClick wether the control has focus or not!</descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Default"/>
       <!-- property Visibility: published -->
       <element name="TButton.DragCursor">
         <short/>
@@ -5948,11 +5922,7 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.Enabled">
-        <short>Determines if the button reacts to a click.</short>
-        <descr>Setting this property determines if the control can be used. </descr>
-        <seealso/>
-      </element>
+      <element name="TButton.Enabled"/>
       <!-- property Visibility: published -->
       <element name="TButton.Font">
         <short>Font is used to set the font of the caption of the Button.</short>
@@ -5979,9 +5949,7 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnClick">
-        <short>The OnClick event is triggered when a user clicks on the button</short>
         <descr>The OnClick event is triggered when a user clicks on the button. It can also be invoked by calling the Click method.</descr>
-        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TButton.OnDragDrop">
@@ -6002,19 +5970,9 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.OnEnter">
-        <short>The OnEnter event is triggered when the button gets focus.</short>
-        <descr>The OnEnter event is triggered when the button gets focus.
-</descr>
-        <seealso/>
-      </element>
+      <element name="TButton.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TButton.OnExit">
-        <short>The OnExit event is triggered when the button loses focus.</short>
-        <descr>The OnExit event is triggered when the button loses focus.
-</descr>
-        <seealso/>
-      </element>
+      <element name="TButton.OnExit"/>
       <!-- property Visibility: published -->
       <element name="TButton.OnKeyDown">
         <short/>
@@ -6100,23 +6058,11 @@ False is set when the edit or combobox control looses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TButton.TabOrder">
-        <short>TabOrder - an integer value to show where the button lies in the Tab Order for this Form</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TButton.TabOrder"/>
       <!-- property Visibility: published -->
-      <element name="TButton.TabStop">
-        <short>Boolean to determine whether the Button is associated with a Tab Stop in the Tab Order for the form</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TButton.TabStop"/>
       <!-- property Visibility: published -->
-      <element name="TButton.Visible">
-        <short>Determines whether the Button is visible.</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TButton.Visible"/>
       <!-- enumeration type Visibility: default -->
       <element name="TCheckBoxState">
         <short>Check Box State</short>

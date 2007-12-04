@@ -234,12 +234,13 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="DefFontData">
-        <short><i>Data</i>  about the <i>Default Font</i>  in the current context</short>
-        <descr>New TFont instances are initialized with the values in this structure.<br/>
-About font default values: The default font is chosen by the interfaces depending on the context. <br/>
-For example, there can be a different default font for a button and a groupbox.</descr>
-        <seealso><link id="TFontData">TFontData </link>
-	</seealso>
+        <short><i>Default Data</i>  for any new <i>Font</i></short>
+        <descr>
+          <p>New <i>TFont</i> instances are initialized with the values in this structure.</p>
+          <p>About font default values: The default font is chosen by the interfaces depending on the context. </p>
+          <p>For example, there can be a different default font for a button and a groupbox.</p>
+        </descr>
+        <seealso><link id="TFontData"/></seealso>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
@@ -1543,9 +1544,11 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       <element name="TFontHandleCache.Add.LongFontName"><short/></element>
       <!-- object Visibility: default -->
       <element name="TFont">
-        <short>The <i>Font</i> to be used for drawing <i>Text</i></short>
-        <descr>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData<br/>
-Individual properties such as Character Set, colour and size can be accessed in the public area</descr>
+        <short>The <i>Font</i>  to be used for drawing <i>Text</i></short>
+        <descr>
+          <p>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData</p>
+          <p>Individual properties such as Character Set, colour and size can be accessed in the public area</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFont.FCanUTF8">
@@ -1812,12 +1815,9 @@ Individual properties such as Character Set, colour and size can be accessed in 
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign">
-        <short><i>Assign</i>  - copies the <i>LogFont</i>  or <i>Source</i> settings to itself</short>
-        <descr>Method: TFont.Assign<br/>
+        <short><i>Assign</i>   - copies the <i>LogFont</i>   or <i>Source</i>  settings to itself</short>
+        <descr><p>Method: <i>TFont.Assign</i></p><p>Params: <i>ALogFont</i>: TLogFont or</p><p><i>Source</i>: another font</p><p>Returns:  nothing</p>
 
-Params: <i>ALogFont</i>: TLogFont or <i>Source</i>: another font<br/>
-
-Returns:  nothing<br/>
 
 Copies the logfont or source settings to itself</descr>
       </element>
@@ -1893,9 +1893,7 @@ Copies the logfont or source settings to itself</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The <i>Height</i> of the current Font</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Name">
@@ -2326,8 +2324,9 @@ Default is psSolid</descr>
       <!-- object Visibility: default -->
       <element name="TRegion">
         <short>A defined <i>Region</i> on the screen, in which text is written</short>
-        <seealso><link id="TRegionData">TRegionData (in same Unit)</link>
-	</seealso>
+        <seealso>
+          <link id="TRegionData">TRegionData (in same Unit)</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TRegion.FRegionData">
@@ -2395,11 +2394,9 @@ Default is psSolid</descr>
       <!-- property Visibility: public -->
       <element name="TRegion.Handle">
         <short>Operating System <i>Handle</i>  for this <i>Region</i></short>
-	<seealso>
+        <seealso>
           <link id="#lcl.lcltype.HRGN">HRGN </link>
-	  
           <link id="#rtl.sysutils.thandle">THandle </link>
-
         </seealso>
       </element>
       <!-- property Visibility: public -->
