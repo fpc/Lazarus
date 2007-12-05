@@ -442,6 +442,7 @@ begin
   ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
   MaxBtnPerRow:=((Page.ClientWidth - ButtonX) div ComponentPaletteBtnWidth);
+  if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
   Rows:=((ButtonCount-1) div MaxBtnPerRow)+1;
   //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
   // automatically set optimal row count and re-position controls to use height optimally
