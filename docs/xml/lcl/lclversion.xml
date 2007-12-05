@@ -9,14 +9,23 @@
 -->
 
 <module name="LCLVersion">
-<short></short>
-<descr>
+<short>Contains the version number constants of the LCL.</short>
+<descr><p>The LCLVersion unit contains the version number constants of the LCL.
+They can be used at runtime to determine the LCL version, so LCL application 
+writers and component writers can offer different functionality or workarounds 
+for bugs and take the LCL version into account while choosing their algorithms
+at run-time.</p>
+<p>Likewise, these version constants can be used at compile time in an conditional
+expressions, such as <code>{$IFDEF lcl_major>0}</code>. Currently these kinds of
+epressions are only support in <code>{$mode delphi}</code>. Recently fpc 2.3.1 added
+support for these kind of expressions in <code>{$mode delphi}</code>.</p>
 </descr>
 
 <!-- constant Visibility: default -->
 <element name="lcl_major">
-<short></short>
-<descr>
+<short>LCL major version</short>
+<descr>Given een complete version string like 0.9.25, the lcl_major constant
+contains the first number.
 </descr>
 <seealso>
 </seealso>
@@ -24,35 +33,33 @@
 
 <!-- constant Visibility: default -->
 <element name="lcl_minor">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>LCL minor version</short>
+<descr>Given a version string like 0.9.25, the lcl_minor constant
+contains the second number.
+<seealso>lcl_version</seealso>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="lcl_release">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>LCL release number</short>
+<descr>Given a version string like 0.9.25, the lcl_release constant
+contains the third number.
+<seealso>lcl_version</seealso>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="lcl_patch">
-<short></short>
-<descr>
+<short>LCL patch version</short>
+<descr>Given a complete version string like 0.9.24.1, the lcl_patch constant
+contains the last number.
 </descr>
-<seealso>
-</seealso>
+<seealso>lcl_version</seealso>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="lcl_version">
-<short></short>
-<descr>
+<short>LCL version string</short>
+<descr>Contains the LCL version string.
 </descr>
 <seealso>
 </seealso>
