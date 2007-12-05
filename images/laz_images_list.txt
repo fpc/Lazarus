@@ -29,6 +29,7 @@ items/item_form.png
 items/item_library.png
 items/item_package.png
 items/item_project.png
+items/item_todo.png
 items/item_unit.png
 menu/menu_abort_build.png
 menu/menu_build.png

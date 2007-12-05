@@ -980,7 +980,7 @@ begin
                                         'InvertAssignment',uemInvertAssignment);
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-                                        'InsertTodo',uemInsertTodo);
+                                        'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
 
   // register the Flags section
   SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -995,7 +995,7 @@ begin
                                                     uemShowUnitInfo);
     SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
     SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
-                                        'EditorProperties',uemEditorProperties, nil, nil, nil,  'menu_editor_options');
+                                        'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
 
 end;
 

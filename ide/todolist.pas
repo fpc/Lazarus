@@ -65,7 +65,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
   StdCtrls, LCLIntf, LCLType,
-  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
+  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs, IDEImagesIntf,
   LazarusIDEStrConsts, Project;
 
 
@@ -121,7 +121,6 @@ type
     acGoto: TAction;
     acRefresh: TAction;
     ActionList: TActionList;
-    ImageList: TImageList;
     lvTodo: TListView;
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
@@ -180,6 +179,9 @@ end;
 constructor TfrmTodo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ToolBar.Images := IDEImages.Images_16;
+  acGoto.ImageIndex := IDEImages.LoadImage(16, 'item_todo');
+  acRefresh.ImageIndex := IDEImages.LoadImage(16, 'refresh');
 end;
 
 destructor TfrmTodo.Destroy;

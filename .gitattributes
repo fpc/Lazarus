@@ -2365,6 +2365,7 @@ images/items/item_form.png -text svneol=unset#image/png
 images/items/item_library.png -text svneol=unset#image/png
 images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
+images/items/item_todo.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
 images/keymapcategory.xpm -text svneol=native#image/x-xpixmap
 images/keymaprelation.xpm -text svneol=native#image/x-xpixmap
@@ -2512,10 +2513,6 @@ images/states/state_not_found.png -text svneol=unset#image/png
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/template.png -text svneol=unset#image/png
-images/todo_goto.bmp -text
-images/todo_options.bmp -text
-images/todo_print.bmp -text
-images/todo_refresh.bmp -text
 images/up.xpm svneol=native#text/plain
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/lazarus-mime.xml svneol=native#text/plain
