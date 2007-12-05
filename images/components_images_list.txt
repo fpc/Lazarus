@@ -16,7 +16,6 @@ components/tcheckgroup.png
 components/tchecklistbox.png
 components/tcolorbox.png
 components/tcolorbutton.png
-components/tcolorcombobox.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
