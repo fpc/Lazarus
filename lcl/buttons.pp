@@ -81,6 +81,8 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FImagesCache: TImageListCache;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
   protected
@@ -104,6 +106,8 @@ type
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
+    property Width: Integer read GetWidth;
+    property Height: Integer read GetHeight;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
