@@ -29,6 +29,8 @@ unit AllLCLUnits;
 interface
 
 uses
+  // lcl version
+  LCLVersion,
   // resource strings
   LCLStrConsts,
   // base classes
