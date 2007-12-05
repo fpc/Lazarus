@@ -1170,14 +1170,12 @@ begin
   and (PreferredSize[asboHorizontal]>0)
   then begin
     // the control.width is fixed to its preferred width
-    MinimumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
     MaximumSize[asboHorizontal]:=PreferredSize[asboHorizontal];
   end;
   if (Control.AutoSize or (Control.BorderSpacing.CellAlignVertical<>ccaFill))
   and (PreferredSize[asboVertical]>0)
   then begin
     // the control.height is fixed to its preferred height
-    MinimumSize[asboVertical]:=PreferredSize[asboVertical];
     MaximumSize[asboVertical]:=PreferredSize[asboVertical];
   end;
 

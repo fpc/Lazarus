@@ -3656,7 +3656,7 @@ function TProject.UnitInfoWithFilename(const AFilename: string;
   begin
     Result:=TheFilename;
     if (pfsfResolveFileLinks in SearchFlags)
-    and (FilenameIsAbsolute(Result)) then
+    and FilenameIsAbsolute(Result) then
       Result:=ReadAllLinks(Result,false);
   end;
 

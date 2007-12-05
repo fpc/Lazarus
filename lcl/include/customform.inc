@@ -862,6 +862,34 @@ end;
        TCustomForm WndProc
 ------------------------------------------------------------------------------}
 procedure TCustomForm.WndProc(var TheMessage : TLMessage);
+
+ {-----------------------------------------------------------------------
+   Return if the control contain a form
+  -----------------------------------------------------------------------}
+  function ContainsForm(Control : TWinControl) : Boolean;
+  var
+    I     : Integer;
+    Found : Boolean;
+  begin
+    Found := False;
+    if Control <> Nil then
+    begin
+      I := 1;
+      while (I <= Control.ControlCount) And (Not Found) do
+      begin
+        if (Control.Controls[I-1] Is TCustomForm)
+        then
+          Found := True
+        else
+          If (Control.Controls[I-1] Is TWinControl)
+          then
+            Found := ContainsForm(Control.Controls[I-1] As TWinControl);
+        Inc(I);
+      end;
+    end;
+    Result := Found;
+  end;
+
 var
   FocusHandle : HWND;
   MenuItem : TMenuItem;
@@ -911,7 +939,7 @@ begin
             DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName,' FActiveControl=',DbgSName(FActiveControl));
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
-            exit;
+            if not ContainsForm(Self) then exit;
           end;
         end;
       end;

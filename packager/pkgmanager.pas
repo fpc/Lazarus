@@ -2982,6 +2982,8 @@ begin
       end;
     end;
     UnitOwners.Free;
+  end else begin
+    DebugLn(['TPkgManager.GetMissingDependenciesForUnit WARNING: unit has no owner: ',UnitFilename]);
   end;
   Result:=mrOk;
 end;
@@ -3088,10 +3090,9 @@ var
     Add: Boolean;
   begin
     if AProject=nil then exit;
-    BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
-    if BaseDir='' then exit;
     Add:=false;
     if not (piosfExcludeOwned in Flags) then begin
+      //DebugLn(['SearchInProject ',AProject.ProjectInfoFile,' UnitFilename=',UnitFilename]);
       if AProject.UnitInfoWithFilename(UnitFilename,
         [pfsfResolveFileLinks,pfsfOnlyProjectFiles])<>nil
       then
@@ -3100,12 +3101,15 @@ var
     if (piosfIncludeSourceDirectories in Flags)
     and FilenameIsAbsolute(UnitFilename) then begin
       // search in project source directories
-      ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
-      if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
-      if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
-        PChar(ProjectDirs),length(ProjectDirs))<>nil
-      then
-        Add:=true;
+      BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+      if BaseDir<>'' then begin
+        ProjectDirs:=AProject.LazCompilerOptions.OtherUnitFiles+';.';
+        if not IDEMacros.CreateAbsoluteSearchPath(ProjectDirs,BaseDir) then exit;
+        if FindPathInSearchPath(PChar(SrcDir),length(SrcDir),
+          PChar(ProjectDirs),length(ProjectDirs))<>nil
+        then
+          Add:=true;
+      end;
     end;
     if Add then
       Result.Add(AProject);
@@ -3114,6 +3118,7 @@ var
 var
   PkgFile: TPkgFile;
 begin
+  //DebugLn(['TPkgManager.GetPossibleOwnersOfUnit ',UnitFilename]);
   Result:=TFPList.Create;
 
   SrcDir:=ExtractFilePath(UnitFilename);
