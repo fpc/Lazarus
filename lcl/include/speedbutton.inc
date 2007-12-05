@@ -888,22 +888,13 @@ end;
 function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
   const AOffset: TPoint; AState: TButtonState; ATransparent: Boolean;
   BiDiFlags: Longint): TRect;
-var
-  NewOffset: TPoint;
 begin
   if Assigned(FGlyph) then
   begin
     if (AState = bsUp) and FMouseInControl then
       AState := bsExclusive;
     if (AState = bsDown) or (Down = true) then
-    begin
-      NewOffset := Point(AOffset.x + 1, AOffset.y + 1);
-      if NewOffset.x + FGlyph.Width >= AClient.Right then
-        NewOffset.x := AOffset.x;
-      if NewOffset.y + FGlyph.Height >= AClient.Bottom then
-        NewOffset.y := AOffset.y;
-      Result := FGlyph.Draw(ACanvas, AClient, NewOffset, AState, ATransparent, BiDiFlags);
-    end
+      Result := FGlyph.Draw(ACanvas, AClient, point(AOffset.x + 1, AOffset.y + 1), AState, ATransparent, BiDiFlags)
     else
       Result := FGlyph.Draw(ACanvas, AClient, AOffset, AState, ATransparent, BiDiFlags);
   end;
