@@ -82,6 +82,7 @@ type
     
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
+    FTextBuffer: WideString;
 
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(const AValue: Integer);
@@ -609,7 +610,6 @@ var
   TextStyle: ATSUStyle;
   TextLength: LongWord;
   S: String;
-  W: WideString;
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
   Options: ATSLineLayoutOptions;
@@ -630,14 +630,15 @@ begin
   // convert UTF-8 string to UTF-16 string
   if ACount < 0 then S := AStr
   else S := Copy(AStr, 1, ACount);
-  W := UTF8ToUTF16(S);
+  // keep copy of text
+  FTextBuffer := UTF8ToUTF16(S);
 
   TextStyle := CurrentFont.Style;
 
   // create text layout
   TextLength := kATSUToTextEnd;
-  if OSError(ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@W[1]),
-      kATSUFromTextBeginning, kATSUToTextEnd, Length(W), 1, @TextLength,
+  if OSError(ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@FTextBuffer[1]),
+      kATSUFromTextBeginning, kATSUToTextEnd, Length(FTextBuffer), 1, @TextLength,
       @TextStyle, ALayout), Self, SName, 'ATSUCreateTextLayoutWithTextPtr') then Exit;
       
   // set layout line orientation
@@ -686,6 +687,7 @@ begin
 
   if ALayout <> nil then
     OSError(ATSUDisposeTextLayout(ALayout), Self, 'EndTextRender', 'ATSUDisposeTextLayout');
+  FTextBuffer := '';
 end;
 
 {------------------------------------------------------------------------------
