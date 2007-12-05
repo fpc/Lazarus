@@ -4040,15 +4040,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
         <short><i>CalculatePreferredSize</i>   - find default/preferred height and width</short>
-        <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><p>procedure TControl.CalculatePreferredSize </p>
-        <p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p>
-  <p>Calculates the default/preferred width and height for a control, which is used
+        <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><p>procedure TControl.CalculatePreferredSize </p><p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p><p>Calculates the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
-  instead.</p>
-  <p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
-  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
-  <p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+  instead.</p><p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
+  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
 
 .</descr>
@@ -5596,13 +5592,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short><i>EditingDone</i> - what to do when you have finished editing</short>
-        <descr><p><i>TControl.EditingDone</i></p>
-		<p>Called when user has finished editing. This procedure can be used by data links to commit the changes</p>.
- <p>For example:</p>
- <ul>            <li>When focus switches to another control (default)</li>
+        <descr><p>            <i>TControl.EditingDone</i>
+          </p><p>Called when user has finished editing. This procedure can be used by data links to commit the changes</p>.
+ <p>For example:</p><ul>            <li>When focus switches to another control (default)</li>
             <li>When user selected another item</li>
-          </ul>
-	  <p>It's totally up to the control, what events will commit.</p></descr>
+          </ul><p>It's totally up to the control, what events will commit.</p></descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteDefaultAction">
@@ -8618,9 +8612,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUnDock">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnUnDock</i> - event handler for control becoming disconnected (undocked) from parent</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUTF8KeyPress">
@@ -10346,6 +10338,13 @@ getting the parent control's Canvas dimensions.</p>
       <element name="Register">
         <short>Register the components used in the current application, so that they can be recognised</short>
         <seealso><link id="#rtl.classes.registercomponents"/></seealso>
+      </element>
+      <element name="TControl.BiDiMode">
+        <short><i>TControlBiDiMode</i> - enabling bi-directional writing</short>
+        <descr>Allows Languages such as Arabic and Hebrew to be used</descr>
+      </element>
+      <element name="TControl.ParentBiDiMode">
+        <short><i>ParentBiDiMode</i> - does the control follow the BiDiMode settings of its parent?</short>
       </element>
     </module>
     <!-- Controls -->

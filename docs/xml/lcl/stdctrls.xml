@@ -719,17 +719,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomGroupBox">
-        <short>Custom Group Box</short>
-        <descr>Custom Group Box: the base type from which Group Box and related components are derived.</descr>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomGroupBox </i>- the base class for <i>TGroupBox</i>, <i>TRadioGroup</i> and <i>TCheckGroup</i></short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomGroupBox.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sets up default size for the class</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomGroupBox.GetControlClassDefaultSize.Result"><short/></element>
@@ -744,10 +738,10 @@
       <element name="TCustomGroupBox.Create.AOwner"><short/></element>
       <!-- object Visibility: default -->
       <element name="TGroupBox">
-        <short>Group Box</short>
-        <descr>Group Box. Allows a number of objects to be grouped physically and conceptually
-on the form; they can be moved around together and have certain properties in
-common.</descr>
+        <short><i>TGroupBox </i>- a container that allows a number of objects to be grouped physically and conceptually on the form</short>
+        <descr>
+          <p>Group Box. Allows a number of objects to be grouped physically and conceptually on the form; they can be moved around together and have certain properties in common.</p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -3623,8 +3617,13 @@ tipically has a different color then the other items.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomEdit">
-        <short><i>TCustomEdit</i>: the base type from which the <i>TEdit</i> Box is derived.</short>
-        <descr><i>TCustomEdit</i>: the base type from which the <i>TEdit</i> Box is derived.</descr>
+        <short><i>TCustomEdit</i>  : the base type from which the <i>TEdit</i>   Box is derived.</short>
+        <descr>
+          <p><i>TCustomEdit</i>
+: the base type from which the <i>TEdit</i>
+ Box is derived.</p>
+          <p>This control deals, for example, with issues such as selection of text sub-strings within the whole text string which are to be edited (cut, pasted, deleted, highlighted etc)</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomEdit.FAutoSelect">
@@ -3951,22 +3950,15 @@ Indicates how text is displayed in a text editing control.</p>
       <element name="TCustomEdit.MouseUp.Y"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomEdit.AutoSelect">
-        <short>property AutoSelect: Boolean</short>
-        <descr>When True, the edit control will select all its text when it
-receives focus or when the Enter key is pressed.
-</descr>
-        <seealso/>
+        <short><i>AutoSelect</i>: if True, the edit control will select all its text when it receives focus or when the Enter key is pressed.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomEdit.AutoSelected">
-        <short>property AutoSelected: Boolean</short>
-        <descr>True indicate that the edit or combobox control has just performed
-an AutoSelect operation so that subsequent mouse-clicks and keystrokes
-proceed normally without selecting the text.
-
-False is set when the edit or combobox control loses focus.
-</descr>
-        <seealso/>
+        <short><i>AutoSelected</i>: if True, indicates that the edit control has just performed an <i>AutoSelect</i> operation</short>
+        <descr>
+          <p>If True, indicates that the edit control has just performed an <i>AutoSelect</i> operation so that subsequent mouse-clicks and keystrokes proceed normally without selecting the text.</p>
+          <p>False is set when the edit control loses focus.</p>
+        </descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomEdit.Create">
@@ -4027,7 +4019,7 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.CharCase">
-        <short>property CharCase: TEditCharCase</short>
+        <short><i>TEditCharCase</i>  - rules for what case to use (upper or lower) to display text</short>
         <descr>
           <p>Indicates how text is displayed in a text editing control in the following ways:</p>
           <ul>
@@ -4035,8 +4027,8 @@ False is set when the edit or combobox control loses focus.
             <li>Upper case letters</li>
             <li>Lower case letters</li>
           </ul>
+          <p>The rules can, of course, be overridden by use of the shift key.</p>
         </descr>
-        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.EchoMode">
@@ -4044,9 +4036,7 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.MaxLength">
-        <short>Max Length</short>
-        <descr>Max Length: maximum length allowed for text string</descr>
-        <seealso/>
+        <short><i>MaxLength</i>: maximum length allowed for text string</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.Modified">
@@ -4078,21 +4068,15 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelLength">
-        <short>Sel Length</short>
-        <descr>Sel Length: the length (in characters) of the text that has been selected for editing</descr>
-        <seealso/>
+        <short><i>SelLength</i>: the length (in characters) of the text that has been selected for editing</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelStart">
-        <short>Sel Start</short>
-        <descr>Sel Start: the index of the character from which selection (for editing) begins</descr>
-        <seealso/>
+        <short><i>Sel Start:</i> the index of the character from which selection (for editing) begins</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.SelText">
-        <short>Sel Text</short>
-        <descr>Sel Text: the text of the actual string that has been selected for editing</descr>
-        <seealso/>
+        <short><i>Sel Text</i>: the string within the edit control that has been selected for editing</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomEdit.TabOrder">
@@ -4486,34 +4470,17 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- object Visibility: default -->
       <element name="TEdit">
-        <short>Edit Box</short>
-        <descr>Edit Box: for entry or display of a single line of text.</descr>
+        <short><i>TEdit</i> - an Edit Box: for entry or display of a single line of text.</short>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: public -->
-      <element name="TEdit.AutoSelected">
-        <short>property AutoSelected: Boolean</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TEdit.AutoSelected"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.Action">
-        <short>Action</short>
-        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Action"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.Align">
-        <short>Align</short>
-        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Align"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.Anchors">
-        <short>Anchors</short>
-        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Anchors"/>
       <!-- property Visibility: published -->
       <element name="TEdit.AutoSize">
         <short/>
@@ -4521,11 +4488,7 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.AutoSelect">
-        <short>property AutoSelect: Boolean</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TEdit.AutoSelect"/>
       <!-- property Visibility: published -->
       <element name="TEdit.BidiMode">
         <short/>
@@ -4545,17 +4508,9 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Constraints">
-        <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Constraints"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.CharCase">
-        <short>Char Case</short>
-        <descr>Character Case: the default character case (Upper or Lower case) to be used in the Edit Box. Can, of course, be over-ridden by use of the [shift] key.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.CharCase"/>
       <!-- property Visibility: published -->
       <element name="TEdit.DragCursor">
         <short/>
@@ -4575,11 +4530,7 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Enabled">
-        <short>Enabled</short>
-        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Enabled"/>
       <!-- property Visibility: published -->
       <element name="TEdit.Font">
         <short/>
@@ -4599,23 +4550,11 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnChange">
-        <short>On Change - Action</short>
-        <descr>On Change - Action to be taken when any of the properties of the control change (especially the textual content).</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnChange"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnChangeBounds">
-        <short>On Change Bounds - Action</short>
-        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnChangeBounds"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnClick">
-        <short>On Click - Action</short>
-        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. User-defined Procedure</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnClick"/>
       <!-- property Visibility: published -->
       <element name="TEdit.OnDragDrop">
         <short/>
@@ -4641,59 +4580,23 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnEnter">
-        <short>On Entry - Action</short>
-        <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnExit">
-        <short>On Exit - Action</short>
-        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. User-defined Procedure</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnExit"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyDown">
-        <short>On Key Down - Action</short>
-        <descr>On Key Down - Action to be taken if a key is down while focus is in this control. Subtly different from On Key Pressed - for example the key might already have been down when focus entered this control, whereas On Key Pressed requires the key to become pressed while focus is in the control. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnKeyDown"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyPress">
-        <short>On Key Press - Action</short>
-        <descr>On Key Press - Action to be taken if a key becomes pressed while focus is in this control. Subtly different from On Key Down, which simply responds to a key being down, whether or not it was already down when focus was given to this control. On Key Press requires that a key becomes pressed while focus in in this control.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnKeyPress"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnKeyUp">
-        <short>On Key Up - Action</short>
-        <descr>On Key Up - Action to be taken if a key is up (ie not pressed) while focus is in this control.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnKeyUp"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseDown">
-        <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnMouseDown"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseMove">
-        <short>On Mouse Move - Action</short>
-        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnMouseMove"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnMouseUp">
-        <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnMouseUp"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.OnResize">
-        <short>On Resize - Action</short>
-        <descr>On Resize - Action to be taken when the control is resized. Might include re-alignment of text or selection of a different font size etc. </descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.OnResize"/>
       <!-- property Visibility: published -->
       <element name="TEdit.OnStartDrag">
         <short/>
@@ -4719,23 +4622,11 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.PopupMenu">
-        <short>Popup Menu</short>
-        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.PopupMenu"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.ReadOnly">
-        <short>Read Only</short>
-        <descr>Read Only - a flag that signifies that users can view the contents of this control but are not allowed to modify it.</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.ReadOnly"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.ShowHint">
-        <short>Show Hint</short>
-        <descr>Show Hint - allows a small box containing helpful text to be displayed while the mouse cursor 'hovers' over the control</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.ShowHint"/>
       <!-- property Visibility: published -->
       <element name="TEdit.TabStop">
         <short/>
@@ -4749,17 +4640,9 @@ False is set when the edit or combobox control loses focus.
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TEdit.Text">
-        <short>Text</short>
-        <descr>Text - the actual character string that represents the contents of the control. May be edited if ReadOnly property is not set</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Text"/>
       <!-- property Visibility: published -->
-      <element name="TEdit.Visible">
-        <short>Visible</short>
-        <descr>Visible - determines whether or not the control can be seen</descr>
-        <seealso/>
-      </element>
+      <element name="TEdit.Visible"/>
       <!-- object Visibility: default -->
       <element name="TMemo">
         <short>Memo Box</short>
