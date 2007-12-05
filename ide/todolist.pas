@@ -180,7 +180,7 @@ constructor TfrmTodo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ToolBar.Images := IDEImages.Images_16;
-  acGoto.ImageIndex := IDEImages.LoadImage(16, 'item_todo');
+  acGoto.ImageIndex := IDEImages.LoadImage(16, 'menu_goto_line');
   acRefresh.ImageIndex := IDEImages.LoadImage(16, 'refresh');
 end;
 

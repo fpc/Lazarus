@@ -22,10 +22,15 @@ actions/arrow_down.png
 actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
+actions/copy.png
+actions/cut.png
 actions/delete.png
 actions/edit.png
 actions/open.png
+actions/paste.png
 actions/refresh.png
+items/item_filter.png
+items/item_font.png
 items/item_form.png
 items/item_library.png
 items/item_package.png
@@ -48,10 +53,7 @@ menu/menu_compiler_options.png
 menu/menu_configure_build_lazarus.png
 menu/menu_configure_help.png
 menu/menu_editor_options.png
-menu/menu_edit_copy.png
-menu/menu_edit_cut.png
 menu/menu_edit_lowercase.png
-menu/menu_edit_paste.png
 menu/menu_edit_sort_16.xpm
 menu/menu_edit_uppercase.png
 menu/menu_environment_options.png
