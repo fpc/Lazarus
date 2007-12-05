@@ -2182,6 +2182,7 @@ images/actions/arrow_left.png -text svneol=unset#image/png
 images/actions/arrow_right.png -text svneol=unset#image/png
 images/actions/arrow_up.png -text svneol=unset#image/png
 images/actions/delete.png -text svneol=unset#image/png
+images/actions/edit.png -text svneol=unset#image/png
 images/actions/open.png -text svneol=unset#image/png
 images/actions/refresh.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal

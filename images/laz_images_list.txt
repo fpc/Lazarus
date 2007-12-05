@@ -23,6 +23,7 @@ actions/arrow_left.png
 actions/arrow_right.png
 actions/arrow_up.png
 actions/delete.png
+actions/edit.png
 actions/open.png
 actions/refresh.png
 items/item_form.png
