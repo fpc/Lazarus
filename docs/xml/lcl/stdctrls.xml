@@ -5516,9 +5516,7 @@ False is set when the edit or combobox control looses focus.
       </element>
       <!-- property Visibility: protected -->
       <element name="TButtonControl.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnChange </i>- event handler for any change in properties of the control</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TButtonControl.Create">
@@ -6287,34 +6285,22 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- object Visibility: default -->
       <element name="TCheckBox">
-        <short>Check Box</short>
-        <descr>Check Box: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a Caption that describes its function.</descr>
+        <short><i>TCheckBox</i> - a small box which can contain a check mark to indicate that it has been selected by a mouse click</short>
+        <descr>
+          <p><i>TCheckBox</i>: a small box which can contain a check mark to indicate that it has been selected by a mouse click. May be associated with a <i>Caption</i> that describes its function.</p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Action">
-        <short>Action</short>
-        <descr>Action: the task to be performed when the component is activated by a mouse movement or key press. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Action"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Align">
-        <short>Align</short>
-        <descr>Align: Is used to align a Control component to a border of a parent control.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Align"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AllowGrayed">
-        <short>Allow Grayed</short>
-        <descr>Allow Grayed: a flag to show whether the box is allowed to be Greyed out, </descr>
-        <seealso/>
+        <short><i>AllowGrayed</i>: a flag to show whether the box is allowed to be Greyed out</short>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Anchors">
-        <short>Anchors</short>
-        <descr>Anchors:  keep the edges of a control component a defined distance from certain borders of the parent control.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Anchors"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.AutoSize">
         <short/>
@@ -6334,16 +6320,10 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Caption">
-        <short>Caption</short>
-        <descr>Caption: a brief description appearing near the check box, usually stating the function of the box or what action will be taken if it becomes checked.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Caption"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Checked">
-        <short>Checked</short>
-        <descr>Checked - shows whether or not the box has been checked (ie selected)</descr>
-        <seealso/>
+        <short><i>Checked</i> - shows whether or not the box has been checked (ie selected)</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Color">
@@ -6352,11 +6332,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Constraints">
-        <short>Constraints</short>
-        <descr>Constraints: Sets the minimum and maximum sizes for a control. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Constraints"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.DragCursor">
         <short/>
@@ -6376,11 +6352,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Enabled">
-        <short>Enabled</short>
-        <descr>Enabled: flag to determine whether or not the control is able to be used</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Enabled"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.Font">
         <short/>
@@ -6388,29 +6360,13 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Hint">
-        <short>Hint</short>
-        <descr>Hint: a short piece of pop-up text that appears if the mouse-cursor hovers over the check box; </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Hint"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnChange">
-        <short>On Change</short>
-        <descr>On Change - Action to be taken when any of the properties of the control change.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnChange"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnChangeBounds">
-        <short>On Change Bounds</short>
-        <descr>On Change Bounds - Action to be taken if any of the bounds of the control are changed. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnChangeBounds"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnClick">
-        <short>On Click - Action</short>
-        <descr>On Click - Action to be taken when the mouse button is clicked with the cursor over this control. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnClick"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnDragDrop">
         <short/>
@@ -6436,23 +6392,11 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnEnter">
-        <short>On Entry - Action</short>
-        <descr>On Entry - Action to be taken when the mouse cursor or text cursor enters the bounds of this control. User-defined Procedure</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnEnter"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnExit">
-        <short/>
-        <descr>On Exit - Action to be taken when the mouse or text cursor leaves this control or when focus is relinquished. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnExit"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseDown">
-        <short>On Mouse Down - Action</short>
-        <descr>On Mouse Down - Action to be taken if the mouse button is down while focus is in this control. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnMouseDown"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnMouseEnter">
         <short/>
@@ -6466,23 +6410,11 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseMove">
-        <short>On Mouse Move - Action</short>
-        <descr>On Mouse Move - Action to be taken if the mouse cursor moves while focus is in this control. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnMouseMove"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnMouseUp">
-        <short>On Mouse Up - Action</short>
-        <descr>On Mouse Up - Action to be taken if the mouse button is up (not pressed) while focus is in this control.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnMouseUp"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.OnResize">
-        <short>On Resize - Action</short>
-        <descr>On Resize - Action to be taken when the control is resized. Might include selection of a different font size etc. </descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.OnResize"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.OnStartDrag">
         <short/>
@@ -6514,17 +6446,9 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.PopupMenu">
-        <short>Popup Menu</short>
-        <descr>Popup Menu - a menu that appears when the right mouse button is clicked over this control</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.PopupMenu"/>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.ShowHint">
-        <short>Show Hint</short>
-        <descr>Show Hint: a flag to show whether or not the hint is to be shown when the mouse cursor hovers over the box.</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.ShowHint"/>
       <!-- property Visibility: published -->
       <element name="TCheckBox.State">
         <short/>
@@ -6550,11 +6474,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TCheckBox.Visible">
-        <short>Visible</short>
-        <descr>Visible - determines whether or not the control can be seen</descr>
-        <seealso/>
-      </element>
+      <element name="TCheckBox.Visible"/>
       <!-- object Visibility: default -->
       <element name="TToggleBox">
         <short>Toggle Box</short>

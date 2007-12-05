@@ -6217,8 +6217,10 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.PopupMenu">
-        <short>Gets or writes the pop-up menu associated with this control</short>
-        <descr>// standard properties, which should be supported by all descendants<br/> Reads the details of the pop-up menu, or stores them.<br/>Properties are defined in the parent class TPopupMenu</descr>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link></descr>
         <seealso><link id="#lcl.Menus.TPopupMenu"/></seealso>
       </element>
       <!-- property Visibility: public -->
@@ -6231,7 +6233,7 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
-        <short>The Visible property represents the ability to see a visual control.</short>
+        <short><i>Visible</i> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -6342,9 +6344,11 @@ Reads or writes a flag to find or store the identity of the parent for this cont
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Hint</i> - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
+        <descr>
+          <p><i>Hint</i> - a small informative pop-up box that appears when the mouse 'hovers' over a control</p>
+          <p>Requires <i>ShowHint</i> to be True</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Top">
