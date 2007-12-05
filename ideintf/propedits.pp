@@ -38,7 +38,7 @@ uses
   LCLProc, Forms, Controls, GraphType,
   Graphics, StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf,
   Dialogs, Grids, EditBtn, PropertyStorage, TextTools, FrmSelectProps,
-  StringsPropEditDlg, ColumnDlg, FileUtil, ObjInspStrConsts;
+  StringsPropEditDlg, ColumnDlg, FileUtil, ObjInspStrConsts, IDEImagesIntf;
 
 const
   MaxIdentLength: Byte = 63;
@@ -3324,8 +3324,6 @@ type
   
   TCollectionPropertyEditorForm = class(TForm)
     CollectionListBox: TListBox;
-    ImageList: TImageList;
-    DisableImageList: TImageList;
     ToolBar1: TToolBar;
     AddButton: TToolButton;
     DeleteButton: TToolButton;
@@ -3366,10 +3364,15 @@ const
 
 procedure TCollectionPropertyEditorForm.FormCreate(Sender: TObject);
 begin
+  ToolBar1.Images := IDEImages.Images_16;
   AddButton.Caption := oiColEditAdd;
   DeleteButton.Caption := oiColEditDelete;
   MoveUpButton.Caption := oiColEditUp;
   MoveDownButton.Caption := oiColEditDown;
+  AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
+  DeleteButton.ImageIndex := IDEImages.LoadImage(16, 'delete');
+  MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 end;
 
 procedure TCollectionPropertyEditorForm.FormDestroy(Sender: TObject);
