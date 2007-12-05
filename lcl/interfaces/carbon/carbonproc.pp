@@ -92,6 +92,7 @@ function RoundFixed(const F: Fixed): Integer;
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
 function GetCarbonRect(const ARect: TRect): FPCMacOSAll.Rect;
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+function ParamsToRect(const AParams: TCreateParams): TRect;
 
 type
   CGRectArray = Array of CGRect;
@@ -674,6 +675,19 @@ end;
   Returns: Carbon Rect from creation parameters
  ------------------------------------------------------------------------------}
 function ParamsToCarbonRect(const AParams: TCreateParams): FPCMacOSAll.Rect;
+begin
+  Result.Left := AParams.X;
+  Result.Top := AParams.Y;
+  Result.Right := AParams.X + AParams.Width;
+  Result.Bottom := AParams.Y + AParams.Height;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    ParamsToRect
+  Params:  AParams - Creation parameters
+  Returns: TRect from creation parameters
+ ------------------------------------------------------------------------------}
+function ParamsToRect(const AParams: TCreateParams): TRect;
 begin
   Result.Left := AParams.X;
   Result.Top := AParams.Y;

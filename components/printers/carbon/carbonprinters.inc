@@ -121,6 +121,15 @@ begin
   OSError(PMSessionGetCurrentPrinter(PrintSession, Result), Self, 'GetCurrentPrinter', 'PMSessionGetCurrentPrinter');
 end;
 
+function TCarbonPrinter.GetCurrentPrinterName: String;
+var
+  P: PMPrinter;
+begin
+  Result := '';
+  P := GetCurrentPrinter;
+  if P <> nil then Result := CFStringToStr(PMPrinterGetName(P));
+end;
+
 procedure TCarbonPrinter.BeginPage;
 begin
   if FBeginDocumentStatus = noErr then
@@ -151,6 +160,27 @@ begin
   end;
 end;
 
+procedure TCarbonPrinter.FindDefaultPrinter;
+var
+  P: PMPrinter;
+  I, C: CFIndex;
+begin
+  if OSError(PMServerCreatePrinterList(kPMServerLocal, FPrinterArray),
+    Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
+
+  C := CFArrayGetCount(FPrinterArray);
+  for I := 0 to C - 1 do
+  begin
+    P := CFArrayGetValueAtIndex(FPrinterArray, I);
+
+    if PMPrinterIsDefault(P) then
+    begin
+      FDefaultPrinter := CFStringToStr(PMPrinterGetName(P));
+      Break;
+    end;
+  end;
+end;
+
 procedure TCarbonPrinter.BeginEnumPrinters(Lst: TStrings);
 var
   P: PMPrinter;
@@ -166,10 +196,11 @@ begin
     P := CFArrayGetValueAtIndex(FPrinterArray, I);
     PrinterName := CFStringToStr(PMPrinterGetName(P));
 
-    if PMPrinterIsDefault(P) then
-      Lst.Insert(0, PrinterName)
+    //DebugLn(DbgS(I) + ' ' + PrinterName);
+    if PrinterName = FDefaultPrinter then
+      Lst.InsertObject(0, PrinterName, TObject(I))
     else
-      Lst.Add(PrinterName);
+      Lst.AddObject(PrinterName, TObject(I));
   end;
 end;
 
@@ -215,6 +246,11 @@ begin
   CreatePrintSettings;
   FPageFormat := CreatePageFormat('');
   FPrinterContext := TCarbonPrinterContext.Create;
+  
+  FindDefaultPrinter;
+  UpdatePrinter;
+  //DebugLn('Current ' + GetCurrentPrinterName);
+  //DebugLn('Default ' + FDefaultPrinter);
 end;
 
 destructor TCarbonPrinter.Destroy;
@@ -255,6 +291,26 @@ begin
     DoSetPaperName(DoGetDefaultPaperName);
 end;
 
+procedure TCarbonPrinter.UpdatePrinter;
+var
+  S: TStringList;
+  P: String;
+begin
+  ValidatePrintSettings;
+  
+  P := GetCurrentPrinterName;
+  
+  S := TStringList.Create;
+  try
+    DoEnumPrinters(S);
+    //DebugLn('UpdatePrinter ' + P + ' ' + DbgS(S.IndexOf(P)));
+    PrinterIndex := S.IndexOf(P);
+  finally
+    S.Free;
+  end;
+  Validate;
+end;
+
 function TCarbonPrinter.GetXDPI: Integer;
 begin
   Result := 72;
@@ -270,6 +326,7 @@ begin
   inherited DoBeginDoc;
   
   //DebugLn('TCarbonPrinter.DoBeginDoc ' + DbgS(Printing));
+  Validate;
 
   FBeginDocumentStatus := PMSessionBeginCGDocument(PrintSession, PrintSettings, PageFormat);
   OSError(FBeginDocumentStatus, Self, 'DoBeginDoc', 'PMSessionBeginCGDocument', '', kPMCancel);
@@ -362,6 +419,8 @@ begin
   
   FPageFormat := CreatePageFormat(AName);
   DoSetOrientation(O);
+  
+  ValidatePageFormat;
 end;
 
 function TCarbonPrinter.DoGetPaperRect(AName: string; var APaperRc: TPaperRect): Integer;
@@ -421,15 +480,13 @@ begin
     Result := S.IndexOf(AName);
     if Result >= 0 then
     begin
+      //DebugLn('DoSetPrinter ' + DbgS(Result));
       //DebugLn('TCarbonPrinter.DoSetPrinter ' + AName + ' ' + DbgS(PrintSession) + ' ' + DbgS(Printers.Objects[Result]));
-      P := PMPrinter(CFArrayGetValueAtIndex(FPrinterArray, Result));
+      P := PMPrinter(CFArrayGetValueAtIndex(FPrinterArray, Integer(S.Objects[Result])));
       PMRetain(PMObject(P));
       if OSError(PMSessionSetCurrentPMPrinter(PrintSession, P),
         Self, 'DoSetPrinter', 'PMSessionSetCurrentPMPrinter') then
           raise EPrinter.CreateFmt('The system is unable to select printer "%s"!', [AName]);
-
-      ValidatePageFormat;
-      ValidatePrintSettings;
     end;
   finally
     EndEnumPrinters;

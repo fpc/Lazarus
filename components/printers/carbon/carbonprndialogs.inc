@@ -22,7 +22,7 @@ begin
       CarbonPrinter.PageFormat, Result),
     Self, SExecute, 'PMSessionPageSetupDialog') then Exit;
 
-  CarbonPrinter.Validate;
+  if Result then CarbonPrinter.Validate;
 end;
 
 
@@ -53,6 +53,8 @@ begin
   if Printer.Printers.Count <= 0 then Exit;
   
   CarbonPrinter := Printer as TCarbonPrinter;
+  //DebugLn('TPrintDialog.Execute ' + CarbonPrinter.CurrentPrinterName);
+  
   if OSError(PMCreatePrintSettings(DialogSettings),
     Self, SExecute, 'PMCreatePrintSettings') then Exit;
   try
@@ -65,10 +67,10 @@ begin
       Self, SExecute, 'PMSetPageRange');
     OSError(PMSetFirstPage(DialogSettings, FromPage, False), Self, SExecute, 'PMSetFirstPage');
     OSError(PMSetLastPage(DialogSettings, ToPage, False), Self, SExecute, 'PMSetLastPage');
-  
+
     if OSError(PMSessionPrintDialog(CarbonPrinter.PrintSession, CarbonPrinter.PrintSettings, CarbonPrinter.PageFormat, Result),
       Self, SExecute, 'PMSessionPrintDialog') then Exit;
-      
+
     if Result then
     begin
       PrintRange := prSelection;
@@ -89,6 +91,8 @@ begin
     
       if OSError(PMCopyPrintSettings(DialogSettings, CarbonPrinter.PrintSettings),
         Self, SExecute, 'PMCopyPrintSettings') then Exit;
+        
+      CarbonPrinter.UpdatePrinter;
     end;
   finally
     PMRelease(PMObject(DialogSettings));

@@ -25,10 +25,12 @@ type
     FPrinterContext: TCarbonPrinterContext;
     FPrinterArray: CFArrayRef;
     FPaperArray: CFArrayRef;
+    FDefaultPrinter: String;
     
     procedure CreatePrintSession;
     procedure CreatePrintSettings;
     function GetCurrentPrinter: PMPrinter;
+    function GetCurrentPrinterName: String;
     
     function CreatePageFormat(APaper: String): PMPageFormat;
     
@@ -38,6 +40,7 @@ type
     procedure BeginPage;
     procedure EndPage;
     
+    procedure FindDefaultPrinter;
     procedure BeginEnumPrinters(Lst: TStrings);
     procedure EndEnumPrinters;
     procedure BeginEnumPapers(Lst: TStrings);
@@ -73,11 +76,13 @@ type
     procedure RawModeChanging; override;
   public
     procedure Validate;
+    procedure UpdatePrinter;
   public
     constructor Create; override;
     destructor Destroy; override;
     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
     // Warning not portable functions here
+    property CurrentPrinterName: String read GetCurrentPrinterName;
     property PrintSession: PMPrintSession read FPrintSession;
     property PrintSettings: PMPrintSettings read FPrintSettings;
     property PageFormat: PMPageFormat read FPageFormat;
