@@ -187,7 +187,7 @@ ResourceString
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
   rsErrorWhileSavingBitmap = 'Error while saving bitmap.';
   rsNoWidgetSet = 'No widgetset object. '
-    +'Plz check if the unit "interfaces" was added to the programs uses clause.';
+    +'Please check if the unit "interfaces" was added to the programs uses clause.';
   rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress Ok to '
     +'ignore and risk data corruption.%sPress Cancel to kill the program.';
   rsCanNotFocus = 'Can not focus';

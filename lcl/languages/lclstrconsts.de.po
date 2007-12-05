@@ -581,7 +581,7 @@ msgid "No to all"
 msgstr "Immer Nein"
 
 #: lclstrconsts:rsnowidgetset
-msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Kein Widgetset-Objekt. Bitte überprüfen Sie, ob die Unit \"Interfaces\" in der Uses-Anweisung des Programms enthalten ist."
 
 #: lclstrconsts:ifsvk_nonconvert

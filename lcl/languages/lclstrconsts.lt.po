@@ -580,7 +580,7 @@ msgid "No to all"
 msgstr "Visiada ne"
 
 #: lclstrconsts:rsnowidgetset
-msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Nevaldiklio objektas. Patikrinkite ar modulis \"interfaces\" yra paminėtas programos naudojamų modulių sąraše."
 
 #: lclstrconsts:ifsvk_nonconvert

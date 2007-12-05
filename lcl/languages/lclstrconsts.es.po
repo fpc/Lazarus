@@ -577,7 +577,7 @@ msgid "No to all"
 msgstr "No a todo"
 
 #: lclstrconsts:rsnowidgetset
-msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""
 
 #: lclstrconsts:ifsvk_nonconvert

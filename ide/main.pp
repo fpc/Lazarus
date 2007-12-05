@@ -6036,7 +6036,7 @@ begin
                                        Project1.MainUnitInfo)>=0) then
         begin
           ACaption:=lisUnitIdentifierExists;
-          AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPlzChoose, ['"',
+          AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPleaseChoose, ['"',
             NewProgramName, '"', #13]);
           Result:=MessageDlg(ACaption,AText,mtError,[mbRetry,mbAbort],0);
           if Result=mrAbort then exit;
@@ -12958,7 +12958,7 @@ begin
                         MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   if CodeToolBoss.ErrorMessage<>'' then begin
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToFindMethodPlzFixTheErrorShownInTheMessage
+    raise Exception.Create(lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage
       );
   end;
 end;
@@ -12998,7 +12998,7 @@ begin
     end else begin
       DebugLn(['TMainIDE.OnPropHookCreateMethod failed adding method to source']);
       DoJumpToCodeToolBossError;
-      raise Exception.Create(lisUnableToCreateNewMethodPlzFixTheErrorShownIn);
+      raise Exception.Create(lisUnableToCreateNewMethodPleaseFixTheErrorShownIn);
     end;
   finally
     OpenEditorsOnCodeToolChange:=OldChange;
@@ -13028,7 +13028,7 @@ begin
   end else begin
     DebugLn(['TMainIDE.OnPropHookShowMethod failed finding the method in code']);
     DoJumpToCodeToolBossError;
-    raise Exception.Create(lisUnableToShowMethodPlzFixTheErrorShownInTheMessage
+    raise Exception.Create(lisUnableToShowMethodPleaseFixTheErrorShownInTheMessage
       );
   end;
 end;
@@ -13072,7 +13072,7 @@ begin
       ErrorMsg:=CodeToolBoss.ErrorMessage;
       DoJumpToCodeToolBossError;
       raise Exception.Create(
-        lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag
+        lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag
         +#13#13+lisError+ErrorMsg);
     end;
   finally

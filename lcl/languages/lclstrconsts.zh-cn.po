@@ -580,7 +580,7 @@ msgid "No to all"
 msgstr "全部选否"
 
 #: lclstrconsts:rsnowidgetset
-msgid "No widgetset object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "没有窗口部件集合对象,请检查单元\"interfaces\"是否添加到程序的uses语句中."
 
 #: lclstrconsts:ifsvk_nonconvert
