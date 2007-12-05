@@ -4040,14 +4040,16 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
         <short><i>CalculatePreferredSize</i>   - find default/preferred height and width</short>
-        <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><pre>procedure TControl.CalculatePreferredSize 
-        (var PreferredWidth, PreferredHeight: integer; 
-          WithThemeSpace: Boolean);</pre><p>Calculates the default/preferred width and height for a control, which is used
+        <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><p>procedure TControl.CalculatePreferredSize </p>
+        <p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p>
+  <p>Calculates the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
-  instead.</p><p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
-  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
-  some space around. This space is theme dependent, so the parameter is passes to the widgetset</p>
+  instead.</p>
+  <p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
+  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
+  <p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
 
 .</descr>
       </element>
@@ -5182,7 +5184,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
-        <short><p>ParentShowHint </p>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+        <short><i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.SessionProperties">
@@ -5406,7 +5408,7 @@ mrLast=mrYesToAll=10</descr>
         <descr>
           <p><i>TControl.AdjustSize</i> calls <i>DoAutoSize</i> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <i>TWinControl.DoAutoSize</i>.  But since <i>DoAutoSize</i> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <p>AdjustSize</p> instead.</p>
+          <p>This method initially does the same as <i>TWinControl.DoAutoSize</i>.  But since <i>DoAutoSize</i> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <i>AdjustSize</i> instead.</p>
         </descr>
       </element>
       <!-- function Visibility: public -->
@@ -5594,11 +5596,13 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short><i>EditingDone</i> - what to do when you have finished editing</short>
-        <descr><p>            <i>TControl.EditingDone</i>
-          </p><p>Called when user has finished editing. This procedure can be used by data links to commit the changes</p>.
- <p>For example:</p><ul>            <li>When focus switches to another control (default)</li>
+        <descr><p><i>TControl.EditingDone</i></p>
+		<p>Called when user has finished editing. This procedure can be used by data links to commit the changes</p>.
+ <p>For example:</p>
+ <ul>            <li>When focus switches to another control (default)</li>
             <li>When user selected another item</li>
-          </ul><p>It's totally up to the control, what events will commit.</p></descr>
+          </ul>
+	  <p>It's totally up to the control, what events will commit.</p></descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteDefaultAction">
@@ -6061,8 +6065,8 @@ introduced. These functions interface with the LCLInterface. </p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso>
-          <link id="#lcl.Controls.TControl.GetText"/>
-          <link id="#lcl.Controls.TControl.SetText"/>
+          <link id="#lcl.Controls.TControl.RealGetText"/>
+          <link id="#lcl.Controls.TControl.RealSetText"/>
         </seealso>
       </element>
       <!-- property Visibility: public -->

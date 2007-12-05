@@ -6888,7 +6888,7 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.ImageIndex">
-        <short><p>ImageIndex </p>- the index value of the image from the imagelist to be used with this button</short>
+        <short><i>ImageIndex </i>- the index value of the image from the imagelist to be used with this button</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Indeterminate">
