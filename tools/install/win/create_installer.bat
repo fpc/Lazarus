@@ -2,14 +2,11 @@
 if [%1]==[] goto USAGE
 if [%2]==[] goto USAGE
 if [%3]==[] goto USAGE
+if [%4]==[] goto USAGE
 
 :: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
 if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
-
-:: Path to the directory containing the mingw gdb debugger installation
-:: it should have the debugger with the name gdb.exe in its bin subdirectory
-SET GDBDIR=c:\lazarus\source\mingw
 
 :: Path to the directory containing the qtinf dll matching the from 
 :: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
@@ -28,14 +25,17 @@ SET FPCSVNDIR=%1
 :: Path to the lazarus sources checked out of subversion
 SET LAZSVNDIR=%2
 
+:: Path to the lazarus third party binaries checked out of subversion
+SET LAZSVNBINDIR=%3
+
 :: Path to latest release compiler
-SET RELEASE_PPC=%3
+SET RELEASE_PPC=%4
 
 :: Optional parameter to indicate the LCL Widget set used by the IDE
-SET IDE_WIDGETSET=%4
+SET IDE_WIDGETSET=%5
 
 :: Name of fpc patch file
-SET PATCHFILE=%5
+SET PATCHFILE=%6
 
 ::=====================================================================
 :: no change needed after this.
@@ -50,6 +50,15 @@ SET MAKEEXE=%FPCBINDIR%\make.exe
 SET PATCHEXE=%FPCSVNDIR%\install\binw32\patch.exe
 SET LOGFILE=%CD%\installer.log
 SET PATCHDIR=%CD%\..\patches
+
+:: Path to the directory containing the mingw gdb debugger installation
+:: it should have the debugger with the name gdb.exe in its bin subdirectory
+SET GDBDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\gdb
+
+:: Path to the directory containing the qtinf dll matching the qt4.pas from 
+:: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
+SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
+
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
@@ -90,7 +99,7 @@ if not exist %BUILDDIR%\lazarus.exe goto END
 if not exist %BUILDDIR%\startlazarus.exe goto END
 
 :: copy gdb into build dir
-if exist %GDBDIR% %CP% -pr %GDBDIR% %BUILDDIR%
+if exist %GDBDIR% %SVN% export %GDBDIR% %BUILDDIR%\mingw
 
 :: create the installer
 SET OutputFileName=lazarus-%LAZVERSION%-fpc-%FPCVERSION%-%DATESTAMP%-%FPCTARGETOS%
@@ -115,9 +124,10 @@ goto STOP
 :USAGE
 @echo off
 echo Usage:
-echo create_installer.bat FPCSVNDIR LAZSVNDIR RELEASECOMPILER [IDEWIDGETSET] [PATCHFILE]
+echo create_installer.bat FPCSVNDIR LAZSVNDIR LAZSVNBINDIR RELEASECOMPILER  [IDEWIDGETSET] [PATCHFILE]
 echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
 echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
+echo LAZSVNBINDIR: directory that contains a svn version of the lazarus binaries repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
 echo IDEWIDGETSET: optional, LCL platform used for compiling the IDE
 echo PATCHFILE: optional patch file for the fpc sources
