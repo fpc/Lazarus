@@ -2516,15 +2516,6 @@ images/todo_goto.bmp -text
 images/todo_options.bmp -text
 images/todo_print.bmp -text
 images/todo_refresh.bmp -text
-images/unitdependencies/srctype_circle_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_filenotfound_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_forbiddencircle_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_library_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_package_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_parseerror_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_program_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_unit_22x22.xpm -text svneol=native#image/x-xpixmap
-images/unitdependencies/srctype_unknown_22x22.xpm -text svneol=native#image/x-xpixmap
 images/up.xpm svneol=native#text/plain
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/lazarus-mime.xml svneol=native#text/plain
