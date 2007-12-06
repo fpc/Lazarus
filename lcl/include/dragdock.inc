@@ -241,6 +241,7 @@ Procedure DragTo(const Position: TPoint);
 var
   TargetControl: TControl;
   ADragCursor: TCursor;
+  AAccepted: Boolean;
 Begin
   {$IFDEF VerboseDrag}
   DebugLn('DragTo P=', IntToStr(Position.X), ',', IntToStr(Position.Y));
@@ -254,7 +255,7 @@ Begin
     exit;
   end;
 
-  TargetControl := GetDragTargetAt(Position,DragControl.DragKind,DragControl);
+  TargetControl := GetDragTargetAt(Position, DragControl.DragKind, DragControl);
 
   if DragControl.DragKind = dkDrag then
     ActiveDrag := dopDrag
@@ -278,7 +279,10 @@ Begin
   begin
     // same target => send dmDragMove
     DragObject.DragPos := Position;
-    ADragCursor := DragObject.GetDragCursor(SendDragOver(dmDragMove), Position.X, Position.Y);
+    AAccepted := SendDragOver(dmDragMove);
+    // on DragMove someone can call CancelDrag and this cause crash w/o this check
+    if DragObject = nil then Exit;
+    ADragCursor := DragObject.GetDragCursor(AAccepted, Position.X, Position.Y);
     if DragImages <> nil then
     begin
       if (DragObject.DragTarget = nil) or (csDisplayDragImage in DragObject.DragTarget.ControlStyle) or

@@ -573,7 +573,7 @@ resourcestring
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
     +'ambiguous file?';
-  lisLazarusEditorV = 'Lazarus Editor v%s';
+  lisLazarusEditorV = 'Lazarus IDE v%s';
   lisnewProject = '%s - (new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
@@ -1137,7 +1137,7 @@ resourcestring
   dlgAddAssignmentOperator = 'Add assignment operator :=';
 
   // source editor
-  locwndSrcEditor = 'Lazarus Source Editor';
+  locwndSrcEditor = 'Source Editor';
   
   // compiler options
   dlgCompilerOptions = 'Compiler Options';

@@ -144,7 +144,7 @@ begin
   msg.Msg := CN_NOTIFY;
   if (widgets=nil) or (Widgets^.ItemCache=nil) or (Widgets^.ItemCache.Count=0) then
   begin
-    debugln(' Gtk2_ItemSelectionChanged  ItemChache=nil ',tComponent(widgetInfo^.lclObject).name);
+    debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
     exit;
   end;
   for i := 0 to Widgets^.ItemCache.Count -1 do
@@ -995,7 +995,7 @@ var
   Widgets: PTVWidgets;
 begin
   GetCommonTreeViewWidgets(PGtkWidget(AWinControl.Handle), Widgets);
-  // on widget destroy we have no ItemDeleted notification and we must destroy ItemChache ourself
+  // on widget destroy we have no ItemDeleted notification and we must destroy ItemCache ourself
   // if things will change please remove this destroy
   Widgets^.ItemCache.Free;
   Widgets^.ItemCache := nil;
