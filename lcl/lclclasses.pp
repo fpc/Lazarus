@@ -29,7 +29,7 @@ unit LCLClasses;
 interface
 
 uses
-  Classes, WSLCLClasses, LCLType, LCLProc;
+  Classes, WSLCLClasses, WSReferences, LCLType, LCLProc;
 
 type
 
@@ -51,25 +51,30 @@ type
   { TLCLHandleComponent }         
   // A base class for all components having a handle
 
-  TLCLHandleComponent = class(TLCLComponent)
+  { TLCLReferenceComponent }
+
+  TLCLReferenceComponent = class(TLCLComponent)
   private
-    FHandle: TLCLIntfHandle;
+    FReferencePtr: PWSReference;
+
     FCreating: Boolean; // Set if we are creating the handle
-    function  GetHandle: TLCLIntfHandle;
-    function  GetHandleAllocated: Boolean;
+    function  GetHandle: THandle;
+    function  GetReferenceAllocated: Boolean;
   protected
     procedure CreateParams(var AParams: TCreateParams); virtual;
-    procedure DestroyHandle;
-    procedure HandleCreated; virtual;    // gets called after the Handle is created
-    procedure HandleDestroying; virtual; // gets called before the Handle is destroyed
-    procedure HandleNeeded;
-    function  WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; virtual;
-    procedure WSDestroyHandle; virtual;
+    procedure DestroyReference;
+    function  GetReferenceHandle: THandle; virtual; abstract;
+    procedure ReferenceCreated; virtual;    // gets called after the Handle is created
+    procedure ReferenceDestroying; virtual; // gets called before the Handle is destroyed
+    procedure ReferenceNeeded;
+    function  WSCreateReference(AParams: TCreateParams): PWSReference; virtual;
+    procedure WSDestroyReference; virtual;
   protected
   public
     destructor Destroy; override;
-    property Handle: TLCLIntfHandle read GetHandle;
-    property HandleAllocated: Boolean read GetHandleAllocated;
+    property Handle: TLCLIntfHandle read GetHandle; deprecated;
+    property HandleAllocated: Boolean read GetReferenceAllocated;
+    property ReferenceAllocated: Boolean read GetReferenceAllocated;
   end;
 
 implementation                    
@@ -110,85 +115,86 @@ procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);
 begin
 end;
 
-{ TLCLHandleComponent }
+{ TLCLReferenceComponent }
 
-procedure TLCLHandleComponent.CreateParams(var AParams: TCreateParams);
+procedure TLCLReferenceComponent.CreateParams(var AParams: TCreateParams);
 begin
 end;
 
-destructor TLCLHandleComponent.Destroy;
+destructor TLCLReferenceComponent.Destroy;
 begin
-  DestroyHandle;
+  DestroyReference;
   inherited Destroy;
 end;
 
-procedure TLCLHandleComponent.DestroyHandle;
+procedure TLCLReferenceComponent.DestroyReference;
 begin
-  if FHandle <> 0 then
+  if ReferenceAllocated then
   begin
-    HandleDestroying;
-    WSDestroyHandle;
-    FHandle := 0;
+    ReferenceDestroying;
+    WSDestroyReference;
+    FReferencePtr^._Clear;
+    FReferencePtr := nil;
   end;
 end;
 
-function TLCLHandleComponent.GetHandle: TLCLIntfHandle;
+function TLCLReferenceComponent.GetHandle: THandle;
 begin
-  if FHandle = 0 then HandleNeeded;
-  Result := FHandle;
+  ReferenceNeeded;
+  Result := GetReferenceHandle;
 end;
 
-function TLCLHandleComponent.GetHandleAllocated: Boolean;
+function TLCLReferenceComponent.GetReferenceAllocated: Boolean;
 begin
-  Result := FHandle <> 0;
+  Result := (FReferencePtr <> nil) and FReferencePtr^.Allocated;
 end;
 
-procedure TLCLHandleComponent.HandleCreated;
-begin
-end;
-
-procedure TLCLHandleComponent.HandleDestroying;
+procedure TLCLReferenceComponent.ReferenceCreated;
 begin
 end;
 
-procedure TLCLHandleComponent.HandleNeeded;
+procedure TLCLReferenceComponent.ReferenceDestroying;
+begin
+end;
+
+procedure TLCLReferenceComponent.ReferenceNeeded;
 var
   Params: TCreateParams;
 begin
-  if FHandle <> 0 then Exit;
+  if ReferenceAllocated then Exit;
 
   if FCreating
   then begin
     // raise some error ?
-    DebugLn('TLCLHandleComponent: Circulair handle creation');
+    DebugLn('TLCLReferenceComponent: Circulair reference creation');
     Exit;
   end;
 
   CreateParams(Params);
   FCreating := True;
   try
-    FHandle := WSCreateHandle(Params);
-    if FHandle = 0
+    FReferencePtr := WSCreateReference(Params);
+    if not ReferenceAllocated
     then begin
       // raise some error ?
-      DebugLn('TLCLHandleComponent: Handle creation failed');
+      DebugLn('TLCLHandleComponent: Reference creation failed');
       Exit;
     end;
   finally
     FCreating := False;
   end;
-  HandleCreated;
+  ReferenceCreated;
 end;
 
-function TLCLHandleComponent.WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle;
+function TLCLReferenceComponent.WSCreateReference(AParams: TCreateParams): PWSReference;
 begin
   // this function should be overriden in derrived class
-  Result := 0;
+  Result := nil;
 end;
 
-procedure TLCLHandleComponent.WSDestroyHandle;
+procedure TLCLReferenceComponent.WSDestroyReference;
 begin
-  TWSLCLHandleComponentClass(WidgetSetClass).DestroyHandle(Self);
+  TWSLCLReferenceComponentClass(WidgetSetClass).DestroyReference(Self);
 end;
 
 end.

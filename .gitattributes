@@ -3277,6 +3277,7 @@ lcl/widgetset/wsmaskedit.pp svneol=native#text/pascal
 lcl/widgetset/wsmenus.pp svneol=native#text/pascal
 lcl/widgetset/wspairsplitter.pp svneol=native#text/pascal
 lcl/widgetset/wsproc.pp svneol=native#text/pascal
+lcl/widgetset/wsreferences.pp svneol=native#text/pascal
 lcl/widgetset/wsspin.pp svneol=native#text/pascal
 lcl/widgetset/wsstdctrls.pp svneol=native#text/pascal
 lcl/widgetset/wstoolwin.pp svneol=native#text/pascal

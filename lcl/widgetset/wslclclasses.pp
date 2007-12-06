@@ -68,10 +68,10 @@ type
 
   { TWSLCLHandleComponent }
 
-  TWSLCLHandleComponent = class(TWSLCLComponent)
-    class procedure DestroyHandle(AComponent: TComponent); virtual;
+  TWSLCLReferenceComponent = class(TWSLCLComponent)
+    class procedure DestroyReference(AComponent: TComponent); virtual;
   end;
-  TWSLCLHandleComponentClass = class of TWSLCLHandleComponent;
+  TWSLCLReferenceComponentClass = class of TWSLCLReferenceComponent;
 
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
@@ -411,7 +411,7 @@ end;
 
 { TWSLCLHandleComponent }
 
-class procedure TWSLCLHandleComponent.DestroyHandle(AComponent: TComponent);
+class procedure TWSLCLReferenceComponent.DestroyReference(AComponent: TComponent);
 begin
 end;
 

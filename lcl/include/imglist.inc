@@ -463,7 +463,7 @@ procedure TCustomImageList.Draw(ACanvas: TCanvas; AX, AY, AIndex: Integer;
 begin
   if (FCount = 0) or (AIndex >= FCount) then Exit;
 
-  HandleNeeded;
+  ReferenceNeeded;
   TWSCustomImageListClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
                           BkColor, BlendColor, ADrawEffect, DrawingStyle, ImageType);
 end;
@@ -565,6 +565,17 @@ begin
   FillDescription(Image.Description);
   Image.DataSize := FWidth * FHeight * SizeOF(FData[0]);
   Image.Data := @FData[Index * FWidth * FHeight];
+end;
+
+function TCustomImageList.GetReference: TWSCustomImageListReference;
+begin
+  if not FReference.Allocated then ReferenceNeeded;
+  Result := FReference;
+end;
+
+function TCustomImageList.GetReferenceHandle: THandle;
+begin
+  Result := FReference.Handle;
 end;
 
 {------------------------------------------------------------------------------
@@ -1347,9 +1358,10 @@ end;
 
   Instructs the widgtset to create an imagelist
  ------------------------------------------------------------------------------}
-function TCustomImageList.WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle;
+function TCustomImageList.WSCreateReference(AParams: TCreateParams): PWSReference;
 begin
-  Result := TWSCustomImageListClass(WidgetSetClass).CreateHandle(Self, FCount, FAllocBy, FWidth, FHeight, @FData[0]);
+  FReference := TWSCustomImageListClass(WidgetSetClass).CreateReference(Self, FCount, FAllocBy, FWidth, FHeight, @FData[0]);
+  Result := @FReference;
 end;
 
 {******************************************************************************

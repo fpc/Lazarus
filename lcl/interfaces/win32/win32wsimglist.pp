@@ -36,7 +36,7 @@ uses
   Windows, SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
   Win32Extra, Win32Int, Win32Proc, InterfaceBase,
 ////////////////////////////////////////////////////
-  WSImgList, WSLCLClasses, WSProc;
+  WSImgList, WSLCLClasses, WSProc, WSReferences;
 
 type
 
@@ -48,10 +48,10 @@ type
     class procedure AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
   public
     class procedure Clear(AList: TCustomImageList); override;
-    class function CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
-      AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle; override;
+    class function CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
+      AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; override;
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
-    class procedure DestroyHandle(AComponent: TComponent); override;
+    class procedure DestroyReference(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
     class procedure DrawToDC(AList: TCustomImageList; AIndex: Integer; ADC: HDC;
@@ -220,13 +220,13 @@ end;
 
 class procedure TWin32WSCustomImageList.Clear(AList: TCustomImageList);
 begin
-  if not WSCheckHandleAllocated(AList, 'Clear')
+  if not WSCheckReferenceAllocated(AList, 'Clear')
   then Exit;
-  ImageList_SetImageCount(HImageList(AList.Handle), 0);
+  ImageList_SetImageCount(AList.Reference._Handle, 0);
 end;
 
-class function TWin32WSCustomImageList.CreateHandle(AList: TCustomImageList;
-  ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle;
+class function TWin32WSCustomImageList.CreateReference(AList: TCustomImageList;
+  ACount, AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference;
 var
   Flags: DWord;
 begin
@@ -245,30 +245,30 @@ begin
       FLAGS := ILC_COLOR or ILC_MASK;
     end;
   end;
-  Result := ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow);
-  if Result <> 0
-  then AddData(Result, ACount, -1, AWidth, AHeight, AData);
+  Result._Init(ImageList_Create(AWidth, AHeight, Flags, ACount, AGrow));
+  if Result.Allocated
+  then AddData(Result._Handle, ACount, -1, AWidth, AHeight, AData);
 end;
 
 class procedure TWin32WSCustomImageList.Delete(AList: TCustomImageList;
   AIndex: Integer);
 begin
-  if not WSCheckHandleAllocated(AList, 'Delete')
+  if not WSCheckReferenceAllocated(AList, 'Delete')
   then Exit;
-  ImageList_Remove(HImageList(AList.Handle), AIndex);
+  ImageList_Remove(AList.Reference._Handle, AIndex);
 end;
 
-class procedure TWin32WSCustomImageList.DestroyHandle(AComponent: TComponent);
+class procedure TWin32WSCustomImageList.DestroyReference(AComponent: TComponent);
 begin
-  if not WSCheckHandleAllocated(TCustomImageList(AComponent), 'DestroyHandle')
+  if not WSCheckReferenceAllocated(TCustomImageList(AComponent), 'DestroyReference')
   then Exit;
-  ImageList_Destroy(TCustomImageList(AComponent).Handle);
+  ImageList_Destroy(TCustomImageList(AComponent).Reference._Handle);
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
   ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
-  if not WSCheckHandleAllocated(AList, 'Draw')
+  if not WSCheckReferenceAllocated(AList, 'Draw')
   then Exit;
   DrawToDC(AList, AIndex, ACanvas.Handle, ABounds, ABkColor, ABlendColor, ADrawEffect, AStyle, AImageType);
 end;
@@ -286,7 +286,7 @@ var
 begin
   if ADrawEffect = gdeNormal then
   begin
-      ImageList_DrawEx(HImageList(AList.Handle), AIndex, ADC, ABounds.Left,
+      ImageList_DrawEx(AList.Reference._Handle, AIndex, ADC, ABounds.Left,
         ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
         ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
   end
@@ -296,7 +296,7 @@ begin
     // if it is manifested exe then use winXP algoriphm of gray painting
     FillChar(DrawParams, SizeOf(DrawParams), 0);
     DrawParams.cbSize := SizeOf(DrawParams);
-    DrawParams.himlL := HImageList(AList.Handle);
+    DrawParams.himlL := AList.Reference._Handle;
     DrawParams.i := AIndex;
     DrawParams.hdcDst := ADC;
     DrawParams.x := ABounds.Left;
@@ -346,10 +346,10 @@ var
   ImageList: HImageList;
   Count: Integer;
 begin
-  if not WSCheckHandleAllocated(AList, 'Insert')
+  if not WSCheckReferenceAllocated(AList, 'Insert')
   then Exit;
 
-  ImageList := HImageList(AList.Handle);
+  ImageList := AList.Reference._Handle;
   Count := ImageList_GetImageCount(ImageList);
   
   if (AIndex <= Count) and (AIndex >= 0) then
@@ -366,13 +366,13 @@ var
   n: integer;
   Handle: THandle;
 begin
-  if not WSCheckHandleAllocated(AList, 'Move')
+  if not WSCheckReferenceAllocated(AList, 'Move')
   then Exit;
   
   if ACurIndex = ANewIndex
   then Exit;
         
-  Handle := AList.Handle;
+  Handle := AList.Reference._Handle;
   if ACurIndex < ANewIndex
   then begin       
     for n := ACurIndex to ANewIndex - 1 do
@@ -390,10 +390,10 @@ var
   ImageList: HImageList;
   Count: Integer;
 begin
-  if not WSCheckHandleAllocated(AList, 'Replace')
+  if not WSCheckReferenceAllocated(AList, 'Replace')
   then Exit;
 
-  ImageList := HImageList(AList.Handle);
+  ImageList := AList.Reference._Handle;
   Count := ImageList_GetImageCount(ImageList);
 
   if (AIndex < Count) and (AIndex >= 0)

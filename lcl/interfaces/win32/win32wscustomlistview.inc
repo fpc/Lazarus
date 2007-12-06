@@ -737,7 +737,7 @@ begin
   then Exit;
 
   if AValue <> nil then
-    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Handle)
+    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Reference._Handle)
   else
     SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], 0);
 end;

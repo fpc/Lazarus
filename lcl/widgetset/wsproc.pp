@@ -32,23 +32,23 @@ uses
   LCLClasses, LCLProc, Controls;
 
 
-function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
-                                const AProcName: String): Boolean;
+function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
+                                   const AProcName: String): Boolean;
 
 function WSCheckHandleAllocated(const AWincontrol: TWinControl;
                                 const AProcName: String): Boolean;
                                 
 implementation
 
-function WSCheckHandleAllocated(const AComponent: TLCLHandleComponent;
+function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
   const AProcName: String): Boolean;
 
   procedure Warn;
   begin
-    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
+    DebugLn('[WARNING] %s called without reference for %s(%s)', [AProcName, AComponent.Name, AComponent.ClassName]);
   end;
 begin
-  Result := AComponent.HandleAllocated;
+  Result := AComponent.ReferenceAllocated;
   if Result then Exit;
   Warn;
 end;

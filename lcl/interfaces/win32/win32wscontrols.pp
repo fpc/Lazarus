@@ -527,7 +527,7 @@ class function TWin32WSDragImageList.BeginDrag(
 begin
   // No check to Handle should be done, because if there is no handle (no needed)
   // we must create it here. This is normal for imagelist (we can never need handle)
-  Result := ImageList_BeginDrag(ADragImageList.Handle, AIndex, X, Y);
+  Result := ImageList_BeginDrag(ADragImageList.Reference.Handle, AIndex, X, Y);
 end;
 
 class function TWin32WSDragImageList.DragMove(const ADragImageList: TDragImageList;

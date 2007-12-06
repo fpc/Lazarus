@@ -51,7 +51,8 @@ interface
 
 uses
   SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
-  LCLProc, Graphics, GraphType, LCLClasses, IntfGraphics, FPReadBMP;
+  LCLProc, Graphics, GraphType, LCLClasses, IntfGraphics, FPReadBMP,
+  WSReferences;
 
 type
   TImageIndex = type integer;
@@ -105,8 +106,9 @@ type
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
 
-  TCustomImageList = class(TLCLHandleComponent)
+  TCustomImageList = class(TLCLReferenceComponent)
   private
+    FReference: TWSCustomImageListReference;
     FDrawingStyle: TDrawingStyle;
     FData: array of TRGBAQuad;
     FImageType: TImageType;
@@ -125,11 +127,13 @@ type
     FUpdateCount: integer;
 
     procedure AllocData(ACount: Integer);
+    function  GetReference: TWSCustomImageListReference;
+
     procedure InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
       AWidth, AHeight: Integer);
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
     procedure InternalReplace(AIndex: Integer; AImage, AMask: HBitmap);
-    function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
+    function  InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
     procedure SetDrawingStyle(const AValue: TDrawingStyle);
@@ -140,11 +144,13 @@ type
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
+    function  GetReferenceHandle: THandle; override;
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
 
-    function  WSCreateHandle(AParams: TCreateParams): TLCLIntfHandle; override;
+    function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
+
   public
     constructor Create(AOwner: TComponent); override;
 
@@ -205,6 +211,7 @@ type
     property Bitmap: TBitmap read FBitmap;
     property MaskBitmap: TBitmap read FMaskBitmap;
     {$endif}
+    property Reference: TWSCustomImageListReference read GetReference;
     property ShareImages: Boolean read FShareImages write SetShareImages;
     property ImageType: TImageType read FImageType write FImageType default itImage;
   end;

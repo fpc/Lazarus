@@ -41,18 +41,18 @@ interface
 ////////////////////////////////////////////////////
 uses
   Classes, Contnrs, GraphType, Graphics, IntfGraphics, ImgList, LCLType, LCLIntf,
-  WSLCLClasses, WSProc;
+  WSLCLClasses, WSProc, WSReferences;
 
 type
   { TWSCustomImageList }
 
-  TWSCustomImageList = class(TWSLCLHandleComponent)
+  TWSCustomImageList = class(TWSLCLReferenceComponent)
     class procedure Clear(AList: TCustomImageList); virtual;
-    class function  CreateHandle(AList: TCustomImageList; ACount, AGrow, AWidth,
-      AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle; virtual;
+    class function  CreateReference(AList: TCustomImageList; ACount, AGrow, AWidth,
+      AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference; virtual;
 
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); virtual;
-    class procedure DestroyHandle(AComponent: TComponent); override;
+    class procedure DestroyReference(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
       ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); virtual;
 
@@ -145,18 +145,21 @@ end;
 
 class procedure TWSCustomImageList.Clear(AList: TCustomImageList);
 begin
-  if not WSCheckHandleAllocated(AList, 'Clear')
+  if not WSCheckReferenceAllocated(AList, 'Clear')
   then Exit;
-  TDefaultImageListImplementor(AList.Handle).Clear;
+  TDefaultImageListImplementor(AList.Reference.Ptr).Clear;
 end;
 
-class function TWSCustomImageList.CreateHandle(AList: TCustomImageList; ACount,
-  AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TLCLIntfHandle;
+class function TWSCustomImageList.CreateReference(AList: TCustomImageList; ACount,
+  AGrow, AWidth, AHeight: Integer; AData: PRGBAQuad): TWSCustomImageListReference;
 var
+  impl: TDefaultImageListImplementor;
+
   ABitmap: TBitmap;
   i: integer;
 begin
-  Result := TLCLIntfHandle(TDefaultImageListImplementor.Create(AList));
+  impl := TDefaultImageListImplementor.Create(AList);
+  Result._Init(impl);
 
   if AData <> nil then
   begin
@@ -164,7 +167,7 @@ begin
     for i := 0 to ACount - 1 do
     begin
       ABitmap := InternalCreateBitmap(AList, AWidth, AHeight, @AData[AWidth * AHeight * i]);
-      TDefaultImageListImplementor(Result).Add(ABitmap);
+      impl.Add(ABitmap);
     end;
   end;
 end;
@@ -172,25 +175,25 @@ end;
 class procedure TWSCustomImageList.Delete(AList: TCustomImageList;
   AIndex: Integer);
 begin
-  if not WSCheckHandleAllocated(AList, 'Delete')
+  if not WSCheckReferenceAllocated(AList, 'Delete')
   then Exit;
-  TDefaultImageListImplementor(AList.Handle).Delete(AIndex);
+  TDefaultImageListImplementor(AList.Reference.Ptr).Delete(AIndex);
 end;
 
-class procedure TWSCustomImageList.DestroyHandle(AComponent: TComponent);
+class procedure TWSCustomImageList.DestroyReference(AComponent: TComponent);
 begin
-  if not WSCheckHandleAllocated(TCustomImageList(AComponent), 'DestroyHandle')
+  if not WSCheckReferenceAllocated(TCustomImageList(AComponent), 'DestroyReference')
   then Exit;
-  TDefaultImageListImplementor(TCustomImageList(AComponent).Handle).Free;
+  TObject(TCustomImageList(AComponent).Reference.Ptr).Free;
 end;
 
 class procedure TWSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
   ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
-  if not WSCheckHandleAllocated(AList, 'Draw')
+  if not WSCheckReferenceAllocated(AList, 'Draw')
   then Exit;
 
-  TDefaultImageListImplementor(AList.Handle).Draw(AIndex, ACanvas, ABounds, ADrawEffect, AStyle);
+  TDefaultImageListImplementor(AList.Reference.Ptr).Draw(AIndex, ACanvas, ABounds, ADrawEffect, AStyle);
 end;
 
 class procedure TWSCustomImageList.Insert(AList: TCustomImageList;
@@ -200,10 +203,10 @@ var
   ACount: Integer;
   ABitmap: TBitmap;
 begin
-  if not WSCheckHandleAllocated(AList, 'Insert')
+  if not WSCheckReferenceAllocated(AList, 'Insert')
   then Exit;
 
-  AImageList := TDefaultImageListImplementor(AList.Handle);
+  AImageList := TDefaultImageListImplementor(AList.Reference.Ptr);
   ACount := AImageList.Count;
 
   if (AIndex <= ACount) and (AIndex >= 0) then
@@ -218,13 +221,13 @@ end;
 class procedure TWSCustomImageList.Move(AList: TCustomImageList; ACurIndex,
   ANewIndex: Integer);
 begin
-  if not WSCheckHandleAllocated(AList, 'Move')
+  if not WSCheckReferenceAllocated(AList, 'Move')
   then Exit;
 
   if ACurIndex = ANewIndex
   then Exit;
 
-  TDefaultImageListImplementor(AList.Handle).Move(ACurIndex, ANewIndex);
+  TDefaultImageListImplementor(AList.Reference.Ptr).Move(ACurIndex, ANewIndex);
 end;
 
 class procedure TWSCustomImageList.Replace(AList: TCustomImageList;
@@ -232,11 +235,11 @@ class procedure TWSCustomImageList.Replace(AList: TCustomImageList;
 var
   ABitmap: TBitmap;
 begin
-  if not WSCheckHandleAllocated(AList, 'Replace')
+  if not WSCheckReferenceAllocated(AList, 'Replace')
   then Exit;
 
   ABitmap := InternalCreateBitmap(AList, AList.Width, AList.Height, AData);
-  TDefaultImageListImplementor(AList.Handle)[AIndex] := ABitmap;
+  TDefaultImageListImplementor(AList.Reference.Ptr)[AIndex] := ABitmap;
 end;
 
 initialization
