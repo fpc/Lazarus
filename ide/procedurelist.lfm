@@ -1,23 +1,23 @@
 object ProcedureListForm: TProcedureListForm
-  Left = 44
-  Height = 688
-  Top = 58
-  Width = 952
-  HorzScrollBar.Page = 951
-  VertScrollBar.Page = 687
+  Left = 93
+  Height = 327
+  Top = 186
+  Width = 638
+  HorzScrollBar.Page = 637
+  VertScrollBar.Page = 326
   ActiveControl = cbObjects
   Caption = 'Procedure List - '
-  ClientHeight = 688
-  ClientWidth = 952
+  ClientHeight = 327
+  ClientWidth = 638
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
   Position = poDefault
   object StatusBar: TStatusBar
-    Height = 23
-    Top = 665
-    Width = 952
+    Height = 24
+    Top = 303
+    Width = 638
     Panels = <    
       item
         Width = 400
@@ -29,7 +29,7 @@ object ProcedureListForm: TProcedureListForm
   end
   object TB: TToolBar
     Height = 26
-    Width = 952
+    Width = 638
     Caption = 'TB'
     Flat = True
     TabOrder = 1
@@ -127,31 +127,31 @@ object ProcedureListForm: TProcedureListForm
   object pnlHeader: TPanel
     Height = 38
     Top = 26
-    Width = 952
+    Width = 638
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 38
-    ClientWidth = 952
+    ClientWidth = 638
     Color = clLime
     ParentColor = False
     TabOrder = 2
     object pnlObjects: TPanel
       Left = 256
       Height = 38
-      Width = 696
+      Width = 382
       Align = alClient
       BevelOuter = bvNone
       ClientHeight = 38
-      ClientWidth = 696
+      ClientWidth = 382
       ParentColor = False
       TabOrder = 0
       object lblObjects: TLabel
         AnchorSideTop.Control = cbObjects
         AnchorSideTop.Side = asrCenter
         Left = 8
-        Height = 14
-        Top = 11
-        Width = 38
+        Height = 17
+        Top = 10
+        Width = 68
         Caption = '&Objects'
         ParentColor = False
       end
@@ -159,10 +159,9 @@ object ProcedureListForm: TProcedureListForm
         Left = 64
         Height = 21
         Top = 8
-        Width = 625
+        Width = 311
         Anchors = [akTop, akLeft, akRight]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 13
         MaxLength = 0
         OnChange = cbObjectsChange
         Sorted = True
@@ -203,9 +202,9 @@ object ProcedureListForm: TProcedureListForm
     end
   end
   object LV: TListView
-    Height = 601
+    Height = 239
     Top = 64
-    Width = 952
+    Width = 638
     Align = alClient
     Columns = <    
       item

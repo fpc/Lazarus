@@ -213,6 +213,7 @@ type
     procedure mnuEditInsertDateTimeClick(Sender: TObject);
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
     procedure mnuInsertTodo(Sender: TObject);
+    procedure mnuEditInsertGUID(Sender: TObject);
 
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
@@ -730,6 +731,7 @@ type
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer);
+    procedure DoInsertGUID;
 
     // Delphi conversion
     function DoConvertDFMtoLFM: TModalResult;
@@ -2653,6 +2655,9 @@ begin
     
   ecProcedureList:
     mnuSearchProcedureList(self);
+
+  ecInsertGUID:
+    mnuEditInsertGUID(self);
 
   else
     Handled:=false;
@@ -13377,6 +13382,11 @@ begin
   DoSourceEditorCommand(ecInsertTodo);
 end;
 
+procedure TMainIDE.mnuEditInsertGUID(Sender: TObject);
+begin
+  DoInsertGUID;
+end;
+
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
 begin
   DoFindInFiles;
@@ -13482,6 +13492,23 @@ begin
     end;
   end;
   DoCommand(EditorCommand);
+end;
+
+procedure TMainIDE.DoInsertGUID;
+const
+  cGUID = '[''%s'']';     // The format of the GUID used for Interfaces
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  lGUID: TGUID;
+begin
+  // get active source editor
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if ActiveSrcEdit = nil then
+    Exit; //==>
+
+  CreateGUID(lGUID);
+  ActiveSrcEdit.Selection := Format(cGUID, [GUIDToString(lGUID)]);
 end;
 
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);

@@ -1748,7 +1748,8 @@ resourcestring
   srkmecInsertCVSName            = 'Insert CVS keyword Name';
   srkmecInsertCVSRevision        = 'Insert CVS keyword Revision';
   srkmecInsertCVSSource          = 'Insert CVS keyword Source';
-  
+  srkmecInsertGUID               = 'Insert a GUID';
+
   // search menu
   srkmecFind                      = 'Find text';
   srkmecFindNext                  = 'Find next';

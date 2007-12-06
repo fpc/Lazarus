@@ -115,6 +115,7 @@ const
   ecInsertCVSSource         = ecFirstLazarus + 93;
   ecInsertModifiedLGPLNotice= ecFirstLazarus + 94;
   ecInsertTodo              = ecFirstLazarus + 95;
+  ecInsertGUID              = ecFirstLazarus + 96;
 
   // source tools
   ecWordCompletion          = ecFirstLazarus + 100;

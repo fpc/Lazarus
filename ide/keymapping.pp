@@ -346,6 +346,7 @@ begin
   ecInsertCVSName: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetResult(VK_Z,[ssCtrl],VK_UNKNOWN,[]);
@@ -369,7 +370,7 @@ begin
   ecJumpToPrevError: SetResult(VK_F8,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecJumpToNextError: SetResult(VK_F8,[ssCtrl],VK_UNKNOWN,[]);
   ecOpenFileAtCursor: SetResult2(VK_RETURN,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecProcedureList: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecProcedureList: SetResult(VK_G, [ssAlt],VK_UNKNOWN,[]);
 
 
   // marker
@@ -1108,8 +1109,7 @@ begin
   ecFindPrevious: SetResult(VK_G,[ssCtrl, ssShift],VK_UNKNOWN,[]);
   ecReplace: SetResult(VK_R,[SSCtrl],VK_UNKNOWN,[]);
   ecGotoLineNumber: SetResult(VK_L,[ssCtrl],VK_UNKNOWN,[]);
-  ecProcedureList: SetResult(VK_P, [ssCtrl],VK_UNKNOWN,[]);
-  
+
   // view menu
   ecToggleObjectInsp: SetResult(VK_F11,[ssCtrl],VK_UNKNOWN,[]);
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
@@ -1377,6 +1377,7 @@ begin
     ecInsertCVSName           : Result:= srkmecInsertCVSName;
     ecInsertCVSRevision       : Result:= srkmecInsertCVSRevision;
     ecInsertCVSSource         : Result:= srkmecInsertCVSSource;
+    ecInsertGUID              : Result:= srkmecInsertGUID;
 
     // search menu
     ecFind                    : Result:= srkmecFind;
@@ -2264,6 +2265,7 @@ begin
     ecInsertCVSRevision); ;
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource,
     ecInsertCVSSource);
+  AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];
