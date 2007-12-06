@@ -4710,10 +4710,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetDragMode.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Click</i> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
@@ -8545,8 +8542,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
-        <short>Determines if the user can tab to a control.</short>
-        <descr>Reads or writes boolean flag; default is False</descr>
+        <short><i>TabStop</i> - determines if the user can tab to a control.</short>
+        <descr>
+          <p>Reads or writes boolean flag; default is False</p>
+          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
+          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
