@@ -321,7 +321,7 @@ type
     property CodeToolsPackage: TLazPackage read FCodeToolsPackage;
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
-    property DefaultPackage: TLazPackage read FDefaultPackage;
+    property DefaultPackage: TLazPackage read FDefaultPackage;// fall back package for buggy/obsoleted stuff
     property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
@@ -514,9 +514,10 @@ begin
   if OnGetAllRequiredPackages=@GetAllRequiredPackages then
     OnGetAllRequiredPackages:=nil;
   Clear;
-  FLazarusBasePackages.Free;
-  FItems.Free;
-  FTree.Free;
+  FreeAndNil(FDefaultPackage);
+  FreeAndNil(FLazarusBasePackages);
+  FreeAndNil(FItems);
+  FreeAndNil(FTree);
   inherited Destroy;
 end;
 
