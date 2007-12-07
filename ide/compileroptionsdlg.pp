@@ -40,7 +40,7 @@ uses
   Forms, Classes, Math, LCLProc, SysUtils, InterfaceBase,
   ComCtrls, Buttons, StdCtrls, ExtCtrls,
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
-  ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
+  MacroIntf, ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
   IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs, CompilerOptions,
   CheckCompilerOpts;
@@ -1555,7 +1555,8 @@ begin
     repeat
       //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
       CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
-      if CurPath<>'' then begin
+      if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath))
+      and (FilenameIsAbsolute(CurPath)) then begin
         if not DirPathExistsCached(CurPath) then begin
           if MessageDlg('Warning','The '+Context+' contains a not existing directory:'#13
             +CurPath,
@@ -1566,16 +1567,18 @@ begin
   end;
 
   // check for special characters
-  FindSpecialCharsInPath(ExpandedPath,HasChars);
-  if ord(Level)<=ord(ccomlWarning) then begin
-    if ord(Level)>=ord(ccomlErrors) then begin
-      ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
-    end else begin
-      ErrorMsg:=SpecialCharsToStr(HasChars);
-    end;
-    if ErrorMsg<>'' then begin
-      if MessageDlg('Warning',Context+#13+ErrorMsg,
-        mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
+  if (not IDEMacros.StrHasMacros(CurPath)) then begin
+    FindSpecialCharsInPath(ExpandedPath,HasChars);
+    if ord(Level)<=ord(ccomlWarning) then begin
+      if ord(Level)>=ord(ccomlErrors) then begin
+        ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
+      end else begin
+        ErrorMsg:=SpecialCharsToStr(HasChars);
+      end;
+      if ErrorMsg<>'' then begin
+        if MessageDlg('Warning',Context+#13+ErrorMsg,
+          mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
+      end;
     end;
   end;
 
@@ -1636,6 +1639,17 @@ begin
 end;
 
 procedure TfrmCompilerOptions.PathEditBtnExecuted(Sender: TObject);
+
+  function CheckPath(const Context, NewPath: string): boolean;
+  var
+    ExpandedPath: String;
+    BaseDir: String;
+  begin
+    BaseDir:=CompilerOpts.BaseDirectory;
+    ExpandedPath:=TrimSearchPath(NewPath,BaseDir);
+    Result:=CheckSearchPath(Context,ExpandedPath,ccomlHints);
+  end;
+
 var AButton: TPathEditorButton;
   NewPath: string;
 begin
@@ -1646,23 +1660,23 @@ begin
     if CompilerOpts<>nil then
       NewPath:=CompilerOpts.ShortenPath(NewPath,false);
     if AButton=OtherUnitsPathEditBtn then begin
-      if CheckSearchPath(lblOtherUnits.Caption,NewPath,ccomlHints) then
+      if CheckPath(lblOtherUnits.Caption,NewPath) then
         edtOtherUnits.Text:=NewPath;
     end else
     if AButton=IncludeFilesPathEditBtn then begin
-      if CheckSearchPath(lblIncludeFiles.Caption,NewPath,ccomlHints) then
+      if CheckPath(lblIncludeFiles.Caption,NewPath) then
         edtIncludeFiles.Text:=NewPath;
     end else
     if AButton=OtherSourcesPathEditBtn then begin
-      if CheckSearchPath(lblOtherSources.Caption,NewPath,ccomlHints) then
+      if CheckPath(lblOtherSources.Caption,NewPath) then
         edtOtherSources.Text:=NewPath;
     end else
     if AButton=LibrariesPathEditBtn then begin
-      if CheckSearchPath(lblLibraries.Caption,NewPath,ccomlHints) then
+      if CheckPath(lblLibraries.Caption,NewPath) then
         edtLibraries.Text:=NewPath;
     end else
     if AButton=DebugPathEditBtn then begin
-      if CheckSearchPath(lblDebugPath.Caption,NewPath,ccomlHints) then
+      if CheckPath(lblDebugPath.Caption,NewPath) then
         edtDebugPath.Text:=NewPath;
     end;
   end;

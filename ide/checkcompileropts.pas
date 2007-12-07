@@ -207,7 +207,6 @@ function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, Path: string
   end;
   
 var
-  i: Integer;
   Warning: String;
   ErrorMsg: String;
   HasChars: TCCOSpecialChars;
@@ -814,6 +813,9 @@ begin
         if not (Result in [mrOk,mrIgnore]) then exit;
       end;
     end;
+    
+    // check for non existing paths
+    
   
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
 

@@ -459,6 +459,9 @@ begin
   FListing.Clear;
   FListing.TimeStamp:=Pool.TimeStamp;
   if Directory='' then exit;// virtual directory
+  
+  // Note: do not add a 'if not DirectoryExists then exit'. This will not
+  // work on automounted directories. You must use FindFirst.
 
   // read the directory
   WorkingListing:=nil;
