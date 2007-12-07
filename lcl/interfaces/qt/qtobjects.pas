@@ -324,6 +324,9 @@ type
   public
     property Handle: QPixmapH read FHandle;
 
+    function getHeight: Integer;
+    function getWidth: Integer;
+    procedure grabWidget(AWidget: QWidgetH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure grabWindow(p1: Cardinal; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
     procedure toImage(retval: QImageH);
     class procedure fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
@@ -2121,6 +2124,21 @@ begin
   inherited Destroy;
 end;
 
+function TQtPixmap.getHeight: Integer;
+begin
+  Result := QPixmap_height(Handle);
+end;
+
+function TQtPixmap.getWidth: Integer;
+begin
+  Result := QPixmap_width(Handle);
+end;
+
+procedure TQtPixmap.grabWidget(AWidget: QWidgetH; x: Integer = 0; y: Integer = 0; w: Integer = -1; h: Integer = -1);
+begin
+  QPixmap_grabWidget(FHandle, AWidget, x, y, w, h);
+end;
+
 procedure TQtPixmap.grabWindow(p1: Cardinal; x: Integer; y: Integer; w: Integer; h: Integer);
 begin
   QPixmap_grabWindow(FHandle, p1, x, y, w, h);
@@ -2566,5 +2584,6 @@ begin
 end;
 
 end.
+
 
 

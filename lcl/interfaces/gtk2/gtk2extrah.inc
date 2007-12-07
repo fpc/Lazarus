@@ -52,6 +52,8 @@ procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
 type
   PPPangoAttrList = ^PPangoAttrList;
 procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
+function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
+
 
 // gtk 2.4
 procedure gtk_toolbar_insert(toolbar: PGtkToolBar; item: PGtkToolItem; pos: gint); cdecl; external gtklib name 'gtk_toolbar_insert';

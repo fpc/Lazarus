@@ -4372,6 +4372,17 @@ begin
   Result:=(RepeatCount>0) and (not SystemKey) and DoUTF8KeyPress(UTF8Key);
 end;
 
+procedure TWinControl.PaintTo(DC: HDC; X, Y: Integer);
+begin
+  if HandleAllocated then
+    TWSWinControlClass(WidgetSetClass).PaintTo(Self, DC, X, Y);
+end;
+
+procedure TWinControl.PaintTo(ACanvas: TCanvas; X, Y: Integer);
+begin
+  PaintTo(ACanvas.Handle, X, Y);
+end;
+
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint

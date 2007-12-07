@@ -95,6 +95,7 @@ type
                                       const AChildren: TFPList); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
   end;
 
   { TQtWSGraphicControl }
@@ -389,6 +390,33 @@ begin
       MaxH := Constraints.MaxHeight;
     Widget.setMaximumSize(MaxW, MaxH);
   end;
+end;
+
+class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
+  ADC: HDC; X, Y: Integer);
+var
+  Context: TQtDeviceContext absolute ADC;
+  Pixmap: TQtPixmap;
+  Image: QImageH;
+  DCSize: TSize;
+  APoint: TQtPoint;
+  ARect: TRect;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'PaintTo') or (ADC = 0) then
+    Exit;
+
+  with DCSize, TQtWidget(AWinControl.Handle) do
+  begin
+    cx := getWidth;
+    cy := getHeight;
+  end;
+  Pixmap := TQtPixmap.Create(@DCSize);
+  Pixmap.grabWidget(TQtWidget(AWinControl.Handle).Widget, 0, 0);
+  APoint.x := X;
+  APoint.Y := Y;
+  ARect := Rect(0, 0, Pixmap.getWidth, Pixmap.getHeight);
+  Context.drawPixmap(@APoint, Pixmap.Handle, @ARect);
+  Pixmap.Free;
 end;
 
 {------------------------------------------------------------------------------

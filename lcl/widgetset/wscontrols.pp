@@ -111,6 +111,7 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual; //TODO: rename to SetVisible(control, visible)
   end;
   TWSWinControlClass = class of TWSWinControl;
@@ -226,6 +227,12 @@ end;
 
 class procedure TWSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
+end;
+
+class procedure TWSWinControl.PaintTo(const AWinControl: TWinControl; ADC: HDC;
+  X, Y: Integer);
+begin
+
 end;
 
 class procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);

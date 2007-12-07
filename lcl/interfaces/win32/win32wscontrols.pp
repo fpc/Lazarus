@@ -90,6 +90,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
+    class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -512,6 +513,18 @@ class procedure TWin32WSWinControl.Invalidate(const AWinControl: TWinControl);
 begin
   // lpRect = nil updates entire client area of window
   InvalidateRect(AWinControl.Handle, nil, true);
+end;
+
+class procedure TWin32WSWinControl.PaintTo(const AWinControl: TWinControl;
+  ADC: HDC; X, Y: Integer);
+var
+  SavedDC: Integer;
+begin
+  SavedDC := SaveDC(ADC);
+  MoveWindowOrgEx(ADC, X, Y);
+  SendMessage(AWinControl.Handle, WM_PRINT, ADC,
+    PRF_CHECKVISIBLE or PRF_CHILDREN or PRF_CLIENT or PRF_NONCLIENT or PRF_OWNED);
+  RestoreDC(ADC, SavedDC);
 end;
 
 class procedure TWin32WSWinControl.ShowHide(const AWinControl: TWinControl);

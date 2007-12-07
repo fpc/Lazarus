@@ -1817,6 +1817,8 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
+    procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
+    procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload;
   end;
 
 
@@ -3342,6 +3344,7 @@ finalization
   FreeThenNil(Mouse);
 
 end.
+
 
 
 

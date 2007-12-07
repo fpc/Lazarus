@@ -1868,7 +1868,7 @@ begin
         end;
       end;
     end;
-    WM_PAINT:
+    WM_PAINT, WM_PRINTCLIENT:
     begin
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false

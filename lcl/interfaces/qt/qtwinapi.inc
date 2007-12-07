@@ -627,8 +627,8 @@ begin
       PS_DASHDOTDOT:QtPen.setStyle(QtDashDotDotLine);
       PS_USERSTYLE: QtPen.setStyle(QtCustomDashLine);
       PS_NULL:QtPen.setStyle(QtNoPen);
-      else
-	      QtPen.setStyle(QtSolidLine);
+    else
+      QtPen.setStyle(QtSolidLine);
     end;
 
     QtPen.setWidth(lopnWidth.X);
@@ -4754,6 +4754,7 @@ begin
 end;
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
+
 
 
 
