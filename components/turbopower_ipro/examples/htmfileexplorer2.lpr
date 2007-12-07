@@ -5,7 +5,7 @@ program HtmFileExplorer2;
 uses
   //MemCheck,
   Interfaces,
-  Forms, HtmFileExp2, JPEGForLazarus;
+  Forms, HtmFileExp2;
 
 begin
   Application.Title:='HtmFileExplorer2';

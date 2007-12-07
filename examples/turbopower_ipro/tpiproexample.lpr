@@ -5,7 +5,7 @@ program TPIProExample;
 uses
   //MemCheck,
   Interfaces,
-  Forms, MainUnit, JPEGForLazarus;
+  Forms, MainUnit;
 
 begin
   Application.Initialize;
