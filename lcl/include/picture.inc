@@ -48,11 +48,11 @@ begin
   Add('bmp', rsBitmaps, TBitmap);
   Add('xpm', rsPixmap, TPixmap);
   Add('png', rsPortableNetworkGraphic, TPortableNetworkGraphic);
-  Add('pbm', 'Portable BitMap', TPortableAnyMapGraphic);
-  Add('pgm', 'Portable GrayMap', TPortableAnyMapGraphic);
-  Add('ppm', 'Portable PixMap', TPortableAnyMapGraphic);
+  Add('pbm', rsPortableBitmap, TPortableAnyMapGraphic);
+  Add('pgm', rsPortableGrayMap, TPortableAnyMapGraphic);
+  Add('ppm', rsPortablePixmap, TPortableAnyMapGraphic);
   Add('ico', rsIcon, TIcon);
-  Add('jpg', 'Joint Picture Expert Group',TJpegImage);
+  Add('jpg', rsJpeg, TJpegImage);
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -197,14 +197,17 @@ begin
 end;
 
 constructor TPicClipboardFormats.Create;
+const
+  sMimeTypePng = 'image/png';
+  sMimeTypeJpg = 'image/jpeg';
 begin
   inherited Create;
   Add(PredefinedClipboardFormat(pcfBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfDelphiBitmap), TBitmap);
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
   //Add(PredefinedClipboardFormat(pcfIcon), TIcon);
-  Add(ClipboardRegisterFormat('image/png'), TPortableNetworkGraphic);
-  Add(ClipboardRegisterFormat('image/jpeg'), TJPegImage);
+  Add(ClipboardRegisterFormat(sMimeTypePng), TPortableNetworkGraphic);
+  Add(ClipboardRegisterFormat(sMimeTypeJpg), TJPegImage);
 end;
 
 procedure TPicClipboardFormats.Clear;

@@ -178,7 +178,11 @@ ResourceString
   rsBitmaps = 'Bitmaps';
   rsPixmap = 'Pixmap';
   rsPortableNetworkGraphic = 'Portable Network Graphic';
+  rsPortableBitmap = 'Portable BitMap';
+  rsPortableGrayMap = 'Portable GrayMap';
+  rsPortablePixmap = 'Portable PixMap';
   rsIcon = 'Icon';
+  rsJpeg = 'Joint Picture Expert Group';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '
     +'previous menu item''s GroupIndex';
