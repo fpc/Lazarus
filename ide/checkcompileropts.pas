@@ -28,7 +28,7 @@ uses
   Classes, SysUtils, LCLProc,  LResources, Forms, Controls, Graphics, Dialogs,
   Clipbrd, StdCtrls, Buttons, FileUtil, Process,
   KeywordFuncLists, CodeToolManager,
-  IDEExternToolIntf,
+  MacroIntf, IDEExternToolIntf,
   IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
   CompilerOptions, ExtToolEditDlg, TransferMacros, LazConf, Menus, ExtCtrls;
 
@@ -73,7 +73,8 @@ type
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
-    function CheckSpecialCharsInPath(const Title, Path: string): TModalResult;
+    function CheckSpecialCharsInPath(const Title, ExpandedPath: string): TModalResult;
+    function CheckNonExistsingSearchPaths(const Title, ExpandedPath: string): TModalResult;
     function CheckCompilerExecutable(const CompilerFilename: string): TModalResult;
     function CheckAmbiguousFPCCfg(const CompilerFilename: string): TModalResult;
     function CheckCompilerConfig(const CompilerFilename: string;
@@ -194,7 +195,7 @@ begin
   FDirectories[Index]:=CurDir;
 end;
 
-function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, Path: string
+function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, ExpandedPath: string
   ): TModalResult;
   
   procedure AddStr(var s: string; const Addition: string);
@@ -211,7 +212,7 @@ var
   ErrorMsg: String;
   HasChars: TCCOSpecialChars;
 begin
-  FindSpecialCharsInPath(Path,HasChars);
+  FindSpecialCharsInPath(ExpandedPath,HasChars);
   Warning:=SpecialCharsToStr(HasChars*[ccoscSpaces,ccoscNonASCII,
                                        ccoscWrongPathDelim,ccoscUnusualChars]);
   ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
@@ -227,6 +228,25 @@ begin
     else
       Result:=mrIgnore;
   end;
+end;
+
+function TCheckCompilerOptsDlg.CheckNonExistsingSearchPaths(const Title,
+  ExpandedPath: string): TModalResult;
+var
+  p: Integer;
+  CurPath: String;
+begin
+  Result:=mrOk;
+  p:=0;
+  repeat
+    CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
+    if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath))
+    and (FilenameIsAbsolute(CurPath)) then begin
+      if not DirPathExistsCached(CurPath) then begin
+        AddWarning(Title+' does not exists: '+CurPath);
+      end;
+    end;
+  until p>length(ExpandedPath);
 end;
 
 function TCheckCompilerOptsDlg.CheckCompilerExecutable(
@@ -815,8 +835,16 @@ begin
     end;
     
     // check for non existing paths
-    
-  
+    CheckNonExistsingSearchPaths('include search path',
+                                 Options.GetIncludePath(false));
+    CheckNonExistsingSearchPaths('library search path',
+                                 Options.GetLibraryPath(false));
+    CheckNonExistsingSearchPaths('unit search path',
+                                 Options.GetUnitPath(false));
+    CheckNonExistsingSearchPaths('source search path',
+                                 Options.GetSrcPath(false));
+
+    // fetch compiler filename
     CompilerFilename:=Options.ParsedOpts.GetParsedValue(pcosCompilerPath);
 
     // check compiler filename

@@ -194,7 +194,7 @@ type
     function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
-        var CleanPos: integer): integer;  // 0=valid CleanPos
+        out CleanPos: integer): integer;  // 0=valid CleanPos
                           //-1=CursorPos was skipped, CleanPos between two links
                           // 1=CursorPos beyond scanned code
                           //-2=X,Y beyond source
@@ -203,7 +203,7 @@ type
     function CleanPosToCaret(CleanPos: integer;
         out Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
-        var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
+        out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
         ResolveComments: boolean; var SameArea: TAtomPosition);
@@ -2120,8 +2120,9 @@ begin
 end;
 
 function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;
-  var CleanPos: integer): integer;
+  out CleanPos: integer): integer;
 begin
+  CleanPos:=0;
   //DebugLn('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
   //DebugLn('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
@@ -2156,9 +2157,11 @@ begin
 end;
 
 function TCustomCodeTool.CleanPosToCaretAndTopLine(CleanPos: integer;
-  var Caret:TCodeXYPosition; var NewTopLine: integer): boolean;
+  out Caret:TCodeXYPosition; out NewTopLine: integer): boolean;
 // true=ok, false=invalid CleanPos
 begin
+  Caret:=CleanCodeXYPosition;
+  NewTopLine:=0;
   Result:=CleanPosToCaret(CleanPos,Caret);
   if Result then begin
     if JumpCentered then begin

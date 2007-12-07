@@ -341,6 +341,9 @@ type
     function GetSrcPath(RelativeToBaseDir: boolean;
                         Parsed: TCompilerOptionsParseType = coptParsed;
                         WithProjDir: boolean = true): string;
+    function GetDebugPath(RelativeToBaseDir: boolean;
+                          Parsed: TCompilerOptionsParseType = coptParsed;
+                          WithProjDir: boolean = true): string;
     function GetLibraryPath(RelativeToBaseDir: boolean;
                             Parsed: TCompilerOptionsParseType = coptParsed;
                             WithProjDir: boolean = true): string;
@@ -1467,6 +1470,12 @@ function TBaseCompilerOptions.GetSrcPath(RelativeToBaseDir: boolean;
   Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
 begin
   Result:=GetPath(pcosSrcPath,icoSrcPath,RelativeToBaseDir,Parsed,WithProjDir);
+end;
+
+function TBaseCompilerOptions.GetDebugPath(RelativeToBaseDir: boolean;
+  Parsed: TCompilerOptionsParseType; WithProjDir: boolean): string;
+begin
+  Result:=GetPath(pcosDebugPath,icoNone,RelativeToBaseDir,Parsed,WithProjDir);
 end;
 
 function TBaseCompilerOptions.GetLibraryPath(RelativeToBaseDir: boolean;

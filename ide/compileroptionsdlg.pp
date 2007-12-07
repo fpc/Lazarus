@@ -796,11 +796,9 @@ begin
   if not CheckPutSearchPath('source search path',OldPath,Options.GetSrcPath(false)) then
     exit(false);
   Options.UnitOutputDirectory := edtUnitOutputDir.Text;
-  OldPath:=Options.GetParsedPath(pcosDebugPath,icoNone,false);
+  OldPath:=Options.GetDebugPath(false);
   Options.DebugPath := edtDebugPath.Text;
-  if not CheckPutSearchPath('debugger search path',OldPath,
-    Options.GetParsedPath(pcosDebugPath,icoNone,false))
-  then
+  if not CheckPutSearchPath('debugger search path',OldPath,Options.GetDebugPath(false)) then
     exit(false);
 
   i:=LCLWidgetTypeComboBox.Itemindex;
