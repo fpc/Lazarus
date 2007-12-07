@@ -121,7 +121,7 @@ const
   psDashDot = FPCanvas.psDashDot;
   psDashDotDot = FPCanvas.psDashDotDot;
   psClear = FPCanvas.psClear;
-  //psInsideframe = FPCanvas.psInsideframe;
+  psInsideframe = FPCanvas.psInsideframe;
 
   pmBlack = FPCanvas.pmBlack;
   pmWhite = FPCanvas.pmWhite;
