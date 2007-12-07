@@ -1,29 +1,28 @@
 LazarusResources.Add('TJPEGExampleForm','FORMDATA',[
-  'TPF0'#16'TJPEGExampleForm'#15'JPEGExampleForm'#7'Caption'#6#28'Example for J'
-  +'PEG for Lazarus'#12'ClientHeight'#3#160#1#11'ClientWidth'#3#169#1#18'HorzSc'
-  +'rollBar.Page'#3#170#1#18'VertScrollBar.Page'#3#161#1#4'Left'#3'#'#1#6'Heigh'
-  +'t'#3#160#1#3'Top'#3#163#0#5'Width'#3#169#1#0#9'TGroupBox'#13'ImageGroupBox'
-  +#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#7'Captio'
-  +'n'#6#3'...'#12'ClientHeight'#3'?'#1#11'ClientWidth'#3#165#1#11'ParentColor'
-  +#9#11'ParentCtl3D'#8#8'TabOrder'#2#0#6'Height'#3'P'#1#5'Width'#3#169#1#0#6'T'
-  +'Image'#6'Image1'#5'Align'#7#8'alClient'#11'Transparent'#9#12'Proportional'#9
-  +#6'Height'#3'?'#1#5'Width'#3#165#1#0#0#0#7'TButton'#14'LoadJPEGButton'#7'Anc'
-  +'hors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#19'Load JPEG from file'#8'Tab'
-  +'Order'#2#1#7'OnClick'#7#19'LoadJPEGButtonClick'#4'Left'#3#229#0#6'Height'#2
-  +#25#3'Top'#3'Z'#1#5'Width'#3#173#0#0#0#7'TButton'#14'SaveJPEGButton'#7'Ancho'
-  +'rs'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#20'Save as JPEG to file'#8'TabO'
-  +'rder'#2#2#7'OnClick'#7#19'SaveJPEGButtonClick'#4'Left'#3#229#0#6'Height'#2
-  +#25#3'Top'#3'|'#1#5'Width'#3#173#0#0#0#7'TButton'#15'LoadImageButton'#7'Anch'
-  +'ors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#10'Load Image'#8'TabOrder'#2#3
-  +#7'OnClick'#7#20'LoadImageButtonClick'#4'Left'#2#24#6'Height'#2#25#3'Top'#3
-  +'Z'#1#5'Width'#3#163#0#0#0#7'TButton'#15'SaveImageButton'#7'Anchors'#11#6'ak'
-  +'Left'#8'akBottom'#0#7'Caption'#6#10'Save Image'#8'TabOrder'#2#4#7'OnClick'#7
-  +#20'SaveImageButtonClick'#4'Left'#2#24#6'Height'#2#25#3'Top'#3'|'#1#5'Width'
-  +#3#163#0#0#0#18'TOpenPictureDialog'#18'OpenPictureDialog1'#6'Filter'#6#143'A'
-  +'ll files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Netwo'
-  +'rk Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'#11'Fil'
-  +'terIndex'#2#0#4'left'#2'X'#3'top'#2'@'#0#0#18'TSavePictureDialog'#18'SavePi'
-  +'ctureDialog1'#6'Filter'#6#143'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*'
-  +'.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xp'
-  +'m|Bitmaps (*.bmp)|*.bmp'#11'FilterIndex'#2#0#4'left'#2'X'#3'top'#2'p'#0#0#0
+  'TPF0'#16'TJPEGExampleForm'#15'JPEGExampleForm'#4'Left'#3'#'#1#6'Height'#3#160
+  +#1#3'Top'#3#163#0#5'Width'#3#169#1#18'HorzScrollBar.Page'#3#168#1#18'VertScr'
+  +'ollBar.Page'#3#159#1#7'Caption'#6#28'Example for JPEG for Lazarus'#12'Clien'
+  +'tHeight'#3#160#1#11'ClientWidth'#3#169#1#0#9'TGroupBox'#13'ImageGroupBox'#6
+  +'Height'#3'P'#1#5'Width'#3#169#1#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#8'akBottom'#0#7'Caption'#6#3'...'#12'ClientHeight'#3'>'#1#11'Client'
+  +'Width'#3#165#1#11'ParentCtl3D'#8#8'TabOrder'#2#0#0#6'TImage'#6'Image1'#6'He'
+  +'ight'#3'>'#1#5'Width'#3#165#1#5'Align'#7#8'alClient'#12'Proportional'#9#11
+  +'Transparent'#8#0#0#0#7'TButton'#14'LoadJPEGButton'#4'Left'#3#229#0#6'Height'
+  +#2#25#3'Top'#3'Z'#1#5'Width'#3#173#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7
+  +'Caption'#6#19'Load JPEG from file'#7'OnClick'#7#19'LoadJPEGButtonClick'#8'T'
+  +'abOrder'#2#1#0#0#7'TButton'#14'SaveJPEGButton'#4'Left'#3#229#0#6'Height'#2
+  +#25#3'Top'#3'|'#1#5'Width'#3#173#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'C'
+  +'aption'#6#20'Save as JPEG to file'#7'OnClick'#7#19'SaveJPEGButtonClick'#8'T'
+  +'abOrder'#2#2#0#0#7'TButton'#15'LoadImageButton'#4'Left'#2#24#6'Height'#2#25
+  +#3'Top'#3'Z'#1#5'Width'#3#163#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Capt'
+  +'ion'#6#10'Load Image'#7'OnClick'#7#20'LoadImageButtonClick'#8'TabOrder'#2#3
+  +#0#0#7'TButton'#15'SaveImageButton'#4'Left'#2#24#6'Height'#2#25#3'Top'#3'|'#1
+  +#5'Width'#3#163#0#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#10'Save'
+  +' Image'#7'OnClick'#7#20'SaveImageButtonClick'#8'TabOrder'#2#4#0#0#18'TOpenP'
+  +'ictureDialog'#18'OpenPictureDialog1'#4'left'#2'u'#3'top'#2'p'#0#0#18'TSaveP'
+  +'ictureDialog'#18'SavePictureDialog1'#6'Filter'#6#255'Graphic (*.jpg;*.ico;*'
+  +'.ppm;*.pgm;*.pbm;*.png;*.xpm;*.bmp)|*.jpg;*.ico;*.ppm;*.pgm;*.pbm;*.png;*.x'
+  +'pm;*.bmp|Joint Picture Expert Group (*.jpg)|*.jpg|Icon (*.ico)|*.ico|Portab'
+  +'le PixMap (*.ppm)|*.ppm|Portable GrayMap (*.pgm)|*.pgm|Portable BitMap (*.p'
+  +'bm)|*.pb'#4'left'#3#146#0#3'top'#2'p'#0#0#0
 ]);

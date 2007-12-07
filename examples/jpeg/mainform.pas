@@ -32,14 +32,17 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ExtDlgs, LazJPEG;
+  ExtCtrls, Buttons, ExtDlgs;
 
 type
+
+  { TJPEGExampleForm }
+
   TJPEGExampleForm = class(TForm)
     LoadImageButton: TButton;
+    OpenPictureDialog1: TOpenPictureDialog;
     SaveImageButton: TButton;
     LoadJPEGButton: TButton;
-    OpenPictureDialog1: TOpenPictureDialog;
     SaveJPEGButton: TButton;
     ImageGroupBox: TGroupBox;
     Image1: TImage;
@@ -87,8 +90,6 @@ begin
 end;
 
 procedure TJPEGExampleForm.LoadImageButtonClick(Sender: TObject);
-var
-  JPEG: TJPEGImage;
 begin
   OpenPictureDialog1.Options:=OpenPictureDialog1.Options+[ofFileMustExist];
   if not OpenPictureDialog1.Execute then exit;
@@ -144,8 +145,6 @@ begin
 end;
 
 procedure TJPEGExampleForm.SaveImageButtonClick(Sender: TObject);
-var
-  JPEG: TJPEGImage;
 begin
   if Image1.Picture.Graphic=nil then begin
     MessageDlg('No image','Please open an image, before save',mtError,
