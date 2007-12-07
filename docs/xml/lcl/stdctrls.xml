@@ -2440,10 +2440,7 @@ False: Turns off auto-complete feature.</descr>
       <element name="TSelectionChangeEvent.User"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomListBox">
-        <short>Custom List Box</short>
-        <descr>Custom List Box: the base type from which List Box is derived.</descr>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomList Box</i>: the base class for  <i>TListBox</i></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomListBox.FCacheValid">
@@ -3026,9 +3023,7 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Canvas">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Canvas</i> - defines the area on which all graphic material is drawn</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ClickOnSelChange">
@@ -3038,9 +3033,7 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Columns">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Columns</i> - the number of vertical columns in which the <i>Items</i> are arranged</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Constraints">
@@ -3050,15 +3043,11 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Count">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Count</i> - the number of entries in the list of <i>Items</i></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ExtendedSelect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ExtendedSelect</i> - boolean. Whether extended selection is allowed. Default True</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Font">
@@ -3074,13 +3063,11 @@ False: Turns off auto-complete feature.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ItemHeight </i>- the height of the individual <i>Items</i></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ItemIndex">
-        <short>property ItemIndex: Integer</short>
+        <short><i>ItemIndex:</i> Integer to indicate the currently selected item (zero origin)</short>
         <descr>Indicates the currently selected item. The first item has number 0,
 the second has number 1, the third number 2, etc. In case no item is selected, ItemIndex
 has value -1. If MultiSelect is True, ItemIndex represents the item which has focus, which
@@ -3093,15 +3080,11 @@ tipically has a different color then the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items </i>- an array of strings representing the list of entries</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.MultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>MultiSelect</i> - boolean; True allows more than one Item from the list to be selected at a time</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnChangeBounds">
@@ -3263,9 +3246,7 @@ tipically has a different color then the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Style </i>of List Box - normal, owner-draw fixed, or owner-draw variable</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.TabOrder">
@@ -3293,8 +3274,11 @@ tipically has a different color then the other items.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TListBox">
-        <short>List Box</short>
-        <descr>List Box: a simple drop-down list from which a choice is made</descr>
+        <short><i>TListBox</i>: a simple drop-down (string) list from which a choice is made</short>
+        <descr>
+          <p><i>TListBox</i>: a simple drop-down (string) list from which a choice is made</p>
+          <p>The array of strings is held in <i>Items</i></p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->

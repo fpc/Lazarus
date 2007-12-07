@@ -8431,9 +8431,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TWinControl.WndProc.Message"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.BorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>BorderStyle</i> - none, or single</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.OnGetSiteInfo">
