@@ -390,7 +390,8 @@ type
           var Identifier: string): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
     function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
-          out ListOfPCodeXYPosition: TFPList): boolean;
+          out ListOfPCodeXYPosition: TFPList;
+          SkipAbstractsInStartClass: boolean = false): boolean;
 
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
@@ -1989,7 +1990,7 @@ begin
 end;
 
 function TCodeToolManager.FindAbstractMethods(Code: TCodeBuffer; X, Y: integer;
-  out ListOfPCodeXYPosition: TFPList): boolean;
+  out ListOfPCodeXYPosition: TFPList; SkipAbstractsInStartClass: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
 begin
@@ -2003,7 +2004,8 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.FindAbstractMethods(CursorPos,ListOfPCodeXYPosition);
+    Result:=FCurCodeTool.FindAbstractMethods(CursorPos,ListOfPCodeXYPosition,
+                                             SkipAbstractsInStartClass);
   except
     on e: Exception do Result:=HandleException(e);
   end;

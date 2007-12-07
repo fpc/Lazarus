@@ -72,7 +72,7 @@ begin
       raise Exception.Create('loading failed '+Filename);
 
     // find abstract methods
-    if CodeToolBoss.FindAbstractMethods(Code,X,Y,ListOfPCodeXYPosition)
+    if CodeToolBoss.FindAbstractMethods(Code,X,Y,ListOfPCodeXYPosition,true)
     then begin
       writeln('FindAbstractMethods succeeded: ');
       if ListOfPCodeXYPosition<>nil then begin
@@ -92,7 +92,6 @@ begin
     end else begin
       writeln('AddMethods failed: ',CodeToolBoss.ErrorMessage);
     end;
-
   except
     on E: Exception do begin
       writeln(E.Message);

@@ -5644,13 +5644,13 @@ var
   FullProcCode: String;
   VirtualStartPos: LongInt;
   VirtualEndPos: integer;
-  AbstractStartPos: LongInt;
-  AbstractEndPos: integer;
   VisibilityDesc: TCodeTreeNodeDesc;
   NodeExt: TCodeTreeNodeExtension;
   AVLNode: TAVLTreeNode;
   ProcName: String;
   NewClassPart: TNewClassPart;
+  Beautifier: TBeautifyCodeOptions;
+  ProcCode: String;
 begin
   Result:=false;
   if (ListOfPCodeXYPosition=nil) or (ListOfPCodeXYPosition.Count=0) then
@@ -5658,7 +5658,8 @@ begin
   
   if (SourceChangeCache=nil) then
     RaiseException('need a SourceChangeCache');
-    
+
+  Beautifier:=SourceChangeCache.BeautifyCodeOptions;
   NewMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
 
@@ -5694,7 +5695,7 @@ begin
                    phpWithCallingSpecs,phpWithProcModifiers]);
       if VirtualToOverride then begin
         VirtualStartPos:=SearchProcSpecifier(FullProcCode,'virtual',
-                        VirtualEndPos,NewCodeTool.Scanner.NestedComments,false);
+                        VirtualEndPos,NewCodeTool.Scanner.NestedComments);
         if VirtualStartPos>=1 then begin
           // replace virtual with override
           FullProcCode:=copy(FullProcCode,1,VirtualStartPos-1)
@@ -5702,20 +5703,25 @@ begin
                        +copy(FullProcCode,VirtualEndPos,length(FullProcCode));
         end;
         // remove abstract
-        AbstractStartPos:=SearchProcSpecifier(FullProcCode,'abstract',
-                        AbstractEndPos,NewCodeTool.Scanner.NestedComments,true);
-        if AbstractStartPos>=1 then begin
-          // replace virtual with override
-          FullProcCode:=copy(FullProcCode,1,AbstractStartPos-1)
-                       +copy(FullProcCode,AbstractEndPos,length(FullProcCode));
-        end;
+        FullProcCode:=RemoveProcSpecifier(FullProcCode,'abstract',
+                                          NewCodeTool.Scanner.NestedComments);
       end;
       
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
+                      phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
+                      phpWithResultType,phpWithCallingSpecs]);
+      ProcCode:=ProcCode+Beautifier.LineEnd
+                  +'begin'+Beautifier.LineEnd
+                  +GetIndentStr(Beautifier.Indent)+Beautifier.LineEnd
+                  +'end;';
+      ProcCode:=Beautifier.BeautifyProc(ProcCode,0,false);
+
       // add method data
       NodeExt:=NodeExtMemManager.NewNode;
       NodeExt.Txt:=CleanProcCode;
       NodeExt.ExtTxt1:=FullProcCode;
       NodeExt.ExtTxt2:=ProcName;
+      NodeExt.ExtTxt3:=ProcCode;
       NodeExt.Flags:=VisibilityDesc;
       NewMethods.Add(NodeExt);
       DebugLn(['TCodeCompletionCodeTool.AddMethods ',i,' CleanProcTxt=',CleanProcCode,' FullProcTxt=',FullProcCode]);
@@ -5746,6 +5752,7 @@ begin
       CleanProcCode:=NodeExt.Txt;
       FullProcCode:=NodeExt.ExtTxt1;
       ProcName:=NodeExt.ExtTxt2;
+      ProcCode:=NodeExt.ExtTxt3;
       VisibilityDesc:=TCodeTreeNodeDesc(NodeExt.Flags);
       case VisibilityDesc of
       ctnClassPrivate:   NewClassPart:=ncpPrivateProcs;
@@ -5754,13 +5761,20 @@ begin
       ctnClassPublished: NewClassPart:=ncpPublishedProcs;
       else               NewClassPart:=ncpPublicProcs;
       end;
-      AddClassInsertion(CleanProcCode,FullProcCode,ProcName,NewClassPart);
+
+      AddClassInsertion(CleanProcCode,FullProcCode,ProcName,NewClassPart,nil,
+                        ProcCode);
       
       AVLNode:=NewMethods.FindSuccessor(AVLNode);
     end;
+    
+    // extend class declaration
+    if not InsertAllNewClassParts then exit;
+
+    // create missing method bodies
+    if not CreateMissingProcBodies then exit;
 
     // apply changes
-    if not InsertAllNewClassParts then exit;
     if not SourceChangeCache.Apply then
       RaiseException(ctsUnableToApplyChanges);
       

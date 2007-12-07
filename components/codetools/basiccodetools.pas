@@ -274,11 +274,15 @@ function RemoveFormComponentFromSource(Source:TSourceLog;
 function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // procedure specifiers
+function FindFirstProcSpecifier(const ProcText: string;
+   NestedComments: boolean = false; CaseSensitive: boolean = false): integer;
 function SearchProcSpecifier(const ProcText, Specifier: string;
    out SpecifierEndPosition: integer;
    NestedComments: boolean = false;
    WithSpaceBehindSemicolon: boolean = true;
    CaseSensitive: boolean = false): integer;
+function RemoveProcSpecifier(const ProcText, Specifier: string;
+   NestedComments: boolean = false): string;
 
 // code search
 function SearchCodeInSource(const Source, Find: string; StartPos: integer;
@@ -1467,6 +1471,31 @@ begin
   while (IsIdentChar[Identifier[Result]]) do inc(Result);
 end;
 
+function FindFirstProcSpecifier(const ProcText: string;
+  NestedComments: boolean; CaseSensitive: boolean): integer;
+// length(ProcText)+1 on failure
+var
+  AtomStart: integer;
+  p: Integer;
+begin
+  Result:=length(ProcText)+1;
+  // read till first semicolon
+  p:=1;
+  while p<=length(ProcText) do begin
+    ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
+    if AtomStart>length(ProcText) then exit;
+    if ProcText[AtomStart] in ['[','('] then begin
+      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments) then
+        exit;
+      p:=AtomStart;
+    end else if ProcText[AtomStart]=';' then begin
+      ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
+      Result:=p;
+      exit;
+    end;
+  end;
+end;
+
 function SearchProcSpecifier(const ProcText, Specifier: string;
   out SpecifierEndPosition: integer; NestedComments: boolean;
   WithSpaceBehindSemicolon: boolean; CaseSensitive: boolean): integer;
@@ -1477,9 +1506,22 @@ function SearchProcSpecifier(const ProcText, Specifier: string;
 var
   AtomStart: integer;
 begin
-  Result:=SearchCodeInSource(ProcText, Specifier, 1, SpecifierEndPosition,
-                             CaseSensitive, NestedComments);
-  if Result<1 then exit;
+  Result:=FindFirstProcSpecifier(ProcText,NestedComments);
+  while Result<=length(ProcText) do begin
+    ReadRawNextPascalAtom(ProcText,Result,AtomStart,NestedComments);
+    if AtomStart>length(ProcText) then exit(-1);
+    if CompareIdentifiers(@ProcText[AtomStart],@Specifier[1])=0 then begin
+      Result:=AtomStart;
+      break;
+    end;
+    if ProcText[AtomStart] in ['[','('] then begin
+      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments)
+      then
+        exit(-1);
+      Result:=AtomStart;
+    end;
+  end;
+  SpecifierEndPosition:=Result;
   while (SpecifierEndPosition<=length(ProcText))
   and (ProcText[SpecifierEndPosition]<>';') do begin
     ReadRawNextPascalAtom(ProcText,SpecifierEndPosition,AtomStart,NestedComments);
@@ -1496,6 +1538,18 @@ begin
     SpecifierEndPosition:=FindLineEndOrCodeAfterPosition(ProcText,
                                        SpecifierEndPosition+1,0,NestedComments);
   end;
+end;
+
+function RemoveProcSpecifier(const ProcText, Specifier: string;
+  NestedComments: boolean): string;
+var
+  EndPos: integer;
+  StartPos: LongInt;
+begin
+  Result:=ProcText;
+  StartPos:=SearchProcSpecifier(Result,Specifier,EndPos,NestedComments);
+  if StartPos>=1 then
+    Result:=copy(Result,1,StartPos-1)+copy(Result,EndPos,length(Result));
 end;
 
 function ReadNextPascalAtom(const Source:string;

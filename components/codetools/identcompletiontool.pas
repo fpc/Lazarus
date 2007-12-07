@@ -307,7 +307,8 @@ type
     function FindCodeContext(const CursorPos: TCodeXYPosition;
                              out CodeContexts: TCodeContextInfo): boolean;
     function FindAbstractMethods(const CursorPos: TCodeXYPosition;
-                                 out ListOfPCodeXYPosition: TFPList): boolean;
+                                 out ListOfPCodeXYPosition: TFPList;
+                                 SkipAbstractsInStartClass: boolean = false): boolean;
   end;
   
 const
@@ -1657,8 +1658,8 @@ begin
 end;
 
 function TIdentCompletionTool.FindAbstractMethods(
-  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList
-  ): boolean;
+  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList;
+  SkipAbstractsInStartClass: boolean): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -1668,6 +1669,8 @@ var
   ATool: TFindDeclarationTool;
   ANode: TCodeTreeNode;
   ProcXYPos: TCodeXYPosition;
+  Skip: Boolean;
+  ClassNode: TCodeTreeNode;
 begin
   Result:=false;
   ListOfPCodeXYPosition:=nil;
@@ -1690,10 +1693,11 @@ begin
       DebugLn(['TIdentCompletionTool.FindAbstractMethods cursor not in a class']);
       exit;
     end;
+    ClassNode:=CursorNode;
 
     Params:=TFindDeclarationParams.Create;
     // gather all identifiers in context
-    Params.ContextNode:=CursorNode;
+    Params.ContextNode:=ClassNode;
     Params.SetIdentifier(Self,nil,@CollectMethods);
     Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
     InitFoundMethods;
@@ -1706,7 +1710,12 @@ begin
         ANode:=NodeExt.Node;
         ATool:=TFindDeclarationTool(NodeExt.Data);
         //DebugLn(['TIdentCompletionTool.FindAbstractMethods ',NodeExt.Txt,' ',ATool.ProcNodeHasSpecifier(ANode,psABSTRACT)]);
-        if ATool.ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
+        Skip:=false;
+        if not ATool.ProcNodeHasSpecifier(ANode,psABSTRACT) then
+          Skip:=true;
+        if SkipAbstractsInStartClass and (ANode.HasAsParent(ClassNode)) then
+          Skip:=true;
+        if not Skip then begin
           if not ATool.CleanPosToCaret(ANode.StartPos,ProcXYPos) then
             raise Exception.Create('TIdentCompletionTool.FindAbstractMethods inconsistency');
           AddCodePosition(ListOfPCodeXYPosition,ProcXYPos);
