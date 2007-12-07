@@ -1086,6 +1086,7 @@ type
     procedure FreeHandle; override;
     procedure FreeMaskHandle;
     function ReleaseHandle: HBITMAP;
+    function ReleaseMaskHandle: HBITMAP;
     function IsEmpty: boolean;
     function GetPixelFormat: TPixelFormat;
   public
@@ -1198,6 +1199,7 @@ type
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     function ReleaseHandle: HBITMAP;
+    function ReleaseMaskHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;

@@ -81,6 +81,12 @@ begin
   FHandle:=0;
 end;
 
+function TBitmapImage.ReleaseMaskHandle: HBITMAP;
+begin
+  Result := FMaskHandle;
+  FMaskHandle := 0;
+end;
+
 function TBitmapImage.IsEmpty: boolean;
 begin
   Result := (FHandle = 0) and (FDIBHandle = 0)

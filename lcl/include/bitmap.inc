@@ -1096,6 +1096,12 @@ begin
   Result := FImage.ReleaseHandle;
 end;
 
+function TBitmap.ReleaseMaskHandle: HBITMAP;
+begin
+  FreeCanvasContext;
+  Result := FImage.ReleaseMaskHandle;
+end;
+
 function TBitmap.ReleasePalette: HPALETTE;
 begin
   // ToDo
