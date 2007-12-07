@@ -1461,7 +1461,7 @@ begin
   with RegisteredListBox do begin
     Name:='RegisteredListBox';
     Align:=alClient;
-    ItemHeight:=ComponentPaletteBtnWidth-2;
+    ItemHeight:=ComponentPaletteImageHeight;
     OnDrawItem:=@RegisteredListBoxDrawItem;
     Style:= lbOwnerDrawFixed;
     Parent:=RegisteredPluginsGroupBox;

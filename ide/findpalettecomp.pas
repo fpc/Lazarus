@@ -93,7 +93,7 @@ begin
   CancelButton.Caption:=dlgCancel;
   PatternEdit.Text:='';
   SearchPatternGroupBox.Caption:=lisMenuFind;
-  ComponentsListBox.ItemHeight:=ComponentPaletteBtnWidth;
+  ComponentsListBox.ItemHeight:=ComponentPaletteImageHeight + 2;
   
   UpdateComponentSelection;
 end;
