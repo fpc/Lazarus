@@ -19,7 +19,6 @@ components/tcolorbutton.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
-components/tcomboedit.png
 components/tdatabase.png
 components/tdatasource.png
 components/tdateedit.png
@@ -64,7 +63,6 @@ components/tlistview.png
 components/tmainmenu.png
 components/tmaskedit.png
 components/tmemo.png
-components/tmenu.png
 components/tmouse.png
 components/tnotebook.png
 components/topendialog.png
@@ -74,7 +72,6 @@ components/tpaintbox.png
 components/tpairsplitter.png
 components/tpanel.png
 components/tpicture.png
-components/tpopup.png
 components/tpopupmenu.png
 components/tprocess.png
 components/tprogressbar.png
