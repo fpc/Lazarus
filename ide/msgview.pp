@@ -623,7 +623,7 @@ end;
 procedure TMessagesView.SaveMessagesToFile(const Filename: string);
 // save visible messages to file
 begin
-  SaveStringToFile(Filename, GetVisibleMessagesAsText, []);
+  SaveStringToFile(Filename, MessageLinesAsText(FItems), []);
 end;
 
 procedure TMessagesView.SrcEditLinesInsertedDeleted(const Filename: string;
