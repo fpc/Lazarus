@@ -173,7 +173,7 @@ ResourceString
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as parent';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
-  rsIndexOutOfBounds = '%s Index %d out of bounds 0-%d';
+  rsIndexOutOfBounds = '%s Index %d out of bounds 0 .. %d';
   rsUnknownPictureExtension = 'Unknown picture extension';
   rsBitmaps = 'Bitmaps';
   rsPixmap = 'Pixmap';

@@ -403,7 +403,7 @@ msgid "Error creating device context for %s.%s"
 msgstr ""
 
 #: lclstrconsts:rsindexoutofbounds
-msgid "%s Index %d out of bounds 0-%d"
+msgid "%s Index %d out of bounds 0 .. %d"
 msgstr ""
 
 #: lclstrconsts:rsunknownpictureextension

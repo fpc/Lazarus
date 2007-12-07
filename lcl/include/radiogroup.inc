@@ -335,7 +335,7 @@ begin
     FItemIndex:=Value
   else begin
     if (Value < -1) or (Value >= FItems.Count) then
-      raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Value,FItems.Count]);
+      raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Value,FItems.Count-1]);
 
     if (HandleAllocated) then
     begin
