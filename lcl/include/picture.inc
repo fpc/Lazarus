@@ -52,9 +52,7 @@ begin
   Add('pgm', 'Portable GrayMap', TPortableAnyMapGraphic);
   Add('ppm', 'Portable PixMap', TPortableAnyMapGraphic);
   Add('ico', rsIcon, TIcon);
-  {$IFDEF UseSimpleJpeg}
   Add('jpg', 'Joint Picture Expert Group',TJpegImage);
-  {$ENDIF}
 end;
 
 procedure TPicFileFormatsList.Clear;
@@ -206,6 +204,7 @@ begin
   Add(PredefinedClipboardFormat(pcfPixmap), TPixmap);
   //Add(PredefinedClipboardFormat(pcfIcon), TIcon);
   Add(ClipboardRegisterFormat('image/png'), TPortableNetworkGraphic);
+  Add(ClipboardRegisterFormat('image/jpeg'), TJPegImage);
 end;
 
 procedure TPicClipboardFormats.Clear;
@@ -411,6 +410,12 @@ begin
   Result := TIcon(Graphic);
 end;
 
+function TPicture.GetJpeg: TJpegImage;
+begin
+  ForceType(TJpegImage);
+  Result := TJpegImage(Graphic);
+end;
+
 procedure TPicture.SetBitmap(Value: TBitmap);
 begin
   SetGraphic(Value);
@@ -432,6 +437,11 @@ begin
 end;
 
 procedure TPicture.SetIcon(Value: TIcon);
+begin
+  SetGraphic(Value);
+end;
+
+procedure TPicture.SetJpeg(Value: TJpegImage);
 begin
   SetGraphic(Value);
 end;

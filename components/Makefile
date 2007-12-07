@@ -1968,7 +1968,6 @@ bigidecomponents: all
 	$(MAKE) -C cgi
 	$(MAKE) -C cgi/ide
 	$(MAKE) -C turbopower_ipro
-	$(MAKE) -C jpeg
 	$(MAKE) -C fpcunit
 	$(MAKE) -C fpcunit/ide
 	$(MAKE) -C projecttemplates

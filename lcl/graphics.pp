@@ -35,7 +35,10 @@ interface
 uses
   SysUtils, Math, Types, Classes, Contnrs, FPCAdds,
   FPImgCmn, FPImage, FPCanvas,
-  FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, FPReadPNM, FPWritePNM,
+  FPReadPNG, FPWritePNG,   // png support
+  FPReadBMP, FPWriteBMP,   // bmp support
+  FPReadPNM, FPWritePNM,   // png support
+  FPReadJpeg, FPWriteJpeg, // jpg support
   IntfGraphics,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
@@ -394,11 +397,7 @@ type
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
   TPortableAnyMapGraphic = class;   // pnm formats: pbm, pgm and ppm
-  {$IFDEF UseSimpleJpeg}
-  {$error will be added to the LCL, when fpc 2.0 is released. Use the jpeg package in the components/jpeg directory instead. }
-  // MG: will be added to the LCL, when fpc 2.0 is released
-  //     but then with the advanced features of the existing package
-  {$ENDIF}
+  TJpegImage = class;               // jpg
 
   { TGraphicsObject
     In Delphi VCL this is the ancestor of TFont, TPen and TBrush.
@@ -783,6 +782,9 @@ type
       PNM - Returns a pnm.  If the contents is not already a pnm, the
         contents are thrown away and a blank pnm (TPortableAnyMapGraphic) is
         returned.
+      Jpeg - Returns a jpeg. If the contents is not already a jpeg, the
+        contents are thrown away and a blank jpeg (TJPegImage) is
+        returned.
       }
 
   TPicture = class(TPersistent)
@@ -793,18 +795,20 @@ type
     FOnProgress: TProgressEvent;
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
+    function GetIcon: TIcon;
+    function GetJpeg: TJpegImage;
     function GetPNG: TPortableNetworkGraphic;
     function GetPNM: TPortableAnyMapGraphic;
     function GetPixmap: TPixmap;
-    function GetIcon: TIcon;
     function GetHeight: Integer;
     function GetWidth: Integer;
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
+    procedure SetIcon(Value: TIcon);
+    procedure SetJpeg(Value: TJpegImage);
     procedure SetPNG(const AValue: TPortableNetworkGraphic);
     procedure SetPNM(const AValue: TPortableAnyMapGraphic);
     procedure SetPixmap(Value: TPixmap);
-    procedure SetIcon(Value: TIcon);
     procedure SetGraphic(Value: TGraphic);
     procedure WriteData(Stream: TStream);
   protected
@@ -833,10 +837,11 @@ type
     procedure Clear; virtual;
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
+    property Icon: TIcon read GetIcon write SetIcon;
+    property Jpeg: TJpegImage read GetJpeg write SetJpeg;
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
     property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
     property PNM: TPortableAnyMapGraphic read GetPNM write SetPNM;
-    property Icon: TIcon read GetIcon write SetIcon;
     property Graphic: TGraphic read FGraphic write SetGraphic;
     //property PictureAdapter: IChangeNotifier read FNotify write FNotify;
     property Height: Integer read GetHeight;
@@ -1192,7 +1197,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
-    Function ReleaseHandle: HBITMAP;
+    function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
@@ -1319,6 +1324,33 @@ type
     property HotSpot: TPoint read FHotSpot write FHotSpot;
     property CursorHandle: hCursor read GetCursorHandle;
     property OwnHandle: Boolean read FOwnHandle write FOwnHandle;
+  end;
+  
+  { TJpegImage }
+
+  TJPEGQualityRange = TFPJPEGCompressionQuality;
+  TJPEGPerformance = TJPEGReadPerformance;
+
+  TJPEGImage = class(TFPImageBitmap)
+  private
+    FGrayScale: Boolean;
+    FPerformance: TJPEGPerformance;
+    FProgressiveEncoding: boolean;
+    FQuality: TJPEGQualityRange;
+  protected
+    procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
+    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
+    procedure InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter); override;
+  public
+    constructor Create; override;
+    class function GetFileExtensions: string; override;
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+  public
+    property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;
+    property GrayScale: Boolean read FGrayScale;
+    property ProgressiveEncoding: boolean read FProgressiveEncoding;
+    property Performance: TJPEGPerformance read FPerformance write FPerformance;
   end;
 
 function GraphicFilter(GraphicClass: TGraphicClass): string;
@@ -2092,6 +2124,77 @@ begin
   FreeAndNil(FontResourceCache);
   FreeAndNil(PenResourceCache);
   FreeAndNil(BrushResourceCache);
+end;
+
+{ TJpegImage }
+
+{ TJPEGImage }
+
+procedure TJPEGImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
+var
+  JPEGReader: TFPReaderJPEG;
+begin
+  if ImgReader is TFPReaderJPEG then
+  begin
+    JPEGReader := TFPReaderJPEG(ImgReader);
+    JPEGReader.Performance := Performance;
+    JPEGReader.OnProgress := @Progress;
+  end;
+  inherited InitFPImageReader(IntfImg, ImgReader);
+end;
+
+procedure TJPEGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
+var
+  JPEGReader: TFPReaderJPEG;
+begin
+  if ImgReader is TFPReaderJPEG then
+  begin
+    JPEGReader := TFPReaderJPEG(ImgReader);
+    FProgressiveEncoding := JPEGReader.ProgressiveEncoding;
+    FGrayScale := JPEGReader.GrayScale;
+  end;
+  inherited FinalizeFPImageReader(ImgReader);
+end;
+
+procedure TJPEGImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
+var
+  JPEGWriter: TFPWriterJPEG;
+begin
+  if ImgWriter is TFPWriterJPEG then
+  begin
+    JPEGWriter := TFPWriterJPEG(ImgWriter);
+    if JPEGWriter <> nil then
+    begin
+      JPEGWriter.ProgressiveEncoding := ProgressiveEncoding;
+      JPEGWriter.CompressionQuality := CompressionQuality;
+      JPEGWriter.OnProgress := @Progress;
+    end;
+  end;
+  inherited InitFPImageWriter(IntfImg, ImgWriter);
+end;
+
+class function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+begin
+  Result := TFPReaderJPEG;
+end;
+
+class function TJPEGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+begin
+  Result := TFPWriterJPEG;
+end;
+
+constructor TJPEGImage.Create;
+begin
+  inherited Create;
+  FPerformance := jpBestQuality;
+  FProgressiveEncoding := False;
+  FGrayScale := False;
+  FQuality := 75;
+end;
+
+class function TJPEGImage.GetFileExtensions: string;
+begin
+  Result := 'jpg;jpeg';
 end;
 
 initialization
