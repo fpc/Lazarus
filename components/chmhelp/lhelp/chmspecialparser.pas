@@ -82,8 +82,11 @@ type
     fText: TStringList;
     function GetLIEnd(StartLine: Integer): Integer;
     function GetNextLI(StartLine: Integer): Integer;
-    function AddLIObjects(StartLine: Integer): Integer;
+    function AddLIObjects(StartLine: Integer; SubItem: Boolean): Integer;
     function LineHasLI(ALine: Integer): Boolean;
+    function LineStartsUL(ALine: Integer): Boolean;
+    function LineEndsUL(ALine: Integer): Boolean;
+    
   public
     constructor Create(AListView: TListView; AStream: TStream);
     procedure DoFill;
@@ -258,7 +261,7 @@ begin
 
 end;
 
-function TIndexFiller.AddLIObjects(StartLine: Integer): Integer;
+function TIndexFiller.AddLIObjects(StartLine: Integer; SubItem: Boolean): Integer;
 var
   NeedsUrl: Boolean = True;
   NeedsName: Boolean = True;
@@ -268,7 +271,7 @@ var
   fPos: Integer;
   fLength: Integer;
   Item: TIndexItem;
-  X: LongInt;
+  X, I: LongInt;
 begin
   for X:= StartLine to fText.Count-1 do begin
     Line := fText.Strings[X];
@@ -278,6 +281,8 @@ begin
         fLength := Length('<param name="name" value="');
         ItemName := Copy(Line, fPos+fLength, Length(Line)-(fLength+fPos));
         ItemName := Copy(ItemNAme, 1, Pos('"', ItemName)-1);
+        if SubItem then
+          ItemName := '  ' + ItemName;
         NeedsName := False;
         NeedsUrl := True;
       end;
@@ -312,6 +317,16 @@ begin
   Result := Pos('<LI>', UpperCase(fText.Strings[ALine])) > 0;
 end;
 
+function TIndexFiller.LineStartsUL(ALine: Integer): Boolean;
+begin
+  Result := Pos('<UL>', UpperCase(fText.Strings[ALine])) > 0;
+end;
+
+function TIndexFiller.LineEndsUL(ALine: Integer): Boolean;
+begin
+  Result := Pos('</UL>', UpperCase(fText.Strings[ALine])) > 0;
+end;
+
 constructor TIndexFiller.Create(AListView: TListView; AStream: TStream);
 begin
  inherited Create;
@@ -322,6 +337,8 @@ end;
 procedure TIndexFiller.DoFill;
 var
   X: Integer;
+  IsSubItem: Boolean;
+  HasInitialUL: Boolean;
 begin
   fStream.Position := 0;
   fText := TStringList.Create;
@@ -329,9 +346,17 @@ begin
   fListView.BeginUpdate;
   fListView.Items.Clear;
   X := -1;
+  HasInitialUL := False;
+  IsSubItem    := False;
   while X < fText.Count-1 do begin
     Inc(X);
-    if LineHasLI(X) then Inc(X, AddLIObjects(X));
+    if LineStartsUL(X) then begin
+      IsSubItem := HasInitialUL and True;
+      HasInitialUL := True;
+    end;
+    if LineEndsUL(X) then
+      IsSubItem := False;
+    if LineHasLI(X) then Inc(X, AddLIObjects(X, IsSubItem));
   end;
   fText.Free;
   fListView.EndUpdate;

@@ -80,7 +80,6 @@ function TIpChmDataProvider.DoGetHtmlStream(const URL: string;
 begin
   //DebugLn('Getting: ', URL);
   Result := fChm.GetObject(URL);
-  
   // If for some reason we were not able to get the page return something so that
   // we don't cause an AV
   if Result = nil then begin
@@ -175,7 +174,8 @@ var
 begin
   Result := True;
   if Pos('Java', URL) =1  then Result := False;
-  if (fChm.ObjectExists(url)= 0) and (fChm.ObjectExists(BuildUrl(fCurrentPath,Url)) = 0) then Result := False;
+  if  (fChm.ObjectExists(url)= 0)
+  and (fChm.ObjectExists(BuildUrl(fCurrentPath,Url)) = 0) then Result := False;
   //DebugLn('CanHandle ',Url,' = ', Result);
   //if not Result then if fChm.ObjectExists(BuildURL('', URL)) > 0 Then result := true;
   if Pos('javascript:helppopup(''', LowerCase(URL)) = 1 then begin

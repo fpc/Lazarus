@@ -21,20 +21,17 @@
         <Display Value="192.168.0.250:0"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="chmpkg"/>
-      </Item1>
-      <Item2>
-        <PackageName Value="LCL"/>
-      </Item2>
-      <Item3>
-        <PackageName Value="lhelpcontrolpkg"/>
-      </Item3>
-      <Item4>
         <PackageName Value="TurboPowerIPro"/>
         <MinVersion Major="1" Valid="True"/>
-      </Item4>
+      </Item1>
+      <Item2>
+        <PackageName Value="lhelpcontrolpkg"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
     </RequiredPackages>
     <Units Count="10">
       <Unit0>

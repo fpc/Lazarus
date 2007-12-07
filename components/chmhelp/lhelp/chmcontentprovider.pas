@@ -19,6 +19,7 @@ type
        fContentsPanel: TPanel;
          fContentsTree: TTreeView;
       fIndexTab: TTabSheet;
+        fIndexEdit: TEdit;
         fIndexView: TListView;
       fSearchTab: TTabSheet;
         fKeywordLabel: TLabel;
@@ -53,10 +54,10 @@ type
     procedure IpHtmlPanelHotChange(Sender: TObject);
     procedure PopupCopyClick(Sender: TObject);
     procedure ContentsTreeSelectionChanged(Sender: TObject);
-    procedure IndexViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure IndexViewDblClick(Sender: TObject);
     procedure ViewMenuContentsClick(Sender: TObject);
     procedure SetTitle(const ATitle: String);
+    procedure SearchEditChange(Sender: TObject);
   public
     function CanGoBack: Boolean; override;
     function CanGoForward: Boolean; override;
@@ -148,7 +149,10 @@ end;
 procedure TChmContentProvider.DoLoadUrl(Url: String; AChm: TChmReader = nil);
 begin
   if (fChms = nil) and (AChm = nil) then exit;
-  if fChms.ObjectExists(Url, AChm) = 0 then Exit;
+  if fChms.ObjectExists(Url, AChm) = 0 then begin
+    fStatusBar.SimpleText := URL + ' not found!';
+    Exit;
+  end;
   fIsUsingHistory := True;
   fHtml.OpenURL(Url);
   TIpChmDataProvider(fHtml.DataProvider).CurrentPath := ExtractFileDir(URL)+'/';
@@ -167,7 +171,6 @@ procedure TChmContentProvider.NewChmOpened(ChmFileList: TChmFileList;
   Index: Integer);
 var
 TImer: TTocTimer;
-Stream: TMemoryStream;
 begin
   if Index = 0 then begin
     fContentsTree.Items.Clear;
@@ -183,7 +186,7 @@ begin
     ChmFileList.Chm[Index].Title := ExtractFileName(ChmFileList.FileName[Index]);
   // Fill the table of contents. This actually works very well
   Timer := TTocTimer.Create(fHtml);
-  if ChmFileList.ObjectExists(ChmFileList.Chm[Index].TOCFile) > 25000 then
+  if ChmFileList.ObjectExists(ChmFileList.Chm[Index].TOCFile) + ChmFileList.ObjectExists(ChmFileList.Chm[Index].IndexFile)> 25000 then
     Timer.Interval := 500
   else
     Timer.Interval := 5;
@@ -191,16 +194,6 @@ begin
   Timer.fChm := ChmFileList.Chm[Index];
   Timer.Enabled := True;
   fContentsTree.Visible := False;
-
-  Stream := fchms.GetObject(ChmFileList.Chm[Index].IndexFile);
-  if Stream <> nil then begin
-    Stream.position := 0;
-    with TIndexFiller.Create(fIndexView, Stream) do begin;
-      DoFill;
-      Free;
-    end;
-    Stream.Free;
-  end;
 end;
 
 procedure TChmContentProvider.FillTOCTimer(Sender: TObject);
@@ -219,18 +212,31 @@ begin
   fChm := TTocTimer(Sender).fChm;
   TTocTimer(Sender).Free;
   if fChm <> nil then begin
+    ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
     if Stream <> nil then begin
       Stream.position := 0;
-      ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
       with TContentsFiller.Create(fContentsTree, Stream, @fStopTimer) do begin
         DoFill(ParentNode);
         Free;
       end;
     end;
     Stream.Free;
+    // we fill the index here too
+    Stream := fchms.GetObject(fChm.IndexFile);
+    if Stream <> nil then begin
+      Stream.position := 0;
+      with TIndexFiller.Create(fIndexView, Stream) do begin;
+        DoFill;
+        Free;
+      end;
+      Stream.Free;
+    end;
   end;
   if ParentNode.Index = 0 then ParentNode.Expanded := True;
+
+
+
   fContentsTree.Visible := True;
   fFillingToc := False;
   fStopTimer := False;
@@ -261,7 +267,14 @@ ATreeNode: TContentTreeNode;
 ARootNode: TTreeNode;
 fChm: TChmReader = nil;
 begin
-  if (fContentsTree.Selected = nil) or not(fContentsTree.Selected is TContentTreeNode) then Exit;
+  if (fContentsTree.Selected = nil) then Exit;
+  if not(fContentsTree.Selected is TContentTreeNode) then
+  begin
+    fChm := TChmReader(fContentsTree.Selected.Data);
+    if fChm.DefaultPage <> '' then
+      DoLoadUrl(fChm.DefaultPage, fChm);
+    Exit;
+  end;
   ATreeNode := TContentTreeNode(fContentsTree.Selected);
 
   //find the chm associated with this branch
@@ -275,13 +288,17 @@ begin
   end;
 end;
 
-procedure TChmContentProvider.IndexViewSelectItem(Sender: TObject;
-  Item: TListItem; Selected: Boolean);
+procedure TChmContentProvider.IndexViewDblClick(Sender: TObject);
 var
-RealItem: TIndexItem;
+  SelectedItem: TListItem;
+  RealItem: TIndexItem;
 begin
-  if not Selected then Exit;
-  RealItem := TIndexItem(Item);
+  SelectedItem := fIndexView.Selected;
+  if SelectedItem = nil then Exit;
+
+  RealItem := TIndexItem(SelectedItem);
+  if not fIndexEdit.Focused then
+    fIndexEdit.Text := Trim(RealItem.Caption);
   if RealItem.Url <> '' then begin
     DoLoadUrl(RealItem.Url);
   end;
@@ -298,6 +315,26 @@ procedure TChmContentProvider.SetTitle(const ATitle: String);
 begin
   if fHtml.Parent = nil then exit;
   TTabSheet(fHtml.Parent).Caption := ATitle;
+end;
+
+procedure TChmContentProvider.SearchEditChange(Sender: TObject);
+var
+  I: Integer;
+  ItemName: String;
+  SearchText: String;
+begin
+  if fIndexEdit.Text = '' then Exit;
+  if not fIndexEdit.Focused then Exit;
+  SearchText := LowerCase(fIndexEdit.Text);
+  for I := 0 to fIndexView.Items.Count-1 do begin
+    ItemName := LowerCase(Copy(fIndexView.Items.Item[I].Caption, 1, Length(SearchText)));
+    if ItemName = SearchText then begin
+      fIndexView.Items.Item[fIndexView.Items.Count-1].MakeVisible(False);
+      fIndexView.Items.Item[I].MakeVisible(False);
+      fIndexView.Items.Item[I].Selected := True;
+      Exit;
+    end;
+  end;
 end;
 
 
@@ -411,12 +448,30 @@ begin
     Parent := fTabsControl;
     Visible := True;
   end;
+
+  with TLabel.Create(fIndexTab) do begin
+    Caption := 'Search';
+    Align := alTop;
+    Parent := fIndexTab;
+    Top := 0;
+    Visible := True;
+  end;
+
+  fIndexEdit := TEdit.Create(fIndexTab);
+  with fIndexEdit do begin
+    Parent := fIndexTab;
+    Top := 10;
+    Align := alTop;
+    Visible := True;
+    BorderSpacing.Bottom := 15;
+    OnChange := @SearchEditChange;
+  end;
   fIndexView := TListView.Create(fIndexTab);
   with fIndexView do begin
     Parent := fIndexTab;
     Align := alClient;
     Visible := True;
-    OnSelectItem := @IndexViewSelectItem;
+    OnDblClick := @IndexViewDblClick;
   end;
   {
   fSearchTab := TTabSheet.Create(fTabsControl);

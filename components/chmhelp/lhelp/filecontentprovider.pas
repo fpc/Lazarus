@@ -92,7 +92,7 @@ begin
   end;
   fExt := ExtractFileExt(fFile);
 
-  WriteLn(fExt);
+  //WriteLn(fExt);
   fIndex := FileContentProviders.IndexOf(fExt);
   if fIndex = -1 then exit;
   Result := TBaseContentProviderClass(FileContentProviders.Objects[fIndex]);
