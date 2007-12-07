@@ -136,6 +136,7 @@ const
   ecRenameIdentifier        = ecFirstLazarus + 115;
   ecInvertAssignment        = ecFirstLazarus + 116;
   ecShowCodeContext         = ecFirstLazarus + 117;
+  ecShowAbstractMethods     = ecFirstLazarus + 118;
 
   // file menu
   ecNew                     = ecFirstLazarus + 201;

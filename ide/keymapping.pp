@@ -422,6 +422,7 @@ begin
   ecFindBlockOtherEnd: SetResult2(VK_Q,[ssCtrl],VK_K,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindBlockStart: SetResult2(VK_Q,[ssCtrl],VK_B,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -742,6 +743,7 @@ begin
   ecFindBlockOtherEnd: SetResult(VK_Q,[ssCtrl],VK_K,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindBlockStart: SetResult(VK_Q,[ssCtrl],VK_B,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoIncludeDirective: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecShowAbstractMethods: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
   ecNextEditor: SetResult(VK_F6,[],VK_UNKNOWN,[],VK_TAB, [ssCtrl], VK_UNKNOWN, []);
@@ -1444,6 +1446,7 @@ begin
     ecFindDeclaration         : Result:= srkmecFindDeclaration;
     ecFindBlockOtherEnd       : Result:= srkmecFindBlockOtherEnd;
     ecFindBlockStart          : Result:= srkmecFindBlockStart;
+    ecShowAbstractMethods     : Result:= srkmecShowAbstractMethods;
 
     // project (menu string resource)
     ecNewProject              : Result:= lisMenuNewProject;
@@ -2332,14 +2335,12 @@ begin
   AddDefault(C, 'Word completion', srkmecWordCompletion, ecWordCompletion);
   AddDefault(C, 'Complete code', srkmecCompletecode, ecCompleteCode);
   AddDefault(C, 'Identifier completion', dlgEdIdComlet, ecIdentCompletion);
-  AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier
-    );
+  AddDefault(C, 'Rename identifier', srkmecRenameIdentifier, ecRenameIdentifier);
   AddDefault(C, 'Find identifier references', srkmecFindIdentifierRefs,
     ecFindIdentifierRefs);
   AddDefault(C, 'Show code context', srkmecShowCodeContext, ecShowCodeContext);
   AddDefault(C, 'Extract proc', srkmecExtractProc, ecExtractProc);
-  AddDefault(C, 'Invert assignment', srkmecInvertAssignment, ecInvertAssignment
-    );
+  AddDefault(C, 'Invert assignment', srkmecInvertAssignment, ecInvertAssignment);
   AddDefault(C, 'Syntax check', srkmecSyntaxCheck, ecSyntaxCheck);
   AddDefault(C, 'Guess unclosed block', lisMenuGuessUnclosedBlock,
     ecGuessUnclosedBlock);
@@ -2356,6 +2357,8 @@ begin
   AddDefault(C, 'Find block start', srkmecFindBlockStart, ecFindBlockStart);
   AddDefault(C, 'Goto include directive', lisMenuGotoIncludeDirective,
     ecGotoIncludeDirective);
+  AddDefault(C, 'Show abstract methods', srkmecShowAbstractMethods,
+    ecShowAbstractMethods);
 
   // source notebook - without menu items in the IDE bar
   C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,

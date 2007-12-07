@@ -417,6 +417,7 @@ type
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
+    //procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);

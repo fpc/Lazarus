@@ -1804,6 +1804,7 @@ resourcestring
   srkmecFindDeclaration           = 'Find declaration';
   srkmecFindBlockOtherEnd         = 'Find block other end';
   srkmecFindBlockStart            = 'Find block start';
+  srkmecShowAbstractMethods       = 'Show abstract methods';
 
   // run menu
   srkmecBuild                     = 'build program/project';
