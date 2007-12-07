@@ -26,7 +26,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls;
+  Buttons, StdCtrls
+{$ifdef fpc}
+  , LResources
+{$endif}
+;
 
 type
   { TNotifierXButton }
@@ -302,7 +306,6 @@ end;
 *******************************************************************}
 procedure TNotifierForm.HandlePaint(Sender: TObject);
 begin
-  Canvas.Color := Color;
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0,0,width,height));
@@ -428,6 +431,9 @@ begin
   vNotifierForm.Show;
 end;
 
+initialization
+{$ifdef fpc}
+  {$i popupnotifier.lrs}
+{$endif}
+
 end.
-
-
