@@ -201,7 +201,7 @@ type
     function CleanPosToCodePos(CleanPos: integer;
         out CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaret(CleanPos: integer;
-        var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
+        out Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer): string;
@@ -2142,10 +2142,11 @@ begin
 end;
 
 function TCustomCodeTool.CleanPosToCaret(CleanPos: integer;
-  var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
+  out Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
 var p: integer;
   Code: Pointer;
 begin
+  Caret:=CleanCodeXYPosition;
   Result:=Scanner.CleanedPosToCursor(CleanPos,p,Code);
   if Result then begin
     Caret.Code:=TCodeBuffer(Code);

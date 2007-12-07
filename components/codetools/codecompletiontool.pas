@@ -186,6 +186,10 @@ type
     function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
+    function AddMethods(CursorPos: TCodeXYPosition;// position in class declaration
+                        ListOfPCodeXYPosition: TFPList;
+                        const VirtualToOverride: boolean;
+                        SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
     function GetRedefinitionNodeText(Node: TCodeTreeNode): string;
@@ -5622,6 +5626,148 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
   {$ENDIF}
+end;
+
+function TCodeCompletionCodeTool.AddMethods(CursorPos: TCodeXYPosition;
+  ListOfPCodeXYPosition: TFPList;
+  const VirtualToOverride: boolean;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  i: Integer;
+  CodeXYPos: TCodeXYPosition;
+  ProcNode: TCodeTreeNode;
+  NewMethods: TAVLTree;// Tree of TCodeTreeNodeExtension
+  NewCodeTool: TFindDeclarationTool;
+  CleanProcCode: String;
+  FullProcCode: String;
+  VirtualStartPos: LongInt;
+  VirtualEndPos: integer;
+  AbstractStartPos: LongInt;
+  AbstractEndPos: integer;
+  VisibilityDesc: TCodeTreeNodeDesc;
+  NodeExt: TCodeTreeNodeExtension;
+  AVLNode: TAVLTreeNode;
+  ProcName: String;
+  NewClassPart: TNewClassPart;
+begin
+  Result:=false;
+  if (ListOfPCodeXYPosition=nil) or (ListOfPCodeXYPosition.Count=0) then
+    exit(true);
+  
+  if (SourceChangeCache=nil) then
+    RaiseException('need a SourceChangeCache');
+    
+  NewMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+  try
+
+    // collect all methods
+    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+      //get next code position
+      CodeXYPos:=PCodeXYPosition(ListOfPCodeXYPosition[i])^;
+      // get codetool for this position
+      NewCodeTool:=OnGetCodeToolForBuffer(Self,CodeXYPos.Code,true);
+      if NewCodeTool=nil then begin
+        DebugLn(['TCodeCompletionCodeTool.AddMethods unit not found for source ',CodeXYPos.Code.Filename,'(',CodeXYPos.Y,',',CodeXYPos.X,')']);
+        exit;
+      end;
+      // parse unit
+      NewCodeTool.BuildTreeAndGetCleanPos(trAll,CodeXYPos,CleanCursorPos,[]);
+      // find node at position
+      ProcNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+      if (ProcNode.Desc<>ctnProcedure)
+      or (ProcNode.Parent=nil) then begin
+        MoveCursorToNodeStart(ProcNode);
+        RaiseException('TCodeCompletionCodeTool.AddMethods source position not a procedure');
+      end;
+      // find visibility
+      VisibilityDesc:=ctnClassPublic;
+      if ProcNode.Parent.Desc in AllClassBaseSections then
+        VisibilityDesc:=ProcNode.Parent.Desc;
+      // extract proc
+      ProcName:=NewCodeTool.ExtractProcName(ProcNode,[phpWithoutClassName,phpInUpperCase]);
+      CleanProcCode:=NewCodeTool.ExtractProcHead(ProcNode,[phpWithoutClassName]);
+      FullProcCode:=NewCodeTool.ExtractProcHead(ProcNode,
+                  [phpWithStart,phpWithoutClassName,phpWithVarModifiers,
+                   phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+                   phpWithCallingSpecs,phpWithProcModifiers]);
+      if VirtualToOverride then begin
+        VirtualStartPos:=SearchProcSpecifier(FullProcCode,'virtual',
+                        VirtualEndPos,NewCodeTool.Scanner.NestedComments,false);
+        if VirtualStartPos>=1 then begin
+          // replace virtual with override
+          FullProcCode:=copy(FullProcCode,1,VirtualStartPos-1)
+                       +'override'
+                       +copy(FullProcCode,VirtualEndPos,length(FullProcCode));
+        end;
+        // remove abstract
+        AbstractStartPos:=SearchProcSpecifier(FullProcCode,'abstract',
+                        AbstractEndPos,NewCodeTool.Scanner.NestedComments,true);
+        if AbstractStartPos>=1 then begin
+          // replace virtual with override
+          FullProcCode:=copy(FullProcCode,1,AbstractStartPos-1)
+                       +copy(FullProcCode,AbstractEndPos,length(FullProcCode));
+        end;
+      end;
+      
+      // add method data
+      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt.Txt:=CleanProcCode;
+      NodeExt.ExtTxt1:=FullProcCode;
+      NodeExt.ExtTxt2:=ProcName;
+      NodeExt.Flags:=VisibilityDesc;
+      NewMethods.Add(NodeExt);
+      DebugLn(['TCodeCompletionCodeTool.AddMethods ',i,' CleanProcTxt=',CleanProcCode,' FullProcTxt=',FullProcCode]);
+    end;
+
+    BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+
+    // find node at position
+    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+
+    // if cursor is on type node, find class node
+    if CursorNode.Desc=ctnTypeDefinition then
+      CursorNode:=CursorNode.FirstChild
+    else if CursorNode.Desc=ctnGenericType then
+      CursorNode:=CursorNode.LastChild;
+    if (CursorNode=nil) or (CursorNode.Desc<>ctnClass) then begin
+      DebugLn(['TIdentCompletionTool.AddMethods cursor not in a class']);
+      exit;
+    end;
+
+    CodeCompleteSrcChgCache:=SourceChangeCache;
+    CodeCompleteClassNode:=CursorNode;
+
+    // add methods
+    AVLNode:=NewMethods.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      CleanProcCode:=NodeExt.Txt;
+      FullProcCode:=NodeExt.ExtTxt1;
+      ProcName:=NodeExt.ExtTxt2;
+      VisibilityDesc:=TCodeTreeNodeDesc(NodeExt.Flags);
+      case VisibilityDesc of
+      ctnClassPrivate:   NewClassPart:=ncpPrivateProcs;
+      ctnClassProtected: NewClassPart:=ncpProtectedProcs;
+      ctnClassPublic:    NewClassPart:=ncpPublicProcs;
+      ctnClassPublished: NewClassPart:=ncpPublishedProcs;
+      else               NewClassPart:=ncpPublicProcs;
+      end;
+      AddClassInsertion(CleanProcCode,FullProcCode,ProcName,NewClassPart);
+      
+      AVLNode:=NewMethods.FindSuccessor(AVLNode);
+    end;
+
+    // apply changes
+    if not InsertAllNewClassParts then exit;
+    if not SourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+      
+    Result:=true;
+  finally
+    NodeExtMemManager.DisposeAVLTree(NewMethods);
+  end;
 end;
 
 constructor TCodeCompletionCodeTool.Create;

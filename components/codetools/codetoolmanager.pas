@@ -165,7 +165,8 @@ type
     destructor Destroy; override;
     
     procedure Init(Config: TCodeToolsOptions);
-    
+    procedure SimpleInit(const ConfigFilename: string);
+
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
     property ChangeStep: integer read FChangeStep;
@@ -388,7 +389,9 @@ type
     function GetIdentifierAt(Code: TCodeBuffer; X,Y: integer;
           var Identifier: string): boolean;
     function IdentItemCheckHasChilds(IdentItem: TIdentifierListItem): boolean;
-    
+    function FindAbstractMethods(Code: TCodeBuffer; X,Y: integer;
+          out ListOfPCodeXYPosition: TFPList): boolean;
+
     // rename identifier
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
@@ -438,6 +441,9 @@ type
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function AddMethods(Code: TCodeBuffer; X,Y: integer;
+          ListOfPCodeXYPosition: TFPList;
+          const VirtualToOverride: boolean): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -865,6 +871,40 @@ begin
   DefineTree.Add(LazarusSrcDefines.CreateCopy);
   DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
                  '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)',nil));
+end;
+
+procedure TCodeToolManager.SimpleInit(const ConfigFilename: string);
+var
+  Options: TCodeToolsOptions;
+begin
+  // setup the Options
+  Options:=TCodeToolsOptions.Create;
+  try
+    // To not parse the FPC sources every time, the options are saved to a file.
+    if FileExists(ConfigFilename) then
+      Options.LoadFromFile(ConfigFilename);
+
+    // setup your paths
+    DebugLn(['TCodeToolManager.SimpleInit Config=',ConfigFilename]);
+    if FileExists(ConfigFilename) then
+      Options.LoadFromFile(ConfigFilename);
+    Options.InitWithEnvironmentVariables;
+    if Options.FPCSrcDir='' then
+      Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
+    if Options.LazarusSrcDir='' then
+      Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
+    DebugLn(['TCodeToolManager.SimpleInit PP=',Options.FPCPath,' FPCDIR=',Options.FPCSrcDir,' LAZARUSDIR=',Options.LazarusSrcDir]);
+
+    // init the codetools
+    if not Options.UnitLinkListValid then
+      debugln('Scanning FPC sources may take a while ...');
+    CodeToolBoss.Init(Options);
+
+    // save the options and the FPC unit links results.
+    Options.SaveToFile(ConfigFilename);
+  finally
+    Options.Free;
+  end;
 end;
 
 procedure TCodeToolManager.BeginUpdate;
@@ -1905,7 +1945,7 @@ begin
   {$ENDIF}
   try
     Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList,
-                      SourceChangeCache.BeautifyCodeOptions);
+                                         SourceChangeCache.BeautifyCodeOptions);
   except
     on e: Exception do HandleException(e);
   end;
@@ -1945,6 +1985,27 @@ begin
     Result:=true;
   except
     on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindAbstractMethods(Code: TCodeBuffer; X, Y: integer;
+  out ListOfPCodeXYPosition: TFPList): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindRedefinitions A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  ListOfPCodeXYPosition:=nil;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.FindAbstractMethods(CursorPos,ListOfPCodeXYPosition);
+  except
+    on e: Exception do Result:=HandleException(e);
   end;
 end;
 
@@ -2934,6 +2995,28 @@ begin
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddMethods(Code: TCodeBuffer; X, Y: integer;
+  ListOfPCodeXYPosition: TFPList; const VirtualToOverride: boolean
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.AddMethods A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.AddMethods(CursorPos,ListOfPCodeXYPosition,
+                                    VirtualToOverride,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -273,8 +273,15 @@ function RemoveFormComponentFromSource(Source:TSourceLog;
   ComponentName, ComponentClassName: string): boolean;
 function FindClassAncestorName(const Source, FormClassName: string): string;
 
+// procedure specifiers
+function SearchProcSpecifier(const ProcText, Specifier: string;
+   out SpecifierEndPosition: integer;
+   NestedComments: boolean = false;
+   WithSpaceBehindSemicolon: boolean = true;
+   CaseSensitive: boolean = false): integer;
+
 // code search
-function SearchCodeInSource(const Source, Find: string; StartPos:integer;
+function SearchCodeInSource(const Source, Find: string; StartPos: integer;
    out EndFoundPosition: integer; CaseSensitive: boolean;
    NestedComments: boolean = false): integer;
 function ReadNextPascalAtom(const Source: string;
@@ -987,6 +994,7 @@ function SearchCodeInSource(const Source, Find: string; StartPos: integer;
   NestedComments: boolean):integer;
 // search pascal atoms of Find in Source
 // returns the start pos
+// -1 on failure
 var
   FindLen: Integer;
   SrcLen: Integer;
@@ -1457,6 +1465,37 @@ begin
   if Identifier=nil then exit;
   if not IsIdentStartChar[Identifier^] then exit;
   while (IsIdentChar[Identifier[Result]]) do inc(Result);
+end;
+
+function SearchProcSpecifier(const ProcText, Specifier: string;
+  out SpecifierEndPosition: integer; NestedComments: boolean;
+  WithSpaceBehindSemicolon: boolean; CaseSensitive: boolean): integer;
+// Result = -1 on failure
+// Result = start of Specifier on success
+// SpecifierEndPosition on semicolon or >length(ProcText)
+// if WithSpaceBehindSemicolon then SpecifierEndPosition is start of next specifier
+var
+  AtomStart: integer;
+begin
+  Result:=SearchCodeInSource(ProcText, Specifier, 1, SpecifierEndPosition,
+                             CaseSensitive, NestedComments);
+  if Result<1 then exit;
+  while (SpecifierEndPosition<=length(ProcText))
+  and (ProcText[SpecifierEndPosition]<>';') do begin
+    ReadRawNextPascalAtom(ProcText,SpecifierEndPosition,AtomStart,NestedComments);
+    if AtomStart>length(ProcText) then exit;
+    if ProcText[AtomStart] in ['[','('] then begin
+      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments)
+      then
+        exit(-1);
+      SpecifierEndPosition:=AtomStart;
+    end;
+  end;
+  if WithSpaceBehindSemicolon and (SpecifierEndPosition<=length(ProcText)) then
+  begin
+    SpecifierEndPosition:=FindLineEndOrCodeAfterPosition(ProcText,
+                                       SpecifierEndPosition+1,0,NestedComments);
+  end;
 end;
 
 function ReadNextPascalAtom(const Source:string;

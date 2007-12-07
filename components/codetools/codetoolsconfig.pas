@@ -253,9 +253,14 @@ end;
 
 procedure TCodeToolsOptions.InitWithEnvironmentVariables;
 begin
-  FPCPath:=FindDefaultCompilerFilename;
-  FPCSrcDir:=GetEnvironmentVariable('FPCDIR');
-  LazarusSrcDir:=GetEnvironmentVariable('LAZARUSDIR');
+  if FPCPath='' then
+    FPCPath:=FindDefaultCompilerFilename;
+  if FPCPath='' then
+    FPCPath:=GetEnvironmentVariable('PP');
+  if FPCSrcDir='' then
+    FPCSrcDir:=GetEnvironmentVariable('FPCDIR');
+  if LazarusSrcDir='' then
+    LazarusSrcDir:=GetEnvironmentVariable('LAZARUSDIR');
 end;
 
 function TCodeToolsOptions.FindDefaultCompilerFilename: string;

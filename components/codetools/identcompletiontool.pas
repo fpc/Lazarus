@@ -270,6 +270,7 @@ type
     ClassAndAncestors: TFPList;// list of PCodeXYPosition
     FoundPublicProperties: TAVLTree;// tree of PChar (pointing to the
                                     // property names in source)
+    FoundMethods: TAVLTree;// tree of TCodeTreeNodeExtension Txt=clean text
   protected
     CurrentIdentifierList: TIdentifierList;
     CurrentContexts: TCodeContextInfo;
@@ -294,13 +295,19 @@ type
     function CollectAllContexts(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure AddCollectionContext(Tool: TFindDeclarationTool;
-                                   Node: TCodeTreeNode);
+      Node: TCodeTreeNode);
+    procedure InitFoundMethods;
+    procedure ClearFoundMethods;
+    function CollectMethods(Params: TFindDeclarationParams;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
                             var IdentifierList: TIdentifierList;
                             BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
     function FindCodeContext(const CursorPos: TCodeXYPosition;
                              out CodeContexts: TCodeContextInfo): boolean;
+    function FindAbstractMethods(const CursorPos: TCodeXYPosition;
+                                 out ListOfPCodeXYPosition: TFPList): boolean;
   end;
   
 const
@@ -1297,6 +1304,53 @@ begin
   //DebugLn('TIdentCompletionTool.AddCollectionContext ',Node.DescAsString,' ',ExtractNode(Node,[]));
 end;
 
+procedure TIdentCompletionTool.InitFoundMethods;
+begin
+  if FoundMethods<>nil then ClearFoundMethods;
+  FoundMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+end;
+
+procedure TIdentCompletionTool.ClearFoundMethods;
+begin
+  if FoundMethods=nil then exit;
+  NodeExtMemManager.DisposeAVLTree(FoundMethods);
+  FoundMethods:=nil;
+end;
+
+function TIdentCompletionTool.CollectMethods(
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+var
+  ProcText: String;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+begin
+  // proceed searching ...
+  Result:=ifrProceedSearch;
+
+  {$IFDEF ShowFoundIdents}
+  //if FoundContext.Tool=Self then
+  DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
+    ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"');
+  {$ENDIF}
+  
+  if FoundContext.Node.Desc=ctnProcedure then begin
+    ProcText:=FoundContext.Tool.ExtractProcHead(FoundContext.Node,
+                                                [phpWithoutClassKeyword]);
+    AVLNode:=FindCodeTreeNodeExtAVLNode(FoundMethods,ProcText);
+    if AVLNode<>nil then begin
+      // method is overriden => ignore
+    end else begin
+      // new method
+      NodeExt:=NodeExtMemManager.NewNode;
+      NodeExt.Node:=FoundContext.Node;
+      NodeExt.Data:=FoundContext.Tool;
+      NodeExt.Txt:=ProcText;
+      FoundMethods.Add(NodeExt);
+    end;
+  end;
+end;
+
 function TIdentCompletionTool.GatherIdentifiers(
   const CursorPos: TCodeXYPosition; var IdentifierList: TIdentifierList;
   BeautifyCodeOptions: TBeautifyCodeOptions): boolean;
@@ -1602,19 +1656,85 @@ begin
   end;
 end;
 
+function TIdentCompletionTool.FindAbstractMethods(
+  const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList
+  ): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+  AVLNode: TAVLTreeNode;
+  NodeExt: TCodeTreeNodeExtension;
+  ATool: TFindDeclarationTool;
+  ANode: TCodeTreeNode;
+  ProcXYPos: TCodeXYPosition;
+begin
+  Result:=false;
+  ListOfPCodeXYPosition:=nil;
+  ActivateGlobalWriteLock;
+  Params:=nil;
+  try
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+
+    // find node at position
+    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+    
+    // if cursor is on type node, find class node
+    if CursorNode.Desc=ctnTypeDefinition then
+      CursorNode:=CursorNode.FirstChild
+    else if CursorNode.Desc=ctnGenericType then
+      CursorNode:=CursorNode.LastChild;
+    if (CursorNode=nil) or (CursorNode.Desc<>ctnClass)
+    or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
+      DebugLn(['TIdentCompletionTool.FindAbstractMethods cursor not in a class']);
+      exit;
+    end;
+
+    Params:=TFindDeclarationParams.Create;
+    // gather all identifiers in context
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,nil,@CollectMethods);
+    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
+    InitFoundMethods;
+    FindIdentifierInContext(Params);
+
+    if FoundMethods<>nil then begin
+      AVLNode:=FoundMethods.FindLowest;
+      while AVLNode<>nil do begin
+        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+        ANode:=NodeExt.Node;
+        ATool:=TFindDeclarationTool(NodeExt.Data);
+        //DebugLn(['TIdentCompletionTool.FindAbstractMethods ',NodeExt.Txt,' ',ATool.ProcNodeHasSpecifier(ANode,psABSTRACT)]);
+        if ATool.ProcNodeHasSpecifier(ANode,psABSTRACT) then begin
+          if not ATool.CleanPosToCaret(ANode.StartPos,ProcXYPos) then
+            raise Exception.Create('TIdentCompletionTool.FindAbstractMethods inconsistency');
+          AddCodePosition(ListOfPCodeXYPosition,ProcXYPos);
+        end;
+        AVLNode:=FoundMethods.FindSuccessor(AVLNode);
+      end;
+    end;
+
+    Result:=true;
+  finally
+    Params.Free;
+    ClearFoundMethods;
+    DeactivateGlobalWriteLock;
+  end;
+end;
 
 { TIdentifierListItem }
 
 function TIdentifierListItem.GetParamList: string;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   if not (iliParamListValid in Flags) then begin
     // Note: if you implement param lists for other than ctnProcedure, check
     //       CompareParamList
-    CurNode:=Node;
-    if (CurNode<>nil) and (CurNode.Desc=ctnProcedure) then begin
-      FParamList:=Tool.ExtractProcHead(CurNode,
+    ANode:=Node;
+    if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
+      FParamList:=Tool.ExtractProcHead(ANode,
          [phpWithoutClassKeyword,phpWithoutClassName,
           phpWithoutName,phpInUpperCase]);
       //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(CurNode.StartPos));
@@ -1664,7 +1784,7 @@ end;
 
 function TIdentifierListItem.AsString: string;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   Result:=IdentifierCompatibilityNames[Compatibility];
   if HasChilds then
@@ -1676,19 +1796,19 @@ begin
   Result:=Result+' Lvl='+IntToStr(Level);
   if Tool<>nil then
     Result:=Result+' File='+Tool.MainFilename;
-  CurNode:=Node;
-  if CurNode<>nil then
-    Result:=Result+' Node='+CurNode.DescAsString
-      +' "'+StringToPascalConst(copy(Tool.Src,CurNode.StartPos,50))+'"';
+  ANode:=Node;
+  if ANode<>nil then
+    Result:=Result+' Node='+ANode.DescAsString
+      +' "'+StringToPascalConst(copy(Tool.Src,ANode.StartPos,50))+'"';
 end;
 
 function TIdentifierListItem.GetDesc: TCodeTreeNodeDesc;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
-  CurNode:=Node;
-  if CurNode<>nil then
-    Result:=CurNode.Desc
+  ANode:=Node;
+  if ANode<>nil then
+    Result:=ANode.Desc
   else
     Result:=DefaultDesc;
 end;
@@ -1712,32 +1832,32 @@ end;
 
 function TIdentifierListItem.IsProcNodeWithParams: boolean;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
-  CurNode:=Node;
-  Result:=(CurNode<>nil) and Tool.ProcNodeHasParamList(CurNode);
+  ANode:=Node;
+  Result:=(ANode<>nil) and Tool.ProcNodeHasParamList(ANode);
 end;
 
 function TIdentifierListItem.IsPropertyWithParams: boolean;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
-  CurNode:=Node;
-  Result:=(CurNode<>nil) and Tool.PropertyNodeHasParamList(CurNode);
+  ANode:=Node;
+  Result:=(ANode<>nil) and Tool.PropertyNodeHasParamList(ANode);
 end;
 
 function TIdentifierListItem.CheckHasChilds: boolean;
 // returns true if test was successful
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   Result:=false;
   if GetDesc in [ctnClass,ctnRecordType,ctnClassInterface] then begin
     Result:=true;
     exit;
   end;
-  CurNode:=Node;
-  if CurNode=nil then exit;
+  ANode:=Node;
+  if ANode=nil then exit;
   UpdateBaseContext;
   if (BaseExprType.Desc=xtContext)
     and (BaseExprType.Context.Node<>nil)
@@ -1749,16 +1869,16 @@ end;
 
 function TIdentifierListItem.CanBeAssigned: boolean;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   Result:=false;
-  CurNode:=Node;
-  if (CurNode=nil) then exit;
+  ANode:=Node;
+  if (ANode=nil) then exit;
   if (GetDesc=ctnVarDefinition) then
     Result:=true;
-  if (CurNode.Desc in [ctnProperty,ctnGlobalProperty]) then begin
-    if Tool.PropertyHasSpecifier(CurNode,'write') then exit(true);
-    if Tool.PropNodeIsTypeLess(CurNode) then begin
+  if (ANode.Desc in [ctnProperty,ctnGlobalProperty]) then begin
+    if Tool.PropertyHasSpecifier(ANode,'write') then exit(true);
+    if Tool.PropNodeIsTypeLess(ANode) then begin
       exit(true);// ToDo: search the real property definition
     end;
   end;
@@ -1767,17 +1887,17 @@ end;
 procedure TIdentifierListItem.UpdateBaseContext;
 var
   Params: TFindDeclarationParams;
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   if (iliBaseExprTypeValid in Flags) then exit;
   BaseExprType:=CleanExpressionType;
   BaseExprType.Desc:=xtNone;
-  CurNode:=Node;
-  if (CurNode<>nil) and (Tool<>nil) then begin
+  ANode:=Node;
+  if (ANode<>nil) and (Tool<>nil) then begin
     Tool.ActivateGlobalWriteLock;
     Params:=TFindDeclarationParams.Create;
     try
-      BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,CurNode);
+      BaseExprType.Context:=Tool.FindBaseTypeOfNode(Params,ANode);
       if (BaseExprType.Context.Node<>nil) then
         BaseExprType.Desc:=xtContext;
     finally
@@ -1795,11 +1915,11 @@ end;
 
 function TIdentifierListItem.IsFunction: boolean;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   if not (iliIsFunctionValid in Flags) then begin
-    CurNode:=Node;
-    if (CurNode<>nil) and Tool.NodeIsFunction(CurNode) then
+    ANode:=Node;
+    if (ANode<>nil) and Tool.NodeIsFunction(ANode) then
       Include(Flags,iliIsFunction);
     Include(Flags,iliIsFunctionValid);
   end;
@@ -1808,12 +1928,12 @@ end;
 
 function TIdentifierListItem.IsAbstractMethod: boolean;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
 begin
   if not (iliIsAbstractMethodValid in Flags) then begin
-    CurNode:=Node;
-    if (CurNode<>nil)
-    and Tool.MoveCursorToProcSpecifier(CurNode,psABSTRACT) then
+    ANode:=Node;
+    if (ANode<>nil)
+    and Tool.ProcNodeHasSpecifier(ANode,psABSTRACT) then
       Include(Flags,iliIsAbstractMethod);
     Include(Flags,iliIsAbstractMethodValid);
   end;
@@ -1837,16 +1957,16 @@ end;
 function TIdentifierListItem.CompareParamList(CompareItem: TIdentifierListItem
   ): integer;
 var
-  CurNode: TCodeTreeNode;
+  ANode: TCodeTreeNode;
   CmpNode: TCodeTreeNode;
 begin
   Result:=0;
   if Self=CompareItem then exit;
-  CurNode:=Node;
+  ANode:=Node;
   CmpNode:=CompareItem.Node;
-  if (CurNode=CmpNode) then exit;
-  if (CurNode=nil) or (CmpNode=nil) then exit;
-  if (CurNode.Desc<>ctnProcedure) or (CmpNode.Desc<>ctnProcedure) then
+  if (ANode=CmpNode) then exit;
+  if (ANode=nil) or (CmpNode=nil) then exit;
+  if (ANode.Desc<>ctnProcedure) or (CmpNode.Desc<>ctnProcedure) then
     exit;
   {DbgOut('TIdentifierListItem.CompareParamList ',GetIdentifier(Identifier),'=',GetIdentifier(CompareItem.Identifier));
   if Node<>nil then

@@ -651,6 +651,7 @@ procedure TPascalReaderTool.MoveCursorToFirstProcSpecifier(
 // After the call,
 // CurPos will stand on the first proc specifier or on a semicolon
 begin
+  //DebugLn(['TPascalReaderTool.MoveCursorToFirstProcSpecifier ',ProcNode.DescAsString,' ',ProcNode.StartPos]);
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then begin
     SaveRaiseException('Internal Error in'
       +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
