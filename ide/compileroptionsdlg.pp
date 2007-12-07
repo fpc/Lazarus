@@ -42,7 +42,8 @@ uses
   Graphics, LResources, FileUtil, Dialogs, Controls, GraphType,
   ProjectIntf, IDEWindowIntf, IDEContextHelpEdit,
   PathEditorDlg, LazarusIDEStrConsts, IDEOptionDefs, LazConf, IDEProcs,
-  IDEImagesIntf, CompilerOptions, ShowCompilerOpts, Project, PackageDefs;
+  IDEImagesIntf, ShowCompilerOpts, Project, PackageDefs, CompilerOptions,
+  CheckCompilerOpts;
 
 type
   { Compiler options form }
@@ -241,6 +242,8 @@ type
     procedure SetupInheritedTab(Page: integer);
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
+    function CheckSearchPath(const Context, ExpandedPath: string;
+                             Level: TCheckCompileOptionsMsgLvl): boolean;
   private
     FOnImExportCompilerOptions: TNotifyEvent;
     FOnTest: TNotifyEvent;
@@ -709,34 +712,17 @@ function TfrmCompilerOptions.PutCompilerOptions(
     if ARun.Checked then Include(Result, crRun);
   end;
   
-  function CheckSearchPath(const Context, ExpandedPath: string): boolean;
+  function CheckPutSearchPath(const Context, OldExpandedPath,
+    NewExpandedPath: string): boolean;
   var
-    CurPath: String;
-    p: Integer;
+    Level: TCheckCompileOptionsMsgLvl;
   begin
-    Result:=false;
-    if ord(CheckAndWarn)<=ord(ccomlHints) then begin
-      if System.Pos('*',ExpandedPath)>0 then begin
-        if MessageDlg('Warning','The '+Context+' contains a star * character.'#13
-          +'Lazarus uses this as normal character and does not expand them as file mask.',
-          mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
-      end;
-      p:=0;
-      repeat
-        //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
-        CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
-        if CurPath<>'' then begin
-          if not DirPathExistsCached(CurPath) then begin
-            if MessageDlg('Warning','The '+Context+' contains a not existing directory:'#13
-              +CurPath,
-              mtWarning,[mbIgnore,mbCancel],0) <> mrIgnore then exit;
-          end;
-        end;
-      until p>length(ExpandedPath);
-    end;
-    Result:=true;
+    Level:=CheckAndWarn;
+    if OldExpandedPath<>NewExpandedPath then
+      Level:=ccomlHints;
+    Result:=CheckSearchPath(Context,NewExpandedPath,Level);
   end;
-
+  
 var
   code: LongInt;
   hs: LongInt;
@@ -749,9 +735,10 @@ var
   NewCustomConfigFile: Boolean;
   NewConfigFilePath: String;
   AdditionalConfig: String;
+  OldPath: String;
 begin
   Result:=true;
-  
+
   // Put the compiler options from the dialog into the TCompilerOptions class
   if DestCompilerOptions<>nil then
     Options:=DestCompilerOptions
@@ -792,21 +779,26 @@ begin
   OldCompOpts.Assign(Options);
 
   // paths
+  OldPath:=Options.GetIncludePath(false);
   Options.IncludePath := edtIncludeFiles.Text;
-  if not CheckSearchPath('include search path',Options.GetIncludePath(false)) then
+  if not CheckPutSearchPath('include search path',OldPath,Options.GetIncludePath(false)) then
     exit(false);
+  OldPath:=Options.GetLibraryPath(false);
   Options.Libraries := edtLibraries.Text;
-  if not CheckSearchPath('library search path',Options.GetLibraryPath(false)) then
+  if not CheckPutSearchPath('library search path',OldPath,Options.GetLibraryPath(false)) then
     exit(false);
+  OldPath:=Options.GetUnitPath(false);
   Options.OtherUnitFiles := edtOtherUnits.Text;
-  if not CheckSearchPath('unit search path',Options.GetUnitPath(false)) then
+  if not CheckPutSearchPath('unit search path',OldPath,Options.GetUnitPath(false)) then
     exit(false);
+  OldPath:=Options.GetSrcPath(false);
   Options.SrcPath := edtOtherSources.Text;
-  if not CheckSearchPath('source search path',Options.GetSrcPath(false)) then
+  if not CheckPutSearchPath('source search path',OldPath,Options.GetSrcPath(false)) then
     exit(false);
   Options.UnitOutputDirectory := edtUnitOutputDir.Text;
+  OldPath:=Options.GetParsedPath(pcosDebugPath,icoNone,false);
   Options.DebugPath := edtDebugPath.Text;
-  if not CheckSearchPath('debugger search path',
+  if not CheckPutSearchPath('debugger search path',OldPath,
     Options.GetParsedPath(pcosDebugPath,icoNone,false))
   then
     exit(false);
@@ -1536,6 +1528,60 @@ begin
   btnLoadSave.Caption := '...';
 end;
 
+function TfrmCompilerOptions.CheckSearchPath(const Context,
+  ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl): boolean;
+var
+  CurPath: String;
+  p: Integer;
+  HasChars: TCCOSpecialChars;
+  ErrorMsg: String;
+begin
+  Result:=false;
+  
+  //DebugLn(['TfrmCompilerOptions.CheckSearchPath Context=',Context,' ExpandedPath=',ExpandedPath,' Level=',ord(Level)]);
+
+  // check for *
+  if ord(Level)<=ord(ccomlHints) then begin
+    if System.Pos('*',ExpandedPath)>0 then begin
+      if MessageDlg('Hint','The '+Context+' contains a star * character.'#13
+        +'Lazarus uses this as normal character and does not expand this as file mask.',
+        mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
+    end;
+  end;
+
+  // check for non existing directories
+  if ord(Level)<=ord(ccomlWarning) then begin
+    p:=0;
+    repeat
+      //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
+      CurPath:=GetNextDirectoryInSearchPath(ExpandedPath,p);
+      if CurPath<>'' then begin
+        if not DirPathExistsCached(CurPath) then begin
+          if MessageDlg('Warning','The '+Context+' contains a not existing directory:'#13
+            +CurPath,
+            mtWarning,[mbIgnore,mbCancel],0) <> mrIgnore then exit;
+        end;
+      end;
+    until p>length(ExpandedPath);
+  end;
+
+  // check for special characters
+  FindSpecialCharsInPath(ExpandedPath,HasChars);
+  if ord(Level)<=ord(ccomlWarning) then begin
+    if ord(Level)>=ord(ccomlErrors) then begin
+      ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
+    end else begin
+      ErrorMsg:=SpecialCharsToStr(HasChars);
+    end;
+    if ErrorMsg<>'' then begin
+      if MessageDlg('Warning',Context+#13+ErrorMsg,
+        mtWarning,[mbOk,mbCancel],0) <> mrOk then exit;
+    end;
+  end;
+
+  Result:=true;
+end;
+
 procedure TfrmCompilerOptions.chkCustomConfigFileClick(Sender: TObject);
 begin
   edtConfigPath.Enabled:=chkCustomConfigFile.Checked;
@@ -1559,7 +1605,8 @@ begin
     end else
     if AButton=IncludeFilesPathEditBtn then begin
       OldPath:=edtIncludeFiles.Text;
-      Templates:='include';
+      Templates:='include'
+                +';inc';
     end else
     if AButton=OtherSourcesPathEditBtn then begin
       OldPath:=edtOtherSources.Text;
@@ -1599,19 +1646,24 @@ begin
     if CompilerOpts<>nil then
       NewPath:=CompilerOpts.ShortenPath(NewPath,false);
     if AButton=OtherUnitsPathEditBtn then begin
-      edtOtherUnits.Text:=NewPath;
+      if CheckSearchPath(lblOtherUnits.Caption,NewPath,ccomlHints) then
+        edtOtherUnits.Text:=NewPath;
     end else
     if AButton=IncludeFilesPathEditBtn then begin
-      edtIncludeFiles.Text:=NewPath;
+      if CheckSearchPath(lblIncludeFiles.Caption,NewPath,ccomlHints) then
+        edtIncludeFiles.Text:=NewPath;
     end else
     if AButton=OtherSourcesPathEditBtn then begin
-      edtOtherSources.Text:=NewPath;
+      if CheckSearchPath(lblOtherSources.Caption,NewPath,ccomlHints) then
+        edtOtherSources.Text:=NewPath;
     end else
     if AButton=LibrariesPathEditBtn then begin
-      edtLibraries.Text:=NewPath;
+      if CheckSearchPath(lblLibraries.Caption,NewPath,ccomlHints) then
+        edtLibraries.Text:=NewPath;
     end else
     if AButton=DebugPathEditBtn then begin
-      edtDebugPath.Text:=NewPath;
+      if CheckSearchPath(lblDebugPath.Caption,NewPath,ccomlHints) then
+        edtDebugPath.Text:=NewPath;
     end;
   end;
 end;

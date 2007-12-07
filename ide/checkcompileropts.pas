@@ -108,7 +108,63 @@ type
 var
   CheckCompilerOptsDlg: TCheckCompilerOptsDlg;
 
+type
+  TCCOSpecialCharType = (
+    ccoscSpaces,
+    ccoscNonASCII,
+    ccoscWrongPathDelim,
+    ccoscUnusualChars,
+    ccoscSpecialChars,
+    ccoscNewLine
+    );
+  TCCOSpecialChars = set of TCCOSpecialCharType;
+
+procedure FindSpecialCharsInPath(const Path: string; out HasChars: TCCOSpecialChars);
+function SpecialCharsToStr(const HasChars: TCCOSpecialChars): string;
+
+
 implementation
+
+
+procedure FindSpecialCharsInPath(const Path: string; out
+  HasChars: TCCOSpecialChars);
+var
+  i: Integer;
+begin
+  HasChars:=[];
+  for i:=1 to length(Path) do begin
+    case Path[i] of
+    #10,#13: Include(HasChars,ccoscNewLine);
+    #0..#8,#11,#12,#14..#31: Include(HasChars,ccoscSpecialChars);
+    #9,' ': Include(HasChars,ccoscSpaces);
+    '/','\': if Path[i]<>PathDelim then Include(HasChars,ccoscWrongPathDelim);
+    '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': Include(HasChars,ccoscUnusualChars);
+    #128..#255: Include(HasChars,ccoscNonASCII);
+    end;
+  end;
+end;
+
+function SpecialCharsToStr(const HasChars: TCCOSpecialChars): string;
+
+  procedure AddStr(var s: string; const Addition: string);
+  begin
+    if s='' then
+      s:=lisCCOContains
+    else
+      s:=s+', ';
+    s:=s+Addition;
+  end;
+
+begin
+  Result:='';
+  if ccoscSpaces in HasChars then AddStr(Result,lisCCOSpaces);
+  if ccoscNonASCII in HasChars then AddStr(Result,lisCCONonASCII);
+  if ccoscWrongPathDelim in HasChars then AddStr(Result,lisCCOWrongPathDelimiter);
+  if ccoscUnusualChars in HasChars then AddStr(Result,lisCCOUnusualChars);
+  
+  if ccoscSpecialChars in HasChars then AddStr(Result,lisCCOSpecialCharacters);
+  if ccoscNewLine in HasChars then AddStr(Result,lisCCOHasNewLine);
+end;
 
 { TCheckCompilerOptsDlg }
 
@@ -152,39 +208,14 @@ function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, Path: string
   
 var
   i: Integer;
-  HasSpaces: Boolean;
-  HasSpecialChars: Boolean;
-  HasNonASCII: Boolean;
-  HasWrongPathDelim: Boolean;
-  HasUnusualChars: Boolean;
-  HasNewLine: Boolean;
   Warning: String;
   ErrorMsg: String;
+  HasChars: TCCOSpecialChars;
 begin
-  HasSpaces:=false;
-  HasSpecialChars:=false;
-  HasNonASCII:=false;
-  HasWrongPathDelim:=false;
-  HasUnusualChars:=false;
-  HasNewLine:=false;
-  for i:=1 to length(Path) do begin
-    case Path[i] of
-    #10,#13: HasNewLine:=true;
-    #0..#8,#11,#12,#14..#31: HasSpecialChars:=true;
-    #9,' ': HasSpaces:=true;
-    '/','\': if Path[i]<>PathDelim then HasWrongPathDelim:=true;
-    '@','#','$','&','*','(',')','[',']','+','~','<','>','?','|': HasUnusualChars:=true;
-    #128..#255: HasNonASCII:=true;
-    end;
-  end;
-  Warning:='';
-  ErrorMsg:='';
-  if HasSpaces then AddStr(Warning,lisCCOSpaces);
-  if HasSpecialChars then AddStr(ErrorMsg,lisCCOSpecialCharacters);
-  if HasNonASCII then AddStr(Warning,lisCCONonASCII);
-  if HasWrongPathDelim then AddStr(Warning,lisCCOWrongPathDelimiter);
-  if HasUnusualChars then AddStr(Warning,lisCCOUnusualChars);
-  if HasNewLine then AddStr(ErrorMsg,lisCCOHasNewLine);
+  FindSpecialCharsInPath(Path,HasChars);
+  Warning:=SpecialCharsToStr(HasChars*[ccoscSpaces,ccoscNonASCII,
+                                       ccoscWrongPathDelim,ccoscUnusualChars]);
+  ErrorMsg:=SpecialCharsToStr(HasChars*[ccoscSpecialChars,ccoscNewLine]);
 
   if Warning<>'' then
     AddWarning(Title+' '+Warning);
