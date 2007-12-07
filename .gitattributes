@@ -2271,7 +2271,6 @@ images/components/tedit.png -text svneol=unset#image/png
 images/components/teditbutton.png -text svneol=unset#image/png
 images/components/teventlog.png -text svneol=unset#image/png
 images/components/tfilelistbox.png -text svneol=unset#image/png
-images/components/tfilenamedit.png -text svneol=unset#image/png
 images/components/tfilenameedit.png -text svneol=unset#image/png
 images/components/tfinddialog.png -text svneol=unset#image/png
 images/components/tfloatspinedit.png -text svneol=unset#image/png

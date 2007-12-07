@@ -43,7 +43,6 @@ components/tedit.png
 components/teditbutton.png
 components/teventlog.png
 components/tfilelistbox.png
-components/tfilenamedit.png
 components/tfilenameedit.png
 components/tfinddialog.png
 components/tfloatspinedit.png
