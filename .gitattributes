@@ -2203,6 +2203,7 @@ images/codeexplorer/ce_class.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_const.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_default.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_finalization.xpm -text svneol=native#image/x-xpixmap
+images/codeexplorer/ce_function.xpm svneol=native#text/plain
 images/codeexplorer/ce_implementation.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_initialization.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_interface.xpm -text svneol=native#image/x-xpixmap

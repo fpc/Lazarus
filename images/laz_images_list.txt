@@ -125,6 +125,7 @@ codeexplorer/ce_implementation.xpm
 codeexplorer/ce_initialization.xpm
 codeexplorer/ce_interface.xpm
 codeexplorer/ce_procedure.xpm
+codeexplorer/ce_function.xpm
 codeexplorer/ce_program.xpm
 codeexplorer/ce_property.xpm
 codeexplorer/ce_type.xpm

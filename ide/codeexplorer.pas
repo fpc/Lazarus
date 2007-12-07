@@ -42,7 +42,7 @@ uses
   Dialogs, Buttons, ComCtrls, Menus,
   // CodeTools
   CodeToolManager, CodeAtom, CodeCache, CodeTree, KeywordFuncLists,
-  DirectivesTree, PascalParserTool,
+  FindDeclarationTool, DirectivesTree, PascalParserTool,
   // IDE Intf
   IDECommands, MenuIntf,
   // IDE
@@ -129,7 +129,8 @@ type
     ImgIDImplementation: Integer;
     ImgIDInitialization: Integer;
     ImgIDInterfaceSection: Integer;
-    ImgIDProc: Integer;
+    ImgIDProcedure: Integer;
+    ImgIDFunction: Integer;
     ImgIDProgram: Integer;
     ImgIDProperty: Integer;
     ImgIDType: Integer;
@@ -144,7 +145,8 @@ type
                                    CodeNode: TCodeTreeNode): string;
     function GetDirectiveNodeDescription(ADirectivesTool: TDirectivesTool;
                                          Node: TCodeTreeNode): string;
-    function GetCodeNodeImage(CodeNode: TCodeTreeNode): integer;
+    function GetCodeNodeImage(Tool: TFindDeclarationTool;
+                              CodeNode: TCodeTreeNode): integer;
     function GetDirectiveNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
                           ParentViewNode, InFrontViewNode: TTreeNode;
@@ -301,7 +303,8 @@ begin
   AddResImg(Imagelist1,'ce_const',ImgIDConstSection);
   AddResImg(Imagelist1,'ce_const',ImgIDConst);
   AddResImg(Imagelist1,'ce_class',ImgIDClass);
-  AddResImg(Imagelist1,'ce_procedure',ImgIDProc);
+  AddResImg(Imagelist1,'ce_procedure',ImgIDProcedure);
+  AddResImg(Imagelist1,'ce_function',ImgIDFunction);
   AddResImg(Imagelist1,'ce_property',ImgIDProperty);
   
   // assign the root TMenuItem to the registered menu root.
@@ -473,7 +476,8 @@ begin
   if Result=lisCEFilter then Result:='';
 end;
 
-function TCodeExplorerView.GetCodeNodeImage(CodeNode: TCodeTreeNode): integer;
+function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;
+  CodeNode: TCodeTreeNode): integer;
 begin
   case CodeNode.Desc of
   ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
@@ -488,7 +492,10 @@ begin
   ctnConstSection,ctnResStrSection:   Result:=ImgIDConstSection;
   ctnConstDefinition:                 Result:=ImgIDConst;
   ctnClass:                           Result:=ImgIDClass;
-  ctnProcedure:                       Result:=ImgIDProc;
+  ctnProcedure:                       if Tool.NodeIsFunction(CodeNode) then
+                                        Result:=ImgIDFunction
+                                      else
+                                        Result:=ImgIDProcedure;
   ctnProperty:                        Result:=ImgIDProperty;
   else
     Result:=ImgIDDefault;
@@ -566,7 +573,7 @@ begin
     if ShowNode then begin
       NodeData:=TViewNodeData.Create(CodeNode);
       NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
-      NodeImageIndex:=GetCodeNodeImage(CodeNode);
+      NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode);
       if InFrontViewNode<>nil then
         ViewNode:=CodeTreeview.Items.InsertObjectBehind(
                                               InFrontViewNode,NodeText,NodeData)
