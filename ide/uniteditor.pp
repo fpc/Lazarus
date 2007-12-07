@@ -417,7 +417,7 @@ type
     procedure InvertAssignmentMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
-    //procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
+    procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     procedure AddWatchAtCursor(Sender: TObject);
@@ -833,6 +833,7 @@ var
     SrcEditMenuFindIdentifierReferences: TIDEMenuCommand;
     SrcEditMenuExtractProc: TIDEMenuCommand;
     SrcEditMenuInvertAssignment: TIDEMenuCommand;
+    SrcEditMenuShowAbstractMethods: TIDEMenuCommand;
   SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
@@ -979,6 +980,8 @@ begin
                                                  'ExtractProc',uemExtractProc);
     SrcEditMenuInvertAssignment:=RegisterIDEMenuCommand(AParent,
                                         'InvertAssignment',uemInvertAssignment);
+    SrcEditMenuShowAbstractMethods:=RegisterIDEMenuCommand(AParent,
+                               'ShowAbstractMethods',srkmecShowAbstractMethods);
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
                                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
@@ -3868,6 +3871,7 @@ begin
       SrcEditMenuRenameIdentifier.Enabled:=
                                      IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
                                      and (not ASrcEdit.ReadOnly);
+      SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
     end else begin
       // user clicked on gutter
       SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
@@ -4022,6 +4026,7 @@ begin
   SrcEditMenuFindIdentifierReferences.OnClick:=
                                          @FindIdentifierReferencesMenuItemClick;
   SrcEditMenuRenameIdentifier.OnClick:=@RenameIdentifierMenuItemClick;
+  SrcEditMenuShowAbstractMethods.OnClick:=@ShowAbstractMethodsMenuItemClick;
 
   SrcEditMenuReadOnly.OnClick:=@ReadOnlyClicked;
   SrcEditMenuShowLineNumbers.OnClick:=@ToggleLineNumbersClicked;
@@ -5110,6 +5115,11 @@ end;
 procedure TSourceNotebook.RenameIdentifierMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecRenameIdentifier);
+end;
+
+procedure TSourceNotebook.ShowAbstractMethodsMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecShowAbstractMethods);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);

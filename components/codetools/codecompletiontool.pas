@@ -121,7 +121,7 @@ type
     FirstInsert: TCodeTreeNodeExtension; // list of insert requests
     FOnGetNewVariableLocation: TOnGetNewVariableLocation;
     FSetPropertyVariablename: string;
-    JumpToProcName: string;
+    FJumpToProcName: string;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
     fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
@@ -142,6 +142,9 @@ type
     function InsertMissingClassSemicolons: boolean;
     function InsertAllNewUnitsToMainUsesSection: boolean;
     function CreateMissingProcBodies: boolean;
+    function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
+           OldTopLine: integer;
+           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function NodeExtIsVariable(ANodeExt: TCodeTreeNodeExtension): boolean;
     function NodeExtHasVisibilty(ANodeExt: TCodeTreeNodeExtension;
       Visibility: TPascalClassSection): boolean;
@@ -157,7 +160,7 @@ type
                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
-                          var NewPos: TCodeXYPosition; var NewTopLine: integer);
+                          out NewPos: TCodeXYPosition; out NewTopLine: integer);
     function AddVariable(CursorNode: TCodeTreeNode;
                       CleanCursorPos,OldTopLine: integer;
                       const VariableName, NewType: string;
@@ -187,8 +190,10 @@ type
                           out NewPos: TCodeXYPosition; out NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
     function AddMethods(CursorPos: TCodeXYPosition;// position in class declaration
+                        OldTopLine: integer;
                         ListOfPCodeXYPosition: TFPList;
                         const VirtualToOverride: boolean;
+                        out NewPos: TCodeXYPosition; out NewTopLine: integer;
                         SourceChangeCache: TSourceChangeCache): boolean;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
                       SourceChangeCache: TSourceChangeCache): boolean; override;
@@ -314,7 +319,7 @@ begin
     FCompletingStartNode:=FCompletingStartNode.NextBrother;
   if FCompletingStartNode<>nil then
     FCompletingStartNode:=FCompletingStartNode.FirstChild;
-  JumpToProcName:='';
+  FJumpToProcName:='';
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
@@ -826,7 +831,7 @@ begin
 end;
 
 procedure TCodeCompletionCodeTool.AdjustCursor(OldCodePos: TCodePosition;
-  OldTopLine: integer; var NewPos: TCodeXYPosition; var NewTopLine: integer);
+  OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine: integer);
 begin
   OldCodePos.Code.AdjustPosition(OldCodePos.P);
   NewPos.Code:=OldCodePos.Code;
@@ -4648,13 +4653,13 @@ var
                  ProcCode,Indent,ANodeExt.ExtTxt3='');
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
       ProcCode);
-    if JumpToProcName='' then begin
+    if FJumpToProcName='' then begin
       // remember one proc body to jump to after the completion
-      JumpToProcName:=ANodeExt.Txt;
-      if System.Pos('.',JumpToProcName)<1 then
-        JumpToProcName:=UpperCaseStr(TheClassName)+'.'+JumpToProcName;
+      FJumpToProcName:=ANodeExt.Txt;
+      if System.Pos('.',FJumpToProcName)<1 then
+        FJumpToProcName:=UpperCaseStr(TheClassName)+'.'+FJumpToProcName;
       {$IFDEF CTDEBUG}
-      DebugLn('CreateMissingProcBodies JumpToProcName="',JumpToProcName,'"');
+      DebugLn('CreateMissingProcBodies FJumpToProcName="',FJumpToProcName,'"');
       {$ENDIF}
     end;
   end;
@@ -5019,6 +5024,73 @@ begin
   end;
 end;
 
+function TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc(
+  CleanPos: integer; OldTopLine: integer;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+var
+  OldCodeXYPos: TCodeXYPosition;
+  OldCodePos: TCodePosition;
+  CursorNode: TCodeTreeNode;
+  CurClassName: String;
+  ANode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
+begin
+  Result:=false;
+  
+  CurClassName:=ExtractClassName(FCodeCompleteClassNode,false);
+
+  // apply the changes and jump to first new proc body
+  if not CleanPosToCodePos(CleanPos,OldCodePos) then
+    RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCodePos');
+  if not CleanPosToCaret(CleanPos,OldCodeXYPos) then
+    RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCaret');
+  if not ASourceChangeCache.Apply then
+    RaiseException(ctsUnableToApplyChanges);
+
+  if FJumpToProcName<>'' then begin
+    {$IFDEF CTDEBUG}
+    DebugLn('TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Jump to new proc body ... "',FJumpToProcName,'"');
+    {$ENDIF}
+    // there was a new proc body
+    // -> find it and jump to
+
+    // reparse code
+    BuildTreeAndGetCleanPos(trAll,OldCodeXYPos,CleanPos,[]);
+    // find CodeTreeNode at cursor
+    CursorNode:=FindDeepestNodeAtPos(CleanPos,true);
+    // due to insertions in front of the class, the cursor position could
+    // have changed
+    while (CursorNode<>nil) do begin
+      if (CursorNode.Desc=ctnTypeSection)
+      or ((CursorNode.Parent<>nil) and (CursorNode.Parent.Desc=ctnTypeSection))
+      then break;
+      CursorNode:=CursorNode.Parent;
+    end;
+    FCodeCompleteClassNode:=FindClassNode(CursorNode,CurClassName,true,false);
+    if FCodeCompleteClassNode=nil then
+      RaiseException('oops, I lost your class');
+    ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
+                                            [ctnTypeDefinition,ctnGenericType]);
+    if ANode=nil then
+      RaiseException(ctsClassNodeWithoutParentNode);
+    if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
+      ANode:=ANode.Parent;
+    ProcNode:=FindProcNode(ANode,FJumpToProcName,
+                           [phpInUpperCase,phpIgnoreForwards]);
+    if ProcNode=nil then
+      RaiseException(ctsNewProcBodyNotFound);
+    Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
+  end else begin
+    {$IFDEF CTDEBUG}
+    DebugLn('TCodeCompletionCodeTool.ApplyChangesAndJumpToFirstNewProc Adjust Cursor ... ');
+    {$ENDIF}
+    // there was no new proc body
+    // -> adjust cursor
+    AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
+    Result:=true;
+  end;
+end;
+
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   OldTopLine: integer; out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
@@ -5028,9 +5100,6 @@ var CleanCursorPos, Indent, insertPos: integer;
   OldCleanCursorPos: LongInt;
 
   procedure CompleteClass;
-  var
-    OldCodePos: TCodePosition;
-    CurClassName: String;
   begin
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(AClassNode.Desc));
@@ -5042,7 +5111,6 @@ var CleanCursorPos, Indent, insertPos: integer;
     DebugLn('TCodeCompletionCodeTool.CompleteCode C ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
     CodeCompleteClassNode:=AClassNode;
-    CurClassName:=ExtractClassName(AClassNode,false);
     try
       // go through all properties and procs
       //  insert read + write prop specifiers
@@ -5082,55 +5150,8 @@ var CleanCursorPos, Indent, insertPos: integer;
       DebugLn('TCodeCompletionCodeTool.CompleteCode Apply ... ');
       {$ENDIF}
       // apply the changes and jump to first new proc body
-      if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then
-        RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCodePos');
-      if not SourceChangeCache.Apply then
-        RaiseException(ctsUnableToApplyChanges);
-
-      if JumpToProcName<>'' then begin
-        {$IFDEF CTDEBUG}
-        DebugLn('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... "',JumpToProcName,'"');
-        {$ENDIF}
-        // there was a new proc body
-        // -> find it and jump to
-
-        // reparse code
-        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-        // find CodeTreeNode at cursor
-        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-        // due to insertions in front of the class, the cursor position could
-        // have changed
-        while (CursorNode<>nil) do begin
-          if (CursorNode.Desc=ctnTypeSection)
-          or ((CursorNode.Parent<>nil) and (CursorNode.Parent.Desc=ctnTypeSection))
-          then break;
-          CursorNode:=CursorNode.Parent;
-        end;
-        FCodeCompleteClassNode:=
-                              FindClassNode(CursorNode,CurClassName,true,false);
-        if FCodeCompleteClassNode=nil then
-          RaiseException('oops, I lost your class');
-        ANode:=FCodeCompleteClassNode.GetNodeOfTypes(
-                                            [ctnTypeDefinition,ctnGenericType]);
-        if ANode=nil then
-          RaiseException(ctsClassNodeWithoutParentNode);
-        if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
-          ANode:=ANode.Parent;
-        ProcNode:=FindProcNode(ANode,JumpToProcName,
-                   [phpInUpperCase,phpIgnoreForwards]);
-        if ProcNode=nil then
-          RaiseException(ctsNewProcBodyNotFound);
-        Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
-      end else begin
-        {$IFDEF CTDEBUG}
-        DebugLn('TCodeCompletionCodeTool.CompleteCode Adjust Cursor ... ');
-        {$ENDIF}
-        // there was no new proc body
-        // -> adjust cursor
-        AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
-        Result:=true;
-      end;
-
+      Result:=ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,
+                                                NewPos,NewTopLine);
     finally
       FreeClassInsertionList;
     end;
@@ -5629,8 +5650,10 @@ begin
 end;
 
 function TCodeCompletionCodeTool.AddMethods(CursorPos: TCodeXYPosition;
+  OldTopLine: integer;
   ListOfPCodeXYPosition: TFPList;
   const VirtualToOverride: boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanCursorPos: integer;
@@ -5651,6 +5674,7 @@ var
   NewClassPart: TNewClassPart;
   Beautifier: TBeautifyCodeOptions;
   ProcCode: String;
+  CurClassName: String;
 begin
   Result:=false;
   if (ListOfPCodeXYPosition=nil) or (ListOfPCodeXYPosition.Count=0) then
@@ -5659,6 +5683,7 @@ begin
   if (SourceChangeCache=nil) then
     RaiseException('need a SourceChangeCache');
 
+  CodeCompleteSrcChgCache:=SourceChangeCache;
   Beautifier:=SourceChangeCache.BeautifyCodeOptions;
   NewMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
   try
@@ -5676,10 +5701,10 @@ begin
       // parse unit
       NewCodeTool.BuildTreeAndGetCleanPos(trAll,CodeXYPos,CleanCursorPos,[]);
       // find node at position
-      ProcNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+      ProcNode:=NewCodeTool.FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
       if (ProcNode.Desc<>ctnProcedure)
       or (ProcNode.Parent=nil) then begin
-        MoveCursorToNodeStart(ProcNode);
+        NewCodeTool.MoveCursorToNodeStart(ProcNode);
         RaiseException('TCodeCompletionCodeTool.AddMethods source position not a procedure');
       end;
       // find visibility
@@ -5699,7 +5724,7 @@ begin
         if VirtualStartPos>=1 then begin
           // replace virtual with override
           FullProcCode:=copy(FullProcCode,1,VirtualStartPos-1)
-                       +'override'
+                       +'override;'
                        +copy(FullProcCode,VirtualEndPos,length(FullProcCode));
         end;
         // remove abstract
@@ -5707,14 +5732,13 @@ begin
                                           NewCodeTool.Scanner.NestedComments);
       end;
       
-      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,
-                      phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
-                      phpWithResultType,phpWithCallingSpecs]);
+      ProcCode:=NewCodeTool.ExtractProcHead(ProcNode,[phpWithStart,
+                phpWithoutClassName,phpWithVarModifiers,phpWithParameterNames,
+                phpWithResultType,phpWithCallingSpecs]);
       ProcCode:=ProcCode+Beautifier.LineEnd
                   +'begin'+Beautifier.LineEnd
                   +GetIndentStr(Beautifier.Indent)+Beautifier.LineEnd
                   +'end;';
-      ProcCode:=Beautifier.BeautifyProc(ProcCode,0,false);
 
       // add method data
       NodeExt:=NodeExtMemManager.NewNode;
@@ -5727,16 +5751,18 @@ begin
       DebugLn(['TCodeCompletionCodeTool.AddMethods ',i,' CleanProcTxt=',CleanProcCode,' FullProcTxt=',FullProcCode]);
     end;
 
-    BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos,[]);
+    BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
 
     // find node at position
-    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
     // if cursor is on type node, find class node
     if CursorNode.Desc=ctnTypeDefinition then
       CursorNode:=CursorNode.FirstChild
     else if CursorNode.Desc=ctnGenericType then
-      CursorNode:=CursorNode.LastChild;
+      CursorNode:=CursorNode.LastChild
+    else
+      CursorNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
     if (CursorNode=nil) or (CursorNode.Desc<>ctnClass) then begin
       DebugLn(['TIdentCompletionTool.AddMethods cursor not in a class']);
       exit;
@@ -5744,6 +5770,7 @@ begin
 
     CodeCompleteSrcChgCache:=SourceChangeCache;
     CodeCompleteClassNode:=CursorNode;
+    CurClassName:=ExtractClassName(CursorNode,false);
 
     // add methods
     AVLNode:=NewMethods.FindLowest;
@@ -5762,6 +5789,8 @@ begin
       else               NewClassPart:=ncpPublicProcs;
       end;
 
+      // change classname
+      ProcCode:=Beautifier.AddClassAndNameToProc(ProcCode,CurClassName,ProcName);
       AddClassInsertion(CleanProcCode,FullProcCode,ProcName,NewClassPart,nil,
                         ProcCode);
       
@@ -5775,11 +5804,12 @@ begin
     if not CreateMissingProcBodies then exit;
 
     // apply changes
-    if not SourceChangeCache.Apply then
-      RaiseException(ctsUnableToApplyChanges);
-      
+    if not ApplyChangesAndJumpToFirstNewProc(CleanCursorPos,OldTopLine,
+      NewPos,NewTopLine) then exit;
+
     Result:=true;
   finally
+    FreeClassInsertionList;
     NodeExtMemManager.DisposeAVLTree(NewMethods);
   end;
 end;

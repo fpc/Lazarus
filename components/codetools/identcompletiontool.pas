@@ -1461,7 +1461,8 @@ begin
       {$IFDEF CTDEBUG}
       DebugLn('TIdentCompletionTool.GatherIdentifiers G');
       {$ENDIF}
-      GatherUsefulIdentifiers(IdentStartPos,GatherContext,BeautifyCodeOptions);
+      GatherUsefulIdentifiers(IdentStartPos,CreateFindContext(Self,CursorNode),
+                              BeautifyCodeOptions);
 
       // check for incomplete context
       
@@ -1682,16 +1683,18 @@ begin
 
     // find node at position
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
-    
+
     // if cursor is on type node, find class node
     if CursorNode.Desc=ctnTypeDefinition then
       CursorNode:=CursorNode.FirstChild
     else if CursorNode.Desc=ctnGenericType then
-      CursorNode:=CursorNode.LastChild;
+      CursorNode:=CursorNode.LastChild
+    else
+      CursorNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
     if (CursorNode=nil) or (CursorNode.Desc<>ctnClass)
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
-      DebugLn(['TIdentCompletionTool.FindAbstractMethods cursor not in a class']);
-      exit;
+      MoveCursorToNodeStart(CursorNode);
+      RaiseException('TIdentCompletionTool.FindAbstractMethods cursor is not in a class');
     end;
     ClassNode:=CursorNode;
 

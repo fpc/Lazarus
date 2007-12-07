@@ -442,9 +442,11 @@ type
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
-    function AddMethods(Code: TCodeBuffer; X,Y: integer;
+    function AddMethods(Code: TCodeBuffer; X,Y, TopLine: integer;
           ListOfPCodeXYPosition: TFPList;
-          const VirtualToOverride: boolean): boolean;
+          const VirtualToOverride: boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function FindRedefinitions(Code: TCodeBuffer;
           out TreeOfCodeTreeNodeExt: TAVLTree; WithEnums: boolean): boolean;
     function RemoveRedefinitions(Code: TCodeBuffer;
@@ -3002,11 +3004,11 @@ begin
   end;
 end;
 
-function TCodeToolManager.AddMethods(Code: TCodeBuffer; X, Y: integer;
-  ListOfPCodeXYPosition: TFPList; const VirtualToOverride: boolean
-  ): boolean;
+function TCodeToolManager.AddMethods(Code: TCodeBuffer; X, Y, TopLine: integer;
+  ListOfPCodeXYPosition: TFPList; const VirtualToOverride: boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
 var
-  CursorPos: TCodeXYPosition;
+  CursorPos, NewPos: TCodeXYPosition;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.AddMethods A ',Code.Filename);
@@ -3017,8 +3019,11 @@ begin
   CursorPos.Y:=Y;
   CursorPos.Code:=Code;
   try
-    Result:=FCurCodeTool.AddMethods(CursorPos,ListOfPCodeXYPosition,
-                                    VirtualToOverride,SourceChangeCache);
+    Result:=FCurCodeTool.AddMethods(CursorPos,TopLine,ListOfPCodeXYPosition,
+              VirtualToOverride,NewPos,NewTopLine,SourceChangeCache);
+    NewCode:=NewPos.Code;
+    NewX:=NewPos.X;
+    NewY:=NewPos.Y;
   except
     on e: Exception do Result:=HandleException(e);
   end;

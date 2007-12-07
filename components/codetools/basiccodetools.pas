@@ -1485,12 +1485,11 @@ begin
     ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
     if AtomStart>length(ProcText) then exit;
     if ProcText[AtomStart] in ['[','('] then begin
-      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments) then
+      if not ReadTilPascalBracketClose(ProcText,p,NestedComments) then
         exit;
-      p:=AtomStart;
     end else if ProcText[AtomStart]=';' then begin
       ReadRawNextPascalAtom(ProcText,p,AtomStart,NestedComments);
-      Result:=p;
+      Result:=AtomStart;
       exit;
     end;
   end;
@@ -1515,10 +1514,9 @@ begin
       break;
     end;
     if ProcText[AtomStart] in ['[','('] then begin
-      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments)
+      if not ReadTilPascalBracketClose(ProcText,Result,NestedComments)
       then
         exit(-1);
-      Result:=AtomStart;
     end;
   end;
   SpecifierEndPosition:=Result;
@@ -1527,10 +1525,9 @@ begin
     ReadRawNextPascalAtom(ProcText,SpecifierEndPosition,AtomStart,NestedComments);
     if AtomStart>length(ProcText) then exit;
     if ProcText[AtomStart] in ['[','('] then begin
-      if not ReadTilPascalBracketClose(ProcText,AtomStart,NestedComments)
+      if not ReadTilPascalBracketClose(ProcText,SpecifierEndPosition,NestedComments)
       then
         exit(-1);
-      SpecifierEndPosition:=AtomStart;
     end;
   end;
   if WithSpaceBehindSemicolon and (SpecifierEndPosition<=length(ProcText)) then
@@ -1538,6 +1535,7 @@ begin
     SpecifierEndPosition:=FindLineEndOrCodeAfterPosition(ProcText,
                                        SpecifierEndPosition+1,0,NestedComments);
   end;
+  //DebugLn(['SearchProcSpecifier ',copy(ProcText,Result,SpecifierEndPosition-Result)]);
 end;
 
 function RemoveProcSpecifier(const ProcText, Specifier: string;
@@ -1815,15 +1813,18 @@ begin
   AtomStart:=Position;
   while Position<=Len do begin
     ReadRawNextPascalAtom(Source,Position,AtomStart,NestedComments);
+    //DebugLn(['ReadTilPascalBracketClose ',copy(Source,AtomStart,Position-AtomStart)]);
     if Position>Len then
       exit; // CloseBracket not found
-    case Source[Position] of
+    case Source[AtomStart] of
     '{','(','[':
-      if not ReadTilPascalBracketClose(Source,Position) then exit;
+      begin
+        if not ReadTilPascalBracketClose(Source,AtomStart) then exit;
+        Position:=AtomStart;
+      end;
     '}',')',']':
-      if Source[Position]=CloseBracket then begin
+      if Source[AtomStart]=CloseBracket then begin
         // CloseBracket found
-        inc(Position);
         Result:=true;
         exit;
       end else begin

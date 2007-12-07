@@ -1052,7 +1052,7 @@ end;
 
 procedure TCTDirectoryCachePool.IncreaseTimeStamp;
 begin
-  DebugLn(['TCTDirectoryCachePool.IncreaseTimeStamp ']);
+  //DebugLn(['TCTDirectoryCachePool.IncreaseTimeStamp ']);
   if FTimeStamp<>High(FTimeStamp) then
     inc(FTimeStamp)
   else

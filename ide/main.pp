@@ -129,7 +129,7 @@ uses
   BuildLazDialog, MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
-  ProcedureList, ExtractProcDlg, FindRenameIdentifier,
+  ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
   // main ide
   MainBar, MainIntf, MainBase;
@@ -835,6 +835,7 @@ type
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
+    function DoShowAbstractMethods: TModalResult;
     function DoInitIdentCompletion(JumpToError: boolean): boolean;
     function DoShowCodeContext(JumpToError: boolean): boolean;
     procedure DoCompleteCodeAtCursor;
@@ -2564,6 +2565,9 @@ begin
 
   ecRenameIdentifier:
     DoFindRenameIdentifier(true);
+
+  ecShowAbstractMethods:
+    DoShowAbstractMethods;
 
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
@@ -11529,6 +11533,11 @@ begin
     OwnerList.Free;
     CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
+end;
+
+function TMainIDE.DoShowAbstractMethods: TModalResult;
+begin
+  Result:=ShowAbstractMethodsDialog;
 end;
 
 {-------------------------------------------------------------------------------

@@ -63,7 +63,7 @@ type
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         var RevertableJump: boolean): boolean;
     function FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function GatherProcNodes(StartNode: TCodeTreeNode;
         Attr: TProcHeadAttributes; const UpperClassName: string): TAVLTree;
     function FindFirstDifferenceNode(SearchForNodes, SearchInNodes: TAVLTree;
@@ -678,7 +678,7 @@ begin
 end;
 
 function TMethodJumpingCodeTool.FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var DestNode: TCodeTreeNode;
   i, NewCleanPos: integer;
 begin

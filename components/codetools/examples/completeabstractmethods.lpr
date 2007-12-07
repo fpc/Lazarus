@@ -42,6 +42,8 @@ var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
   CodeXYPos: TCodeXYPosition;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
 begin
   if (ParamCount>=1) and (Paramcount<>3) then begin
     writeln('Usage:');
@@ -59,7 +61,6 @@ begin
     Filename:=GetCurrentDir+'/scanexamples/abstractclass1.pas';
     X:=3;
     Y:=18;
-
     if (ParamCount>=3) then begin
       Filename:=ExpandFileName(ParamStr(1));
       X:=StrToInt(ParamStr(2));
@@ -85,9 +86,10 @@ begin
       writeln('FindAbstractMethods failed: ',CodeToolBoss.ErrorMessage);
     end;
     
-    if CodeToolBoss.AddMethods(Code,X,Y,ListOfPCodeXYPosition,true)
+    if CodeToolBoss.AddMethods(Code,X,Y,1,ListOfPCodeXYPosition,true,
+      NewCode,NewX,NewY,NewTopLine)
     then begin
-      writeln('AddMethods succeeded: ');
+      writeln('AddMethods succeeded: ',NewCode.Filename,' (',NewY,',',NewX,') ');
       writeln(Code.Source);
     end else begin
       writeln('AddMethods failed: ',CodeToolBoss.ErrorMessage);

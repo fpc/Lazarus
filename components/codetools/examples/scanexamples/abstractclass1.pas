@@ -8,7 +8,7 @@ uses
   Classes, SysUtils; 
   
 type
-  TAbstractClass = class
+  TAbstractClass = class(TStrings)
   public
     procedure Increase; virtual; abstract;
     procedure Decrease; virtual; abstract;

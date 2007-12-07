@@ -759,7 +759,7 @@ type
         IgnoreJumpCentered: boolean): boolean;
     function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
         NewBottomLineCleanPos: integer;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
     function NodeIsForwardDeclaration(Node: TCodeTreeNode): boolean;
 
@@ -3918,8 +3918,8 @@ begin
 end;
 
 function TFindDeclarationTool.JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
-  NewBottomLineCleanPos: integer; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
+  NewBottomLineCleanPos: integer; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; IgnoreJumpCentered: boolean): boolean;
 var
   CenteredTopLine: integer;
   NewTopLinePos: TCodeXYPosition;
