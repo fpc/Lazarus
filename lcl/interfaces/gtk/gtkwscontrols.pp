@@ -622,39 +622,6 @@ class procedure TGtkWSWinControl.PaintTo(const AWinControl: TWinControl;
   ADC: HDC; X, Y: Integer);
 var
   DC: TGtkDeviceContext absolute ADC;
-  AWidget: PGtkWidget;
-  AClientWidget: PGtkWidget;
-  AOffset: TPoint;
-  AWindow: PGdkWindow;
-
-  function GetOffset(AWidget: PGtkWidget): TPoint;
-  var
-    Fixed: Pointer;
-    Adjustment: PGtkAdjustment;
-  begin
-    Result.X := 0;
-    Result.Y := 0;
-    {$ifdef GTK2}
-    if (AWidget <> nil)
-    and GTK_WIDGET_NO_WINDOW(AWidget)
-    and not GtkWidgetIsA(AWidget, GTKAPIWidget_GetType)
-    then begin
-      Inc(Result.X, AWidget^.Allocation.x);
-      Inc(Result.y, AWidget^.Allocation.y);
-    end;
-    {$endIf}
-
-    Fixed := GetFixedWidget(AWidget);
-    if not GtkWidgetIsA(Fixed, GTK_LAYOUT_GET_TYPE) then Exit;
-
-    Adjustment := gtk_layout_get_hadjustment(Fixed);
-    if Adjustment <> nil
-    then Dec(Result.X, Trunc(Adjustment^.Value - Adjustment^.Lower));
-
-    Adjustment := gtk_layout_get_vadjustment(Fixed);
-    if Adjustment <> nil
-    then Dec(Result.Y, Trunc(Adjustment^.Value-Adjustment^.Lower));
-  end;
 
   procedure PaintWindow(AWindow: PGdkWindow; AOffset: TPoint);
   var
@@ -664,53 +631,24 @@ var
     gdk_window_copy_area(DC.Drawable, DC.GC, X, Y, AWindow,
       AOffset.X, AOffset.Y, W, H);
   end;
-{
-  procedure PerformExpose(AWidget: PGtkWidget);
+  
+  procedure PaintWidget(AWidget: PGtkWidget);
   var
-    AEvent: PGdkEvent;
+    AOffset: TPoint;
+    AWindow: PGdkWindow;
   begin
-    AEvent := gdk_event_new(GDK_EXPOSE);
-    PGdkEventExpose(AEvent)^.window := AWidget^.Window;
-    g_object_ref(PGdkEventExpose(AEvent)^.window);
-    gtk_widget_send_expose(AWidget, AEvent);
-    gdk_event_free(AEvent);
-  end;
-
-var
-  APixmap: PGdkPixmap;
-  W, H: gint;}
-begin
-  if not WSCheckHandleAllocated(AWinControl, 'PaintTo')
-  then Exit;
-
-  AWidget := PGtkWidget(AWinControl.Handle);
-{
-  AWindow := AWidget^.window;
-  gdk_window_get_size(AWindow, @W, @H);
-  APixmap := gdk_pixmap_new(nil, W, H, 32);
-  AWidget^.window:= APixmap;
-  PerformExpose(AWidget);
-  AWidget^.window := AWindow;
-
-  gdk_window_copy_area(DC.Drawable, DC.GC, X, Y, APixmap,
-      0, 0, W, H);
-}
-      
-  AClientWidget := GetFixedWidget(AWidget);
-  if AClientWidget <> nil then
-  begin
-    AWindow := GetControlWindow(AClientWidget);
-    if AWindow = nil then
-    begin
-      //force creation
-      gtk_widget_realize(AClientWidget);
-      AWindow := GetControlWindow(AClientWidget);
-    end;
-    AOffset := GetOffset(AWidget);
+    AWindow := AWidget^.window;
+    AOffset := Point(AWidget^.allocation.x, AWidget^.allocation.y);
 
     if AWindow <> nil then
       PaintWindow(AWindow, AOffset);
   end;
+  
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'PaintTo')
+  then Exit;
+
+  PaintWidget(PGtkWidget(AWinControl.Handle));
 end;
 
 { helper/common routines }
