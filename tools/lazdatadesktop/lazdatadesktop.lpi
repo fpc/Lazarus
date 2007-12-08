@@ -2,17 +2,17 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
+      <AutoCreateForms Value="False"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <Title Value="Lazarus Data Desktop"/>
-      <ActiveEditorIndexAtStart Value="0"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
       <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
       <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
@@ -22,32 +22,35 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="lazdatadict"/>
       </Item1>
       <Item2>
-        <PackageName Value="SQLDBLaz"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
       <Item3>
-        <PackageName Value="RunTimeTypeInfoControls"/>
+        <PackageName Value="SQLDBLaz"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="RunTimeTypeInfoControls"/>
       </Item4>
       <Item5>
+        <PackageName Value="LCL"/>
+      </Item5>
+      <Item6>
         <PackageName Value="DBFLaz"/>
         <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item5>
+      </Item6>
+      <Item7>
+        <PackageName Value="lazdbexport"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="57">
+    <Units Count="11">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="lazdatadesktop"/>
-        <CursorPos X="17" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="184"/>
       </Unit0>
       <Unit1>
         <Filename Value="frmmain.pp"/>
@@ -55,413 +58,67 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmmain.lrs"/>
         <UnitName Value="frmmain"/>
-        <CursorPos X="1" Y="19"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="184"/>
       </Unit1>
       <Unit2>
         <Filename Value="dicteditor.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="dicteditor"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="184"/>
       </Unit2>
       <Unit3>
-        <Filename Value="fpdatadict.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="fpdatadict"/>
-        <CursorPos X="1" Y="9"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="184"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="inicol.pp"/>
-        <UnitName Value="inicol"/>
-        <CursorPos X="1" Y="232"/>
-        <TopLine Value="207"/>
-        <UsageCount Value="78"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="fpdddbf.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="fpddDbf"/>
-        <CursorPos X="1" Y="12"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="173"/>
-      </Unit5>
-      <Unit6>
         <Filename Value="frmimportdd.pp"/>
         <ComponentName Value="ImportDDform"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmimportdd.lrs"/>
         <UnitName Value="frmimportdd"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="169"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="../../lcl/inipropstorage.pp"/>
-        <UnitName Value="IniPropStorage"/>
-        <CursorPos X="52" Y="23"/>
-        <TopLine Value="17"/>
-        <UsageCount Value="23"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="../../lcl/propertystorage.pp"/>
-        <UnitName Value="PropertyStorage"/>
-        <CursorPos X="1" Y="137"/>
-        <TopLine Value="120"/>
-        <UsageCount Value="28"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="../../lcl/forms.pp"/>
-        <UnitName Value="Forms"/>
-        <CursorPos X="14" Y="523"/>
-        <TopLine Value="504"/>
-        <UsageCount Value="24"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="../../lcl/controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="18" Y="3086"/>
-        <TopLine Value="3078"/>
-        <UsageCount Value="24"/>
-      </Unit10>
-      <Unit11>
+      </Unit3>
+      <Unit4>
         <Filename Value="frmgeneratesql.pp"/>
         <ComponentName Value="GenerateSQLForm"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmgeneratesql.lrs"/>
         <UnitName Value="frmgeneratesql"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="143"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="../../fpcsrc/fcl/db/db.pp"/>
-        <UnitName Value="db"/>
-        <CursorPos X="47" Y="97"/>
-        <TopLine Value="69"/>
-        <UsageCount Value="13"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="fpddsqldb.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="fpddsqldb"/>
-        <CursorPos X="1" Y="15"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="129"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="../../fpcsrc/fcl/db/sqldb/sqldb.pp"/>
-        <UnitName Value="sqldb"/>
-        <CursorPos X="15" Y="76"/>
-        <TopLine Value="60"/>
-        <UsageCount Value="19"/>
-      </Unit14>
-      <Unit15>
+      </Unit4>
+      <Unit5>
         <Filename Value="frmsqlconnect.pp"/>
         <ComponentName Value="SQLConnectionForm"/>
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="frmsqlconnect.lrs"/>
         <UnitName Value="frmSQLConnect"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="127"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="../../fpcsrc/fcl/db/sqldb/interbase/ibconnection.pp"/>
-        <UnitName Value="IBConnection"/>
-        <CursorPos X="16" Y="35"/>
-        <TopLine Value="17"/>
-        <UsageCount Value="10"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="../../fpcsrc/fcl/inc/inifiles.pp"/>
-        <UnitName Value="IniFiles"/>
-        <CursorPos X="3" Y="474"/>
-        <TopLine Value="444"/>
-        <UsageCount Value="8"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="inifiles.pp"/>
-        <UnitName Value="IniFiles"/>
-        <CursorPos X="1" Y="730"/>
-        <TopLine Value="714"/>
-        <UsageCount Value="5"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="inipropstorage.pp"/>
-        <UnitName Value="IniPropStorage"/>
-        <CursorPos X="54" Y="23"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="6"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="fpddmysql.pp"/>
-        <UnitName Value="fpddmysql"/>
-        <CursorPos X="33" Y="8"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="13"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="frmmain.lfm"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="7"/>
-        <SyntaxHighlighter Value="LFM"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="../../projects/lazarus/components/jpeg/lazjpeg.pp"/>
-        <UnitName Value="LazJPEG"/>
-        <CursorPos X="8" Y="97"/>
-        <TopLine Value="72"/>
-        <UsageCount Value="7"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="../ads/adsdata.pp"/>
-        <UnitName Value="adsdata"/>
-        <CursorPos X="17" Y="456"/>
-        <TopLine Value="433"/>
-        <UsageCount Value="4"/>
-      </Unit23>
-      <Unit24>
+      </Unit5>
+      <Unit6>
         <Filename Value="ddfiles.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ddfiles"/>
-        <CursorPos X="28" Y="25"/>
-        <TopLine Value="1"/>
-        <EditorIndex Value="0"/>
-        <UsageCount Value="91"/>
-        <Loaded Value="True"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="../fpc/fprepos.pp"/>
-        <UnitName Value="fprepos"/>
-        <CursorPos X="39" Y="291"/>
-        <TopLine Value="266"/>
-        <UsageCount Value="4"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="../fpc/streamcoll.pp"/>
-        <UnitName Value="streamcoll"/>
-        <CursorPos X="1" Y="45"/>
-        <TopLine Value="23"/>
-        <UsageCount Value="4"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="../../../../../../michael/fpc/packages/fcl-db/src/db.pp"/>
-        <UnitName Value="db"/>
-        <CursorPos X="14" Y="915"/>
-        <TopLine Value="890"/>
-        <UsageCount Value="38"/>
-      </Unit27>
-      <Unit28>
+      </Unit6>
+      <Unit7>
         <Filename Value="conneditor.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="conneditor"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="86"/>
-      </Unit28>
-      <Unit29>
-        <Filename Value="../../../../../../michael/projects/lazarus/components/sqldb/registersqldb.pp"/>
-        <UnitName Value="registersqldb"/>
-        <CursorPos X="22" Y="30"/>
-        <TopLine Value="4"/>
-        <UsageCount Value="24"/>
-      </Unit29>
-      <Unit30>
-        <Filename Value="../../../../../../michael/lazarus/lcl/controls.pp"/>
-        <UnitName Value="Controls"/>
-        <CursorPos X="1" Y="1078"/>
-        <TopLine Value="1052"/>
-        <UsageCount Value="36"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="../../../../../../michael/fpc/rtl/objpas/classes/classesh.inc"/>
-        <CursorPos X="56" Y="439"/>
-        <TopLine Value="412"/>
-        <UsageCount Value="21"/>
-      </Unit31>
-      <Unit32>
+      </Unit7>
+      <Unit8>
         <Filename Value="datapanel.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="datapanel"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="43"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="../../../../../../michael/lazarus/lcl/dbctrls.pp"/>
-        <UnitName Value="DbCtrls"/>
-        <CursorPos X="37" Y="824"/>
-        <TopLine Value="821"/>
-        <UsageCount Value="10"/>
-      </Unit33>
-      <Unit34>
+      </Unit8>
+      <Unit9>
         <Filename Value="querypanel.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="querypanel"/>
-        <CursorPos X="1" Y="12"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="40"/>
-      </Unit34>
-      <Unit35>
-        <Filename Value="../../../../../../michael/lazarus/components/synedit/synedithighlighter.pp"/>
-        <UnitName Value="SynEditHighlighter"/>
-        <CursorPos X="63" Y="8"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="9"/>
-      </Unit35>
-      <Unit36>
-        <Filename Value="../../../../../../michael/lazarus/lcl/comctrls.pp"/>
-        <UnitName Value="ComCtrls"/>
-        <CursorPos X="25" Y="1357"/>
-        <TopLine Value="1332"/>
-        <UsageCount Value="9"/>
-      </Unit36>
-      <Unit37>
-        <Filename Value="../../../../../../michael/lazarus/lcl/include/toolbutton.inc"/>
-        <CursorPos X="29" Y="303"/>
-        <TopLine Value="303"/>
-        <UsageCount Value="9"/>
-      </Unit37>
-      <Unit38>
-        <Filename Value="../../../../../../michael/lazarus/components/synedit/synmemo.pp"/>
-        <UnitName Value="SynMemo"/>
-        <CursorPos X="32" Y="128"/>
-        <TopLine Value="128"/>
-        <UsageCount Value="14"/>
-      </Unit38>
-      <Unit39>
-        <Filename Value="../../../../../../michael/lazarus/components/synedit/synedit.pp"/>
-        <UnitName Value="SynEdit"/>
-        <CursorPos X="34" Y="1389"/>
-        <TopLine Value="1364"/>
-        <UsageCount Value="14"/>
-      </Unit39>
-      <Unit40>
-        <Filename Value="querypanel.lrs"/>
-        <CursorPos X="26" Y="107"/>
-        <TopLine Value="65"/>
-        <UsageCount Value="13"/>
-      </Unit40>
-      <Unit41>
-        <Filename Value="../../../../../../michael/lazarus/lcl/actnlist.pp"/>
-        <UnitName Value="ActnList"/>
-        <CursorPos X="17" Y="103"/>
-        <TopLine Value="74"/>
-        <UsageCount Value="10"/>
-      </Unit41>
-      <Unit42>
-        <Filename Value="../../../../../../michael/lazarus/lcl/include/customactionlist.inc"/>
-        <CursorPos X="1" Y="10"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit42>
-      <Unit43>
-        <Filename Value="../../../../../../michael/lazarus/lcl/forms.pp"/>
-        <UnitName Value="Forms"/>
-        <CursorPos X="15" Y="472"/>
-        <TopLine Value="447"/>
-        <UsageCount Value="10"/>
-      </Unit43>
-      <Unit44>
-        <Filename Value="../../../../../../michael/lazarus/lcl/include/application.inc"/>
-        <CursorPos X="1" Y="311"/>
-        <TopLine Value="286"/>
-        <UsageCount Value="12"/>
-      </Unit44>
-      <Unit45>
-        <Filename Value="../../../../../../michael/lazarus/lcl/include/customform.inc"/>
-        <CursorPos X="3" Y="1090"/>
-        <TopLine Value="1068"/>
-        <UsageCount Value="10"/>
-      </Unit45>
-      <Unit46>
-        <Filename Value="../../../../../../michael/lazarus/lcl/interfaces/gtk/gtkproc.inc"/>
-        <CursorPos X="1" Y="3575"/>
-        <TopLine Value="3550"/>
-        <UsageCount Value="12"/>
-      </Unit46>
-      <Unit47>
-        <Filename Value="../../../../../../michael/lazarus/lcl/interfaces/gtk/gtkobject.inc"/>
-        <CursorPos X="1" Y="1430"/>
-        <TopLine Value="1405"/>
-        <UsageCount Value="12"/>
-      </Unit47>
-      <Unit48>
-        <Filename Value="../../../../../../michael/lazarus/lcl/interfaces/gtk/gtkcallback.inc"/>
-        <CursorPos X="10" Y="638"/>
-        <TopLine Value="630"/>
-        <UsageCount Value="12"/>
-      </Unit48>
-      <Unit49>
-        <Filename Value="../../../../../../michael/lazarus/components/sqldb/registersqldb.pp"/>
-        <UnitName Value="registersqldb"/>
-        <CursorPos X="37" Y="39"/>
-        <TopLine Value="36"/>
-        <UsageCount Value="12"/>
-      </Unit49>
-      <Unit50>
-        <Filename Value="../apiwizz/apiwizard.pp"/>
-        <UnitName Value="APIWizard"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit50>
-      <Unit51>
-        <Filename Value="../../components/daemon/lazdaemonapp.pp"/>
-        <UnitName Value="lazdaemonapp"/>
-        <CursorPos X="1" Y="12"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="10"/>
-      </Unit51>
-      <Unit52>
-        <Filename Value="../../ideintf/projectintf.pas"/>
-        <UnitName Value="ProjectIntf"/>
-        <CursorPos X="15" Y="566"/>
-        <TopLine Value="548"/>
-        <UsageCount Value="11"/>
-      </Unit52>
-      <Unit53>
-        <Filename Value="../../lcl/include/customform.inc"/>
-        <CursorPos X="43" Y="1955"/>
-        <TopLine Value="1937"/>
-        <UsageCount Value="10"/>
-      </Unit53>
-      <Unit54>
-        <Filename Value="../../lcl/widgetset/wsforms.pp"/>
-        <UnitName Value="WSForms"/>
-        <CursorPos X="34" Y="55"/>
-        <TopLine Value="35"/>
-        <UsageCount Value="10"/>
-      </Unit54>
-      <Unit55>
-        <Filename Value="../../lcl/widgetset/wscontrols.pp"/>
-        <UnitName Value="WSControls"/>
-        <CursorPos X="23" Y="100"/>
-        <TopLine Value="78"/>
-        <UsageCount Value="10"/>
-      </Unit55>
-      <Unit56>
+      </Unit9>
+      <Unit10>
         <Filename Value="README.txt"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="1" Y="1"/>
-        <TopLine Value="1"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="None"/>
-      </Unit56>
+      </Unit10>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <Target>
+      <Filename Value="lazdatadesktop"/>
+    </Target>
     <SearchPaths>
-      <Libraries Value="/opt/gnome/lib64/"/>
-      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
+      <Libraries Value="/opt/gnome/lib/"/>
+      <LCLWidgetType Value="gtk"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
@@ -477,19 +134,4 @@
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
-  <Debugging>
-    <Watches Count="1">
-      <Item1>
-        <Expression Value="RC"/>
-      </Item1>
-    </Watches>
-    <Exceptions Count="2">
-      <Item1>
-        <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
-        <Name Value="EFOpenError"/>
-      </Item2>
-    </Exceptions>
-  </Debugging>
 </CONFIG>

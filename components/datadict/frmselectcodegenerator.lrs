@@ -1,0 +1,21 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TSelectCodeGeneratorForm','FORMDATA',[
+  'TPF0'#24'TSelectCodeGeneratorForm'#23'SelectCodeGeneratorForm'#4'Left'#3'!'#2
+  +#6'Height'#3','#1#3'Top'#3#239#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3
+  +#143#1#18'VertScrollBar.Page'#3'+'#1#13'ActiveControl'#7#22'BPButtons.Cancel'
+  +'Button'#7'Caption'#6#27'Select code to be generated'#12'ClientHeight'#3','#1
+  +#11'ClientWidth'#3#144#1#7'OnClose'#7#9'FormClose'#6'OnShow'#7#8'FormShow'#0
+  +#11'TRadioGroup'#12'RGGenerators'#4'Left'#2#8#6'Height'#3#240#0#3'Top'#2#8#5
+  +'Width'#3'x'#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'A'
+  +'utoFill'#9#7'Caption'#6#25'Available code generators'#28'ChildSizing.LeftRi'
+  +'ghtSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.Enlarge'
+  +'Horizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7
+  +#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScale'
+  +'Childs'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.'
+  +'Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'
+  +#2#1#8'TabOrder'#2#0#0#0#12'TButtonPanel'#9'BPButtons'#4'Left'#2#6#6'Height'
+  +#2'*'#3'Top'#3#2#1#5'Width'#3#132#1#5'Align'#7#8'alBottom'#8'AutoSize'#9#8'T'
+  +'abOrder'#2#1#11'ShowButtons'#11#4'pbOK'#8'pbCancel'#0#10'ShowGlyphs'#11#4'p'
+  +'bOK'#8'pbCancel'#7'pbClose'#6'pbHelp'#0#0#0#0
+]);

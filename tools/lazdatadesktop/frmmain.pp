@@ -36,9 +36,14 @@ type
     FEngineName : String;
   end;
   
-  TImportMenuItem = Class(TEngineMenuItem);
   TNewConnectionMenuItem = Class(TEngineMenuItem);
+  TImportMenuItem = Class(TEngineMenuItem);
   
+  TRecentImportMenuItem = Class(TMenuItem)
+  Public
+    FRecentConnection : TRecentConnection;
+  end;
+
   { TMainForm }
 
   TMainForm = class(TForm)
@@ -132,6 +137,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure HaveConnection(Sender: TObject);
     procedure HaveDDEditor(Sender: TObject);
     procedure HaveTabs(Sender: TObject);
@@ -141,11 +147,13 @@ type
     procedure LVDictsDblClick(Sender: TObject);
     procedure LVDictsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
       );
+    procedure PCDDChange(Sender: TObject);
     procedure SaveAsExecute(Sender: TObject);
   private
     FRecentDicts : TRecentDataDicts;
     FRecentConnections : TRecentConnections;
     procedure AddRecentConnection(RC: TRecentConnection; AssumeNew: Boolean);
+    procedure CheckParams;
     function CloseCurrentConnection: TModalResult;
     function CloseCurrentTab(AddCancelClose: Boolean = False): TModalResult;
     function GetConnectionName(var AName: String): Boolean;
@@ -154,7 +162,9 @@ type
     procedure NewConnection(EngineName : String);
     procedure NewConnection;
     procedure OpenConnection(RC: TRecentConnection);
+    procedure RegisterDDEngines;
     Function SelectEngineType(Var EngineName : String) : Boolean;
+    procedure ShowImportRecentconnections;
     procedure ShowNewConnectionTypes;
     procedure ShowRecentConnections;
     Procedure ShowRecentDictionaries;
@@ -168,8 +178,10 @@ type
     Procedure AddRecentDict(DF : TRecentDataDict; AssumeNew : Boolean);
     Function  FindLi(LV : TListView;RI : TRecentItem) : TListItem;
     procedure ImportClick(Sender : TObject);
+    procedure RecentImportClick(Sender : TObject);
     procedure NewConnectionClick(Sender : TObject);
     procedure DoImport(Const EngineName : String);
+    procedure DoImport(Const EngineName,ConnectionString : String);
     Procedure DoDDEProgress(Sender : TObject; Const Msg : String);
     { private declarations }
   public
@@ -199,7 +211,18 @@ var
 
 implementation
 
-uses frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect;
+uses
+  // Data dictionary support for
+  fpdddbf,     // DBF
+  fpddfb,      // Firebird
+  fpddmysql40, // MySQL 4.0
+  fpddmysql41, // MySQL 4.1
+  fpddmysql50, // MySQL 5.0
+  fpddoracle,  // Oracle
+  fpddpq,      // PostgreSQL
+  fpddsqlite3, // SQLite 3
+  fpddodbc,    // Any ODBC supported
+  frmimportdd,frmgeneratesql,fpddsqldb,frmSQLConnect,fpstdexports;
 
 ResourceString
   SSaveData     = 'Save changes';
@@ -222,7 +245,9 @@ ResourceString
   SConnectionDescription = 'Enter a descriptive name for the connection';
   SConnectionNameExists = 'There is already a connection named "%s"'#13#10+
                           'Would you like to override the connection data ?';
-  
+  SUnknownDictionary = 'Unknown data dictionary: %s';
+  SUnknownConnection = 'Unknown connection: %s';
+
   
 { ---------------------------------------------------------------------
   TMainform events
@@ -239,9 +264,12 @@ procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 
 begin
   CanClose:=True;
-  PCDD.ActivePageIndex:=PCDD.PageCount-1;
-  While Canclose and (CurrentEditor<>Nil) do
-    CanClose:=CloseCurrentEditor(True)<>mrCancel;
+  If PCDD.PageCount>2 then
+    begin
+    PCDD.ActivePageIndex:=PCDD.PageCount-1;
+    While Canclose and (CurrentEditor<>Nil) do
+      CanClose:=CloseCurrentEditor(True)<>mrCancel;
+    end;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
@@ -250,6 +278,10 @@ Var
   FN : String;
 
 begin
+  // Register DD engines.
+  RegisterDDEngines;
+  // Register standard export formats.
+  RegisterStdFormats;
   FRecentDicts:=TRecentDataDicts.Create(TRecentDataDict);
   FRecentConnections:=TRecentConnections.Create(TRecentConnection);
   FN:=GetAppConfigDir(False);
@@ -273,6 +305,48 @@ begin
   FreeAndNil(FRecentDicts);
 end;
 
+procedure TMainForm.FormShow(Sender: TObject);
+begin
+  CheckParams;
+end;
+
+procedure TMainForm.CheckParams;
+
+Var
+  S : String;
+  D : TRecentDatadict;
+  C : TRecentConnection;
+  
+begin
+  With Application do
+  If HasOption('d','dictionary') then
+    begin
+    S:=GetOptionValue('d','dictionary');
+    D:=FRecentDicts.FindFromName(S);
+    If (D<>Nil) then
+      OpenDataDict(D)
+    else
+      ShowMessage(Format(SUnknownDictionary,[S]));
+    end
+  else If HasOption('f','filename') then
+    begin
+    S:=GetOptionValue('f','filename');
+    If FileExists(S) then
+      OpenFile(S);
+    end
+  else If HasOption('c','connection') then
+    begin
+    S:=GetOptionValue('c','connection');
+    C:=FRecentConnections.FindFromName(S);
+    If (C<>Nil) then
+      OpenConnection(C)
+    else
+      ShowMessage(Format(SUnknownConnection,[S]));
+    end;
+
+end;
+
+
 procedure TMainForm.HaveConnection(Sender: TObject);
 begin
   (Sender as TAction).Enabled:=True
@@ -283,13 +357,47 @@ end;
   Main form auxiliary methods
   ---------------------------------------------------------------------}
   
-procedure TMainForm.RegisterConnectionCallBacks;
+procedure TMainForm.RegisterDDEngines;
 
 begin
-  RegisterConnectionStringCallback('TDBFDDEngine',@GetDBFDir);
-  RegisterConnectionStringCallback('TSQLDBMySql4DDEngine',@GetSQLConnectionDlg);
-  RegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
-  RegisterConnectionStringCallback('TSQLDBIBDDEngine',@GetSQLConnectionDlg);
+  RegisterFBDDEngine;
+  RegisterMySQL40DDEngine;
+  RegisterMySQL41DDEngine;
+  RegisterMySQL50DDEngine;
+  RegisterOracleDDEngine;
+  RegisterPostgreSQLDDengine;
+  RegisterSQLite3DDEngine;
+  RegisterODBCDDengine;
+end;
+
+procedure TMainForm.RegisterConnectionCallBacks;
+
+Var
+  L : TStringList;
+  
+  Procedure MaybeRegisterConnectionStringCallback(RC : String;CallBack : TGetConnectionEvent);
+  
+  begin
+    If L.IndexOf(Rc)<>-1 then
+      RegisterConnectionStringCallback(RC,Callback);
+  end;
+
+begin
+  L:=TStringList.Create;
+  try
+    GetDictionaryEngineList(L);
+    MaybeRegisterConnectionStringCallback('TDBFDDEngine',@GetDBFDir);
+    MaybeRegisterConnectionStringCallback('TSQLDBMySql40DDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBMySql41DDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBMySql5DDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBODBCDDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBPOSTGRESQLDDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBIBDDEngine',@GetSQLConnectionDlg);
+    MaybeRegisterConnectionStringCallback('TSQLDBSQLite3DDEngine',@GetSQLConnectionDlg);
+  finally
+    L.free;
+  end;
+
 end;
 
 
@@ -384,9 +492,52 @@ begin
         PSMain.StoredValue[L[i]]:='';
         end;
       end;
+    ShowImportRecentconnections;
   Finally
     L.Free;
   end;
+  MIImport.Enabled:=(MIImport.Count>0);
+end;
+
+procedure TMainForm.ShowImportRecentconnections;
+
+Var
+  MR : TMenuItem;
+  MI : TRecentImportMenuItem;
+  L : TStringList;
+  dd,dt : string;
+  i : integer;
+  cap : TFPDDEngineCapabilities;
+  RC: TRecentConnection;
+
+begin
+  If (FRecentConnections.Count>0) then
+    begin
+    MR:=TMenuItem.Create(Self);
+    MR.Caption:='From connection';
+    MIimport.Insert(0,MR);
+    L:=TStringList.Create;
+    Try
+      For I:=0 to FRecentConnections.Count-1 do
+        L.AddObject(FRecentConnections[i].Name,FRecentConnections[i]);
+      L.Sort;
+      For I:=0 to L.Count-1 do
+        begin
+        RC:=L.Objects[i] as TRecentConnection;
+        GetDictionaryEngineInfo(RC.EngineName,dd,dt,cap);
+        if (ecImport in cap) then
+          begin
+          MI:=TRecentImportMenuItem.Create(Self);
+          MI.Caption:=L[i];
+          MI.FRecentConnection:=RC;
+          MI.OnClick:=@RecentImportClick;
+          MR.Add(MI);
+          end;
+        end;
+    Finally
+      L.Free;
+    end;
+    end;
   MIImport.Enabled:=(MIImport.Count>0);
 end;
 
@@ -462,6 +613,16 @@ procedure TMainForm.ImportClick(Sender : TObject);
 
 begin
   DoImport((Sender as TEngineMenuItem).FEngineName);
+end;
+
+procedure TMainForm.RecentImportClick(Sender : TObject);
+
+Var
+  RC : TRecentConnection;
+
+begin
+  RC:=(Sender as TRecentImportMenuItem).FRecentConnection;
+  DoImport(RC.EngineName,RC.ConnectionString);
 end;
 
 procedure TMainForm.NewConnectionClick(Sender : TObject);
@@ -742,7 +903,7 @@ Var
 begin
   CE:=CurrentConnection;
   CE.DisConnect;
-  CE.Free;
+  Application.ReleaseComponent(ce);
   Result:=mrOK;
 end;
 
@@ -871,7 +1032,15 @@ begin
 end;
 
 
+
+
 procedure TMainForm.DoImport(Const EngineName : String);
+
+begin
+  DoImport(EngineName,'');
+end;
+
+procedure TMainForm.DoImport(Const EngineName, Connectionstring : String);
 
   Function UseNewDataDict : Boolean;
   
@@ -889,7 +1058,9 @@ Var
 begin
   DDE:=CreateDictionaryEngine(EngineName,self);
   Try
-    CS:=DDE.GetConnectString;
+    CS:=ConnectionString;
+    If (CS='') then
+      CS:=DDE.GetConnectString;
     If (CS='') then
       exit;
     DDE.Connect(CS);
@@ -940,6 +1111,11 @@ end;
 
 procedure TMainForm.LVDictsKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+begin
+
+end;
+
+procedure TMainForm.PCDDChange(Sender: TObject);
 begin
 
 end;
@@ -1074,6 +1250,7 @@ begin
     Exit;
   RC:=FRecentConnections.FindFromName(AName);
   RC.ConnectionString:=CS;
+  RC.EngineName:=EngineName;
   RC.Use;
   CDE:=NewConnectionEditor(Aname);
   CDE.Engine:=DDE;

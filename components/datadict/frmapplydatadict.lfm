@@ -1,0 +1,34 @@
+object ApplyDataDictionaryForm: TApplyDataDictionaryForm
+  Left = 549
+  Height = 265
+  Top = 208
+  Width = 373
+  HorzScrollBar.Page = 372
+  VertScrollBar.Page = 264
+  Caption = 'Applying data dictionary'
+  ClientHeight = 265
+  ClientWidth = 373
+  object BOK: TButton
+    Left = 288
+    Height = 25
+    Top = 236
+    Width = 75
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Close'
+    Default = True
+    OnClick = BOKClick
+    TabOrder = 0
+  end
+  object MLog: TMemo
+    Left = 8
+    Height = 224
+    Top = 8
+    Width = 353
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Lines.Strings = (
+      ''
+    )
+    TabOrder = 1
+  end
+end

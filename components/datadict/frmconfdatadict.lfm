@@ -1,0 +1,75 @@
+object ConfigIDEDataDictForm: TConfigIDEDataDictForm
+  Left = 450
+  Height = 152
+  Top = 368
+  Width = 463
+  HorzScrollBar.Page = 462
+  VertScrollBar.Page = 151
+  ActiveControl = BOK
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Configure Data Dictionary'
+  ClientHeight = 152
+  ClientWidth = 463
+  OnCreate = FormCreate
+  object Label1: TLabel
+    Left = 8
+    Height = 13
+    Top = 8
+    Width = 169
+    Caption = 'Database desktop application:'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 13
+    Top = 64
+    Width = 179
+    Caption = 'Default datadictionary directory:'
+    ParentColor = False
+  end
+  object FEDD: TFileNameEdit
+    Left = 32
+    Height = 23
+    Top = 32
+    Width = 392
+    Filter = 'Applications|*.exe|Any file|*.*'
+    ButtonWidth = 23
+    NumGlyphs = 1
+    ParentColor = False
+    TabOrder = 0
+  end
+  object BOK: TButton
+    Left = 376
+    Height = 25
+    Top = 120
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    OnClick = BOKClick
+    TabOrder = 1
+  end
+  object BCancel: TButton
+    Left = 288
+    Height = 25
+    Top = 120
+    Width = 75
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = '&Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object DEDD: TDirectoryEdit
+    Left = 32
+    Height = 23
+    Top = 80
+    Width = 392
+    ButtonWidth = 23
+    NumGlyphs = 1
+    ParentColor = False
+    TabOrder = 3
+  end
+end

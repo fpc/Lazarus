@@ -50,6 +50,7 @@ Type
     procedure SelectConnection;
     procedure SelectField(TableName, FieldName: String);
     procedure SelectFields(TableName: String);
+    procedure SelectIndexes(TableName: String);
     procedure SelectTable(TableName: String);
     procedure SelectTables;
     procedure SetDescription(const AValue: String);
@@ -60,6 +61,7 @@ Type
     procedure ShowFields(ATableName: String; ALV: TListView);
     procedure ShowIndexes(ATableName: String; ATV: TTreeView;
       ParentNode: TTreeNode);
+    procedure ShowIndexes(ATableName: String; ALV: TListView);
     procedure ShowTableData(ATableName: String);
     procedure ShowTables(ATV : TTreeView;ParentNode: TTreeNode; AddSubNodes : Boolean = False);
   Public
@@ -75,14 +77,16 @@ Type
 
 Const
   // Image Index for nodes. Relative to ImageOffset;
-  iiConnection = 0;
-  iiTables     = 1;
-  iiTable      = 2;
-  iiFields     = 3;
-  iiField      = 4;
-  iiIndexes    = 5;
-  iiIndex      = 6;
-  iiTableData  = 7;
+  iiConnection   = 0;
+  iiTables       = 1;
+  iiTable        = 2;
+  iiFields       = 3;
+  iiField        = 4;
+  iiIndexes      = 5;
+  iiIndex        = 6;
+  iiTableData    = 7;
+  iiIndexFields  = 8;
+  iiIndexOptions = 9;
   FimageOffset = 0;
   
 {
@@ -100,6 +104,8 @@ ResourceString
   SNewDictionary      = 'New database';
   SNodeDataBase       = 'Database';
   SNodeTableData      = 'Table Data';
+  SNodeIndexOptions   = 'Index options: ';
+  SNodeIndexFields    = 'Index fields: ';
   SParameter          = 'Parameter';
   SValue              = 'Value';
   SEngineType         = 'Engine';
@@ -107,6 +113,8 @@ ResourceString
   SColName            = 'Name';
   SColType            = 'Type';
   SColSize            = 'Size';
+  SColFields          = 'Fields';
+  SColOptions         = 'Options';
   SQuery              = 'Run query';
   SObject             = 'Selected object';
 
@@ -297,6 +305,8 @@ begin
                      SelectField(PPN.Text,N.Text);
     otTableData  : If Assigned(PN) then
                      ShowTableData(PN.Text);
+    otIndexDefs  : If Assigned(PN) then
+                     SelectIndexes(PN.Text);
   end;
 end;
 
@@ -419,10 +429,101 @@ begin
   TN.Expand(True);
 end;
 
-procedure TConnectionEditor.ShowIndexes(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
+procedure TConnectionEditor.SelectIndexes(TableName : String);
+
+Var
+  LV : TListView;
+  LC : TListColumn;
 
 begin
+  ClearDisplay;
+  LV:=TListView.Create(Self);
+  LV.ViewStyle:=vsReport;
+  LV.ShowColumnHeaders:=True;
+  LC:=LV.Columns.Add;
+  LC.Caption:=SColName;
+  LC.Width:=200;
+  LC:=LV.Columns.Add;
+  LC.Caption:=SColFields;
+  LC.Width:=80;
+  LC:=LV.Columns.Add;
+  LC.Caption:=SColOptions;
+  LC.Width:=30;
+  LV.Parent:=FDisplay;
+  LV.Align:=alClient;
+  LV.BeginUpdate;
+  Try
+    ShowIndexes(TableName,LV);
+  Finally
+    LV.EndUpdate;
+  end;
+end;
 
+procedure TConnectionEditor.ShowIndexes(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
+
+Var
+  L : TStringList;
+  ID : TDDIndexDefs;
+  D : TDDIndexDef;
+  NI,NN : TTreeNode;
+  I : Integer;
+
+begin
+  L:=TStringList.Create;
+  Try
+    ID:=TDDIndexDefs.Create(ATableName);
+    try
+      FEngine.GetTableIndexDefs(ATableName,ID);
+      For I:=0 to ID.Count-1 do
+        L.AddObject(ID[I].IndexName,ID[I]);
+      L.Sort;
+      For I:=0 to L.Count-1 do
+        begin
+        D:=L.Objects[I] as TDDIndexDef;
+        NI:=NewNode(ATV,ParentNode,D.IndexName,iiIndex);
+        NN:=NewNode(ATV,NI,SNodeIndexFields+D.Fields,iiIndexFields);
+        NN:=NewNode(ATV,NI,SNodeIndexOptions+IndexOptionsToString(D.Options),iiIndexOptions)
+        end;
+    finally
+      ID.Free;
+    end;
+  Finally
+    L.Free;
+  end;
+end;
+
+procedure TConnectionEditor.ShowIndexes(ATableName : String; ALV : TListView);
+
+Var
+  L : TStringList;
+  ID : TDDIndexDefs;
+  D : TDDIndexDef;
+  LI : TListItem;
+  I : Integer;
+
+begin
+  L:=TStringList.Create;
+  Try
+    ID:=TDDIndexDefs.Create(ATableName);
+    try
+      FEngine.GetTableIndexDefs(ATableName,ID);
+      For I:=0 to ID.Count-1 do
+        L.AddObject(ID[I].IndexName,ID[I]);
+      L.Sort;
+      For I:=0 to L.Count-1 do
+        begin
+        D:=L.Objects[I] as TDDIndexDef;
+        LI:=ALV.Items.Add;
+        LI.Caption:=D.IndexName;
+        LI.SubItems.Add(D.Fields);
+        LI.SubItems.Add(IndexOptionsToString(D.Options));
+        end;
+    finally
+      ID.Free;
+    end;
+  Finally
+    L.Free;
+  end;
 end;
 
 procedure TConnectionEditor.ShowFields(ATableName : String; ATV : TTreeView;ParentNode : TTreeNode);
@@ -541,6 +642,7 @@ begin
     iiFields     : Result:=otFields;
     iiField      : Result:=otField;
     iiTableData  : Result:=otTabledata;
+    iiIndexes    : Result:=otIndexDefs;
   end;
 end;
 

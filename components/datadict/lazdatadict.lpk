@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="lazdatadict"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Files Count="17">
+      <Item1>
+        <Filename Value="frmconfprojdatadict.pp"/>
+        <UnitName Value="frmconfprojdatadict"/>
+      </Item1>
+      <Item2>
+        <Filename Value="idedatadict.pp"/>
+        <UnitName Value="idedatadict"/>
+      </Item2>
+      <Item3>
+        <Filename Value="reglazdatadict.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="reglazdatadict"/>
+      </Item3>
+      <Item4>
+        <Filename Value="frmconfdatadict.lfm"/>
+        <Type Value="LFM"/>
+      </Item4>
+      <Item5>
+        <Filename Value="frmconfdatadict.lrs"/>
+        <Type Value="LRS"/>
+      </Item5>
+      <Item6>
+        <Filename Value="frmconfdatadict.pp"/>
+        <UnitName Value="frmconfdatadict"/>
+      </Item6>
+      <Item7>
+        <Filename Value="frmselectcodegenerator.lfm"/>
+        <Type Value="LFM"/>
+      </Item7>
+      <Item8>
+        <Filename Value="frmselectcodegenerator.lrs"/>
+        <Type Value="LRS"/>
+      </Item8>
+      <Item9>
+        <Filename Value="frmselectcodegenerator.pp"/>
+        <UnitName Value="frmSelectCodeGenerator"/>
+      </Item9>
+      <Item10>
+        <Filename Value="fpcodegenerator.pp"/>
+        <UnitName Value="fpcodegenerator"/>
+      </Item10>
+      <Item11>
+        <Filename Value="frmbaseconfigcodegenerator.lfm"/>
+        <Type Value="LFM"/>
+      </Item11>
+      <Item12>
+        <Filename Value="frmbaseconfigcodegenerator.lrs"/>
+        <Type Value="LRS"/>
+      </Item12>
+      <Item13>
+        <Filename Value="frmbaseconfigcodegenerator.pp"/>
+        <UnitName Value="frmBaseConfigCodeGenerator"/>
+      </Item13>
+      <Item14>
+        <Filename Value="frmgeneratedcode.lfm"/>
+        <Type Value="LFM"/>
+      </Item14>
+      <Item15>
+        <Filename Value="frmgeneratedcode.lrs"/>
+        <Type Value="LRS"/>
+      </Item15>
+      <Item16>
+        <Filename Value="frmgeneratedcode.pp"/>
+        <UnitName Value="frmgeneratedcode"/>
+      </Item16>
+      <Item17>
+        <Filename Value="reglazdatadict.lrs"/>
+        <Type Value="LRS"/>
+      </Item17>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="5">
+      <Item1>
+        <PackageName Value="RunTimeTypeInfoControls"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="SynEdit"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="LCL"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="IDEIntf"/>
+      </Item4>
+      <Item5>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item5>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

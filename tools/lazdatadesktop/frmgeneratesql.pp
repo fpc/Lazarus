@@ -37,10 +37,10 @@ type
     BCancel: TButton;
     BGenerate: TButton;
     CBTables: TComboBox;
+    LBKeyFields: TListBox;
     LCBTables: TLabel;
     Label2: TLabel;
     LLBKeyFields: TLabel;
-    LBKeyFields: TListBox;
     LBFields: TListBox;
     LSEIndent: TLabel;
     LSELineLength: TLabel;

@@ -1,0 +1,22 @@
+LazarusResources.Add('tfpcodegenerator','XPM',[
+  '/* XPM */'#10'static char *tfpcodegenerator[]={'#10'"22 23 36 1",'#10'"G c N'
+  +'one",'#10'". c None",'#10'"a c #000000",'#10'"t c #000008",'#10'"s c #00001'
+  +'0",'#10'"b c #000400",'#10'"c c #000408",'#10'"u c #000410",'#10'"B c #0008'
+  +'00",'#10'"v c #000810",'#10'"C c #000c00",'#10'"# c #080408",'#10'"F c #080'
+  +'800",'#10'"E c #080808",'#10'"r c #080c00",'#10'"x c #296929",'#10'"i c #bd'
+  +'bebd",'#10'"n c #bdbec5",'#10'"q c #c5c2bd",'#10'"f c #c5c2c5",'#10'"o c #c'
+  +'5c2cd",'#10'"d c #c5c6c5",'#10'"h c #c5c6cd",'#10'"D c #c5c6d5",'#10'"p c #'
+  +'c5cabd",'#10'"A c #c5cad5",'#10'"m c #c5ceb4",'#10'"w c #c5cec5",'#10'"j c '
+  +'#cdc6cd",'#10'"k c #cdcacd",'#10'"g c #cdcad5",'#10'"l c #cdceb4",'#10'"z c'
+  +' #cdcec5",'#10'"e c #cdcecd",'#10'"y c #de1c10",'#10'"H c #ff0000",'#10'".#'
+  +'aaaaaaabaaabacaabaa.",'#10'".adbefghhiejklmnoplqa.",'#10'".braassstabaaabuv'
+  +'tabb.",'#10'".awa......kxxxxxxxx.a.",'#10'".a.b......dxyyyyyyx.b.",'#10'".a'
+  +'zb.xxxx.Axyyyyyyx.a.",'#10'".B.C......Axxxxxyyx.a.",'#10'".awa.xxxx.A....xy'
+  +'yx.B.",'#10'".a.c......D....xyyx.a.",'#10'".Eda.xxxx.A....xyyx.a.",'#10'".a'
+  +'.c......o.xxxxxxxxxx",'#10'".Fda.xxxx.h..xyyyyyyx.",'#10'".a.c......n...xyy'
+  +'yyxa.",'#10'".aea......k....xyyx.c.",'#10'".aaEaaacttttaaaaxxaac.",'#10'"..'
+  +'...GG...............",'#10'".GGGHHHGGGHHGGGHHHGG..",'#10'".GGGHGGHGHGGHGHGG'
+  +'G....",'#10'".GGGHGGHGHGGHGGHGG....",'#10'".GGGHHHGGHHHHGGGHG....",'#10'".G'
+  +'GGHGGGGHGGHGGGGH....",'#10'".GGGHGGGGHGGHGHHHG....",'#10'".................'
+  +'....."};'#10
+]);

@@ -26,7 +26,6 @@ Type
 
   TRecentItem = Class(TNamedIniCollectionItem)
   private
-    FLastOpened: TDateTime;
     FLastUse: TDateTime;
     FUseCount: Integer;
   Public
@@ -285,7 +284,7 @@ begin
   With Ini do
     begin
     WriteInteger(ASection,KeyUseCount,FUseCount);
-    WriteDateTime(ASection,KeyLastUsed,FLastOpened);
+    WriteDateTime(ASection,KeyLastUsed,FLastUse);
     end;
 end;
 
@@ -294,13 +293,13 @@ begin
   With Ini do
     begin
     FUseCount:=ReadInteger(ASection,KeyUseCount,0);
-    FLastOpened:=ReadDateTime(ASection,KeyLastUsed,0);
+    FLastUse:=ReadDateTime(ASection,KeyLastUsed,0);
     end;
 end;
 
 procedure TRecentItem.Use;
 begin
-  FLastOpened:=Now;
+  FLastUse:=Now;
   inc(FUseCount);
 end;
 
