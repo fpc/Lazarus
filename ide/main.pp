@@ -2043,6 +2043,7 @@ begin
     itmEditInsertUsername.OnClick:=@mnuEditInsertUsernameClick;
     itmEditInsertDateTime.OnClick:=@mnuEditInsertDateTimeClick;
     itmEditInsertChangeLogEntry.OnClick:=@mnuEditInsertChangeLogEntryClick;
+    itmEditInsertGUID.OnClick:=@mnuEditInsertGUID;
   end;
 end;
 
