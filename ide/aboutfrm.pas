@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
-  FileUtil;
+  Clipbrd, FileUtil;
 
 type
 
@@ -37,6 +37,9 @@ type
     CloseButton: TBitBtn;
     BuildDateLabel: TLABEL;
     AboutMemo: TMEMO;
+    Image1: TImage;
+    LogoImage: TImage;
+    LogoPage: TPage;
     PlatformLabel: TLabel;
     VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
@@ -48,11 +51,9 @@ type
     AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
   private
-    FPixmap : TPixmap;
     procedure LoadContributors;
     procedure LoadAcknowledgements;
   public
-    procedure Paint; override;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -93,8 +94,9 @@ end;
 
 destructor TAboutForm.Destroy;
 begin
-  FPixmap.Free;
-  FPixmap:=nil;
+  // easter egg: copy the version to clipboard
+  Clipboard.AsText := LazarusVersionStr + ' r' + LazarusRevisionStr
+                      + ' ' + PlatformLabel.Caption;
 
   inherited Destroy;
 end;
@@ -119,12 +121,17 @@ const
     Date := EncodeDate(StrToWord(Copy(BuildDate,1,SlashPos1-1)),
       StrToWord(Copy(BuildDate,SlashPos1+1,SlashPos2-SlashPos1-1)),
       StrToWord(Copy(BuildDate,SlashPos2+1,Length(BuildDate)-SlashPos2)));
-    Result := DateTimeToStr(Date);
+    Result := FormatDateTime('yyyy-mm-dd', Date);
   end;
 
+var
+  FBitmap: TBitmap;
 begin
-  FPixmap := TPixmap.Create;
-  FPixmap.LoadFromLazarusResource('lazarus_about_logo');
+  Notebook1.PageIndex:=0;
+  FBitmap := LoadBitmapFromLazarusResource('splash_logo');
+  Image1.Picture.Graphic:=FBitmap;
+  LogoImage.Picture.Graphic:=FBitmap;
+  FBitmap.Free;
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
@@ -173,14 +180,6 @@ begin
     AcknowledgementsMemo.Lines.LoadFromFile(AcknowledgementsFileName)
   else
     AcknowledgementsMemo.Text:=lisAboutNoContributors;
-end;
-
-procedure TAboutForm.Paint;
-begin
-  inherited Paint;
-  if FPixmap <> nil then
-    Canvas.Draw(12, PlatformLabel.Top + PlatformLabel.Height + 6,
-      FPixmap);
 end;
 
 initialization
