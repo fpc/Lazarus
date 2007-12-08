@@ -201,7 +201,7 @@ type
                           const Filename: string): string; override;
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings;
-                         Quiet: boolean): TModalResult; override;
+                         Quiet: boolean = false): TModalResult; override;
     function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          var List: TObjectArray): TModalResult;
