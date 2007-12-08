@@ -497,6 +497,7 @@ type
     procedure ChangeFoundProc(const ProcContext: TFindContext;
                               ProcCompatibility: TTypeCompatibility;
                               ParamCompatibilityList: TTypeCompatibilityList);
+    procedure PrettifyResult;
     procedure ConvertResultCleanPosToCaretPos;
     procedure ClearResult(CopyCacheFlags: boolean);
     procedure ClearInput;
@@ -695,6 +696,9 @@ type
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindMainDeclaration(const CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindDeclarationOfIdentifier(const CursorPos: TCodeXYPosition;
+      Identifier: PChar;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       SearchSmartFlags: TFindSmartFlags;
@@ -1111,6 +1115,51 @@ begin
                           NewPos,NewTopLine);
 end;
 
+function TFindDeclarationTool.FindDeclarationOfIdentifier(
+  const CursorPos: TCodeXYPosition; Identifier: PChar;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+begin
+  Result:=false;
+  ActivateGlobalWriteLock;
+  Params:=nil;
+  try
+    // build code tree
+    {$IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier A CursorPos=X',dbgs(CursorPos.X),',Y',dbgs(CursorPos.Y));
+    {$ENDIF}
+    if DirtySrc<>nil then DirtySrc.Clear;
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFNDEF DisableIgnoreErrorAfter}btSetIgnoreErrorPos{$ENDIF}]);
+    {$IFDEF CTDEBUG}
+    DebugLn('TFindDeclarationTool.FindDeclarationOfIdentifier B CleanCursorPos=',dbgs(CleanCursorPos));
+    {$ENDIF}
+    // find CodeTreeNode at cursor
+    CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,CleanCursorPos,true);
+    // search
+    Params:=TFindDeclarationParams.Create;
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,Identifier,nil);
+    Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                   fdfExceptionOnPredefinedIdent,
+                   fdfTopLvlResolving,fdfSearchInAncestors,
+                   fdfIgnoreCurContextNode];
+    FindIdentifierInContext(Params);
+    // convert result to nice source position
+    Params.PrettifyResult;
+    Params.ConvertResultCleanPosToCaretPos;
+    NewPos:=Params.NewPos;
+    NewTopLine:=Params.NewTopLine;
+    Result:=true;
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags;
   var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
@@ -1350,27 +1399,7 @@ begin
           Result:=FindIdentifierInContext(Params);
         end;
         if Result then begin
-        
-          // adjust result for nicer position
-          NewNode:=Params.NewNode;
-          if (NewNode<>nil) then begin
-            if (NewNode.Desc=ctnProcedure)
-            and (NewNode.FirstChild<>nil)
-            and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
-              // Instead of jumping to the procedure keyword,
-              // jump to the procedure name
-              Params.NewNode:=NewNode.FirstChild;
-              Params.NewCleanPos:=Params.NewNode.StartPos;
-            end;
-            if (NewNode.Desc=ctnGenericType)
-            and (NewNode.FirstChild<>nil) then begin
-              // Instead of jumping to the generic keyword,
-              // jump to the name
-              Params.NewNode:=NewNode.FirstChild;
-              Params.NewCleanPos:=Params.NewNode.StartPos;
-            end;
-          end;
-            
+          Params.PrettifyResult;
           Params.ConvertResultCleanPosToCaretPos;
           NewNode:=Params.NewNode;
           NewTool:=Params.NewCodeTool;
@@ -8237,6 +8266,28 @@ begin
       FreeMem(FoundProc^.ParamCompatibilityList);
     FoundProc^.ParamCompatibilityList:=ParamCompatibilityList;
     //DebugLn(['TFindDeclarationParams.ChangeFoundProc New ParamCompatibilityList=',dbgs(FoundProc^.ParamCompatibilityList)]);
+  end;
+end;
+
+procedure TFindDeclarationParams.PrettifyResult;
+begin
+  // adjust result for nicer position
+  if (NewNode<>nil) then begin
+    if (NewNode.Desc=ctnProcedure)
+    and (NewNode.FirstChild<>nil)
+    and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
+      // Instead of jumping to the procedure keyword,
+      // jump to the procedure name
+      NewNode:=NewNode.FirstChild;
+      NewCleanPos:=NewNode.StartPos;
+    end;
+    if (NewNode.Desc=ctnGenericType)
+    and (NewNode.FirstChild<>nil) then begin
+      // Instead of jumping to the generic keyword,
+      // jump to the name
+      NewNode:=NewNode.FirstChild;
+      NewCleanPos:=NewNode.StartPos;
+    end;
   end;
 end;
 

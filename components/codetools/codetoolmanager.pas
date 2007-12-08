@@ -360,6 +360,10 @@ type
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    function FindDeclarationOfIdentifier(Code: TCodeBuffer; X,Y: integer;
+          Identifier: PChar;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; out NewCode: TCodeBuffer;
@@ -1682,7 +1686,7 @@ var
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
+  DebugLn(['TCodeToolManager.FindDeclaration A ',Code.Filename,' x=',x,' y=',y]);
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
@@ -1713,6 +1717,49 @@ begin
   {$ENDIF}
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclaration END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationOfIdentifier(Code: TCodeBuffer;
+  X,Y: integer; Identifier: PChar; out NewCode: TCodeBuffer; out NewX, NewY,
+  NewTopLine: integer): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationOfIdentifier A ',Code.Filename,' x=',x,' y=',y,' Identifier=',GetIdentifier(Identifier));
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationOfIdentifier B ',dbgs(FCurCodeTool.Scanner<>nil));
+  {$ENDIF}
+  try
+    {$IFDEF DoNotHandleFindDeclException}
+    DebugLn('TCodeToolManager.FindDeclarationOfIdentifier NOT HANDLING EXCEPTIONS');
+    RaiseUnhandableExceptions:=true;
+    {$ENDIF}
+    Result:=FCurCodeTool.FindDeclarationOfIdentifier(CursorPos,Identifier,NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  {$IFDEF DoNotHandleFindDeclException}
+  finally
+    RaiseUnhandableExceptions:=false;
+  end;
+  {$ELSE}
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$ENDIF}
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationOfIdentifier END ');
   {$ENDIF}
 end;
 

@@ -265,7 +265,7 @@ begin
       DebugLn(['TAbstractMethodsDialog.AddOverrides ',Item.CodeXYPos.Code.Filename,' ',Item.CodeXYPos.X,',',Item.CodeXYPos.Y]);
       if OnlyFirst then break;
     end;
-
+    
     //DebugLn(['TAbstractMethodsDialog.AddOverrides ',CodePos.Code.Filename,' ',CodePos.X,',',CodePos.Y]);
     if not CodeToolBoss.AddMethods(CodePos.Code,CodePos.X,CodePos.Y,TopLine,
       NewList,true,NewCode,NewX,NewY,NewTopLine)
@@ -361,7 +361,8 @@ begin
       phpWithDefaultValues,phpWithResultType,
       phpWithOfObject,phpWithCallingSpecs]);
     NewItem.BelongsToStartClass:=ProcNode.HasAsParent(ClassNode);
-    inc(BelongsToStartClassCnt);
+    if NewItem.BelongsToStartClass then
+      inc(BelongsToStartClassCnt);
     FItems.Add(NewItem);
   end;
   

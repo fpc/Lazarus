@@ -30,8 +30,10 @@ unit MsgQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, FileUtil, LCLProc, IDEMsgIntf, TextTools,
-  LazarusIDEStrConsts, ProjectIntf, LazIDEIntf, CodeCache, CodeToolManager;
+  Classes, SysUtils, LCLProc, Controls, Dialogs, FileUtil,
+  CodeAtom, CodeCache, CodeToolManager,
+  IDEMsgIntf, TextTools, ProjectIntf, LazIDEIntf,
+  AbstractsMethodsDlg, LazarusIDEStrConsts;
   
 type
 
@@ -49,6 +51,17 @@ type
   TQuickFixLinkerUndefinedReference = class(TIDEMsgQuickFixItem)
   public
     constructor Create;
+    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
+  end;
+
+  { TQuickFixClassWithAbstractMethods
+    Quick fix for example:
+    Warning: Constructing a class "TClassA" with abstract methods }
+
+  TQuickFixClassWithAbstractMethods = class(TIDEMsgQuickFixItem)
+  public
+    constructor Create;
+    function IsApplicable(Line: TIDEMessageLine): boolean; override;
     procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
   end;
 
@@ -123,7 +136,10 @@ begin
   TestDir:=LazarusIDE.GetTestBuildDirectory;
   if (TestDir<>'') or (FileIsInDirectory(Filename,TestDir)) then
     Filename:=ExtractFileName(Filename);
+  if not FilenameIsAbsolute(Filename) then
+    Filename:=AppendPathDelim(Msg.Directory)+Filename;
   //DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
+
   CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
   if CodeBuf=nil then begin
     DebugLn('GetMsgLineFilename Filename "',Filename,'" not found.');
@@ -141,8 +157,10 @@ begin
   RegisterIDEMsgQuickFix('Unit xxx not used in yyy','Quick fix: Remove unit',
     'Unit "[a-z_0-9]+" not used in [a-z_0-9]+',[imqfoMenuItem],
     nil,@QuickFixUnitNotUsed);
+    
   RegisterIDEMsgQuickFix(TQuickFixUnitNotFoundPosition.Create);
   RegisterIDEMsgQuickFix(TQuickFixLinkerUndefinedReference.Create);
+  RegisterIDEMsgQuickFix(TQuickFixClassWithAbstractMethods.Create);
 end;
 
 procedure FreeStandardIDEQuickFixItems;
@@ -154,7 +172,7 @@ end;
 
 constructor TQuickFixUnitNotFoundPosition.Create;
 begin
-  Name:='Fatal: Can''t find unit xxx';
+  Name:='Improve error position of: Fatal: Can''t find unit xxx';
   Steps:=[imqfoImproveMessage];
 end;
 
@@ -333,6 +351,88 @@ begin
     and REMatches(Msg.Msg,'^(.*)\(\.text.*?\): .* `([a-zA-Z0-9_$]+)'':$') then
       // example: unit1.o(.text+0x1a): In function `SubProc':
       JumpTo(Msg,IDEMessagesWindow[Msg.Position+1]);
+  end;
+end;
+
+{ TQuickFixClassWithAbstractMethods }
+
+constructor TQuickFixClassWithAbstractMethods.Create;
+begin
+  Name:='Show abstract methods';
+  Steps:=[imqfoMenuItem];
+end;
+
+function TQuickFixClassWithAbstractMethods.IsApplicable(Line: TIDEMessageLine
+  ): boolean;
+begin
+  Result:=(Line.Parts<>nil)
+          and (System.Pos(') Warning: Constructing a class "',Line.Msg)>0)
+          and (System.Pos('" with abstract methods',Line.Msg)>0);
+end;
+
+procedure TQuickFixClassWithAbstractMethods.Execute(const Msg: TIDEMessageLine;
+  Step: TIMQuickFixStep);
+var
+  CodeBuf: TCodeBuffer;
+  Caret: TPoint;
+  Filename: string;
+  NewCode: TCodeBuffer;
+  NewX,NewY,NewTopLine: Integer;
+  Tool: TCodeTool;
+  CurClassName: String;
+begin
+  if Step=imqfoMenuItem then begin
+    DebugLn(['TQuickFixClassWithAbstractMethods.Execute ']);
+    // get source position
+    // (FPC reports position right after the constructor call
+    //  for example right after TStrings.Create)
+    if not GetMsgLineFilename(Msg,CodeBuf) then exit;
+    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
+    if not LazarusIDE.BeginCodeTools then begin
+      DebugLn(['TQuickFixClassWithAbstractMethods.Execute failed because IDE busy']);
+      exit;
+    end;
+
+    // get class name
+    if not REMatches(Msg.Msg,'Warning: Constructing a class "([a-z_0-9]+)"','I') then begin
+      DebugLn('QuickFixClassWithAbstractMethods invalid message ',Msg.Msg);
+      exit;
+    end;
+    CurClassName:=REVar(1);
+    DebugLn(['TQuickFixClassWithAbstractMethods.Execute Class=',CurClassName]);
+
+    // find the class
+
+    // build the tree
+    CodeToolBoss.Explore(CodeBuf,Tool,false,true);
+    if Tool=nil then begin
+      DebugLn(['TQuickFixClassWithAbstractMethods.Execute no tool for ',CodeBuf.Filename]);
+      exit;
+    end;
+
+    if not CodeToolBoss.FindDeclarationOfIdentifier(CodeBuf,Caret.X,Caret.Y,
+      @CurClassName[1],NewCode,NewX,NewY,NewTopLine)
+    then begin
+      if CodeToolBoss.ErrorMessage<>'' then begin
+        LazarusIDE.DoJumpToCodeToolBossError
+      end else begin
+        MessageDlg('Class not found',
+          'Class '+CurClassName+' not found at '
+          +CodeBuf.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')',
+          mtError,[mbCancel],0);
+      end;
+      exit;
+    end;
+    DebugLn(['TQuickFixClassWithAbstractMethods.Execute Declaration at ',NewCode.Filename,' ',NewX,',',NewY]);
+
+    if LazarusIDE.DoOpenFileAndJumpToPos(NewCode.Filename,
+      Point(NewX,NewY),NewTopLine,-1,[])<>mrOk
+    then begin
+      DebugLn(['TQuickFixClassWithAbstractMethods.Execute failed opening ',NewCode.Filename]);
+      exit;
+    end;
+
+    ShowAbstractMethodsDialog;
   end;
 end;
 
