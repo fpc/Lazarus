@@ -4045,9 +4045,7 @@ mrLast=mrYesToAll=10</descr>
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.</p><p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
   See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
-  some space around. This space is theme dependent, so the parameter is passed to the widgetset</p>
-
-.</descr>
+  some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.CalculatePreferredSize.PreferredWidth"><short/></element>
@@ -5590,8 +5588,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.EditingDone">
         <short><i>EditingDone</i> - what to do when you have finished editing</short>
         <descr><p>            <i>TControl.EditingDone</i>
-          </p><p>Called when user has finished editing. This procedure can be used by data links to commit the changes</p>.
- <p>For example:</p><ul>            <li>When focus switches to another control (default)</li>
+          </p><p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
+          <p>For example:</p><ul>            <li>When focus switches to another control (default)</li>
             <li>When user selected another item</li>
           </ul><p>It's totally up to the control, what events will commit.</p></descr>
       </element>

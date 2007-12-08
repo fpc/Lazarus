@@ -5897,7 +5897,8 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- object Visibility: default -->
       <element name="TCustomCheckBox">
         <short><i>TCustomCheckBox </i>is the ancestor of all check-box components.</short>
-        <descr><p><i>TCustomCheckBox</i>: The base (abstract) class from which the <i>TCheckBox </i>is derived</p>.  <p>Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</p></descr>
+        <descr><p><i>TCustomCheckBox</i>: The base (abstract) class from which the <i>TCheckBox </i>is derived.</p>
+        <p>Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</p></descr>
         <seealso><link id="TCheckBox"/></seealso>
       </element>
       <!-- variable Visibility: private -->

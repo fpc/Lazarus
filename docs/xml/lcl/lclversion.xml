@@ -16,7 +16,7 @@ writers and component writers can offer different functionality or workarounds
 for bugs and take the LCL version into account while choosing their algorithms
 at run-time.</p>
 <p>Likewise, these version constants can be used at compile time in an conditional
-expressions, such as <code>{$IFDEF lcl_major>0}</code>. Currently these kinds of
+expressions, such as <code>{$IFDEF lcl_major&gt;0}</code>. Currently these kinds of
 epressions are only support in <code>{$mode delphi}</code>. Recently fpc 2.3.1 added
 support for these kind of expressions in <code>{$mode delphi}</code>.</p>
 </descr>
