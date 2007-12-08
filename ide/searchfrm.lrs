@@ -10,20 +10,20 @@ LazarusResources.Add('TSearchForm','FORMDATA',[
   +'eight'#3#149#0#5'Width'#3#172#1#5'Align'#7#8'alClient'#10'BevelInner'#7#9'b'
   +'vLowered'#12'ClientHeight'#3#149#0#11'ClientWidth'#3#172#1#11'FullRepaint'#8
   +#10'ParentFont'#9#8'TabOrder'#2#0#7'TabStop'#9#7'OnClick'#7#11'Panel2Click'#0
-  +#6'TLabel'#10'lblMatches'#4'Left'#2'y'#6'Height'#2#19#3'Top'#2'P'#5'Width'#3
-  +'*'#1#11'ParentColor'#8#0#0#6'TLabel'#12'MatchesLabel'#21'AnchorSideTop.Cont'
+  +#6'TLabel'#10'lblMatches'#4'Left'#2'y'#6'Height'#2#20#3'Top'#2'P'#5'Width'#3
+  +'+'#1#11'ParentColor'#8#0#0#6'TLabel'#12'MatchesLabel'#21'AnchorSideTop.Cont'
   +'rol'#7#10'lblMatches'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2#16#6
-  +'Height'#2#13#3'Top'#2'S'#5'Width'#2'1'#7'Caption'#6#7'Matches'#11'ParentCol'
-  +'or'#8#0#0#6'TLabel'#11'lblProgress'#4'Left'#2'y'#6'Height'#2#19#3'Top'#2'0'
-  +#5'Width'#3')'#1#11'ParentColor'#8#0#0#6'TLabel'#14'SearchingLabel'#21'Ancho'
+  +'Height'#2#14#3'Top'#2'S'#5'Width'#2')'#7'Caption'#6#7'Matches'#11'ParentCol'
+  +'or'#8#0#0#6'TLabel'#11'lblProgress'#4'Left'#2'y'#6'Height'#2#20#3'Top'#2'0'
+  +#5'Width'#3'*'#1#11'ParentColor'#8#0#0#6'TLabel'#14'SearchingLabel'#21'Ancho'
   +'rSideTop.Control'#7#11'lblProgress'#18'AnchorSideTop.Side'#7#9'asrCenter'#4
-  +'Left'#2#16#6'Height'#2#13#3'Top'#2'3'#5'Width'#2'='#7'Caption'#6#10'Searchi'
+  +'Left'#2#16#6'Height'#2#14#3'Top'#2'3'#5'Width'#2'4'#7'Caption'#6#10'Searchi'
   +'ng:'#11'ParentColor'#8#0#0#6'TLabel'#15'SearchTextLabel'#21'AnchorSideTop.C'
   +'ontrol'#7#13'lblSearchText'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#2
-  +#16#6'Height'#2#13#3'Top'#2#20#5'Width'#2'G'#7'Caption'#6#12'Search Text:'#11
-  +'ParentColor'#8#0#0#6'TLabel'#13'lblSearchText'#4'Left'#2'y'#6'Height'#2#20#3
-  +'Top'#2#16#5'Width'#3'('#1#11'ParentColor'#8#0#0#7'TButton'#9'btnCancel'#4'L'
-  +'eft'#3#177#0#6'Height'#2#26#3'Top'#2'p'#5'Width'#2'6'#8'AutoSize'#9#7'Capti'
+  +#16#6'Height'#2#14#3'Top'#2#19#5'Width'#2'?'#7'Caption'#6#12'Search Text:'#11
+  +'ParentColor'#8#0#0#6'TLabel'#13'lblSearchText'#4'Left'#2'y'#6'Height'#2#21#3
+  +'Top'#2#16#5'Width'#3')'#1#11'ParentColor'#8#0#0#7'TButton'#9'btnCancel'#4'L'
+  +'eft'#3#177#0#6'Height'#2#23#3'Top'#2'p'#5'Width'#2';'#8'AutoSize'#9#7'Capti'
   +'on'#6#6'Cancel'#7'Default'#9#7'OnClick'#7#13'btnAbortCLICK'#8'TabOrder'#2#0
   +#0#0#0#0
 ]);

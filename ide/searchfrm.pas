@@ -1,6 +1,6 @@
 {
 /***************************************************************************
-                                frmSearch.pas
+                                SearchFrm.pas
                              -------------------
 
  ***************************************************************************/
@@ -24,7 +24,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit frmSearch;
+unit SearchFrm;
 
 {$mode objfpc}{$H+}
 
@@ -66,7 +66,6 @@ type
     fMask: string;
     fMatches: longint;
     fPad: string;
-    fParsedMasks: TStringList; //Holds the parsed masks.
     FProgress: TIDESearchInTextProgress;
     fPromptOnReplace: boolean;
     fRecursive: boolean;
@@ -82,7 +81,6 @@ type
     fAborting: boolean;
     procedure DoFindInFiles(TheFileName: string);
     procedure DoFindInSearchList;
-    procedure ParseMask;
     procedure UpdateMatches;
     procedure UpdateProgress(FileName: string);
     function PadAndShorten(FileName: string): string;
@@ -666,7 +664,6 @@ end;
 
 procedure TSearchForm.SearchFormDESTROY(Sender: TObject);
 begin
-  FreeAndNil(fParsedMasks);
   FreeAndNil(fProgress);
 end;
 
@@ -706,7 +703,6 @@ begin
   Progress.Abort:=false;
   lblSearchText.Caption:= fSearchFor;
   fMatches:= 0;
-  ParseMask;
   if Assigned(fResultsList) then
   begin
     if fSearchFiles then
@@ -721,74 +717,85 @@ begin
   Close;
 end;//DoSearch
 
+type
+
+  { TLazFileSearcher }
+
+  TLazFileSearcher = class(TFileSearcher)
+  private
+    FParent: TSearchForm;
+    procedure CheckAbort;
+  protected
+    procedure DoDirectoryEnter; override;
+    procedure DoDirectoryFound; override;
+    procedure DoFileFound; override;
+  public
+    constructor Create(AParent: TSearchForm);
+  end;
+
+{ TLazFileSearcher }
+
+procedure TLazFileSearcher.CheckAbort;
+begin
+  if FParent.Progress.Abort then
+  begin
+    if not FParent.FAborting then
+    begin
+      FParent.FAborting := True;
+      FParent.FResultsList.Insert(0, FParent.FAbortString);
+    end;
+
+    Stop;
+  end;
+end;
+
+procedure TLazFileSearcher.DoDirectoryEnter;
+begin
+  CheckAbort;
+end;
+
+procedure TLazFileSearcher.DoDirectoryFound;
+begin
+  CheckAbort;
+end;
+
+procedure TLazFileSearcher.DoFileFound;
+var
+  F: String;
+begin
+  F := FileName;
+  if FileIsReadable(F) and FileIsText(F) then
+  begin
+    //DebugLn('TLazFileSearcher.DoFileFound ' + F);
+    FParent.UpdateProgress(F);
+    FParent.SearchFile(F);
+  end;
+    
+  CheckAbort;
+end;
+
+constructor TLazFileSearcher.Create(AParent: TSearchForm);
+begin
+  inherited Create;
+  
+  FParent := AParent;
+end;
+
+{ TSearchForm }
+
 procedure TSearchForm.DoFindInFiles(TheFileName: string);
 var
-  //Loop counter
-  i:        integer;
-  //Result of FindFirst, FindNext
-  FileInfo: TSearchRec;
-  //Temp Storage for The search Directoru
-  TempDir: string;
+  Searcher: TLazFileSearcher;
 begin
   //if we have a list and a valid directory
   if (DirPathExists(TheFileName)) then
-  begin //make sure path ends with delimiter
-    TempDir:= AppendPathDelim(TheFileName);
-    for i:= 0 to fParsedMasks.Count -1 do
-    begin
-      if SysUtils.FindFirst(TempDir + fParsedMasks[i],
-                            faAnyFile,FileInfo)=0 then
-      begin
-        repeat
-          // check if special file, skip directories this time
-          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-          or ((faDirectory and FileInfo.Attr)>0) then continue;
-          //Make sure this is a text file as it will be searched
-          if FileIsReadable(TempDir + FileInfo.Name)
-          and FileIsText(TempDir + FileInfo.Name) then
-          begin
-            UpdateProgress(TempDir + FileInfo.Name);
-            SearchFile(TempDir + FileInfo.Name);
-          end;//if
-          if Progress.Abort and not fAborting then
-          begin
-            fAborting:= True;
-            fResultsList.Insert(0,fAbortString);
-            break;
-          end
-          else if Progress.Abort then
-          begin
-            break;
-          end;
-        until SysUtils.FindNext(FileInfo)<>0;
-      end;//if
-      SysUtils.FindClose(FileInfo);
-    end;//for
-    //If selected then Look for and search subdirectories
-    if (frecursive) then begin
-      if (SysUtils.FindFirst(TempDir+GetAllFilesMask,faAnyFile,FileInfo)=0) then
-      begin
-        repeat
-          // check if directory and not special file
-          if ((faDirectory and FileInfo.Attr)>0)
-            and (FileInfo.Name<>'.') and (FileInfo.Name<>'..')
-            and (FileInfo.Name<>'')
-            then
-              DoFindInFiles(TempDir + FileInfo.Name);
-          if Progress.Abort and not fAborting then
-          begin
-            fAborting:= True;
-            fResultsList.Insert(0,fAbortString);
-            break;
-          end
-          else if Progress.Abort then
-          begin
-            break;
-          end;
-        until SysUtils.FindNext(FileInfo)<>0;
-      end;//if
-      SysUtils.FindClose(FileInfo);
-    end;//if
+  begin
+    Searcher := TLazFileSearcher.Create(Self);
+    try
+      Searcher.Search(TheFileName, FMask, FRecursive);
+    finally
+      Searcher.Free;
+    end;
   end;//if
 end;//DoFindInFiles
 
@@ -805,44 +812,6 @@ begin
     end;//for
   end;//if
 end;//DoFindInSearchList
-
-procedure TSearchForm.ParseMask;
-var
-  //Position Tracking within the string.
-  curpos,startpos: integer;
-  //Used as mask seperator
-const
-  MaskSeperator = ';';
-begin
-  if not Assigned(fParsedMasks) then
-    fParsedMasks:= TStringList.Create;
-  if fmask<>'' then
-  begin
-    fParsedMasks.Clear;
-    //do we have multiple masks
-    if (pos(MaskSeperator,fMask)>0) then
-    begin
-      startpos:=1;
-      curpos:=1;
-      repeat //loop through the string and get the masks.
-        while (curpos<=length(fmask)) and (fmask[curpos] <> MaskSeperator) do
-          inc(curpos);
-        //add the mask to the list
-        fParsedMasks.Add(copy(fmask,startpos,curpos-startpos));
-        inc(curpos);//skip the seperator
-        startpos:= curpos;//start on next mask
-      until curpos > length(fmask);
-    end//if
-    else
-    begin
-      fParsedMasks.Add(fmask);
-    end;//else
-  end//if
-  else
-  begin
-    fParsedMasks.Add(GetAllFilesMask) //OS Independent Mask
-  end;//else
-end;//ParseMask
 
 procedure TSearchForm.UpdateMatches;
 begin
@@ -899,7 +868,7 @@ begin
 end;//PadAndShorten
 
 initialization
-  {$I frmsearch.lrs}
+  {$I searchfrm.lrs}
 
 end.
 

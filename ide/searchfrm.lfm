@@ -28,35 +28,35 @@ object SearchForm: TSearchForm
     OnClick = Panel2Click
     object lblMatches: TLabel
       Left = 121
-      Height = 19
+      Height = 20
       Top = 80
-      Width = 298
+      Width = 299
       ParentColor = False
     end
     object MatchesLabel: TLabel
       AnchorSideTop.Control = lblMatches
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 13
+      Height = 14
       Top = 83
-      Width = 49
+      Width = 41
       Caption = 'Matches'
       ParentColor = False
     end
     object lblProgress: TLabel
       Left = 121
-      Height = 19
+      Height = 20
       Top = 48
-      Width = 297
+      Width = 298
       ParentColor = False
     end
     object SearchingLabel: TLabel
       AnchorSideTop.Control = lblProgress
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 13
+      Height = 14
       Top = 51
-      Width = 61
+      Width = 52
       Caption = 'Searching:'
       ParentColor = False
     end
@@ -64,24 +64,24 @@ object SearchForm: TSearchForm
       AnchorSideTop.Control = lblSearchText
       AnchorSideTop.Side = asrCenter
       Left = 16
-      Height = 13
-      Top = 20
-      Width = 71
+      Height = 14
+      Top = 19
+      Width = 63
       Caption = 'Search Text:'
       ParentColor = False
     end
     object lblSearchText: TLabel
       Left = 121
-      Height = 20
+      Height = 21
       Top = 16
-      Width = 296
+      Width = 297
       ParentColor = False
     end
     object btnCancel: TButton
       Left = 177
-      Height = 26
+      Height = 23
       Top = 112
-      Width = 54
+      Width = 59
       AutoSize = True
       Caption = 'Cancel'
       Default = True

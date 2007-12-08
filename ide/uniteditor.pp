@@ -59,7 +59,7 @@ uses
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
-  SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
+  SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   LazDocHints, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf;
 
