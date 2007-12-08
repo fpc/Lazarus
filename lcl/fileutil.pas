@@ -27,7 +27,7 @@ interface
 
 uses
   // For Smart Linking: Do not use the LCL!
-  Classes, SysUtils, LCLStrConsts;
+  Classes, SysUtils, LCLStrConsts, Masks;
   
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
@@ -106,6 +106,58 @@ function SearchAllFilesInPath(const Filename, BasePath, SearchPath,
 function FindDiskFilename(const Filename: string): string;
 function FindDiskFileCaseInsensitive(const Filename: string): string;
 function FindDefaultExecutablePath(const Executable: string): string;
+
+type
+
+  { TFileIterator }
+
+  TFileIterator = class
+  private
+    FPath: String;
+    FLevel: Integer;
+    FFileInfo: TSearchRec;
+    FSearching: Boolean;
+    function GetFileName: String;
+  public
+    procedure Stop;
+
+    function IsDirectory: Boolean;
+  public
+    property FileName: String read GetFileName;
+    property FileInfo: TSearchRec read FFileInfo;
+    property Level: Integer read FLevel;
+    property Path: String read FPath;
+
+    property Searching: Boolean read FSearching;
+  end;
+
+  TFileFoundEvent = procedure (FileIterator: TFileIterator) of object;
+  TDirectoryFoundEvent = procedure (FileIterator: TFileIterator) of object;
+
+  { TFileSearcher }
+
+  TFileSearcher = class(TFileIterator)
+  private
+    FOnFileFound: TFileFoundEvent;
+    FOnDirectoryFound: TDirectoryFoundEvent;
+
+    procedure RaiseSearchingError;
+  protected
+    procedure DoDirectoryEnter; virtual;
+    procedure DoDirectoryFound; virtual;
+    procedure DoFileFound; virtual;
+  public
+    constructor Create;
+
+    procedure Search(const ASearchPath: String; ASearchMask: String = '';
+      ASearchSubDirs: Boolean = True);
+  public
+    property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
+    property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
+  end;
+
+function FindAllFiles(const SearchPath: String; SearchMask: String = '';
+  SearchSubDirs: Boolean = True): TStringList;
 
 // file actions
 function ReadFileToString(const Filename: string): string;

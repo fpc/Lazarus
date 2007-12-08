@@ -1351,6 +1351,172 @@ begin
   Result:='';
 end;
 
+type
+
+  { TListFileSearcher }
+
+  TListFileSearcher = class(TFileSearcher)
+  private
+    FList: TStrings;
+  protected
+    procedure DoFileFound; override;
+  public
+    constructor Create(AList: TStrings);
+  end;
+
+{ TListFileSearcher }
+
+procedure TListFileSearcher.DoFileFound;
+begin
+  FList.Add(FileName);
+end;
+
+constructor TListFileSearcher.Create(AList: TStrings);
+begin
+  FList := AList;
+end;
+
+function FindAllFiles(const SearchPath: String; SearchMask: String;
+  SearchSubDirs: Boolean): TStringList;
+var
+  Searcher: TListFileSearcher;
+begin
+  Result := TStringList.Create;
+  Searcher := TListFileSearcher.Create(Result);
+  try
+    Searcher.Search(SearchPath, SearchMask, SearchSubDirs);
+  finally
+    Searcher.Free;
+  end;
+end;
+
+{ TFileIterator }
+
+function TFileIterator.GetFileName: String;
+begin
+  Result := FPath + FFileInfo.Name;
+end;
+
+procedure TFileIterator.Stop;
+begin
+  FSearching := False;
+end;
+
+function TFileIterator.IsDirectory: Boolean;
+begin
+  Result := (FFileInfo.Attr and faDirectory) <> 0;
+end;
+
+{ TFileSearcher }
+
+procedure TFileSearcher.RaiseSearchingError;
+begin
+  raise Exception.Create('The file searcher is already searching!');
+end;
+
+procedure TFileSearcher.DoDirectoryEnter;
+begin
+  //
+end;
+
+procedure TFileSearcher.DoDirectoryFound;
+begin
+  if Assigned(FOnDirectoryFound) then OnDirectoryFound(Self);
+end;
+
+procedure TFileSearcher.DoFileFound;
+begin
+  if Assigned(FOnFileFound) then OnFileFound(Self);
+end;
+
+constructor TFileSearcher.Create;
+begin
+  FSearching := False;
+end;
+
+procedure TFileSearcher.Search(const ASearchPath: String; ASearchMask: String = '';
+  ASearchSubDirs: Boolean = True);
+var
+  MaskList: TMaskList;
+
+  procedure DoSearch(const APath: String; const ALevel: Integer);
+  var
+    P: String;
+    PathInfo: TSearchRec;
+  begin
+    P := APath + AllFilesMask;
+
+    if SysUtils.FindFirst(P, faAnyFile, PathInfo) = 0 then
+    try
+      begin
+        repeat
+          // skip special files
+          if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
+            (PathInfo.Name = '') then Continue;
+
+          if (PathInfo.Attr and faDirectory) = 0 then
+          begin
+            if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
+            begin
+              FPath := APath;
+              FLevel := ALevel;
+              FFileInfo := PathInfo;
+              DoFileFound;
+            end;
+          end
+          else
+          begin
+            FPath := APath;
+            FLevel := ALevel;
+            FFileInfo := PathInfo;
+            DoDirectoryFound;
+          end;
+
+        until (SysUtils.FindNext(PathInfo) <> 0) or not FSearching;
+      end;
+    finally
+      SysUtils.FindClose(PathInfo);
+    end;
+    
+    if ASearchSubDirs or (ALevel > 0) then // search recursively in directories
+      if SysUtils.FindFirst(P, faAnyFile, PathInfo) = 0 then
+      try
+        begin
+          repeat
+            if (PathInfo.Name = '.') or (PathInfo.Name = '..') or
+              (PathInfo.Name = '') or ((PathInfo.Attr and faDirectory) = 0) then Continue;
+              
+            FPath := APath;
+            FLevel := ALevel;
+            FFileInfo := PathInfo;
+            DoDirectoryEnter;
+            if not FSearching then Break;
+            
+            DoSearch(AppendPathDelim(APath + PathInfo.Name), Succ(ALevel));
+            
+          until (SysUtils.FindNext(PathInfo) <> 0);
+        end;
+      finally
+        SysUtils.FindClose(PathInfo);
+      end;
+  end;
+
+begin
+  if FSearching then RaiseSearchingError;
+
+  MaskList := TMaskList.Create(ASearchMask);
+  // empty mask = all files mask
+  if MaskList.Count = 0 then FreeAndNil(MaskList);
+
+  FSearching := True;
+  try
+    DoSearch(AppendPathDelim(ASearchPath), 0);
+  finally
+    FSearching := False;
+    if MaskList <> nil then MaskList.Free;
+  end;
+end;
+
 function GetAllFilesMask: string;
 begin
   {$IFDEF WINDOWS}
