@@ -613,10 +613,6 @@ end;
 
 {
   Paint control to X, Y point of device context.
-  
-  Currently this is not completely implemented. Now only fixed is painted onto DC,
-  but some widgets are more complex: for example containers with scrollbars.
-  As result some parts will not be drawn and be black in ADC.
 }
 class procedure TGtkWSWinControl.PaintTo(const AWinControl: TWinControl;
   ADC: HDC; X, Y: Integer);
