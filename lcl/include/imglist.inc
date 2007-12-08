@@ -152,11 +152,9 @@ function TCustomImageList.AddLazarusResource(const ResourceName: string; MaskCol
 var
   Bmp: TBitmap;
 begin
-  Bmp := TBitmap.Create;
-
+  Bmp := LoadBitmapFromLazarusResource(ResourceName);
   if MaskColor <> clNone then
-    Bmp.TransparentColor := MaskColor;
-  Bmp.LoadFromLazarusResource(ResourceName);
+    Bmp.Mask(MaskColor);
   Result := Add(Bmp, nil);
   Bmp.Free;
 end;
