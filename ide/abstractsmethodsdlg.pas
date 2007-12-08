@@ -36,7 +36,8 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   CheckLst, StdCtrls, ExtCtrls, Buttons,
   CodeAtom, CodeTree, PascalParserTool, CodeCache, CodeToolManager,
-  LazIDEIntf, SrcEditorIntf;
+  LazIDEIntf, SrcEditorIntf,
+  LazarusIDEStrConsts;
 
 type
 
@@ -101,11 +102,11 @@ begin
   ListOfPCodeXYPosition:=nil;
   try
     // init codetools
-    ErrMsg:='IDE is busy';
+    ErrMsg:=lisSAMIDEIsBusy;
     if not LazarusIDE.BeginCodeTools then exit;
     
     // get cursor position
-    ErrMsg:='Cursor is not in a class declaration';
+    ErrMsg:=lisSAMCursorIsNotInAClassDeclaration;
     SrcEdit:=SourceEditorWindow.ActiveEditor;
     if SrcEdit=nil then exit;
     Code:=TCodeBuffer(SrcEdit.CodeToolsBuffer);
@@ -126,8 +127,8 @@ begin
     // check if there are abstract methods left to override
     if (ListOfPCodeXYPosition=nil) or (ListOfPCodeXYPosition.Count=0) then begin
       ErrMsg:='';
-      MessageDlg('No abstract methods found',
-        'There are no abstract methods left to override.'
+      MessageDlg(lisSAMNoAbstractMethodsFound,
+        lisSAMThereAreNoAbstractMethodsLeftToOverride
         ,mtConfirmation,[mbOk],0);
       Result:=mrOk;
       exit;
@@ -141,7 +142,8 @@ begin
   finally
     CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     if ErrMsg<>'' then begin
-      MessageDlg('Error','Unable to show abstract methods of the current class, because'#13
+      MessageDlg(lisCCOErrorCaption,
+        lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus+#13
         +ErrMsg,mtError,[mbCancel],0);
     end;
   end;
@@ -153,13 +155,13 @@ procedure TAbstractMethodsDialog.FormCreate(Sender: TObject);
 begin
   FItems:=TFPList.Create;
 
-  AddFirstBitBtn.Caption:='Override first selected';
-  AddAllBitBtn.Caption:='Override all selected';
-  CancelBitBtn.Caption:='Cancel';
+  AddFirstBitBtn.Caption:=lisSAMOverrideFirstSelected;
+  AddAllBitBtn.Caption:=lisSAMOverrideAllSelected;
+  CancelBitBtn.Caption:=dlgCancel;
 
-  SelectNoneButton.Caption:='Select none';
-  SelectAllButton.Caption:='Select all';
-  MethodsGroupBox.Caption:='Abstract methods - not overriden';
+  SelectNoneButton.Caption:=lisSAMSelectNone;
+  SelectAllButton.Caption:=lisMenuSelectAll;
+  MethodsGroupBox.Caption:=lisSAMAbstractMethodsNotYetOverridden;
 end;
 
 procedure TAbstractMethodsDialog.AddFirstBitBtnClick(Sender: TObject);
@@ -235,8 +237,8 @@ begin
       Item:=TAbstractMethodDlgItem(FItems[i]);
       if MethodsCheckListBox.Checked[i] and Item.BelongsToStartClass then begin
         if Result then begin
-          MessageDlg('Impossible',
-            'This method can not be overriden because it is defined in the current class',
+          MessageDlg(lisCCOErrorCaption,
+            lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh,
             mtError,[mbCancel],0);
           Result:=false;
         end;
@@ -374,17 +376,17 @@ begin
   end;
 
   // caption
-  Caption:='Abstract methods of '+StartClassName;
+  Caption:=Format(lisSAMAbstractMethodsOf, [StartClassName]);
   
   // note
   NoteStr:='';
   if BelongsToStartClassCnt>0 then begin
-    NoteStr:=StartClassName+' is an abstract class, it has '
-             +IntToStr(BelongsToStartClassCnt)+' abstract methods.'#13;
+    NoteStr:=Format(lisSAMIsAnAbstractClassItHasAbstractMethods, [
+      StartClassName, IntToStr(BelongsToStartClassCnt)])+#13;
   end;
-  NoteStr:=NoteStr+'There are '+IntToStr(FItems.Count-BelongsToStartClassCnt)
-    +' abstract methods to override.'#13
-    +'Select the methods for which stubs should be created:';
+  NoteStr:=NoteStr+
+    Format(lisSAMThereAreAbstractMethodsToOverrideSelectTheMethodsF,
+           [IntToStr(FItems.Count-BelongsToStartClassCnt), #13]);
   NoteLabel.Caption:=NoteStr;
   
   UpdateButtons;

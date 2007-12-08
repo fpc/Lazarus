@@ -196,6 +196,8 @@ resourcestring
   lisKMSelectPageBottom = 'Select page bottom';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
+  lisSAMAbstractMethodsNotYetOverridden = 'Abstract methods - not yet '
+    +'overridden';
   lisMenuSelectToBrace = 'Select to brace';
   lisMenuSelectCodeBlock = 'Select code block';
   lisMenuSelectWord = 'Select word';
@@ -856,6 +858,7 @@ resourcestring
   lisLazDoc = 'LazDoc';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
+  lisSAMSelectNone = 'Select none';
   lisKMClassic = 'Classic';
   lisKMMacOSX = 'Mac OS X';
   lisPEFilename = 'Filename:';
@@ -1337,6 +1340,21 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh = 'This method can '
+    +'not be overridden because it is defined in the current class';
+  lisSAMIsAnAbstractClassItHasAbstractMethods = '%s is an abstract class, it '
+    +'has %s abstract methods.';
+  lisSAMAbstractMethodsOf = 'Abstract methods of %s';
+  lisSAMThereAreAbstractMethodsToOverrideSelectTheMethodsF = 'There are %s '
+    +'abstract methods to override.%sSelect the methods for which stubs '
+    +'should be created:';
+  lisSAMNoAbstractMethodsFound = 'No abstract methods found';
+  lisSAMCursorIsNotInAClassDeclaration = 'Cursor is not in a class declaration';
+  lisSAMIDEIsBusy = 'IDE is busy';
+  lisSAMThereAreNoAbstractMethodsLeftToOverride = 'There are no abstract '
+    +'methods left to override.';
+  lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus = 'Unable to show '
+    +'abstract methods of the current class, because';
   lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
   lisCCOWarningCaption = 'Warning';
   lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
@@ -3533,6 +3551,8 @@ resourcestring
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
   lisPLDPackageLinks = 'Package Links';
+  lisSAMOverrideFirstSelected = 'Override first selected';
+  lisSAMOverrideAllSelected = 'Override all selected';
 
 implementation
 
