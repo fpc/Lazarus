@@ -124,7 +124,7 @@ type
     function CreateNewCommandID: word;
     function CreateCategory(Parent: TIDECommandCategory;
                             const AName, Description: string;
-                            Scope: TIDECommandScope): TIDECommandCategory; override;
+                            Scope: TIDECommandScope = nil): TIDECommandCategory; override;
     function CreateCommand(Category: TIDECommandCategory;
                            const AName, Description: string;
                            const TheShortcutA, TheShortcutB: TIDEShortCut;

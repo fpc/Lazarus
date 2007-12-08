@@ -123,6 +123,7 @@ type
     function ReadWideString: WideString; override;
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
+    procedure Read(var Buf; Count: LongInt); override;
   public
     property Doc: TDOMDocument read FDoc;
     property Element: TDOMElement read FElement;// current element node
@@ -443,13 +444,9 @@ begin
 end;
 
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
-var
-  s: string;
 begin
-  SetLength(s,Count);
-  if s<>'' then
-    System.Move(Buffer,s[1],Count);
-  GetPropertyElement('rawdata')['value'] := s;
+  // there can be arbitrary lots of Write calls
+  raise Exception.Create('TODO: TXMLObjectWriter.Write');
 end;
 
 
@@ -846,7 +843,13 @@ begin
 end;
 
 procedure TXMLObjectReader.ReadBinary(const DestData: TMemoryStream);
+var
+  Value: String;
 begin
+  Value:=FElement['value'];
+  if Value<>'' then
+    DestData.Write(Value[1],length(Value));
+  ReadValue;
   //writeln('TXMLObjectReader.ReadBinary ');
 end;
 
@@ -1034,6 +1037,12 @@ procedure TXMLObjectReader.SkipValue;
 begin
   ReadValue;
   //writeln('TXMLObjectReader.SkipValue ');
+end;
+
+procedure TXMLObjectReader.Read(var Buf; Count: LongInt);
+begin
+  raise Exception.Create('TODO: TXMLObjectReader.Read');
+  //writeln('TXMLObjectReader.Read ');
 end;
 
 end.
