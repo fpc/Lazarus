@@ -335,7 +335,7 @@ type
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
-                    var ACleanPos: integer): integer; // 0=valid CleanPos
+                    out ACleanPos: integer): integer; // 0=valid CleanPos
                           //-1=CursorPos was skipped, CleanPos between two links
                           // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
@@ -363,8 +363,8 @@ type
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;
-                                      var EndCursorPos: integer;
-                                      var EndCode: Pointer): boolean;
+                                      out EndCursorPos: integer;
+                                      out EndCode: Pointer): boolean;
 
     property ChangeStep: integer read FChangeStep;
 
@@ -1594,7 +1594,7 @@ end;
 -------------------------------------------------------------------------------}
 function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
   StartCode: pointer;
-  var EndCursorPos: integer; var EndCode: Pointer): boolean;
+  out EndCursorPos: integer; out EndCode: Pointer): boolean;
   
   type
     TIf = record
@@ -1941,6 +1941,8 @@ var
   SearchedCodes: TFPList;
 begin
   Result:=false;
+  EndCursorPos:=0;
+  EndCode:=nil;
   
   // search link before start position
   LinkID:=-1;
@@ -2926,7 +2928,7 @@ begin
 end;
 
 function TLinkScanner.CursorToCleanPos(ACursorPos: integer; ACode: pointer;
-  var ACleanPos: integer): integer;
+  out ACleanPos: integer): integer;
 // 0=valid CleanPos
 //-1=CursorPos was skipped, CleanPos is between two links
 // 1=CursorPos beyond scanned code
@@ -2937,6 +2939,7 @@ begin
   i:=0;
   SkippedPos:=false;
   SkippedCleanPos:=-1;
+  ACleanPos:=0;
   while i<LinkCount do begin
     //DebugLn('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
     if (FLinks[i].Code=ACode) and (FLinks[i].SrcPos<=ACursorPos) then begin

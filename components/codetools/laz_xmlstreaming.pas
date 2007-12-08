@@ -77,6 +77,7 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+    procedure Write(const Buffer; Count: Longint); override;
   public
     property Doc: TDOMDocument read FDoc;
   end;
@@ -439,6 +440,16 @@ procedure TXMLObjectWriter.WriteWideString(const Value: WideString);
 // save widestrings as utf8
 begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
+end;
+
+procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
+var
+  s: string;
+begin
+  SetLength(s,Count);
+  if s<>'' then
+    System.Move(Buffer,s[1],Count);
+  GetPropertyElement('rawdata')['value'] := s;
 end;
 
 

@@ -62,7 +62,7 @@ function CleanCodeFromComments(const DirtyCode: string;
 function ExtractCommentContent(const ASource: string; CommentStart: integer;
     NestedComments: boolean;
     TrimStart: boolean = false; TrimEnd: boolean = false): string;
-function FindMainUnitHint(const ASource: string; var Filename: string): boolean;
+function FindMainUnitHint(const ASource: string; out Filename: string): boolean;
 
 // indent
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
@@ -76,7 +76,7 @@ procedure IndentText(const Source: string; Indent, TabWidth: integer;
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
-    var IdentStart,IdentEnd:integer);
+    out IdentStart,IdentEnd:integer);
 function GetIdentStartPosition(const Source:string; Position:integer): integer;
 function GetIdentLen(Identifier: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
@@ -1434,7 +1434,7 @@ begin
 end;
 
 procedure GetIdentStartEndAtPosition(const Source: string; Position: integer;
-    var IdentStart, IdentEnd: integer);
+  out IdentStart, IdentEnd: integer);
 begin
   IdentStart:=Position;
   IdentEnd:=Position;
@@ -2831,7 +2831,7 @@ begin
   Result:=copy(ASource,StartPos,EndPos-StartPos);
 end;
 
-function FindMainUnitHint(const ASource: string; var Filename: string
+function FindMainUnitHint(const ASource: string; out Filename: string
   ): boolean;
 const
   IncludeByHintStart = '{%MainUnit ';
@@ -2841,6 +2841,7 @@ var
   EndPos: LongInt;
 begin
   Result:=false;
+  Filename:='';
   MaxPos:=length(ASource);
   StartPos:=length(IncludeByHintStart);
   if not TextBeginsWith(PChar(Pointer(ASource)),// pointer type cast avoids #0 check

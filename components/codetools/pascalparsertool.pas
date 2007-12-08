@@ -213,13 +213,13 @@ type
 
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
-        const CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
+        const CursorPos: TCodeXYPosition; out CleanCursorPos: integer;
         BuildTreeFlags: TBuildTreeFlags);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
-        var FunctionResult: TCodeTreeNode);
+        out FunctionResult: TCodeTreeNode);
     procedure BuildSubTree(CleanCursorPos: integer); virtual;
     procedure BuildSubTree(ANode: TCodeTreeNode); virtual;
     function NodeNeedsBuildSubTree(ANode: TCodeTreeNode): boolean; virtual;
@@ -3886,7 +3886,7 @@ end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
   TreeRange: TTreeRange; const CursorPos: TCodeXYPosition;
-  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
+  out CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
 var
   CaretType: integer;
   IgnorePos: TCodePosition;
@@ -4050,7 +4050,7 @@ begin
 end;
 
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
-  var FunctionResult: TCodeTreeNode);
+  out FunctionResult: TCodeTreeNode);
 begin
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;

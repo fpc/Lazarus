@@ -60,8 +60,8 @@ type
         Node: TCodeTreeNode): TAVLTreeNode;
   public
     function FindJumpPoint(CursorPos: TCodeXYPosition;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer;
-        var RevertableJump: boolean): boolean;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
+        out RevertableJump: boolean): boolean;
     function FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
         out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function GatherProcNodes(StartNode: TCodeTreeNode;
@@ -195,8 +195,8 @@ begin
 end;
 
 function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
-  var RevertableJump: boolean): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
+  out RevertableJump: boolean): boolean;
 
 const
   JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers,

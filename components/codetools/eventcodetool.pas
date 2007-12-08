@@ -48,7 +48,7 @@ uses
   SourceChanger, FindDeclarationTool, ExtractProcTool;
 
 type
-  TGetStringProc = procedure(const s: string) of object;
+  TECTGetStringProc = procedure(const s: string) of object;
   
   TEventsCodeTool = class(TExtractProcTool)
   private
@@ -65,9 +65,9 @@ type
         SourceChangeCache: TSourceChangeCache): boolean;
   
     function GetCompatiblePublishedMethods(const UpperClassName: string;
-        TypeData: PTypeData; Proc: TGetStringProc): boolean;
+        TypeData: PTypeData; Proc: TECTGetStringProc): boolean;
     function GetCompatiblePublishedMethods(ClassNode: TCodeTreeNode;
-        TypeData: PTypeData; Proc: TGetStringProc): boolean;
+        TypeData: PTypeData; Proc: TECTGetStringProc): boolean;
     function PublishedMethodExists(const UpperClassName,
         UpperMethodName: string; TypeData: PTypeData;
         out MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
@@ -78,7 +78,7 @@ type
         ): boolean;
     function JumpToPublishedMethodBody(const UpperClassName,
         UpperMethodName: string;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function RenamePublishedMethod(const UpperClassName, UpperOldMethodName,
         NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedMethod(ClassNode: TCodeTreeNode;
@@ -157,6 +157,7 @@ begin
       // read ParamFlags
       // ToDo: check this: SizeOf(TParamFlags) is 4, but the data is only 1 byte
       Len:=1; // typinfo.pp comment is wrong: SizeOf(TParamFlags)
+      ParamType.Flags:=[];
       Move(TypeData^.ParamList[Offset],ParamType.Flags,Len);
       inc(Offset,Len);
 
@@ -215,7 +216,7 @@ end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
   const UpperClassName: string; TypeData: PTypeData;
-  Proc: TGetStringProc): boolean;
+  Proc: TECTGetStringProc): boolean;
 var ClassNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -238,7 +239,8 @@ begin
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(
-  ClassNode: TCodeTreeNode; TypeData: PTypeData; Proc: TGetStringProc): boolean;
+  ClassNode: TCodeTreeNode; TypeData: PTypeData;
+  Proc: TECTGetStringProc): boolean;
 var
   Params: TFindDeclarationParams;
   CompListSize: integer;
@@ -532,7 +534,7 @@ end;
 
 function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
   UpperMethodName: string;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   ANode: TCodeTreeNode;
   ClassNode: TCodeTreeNode;

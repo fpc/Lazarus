@@ -83,6 +83,7 @@ type
   
 const
   StartAtomPosition: TAtomPosition = (StartPos:1; EndPos:1; Flag:cafNone);
+  CleanAtomPosition: TAtomPosition = (StartPos:0; EndPos:0; Flag:cafNone);
 
 type
   TAtomRing = class

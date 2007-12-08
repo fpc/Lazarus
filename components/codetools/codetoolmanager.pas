@@ -54,9 +54,9 @@ type
   TDirectivesTool = TCompilerDirectivesTree;
 
   TGetStringProc = procedure(const s: string) of object;
-  TOnBeforeApplyChanges = procedure(Manager: TCodeToolManager;
+  TOnBeforeApplyCTChanges = procedure(Manager: TCodeToolManager;
                                     var Abort: boolean) of object;
-  TOnAfterApplyChanges = procedure(Manager: TCodeToolManager) of object;
+  TOnAfterApplyCTChanges = procedure(Manager: TCodeToolManager) of object;
   TOnGatherExternalChanges = procedure(Manager: TCodeToolManager;
                                        var Abort: boolean) of object;
   TOnSearchUsedUnit = function(const SrcFilename: string;
@@ -93,8 +93,8 @@ type
     FCodeTreeNodesDeletedStep: integer;
     FIndentSize: integer;
     FJumpCentered: boolean;
-    FOnAfterApplyChanges: TOnAfterApplyChanges;
-    FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FOnAfterApplyChanges: TOnAfterApplyCTChanges;
+    FOnBeforeApplyChanges: TOnBeforeApplyCTChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
@@ -258,9 +258,9 @@ type
     property OnGatherExternalChanges: TOnGatherExternalChanges
                    read FOnGatherExternalChanges write FOnGatherExternalChanges;
     function ApplyChanges: boolean;
-    property OnBeforeApplyChanges: TOnBeforeApplyChanges
+    property OnBeforeApplyChanges: TOnBeforeApplyCTChanges
                          read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
-    property OnAfterApplyChanges: TOnAfterApplyChanges
+    property OnAfterApplyChanges: TOnAfterApplyCTChanges
                            read FOnAfterApplyChanges write FOnAfterApplyChanges;
           
     // defines

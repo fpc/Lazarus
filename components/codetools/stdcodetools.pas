@@ -82,7 +82,7 @@ type
     // uses sections
     function FindUnitInUsesSection(UsesNode: TCodeTreeNode;
           const UpperUnitName: string;
-          var NamePos, InPos: TAtomPosition): boolean;
+          out NamePos, InPos: TAtomPosition): boolean;
     function FindUnitInAllUsesSections(const UpperUnitName: string;
           out NamePos, InPos: TAtomPosition): boolean;
     function RenameUsedUnit(const OldUpperUnitName, NewUnitName,
@@ -196,25 +196,25 @@ type
 
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockStart(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
           var BlockCleanStart, BlockCleanEnd: integer): boolean;
       
     // compiler directives
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindEnclosingIncludeDirective(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindModeDirective(DoBuildTree: boolean;
-          var ACleanPos: integer): boolean;
+          out ACleanPos: integer): boolean;
     function FindResourceDirective(DoBuildTree: boolean;
           var ACleanPos: integer; const Filename: string = ''): boolean;
     function FindResourceDirective(const CursorPos: TCodeXYPosition;
-          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer;
           const Filename: string = ''): boolean;
     function AddResourceDirective(const Filename: string;
           SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
@@ -234,7 +234,7 @@ type
 
     // expressions
     function GetStringConstBounds(const CursorPos: TCodeXYPosition;
-          var StartPos, EndPos: TCodeXYPosition;
+          out StartPos, EndPos: TCodeXYPosition;
           ResolveComments: boolean): boolean;
     function ReplaceCode(const StartPos, EndPos: TCodeXYPosition;
           const NewCode: string;
@@ -371,11 +371,11 @@ end;
 
 function TStandardCodeTool.FindUnitInUsesSection(UsesNode: TCodeTreeNode;
   const UpperUnitName: string;
-  var NamePos, InPos: TAtomPosition): boolean;
+  out NamePos, InPos: TAtomPosition): boolean;
 begin
   Result:=false;
-  NamePos.StartPos:=0;
-  InPos.StartPos:=0;
+  NamePos:=CleanAtomPosition;
+  InPos:=CleanAtomPosition;
   if (UsesNode=nil) or (UpperUnitName='') or (length(UpperUnitName)>255)
   or (UsesNode.Desc<>ctnUsesSection) then exit;
   MoveCursorToNodeStart(UsesNode);
@@ -1625,7 +1625,7 @@ var
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext;
     SearchAlsoInDefineProperties, ErrorOnNotFound: boolean;
-    var IdentContext: TFindContext): boolean;
+    out IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
     IdentifierNotPublished: Boolean;
@@ -2665,7 +2665,7 @@ end;
 
 function TStandardCodeTool.GetStringConstBounds(
   const CursorPos: TCodeXYPosition;
-  var StartPos, EndPos: TCodeXYPosition; ResolveComments: boolean): boolean;
+  out StartPos, EndPos: TCodeXYPosition; ResolveComments: boolean): boolean;
 // examples:
 //   's1'+'s2'#13+AFunction(...)+inherited AMethod
 { $DEFINE VerboseGetStringConstBounds}
@@ -4385,7 +4385,7 @@ end;
 
 function TStandardCodeTool.FindBlockCounterPart(
   const CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 // jump from bracket-open to bracket-close or 'begin' to 'end'
 // or 'until' to 'repeat' ...
 var CleanCursorPos: integer;
@@ -4427,7 +4427,7 @@ begin
 end;
 
 function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
 var CleanCursorPos: integer;
@@ -4476,7 +4476,7 @@ begin
 end;
 
 function TStandardCodeTool.GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 { search a block (e.g. begin..end) that looks unclosed, i.e. 'begin'
   without 'end' or 'begin' with 'end' in a different column.
   This function can be used as GuessNextUnclosedBlock, because it ignores blocks
@@ -4594,7 +4594,7 @@ end;
 
 function TStandardCodeTool.GuessMisplacedIfdefEndif(
   const CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   StartCursorPos, EndCursorPos: integer;
   StartCode, EndCode: Pointer;
@@ -4625,7 +4625,7 @@ begin
 end;
 
 function TStandardCodeTool.FindEnclosingIncludeDirective(
-  const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition;
   var NewTopLine: integer): boolean;
 var
   CleanCursorPos, LinkIndex, NewCleanPos: integer;
@@ -4649,11 +4649,12 @@ begin
 end;
 
 function TStandardCodeTool.FindModeDirective(DoBuildTree: boolean;
-  var ACleanPos: integer): boolean;
+  out ACleanPos: integer): boolean;
 var
   ParamPos: Integer;
 begin
   Result:=false;
+  ACleanPos:=0;
   if DoBuildTree then BuildTree(true);
   ACleanPos:=FindNextCompilerDirectiveWithName(Src,1,'Mode',
                                                Scanner.NestedComments,ParamPos);
@@ -4697,8 +4698,8 @@ begin
 end;
 
 function TStandardCodeTool.FindResourceDirective(
-  const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer; const Filename: string): boolean;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; const Filename: string): boolean;
 var
   CleanCursorPos: integer;
 begin

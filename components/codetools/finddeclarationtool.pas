@@ -483,7 +483,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Save(var Input: TFindDeclarationInput);
+    procedure Save(out Input: TFindDeclarationInput);
     procedure Load(Input: TFindDeclarationInput; FreeInput: boolean);
     procedure SetResult(const AFindContext: TFindContext);
     procedure SetResult(ANewCodeTool: TFindDeclarationTool;
@@ -564,7 +564,7 @@ type
     {$ENDIF}
     function FindDeclarationInUsesSection(UsesNode: TCodeTreeNode;
       CleanPos: integer;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       var IncludeCode: TCodeBuffer): boolean;
     function FindEnumInContext(Params: TFindDeclarationParams): boolean;
@@ -694,24 +694,24 @@ type
     function ConsistencyCheck: integer; override;
 
     function FindDeclaration(const CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindMainDeclaration(const CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationOfIdentifier(const CursorPos: TCodeXYPosition;
       Identifier: PChar;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       SearchSmartFlags: TFindSmartFlags;
       var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationInInterface(const Identifier: string;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationWithMainUsesSection(const Identifier: string;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
       out NewContext: TFindContext; IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationOfPropertyPath(const PropertyPath: string;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer;
       IgnoreTypeLess: boolean = false): boolean;
     function FindDeclarationNodeInInterface(const Identifier: string;
       BuildTheTree: Boolean): TCodeTreeNode;
@@ -759,7 +759,7 @@ type
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
 
     function JumpToNode(ANode: TCodeTreeNode;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        out NewPos: TCodeXYPosition; out NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
     function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos,
         NewBottomLineCleanPos: integer;
@@ -1095,7 +1095,7 @@ end;
 { TFindDeclarationTool }
 
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
@@ -1105,8 +1105,8 @@ begin
 end;
 
 function TFindDeclarationTool.FindMainDeclaration(
-  const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
-  var NewTopLine: integer): boolean;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition;
+  out NewTopLine: integer): boolean;
 var
   NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode;
@@ -1117,7 +1117,7 @@ end;
 
 function TFindDeclarationTool.FindDeclarationOfIdentifier(
   const CursorPos: TCodeXYPosition; Identifier: PChar;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
@@ -1163,7 +1163,7 @@ end;
 function TFindDeclarationTool.FindDeclaration(const CursorPos: TCodeXYPosition;
   SearchSmartFlags: TFindSmartFlags;
   var NewTool: TFindDeclarationTool; var NewNode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
@@ -1428,7 +1428,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindDeclarationInInterface(
-  const Identifier: string; var NewPos: TCodeXYPosition; var NewTopLine: integer
+  const Identifier: string; out NewPos: TCodeXYPosition; out NewTopLine: integer
   ): boolean;
 var
   Node: TCodeTreeNode;
@@ -1441,7 +1441,7 @@ begin
 end;
 
 function TFindDeclarationTool.FindDeclarationWithMainUsesSection(
-  const Identifier: string; var NewPos: TCodeXYPosition; var NewTopLine: integer
+  const Identifier: string; out NewPos: TCodeXYPosition; out NewTopLine: integer
   ): boolean;
 var
   UsesNode: TCodeTreeNode;
@@ -1583,7 +1583,7 @@ end;
 
 function TFindDeclarationTool.FindDeclarationOfPropertyPath(
   const PropertyPath: string;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
   IgnoreTypeLess: boolean): boolean;
 var
   Context: TFindContext;
@@ -1686,7 +1686,7 @@ end;
 
 function TFindDeclarationTool.FindDeclarationInUsesSection(
   UsesNode: TCodeTreeNode; CleanPos: integer;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
   
   procedure RaiseUsesExpected;
   begin
@@ -3929,7 +3929,7 @@ begin
 end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
   IgnoreJumpCentered: boolean): boolean;
 var
   JumpPos: LongInt;
@@ -8093,7 +8093,7 @@ begin
   end;
 end;
 
-procedure TFindDeclarationParams.Save(var Input: TFindDeclarationInput);
+procedure TFindDeclarationParams.Save(out Input: TFindDeclarationInput);
 begin
   Input.Flags:=Flags;
   Input.Identifier:=Identifier;

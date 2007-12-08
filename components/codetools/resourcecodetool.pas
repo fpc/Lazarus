@@ -54,7 +54,7 @@ type
           const ResourceName: string): boolean;
     function RemoveLazarusResourceEx(ResourceCode: TCodeBuffer;
           const ResourceName: string; AllExceptFirst: boolean;
-          var First: TAtomPosition): boolean;
+          out First: TAtomPosition): boolean;
   end;
   
   TResourceCodeToolError = class(Exception)
@@ -231,7 +231,7 @@ begin
 end;
 
 function TResourceCodeTool.RemoveLazarusResourceEx(ResourceCode: TCodeBuffer;
-  const ResourceName: string; AllExceptFirst: boolean; var First: TAtomPosition
+  const ResourceName: string; AllExceptFirst: boolean; out First: TAtomPosition
   ): boolean;
 var
   ResourcePositions: TAtomList;

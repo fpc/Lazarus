@@ -67,7 +67,7 @@ type
       var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
     function ExtractProc(const StartPos, EndPos: TCodeXYPosition;
       ProcType: TExtractProcType; const ProcName: string;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer;
+      out NewPos: TCodeXYPosition; out NewTopLine: integer;
       SourceChangeCache: TSourceChangeCache): boolean;
   end;
   
@@ -257,7 +257,7 @@ end;
 
 function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 type
   TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
@@ -512,7 +512,7 @@ var
   function DeleteLocalVariable(ProcVar: TExtractedProcVariable): boolean;
   
     function VariableNodeShouldBeDeleted(VarNode: TCodeTreeNode;
-      var CurProcVar: TExtractedProcVariable): boolean;
+      out CurProcVar: TExtractedProcVariable): boolean;
     var
       AVLNode: TAVLTreeNode;
     begin
@@ -692,11 +692,12 @@ var
     Result:=true;
   end;
   
-  function CreateProcNameParts(var ProcClassName: string;
-    var ProcClassNode: TCodeTreeNode): boolean;
+  function CreateProcNameParts(out ProcClassName: string;
+    out ProcClassNode: TCodeTreeNode): boolean;
   begin
     Result:=false;
     ProcClassName:='';
+    ProcClassNode:=nil;
     if ProcType in [eptPrivateMethod,eptProtectedMethod,eptPublicMethod,
       eptPublishedMethod] then
     begin
@@ -716,7 +717,7 @@ var
     Result:=true;
   end;
 
-  function CreateProcParamList(var CompleteParamListCode,
+  function CreateProcParamList(out CompleteParamListCode,
     BaseParamListCode: string): boolean;
   var
     AVLNode: TAVLTreeNode;
@@ -774,7 +775,7 @@ var
     Result:=true;
   end;
   
-  function CreateProcVarSection(var VarSectionCode: string): boolean;
+  function CreateProcVarSection(out VarSectionCode: string): boolean;
   var
     AVLNode: TAVLTreeNode;
     ProcVar: TExtractedProcVariable;
@@ -834,7 +835,7 @@ var
     Result:=true;
   end;
   
-  function CreateProcBeginEndBlock(var BeginEndCode: string): boolean;
+  function CreateProcBeginEndBlock(out BeginEndCode: string): boolean;
   var
     DirtyStartPos, DirtyEndPos: integer;
     le, s: String;
@@ -842,6 +843,7 @@ var
     DirtySelection: String;
   begin
     Result:=false;
+    BeginEndCode:='';
     le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
     // extract dirty source, so that compiler directives are moved.
     StartPos.Code.LineColToPosition(StartPos.Y,StartPos.X,DirtyStartPos);
@@ -872,7 +874,7 @@ var
   end;
   
   function FindInsertPositionForProcBody(
-    var InsertPos, Indent: integer): boolean;
+    out InsertPos, Indent: integer): boolean;
   var
     BeginNode: TCodeTreeNode;
     ANode: TCodeTreeNode;
@@ -943,7 +945,7 @@ var
   end;
 
   function FindInsertPositionForProcIntf(
-    var IntfInsertPos, IntfIndent: integer): boolean;
+    out IntfInsertPos, IntfIndent: integer): boolean;
   begin
     Result:=false;
     IntfInsertPos:=0;
@@ -1054,7 +1056,7 @@ var
   end;
 
   function CreateProcBody(const ProcClassName, ParamList,
-    VarSection, BeginEndCode: string; var ProcCode: string): boolean;
+    VarSection, BeginEndCode: string; out ProcCode: string): boolean;
   var
     le: String;
     ProcHeader: String;

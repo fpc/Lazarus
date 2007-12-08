@@ -154,10 +154,10 @@ type
     procedure FindInsertPositionForProcInterface(var Indent, InsertPos: integer;
            SourceChangeCache: TSourceChangeCache);
     function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
-           var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
+           out VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
     function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
                           VariableName, VariableType: string;
-                          var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                          out NewPos: TCodeXYPosition; out NewTopLine: integer;
                           SourceChangeCache: TSourceChangeCache): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           out NewPos: TCodeXYPosition; out NewTopLine: integer);
@@ -734,7 +734,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax(
-  CleanCursorPos: integer; var VarNameAtom, AssignmentOperator,
+  CleanCursorPos: integer; out VarNameAtom, AssignmentOperator,
   TermAtom: TAtomPosition): boolean;
 // check for VarName:=Term
 begin
@@ -765,8 +765,8 @@ end;
 function TCodeCompletionCodeTool.AddLocalVariable(
   CleanCursorPos: integer; OldTopLine: integer;
   VariableName, VariableType: string;
-  var NewPos: TCodeXYPosition;
-  var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+  out NewPos: TCodeXYPosition;
+  out NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
   CursorNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
@@ -5269,10 +5269,10 @@ var CleanCursorPos, Indent, insertPos: integer;
     be added to the published section of the class of the Begin..End Block.
   }
   
-    function CheckEventAssignmentSyntax(var PropertyAtom: TAtomPosition;
-      var AssignmentOperator, AddrOperatorPos: integer;
-      var UserEventAtom: TAtomPosition;
-      var SemicolonPos: integer): boolean;
+    function CheckEventAssignmentSyntax(out PropertyAtom: TAtomPosition;
+      out AssignmentOperator, AddrOperatorPos: integer;
+      out UserEventAtom: TAtomPosition;
+      out SemicolonPos: integer): boolean;
     begin
       Result:=false;
 
@@ -5323,7 +5323,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     end;
     
     function FindEventTypeAtCursor(PropertyAtom: TAtomPosition;
-      var PropertyContext, ProcContext: TFindContext;
+      out PropertyContext, ProcContext: TFindContext;
       Params: TFindDeclarationParams): boolean;
     begin
       Result:=false;
@@ -5419,12 +5419,14 @@ var CleanCursorPos, Indent, insertPos: integer;
       ProcContext: TFindContext;
       AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
       UserEventAtom: TAtomPosition;
-      var MethodDefinition: string; var MethodAttr: TProcHeadAttributes
+      out MethodDefinition: string; out MethodAttr: TProcHeadAttributes
       ): boolean;
     var RValue, CleanMethodDefinition: string;
       StartInsertPos, EndInsertPos: integer;
     begin
       Result:=false;
+      MethodDefinition:='';
+      MethodAttr:=[];
       
       {$IFDEF CTDEBUG}
       DebugLn('  CompleteEventAssignment: Extract method param list...');

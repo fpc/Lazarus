@@ -206,9 +206,9 @@ type
         out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToStr(CleanPos: integer): string;
     procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
-        ResolveComments: boolean; var SameArea: TAtomPosition);
+        ResolveComments: boolean; out SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
-        var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
+        out ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
     function FindLineEndOrCodeAfterPosition(StartPos: integer;
         SkipEmptyLines: boolean = false): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
@@ -219,7 +219,7 @@ type
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
     procedure BeginParsingAndGetCleanPos(DeleteNodes,
         OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
-        var CleanCursorPos: integer);
+        out CleanCursorPos: integer);
     function IsDirtySrcValid: boolean;
 
     function StringIsKeyWord(const Word: string): boolean;
@@ -1678,7 +1678,7 @@ end;
 
 procedure TCustomCodeTool.BeginParsingAndGetCleanPos(DeleteNodes,
   OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
-  var CleanCursorPos: integer);
+  out CleanCursorPos: integer);
 var Dummy: integer;
 begin
   if UpdateNeeded(OnlyInterfaceNeeded) then
@@ -2183,10 +2183,11 @@ begin
 end;
 
 procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
-  ResolveComments: boolean; var SameArea: TAtomPosition);
+  ResolveComments: boolean; out SameArea: TAtomPosition);
 var
   ANode: TCodeTreeNode;
 begin
+  SameArea:=CleanAtomPosition;
   if CodePosInFront<1 then begin
     ANode:=FindDeepestNodeAtPos(CleanPos,True);
     CodePosInFront:=ANode.StartPos;
@@ -2250,7 +2251,7 @@ begin
 end;
 
 procedure TCustomCodeTool.GetLineInfo(ACleanPos: integer;
-  var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
+  out ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
 begin
   if ACleanPos>=1 then begin
     if ACleanPos<=SrcLen then begin

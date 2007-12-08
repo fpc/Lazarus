@@ -169,8 +169,8 @@ type
     // uses sections
     procedure MoveCursorToUsesStart(UsesNode: TCodeTreeNode);
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
-    procedure ReadNextUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
-    procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
+    procedure ReadNextUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
+    procedure ReadPriorUsedUnit(out UnitNameAtom, InAtom: TAtomPosition);
   end;
 
 implementation
@@ -1755,7 +1755,7 @@ begin
     RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
 end;
 
-procedure TPascalReaderTool.ReadNextUsedUnit(var UnitNameAtom,
+procedure TPascalReaderTool.ReadNextUsedUnit(out UnitNameAtom,
   InAtom: TAtomPosition);
 begin
   AtomIsIdentifier(true);
@@ -1767,11 +1767,12 @@ begin
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
     InAtom:=CurPos;
     ReadNextAtom; // read comma or semicolon
-  end else
-    InAtom.StartPos:=-1;
+  end else begin
+    InAtom:=CleanAtomPosition;
+  end;
 end;
 
-procedure TPascalReaderTool.ReadPriorUsedUnit(var UnitNameAtom,
+procedure TPascalReaderTool.ReadPriorUsedUnit(out UnitNameAtom,
   InAtom: TAtomPosition);
 begin
   ReadPriorAtom; // read unitname
@@ -1781,8 +1782,9 @@ begin
     if not UpAtomIs('IN') then
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsKeywordIn,GetAtom]);
     ReadPriorAtom; // read unitname
-  end else
-    InAtom.StartPos:=-1;
+  end else begin
+    InAtom:=CleanAtomPosition;
+  end;
   AtomIsIdentifier(true);
   UnitNameAtom:=CurPos;
 end;
