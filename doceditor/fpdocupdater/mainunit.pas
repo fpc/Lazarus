@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  FPDocFiles, StdCtrls, ComCtrls, Masks, FileUtil, ExtCtrls,
+  FPDocFiles, StdCtrls, ComCtrls, FileUtil, ExtCtrls,
   LCLIntf, LCLType, LCLProc, Process, EditBtn, Laz_XMLCfg;
 
 type
@@ -94,33 +94,15 @@ implementation
 uses
   UnitMove, UnitSummary;
 
-function FindFiles(const Path, Mask: String; WithPath: Boolean = True;
-  WithExt: Boolean = True): TStringList;
+function FindFiles(const Path, Mask: String; OnlyFileName: Boolean = False): TStringList;
 var
-  MaskList: TMaskList;
-  Info: TSearchRec;
+  I: Integer;
   S: String;
 begin
-  Result := TStringList.Create;
-  MaskList := TMaskList.Create(Mask);
-  try
-    if SysUtils.FindFirst(Path + GetAllFilesMask, faAnyFile, Info) = 0 then
-    repeat
-      if MaskList.Matches(Info.Name) then
-      begin
-        if WithPath then S := Path
-        else S := '';
-        if WithExt then S := S + Info.Name
-        else S := S + ExtractFileNameOnly(Info.Name);
-        
-        Result.Add(S);
-      end;
-    until SysUtils.FindNext(Info) <> 0;
-
-    SysUtils.FindClose(Info);
-  finally
-    MaskList.Free;
-  end;
+  Result := FindAllFiles(Path, Mask, False);
+  if OnlyFileName then
+    for I := 0 to Result.Count - 1 do
+      Result[I] := ExtractFileNameOnly(Result[I]);
 end;
 
 { TFormMain }
@@ -266,7 +248,7 @@ begin
     DocsPath := AppendPathDelim(EditDocs.Directory);
     UnitsPath := AppendPathDelim(EditUnits.Directory);
     
-    Docs := FindFiles(DocsPath, '*.xml', False, False);
+    Docs := FindFiles(DocsPath, '*.xml', True);
     Units := FindFiles(UnitsPath, '*.pas;*.pp');
     try
       Units.Sorted := True;
