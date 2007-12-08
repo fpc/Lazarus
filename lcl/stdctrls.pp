@@ -803,6 +803,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;
