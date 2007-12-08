@@ -1444,7 +1444,7 @@ var
     P: String;
     PathInfo: TSearchRec;
   begin
-    P := APath + AllFilesMask;
+    P := APath + AllDirectoryEntriesMask;
 
     if SysUtils.FindFirst(P, faAnyFile, PathInfo) = 0 then
     try
