@@ -1693,7 +1693,7 @@ begin
       CursorNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
     if (CursorNode=nil) or (CursorNode.Desc<>ctnClass)
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
-      MoveCursorToNodeStart(CursorNode);
+      MoveCursorToCleanPos(CleanCursorPos);
       RaiseException('TIdentCompletionTool.FindAbstractMethods cursor is not in a class');
     end;
     ClassNode:=CursorNode;
