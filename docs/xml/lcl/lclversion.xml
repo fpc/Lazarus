@@ -35,7 +35,7 @@ contains the first number.
 <element name="lcl_minor">
 <short>LCL minor version</short>
 <descr>Given a version string like 0.9.25, the lcl_minor constant
-contains the second number.
+contains the second number.</descr>
 <seealso>lcl_version</seealso>
 </element>
 
@@ -43,7 +43,7 @@ contains the second number.
 <element name="lcl_release">
 <short>LCL release number</short>
 <descr>Given a version string like 0.9.25, the lcl_release constant
-contains the third number.
+contains the third number.</descr>
 <seealso>lcl_version</seealso>
 </element>
 
