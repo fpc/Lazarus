@@ -374,7 +374,7 @@ begin
   end;
 
   // caption
-  Caption:='Abstract methods of '+ClassName;
+  Caption:='Abstract methods of '+StartClassName;
   
   // note
   NoteStr:='';
