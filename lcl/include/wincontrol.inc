@@ -2700,24 +2700,12 @@ var
         end;
       alClient:
         begin
-          // VCL is tricking here.
-          // For alClients with Constraints do the same as for alLeft/alTop
-          //debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
-          if (RemainingClientRect.Right-RemainingClientRect.Left-NewWidth)
-           > (RemainingClientRect.Bottom-RemainingClientRect.Top-NewHeight)
-          then begin
-            // use alLeft strategy
-            RemainingClientRect.Left:=Min(NewLeft+NewWidth,RemainingClientRect.Right);
-            RemainingBorderSpace.Left:=0;
-            AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-              Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
-          end else begin
-            // use alTop strategy
-            RemainingClientRect.Top:=Min(NewTop+NewHeight,RemainingClientRect.Bottom);
-            RemainingBorderSpace.Top:=0;
-            AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-              0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Bottom),0,0);
-          end;
+          // For VCL compatibility alClient should *not* reduce the free space,
+          // so that several alClient controls can overlap. This can be used
+          // for example to simulate a Tabbed control.
+          // This produces more overhead than using Visible, but
+          // some Delphi programs use it nevertheless.
+          // See bug 10380.
         end;
     end;
 
