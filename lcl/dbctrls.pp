@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
   Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, Chart,
-  LCLType;
+  LCLType, LResources;
 
 Type
   { TFieldDataLink }
@@ -1402,6 +1402,9 @@ end;
 {$Include dbimage.inc}
 {$Include dbcalendar.inc}
 {$Include dbcustomnavigator.inc}
+
+initialization
+  {$I lcl_dbnav_images.lrs}
 
 finalization
   FieldClasses.Free;

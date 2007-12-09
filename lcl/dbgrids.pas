@@ -44,7 +44,7 @@ interface
 
 uses
   Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB,
-  LMessages, Grids, Dialogs, Controls, Themes;
+  LMessages, LResources, Grids, Dialogs, Controls, Themes;
 
 type
   TCustomDbGrid = class;
@@ -3454,5 +3454,8 @@ begin
   if Result then
     FGrid.Invalidate;
 end;
+
+initialization
+{$I lcl_dbgrid_images.lrs}
 
 end.
