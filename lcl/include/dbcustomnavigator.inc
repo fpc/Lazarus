@@ -214,6 +214,7 @@ var
   Y: Integer;
   W: Integer;
   H: Integer;
+  B: TBitmap;
 begin
   if FUpdateButtonsLock>0 then begin
     FUpdateButtonsNeeded:=true;
@@ -254,8 +255,9 @@ begin
       Buttons[CurButtonType]:=CurButton;
       if CurButtonType in [nbPrior,nbNext] then
         CurButton.NavStyle:=CurButton.NavStyle+[nsAllowTimer];
-      CurButton.Glyph.LoadFromLazarusResource(
-                                        DBNavButtonResourceName[CurButtonType]);
+      B := LoadBitmapFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
+      CurButton.Glyph := B;
+      B.Free;
       CurButton.NumGlyphs:=1;
     end else
       CurButton:=Buttons[CurButtonType];
