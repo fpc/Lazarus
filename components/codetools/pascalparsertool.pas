@@ -57,6 +57,7 @@ type
     phpWithVarModifiers,   // extract 'var', 'out', 'const'
     phpWithParameterNames, // extract parameter names
     phpWithoutParamTypes,  // skip colon, param types and default values
+    phpWithHasDefaultValues,// extract the equal sign of default values
     phpWithDefaultValues,  // extract default values
     phpWithResultType,     // extract colon + result type
     phpWithOfObject,       // extract 'of object'
@@ -251,6 +252,7 @@ const
       'phpWithVarModifiers',
       'phpWithParameterNames',
       'phpWithoutParamTypes',
+      'phpWithHasDefaultValues',
       'phpWithDefaultValues',
       'phpWithResultType',
       'phpWithOfObject',
@@ -1120,10 +1122,11 @@ var CloseBracket: char;
   
   procedure ReadDefaultValue;
   begin
+    // read =
     if not Extract then
       ReadNextAtom
     else
-      ExtractNextAtom(phpWithDefaultValues in Attr,Attr);
+      ExtractNextAtom([phpWithDefaultValues,phpWithHasDefaultValues]*Attr<>[],Attr);
     ReadConstant(ExceptionOnError,
       Extract and (phpWithDefaultValues in Attr),Attr);
     if (phpCreateNodes in Attr) then begin
