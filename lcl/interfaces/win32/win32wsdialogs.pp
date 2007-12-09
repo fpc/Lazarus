@@ -400,8 +400,8 @@ begin
       Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
 
       TitleBuffer := Utf8Decode(AOpenDialog.Title);
-      lpStrTitle := GetMem(Length(TitleBuffer) * 2 + 2);
-      Move(TitleBuffer[1], lpStrTitle^, Length(TitleBuffer) * 2 + 2);
+      lpStrTitle := AllocMem(Length(TitleBuffer) * 2 + 2);
+      Move(TitleBuffer[1], lpStrTitle^, Length(TitleBuffer) * 2);
     end
     else
     begin
