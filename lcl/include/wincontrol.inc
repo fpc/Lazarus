@@ -2702,9 +2702,10 @@ var
         begin
           // For VCL compatibility alClient should *not* reduce the free space,
           // so that several alClient controls can overlap. This can be used
-          // for example to simulate a Tabbed control.
-          // This produces more overhead than using Visible, but
-          // some Delphi programs use it nevertheless.
+          // for example to simulate a two page control and edit both pages
+          // at designtime with SendToBack.
+          // At runtime programs should use Visible instead of BringToFront to
+          // reduce overhead.
           // See bug 10380.
         end;
     end;
