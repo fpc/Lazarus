@@ -4111,7 +4111,6 @@ begin
   rcToken := AClip;
   rcToken.Top := (RowToScreenRow(LastLine)+1) * fTextHeight;
   if (rcToken.Top < rcToken.Bottom) then begin
-    DebugLn('Draw To clip ' + ColorToString(colEditorBG));
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
     // Draw the right edge if necessary.
