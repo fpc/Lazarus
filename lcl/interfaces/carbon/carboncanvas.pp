@@ -83,7 +83,6 @@ type
     FSavedDCList: TFPObjectList;
     FTextFractional: Boolean;
     FTextBuffer: WideString;
-    FTextLayout: ATSUTextLayout;
 
     procedure SetBkColor(AValue: TColor);
     procedure SetBkMode(const AValue: Integer);
@@ -94,8 +93,6 @@ type
     procedure SetROP2(const AValue: Integer);
     procedure SetTextColor(AValue: TColor);
   protected
-    procedure UpdateTextLayout;
-    procedure FreeTextLayout;
     function GetSize: TPoint; virtual; abstract;
     function SaveDCData: TCarbonDCData; virtual;
     procedure RestoreDCData(const AData: TCarbonDCData); virtual;
@@ -107,8 +104,8 @@ type
     function SaveDC: Integer;
     function RestoreDC(ASavedDC: Integer): Boolean;
     
-    function BeginTextRender(AStr: PChar; ACount: Integer): Boolean;
-    procedure EndTextRender;
+    function BeginTextRender(AStr: PChar; ACount: Integer; out ALayout: ATSUTextLayout): Boolean;
+    procedure EndTextRender(var ALayout: ATSUTextLayout);
     
     procedure SetAntialiasing(AValue: Boolean);
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
@@ -385,44 +382,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonDeviceContext.UpdateTextLayout
-
-  Updates text layout object
- ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.UpdateTextLayout;
-var
-  Tag: ATSUAttributeTag;
-  DataSize: ByteCount;
-  PValue: ATSUAttributeValuePtr;
-const
-  SName = 'UpdateTextLayout';
-begin
-  FreeTextLayout;
-  
-  // create text layout
-  if OSError(ATSUCreateTextLayout(FTextLayout), Self, SName, 'ATSUCreateTextLayout') then Exit;
-
-  // set layout context
-  Tag := kATSUCGContextTag;
-  DataSize := SizeOf(CGContextRef);
-
-  PValue := @CGContext;
-  if OSError(ATSUSetLayoutControls(FTextLayout, 1, @Tag, @DataSize, @PValue),
-    Self, SName, 'ATSUSetLayoutControls', 'CGContext') then Exit;
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonDeviceContext.FreeTextLayout
-
-  Frees text layout object
- ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.FreeTextLayout;
-begin
-  if FTextLayout <> nil then
-    OSError(ATSUDisposeTextLayout(FTextLayout), Self, 'FreeTextLayout', 'ATSUDisposeTextLayout');
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.Create
 
   Creates new Carbon device context
@@ -445,8 +404,6 @@ begin
   FCurrentRegion.Select;
   
   FTextFractional := True;
-  
-  FTextLayout := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -456,8 +413,6 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCarbonDeviceContext.Destroy;
 begin
-  FreeTextLayout;
-  
   BkBrush.Free;
   TextBrush.Free;
   
@@ -509,8 +464,6 @@ begin
     // set initial pen, brush and font
     CurrentPen := DefaultPen;
     CurrentBrush := DefaultBrush;
-    
-    UpdateTextLayout;
   end;
 end;
 
@@ -642,16 +595,20 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.BeginTextRender
-  Params:  AStr       - UTF8 string to render
-           ACount     - Count of chars to render
+  Params:  AStr    - UTF8 string to render
+           ACount  - Count of chars to render
+           ALayout - ATSU layout
   Returns: If the function suceeds
 
-  Sets the ATSU text layout for the specified text and manages the device
+  Creates the ATSU text layout for the specified text and manages the device
   context to render the text.
   NOTE: Coordination system is set upside-down!
  ------------------------------------------------------------------------------}
-function TCarbonDeviceContext.BeginTextRender(AStr: PChar; ACount: Integer): Boolean;
+function TCarbonDeviceContext.BeginTextRender(AStr: PChar; ACount: Integer; out
+  ALayout: ATSUTextLayout): Boolean;
 var
+  TextStyle: ATSUStyle;
+  TextLength: LongWord;
   S: String;
   Tag: ATSUAttributeTag;
   DataSize: ByteCount;
@@ -669,27 +626,27 @@ begin
 
   // change coordination system
   CGContextScaleCTM(CGContext, 1, -1);
-  
+
   // convert UTF-8 string to UTF-16 string
   if ACount < 0 then S := AStr
   else S := Copy(AStr, 1, ACount);
   // keep copy of text
   FTextBuffer := UTF8ToUTF16(S);
 
-  // set text
-  if OSError(ATSUSetTextPointerLocation(FTextLayout, ConstUniCharArrayPtr(@FTextBuffer[1]),
-      kATSUFromTextBeginning, kATSUToTextEnd, Length(FTextBuffer)),
-    Self, SName, 'ATSUSetTextPointerLocation') then Exit;
-  // set style
-  if OSError(ATSUSetRunStyle(FTextLayout, CurrentFont.Style, kATSUFromTextBeginning, kATSUToTextEnd),
-    Self, SName, 'ATSUSetRunStyle') then Exit;
+  TextStyle := CurrentFont.Style;
 
+  // create text layout
+  TextLength := kATSUToTextEnd;
+  if OSError(ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@FTextBuffer[1]),
+      kATSUFromTextBeginning, kATSUToTextEnd, Length(FTextBuffer), 1, @TextLength,
+      @TextStyle, ALayout), Self, SName, 'ATSUCreateTextLayoutWithTextPtr') then Exit;
+      
   // set layout line orientation
   Tag := kATSULineRotationTag;
   DataSize := SizeOf(Fixed);
 
   PValue := @(CurrentFont.LineRotation);
-  if OSError(ATSUSetLayoutControls(FTextLayout, 1, @Tag, @DataSize, @PValue),
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
     Self, SName, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
 
   if not TextFractional then
@@ -701,23 +658,35 @@ begin
     Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
       kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
     PValue := @Options;
-    if OSError(ATSUSetLayoutControls(FTextLayout, 1, @Tag, @DataSize, @PValue),
+    if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
       Self, SName, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
   end;
+
+  // set layout context
+  Tag := kATSUCGContextTag;
+  DataSize := SizeOf(CGContextRef);
+
+  PValue := @CGContext;
+  if OSError(ATSUSetLayoutControls(ALayout, 1, @Tag, @DataSize, @PValue),
+    Self, SName, 'ATSUSetLayoutControls', 'CGContext') then Exit;
 
   Result := True;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonDeviceContext.EndTextRender
+  Params:  ALayout - ATSU layout
 
-  Manages the device context to render ordinary graphic
+  Frees the ATSU text layout and manages the device
+  context to render ordinary graphic
  ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.EndTextRender;
+procedure TCarbonDeviceContext.EndTextRender(var ALayout: ATSUTextLayout);
 begin
   // restore context
   CGContextRestoreGState(CGContext);
 
+  if ALayout <> nil then
+    OSError(ATSUDisposeTextLayout(ALayout), Self, 'EndTextRender', 'ATSUDisposeTextLayout');
   FTextBuffer := '';
 end;
 
@@ -866,6 +835,7 @@ end;
 function TCarbonDeviceContext.ExtTextOut(X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
+  TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
   MX, MY: ATSUTextMeasurement;
   A: Single;
@@ -884,12 +854,12 @@ begin
     //DebugLn('TCarbonDeviceContext.ExtTextOut fill ' + DbgS(Rect^));
   end;
   
-  if not BeginTextRender(Str, Count) then Exit;
+  if not BeginTextRender(Str, Count, TextLayout) then Exit;
   
   try
     // get text ascent
     if OSError(
-      ATSUGetUnjustifiedBounds(FTextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
+      ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
         TextBefore, TextAfter, Ascent, Descent),
       Self, SName, SGetUnjustifiedBounds) then Exit;
 
@@ -918,12 +888,12 @@ begin
     TextBrush.Apply(Self, False); // do not use ROP2
 
     // finally draw the text
-    if OSError(ATSUDrawText(FTextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
+    if OSError(ATSUDrawText(TextLayout, kATSUFromTextBeginning, kATSUToTextEnd,
         X shl 16 - TextBefore + MX, -(Y shl 16) - Ascent + MY),
        Self, SName, 'ATSUDrawText') then Exit;
     Result := True;
   finally
-    EndTextRender;
+    EndTextRender(TextLayout);
   end;
 end;
 
@@ -1004,6 +974,7 @@ end;
 function TCarbonDeviceContext.GetTextExtentPoint(Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
+  TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 const
   SName = 'GetTextExtentPoint';
@@ -1012,10 +983,10 @@ begin
   Size.cx := 0;
   Size.cy := 0;
 
-  if not BeginTextRender(Str, Count) then Exit;
+  if not BeginTextRender(Str, Count, TextLayout) then Exit;
   try
     // finally compute the text dimensions
-    if OSError(ATSUGetUnjustifiedBounds(FTextLayout, kATSUFromTextBeginning,
+    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
         kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
       Self, SName, SGetUnjustifiedBounds) then Exit;
 
@@ -1024,7 +995,7 @@ begin
 
     Result := True;
   finally
-    EndTextRender;
+    EndTextRender(TextLayout);
   end;
 end;
 
@@ -1041,6 +1012,7 @@ var
   TextStyle: ATSUStyle;
   M: ATSUTextMeasurement;
   B: Boolean;
+  TextLayout: ATSUTextLayout;
   TextBefore, TextAfter, Ascent, Descent: ATSUTextMeasurement;
 const
   SName = 'GetTextMetrics';
@@ -1054,13 +1026,13 @@ begin
 
   // According to the MSDN library, TEXTMETRIC:
   // the average char width is generally defined as the width of the letter x
-  if not BeginTextRender('x', 1) then Exit;
+  if not BeginTextRender('x', 1, TextLayout) then Exit;
   try
-    if OSError(ATSUGetUnjustifiedBounds(FTextLayout, kATSUFromTextBeginning,
+    if OSError(ATSUGetUnjustifiedBounds(TextLayout, kATSUFromTextBeginning,
           kATSUToTextEnd, TextBefore, TextAfter, Ascent, Descent),
         SName, SGetUnjustifiedBounds) then Exit
   finally
-    EndTextRender;
+    EndTextRender(TextLayout);
   end;
 
   TM.tmAscent := RoundFixed(Ascent);
