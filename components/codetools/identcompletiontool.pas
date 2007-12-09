@@ -1337,7 +1337,7 @@ begin
   
   if FoundContext.Node.Desc=ctnProcedure then begin
     ProcText:=FoundContext.Tool.ExtractProcHead(FoundContext.Node,
-                                                [phpWithoutClassKeyword]);
+                              [phpWithoutClassKeyword,phpWithHasDefaultValues]);
     AVLNode:=FindCodeTreeNodeExtAVLNode(FoundMethods,ProcText);
     if AVLNode<>nil then begin
       // method is overriden => ignore
