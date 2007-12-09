@@ -33,9 +33,14 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   ClipBrd, StdCtrls, Buttons, ExtCtrls, Menus, FileUtil,
-  SynEdit, SynHighlighterPas, SynEditAutoComplete, CodeToolManager, CodeCache,
-  KeywordFuncLists, BasicCodeTools, PascalParserTool,
+  // synedit
+  SynEdit, SynHighlighterPas, SynEditAutoComplete,
+  // codetools
+  CodeToolManager, CodeAtom, CodeCache, KeywordFuncLists, BasicCodeTools,
+  PascalParserTool,
+  // IDEIntf
   IDECommands, TextTools, SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf,
+  // IDE
   IDEProcs, InputHistory, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect;
 
 type
@@ -405,18 +410,39 @@ end;
 function CodeMacroAddMissingEnd(const Parameter: string;
   InteractiveValue: TPersistent; SrcEdit: TSourceEditorInterface; var Value,
   ErrorMsg: string): boolean;
+{ checks if at current position a block end should be inserted
+  Examples:
+  
+  No block end required:
+    begin|
+    end
+    
+    repeat|
+    until
+    
+    begin|
+      repeat
+    
+  Block end required:
+    begin
+      begin|
+    end;
+}
 var
   Line: String;
   p: TPoint;
-  CodeBuf: TCodeBuffer;
+  CodeXYPos: TCodeXYPosition;
 begin
   Result:=true;
   Value:='';
   Line:=SrcEdit.CurrentLineText;
   p:=SrcEdit.CursorTextXY;
   if p.y<1 then exit;
-  CodeBuf:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
-  if CodeBuf=nil then exit;
+  CodeXYPos.X:=p.x;
+  CodeXYPos.Y:=p.y;
+  CodeXYPos.Code:=SrcEdit.CodeToolsBuffer as TCodeBuffer;
+  if CodeXYPos.Code=nil then exit;
+
   // ToDo
   
   while (p.y<=SrcEdit.LineCount) do begin

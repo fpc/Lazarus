@@ -341,15 +341,15 @@ type
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function FindBlockStart(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
     function GuessUnclosedBlock(Code: TCodeBuffer; X,Y: integer;
-          var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
-          
+          out NewCode: TCodeBuffer;
+          out NewX, NewY, NewTopLine: integer): boolean;
+
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
@@ -2756,7 +2756,7 @@ begin
 end;
 
 function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;
-  X, Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  X, Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
   ): boolean;
 var
   CursorPos: TCodeXYPosition;
@@ -2789,7 +2789,7 @@ begin
 end;
 
 function TCodeToolManager.FindBlockStart(Code: TCodeBuffer;
-  X, Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  X, Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
   ): boolean;
 var
   CursorPos: TCodeXYPosition;
@@ -2822,7 +2822,7 @@ begin
 end;
 
 function TCodeToolManager.GuessUnclosedBlock(Code: TCodeBuffer; X, Y: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;

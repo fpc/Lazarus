@@ -202,7 +202,7 @@ type
     function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
     function FindBlockCleanBounds(const CursorPos: TCodeXYPosition;
-          var BlockCleanStart, BlockCleanEnd: integer): boolean;
+          out BlockCleanStart, BlockCleanEnd: integer): boolean;
       
     // compiler directives
     function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
@@ -4523,13 +4523,15 @@ begin
 end;
 
 function TStandardCodeTool.FindBlockCleanBounds(
-  const CursorPos: TCodeXYPosition; var BlockCleanStart, BlockCleanEnd: integer
+  const CursorPos: TCodeXYPosition; out BlockCleanStart, BlockCleanEnd: integer
   ): boolean;
 var
   CleanCursorPos: integer;
   BlockStartFound: Boolean;
 begin
   Result:=false;
+  BlockCleanStart:=0;
+  BlockCleanEnd:=0;
   // scan code
   BeginParsingAndGetCleanPos(true,false,CursorPos,CleanCursorPos);
   // read word at cursor
