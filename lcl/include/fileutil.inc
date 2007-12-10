@@ -1434,8 +1434,8 @@ begin
   FSearching := False;
 end;
 
-procedure TFileSearcher.Search(const ASearchPath: String; ASearchMask: String = '';
-  ASearchSubDirs: Boolean = True);
+procedure TFileSearcher.Search(const ASearchPath: String; ASearchMask: String;
+  ASearchSubDirs: Boolean; AMaskSeparator: char);
 var
   MaskList: TMaskList;
 
@@ -1504,7 +1504,7 @@ var
 begin
   if FSearching then RaiseSearchingError;
 
-  MaskList := TMaskList.Create(ASearchMask);
+  MaskList := TMaskList.Create(ASearchMask,AMaskSeparator);
   // empty mask = all files mask
   if MaskList.Count = 0 then FreeAndNil(MaskList);
 

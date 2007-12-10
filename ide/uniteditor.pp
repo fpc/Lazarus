@@ -4686,7 +4686,6 @@ begin
       end;
     end;
   end;
-  IDEDialogLayoutList.SaveLayout(FindInFilesDialog);
 end;
 
 procedure TSourceNotebook.ShowSearchResultsView;

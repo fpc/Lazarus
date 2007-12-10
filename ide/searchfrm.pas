@@ -764,9 +764,10 @@ var
   F: String;
 begin
   F := FileName;
+  //DebugLn(['TLazFileSearcher.DoFileFound ',Filename]);
   if FileIsReadable(F) and FileIsText(F) then
   begin
-    //DebugLn('TLazFileSearcher.DoFileFound ' + F);
+    //DebugLn('TLazFileSearcher.DoFileFound text file: ' + F);
     FParent.UpdateProgress(F);
     FParent.SearchFile(F);
   end;
@@ -792,7 +793,7 @@ begin
   begin
     Searcher := TLazFileSearcher.Create(Self);
     try
-      Searcher.Search(TheFileName, FMask, FRecursive);
+      Searcher.Search(TheFileName, FMask, FRecursive,';');
     finally
       Searcher.Free;
     end;
