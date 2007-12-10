@@ -12,34 +12,34 @@ object TodoDialog: TTodoDialog
   OnCreate = FormCreate
   object TodoLabel: TLabel
     Left = 8
-    Height = 20
+    Height = 14
     Top = 8
-    Width = 30
+    Width = 27
     Caption = 'Text:'
     FocusControl = TodoMemo
     ParentColor = False
   end
   object PriorityLabel: TLabel
     Left = 10
-    Height = 20
+    Height = 14
     Top = 167
-    Width = 45
+    Width = 35
     Caption = 'Priority'
     ParentColor = False
   end
   object OwnerLabel: TLabel
     Left = 56
-    Height = 20
+    Height = 14
     Top = 168
-    Width = 41
+    Width = 33
     Caption = 'Owner'
     ParentColor = False
   end
   object CategoryLabel: TLabel
     Left = 248
-    Height = 20
+    Height = 14
     Top = 168
-    Width = 59
+    Width = 46
     Caption = 'Category'
     ParentColor = False
   end
@@ -49,17 +49,19 @@ object TodoDialog: TTodoDialog
     Top = 216
     Width = 75
     Caption = 'Ok'
+    Default = True
     ModalResult = 1
-    TabOrder = 1
+    TabOrder = 4
   end
   object CancelButton: TButton
     Left = 397
     Height = 25
     Top = 216
     Width = 75
+    Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 2
+    TabOrder = 5
   end
   object TodoMemo: TMemo
     Left = 8
@@ -75,20 +77,20 @@ object TodoDialog: TTodoDialog
     Top = 181
     Width = 38
     OnKeyPress = PriorityEditKeyPress
-    TabOrder = 3
+    TabOrder = 1
   end
   object OwnerEdit: TEdit
     Left = 56
     Height = 23
     Top = 181
     Width = 182
-    TabOrder = 4
+    TabOrder = 2
   end
   object CategoryEdit: TEdit
     Left = 248
     Height = 23
     Top = 181
     Width = 224
-    TabOrder = 5
+    TabOrder = 3
   end
 end
