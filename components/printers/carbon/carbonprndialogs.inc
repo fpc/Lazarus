@@ -45,6 +45,7 @@ var
   CarbonPrinter: TCarbonPrinter;
   DialogSettings: PMPrintSettings;
   V: UInt32;
+  PFrom, PTo: Integer;
 begin
   Result := False;
   // TODO: Options, Title
@@ -65,10 +66,12 @@ begin
     OSError(PMSetCopies(DialogSettings, Copies, False), Self, SExecute, 'PMSetCopies');
     OSError(PMSetPageRange(DialogSettings, MinPage, MaxPage),
       Self, SExecute, 'PMSetPageRange');
-    OSError(PMSetFirstPage(DialogSettings, FromPage, False), Self, SExecute, 'PMSetFirstPage');
-    OSError(PMSetLastPage(DialogSettings, ToPage, False), Self, SExecute, 'PMSetLastPage');
+    PFrom := Max(FromPage, MinPage);
+    OSError(PMSetFirstPage(DialogSettings, PFrom, False), Self, SExecute, 'PMSetFirstPage');
+    PTo := Max(PFrom, Min(ToPage, MaxPage));
+    OSError(PMSetLastPage(DialogSettings, PTo, False), Self, SExecute, 'PMSetLastPage');
 
-    if OSError(PMSessionPrintDialog(CarbonPrinter.PrintSession, CarbonPrinter.PrintSettings, CarbonPrinter.PageFormat, Result),
+    if OSError(PMSessionPrintDialog(CarbonPrinter.PrintSession, DialogSettings, CarbonPrinter.PageFormat, Result),
       Self, SExecute, 'PMSessionPrintDialog') then Exit;
 
     if Result then

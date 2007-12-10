@@ -83,7 +83,7 @@ uses Controls, udlgSelectPrinter, udlgPropertiesPrinter, FileUtil;
 
     {$ELSE}
     
-uses Controls, CarbonProc, FPCMacOSAll, LCLProc;
+uses Controls, Math, CarbonProc, FPCMacOSAll, LCLProc;
 {$I carbonprndialogs.inc}
 
     {$ENDIF}

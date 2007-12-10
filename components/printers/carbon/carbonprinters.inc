@@ -292,22 +292,8 @@ begin
 end;
 
 procedure TCarbonPrinter.UpdatePrinter;
-var
-  S: TStringList;
-  P: String;
 begin
-  ValidatePrintSettings;
-  
-  P := GetCurrentPrinterName;
-  
-  S := TStringList.Create;
-  try
-    DoEnumPrinters(S);
-    //DebugLn('UpdatePrinter ' + P + ' ' + DbgS(S.IndexOf(P)));
-    PrinterIndex := S.IndexOf(P);
-  finally
-    S.Free;
-  end;
+  SetPrinter(GetCurrentPrinterName);
   Validate;
 end;
 
