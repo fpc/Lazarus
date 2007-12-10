@@ -3,11 +3,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-12 18:34-0600\n"
-"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
-"Language-Team: \n"
 
 #: lr_const:spaper20
 msgid "#10 Envelope, 4 1/8  x 9 1/2\""
@@ -561,6 +556,10 @@ msgstr ""
 msgid "Auto size"
 msgstr ""
 
+#: lr_const:sdocautor
+msgid "Autor"
+msgstr ""
+
 #: lr_const:sfilterparam
 msgid "Average font height:"
 msgstr ""
@@ -667,6 +666,10 @@ msgstr ""
 
 #: lr_const:sfrdesignerformbring
 msgid "Bring to front"
+msgstr ""
+
+#: lr_const:sdocbuild
+msgid "Build"
 msgstr ""
 
 #: lr_const:spaper24
@@ -1461,6 +1464,10 @@ msgstr ""
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr ""
 
+#: lr_const:sdocmajor
+msgid "Major"
+msgstr ""
+
 #: lr_const:spgoptformmargins
 msgid "Margins"
 msgstr ""
@@ -1499,6 +1506,10 @@ msgstr ""
 
 #: lr_const:sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
+msgstr ""
+
+#: lr_const:sdocminor
+msgid "Minor"
 msgstr ""
 
 #: lr_const:smm
@@ -1739,6 +1750,10 @@ msgstr ""
 
 #: lr_const:sfrdesignerformredo
 msgid "Redo cancelled action"
+msgstr ""
+
+#: lr_const:sdocrelease
+msgid "Release"
 msgstr ""
 
 #: lr_const:sfrdesignerformremovepg
@@ -2067,6 +2082,10 @@ msgstr ""
 
 #: lr_const:svaredformcapt
 msgid "Variables list"
+msgstr ""
+
+#: lr_const:sdocversion
+msgid "Version"
 msgstr ""
 
 #: lr_const:sfrdesignerformvertcenter

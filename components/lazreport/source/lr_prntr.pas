@@ -59,6 +59,7 @@ type
       pgOr: TPrinterOrientation): Boolean;
     function GetArrayPos(pgSize: Integer): Integer;
     function DefaultPaperIndex: Integer;
+    function DefaultPageSize: Integer;
     
     property PaperNames: TStringList read GetPaperNames;
     property Printer: TPrinter read FPrinter write SetPrinter;
@@ -1056,6 +1057,18 @@ begin
   Result:= FPaperNames.IndexOf(FPrinter.PaperSize.DefaultPaperName);
   if Result<0 then
     Result:=0;
+end;
+
+function TfrPrinter.DefaultPageSize: Integer;
+var
+  Indx: Integer;
+begin
+  if FPaperNames.Count>0  then
+  begin
+    Indx := DefaultPaperIndex;
+    result := PaperSizes[Indx];
+  end else
+    result := 9;
 end;
 
 procedure TfrPrinter.SetPrinterIndex(Value: Integer);

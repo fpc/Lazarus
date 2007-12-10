@@ -9070,7 +9070,7 @@ end;
 
 constructor TfrPageReport.CreatePage;
 begin
-  self.Create(9, 0, 0, poPortrait);
+  self.Create(prn.DefaultPageSize, 0, 0, poPortrait);
 end;
 
 { TfrPageDialog }
