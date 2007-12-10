@@ -1568,7 +1568,7 @@ begin
  if parser.fLine[parser.Run] in parser.fCurrentRule.fTermSymbols then
  begin
    Result:=True;
-   tkSynSymbol:=self.tkSynSymbol;
+   tkSynSymbol1:=self.tkSynSymbol;
  end
  else
    Result:=false;
@@ -1591,7 +1591,7 @@ function TDefaultTermSymbols.GetToken(parser: TSynUniSyn;var tkSynSymbol1:TSynSy
 begin
   if parser.fLine[parser.Run]<>#0 then
      Inc(parser.Run);
-  tkSynSymbol:=self.tkSynSymbol;
+  tkSynSymbol1:=self.tkSynSymbol;
   Result:=True;
 end;
 
