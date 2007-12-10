@@ -347,6 +347,7 @@ begin
   ecInsertCVSRevision: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertCVSSource: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecInsertGUID: SetResult(VK_G, [ssCtrl,ssShift],VK_UNKNOWN,[]);
+  ecInsertToDo: SetResult(VK_T, [ssCtrl,ssShift],VK_UNKNOWN,[]);
 
   // command commands
   ecUndo: SetResult(VK_Z,[ssCtrl],VK_UNKNOWN,[]);
@@ -1380,6 +1381,7 @@ begin
     ecInsertCVSRevision       : Result:= srkmecInsertCVSRevision;
     ecInsertCVSSource         : Result:= srkmecInsertCVSSource;
     ecInsertGUID              : Result:= srkmecInsertGUID;
+    ecInsertToDo              : Result:= uemInsertTodo;
 
     // search menu
     ecFind                    : Result:= srkmecFind;
@@ -2269,6 +2271,7 @@ begin
   AddDefault(C, 'Insert CVS keyword Source', srkmecInsertCVSSource,
     ecInsertCVSSource);
   AddDefault(C, 'Insert a GUID',srkmecInsertGUID, ecInsertGUID);
+  AddDefault(C, 'Insert Todo',uemInsertTodo, ecInsertTodo);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,nil)];

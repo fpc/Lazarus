@@ -438,6 +438,7 @@ begin
         CreateMenuItem(SubSubParentMI,itmEditInsertDateTime,'itmEditInsertDateTime',lisMenuInsertDateTime);
         CreateMenuItem(SubSubParentMI,itmEditInsertChangeLogEntry,'itmEditInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
         CreateMenuItem(SubSubParentMI,itmEditInsertGUID,'itmEditInsertGUID',srkmecInsertGUID);
+        CreateMenuItem(SubSubParentMI,itmEditInsertTodo,'itmEditInsertTodo',uemInsertTodo);
       end;
     end;
 
@@ -843,6 +844,7 @@ begin
     itmEditInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmEditInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);
     itmEditInsertGUID.Command:=GetCommand(ecInsertGUID);
+    itmEditInsertTodo.Command:=GetCommand(ecInsertTodo);
 
     // search menu
     itmSearchFind.Command:=GetCommand(ecFind);

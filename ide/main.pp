@@ -2663,7 +2663,10 @@ begin
 
   ecInsertGUID:
     mnuEditInsertGUID(self);
-
+    
+  ecInsertTodo:
+    mnuInsertTodo(self);
+    
   else
     Handled:=false;
     // let the bosses handle it

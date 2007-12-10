@@ -138,6 +138,7 @@ type
             itmEditInsertDateTime: TIDEMenuCommand;
             itmEditInsertChangeLogEntry: TIDEMenuCommand;
             itmEditInsertGUID: TIDEMenuCommand;
+            itmEditInsertTodo: TIDEMenuCommand;
       //itmEditMenuCodeTools: TIDEMenuSection;
         itmEditCompleteCode: TIDEMenuCommand;
         itmEditExtractProc: TIDEMenuCommand;
