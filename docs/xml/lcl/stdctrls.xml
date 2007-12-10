@@ -1128,10 +1128,14 @@
       <element name="TMeasureItemEvent.Height"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomComboBox">
-        <short>Custom Combo Box</short>
-        <descr>Custom Combination Box: the base class from which Combo Box is derived.</descr>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomComboBox</i>  - the base class from which <i>TComboBox </i> is derived</short>
+        <descr>
+          <p><i>TCustomComboBox</i> - the base class from which <i>TComboBox </i>is derived</p>
+          <p>Despite similarities in appearance to <i>TCustomEdit</i>
+ and <i>TCustomList</i>
+, the class inherits no properties from these classes, but only from <link id="#lcl.Controls.TWinControl">TWinControl</link></p>
+          <p>It has some interesting properties including <i>AutoComplete</i> and <i>AutoCompleteText</i>, <i>AutoDropDown</i> and the ability to create and add a History display</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomComboBox.FCharCase">
@@ -1767,51 +1771,35 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.SelectItem.AnItem"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.DropDownCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>DropDownCount </i>- number of entries in the drop-down list</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.ItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ItemHeight</i>  - the height of the current item in the drop-down list</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.ItemWidth">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ItemWidth </i>- the width of the current item in the drop-down list</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.MaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>MaxLength </i>- the maximum allowed length of a string</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnChange</i> - event handler for any change in properties of the combo box</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnCloseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnCloseUp</i> - event handler for when the drop-down box is closed up again</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnDrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnDrawItem</i> - event handler for when an entry is written to the <i>Items </i>list</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnDropDown </i>- event handler for when the drop-down list appears</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.OnMeasureItem">
@@ -1833,9 +1821,7 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomComboBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Sorted </i>- whether the entries in the drop-down list have been sorted</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomComboBox.Create">
@@ -1855,10 +1841,7 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>AddItem </i>- adds an Item to the list in the drop-down box</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddItem.Item"><short/></element>
@@ -1866,10 +1849,11 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.AddItem.AnObject"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.AddHistoryItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>AddHistoryItem</i>  - Add an Item as first entry in History List</short>
+        <descr>
+          <p><i>AddHistoryItem</i> - Add an Item as first entry in History List</p>
+          <p>Removes the Item from old position and removes  last item if history is full</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomComboBox.AddHistoryItem.Item"><short/></element>
@@ -1883,21 +1867,15 @@ False is set when the edit or combobox control loses focus.
       <element name="TCustomComboBox.AddHistoryItem.AnObject"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.Clear">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Clear</i> - remove all text and drop-down list</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.ClearSelection">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>ClearSelection </i>- clear the currently selected text or items from drop-down list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.CharCase">
-        <short>property CharCase: TEditCharCase</short>
+        <short><i>CharCase:</i> indicates whether text is to be displayed as Upper, Lower or Normal case (as entered)</short>
         <descr>
           <p>Indicates how text is displayed in a text editing control in the following ways:</p>
           <ul>
@@ -1906,13 +1884,10 @@ False is set when the edit or combobox control loses focus.
             <li>Lower case letters</li>
           </ul>
         </descr>
-        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.DroppedDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>DroppedDown </i>- indicates whether or not the drop-down list has appeared</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomComboBox.MeasureItem">
@@ -1934,22 +1909,31 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoComplete">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>AutoComplete</i> - enables the facility to offer suggestions for completing text-strings</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoCompleteText">
-        <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
-        <descr>Options for behavior of the Auto-Complete feature.
-</descr>
+        <short><i>AutoCompleteText</i> : Options for behavior of the Auto-Complete feature</short>
+        <descr>
+          <p><i>AutoCompleteText</i>: Options for behavior of the <i>Auto-Complete</i> feature</p>
+          <ul>
+            <li>Enabled: Enable Auto-Completion feature.</li>
+            <li>EndOfLineComplete: Perform Auto-Complete only when cursor is at the end of the string.</li>
+            <li>RetainPrefixCase: Retains the case of characters user has typed. (This option has no effect if cbactEndOfLineComplete is False)</li>
+            <li>SearchCaseSensitive: Search completion string with case sensitivity.</li>
+            <li>cbactSearchAscending: Search completion string in accending order. (False will search in descending order)</li>
+          </ul>
+          <p>This property exists as a <i>Set</i> of <i>Options</i>, so zero or more options may be operational</p>
+        </descr>
         <seealso><link id="TComboBoxAutoCompleteTextOption"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>AutoDropDown </i>- if True, the drop-down list appears as soon as the cursor moves over the text box</short>
+        <descr>
+          <p><i>AutoDropDown </i>- if True, the drop-down list appears as soon as the cursor moves over the text box</p>
+          <p>If False, the drop-down box only appears when the downward triangular indicator at the end of the box is selected</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelect">
@@ -1966,39 +1950,34 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelected">
-        <short>property AutoSelected: Boolean</short>
-        <descr>True indicate that the edit or combobox control has just performed
-an AutoSelect operation so that subsequent mouse-clicks and keystrokes
-proceed normally without selecting the text.
-
-False is set when the edit or combobox control loses focus.
-</descr>
-        <seealso/>
+        <short><i>AutoSelected</i>: True indicates that the combobox control has just performed an <i>AutoSelect</i> operation</short>
+        <descr>
+          <p>True indicates that the combobox control has just performed an <i>AutoSelect</i> operation so that subsequent mouse-clicks and keystrokes
+proceed normally without selecting the text.</p>
+          <p>False is set when the combobox control loses focus.</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ArrowKeysTraverseList">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ArrowKeysTraverseList</i> - enables the operator to use the keyboard Arrow keys to move through the list as an alternative to using the mouse</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Canvas">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Canvas</i> - the area on which the components are drawn or painted</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items </i>- an array  of strings that holds the entries of the drop-down list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ItemIndex">
-        <short>property ItemIndex: Integer</short>
-        <descr>Indicates the currently selected item. The first item has number 0,
-the second has number 1, the third number 2, etc. In case no item is selected, ItemIndex
-has value -1.</descr>
+        <short><i>Index </i>- the number of the currently selected item (starting at zero)</short>
+        <descr>
+          <p><i>Index </i>- the number of the currently selected item</p>
+          <p>The first item has number 0, the second has number 1, the third number 2, etc. </p>
+          <p>In case no item is selected, ItemIndex
+has value -1.</p>
+        </descr>
         <seealso>
           <link id="TCustomComboBox"/>
           <link id="TCustomComboBox.Items"/>
@@ -2006,39 +1985,27 @@ has value -1.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ReadOnly </i>- if True, information in the control can only be Read, not Written or Deleted</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelLength">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SelLength </i>- the length of the text that has been selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelStart">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SelStart </i>- the starting position of the text that has been selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.SelText">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SelText</i> - the text string that has been selected for editing</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Style">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Style</i>: may be Simple, a single-line Drop-Down or a Drop-Down list, or some version drawn by the Owner</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.Text">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Text</i> - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i></short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomComboBox.TabStop">
@@ -3071,7 +3038,7 @@ False: Turns off auto-complete feature.</descr>
         <descr>Indicates the currently selected item. The first item has number 0,
 the second has number 1, the third number 2, etc. In case no item is selected, ItemIndex
 has value -1. If MultiSelect is True, ItemIndex represents the item which has focus, which
-tipically has a different color then the other items.</descr>
+typically has a different color from the other items.</descr>
         <seealso>
           <link id="TCustomListBox"/>
           <link id="TCustomListBox.Items"/>
@@ -5668,9 +5635,11 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TButton">
-        <short>The most basic button component</short>
-        <descr>Button: Base type for all Buttons. A push button control. The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.
-</descr>
+        <short><i>TButton:</i> Base type for all Buttons. A push button control</short>
+        <descr>
+          <p><i>TButton:</i> Base type for all Buttons. A push button control.</p>
+          <p>The user pushes a button (eg selects it with the mouse cursor and clicks the mouse) to start an action.</p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- procedure Visibility: public -->
@@ -5897,8 +5866,10 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- object Visibility: default -->
       <element name="TCustomCheckBox">
         <short><i>TCustomCheckBox </i>is the ancestor of all check-box components.</short>
-        <descr><p><i>TCustomCheckBox</i>: The base (abstract) class from which the <i>TCheckBox </i>is derived.</p>
-        <p>Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</p></descr>
+        <descr>
+          <p><i>TCustomCheckBox</i>: The base (abstract) class from which the <i>TCheckBox </i>is derived.</p>
+          <p>Check boxes present the user with options that can be selected (checked) or deselected (unchecked).</p>
+        </descr>
         <seealso><link id="TCheckBox"/></seealso>
       </element>
       <!-- variable Visibility: private -->
