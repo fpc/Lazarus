@@ -55,7 +55,6 @@ type
     procedure LoadAcknowledgements;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
   end;
 
 
@@ -90,15 +89,6 @@ end;
 constructor TAboutForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-end;
-
-destructor TAboutForm.Destroy;
-begin
-  // easter egg: copy the version to clipboard
-  Clipboard.AsText := LazarusVersionStr + ' r' + LazarusRevisionStr
-                      + ' ' + PlatformLabel.Caption;
-
-  inherited Destroy;
 end;
 
 procedure TAboutForm.AboutFormCreate(Sender:TObject);
