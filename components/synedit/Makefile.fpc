@@ -35,7 +35,7 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch \
   synhighlighterposition synhighlighterjava synhighlightercss \
   synhighlighterphp synhighlightertex synhighlighterhashentries \
-  synhighlightersql
+  synhighlightersql synhighlightervb
 
 [require]
 # Adding lcl does not work, because it adds the source path.
