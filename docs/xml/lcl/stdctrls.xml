@@ -6456,12 +6456,20 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- object Visibility: default -->
       <element name="TRadioButton">
-        <short><i>TRadioButton</i>: a button that works with other Radio Buttons in a mutually exclusive way - if one button is selected, none of the others in the group can be selected</short>
+        <short><i>TRadioButton</i> : a button that works with other Radio Buttons in a mutually exclusive way - if one button is selected, none of the others in the group can be selected</short>
         <descr>
           <p><i>TRadioButton</i>: a button that works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected.</p>
           <p>The Application Programmer is responsible for ensuring that the <i>OnClick</i> event handler for each button has a unique <i>Action</i>, and that the Actions of the other (deselected and therefore inactive) buttons are turned off.</p>
+          <p><i>TRadioGroup</i> behaves differently from a group of <i>TRadioButton</i> controls placed arbitrarily around a form. </p>
+          <p>In the case of <i>TRadioButton</i>, the mutual exclusivity is a feature that applies to any <i>RadioButton</i> anywhere in the Form, and the <i>RadioButtons</i> can be rearranged in any order or placed anywhere within the containing <i>Form</i>, while in <i>TRadioGroup</i> the excluisivity applies only to buttons within the Group, which are ordered strictly accordng to their <i>ItemIndex</i> within the <i>Items</i> stringlist. </p>
+          <p><i>TRadioButton</i> is an entity in itself, with a number of additional properties, whereas the buttons within <i>TRadioGroup</i>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <i>RadioButton</i>. </p>
+          <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i></p>
         </descr>
-        <seealso><link id="HowToUseStdCtrls"/></seealso>
+        <seealso>
+          <link id="HowToUseStdCtrls"/>
+          <link id="#lcl.ExtCtrls.TRadioGroup"/>
+        </seealso>
+        <example file="extctrls/radiobutton.pas"/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TRadioButton.DialogChar">
