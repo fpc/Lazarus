@@ -36,9 +36,10 @@ unit DbCtrls;
 interface          
 
 uses
-  Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, Chart,
-  LCLType, LResources;
+  Classes, SysUtils, DB,
+  LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
+  Calendar, Chart;
 
 Type
   { TFieldDataLink }

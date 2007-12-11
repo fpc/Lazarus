@@ -78,6 +78,9 @@ ResourceString
   rsReplace = 'Replace';
   rsReplaceAll = 'Replace all';
   
+  // DBGrid
+  rsDeleteRecord = 'Delete record?';
+  
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'
     +'PAINT/LM_GtkPAINT message links left.';
