@@ -586,7 +586,7 @@ function TCustomComboBox.GetItemHeight: Integer;
 begin
   // FItemHeight is not initialized at class creating. we can, but with what value?
   // so, if it still uninitialized (=0), then we ask widgetset
-  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable]) and (FItemHeight > 0) then
+  if (FStyle in [csOwnerDrawFixed, csOwnerDrawVariable]) and (FItemHeight > 0) or not HandleAllocated then
   begin
     Result := FItemHeight
   end else
