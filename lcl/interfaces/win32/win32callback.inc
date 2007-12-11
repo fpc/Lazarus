@@ -619,6 +619,26 @@ var
     Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
     Windows.EnableWindow(Buddy, Enable);
   end;
+  
+  procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
+  var
+    i : integer;
+    ChildControl: TWinControl;
+  begin
+    for i := 0 to WinControl.ControlCount-1 do begin
+      if WinControl.Controls[i] is TWinControl then begin
+        ChildControl := TWinControl(WinControl.Controls[i]);
+        if Enable then begin
+           if ChildControl.Enabled then
+             EnableWindow(ChildControl.Handle, true)
+        end
+        else
+          EnableWindow(ChildControl.Handle, false);
+
+        EnableChildWindows(ChildControl, Enable);
+      end;
+    end;
+  end;
 
   procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
   var
@@ -1461,6 +1481,9 @@ begin
           RestoreStayOnTopFlags(Window);
           EnableApplicationWindows(Window);
         end;
+        
+      if assigned(lWinControl) then
+        EnableChildWindows(lWinControl, WParam<>0);
 
       If (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);
