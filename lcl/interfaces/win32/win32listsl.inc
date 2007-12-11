@@ -28,21 +28,6 @@
 {$ENDIF}
 
 {*************************************************************}
-{                      Default compare function               }
-{*************************************************************}
-
-Function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
-Var
-  AStr, BStr: PChar;
-Begin
-  AStr:=nil;
-  BStr:=nil;
-  GetWindowText(A, AStr, GetWindowTextLength(A) + 1);
-  GetWindowText(B, BStr, GetWindowTextLength(B) + 1);
-  Result := StrComp(AStr, BStr);
-end;
-
-{*************************************************************}
 {                      TWin32ListStringList methods           }
 {*************************************************************}
 
@@ -165,17 +150,36 @@ end;
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.Get(Index: Integer): String;
 Var
+{$ifdef WindowsUnicodeSupport}
+  s: string;
+  w: widestring;
+{$else}
   Item: PChar;
+{$endif}
 Begin
   If (Index < 0) Or (Index >= Count) Then
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then begin
+      SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
+      Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
+      Result := UTF8Encode(w);
+    end
+    else
+    begin
+      SetLength(s, Windows.SendMessage(FWin32List, FFlagGetTextLen, Index, 0));
+      Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(PChar(s)));
+      Result := AnsiToUtf8(s);
+    end;
+    {$else}
     Getmem(Item, Windows.SendMessage(FWin32List, FFlagGetTextLen, Index, 0)+1);
     Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));
+    Result := Item;
+    FreeMem(Item);
+    {$endif}
   End;
-  Result := StrPas(Item);
-  Dispose(Item);
 End;
 
 {------------------------------------------------------------------------------
