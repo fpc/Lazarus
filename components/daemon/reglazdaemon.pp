@@ -107,7 +107,7 @@ end;
 
 function TDaemonFileDescriptor.GetInterfaceUsesSection: String;
 begin
-  Result:=inherited GetInterfaceUsesSection+', daemonapp';
+  Result:=inherited GetInterfaceUsesSection+', DaemonApp';
 end;
 
 function TDaemonFileDescriptor.GetImplementationSource(const Filename,
@@ -184,10 +184,10 @@ begin
         Add('');
         Add('Uses');
         Add('{$IFDEF UNIX}{$IFDEF UseCThreads}');
-        Add('  cthreads,');
+        Add('  CThreads,');
         Add('{$ENDIF}{$ENDIF}');
-        Add('  lazdaemon,');
-        Add('  daemonapp');
+        Add('  LazDaemon,');
+        Add('  DaemonApp');
         Add('  { add your units here };');
         Add('');
         Add('begin');
@@ -211,9 +211,9 @@ Var
 begin
   FD:=ProjectFileDescriptors.FindByName('Daemon Mapper');
   O:=[nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc];
-  Result:=LazarusIDE.DoNewEditorFile(FD,'','',O);
+  Result:=LazarusIDE.DoNewEditorFile(FD,'DaemonMapperUnit1.pas','',O);
   FD:=ProjectFileDescriptors.FindByName('Daemon Module');
-  Result:=LazarusIDE.DoNewEditorFile(FD,'','',O );
+  Result:=LazarusIDE.DoNewEditorFile(FD,'DaemonUnit1.pas','',O );
 end;
 
 { TDaemonMapperDescriptor }
@@ -238,7 +238,7 @@ end;
 
 function TDaemonMapperDescriptor.GetInterfaceUsesSection: String;
 begin
-  Result:=inherited GetInterfaceUsesSection+', daemonapp';
+  Result:=inherited GetInterfaceUsesSection+', DaemonApp';
 end;
 
 function TDaemonMapperDescriptor.GetImplementationSource(const Filename,

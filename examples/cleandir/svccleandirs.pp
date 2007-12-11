@@ -142,7 +142,7 @@ procedure TCleanDirsDaemon.CleanDirsDaemonStart(Sender: TCustomDaemon;
   
 begin
   StartLog;
-  { Start should return immediatly. Therefor, a thread is started if
+  { Start should return immediatly. Therefore, a thread is started if
     one is not yet running. Usually, here one opens a TCP/IP socket
     and starts listening }
   OK:=(FThread=Nil) and (FConfigFile<>'');
