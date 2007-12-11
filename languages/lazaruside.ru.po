@@ -61,6 +61,10 @@ msgstr "Каталог %s"
 msgid "%s is already part of the Project."
 msgstr "%s - уже часть проекта."
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "Каталог проекта %s"
@@ -436,6 +440,14 @@ msgstr "О проекте"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "О проекте Lazarus"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2120,6 +2132,10 @@ msgstr "Курсор вне конца строки"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Колонка курсора в этом редакторе"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3817,6 +3833,10 @@ msgstr "Настройки IDE:"
 msgid "IDE internals"
 msgstr "Внутреннее состояние IDE"
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ВСТ"
@@ -4160,6 +4180,10 @@ msgstr "Вставить шаблон"
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr "Вставить Todo"
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -5441,6 +5465,10 @@ msgstr "Следующая Закладка"
 msgid "No ResourceString Section found"
 msgstr "Не найдено секции ResourceString"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "Без файлов резервных копий"
@@ -5844,6 +5872,14 @@ msgstr "Каталог сохранений"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "Переполнения"
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -7313,6 +7349,10 @@ msgstr "Выделить конец строки"
 msgid "Select line start"
 msgstr "Выделить начало строки"
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr "Выделить низ страницы"
@@ -7520,6 +7560,10 @@ msgstr "Показать настройки для редактирования 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Показывать предупреждения"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8637,9 +8681,17 @@ msgstr "Имя модуля не является корректным иден�
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Имя модуля используется при раскрытии IDE выражений uses"
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Во всплывающем меню больше функций"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8768,6 +8820,10 @@ msgstr "Это сосед, к которому привязывается вер
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Содержимое этого файла похоже на исходный код на Паскале.%sРекомендуется использовать имена файлов в нижнем регистре во избежание различных проблем на некоторых файловых системах и с другими компиляторами.%sПереименовать в нижний регистр?"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9216,6 +9272,10 @@ msgstr "Не могу сохранить файл %s%s%s"
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Невозможно установить привязку к компоненту"
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."

@@ -251,6 +251,10 @@ msgstr "Kustom"
 msgid "Delete"
 msgstr "Delete"
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr "Arah"
@@ -503,6 +507,10 @@ msgstr "Nilai properti tidak benar"
 msgid "Invalid stream format"
 msgstr "Format stream tidak benar"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr "Junja"
@@ -619,9 +627,21 @@ msgstr "Tombol pause"
 msgid "Pixmap"
 msgstr "Pixmap"
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
 msgstr "Portable Network Graphic"
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

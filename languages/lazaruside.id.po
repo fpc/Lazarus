@@ -61,6 +61,10 @@ msgstr "direktori %s"
 msgid "%s is already part of the Project."
 msgstr "%s sudah merupakan bagian dari Proyek."
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "Direktori proyek %s"
@@ -436,6 +440,14 @@ msgstr "Tentang"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Tentang Lazarus"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2120,6 +2132,10 @@ msgstr "Kursor setelah EOL"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Kolom kursor dalam editor saat ini"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3817,6 +3833,10 @@ msgstr "Opsi IDE"
 msgid "IDE internals"
 msgstr ""
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "INS"
@@ -4159,6 +4179,10 @@ msgstr "Sisipkan Template"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
@@ -5441,6 +5465,10 @@ msgstr "Penanda berikutnya"
 msgid "No ResourceString Section found"
 msgstr "ResourceString Section tidak ditemukan"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "Tidak ada file backup"
@@ -5844,6 +5872,14 @@ msgstr "Direktori output"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "Kelebihan"
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -7313,6 +7349,10 @@ msgstr "Pilih akhir baris"
 msgid "Select line start"
 msgstr "Pilih awal baris"
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr "Pilih bawah halaman"
@@ -7520,6 +7560,10 @@ msgstr "Tampilkan Opsi untuk pengeditan form"
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Tampilkan Peringatan"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8637,9 +8681,17 @@ msgstr "Nama unit bukan pengenal pascal yang benar."
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Nama unit digunakan ketika IDE melebarkan klausul uses."
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Ada fungsi lebih banyak dalam menu popup"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8768,6 +8820,10 @@ msgstr "Ini adalah kontrol terdekat dimana sisi atas dianchor. Biarkan kosong un
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Ini sepertinya file pascal. %s direkomendasikan untuk menggunakan nama file dengan huruf kecil, untuk menghindari berbagai masalah pada beberapa filesystems dan kompilator berbeda. %sGanti nama ke huruf kecil?"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9216,6 +9272,10 @@ msgstr "Tidak bisa menyimpan file %s%s%s"
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Tidak bisa men-set Kontrol AnchorSide"
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."

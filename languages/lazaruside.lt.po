@@ -1,5 +1,4 @@
-# translation of lazaruside.po to Lithuanian
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
+# translation of lazaruside.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -63,6 +62,10 @@ msgstr "%s katalogas"
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s jau yra projekte."
+
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
@@ -439,6 +442,14 @@ msgstr "Apie"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Apie Lazarus"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2127,6 +2138,10 @@ msgstr "Žymeklis peržengia EOL"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Žymeklio stulpelis veikiamąjame redaktoriuje"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3824,6 +3839,10 @@ msgstr "IKA parinktys:"
 msgid "IDE internals"
 msgstr "IKA ypatybės"
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ĮTERPTI"
@@ -4167,6 +4186,10 @@ msgstr "Įterpti šabloną"
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr "Įterpti ToDo"
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
+msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -5450,6 +5473,10 @@ msgstr "Tolesnė žymė"
 msgid "No ResourceString Section found"
 msgstr "Nerasta \"ResourceString\" sekcija"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "Nedaryti atsarginių kopijų"
@@ -5854,6 +5881,14 @@ msgstr "Išvesties katalogas"
 msgid "Overflow"
 msgstr "Perpildymą"
 
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
+
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Viršesnė kalba. Pavyzdžiui: --language=de. Galimas reikšmes galite sužinoti žvilgterėje į kalbų katalogą."
@@ -6118,11 +6153,11 @@ msgstr "Nuolatinis žymeklis"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr "Patikrinkite testinių projektų katalogą %s\"Aplinka -> Aplinkos parinktys -> Failai -> Katalogas testo projektų darymui\""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Patikrinkite kompiliatoriaus vardą"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Patikrinkite FreePascal pirminio kodo katalogą"
 
@@ -7324,6 +7359,10 @@ msgstr "Žymėti iki eilutės galo"
 msgid "Select line start"
 msgstr "Žymėti iki eilutės pradžios"
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr "Žymėti iki lapo apačios"
@@ -7531,6 +7570,10 @@ msgstr "Formos konstravimo parinktys"
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Rodyti perspėjimus"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8195,8 +8238,8 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "LFM (Lazarus forma) faile aptikta klaidų. Pavyzdžiui, jame yra savybių/klasių, kurių nėra dabartiniame LCL. Yra įprasta šias savybes/klases pašalinti ir po to paskalio kodą taisyti rankiniu būdu."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
-msgstr "Nerastas Lazarus katalogas.%sBe jo neis kurti LCL taikomųjų programų.%sPatikrinkite \"Aplinka -> Aplinkos parinktys -> Failai\"."
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
 msgid "The Lazarus main directory."
@@ -8302,9 +8345,9 @@ msgstr "Dabartinis Lazarus katalogas %s%s%s%s nėra geras.%sBe jo neis kurti LCL
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Dabartinis kompiliatorius, vardu %s%s%s%s, nėra vykdomasis failas.%sPaspaudus \"Tinka\" bus parinktas numatytasis %s%s%s.%sArba jį galite nustatyti \"Aplinka -> Aplinkos parinktys -> Failai\"."
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
-msgstr "Dabartinis kompiliatorius, vardu %s%s%s%s, nėra vykdomasis failas.%sPatikrinkite \"Aplinka -> Aplinkos parinktys -> Failai\"."
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
+msgstr ""
 
 #: lazarusidestrconsts:lisuethecurre
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
@@ -8650,9 +8693,17 @@ msgstr "Modulio vardas nėra paskalio identifikatorius."
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Modulio vardas naudojamas kai IKA praplečia naudojamų modulių sąrašą."
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Daugiau funkcijų yra iškylančiame menių"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8690,9 +8741,9 @@ msgstr "Rastas kitas failas tokiu pat vardu bei panašiu prievardžiu.%sFailas: 
 msgid "There is a maximum of %s tools."
 msgstr "Čia daugiausia gali būti %s įrankių."
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
-msgstr "Projekte jau yra modulis tokiu vardu %s%s%s.%sParinkite kitokį vardą."
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
 msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
@@ -8789,6 +8840,10 @@ msgstr ""
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Panašu kad tai paskalio failas.%sRekomenduotina failo varde naudoti tik mažąsias raides, tokiu būdu išvengsite problemų, susijusių su įvairiomis failų sistemomis ar įvairiais kompiliatoriais.%sPervardyti mažosiomis raidėmis?"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -8985,8 +9040,8 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "Nepavyko padaryti failo %s%s%s atsarginę kopiją į %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
-msgstr "Programos pirminiame kode nepavyko pakeisti automatiškai kuriamų formų sąrašą.%sSusimildami, pirmiausiai ištaisykit klaidas."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
 msgid "Unable to clean up %s%s%s.%sPlease check permissions."
@@ -9064,9 +9119,9 @@ msgstr "Nepavyko sukurti failą %s%s%s."
 msgid "Unable to create file%s%s%s%s"
 msgstr "Nepavyko sukurti failą%s%s%s%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
-msgstr "Nepavyko sukurti naują metodą. Pirma ištaisykite pranešimų lange rodomą klaidą."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
 msgid "Unable to create output directory %s%s%s%sfor package %s."
@@ -9120,9 +9175,9 @@ msgstr "Nerastas failas %s%s%s."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "Failas %s%s%s nerastas.%sPatikrinkite kelius meniu%s\"Projektas -> Kompiliatoriaus parinktys... -> Keliai -> Kitų modulių failai\""
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
-msgstr "Nepavyko rasti metodą. Pirma ištaisykite pranešimų lange rodomą klaidą."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
 msgid "Unable to find the unit of component class %s%s%s."
@@ -9220,9 +9275,9 @@ msgstr "Nepavyko pervardyti failą %s%s%s%sį %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "Nepavyko pirminiame kode pervardyti formą."
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
-msgstr "Nepavyko pervardyti metodą. Pirma ištaisykite pranešimų lange rodomą klaidą."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
@@ -9240,9 +9295,13 @@ msgstr "Nepavyko išsaugoti failą %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "Kraštą pririšti prie komponentės neįmanoma"
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
-msgstr "Nepavyko parodyti metodą. Pirma ištaisykite pranešimų lange rodomą klaidą."
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletostreamt
 msgid "Unable to stream %s:T%s."

@@ -253,6 +253,10 @@ msgstr "Inny"
 msgid "Delete"
 msgstr ""
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr ""
@@ -505,6 +509,10 @@ msgstr "Błędna wartość właściwości"
 msgid "Invalid stream format"
 msgstr "Błędny format strumienia"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr ""
@@ -621,8 +629,20 @@ msgstr ""
 msgid "Pixmap"
 msgstr ""
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
+msgstr ""
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
 msgstr ""
 
 #: lclstrconsts:ifsvk_print

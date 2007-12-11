@@ -60,6 +60,10 @@ msgstr "%s ディレクトリ"
 msgid "%s is already part of the Project."
 msgstr "%s はすでにプロジェクトの一部です"
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "%s プロジェクトディレクトリ"
@@ -435,6 +439,14 @@ msgstr "紹介"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Lazarusについて"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2119,6 +2131,10 @@ msgstr "EOL（ファイル終端）を越えたカーソル"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "現在のエディタのカーソル列"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3816,6 +3832,10 @@ msgstr "IDE オプション"
 msgid "IDE internals"
 msgstr ""
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr ""
@@ -4158,6 +4178,10 @@ msgstr "テンプレートを挿入"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
@@ -5440,6 +5464,10 @@ msgstr "次のブックマーク"
 msgid "No ResourceString Section found"
 msgstr "リソース文字列セクションが見つかりません。"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "バックアップファイルを作らない"
@@ -5843,6 +5871,14 @@ msgstr "出力ディレクトリ"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "オーバーフロー"
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -7312,6 +7348,10 @@ msgstr "行末まで選択"
 msgid "Select line start"
 msgstr "行頭まで選択"
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr "ページ下端まで選択"
@@ -7519,6 +7559,10 @@ msgstr "フォーム編集のオプションを表示"
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "警告を表示"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8636,9 +8680,17 @@ msgstr "そのユニット名は有効なpascal識別子ではありません。
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "そのユニット名はIDEがuses節を拡張するときに用いられます。"
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "ポップアップメニューの中にもっと多くの機能があります。"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8767,6 +8819,10 @@ msgstr "これは上側がアンカーされる兄弟のコントロールです
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "これはpascalファイルのようです。%sいくつかのファイルシステムと異なるコンパイラにおける様々な問題を避けるため、小文字のファイル名を用いることが推奨されます。%s小文字に名称変更しますか？"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9215,6 +9271,10 @@ msgstr "ファイル%s%s%sを保存できません。"
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "アンカーサイドコントロールを設置できません。"
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."

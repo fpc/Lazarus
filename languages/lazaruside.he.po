@@ -61,6 +61,10 @@ msgstr "ספרייה %s"
 msgid "%s is already part of the Project."
 msgstr "כבר חלק מהמיזם. %s"
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "ספריית המיזם %s"
@@ -436,6 +440,14 @@ msgstr "אודות"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "אודות לזרוס"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2119,6 +2131,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
+msgstr ""
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
@@ -3817,6 +3833,10 @@ msgstr ""
 msgid "IDE internals"
 msgstr ""
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr ""
@@ -4159,6 +4179,10 @@ msgstr ""
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
@@ -5441,6 +5465,10 @@ msgstr ""
 msgid "No ResourceString Section found"
 msgstr ""
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr ""
@@ -5843,6 +5871,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
 msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
@@ -7313,6 +7349,10 @@ msgstr ""
 msgid "Select line start"
 msgstr ""
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr ""
@@ -7519,6 +7559,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
@@ -8637,8 +8681,16 @@ msgstr ""
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr ""
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
+msgstr ""
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
 msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
@@ -8767,6 +8819,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
+msgstr ""
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
@@ -9215,6 +9271,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
+msgstr ""
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage

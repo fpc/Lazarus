@@ -250,6 +250,10 @@ msgstr "Personnalisé"
 msgid "Delete"
 msgstr "Supprimer"
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr "Direction"
@@ -502,6 +506,10 @@ msgstr "Valeur de propriété incorrecte"
 msgid "Invalid stream format"
 msgstr "Format de flux incorrecte"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr "Junja"
@@ -618,9 +626,21 @@ msgstr "Touche Pause"
 msgid "Pixmap"
 msgstr "Pixmap"
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
 msgstr "Portable Network Graphic"
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

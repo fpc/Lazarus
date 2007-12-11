@@ -238,6 +238,10 @@ msgstr "Спеціальний"
 msgid "Delete"
 msgstr "Видалити"
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr ""
@@ -490,6 +494,10 @@ msgstr "Неправильне значення властивості"
 msgid "Invalid stream format"
 msgstr "Неправильний формат потоку"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr "Кенійська"
@@ -606,9 +614,21 @@ msgstr "Кнопка Pause"
 msgid "Pixmap"
 msgstr "Pixmap"
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
 msgstr "Портативна мережева графіка PNG"
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

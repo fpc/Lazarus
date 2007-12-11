@@ -64,6 +64,10 @@ msgstr "%s 目录"
 msgid "%s is already part of the Project."
 msgstr "%s 已经是工程的一部分"
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "%s 工程路径"
@@ -439,6 +443,14 @@ msgstr "关于"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "关于 Lazarus"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2123,6 +2135,10 @@ msgstr "允许光标超过行末"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "当前代码编辑器中光标所在列"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3820,6 +3836,10 @@ msgstr "IDE 选项:"
 msgid "IDE internals"
 msgstr ""
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "插入"
@@ -4162,6 +4182,10 @@ msgstr "插入模板"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
@@ -5444,6 +5468,10 @@ msgstr "下一个书签"
 msgid "No ResourceString Section found"
 msgstr "未找到任何资源字符串节"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "没有备份文件"
@@ -5847,6 +5875,14 @@ msgstr "输出目录"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "溢出"
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -7316,6 +7352,10 @@ msgstr ""
 msgid "Select line start"
 msgstr ""
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr ""
@@ -7523,6 +7563,10 @@ msgstr "显示窗体编辑选项"
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "显示警告"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8640,9 +8684,17 @@ msgstr "单元名不是一个有效的 pascal 标识符."
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "单元名将在 IDE 中的延伸的 uses 语句中使用"
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "弹出菜单中有更多功能"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8771,6 +8823,10 @@ msgstr "This is the sibling control to which the top side is anchored. Leave emp
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "这个好像是一个 pascal 文件.%s建议将文件名小写来消除某些文件系统上和不同编译器上会发生的问题 .%s重命名为小写么?"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9219,6 +9275,10 @@ msgstr "无法保存文件 %s%s%s"
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "无法设置锚边"
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."

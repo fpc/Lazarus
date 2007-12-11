@@ -63,6 +63,10 @@ msgstr "%s Verzeichnis"
 msgid "%s is already part of the Project."
 msgstr "%s ist bereits im Projekt."
 
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "%s Projektverzeichnis"
@@ -438,6 +442,14 @@ msgstr "Über"
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
 msgstr "Über Lazarus"
+
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -2122,6 +2134,10 @@ msgstr "Cursor hinter dem Zeilenende"
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Cursor-Spalte im aktuellem Editor"
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3819,6 +3835,10 @@ msgstr "IDE-Einstellungen"
 msgid "IDE internals"
 msgstr ""
 
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "Einfg"
@@ -4161,6 +4181,10 @@ msgstr "Vorlage einfügen"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
@@ -5443,6 +5467,10 @@ msgstr "Nächstes Lesezeichen"
 msgid "No ResourceString Section found"
 msgstr "Kein ResourceString-Abschnitt gefunden"
 
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
 msgstr "Keine Backup Dateien"
@@ -5846,6 +5874,14 @@ msgstr "Ausgabeverzeichnis"
 #: lazarusidestrconsts:dlgcooverflow
 msgid "Overflow"
 msgstr "Überlauf"
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -7315,6 +7351,10 @@ msgstr "Zeilenende wählen"
 msgid "Select line start"
 msgstr "Zeilenanfang wählen"
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
 msgstr "Seitenende auswählen"
@@ -7522,6 +7562,10 @@ msgstr "Anzeigen der Einstellungen für das Bearbeiten von Formularen"
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
 msgstr "Warnungen anzeigen"
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -8639,9 +8683,17 @@ msgstr "Der Unitname ist kein gültiger Pascal-Bezeichner."
 msgid "The unitname is used when the IDE extends uses clauses."
 msgstr "Der Unitname wird beim Erweitern der Uses-Klausel von der IDE verwendet."
 
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
 msgstr "Das Popup-Menü enthält mehr Funktionen"
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
 
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
@@ -8770,6 +8822,10 @@ msgstr "Das ist das Geschwistercontrol an das die Oberseite verankert wurde. Fü
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
 msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in Kleinbuchstaben anzugeben um diverse Probleme auf einige Dateisystemen und mit verschiedenen Compilern aus dem Weg zu gehen.%sIn Kleinbuchstaben umbenennen?"
+
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9218,6 +9274,10 @@ msgstr "Kann die Datei %s%s%s nicht speichern"
 #: lazarusidestrconsts:lisunabletosetanchorsidecontrol
 msgid "Unable to set AnchorSide Control"
 msgstr "Kann Ankerseiten-Kontrollelement nicht setzen"
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."

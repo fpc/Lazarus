@@ -251,6 +251,10 @@ msgstr "自定义"
 msgid "Delete"
 msgstr "删除"
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr "方向"
@@ -503,6 +507,10 @@ msgstr "无效属性值"
 msgid "Invalid stream format"
 msgstr "无效流格式"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr "Junja"
@@ -619,9 +627,21 @@ msgstr "暂停键"
 msgid "Pixmap"
 msgstr "象素映射"
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
 msgstr "移动网络图"
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

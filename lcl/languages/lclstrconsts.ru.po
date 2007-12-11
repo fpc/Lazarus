@@ -249,6 +249,10 @@ msgstr "Пользовательский"
 msgid "Delete"
 msgstr "Удалить"
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rsdirection
 msgid "Direction"
 msgstr "Направление"
@@ -501,6 +505,10 @@ msgstr "Неправильное значение свойства"
 msgid "Invalid stream format"
 msgstr "Неправильный формат потока"
 
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
+msgstr ""
+
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
 msgstr "Джанджа"
@@ -617,9 +625,21 @@ msgstr "Клавиша Pause"
 msgid "Pixmap"
 msgstr "Pixmap"
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
 msgstr "Portable Network Graphic"
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

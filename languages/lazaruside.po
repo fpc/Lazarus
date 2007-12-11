@@ -482,6 +482,10 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
+#: lazarusidestrconsts:lissamabstractmethodsnotyetoverridden
+msgid "Abstract methods - not yet overridden"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselecttobrace
 msgid "Select to brace"
 msgstr ""
@@ -2326,6 +2330,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: lazarusidestrconsts:lissamselectnone
+msgid "Select none"
+msgstr ""
+
 #: lazarusidestrconsts:liskmclassic
 msgid "Classic"
 msgstr ""
@@ -4074,6 +4082,42 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
+msgid "This method can not be overridden because it is defined in the current class"
+msgstr ""
+
+#: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
+msgid "%s is an abstract class, it has %s abstract methods."
+msgstr ""
+
+#: lazarusidestrconsts:lissamabstractmethodsof
+msgid "Abstract methods of %s"
+msgstr ""
+
+#: lazarusidestrconsts:lissamthereareabstractmethodstooverrideselectthemethodsf
+msgid "There are %s abstract methods to override.%sSelect the methods for which stubs should be created:"
+msgstr ""
+
+#: lazarusidestrconsts:lissamnoabstractmethodsfound
+msgid "No abstract methods found"
+msgstr ""
+
+#: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
+msgid "Cursor is not in a class declaration"
+msgstr ""
+
+#: lazarusidestrconsts:lissamideisbusy
+msgid "IDE is busy"
+msgstr ""
+
+#: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
+msgid "There are no abstract methods left to override."
+msgstr ""
+
+#: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
+msgid "Unable to show abstract methods of the current class, because"
+msgstr ""
+
 #: lazarusidestrconsts:lisccounabletogetfiledate
 msgid "Unable to get file date of %s."
 msgstr ""
@@ -5518,6 +5562,10 @@ msgstr ""
 msgid "Insert CVS keyword Source"
 msgstr ""
 
+#: lazarusidestrconsts:srkmecinsertguid
+msgid "Insert a GUID"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecfind
 msgid "Find text"
 msgstr ""
@@ -5712,6 +5760,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindblockstart
 msgid "Find block start"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshowabstractmethods
+msgid "Show abstract methods"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuild
@@ -10732,5 +10784,13 @@ msgstr ""
 
 #: lazarusidestrconsts:lispldpackagelinks
 msgid "Package Links"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverridefirstselected
+msgid "Override first selected"
+msgstr ""
+
+#: lazarusidestrconsts:lissamoverrideallselected
+msgid "Override all selected"
 msgstr ""
 

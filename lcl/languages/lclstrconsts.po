@@ -154,6 +154,10 @@ msgstr ""
 msgid "Replace all"
 msgstr ""
 
+#: lclstrconsts:rsdeleterecord
+msgid "Delete record?"
+msgstr ""
+
 #: lclstrconsts:rswarningunremovedpaintmessages
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr ""
@@ -422,8 +426,24 @@ msgstr ""
 msgid "Portable Network Graphic"
 msgstr ""
 
+#: lclstrconsts:rsportablebitmap
+msgid "Portable BitMap"
+msgstr ""
+
+#: lclstrconsts:rsportablegraymap
+msgid "Portable GrayMap"
+msgstr ""
+
+#: lclstrconsts:rsportablepixmap
+msgid "Portable PixMap"
+msgstr ""
+
 #: lclstrconsts:rsicon
 msgid "Icon"
+msgstr ""
+
+#: lclstrconsts:rsjpeg
+msgid "Joint Picture Expert Group"
 msgstr ""
 
 #: lclstrconsts:rsunsupportedclipboardformat
