@@ -8206,11 +8206,11 @@ To add, change or delete a column use the Columns property.</descr>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickMarks">
         <short><i>Tickmarks </i>- whether the ticks are above/left, below/right, or both</short>
-        <descr><i>Tickmarks </i>- wherr the ticks appear relative to the bar: above/left, below/right, or both</descr>
+        <descr><i>Tickmarks </i>- where the ticks appear relative to the bar: above/left, below/right, or both</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickStyle">
-        <short><i>TickStyle </i>- none, produced automatically, or calculated mnually</short>
+        <short><i>TickStyle </i>- none, produced automatically, or calculated manually</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TTrackBar">
@@ -8221,7 +8221,7 @@ To add, change or delete a column use the Columns property.</descr>
           <p>The <i>Position</i> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
           <p>In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.</p>
         </descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls"/></seealso>
+        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
         <example file="comctrls/TrackBarEx.pas"/>
       </element>
       <!-- property Visibility: published -->
