@@ -3202,15 +3202,21 @@ requiring the user to select one af a set of alternatives</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TRadioGroup">
-        <short><i>TRadioGroup</i>  : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
+        <short><i>TRadioGroup</i>   : A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives</short>
         <descr>
           <p><i>TRadioGroup</i>: A group of related but mutually exclusive radio buttons, requiring the user to select one af a set of alternatives. As one button becomes selected, the remaining buttons in the group become automatically deselected.</p>
           <p>To Use this control, place it in the required position on the form, then in the Object Inspector select <i>Items</i> and click on the ellipsis (...) to open the string editor. Type in the captions to accompany each check box, then close the string editor and you will see a series of Radio Boxes with their captions displayed beside them. (Note - unlike <link id="#lcl.ExtCtrls.TCheckGroup">TCheckGroup</link>, there is no special RadioGroup editor)</p>
           <p>Inherits properties from <link id="#lcl.ExtCtrls.TCustomRadioGroup">TCustomRadioGroup</link> and <link id="#lcl.StdCtrls.TCustomGroupBox">TCustomGroupBox</link></p>
+          <p><i>TRadioGroup</i> behaves differently from a group of <i>TRadioButton</i> controls placed arbitrarily around a form. </p>
+          <p>In the case of <i>TRadioButton</i>, the mutual exclusivity is a feature that applies to any <i>RadioButton</i> anywhere in the Form, and the <i>RadioButtons</i> can be rearranged in any order or placed anywhere within the containing <i>Form</i>, while in <i>TRadioGroup</i> the excluisivity applies only to buttons within the Group, which are ordered strictly accordng to their <i>ItemIndex</i> within the <i>Items</i> stringlist. </p>
+          <p><i>TRadioButton</i> is an entity in itself, with a number of additional properties, whereas the buttons within <i>TRadioGroup</i>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <i>RadioButton</i>. </p>
+          <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i></p>
         </descr>
         <seealso>
-          <link id="#lcl.StdCtrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+          <link id="#lcl.StdCtrls.HowToUseStdCtrls"/>
+          <link id="#lcl.StdCtrls.TRadioButton"/>
         </seealso>
+        <example file="extctrls/radiobutton.pas"/>
       </element>
       <!-- property Visibility: published -->
       <element name="TRadioGroup.Align">

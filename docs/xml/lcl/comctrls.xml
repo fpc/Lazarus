@@ -10,85 +10,47 @@
       <short>Several controls commonly used in Lazarus forms</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="SysUtils"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Classes"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Math">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Math"/>
       <!-- unresolved type reference Visibility: default -->
       <element name="FPCAdds">
         <short>???</short>
       </element>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LCLStrConsts"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LResources"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LCLIntf"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LCLType"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LCLProc"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="AvgLvlTree">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="AvgLvlTree"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="LMessages">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="LMessages"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="ImgList">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="ImgList"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="ActnList">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="ActnList"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="GraphType"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Graphics"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Menus">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Menus"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Controls"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Forms"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="StdCtrls"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="ExtCtrls">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="ExtCtrls"/>
       <!-- unresolved type reference Visibility: default -->
       <element name="ToolWin">
         <short/>
@@ -96,13 +58,9 @@
         <seealso/>
       </element>
       <!-- unresolved type reference Visibility: default -->
-      <element name="CommCtrl">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="CommCtrl"/>
       <!-- unresolved type reference Visibility: default -->
-      <element name="Buttons">
-        <short>Unit used by ComCtrls.</short>
-      </element>
+      <element name="Buttons"/>
       <!-- enumeration type Visibility: default -->
       <element name="THitTest">
         <short/>
@@ -7950,8 +7908,10 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TTrackBarScalePos.trBottom"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomTrackBar">
-        <short><i>TCustomTrackBar</i> - the base class for <i>TTrackBar</i></short>
-        <descr><i>TCustomTrackBar</i> defines many of the properties inherited by <i>TTrackBar</i>, a control for graphically displaying the progress of a process</descr>
+        <short><i>TCustomTrackBar</i>   - the base class for <i>TTrackBar</i></short>
+        <descr>
+          <p><i>TCustomTrackBar</i> defines many of the properties inherited by <i>TTrackBar</i>, a device that allows the user to determine the value of a variable using a quasi-analog slider</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTrackBar.FOrientation">
@@ -8197,53 +8157,39 @@ To add, change or delete a column use the Columns property.</descr>
       <element name="TCustomTrackBar.SetTick.Value"><short/></element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Frequency">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Frequency </i>- how frequently the position of the slider is to be read and updated (currently unsupported)</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.LineSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Line-Size </i>- increment for slider position when an arrow key is pressed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Max">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Max </i>- the value corresponding to full movement of the slider. Default = 10</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Min">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Min</i>  - the value associated with the minimum slider position. Default = 0</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.OnChange">
-        <short>Action to be taken on change in the process being tracked</short>
+        <short><i>OnChange</i> - action to be taken on change in the slider position</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Orientation">
-        <short><i>TTrackBarOrientation</i> - horizontal or vertical</short>
+        <short><i>Orientation</i>  - horizontal or vertical</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.PageSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>PageSize</i> - increment for slider position when PageUp or PageDown key is pressed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Position">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Position </i>- the location of the slider along the track bar. Represents the Return value from the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.ScalePos">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ScalePos </i>- whether scaling label appears at top, bottom, left or right</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.ShowScale">
@@ -8259,23 +8205,24 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickMarks">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Tickmarks </i>- whether the ticks are above/left, below/right, or both</short>
+        <descr><i>Tickmarks </i>- wherr the ticks appear relative to the bar: above/left, below/right, or both</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>TickStyle </i>- none, produced automatically, or calculated mnually</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TTrackBar">
-        <short>Track Bar</short>
-        <descr>Track Bar: a device that appears at the  bottom of  a window or panel or form, showing the progress of a process or allowing the user to select (with the mouse pointer) a value denoting how much of a procedure  is to be accepted.</descr>
-        <seealso>
-          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
-        </seealso>
+        <short><i>TTrackBar</i>: a device which allows the user to determine the value of a variable using a quasi-analog slider</short>
+        <descr>
+          <p><i>TTrackBar</i>: a device which allows the user to determine the value of a variable using a quasi-analog slider</p>
+          <p>The device looks like a slider-potentiometer control on a hi-fi amplifier, and consists of a slider which can be moved along a bar using the mouse. Tick marks can be displayed along one or both edges, giving an indication of the proportion of the maximum value of the controlled variable that is being selected.</p>
+          <p>The <i>Position</i> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
+          <p>In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.</p>
+        </descr>
+        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls"/></seealso>
+        <example file="comctrls/TrackBarEx.pas"/>
       </element>
       <!-- property Visibility: published -->
       <element name="TTrackBar.Align">

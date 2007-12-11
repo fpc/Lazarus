@@ -1316,6 +1316,7 @@ docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clistbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/comctrls/TrackBarEx.pas -text
 docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
 docs/xml/lcl/commctrl.xml svneol=LF#text/xml eol=lf
@@ -1338,6 +1339,7 @@ docs/xml/lcl/dynhasharray.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dynqueue.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/editbtn.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/extctrls/radiobutton.pas -text
 docs/xml/lcl/extctrls/statusbar.pas svneol=native#text/plain
 docs/xml/lcl/extdlgs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/extendedstrings.xml svneol=LF#text/xml eol=lf
