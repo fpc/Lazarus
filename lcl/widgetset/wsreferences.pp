@@ -60,10 +60,46 @@ type
     property Ptr: Pointer read FRef.Ptr;
   end;
 
+  // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+  // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+  // NOTE NOTE NOTE NOTE NOTE NOTE NOTE NOTE
+  //
+  // All properties with _ are temporary and for lcl use only.
+  // They can be removed anytime, without notice
+  //
+  // (don't complain that I didn't warn you)
 
   TWSCustomImageListReference = object(TWSReference)
   public
-    property Handle: Thandle read FRef.Handle;
+    property Handle: THandle read FRef.Handle;
+  end;
+  
+  TWSGDIObjReference = object(TWSReference)
+  end;
+  
+  TWSBitmapReference = object(TWSGDIObjReference)
+    property Handle: THandle read FRef.Handle;
+  end;
+
+  TWSBrushReference = object(TWSGDIObjReference)
+    property Handle: THandle read FRef.Handle;
+  end;
+
+  TWSPenReference = object(TWSGDIObjReference)
+    property Handle: THandle read FRef.Handle;
+  end;
+
+  TWSFontReference = object(TWSGDIObjReference)
+    property Handle: THandle read FRef.Handle;
+  end;
+
+  TWSRegionReference = object(TWSGDIObjReference)
+    property _lclHandle: THandle write FRef.Handle;
+    property Handle: THandle read FRef.Handle;
+  end;
+  
+  TWSDeviceContextReference = object(TWSReference)
+    property Handle: THandle read FRef.Handle;
   end;
 
 

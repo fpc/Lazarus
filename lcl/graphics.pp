@@ -42,7 +42,7 @@ uses
   IntfGraphics,
   AvgLvlTree,
   LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
-  GraphType, GraphMath, InterfaceBase;
+  GraphType, GraphMath, InterfaceBase, WSReferences;
 
 type
   PColor = ^TColor;
@@ -614,29 +614,33 @@ type
   { TRegion }
 
   TRegionData = record
-    Handle: HRgn;
+    Reference: TWSRegionReference;
     Rect: TRect;
     {Polygon Region Info - not used yet}
-    Polygon: PPoint;//Polygon Points
-    NumPoints: Longint;//Number of Points
-    Winding: Boolean;//Use Winding mode
+    Polygon: PPoint;    //Polygon Points
+    NumPoints: Longint; //Number of Points
+    Winding: Boolean;   //Use Winding mode
   end;
 
   TRegion = class(TGraphicsObject)
   private
     FRegionData: TRegionData;
-    procedure FreeHandle;
-  protected
+    procedure FreeReference;
+    function GetReference: TWSRegionReference;
     function GetHandle: HRGN;
+    procedure ReferenceNeeded;
     procedure SetHandle(const Value: HRGN);
+  protected
     procedure SetClipRect(value: TRect);
     Function GetClipRect: TRect;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Handle: HRGN read GetHandle write SetHandle;
+
     property ClipRect: TRect read GetClipRect write SetClipRect;
+    property Handle: HRGN read GetHandle write SetHandle; deprecated;
+    property Reference: TWSRegionReference read GetReference;
   end;
 
 

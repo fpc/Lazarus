@@ -48,10 +48,9 @@ type
     property WidgetSetClass: TWSLCLComponentClass read FWidgetSetClass;
   end;
   
-  { TLCLHandleComponent }         
-  // A base class for all components having a handle
-
   { TLCLReferenceComponent }
+
+  // A base class for all components having a handle
 
   TLCLReferenceComponent = class(TLCLComponent)
   private

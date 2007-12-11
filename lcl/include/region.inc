@@ -28,7 +28,7 @@
 constructor TRegion.Create;
 begin
   inherited Create;
-  FillChar(FRegionData,SizeOf(FRegionData), 0);
+  FillChar(FRegionData, SizeOf(FRegionData), 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TRegion.Destroy;
 begin
-  FreeHandle;
+  FreeReference;
   inherited Destroy;
 end;
 
@@ -57,6 +57,7 @@ begin
   then begin
     Self.ClipRect := TRegion(Source).ClipRect;
     //TODO : Get Polygon INFO
+    Exit;
   end;
 
   inherited Assign(Source);
@@ -71,14 +72,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.SetHandle(const Value: HRGN);
 begin
-  if FRegionData.Handle <> Value
-  then begin
-    FreeHandle;
-    FRegionData.Handle := Value;
-    FRegionData.Rect := GetClipRect;
-    //TODO: query polygon params
-    Changed;
-  end;
+  if FRegionData.Reference.Handle = Value then Exit;
+
+  FreeReference;
+  FRegionData.Reference._lclHandle := Value;
+  FRegionData.Rect := GetClipRect;
+  //TODO: query polygon params
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -89,40 +89,58 @@ end;
   Creates a region if needed
  ------------------------------------------------------------------------------}
 function TRegion.GetHandle: HRGN;
+begin
+  Result := Reference.Handle;
+end;
+
+function TRegion.GetReference: TWSRegionReference;
+begin
+  ReferenceNeeded;
+  Result := FRegionData.Reference;
+end;
+
+procedure TRegion.ReferenceNeeded;
 var
   FillMode: integer;
 begin
-  If FRegiondata.Handle = 0 then
-    With FRegionData do
-      if (Polygon <> nil) or (((Rect.Right - Rect.Left) <> 0) or ((Rect.Bottom - Rect.Top) <> 0))
-      then
-        If Polygon <> nil then begin
-          if Winding then
-            FillMode:=LCLType.Winding
-          else
-            FillMode:=Alternate;
-          FRegionData.Handle := CreatePolygonRgn(Polygon, NumPoints, FillMode);
-        end else
-          With Rect do
-            FRegionData.Handle := CreateRectRgn(Left, Top, Right, Bottom);
+  if FRegionData.Reference.Allocated then Exit;
 
-  Result := FRegionData.Handle;
+  if FRegionData.Polygon <> nil
+  then begin
+    if FRegionData.Winding
+    then FillMode := Winding
+    else FillMode := Alternate;
+    
+    FRegionData.Reference._lclHandle := CreatePolygonRgn(
+      FRegionData.Polygon, FRegionData.NumPoints, FillMode);
+    Exit;
+  end;
+    
+  with FRegionData.Rect do
+  begin
+    if (Right - Left <> 0) or (Bottom - Top <> 0)
+    then begin
+      FRegionData.Reference._lclHandle := CreateRectRgn(Left, Top, Right, Bottom);
+      Exit;
+    end;
+  end;
+  
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TRegion.FreeHandle
+  Method:  TRegion.FreeReference
   Params:  none
   Returns: Nothing
 
   Frees a brushhandle if needed
  ------------------------------------------------------------------------------}
-procedure TRegion.FreeHandle;
+
+procedure TRegion.FreeReference;
 begin
-  if FRegionData.Handle <> 0
-  then begin
-    DeleteObject(FRegionData.Handle);
-    FRegionData.Handle := 0;
-  end;
+  if not FRegionData.Reference.Allocated then Exit;
+
+  DeleteObject(FRegionData.Reference.Handle);
+  FRegionData.Reference._lclHandle := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -134,19 +152,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRegion.SetClipRect(Value : TRect);
 begin
-  if FRegionData.Rect <> Value
-  then begin
-    FreeHandle;
-    FRegionData.Rect := Value;
-    If FRegionData.Polygon <> nil then
-      ReallocMem(FRegionData.Polygon, 0);
+  if FRegionData.Rect = Value then Exit;
 
-    FRegionData.Polygon := nil;
-    FRegionData.NumPoints := 0;
-    FRegionData.Winding := False;
+  FreeReference;
+  FRegionData.Rect := Value;
+  if FRegionData.Polygon <> nil then
+    ReallocMem(FRegionData.Polygon, 0);
+
+  FRegionData.Polygon := nil;
+  FRegionData.NumPoints := 0;
+  FRegionData.Winding := False;
     
-    Changed;
-  end;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -156,21 +173,24 @@ end;
 
   Gets the regions current clip rect
  ------------------------------------------------------------------------------}
-Function TRegion.GetClipRect : TRect;
+function TRegion.GetClipRect : TRect;
 begin
-  If FRegionData.Handle <> 0 then
-    GetRgnBox(FRegionData.Handle, @Result)
-  else
-    If FRegionData.Polygon <> nil then begin
-      GetHandle;
-      If FRegionData.Handle <> 0 then
-        Result := GetClipRect
-      else
-        Result := FRegionData.Rect;
-      FreeHandle;
+  if FRegionData.Reference.Allocated
+  then begin
+    GetRgnBox(FRegionData.Reference.Handle, @Result)
+  end
+  else begin
+    if FRegionData.Polygon <> nil
+    then begin
+      ReferenceNeeded;
+      if FRegionData.Reference.Allocated
+      then Result := GetClipRect
+      else Result := FRegionData.Rect;
+      //FreeReference; // ??? why free (mwe)
     end
     else
       Result := FRegionData.Rect;
+  end;
 end;
 
 // included by graphics.pp
