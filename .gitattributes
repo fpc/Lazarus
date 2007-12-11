@@ -984,6 +984,7 @@ components/synedit/synhighlighterpython.pas svneol=native#text/pascal
 components/synedit/synhighlightersql.pas svneol=native#text/pascal
 components/synedit/synhighlightertex.pas svneol=native#text/pascal
 components/synedit/synhighlighterunixshellscript.pas svneol=native#text/pascal
+components/synedit/synhighlightervb.pas svneol=native#text/plain
 components/synedit/synhighlighterxml.pas svneol=native#text/pascal
 components/synedit/synmacrorecorder.pas svneol=native#text/pascal
 components/synedit/synmemo.pas svneol=native#text/pascal
