@@ -218,7 +218,7 @@ begin
   for i := AStart to Item^.FImageList.Count - 1 do
   begin
     Item^.FImageIndexes[OldLen + i - AStart] := i;
-    AListener.CacheSetImageIndex(OldLen + i - AStart, AStart);
+    AListener.CacheSetImageIndex(OldLen + i - AStart, i);
   end;
 end;
 
