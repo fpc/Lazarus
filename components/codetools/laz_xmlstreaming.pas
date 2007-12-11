@@ -22,6 +22,11 @@ unit Laz_XMLStreaming;
 {$MODE objfpc}
 {$H+}
 
+{$DEFINE HasReadWriteBuf}
+{$IF defined(VER2_2_0) or defined(VER2_0)}
+{$UNDEF HasReadWriteBuf}
+{$ENDIF}
+
 interface
 
 uses SysUtils, Classes, TypInfo, FileProcs, Laz_DOM, Laz_XMLWrite;
@@ -77,7 +82,9 @@ type
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
     procedure WriteString(const Value: String); override;
     procedure WriteWideString(const Value: WideString); override;
+    {$IFDEF HasReadWriteBuf}
     procedure Write(const Buffer; Count: Longint); override;
+    {$ENDIF}
   public
     property Doc: TDOMDocument read FDoc;
   end;
@@ -123,7 +130,9 @@ type
     function ReadWideString: WideString; override;
     procedure SkipComponent(SkipComponentInfos: Boolean); override;
     procedure SkipValue; override;
+    {$IFDEF HasReadWriteBuf}
     procedure Read(var Buf; Count: LongInt); override;
+    {$ENDIF}
   public
     property Doc: TDOMDocument read FDoc;
     property Element: TDOMElement read FElement;// current element node
@@ -443,12 +452,13 @@ begin
   GetPropertyElement('widestring')['value'] := System.UTF8Encode(Value);
 end;
 
+{$IFDEF HasReadWriteBuf}
 procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
 begin
   // there can be arbitrary lots of Write calls
   raise Exception.Create('TODO: TXMLObjectWriter.Write');
 end;
-
+{$ENDIF}
 
 { TXMLObjectReader }
 
@@ -1039,10 +1049,12 @@ begin
   //writeln('TXMLObjectReader.SkipValue ');
 end;
 
+{$IFDEF HasReadWriteBuf}
 procedure TXMLObjectReader.Read(var Buf; Count: LongInt);
 begin
   raise Exception.Create('TODO: TXMLObjectReader.Read');
   //writeln('TXMLObjectReader.Read ');
 end;
+{$ENDIF}
 
 end.
