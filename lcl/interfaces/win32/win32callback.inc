@@ -322,6 +322,12 @@ var
     else Result := nil;
   end;
 
+  function GetIsNativeControl(AWindow: HWND): Boolean;
+  begin
+    GetClassName(AWindow, winClassName, 20);
+    Result := not CompareMem(@winClassName, @ClsName, High(ClsName) + 1);
+  end;
+  
   procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
@@ -356,7 +362,7 @@ var
     GetClassName(Window, winClassName, 20);
     isNotebook := ThemeServices.ThemesEnabled and
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
-    isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
+    isNativeControl := GetIsNativeControl(Window);
     ParentPaintWindow := 0;
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
     // if needParentPaint and not isTabPage then background will be drawn in
@@ -1868,10 +1874,15 @@ begin
         end;
       end;
     end;
-    WM_PAINT, WM_PRINTCLIENT:
+    WM_PAINT:
     begin
       SendPaintMessage(HDC(WParam));
       // SendPaintMessage sets winprocess to false
+    end;
+    WM_PRINTCLIENT:
+    begin
+      if ((LParam and PRF_CLIENT) = PRF_CLIENT) and (lWinControl <> nil) then
+        SendPaintMessage(HDC(WParam));
     end;
     WM_PASTE:
     begin
