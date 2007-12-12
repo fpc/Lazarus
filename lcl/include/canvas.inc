@@ -125,17 +125,18 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateBrush;
-var OldHandle: HBRUSH;
+var
+  OldHandle: HBRUSH;
 begin
 //DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',DbgS(Self)
 // ,'  Brush=',DbgS(Brush));
-  OldHandle:=SelectObject(FHandle, Brush.Handle);
+  OldHandle := SelectObject(FHandle, Brush.Reference.Handle);
   //debugln('TCanvas.CreateBrush ',ClassName,' Self=',DbgS(Self),' OldHandle=',DbgS(OldHandle),8),' NewHandle=',DbgS(Brush.Handle),' FSavedBrushHandle=',DbgS(Cardinal(FSavedBrushHandle));
-  if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
-    FSavedBrushHandle:=OldHandle;
+  if (OldHandle <> Brush.Reference.Handle) and (FSavedBrushHandle=0) then
+    FSavedBrushHandle := OldHandle;
   Include(FState, csBrushValid);
   SetBkColor(FHandle, Brush.Color);
-  if Brush.Style=bsSolid then
+  if Brush.Style = bsSolid then
     SetBkMode(FHandle, OPAQUE)
   else
     SetBkMode(FHandle, TRANSPARENT);
@@ -148,23 +149,36 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreatePen;
-var OldHandle: HPEN;
-const PenModes:Array[TPenMode] of Integer =
-  ( R2_BLACK, R2_WHITE, R2_NOP, R2_NOT, R2_COPYPEN, R2_NOTCOPYPEN, R2_MERGEPENNOT,
-    R2_MASKPENNOT, R2_MERGENOTPEN, R2_MASKNOTPEN, R2_MERGEPEN, R2_NOTMERGEPEN,
-    R2_MASKPEN, R2_NOTMASKPEN, R2_XORPEN, R2_NOTXORPEN );
-{
-  TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
-              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge,
-              pmMask, pmNotMask, pmXor, pmNotXor
-}
+var
+  OldHandle: HPEN;
+  
+const
+  PenModes: array[TPenMode] of Integer =
+  (
+{pmBlack      } R2_BLACK,
+{pmWhite      } R2_WHITE,
+{pmNop        } R2_NOP,
+{pmNot        } R2_NOT,
+{pmCopy       } R2_COPYPEN,
+{pmNotCopy    } R2_NOTCOPYPEN,
+{pmMergePenNot} R2_MERGEPENNOT,
+{pmMaskPenNot } R2_MASKPENNOT,
+{pmMergeNotPen} R2_MERGENOTPEN,
+{pmMaskNotPen } R2_MASKNOTPEN,
+{pmMerge      } R2_MERGEPEN,
+{pmNotMerge   } R2_NOTMERGEPEN,
+{pmMask       } R2_MASKPEN,
+{pmNotMask    } R2_NOTMASKPEN,
+{pmXor        } R2_XORPEN,
+{pmNotXor     } R2_NOTXORPEN
+  );
 begin
 //DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',DbgS(Self)
 // ,'  Pen=',DbgS(Pen));
-  OldHandle:=SelectObject(FHandle, Pen.Handle);
-  if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
-    FSavedPenHandle:=OldHandle;
-  MoveTo(PenPos.X,PenPos.Y);
+  OldHandle := SelectObject(FHandle, Pen.Reference.Handle);
+  if (OldHandle <> Pen.Reference.Handle) and (FSavedPenHandle=0) then
+    FSavedPenHandle := OldHandle;
+  MoveTo(PenPos.X, PenPos.Y);
   Include(FState, csPenValid);
   SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
@@ -176,15 +190,16 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateFont;
-var OldHandle: HFONT;
+var
+  OldHandle: HFONT;
 begin
   // The first time the font handle is selected, the default font handle
   // is returned. Save this font handle to restore it later in DeselectHandles.
   // The TFont will call DeleteObject itself, so we never need to call it.
-  OldHandle:=SelectObject(FHandle, Font.Handle);
+  OldHandle := SelectObject(FHandle, Font.Reference.Handle);
   //DebugLn(['TCanvas.CreateFont OldHandle=',dbghex(OldHandle),' Font.Handle=',dbghex(Font.Handle)]);
-  if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
-    FSavedFontHandle:=OldHandle;
+  if (OldHandle <> Font.Reference.Handle) and (FSavedFontHandle=0) then
+    FSavedFontHandle := OldHandle;
   Include(FState, csFontValid);
   SetTextColor(FHandle, Font.Color);
 end;
@@ -193,11 +208,12 @@ end;
   procedure TCanvas.CreateRegion;
  ------------------------------------------------------------------------------}
 procedure TCanvas.CreateRegion;
-var OldHandle: HRGN;
+var
+  OldHandle: HRGN;
 begin
-  OldHandle:=SelectObject(FHandle, Region.Handle);
-  if (OldHandle<>Region.Handle) and (FSavedRegionHandle=0) then
-    FSavedRegionHandle:=OldHandle;
+  OldHandle := SelectObject(FHandle, Region.Reference.Handle);
+  if (OldHandle <> Region.Reference.Handle) and (FSavedRegionHandle=0) then
+    FSavedRegionHandle := OldHandle;
   Include(FState, csRegionValid);
 end;
 
@@ -834,7 +850,7 @@ procedure TCanvas.FillRect(const ARect : TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLIntf.FillRect(FHandle, ARect, Brush.Handle);
+  LCLIntf.FillRect(FHandle, ARect, Brush.Reference.Handle);
   Changed;
 end;
 
@@ -858,7 +874,7 @@ procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLIntf.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Handle);
+  LCLIntf.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Reference.Handle);
   Changed;
 end;
 
