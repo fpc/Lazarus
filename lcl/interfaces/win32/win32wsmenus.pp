@@ -472,15 +472,9 @@ begin
 
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
-  begin
-    WideBuffer := Utf8Decode(aMenuItem.Caption);
-    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags);
-  end
+    DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @aRect, dtFlags)
   else
-  begin
-    AnsiBuffer := Utf8ToAnsi(aMenuItem.Caption);
     DrawText(aHDC, pChar(AnsiBuffer), length(AnsiBuffer), @aRect, dtFlags);
-  end;
 {$else}
   DrawText(aHDC, pChar(aMenuItem.Caption), length(aMenuItem.Caption), @aRect, dtFlags);
 {$endif}
