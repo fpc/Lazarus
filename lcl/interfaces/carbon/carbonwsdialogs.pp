@@ -120,7 +120,8 @@ uses
 { TCarbonWSFileDialog }
 
 var
-  FilterMask: TMaskList;
+  Filters: TStringList; // filter text + TMaskList in object
+  FilterIndex: Integer;
 
 function FilterCallback(var theItem: AEDesc; info: NavFileOrFolderInfoPtr;
  callbackUD: UnivPtr; filterMode: NavFilterModes): Boolean; stdcall;
@@ -135,6 +136,7 @@ var
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
   FilePath: string;
+  FilterMask: TMaskList;
 begin
   Result := True;
   
@@ -167,6 +169,10 @@ begin
   FreeCFString(FileURL);
   FreeCFString(FileCFStr);
 
+  FilterMask := nil;
+  if (FilterIndex >= 0) and (FilterIndex < Filters.Count) then
+    FilterMask := TMaskList(Filters.Objects[FilterIndex]);
+
   Result := (FilterMask = nil) or FilterMask.Matches(ExtractFilename(FilePath));
   //DebugLn('FilterCallback ' + DbgS(FilterMask) + ' ' + ExtractFilename(FilePath) + ' ' + DbgS(Result));
 end;  {FilterCallback}
@@ -178,6 +184,8 @@ var
   DirRef: FSRef;
   DirURL: CFURLRef;
   DirCFStr: CFStringRef;
+  PMenuSpec: NavMenuItemSpecPtr;
+  MenuSpec: NavMenuItemSpec;
 const
   SName = 'NavDialogCallback';
 begin
@@ -188,6 +196,14 @@ begin
   case CallBackSelector of
   kNavCBStart:
     begin
+      // set initial filter index
+      MenuSpec.version := kNavMenuItemSpecVersion;
+      MenuSpec.menuCreator := kExtensionFolderType;
+      MenuSpec.menuType := FilterIndex;
+      MenuSpec.menuItemName := '';
+      OSError(NavCustomControl(CallBackParms^.context, kNavCtlSelectCustomType, @MenuSpec),
+                SName, 'NavCustomControl', 'FilterIndex');
+    
       // Set InitialDir
       if DirectoryExists(TFileDialog(CallbackUD).InitialDir) then
       begin
@@ -205,8 +221,17 @@ begin
             if not OSError(AECreateDesc(typeFSRef, @DirRef, SizeOf(FSRef), Dir),
               SName, 'AECreateDesc') then
               OSError(NavCustomControl(CallBackParms^.context, kNavCtlSetLocation, @Dir),
-                SName, 'NavCustomControl');
+                SName, 'NavCustomControl', 'InitialDir');
       end;
+    end;
+  kNavCBPopupMenuSelect: // user has changed filter
+    begin
+      if CallBackParms = nil then Exit;
+      PMenuSpec := NavMenuItemSpecPtr(CallBackParms^.eventData.eventDataParms.param);
+      if PMenuSpec = nil then Exit;
+      //DebugLn(DbgS(PMenuSpec^.menuType));
+      
+      FilterIndex := PMenuSpec^.menuType;
     end;
   end;
 end;
@@ -239,8 +264,8 @@ var
   FileRef: FSRef;
   FileURL: CFURLRef;
   FileCFStr: CFStringRef;
-  Filters: TParseStringList;
-  T: String;
+  ParsedFilter: TParseStringList;
+  M: TMaskList;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('TCarbonWSFileDialog.ShowModal for ' + ACommonDialog.Name);
@@ -260,21 +285,27 @@ begin
   FilterUPP := NewNavObjectFilterUPP(NavObjectFilterProcPtr(@FilterCallback));
   NavDialogUPP := NewNavEventUPP(NavEventProcPtr(@NavDialogCallback));
 
-  // user cannot pick individual filter -> use all
-  Filters := TParseStringList.Create(FileDialog.Filter, '|');
+  Filters := TStringList.Create;
+  FilterIndex := FileDialog.FilterIndex - 1; // file dialog filter index is ine based
+
+  // parse filters to popup menu - filter text + TMaskList
+  ParsedFilter := TParseStringList.Create(FileDialog.Filter, '|');
   try
-    T := '';
-    for I := 1 to Filters.Count div 2 do
+    for I := 1 to ParsedFilter.Count div 2 do
     begin
-      //DebugLn('Filter ' + Filters[I * 2 - 1]);
-      if T <> '' then T := T + ';' + Filters[I * 2 - 1]
-      else T := Filters[I * 2 - 1];
+      try
+        M := TMaskList.Create(ParsedFilter[I * 2 - 1]);
+      except
+        FreeAndNil(M);
+      end;
+      //DebugLn('Filter ' + ParsedFilter[I * 2 - 1]);
+      Filters.AddObject(ParsedFilter[I * 2 - 2], M);
     end;
-    if T <> '' then FilterMask := TMaskList.Create(T);
   finally
-    Filters.Free;
+    ParsedFilter.Free;
   end;
   
+  CreationOptions.popupExtension := StringsToCFArray(Filters);
   try
     if FileDialog is TSaveDialog then
     begin  // Checking for TSaveDialog first since it's descendent of TOpenDialog
@@ -377,7 +408,11 @@ begin
     end;
 
   finally
-    FreeAndNil(FilterMask);
+    CFRelease(CreationOptions.popupExtension);
+    for I := 0 to Filters.Count - 1 do
+      if Filters.Objects[I] <> nil then Filters.Objects[I].Free;
+    Filters.Free;
+
     DisposeNavObjectFilterUPP(FilterUPP);
     DisposeNavEventUPP(NavDialogUPP);
     FreeCFString(CreationOptions.windowTitle);

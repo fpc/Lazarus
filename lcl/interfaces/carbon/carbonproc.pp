@@ -87,6 +87,8 @@ procedure FreeCFString(var AString: CFStringRef);
 function CFStringToStr(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): String;
 function CFStringToData(AString: CFStringRef; Encoding: CFStringEncoding = DEFAULT_CFSTRING_ENCODING): CFDataRef;
 
+function StringsToCFArray(S: TStrings): CFArrayRef;
+
 function RoundFixed(const F: Fixed): Integer;
 
 function GetCarbonRect(Left, Top, Width, Height: Integer): FPCMacOSAll.Rect;
@@ -631,6 +633,23 @@ begin
   S := CFStringToStr(AString, Encoding);
   
   Result := CFDataCreate(nil, @S[1], Length(S));
+end;
+
+{------------------------------------------------------------------------------
+  Name:    StringsToCFArray
+  Params:  S - Strings
+  Returns: Creates CFArray from strings
+ ------------------------------------------------------------------------------}
+function StringsToCFArray(S: TStrings): CFArrayRef;
+var
+  StrArray: Array of CFStringRef;
+  I: Integer;
+begin
+  SetLength(StrArray, S.Count);
+  
+  for I := 0 to S.Count - 1 do CreateCFString(S[I], StrArray[I]);
+  
+  Result := CFArrayCreate(nil, @StrArray[0], Length(StrArray), nil);
 end;
 
 {------------------------------------------------------------------------------
