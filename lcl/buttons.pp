@@ -87,6 +87,7 @@ type
     function GetWidth: Integer;
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
+    procedure ClearImages;
   protected
     // IUnknown
     function QueryInterface(const iid: tguid; out obj): longint; stdcall;

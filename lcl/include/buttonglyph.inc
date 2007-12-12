@@ -95,10 +95,10 @@ begin
   begin
     if FOriginal.Width mod FOriginal.Height = 0 then
     begin
-      GlyphCount:= FOriginal.Width div FOriginal.Height;
-      if GlyphCount > 4 then
-        GlyphCount:= 1;
-      FNumGlyphs:= TNumGlyphs(GlyphCount);
+      GlyphCount := FOriginal.Width div FOriginal.Height;
+      if GlyphCount > High(TNumGlyphs) then
+        GlyphCount := Low(TNumGlyphs);
+      FNumGlyphs := TNumGlyphs(GlyphCount);
     end;
   end;
   GlyphChanged(FOriginal);
@@ -126,6 +126,7 @@ begin
   begin
     FImagesCache.UnregisterListener(Self);
     FImagesCache := nil; // cache can free on unregister
+    ClearImages;
   end;
 
   if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
@@ -177,6 +178,15 @@ begin
     FNumGlyphs := Value;
     GlyphChanged(FOriginal);
   end;
+end;
+
+procedure TButtonGlyph.ClearImages;
+var
+  i: TButtonState;
+begin
+  FImages := nil;
+  for i := Low(TButtonState) to High(TButtonState) do
+    FImageIndexes[i] := -1;
 end;
 
 function TButtonGlyph.QueryInterface(const iid: tguid; out obj): longint; stdcall;

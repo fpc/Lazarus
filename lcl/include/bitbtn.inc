@@ -148,11 +148,11 @@ end;
 procedure TCustomBitBtn.SetNumGlyphs(AValue: Integer);
 begin
   if AValue < 0 then AValue := 1;
-  if AValue > 4 then AValue := 4;
+  if AValue > High(TNumGlyphs) then AValue := High(TNumGlyphs);
 
   if AValue <> FButtonGlyph.NumGlyphs then
   Begin
-    FButtonGlyph.NumGlyphs :=  TNumGlyphs(AValue);
+    FButtonGlyph.NumGlyphs := TNumGlyphs(AValue);
     Invalidate;
   end;
 end;
