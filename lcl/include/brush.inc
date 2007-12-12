@@ -157,7 +157,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TBrush.FreeHandle
+  Method:  TBrush.FreeReference
   Params:  none
   Returns: Nothing
 

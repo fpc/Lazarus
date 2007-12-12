@@ -447,7 +447,6 @@ type
   private
     FCanUTF8: boolean;
     FCanUTF8Valid: boolean;
-    FHandle: HFont;
     FIsMonoSpace: boolean;
     FIsMonoSpaceValid: boolean;
     FPitch: TFontPitch;
@@ -459,15 +458,19 @@ type
     FFontHandleCached: boolean;
     FColor: TColor;
     FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
-    procedure FreeHandle;
+    FReference: TWSFontReference;
+    procedure FreeReference;
     function GetCanUTF8: boolean;
+    function  GetHandle: HFONT;
     procedure GetData(var FontData: TFontData);
     function GetIsMonoSpace: boolean;
+    function GetReference: TWSFontReference;
     function IsNameStored: boolean;
     procedure SetData(const FontData: TFontData);
+    procedure SetHandle(const Value: HFONT);
+    procedure ReferenceNeeded;
   protected
     function  GetCharSet: TFontCharSet;
-    function  GetHandle: HFONT;
     function  GetHeight: Integer;
     function  GetName: string;
     function  GetPitch: TFontPitch;
@@ -482,7 +485,6 @@ type
     procedure SetColor(Value: TColor);
     procedure SetFlags(Index: integer; AValue: boolean); override;
     procedure SetFPColor(const AValue: TFPColor); override;
-    procedure SetHandle(const Value: HFONT);
     procedure SetHeight(value: Integer);
     procedure SetName(AValue: string); override;
     procedure SetPitch(Value: TFontPitch);
@@ -493,16 +495,17 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure Assign(const ALogFont: TLogFont);
-    function IsEqual(AFont: TFont): boolean; virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
     function HandleAllocated: boolean;
+    property Handle: HFONT read GetHandle write SetHandle; deprecated;
     function IsDefault: boolean;
-    procedure SetDefault;
-    property Handle: HFONT read GetHandle write SetHandle;
-    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
-    property CanUTF8: boolean read GetCanUTF8;
+    function IsEqual(AFont: TFont): boolean; virtual;
     property IsMonoSpace: boolean read GetIsMonoSpace;
+    procedure SetDefault;
+    property CanUTF8: boolean read GetCanUTF8;
+    property PixelsPerInch: Integer read FPixelsPerInch write FPixelsPerInch;
+    property Reference: TWSFontReference read GetReference;
   published
     property CharSet: TFontCharSet read GetCharSet write SetCharSet default DEFAULT_CHARSET;
     property Color: TColor read FColor write SetColor default clWindowText;
