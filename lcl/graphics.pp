@@ -1308,18 +1308,19 @@ type
   TCursorImage = class(TIcon)
   private
     FHotSpot: TPoint;
-    FCursorHandle: hCursor;
+    FCursorHandle: HCURSOR;
     FOwnHandle: Boolean;
   protected
-    function GetCursorHandle: hCursor;
+    function GetCursorHandle: HCURSOR;
+    procedure CursorHandleNeeded;
   public
     constructor Create; override;
     destructor Destroy; override;
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
+    function ReleaseCursorHandle: HCURSOR;
     property HotSpot: TPoint read FHotSpot write FHotSpot;
-    property CursorHandle: hCursor read GetCursorHandle;
-    property OwnHandle: Boolean read FOwnHandle write FOwnHandle;
+    property CursorHandle: HCURSOR read GetCursorHandle;
   end;
   
   { TJpegImage }
@@ -1494,8 +1495,7 @@ var
 begin
   CursorImage := TCursorImage.Create;
   CursorImage.LoadFromLazarusResource(ACursorName);
-  CursorImage.OwnHandle := False;
-  Result := CursorImage.CursorHandle;
+  Result := CursorImage.ReleaseCursorHandle;
   CursorImage.Free;
 end;
 
@@ -2058,7 +2058,19 @@ begin
             (AnsiCompareText(ResourceType,'CUR')=0);
 end;
 
-function TCursorImage.GetCursorHandle: hCursor;
+function TCursorImage.ReleaseCursorHandle: HCURSOR;
+begin
+  Result := CursorHandle;
+  FCursorHandle := 0;
+end;
+
+function TCursorImage.GetCursorHandle: HCURSOR;
+begin
+  CursorHandleNeeded;
+  Result := FCursorHandle;
+end;
+
+procedure TCursorImage.CursorHandleNeeded;
 var
   IconInfo: TIconInfo;
 begin
@@ -2071,7 +2083,6 @@ begin
     IconInfo.hbmColor := Handle;
     FCursorHandle := WidgetSet.CreateCursor(@IconInfo);
   end;
-  Result := FCursorHandle;
 end;
 
 constructor TCursorImage.Create;
@@ -2084,7 +2095,7 @@ end;
 
 destructor TCursorImage.Destroy;
 begin
-  if (FCursorHandle <> 0) and OwnHandle then
+  if (FCursorHandle <> 0) then
     WidgetSet.DestroyCursor(FCursorHandle);
   inherited Destroy;
 end;
