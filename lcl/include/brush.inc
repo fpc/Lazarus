@@ -40,9 +40,10 @@ end;
 
   Sets the style of a brush
  ------------------------------------------------------------------------------}
-Procedure TBrush.SetColor(Value : TColor);
+procedure TBrush.SetColor(Value : TColor);
 begin
-  if FColor <> Value then SetColor(Value,TColorToFPColor(Value));
+  if FColor <> Value then
+    SetColor(Value, TColorToFPColor(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -52,10 +53,11 @@ end;
 
   Sets the style of a brush
  ------------------------------------------------------------------------------}
-Procedure TBrush.SetStyle(Value : TBrushStyle);
+procedure TBrush.SetStyle(Value : TBrushStyle);
 begin
-  if Style <> Value then begin
-    FreeHandle;
+  if Style <> Value then
+  begin
+    FreeReference;
     inherited SetStyle(Value);
     Changed;
   end;
@@ -68,11 +70,11 @@ end;
 
   Sets the style of a brush
  ------------------------------------------------------------------------------}
-Procedure TBrush.SetBitmap(Value : TBitmap);
+procedure TBrush.SetBitmap(Value : TBitmap);
 begin
-  if FBitmap <> Value
-  then begin
-    FreeHandle;
+  if FBitmap <> Value then
+  begin
+    FreeReference;
     FBitmap := Value;
     Changed;
   end;
@@ -89,9 +91,8 @@ constructor TBrush.Create;
 begin
   inherited Create;
   FBitmap := nil;
-  FHandle := 0;
   FColor := clWhite;
-  DelayAllocate:=true;
+  DelayAllocate := True;
   inherited SetStyle(bsSolid);
 end;
 
@@ -104,7 +105,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TBrush.Destroy;
 begin
-  FreeHandle;
+  FreeReference;
   inherited Destroy;
 end;
 
@@ -115,12 +116,12 @@ end;
 
   Copies the source brush to itself
  ------------------------------------------------------------------------------}
-Procedure TBrush.Assign(Source: TPersistent);
+procedure TBrush.Assign(Source: TPersistent);
 begin
-  if Source is TBrush
-  then begin
+  if Source is TBrush then
+  begin
     Bitmap := TBrush(Source).Bitmap;
-    SetColor(TBrush(Source).Color,TFPCanvasHelper(Source).FPColor);
+    SetColor(TBrush(Source).Color, TFPCanvasHelper(Source).FPColor);
     Style := TBrush(Source).Style;
   end
   else
@@ -136,13 +137,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBrush.SetHandle(const Value: HBRUSH);
 begin
-  if FHandle <> Value
-  then begin
-    FreeHandle;
-    FHandle := Value;
-    //TODO: query new parameters
-    Changed;
-  end;
+  if FReference.Handle = Value then Exit;
+
+  FreeReference;
+  FReference._lclHandle := Value;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -153,49 +152,8 @@ end;
   Creates a brush if needed
  ------------------------------------------------------------------------------}
 function TBrush.GetHandle: HBRUSH;
-var
-  LogBrush: TLogBrush;
-  CachedBrush: TBlockResourceCacheDescriptor;
 begin
-  if FHandle = 0
-  then begin
-    FillChar(LogBrush,SizeOf(LogBrush),0);
-    with LogBrush do
-    begin
-      if FBitmap <> nil
-      then begin
-        lbStyle := BS_PATTERN;
-        lbHatch := FBitmap.Handle;
-      end else
-      begin
-      lbHatch := 0;
-      case Style of
-        bsSolid: lbStyle := BS_SOLID;
-        bsClear: lbStyle := BS_HOLLOW;
-      else
-        lbStyle := BS_HATCHED;
-        lbHatch := Ord(Style) - Ord(bsHorizontal);
-        end;
-      end;
-      lbColor := ColorRef(FColor);
-    end;
-    CachedBrush := BrushResourceCache.FindDescriptor(@LogBrush);
-    if CachedBrush <> nil then
-    begin
-      CachedBrush.Item.IncreaseRefCount;
-      FHandle := CachedBrush.Item.Handle;
-    end else
-    begin
-      if LogBrush.lbStyle <> BS_PATTERN then
-        FHandle := CreateBrushIndirect(LogBrush)
-      else
-        FHandle := CreatePatternBrush(LogBrush.lbHatch);
-      BrushResourceCache.AddResource(FHandle,@LogBrush);
-    end;
-    FBrushHandleCached := True;
-  end;
-
-  Result := FHandle;
+  Result := Reference.Handle;
 end;
 
 {------------------------------------------------------------------------------
@@ -203,19 +161,71 @@ end;
   Params:  none
   Returns: Nothing
 
-  Frees a brushhandle if needed
+  Frees a brush handle if needed
  ------------------------------------------------------------------------------}
-procedure TBrush.FreeHandle;
+
+procedure TBrush.FreeReference;
 begin
-  if FHandle <> 0
-  then begin
-    if FBrushHandleCached then begin
-      BrushResourceCache.FindItem(FHandle).DecreaseRefCount;
-      FBrushHandleCached:=false;
+  if not FReference.Allocated then Exit;
+
+  Changing;
+  if FBrushHandleCached then
+  begin
+    BrushResourceCache.FindItem(FReference.Handle).DecreaseRefCount;
+    FBrushHandleCached := False;
+  end else
+    DeleteObject(FReference.Handle);
+  FReference._lclHandle := 0;
+end;
+
+function TBrush.GetReference: TWSBrushReference;
+begin
+  ReferenceNeeded;
+  Result := FReference;
+end;
+
+procedure TBrush.ReferenceNeeded;
+var
+  LogBrush: TLogBrush;
+  CachedBrush: TBlockResourceCacheDescriptor;
+begin
+  if FReference.Allocated then Exit;
+
+  FillChar(LogBrush, SizeOf(LogBrush), 0);
+  with LogBrush do
+  begin
+    if FBitmap <> nil then
+    begin
+      lbStyle := BS_PATTERN;
+      lbHatch := FBitmap.Handle;
     end else
-      DeleteObject(FHandle);
-    FHandle := 0;
+    begin
+      lbHatch := 0;
+      case Style of
+        bsSolid: lbStyle := BS_SOLID;
+        bsClear: lbStyle := BS_HOLLOW;
+      else
+        lbStyle := BS_HATCHED;
+        lbHatch := Ord(Style) - Ord(bsHorizontal);
+      end;
+    end;
+    lbColor := ColorRef(FColor);
   end;
+
+  CachedBrush := BrushResourceCache.FindDescriptor(@LogBrush);
+  if CachedBrush <> nil then
+  begin
+    CachedBrush.Item.IncreaseRefCount;
+    FReference._lclHandle := CachedBrush.Item.Handle;
+  end else
+  begin
+    if LogBrush.lbStyle <> BS_PATTERN then
+      FReference._lclHandle := CreateBrushIndirect(LogBrush)
+    else
+      FReference._lclHandle := CreatePatternBrush(LogBrush.lbHatch);
+    BrushResourceCache.AddResource(FReference.Handle, @LogBrush);
+  end;
+  FBrushHandleCached := True;
 end;
 
 procedure TBrush.DoChange(var Msg);
@@ -226,19 +236,20 @@ end;
 procedure TBrush.DoAllocateResources;
 begin
   inherited DoAllocateResources;
-  GetHandle;
+  GetReference;
 end;
 
 procedure TBrush.DoDeAllocateResources;
 begin
-  FreeHandle;
+  FreeReference;
   inherited DoDeAllocateResources;
 end;
 
 procedure TBrush.DoCopyProps(From: TFPCanvasHelper);
 begin
-  if From is TBrush then begin
-    FreeHandle;
+  if From is TBrush then
+  begin
+    FreeReference;
     inherited DoCopyProps(From);
     //TODO: query new parameters
     Changed;
@@ -248,15 +259,15 @@ end;
 
 procedure TBrush.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
-  if (NewColor=Color) and (NewFPColor=FPColor) then exit;
-  FreeHandle;
-  FColor:=NewColor;
+  if (NewColor = Color) and (NewFPColor = FPColor) then Exit;
+  FreeReference;
+  FColor := NewColor;
   inherited SetFPColor(NewFPColor);
   Changed;
 end;
 
 procedure TBrush.SetFPColor(const AValue: TFPColor);
 begin
-  if FPColor=AValue then exit;
-  SetColor(FPColorToTColor(AValue),AValue);
+  if FPColor <> AValue then
+    SetColor(FPColorToTColor(AValue), AValue);
 end;

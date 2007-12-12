@@ -418,7 +418,6 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
-
   { TFontHandleCacheDescriptor }
 
   TFontHandleCacheDescriptor = class(TResourceCacheDescriptor)
@@ -426,7 +425,6 @@ type
     LogFont: TLogFont;
     LongFontName: string;
   end;
-
 
   { TFontHandleCache }
 
@@ -442,7 +440,6 @@ type
     function Add(TheFont: HFONT; const LogFont: TLogFont;
                  const LongFontName: string): TFontHandleCacheDescriptor;
   end;
-
 
   { TFont }
 
@@ -516,15 +513,7 @@ type
     property Style: TFontStyles read GetStyle write SetStyle;
   end;
 
-
   { TPen }
-
-  TPenData = record
-    Reference: TWSPenReference;
-    Color: TColor;
-    Width: Integer;
-    Style: TPenStyle;
-  end;
 
   TPenHandleCache = class(TBlockResourceCache)
   protected
@@ -566,15 +555,7 @@ type
     property Width default 1;
   end;
 
-
   { TBrush }
-
-  TBrushData = record
-    Handle: HBrush;
-    Color: TColor;
-    Bitmap: TBitmap;
-    Style: TBrushStyle;
-  end;
 
   TBrushHandleCache = class(TBlockResourceCache)
   protected
@@ -585,11 +566,15 @@ type
 
   TBrush = class(TFPCustomBrush)
   private
-    FHandle: HBrush;
     FBrushHandleCached: boolean;
     FColor: TColor;
     FBitmap: TBitmap;
-    procedure FreeHandle;
+    FReference: TWSBrushReference;
+    procedure FreeReference;
+    function GetHandle: HBRUSH;
+    function GetReference: TWSBrushReference;
+    procedure ReferenceNeeded;
+    procedure SetHandle(const Value: HBRUSH);
     procedure DoChange(var Msg); message LM_CHANGED;
   protected
     procedure DoAllocateResources; override;
@@ -597,17 +582,16 @@ type
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    function GetHandle: HBRUSH;
     procedure SetBitmap(Value: TBitmap);
     procedure SetColor(Value: TColor);
-    procedure SetHandle(const Value: HBRUSH);
-    Procedure SetStyle(Value: TBrushStyle); override;
+    procedure SetStyle(Value: TBrushStyle); override;
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
-    property Handle: HBRUSH read GetHandle write SetHandle;
+    property Handle: HBRUSH read GetHandle write SetHandle; deprecated;
+    property Reference: TWSBrushReference read GetReference;
   published
     property Color: TColor read FColor write SetColor default clWhite;
     property Style default bsSolid;

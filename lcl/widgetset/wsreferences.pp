@@ -82,6 +82,7 @@ type
   end;
 
   TWSBrushReference = object(TWSGDIObjReference)
+    property _lclHandle: THandle write FRef.Handle;
     property Handle: THandle read FRef.Handle;
   end;
 

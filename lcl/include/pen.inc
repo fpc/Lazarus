@@ -136,14 +136,14 @@ end;
 
   Copies the source pen to itself
  ------------------------------------------------------------------------------}
-Procedure TPen.Assign(Source : Tpersistent);
+procedure TPen.Assign(Source : Tpersistent);
 begin
-  if Source is TPen
-  then begin
+  if Source is TPen then
+  begin
     Width := TPen(Source).Width;
-    SetColor(TPen(Source).Color,TFPCanvasHelper(Source).FPColor);
+    SetColor(TPen(Source).Color, TFPCanvasHelper(Source).FPColor);
     Style := TPen(Source).Style;
-    Mode := TPEn(Source).Mode;
+    Mode := TPen(Source).Mode;
   end
   else
     inherited Assign(Source);
