@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, FPCAdds, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, LazConf, LazarusIDEStrConsts, ExtCtrls, EnvironmentOpts,
-  Clipbrd, FileUtil;
+  Clipbrd, FileUtil, Menus;
 
 type
 
@@ -40,7 +40,9 @@ type
     Image1: TImage;
     LogoImage: TImage;
     LogoPage: TPage;
+    miVerToClipboard: TMenuItem;
     PlatformLabel: TLabel;
+    PopupMenu1: TPopupMenu;
     VersionLabel: TLABEL;
     ContributorsMemo:TMemo;
     AcknowledgementsMemo:TMemo;
@@ -50,6 +52,7 @@ type
     ContributorsPage:TPage;
     AcknowledgementsPage:TPage;
     procedure AboutFormCreate(Sender:TObject);
+    procedure miVerToClipboardClick(Sender: TObject);
   private
     procedure LoadContributors;
     procedure LoadAcknowledgements;
@@ -132,6 +135,8 @@ begin
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
   AcknowledgementsPage.Caption:=lisAcknowledgements;
+  miVerToClipboard.Caption := lisVerToClipboard;
+  
   Constraints.MinWidth:= 600;
   Constraints.MinHeight:= 300;
 
@@ -143,6 +148,12 @@ begin
   LoadContributors;
   LoadAcknowledgements;
   CloseButton.Caption:=lisClose;
+end;
+
+procedure TAboutForm.miVerToClipboardClick(Sender: TObject);
+begin
+  Clipboard.AsText := 'v' + LazarusVersionStr + ' r' + LazarusRevisionStr +
+      ' ' + PlatformLabel.Caption;
 end;
 
 procedure TAboutForm.LoadContributors;

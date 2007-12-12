@@ -715,6 +715,7 @@ resourcestring
   lisPleaseCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
+  lisVerToClipboard = 'Copy version information to clipboard';
   lisDate = 'Date';
   lisSVNRevision = 'SVN Revision: ';
   lisClose = '&Close';

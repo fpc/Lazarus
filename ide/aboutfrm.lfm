@@ -10,38 +10,39 @@ object AboutForm: TAboutForm
   ClientHeight = 270
   ClientWidth = 608
   OnCreate = AboutFormCreate
+  PopupMenu = PopupMenu1
   Position = poScreenCenter
   object VersionLabel: TLabel
     Left = 14
-    Height = 20
+    Height = 17
     Top = 6
-    Width = 67
+    Width = 73
     Alignment = taCenter
     Caption = 'Version #:'
     ParentColor = False
   end
   object BuildDateLabel: TLabel
     Left = 14
-    Height = 20
+    Height = 17
     Top = 23
-    Width = 36
+    Width = 40
     Alignment = taCenter
     Caption = 'Date:'
     ParentColor = False
   end
   object RevisionLabel: TLabel
     Left = 14
-    Height = 20
+    Height = 17
     Top = 40
-    Width = 86
+    Width = 101
     Caption = 'RevisionLabel'
     ParentColor = False
   end
   object PlatformLabel: TLabel
     Left = 14
-    Height = 20
+    Height = 17
     Top = 61
-    Width = 89
+    Width = 101
     Caption = 'PlatformLabel'
     ParentColor = False
   end
@@ -52,7 +53,7 @@ object AboutForm: TAboutForm
     AnchorSideRight.Control = Notebook1
     Left = 6
     Height = 113
-    Top = 87
+    Top = 84
     Width = 203
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -62,7 +63,7 @@ object AboutForm: TAboutForm
   end
   object CloseButton: TBitBtn
     Left = 70
-    Height = 36
+    Height = 34
     Top = 225
     Width = 74
     AutoSize = True
@@ -108,11 +109,11 @@ object AboutForm: TAboutForm
     TabOrder = 0
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 385
-      ClientHeight = 230
+      ClientWidth = 389
+      ClientHeight = 261
       object AboutMemo: TMemo
-        Height = 230
-        Width = 385
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -121,11 +122,11 @@ object AboutForm: TAboutForm
     end
     object ContributorsPage: TPage
       Caption = 'Contributors'
-      ClientWidth = 385
-      ClientHeight = 230
+      ClientWidth = 389
+      ClientHeight = 261
       object ContributorsMemo: TMemo
-        Height = 230
-        Width = 385
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -134,11 +135,11 @@ object AboutForm: TAboutForm
     end
     object AcknowledgementsPage: TPage
       Caption = 'Acknowledgements'
-      ClientWidth = 385
-      ClientHeight = 230
+      ClientWidth = 389
+      ClientHeight = 261
       object AcknowledgementsMemo: TMemo
-        Height = 230
-        Width = 385
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -148,13 +149,21 @@ object AboutForm: TAboutForm
     object LogoPage: TPage
       Caption = 'LogoPage'
       ClientWidth = 385
-      ClientHeight = 230
+      ClientHeight = 227
       object LogoImage: TImage
-        Height = 230
+        Height = 227
         Width = 385
         Align = alClient
         Transparent = False
       end
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 18
+    top = 218
+    object miVerToClipboard: TMenuItem
+      Caption = 'Copy version information to clipboard'
+      OnClick = miVerToClipboardClick
     end
   end
 end
