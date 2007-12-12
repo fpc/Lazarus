@@ -41,13 +41,10 @@ end;
 
   Sets the style of a pen
  ------------------------------------------------------------------------------}
-Procedure TPen.SetColor(Value : TColor);
+procedure TPen.SetColor(Value : TColor);
 begin
-  if FColor <> value
-  then begin
-    FreeHandle;
-    SetColor(Value,TColorToFPColor(Value));
-  end;
+  if FColor <> Value then
+    SetColor(Value, TColorToFPColor(Value));
 end;
 
 {------------------------------------------------------------------------------
@@ -57,11 +54,11 @@ end;
 
   Sets the style of a pen
  ------------------------------------------------------------------------------}
-Procedure TPen.SetStyle(Value : TPenStyle);
+procedure TPen.SetStyle(Value : TPenStyle);
 begin
-  if Style <> Value
-  then begin
-    FreeHandle;
+  if Style <> Value then
+  begin
+    FreeReference;
     inherited SetStyle(Value);
     Changed;
   end;
@@ -74,11 +71,11 @@ end;
 
   Sets the Mode of a pen
  ------------------------------------------------------------------------------}
-Procedure TPen.SetMode(Value : TPenMode);
+procedure TPen.SetMode(Value : TPenMode);
 begin
-  if Mode <> Value
-  then begin
-    FreeHandle;
+  if Mode <> Value then
+  begin
+    FreeReference;
     inherited SetMode(Value);
     Changed;
   end;
@@ -91,11 +88,11 @@ end;
 
   Sets the style of a pen
  ------------------------------------------------------------------------------}
-Procedure TPen.SetWidth(Value : Integer);
+procedure TPen.SetWidth(Value : Integer);
 begin
-  if Width <> Value
-  then begin
-    FreeHandle;
+  if Width <> Value then
+  begin
+    FreeReference;
     inherited SetWidth(Value);
     Changed;
   end;
@@ -111,8 +108,7 @@ end;
 constructor TPen.Create;
 begin
   inherited Create;
-  FHandle := 0;
-  DelayAllocate:=true;
+  DelayAllocate := True;
   inherited SetWidth(1);
   inherited SetStyle(psSolid);
   inherited SetMode(pmCopy);
@@ -129,7 +125,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TPen.Destroy;
 begin
-  FreeHandle;
+  FreeReference;
   inherited Destroy;
 end;
 
@@ -162,13 +158,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPen.SetHandle(const Value: HPEN);
 begin
-  if FHandle <> Value
-  then begin
-    FreeHandle;
-    FHandle := Value;
-    //TODO: query new parameters
-    Changed;
-  end;
+  if FReference.Handle = Value then Exit;
+
+  FreeReference;
+  FReference._lclHandle := Value;
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -179,6 +173,17 @@ end;
   Creates a pen if needed
  ------------------------------------------------------------------------------}
 function TPen.GetHandle: HPEN;
+begin
+  Result := Reference.Handle;
+end;
+
+function TPen.GetReference: TWSPenReference;
+begin
+  ReferenceNeeded;
+  Result := FReference;
+end;
+
+procedure TPen.ReferenceNeeded;
 const
   PEN_STYLES: array[TPenStyle] of Word = (
     ps_Solid, ps_Dash, ps_Dot, ps_DashDot, ps_DashDotDot, ps_insideFrame,
@@ -189,67 +194,68 @@ var
   LogPen: TLogPen;
   CachedPen: TBlockResourceCacheDescriptor;
 begin
-  if FHandle = 0
-  then begin
-    FillChar(LogPen,SizeOf(LogPen),0);
-    with LogPen do
-    begin
-      lopnStyle := PEN_STYLES[Style];
-      lopnWidth.X := Width;
-      lopnColor := FColor;
-    end;
-    CachedPen:=PenResourceCache.FindDescriptor(@LogPen);
-    if CachedPen<>nil then begin
-      CachedPen.Item.IncreaseRefCount;
-      FHandle := CachedPen.Item.Handle;
-    end else begin
-      FHandle := CreatePenIndirect(LogPen);
-      PenResourceCache.AddResource(FHandle,@LogPen);
-    end;
-    FPenHandleCached:=true;
+  if FReference.Allocated then Exit;
+
+  FillChar(LogPen, SizeOf(LogPen), 0);
+  with LogPen do
+  begin
+    lopnStyle := PEN_STYLES[Style];
+    lopnWidth.X := Width;
+    lopnColor := FColor;
   end;
 
-  Result := FHandle;
+  CachedPen := PenResourceCache.FindDescriptor(@LogPen);
+  if CachedPen <> nil then
+  begin
+    CachedPen.Item.IncreaseRefCount;
+    FReference._lclHandle := CachedPen.Item.Handle;
+  end else
+  begin
+    FReference._lclHandle := CreatePenIndirect(LogPen);
+    PenResourceCache.AddResource(FReference.Handle, @LogPen);
+  end;
+  FPenHandleCached := True;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TPen.FreeHandle
+  Method:  TPen.FreeReference
   Params:  none
   Returns: Nothing
 
-  Frees a penhandle if needed
+  Frees a pen handle if needed
  ------------------------------------------------------------------------------}
-procedure TPen.FreeHandle;
+
+procedure TPen.FreeReference;
 begin
-  if FHandle <> 0
-  then begin
-    // Changing triggers deselecting the current handle
-    Changing;
-    if FPenHandleCached then begin
-      PenResourceCache.FindItem(FHandle).DecreaseRefCount;
-      FPenHandleCached:=false;
-    end else
-      DeleteObject(FHandle);
-    FHandle := 0;
-  end;
+  if not FReference.Allocated then Exit;
+
+  Changing;
+  if FPenHandleCached then
+  begin
+    PenResourceCache.FindItem(FReference.Handle).DecreaseRefCount;
+    FPenHandleCached := False;
+  end else
+    DeleteObject(FReference.Handle);
+  FReference._lclHandle := 0;
 end;
 
 procedure TPen.DoAllocateResources;
 begin
   inherited DoAllocateResources;
-  GetHandle;
+  GetReference;
 end;
 
 procedure TPen.DoDeAllocateResources;
 begin
-  FreeHandle;
+  FreeReference;
   inherited DoDeAllocateResources;
 end;
 
 procedure TPen.DoCopyProps(From: TFPCanvasHelper);
 begin
-  if From is TPen then begin
-    FreeHandle;
+  if From is TPen then
+  begin
+    FreeReference;
     inherited DoCopyProps(From);
     //TODO: query new parameters
     Changed;
@@ -259,16 +265,16 @@ end;
 
 procedure TPen.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
-  if (NewColor=Color) and (NewFPColor=FPColor) then exit;
-  FreeHandle;
-  FColor:=NewColor;
+  if (NewColor = Color) and (NewFPColor = FPColor) then Exit;
+  FreeReference;
+  FColor := NewColor;
   inherited SetFPColor(NewFPColor);
   Changed;
 end;
 
 procedure TPen.SetFPColor(const AValue: TFPColor);
 begin
-  if FPColor=AValue then exit;
-  SetColor(FPColorToTColor(AValue),AValue);
+  if FPColor <> AValue then
+    SetColor(FPColorToTColor(AValue), AValue);
 end;
 

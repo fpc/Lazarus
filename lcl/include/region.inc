@@ -132,7 +132,7 @@ end;
   Params:  none
   Returns: Nothing
 
-  Frees a brushhandle if needed
+  Frees a region handle if needed
  ------------------------------------------------------------------------------}
 
 procedure TRegion.FreeReference;

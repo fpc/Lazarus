@@ -407,12 +407,12 @@ type
   private
     FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
-    Procedure DoChange(var Msg); message LM_CHANGED;
+    procedure DoChange(var Msg); message LM_CHANGED;
   protected
     procedure Changing; dynamic;
     procedure Changed; dynamic;
-    Procedure Lock;
-    Procedure UnLock;
+    procedure Lock;
+    procedure UnLock;
   public
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -520,7 +520,7 @@ type
   { TPen }
 
   TPenData = record
-    Handle: HPen;
+    Reference: TWSPenReference;
     Color: TColor;
     Width: Integer;
     Style: TPenStyle;
@@ -535,18 +535,20 @@ type
 
   TPen = class(TFPCustomPen)
   private
-    FHandle: HPen;
     FColor: TColor;
     FPenHandleCached: boolean;
-    procedure FreeHandle;
+    FReference: TWSPenReference;
+    procedure FreeReference;
+    function GetHandle: HPEN;
+    function GetReference: TWSPenReference;
+    procedure ReferenceNeeded;
+    procedure SetHandle(const Value: HPEN);
   protected
     procedure DoAllocateResources; override;
     procedure DoDeAllocateResources; override;
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    function GetHandle: HPEN;
-    procedure SetHandle(const Value: HPEN);
     procedure SetColor(Value: TColor);
     procedure SetMode(Value: TPenMode); override;
     procedure SetStyle(Value: TPenStyle); override;
@@ -555,7 +557,8 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Handle: HPEN read GetHandle write SetHandle;
+    property Handle: HPEN read GetHandle write SetHandle; deprecated;
+    property Reference: TWSPenReference read GetReference;
   published
     property Color: TColor read FColor write SetColor default clBlack;
     property Mode default pmCopy;
@@ -632,7 +635,7 @@ type
     procedure SetHandle(const Value: HRGN);
   protected
     procedure SetClipRect(value: TRect);
-    Function GetClipRect: TRect;
+    function GetClipRect: TRect;
   public
     constructor Create;
     destructor Destroy; override;
