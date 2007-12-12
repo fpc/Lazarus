@@ -736,6 +736,8 @@ begin
   Result := False;
   if OSError(HIViewSetFrame(Frames[0], RectToCGRect(ARect)),
     Self, SSetBounds, SViewFrame) then Exit;
+  // ensure bounds are send back to LCL once after creation
+  if not BoundsReported then BoundsChanged;
   
   Result := True;
 end;

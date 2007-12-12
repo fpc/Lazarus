@@ -387,11 +387,13 @@ const
 *)
 
   function TranslateMacKeyCode : boolean;
-  var KeyCode: UInt32;
+  var KeyCode, DeadKeys: UInt32;
       TextLen : UInt32;
       CharLen : integer;
-      buf : array[1..6] of byte; //isn't 4 bytes enough?
-      u : cardinal;
+      buf : array[1..6] of Char; //isn't 4 bytes enough?
+      U: Cardinal;
+      Layout: UCKeyboardLayoutPtr;
+      KeyboardLayout: KeyboardLayoutRef;
   begin
     Result:=false;
     SendChar:=false;
@@ -447,16 +449,29 @@ const
       exit;
     end;
     
+
     //printable keys
     //for these keys, send char or UTF8KeyPress
-    if OSError(
-      GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
-        6, @TextLen, @Buf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
-        
+    if not IsSysKey then
+    begin
+      if OSError(
+        GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
+          6, @TextLen, @Buf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
+    end
+    else
+    begin // Command modifier suppressing shift workaround
+      DeadKeys := 0;
+      OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
+      OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
+      OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
+          (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
+          kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
+    end;
+
     if TextLen>0 then
     begin
       SendChar:=true;
-      
+
       u:=UTF16CharacterToUnicode(PWideChar(@Buf[1]),CharLen);
       if CharLen=0 then exit;
       UTF8Character:=UnicodeToUTF8(u);
@@ -468,7 +483,7 @@ const
           GetEventParameter(AEvent, kEventParamKeyMacCharCodes, typeChar, nil,
             Sizeof(KeyChar), nil, @KeyChar), SName, AGetEvent,
           'kEventParamKeyMacCharCodes') then Exit;
-          
+
       case KeyChar of
         'a'..'z': VKKeyCode:=VK_A+ord(KeyChar)-ord('a');
         'A'..'Z': VKKeyCode:=ord(KeyChar);
@@ -518,9 +533,11 @@ const
        DebugLn('[TranslateMacKeyCode] VK=', DbgsVKCode(VKKeyCode), ' Utf8="',
          UTF8Character, '" KeyChar="', KeyChar, '"');
       {$ENDIF}
-      Result:=true;
+
+      Result := True;
     end
-    else Debugln('[TranslateMacKeyCode] ***WARNING: Can''t get unicode character!***');
+    else DebugLn('[TranslateMacKeyCode] Error Unable to get Unicode char RawKeyCode = ',
+      DbgsVKCode(KeyCode));
   end;
 
   function HandleRawKeyDownEvent: OSStatus;
@@ -542,7 +559,8 @@ const
     
     // is the key combination help key (Cmd + ?)
     if SendChar and IsSysKey and (UTF8Character = '?') then
-    begin // TODO: this does not function, we can't get shifted key in Cmd combination
+    begin
+      //DebugLn('Application.ShowHelpForObject');
       Application.ShowHelpForObject(Widget.LCLObject);
     end;
     
@@ -989,7 +1007,7 @@ begin
     SetControlProperty(Content, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, SCreateWidget, SSetControlProp);
 
-  SetBounds(Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
+  SetBounds(LCLObject.BoundsRect);
   SetText(AParams.Caption);
   //DebugLn('TCarbonWindow.CreateWidget succeeds');
   SetColor(LCLObject.Color);

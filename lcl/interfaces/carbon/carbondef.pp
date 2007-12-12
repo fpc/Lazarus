@@ -66,6 +66,7 @@ type
     FCursor: HCURSOR;
     FHasCaret: Boolean;
     FResizing: Boolean;
+    FBoundsReported: Boolean;
     function GetPainting: Boolean;
     function GetProperty(AIndex: String): Pointer;
     procedure SetProperty(AIndex: String; const AValue: Pointer);
@@ -116,6 +117,7 @@ type
     function SetText(const S: String): Boolean; virtual; abstract;
     function Update: Boolean; virtual; abstract;
   public
+    property BoundsReported: Boolean read FBoundsReported;
   { Content:
      = widget in controls without special client control
      - client area control of control or window
@@ -445,10 +447,12 @@ begin
   
   Resized :=
     (OldBounds.Right - OldBounds.Left <> WidgetBounds.Right - WidgetBounds.Left) or
-    (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top);
+    (OldBounds.Bottom - OldBounds.Top <> WidgetBounds.Bottom - WidgetBounds.Top) or
+    not FBoundsReported;
   Moved :=
     (OldBounds.Left <> WidgetBounds.Left) or
-    (OldBounds.Top <> WidgetBounds.Top);
+    (OldBounds.Top <> WidgetBounds.Top) or
+    not FBoundsReported;
   ClientResized := False;
   
   // send window pos changed
@@ -474,13 +478,12 @@ begin
   end;
   
   // update client rect
-  //if Resized or LCLObject.ClientRectNeedsInterfaceUpdate then
+  if Resized or LCLObject.ClientRectNeedsInterfaceUpdate then
   begin
     {$IFDEF VerboseBounds}
       DebugLn('TCarbonWidget.BoundsChanged Update client rects cache');
     {$ENDIF}
-    LCLObject.InvalidateClientRectCache(True);
-    LCLObject.DoAdjustClientRectChange;
+    LCLObject.InvalidateClientRectCache(False);
     ClientResized := True;
   end;
   
@@ -490,7 +493,7 @@ begin
     LCLSendSizeMsg(LCLObject, WidgetBounds.Right - WidgetBounds.Left,
       WidgetBounds.Bottom - WidgetBounds.Top, Size_SourceIsInterface);
   end;
-
+  
   // then send a LM_MOVE message
   if Moved then
   begin
@@ -506,11 +509,13 @@ begin
   begin
     TCarbonWidget(LCLObject.Parent.Handle).Invalidate(@OldBounds);
   end;
-  
+
   {$IFDEF VerboseBounds}
     DebugLn('TCarbonWidget.BoundsChanged LCL new bounds: ' + DbgS(LCLObject.BoundsRect));
     DebugLn('TCarbonWidget.BoundsChanged LCL new client: ' + DbgS(LCLObject.ClientRect));
   {$ENDIF}
+  
+  FBoundsReported := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -540,11 +545,9 @@ begin
   Context := nil;
   FHasCaret := False;
   FResizing := False;
+  FBoundsReported := False;
   
-
   CreateWidget(AParams);
-  
-  BoundsChanged;
   
   {$IFDEF VerboseWidget}
     DebugLn('TCarbonWidget.Create ', ClassName, ' ', LCLObject.Name, ': ',
