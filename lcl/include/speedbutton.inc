@@ -24,6 +24,13 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+const
+  UpState: array[Boolean] of TButtonState =
+  (
+{False} bsUp, // mouse in control = false
+{True } bsHot // mouse in contorl = true
+  );
+
 {------------------------------------------------------------------------------
   Method:  TCustomSpeedButton.Create
   Params:  none
@@ -135,25 +142,29 @@ var
 begin
   //since Down needs GroupIndex, then we need to wait that all properties
   //loaded before we continue
-  if (csLoading in ComponentState) then begin
+  if (csLoading in ComponentState) then
+  begin
     FDownLoaded := Value;
     exit;
-  end else begin
-    if FGroupIndex = 0 then Value:= false;
-    if FDown <> Value then begin
-      if FDown and not FAllowAllUp then Exit;
-      OldDown:=FDown;
+  end else
+  begin
+    if FGroupIndex = 0 then
+      Value:= false;
+    if FDown <> Value then
+    begin
+      if FDown and not FAllowAllUp then
+        Exit;
+      OldDown := FDown;
       FDown := Value;
-      OldState := fState;
-      if FDown then begin
-        fState := bsExclusive;
-      end else begin
-        FState := bsUp;
-      end;
-      if (OldDown<>FDown) or (OldState<>FState) then Invalidate;
-      if Value then begin
+      OldState := FState;
+      if FDown then
+        FState := bsExclusive
+      else
+        FState := UpState[FMouseInControl];
+      if (OldDown <> FDown) or (OldState <> FState) then
+        Invalidate;
+      if Value then
         UpdateExclusive;
-      end;
     end;
   end;
 end;
@@ -161,7 +172,6 @@ end;
 procedure TCustomSpeedButton.SetEnabled(NewEnabled: boolean);
 begin
   inherited;
-
   UpdateState(true);
 end;
 
@@ -278,27 +288,33 @@ procedure TCustomSpeedButton.UpdateState(InvalidateOnChange: boolean);
 var
   OldState: TButtonState;
 begin
-  OldState:=FState;
-  if not Enabled then begin
+  OldState := FState;
+  if not Enabled then
+  begin
     FState := bsDisabled;
     FDragging := False;
-  end else begin
-    if FState = bsDisabled
-    then begin
-      if FDown and (GroupIndex <> 0)
-      then FState := bsExclusive
-      else FState := bsUp;
+  end else
+  begin
+    if FState = bsDisabled then
+    begin
+      if FDown and (GroupIndex <> 0) then
+        FState := bsExclusive
+      else
+        FState := UpState[FMouseInControl];
     end
-    else if (FState = bsDown) and (not FMouseInControl) and (not FDragging)
-    and (not FDown) then begin
+    else
+    if (FState in [bsHot, bsDown]) and (not FMouseInControl) and (not FDragging) and (not FDown) then
+    begin
       // return to normal
       FState := bsUp;
-    end;
+    end
+    else
+    if (FState = bsUp) and FMouseInControl then
+      FState := bsHot;
   end;
-  if FState<>OldState then
+  if FState <> OldState then
     if (Action is TCustomAction) then
-      TCustomAction(Action).Checked := FState=bsDown;
-
+      TCustomAction(Action).Checked := FState = bsDown;
   //if InvalidateOnChange then DebugLn(['TCustomSpeedButton.UpdateState ',DbgSName(Self),' InvalidateOnChange=',InvalidateOnChange,' StateChange=',FState<>OldState]);
   if InvalidateOnChange and
      (
@@ -327,7 +343,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
     if FState in [bsDown, bsExclusive] then
       Result := tbPushButtonPressed
     else
-    if fMouseInControl then
+    if FState = bsHot then
       Result := tbPushButtonHot
     else
       Result := tbPushButtonNormal
@@ -352,7 +368,7 @@ function TCustomSpeedButton.GetDrawDetails: TThemedElementDetails;
       begin
         if FState in [bsDown, bsExclusive] then
           Result := ttbButtonPressed else
-        if fMouseInControl then
+        if FState = bsHot then
           Result := ttbButtonHot
         else
           Result := ttbButtonNormal
@@ -494,7 +510,7 @@ var
   TMP : String;
 begin
   UpdateState(false);
-  if FGlyph=nil then exit;
+  if FGlyph = nil then exit;
 
   PaintRect:=ClientRect;
   FLastDrawDetails := GetDrawDetails;
@@ -627,10 +643,10 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if csDesigning in ComponentState then exit;
 
-  if (Button = mbLeft) and Enabled
-  then begin
-    if not FDown
-    then begin
+  if (Button = mbLeft) and Enabled then
+  begin
+    if not FDown then
+    begin
       FState := bsDown;
       if (Action is TCustomAction) then
         TCustomAction(Action).Checked := False;
@@ -654,22 +670,23 @@ begin
   inherited MouseMove(Shift, X, Y);
   if csDesigning in ComponentState then exit;
 
-  if FDragging
-  then begin
+  if FDragging then
+  begin
     Assert(False,'Trace:FDragging is true');
     if FDown then
       NewState := bsExclusive
-    else begin
+    else
+    begin
       if  (X >= 0) and (X < Width)
       and (Y >= 0) and (Y < Height) 
       then
         NewState := bsDown
       else
-        NewState := bsUp;
+        NewState := UpState[FMouseInControl];
     end;
 
-    if NewState <> FState
-    then begin
+    if NewState <> FState then
+    begin
       //debugln(['TCustomSpeedButton.MouseMove ',DbgSName(Self),' fState=',ord(fstate),' NewState=',ord(NewState)]);
       FState := NewState;
       Invalidate;
@@ -748,15 +765,16 @@ begin
     MouseCapture := False;
   end;
 
-  if not (csDesigning in ComponentState) and FDragging
-  then begin
-    OldState:=FState;
+  if not (csDesigning in ComponentState) and FDragging then
+  begin
+    OldState := FState;
     FDragging := False;
 
-    if FGroupIndex = 0
-    then begin
-      FState := bsUp;
-      if OldState<>FState then Invalidate;
+    if FGroupIndex = 0 then
+    begin
+      FState := UpState[FMouseInControl];
+      if OldState <> FState then
+        Invalidate;
     end
     else if (Message.XPos >= 0) and (Message.XPos < Width)
         and (Message.YPos >= 0) and (Message.YPos < Height) then
@@ -832,7 +850,7 @@ begin
       if Sender.Down and FDown
       then begin
         FDown := False;
-        FState := bsUp;
+        FState := UpState[FMouseInControl];
         Invalidate;
       end;
       FAllowAllUp := Sender.AllowAllUp;
@@ -891,8 +909,6 @@ function TCustomSpeedButton.DrawGlyph(ACanvas: TCanvas; const AClient: TRect;
 begin
   if Assigned(FGlyph) then
   begin
-    if (AState = bsUp) and FMouseInControl then
-      AState := bsExclusive;
     if (AState = bsDown) or (Down = true) then
       Result := FGlyph.Draw(ACanvas, AClient, point(AOffset.x + 1, AOffset.y + 1), AState, ATransparent, BiDiFlags)
     else
@@ -921,9 +937,8 @@ end;
 procedure TCustomSpeedButton.MouseEnter;
 begin
   if csDesigning in ComponentState then exit;
-  if not FMouseInControl
-  and Enabled and (GetCapture = 0)
-  then begin
+  if not FMouseInControl and Enabled and (GetCapture = 0) then
+  begin
     FMouseInControl := True;
     UpdateState(true);
     inherited MouseEnter;
@@ -940,12 +955,13 @@ procedure TCustomSpeedButton.MouseLeave;
 begin
   if csDesigning in ComponentState then exit;
   ///DebugLn(['TCustomSpeedButton.MouseLeave ',DbgSName(Self),' FMouseInControl=',FMouseInControl,' FDragging=',FDragging]);
-  if FMouseInControl
-  then begin
+  if FMouseInControl then
+  begin
     FMouseInControl := False;
     if Enabled then
     begin
-      if FDragging and (not MouseCapture) then begin
+      if FDragging and (not MouseCapture) then
+      begin
         // something fetched our mouse capture
         FDragging:=false;
       end;

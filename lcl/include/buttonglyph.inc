@@ -66,6 +66,11 @@ begin
       if NumGlyphs > 3 then
         AStoredState := State
       else
+        AEffect := gdeNormal;
+    bsHot:
+      if NumGlyphs > 4 then
+        AStoredState := State
+      else
         AEffect := gdeHighlighted;
   end;
   AIndex := FImageIndexes[AStoredState];
