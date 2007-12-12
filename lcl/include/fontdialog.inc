@@ -40,7 +40,6 @@ constructor TFontDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csFontDialog;
-  FTitle:= rsSelectFontTitle;
   FFont := TFont.Create;
   FOptions := [fdEffects];
 end;
@@ -54,5 +53,10 @@ end;
 procedure TFontDialog.SetFont(const AValue: TFont);
 begin
   FFont.Assign(AValue);
+end;
+
+function TFontDialog.DefaultTitle: string;
+begin
+  Result:=rsSelectFontTitle;
 end;
 

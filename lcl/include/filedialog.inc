@@ -250,6 +250,11 @@ begin
   Result:=CheckAllFiles;
 end;
 
+function TOpenDialog.DefaultTitle: string;
+begin
+  Result:= rsfdOpenFile;
+end;
+
 {------------------------------------------------------------------------------
   Method: TOpenDialog.Create
   Params:  AOwner: the owner of the class
@@ -261,7 +266,6 @@ constructor TOpenDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle:=csOpenFileDialog;
-  FTitle:= rsfdOpenFile;
   FOptions := DefaultOpenDialogOptions;
 end;
 
@@ -280,6 +284,11 @@ begin
   if Assigned(OnSelectionChange) then OnSelectionChange(Self);
 end;
 
+function TSaveDialog.DefaultTitle: string;
+begin
+  Result:=rsfdFileSaveAs;
+end;
+
 {******************************************************************************
                                   TSaveDialog
  ******************************************************************************}
@@ -294,7 +303,6 @@ constructor TSaveDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle:=csSaveFileDialog;
-  FTitle:= rsfdFileSaveAs;
 end;
 
 {******************************************************************************
@@ -307,7 +315,6 @@ constructor TSelectDirectoryDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle:=csSelectDirectoryDialog;
-  FTitle:=rsfdSelectDirectory;
 end;
 
 function TSelectDirectoryDialog.CheckFileMustExist(const AFilename: string): boolean;
@@ -319,6 +326,11 @@ begin
                [mbCancel],0);
   end else
     Result:=true;
+end;
+
+function TSelectDirectoryDialog.DefaultTitle: string;
+begin
+  Result:=rsfdSelectDirectory;
 end;
 
 

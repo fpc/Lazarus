@@ -74,8 +74,10 @@ type
     procedure SetHandle(const AValue: THandle);
     procedure SetHeight(const AValue: integer);
     procedure SetWidth(const AValue: integer);
+    function IsTitleStored: boolean;
   protected
     function DoExecute : boolean; virtual;
+    function DefaultTitle: string; virtual;
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
@@ -94,7 +96,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Width: integer read FWidth write SetWidth;
     property Height: integer read FHeight write SetHeight;
-    property Title: string read FTitle write FTitle;
+    property Title: string read FTitle write FTitle stored IsTitleStored;
   end;
 
 
@@ -189,6 +191,7 @@ type
     function CheckFileMustExist(const AFileName: string): boolean; virtual;
     function CheckAllFiles: boolean; virtual;
     function DoExecute: boolean; override;
+    function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure DoFolderChange; virtual;
@@ -204,6 +207,8 @@ type
   { TSaveDialog }
   
   TSaveDialog = class(TOpenDialog)
+  protected
+    function DefaultTitle: string; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -214,6 +219,7 @@ type
   TSelectDirectoryDialog = class(TOpenDialog)
   protected
     function CheckFileMustExist(const AFilename: string): boolean; override;
+    function DefaultTitle: string; override;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -224,6 +230,8 @@ type
   TColorDialog = class(TCommonDialog)
   private
     FColor: TColor;
+  protected
+    function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -317,6 +325,8 @@ type
     FOptions: TFontDialogOptions;
     FPreviewText: string;
     procedure SetFont(const AValue: TFont);
+  protected
+    function DefaultTitle: string; override;
   public
     procedure ApplyClicked; virtual;
     constructor Create (AOwner : TComponent); override;

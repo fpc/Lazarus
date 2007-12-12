@@ -27,6 +27,7 @@
 constructor TCommonDialog.Create (TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FTitle := DefaultTitle;
 end;
 
 function TCommonDialog.Execute: boolean;
@@ -71,6 +72,11 @@ begin
   FHandle:=AValue;
 end;
 
+function TCommonDialog.IsTitleStored: boolean;
+begin
+  result := FTitle<>DefaultTitle;
+end;
+
 procedure TCommonDialog.SetHeight(const AValue: integer);
 begin
   if FHeight=AValue then exit;
@@ -109,4 +115,9 @@ begin
     until false;
   end;
   Result := (FUserChoice = mrOk);
+end;
+
+function TCommonDialog.DefaultTitle: string;
+begin
+  result := '';
 end;

@@ -27,5 +27,11 @@ constructor TColorDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csColorDialog;
-  FTitle:= rsSelectcolorTitle;
 end;
+
+function TColorDialog.DefaultTitle: string;
+begin
+  Result:=rsSelectcolorTitle;
+end;
+
+
