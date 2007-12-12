@@ -102,7 +102,6 @@ object frGEditorForm: TfrGEditorForm
   end
   object OpenDlg: TOpenDialog
     Options = [ofHideReadOnly]
-    Title = 'Ouvrir un fichier existant'
     DefaultExt = '.bmp'
     FilterIndex = 0
     left = 52

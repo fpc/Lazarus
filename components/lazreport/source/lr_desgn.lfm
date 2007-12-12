@@ -3298,13 +3298,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
   end
   object OpenDialog1: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     FilterIndex = 0
     left = 288
     top = 200
   end
   object SaveDialog1: TSaveDialog
-    Title = 'Enregistrer le fichier sous'
     FilterIndex = 0
     Options = [ofHideReadOnly]
     left = 288

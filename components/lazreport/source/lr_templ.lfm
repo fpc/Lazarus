@@ -94,7 +94,6 @@ object frTemplNewForm: TfrTemplNewForm
     HelpContext = 73
   end
   object OpenDialog1: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     FilterIndex = 0
     left = 152
     top = 196

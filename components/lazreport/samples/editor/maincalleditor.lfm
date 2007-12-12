@@ -4,10 +4,10 @@ object frmMain: TfrmMain
   Top = 144
   Width = 573
   HorzScrollBar.Page = 572
-  VertScrollBar.Page = 380
+  VertScrollBar.Page = 384
   ActiveControl = btnCallEditor
   Caption = 'Testing LazReport Editor'
-  ClientHeight = 381
+  ClientHeight = 385
   ClientWidth = 573
   Menu = MainMenu1
   OnCreate = frmMainCreate
@@ -23,7 +23,7 @@ object frmMain: TfrmMain
     TabOrder = 0
   end
   object dbGrid1: TDBGrid
-    Height = 321
+    Height = 322
     Top = 40
     Width = 573
     Align = alBottom
@@ -59,8 +59,8 @@ object frmMain: TfrmMain
     TabOrder = 2
   end
   object StatusBar1: TStatusBar
-    Height = 20
-    Top = 361
+    Height = 23
+    Top = 362
     Width = 573
     Panels = <>
   end
@@ -257,10 +257,9 @@ object frmMain: TfrmMain
     end
   end
   object OpenDialog1: TOpenDialog
-    Title = 'Open existing file'
     Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
     FilterIndex = 0
-    left = 96
+    left = 100
     top = 272
   end
   object frCSVExport1: TfrCSVExport

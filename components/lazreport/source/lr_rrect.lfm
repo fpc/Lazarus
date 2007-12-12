@@ -288,9 +288,7 @@ object frRoundRectForm: TfrRoundRectForm
     end
   end
   object colorDlg: TColorDialog
-    Title = 'Choisir une couleur'
     Color = clBtnFace
-    Title = 'Choisir une couleur'
     left = 184
     top = 192
   end

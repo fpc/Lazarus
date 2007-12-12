@@ -90,7 +90,7 @@ type
     procedure frmMainCreate(Sender: TObject);
   private
     { private declarations }
-    procedure TranslateGUI;
+    procedure UpdateAppTranslation;
   public
     { public declarations }
   end; 
@@ -196,15 +196,9 @@ begin
 end;
 
 procedure TfrmMain.frmMainCreate(Sender: TObject);
-var
-  Lang, FallbackLang: String;
 begin
-  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('MaincallEditor','languages/maincalleditor.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('Lr_const','../../languages/lr_const.%s.po', Lang,FallbackLang);
-  
-  TranslateGUI;
+
+  UpdateAppTranslation;
   
   dbf1.close;
   dbf1.FilePath := 'db/';
@@ -212,7 +206,7 @@ begin
   dbf1.open;
 end;
 
-procedure TfrmMain.TranslateGUI;
+procedure TfrmMain.UpdateAppTranslation;
 begin
   accOpenReport.Caption := cerOpenReport;
   accNewReport.Caption := cerNewReport;
@@ -222,8 +216,20 @@ begin
   accPrintGrid.Caption := cerPrintGrid;
 end;
 
+procedure TranslateResStrings;
+var
+  Lang, FallbackLang: String;
+begin
+  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('MaincallEditor','languages/maincalleditor.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('Lr_const','../../languages/lr_const.%s.po', Lang,FallbackLang);
+end;
+
 initialization
   {$I maincalleditor.lrs}
+  TranslateResStrings;
+  
 
 end.
 

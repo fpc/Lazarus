@@ -70,7 +70,6 @@ object Form1: TForm1
     top = 124
   end
   object OpenDialog1: TOpenDialog
-    Title = 'Abrir un archivo existente'
     FilterIndex = 0
     top = 64
   end

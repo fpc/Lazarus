@@ -496,7 +496,6 @@ object frPreviewForm: TfrPreviewForm
     end
   end
   object OpenDialog: TOpenDialog
-    Title = 'Ouvrir un fichier existant'
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]
@@ -504,7 +503,6 @@ object frPreviewForm: TfrPreviewForm
     top = 99
   end
   object SaveDialog: TSaveDialog
-    Title = 'Enregistrer le fichier sous'
     Filter = 'Report file (*.frp)|*.frp'
     FilterIndex = 0
     Options = [ofHideReadOnly]

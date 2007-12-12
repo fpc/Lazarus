@@ -164,7 +164,6 @@ object frHilightForm: TfrHilightForm
     end
   end
   object ColorDialog1: TColorDialog
-    Title = 'Choisir une couleur'
     left = 152
     top = 144
   end
