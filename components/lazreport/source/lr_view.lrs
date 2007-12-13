@@ -108,13 +108,13 @@ LazarusResources.Add('TfrPreviewForm','FORMDATA',[
   +#3#156#1#5'Align'#7#8'alClient'#10'BevelInner'#7#9'bvLowered'#10'BevelOuter'
   +#7#6'bvNone'#12'ClientHeight'#3'Z'#1#11'ClientWidth'#3#156#1#11'FullRepaint'
   +#8#8'TabOrder'#2#1#0#10'TScrollBox'#10'ScrollBox1'#4'Left'#2#1#6'Height'#3'E'
-  +#1#3'Top'#2#1#5'Width'#3#139#1#18'HorzScrollBar.Page'#3#134#1#18'VertScrollB'
-  +'ar.Page'#3'@'#1#5'Align'#7#8'alClient'#8'TabOrder'#2#0#0#0#6'TPanel'#6'BPan'
+  +#1#3'Top'#2#1#5'Width'#3#139#1#18'HorzScrollBar.Page'#3#138#1#18'VertScrollB'
+  +'ar.Page'#3'D'#1#5'Align'#7#8'alClient'#8'TabOrder'#2#0#0#0#6'TPanel'#6'BPan'
   +'el'#4'Left'#2#1#6'Height'#2#19#3'Top'#3'F'#1#5'Width'#3#154#1#5'Align'#7#8
   +'alBottom'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#10'BevelOuter'#7#6'bvNone'
   +#12'ClientHeight'#2#19#11'ClientWidth'#3#154#1#11'FullRepaint'#8#8'TabOrder'
   +#2#1#0#10'TScrollBar'#10'HScrollBar'#22'AnchorSideLeft.Control'#7#7'LbPanel'
-  +#4'Left'#2'L'#6'Height'#2#19#5'Width'#3'>'#1#5'Align'#7#8'alClient'#18'Borde'
+  +#4'Left'#2'L'#6'Height'#2#15#5'Width'#3'>'#1#5'Align'#7#8'alClient'#18'Borde'
   +'rSpacing.Left'#2#2#19'BorderSpacing.Right'#2#16#5'Ctl3D'#9#11'LargeChange'#3
   +#200#0#3'Max'#3#0'}'#11'ParentCtl3D'#8#8'Position'#2'd'#11'SmallChange'#2#10
   +#8'TabOrder'#2#0#8'OnChange'#7#16'HScrollBarChange'#0#0#6'TPanel'#7'LbPanel'
@@ -162,10 +162,9 @@ LazarusResources.Add('TfrPreviewForm','FORMDATA',[
   +'EditBtnClick'#0#0#9'TMenuItem'#2'N6'#7'Caption'#6#8'Add page'#10'GroupIndex'
   +#2#1#7'OnClick'#7#15'NewPageBtnClick'#0#0#9'TMenuItem'#2'N7'#7'Caption'#6#11
   +'Delete page'#10'GroupIndex'#2#1#7'OnClick'#7#15'DelPageBtnClick'#0#0#0#11'T'
-  +'OpenDialog'#10'OpenDialog'#5'Title'#6#26'Ouvrir un fichier existant'#6'Filt'
-  +'er'#6#25'Report file (*.frp)|*.frp'#11'FilterIndex'#2#0#7'Options'#11#14'of'
-  +'HideReadOnly'#0#4'left'#2'|'#3'top'#2'c'#0#0#11'TSaveDialog'#10'SaveDialog'
-  +#5'Title'#6#27'Enregistrer le fichier sous'#6'Filter'#6#25'Report file (*.fr'
-  +'p)|*.frp'#11'FilterIndex'#2#0#7'Options'#11#14'ofHideReadOnly'#0#4'left'#3
-  +#164#0#3'top'#2'c'#0#0#0
+  +'OpenDialog'#10'OpenDialog'#6'Filter'#6#25'Report file (*.frp)|*.frp'#11'Fil'
+  +'terIndex'#2#0#7'Options'#11#14'ofHideReadOnly'#0#4'left'#2'|'#3'top'#2'c'#0
+  +#0#11'TSaveDialog'#10'SaveDialog'#6'Filter'#6#25'Report file (*.frp)|*.frp'
+  +#11'FilterIndex'#2#0#7'Options'#11#14'ofHideReadOnly'#0#4'left'#3#164#0#3'to'
+  +'p'#2'c'#0#0#0
 ]);

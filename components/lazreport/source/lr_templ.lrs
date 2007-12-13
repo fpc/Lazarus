@@ -1,30 +1,29 @@
 { Ceci est un fichier ressource généré automatiquement par Lazarus }
 
 LazarusResources.Add('TfrTemplNewForm','FORMDATA',[
-  'TPF0'#15'TfrTemplNewForm'#14'frTemplNewForm'#11'BorderStyle'#7#8'bsDialog'#7
-  +'Caption'#6#12#205#238#226#251#233' '#248#224#225#235#238#237#12'ClientHeigh'
-  +'t'#3'$'#1#11'ClientWidth'#3#219#0#11'Font.Height'#2#245#9'Font.Name'#6#13'M'
-  +'S Sans Serif'#10'OnActivate'#7#12'FormActivate'#8'OnCreate'#7#10'FormCreate'
-  +#8'Position'#7#14'poScreenCenter'#10'TextHeight'#2#13#18'HorzScrollBar.Page'
-  +#3#220#0#18'VertScrollBar.Page'#3'%'#1#4'Left'#3'&'#2#6'Height'#3'$'#1#3'Top'
-  +#3#171#0#5'Width'#3#219#0#0#6'TLabel'#6'Label1'#7'Caption'#6#11#202#238#236
-  +#236#229#237#242#224#240#232#233#12'FocusControl'#7#5'Memo1'#6'Height'#2#17#5
-  +'Width'#2'A'#0#0#9'TGroupBox'#9'GroupBox2'#7'Caption'#6#8#202#224#240#242#232
-  +#237#234#224#12'ClientHeight'#2'd'#11'ClientWidth'#3#207#0#11'ParentColor'#9
-  +#8'TabOrder'#2#0#4'Left'#2#4#6'Height'#2'u'#3'Top'#3#136#0#5'Width'#3#211#0#0
-  +#6'TPanel'#6'Panel1'#10'BevelOuter'#7#9'bvLowered'#12'ClientHeight'#2'Y'#11
-  +'ClientWidth'#2'X'#11'FullRepaint'#8#8'TabOrder'#2#0#4'Left'#2#8#6'Height'#2
-  +'Y'#3'Top'#2#6#5'Width'#2'X'#11'HelpContext'#2'S'#0#6'TImage'#6'Image1'#5'Al'
-  +'ign'#7#8'alClient'#6'Center'#9#11'Transparent'#9#4'Left'#2#1#6'Height'#2'W'
-  +#3'Top'#2#1#5'Width'#2'V'#0#0#0#7'TButton'#7'Button1'#7'Caption'#6#8#206#225
-  +#231#238#240'...'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#4'Left'#2'|'
-  +#6'Height'#2#25#3'Top'#2#20#5'Width'#2'K'#11'HelpContext'#2'@'#0#0#0#7'TButt'
-  +'on'#7'Button2'#7'Caption'#6#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrd'
-  +'er'#2#1#4'Left'#2'<'#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#11'HelpConte'
-  +'xt'#2'('#0#0#7'TButton'#7'Button3'#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'Mo'
-  +'dalResult'#2#2#8'TabOrder'#2#2#4'Left'#3#140#0#6'Height'#2#25#3'Top'#3#8#1#5
-  +'Width'#2'K'#11'HelpContext'#2'2'#0#0#5'TMemo'#5'Memo1'#8'TabOrder'#2#3#4'Le'
-  +'ft'#2#4#6'Height'#2'm'#3'Top'#2#20#5'Width'#3#210#0#11'HelpContext'#2'I'#0#0
-  +#11'TOpenDialog'#11'OpenDialog1'#5'Title'#6#26'Ouvrir un fichier existant'#11
-  +'FilterIndex'#2#0#4'left'#3#152#0#3'top'#3#196#0#0#0#0
+  'TPF0'#15'TfrTemplNewForm'#14'frTemplNewForm'#4'Left'#3'&'#2#6'Height'#3'$'#1
+  +#3'Top'#3#171#0#5'Width'#3#219#0#18'HorzScrollBar.Page'#3#218#0#18'VertScrol'
+  +'lBar.Page'#3'#'#1#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#12#205#238#226
+  +#251#233' '#248#224#225#235#238#237#12'ClientHeight'#3'$'#1#11'ClientWidth'#3
+  +#219#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#10'OnActivate'
+  +#7#12'FormActivate'#8'OnCreate'#7#10'FormCreate'#8'Position'#7#14'poScreenCe'
+  +'nter'#0#6'TLabel'#6'Label1'#6'Height'#2#13#5'Width'#2#1#7'Caption'#6#11#202
+  +#238#236#236#229#237#242#224#240#232#233#12'FocusControl'#7#5'Memo1'#11'Pare'
+  +'ntColor'#8#0#0#9'TGroupBox'#9'GroupBox2'#4'Left'#2#4#6'Height'#2'u'#3'Top'#3
+  +#136#0#5'Width'#3#211#0#7'Caption'#6#8#202#224#240#242#232#237#234#224#12'Cl'
+  +'ientHeight'#2'd'#11'ClientWidth'#3#207#0#8'TabOrder'#2#0#0#6'TPanel'#6'Pane'
+  +'l1'#4'Left'#2#8#6'Height'#2'Y'#3'Top'#2#6#5'Width'#2'X'#11'HelpContext'#2'S'
+  +#10'BevelOuter'#7#9'bvLowered'#12'ClientHeight'#2'Y'#11'ClientWidth'#2'X'#11
+  +'FullRepaint'#8#8'TabOrder'#2#0#0#6'TImage'#6'Image1'#4'Left'#2#1#6'Height'#2
+  +'W'#3'Top'#2#1#5'Width'#2'V'#5'Align'#7#8'alClient'#6'Center'#9#11'Transpare'
+  +'nt'#8#0#0#0#7'TButton'#7'Button1'#4'Left'#2'|'#6'Height'#2#25#3'Top'#2#20#5
+  +'Width'#2'K'#11'HelpContext'#2'@'#7'Caption'#6#8#206#225#231#238#240'...'#7
+  +'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#0#7'TButton'#7'Button2'#4'L'
+  +'eft'#2'<'#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#11'HelpContext'#2'('#7
+  +'Caption'#6#2'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TBu'
+  +'tton'#7'Button3'#4'Left'#3#140#0#6'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'
+  +#11'HelpContext'#2'2'#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2
+  +#8'TabOrder'#2#2#0#0#5'TMemo'#5'Memo1'#4'Left'#2#4#6'Height'#2'm'#3'Top'#2#20
+  +#5'Width'#3#210#0#11'HelpContext'#2'I'#8'TabOrder'#2#3#0#0#11'TOpenDialog'#11
+  +'OpenDialog1'#11'FilterIndex'#2#0#4'left'#3#152#0#3'top'#3#196#0#0#0#0
 ]);

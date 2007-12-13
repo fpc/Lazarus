@@ -4,10 +4,10 @@ inherited frDesignerForm: TfrDesignerForm
   Top = 106
   Width = 695
   HorzScrollBar.Page = 694
-  VertScrollBar.Page = 414
+  VertScrollBar.Page = 407
   ActiveControl = C3
   Caption = 'Designer'
-  ClientHeight = 415
+  ClientHeight = 408
   ClientWidth = 695
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
@@ -39,7 +39,7 @@ inherited frDesignerForm: TfrDesignerForm
   WindowState = wsMaximized
   object StatusBar1: TStatusBar
     Height = 20
-    Top = 395
+    Top = 388
     Width = 695
     Panels = <    
       item
@@ -1615,7 +1615,6 @@ inherited frDesignerForm: TfrDesignerForm
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
-          ItemHeight = 13
           Items.Strings = (
             '5'
             '6'
@@ -1983,21 +1982,21 @@ inherited frDesignerForm: TfrDesignerForm
     end
   end
   object frDock2: TPanel
-    Height = 312
+    Height = 305
     Top = 83
     Width = 27
     Align = alLeft
-    ClientHeight = 312
+    ClientHeight = 305
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 1
     object Panel4: TPanel
       Left = 1
-      Height = 310
+      Height = 303
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 310
+      ClientHeight = 303
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 0
@@ -2189,11 +2188,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
     object panForDlg: TPanel
       Left = 1
-      Height = 310
+      Height = 303
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 310
+      ClientHeight = 303
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 1
@@ -2240,7 +2239,7 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object Tab1: TTabControl
     Left = 27
-    Height = 312
+    Height = 305
     Top = 83
     Width = 641
     Align = alClient
@@ -2254,7 +2253,7 @@ inherited frDesignerForm: TfrDesignerForm
     TabStop = False
     object ScrollBox1: TScrollBox
       Left = 2
-      Height = 280
+      Height = 273
       Top = 30
       Width = 637
       AutoScroll = True
@@ -2326,6 +2325,7 @@ inherited frDesignerForm: TfrDesignerForm
           2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E
           2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E2E227D0A
         }
+        Transparent = False
         Visible = False
       end
       object Image2: TImage
@@ -2350,6 +2350,7 @@ inherited frDesignerForm: TfrDesignerForm
           2E2E2E2E612E2E2E2A2A2A2A2A2A2A222C0A222E2E2E2E612E2E2E2E2E2E2E2E
           2E2E2E227D0A
         }
+        Transparent = False
         Visible = False
       end
       object LinePanel: TPanel
@@ -2714,12 +2715,12 @@ inherited frDesignerForm: TfrDesignerForm
   end
   object frDock4: TPanel
     Left = 668
-    Height = 312
+    Height = 305
     Top = 83
     Width = 27
     Align = alRight
     Anchors = [akTop, akRight]
-    ClientHeight = 312
+    ClientHeight = 305
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 3

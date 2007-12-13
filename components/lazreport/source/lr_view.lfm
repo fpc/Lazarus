@@ -290,8 +290,8 @@ object frPreviewForm: TfrPreviewForm
       Height = 325
       Top = 1
       Width = 395
-      HorzScrollBar.Page = 390
-      VertScrollBar.Page = 320
+      HorzScrollBar.Page = 394
+      VertScrollBar.Page = 324
       Align = alClient
       TabOrder = 0
     end
@@ -310,7 +310,7 @@ object frPreviewForm: TfrPreviewForm
       object HScrollBar: TScrollBar
         AnchorSideLeft.Control = LbPanel
         Left = 76
-        Height = 19
+        Height = 15
         Width = 318
         Align = alClient
         BorderSpacing.Left = 2

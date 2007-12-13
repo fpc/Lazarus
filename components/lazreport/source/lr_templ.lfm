@@ -1,4 +1,10 @@
 object frTemplNewForm: TfrTemplNewForm
+  Left = 550
+  Height = 292
+  Top = 171
+  Width = 219
+  HorzScrollBar.Page = 218
+  VertScrollBar.Page = 291
   BorderStyle = bsDialog
   Caption = 'Новый шаблон'
   ClientHeight = 292
@@ -8,90 +14,83 @@ object frTemplNewForm: TfrTemplNewForm
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poScreenCenter
-  TextHeight = 13
-  HorzScrollBar.Page = 220
-  VertScrollBar.Page = 293
-  Left = 550
-  Height = 292
-  Top = 171
-  Width = 219
   object Label1: TLabel
+    Height = 13
+    Width = 1
     Caption = 'Комментарий'
     FocusControl = Memo1
-    Height = 17
-    Width = 65
+    ParentColor = False
   end
   object GroupBox2: TGroupBox
-    Caption = 'Картинка'
-    ClientHeight = 100
-    ClientWidth = 207
-    ParentColor = True
-    TabOrder = 0
     Left = 4
     Height = 117
     Top = 136
     Width = 211
+    Caption = 'Картинка'
+    ClientHeight = 100
+    ClientWidth = 207
+    TabOrder = 0
     object Panel1: TPanel
-      BevelOuter = bvLowered
-      ClientHeight = 89
-      ClientWidth = 88
-      FullRepaint = False
-      TabOrder = 0
       Left = 8
       Height = 89
       Top = 6
       Width = 88
       HelpContext = 83
+      BevelOuter = bvLowered
+      ClientHeight = 89
+      ClientWidth = 88
+      FullRepaint = False
+      TabOrder = 0
       object Image1: TImage
-        Align = alClient
-        Center = True
-        Transparent = True
         Left = 1
         Height = 87
         Top = 1
         Width = 86
+        Align = alClient
+        Center = True
+        Transparent = False
       end
     end
     object Button1: TButton
-      Caption = 'Обзор...'
-      OnClick = Button1Click
-      TabOrder = 1
       Left = 124
       Height = 25
       Top = 20
       Width = 75
       HelpContext = 64
+      Caption = 'Обзор...'
+      OnClick = Button1Click
+      TabOrder = 1
     end
   end
   object Button2: TButton
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 1
     Left = 60
     Height = 25
     Top = 264
     Width = 75
     HelpContext = 40
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
   end
   object Button3: TButton
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 2
     Left = 140
     Height = 25
     Top = 264
     Width = 75
     HelpContext = 50
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
   end
   object Memo1: TMemo
-    TabOrder = 3
     Left = 4
     Height = 109
     Top = 20
     Width = 210
     HelpContext = 73
+    TabOrder = 3
   end
   object OpenDialog1: TOpenDialog
     FilterIndex = 0
