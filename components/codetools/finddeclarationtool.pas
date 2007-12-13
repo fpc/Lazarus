@@ -3403,12 +3403,11 @@ begin
         AddPos;
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
-        debugln('TFindDeclarationTool.FindDeclarationAndOverload ',
-          ' Self="',MainFilename,'" ');
+        {debugln('TFindDeclarationTool.FindDeclarationAndOverload Self="',MainFilename,'" ');
         if CurCursorPos.Code<>nil then
           debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
         if CurTool<>nil then
-          debugln('  CurTool=',CurTool.MainFilename);
+          debugln('  CurTool=',CurTool.MainFilename);}
         if (CurTool=nil) then exit;
       end;
     except

@@ -31,13 +31,15 @@ unit LazDoc;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, AvgLvlTree,
+  // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
-  CodeCache, CacheCodeTools,
-  FileProcs, AvgLvlTree,
+  CodeCache, CacheCodeTools, FileProcs,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
+  // IDEIntf
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, LazIDEIntf,
-  CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts;
+  // IDE
+  CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts, DialogProcs;
 
 type
   TFPDocItem = (
@@ -48,7 +50,7 @@ type
     fpdiExample
     );
 
-  TFPDocNode = array [TFPDocItem] of String;
+  TFPDocElementValues = array [TFPDocItem] of String;
   
 const
   FPDocItemNames: array[TFPDocItem] of shortstring = (
@@ -61,12 +63,22 @@ const
 
 type
 
+  TLazFPDocFileFlag = (
+    ldffDocChangingCalled,
+    ldffDocChangedNeedsCalling
+    );
+  TLazFPDocFileFlags = set of TLazFPDocFileFlag;
+
   { TLazFPDocFile }
 
   TLazFPDocFile = class
+  private
+    fUpdateLock: integer;
+    FFlags: TLazFPDocFileFlags;
   public
     Filename: string;
-    Doc: TXMLdocument;
+    Doc: TXMLdocument;// IMPORTANT: if you change this, call DocChanging and DocChanged to notify the references
+    DocModified: boolean;
     ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was build
     CodeBuffer: TCodeBuffer;
     destructor Destroy; override;
@@ -74,7 +86,13 @@ type
     function GetFirstElement: TDOMNode;
     function GetElementWithName(const ElementName: string): TDOMNode;
     function GetChildValuesAsString(Node: TDOMNode): String;
-    function GetValuesFromNode(Node: TDOMNode): TFPDocNode;
+    function GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
+    function GetValueFromNode(Node: TDOMNode; Item: TFPDocItem): string;
+    procedure SetChildValue(Node: TDOMNode; const ChildName: string; NewValue: string);
+    procedure DocChanging;
+    procedure DocChanged;
+    procedure BeginUpdate;
+    procedure EndUpdate;
   end;
   
   { TLDSourceToFPDocFile - cache item for source to FPDoc file mapping }
@@ -94,6 +112,7 @@ type
     CodeXYPos: TCodeXYPosition;
     ElementName: string;
     ElementNode: TDOMNode;
+    ElementNodeValid: boolean;
     FPDocFile: TLazFPDocFile;
   end;
   
@@ -114,11 +133,13 @@ type
     procedure Clear;
     property Items[Index: integer]: TLazDocElement read GetItems; default;
     property Count: integer read GetCount;
+    function IndexOfFile(AFile: TLazFPDocFile): integer;
     function IsValid: boolean;
+    procedure MakeValid;
+    function DocFile: TLazFPDocFile;
   end;
   
-  TLazDocChangeEvent =
-              procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
+  TLazDocChangeEvent = procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
   
   TLazDocManagerHandler = (
     ldmhDocChanging,
@@ -156,6 +177,7 @@ type
                            UpdateFromDisk, Revert: Boolean;
                            out ADocFile: TLazFPDocFile;
                            out CacheWasUsed: boolean): Boolean;
+    function SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
     function GetFPDocFilenameForHelpContext(
                                        Context: TPascalHelpContextList;
                                        out CacheWasUsed: boolean): string;
@@ -195,9 +217,34 @@ function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
 function CompareLDSrc2DocSrcFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 
+function ToUnixLineEnding(const s: String): String;
+
 
 implementation
 
+
+function ToUnixLineEnding(const s: String): String;
+var
+  p: Integer;
+begin
+  Result:=s;
+  p:=1;
+  while (p<=length(s)) do begin
+    if not (s[p] in [#10,#13]) then begin
+      inc(p);
+    end else begin
+      // line ending
+      if (p<length(s)) and (s[p+1] in [#10,#13]) and (s[p]<>s[p+1]) then begin
+        // double character line ending
+        Result:=copy(Result,1,p-1)+#10+copy(Result,p+2,length(Result));
+      end else if s[p]=#13 then begin
+        // single char line ending #13
+        Result[p]:=#10;
+      end;
+      inc(p);
+    end;
+  end;
+end;
 
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 begin
@@ -294,7 +341,7 @@ begin
   end;
 end;
 
-function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocNode;
+function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
 // simple function to return the values as string
 var
   S: String;
@@ -318,11 +365,109 @@ begin
       if S = 'seealso' then
         Result[fpdiSeeAlso] := GetChildValuesAsString(Node);
 
-      if S = 'example' then begin
+      if S = 'example' then
         Result[fpdiExample] := Node.Attributes.GetNamedItem('file').NodeValue;
-      end;
     end;
     Node := Node.NextSibling;
+  end;
+end;
+
+function TLazFPDocFile.GetValueFromNode(Node: TDOMNode; Item: TFPDocItem
+  ): string;
+var
+  Child: TDOMNode;
+begin
+  Result:='';
+  Child:=Node.FindNode(FPDocItemNames[Item]);
+  if Child<>nil then begin
+    if Item=fpdiExample then
+      Result := Child.Attributes.GetNamedItem('file').NodeValue
+    else
+      Result := GetChildValuesAsString(Child);
+  end;
+end;
+
+procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
+  NewValue: string);
+var
+  Child: TDOMNode;
+begin
+  Child:=Node.FindNode(ChildName);
+  NewValue:=ToUnixLineEnding(NewValue);
+  if Child=nil then begin
+    {if ChildName = 'example' then begin
+      OldNode:=Child.Attributes.GetNamedItem('file');
+      NewValue:=FilenameToURLPath(NewValue);
+      if (NewValue<>'')
+      or (not (OldNode is TDOMAttr))
+      or (TDOMAttr(OldNode).Value<>NewValue) then begin
+        DebugLn(['TLazFPDocFile.SetChildValue Changing Name=',ChildName,' NewValue="',NewValue,'"']);
+        // add or change example
+        DocChanging;
+        FileAttribute := Doc.CreateAttribute('file');
+        FileAttribute.Value := NewValue;
+        OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
+        OldNode.Free;
+        DocChanged;
+      end;
+    end
+    else }
+    // add node
+    if NewValue<>'' then begin
+      DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
+      DocChanging;
+      Child := Doc.CreateTextNode(NewValue);
+      Node.AppendChild(Child);
+      DocChanged;
+    end;
+  end else begin
+    // change node
+    if Child.FirstChild=nil then begin
+      DebugLn(['TLazFPDocFile.SetChildValue FAILED ',Node.NodeName,' ChildName=',Child.NodeName,' Child.FirstChild=nil']);
+      exit;
+    end;
+    if Child.FirstChild.NodeValue <> NewValue then begin
+      DebugLn(['TLazDocForm.CheckAndWriteNode Changing ',Node.NodeName,' ChildName=',Child.NodeName,' OldValue=',Child.FirstChild.NodeValue,' NewValue="',NewValue,'"']);
+      DocChanging;
+      Child.FirstChild.NodeValue := NewValue;
+      DocChanged;
+    end;
+  end;
+end;
+
+procedure TLazFPDocFile.DocChanging;
+begin
+  DocModified:=true;
+  if (fUpdateLock>0) then begin
+    if (ldffDocChangingCalled in FFlags) then exit;
+    Include(FFlags,ldffDocChangingCalled);
+  end;
+  LazDocBoss.CallDocChangeEvents(ldmhDocChanging,Self);
+end;
+
+procedure TLazFPDocFile.DocChanged;
+begin
+  if (fUpdateLock>0) then begin
+    Include(FFlags,ldffDocChangedNeedsCalling);
+    exit;
+  end;
+  Exclude(FFlags,ldffDocChangedNeedsCalling);
+  LazDocBoss.CallDocChangeEvents(ldmhDocChanged,Self);
+end;
+
+procedure TLazFPDocFile.BeginUpdate;
+begin
+  inc(fUpdateLock);
+end;
+
+procedure TLazFPDocFile.EndUpdate;
+begin
+  dec(fUpdateLock);
+  if fUpdateLock<0 then RaiseGDBException('TLazFPDocFile.EndUpdate');
+  if fUpdateLock=0 then begin
+    Exclude(FFlags,ldffDocChangingCalled);
+    if ldffDocChangedNeedsCalling in FFlags then
+      DocChanged;
   end;
 end;
 
@@ -399,19 +544,27 @@ begin
     FreeAndNil(ADocFile.Doc);
     exit;
   end;
-  if (ADocFile.Doc<>nil)
-  and (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep)
-  then begin
-    // no update needed
-    exit(true);
+  if (ADocFile.Doc<>nil) then begin
+    if (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep) then begin
+      // CodeBuffer has not changed
+      if ADocFile.DocModified and Revert then begin
+        // revert the modifications => rebuild the Doc from the CodeBuffer
+      end else begin
+        // no update needed
+        exit(true);
+      end;
+    end;
   end;
   CacheWasUsed:=false;
   
+  {$IFDEF VerboseLazDoc}
   DebugLn(['TLazDocManager.LoadFPDocFile parsing ',ADocFile.Filename]);
+  {$ENDIF}
   CallDocChangeEvents(ldmhDocChanging,ADocFile);
 
   // parse XML
   ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
+  ADocFile.DocModified:=false;
   FreeAndNil(ADocFile.Doc);
 
   MemStream:=TMemoryStream.Create;
@@ -427,6 +580,53 @@ begin
     MemStream.Free;
     CallDocChangeEvents(ldmhDocChanging,ADocFile);
   end;
+end;
+
+function TLazDocManager.SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
+var
+  ms: TMemoryStream;
+  s: string;
+begin
+  if (not ADocFile.DocModified)
+  and (ADocFile.ChangeStep=ADocFile.CodeBuffer.ChangeStep)
+  and (not ADocFile.CodeBuffer.FileOnDiskNeedsUpdate) then begin
+    DebugLn(['TLazDocManager.SaveFPDocFile no save needed: ',ADocFile.Filename]);
+    exit(mrOk);
+  end;
+  if (ADocFile.Doc=nil) then begin
+    DebugLn(['TLazDocManager.SaveFPDocFile no Doc: ',ADocFile.Filename]);
+    exit(mrOk);
+  end;
+  if not FilenameIsAbsolute(ADocFile.Filename) then begin
+    DebugLn(['TLazDocManager.SaveFPDocFile no expanded filename: ',ADocFile.Filename]);
+    exit(mrCancel);
+  end;
+
+  // write Doc to xml stream
+  try
+    ms:=TMemoryStream.Create;
+    WriteXMLFile(ADocFile.Doc, ms);
+    ms.Position:=0;
+    SetLength(s,ms.Size);
+    if s<>'' then
+      ms.Read(s[1],length(s));
+  finally
+    ms.Free;
+  end;
+
+  // write to CodeBuffer
+  ADocFile.CodeBuffer.Source:=s;
+  ADocFile.DocModified:=false;
+  if ADocFile.CodeBuffer.ChangeStep=ADocFile.ChangeStep then begin
+    // doc was not really modified => do not save to keep file date
+    DebugLn(['TLazDocManager.SaveFPDocFile Doc was not really modified ',ADocFile.Filename]);
+    exit(mrOk);
+  end;
+  ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
+  
+  // write to disk
+  Result:=SaveCodeBuffer(ADocFile.CodeBuffer);
+  DebugLn(['TLazDocManager.SaveFPDocFile saved ',ADocFile.Filename]);
 end;
 
 function TLazDocManager.GetFPDocFilenameForHelpContext(
@@ -544,7 +744,9 @@ begin
   end;
   CacheWasUsed:=false;
   
+  {$IFDEF VerboseLazDoc}
   DebugLn(['TLazDocManager.GetFPDocFilenameForSource searching SrcFilename=',SrcFilename]);
+  {$ENDIF}
 
   // first check if the file is owned by any project/package
   SearchPath:='';
@@ -555,7 +757,9 @@ begin
   // finally add the default paths
   AddSearchPath(EnvironmentOptions.LazDocPaths,'');
   FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+  {$IFDEF VerboseLazDoc}
   DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
+  {$ENDIF}
   Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
   
   // save to cache
@@ -660,13 +864,14 @@ begin
     if Result<>ldprSuccess then exit;
     if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
     
+    {$IFDEF VerboseLazDoc}
     DebugLn(['TLazDocManager.GetElementChain init the element chain: ListOfPCodeXYPosition.Count=',ListOfPCodeXYPosition.Count,' ...']);
+    {$ENDIF}
     // init the element chain
     Result:=ldprParsing;
     Chain:=TLazDocElementChain.Create;
     Chain.CodePos.Code:=Code;
-    Chain.IDEChangeStep:=CompilerParseStamp;
-    Chain.CodetoolsChangeStep:=CodeToolBoss.CodeTreeNodesDeletedStep;
+    Chain.MakeValid;
     Code.LineColToPosition(Y,X,Chain.CodePos.P);
     // fill the element chain
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
@@ -742,6 +947,7 @@ begin
       if (LDElement.FPDocFile<>nil) and (LDElement.ElementName<>'') then begin
         LDElement.ElementNode:=
                   LDElement.FPDocFile.GetElementWithName(LDElement.ElementName);
+        LDElement.ElementNodeValid:=true;
       end;
       //DebugLn(['TLazDocManager.GetElementChain ElementNode=',LDElement.ElementNode<>nil]);
     end;
@@ -778,7 +984,7 @@ var
   Chain: TLazDocElementChain;
   i: Integer;
   Item: TLazDocElement;
-  NodeValues: TFPDocNode;
+  NodeValues: TFPDocElementValues;
   f: TFPDocItem;
   ListOfPCodeXYPosition: TFPList;
   CodeXYPos: PCodeXYPosition;
@@ -945,10 +1151,32 @@ begin
   FItems.Clear;
 end;
 
+function TLazDocElementChain.IndexOfFile(AFile: TLazFPDocFile): integer;
+begin
+  Result:=FItems.Count-1;
+  while (Result>=0) do begin
+    if Items[Result].FPDocFile=AFile then exit;
+    dec(Result);
+  end;
+end;
+
 function TLazDocElementChain.IsValid: boolean;
 begin
   Result:=(IDEChangeStep=CompilerParseStamp)
     and (CodetoolsChangeStep=CodeToolBoss.CodeTreeNodesDeletedStep);
+end;
+
+procedure TLazDocElementChain.MakeValid;
+begin
+  IDEChangeStep:=CompilerParseStamp;
+  CodetoolsChangeStep:=CodeToolBoss.CodeTreeNodesDeletedStep;
+end;
+
+function TLazDocElementChain.DocFile: TLazFPDocFile;
+begin
+  Result:=nil;
+  if (Count>0) then
+    Result:=Items[0].FPDocFile;
 end;
 
 end.

@@ -223,7 +223,7 @@ begin
   end;
   FCurrent.Add(Item);
   
-  if ListOfPCodeXYPosition<>nil then DebugLn(['TDeclarationInheritanceCache.FindDeclarations ',ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition)]);
+  //if ListOfPCodeXYPosition<>nil then DebugLn(['TDeclarationInheritanceCache.FindDeclarations ',ListOfPCodeXYPositionToStr(ListOfPCodeXYPosition)]);
 
   // clean up cache a bit
   CleanCache(5);
