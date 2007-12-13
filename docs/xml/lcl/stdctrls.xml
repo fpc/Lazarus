@@ -209,10 +209,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomScrollBar">
-        <short>Custom Scroll Bar</short>
-        <descr>Custom Scroll Bar:  the base type from which Control Bars are derived</descr>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomScrollBar</i>:  the base class for <i>TScrollBar</i></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomScrollBar.FKind">
@@ -437,15 +434,12 @@
       <element name="TCustomScrollBar.SetParams.APageSize"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Kind">
-        <short>Whether Horizontal or Vertical</short>
-        <descr/>
-        <seealso/>
+        <short><i>Kind</i> of scroll bar - whether Horizontal or Vertical</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.LargeChange">
-        <short>The size of the step to be taken by the scroller for a large change</short>
-        <descr>A large change is produced by the user clicking on the blank area above or below the scroller; it is rather analogous to the Page Down or Page Up functions of the Keyboard and is typically set up to move the scroller and the contents of the page or canvas by a whole paragraph or half a page or a full page.</descr>
-        <seealso/>
+        <short><i>LargeChange </i>- the size of the step to be taken by the slider for a large change</short>
+        <descr>A <i>LargeChange</i> is produced by the user clicking on the blank area above or below the slider; it is rather analogous to the Page Down or Page Up functions of the Keyboard and is typically set up to move the slider and the contents of the page or canvas by a whole paragraph or half a page or a full page.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Max">
@@ -461,21 +455,16 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.PageSize">
-        <short>the size of the page on which this scrollbar is found</short>
-        <descr/>
-        <seealso/>
+        <short><i>PageSize:</i> the size of a page - typically used for <i>LargeChange</i></short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Position">
-        <short>The position of the scrollbar on the current page</short>
-        <descr/>
-        <seealso/>
+        <short>The <i>Position</i> of the scroller along the ScrollBar</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.SmallChange">
-        <short>The size of the step to be taken by the scroller for a small change</short>
+        <short>SmallChange - the size of the step to be taken by the scroller for a small change</short>
         <descr>A small change is produced by the user clicking on one of the triangular tags at either end of the scrollbar. It is rather analogous to the effect of using the up or down arrows on the keyboard, and is typically set to produce a movement of a few pixels or a single line of text</descr>
-        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.TabStop">
@@ -485,7 +474,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnChange">
-        <short>Event handler for any change in position of the scroller or other mouse movement or keyboard event associated with the scrollbar</short>
+        <short>Event handler for any change in position of the slider or other mouse movement or keyboard event associated with the scrollbar</short>
         <descr/>
         <seealso/>
       </element>
@@ -497,8 +486,16 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollBar">
-        <short>Control for scrolling a page thumb in specified range.</short>
-        <descr>Scroll Bar is a control that allows user to scroll its page thumb in specified range. Can be horizontal or vertical.</descr>
+        <short><i>TScrollBar</i> - a control that allows the user to scroll the current page or document window by moving a slider</short>
+        <descr>
+          <p><i>TScrollBar</i> - a control that allows the user to scroll the current page or document window by moving a slider</p>
+          <p>It appears as a long rectangular track or bar within which a smaller contrasting block or slider can move up an down (or from side to side in a horizontal ScrollBar)</p>
+          <p>It has small triangular indicators or pointers at each end: typically for a vertical ScrollBar the top indicator points up, and at the bottom there is a pair of pointers, one up and one down. Clicking with the mouse on one of the pointers moves the slider a small distance (<i>SmallChange</i>) in the specified direction, and the programmer's responsibility is to ensure that the page, image or document in which the ScrollBar is found will scroll by a corresponding small amount</p>
+          <p>Clicking with the mouse in the blank area of the scrollbar above or below the slider makes the slider move by a larger increment (<i>LargeChange</i>) and scrolls the contents of the window by a larger amount - several lines, a paragraph, half a page or anything up to a page (<i>PageSize</i>)</p>
+          <p>The slider can also be moved by clicking on it with the mouse, and holding down the button while moving the mouse. The slider follows the mouse until the button is released. If the mouse has a scrollwheel, the slider can be similarly moved by rotating the wheel. In each case, the contents of the window scroll by a corresponding amount</p>
+          <p>Scrolling of the window and movement of the slider can also be achieved by using the directional arrows or the Page Up/Page Down keys on the keyboard</p>
+          <p>The location of the slider along the track is held in the <i>Position</i> property, which reports where the mouse has placed it, or can alternatively be set to an arbitrary location by the program.</p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -562,11 +559,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TScrollBar.Kind">
-        <short>Determines whether Scroll Bar is vertical or horizontal.</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TScrollBar.Kind"/>
       <!-- property Visibility: published -->
       <element name="TScrollBar.LargeChange">
         <short/>
@@ -707,7 +700,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnScroll">
-        <short>The OnScroll event is called when user scrolls the page thumb.</short>
+        <short>The OnScroll event is called when the user moves the slider</short>
         <descr/>
         <seealso><link id="TScrollBar.OnChange"/></seealso>
       </element>
@@ -6461,7 +6454,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
           <p><i>TRadioButton</i>: a button that works in conjunction with other Radio Buttons in a mutually exclusive manner - if one button of a group is selected, none of the others in that group can be selected.</p>
           <p>The Application Programmer is responsible for ensuring that the <i>OnClick</i> event handler for each button has a unique <i>Action</i>, and that the Actions of the other (deselected and therefore inactive) buttons are turned off.</p>
           <p><i>TRadioGroup</i> behaves differently from a group of <i>TRadioButton</i> controls placed arbitrarily around a form. </p>
-          <p>In the case of <i>TRadioButton</i>, the mutual exclusivity is a feature that applies to any <i>RadioButton</i> anywhere in the Form, and the <i>RadioButtons</i> can be rearranged in any order or placed anywhere within the containing <i>Form</i>, while in <i>TRadioGroup</i> the exclusivity applies only to buttons within the Group, which are ordered strictly accordng to their <i>ItemIndex</i> within the <i>Items</i> stringlist. </p>
+          <p>In the case of <i>TRadioButton</i>, the mutual exclusivity is a feature that applies to any <i>RadioButton</i> anywhere in the Form, and the <i>RadioButtons</i> can be rearranged in any order or placed anywhere within the containing <i>Form</i>, while in <i>TRadioGroup</i> the exclusivity applies only to buttons within the Group, which are ordered strictly according to their <i>ItemIndex</i> within the <i>Items</i> stringlist. </p>
           <p><i>TRadioButton</i> is an entity in itself, with a number of additional properties, whereas the buttons within <i>TRadioGroup</i>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <i>RadioButton</i>. </p>
           <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i></p>
         </descr>
