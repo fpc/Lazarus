@@ -366,7 +366,7 @@ begin
   end else begin
     OldBitmap := HBITMAP(Windows.SendMessage(BitBtnHandle, BM_GETIMAGE, IMAGE_BITMAP, 0));
     if NewBitmap <> 0 then
-      DrawBitmap(BitBtnEnabledToButtonState[BitBtn.Enabled or (csDesigning in BitBtn.ComponentState)]);
+      DrawBitmap(BitBtnEnabledToButtonState[IsWindowEnabled(BitBtnHandle) or (csDesigning in BitBtn.ComponentState)]);
     Windows.SendMessage(BitBtnHandle, BM_SETIMAGE, IMAGE_BITMAP, LPARAM(NewBitmap));
     if OldBitmap <> 0 then
       DeleteObject(OldBitmap);

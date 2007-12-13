@@ -1482,7 +1482,8 @@ begin
           EnableApplicationWindows(Window);
         end;
         
-      if assigned(lWinControl) then
+      // disable child windows of for example groupboxes, but not of forms
+      if assigned(lWinControl) and not (lWinControl is TCustomForm) then
         EnableChildWindows(lWinControl, WParam<>0);
 
       If (lWinControl is TCustomFloatSpinEdit) then
