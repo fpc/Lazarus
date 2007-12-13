@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-07-16 15:33+0100\n"
+"PO-Revision-Date: 2007-12-13 18:08+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "X-Poedit-Language: German\n"
@@ -1054,7 +1054,7 @@ msgstr "HEAD: (%s) FAILED"
 
 #: ipconst:snntpcmdhelp
 msgid "HELP"
-msgstr ""
+msgstr "HELP"
 
 #: ipconst:ssslhandshakefailure
 msgid "Handshake failure."
@@ -1726,7 +1726,7 @@ msgstr "Falscher Protokolltyp für Socket"
 
 #: ipconst:spop3cmdquit
 msgid "QUIT"
-msgstr ""
+msgstr "QUIT"
 
 #: ipconst:sssquit
 msgid "Quit"
@@ -1954,7 +1954,7 @@ msgstr "Dateisuche bei"
 
 #: ipconst:sntselectgroup
 msgid "Selecting Group"
-msgstr ""
+msgstr "Wähle Gruppe"
 
 #: ipconst:snsgroup
 msgid "Selecting group"

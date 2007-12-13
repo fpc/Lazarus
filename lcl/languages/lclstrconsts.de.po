@@ -4,7 +4,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-31 14:37+0100\n"
+"PO-Revision-Date: 2007-12-13 18:11+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -254,7 +254,7 @@ msgstr "Löschen"
 
 #: lclstrconsts:rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Datensatz löschen?"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
@@ -510,7 +510,7 @@ msgstr "Ungültiges Streamformat"
 
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Jpint Picture Expert Group"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
@@ -630,11 +630,11 @@ msgstr "Pixmap"
 
 #: lclstrconsts:rsportablebitmap
 msgid "Portable BitMap"
-msgstr ""
+msgstr "Portable Bitmap"
 
 #: lclstrconsts:rsportablegraymap
 msgid "Portable GrayMap"
-msgstr ""
+msgstr "Portable Graymap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
@@ -642,7 +642,7 @@ msgstr "PNG-Grafik"
 
 #: lclstrconsts:rsportablepixmap
 msgid "Portable PixMap"
-msgstr ""
+msgstr "Portable Pixmap"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

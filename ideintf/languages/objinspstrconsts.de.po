@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-21 20:34+0100\n"
+"PO-Revision-Date: 2007-12-13 18:10+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -233,7 +233,7 @@ msgstr "Zeichen für Leerstellen"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Prüfe Dataset-Einstellungen"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -397,7 +397,7 @@ msgstr "Bearbeiten"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
-msgstr ""
+msgstr "Felder bearbeiten"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
@@ -449,7 +449,7 @@ msgstr "Favoriten"
 
 #: objinspstrconsts:fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
@@ -533,7 +533,7 @@ msgstr "Ungültiger Eigenschaftswert"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
