@@ -20,16 +20,18 @@
 
 function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 begin
-  if TestStreamIsBMP(AStream) then
-    Result:=bnWinBitmap
+  if (AStream is TResourceStream) then
+    Result := bnDIB
+  else if TestStreamIsBMP(AStream) then
+    Result := bnWinBitmap
   else if TestStreamIsXPM(AStream) then
-    Result:=bnXPixmap
+    Result := bnXPixmap
   else if TestStreamIsIcon(AStream) then
     Result := bnIcon
   else if TestStreamIsCursor(AStream) then
     Result := bnCursor
   else
-    Result:=bnNone;
+    Result := bnNone;
 end;
 
 function TestStreamIsBMP(const AStream: TStream): boolean;
@@ -460,13 +462,9 @@ begin
 end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
-{var
+var
   Stream: TResourceStream;
-}
 begin
-{
-  Code should look like:
-  
   Stream := nil;
   try
     Stream := TResourceStream.Create(Instance, ResName, RT_BITMAP);
@@ -474,15 +472,12 @@ begin
   finally
     Stream.Free;
   end;
-}
-  DebugLn('ToDo: TBitMap.LoadFromResourceName');
 end;
 
 procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
+var
+  Stream: TResourceStream;
 begin
-{
-  Code should look like:
-
   Stream := nil;
   try
     Stream := TResourceStream.CreateFromID(Instance, ResID, RT_BITMAP);
@@ -490,8 +485,6 @@ begin
   finally
     Stream.Free;
   end;
-}
-  DebugLn('ToDo: TBitMap.LoadFromResourceID');
 end;
 
 procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
@@ -647,20 +640,27 @@ begin
   WorkStream:=nil;
   try
     // create mem stream if not already done (to read the image type)
-    if (Stream is TCustomMemoryStream) then begin
-      WorkStream:=Stream;
-    end else if UseSize then begin
-      WorkStream:=TMemoryStream.Create;
+    if (Stream is TCustomMemoryStream) then
+    begin
+      WorkStream := Stream;
+    end
+    else
+    if UseSize then
+    begin
+      WorkStream := TMemoryStream.Create;
       TMemoryStream(WorkStream).SetSize(Size);
-      WorkStream.CopyFrom(Stream,Size);
+      WorkStream.CopyFrom(Stream, Size);
       WorkStream.Position:=0;
-    end else begin
+    end
+    else
+    begin
       // size is unknown and type is not TMemoryStream
       // ToDo: create cache stream from Stream
-      WorkStream:=Stream;
+      WorkStream := Stream;
     end;
     // get image type
-    if WorkStream is TCustomMemoryStream then begin
+    if WorkStream is TCustomMemoryStream then
+    begin
       MemStream:=TCustomMemoryStream(WorkStream);
       OldPosition:=MemStream.Position;
       GetSize:=MemStream.Size;
@@ -668,22 +668,23 @@ begin
       MemStream.Position:=OldPosition;
       if UseSize and (Size>GetSize-OldPosition) then
         RaiseInvalidSize;
-      StreamType:=TestStreamBitmapNativeType(MemStream);
+      StreamType := TestStreamBitmapNativeType(MemStream);
     end else
-      StreamType:=bnWinBitmap;
+      StreamType := bnWinBitmap;
     //debugln('TBitmap.ReadStream ',dbgs(ord(StreamType)),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size),' Stream=',DbgSName(Stream));
-    ReaderClass:=nil;
+    ReaderClass := nil;
     case StreamType of
-      bnWinBitmap:  ReaderClass:=TLazReaderBMP;
-      bnXPixmap:    ReaderClass:=TLazReaderXPM;
-      bnIcon:       ReaderClass:=TLazReaderIcon;
-      bnCursor:     ReaderClass:=TLazReaderCursor;
+      bnDIB:        ReaderClass := TLazReaderDIB;
+      bnWinBitmap:  ReaderClass := TLazReaderBMP;
+      bnXPixmap:    ReaderClass := TLazReaderXPM;
+      bnIcon:       ReaderClass := TLazReaderIcon;
+      bnCursor:     ReaderClass := TLazReaderCursor;
     else
       RaiseInvalidBitmapHeader;
     end;
-    ReadStreamWithFPImage(WorkStream,UseSize,Size,ReaderClass);
+    ReadStreamWithFPImage(WorkStream, UseSize, Size, ReaderClass);
   finally
-    if WorkStream<>Stream then
+    if WorkStream <> Stream then
       WorkStream.Free;
   end;
 end;

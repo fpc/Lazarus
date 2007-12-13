@@ -1865,6 +1865,23 @@ const
 
   CBM_INIT = 4;     { initialize bitmap  }
 
+{ Predefined Resource Types }
+{$ifdef windows}
+  RT_CURSOR = Windows.RT_CURSOR;
+  RT_BITMAP = Windows.RT_BITMAP;
+  RT_ICON   = Windows.RT_ICON;
+{$else}
+  {$ifdef UNICODE} // PI: taked this define from classesh.inc TResourceStream
+    RT_CURSOR = PWideChar(1);
+    RT_BITMAP = PWideChar(2);
+    RT_ICON   = PWideChar(3);
+  {$else}
+    RT_CURSOR = PChar(1);
+    RT_BITMAP = PChar(2);
+    RT_ICON   = PChar(3);
+  {$endif}
+{$endif}
+
 
 type
   TFarProc = Pointer;
@@ -2553,7 +2570,6 @@ type
   _NM_LISTVIEW = TNMListView;
   NM_LISTVIEW = TNMListView;
   tagNMLISTVIEW = TNMListView;
-
 
 Function CS_To_String(CompStyle: Integer): String;
 // key mapping

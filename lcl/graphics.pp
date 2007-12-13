@@ -1054,11 +1054,12 @@ type
     same TBitmapImage }
 
   TBitmapNativeType = (
-    bnNone,  // not a TBitmap native type
-    bnWinBitmap,
-    bnXPixmap,
-    bnIcon,
-    bnCursor
+    bnNone,      // not a TBitmap native type
+    bnWinBitmap, // windows bitmap
+    bnXPixmap,   // pixmap (xpm)
+    bnIcon,      // icon file (ico)
+    bnCursor,    // same as icon but from cursor file
+    bnDIB        // only dib
     );
   TBitmapNativeTypes = set of TBitmapNativeType;
 

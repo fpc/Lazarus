@@ -447,6 +447,13 @@ type
     property MaskColor: TFPColor read FMaskColor write FMaskColor;
     property MaskMode: TLazReaderMaskMode read FMaskMode write FMaskMode;
   end;
+  
+  { TLazReaderDIB }
+
+  TLazReaderDIB = class(TLazReaderBMP)
+  protected
+    function InternalCheck(Stream: TStream) : boolean; override;
+  end;
 
   { TLazReaderPartIcon }
   { This is a FPImage writer for a single icon from an icon file }
@@ -4741,11 +4748,11 @@ end;
 
 function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
 var
-  BFH:TBitMapFileHeader;
+  BFH: TBitMapFileHeader;
 begin
-  stream.Read(BFH,SizeOf(BFH));
-  With BFH do
-    Result:=(LEtoN(bfType)=BMmagic); // Just check magic number
+  stream.Read(BFH, SizeOf(BFH));
+  with BFH do
+    Result := (LEtoN(bfType) = BMmagic); // Just check magic number
 end;
 
 constructor TLazReaderBMP.Create;
@@ -5017,6 +5024,13 @@ begin
     IsNumberChar[c]:=c in ['0'..'9'];
     IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
   end;
+end;
+
+{ TLazReaderDIB }
+
+function TLazReaderDIB.InternalCheck(Stream: TStream): boolean;
+begin
+  Result := True;
 end;
 
 initialization
