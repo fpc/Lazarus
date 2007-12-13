@@ -465,11 +465,11 @@ begin
     CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
       lisMenuReplace2, 'menu_search_replace');
     CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
-    CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine, 'menu_goto_line');
 
     CreateMenuSeparatorSection(mnuSearch,itmJumpings,'itmJumpings');
     ParentMI:=itmJumpings;
 
+    CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine, 'menu_goto_line');
     CreateMenuItem(ParentMI,itmJumpBack,'itmJumpBack',lisMenuJumpBack);
     CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward);
     CreateMenuItem(ParentMI,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory);

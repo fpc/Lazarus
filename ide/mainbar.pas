@@ -152,8 +152,8 @@ type
         itmSearchFindInFiles: TIDEMenuCommand;
         itmSearchReplace: TIDEMenuCommand;
         itmIncrementalFind: TIDEMenuCommand;
-        itmGotoLine: TIDEMenuCommand;
       //itmJumpings: TIDEMenuSection;
+        itmGotoLine: TIDEMenuCommand;
         itmJumpBack: TIDEMenuCommand;
         itmJumpForward: TIDEMenuCommand;
         itmAddJumpPoint: TIDEMenuCommand;
