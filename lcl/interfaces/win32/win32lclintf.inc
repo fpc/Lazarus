@@ -511,11 +511,18 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 var
-  BitmapInfo: Windows.TBitmap;
+  ASize: Integer;
+  WinDIB: Windows.TDIBSection;
 begin
-  Result := Windows.GetObject(ABitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
+  Result := ASize > 0;
   if Result then
-    FillRawImageDescription(BitmapInfo, ADesc);
+  begin
+    FillRawImageDescription(WinDIB.dsBm, ADesc);
+    // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+    if ASize < SizeOf(WinDIB) then
+      ADesc.AlphaPrec := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -575,17 +582,25 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
 var
-  WinBmp: Windows.TBitmap;
+  WinDIB: Windows.TDIBSection;
+  WinBmp: Windows.TBitmap absolute WinDIB.dsBm;
+  ASize: Integer;
   R: TRect;
 begin
   ARawImage.Init;
-  if Windows.GetObject(ABitmap, SizeOf(WinBmp), @WinBmp) = 0
+  FillChar(WinDIB, SizeOf(WinDIB), 0);
+  ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
+  if ASize = 0
   then Exit(False);
 
   //DbgDumpBitmap(ABitmap, 'FromBitmap - Image');
   //DbgDumpBitmap(AMask, 'FromBitmap - Mask');
 
   FillRawImageDescription(WinBmp, ARawImage.Description);
+  // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+  if ASize < SizeOf(WinDIB) then
+    ARawImage.Description.AlphaPrec := 0;
+    
   R := ARect;
   if R.Top > WinBmp.bmHeight then
     R.Top := WinBmp.bmHeight;
