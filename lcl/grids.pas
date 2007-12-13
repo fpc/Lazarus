@@ -2808,9 +2808,9 @@ begin
   EndUpdate(uoNone);
 
   R := CellRect(aCol, 0);
-  R.Bottom := FGCache.MaxClientXY.Y+1;
+  R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
   if bigger then
-    R.Right := FGCache.MaxClientXY.X+1
+    R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
   else
     R.Right := FGCache.ClientWidth;
   if aCol=FTopLeft.x then
@@ -2831,9 +2831,9 @@ begin
   EndUpdate(uoNone);
 
   R := CellRect(0, aRow);
-  R.Right := FGCache.MaxClientXY.X+1;
+  R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
   if bigger then
-    R.Bottom := FGCache.MaxClientXY.Y+1
+    R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
   else
     R.Bottom := FGCache.ClientHeight;
   if aRow=FTopLeft.y then
