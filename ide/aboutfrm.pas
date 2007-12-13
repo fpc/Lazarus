@@ -135,6 +135,7 @@ begin
   AboutPage.Caption:=lisMenuTemplateAbout;
   ContributorsPage.Caption:=lisContributors;
   AcknowledgementsPage.Caption:=lisAcknowledgements;
+  LogoPage.Caption:=lisLogo;
   miVerToClipboard.Caption := lisVerToClipboard;
   
   Constraints.MinWidth:= 600;

@@ -716,6 +716,7 @@ resourcestring
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
   lisVerToClipboard = 'Copy version information to clipboard';
+  lisLogo = 'Logo';
   lisDate = 'Date';
   lisSVNRevision = 'SVN Revision: ';
   lisClose = '&Close';
