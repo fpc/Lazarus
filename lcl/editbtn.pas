@@ -31,6 +31,9 @@ uses
   Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
   ExtDlgs, CalendarPopup;
 
+const
+  NullDate: TDateTime = 0;
+
 type
   { TCustomEditButton }
 
@@ -311,24 +314,26 @@ type
 
   TDateEdit = class(TCustomEditButton)
   private
+    FDefaultToday: Boolean;
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
     FOnAcceptDate: TAcceptDateEvent;
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
-    FDate: TDateTime;
+    FDateFormat:string;
+    function GetDate: TDateTime;
     function IsStoreTitle: boolean;
-    procedure SetDate(const Value: TDateTime);
+    procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; Const ADate: TDateTime);
   protected
     procedure DoButtonClick (Sender: TObject); override;
-    procedure EditingDone; override;
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DateFormatChanged; virtual;
-    property Date: TDateTime read FDate write SetDate;
+    function GetDateFormat: string;
+    property Date: TDateTime Read GetDate Write SetDate;
     property Button;
   published
     property DialogTitle:TCaption read FDialogTitle write FDialogTitle Stored IsStoreTitle;
@@ -337,6 +342,8 @@ type
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly default true;
+    property DefaultToday: Boolean read FDefaultToday write FDefaultToday
+      default False;
 
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
@@ -881,14 +888,20 @@ end;
 
 { TDateEdit }
 
+function StrToDateDef(cDate: String; dDefault: TDateTime): TDateTime;
+begin
+  try
+    Result := StrToDate(cDate)
+  except
+    Result := dDefault;
+  end;
+end;
+
 constructor TDateEdit.Create(AOwner: TComponent);
 var
   ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
-//  FDate:=Now;
-  Date:=trunc(Now);
-//  Text:=DateToStr(Date);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
   DialogTitle:=rsPickDate;
   OKCaption:='OK';
@@ -897,6 +910,7 @@ begin
   Button.Glyph:=ABitmap;
   ABitmap.Free;
   Button.OnClick:= @DoButtonClick;
+  DateFormatChanged;
 end;
 
 destructor TDateEdit.Destroy;
@@ -906,7 +920,12 @@ end;
 
 procedure TDateEdit.DateFormatChanged;
 begin
-  Text:=DateToStr(FDate);
+  FDateFormat := LongDateFormat;
+end;
+
+function TDateEdit.GetDateFormat: string;
+begin
+  Result := FDateFormat;
 end;
 
 procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
@@ -919,37 +938,41 @@ begin
   ShowCalendarPopup(PopupOrigin, Date, @CalendarPopupReturnDate);
 end;
 
-procedure TDateEdit.EditingDone;
-var Datetmp: TDate;
-begin
-  inherited EditingDone;
-  //debugln('TDateEdit.EditingDone Text="',Text,'"');
-  try
-    Datetmp:=StrToDate(Text);
-    // if this worked, then adjust it to current format
-    Date:=Datetmp;
-  except
-    Text:=DateToStr(Date);
-    // invalid date: keep the old;
-  end;
-end;
-
 procedure TDateEdit.DblClick;
 begin
   inherited DblClick;
   DoButtonClick(nil);
 end;
 
+function TDateEdit.GetDate: TDateTime;
+begin
+  if FDefaultToday then Result := SysUtils.Date
+  else Result := NullDate;
+  if Trim(Text)<>'' then
+    Result := StrToDateDef(Text, Result);
+end;
 
 function TDateEdit.IsStoreTitle: boolean;
 begin
   Result:=DialogTitle<>rsPickDate;
 end;
 
-procedure TDateEdit.SetDate(const Value:TDateTime);
+procedure TDateEdit.SetDate(Value:TDateTime);
+var
+  D: TDateTime;
 begin
-  FDate:=Value;
-  Text:=DateToStr(FDate);
+  if {not IsValidDate(Value) or }(Value = NullDate) then
+  begin
+    if DefaultToday then Value := SysUtils.Date
+    else Value := NullDate;
+  end;
+  D := Self.Date;
+  if Value = NullDate then
+    Text := ''
+  else
+    Text := DateToStr(Value);
+  if D <> Date then
+    Change;
 end;
 
 procedure TDateEdit.CalendarPopupReturnDate(Sender: TObject;
@@ -959,14 +982,12 @@ var
   D:TDateTime;
 begin
   try
-    FDate:=ADate;
-    Self.Date:=FDate;
-    D:=FDate;
     B:=true;
-    If Assigned(FOnAcceptDate) then
-      FOnAcceptDate(Self,D,B);
-    if B then
-      Text:=DateToStr(FDate);
+    D:=ADate;
+    if Assigned(FOnAcceptDate) then
+      FOnAcceptDate(Self, D, B);
+   if B then
+      Self.Date:=D;
   except
     on E:Exception do
       MessageDlg(E.Message, mtError, [mbOK], 0);
