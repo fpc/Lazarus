@@ -1,1 +1,1 @@
-..\..\..\tools\lazres printersdlgs.lrs @printersdlgs.txt
+..\..\..\tools\lazres ..\printersdlgs.lrs @printersdlgs.txt
