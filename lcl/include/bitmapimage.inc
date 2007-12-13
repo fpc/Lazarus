@@ -32,7 +32,7 @@ end;
 
 function TBitmapImage.HandleAllocated: boolean;
 begin
-  Result:=FHandle<>0;
+  Result := FHandle <> 0;
 end;
 
 function TBitmapImage.GetHandleType: TBitmapHandleType;
@@ -52,12 +52,12 @@ end;
 procedure TBitmapImage.FreeHandle;
 begin
   FreeMaskHandle;
+  FreePalette;
   if (FHandle <> 0) and (FHandle <> FDIBHandle) then
   begin
     DeleteObject(FHandle);
   end;
   FHandle := 0;
-  FPalette := 0;
 end;
 
 procedure TBitmapImage.FreeMaskHandle;
@@ -69,16 +69,25 @@ begin
   end;
 end;
 
+procedure TBitmapImage.FreePalette;
+begin
+  if FPalette <> 0 then
+  begin
+    DeleteObject(FPalette);
+    FPalette := 0;
+  end;
+end;
+
 function TBitmapImage.ReleaseHandle: HBITMAP;
 // simply return the current handle and set to 0 without freeing handles
 begin
-  Result:=FHandle;
+  Result := FHandle;
   if FHandle = FDIBHandle then
   begin
     FDIBHandle := 0;
     FDIB.dsbm.bmBits := nil;
   end;
-  FHandle:=0;
+  FHandle := 0;
 end;
 
 function TBitmapImage.ReleaseMaskHandle: HBITMAP;
@@ -87,10 +96,15 @@ begin
   FMaskHandle := 0;
 end;
 
+function TBitmapImage.ReleasePalette: HPALETTE;
+begin
+  Result := FPalette;
+  FPalette := 0;
+end;
+
 function TBitmapImage.IsEmpty: boolean;
 begin
-  Result := (FHandle = 0) and (FDIBHandle = 0)
-            and (SaveStream=nil);
+  Result := (FHandle = 0) and (FDIBHandle = 0) and (SaveStream=nil);
 end;
 
 function TBitmapImage.GetPixelFormat: TPixelFormat;

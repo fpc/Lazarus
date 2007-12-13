@@ -560,7 +560,10 @@ end;
 
 procedure TBitMap.PaletteNeeded;
 begin
+  if (FImage.FPalette <> 0) then exit;
+  
   // ToDo
+  //CreatePalette;
 end;
 
 procedure TBitmap.UnshareImage(CopyContent: boolean);
@@ -1091,13 +1094,14 @@ end;
 // useful for creating a HBitmap
 function TBitmap.ReleaseHandle: HBITMAP;
 begin
-  //HandleNeeded; Delphi creates a handle. Why?
+  HandleNeeded;
   FreeCanvasContext;
   Result := FImage.ReleaseHandle;
 end;
 
 function TBitmap.ReleaseMaskHandle: HBITMAP;
 begin
+  MaskHandleNeeded;
   FreeCanvasContext;
   Result := FImage.ReleaseMaskHandle;
 end;
@@ -1105,6 +1109,11 @@ end;
 function TBitmap.ReleasePalette: HPALETTE;
 begin
   // ToDo
+  {
+   PaletteNeeded;
+   FreeCanvasContext;
+   Result := FImage.ReleasePaletteHandle;
+  }
   Result := 0;
 end;
 
@@ -1252,7 +1261,8 @@ end;
 
 function TBitmap.GetPalette: HPALETTE;
 begin
-  Result:=inherited GetPalette;
+  PaletteNeeded;
+  Result := FImage.FPalette;
 end;
 
 function TBitmap.GetWidth: Integer;

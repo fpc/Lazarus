@@ -1079,8 +1079,10 @@ type
   protected
     procedure FreeHandle; override;
     procedure FreeMaskHandle;
+    procedure FreePalette;
     function ReleaseHandle: HBITMAP;
     function ReleaseMaskHandle: HBITMAP;
+    function ReleasePalette: HPALETTE;
     function IsEmpty: boolean;
     function GetPixelFormat: TPixelFormat;
   public
