@@ -8198,9 +8198,8 @@ end;
 
 procedure TGridColumnTitle.SetFont(const AValue: TFont);
 begin
-  if AValue.Handle<>FFont.Handle then begin
+  if not FFont.IsEqual(AValue) then
     FFont.Assign(AValue);
-  end;
 end;
 
 procedure TGridColumnTitle.SetLayout(const AValue: TTextLayout);
@@ -8467,9 +8466,8 @@ end;
 
 procedure TGridColumn.SetFont(const AValue: TFont);
 begin
-  if AValue.Handle<>FFont.Handle then begin
+  if not FFont.IsEqual(AValue) then
     FFont.Assign(AValue);
-  end;
 end;
 
 procedure TGridColumn.SetLayout(const AValue: TTextLayout);

@@ -259,7 +259,7 @@ begin
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
-        lhFont := AWinControl.Font.Handle;
+        lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0)
     end;
   end;
@@ -280,7 +280,7 @@ begin
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
-        lhFont := AWinControl.Font.Handle;
+        lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
     end
     else
@@ -467,7 +467,7 @@ class procedure TWin32WSWinControl.SetFont(const AWinControl: TWinControl; const
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont')
   then Exit;
-  Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
+  Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Reference.Handle), 1);
 end;
 
 class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);

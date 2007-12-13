@@ -36,19 +36,19 @@ var
   OldFont: HGDIOBJ;
   LabelText: string;
 begin
-  if (Parent=nil) or (not Parent.HandleAllocated) then exit;
+  if (Parent=nil) or (not Parent.HandleAllocated) then Exit;
   DC := GetDC(Parent.Handle);
   try
-    R := Rect(0,0, Width, Height);
-    OldFont:=SelectObject(DC, Font.Handle);
-    Flags:=DT_CalcRect;
+    R := Rect(0, 0, Width, Height);
+    OldFont := SelectObject(DC, Font.Reference.Handle);
+    Flags := DT_CalcRect;
     if WordWrap then
       inc(Flags, DT_WordBreak)
     else
     if not HasMultiLine then
       inc(Flags, DT_SingleLine);
 
-    LabelText:=GetLabelText;
+    LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
     SelectObject(DC, OldFont);
     // add one to be able to display disabled label
@@ -338,7 +338,7 @@ begin
     and (CurFontHeight<=MaxFontHeight) do begin
       AFont.Height:=CurFontHeight; // NOTE: some TFont do not allow any integer
       //debugln('TCustomLabel.CalcFittingFontHeight A ',dbgs(MinFontHeight),'<=',dbgs(AFont.Height),'<=',dbgs(MaxFontHeight));
-      OldFont:=SelectObject(DC, AFont.Handle);
+      OldFont := SelectObject(DC, AFont.Reference.Handle);
       DrawText(DC, PChar(TheText), Length(TheText), R, Flags);
       SelectObject(DC, OldFont);
       NeededWidth := R.Right - R.Left;

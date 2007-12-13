@@ -4343,9 +4343,9 @@ procedure TWinControl.EraseBackground(DC: HDC);
 var
   ARect: TRect;
 begin
-  if DC=0 then exit;
-  ARect:=Rect(0,0,Width,Height);
-  FillRect(DC,ARect,Brush.Handle)
+  if DC = 0 then Exit;
+  ARect := Rect(0, 0, Width, Height);
+  FillRect(DC, ARect, Brush.Reference.Handle)
 end;
 
 {------------------------------------------------------------------------------

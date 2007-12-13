@@ -165,7 +165,7 @@ var
 
     // fill with background color
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-    Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
+    Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Reference.Handle);
     if AState <> bsDisabled then
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
@@ -237,7 +237,7 @@ begin
   BitBtnLayout := BitBtn.Layout;
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
-  OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Handle);
+  OldFontHandle := SelectObject(hdcNewBitmap, BitBtn.Font.Reference.Handle);
   {$IFDEF WindowsUnicodeSupport}
   if UnicodeEnabledOS then
   begin
