@@ -31,6 +31,9 @@ interface
 
 
 type
+  // use TLCLHandle instead of THandle since THandle = longint under 64bit linux
+  TLCLHandle = PtrUInt;
+
   { TWSReference }
   {
     Abstract (temporary) base object for all references to WS classes.
@@ -45,15 +48,15 @@ type
     FRef: record
       case Byte of
         0: (Ptr: Pointer);
-        1: (Handle: THandle);
+        1: (Handle: TLCLHandle);
     end;
   public
     // NOTE: These _Methods are temporary and for widgetset use only.
     //       They can be removed anytime, without notice
     procedure _Clear;
     procedure _Init(APtr: Pointer);
-    procedure _Init(AHandle: THandle);
-    property  _Handle: THandle read FRef.Handle;
+    procedure _Init(AHandle: TLCLHandle);
+    property  _Handle: TLCLHandle read FRef.Handle;
     //----
     
     property Allocated: Boolean read GetAllocated;
@@ -71,42 +74,42 @@ type
 
   TWSCustomImageListReference = object(TWSReference)
   public
-    property Handle: THandle read FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
   
   TWSGDIObjReference = object(TWSReference)
   end;
   
   TWSBitmapReference = object(TWSGDIObjReference)
-    property Handle: THandle read FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
   
   TWSBrushReference = object(TWSGDIObjReference)
-    property _lclHandle: THandle write FRef.Handle;
-    property Handle: THandle read FRef.Handle;
+    property _lclHandle: TLCLHandle write FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
 
   TWSPenReference = object(TWSGDIObjReference)
-    property _lclHandle: THandle write FRef.Handle;
-    property Handle: THandle read FRef.Handle;
+    property _lclHandle: TLCLHandle write FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
 
   TWSFontReference = object(TWSGDIObjReference)
-    property _lclHandle: THandle write FRef.Handle;
-    property Handle: THandle read FRef.Handle;
+    property _lclHandle: TLCLHandle write FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
 
   TWSRegionReference = object(TWSGDIObjReference)
-    property _lclHandle: THandle write FRef.Handle;
-    property Handle: THandle read FRef.Handle;
+    property _lclHandle: TLCLHandle write FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
   
   TWSDeviceContextReference = object(TWSReference)
-    property Handle: THandle read FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
 
   TWSIconReference = object(TWSReference)
-    property Handle: THandle read FRef.Handle;
+    property Handle: TLCLHandle read FRef.Handle;
   end;
 
 implementation
@@ -123,7 +126,7 @@ begin
   FRef.Ptr := APtr;
 end;
 
-procedure TWSReference._Init(AHandle: THandle);
+procedure TWSReference._Init(AHandle: TLCLHandle);
 begin
   FRef.Handle := AHandle;
 end;
