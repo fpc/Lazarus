@@ -2816,7 +2816,7 @@ begin
   if aCol=FTopLeft.x then
     R.Left := FGCache.FixedWidth;
 
-  InvalidateRect(handle, @R, True);
+  InvalidateRect(handle, @R, False);
 end;
 
 procedure TCustomGrid.ResizeRow(aRow, aHeight: Integer);
@@ -2839,7 +2839,7 @@ begin
   if aRow=FTopLeft.y then
     R.Top := FGCache.FixedHeight;
 
-  InvalidateRect(handle, @R, True);
+  InvalidateRect(handle, @R, False);
 end;
 
 
@@ -4741,8 +4741,8 @@ begin
             DrawXorVertLine(FPrevValue);
           FPrevLine := False;
           FPrevValue := -1;
-          ResizeColumn(FSplitter.x, x-FSplitter.y);
         end;
+        ResizeColumn(FSplitter.x, x-FSplitter.y);
         HeaderSized( True, FSplitter.X);
       end;
       
@@ -4753,8 +4753,8 @@ begin
             DrawXorHorzLine(FPrevValue);
           FPrevLine := False;
           FPrevValue := -1;
-          ResizeRow(FSplitter.y, y-FSplitter.x);
         end;
+        ResizeRow(FSplitter.y, y-FSplitter.x);
         HeaderSized( False, FSplitter.Y);
       end;
       
