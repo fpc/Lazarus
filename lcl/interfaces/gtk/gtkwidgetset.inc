@@ -23,7 +23,7 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
-{$define GtkFixedWithWindow}
+{off $define GtkFixedWithWindow}
 {------------------------------------------------------------------------------
   Procedure: GLogFunc
 
