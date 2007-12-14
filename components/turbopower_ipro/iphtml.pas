@@ -565,11 +565,7 @@ type
     FLinkColor : TColor;
     FVLinkColor : TColor;
     FALinkColor : TColor;
-   {$IFDEF IP_LAZARUS}
-    FBgColor : TColorRef;
-   {$ELSE}
     FBgColor : TColor;
-   {$ENDIF}
     FPreformatted : Boolean;
     FNoBreak : Boolean;
     FUseCount: Integer;
@@ -582,11 +578,7 @@ type
     property LinkColor : TColor read FLinkColor write FLinkColor;
     property VLinkColor : TColor read FVLinkColor write FVLinkColor;
     property ALinkColor : TColor read FALinkColor write FALinkColor;
-   {$IFDEF IP_LAZARUS}
-    property BgColor : TColorRef read FBgColor write FBgColor;
-   {$ELSE}
     property BgColor : TColor read FBgColor write FBgColor;
-   {$ENDIF}
     property Preformatted : Boolean read FPreformatted write FPreformatted;
     property NoBreak : Boolean read FNoBreak write FNoBreak;
     property UseCount : Integer read FUseCount write FUseCount;
@@ -603,11 +595,7 @@ type
     function GetAlignment: TIpHtmlAlign;
     function GetALinkColor: TColor;
     function GetBaseFontSize: Integer;
-   {$IFDEF IP_LAZARUS}
-    function GetBgColor: TColorRef;
-   {$ELSE}
     function GetBgColor: TColor;
-   {$ENDIF}
     function GetFontBaseline: Integer;
     function GetFontColor: TColor;
     function GetFontName: string;
@@ -620,11 +608,7 @@ type
     procedure SetAlignment(const Value: TIpHtmlAlign);
     procedure SetALinkColor(const Value: TColor);
     procedure SetBaseFontSize(const Value: Integer);
-   {$IFDEF IP_LAZARUS}
-    procedure SetBgColor(const Value: TColorRef);
-   {$ELSE}
     procedure SetBgColor(const Value: TColor);
-   {$ENDIF}
     procedure SetFontBaseline(const Value: Integer);
     procedure SetFontColor(const Value: TColor);
     procedure SetFontName(const Value: string);
@@ -658,11 +642,7 @@ type
     property LinkColor : TColor read GetLinkColor write SetLinkColor;
     property VLinkColor : TColor read GetVLinkColor write SetVLinkColor;
     property ALinkColor : TColor read GetALinkColor write SetALinkColor;
-   {$IFDEF IP_LAZARUS}
-    property BgColor : TColorRef read GetBgColor write SetBgColor;
-   {$ELSE}
     property BgColor : TColor read GetBgColor write SetBgColor;
-   {$ENDIF}
     property Preformatted : Boolean read GetPreformatted write SetPreformatted;
     property NoBreak : Boolean read GetNoBreak write SetNoBreak;
   end;
@@ -911,16 +891,8 @@ type
   private
     FSize: TIpHtmlRelSize;
     FFace: string;
-   {$IFDEF IP_LAZARUS}
-    FColor: TColorRef;
-   {$ELSE}
     FColor: TColor;
-   {$ENDIF}
-   {$IFDEF IP_LAZARUS}
-    procedure SetColor(const Value: TColorRef);
-   {$ELSE}
     procedure SetColor(const Value: TColor);
-   {$ENDIF}
     procedure SetFace(const Value: string);
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
@@ -928,11 +900,7 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
-   {$IFDEF IP_LAZARUS}
-    property Color : TColorRef read FColor write SetColor;
-   {$ELSE}
     property Color : TColor read FColor write SetColor;
-   {$ENDIF}
     property Face : string read FFace write SetFace;
     property Size : TIpHtmlRelSize read FSize write FSize;
   end;
@@ -1103,34 +1071,18 @@ type
 
   TIpHtmlNodeBODY = class(TIpHtmlNodeBlock)
   private
-   {$IFDEF IP_LAZARUS}
-    FBgColor : TColor;
-    FText : TColorRef;
-    FLink : TColorRef;
-    FVLink : TColorRef;
-    FALink : TColorRef;
-   {$ELSE}
     FBgColor : TColor;
     FText : TColor;
     FLink : TColor;
     FVLink : TColor;
     FALink : TColor;
-   {$ENDIF}
     FBackground : string;
     procedure SetBackground(const Value: string);
-   {$IFDEF IP_LAZARUS}
-    procedure SetAlink(const Value: TColorRef);
-    procedure SetBgColor(const Value: TColorRef);
-    procedure SetLink(const Value: TColorRef);
-    procedure SetText(const Value: TColorRef);
-    procedure SetVlink(const Value: TColorRef);
-   {$ELSE}
     procedure SetAlink(const Value: TColor);
     procedure SetBgColor(const Value: TColor);
     procedure SetLink(const Value: TColor);
     procedure SetText(const Value: TColor);
     procedure SetVlink(const Value: TColor);
-   {$ENDIF}
   protected
     BGPicture : TPicture;
     procedure Render(const RenderProps: TIpHtmlProps); override;
@@ -1139,19 +1091,11 @@ type
     destructor Destroy; override;
     procedure ImageChange(NewPicture : TPicture); override;
     property Background : string read FBackground write SetBackground;
-   {$IFDEF IP_LAZARUS}
-    property ALink : TColorRef read Falink write SetAlink;
-    property BgColor : TColorRef read FBgColor write SetBgColor;
-    property Link : TColorRef read FLink write SetLink;
-    property Text : TColorRef read FText write SetText;
-    property VLink : TColorRef read FVLink write SetVlink;
-   {$ELSE}
     property ALink : TColor read Falink write SetAlink;
     property BgColor : TColor read FBgColor write SetBgColor;
     property Link : TColor read FLink write SetLink;
     property Text : TColor read FText write SetText;
     property VLink : TColor read FVLink write SetVlink;
-   {$ENDIF}
   end;
 
   TIpHtmlNodeNOFRAMES = class(TIpHtmlNodeCore);
@@ -1340,11 +1284,7 @@ type
 
   TIpHtmlNodeHR = class(TIpHtmlNodeAlignInline)
   private
-   {$IFDEF IP_LAZARUS}
-    FColor: TColorRef;
-   {$ELSE}
     FColor: TColor;
-   {$ENDIF}
     FNoShade : Boolean;
     FSize : TIpHtmlInteger;                                            {!!.10}
     FWidth : TIpHtmlLength;
@@ -1360,11 +1300,7 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
-   {$IFDEF IP_LAZARUS}
-    property Color : TColorRef read FColor write FColor;
-   {$ELSE}
     property Color : TColor read FColor write FColor;
-   {$ENDIF}
     property NoShade  : Boolean read FNoShade write FNoShade;
     property Size : TIpHtmlInteger read FSize write FSize;             {!!.10}
     property Width : TIpHtmlLength read FWidth write FWidth;
@@ -1727,11 +1663,7 @@ type
 
   TIpHtmlNodeTABLE = class(TIpHtmlNodeAlignInline)
   private
-   {$IFDEF IP_LAZARUS}
-    FBgColor: TColorRef;
-   {$ELSE}
     FBgColor: TColor;
-   {$ENDIF}
     FBorder: Integer;
     FCellSpacing: Integer;
     FCellPadding: Integer;
@@ -1781,11 +1713,7 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
-   {$IFDEF IP_LAZARUS}
-    property BgColor : TColorRef read FBgColor write FBgColor;
-   {$ELSE}
     property BgColor : TColor read FBgColor write FBgColor;
-   {$ENDIF}
     property Border : Integer read FBorder write SetBorder;            {!!.10}
     property CalcMinWidth: Integer read FMin;                          {!!.10}
     property CalcMaxWidth: Integer read FMax;                          {!!.10}
@@ -1876,11 +1804,7 @@ type
   TIpHtmlNodeTableHeaderOrCell = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlAlign;
-   {$IFDEF IP_LAZARUS}
-    FBgColor : TColorRef;
-   {$ELSE}
     FBgColor : TColor;
-   {$ENDIF}
     FCalcWidthMin: Integer;                                            {!!.10}
     FCalcWidthMax: Integer;                                            {!!.10}
     FColspan: Integer;
@@ -1901,11 +1825,7 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write FAlign;
-   {$IFDEF IP_LAZARUS}
-    property BgColor : TColorRef read FBgColor write FBgColor;
-   {$ELSE}
     property BgColor : TColor read FBgColor write FBgColor;
-   {$ENDIF}
     property CalcWidthMin: Integer read FCalcWidthMin;                 {!!.10}
     property CalcWidthMax: Integer read FCalcWidthMax;                 {!!.10}
     property Colspan : Integer read FColspan write FColspan;
@@ -2124,19 +2044,11 @@ type
     FHotPoint : TPoint;
     FOnInvalidateRect : TInvalidateEvent;
     FTarget : TCanvas;
-   {$IFDEF IP_LAZARUS}
-    FVLinkColor: TColorRef;
-    FLinkColor: TColorRef;
-    FALinkColor: TColorRef;
-    FTextColor: TColorRef;
-    FBgColor: TColorRef; //JMN
-   {$ELSE}
     FVLinkColor: TColor;
     FLinkColor: TColor;
     FALinkColor: TColor;
     FTextColor: TColor;
     FBgColor: TColor; //JMN
-   {$ENDIF}
     FHasFrames : Boolean;
     FOnGetImageX : TIpHtmlDataGetImageEvent;
     FOnScroll : TIpHtmlScrollEvent;
@@ -2238,11 +2150,7 @@ type
     function FindPropB(const pFontBaseline: Integer;
       const pFontColor: TColor; const pAlignment: TIpHtmlAlign;
       const pVAlignment: TIpHtmlVAlign3; const pLinkColor, pVLinkColor,
-   {$IFDEF IP_LAZARUS}
-      pALinkColor: TColor; const pBgColor: TColorRef; const pPreformatted,
-   {$ELSE}
       pALinkColor: TColor; const pBgColor: TColor; const pPreformatted,
-   {$ENDIF}
       pNoBreak: Boolean): TIpHtmlPropB;
     procedure ClearCache;
     function CheckKnownURL(URL: string): boolean;
@@ -2314,11 +2222,7 @@ type
     procedure ParseTABLE(Parent: TIpHtmlNode;
         const EndTokens: TIpHtmlTokenSet);
     function FindAttribute(const AttrName: string): string;
-   {$IFDEF IP_LAZARUS}
-    function ColorFromString(S: string): TColorRef;
-   {$ELSE}
     function ColorFromString(S: string): TColor;
-   {$ENDIF}
     function ParseAlignment: TIpHtmlAlign;
     function ParseCellAlign(Default : TIpHtmlAlign) : TIpHtmlAlign;
     function ParseFrameProp(Default: TIpHtmlFrameProp) : TIpHtmlFrameProp;
@@ -2434,19 +2338,11 @@ type
     property OnInvalidateRect : TInvalidateEvent
       read FOnInvalidateRect write FOnInvalidateRect;
     property Target : TCanvas read FTarget;
-   {$IFDEF IP_LAZARUS}
-    property TextColor : TColorRef read FTextColor write FTextColor;
-    property LinkColor : TColorRef read FLinkColor write FLinkColor;
-    property VLinkColor : TColorRef read FVLinkColor write FVLinkColor;
-    property ALinkColor : TColorRef read FALinkColor write FALinkColor;
-    property BgColor : TColorRef read FBgColor write FBgColor;
-   {$ELSE}
     property TextColor : TColor read FTextColor write FTextColor;
     property LinkColor : TColor read FLinkColor write FLinkColor;
     property VLinkColor : TColor read FVLinkColor write FVLinkColor;
     property ALinkColor : TColor read FALinkColor write FALinkColor;
     property BgColor : TColor read FBgColor write FBgColor;
-   {$ENDIF}
     property HasFrames : Boolean read FHasFrames;
     property OnGetImageX : TIpHtmlDataGetImageEvent
                 read FOnGetImageX write FOnGetImageX;
@@ -4474,11 +4370,7 @@ begin
   Invalidate;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.SetAlink(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeBODY.SetAlink(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FAlink then begin
     Falink := Value;
@@ -4494,11 +4386,7 @@ begin
   end;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.SetBgColor(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeBODY.SetBgColor(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FBgColor then begin
     FBgColor := Value;
@@ -4506,11 +4394,7 @@ begin
   end;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.SetLink(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeBODY.SetLink(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FLink then begin
     FLink := Value;
@@ -4518,11 +4402,7 @@ begin
   end;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.SetText(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeBODY.SetText(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FText then begin
     FText := Value;
@@ -4530,11 +4410,7 @@ begin
   end;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeBODY.SetVlink(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeBODY.SetVlink(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FVLink then begin
     FVLink := Value;
@@ -7360,11 +7236,7 @@ begin
       ReportError(SHtmlInvDir);
 end;
 
-{$IFDEF IP_LAZARUS}
-function TIpHtml.ColorFromString(S : string) : TColorRef;
-{$ELSE}
 function TIpHtml.ColorFromString(S : string) : TColor;
-{$ENDIF}
 var
   R, G, B, Err : Integer;
 begin
@@ -9191,11 +9063,7 @@ begin
   FSize.Free;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlNodeFONT.SetColor(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlNodeFONT.SetColor(const Value: TColor);
-{$ENDIF}
 begin
   if Value <> FColor then begin
     FColor := Value;
@@ -14809,11 +14677,7 @@ begin
   Result := PropA.BaseFontSize;
 end;
 
-{$IFDEF IP_LAZARUS}
-function TIpHtmlProps.GetBgColor: TColorRef;
-{$ELSE}
 function TIpHtmlProps.GetBgColor: TColor;
-{$ENDIF}
 begin
   Result := PropB.BgColor;
 end;
@@ -14904,11 +14768,7 @@ function TIpHtml.FindPropB(
   const pLinkColor : TColor;
   const pVLinkColor : TColor;
   const pALinkColor : TColor;
-  {$IFDEF IP_LAZARUS}
-  const pBgColor : TColorRef;
-  {$ELSE}
   const pBgColor : TColor;
-  {$ENDIF}
   const pPreformatted : Boolean;
   const pNoBreak : Boolean
   ): TIpHtmlPropB;
@@ -14989,11 +14849,7 @@ begin
   end;
 end;
 
-{$IFDEF IP_LAZARUS}
-procedure TIpHtmlProps.SetBgColor(const Value: TColorRef);
-{$ELSE}
 procedure TIpHtmlProps.SetBgColor(const Value: TColor);
-{$ENDIF}
 var
   NewPropB : TIpHtmlPropB;
 begin
