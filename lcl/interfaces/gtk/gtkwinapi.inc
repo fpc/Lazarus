@@ -8569,7 +8569,7 @@ begin
   DbgOut(' OldFocus=',GetWidgetDebugReport(PGtkWidget(Result)));
   DebugLn('');
   if not GTK_WIDGET_VISIBLE(Widget) then
-    Raise Exception('TGtkWidgetSet.SetFocus: Widget is not visible');
+    raise Exception.Create('TGtkWidgetSet.SetFocus: Widget is not visible');
   {$EndIf}
 
   if Result=hWnd then exit;

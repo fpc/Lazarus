@@ -561,7 +561,7 @@ function GTKAPIWidgetClient_FocusIn(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusIn ',DbgS(AWidget),' ',dbgs(event^.thein));
+  DebugLn('GTKAPIWidgetClient_FocusIn ',DbgS(AWidget),' ',dbgs(event^.{$ifdef gtk1}thein{$else}_in{$endif}));
   {$ENDIF}
   
   gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
@@ -579,7 +579,7 @@ function GTKAPIWidgetClient_FocusOut(AWidget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
-  DebugLn('GTKAPIWidgetClient_FocusOut ',DbgS(AWidget),' ',dbgs(event^.thein));
+  DebugLn('GTKAPIWidgetClient_FocusOut ',DbgS(AWidget),' ',dbgs(event^.{$ifdef gtk1}thein{$else}_in{$endif}));
   {$ENDIF}
   
   gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);

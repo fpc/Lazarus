@@ -603,7 +603,7 @@ begin
 
   FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
-  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
+  write('gtkfrmactivateAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -657,7 +657,7 @@ begin
   {$ENDIF}
   if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
-  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^.theIn,
+  write('gtkfrmdeactivate Widget=',DbgS(Widget),' ',Event^.{$ifdef gtk1}thein{$else}_in{$endif},
         ' GetFocus=',DbgS(Widget));
   LCLObject:=TControl(GetLCLObject(Widget));
   if LCLObject<>nil then
@@ -715,7 +715,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
+  write('GTKFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -762,7 +762,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
+  write('GTKFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -815,7 +815,7 @@ begin
   if (Widget=nil) or (Event=nil) then ;
   //DebugLn('GTKKillFocusCB ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
+  write('GTKillFocusCB Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -865,7 +865,7 @@ begin
   {$ENDIF}
   //DebugLn('GTKKillFocusCBAfter ',DbgSName(TObject(Data)),' ',GetWidgetDebugReport(Widget));
   {$IFDEF VerboseFocus}
-  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.theIn);
+  write('GTKillFocusCBAfter Widget=',DbgS(Widget),' Event^.theIn=',Event^.{$ifdef gtk1}thein{$else}_in{$endif});
   LCLObject:=TObject(data);
   if LCLObject<>nil then begin
     if LCLObject is TComponent then begin
@@ -2637,7 +2637,7 @@ begin
   end;
 end;
 
-function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
+function GtkSwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
   data: gPointer): GBoolean; cdecl;
 var
   Mess: TLMNotify;
