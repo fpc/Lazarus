@@ -63,7 +63,8 @@ uses
   WSToolwin,
   WSProc,
   WSDesigner,
-  DefaultTranslator;
+  // Other units
+  DefaultTranslator, utf8wstring;
 
 implementation
 
