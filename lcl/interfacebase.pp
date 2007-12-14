@@ -33,9 +33,6 @@ interface
 {$endif}
 
 uses
-{$ifdef UseUTF8WString}
-  utf8wstring,
-{$endif}
   Types, Classes, SysUtils, Math, LCLStrConsts, LCLType, LCLProc, LMessages,
   GraphType, GraphMath, Themes;
 

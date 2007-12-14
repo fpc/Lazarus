@@ -64,7 +64,7 @@ uses
   WSProc,
   WSDesigner,
   // Other units
-  DefaultTranslator, utf8wstring;
+  DefaultTranslator;
 
 implementation
 

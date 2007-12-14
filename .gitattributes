@@ -3272,7 +3272,6 @@ lcl/themes.pas svneol=native#text/pascal
 lcl/tmschema.pas svneol=native#text/pascal
 lcl/toolwin.pp svneol=native#text/pascal
 lcl/translations.pas svneol=native#text/pascal
-lcl/utf8wstring.pas -text
 lcl/utrace.pp svneol=native#text/pascal
 lcl/widgetset/README.txt svneol=native#text/plain
 lcl/widgetset/wsactnlist.pp svneol=native#text/pascal
