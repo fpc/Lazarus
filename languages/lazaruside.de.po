@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-13 18:04+0100\n"
+"PO-Revision-Date: 2007-12-14 16:49+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -6806,7 +6806,7 @@ msgstr "Fenstergröße wiederherstellen"
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
-msgstr "Ergebnosse"
+msgstr "Ergebnisse"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
