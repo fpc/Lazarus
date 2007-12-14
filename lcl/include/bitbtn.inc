@@ -38,7 +38,6 @@ end;
 destructor TCustomBitBtn.Destroy;
 Begin
   FreeThenNil(FButtonGlyph);
-  FreeThenNil(FMultiGlyph);
   inherited Destroy;
 end;
 

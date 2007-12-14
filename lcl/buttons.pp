@@ -130,7 +130,6 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FSpacing: Integer;
-    FMultiGlyph: TBitmap;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: Integer;
     Function IsGlyphStored: Boolean;
