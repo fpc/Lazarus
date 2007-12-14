@@ -21,22 +21,24 @@ var
   NoteBookWidget: PGtkWidget;
   PageWidget: PGtkWidget;
   TabWidget: PGtkWidget;
+  ImageIndex: Integer;
 begin
-  NoteBook:=Page.Parent as TCustomNotebook;
-  if (NoteBook.Images=nil) or (Page.ImageIndex<0)
-  or (Page.ImageIndex>=NoteBook.Images.Count)
+  NoteBook := Page.Parent as TCustomNotebook;
+  ImageIndex := NoteBook.GetImageIndex(Page.PageIndex);
+  if (NoteBook.Images = nil) or (ImageIndex < 0)
+  or (Page.ImageIndex >= NoteBook.Images.Count)
   or (not NoteBook.HandleAllocated)
   or (not Page.HandleAllocated)
   then exit;
-  NoteBookWidget:=PGtkWidget(NoteBook.Handle);
-  PageWidget:=PGtkWidget(Page.Handle);
+  NoteBookWidget := PGtkWidget(NoteBook.Handle);
+  PageWidget := PGtkWidget(Page.Handle);
 
   // get the tab container and the tab icon widget
-  TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
+  TabWidget := gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
-  if TabWidget=nil then exit;
+  if TabWidget = nil then exit;
   {$note reimplement}
-  DrawImageListIconOnWidget(NoteBook.Images,Page.ImageIndex,Widget);
+  DrawImageListIconOnWidget(NoteBook.Images, ImageIndex, Widget);
 end;
 
 function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
@@ -48,8 +50,8 @@ begin
   //DebugLn('PageIconWidgetExposeAfter ',DbgS(Widget));
   EventTrace('PageIconWidgetExposeAfter', Data);
   if (Event^.Count > 0) then exit;
-  ThePage:=TObject(Data) as TCustomPage;
-  DrawNotebookPageIcon(ThePage,Widget);
+  ThePage := TObject(Data) as TCustomPage;
+  DrawNotebookPageIcon(ThePage, Widget);
 end;
 
 {$IFNDEF GTK2}
@@ -62,7 +64,7 @@ begin
   //DebugLn('PageIconWidgetDrawAfter ',DbgS(Widget),' ',Area^.x,',',Area^.y);
   EventTrace('PageIconWidgetDrawAfter', Data);
   ThePage:=TObject(Data) as TCustomPage;
-  DrawNotebookPageIcon(ThePage,Widget);
+  DrawNotebookPageIcon(ThePage, Widget);
 end;
 {$ENDIF}
 

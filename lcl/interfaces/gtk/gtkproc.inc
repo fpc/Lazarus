@@ -1227,6 +1227,7 @@ var
   ImageHeight: Integer;
   WindowWidth, WindowHeight: integer;
   DestDC: HDC;
+  FixedWidget: PGtkWidget;
 begin
   if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
@@ -1237,13 +1238,26 @@ begin
   ImgList.GetBitmap(Index, Bitmap, AEffect);
   if (ImageWidth<1) or (ImageHeight<1) then exit;
 
-  WindowWidth:=DestWidget^.allocation.width;
-  WindowHeight:=DestWidget^.allocation.height;
+  WindowWidth := DestWidget^.allocation.width;
+  WindowHeight := DestWidget^.allocation.height;
+
+  DestLeft := DestWidget^.allocation.x;
+  DestTop := DestWidget^.allocation.y;
+
+  // if our widget is placed on non-window fixed then we should substract its allocation here
+  // since in GetDC we will get this difference in offset
+  FixedWidget := GetFixedWidget(DestWidget);
+  if (FixedWidget <> nil) and GTK_WIDGET_NO_WINDOW(FixedWidget) then
+  begin
+    dec(DestLeft, FixedWidget^.allocation.x);
+    dec(DestTop, FixedWidget^.allocation.y);
+  end;
+    
   if CenterHorizontally then
-    DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
+    inc(DestLeft, ((WindowWidth-ImageWidth) div 2));
   if CenterVertically then
-    DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
-  DestDC:=GetDC(HDC(PtrUInt(DestWidget)));
+    inc(DestTop, ((WindowHeight-ImageHeight) div 2));
+  DestDC := GetDC(HDC(PtrUInt(DestWidget)));
 
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
   //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
@@ -4231,44 +4245,52 @@ var
   var
     HasIcon: Boolean;
     IconSize: TPoint;
+    ImageIndex: Integer;
   begin
     HasIcon:=false;
     IconSize:=Point(0,0);
+    ImageIndex := TheNoteBook.GetImageIndex(ThePage.PageIndex);
     if (TheNoteBook.Images<>nil)
-    and (ThePage.ImageIndex>=0)
-    and (ThePage.ImageIndex<TheNoteBook.Images.Count) then begin
+    and (ImageIndex >= 0)
+    and (ImageIndex < TheNoteBook.Images.Count) then
+    begin
       // page has valid image
-      IconSize:=Point(TheNoteBook.Images.Width,TheNoteBook.Images.Height);
-      HasIcon:=(IconSize.X>0) and (IconSize.Y>0);
+      IconSize := Point(TheNoteBook.Images.Width, TheNoteBook.Images.Height);
+      HasIcon := (IconSize.X>0) and (IconSize.Y>0);
     end;
 
-    if HasIcon then begin
+    if HasIcon then
+    begin
       // page has an image
-      if TabImageWidget<>nil then begin
+      if TabImageWidget <> nil then
+      begin
         // there is already an icon widget for the image in the tab
         // -> resize the icon widget
         gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
-      end else begin
+      end else
+      begin
         // there is no pixmap for the image in the tab
         // -> insert one ot the left side of the label
-        TabImageWidget:= gtk_label_new(#0);
+        TabImageWidget := gtk_label_new(#0);
         g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
                            TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
         {$IFNDEF GTK2}
         g_signal_connect(PgtkObject(TabImageWidget), 'draw',
                              TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
         {$ENDIF}
-        gtk_object_set_data(PGtkObject(TabWidget),'TabImage',TabImageWidget);
-        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
+        gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', TabImageWidget);
+        gtk_widget_set_usize(TabImageWidget, IconSize.X, IconSize.Y);
         gtk_widget_show(TabImageWidget);
-        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabImageWidget);
-        gtk_box_reorder_child(PGtkBox(TabWidget),TabImageWidget,0);
+        gtk_box_pack_start_defaults(PGtkBox(TabWidget), TabImageWidget);
+        gtk_box_reorder_child(PGtkBox(TabWidget), TabImageWidget, 0);
       end;
-      if MenuImageWidget<>nil then begin
+      if MenuImageWidget<>nil then
+      begin
         // there is already an icon widget for the image in the menu
         // -> resize the icon widget
-        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
-      end else begin
+        gtk_widget_set_usize(MenuImageWidget, IconSize.X, IconSize.Y);
+      end else
+      begin
         // there is no icon widget for the image in the menu
         // -> insert one at the left side of the label
         MenuImageWidget:=gtk_label_new(#0);
@@ -4284,16 +4306,19 @@ var
         gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
         gtk_box_reorder_child(PGtkBox(MenuWidget),MenuImageWidget,0);
       end;
-    end else begin
+    end else
+    begin
       // page does not have an image
-      if TabImageWidget<>nil then begin
+      if TabImageWidget<>nil then
+      begin
         // there is a pixmap for an old image in the tab
         // -> remove the icon widget
         DestroyWidget(TabImageWidget);
         gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
         TabImageWidget:=nil;
       end;
-      if MenuImageWidget<>nil then begin
+      if MenuImageWidget<>nil then
+      begin
         // there is a pixmap for an old image in the menu
         // -> remove the icon widget
         DestroyWidget(MenuImageWidget);
