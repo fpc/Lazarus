@@ -1,21 +1,28 @@
 { This is an automatically generated lazarus resource file }
 
-
 LazarusResources.Add('TLazDocEditForm','FORMDATA',[
-  'TPF0'#15'TLazDocEditForm'#14'LazDocEditForm'#4'Left'#3#205#0#6'Height'#2'u'#3
-  +'Top'#3#255#1#5'Width'#3#241#2#18'HorzScrollBar.Page'#3#240#2#18'VertScrollB'
-  +'ar.Page'#2't'#13'ActiveControl'#7#18'InheritedShortEdit'#7'Caption'#6#13'La'
-  +'zDoc editor'#12'ClientHeight'#2'u'#11'ClientWidth'#3#241#2#8'OnCreate'#7#10
-  +'FormCreate'#9'OnDestroy'#7#11'FormDestroy'#8'OnResize'#7#10'FormResize'#0#12
-  +'TPageControl'#11'PageControl'#4'Left'#2#17#6'Height'#2'u'#5'Width'#3#224#2
-  +#10'ActivePage'#7#17'InheritedTabSheet'#5'Align'#7#8'alClient'#8'TabIndex'#2
-  +#5#8'TabOrder'#2#0#11'TabPosition'#7#8'tpBottom'#0#9'TTabSheet'#13'ShortTabS'
-  +'heet'#7'Caption'#6#13'ShortTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'#3
-  +#220#2#0#5'TEdit'#9'ShortEdit'#6'Height'#2#23#5'Width'#3#218#2#5'Align'#7#5
-  +'alTop'#19'BorderSpacing.Right'#2#2#13'OnEditingDone'#7#22'DocumentationTagC'
-  +'hange'#8'TabOrder'#2#0#4'Text'#6#9'ShortEdit'#0#0#0#9'TTabSheet'#13'DescrTa'
-  +'bSheet'#7'Caption'#6#13'DescrTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'
-  +#3#220#2#0#5'TMemo'#9'DescrMemo'#6'Height'#2'R'#5'Width'#3#218#2#5'Align'#7#8
+  'TPF0'#15'TLazDocEditForm'#14'LazDocEditForm'#4'Left'#3'/'#1#6'Height'#2'u'#3
+  +'Top'#3'$'#2#5'Width'#3#241#2#18'HorzScrollBar.Page'#3#240#2#18'VertScrollBa'
+  +'r.Page'#2't'#13'ActiveControl'#7#9'ShortEdit'#7'Caption'#6#13'LazDoc editor'
+  +#12'ClientHeight'#2'u'#11'ClientWidth'#3#241#2#8'OnCreate'#7#10'FormCreate'#9
+  +'OnDestroy'#7#11'FormDestroy'#8'OnResize'#7#10'FormResize'#0#12'TPageControl'
+  +#11'PageControl'#4'Left'#2#17#6'Height'#2'u'#5'Width'#3#224#2#10'ActivePage'
+  +#7#13'ShortTabSheet'#5'Align'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#0
+  +#11'TabPosition'#7#8'tpBottom'#0#9'TTabSheet'#13'ShortTabSheet'#7'Caption'#6
+  +#13'ShortTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'#3#220#2#0#5'TEdit'#9
+  +'ShortEdit'#6'Height'#2#23#5'Width'#3#218#2#5'Align'#7#5'alTop'#19'BorderSpa'
+  +'cing.Right'#2#2#13'OnEditingDone'#7#22'DocumentationTagChange'#8'TabOrder'#2
+  +#0#4'Text'#6#9'ShortEdit'#0#0#7'TButton'#12'CreateButton'#21'AnchorSideTop.C'
+  +'ontrol'#7#9'ShortEdit'#18'AnchorSideTop.Side'#7#9'asrBottom'#4'Left'#2#6#6
+  +'Height'#2#29#3'Top'#2#29#5'Width'#2'b'#8'AutoSize'#9#20'BorderSpacing.Aroun'
+  +'d'#2#6#7'Caption'#6#12'CreateButton'#7'OnClick'#7#17'CreateButtonClick'#8'T'
+  +'abOrder'#2#1#0#0#7'TButton'#10'SaveButton'#22'AnchorSideLeft.Control'#7#12
+  +'CreateButton'#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Contr'
+  +'ol'#7#12'CreateButton'#4'Left'#2'n'#6'Height'#2#29#3'Top'#2#29#5'Width'#2'W'
+  +#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#7'Caption'#6#10'SaveButton'#7'OnCl'
+  +'ick'#7#15'SaveButtonClick'#8'TabOrder'#2#2#0#0#0#9'TTabSheet'#13'DescrTabSh'
+  +'eet'#7'Caption'#6#13'DescrTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'#3
+  +#220#2#0#5'TMemo'#9'DescrMemo'#6'Height'#2'R'#5'Width'#3#218#2#5'Align'#7#8
   +'alClient'#19'BorderSpacing.Right'#2#2#20'BorderSpacing.Bottom'#2#4#13'Lines'
   +'.Strings'#1#6#9'DescrMemo'#0#8'OnChange'#7#22'DocumentationTagChange'#8'Tab'
   +'Order'#2#0#0#0#0#9'TTabSheet'#14'ErrorsTabSheet'#7'Caption'#6#14'ErrorsTabS'
@@ -58,7 +65,7 @@ LazarusResources.Add('TLazDocEditForm','FORMDATA',[
   +'bOrder'#2#1#0#0#0#9'TTabSheet'#17'InheritedTabSheet'#7'Caption'#6#17'Inheri'
   +'tedTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'#3#220#2#0#6'TLabel'#19'I'
   +'nheritedShortLabel'#6'Height'#2#20#3'Top'#2#2#5'Width'#3#220#2#5'Align'#7#5
-  +'alTop'#17'BorderSpacing.Top'#2#2#7'Caption'#6#19'InheritedShortLabel'#11'Pa'
+  ,'alTop'#17'BorderSpacing.Top'#2#2#7'Caption'#6#19'InheritedShortLabel'#11'Pa'
   +'rentColor'#8#0#0#5'TEdit'#18'InheritedShortEdit'#22'AnchorSideLeft.Control'
   +#7#17'InheritedTabSheet'#21'AnchorSideTop.Control'#7#19'InheritedShortLabel'
   +#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRight.Control'#7#17'Inhe'
@@ -66,7 +73,7 @@ LazarusResources.Add('TLazDocEditForm','FORMDATA',[
   +#2#24#5'Width'#3#220#2#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#17'Bord'
   +'erSpacing.Top'#2#2#8'ReadOnly'#9#8'TabOrder'#2#0#4'Text'#6#18'InheritedShor'
   +'tEdit'#0#0#7'TButton'#21'MoveToInheritedButton'#6'Height'#2#29#3'Top'#2'6'#5
-  ,'Width'#3#158#0#8'AutoSize'#9#7'Caption'#6#21'MoveToInheritedButton'#7'OnCli'
+  +'Width'#3#158#0#8'AutoSize'#9#7'Caption'#6#21'MoveToInheritedButton'#7'OnCli'
   +'ck'#7#26'MoveToInheritedButtonClick'#8'TabOrder'#2#1#0#0#7'TButton'#23'Copy'
   +'FromInheritedButton'#22'AnchorSideLeft.Control'#7#21'MoveToInheritedButton'
   +#19'AnchorSideLeft.Side'#7#9'asrBottom'#21'AnchorSideTop.Control'#7#21'MoveT'
@@ -122,7 +129,7 @@ LazarusResources.Add('TLazDocEditForm','FORMDATA',[
   +#9'c #A37A4E",'#13#10'"} '#9'c #F0E1CF",'#13#10'"| '#9'c #BD964F",'#13#10'"1'
   +' '#9'c #977740",'#13#10'"2 '#9'c #7C6038",'#13#10'"3 '#9'c #9C7749",'#13#10
   +'"4 '#9'c #866340",'#13#10'"5 '#9'c #BA8D59",'#13#10'"6 '#9'c #634430",'#13
-  +#10'"7 '#9'c #8A6542",'#13#10'"8 '#9'c #C99761",'#13#10'"9 '#9'c #CC9B62",'
+  ,#10'"7 '#9'c #8A6542",'#13#10'"8 '#9'c #C99761",'#13#10'"9 '#9'c #CC9B62",'
   +#13#10'"0 '#9'c #6C5842",'#13#10'"a '#9'c #82705A",'#13#10'"b '#9'c #A47C4F"'
   +','#13#10'"c '#9'c #614A2F",'#13#10'"d '#9'c #906C45",'#13#10'"e '#9'c #7C51'
   +'3C",'#13#10'"f '#9'c #AD7F54",'#13#10'"g '#9'c #B78858",'#13#10'"h '#9'c #A'
@@ -130,7 +137,7 @@ LazarusResources.Add('TLazDocEditForm','FORMDATA',[
   +' #93705B",'#13#10'"l '#9'c #3F3636",'#13#10'"m '#9'c #D3D3D3",'#13#10'"n '#9
   +'c #CE9E60",'#13#10'"o '#9'c #755738",'#13#10'"p '#9'c #A77951",'#13#10'"q '
   +#9'c #CE9C63",'#13#10'"r '#9'c #3B271D",'#13#10'"s '#9'c #825F4B",'#13#10'"t'
-  ,' '#9'c #D6D5D3",'#13#10'"u '#9'c #EEEAE0",'#13#10'"v '#9'c #AB7A53",'#13#10
+  +' '#9'c #D6D5D3",'#13#10'"u '#9'c #EEEAE0",'#13#10'"v '#9'c #AB7A53",'#13#10
   +'"w '#9'c #745438",'#13#10'"x '#9'c #A77B50",'#13#10'"y '#9'c #948B83",'#13
   +#10'"z '#9'c #261313",'#13#10'"A '#9'c #8B6843",'#13#10'"B '#9'c #634730",'
   +#13#10'"C '#9'c #4B3924",'#13#10'"D '#9'c #B58757",'#13#10'"E '#9'c #816347"'
@@ -186,7 +193,7 @@ LazarusResources.Add('TLazDocEditForm','FORMDATA',[
   +'                 ",'#13#10'"                 ",'#13#10'"                 ",'
   +#13#10'"                 ",'#13#10'"                 ",'#13#10'"            '
   +'     "};'#13#10#9'NumGlyphs'#2#0#7'OnClick'#7#17'FormatButtonClick'#0#0#0#11
-  +'TOpenDialog'#10'OpenDialog'#5'Title'#6#17'Open example file'#6'Filter'#6#28
+  ,'TOpenDialog'#10'OpenDialog'#5'Title'#6#17'Open example file'#6'Filter'#6#28
   +'pascal file|*.pas; *.pp; *.p'#11'FilterIndex'#2#0#4'left'#2'@'#3'top'#2#24#0
   +#0#0
 ]);

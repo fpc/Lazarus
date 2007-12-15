@@ -28,6 +28,8 @@ unit LazDoc;
 
 {$mode objfpc}{$H+}
 
+{ $define VerboseLazDoc}
+
 interface
 
 uses
@@ -37,7 +39,7 @@ uses
   CodeCache, CacheCodeTools, FileProcs,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, LazIDEIntf,
+  MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs, LazIDEIntf,
   // IDE
   CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts, DialogProcs;
 
@@ -84,7 +86,8 @@ type
     destructor Destroy; override;
     function GetModuleNode: TDOMNode;
     function GetFirstElement: TDOMNode;
-    function GetElementWithName(const ElementName: string): TDOMNode;
+    function GetElementWithName(const ElementName: string;
+                                CreateIfNotExists: boolean = false): TDOMNode;
     function GetChildValuesAsString(Node: TDOMNode): String;
     function GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
     function GetValueFromNode(Node: TDOMNode; Item: TFPDocItem): string;
@@ -102,6 +105,7 @@ type
     SourceFilename: string;
     FPDocFilename: string;
     FPDocFilenameTimeStamp: integer;
+    FilesTimeStamp: integer;
   end;
   
   { TLazDocElement }
@@ -166,6 +170,9 @@ type
                             const AMethod: TMethod);
     procedure CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
                                   Doc: TLazFPDocFile);
+    function DoCreateFPDocFileForSource(const SrcFilename: string): string;
+    function CreateFPDocFile(const ExpandedFilename, PackageName,
+                             ModuleName: string): TCodeBuffer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -183,7 +190,8 @@ type
                                        out CacheWasUsed: boolean): string;
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean;
-                                       out CacheWasUsed: boolean): string;
+                                       out CacheWasUsed: boolean;
+                                       CreateIfNotExists: boolean = false): string;
     function CodeNodeToElementName(Tool: TFindDeclarationTool;
                                    CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
@@ -192,12 +200,18 @@ type
     function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
                                  out ListOfPCodeXYPosition: TFPList;
                                  out CacheWasUsed: boolean): TLazDocParseResult;
+    function GetCodeContext(CodePos: PCodeXYPosition;
+                            out FindContext: TFindContext;
+                            Complete: boolean;
+                            out CacheWasUsed: boolean): TLazDocParseResult;
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TLazDocElementChain;
                              out CacheWasUsed: boolean): TLazDocParseResult;
     function GetHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                      out Hint: string;
                      out CacheWasUsed: boolean): TLazDocParseResult;
+    function CreateElement(Code: TCodeBuffer; X, Y: integer;
+                           out Element: TLazDocElement): Boolean;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
@@ -308,11 +322,14 @@ begin
 
   //proceed to element
   Result := Result.FirstChild;
-  while Result.NodeName <> 'element' do
+  while (Result<>nil) and (Result.NodeName <> 'element') do
     Result := Result.NextSibling;
 end;
 
-function TLazFPDocFile.GetElementWithName(const ElementName: string): TDOMNode;
+function TLazFPDocFile.GetElementWithName(const ElementName: string;
+  CreateIfNotExists: boolean): TDOMNode;
+var
+  ModuleNode: TDOMNode;
 begin
   Result:=GetFirstElement;
   //DebugLn(['TLazFPDocFile.GetElementWithName ',ElementName,' GetFirstElement=',GetFirstElement<>nil]);
@@ -325,6 +342,19 @@ begin
       exit;
     Result:=Result.NextSibling;
   end;
+  if (Result=nil) and CreateIfNotExists then begin
+    DebugLn(['TLazFPDocFile.GetElementWithName creating ',ElementName]);
+    ModuleNode:=GetModuleNode;
+    if ModuleNode=nil then begin
+      DebugLn(['TLazFPDocFile.GetElementWithName create failed: missing module name. ElementName=',ElementName]);
+      exit;
+    end;
+    Result:=Doc.CreateElement('element');
+    DocChanging;
+    TDOMElement(Result).SetAttribute('name',ElementName);
+    ModuleNode.AppendChild(Result);
+    DocChanged;
+  end;
 end;
 
 function TLazFPDocFile.GetChildValuesAsString(Node: TDOMNode): String;
@@ -335,8 +365,10 @@ begin
   Child:=Node.FirstChild;
   while Child<>nil do begin
     //DebugLn(['TLazFPDocFile.GetChildValuesAsString ',dbgsName(Child)]);
-    if Child is TDOMText then
+    if Child is TDOMText then begin
+      //DebugLn(['TLazFPDocFile.GetChildValuesAsString Data="',TDOMText(Child).Data,'" Length=',TDOMText(Child).Length]);
       Result:=Result+TDOMText(Child).Data;
+    end;
     Child:=Child.NextSibling;
   end;
 end;
@@ -379,6 +411,7 @@ var
 begin
   Result:='';
   Child:=Node.FindNode(FPDocItemNames[Item]);
+  //DebugLn(['TLazFPDocFile.GetValueFromNode ',FPDocItemNames[Item],' Found=',Child<>nil]);
   if Child<>nil then begin
     if Item=fpdiExample then
       Result := Child.Attributes.GetNamedItem('file').NodeValue
@@ -391,6 +424,7 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
   NewValue: string);
 var
   Child: TDOMNode;
+  TextNode: TDOMText;
 begin
   Child:=Node.FindNode(ChildName);
   NewValue:=ToUnixLineEnding(NewValue);
@@ -416,22 +450,21 @@ begin
     if NewValue<>'' then begin
       DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
       DocChanging;
-      Child := Doc.CreateTextNode(NewValue);
+      Child := Doc.CreateElement(ChildName);
       Node.AppendChild(Child);
+      TextNode := Doc.CreateTextNode(NewValue);
+      Child.AppendChild(TextNode);
       DocChanged;
     end;
-  end else begin
+  end else if GetChildValuesAsString(Child)<>NewValue then begin
     // change node
-    if Child.FirstChild=nil then begin
-      DebugLn(['TLazFPDocFile.SetChildValue FAILED ',Node.NodeName,' ChildName=',Child.NodeName,' Child.FirstChild=nil']);
-      exit;
-    end;
-    if Child.FirstChild.NodeValue <> NewValue then begin
-      DebugLn(['TLazDocForm.CheckAndWriteNode Changing ',Node.NodeName,' ChildName=',Child.NodeName,' OldValue=',Child.FirstChild.NodeValue,' NewValue="',NewValue,'"']);
-      DocChanging;
-      Child.FirstChild.NodeValue := NewValue;
-      DocChanged;
-    end;
+    DocChanging;
+    while Child.FirstChild<>nil do
+      Child.FirstChild.Free;
+    DebugLn(['TLazDocForm.CheckAndWriteNode Changing ',Node.NodeName,' ChildName=',Child.NodeName,' OldValue=',Child.FirstChild.NodeValue,' NewValue="',NewValue,'"']);
+    TextNode := Doc.CreateTextNode(NewValue);
+    Child.AppendChild(TextNode);
+    DocChanged;
   end;
 end;
 
@@ -493,6 +526,194 @@ begin
   i:=FHandlers[HandlerType].Count;
   while FHandlers[HandlerType].NextDownIndex(i) do
     TLazDocChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
+end;
+
+function TLazDocManager.DoCreateFPDocFileForSource(const SrcFilename: string
+  ): string;
+  
+  procedure CleanUpPkgList(var PkgList: TFPList);
+  var
+    i: Integer;
+    AProject: TLazProject;
+    BaseDir: String;
+    APackage: TLazPackage;
+  begin
+    if (PkgList=nil) then exit;
+    for i:=PkgList.Count-1 downto 0 do begin
+      if TObject(PkgList[i]) is TLazProject then begin
+        AProject:=TLazProject(PkgList[i]);
+        BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+        if BaseDir<>'' then continue;
+      end else if TObject(PkgList[i]) is TLazPackage then begin
+        APackage:=TLazPackage(PkgList[i]);
+        BaseDir:=APackage.Directory;
+        if BaseDir<>'' then continue;
+      end;
+      // this owner can not be used
+      PkgList.Delete(i);
+    end;
+    if PkgList.Count=0 then
+      FreeAndNil(PkgList);
+      
+    if PkgList.Count>1 then begin
+      // there are more than one possible owners
+      DebugLn(['TLazDocManager.DoCreateFPDocFileForSource.CleanUpPkgList Warning: overlapping projects/packages']);
+    end;
+  end;
+  
+  function SelectNewLazDocPaths(const Title, BaseDir: string): string;
+  begin
+    Result:=LazSelectDirectory('Choose LazDoc directory for '+Title,BaseDir);
+  end;
+  
+var
+  PkgList: TFPList;
+  NewOwner: TObject;
+  AProject: TLazProject;
+  APackage: TLazPackage;
+  p: Integer;
+  LazDocPaths: String;
+  LazDocPackageName: String;
+  NewPath: String;
+  BaseDir: String;
+  Code: TCodeBuffer;
+  CurUnitName: String;
+  AVLNode: TAvgLvlTreeNode;
+begin
+  Result:='';
+  DebugLn(['TLazDocManager.DoCreateFPDocFileForSource ',SrcFilename]);
+  if not FilenameIsAbsolute(SrcFilename) then begin
+    DebugLn(['TLazDocManager.DoCreateFPDocFileForSource failed, because file no absolute: ',SrcFilename]);
+    exit;
+  end;
+
+  PkgList:=nil;
+  try
+    // get all packages owning the file
+    PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
+    CleanUpPkgList(PkgList);
+    if (PkgList=nil) then begin
+      PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
+      CleanUpPkgList(PkgList);
+    end;
+    if PkgList=nil then begin
+      // no package/project found
+      MessageDlg('Package not found',
+        'The unit '+SrcFilename+' is not owned be any package or project.'#13
+        +'Please add the unit to a package or project.'#13
+        +'Unable to create the fpdoc file.',mtError,[mbCancel],0);
+      exit;
+    end;
+
+    NewOwner:=TObject(PkgList[0]);
+    if NewOwner is TLazProject then begin
+      AProject:=TLazProject(NewOwner);
+      BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
+      if AProject.LazDocPaths='' then
+        AProject.LazDocPaths:=SelectNewLazDocPaths(AProject.ShortDescription,BaseDir);
+      LazDocPaths:=AProject.LazDocPaths;
+      LazDocPackageName:=ExtractFileNameOnly(AProject.ProjectInfoFile);
+    end else if NewOwner is TLazPackage then begin
+      APackage:=TLazPackage(NewOwner);
+      BaseDir:=APackage.Directory;
+      if APackage.LazDocPaths='' then
+        APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
+      LazDocPaths:=APackage.LazDocPaths;
+      LazDocPackageName:=APackage.Name;
+    end else begin
+      DebugLn(['TLazDocManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
+      exit;
+    end;
+      
+    p:=1;
+    repeat
+      NewPath:=GetNextDirectoryInSearchPath(LazDocPaths,p);
+      if not FilenameIsAbsolute(NewPath) then
+        NewPath:=AppendPathDelim(BaseDir)+NewPath;
+      if DirPathExistsCached(NewPath) then begin
+        // fpdoc directory found
+        Result:=AppendPathDelim(NewPath)+lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+        Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+        // get unitname
+        CurUnitName:=ExtractFileNameOnly(SrcFilename);
+        if Code<>nil then
+          CurUnitName:=CodeToolBoss.GetSourceName(Code,false);
+        // remove cache (source to fpdoc filename)
+        AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),
+                                      @CompareAnsistringWithLDSrc2DocSrcFile);
+        if AVLNode<>nil then
+          FSrcToDocMap.FreeAndDelete(AVLNode);
+        // create fpdoc file
+        if CreateFPDocFile(Result,LazDocPackageName,CurUnitName)=nil then
+          Result:='';
+        exit;
+      end;
+    until false;
+    
+    // no valid directory found
+    DebugLn(['TLazDocManager.DoCreateFPDocFileForSource LazDocModul="',LazDocPackageName,'" LazDocPaths="',LazDocPaths,'" ']);
+    MessageDlg('No valid lazdoc path',
+      LazDocPackageName+' does not have any valid lazdoc path.'#13
+      +'Unable to create the fpdoc file for '+SrcFilename,mtError,[mbCancel],0);
+  finally
+    PkgList.Free;
+  end;
+end;
+
+function TLazDocManager.CreateFPDocFile(const ExpandedFilename,
+  PackageName, ModuleName: string): TCodeBuffer;
+var
+  Doc: TXMLDocument;
+  DescrNode: TDOMElement;
+  ms: TMemoryStream;
+  s: string;
+  ModuleNode: TDOMElement;
+  PackageNode: TDOMElement;
+begin
+  Result:=nil;
+  if FileExistsCached(ExpandedFilename) then begin
+    Result:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
+    exit;
+  end;
+  Result:=CodeToolBoss.CreateFile(ExpandedFilename);
+  if Result=nil then begin
+    MessageDlg('Unable to create file',
+      'Unable to create file '+ExpandedFilename,mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  Doc:=nil;
+  ms:=nil;
+  try
+    Doc:=TXMLDocument.Create;
+    // <fpdoc-descriptions>
+    DescrNode:=Doc.CreateElement('fpdoc-descriptions');
+    Doc.AppendChild(DescrNode);
+    //   <package name="packagename">
+    PackageNode:=Doc.CreateElement('package');
+    PackageNode.SetAttribute('name',PackageName);
+    DescrNode.AppendChild(PackageNode);
+    //   <module name="unitname">
+    ModuleNode:=Doc.CreateElement('module');
+    ModuleNode.SetAttribute('name',ModuleName);
+    PackageNode.AppendChild(ModuleNode);
+    // write the XML to a string
+    ms:=TMemoryStream.Create;
+    WriteXMLFile(Doc,ms);
+    ms.Position:=0;
+    SetLength(s,ms.Size);
+    if s<>'' then
+      ms.Read(s[1],length(s));
+    // copy to codebuffer
+    //DebugLn(['TLazDocManager.CreateFPDocFile ',s]);
+    Result.Source:=s;
+    // save file
+    if SaveCodeBuffer(Result)<>mrOk then
+      Result:=nil;
+  finally
+    ms.Free;
+    Doc.Free;
+  end;
 end;
 
 constructor TLazDocManager.Create;
@@ -647,7 +868,8 @@ begin
 end;
 
 function TLazDocManager.GetFPDocFilenameForSource(SrcFilename: string;
-  ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean): string;
+  ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
+  CreateIfNotExists: boolean): string;
 var
   FPDocName: String;
   SearchPath: String;
@@ -671,9 +893,9 @@ var
     if not FilenameIsAbsolute(SrcFilename) then exit;
     
     if CheckSourceDirectories then begin
-      PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
-    end else begin
       PkgList:=PackageEditingInterface.GetPossibleOwnersOfUnit(SrcFilename,[]);
+    end else begin
+      PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
     end;
     // get all packages owning the file
     if PkgList=nil then exit;
@@ -730,46 +952,61 @@ begin
     end;
   end;
   
-  if not FilenameIsPascalSource(SrcFilename) then exit;
+  if not FilenameIsPascalSource(SrcFilename) then begin
+    DebugLn(['TLazDocManager.GetFPDocFilenameForSource error: not a source file: "',SrcFilename,'"']);
+    exit;
+  end;
   
-  // first try cache
-  MapEntry:=nil;
-  AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),@CompareAnsistringWithLDSrc2DocSrcFile);
-  if AVLNode<>nil then begin
-    MapEntry:=TLDSourceToFPDocFile(AVLNode.Data);
-    if MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp then begin
-      Result:=MapEntry.FPDocFilename;
-      exit;
+  try
+    // first try cache
+    MapEntry:=nil;
+    AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),
+                                  @CompareAnsistringWithLDSrc2DocSrcFile);
+    if AVLNode<>nil then begin
+      MapEntry:=TLDSourceToFPDocFile(AVLNode.Data);
+      if (MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp)
+      and (MapEntry.FilesTimeStamp=FileStateCache.TimeStamp) then begin
+        Result:=MapEntry.FPDocFilename;
+        exit;
+      end;
     end;
-  end;
-  CacheWasUsed:=false;
-  
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocManager.GetFPDocFilenameForSource searching SrcFilename=',SrcFilename]);
-  {$ENDIF}
+    CacheWasUsed:=false;
 
-  // first check if the file is owned by any project/package
-  SearchPath:='';
-  CheckUnitOwners(false);
-  CheckUnitOwners(true);
-  CheckIfInLazarus;
+    {$IFDEF VerboseLazDoc}
+    DebugLn(['TLazDocManager.GetFPDocFilenameForSource searching SrcFilename=',SrcFilename]);
+    {$ENDIF}
 
-  // finally add the default paths
-  AddSearchPath(EnvironmentOptions.LazDocPaths,'');
-  FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
-  {$ENDIF}
-  Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
-  
-  // save to cache
-  if MapEntry=nil then begin
-    MapEntry:=TLDSourceToFPDocFile.Create;
-    MapEntry.SourceFilename:=SrcFilename;
-    FSrcToDocMap.Add(MapEntry);
+    // first check if the file is owned by any project/package
+    SearchPath:='';
+    CheckUnitOwners(false);// first check if file is owned by a package/project
+    CheckUnitOwners(true);// then check if the file is in a source directory of a package/project
+    CheckIfInLazarus;
+
+    // finally add the default paths
+    AddSearchPath(EnvironmentOptions.LazDocPaths,'');
+    FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
+    {$IFDEF VerboseLazDoc}
+    DebugLn(['TLazDocManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
+    {$ENDIF}
+    Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
+
+    // save to cache
+    if MapEntry=nil then begin
+      MapEntry:=TLDSourceToFPDocFile.Create;
+      MapEntry.SourceFilename:=SrcFilename;
+      FSrcToDocMap.Add(MapEntry);
+    end;
+    MapEntry.FPDocFilename:=Result;
+    MapEntry.FPDocFilenameTimeStamp:=CompilerParseStamp;
+    MapEntry.FilesTimeStamp:=FileStateCache.TimeStamp;
+  finally
+    if (Result='') and CreateIfNotExists then begin
+      Result:=DoCreateFPDocFileForSource(SrcFilename);
+    end;
+    {$IFDEF VerboseLazDoc}
+    DebugLn(['TLazDocManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
+    {$ENDIF}
   end;
-  MapEntry.FPDocFilename:=Result;
-  MapEntry.FPDocFilenameTimeStamp:=CompilerParseStamp;
 end;
 
 function TLazDocManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
@@ -841,6 +1078,65 @@ begin
     Result:=ldprFailed;
 end;
 
+function TLazDocManager.GetCodeContext(CodePos: PCodeXYPosition; out
+  FindContext: TFindContext; Complete: boolean; out CacheWasUsed: boolean
+  ): TLazDocParseResult;
+var
+  CurTool: TCodeTool;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
+begin
+  Result:=ldprFailed;
+  FindContext:=CleanFindContext;
+  CacheWasUsed:=true;
+
+  //DebugLn(['TLazDocManager.GetElementChain i=',i,' X=',CodePos^.X,' Y=',CodePos^.Y]);
+  if (CodePos=nil) or (CodePos^.Code=nil) or (CodePos^.X<1) or (CodePos^.Y<1)
+  then begin
+    DebugLn(['TLazDocManager.GetElementChain invalid CodePos']);
+    exit;
+  end;
+
+  // build CodeTree and find node
+  if not CodeToolBoss.Explore(CodePos^.Code,CurTool,false,true) then begin
+    DebugLn(['TLazDocManager.GetElementChain note: there was a parser error']);
+  end;
+  if CurTool=nil then begin
+    DebugLn(['TLazDocManager.GetElementChain explore failed']);
+    exit;
+  end;
+  if CurTool.CaretToCleanPos(CodePos^,CleanPos)<>0 then begin
+    DebugLn(['TLazDocManager.GetElementChain invalid CodePos']);
+    exit;
+  end;
+
+  Node:=CurTool.FindDeepestNodeAtPos(CleanPos,false);
+  if Node=nil then begin
+    DebugLn(['TLazDocManager.GetElementChain node not found']);
+    exit;
+  end;
+
+  // use only definition nodes
+  if (Node.Desc=ctnProcedureHead)
+  and (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
+    Node:=Node.Parent;
+  if not (Node.Desc in
+    (AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnEnumIdentifier]))
+  then begin
+    DebugLn(['TLazDocManager.GetElementChain ignoring node ',Node.DescAsString]);
+    exit;
+  end;
+  if (CurTool.NodeIsForwardDeclaration(Node)) then begin
+    DebugLn(['TLazDocManager.GetElementChain ignoring forward']);
+    exit;
+  end;
+  
+  // success
+  FindContext.Tool:=CurTool;
+  FindContext.Node:=Node;
+  Result:=ldprSuccess;
+end;
+
 function TLazDocManager.GetElementChain(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out Chain: TLazDocElementChain; out CacheWasUsed: boolean
   ): TLazDocParseResult;
@@ -848,12 +1144,10 @@ var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
   CodePos: PCodeXYPosition;
-  CurTool: TCodeTool;
-  CleanPos: integer;
   LDElement: TLazDocElement;
   SrcFilename: String;
   FPDocFilename: String;
-  Node: TCodeTreeNode;
+  FindContext: TFindContext;
 begin
   Chain:=nil;
   ListOfPCodeXYPosition:=nil;
@@ -877,49 +1171,15 @@ begin
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
       // get source position of declaration
       CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-      //DebugLn(['TLazDocManager.GetElementChain i=',i,' X=',CodePos^.X,' Y=',CodePos^.Y]);
-      if (CodePos=nil) or (CodePos^.Code=nil) or (CodePos^.X<1) or (CodePos^.Y<1)
-      then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' invalid CodePos']);
-        continue;
-      end;
-
-      // build CodeTree and find node
-      if not CodeToolBoss.Explore(CodePos^.Code,CurTool,false,true) then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' explore failed']);
-        continue;
-      end;
-      if CurTool.CaretToCleanPos(CodePos^,CleanPos)<>0 then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' invalid CodePos']);
-        continue;
-      end;
-      
-      Node:=CurTool.FindDeepestNodeAtPos(CleanPos,false);
-      if Node=nil then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' node not found']);
-        continue;
-      end;
-
-      // use only definition nodes
-      if (Node.Desc=ctnProcedureHead)
-      and (Node.Parent<>nil) and (Node.Parent.Desc=ctnProcedure) then
-        Node:=Node.Parent;
-      if not (Node.Desc in
-        (AllIdentifierDefinitions+[ctnProperty,ctnProcedure,ctnEnumIdentifier]))
-      then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' ignoring node ',Node.DescAsString]);
-        continue;
-      end;
-      if (CurTool.NodeIsForwardDeclaration(Node)) then begin
-        DebugLn(['TLazDocManager.GetElementChain i=',i,' ignoring forward']);
-        continue;
-      end;
+      Result:=GetCodeContext(CodePos,FindContext,Complete,CacheWasUsed);
+      if Result=ldprFailed then continue; // skip invalid contexts
+      if Result<>ldprSuccess then continue;
+      if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
 
       // add element
       LDElement:=Chain.Add;
       LDElement.CodeXYPos:=CodePos^;
-      LDElement.CodeContext.Tool:=CurTool;
-      LDElement.CodeContext.Node:=Node;
+      LDElement.CodeContext:=FindContext;
       //DebugLn(['TLazDocManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
 
       // find corresponding FPDoc file
@@ -1061,6 +1321,62 @@ begin
   end;
   
   DebugLn(['TLazDocManager.GetHint END Hint="',Hint,'"']);
+end;
+
+function TLazDocManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
+  out Element: TLazDocElement): Boolean;
+var
+  CacheWasUsed: boolean;
+  SrcFilename: String;
+  FPDocFilename: String;
+begin
+  Result:=false;
+  Element:=nil;
+  if Code=nil then begin
+    DebugLn(['TLazDocManager.CreateElement failed Code=nil']);
+    exit;
+  end;
+  DebugLn(['TLazDocManager.CreateElement START ',Code.Filename,' ',X,',',Y]);
+  
+  Element:=TLazDocElement.Create;
+  try
+    // check if code context can have a fpdoc element
+    Element.CodeXYPos.Code:=Code;
+    Element.CodeXYPos.X:=X;
+    Element.CodeXYPos.Y:=Y;
+    if GetCodeContext(@Element.CodeXYPos,Element.CodeContext,true,
+      CacheWasUsed)<>ldprSuccess then
+    begin
+      DebugLn(['TLazDocManager.CreateElement GetCodeContext failed for ',Code.Filename,' ',X,',',Y]);
+      exit;
+    end;
+    Element.ElementName:=CodeNodeToElementName(Element.CodeContext.Tool,
+                                               Element.CodeContext.Node);
+    DebugLn(['TLazDocManager.CreateElement Element.ElementName=',Element.ElementName]);
+
+    // find / create fpdoc file
+    SrcFilename:=Element.CodeContext.Tool.MainFilename;
+    FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed,true);
+    if FPDocFilename='' then begin
+      // no fpdoc file
+      DebugLn(['TLazDocManager.CreateElement unable to create fpdoc file for ',FPDocFilename]);
+    end;
+    DebugLn(['TLazDocManager.CreateElement FPDocFilename=',FPDocFilename]);
+
+    // parse fpdoc file
+    if not LoadFPDocFile(FPDocFilename,true,false,Element.FPDocFile,CacheWasUsed)
+    then begin
+      DebugLn(['TLazDocManager.CreateElement unable to load fpdoc file ',FPDocFilename]);
+      exit;
+    end;
+
+    Element.ElementNode:=Element.FPDocFile.GetElementWithName(
+                                                      Element.ElementName,true);
+    Result:=Element.ElementNode<>nil;
+  finally
+    if not Result then
+      FreeAndNil(Element);
+  end;
 end;
 
 procedure TLazDocManager.FreeDocs;

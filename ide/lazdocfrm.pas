@@ -31,7 +31,7 @@ unit LazDocFrm;
 
 {$mode objfpc}{$H+}
 
-{ $define dbgLazDoc}
+{ $define VerboseLazDoc}
 
 interface
 
@@ -68,6 +68,8 @@ type
   TLazDocEditForm = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
+    SaveButton: TButton;
+    CreateButton: TButton;
     CopyFromInheritedButton: TButton;
     MoveToInheritedButton: TButton;
     InheritedShortEdit: TEdit;
@@ -98,6 +100,7 @@ type
     procedure AddLinkButtonClick(Sender: TObject);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
+    procedure CreateButtonClick(Sender: TObject);
     procedure DeleteLinkButtonClick(Sender: TObject);
     procedure DocumentationTagChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -108,6 +111,7 @@ type
     procedure LinkListBoxClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure MoveToInheritedButtonClick(Sender: TObject);
+    procedure SaveButtonClick(Sender: TObject);
   private
     FCaretXY: TPoint;
     FModified: Boolean;
@@ -126,6 +130,7 @@ type
     function FindInheritedIndex: integer;
     procedure Save;
     function GetValues: TFPDocElementValues;
+    procedure SetModified(const AValue: boolean);
     function WriteNode(Element: TLazDocElement; Values: TFPDocElementValues;
                        Interactive: Boolean): Boolean;
     procedure UpdateChain;
@@ -137,6 +142,7 @@ type
     procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure LoadGUIValues(Element: TLazDocElement);
     procedure MoveToInherited(Element: TLazDocElement);
+    function CreateElement(Element: TLazDocElement): Boolean;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -148,6 +154,7 @@ type
     property Doc: TXMLdocument read GetDoc;
     property SourceFilename: string read GetSourceFilename;
     property CaretXY: TPoint read FCaretXY;
+    property Modified: boolean read FModified write SetModified;
   end;
 
 var
@@ -231,6 +238,11 @@ begin
   InsertCodeTagButton.Hint := lisLazDocHintInsertCodeTag;
   InsertRemarkButton.Hint := lisLazDocHintRemarkTag;
   InsertVarTagButton.Hint := lisLazDocHintVarTag;
+
+  CreateButton.Caption := 'Create help item';
+  CreateButton.Enabled:=false;
+  SaveButton.Caption := 'Save';
+  SaveButton.Enabled:=false;
 
   AddLinkButton.Caption := lisLazDocAddLinkButton;
   DeleteLinkButton.Caption := lisLazDocDeleteLinkButton;
@@ -413,6 +425,11 @@ begin
   end;
 end;
 
+procedure TLazDocEditForm.SaveButtonClick(Sender: TObject);
+begin
+  Save;
+end;
+
 function TLazDocEditForm.GetContextTitle(Element: TLazDocElement): string;
 // get codetools path. for example: TButton.Align
 begin
@@ -487,6 +504,7 @@ begin
   if (fChain<>nil) and (fChain.Count>0) then
     Element:=fChain[0];
   LoadGUIValues(Element);
+  SaveButton.Enabled:=FModified;
 end;
 
 procedure TLazDocEditForm.UpdateInheritedControls;
@@ -597,7 +615,11 @@ var
   OldModified: Boolean;
 begin
   OldModified:=FModified;
+  
   EnabledState := (Element<>nil) and (Element.ElementNode<>nil);
+  
+  CreateButton.Enabled := (Element<>nil) and (Element.ElementNode=nil)
+                          and (Element.ElementName<>'');
 
   if EnabledState then
   begin
@@ -643,6 +665,25 @@ begin
   WriteNode(Element,Values,true);
 end;
 
+function TLazDocEditForm.CreateElement(Element: TLazDocElement): Boolean;
+var
+  NewElement: TLazDocElement;
+begin
+  DebugLn(['TLazDocEditForm.CreateElement ']);
+  if (Element=nil) or (Element.ElementName='') then exit(false);
+  NewElement:=nil;
+  Include(FFlags,ldffWriting);
+  try
+    Result:=LazDocBoss.CreateElement(Element.CodeXYPos.Code,
+                            Element.CodeXYPos.X,Element.CodeXYPos.Y,NewElement);
+  finally
+    Exclude(FFlags,ldffWriting);
+    NewElement.Free;
+  end;
+  Reset;
+  InvalidateChain;
+end;
+
 procedure TLazDocEditForm.Reset;
 begin
   FreeAndNil(fChain);
@@ -656,7 +697,8 @@ begin
   LinkListBox.Clear;
   ExampleEdit.Clear;
 
-  FModified := False;
+  Modified := False;
+  CreateButton.Enabled:=false;
 end;
 
 procedure TLazDocEditForm.InvalidateChain;
@@ -705,7 +747,7 @@ end;
 
 procedure TLazDocEditForm.ClearEntry(DoSave: Boolean);
 begin
-  FModified:=true;
+  Modified:=true;
   ShortEdit.Text:='';
   DescrMemo.Text:='';
   ErrorsMemo.Text:='';
@@ -729,6 +771,7 @@ begin
   end else begin
     FModified := False;
   end;
+  SaveButton.Enabled:=false;
 end;
 
 function TLazDocEditForm.GetValues: TFPDocElementValues;
@@ -738,6 +781,13 @@ begin
   Result[fpdiErrors]:=ErrorsMemo.Text;
   Result[fpdiSeeAlso]:=LinkListBox.Items.Text;
   Result[fpdiExample]:=ExampleEdit.Text;
+end;
+
+procedure TLazDocEditForm.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+  SaveButton.Enabled:=FModified;
 end;
 
 function TLazDocEditForm.WriteNode(Element: TLazDocElement;
@@ -888,7 +938,7 @@ end;
 
 procedure TLazDocEditForm.DocumentationTagChange(Sender: TObject);
 begin
-  FModified := True;
+  Modified := True;
 end;
 
 function TLazDocEditForm.MakeLink: String;
@@ -925,7 +975,7 @@ begin
   if Trim(LinkIdComboBox.Text) <> '' then
   begin
     LinkListBox.Items.Add(MakeLink);
-    FModified := True;
+    Modified := True;
   end;
 end;
 
@@ -951,7 +1001,13 @@ begin
       mtConfirmation,[mrYes,'Replace',mrCancel],0)<>mrYes then exit;
   end;
   LoadGUIValues(fChain[i]);
-  FModified:=true;
+  Modified:=true;
+end;
+
+procedure TLazDocEditForm.CreateButtonClick(Sender: TObject);
+begin
+  if (fChain=nil) or (fChain.Count=0) then exit;
+  CreateElement(fChain[0]);
 end;
 
 procedure TLazDocEditForm.DeleteLinkButtonClick(Sender: TObject);
@@ -959,7 +1015,7 @@ begin
   if LinkListBox.ItemIndex >= 0 then begin
     LinkListBox.Items.Delete(LinkListBox.ItemIndex);
     DebugLn(['TLazDocEditForm.DeleteLinkButtonClick ']);
-    FModified := True;
+    Modified := True;
   end;
 end;
 

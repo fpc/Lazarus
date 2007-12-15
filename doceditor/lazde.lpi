@@ -134,7 +134,7 @@
       <Unit14>
         <Filename Value="lazdemsg.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazdemsg"/>
+        <UnitName Value="LazDEMsg"/>
       </Unit14>
       <Unit15>
         <Filename Value="lazdeopts.pp"/>

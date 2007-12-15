@@ -1,11 +1,11 @@
 object LazDocEditForm: TLazDocEditForm
-  Left = 205
+  Left = 303
   Height = 117
-  Top = 511
+  Top = 548
   Width = 753
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
-  ActiveControl = InheritedShortEdit
+  ActiveControl = ShortEdit
   Caption = 'LazDoc editor'
   ClientHeight = 117
   ClientWidth = 753
@@ -16,9 +16,9 @@ object LazDocEditForm: TLazDocEditForm
     Left = 17
     Height = 117
     Width = 736
-    ActivePage = InheritedTabSheet
+    ActivePage = ShortTabSheet
     Align = alClient
-    TabIndex = 5
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     object ShortTabSheet: TTabSheet
@@ -33,6 +33,33 @@ object LazDocEditForm: TLazDocEditForm
         OnEditingDone = DocumentationTagChange
         TabOrder = 0
         Text = 'ShortEdit'
+      end
+      object CreateButton: TButton
+        AnchorSideTop.Control = ShortEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 29
+        Top = 29
+        Width = 98
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'CreateButton'
+        OnClick = CreateButtonClick
+        TabOrder = 1
+      end
+      object SaveButton: TButton
+        AnchorSideLeft.Control = CreateButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CreateButton
+        Left = 110
+        Height = 29
+        Top = 29
+        Width = 87
+        AutoSize = True
+        BorderSpacing.Left = 6
+        Caption = 'SaveButton'
+        OnClick = SaveButtonClick
+        TabOrder = 2
       end
     end
     object DescrTabSheet: TTabSheet
