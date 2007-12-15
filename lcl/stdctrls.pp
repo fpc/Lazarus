@@ -388,6 +388,7 @@ type
     property AutoCompleteText;
     property AutoDropDown;
     property AutoSelect;
+    property AutoSize;// Note: windows has a fixed height in some styles
     property BidiMode;
     property BorderSpacing;
     property CharCase;
