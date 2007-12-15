@@ -68,7 +68,7 @@ type
 
 var
   LazarusHelp: TBaseHelpManager; // initialized by the IDE
-
+  
 implementation
 
 { THelpDBIRegExprMessage }

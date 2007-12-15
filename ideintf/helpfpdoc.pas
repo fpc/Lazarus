@@ -52,7 +52,7 @@ function RegisterFPDocHTMLHelpForPackage(const DBName, DBTitle, BaseURL,
   directory (where the .lpk file is) and all sub directories.
 
   DBName:      the database ID. The IDE will change it if there is already a DB
-               with this name.
+               with this name. Use the package name.
   DBTitle:     the localized title shown in IDE dialogs.
   BaseURL:     all paths are relative to this URL.
   PackageName: the name of the package.

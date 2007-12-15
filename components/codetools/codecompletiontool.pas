@@ -114,7 +114,7 @@ type
   TCodeCompletionCodeTool = class(TMethodJumpingCodeTool)
   private
     ASourceChangeCache: TSourceChangeCache;
-    FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed
+    FCodeCompleteClassNode: TCodeTreeNode; // the class that is to be completed (ctnClass or ctnClassInterface)
     FCompletingStartNode: TCodeTreeNode; // the first variable/method/GUID node in FCodeCompleteClassNode
     FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
@@ -3732,8 +3732,9 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                         Parts[ppRead].EndPos-Parts[ppRead].StartPos)
     else begin
       if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-      or (AnsiCompareText(AccessParamPrefix,
-              LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
+      or (SysUtils.CompareText(AccessParamPrefix,
+              LeftStr(AccessParam,length(AccessParamPrefix)))=0)
+      or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
       begin
         // create the default read identifier for a function
         AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
@@ -3794,7 +3795,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // complete read access specifier
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-    or (AnsiCompareText(AccessParamPrefix,
+    or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
     begin
       // the read identifier is a function
@@ -3922,7 +3923,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // complete class
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-    or (AnsiCompareText(AccessParamPrefix,
+    or (SysUtils.CompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
     begin
       // add insert demand for function
@@ -4156,7 +4157,7 @@ begin
                 ctnProcedure:
                   begin
                     CurCode:=ExtractProcName(ANode,[]);
-                    if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
+                    if SysUtils.CompareText(CurCode,ANodeExt.ExtTxt2)>0 then
                       break;
                   end;
                   
@@ -4166,7 +4167,7 @@ begin
                         .MixMethodsAndProperties then
                     begin
                       CurCode:=ExtractPropName(ANode,false);
-                      if AnsiCompareStr(CurCode,ANodeExt.ExtTxt2)>0 then
+                      if SysUtils.CompareText(CurCode,ANodeExt.ExtTxt2)>0 then
                         break;
                     end else
                       break;
@@ -4831,6 +4832,11 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
   {$ENDIF}
+  if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+    // interfaces have no implementations
+    exit(true);
+  end;
+  
   Result:=false;
   MethodInsertPolicy:=ASourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy;
   // gather existing class proc bodies
@@ -5115,13 +5121,15 @@ var CleanCursorPos, Indent, insertPos: integer;
       // go through all properties and procs
       //  insert read + write prop specifiers
       //  demand Variables + Procs + Proc Bodies
-      {$IFDEF CTDEBUG}
+      { $IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
-      {$ENDIF}
+      { $ENDIF}
       SectionNode:=FCodeCompleteClassNode.FirstChild;
       while SectionNode<>nil do begin
+        //DebugLn(['CompleteClass AAA1']);
         ANode:=SectionNode.FirstChild;
         while ANode<>nil do begin
+          //DebugLn(['CompleteClass AAA2 ',ANode.DescAsString]);
           if ANode.Desc=ctnProperty then begin
             // check if property is complete
             if not CompleteProperty(ANode) then
@@ -5368,9 +5376,9 @@ var CleanCursorPos, Indent, insertPos: integer;
         Result:=fFullTopLvlName;
         l:=PropertyAtom.EndPos-PropertyAtom.StartPos;
         PropertyName:=copy(Src,PropertyAtom.StartPos,l);
-        if AnsiCompareText(PropertyName,RightStr(Result,l))<>0 then
+        if SysUtils.CompareText(PropertyName,RightStr(Result,l))<>0 then
           Result:=Result+PropertyName;
-        if AnsiCompareText(PropertyName,Result)=0 then begin
+        if SysUtils.CompareText(PropertyName,Result)=0 then begin
           // this is an event of the class (not event of published objects)
           // -> add form name
           MoveCursorToNodeStart(AClassNode.Parent);
@@ -5382,7 +5390,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         end;
         // convert OnClick to Click
         if (UpperCaseStr(LeftStr(PropertyName,2))='ON')
-        and (AnsiCompareText(RightStr(Result,l),PropertyName)=0)
+        and (SysUtils.CompareText(RightStr(Result,l),PropertyName)=0)
         then
           Result:=LeftStr(Result,length(Result)-l)+RightStr(Result,l-2);
       end else begin
@@ -5606,7 +5614,7 @@ begin
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
 
   // test if in a class
-  AClassNode:=CursorNode.GetNodeOfType(ctnClass);
+  AClassNode:=CursorNode.GetNodeOfTypes([ctnClass,ctnClassInterface]);
   if AClassNode<>nil then begin
     CompleteClass;
     exit;
