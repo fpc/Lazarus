@@ -3219,7 +3219,7 @@ begin
     SaveRaiseExceptionFmt(ctsNestedDefinitionsAreNotAllowed,['interface']);
   IntfAtomPos:=CurPos;
   // class interface start found
-  ChildCreated:=true;
+  ChildCreated:=true; // maybe change this in future to jit parsing
   if ChildCreated then begin
     CreateChildNode;
     CurNode.Desc:=ctnClassInterface;

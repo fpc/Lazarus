@@ -92,8 +92,11 @@ type
   TNewVarLocation = (
     ncpvPrivate,ncpvProtected,ncpvPublic,ncpvPublished,ncpvLocal
     );
-                   
+
 const
+  NewClassPartProcs = [ncpPrivateProcs,ncpProtectedProcs,ncpPublicProcs,ncpPublishedProcs];
+  NewClassPartVars = [ncpPrivateVars,ncpProtectedVars,ncpPublicVars,ncpPublishedVars];
+
   NewClassPartVisibilty: array[TNewClassPart] of TPascalClassSection = (
     pcsPrivate, pcsPrivate,
     pcsProtected, pcsProtected,
@@ -393,6 +396,14 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeCompletionCodeTool.AddClassInsertion] CleanDef="',CleanDef,'" Def="',Def,'" Identifiername="',Identifiername,'" Body="',Body,'"');
   {$ENDIF}
+  if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+    // a class interface has no section -> put them all into 'public'
+    if TheType in NewClassPartProcs then
+      TheType:=ncpPublicProcs
+    else if TheType in NewClassPartVars then
+      raise Exception.Create('TCodeCompletionCodeTool.AddClassInsertion can not add variables to a class interface');
+  end;
+  
   NewInsert:=NodeExtMemManager.NewNode;
   with NewInsert do begin
     Node:=PosNode;
@@ -3791,12 +3802,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if read access variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
+    and (FCodeCompleteClassNode.Desc<>ctnClassInterface)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete read access specifier
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
-            LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
+            LeftStr(AccessParam,length(AccessParamPrefix)))=0)
+    or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
     begin
       // the read identifier is a function
       {$IFDEF CTDEBUG}
@@ -3919,12 +3932,14 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
 
     // check if write variable exists
     if (Parts[ppParamList].StartPos<1) and (Parts[ppIndexWord].StartPos<1)
+    and (FCodeCompleteClassNode.Desc<>ctnClassInterface)
     and VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then exit;
 
     // complete class
     if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
     or (SysUtils.CompareText(AccessParamPrefix,
-            LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
+            LeftStr(AccessParam,length(AccessParamPrefix)))=0)
+    or (FCodeCompleteClassNode.Desc=ctnClassInterface) then
     begin
       // add insert demand for function
       // build function code
@@ -4107,10 +4122,14 @@ begin
           ClassSectionNode:=ClassSectionNode.NextBrother;
       end else if ANodeExt.Node<>nil then begin
         // search a section of the same Visibility in front of the node
-        ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
-        while (ClassSectionNode<>nil)
-        and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
-          ClassSectionNode:=ClassSectionNode.PriorBrother;
+        if FCodeCompleteClassNode.Desc=ctnClass then begin
+          ClassSectionNode:=ANodeExt.Node.Parent.PriorBrother;
+          while (ClassSectionNode<>nil)
+          and (ClassSectionNode.Desc<>ClassSectionNodeType[Visibility]) do
+            ClassSectionNode:=ClassSectionNode.PriorBrother;
+        end else begin
+          ClassSectionNode:=FCodeCompleteClassNode;
+        end;
       end;
       if ClassSectionNode=nil then begin
         // there is no existing class section node
@@ -4126,7 +4145,7 @@ begin
                          //   nil means insert as first
         InsertBehind:=true;
         ANode:=ClassSectionNode.FirstChild;
-        
+
         // skip the class GUID
         if (ANode<>nil) and (ANode.Desc=ctnClassGUID) then
           ANode:=ANode.NextBrother;
@@ -4226,7 +4245,22 @@ begin
           // insert as first variable/proc
           Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
                     +ASourceChangeCache.BeautifyCodeOptions.Indent;
-          InsertPos:=FindLineEndOrCodeAfterPosition(ClassSectionNode.StartPos);
+          InsertPos:=ClassSectionNode.StartPos;
+          if (ClassSectionNode.Desc in AllClassBaseSections)
+          or (ClassSectionNode.Desc in AllClassTypeSections) then begin
+            // skip keyword
+            inc(InsertPos,GetIdentLen(@Src[InsertPos]));
+          end else if ClassSectionNode.Desc=ctnClassInterface then begin
+            // skip class interface header
+            MoveCursorToCleanPos(InsertPos);
+            ReadNextAtom; // skip 'interface'
+            InsertPos:=CurPos.EndPos;
+            if ReadNextAtomIsChar('(') then begin
+              ReadTilBracketClose(true);
+              InsertPos:=CurPos.EndPos;
+            end;
+          end;
+          InsertPos:=FindLineEndOrCodeAfterPosition(InsertPos);
         end;
       end;
       CurCode:=ANodeExt.ExtTxt1;
@@ -4291,6 +4325,11 @@ var
     SectionKeyWord: String;
     ANode: TCodeTreeNode;
   begin
+    if FCodeCompleteClassNode.Desc=ctnClassInterface then begin
+      // a class interface has no sections
+      exit;
+    end;
+  
     NewClassSectionInsertPos[Visibility]:=-1;
     NewClassSectionIndent[Visibility]:=0;
     if GetFirstNodeExtWithVisibility(Visibility)=nil then exit;
@@ -5121,15 +5160,16 @@ var CleanCursorPos, Indent, insertPos: integer;
       // go through all properties and procs
       //  insert read + write prop specifiers
       //  demand Variables + Procs + Proc Bodies
-      { $IFDEF CTDEBUG}
+      {$IFDEF CTDEBUG}
       DebugLn('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
-      { $ENDIF}
-      SectionNode:=FCodeCompleteClassNode.FirstChild;
+      {$ENDIF}
+      if FCodeCompleteClassNode.Desc=ctnClass then
+        SectionNode:=FCodeCompleteClassNode.FirstChild
+      else
+        SectionNode:=FCodeCompleteClassNode;
       while SectionNode<>nil do begin
-        //DebugLn(['CompleteClass AAA1']);
         ANode:=SectionNode.FirstChild;
         while ANode<>nil do begin
-          //DebugLn(['CompleteClass AAA2 ',ANode.DescAsString]);
           if ANode.Desc=ctnProperty then begin
             // check if property is complete
             if not CompleteProperty(ANode) then
@@ -5137,6 +5177,7 @@ var CleanCursorPos, Indent, insertPos: integer;
           end;
           ANode:=ANode.NextBrother;
         end;
+        if SectionNode=FCodeCompleteClassNode then break;
         SectionNode:=SectionNode.NextBrother;
       end;
 
