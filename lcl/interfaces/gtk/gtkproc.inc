@@ -1228,6 +1228,7 @@ var
   WindowWidth, WindowHeight: integer;
   DestDC: HDC;
   FixedWidget: PGtkWidget;
+  Offset: TPoint;
 begin
   if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
@@ -1241,22 +1242,20 @@ begin
   WindowWidth := DestWidget^.allocation.width;
   WindowHeight := DestWidget^.allocation.height;
 
-  DestLeft := DestWidget^.allocation.x;
-  DestTop := DestWidget^.allocation.y;
+  Offset := Point(0, 0);
 
+  {$ifndef gtk1}
   // if our widget is placed on non-window fixed then we should substract its allocation here
   // since in GetDC we will get this difference in offset
   FixedWidget := GetFixedWidget(DestWidget);
   if (FixedWidget <> nil) and GTK_WIDGET_NO_WINDOW(FixedWidget) then
-  begin
-    dec(DestLeft, FixedWidget^.allocation.x);
-    dec(DestTop, FixedWidget^.allocation.y);
-  end;
+    Offset := Point(FixedWidget^.allocation.x, FixedWidget^.allocation.y);
+  {$endif}
     
   if CenterHorizontally then
-    inc(DestLeft, ((WindowWidth-ImageWidth) div 2));
+    DestLeft := DestWidget^.allocation.x - Offset.x + ((WindowWidth-ImageWidth) div 2);
   if CenterVertically then
-    inc(DestTop, ((WindowHeight-ImageHeight) div 2));
+    DestTop := DestWidget^.allocation.y - Offset.y +  ((WindowHeight-ImageHeight) div 2);
   DestDC := GetDC(HDC(PtrUInt(DestWidget)));
 
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
