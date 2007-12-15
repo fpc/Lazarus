@@ -39,7 +39,7 @@ type
     procedure PrintPage(Text: TStrings; PageNum: integer);
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
 
     procedure Execute(Text: TStrings);
   published
@@ -69,6 +69,7 @@ destructor TSourcePrinter.Destroy;
 begin
   FFont.Free;
   PrintDialog.Free;
+  inherited Destroy;
 end;
 
 procedure TSourcePrinter.PrintPage(Text: TStrings; PageNum: integer);
@@ -100,7 +101,6 @@ end;
 procedure TSourcePrinter.Execute(Text: TStrings);
 var
   p: integer;
-  copies: integer;
 begin
   if PrintDialog.Execute then
   begin

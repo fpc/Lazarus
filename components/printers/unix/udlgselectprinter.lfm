@@ -1,188 +1,297 @@
 object dlgSelectPrinter: TdlgSelectPrinter
-  Left = 228
-  Height = 401
-  Top = 43
+  Left = 295
+  Height = 463
+  Top = 175
   Width = 552
   HorzScrollBar.Page = 551
-  VertScrollBar.Page = 400
-  ActiveControl = cbPrinters
+  VertScrollBar.Page = 462
+  ActiveControl = NbOpts
   Caption = 'Printing'
-  ClientHeight = 401
+  ClientHeight = 463
   ClientWidth = 552
   OnCreate = dlgSelectPrinterCREATE
   OnShow = dlgSelectPrinterSHOW
   object labCUPS: TLabel
+    AnchorSideTop.Control = PrinterGroupbox
+    AnchorSideTop.Side = asrBottom
     Left = 8
-    Height = 14
-    Top = 152
-    Width = 180
+    Height = 20
+    Top = 149
+    Width = 247
+    BorderSpacing.Top = 6
     Caption = 'CUPS (Common Unix Printing System)'
     ParentColor = False
   end
   object labCUPSServer: TLabel
-    Left = 264
-    Height = 14
-    Top = 152
-    Width = 73
+    AnchorSideLeft.Control = labCUPS
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = labCUPS
+    Left = 261
+    Height = 20
+    Top = 149
+    Width = 98
+    BorderSpacing.Left = 6
     Caption = 'labCUPSServer'
     ParentColor = False
   end
-  object Groupbox1: TGroupBox
-    Left = 8
-    Height = 136
-    Top = 8
-    Width = 536
+  object PrinterGroupbox: TGroupBox
+    Left = 6
+    Height = 137
+    Top = 6
+    Width = 540
+    Align = alTop
+    BorderSpacing.Around = 6
     Caption = ' Printer '
     ClientHeight = 118
-    ClientWidth = 532
+    ClientWidth = 536
     ParentCtl3D = False
     TabOrder = 0
-    object ImgPrn: TImage
-      Left = 110
-      Height = 19
-      Top = 7
-      Width = 17
-    end
-    object Label1: TLabel
-      Left = 19
-      Height = 14
-      Top = 9
-      Width = 28
-      Caption = 'Name'
-      ParentColor = False
-    end
-    object Label2: TLabel
-      Left = 17
-      Height = 14
-      Top = 36
-      Width = 27
-      Caption = 'State'
-      ParentColor = False
-    end
-    object Label3: TLabel
-      Left = 18
-      Height = 14
-      Top = 64
-      Width = 41
-      Caption = 'Location'
-      ParentColor = False
-    end
-    object Label4: TLabel
-      Left = 17
-      Height = 14
-      Top = 92
-      Width = 54
-      Caption = 'Description'
-      ParentColor = False
-    end
-    object labState: TLabel
-      Left = 128
-      Height = 14
-      Top = 40
-      Width = 41
-      Caption = 'labState'
-      ParentColor = False
-    end
-    object labLocation: TLabel
-      Left = 128
-      Height = 14
-      Top = 66
-      Width = 55
-      Caption = 'labLocation'
-      ParentColor = False
-    end
-    object labComment: TLabel
-      Left = 126
-      Height = 14
-      Top = 92
-      Width = 60
-      Caption = 'labComment'
-      ParentColor = False
-    end
-    object cbPrinters: TComboBox
-      Left = 126
-      Height = 21
-      Top = 6
-      Width = 280
-      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      ItemHeight = 13
-      MaxLength = 0
-      OnChange = cbPrintersCHANGE
-      OnKeyPress = cbPrintersKEYPRESS
-      ParentCtl3D = False
-      Style = csDropDownList
+    object PrinterLabelsPanel: TPanel
+      Height = 118
+      Width = 85
+      Align = alLeft
+      AutoSize = True
+      BevelOuter = bvNone
+      ChildSizing.Layout = cclTopToBottomThenLeftToRight
+      ChildSizing.ControlsPerLine = 4
+      ClientHeight = 118
+      ClientWidth = 85
       TabOrder = 0
+      object PrinterNameLabel: TLabel
+        Left = 6
+        Height = 20
+        Top = 6
+        Width = 73
+        BorderSpacing.Around = 6
+        Caption = 'Name'
+        ParentColor = False
+      end
+      object PrinterStateLabel: TLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 20
+        Top = 32
+        Width = 73
+        BorderSpacing.Around = 6
+        Caption = 'State'
+        ParentColor = False
+        OnChangeBounds = PrinterStateLabelChangeBounds
+      end
+      object PrinterLocationLabel: TLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 20
+        Top = 58
+        Width = 73
+        BorderSpacing.Around = 6
+        Caption = 'Location'
+        ParentColor = False
+      end
+      object PrinterDescriptionLabel: TLabel
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 20
+        Top = 84
+        Width = 73
+        BorderSpacing.Around = 6
+        Caption = 'Description'
+        ParentColor = False
+      end
     end
-    object btnProp: TButton
-      Left = 422
-      Height = 25
-      Top = 4
-      Width = 100
-      BorderSpacing.InnerBorder = 4
-      Caption = 'Properties ...'
-      OnClick = btnPropCLICK
+    object PrinterStatePanel: TPanel
+      Left = 85
+      Height = 118
+      Width = 451
+      Align = alClient
+      BevelOuter = bvNone
+      ClientHeight = 118
+      ClientWidth = 451
       TabOrder = 1
-    end
-    object cbPrintToFile: TCheckBox
-      Left = 422
-      Height = 13
-      Top = 89
-      Width = 69
-      Caption = 'Print to file'
-      TabOrder = 2
+      object labState: TLabel
+        AnchorSideLeft.Control = PrinterStatePanel
+        AnchorSideTop.Control = PrinterStatePanel
+        Left = 6
+        Height = 20
+        Top = 31
+        Width = 55
+        BorderSpacing.Top = 25
+        BorderSpacing.Around = 6
+        Caption = 'labState'
+        ParentColor = False
+      end
+      object labLocation: TLabel
+        AnchorSideLeft.Control = PrinterStatePanel
+        AnchorSideTop.Control = labState
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 20
+        Top = 57
+        Width = 74
+        BorderSpacing.Around = 6
+        Caption = 'labLocation'
+        ParentColor = False
+      end
+      object labComment: TLabel
+        AnchorSideLeft.Control = PrinterStatePanel
+        AnchorSideTop.Control = labLocation
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 20
+        Top = 83
+        Width = 84
+        BorderSpacing.Around = 6
+        Caption = 'labComment'
+        ParentColor = False
+      end
+      object PrinterComboPanel: TPanel
+        AnchorSideLeft.Control = PrinterStatePanel
+        AnchorSideTop.Control = PrinterStatePanel
+        AnchorSideRight.Control = btnProp
+        Left = 6
+        Height = 20
+        Top = 6
+        Width = 328
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Right = 12
+        BorderSpacing.Around = 6
+        BevelOuter = bvNone
+        ClientHeight = 20
+        ClientWidth = 328
+        TabOrder = 0
+        object ImgPrn: TImage
+          Height = 20
+          Width = 17
+          Align = alLeft
+          Transparent = False
+        end
+        object cbPrinters: TComboBox
+          AnchorSideLeft.Side = asrBottom
+          Left = 17
+          Height = 20
+          Width = 311
+          Align = alClient
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          AutoSize = True
+          MaxLength = 0
+          OnChange = cbPrintersCHANGE
+          OnKeyPress = cbPrintersKEYPRESS
+          ParentCtl3D = False
+          Style = csDropDownList
+          TabOrder = 0
+        end
+      end
+      object btnProp: TButton
+        AnchorSideRight.Control = PrinterStatePanel
+        AnchorSideRight.Side = asrBottom
+        Left = 352
+        Height = 29
+        Top = 7
+        Width = 93
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Around = 6
+        Caption = 'Properties ...'
+        OnClick = btnPropCLICK
+        TabOrder = 1
+      end
+      object cbPrintToFile: TCheckBox
+        AnchorSideTop.Control = labLocation
+        AnchorSideRight.Control = PrinterStatePanel
+        AnchorSideRight.Side = asrBottom
+        Left = 347
+        Height = 22
+        Top = 57
+        Width = 92
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 12
+        Caption = 'Print to file'
+        TabOrder = 2
+      end
     end
   end
   object NbOpts: TNotebook
-    Left = 8
-    Height = 192
-    Top = 168
-    Width = 537
-    PageIndex = 0
+    AnchorSideTop.Control = labCUPS
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 240
+    Top = 175
+    Width = 540
+    Align = alBottom
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Around = 6
+    PageIndex = 1
     TabOrder = 1
     object pgCopies: TPage
       Caption = 'Copies'
-      ClientWidth = 529
-      ClientHeight = 166
+      ClientWidth = 536
+      ClientHeight = 209
       object gbPages: TGroupBox
+        AnchorSideBottom.Control = pgCopies
+        AnchorSideBottom.Side = asrBottom
         Left = 8
-        Height = 156
+        Height = 196
         Top = 7
         Width = 262
+        Anchors = [akTop, akLeft, akBottom]
+        BorderSpacing.Around = 6
         Caption = ' Select pages '
-        ClientHeight = 138
+        ClientHeight = 177
         ClientWidth = 258
         ParentCtl3D = False
         TabOrder = 0
         object Bevel1: TBevel
+          AnchorSideTop.Control = edRange
+          AnchorSideTop.Side = asrBottom
           Left = 18
           Height = 3
-          Top = 100
+          Top = 105
           Width = 230
+          BorderSpacing.Top = 6
           Shape = bsTopLine
           Style = bsRaised
         end
         object labPage: TLabel
+          AnchorSideTop.Control = Bevel1
+          AnchorSideTop.Side = asrBottom
           Left = 14
-          Height = 14
-          Top = 111
-          Width = 30
+          Height = 20
+          Top = 120
+          Width = 39
+          BorderSpacing.Top = 12
           Caption = 'Pages'
           ParentColor = False
         end
         object edRange: TEdit
-          Left = 92
+          AnchorSideLeft.Control = rbRange
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbRange
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = gbPages
+          AnchorSideRight.Side = asrBottom
+          Left = 93
           Height = 23
-          Top = 70
-          Width = 154
+          Top = 76
+          Width = 159
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Left = 15
+          BorderSpacing.Right = 6
           TabOrder = 0
         end
         object edPageSet: TComboBox
-          Left = 130
-          Height = 21
-          Top = 108
-          Width = 118
+          AnchorSideTop.Control = labPage
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = gbPages
+          AnchorSideRight.Side = asrBottom
+          Left = 104
+          Height = 26
+          Top = 117
+          Width = 148
+          Anchors = [akTop, akRight]
           AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          ItemHeight = 13
+          AutoSelect = True
+          BorderSpacing.Right = 6
           ItemIndex = 0
           Items.Strings = (
             'All pages'
@@ -196,31 +305,38 @@ object dlgSelectPrinter: TdlgSelectPrinter
           Text = 'All pages'
         end
         object rbCurrentPage: TRadioButton
+          AnchorSideTop.Control = rbAllPage
+          AnchorSideTop.Side = asrBottom
           Left = 14
-          Height = 13
-          Top = 21
-          Width = 81
+          Height = 22
+          Top = 28
+          Width = 108
           AllowGrayed = True
+          BorderSpacing.Around = 2
           Caption = 'Current page'
           DragCursor = crDefault
           Enabled = False
           TabOrder = 2
         end
         object rbRange: TRadioButton
+          AnchorSideTop.Control = rbSelection
+          AnchorSideTop.Side = asrBottom
           Left = 14
-          Height = 13
-          Top = 68
-          Width = 52
+          Height = 22
+          Top = 76
+          Width = 64
           AllowGrayed = True
+          BorderSpacing.Around = 2
           Caption = 'Range'
           DragCursor = crDefault
           TabOrder = 4
         end
         object rbAllPage: TRadioButton
           Left = 14
-          Height = 13
-          Width = 34
+          Height = 22
+          Width = 43
           AllowGrayed = True
+          BorderSpacing.Around = 6
           Caption = 'All '
           Checked = True
           DragCursor = crDefault
@@ -228,11 +344,14 @@ object dlgSelectPrinter: TdlgSelectPrinter
           TabOrder = 3
         end
         object rbSelection: TRadioButton
+          AnchorSideTop.Control = rbCurrentPage
+          AnchorSideTop.Side = asrBottom
           Left = 14
-          Height = 13
-          Top = 45
-          Width = 64
+          Height = 22
+          Top = 52
+          Width = 83
           AllowGrayed = True
+          BorderSpacing.Around = 2
           Caption = 'Selection'
           DragCursor = crDefault
           Enabled = False
@@ -240,55 +359,78 @@ object dlgSelectPrinter: TdlgSelectPrinter
         end
       end
       object gbCopies: TGroupBox
-        Left = 279
-        Height = 155
+        AnchorSideLeft.Control = gbPages
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideRight.Control = pgCopies
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = pgCopies
+        AnchorSideBottom.Side = asrBottom
+        Left = 276
+        Height = 196
         Top = 7
-        Width = 257
+        Width = 254
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        BorderSpacing.Around = 6
         Caption = ' Copies '
-        ClientHeight = 137
-        ClientWidth = 253
+        ClientHeight = 177
+        ClientWidth = 250
         ParentCtl3D = False
         TabOrder = 1
         object imgCollate: TImage
+          AnchorSideTop.Control = lanNumCopies
+          AnchorSideTop.Side = asrBottom
           Left = 6
           Height = 37
           Top = 32
           Width = 93
           AutoSize = True
+          BorderSpacing.Top = 6
           Proportional = True
+          Transparent = False
         end
         object lanNumCopies: TLabel
           Left = 6
-          Height = 14
+          Height = 20
           Top = 6
-          Width = 84
+          Width = 114
           Caption = 'Number of copies'
           ParentColor = False
         end
         object edCopies: TSpinEdit
-          Left = 134
+          AnchorSideLeft.Control = lanNumCopies
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = lanNumCopies
+          AnchorSideTop.Side = asrCenter
+          Left = 126
           Height = 20
-          Top = 3
+          Top = 6
           Width = 50
+          BorderSpacing.Left = 6
           TabOrder = 0
         end
         object cbCollate: TCheckBox
+          AnchorSideTop.Control = edCopies
+          AnchorSideTop.Side = asrBottom
           Left = 119
-          Height = 13
+          Height = 22
           Top = 32
-          Width = 52
+          Width = 68
           AllowGrayed = True
+          BorderSpacing.Around = 6
           Caption = 'Collate'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
           TabOrder = 2
         end
         object cbReverse: TCheckBox
+          AnchorSideTop.Control = cbCollate
+          AnchorSideTop.Side = asrBottom
           Left = 119
-          Height = 13
+          Height = 22
           Top = 60
-          Width = 60
+          Width = 74
           AllowGrayed = True
+          BorderSpacing.Around = 6
           Caption = 'Reverse'
           DragCursor = crDefault
           OnClick = cbReverseCLICK
@@ -298,21 +440,25 @@ object dlgSelectPrinter: TdlgSelectPrinter
     end
     object pgAdvance: TPage
       Caption = 'Advanced'
-      ClientWidth = 529
-      ClientHeight = 166
+      ClientWidth = 536
+      ClientHeight = 209
       object labTask: TLabel
         Left = 7
-        Height = 13
+        Height = 20
         Top = 10
-        Width = 74
+        Width = 84
         Caption = 'Delayed task'
         ParentColor = False
       end
-      object Label5: TLabel
+      object PrioLabel: TLabel
+        AnchorSideTop.Control = labTask
+        AnchorSideTop.Side = asrBottom
         Left = 7
-        Height = 13
-        Top = 45
-        Width = 40
+        Height = 20
+        Top = 56
+        Width = 45
+        BorderSpacing.Top = 20
+        BorderSpacing.Around = 6
         Caption = 'Priority'
         ParentColor = False
       end
@@ -322,7 +468,7 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Top = 7
         Width = 200
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 13
+        AutoSize = True
         ItemIndex = 0
         Items.Strings = (
           'Immediate'
@@ -347,23 +493,31 @@ object dlgSelectPrinter: TdlgSelectPrinter
         Left = 429
         Height = 23
         Top = 9
-        Width = 58
+        Width = 83
         DragCursor = crDefault
         MaxLength = 8
         TabOrder = 0
         Text = '23:00:00'
       end
       object edPriority: TSpinEdit
+        AnchorSideTop.Control = PrioLabel
+        AnchorSideTop.Side = asrCenter
         Left = 127
         Height = 20
-        Top = 42
+        Top = 56
         Width = 50
         TabOrder = 3
       end
       object tkbPriority: TTrackBar
-        Left = 192
-        Height = 20
-        Top = 49
+        AnchorSideLeft.Control = edPriority
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = PrioLabel
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = pgAdvance
+        AnchorSideRight.Side = asrBottom
+        Left = 183
+        Height = 38
+        Top = 47
         Width = 335
         Frequency = 10
         Max = 100
@@ -372,42 +526,46 @@ object dlgSelectPrinter: TdlgSelectPrinter
         ScalePos = trTop
         TabStop = False
         TickMarks = tmBoth
+        BorderSpacing.Around = 6
         DragCursor = crDefault
         ParentCtl3D = False
         TabOrder = 2
       end
     end
   end
-  object Panel1: TPanel
-    Height = 41
-    Top = 360
+  object BtnPanel: TPanel
+    Height = 42
+    Top = 421
     Width = 552
     Align = alBottom
     Anchors = [akLeft, akBottom]
-    ClientHeight = 41
+    AutoSize = True
+    ClientHeight = 42
     ClientWidth = 552
     FullRepaint = False
     TabOrder = 2
     TabStop = True
     object btnCancel: TButton
-      Left = 447
-      Height = 25
-      Top = 8
-      Width = 91
-      Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
+      Left = 490
+      Height = 28
+      Top = 7
+      Width = 55
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
       Cancel = True
       Caption = 'Cancel'
       ModalResult = 2
       TabOrder = 0
     end
     object btnPrint: TButton
-      Left = 343
-      Height = 25
-      Top = 8
-      Width = 99
-      Anchors = [akTop, akRight]
-      BorderSpacing.InnerBorder = 4
+      Left = 443
+      Height = 28
+      Top = 7
+      Width = 41
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'Print'
       Default = True
       ModalResult = 1
@@ -415,21 +573,25 @@ object dlgSelectPrinter: TdlgSelectPrinter
       TabOrder = 1
     end
     object btnReduc: TButton
-      Left = 8
-      Height = 25
-      Top = 8
-      Width = 88
-      BorderSpacing.InnerBorder = 4
+      Left = 7
+      Height = 28
+      Top = 7
+      Width = 60
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'More ...'
       OnClick = btnReducCLICK
       TabOrder = 2
     end
     object btnPreview: TButton
-      Left = 208
-      Height = 25
-      Top = 8
-      Width = 123
-      BorderSpacing.InnerBorder = 4
+      Left = 377
+      Height = 28
+      Top = 7
+      Width = 60
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
       Caption = 'Preview'
       ModalResult = 6
       TabOrder = 3

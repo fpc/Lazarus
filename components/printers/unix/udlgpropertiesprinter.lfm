@@ -5,7 +5,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
   Width = 457
   HorzScrollBar.Page = 456
   VertScrollBar.Page = 416
-  ActiveControl = btnCancel1
+  ActiveControl = PagesProperties
   Caption = 'Printer properties'
   ClientHeight = 417
   ClientWidth = 457
@@ -52,33 +52,33 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
     Height = 376
     Width = 457
     Align = alClient
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 1
     object pgGeneral: TPage
       Caption = 'General'
       ClientWidth = 453
-      ClientHeight = 346
+      ClientHeight = 345
       object labPaperSize: TLabel
         Left = 15
-        Height = 13
+        Height = 20
         Top = 19
-        Width = 60
+        Width = 66
         Caption = 'Paper size'
         ParentColor = False
       end
       object labPaperType: TLabel
         Left = 15
-        Height = 13
+        Height = 20
         Top = 55
-        Width = 62
+        Width = 69
         Caption = 'Paper type'
         ParentColor = False
       end
       object labPaperSrc: TLabel
         Left = 15
-        Height = 13
+        Height = 20
         Top = 92
-        Width = 76
+        Width = 84
         Caption = 'Paper source'
         ParentColor = False
       end
@@ -125,8 +125,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 233
         Caption = ' Orientation '
-        ClientHeight = 119
-        ClientWidth = 233
+        ClientHeight = 100
+        ClientWidth = 229
         ParentCtl3D = False
         TabOrder = 6
         object imgOrientation: TImage
@@ -134,12 +134,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Height = 48
           Top = 25
           Width = 52
+          Transparent = False
         end
         object rbPortrait: TRadioButton
           Left = 7
-          Height = 20
+          Height = 22
           Top = 5
-          Width = 63
+          Width = 71
           AllowGrayed = True
           Caption = 'Portrait'
           Checked = True
@@ -150,9 +151,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbLandscape: TRadioButton
           Left = 7
-          Height = 20
+          Height = 22
           Top = 29
-          Width = 86
+          Width = 93
           AllowGrayed = True
           Caption = 'Landscape'
           DragCursor = crDefault
@@ -161,9 +162,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbrev_Landscape: TRadioButton
           Left = 7
-          Height = 20
+          Height = 22
           Top = 53
-          Width = 132
+          Width = 143
           AllowGrayed = True
           Caption = 'Reverse landscape'
           DragCursor = crDefault
@@ -172,9 +173,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbrev_portrait: TRadioButton
           Left = 7
-          Height = 20
+          Height = 22
           Top = 77
-          Width = 112
+          Width = 125
           AllowGrayed = True
           Caption = 'Reverse portrait'
           DragCursor = crDefault
@@ -188,8 +189,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 123
         Width = 185
         Caption = ' Duplex printing '
-        ClientHeight = 119
-        ClientWidth = 185
+        ClientHeight = 100
+        ClientWidth = 181
         ParentCtl3D = False
         TabOrder = 2
         object imgDuplex: TImage
@@ -197,12 +198,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Height = 52
           Top = 21
           Width = 44
+          Transparent = False
         end
         object rbDuplexNone: TRadioButton
           Left = 14
-          Height = 20
+          Height = 22
           Top = 5
-          Width = 54
+          Width = 58
           AllowGrayed = True
           Caption = 'None'
           Checked = True
@@ -213,9 +215,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexLong: TRadioButton
           Left = 14
-          Height = 20
+          Height = 22
           Top = 29
-          Width = 84
+          Width = 91
           AllowGrayed = True
           Caption = 'Long edge'
           DragCursor = crDefault
@@ -224,9 +226,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbDuplexShort: TRadioButton
           Left = 14
-          Height = 20
+          Height = 22
           Top = 53
-          Width = 85
+          Width = 95
           AllowGrayed = True
           Caption = 'Short edge'
           DragCursor = crDefault
@@ -240,7 +242,7 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 247
         Width = 232
         Caption = ' Banners '
-        ClientHeight = 79
+        ClientHeight = 77
         ClientWidth = 228
         ParentCtl3D = False
         TabOrder = 3
@@ -291,8 +293,8 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         Top = 247
         Width = 185
         Caption = ' Pages per sheet '
-        ClientHeight = 96
-        ClientWidth = 185
+        ClientHeight = 77
+        ClientWidth = 181
         ParentCtl3D = False
         TabOrder = 5
         object imgPageSheet: TImage
@@ -300,12 +302,13 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
           Height = 50
           Top = 17
           Width = 80
+          Transparent = False
         end
         object rbSheet1: TRadioButton
           Left = 6
-          Height = 20
+          Height = 22
           Top = 5
-          Width = 31
+          Width = 32
           AllowGrayed = True
           Caption = '1'
           Checked = True
@@ -316,9 +319,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet2: TRadioButton
           Left = 6
-          Height = 20
+          Height = 22
           Top = 25
-          Width = 31
+          Width = 32
           AllowGrayed = True
           Caption = '2'
           DragCursor = crDefault
@@ -327,9 +330,9 @@ object dlgpropertiesprinter: Tdlgpropertiesprinter
         end
         object rbSheet4: TRadioButton
           Left = 6
-          Height = 20
+          Height = 22
           Top = 46
-          Width = 31
+          Width = 32
           AllowGrayed = True
           Caption = '4'
           DragCursor = crDefault

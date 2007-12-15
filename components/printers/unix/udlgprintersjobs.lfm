@@ -1,23 +1,23 @@
 object dlgPrintersJobs: TdlgPrintersJobs
-  Left = 188
-  Height = 257
-  Top = 214
-  Width = 604
-  HorzScrollBar.Page = 603
-  VertScrollBar.Page = 256
+  Left = 346
+  Height = 272
+  Top = 332
+  Width = 658
+  HorzScrollBar.Page = 657
+  VertScrollBar.Page = 271
   ActiveControl = cbPrinters
   Caption = 'Printers jobs'
-  ClientHeight = 257
-  ClientWidth = 604
+  ClientHeight = 272
+  ClientWidth = 658
   OnShow = btnRefeshClick
   ShowHint = True
   object Panel1: TPanel
     Height = 35
-    Width = 604
+    Width = 658
     Align = alTop
     BevelOuter = bvLowered
     ClientHeight = 35
-    ClientWidth = 604
+    ClientWidth = 658
     FullRepaint = False
     TabOrder = 0
     TabStop = True
@@ -545,9 +545,9 @@ object dlgPrintersJobs: TdlgPrintersJobs
     end
   end
   object lvJobs: TListView
-    Height = 222
+    Height = 237
     Top = 35
-    Width = 604
+    Width = 658
     Align = alClient
     Columns = <    
       item
@@ -596,7 +596,7 @@ object dlgPrintersJobs: TdlgPrintersJobs
   object lstImg: TImageList
     Height = 19
     Width = 19
-    left = 9
-    top = 536
+    left = 75
+    top = 125
   end
 end

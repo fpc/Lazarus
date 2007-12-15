@@ -62,18 +62,21 @@ type
     edPageSet: TCOMBOBOX;
     cbTasktime: TCOMBOBOX;
     edRange: TEDIT;
-    Groupbox1: TGROUPBOX;
+    PrinterStatePanel: TPanel;
+    PrinterComboPanel: TPanel;
+    PrinterLabelsPanel: TPanel;
+    PrinterGroupbox: TGroupbox;
     gbPages: TGROUPBOX;
     gbCopies: TGROUPBOX;
     ImgPrn: TIMAGE;
     imgCollate: TIMAGE;
-    Label1: TLABEL;
-    Label2: TLABEL;
-    Label3: TLABEL;
-    Label4: TLABEL;
+    PrinterNameLabel: TLabel;
+    PrinterStateLabel: TLabel;
+    PrinterLocationLabel: TLabel;
+    PrinterDescriptionLabel: TLabel;
     labComment: TLABEL;
     labCUPS: TLABEL;
-    Label5: TLABEL;
+    PrioLabel: TLabel;
     labCUPSServer: TLABEL;
     labTask: TLABEL;
     lanNumCopies: TLABEL;
@@ -84,7 +87,7 @@ type
     NbOpts: TNOTEBOOK;
     pgAdvance: TPAGE;
     pgCopies: TPAGE;
-    Panel1: TPANEL;
+    BtnPanel: TPanel;
     rbSelection: TRadioButton;
     rbRange: TRADIOBUTTON;
     rbCurrentPage: TRADIOBUTTON;
@@ -101,6 +104,7 @@ type
     procedure cbTasktimeCHANGE(Sender: TObject);
     procedure dlgSelectPrinterCREATE(Sender: TObject);
     procedure dlgSelectPrinterSHOW(Sender: TObject);
+    procedure PrinterStateLabelChangeBounds(Sender: TObject);
     procedure tkbPriorityCHANGE(Sender: TObject);
   private
     { private declarations }
@@ -377,6 +381,11 @@ begin
   RefreshInfos;
 end;
 
+procedure TdlgSelectPrinter.PrinterStateLabelChangeBounds(Sender: TObject);
+begin
+  labState.BorderSpacing.Top:=PrinterStateLabel.Top-labState.BorderSpacing.Around;
+end;
+
 procedure TdlgSelectPrinter.cbTasktimeCHANGE(Sender: TObject);
 begin
   if Sender=nil then ;
@@ -389,6 +398,7 @@ procedure TdlgSelectPrinter.dlgSelectPrinterCREATE(Sender: TObject);
 begin
   if Sender=nil then ;
   fPropertiesSetting:=False;
+  NbOpts.PageIndex:=0;
 end;
 
 //Show corresponding image

@@ -38,7 +38,6 @@ resourcestring
 
 var
   CmdFormatSelection : TIDECommand;
-  CmdFormatFile      : TIDECommand;
 
 procedure Register;
 var

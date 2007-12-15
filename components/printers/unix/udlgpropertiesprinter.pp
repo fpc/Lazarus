@@ -137,6 +137,8 @@ Var Lst : TStringList;
 begin
   if Sender=nil then ;
   
+  PagesProperties.PageIndex:=0;
+  
   FPaperSizeOptions := TStringList.Create;
   FMediaTypeOptions := TStringlist.Create;
   FInputSlotOptions := TStringList.Create;

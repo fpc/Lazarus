@@ -3006,11 +3006,6 @@ type
     procedure CreateWnd; override;
 end;
 
-{$IFDEF IP_LAZARUS}
-const
-  CheckStates: array[Boolean] of TCheckBoxState = (cbUnchecked, cbChecked);
-{$ENDIF}
-
 procedure THtmlRadioButton.CreateWnd;
 begin
   inherited CreateWnd;
@@ -16249,7 +16244,6 @@ const
      WSB_PROP_HBKGCOLOR),
     (WSB_PROP_VSTYLE, WSB_PROP_CYVSCROLL, WSB_PROP_CYVTHUMB, WSB_PROP_CXVSCROLL,
      WSB_PROP_VBKGCOLOR));
-  Kinds: array[TScrollBarKind] of Integer = (WSB_PROP_HSTYLE, WSB_PROP_VSTYLE);
 var
   Code: Word;
   ScrollInfo: TScrollInfo;
