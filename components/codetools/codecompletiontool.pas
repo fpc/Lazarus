@@ -317,7 +317,10 @@ begin
   FreeClassInsertionList;
   FCodeCompleteClassNode:=AClassNode;
   BuildSubTreeForClass(FCodeCompleteClassNode);
-  FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
+  if FCodeCompleteClassNode.Desc=ctnClassInterface then
+    FCompletingStartNode:=FCodeCompleteClassNode
+  else
+    FCompletingStartNode:=FCodeCompleteClassNode.FirstChild;
   while (FCompletingStartNode<>nil) and (FCompletingStartNode.FirstChild=nil) do
     FCompletingStartNode:=FCompletingStartNode.NextBrother;
   if FCompletingStartNode<>nil then
