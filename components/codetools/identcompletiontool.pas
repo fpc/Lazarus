@@ -1032,7 +1032,8 @@ begin
           0,nil,nil,ctnProcedure);
       CurrentIdentifierList.Add(NewItem);
     end;
-    if UpAtomIs('READ') or UpAtomIs('WRITE') then begin
+    if (UpAtomIs('READ') or UpAtomIs('WRITE'))
+    and (Context.Node.GetNodeOfType(ctnClass)<>nil) then begin
       // add the default class completion 'read'/'write' specifier variable
       NewItem:=TIdentifierListItem.Create(
           icompUnknown,true,0,
