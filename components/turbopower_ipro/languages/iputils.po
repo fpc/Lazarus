@@ -1,8 +1,14 @@
-#: iputils:slongversion
-msgid "Version %.2f"
+msgid ""
 msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: iputils:sshortversion
 msgid "v%.2f"
+msgstr ""
+
+#: iputils:slongversion
+msgid "Version %.2f"
 msgstr ""
 
