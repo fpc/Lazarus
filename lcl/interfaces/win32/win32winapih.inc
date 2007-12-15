@@ -57,8 +57,6 @@ function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
 function CreateFontIndirect(Const LogFont: TLogFont): HFONT; override;
 function CreatePatternBrush(ABitmap: HBITMAP): HBRUSH; override;
 function CreatePenIndirect(Const LogPen: TLogPen): HPEN; override;
-{ Creates a bitmap from raw pixmap data }
-function CreatePixmapIndirect(Const Data: Pointer; Const TransColor: LongInt): HBITMAP; override;
 function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; override;
 function CreateRectRgn(X1, Y1, X2, Y2: Integer): HRGN; override;
 

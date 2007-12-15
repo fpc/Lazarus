@@ -617,19 +617,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:  CreatePixmapIndirect
-  Params:  Data       - Raw pixmap data
-           TransColor - Color of transparent spots
-  Returns: Handle to LCL bitmap
-
-  Creates a bitmap from raw pixmap data.
- ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.CreatePixmapIndirect(const Data: Pointer;
-  const TransColor: Longint): HBITMAP;
-begin
-  Result:=inherited CreatePixmapIndirect(Data, TransColor);
-end;}
-{------------------------------------------------------------------------------
   Method:  CreatePolygonRgn
   Params:  Points, NumPts, FillMode
   Returns: the handle to the region

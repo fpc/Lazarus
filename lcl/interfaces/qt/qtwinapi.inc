@@ -641,21 +641,6 @@ begin
   Result := HPEN(QtPen);
 end;
 
-
-{------------------------------------------------------------------------------
-  Function: CreatePixmapIndirect
-  Params:  const Data: Pointer; const TransColor: Longint
-  Returns: HBITMAP
-
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP;
-begin
-  {$ifdef VerboseQtWinAPI_MISSING_IMPLEMENTATION}
-    WriteLn('***** [WinAPI TQtWidgetSet.CreatePixmapIndirect] missing implementation ');
-  {$endif}
-  Result := 0;
-end;
-
 {------------------------------------------------------------------------------
   Function: CreatePolygonRgn
   Params:  none

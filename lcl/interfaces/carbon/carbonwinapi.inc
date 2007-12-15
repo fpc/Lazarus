@@ -430,13 +430,6 @@ begin
   Result := HPEN(TCarbonPen.Create(LogPen));
 end;
 
-function TCarbonWidgetSet.CreatePixmapIndirect(const Data: Pointer;
-  const TransColor: Longint): HBITMAP;
-begin
-  DebugLn('TCarbonWidgetSet.CreatePixmapIndirect TODO');
-  Result := 0;
-end;
-
 {------------------------------------------------------------------------------
   Method:  CreatePolygonRgn
   Params:  Points   - Pointer to array of polygon points
