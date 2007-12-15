@@ -596,12 +596,9 @@ begin
 end;
 
 procedure TCustomListView.FinalizeWnd;
-var
-  LVC: TWSCustomListViewClass;
 begin
-  LVC := TWSCustomListViewClass(WidgetSetClass);
   // store origin
-  FViewOriginCache := LVC.GetViewOrigin(Self);
+  FViewOriginCache := TWSCustomListViewClass(WidgetSetClass).GetViewOrigin(Self);
   inherited FinalizeWnd;
 end;
 

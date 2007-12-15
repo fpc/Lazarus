@@ -9051,7 +9051,7 @@ begin
     and (not AWinControl.Font.IsDefault)
     then begin
        // allocate font (just read it)
-       if AWinControl.Font.Handle=0 then ;
+       if AWinControl.Font.Reference.Handle=0 then ;
     end;
     
   finally

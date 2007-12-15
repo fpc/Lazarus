@@ -61,7 +61,6 @@ var
   idx: Integer;
   UpdAllowed: Boolean;
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   idx := Index;
   UpdAllowed := WSUpdateAllowed;
@@ -79,8 +78,7 @@ begin
   if not UpdAllowed then Exit;
   
   LV := Columns.FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnDelete(LV, Idx);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnDelete(LV, Idx);
 end;
 
 procedure TListColumn.WSCreateColumn;
@@ -104,11 +102,9 @@ end;
 procedure TListColumn.WSDestroyColumn;
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnDelete(LV, Index);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnDelete(LV, Index);
 end;
 
 function TListColumn.WSUpdateAllowed: Boolean;
@@ -123,14 +119,12 @@ end;
 function TListColumn.GetWidth: TWidth;
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
   WSWidth: integer;
 begin
   if WSUpdateAllowed
   then begin
     LV := TListColumns(Collection).FOwner;
-    WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-    WSWidth := WSC.ColumnGetWidth(LV, Index, Self);
+    WSWidth := TWSCustomListViewClass(LV.WidgetSetClass).ColumnGetWidth(LV, Index, Self);
     if WSWidth < 0
     then Result := FWidth
     else Result := WSWidth;
@@ -141,7 +135,6 @@ end;
 procedure TListColumn.SetAlignment(const AValue: TAlignment);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FAlignment = AValue then Exit;
   FAlignment := AValue;
@@ -149,14 +142,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetAlignment(LV, Index, Self, FAlignment);
 end;
 
 procedure TListColumn.SetCaption(const AValue: TTranslateString);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if AValue = FCaption then Exit;
   FCaption := AValue;
@@ -164,14 +155,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetCaption(LV, Index, Self, FCaption);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetCaption(LV, Index, Self, FCaption);
 end;
 
 procedure TListColumn.SetWidth(const AValue: TWidth);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FWidth = AValue then Exit;
   FWidth := AValue;
@@ -179,14 +168,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetWidth(LV, Index, Self, FWidth);
 end;
 
 procedure TListColumn.SetMaxWidth(const AValue: TWidth);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FMaxWidth = AValue then Exit;
   FMaxWidth := AValue;
@@ -194,14 +181,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
 end;
 
 procedure TListColumn.SetMinWidth(const AValue: TWidth);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FMinWidth = AValue then Exit;
   FMinWidth := AValue;
@@ -209,14 +194,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetMinWidth(LV, Index, Self, FMinWidth);
 end;
 
 procedure TListColumn.SetAutoSize(const AValue: Boolean);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FAutoSize = AValue then Exit;
   FAutoSize := AValue;
@@ -224,14 +207,12 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetAutosize(LV, Index, Self, FAutosize);
 end;
 
 procedure TListColumn.SetImageIndex(const AValue: TImageIndex);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FImageIndex = AValue then Exit;
   FImageIndex := AValue;
@@ -239,16 +220,14 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetImage(LV, Index, Self, FImageIndex);
 end;
 
 procedure TListColumn.SetIndex(AValue: Integer);
 var
   OldIndex: Integer;
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
-begin               
+begin
   OldIndex := Index;
   inherited;
                      
@@ -256,8 +235,7 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnMove(LV, OldIndex, Index, Self);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnMove(LV, OldIndex, Index, Self);
 end;
 
 function TListColumn.GetDisplayName: string;
@@ -269,7 +247,6 @@ end;
 procedure TListColumn.SetVisible(const AValue: Boolean);
 var
   LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   if FVisible = AValue then Exit;
   FVisible := AValue;
@@ -277,7 +254,6 @@ begin
   if not WSUpdateAllowed then Exit;
   
   LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnSetVisible(LV, Index, Self, FVisible);
+  TWSCustomListViewClass(LV.WidgetSetClass).ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 

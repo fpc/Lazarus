@@ -1368,7 +1368,7 @@ begin
         begin
           Windows.SetTextColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
           Windows.SetBkColor(WindowDC, Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
-          LMessage.Result := LResult(ChildWinControl.Brush.Handle);
+          LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
           //DebugLn(['WindowProc ', ChildWinControl.Name, ' Brush: ', LMessage.Result]);
           // Override default handling
           WinProcess := false;

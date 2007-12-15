@@ -432,13 +432,10 @@ procedure TListItem.WSUpdateChecked;
 var
   LV: TCustomListView;
   Idx: Integer;
-  WSC: TWSCustomListViewClass;
 begin
   LV := FOwner.FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
   idx := GetIndex;
-
-  WSC.ItemSetChecked(LV, idx, Self, FChecked);
+  TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, idx, Self, FChecked);
 end;
 
 {------------------------------------------------------------------------------}

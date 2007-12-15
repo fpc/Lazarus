@@ -620,7 +620,7 @@ begin
   end;
 
 
-  UseFont := PGdiObject(AFont.Handle)^.GDIFontObject;
+  UseFont := PGdiObject(AFont.Reference.Handle)^.GDIFontObject;
   FontDesc := pango_layout_get_font_description(UseFont);
   gtk_widget_modify_font(AWidget, FontDesc);
 end;
