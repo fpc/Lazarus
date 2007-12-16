@@ -1,8 +1,9 @@
-# translation of lazaruside.po to Arabic Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
+# translation of lazaruside.po to Arabic
+# Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
-"PO-Revision-Date: 2007-11-11 23:34+0100\n"
+"PO-Revision-Date: 2007-11-26 23:43+0100\n"
 "Language-Team: Arabic <ar@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -212,7 +213,7 @@ msgstr "جذاذة"
 
 #: lazarusidestrconsts:lismenufind2
 msgid "&Find ..."
-msgstr ""
+msgstr "إبحث"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
@@ -336,7 +337,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
-msgstr ""
+msgstr "نوافذ"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -3232,19 +3233,19 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
-msgstr ""
+msgstr "إبحث"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr ""
+msgstr "إبحث عن التالي"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr ""
+msgstr "إبحث عن السابق"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files ..."
-msgstr ""
+msgstr "إبحث في الجذاذات"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -3260,7 +3261,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
-msgstr ""
+msgstr "إبحث عن التالي"
 
 #: lazarusidestrconsts:lisfrifindreferences
 msgid "Find References"
@@ -3292,7 +3293,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindinfiles
 msgid "Find in files"
-msgstr ""
+msgstr "إبحث في الجذاذات"
 
 #: lazarusidestrconsts:liskmfindincremental
 msgid "Find incremental"
@@ -3300,7 +3301,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindnext
 msgid "Find next"
-msgstr ""
+msgstr "إبحث عن التالي"
 
 #: lazarusidestrconsts:srkmecfindnextwordoccurrence
 msgid "Find next word occurrence"
@@ -3320,7 +3321,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfindprevious
 msgid "Find previous"
-msgstr ""
+msgstr "إبحث عن السابق"
 
 #: lazarusidestrconsts:srkmecfindprevwordoccurrence
 msgid "Find previous word occurrence"
