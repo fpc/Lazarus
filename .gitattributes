@@ -978,6 +978,7 @@ components/synedit/synhighlightercss.pas svneol=native#text/pascal
 components/synedit/synhighlighterhashentries.pas svneol=native#text/pascal
 components/synedit/synhighlighterhtml.pp svneol=native#text/pascal
 components/synedit/synhighlighterjava.pas svneol=native#text/pascal
+components/synedit/synhighlighterjscript.pas svneol=native#text/pascal
 components/synedit/synhighlighterlfm.pas svneol=native#text/pascal
 components/synedit/synhighlightermulti.pas svneol=native#text/pascal
 components/synedit/synhighlighterpas.pp svneol=native#text/pascal
