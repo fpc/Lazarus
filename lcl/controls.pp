@@ -73,8 +73,6 @@ type
   TControl = class;
   TWinControlClass = class of TWinControl;
   TControlClass = class of TControl;
-  TDragDockObject = class;
-
 
   TDate = type TDateTime;
   TTime = type TDateTime;
@@ -102,13 +100,6 @@ type
     Inserting: Boolean;
     Result: LRESULT;
   End;
-
-  TCMFloat = packed record
-    Msg: Cardinal;
-    Reserved: Integer;
-    DockSource: TDragDockObject;
-    Result: Integer;
-  end;
 
   TCMDialogChar = TLMKEY;
   TCMDialogKey = TLMKEY;
@@ -371,17 +362,17 @@ type
     FMouseDeltaX: Double;
     FMouseDeltaY: Double;
     FCancelling: Boolean;
-    DragCapture: HWnd;
+    function Capture: HWND;
   protected
-    procedure Capture;
-    procedure ReleaseCapture;
-    procedure MainWndProc(var Message: TLMessage);
-    procedure WndProc(var Msg: TLMessage); virtual;
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); virtual;
-
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; virtual;
     function GetDragImages: TDragImageList; virtual;
-
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); virtual;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); virtual;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); virtual;
+    procedure CaptureChanged(OldCaptureControl: TControl); virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); virtual;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); virtual;
   public
     destructor Destroy; override;
     procedure Assign(Source: TDragObject); virtual;
@@ -395,7 +386,7 @@ type
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTargetPos: TPoint read FDragTargetPos write FDragTargetPos;
     property DragTarget: TControl read FDragTarget write FDragTarget;
-    property Dropped: Boolean read FDropped write FDropped;
+    property Dropped: Boolean read FDropped;
     property MouseDeltaX: Double read FMouseDeltaX;
     property MouseDeltaY: Double read FMouseDeltaX;
   end;
@@ -429,6 +420,8 @@ type
 
   { TDragDockObject }
 
+  TDragDockObject = class;
+
   TDockOrientation = (
     doNoOrient,   // zone contains a TControl and no child zones.
     doHorizontal, // zone's children are stacked top-to-bottom.
@@ -453,7 +446,6 @@ type
     FDockRect: TRect;
     FDropAlign: TAlign;
     FDropOnControl: TControl;
-    FEraseDockRect: TRect;
     FFloating: Boolean;
     FIncreaseDockArea: Boolean;
     procedure SetBrush(Value: TBrush);
@@ -470,38 +462,14 @@ type
     procedure Assign(Source: TDragObject); override;
     property Brush: TBrush read FBrush write SetBrush;
     property DockRect: TRect read FDockRect write FDockRect;// screen coordinates
-    property DropAlign: TAlign read FDropAlign write FDropAlign;
-    property DropOnControl: TControl read FDropOnControl write FDropOnControl;
+    property DropAlign: TAlign read FDropAlign;
+    property DropOnControl: TControl read FDropOnControl;
     property Floating: Boolean read FFloating write FFloating;
     property FrameWidth: Integer read GetFrameWidth;
     property IncreaseDockArea: Boolean read FIncreaseDockArea;
-    property EraseDockRect: TRect read FEraseDockRect write FEraseDockRect;
   end;
 
 
-  { TDragManager }
-
-  TDragManager = class(TPersistent)
-  public
-    procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;
-    procedure BeginDrag(AControl: TControl; AImmediate: Boolean; AThreshold: Integer);virtual;
-    function Dragging(AControl: TControl): boolean; virtual;
-    procedure DragTo(const APosition: TPoint); virtual;
-    procedure DragDone(ADrop: Boolean); virtual;
-    procedure CancelDrag; virtual;
-  end;
-  
-var
-  DragManager: TDragManager;
-
-//Drag and Dock wrappers to stay fully compatible
-procedure BeginDrag(AControl: TControl; AImmediate: Boolean; AThreshold: Integer);
-function Dragging(AControl: TControl=nil): boolean;
-procedure DragTo(const APosition: TPoint);
-procedure DragDone(ADrop: Boolean);
-procedure CancelDrag;
-
-type
   { TDockManager is an abstract class for managing a dock site's docked
     controls. See TDockTree below for the more info.
     }
@@ -1034,7 +1002,7 @@ type
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
-    procedure CMFloat(var Message: TCMFloat); message CM_FLOAT;
+    procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;//not in delphi
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -1623,7 +1591,6 @@ type
     function CanTab: Boolean; override;
     procedure DoDragMsg(var DragMsg: TCMDrag); override;
     procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
-    procedure CMFloat(var Message: TCMFloat); message CM_FLOAT;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure DoSendShowHideToInterface; virtual;
@@ -2222,6 +2189,8 @@ var
 procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
 procedure SetCaptureControl(Control: TControl);
 function GetCaptureControl: TControl;
+procedure CancelDrag;
+procedure DragDone(Drop: Boolean);
 
 var
   NewStyleControls: Boolean;
@@ -2262,6 +2231,7 @@ var
   // The interface knows, which TWinControl has the capture. This stores
   // what child control of this TWinControl has actually the capture.
   CaptureControl: TControl=nil;
+  DockSiteHash: TDynHashArray=nil;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
@@ -3366,11 +3336,11 @@ initialization
   //DebugLn('controls.pp - initialization');
   Mouse := TMouse.Create;
   DefaultDockTreeClass := TDockTree;
-  DragManager := TDragManagerDefault.Create;
+
   RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 
 finalization
-  FreeThenNil(DragManager);
+  FreeThenNil(DockSiteHash);
   FreeThenNil(Mouse);
 
 end.

@@ -113,27 +113,5 @@ begin
   if NextPage<>nil then ActivePage:=NextPage;
 end;
 
-procedure TPageControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
-var DockObjectVisible: Boolean;
-  FNewDockTabSheet: TTabSheet;
-begin
-  FNewDockTabSheet := TTabSheet.Create(Self);
-  FNewDockTabSheet.Parent := Self;
-  try
-    FNewDockTabSheet.PageControl := Self;
-    if DockObject.Control is TCustomForm then
-      FNewDockTabSheet.Caption := TCustomForm(DockObject.Control).Caption;
-    DockObject.Control.Dock(FNewDockTabSheet, DockObject.DockRect);
-    DockObject.Control.Align := alClient;
-  except
-    FNewDockTabSheet.Free;
-    raise;
-  end;
-  DockObjectVisible := DockObject.Control.Visible;
-  FNewDockTabSheet.TabVisible := DockObjectVisible;
-  if DockObjectVisible
-  then ActivePage := FNewDockTabSheet;
-end;
-
 
 // included by comctrls.pp

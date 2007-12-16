@@ -31,67 +31,10 @@ begin
   FAlwaysShowDragImages := Source.FAlwaysShowDragImages;
 end;
 
-procedure TDragObject.WndProc(var Msg: TLMessage);
-//Some drag&dock handling
-var P: TPoint;
+function TDragObject.Capture: HWND;
 begin
-  try
-    case Msg.Msg of
-      LM_MOUSEMOVE: begin
-        P := SmallPointToPoint(TLMMouseMove(Msg).Pos);
-        ClientToScreen(DragCapture, P);
-        DragManager.DragTo(P);
-      end;
-      LM_CAPTURECHANGED: DragManager.DragDone(false);
-      LM_LBUTTONUP, LM_RBUTTONUP: DragManager.DragDone(True);
-      { Forms.IsKeyMsg sends WM_KEYxxx messages here (+CN_BASE) when a
-        TPUtilWindow has the mouse capture. }
-      CN_KEYUP:
-        //TODO: This is never called! Missing code?
-        if Msg.WParam = VK_CONTROL
-        then DragManager.DragTo(DragPos);
-      CN_KEYDOWN:begin
-        //TODO: This is never called! Missing code?
-        case Msg.WParam of
-          VK_CONTROL: DragManager.DragTo(DragPos);
-          VK_ESCAPE:begin
-            { Consume keystroke and cancel drag operation }
-            Msg.Result := 1;
-            DragManager.DragDone(false);
-          end;
-        end;
-      end;
-    end;
-  except
-    DragManager.DragDone(false);
-    Application.HandleException(Self);
-  end;
-end;
-
-procedure TDragObject.MainWndProc(var Message: TLMessage);
-begin
-  try
-    WndProc(Message);
-  except
-    Application.HandleException(Self);
-  end;
-end;
-
-procedure TDragObject.Capture;
-begin
-  if DragCapture=0 then begin
-    DragCapture := WidgetSet.AllocateHWnd(@MainWndProc);
-    WidgetSet.SetCapture(DragCapture);
-  end;
-end;
-
-procedure TDragObject.ReleaseCapture;
-begin
-  if DragCapture<>0 then begin
-    WidgetSet.ReleaseCapture;
-    WidgetSet.DeallocateHWnd(DragCapture);
-    DragCapture := 0;
-  end;
+  Result:=0;
+  //SetCapture(Result);
 end;
 
 procedure TDragObject.Finished(Target: TObject; X, Y: Integer; Accepted: Boolean);
@@ -107,6 +50,67 @@ end;
 function TDragObject.GetDragImages: TDragImageList;
 begin
   Result := nil;
+end;
+
+procedure TDragObject.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  P: TPoint;
+begin
+  P:=Point(X,Y);
+  DragTo(P);
+end;
+
+procedure TDragObject.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+
+end;
+
+procedure TDragObject.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  DragDone(True);
+end;
+
+procedure TDragObject.CaptureChanged(OldCaptureControl: TControl);
+var
+  i: integer;
+  IsDragging: Boolean;
+begin
+  // if this is TWinControl, and it have controls (not TWinControls)
+  // then we should check Dragging in those controls
+  IsDragging := OldCaptureControl.Dragging;
+  if (not IsDragging) and (OldCaptureControl is TWinControl) then
+  begin
+    for i := 0 to TWinControl(OldCaptureControl).ControlCount - 1 do
+    begin
+      IsDragging := IsDragging or TWinControl(OldCaptureControl).Controls[i].Dragging;
+      if IsDragging then
+        break;
+    end;
+  end;
+  DragDone(IsDragging);
+end;
+
+procedure TDragObject.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+
+  VK_CONTROL:
+    DragTo(DragObject.DragPos);
+
+  VK_ESCAPE:
+    begin
+      Key:=VK_UNKNOWN; // Consume keystroke and cancel drag operation
+      DragDone(False);
+    end;
+
+  end;
+end;
+
+procedure TDragObject.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_CONTROL then DragTo(DragObject.DragPos);
 end;
 
 destructor TDragObject.Destroy;
@@ -217,8 +221,6 @@ end;
 constructor TDragDockObject.Create(AControl: TControl);
 begin
   inherited Create(AControl);
-  FBrush:=TBrush.Create;
-  FBrush.Color:=clGray;
 end;
 
 destructor TDragDockObject.Destroy;
