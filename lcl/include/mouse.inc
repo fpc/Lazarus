@@ -72,7 +72,7 @@ end;
 
 function TMouse.GetIsDragging: Boolean;
 begin
-  Result := ActiveDrag <> dopNone;
+  Result := Dragging;
 end;
 
 // included by controls.pp

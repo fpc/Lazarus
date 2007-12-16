@@ -4617,6 +4617,7 @@ begin
         AWinControl.DestroyHandle;
     end;
   end;
+  
   DestroyWnd;
   Exclude(FControlState, csDestroyingHandle);
 end;
@@ -4793,14 +4794,19 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
   MousePos: TPoint; var CanDock: Boolean);
+const
+  ADockMargin = 10;
 begin
   GetWindowRect(Handle,InfluenceRect);
-  // VCL inflates the docking rectangle. Do we need this too? Why?
-  //InflateRect(InfluenceRect,?,?);
+  //Margins to test docking
+  InfluenceRect.Left:= InfluenceRect.Left-ADockMargin;
+  InfluenceRect.Top:= InfluenceRect.Top-ADockMargin;
+  InfluenceRect.Right:= InfluenceRect.Right+ADockMargin;
+  InfluenceRect.Bottom:= InfluenceRect.Bottom+ADockMargin;
+
   if Assigned(FOnGetSiteInfo) then
     FOnGetSiteInfo(Self,Client,InfluenceRect,MousePos,CanDock);
 end;
-
 {------------------------------------------------------------------------------
   procedure TWinControl.ReloadDockedControl(const AControlName: string;
     var AControl: TControl);
@@ -4874,6 +4880,21 @@ Begin
       // Sendmessage to do something?
     End;
   end;
+end;
+
+procedure TWinControl.CMFloat(var Message: TCMFloat);
+var WasVisible: Boolean;
+begin
+  if FloatingDockSiteClass = ClassType then begin
+    WasVisible := Visible;
+    try
+      Dock(nil, Message.DockSource.FDockRect);
+    finally
+      if WasVisible
+      then BringToFront;
+    end;
+  end
+  else inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -5015,13 +5036,6 @@ begin
 
     if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
-
-    // let drag object handle the key
-    if Dragging and (DragObject<>nil) then
-    begin
-      DragObject.KeyDown(CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then Exit;
-    end;
 
     // let user handle the key
     if not (csNoStdEvents in ControlStyle) then 
@@ -5252,12 +5266,6 @@ begin
   begin
     ShiftState := KeyDataToShiftState(KeyData);
 
-    if Dragging and (DragObject<>nil) then
-    begin
-      DragObject.KeyUp(CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then exit;
-    end;
-    
     if not (csNoStdEvents in ControlStyle)
     then begin
       KeyUpBeforeInterface(CharCode, ShiftState);
@@ -5812,6 +5820,9 @@ begin
     Control.Parent := nil;
     n := ControlCount;
   end;
+
+  if FDockSite then
+    DragManager.RegisterDocksite(Self, false);
 
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
@@ -6953,7 +6964,7 @@ begin
   if FDockSite=NewDockSite then exit;
   FDockSite := NewDockSite;
   if not (csDesigning in ComponentState) then begin
-    RegisterDockSite(Self,NewDockSite);
+    DragManager.RegisterDockSite(Self,NewDockSite);
     if not NewDockSite then begin
       FreeAndNil(FDockClients);
       FDockClients := nil;

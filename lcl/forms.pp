@@ -375,6 +375,7 @@ type
     FKeyPreview: Boolean;
     FMenu: TMainMenu;
     FModalResult: TModalResult;
+    FOldBorderStyle: TFormBorderStyle;
     FOnActivate: TNotifyEvent;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
@@ -430,6 +431,7 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure LMDragStart(Var Message: TLMessage); message LM_DRAGSTART;//not in delphi
     procedure AddHandler(HandlerType: TFormHandlerType;
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TFormHandlerType;
@@ -602,6 +604,8 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DragKind;
+    property DragMode;
     property DockSite;
     property Enabled;
     property Font;

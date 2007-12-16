@@ -219,7 +219,6 @@ type
     property Width stored False;
   end;
 
-
   { TPageControl }
 
   TPageControl = class(TCustomNotebook)
@@ -240,6 +239,7 @@ type
     property ActivePageIndex: Integer read GetActivePageIndex
                                       write SetActivePageIndex;
     property Pages[Index: Integer]: TTabSheet read GetTabSheet;
+    procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); override;
   published
     property ActivePage: TTabSheet read GetActiveTabSheet write SetActiveTabSheet;
     property Align;
@@ -247,9 +247,9 @@ type
     property BorderSpacing;
     //property BiDiMode;
     property Constraints;
-    //property DockSite;
+    property DockSite;
     property DragCursor;
-    //property DragKind;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -275,25 +275,25 @@ type
     property OnChange: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property OnChanging;
     property OnContextPopup;
-    //property OnDockDrop;
-    //property OnDockOver;
+    property OnDockDrop;
+    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
     //property OnDrawTab;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetImageIndex;
-    //property OnGetSiteInfo;
+    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnPageChanged;
     property OnResize;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
-    //property OnUnDock;
+    property OnUnDock;
   end;
 
 

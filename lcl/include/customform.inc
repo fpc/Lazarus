@@ -940,16 +940,17 @@ begin
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
             if not ContainsForm(Self) then exit;
+            //LCLIntf.SetFocus(Self.Handle);
           end;
         end;
       end;
     CM_EXIT:
       begin
-        //TODO: deal with docking                if HostDockSite <> nil then DeActivate;
+        if HostDockSite <> nil then DeActivate;
       end;
     CM_ENTER:
       begin
-        //TODO: Deal with docking                if HostDockSite <> nil then Activate;
+        if HostDockSite <> nil then Activate;
       end;
     LM_WINDOWPOSCHANGING:
       if ([csLoading, csDesigning] * ComponentState = [csLoading])
@@ -1026,9 +1027,18 @@ begin
 end;
 
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+//Save or restore the form borderstyle before its (un)docked
 begin
-  if (NewDockSite<>HostDockSite) then begin
-
+  if (NewDockSite <> HostDockSite) and ((NewDockSite = nil) or Floating) then
+  begin
+    if NewDockSite = nil then
+      //Restore the form borderstyle
+      FFormBorderStyle := FOldBorderStyle
+    else begin
+      //Save the borderstyle & set new bordertype
+      FOldBorderStyle := FFormBorderStyle;
+      FFormBorderStyle := bsNone;
+    end;
   end;
   inherited DoDock(NewDockSite, ARect);
 end;
@@ -1428,7 +1438,6 @@ begin
   inherited Create(AOwner);
   Visible := False;
   fCompStyle:= csForm;
-
   FMenu:= nil;
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
@@ -1447,6 +1456,8 @@ begin
   FAllowDropFiles := False;
 End;
 
+
+
 {------------------------------------------------------------------------------
   TCustomForm CreateParams
 ------------------------------------------------------------------------------}
@@ -1457,7 +1468,7 @@ begin
   begin
     if (Parent = nil) {and (ParentWindow = 0)} then
     begin
-//    WndParent := Application.Handle;
+      //WndParent := Application.Handle;
       { TODO : No application handle }
       Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP);
       if Parent=nil then
@@ -2089,6 +2100,13 @@ end;
 procedure TCustomForm.Dock(NewDockSite: TWinControl; ARect: TRect);
 begin
   inherited Dock(NewDockSite, ARect);
+end;
+
+procedure TCustomForm.LMDragStart(var Message: TLMessage);
+begin
+  if (Message.wParam = HTCAPTION) and (DragKind = dkDock) and
+    not (csDesigning in ComponentState) and(WindowState <> wsMinimized)
+  then DragManager.BeginDrag(Self, not Floating, -1);
 end;
 
 //==============================================================================

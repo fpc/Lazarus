@@ -1518,6 +1518,15 @@ Begin
 
   ecFindPrevWordOccurrence:
     FindNextWordOccurrence(false);
+    
+  ecSetFreeBookmark:
+    FSourceNoteBook.BookMarkSetFreeClicked(Self);
+    
+  ecPrevBookmark:
+    FSourceNoteBook.BookMarkPrevClicked(Self);
+
+  ecNextBookmark:
+    FSourceNoteBook.BookMarkNextClicked(Self);
 
   ecSelectionEnclose:
     EncloseSelection;

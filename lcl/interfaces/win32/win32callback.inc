@@ -1812,10 +1812,20 @@ begin
         end;
       end;
     end;
-    WM_NCLBUTTONDOWN:
-    begin
+    WM_NCLBUTTONDOWN:begin
       NotifyUserInput := True;
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
+
+      //Drag&Dock support TCustomForm => Start BeginDrag()
+      if lWinControl <> nil then begin
+        LMessage.Msg := LM_DRAGSTART;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
+        DeliverMessage(lWinControl, PLMsg^);
+        //no need to deliver this message later on..
+        LMessage.Msg := LM_NULL;
+      end;
+      
     end;
     WM_NOTIFY:
     begin

@@ -431,7 +431,7 @@ var
   UserDropDown: boolean;
 begin
   Skip := False;
-  UserDropDown := ((Shift *[ssCtrl] = [ssCtrl]) and (Key = VK_DOWN));
+  UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
 
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
