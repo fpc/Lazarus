@@ -1,31 +1,30 @@
 object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
   Left = 316
-  Height = 198
+  Height = 294
   Top = 154
   Width = 445
   HorzScrollBar.Page = 444
-  VertScrollBar.Page = 197
+  VertScrollBar.Page = 293
   ActiveControl = FCheck
-  AutoSize = True
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'CheckListBoxEditorDlg'
-  ClientHeight = 198
+  ClientHeight = 294
   ClientWidth = 445
   Constraints.MinHeight = 100
   Constraints.MinWidth = 200
+  OnCreate = FormCreate
   Position = poScreenCenter
   object FCheck: TCheckListBox
-    Height = 127
-    Top = 35
+    Height = 234
+    Top = 24
     Width = 445
     Align = alClient
     TabOrder = 0
-    TopIndex = -1
   end
   object FPanelOKCancel: TPanel
     Height = 36
-    Top = 162
+    Top = 258
     Width = 445
     Align = alBottom
     BevelInner = bvLowered
@@ -97,82 +96,56 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       TabOrder = 3
     end
   end
-  object FPanelButtons: TPanel
-    Height = 35
+  object ToolBar: TToolBar
+    Height = 24
     Width = 445
-    Align = alTop
     AutoSize = True
-    BevelInner = bvLowered
-    ClientHeight = 35
-    ClientWidth = 445
+    Caption = 'ToolBar'
+    Flat = True
     TabOrder = 2
-    object BtnAdd: TButton
-      AnchorSideLeft.Control = FPanelButtons
-      AnchorSideTop.Control = FPanelButtons
-      Left = 6
-      Height = 29
-      Top = 6
-      Width = 59
-      AutoSize = True
-      BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      Caption = 'BtnAdd'
+    object tbAdd: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'tbAdd'
       OnClick = AddItem
-      TabOrder = 0
     end
-    object BtnDelete: TButton
-      AnchorSideLeft.Control = BtnAdd
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnAdd
-      Left = 65
-      Height = 29
-      Top = 6
-      Width = 76
-      AutoSize = True
-      Caption = 'BtnDelete'
+    object tbDelete: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'tbDelete'
       OnClick = DeleteItem
-      TabOrder = 1
     end
-    object BtnUp: TButton
-      AnchorSideLeft.Control = BtnDelete
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnDelete
-      Left = 147
-      Height = 29
-      Top = 6
-      Width = 52
-      AutoSize = True
-      BorderSpacing.Left = 6
-      Caption = 'BtnUp'
+    object ToolButton3: TToolButton
+      Left = 47
+      Top = 2
+      Width = 9
+      Caption = 'ToolButton3'
+      Style = tbsDivider
+    end
+    object tbUp: TToolButton
+      Left = 56
+      Top = 2
+      Caption = 'tbUp'
       OnClick = MoveUpItem
-      TabOrder = 2
     end
-    object BtnDown: TButton
-      AnchorSideLeft.Control = BtnUp
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnUp
-      Left = 199
-      Height = 29
-      Top = 6
-      Width = 69
-      AutoSize = True
-      Caption = 'BtnDown'
+    object tbDown: TToolButton
+      Left = 79
+      Top = 2
+      Caption = 'tbDown'
       OnClick = MoveDownItem
-      TabOrder = 3
     end
-    object BtnModify: TButton
-      AnchorSideLeft.Control = BtnDown
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = BtnDown
-      Left = 274
-      Height = 29
-      Top = 6
-      Width = 75
-      AutoSize = True
-      BorderSpacing.Left = 6
-      Caption = 'BtnModify'
+    object ToolButton6: TToolButton
+      Left = 102
+      Top = 2
+      Width = 10
+      Caption = 'ToolButton6'
+      Style = tbsDivider
+    end
+    object tbEdit: TToolButton
+      Left = 112
+      Top = 2
+      Caption = 'tbEdit'
       OnClick = ModifyItem
-      TabOrder = 4
     end
   end
 end

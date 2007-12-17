@@ -847,33 +847,21 @@ end;
 { TCheckListBoxComponentEditor }
 
 procedure TCheckListBoxComponentEditor.DoShowEditor;
-var Dlg: TCheckListBoxEditorDlg;
+var 
+  Dlg: TCheckListBoxEditorDlg;
 begin
-  Dlg:=TCheckListBoxEditorDlg.Create(nil);
-  with Dlg do begin
-    Caption:=clbCheckListBoxEditor;
-    BtnOK.Caption:=oisOk;
-    BtnCancel.Caption:=oisCancel;
-    BtnHelp.Caption:=cActionListEditorHelpCategory;
-    BtnAdd.Caption:=oiscAdd;
-    BtnDelete.Caption:=oiscDelete;
-    BtnUp.Caption:=clbUp;
-    BtnDown.Caption:=clbDown;
-    BtnModify.Caption:='...';
-    BtnModify.ShowHint:=true;
-    BtnModify.Hint:=clbModify;
-    Modified:=false;
-  end;
-
+  Dlg := TCheckListBoxEditorDlg.Create(nil);
   try
-    if GetComponent is TCheckListBox then begin
-      Dlg.aCheck:=TCheckListBox(GetComponent);
+    if GetComponent is TCheckListBox then 
+    begin
+      Dlg.aCheck := TCheckListBox(GetComponent);
       if not HasHook then exit;
 
       AssignCheckList(Dlg.FCheck, Dlg.aCheck);
 
       //ShowEditor
-      if Dlg.ShowModal=mrOK then begin
+      if Dlg.ShowModal=mrOK then 
+      begin
         AssignCheckList(Dlg.aCheck, Dlg.FCheck);
         Modified;
       end;
