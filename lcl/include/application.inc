@@ -395,6 +395,7 @@ function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
 var
   CallHelp: Boolean;
   ActiveForm: TCustomForm;
+  i: LongInt;
 begin
   Result := False;
   CallHelp := True;
@@ -403,8 +404,12 @@ begin
   { let existing hooks get called, if any. }
   if Assigned(ActiveForm) and Assigned(ActiveForm.FOnHelp) then
     Result := ActiveForm.FOnHelp(Command, Data, CallHelp)
-  else if Assigned(FOnHelp) then
+  else if Assigned(FOnHelp) then begin
     Result := FOnHelp(Command, Data, CallHelp);
+    i:=FApplicationHandlers[ahtHelp].Count;
+    while (not Result) and (FApplicationHandlers[ahtHelp].NextDownIndex(i)) do
+      Result:=THelpEvent(FApplicationHandlers[ahtHelp][i])(Command, Data, CallHelp);
+  end;
 
   if CallHelp then begin
     if Assigned(ActiveForm) and ActiveForm.HandleAllocated
@@ -525,7 +530,7 @@ procedure TApplication.StopHintTimer;
 begin
   if FHintTimer <> nil then
     FHintTimer.Enabled := false;
-  FHintTimerType := ahtNone;
+  FHintTimerType := ahttNone;
 end;
 
 {------------------------------------------------------------------------------
@@ -596,15 +601,15 @@ begin
   {$ifdef DebugHintWindow}
     DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
   {$endif}
-  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahtShowHint])) then
+  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahttShowHint])) then
   begin
     if Info.ControlHasHint then
     begin
       FHintControl := Info.Control;
       case FHintTimerType of
-        ahtNone, ahtShowHint:
-          StartHintTimer(HintPause, ahtShowHint);
-        ahtHideHint:
+        ahttNone, ahttShowHint:
+          StartHintTimer(HintPause, ahttShowHint);
+        ahttHideHint:
           ShowHintWindow(Info);
         else
           HideHint;
@@ -630,6 +635,7 @@ var
   CanShow: Boolean;
   HintWinRect: TRect;
   CurHeight: Integer;
+  i: LongInt;
 begin
   if not FShowHint or (FHintControl=nil) then
     Exit;
@@ -671,8 +677,13 @@ begin
   or (not HintInfo.HintWindowClass.InheritsFrom(THintWindow)) then
     HintInfo.HintWindowClass := HintWindowClass;
 
-  if CanShow and Assigned(FOnShowHint) then
+  i:=FApplicationHandlers[ahtShowHint].Count;
+  if CanShow
+  and (Assigned(FOnShowHint) or (i>0)) then begin
     FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
+    while FApplicationHandlers[ahtShowHint].NextDownIndex(i) do
+      TShowHintEvent(FApplicationHandlers[ahtShowHint][i])(HintInfo.HintStr, CanShow, HintInfo);
+  end;
   if CanShow and (FHintControl <> nil) and (HintInfo.HintStr <> '') then
   begin
     // create hint window
@@ -719,7 +730,7 @@ begin
     //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
     FHintWindow.ActivateHint(HintWinRect,HintInfo.HintStr);
     // start hide timer
-    StartHintTimer(HintHidePause,ahtHideHint);
+    StartHintTimer(HintHidePause,ahttHideHint);
   end else
     HideHint;
 
@@ -766,7 +777,7 @@ begin
   OldHintTimerType := FHintTimerType;
   StopHintTimer;
   case OldHintTimerType of
-    ahtShowHint:
+    ahttShowHint:
       begin
         Info := GetHintInfoAtMouse;
         if Info.ControlHasHint then
@@ -893,6 +904,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.HandleException(Sender: TObject);
 
+var
+  i: LongInt;
 begin
   if Self=nil then exit;
   if AppHandlingException in FFlags then begin
@@ -904,6 +917,7 @@ begin
     Halt;
   end;
   Include(FFlags,AppHandlingException);
+  
   if StopOnException then
     inherited Terminate;
   if not (AppNoExceptionMessages in FFlags) then begin
@@ -922,9 +936,13 @@ begin
   // handle the exception
   if ExceptObject is Exception then begin
     if not (ExceptObject is EAbort) then
-      if Assigned(OnException) then
-        OnException(Sender, Exception(ExceptObject))
-      else
+      i:=FApplicationHandlers[ahtUserInput].Count;
+      if Assigned(OnException) or (i>0) then begin
+        if Assigned(OnException) then
+          OnException(Sender, Exception(ExceptObject));
+        while FApplicationHandlers[ahtException].NextDownIndex(i) do
+          TExceptionEvent(FApplicationHandlers[ahtException][i])(Self,Exception(ExceptObject));
+      end else
         ShowException(Exception(ExceptObject));
   end else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
@@ -1150,9 +1168,10 @@ procedure TApplication.SetHint(const AValue: string);
 begin
   if FHint=AValue then exit;
   FHint:=AValue;
-  if Assigned(FOnHint) then
-    FOnHint(Self)
-  else begin
+  if Assigned(FOnHint) or (FApplicationHandlers[ahtHint].Count>0) then begin
+    FOnHint(Self);
+    FApplicationHandlers[ahtHint].CallNotifyEvents(Self);
+  end else begin
     // Send THintAction
     with TCustomHintAction.Create(Self) do begin
       Hint := FHint;
@@ -1422,6 +1441,105 @@ begin
   RemoveHandler(ahtDeactivate,TMethod(Handler));
 end;
 
+procedure TApplication.AddOnExceptionHandler(Handler: TExceptionEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtException,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnExceptionHandler(Handler: TExceptionEvent);
+begin
+  RemoveHandler(ahtException,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnEndSessionHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtEndSession,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnEndSessionHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtEndSession,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnQueryEndSessionHandler(
+  Handler: TQueryEndSessionEvent; AsLast: Boolean);
+begin
+  AddHandler(ahtQueryEndSession,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnQueryEndSessionHandler(
+  Handler: TQueryEndSessionEvent);
+begin
+  RemoveHandler(ahtQueryEndSession,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnMinimizeHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtMinimize,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnMinimizeHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtMinimize,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnRestoreHandler(Handler: TNotifyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtRestore,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnRestoreHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtRestore,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnDropFilesHandler(Handler: TDropFilesEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtDropFiles,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnDropFilesHandler(Handler: TDropFilesEvent);
+begin
+  RemoveHandler(ahtDropFiles,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnHelpHandler(Handler: THelpEvent; AsLast: Boolean);
+begin
+  AddHandler(ahtHelp,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnHelpHandler(Handler: THelpEvent);
+begin
+  RemoveHandler(ahtHelp,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnHintHandler(Handler: TNotifyEvent; AsLast: Boolean
+  );
+begin
+  AddHandler(ahtHint,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnHintHandler(Handler: TNotifyEvent);
+begin
+  RemoveHandler(ahtHint,TMethod(Handler));
+end;
+
+procedure TApplication.AddOnShowHintHandler(Handler: TShowHintEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtShowHint,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnShowHintHandler(Handler: TShowHintEvent);
+begin
+  RemoveHandler(ahtShowHint,TMethod(Handler));
+end;
+
 procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TApplicationHandlerType;
@@ -1437,14 +1555,20 @@ end;
 procedure TApplication.IntfEndSession;
 begin
   if Assigned(FOnEndSession) then FOnEndSession(Self);
+  FApplicationHandlers[ahtEndSession].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------
   procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
 ------------------------------------------------------------------------------}
 procedure TApplication.IntfQueryEndSession(var Cancel : Boolean);
+var
+  i: LongInt;
 begin
   if Assigned(FOnQueryEndSession) then FOnQueryEndSession(Cancel);
+  i:=FApplicationHandlers[ahtQueryEndSession].Count;
+  while FApplicationHandlers[ahtQueryEndSession].NextDownIndex(i) do
+    TQueryEndSessionEvent(FApplicationHandlers[ahtQueryEndSession][i])(Cancel);
 end;
 
 {------------------------------------------------------------------------------
@@ -1453,6 +1577,7 @@ end;
 procedure TApplication.IntfAppMinimize;
 begin
   if Assigned(FOnMinimize) then FOnMinimize(Self);
+  FApplicationHandlers[ahtMinimize].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1461,6 +1586,7 @@ end;
 procedure TApplication.IntfAppRestore;
 begin
   if Assigned(FOnRestore) then FOnRestore(Self);
+  FApplicationHandlers[ahtRestore].CallNotifyEvents(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1471,8 +1597,13 @@ end;
   This function is called by the interface.
  ------------------------------------------------------------------------------}
 procedure TApplication.IntfDropFiles(const FileNames: array of String);
+var
+  i: LongInt;
 begin
   if Assigned(FOnDropFiles) then FOnDropFiles(Self, FileNames);
+  i:=FApplicationHandlers[ahtDropFiles].Count;
+  while FApplicationHandlers[ahtDropFiles].NextDownIndex(i) do
+    TDropFilesEvent(FApplicationHandlers[ahtDropFiles][i])(Self,Filenames);
 end;
 
 {------------------------------------------------------------------------------

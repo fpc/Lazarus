@@ -862,7 +862,7 @@ type
     Result: LRESULT;
   end;
 
-  TAppHintTimerType = (ahtNone, ahtShowHint, ahtHideHint, ahtReshowHint);
+  TAppHintTimerType = (ahttNone, ahttShowHint, ahttHideHint, ahttReshowHint);
 
   TShowHintEvent = procedure (var HintStr: string; var CanShow: Boolean;
     var HintInfo: THintInfo) of object;
@@ -899,7 +899,16 @@ type
     ahtKeyDownAfter,  // after interface and LCL
     ahtActivate,
     ahtDeactivate,
-    ahtUserInput
+    ahtUserInput,
+    ahtException,
+    ahtEndSession,
+    ahtQueryEndSession,
+    ahtMinimize,
+    ahtRestore,
+    ahtDropFiles,
+    ahtHelp,
+    ahtHint,
+    ahtShowHint
     );
 
   PAsyncCallQueueItem = ^TAsyncCallQueueItem;
@@ -1076,6 +1085,24 @@ type
     procedure RemoveOnActivateHandler(Handler: TNotifyEvent);
     procedure AddOnDeactivateHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
     procedure RemoveOnDeactivateHandler(Handler: TNotifyEvent);
+    procedure AddOnExceptionHandler(Handler: TExceptionEvent; AsLast: Boolean=true);
+    procedure RemoveOnExceptionHandler(Handler: TExceptionEvent);
+    procedure AddOnEndSessionHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnEndSessionHandler(Handler: TNotifyEvent);
+    procedure AddOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent; AsLast: Boolean=true);
+    procedure RemoveOnQueryEndSessionHandler(Handler: TQueryEndSessionEvent);
+    procedure AddOnMinimizeHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnMinimizeHandler(Handler: TNotifyEvent);
+    procedure AddOnRestoreHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnRestoreHandler(Handler: TNotifyEvent);
+    procedure AddOnDropFilesHandler(Handler: TDropFilesEvent; AsLast: Boolean=true);
+    procedure RemoveOnDropFilesHandler(Handler: TDropFilesEvent);
+    procedure AddOnHelpHandler(Handler: THelpEvent; AsLast: Boolean=true);
+    procedure RemoveOnHelpHandler(Handler: THelpEvent);
+    procedure AddOnHintHandler(Handler: TNotifyEvent; AsLast: Boolean=true);
+    procedure RemoveOnHintHandler(Handler: TNotifyEvent);
+    procedure AddOnShowHintHandler(Handler: TShowHintEvent; AsLast: Boolean=true);
+    procedure RemoveOnShowHintHandler(Handler: TShowHintEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): boolean;
