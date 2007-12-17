@@ -480,21 +480,23 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.OnScroll">
-        <short>Handler for a scrolling event</short>
-        <descr/>
-        <seealso/>
+        <short><i>OnScroll</i>  - Handler for a scrolling event (by mouse, keyboard or program)</short>
+        <descr>
+          <p><i>OnScroll</i> - Handler for a scrolling event</p>
+          <p>Called when there is any movement of the slider by mouse, arrow keys or Page Up/Down keys, or if the display in the main window is caused to scroll</p>
+        </descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TScrollBar">
-        <short><i>TScrollBar</i> - a control that allows the user to scroll the current page or document window by moving a slider</short>
+        <short><i>TScrollBar</i>  - a control that allows the user to scroll the current page or document window by moving a slider</short>
         <descr>
           <p><i>TScrollBar</i> - a control that allows the user to scroll the current page or document window by moving a slider</p>
-          <p>It appears as a long rectangular track or bar within which a smaller contrasting block or slider can move up an down (or from side to side in a horizontal ScrollBar)</p>
-          <p>It has small triangular indicators or pointers at each end: typically for a vertical ScrollBar the top indicator points up, and at the bottom there is a pair of pointers, one up and one down. Clicking with the mouse on one of the pointers moves the slider a small distance (<i>SmallChange</i>) in the specified direction, and the programmer's responsibility is to ensure that the page, image or document in which the ScrollBar is found will scroll by a corresponding small amount</p>
+          <p>It appears as a long rectangular track or bar within which a smaller contrasting block or slider can move up and down (or from side to side in a horizontal ScrollBar)</p>
+          <p>It has small triangular indicators or pointers at each end. Typically, for a vertical ScrollBar the top indicator points up, and at the bottom there is a pair of pointers, one up and one down. Clicking with the mouse on one of the pointers moves the slider a small distance (<i>SmallChange</i>) in the specified direction, and the programmer's responsibility is to ensure that the page, image or document in which the ScrollBar is found will scroll by a corresponding small amount</p>
           <p>Clicking with the mouse in the blank area of the scrollbar above or below the slider makes the slider move by a larger increment (<i>LargeChange</i>) and scrolls the contents of the window by a larger amount - several lines, a paragraph, half a page or anything up to a page (<i>PageSize</i>)</p>
           <p>The slider can also be moved by clicking on it with the mouse, and holding down the button while moving the mouse. The slider follows the mouse until the button is released. If the mouse has a scrollwheel, the slider can be similarly moved by rotating the wheel. In each case, the contents of the window scroll by a corresponding amount</p>
           <p>Scrolling of the window and movement of the slider can also be achieved by using the directional arrows or the Page Up/Page Down keys on the keyboard</p>
-          <p>The location of the slider along the track is held in the <i>Position</i> property, which reports where the mouse has placed it, or can alternatively be set to an arbitrary location by the program.</p>
+          <p>The location of the slider along the track is held in the <i>Position</i> property, which reports where the mouse has placed it, or can alternatively be set to an arbitrary location by the program. If the mouse or arrow keys are used to move the cursor somewhere on the main window so as to make the display scroll (eg by moving beyond the top or bottom line in a text display) the scroll bar slider moves to indicate the corresponding location along the scroll bar</p>
         </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
@@ -646,8 +648,6 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnChange">
-        <short>The OnChange event is called when the Position is changed.</short>
-        <descr/>
         <seealso><link id="TScrollBar.OnScroll"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -700,8 +700,6 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TScrollBar.OnScroll">
-        <short>The OnScroll event is called when the user moves the slider</short>
-        <descr/>
         <seealso><link id="TScrollBar.OnChange"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -2008,8 +2006,14 @@ has value -1.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TComboBox">
-        <short>Combo Box</short>
-        <descr>Combo box. A simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</descr>
+        <short><i>TComboBox </i>- a simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</short>
+        <descr>
+          <p><i>TComboBox </i>- a simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</p>
+          <p>The default text-string (if any, entered in the Form Designer) and the value of the text string that is ultimately selected from the drop-down list, is held in <i>Text</i></p>
+          <p>The values that can be selected from the drop-down list are held in the string-array <i>Items</i>. Clicking on the ellipsis (...) next to <i>Items</i> in the Object Inspector opens a pop-up string-list editor which allows the designer to enter and edit a number of lines of text to represent the selections</p>
+          <p>At run-time, the entry selected from the drop-down list in  <i>Items</i> is used to replace any information previously found in <i>Text</i>, and <i>ItemIndex</i> holds the (zero-origin) index number of the selected item</p>
+          <p>If no value is selected from the drop-down list, the default text (if any) remains, or any information typed directly into <i>Text</i> will be returned, and <i>ItemIndex</i> takes the value of -1</p>
+        </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -4023,10 +4027,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TMemoScrollbar">
-        <short>Scroll Bar specifically for use in Memo Boxes</short>
+        <short><i>TMemoScrollBar</i> - a Scroll Bar specifically for use in Memo Boxes</short>
         <descr>Scroll Bar specifically for use in Memo Boxes. Inherits most of its properties from its ancestor, <link id="#lcl.Forms.TControlScrollBar">TControlScrollBar</link></descr>
-        <errors/>
-        <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TMemoScrollbar.GetHorzScrollBar">
