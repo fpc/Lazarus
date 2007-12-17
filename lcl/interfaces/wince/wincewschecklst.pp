@@ -40,25 +40,20 @@ type
 
   { TWinCEWSCheckListBox }
 
+  { TWinCEWSCustomCheckListBox }
+
   TWinCEWSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
   protected
   public
-    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer): boolean; override;
-    class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer; const AChecked: boolean); override;
+    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): TCheckBoxState; override;
+    class procedure SetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
 
 implementation
-
-class function  TWinCEWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer): boolean;
-begin
-  Result := TWinCECheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
-end;
 
 class function  TWinCEWSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
@@ -69,13 +64,21 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
-class procedure TWinCEWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer; const AChecked: boolean);
+class function TWinCEWSCustomCheckListBox.GetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
+  ): TCheckBoxState;
+begin
+  Result := TWinCECheckListBoxStrings(ACheckListBox.Items).State[AIndex];
+end;
+
+class procedure TWinCEWSCustomCheckListBox.SetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AState: TCheckBoxState);
 var
   SizeRect: Windows.RECT;
   Handle: HWND;
 begin
-  TWinCECheckListBoxStrings(ACheckListBox.Items).Checked[AIndex] := AChecked;
+  TWinCECheckListBoxStrings(ACheckListBox.Items).State[AIndex] := AChecked;
 
   // redraw control
   Handle := ACheckListBox.Handle;

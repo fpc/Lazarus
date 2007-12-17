@@ -426,27 +426,17 @@ begin
   inherited Create(List, TheOwner);
   with FDefaultItem do
   begin
-    Checked := false;
+    State := cbUnchecked;
     TheObject := nil;
   end;
 end;
 
-function TWin32CheckListBoxStrings.GetChecked(const Index: Integer): Boolean;
+function TWin32CheckListBoxStrings.GetState(Index: Integer): TCheckBoxState;
 var
   Data: PWin32CheckListBoxItemRecord;
 begin
   Data := GetItemRecord(Index, false);
-  Result := Data^.Checked
-end;
-
-procedure TWin32CheckListBoxStrings.SetChecked(const Index: Integer;
-  const AValue: Boolean);
-var
-  ItemRecord: PWin32CheckListBoxItemRecord;
-begin
-  ItemRecord := GetItemRecord(Index, true);
-  ItemRecord^.Checked := AValue;
-  SetItemRecord(Index, ItemRecord);
+  Result := Data^.State;
 end;
 
 function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
@@ -468,6 +458,16 @@ procedure TWin32CheckListBoxStrings.SetItemRecord(const Index: Integer;
   ItemRecord: PWin32CheckListBoxItemRecord);
 begin
   Windows.SendMessage(FWin32List, LB_SETITEMDATA, Index, LPARAM(ItemRecord));
+end;
+
+procedure TWin32CheckListBoxStrings.SetState(Index: Integer;
+  const AValue: TCheckBoxState);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.State := AValue;
+  SetItemRecord(Index, ItemRecord);
 end;
 
 procedure TWin32CheckListBoxStrings.Clear;

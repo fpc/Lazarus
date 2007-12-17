@@ -41,25 +41,22 @@ type
 
   { TWin32WSCheckListBox }
 
+  { TWin32WSCustomCheckListBox }
+
   TWin32WSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
   protected
   public
-    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
-    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer; const AChecked: boolean); override;
+
+    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): TCheckBoxState; override;
+    class procedure SetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
 
 implementation
-
-class function  TWin32WSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer): boolean;
-begin
-  Result := TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex];
-end;
 
 class function  TWin32WSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
@@ -70,18 +67,26 @@ begin
   GetWindowInfo(Handle)^.List := Result;
 end;
 
-class procedure TWin32WSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer; const AChecked: boolean);
+class function TWin32WSCustomCheckListBox.GetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
+  ): TCheckBoxState;
+begin
+  Result := TWin32CheckListBoxStrings(ACheckListBox.Items).State[AIndex];
+end;
+
+class procedure TWin32WSCustomCheckListBox.SetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AState: TCheckBoxState);
 var
   SizeRect: Windows.RECT;
   Handle: HWND;
 begin
-  TWin32CheckListBoxStrings(ACheckListBox.Items).Checked[AIndex] := AChecked;
+  TWin32CheckListBoxStrings(ACheckListBox.Items).State[AIndex] := AState;
 
   // redraw control
   Handle := ACheckListBox.Handle;
   Windows.SendMessage(Handle, LB_GETITEMRECT, AIndex, LPARAM(@SizeRect));
-  Windows.InvalidateRect(Handle, @SizeRect, false);
+  Windows.InvalidateRect(Handle, @SizeRect, False);
 end;
 
 initialization

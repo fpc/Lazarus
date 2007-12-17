@@ -562,8 +562,9 @@ var
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
-        if I < TCheckListBox(lWinControl).Items.Count then begin
-          TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
+        if I < TCheckListBox(lWinControl).Items.Count then
+        begin
+          TCheckListBox(lWinControl).Toggle(I);
           Message.Msg := LM_CHANGED;
           Message.WParam := I;
           DeliverMessage(lWinControl, Message);

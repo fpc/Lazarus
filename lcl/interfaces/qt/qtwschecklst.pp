@@ -45,21 +45,39 @@ type
 
   { TQtWSCheckListBox }
 
+  { TQtWSCustomCheckListBox }
+
   TQtWSCustomCheckListBox = class(TWSCustomCheckListBox)
   private
   protected
   public
-    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer): boolean; override;
-    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer; const AChecked: boolean); override;
+    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): TCheckBoxState; override;
+    class procedure SetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
 
 implementation
 
-class function  TQtWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer): boolean;
+const
+  LCLCheckStateToQtCheckStateMap: array[TCheckBoxState] of QtCheckState =
+  (
+{cbUnchecked} QtUnchecked,
+{cbChecked  } QtChecked,
+{cbGrayed   } QtPartiallyChecked
+  );
+  
+  QtCheckStateToLCLCheckStateMap: array[QtCheckState] of TCheckBoxState =
+  (
+{QtUnchecked       } cbUnchecked,
+{QtPartiallyChecked} cbGrayed,
+{QtChecked         } cbChecked
+  );
+
+class function TQtWSCustomCheckListBox.GetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
+  ): TCheckBoxState;
 var
   QtListWidget: TQtListWidget;
   AListWidget: QListWidgetH;
@@ -68,11 +86,12 @@ begin
   QtListWidget := TQtListWidget(ACheckListBox.Handle);
   AListWidget := QListWidgetH(QtListWidget.Widget);
   AItem := QListWidget_item(AListWidget, AIndex);
-  Result := QListWidgetItem_checkState(AItem) = QtChecked;
+  Result := QtCheckStateToLCLCheckStateMap[QListWidgetItem_checkState(AItem)];
 end;
 
-class procedure TQtWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer; const AChecked: boolean);
+class procedure TQtWSCustomCheckListBox.SetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AState: TCheckBoxState);
 var
   QtListWidget: TQtListWidget;
   AListWidget: QListWidgetH;
@@ -81,10 +100,7 @@ begin
   QtListWidget := TQtListWidget(ACheckListBox.Handle);
   AListWidget := QListWidgetH(QtListWidget.Widget);
   AItem := QListWidget_item(AListWidget, AIndex);
-  
-  if AChecked then
-    QListWidgetItem_setCheckState(AItem, QtChecked)
-  else QListWidgetItem_setCheckState(AItem, QtUnchecked);
+  QListWidgetItem_setCheckState(AItem, LCLCheckStateToQtCheckStateMap[AState]);
 end;
 
 initialization

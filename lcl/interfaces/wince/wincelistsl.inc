@@ -387,28 +387,19 @@ end;
 constructor TWinCECheckListBoxStrings.Create(List : HWND; TheOwner: TWinControl);
 begin
   inherited Create(List, TheOwner);
-  with FDefaultItem do begin
-    Checked := false;
+  with FDefaultItem do
+  begin
+    State := cbUnchecked;
     TheObject := nil;
   end;
 end;
 
-function TWinCECheckListBoxStrings.GetChecked(const Index: Integer): Boolean;
+function TWinCECheckListBoxStrings.GetState(AIndex: Integer): TCheckBoxState;
 var
   Data: PWinCECheckListBoxItemRecord;
 begin
   Data := GetItemRecord(Index, false);
-  Result := Data^.Checked
-end;
-
-procedure TWinCECheckListBoxStrings.SetChecked(const Index: Integer;
-  const AValue: Boolean);
-var
-  ItemRecord: PWinCECheckListBoxItemRecord;
-begin
-  ItemRecord := GetItemRecord(Index, true);
-  ItemRecord^.Checked := AValue;
-  SetItemRecord(Index, ItemRecord);
+  Result := Data^.State
 end;
 
 function TWinCECheckListBoxStrings.GetItemRecord(const Index: Integer;
@@ -428,6 +419,16 @@ procedure TWinCECheckListBoxStrings.SetItemRecord(const Index: Integer;
   ItemRecord: PWinCECheckListBoxItemRecord);
 begin
   Windows.SendMessage(FWinCEList, LB_SETITEMDATA, Index, LPARAM(ItemRecord));
+end;
+
+procedure TWinCECheckListBoxStrings.SetState(AIndex: Integer;
+  const AValue: TCheckBoxState);
+var
+  ItemRecord: PWinCECheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.State := AValue;
+  SetItemRecord(Index, ItemRecord);
 end;
 
 procedure TWinCECheckListBoxStrings.Clear;

@@ -47,10 +47,10 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
                     const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer): boolean; override;
-    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox;
-      const AIndex: integer; const AChecked: boolean); override;
+    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): TCheckBoxState; override;
+    class procedure SetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AState: TCheckBoxState); override;
   end;
 
 
@@ -74,23 +74,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomCheckListBox.GetChecked
+  Method:  TCarbonWSCustomCheckListBox.GetState
   Params:  ACustomCheckListBox - LCL custom check list box
            AIndex              - Item index
   Returns: If the specified item in check list box in Carbon interface is
-           checked
+           checked, grayed or unchecked
  ------------------------------------------------------------------------------}
-class function TCarbonWSCustomCheckListBox.GetChecked(
-  const ACheckListBox: TCustomCheckListBox; const AIndex: integer): boolean;
+class function TCarbonWSCustomCheckListBox.GetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
+  ): TCheckBoxState;
 begin
   Result := false;
-  if not CheckHandle(ACheckListBox, Self, 'GetChecked') then Exit;
+  if not CheckHandle(ACheckListBox, Self, 'GetState') then Exit;
 
-  Result := TCarbonCheckListBox(ACheckListBox.Handle).GetItemChecked(AIndex);
+  // TODO: grayed state
+  if TCarbonCheckListBox(ACheckListBox.Handle).GetItemChecked(AIndex) then
+    Result := cbChecked
+  else
+    Result := cbUnchecked;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomCheckListBox.SetChecked
+  Method:  TCarbonWSCustomCheckListBox.SetState
   Params:  ACustomCheckListBox - LCL custom check list box
            AIndex              - Item index to change checked value
            AChecked            - New checked value
@@ -98,13 +103,14 @@ end;
   Changes checked value of item with the specified index of check list box in
   Carbon interface
  ------------------------------------------------------------------------------}
-class procedure TCarbonWSCustomCheckListBox.SetChecked(
+class procedure TCarbonWSCustomCheckListBox.SetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
-  const AChecked: boolean);
+  const AState: TCheckBoxState);
 begin
-  if not CheckHandle(ACheckListBox, Self, 'SetChecked') then Exit;
+  if not CheckHandle(ACheckListBox, Self, 'SetState') then Exit;
   
-  TCarbonCheckListBox(ACheckListBox.Handle).SetItemChecked(AIndex, AChecked);
+  // TODO: grayed state
+  TCarbonCheckListBox(ACheckListBox.Handle).SetItemChecked(AIndex, AState <> cbUnchecked);
 end;
 
 initialization

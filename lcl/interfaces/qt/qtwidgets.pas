@@ -39,7 +39,7 @@ uses
   Classes, SysUtils, Types, Math,
   // LCL
   LCLType, LCLProc, LCLIntf, LMessages, Buttons, Forms, Controls, ComCtrls,
-  ExtCtrls, StdCtrls, Menus, Dialogs;
+  ExtCtrls, StdCtrls, CheckLst, Menus, Dialogs;
 
 type
   // forward declarations

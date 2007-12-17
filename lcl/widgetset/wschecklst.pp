@@ -44,32 +44,36 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst,
+  StdCtrls, CheckLst,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSStdCtrls;
 
 type
   { TWSCheckListBox }
 
+  { TWSCustomCheckListBox }
+
   TWSCustomCheckListBox = class(TWSCustomListBox)
-    class function  GetChecked(const ACheckListBox: TCustomCheckListBox; 
-      const AIndex: integer): boolean; virtual;
-    class procedure SetChecked(const ACheckListBox: TCustomCheckListBox; 
-      const AIndex: integer; const AChecked: boolean); virtual;
+    class function  GetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer): TCheckBoxState; virtual;
+    class procedure SetState(const ACheckListBox: TCustomCheckListBox;
+      const AIndex: integer; const AState: TCheckBoxState); virtual;
   end;
   TWSCustomCheckListBoxClass = class of TWSCustomCheckListBox;
 
 
 implementation
 
-class function  TWSCustomCheckListBox.GetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer): boolean;
+class function TWSCustomCheckListBox.GetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer
+  ): TCheckBoxState;
 begin
-  Result := false;
+  Result := cbUnchecked;
 end;
 
-class procedure TWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
-  const AIndex: integer; const AChecked: boolean);
+class procedure TWSCustomCheckListBox.SetState(
+  const ACheckListBox: TCustomCheckListBox; const AIndex: integer;
+  const AState: TCheckBoxState);
 begin
 end;
 

@@ -204,6 +204,7 @@ var
     Brush: HBRUSH;
     Rect: Windows.Rect;
     Flags: Cardinal;
+    Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
 {$ifdef WindowsUnicodeSupport}
@@ -224,14 +225,28 @@ var
     DeleteObject(Brush);
 
     // draw checkbox
-    Flags := DFCS_BUTTONCHECK;
-    if CheckListBox.Checked[Data^.ItemID] then
-      Flags := Flags or DFCS_CHECKED;
-    Rect.Left := Data^.rcItem.Left + 2;
-    Rect.Top := Data^.rcItem.Top + 2;
-    Rect.Bottom := Data^.rcItem.Bottom - 2;
+    Rect := Data^.rcItem;
+    InflateRect(Rect, -1, -1);
     Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
-    Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
+
+    if ThemeServices.ThemesEnabled then
+    begin
+      case CheckListBox.State[Data^.ItemID] of
+        cbUnchecked: Details := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
+        cbChecked: Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+        cbGrayed: Details := ThemeServices.GetElementDetails(tbCheckBoxMixedNormal);
+      end;
+      ThemeServices.DrawElement(Data^._HDC, Details, Rect);
+    end
+    else
+    begin
+      Flags := DFCS_BUTTONCHECK;
+      case CheckListBox.State[Data^.ItemID] of
+        cbChecked: Flags := Flags or DFCS_CHECKED;
+        cbGrayed: Flags := Flags or DFCS_INACTIVE;
+      end;
+      Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
+    end;
 
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
