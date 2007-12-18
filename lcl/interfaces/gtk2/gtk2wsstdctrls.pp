@@ -427,8 +427,8 @@ end;
 class procedure TGtk2WSCustomListBox.SetBorder(
   const ACustomListBox: TCustomListBox);
 begin
-  // TODO
-  debugln('TGtk2WSCustomListBox.SetBorder TODO');
+  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(ACustomListBox.Handle),
+    BorderStyleShadowMap[ACustomListBox.BorderStyle]);
 end;
 
 class procedure TGtk2WSCustomListBox.SetItemIndex(
@@ -533,8 +533,8 @@ var
   column : PGtkTreeViewColumn;
   WidgetInfo: PWidgetInfo;
 begin
-  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl,AParams);
-  p:= PGtkWidget(Result);
+  Result := TGtkWSBaseScrollingWinControl.CreateHandle(AWinControl, AParams);
+  p := PGtkWidget(Result);
   
   if Result = 0 then exit;
   {$IFDEF DebugLCLComponents}
@@ -545,7 +545,8 @@ begin
   GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
   gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
                                  GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
+  gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),
+    BorderStyleShadowMap[TCustomListBox(AWinControl).BorderStyle]);
   gtk_widget_show(p);
 
   liststore := gtk_list_store_new (2, [G_TYPE_STRING, G_TYPE_POINTER, nil]);

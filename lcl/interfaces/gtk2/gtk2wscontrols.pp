@@ -35,9 +35,9 @@ uses
 ////////////////////////////////////////////////////
   Controls,
 ////////////////////////////////////////////////////
-  Gtk2, Gdk2, Glib2,
+  Gtk2, Gdk2, Glib2, GtkGlobals,
   GtkWsControls,
-  WSControls, WSLCLClasses;
+  WSControls, WSLCLClasses, WSProc;
   
 
 type
@@ -66,6 +66,7 @@ type
   public
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TGtk2WSGraphicControl }
@@ -160,6 +161,21 @@ begin
   else
     TGtkWSWinControl{(ClassParent)}.SetText(AWinControl, AText);
   end;
+end;
+
+class procedure TGtk2WSWinControl.SetBorderStyle(
+  const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
+var
+  Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBorderStyle')
+  then Exit;
+  
+  Widget := PGtkWidget(AWinControl.Handle);
+  if GTK_IS_SCROLLED_WINDOW(Widget) then
+    gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget), BorderStyleShadowMap[ABorderStyle])
+  else
+    TWSWinControlClass(ClassParent).SetBorderStyle(AWinControl, ABorderStyle);
 end;
 
 initialization

@@ -36,7 +36,7 @@ uses
   GtkFontCache, Gtk1WSPrivate,
   {$ENDIF}
   InterfaceBase, WSStdCtrls, WSLCLClasses, WSProc, WSControls,
-  GtkInt, GtkDef, GTKWinApiWindow, gtkglobals, gtkproc, gtkExtra, GtkWSPrivate;
+  GtkInt, GtkDef, GTKWinApiWindow, GtkGlobals, GtkProc, GtkExtra, GtkWSPrivate;
 
 
 type
@@ -639,11 +639,7 @@ var
 begin
   Handle := ACustomListBox.Handle;
   Widget:= PGtkWidget(PGtkBin(Handle)^.child);
-  if ACustomListBox.BorderStyle = TBorderStyle(bsSingle)
-  then
-    gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
-  else
-    gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
+  gtk_viewport_set_shadow_type(PGtkViewPort(Widget), BorderStyleShadowMap[ACustomListBox.BorderStyle]);
 end;
 
 class procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
