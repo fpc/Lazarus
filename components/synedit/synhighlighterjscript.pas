@@ -1767,7 +1767,7 @@ end;
 
 function TSynJScriptSyn.GetRange: Pointer;
 begin
-  Result := Pointer(fRange);
+  Result := Pointer(ptruint(fRange));
 end;
 
 function TSynJScriptSyn.GetToken: String;
@@ -1825,7 +1825,7 @@ end;
 
 procedure TSynJScriptSyn.SetRange(Value: Pointer);
 begin
-  fRange := TRangeState(Value);
+  fRange := TRangeState(ptruint(Value));
 end;
 
 function TSynJScriptSyn.GetIdentChars: TSynIdentChars;
