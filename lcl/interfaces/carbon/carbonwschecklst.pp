@@ -84,7 +84,7 @@ class function TCarbonWSCustomCheckListBox.GetState(
   const ACheckListBox: TCustomCheckListBox; const AIndex: integer
   ): TCheckBoxState;
 begin
-  Result := false;
+  Result := cbUnchecked;
   if not CheckHandle(ACheckListBox, Self, 'GetState') then Exit;
 
   // TODO: grayed state
