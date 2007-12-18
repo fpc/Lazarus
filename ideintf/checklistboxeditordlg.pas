@@ -68,13 +68,14 @@ var
   i: integer;
 begin
   dstCheck.Items.Clear;
-  dstCheck.Items:=srcCheck.Items;
-  dstCheck.ItemHeight:=srcCheck.ItemHeight;
-  for i := 0 to srcCheck.Items.Count-1 do
+  dstCheck.AllowGrayed := srcCheck.AllowGrayed;
+  dstCheck.Items := srcCheck.Items;
+  dstCheck.ItemHeight := srcCheck.ItemHeight;
+  for i := 0 to srcCheck.Items.Count - 1 do
   begin
-    if srcCheck.Items[i]<>dstCheck.Items[i] then
+    if srcCheck.Items[i] <> dstCheck.Items[i] then
       dstCheck.Items[i] := srcCheck.Items[i];
-    dstCheck.Checked[i]:=srcCheck.Checked[i]
+    dstCheck.State[i] := srcCheck.State[i]
   end;
 end;
 

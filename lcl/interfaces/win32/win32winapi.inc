@@ -198,12 +198,18 @@ var
   end;
 
   procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
+  const
+    ThemeStateMap: array[TCheckBoxState, Boolean] of TThemedButton =
+    (
+     {cbUnchecked} (tbCheckBoxUncheckedDisabled, tbCheckBoxUncheckedNormal),
+     {cbChecked  } (tbCheckBoxCheckedDisabled, tbCheckBoxCheckedNormal),
+     {cbGrayed   } (tbCheckBoxMixedDisabled, tbCheckBoxMixedNormal)
+    );
   var
-    Selected: Boolean;
+    Enabled, Selected: Boolean;
     lgBrush: LOGBRUSH;
     Brush: HBRUSH;
     Rect: Windows.Rect;
-    Flags: Cardinal;
     Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
@@ -213,9 +219,10 @@ var
 {$endif}
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
+    Enabled := CheckListBox.Enabled;
 
     // fill the background
-    if Selected then
+    if Enabled and Selected then
       lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
     else
       lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
@@ -229,30 +236,19 @@ var
     InflateRect(Rect, -1, -1);
     Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
 
-    if ThemeServices.ThemesEnabled then
-    begin
-      case CheckListBox.State[Data^.ItemID] of
-        cbUnchecked: Details := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
-        cbChecked: Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-        cbGrayed: Details := ThemeServices.GetElementDetails(tbCheckBoxMixedNormal);
-      end;
-      ThemeServices.DrawElement(Data^._HDC, Details, Rect);
-    end
-    else
-    begin
-      Flags := DFCS_BUTTONCHECK;
-      case CheckListBox.State[Data^.ItemID] of
-        cbChecked: Flags := Flags or DFCS_CHECKED;
-        cbGrayed: Flags := Flags or DFCS_INACTIVE;
-      end;
-      Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
-    end;
+    // draw all through ThemeServices. ThemeServices can decide itself hot to perform actual draw
+    Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
+    ThemeServices.DrawElement(Data^._HDC, Details, Rect);
 
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
     Rect.Right := Data^.rcItem.Right;
     Rect.Left := Rect.Bottom-Rect.Top + 5;
-    if Selected then begin
+    if not Enabled then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
+    else
+    if Selected then
+    begin
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
       OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
     end;
@@ -273,7 +269,11 @@ var
     Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
 {$endif}
-    if Selected then begin
+    if not Enabled then
+      Windows.SetTextColor(Data^._HDC, OldColor)
+    else
+    if Selected then
+    begin
       Windows.SetTextColor(Data^._HDC, OldColor);
       Windows.SetBkColor(Data^._HDC, OldBackColor);
     end;

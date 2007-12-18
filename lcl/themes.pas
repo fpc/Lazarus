@@ -1846,7 +1846,11 @@ begin
         begin
           case Details.Part of
             BP_RADIOBUTTON: ADrawFlags := DFCS_BUTTONRADIO;
-            BP_CHECKBOX: ADrawFlags := DFCS_BUTTONCHECK;
+            BP_CHECKBOX:
+              if IsMixed(Details) then
+                ADrawFlags := DFCS_BUTTON3STATE
+              else
+                ADrawFlags := DFCS_BUTTONCHECK;
           end;
         end;
 
@@ -1856,7 +1860,7 @@ begin
           ADrawFlags := ADrawFlags or DFCS_PUSHED else
         if IsHot(Details) then
           ADrawFlags := ADrawFlags or DFCS_HOT;
-        if IsChecked(Details) then
+        if IsChecked(Details) or IsMixed(Details) then
           ADrawFlags := ADrawFlags or DFCS_CHECKED;
 
         WidgetSet.DrawFrameControl(DC, ARect, DFC_BUTTON, ADrawFlags);

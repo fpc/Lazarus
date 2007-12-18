@@ -275,19 +275,14 @@ var
   ChecksCount: integer;
   Checks: string;
   i: Integer;
-  v: Integer;
 begin
   ChecksCount := ReadLRSInteger(Stream);
   if ChecksCount > 0 then
   begin
     SetLength(Checks, ChecksCount);
     Stream.ReadBuffer(Checks[1], ChecksCount);
-    for i:=0 to ChecksCount-1 do
-    begin
-      v := ord(Checks[i+1]);
-      Checked[i] := ((v and 1) > 0);
-      //debugln('TCustomCheckListBox.ReadData Checked[',dbgs(i),']=',dbgs(Checked[i]),' v=',dbgs(v));
-    end;
+    for i := 0 to ChecksCount-1 do
+      State[i] := TCheckBoxState(ord(Checks[i + 1]));
   end;
 end;
 
@@ -296,20 +291,14 @@ var
   ChecksCount: integer;
   Checks: string;
   i: Integer;
-  v: Integer;
 begin
-  ChecksCount:=Items.Count;
+  ChecksCount := Items.Count;
   WriteLRSInteger(Stream, ChecksCount);
-  if ChecksCount>0 then
+  if ChecksCount > 0 then
   begin
     SetLength(Checks, ChecksCount);
-    for i:=0 to ChecksCount-1 do
-    begin
-      v := 0;
-      if Checked[i] then inc(v, 1);
-      //debugln('TCustomCheckListBox.WriteData Checked[',dbgs(i),']=',dbgs(Checked[i]));
-      Checks[i+1] := chr(v);
-    end;
+    for i := 0 to ChecksCount - 1 do
+      Checks[i+1] := chr(Ord(State[i]));
     Stream.WriteBuffer(Checks[1], ChecksCount);
   end;
 end;
