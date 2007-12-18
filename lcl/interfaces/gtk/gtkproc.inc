@@ -1048,9 +1048,9 @@ begin
 end;
 
 procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
-  X, Y, Width, Height: integer; ClipMergeMask: PGdkPixmap;
+  X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
-  var NewClipMask: PGdkPixmap);
+  var NewClipMask: PGdkBitmap);
 // merge ClipMergeMask into the destination clipping mask at the
 // destination rectangle
 var
