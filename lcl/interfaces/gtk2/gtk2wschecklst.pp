@@ -147,6 +147,10 @@ begin
 
   // Check Column
   renderer := gtk_cell_renderer_toggle_new();
+  {$ifdef windows}
+  // standard indicator size = 13 and its looks ugly under windows
+  g_object_set(renderer, 'indicator-size', [14, nil]);
+  {$endif}
   column := gtk_tree_view_column_new;
   gtk_tree_view_column_set_title(column, 'CHECKBTNS');
   gtk_tree_view_column_pack_start(column, renderer, True);
