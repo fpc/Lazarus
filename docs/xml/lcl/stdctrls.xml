@@ -1928,7 +1928,7 @@ False is set when the edit or combobox control loses focus.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelect">
-        <short>property AutoSelect: Boolean</short>
+        <short><i>AutoSelect</i>: Boolean. If True, all contents of <i>Text</i> box are selected when control receives focus</short>
         <descr>
           <p>When True, the edit control will select all its text when:</p>
           <ul>
@@ -1937,7 +1937,6 @@ False is set when the edit or combobox control loses focus.
             <li>A new item is selected.</li>
           </ul>
         </descr>
-        <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomComboBox.AutoSelected">
@@ -2035,17 +2034,9 @@ has value -1.</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.AutoComplete">
-        <short>property AutoComplete: Boolean</short>
-        <descr>True: Turns on auto-complete feature.
-False: Turns off auto-complete feature.</descr>
-        <seealso/>
-      </element>
+      <element name="TComboBox.AutoComplete"/>
       <!-- property Visibility: published -->
       <element name="TComboBox.AutoCompleteText">
-        <short>property AutoCompleteText: TComboBoxAutoCompleteText</short>
-        <descr>Options for behavior of the Auto-Complete feature.
-</descr>
         <seealso><link id="TComboBoxAutoCompleteTextOption"/></seealso>
       </element>
       <!-- property Visibility: published -->
@@ -2055,18 +2046,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.AutoSelect">
-        <short>property AutoSelected: Boolean</short>
-        <descr>
-          <p>When True, the edit control will select all its text when:</p>
-          <ul>
-            <li>It receives focus</li>
-            <li>The Enter key is pressed.</li>
-            <li>A new item is selected.</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
+      <element name="TComboBox.AutoSelect"/>
       <!-- property Visibility: published -->
       <element name="TComboBox.BidiMode">
         <short/>
@@ -2080,18 +2060,7 @@ False: Turns off auto-complete feature.</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TComboBox.CharCase">
-        <short>property CharCase: TEditCharCase</short>
-        <descr>
-          <p>Indicates how text is displayed in a text editing control in the following ways:</p>
-          <ul>
-            <li>Normal case letters</li>
-            <li>Upper case letters</li>
-            <li>Lower case letters</li>
-          </ul>
-        </descr>
-        <seealso/>
-      </element>
+      <element name="TComboBox.CharCase"/>
       <!-- property Visibility: published -->
       <element name="TComboBox.Color">
         <short/>
@@ -3048,7 +3017,7 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.MultiSelect">
-        <short><i>MultiSelect</i> - boolean; True allows more than one Item from the list to be selected at a time</short>
+        <short><i>MultiSelect</i>  - allows more than one Item from the list to be selected at a time, by pressing the CTRL or SHIFT key while selecting</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnChangeBounds">
@@ -3070,9 +3039,11 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnDrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnDrawItem</i> - event handler for drawing an Item</short>
+        <descr>
+          <p><i>OnDrawItem</i> - event handler for drawing an Item</p>
+          <p>For example, selecting an item may require it to be highlighted or have its font or background changed</p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnEnter">
@@ -3136,21 +3107,15 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnMouseWheel">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnMouseWheel </i> - event handler for movement of the scroll-wheel on the mouse</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnMouseWheelDown">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnMouseWheelDown</i> - event handler for downwards scrolling movement of the mouse wheel</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnMouseWheelUp">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnMouseWheelUp</i> - event handler for upward scrolling movement of the mouse wheel</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnResize">
@@ -3160,9 +3125,7 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.OnSelectionChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnSelectionChange</i> - event handler for changing the <i>Item</i> selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ParentFont">
@@ -3190,9 +3153,7 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Selected">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Selected </i>- whether the <i>Item</i> with given <i>Index</i> has been selected</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.Selected.Index"><short/></element>
@@ -3204,9 +3165,7 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Sorted</i>  - whether the selected <i>Items</i>  in the list have been arranged in alphabetical order</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.Style">
@@ -3238,10 +3197,11 @@ typically has a different color from the other items.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TListBox">
-        <short><i>TListBox</i>: a simple drop-down (string) list from which a choice is made</short>
+        <short><i>TListBox</i> : a simple string list from which a choice is made</short>
         <descr>
-          <p><i>TListBox</i>: a simple drop-down (string) list from which a choice is made</p>
+          <p><i>TListBox</i>: a simple string list from which a choice is made</p>
           <p>The array of strings is held in <i>Items</i></p>
+          <p>Clicking on the ellipsis (...) next to the <i>Items</i> entry in the Object Inspector at design-time opens a string-list editor in which the individual text-strings for the list can be entered or edited. The editor also allows the entries to be sorted alphabetically in normal or reverse order.</p>
         </descr>
         <seealso><link id="HowToUseStdCtrls"/></seealso>
       </element>
