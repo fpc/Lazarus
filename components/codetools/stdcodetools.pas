@@ -3763,8 +3763,6 @@ function TStandardCodeTool.GetPasDocComments(const StartPos: TCodeXYPosition;
   var
     CodePos: TCodeXYPosition;
   begin
-    if ListOfPCodeXYPosition=nil then
-      ListOfPCodeXYPosition:=TFPList.Create;
     if not CleanPosToCaret(CleanPos,CodePos) then exit;
     AddCodePosition(ListOfPCodeXYPosition,CodePos);
   end;

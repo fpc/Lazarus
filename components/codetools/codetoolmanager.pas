@@ -1403,16 +1403,9 @@ begin
 end;
 
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);
-var
-  i: Integer;
-  CursorPos: PCodeXYPosition;
 begin
   if List<>nil then begin
-    for i:=0 to List.Count-1 do begin
-      CursorPos := PCodeXYPosition(List[i]);
-      Dispose(CursorPos);
-    end;
-    List.Free;
+    FreeListOfPCodeXYPosition(List);
     List:=nil;
   end;
 end;
@@ -1432,7 +1425,6 @@ begin
   end;
   Tree.Free;
 end;
-
 
 function TCodeToolManager.CreateTreeOfPCodeXYPosition: TAVLTree;
 begin
@@ -1856,6 +1848,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclarationAndOverload A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
+  ListOfPCodeXYPosition:=nil;
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
@@ -2738,6 +2731,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.GetPasDocComments A ',Code.Filename);
   {$ENDIF}
+  ListOfPCodeXYPosition:=nil;
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
@@ -2766,6 +2760,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindBlockCounterPart A ',Code.Filename);
   {$ENDIF}
+  NewCode:=nil;
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
@@ -3061,6 +3056,7 @@ begin
   DebugLn('TCodeToolManager.AddMethods A ',Code.Filename);
   {$ENDIF}
   Result:=false;
+  NewCode:=nil;
   if not InitCurCodeTool(Code) then exit;
   CursorPos.X:=X;
   CursorPos.Y:=Y;
