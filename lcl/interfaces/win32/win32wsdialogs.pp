@@ -245,11 +245,16 @@ function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
   begin
     // Btw, setting width and height of dialog doesnot reposition child controls :(
     // So no way to set another height and width at least here
-    GetWindowRect(ADialogWnd, @DialogRect);
+    
+    // do reposition only if dialog has no parent form
+    if (GetParent(ADialogWnd) = Win32WidgetSet.AppHandle) then
+    begin
+      GetWindowRect(ADialogWnd, @DialogRect);
 
-    Left := (GetSystemMetrics(SM_CXSCREEN) - DialogRect.Right + DialogRect.Left) div 2;
-    Top := (GetSystemMetrics(SM_CYSCREEN) - DialogRect.Bottom + DialogRect.Top) div 2;
-    SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
+      Left := (GetSystemMetrics(SM_CXSCREEN) - DialogRect.Right + DialogRect.Left) div 2;
+      Top := (GetSystemMetrics(SM_CYSCREEN) - DialogRect.Bottom + DialogRect.Top) div 2;
+      SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
+    end;
   end;
   
 var
