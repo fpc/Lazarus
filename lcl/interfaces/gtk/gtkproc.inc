@@ -3957,9 +3957,10 @@ end;
 
   Get the gdkwindow of a widget.
 ------------------------------------------------------------------------------}
-Function GetControlWindow(Widget: Pointer) : PGDKWindow;
+function GetControlWindow(Widget: Pointer) : PGDKWindow;
 begin
-  If Widget <> nil then begin
+  if Widget <> nil then 
+  begin
     If not GTKWidgetIsA(PGTKWidget(Widget), GTK_Layout_Get_Type) then
       Result := PGTKWidget(Widget)^.Window
     else
@@ -3971,8 +3972,6 @@ begin
   end else
     RaiseGDBException('GetControlWindow Widget=nil');
 end;
-
-
 
 
 {------------------------------------------------------------------------------
@@ -7006,7 +7005,7 @@ begin
   {$IFDEF Gtk2}
   if (Widget^.parent<>nil)
   and GtkWidgetIsA(Widget^.parent,GTK_TYPE_FIXED)
-  and not gtk_fixed_get_has_window(PGtkFixed(Widget^.parent))
+  and GTK_WIDGET_NO_WINDOW(Widget^.parent)
   then begin
     inc(LCLLeft, Widget^.parent^.allocation.x);
     inc(LCLTop, Widget^.parent^.allocation.y);
@@ -7117,7 +7116,7 @@ begin
   else
   if (aWidget^.parent<>nil)
   and GtkWidgetIsA(aWidget^.parent,GTK_TYPE_FIXED)
-  and not gtk_fixed_get_has_window(PGtkFixed(aWidget^.parent))
+  and GTK_WIDGET_NO_WINDOW(aWidget^.parent)
   then begin
     // widget on a fixed, but fixed w/o window
     Dec(Left, PGtkWidget(aWidget^.parent)^.allocation.x);

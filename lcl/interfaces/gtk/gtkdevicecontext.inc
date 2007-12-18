@@ -50,7 +50,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkDeviceContext.GetOffset: TPoint;
 var
-  Fixed : Pointer;
+  Fixed: Pointer;
   Adjustment: PGtkAdjustment;
 begin
   if Self = nil
@@ -61,20 +61,26 @@ begin
   end;
 
   Result := FOrigin;
-  {$ifdef GTK2}
-  if (FWidget <> nil)
-  and GTK_WIDGET_NO_WINDOW(FWidget)
-  and not GtkWidgetIsA(FWidget, GTKAPIWidget_GetType)
-  then begin
-    Inc(Result.X, FWidget^.Allocation.x);
-    Inc(Result.y, FWidget^.Allocation.y);
+  {$ifndef gtk1}
+  if (FWidget <> nil) then
+  begin
+    Fixed := GetFixedWidget(FWidget);
+    if GTK_WIDGET_NO_WINDOW(FWidget) and
+       GTK_WIDGET_NO_WINDOW(Fixed) and
+       not GtkWidgetIsA(FWidget, GTKAPIWidget_GetType) then
+    begin
+      Inc(Result.X, FWidget^.Allocation.x);
+      Inc(Result.y, FWidget^.Allocation.y);
+    end;
   end;
-  {$endIf}
+  {$endif}
   
   if not FSpecialOrigin then Exit;
   if FWidget = nil then Exit;
   
+  {$ifdef gtk1}
   Fixed := GetFixedWidget(FWidget);
+  {$endif}
   if not GtkWidgetIsA(Fixed, GTK_LAYOUT_GET_TYPE) then Exit;
   
   Adjustment := gtk_layout_get_hadjustment(Fixed);

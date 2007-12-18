@@ -3195,7 +3195,7 @@ begin
     if ALCLObject is TCustomListBox then
       gMouse:=gMain;
     {$ELSE}
-    if GTK_IS_FIXED(gMouse) and not gtk_fixed_get_has_window(PGtkFixed(gMouse)) then
+    if GTK_IS_FIXED(gMouse) and GTK_WIDGET_NO_WINDOW(gMouse) then
     begin
       gTemp := PGtkObject(gtk_widget_get_parent(PGtkWidget(gMouse)));
       //DebugLn(gtk_type_name(g_object_type(gMouse)) + ' => ' + gtk_type_name(g_object_type(gTemp)));
