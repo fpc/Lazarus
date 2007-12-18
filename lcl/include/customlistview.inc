@@ -756,8 +756,10 @@ procedure TCustomListView.SetFocused(const AValue: TListItem);
 begin
   if FFocused = AValue then exit;
   FFocused := AValue;
-  if not HandleAllocated then exit;
-  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FFocused.Index, FFocused, lisFocused, True);
+  if not HandleAllocated then
+    Exit;
+  if FFocused <> nil then
+    TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FFocused.Index, FFocused, lisFocused, True);
 end;
 
 procedure TCustomListView.SetHotTrackStyles(const AValue: TListHotTrackStyles);
