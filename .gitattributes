@@ -3518,7 +3518,6 @@ tools/install/win/lazarus-cross.iss svneol=native#text/plain
 tools/install/win/lazarus_install_cheetah.bmp -text svneol=unset#image/bmp
 tools/install/win/lazarus_install_cheetah_small.bmp -text svneol=unset#image/bmp
 tools/install/win/readme.txt svneol=native#text/plain
-tools/lazarusmake.ini svneol=native#text/plain
 tools/lazdatadesktop/README.txt svneol=native#text/plain
 tools/lazdatadesktop/bitmaps/deletefield.bmp -text
 tools/lazdatadesktop/bitmaps/deletetable.bmp -text
