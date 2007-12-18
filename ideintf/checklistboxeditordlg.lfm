@@ -20,6 +20,7 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
     Top = 24
     Width = 445
     Align = alClient
+    OnClick = FCheckClick
     TabOrder = 0
   end
   object FPanelOKCancel: TPanel
@@ -107,12 +108,17 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       Left = 1
       Top = 2
       Caption = 'tbAdd'
+      ParentShowHint = False
+      ShowHint = True
       OnClick = AddItem
     end
     object tbDelete: TToolButton
       Left = 24
       Top = 2
       Caption = 'tbDelete'
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = DeleteItem
     end
     object ToolButton3: TToolButton
@@ -126,12 +132,18 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       Left = 56
       Top = 2
       Caption = 'tbUp'
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = MoveUpItem
     end
     object tbDown: TToolButton
       Left = 79
       Top = 2
       Caption = 'tbDown'
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = MoveDownItem
     end
     object ToolButton6: TToolButton
@@ -145,6 +157,9 @@ object CheckListBoxEditorDlg: TCheckListBoxEditorDlg
       Left = 112
       Top = 2
       Caption = 'tbEdit'
+      Enabled = False
+      ParentShowHint = False
+      ShowHint = True
       OnClick = ModifyItem
     end
   end

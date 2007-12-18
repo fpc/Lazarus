@@ -42,6 +42,7 @@ type
     tbEdit: TToolButton;
     procedure AddItem(Sender: TObject);
     procedure DeleteItem(Sender: TObject);
+    procedure FCheckClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ModifyItem(Sender: TObject);
     procedure MoveDownItem(Sender: TObject);
@@ -50,6 +51,7 @@ type
   private
     { private declarations }
     FModified: Boolean;
+    procedure Change;
   public
     { public declarations }
     property Modified: Boolean read FModified write FModified;
@@ -92,6 +94,11 @@ begin
   if MessageDlg(clbCheckListBoxEditor,Format(clbDelete,[FCheck.ItemIndex,FCheck.Items[FCheck.ItemIndex]]),
     mtConfirmation, mbYesNo, 0) = mrYes then
     FCheck.Items.Delete(FCheck.ItemIndex);
+end;
+
+procedure TCheckListBoxEditorDlg.FCheckClick(Sender: TObject);
+begin
+  Change;
 end;
 
 procedure TCheckListBoxEditorDlg.FormCreate(Sender: TObject);
@@ -159,6 +166,14 @@ begin
     AssignCheckList(aCheck, FCheck);
     FModified := True;
   end;
+end;
+
+procedure TCheckListBoxEditorDlg.Change;
+begin
+  tbDelete.Enabled := FCheck.ItemIndex <> -1;
+  tbEdit.Enabled := FCheck.ItemIndex <> -1;
+  tbUp.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex > 0);
+  tbDown.Enabled := (FCheck.ItemIndex <> -1) and (FCheck.ItemIndex < FCheck.Count - 1);
 end;
 
 initialization
