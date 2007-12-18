@@ -398,7 +398,7 @@ function TWinCECheckListBoxStrings.GetState(AIndex: Integer): TCheckBoxState;
 var
   Data: PWinCECheckListBoxItemRecord;
 begin
-  Data := GetItemRecord(Index, false);
+  Data := GetItemRecord(AIndex, False);
   Result := Data^.State
 end;
 
@@ -426,9 +426,9 @@ procedure TWinCECheckListBoxStrings.SetState(AIndex: Integer;
 var
   ItemRecord: PWinCECheckListBoxItemRecord;
 begin
-  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord := GetItemRecord(AIndex, True);
   ItemRecord^.State := AValue;
-  SetItemRecord(Index, ItemRecord);
+  SetItemRecord(AIndex, ItemRecord);
 end;
 
 procedure TWinCECheckListBoxStrings.Clear;

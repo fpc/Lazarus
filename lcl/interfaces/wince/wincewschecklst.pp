@@ -46,6 +46,7 @@ type
   private
   protected
   public
+    class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
@@ -55,7 +56,7 @@ type
 
 implementation
 
-class function  TWinCEWSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
+class function TWinCEWSCustomCheckListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;
 var
   Handle: HWND;
 begin
@@ -78,7 +79,7 @@ var
   SizeRect: Windows.RECT;
   Handle: HWND;
 begin
-  TWinCECheckListBoxStrings(ACheckListBox.Items).State[AIndex] := AChecked;
+  TWinCECheckListBoxStrings(ACheckListBox.Items).State[AIndex] := AState;
 
   // redraw control
   Handle := ACheckListBox.Handle;
