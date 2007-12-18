@@ -488,13 +488,14 @@ Var
     MousePos.Y := LMMouse.Pos.Y;
     for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
-      Windows.SendMessage(Window, LB_GETITEMRECT, I, LongInt(@ItemRect));
+      Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
       ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
-      if Windows.PtInRect(@ItemRect, MousePos) then
+      if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
-        if I < TCheckListBox(lWinControl).Items.Count then begin
-          TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
+        if I < TCheckListBox(lWinControl).Items.Count then
+        begin
+          TCheckListBox(lWinControl).Toggle(I);
           Message.Msg := LM_CHANGED;
           Message.WParam := I;
           DeliverMessage(lWinControl, Message);

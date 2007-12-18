@@ -143,22 +143,29 @@ var
     end;
   end;
 
-{
   procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
+  const
+    ThemeStateMap: array[TCheckBoxState, Boolean] of TThemedButton =
+    (
+     {cbUnchecked} (tbCheckBoxUncheckedDisabled, tbCheckBoxUncheckedNormal),
+     {cbChecked  } (tbCheckBoxCheckedDisabled, tbCheckBoxCheckedNormal),
+     {cbGrayed   } (tbCheckBoxMixedDisabled, tbCheckBoxMixedNormal)
+    );
   var
-    Selected: Boolean;
+    Enabled, Selected: Boolean;
     lgBrush: LOGBRUSH;
     Brush: HBRUSH;
     Rect: Windows.Rect;
-    Flags: Cardinal;
+    Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
-
+    WideBuffer: WideString;
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
+    Enabled := CheckListBox.Enabled;
 
     // fill the background
-    if Selected then
+    if Enabled and Selected then
       lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
     else
       lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
@@ -167,39 +174,46 @@ var
     Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
     DeleteObject(Brush);
 
-    // draw checkbox
-    Flags := DFCS_BUTTONCHECK;
-    if CheckListBox.Checked[Data^.ItemID] then
-      Flags := Flags or DFCS_CHECKED;
-    Rect.Left := Data^.rcItem.Left + 2;
-    Rect.Top := Data^.rcItem.Top + 2;
-    Rect.Bottom := Data^.rcItem.Bottom - 2;
+    Rect := Data^.rcItem;
+    InflateRect(Rect, -1, -1);
     Rect.Right := Rect.Left + Rect.Bottom - Rect.Top;
-    Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
+
+    // draw all through ThemeServices. ThemeServices can decide itself hot to perform actual draw
+    Details := ThemeServices.GetElementDetails(ThemeStateMap[CheckListBox.State[Data^.ItemID], Enabled]);
+    ThemeServices.DrawElement(Data^._HDC, Details, Rect);
 
     // draw text
     Rect := Windows.Rect(Data^.rcItem);
     Rect.Right := Data^.rcItem.Right;
     Rect.Left := Rect.Bottom-Rect.Top + 5;
-    if Selected then begin
+    if not Enabled then
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
+    else
+    if Selected then
+    begin
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
       OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
     end;
-    Windows.DrawText(Data^._HDC, PChar(CheckListBox.Items[Data^.ItemID]), -1,
-      Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    if Selected then begin
+    WideBuffer := Utf8Decode(CheckListBox.Items[Data^.ItemID]);
+    Windows.DrawText(Data^._HDC, PWideChar(WideBuffer), -1,
+       Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    if not Enabled then
+      Windows.SetTextColor(Data^._HDC, OldColor)
+    else
+    if Selected then
+    begin
       Windows.SetTextColor(Data^._HDC, OldColor);
       Windows.SetBkColor(Data^._HDC, OldBackColor);
     end;
   end;
-}
+
 begin
   Handle := ObjectToHwnd(Sender);
   case TLMessage(Message).Msg of
 
     LM_PAINT:
       CallWinCEPaintHandler;
- {
+
     LM_DRAWITEM:
     begin
       with TLMDrawItems(Message) do
@@ -225,7 +239,6 @@ begin
         end;
       end;
     end;
-}
 
     LM_GETDLGCODE:
     begin

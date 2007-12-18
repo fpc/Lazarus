@@ -44,7 +44,7 @@ Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Graphics, Menus, WinCEProc, WinCEExtra,
-  WinExt, WinCEDef;
+  WinExt, WinCEDef, Themes;
 
 const
   IDC_NODROP    = IDC_NO;
