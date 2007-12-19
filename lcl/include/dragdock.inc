@@ -23,7 +23,7 @@ var
   DragThreshold: Integer;// treshold before the drag becomes activated
   DragImages: TDragImageList; // DragObject.GetDragImages
 
-Procedure DragTo(const Position: TPoint); forward;
+procedure DragTo(const Position: TPoint); forward;
 
 {-------------------------------------------------------------------------------
   function HostDockSiteManagerAvailable(HostDockSite: TWinControl): boolean;
@@ -132,7 +132,7 @@ end;
   it will be started when the user moves the mouse more than DragThreshold
   pixel.
 -------------------------------------------------------------------------------}
-Procedure DragInitControl(Control: TControl; Immediate: Boolean;
+procedure DragInitControl(Control: TControl; Immediate: Boolean;
   Threshold: Integer);
 var
   ok: boolean;
@@ -237,12 +237,12 @@ end;
 
 
 -------------------------------------------------------------------------------}
-Procedure DragTo(const Position: TPoint);
+procedure DragTo(const Position: TPoint);
 var
   TargetControl: TControl;
   ADragCursor: TCursor;
   AAccepted: Boolean;
-Begin
+begin
   {$IFDEF VerboseDrag}
   DebugLn('DragTo P=', IntToStr(Position.X), ',', IntToStr(Position.Y));
   {$ENDIF}
@@ -317,7 +317,7 @@ end;
   Frees the DragObject if autocreated by the LCL,
   Finish: DragSave.Finished
 -------------------------------------------------------------------------------}
-Procedure DragDone(Drop : Boolean);
+procedure DragDone(Drop : Boolean);
 var
   Accepted: Boolean;
   OldDragObject: TDragObject;
@@ -368,7 +368,7 @@ Begin
 
     // drop
     if (OldDragObject<>nil) and (OldDragObject.DragTarget <> nil) then
-    Begin
+    begin
       DragMsg := dmDragDrop;
       if not Accepted then begin
         DragMsg := dmDragCancel;

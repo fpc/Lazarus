@@ -402,7 +402,7 @@ type
   protected
     Procedure EndDrag(Target: TObject; X, Y: Integer); Virtual;
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); override;
-  Public
+  public
     constructor Create(AControl: TControl); virtual;
     procedure Assign(Source: TDragObject); override;
     property Control: TControl read FControl write FControl;

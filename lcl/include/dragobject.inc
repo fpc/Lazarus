@@ -152,7 +152,8 @@ end;
 function TDragControlObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
 begin
   if Accepted then
-    Result := Control.DragCursor else
+    Result := Control.DragCursor
+  else
     Result := crNoDrop;
 end;
 

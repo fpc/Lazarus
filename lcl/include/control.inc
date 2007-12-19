@@ -63,11 +63,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
-  P : TPoint;
+  P: TPoint;
 begin
   // start a drag operation, if not already running
-  if (DragControl = nil) then begin
-
+  if (DragControl = nil) then
+  begin
     // if the last mouse down was not followed by a mouse up, simulate a
     // mouse up. This way applications need only to react to mouse up to
     // clean up.
@@ -76,7 +76,8 @@ begin
     {$endif}
     if Immediate then
       SetCaptureControl(nil);
-    if csLButtonDown in ControlState then begin
+    if csLButtonDown in ControlState then
+    begin
       GetCursorPos(p);
       P := ScreenToClient(p);
       Perform(LM_LBUTTONUP, 0, Integer(PointToSmallPoint(p)));
@@ -84,7 +85,7 @@ begin
 
     if Threshold < 0 then
       Threshold := Mouse.DragThreshold;
-    DragInitControl(Self,Immediate,Threshold);
+    DragInitControl(Self, Immediate, Threshold);
   end;
 end;
 
@@ -93,7 +94,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
-  BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
+  BeginDrag(Mouse.DragImmediate, Mouse.DragThreshold);
 end;
 
 {------------------------------------------------------------------------------
@@ -3139,7 +3140,7 @@ end;
   TControl WMMouseMove
 ------------------------------------------------------------------------------}
 procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
-Begin
+begin
   {$IFDEF VerboseMouseBugfix}
   DebugLn(['[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos]);
   {$ENDIF}
@@ -3148,26 +3149,28 @@ Begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseMove(KeystoShiftState(Keys), XPos, YPos);
-End;
+end;
 
 {------------------------------------------------------------------------------
   TControl MouseDown
 ------------------------------------------------------------------------------}
-Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   P: TPoint;
   Form: TCustomForm;
 begin
-  if (not (Self is TWinControl)) or (not TWinControl(Self).CanFocus) then begin
-    Form:=GetParentForm(Self);
-    if (Form<>nil) and (Form.ActiveControl<>nil) then
+  if (not (Self is TWinControl)) or (not TWinControl(Self).CanFocus) then
+  begin
+    Form := GetParentForm(Self);
+    if (Form <> nil) and (Form.ActiveControl <> nil) then
       Form.ActiveControl.EditingDone;
   end;
 
-  if (Button in [mbLeft,mbRight]) and (DragObject<>nil) then begin
-    P:=ClientToScreen(Point(X,Y));
-    DragObject.MouseDown(Button,Shift,P.X,P.Y);
+  if (Button in [mbLeft, mbRight]) and (DragObject <> nil) then
+  begin
+    P := ClientToScreen(Point(X,Y));
+    DragObject.MouseDown(Button, Shift, P.X, P.Y);
   end;
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
 end;
@@ -3175,17 +3178,17 @@ end;
 {------------------------------------------------------------------------------
   TControl MouseMove
 ------------------------------------------------------------------------------}
-Procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
   DragObjectDragging : Boolean;
 begin
-  if DragObject <> nil then
-    DragObjectDragging := true else
-    DragObjectDragging := false;
-  if DragObjectDragging then begin
-    P:=ClientToScreen(Point(X,Y));
-    DragObject.MouseMove(Shift,P.X,P.Y);
+  DragObjectDragging := DragObject <> nil;
+
+  if DragObjectDragging then
+  begin
+    P := ClientToScreen(Point(X, Y));
+    DragObject.MouseMove(Shift, P.X, P.Y);
   end;
   if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
 end;
@@ -3193,18 +3196,18 @@ end;
 {------------------------------------------------------------------------------
   TControl MouseUp
 ------------------------------------------------------------------------------}
-Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
+procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 var
   P: TPoint;
   DragObjectDragging : Boolean;
 begin
-  if DragObject <> nil then
-    DragObjectDragging := true else
-    DragObjectDragging := false;
-    if (Button in [mbLeft,mbRight]) and DragObjectDragging then begin
-    P:=ClientToScreen(Point(X,Y));
-    DragObject.MouseUp(Button,Shift,P.X,P.Y);
+  DragObjectDragging := DragObject <> nil;
+    
+  if (Button in [mbLeft, mbRight]) and DragObjectDragging then
+  begin
+    P := ClientToScreen(Point(X, Y));
+    DragObject.MouseUp(Button, Shift, P.X, P.Y);
   end;
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
