@@ -128,9 +128,11 @@ begin
   Result := True;
   Inc(fBranchCount);
   X := StartLine-1;
+  if EndLine > fText.Count-1 then
+    EndLine := fText.Count-1;
   while X < EndLine do begin
     Inc(X);
-    if Pos('<LI>', fText.Strings[X]) > 0 then begin
+    if Pos('<LI>', UpperCase(fText.Strings[X])) > 0 then begin
       try
         NodeInfo := GetLIData(X);
         TreeNode := TContentTreeNode(fTreeView.Items.AddChild(ParentNode, NodeInfo.Name));
@@ -206,8 +208,8 @@ var
   X: Integer;
 begin
   for X := 0 to fText.Count-1 do begin
-    if Pos('<UL>', fText.Strings[X]) > 0 then Inc(ULDepth);
-    if Pos('</UL>', fText.Strings[X]) > 0 then Dec(ULDepth);
+    if Pos('<UL>', UpperCase(fText.Strings[X])) > 0 then Inc(ULDepth);
+    if Pos('</UL>', UpperCase(fText.Strings[X])) > 0 then Dec(ULDepth);
     fULList[X] := ULDepth;
   end;
 end;
@@ -299,7 +301,6 @@ begin
         fListView.Items.AddItem(Item);
         Item.Caption := ItemName;
         Item.Url := ItemUrl;
-        //WriteLn('Added IndexItem. Caption = ', ItemName,' Url = ',ItemUrl);
         ItemName := '';
         ItemUrl := '';
       end;

@@ -61,6 +61,7 @@ type
     function CanHandle(const URL: string): Boolean; override;
     function BuildURL(const OldURL, NewURL: string): string; override;
     function GetDirsParents(ADir: String): TStringList;
+    function DoGetStream(const URL: string): TStream; override;
   public
     constructor Create(var AChm: TChmFileList);
     destructor Destroy; override;
@@ -78,7 +79,6 @@ implementation
 function TIpChmDataProvider.DoGetHtmlStream(const URL: string;
   PostData: TIpFormDataEntity): TStream;
 begin
-  //DebugLn('Getting: ', URL);
   Result := fChm.GetObject(URL);
   // If for some reason we were not able to get the page return something so that
   // we don't cause an AV
@@ -246,6 +246,21 @@ begin
     end;
   end;
 
+end;
+
+function TIpChmDataProvider.DoGetStream(const URL: string): TStream;
+var
+ NewURL: String;
+begin
+  Result := nil;
+  if Length(URL) = 0 then
+    Exit;
+  if not (URL[1] in ['/']) then
+    NewURL := BuildUrl(fCurrentPath,URL)
+  else
+    NewURL := URL;
+
+  Result := fChm.GetObject(NewURL);
 end;
 
 constructor TIpChmDataProvider.Create(var AChm: TChmFileList);

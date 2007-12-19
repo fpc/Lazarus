@@ -44,11 +44,11 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     Choose the DataBases tab.
 
     RTLUnits:
-    this should be "rtl.chm://rtl/"
+    this should be "rtl.chm://"
     FCLUnits:
-    this should be "fcl.chm://fcl/"
+    this should be "fcl.chm://"
     LCLUnits:
-    this should be "lcl.chm://lcl/"
+    this should be "lcl.chm://"
 
     NOTE if you have only a single lcl-fcl-rtl.chm file then then paths become:
     "lcl-fcl-rtl.chm://rtl/"

@@ -422,6 +422,14 @@ type
   {$ENDIF}
 
   TIpHtml = class;
+  
+  {$IFDEF IP_LAZARUS}
+  TIpAbstractHtmlDataProvider = class;
+  {$DEFINE CSS_INTERFACE}
+{$I ipcss.inc}
+  {$UNDEF CSS_INTERFACE}
+  {$ENDIF}
+
   TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar);
   TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
   TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
@@ -589,6 +597,8 @@ type
     constructor Create(Owner: TIpHtml);
   end;
 
+  { TIpHtmlProps }
+  
   TIpHtmlProps = class
   {-class for holding the currently active style attributes}
   private
@@ -646,7 +656,7 @@ type
     property Preformatted : Boolean read GetPreformatted write SetPreformatted;
     property NoBreak : Boolean read GetNoBreak write SetNoBreak;
   end;
-
+  
   TIpHtmlNodeAlignInline = class;
 
   TElementType = (etWord, etObject, etSoftLF, etHardLF, etClearLeft,
@@ -752,19 +762,35 @@ type
     property ChildNode[Index : Integer] : TIpHtmlNode read GetChildNode;
   end;
 
+  { TIpHtmlNodeCore }
+
   TIpHtmlNodeCore = class(TIpHtmlNodeMulti)
   private
+    {$IFDEF IP_LAZARUS}
+    FCSS: TCSSProps;
+    FElementName: String;
+    {$ENDIF}
     FStyle: string;
     FClassId: string;
     FTitle: string;
     FId: string;
   protected
     procedure ParseBaseProps(Owner : TIpHtml); {virtual;}              {!!.12}
-  public                                                               {!!.10}
+    {$IFDEF IP_LAZARUS}
+    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
+    function ElementName: String;
+    {$ENDIF}
+  public                      {!!.10}
+    {$IFDEF IP_LAZARUS}
+    destructor Destroy; override;
+    {$ENDIF}
     property ClassId : string read FClassId write FClassId;
     property Id : string read FId write FId;
     property Style : string read FStyle write FStyle;
     property Title : string read FTitle write FTitle;
+    {$IFDEF IP_LAZARUS}
+    property CSS: TCSSProps read FCSS write FCSS;
+    {$ENDIF}
   end;
 
   TIpHtmlNodeInline = class(TIpHtmlNodeCore)
@@ -877,6 +903,8 @@ type
     property EscapedText : string read FEscapedText write SetEscapedText;
   end;
 
+  { TIpHtmlNodeGenInline }
+
   TIpHtmlNodeGenInline = class(TIpHtmlNodeInline)
   protected
     Props: TIpHtmlProps;
@@ -909,12 +937,18 @@ type
   private
     FMedia: string;
     FTitle: string;
+    {$IFDEF IP_LAZARUS}
+    FType: string;
+    {$ENDIF}
   protected
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
   public                                                   {!!.10}
     property Media : string read FMedia write FMedia;
     property Title : string read FTitle write FTitle;
+    {$IFDEF IP_LAZARUS}
+    property Type_ : string read FType write FType;
+    {$ENDIF}
   end;
 
   TIpHtmlNodeSCRIPT = class(TIpHtmlNodeNv);
@@ -1069,6 +1103,8 @@ type
     property Title : string read FTitle write FTitle;
   end;
 
+  { TIpHtmlNodeBODY }
+
   TIpHtmlNodeBODY = class(TIpHtmlNodeBlock)
   private
     FBgColor : TColor;
@@ -1086,6 +1122,9 @@ type
   protected
     BGPicture : TPicture;
     procedure Render(const RenderProps: TIpHtmlProps); override;
+    {$IFDEF IP_LAZARUS}
+    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); override;
+    {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1219,6 +1258,8 @@ type
     destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write FAlign;
   end;
+
+  { TIpHtmlNodeSPAN }
 
   TIpHtmlNodeSPAN = class(TIpHtmlNodeGenInline)
   private
@@ -1600,11 +1641,17 @@ type
     FHRef: string;
     FRev: string;
     FRel: string;
+    {$IFDEF IP_LAZARUS}
+    FType: string;
+    {$ENDIF}
   public                                                   {!!.10}
     property HRef : string read FHRef write FHRef;
     property Rel : string read FRel write FRel;
     property Rev : string read FRev write FRev;
     property Title : string read FTitle write FTitle;
+    {$IFDEF IP_LAZARUS}
+    property Type_ : string read FType write FType;
+    {$ENDIF}
   end;
 
   TIpHtmlVAlignment2 = (hva2Top, hva2Bottom, hva2Left, hva2Right);
@@ -1661,6 +1708,8 @@ type
     procedure Delete(Index: Integer);
   end;
 
+  { TIpHtmlNodeTABLE }
+
   TIpHtmlNodeTABLE = class(TIpHtmlNodeAlignInline)
   private
     FBgColor: TColor;
@@ -1710,6 +1759,9 @@ type
     property ColCount : Integer read GetColCount;
     procedure WidthChanged(Sender: TObject);                           {!!.10}
     function ExpParentWidth: Integer; override;                        {!!.10}
+    {$IFDEF IP_LAZARUS}
+    procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); override;
+    {$ENDIF}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -2064,6 +2116,10 @@ type
     FCanPaint : Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
+    {$IFDEF IP_LAZARUS}
+    FDataProvider: TIpAbstractHtmlDataProvider;
+    FCSS: TCSSGlobalProps;
+    {$ENDIF}
   protected
     CharStream : TStream;
     CurToken : TIpHtmlToken;
@@ -2266,6 +2322,9 @@ type
     procedure ParseMeta(Parent : TIpHtmlNode);
     procedure ParseBody(Parent : TIpHtmlNode;
           const EndTokens: TIpHtmlTokenSet);
+    {$IFDEF IP_LAZARUS}
+    procedure ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
+    {$ENDIF}
     procedure ParseBodyText(Parent : TIpHtmlNode;
       const EndTokens: TIpHtmlTokenSet);
     procedure ParseBlock(Parent: TIpHtmlNode;
@@ -2377,6 +2436,7 @@ type
     {$ENDIF}
     {$IFDEF IP_LAZARUS}
     function GetSelectionBlocks(out StartSelIndex,EndSelIndex: Integer): boolean;
+    property CSS: TCSSGlobalProps read FCSS write FCSS;
     {$ENDIF}
   public
     constructor Create;
@@ -2549,6 +2609,9 @@ type
   protected
     function DoGetHtmlStream(const URL: string;
       PostData: TIpFormDataEntity) : TStream; virtual; abstract;
+    {$IFDEF IP_LAZARUS}
+    function DoGetStream(const URL: string): TStream; virtual; abstract;
+    {$ENDIF}
     {-provider assumes ownership of returned TStream and will free it when
       done using it.}
     function DoCheckURL(const URL: string;
@@ -2909,7 +2972,7 @@ type
     property DataProvider;
     property FlagErrors;
   end;
-
+  
 var
   ScaleFonts : Boolean = False; {true during print preview only}       {!!.10}
     {public to let print preview unit access it}
@@ -2930,6 +2993,11 @@ uses
 
 {$IFNDEF IP_LAZARUS}
 {$R *.res}
+{$ENDIF}
+
+{$IFDEF IP_LAZARUS}
+{$I ipcss.inc}
+
 {$ENDIF}
 
 var
@@ -4232,7 +4300,14 @@ end;
 procedure TIpHtmlNodeMulti.SetProps(const RenderProps: TIpHtmlProps);
 var
   i : Integer;
+{$IFDEF IP_LAZARUS}
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
+  {$IFDEF IP_LAZARUS}
+  if Self.InheritsFrom(TIpHtmlNodeCore) then
+    TIpHtmlNodeCore(Self).LoadCSSProps(Owner, Elem, RenderProps);
+  {$ENDIF}
   for i := 0 to Pred(FChildren.Count) do
     TIpHtmlNode(FChildren[i]).SetProps(RenderProps);
 end;
@@ -4277,6 +4352,9 @@ end;
 constructor TIpHtmlNodeBODY.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'body';
+  {$ENDIF}
   FBgColor := -1;
   FText := -1;
   FLink := -1;
@@ -4348,6 +4426,31 @@ begin
   Owner.Target.Brush.Style:=bsSolid;
   {$ENDIF}
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeBODY.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
+var
+  LinkElement: TCSSProps;
+begin
+  inherited LoadCSSProps(Owner, Element, Props);
+  LinkElement := Owner.CSS.GetElement('a:link', '');
+  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
+    Link := LinkElement.Color;
+  LinkElement := Owner.CSS.GetElement('a:visited', '');
+  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
+    VLink := LinkElement.Color;
+  LinkElement := Owner.CSS.GetElement('a:active', '');
+  if (LinkElement <> nil) and (LinkElement.Color <> -1) then
+    ALink := LinkElement.Color;
+    
+  if Element = nil then
+    exit;
+    
+  if Element.Color <> -1 then
+    Text := Element.Color;
+
+end;
+{$ENDIF}
 
 destructor TIpHtmlNodeBODY.Destroy;
 begin
@@ -5194,6 +5297,9 @@ begin
   with CurStyle do begin
     Media := FindAttribute('MEDIA');
     Title := FindAttribute('TITLE');
+    {$IFDEF IP_LAZARUS}
+    Type_ := FindAttribute('TYPE');
+    {$ENDIF}
   end;
   NextToken;
   if CurToken <> IpHtmlTagSTYLEend then
@@ -5259,13 +5365,18 @@ begin
   NextToken;
 end;
 
-procedure TIpHtml.ParseLink;
+procedure TIpHtml.ParseLink(Parent : TIpHtmlNode);
 begin
   with TIpHtmlNodeLINK.Create(Parent) do begin
     HRef := FindAttribute('HREF');
     Rel := FindAttribute('REL');
     Rev := FindAttribute('REV');
     Title := FindAttribute('TITLE');
+    {$IFDEF IP_LAZARUS}
+    Type_ := LowerCase(FindAttribute('TYPE'));
+    if (LowerCase(Rel) = 'stylesheet') and (Type_ = 'text/css') then
+      ParseStyleSheet(Parent, Href);
+    {$ENDIF}
     ParseBaseProps(Self);
   end;
   NextToken;
@@ -5376,6 +5487,9 @@ var
   NewHeader : TIpHtmlNodeHeader;
 begin
   NewHeader := TIpHtmlNodeHeader.Create(Parent);
+  {$IFDEF IP_LAZARUS}
+  NewHeader.FElementName := 'h'+IntToStr(Size);
+  {$ENDIF}
   NewHeader.ParseBaseProps(Self);
   NewHeader.Size := Size;
   NewHeader.Align := ParseAlignment;
@@ -5836,6 +5950,9 @@ var
 begin
   CurSPAN := TIpHtmlNodeSPAN.Create(Parent);
   with CurSPAN do begin
+    {$IFDEF IP_LAZARUS}
+    FElementName := 'span';
+    {$ENDIF}
     Align := ParseAlignment;
     ParseBaseProps(Self);
   end;
@@ -6254,6 +6371,9 @@ begin
       begin
         CurTableCell := TIpHtmlNodeTD.Create(Parent);
         with CurTableCell do begin
+          {$IFDEF IP_LAZARUS}
+          FElementName := 'td';
+          {$ENDIF}
           Nowrap := ParseBoolean('NOWRAP');
           Rowspan := ParseInteger('ROWSPAN', 1);
           Colspan := ParseInteger('COLSPAN', 1);
@@ -6629,6 +6749,31 @@ begin
       NextToken;
   end;
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
+var
+  StyleStream: TStream;
+begin
+  if FDataProvider = nil then
+    exit;
+
+  if Parent is TIpHtmlNodeHEAD then
+  begin
+    StyleStream := FDataProvider.DoGetStream(HRef);
+    if StyleStream <> nil then
+    begin
+      with TCSSReader.Create(StyleStream, FCSS) do
+      begin
+        ParseCSS;
+        Free;
+      end;
+      StyleStream.Free;
+    end;
+  end;
+end;
+{$ENDIF}
+
 
 procedure TIpHtml.ParseBodyText(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
@@ -7417,6 +7562,9 @@ procedure TIpHtml.ParseBody(Parent : TIpHtmlNode;
 var                                                                    {!!.12}
   i : Integer;                                                         {!!.12}
   Node : TIpHtmlNode;                                                  {!!.12}
+  {$IFDEF IP_LAZARUS}
+  Element: TCSSProps = nil;
+  {$ENDIF}
 begin
 //  while CurToken = IpHtmlTagText do                                  {Deleted !!.12}
 //    NextToken;                                                       {Deleted !!.12}
@@ -7435,6 +7583,9 @@ begin
       ALink := ColorFromString(FindAttribute('ALINK'));
       Background := FindAttribute('BACKGROUND');
       ParseBaseProps(Self);
+      {$IFDEF IP_LAZARUS}
+      LoadCSSProps(Owner, Element, nil);
+      {$ENDIF}
     end;
 
     NextToken;
@@ -7449,7 +7600,10 @@ begin
     if not TIpHtmlNodeHtml(Parent).HasBodyNode then
       { No. Create a body node under FHtml. }
       with TIpHtmlNodeHtml(Parent) do begin
-        TIpHtmlNodeBODY.Create(Parent);
+        {$IFDEF IP_LAZARUS}
+        with
+        {$ENDIF}
+        TIpHtmlNodeBODY.Create(Parent){$IFDEF IP_LAZARUS} do LoadCSSProps(Owner, Element, nil){$ENDIF};
 
         { Make each of FHtml's current children the children of the
           Body node. }
@@ -7557,6 +7711,7 @@ begin
   VLinkColor := clPurple;
   ALinkColor := clRed;
   {$IFDEF IP_LAZARUS}
+  FCSS := TCSSGlobalProps.Create;
     {$IFDEF UseGifImageUnit}
     GifImages := TList.Create;
     {$ELSE}
@@ -7649,6 +7804,7 @@ var
   i : Integer;
 begin
  {$IFDEF IP_LAZARUS} //JMN
+ FCSS.Free;
     {$IFDEF UseGifImageUnit}
     for i := 0 to Pred(GifImages.Count) do
       if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
@@ -9112,6 +9268,20 @@ begin
       Props.FontBaseline := Props.FontBaseline + 4;
     end;
   end;
+  {$IFDEF IP_LAZARUS}
+  case Style of
+    hfsTT    : FElementName := 'tt';
+    hfsI     : FElementName := 'i';
+    hfsB     : FElementName := 'b';
+    hfsU     : FElementName := 'u';
+    hfsSTRIKE: FElementName := 'strike';
+    hfsS     : FElementName := 's';
+    hfsBIG   : FElementName := 'big';
+    hfsSMALL : FElementName := 'small';
+    hfsSUB   : FElementName := 'sub';
+    hfsSUP   : FElementName := 'sup';
+  end;
+  {$ENDIF}
 end;
 
 { TIpHtmlNodeBlock }
@@ -9146,6 +9316,7 @@ var
   {$IFDEF IP_LAZARUS}
   OldBrushcolor: TColor;
   OldFontColor: TColor;
+  OldFontStyle: TFontStyles;
   OldBrushStyle: TBrushStyle;
   {$ENDIF}
 begin
@@ -9187,10 +9358,11 @@ begin
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
           {$IFDEF IP_LAZARUS}
+          OldBrushColor := Owner.Target.Brush.Color;
+          OldBrushStyle := Owner.Target.Brush.Style;
+          OldFontColor := Owner.Target.Font.Color;
+          OldFontStyle := Owner.Target.Font.Style;
           if CurWord.IsSelected  then begin
-            OldBrushColor := Owner.Target.Brush.Color;
-            OldBrushStyle := Owner.Target.Brush.Style;
-            OldFontColor := Owner.Target.Font.Color;
             Owner.Target.Font.color := clHighlightText;
             Owner.Target.brush.Style := bsSolid;
             Owner.Target.brush.color := clHighLight;
@@ -9202,11 +9374,10 @@ begin
           if  CurWord.AnsiWord <> NAnchorChar  //JMN
           then  Owner.Target.TextOut(P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
-          if CurWord.IsSelected then begin
-            Owner.Target.Font.Color := OldFontColor;
-            Owner.Target.Brush.Color := OldBrushColor;
-            Owner.Target.Brush.Style := OldBrushStyle;
-          end;
+          Owner.Target.Font.Color := OldFontColor;
+          Owner.Target.Brush.Color := OldBrushColor;
+          Owner.Target.Brush.Style := OldBrushStyle;
+          Owner.Target.Font.Style := OldFontStyle;
           {$ENDIF}
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
         end;
@@ -10567,6 +10738,9 @@ end;
 constructor TIpHtmlNodeP.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'p';
+  {$ENDIF}
   Props := TIpHtmlProps.Create(Owner);
 end;
 
@@ -11071,6 +11245,9 @@ end;
 constructor TIpHtmlNodeA.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'a';
+  {$ENDIF}
   AreaList := TList.Create;
   MapAreaList := TList.Create;
   Props := TIpHtmlProps.Create(Owner);
@@ -11251,9 +11428,16 @@ end;
 { TIpHtmlNodeSPAN }
 
 procedure TIpHtmlNodeSPAN.ApplyProps(const RenderProps: TIpHtmlProps);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   Props.Assign(RenderProps);
   Props.Alignment := Align;
+  {$IFDEF IP_LAZARUS}
+  LoadCSSProps(Owner, Elem, Props);
+  {$ENDIF}
 end;
 
 { TIpHtmlNodeTABLE }
@@ -12509,6 +12693,9 @@ end;
 constructor TIpHtmlNodeTABLE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'table';
+  {$ENDIF}
   BgColor := -1;
   SizeWidth := TIpHtmlPixels.Create;
   SizeWidth.PixelsType := hpUndefined;
@@ -12531,8 +12718,8 @@ begin
   if (BGColor <> -1) and PageRectToScreen(BorderRect, R) then begin
     Owner.Target.Brush.Color := BGColor;
     Owner.Target.FillRect(R);
-  end;
 
+  end;
   Owner.Target.Pen.Color := clBlack;
 
   Al := Props.VAlignment;
@@ -12568,7 +12755,7 @@ begin
                     end;
 
                     Props.VAlignment := Al;
-
+                    
                     Render(Props);
 
                     {paint left rule if selected}
@@ -12657,8 +12844,8 @@ begin
         RGB(128,128,128));
 
   {render caption}
-  if assigned(FCaption) then
-    FCaption.Render(Props);
+  //if assigned(FCaption) then
+  //  FCaption.Render(Props);
 end;
 
 procedure TIpHtmlNodeTABLE.SetProps(const RenderProps: TIpHtmlProps);
@@ -12864,11 +13051,26 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeTABLE.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps;
+  const Props: TIpHtmlProps);
+begin
+  inherited LoadCSSProps(Owner, Element, Props);
+  if Element = nil then
+    exit;
+  if Element.BGColor <> -1 then
+    BgColor := Element.BGColor;
+end;
+{$ENDIF}
+
 { TIpHtmlNodeTR }
 
 constructor TIpHtmlNodeTR.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'tr';
+  {$ENDIF}
   FAlign := haDefault;
   FValign := hvaMiddle;
 end;
@@ -14371,6 +14573,10 @@ end;
 { TIpHtmlNodeCore }
 
 procedure TIpHtmlNodeCore.ParseBaseProps;
+{$IFDEF IP_LAZARUS}
+var
+  Commands: TStringList;
+{$ENDIF}
 begin
   with Owner do begin
     Id := FindAttribute('ID');
@@ -14378,7 +14584,107 @@ begin
     Title := FindAttribute('TITLE');
     Style := FindAttribute('STYLE');
   end;
+  {$IFDEF IP_LAZARUS}
+  if Style <> '' then
+  begin
+    if CSS = nil then
+      CSS := TCSSProps.Create;
+    Commands := SeperateCommands(Style);
+    CSS.ReadCommands(Commands);
+    Commands.Free;
+  end;
+  {$ENDIF}
 end;
+
+{$IFDEF IP_LAZARUS}
+procedure TIpHtmlNodeCore.LoadCSSProps(Owner: TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps);
+var
+  TmpElement: TCSSProps;
+begin
+  if Owner.CSS = nil then
+    exit;
+  TmpElement := Element;
+  if Element = nil then
+  begin
+    // process first the Main element
+    Element := Owner.CSS.GetElement(ElementName, '');
+    if Element <> nil then
+      LoadCSSProps(Owner, Element, Props);
+    // load the .class if there is one
+    Element := Owner.CSS.GetElement('', ClassId);
+    if Element <> nil then
+      LoadCSSProps(Owner, Element, Props);
+    // then load the element + class if there is one
+    Element := Owner.CSS.GetElement(ElementName, ClassId);
+  end;
+  
+  //if FElementName = '' then
+  //  WriteLn('Element name not set for class ', ClassNAme);
+
+  if (Element <> nil) and (Props <> nil) then
+  begin
+    {$WARNING Setting these font colors and name messes up the alignment for some reason}
+    if Element.Color <> -1 then
+      Props.FontColor := Element.Color;
+    if Element.BGColor <> -1 then
+      Props.BgColor := Element.Color;
+    if Element.Font.Name <> '' then
+      Props.FontName := FirstString(Element.Font.Name);
+
+     {$WARNING TODO Set Font size from CSS Value}
+    // see http://xhtml.com/en/css/reference/font-size/
+    //if Element.Font.Size <> '' then // <- is a string
+    //  Props.FontSize :=  Element.Font.Size;
+
+    if Element.Font.Style <> cfsNormal then
+      case Element.Font.Style of
+        cfsItalic: Props.FontStyle := Props.FontStyle + [fsItalic];
+        cfsInherit: ; // what to do?
+        cfsOblique: ; // what to do?
+      end;
+
+    if Element.Font.Weight <> cfwNormal then
+      case Element.Font.Weight of
+        cfwBold    : Props.FontStyle := Props.FontStyle + [fsBold];
+        cfwBolder  : Props.FontStyle := Props.FontStyle + [fsBold];
+        cfwLighter : Props.FontStyle := Props.FontStyle - [fsBold];
+        cfw100     : ;
+        cfw200     : ;
+        cfw300     : ;
+        cfw400     : ;
+        cfw500     : ;
+        cfw600     : ;
+        cfw700     : ;
+        cfw800     : ;
+        cfw900     : ;
+      end;
+  end;
+  
+  if TmpElement = nil then
+  begin
+    // lookup id elements
+    TmpElement := Owner.CSS.GetElement(Id);
+    if TmpElement <> nil then
+      LoadCSSProps(Owner, TmpElement, Props);
+    // lookup local elements for this tag, not from the stylesheet
+    TmpElement := CSS;
+    if TmpElement <> nil then
+      LoadCSSProps(Owner, TmpElement, Props);
+  end;
+end;
+
+function TIpHtmlNodeCore.ElementName: String;
+begin
+  Result := FElementName;
+end;
+
+destructor TIpHtmlNodeCore.Destroy;
+begin
+  if Assigned(FCSS) then
+    FCSS.Free;
+  inherited Destroy;
+end;
+{$ENDIF}
 
 { TIpHtmlNodeINS }
 
@@ -14401,6 +14707,9 @@ end;
 constructor TIpHtmlNodeTHEAD.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'thead';
+  {$ENDIF}
   FVAlign := hva3Middle;
 end;
 
@@ -14409,6 +14718,9 @@ end;
 constructor TIpHtmlNodeTBODY.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
+  {$IFDEF IP_LAZARUS}
+  FElementName := 'tbody';
+  {$ENDIF}
   FVAlign := hva3Middle;
 end;
 
@@ -15368,8 +15680,15 @@ begin
 end;
 
 procedure TIpHtmlNodeControl.SetProps(const RenderProps: TIpHtmlProps);
+{$IFDEF IP_LAZARUS}
+var
+  Elem: TCSSProps = nil;
+{$ENDIF}
 begin
   Props.Assign(RenderProps);
+  {$IFDEF IP_LAZARUS}
+  LoadCSSProps(Owner, Elem, Props);
+  {$ENDIF}
 end;
 
 function TIpHtmlNodeControl.GetDim(ParentWidth: Integer): TSize;
@@ -16354,6 +16673,10 @@ begin
   Html.FlagErrors := FFlagErrors;
   Html.MarginWidth := FMarginWidth;
   Html.MarginHeight := FMarginHeight;
+  {$IFDEF IP_LAZARUS}
+  if FDataProvider <> nil then
+    Html.FDataProvider := FDataProvider;
+  {$ENDIF}
 end;
 
 constructor TIpHtmlFrame.Create(Viewer: TIpHtmlCustomPanel; Parent: TCustomPanel;

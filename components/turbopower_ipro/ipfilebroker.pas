@@ -117,12 +117,17 @@ TIpCustomHtmlDataProvider = class(TIpAbstractHtmlDataProvider)
     property OnReportReference;
   end;
 
+  { TIpFileDataProvider }
+
   TIpFileDataProvider = class(TIpCustomHtmlDataProvider)
   private
     FOldURL : string;
   public
     constructor Create(AOwner : TComponent); override;
     function GetHtmlStream(const URL : string; PostData : TIpFormDataEntity) : TStream; override;
+    {$IFDEF IP_LAZARUS}
+    function DoGetStream(const URL: string): TStream; override;
+    {$ENDIF}
     function CheckURL(const URL : string; var ContentType : string) : Boolean; override;
     procedure Leave(Html : TIpHtml); override;
     procedure Reference(const URL : string); override;
@@ -338,6 +343,21 @@ begin
   FOldURL := URL;
   Finalize(FileAddrRec);
 end;
+
+{$IFDEF IP_LAZARUS}
+function TIpFileDataProvider.DoGetStream(const URL: string): TStream;
+var
+  FileAddrRec : TIpAddrRec;
+  FN : string;
+begin
+  Initialize(FileAddrRec);
+  IpParseURL(URL, FileAddrRec);
+  FN := NetToDosPath(FileAddrRec.Path);
+  Result := TMemoryStream.Create;
+  TMemoryStream(Result).LoadFromFile(FN);
+  Finalize(FileAddrRec);
+end;
+{$ENDIF}
 
 procedure TIpFileDataProvider.GetImage(Sender : TIpHtmlNode;
   const URL : string; var Picture : TPicture);

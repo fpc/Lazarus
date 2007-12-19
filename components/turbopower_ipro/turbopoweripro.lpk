@@ -24,7 +24,7 @@
     <License Value="MPL - Mozilla public license
 "/>
     <Version Major="1"/>
-    <Files Count="10">
+    <Files Count="11">
       <Item1>
         <Filename Value="ipanim.pas"/>
         <UnitName Value="IpAnim"/>
@@ -67,6 +67,10 @@
         <Filename Value="iputils.pas"/>
         <UnitName Value="IpUtils"/>
       </Item10>
+      <Item11>
+        <Filename Value="ipcss.inc"/>
+        <Type Value="Include"/>
+      </Item11>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
