@@ -562,6 +562,11 @@ begin
   inherited DestroyWnd;
 end;
 
+procedure TCustomListView.BeginAutoDrag;
+begin
+  BeginDrag(False);
+end;
+
 {------------------------------------------------------------------------------
    TCustomListView BeginUpdate
    Params: None

@@ -931,6 +931,7 @@ type
     procedure FinalizeWnd; override;
 
     procedure DestroyWnd; override;
+    procedure BeginAutoDrag; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
 
