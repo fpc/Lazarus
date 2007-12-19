@@ -59,7 +59,7 @@ type
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
     procedure ClickCheck; dynamic;
-    procedure ItemClick(const AIndex: Integer);
+    procedure ItemClick(const AIndex: Integer); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Toggle(AIndex: Integer);
