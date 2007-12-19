@@ -1172,7 +1172,7 @@ begin
     OldStyle := FStyle;
     FreeReference;
     FReference._lclHandle := FontData.Handle;
-    inherited SetSize(-Round(FontData.Height * 72 / FPixelsPerInch));
+    inherited SetSize(-MulDiv(FontData.Height, 72, FPixelsPerInch));
     FHeight := FontData.Height;
     FPitch := FontData.Pitch;
     FStyle := FontData.Style;
