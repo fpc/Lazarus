@@ -3939,8 +3939,10 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomListView">
-        <short>The ancestor class for ListViews.</short>
-        <descr>TCustomListView is the ancestor for TListView. If you want to define your own ListView class, you should use this class to derive it from.</descr>
+        <short><i>TCustomListView</i> - the ancestor class for <i>TListView</i></short>
+        <descr>
+          <p><i>TCustomListView</i> is the ancestor for <i>TListView</i>. If you want to define your own ListView class, you should use this class to derive it from.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomListView.FAllocBy"/>
@@ -4412,9 +4414,7 @@ cdsIndeterminate</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: private -->
-      <element name="TCustomListView.CNNotify">
-        <short>Procedure to handle all kind of messages send to the ListView</short>
-      </element>
+      <element name="TCustomListView.CNNotify"/>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.CNNotify.AMessage"><short/></element>
       <!-- procedure Visibility: protected -->
@@ -4444,8 +4444,10 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Change">
-        <short>Internal procedure called when an item has changed.</short>
-        <descr>This is an internal procedure which is called after an item has been changed. This procedure makes sure the OnChange event is called if the user assigned a method to this event.</descr>
+        <short><i>Change</i>  - Internal procedure to simulate the <i>OnChange</i> event</short>
+        <descr>
+          <p>This is an internal procedure which is called after an item has been changed. It is a programmatic method for simulating the <i>OnChange</i> event if the programmer has assigned a method to this event.</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Change.AItem"><short/></element>
@@ -4453,8 +4455,11 @@ cdsIndeterminate</descr>
       <element name="TCustomListView.Change.AChange"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ColClick">
-        <short>Procedure to trigger the OnColumnClick event.</short>
-        <descr>If a method is assigned to the OnColumnClick event, this procedure executes it.</descr>
+        <short><i>ColClick</i>  - procedure to simulate the <i>OnColumnClick</i>  event.</short>
+        <descr>
+          <p><i>ColClick</i>  - procedure to simulate the <i>OnColumnClick</i>  event.</p>
+          <p>Can be used programmatically to execute the same code as is used to respond to the <i>OnColumnClick </i>event</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.ColClick.AColumn"><short/></element>
@@ -4551,25 +4556,22 @@ cdsIndeterminate</descr>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.WMVScroll.Msg"><short/></element>
       <!-- property Visibility: protected -->
-      <element name="TCustomListView.AllocBy">
-        <short>Protected propety to read and set FAllocBy</short>
-      </element>
+      <element name="TCustomListView.AllocBy"/>
       <!-- property Visibility: protected -->
-      <element name="TCustomListView.BorderStyle">
-        <short>A property to store the borderstyle of the listview.</short>
-        <descr>This property should be made published in descendants if you want to allow the users to change the borderstyle.</descr>
-      </element>
+      <element name="TCustomListView.BorderStyle"/>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
-        <short>Property to define and change the columns of a ListView</short>
-        <descr>Columns is a TCollectionItem and contains all information on the columns of a listview.</descr>
+        <short><i>Columns </i>- define and change the columns of a ListView</short>
+        <descr>
+          <p><i>Columns</i> is a <i>TCollectionItem</i> and contains all information on the columns of a listview.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
-        <short>Boolean property to determine if the OnColumnClick event will be executed.</short>
-        <descr>The ColumnClick property of the ListView determines if the OnColumnClickEvent will be executed. A call of the OnColumnClick event will only be done when a method has been assigned to the OnColumnClick event and this property is set to true.<br/>
-
-By default ColumnClick is set to True.</descr>
+        <short><i>ColumnClick </i> - determines if the <i>OnColumnClick</i>  event will be executed.</short>
+        <descr>
+          <p>The <i>ColumnClick</i> property of the ListView enables or disables the <i>OnColumnClick</i> Event. A call to <i>OnColumnClick</i> will only be done when a method has been assigned to the <i>OnColumnClick</i> event and <i>ColumnClick</i> is set to true (default).</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.DefaultItemHeight">
@@ -4591,21 +4593,25 @@ By default ColumnClick is set to True.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</short>
+        <descr>
+          <p><i>Items</i> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</p>
+          <p><i>Items</i> is of type <i>TListitems</i> which has a built-in cache of the last accessed item. This speeds up interface updates since Item.Index is often used for the same item updating more properties. If FCacheIndex = -1 then the cache is not valid.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.LargeImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>LargeImages</i>  - an ImageList to be used in association with the list of <i>Items</i></short>
+        <descr>
+          <p><i>LargeImages</i> - an ImageList to be used in association with the list of <i>Items</i></p>
+          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
+          <p>A <i>TImageList</i> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.MultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>MultiSelect</i> - enables the selection of more than one entry from <i>Items</i> - by pressing SHIFT or CTRL keys while selecting</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerData">
@@ -4621,9 +4627,7 @@ By default ColumnClick is set to True.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ReadOnly</i> - determines if the list can only be read, and not written or deleted.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrolledLeft">
@@ -4639,15 +4643,11 @@ By default ColumnClick is set to True.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrollBars">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ScrollBars</i> - the kind of scrollbars to be used: none, auto, horizontal or vertical</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowColumnHeaders">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ShowColumnHeaders</i> - whether headers for columns are to be displayed</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowWorkAreas">
@@ -4657,33 +4657,29 @@ By default ColumnClick is set to True.</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SmallImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SmallImages</i>  - an ImageList of small images (icons) to be used in association with the list of <i>Items</i></short>
+        <descr>
+          <p><i>SmallImages</i>  - an ImageList of small images (icons) to be used in association with the list of <i>Items</i></p>
+          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
+          <p>A <i>TImageList</i> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+        </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortType">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SortType</i> - whether to sort by text, by data, both or not at all</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortColumn">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SortColumn</i> - the column that is being sorted</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.StateImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>StateImages</i> - an imagelist of icons to demonstrate the state of a process or event</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ViewStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ViewStyle </i>- whether to view as a simple list, a list with large or small icons, or as a report</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnChange">
@@ -4722,9 +4718,7 @@ By default ColumnClick is set to True.</descr>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TCustomListView.Create">
-        <short>The class method to "create" a Listview.</short>
-      </element>
+      <element name="TCustomListView.Create"/>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Create.Aowner"><short/></element>
       <!-- destructor Visibility: public -->
@@ -4735,32 +4729,29 @@ By default ColumnClick is set to True.</descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TCustomListView.BeginUpdate">
-        <short>Procedure to be called before changes are made to the ListView</short>
-        <descr>This procedure increases FUpdateCount. After this procedure is called, changes made to the listview will only be drawn after a call to EndUpdate.</descr>
-      </element>
+      <element name="TCustomListView.BeginUpdate"/>
       <!-- procedure Visibility: public -->
-      <element name="TCustomListView.EndUpdate">
-        <short>Procedure to be called after a call to BeginUpdate.</short>
-        <descr>Call EndUpdate to make sure changes made to the ListView are drawn.</descr>
-      </element>
+      <element name="TCustomListView.EndUpdate"/>
       <!-- property Visibility: public -->
       <element name="TCustomListView.BoundingRect">
-        <short>A property to publish the rectangle the component occupies.</short>
+        <short><i>BoundingRect</i> - the coordinates of the rectangle containing the ListView</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Canvas">
-        <short>Read only property to give read access to the canvas.</short>
+        <short><i>Canvas</i>  - defines the area on which all graphic material is drawn (Read-only)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Checkboxes">
-        <short>Properties to determine if the ListView shows checkboxes with the items</short>
+        <short><i>CheckBoxes</i> - determines if the ListView shows checkboxes beside the items on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Column">
-        <short>Property to read the column information of the listview.</short>
-        <descr>This property can be used to read the information of a column. The column to retreive the information of, is determined by an index. (AIndex) As with nearly all indexes, this index is 0 based. In column[0] the caption of the listitem is show, in subsequent column the subitems of the listitem are shown.<br/>
-To add, change or delete a column use the Columns property.</descr>
+        <short><i>Column </i>- reads the column information of the listview.</short>
+        <descr>
+          <p>This property can be used to read the information of a column.</p>
+          <p>The column whose information is to be retrieved is determined by an index (AIndex). As with nearly all indexes, this index is 0 based. In column[0] the caption of the listitem is show, in subsequent column the subitems of the listitem are shown.</p>
+          <p>To add, change or delete a column use the Columns property</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListView.Column.AIndex">
@@ -4768,15 +4759,11 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>DropTarget </i> - location where an item from the list is to be dropped</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FlatScrollBars">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>FlatScrollBars </i>- whether the scroll bars are to be displayed flat</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
@@ -4804,27 +4791,19 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ItemFocused">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ItemFocused</i> - the item currently receiving focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.RowSelect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>RowSelect </i>- whether the user can select rows of items (across columns). Default false</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.SelCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SelCount </i>- the number of items selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Selected">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Selected</i> - the current list item that has been selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TabStop">
@@ -4834,28 +4813,27 @@ To add, change or delete a column use the Columns property.</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TopItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>TopItem</i> - the first item on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ViewOrigin">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ViewOrigin </i>- the top left coordinate for the current view</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.VisibleRowCount">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>VisibleRowCount</i> - the number of rows visible in the current view (some items might have scrolled outside the window)</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TListView">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TListView </i> - a window showing a list of <i>Items</i>, which may or may not have associated icons</short>
+        <descr>
+          <p><i>TListView </i>- a window showing a list of items, which may or may not have associated icons</p>
+          <p>At first, this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link>, but it has a much higher degree of complexity. It is capable of displaying Items in <i>Columns</i> of <i>Rows</i>, and it can have images associated with the list <i>Items</i>.</p>
+          <p>The important information is held in <i>Items</i>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (...) next to the <i>Items</i> entry in the Object Inspector.</p>
+          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p><i>SmallImages</i> (if assigned to a string-list) can be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.</p>
+          <p>One or more <i>TImageList</i> controls need to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. The image list can be populated by reading from files. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TListView.Align">
@@ -8221,7 +8199,9 @@ To add, change or delete a column use the Columns property.</descr>
           <p>The <i>Position</i> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
           <p>In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.</p>
         </descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
         <example file="comctrls/TrackBarEx.pas"/>
       </element>
       <!-- property Visibility: published -->
