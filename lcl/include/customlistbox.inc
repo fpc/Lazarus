@@ -40,6 +40,11 @@ begin
   end;
 end;
 
+procedure TCustomListBox.BeginAutoDrag;
+begin
+  BeginDrag(False);
+end;
+
 procedure TCustomListBox.Loaded;
 begin
   inherited Loaded;
