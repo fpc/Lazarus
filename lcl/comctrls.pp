@@ -777,8 +777,8 @@ type
     constructor Create(TheOwner: TCustomListView);
     destructor Destroy; override;
     function Add: TListColumn;
-    procedure BeginUpdate; {$IFNDEF VER2_0}override{$ELSE}virtual{$ENDIF};
-    procedure EndUpdate; {$IFNDEF VER2_0}override{$ELSE}virtual{$ENDIF};
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
     property Owner: TCustomListView read FOwner;
     property Items[const AIndex: Integer]: TListColumn
                                             read GetItem write SetItem; default;
