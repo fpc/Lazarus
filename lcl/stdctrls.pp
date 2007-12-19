@@ -485,6 +485,7 @@ type
   protected
     procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
     procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
+    procedure BeginAutoDrag; override;
     procedure Loaded; override;
     procedure InitializeWnd; override;
     procedure FinalizeWnd; override;

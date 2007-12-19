@@ -79,7 +79,8 @@ begin
   if Count <= Aindex then Exit;
 
   // Move column to the last, otherwise our items get shuffeled
-  ColumnMove(ALV, AIndex, Count - 1, nil);
+  if AIndex <> Count - 1 then
+    ColumnMove(ALV, AIndex, Count - 1, nil);
   ListView_DeleteColumn(hLV, Count - 1);
 end;
 

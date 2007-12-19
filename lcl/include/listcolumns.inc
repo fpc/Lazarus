@@ -28,27 +28,6 @@ begin
     OwnerFormDesignerModified(Owner);
 end;
 
-procedure TListColumns.BeginUpdate;
-begin
-  {$IFNDEF VER2_0}
-  inherited;
-  // if 2.0 is not supported anymore, maybe FUpdateCount can be removed and
-  // the Changed notification can be used.
-  {$ENDIF}
-  inc(FUpdateCount);
-end;
-
-procedure TListColumns.EndUpdate;
-begin
-  {$IFNDEF VER2_0}
-  inherited;
-  {$ENDIF}
-  if FUpdateCount<=0 then
-    RaiseGDBException('TListColumns.EndUpdate');
-  dec(FUpdateCount);
-  if (FUpdateCount=0) and FNeedsUpdate then Update(FItemNeedsUpdate);
-end;
-
 procedure TListColumns.Assign(Source: TPersistent);
 var
   I: Integer;
@@ -87,6 +66,13 @@ begin
   BeginUpdate;
   inherited Destroy;
   EndUpdate;
+end;
+
+procedure TListColumns.Update(Item: TCollectionItem);
+begin
+  if (Item = nil) and FNeedsUpdate then
+    Item := FItemNeedsUpdate;
+  inherited Update(Item);
 end;
 
 function TListColumns.GetItem(const AIndex: Integer): TListColumn;

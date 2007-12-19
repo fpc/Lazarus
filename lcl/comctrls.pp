@@ -766,19 +766,16 @@ type
   TListColumns = class(TCollection)
   private
     FOwner: TCustomListView;
-    FUpdateCount: integer;
     FItemNeedsUpdate: TCollectionItem;
     FNeedsUpdate: boolean;
     function GetItem(const AIndex: Integer): TListColumn;
     procedure WSCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
-  protected
   public
     constructor Create(TheOwner: TCustomListView);
     destructor Destroy; override;
+    procedure Update(Item: TCollectionItem); override;
     function Add: TListColumn;
-    procedure BeginUpdate; override;
-    procedure EndUpdate; override;
     property Owner: TCustomListView read FOwner;
     property Items[const AIndex: Integer]: TListColumn
                                             read GetItem write SetItem; default;
