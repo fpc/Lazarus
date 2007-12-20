@@ -1313,6 +1313,7 @@ docs/html/localrtlfooter.xml svneol=native#text/plain
 docs/html/sourceforgefooter.xml svneol=native#text/xml
 docs/html/update_gtkintf_html.sh -text svneol=native#application/x-sh
 docs/html/update_html.sh -text svneol=native#application/x-sh
+docs/html/update_lcl_docs.lpr -text
 docs/html/update_lcl_html.sh -text svneol=native#mime-type%3Dtext/plain
 docs/images/cheetah1.png -text svneol=unset#image/png
 docs/images/laztitle.jpg -text svneol=unset#image/jpeg
