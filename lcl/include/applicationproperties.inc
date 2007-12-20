@@ -303,8 +303,21 @@ end;
 
 destructor TApplicationProperties.Destroy;
 begin
-  If not (csDesigning in ComponentState) then
-    Application.RemoveAllHandlersOfObject(Self);
+  If not (csDesigning in ComponentState) then begin
+    Application.RemoveOnExceptionHandler(FOnException);
+    Application.RemoveOnIdleHandler(FOnIdle);
+    Application.RemoveOnIdleEndHandler(FOnIdleEnd);
+    Application.RemoveOnEndSessionHandler(FOnEndSession);
+    Application.RemoveOnQueryEndSessionHandler(FOnQueryEndSession);
+    Application.RemoveOnMinimizeHandler(FOnMinimize);
+    Application.RemoveOnRestoreHandler(FOnRestore);
+    Application.RemoveOnDropFilesHandler(FOnDropFiles);
+    Application.RemoveOnHelpHandler(FOnHelp);
+    Application.RemoveOnHintHandler(FOnHint);
+    Application.RemoveOnShowHintHandler(FOnShowHint);
+    Application.RemoveOnUserInputHandler(FOnUserInput);
+  end;
+//AG Application.RemoveAllHandlersOfObject(Self); "Self" is wrong, because Events is owner's methods
   inherited Destroy;
 end;
 
