@@ -363,6 +363,7 @@ components/images/readme.txt svneol=native#text/plain
 components/images/registerimg4laz.pas svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
 components/lazreport/doc/cvs2cl.pl -text svneol=unset#application/x-perl
+components/lazreport/doc/firststeps.odt -text
 components/lazreport/doc/fr_eng.sxw -text
 components/lazreport/doc/readme.txt svneol=native#text/plain
 components/lazreport/doc/todo_and_ideas.txt svneol=native#text/plain
