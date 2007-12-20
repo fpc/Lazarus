@@ -367,6 +367,10 @@ components/lazreport/doc/firststeps.odt -text
 components/lazreport/doc/fr_eng.sxw -text
 components/lazreport/doc/readme.txt svneol=native#text/plain
 components/lazreport/doc/todo_and_ideas.txt svneol=native#text/plain
+components/lazreport/doc/tutorials/stringgrid/en/Tutorial[!!-~]LazReport[!!-~]and[!!-~]StringGrid.pdf -text svneol=unset#application/pdf
+components/lazreport/doc/tutorials/stringgrid/en/Tutorial_en.odt -text
+components/lazreport/doc/tutorials/stringgrid/es/Tutorial[!!-~]LazReport[!!-~]y[!!-~]StringGrid.pdf -text svneol=unset#application/pdf
+components/lazreport/doc/tutorials/stringgrid/es/Tutorial_es.odt -text
 components/lazreport/images/bitmaps/fr_bold.bmp -text
 components/lazreport/images/bitmaps/fr_check.bmp -text
 components/lazreport/images/bitmaps/fr_checkbox.bmp -text
@@ -432,6 +436,12 @@ components/lazreport/samples/editor/maincalleditor.pas svneol=native#text/pascal
 components/lazreport/samples/editor/readme.txt svneol=native#text/plain
 components/lazreport/samples/editor/salida.lrf svneol=native#text/xml
 components/lazreport/samples/index.txt svneol=native#text/plain
+components/lazreport/samples/stringgrid/project1.lpi svneol=native#text/plain
+components/lazreport/samples/stringgrid/project1.lpr svneol=native#text/pascal
+components/lazreport/samples/stringgrid/sample.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/stringgrid/unit1.lfm svneol=native#text/plain
+components/lazreport/samples/stringgrid/unit1.lrs svneol=native#text/plain
+components/lazreport/samples/stringgrid/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/userds/notes.txt svneol=native#text/plain
 components/lazreport/samples/userds/project1.lpi svneol=native#text/plain
 components/lazreport/samples/userds/project1.lpr svneol=native#text/pascal
