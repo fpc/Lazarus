@@ -341,28 +341,8 @@ end;
 procedure TProjectOptionsDialog.EnableVersionInfo(UseVersionInfo: boolean);
 begin
   VersionInfoGroupBox.Enabled := UseVersionInfo;
-  VersionLabel.Enabled := UseVersionInfo;
-  MajorRevisionLabel.Enabled := UseVersionInfo;
-  MinorRevisionLabel.Enabled := UseVersionInfo;
-  BuildLabel.Enabled := UseVersionInfo;
-  VersionSpinEdit.Enabled := UseVersionInfo;
-  MajorRevisionSpinEdit.Enabled := UseVersionInfo;
-  MinorRevisionSpinEdit.Enabled := UseVersionInfo;
-  BuildEdit.Enabled := UseVersionInfo;
-  AutomaticallyIncreaseBuildCheckBox.Enabled := UseVersionInfo;
-
   LanguageSettingsGroupBox.Enabled := UseVersionInfo;
-  LanguageSelectionLabel.Enabled := UseVersionInfo;
-  CharacterSetLabel.Enabled := UseVersionInfo;
-  LanguageSelectionComboBox.Enabled := UseVersionInfo;
-  CharacterSetComboBox.Enabled := UseVersionInfo;
-
   OtherInfoGroupBox.Enabled := UseVersionInfo;
-  DescriptionLabel.Enabled := UseVersionInfo;
-  CopyrightLabel.Enabled := UseVersionInfo;
-  DescriptionEdit.Enabled := UseVersionInfo;
-  CopyrightEdit.Enabled := UseVersionInfo;
-  AdditionalInfoButton.Enabled := UseVersionInfo;
 end;
 
 procedure TProjectOptionsDialog.Enablei18nInfo(Usei18n: boolean);
