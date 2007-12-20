@@ -459,9 +459,10 @@ begin
     DebugLn('EventClass: "',CurEventClass.Chars,'" EventKind: ',IntToStr(CurEventKind.Int));
     {$ENDIF}
 
-    if CurEventClass.Chars=LCLCarbonEventClass then begin
+    if CurEventClass.Chars = LCLCarbonEventClass then
+    begin
       // internal carbon intf message
-      if (CurEventKind.Chars=LCLCarbonEventKindWake) and IsMultiThread then
+      if (CurEventKind.Chars = LCLCarbonEventKindWake) and IsMultiThread then
       begin
         // a thread is waiting -> synchronize
         CheckSynchronize;
@@ -1066,3 +1067,38 @@ begin
     OSError(RemoveEventLoopTimer(EventLoopTimerRef(TimerHandle)), Self,
       'DestroyTimer', 'RemoveEventLoopTimer');
 end;
+
+function TCarbonWidgetSet.PrepareUserEvent(Handle: HWND; Msg: Cardinal;
+  wParam: WParam; lParam: LParam; out Target: EventTargetRef): EventRef;
+var
+  EventSpec: EventTypeSpec;
+  AMessage: TLMessage;
+  Widget: TCarbonWidget;
+begin
+  Result := nil;
+  if FMainEventQueue = nil then exit;
+
+  Widget := TCarbonWidget(Handle);
+
+  if Widget is TCarbonControl then
+    Target := GetControlEventTarget(Widget.Widget)
+  else
+  if Widget is TCarbonWindow then
+    Target := GetWindowEventTarget(Widget.Widget)
+  else
+    Exit;
+
+  EventSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindUser);
+  if CreateEvent(nil, EventSpec.eventClass, EventSpec.eventKind,
+    0, kEventAttributeUserEvent, Result) <> noErr then
+    Exit;
+
+  AMessage.Msg := Msg;
+  AMessage.LParam := lParam;
+  AMessage.WParam := wParam;
+  AMessage.Result := 0;
+  SetEventParameter(Result, MakeFourCC('wmsg'),
+                            MakeFourCC('wmsg'), SizeOf(TLMessage),
+                            @AMessage);
+end;
+

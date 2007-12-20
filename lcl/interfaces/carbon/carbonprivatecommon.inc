@@ -458,3 +458,19 @@ begin
   
   Result := noErr; // cursor was setted
 end;
+
+function CarbonCommon_User(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+var
+  AMessage: TLMessage;
+begin
+  Result := GetEventParameter(AEvent, MakeFourCC('wmsg'), MakeFourCC('wmsg'), nil,
+     SizeOf(TLMessage), nil, @AMessage);
+  if Result = noErr then
+  begin
+    AMessage.Result := DeliverMessage(AWidget.LCLObject, AMessage);
+    SetEventParameter(AEvent, MakeFourCC('wmsg'), MakeFourCC('wmsg'),
+      SizeOf(TLMessage), @AMessage);
+  end;
+end;

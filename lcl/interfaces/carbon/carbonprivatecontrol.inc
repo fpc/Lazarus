@@ -255,12 +255,18 @@ begin
     RegisterEventHandler(@CarbonControl_CommandProcess),
     1, @TmpSpec, Pointer(Self), nil);
     
-// cursor set
+  // cursor set
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
   InstallControlEventHandler(Content,
     RegisterEventHandler(@CarbonCommon_SetCursor),
     1, @TmpSpec, Pointer(Self), nil);
 
+  // user messages
+  TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindUser);
+  InstallControlEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_User),
+    1, @TmpSpec, Pointer(Self), nil);
+    
   if cceHit in Events then
   begin
     TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);

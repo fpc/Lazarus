@@ -2256,8 +2256,29 @@ end;
 
 function TCarbonWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): Boolean;
+var
+  UserEvent: EventRef;
+  EventTarget: EventTargetRef;
 begin
-  Result:=inherited PostMessage(Handle, Msg, wParam, lParam);
+  Result := False;
+  if not CheckWidget(Handle, 'PostMessage') then Exit;
+
+  UserEvent := nil;
+  try
+    UserEvent := PrepareUserEvent(Handle, Msg, wParam, lParam, EventTarget);
+    if UserEvent = nil then
+      Exit;
+
+    SetEventParameter(UserEvent, kEventParamPostTarget, typeEventTargetRef,
+      SizeOf(EventTarget), @EventTarget);
+      
+    if PostEventToQueue(FMainEventQueue, UserEvent, kEventPriorityStandard) <> noErr then
+      Exit;
+  finally
+    if UserEvent <> nil then 
+      ReleaseEvent(UserEvent);
+  end;
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2596,8 +2617,28 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal;
   wParam: WParam; lParam: LParam): LResult;
+var
+  UserEvent: EventRef;
+  EventTarget: EventTargetRef;
+  AMessage: TLMessage;
 begin
-  Result := inherited SendMessage(HandleWnd, Msg, wParam, lParam);
+  Result := 0;
+  if not CheckWidget(HandleWnd, 'SendMessage') then Exit;
+
+  UserEvent := nil;
+  try
+    UserEvent := PrepareUserEvent(HandleWnd, Msg, wParam, lParam, EventTarget);
+    if UserEvent = nil then
+      Exit;
+
+    SendEventToEventTarget(UserEvent, EventTarget);
+    if GetEventParameter(UserEvent, MakeFourCC('wmsg'), MakeFourCC('wmsg'), nil,
+       SizeOf(TLMessage), nil, @AMessage) = noErr then
+      Result := AMessage.Result;
+  finally
+    if UserEvent <> nil then
+      ReleaseEvent(UserEvent);
+  end;
 end;
 
 {------------------------------------------------------------------------------

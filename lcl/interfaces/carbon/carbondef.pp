@@ -147,6 +147,7 @@ const
   LCLCarbonEventClass    = 'Laz ';
   LCLCarbonEventKindWake = 'Wake';
   LCLCarbonEventKindMain = 'Main';
+  LCLCarbonEventKindUser = 'User';
 
 function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const DbgText: String): Boolean;
 function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;

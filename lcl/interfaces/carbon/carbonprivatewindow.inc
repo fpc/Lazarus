@@ -955,6 +955,11 @@ begin
     RegisterEventHandler(@CarbonCommon_CursorChange),
     1, @TmpSpec, Pointer(Self), nil);	
 
+  // user messages
+  TmpSpec := MakeEventSpec(LCLCarbonEventClass, LCLCarbonEventKindUser);
+  InstallWindowEventHandler(Widget,
+    RegisterEventHandler(@CarbonCommon_User),
+    1, @TmpSpec, Pointer(Self), nil);
   {$IFDEF VerboseWindowEvent}
     DebugLn('TCarbonWindow.RegisterEvents ', ClassName, ' ',
       LCLObject.Name, ': ', LCLObject.ClassName);
