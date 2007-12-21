@@ -129,9 +129,6 @@ begin
     begin
       SetString(RTLPrefix, 'ms-its:rtl.chm::/', 'RTLLINKPREFIX');
       SetString(FCLPrefix, 'ms-its:fcl.chm::/', 'FCLLINKPREFIX');
-      ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
-                          +' --auto-toc --auto-index'
-                          +' --css-file=..'+PathDelim+'fpdoc.css ';
     end
     else
     begin
@@ -144,6 +141,13 @@ begin
       RTLPrefix := ','+RTLPrefix;
     if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
       FCLPrefix := ','+FCLPrefix;
+  end;
+  
+  if OutFormat='chm' then
+  begin
+    ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
+                          +' --auto-toc --auto-index'
+                          +' --css-file=..'+PathDelim+'fpdoc.css ';
   end;
   
   ArgParams:=ArgParams+' --format='+OutFormat+' ';
