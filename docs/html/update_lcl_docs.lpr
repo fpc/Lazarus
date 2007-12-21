@@ -54,8 +54,6 @@ begin
   WriteLn('     FPDOCFORMAT, FPDOCPARAMS, FPDOC, FPDOCFOOTER, FPCDOCS, RTLLINKPREFIX, FCLLINKPREFIX');
   WriteLn;
   Halt(0);
-  
-
 end;
 
 procedure ReadOptions;
@@ -177,7 +175,7 @@ begin
   if Result then
     Exit;
   Paths := TStringList.Create;
-  Paths.Delimiter:={$IFDEF MSWINDOWS}';'{$ELSE}':'{$ENDIF};
+  Paths.Delimiter:=PathSeparator;
   Paths.DelimitedText := GetEnvironmentVariable('PATH');
   for I := 0 to Paths.Count-1 do
   begin
