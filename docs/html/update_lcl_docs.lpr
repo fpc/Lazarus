@@ -1,7 +1,9 @@
 program update_lcl_docs;
 
 {$mode objfpc}{$H+}
+{$IFDEF MSWINDOWS}
 {$APPTYPE console}
+{$ENDIF}
 
 uses
   Classes, Sysutils, GetOpts, Process;
@@ -120,13 +122,13 @@ begin
   begin
     if OutFormat = 'html' then
     begin
-      SetString(RTLPrefix, ',../rtl/', 'RTLLINKPREFIX');
-      SetString(FCLPrefix, ',../fcl/', 'FCLLINKPREFIX');
+      SetString(RTLPrefix, '../rtl/', 'RTLLINKPREFIX');
+      SetString(FCLPrefix, '../fcl/', 'FCLLINKPREFIX');
     end
     else if OutFormat = 'chm' then
     begin
-      SetString(RTLPrefix, ',ms-its:rtl.chm::/', 'RTLLINKPREFIX');
-      SetString(FCLPrefix, ',ms-its:fcl.chm::/', 'FCLLINKPREFIX');
+      SetString(RTLPrefix, 'ms-its:rtl.chm::/', 'RTLLINKPREFIX');
+      SetString(FCLPrefix, 'ms-its:fcl.chm::/', 'FCLLINKPREFIX');
       ArgParams:=ArgParams+' --output='+ ChangeFileExt(PackageName, '.chm')
                           +' --auto-toc --auto-index'
                           +' --css-file=..'+PathDelim+'fpdoc.css ';
@@ -138,6 +140,10 @@ begin
     end;
     ArgParams:=ArgParams+ '--import='+FPCDocsPath+PathDelim+'rtl.xct'+RTLPrefix
                         +' --import='+FPCDocsPath+PathDelim+'fcl.xct'+FCLPrefix;
+    if (RTLPrefix<>'') and (RTLPrefix[1]<>',') then
+      RTLPrefix := ','+RTLPrefix;
+    if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
+      FCLPrefix := ','+FCLPrefix;
   end;
   
   ArgParams:=ArgParams+' --format='+OutFormat+' ';
@@ -156,12 +162,34 @@ begin
   FindClose(FRec);
 end;
 
+function FileInPath(FileName: String): Boolean;
+var
+  FRec: TSearchRec;
+  Paths: TStringList;
+  I: Integer;
+begin
+  Result := False;
+  Paths := TStringList.Create;
+  Paths.Delimiter:={$IFDEF MSWINDOWS}';'{$ELSE}':'{$ENDIF};
+  Paths.DelimitedText := GetEnvironmentVariable('PATH');
+  for I := 0 to Paths.Count-1 do
+  begin
+    if FindFirst(IncludeTrailingPathDelimiter(Paths[I])+FileName,
+          faAnyFile and not faDirectory, FRec) = 0 then
+      Result := True;
+    FindClose(FRec);
+    if Result then break;
+  end;
+  Paths.Free;
+end;
+
 
 procedure MakeFileList;
 var
   FileList: TStringList;
   InputList: TStringList;
   I: Integer;
+  XMLFile: String;
 begin
   FileList := TStringList.Create;
   InputList := TStringList.Create;
@@ -172,7 +200,11 @@ begin
   for I := 0 to FileList.Count-1 do
   begin
     InputList.Add('..'+PathDelim+PasSrcDir+FileList[I] + ' -Fi..'+PathDelim+PasSrcDir+'include');
-    ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
+    XMLFile := XMLSrcDir+ChangeFileExt(FileList[I],'.xml');
+    if FileExists(PackageName+PathDelim+XMLFile) then
+      ArgParams:=ArgParams+' --descr='+XMLSrcDir+ChangeFileExt(FileList[I],'.xml')
+    else
+      WriteLn('Warning! No corresponding xml file for unit ' + FileList[I]);
   end;
   FileList.Free;
   InputList.SaveToFile(PackageName+PathDelim+InputFileList);
@@ -190,8 +222,16 @@ begin
     WriteLn(CmdLine);
     Exit;
   end;
+  {$IFDEF MSWINDOWS}fpdoc := ChangeFileExt(fpdoc,'.exe');{$ENDIF}
+  if not FileInPath(fpdoc) then
+  begin
+    WriteLn('Error: fpdoc cannot be found. Please add the directory it is in to the PATH ',
+            'or set it with --fpdoc path',PathDelim,'to',PathDelim,'fpdoc'{$IFDEF MSWINDOWS},'.exe'{$ENDIF});
+    Halt(1);
+  end;
   Process := TProcess.Create(nil);
   Process.Options := Process.Options + [poWaitOnExit];
+  Process.CurrentDirectory := GetCurrentDir+PathDelim+PackageName;
   Process.CommandLine := CmdLine;
   Process.Execute;
   Process.Free;
@@ -203,7 +243,6 @@ begin
     mkdir(PackageName);
   InitVars;
   MakeFileList;
-  SetCurrentDir(PackageName);
   Run;
 end.
 
