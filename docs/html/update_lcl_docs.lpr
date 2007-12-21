@@ -168,7 +168,9 @@ var
   Paths: TStringList;
   I: Integer;
 begin
-  Result := False;
+  Result := FileExists(FileName);
+  if Result then
+    Exit;
   Paths := TStringList.Create;
   Paths.Delimiter:={$IFDEF MSWINDOWS}';'{$ELSE}':'{$ENDIF};
   Paths.DelimitedText := GetEnvironmentVariable('PATH');
