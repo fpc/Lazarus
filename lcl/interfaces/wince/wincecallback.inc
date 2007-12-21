@@ -1886,8 +1886,6 @@ begin
           Assigned(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWinCEWidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
-
-{$ifdef PassWin32MessagesToLCL}
   else
     // pass along user defined messages
     if Msg >= WM_USER then
@@ -1897,9 +1895,7 @@ begin
       LMessage.LParam := LParam;
       WinProcess := false;
     end;
-
-{$endif}
-  End;
+  end;
 
   If WinProcess Then
   begin

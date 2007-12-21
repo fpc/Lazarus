@@ -2126,19 +2126,15 @@ begin
           Assigned(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg) then
         exit(TWin32WidgetSet(WidgetSet).FOnAsyncSocketMsg(WParam, LParam))
     end;
-
-{$ifdef PassWin32MessagesToLCL}
   else
     // pass along user defined messages
     if Msg >= WM_USER then
     begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
-      LMessa®ge.LParam := LParam;
+      LMessage.LParam := LParam;
       WinProcess := false;
     end;
-
-{$endif}
   end;
 
   If WinProcess Then
