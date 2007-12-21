@@ -5,6 +5,7 @@
     <Version Value="6"/>
     <General>
       <MainUnit Value="0"/>
+      <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
       <ActiveEditorIndexAtStart Value="0"/>
     </General>
@@ -43,58 +44,18 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="4" Y="65"/>
+        <CursorPos X="20" Y="50"/>
         <TopLine Value="48"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit1>
     </Units>
-    <JumpHistory Count="9" HistoryIndex="8">
-      <Position1>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="19" Column="45" TopLine="18"/>
-      </Position1>
-      <Position2>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="24" Column="67" TopLine="17"/>
-      </Position2>
-      <Position3>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="49" Column="5" TopLine="21"/>
-      </Position3>
-      <Position4>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="50" Column="16" TopLine="32"/>
-      </Position4>
-      <Position5>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="46" Column="48" TopLine="34"/>
-      </Position5>
-      <Position6>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="9" Column="12" TopLine="1"/>
-      </Position6>
-      <Position7>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="57" Column="43" TopLine="36"/>
-      </Position7>
-      <Position8>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="39" Column="14" TopLine="27"/>
-      </Position8>
-      <Position9>
-        <Filename Value="unit1.pas"/>
-        <Caret Line="58" Column="27" TopLine="47"/>
-      </Position9>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
     <PathDelim Value="\"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk2"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
@@ -112,11 +73,11 @@
   <Debugging>
     <BreakPoints Count="2">
       <Item1>
-        <Source Value="..\..\..\lazarus\lcl\include\winapi.inc"/>
+        <Source Value="..\..\lcl\include\winapi.inc"/>
         <Line Value="79"/>
       </Item1>
       <Item2>
-        <Source Value="..\..\..\lazarus\lcl\include\winapi.inc"/>
+        <Source Value="..\..\lcl\include\winapi.inc"/>
         <Line Value="87"/>
       </Item2>
     </BreakPoints>
