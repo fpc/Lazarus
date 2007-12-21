@@ -380,33 +380,33 @@ components/lazreport/images/bitmaps/fr_radio.bmp -text
 components/lazreport/images/bitmaps/fr_script.bmp -text
 components/lazreport/images/bitmaps/fr_undrline.bmp -text
 components/lazreport/images/bitmaps/rename_lower.pl -text svneol=unset#application/x-perl
-components/lazreport/images/bitmaps/tfrbarcodeobject.bmp -text
+components/lazreport/images/bitmaps/tfrbarcodeobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrchartobject.bmp -text
-components/lazreport/images/bitmaps/tfrcheckboxobject.bmp -text
-components/lazreport/images/bitmaps/tfrcompositereport.bmp -text
-components/lazreport/images/bitmaps/tfrcsvexport.bmp -text
+components/lazreport/images/bitmaps/tfrcheckboxobject.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrcompositereport.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrcsvexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrdatastorage.bmp -text
-components/lazreport/images/bitmaps/tfrdbdataset.bmp -text
+components/lazreport/images/bitmaps/tfrdbdataset.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrdesigner.bmp -text
 components/lazreport/images/bitmaps/tfrdock.bmp -text
-components/lazreport/images/bitmaps/tfrhtmexport.bmp -text
+components/lazreport/images/bitmaps/tfrhtmexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfroleobject.bmp -text
 components/lazreport/images/bitmaps/tfropendbdialog.bmp -text
 components/lazreport/images/bitmaps/tfrpreview.bmp -text
-components/lazreport/images/bitmaps/tfrprintgrid.bmp -text
-components/lazreport/images/bitmaps/tfrreport.bmp -text
+components/lazreport/images/bitmaps/tfrprintgrid.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrreport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrichobject.bmp -text
-components/lazreport/images/bitmaps/tfrroundrectobject.bmp -text
+components/lazreport/images/bitmaps/tfrroundrectobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrtfexport.bmp -text
 components/lazreport/images/bitmaps/tfrrxrichobject.bmp -text
-components/lazreport/images/bitmaps/tfrshapeobject.bmp -text
+components/lazreport/images/bitmaps/tfrshapeobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrspeedbutton.bmp -text
 components/lazreport/images/bitmaps/tfrtbbutton.bmp -text
 components/lazreport/images/bitmaps/tfrtbpanel.bmp -text
 components/lazreport/images/bitmaps/tfrtbseparator.bmp -text
-components/lazreport/images/bitmaps/tfrtextexport.bmp -text
+components/lazreport/images/bitmaps/tfrtextexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrtoolbar.bmp -text
-components/lazreport/images/bitmaps/tfruserdataset.bmp -text
+components/lazreport/images/bitmaps/tfruserdataset.png -text svneol=unset#image/png
 components/lazreport/images/designer/fr_bold.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_heightwidth.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_italic.xpm svneol=native#text/x-pixmap
