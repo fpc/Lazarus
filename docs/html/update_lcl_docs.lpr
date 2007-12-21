@@ -135,12 +135,13 @@ begin
       SetString(RTLPrefix, '', 'RTLLINKPREFIX');
       SetString(FCLPrefix, '', 'FCLLINKPREFIX');
     end;
-    ArgParams:=ArgParams+ '--import='+FPCDocsPath+PathDelim+'rtl.xct'+RTLPrefix
-                        +' --import='+FPCDocsPath+PathDelim+'fcl.xct'+FCLPrefix;
+    
     if (RTLPrefix<>'') and (RTLPrefix[1]<>',') then
       RTLPrefix := ','+RTLPrefix;
     if (FCLPrefix<>'') and (FCLPrefix[1]<>',') then
       FCLPrefix := ','+FCLPrefix;
+    ArgParams:=ArgParams+ '--import='+FPCDocsPath+PathDelim+'rtl.xct'+RTLPrefix
+                        +' --import='+FPCDocsPath+PathDelim+'fcl.xct'+FCLPrefix;
   end;
   
   if OutFormat='chm' then
