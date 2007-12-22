@@ -73,7 +73,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char = PathSeparator);
+    constructor Create(const AValue: String; ASeparator: Char = ';');
     destructor Destroy; override;
     
     function Matches(const AFileName: String): Boolean;
@@ -83,7 +83,7 @@ type
   end;
 
 function MatchesMask(const FileName, Mask: String): Boolean;
-function MatchesMaskList(const FileName, Mask: String; Separator: Char = PathSeparator): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char = ';'): Boolean;
 
 implementation
 
