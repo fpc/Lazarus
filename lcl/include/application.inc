@@ -678,9 +678,9 @@ begin
     HintInfo.HintWindowClass := HintWindowClass;
 
   i:=FApplicationHandlers[ahtShowHint].Count;
-  if CanShow
-  and (Assigned(FOnShowHint) or (i>0)) then begin
-    FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
+  if CanShow and (i>0) then begin
+    if Assigned(FOnShowHint) then
+      FOnShowHint(HintInfo.HintStr, CanShow, HintInfo);
     while FApplicationHandlers[ahtShowHint].NextDownIndex(i) do
       TShowHintEvent(FApplicationHandlers[ahtShowHint][i])(HintInfo.HintStr, CanShow, HintInfo);
   end;
