@@ -2133,17 +2133,17 @@ begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
-      WinProcess := false;
+      WinProcess := False;
     end;
   end;
 
-  If WinProcess Then
+  if WinProcess then
   begin
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-    WinProcess := false;
+    WinProcess := False;
   end;
 
-  Case Msg Of
+  case Msg Of
     WM_MOVE:
     begin
       PLMsg:=@LMMove;
@@ -2337,8 +2337,6 @@ begin
         if MouseDownFocusStatus = mfFocusSense then
           MouseDownFocusStatus := mfNone;
       end;
-
-
       WM_NCDESTROY:
       begin
         // free extra parent window for inner groupbox (if used)

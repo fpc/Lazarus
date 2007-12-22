@@ -3357,11 +3357,6 @@ begin
       ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
     end;
 
-    LM_MOVECURSOR:
-    begin
-      ConnectSenderSignal(gFixed, 'move-cursor', @gtkmovecursorCB);
-    end;
-
     LM_MOUSEMOVE:
     begin
       {$IFDEF GTK1}

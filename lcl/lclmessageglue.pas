@@ -53,7 +53,6 @@ function LCLSendChangedMsg(const Target: TControl; ItemIndex: WPARAM = 0): PtrIn
 function LCLSendClickedMsg(const Target: TControl): PtrInt;
 function LCLSendPressedMsg(const Target: TControl): PtrInt;
 function LCLSendReleasedMsg(const Target: TControl): PtrInt;
-function LCLSendMoveCursorMsg(const Target: TControl): PtrInt;
 function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
 function LCLSendMouseLeaveMsg(const Target: TControl): PtrInt;
 function LCLSendInsertTextMsg(const Target: TControl): PtrInt;
@@ -69,7 +68,6 @@ function LCLSendKillLineMsg(const Target: TControl): PtrInt;
 function LCLSendCutToClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendCopyToClipboardMsg(const Target: TControl): PtrInt;
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
-function LCLSendExposeEventMsg(const Target: TControl): PtrInt;
 function LCLSendConfigureEventMsg(const Target: TControl): PtrInt;
 function LCLSendPaintMsg(const Target: TControl;const  DC: HDC; const PaintStruct: PPaintStruct): PtrInt;
 function LCLSendKeyDownEvent(const Target: TControl; var CharCode: Word; KeyData: PtrInt; BeforeEvent, IsSysKey: Boolean): PtrInt;
@@ -568,24 +566,6 @@ end;
 
 {******************************************************************************
  *                                                                            *
- *  LCLSendMoveCursorMsg                                                      *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_MOVECURSOR     *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendMoveCursorMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_MOVECURSOR);
-end;
-
-{******************************************************************************
- *                                                                            *
  *  LCLSendMouseEnterMsg                                                      *
  *                                                                            *
  *  Returns     : 0 to accept the message, non-zero to reject the message     *
@@ -843,24 +823,6 @@ end;
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
 begin
   Result := SendSimpleMessage(Target, LM_PASTEFROMCLIP);
-end;
-
-{******************************************************************************
- *                                                                            *
- *  LCLSendExposeEventMsg                                                     *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_EXPOSEEVENT    *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendExposeEventMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_EXPOSEEVENT);
 end;
 
 {******************************************************************************
@@ -1275,8 +1237,6 @@ end;
   LM_SHOW            // NOT USED
   LM_MOVERESIZE      // NOT USED
   LM_DRAW            // NOT USED
-  LM_OK_CLICKED      // NOT USED
-  LM_CANCEL_CLICKED  // NOT USED
   LM_MOUSEBTNPRESS   // NOT USED
   LM_MOUSEBTNRELEASE // NOT USED
 }

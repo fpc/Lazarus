@@ -196,7 +196,6 @@ function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl
 function gtkPressedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkEnterCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;

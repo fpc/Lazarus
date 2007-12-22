@@ -2527,18 +2527,6 @@ begin
   Result := CallBackDefaultReturn;
 end;
 
-function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMessage;
-begin
-  Result := CallBackDefaultReturn;
-
-  if (Widget=nil) then ;
-  EventTrace('move-cursor', data);
-  Mess.msg := LM_MOVECURSOR;
-  DeliverMessage(Data, Mess);
-end;
-
 function gtksize_allocateCB(widget: PGtkWidget; size: pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
 {$IFDEF VerboseSizeMsg}

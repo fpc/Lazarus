@@ -313,7 +313,6 @@ begin
   GtkWidgetSet.SetCallback(LM_FOCUS, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_PAINT, AGTKObject, AComponent);
-  GtkWidgetSet.SetCallback(LM_EXPOSEEVENT, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_KEYDOWN, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_KEYUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_CHAR, AGTKObject, AComponent);

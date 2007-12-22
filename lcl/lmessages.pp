@@ -1,5 +1,5 @@
 {  $Id$  }
- {
+{
  /***************************************************************************
                                lMessages.pp
                                ------------
@@ -36,6 +36,9 @@ uses Classes, SysUtils, LCLType, GraphType
   ;
 
 const
+  // TODO: review this list of messages and remove obsoleted/uneeded, move
+  // internal gtk things (like LM_CONFIGUREEVENT) directly to gtk interface code
+
   //-------------
   // lcl messages
   //
@@ -45,83 +48,67 @@ const
   //-------------
   LM_USER           = $400; // MWE: changed from $100 to $400 since they were in the windows range
   WM_USER           = LM_USER;
-  LM_DESTROY        = LM_User+2;
-  LM_ACTIVATEITEM   = LM_User+4;
-  LM_CHANGED        = LM_User+5;
-  LM_FOCUS          = LM_User+6;
-  LM_CLICKED        = LM_User+7;
-  LM_PRESSED        = LM_User+8;
-  LM_RELEASED       = LM_User+9;
-  LM_MOVECURSOR     = LM_User+10;
-  LM_ENTER          = LM_User+11;
-  LM_LEAVE          = LM_User+12;
-  //LM_SIZEALLOCATE = LM_User+13;
-  LM_CHECKRESIZE    = LM_User+14;
-  //LM_SHOW = LM_User+15; // Windows Compatability
-  LM_INSERTTEXT     = LM_User+16;
-  LM_DELETETEXT     = LM_User+17;
-  LM_SETEDITABLE    = LM_User+18;
-  LM_MOVEWORD       = LM_User+19;
-  LM_MOVEPAGE       = LM_User+20;
-  LM_MOVETOROW      = LM_User+21;
-  LM_MOVETOCOLUMN   = LM_User+22;
-  LM_KILLCHAR       = LM_User+23;
-  LM_KILLWORD       = LM_User+24;
-  LM_KILLLINE       = LM_User+25;
-  LM_CUTTOCLIP      = LM_User+26;
-  LM_COPYTOCLIP     = LM_User+27;
-  LM_PASTEFROMCLIP  = LM_User+28;
-  //LM_MOVERESIZE   = LM_User+29;
-  LM_EXPOSEEVENT    = LM_User+30;
-  LM_CONFIGUREEVENT = LM_User+31;
-  //LM_DRAW         = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
-  LM_PAINT          = LM_User+32;
-  LM_OK_CLICKED     = LM_USER+36;
-  LM_CANCEL_CLICKED = LM_USER+37;
-  //LM_KEYDOWN      = LM_User+38; // Windows Compatability
-  //LM_KEYUP        = LM_USER+39;  // Windows Compatability
-  LM_TIMER          = LM_USER+40;
-  //LM_MOUSEBTNPRESS  = LM_USER+41;
-  //LM_MOUSEBTNRELEASE  = LM_USER+42;
-  LM_CLEARSEL       = LM_USER+50; // WM_CLEAR
-  LM_EXIT           = LM_USER+60;
-  LM_CLOSEQUERY     = LM_USER+62;
-  LM_DRAGSTART      = LM_USER+63;
-  LM_DEACTIVATE     = LM_USER+64;  //used when a form is no longer in front
-  LM_QUIT           = LM_USER+65;
 
-  LM_MONTHCHANGED   = LM_USER+66;
-  LM_YEARCHANGED    = LM_USER+67;
-  LM_DAYCHANGED     = LM_USER+68;
+  // reserve some space for LM_USER messages
+  LM_LCL            = LM_USER + $10000;
+  
+  LM_ACTIVATEITEM   = LM_LCL + 04; // GTK internal. Should be removed later
+  LM_CHANGED        = LM_LCL + 05;
+  LM_FOCUS          = LM_LCL + 06;
+  LM_CLICKED        = LM_LCL + 07;
+  LM_PRESSED        = LM_LCL + 08;
+  LM_RELEASED       = LM_LCL + 09;
+  LM_ENTER          = LM_LCL + 11;
+  LM_LEAVE          = LM_LCL + 12;
+  LM_CHECKRESIZE    = LM_LCL + 14;
+  LM_INSERTTEXT     = LM_LCL + 16;
+  LM_DELETETEXT     = LM_LCL + 17;
+  LM_SETEDITABLE    = LM_LCL + 18;
+  LM_MOVEWORD       = LM_LCL + 19;
+  LM_MOVEPAGE       = LM_LCL + 20;
+  LM_MOVETOROW      = LM_LCL + 21;
+  LM_MOVETOCOLUMN   = LM_LCL + 22;
+  LM_KILLCHAR       = LM_LCL + 23;
+  LM_KILLWORD       = LM_LCL + 24;
+  LM_KILLLINE       = LM_LCL + 25;
+  LM_CUTTOCLIP      = LM_LCL + 26;
+  LM_COPYTOCLIP     = LM_LCL + 27;
+  LM_PASTEFROMCLIP  = LM_LCL + 28;
+  LM_CONFIGUREEVENT = LM_LCL + 31; // GTK internal. Should be removed later.
+  LM_PAINT          = LM_LCL + 32;
+  LM_TIMER          = LM_LCL + 40;
+  LM_CLEARSEL       = LM_LCL + 50; // WM_CLEAR
+  LM_EXIT           = LM_LCL + 60;
+  LM_CLOSEQUERY     = LM_LCL + 62;
+  LM_DRAGSTART      = LM_LCL + 63;
+  LM_DEACTIVATE     = LM_LCL + 64;  //used when a form is no longer in front
+  LM_QUIT           = LM_LCL + 65;
+  LM_MONTHCHANGED   = LM_LCL + 66;
+  LM_YEARCHANGED    = LM_LCL + 67;
+  LM_DAYCHANGED     = LM_LCL + 68;
 
-  LM_MOUSEFIRST2    = LM_USER+70;
-  LM_LBUTTONTRIPLECLK = LM_MOUSEFIRST2 +0;
-  LM_LBUTTONQUADCLK = LM_MOUSEFIRST2   +1;
-  LM_MBUTTONTRIPLECLK = LM_MOUSEFIRST2 +2;
-  LM_MBUTTONQUADCLK = LM_MOUSEFIRST2   +3;
-  LM_RBUTTONTRIPLECLK = LM_MOUSEFIRST2 +4;
-  LM_RBUTTONQUADCLK = LM_MOUSEFIRST2   +5;
-  LM_MOUSEENTER     = LM_MOUSEFIRST2   +6;
-  LM_MOUSELEAVE     = LM_MOUSEFIRST2   +7;
-  LM_MOUSELAST2     = LM_MOUSELEAVE;
+  LM_MOUSEFIRST2    = LM_LCL + 70;
+  LM_LBUTTONTRIPLECLK = LM_MOUSEFIRST2 + 0;
+  LM_LBUTTONQUADCLK   = LM_MOUSEFIRST2 + 1;
+  LM_MBUTTONTRIPLECLK = LM_MOUSEFIRST2 + 2;
+  LM_MBUTTONQUADCLK   = LM_MOUSEFIRST2 + 3;
+  LM_RBUTTONTRIPLECLK = LM_MOUSEFIRST2 + 4;
+  LM_RBUTTONQUADCLK   = LM_MOUSEFIRST2 + 5;
+  LM_MOUSEENTER       = LM_MOUSEFIRST2 + 6;
+  LM_MOUSELEAVE       = LM_MOUSEFIRST2 + 7;
+  LM_MOUSELAST2       = LM_MOUSELEAVE;
   // for triple and quad clicks see below
 
-  LM_GRABFOCUS      = LM_USER+79;
-
-  LM_DRAWLISTITEM   = LM_User+80;
-
-  LM_SETCURSOR      = LM_User+81;
-
-  LM_CONTEXTMENU    = LM_User+82;
-
-  LM_INTERNALPAINT  = LM_User + 90;
+  LM_GRABFOCUS      = LM_LCL + 79;
+  LM_DRAWLISTITEM   = LM_LCL + 80;
+  LM_CONTEXTMENU    = LM_LCL + 82;
+  LM_INTERNALPAINT  = LM_LCL + 90;
 
   // these IDs are reserved for internal messages in the interfaces
-  LM_INTERFACEFIRST = LM_User+99;
-  LM_INTERFACELAST  = LM_User+199;
-
-  LM_UNKNOWN        = LM_INTERFACELAST+1;
-
+  LM_INTERFACEFIRST = LM_LCL + 99;
+  LM_INTERFACELAST  = LM_LCL + 199;
+  
+  LM_UNKNOWN        = LM_INTERFACELAST + 1;
 
   //-------------
   //end of messages that are sent to the interface
@@ -159,9 +146,8 @@ const
   //-------------
 
   LM_NULL              = $0000;
-  // not yet these are defined as messages to the interface
-  //LM_CREATE            = $0001;
-  //LM_DESTROY           = $0002;
+  LM_CREATE            = $0001;
+  LM_DESTROY           = $0002;
   LM_MOVE              = $0003;
 
   LM_SIZE              = $0005;
@@ -175,6 +161,7 @@ const
   LM_SHOWWINDOW        = $0018;
 
   LM_CANCELMODE        = $001F;
+  LM_SETCURSOR         = $0020;
   LM_DRAWITEM          = $002B;
   LM_MEASUREITEM       = $002C;
   LM_DELETEITEM        = $002D;
@@ -876,7 +863,6 @@ begin
   LM_CLICKED        :Result:='LM_CLICKED';
   LM_PRESSED        :Result:='LM_PRESSED';
   LM_RELEASED       :Result:='LM_RELEASED';
-  LM_MOVECURSOR     :Result:='LM_MOVECURSOR';
   LM_ENTER          :Result:='LM_ENTER';
   LM_LEAVE          :Result:='LM_LEAVE';
   //LM_SIZEALLOCATE :Result:='LM_SIZEALLOCATE';
@@ -896,12 +882,9 @@ begin
   LM_COPYTOCLIP     :Result:='LM_COPYTOCLIP';
   LM_PASTEFROMCLIP  :Result:='LM_PASTEFROMCLIP';
   //LM_MOVERESIZE   :Result:='LM_MOVERESIZE';
-  LM_EXPOSEEVENT    :Result:='LM_EXPOSEEVENT';
   LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
   //LM_DRAW         :Result:='LM_DRAW';
   LM_PAINT          :Result:='LM_PAINT';
-  LM_OK_CLICKED     :Result:='LM_OK_CLICKED';
-  LM_CANCEL_CLICKED :Result:='LM_CANCEL_CLICKED';
   //LM_KEYDOWN      :Result:='LM_KEYDOWN';
   //LM_KEYUP        :Result:='LM_KEYUP';
   LM_TIMER          :Result:='LM_TIMER';

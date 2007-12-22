@@ -39,7 +39,8 @@ Const
   MCM_SETCURSEL =  MCM_FIRST + 2;
   MCM_GETMINREQRECT = MCM_FIRST + 9;
 
-  WM_LCL_SOCK_ASYNC = WM_USER;
+  // it is not good to use WM_USER since many programs use it.
+  WM_LCL_SOCK_ASYNC = WM_USER + $500;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
