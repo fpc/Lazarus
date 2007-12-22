@@ -945,6 +945,7 @@ type
     property OnStartDrag;
     property ParentBidiMode;
     property ParentFont;
+    property ParentColor;
     property ShowAccelChar;
     property TabOrder;
     property TabStop;
@@ -1517,6 +1518,7 @@ initialization
   DefaultButtonControlUseOnChange:=false;
 
 end.
+
 
 
 

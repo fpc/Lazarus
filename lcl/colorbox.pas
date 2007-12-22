@@ -55,6 +55,7 @@ type
     property AutoComplete;
     property AutoCompleteText;
     property AutoDropDown;
+    property AutoSize;
     property BorderSpacing;
     property Color;
     property Ctl3D;
