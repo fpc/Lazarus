@@ -2950,12 +2950,12 @@ end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
 var
-  ComponentPalleteVisible: boolean;
+  ComponentPaletteVisible: boolean;
 begin
-  ComponentPalleteVisible:=not MainIDEBar.ComponentNotebook.Visible;
-  MainIDEBar.itmViewComponentPalette.Checked:=ComponentPalleteVisible;
-  MainIDEBar.ComponentNotebook.Visible:=ComponentPalleteVisible;
-  EnvironmentOptions.ComponentPaletteVisible:=ComponentPalleteVisible;
+  ComponentPaletteVisible:=not MainIDEBar.ComponentNotebook.Visible;
+  MainIDEBar.itmViewComponentPalette.Checked:=ComponentPaletteVisible;
+  MainIDEBar.ComponentNotebook.Visible:=ComponentPaletteVisible;
+  EnvironmentOptions.ComponentPaletteVisible:=ComponentPaletteVisible;
 end;
 
 procedure TMainIDE.DoToggleViewIDESpeedButtons;

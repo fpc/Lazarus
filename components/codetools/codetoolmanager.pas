@@ -1405,7 +1405,7 @@ end;
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);
 begin
   if List<>nil then begin
-    FreeListOfPCodeXYPosition(List);
+    CodeAtom.FreeListOfPCodeXYPosition(List);
     List:=nil;
   end;
 end;
