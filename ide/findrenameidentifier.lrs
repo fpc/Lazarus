@@ -10,47 +10,47 @@ LazarusResources.Add('TFindRenameIdentifierDialog','FORMDATA',[
   +'ogCreate'#8'Position'#7#14'poScreenCenter'#0#9'TGroupBox'#15'CurrentGroupBo'
   +'x'#4'Left'#2#6#6'Height'#2'O'#3'Top'#2#6#5'Width'#3#184#1#5'Align'#7#5'alTo'
   +'p'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#20'BorderSpaci'
-  +'ng.Around'#2#6#7'Caption'#6#15'CurrentGroupBox'#12'ClientHeight'#2'<'#11'Cl'
+  +'ng.Around'#2#6#7'Caption'#6#15'CurrentGroupBox'#12'ClientHeight'#2'='#11'Cl'
   +'ientWidth'#3#180#1#8'TabOrder'#2#0#0#8'TListBox'#14'CurrentListBox'#4'Left'
-  +#2#6#6'Height'#2'0'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#8'alClient'#20'Bo'
-  +'rderSpacing.Around'#2#6#16'ClickOnSelChange'#8#8'TabOrder'#2#0#8'TopIndex'#2
-  +#255#0#0#0#9'TGroupBox'#11'NewGroupBox'#4'Left'#2#6#6'Height'#2'U'#3'Top'#2
-  +'['#5'Width'#3#184#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Capt'
-  +'ion'#6#11'NewGroupBox'#12'ClientHeight'#2'B'#11'ClientWidth'#3#180#1#8'TabO'
-  +'rder'#2#1#0#5'TEdit'#7'NewEdit'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Wid'
-  +'th'#3#168#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0
-  +#4'Text'#6#7'NewEdit'#0#0#9'TCheckBox'#14'RenameCheckBox'#4'Left'#2#6#6'Heig'
-  +'ht'#2#20#3'Top'#2'#'#5'Width'#3#168#1#5'Align'#7#5'alTop'#11'AllowGrayed'#9
-  +#7'Anchors'#11#5'akTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#7'Caption'
-  +#6#14'RenameCheckBox'#8'OnChange'#7#20'RenameCheckBoxChange'#8'TabOrder'#2#1
-  +#11'UseOnChange'#9#0#0#0#9'TGroupBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'
-  +#3#244#0#3'Top'#3#182#0#5'Width'#3#184#1#5'Align'#7#5'alTop'#20'BorderSpacin'
-  +'g.Around'#2#6#7'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#225#0#11'Cl'
-  +'ientWidth'#3#180#1#8'TabOrder'#2#2#0#9'TCheckBox'#21'ScopeCommentsCheckBox'
-  +#4'Left'#2#6#6'Height'#2#20#3'Top'#3#185#0#5'Width'#3#168#1#5'Align'#7#5'alT'
-  +'op'#11'AllowGrayed'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#21'ScopeCom'
-  +'mentsCheckBox'#8'TabOrder'#2#0#0#0#11'TRadioGroup'#15'ScopeRadioGroup'#4'Le'
-  +'ft'#2#6#6'Height'#2'p'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'Au'
-  +'toFill'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#15'ScopeRadioGroup'#28
-  +'ChildSizing.LeftRightSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'C'
-  +'hildSizing.EnlargeHorizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing'
-  +'.EnlargeVertical'#7#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHoriz'
-  +'ontal'#7#14'crsScaleChilds'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChi'
-  +'lds'#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSiz'
-  +'ing.ControlsPerLine'#2#1#12'ClientHeight'#2']'#11'ClientWidth'#3#164#1#13'I'
-  +'tems.Strings'#1#6#15'in current unit'#6#15'in main project'#6#30'in project'
-  +'/package owning file'#6'!in all open projects and packages'#0#8'TabOrder'#2
-  +#1#0#0#9'TGroupBox'#18'ExtraFilesGroupBox'#4'Left'#2#6#6'Height'#2'7'#3'Top'
-  +#2'|'#5'Width'#3#168#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Ca'
-  +'ption'#6#18'ExtraFilesGroupBox'#12'ClientHeight'#2'$'#11'ClientWidth'#3#164
-  +#1#8'TabOrder'#2#2#0#5'TEdit'#14'ExtraFilesEdit'#4'Left'#2#6#6'Height'#2#23#3
-  +'Top'#2#6#5'Width'#3#152#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#8
-  +'TabOrder'#2#0#4'Text'#6#14'ExtraFilesEdit'#0#0#0#0#7'TButton'#18'FindOrRena'
-  +'meButton'#23'AnchorSideRight.Control'#7#12'CancelButton'#4'Left'#3#193#0#6
-  +'Height'#2#29#3'Top'#3#177#1#5'Width'#3#147#0#7'Anchors'#11#7'akRight'#8'akB'
-  +'ottom'#0#8'AutoSize'#9#19'BorderSpacing.Right'#2#8#7'Caption'#6#18'FindOrRe'
-  +'nameButton'#7'OnClick'#7#23'FindOrRenameButtonClick'#8'TabOrder'#2#3#0#0#7
-  +'TButton'#12'CancelButton'#4'Left'#3'\'#1#6'Height'#2#29#3'Top'#3#177#1#5'Wi'
-  +'dth'#2'b'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6
-  +#12'CancelButton'#11'ModalResult'#2#2#8'TabOrder'#2#4#0#0#0
+  +#2#6#6'Height'#2'1'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#8'alClient'#20'Bo'
+  +'rderSpacing.Around'#2#6#16'ClickOnSelChange'#8#8'TabOrder'#2#0#0#0#0#9'TGro'
+  +'upBox'#11'NewGroupBox'#4'Left'#2#6#6'Height'#2'U'#3'Top'#2'['#5'Width'#3#184
+  +#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#11'NewGroup'
+  +'Box'#12'ClientHeight'#2'C'#11'ClientWidth'#3#180#1#8'TabOrder'#2#1#0#5'TEdi'
+  +'t'#7'NewEdit'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3#168#1#5'Alig'
+  +'n'#7#5'alTop'#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Text'#6#7'NewE'
+  +'dit'#0#0#9'TCheckBox'#14'RenameCheckBox'#4'Left'#2#6#6'Height'#2#19#3'Top'#2
+  +'#'#5'Width'#3#168#1#5'Align'#7#5'alTop'#11'AllowGrayed'#9#7'Anchors'#11#5'a'
+  +'kTop'#7'akRight'#0#20'BorderSpacing.Around'#2#6#7'Caption'#6#14'RenameCheck'
+  +'Box'#8'OnChange'#7#20'RenameCheckBoxChange'#8'TabOrder'#2#1#11'UseOnChange'
+  +#9#0#0#0#9'TGroupBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'#3#244#0#3'Top'
+  +#3#182#0#5'Width'#3#184#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7
+  +'Caption'#6#13'ScopeGroupBox'#12'ClientHeight'#3#226#0#11'ClientWidth'#3#180
+  +#1#8'TabOrder'#2#2#0#9'TCheckBox'#21'ScopeCommentsCheckBox'#4'Left'#2#6#6'He'
+  +'ight'#2#19#3'Top'#3#185#0#5'Width'#3#168#1#5'Align'#7#5'alTop'#11'AllowGray'
+  +'ed'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#21'ScopeCommentsCheckBox'#8
+  +'TabOrder'#2#0#0#0#11'TRadioGroup'#15'ScopeRadioGroup'#4'Left'#2#6#6'Height'
+  +#2'p'#3'Top'#2#6#5'Width'#3#168#1#5'Align'#7#5'alTop'#8'AutoFill'#9#20'Borde'
+  +'rSpacing.Around'#2#6#7'Caption'#6#15'ScopeRadioGroup'#28'ChildSizing.LeftRi'
+  +'ghtSpacing'#2#6#28'ChildSizing.TopBottomSpacing'#2#6#29'ChildSizing.Enlarge'
+  +'Horizontal'#7#24'crsHomogenousChildResize'#27'ChildSizing.EnlargeVertical'#7
+  +#24'crsHomogenousChildResize'#28'ChildSizing.ShrinkHorizontal'#7#14'crsScale'
+  +'Childs'#26'ChildSizing.ShrinkVertical'#7#14'crsScaleChilds'#18'ChildSizing.'
+  +'Layout'#7#29'cclLeftToRightThenTopToBottom'#27'ChildSizing.ControlsPerLine'
+  +#2#1#12'ClientHeight'#2'^'#11'ClientWidth'#3#164#1#13'Items.Strings'#1#6#15
+  +'in current unit'#6#15'in main project'#6#30'in project/package owning file'
+  +#6'!in all open projects and packages'#0#8'TabOrder'#2#1#0#0#9'TGroupBox'#18
+  +'ExtraFilesGroupBox'#4'Left'#2#6#6'Height'#2'7'#3'Top'#2'|'#5'Width'#3#168#1
+  +#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#18'ExtraFiles'
+  +'GroupBox'#12'ClientHeight'#2'%'#11'ClientWidth'#3#164#1#8'TabOrder'#2#2#0#5
+  +'TEdit'#14'ExtraFilesEdit'#4'Left'#2#6#6'Height'#2#23#3'Top'#2#6#5'Width'#3
+  +#152#1#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#8'TabOrder'#2#0#4'Te'
+  +'xt'#6#14'ExtraFilesEdit'#0#0#0#0#7'TButton'#18'FindOrRenameButton'#23'Ancho'
+  +'rSideRight.Control'#7#12'CancelButton'#4'Left'#3#220#0#6'Height'#2#23#3'Top'
+  +#3#183#1#5'Width'#3#128#0#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'
+  +#9#19'BorderSpacing.Right'#2#8#7'Caption'#6#18'FindOrRenameButton'#7'Default'
+  +#9#7'OnClick'#7#23'FindOrRenameButtonClick'#8'TabOrder'#2#3#0#0#7'TButton'#12
+  +'CancelButton'#4'Left'#3'd'#1#6'Height'#2#23#3'Top'#3#183#1#5'Width'#2'Z'#7
+  +'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9#7'Caption'#6#12'CancelBu'
+  +'tton'#11'ModalResult'#2#2#8'TabOrder'#2#4#0#0#0
 ]);

@@ -10,14 +10,14 @@ main=lazarus/lcl
 packages=rtl gtk
 
 [target]
-units=interfaces
+units=interfaces2
 implicitunits=gtk2int
 
 [compiler]
-options=-gl -dgtk2
+options=-gl -dgtk2 -Fi../gtk/
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) ../gtk .
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/gtk2
-includedir=../gtk
+includedir=.
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \

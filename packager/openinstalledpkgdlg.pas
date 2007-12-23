@@ -44,6 +44,9 @@ uses
   PackageDefs, LazarusIDEStrConsts, IDEWindowIntf, PackageSystem;
 
 type
+
+  { TOpenInstalledPackagesDlg }
+
   TOpenInstalledPackagesDlg = class(TCustomForm)
     PkgListView: TListView;
     HintMemo: TMemo;
@@ -51,6 +54,7 @@ type
     CancelButton: TButton;
     procedure OpenButtonClick(Sender: TObject);
     procedure OpenInstalledPackagesDlgResize(Sender: TObject);
+    procedure PkgListViewDblClick(Sender: TObject);
     procedure PkgListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
@@ -104,6 +108,11 @@ begin
   
   with CancelButton do
     SetBounds(Parent.ClientWidth-90,Parent.ClientHeight-Height-5,80,Height);
+end;
+
+procedure TOpenInstalledPackagesDlg.PkgListViewDblClick(Sender: TObject);
+begin
+  OpenButtonClick(Sender);
 end;
 
 procedure TOpenInstalledPackagesDlg.PkgListViewSelectItem(Sender: TObject;
@@ -167,6 +176,7 @@ begin
     NewColumn.Caption:=lisOIPState;
     NewColumn.Width:=300;
     OnSelectItem:=@PkgListViewSelectItem;
+    OnDblClick:=@PkgListViewDblClick;
   end;
   
   HintMemo:=TMemo.Create(Self);
