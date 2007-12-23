@@ -1375,7 +1375,7 @@ var
   DC: HDC;
   Info: record
     Header: Windows.TBitmapInfoHeader;
-    Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
+    Colors: array[Byte] of Cardinal; // reserve extra color for colormasks
   end;
   
   FullScanLine: Boolean; // win9x requires a full scanline to be retrieved

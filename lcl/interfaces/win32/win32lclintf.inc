@@ -476,7 +476,11 @@ begin
   ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
   Windows.ReleaseDC(0, DC);
 
-  if ABitmap = 0 then Exit;
+  if ABitmap = 0 then 
+  begin
+    DebugLn('Windows.CreateDIBSection returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
+    Exit;
+  end;
   if BitsPtr = nil then Exit;
 
   // copy the image data
@@ -492,6 +496,8 @@ begin
   if ASkipMask then Exit(True);
 
   AMask := Windows.CreateBitmap(ADesc.Width, ADesc.Height, 1, 1, ARawImage.Mask);
+  if AMask = 0 then  
+    DebugLn('Windows.CreateBitmap returns 0. Reason = ' + GetLastErrorText(Windows.GetLastError));
   Result := AMask <> 0;
   //DbgDumpBitmap(AMask, 'CreateBitmaps - Mask');
 end;
@@ -505,11 +511,18 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 var
-  BitmapInfo: Windows.TBitmap;
+  ASize: Integer;
+  WinDIB: Windows.TDIBSection;
 begin
-  Result := Windows.GetObject(ABitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
+  Result := ASize > 0;
   if Result then
-    FillRawImageDescription(BitmapInfo, ADesc);
+  begin
+    FillRawImageDescription(WinDIB.dsBm, ADesc);
+    // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+    if ASize < SizeOf(WinDIB) then
+      ADesc.AlphaPrec := 0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -539,15 +552,12 @@ begin
   ADesc.ByteOrder := riboLSBFirst;
   ADesc.LineOrder := riloTopToBottom;
   ADesc.LineEnd := rileDWordBoundary;
+  ADesc.BitsPerPixel := ADesc.Depth;
 
   if (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0
   then begin
     // has palette
-    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
-    ADesc.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES);
-  end
-  else begin
-    ADesc.BitsPerPixel := ADesc.Depth;
+    ADesc.PaletteColorCount := Windows.GetDeviceCaps(DC, NUMCOLORS);
   end;
   
   if ADC = 0
@@ -572,17 +582,25 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean;
 var
-  WinBmp: Windows.TBitmap;
+  WinDIB: Windows.TDIBSection;
+  WinBmp: Windows.TBitmap absolute WinDIB.dsBm;
+  ASize: Integer;
   R: TRect;
 begin
   ARawImage.Init;
-  if Windows.GetObject(ABitmap, SizeOf(WinBmp), @WinBmp) = 0
+  FillChar(WinDIB, SizeOf(WinDIB), 0);
+  ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
+  if ASize = 0
   then Exit(False);
 
   //DbgDumpBitmap(ABitmap, 'FromBitmap - Image');
   //DbgDumpBitmap(AMask, 'FromBitmap - Mask');
 
   FillRawImageDescription(WinBmp, ARawImage.Description);
+  // if it is not DIB then alpha in bitmaps is not supported => use 0 alpha prec
+  if ASize < SizeOf(WinDIB) then
+    ARawImage.Description.AlphaPrec := 0;
+    
   R := ARect;
   if R.Top > WinBmp.bmHeight then
     R.Top := WinBmp.bmHeight;
