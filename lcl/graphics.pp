@@ -1400,6 +1400,7 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
                      ): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
 function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
+function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
 
 var
   { Stores information about the current screen
@@ -1470,6 +1471,26 @@ begin
   CursorImage.OwnHandle := False;
   Result := CursorImage.CursorHandle;
   CursorImage.Free;
+end;
+
+function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
+var
+  Stream: TLazarusResourceStream;
+  GraphicClass: TGraphicClass;
+begin
+  Result := nil;
+  Stream := nil;
+  try
+    Stream := TLazarusResourceStream.CreateFromHandle(Handle);
+    GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
+    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
+    begin
+      Result := TBitmap(GraphicClass.Create);
+      Result.LoadFromStream(Stream);
+    end;
+  finally
+    Stream.Free;
+  end;
 end;
 
 function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;

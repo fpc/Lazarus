@@ -251,7 +251,7 @@ type
     procedure SetRawImage(const ARawImage: TRawImage; ADataOwner: Boolean = True); virtual;
     procedure GetRawImage(out ARawImage: TRawImage); virtual;
     procedure FillPixels(const Color: TFPColor); virtual;
-    procedure CopyPixels(ASource: TFPCustomImage); virtual;
+    procedure CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0); virtual;
     procedure AlphaFromMask(AKeepAlpha: Boolean = True);
     procedure GetXYDataPostion(x, y: integer; out Position: TRawImagePosition);
     procedure GetXYMaskPostion(x, y: integer; out Position: TRawImagePosition);
@@ -3082,7 +3082,7 @@ begin
   // ToDo: mask
 end;
 
-procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage);
+procedure TLazIntfImage.CopyPixels(ASource: TFPCustomImage; XDst: Integer = 0; YDst: Integer = 0);
 var
   SrcImg: TLazIntfImage absolute ASource;
   x, y, xStop, yStop: Integer;
@@ -3092,7 +3092,7 @@ begin
     SetSize(Src.Width,Src.Height);
 }
   if (ASource is TLazIntfImage) and
-     FRawImage.Description.IsEqual(SrcImg.FRawImage.Description) then
+     FRawImage.Description.IsEqual(SrcImg.FRawImage.Description) and (XDst =  0) and (YDst = 0) then
   begin
     // same description -> copy
     if FRawImage.Data <> nil then
@@ -3104,21 +3104,21 @@ begin
 
   // copy pixels
   xStop := ASource.Width;
-  if Width < xStop
-  then xStop := Width;
+  if Width - XDst < xStop
+  then xStop := Width - XDst;
   yStop := ASource.Height;
-  if Height < yStop
-  then yStop := Height;
+  if Height - YDst < yStop
+  then yStop := Height - YDst;
   Dec(xStop);
   Dec(yStop);
   for y:=0 to yStop do
     for x:=0 to xStop do
-      Colors[x,y] := ASource.Colors[x,y];
+      Colors[x+XDst,y+YDst] := ASource.Colors[x,y];
 
   if ASource is TLazIntfImage then
     for y:=0 to yStop do
       for x:=0 to xStop do
-        Masked[x,y] := SrcImg.Masked[x,y];
+        Masked[x+XDst,y+YDst] := SrcImg.Masked[x,y];
 
 end;
 
