@@ -2134,7 +2134,6 @@ images/components/tcheckgroup.png -text svneol=unset#image/png
 images/components/tchecklistbox.png -text svneol=unset#image/png
 images/components/tcolorbox.png -text svneol=unset#image/png
 images/components/tcolorbutton.png -text svneol=unset#image/png
-images/components/tcolorcombobox.png -text svneol=unset#image/png
 images/components/tcolordialog.png -text svneol=unset#image/png
 images/components/tcolorlistbox.png -text svneol=unset#image/png
 images/components/tcombobox.png -text svneol=unset#image/png
