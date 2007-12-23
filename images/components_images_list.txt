@@ -19,13 +19,11 @@ components/tcolorbutton.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
-components/tdatabase.png
 components/tdatasource.png
 components/tdateedit.png
 components/tdbcalendar.png
 components/tdbcheckbox.png
 components/tdbcombobox.png
-components/tdbcontrol.png
 components/tdbedit.png
 components/tdbgrid.png
 components/tdbgroupbox.png
@@ -35,7 +33,6 @@ components/tdbmemo.png
 components/tdbnavigator.png
 components/tdbradiogroup.png
 components/tdbtext.png
-components/tdialogtemplate.png
 components/tdirectoryedit.png
 components/tdrawgrid.png
 components/tedit.png
@@ -75,7 +72,6 @@ components/tpicture.png
 components/tpopupmenu.png
 components/tprocess.png
 components/tprogressbar.png
-components/tquery.png
 components/tradiobutton.png
 components/tradiogroup.png
 components/treplacedialog.png
@@ -83,7 +79,6 @@ components/tsavedialog.png
 components/tsavepicturedialog.png
 components/tscrollbar.png
 components/tscrollbox.png
-components/tselectdirdialog.png
 components/tselectdirectorydialog.png
 components/tshape.png
 components/tsimpleipcclient.png
