@@ -100,7 +100,7 @@ begin
   FEnabled := True;
   FCommand := UniqueCommand;
   FImageIndex := -1;
-  FBitmapIsValid := False;
+  FBitmapIsValid := True;
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
