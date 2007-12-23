@@ -12118,6 +12118,7 @@ var
   OldName: String;
   OldClassName: String;
   OldOpenEditorsOnCodeToolChange: Boolean;
+  RegComp: TRegisteredComponent;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -12312,6 +12313,12 @@ begin
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
+
+  RegComp:=IDEComponentPalette.FindComponent(NewName);
+  if RegComp<>nil then begin
+    s:='There is already a component class with the name '+RegComp.ComponentClass.ClassName;
+    raise EComponentError.Create(s);
+  end;
 
   OldOpenEditorsOnCodeToolChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
