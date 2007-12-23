@@ -12111,15 +12111,9 @@ procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  NewClassName: string;
   BossResult: boolean;
-  AncestorRoot: TComponent;
-  s: String;
   OldName: String;
   OldClassName: String;
-  OldOpenEditorsOnCodeToolChange: Boolean;
-  RegComp: TRegisteredComponent;
-  ConflictingUnitInfo: TUnitInfo;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -12293,6 +12287,14 @@ var
     end;
   end;
 
+var
+  NewClassName: string;
+  AncestorRoot: TComponent;
+  s: String;
+  OldOpenEditorsOnCodeToolChange: Boolean;
+  RegComp: TRegisteredComponent;
+  ConflictingUnitInfo: TUnitInfo;
+  ConflictingClass: TClass;
 begin
   DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
@@ -12307,6 +12309,16 @@ begin
   and (FRenamingComponents.IndexOf(AComponent)>=0) then begin
     // already validated
     exit;
+  end;
+  
+  // check if classname
+  ConflictingClass:=AComponent.ClassType;
+  while ConflictingClass<>nil do begin
+    if SysUtils.CompareText(NewName,ConflictingClass.ClassName)=0 then begin
+      s:='This component has already the class '+ConflictingClass.ClassName;
+      raise EComponentError.Create(s);
+    end;
+    ConflictingClass:=ConflictingClass.ClassParent;
   end;
 
   // check if keyword
@@ -12329,6 +12341,14 @@ begin
     s:='There is already an unit with the name '+ConflictingUnitInfo.UnitName;
     raise EComponentError.Create(s);
   end;
+  
+  // check if resource classname
+  ConflictingUnitInfo:=Project1.ProjectUnitWithUnitname(NewName);
+  if ConflictingUnitInfo<>nil then begin
+    s:='There is already an unit with the name '+ConflictingUnitInfo.UnitName;
+    raise EComponentError.Create(s);
+  end;
+
 
   OldOpenEditorsOnCodeToolChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
