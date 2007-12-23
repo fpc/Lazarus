@@ -193,20 +193,27 @@ begin
     else
       ABitmap := nil;
       
-    if (TheDialog.ShowModal = mrOK) then begin
-      If TheDialog.Preview.Picture.Graphic <> nil then begin
-        If TheDialog.Modified and FileExists(TheDialog.FileName) then begin
+    if (TheDialog.ShowModal = mrOK) then
+    begin
+      if TheDialog.Preview.Picture.Graphic <> nil then
+      begin
+        if TheDialog.Modified and FileExists(TheDialog.FileName) then
+        begin
           Ext := ExtractFileExt(TheDialog.FileName);
-          if ABitmap=nil then ABitmap:=TBitmap.Create;
-          If (ABitmap is TBitmap)
-          and ((CompareText(Ext, '.xpm') = 0)
-            or (CompareText(Ext, '.bmp') = 0))
-          then begin
+          if ABitmap = nil then
+            ABitmap := TBitmap.Create;
+          if (ABitmap is TBitmap) and
+             ((CompareText(Ext, '.xpm') = 0) or
+              (CompareText(Ext, '.bmp') = 0)) then
+          begin
             ABitmap.LoadFromFile(TheDialog.FileName);
-          end else begin
+          end
+          else
+          begin
             ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
             ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
-            With ABitmap.Canvas do begin
+            with ABitmap.Canvas do
+            begin
               Brush.Color := clWhite;
               FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
               Draw(0, 0, TheDialog.Preview.Picture.Graphic);
@@ -216,7 +223,9 @@ begin
           Modified;
         end;
       end
-      else if ABitmap<>nil then begin
+      else
+      if ABitmap <> nil then
+      begin
         ABitmap.FreeImage;
         Modified;
       end;
@@ -248,20 +257,25 @@ var
 begin
   Picture := TPicture(GetObjectValue(TPicture));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
-  If (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then begin
+  if (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then
+  begin
     TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
     TheDialog.Preview.Picture.Bitmap.Height := Picture.Height;
-    With TheDialog.Preview.Picture.Bitmap.Canvas do begin
+    with TheDialog.Preview.Picture.Bitmap.Canvas do
+    begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Picture.Width, Picture.Height));
       Draw(0, 0, Picture.Graphic);
     end;
   end;
   try
-    if (TheDialog.ShowModal = mrOK) then begin
-      If TheDialog.Preview.Picture.Graphic <> nil then begin
-        If TheDialog.FileName <> '' then
-          If FileExists(TheDialog.FileName) then begin
+    if (TheDialog.ShowModal = mrOK) then
+    begin
+      if TheDialog.Preview.Picture.Graphic <> nil then
+      begin
+        if TheDialog.FileName <> '' then
+          If FileExists(TheDialog.FileName) then
+          begin
             Picture.LoadFromFile(TheDialog.FileName);
             AddPackage(Picture);
           end;
@@ -285,11 +299,12 @@ begin
   ABitmap := TBitmap(GetObjectValue(TBitmap));
   TheDialog := TGraphicPropertyEditorForm.Create(nil);
   try
-    if not ABitmap.Empty then begin
+    if not ABitmap.Empty then
       TheDialog.Preview.Picture.Assign(ABitmap);
-    end;
-    if (TheDialog.ShowModal = mrOK) then begin
-      if TheDialog.Modified then begin
+    if (TheDialog.ShowModal = mrOK) then
+    begin
+      if TheDialog.Modified then
+      begin
         ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
         Modified;
       end;
@@ -308,7 +323,8 @@ begin
   ColorDialog := TColorDialog.Create(nil);
   try
     ColorDialog.Color := GetOrdValue;
-    if ColorDialog.Execute then SetOrdValue(ColorDialog.Color);
+    if ColorDialog.Execute then
+      SetOrdValue(ColorDialog.Color);
   finally
     ColorDialog.Free;
   end;
@@ -333,9 +349,8 @@ end;
 procedure TColorPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
   AState:TPropEditDrawState);
 begin
-  if GetVisualValue <> '' then begin
+  if GetVisualValue <> '' then
     ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInEdit])
-  end
   else
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
@@ -358,12 +373,14 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
        (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
     else
-      if pedsInEdit in AState then begin
+      if pedsInEdit in AState then
+      begin
         if pedsSelected in AState then
           Result := clWindow
         else
          Result := AColor;
-      end else begin
+      end else
+      begin
         if pedsSelected in AState then
           Result := clHighlight
         else
@@ -371,30 +388,34 @@ procedure TColorPropertyEditor.ListDrawValue(const CurValue:ansistring;
       end;
   end;
 var
-  vRight,vBottom: Integer;
+  vRight, vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
   vOldPenStyle: TPenStyle;
 begin
   vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
-  with ACanvas do begin
+  with ACanvas do
+  begin
     // save off things
     vOldPenStyle := Pen.Style;
     vOldPenColor := Pen.Color;
     vOldBrushColor := Brush.Color;
 
     // frame things
-    if pedsInEdit in AState then begin
+    if pedsInEdit in AState then
+    begin
       if pedsSelected in AState then
         Brush.Color := clWindow
       else
         Brush.Color := ACanvas.Brush.Color;
-      end else begin
-        if pedsSelected in AState then
-          Brush.Color := clHighlightText
-        else
-         Brush.Color := clWindow;
-      end;
+    end
+    else
+    begin
+      if pedsSelected in AState then
+        Brush.Color := clHighlightText
+      else
+       Brush.Color := clWindow;
+    end;
     Pen.Color := Brush.Color;
     Pen.Style := psSolid;
     FillRect(ARect);
@@ -485,13 +506,15 @@ procedure TFontCharsetPropertyEditor.SetValue(const NewValue: ansistring);
 var
   CValue: Longint;
 begin
-  if not SameText(NewValue,'DEFAULT_CHARSET') then begin
+  if not SameText(NewValue, 'DEFAULT_CHARSET') then
+  begin
     CValue := StringToCharset(NewValue);
     if CValue = DEFAULT_CHARSET then
       inherited SetValue(NewValue)
     else
       SetOrdValue(CValue);
-  end else
+  end
+  else
     SetOrdValue(DEFAULT_CHARSET);
 end;
 
