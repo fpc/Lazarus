@@ -992,8 +992,9 @@ begin
   AEntry := PGtkObject(GetComboBoxEntry(PGtkWidget(ComboWidget)));
   APrivate := PGtkComboBoxPrivate(ComboWidget^.priv);
   AButton := PGtkObject(APrivate^.button);
-  
-  // we have to remove the handler gtk sets up because we will never get the mouse down messages
+  //DebugLn(['TGtk2WSCustomComboBox.SetCallbacks ',dbgsName(AWinControl),' AButton=',GetWidgetClassName(PGtkWidget(AButton)),' ComboWidget=',GetWidgetClassName(PGtkWidget(ComboWidget))]);
+
+  // we have to remove the handler gtk sets up to get the mouse down messages
   BtnPressID := g_signal_lookup('button_press_event', GTK_TYPE_COMBO_BOX);
   if AButton<>nil then begin
     HandlerID := g_signal_handler_find(AButton, G_SIGNAL_MATCH_ID, BtnPressID, 0, nil, nil, nil);

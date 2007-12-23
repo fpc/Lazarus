@@ -391,6 +391,10 @@ var
   ClassLen: Integer;
 begin
   Result:='';
+  if Widget=nil then begin
+    Result:='nil';
+    exit;
+  end;
   if (gtk_object_get_class(Widget)=nil) then begin
     Result:='<Widget without class>';
     exit;
@@ -7655,7 +7659,7 @@ begin
   // the client area (like menu)
   Result := gtk_vbox_new(False, 0);
 
-  If FormWidget = nil then
+  if FormWidget = nil then
     FormWidget := Result;
 
   // Create the form client area (a scrolled window with a gtklayout

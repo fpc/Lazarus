@@ -179,8 +179,11 @@ begin
       end;
     end;
 
-    if not (csDesigning in TComponent(Data).ComponentState) then
+    if (csDesigning in TComponent(Data).ComponentState) then begin
+      //DebugLn(['gtkRealizeCB ',dbgsName(TComponent(Data)),' ',GetWidgetDebugReport(Widget)]);
+    end else begin
       RealizeAccelerator(TComponent(Data),Widget);
+    end;
   end;
 end;
 
