@@ -553,7 +553,7 @@ begin
     CreateMenuSeparatorSection(mnuProject,itmProjectNewSection,'itmProjectNewSection');
     ParentMI:=itmProjectNewSection;
 
-    CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject, 'menu_project_new');
+    CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject, 'item_project');
     CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectOpenSection,'itmProjectOpenSection');
