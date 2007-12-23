@@ -12131,6 +12131,10 @@ var
   procedure CheckInterfaceName(const AName: string);
   var
     i: LongInt;
+    RegComp: TRegisteredComponent;
+    ConflictingUnitInfo: TUnitInfo;
+    ConflictingClass: TClass;
+    s: string;
   begin
     if CompareText(ActiveUnitInfo.UnitName,AName)=0 then
       raise Exception.Create(Format(
@@ -12151,6 +12155,29 @@ var
           '"']));
     end;
 
+    // check if classname
+    ConflictingClass:=AComponent.ClassType;
+    while ConflictingClass<>nil do begin
+      if SysUtils.CompareText(AName,ConflictingClass.ClassName)=0 then begin
+        s:='This component has already the class '+ConflictingClass.ClassName;
+        raise EComponentError.Create(s);
+      end;
+      ConflictingClass:=ConflictingClass.ClassParent;
+    end;
+
+    // check if keyword
+    BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
+    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
+    if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,AName) then
+      raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', AName, '"']
+        ));
+
+    // check if registered component class
+    RegComp:=IDEComponentPalette.FindComponent(AName);
+    if RegComp<>nil then begin
+      s:='There is already a component class with the name '+RegComp.ComponentClass.ClassName;
+      raise EComponentError.Create(s);
+    end;
   end;
   
   procedure RenameInheritedComponents(RenamedUnit: TUnitInfo;
@@ -12292,9 +12319,6 @@ var
   AncestorRoot: TComponent;
   s: String;
   OldOpenEditorsOnCodeToolChange: Boolean;
-  RegComp: TRegisteredComponent;
-  ConflictingUnitInfo: TUnitInfo;
-  ConflictingClass: TClass;
 begin
   DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
@@ -12310,45 +12334,16 @@ begin
     // already validated
     exit;
   end;
-  
-  // check if classname
-  ConflictingClass:=AComponent.ClassType;
-  while ConflictingClass<>nil do begin
-    if SysUtils.CompareText(NewName,ConflictingClass.ClassName)=0 then begin
-      s:='This component has already the class '+ConflictingClass.ClassName;
-      raise EComponentError.Create(s);
-    end;
-    ConflictingClass:=ConflictingClass.ClassParent;
-  end;
 
-  // check if keyword
-  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
-  ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
-  if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
-    raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
-      ));
-
-  // check if registered component class
-  RegComp:=IDEComponentPalette.FindComponent(NewName);
-  if RegComp<>nil then begin
-    s:='There is already a component class with the name '+RegComp.ComponentClass.ClassName;
-    raise EComponentError.Create(s);
+  OldName:=AComponent.Name;
+  OldClassName:=AComponent.ClassName;
+  NewClassName:='';
+  CheckInterfaceName(NewName);
+  if AComponent=ADesigner.LookupRoot then begin
+    // rename owner component (e.g. the form)
+    NewClassName:='T'+NewName;
+    CheckInterfaceName(NewClassName);
   end;
-  
-  // check if unitnanme
-  ConflictingUnitInfo:=Project1.UnitWithUnitname(NewName);
-  if ConflictingUnitInfo<>nil then begin
-    s:='There is already an unit with the name '+ConflictingUnitInfo.UnitName;
-    raise EComponentError.Create(s);
-  end;
-  
-  // check if resource classname
-  ConflictingUnitInfo:=Project1.ProjectUnitWithUnitname(NewName);
-  if ConflictingUnitInfo<>nil then begin
-    s:='There is already an unit with the name '+ConflictingUnitInfo.UnitName;
-    raise EComponentError.Create(s);
-  end;
-
 
   OldOpenEditorsOnCodeToolChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
@@ -12363,19 +12358,11 @@ begin
       raise EComponentError.Create(s);
     end;
 
-
-    OldName:=AComponent.Name;
-    OldClassName:=AComponent.ClassName;
-
     // check inherited components
     RenameInheritedComponents(ActiveUnitInfo,true);
 
     if AComponent=ADesigner.LookupRoot then begin
       // rename owner component (e.g. the form)
-
-      CheckInterfaceName(NewName);
-      NewClassName:='T'+NewName;
-      CheckInterfaceName(NewClassName);
 
       // rename form component in source
       BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
