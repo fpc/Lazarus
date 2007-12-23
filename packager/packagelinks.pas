@@ -66,7 +66,11 @@ type
     ploUser
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
-
+  
+const
+  AllPkgLinkOrigins = [low(TPkgLinkOrigin)..high(TPkgLinkOrigin)];
+  
+type
   TPackageLink = class(TLazPackageID)
   private
     FAutoCheckExists: boolean;
@@ -136,6 +140,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     function GetUserLinkFile: string;
+    function GetGlobalLinkDirectory: string;
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
     procedure UpdateAll;
@@ -147,7 +152,8 @@ type
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
-    procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent);
+    procedure IteratePackages(MustExist: boolean; Event: TIteratePackagesEvent;
+                              Origins: TPkgLinkOrigins = AllPkgLinkOrigins);
     function AddUserLink(APackage: TLazPackage): TPackageLink;
     function AddUserLink(const PkgFilename, PkgName: string): TPackageLink;
     procedure RemoveLink(APackageID: TLazPackageID; FreeID: boolean);
@@ -159,7 +165,9 @@ type
   end;
   
 var
-  PkgLinks: TPackageLinks; // set by the PkgBoss
+  PkgLinks: TPackageLinks = nil; // set by the PkgBoss
+
+function ComparePackageLinks(Data1, Data2: Pointer): integer;
 
 
 implementation
@@ -308,6 +316,12 @@ begin
   Result:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
 end;
 
+function TPackageLinks.GetGlobalLinkDirectory: string;
+begin
+  Result:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
+                                  +'packager'+PathDelim+'globallinks'+PathDelim;
+end;
+
 procedure TPackageLinks.UpdateGlobalLinks;
 
   function ParseFilename(const Filename: string;
@@ -375,8 +389,7 @@ begin
   Exclude(FStates,plsGlobalLinksNeedUpdate);
   
   FGlobalLinks.FreeAndClear;
-  GlobalLinksDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
-                                  +'packager'+PathDelim+'globallinks'+PathDelim;
+  GlobalLinksDir:=GetGlobalLinkDirectory;
   //debugln('UpdateGlobalLinks A ',GlobalLinksDir);
   if FindFirst(GlobalLinksDir+'*.lpl', faAnyFile, FileInfo)=0 then begin
     PkgVersion:=TPkgVersion.Create;
@@ -735,10 +748,12 @@ begin
 end;
 
 procedure TPackageLinks.IteratePackages(MustExist: boolean;
-  Event: TIteratePackagesEvent);
+  Event: TIteratePackagesEvent; Origins: TPkgLinkOrigins);
 begin
-  IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
-  IteratePackagesInTree(MustExist,FGlobalLinks,Event);
+  if ploUser in Origins then
+    IteratePackagesInTree(MustExist,FUserLinksSortID,Event);
+  if ploGlobal in Origins then
+    IteratePackagesInTree(MustExist,FGlobalLinks,Event);
 end;
 
 function TPackageLinks.AddUserLink(APackage: TLazPackage): TPackageLink;

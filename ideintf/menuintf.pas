@@ -309,6 +309,7 @@ var
       itmViewUnitWindows: TIDEMenuSection;
       itmViewSecondaryWindows: TIDEMenuSection;
         itmViewDebugWindows: TIDEMenuSection;
+        itmViewIDEInternalsWindows: TIDEMenuSection;
 
     // project menu
     mnuProject: TIDEMenuSection;

@@ -1,0 +1,93 @@
+object PackageLinksDialog: TPackageLinksDialog
+  Left = 290
+  Height = 451
+  Top = 189
+  Width = 659
+  HorzScrollBar.Page = 658
+  VertScrollBar.Page = 450
+  ActiveControl = CloseBitBtn
+  Caption = 'PackageLinksDialog'
+  ClientHeight = 451
+  ClientWidth = 659
+  OnCreate = FormCreate
+  object CloseBitBtn: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 579
+    Height = 36
+    Top = 409
+    Width = 74
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Close'
+    Kind = bkClose
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 0
+  end
+  object ScopeGroupBox: TGroupBox
+    Height = 109
+    Width = 659
+    Align = alTop
+    AutoSize = True
+    Caption = 'ScopeGroupBox'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ClientHeight = 90
+    ClientWidth = 655
+    TabOrder = 1
+    object FileMustExistCheckBox: TCheckBox
+      Left = 6
+      Height = 22
+      Top = 6
+      Width = 193
+      Caption = 'FileMustExistCheckBox'
+      OnChange = FileMustExistCheckBoxChange
+      TabOrder = 0
+    end
+    object ShowGlobalLinksCheckBox: TCheckBox
+      Left = 6
+      Height = 22
+      Top = 34
+      Width = 193
+      Caption = 'ShowGlobalLinksCheckBox'
+      Checked = True
+      OnChange = ShowGlobalLinksCheckBoxChange
+      State = cbChecked
+      TabOrder = 1
+    end
+    object ShowUserLinksCheckBox: TCheckBox
+      Left = 6
+      Height = 22
+      Top = 62
+      Width = 193
+      Caption = 'ShowUserLinksCheckBox'
+      Checked = True
+      OnChange = ShowUserLinksCheckBoxChange
+      State = cbChecked
+      TabOrder = 2
+    end
+  end
+  object PkgStringGrid: TStringGrid
+    AnchorSideBottom.Control = CloseBitBtn
+    Height = 294
+    Top = 109
+    Width = 659
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 4
+    FixedColor = clBtnFace
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goTabs, goColSpanning, goDblClickAutoSize, goSmoothScroll]
+    RowCount = 5
+    ScrollBars = ssAutoBoth
+    TabOrder = 2
+    TabStop = True
+  end
+end

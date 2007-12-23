@@ -161,6 +161,9 @@ resourcestring
   lisMenuSaveAs = 'Save As ...';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
+  lisPLDOnlyExistingFiles = 'Only existing files';
+  lisPLDShowGlobalLinks = 'Show global links';
+  lisPLDShowUserLinks = 'Show user links';
   lisKMCloseAll = 'Close All';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close all editor files';
@@ -274,6 +277,8 @@ resourcestring
   lisMenuViewLocalVariables = 'Local Variables';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
+  lisMenuIDEInternals = 'IDE internals';
+  lisMenuPackageLinks = 'Package links ...';
   
   lisMenuNewProject = 'New Project ...';
   lisMenuNewProjectFromFile = 'New Project from file ...';
@@ -1376,6 +1381,7 @@ resourcestring
   dlgPromptOnReplace = 'Prompt On Replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
+  lisPLDExists = 'Exists';
   dlgFromCursor = 'From Cursor';
   dlgEntireScope = 'Entire Scope';
   dlgScope = 'Scope';
@@ -1409,6 +1415,7 @@ resourcestring
   lisFRIinAllOpenPackagesAndProjects = 'in all open packages and projects';
   lisFRIRenameAllReferences = 'Rename all References';
   dlgGlobal = 'Global';
+  lisPLDUser = 'User';
   dlgSelectedText = 'Selected Text';
   dlgDirection = 'Direction';
   lisFRForwardSearch = 'Forward search';
@@ -3444,6 +3451,7 @@ resourcestring
   lisAutomaticallyOnAddSymbol = 'symbol';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
+  lisPLDPackageLinks = 'Package Links';
 
 implementation
 

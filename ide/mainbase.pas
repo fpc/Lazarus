@@ -535,6 +535,10 @@ begin
       CreateMenuItem(itmViewDebugWindows,itmViewCallStack,'itmViewCallStack',lisMenuViewCallStack,'debugger_call_stack');
       CreateMenuItem(itmViewDebugWindows,itmViewDebugOutput,'itmViewDebugOutput',lisMenuViewDebugOutput,'debugger_output');
     end;
+    CreateMenuSubSection(ParentMI, itmViewIDEInternalsWindows, 'itmViewIDEInternalsWindows', lisMenuIDEInternals, '');
+    begin
+      CreateMenuItem(itmViewIDEInternalsWindows, itmViewPackageLinks, 'itmViewPackageLinks', lisMenuPackageLinks, '');
+    end;
   end;
 end;
 
@@ -865,6 +869,7 @@ begin
     itmViewAnchorEditor.Command:=GetCommand(ecViewAnchorEditor);
     itmViewComponentPalette.Command:=GetCommand(ecToggleCompPalette);
     itmViewIDESpeedButtons.Command:=GetCommand(ecToggleIDESpeedBtns);
+    //itmViewPackageLinks.Command:=GetCommand(ec?);
 
     // project menu
     itmProjectNew.Command:=GetCommand(ecNewProject);
