@@ -202,11 +202,14 @@ begin
           Ext := ExtractFileExt(TheDialog.FileName);
           if ABitmap = nil then
             ABitmap := TBitmap.Create;
-          if (ABitmap is TBitmap) and
-             ((CompareText(Ext, '.xpm') = 0) or
-              (CompareText(Ext, '.bmp') = 0)) then
+
+          // Paul: can it be not TBitmap at all?
+          if (ABitmap is TBitmap) then
           begin
-            ABitmap.LoadFromFile(TheDialog.FileName);
+            if ((CompareText(Ext, '.xpm') = 0) or (CompareText(Ext, '.bmp') = 0)) then
+              ABitmap.LoadFromFile(TheDialog.FileName)
+            else
+              ABitmap.Assign(TheDialog.Preview.Picture.Graphic);
           end
           else
           begin
