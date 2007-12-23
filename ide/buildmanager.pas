@@ -779,6 +779,7 @@ begin
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
+            DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles AAA1 ',CurDir+FileInfo.Name]);
             if FilenameIsPascalUnit(FileInfo.Name) then
               CurUnitTree:=SourceUnitTree
             else if (CompareFileExt(FileInfo.Name,CompiledExt,false)=0) then
@@ -789,6 +790,7 @@ begin
             if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then
               continue;
             CurFilename:=CurDir+FileInfo.Name;
+            DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);
             // check if unit already found
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
