@@ -187,13 +187,13 @@ end;
 
 
 // Based on MS Article Q167345
-procedure TWinPrinter.UpdateDevMode;
+procedure TWinPrinter.UpdateDevMode(APrinterIndex:Integer);
 var
   PDev: TPrinterDevice;
   dwRet: Integer;
 begin
   // now we have a right FPrinterHandle, get current printer settings
-  PDev := TPrinterDevice(Printers.Objects[PrinterIndex]);
+  PDev := TPrinterDevice(Printers.Objects[APrinterIndex]);
 
   // allocate a new Devmode
   if (Pdev.DevMode=nil) then begin
@@ -256,7 +256,7 @@ begin
     Inf.cbSize:=SizeOf(Inf);
     Inf.lpszDocName:=PChar(Title);
 
-    StartDoc(fDC,Inf);
+    StartDoc(fDC,@Inf);
     StartPage(fDC);
     
   end;
@@ -595,9 +595,7 @@ begin
     if not OpenPrinter(PChar(PDev.Name),fPrinterHandle, nil) then
       raise EPrinter.CreateFmt('OpenPrinter exception : %s',
                                    [SysErrorMessage(GetlastError)]);
-
-    UpdateDevMode;
-
+    UpdateDevMode(i);
     Result:=i;
   end;
 end;
