@@ -2438,12 +2438,12 @@ images/menu/menu_close.png -text svneol=unset#image/png
 images/menu/menu_close_all.png -text svneol=unset#image/png
 images/menu/menu_codetoolsdefineseditor.png -text svneol=unset#image/png
 images/menu/menu_codetoolsoptions.png -text svneol=unset#image/png
-images/menu/menu_comment_16.xpm svneol=native#text/plain
+images/menu/menu_comment.png -text
 images/menu/menu_compiler_options.png -text svneol=unset#image/png
 images/menu/menu_configure_build_lazarus.png -text svneol=unset#image/png
 images/menu/menu_configure_help.png -text svneol=unset#image/png
 images/menu/menu_edit_lowercase.png -text svneol=unset#image/png
-images/menu/menu_edit_sort_16.xpm svneol=native#text/plain
+images/menu/menu_edit_sort.png -text
 images/menu/menu_edit_uppercase.png -text svneol=unset#image/png
 images/menu/menu_editor_options.png -text svneol=unset#image/png
 images/menu/menu_environment_options.png -text svneol=unset#image/png
@@ -2475,7 +2475,7 @@ images/menu/menu_run_file.png -text svneol=unset#image/png
 images/menu/menu_run_parameters.png -text svneol=unset#image/png
 images/menu/menu_save.png -text svneol=unset#image/png
 images/menu/menu_save_all.png -text svneol=unset#image/png
-images/menu/menu_saveas_16.xpm svneol=native#text/plain
+images/menu/menu_saveas.png -text
 images/menu/menu_search_files.png -text svneol=unset#image/png
 images/menu/menu_search_find.png -text svneol=unset#image/png
 images/menu/menu_search_find_next.png -text svneol=unset#image/png
@@ -2491,7 +2491,7 @@ images/menu/menu_tool_dfm_to_lfm.png -text svneol=unset#image/png
 images/menu/menu_tool_diff.png -text svneol=unset#image/png
 images/menu/menu_tool_make_resourcestring.png -text svneol=unset#image/png
 images/menu/menu_tool_syntax_check.png -text svneol=unset#image/png
-images/menu/menu_uncomment_16.xpm svneol=native#text/plain
+images/menu/menu_uncomment.png -text
 images/menu/menu_undo.png -text svneol=unset#image/png
 images/menu/menu_unindent.png -text svneol=unset#image/png
 images/menu/menu_view_anchor_editor.png -text svneol=unset#image/png

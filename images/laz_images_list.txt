@@ -48,13 +48,13 @@ menu/menu_close.png
 menu/menu_close_all.png
 menu/menu_codetoolsdefineseditor.png
 menu/menu_codetoolsoptions.png
-menu/menu_comment_16.xpm
+menu/menu_comment.png
 menu/menu_compiler_options.png
 menu/menu_configure_build_lazarus.png
 menu/menu_configure_help.png
 menu/menu_editor_options.png
 menu/menu_edit_lowercase.png
-menu/menu_edit_sort_16.xpm
+menu/menu_edit_sort.png
 menu/menu_edit_uppercase.png
 menu/menu_environment_options.png
 menu/menu_exit.png
@@ -84,7 +84,7 @@ menu/menu_run_cursor.png
 menu/menu_run_file.png
 menu/menu_run_parameters.png
 menu/menu_save.png
-menu/menu_saveas_16.xpm
+menu/menu_saveas.png
 menu/menu_save_all.png
 menu/menu_search_files.png
 menu/menu_search_find.png
@@ -101,7 +101,7 @@ menu/menu_tool_dfm_to_lfm.png
 menu/menu_tool_diff.png
 menu/menu_tool_make_resourcestring.png
 menu/menu_tool_syntax_check.png
-menu/menu_uncomment_16.xpm
+menu/menu_uncomment.png
 menu/menu_undo.png
 menu/menu_unindent.png
 menu/menu_view_anchor_editor.png
