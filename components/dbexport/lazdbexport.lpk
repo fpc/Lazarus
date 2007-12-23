@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="3">
+    <Name Value="lazdbexport"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="5"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Standard TDataset Export objects from FCL"/>
+    <License Value="Modified LGPL"/>
+    <Version Major="1"/>
+    <Files Count="11">
+      <Item1>
+        <Filename Value="regdbexport.pp"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regdbexport"/>
+      </Item1>
+      <Item2>
+        <Filename Value="fpdataexporter.pp"/>
+        <UnitName Value="fpdataexporter"/>
+      </Item2>
+      <Item3>
+        <Filename Value="frmselectexportformat.lfm"/>
+        <Type Value="LFM"/>
+      </Item3>
+      <Item4>
+        <Filename Value="frmselectexportformat.lrs"/>
+        <Type Value="LRS"/>
+      </Item4>
+      <Item5>
+        <Filename Value="frmselectexportformat.pp"/>
+        <UnitName Value="frmSelectExportFormat"/>
+      </Item5>
+      <Item6>
+        <Filename Value="frmexportprogress.lfm"/>
+        <Type Value="LFM"/>
+      </Item6>
+      <Item7>
+        <Filename Value="frmexportprogress.lrs"/>
+        <Type Value="LRS"/>
+      </Item7>
+      <Item8>
+        <Filename Value="frmexportprogress.pp"/>
+        <UnitName Value="frmexportprogress"/>
+      </Item8>
+      <Item9>
+        <Filename Value="frmbaseconfigexport.lfm"/>
+        <Type Value="LFM"/>
+      </Item9>
+      <Item10>
+        <Filename Value="frmbaseconfigexport.lrs"/>
+        <Type Value="LRS"/>
+      </Item10>
+      <Item11>
+        <Filename Value="frmbaseconfigexport.pp"/>
+        <UnitName Value="frmBaseConfigExport"/>
+      </Item11>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="4">
+      <Item1>
+        <PackageName Value="RunTimeTypeInfoControls"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="IDEIntf"/>
+      </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
