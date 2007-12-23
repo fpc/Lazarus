@@ -1712,10 +1712,13 @@ begin
       AProjectFilename:=CmdLineFiles[0];
       if (CompareFileExt(AProjectFilename,'.lpr',false)=0) then
         AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-      AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
-      if FileExists(AProjectFilename) then begin
-        CmdLineFiles.Delete(0);
-        ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+      // only try to load .lpi files, other files are loaded later
+      if (CompareFileExt(AProjectFilename,'.lpi',false)=0) then begin
+        AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
+        if FileExists(AProjectFilename) then begin
+          CmdLineFiles.Delete(0);
+          ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+        end;
       end;
     end;
 
