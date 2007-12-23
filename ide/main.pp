@@ -12119,6 +12119,7 @@ var
   OldClassName: String;
   OldOpenEditorsOnCodeToolChange: Boolean;
   RegComp: TRegisteredComponent;
+  ConflictingUnitInfo: TUnitInfo;
 
   procedure ApplyBossResult(const ErrorMsg: string);
   var
@@ -12308,15 +12309,24 @@ begin
     exit;
   end;
 
+  // check if keyword
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
 
+  // check if registered component class
   RegComp:=IDEComponentPalette.FindComponent(NewName);
   if RegComp<>nil then begin
     s:='There is already a component class with the name '+RegComp.ComponentClass.ClassName;
+    raise EComponentError.Create(s);
+  end;
+  
+  // check if unitnanme
+  ConflictingUnitInfo:=Project1.UnitWithUnitname(NewName);
+  if ConflictingUnitInfo<>nil then begin
+    s:='There is already an unit with the name '+ConflictingUnitInfo.UnitName;
     raise EComponentError.Create(s);
   end;
 
