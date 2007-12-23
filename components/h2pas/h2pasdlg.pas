@@ -836,7 +836,7 @@ begin
   // selection or line of the source editor.
   fSrcEditAddSearchReplaceMenuItem:=RegisterIDEMenuCommand(SrcEditSection,
       'Add "search and replace" tool before h2pas',
-      'Add "search and replace" tool before h2pas',
+      'Add "search and replace" tool before h2pas', 
       @OnAddSearchAndReplaceBeforeH2PasClick);
 end;
 

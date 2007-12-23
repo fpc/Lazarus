@@ -147,7 +147,7 @@ begin
     RegisterProjectDescriptor(ProjDesc,STemplateCategory);
     ProjMenu:=RegisterIDEMenuCommand(itmFileNewFromTemplate,
                                      SItmtemplate+Atemplate.Name,
-                                     ATemplate.Name,
+                                     ATemplate.Name,                                     
                                      Nil,@DoProject,Nil);
     MenuList.Add(TIDEObject.Create(ProjDesc,ProjMenu));
     end;

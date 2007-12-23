@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Menus, ImgList, Graphics, LazHelpIntf,
-  IDECommands;
+  IDECommands, IDEImagesIntf;
   
 type
   TIDEMenuItem = class;
@@ -217,6 +217,7 @@ type
     FDefault: Boolean;
     FGroupIndex: Byte;
     FRadioItem: Boolean;
+    FResourceName: String;
     FRightJustify: boolean;
     FShowAlwaysCheckable: boolean;
   protected
@@ -230,6 +231,7 @@ type
     procedure SetShowAlwaysCheckable(const AValue: boolean); virtual;
     procedure SetCommand(const AValue: TIDECommand); virtual;
     procedure SetMenuItem(const AValue: TMenuItem); override;
+    procedure SetResourceName(const AValue: String);
     procedure CommandChanged(Sender: TObject);
   public
     property Command: TIDECommand read FCommand write SetCommand;
@@ -241,6 +243,7 @@ type
     property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
                                           write SetShowAlwaysCheckable;
+    property ResourceName: String read FResourceName write SetResourceName;
   end;
   TIDEMenuCommandClass = class of TIDEMenuCommand;
   
@@ -419,12 +422,14 @@ function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
                                 const Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand; overload;
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
                                 const OnClickMethod: TNotifyEvent = nil;
                                 const OnClickProc: TNotifyProcedure = nil;
-                                const Command: TIDECommand = nil
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
                                 ): TIDEMenuCommand; overload;
 
 implementation
@@ -478,29 +483,36 @@ begin
   Result:=RegisterIDESubMenu(Parent,Name,Caption,OnClickMethod,OnClickProc);
 end;
 
-function RegisterIDEMenuCommand(Parent: TIDEMenuSection; const Name,
-  Caption: string; const OnClickMethod: TNotifyEvent;
-  const OnClickProc: TNotifyProcedure; const Command: TIDECommand
-  ): TIDEMenuCommand;
+function RegisterIDEMenuCommand(Parent: TIDEMenuSection;
+                                const Name, Caption: string;
+                                const OnClickMethod: TNotifyEvent = nil;
+                                const OnClickProc: TNotifyProcedure = nil;
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
+                                ): TIDEMenuCommand;
 begin
-  Result:=TIDEMenuCommand.Create(Name);
-  Result.Caption:=Caption;
-  Result.OnClick:=OnClickMethod;
-  Result.OnClickProc:=OnClickProc;
-  Result.Command:=Command;
+  Result := TIDEMenuCommand.Create(Name);
+  Result.Caption := Caption;
+  Result.OnClick := OnClickMethod;
+  Result.OnClickProc := OnClickProc;
+  Result.Command := Command;
+  Result.ResourceName := ResourceName;
   Parent.AddLast(Result);
 end;
 
 function RegisterIDEMenuCommand(const Path, Name, Caption: string;
-  const OnClickMethod: TNotifyEvent; const OnClickProc: TNotifyProcedure;
-  const Command: TIDECommand): TIDEMenuCommand;
+                                const OnClickMethod: TNotifyEvent = nil;
+                                const OnClickProc: TNotifyProcedure = nil;
+                                const Command: TIDECommand = nil;
+                                const ResourceName: String = ''
+                                ): TIDEMenuCommand;
 var
   Parent: TIDEMenuSection;
 begin
   //debugln('RegisterIDEMenuCommand Path="',Path,'" Name="',Name,'"');
-  Parent:=IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
-  Result:=RegisterIDEMenuCommand(Parent,Name,Caption,OnClickMethod,OnClickProc,
-                                 Command);
+  Parent := IDEMenuRoots.FindByPath(Path,true) as TIDEMenuSection;
+  Result := RegisterIDEMenuCommand(Parent, Name, Caption,
+    OnClickMethod, OnClickProc, Command, ResourceName);
 end;
 
 { TIDEMenuItem }
@@ -1465,6 +1477,17 @@ begin
       MenuItem.ShortCut:=0;
 end;
 
+procedure TIDEMenuCommand.SetResourceName(const AValue: String);
+begin
+  if FResourceName=AValue then exit;
+  FResourceName:=AValue;
+  if MenuItem<>nil then
+    if AValue <> '' then
+      MenuItem.ImageIndex := IDEImages.LoadImage(16, FResourceName)
+    else
+      MenuItem.ImageIndex := -1;
+end;
+
 procedure TIDEMenuCommand.MenuItemClick(Sender: TObject);
 begin
   inherited MenuItemClick(Sender);
@@ -1555,6 +1578,8 @@ begin
     else
       MenuItem.ShortCut:=ShortCut(0,[]);
     MenuItem.GroupIndex:=GroupIndex;
+    if ResourceName <> '' then
+      MenuItem.ImageIndex := IDEImages.LoadImage(16, ResourceName);
   end;
 end;
 

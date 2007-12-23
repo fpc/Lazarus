@@ -51,7 +51,7 @@ uses
   SynEditKeyCmds, SynCompletion,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
-  IDEWindowIntf,
+  IDEWindowIntf, IDEImagesIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -880,11 +880,11 @@ begin
       SrcEditMenuProcedureJump:=RegisterIDEMenuCommand(AParent,'Procedure Jump',
                                                        uemProcedureJump);
       SrcEditMenuFindNextWordOccurrence:=RegisterIDEMenuCommand(AParent,
-                      'Find next word occurrence',srkmecFindNextWordOccurrence);
+                      'Find next word occurrence', srkmecFindNextWordOccurrence, nil, nil, nil, 'menu_search_find_next');
       SrcEditMenuFindPrevWordOccurrence:=RegisterIDEMenuCommand(AParent,
-                  'Find previous word occurrence',srkmecFindPrevWordOccurrence);
+                  'Find previous word occurrence', srkmecFindPrevWordOccurrence, nil, nil, nil, 'menu_search_find_previous');
       SrcEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,
-                  'Find in files',srkmecFindInFiles);
+                  'Find in files', srkmecFindInFiles, nil, nil, nil, 'menu_search_files');
 
     AParent:=SrcEditMenuSectionFirstStatic;
     SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
@@ -896,9 +896,9 @@ begin
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                       'Clipboard');
   AParent:=SrcEditMenuSectionClipboard;
-    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut);
-    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy);
-    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste);
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'menu_edit_cut');
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'menu_edit_copy');
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'menu_edit_paste');
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
                                                     uemCopyFilename);
 
@@ -937,9 +937,9 @@ begin
       SrcEditMenuAddWatchAtCursor:=RegisterIDEMenuCommand(AParent,
                                      'Add Watch at Cursor',uemAddWatchAtCursor);
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,
-                                                'Run to cursor',uemRunToCursor);
+                                                'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
-                                            'View Call Stack',uemViewCallStack);
+                                            'View Call Stack', uemViewCallStack, nil, nil, nil, 'debugger_call_stack');
 
   // register the File Specific dynamic section
   AParent:=SourceEditorMenuRoot;
@@ -989,7 +989,7 @@ begin
                                                     uemShowUnitInfo);
     SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
     SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
-                                        'EditorProperties',uemEditorProperties);
+                                        'EditorProperties',uemEditorProperties, nil, nil, nil,  'menu_editor_options');
 
 end;
 
@@ -3931,9 +3931,11 @@ begin
   //debugln('TSourceNotebook.BuildPopupMenu');
   
   SrcPopupMenu := TPopupMenu.Create(Self);
-  with SrcPopupMenu do begin
+  with SrcPopupMenu do 
+  begin
     AutoPopup := True;
     OnPopup :=@SrcPopupMenuPopup;
+    Images := IDEImages.Images_16;
   end;
   
   // assign the root TMenuItem to the registered menu root.

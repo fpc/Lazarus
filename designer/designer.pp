@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
-  PropEdits, ComponentEditors, MenuIntf,
+  PropEdits, ComponentEditors, MenuIntf, IDEImagesIntf,
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, ComponentReg,
   NonControlDesigner, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, CustomFormEditor,
@@ -408,11 +408,11 @@ begin
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                            'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Cut',lisMenuCut);
+                                            'Cut',lisMenuCut, nil, nil, nil, 'menu_edit_cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Copy',lisMenuCopy);
+                                            'Copy',lisMenuCopy, nil, nil, nil, 'menu_edit_copy');
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Paste',lisMenuPaste);
+                                            'Paste',lisMenuPaste, nil, nil, nil, 'menu_edit_paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                          'Delete selection',fdmDeleteSelection);
 
@@ -438,7 +438,7 @@ begin
     DesignerMenuSnapToGuideLinesOption:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
                                'Snap to guide lines',fdmSnapToGuideLinesOption);
     DesignerMenuShowOptions:=RegisterIDEMenuCommand(DesignerMenuSectionOptions,
-                                                 'Show options',fdmShowOptions);
+                                                 'Show options',fdmShowOptions, nil, nil, nil, 'menu_environment_options');
 end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
@@ -2682,9 +2682,11 @@ begin
   if DesignerPopupMenu<>nil then exit;
   
   DesignerPopupMenu:=TPopupMenu.Create(nil);
-  with DesignerPopupMenu do begin
-    Name:='DesignerPopupmenu';
-    OnPopup :=@DesignerPopupMenuPopup;
+  with DesignerPopupMenu do 
+  begin
+    Name := 'DesignerPopupmenu';
+    OnPopup := @DesignerPopupMenuPopup;
+    Images := IDEImages.Images_16;
   end;
 
   // assign the root TMenuItem to the registered menu root.

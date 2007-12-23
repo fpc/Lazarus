@@ -373,47 +373,28 @@ begin
   if OnComponentIsInvisible=@CheckComponentDesignerVisible then
     OnComponentIsInvisible:=nil;
   NoteBook:=nil;
-  fComponents.Free;
-  fComponents:=nil;
-  if fUnregisteredIcon<>nil then begin
-    fUnregisteredIcon.Free;
-    fUnregisteredIcon:=nil;
-  end;
-  if fSelectButtonIcon<>nil then begin
-    fSelectButtonIcon.Free;
-    fSelectButtonIcon:=nil;
-  end;
-  PopupMenu.Free;
-  PopupMenu:=nil;
+  FreeAndNil(fComponents);
+  FreeAndNil(fUnregisteredIcon);
+  FreeAndNil(fSelectButtonIcon);
+  FreeAndNil(PopupMenu);
   inherited Destroy;
 end;
 
 function TComponentPalette.GetUnregisteredIcon: TBitMap;
-var
-  ResName: string;
-  res: TLResource;
 begin
-  if fUnregisteredIcon=nil then begin
-    fUnregisteredIcon:=TPixmap.Create;
-    fUnregisteredIcon.TransparentColor:=clWhite;
-    ResName:='unregisteredcomponent';
-    res:=LazarusResources.Find(ResName);
-    if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
-      fUnregisteredIcon.LoadFromLazarusResource(ResName);
-    end else begin
-      fUnregisteredIcon.LoadFromLazarusResource('default');
-    end;
+  if fUnregisteredIcon = nil then 
+  begin
+    fUnregisteredIcon := LoadBitmapFromLazarusResource('unregisteredcomponent');
+    if fUnregisteredIcon = nil then
+      fUnregisteredIcon := LoadBitmapFromLazarusResource('default');
   end;
-  Result:=fUnregisteredIcon;
+  Result := fUnregisteredIcon;
 end;
 
 function TComponentPalette.GetSelectButtonIcon: TBitmap;
 begin
-  if fSelectButtonIcon=nil then begin
-    fSelectButtonIcon:=TPixmap.Create;
-    fSelectButtonIcon.TransparentColor:=clWhite;
-    fSelectButtonIcon.LoadFromLazarusResource('tmouse');
-  end;
+  if fSelectButtonIcon=nil then 
+    fSelectButtonIcon := LoadBitmapFromLazarusResource('tmouse');
   Result:=fSelectButtonIcon;
 end;
 
@@ -488,6 +469,7 @@ var
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
+  Bitmap: TBitmap;
 begin
   if fUpdatingNotebook then exit;
   if IsUpdateLocked then begin
@@ -544,7 +526,9 @@ begin
         with CurBtn do begin
           Name:='PaletteSelectBtn'+IntToStr(i);
           OnClick := @SelectionToolClick;
-          Glyph.LoadFromLazarusResource('tmouse');
+          Bitmap := LoadBitmapFromLazarusResource('tmouse');
+          Glyph := Bitmap;
+          Bitmap.Free;
           Flat := True;
           GroupIndex:= 1;
           Down := True;
