@@ -26,7 +26,6 @@
  *                                                                         *
  ***************************************************************************
 }
-{%RunCommand $MakeEx e($(EdFile))}
 unit BuildManager;
 
 {$mode objfpc}{$H+}
@@ -38,7 +37,7 @@ uses
   // LCL
   LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
-  CodeToolManager, DefineTemplates,
+  BasicCodeTools, CodeToolManager, DefineTemplates,
   // IDEIntf
   SrcEditorIntf, ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   LazIDEIntf,
@@ -157,13 +156,14 @@ type
 
 function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
 begin
-  Result:=CompareText(UnitFile1^.UnitName,UnitFile2^.UnitName);
+  Result:=CompareIdentifierPtrs(Pointer(UnitFile1^.UnitName),
+                                Pointer(UnitFile2^.UnitName));
 end;
 
 function CompareUnitNameAndUnitFile(UnitName: PChar;
   UnitFile: PUnitFile): integer;
 begin
-  Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
+  Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.UnitName));
 end;
 
 { TBuildManager }
@@ -752,6 +752,7 @@ var
   CurUnitTree: TAVLTree;
   FileInfoNeedClose: Boolean;
   UnitPath: String;
+  IgnoreAll: Boolean;
 begin
   Result:=mrOk;
   UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
@@ -774,6 +775,7 @@ begin
                                              UnitPath,StartPos,EndPos-StartPos)));
         FileInfoNeedClose:=true;
         if SysUtils.FindFirst(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
+          IgnoreAll:=false;
           repeat
             if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
             or ((FileInfo.Attr and faDirectory)<>0) then continue;
@@ -784,22 +786,30 @@ begin
             else
               continue;
             CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
+            if (CurUnitName='') or (not IsValidIdent(CurUnitName)) then
+              continue;
             CurFilename:=CurDir+FileInfo.Name;
             // check if unit already found
             ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
                                  TListSortCompare(@CompareUnitNameAndUnitFile));
-            if ANode<>nil then begin
+            if (ANode<>nil) and (not IgnoreAll) then begin
+              DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.UnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
-              Result:=MessageDlg('Ambiguous unit found',
-                'The unit '+CurUnitName+' exists twice in the unit path of the '
-                +ContextDescription+':'#13
+              Result:=QuestionDlg(lisAmbiguousUnitFound2,
+                Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
+                  ContextDescription])
+                +#13
                 +#13
                 +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
                 +'2. "'+CurFilename+'"'#13
                 +#13
-                +'Hint: Check if two packages contain a unit with the same name.',
-                mtWarning,[mbAbort,mbIgnore],0);
-              if Result<>mrIgnore then exit;
+                +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
+                mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrAbort], 0);
+              case Result of
+              mrIgnore: ;
+              mrYesToAll: IgnoreAll:=true;
+              else exit;
+              end;
             end;
             // add unit to tree
             New(AnUnitFile);
@@ -974,11 +984,11 @@ function TBuildManager.MacroFuncProject(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   if Project1<>nil then begin
-    if CompareText(Param,'SrcPath')=0 then
+    if SysUtils.CompareText(Param,'SrcPath')=0 then
       Result:=Project1.CompilerOptions.GetSrcPath(false)
-    else if CompareText(Param,'IncPath')=0 then
+    else if SysUtils.CompareText(Param,'IncPath')=0 then
       Result:=Project1.CompilerOptions.GetIncludePath(false)
-    else if CompareText(Param,'UnitPath')=0 then
+    else if SysUtils.CompareText(Param,'UnitPath')=0 then
       Result:=Project1.CompilerOptions.GetUnitPath(false)
     else begin
       Result:='<Invalid parameter for macro Project:'+Param+'>';

@@ -558,6 +558,12 @@ resourcestring
     +'like a text file.%sOpen it anyway?';
   lisUnableToCreateBackupDirectory =
     'Unable to create backup directory %s%s%s.';
+  lisAmbiguousUnitFound2 = 'Ambiguous unit found';
+  lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
+    +'unit path of the %s:';
+  lisHintCheckIfTwoPackagesContainAUnitWithTheSameName = 'Hint: Check if two '
+    +'packages contain a unit with the same name.';
+  lisIgnoreAll = 'Ignore all';
   lisDeleteFileFailed = 'Delete file failed';
   lisUnableToRemoveOldBackupFile = 'Unable to remove old backup file %s%s%s!';
   lisRenameFileFailed = 'Rename file failed';

@@ -468,223 +468,229 @@ begin
     Options:=SrcCompilerOptions
   else
     Options:=CompilerOpts;
+  DisableAlign;
+  try
+    EnabledLinkerOpts:=Options.NeedsLinkerOpts;
 
-  EnabledLinkerOpts:=Options.NeedsLinkerOpts;
+    { Get the compiler options and apply them to the dialog }
 
-  { Get the compiler options and apply them to the dialog }
+    // paths
+    edtOtherUnits.Text := Options.OtherUnitFiles;
+    edtIncludeFiles.Text := Options.IncludePath;
+    edtLibraries.Text := Options.Libraries;
+    lblLibraries.Enabled:=EnabledLinkerOpts;
+    edtOtherSources.Text := Options.SrcPath;
+    edtUnitOutputDir.Text := Options.UnitOutputDirectory;
+    edtDebugPath.Text := Options.DebugPath;
 
-  // paths
-  edtOtherUnits.Text := Options.OtherUnitFiles;
-  edtIncludeFiles.Text := Options.IncludePath;
-  edtLibraries.Text := Options.Libraries;
-  lblLibraries.Enabled:=EnabledLinkerOpts;
-  edtOtherSources.Text := Options.SrcPath;
-  edtUnitOutputDir.Text := Options.UnitOutputDirectory;
-  edtDebugPath.Text := Options.DebugPath;
+    LCLPlatform := DirNameToLCLPlatform(Options.LCLWidgetType);
+    if CompareText(Options.LCLWidgetType,LCLPlatformDirNames[LCLPlatform])=0 then
+      LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
+    else
+      LCLWidgetTypeComboBox.ItemIndex := 0;
 
-  LCLPlatform := DirNameToLCLPlatform(Options.LCLWidgetType);
-  if CompareText(Options.LCLWidgetType,LCLPlatformDirNames[LCLPlatform])=0 then
-    LCLWidgetTypeComboBox.ItemIndex := ord(LCLPlatform)+1
-  else
-    LCLWidgetTypeComboBox.ItemIndex := 0;
+    // parsing
+    if (Options.AssemblerStyle in [1,2,3])  then
+      grpAsmStyle.ItemIndex:=Options.AssemblerStyle
+    else
+      grpAsmStyle.ItemIndex:=0;
 
-  // parsing
-  if (Options.AssemblerStyle in [1,2,3])  then
-    grpAsmStyle.ItemIndex:=Options.AssemblerStyle
-  else
-    grpAsmStyle.ItemIndex:=0;
+    with grpSyntaxOptions do
+    begin
+      Checked[0] := Options.Delphi2Extensions;
+      Checked[1] := Options.CStyleOperators;
+      Checked[2] := Options.IncludeAssertionCode;
+      Checked[3] := Options.AllowLabel;
+      Checked[4] := Options.CPPInline;
+      Checked[5] := Options.CStyleMacros;
+      Checked[6] := Options.TPCompatible;
+      Checked[7] := Options.InitConstructor;
+      Checked[8] := Options.StaticKeyword;
+      Checked[9] := Options.DelphiCompat;
+      Checked[10] := Options.UseAnsiStrings;
+      Checked[11] := Options.GPCCompat;
+    end;
 
-  with grpSyntaxOptions do
-  begin
-    Checked[0] := Options.Delphi2Extensions;
-    Checked[1] := Options.CStyleOperators;
-    Checked[2] := Options.IncludeAssertionCode;
-    Checked[3] := Options.AllowLabel;
-    Checked[4] := Options.CPPInline;
-    Checked[5] := Options.CStyleMacros;
-    Checked[6] := Options.TPCompatible;
-    Checked[7] := Options.InitConstructor;
-    Checked[8] := Options.StaticKeyword;
-    Checked[9] := Options.DelphiCompat;
-    Checked[10] := Options.UseAnsiStrings;
-    Checked[11] := Options.GPCCompat;
-  end;
+    // code generation
+    chkSmartLinkUnit.Checked := Options.SmartLinkUnit;
 
-  // code generation
-  chkSmartLinkUnit.Checked := Options.SmartLinkUnit;
+    chkChecksIO.Checked := Options.IOChecks;
+    chkChecksRange.Checked := Options.RangeChecks;
+    chkChecksOverflow.Checked := Options.OverflowChecks;
+    chkChecksStack.Checked := Options.StackChecks;
 
-  chkChecksIO.Checked := Options.IOChecks;
-  chkChecksRange.Checked := Options.RangeChecks;
-  chkChecksOverflow.Checked := Options.OverflowChecks;
-  chkChecksStack.Checked := Options.StackChecks;
+    grpHeapSize.Enabled:=EnabledLinkerOpts;
+    edtHeapSize.Text := IntToStr(Options.HeapSize);
 
-  grpHeapSize.Enabled:=EnabledLinkerOpts;
-  edtHeapSize.Text := IntToStr(Options.HeapSize);
+    case Options.Generate of
+      cgcNormalCode:  radGenNormal.Checked := true;
+      cgcFasterCode:  radGenFaster.Checked := true;
+      cgcSmallerCode: radGenSmaller.Checked := true;
+    end;
 
-  case Options.Generate of
-    cgcNormalCode:  radGenNormal.Checked := true;
-    cgcFasterCode:  radGenFaster.Checked := true;
-    cgcSmallerCode: radGenSmaller.Checked := true;
-  end;
+    i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
+    if i<0 then i:=0;  // 0 is default
+    TargetOSComboBox.ItemIndex:=i;
+    TargetOSComboBox.Text:=Options.TargetOS;
+    i:=TargetCPUComboBox.Items.IndexOf(Options.TargetCPU);
+    if i<0 then i:=0;  // 0 is default
+    TargetCPUComboBox.ItemIndex:=i;
+    TargetCPUComboBox.Text:=Options.TargetCPU;
 
-  i:=TargetOSComboBox.Items.IndexOf(Options.TargetOS);
-  if i<0 then i:=0;  // 0 is default
-  TargetOSComboBox.ItemIndex:=i;
-  TargetOSComboBox.Text:=Options.TargetOS;
-  i:=TargetCPUComboBox.Items.IndexOf(Options.TargetCPU);
-  if i<0 then i:=0;  // 0 is default
-  TargetCPUComboBox.ItemIndex:=i;
-  TargetCPUComboBox.Text:=Options.TargetCPU;
+    case Options.TargetProcessor of
+      1..3: Targeti386ProcComboBox.ItemIndex:=Options.TargetProcessor;
+    else
+      Targeti386ProcComboBox.ItemIndex := 0;
+    end;
 
-  case Options.TargetProcessor of
-    1..3: Targeti386ProcComboBox.ItemIndex:=Options.TargetProcessor;
-  else
-    Targeti386ProcComboBox.ItemIndex := 0;
-  end;
+    chkOptVarsInReg.Checked := Options.VariablesInRegisters;
+    chkOptUncertain.Checked := Options.UncertainOptimizations;
 
-  chkOptVarsInReg.Checked := Options.VariablesInRegisters;
-  chkOptUncertain.Checked := Options.UncertainOptimizations;
+    case Options.OptimizationLevel of
+      1: radOptLevel1.Checked := true;
+      2: radOptLevel2.Checked := true;
+      3: radOptLevel3.Checked := true;
+    else
+      radOptLevelNone.Checked := true;
+    end;
 
-  case Options.OptimizationLevel of
-    1: radOptLevel1.Checked := true;
-    2: radOptLevel2.Checked := true;
-    3: radOptLevel3.Checked := true;
-  else
-    radOptLevelNone.Checked := true;
-  end;
+    // linking
+    chkDebugGDB.Checked := Options.GenerateDebugInfo;
+    chkDebugDBX.Checked := Options.GenerateDebugDBX;
+    chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
+    chkUseHeaptrc.Checked := Options.UseHeaptrc;
+    chkUseValgrind.Checked := Options.UseValgrind;
+    chkGenGProfCode.Checked := Options.GenGProfCode;
+    chkSymbolsStrip.Checked := Options.StripSymbols;
+    chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
 
-  // linking
-  chkDebugGDB.Checked := Options.GenerateDebugInfo;
-  chkDebugDBX.Checked := Options.GenerateDebugDBX;
-  chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
-  chkUseHeaptrc.Checked := Options.UseHeaptrc;
-  chkUseValgrind.Checked := Options.UseValgrind;
-  chkGenGProfCode.Checked := Options.GenGProfCode;
-  chkSymbolsStrip.Checked := Options.StripSymbols;
-  chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
+    chkLinkSmart.Checked := Options.LinkSmart;
+    grpLinkLibraries.Enabled:=EnabledLinkerOpts;
 
-  chkLinkSmart.Checked := Options.LinkSmart;
-  grpLinkLibraries.Enabled:=EnabledLinkerOpts;
+    chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
+    edtOptionsLinkOpt.Text := Options.LinkerOptions;
+    chkWin32GraphicApp.Checked := Options.Win32GraphicApp;
+    chkWin32GraphicApp.Enabled:=EnabledLinkerOpts;
+    grpOptions.Enabled:=EnabledLinkerOpts;
 
-  chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
-  edtOptionsLinkOpt.Text := Options.LinkerOptions;
-  chkWin32GraphicApp.Checked := Options.Win32GraphicApp;
-  chkWin32GraphicApp.Enabled:=EnabledLinkerOpts;
-  grpOptions.Enabled:=EnabledLinkerOpts;
+    // messages
+    with grpVerbosity do
+    begin
+      Checked[0] := Options.ShowErrors;
+      Checked[1] := Options.ShowHintsForSenderNotUsed;
+      Checked[2] := Options.ShowWarn;
+      Checked[3] := Options.ShowDebugInfo;
+      Checked[4] := Options.ShowNotes;
+      Checked[5] := Options.ShowUsedFiles;
+      Checked[6] := Options.ShowHints;
+      Checked[7] := Options.ShowTriedFiles;
+      Checked[8] := Options.ShowGenInfo;
+      Checked[9] := Options.ShowDefMacros;
+      Checked[10] := Options.ShowLineNum;
+      Checked[11] := Options.ShowCompProc;
+      Checked[12] := Options.ShowAllProcsOnError;
+      Checked[13] := Options.ShowCond;
+      Checked[14] := Options.ShowAll;
+      Checked[15] := Options.ShowExecInfo;
+      Checked[16] := Options.ShowSummary;
+      Checked[17] := Options.ShowNothing;
+      Checked[18] := Options.ShowHintsForUnusedUnitsInMainSrc;
+      Checked[19] := Options.WriteFPCLogo;
+    end;
 
-  // messages
-  with grpVerbosity do
-  begin
-    Checked[0] := Options.ShowErrors;
-    Checked[1] := Options.ShowHintsForSenderNotUsed;
-    Checked[2] := Options.ShowWarn;
-    Checked[3] := Options.ShowDebugInfo;
-    Checked[4] := Options.ShowNotes;
-    Checked[5] := Options.ShowUsedFiles;
-    Checked[6] := Options.ShowHints;
-    Checked[7] := Options.ShowTriedFiles;
-    Checked[8] := Options.ShowGenInfo;
-    Checked[9] := Options.ShowDefMacros;
-    Checked[10] := Options.ShowLineNum;
-    Checked[11] := Options.ShowCompProc;
-    Checked[12] := Options.ShowAllProcsOnError;
-    Checked[13] := Options.ShowCond;
-    Checked[14] := Options.ShowAll;
-    Checked[15] := Options.ShowExecInfo;
-    Checked[16] := Options.ShowSummary;
-    Checked[17] := Options.ShowNothing;
-    Checked[18] := Options.ShowHintsForUnusedUnitsInMainSrc;
-    Checked[19] := Options.WriteFPCLogo;
-  end;
+    // other
+    chkConfigFile.Checked := not Options.DontUseConfigFile;
+    chkCustomConfigFile.Checked := Options.CustomConfigFile;
+    edtConfigPath.Enabled := chkCustomConfigFile.Checked;
+    edtConfigPath.Text := Options.ConfigFilePath;
+    memCustomOptions.Text := Options.CustomOptions;
 
-  // other
-  chkConfigFile.Checked := not Options.DontUseConfigFile;
-  chkCustomConfigFile.Checked := Options.CustomConfigFile;
-  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
-  edtConfigPath.Text := Options.ConfigFilePath;
-  memCustomOptions.Text := Options.CustomOptions;
+    edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
 
-  edtErrorCnt.Text := IntToStr(Options.StopAfterErrCount);
+    // inherited tab
+    UpdateInheritedTab;
 
-  // inherited tab
-  UpdateInheritedTab;
+    // compilation
+    chkCreateMakefile.Checked:=Options.CreateMakefileOnBuild;
 
-  // compilation
-  chkCreateMakefile.Checked:=Options.CreateMakefileOnBuild;
-  
-  ExecuteBeforeCommandEdit.Text:=Options.ExecuteBefore.Command;
-  ExecuteBeforeScanFPCCheckBox.Checked:=Options.ExecuteBefore.ScanForFPCMessages;
-  ExecuteBeforeScanMakeCheckBox.Checked:=
+    ExecuteBeforeCommandEdit.Text:=Options.ExecuteBefore.Command;
+    ExecuteBeforeScanFPCCheckBox.Checked:=Options.ExecuteBefore.ScanForFPCMessages;
+    ExecuteBeforeScanMakeCheckBox.Checked:=
                                       Options.ExecuteBefore.ScanForMakeMessages;
-  ExecuteBeforeShowAllCheckBox.Checked:=Options.ExecuteBefore.ShowAllMessages;
-  if Options.ExecuteBefore is TProjectCompilationToolOptions
-  then with TProjectCompilationToolOptions(Options.ExecuteBefore) do begin
-    chkExecBeforeCompile.Checked := crCompile in CompileReasons;
-    chkExecBeforeBuild.Checked := crBuild in CompileReasons;
-    chkExecBeforeRun.Checked := crRun in CompileReasons;
-    lblRunIfExecBefore.Visible := True;
-    chkExecBeforeCompile.Visible := True;
-    chkExecBeforeBuild.Visible := True;
-    chkExecBeforeRun.Visible := True;
-  end
-  else begin
-    lblRunIfExecBefore.Visible := False;
-    chkExecBeforeCompile.Visible := False;
-    chkExecBeforeBuild.Visible := False;
-    chkExecBeforeRun.Visible := False;
-  end;
+    ExecuteBeforeShowAllCheckBox.Checked:=Options.ExecuteBefore.ShowAllMessages;
+    if Options.ExecuteBefore is TProjectCompilationToolOptions
+    then with TProjectCompilationToolOptions(Options.ExecuteBefore) do begin
+      chkExecBeforeCompile.Checked := crCompile in CompileReasons;
+      chkExecBeforeBuild.Checked := crBuild in CompileReasons;
+      chkExecBeforeRun.Checked := crRun in CompileReasons;
+      lblRunIfExecBefore.Visible := True;
+      chkExecBeforeCompile.Visible := True;
+      chkExecBeforeBuild.Visible := True;
+      chkExecBeforeRun.Visible := True;
+    end
+    else begin
+      lblRunIfExecBefore.Visible := False;
+      chkExecBeforeCompile.Visible := False;
+      chkExecBeforeBuild.Visible := False;
+      chkExecBeforeRun.Visible := False;
+    end;
 
-  edtCompiler.Text := Options.CompilerPath;
-  if Options is TProjectCompilerOptions
-  then with TProjectCompilerOptions(Options) do begin
-    lblRunIfCompiler.Visible := True;
-    chkCompilerCompile.AnchorToNeighbour(akLeft,6,lblRunIfCompiler);
-    chkCompilerCompile.Checked := crCompile in CompileReasons;
-    chkCompilerBuild.Checked := crBuild in CompileReasons;
-    chkCompilerRun.Checked := crRun in CompileReasons;
-    chkCompilerCompile.Caption := lisCOCallOnCompile;
-    chkCompilerCompile.Visible := True;
-    chkCompilerBuild.Visible := True;
-    chkCompilerRun.Visible := True;
-    lblCompiler.AnchorParallel(akLeft,0,lblRunIfCompiler);
-  end
-  else if Options is TPkgCompilerOptions
-  then begin
-    lblRunIfCompiler.Visible := False;
-    chkCompilerCompile.AnchorParallel(akLeft,6,chkCompilerCompile.Parent);
-    chkCompilerCompile.Visible := True;
-    chkCompilerCompile.Caption := lisCOSkipCallingCompiler;
-    chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
-    chkCompilerBuild.Visible := False;
-    chkCompilerRun.Visible := False;
-    lblCompiler.AnchorParallel(akLeft,6,lblCompiler.Parent);
-  end
-  else begin
-    lblRunIfCompiler.Visible := False;
-    chkCompilerCompile.Visible := False;
-    chkCompilerBuild.Visible := False;
-    chkCompilerRun.Visible := False;
-  end;
+    edtCompiler.Text := Options.CompilerPath;
+    if Options is TProjectCompilerOptions
+    then with TProjectCompilerOptions(Options) do begin
+      lblRunIfCompiler.Visible := True;
+      chkCompilerCompile.AnchorToNeighbour(akLeft,30,lblRunIfCompiler);
+      chkCompilerCompile.Checked := crCompile in CompileReasons;
+      chkCompilerBuild.Checked := crBuild in CompileReasons;
+      chkCompilerRun.Checked := crRun in CompileReasons;
+      chkCompilerCompile.Caption := lisCOCallOnCompile;
+      chkCompilerCompile.Visible := True;
+      chkCompilerBuild.Visible := True;
+      chkCompilerRun.Visible := True;
+      lblCompiler.AnchorToNeighbour(akTop,6,lblRunIfCompiler);
+    end
+    else if Options is TPkgCompilerOptions
+    then begin
+      lblRunIfCompiler.Visible := False;
+      chkCompilerCompile.AnchorParallel(akTop,6,chkCompilerCompile.Parent);
+      chkCompilerCompile.AnchorParallel(akLeft,6,chkCompilerCompile.Parent);
+      chkCompilerCompile.Visible := True;
+      chkCompilerCompile.Caption := lisCOSkipCallingCompiler;
+      chkCompilerCompile.Checked := TPkgCompilerOptions(Options).SkipCompiler;
+      chkCompilerBuild.Visible := False;
+      chkCompilerRun.Visible := False;
+      lblCompiler.AnchorToNeighbour(akTop,6,chkCompilerCompile);
+    end
+    else begin
+      lblRunIfCompiler.Visible := False;
+      chkCompilerCompile.Visible := False;
+      chkCompilerBuild.Visible := False;
+      chkCompilerRun.Visible := False;
+      lblCompiler.AnchorParallel(akTop,6,lblCompiler.Parent);
+    end;
 
-  ExecuteAfterCommandEdit.Text:=Options.ExecuteAfter.Command;
-  ExecuteAfterScanFPCCheckBox.Checked:=Options.ExecuteAfter.ScanForFPCMessages;
-  ExecuteAfterScanMakeCheckBox.Checked:=Options.ExecuteAfter.ScanForMakeMessages;
-  ExecuteAfterShowAllCheckBox.Checked:=Options.ExecuteAfter.ShowAllMessages;
-  if Options.ExecuteAfter is TProjectCompilationToolOptions
-  then with TProjectCompilationToolOptions(Options.ExecuteAfter) do begin
-    chkExecAfterCompile.Checked := crCompile in CompileReasons;
-    chkExecAfterBuild.Checked := crBuild in CompileReasons;
-    chkExecAfterRun.Checked := crRun in CompileReasons;
-    lblRunIfExecAfter.Visible := True;
-    chkExecAfterCompile.Visible := True;
-    chkExecAfterBuild.Visible := True;
-    chkExecAfterRun.Visible := True;
-  end
-  else begin
-    lblRunIfExecAfter.Visible := False;
-    chkExecAfterCompile.Visible := False;
-    chkExecAfterBuild.Visible := False;
-    chkExecAfterRun.Visible := False;
+    ExecuteAfterCommandEdit.Text:=Options.ExecuteAfter.Command;
+    ExecuteAfterScanFPCCheckBox.Checked:=Options.ExecuteAfter.ScanForFPCMessages;
+    ExecuteAfterScanMakeCheckBox.Checked:=Options.ExecuteAfter.ScanForMakeMessages;
+    ExecuteAfterShowAllCheckBox.Checked:=Options.ExecuteAfter.ShowAllMessages;
+    if Options.ExecuteAfter is TProjectCompilationToolOptions
+    then with TProjectCompilationToolOptions(Options.ExecuteAfter) do begin
+      chkExecAfterCompile.Checked := crCompile in CompileReasons;
+      chkExecAfterBuild.Checked := crBuild in CompileReasons;
+      chkExecAfterRun.Checked := crRun in CompileReasons;
+      lblRunIfExecAfter.Visible := True;
+      chkExecAfterCompile.Visible := True;
+      chkExecAfterBuild.Visible := True;
+      chkExecAfterRun.Visible := True;
+    end
+    else begin
+      lblRunIfExecAfter.Visible := False;
+      chkExecAfterCompile.Visible := False;
+      chkExecAfterBuild.Visible := False;
+      chkExecAfterRun.Visible := False;
+    end;
+  finally
+    EnableAlign;
   end;
 end;
 

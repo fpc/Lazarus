@@ -21,7 +21,7 @@ object frmCompilerOptions: TfrmCompilerOptions
     Width = 669
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 1
+    PageIndex = 7
     TabOrder = 0
     object PathPage: TPage
       Caption = 'PathPage'
@@ -984,7 +984,7 @@ object frmCompilerOptions: TfrmCompilerOptions
         Cursor = crVSplit
         Height = 5
         Top = 279
-        Width = 1
+        Width = 665
         Align = alTop
         ResizeAnchor = akTop
       end
@@ -1006,7 +1006,7 @@ object frmCompilerOptions: TfrmCompilerOptions
       object ExecuteAfterGroupBox: TGroupBox
         Left = 6
         Height = 108
-        Top = 234
+        Top = 233
         Width = 653
         Align = alTop
         AutoSize = True
@@ -1021,7 +1021,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 20
           Top = 6
-          Width = 105
+          Width = 106
           BorderSpacing.Around = 6
           Caption = 'lblRunIfExecAfter'
           ParentColor = False
@@ -1033,7 +1033,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 20
           Top = 32
-          Width = 183
+          Width = 184
           BorderSpacing.Around = 6
           Caption = 'ExecuteAfterCommandLabel'
           ParentColor = False
@@ -1042,10 +1042,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Control = lblRunIfExecAfter
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteAfterGroupBox
-          Left = 141
+          Left = 142
           Height = 22
           Top = 6
-          Width = 158
+          Width = 159
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'chkExecAfterCompile'
@@ -1055,10 +1055,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Control = chkExecAfterCompile
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteAfterGroupBox
-          Left = 329
+          Left = 331
           Height = 22
           Top = 6
-          Width = 137
+          Width = 138
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'chkExecAfterBuild'
@@ -1068,10 +1068,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Control = chkExecAfterBuild
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteAfterGroupBox
-          Left = 496
+          Left = 499
           Height = 22
           Top = 6
-          Width = 129
+          Width = 130
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'chkExecAfterRun'
@@ -1084,10 +1084,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = ExecuteAfterGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 207
+          Left = 208
           Height = 23
           Top = 32
-          Width = 436
+          Width = 435
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 12
           BorderSpacing.Around = 6
@@ -1099,10 +1099,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteAfterCommandEdit
           AnchorSideTop.Side = asrBottom
-          Left = 269
+          Left = 271
           Height = 22
           Top = 61
-          Width = 224
+          Width = 225
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'ExecuteAfterScanFPCCheckBox'
@@ -1115,7 +1115,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 22
           Top = 61
-          Width = 233
+          Width = 235
           BorderSpacing.Around = 6
           Caption = 'ExecuteAfterScanMakeCheckBox'
           TabOrder = 5
@@ -1125,10 +1125,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteAfterCommandEdit
           AnchorSideTop.Side = asrBottom
-          Left = 523
+          Left = 526
           Height = 22
           Top = 61
-          Width = 217
+          Width = 218
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'ExecuteAfterShowAllCheckBox'
@@ -1137,14 +1137,14 @@ object frmCompilerOptions: TfrmCompilerOptions
       end
       object grpCompiler: TGroupBox
         Left = 6
-        Height = 80
+        Height = 79
         Top = 148
         Width = 653
         Align = alTop
         AutoSize = True
         BorderSpacing.Around = 6
         Caption = 'grpCompiler'
-        ClientHeight = 61
+        ClientHeight = 60
         ClientWidth = 649
         TabOrder = 2
         object lblRunIfCompiler: TLabel
@@ -1181,8 +1181,8 @@ object frmCompilerOptions: TfrmCompilerOptions
           Height = 22
           Top = 6
           Width = 155
-          BorderSpacing.Left = 24
-          BorderSpacing.Around = 6
+          BorderSpacing.Left = 30
+          BorderSpacing.Top = 6
           Caption = 'chkCompilerCompile'
           TabOrder = 0
         end
@@ -1215,13 +1215,13 @@ object frmCompilerOptions: TfrmCompilerOptions
         object edtCompiler: TEdit
           AnchorSideLeft.Control = lblCompiler
           AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = lblRunIfCompiler
-          AnchorSideTop.Side = asrBottom
+          AnchorSideTop.Control = lblCompiler
+          AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = grpCompiler
           AnchorSideRight.Side = asrBottom
           Left = 96
           Height = 23
-          Top = 32
+          Top = 31
           Width = 547
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 12
@@ -1260,7 +1260,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 20
           Top = 32
-          Width = 194
+          Width = 195
           BorderSpacing.Around = 6
           Caption = 'ExecuteBeforeCommandLabel'
           ParentColor = False
@@ -1272,7 +1272,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 153
           Height = 22
           Top = 6
-          Width = 169
+          Width = 170
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'chkExecBeforeCompile'
@@ -1282,10 +1282,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Control = chkExecBeforeCompile
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteBeforeGroupBox
-          Left = 352
+          Left = 353
           Height = 22
           Top = 6
-          Width = 148
+          Width = 149
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'chkExecBeforeBuild'
@@ -1295,7 +1295,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Control = chkExecBeforeBuild
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteBeforeGroupBox
-          Left = 530
+          Left = 532
           Height = 22
           Top = 6
           Width = 141
@@ -1311,10 +1311,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideTop.Side = asrBottom
           AnchorSideRight.Control = ExecuteBeforeGroupBox
           AnchorSideRight.Side = asrBottom
-          Left = 218
+          Left = 219
           Height = 23
           Top = 32
-          Width = 425
+          Width = 424
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 12
           BorderSpacing.Around = 6
@@ -1326,10 +1326,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteBeforeCommandEdit
           AnchorSideTop.Side = asrBottom
-          Left = 280
+          Left = 282
           Height = 22
           Top = 61
-          Width = 235
+          Width = 236
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'ExecuteBeforeScanFPCCheckBox'
@@ -1342,7 +1342,7 @@ object frmCompilerOptions: TfrmCompilerOptions
           Left = 6
           Height = 22
           Top = 61
-          Width = 244
+          Width = 246
           BorderSpacing.Around = 6
           Caption = 'ExecuteBeforeScanMakeCheckBox'
           TabOrder = 5
@@ -1352,10 +1352,10 @@ object frmCompilerOptions: TfrmCompilerOptions
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ExecuteBeforeCommandEdit
           AnchorSideTop.Side = asrBottom
-          Left = 545
+          Left = 548
           Height = 22
           Top = 61
-          Width = 228
+          Width = 229
           BorderSpacing.Left = 24
           BorderSpacing.Around = 6
           Caption = 'ExecuteBeforeShowAllCheckBox'
