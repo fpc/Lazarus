@@ -123,20 +123,24 @@ endif
 
 #-----------------------------------------------------------------------------
 [rules]
-.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge
+.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge revisioninc
 .SUFFIXES: .rc .res
 
 %.res: %.rc
         windres -i $< -o $@ --preprocessor $(RCPP)
 
 #-----------------------------------------------------------------------------
-ide: $(COMPILER_UNITTARGETDIR)
+revisioninc:
 ifneq ($(USESVN2REVISIONINC),0)
 ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
         $(MAKE) -C ../tools svn2revisioninc$(SRCEXEEXT) OS_TARGET=$(OS_SOURCE) OPT=''
 endif
 	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
 endif
+
+
+#-----------------------------------------------------------------------------
+ide: $(COMPILER_UNITTARGETDIR) revisioninc
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
@@ -148,7 +152,7 @@ idepkg: $(COMPILER_UNITTARGETDIR)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
-bigide: $(COMPILER_UNITTARGETDIR)
+bigide: $(COMPILER_UNITTARGETDIR) revisioninc
         -$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 
