@@ -1021,14 +1021,14 @@ end;
 function TTreeNode.GetItems(AnIndex: Integer): TTreeNode;
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeErrorFmt(rsIndexOutOfBounds,[ClassName, AnIndex, Count]);
+    TreeNodeErrorFmt(rsIndexOutOfBounds,[ClassName, AnIndex, Count-1]);
   Result:=FItems[AnIndex];
 end;
 
 procedure TTreeNode.SetItems(AnIndex: Integer; AValue: TTreeNode);
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeErrorFmt(rsIndexOutOfBounds, [ClassName, AnIndex, Count]);
+    TreeNodeErrorFmt(rsIndexOutOfBounds, [ClassName, AnIndex, Count-1]);
   Items[AnIndex].Assign(AValue);
 end;
 

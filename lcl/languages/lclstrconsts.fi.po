@@ -27,7 +27,7 @@ msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left.
 msgstr ""
 
 #: lclstrconsts:rsindexoutofbounds
-msgid "%s Index %d out of bounds 0-%d"
+msgid "%s Index %d out of bounds 0 .. %d"
 msgstr ""
 
 #: lclstrconsts:rsisalreadyassociatedwith

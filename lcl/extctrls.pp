@@ -796,6 +796,7 @@ type
     procedure Clicked(Sender: TObject);
     procedure DoClick(Index: integer);
     procedure ItemsChanged (Sender : TObject);
+    procedure RaiseIndexOutOfBounds(Index: integer );
     procedure SetAutoFill(const AValue: boolean);
     procedure SetChecked(Index: integer; const AValue: boolean);
     procedure SetCheckEnabled(Index: integer; const AValue: boolean);

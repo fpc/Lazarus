@@ -163,6 +163,11 @@ begin
   Result := FTopIndex;
 end;
 
+procedure TCustomListBox.RaiseIndexOutOfBounds(AIndex: integer);
+begin
+  Exception.CreateFmt(rsIndexOutOfBounds, [ClassName, AIndex, FItems.Count-1]);
+end;
+
 procedure TCustomListBox.SetColumns(const AValue: Integer);
 begin
   if (FColumns = AValue) or (AValue < 0) then
@@ -513,13 +518,13 @@ begin
 //DebugLn('[TCustomListBox.GetItemIndex] END ');
 end;
 
-procedure TCustomListBox.SetItemIndex(Val : integer);
+procedure TCustomListBox.SetItemIndex(AIndex : integer);
 begin
-  if (Val >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Val,FItems.Count]);
-  if Val<0 then Val:=-1;
-//DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',dbgs(Val));
-  FItemIndex:=Val;
+  if (AIndex >= FItems.Count) then
+    RaiseIndexOutOfBounds(AIndex);
+  if AIndex<0 then AIndex:=-1;
+//DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',dbgs(AIndex));
+  FItemIndex:=AIndex;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
     SendItemIndex;
   DoSelectionChange(false);
@@ -531,9 +536,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.CheckIndex(const AIndex: Integer);
 begin
-  if (AIndex < 0)
-  or (AIndex >= Items.Count)
-  then raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName, AIndex, Items.Count]);
+  if (AIndex < 0) or (AIndex >= Items.Count) then
+    RaiseIndexOutOfBounds(AIndex);
 end;
 
 {------------------------------------------------------------------------------

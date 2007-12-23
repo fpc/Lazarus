@@ -879,11 +879,11 @@ var
     
     NewValue := SpinEdit.GetLimitedValue(
       WindowInfo^.spinValue + AUpDownMsg^.iDelta * SpinEdit.Increment);
+    WindowInfo^.spinValue := NewValue;
 
     spinHandle := AUpDownMsg^.hdr.hwndFrom;
     UpdateFloatSpinEditText(SpinEdit, NewValue);
     Windows.SendMessage(spinHandle, UDM_SETPOS32, 0, 500);
-    WindowInfo^.spinValue := NewValue;
   end;
 
   procedure SetMinMaxInfo(var MinMaxInfo: TMINMAXINFO);
@@ -1422,7 +1422,7 @@ begin
         lWinControl := WindowInfo^.WinControl;
       {$IFDEF MSG_DEBUG}
       with PDrawItemStruct(LParam)^ do
-        writeln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
+        debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, hwndItem]));
       {$ENDIF}
 
       if (lWinControl<>nil) and
@@ -1487,7 +1487,7 @@ begin
       // recreated when the enabled state is changed
       if not ThemeServices.ThemesEnabled
       and (lWinControl is TCustomBitBtn)
-      then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
+      then DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
     end;
     WM_ERASEBKGND:
     begin
@@ -2122,7 +2122,7 @@ begin
     begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
+      LMessa®ge.LParam := LParam;
       WinProcess := false;
     end;
 
@@ -2404,7 +2404,7 @@ begin
     if (PLMsg^.Result <> 0) then
     begin
 {$ifdef MSG_DEBUG}
-      writeln(MessageStackDepth, ' *ignore next character');
+      debugln(MessageStackDepth, ' *ignore next character');
 {$endif}
       IgnoreNextCharWindow := Window;
     end else begin
@@ -2412,7 +2412,7 @@ begin
       // assume WM_CHAR is always preceded by WM_KEYDOWN
 {$ifdef MSG_DEBUG}
       if IgnoreNextCharWindow <> 0 then
-        writeln(MessageStackDepth, ' *stop ignoring next character');
+        debugln(MessageStackDepth, ' *stop ignoring next character');
 {$endif}
       IgnoreNextCharWindow := 0;
     end;

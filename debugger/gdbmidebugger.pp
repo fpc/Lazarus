@@ -2172,7 +2172,13 @@ begin
 
   DebugLn(['TGDBMIDebugger.StartDebugging WorkingDir="',WorkingDir,'"']);
   if WorkingDir <> ''
-  then ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(WorkingDir)], []);
+  then begin
+    // to workaround a possible bug in gdb, first set the workingdir to .
+    // otherwise on second run within the same gdb session the workingdir
+    // is set to c:\windows
+    ExecuteCommand('-environment-cd %s', ['.'], [cfIgnoreError]);
+    ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(WorkingDir)], []);
+  end;
 
   FTargetFlags := [tfHasSymbols]; // Set until proven otherwise
 

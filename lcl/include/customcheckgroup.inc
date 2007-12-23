@@ -57,6 +57,12 @@ begin
   OwnerFormDesignerModified(Self);
 end;
 
+procedure TCustomCheckGroup.RaiseIndexOutOfBounds(Index: integer ) ;
+begin
+  raise Exception.CreateFmt(rsIndexOutOfBounds,
+                            [ClassName, Index, FItems.Count - 1]);
+end;
+
 procedure TCustomCheckGroup.SetAutoFill(const AValue: boolean);
 begin
   if FAutoFill=AValue then exit;
@@ -144,7 +150,7 @@ end;
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
+    RaiseIndexOutOfBounds(Index);
   Result:=TCheckBox(FButtonList[Index]).Enabled;
 end;
 
@@ -152,7 +158,7 @@ procedure TCustomCheckGroup.SetCheckEnabled(Index: integer;
   const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
+    RaiseIndexOutOfBounds(Index);
   TCheckBox(FButtonList[Index]).Enabled:=AValue;
 end;
 
@@ -170,14 +176,14 @@ end;
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
+    RaiseIndexOutOfBounds(Index);
   Result:=TCheckBox(FButtonList[Index]).Checked;
 end;
 
 procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
+    RaiseIndexOutOfBounds(Index);
   // disable OnClick
   TCheckBox(FButtonList[Index]).OnClick:=nil;
   // set value

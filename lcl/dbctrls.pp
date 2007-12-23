@@ -36,9 +36,10 @@ unit DbCtrls;
 interface          
 
 uses
-  Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, Chart,
-  LCLType;
+  Classes, SysUtils, DB,
+  LCLStrConsts, LCLProc, LMessages, LCLType, LResources, GraphType,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls,
+  Calendar, Chart;
 
 Type
   { TFieldDataLink }
@@ -1402,6 +1403,9 @@ end;
 {$Include dbimage.inc}
 {$Include dbcalendar.inc}
 {$Include dbcustomnavigator.inc}
+
+initialization
+  {$I lcl_dbnav_images.lrs}
 
 finalization
   FieldClasses.Free;

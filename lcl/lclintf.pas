@@ -186,7 +186,6 @@ begin
 end;
 
 initialization
-  {$I lclicons.lrs}
   InternalInit;
 
 end.

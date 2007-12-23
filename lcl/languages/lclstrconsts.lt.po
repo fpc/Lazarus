@@ -40,8 +40,8 @@ msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left.
 msgstr " Perspėjimas: liko %s nepašalintos nuorodos į LM_PAINT/LM_GtkPAINT pranešimus."
 
 #: lclstrconsts:rsindexoutofbounds
-msgid "%s Index %d out of bounds 0-%d"
-msgstr "%s indeksas %d peržengia ribas 0-%d"
+msgid "%s Index %d out of bounds 0 .. %d"
+msgstr "%s indeksas %d peržengia ribas 0 .. %d"
 
 #: lclstrconsts:rsisalreadyassociatedwith
 msgid "%s is already associated with %s"

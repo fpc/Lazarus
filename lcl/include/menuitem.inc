@@ -402,7 +402,7 @@ end;
 function TMenuItem.GetItem(Index: Integer): TMenuItem;
 begin
   if FItems = nil then
-    raise EMenuError.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,0]);
+    raise EMenuError.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,-1]);
   Result := TMenuItem(FItems[Index]);
 end;
 

@@ -75,7 +75,6 @@ tools: lcl components
         
 #-----------------------------------------------------------------------------
 examples: lcl components
-        $(MAKE) -C examples
 
 #-----------------------------------------------------------------------------
 all: lcl components packager/registration ideintf designer packager ide starter lazbuilder

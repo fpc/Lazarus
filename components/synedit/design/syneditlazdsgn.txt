@@ -19,3 +19,4 @@ tsynsqlsyn.png
 tsyntexsyn.png
 tsynunixshellscriptsyn.png
 tsynxmlsyn.png
+tsynvbsyn.png

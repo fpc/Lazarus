@@ -471,6 +471,7 @@ type
     FTopIndex: integer;
     function GetCount: Integer;
     function GetTopIndex: Integer;
+    procedure RaiseIndexOutOfBounds(AIndex: integer);
     procedure SetColumns(const AValue: Integer);
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
@@ -495,7 +496,7 @@ type
     function GetCachedDataSize: Integer; virtual; // returns the amount of data needed per item
     function GetCachedData(const AIndex: Integer): Pointer;
     procedure SetExtendedSelect(Val: boolean); virtual;
-    procedure SetItemIndex(Val: integer); virtual;
+    procedure SetItemIndex(AIndex: integer); virtual;
     procedure SetItems(Value: TStrings); virtual;
     procedure SetItemHeight(Value: Integer);
     procedure SetMultiSelect(Val: boolean); virtual;
@@ -802,6 +803,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
     property OnEditingDone;

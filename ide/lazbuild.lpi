@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="/"/>
-    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
-      <IconPath Value="./"/>
+      <IconPath Value=".\"/>
       <TargetFileExt Value=""/>
     </General>
     <PublishOptions>
@@ -17,15 +17,16 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <CommandLineParams Value="c:\lazarus\source\lazarus\examples\hello.lpi"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="IDEIntf"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="SynEdit"/>
       </Item2>
     </RequiredPackages>
     <Units Count="3">
@@ -48,13 +49,14 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
+    <PathDelim Value="\"/>
     <Target>
-      <Filename Value="../lazbuild"/>
+      <Filename Value="..\lazbuild"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="include/;include/$(TargetOS)/"/>
-      <OtherUnitFiles Value="../designer/;../packager/;../components/codetools/units/$(TargetCPU)-$(TargetOS)/"/>
-      <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)"/>
+      <IncludeFiles Value="include\;include\$(TargetOS)\"/>
+      <OtherUnitFiles Value="..\designer\;..\packager\;..\components\codetools\units\$(TargetCPU)-$(TargetOS)\"/>
+      <UnitOutputDirectory Value="..\units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>

@@ -16,15 +16,28 @@ interface
 uses
   SynTextDrawer, SynEditKeyCmds, SynEditTypes, SynEditStrConst,
   SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
-  SynEdit, SynEditHighlighter, SynhighlighterPas, SynCompletion,
-  SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
-  SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
-  SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
-  SynHighlighterUNIXShellScript, SynHighlighterCss, SynHighlighterPHP,
-  SynHighlighterTeX, SynHighlighterHashEntries, SynHighlighterSQL,
-  SynHighlighterPython, SynHighlighterAny,
-  SynEditLazDsgn;
+  SynEdit, SynEditHighlighter, SynCompletion, SynEditAutoComplete, 
+  SynEditLazDsgn, SynRegExpr, SynEditRegexSearch, SynEditExport, 
+  SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
+  SynHighlighterAny,
+  SynhighlighterCPP, 
+  SynHighlighterCss, 
+  SynHighlighterHashEntries, 
+  SynhighlighterHTML, 
+  SynHighlighterJava,
+  SynHighlighterJScript,
+  SynHighlighterLFM, 
+  SynHighlighterMulti,
+  SynHighlighterPas,
+  SynHighlighterPerl, 
+  SynHighlighterPHP,
+  SynHighlighterPosition, 
+  SynHighlighterPython, 
+  SynHighlighterSQL,
+  SynHighlighterTeX, 
+  SynHighlighterUNIXShellScript, 
+  SynHighlighterVB, 
+  SynHighlighterXML;
 
 implementation
 

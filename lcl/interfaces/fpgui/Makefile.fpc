@@ -13,7 +13,7 @@ packages=rtl
 units=interfaces
 
 [prerules]
-ifeq ($(OS_TARGET),linux)
+ifneq ($(findstring $(OS_TARGET),$(UNIXs)),)
 fpGUIPlatform=x11
 endif
 ifeq ($(OS_TARGET),win32)

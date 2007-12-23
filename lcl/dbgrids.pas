@@ -34,17 +34,12 @@ unit DBGrids;
 
 {$mode objfpc}{$H+}
 
-{$IF defined(VER2_0_2) and defined(win32)}
-// FPC <= 2.0.2 compatibility code
-// WINDOWS define was added after FPC 2.0.2
-  {$define WINDOWS}
-{$endif}
-
 interface
 
 uses
-  Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB,
-  LMessages, Grids, Dialogs, Controls, Themes;
+  Classes, SysUtils, DB,
+  LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
+  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes;
 
 type
   TCustomDbGrid = class;
@@ -1803,7 +1798,8 @@ begin
         doOnKeyDown;
         if (Key<>0) and (ssCtrl in Shift) and GridCanModify then
           if not (dgConfirmDelete in Options) or
-            (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
+            (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>
+              mrCancel)
           then begin
             doDelete;
             key := 0;
@@ -3453,5 +3449,8 @@ begin
   if Result then
     FGrid.Invalidate;
 end;
+
+initialization
+{$I lcl_dbgrid_images.lrs}
 
 end.

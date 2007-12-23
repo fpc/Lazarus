@@ -1128,6 +1128,9 @@ begin
       //debugln('TSourceEditor.StartFindAndReplace B not FindTextAtCursor');
       LazFindReplaceDialog.FindText:='';
     end;
+    // if there is no FindText, use the most recently used FindText
+    if (LazFindReplaceDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
+      LazFindReplaceDialog.FindText:=InputHistories.FindHistory[0]
   end;
 
   GetDialogPosition(LazFindReplaceDialog.Width,LazFindReplaceDialog.Height,ALeft,ATop);
@@ -4613,7 +4616,11 @@ begin
   else
     LoadFindInFilesHistory(FindInFilesDialog);
 
+  // if there is no FindText, use the most recently used FindText
   FindInFilesDialog.FindText:= FindText;
+  if (FindInFilesDialog.FindText='') and (InputHistories.FindHistory.Count > 0) then
+      FindInFilesDialog.FindText:=InputHistories.FindHistory[0];
+
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
   FindInFilesDialog.Options:=

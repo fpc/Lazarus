@@ -38,8 +38,8 @@ msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left.
 msgstr " WAARSCHUWING: Er zijn %s LM_PAINT/LM_GtkPAINT berichten niet verwijderd."
 
 #: lclstrconsts:rsindexoutofbounds
-msgid "%s Index %d out of bounds 0-%d"
-msgstr "%s Index %d valt buiten de grenzen 0-%d"
+msgid "%s Index %d out of bounds 0 .. %d"
+msgstr "%s Index %d valt buiten de grenzen 0 .. %d"
 
 #: lclstrconsts:rsisalreadyassociatedwith
 msgid "%s is already associated with %s"

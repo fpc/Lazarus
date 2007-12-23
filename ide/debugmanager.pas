@@ -67,6 +67,8 @@ type
     ddtEvaluate
     );
     
+  { TDebugManager }
+
   TDebugManager = class(TBaseDebugManager)
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
@@ -122,6 +124,7 @@ type
     procedure InitEvaluateDlg;
 
     procedure FreeDebugger;
+    procedure ResetDebugger;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -1011,15 +1014,8 @@ begin
 end;
 
 procedure TDebugManager.mnuResetDebuggerClicked(Sender: TObject);
-var
-  OldState: TDBGState;
 begin
-  OldState := State;
-  if OldState = dsNone then Exit;
-
-  EndDebugging;
-//  OnDebuggerChangeState(FDebugger, OldState);
-//  InitDebugger;
+  ResetDebugger;
 end;
 
 procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
@@ -1636,6 +1632,18 @@ begin
   then MainIDE.ToolStatus := itNone;
 end;
 
+procedure TDebugManager.ResetDebugger;
+var
+  OldState: TDBGState;
+begin
+  OldState := State;
+  if OldState = dsNone then Exit;
+
+  EndDebugging;
+//  OnDebuggerChangeState(FDebugger, OldState);
+//  InitDebugger;
+end;
+
 function TDebugManager.InitDebugger: Boolean;
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
@@ -1842,11 +1850,12 @@ begin
   //debugln('TDebugManager.ProcessCommand ',dbgs(Command));
   Handled:=true;
   case Command of
-  ecPause:       DoPauseProject;
-  ecStepInto:    DoStepIntoProject;
-  ecStepOver:    DoStepOverProject;
-  ecRunToCursor: DoRunToCursor;
-  ecStopProgram: DoStopProject;
+  ecPause:             DoPauseProject;
+  ecStepInto:          DoStepIntoProject;
+  ecStepOver:          DoStepOverProject;
+  ecRunToCursor:       DoRunToCursor;
+  ecStopProgram:       DoStopProject;
+  ecResetDebugger:     ResetDebugger;
   ecToggleCallStack:   DoToggleCallStack;
   ecEvaluate:          ViewDebugDialog(ddtEvaluate);
   ecToggleWatches:     ViewDebugDialog(ddtWatches);

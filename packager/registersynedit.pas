@@ -44,7 +44,7 @@ uses
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
-  SynHighlighterSQL, SynHighlighterPython, SynHighlighterAny,
+  SynHighlighterSQL, SynHighlighterPython, SynHighlighterVB, SynHighlighterAny,
   LazarusPackageIntf, LazarusIDEStrConsts;
 
 procedure Register;
@@ -151,6 +151,11 @@ begin
   RegisterComponents('SynEdit',[TSynMultiSyn]);
 end;
 
+procedure RegisterSynHighlighterVB;
+begin
+  RegisterComponents('SynEdit',[TSynVBSyn]);
+end;
+
 procedure Register;
 begin
   RegisterUnit('SynEdit',@RegisterSynEditUnit);
@@ -172,6 +177,7 @@ begin
   RegisterUnit('SynHighlighterTeX',@RegisterSynHighlighterTeX);
   RegisterUnit('SynHighlighterSQL',@RegisterSynHighlighterSQL);
   RegisterUnit('SynHighlighterPython',@RegisterSynHighlighterPython);
+  RegisterUnit('SynHighlighterVB',@RegisterSynHighlighterVB);
 
   RegisterUnit('SynHighlighterAny',@RegisterSynHighlighterAny);
   RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);

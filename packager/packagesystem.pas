@@ -1260,6 +1260,7 @@ begin
     AddFile('synhighlightertex.pas','SynHighlighterTeX',pftUnit,[],cpBase);
     AddFile('synhighlightersql.pas','SynHighlighterSQL',pftUnit,[],cpBase);
     AddFile('synhighlighterpython.pas','SynHighlighterPython',pftUnit,[],cpBase);
+    AddFile('synhighlightervb.pas','SynHighlighterVB',pftUnit,[],cpBase);
     AddFile('synhighlighterany.pas','SynHighlighterAny',pftUnit,[],cpBase);
 
     // add unit paths

@@ -408,7 +408,8 @@ begin
       nbRefresh: Refresh;
       nbDelete:
         if (not ConfirmDelete)
-        or (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
+        or (MessageDlg(rsDeleteRecord, mtConfirmation, mbOKCancel, 0 )<>
+          mrCancel)
         then
           Delete;
       end;

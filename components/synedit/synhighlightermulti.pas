@@ -276,7 +276,9 @@ end;
 
 function TSynMultiSyn.GetAttribCount: integer;
 begin
-  Result := inherited GetAttribCount + Schemes.Count;
+  Result := Schemes.Count;
+  if DefaultHighlighter <> nil then
+    Inc( Result, inherited GetAttribCount );
 end;
 
 function TSynMultiSyn.GetAttribute(
@@ -530,7 +532,10 @@ begin
   fCurrScheme := -1;
   fTmpRange := nil;
   //GBN 31/02/2002 - From Flavio
-  DefaultHighlighter.ResetRange;
+  if DefaultHighlighter <> nil then begin
+    DefaultHighlighter.ResetRange;
+    fTmpRange := DefaultHighlighter.GetRange;
+  end;
 end;
 
 procedure TSynMultiSyn.SetDefaultHighlighter(
@@ -736,7 +741,7 @@ end;
 
 constructor TgmScheme.Create(TheCollection: TCollection);
 begin
-  inherited Create(Collection);
+  inherited Create(TheCollection);
   fCaseSensitive := True;
   fMarkerAttri := TSynHighlighterAttributes.Create(SYNS_AttrMarker);
   fMarkerAttri.OnChange := {$IFDEF FPC}@{$ENDIF}MarkerAttriChanged;

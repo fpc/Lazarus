@@ -21,6 +21,8 @@
 constructor TMouse.Create;
 begin
   inherited Create;
+  FDragImmediate := true;
+  FDragThreshold := 5;
   FWheelScrollLines := -1;
 end;
 

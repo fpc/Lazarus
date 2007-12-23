@@ -78,6 +78,9 @@ ResourceString
   rsReplace = 'Replace';
   rsReplaceAll = 'Replace all';
   
+  // DBGrid
+  rsDeleteRecord = 'Delete record?';
+  
   // gtk interface
   rsWarningUnremovedPaintMessages = ' WARNING: There are %s unremoved LM_'
     +'PAINT/LM_GtkPAINT message links left.';
@@ -173,7 +176,7 @@ ResourceString
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as parent';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
-  rsIndexOutOfBounds = '%s Index %d out of bounds 0-%d';
+  rsIndexOutOfBounds = '%s Index %d out of bounds 0 .. %d';
   rsUnknownPictureExtension = 'Unknown picture extension';
   rsBitmaps = 'Bitmaps';
   rsPixmap = 'Pixmap';
