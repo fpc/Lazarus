@@ -1,0 +1,2 @@
+tprintdialog.png
+tprintersetupdialog.png

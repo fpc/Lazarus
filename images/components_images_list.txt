@@ -78,8 +78,6 @@ components/tpanel.png
 components/tpicture.png
 components/tpopup.png
 components/tpopupmenu.png
-components/tprinterdialog.png
-components/tprintersetupdialog.png
 components/tprocess.png
 components/tprogressbar.png
 components/tquery.png

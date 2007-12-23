@@ -211,131 +211,6 @@ var
   RegisteredActions: TRegisteredActionCategories;
   NotifyActionListChange: TNotifyActionListChange;
 
-type
-   PCharArray   = Array[0..16+5] of PChar;
-var
-  aColor : PChar = 'a c #009900';
-  aColorDis: PChar = 'a c #C0C0C0';
-  cImg_Add: PCharArray =
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   ' ',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '.....#####......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.#####aaa#####..',
-   '.#aaaaaaaaaaa#..',
-   '.#aaaaaaaaaaa#..',
-   '.#aaaaaaaaaaa#..',
-   '.#####aaa#####..',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#####......',
-   '................');
-
-  cImg_Delete: PCharArray =
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   ' ',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '................',
-   '................',
-   '................',
-   '................',
-   '.#############..',
-   '.#aaaaaaaaaaa#..',
-   '.#aaaaaaaaaaa#..',
-   '.#aaaaaaaaaaa#..',
-   '.#############..',
-   '................',
-   '................',
-   '................',
-   '................',
-   '................');
-
-  cImg_MoveUp: PCharArray =
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   ' ',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '.......#........',
-   '......###.......',
-   '.....##a##......',
-   '....#aaaaa#.....',
-   '...###aaa###....',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#####......',
-   '................');
-   
-  cImg_MoveDown: PCharArray =
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   ' ',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '.....#####......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '.....#aaa#......',
-   '...###aaa###....',
-   '....#aaaaa#.....',
-   '.....##a##......',
-   '......###.......',
-   '.......#........',
-   '................');
-   
-{  cImg_Delete: PCharArray =
-  ('16 16 5 1',
-   '. c None',
-   '# c #303030',
-   ' ',
-   ' ',
-   ' ',
-   '................',
-   '................',
-   '................',
-   '..##.......##...',
-   '..####....##....',
-   '...####..##.....',
-   '.....####.......',
-   '......###.......',
-   '.....#####......',
-   '....###..##.....',
-   '...###....##....',
-   '..###......#....',
-   '..###.......#...',
-   '...#............',
-   '.............#..',
-   '................');}
-
 procedure RegisterActions(const ACategory: string;
                           const AClasses: array of TBasicActionClass;
                           AResource: TComponentClass);
@@ -662,26 +537,8 @@ begin
 end;
 
 procedure TActionListEditor.ActDeleteUpdate(Sender: TObject);
-var
-  oldState: Boolean;
-  bmp: TBitMap;
-  imgArray: PCharArray;
 begin
-  oldState := TAction(Sender).Enabled;
   TAction(Sender).Enabled := lstActionName.SelCount > 0;
-  if TAction(Sender).Enabled <> oldState then begin
-    bmp := TBitMap.Create;
-    try
-      imgArray := cImg_Delete;
-      if TAction(Sender).Enabled
-      then imgArray := cImg_Delete
-      else imgArray[3] := aColorDis;
-      bmp.Handle := CreatePixmapIndirect(@imgArray[0], GetSysColor(COLOR_BTNFACE));
-      btnDelete.Glyph.Assign(bmp);
-    finally
-      bmp.Free;
-    end;
-  end;
 end;
 
 procedure TActionListEditor.ActMoveDownExecute(Sender: TObject);
@@ -706,52 +563,16 @@ begin
 end;
 
 procedure TActionListEditor.ActMoveDownUpdate(Sender: TObject);
-var
-  oldState: Boolean;
-  bmp: TBitMap;
-  imgArray: PCharArray;
 begin
-  oldState := TAction(Sender).Enabled;
   TAction(Sender).Enabled := (lstActionName.Items.Count > 1)
                          and (lstActionName.ItemIndex >= 0)
                          and (lstActionName.ItemIndex < lstActionName.Items.Count-1);
-  if TAction(Sender).Enabled <> oldState then begin
-    bmp := TBitMap.Create;
-    try
-      imgArray := cImg_MoveDown;
-      if TAction(Sender).Enabled
-      then imgArray[3] := aColor
-      else imgArray[3] := aColorDis;
-      bmp.Handle := CreatePixmapIndirect(@imgArray[0], GetSysColor(COLOR_BTNFACE));
-      btnDown.Glyph.Assign(bmp);
-    finally
-      bmp.Free;
-    end;
-  end;
 end;
 
 procedure TActionListEditor.ActMoveUpUpdate(Sender: TObject);
-var
-  oldState: Boolean;
-  bmp: TBitMap;
-  imgArray: PCharArray;
 begin
-  oldState := TAction(Sender).Enabled;
   TAction(Sender).Enabled := (lstActionName.Items.Count > 1)
                          and (lstActionName.ItemIndex > 0);
-  if TAction(Sender).Enabled <> oldState then begin
-    bmp := TBitMap.Create;
-    try
-      imgArray := cImg_MoveUp;
-      if TAction(Sender).Enabled
-      then imgArray[3] := aColor
-      else imgArray[3] := aColorDis;
-      bmp.Handle := CreatePixmapIndirect(@imgArray[0], GetSysColor(COLOR_BTNFACE));
-      btnUp.Glyph.Assign(bmp);
-    finally
-      bmp.Free;
-    end;
-  end;
 end;
 
 procedure TActionListEditor.ActNewExecute(Sender: TObject);
@@ -934,28 +755,20 @@ begin
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
-  cImg_Add[3] := aColor;
-  bmp := TBitMap.Create;
-  bmp.Handle := CreatePixmapIndirect(@cImg_Add[0], GetSysColor(COLOR_BTNFACE));
-  btnAdd.Glyph.Assign(Bmp);
+  bmp := LoadBitmapFromLazarusResource('add');
+  btnAdd.Glyph.Assign(bmp);
   bmp.Free;
   
-  cImg_Delete[3] := aColor;
-  bmp := TBitMap.Create;
-  bmp.Handle := CreatePixmapIndirect(@cImg_Delete[0], GetSysColor(COLOR_BTNFACE));
-  btnDelete.Glyph.Assign(Bmp);
+  bmp := LoadBitmapFromLazarusResource('delete');
+  btnDelete.Glyph.Assign(bmp);
   bmp.Free;
 
-  cImg_MoveUp[3] := aColor;
-  bmp := TBitMap.Create;
-  bmp.Handle := CreatePixmapIndirect(@cImg_MoveUp[0], GetSysColor(COLOR_BTNFACE));
-  btnUp.Glyph.Assign(Bmp);
+  bmp := LoadBitmapFromLazarusResource('arrow_up');
+  btnUp.Glyph.Assign(bmp);
   bmp.Free;
 
-  cImg_MoveDown[3] := aColor;
-  bmp := TBitMap.Create;
-  bmp.Handle := CreatePixmapIndirect(@cImg_MoveDown[0], GetSysColor(COLOR_BTNFACE));
-  btnDown.Glyph.Assign(Bmp);
+  bmp := LoadBitmapFromLazarusResource('arrow_down');
+  btnDown.Glyph.Assign(bmp);
   bmp.Free;
 
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
