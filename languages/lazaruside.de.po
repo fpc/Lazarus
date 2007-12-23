@@ -1875,6 +1875,10 @@ msgstr "Gewählte Meldungen in die Zwischenablage kopieren"
 msgid "Copy selection to clipboard"
 msgstr "Auswahl in die Zwischenablage kopieren"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Kopiere Wort wenn nichts ausgewählt"

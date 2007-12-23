@@ -1865,6 +1865,10 @@ msgstr "Copiar mensagens selecionadas para Área de Transferência"
 msgid "Copy selection to clipboard"
 msgstr "Copiar seleção para Área de Transferência"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Copiar palavra ao tentar copiar nada"

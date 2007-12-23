@@ -1873,6 +1873,10 @@ msgstr ""
 msgid "Copy selection to clipboard"
 msgstr "Copia la selecció al porta-retalls"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Copia paraula abans de no copiar-la"

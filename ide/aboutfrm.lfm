@@ -5,55 +5,67 @@ object AboutForm: TAboutForm
   Width = 608
   HorzScrollBar.Page = 607
   VertScrollBar.Page = 269
-  ActiveControl = AboutMemo
+  ActiveControl = Notebook1
   Caption = 'About Lazarus'
   ClientHeight = 270
   ClientWidth = 608
   OnCreate = AboutFormCreate
+  PopupMenu = PopupMenu1
   Position = poScreenCenter
   object VersionLabel: TLabel
     Left = 14
-    Height = 14
+    Height = 17
     Top = 6
-    Width = 51
+    Width = 73
     Alignment = taCenter
     Caption = 'Version #:'
-    Color = clNone
     ParentColor = False
   end
   object BuildDateLabel: TLabel
     Left = 14
-    Height = 14
+    Height = 17
     Top = 23
-    Width = 28
+    Width = 40
     Alignment = taCenter
     Caption = 'Date:'
-    Color = clNone
     ParentColor = False
   end
   object RevisionLabel: TLabel
     Left = 14
-    Height = 14
+    Height = 17
     Top = 40
-    Width = 66
+    Width = 101
     Caption = 'RevisionLabel'
-    Color = clNone
     ParentColor = False
   end
   object PlatformLabel: TLabel
     Left = 14
-    Height = 14
+    Height = 17
     Top = 61
-    Width = 66
+    Width = 101
     Caption = 'PlatformLabel'
-    Color = clNone
     ParentColor = False
+  end
+  object Image1: TImage
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PlatformLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Notebook1
+    Left = 6
+    Height = 113
+    Top = 84
+    Width = 203
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Center = True
+    Proportional = True
+    Transparent = False
   end
   object CloseButton: TBitBtn
     Left = 70
-    Height = 36
+    Height = 34
     Top = 225
-    Width = 81
+    Width = 74
     AutoSize = True
     Cancel = True
     Caption = 'Close'
@@ -93,14 +105,15 @@ object AboutForm: TAboutForm
     Top = 6
     Width = 389
     Anchors = [akTop, akLeft, akRight, akBottom]
-    PageIndex = 0
+    PageIndex = 3
+    TabOrder = 0
     object AboutPage: TPage
       Caption = 'About'
-      ClientWidth = 381
-      ClientHeight = 235
+      ClientWidth = 389
+      ClientHeight = 261
       object AboutMemo: TMemo
-        Height = 235
-        Width = 381
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -109,11 +122,11 @@ object AboutForm: TAboutForm
     end
     object ContributorsPage: TPage
       Caption = 'Contributors'
-      ClientWidth = 381
-      ClientHeight = 235
+      ClientWidth = 389
+      ClientHeight = 261
       object ContributorsMemo: TMemo
-        Height = 231
-        Width = 385
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
@@ -122,16 +135,35 @@ object AboutForm: TAboutForm
     end
     object AcknowledgementsPage: TPage
       Caption = 'Acknowledgements'
-      ClientWidth = 381
-      ClientHeight = 235
+      ClientWidth = 389
+      ClientHeight = 261
       object AcknowledgementsMemo: TMemo
-        Height = 235
-        Width = 381
+        Height = 261
+        Width = 389
         Align = alClient
         ReadOnly = True
         ScrollBars = ssAutoBoth
         TabOrder = 0
       end
+    end
+    object LogoPage: TPage
+      Caption = 'LogoPage'
+      ClientWidth = 385
+      ClientHeight = 227
+      object LogoImage: TImage
+        Height = 227
+        Width = 385
+        Align = alClient
+        Transparent = False
+      end
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    left = 18
+    top = 218
+    object miVerToClipboard: TMenuItem
+      Caption = 'Copy version information to clipboard'
+      OnClick = miVerToClipboardClick
     end
   end
 end

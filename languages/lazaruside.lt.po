@@ -1879,6 +1879,10 @@ msgstr "Kopijuoti pažymėtus pranešimus į iškarpinę"
 msgid "Copy selection to clipboard"
 msgstr "Pažymėtą kopijuoti į iškarpinę"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Kai kopijuojant nieks nepažymėta- kopijuoti žodį"

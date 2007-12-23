@@ -1873,6 +1873,10 @@ msgstr "Copy pesan yang dipilih ke clipboard"
 msgid "Copy selection to clipboard"
 msgstr "Copy pilihan ke clipboard"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Copy kata pada copy kosong"

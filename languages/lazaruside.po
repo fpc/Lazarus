@@ -2070,6 +2070,10 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr ""

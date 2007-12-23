@@ -1876,6 +1876,10 @@ msgstr "复制所选的消息到剪切板"
 msgid "Copy selection to clipboard"
 msgstr "复制选区到剪切板"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "在没有复制时复制单词"

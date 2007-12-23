@@ -8,7 +8,7 @@ version=0.5
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=unix/ win32/ carbon/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=unix/ win32/ carbon/ ./
-options=-dUseCache -dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
+options=-dUseCache -dNativePrint -dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
 [target]
 units=printer4lazarus.pas

@@ -1862,6 +1862,10 @@ msgstr "Kopio valitut kääntäjän viestit leikepöydälle"
 msgid "Copy selection to clipboard"
 msgstr "Kopio valittu leikepöydälle"
 
+#: lazarusidestrconsts:lisvertoclipboard
+msgid "Copy version information to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
 msgstr "Valitse kopioinnissa kursorin osoittama sana jos muuta ei ole valittu"
