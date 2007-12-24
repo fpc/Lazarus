@@ -751,7 +751,7 @@ begin
     try
       FreeHandle;
       inherited SetSize(AValue);
-      FHeight := - Round(AValue * FPixelsPerInch / 72);
+      FHeight := -MulDiv(AValue, FPixelsPerInch, 72);
       if IsFontNameXLogicalFontDesc(Name) then
         Name:=ClearXLFDHeight(Name);
       Changed;
@@ -804,7 +804,7 @@ procedure TFont.SetHeight(Value: Integer);
 begin
   if FHeight=Value then exit;
   // set Size first. This will set FHeight to a rounded equivalent
-  Size := -Round(Value*72/FPixelsPerInch);
+  Size := -MulDiv(Value, 72, FPixelsPerInch);
   // store the real FHeight
   FHeight:=Value;
 end;
@@ -1119,7 +1119,7 @@ begin
     OldStyle:=FStyle;
     FreeHandle;
     FHandle := FontData.Handle;
-    inherited SetSize(-Round(FontData.Height * 72 / FPixelsPerInch));
+    inherited SetSize(-MulDiv(FontData.Height, 72, FPixelsPerInch));
     FHeight := FontData.Height;
     FPitch:=FontData.Pitch;
     FStyle:=FontData.Style;
