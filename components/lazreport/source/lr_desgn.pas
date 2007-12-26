@@ -5065,7 +5065,8 @@ procedure TfrDesignerForm.frDesignerFormCloseQuery(Sender: TObject;
 var
   Res:integer;
 begin
-  if FileModified and (not ((csDesigning in CurReport.ComponentState) and CurReport.StoreInDFM)) then
+  if FileModified and (CurReport<>nil) and
+    (not ((csDesigning in CurReport.ComponentState) and CurReport.StoreInDFM)) then
   begin
     Res:=Application.MessageBox(PChar(sSaveChanges + ' ' + sTo + ' ' + ExtractFileName(CurDocName) + '?'),
       PChar(sConfirm), mb_IconQuestion + mb_YesNoCancel);
@@ -5074,6 +5075,7 @@ begin
       mrNo:
         begin
           CanClose := True;
+          FileModified := False; // no means don't want changes
           ModalResult := mrCancel;
         end;
       mrYes:
