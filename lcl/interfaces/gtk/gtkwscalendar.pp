@@ -27,13 +27,15 @@ unit GtkWSCalendar;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf, GtkFontCache,
   {$ENDIF}
-  GtkProc, GtkDef, Calendar, WSCalendar, WSLCLClasses;
+  Controls, Calendar, LCLType, LMessages,
+  GtkProc, GtkDef, GtkInt, GtkWsControls,
+  InterfaceBase, WSCalendar, WSLCLClasses, WSProc;
 
 type
 
@@ -42,7 +44,11 @@ type
   TGtkWSCustomCalendar = class(TWSCustomCalendar)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class procedure SetDisplaySettings(const ACalendar: TCustomCalendar; 
@@ -50,28 +56,67 @@ type
     class procedure SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean); override;
   end;
 
-function GetGtkCalendar(const ACalendar: TCustomCalendar): PGtkCalendar;
-
 implementation
 
-function GetGtkCalendar(const ACalendar: TCustomCalendar): PGtkCalendar;
-var
-  WinWidgetInfo: PWidgetInfo;
+class procedure TGtkWSCustomCalendar.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
 begin
-  Result:=nil;
-  if (ACalendar=nil) or (not ACalendar.HandleAllocated) then exit;
-  WinWidgetInfo:=GetWidgetInfo(PGtkWidget(ACalendar.Handle), False);
-  if WinWidgetInfo=nil then exit;
-  Result:=PGtkCalendar(WinWidgetInfo^.CoreWidget);
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGtkWidgetset(Widgetset) do
+  begin
+    SetCallback(LM_MONTHCHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_YEARCHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_DAYCHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
+class function TGtkWSCustomCalendar.GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
+begin
+  Result := PGtkCalendar(GetWidgetInfo(PGtkWidget(ACalendar.Handle))^.CoreWidget);
+end;
+
+class function TGtkWSCustomCalendar.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  FrameWidget, CalendarWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGtkAllocation;
+begin
+  FrameWidget := gtk_frame_new(nil);
+  CalendarWidget := gtk_calendar_new();
+  gtk_container_add(PGtkContainer(FrameWidget), CalendarWidget);
+  gtk_widget_show_all(FrameWidget);
+
+  Result := TLCLIntfHandle(PtrUInt(FrameWidget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(FrameWidget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  WidgetInfo := CreateWidgetInfo(FrameWidget, AWinControl, AParams);
+  WidgetInfo^.CoreWidget := CalendarWidget;
+  SetMainWidget(FrameWidget, CalendarWidget);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallBacks(FrameWidget, WidgetInfo);
 end;
 
 class function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   Year, Month, Day: guint;  //used for csCalendar
+  CalendarWidget: PGtkCalendar;
 begin
-  gtk_calendar_get_date(GetGtkCalendar(ACalendar), @Year, @Month, @Day);
+  Result := 0;
+  if WSCheckHandleAllocated(ACalendar, 'GetDateTime') then
+    Exit;
+  gtk_calendar_get_date(GetCalendar(ACalendar), @Year, @Month, @Day);
   //For some reason, the month is zero based.
-  Result := EncodeDate(Year,Month+1,Day);
+  Result := EncodeDate(Year, Month + 1, Day);
 end;
 
 class procedure TGtkWSCustomCalendar.SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime);
@@ -79,12 +124,14 @@ var
   Year, Month, Day: string;
   GtkCalendar: PGtkCalendar;
 begin
-  GtkCalendar := GetGtkCalendar(ACalendar);
+  if WSCheckHandleAllocated(ACalendar, 'SetDateTime') then
+    Exit;
+  GtkCalendar := GetCalendar(ACalendar);
   Year := FormatDateTime('yyyy', ADateTime);
   Month := FormatDateTime('mm', ADateTime);
   Day := FormatDateTime('dd', ADateTime);
-  gtk_calendar_select_month(GtkCalendar,StrtoInt(Month)-1,StrToInt(Year));
-  gtk_calendar_select_day(GtkCalendar,StrToInt(Day));
+  gtk_calendar_select_month(GtkCalendar, StrtoInt(Month) - 1, StrToInt(Year));
+  gtk_calendar_select_day(GtkCalendar, StrToInt(Day));
 end;
 
 class procedure TGtkWSCustomCalendar.SetDisplaySettings(const ACalendar: TCustomCalendar;
@@ -93,6 +140,8 @@ var
   num: dword;
   gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
 begin
+  if WSCheckHandleAllocated(ACalendar, 'SetDisplaySettings') then
+    Exit;
   num := 0;
   if (dsShowHeadings in ADisplaySettings) then
     num := Num + (1 shl 0);
@@ -110,19 +159,18 @@ begin
      num := Num  + (1 shl 4);
 
   gtkCalendarDisplayOptions := TGtkCalendarDisplayOptions(num);
-  gtk_Calendar_Display_options(GetGtkCalendar(ACalendar), gtkCalendarDisplayOptions);
+  gtk_Calendar_Display_options(GetCalendar(ACalendar), gtkCalendarDisplayOptions);
 end;
 
 class procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
   const AReadOnly: boolean);
-var
-  GtkCalendar: PGtkCalendar;
 begin
-  GtkCalendar := GetGtkCalendar(ACalendar);
+  if WSCheckHandleAllocated(ACalendar, 'SetReadOnly') then
+    Exit;
   if AReadOnly then
-    gtk_calendar_freeze(GtkCalendar)
+    gtk_calendar_freeze(GetCalendar(ACalendar))
   else
-    gtk_calendar_thaw(GtkCalendar);
+    gtk_calendar_thaw(GetCalendar(ACalendar));
 end;
 
 initialization

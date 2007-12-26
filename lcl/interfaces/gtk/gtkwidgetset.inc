@@ -4744,16 +4744,6 @@ begin
       gtk_widget_show(p);
     end;
 
-  csCalendar :
-    begin
-      p := gtk_frame_new(nil);
-      TempWidget := gtk_calendar_new();
-      gtk_container_add(GTK_CONTAINER(p), TempWidget);
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
-      gtk_widget_show_all(p);
-    end;
-
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(PChar(ACaption));
@@ -4872,6 +4862,7 @@ begin
   // All obsoletes (some of them may still be in use for gtk1/gtk2, they are overridden there)
   csClistBox, csListBox, csCheckListBox,
   csArrow,
+  csCalendar,
   csComboBox,
   csMemo,
   csSpinEdit,
