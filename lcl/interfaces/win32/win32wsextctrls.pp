@@ -109,7 +109,6 @@ type
   private
   protected
   public
-    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TWin32WSSplitter }
@@ -705,20 +704,6 @@ begin
 end;
 
 
-
-{ TWin32WSCustomSplitter }
-
-class procedure TWin32WSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
-var
-  ARect: TRect;
-begin
-  if ASplitter.Beveled then
-  begin
-    ARect := Rect(0, 0, ASplitter.Width, ASplitter.Height);
-    Frame3D(ASplitter.Canvas.Handle, ARect, 1, bvRaised);
-  end;
-end;
-
 {$include win32trayicon.inc}
 
 initialization
@@ -734,7 +719,7 @@ initialization
 //  RegisterWSComponent(TPage, TWin32WSPage);
 //  RegisterWSComponent(TNotebook, TWin32WSNotebook);
 //  RegisterWSComponent(TShape, TWin32WSShape);
-  RegisterWSComponent(TCustomSplitter, TWin32WSCustomSplitter);
+//  RegisterWSComponent(TCustomSplitter, TWin32WSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TWin32WSSplitter);
 //  RegisterWSComponent(TPaintBox, TWin32WSPaintBox);
 //  RegisterWSComponent(TCustomImage, TWin32WSCustomImage);

@@ -107,7 +107,6 @@ type
   private
   protected
   public
-    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TWinCEWSSplitter }
@@ -598,20 +597,6 @@ begin
 end;
 
 
-
-{ TWinCEWSCustomSplitter }
-
-class procedure TWinCEWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter);
-var
-  ARect: TRect;
-begin
-  if ASplitter.Beveled then
-  begin
-    ARect := Rect(0, 0, ASplitter.Width, ASplitter.Height);
-    Frame3D(ASplitter.Canvas.Handle, ARect, 1, bvRaised);
-  end;
-end;
-
 initialization
 
 ////////////////////////////////////////////////////
@@ -625,7 +610,7 @@ initialization
 //  RegisterWSComponent(TPage, TWinCEWSPage);
 //  RegisterWSComponent(TNotebook, TWinCEWSNotebook);
 //  RegisterWSComponent(TShape, TWinCEWSShape);
-  RegisterWSComponent(TCustomSplitter, TWinCEWSCustomSplitter);
+//  RegisterWSComponent(TCustomSplitter, TWinCEWSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TWinCEWSSplitter);
 //  RegisterWSComponent(TPaintBox, TWinCEWSPaintBox);
 //  RegisterWSComponent(TCustomImage, TWinCEWSCustomImage);

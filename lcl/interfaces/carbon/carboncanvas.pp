@@ -111,7 +111,6 @@ type
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
   public
     procedure DrawFocusRect(const ARect: TRect);
-    procedure DrawSplitter(const ARect: TRect);
     
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
@@ -743,25 +742,6 @@ begin
   OSError(
     HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal),
     Self, 'DrawFocusRect', 'HIThemeDrawFocusRect');
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonDeviceContext.DrawSplitter
-  Params:  ARect    - Bounding rectangle
-
-  Draws a splitter
- ------------------------------------------------------------------------------}
-procedure TCarbonDeviceContext.DrawSplitter(const ARect: TRect);
-var
-  DrawInfo: HIThemeSplitterDrawInfo;
-begin
-  DrawInfo.version := 0;
-  DrawInfo.adornment := kHIThemeSplitterAdornmentNone;
-  DrawInfo.state := kThemeStateActive;
-  
-  OSError(
-    HIThemeDrawPaneSplitter(RectToCGRect(ARect), DrawInfo, CGContext, kHIThemeOrientationNormal),
-    Self, 'DrawSplitter', 'HIThemeDrawPaneSplitter');
 end;
 
 {------------------------------------------------------------------------------

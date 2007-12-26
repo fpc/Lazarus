@@ -102,7 +102,6 @@ type
   private
   protected
   public
-    class procedure DrawSplitter(const ASplitter: TCustomSplitter); override;
   end;
 
   { TGtkWSSplitter }
@@ -510,86 +509,6 @@ begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
-{ TGtkWSCustomSplitter }
-
-class procedure TGtkWSCustomSplitter.DrawSplitter(
-  const ASplitter: TCustomSplitter);
-var
-  Widget: PGtkWidget;
-  ClientWidget: Pointer;
-  DCOrigin: TPoint;
-  Area: TGdkRectangle;
-  Style: PGtkStyle;
-  AWindow: PGdkWindow;
-  DevContext: TGtkDeviceContext;
-  ARect: TRect;
-  {$IFDEF Gtk1}
-  Detail: PChar;
-  {$ELSE}
-  Orientation: TGtkOrientation;
-  {$ENDIF}
-begin
-  if not ASplitter.HandleAllocated then exit;
-  DevContext:=TGtkDeviceContext(ASplitter.Canvas.Handle);
-  Widget:=PGtkWidget(ASplitter.Handle);
-  ClientWidget:=GetFixedWidget(Widget);
-  if ClientWidget<>nil then
-    Widget:=ClientWidget;
-  AWindow:=DevContext.Drawable;
-
-  Style := gtk_widget_get_style(Widget);
-  if Style = nil then
-    Style:=GetStyle(lgsButton);
-
-  DCOrigin := DevContext.Offset;
-  Area.X:=DCOrigin.X;
-  Area.Y:=DCOrigin.Y;
-  Area.Width:=ASplitter.Width;
-  Area.Height:=ASplitter.Height;
-  
-  if ASplitter.Beveled then begin
-    ARect:=Bounds(Area.x,Area.y,Area.Width,Area.Height);
-    DrawEdge(HDC(DevContext),ARect,BDR_RAISEDOUTER,BF_ADJUST+BF_RECT);
-    Area.X:=ARect.Left;
-    Area.Y:=ARect.Top;
-    Area.Width:=ARect.Right-ARect.Left;
-    Area.Height:=ARect.Bottom-ARect.Top;
-  end;
-
-  {$IFDEF Gtk1}
-  if ASplitter.ResizeAnchor in [akTop,akBottom] then
-    Detail:='vpaned'
-  else
-    Detail:='hpaned';
-    
-  gtk_paint_box(Style, AWindow,
-    GTK_WIDGET_STATE(Widget),
-    GTK_SHADOW_NONE,
-    @Area, Widget, Detail,
-    Area.X,Area.Y,Area.Width,Area.Height);
-  {$ELSE}
-  if ASplitter.ResizeAnchor in [akTop,akBottom] then
-    Orientation := GTK_ORIENTATION_HORIZONTAL
-  else
-    Orientation := GTK_ORIENTATION_VERTICAL;
-
-  // fill area
-  gtk_paint_flat_box(Style, AWindow,
-    GTK_WIDGET_STATE(Widget),
-    GTK_SHADOW_NONE,
-    @Area, Widget, 'paned',
-    Area.X, Area.Y, Area.Width, Area.Height);
-
-  // draw size grip
-  gtk_paint_handle(Style, AWindow,
-    GTK_WIDGET_STATE(Widget),
-    GTK_SHADOW_NONE,
-    @Area, Widget, 'paned',
-    Area.X, Area.Y, Area.Width, Area.Height,
-    Orientation);
-  {$ENDIF}
-end;
-
 class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -660,7 +579,7 @@ initialization
 //  RegisterWSComponent(TPage, TGtkWSPage);
 //  RegisterWSComponent(TNotebook, TGtkWSNotebook);
 //  RegisterWSComponent(TShape, TGtkWSShape);
-  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
+//  RegisterWSComponent(TCustomSplitter, TGtkWSCustomSplitter);
 //  RegisterWSComponent(TSplitter, TGtkWSSplitter);
 //  RegisterWSComponent(TPaintBox, TGtkWSPaintBox);
 //  RegisterWSComponent(TCustomImage, TGtkWSCustomImage);

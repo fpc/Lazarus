@@ -94,9 +94,7 @@ type
 
   TWSCustomSplitter = class(TWSCustomControl)
   public
-    class procedure DrawSplitter(const ASplitter: TCustomSplitter); virtual;
   end;
-  TWSCustomSplitterClass = class of TWSCustomSplitter;
 
   { TWSSplitter }
 
@@ -287,14 +285,6 @@ end;
 class procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook;
   AShowTabs: boolean);
 begin
-end;
-
-{ TWSCustomSplitter }
-
-class procedure TWSCustomSplitter.DrawSplitter(const ASplitter: TCustomSplitter
-  );
-begin
-  debugln('TWSCustomSplitter.DrawSplitter TODO');
 end;
 
 { TWSCustomTrayIcon }
