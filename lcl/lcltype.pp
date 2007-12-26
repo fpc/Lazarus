@@ -2405,7 +2405,7 @@ const
   csTrackBar = 39;
   csWinControl = 40;
   csFixed = csWinControl; //TODO remove
-  csImage = 41;
+//  csImage = 41;
 //  csToolbar = 42;
 //  csToolButton = 43;
   csBitBtn = 44;
@@ -2738,9 +2738,9 @@ Begin
       Result := 'csTrackBar';
     csFixed:
       Result := 'csFixed';
-    csImage:
+{    csImage:
       Result := 'csImage';
-{    csToolbar:
+    csToolbar:
       Result := 'csToolbar';
     csToolButton:
       Result := 'csToolButton';}

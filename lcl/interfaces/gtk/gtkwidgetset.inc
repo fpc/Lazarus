@@ -4765,11 +4765,6 @@ begin
     p:=CreateAPIWidget(TWinControl(Sender));
 
 
-  csImage :
-    begin
-      p := gtk_image_new();
-    end;
-
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender, true);
 

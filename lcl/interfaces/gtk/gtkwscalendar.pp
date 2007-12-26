@@ -109,7 +109,6 @@ end;
 class function  TGtkWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
 var
   Year, Month, Day: guint;  //used for csCalendar
-  CalendarWidget: PGtkCalendar;
 begin
   Result := 0;
   if WSCheckHandleAllocated(ACalendar, 'GetDateTime') then
