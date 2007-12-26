@@ -46,6 +46,8 @@ Type
     ACloseQuery : TAction;
     ALoadSQL : TAction;
     ASaveSQL : TAction;
+    AExport : TAction;
+    ACreateCode : TAction;
     FMSQL: TSynMemo; // later change to SQL highlighting Syn memo.
     FSplit: TSplitter;
     FData : TDataPanel;
@@ -63,6 +65,8 @@ Type
     procedure PreviousQueryClick(Sender: TObject);
     procedure SaveQueryClick(Sender: TObject);
     procedure SetEngine(const AValue: TFPDDEngine);
+    procedure ExportDataClick(Sender: TObject);
+    procedure CreateCodeClick(Sender: TObject);
   Protected
     Procedure CreateControls; virtual;
     procedure CreateActions; virtual;
@@ -81,6 +85,8 @@ Type
     Function PreviousQuery : Integer;
     Procedure CloseDataset;
     Procedure FreeDataset;
+    Procedure ExportData;
+    Procedure CreateCode;
     Property Dataset : TDataset Read GetDataset;
     Property Engine : TFPDDEngine Read FEngine Write SetEngine;
     Property QueryHistory : TStrings Read FQueryHistory;
@@ -90,7 +96,7 @@ Type
 
 implementation
 
-uses strutils;
+uses strutils, fpdataexporter, fpcodegenerator;
 
 Resourcestring
   SSQLFilters = 'SQL files|*.sql|All files|*.*';
@@ -108,7 +114,11 @@ Resourcestring
   SHintSave = 'Save SQL statement to file';
   SClose = 'Close result';
   SHintClose = 'Close query result data panel';
-  
+  SExport = 'Export data';
+  SHintExport = 'Export this data';
+  SCreateCode = 'Create code';
+  SHintCreateCode = 'Create pascal code for this data';
+
 { TQueryPanel }
 
 { ---------------------------------------------------------------------
@@ -138,6 +148,16 @@ begin
     FreeDataset;
     end;
   FEngine:=AValue;
+end;
+
+procedure TQueryPanel.ExportDataClick(Sender: TObject);
+begin
+  ExportData;
+end;
+
+procedure TQueryPanel.CreateCodeClick(Sender: TObject);
+begin
+  CreateCode;
 end;
 
 function TQueryPanel.GetDataset: TDataset;
@@ -170,6 +190,7 @@ begin
   FData.Align:=alBottom;
   FData.Height:=200;
   FData.Visible:=False;
+  FData.ShowExtraButtons:=False;
   // Splitter
   FSplit:=TSplitter.Create(Self);
   FSplit.Parent:=Self;
@@ -181,6 +202,7 @@ begin
   FMSQL.Highlighter:=TSynSQLSyn.Create(Self);
   FMSQL.Options:=[eoSmartTabDelete, eoSmartTabs, eoTabIndent, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight];
   FMSQL.OnKeyDown:=@OnMemoKey;
+  FMSQL.ExtraLineSpacing:=2;
 end;
 
 procedure TQueryPanel.CreateImageList;
@@ -196,6 +218,8 @@ begin
   FIL.AddLazarusResource('qrybtn_next');
   FIL.AddLazarusResource('qrybtn_open');
   FIL.AddLazarusResource('qrybtn_save');
+  FIL.AddLazarusResource('qrybtn_export');
+  FIL.AddLazarusResource('qrybtn_code');
 end;
 
 procedure TQueryPanel.CreateActions;
@@ -222,6 +246,8 @@ begin
   ANextQuery:=NewAction(SNext,SHintNext,3,@NextQueryClick,@HaveNextQuery);
   ALoadSQL:=NewAction(SLoad,SHintLoad,4,@LoadQueryClick,@NotBusy);
   ASaveSQL:=NewAction(SSave,SHintSave,5,@SaveQueryClick,@NotBusy);
+  AExport:=NewAction(SExport,SHintExport,6,@ExportDataClick,@DataShowing);
+  ACreateCode:=NewAction(SCreateCode,SHintCreateCode,7,@CreateCodeClick,@DataShowing);
 end;
 
 
@@ -260,6 +286,9 @@ begin
   NewSeparator(L);
   B:=NewButton(ALoadSQL,L);
   B:=NewButton(ASaveSQL,L);
+  NewSeparator(L);
+  B:=NewButton(AExport,L);
+  B:=NewButton(ACreateCode,L);
 end;
 
 { ---------------------------------------------------------------------
@@ -473,6 +502,32 @@ begin
   FData.Dataset:=Nil;
   D.Free;
 end;
+
+
+
+procedure TQueryPanel.ExportData;
+
+begin
+  With TFPDataExporter.Create(Dataset) do
+    try
+      Execute;
+    finally
+      Free;
+    end;
+end;
+
+procedure TQueryPanel.CreateCode;
+begin
+  With TFPCodeGenerator.Create(Dataset) do
+    try
+      SQL:=FMSQL.Lines;
+      DataSet:=Self.Dataset;
+      Execute;
+    Finally
+      Free;
+    end;
+end;
+
 
 
 initialization

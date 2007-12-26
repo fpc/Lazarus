@@ -1,4 +1,4 @@
-program LazDataDesktop;
+program lazdatadesktop;
 
 {$mode objfpc}{$H+}
 
@@ -8,17 +8,15 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, frmmain, dicteditor, fpdatadict, fpdddbf, DBFLaz,
-  frmimportdd, RunTimeTypeInfoControls, frmgeneratesql, fpddsqldb, SQLDBLaz,
-  frmSQLConnect, ddfiles, conneditor, datapanel, querypanel;
+  { add your units here }, frmmain, dicteditor, DBFLaz,
+  frmimportdd, RunTimeTypeInfoControls, frmgeneratesql, SQLDBLaz,
+  frmSQLConnect, ddfiles, conneditor, datapanel, querypanel, lazdbexport,
+  lazdatadict;
 
 begin
   Application.Title:='Lazarus Data Desktop';
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TImportDDform, ImportDDform);
-  Application.CreateForm(TGenerateSQLForm, GenerateSQLForm);
-  Application.CreateForm(TSQLConnectionForm, SQLConnectionForm);
   Application.Run;
 end.
 

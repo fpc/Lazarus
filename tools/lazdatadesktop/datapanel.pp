@@ -25,7 +25,8 @@ unit datapanel;
 interface
 
 uses
-  Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls;
+  Classes, SysUtils, Controls, ExtCtrls, StdCtrls, DB, dbgrids, dbCtrls,
+  buttons;
   
 Type
 
@@ -36,9 +37,15 @@ Type
     FTopPanel: TPanel;
     FDBGrid : TDBGrid;
     FNavigator : TDBNavigator;
+    FExportSB : TSpeedButton;
+    FCodeSB : TSpeedButton;
     procedure Checkbuttons;
     procedure CreateControls;
     function GetDataset: TDataset;
+    procedure DoExport(Sender : TObject);
+    procedure DoCode(Sender : TObject);
+    function GetExtra: Boolean;
+    procedure SetExtra(const AValue: Boolean);
   Protected
     Property TopPanel : TPanel Read FTopPanel;
     Property DBGrid : TDBGrid Read FDBGrid;
@@ -47,9 +54,14 @@ Type
   Public
     Constructor Create(AOwner : TComponent); Override;
     Property Dataset : TDataset Read GetDataset Write SetDataset;
+    Procedure ExportData;
+    Procedure CreateCode;
+    Property ShowExtraButtons : Boolean Read GetExtra Write SetExtra;
   end;
 
 implementation
+
+uses fpdataexporter,fpcodegenerator;
 
 { TDataPanel }
 
@@ -58,10 +70,52 @@ begin
   Result:=FDatasource.Dataset;
 end;
 
+procedure TDataPanel.DoExport(Sender: TObject);
+begin
+  ExportData;
+end;
+
+procedure TDataPanel.DoCode(Sender : TObject);
+
+begin
+  CreateCode;
+end;
+
+function TDataPanel.GetExtra: Boolean;
+begin
+  Result:=FExportSB.Visible;
+end;
+
+procedure TDataPanel.SetExtra(const AValue: Boolean);
+begin
+  FExportSB.Visible:=AValue;
+  FCodeSB.Visible:=AValue;
+end;
+
 procedure TDataPanel.SetDataset(const AValue: TDataset);
 begin
   FDatasource.Dataset:=AValue;
   CheckButtons;
+end;
+
+procedure TDataPanel.ExportData;
+begin
+  With TFPDataExporter.Create(Dataset) do
+    Try
+      Execute;
+    Finally
+      Free;
+    end;
+end;
+
+procedure TDataPanel.CreateCode;
+begin
+  With TFPCodeGenerator.Create(Dataset) do
+    try
+      Execute;
+    Finally
+      Free;
+    end;
 end;
 
 constructor TDataPanel.Create(AOwner: TComponent);
@@ -89,12 +143,30 @@ begin
   FDBGrid.DataSource:=FDatasource;
   // Navigator;
   FNavigator:=TDBNavigator.Create(Self);
-  FNavigator.Parent:=Self;
+  FNavigator.Parent:=FTopPanel;
   FNavigator.Top:=4;
   FNavigator.Left:=4;
   FNavigator.Height:=22;
   FNavigator.DataSource:=FDatasource;
   CheckButtons;
+  FExportSB:=TSpeedButton.Create(Self);
+  FExportSB.Parent:=FTopPanel;
+  FExportSB.Left:=16+FNavigator.Width+FNavigator.Left;
+  FExportSB.Top:=4;
+  FExportSB.Height:=22;
+  FExportSB.Width:=22;
+  FExportSB.Glyph.LoadFromLazarusResource('qrybtn_export');
+  FExportSB.Flat:=True;
+  FExportSB.OnClick:=@DoExport;
+  FCodeSB:=TSpeedButton.Create(Self);
+  FCodeSB.Parent:=FTopPanel;
+  FCodeSB.Left:=FExportSB.Width+FExportSB.Left;
+  FCodeSB.Top:=4;
+  FCodeSB.Height:=22;
+  FCodeSB.Width:=22;
+  FCodeSB.Glyph.LoadFromLazarusResource('qrybtn_code');
+  FCodeSB.Flat:=True;
+  FCodeSB.OnClick:=@DoCode;
 end;
 
 procedure TDataPanel.Checkbuttons;

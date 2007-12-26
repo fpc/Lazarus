@@ -1,0 +1,13 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TApplyDataDictionaryForm','FORMDATA',[
+  'TPF0'#24'TApplyDataDictionaryForm'#23'ApplyDataDictionaryForm'#4'Left'#3'%'#2
+  +#6'Height'#3#9#1#3'Top'#3#208#0#5'Width'#3'u'#1#18'HorzScrollBar.Page'#3't'#1
+  +#18'VertScrollBar.Page'#3#8#1#7'Caption'#6#24'Applying data dictionary'#12'C'
+  +'lientHeight'#3#9#1#11'ClientWidth'#3'u'#1#0#7'TButton'#3'BOK'#4'Left'#3' '#1
+  +#6'Height'#2#25#3'Top'#3#236#0#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBo'
+  +'ttom'#0#25'BorderSpacing.InnerBorder'#2#4#7'Caption'#6#6'&Close'#7'Default'
+  +#9#7'OnClick'#7#8'BOKClick'#8'TabOrder'#2#0#0#0#5'TMemo'#4'MLog'#4'Left'#2#8
+  +#6'Height'#3#224#0#3'Top'#2#8#5'Width'#3'a'#1#7'Anchors'#11#5'akTop'#6'akLef'
+  +'t'#7'akRight'#8'akBottom'#0#13'Lines.Strings'#1#6#0#0#8'TabOrder'#2#1#0#0#0
+]);
