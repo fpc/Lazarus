@@ -998,6 +998,7 @@ begin
     exit;
   end;
   for i:=1 to ParamCount do begin
+    //DebugLn(['TMainIDE.ParseCmdLineOptions ',i,' "',ParamStr(i),'"']);
     if ParamIsOptionPlusValue(i,PrimaryConfPathOptLong,AValue) then begin
       SetPrimaryConfigPath(AValue);
     end;
@@ -8690,8 +8691,9 @@ procedure TMainIDE.DoRestart;
                             [LineEnding, ExeName]),mtError,[mbCancel]);
         exit;
       end;
-      StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
-        [ExeName, GetProcessID]);
+      StartLazProcess.CommandLine := ExeName
+        +' --lazarus-pid='+IntToStr(GetProcessID)
+        +' ''--primary-config-path='+GetPrimaryConfigPath+'''';
       StartLazProcess.Execute;
     finally
       StartLazProcess.Free;
@@ -12132,7 +12134,6 @@ var
   var
     i: LongInt;
     RegComp: TRegisteredComponent;
-    ConflictingUnitInfo: TUnitInfo;
     ConflictingClass: TClass;
     s: string;
   begin

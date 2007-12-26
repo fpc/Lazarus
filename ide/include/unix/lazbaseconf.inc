@@ -86,7 +86,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetPrimaryConfigPath(const NewValue: String);
 begin
-  //writeln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileName(NewValue),'"');
+  debugln('SetPrimaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileName(NewValue),'"');
   PrimaryConfigPath:=ExpandFileName(NewValue);
 end;
 
@@ -95,6 +95,7 @@ end;
  ---------------------------------------------------------------------------}
 procedure SetSecondaryConfigPath(const NewValue: String);
 begin
+  debugln('SetSecondaryConfigPath NewValue="',NewValue,'" -> "',ExpandFileName(NewValue),'"');
   SecondaryConfigPath:=ExpandFileName(NewValue);
 end;
 

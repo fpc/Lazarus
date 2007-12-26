@@ -46,7 +46,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, DefineTemplates, FileUtil, InterfaceBase;
+  SysUtils, Classes, LCLProc, DefineTemplates, FileUtil, InterfaceBase;
 
 type
   TLCLPlatforms = set of TLCLPlatform;

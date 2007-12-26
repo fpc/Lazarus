@@ -48,7 +48,6 @@
       <Filename Value="D:/lazarus/source/lazarus/startlazarus.exe"/>
     </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="D:/lazarus/source/lazarus/units/i386-win32"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <CodeGeneration>

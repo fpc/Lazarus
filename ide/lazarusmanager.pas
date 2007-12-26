@@ -169,7 +169,7 @@ var
 begin
   Result := ' --no-splash-screen --started-by-startlazarus';
   for i := 0 to FCmdLineParams.Count - 1 do
-    Result := Result + ' ' + FCmdLineParams[i];
+    Result := Result + ' "' + FCmdLineParams[i] + '"';
   if FLazarusDebug then
    Result := Result + ' --debug-log=' +
                         AppendPathDelim(GetPrimaryConfigPath) + 'debug.log';
