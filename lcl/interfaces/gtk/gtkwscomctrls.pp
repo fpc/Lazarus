@@ -151,7 +151,9 @@ type
   TGtkWSProgressBar = class(TWSProgressBar)
   private
   protected
+    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
@@ -237,6 +239,34 @@ const
 {$ENDIF}
 
 { TGtkWSProgressBar }
+
+class procedure TGtkWSProgressBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSProgressBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Adjustment: PGtkAdjustment;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  with TCustomProgressBar(AWinControl) do
+  begin
+     // Create a GtkAdjustment object to hold the range of the progress bar
+     Adjustment := PGtkAdjustment(gtk_adjustment_new(Position, Min, Max, 0, 0, 0));
+     // Create the GtkProgressBar using the adjustment
+     Widget := gtk_progress_bar_new_with_adjustment(Adjustment);
+  end;
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
+end;
 
 class procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 var

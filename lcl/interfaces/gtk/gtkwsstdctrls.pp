@@ -391,7 +391,7 @@ end;
 class function TGtkWSScrollBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  Adjustment: PgtkAdjustment;
+  Adjustment: PGtkAdjustment;
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin

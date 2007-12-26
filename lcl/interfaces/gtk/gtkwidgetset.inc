@@ -4729,15 +4729,6 @@ begin
   csPreviewFileControl:
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
-  csProgressBar:
-    with (TCustomProgressBar (Sender)) do
-    begin
-       { Create a GtkAdjustment object to hold the range of the progress bar }
-       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
-       { Create the GtkProgressBar using the adjustment }
-       P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
-    end;
-
   csTrackBar:
     with (TCustomTrackBar (Sender)) do
     begin
