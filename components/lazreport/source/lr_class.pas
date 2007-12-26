@@ -418,6 +418,8 @@ type
     
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
+    function GetPictureType: byte;
+    function PictureTypeToGraphic(b: Byte): TGraphic;
   protected
     procedure GetBlob(b: TfrTField); override;
   public
@@ -431,6 +433,7 @@ type
     procedure SaveToStream(Stream: TStream); override;
     procedure SaveToXML(XML: TXMLConfig; Path: String); override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
+    class function GetFilter: string;
   published
     property Picture : TPicture read fPicture write fPicture;
 
@@ -3584,6 +3587,7 @@ const
 //**  pkMetafile = 2;
   pkIcon = 3;
   pkJPEG = 4;
+  pkPNG  = 5;
 
 procedure StreamToXML(XML: TXMLConfig; Path: String; Stream: TStream);
 var
@@ -3638,14 +3642,7 @@ begin
   inherited LoadFromStream(Stream);
   Stream.Read(b, 1);
   Stream.Read(n, 4);
-  Graphic := nil;
-  case b of
-    pkBitmap:   Graphic := TBitmap.Create;
-    pkIcon:     Graphic := TIcon.Create;
-{$IFDEF JPEG}
-    pkJPEG:     Graphic := TJPEGImage.Create;
-{$ENDIF}
-  end;
+  Graphic := PictureTypeToGraphic(b);
   Picture.Graphic := Graphic;
   if Graphic <> nil then
   begin
@@ -3663,16 +3660,7 @@ var
 begin
   inherited LoadFromXML(XML, Path);
   b := XML.GetValue(Path+'Picture/Type/Value', pkNone);
-  Graphic := nil;
-  case b of
-    pkBitmap:   Graphic := TBitmap.Create;
-    pkIcon:     Graphic := TIcon.Create;
-{$IFDEF JPEG}
-    pkJPEG:     Graphic := TJPEGImage.Create;
-{$ENDIF}
-    else
-      exit;
-  end;
+  Graphic := PictureTypeToGraphic(b);
   Picture.Graphic := Graphic;
   if Graphic <> nil then
   begin
@@ -3694,16 +3682,7 @@ var
   n, o: Integer;
 begin
   inherited SaveToStream(Stream);
-  b := pkNone;
-  if Picture.Graphic <> nil then
-    if Picture.Graphic is TBitmap then
-      b := pkBitmap
-    else if Picture.Graphic is TIcon then
-      b := pkIcon
-{$IFDEF JPEG}
-    else if Picture.Graphic is TJPEGImage then
-      b := pkJPEG
-{$ENDIF};
+  b := GetPictureType;
   Stream.Write(b, 1);
   n := Stream.Position;
   Stream.Write(n, 4);
@@ -3722,16 +3701,7 @@ var
   m: TMemoryStream;
 begin
   inherited SaveToXML(XML, Path);
-  b := pkNone;
-  if Picture.Graphic <> nil then
-    if Picture.Graphic is TBitmap then
-      b := pkBitmap
-    else if Picture.Graphic is TIcon then
-      b := pkIcon
-{$IFDEF JPEG}
-    else if Picture.Graphic is TJPEGImage then
-      b := pkJPEG
-{$ENDIF};
+  b := GetPictureType;
   XML.SetValue(Path+'Picture/Type/Value', b);
   if b <> pkNone then
   begin
@@ -3836,6 +3806,50 @@ begin
     end;
   end;
   frDesigner.AfterChange;
+end;
+
+function TfrPictureView.GetPictureType: byte;
+begin
+  result := pkNone;
+  if Picture.Graphic <> nil then
+    if Picture.Graphic is TPortableNetworkGraphic then
+      result := pkPNG
+    else if Picture.Graphic is TJPEGImage then
+      result := pkJPEG
+    else if Picture.Graphic is TIcon then
+      result := pkIcon
+    else if Picture.Graphic is TBitmap then
+      result := pkBitmap;
+end;
+
+function TfrPictureView.PictureTypeToGraphic(b: Byte): TGraphic;
+begin
+  result := nil;
+  case b of
+    pkBitmap:   result := TBitmap.Create;
+    pkIcon:     result := TIcon.Create;
+    pkJPEG:     result := TJPEGImage.Create;
+    pkPNG:      result := TPortableNetworkGraphic.Create;
+  end;
+end;
+
+class function TfrPictureView.GetFilter: string;
+  procedure AddFilter(G:TGraphicClass);
+  var
+    S: string;
+  begin
+    if result<>'' then
+      Result := Result + ';';
+    Result := Result + '*.' + StringReplace(G.GetFileExtensions, ';', ';*.',
+                                            [rfReplaceAll]);
+  end;
+begin
+  Result := '';
+  AddFilter(TBitmap);
+  AddFilter(TIcon);
+  AddFilter(TJpegImage);
+  AddFilter(TPortableNetworkGraphic);
+  Result := '(' + Result + ')|'+Result;
 end;
 
 {----------------------------------------------------------------------------}

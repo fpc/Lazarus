@@ -52,13 +52,9 @@ uses LR_Class, LR_Desgn;
 
 procedure TfrGEditorForm.BitBtn1Click(Sender: TObject);
 begin
-{$IFDEF JPEG}
-  OpenDlg.Filter := sPictFile +
-    ' (*.bmp *.jpg *.ico)|*.bmp;*.jpg;*.ico|' +sAllFiles + '|*.*';
-{$ELSE}
-  OpenDlg.Filter := sPictFile +
-    ' (*.bmp *.ico)|*.bmp;*.ico|' +sAllFiles + '|*.*';
-{$ENDIF}
+  OpenDlg.Filter := sPictFile + ' ' +
+    TfrPictureView.GetFilter + '|' +sAllFiles + '|*.*';
+
   if OpenDlg.Execute then
     Image1.Picture.LoadFromFile(OpenDlg.FileName);
 end;

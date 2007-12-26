@@ -30,9 +30,9 @@ object frGEditorForm: TfrGEditorForm
   end
   object CB1: TCheckBox
     Left = 256
-    Height = 22
+    Height = 19
     Top = 232
-    Width = 63
+    Width = 60
     HelpContext = 82
     AllowGrayed = True
     Caption = '&Stretch'

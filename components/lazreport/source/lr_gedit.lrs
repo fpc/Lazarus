@@ -9,8 +9,8 @@ LazarusResources.Add('TfrGEditorForm','FORMDATA',[
   +'creenCenter'#0#6'TBevel'#6'Bevel1'#4'Left'#2#4#6'Height'#3#241#0#3'Top'#2#8
   +#5'Width'#3#246#0#5'Shape'#7#7'bsFrame'#0#0#6'TImage'#6'Image1'#4'Left'#2#8#6
   +'Height'#3#233#0#3'Top'#2#12#5'Width'#3#237#0#7'Stretch'#9#11'Transparent'#8
-  +#0#0#9'TCheckBox'#3'CB1'#4'Left'#3#0#1#6'Height'#2#22#3'Top'#3#232#0#5'Width'
-  +#2'?'#11'HelpContext'#2'R'#11'AllowGrayed'#9#7'Caption'#6#8'&Stretch'#7'OnCl'
+  +#0#0#9'TCheckBox'#3'CB1'#4'Left'#3#0#1#6'Height'#2#19#3'Top'#3#232#0#5'Width'
+  +#2'<'#11'HelpContext'#2'R'#11'AllowGrayed'#9#7'Caption'#6#8'&Stretch'#7'OnCl'
   +'ick'#7#8'CB1Click'#8'TabOrder'#2#3#0#0#7'TButton'#7'Button1'#4'Left'#3#0#1#6
   +'Height'#2#25#3'Top'#2'`'#5'Width'#2'K'#11'HelpContext'#2'('#7'Caption'#6#2
   +'Ok'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#7'Butto'
