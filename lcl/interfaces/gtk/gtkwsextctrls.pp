@@ -33,7 +33,7 @@ uses
 {$ELSE GTK2}
   gtk, gdk, glib, gtk1WSPrivate, graphics,
 {$ENDIF GTK2}
-  gtkextra,
+  GtkExtra, GtkWsControls,
   GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes, Forms, SysUtils, Menus,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
 
@@ -44,7 +44,10 @@ type
   TGtkWSCustomPage = class(TWSCustomPage)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl;
+      const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
@@ -198,7 +201,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
@@ -241,6 +244,33 @@ const
   );
 
 { TGtkWSCustomPage }
+
+class procedure TGtkWSCustomPage.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSCustomPage.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := GtkWidgetset.CreateSimpleClientAreaWidget(AWinControl, True);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  
+  WidgetInfo := GetWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AWinControl;
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+  
+  SetCallBacks(Widget, WidgetInfo);
+end;
 
 class procedure TGtkWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
 begin

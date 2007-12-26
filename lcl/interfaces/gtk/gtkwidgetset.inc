@@ -4764,10 +4764,6 @@ begin
   csWinControl: // code moved for TCustomControl
     p:=CreateAPIWidget(TWinControl(Sender));
 
-
-  csPage:    // TCustomPage - Notebook page
-    P:=CreateSimpleClientAreaWidget(Sender, true);
-
   csPairSplitter:
     p:=CreatePairSplitter(Sender);
 
@@ -4873,6 +4869,7 @@ begin
   csButton,
   csToggleBox,
   csRadioButton,
+  csPage,
   csPopupMenu,
   csCheckbox,
   csMainMenu: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
