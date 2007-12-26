@@ -175,7 +175,7 @@ begin
   if GTK_IS_SCROLLED_WINDOW(Widget) then
     gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(Widget), BorderStyleShadowMap[ABorderStyle])
   else
-    TWSWinControlClass(ClassParent).SetBorderStyle(AWinControl, ABorderStyle);
+    TGtkWSWinControl{(ClassParent)}.SetBorderStyle(AWinControl, ABorderStyle);
 end;
 
 initialization

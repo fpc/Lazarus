@@ -4565,27 +4565,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
-    ): PGtkWidget;
-
-  Create a TCustomPairSplitter widget set
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreatePairSplitter(PairSplitterObject: TObject
-  ): PGtkWidget;
-var
-  APairSplitter: TCustomPairSplitter;
-  PanedWidget: PGtkWidget;
-begin
-  APairSplitter:=TCustomPairSplitter(PairSplitterObject);
-  // create the paned
-  if APairSplitter.SplitterType=pstHorizontal then
-    PanedWidget:=gtk_hpaned_new
-  else
-    PanedWidget:=gtk_vpaned_new;
-  Result:=PanedWidget;
-end;
-
-{------------------------------------------------------------------------------
   function TGtkWidgetSet.CreateStatusBar(StatusBar: TObject): PGtkWidget;
 
   Create a TStatusBar widget set
@@ -4731,9 +4710,7 @@ end;
 function TGTKWidgetSet.CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String): PGtkWidget;
 var
   p: Pointer absolute Result;
-  TempWidget,
-  TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
-  Adjustment: PGtkAdjustment;
+  TempWidget: PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
 begin
   Result := nil;
 
@@ -4764,12 +4741,6 @@ begin
   csWinControl: // code moved for TCustomControl
     p:=CreateAPIWidget(TWinControl(Sender));
 
-  csPairSplitter:
-    p:=CreatePairSplitter(Sender);
-
-  csPairSplitterSide:
-    P:=CreateSimpleClientAreaWidget(Sender,true);
-
   csPreviewFileControl:
     P:=CreateSimpleClientAreaWidget(Sender,true);
 
@@ -4780,20 +4751,6 @@ begin
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
        { Create the GtkProgressBar using the adjustment }
        P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
-    end;
-
-  csScrollBar :
-    begin
-      Adjustment := PgtkAdjustment(
-                     gtk_adjustment_new(1,TScrollBar(sender).min,
-                     TScrollBar(sender).max,
-                     TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-                     TScrollBar(sender).Pagesize));
-      if (TScrollBar(sender).kind = sbHorizontal) then
-        P := gtk_hscrollbar_new(Adjustment)
-      else
-        P := gtk_vscrollbar_new(Adjustment);
-      gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, P);
     end;
 
   csStatusBar :
@@ -4812,67 +4769,8 @@ begin
          P := gtk_vscale_new (PGTKADJUSTMENT (TempWidget));
        gtk_scale_set_digits (PGTKSCALE (P), 0);
     end;
-
-  csScrollBox :
-    begin
-      Assert(Sender is TScrollBox);
-
-      p := gtk_frame_new(nil);
-      gtk_frame_set_shadow_type(pGtkFrame(p),GTK_SHADOW_IN);
-
-      TempWidget := gtk_scrolled_window_new(nil,nil);
-      gtk_container_add(PGTKContainer(p), TempWidget);
-      gtk_widget_show(TempWidget);
-
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
-                                     GTK_POLICY_NEVER,
-                                     GTK_POLICY_NEVER);
-
-      gtk_object_set_data(P,odnScrollArea, TempWidget);
-
-      Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(TempWidget));
-      if Adjustment <> nil
-      then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
-                               PGTKScrolledWindow(TempWidget)^.vscrollbar);
-
-      Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(TempWidget));
-      if Adjustment <> nil
-      then gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar,
-                               PGTKScrolledWindow(TempWidget)^.hscrollbar);
-
-      TempWidget2 := gtk_layout_new(nil, nil);
-      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
-      gtk_widget_show(TempWidget2);
-      SetFixedWidget(p, TempWidget2);
-      SetMainWidget(p, TempWidget2);
-
-    end;
-
-  // All obsoletes (some of them may still be in use for gtk1/gtk2, they are overridden there)
-  csClistBox, csListBox, csCheckListBox,
-  csArrow,
-  csCalendar,
-  csComboBox,
-  csMemo,
-  csSpinEdit,
-  csStaticText,
-  csPanel,
-  csMenuItem,
-  csListView,
-  csHintWindow,
-  csGroupBox,
-  csForm,
-  csEdit,
-  csBitBtn,
-  csButton,
-  csToggleBox,
-  csRadioButton,
-  csPage,
-  csPopupMenu,
-  csCheckbox,
-  csMainMenu: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
+  else
+    DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
   end; //end case
 end;
 

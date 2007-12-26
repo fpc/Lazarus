@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Math,
-  LCLType, LMessages, LCLProc, Controls, Graphics, StdCtrls,
+  LCLType, LMessages, LCLProc, Controls, Graphics, StdCtrls, Forms,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango, Gtk2WSPrivate,
   {$ELSE}
@@ -46,7 +46,9 @@ type
   TGtkWSScrollBar = class(TWSScrollBar)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
@@ -374,6 +376,45 @@ begin
 end;
 
 { TGtkWSScrollBar }
+
+class procedure TGtkWSScrollBar.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  if TScrollBar(AWidgetInfo^.LCLObject).Kind = sbHorizontal then
+    TGtkWidgetset(Widgetset).SetCallback(LM_HSCROLL, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject)
+  else
+    TGtkWidgetset(Widgetset).SetCallback(LM_VSCROLL, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtkWSScrollBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Adjustment: PgtkAdjustment;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  with TScrollBar(AWinControl) do
+  begin
+    Adjustment := PgtkAdjustment(
+                   gtk_adjustment_new(1, Min, Max, SmallChange, LargeChange,
+                     Pagesize));
+                     
+    if (Kind = sbHorizontal) then
+      Widget := gtk_hscrollbar_new(Adjustment)
+    else
+      Widget := gtk_vscrollbar_new(Adjustment);
+  end;
+  gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Widget);
+
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
+end;
 
 class procedure TGtkWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var

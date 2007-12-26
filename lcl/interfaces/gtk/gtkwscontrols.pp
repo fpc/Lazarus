@@ -304,7 +304,10 @@ begin
 
   Widget := PGtkWidget(AWinControl.Handle);
   if GtkWidgetIsA(Widget, GTKAPIWidget_GetType) then
-    GTKAPIWidget_SetShadowType(PGTKAPIWidget(Widget), BorderStyleShadowMap[ABorderStyle]);
+    GTKAPIWidget_SetShadowType(PGTKAPIWidget(Widget), BorderStyleShadowMap[ABorderStyle])
+  else
+  if GTK_IS_FRAME(Widget) then
+    gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[ABorderStyle]);
 end;
 
 class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;

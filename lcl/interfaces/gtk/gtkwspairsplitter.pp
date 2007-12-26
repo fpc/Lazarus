@@ -32,26 +32,31 @@ uses
   {$ELSE}
   Gtk, //Glib, Gdk,
   {$ENDIF}
-  GtkWSPrivate,
-  Controls, PairSplitter,
+  GtkWSPrivate, GtkInt, GtkDef, GtkProc, GtkWSControls,
+  Classes, Controls, LCLType, PairSplitter,
   WSPairSplitter, WSLCLClasses, WSProc;
 
 type
 
   { TGtkWSPairSplitterSide }
-
   TGtkWSPairSplitterSide = class(TWSPairSplitterSide)
   private
   protected
+  protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
-
+  
   { TGtkWSCustomPairSplitter }
 
   TGtkWSCustomPairSplitter = class(TWSCustomPairSplitter)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
     // special cursor handling
@@ -72,10 +77,39 @@ implementation
 
 { TGtkWSCustomPairSplitter }
 
+class procedure TGtkWSCustomPairSplitter.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSCustomPairSplitter.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  // create the paned
+  if TCustomPairSplitter(AWinControl).SplitterType = pstHorizontal then
+    Widget := gtk_hpaned_new
+  else
+    Widget := gtk_vpaned_new;
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
+  SetCallBacks(Widget, WidgetInfo);
+end;
+
 class function TGtkWSCustomPairSplitter.AddSide(ASplitter: TCustomPairSplitter;
   ASide: TPairSplitterSide; Side: integer): Boolean;
 begin
-  Result:=false;
+  Result := False;
   
   if not (WSCheckHandleAllocated(ASplitter, 'AddSide - splitter') and
           WSCheckHandleAllocated(ASide, 'AddSide - side'))
@@ -83,24 +117,24 @@ begin
 
   if (Side<0) or (Side>1) then exit;
   
-  if Side=0 then
+  if Side = 0 then
     gtk_paned_add1(PGtkPaned(ASplitter.Handle),PGtkWidget(ASide.Handle))
   else
     gtk_paned_add2(PGtkPaned(ASPlitter.Handle),PGtkWidget(ASide.Handle));
     
-  Result:=true;
+  Result := True;
 end;
 
 class function TGtkWSCustomPairSplitter.SetPosition(
   ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean;
 begin
-  Result:=false;
+  Result := False;
   if not WSCheckHandleAllocated(ASplitter, 'SetPosition')
   then Exit;
   if NewPosition>=0 then
-    gtk_paned_set_position(PGtkPaned(ASplitter.Handle),NewPosition);
-  NewPosition:=PGtkPaned(ASplitter.Handle)^.child1_size;
-  Result:=true;
+    gtk_paned_set_position(PGtkPaned(ASplitter.Handle), NewPosition);
+  NewPosition := PGtkPaned(ASplitter.Handle)^.child1_size;
+  Result := True;
 end;
 
 class function TGtkWSCustomPairSplitter.GetSplitterCursor(
@@ -115,6 +149,36 @@ begin
   Result := False;
 end;
 
+{ TGtkWSPairSplitterSide }
+
+class procedure TGtkWSPairSplitterSide.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSPairSplitterSide.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := GtkWidgetset.CreateSimpleClientAreaWidget(AWinControl, True);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+
+  WidgetInfo := GetWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AWinControl;
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  SetCallBacks(Widget, WidgetInfo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -123,7 +187,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
+  RegisterWSComponent(TPairSplitterSide, TGtkWSPairSplitterSide);
   RegisterWSComponent(TCustomPairSplitter, TGtkWSCustomPairSplitter, TGtkPrivatePaned);
 //  RegisterWSComponent(TPairSplitter, TGtkWSPairSplitter);
 ////////////////////////////////////////////////////

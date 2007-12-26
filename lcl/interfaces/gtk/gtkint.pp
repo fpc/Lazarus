@@ -149,7 +149,6 @@ type
     function CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String
       ): PGtkWidget; virtual; // temporary solution till all are created through createhandle
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
-    function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;

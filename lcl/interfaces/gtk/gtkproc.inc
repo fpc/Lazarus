@@ -7648,7 +7648,7 @@ end;
   the client area is associated. If FormWidget=nil then the hbox will be used
   as main widget.
 -------------------------------------------------------------------------------}
-Function CreateFormContents(AForm: TCustomForm;
+function CreateFormContents(AForm: TCustomForm;
   var FormWidget: Pointer): Pointer;
 var
   ScrolledWidget, ClientAreaWidget: PGtkWidget;
@@ -7674,7 +7674,7 @@ begin
   //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 
-  gtk_object_set_data(FormWidget,odnScrollArea,ScrolledWidget);
+  gtk_object_set_data(FormWidget, odnScrollArea, ScrolledWidget);
 
   gtk_widget_show(ClientAreaWidget);
   SetFixedWidget(FormWidget, ClientAreaWidget);

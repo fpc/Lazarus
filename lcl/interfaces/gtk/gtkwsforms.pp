@@ -44,7 +44,9 @@ type
   TGtkWSScrollingWinControl = class(TWSScrollingWinControl)
   private
   protected
+    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
   end;
 
@@ -76,8 +78,8 @@ type
 
   TGtkWSCustomForm = class(TWSCustomForm)
   private
-    class procedure  SetCallbacks(const AWinControl: TWinControl; const AWidgetInfo: PWidgetInfo); virtual;
   protected
+    class procedure  SetCallbacks(const AWinControl: TWinControl; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     
@@ -127,7 +129,61 @@ type
 
 implementation
 
-{ TGtkWSCustomForm }
+class procedure TGtkWSScrollingWinControl.SetCallbacks(
+  const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGTKWidgetSet(Widgetset) do
+  begin
+    SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
+class function TGtkWSScrollingWinControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Scrolled: PGtkScrolledWindow;
+  Frame: PGtkFrame;
+  Layout: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Adjustment: PGtkAdjustment;
+begin
+  Frame := PGtkFrame(gtk_frame_new(nil));
+  gtk_frame_set_shadow_type(Frame, BorderStyleShadowMap[TScrollingWinControl(AWinControl).BorderStyle]);
+  Scrolled := PGtkScrolledWindow(gtk_scrolled_window_new(nil, nil));
+  gtk_container_add(PGTKContainer(Frame), PGtkWidget(Scrolled));
+  gtk_widget_show(PGtkWidget(Scrolled));
+
+  GTK_WIDGET_UNSET_FLAGS(Scrolled^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(Scrolled^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(Scrolled, GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+  gtk_object_set_data(PGtkObject(Frame), odnScrollArea, Scrolled);
+  
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Frame, dbgsName(AWinControl));
+  {$ENDIF}
+
+  WidgetInfo := CreateWidgetInfo(Frame, AWinControl, AParams);
+
+  Adjustment := gtk_scrolled_window_get_vadjustment(Scrolled);
+  if Adjustment <> nil then
+    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.vscrollbar);
+
+  Adjustment := gtk_scrolled_window_get_hadjustment(Scrolled);
+  if Adjustment <> nil then
+    gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, Scrolled^.hscrollbar);
+
+  Layout := gtk_layout_new(nil, nil);
+  gtk_container_add(PGTKContainer(Scrolled), Layout);
+  gtk_widget_show(Layout);
+  SetFixedWidget(Frame, Layout);
+  SetMainWidget(Frame, Layout);
+  
+  Result := TLCLIntfHandle(PtrUInt(Frame));
+  SetCallBacks(PGtkWidget(Frame), WidgetInfo);
+end;
 
 class procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
