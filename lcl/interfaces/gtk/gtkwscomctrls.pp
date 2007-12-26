@@ -37,7 +37,7 @@ uses
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
   StdCtrls, LCLProc, ImgList, Math,
   // widgetset
-  WSComCtrls, WSLCLClasses, WSProc, WSControls,
+  InterfaceBase, WSComCtrls, WSLCLClasses, WSProc, WSControls,
   // interface
   GtkDef, GtkExtra, GtkWSPrivate;
 
@@ -200,7 +200,9 @@ type
   TGtkWSTrackBar = class(TWSTrackBar)
   private
   protected
+    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -366,6 +368,38 @@ end;
 {$endif}
 
 { TGtkWSTrackBar }
+
+class procedure TGtkWSTrackBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtkWidgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtkWSTrackBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Adjustment: PGtkAdjustment;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  with TCustomTrackBar(AWinControl) do
+  begin
+    Adjustment := PGtkAdjustment(gtk_adjustment_new (Position, Min, Max,
+                                                  linesize, pagesize, 0));
+    if (Orientation = trHorizontal) then
+      Widget := gtk_hscale_new(Adjustment)
+    else
+      Widget := gtk_vscale_new(Adjustment);
+     gtk_scale_set_digits(PGtkScale(Widget), 0);
+  end;
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
+end;
 
 class procedure TGtkWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
 var

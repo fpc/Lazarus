@@ -4695,7 +4695,6 @@ end;
 function TGTKWidgetSet.CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String): PGtkWidget;
 var
   p: Pointer absolute Result;
-  TempWidget: PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
 begin
   Result := nil;
 
@@ -4722,18 +4721,6 @@ begin
 
   csPreviewFileControl:
     P:=CreateSimpleClientAreaWidget(Sender,true);
-
-  csTrackBar:
-    with (TCustomTrackBar (Sender)) do
-    begin
-       TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max,
-                                                     linesize, pagesize, 0));
-       if (Orientation = trHorizontal) then
-         P := gtk_hscale_new (PGTKADJUSTMENT (TempWidget))
-         else
-         P := gtk_vscale_new (PGTKADJUSTMENT (TempWidget));
-       gtk_scale_set_digits (PGTKSCALE (P), 0);
-    end;
   else
     DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
   end; //end case
