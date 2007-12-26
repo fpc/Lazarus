@@ -45,7 +45,10 @@ type
   { TGtkWSStatusBar }
 
   TGtkWSStatusBar = class(TWSStatusBar)
+  protected
+    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -388,6 +391,28 @@ begin
 end;
 
 { TGtkWSStatusBar }
+
+class procedure TGtkWSStatusBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := gtk_hbox_new(false,0);
+  UpdateStatusBarPanels(AWinControl, Widget);
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
+end;
 
 class procedure TGtkWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
   PanelIndex: integer);

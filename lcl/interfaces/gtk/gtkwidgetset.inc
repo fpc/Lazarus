@@ -4565,21 +4565,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreateStatusBar(StatusBar: TObject): PGtkWidget;
-
-  Create a TStatusBar widget set
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateStatusBar(StatusBar: TObject): PGtkWidget;
-begin
-  {$IFDEF OldStatusBar}
-  Result:=gtk_statusbar_new;
-  {$ELSE}
-  Result:=gtk_hbox_new(false,0);
-  UpdateStatusBarPanels(StatusBar,Result);
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
   function TGtkWidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
     ): PGtkWidget;
 
@@ -4751,11 +4736,6 @@ begin
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
        { Create the GtkProgressBar using the adjustment }
        P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
-    end;
-
-  csStatusBar :
-    begin
-      p:=CreateStatusBar(Sender);
     end;
 
   csTrackBar:

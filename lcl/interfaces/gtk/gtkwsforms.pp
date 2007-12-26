@@ -188,6 +188,7 @@ end;
 class procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
 begin
+  {$note implement me}
 end;
 
 
