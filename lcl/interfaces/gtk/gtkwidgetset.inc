@@ -4771,7 +4771,7 @@ begin
   csFontDialog :
     InitializeFontDialog(TFontDialog(Sender),p,PChar(ACaption));
 
-  csWinControl:
+  csWinControl: // code moved for TCustomControl
     p:=CreateAPIWidget(TWinControl(Sender));
 
 
@@ -4815,27 +4815,9 @@ begin
       gtk_object_set_data(PGTKObject(Adjustment), odnScrollBar, P);
     end;
 
-  csScrolledWindow :
-    begin
-       P := gtk_scrolled_window_new(nil,nil);
-    end;
-
-  csSpeedButton:
-    Begin
-      p := gtk_button_new_with_label(PChar(ACaption));
-    end;
-
   csStatusBar :
     begin
       p:=CreateStatusBar(Sender);
-    end;
-
-  csToolbar:
-    P:=CreateToolBar(Sender);
-
-  csToolButton:
-    begin
-      p := CreateFixedClientWidget;
     end;
 
   csTrackBar:

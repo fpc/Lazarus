@@ -2406,11 +2406,11 @@ const
   csWinControl = 40;
   csFixed = csWinControl; //TODO remove
   csImage = 41;
-  csToolbar = 42;
-  csToolButton = 43;
+//  csToolbar = 42;
+//  csToolButton = 43;
   csBitBtn = 44;
   csCListBox = 45;
-  csSpeedButton = 46;
+//  csSpeedButton = 46;
   csPopupMenu = 47;
   csHintWindow = 48;
 
@@ -2740,16 +2740,16 @@ Begin
       Result := 'csFixed';
     csImage:
       Result := 'csImage';
-    csToolbar:
+{    csToolbar:
       Result := 'csToolbar';
     csToolButton:
-      Result := 'csToolButton';
+      Result := 'csToolButton';}
     csBitBtn:
       Result := 'csBitBtn';
     csCListBox:
       Result := 'csCListBox';
-    csSpeedButton:
-      Result := 'csSpeedButton';
+{    csSpeedButton:
+      Result := 'csSpeedButton';}
     csPopupMenu:
       Result := 'csPopupMenu';
     csHintWinDow:

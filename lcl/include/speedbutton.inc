@@ -40,9 +40,7 @@ const
  ------------------------------------------------------------------------------}
 constructor TCustomSpeedButton.Create(AOwner: TComponent);
 begin
-  Inherited Create(AOwner);
-  FCompStyle := csSpeedButton;
-
+  inherited Create(AOwner);
   FGlyph := TButtonGlyph.Create;
   FGlyph.OnChange := @GlyphChanged;
 

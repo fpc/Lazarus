@@ -552,24 +552,24 @@ end;
 
   Shows or hides a control
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.ShowHide(Sender: TObject);
-Var
+procedure TWin32WidgetSet.ShowHide(Sender: TObject);
+var
   Handle: HWND;
   ParentPanel: HWND;
   Flags: dword;
-Begin
-  If (TControl(Sender).FCompStyle = csToolButton) then exit;
+begin
   Handle := ObjectToHWND(Sender);
   ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
   if ParentPanel <> 0 then
     Handle := ParentPanel;
-  If TControl(Sender).HandleObjectShouldBeVisible Then
-  Begin
+  if TControl(Sender).HandleObjectShouldBeVisible then
+  begin
     Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
-    end else begin
+    end else
+    begin
       Flags := SW_SHOW;
       if TControl(Sender) is TCustomForm then
         case TCustomForm(Sender).WindowState of
@@ -582,15 +582,15 @@ Begin
       if Flags = SW_SHOWMAXIMIZED then
         Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
-    If (Sender Is TCustomForm) Then
+    if (Sender Is TCustomForm) then
       SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
-  End
-  Else
-  Begin
+  end
+  else
+  begin
     Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
     ShowWindow(Handle, SW_HIDE);
-  End;
-End;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DCReDraw

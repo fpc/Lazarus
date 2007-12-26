@@ -56,7 +56,6 @@ end;
 constructor TToolButton.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  fCompStyle := csToolButton;
   FImageIndex := -1;
   FStyle := tbsButton;
   ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];

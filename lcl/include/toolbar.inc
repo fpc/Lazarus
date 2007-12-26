@@ -62,7 +62,6 @@ begin
   FNewStyle := True;
   FWrapable := True;
   FButtons := TList.Create;
-  fCompStyle := csToolbar;
   FIndent := 1;
   FList:=false;
   FImageChangeLink := TChangeLink.Create;
