@@ -4744,15 +4744,6 @@ begin
       gtk_widget_show(p);
     end;
 
-  csArrow :
-    begin
-      P := gtk_event_box_new();
-      TempWidget := gtk_arrow_new(gtk_arrow_left, gtk_shadow_etched_in);
-      gtk_container_add(p, TempWidget);
-      gtk_widget_show(TempWidget);
-      gtk_object_set_data(P, 'arrow', TempWidget);
-    end;
-
   csCalendar :
     begin
       p := gtk_frame_new(nil);
@@ -4898,6 +4889,7 @@ begin
 
   // All obsoletes (some of them may still be in use for gtk1/gtk2, they are overridden there)
   csClistBox, csListBox, csCheckListBox,
+  csArrow,
   csComboBox,
   csMemo,
   csSpinEdit,

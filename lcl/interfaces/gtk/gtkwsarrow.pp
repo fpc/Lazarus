@@ -32,52 +32,88 @@ uses
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf, GtkFontCache,
   {$ENDIF}
-  Arrow, WSArrow, WSLCLClasses;
+  Classes, Controls, Arrow, LCLType,
+  WSArrow, WSLCLClasses,
+  GtkDef, GtkProc, GtkWsControls;
 
 type
-
   { TGtkWSArrow }
 
   TGtkWSArrow = class(TWSArrow)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType; 
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
       const AShadowType: TShadowType); override;
   end;
 
-
 implementation
 
+const
+  LCLToGTKArrowTypeMap: array[TArrowType] of TGtkArrowType =
+  (
+{ atUp   } GTK_ARROW_UP,
+{ atDown } GTK_ARROW_DOWN,
+{ atLeft } GTK_ARROW_LEFT,
+{ atRight} GTK_ARROW_RIGHT
+  );
+  
+  LCLToGTKShadowTypeMap: array[TShadowType] of TGtkShadowType =
+  (
+{ stNone     } GTK_SHADOW_NONE,
+{ stIn       } GTK_SHADOW_IN,
+{ stOut      } GTK_SHADOW_OUT,
+{ stEtchedIn } GTK_SHADOW_ETCHED_IN,
+{ stEtchedOut} GTK_SHADOW_ETCHED_OUT
+  );
+
 { TGtkWSArrow }
+
+class procedure TGtkWSArrow.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSArrow.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  EventBox, ArrowWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGtkAllocation;
+begin
+  EventBox := gtk_event_box_new();
+  ArrowWidget := gtk_arrow_new(gtk_arrow_left, gtk_shadow_etched_in);
+  gtk_container_add(PGtkContainer(EventBox), ArrowWidget);
+  gtk_widget_show_all(EventBox);
+
+  Result := TLCLIntfHandle(PtrUInt(EventBox));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallBacks(EventBox, WidgetInfo);
+end;
 
 class procedure TGtkWSArrow.SetType(const AArrow: TArrow; const AArrowType: TArrowType;
   const AShadowType: TShadowType);
 var
-  ArrowType : TGTKArrowType;
-  ShadowType : TGTKShadowType;
-  ArrowWidget: PGtkArrow;
+  ArrowWidget: PGtkWidget;
 begin
-  case AArrowType of
-    atUp:    ArrowType := GTK_ARROW_UP;
-    atLeft:  ArrowType := GTK_ARROW_LEFT;
-    atRight: ArrowType := GTK_ARROW_RIGHT;
-  else
-             ArrowType := GTK_ARROW_DOWN;
-  end;
+  ArrowWidget := PGtkBin(AArrow.Handle)^.child;
 
-  case AShadowType of
-    stNONE : ShadowType := GTK_SHADOW_NONE;
-    stIN : ShadowType := GTK_SHADOW_IN;
-    stOut : ShadowType := GTK_SHADOW_OUT;
-    stEtchedIn : ShadowType := GTK_SHADOW_ETCHED_IN;
-    stEtchedOut : ShadowType := GTK_SHADOW_ETCHED_OUT;
-  else
-    ShadowType := GTK_SHADOW_NONE;
-  end;
-
-  ArrowWidget := gtk_object_get_data(PGtkObject(AArrow.Handle), 'arrow');
-  gtk_arrow_set(ArrowWidget, ArrowType, ShadowType);
+  gtk_arrow_set(PGtkArrow(ArrowWidget),
+    LCLToGTKArrowTypeMap[AArrowType],
+    LCLToGTKShadowTypeMap[AShadowType]);
 end;
 
 initialization
