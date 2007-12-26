@@ -2362,7 +2362,7 @@ type
 
 const
   csNone = 0;
-  csAlignment = 1;
+//  csAlignment = 1;
 //  csBox = 2;
   csButton = 3;
   csComboBox = 4;
@@ -2652,10 +2652,11 @@ Begin
   Case CompStyle of
     csNone:
       Result := 'csNone';
-    csAlignment:
+{    csAlignment:
       Result := 'csAlignment';
-//    csBox:
-//      Result := 'csBox';
+    csBox:
+      Result := 'csBox';
+}
     csButton:
       Result := 'csButton';
     csComboBox:

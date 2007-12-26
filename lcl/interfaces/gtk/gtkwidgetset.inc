@@ -4700,12 +4700,6 @@ begin
   Result := nil;
 
   case ACompStyle of
-  csAlignment :
-    begin
-      p := gtk_alignment_new(0.5,0.5,0,0);
-      gtk_widget_show(p);
-    end;
-
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(PChar(ACaption));
