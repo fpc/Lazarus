@@ -179,9 +179,8 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
@@ -722,22 +721,6 @@ end;
 {$I gtk2wscustommemo.inc}
 
 { TGtk2WSCustomEdit }
-
-class function TGtk2WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
-var
-  p: PGtkWidget; // ptr to the newly created GtkWidget
-begin
-  p :=  gtk_entry_new();
-  gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(AWinControl).ReadOnly);
-  gtk_widget_show_all(P);
-  Result := TLCLIntfHandle(PtrUInt(P));
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(p,dbgsName(AWinControl));
-  {$ENDIF}
-  gtk2WidgetSet.FinishComponentCreate(AWinControl, P);
-end;
-
 
 class function TGtk2WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;

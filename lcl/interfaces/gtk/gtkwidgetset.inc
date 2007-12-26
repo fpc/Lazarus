@@ -4731,15 +4731,9 @@ end;
 function TGTKWidgetSet.CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String): PGtkWidget;
 var
   p: Pointer absolute Result;
-  
   TempWidget,
   TempWidget2 : PGTKWidget;      // pointer to gtk-widget (local use when neccessary)
-  TempInt   : Integer;           // local use when neccessary
-
-  Box       : Pointer;           // currently only used for MainMenu
-  ParentForm: TCustomForm;
   Adjustment: PGtkAdjustment;
-  LabelWidget: PGtkLabel;
 begin
   Result := nil;
 
@@ -4769,12 +4763,6 @@ begin
       gtk_widget_show_all(p);
     end;
 
-  csCheckbox :
-    begin
-      p := gtk_check_button_new_with_label(PChar(ACaption));
-    end;
-
-
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(PChar(ACaption));
@@ -4784,7 +4772,6 @@ begin
         'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
-
 
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog:
@@ -4802,32 +4789,6 @@ begin
       p := gtk_image_new();
     end;
 
-  csMainMenu:
-    begin
-      p := gtk_menu_bar_new();
-      // get the VBox, the form has one child, a VBox
-      ParentForm:=TCustomForm(TMenu(Sender).Parent);
-      if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
-        RaiseGDBException('MainMenu without form');
-      if ParentForm.Menu<>TMenu(Sender) then
-        RaiseGDBException('form has already a MainMenu');
-      if ParentForm.HandleAllocated then begin
-        Box := PGTKBin(ParentForm.Handle)^.Child;
-        gtk_box_pack_start(Box, p, False, False, 0);
-      end;
-      gtk_widget_show(p);
-    end;
-
-  csMenuBar :
-    begin
-       P := gtk_menu_bar_new();
-       gtk_container_add(
-         GTK_Container(
-           GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
-       gtk_widget_show(p);
-    end;
-
-
   csPage:    // TCustomPage - Notebook page
     P:=CreateSimpleClientAreaWidget(Sender, true);
 
@@ -4836,9 +4797,6 @@ begin
 
   csPairSplitterSide:
     P:=CreateSimpleClientAreaWidget(Sender,true);
-
-  csPopupMenu :
-    P := gtk_menu_new();
 
   csPreviewFileControl:
     P:=CreateSimpleClientAreaWidget(Sender,true);
@@ -4850,29 +4808,6 @@ begin
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, 0, 0, 0));
        { Create the GtkProgressBar using the adjustment }
        P := gtk_progress_bar_new_with_adjustment (PGtkAdjustment (TempWidget));
-    end;
-
-  csRadioButton :
-    with TRadioButton(Sender) do
-    begin
-      // Look for our parent's control and use the first radio we find for grouping
-      TempWidget:= nil;
-      if (Parent <> nil) then begin
-        for TempInt:= 0 to Parent.ControlCount - 1 do begin
-          if (Parent.Controls[TempInt] is TRadioButton)
-          and TWinControl(Parent.Controls[TempInt]).HandleAllocated then begin
-            TempWidget:= PGtkWidget(TWinControl(Parent.Controls[TempInt]).Handle);
-            Break;
-          end;
-        end;
-      end;
-      if TempWidget <> nil then
-        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,'')
-      else
-        P:= gtk_radio_button_new_with_label(nil, '');
-      LabelWidget:=pGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(P)^.Button)));
-      SetLabelCaption(LabelWidget, PChar(ACaption)
-         {$IFDEF Gtk1}, TWinControl(Sender),PGtkWidget(p), 'clicked'{$ENDIF});
     end;
 
   csScrollBar :
@@ -4902,11 +4837,6 @@ begin
   csStatusBar :
     begin
       p:=CreateStatusBar(Sender);
-    end;
-
-  csToggleBox :
-    begin
-      P := gtk_toggle_button_new_with_label(PChar(ACaption));
     end;
 
   csToolbar:
@@ -4980,8 +4910,12 @@ begin
   csForm,
   csEdit,
   csBitBtn,
-  csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
-  
+  csButton,
+  csToggleBox,
+  csRadioButton,
+  csPopupMenu,
+  csCheckbox,
+  csMainMenu: DebugLn('[WARNING] Obsolete call to TGTKOBject.CreateComponent for ', Sender.ClassName);
   end; //end case
 end;
 

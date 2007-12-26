@@ -34,7 +34,7 @@ uses
   {$ENDIF}
   GtkInt, gtkProc, gtkglobals, GTKExtra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
-  Graphics, Menus;
+  Graphics, Menus, Forms;
 
 type
   { TGtkWSMenuItem }
@@ -62,7 +62,7 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
   { TGtkWSMainMenu }
@@ -79,6 +79,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
@@ -157,10 +158,7 @@ class function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
   MenuItemWidget: PGtkWidget;
 begin
-  //Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenuItem));
-  MenuItemWidget:=CreateMenuItem(AMenuItem);
-  //Set_RC_Name(AMenuItem,MenuItemWidget);
-
+  MenuItemWidget := CreateMenuItem(AMenuItem);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(MenuItemWidget,dbgsName(AMenuItem));
   {$ENDIF}
@@ -268,18 +266,51 @@ end;
 { TGtkWSMenu }
 
 class function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  Widget: PGtkWidget;
+  Box: Pointer;
+  ParentForm: TCustomForm;
 begin
-  { TODO: cleanup }
-  Result := HMENU(TGtkWidgetSet(WidgetSet).CreateComponent(AMenu));
+  Widget := gtk_menu_bar_new();
+  // get the VBox, the form has one child, a VBox
+  ParentForm := TCustomForm(AMenu.Parent);
+  if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
+    RaiseGDBException('MainMenu without form');
+  if ParentForm.Menu <> AMenu then
+    RaiseGDBException('Form already has a MainMenu');
+  if ParentForm.HandleAllocated then
+  begin
+    Box := PGTKBin(ParentForm.Handle)^.Child;
+    gtk_box_pack_start(Box, Widget, False, False, 0);
+  end;
+  gtk_widget_show(Widget);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  // no callbacks for main menu
 end;
 
 { TGtkWSPopupMenu }
-procedure GtkWS_Popup(menu:  PGtkMenu; X, Y: pgint;
+procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint;
   {$IFDEF GTK2} ForceInScreen: pgboolean; {$ENDIF}
   Point: PPoint); cdecl;
 begin
   X^ := Point^.X;
   Y^ := Point^.Y;
+end;
+
+class function TGtkWSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
+var
+  Widget: PGtkWidget;
+begin
+  Widget := gtk_menu_new;
+  Result := HMENU(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
+  {$ENDIF}
+  // no callbacks for popup menu
 end;
 
 class procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu;
@@ -296,7 +327,7 @@ begin
     AProc := nil
   else
     AProc := @GtkWS_Popup;
-  gtk_menu_popup(PgtkMenu(APopupMenu.Handle),
+  gtk_menu_popup(PGtkMenu(APopupMenu.Handle),
                             nil,
                             nil,
                             TGtkMenuPositionFunc(AProc),

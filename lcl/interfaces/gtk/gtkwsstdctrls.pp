@@ -58,7 +58,6 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -148,11 +147,9 @@ type
   TGtkWSCustomEdit = class(TWSCustomEdit)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    {$IFDEF GTK1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-//    class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    {$ENDIF}
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
@@ -282,7 +279,9 @@ type
   TGtkWSCustomCheckBox = class(TWSCustomCheckBox)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
                                   ): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
@@ -310,6 +309,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSRadioButton }
@@ -318,6 +318,7 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
 function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
@@ -934,21 +935,39 @@ end;
 
 { TGtkWSCustomEdit }
 
-{$IFDEF GTK1}
+class procedure TGtkWSCustomEdit.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  with TGtkWidgetset(Widgetset) do
+  begin
+    SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_ACTIVATE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_CUTTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COPYTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_PASTEFROMCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
 class function TGtkWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  p: pointer;          // ptr to the newly created GtkWidget
+  Widget: PGtkWidget; // ptr to the newly created GtkWidget
+  WidgetInfo: PWidgetInfo;
 begin
-  p := gtk_entry_new();
-
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  Widget := gtk_entry_new();
+  gtk_editable_set_editable(PGtkEditable(Widget), not TCustomEdit(AWinControl).ReadOnly);
+  gtk_widget_show_all(Widget);
+  Result := TLCLIntfHandle(PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  if Result = 0 then
+    Exit;
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
 end;
-{$ENDIF}
 
 class function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
@@ -1375,6 +1394,36 @@ end;
 
 { TGtkWSCustomCheckBox }
 
+class procedure TGtkWSCustomCheckBox.SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtkWidgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtkWSCustomCheckBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := gtk_check_button_new_with_label(AParams.Caption);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
 class function  TGtkWSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
@@ -1721,6 +1770,84 @@ begin
   //debugln('TGtkWSCustomGroupBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
+{ TGtkWSRadioButton }
+
+class function TGtkWSRadioButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget, TempWidget: PGtkWidget;
+  LabelWidget: PGtkLabel;
+  TempInt: Integer;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  with TRadioButton(AWinControl) do
+  begin
+    // Look for our parent's control and use the first radio we find for grouping
+    TempWidget := nil;
+    if (Parent <> nil) then
+    begin
+      for TempInt := 0 to Parent.ControlCount - 1 do
+      begin
+        if (Parent.Controls[TempInt] is TRadioButton) and
+           TWinControl(Parent.Controls[TempInt]).HandleAllocated then
+        begin
+          TempWidget := PGtkWidget(TWinControl(Parent.Controls[TempInt]).Handle);
+          Break;
+        end;
+      end;
+    end;
+    
+    if TempWidget <> nil then
+      Widget := gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,'')
+    else
+      Widget := gtk_radio_button_new_with_label(nil, '');
+      
+    LabelWidget := PGtkLabel(gtk_bin_get_child(PGtkBin(@PGTKToggleButton(Widget)^.Button)));
+    GtkWidgetSet.SetLabelCaption(LabelWidget, AParams.Caption
+       {$IFDEF Gtk1}, AWinControl, Widget, 'clicked'{$ENDIF});
+  end;
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  TGtkWSCustomCheckBox.SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
+{ TGtkWSToggleBox }
+
+class function TGtkWSToggleBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := gtk_toggle_button_new_with_label(AParams.Caption);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  TGtkWSCustomCheckBox.SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1746,8 +1873,8 @@ initialization
 {$endif}
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
 //  RegisterWSComponent(TCheckBox, TGtkWSCheckBox);
-//  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
-//  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
+  RegisterWSComponent(TToggleBox, TGtkWSToggleBox);
+  RegisterWSComponent(TRadioButton, TGtkWSRadioButton);
   RegisterWSComponent(TCustomStaticText, TGtkWSCustomStaticText);
 //  RegisterWSComponent(TStaticText, TGtkWSStaticText);
 ////////////////////////////////////////////////////
