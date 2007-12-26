@@ -106,7 +106,9 @@ type
   TGtkWSCustomControl = class(TWSCustomControl)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
   { TGtkWSImageList }
@@ -876,6 +878,46 @@ begin
   );
 end;
 
+{ TGtkWSCustomControl }
+
+class procedure TGtkWSCustomControl.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGTKWidgetSet(Widgetset) do
+  begin
+    SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
+class function TGtkWSCustomControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := TGtkWidgetset(Widgetset).CreateAPIWidget(AWinControl);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  Result := THandle(PtrUInt(Widget));
+  if Result = 0 then Exit;
+
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+  
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -888,7 +930,7 @@ initialization
 //  RegisterWSComponent(TControl, TGtkWSControl);
   RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
-//  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
+  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
 //  RegisterWSComponent(TImageList, TGtkWSImageList);
 ////////////////////////////////////////////////////
 end.
