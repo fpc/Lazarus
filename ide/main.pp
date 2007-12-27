@@ -8693,7 +8693,7 @@ procedure TMainIDE.DoRestart;
       end;
       StartLazProcess.CommandLine := ExeName
         +' --lazarus-pid='+IntToStr(GetProcessID)
-        +' ''--primary-config-path='+GetPrimaryConfigPath+'''';
+        +' --primary-config-path='+GetPrimaryConfigPath;
       StartLazProcess.Execute;
     finally
       StartLazProcess.Free;
