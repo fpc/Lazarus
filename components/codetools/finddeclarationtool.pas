@@ -1202,7 +1202,9 @@ var CleanCursorPos: integer;
         BuildSubTreeForClass(ClassNode);
         CursorNode:=FindDeepestNodeAtPos(ClassNode,CleanCursorPos,true);
         if (CursorNode.Desc in [ctnClass,ctnClassInterface])
-        and (CleanCursorPos<ClassNode.FirstChild.StartPos) then begin
+        and ((ClassNode.FirstChild=nil)
+             or (CleanCursorPos<ClassNode.FirstChild.StartPos))
+        then begin
           // identifier is an ancestor/interface identifier
           CursorNode:=CursorNode.Parent;
           DirectSearch:=true;
