@@ -66,7 +66,7 @@ type
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
     // New properties.
-    Property ButtonWidth : Integer Read GetButtonWidth write SetButtonWidth;
+    property ButtonWidth : Integer read GetButtonWidth write SetButtonWidth;
     property DirectInput : Boolean read GetDirectInput write SetDirectInput stored False Default True;
     property Glyph : TBitmap read GetGlyph write SetGlyph;
     property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs;
@@ -76,8 +76,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    Property Flat : Boolean Read GetFlat Write SetFlat;
-    Property ButtonOnlyWhenFocused : Boolean Read FButtonNeedsFocus Write SetButtonNeedsFocus;
+    property Flat : Boolean read GetFlat write SetFlat;
+    property ButtonOnlyWhenFocused : Boolean read FButtonNeedsFocus write SetButtonNeedsFocus;
   end;
   
   
@@ -85,7 +85,7 @@ type
   
   TEditButton = Class(TCustomEditButton)
   Public
-    Property Button;
+    property Button;
   published
     property AutoSize;
     property AutoSelect;
@@ -98,17 +98,17 @@ type
     property CharCase;
     property Color;
     property Ctl3D;
-    Property DirectInput;
+    property DirectInput;
     property DragCursor;
     property DragMode;
     property EchoMode;
     property Enabled;
-    Property Flat;
+    property Flat;
     property Font;
     property Glyph;
     property MaxLength;
     property NumGlyphs;
-    Property OnButtonClick;
+    property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -158,33 +158,33 @@ type
     FOnAcceptFN: TAcceptFileNameEvent;
     function GetFileName: String;
     procedure SetFileName(const AValue: String);
-  Protected
-    Function CreateDialog(AKind : TDialogKind) : TCommonDialog; Virtual;
-    Procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); Virtual;
-    Function CreateFileOpenBitmap : TBitmap; Virtual;
+  protected
+    Function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
+    Procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
+    Function CreateFileOpenBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; Virtual;
-  Public
+    Procedure RunDialog; virtual;
+  public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
-    Property DialogFiles : TStrings Read FDialogFiles;
+    property DialogFiles : TStrings read FDialogFiles;
   Published
     // TFileName properties.
-    Property FileName : String Read GetFileName Write SetFileName;
-    Property InitialDir : String Read FInitialDir Write FInitialDir;
-    Property OnAcceptFileName : TAcceptFileNameEvent Read FOnAcceptFN Write FonAcceptFN;
-    Property DialogKind : TDialogKind Read FDialogKind Write FDialogKind;
-    Property DialogTitle : String Read FDialogTitle Write FDialogTitle;
-    Property DialogOptions : TOpenOptions Read FDialogOptions Write FDialogOptions;
-    Property Filter : String Read FFilter Write FFilter;
-    Property FilterIndex : Integer Read FFilterIndex Write FFIlterIndex;
+    property FileName : String read GetFileName write SetFileName;
+    property InitialDir : String read FInitialDir write FInitialDir;
+    property OnAcceptFileName : TAcceptFileNameEvent read FOnAcceptFN write FonAcceptFN;
+    property DialogKind : TDialogKind read FDialogKind write FDialogKind;
+    property DialogTitle : String read FDialogTitle write FDialogTitle;
+    property DialogOptions : TOpenOptions read FDialogOptions write FDialogOptions;
+    property Filter : String read FFilter write FFilter;
+    property FilterIndex : Integer read FFilterIndex write FFIlterIndex;
     // TEditButton properties.
-    Property ButtonWidth;
-    Property DirectInput;
-    Property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property DirectInput;
+    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
-    Property Flat;
+    property Flat;
     // Other properties
     property Align;
     property Anchors;
@@ -237,29 +237,29 @@ type
     FShowHidden: Boolean;
     function GetDirectory: String;
     procedure SetDirectory(const AValue: String);
-  Protected
-    Function CreateDialog : TCommonDialog; Virtual;
-    Function GetDialogResult(D : TCommonDialog) : String; Virtual;
-    Function CreateDirectoryBitmap : TBitmap; Virtual;
+  protected
+    Function CreateDialog : TCommonDialog; virtual;
+    Function GetDialogResult(D : TCommonDialog) : String; virtual;
+    Function CreateDirectoryBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; Virtual;
-  Public
+    Procedure RunDialog; virtual;
+  public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
-  Published
+  published
     // TDirectory properties.
-    Property Directory : String Read GetDirectory Write SetDirectory;
-    Property RootDir : String Read FRootDir Write FRootDir;
-    Property OnAcceptDirectory : TAcceptFileNameEvent Read FOnAcceptDir Write FonAcceptDir;
-    Property DialogTitle : String Read FDialogTitle Write FDialogTitle;
-    Property ShowHidden : Boolean Read FShowHidden Write FShowHidden;
+    property Directory : String read GetDirectory write SetDirectory;
+    property RootDir : String read FRootDir write FRootDir;
+    property OnAcceptDirectory : TAcceptFileNameEvent read FOnAcceptDir write FonAcceptDir;
+    property DialogTitle : String read FDialogTitle write FDialogTitle;
+    property ShowHidden : Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
-    Property ButtonWidth;
-    Property DirectInput;
-    Property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property DirectInput;
+    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
-    Property Flat;
+    property Flat;
     // Other properties
     property Align;
     property Anchors;
@@ -328,18 +328,18 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DateFormatChanged; virtual;
-    property Date: TDateTime Read FDate Write SetDate;
+    property Date: TDateTime read FDate write SetDate;
     property Button;
   published
-    property DialogTitle:TCaption Read FDialogTitle Write FDialogTitle Stored IsStoreTitle;
-    Property CalendarDisplaySettings : TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
-    Property OnAcceptDate : TAcceptDateEvent Read FOnAcceptDAte Write FOnAcceptDate;
-    property OKCaption:TCaption Read FOKCaption Write FOKCaption;
-    property CancelCaption:TCaption Read FCancelCaption Write FCancelCaption;
+    property DialogTitle:TCaption read FDialogTitle write FDialogTitle Stored IsStoreTitle;
+    property CalendarDisplaySettings : TDisplaySettings read FDisplaySettings write FDisplaySettings;
+    property OnAcceptDate : TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
+    property OKCaption:TCaption read FOKCaption write FOKCaption;
+    property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly default true;
 
-    Property ButtonOnlyWhenFocused;
-    Property ButtonWidth;
+    property ButtonOnlyWhenFocused;
+    property ButtonWidth;
     property Action;
     property Align;
     property Anchors;
@@ -362,11 +362,11 @@ type
     property OnEditingDone;
     property OnEnter;
     property OnExit;
-    Property OnKeyDown;
+    property OnKeyDown;
     property OnKeyPress;
-    Property OnKeyUp;
-    Property OnMouseDown;
-    Property OnMouseMove;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
     property OnMouseUp;
     property OnResize;
     property ParentFont;
@@ -382,8 +382,8 @@ type
   
   { TCalcEdit }
   
-  TAcceptValueEvent = Procedure (Sender : TObject; Var AValue : Double; Var Action : Boolean) of Object;
-  TCalcEdit = Class(TCustomEditButton)
+  TAcceptValueEvent = procedure(Sender: TObject; var AValue: Double; var Action: Boolean) of Object;
+  TCalcEdit = class(TCustomEditButton)
   private
     FDialogTitle: String;
     FLayout: TCalculatorLayout;
@@ -393,28 +393,28 @@ type
     procedure SetAsFloat(const AValue: Double);
     procedure SetAsInteger(const AValue: Integer);
     function TitleStored: boolean;
-  Protected
+  protected
     FCalcDialog : TForm;
-    Function CreateCalcBitmap : TBitmap; Virtual;
+    Function CreateCalcBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; Virtual;
-  Public
+    Procedure RunDialog; virtual;
+  public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
-  Published
+  published
     // CalcEdit properties
-    Property CalculatorLayout : TCalculatorLayout Read FLayout Write Flayout;
-    Property AsFloat : Double Read GetAsFloat Write SetAsFloat;
-    Property AsInteger : Integer Read GetAsInteger Write SetAsInteger;
-    Property OnAcceptValue : TAcceptValueEvent Read FOnAcceptValue Write FOnAcceptValue;
-    Property DialogTitle : String Read FDialogTitle Write FDialogTitle Stored TitleStored;
+    property CalculatorLayout : TCalculatorLayout read FLayout write Flayout;
+    property AsFloat : Double read GetAsFloat write SetAsFloat;
+    property AsInteger : Integer read GetAsInteger write SetAsInteger;
+    property OnAcceptValue : TAcceptValueEvent read FOnAcceptValue write FOnAcceptValue;
+    property DialogTitle : String read FDialogTitle write FDialogTitle Stored TitleStored;
     // TEditButton properties.
-    Property ButtonWidth;
-    Property DirectInput;
-    Property ButtonOnlyWhenFocused;
+    property ButtonWidth;
+    property DirectInput;
+    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
-    Property Flat;
+    property Flat;
     // Other properties
     property Align;
     property Anchors;
@@ -456,12 +456,12 @@ type
     property OnStartDrag;
   end;
 
-Var
-  FileOpenGlyph : TBitmap;
-  DateGlyph : TBitmap;
-  CalcGlyph : TBitmap;
+var
+  FileOpenGlyph: TBitmap;
+  DateGlyph: TBitmap;
+  CalcGlyph: TBitmap;
 
-Const
+const
   ResBtnFileOpen   = 'btnselfile';
   ResBtnSelDir     = 'btnseldir';
   ResBtnCalendar   = 'btncalendar';
@@ -471,37 +471,36 @@ procedure Register;
 
 implementation
 
-Function GlyphFromBitmapOrResource(B : TBitmap;
-  const ResourceName : String) : TBitmap;
+function GlyphFromBitmapOrResource(B: TBitmap;
+  const ResourceName: String): TBitmap;
 begin
-  Result:=TBitmap.Create;
-  If Assigned(B) then
-    Result.Assign(B)
+  if Assigned(B) then
+  begin
+    Result := TBitmap.Create;
+    Result.Assign(B);
+  end
   else
-    Result.LoadFromLazarusResource(ResourceName);
+    Result := LoadBitmapFromLazarusResource(ResourceName);
 end;
 
-Function CreateFileOpenGlyph : TBitmap;
-
+function CreateFileOpenGlyph : TBitmap;
 begin
-  Result:=GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnFileOpen);
+  Result := GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnFileOpen);
 end;
 
-Function CreateDirectoryGlyph : TBitmap;
+function CreateDirectoryGlyph : TBitmap;
 begin
-  Result:=GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnSelDir);
+  Result := GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnSelDir);
 end;
 
-Function CreateDateGlyph : TBitmap;
-
+function CreateDateGlyph : TBitmap;
 begin
-  Result:=GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar);
+  Result := GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar);
 end;
 
-Function CreateCalcGlyph : TBitmap;
-
+function CreateCalcGlyph : TBitmap;
 begin
-  Result:=GlyphFromBitmapOrResource(CalcGlyph,ResBtnCalculator);
+  Result := GlyphFromBitmapOrResource(CalcGlyph,ResBtnCalculator);
 end;
 
 
@@ -570,11 +569,11 @@ end;
 
 procedure TCustomEditButton.SetButtonNeedsFocus(const AValue: Boolean);
 begin
-  If FButtonNeedsFocus<>AValue then
-    begin
+  if FButtonNeedsFocus<>AValue then
+  begin
     FButtonNeedsFocus:=AValue;
     CheckButtonVisible;
-    end;
+  end;
 end;
 
 procedure TCustomEditButton.SetButtonWidth(const AValue: Integer);
@@ -594,12 +593,12 @@ begin
 end;
 
 function TCustomEditButton.GetGlyph : TBitmap;
-Begin
+begin
   Result:=FButton.Glyph;
 end;
 
 procedure TCustomEditButton.SetNumGlyphs(ANumber: Integer);
-Begin
+begin
   FButton.NumGlyphs:=ANumber;
 end;
 
@@ -637,7 +636,7 @@ end;
 
 procedure TCustomEditButton.DoButtonClick (Sender: TObject);
 begin
-  If Not ReadOnly then
+  If not ReadOnly then
     if Assigned(FOnButtonClick) then
       FOnButtonClick(Self);
 end;
@@ -648,10 +647,9 @@ begin
   CheckButtonVisible;
 end;
 
-
 procedure TCustomEditButton.WMKillFocus(var Message: TLMKillFocus);
 begin
-  If FButtonNeedsFocus then
+  if FButtonNeedsFocus then
     FButton.Visible:=False;
   inherited;
 end;
@@ -660,10 +658,10 @@ procedure TCustomEditButton.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FButton <> nil then 
-    begin
+  begin
     FButton.Parent := Parent;
     CheckButtonVisible;
-    end;
+  end;
 end;
 
 procedure TCustomEditButton.DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -716,15 +714,13 @@ begin
 end;
 
 function TFileNameEdit.CreateDialog(AKind: TDialogKind): TCommonDialog;
-
-Var
-  O : TOpenDialog;
-  S : TSaveDialog;
-  
+var
+  O: TOpenDialog;
+  S: TSaveDialog;
 begin
   Case AKind of
-    dkopen,dkPictureOpen :
-      begin
+    dkopen, dkPictureOpen:
+    begin
       O:=TOpenDialog.Create(Self);
       O.FileName:=FileName;
       O.Options:=DialogOptions;
@@ -732,45 +728,43 @@ begin
       O.Filter:=Filter;
       O.FilterIndex:=FilterIndex;
       Result:=O;
-      end;
-    dkSave,dkPictureSave :
-      begin
+    end;
+    dkSave, dkPictureSave:
+    begin
       S:=TSaveDialog.Create(Self);
       S.Filter:=Filter;
       S.FilterIndex:=FilterIndex;
       Result:=S;
-      end;
+    end;
   end;
   // Set some common things.
-  Result.Title:=DialogTitle;
+  Result.Title := DialogTitle;
 end;
 
 procedure TFileNameEdit.SaveDialogResult(AKind: TDialogKind; D: TCommonDialog);
-
-Var
-  FN : String;
-
+var
+  FN: String;
 begin
-  Case AKind of
+  case AKind of
     dkOpen,dkPictureOpen :
-      begin
+    begin
       FN:=TOpenDialog(D).FileName;
-      If (FN<>'') then
-        begin
-        If Assigned(FOnAcceptFN) then
+      if (FN<>'') then
+      begin
+        if Assigned(FOnAcceptFN) then
           FOnAcceptFN(Self,Fn);
-        end;
-      If (FN<>'') then
-        begin
+      end;
+      if (FN<>'') then
+      begin
         FileName:=FN;
         FDialogFiles.Text:=TOpenDialog(D).Files.Text;
-        end;
       end;
+    end;
     dkSave,dkPictureSave :
-      begin
+    begin
       FileName:=TSaveDialog(D).FileName;
       FDialogFiles.Clear;
-      end;
+    end;
   end;
 end;
 
@@ -786,16 +780,14 @@ begin
 end;
 
 procedure TFileNameEdit.RunDialog;
-
-Var
+var
   D : TCommonDialog;
-
 begin
   D:=CreateDialog(DialogKind);
-  Try
-    If D.Execute then
+  try
+    if D.Execute then
       SaveDialogResult(DialogKind,D);
-  Finally
+  finally
     D.Free;
   end
 end;
@@ -820,24 +812,25 @@ end;
 procedure TDirectoryEdit.SetDirectory(const AValue: String);
 begin
   if (Text<>AValue) then
-    begin
     Text:=AValue;
-    end;
 end;
 
 function TDirectoryEdit.CreateDialog: TCommonDialog;
 begin
   Result:=TSelectDirectoryDialog.Create(Self);
-  if DirPathExists(Directory) then begin
+  if DirPathExists(Directory) then
+  begin
     TSelectDirectoryDialog(Result).InitialDir:=Directory;
     TSelectDirectoryDialog(Result).FileName:='';
-  end else begin
+  end
+  else
+  begin
     TSelectDirectoryDialog(Result).InitialDir:=RootDir;
     TSelectDirectoryDialog(Result).FileName:=Directory;
   end;
 end;
 
-Function TDirectoryEdit.GetDialogResult(D: TCommonDialog) : String;
+function TDirectoryEdit.GetDialogResult(D: TCommonDialog) : String;
 begin
   Result:=TSelectDirectoryDialog(D).FileName;
 end;
@@ -855,32 +848,30 @@ begin
 end;
 
 procedure TDirectoryEdit.RunDialog;
-
-Var
-  D : String;
-  Dlg : TCommonDialog;
-  B : Boolean;
-  
+var
+  D: String;
+  Dlg: TCommonDialog;
+  B: Boolean;
 begin
   Dlg:=CreateDialog;
-  Try
+  try
     B:=Dlg.Execute;
-    If B then
+    if B then
       D:=GetDialogResult(Dlg);
-  Finally
+  finally
     Dlg.Free;
   end;
-  If B then
+  if B then
+  begin
+    if Assigned(FOnAcceptDir) then
     begin
-    If Assigned(FOnAcceptDir) then
-      begin
       FOnAcceptdir(Self,D);
-      If (D<>'') then
+      if (D<>'') then
         Directory:=D;
-      end
+    end
     else
       Directory:=D;
-    end;
+  end;
 end;
 
 function TDirectoryEdit.GetDirectory: String;
@@ -982,13 +973,11 @@ begin
   end;
 end;
 
-
-
 { TCalcEdit }
 
 function TCalcEdit.GetAsFloat: Double;
 begin
-  Try
+  try
     Result:=StrToDouble(Trim(Text));
   except
     Result:=0.0;
@@ -1027,27 +1016,25 @@ begin
 end;
 
 procedure TCalcEdit.RunDialog;
-
-Var
+var
   D : Double;
   B : Boolean;
-  
 begin
   D:=AsFloat;
-  With CreateCalculatorForm(Self,FLayout,0) do
-    Try
+  with CreateCalculatorForm(Self,FLayout,0) do
+    try
       Caption:=DialogTitle;
       Value:=D;
-      If (ShowModal=mrOK) then
-        begin
+      if (ShowModal=mrOK) then
+      begin
         D:=Value;
         B:=True;
         If Assigned(FOnAcceptValue) then
           FOnAcceptValue(Self,D,B);
-        If B then
+        if B then
           AsFloat:=D;
-        end;
-    Finally
+      end;
+    finally
       Free;
     end;
 end;
@@ -1074,10 +1061,7 @@ begin
                               TDateEdit,TCalcEdit]);
 end;
 
-Initialization
-
-{$i edbtnimg.lrs}
-
-Finalization
+initialization
+{$i lcl_edbtnimg.lrs}
 
 end.

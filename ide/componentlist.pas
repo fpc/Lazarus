@@ -113,6 +113,7 @@ end;
 
 destructor TComponentListForm.Destroy;
 begin
+  ComponentListForm := nil;
   FComponentList.Free;
   inherited Destroy;
 end;

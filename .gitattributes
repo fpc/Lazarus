@@ -365,33 +365,33 @@ components/lazreport/images/bitmaps/fr_radio.bmp -text
 components/lazreport/images/bitmaps/fr_script.bmp -text
 components/lazreport/images/bitmaps/fr_undrline.bmp -text
 components/lazreport/images/bitmaps/rename_lower.pl -text svneol=unset#application/x-perl
-components/lazreport/images/bitmaps/tfrbarcodeobject.bmp -text
+components/lazreport/images/bitmaps/tfrbarcodeobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrchartobject.bmp -text
-components/lazreport/images/bitmaps/tfrcheckboxobject.bmp -text
-components/lazreport/images/bitmaps/tfrcompositereport.bmp -text
-components/lazreport/images/bitmaps/tfrcsvexport.bmp -text
+components/lazreport/images/bitmaps/tfrcheckboxobject.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrcompositereport.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrcsvexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrdatastorage.bmp -text
-components/lazreport/images/bitmaps/tfrdbdataset.bmp -text
+components/lazreport/images/bitmaps/tfrdbdataset.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrdesigner.bmp -text
 components/lazreport/images/bitmaps/tfrdock.bmp -text
-components/lazreport/images/bitmaps/tfrhtmexport.bmp -text
+components/lazreport/images/bitmaps/tfrhtmexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfroleobject.bmp -text
 components/lazreport/images/bitmaps/tfropendbdialog.bmp -text
 components/lazreport/images/bitmaps/tfrpreview.bmp -text
-components/lazreport/images/bitmaps/tfrprintgrid.bmp -text
-components/lazreport/images/bitmaps/tfrreport.bmp -text
+components/lazreport/images/bitmaps/tfrprintgrid.png -text svneol=unset#image/png
+components/lazreport/images/bitmaps/tfrreport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrichobject.bmp -text
-components/lazreport/images/bitmaps/tfrroundrectobject.bmp -text
+components/lazreport/images/bitmaps/tfrroundrectobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrrtfexport.bmp -text
 components/lazreport/images/bitmaps/tfrrxrichobject.bmp -text
-components/lazreport/images/bitmaps/tfrshapeobject.bmp -text
+components/lazreport/images/bitmaps/tfrshapeobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrspeedbutton.bmp -text
 components/lazreport/images/bitmaps/tfrtbbutton.bmp -text
 components/lazreport/images/bitmaps/tfrtbpanel.bmp -text
 components/lazreport/images/bitmaps/tfrtbseparator.bmp -text
-components/lazreport/images/bitmaps/tfrtextexport.bmp -text
+components/lazreport/images/bitmaps/tfrtextexport.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrtoolbar.bmp -text
-components/lazreport/images/bitmaps/tfruserdataset.bmp -text
+components/lazreport/images/bitmaps/tfruserdataset.png -text svneol=unset#image/png
 components/lazreport/images/designer/fr_bold.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_heightwidth.xpm svneol=native#text/x-pixmap
 components/lazreport/images/designer/fr_italic.xpm svneol=native#text/x-pixmap
@@ -1017,6 +1017,7 @@ components/tachart/taengine.pas svneol=native#text/plain
 components/tachart/tagraph.lrs svneol=native#text/plain
 components/tachart/tagraph.pas svneol=native#text/plain
 components/tachart/taseries.pas svneol=native#text/plain
+components/tachart/tchart.png -text svneol=unset#images/png
 components/tdbf/Makefile svneol=native#text/plain
 components/tdbf/Makefile.fpc svneol=native#text/plain
 components/tdbf/dbflaz.lpk svneol=native#text/pascal
@@ -1058,7 +1059,8 @@ components/turbopower_ipro/languages/iputils.lt.po svneol=native#text/plain
 components/turbopower_ipro/languages/iputils.pl.po svneol=native#text/plain
 components/turbopower_ipro/languages/iputils.po svneol=native#text/plain
 components/turbopower_ipro/languages/iputils.ru.po svneol=native#text/plain
-components/turbopower_ipro/tiphtmlpanel.xpm -text svneol=native#image/x-xpixmap
+components/turbopower_ipro/tipfiledataprovider.png -text svneol=unset#image/png
+components/turbopower_ipro/tiphtmlpanel.png -text svneol=unset#image/png
 components/turbopower_ipro/turbopoweripro.lpk svneol=native#text/pascal
 components/turbopower_ipro/turbopoweripro.pas svneol=native#text/plain
 converter/delphiproject2laz.pas svneol=native#text/plain
@@ -2051,7 +2053,6 @@ ideintf/collectionpropeditform.lrs svneol=native#text/plain
 ideintf/columndlg.pp svneol=native#text/pascal
 ideintf/componenteditors.pas svneol=native#text/pascal
 ideintf/componentreg.pas svneol=native#text/pascal
-ideintf/componenttreeview.lrs svneol=native#text/pascal
 ideintf/componenttreeview.pas svneol=native#text/pascal
 ideintf/dbpropedits.pas svneol=native#text/pascal
 ideintf/fieldseditor.lfm svneol=native#text/plain
@@ -2119,10 +2120,6 @@ ideintf/objectinspector.lfm svneol=native#text/plain
 ideintf/objectinspector.lrs svneol=native#text/plain
 ideintf/objectinspector.pp svneol=native#text/pascal
 ideintf/objinspstrconsts.pas svneol=native#text/pascal
-ideintf/oi_box.bmp -text svneol=unset#image/bmp
-ideintf/oi_comp.bmp -text svneol=unset#image/bmp
-ideintf/oi_control.bmp -text svneol=unset#image/bmp
-ideintf/oi_form.bmp -text svneol=unset#image/bmp
 ideintf/packageintf.pas svneol=native#text/pascal
 ideintf/projectintf.pas svneol=native#text/pascal
 ideintf/propedits.pp svneol=native#text/pascal
@@ -2283,6 +2280,13 @@ images/components/unregisteredcomponent.png -text svneol=unset#image/png
 images/components_images.bat svneol=native#text/plain
 images/components_images.lrs svneol=native#text/pascal
 images/components_images_list.txt svneol=native#text/plain
+images/componenttreeview.bat svneol=native#text/plain
+images/componenttreeview.lrs svneol=native#text/pascal
+images/componenttreeview/oi_box.png -text svneol=unset#image/png
+images/componenttreeview/oi_comp.png -text svneol=unset#image/png
+images/componenttreeview/oi_control.png -text svneol=unset#image/png
+images/componenttreeview/oi_form.png -text svneol=unset#image/png
+images/componenttreeview_list.txt svneol=native#text/plain
 images/debugger/debugger.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png
@@ -2545,7 +2549,6 @@ lcl/dirsel.pas svneol=native#text/pascal
 lcl/dynamicarray.pas svneol=native#text/pascal
 lcl/dynhasharray.pp svneol=native#text/pascal
 lcl/dynqueue.pas svneol=native#text/plain
-lcl/edbtnimg.lrs svneol=native#text/pascal
 lcl/editbtn.pas svneol=native#text/pascal
 lcl/extctrls.pp svneol=native#text/pascal
 lcl/extdlgs.lrs svneol=native#text/pascal
@@ -2578,9 +2581,10 @@ lcl/images/btncalcmul.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcok.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcplus.xpm -text svneol=native#image/x-xpixmap
 lcl/images/btncalcpm.xpm -text svneol=native#image/x-xpixmap
-lcl/images/btncalculator.xpm -text svneol=native#image/x-xpixmap
-lcl/images/btncalendar.xpm -text svneol=native#image/x-xpixmap
-lcl/images/btnseldir.xpm -text svneol=native#image/x-xpixmap
+lcl/images/btncalculator.png -text svneol=unset#image/png
+lcl/images/btncalendar.png -text svneol=unset#image/png
+lcl/images/btnseldir.png -text svneol=unset#image/png
+lcl/images/btnselfile.png -text svneol=unset#image/png
 lcl/images/buttons/btn_abort.png -text svneol=unset#image/png
 lcl/images/buttons/btn_all.png -text svneol=unset#image/png
 lcl/images/buttons/btn_cancel.png -text svneol=unset#image/png
@@ -2608,16 +2612,16 @@ lcl/images/cursors/cur_22.cur -text svneol=unset#image/x-cursor
 lcl/images/dbgridcheckedcb.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbgridgrayedcb.xpm -text svneol=native#image/x-xpixmap
 lcl/images/dbgriduncheckedcb.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavcancel.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavdelete.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavedit.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavfirst.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavinsert.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavlast.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavnext.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavpost.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavprior.xpm -text svneol=native#image/x-xpixmap
-lcl/images/dbnavrefresh.xpm -text svneol=native#image/x-xpixmap
+lcl/images/dbnavcancel.png -text svneol=unset#image/png
+lcl/images/dbnavdelete.png -text svneol=unset#image/png
+lcl/images/dbnavedit.png -text svneol=unset#image/png
+lcl/images/dbnavfirst.png -text svneol=unset#image/png
+lcl/images/dbnavinsert.png -text svneol=unset#image/png
+lcl/images/dbnavlast.png -text svneol=unset#image/png
+lcl/images/dbnavnext.png -text svneol=unset#image/png
+lcl/images/dbnavpost.png -text svneol=unset#image/png
+lcl/images/dbnavprior.png -text svneol=unset#image/png
+lcl/images/dbnavrefresh.png -text svneol=unset#image/png
 lcl/images/dialogs/build.bat -text
 lcl/images/dialogs/dialog_confirmation.png -text svneol=unset#image/png
 lcl/images/dialogs/dialog_error.png -text svneol=unset#image/png
@@ -2627,6 +2631,8 @@ lcl/images/lcl_dbgrid_images.bat svneol=native#text/plain
 lcl/images/lcl_dbgrid_images_list.txt svneol=native#text/plain
 lcl/images/lcl_dbnav_images.bat svneol=native#text/plain
 lcl/images/lcl_dbnav_images_list.txt svneol=native#text/plain
+lcl/images/lcl_edbtnimg.bat svneol=native#text/plain
+lcl/images/lcl_edbtnimg_list.txt svneol=native#text/plain
 lcl/imglist.pp svneol=native#text/pascal
 lcl/include/actionlink.inc svneol=native#text/pascal
 lcl/include/alignment.inc svneol=native#text/pascal
@@ -3125,6 +3131,7 @@ lcl/lazhelpintf.pas svneol=native#text/pascal
 lcl/lazlinkedlist.pas svneol=native#text/pascal
 lcl/lcl_dbgrid_images.lrs svneol=native#text/pascal
 lcl/lcl_dbnav_images.lrs svneol=native#text/pascal
+lcl/lcl_edbtnimg.lrs svneol=native#text/pascal
 lcl/lclclasses.pp svneol=native#text/pascal
 lcl/lclintf.pas svneol=native#text/pascal
 lcl/lclmemmanager.pas svneol=native#text/pascal

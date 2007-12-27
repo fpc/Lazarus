@@ -76,7 +76,7 @@ type
   end;
 
 const
-  NonVisualCompIconWidth = ComponentPaletteBtnWidth-2;
+  NonVisualCompIconWidth = ComponentPaletteImageWidth;
   NonVisualCompBorder = 2;
   NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 

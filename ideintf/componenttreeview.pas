@@ -444,7 +444,7 @@ begin
 end;
 
 initialization
-  {$I componenttreeview.lrs}
+  {$I ../images/componenttreeview.lrs}
 
 end.
 
