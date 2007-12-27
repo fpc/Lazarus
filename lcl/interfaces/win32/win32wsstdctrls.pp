@@ -904,7 +904,10 @@ end;
 
 class function TWin32WSCustomComboBox.GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer;
 begin
-  Result := SendMessage(ACustomComboBox.Handle, CB_GETITEMHEIGHT, 0, 0);
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemHeight') then 
+    Result := 0
+  else
+    Result := SendMessage(ACustomComboBox.Handle, CB_GETITEMHEIGHT, 0, 0);
 end;
 
 class procedure TWin32WSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
