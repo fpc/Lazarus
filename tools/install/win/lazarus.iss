@@ -37,8 +37,10 @@ ShowTasksTreeLines=true
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
 
 [Components]
+#if FPCTargetOS=="win32"
 #if IDEWidgetSet!="qt"
 Name: installqtintfdll; Description: Install QT interface dll; Types: custom full compact
+#endif
 #endif
 Name: associatelfm; Description: {code:GetAssociateDesc|.lfm}; Types: custom full
 Name: associatelpi; Description: {code:GetAssociateDesc|.lpi}; Types: custom full

@@ -94,6 +94,12 @@ cd %BUILDDIR%\packager\registration
 gmkdir -p %BUILDDIR%\image\packager\units
 cp -pr %BUILDDIR%\packager\units\%FPCFULLTARGET% %BUILDDIR%\image\packager\units\%FPCFULLTARGET%
 
+%SVN% export %LAZSVNDIR%\ideintf %BUILDDIR%\ideint
+cd %BUILDDIR%\ideintf
+%MAKEEXE% FPC=%compiler%
+gmkdir -p %BUILDDIR%\image\ideintf\units
+cp -pr %BUILDDIR%\ideintf\units\%FPCFULLTARGET% %BUILDDIR%\image\ideintf\units\%FPCFULLTARGET%
+
 gmkdir -p %BUILDDIR%\components
 %SVN% export %LAZSVNDIR%\components\synedit %BUILDDIR%\components\synedit
 cd %BUILDDIR%\components\synedit
