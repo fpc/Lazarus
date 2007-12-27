@@ -107,7 +107,6 @@ var
   CurIcon: TBitmap;
   IconWidth: Integer;
   IconHeight: Integer;
-  CurRect: TRect;
 begin
   if fSelectedComponents=nil then exit;
   if (Index<0) or (Index>=fSelectedComponents.Count) then exit;
@@ -117,13 +116,7 @@ begin
     CurStr:=Format(lisPckEditPage, [CurComponent.ComponentClass.ClassName,
       CurComponent.Page.PageName]);
     TxtH:=TextHeight(CurStr);
-    CurRect:=ARect;
-    inc(CurRect.Left,25);
-    FillRect(CurRect);
-    Brush.Color:=clLtGray;
-    CurRect:=ARect;
-    CurRect.Right:=ARect.Left+25;
-    FillRect(CurRect);
+    FillRect(ARect);
     CurIcon:=nil;
     if CurComponent is TPkgComponent then
       CurIcon:=TPkgComponent(CurComponent).Icon;

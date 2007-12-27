@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-01 01:07+0300\n"
+"PO-Revision-Date: 2007-11-18 00:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -367,7 +367,7 @@ msgstr " (psNoOp)"
 
 #: ipconst:spop3nottransacting
 msgid "%s can not be called in authentication state"
-msgstr "%s нельзя вызвать во время аутентификации"
+msgstr "%s нельзя вызвать во время проверки подлинности"
 
 #: ipconst:spop3notauthenticating
 msgid "%s can not be called in transaction state"
@@ -487,51 +487,51 @@ msgstr "Попытка записи"
 
 #: ipconst:srasauthenticate
 msgid "Authenticate"
-msgstr "Аутентифицировать"
+msgstr "Выполнить проверку подлинности"
 
 #: ipconst:srasauthack
 msgid "Authenticate acknowledged"
-msgstr "Аутентификация подтверждена"
+msgstr "Проверка подлинности успешно выполнена"
 
 #: ipconst:srasauthcallback
 msgid "Authenticate callback"
-msgstr "Внешний обработчик аутентификации"
+msgstr "Внешний обработчик проверки подлинности"
 
 #: ipconst:srasauthchangepassword
 msgid "Authenticate change password"
-msgstr "Аутентифицировать смену пароля"
+msgstr "Проверить на подлинность смену пароля"
 
 #: ipconst:srasauthlinkspeed
 msgid "Authenticate link speed"
-msgstr "Аутентифицировать скорость соединения"
+msgstr "Проверить скорость соединения"
 
 #: ipconst:srasauthnotify
 msgid "Authenticate notify"
-msgstr "Уведомление об аутентификации"
+msgstr "Уведомление о проверке на подлинность"
 
 #: ipconst:srasauthproject
 msgid "Authenticate project"
-msgstr "Аутентифицировать проект"
+msgstr "Проверка подлинности проекта"
 
 #: ipconst:srasauthretry
 msgid "Authenticate retry"
-msgstr "Повторить аутентификацию"
+msgstr "Повторить проверку подлинности"
 
 #: ipconst:srasauthenticated
 msgid "Authenticated"
-msgstr "Аутентифицирован"
+msgstr "Проверен"
 
 #: ipconst:sntauthenticate
 msgid "Authenticating"
-msgstr "Аутентификация"
+msgstr "Проверка подлинности"
 
 #: ipconst:sssauthpass
 msgid "Authenticating password"
-msgstr "Аутентификация пароля"
+msgstr "Проверка подлинности пароля"
 
 #: ipconst:sssauthuser
 msgid "Authenticating username"
-msgstr "Аутентификация имени пользователя"
+msgstr "Проверка подлинности имени пользователя"
 
 #: ipconst:snsauthpass
 msgid "Authorizing password"
@@ -915,7 +915,7 @@ msgstr "Загрузить?"
 
 #: ipconst:sicmpecho
 msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
-msgstr ""
+msgstr "Эхо-ответ (Число хопов: %d)\n              Статус = %d\n              RTTime = %d\n             Ttl = %d\n             Tos = %d\n             Флаги IP = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
@@ -1743,7 +1743,7 @@ msgstr "Ошибка Ras  (%d): в API '%s'"
 
 #: ipconst:srasreauthenticate
 msgid "Re-authenticate"
-msgstr "Переаутентифицироваться"
+msgstr "Перепроверить подлинность"
 
 #: ipconst:ssslreaderror
 msgid "Read error."
@@ -1779,7 +1779,7 @@ msgstr "Время запроса истекло"
 
 #: ipconst:sssauthlogin
 msgid "Requesting authentication"
-msgstr "Запрос аутентификации"
+msgstr "Запрос проверки подлинности"
 
 #: ipconst:swsa_qos_request_confirmed
 msgid "Reserve has been confirmed"
@@ -1903,7 +1903,7 @@ msgstr "Извлечение заголовков сообщения"
 
 #: ipconst:srasretryauthentication
 msgid "Retry authentication"
-msgstr "Повторить аутентификацию"
+msgstr "Повторить проверку подлинности"
 
 #: ipconst:ssslrevokedcertificate
 msgid "Revoked Certificate."
@@ -2063,7 +2063,7 @@ msgstr "Устаревший дескриптор файла NFS"
 
 #: ipconst:srasstartauthentication
 msgid "Start authentication"
-msgstr "Начать аутентификацию"
+msgstr "Начать проверку подлинности"
 
 #: ipconst:slogtaskstart
 msgid "Starting task: "

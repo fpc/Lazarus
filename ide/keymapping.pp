@@ -1348,6 +1348,7 @@ begin
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
+    ecViewComponents          : Result:= srkmecViewComponents;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
 

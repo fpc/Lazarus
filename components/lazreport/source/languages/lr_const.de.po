@@ -405,12 +405,10 @@ msgid "11 x 17\""
 msgstr "11 x 17 \""
 
 #: lr_const:sformat32
-#, fuzzy
 msgid "11.15.1998"
 msgstr "15.11.1998"
 
 #: lr_const:sformat31
-#, fuzzy
 msgid "11.15.98"
 msgstr "15.11.98"
 
@@ -815,17 +813,14 @@ msgid "Copy variables"
 msgstr "Variablen kopieren"
 
 #: lr_const:sband20
-#, fuzzy
 msgid "Cross data"
 msgstr "Kreuzdaten"
 
 #: lr_const:sband21
-#, fuzzy
 msgid "Cross footer"
 msgstr "Kreuz-Footer"
 
 #: lr_const:sband19
-#, fuzzy
 msgid "Cross header"
 msgstr "Kreuz-Header"
 
@@ -850,7 +845,6 @@ msgid "Cut"
 msgstr "Ausschneiden"
 
 #: lr_const:spaper25
-#, fuzzy
 msgid "D Sheet, 22 x 34\""
 msgstr "D-Blatt, 22 x 34 \""
 
@@ -1247,12 +1241,10 @@ msgid "Framed zone"
 msgstr "Umrandeter Bereich"
 
 #: lr_const:spaper41
-#, fuzzy
 msgid "German Legal Fanfold, 8 1/2 x 13\""
 msgstr "Deutsches Legal, fächergefaltet, 8 1/2 x 13 \""
 
 #: lr_const:spaper40
-#, fuzzy
 msgid "German Std Fanfold, 8 1/2 x 12\""
 msgstr "Deutsches Std fächergefaltet, 8 1/2 x 12 \""
 
@@ -1533,7 +1525,6 @@ msgid "Normal text / 90 degrees"
 msgstr "Normaler Text/90 Grad"
 
 #: lr_const:spaper18
-#, fuzzy
 msgid "Note, 8 1/2 x 11\""
 msgstr "US Note, 8 1/2 x 11\""
 
@@ -1882,7 +1873,6 @@ msgid "Standard"
 msgstr "Standard"
 
 #: lr_const:spaper6
-#, fuzzy
 msgid "Statement, 5 1/2 x 8 1/2\""
 msgstr "Statement, 5 1/2 x 8 1/2 \""
 
@@ -1919,12 +1909,10 @@ msgid "Subject"
 msgstr "Betreff"
 
 #: lr_const:spaper57
-#, fuzzy
 msgid "SuperASuperAA4 227 x 356 mm"
 msgstr "SuperASuperAA4, 227 x 356 mm"
 
 #: lr_const:spaper58
-#, fuzzy
 msgid "SuperBSuperBA3 305 x 487 mm"
 msgstr "SuperBSuperBA3, 305 x 487 mm"
 
@@ -2129,12 +2117,10 @@ msgid "hh:nn:ss"
 msgstr "hh:mm:ss"
 
 #: lr_const:sdateformat1
-#, fuzzy
 msgid "mm.dd.yy"
 msgstr "tt.mm.jj"
 
 #: lr_const:sdateformat2
-#, fuzzy
 msgid "mm.dd.yyyy"
 msgstr "tt.mm.jjjj"
 

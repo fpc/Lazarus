@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-21 00:49+0300\n"
+"PO-Revision-Date: 2007-11-18 00:29+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -231,7 +231,7 @@ msgstr "Символы для пробелов"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr "Проверить настройки набора данных"
+msgstr "Проверить параметры набора данных"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -883,7 +883,7 @@ msgstr "Элемент \"%s\" уже имеется. Всё равно доба�
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
-msgstr "Панель инструментов"
+msgstr "Инструментальная панель"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"

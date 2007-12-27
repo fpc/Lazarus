@@ -259,9 +259,9 @@ msgstr "&Outils"
 msgid "&View"
 msgstr "&Voir"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "&Fenêtres"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -507,6 +507,10 @@ msgstr "Ajouter au paquet"
 msgid "Add to project"
 msgstr "Ajouter au projet"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "Ajouter une unité à la clause uses du paquet. Désactivez ceci seulement pour les unités qui ne seraient pas compilés dans tous les cas."
@@ -583,6 +587,10 @@ msgstr "Tous les paquets"
 msgid "All projects"
 msgstr "Tous les projets"
 
+#: lazarusidestrconsts:lisccotestssuccess
+msgid "All tests succeeded."
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr "Autoriser LABEL et GOTO"
@@ -639,6 +647,10 @@ msgstr "Unité ambigüe trouvée"
 msgid "Ambiguous additional compiler config file"
 msgstr "Fichier litigieux de configuration additionnel du compilateur trouvé"
 
+#: lazarusidestrconsts:lisccoambiguouscompiler
+msgid "Ambiguous compiler"
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
 msgstr "Action sur fichier litigieux:"
@@ -654,6 +666,10 @@ msgstr "Fichier litigieux trouvé: %s%s%s%sCe fichier peut être confondu avec %
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "Fichiers ambigus trouvés"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -1174,6 +1190,10 @@ msgstr "Vérifier les changements sur le disque avec le chargement "
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "Vérifier la cohérence"
+
+#: lazarusidestrconsts:dlgccocaption
+msgid "Checking compiler options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -1859,6 +1879,10 @@ msgstr "Copie depuis hérité "
 msgid "Copy method name to the clipboard"
 msgstr "Copier le Nom de méthode dans le presse-papiers"
 
+#: lazarusidestrconsts:lisccocopyoutputtocliboard
+msgid "Copy output to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
 msgstr "Copier les composants choisis vers le presse-papiers"
@@ -2515,6 +2539,10 @@ msgstr "&Activer tout"
 msgid "E&nvironment"
 msgstr "&Configuration"
 
+#: lazarusidestrconsts:lisccoerrormsg
+msgid "ERROR: "
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
 msgstr "Editer"
@@ -2667,7 +2695,7 @@ msgstr "Commandes du menu Environnement"
 msgid "Environment options ..."
 msgstr "Options d'environnement ..."
 
-#: lazarusidestrconsts:liscodetemplerror
+#: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
 msgstr "Erreur"
 
@@ -2847,6 +2875,10 @@ msgstr "Exécution interrompue"
 msgid "Execution stopped%s"
 msgstr "Exécution interrompue%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "Quitter"
@@ -2950,6 +2982,10 @@ msgstr "Répertoire des sources de FPC"
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
 msgstr "Répertoire des sources de FPC \"%s\" non trouvé."
+
+#: lazarusidestrconsts:lisccofpcunitpathhassource
+msgid "FPC unit path contains a source: "
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3587,6 +3623,10 @@ msgstr "Couleur de gouttière"
 msgid "Gutter width"
 msgstr "Largeur de gouttière"
 
+#: lazarusidestrconsts:lisccohintmsg
+msgid "HINT: "
+msgstr ""
+
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
 msgstr "Défilement d'une demi-page"
@@ -3654,6 +3694,10 @@ msgstr "Sélecteur d'aide"
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
 msgstr "Cacher l'IDE à l'exécution"
+
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
@@ -3723,6 +3767,10 @@ msgstr "Iinterface IDE"
 msgid "IDE Options:"
 msgstr "Options de l'IDE:"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "INS"
@@ -3782,6 +3830,10 @@ msgstr "Ignorer"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "Ignorer les espaces"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -3906,6 +3958,10 @@ msgstr "Indonésien"
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
 msgstr "Informations sur %s"
+
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
@@ -4247,6 +4303,10 @@ msgstr "Identificateur Pascal invalide"
 msgid "Invalid Resourcestring section"
 msgstr "Section ResourceString non valide"
 
+#: lazarusidestrconsts:lisccoinvalidtestdir
+msgid "Invalid Test Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
 msgstr "Nom d'unité non valide"
@@ -4258,6 +4318,10 @@ msgstr "Nom d'unité non valide : %s"
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
 msgstr "Commande non valide"
+
+#: lazarusidestrconsts:lisccoinvalidcompiler
+msgid "Invalid compiler"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
 msgid "Invalid compiler filename"
@@ -4362,6 +4426,10 @@ msgstr "Nom de procédure non valide"
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
 msgstr "Nom de fichier projet non valide"
+
+#: lazarusidestrconsts:lisccoinvalidsearchpath
+msgid "Invalid search path"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
@@ -4631,10 +4699,6 @@ msgstr "Paramêtres du bureau Lazarus"
 msgid "Lazarus Directory"
 msgstr "Répertoire Lazarus"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Editeur Lazarus v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Fichier Lazarus"
@@ -4643,13 +4707,13 @@ msgstr "Fichier Lazarus"
 msgid "Lazarus IDE"
 msgstr "Lazarus IDE"
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "fichier d'information du projet Lazarus"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Editeur de sources Lazarus"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -4811,6 +4875,10 @@ msgstr "Editeur de liens"
 msgid "Linking"
 msgstr "Edition des liens"
 
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
 msgstr "Lithuanian"
@@ -4850,6 +4918,10 @@ msgstr "Mettre la sélection en minuscules"
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "Minuscules mais première lettre en majuscule"
+
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
@@ -5006,6 +5078,10 @@ msgstr "Evènement  manquants"
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
 msgstr "Paquets manquants"
+
+#: lazarusidestrconsts:lisccomissingunit
+msgid "Missing unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -5495,6 +5571,10 @@ msgstr "Aide en ligne"
 msgid "Online Help not yet implemented"
 msgstr "Aide en ligne pas encore implémentée"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Chercher les mots entiers seulement"
@@ -5787,6 +5867,10 @@ msgstr "Graphique des paquets ..."
 msgid "Package Info"
 msgstr "Information paquet"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "Nom de paquet"
@@ -5839,6 +5923,10 @@ msgstr "Le paquet est en lecture seule"
 msgid "Package is required"
 msgstr "Le paquet est requis"
 
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "Nom de paquet déjà existant"
@@ -5882,6 +5970,10 @@ msgstr "Nom de page trop long"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Dessiner les éléments du designer seulement quand inactif (réduit la charge sur ordinateurs lents)"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
@@ -5970,6 +6062,10 @@ msgstr "suspendre le programme"
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
 msgstr "Curseur persistant"
+
+#: lazarusidestrconsts:lisccochecktestdir
+msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgstr ""
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -6634,6 +6730,10 @@ msgstr "Restaurer la géométrie de la fenêtre"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Restaurer la taille de la fenêtre"
+
+#: lazarusidestrconsts:dlgccoresults
+msgid "Results"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
@@ -7459,6 +7559,10 @@ msgstr "Afficher les infos de l'exe (Win32 seulement)"
 msgid "Show general info"
 msgstr "Afficher les informations générales"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "Afficher la grille"
@@ -7515,6 +7619,10 @@ msgstr "Afficher les unités"
 msgid "Show used files"
 msgstr "Afficher les fichiers utilisés"
 
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
+
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
 msgstr "Contrôle"
@@ -7538,6 +7646,10 @@ msgstr "Taille"
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
 msgstr "Taille :"
+
+#: lazarusidestrconsts:lisccoskip
+msgid "Skip"
+msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -7911,7 +8023,7 @@ msgstr "Fichier modèle"
 msgid "Templates"
 msgstr "Modèles"
 
-#: lazarusidestrconsts:liscomptest
+#: lazarusidestrconsts:dlgccotest
 msgid "Test"
 msgstr "Test"
 
@@ -7922,6 +8034,38 @@ msgstr "Répertoire de test"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "Répertoire de test \"%s\" non trouvé."
+
+#: lazarusidestrconsts:dlgccotestcheckingcompiler
+msgid "Test: Checking compiler ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingcompilerconfig
+msgid "Test: Checking compiler configuration ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilerdate
+msgid "Test: Checking compiler date ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingfpcconfigs
+msgid "Test: Checking fpc configs ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestmissingppu
+msgid "Test: Checking missing fpc ppu ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestsrcinppupaths
+msgid "Test: Checking sources in fpc ppu search paths ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotesttoolcompilingemptyfile
+msgid "Test: Compiling an empty file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilingemptyfile
+msgid "Test: Compiling an empty file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
@@ -8079,6 +8223,14 @@ msgstr "La commande après %s%s%s n'est pas exécutable."
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "La commande après publication est non valide:%s%s%s%s"
 
+#: lazarusidestrconsts:lisccoppunotfounddetailed
+msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
+msgstr ""
+
+#: lazarusidestrconsts:lisccocompilernotanexe
+msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
 msgstr "Le compilateur \"%s\" n'est pas un exécutable."
@@ -8126,6 +8278,10 @@ msgstr "La police courante de l'éditeur ne supporte pas UTF-8, mais votre syst�
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
 msgstr "Le chemin d'unité actuel pour le fichier%s%s%s%s est%s%s%s%s.%s%sLe chemin vers les unités LCL %s%s%s manque.%s%sSuggestion pour les nouveaux venus à Lazarus:%sCréez une application Lazarus et placez le fichier dans le dossier du projet."
+
+#: lazarusidestrconsts:lisccodatesdiffer
+msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgstr ""
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
@@ -8287,6 +8443,10 @@ msgstr "Le nom %s%s%s n'est pas un identificateur Pascal valide."
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Le nom \"%s\" n'est pas un identificateur Pascal valide."
 
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "Le paquet %s est un paquet runtime seulement.%sLes paquets runtime ne peuvent pas être installés dans l'IDE."
@@ -8399,6 +8559,10 @@ msgstr "La chaîne ressource %s%s%s existe déjà %sVeuillez choisir un autre no
 msgid "The root component can not be deleted."
 msgstr "Le composant racine ne peut pas être supprimé."
 
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "L'unité %s%s%s existe déjà %sIgnorer forcera un changement de nom;%sAnnuler annulera l'enregistrement de ce source et%sArrêter interrompra toute l'opération de sauvegarde."
@@ -8459,9 +8623,17 @@ msgstr "Il y a plus de fonctions dans le menu contextuel."
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "D'autres fichiers dans le répertoire portent le même nom,%sne différant que par la casse:%s%s%sLes effacer ?"
 
+#: lazarusidestrconsts:lisccoseveralcompilers
+msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgstr "Deux unités portent le même nom: %s%s1. %s%s%s de %s%s2. %s%s%s de %s%s%s"
+
+#: lazarusidestrconsts:lisccoppuolderthancompiler
+msgid "There is a .ppu file older than the compiler itself:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -8807,6 +8979,14 @@ msgstr "Impossible de copier le fichier %s%s%s%s vers %s%s%s"
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr "Impossible de copier le fichier %s%s%s%svers %s%s%s."
 
+#: lazarusidestrconsts:lisccounabletocreatetestfile
+msgid "Unable to create Test File"
+msgstr ""
+
+#: lazarusidestrconsts:lisccounabletocreatetestpascalfile
+msgid "Unable to create Test pascal file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
 msgstr "Impossible de créer le répertoire de sauvegarde %s%s%s."
@@ -8906,6 +9086,10 @@ msgstr "Impossible de trouver l'unité de la classe composante %s%s%s."
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "Impossible de recueillir les changements de l'éditeur."
+
+#: lazarusidestrconsts:lisccounabletogetfiledate
+msgid "Unable to get file date of %s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
@@ -9335,6 +9519,10 @@ msgstr "Employer l'unité"
 msgid "Use windowmanager setting"
 msgstr "Utiliser le gestionnaire de fenêtres"
 
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"
 msgstr "Utilisateur d'abord"
@@ -9511,6 +9699,10 @@ msgstr "Afficher le navigateur de code"
 msgid "View component palette"
 msgstr "Afficher la palette de composant"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "Afficher la fenêtre de sortie du débogueur"
@@ -9591,9 +9783,17 @@ msgstr "Gouttière visible"
 msgid "Visible right margin"
 msgstr "Marge droite visible"
 
+#: lazarusidestrconsts:lisccowarningmsg
+msgid "WARNING: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "Prévenir à la compilation"
+
+#: lazarusidestrconsts:lisccowarningcaption
+msgid "Warning"
+msgstr ""
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
@@ -9779,6 +9979,10 @@ msgstr "Couleur haut, gauche"
 msgid "color for right, bottom"
 msgstr "Couleur bas, droit"
 
+#: lazarusidestrconsts:lisccomsgppunotfound
+msgid "compiled FPC unit not found: %s.ppu"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
 msgstr "Options du compilateur"
@@ -9795,6 +9999,10 @@ msgstr "Fichier de configuration de la construction"
 msgid "contains"
 msgstr "contient "
 
+#: lazarusidestrconsts:lisccocontains
+msgid "contains "
+msgstr ""
+
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
 msgstr "Options personalisées"
@@ -9802,6 +10010,10 @@ msgstr "Options personalisées"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "défaut (%s)"
+
+#: lazarusidestrconsts:lisccoenglishmessagefilemissing
+msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecevaluate
 msgid "evaluate/modify"
@@ -9903,6 +10115,14 @@ msgstr "manquant"
 msgid "modified"
 msgstr "modifié"
 
+#: lazarusidestrconsts:lisccomultiplecfgfound
+msgid "multiple compiler configs found: "
+msgstr ""
+
+#: lazarusidestrconsts:lisccohasnewline
+msgid "new line symbols"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "non"
@@ -9910,6 +10130,14 @@ msgstr "non"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "ne pas renommer automatiquement"
+
+#: lazarusidestrconsts:liscconocfgfound
+msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:lisccononascii
+msgid "non ASCII"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
@@ -9947,6 +10175,10 @@ msgstr "suspendre le programme"
 msgid "please select a macro"
 msgstr "veuillez choisir une macro"
 
+#: lazarusidestrconsts:lisccoppuexiststwice
+msgid "ppu exists twice: %s, %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "Premier répertoire de configuration, là où Lazarrus stocke ses dossiers de configuration. Par défaut c'est"
@@ -9958,6 +10190,10 @@ msgstr "compiler vite, aucun lien"
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "Lecture seule"
+
+#: lazarusidestrconsts:lisccorelunitpathfoundincfg
+msgid "relative unit path found in fpc cfg: %s"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
@@ -10039,6 +10275,14 @@ msgstr "Activer RANGECHECKS"
 msgid "space"
 msgstr ""
 
+#: lazarusidestrconsts:lisccospaces
+msgid "spaces"
+msgstr ""
+
+#: lazarusidestrconsts:lisccospecialcharacters
+msgid "special characters"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "Fichier de configuration des paquets statiques"
@@ -10063,6 +10307,10 @@ msgstr "Chemin des unités"
 msgid "unknown editor command"
 msgstr "Commande d'édition inconnue"
 
+#: lazarusidestrconsts:lisccounusualchars
+msgid "unusual characters"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
 msgstr "utiliser l'unité HeapTrc"
@@ -10073,6 +10321,10 @@ msgstr "utiliser l'unité LineInfo"
 
 #: lazarusidestrconsts:lisautomaticallyonwordend
 msgid "word end"
+msgstr ""
+
+#: lazarusidestrconsts:lisccowrongpathdelimiter
+msgid "wrong path delimiter"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidyes

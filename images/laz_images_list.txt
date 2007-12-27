@@ -1,16 +1,4 @@
 btn_downarrow.xpm
-btn_newform.xpm
-btn_newunit.xpm
-btn_openfile.xpm
-btn_pause.xpm
-btn_run.xpm
-btn_save.xpm
-btn_saveall.xpm
-btn_stepinto.xpm
-btn_stepover.xpm
-btn_toggleform.xpm
-btn_viewforms.xpm
-btn_viewunits.xpm
 pkg_binary.xpm
 pkg_compile.xpm
 pkg_conflict.xpm
@@ -93,7 +81,6 @@ menu/menu_run_file.png
 menu/menu_run_parameters.png
 menu/menu_save.png
 menu/menu_saveas_16.xpm
-menu/menu_save_16_dual.xpm
 menu/menu_save_all.png
 menu/menu_search_files.png
 menu/menu_search_find.png

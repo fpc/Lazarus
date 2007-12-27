@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-29 17:40+0300\n"
+"PO-Revision-Date: 2007-11-18 01:54+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -303,11 +303,11 @@ msgstr "&Текст"
 
 #: lr_const:sfrdesignerform_toolbars
 msgid "&Toolbars"
-msgstr "&Панели инструментов"
+msgstr "Инструментальные &панели"
 
 #: lr_const:sfrdesignerform_tools
 msgid "&Tools"
-msgstr "&Инструменты"
+msgstr "&Сервис"
 
 #: lr_const:spgoptformtop
 msgid "&Top, mm"
@@ -1279,7 +1279,7 @@ msgstr "Файл HTML"
 
 #: lr_const:sfrdesignerform_help2
 msgid "Help &tool"
-msgstr "&Инструмент помощи"
+msgstr "&Средство помощи"
 
 #: lr_const:shilightformhilitattr
 msgid "Highlight attributes"
@@ -1959,11 +1959,11 @@ msgstr "Заголовок"
 
 #: lr_const:sfrdesignerform_tools2
 msgid "Too&ls"
-msgstr "&Инструменты"
+msgstr "С&редства"
 
 #: lr_const:sfrdesignerformtools
 msgid "Tools"
-msgstr "Инструменты"
+msgstr "Средства"
 
 #: lr_const:sfrdesignerformtopalign
 msgid "Top align"

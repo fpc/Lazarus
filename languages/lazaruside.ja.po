@@ -256,9 +256,9 @@ msgstr "ツール(&T)"
 msgid "&View"
 msgstr "表示(&V)"
 
-#: lazarusidestrconsts:lismenuwindows
-msgid "&Windows"
-msgstr "ウィンドウ(&W)"
+#: lazarusidestrconsts:lismenuwindow
+msgid "&Window"
+msgstr ""
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -504,6 +504,10 @@ msgstr "パッケージに追加"
 msgid "Add to project"
 msgstr "プロジェクトに追加"
 
+#: lazarusidestrconsts:lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
 msgstr "パッケージのuses節にユニットを追加してください。全ての場合にコンパイルされるべきではないユニットについてのみ無効化してください。 "
@@ -580,6 +584,10 @@ msgstr "すべてのパッケージ"
 msgid "All projects"
 msgstr "すべてのプロジェクト"
 
+#: lazarusidestrconsts:lisccotestssuccess
+msgid "All tests succeeded."
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr "LABELとGOTOを許す"
@@ -636,6 +644,10 @@ msgstr "曖昧なユニットがみつかりました"
 msgid "Ambiguous additional compiler config file"
 msgstr "曖昧な追加コンパイラ設定ファイル"
 
+#: lazarusidestrconsts:lisccoambiguouscompiler
+msgid "Ambiguous compiler"
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
 msgstr "曖昧なファイル操作"
@@ -651,6 +663,10 @@ msgstr "曖昧なファイルが見つかりました。 %s%s%s%sこのファイ
 #: lazarusidestrconsts:lisambiguousfilesfound
 msgid "Ambiguous files found"
 msgstr "曖昧なファイルが見つかりました"
+
+#: lazarusidestrconsts:lisambiguousunitfound2
+msgid "Ambiguous unit found"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -1171,6 +1187,10 @@ msgstr "読み込み時にディスクの変更をチェック"
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
 msgstr "整合性をチェック"
+
+#: lazarusidestrconsts:dlgccocaption
+msgid "Checking compiler options"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcochecks
 msgid "Checks:"
@@ -1856,6 +1876,10 @@ msgstr "継承からコピー"
 msgid "Copy method name to the clipboard"
 msgstr "メソッド名をクリップボードにコピー"
 
+#: lazarusidestrconsts:lisccocopyoutputtocliboard
+msgid "Copy output to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liskmcopyselectedcomponentstoclipboard
 msgid "Copy selected Components to clipboard"
 msgstr ""
@@ -2512,6 +2536,10 @@ msgstr "全てを有効化(&n)"
 msgid "E&nvironment"
 msgstr "環境(&N)"
 
+#: lazarusidestrconsts:lisccoerrormsg
+msgid "ERROR: "
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
 msgstr "編集"
@@ -2664,7 +2692,7 @@ msgstr "環境メニューコマンド"
 msgid "Environment options ..."
 msgstr "環境オプション ..."
 
-#: lazarusidestrconsts:liscodetemplerror
+#: lazarusidestrconsts:lisccoerrorcaption
 msgid "Error"
 msgstr "エラー"
 
@@ -2844,6 +2872,10 @@ msgstr "実行を停止しました"
 msgid "Execution stopped%s"
 msgstr "実行を一時停止しました%s"
 
+#: lazarusidestrconsts:lispldexists
+msgid "Exists"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
 msgstr "終了"
@@ -2947,6 +2979,10 @@ msgstr "FPCソースディレクトリ"
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
 msgstr "FPCソースディレクトリ \"%s\" が見つかりません"
+
+#: lazarusidestrconsts:lisccofpcunitpathhassource
+msgid "FPC unit path contains a source: "
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3584,6 +3620,10 @@ msgstr "余白色"
 msgid "Gutter width"
 msgstr "余白幅"
 
+#: lazarusidestrconsts:lisccohintmsg
+msgid "HINT: "
+msgstr ""
+
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half page scroll"
 msgstr "半ページスクロール"
@@ -3651,6 +3691,10 @@ msgstr "ヘルプ選択"
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
 msgstr "実行中はIDEウィンドウを隠す"
+
+#: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
+msgid "Hint: Check if two packages contain a unit with the same name."
+msgstr ""
 
 #: lazarusidestrconsts:lishintthemakeresourcestringfunctionexpectsastringcon2
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
@@ -3720,6 +3764,10 @@ msgstr ""
 msgid "IDE Options:"
 msgstr "IDE オプション"
 
+#: lazarusidestrconsts:lismenuideinternals
+msgid "IDE internals"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr ""
@@ -3779,6 +3827,10 @@ msgstr "無視"
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
 msgstr "空白を無視"
+
+#: lazarusidestrconsts:lisignoreall
+msgid "Ignore all"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
@@ -3903,6 +3955,10 @@ msgstr "インドネシア語"
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
 msgstr "%s に関する情報"
+
+#: lazarusidestrconsts:liscmplstinheritance
+msgid "Inheritance"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
@@ -4244,6 +4300,10 @@ msgstr "無効なPascal識別子"
 msgid "Invalid Resourcestring section"
 msgstr "無効なResourcestringセクション"
 
+#: lazarusidestrconsts:lisccoinvalidtestdir
+msgid "Invalid Test Directory"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
 msgstr "無効なユニット名"
@@ -4254,6 +4314,10 @@ msgstr "無効なユニット名"
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
+msgstr ""
+
+#: lazarusidestrconsts:lisccoinvalidcompiler
+msgid "Invalid compiler"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilename
@@ -4359,6 +4423,10 @@ msgstr "無効な手続き名"
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
 msgstr "無効なプロジェクト名"
+
+#: lazarusidestrconsts:lisccoinvalidsearchpath
+msgid "Invalid search path"
+msgstr ""
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
@@ -4628,10 +4696,6 @@ msgstr "Lazarusデスクトップ設定"
 msgid "Lazarus Directory"
 msgstr "Lazarusディレクトリ"
 
-#: lazarusidestrconsts:lislazaruseditorv
-msgid "Lazarus Editor v%s"
-msgstr "Lazarus エディター v%s"
-
 #: lazarusidestrconsts:lislazarusfile
 msgid "Lazarus File"
 msgstr "Lazarusファイル"
@@ -4640,13 +4704,13 @@ msgstr "Lazarusファイル"
 msgid "Lazarus IDE"
 msgstr ""
 
+#: lazarusidestrconsts:lislazaruseditorv
+msgid "Lazarus IDE v%s"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusprojectinfofile
 msgid "Lazarus Project Info file"
 msgstr "Lazarusプロジェクト情報ファイル"
-
-#: lazarusidestrconsts:locwndsrceditor
-msgid "Lazarus Source Editor"
-msgstr "Lazarusソースエディタ"
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -4808,6 +4872,10 @@ msgstr "リンカー"
 msgid "Linking"
 msgstr "リンク中"
 
+#: lazarusidestrconsts:liscmplstlist
+msgid "List"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
 msgstr ""
@@ -4847,6 +4915,10 @@ msgstr "選択部を小文字化"
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "頭文字以外を小文字に"
+
+#: lazarusidestrconsts:liskmmacosx
+msgid "Mac OS X"
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolmacros
 msgid "Macros"
@@ -5003,6 +5075,10 @@ msgstr "見つからないイベント"
 #: lazarusidestrconsts:lismissingpackages
 msgid "Missing Packages"
 msgstr "見つからないパッケージ"
+
+#: lazarusidestrconsts:lisccomissingunit
+msgid "Missing unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -5492,6 +5568,10 @@ msgstr "オンラインヘルプ"
 msgid "Online Help not yet implemented"
 msgstr "オンラインヘルプはまだ実装されていません。"
 
+#: lazarusidestrconsts:lispldonlyexistingfiles
+msgid "Only existing files"
+msgstr ""
+
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "単語全体についてのみ検索"
@@ -5784,6 +5864,10 @@ msgstr "パッケージグラフ ..."
 msgid "Package Info"
 msgstr "パッケージ情報"
 
+#: lazarusidestrconsts:lispldpackagelinks
+msgid "Package Links"
+msgstr ""
+
 #: lazarusidestrconsts:lisoippackagename
 msgid "Package Name"
 msgstr "パッケージ名"
@@ -5836,6 +5920,10 @@ msgstr "パッケージは読み込み専用です"
 msgid "Package is required"
 msgstr "パッケージが要求されています"
 
+#: lazarusidestrconsts:lismenupackagelinks
+msgid "Package links ..."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
 msgstr "パッケージ名はすでに存在します"
@@ -5879,6 +5967,10 @@ msgstr "パッケージ名が長すぎます"
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "ペイントデザイナーアイテムはアイドル状態のみです（遅いコンピュータのオーバーヘッドを減らすため）"
+
+#: lazarusidestrconsts:liscmplstpalette
+msgid "Palette"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
@@ -5967,6 +6059,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
 msgstr "固定キャレット"
+
+#: lazarusidestrconsts:lisccochecktestdir
+msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
+msgstr ""
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -6631,6 +6727,10 @@ msgstr "ウィンドウの位置/サイズを復元"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "ウィンドウサイズを復元"
+
+#: lazarusidestrconsts:dlgccoresults
+msgid "Results"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmresume
 msgid "Resume"
@@ -7456,6 +7556,10 @@ msgstr "実行ファイル情報を表示(Win32のみ)"
 msgid "Show general info"
 msgstr "一般的な情報を表示"
 
+#: lazarusidestrconsts:lispldshowgloballinks
+msgid "Show global links"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
 msgstr "グリッドを表示"
@@ -7512,6 +7616,10 @@ msgstr ""
 msgid "Show used files"
 msgstr "用いられたファイルを表示"
 
+#: lazarusidestrconsts:lispldshowuserlinks
+msgid "Show user links"
+msgstr ""
+
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
 msgstr "兄弟"
@@ -7535,6 +7643,10 @@ msgstr "サイズ"
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
 msgstr "サイズ"
+
+#: lazarusidestrconsts:lisccoskip
+msgid "Skip"
+msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -7908,7 +8020,7 @@ msgstr "テンプレートファイル名"
 msgid "Templates"
 msgstr "テンプレート"
 
-#: lazarusidestrconsts:liscomptest
+#: lazarusidestrconsts:dlgccotest
 msgid "Test"
 msgstr "テスト"
 
@@ -7919,6 +8031,38 @@ msgstr "テストディレクトリ"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "テストディレクトリ \"%s\"が見つかりません"
+
+#: lazarusidestrconsts:dlgccotestcheckingcompiler
+msgid "Test: Checking compiler ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingcompilerconfig
+msgid "Test: Checking compiler configuration ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilerdate
+msgid "Test: Checking compiler date ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcheckingfpcconfigs
+msgid "Test: Checking fpc configs ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestmissingppu
+msgid "Test: Checking missing fpc ppu ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestsrcinppupaths
+msgid "Test: Checking sources in fpc ppu search paths ..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotesttoolcompilingemptyfile
+msgid "Test: Compiling an empty file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgccotestcompilingemptyfile
+msgid "Test: Compiling an empty file ..."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
@@ -8076,6 +8220,14 @@ msgstr " %s%s%sの後のコマンドは実行できません。"
 msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr "発行後のコマンドは無効です：%s%s%s%s"
 
+#: lazarusidestrconsts:lisccoppunotfounddetailed
+msgid "The compiled FPC unit %s.ppu was not found.%sThis typically means your fpc.cfg has a bug. Or your FPC installation is broken."
+msgstr ""
+
+#: lazarusidestrconsts:lisccocompilernotanexe
+msgid "The compiler \"%s\" is not an executable file.%sDetails: %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
 msgstr "コンパイラファイル\"%s\"は実行可能ではありません。"
@@ -8123,6 +8275,10 @@ msgstr "現在のエディタフォントはUTF-8をサポートしていませ�
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
 msgstr "ファイル %s%s%s%s の現在のユニットパスは%s%s%s%sです。%s%sLCLユニットのパス%s%s%sが見つかりません。%s%s初心者へのヒント:%slazarusアプリケーションを作成し、そのファイルをプロジェクトディレクトリに置いて下さい。"
+
+#: lazarusidestrconsts:lisccodatesdiffer
+msgid "The dates of the .ppu files of FPC differ more than one hour.%sThis can mean, they are from two different installations.%sFile1: %s%sFile2: %s"
+msgstr ""
 
 #: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
 msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Environment -> Debugger Options"
@@ -8284,6 +8440,10 @@ msgstr "その名前%s%s%sは有効なpascal識別子ではありません。"
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "その名前\"%s\"は有効なpascal識別子ではありません。"
 
+#: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
 msgid "The package %s is a runtime only package.%sRuntime only packages can not be installed in the IDE."
 msgstr "パッケージ %s は実行時専用パッケージです。%s実行時専用パッケージはIDEにインストールできません。"
@@ -8396,6 +8556,10 @@ msgstr "リソース文字列%s%s%sは既に存在しています。%s他の名�
 msgid "The root component can not be deleted."
 msgstr "rootコンポーネントは削除できません。"
 
+#: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
+msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr "ユニット%s%s%sは既に存在しています。%s[無視]すると強制的に名称変更します。%s[キャンセル]するとこのソースの保存をキャンセルします。%s[中止]すると全ての保存を中止します。"
@@ -8456,9 +8620,17 @@ msgstr "ポップアップメニューの中にもっと多くの機能があり
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "ディレクトリに大文字小文字だけが異なる同じ名前をもつ他のファイル%s%s%sがあります。それ（ら）を削除しますか？"
 
+#: lazarusidestrconsts:lisccoseveralcompilers
+msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgstr "同じ名前のユニットが2つあります: %s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+
+#: lazarusidestrconsts:lisccoppuolderthancompiler
+msgid "There is a .ppu file older than the compiler itself:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenameasapackage
 msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
@@ -8804,6 +8976,14 @@ msgstr "ファイル%s%s%s%sを%s%s%sにコピーできません。"
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr "ファイル%s%s%s%sを%s%s%sにコピーできません。"
 
+#: lazarusidestrconsts:lisccounabletocreatetestfile
+msgid "Unable to create Test File"
+msgstr ""
+
+#: lazarusidestrconsts:lisccounabletocreatetestpascalfile
+msgid "Unable to create Test pascal file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
 msgstr "バックアップディレクトリ%s%s%sを作成できません。"
@@ -8903,6 +9083,10 @@ msgstr ""
 #: lazarusidestrconsts:lisunabletogathereditorchanges
 msgid "Unable to gather editor changes."
 msgstr "エディタの変更点を集めることができません。"
+
+#: lazarusidestrconsts:lisccounabletogetfiledate
+msgid "Unable to get file date of %s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
@@ -9332,6 +9516,10 @@ msgstr "ユニットを使用"
 msgid "Use windowmanager setting"
 msgstr "ウィンドウマネージャーの設定を使う"
 
+#: lazarusidestrconsts:lisplduser
+msgid "User"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecuserfirst
 msgid "User First"
 msgstr ""
@@ -9508,6 +9696,10 @@ msgstr ""
 msgid "View component palette"
 msgstr "コンポーネントパレットを表示"
 
+#: lazarusidestrconsts:srkmecviewcomponents
+msgid "View components"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"
 msgstr "デバッガー出力を表示"
@@ -9588,9 +9780,17 @@ msgstr "余白を表示"
 msgid "Visible right margin"
 msgstr "右マージンを表示"
 
+#: lazarusidestrconsts:lisccowarningmsg
+msgid "WARNING: "
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "コンパイル時に警告"
+
+#: lazarusidestrconsts:lisccowarningcaption
+msgid "Warning"
+msgstr ""
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
@@ -9776,6 +9976,10 @@ msgstr "左と上の色"
 msgid "color for right, bottom"
 msgstr "右と下の色"
 
+#: lazarusidestrconsts:lisccomsgppunotfound
+msgid "compiled FPC unit not found: %s.ppu"
+msgstr ""
+
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
 msgstr "コンパイラオプション"
@@ -9792,6 +9996,10 @@ msgstr "構築ファイルの設定"
 msgid "contains"
 msgstr ""
 
+#: lazarusidestrconsts:lisccocontains
+msgid "contains "
+msgstr ""
+
 #: lazarusidestrconsts:liscustomoptions
 msgid "custom options"
 msgstr "カスタムオプション"
@@ -9799,6 +10007,10 @@ msgstr "カスタムオプション"
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
 msgstr "デフォルト(%s)"
+
+#: lazarusidestrconsts:lisccoenglishmessagefilemissing
+msgid "english message file for fpc is missing:components/codetools/fpc.errore.msg"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecevaluate
 msgid "evaluate/modify"
@@ -9900,6 +10112,14 @@ msgstr "見つからない"
 msgid "modified"
 msgstr "修正済み"
 
+#: lazarusidestrconsts:lisccomultiplecfgfound
+msgid "multiple compiler configs found: "
+msgstr ""
+
+#: lazarusidestrconsts:lisccohasnewline
+msgid "new line symbols"
+msgstr ""
+
 #: lazarusidestrconsts:lisuidno
 msgid "no"
 msgstr "いいえ"
@@ -9907,6 +10127,14 @@ msgstr "いいえ"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "自動的にリネームしない"
+
+#: lazarusidestrconsts:liscconocfgfound
+msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:lisccononascii
+msgid "non ASCII"
+msgstr ""
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
@@ -9944,6 +10172,10 @@ msgstr "プログラムを一時停止"
 msgid "please select a macro"
 msgstr "マクロを選択してください。"
 
+#: lazarusidestrconsts:lisccoppuexiststwice
+msgid "ppu exists twice: %s, %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "primary config directory, where Lazarus stores its config files. Default is "
 msgstr "Lazarusがその設定ファイルを保存する主設定ディレクトリ。デフォルト："
@@ -9955,6 +10187,10 @@ msgstr "高速コンパイル、リンクなし"
 #: lazarusidestrconsts:lisoipreadonly
 msgid "readonly"
 msgstr "読み込み専用"
+
+#: lazarusidestrconsts:lisccorelunitpathfoundincfg
+msgid "relative unit path found in fpc cfg: %s"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
@@ -10036,6 +10272,14 @@ msgstr "RANGECHECKSをonに設定"
 msgid "space"
 msgstr ""
 
+#: lazarusidestrconsts:lisccospaces
+msgid "spaces"
+msgstr ""
+
+#: lazarusidestrconsts:lisccospecialcharacters
+msgid "special characters"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
 msgstr "静的パッケージ設定ファイル"
@@ -10060,6 +10304,10 @@ msgstr "ユニットパス"
 msgid "unknown editor command"
 msgstr "不明なエディタコマンド"
 
+#: lazarusidestrconsts:lisccounusualchars
+msgid "unusual characters"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefuseheaptrcunit
 msgid "use HeapTrc unit"
 msgstr "HeapTrcユニットを使う"
@@ -10070,6 +10318,10 @@ msgstr "LineInfoユニットを使う"
 
 #: lazarusidestrconsts:lisautomaticallyonwordend
 msgid "word end"
+msgstr ""
+
+#: lazarusidestrconsts:lisccowrongpathdelimiter
+msgid "wrong path delimiter"
 msgstr ""
 
 #: lazarusidestrconsts:lisuidyes

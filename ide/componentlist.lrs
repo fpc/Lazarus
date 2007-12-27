@@ -1,0 +1,54 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TComponentListForm','FORMDATA',[
+  'TPF0'#18'TComponentListForm'#17'ComponentListForm'#4'Left'#2'%'#6'Height'#3
+  +'+'#2#3'Top'#3#172#0#5'Width'#3#231#0#18'HorzScrollBar.Page'#3#230#0#18'Vert'
+  +'ScrollBar.Page'#3'*'#2#13'ActiveControl'#7#11'PatternEdit'#7'Caption'#6#10
+  +'Components'#12'ClientHeight'#3'+'#2#11'ClientWidth'#3#231#0#10'KeyPreview'#9
+  +#9'OnKeyDown'#7#11'FormKeyDown'#6'OnShow'#7#8'FormShow'#0#6'TPanel'#6'Panel1'
+  +#6'Height'#3'+'#2#5'Width'#3#231#0#5'Align'#7#8'alClient'#10'BevelOuter'#7#9
+  +'bvLowered'#7'Caption'#6#6'Panel1'#12'ClientHeight'#3'+'#2#11'ClientWidth'#3
+  +#231#0#8'TabOrder'#2#0#0#6'TPanel'#6'Panel2'#4'Left'#2#1#6'Height'#2'$'#3'To'
+  +'p'#3#6#2#5'Width'#3#229#0#5'Align'#7#8'alBottom'#12'ClientHeight'#2'$'#11'C'
+  +'lientWidth'#3#229#0#8'TabOrder'#2#0#0#7'TButton'#11'CloseButton'#4'Left'#3
+  +#144#0#6'Height'#2#26#3'Top'#2#4#5'Width'#2'I'#7'Anchors'#11#7'akRight'#8'ak'
+  +'Bottom'#0#8'AutoSize'#9#7'Caption'#6#11'CloseButton'#7'OnClick'#7#16'CloseB'
+  +'uttonClick'#8'TabOrder'#2#0#0#0#0#6'TPanel'#6'Panel3'#4'Left'#2#1#6'Height'
+  +#2'&'#3'Top'#2#1#5'Width'#3#229#0#5'Align'#7#5'alTop'#11'BorderWidth'#2#8#12
+  +'ClientHeight'#2'&'#11'ClientWidth'#3#229#0#8'TabOrder'#2#1#0#6'TLabel'#11'L'
+  +'abelSearch'#4'Left'#2#5#6'Height'#2#14#3'Top'#2#12#5'Width'#2';'#7'Caption'
+  +#6#11'LabelSearch'#11'ParentColor'#8#0#0#5'TEdit'#11'PatternEdit'#4'Left'#2
+  +'G'#6'Height'#2#23#3'Top'#2#8#5'Width'#2'u'#7'Anchors'#11#5'akTop'#6'akLeft'
+  +#7'akRight'#0#8'OnChange'#7#24'UpdateComponentSelection'#8'TabOrder'#2#0#0#0
+  +#0#6'TPanel'#6'Panel4'#4'Left'#2#1#6'Height'#3#223#1#3'Top'#2''''#5'Width'#3
+  +#229#0#5'Align'#7#8'alClient'#12'ClientHeight'#3#223#1#11'ClientWidth'#3#229
+  +#0#8'TabOrder'#2#2#0#12'TPageControl'#11'PageControl'#4'Left'#2#1#6'Height'#3
+  +#221#1#3'Top'#2#1#5'Width'#3#227#0#10'ActivePage'#7#15'TabSheetListBox'#5'Al'
+  +'ign'#7#8'alClient'#8'TabIndex'#2#0#8'TabOrder'#2#0#0#9'TTabSheet'#15'TabShe'
+  +'etListBox'#7'Caption'#6#4'List'#12'ClientHeight'#3#191#1#11'ClientWidth'#3
+  +#223#0#0#6'TPanel'#6'Panel7'#6'Height'#3#191#1#5'Width'#3#223#0#5'Align'#7#8
+  +'alClient'#10'BevelOuter'#7#6'bvNone'#11'BorderWidth'#2#5#12'ClientHeight'#3
+  +#191#1#11'ClientWidth'#3#223#0#8'TabOrder'#2#0#0#8'TListBox'#17'ListboxCompo'
+  +'nents'#4'Left'#2#5#6'Height'#3#181#1#3'Top'#2#5#5'Width'#3#213#0#5'Align'#7
+  +#8'alClient'#10'OnDblClick'#7#25'ListboxComponentsDblClick'#6'Sorted'#9#8'Ta'
+  +'bOrder'#2#0#8'TopIndex'#2#255#0#0#0#0#9'TTabSheet'#19'TabSheetPaletteTree'#7
+  +'Caption'#6#7'Palette'#12'ClientHeight'#3#221#1#11'ClientWidth'#3#227#0#0#6
+  +'TPanel'#6'Panel5'#6'Height'#3#221#1#5'Width'#3#227#0#5'Align'#7#8'alClient'
+  +#10'BevelOuter'#7#6'bvNone'#11'BorderWidth'#2#5#12'ClientHeight'#3#221#1#11
+  +'ClientWidth'#3#227#0#8'TabOrder'#2#0#0#9'TTreeView'#12'TreePallette'#4'Left'
+  +#2#5#6'Height'#3#211#1#3'Top'#2#5#5'Width'#3#217#0#5'Align'#7#8'alClient'#17
+  +'DefaultItemHeight'#2#14#8'ReadOnly'#9#9'ShowLines'#8#8'TabOrder'#2#0#10'OnD'
+  +'blClick'#7#20'TreePalletteDblClick'#7'Options'#11#17'tvoAutoItemHeight'#16
+  +'tvoHideSelection'#21'tvoKeepCollapsedNodes'#11'tvoReadOnly'#14'tvoShowButto'
+  +'ns'#11'tvoShowRoot'#11'tvoToolTips'#22'tvoNoDoubleClickExpand'#0#0#0#0#0#9
+  +'TTabSheet'#19'TabSheetInheritance'#7'Caption'#6#11'Inheritance'#12'ClientHe'
+  +'ight'#3#191#1#11'ClientWidth'#3#223#0#0#6'TPanel'#6'Panel6'#6'Height'#3#191
+  +#1#5'Width'#3#223#0#5'Align'#7#8'alClient'#10'BevelOuter'#7#6'bvNone'#11'Bor'
+  +'derWidth'#2#5#12'ClientHeight'#3#191#1#11'ClientWidth'#3#223#0#8'TabOrder'#2
+  +#0#0#9'TTreeView'#15'TreeInheritance'#4'Left'#2#5#6'Height'#3#181#1#3'Top'#2
+  +#5#5'Width'#3#213#0#5'Align'#7#8'alClient'#17'DefaultItemHeight'#2#14#8'Read'
+  +'Only'#9#8'TabOrder'#2#0#10'OnDblClick'#7#23'TreeInheritanceDblClick'#7'Opti'
+  +'ons'#11#17'tvoAutoItemHeight'#16'tvoHideSelection'#21'tvoKeepCollapsedNodes'
+  +#11'tvoReadOnly'#14'tvoShowButtons'#12'tvoShowLines'#11'tvoShowRoot'#11'tvoT'
+  +'oolTips'#22'tvoNoDoubleClickExpand'#0#0#0#0#0#0#0#0#0
+]);

@@ -1,0 +1,175 @@
+object ComponentListForm: TComponentListForm
+  Left = 37
+  Height = 555
+  Top = 172
+  Width = 231
+  HorzScrollBar.Page = 230
+  VertScrollBar.Page = 554
+  ActiveControl = PatternEdit
+  Caption = 'Components'
+  ClientHeight = 555
+  ClientWidth = 231
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  object Panel1: TPanel
+    Height = 555
+    Width = 231
+    Align = alClient
+    BevelOuter = bvLowered
+    Caption = 'Panel1'
+    ClientHeight = 555
+    ClientWidth = 231
+    TabOrder = 0
+    object Panel2: TPanel
+      Left = 1
+      Height = 36
+      Top = 518
+      Width = 229
+      Align = alBottom
+      ClientHeight = 36
+      ClientWidth = 229
+      TabOrder = 0
+      object CloseButton: TButton
+        Left = 144
+        Height = 26
+        Top = 4
+        Width = 73
+        Anchors = [akRight, akBottom]
+        AutoSize = True
+        Caption = 'CloseButton'
+        OnClick = CloseButtonClick
+        TabOrder = 0
+      end
+    end
+    object Panel3: TPanel
+      Left = 1
+      Height = 38
+      Top = 1
+      Width = 229
+      Align = alTop
+      BorderWidth = 8
+      ClientHeight = 38
+      ClientWidth = 229
+      TabOrder = 1
+      object LabelSearch: TLabel
+        Left = 5
+        Height = 14
+        Top = 12
+        Width = 59
+        Caption = 'LabelSearch'
+        ParentColor = False
+      end
+      object PatternEdit: TEdit
+        Left = 71
+        Height = 23
+        Top = 8
+        Width = 117
+        Anchors = [akTop, akLeft, akRight]
+        OnChange = UpdateComponentSelection
+        TabOrder = 0
+      end
+    end
+    object Panel4: TPanel
+      Left = 1
+      Height = 479
+      Top = 39
+      Width = 229
+      Align = alClient
+      ClientHeight = 479
+      ClientWidth = 229
+      TabOrder = 2
+      object PageControl: TPageControl
+        Left = 1
+        Height = 477
+        Top = 1
+        Width = 227
+        ActivePage = TabSheetListBox
+        Align = alClient
+        TabIndex = 0
+        TabOrder = 0
+        object TabSheetListBox: TTabSheet
+          Caption = 'List'
+          ClientHeight = 447
+          ClientWidth = 223
+          object Panel7: TPanel
+            Height = 447
+            Width = 223
+            Align = alClient
+            BevelOuter = bvNone
+            BorderWidth = 5
+            ClientHeight = 447
+            ClientWidth = 223
+            TabOrder = 0
+            object ListboxComponents: TListBox
+              Left = 5
+              Height = 437
+              Top = 5
+              Width = 213
+              Align = alClient
+              OnDblClick = ListboxComponentsDblClick
+              Sorted = True
+              TabOrder = 0
+              TopIndex = -1
+            end
+          end
+        end
+        object TabSheetPaletteTree: TTabSheet
+          Caption = 'Palette'
+          ClientHeight = 477
+          ClientWidth = 227
+          object Panel5: TPanel
+            Height = 477
+            Width = 227
+            Align = alClient
+            BevelOuter = bvNone
+            BorderWidth = 5
+            ClientHeight = 477
+            ClientWidth = 227
+            TabOrder = 0
+            object TreePallette: TTreeView
+              Left = 5
+              Height = 467
+              Top = 5
+              Width = 217
+              Align = alClient
+              DefaultItemHeight = 14
+              ReadOnly = True
+              ShowLines = False
+              TabOrder = 0
+              OnDblClick = TreePalletteDblClick
+              Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+            end
+          end
+        end
+        object TabSheetInheritance: TTabSheet
+          Caption = 'Inheritance'
+          ClientHeight = 447
+          ClientWidth = 223
+          object Panel6: TPanel
+            Height = 447
+            Width = 223
+            Align = alClient
+            BevelOuter = bvNone
+            BorderWidth = 5
+            ClientHeight = 447
+            ClientWidth = 223
+            TabOrder = 0
+            object TreeInheritance: TTreeView
+              Left = 5
+              Height = 437
+              Top = 5
+              Width = 213
+              Align = alClient
+              DefaultItemHeight = 14
+              ReadOnly = True
+              TabOrder = 0
+              OnDblClick = TreeInheritanceDblClick
+              Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoNoDoubleClickExpand]
+            end
+          end
+        end
+      end
+    end
+  end
+end

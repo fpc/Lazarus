@@ -144,7 +144,7 @@ function TCheckCompilerOptsDlg.CheckSpecialCharsInPath(const Title, Path: string
   procedure AddStr(var s: string; const Addition: string);
   begin
     if s='' then
-      s:='contains: '
+      s:=lisCCOContains
     else
       s:=s+', ';
     s:=s+Addition;
@@ -179,18 +179,18 @@ begin
   end;
   Warning:='';
   ErrorMsg:='';
-  if HasSpaces then AddStr(Warning,'spaces');
-  if HasSpecialChars then AddStr(ErrorMsg,'special characters');
-  if HasNonASCII then AddStr(Warning,'non ASCII');
-  if HasWrongPathDelim then AddStr(Warning,'wrong path delimiter');
-  if HasUnusualChars then AddStr(Warning,'unusual characters');
-  if HasNewLine then AddStr(ErrorMsg,'unusual characters');
+  if HasSpaces then AddStr(Warning,lisCCOSpaces);
+  if HasSpecialChars then AddStr(ErrorMsg,lisCCOSpecialCharacters);
+  if HasNonASCII then AddStr(Warning,lisCCONonASCII);
+  if HasWrongPathDelim then AddStr(Warning,lisCCOWrongPathDelimiter);
+  if HasUnusualChars then AddStr(Warning,lisCCOUnusualChars);
+  if HasNewLine then AddStr(ErrorMsg,lisCCOHasNewLine);
 
   if Warning<>'' then
     AddWarning(Title+' '+Warning);
   if ErrorMsg<>'' then begin
-    Result:=QuestionDlg('Invalid search path',Title+' '+ErrorMsg,mtError,
-      [mrIgnore,'Skip',mrAbort],0);
+    Result:=QuestionDlg(lisCCOInvalidSearchPath,Title+' '+ErrorMsg,mtError,
+      [mrIgnore,lisCCOSkip,mrAbort],0);
   end else begin
     if Warning='' then
       Result:=mrOk
@@ -205,15 +205,14 @@ var
   CompilerFiles: TStrings;
 begin
   FTest:=cotCheckCompilerExe;
-  TestGroupbox.Caption:='Test: Checking compiler ...';
+  TestGroupbox.Caption:=dlgCCOTestCheckingCompiler;
   try
     CheckIfFileIsExecutable(CompilerFilename);
   except
     on e: Exception do begin
-      Result:=QuestionDlg('Invalid compiler',
-        'The compiler "'+CompilerFilename+'" is not an executable file.'#13
-        +'Details: '+E.Message,
-        mtError,[mrIgnore,'Skip',mrAbort],0);
+      Result:=QuestionDlg(lisCCOInvalidCompiler,
+        Format(lisCCOCompilerNotAnExe,[CompilerFilename,#13,E.Message]),
+        mtError,[mrIgnore,lisCCOSkip,mrAbort],0);
       exit;
     end;
   end;
@@ -224,10 +223,8 @@ begin
   ResolveLinksInFileList(CompilerFiles,false);
   RemoveDoubles(CompilerFiles);
   if (CompilerFiles<>nil) and (CompilerFiles.Count>1) then begin
-    Result:=MessageDlg('Ambiguous Compiler',
-      'There are several FreePascal Compilers in your path.'#13#13
-      +CompilerFiles.Text+#13
-      +'Maybe you forgot to delete an old compiler?',
+    Result:=MessageDlg(lisCCOAmbiguousCompiler,
+      Format(lisCCOSeveralCompilers,[#13#13,CompilerFiles.Text,#13]),
       mtWarning,[mbAbort,mbIgnore],0);
     if Result<>mrIgnore then exit;
   end;
@@ -251,7 +248,7 @@ var
   
 begin
   FTest:=cotCheckAmbiguousFPCCfg;
-  TestGroupbox.Caption:='Test: Checking fpc configs ...';
+  TestGroupbox.Caption:=dlgCCOTestCheckingFPCConfigs;
 
   CfgFiles:=TStringList.Create;
   
@@ -290,10 +287,10 @@ begin
 
   // warn about missing or too many fpc.cfg
   if CfgFiles.Count<1 then begin
-    AddWarning('no fpc.cfg found');
+    AddWarning(lisCCONoCfgFound);
   end else if CfgFiles.Count>1 then begin
     for i:=0 to CfgFiles.Count-1 do
-      AddWarning('multiple compiler configs found: '+CfgFiles[i]);
+      AddWarning(lisCCOMultipleCfgFound+CfgFiles[i]);
   end;
 
   CfgFiles.Free;
@@ -310,14 +307,13 @@ var
 begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
-  TestGroupbox.Caption:='Test: Compiling an empty file ...';
+  TestGroupbox.Caption:=dlgCCOTestCompilingEmptyFile;
   
   // get Test directory
   TestDir:=AppendPathDelim(EnvironmentOptions.TestBuildDirectory);
   if not DirPathExists(TestDir) then begin
-    MessageDlg('Invalid Test Directory',
-      'Please check the Test directory under'#13
-      +'Environment -> Environment Options -> Files -> Directory for building test projects',
+    MessageDlg(lisCCOInvalidTestDir,
+      Format(lisCCOCheckTestDir,[#13]),
       mtError,[mbCancel],0);
     Result:=mrCancel;
     exit;
@@ -325,8 +321,8 @@ begin
   // create bogus file
   BogusFilename:=CreateNonExistingFilename(TestDir+'testcompileroptions.pas');
   if not CreateEmptyFile(BogusFilename) then begin
-    MessageDlg('Unable to create Test File',
-      'Unable to create Test pascal file "'+BogusFilename+'".',
+    MessageDlg(lisCCOUnableToCreateTestFile,
+      Format(lisCCOUnableToCreateTestPascalFile,[BogusFilename]),
       mtError,[mbCancel],0);
     Result:=mrCancel;
     exit;
@@ -338,7 +334,7 @@ begin
                    +' '+BogusFilename;
 
     CompileTool:=TExternalToolOptions.Create;
-    CompileTool.Title:='Test: Compiling empty file';
+    CompileTool.Title:=dlgCCOTestToolCompilingEmptyFile;
     CompileTool.ScanOutputForFPCMessages:=true;
     CompileTool.ScanOutputForMakeMessages:=true;
     CompileTool.WorkingDirectory:=TestDir;
@@ -400,7 +396,7 @@ var
         NewPath:=copy(Line,CurPos,len);
         if NewPath<>'' then begin
           if not FilenameIsAbsolute(NewPath) then begin
-            AddWarning('relative unit path found in fpc cfg: '+NewPath);
+            AddWarning(Format(lisCCORelUnitPathFoundInCfg,[NewPath]));
             NewPath:=ExpandFileName(NewPath);
           end;
           NewPath:=AppendPathDelim(TrimFilename(NewPath));
@@ -431,7 +427,7 @@ begin
   FPCCfgUnitPath:='';
 
   FTest:=cotCheckCompilerConfig;
-  TestGroupbox.Caption:='Test: Checking compiler configuration ...';
+  TestGroupbox.Caption:=dlgCCOTestCheckingCompilerConfig;
 
   Result:=CheckAmbiguousFPCCfg(CompilerFilename);
   if not (Result in [mrOk,mrIgnore]) then exit;
@@ -453,7 +449,7 @@ begin
   if FileExistsCached(CodeToolBoss.DefinePool.EnglishErrorMsgFilename) then
     CmdLine:=CmdLine+'-Fr'+CodeToolBoss.DefinePool.EnglishErrorMsgFilename+' '
   else
-    AddWarning('english message file for fpc is missing: components/codetools/fpc.errore.msg');
+    AddWarning(lisCCOEnglishMessageFileMissing);
 
   if CurCompilerOptions<>'' then
     CmdLine:=CmdLine+CurCompilerOptions+' ';
@@ -540,12 +536,11 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
     for i:=0 to PPUs.Count-1 do begin
       if ExtractFileNameOnly(PPUs[i])=UnitName then exit(true);
     end;
-    AddMsg(Severity,'compiled FPC unit not found: '+Unitname+'.ppu');
+    AddMsg(Severity,Format(lisCCOMsgPPUNotFound,[Unitname]));
     Result:=ord(Severity)>=ord(ccmlError);
     if not Result then begin
-      if MessageDlg('Missing unit',
-        'The compiled FPC unit '+Unitname+'.ppu was not found.'#13
-        +'This typically means your fpc.cfg has a bug. Or your FPC installation is broken.',
+      if MessageDlg(lisCCOMissingUnit,
+        Format(lisCCOPPUNotFoundDetailed,[Unitname, #13]),
         mtError,[mbIgnore,mbAbort],0)=mrIgnore then
           Result:=true;
     end;
@@ -553,7 +548,7 @@ function TCheckCompilerOptsDlg.CheckMissingFPCPPUs(PPUs: TStrings
   
 begin
   FTest:=cotCheckMissingFPCPPUs;
-  TestGroupbox.Caption:='Test: Checking missing fpc ppu ...';
+  TestGroupbox.Caption:=dlgCCOTestMissingPPU;
 
   Result:=mrCancel;
   // rtl
@@ -608,13 +603,13 @@ var
   
 begin
   FTest:=cotCheckCompilerDate;
-  TestGroupbox.Caption:='Test: Checking compiler date ...';
+  TestGroupbox.Caption:=dlgCCOTestCompilerDate;
 
   Result:=mrCancel;
   
   CompilerDate:=FileAge(CompilerFilename);
   if CompilerDate=-1 then begin
-    Result:=MessageDlg('Error','Unable to get file date of '+CompilerFilename+'.',
+    Result:=MessageDlg(lisCCOErrorCaption,Format(lisCCOUnableToGetFileDate,[CompilerFilename]),
       mtError,[mbIgnore,mbAbort],0);
     exit;
   end;
@@ -638,11 +633,8 @@ begin
   if MinPPU<>'' then begin
     if MaxPPUDate-MinPPUDate>3600 then begin
       // the FPC .ppu files dates differ more than one hour
-      Result:=MessageDlg('Warning','The dates of the .ppu files of FPC'
-        +' differ more than one hour.'#13
-        +'This can mean, they are from two different installations.'#13
-        +'File1: '+MinPPU+#13
-        +'File2: '+MaxPPU,
+      Result:=MessageDlg(lisCCOWarningCaption,
+        Format(lisCCODatesDiffer,[#13,#13,MinPPU,#13,MaxPPU]),
         mtError,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then
         exit;
@@ -659,8 +651,7 @@ begin
   if MinPPU<>'' then begin
     if CompilerDate-MinPPUDate>300 then begin
       // the compiler is more than 5 minutes newer than one of the ppu files
-      Result:=MessageDlg('Warning','There is a .ppu file older than the compiler itself.'#13
-        +MinPPU,
+      Result:=MessageDlg(lisCCOWarningCaption,Format(lisCCOPPUOlderThanCompiler,[#13,MinPPU]),
         mtError,[mbIgnore,mbAbort],0);
       if Result<>mrIgnore then
         exit;
@@ -699,7 +690,7 @@ begin
       AnotherUnitName:=ExtractFileNameOnly(SearchInPPUs[j]);
       if CompareText(AnotherUnitName,CurUnitName)=0 then begin
         // unit exists twice
-        AddWarning('ppu exists twice: '+SearchForPPUs[i]+', '+SearchInPPUs[j]);
+        AddWarning(Format(lisCCOPPUExistsTwice,[SearchForPPUs[i],SearchInPPUs[j]]));
         break;
       end;
       dec(j);
@@ -723,7 +714,7 @@ var
   WarnedDirectories: TStringList;
 begin
   FTest:=cotCheckFPCUnitPathsContainSources;
-  TestGroupbox.Caption:='Test: Checking sources in fpc ppu search paths ...';
+  TestGroupbox.Caption:=dlgCCOTestSrcInPPUPaths;
 
   Result:=mrCancel;
   WarnedDirectories:=TStringList.Create;
@@ -743,7 +734,7 @@ begin
               continue;
             // check extension
             if FilenameIsPascalUnit(FileInfo.Name) then begin
-              AddWarning('FPC unit path contains a source: '+Directory+FileInfo.Name);
+              AddWarning(lisCCOFPCUnitPathHasSource+Directory+FileInfo.Name);
               WarnedDirectories.Add(Directory);
               break;
             end;
@@ -842,13 +833,13 @@ begin
     // ToDo: check ppu checksums and versions
 
     if OutputListbox.Items.Count=0 then
-      AddMsg('All tests succeeded.','',-1);
+      AddMsg(lisCCOTestsSuccess,'',-1);
 
   finally
     CompilerFiles.Free;
     CompileTool.Free;
     FTest:=cotNone;
-    TestGroupbox.Caption:='Test';
+    TestGroupbox.Caption:=dlgCCOTest;
     FPC_PPUs.Free;
     Target_PPUs.Free;
   end;
@@ -859,11 +850,11 @@ constructor TCheckCompilerOptsDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Application.AddOnIdleHandler(@ApplicationOnIdle,true);
-  Caption:='Checking compiler options';
-  CloseButton1.Caption:='Close';
-  TestGroupbox.Caption:='Test';
-  OutputGroupBox.Caption:='Results';
-  CopyOutputMenuItem.Caption:='Copy output to clipboard';
+  Caption:=dlgCCOCaption;
+  CloseButton1.Caption:=lisClose;
+  TestGroupbox.Caption:=dlgCCOTest;
+  OutputGroupBox.Caption:=dlgCCOResults;
+  CopyOutputMenuItem.Caption:=lisCCOCopyOutputToCliboard;
 end;
 
 destructor TCheckCompilerOptsDlg.Destroy;
@@ -922,9 +913,9 @@ procedure TCheckCompilerOptsDlg.AddMsg(const Level: TCompilerCheckMsgLvl;
   const Msg: string);
 begin
   case Level of
-  ccmlWarning: Add('WARNING: '+Msg,'',false,-1);
-  ccmlHint:    Add('HINT: '+Msg,'',false,-1);
-  else         Add('ERROR: '+Msg,'',false,-1);
+  ccmlWarning: Add(lisCCOWarningMsg+Msg,'',false,-1);
+  ccmlHint:    Add(lisCCOHintMsg+Msg,'',false,-1);
+  else         Add(lisCCOErrorMsg+Msg,'',false,-1);
   end;
 end;
 

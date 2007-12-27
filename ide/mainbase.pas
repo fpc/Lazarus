@@ -509,6 +509,7 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
     CreateMenuItem(ParentMI,itmViewLazDoc,'itmViewLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser);
+    CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
     ParentMI:=itmViewUnitWindows;
@@ -860,6 +861,7 @@ begin
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
     itmViewLazDoc.Command:=GetCommand(ecToggleLazDoc);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
+    itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);
     itmViewForms.Command:=GetCommand(ecViewForms);

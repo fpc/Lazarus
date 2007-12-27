@@ -251,6 +251,7 @@ resourcestring
   lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewCodeBrowser = 'Code Browser';
+  lisMenuViewComponents = '&Components';
   lisMenuJumpTo = 'Jump to';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
@@ -1289,6 +1290,64 @@ resourcestring
   dlgMainViewUnits = 'View project units';
   dlgMultiSelect = 'Multi Select';
   
+  // check compiler options dialog
+  dlgCCOCaption = 'Checking compiler options';
+  dlgCCOTest = 'Test';
+  dlgCCOResults = 'Results';
+  lisCCOCopyOutputToCliboard = 'Copy output to clipboard';
+  lisCCOContains = 'contains ';
+  lisCCOSpaces = 'spaces';
+  lisCCOSpecialCharacters = 'special characters';
+  lisCCONonASCII = 'non ASCII';
+  lisCCOWrongPathDelimiter = 'wrong path delimiter';
+  lisCCOUnusualChars = 'unusual characters';
+  lisCCOHasNewLine = 'new line symbols';
+  lisCCOInvalidSearchPath = 'Invalid search path';
+  lisCCOSkip = 'Skip';
+  dlgCCOTestCheckingCompiler = 'Test: Checking compiler ...';
+  lisCCOInvalidCompiler = 'Invalid compiler';
+  lisCCOCompilerNotAnExe = 'The compiler "%s" is not an executable file.%s'
+    +'Details: %s';
+  lisCCOAmbiguousCompiler = 'Ambiguous compiler';
+  lisCCOSeveralCompilers = 'There are several FreePascal Compilers in your path.%s%s%s'
+    +'Maybe you forgot to delete an old compiler?';
+  dlgCCOTestCheckingFPCConfigs = 'Test: Checking fpc configs ...';
+  lisCCONoCfgFound = 'no fpc.cfg found';
+  lisCCOMultipleCfgFound = 'multiple compiler configs found: ';
+  dlgCCOTestCompilingEmptyFile = 'Test: Compiling an empty file ...';
+  lisCCOInvalidTestDir = 'Invalid Test Directory';
+  lisCCOCheckTestDir = 'Please check the Test directory under %s'
+    +'Environment -> Environment Options -> Files -> Directory for building test projects';
+  lisCCOUnableToCreateTestFile = 'Unable to create Test File';
+  lisCCOUnableToCreateTestPascalFile = 'Unable to create Test pascal file "%s".';
+  dlgCCOTestToolCompilingEmptyFile = 'Test: Compiling an empty file';
+  lisCCORelUnitPathFoundInCfg = 'relative unit path found in fpc cfg: %s';
+  dlgCCOTestCheckingCompilerConfig = 'Test: Checking compiler configuration ...';
+  lisCCOEnglishMessageFileMissing = 'english message file for fpc is missing:'
+    +'components/codetools/fpc.errore.msg';
+  lisCCOMsgPPUNotFound = 'compiled FPC unit not found: %s.ppu';
+  lisCCOMissingUnit = 'Missing unit';
+  lisCCOPPUNotFoundDetailed = 'The compiled FPC unit %s.ppu was not found.%s'
+    +'This typically means your fpc.cfg has a bug. Or your FPC installation is broken.';
+  dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
+  dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
+  lisCCOErrorCaption = 'Error';
+  lisCCOUnableToGetFileDate = 'Unable to get file date of %s.';
+  lisCCOWarningCaption = 'Warning';
+  lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
+    +' differ more than one hour.%s'
+    +'This can mean, they are from two different installations.%s'
+    +'File1: %s%s'
+    +'File2: %s';
+  lisCCOPPUOlderThanCompiler = 'There is a .ppu file older than the compiler itself:%s%s';
+  lisCCOPPUExistsTwice = 'ppu exists twice: %s, %s';
+  dlgCCOTestSrcInPPUPaths = 'Test: Checking sources in fpc ppu search paths ...';
+  lisCCOFPCUnitPathHasSource = 'FPC unit path contains a source: ';
+  lisCCOTestsSuccess = 'All tests succeeded.';
+  lisCCOWarningMsg = 'WARNING: ';
+  lisCCOHintMsg = 'HINT: ';
+  lisCCOErrorMsg = 'ERROR: ';
+  
   // show compiler options dialog
   dlgCommandLineParameters = 'Command line parameters';
   
@@ -1718,6 +1777,7 @@ resourcestring
   srkmecTogglecallStack           = 'View call stack';
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
+  srkmecViewComponents            = 'View components';
   srkmecViewUnitDependencies      = 'View unit dependencies';
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';
@@ -2963,8 +3023,6 @@ resourcestring
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '
     +'package?';
   lisPckEditPage = '%s, Page: %s';
-  lisFPFindPaletteComponent = 'Find palette component';
-  lisFPComponents = 'Components';
   lisPckEditRemoveFile2 = 'Remove file?';
   lisPckEditRemoveFileFromPackage = 'Remove file %s%s%s%sfrom package %s%s%s?';
   lisPckEditRemoveDependency2 = 'Remove Dependency?';
@@ -3079,6 +3137,16 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
+  // Find palette component dialog
+  lisFPFindPaletteComponent = 'Find palette component';
+  lisFPComponents = 'Components';
+  
+  // components list form
+  lisCmpLstComponents = 'Components';
+  lisCmpLstList = 'List';
+  lisCmpLstPalette = 'Palette';
+  lisCmpLstInheritance = 'Inheritance';
+
   // menu editor
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorSelectMenu = 'Select Menu:';
