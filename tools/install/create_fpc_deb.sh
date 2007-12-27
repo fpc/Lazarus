@@ -1,12 +1,11 @@
 #!/bin/bash
 
-set -x
 set -e
 
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 fpc|fpc-src [notemp] <FPCSrcDir> [release]"
+Usage="Usage: [OS_TARGET=xxx] [CPU_TARGET=xxx] [BINUTILSPREFIX=xxx] $0 fpc|fpc-src [notemp] <FPCSrcDir> [release]"
 
 # what package should be built ...
 PackageName=""
@@ -63,7 +62,8 @@ getBINUTILSPREFIX() {
   IFS="$_IFS"
   for p in "$@"
   do
-    as=`echo $p/${TARGET_PREFIX}*as`
+    set `echo $p/${TARGET_PREFIX}*as`
+    as="$1"
     if test -x "$as"
     then
       TARGET_PREFIX="${as%%as}"
@@ -94,12 +94,13 @@ echo " $CompilerVersionStr-$FPCRelease"
 Arch=`dpkg --print-architecture` 
 
 CPU_TARGET="${CPU_TARGET:-$Arch}"
+
 case "$CPU_TARGET" in
-  i386)  ppcbin=ppc386;;
-  amd64) ppcbin=ppcx64;;
-  powerpc) ppcbin=ppcppc;;
-  sparc) ppcbin=ppcsparc;;
-  arm) ppcbin=ppcarm;;
+  i386)  ppcbin=386;;
+  amd64) ppcbin=x64;;
+  powerpc) ppcbin=ppc;;
+  sparc) ppcbin=sparc;;
+  arm) ppcbin=arm;;
   *)    echo "$CPU_TARGET is not supported."
         exit -1;;
 esac
@@ -108,12 +109,17 @@ if [ "$CPU_TARGET" != "$Arch" ]
 then TARGET_SUFFIX="-${CPU_TARGET}"
      TARGET_PREFIX="${CPU_TARGET}-"
      CROSSINSTALL=1
+     PPPRE=ppcross
+else
+     PPPRE=ppc
 fi 
 
 if test -n "$OS_TARGET"
 then
 	TARGET_SUFFIX="${TARGET_SUFFIX}-${OS_TARGET}"
-	TARGET_PREFIX="${TARGET_PREFIX}${OS_TARGET}-"
+	TARGET_RPPEFIX="${TARGET_PREFIX}${OS_TARGET}-"
+	TARGET="${CPU_TARGET}-${OS_TARGET}"
+     	CROSSINSTALL=1
 fi
 
 if test -z "$FPC"
@@ -123,17 +129,17 @@ fi
 
 BINUTILS=binutils
 # detect any finalprefix elements
-if test -n "$TARGET_PREFIX"
+if test -n "$TARGET_PREFIX" -a -z "$BINUTILSPREFIX"
 then
-  BINUTILSPREFIX="`getBINUTILSPREFIX $TARGET_PREFIX`"
+  BINUTILSPREFIX="`getBINUTILSPREFIX $BINUTILSPREFIX`"
+
   if test -n "$BINUTILSPREFIX"
   then echo "BINUTILSPREFIX=$BINUTILSPREFIX"
-       BINUTILS=`dpkg -S "${BINUTILSPREFIX}as" | sed "s/:.*//"`
-  else echo "Can't find cross binutils"
-       exit 1
+     BINUTILS=`dpkg -S "${BINUTILSPREFIX}as" | sed "s/:.*//"`
+  else echo "Can't find cross binutils automatically, consider setting BINUTILSPREFIX"
+     exit 1
   fi
 fi
-
 
 #------------------------------------------------------------------------------
 # download/export fpc svn if needed
@@ -197,14 +203,29 @@ mkdir -p $DebianDocDir
 chmod 755 $DebianDocDir
 mkdir -p $DebianRulezDir
 chmod 755 $DebianRulezDir
+DEPENDS="$BINUTILS"
+
+if test -n "$CROSSINSTALL"
+then
+  DEPENDS="$DEPENDS, fpc (= $FPCVersion)"
+fi
+
 
 # create debian control file, which contains the package description
 echo "creating DEBIAN/control file"
 cat $ResourceDir/control \
   | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/ARCH/$Arch/g" \
         -e "s/^Package: .*/Package: $PackageName$TARGET_SUFFIX/" \
-        -e "s/Depends: binutils/Depends: $BINUTILS/" \
+        -e "s/Depends: binutils/Depends: $DEPENDS/" \
   > $DebianRulezDir/control
+
+
+# identify conf files
+if test -n "$TARGET_SUFFIX"
+then
+echo "/usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX:--cross}.cfg" >> $DebianRulezDir/conffiles
+fi
+
 # create debian changelog file, needed for version
 echo "creating usr/share/doc/fpc/changelog file ..."
 File=$DebianDocDir/changelog
@@ -217,12 +238,48 @@ rm -f $File.gz
 gzip --best $File
 
 # create postinst if needed
-if [ -f "$ResourceDir/postinst" ]; then
+if [ -f "$ResourceDir/postinst" ]
+then
+  if [ -z "$CROSSINSTALL" ]
+  then
     echo "creating DEBIAN/postinst file"
     cat $ResourceDir/postinst \
-      | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/PPCBIN/$ppcbin/g" \
+      | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/PPCBIN/$PPPRE$ppcbin/g" \
       > $DebianRulezDir/postinst
+    cat >> $DebianRulezDir/postinst <<CFG
+touch /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/fpc-cross.cfg
+cat >> /usr/lib/fpc/fpc-cross.cfg << FPCCFG
+#if $FPCVersion = \\\$fpcversion
+#include /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+#end
+FPCCFG
+CFG
     chmod a+rx $DebianRulezDir/postinst
+    # un-install
+    cat > $DebianRulezDir/prerm <<CROSS
+#! /bin/sh
+rm -f /usr/lib/fpc/$FPCVersion/ppc$ppcbin
+# remove fpc-cross include lines
+sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/fpc-cross.cfg
+CROSS
+    chmod a+rx $DebianRulezDir/prerm
+  else 
+    # cross-compilerpostinst
+    cat > $DebianRulezDir/postinst <<CROSS
+#! /bin/sh
+ln -sf /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin /usr/bin/ppc$ppcbin 
+grep 2>/dev/null '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' /usr/lib/fpc/$FPCVersion/fpc-cross.cfg || echo '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' >> /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+CROSS
+    chmod a+rx $DebianRulezDir/postinst
+    # un-install
+    cat > $DebianRulezDir/prerm <<CROSS
+#! /bin/sh
+rm -f /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin
+sed -i -e "/#include \/usr\/lib\/fpc\/$FPCVersion\/fpc${TARGET_SUFFIX}.cfg/d" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+CROSS
+    chmod a+rx $DebianRulezDir/prerm
+  fi
 fi
 
 # create changelog.Debian file
@@ -251,14 +308,19 @@ if [ "$PackageName" = "fpc" ]; then
     make clean all ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
     mkdir -p $DebianInstallDir
     make install INSTALL_PREFIX=$DebianInstallDir ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
-
-    # if building cross-package
-    # 1. get rid of ./doc
-    # 2. rename bin's with prefix
-    #
-    if test -n "${TARGET_PREFIX}"
+    if test -z "$BINUTILSPREFIX"
     then
-	find $DebianInstallDir
+      # need up to date samplecfg that chains cross compiler additions
+      grep 'fpc-cross.cfg' $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg &>/dev/null || \
+        sed -i -e "/^FPCPATH=/aFPCPARENT=\"\`dirname \"\$1\"\`\"
+;/^#ENDIF NEEDCROSSBINUTILS/i#include \$FPCPARENT/fpc-cross.cfg"  $DebianInstallDir/lib/fpc/$FPCVersion/samplecfg
+    else cat > $DebianInstallDir/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg <<CROSS
+# Detect $TARGET compiles
+#IF \$fpc-target = $TARGET
+ -XP$BINUTILSPREFIX
+#WRITE Target $TARGET with binutils prefix $BINUTILSPREFIX
+#END
+CROSS
     fi
     cd -
 fi
