@@ -4985,6 +4985,10 @@ msgstr "Local"
 msgid "Local Variables"
 msgstr "Variables Locals"
 
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
 msgstr "Fica a minúscules la selecció"

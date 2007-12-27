@@ -1,4 +1,3 @@
-# translation of lazaruside.po to français translation of lazarusidenew.po to  translation of lazaruside.po to  , 2005. , 2005. beuz_ <lazarus@beuselinck.com>, 2006.
 msgid ""
 msgstr ""
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
@@ -4986,6 +4985,10 @@ msgstr "Local"
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
 msgstr "Variables locales"
+
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"

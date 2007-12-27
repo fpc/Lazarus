@@ -1,4 +1,3 @@
-# Afrikaans translation of Lazarus. Copyright (C) 2006 Free Software Foundation, Inc. graemeg <graemeg@gmail.com>, 2006.  
 msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus 0.9.19\n"
@@ -4986,6 +4985,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulowercaseselection

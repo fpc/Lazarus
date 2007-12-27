@@ -1,3 +1,9 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   команда1 \""
@@ -4973,6 +4979,10 @@ msgstr "Місцевий"
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
 msgstr "Місцеві змінні"
+
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"

@@ -4984,6 +4984,10 @@ msgstr "ローカル"
 msgid "Local Variables"
 msgstr "ローカル変数"
 
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
 msgstr "選択部を小文字化"

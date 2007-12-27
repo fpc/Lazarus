@@ -1,5 +1,3 @@
-# translation of lazaruside.po to Arabic
-# Mazen NEIFER <mazen.neifer@supaero.org>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Mazen NEIFER <mazen.neifer@supaero.org>\n"
@@ -4985,6 +4983,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulowercaseselection

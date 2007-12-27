@@ -565,6 +565,10 @@ msgstr "Skaičiuojant įvyko klaida"
 msgid "Auto size"
 msgstr "Automatiškai nustatyti dydį"
 
+#: lr_const:sdocautor
+msgid "Autor"
+msgstr ""
+
 #: lr_const:sfilterparam
 msgid "Average font height:"
 msgstr "Vidutinis šrifto aukštis:"
@@ -668,6 +672,10 @@ msgstr "Perkelti &priekin"
 #: lr_const:sfrdesignerformbring
 msgid "Bring to front"
 msgstr "Perkelti priekin"
+
+#: lr_const:sdocbuild
+msgid "Build"
+msgstr ""
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -1461,6 +1469,10 @@ msgstr "mm"
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
 msgstr "MONTHOF(<Data>)/Grąžina duotos <Data> mėnesio numerį (1..12)."
 
+#: lr_const:sdocmajor
+msgid "Major"
+msgstr ""
+
 #: lr_const:spgoptformmargins
 msgid "Margins"
 msgstr "Paraštės"
@@ -1480,6 +1492,10 @@ msgstr "Pagrindinio antraštė"
 #: lr_const:smathcategory
 msgid "Math"
 msgstr "Matematika"
+
+#: lr_const:sdocminor
+msgid "Minor"
+msgstr ""
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -1704,6 +1720,10 @@ msgstr "Stačiakampis"
 #: lr_const:sfrdesignerformredo
 msgid "Redo cancelled action"
 msgstr "Atstatyti atšauktą veiksmą"
+
+#: lr_const:sdocrelease
+msgid "Release"
+msgstr ""
 
 #: lr_const:sfrdesignerformremovepg
 msgid "Remove page"
@@ -2028,6 +2048,10 @@ msgstr "Kintamųjų redaktorius"
 #: lr_const:svaredformcapt
 msgid "Variables list"
 msgstr "Kintamųjų sąrašas"
+
+#: lr_const:sdocversion
+msgid "Version"
+msgstr ""
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"

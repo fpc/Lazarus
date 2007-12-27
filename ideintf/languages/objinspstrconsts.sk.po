@@ -1,4 +1,3 @@
-# Slovak translation of lazarus Ivan Masár <helix84@centrum.sk>, 2007. 
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarus 0.9.22\n"

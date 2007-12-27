@@ -4988,6 +4988,10 @@ msgstr "局部"
 msgid "Local Variables"
 msgstr "局部变量"
 
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
 msgstr "转换选区为小写"

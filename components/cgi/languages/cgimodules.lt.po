@@ -1,4 +1,3 @@
-# translation of cgimodules.po to Lithuanian Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"

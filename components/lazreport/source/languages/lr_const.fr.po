@@ -574,6 +574,10 @@ msgstr "Une erreur s'est produite pendant le calcul"
 msgid "Auto size"
 msgstr "Taille automatique"
 
+#: lr_const:sdocautor
+msgid "Autor"
+msgstr ""
+
 #: lr_const:sfilterparam
 msgid "Average font height:"
 msgstr ""
@@ -677,6 +681,10 @@ msgstr "&Déplacer en avant"
 #: lr_const:sfrdesignerformbring
 msgid "Bring to front"
 msgstr "Bring to front"
+
+#: lr_const:sdocbuild
+msgid "Build"
+msgstr ""
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -1470,6 +1478,10 @@ msgstr ""
 msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
 msgstr ""
 
+#: lr_const:sdocmajor
+msgid "Major"
+msgstr ""
+
 #: lr_const:spgoptformmargins
 msgid "Margins"
 msgstr "Marges"
@@ -1488,6 +1500,10 @@ msgstr ""
 
 #: lr_const:smathcategory
 msgid "Math"
+msgstr ""
+
+#: lr_const:sdocminor
+msgid "Minor"
 msgstr ""
 
 #: lr_const:spaper37
@@ -1712,6 +1728,10 @@ msgstr "Rectangle"
 
 #: lr_const:sfrdesignerformredo
 msgid "Redo cancelled action"
+msgstr ""
+
+#: lr_const:sdocrelease
+msgid "Release"
 msgstr ""
 
 #: lr_const:sfrdesignerformremovepg
@@ -2037,6 +2057,10 @@ msgstr "Editeur de variables"
 #: lr_const:svaredformcapt
 msgid "Variables list"
 msgstr "Liste de variables"
+
+#: lr_const:sdocversion
+msgid "Version"
+msgstr ""
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"

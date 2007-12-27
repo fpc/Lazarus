@@ -4985,6 +4985,10 @@ msgstr "Lokal"
 msgid "Local Variables"
 msgstr "Variabel Lokal"
 
+#: lazarusidestrconsts:lislogo
+msgid "Logo"
+msgstr ""
+
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
 msgstr "Kecilkan huruf pilihan"
