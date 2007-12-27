@@ -89,7 +89,7 @@ begin
              SysUtils.GetEnvironmentVariable('PATH'),';',
              []);
   if Result <> '' then exit;
-  Result := DefaultDrive + '\pp\bin\i386-win32\ppc386.exe';
+  Result := DefaultDrive + '\fpc\bin\i386-win32\ppc386.exe';
   if not FileExists(Result) then Result:='';
 end;
 
