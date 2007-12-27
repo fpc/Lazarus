@@ -53,7 +53,9 @@ type
     class procedure Delete(AList: TCustomImageList; AIndex: Integer); override;
     class procedure DestroyHandle(AComponent: TComponent); override;
     class procedure Draw(AList: TCustomImageList; AIndex: Integer; ACanvas: TCanvas;
-      ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType); override;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType); override;
+    class procedure DrawToDC(AList: TCustomImageList; AIndex: Integer; ADC: HDC;
+      ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
     class procedure Insert(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
     class procedure Move(AList: TCustomImageList; ACurIndex, ANewIndex: Integer); override;
     class procedure Replace(AList: TCustomImageList; AIndex: Integer; AData: PRGBAQuad); override;
@@ -77,7 +79,7 @@ const
 { itImage } ILD_NORMAL,
 { itMask }  ILD_MASK
   );
-  
+
 function ColorToImagelistColor(AColor: TColor): DWord;
 begin
   case AColor of
@@ -264,14 +266,77 @@ begin
 end;
 
 class procedure TWin32WSCustomImageList.Draw(AList: TCustomImageList; AIndex: Integer;
-  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; AEnabled: Boolean; AStyle: TDrawingStyle; AImageType: TImageType);
+  ACanvas: TCanvas; ABounds: TRect; ABkColor, ABlendColor: TColor; ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle; AImageType: TImageType);
 begin
   if not WSCheckHandleAllocated(AList, 'Draw')
   then Exit;
+  DrawToDC(AList, AIndex, ACanvas.Handle, ABounds, ABkColor, ABlendColor, ADrawEffect, AStyle, AImageType);
+end;
 
-  ImageList_DrawEx(HImageList(AList.Handle), AIndex, ACanvas.Handle, ABounds.Left,
-    ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
-    ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
+class procedure TWin32WSCustomImageList.DrawToDC(AList: TCustomImageList;
+  AIndex: Integer; ADC: HDC; ABounds: TRect; ABkColor, ABlendColor: TColor;
+  ADrawEffect: TGraphicsDrawEffect; AStyle: TDrawingStyle;
+  AImageType: TImageType);
+var
+  DrawParams: TImageListDrawParams;
+  RawImg: TRawImage;
+  ListImg, DeviceImg: TLazIntfImage;
+  OldBmp, ImgHandle, MskHandle: HBitmap;
+  ImgDC: HDC;
+begin
+  if ADrawEffect = gdeNormal then
+  begin
+      ImageList_DrawEx(HImageList(AList.Handle), AIndex, ADC, ABounds.Left,
+        ABounds.Top, ABounds.Right, ABounds.Bottom, ColorToImagelistColor(ABkColor),
+        ColorToImagelistColor(ABlendColor), DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType]);
+  end
+  else
+  if (ADrawEffect = gdeDisabled) and (Win32WidgetSet.CommonControlsVersion >= ComCtlVersionIE6) then
+  begin
+    // if it is manifested exe then use winXP algoriphm of gray painting
+    FillChar(DrawParams, SizeOf(DrawParams), 0);
+    DrawParams.cbSize := SizeOf(DrawParams);
+    DrawParams.himlL := HImageList(AList.Handle);
+    DrawParams.i := AIndex;
+    DrawParams.hdcDst := ADC;
+    DrawParams.x := ABounds.Left;
+    DrawParams.y := ABounds.Top;
+    DrawParams.cx := ABounds.Right;
+    DrawParams.cy := ABounds.Bottom;
+    DrawParams.rgbBk := ColorToImagelistColor(ABkColor);
+    DrawParams.rgbFg := ColorToImagelistColor(ABlendColor);
+    DrawParams.fStyle := DRAWINGSTYLEMAP[AStyle] or IMAGETPYEMAP[AImageType];
+    DrawParams.fState := ILS_SATURATE; // draw greyed
+    ImageList_DrawIndirect(@DrawParams);
+  end
+  else
+  begin
+    // use RawImage_PerformEffect to perform drawing effect
+    AList.GetRawImage(AIndex, RawImg);
+    RawImg.PerformEffect(ADrawEffect, True);
+
+    if not Widgetset.RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle, True)
+    then begin
+      // bummer, the widgetset doesn't support our 32bit format, try device
+      ListImg := TLazIntfImage.Create(RawImg, False);
+      DeviceImg := TLazIntfImage.Create(0, 0);
+      DeviceImg.DataDescription := GetDescriptionFromDevice(0, AList.Width, AList.Height);
+      DeviceImg.CopyPixels(ListImg);
+      DeviceImg.GetRawImage(RawImg);
+      Widgetset.RawImage_CreateBitmaps(RawImg, ImgHandle, MskHandle);
+      DeviceImg.Free;
+      ListImg.Free;
+    end;
+    ImgDC := CreateCompatibleDC(0);
+    OldBmp := SelectObject(ImgDC, ImgHandle);
+    WidgetSet.StretchMaskBlt(ADC, ABounds.Left, ABounds.Top, ABounds.Right, ABounds.Bottom,
+      ImgDC, 0, 0, ABounds.Right, ABounds.Bottom, MskHandle, 0, 0, SRCCOPY);
+    RawImg.FreeData;
+    SelectObject(ImgDC, OldBmp);
+    if ImgHandle<>0 then DeleteObject(ImgHandle);
+    if MskHandle<>0 then DeleteObject(MskHandle);
+    DeleteDC(ImgDC);
+  end;
 end;
 
 class procedure TWin32WSCustomImageList.Insert(AList: TCustomImageList;
@@ -335,7 +400,6 @@ begin
 end;
 
 initialization
-
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////

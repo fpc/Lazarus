@@ -48,7 +48,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
   end;
 
@@ -91,11 +91,11 @@ end;
   Sets the bitmap of bevel button in Carbon interface
  ------------------------------------------------------------------------------}
 class procedure TCarbonWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TBitmap);
+  const AValue: TButtonGlyph);
 begin
   if not CheckHandle(ABitBtn, Self, 'SetGlyph') then Exit;
   
-  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue);
+  TCarbonBitBtn(ABitBtn.Handle).SetGlyph(AValue.Glyph);
 end;
 
 {------------------------------------------------------------------------------

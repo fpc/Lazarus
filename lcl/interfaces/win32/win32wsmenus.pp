@@ -33,10 +33,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Graphics, Menus, Forms,
+  Graphics, GraphType, ImgList, Menus, Forms,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
-  Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, InterfaceBase, LCLProc;
+  Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
+  InterfaceBase, LCLProc;
 
 type
 
@@ -509,21 +510,47 @@ end;
 
 procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
 var
-  hdcMem: HDC;
-  hbmpOld: HBITMAP;
   x: Integer;
-  bmp: Graphics.TBitmap;
+  AEffect: TGraphicsDrawEffect;
+  AImageList: TCustomImageList;
+  FreeImageList: Boolean;
+  AImageIndex: Integer;
 begin
-  // prevent multiple creation copies of menuitem bitmap form imagelist
-  bmp := aMenuItem.Bitmap;
-  hdcMem := bmp.Canvas.Handle;
-  hbmpOld := SelectObject(hdcMem, bmp.Handle);
+  AImageList := aMenuItem.GetImageList;
+  if AImageList = nil then
+  begin
+    AImageList := TImageList.Create(nil);
+    AImageList.Width := aMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
+    AImageList.Height := aMenuItem.Bitmap.Height;
+    AImageIndex := AImageList.Add(aMenuItem.Bitmap, nil);
+    FreeImageList := True;
+  end
+  else
+  begin
+    FreeImageList := False;
+    AImageIndex := aMenuItem.ImageIndex;
+  end;
+
+  if not aMenuItem.Enabled then
+    AEffect := gdeDisabled
+  else
+  if aSelected then
+    AEffect := gdeHighlighted
+  else
+    AEffect := gdeNormal;
+
   if aMenuItem.GetIsRightToLeft then
-    x := aRect.Right - CheckSpace(aMenuItem) - bmp.Width - spaceBetweenIcons
+    x := aRect.Right - CheckSpace(aMenuItem) - AImageList.Width - spaceBetweenIcons
   else
     x := aRect.Left + CheckSpace(aMenuItem) + spaceBetweenIcons;
-  TWin32WidgetSet(WidgetSet).MaskBlt(aHDC, x, aRect.top + TopPosition(aRect.bottom - aRect.top, bmp.Height), bmp.Width, bmp.Height, hdcMem, 0, 0, bmp.MaskHandle, 0, 0);
-  SelectObject(hdcMem, hbmpOld);
+
+  if AImageIndex < AImageList.Count then
+    TWin32WSCustomImageList.DrawToDC(AImageList, AImageIndex, aHDC,
+      Rect(x, aRect.top + TopPosition(aRect.bottom - aRect.top, AImageList.Height),
+      AImageList.Width, AImageList.Height), AImageList.BkColor, AImageList.BlendColor,
+      AEffect, AImageList.DrawingStyle, AImageList.ImageType);
+  if FreeImageList then
+    AImageList.Free;
 end;
 
 procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);

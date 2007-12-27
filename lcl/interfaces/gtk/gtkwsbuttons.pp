@@ -34,7 +34,7 @@ uses
   GLib, Gtk, gdk, Gtk1WSPrivate,
   {$ENDIF}
   // LCL
-  Classes, LCLProc, LCLType, LMessages, Controls, Graphics, Buttons,
+  Classes, LCLProc, LCLType, LMessages, Controls, Graphics, GraphType, Buttons,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // interface
@@ -59,7 +59,7 @@ type
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -152,12 +152,15 @@ begin
 end;
 
 class procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TBitmap);
+  const AValue: TButtonGlyph);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   GDIObject: PGDIObject;
   Mask: PGdkBitmap;
+  AGlyph: TBitmap;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph')
   then Exit;
@@ -165,21 +168,25 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
   BitBtnInfo := WidgetInfo^.UserData;                       
   
+  AGlyph := TBitmap.Create;
+  AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
+  AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
   // check if an image is needed
-  if (AValue.Handle = 0)
-  or (AValue.Width = 0) 
-  or (AValue.Height = 0)
+  if (AGlyph.Handle = 0)
+  or (AGlyph.Width = 0)
+  or (AGlyph.Height = 0)
   then begin                                  
     if BitBtnInfo^.ImageWidget <> nil
     then begin
       gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.ImageWidget);
       BitBtnInfo^.ImageWidget := nil;
     end;
+    AGlyph.Free;
     Exit;
   end;
   
-  GDIObject := PgdiObject(AValue.Handle);
-  Mask := CreateGdkMaskBitmap(AValue.Handle, AValue.MaskHandle);
+  GDIObject := PgdiObject(AGlyph.Handle);
+  Mask := CreateGdkMaskBitmap(AValue.Glyph.Handle, AValue.Glyph.MaskHandle);
   
   // check for image
   if BitBtnInfo^.ImageWidget = nil
@@ -194,6 +201,7 @@ begin
   end;
   
   gdk_pixmap_unref(Mask);
+  AGlyph.Free;
 end;
 
 class procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;

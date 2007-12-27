@@ -70,6 +70,28 @@ type
   end;
   TComboboxInfo = tagCOMBOBOXINFO;
   PComboboxInfo = ^TComboboxInfo;
+  
+  tagIMAGELISTDRAWPARAMS = record
+    cbSize: DWORD;
+    himlL: HIMAGELIST;
+    i: integer;
+    hdcDst: HDC;
+    x: integer;
+    y: integer;
+    cx: integer;
+    cy: integer;
+    xBitmap: integer;
+    yBitmap: integer;
+    rgbBk: COLORREF;
+    rgbFg: COLORREF;
+    fStyle: UINT;
+    dwRop: DWORD;
+    fState: DWORD;
+    Frame: DWORD;
+    crEffect: DWORD;
+  end;
+  TImageListDrawParams = tagIMAGELISTDRAWPARAMS;
+  PImageListDrawParams = ^TImageListDrawParams;
 
 { Win32 API constants not included in windows.pp }
 const
@@ -307,11 +329,20 @@ function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
 // missing imagelist macros and constants
 
 const
+// image list copy flags
   ILCF_MOVE = $00000000;
   ILCF_SWAP = $00000001;
+// image list states
+  ILS_NORMAL   = $00000000;
+  ILS_GLOW     = $00000001;
+  ILS_SHADOW   = $00000002;
+  ILS_SATURATE = $00000004;
+  ILS_ALPHA    = $00000008;
+
 
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; stdcall; external 'comctl32';
-
+// only with IExplorer 3.0 or later
+function ImageList_DrawIndirect(pimldp: PIMAGELISTDRAWPARAMS): BOOL; stdcall; external 'comctl32';
 
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
@@ -820,7 +851,7 @@ end;
 const 
   msimg32lib = 'msimg32.dll';
   user32lib = 'user32.dll';
- 
+
 var
   msimg32handle: THandle = 0;
   user32handle: THandle = 0;

@@ -33,10 +33,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Buttons, Graphics, Controls,
+  Windows, Classes, Buttons, Graphics, GraphType, Controls,
 ////////////////////////////////////////////////////
   WSProc, WSControls, WSButtons, WSLCLClasses, 
-  Win32WSControls, LCLType, Themes;
+  Win32WSControls, Win32WSImgList, LCLType, Themes;
 
 type
 
@@ -52,7 +52,7 @@ type
           const ALeft, ATop, AWidth, AHeight: integer); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
-    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -73,6 +73,10 @@ implementation
 
 uses
   Win32Int, InterfaceBase, Win32Proc;
+
+type
+  TBitBtnAceess = class(TCustomBitBtn)
+  end;
 
 { TWin32WSBitBtn }
 
@@ -145,42 +149,34 @@ var
   
   procedure DrawBitmap(AState: TButtonState);
   var
-    MonoDC: HDC;
-    MonoBmp, OldMonoBmp: HBITMAP;
-
     TextFlags: integer; // flags for caption (enabled or disabled)
-    numGlyphs, glyphLeft, glyphWidth, glyphHeight: integer;
-    themesActive, emulateDisabled: boolean;
+    glyphWidth, glyphHeight: integer;
+    themesActive: boolean;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
+    AIndex: Integer;
+    AEffect: TGraphicsDrawEffect;
   begin
-    emulateDisabled := false;
-    glyphLeft := 0;
     glyphWidth := srcWidth;
     glyphHeight := srcHeight;
     TextFlags := DST_PREFIXTEXT;
-    numGlyphs := BitBtn.NumGlyphs;
-    case AState of
-      bsDisabled:
-      begin
-        if numGlyphs > 1 then
-          glyphLeft := glyphWidth
-        else
-          emulateDisabled := true;
-        TextFlags := TextFlags or DSS_DISABLED;
-      end;
-      bsDown:      if numGlyphs > 2 then glyphLeft := 2*glyphWidth;
-      bsExclusive: if numGlyphs > 3 then glyphLeft := 3*glyphWidth;
-    end;
+
+    if AState = bsDisabled then
+      TextFlags := TextFlags or DSS_DISABLED;
 
     // fill with background color
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
-    if not emulateDisabled then
+    if AState <> bsDisabled then
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        WidgetSet.MaskBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, glyphWidth,
-            glyphHeight, BitBtn.Glyph.Canvas.Handle, glyphLeft, 0, BitBtn.Glyph.MaskHandle, glyphLeft, 0);
+        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
+        TWin32WSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
+          hdcNewBitmap, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
       end;
     end else
     begin
@@ -191,32 +187,24 @@ var
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        // Create a Mono DC
-        MonoBmp := CreateBitmap(glyphWidth, glyphHeight, 1, 1, nil);
-        MonoDC := CreateCompatibleDC(hdcNewBitmap);
-        OldMonoBmp := SelectObject(MonoDC, MonoBmp);
-        // Create the black and white image
-        with BitBtn.Glyph do
-        begin
-          FillRect(MonoDC, Rect(0, 0, glyphWidth, glyphHeight), BitBtn.Brush.Handle);
-          WidgetSet.MaskBlt(MonoDC, 0, 0, glyphWidth, glyphHeight,
-            Canvas.Handle, glyphLeft, 0, MaskHandle, glyphLeft, 0);
-        end;
-        
+        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, AIndex, AEffect);
         if themesActive then
         begin
           // non-themed winapi wants white/other as background/picture-disabled colors
           // themed winapi draws bitmap-as, with transparency defined by bitbtn.brush color
           SetBkColor(hdcNewBitmap, ColorToRGB(BitBtn.Brush.Color));
           SetTextColor(hdcNewBitmap, GetSysColor(COLOR_BTNSHADOW));
-        end;
-        // Draw the black and white image
-        BitBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, glyphWidth, glyphHeight,
-               MonoDC, 0, 0, SRCCOPY);
+        end
+        else
+        if AEffect = gdeDisabled then
+          AEffect := gde1Bit;
 
-        SelectObject(MonoDC, OldMonoBmp);
-        DeleteDC(MonoDC);
-        DeleteObject(MonoBmp);
+        TWin32WSCustomImageList.DrawToDC(TBitBtnAceess(BitBtn).FButtonGlyph.Images, AIndex,
+          hdcNewBitmap, Rect(XDestBitmap, YDestBitmap, glyphWidth, glyphHeight),
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BkColor,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.BlendColor, AEffect,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.DrawingStyle,
+          TBitBtnAceess(BitBtn).FButtonGlyph.Images.ImageType);
       end;
     end;
     SetBkMode(hdcNewBitmap, TRANSPARENT);
@@ -367,7 +355,9 @@ begin
         DrawBitmap(XPBitBtn_ImageIndexToState[I]);
         ImageList_AddMasked(ButtonImageList.himl, NewBitmap, ColorToRGB(BitBtn.Brush.Color));
       end;
-    end else begin
+    end
+    else
+    begin
       ButtonImageList.himl := 0;
     end;
     Windows.SendMessage(BitBtnHandle, BCM_SETIMAGELIST, 0, LPARAM(@ButtonImageList));
@@ -476,7 +466,7 @@ begin
 end;
 
 class procedure TWin32WSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
-  const AValue: TBitmap);
+  const AValue: TButtonGlyph);
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') then Exit;
   DrawBitBtnImage(ABitBtn, ABitBtn.Caption);

@@ -38,20 +38,27 @@ interface
 {$endif}
 
 uses
-  Types, Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts,
+  Types, Classes, SysUtils, Math, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, LMessages, Forms,
   Themes, Menus{for ShortCut procedures}, LResources;
 
 type
   { TButton }
 
-  TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
-  TButtonState = (
+  TButtonLayout =
+  (
+    blGlyphLeft,
+    blGlyphRight,
+    blGlyphTop,
+    blGlyphBottom
+  );
+  TButtonState =
+  (
     bsUp,       // button is up
     bsDisabled, // button disabled (grayed)
     bsDown,     // button is down
     bsExclusive // button is the only down in his group
-    );
+  );
 
   {TNumGlyphs holds the number of glyphs in an image.
     We restrict it to 4 to stay compatible but we don't NEED to.
@@ -68,6 +75,7 @@ type
 
   TButtonGlyph = class
   private
+    FImages: TCustomImageList;
     FOriginal: TBitmap;
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
@@ -78,11 +86,13 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure GetImageIndexAndEffect(State: TButtonState; var AIndex: Integer; var AEffect: TGraphicsDrawEffect);
     function Draw(Canvas: TCanvas; const Client: TRect; const Offset: TPoint;
                   State: TButtonState; Transparent: Boolean;
                   BiDiFlags: Longint): TRect;
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
+    property Images: TCustomImageList read FImages;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -98,7 +108,6 @@ type
 
   TCustomBitBtn = class(TCustomButton)
   private
-    FButtonGlyph: TButtonGlyph;
     FKind: TBitBtnKind;
     FLayout: TButtonLayout;
     FMargin: integer;
@@ -114,10 +123,10 @@ type
     procedure SetNumGlyphs(AValue: Integer);
     Procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
-    procedure DrawGlyph;
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(aKind: TBitBtnKind): String;
   protected
+    FButtonGlyph: TButtonGlyph;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
@@ -201,7 +210,7 @@ type
     FDownLoaded : Boolean;// value of Down set during loading
     FDragging: Boolean;
     FFlat: Boolean;
-    FGlyph:   TButtonGlyph;
+    FGlyph: TButtonGlyph;
     FGroupIndex: Integer;
     FLastDrawDetails: TThemedElementDetails;
     FLayout: TButtonLayout;
