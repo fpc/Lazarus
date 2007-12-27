@@ -681,6 +681,7 @@ function TMethodJumpingCodeTool.FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
   out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
 var DestNode: TCodeTreeNode;
   i, NewCleanPos: integer;
+  LineStartPos: LongInt;
 begin
   Result:=false;
   if ProcNode=nil then exit;
@@ -699,13 +700,13 @@ begin
       asm
       |end
 
+      begin
+         |DoSomething;
+      end
+
       asm
         |
 
-      end
-
-      begin
-        |DoSomething;
       end
   }
   MoveCursorToNodeStart(DestNode);
@@ -723,26 +724,39 @@ begin
   DebugLn('[TMethodJumpingCodeTool.FindJumpPointInProcNode] B i=',dbgs(i),' IndentSize=',dbgs(IndentSize));
   {$ENDIF}
   // set cursor in the next line but before the next token/comment
+  // read 'begin' or 'asm'
   ReadNextAtom;
   NewCleanPos:=CurPos.EndPos;
+  // skip spaces
   while (NewCleanPos<=SrcLen) and (Src[NewCleanPos] in [' ',#8]) do
     inc(NewCleanPos);
   if (NewCleanPos<=SrcLen) and (Src[NewCleanPos] in [#13,#10]) then begin
+    // skip newline chars
     inc(NewCleanPos);
     if (NewCleanPos<=SrcLen) and (Src[NewCleanPos] in [#13,#10])
     and (Src[NewCleanPos-1]<>Src[NewCleanPos]) then
       inc(NewCleanPos);
-    inc(i,IndentSize);
-    while (i>0) and (NewCleanPos<=SrcLen) and (Src[NewCleanPos] in [' ',#8])
-    do begin
+    // check if there is code in the line
+    LineStartPos:=NewCleanPos;
+    while (NewCleanPos<=SrcLen) and (Src[NewCleanPos] in [' ',#8]) do
       inc(NewCleanPos);
-      dec(i);
-    end;
-    if not (Src[NewCleanPos] in [#13,#10]) then
+    if (NewCleanPos>SrcLen) or (Src[NewCleanPos] in [#10,#13]) then begin
+      // empty line
+      inc(i,IndentSize);
+      if NewCleanPos>LineStartPos+i then
+        NewCleanPos:=LineStartPos+i
+      else if NewCleanPos<LineStartPos+i then
+        i:=(LineStartPos+i)-NewCleanPos;
+    end else begin
+      // code in line
       i:=0;
+    end;
   end else
     i:=0;
-  if NewCleanPos>SrcLen then NewCleanPos:=SrcLen;
+  if NewCleanPos>SrcLen then begin
+    NewCleanPos:=SrcLen;
+    inc(i);
+  end;
   
   if not JumpToCleanPos(NewCleanPos,ProcNode.StartPos,ProcNode.EndPos,
                         NewPos,NewTopLine,true)
