@@ -329,18 +329,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TQtWidgetSet.CreateComponent
-  Params:   sender - object for which to create visual representation
-  Returns:  nothing
-
-  Deprecated, never call this function
- ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateComponent(Sender : TObject): THandle;
-begin
-  Result := 0;
-end;
-
-{------------------------------------------------------------------------------
   Function: TQtWidgetSet.IsValidDC
   Params:   DC     -  handle to a device context (TQtDeviceContext)
   Returns:  True   -  if the DC is valid

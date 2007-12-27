@@ -520,19 +520,6 @@ begin
 end;
 
  {------------------------------------------------------------------------------
-  Function: TWin32WidgetSet.CreateComponent
-  Params:   Sender - object for which to create visual representation
-  Returns:  nothing
-
-  Tells Windows to create a control
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.CreateComponent(Sender: TObject): THandle;
-begin
-  DebugLn('WARNING: TWin32WidgetSet.CreateComponent is deprecated, should not be reachable!!');
-  Result := 0;
-end;
-
- {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AssignSelf
   Params: Window - The window to assign
           Data   - The data to assign to the window

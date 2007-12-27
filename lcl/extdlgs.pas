@@ -1262,7 +1262,7 @@ begin
 end;
 
 
-Initialization
+initialization
 {$i extdlgs.lrs}
 
 end.

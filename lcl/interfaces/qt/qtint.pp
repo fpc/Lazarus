@@ -101,7 +101,6 @@ type
     function  InitHintFont(HintFont: TObject): Boolean; override;
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override; // deprecated
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 

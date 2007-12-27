@@ -977,19 +977,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.CreateComponent
-  Params:  Sender
-
-  Tells Carbon to create a control
-  Deprecated! Implement TCarbonWS*.CreateHandle method instead.
- ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateComponent(Sender: TObject): THandle;
-begin
-  DebugLn('WARNING: TCarbonWidgetSet.CreateComponent is deprecated, should not be called!! Go whack somebody with a large throut!');
-  Result := 0;
-end;
-
-{------------------------------------------------------------------------------
   Method:  TimerCallback
   Params:  inTimer    - Timer reference
            inUserData - User data passed when installing timer

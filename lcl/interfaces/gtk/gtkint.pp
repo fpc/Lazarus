@@ -146,8 +146,6 @@ type
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
 
     // create and destroy
-    function CreateComponentWidget(Sender: TObject; ACompStyle: Integer; const ACaption: String
-      ): PGtkWidget; virtual; // temporary solution till all are created through createhandle
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
@@ -213,18 +211,6 @@ type
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
     procedure UntransientWindow(GtkWindow: PGtkWindow);
-    procedure InitializeFileDialog(FileDialog: TFileDialog;
-      var SelWidget: PGtkWidget; Title: PChar); virtual;
-    procedure InitializeFontDialog(FontDialog: TFontDialog;
-      var SelWidget: PGtkWidget; Title: PChar);
-    procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
-    function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget): string; virtual;
-    procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
-      SelWidget: PGtkWidget); virtual;
-    procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget); virtual;
-
     // misc
     function GetCaption(Sender : TObject) : String; virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
@@ -293,7 +279,6 @@ type
                              ConvertAmpersandsToUnderScores: Boolean) : PChar;
 
     // create and destroy
-    function CreateComponent(Sender: TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : THandle; override;
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -307,9 +292,6 @@ type
 
 {$I gtklistslh.inc}
 {$I gtkfiledialogutilsh.inc}
-
-procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
-  SelWidget: PGtkWidget);
 
 var
   GTKWidgetSet: TGTKWidgetSet;
@@ -328,7 +310,7 @@ uses
  GtkWSButtons,
  GtkWSCalendar,
  GtkWSCheckLst,
-// GtkWSCListBox,
+ GtkWSCListBox,
  GtkWSComCtrls,
  GtkWSControls,
 // GtkWSDbCtrls,

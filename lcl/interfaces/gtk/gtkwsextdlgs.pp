@@ -36,7 +36,9 @@ type
   TGtkWSPreviewFileControl = class(TWSPreviewFileControl)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSPreviewFileDialog }
@@ -98,6 +100,36 @@ type
 
 implementation
 
+{ TGtkWSPreviewFileControl }
+
+class procedure TGtkWSPreviewFileControl.SetCallbacks(
+  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSPreviewFileControl.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := GtkWidgetset.CreateSimpleClientAreaWidget(AWinControl, True);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+
+  WidgetInfo := GetWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AWinControl;
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  SetCallBacks(Widget, WidgetInfo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -106,7 +138,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl);
+  RegisterWSComponent(TPreviewFileControl, TGtkWSPreviewFileControl);
 //  RegisterWSComponent(TPreviewFileDialog, TGtkWSPreviewFileDialog);
 //  RegisterWSComponent(TOpenPictureDialog, TGtkWSOpenPictureDialog);
 //  RegisterWSComponent(TSavePictureDialog, TGtkWSSavePictureDialog);

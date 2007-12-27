@@ -189,12 +189,12 @@ begin
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     SetStdBiDiModeParams(AWinControl, Params);
     {$IFDEF VerboseSizeMsg}
-    DebugLn('TWin32WidgetSet.CreateComponent A ' + dbgsName(AWinControl) + ' ' +
+    DebugLn('PrepareCreateWindow ' + dbgsName(AWinControl) + ' ' +
       Format('%d, %d, %d, %d', [Left, Top, Width, Height]));
     {$ENDIF}
 
-    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
-    Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
+    Assert(False, Format('Trace:PrepareCreateWindow - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
+    Assert(False, Format('Trace:PrepareCreateWindow - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
   end;
 end;
 

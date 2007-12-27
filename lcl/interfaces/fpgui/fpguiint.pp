@@ -76,7 +76,6 @@ type
     
 
     // create and destroy
-    function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): THandle; override;
     function DestroyTimer(TimerHandle: THandle): boolean; override;
 

@@ -156,7 +156,7 @@ class function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
   // For now default to the old creation routines
-  Result := WidgetSet.CreateComponent(AWinControl);
+  Result := 0;
 end;
 
 class procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);

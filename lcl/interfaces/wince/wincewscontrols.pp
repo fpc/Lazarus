@@ -195,11 +195,11 @@ begin
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     {$IFDEF VerboseSizeMsg}
-    writeln('TWinCEWidgetSet.CreateComponent A ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
+    writeln('PrepareCreateWindow ',AWinControl.Name,':',AWinControl.ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
 
-    //Assert(False, Format('Trace:TWinCEWidgetSet.CreateComponent - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
-    //Assert(False, Format('Trace:TWinCEWidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
+    //Assert(False, Format('Trace:PrepareCreateWindow - Creating component %S with the caption of %S', [AWinControl.ClassName, AWinControl.Caption]));
+    //Assert(False, Format('Trace:PrepareCreateWindow - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
   end;
 end;
 

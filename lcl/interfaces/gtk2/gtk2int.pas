@@ -55,30 +55,15 @@ type
   { TGtk2WidgetSet }
 
   TGtk2WidgetSet = class(TGtkWidgetSet)
-  private
-    function CreateCListBox(Sender: TObject): PGtkWidget;
-    function CreateListBox(Sender: TObject): PGtkWidget;
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
 
-    function CreateComponentWidget(Sender: TObject; ACompStyle: Integer;
-             const ACaption: String): PGtkWidget; override; // temporary solution till all are created through createhandle
-
+    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override; // temporary
     function GetText(Sender: TComponent; var Text: String): Boolean;
-    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
-
-    procedure InitializeFileDialog(FileDialog: TFileDialog;
-      var SelWidget: PGtkWidget; Title: PChar); override;
-    function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget): string; override;
-    procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget); override;
-    procedure CreatePreviewDialogControl(
-      PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); override;
 
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; override;
@@ -167,7 +152,7 @@ uses
  Gtk2WSControls,
 // Gtk2WSDbCtrls,
 // Gtk2WSDBGrids,
-// Gtk2WSDialogs,
+ Gtk2WSDialogs,
 // Gtk2WSDirSel,
 // Gtk2WSEditBtn,
  Gtk2WSExtCtrls,

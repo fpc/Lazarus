@@ -199,18 +199,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TFpGuiWidgetSet.CreateComponent
-  Params:   sender - object for which to create visual representation
-  Returns:  nothing
-
-  Deprecated, never call this function
- ------------------------------------------------------------------------------}
-function TFpGuiWidgetSet.CreateComponent(Sender : TObject): THandle;
-begin
-  Result := 0;
-end;
-
-{------------------------------------------------------------------------------
   Function: TFpGuiWidgetSet.IsValidDC
   Params:   DC     -  handle to a device context (TFpGuiDeviceContext)
   Returns:  True   -  if the DC is valid

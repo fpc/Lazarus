@@ -80,6 +80,8 @@ type
   protected
   public
   {$IFDEF GTK1}
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -117,6 +119,8 @@ type
   protected
   public
   {$IFDEF GTK1}
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -176,7 +180,7 @@ type
   protected
   public
     {$ifdef GTK1}
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
                         const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo;
                                const AText: string); override;
@@ -433,7 +437,51 @@ begin
 end;
 
 { TGtkWSCustomListBox }
+
 {$IFDEF GTK1}
+class procedure TGtkWSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtkWidgetset(Widgetset).SetCallback(LM_SELCHANGE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtkWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  ScrolledWnd: PGtkScrolledWindow absolute Widget;
+  ListBox: TCustomListBox absolute AWinControl;
+  List: Pointer;
+begin
+  Widget := gtk_scrolled_window_new(nil, nil);
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(ScrolledWnd^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(ScrolledWnd, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  gtk_widget_show(Widget);
+
+  List := gtk_list_new;
+  gtk_scrolled_window_add_with_viewport(ScrolledWnd, List);
+  gtk_container_set_focus_vadjustment(List,
+               gtk_scrolled_window_get_vadjustment(ScrolledWnd));
+  gtk_container_set_focus_hadjustment(PGtkContainer(List),
+               gtk_scrolled_window_get_hadjustment(ScrolledWnd));
+  gtk_widget_show(List);
+
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  SetMainWidget(Widget, List);
+  WidgetInfo^.CoreWidget := List;
+
+  TGtkWidgetSet(WidgetSet).SetSelectionMode(AWinControl, Widget,
+    ListBox.MultiSelect, ListBox.ExtendedSelect);
+
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  SetCallbacks(Widget, WidgetInfo);
+end;
 
 class function TGtkWSCustomListBox.GetIndexAtY(
   const ACustomListBox: TCustomListBox; y: integer): integer;
@@ -816,7 +864,74 @@ end;
 
 
 { TGtkWSCustomComboBox }
+
 {$IFDEF GTK1}
+class procedure TGtkWSCustomComboBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGtkWidgetset(Widgetset) do
+  begin
+    SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COMMAND, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_SELCHANGE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
+class function TGtkWSCustomComboBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+var
+  ComboBox: TComboBox absolute AWinControl;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  ComboWidget: PGtkCombo absolute Widget;
+
+  ItemList: TGtkListStringList;
+  GtkList: PGtkList;
+  Allocation: TGtkAllocation;
+begin
+  Widget := gtk_combo_new();
+
+  SetMainWidget(Widget, ComboWidget^.entry);
+
+  gtk_combo_disable_activate(ComboWidget);
+  gtk_combo_set_case_sensitive(ComboWidget, GdkTrue);
+
+  // Prevents the OnSelect event be fired after inserting the first item
+  // or deleting the selected item
+  GtkList:=PGtkList(ComboWidget^.List);
+  if GtkList^.selection = nil then
+    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_SINGLE)
+  else
+    gtk_list_set_selection_mode(GtkList, GTK_SELECTION_BROWSE);
+
+  // Items
+  ItemList:= TGtkListStringList.Create(GtkList, ComboBox, False);
+  gtk_object_set_data(PGtkObject(Widget), GtkListItemLCLListTag, ItemList);
+  ItemList.Assign(ComboBox.Items);
+  ItemList.Sorted:= ComboBox.Sorted;
+
+  // ItemIndex
+  if ComboBox.ItemIndex >= 0 then
+    gtk_list_select_item(GtkList, ComboBox.ItemIndex);
+
+  // MaxLength
+  gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),guint16(ComboBox.MaxLength));
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
 class function  TGtkWSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
 begin
@@ -1786,7 +1901,7 @@ var
   Widget: PGtkWidget;
   border_width: Integer;
 begin
-  Widget:=PGtkWidget(AWinControl.Handle);
+  Widget := PGtkWidget(AWinControl.Handle);
 
   PreferredWidth := (gtk_widget_get_xthickness(Widget)) * 2
                     {$ifdef gtk1}

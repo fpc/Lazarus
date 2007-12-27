@@ -506,11 +506,6 @@ begin
   end;
 end;
 
-function TWinCEWidgetSet.CreateComponent(Sender: TObject): THandle;
-begin
-
-end;
-
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
