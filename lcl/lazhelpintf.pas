@@ -540,12 +540,17 @@ procedure FreeLCLHelpSystem;
 procedure FreeUnusedLCLHelpSystem;
 
 // URL functions
+// used names:
+//  URL: Type + Path + Params e.g. http://www.freepascal.org?param
+//  URLType: e.g. file or http
+//  URLPath: URL without type and without parameters (always / as path delimiter)
+//  URLParams: parameters appended by ? or #
 function FilenameToURL(const Filename: string): string;
 function FilenameToURLPath(const Filename: string): string;
 function URLPathToFilename(const URLPath: string): string;
 procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
 function CombineURL(const URLType, URLPath, URLParams: string): string;
-function URLFilenameIsAbsolute(const Filename: string): boolean;
+function URLFilenameIsAbsolute(const URLPath: string): boolean;
 function FindURLPathStart(const URL: string): integer;
 function FindURLPathEnd(const URL: string): integer;
 function ChompURLParams(const URL: string): string;
@@ -659,9 +664,9 @@ begin
     Result:=Result+URLParams;
 end;
 
-function URLFilenameIsAbsolute(const Filename: string): boolean;
+function URLFilenameIsAbsolute(const URLPath: string): boolean;
 begin
-  Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
+  Result:=FilenameIsAbsolute(URLPathToFilename(URLPath));
 end;
 
 function FindURLPathStart(const URL: string): integer;
