@@ -394,6 +394,20 @@ begin
   Result := WrapButtons(NewWidth, NewHeight);
 end;
 
+procedure TToolBar.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+var
+  ARect, Adjusted: TRect;
+begin
+  ARect := ClientRect;
+  Adjusted := ARect;
+  AdjustClientRect(Adjusted);
+  PreferredWidth := ButtonWidth;
+  inc(PreferredWidth, (Adjusted.Left - ARect.Left) - (Adjusted.Right - ARect.Right));
+  PreferredHeight := ButtonHeight;
+  inc(PreferredHeight, (Adjusted.Top - ARect.Top) - (Adjusted.Bottom - ARect.Bottom));
+end;
+
 {------------------------------------------------------------------------------
   function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
   
@@ -406,7 +420,6 @@ end;
 ------------------------------------------------------------------------------}
 function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
 var
-  i: Integer;
   ARect: TRect;
   x: Integer;
   y: Integer;
@@ -471,6 +484,10 @@ var
     until false;
   end;
 
+var
+  CurClientRect: TRect;
+  AdjustClientFrame: TRect;
+  i: Integer;
 begin
   //DebugLn('WrapButtons ');
   Result:=true;
@@ -493,11 +510,16 @@ begin
     OrderedControls.Sort(TListSortCompare(@CompareToolBarControl));
     
     // position OrderedControls
-    ARect:=ClientRect;
+    CurClientRect:=ClientRect;
+    ARect:=CurClientRect;
     AdjustClientRect(ARect);
+    AdjustClientFrame.Left:=ARect.Left-CurClientRect.Left;
+    AdjustClientFrame.Top:=ARect.Top-CurClientRect.Top;
+    AdjustClientFrame.Right:=CurClientRect.Right-ARect.Right;
+    AdjustClientFrame.Bottom:=CurClientRect.Bottom-ARect.Bottom;
     //DebugLn(['TToolBar.WrapButtons ',DbgSName(Self),' ARect=',dbgs(ARect)]);
     // important: top, left button must start in the AdjustClientRect top, left
-    // other Toolbar.AutoSize=true will create an endless loop
+    // otherwise Toolbar.AutoSize=true will create an endless loop
     StartX:=ARect.Left;
     x:=StartX;
     y:=ARect.Top;
@@ -516,13 +538,22 @@ begin
           w:=NewControlWidth;
           h:=ButtonHeight;
         end;
+        w:=CurControl.Constraints.MinMaxWidth(w);
+        h:=CurControl.Constraints.MinMaxWidth(h);
         if (CurControl.Left<>x) or (CurControl.Top<>y)
         or (CurControl.Width<>w) or (CurControl.Height<>h) then begin
           //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
           CurControl.SetBoundsKeepBase(x,y,w,h);
         end;
-        inc(x,CurControl.Width);
         
+        // adjust NewWidth, NewHeight
+        NewWidth:=Max(NewWidth,
+                      CurControl.Left+CurControl.Width+AdjustClientFrame.Right);
+        NewHeight:=Max(NewHeight,
+                     CurControl.Top+CurControl.Height+AdjustClientFrame.Bottom);
+
+        // step to next position
+        inc(x,w);
         if (not Wrapable) and (CurControl is TToolButton)
         and (TToolButton(CurControl).Wrap) then begin
           // user forced wrap -> start new line

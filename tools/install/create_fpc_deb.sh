@@ -56,6 +56,24 @@ fi
 
 fakeroot -v
 
+getBINUTILSPREFIX() {
+  _IFS="$IFS"
+  IFS=":"
+  set $PATH
+  IFS="$_IFS"
+  for p in "$@"
+  do
+    as=`echo $p/${TARGET_PREFIX}*as`
+    if test -x "$as"
+    then
+      TARGET_PREFIX="${as%%as}"
+      break
+    fi
+  done
+  if test -x "${TARGET_PREFIX}as"
+  then echo "${TARGET_PREFIX}"
+  fi
+}
 
 #------------------------------------------------------------------------------
 # retrieve the version information
@@ -64,13 +82,57 @@ echo -n "getting FPC version from local svn ..."
 VersionFile="$FPCSrcDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
-CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
+CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^-1-9]//g'`
 CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 FPCVersion="$CompilerVersion.$CompilerRelease"
-if [ "$CompilerPatch" != "0" ]; then
-  FPCVersion="$FPCVersion.$CompilerPatch"
-fi
+FPCVersion="$FPCVersion.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
+
+#------------------------------------------------------------------------------ 
+# architecture dependent stuff 
+
+Arch=`dpkg --print-architecture` 
+
+CPU_TARGET="${CPU_TARGET:-$Arch}"
+case "$CPU_TARGET" in
+  i386)  ppcbin=ppc386;;
+  amd64) ppcbin=ppcx64;;
+  powerpc) ppcbin=ppcppc;;
+  sparc) ppcbin=ppcsparc;;
+  arm) ppcbin=ppcarm;;
+  *)    echo "$CPU_TARGET is not supported."
+        exit -1;;
+esac
+
+if [ "$CPU_TARGET" != "$Arch" ]
+then TARGET_SUFFIX="-${CPU_TARGET}"
+     TARGET_PREFIX="${CPU_TARGET}-"
+     CROSSINSTALL=1
+fi 
+
+if test -n "$OS_TARGET"
+then
+	TARGET_SUFFIX="${TARGET_SUFFIX}-${OS_TARGET}"
+	TARGET_PREFIX="${TARGET_PREFIX}${OS_TARGET}-"
+fi
+
+if test -z "$FPC"
+then
+	FPC="`fpc -P$Arch -PB`"
+fi
+
+BINUTILS=binutils
+# detect any finalprefix elements
+if test -n "$TARGET_PREFIX"
+then
+  BINUTILSPREFIX="`getBINUTILSPREFIX $TARGET_PREFIX`"
+  if test -n "$BINUTILSPREFIX"
+  then echo "BINUTILSPREFIX=$BINUTILSPREFIX"
+       BINUTILS=`dpkg -S "${BINUTILSPREFIX}as" | sed "s/:.*//"`
+  else echo "Can't find cross binutils"
+       exit 1
+  fi
+fi
 
 
 #------------------------------------------------------------------------------
@@ -103,39 +165,16 @@ else
   TmpDir=$FPCSrcDir
 fi
 
-#------------------------------------------------------------------------------ 
-# architecture dependent stuff 
-
-Arch=`dpkg --print-architecture` 
-if [  "$Arch" = i386 ]; then
-  ppcbin=ppc386
-else
-  if [ "$Arch" = amd64 ]; then
-    ppcbin=ppcx64
-  else
-    if [  "$Arch" = powerpc ]; then
-      ppcbin=ppcppc
-    else
-      if [  "$Arch" = sparc ]; then
-        ppcbin=ppcsparc
-      else
-        echo "$Arch is not supported."
-        exit -1
-      fi
-    fi
-  fi
-fi 
- 
 #------------------------------------------------------------------------------
 # setup variables
 
 CurDir=`pwd`
 FPCBuildDir=$TmpDir/fpc_build
-FPCDeb=$CurDir/${PackageName}_$FPCVersion-${FPCRelease}_$Arch.deb
+FPCDeb=$CurDir/${PackageName}${TARGET_SUFFIX}_$FPCVersion-${FPCRelease}_$Arch.deb
 ResourceDir=$CurDir/debian_$PackageName
 DebianInstallDir=$FPCBuildDir/usr
 DebianRulezDir=$FPCBuildDir/DEBIAN/
-DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName
+DebianDocDir=$FPCBuildDir/usr/share/doc/$PackageName${TARGET_SUFFIX}
 DebianSourceDir=$FPCBuildDir/usr/share/fpcsrc
 Date=`date --rfc-822`
 
@@ -163,6 +202,8 @@ chmod 755 $DebianRulezDir
 echo "creating DEBIAN/control file"
 cat $ResourceDir/control \
   | sed -e "s/FPCVERSION/$FPCVersion/g" -e "s/ARCH/$Arch/g" \
+        -e "s/^Package: .*/Package: $PackageName$TARGET_SUFFIX/" \
+        -e "s/Depends: binutils/Depends: $BINUTILS/" \
   > $DebianRulezDir/control
 # create debian changelog file, needed for version
 echo "creating usr/share/doc/fpc/changelog file ..."
@@ -202,13 +243,23 @@ if [ "$PackageName" = "fpc-src" ]; then
     mkdir -p $DebianSourceDir
     cp -a $FPCSrcDir/* $DebianSourceDir/
 fi
+
 if [ "$PackageName" = "fpc" ]; then
     # build fpc
     mkdir -p $FPCBuildDir/etc
     cd $FPCSrcDir
-    make clean all
+    make clean all ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
     mkdir -p $DebianInstallDir
-    make install INSTALL_PREFIX=$DebianInstallDir
+    make install INSTALL_PREFIX=$DebianInstallDir ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+
+    # if building cross-package
+    # 1. get rid of ./doc
+    # 2. rename bin's with prefix
+    #
+    if test -n "${TARGET_PREFIX}"
+    then
+	find $DebianInstallDir
+    fi
     cd -
 fi
 

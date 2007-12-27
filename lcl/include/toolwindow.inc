@@ -78,7 +78,7 @@ var
   ARect: TRect;
 begin
   FEdgeBorderType := 0;
-  if (ebTOP in FEdgeBorders)  then
+  if (ebTop in FEdgeBorders)  then
   FEdgeBorderType := FEdgeBorderType or longint(BF_TOP);
   if (ebBottom in FEdgeBorders)  then
   FEdgeBorderType := FEdgeBorderType or longint(BF_BOTTOM);

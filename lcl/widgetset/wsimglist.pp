@@ -72,8 +72,6 @@ type
 
   TDefaultImageListImplementor = class(TObjectList)
   private
-    FWidth: Integer;
-    FHeight: Integer;
   public
     constructor Create(AWidth, AHeight: Integer); reintroduce;
     procedure Draw(AIndex: Integer; ACanvas: TCanvas; ABounds: TRect; AEnabled: Boolean; AStyle: TDrawingStyle);

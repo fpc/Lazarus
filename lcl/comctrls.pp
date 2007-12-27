@@ -1490,6 +1490,8 @@ type
     procedure AdjustClientRect(var ARect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                    PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function CheckMenuDropdown(Button: TToolButton): Boolean; dynamic;
     procedure ClickButton(Button: TToolButton); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
