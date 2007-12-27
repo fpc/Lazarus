@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-18 00:29+0300\n"
+"PO-Revision-Date: 2007-12-27 11:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -23,7 +23,7 @@ msgstr "&Добавить"
 
 #: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
-msgstr "&Отмена"
+msgstr "От&мена"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
@@ -31,7 +31,7 @@ msgstr "&Содержимое"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr "&Копировать"
+msgstr "Копиров&ать"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -47,7 +47,7 @@ msgstr "&Первый"
 
 #: objinspstrconsts:oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr "&Помощь по помощи"
+msgstr "Справ&ка по справке"
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
@@ -55,7 +55,7 @@ msgstr "&Вставить"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr "По&следний"
+msgstr "Пос&ледний"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
@@ -63,7 +63,7 @@ msgstr "&Загрузить"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr "&Следующий"
+msgstr "Следу&ющий"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
@@ -71,7 +71,7 @@ msgstr "&ОК"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr "&Открыть..."
+msgstr "О&ткрыть..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
@@ -79,27 +79,27 @@ msgstr "&Вставить"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr "&Предыдущий"
+msgstr "Пред&ыдущий"
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr "&Обновить"
+msgstr "Об&новить"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr "&Сохранить"
+msgstr "Со&хранить"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr "&Поиск темы"
+msgstr "Поиск те&мы"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr "&Отменить"
+msgstr "Отменит&ь"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr "&Вверх"
+msgstr "Ввер&х"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -143,7 +143,7 @@ msgstr "Добавить как одно"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
-msgstr "Добавить новый Элемент"
+msgstr "Добавить новый элемент"
 
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
@@ -155,7 +155,7 @@ msgstr "Добавить вкладку"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
-msgstr "Добавить в Избранное"
+msgstr "Добавить в избранное"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
@@ -191,7 +191,7 @@ msgstr "Авторазмер"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr "Доступные Классы Действий:"
+msgstr "Доступные классы действий:"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -347,7 +347,7 @@ msgstr "Удалить"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Удалить Действие"
+msgstr "Удалить действие"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
@@ -367,7 +367,7 @@ msgstr "Удалить вкладку"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
-msgstr "Удалить Элемент %d \"%s\"?"
+msgstr "Удалить элемент %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
@@ -399,7 +399,7 @@ msgstr "Редактировать поля"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr "Редактировать Элементы ListView..."
+msgstr "Редактировать элементы ListView..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
@@ -407,7 +407,7 @@ msgstr "Редактировать StringGrid..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr "Редактировать Элементы TreeView..."
+msgstr "Редактировать элементы TreeView..."
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -471,15 +471,15 @@ msgstr "Выбор шрифта"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
-msgstr "Помощь"
+msgstr "Справка"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr "Содержание помощи"
+msgstr "Содержание справки"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
-msgstr "Помощь к помощи"
+msgstr "Справка по справке"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
@@ -539,7 +539,7 @@ msgstr "Элемент"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr "Свойства Элемента"
+msgstr "Свойства элемента"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
@@ -559,7 +559,7 @@ msgstr "По левому краю"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr "Редактор Элементов ListView"
+msgstr "Редактор элементов ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
@@ -587,7 +587,7 @@ msgstr "Метод"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr "Изменить Элемент"
+msgstr "Изменить элемент"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -595,7 +595,7 @@ msgstr "Переместить вниз"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr "Переместить Строки/Столбцы"
+msgstr "Переместить строки/столбцы"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -627,19 +627,19 @@ msgstr "Переместить вверх"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr "Новое Действие"
+msgstr "Новое действие"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr "Новый Элемент"
+msgstr "Новый элемент"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr "Новое Стандартное Действие"
+msgstr "Новое стандартное действие"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
-msgstr "Новый Подэлемент"
+msgstr "Новый подэлемент"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
@@ -663,7 +663,7 @@ msgstr "Инспектор объектов"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr "Ok"
+msgstr "ОК"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
@@ -683,7 +683,7 @@ msgstr "Открыть файл масок (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
-msgstr "Настройки"
+msgstr "Параметры"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
@@ -819,7 +819,7 @@ msgstr "Установить по умолчанию: %s"
 
 #: objinspstrconsts:oisshowcomponenttree
 msgid "Show Component Tree"
-msgstr "Показывать Дерево компонентов"
+msgstr "Показывать дерево компонентов"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
@@ -839,7 +839,7 @@ msgstr "Разбить изображение"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr "Классы Стандартных Действий"
+msgstr "Классы стандартных действий"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
@@ -895,7 +895,7 @@ msgstr "Прозрачный цвет:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr "Редактор Элементов TreeView"
+msgstr "Редактор элементов TreeView"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"

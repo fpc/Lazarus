@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-18 00:27+0300\n"
+"PO-Revision-Date: 2007-12-27 01:27+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -323,43 +323,43 @@ msgstr " (stSendMail)"
 
 #: ipconst:sfilename
 msgid " Filename: "
-msgstr "Имя файла:"
+msgstr " Имя файла: "
 
 #: ipconst:sftpbytestransferred
 msgid " bytes Transferred"
-msgstr "байт передано"
+msgstr " байт передано"
 
 #: ipconst:sbytesfromstream
 msgid " bytes from stream"
-msgstr "байт из потока"
+msgstr " байт из потока"
 
 #: ipconst:sbytesreadfromstream
 msgid " bytes read from stream"
-msgstr "байт прочитано из потока"
+msgstr " байт прочитано из потока"
 
 #: ipconst:sbytestostream
 msgid " bytes to stream"
-msgstr "байт в поток"
+msgstr " байт в поток"
 
 #: ipconst:sbyteswrittentostream
 msgid " bytes written to stream"
-msgstr "байт записано в поток"
+msgstr " байт записано в поток"
 
 #: ipconst:shtmlencnotsupported
 msgid " encoding not supported"
-msgstr "кодировка не поддерживается"
+msgstr " кодировка не поддерживается"
 
 #: ipconst:shtmlexp
 msgid " expected"
-msgstr "ожидается"
+msgstr " ожидается"
 
 #: ipconst:sftplogin
 msgid " logged in"
-msgstr "вход выполнен"
+msgstr " вход выполнен"
 
 #: ipconst:sftplogout
 msgid " logged out"
-msgstr "вы не вошли"
+msgstr " вы не вошли"
 
 #: ipconst:slogpsnoop
 msgid " {psNoOp)"
@@ -2031,7 +2031,7 @@ msgstr "Номер сессии длиннее 32 байт."
 
 #: ipconst:swsaeisconn
 msgid "Socket is already connected"
-msgstr "Сокет уже подсоединен"
+msgstr "Сокет уже подсоединён"
 
 #: ipconst:swsaenotconn
 msgid "Socket is not connected"
