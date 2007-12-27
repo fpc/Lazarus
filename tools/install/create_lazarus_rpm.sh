@@ -27,6 +27,8 @@ SrcTGZ=$(./rpm/get_rpm_source_dir.sh)/SOURCES/$Src
 TmpDir=/tmp/lazarus$LazVersion
 SpecFile=rpm/lazarus-$LazVersion-$LazRelease.spec
 
+Arch=$(rpm --eval "%{_arch}")
+
 # download lazarus svn if needed
 echo "creating lazarus tgz ..."
 #if [ ! -f $SrcTGZ ]; then
@@ -48,7 +50,7 @@ cat rpm/lazarus.spec.template | \
 echo "building rpm ..."
 rpm -ba $SpecFile || rpmbuild -ba $SpecFile
 
-echo "The new rpm can be found at $(./rpm/get_rpm_source_dir.sh)/RPMS/i386/lazarus-$LazVersion-$LazRelease.i386.rpm"
+echo "The new rpm can be found at $(./rpm/get_rpm_source_dir.sh)/RPMS/$Arch/lazarus-$LazVersion-$LazRelease.$Arch.rpm"
 
 # end.
 
