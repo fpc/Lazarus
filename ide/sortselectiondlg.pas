@@ -176,7 +176,7 @@ const
   SpaceChars = [' ',#9];
 var
   Settings: TTextBlockCompareSettings;
-  Tree: TAVLTree;
+  Tree: TAVLTree;// tree of TTextBlock
   StartPos: Integer;
   EndPos: Integer;
   ANode: TAVLTreeNode;
@@ -317,6 +317,7 @@ begin
   
   // clean up
   Tree.FreeAndClear;
+  Tree.Free;
   Settings.Free;
 end;
 
