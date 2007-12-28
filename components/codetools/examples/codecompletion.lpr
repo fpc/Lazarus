@@ -57,7 +57,8 @@ begin
     X:=3;
     Y:=41;
     TopLine:=20;
-
+    Filename:=ExpandFileName('scanexamples'+PathDelim+'completion1.pas');
+    
     if (ParamCount>=3) then begin
       Filename:=ExpandFileName(ParamStr(1));
       X:=StrToInt(ParamStr(2));
@@ -79,7 +80,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln(E.Message);
+      writeln('EXCEPTION: '+E.Message);
     end;
   end;
 end.
