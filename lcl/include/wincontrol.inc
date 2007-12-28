@@ -6462,6 +6462,7 @@ begin
         Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
       end;
 
+      //DebugLn(['TWinControl.CreateWnd ',DbgSName(WidgetSetClass),' ',DbgSName(Self)]);
       FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
       if not HandleAllocated then
         RaiseGDBException('Handle creation failed creating '+DbgSName(Self));

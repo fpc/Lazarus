@@ -104,9 +104,8 @@ type
   { TGtkWSCustomControl }
 
   TGtkWSCustomControl = class(TWSCustomControl)
-  private
   protected
-    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCCCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
@@ -883,7 +882,7 @@ end;
 
 { TGtkWSCustomControl }
 
-class procedure TGtkWSCustomControl.SetCallbacks(const AWidget: PGtkWidget;
+class procedure TGtkWSCustomControl.SetCCCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
@@ -921,7 +920,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
   
-  SetCallbacks(Widget, WidgetInfo);
+  SetCCCallbacks(Widget, WidgetInfo);
 end;
 
 initialization

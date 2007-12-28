@@ -106,8 +106,11 @@ class function TLCLComponent.NewInstance: TObject;
 begin
   Result := inherited NewInstance; 
   TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);
-  if TLCLComponent(Result).FWidgetSetClass = nil
-  then TLCLComponent(Result).FWidgetSetClass := TWSLCLComponent; 
+  if TLCLComponent(Result).FWidgetSetClass = nil then
+  begin
+    DebugLn(['TLCLComponent.NewInstance WARNING: missing FWidgetSetClass ',ClassName]);
+    TLCLComponent(Result).FWidgetSetClass := TWSLCLComponent;
+  end;
 end;
 
 procedure TLCLComponent.RemoveAllHandlersOfObject(AnObject: TObject);

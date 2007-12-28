@@ -37,6 +37,7 @@ uses
 ////////////////////////////////////////////////////
   Gtk2, Gdk2, Glib2, GtkGlobals,
   GtkWsControls,
+  gtkProc, LCLType,
   WSControls, WSLCLClasses, WSProc;
   
 
@@ -95,7 +96,6 @@ type
 
 
 implementation
-uses gtkproc, lcltype;
 
 { TGtk2WSWinControl }
 
