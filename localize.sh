@@ -56,7 +56,7 @@ for idx in ${!RSTFILES[@]}; do
   
   if [ "@"$RST != "@" ]; then
     echo $RSTDIR/languages/$POFILE.po
-    rstconv -i $RST -o $RSTDIR/languages/$POFILE.po
+    rstconv -c UTF-8 -i $RST -o $RSTDIR/languages/$POFILE.po
     ./tools/updatepofiles $RSTDIR/languages/$POFILE.po
   fi
 done
