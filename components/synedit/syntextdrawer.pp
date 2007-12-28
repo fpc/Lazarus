@@ -949,14 +949,14 @@ end;
 {$IFDEF SYN_LAZARUS}
 function TheTextDrawer.GetUseUTF8: boolean;
 begin
-  FFontStock.BaseFont.Handle;
+  FFontStock.BaseFont.Reference;
   Result:=FFontStock.BaseFont.CanUTF8;
   //debugln('TheTextDrawer.GetUseUTF8 ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.CanUTF8),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
 
 function TheTextDrawer.GetMonoSpace: boolean;
 begin
-  FFontStock.BaseFont.Handle;
+  FFontStock.BaseFont.Reference;
   Result:=FFontStock.BaseFont.IsMonoSpace;
   //debugln('TheTextDrawer.GetMonoSpace ',FFontStock.BaseFont.Name,' ',dbgs(FFontStock.BaseFont.IsMonoSpace),' ',dbgs(FFontStock.BaseFont.HandleAllocated));
 end;
