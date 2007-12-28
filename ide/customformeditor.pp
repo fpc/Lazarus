@@ -1190,8 +1190,7 @@ var
   ANonControlForm: TNonControlDesignerForm;
 begin
   ANonControlForm:=FindNonControlForm(AComponent);
-  DebugLn('TCustomFormEditor.UpdateDesignerFormName ',
-    BoolToStr(ANonControlForm<>nil), ' ',AComponent.Name);
+  //DebugLn(['TCustomFormEditor.UpdateDesignerFormName ',ANonControlForm<>nil, ' ',AComponent.Name]);
   if ANonControlForm<>nil then
     ANonControlForm.Caption:=AComponent.Name;
 end;
@@ -1982,9 +1981,9 @@ procedure TCustomFormEditor.JITListPropertyNotFound(Sender: TObject;
   Reader: TReader; Instance: TPersistent; var PropName: string;
   IsPath: boolean; var Handled, Skip: Boolean);
 begin
-  DebugLn('TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
+  DebugLn(['TCustomFormEditor.JITListPropertyNotFound ',Sender.ClassName,
     ' Instance=',Instance.ClassName,' PropName="',PropName,
-    '" IsPath=',BoolToStr(IsPath));
+    '" IsPath=',IsPath]);
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer

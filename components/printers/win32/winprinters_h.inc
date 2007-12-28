@@ -44,7 +44,7 @@ Type
     procedure SetDC;
     procedure ClearDC;
     procedure FreeDC;
-    procedure UpdateDevMode;
+    procedure UpdateDevMode(APrinterIndex:Integer);
 
   protected
     //function GetDefaultPrinter : String;

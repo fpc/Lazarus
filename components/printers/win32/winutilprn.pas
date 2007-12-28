@@ -183,6 +183,7 @@ type
      ImageableArea: TRect;
   end;
 
+  PDocInfo = ^TDocInfo;
   TDocInfo = packed record
     cbSize      : Integer;
     lpszDocName : PChar;
@@ -323,7 +324,7 @@ function CommDlgExtendedError: DWORD; stdcall; external 'comdlg32.dll'  name 'Co
 function CreateIC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' name 'CreateICA';
 function CreateDC(lpszDriver, lpszDevice, lpszOutput: PChar; lpdvmInit: PDeviceMode): HDC; stdcall; external 'gdi32.dll' name 'CreateDCA';
 function DeleteDC(DC: HDC): BOOL; stdcall; external 'gdi32.dll' name 'DeleteDC';
-function StartDoc(DC: HDC; Inf : TDocInfo): Integer; stdcall; external 'gdi32.dll' name 'StartDocA';
+function StartDoc(DC: HDC; Inf : PDocInfo): Integer; stdcall; external 'gdi32.dll' name 'StartDocA';
 function EndDoc(DC: HDC): Integer; stdcall;  external 'gdi32.dll' name 'EndDoc';
 function StartPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'StartPage';
 function EndPage(DC: HDC): Integer; stdcall; external 'gdi32.dll' name 'EndPage';

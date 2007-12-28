@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 190
+  Left = 288
   Height = 507
-  Top = 30
+  Top = 142
   Width = 339
   HorzScrollBar.Page = 338
   VertScrollBar.Page = 506
@@ -13,9 +13,9 @@ object Form1: TForm1
   Position = poDesktopCenter
   object Label1: TLabel
     Left = 16
-    Height = 13
+    Height = 14
     Top = 8
-    Width = 269
+    Width = 230
     Caption = 'This sample show how to use the printer dialogs'
     ParentColor = False
   end

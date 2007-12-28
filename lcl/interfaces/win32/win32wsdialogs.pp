@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes,
+  LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes, Forms,
 ////////////////////////////////////////////////////
   WSDialogs, WSLCLClasses, Windows, Win32Extra, Win32Int, InterfaceBase;
 
@@ -141,7 +141,7 @@ function GetOwnerHandle(ADialog : TCommonDialog): HWND;
 begin
   with ADialog do
   begin
-    if Owner Is TWinControl then
+    if Owner is TWinControl then
       Result := TWinControl(Owner).Handle
     else
       Result := TWin32WidgetSet(WidgetSet).AppHandle;
@@ -234,14 +234,41 @@ end;
 type
   TWinFileDialogFunc = function(OpenFile: Windows.LPOPENFILENAME): WINBOOL; stdcall;
 
-function OpenFileDialogCallBack(hwnd : Handle; uMsg : UINT; wParam: WPARAM;
-  lParam: LPARAM) : UINT; stdcall;
+function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
+  lParam: LPARAM): UINT; stdcall;
+  
+  procedure Reposition(ADialogWnd: Handle);
+  var
+    Left, Top: Integer;
+    DialogRect: TRect;
+  begin
+    // Btw, setting width and height of dialog doesnot reposition child controls :(
+    // So no way to set another height and width at least here
+    
+    // do reposition only if dialog has no parent form
+    if (GetParent(ADialogWnd) = Win32WidgetSet.AppHandle) then
+    begin
+      GetWindowRect(ADialogWnd, @DialogRect);
+
+      Left := (GetSystemMetrics(SM_CXSCREEN) - DialogRect.Right + DialogRect.Left) div 2;
+      Top := (GetSystemMetrics(SM_CYSCREEN) - DialogRect.Bottom + DialogRect.Top) div 2;
+      SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
+    end;
+  end;
+  
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
   NeededSize: SizeInt;
   DialogRec: POpenFileDialogRec;
 begin
+  if uMsg = WM_INITDIALOG then
+  begin
+    // Windows asks us to initialize dialog. At this moment controls are not
+    // arranged and this is that moment when we should set bounds of our dialog
+    Reposition(GetParent(hWnd));
+  end
+  else
   if uMsg = WM_NOTIFY then
   begin
     OpenFileNotify := LPOFNOTIFY(lParam);
@@ -283,7 +310,7 @@ begin
         end;
     end;
   end;
-  Result:= 0;
+  Result := 0;
 end;
 
 function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;

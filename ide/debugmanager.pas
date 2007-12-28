@@ -689,7 +689,7 @@ end;
 
 procedure TManagedBreakPoints.NotifyRemove(const ABreakPoint: TIDEBreakPoint);
 begin
-  debugln('TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',IntToStr(ABreakpoint.Line),' ',BoolToStr(TManagedBreakPoint(ABreakpoint).SourceMark <> nil));
+  debugln(['TManagedBreakPoints.NotifyRemove A ',ABreakpoint.Source,' ',ABreakpoint.Line,' ',TManagedBreakPoint(ABreakpoint).SourceMark <> nil]);
 
   inherited;
 

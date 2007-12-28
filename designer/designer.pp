@@ -1620,7 +1620,8 @@ Begin
     // right click -> popup menu
     DisableRubberBand;
     if EnvironmentOptions.RightClickSelects
-    and (not ControlSelection.IsSelected(MouseDownComponent)) then
+    and (not ControlSelection.IsSelected(MouseDownComponent))
+    and (Shift=[]) then
       PointSelect;
     PopupMenuComponentEditor:=GetComponentEditorForSelection;
     BuildPopupMenu;

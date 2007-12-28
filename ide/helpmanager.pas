@@ -675,9 +675,9 @@ function THelpManager.ShowHelpForSourcePosition(const Filename: string;
       if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
         ListOfPCodeXYPosition,[fdlfWithoutEmptyProperties,fdlfWithoutForwards])
       then begin
+        if ListOfPCodeXYPosition=nil then exit;
         debugln('THelpManager.ShowHelpForSourcePosition B Success ',dbgs(ListOfPCodeXYPosition.Count));
         // convert the source positions in pascal help context list
-        if ListOfPCodeXYPosition=nil then exit;
         for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
           CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
           debugln('THelpManager.ShowHelpForSourcePosition C ',CurCodePos^.Code.Filename,' X=',dbgs(CurCodePos^.X),' Y=',dbgs(CurCodePos^.Y));

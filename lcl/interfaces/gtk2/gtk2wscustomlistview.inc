@@ -549,7 +549,7 @@ begin
 
     gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(AAlignment));
   end;
-  //DebugLn('ColSetALignment AIndex=',IntTOStr(AIndex),' (GtkColumn=nil)=', BoolToStr(GtkColumn=nil));
+  //DebugLn(['ColSetALignment AIndex=',AIndex,' (GtkColumn=nil)=', GtkColumn=nil]);
 
 end;
 

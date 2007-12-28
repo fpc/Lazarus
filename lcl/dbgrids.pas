@@ -778,8 +778,8 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
   if aDataSet<>nil then begin
-    DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
-    DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
+    DebugLn(['Editing=', dsEdit = aDataSet.State]);
+    DebugLn(['Inserting=',dsInsert = aDataSet.State]);
   end else
     DebugLn('Dataset=nil');
   {$endif}
@@ -2057,7 +2057,7 @@ end;
 
 procedure TCustomDBGrid.EditingColumn(aCol: Integer; Ok: Boolean);
 begin
-  {$ifdef dbgDBGrid} DebugLn('DBGrid.EditingColumn INIT aCol=', InttoStr(aCol), ' Ok=', BoolToStr(ok)); {$endif}
+  {$ifdef dbgDBGrid} DebugLn(['DBGrid.EditingColumn INIT aCol=', aCol, ' Ok=', ok]); {$endif}
   if Ok then begin
     FEditingColumn := aCol;
     FDatalink.Modified := True;
