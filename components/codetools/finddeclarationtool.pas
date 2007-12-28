@@ -2862,12 +2862,9 @@ begin
     end;
     OldContextNode:=Params.ContextNode;
     if OldContextNode.FirstChild<>nil then begin
-      try
-        Params.ContextNode:=CurContextNode;
-        Result:=FindEnumInContext(Params);
-      finally
-        Params.ContextNode:=OldContextNode;
-      end;
+      Params.ContextNode:=CurContextNode;
+      Result:=FindEnumInContext(Params);
+      Params.ContextNode:=OldContextNode;
       if Result then exit;
     end;
     CurContextNode:=CurContextNode.NextBrother;
@@ -5048,13 +5045,9 @@ begin
       end else begin
         // the system unit name itself is searched -> rename searched identifier
         Params.Save(OldInput);
-        try
-          Params.SetIdentifier(Self,PChar(Pointer(SystemAlias)),nil);
-          Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
-        finally
-          // ! always reset input, because the string SystemAlias is freed !
-          Params.Load(OldInput,true);
-        end;
+        Params.SetIdentifier(Self,PChar(Pointer(SystemAlias)),nil);
+        Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
+        Params.Load(OldInput,true);
       end;
     end;
     if Result then exit;
@@ -6529,6 +6522,7 @@ var
   OldInput: TFindDeclarationInput;
   CurCompatibilityList: TTypeCompatibilityList;
   CompListSize: integer;
+  NewExprInputList: TExprTypeList;
 begin
   // the search has found an identifier with the right name
   {$IFDEF ShowFoundIdentifier}
@@ -6617,10 +6611,12 @@ begin
             Params.ContextNode:=StartContextNode;
             Params.OnIdentifierFound:=@Params.IdentifierTool.CheckSrcIdentifier;
             Params.IdentifierTool.ReadNextAtom;
-            Params.FoundProc^.ExprInputList:=
+            NewExprInputList:=
               Params.IdentifierTool.CreateParamExprListFromStatement(
                                     Params.IdentifierTool.CurPos.EndPos,Params);
             Params.Load(OldInput,true);
+            FreeAndNil(Params.FoundProc^.ExprInputList);
+            Params.FoundProc^.ExprInputList:=NewExprInputList;
           end
           else if (StartContextNode.Desc in [ctnProcedureHead,ctnProcedure])
           then begin
@@ -6630,9 +6626,11 @@ begin
             ' Creating Input Expression List for proc node ...'
             );
             {$ENDIF}
-            Params.FoundProc^.ExprInputList:=
+            NewExprInputList:=
               Params.IdentifierTool.CreateParamExprListFromProcNode(
                                                        StartContextNode,Params);
+            FreeAndNil(Params.FoundProc^.ExprInputList);
+            Params.FoundProc^.ExprInputList:=NewExprInputList;
           end;
         end;
       end;
@@ -8333,7 +8331,7 @@ end;
 
 procedure TExprTypeList.Grow;
 begin
-  Capacity:=Capacity+5;
+  Capacity:=Capacity*2+4;
 end;
 
 procedure TExprTypeList.Add(const ExprType: TExpressionType);
