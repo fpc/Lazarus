@@ -888,14 +888,12 @@ begin
   Options:=TCodeToolsOptions.Create;
   try
     // To not parse the FPC sources every time, the options are saved to a file.
-    if FileExists(ConfigFilename) then
-      Options.LoadFromFile(ConfigFilename);
-
-    // setup your paths
     DebugLn(['TCodeToolManager.SimpleInit Config=',ConfigFilename]);
     if FileExists(ConfigFilename) then
       Options.LoadFromFile(ConfigFilename);
+    // use environment variables
     Options.InitWithEnvironmentVariables;
+    // apply defaults
     if Options.FPCSrcDir='' then
       Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
     if Options.LazarusSrcDir='' then

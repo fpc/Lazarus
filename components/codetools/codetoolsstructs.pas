@@ -112,8 +112,10 @@ type
     procedure Clear;
     function Contains(const s: string): boolean;
     function GetString(const Name: string; out Value: string): boolean;
+    procedure Remove(const Name: string);
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     property CaseSensitive: boolean read FCaseSensitive;
+    property Tree: TAVLTree read FTree;
   end;
   
 function CompareStringToStringItems(Data1, Data2: Pointer): integer;
@@ -382,6 +384,19 @@ begin
     Result:=true;
   end else begin
     Result:=false;
+  end;
+end;
+
+procedure TStringToStringTree.Remove(const Name: string);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Node:=FindNode(Name);
+  if Node<>nil then begin
+    FTree.Delete(Node);
+    Item:=PStringToStringTreeItem(Node.Data);
+    Dispose(Item);
   end;
 end;
 

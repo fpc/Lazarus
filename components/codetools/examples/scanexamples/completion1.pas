@@ -41,8 +41,7 @@ begin
   Str:='Path'+PathDelim; // put the cursor on 'Str' and code completion will
             // insert a local variable var Str: String in front of the 'begin'
 
-  // Not yet implemented:
-  NewProcedure(12345); // put the cursor on 'NewProcedure' and code completion
+  NewProcedure(12345,LineEnding,PathDelim); // put the cursor on 'NewProcedure' and code completion
             // will create a new procedure
 end;
 

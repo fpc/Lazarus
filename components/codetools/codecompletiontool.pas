@@ -182,6 +182,9 @@ type
                            CursorNode: TCodeTreeNode;
                            var NewPos: TCodeXYPosition; var NewTopLine: integer;
                            SourceChangeCache: TSourceChangeCache): boolean;
+    function CreateParamListFromStatement(CursorNode: TCodeTreeNode;
+                                          BracketOpenPos: integer;
+                                          out CleanList: string): string;
     function CompleteProcByCall(CleanCursorPos, OldTopLine: integer;
                            CursorNode: TCodeTreeNode;
                            var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -1155,13 +1158,365 @@ begin
   //DebugLn(['TCodeCompletionCodeTool.CompleteMethod END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',DbgsCXY(NewPos),' NewTopLine=',NewTopLine]);
 end;
 
+function TCodeCompletionCodeTool.CreateParamListFromStatement(
+  CursorNode: TCodeTreeNode; BracketOpenPos: integer; out CleanList: string
+  ): string;
+var
+  ParamNames: TStringToStringTree;
+  
+  function CreateParamName(ExprStartPos, ExprEndPos: integer;
+    const ParamType: string): string;
+  var
+    i: Integer;
+  begin
+    Result:='';
+    // use the last identifier of expression as name
+    MoveCursorToCleanPos(ExprStartPos);
+    repeat
+      ReadNextAtom;
+      if AtomIsIdentifier(false) then
+        Result:=GetAtom
+      else
+        Result:='';
+    until CurPos.EndPos>=ExprEndPos;
+    // otherwise use ParamType
+    if Result='' then
+      Result:=ParamType;
+    // otherwise use 'Param'
+    if (Result='') or (not IsValidIdent(Result)) then
+      Result:='Param';
+    // prepend an 'a'
+    if Result[1]<>'a' then
+      Result:='a'+Result;
+    // make unique
+    if ParamNames=nil then
+      ParamNames:=TStringToStringTree.Create(false);
+    if ParamNames.Contains(Result) then begin
+      i:=1;
+      while ParamNames.Contains(Result+IntToStr(i)) do inc(i);
+      Result:=Result+IntToStr(i);
+    end;
+    ParamNames[Result]:='used';
+  end;
+  
+var
+  i: Integer;
+  ExprList: TExprTypeList;
+  ParamExprType: TExpressionType;
+  ParamType: String;
+  ExprStartPos: LongInt;
+  ExprEndPos: LongInt;
+  Params: TFindDeclarationParams;
+  ParamName: String;
+  // create param list without brackets
+begin
+  Result:='';
+  CleanList:='';
+  ExprList:=nil;
+  ParamNames:=nil;
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    // check parameter list
+    Params.ContextNode:=CursorNode;
+    ExprList:=CreateParamExprListFromStatement(BracketOpenPos,Params);
+
+    // create parameter list
+    MoveCursorToCleanPos(BracketOpenPos);
+    ReadNextAtom;
+    //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement BracketClose=',BracketClose]);
+    for i:=0 to ExprList.Count-1 do begin
+      ReadNextAtom;
+      ExprStartPos:=CurPos.StartPos;
+      // read til comma or bracket close
+      repeat
+        //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement loop ',GetAtom]);
+        if (CurPos.StartPos>SrcLen)
+        or (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose,cafComma])
+        then
+          break;
+        if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
+          ReadTilBracketClose(true);
+        end;
+        ReadNextAtom;
+      until false;
+      ExprEndPos:=CurPos.StartPos;
+      //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement Param=',copy(Src,ExprStartPos,ExprEndPos-ExprStartPos)]);
+      // get type
+      ParamExprType:=ExprList.Items[i];
+      ParamType:=FindExprTypeAsString(ParamExprType,ExprStartPos,Params);
+      // create a nice parameter name
+      ParamName:=CreateParamName(ExprStartPos,ExprEndPos,ParamType);
+      //DebugLn(['TCodeCompletionCodeTool.CreateParamListFromStatement ',i,' ',ParamName,':',ParamType]);
+      if Result<>'' then begin
+        Result:=Result+';';
+        CleanList:=CleanList+';';
+      end;
+      Result:=Result+ParamName+':'+ParamType;
+      CleanList:=CleanList+':'+ParamType;
+      // next
+      MoveCursorToCleanPos(ExprEndPos);
+      ReadNextAtom;
+    end;
+  finally
+    ExprList.Free;
+    Params.Free;
+    ParamNames.Free;
+    DeactivateGlobalWriteLock;
+  end;
+end;
+
 function TCodeCompletionCodeTool.CompleteProcByCall(CleanCursorPos,
   OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
   var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 // check if 'procname(expr list);'
+const
+  ShortProcFormat = [phpWithoutClassKeyword];
+
+  function CheckProcSyntax(out BeginNode: TCodeTreeNode;
+    out ProcNameAtom: TAtomPosition;
+    out BracketOpenPos, BracketClosePos: LongInt): boolean;
+  begin
+    Result:=false;
+    // check if in a begin..end block
+    if CursorNode=nil then exit;
+    BeginNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
+    if BeginNode=nil then exit;
+    // check if CleanCursorPos is valid
+    if (CleanCursorPos>SrcLen) then CleanCursorPos:=SrcLen;
+    if (CleanCursorPos<1) then exit;
+    // skip bracket
+    if (Src[CleanCursorPos]='(') then dec(CleanCursorPos);
+    // go to start of identifier
+    while (CleanCursorPos>1) and (IsIdentChar[Src[CleanCursorPos-1]]) do
+      dec(CleanCursorPos);
+    // read procname
+    MoveCursorToCleanPos(CleanCursorPos);
+    ReadNextAtom;
+    if not AtomIsIdentifier(false) then exit;
+    ProcNameAtom:=CurPos;
+    // read bracket
+    ReadNextAtom;
+    if CurPos.Flag<>cafRoundBracketOpen then exit;
+    BracketOpenPos:=CurPos.StartPos;
+    // read bracket close
+    if not ReadTilBracketClose(false) then exit;
+    BracketClosePos:=CurPos.StartPos;
+    Result:=true;
+  end;
+  
+  function CheckFunctionType(const ProcNameAtom: TAtomPosition;
+    out IsFunction: Boolean;
+    out FuncType: String;
+    out ProcExprStartPos: integer): boolean;
+  begin
+    Result:=false;
+    // find start of proc expression (e.g. Button1.Constrains.DoSomething)
+    IsFunction:=false;
+    FuncType:='';
+    ProcExprStartPos:=FindStartOfVariable(ProcNameAtom.EndPos);
+    if ProcExprStartPos<0 then exit;
+    MoveCursorToCleanPos(ProcExprStartPos);
+    ReadPriorAtom;
+    if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen])
+    or (UpAtomIs(':=')) then begin
+      FuncType:='integer';
+      IsFunction:=true;
+    end;
+    Result:=true;
+  end;
+  
+  function CheckProcDoesNotExist(Params: TFindDeclarationParams;
+    const ProcNameAtom: TAtomPosition): boolean;
+  begin
+    Result:=false;
+    // check if proc already exists
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,@Src[ProcNameAtom.StartPos],@CheckSrcIdentifier);
+    Params.Flags:=[fdfSearchInParentNodes,
+                   fdfTopLvlResolving,fdfSearchInAncestors,
+                   fdfIgnoreCurContextNode];
+    if FindIdentifierInContext(Params) then begin
+      // proc already exists
+      DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall proc already exists']);
+      MoveCursorToCleanPos(ProcNameAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
+    end;
+    Result:=true;
+  end;
+
+  function CreateProcCode(CursorNode: TCodeTreeNode;
+    const ProcNameAtom: TAtomPosition;
+    IsFunction: boolean; const FuncType: string;
+    BracketOpenPos, Indent: integer;
+    out CleanProcHead, ProcCode: string): boolean;
+  var
+    le: String;
+    ProcName: String;
+  begin
+    Result:=false;
+
+    // create param list
+    ProcCode:=CreateParamListFromStatement(CursorNode,BracketOpenPos,CleanProcHead);
+    if ProcCode<>'' then begin
+      ProcCode:='('+ProcCode+')';
+      CleanProcHead:='('+CleanProcHead+')';
+    end;
+
+    // prepend proc name
+    ProcName:=GetAtom(ProcNameAtom);
+    ProcCode:=ProcName+ProcCode;
+    CleanProcHead:=ProcName+CleanProcHead;
+
+    // prepend 'procedure' keyword
+    if IsFunction then
+      ProcCode:='function '+ProcCode+':'+FuncType+';'
+    else
+      ProcCode:='procedure '+ProcCode+';';
+    CleanProcHead:=CleanProcHead+';';
+
+    // append begin..end
+    le:=SourceChangeCache.BeautifyCodeOptions.LineEnd;
+    ProcCode:=ProcCode+le
+      +'begin'+le
+      +le
+      +'end;';
+
+    ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(ProcCode,Indent);
+
+    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ProcCode]);
+    Result:=true;
+  end;
+
+  function CreatePathForNewProc(InsertPos: integer;
+    const CleanProcHead: string;
+    var NewProcPath: TStrings): boolean;
+  var
+    ContextNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    // find context at insert position
+    ContextNode:=FindDeepestNodeAtPos(InsertPos,true);
+    if (ContextNode.Desc=ctnProcedure) and (ContextNode.StartPos=InsertPos)
+    or ((ContextNode.LastChild<>nil) and (ContextNode.LastChild.StartPos<InsertPos))
+    then
+      // ContextNode is a procedure below or above the insert position
+      // => after the insert the new proc will not be a child
+      // -> it will become a child of its parent
+      ContextNode:=ContextNode.Parent;
+    NewProcPath:=CreateSubProcPath(ContextNode,ShortProcFormat);
+    // add new proc
+    NewProcPath.Add(CleanProcHead);
+    
+    DebugLn(['CreatePathForNewProc NewProcPath=',NewProcPath.Text]);
+    Result:=true;
+  end;
+
+  function FindJumpPointToNewProc(SubProcPath: TStrings): boolean;
+  var
+    NewProcNode: TCodeTreeNode;
+  begin
+    Result:=false;
+    // reparse code and find jump point into new proc
+    BuildTree(false);
+    NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
+    {$IFDEF CTDebug}
+    DebugLn('TCodeCompletionCodeTool.CompleteProcByCall A found=',dbgs(NewProcNode<>nil));
+    {$ENDIF}
+    if NewProcNode=nil then exit;
+    Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine);
+    {$IFDEF CTDebug}
+    DebugLn('TCodeCompletionCodeTool.CompleteProcByCall END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
+    {$ENDIF}
+  end;
+
+var
+  BeginNode: TCodeTreeNode;
+  ProcNameAtom: TAtomPosition;
+  BracketOpenPos, BracketClosePos: integer;
+  ExprType: TExpressionType;
+  Params: TFindDeclarationParams;
+  InsertPos: LongInt;
+  Indent: LongInt;
+  ExprList: TExprTypeList;
+  ProcNode: TCodeTreeNode;
+  ProcCode: String;
+  ProcExprStartPos: LongInt;
+  IsFunction: Boolean;
+  FuncType: String;
+  CleanProcHead: string;
+  NewProcPath: TStringList;
 begin
   Result:=false;
+  if not CheckProcSyntax(BeginNode,ProcNameAtom,BracketOpenPos,BracketClosePos) then exit;
   
+  Params:=TFindDeclarationParams.Create;
+  ExprList:=nil;
+  ActivateGlobalWriteLock;
+  try
+    if not CheckFunctionType(ProcNameAtom,IsFunction,FuncType,ProcExprStartPos) then exit;
+    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',copy(Src,ProcNameAtom.StartPos,BracketClosePos+1-ProcNameAtom.StartPos)]);
+    if not CheckProcDoesNotExist(Params,ProcNameAtom) then exit;
+
+    // find context (e.g. Button1.|)
+    Params.Clear;
+    Params.ContextNode:=CursorNode;
+    ExprType:=FindExpressionTypeOfVariable(-1,ProcNameAtom.StartPos,Params);
+    DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall ',ExprTypeToString(ExprType)]);
+    
+    if ExprType.Desc=xtNone then begin
+      // default context
+      if NodeIsInAMethod(CursorNode) then begin
+        // eventually: create a new method
+        DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall eventually: create a new method']);
+        exit;
+      end else begin
+        ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
+        if ProcNode<>nil then begin
+          // this is a normal proc or sub proc
+          // insert new proc in front
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(ProcNode.StartPos);
+          Indent:=GetLineIndent(Src,ProcNode.StartPos);
+        end else begin
+          // this is a begin..end without proc (e.g. program or unit code)
+          // insert new proc in front
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(BeginNode.StartPos);
+          Indent:=GetLineIndent(Src,BeginNode.StartPos);
+        end;
+      end;
+    end else begin
+      // eventually: create a new method in another class
+      DebugLn(['TCodeCompletionCodeTool.CompleteProcByCall eventually: create a new method in another class']);
+      exit;
+    end;
+
+    if not CreateProcCode(CursorNode,ProcNameAtom,
+      IsFunction,FuncType,BracketOpenPos,Indent,
+      CleanProcHead,ProcCode) then exit;
+
+  finally
+    DeactivateGlobalWriteLock;
+    Params.Free;
+    ExprList.Free;
+  end;
+  
+  // insert proc body
+  if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+    InsertPos,InsertPos,ProcCode)
+  then
+    exit;
+    
+  // remember old path
+  NewProcPath:=nil;
+  try
+    if not CreatePathForNewProc(InsertPos,CleanProcHead,NewProcPath) then exit;
+    if not SourceChangeCache.Apply then exit;
+    if not FindJumpPointToNewProc(NewProcPath) then exit;
+    Result:=true;
+  finally
+    NewProcPath.Free;
+  end;
 end;
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,

@@ -631,6 +631,8 @@ type
       Params: TFindDeclarationParams): TExpressionType;
     function FindTermTypeAsString(TermAtom: TAtomPosition;
       CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
+    function FindExprTypeAsString(const ExprType: TExpressionType;
+      TermCleanPos: integer; Params: TFindDeclarationParams): string;
   protected
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
@@ -7848,17 +7850,8 @@ end;
 
 function TFindDeclarationTool.FindTermTypeAsString(TermAtom: TAtomPosition;
   CursorNode: TCodeTreeNode; Params: TFindDeclarationParams): string;
-
-  procedure RaiseTermNotSimple;
-  begin
-    MoveCursorToCleanPos(TermAtom.StartPos);
-    RaiseException(ctsTermNotSimple);
-  end;
-
 var
   ExprType: TExpressionType;
-  FindContext: TFindContext;
-  ANode: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(CursorNode);{$ENDIF}
   Result:='';
@@ -7866,6 +7859,25 @@ begin
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFunctionResult];
   ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
+  Result:=FindExprTypeAsString(ExprType,TermAtom.StartPos,Params);
+end;
+
+function TFindDeclarationTool.FindExprTypeAsString(
+  const ExprType: TExpressionType; TermCleanPos: integer;
+  Params: TFindDeclarationParams): string;
+
+  procedure RaiseTermNotSimple;
+  begin
+    if TermCleanPos<1 then
+      TermCleanPos:=1;
+    MoveCursorToCleanPos(TermCleanPos);
+    RaiseException(ctsTermNotSimple);
+  end;
+
+var
+  FindContext: TFindContext;
+  ANode: TCodeTreeNode;
+begin
   {$IFDEF ShowExprEval}
   DebugLn('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
     ExprTypeToString(ExprType));
@@ -7890,15 +7902,15 @@ begin
                                                        ExprType.Context.Node);
           end;
         end;
-        
+
         // ToDo: PPU, PPW, DCU
-      
+
         case FindContext.Node.Desc of
-        
+
         ctnTypeDefinition:
           Result:=GetIdentifier(
                               @FindContext.Tool.Src[FindContext.Node.StartPos]);
-                              
+
         ctnVarDefinition,ctnConstDefinition:
           begin
             ANode:=FindContext.Tool.FindTypeNodeOfDefinition(FindContext.Node);
@@ -7906,7 +7918,7 @@ begin
               RaiseTermNotSimple;
             Result:=GetIdentifier(@FindContext.Tool.Src[ANode.StartPos]);
           end;
-          
+
         ctnClass, ctnClassInterface:
           Result:=GetIdentifier(
                        @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
@@ -7923,9 +7935,9 @@ begin
             FindContext.Tool.MoveCursorToPropType(FindContext.Node);
             Result:=FindContext.Tool.GetAtom;
           end;
-          
+
         end;
-        
+
         if Result='' then begin
           DebugLn('TFindDeclarationTool.FindTermTypeAsString ContextNode=',
             FindContext.Node.DescAsString);
