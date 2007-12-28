@@ -74,7 +74,7 @@ Procedure Register;
 
 begin
   RegisterIDEMenuCommand(itmSecondaryTools,SExploreIDEMEnu,
-                         SExploreIDEMenuCaption,'',Nil,@ShowMenu,Nil);
+                         SExploreIDEMenuCaption,nil,@ShowMenu,nil,'');
 end;
 
 
