@@ -4182,7 +4182,7 @@ begin
       // change the type
       ApplyNeeded:=true;
       if not SourceChangeCache.Replace(gtNone,gtNone,
-        CurPos.StartPos,CurPos.EndPos,NewVarName)
+        CurPos.StartPos,CurPos.EndPos,VarType)
       then begin
         RaiseException('Unable to replace type');
       end;
