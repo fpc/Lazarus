@@ -12167,8 +12167,6 @@ var
     end;
 
     // check if keyword
-    BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
-    ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
     if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,AName) then
       raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', AName, '"']
         ));
@@ -12335,6 +12333,9 @@ begin
     // already validated
     exit;
   end;
+
+  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
+  ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
 
   OldName:=AComponent.Name;
   OldClassName:=AComponent.ClassName;
