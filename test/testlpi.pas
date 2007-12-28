@@ -28,25 +28,37 @@ uses
 
 type
 
-  { TLpiTest }
+  { TLpkTest }
 
-  TLpiTest= class(TTestCase)
+  TLpkTest = class(TTestCase)
   private
     FPath: string;
-    procedure RunScript;
   public
     constructor Create(const APath: string; const ATestName: string); overload;
-    class function CreateProjectSuite(const aName, APath: string): TTestSuite;
+    class function GetExtension: string; virtual;
+    class function CreateSuiteFromFile(const aName, APath: string): TTestSuite; virtual;
     class function CreateSuiteFromDirectory(const AName, ABasePath: string): TTestSuite;
   published
     procedure TestCompile;
+  end;
+
+  { TLpiTest }
+
+  TLpiTest= class(TLpkTest)
+  private
+    procedure RunScript;
+  public
+    class function GetExtension: string; override;
+    class function CreateSuiteFromFile(const aName, APath: string): TTestSuite; override;
+  published
     procedure TestRun;
   end; 
-
+  
 implementation
 
 var
   LazarusDir: string;
+  ComponentsDir: String;
   ExamplesDir: string;
   CTExamplesDir: string;
   LCLTestDir: string;
@@ -55,8 +67,9 @@ var
 procedure InitDirectories;
 begin
   LazarusDir := ExpandFileName(ExtractFilePath(ParamStr(0)) + '../');
+  ComponentsDir := SetDirSeparators(LazarusDir + 'components/');
   ExamplesDir := LazarusDir + 'examples' + PathDelim;
-  CTExamplesDir := SetDirSeparators(LazarusDir + 'components/codetools/examples/');
+  CTExamplesDir := SetDirSeparators(ComponentsDir + 'codetools/examples/');
   LCLTestDir := LazarusDir + 'lcl' + PathDelim + 'tests' + PathDelim;
   ScriptEngine := 'C:\Program Files\AutoHotkey\AutoHotKey.exe';
 end;
@@ -65,6 +78,95 @@ function GetScriptFileName(const LpiFileName: string): string;
 begin
   Result := AppendPathDelim(ProgramDirectory) +
               ExtractFileNameOnly(LpiFileName) +'.ahk';
+end;
+
+constructor TLpkTest.Create(const APath: string; const ATestName: string);
+begin
+  inherited CreateWithName(ATestName);
+  FPath := APath;
+end;
+
+class function TLpkTest.GetExtension: string;
+begin
+  Result := '.lpk';
+end;
+
+class function TLpkTest.CreateSuiteFromDirectory(const AName,
+  ABasePath: string): TTestSuite;
+
+  procedure SearchDirectory(const ADirectory: string);
+  var
+    RelativePath: string;
+    SearchMask: string;
+    FileInfo: TSearchRec;
+  begin
+    SearchMask := ABasePath+ADirectory + '*';
+    if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
+      repeat
+        // skip special directory entries
+        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+        
+        RelativePath := ADirectory+ FileInfo.Name;
+        if RightStr(FileInfo.Name,4)=GetExtension then
+          Result.AddTest(CreateSuiteFromFile(RelativePath, ABasePath+RelativePath))
+        else if (FileInfo.Attr and faDirectory=faDirectory) then
+          SearchDirectory(AppendPathDelim(RelativePath));
+      until FindNext(FileInfo)<>0;
+    end;
+    FindClose(FileInfo);
+  end;
+  
+begin
+  Result := TTestSuite.Create(AName);
+  SearchDirectory('')
+end;
+
+procedure TLpkTest.TestCompile;
+var
+  LazBuildPath: string;
+  LazBuild: TProcess;
+begin
+  LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
+  AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
+  LazBuild := TProcess.Create(nil);
+  try
+    {$IFDEF windows}
+    LazBuild.Options := [poNewConsole];
+    {$ELSE}
+    LazBuild.Options := [poNoConsole];
+    {$ENDIF}
+    LazBuild.ShowWindow := swoHIDE;
+    LazBuild.CommandLine := LazBuildPath;
+    if Compiler<>'' then
+      LazBuild.CommandLine := LazBuild.CommandLine + ' --compiler='+Compiler;
+    LazBuild.CommandLine := LazBuild.CommandLine + ' -B ' + FPath;
+    LazBuild.CurrentDirectory := ExtractFileDir(FPath);
+    LazBuild.Execute;
+    LazBuild.WaitOnExit;
+    AssertEquals('Compilation failed: ExitCode', 0, LazBuild.ExitStatus);
+  finally
+    LazBuild.Free;
+  end;
+end;
+
+class function TLpiTest.GetExtension: string;
+begin
+  Result := '.lpi';
+end;
+
+class function TLpiTest.CreateSuiteFromFile(const AName,
+  APath: string): TTestSuite;
+var
+  AhkFileName: String;
+begin
+  Result := inherited CreateSuiteFromFile(AName, APath);
+{$IFDEF win32}
+  AhkFileName := GetScriptFileName(APath);
+  if FileExists(AhkFileName) then
+    Result.AddTest(TLpiTest.Create(APath, 'TestRun'));
+{$ELSE}
+  {$NOTE scripting is only available on win32}
+{$ENDIF}
 end;
 
 procedure TLpiTest.RunScript;
@@ -83,13 +185,7 @@ begin
   end;
 end;
 
-constructor TLpiTest.Create(const APath: string; const ATestName: string);
-begin
-  inherited CreateWithName(ATestName);
-  FPath := APath;
-end;
-
-class function TLpiTest.CreateProjectSuite(const AName,
+class function TLpkTest.CreateSuiteFromFile(const AName,
   APath: string): TTestSuite;
 var
   AhkFileName: String;
@@ -103,63 +199,6 @@ begin
 {$ELSE}
   {$NOTE scripting is only available on win32}
 {$ENDIF}
-end;
-
-class function TLpiTest.CreateSuiteFromDirectory(const AName,
-  ABasePath: string): TTestSuite;
-
-  procedure SearchDirectory(const ADirectory: string);
-  var
-    RelativePath: string;
-    SearchMask: string;
-    FileInfo: TSearchRec;
-  begin
-    SearchMask := ABasePath+ADirectory + '*';
-    if FindFirst(SearchMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        // skip special directory entries
-        if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
-        
-        RelativePath := ADirectory+ FileInfo.Name;
-        if RightStr(FileInfo.Name,4)='.lpi' then
-          Result.AddTest(CreateProjectSuite(RelativePath, ABasePath+RelativePath))
-        else if (FileInfo.Attr and faDirectory=faDirectory) then
-          SearchDirectory(AppendPathDelim(RelativePath));
-      until FindNext(FileInfo)<>0;
-    end;
-    FindClose(FileInfo);
-  end;
-begin
-  Result := TTestSuite.Create(AName);
-  SearchDirectory('')
-end;
-
-procedure TLpiTest.TestCompile;
-var
-  LazBuildPath: string;
-  LazBuild: TProcess;
-begin
-  LazBuildPath := LazarusDir + 'lazbuild' + GetExeExt;
-  AssertTrue(LazBuildPath + ' does not exist', FileExists(LazBuildPath));
-  LazBuild := TProcess.Create(nil);
-  try
-    {$IFDEF windows}
-    LazBuild.Options := [poNewConsole];
-    {$ELSE}
-    LazBuild.Options := [poNoConsole];
-    {$ENDIF}
-    LazBuild.ShowWindow := swoHIDE;
-    LazBuild.CommandLine := LazBuildPath;
-    if Compiler<>'' then
-      LazBuild.CommandLine := LazBuild.CommandLine + ' --compiler='+Compiler;
-    LazBuild.CommandLine := LazBuild.CommandLine + ' ' + FPath;
-    LazBuild.CurrentDirectory := ExtractFileDir(FPath);
-    LazBuild.Execute;
-    LazBuild.WaitOnExit;
-    AssertEquals('Compilation failed: ExitCode', 0, LazBuild.ExitStatus);
-  finally
-    LazBuild.Free;
-  end;
 end;
 
 procedure TLpiTest.TestRun;
@@ -180,13 +219,31 @@ begin
   end;
 end;
 
+procedure InitializeTestSuites;
+var
+  ATestSuite: TTestSuite;
+begin
+  // Create testsuite for projects
+  ATestSuite := TTestSuite.Create('Projects');
+  ATestSuite.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('Examples', ExamplesDir));
+  ATestSuite.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('Codetools Examples', CTExamplesDir));
+  ATestSuite.AddTest(
+    TLpiTest.CreateSuiteFromDirectory('LCL test', LCLTestDir));
+  GetTestRegistry.AddTest(ATestSuite);
+  
+  // Create testsuite for packages
+  ATestSuite := TTestSuite.Create('Packages');
+  ATestSuite.AddTest(
+    TLpkTest.CreateSuiteFromDirectory('Components', ComponentsDir));
+  ATestSuite.AddTest(
+    TLpkTest.CreateSuiteFromDirectory('Examples', ExamplesDir));
+  GetTestRegistry.AddTest(ATestSuite);
+end;
+
 initialization
   InitDirectories;
-  GetTestRegistry.AddTest(
-    TLpiTest.CreateSuiteFromDirectory('Examples', ExamplesDir));
-  GetTestRegistry.AddTest(
-    TLpiTest.CreateSuiteFromDirectory('Codetools Examples', CTExamplesDir));
-  GetTestRegistry.AddTest(
-    TLpiTest.CreateSuiteFromDirectory('LCL test', LCLTestDir));
+  InitializeTestSuites;
 end.
 
