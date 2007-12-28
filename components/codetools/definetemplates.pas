@@ -3780,6 +3780,19 @@ begin
       ctsFreePascalComponentLibrary,'','fcl-base',
       da_Directory);
   PackagesDir.AddChild(FCLBaseDir);
+  // packages/fcl-base/src
+  FCLBaseSrcDir:=TDefineTemplate.Create('src',
+      'src','','src',
+      da_Directory);
+  FCLBaseDir.AddChild(FCLBaseSrcDir);
+  FCLBaseSrcDir.AddChild(TDefineTemplate.Create('Include Path',
+    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
+    ExternalMacroStart+'IncPath',
+    d(   DefinePathMacro+'/inc/'
+    +';'+DefinePathMacro+'/'+TargetOS+DS // TargetOS before SrcOS !
+    +';'+DefinePathMacro+'/'+SrcOS+DS
+    +';'+IncPathMacro)
+    ,da_DefineRecurse));
 
   // packages/fcl-process
   FCLSubDir:=TDefineTemplate.Create('FCL-process',
@@ -3799,12 +3812,6 @@ begin
     +';'+IncPathMacro)
     ,da_DefineRecurse));
     
-  // packages/fcl-base
-  FCLBaseDir:=TDefineTemplate.Create('FCL-base',
-      ctsFreePascalComponentLibrary,'','fcl-base',
-      da_Directory);
-  PackagesDir.AddChild(FCLBaseDir);
-  
   // packages/base
   PackagesBaseDir:=TDefineTemplate.Create('base','base','','base',da_Directory);
   PackagesDir.AddChild(PackagesBaseDir);
