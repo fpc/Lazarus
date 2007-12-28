@@ -223,14 +223,6 @@ begin
   Self.SetWindowLong(Result, GWL_WNDPROC, PtrInt(@CallbackAllocateHWnd))
 end;
 
-{$ifdef OldRawImageProcs}
-function TWin32WidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-begin
-  Result := RawImage_CreateBitmaps(RawImage, Bitmap, MaskBitmap);
-end;
-{$endif}
-
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DeallocateHWnd
   Params:   Wnd   - A Window handle, that was created with AllocateHWnd
@@ -293,14 +285,6 @@ begin
   Result := '';
 end;
 
-{$ifdef OldRawImageProcs}
-function TWin32WidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): Boolean;
-begin
-  Result := Rawimage_DescriptionFromBitmap(Bitmap, Desc^);
-end;
-{$endif}
-
 {------------------------------------------------------------------------------
   Function: GetControlConstraints
   Params: Constraints: TObject
@@ -351,25 +335,6 @@ begin
     end;
   end;
 end;
-
-{$ifdef OldRawImageProcs}
-function TWin32WidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
-begin
-  Result := RawImage_DescriptionFromDevice(DC, Desc^);
-end;
-{$endif}
-
-{$ifdef OldRawImageProcs}
-function TWin32WidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := RawImage_FromBitmap(NewRawImage, SrcBitmap, SrcMaskBitmap, SrcRect)
-end;
-
-function TWin32WidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := RawImage_FromDevice(NewRawImage, SrcDC, SrcRect)
-end;
-{$endif}
 
 {------------------------------------------------------------------------------
   function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;

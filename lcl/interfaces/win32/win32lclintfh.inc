@@ -50,15 +50,6 @@ function FontCanUTF8(Font: HFont): boolean; override;
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetControlConstraints(Constraints: TObject): boolean; override;
 
-{$note todo: remove ---}
-{$ifdef OldRawImageProcs}
-function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; override;
-function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
-function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
-{$endif}
-
 function IntfSendsUTF8KeyPress: boolean; override;
 
 function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;

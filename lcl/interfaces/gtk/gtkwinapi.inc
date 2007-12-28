@@ -943,20 +943,6 @@ end;
 
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-    var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): Boolean;
-
- ------------------------------------------------------------------------------}
-{$ifdef OldRawImageProcs}
-function TGtkWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-begin
-  Result := RawImage_CreateBitmaps(RawImage, Bitmap, MaskBitmap);
-end;
-{$endif}
-  
-
-{------------------------------------------------------------------------------
   Function:  CreateBrushIndirect
   Params:  none
   Returns: Nothing
@@ -4410,13 +4396,6 @@ begin
     DebugLn('WARNING: [TGtkWidgetSet.GetBitmapBits] invalid Bitmap!');
 end;
 
-{$ifdef OldRawImageProcs}
-function TGtkWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean;
-begin
-  Result := RawImage_DescriptionFromBitmap(Bitmap, Desc^);
-end;
-{$endif}
-
 {------------------------------------------------------------------------------
   Function: GetCapture
   Params:  none
@@ -4739,18 +4718,6 @@ begin
   end;
 end;
 
-{$ifdef OldRawImageProcs}
-function TGtkWidgetSet.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := RawImage_FromDevice(NewRawImage, SrcDC, SrcRect);
-end;
-
-function TGtkWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result := RawImage_FromBitmap(NewRawImage, SrcBitmap, SrcMaskBitmap, SrcRect);
-end;
-{$endif}
-
 {------------------------------------------------------------------------------
   Function: GetRGNBox
   Params: rgn, lprect
@@ -5043,14 +5010,6 @@ begin
     DebugLn('TGtkWidgetSet.GetDeviceCaps not supported: Type=',dbgs(Index));
   end;
 end;
-
-{$ifdef OldRawImageProcs}
-function TGtkWidgetSet.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
-begin
-  Result := RawImage_DescriptionFromDevice(DC, Desc^);
-end;
-{$endif}
-
 
 {------------------------------------------------------------------------------
   function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
