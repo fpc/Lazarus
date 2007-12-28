@@ -5216,6 +5216,8 @@ begin
   end;
 end;
 
+finalization
+  FreeAndNil(BlockKeywords);
 
 end.
 
