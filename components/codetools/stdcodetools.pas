@@ -5217,7 +5217,7 @@ begin
 end;
 
 finalization
-  FreeAndNil(BlockKeywords);
+  FreeAndNil(BlockKeywordFuncList);
 
 end.
 

@@ -174,11 +174,15 @@ type
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
                        SourceChangeCache: TSourceChangeCache): boolean;
-    function CompleteLocalVariableAsParameter(CleanCursorPos,
+    function CompleteLocalVariableByParameter(CleanCursorPos,
                        OldTopLine: integer; CursorNode: TCodeTreeNode;
                        var NewPos: TCodeXYPosition; var NewTopLine: integer;
                        SourceChangeCache: TSourceChangeCache): boolean;
-    function CompleteMethod(CleanCursorPos, OldTopLine: integer;
+    function CompleteMethodByBody(CleanCursorPos, OldTopLine: integer;
+                           CursorNode: TCodeTreeNode;
+                           var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                           SourceChangeCache: TSourceChangeCache): boolean;
+    function CompleteProcByCall(CleanCursorPos, OldTopLine: integer;
                            CursorNode: TCodeTreeNode;
                            var NewPos: TCodeXYPosition; var NewTopLine: integer;
                            SourceChangeCache: TSourceChangeCache): boolean;
@@ -961,7 +965,7 @@ begin
                       NewType,NewPos,NewTopLine,SourceChangeCache);
 end;
 
-function TCodeCompletionCodeTool.CompleteLocalVariableAsParameter(
+function TCodeCompletionCodeTool.CompleteLocalVariableByParameter(
   CleanCursorPos, OldTopLine: integer; CursorNode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
@@ -1071,7 +1075,7 @@ begin
                       NewType,NewPos,NewTopLine,SourceChangeCache);
 end;
 
-function TCodeCompletionCodeTool.CompleteMethod(
+function TCodeCompletionCodeTool.CompleteMethodByBody(
   CleanCursorPos, OldTopLine: integer;
   CursorNode: TCodeTreeNode;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -1149,6 +1153,15 @@ begin
   // adjust cursor position
   AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
   //DebugLn(['TCodeCompletionCodeTool.CompleteMethod END OldCodePos.P=',OldCodePos.P,' OldTopLine=',OldTopLine,' NewPos=',DbgsCXY(NewPos),' NewTopLine=',NewTopLine]);
+end;
+
+function TCodeCompletionCodeTool.CompleteProcByCall(CleanCursorPos,
+  OldTopLine: integer; CursorNode: TCodeTreeNode; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+// check if 'procname(expr list);'
+begin
+  Result:=false;
+  
 end;
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
@@ -5679,22 +5692,27 @@ begin
     exit;
   end;
   
-  // test if Event assignment
+  // test if Event assignment (MyClick:=@Button1.OnClick)
   Result:=CompleteEventAssignment;
   if Result then exit;
   
-  // test if Local variable assignment
+  // test if Local variable assignment (i:=3)
   Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,
                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
   
-  // test if undeclared local variable as parameter
-  Result:=CompleteLocalVariableAsParameter(CleanCursorPos,OldTopLine,
+  // test if undeclared local variable as parameter (GetPenPos(x,y))
+  Result:=CompleteLocalVariableByParameter(CleanCursorPos,OldTopLine,
                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
+  if Result then exit;
+  
+  // test if procedure call
+  Result:=CompleteProcByCall(CleanCursorPos,OldTopLine,
+                               CursorNode,NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
 
   // test if method body
-  Result:=CompleteMethod(OldCleanCursorPos,OldTopLine,CursorNode,
+  Result:=CompleteMethodByBody(OldCleanCursorPos,OldTopLine,CursorNode,
                          NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
 
