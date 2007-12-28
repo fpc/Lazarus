@@ -6065,11 +6065,11 @@ msgstr "Persistent caret"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Controleer compiler naam"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Controleer de FP bron directory"
 
@@ -8158,7 +8158,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "Het LFM (Lazarus form) bestand bevat ongeldige properties. Dit kan betekenen dat het properties/klassen bevat, die niet in de huidige LCL voorkomen. De manier om dit te repareren is deze properties te verwijderen uit de lfm en de pascal handmatig aan te passen."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "De lazarus directorie is niet gevonden.%Je kunt geen LCL programmaas maken.%Controleer Instellingen -> Omgeving Opties -> Bestanden"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8265,8 +8265,8 @@ msgstr "De huidige Lazarus-directorie %s%s%s%slijkt niet correct.%sZonder dat ku
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "De huidige compiler bestandsnaam %s%s%s%sis geen geldige executable.%sKlik op OK voor de standaard %s%s%s.%sOf controleer Instellingen -> Omgevings Opties -> Bestanden"
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "De huidige compilerbestandsnaam %s%s%s%sis geen geldige executable.%sControleer Instellingen -> Omgevings Opties -> Bestanden"
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8653,8 +8653,8 @@ msgstr "Er is een bestand met dezelfde naam en een gelijke extensie op disk%sBes
 msgid "There is a maximum of %s tools."
 msgstr "Er is een maximum van %s hulpmiddelen"
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Er is een unit met de naam %s%s%s in het project.%sKies een andere naam"
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8938,7 +8938,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "Kan het bestand %s%s%s niet backup-en naar %s%s%s"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Kan de \"Auto createlijst\" niet wijzigen in de broncode.%sLos eerst de fouten op."
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9017,8 +9017,8 @@ msgstr "Kan het bestand %s%s%s niet maken."
 msgid "Unable to create file%s%s%s%s"
 msgstr "Kan het bestand %s%s%s niet maken%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "Kan de nieuwe methode niet maken. Herstel de in het boodschappen scherm getoonde fout."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9073,8 +9073,8 @@ msgstr "Kan het bestand %s%s%s niet vinden."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "Kan het bestand %s%s%s niet vinden.%sControleer het zoekpad in%sProject->Compiler Opties...->Paden->Andere Unit bestanden"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Kan de methode niet vinden. Herstel de fout getoond in het mededelingen scherm."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9173,8 +9173,8 @@ msgstr "Kan het bestand %s%s%s%sniet hernoemen in %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "Kan het form niet in de broncode hernoemen."
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "Kan de methode niet hernoemen. Herstel de fout in het mededelingen scherm."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9193,8 +9193,8 @@ msgstr "Kan het bestand %s%s%s niet opslaan"
 msgid "Unable to set AnchorSide Control"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "Kan de methode niet tonen. Herstel de fout in het mededelingen scherm."
 
 #: lazarusidestrconsts:lisunabletostreamt

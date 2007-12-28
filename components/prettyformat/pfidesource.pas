@@ -54,7 +54,6 @@ begin
   CmdFormatFile:=RegisterIDECommand(Cat,
                                     SCmdPFFile,
                                     SDescrPFFile,
-                                    '',
                                     Key,nil,@PrettyPrintFile);
   RegisterIDEMenuCommand(SrcEditSubMenuRefactor,
                          SCmdPFSelection,

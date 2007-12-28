@@ -799,7 +799,7 @@ begin
   inherited Create;
 
   { create the meta information for each available highlighter.
-    Plz keep the pascal highlighter at the top. The rest can be ordered as you
+    Please keep the pascal highlighter at the top. The rest can be ordered as you
     like.
   }
 

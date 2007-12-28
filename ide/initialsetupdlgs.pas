@@ -79,7 +79,7 @@ begin
           CurCompilerFilename:=DefaultCompPath;
       end else begin
         MessageDlg(lisInvalidCompilerFilename,
-           Format(lisTheCurrentCompilerFilenameIsNotAValidExecutablePlz, ['"',
+           Format(lisTheCurrentCompilerFilenameIsNotAValidExecutablePlease, ['"',
              CurCompilerFilename, '"', #13, #13]),
            mtWarning,[mbIgnore],0);
       end;

@@ -487,8 +487,8 @@ resourcestring
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
     +'file %s%s%s%sis equal to the project main source file!';
   lisUnitIdentifierExists = 'Unit identifier exists';
-  lisThereIsAUnitWithTheNameInTheProjectPlzChoose = 'There is a unit with the '
-    +'name %s%s%s in the project.%sPlz choose a different name';
+  lisThereIsAUnitWithTheNameInTheProjectPleaseChoose = 'There is a unit with the '
+    +'name %s%s%s in the project.%sPlease choose a different name';
   lisErrorCreatingFile = 'Error creating file';
   lisUnableToCreateFile3 = 'Unable to create file%s%s%s%s';
   lisCopyError2 = 'Copy error';
@@ -638,14 +638,14 @@ resourcestring
     'Save file %s%s%s%sbefore closing form %s%s%s?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
   lisSorryNotImplementedYet = 'Sorry, not implemented yet';
-  lisUnableToFindMethodPlzFixTheErrorShownInTheMessage = 'Unable to find '
-    +'method. Plz fix the error shown in the message window.';
-  lisUnableToCreateNewMethodPlzFixTheErrorShownIn = 'Unable to create new '
-    +'method. Plz fix the error shown in the message window.';
-  lisUnableToShowMethodPlzFixTheErrorShownInTheMessage = 'Unable to show '
-    +'method. Plz fix the error shown in the message window.';
-  lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag = 'Unable to rename '
-    +'method. Plz fix the error shown in the message window.';
+  lisUnableToFindMethodPleaseFixTheErrorShownInTheMessage = 'Unable to find '
+    +'method. Please fix the error shown in the message window.';
+  lisUnableToCreateNewMethodPleaseFixTheErrorShownIn = 'Unable to create new '
+    +'method. Please fix the error shown in the message window.';
+  lisUnableToShowMethodPleaseFixTheErrorShownInTheMessage = 'Unable to show '
+    +'method. Please fix the error shown in the message window.';
+  lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag = 'Unable to rename '
+    +'method. Please fix the error shown in the message window.';
   lisStopDebugging = 'Stop Debugging?';
   lisStopTheDebugging = 'Stop the debugging?';
   lisCannotFindLazarusStarter = 'Cannot find lazarus starter:%s%s';
@@ -705,9 +705,9 @@ resourcestring
   lisProjectChanged = 'Project changed';
 
   lisFPCSourceDirectoryError = 'FPC Source Directory error';
-  lisPlzCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
+  lisPleaseCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
   lisCompilerError = 'Compiler error';
-  lisPlzCheckTheCompilerName = 'Please check the compiler name';
+  lisPleaseCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
   lisVerToClipboard = 'Copy version information to clipboard';
@@ -2376,7 +2376,7 @@ resourcestring
 
   // project options
   lisProjOptsUnableToChangeTheAutoCreateFormList = 'Unable to change the auto '
-    +'create form list in the program source.%sPlz fix errors first.';
+    +'create form list in the program source.%sPlease fix errors first.';
   lisProjOptsError = 'Error';
   
   // path edit dialog
@@ -3252,8 +3252,8 @@ resourcestring
     +'compiler (filename: %s) was not found.%sIt is recommended that you '
     +'install fpc.';
   lisInvalidCompilerFilename = 'Invalid Compiler Filename';
-  lisTheCurrentCompilerFilenameIsNotAValidExecutablePlz = 'The current '
-    +'compiler filename %s%s%s%sis not a valid executable.%sPlz check '
+  lisTheCurrentCompilerFilenameIsNotAValidExecutablePlease = 'The current '
+    +'compiler filename %s%s%s%sis not a valid executable.%sPlease check '
     +'Environment -> Environment Options -> Files';
   lisFreePascalSourcesNotFound = 'Free Pascal Sources not found';
   lisTheFreePascalSourceDirectoryWasNotFoundSomeCodeFun = 'The Free Pascal '
@@ -3276,7 +3276,7 @@ resourcestring
     +'Files';
   lisTheLazarusDirectoryWasNotFoundYouWillNotBeAbleToCr = 'The Lazarus '
     +'directory was not found.%sYou will not be able to create LCL '
-    +'applications.%sPlz check Environment -> Environment Options -> Files';
+    +'applications.%sPlease check Environment -> Environment Options -> Files';
   lisTheCurrentFreePascalSourceDirectoryDoesNotLookCorr = 'The current Free '
     +'Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to '
     +'choose the default %s%s%s.%sOtherwise check Environment -> Environment '

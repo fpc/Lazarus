@@ -4,7 +4,7 @@ SET OLDCURDRIVE=%CD:~,2%
 SET FPCSRC_DIR=%FPCSVNDIR%\fpcsrc
 SET HASFCL=0
 
-SET SOURCE_DIR=%BUILDDIR%\fpc-patched
+SET SOURCE_DIR=%BUILDDIR%\fpc-source
 %SVN% export %FPCSRC_DIR% %SOURCE_DIR%
 
 :: to switch drive

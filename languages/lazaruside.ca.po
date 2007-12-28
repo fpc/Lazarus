@@ -6065,11 +6065,11 @@ msgstr "Intercalació persistent"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Si us plau, comproveu el nom del compilador"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Si us plau, comproveu el directori del codi font de FreePascal"
 
@@ -8158,7 +8158,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "El fitxer LFM (Lazarus Form) conté propietats no vàlides. Això vol dir, per exemple, que conté algunes propietats/classes les quals no existeixen en la LCL actual. La manera normal de corregir això és eliminar aquestes propietats de la LFM i corregir manualment el codi pascal."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "No s'ha trobat el directori Lazarus.%sNo prodreu crear aplicacions LCL.%sSi us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8265,8 +8265,8 @@ msgstr "El directori actual del Lazarus %s%s%s%sno sembla correcte.%sSense ell, 
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "El nom del compilador actual %s%s%s%s no és un executable vàlid.%sEscolliu D'ACORD per seleccionar el predeterminat %s%s%s.%sSi no, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "El nom del compilador actual %s%s%s%sno és un executable vàlid.%s Si us plau, comproveu Entorn -> Opcions de l'Entorn -> Fitxers"
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8653,8 +8653,8 @@ msgstr ""
 msgid "There is a maximum of %s tools."
 msgstr "Hi ha un màxim de %s eines."
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "En el projecte hi ha una unitat amb el nom %s%s%s.%sSi us plau, escolliu un nom diferent."
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8938,7 +8938,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "No es pot fer copia de seguretat del fitxer %s%s%s a %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "No es pot canviar la llista de les formes creades automàticament en el codi font del programa. %s Si us plau, corregiu primer els errors."
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9017,8 +9017,8 @@ msgstr "No es pot crear el fitxer %s%s%s."
 msgid "Unable to create file%s%s%s%s"
 msgstr "No es pot crear el fitxer%s%s%s%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "No es pot crear el nou mètode. Si us plau, corregiu l'error de la finestra de missatges."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9073,8 +9073,8 @@ msgstr "No es pot trobar el fitxer %s%s%s."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "No es pot trobar el fitxer %s%s%s.%sComproveu la trajectòria a%sProjecte->Opcions del Compilador...->Trajectòries de Recerca->Altres Fitxers d'unitats"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "No es pot trobar el mètode. Si us plau, comproveu l'error mostrat a la finestra de missatges."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9173,8 +9173,8 @@ msgstr "No es pot canviar el nom del fitxer %s%s%s%sa %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "No es pot canviar el nom de la forma en el codi font"
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "No es pot canviar el nom del mètode. Si us plau, corregiu l'error de la finestra de missatges."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9193,8 +9193,8 @@ msgstr "No es pot desar el fitxer %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "No es pot mostrar el mètode. Si us plau, corregiu l'error de la finestra de missatges."
 
 #: lazarusidestrconsts:lisunabletostreamt

@@ -1,0 +1,12 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TVersionForm','FORMDATA',[
+  'TPF0'#12'TVersionForm'#11'VersionForm'#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'
+  +#3#164#0#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Pa'
+  +'ge'#3'+'#1#13'ActiveControl'#7#5'Memo1'#7'Caption'#6#11'VersionForm'#12'Cli'
+  +'entHeight'#3','#1#11'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#0#5
+  +'TMemo'#5'Memo1'#4'Left'#2#29#6'Height'#3#130#0#3'Top'#2#19#5'Width'#3']'#1
+  +#13'Lines.Strings'#1#6#5'Memo1'#0#8'TabOrder'#2#0#0#0#7'TButton'#7'Button1'#4
+  +'Left'#2'$'#6'Height'#2#25#3'Top'#3#181#0#5'Width'#2'K'#7'Caption'#6#7'Butto'
+  +'n1'#7'OnClick'#7#12'Button1Click'#8'TabOrder'#2#1#0#0#0
+]);

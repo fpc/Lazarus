@@ -1462,8 +1462,8 @@ msgstr ""
 msgid "Unit identifier exists"
 msgstr ""
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr ""
 
 #: lazarusidestrconsts:liserrorcreatingfile
@@ -1894,20 +1894,20 @@ msgstr ""
 msgid "Sorry, not implemented yet"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr ""
 
 #: lazarusidestrconsts:lisstopdebugging
@@ -2098,7 +2098,7 @@ msgstr ""
 msgid "FPC Source Directory error"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr ""
 
@@ -2106,7 +2106,7 @@ msgstr ""
 msgid "Compiler error"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr ""
 
@@ -7483,7 +7483,7 @@ msgid "Invalid Exclude filter"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr ""
 
 #: lazarusidestrconsts:lisprojoptserror
@@ -9846,8 +9846,8 @@ msgstr ""
 msgid "Invalid Compiler Filename"
 msgstr ""
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr ""
 
 #: lazarusidestrconsts:lisfreepascalsourcesnotfound
@@ -9879,7 +9879,7 @@ msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it 
 msgstr ""
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr ""
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr

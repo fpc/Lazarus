@@ -6064,11 +6064,11 @@ msgstr "固定キャレット"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "コンパイラ名をチェックしてください"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Free Pascalのソースディレクトリをチェックしてください"
 
@@ -8157,7 +8157,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "そのLFM(Lazarus form)は無効なプロパティを含んでいます。このことは、例えばそれが現在のLCLに存在しないいくつかのプロパティやクラスを含んでいることを意味します。通常の解決策はlfmからそれらのプロパティを削除しそのpascalコードを手動で修復することです。"
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Lazarusディレクトリが見つかりませんでした。%sこのままではLCLアプリケーションを作成できません。%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8264,8 +8264,8 @@ msgstr "現在のLazarusディレクトリ%s%s%s%sは正しくないようです
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%OKを選び、既定の%s%s%sを選んでください。さもなければ%s%s環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "現在のコンパイラファイル名%s%s%s%sは有効な実行ファイルではありません。%環境 -> 環境オプション -> ファイルをチェックして下さい。"
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8652,8 +8652,8 @@ msgstr "ディスクに同じ名前で類似した拡張子をもつファイル
 msgid "There is a maximum of %s tools."
 msgstr "%sツールに上限があります。"
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "プロジェクトに%s%s%sという名前のユニットがあります。%s別の名前を選んでください。"
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8937,7 +8937,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "%s%s%sを%s%s%sにバックアップできません!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "プログラムソースの自動生成フォームリストを変更できません。%sまずエラーを修復してください。"
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9016,8 +9016,8 @@ msgstr "ファイル%s%s%sを作成できません。"
 msgid "Unable to create file%s%s%s%s"
 msgstr "ファイル%s%s%s%sを作成できません。"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "新しいメソッドを作成できません。メッセージウィンドウに表示されているエラーを修復してください。"
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9072,8 +9072,8 @@ msgstr "が見つかりません。"
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "ファイル%s%s%sが見つかりません。"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "メソッドが見つかりません。メッセージウィンドウに表示されているエラーを修復してください。"
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9172,8 +9172,8 @@ msgstr "ファイル%s%s%sを%s%s%sに名称変更できません。"
 msgid "Unable to rename form in source."
 msgstr "ソース内のフォーム名を変更できません。"
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "メソッドの名称を変更できません。メッセージウィンドウに表示されているエラーを修復してください。"
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9192,8 +9192,8 @@ msgstr "ファイル%s%s%sを保存できません。"
 msgid "Unable to set AnchorSide Control"
 msgstr "アンカーサイドコントロールを設置できません。"
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "メソッドを表示できません。メッセージウィンドウに表示されているエラーを修復してください。"
 
 #: lazarusidestrconsts:lisunabletostreamt

@@ -6068,11 +6068,11 @@ msgstr "固定的脱字符(^)"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "请检查编译器名称"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "请检查 freepascal 源代码目录"
 
@@ -8161,7 +8161,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "LFM (Lazarus form) 文件包含无效得属性. 这就意味着可能包含一些 LCL 中间没有得属性和类. 一般得解决方法是从 lfm 文件移除这些属性和方法,并且手动修改代码中."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "未找到 Lazarus 目录.%s你将无法创建 LCL 应用程序.%s请检查 环境 -> 环境选项 -> 文件"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8268,8 +8268,8 @@ msgstr "当前 Lazarus 目录 %s%s%s%s好像不正确.%s没有它你无法创建
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "当前编译器文件 %s%s%s%s不是一个有效得可执行文件.%s点击 确定 设为默认 %s%s%s.%s否则请检查 环境 -> 环境选项 -> 文件"
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "当前编译器名 %s%s%s%s不是一个有效得可执行文件.%s请检查 环境 -> 环境选项 -> 文件"
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8656,8 +8656,8 @@ msgstr "磁盘上面有一个文件有相同的名字后类似的后缀%s文件:
 msgid "There is a maximum of %s tools."
 msgstr "最大限制为 %s 个工具."
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "工程中已经有同名单元 %s%s%s .%s请选择一个不同的名字"
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8941,7 +8941,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "无法备份文件 %s%s%s 到 %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "无法更改程序中窗体创建顺序.%s请先修复错误."
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9020,8 +9020,8 @@ msgstr "无法创建文件 %s%s%s."
 msgid "Unable to create file%s%s%s%s"
 msgstr "无法创建文件%s%s%s%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "无法创建新的 method. 请先修复消息窗口中显示的错误."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9076,8 +9076,8 @@ msgstr "无法找到文件 %s%s%s."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "无法找到文件 %s%s%s.%s请检查搜索目录%s工程->编译选项...->查找路径->其余单元文件"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "无法找到 method. 请先修复消息窗口中显示的错误."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9176,8 +9176,8 @@ msgstr "无法重命名文件 %s%s%s%sto %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "无法重命名源代码中的窗体."
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "无法重命名 method. 请修复消息窗口中显示的错误."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9196,8 +9196,8 @@ msgstr "无法保存文件 %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "无法设置锚边"
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "无法显示 method. 请修复消息窗口中显示的错误."
 
 #: lazarusidestrconsts:lisunabletostreamt

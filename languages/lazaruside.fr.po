@@ -6067,11 +6067,11 @@ msgstr "Curseur persistant"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Veuillez vérifier le nom du compilateur"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Veuillez vérifier le répertoire des sources de FreePascal"
 
@@ -8160,7 +8160,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "Le fichier LFM (Lazarus form) contient des propriétés invalides. Cela veut dire qu'il contient des propriétés/classes qui n'existent pas dans la LCL actuelle. L'action recommandée est de retirer ces propriétés du LFM et de corriger le code Pascal manuellement."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "The répertoire de Lazarus est introuvable.%sVous ne pourrez pas créer d'application LCL.%sVeuillez vérifier l'environnement dans Configuration->Options d'environnement->Fichiers"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8267,8 +8267,8 @@ msgstr "Le répertoire présent de Lazarus %s%s%s%sne semble pas correct.%sAinsi
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "Le nom de compilateur actuel %s%s%s%sn'est pas un exécutable valide. Choisissez OK pour revenir à la valeur par défaut %s%s%s.%sSinon, vérifiez Configuration->Options d'environnement->Fichiers."
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Le nom de compilateur actuel %s%s%s%sn'est pas un exécutable valide.%sVeuillez vérifier dans Configuration->Options d'environnement->Fichiers."
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8655,8 +8655,8 @@ msgstr "Un fichier porte le même nom et une extension similaire%sFichier: %s%sF
 msgid "There is a maximum of %s tools."
 msgstr "Le nombre d'outils est limité à %s."
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "Une unité du projet porte déjà le nom %s%s%s.%sVeuillez choisir un nom différent."
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8940,7 +8940,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "Impossible de faire une copie de sauvegarde du fichier %s%s%s vers %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Impossible de modifier la liste de création automatique des fiches dans le source du programme.%sVeuillez d'abord corriger les erreurs."
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9019,8 +9019,8 @@ msgstr "Impossible de créer le fichier %s%s%s."
 msgid "Unable to create file%s%s%s%s"
 msgstr "Impossible de créer le fichier %s%s%s%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "Impossible de créer une nouvelle méthode. Veuillez corriger l'erreur affichée dans le fenêtre de messages."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9075,8 +9075,8 @@ msgstr "Impossible de trouver le fichier %s%s%s."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "Impossible de trouver le fichier %s%s%s.%sVérifiez le chemin de recherche dans Projet->Options du compilateur...->Chemins de recherche->Autres fichiers unité"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Impossible de trouver la méthode. Veuillez corriger l'erreur affichée dans la fenêtre de messages."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9175,8 +9175,8 @@ msgstr "Impossible de renommer le fichier %s%s%s%sen %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "Impossible de renommer la fiche dans le source."
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "Impossible de renommer la méthode. Veuillez corriger l'erreur affichée dans la fenêtre de messages."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9195,8 +9195,8 @@ msgstr "Impossible d'enregistrer le fichier %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "Impossible de placer la Commande latérale d'ancre "
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "Impossible d'afficher la méthode. Veuillez corriger l'erreur affichée dans la fenêtre de messages."
 
 #: lazarusidestrconsts:lisunabletostreamt

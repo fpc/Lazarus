@@ -6054,11 +6054,11 @@ msgstr "Нерухомий курсор"
 msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgstr ""
 
-#: lazarusidestrconsts:lisplzcheckthecompilername
+#: lazarusidestrconsts:lispleasecheckthecompilername
 msgid "Please check the compiler name"
 msgstr "Перевірте назву компілятора"
 
-#: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
+#: lazarusidestrconsts:lispleasecheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
 msgstr "Перевірте теку кодів FreePascal"
 
@@ -8147,7 +8147,7 @@ msgid "The LFM (Lazarus form) file contains invalid properties. This means for e
 msgstr "LFM-файл (файл форми Lazarus) вміщує некоректні властивості. Це означає, наприклад, що він вміщує деякі властивості/класи, яких немає в поточній версії LCL. Як правило треба прибрати ці властивості з lfm і (якщо треба) виправити код паскаля вручну."
 
 #: lazarusidestrconsts:listhelazarusdirectorywasnotfoundyouwillnotbeabletocr
-msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlz check Environment -> Environment Options -> Files"
+msgid "The Lazarus directory was not found.%sYou will not be able to create LCL applications.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Теки Lazarus не знайдено.%sВи не зможете створювати додатки LCL.Перевірте Оточення -> Параметри Оточення -> Файли"
 
 #: lazarusidestrconsts:liscodetoolsdefsthelazarusmaindirectory
@@ -8254,8 +8254,8 @@ msgstr "Поточна тека Lazarus %s%s%s%sвиглядає неправи�
 msgid "The current compiler filename %s%s%s%sis not a valid executable.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Environment -> Environment Options -> Files"
 msgstr "%s%s%s.%sІнакше перевірте Оточення->Параметри оточення->Файли"
 
-#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplz
-msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlz check Environment -> Environment Options -> Files"
+#: lazarusidestrconsts:listhecurrentcompilerfilenameisnotavalidexecutableplease
+msgid "The current compiler filename %s%s%s%sis not a valid executable.%sPlease check Environment -> Environment Options -> Files"
 msgstr "Поточна назва компілятора %s%s%s%s не є виконуваним файлом.%sПеревірте Environment -> Environment Options -> Files"
 
 #: lazarusidestrconsts:lisuethecurre
@@ -8642,8 +8642,8 @@ msgstr "На диску є файл з такою самою назвою і с�
 msgid "There is a maximum of %s tools."
 msgstr "Припускається максимум %s інструментів."
 
-#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectplzchoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlz choose a different name"
+#: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
+msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgstr "В проекті є модуль з назвою %s%s%s.%sВиберіть іншу назву"
 
 #: lazarusidestrconsts:lispkgmangthereisaunitwiththesamenameasapackage1from2
@@ -8927,7 +8927,7 @@ msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgstr "Не можу зберегти резервний файл %s%s%s як %s%s%s!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
-msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
+msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
 msgstr "Не можу змінити список автостворюваних форм в коді програми.%sВиправте спочатку помилки."
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions
@@ -9006,8 +9006,8 @@ msgstr "Не можу створити файл %s%s%s."
 msgid "Unable to create file%s%s%s%s"
 msgstr "Не можу створити файл %s%s%s%s"
 
-#: lazarusidestrconsts:lisunabletocreatenewmethodplzfixtheerrorshownin
-msgid "Unable to create new method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletocreatenewmethodpleasefixtheerrorshownin
+msgid "Unable to create new method. Please fix the error shown in the message window."
 msgstr "Не можу створити новий метод. Виправте помилки, що вказані в вікні повідомлень."
 
 #: lazarusidestrconsts:lispkgmangunabletocreateoutputdirectoryforpackage
@@ -9062,8 +9062,8 @@ msgstr "Не можу знайти файл %s%s%s."
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
 msgstr "Не можу знайти файл %s%s%s.%sПеревірте шлях пошуку в%sПроект->Параметри компілятора...->Шляхи->Інші файли модулів"
 
-#: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
-msgid "Unable to find method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to find method. Please fix the error shown in the message window."
 msgstr "Не можу знайти метод. Виправте помилки в вікні повідомлень."
 
 #: lazarusidestrconsts:lisunabletofindtheunitofcomponentclass
@@ -9162,8 +9162,8 @@ msgstr "Не можу змінити назву файла %s%s%s%sв %s%s%s."
 msgid "Unable to rename form in source."
 msgstr "Неможливо змінити назву форми в коді"
 
-#: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
-msgid "Unable to rename method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletorenamemethodpleasefixtheerrorshowninthemessag
+msgid "Unable to rename method. Please fix the error shown in the message window."
 msgstr "Не можу змінити назву метода. Виправте помилку. Див. вікно повідомлень."
 
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
@@ -9182,8 +9182,8 @@ msgstr "Не можу зберегти файл %s%s%s"
 msgid "Unable to set AnchorSide Control"
 msgstr "Неможливо встановити AnchorSide Control"
 
-#: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
-msgid "Unable to show method. Plz fix the error shown in the message window."
+#: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
+msgid "Unable to show method. Please fix the error shown in the message window."
 msgstr "Не можу показати метод. Виправте помилку. Див. вікно повідомлень."
 
 #: lazarusidestrconsts:lisunabletostreamt

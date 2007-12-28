@@ -550,10 +550,10 @@ begin
       InputHistories.Save;
     end else begin
       IDEMessageDialog(lisFPCSourceDirectoryError,
-        lisPlzCheckTheFPCSourceDirectory,mtError,[mbOk]);
+        lisPleaseCheckTheFPCSourceDirectory,mtError,[mbOk]);
     end;
   end else begin
-    IDEMessageDialog(lisCompilerError,lisPlzCheckTheCompilerName,mtError,
+    IDEMessageDialog(lisCompilerError,lisPleaseCheckTheCompilerName,mtError,
                      [mbOk]);
   end;
 end;

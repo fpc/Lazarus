@@ -1,0 +1,32 @@
+object VersionForm: TVersionForm
+  Left = 290
+  Height = 300
+  Top = 164
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  ActiveControl = Memo1
+  Caption = 'VersionForm'
+  ClientHeight = 300
+  ClientWidth = 400
+  OnCreate = FormCreate
+  object Memo1: TMemo
+    Left = 29
+    Height = 130
+    Top = 19
+    Width = 349
+    Lines.Strings = (
+      'Memo1'
+    )
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 36
+    Height = 25
+    Top = 181
+    Width = 75
+    Caption = 'Button1'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+end
