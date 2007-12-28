@@ -4064,9 +4064,9 @@ var
   WinWidgetInfo: PWinWidgetInfo;
 begin
   Result := GTKAPIWidget_New;
-  WinWidgetInfo:=GetWidgetInfo(Result,true);
-  WinWidgetInfo^.CoreWidget:=PGTKAPIWidget(Result)^.Client;
-  SetLCLObject(WinWidgetInfo^.CoreWidget,AWinControl);
+  WinWidgetInfo := GetWidgetInfo(Result, True);
+  WinWidgetInfo^.CoreWidget := PGTKAPIWidget(Result)^.Client;
+  WinWidgetInfo^.LCLObject := AWinControl;
 
   gtk_scrolled_window_set_policy(PGTKScrolledWindow(Result),
     GTK_POLICY_NEVER, GTK_POLICY_NEVER);

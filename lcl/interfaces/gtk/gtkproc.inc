@@ -3741,11 +3741,8 @@ begin
 
   WidgetInfo := GetWidgetInfo(Widget, True);
   WidgetInfo^.LCLObject := AnObject;
-  //TODO: remove old compatebility
-  gtk_object_set_data(Widget, 'Class', Pointer(AnObject));
 end;
 
-//TODO: cleanup when WidgetInfo is fully implemented
 function GetLCLObject(const Widget: Pointer): TObject;
 var
   WidgetInfo: PWinWidgetInfo;
@@ -3757,10 +3754,6 @@ begin
   if WidgetInfo <> nil
   then Result := WidgetInfo^.LCLObject
   else Result := nil;
-
-  // Fallback;
-  if Result = nil
-  then Result := TObject(gtk_object_get_data(Widget, 'Class'));
 end;
 
 {-------------------------------------------------------------------------------

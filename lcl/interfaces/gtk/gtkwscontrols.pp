@@ -108,7 +108,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
   { TGtkWSImageList }
@@ -909,7 +909,10 @@ begin
   Result := THandle(PtrUInt(Widget));
   if Result = 0 then Exit;
 
-  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
 
   // set allocation
   Allocation.X := AParams.X;
