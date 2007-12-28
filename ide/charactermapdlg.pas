@@ -48,7 +48,7 @@ type
   TCharacterMapDialog = class(TForm)
     CharactersGroupbox: TGroupbox;
     CharInfoLabel: TLabel;
-    CloseButton: TButton;
+    CloseButton: TBitBtn;
     StringGrid1: TStringGrid;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);

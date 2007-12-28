@@ -2,58 +2,54 @@ object CharacterMapDialog: TCharacterMapDialog
   Left = 507
   Height = 397
   Top = 139
-  Width = 360
-  HorzScrollBar.Page = 359
+  Width = 471
+  HorzScrollBar.Page = 470
   VertScrollBar.Page = 396
-  ActiveControl = CloseButton
   Caption = 'CharacterMapDialog'
   ClientHeight = 397
-  ClientWidth = 360
+  ClientWidth = 471
   FormStyle = fsStayOnTop
   KeyPreview = True
   OnCreate = FormCreate
   OnShow = FormShow
-  object CloseButton: TButton
-    Left = 142
-    Height = 25
-    Top = 368
-    Width = 75
-    Anchors = [akBottom]
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Close'
-    Default = True
-    ModalResult = 1
-    OnClick = CloseButtonClick
-    TabOrder = 0
-  end
   object CharactersGroupbox: TGroupBox
-    Left = 8
-    Height = 352
-    Top = 8
-    Width = 345
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CloseButton
+    Left = 6
+    Height = 353
+    Top = 6
+    Width = 459
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Characters'
-    ClientHeight = 333
-    ClientWidth = 341
+    ClientHeight = 335
+    ClientWidth = 455
     ParentCtl3D = False
-    TabOrder = 1
+    TabOrder = 0
     object CharInfoLabel: TLabel
       Left = 6
-      Height = 13
-      Top = 314
-      Width = 329
+      Height = 14
+      Top = 315
+      Width = 443
       Align = alBottom
       BorderSpacing.Around = 6
       Caption = 'CharInfoLabel'
       ParentColor = False
     end
     object StringGrid1: TStringGrid
+      AnchorSideLeft.Control = CharactersGroupbox
+      AnchorSideTop.Control = CharactersGroupbox
+      AnchorSideRight.Control = CharactersGroupbox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = CharactersGroupbox
+      AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 288
+      Height = 323
       Top = 6
-      Width = 325
+      Width = 443
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ColCount = 17
@@ -67,5 +63,23 @@ object CharacterMapDialog: TCharacterMapDialog
       OnMouseDown = StringGrid1MouseDown
       OnMouseMove = StringGrid1MouseMove
     end
+  end
+  object CloseButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 376
+    Height = 26
+    Top = 365
+    Width = 89
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = '&Закрыть'
+    Kind = bkClose
+    NumGlyphs = 0
+    OnClick = CloseButtonClick
+    TabOrder = 1
   end
 end
