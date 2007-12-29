@@ -51,9 +51,9 @@ type
     property Control: TControl read FControl write SetControl;
   end;
 
-  { TCodeHelpFrm }
+  { TCodeHintFrm }
 
-  TCodeHelpFrm = class(THintWindow)
+  TSrcEditHintWindow = class(THintWindow)
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -91,15 +91,15 @@ type
   end;
   
 var
-  CodeHelpFrm: TCodeHelpFrm = nil;
+  SrcEditHintWindow: TSrcEditHintWindow = nil;
 
 implementation
 
-{ TCodeHelpFrm }
+{ TSrcEditHintWindow }
 
-procedure TCodeHelpFrm.ApplicationIdle(Sender: TObject; var Done: Boolean);
+procedure TSrcEditHintWindow.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
-  //DebugLn(['TCodeHelpFrm.ApplicationIdle NeedVisible=',NeedVisible]);
+  //DebugLn(['TCodeHintFrm.ApplicationIdle NeedVisible=',NeedVisible]);
   if not NeedVisible then begin
     Hide;
     exit;
@@ -107,17 +107,17 @@ begin
   UpdatePosition;
 end;
 
-procedure TCodeHelpFrm.FormCreate(Sender: TObject);
+procedure TSrcEditHintWindow.FormCreate(Sender: TObject);
 begin
   Application.AddOnIdleHandler(@ApplicationIdle);
 end;
 
-procedure TCodeHelpFrm.FormDestroy(Sender: TObject);
+procedure TSrcEditHintWindow.FormDestroy(Sender: TObject);
 begin
 
 end;
 
-procedure TCodeHelpFrm.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TSrcEditHintWindow.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   SrcEdit: TSourceEditorInterface;
@@ -136,7 +136,7 @@ begin
   end;
 end;
 
-procedure TCodeHelpFrm.FormPaint(Sender: TObject);
+procedure TSrcEditHintWindow.FormPaint(Sender: TObject);
 begin
   if Provider<>nil then begin
     Provider.Paint(Canvas,Rect(0,0,ClientWidth,ClientHeight));
@@ -148,7 +148,7 @@ begin
   end;
 end;
 
-procedure TCodeHelpFrm.FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+procedure TSrcEditHintWindow.FormUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
   );
 var
   SrcEdit: TSourceEditorInterface;
@@ -163,7 +163,7 @@ begin
   end;
 end;
 
-procedure TCodeHelpFrm.SetAnchorForm(const AValue: TCustomForm);
+procedure TSrcEditHintWindow.SetAnchorForm(const AValue: TCustomForm);
 begin
   if FAnchorForm=AValue then exit;
   if FAnchorForm<>nil then
@@ -174,32 +174,32 @@ begin
   UpdatePosition;
 end;
 
-procedure TCodeHelpFrm.OnAnchorFormChangeBounds(Sender: TObject);
+procedure TSrcEditHintWindow.OnAnchorFormChangeBounds(Sender: TObject);
 begin
-  //DebugLn(['TCodeHelpFrm.OnAnchorFormChangeBounds ',dbgs(BoundsRect),' Sender=',dbgsName(Sender),' SenderVisible=',TControl(Sender).Visible,' SenderBounds=',dbgs(TControl(Sender).BoundsRect)]);
+  //DebugLn(['TCodeHintFrm.OnAnchorFormChangeBounds ',dbgs(BoundsRect),' Sender=',dbgsName(Sender),' SenderVisible=',TControl(Sender).Visible,' SenderBounds=',dbgs(TControl(Sender).BoundsRect)]);
   UpdatePosition;
 end;
 
-procedure TCodeHelpFrm.SetHelpEnabled(const AValue: boolean);
+procedure TSrcEditHintWindow.SetHelpEnabled(const AValue: boolean);
 begin
   if FHelpEnabled=AValue then exit;
   FHelpEnabled:=AValue;
   UpdatePosition;
 end;
 
-procedure TCodeHelpFrm.SetPreferredHeight(const AValue: integer);
+procedure TSrcEditHintWindow.SetPreferredHeight(const AValue: integer);
 begin
   if FPreferredHeight=AValue then exit;
   FPreferredHeight:=AValue;
 end;
 
-procedure TCodeHelpFrm.SetPreferredWidth(const AValue: integer);
+procedure TSrcEditHintWindow.SetPreferredWidth(const AValue: integer);
 begin
   if FPreferredWidth=AValue then exit;
   FPreferredWidth:=AValue;
 end;
 
-procedure TCodeHelpFrm.SetProvider(const AValue: TCodeHintProvider);
+procedure TSrcEditHintWindow.SetProvider(const AValue: TCodeHintProvider);
 begin
   if FProvider=AValue then exit;
   if FProvider<>nil then begin
@@ -212,13 +212,13 @@ begin
   end;
 end;
 
-procedure TCodeHelpFrm.SetSrcEditCaret(const AValue: TPoint);
+procedure TSrcEditHintWindow.SetSrcEditCaret(const AValue: TPoint);
 begin
   if ComparePoints(FSrcEditCaret,AValue)=0 then exit;
   FSrcEditCaret:=AValue;
 end;
 
-procedure TCodeHelpFrm.UpdatePosition;
+procedure TSrcEditHintWindow.UpdatePosition;
 var
   NewBounds: TRect;
   DesktopBounds: TRect;
@@ -304,17 +304,17 @@ begin
                        PreferredWidth,PreferredHeight),[akBottom]);
   end;
   
-  //DebugLn(['TCodeHelpFrm.UpdatePosition NewBounds=',dbgs(NewBounds),' BoundsRect=',dbgs(BoundsRect)]);
+  //DebugLn(['TCodeHintFrm.UpdatePosition NewBounds=',dbgs(NewBounds),' BoundsRect=',dbgs(BoundsRect)]);
   BoundsRect:=NewBounds;
   Visible:=true;
 end;
 
-procedure TCodeHelpFrm.Paint;
+procedure TSrcEditHintWindow.Paint;
 begin
   FormPaint(Self);
 end;
 
-constructor TCodeHelpFrm.Create(TheOwner: TComponent);
+constructor TSrcEditHintWindow.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   OnDestroy:=@FormDestroy;
@@ -325,21 +325,21 @@ begin
   FormCreate(Self);
 end;
 
-destructor TCodeHelpFrm.Destroy;
+destructor TSrcEditHintWindow.Destroy;
 begin
   inherited Destroy;
-  if CodeHelpFrm=Self then
-    CodeHelpFrm:=nil;
+  if SrcEditHintWindow=Self then
+    SrcEditHintWindow:=nil;
 end;
 
-procedure TCodeHelpFrm.UpdateHints;
+procedure TSrcEditHintWindow.UpdateHints;
 begin
   if not Visible then exit;
-  //DebugLn(['TCodeHelpFrm.UpdateHints ']);
+  //DebugLn(['TCodeHintFrm.UpdateHints ']);
   if Provider<>nil then Provider.UpdateHint;
 end;
 
-function TCodeHelpFrm.NeedVisible: boolean;
+function TSrcEditHintWindow.NeedVisible: boolean;
 begin
   if not HelpEnabled then exit(false);
   if (AnchorForm<>nil) then begin

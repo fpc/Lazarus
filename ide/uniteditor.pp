@@ -1359,8 +1359,8 @@ begin
     // close hint windows
     if (CodeContextFrm<>nil) then
       CodeContextFrm.Hide;
-    if (CodeHelpFrm<>nil) then
-      CodeHelpFrm.Hide;
+    if (SrcEditHintWindow<>nil) then
+      SrcEditHintWindow.Hide;
   end;
 
   if (FSourceNoteBook<>nil)
@@ -3037,7 +3037,7 @@ begin
   FreeAndNil(Gotodialog);
 
   FreeThenNil(CodeContextFrm);
-  FreeThenNil(CodeHelpFrm);
+  FreeThenNil(SrcEditHintWindow);
   FreeThenNil(aCompletion);
   FreeThenNil(FHintTimer);
   FreeThenNil(FHintWindow);
@@ -3475,8 +3475,8 @@ end;
 
 procedure TSourceNotebook.OnSynCompletionPositionChanged(Sender: TObject);
 begin
-  if CodeHelpFrm<>nil then
-    CodeHelpFrm.UpdateHints;
+  if SrcEditHintWindow<>nil then
+    SrcEditHintWindow.UpdateHints;
 end;
 
 procedure TSourceNotebook.DeactivateCompletionForm;
@@ -3684,8 +3684,8 @@ Begin
     end;
     if CurrentCompletionType=ctIdentCompletion then
       StartShowCodeHelp
-    else if CodeHelpFrm<>nil then
-      CodeHelpFrm.HelpEnabled:=false;
+    else if SrcEditHintWindow<>nil then
+      SrcEditHintWindow.HelpEnabled:=false;
   end;
 End;
 
@@ -4803,14 +4803,14 @@ end;
 
 procedure TSourceNotebook.StartShowCodeHelp;
 begin
-  if CodeHelpFrm=nil then begin
-    CodeHelpFrm:=TCodeHelpFrm.Create(Self);
-    CodeHelpFrm.Name:='TSourceNotebook_CodeHelpFrm';
-    CodeHelpFrm.Provider:=TLazDocHintProvider.Create(CodeHelpFrm);
+  if SrcEditHintWindow=nil then begin
+    SrcEditHintWindow:=TSrcEditHintWindow.Create(Self);
+    SrcEditHintWindow.Name:='TSourceNotebook_SrcEditHintWindow';
+    SrcEditHintWindow.Provider:=TLazDocHintProvider.Create(SrcEditHintWindow);
   end;
-  CodeHelpFrm.AnchorForm:=CurCompletionControl.TheForm;
+  SrcEditHintWindow.AnchorForm:=CurCompletionControl.TheForm;
   {$IFDEF EnableCodeHelp}
-  CodeHelpFrm.HelpEnabled:=true;
+  SrcEditHintWindow.HelpEnabled:=true;
   {$ENDIF}
 end;
 
