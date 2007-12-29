@@ -641,7 +641,7 @@ begin
   ColonPos:=1;
   while (ColonPos<=len) and (URL[ColonPos]<>':') do
     inc(ColonPos);
-  if ColonPos=len then exit;
+  if ColonPos>len then exit;
   // get URLType
   URLType:=copy(URL,1,ColonPos-1);
   URLStartPos:=ColonPos+1;

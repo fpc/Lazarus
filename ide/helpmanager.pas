@@ -34,8 +34,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  ExtCtrls, LResources, FileUtil,
+  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Buttons, StdCtrls,
+  Dialogs, ExtCtrls, LResources, FileUtil,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -50,6 +50,63 @@ uses
   IDEContextHelpEdit;
 
 type
+
+  TLIHProviders = class;
+
+  { TLazIDEHTMLProvider }
+
+  TLazIDEHTMLProvider = class(TAbstractIDEHTMLProvider)
+  private
+    FProviders: TLIHProviders;
+    procedure SetProviders(const AValue: TLIHProviders);
+  public
+    function GetStream(const URL: string): TStream; override;
+    procedure ReleaseStream(const URL: string); override;
+    property Providers: TLIHProviders read FProviders write SetProviders;
+  end;
+
+  { TLIHProviderStream }
+
+  TLIHProviderStream = class
+  private
+    FRefCount: integer;
+  public
+    Stream: TStream;
+    URL: string;
+    destructor Destroy; override;
+    procedure IncreaseRefCount;
+    procedure DecreaseRefCount;
+    property RefCount: integer read FRefCount;
+  end;
+
+  { TLIHProviders
+    manages all TLazIDEHTMLProvider }
+
+  TLIHProviders = class
+  private
+    FStreams: TAVLTree;// tree of TLIHProviderStream sorted for URL
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function FindStream(const URL: string; CreateIfNotExists: Boolean): TLIHProviderStream;
+    function GetStream(const URL: string): TStream;
+    procedure ReleaseStream(const URL: string);
+  end;
+
+  { TSimpleHTMLControl }
+
+  TSimpleHTMLControl = class(TLabel,TIDEHTMLControlIntf)
+  private
+    FProvider: TAbstractIDEHTMLProvider;
+    FURL: string;
+    procedure SetProvider(const AValue: TAbstractIDEHTMLProvider);
+    function HTMLToCaption(const s: string): string;
+  public
+    function GetURL: string;
+    procedure SetURL(const AValue: string);
+    property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
+  end;
+
   { TIDEHelpDatabases }
 
   TIDEHelpDatabases = class(THelpDatabases)
@@ -83,6 +140,7 @@ type
     FFCLHelpDB: THelpDatabase;
     FLCLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
+    FHTMLProviders: TLIHProviders;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
@@ -161,6 +219,258 @@ var
   HelpBoss: TBaseHelpManager = nil;
   
 implementation
+
+function LazCreateIDEHTMLControl(Owner: TComponent;
+  var Provider: TAbstractIDEHTMLProvider): TControl;
+var
+  HTMLControl: TSimpleHTMLControl;
+begin
+  HTMLControl:=TSimpleHTMLControl.Create(Owner);
+  Result:=HTMLControl;
+  if Provider=nil then
+    Provider:=CreateIDEHTMLProvider(Owner);
+  Provider.ControlIntf:=HTMLControl;
+  HTMLControl.Provider:=Provider;
+end;
+
+function LazCreateIDEHTMLProvider(Owner: TComponent): TAbstractIDEHTMLProvider;
+begin
+  Result:=TLazIDEHTMLProvider.Create(Owner);
+  TLazIDEHTMLProvider(Result).Providers:=THelpManager(HelpBoss).FHTMLProviders;
+end;
+
+function CompareLIHProviderStream(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareStr(TLIHProviderStream(Data1).URL,TLIHProviderStream(Data2).URL);
+end;
+
+function CompareURLWithLIHProviderStream(URL, Stream: Pointer): integer;
+begin
+  Result:=CompareStr(AnsiString(URL),TLIHProviderStream(Stream).URL);
+end;
+
+{ TSimpleHTMLControl }
+
+procedure TSimpleHTMLControl.SetProvider(const AValue: TAbstractIDEHTMLProvider
+  );
+begin
+  if FProvider=AValue then exit;
+  FProvider:=AValue;
+end;
+
+function TSimpleHTMLControl.HTMLToCaption(const s: string): string;
+var
+  p: Integer;
+  EndPos: Integer;
+begin
+  Result:=s;
+  p:=1;
+  while p<=length(Result) do begin
+    if Result[p]='<' then begin
+      // skip html tag
+      EndPos:=p+1;
+      while (EndPos<=length(Result)) do begin
+        if Result[EndPos]='"' then begin
+          // skip " tag
+          while (EndPos<=length(Result)) and (Result[EndPos]<>'"') do
+            inc(EndPos);
+          if EndPos>length(Result) then break;
+        end;
+        if (Result[EndPos]='>') then begin
+          inc(EndPos);
+          break;
+        end;
+        inc(EndPos);
+      end;
+      System.Delete(Result,p,EndPos-p);
+    end else
+      inc(p);
+  end;
+end;
+
+function TSimpleHTMLControl.GetURL: string;
+begin
+  Result:=FURL;
+end;
+
+procedure TSimpleHTMLControl.SetURL(const AValue: string);
+var
+  Stream: TStream;
+  s: string;
+  NewURL: String;
+begin
+  if Provider=nil then raise Exception.Create('TSimpleHTMLControl.SetURL missing Provider');
+  if FURL=AValue then exit;
+  NewURL:=Provider.BuildURL(Provider.BaseURL,AValue);
+  if FURL=NewURL then exit;
+  FURL:=NewURL;
+  try
+    Stream:=Provider.GetStream(FURL);
+    SetLength(s,Stream.Size);
+    if s<>'' then
+      Stream.Read(s[1],length(s));
+    Caption:=HTMLToCaption(s);
+    Provider.ReleaseStream(FURL);
+  except
+    on E: Exception do begin
+      Caption:=E.Message;
+    end;
+  end;
+end;
+
+{ TLazIDEHTMLProvider }
+
+procedure TLazIDEHTMLProvider.SetProviders(const AValue: TLIHProviders);
+begin
+  if FProviders=AValue then exit;
+  FProviders:=AValue;
+end;
+
+function TLazIDEHTMLProvider.GetStream(const URL: string): TStream;
+begin
+  Result:=FProviders.GetStream(URL);
+end;
+
+procedure TLazIDEHTMLProvider.ReleaseStream(const URL: string);
+begin
+  FProviders.ReleaseStream(URL);
+end;
+
+{ TLIHProviders }
+
+constructor TLIHProviders.Create;
+begin
+  FStreams:=TAVLTree.Create(@CompareLIHProviderStream);
+end;
+
+destructor TLIHProviders.Destroy;
+begin
+  FStreams.FreeAndClear;
+  FreeAndNil(FStreams);
+  inherited Destroy;
+end;
+
+function TLIHProviders.FindStream(const URL: string; CreateIfNotExists: Boolean
+  ): TLIHProviderStream;
+var
+  Node: TAVLTreeNode;
+begin
+  if URL='' then
+    exit(nil);
+  Node:=FStreams.FindKey(Pointer(URL),@CompareURLWithLIHProviderStream);
+  if Node<>nil then begin
+    Result:=TLIHProviderStream(Node.Data);
+  end else if CreateIfNotExists then begin
+    Result:=TLIHProviderStream.Create;
+    Result.URL:=URL;
+    FStreams.Add(Result);
+  end else
+    Result:=nil;
+end;
+
+function TLIHProviders.GetStream(const URL: string): TStream;
+
+  procedure OpenFile(out Stream: TStream; const Filename: string);
+  var
+    fs: TFileStream;
+    ok: Boolean;
+  begin
+    fs:=nil;
+    ok:=false;
+    try
+      fs:=TFileStream.Create(Filename,fmOpenRead);
+      //DebugLn(['OpenFile ',Filename,' ',fs.Size,' ',fs.Position]);
+      Stream:=fs;
+      ok:=true;
+    finally
+      if not ok then
+        fs.Free;
+    end;
+  end;
+
+
+{const
+  HTML =
+     '<HTML>'+#10
+    +'<BODY>'+#10
+    +'Test'+#10
+    +'</BODY>'+#10
+    +'</HTML>';}
+var
+  Stream: TLIHProviderStream;
+  URLType: string;
+  URLPath: string;
+  URLParams: string;
+begin
+  if URL='' then raise Exception.Create('TLIHProviders.GetStream no URL');
+  Stream:=FindStream(URL,true);
+  Stream.IncreaseRefCount;
+  Result:=Stream.Stream;
+  try
+    if Result=nil then begin
+      SplitURL(URL,URLType,URLPath,URLParams);
+      DebugLn(['TLIHProviders.GetStream URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams]);
+      if URLType='lazdoc' then begin
+        if copy(URLPath,1,8)='lazarus/' then begin
+          URLPath:=copy(URLPath,9,length(URLPath));
+          if (URLPath='index.html')
+          or (URLPath='images/laztitle.jpg')
+          or (URLPath='images/cheetah1.png') then begin
+            OpenFile(Result,'/home/mattias/pascal/wichtig/lazarus/docs/'+URLPath);
+          end;
+        end;
+      end else begin
+
+      end;
+      {Result:=TMemoryStream.Create;
+      Stream.Stream:=Result;
+      Result.Write(HTML[1],length(HTML));
+      Result.Position:=0;}
+      if Result=nil then
+        raise Exception.Create('TLIHProviders.GetStream: URL not found "'+dbgstr(URL)+'"');
+      Stream.Stream:=Result;
+    end;
+  finally
+    if Result=nil then
+      ReleaseStream(URL);
+  end;
+end;
+
+procedure TLIHProviders.ReleaseStream(const URL: string);
+var
+  Stream: TLIHProviderStream;
+begin
+  Stream:=FindStream(URL,false);
+  if Stream=nil then
+    raise Exception.Create('TLIHProviders.ReleaseStream "'+URL+'"');
+  Stream.DecreaseRefCount;
+  if Stream.RefCount=0 then begin
+    FStreams.Remove(Stream);
+    Stream.Free;
+  end;
+end;
+
+{ TLIHProviderStream }
+
+destructor TLIHProviderStream.Destroy;
+begin
+  FreeAndNil(Stream);
+  inherited Destroy;
+end;
+
+procedure TLIHProviderStream.IncreaseRefCount;
+begin
+  inc(FRefCount);
+end;
+
+procedure TLIHProviderStream.DecreaseRefCount;
+begin
+  if FRefCount<=0 then
+    raise Exception.Create('TLIHProviderStream.DecreaseRefCount');
+  dec(FRefCount);
+end;
+
+{ THelpSelectorDialog }
 
 procedure THelpSelectorDialog.HelpSelectorDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
@@ -438,10 +748,18 @@ begin
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),
                        THTMLHelpDatabase,'BaseURL',TURLDirectoryPropertyEditor);
+
+  FHTMLProviders:=TLIHProviders.Create;
+
+  if CreateIDEHTMLControl=nil then
+    CreateIDEHTMLControl:=@LazCreateIDEHTMLControl;
+  if CreateIDEHTMLProvider=nil then
+    CreateIDEHTMLProvider:=@LazCreateIDEHTMLProvider;
 end;
 
 destructor THelpManager.Destroy;
 begin
+  FreeThenNil(FHTMLProviders);
   FreeThenNil(CodeHelpBoss);
   FPCMessagesHelpDB:=nil;
   FreeThenNil(HelpDatabases);

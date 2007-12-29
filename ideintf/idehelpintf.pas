@@ -23,7 +23,7 @@ unit IDEHelpIntf;
 interface
 
 uses
-  Classes, SysUtils, HelpIntfs, LazHelpIntf, TextTools;
+  Classes, SysUtils, Controls, HelpIntfs, LazHelpIntf, TextTools;
 
 type
   { THelpDBIRegExprMessage
@@ -65,11 +65,57 @@ type
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                             const Filename: string): TPascalHelpContextList; virtual; abstract;
   end;
+  
 
 var
   LazarusHelp: TBaseHelpManager; // initialized by the IDE
-  
+
+type
+  { TIDEHTMLControlIntf }
+
+  TIDEHTMLControlIntf = interface
+    function GetURL: string;
+    procedure SetURL(const AValue: string);
+    property URL: string read GetURL write SetURL;
+  end;
+
+  { TAbstractIDEHTMLProvider
+    An instance of this class connects 3 parts:
+     1. IDE html files  (via implementation)
+     2. a html viewer control (via ControlIntf)
+     3. IDE or designtime package code
+    All three can communicate. }
+
+  TAbstractIDEHTMLProvider = class(TComponent)
+  protected
+    FBaseURL: string;
+    FControlIntf: TIDEHTMLControlIntf;
+    procedure SetBaseURL(const AValue: string); virtual;
+    procedure SetControlIntf(const AValue: TIDEHTMLControlIntf); virtual;
+  public
+    function GetStream(const URL: string
+      ): TStream; virtual; abstract; { provider assumes ownership of returned TStream
+                                       and increases internal reference count.
+                                       If not found it raises an exception. }
+    procedure ReleaseStream(const URL: string); virtual; abstract;
+    property BaseURL: string read FBaseURL write SetBaseURL;// fallback for relative URLs
+    function BuildURL(const CurBaseURL, CurURL: string): string; virtual;
+    property ControlIntf: TIDEHTMLControlIntf read FControlIntf write SetControlIntf;
+  end;
+
+  TCreateIDEHTMLControlEvent =
+    function(Owner: TComponent; var Provider: TAbstractIDEHTMLProvider): TControl;
+  TCreateIDEHTMLProviderEvent =
+    function(Owner: TComponent): TAbstractIDEHTMLProvider;
+
+var
+  CreateIDEHTMLControl: TCreateIDEHTMLControlEvent = nil;// will be set by the IDE
+    // and overidden by a package like turbopoweriprodsgn.lpk
+  CreateIDEHTMLProvider: TCreateIDEHTMLProviderEvent = nil;// will be set by the IDE
+
+
 implementation
+
 
 { THelpDBIRegExprMessage }
 
@@ -86,6 +132,42 @@ function THelpDBIRegExprMessage.MessageMatches(const TheMessage: string;
 begin
   Result:=REMatches(TheMessage,Expression,ModifierStr);
   //writeln('THelpDBIRegExprMessage.MessageMatches TheMessage="',TheMessage,'" Expression="',Expression,'" Result=',Result);
+end;
+
+{ TAbstractIDEHTMLProvider }
+
+procedure TAbstractIDEHTMLProvider.SetBaseURL(const AValue: string);
+begin
+  if FBaseURL=AValue then exit;
+  FBaseURL:=AValue;
+end;
+
+procedure TAbstractIDEHTMLProvider.SetControlIntf(
+  const AValue: TIDEHTMLControlIntf);
+begin
+  if FControlIntf=AValue then exit;
+  FControlIntf:=AValue;
+end;
+
+function TAbstractIDEHTMLProvider.BuildURL(const CurBaseURL, CurURL: string
+  ): string;
+var
+  URLType: string;
+  URLPath: string;
+  URLParams: string;
+begin
+  Result:=CurURL;
+  SplitURL(CurURL,URLType,URLPath,URLParams);
+  //DebugLn(['TAbstractIDEHTMLProvider.BuildURL CurURL=',CurURL,' URLType=',URLType,' URLPath=',URLPath,' URLParams=',URLParams]);
+  if URLType='' then begin
+    // no URLType => use CurURL as URLPath
+    Result:=CurURL;
+    //DebugLn(['TAbstractIDEHTMLProvider.BuildURL AAA1 ',Result]);
+    if not URLFilenameIsAbsolute(Result) then
+      Result:=CurBaseURL+Result;
+  end else begin
+    Result:=CurURL;
+  end;
 end;
 
 end.

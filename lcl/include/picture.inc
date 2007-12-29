@@ -525,7 +525,7 @@ begin
   ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
-    DebugLn(['TPicture.LoadFromStreamWithFileExt ',Stream.Position,' ',Stream.Size,' ',DbgSName(Stream)]);
+    //DebugLn(['TPicture.LoadFromStreamWithFileExt ',Stream.Position,' ',Stream.Size,' ',DbgSName(Stream)]);
     NewGraphic.LoadFromStream(Stream);
     ok:=true;
   finally
