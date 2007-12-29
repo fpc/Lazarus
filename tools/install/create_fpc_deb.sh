@@ -248,8 +248,8 @@ then
       > $DebianRulezDir/postinst
     cat >> $DebianRulezDir/postinst <<CFG
 touch /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
-sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/fpc-cross.cfg
-cat >> /usr/lib/fpc/fpc-cross.cfg << FPCCFG
+sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
+cat >> /usr/lib/fpc/$FPCVersion/fpc-cross.cfg << FPCCFG
 #if $FPCVersion = \\\$fpcversion
 #include /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 #end
@@ -261,7 +261,7 @@ CFG
 #! /bin/sh
 rm -f /usr/lib/fpc/$FPCVersion/ppc$ppcbin
 # remove fpc-cross include lines
-sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/fpc-cross.cfg
+sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 CROSS
     chmod a+rx $DebianRulezDir/prerm
   else 
