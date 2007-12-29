@@ -436,7 +436,8 @@ begin
     
   ctnProcedure:
     Result:=ACodeTool.ExtractProcHead(CodeNode,
-                  [phpWithStart,phpWithVarModifiers,
+                  [// phpWithStart is no needed because there are icons
+                   phpWithVarModifiers,
                    phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
                    
