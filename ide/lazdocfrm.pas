@@ -50,7 +50,7 @@ uses
   IDEHelpIntf, LazHelpIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts,
-  IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, CodeHelp;
+  IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, CodeHelp;
 
 type
   TLazDocFormFlag = (
@@ -366,12 +366,12 @@ var
   i: Integer;
   Element: TLazDocElement;
   Candidates: TFPList;
-  LazDocSelectInheritedDlg: TLazDocSelectInheritedDlg;
+  FPDocSelectInheritedDlg: TFPDocSelectInheritedDlg;
   ShortDescr: String;
 begin
   if fChain=nil then exit;
   Candidates:=nil;
-  LazDocSelectInheritedDlg:=nil;
+  FPDocSelectInheritedDlg:=nil;
   try
     // find all entries till the first inherited entry with a description
     for i:=1 to fChain.Count-1 do begin
@@ -404,15 +404,15 @@ begin
     end else begin
       // there is more than one candidate
       // => ask which one to replace
-      LazDocSelectInheritedDlg:=TLazDocSelectInheritedDlg.Create(nil);
-      LazDocSelectInheritedDlg.InheritedComboBox.Items.Clear;
+      FPDocSelectInheritedDlg:=TFPDocSelectInheritedDlg.Create(nil);
+      FPDocSelectInheritedDlg.InheritedComboBox.Items.Clear;
       for i:=0 to Candidates.Count-1 do begin
         Element:=TLazDocElement(Candidates[i]);
-        LazDocSelectInheritedDlg.InheritedComboBox.Items.Add(
+        FPDocSelectInheritedDlg.InheritedComboBox.Items.Add(
                                                       GetContextTitle(Element));
       end;
-      if LazDocSelectInheritedDlg.ShowModal<>mrOk then exit;
-      i:=LazDocSelectInheritedDlg.InheritedComboBox.ItemIndex;
+      if FPDocSelectInheritedDlg.ShowModal<>mrOk then exit;
+      i:=FPDocSelectInheritedDlg.InheritedComboBox.ItemIndex;
       if i<0 then exit;
       Element:=TLazDocElement(Candidates[i]);
     end;
@@ -420,7 +420,7 @@ begin
     // move the content of the current entry to the inherited entry
     MoveToInherited(Element);
   finally
-    LazDocSelectInheritedDlg.Free;
+    FPDocSelectInheritedDlg.Free;
     Candidates.Free;
   end;
 end;

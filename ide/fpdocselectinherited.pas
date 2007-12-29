@@ -24,7 +24,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit LazDocSelectInherited;
+unit FPDocSelectInherited;
 
 {$mode objfpc}{$H+}
 
@@ -36,9 +36,9 @@ uses
 
 type
 
-  { TLazDocSelectInheritedDlg }
+  { TFPDocSelectInheritedDlg }
 
-  TLazDocSelectInheritedDlg = class(TForm)
+  TFPDocSelectInheritedDlg = class(TForm)
     OkButton: TButton;
     CancelButton: TButton;
     InheritedComboBox: TComboBox;
@@ -47,9 +47,9 @@ type
 
 implementation
 
-{ TLazDocSelectInheritedDlg }
+{ TFPDocSelectInheritedDlg }
 
-procedure TLazDocSelectInheritedDlg.FormCreate(Sender: TObject);
+procedure TFPDocSelectInheritedDlg.FormCreate(Sender: TObject);
 begin
   Caption:='Select an inherited entry';
   OkButton.Caption:='Ok';
@@ -57,7 +57,7 @@ begin
 end;
 
 initialization
-  {$I lazdocselectinherited.lrs}
+  {$I fpdocselectinherited.lrs}
 
 end.
 

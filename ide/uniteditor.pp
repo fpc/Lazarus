@@ -60,7 +60,7 @@ uses
   CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  LazDocHints, LazDocFrm,
+  FPDocHints, LazDocFrm,
   BaseDebugManager, Debugger, MainIntf;
 
 type
@@ -4806,7 +4806,7 @@ begin
   if SrcEditHintWindow=nil then begin
     SrcEditHintWindow:=TSrcEditHintWindow.Create(Self);
     SrcEditHintWindow.Name:='TSourceNotebook_SrcEditHintWindow';
-    SrcEditHintWindow.Provider:=TLazDocHintProvider.Create(SrcEditHintWindow);
+    SrcEditHintWindow.Provider:=TFPDocHintProvider.Create(SrcEditHintWindow);
   end;
   SrcEditHintWindow.AnchorForm:=CurCompletionControl.TheForm;
   {$IFDEF EnableCodeHelp}

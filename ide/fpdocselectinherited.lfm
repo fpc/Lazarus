@@ -1,4 +1,4 @@
-object LazDocSelectInheritedDlg: TLazDocSelectInheritedDlg
+object FPDocSelectInheritedDlg: TFPDocSelectInheritedDlg
   Left = 282
   Height = 75
   Top = 158
@@ -6,7 +6,7 @@ object LazDocSelectInheritedDlg: TLazDocSelectInheritedDlg
   HorzScrollBar.Page = 329
   VertScrollBar.Page = 74
   ActiveControl = OkButton
-  Caption = 'LazDocSelectInheritedDlg'
+  Caption = 'FPDocSelectInheritedDlg'
   ClientHeight = 75
   ClientWidth = 330
   OnCreate = FormCreate
