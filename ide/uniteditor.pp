@@ -3102,11 +3102,11 @@ var
   SrcEdit: TSourceEditor;
   CaretPos: TPoint;
 begin
-  if LazDocEditForm = nil then exit;
+  if FPDocEditor = nil then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   CaretPos := SrcEdit.EditorComponent.CaretXY;
-  LazDocEditForm.UpdateLazDoc(SrcEdit.Filename,CaretPos);
+  FPDocEditor.UpdateLazDoc(SrcEdit.Filename,CaretPos);
 end;
 
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;

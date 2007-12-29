@@ -1,4 +1,4 @@
-object LazDocEditForm: TLazDocEditForm
+object FPDocEditor: TFPDocEditor
   Left = 303
   Height = 117
   Top = 548
@@ -6,7 +6,7 @@ object LazDocEditForm: TLazDocEditForm
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
   ActiveControl = ShortEdit
-  Caption = 'LazDoc editor'
+  Caption = 'FPDoc editor'
   ClientHeight = 117
   ClientWidth = 753
   OnCreate = FormCreate

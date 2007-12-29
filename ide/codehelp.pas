@@ -158,7 +158,7 @@ type
     
   { TLazDocManager }
 
-  TLazDocManager = class
+  TCodeHelpManager = class
   private
     FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
     FHandlers: array[TLazDocManagerHandler] of TMethodList;
@@ -224,7 +224,7 @@ type
   end;
 
 var
-  LazDocBoss: TLazDocManager = nil;// set by the IDE
+  LazDocBoss: TCodeHelpManager = nil;// set by the IDE
   
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
@@ -504,7 +504,7 @@ begin
   end;
 end;
 
-procedure TLazDocManager.AddHandler(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.AddHandler(HandlerType: TLazDocManagerHandler;
   const AMethod: TMethod; AsLast: boolean);
 begin
   if FHandlers[HandlerType]=nil then
@@ -512,13 +512,13 @@ begin
   FHandlers[HandlerType].Add(AMethod);
 end;
 
-procedure TLazDocManager.RemoveHandler(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.RemoveHandler(HandlerType: TLazDocManagerHandler;
   const AMethod: TMethod);
 begin
   FHandlers[HandlerType].Remove(AMethod);
 end;
 
-procedure TLazDocManager.CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
   Doc: TLazFPDocFile);
 var
   i: LongInt;
@@ -528,7 +528,7 @@ begin
     TLazDocChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
 end;
 
-function TLazDocManager.DoCreateFPDocFileForSource(const SrcFilename: string
+function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string
   ): string;
   
   procedure CleanUpPkgList(var PkgList: TFPList);
@@ -660,7 +660,7 @@ begin
   end;
 end;
 
-function TLazDocManager.CreateFPDocFile(const ExpandedFilename,
+function TCodeHelpManager.CreateFPDocFile(const ExpandedFilename,
   PackageName, ModuleName: string): TCodeBuffer;
 var
   Doc: TXMLDocument;
@@ -716,7 +716,7 @@ begin
   end;
 end;
 
-constructor TLazDocManager.Create;
+constructor TCodeHelpManager.Create;
 begin
   FDocs:=TAvgLvlTree.Create(@CompareLazFPDocFilenames);
   FSrcToDocMap:=TAvgLvlTree.Create(@CompareLDSrc2DocSrcFilenames);
@@ -725,7 +725,7 @@ begin
                                   @CodeToolBoss.GetCodeTreeNodesDeletedStep);
 end;
 
-destructor TLazDocManager.Destroy;
+destructor TCodeHelpManager.Destroy;
 begin
   ClearSrcToDocMap;
   FreeDocs;
@@ -735,7 +735,7 @@ begin
   inherited Destroy;
 end;
 
-function TLazDocManager.FindFPDocFile(const Filename: string): TLazFPDocFile;
+function TCodeHelpManager.FindFPDocFile(const Filename: string): TLazFPDocFile;
 var
   Node: TAvgLvlTreeNode;
 begin
@@ -746,7 +746,7 @@ begin
     Result:=nil;
 end;
 
-function TLazDocManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
+function TCodeHelpManager.LoadFPDocFile(const Filename: string; UpdateFromDisk,
   Revert: Boolean; out ADocFile: TLazFPDocFile; out CacheWasUsed: boolean): Boolean;
 var
   MemStream: TMemoryStream;
@@ -803,7 +803,7 @@ begin
   end;
 end;
 
-function TLazDocManager.SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
+function TCodeHelpManager.SaveFPDocFile(ADocFile: TLazFPDocFile): TModalResult;
 var
   ms: TMemoryStream;
   s: string;
@@ -850,7 +850,7 @@ begin
   DebugLn(['TLazDocManager.SaveFPDocFile saved ',ADocFile.Filename]);
 end;
 
-function TLazDocManager.GetFPDocFilenameForHelpContext(
+function TCodeHelpManager.GetFPDocFilenameForHelpContext(
   Context: TPascalHelpContextList; out CacheWasUsed: boolean): string;
 var
   i: Integer;
@@ -867,7 +867,7 @@ begin
   end;
 end;
 
-function TLazDocManager.GetFPDocFilenameForSource(SrcFilename: string;
+function TCodeHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
   ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
   CreateIfNotExists: boolean): string;
 var
@@ -1009,7 +1009,7 @@ begin
   end;
 end;
 
-function TLazDocManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
+function TCodeHelpManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
   CodeNode: TCodeTreeNode): string;
 var
   NodeName: String;
@@ -1034,7 +1034,7 @@ begin
   end;
 end;
 
-function TLazDocManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
+function TCodeHelpManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
   Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
   out CacheWasUsed: boolean): TLazDocParseResult;
 var
@@ -1066,7 +1066,7 @@ begin
   Result:=ldprSuccess;
 end;
 
-function TLazDocManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
+function TCodeHelpManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
   out ListOfPCodeXYPosition: TFPList; out CacheWasUsed: boolean
   ): TLazDocParseResult;
 begin
@@ -1078,7 +1078,7 @@ begin
     Result:=ldprFailed;
 end;
 
-function TLazDocManager.GetCodeContext(CodePos: PCodeXYPosition; out
+function TCodeHelpManager.GetCodeContext(CodePos: PCodeXYPosition; out
   FindContext: TFindContext; Complete: boolean; out CacheWasUsed: boolean
   ): TLazDocParseResult;
 var
@@ -1137,7 +1137,7 @@ begin
   Result:=ldprSuccess;
 end;
 
-function TLazDocManager.GetElementChain(Code: TCodeBuffer; X, Y: integer;
+function TCodeHelpManager.GetElementChain(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out Chain: TLazDocElementChain; out CacheWasUsed: boolean
   ): TLazDocParseResult;
 var
@@ -1219,7 +1219,7 @@ begin
   end;
 end;
 
-function TLazDocManager.GetHint(Code: TCodeBuffer; X, Y: integer;
+function TCodeHelpManager.GetHint(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out Hint: string; out CacheWasUsed: boolean
   ): TLazDocParseResult;
   
@@ -1323,7 +1323,7 @@ begin
   DebugLn(['TLazDocManager.GetHint END Hint="',Hint,'"']);
 end;
 
-function TLazDocManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
+function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
   out Element: TLazDocElement): Boolean;
 var
   CacheWasUsed: boolean;
@@ -1379,7 +1379,7 @@ begin
   end;
 end;
 
-procedure TLazDocManager.FreeDocs;
+procedure TCodeHelpManager.FreeDocs;
 var
   AVLNode: TAvgLvlTreeNode;
 begin
@@ -1391,12 +1391,12 @@ begin
   FDocs.FreeAndClear;
 end;
 
-procedure TLazDocManager.ClearSrcToDocMap;
+procedure TCodeHelpManager.ClearSrcToDocMap;
 begin
   FSrcToDocMap.FreeAndClear;
 end;
 
-procedure TLazDocManager.RemoveAllHandlersOfObject(AnObject: TObject);
+procedure TCodeHelpManager.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TLazDocManagerHandler;
 begin
@@ -1404,25 +1404,25 @@ begin
     FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
-procedure TLazDocManager.AddHandlerOnChanging(
+procedure TCodeHelpManager.AddHandlerOnChanging(
   const OnDocChangingEvent: TLazDocChangeEvent; AsLast: boolean);
 begin
   AddHandler(ldmhDocChanging,TMethod(OnDocChangingEvent),AsLast);
 end;
 
-procedure TLazDocManager.RemoveHandlerOnChanging(
+procedure TCodeHelpManager.RemoveHandlerOnChanging(
   const OnDocChangingEvent: TLazDocChangeEvent);
 begin
   RemoveHandler(ldmhDocChanging,TMethod(OnDocChangingEvent));
 end;
 
-procedure TLazDocManager.AddHandlerOnChanged(
+procedure TCodeHelpManager.AddHandlerOnChanged(
   const OnDocChangedEvent: TLazDocChangeEvent; AsLast: boolean);
 begin
   AddHandler(ldmhDocChanged,TMethod(OnDocChangedEvent),AsLast);
 end;
 
-procedure TLazDocManager.RemoveHandlerOnChanged(
+procedure TCodeHelpManager.RemoveHandlerOnChanged(
   const OnDocChangedEvent: TLazDocChangeEvent);
 begin
   RemoveHandler(ldmhDocChanged,TMethod(OnDocChangedEvent));

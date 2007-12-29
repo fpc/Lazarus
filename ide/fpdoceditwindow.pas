@@ -25,7 +25,7 @@ unit FPDocEditWindow;
 
 {$mode objfpc}{$H+}
 
-{ $define VerboseLazDoc}
+{ $define VerboseCodeHelp}
 
 interface
 
@@ -57,9 +57,9 @@ type
     );
   TLazDocFormFlags = set of TLazDocFormFlag;
   
-  { TLazDocEditForm }
+  { TFPDocEditor }
 
-  TLazDocEditForm = class(TForm)
+  TFPDocEditor = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
     SaveButton: TButton;
@@ -152,25 +152,25 @@ type
   end;
 
 var
-  LazDocEditForm: TLazDocEditForm = nil;
+  FPDocEditor: TFPDocEditor = nil;
 
 procedure DoShowLazDoc;
 
 implementation
 
-{ TLazDocEditForm }
+{ TFPDocEditor }
 
 procedure DoShowLazDoc;
 begin
-  if LazDocEditForm = Nil then begin
-    Application.CreateForm(TLazDocEditForm, LazDocEditForm);
+  if FPDocEditor = Nil then begin
+    Application.CreateForm(TFPDocEditor, FPDocEditor);
     EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwLazDocName).Apply;
   end;
 
-  LazDocEditForm.Show;
+  FPDocEditor.Show;
 end;
 
-function TLazDocEditForm.GetFirstElement: TDOMNode;
+function TFPDocEditor.GetFirstElement: TDOMNode;
 var
   CurDocFile: TLazFPDocFile;
 begin
@@ -180,7 +180,7 @@ begin
   Result:=CurDocFile.GetFirstElement;
 end;
 
-procedure TLazDocEditForm.UpdateLinkIdComboBox;
+procedure TFPDocEditor.UpdateLinkIdComboBox;
 // fills LinkIdComboBox.Items
 var
   n: TDOMNode;
@@ -192,8 +192,8 @@ begin
   end;
   Exclude(FFLags,ldffLinkIDComboNeedsUpdate);
 
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocEditForm.UpdateLinkIdComboBox START']);
+  {$IFDEF VerboseCodeHelp}
+  DebugLn(['TFPDocEditForm.UpdateLinkIdComboBox START']);
   {$ENDIF}
   LinkIdComboBox.Clear;
   if Doc=nil then exit;
@@ -211,7 +211,7 @@ begin
   sl.Free;
 end;
 
-procedure TLazDocEditForm.FormCreate(Sender: TObject);
+procedure TFPDocEditor.FormCreate(Sender: TObject);
 begin
   Caption := lisLazDocMainFormCaption;
 
@@ -256,7 +256,7 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 end;
 
-procedure TLazDocEditForm.FormDestroy(Sender: TObject);
+procedure TFPDocEditor.FormDestroy(Sender: TObject);
 begin
   Reset;
   FreeAndNil(fChain);
@@ -264,12 +264,12 @@ begin
   Application.RemoveAllHandlersOfObject(Self);
 end;
 
-procedure TLazDocEditForm.FormResize(Sender: TObject);
+procedure TFPDocEditor.FormResize(Sender: TObject);
 begin
   LinkIdComboBox.Width := (AddLinkButton.Left - LinkIdComboBox.Left - 8) div 2;
 end;
 
-procedure TLazDocEditForm.FormatButtonClick(Sender: TObject);
+procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
 
   procedure InsertTag(starttag, endtag: String);
   begin
@@ -302,7 +302,7 @@ begin
   end;
 end;
 
-procedure TLazDocEditForm.LinkChange(Sender: TObject);
+procedure TFPDocEditor.LinkChange(Sender: TObject);
 begin
   if LinkListBox.ItemIndex<0 then
     Exit;
@@ -310,7 +310,7 @@ begin
   LinkListBox.Items.Strings[LinkListBox.ItemIndex] := MakeLink;
 end;
 
-procedure TLazDocEditForm.LinkListBoxClick(Sender: TObject);
+procedure TFPDocEditor.LinkListBoxClick(Sender: TObject);
 var
   strTmp: String;
   intTmp: Integer;
@@ -338,7 +338,7 @@ begin
     LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
 end;
 
-procedure TLazDocEditForm.ApplicationIdle(Sender: TObject; var Done: Boolean);
+procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   Done:=false;
   if ldffChainNeedsUpdate in FFlags then
@@ -355,7 +355,7 @@ begin
     Done:=true;
 end;
 
-procedure TLazDocEditForm.MoveToInheritedButtonClick(Sender: TObject);
+procedure TFPDocEditor.MoveToInheritedButtonClick(Sender: TObject);
 var
   i: Integer;
   Element: TLazDocElement;
@@ -419,12 +419,12 @@ begin
   end;
 end;
 
-procedure TLazDocEditForm.SaveButtonClick(Sender: TObject);
+procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
 begin
   Save;
 end;
 
-function TLazDocEditForm.GetContextTitle(Element: TLazDocElement): string;
+function TFPDocEditor.GetContextTitle(Element: TLazDocElement): string;
 // get codetools path. for example: TButton.Align
 begin
   Result:='';
@@ -432,7 +432,7 @@ begin
   Result:=Element.ElementName;
 end;
 
-function TLazDocEditForm.GetDoc: TXMLdocument;
+function TFPDocEditor.GetDoc: TXMLdocument;
 begin
   if DocFile<>nil then
     Result:=DocFile.Doc
@@ -440,19 +440,19 @@ begin
     Result:=nil;
 end;
 
-function TLazDocEditForm.GetDocFile: TLazFPDocFile;
+function TFPDocEditor.GetDocFile: TLazFPDocFile;
 begin
   Result:=nil;
   if fChain=nil then exit;
   Result:=fChain.DocFile;
 end;
 
-function TLazDocEditForm.GetSourceFilename: string;
+function TFPDocEditor.GetSourceFilename: string;
 begin
   Result:=fSourceFilename;
 end;
 
-procedure TLazDocEditForm.UpdateCaption;
+procedure TFPDocEditor.UpdateCaption;
 var
   strCaption: String;
 begin
@@ -462,8 +462,8 @@ begin
   end;
   Exclude(FFlags,ldffCaptionNeedsUpdate);
   
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocEditForm.UpdateCaption START']);
+  {$IFDEF VerboseCodeHelp}
+  DebugLn(['TFPDocEditForm.UpdateCaption START']);
   {$ENDIF}
   strCaption := lisLazDocMainFormCaption + ' - ';
 
@@ -476,12 +476,12 @@ begin
     Caption := strCaption + DocFile.Filename
   else
     Caption := strCaption + lisLazDocNoTagCaption;
-  {$IFDEF VerboseLazDoc}
+  {$IFDEF VerboseCodeHelp}
   DebugLn(['TLazDocForm.UpdateCaption ',Caption]);
   {$ENDIF}
 end;
 
-procedure TLazDocEditForm.UpdateValueControls;
+procedure TFPDocEditor.UpdateValueControls;
 var
   Element: TLazDocElement;
 begin
@@ -491,8 +491,8 @@ begin
   end;
   Exclude(FFLags,ldffValueControlsNeedsUpdate);
 
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocEditForm.UpdateValueControls START']);
+  {$IFDEF VerboseCodeHelp}
+  DebugLn(['TFPDocEditForm.UpdateValueControls START']);
   {$ENDIF}
   Element:=nil;
   if (fChain<>nil) and (fChain.Count>0) then
@@ -501,7 +501,7 @@ begin
   SaveButton.Enabled:=FModified;
 end;
 
-procedure TLazDocEditForm.UpdateInheritedControls;
+procedure TFPDocEditor.UpdateInheritedControls;
 var
   i: LongInt;
   Element: TLazDocElement;
@@ -513,8 +513,8 @@ begin
   end;
   Exclude(FFLags,ldffInheritedControlsNeedsUpdate);
 
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocEditForm.UpdateInheritedControls START']);
+  {$IFDEF VerboseCodeHelp}
+  DebugLn(['TFPDocEditForm.UpdateInheritedControls START']);
   {$ENDIF}
   i:=FindInheritedIndex;
   if i<0 then begin
@@ -535,7 +535,7 @@ begin
   CopyFromInheritedButton.Enabled:=(i>=0);
 end;
 
-procedure TLazDocEditForm.UpdateChain;
+procedure TFPDocEditor.UpdateChain;
 var
   Code: TCodeBuffer;
   LDResult: TLazDocParseResult;
@@ -551,15 +551,15 @@ begin
 
   if (fSourceFilename='') or (CaretXY.X<1) or (CaretXY.Y<1) then exit;
 
-  {$IFDEF VerboseLazDoc}
-  DebugLn(['TLazDocEditForm.UpdateChain START']);
+  {$IFDEF VerboseCodeHelp}
+  DebugLn(['TFPDocEditForm.UpdateChain START']);
   {$ENDIF}
   NewChain:=nil;
   try
     // fetch pascal source
     Code:=CodeToolBoss.LoadFile(fSourceFilename,true,false);
     if Code=nil then begin
-      DebugLn(['TLazDocEditForm.UpdateChain failed loading ',fSourceFilename]);
+      DebugLn(['TFPDocEditForm.UpdateChain failed loading ',fSourceFilename]);
       exit;
     end;
 
@@ -570,12 +570,12 @@ begin
     ldprParsing:
       begin
         Include(FFLags,ldffChainNeedsUpdate);
-        DebugLn(['TLazDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
     ldprFailed:
       begin
-        DebugLn(['TLazDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
+        DebugLn(['TFPDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
     else
@@ -587,7 +587,7 @@ begin
   end;
 end;
 
-procedure TLazDocEditForm.OnLazDocChanging(Sender: TObject;
+procedure TFPDocEditor.OnLazDocChanging(Sender: TObject;
   LazDocFPFile: TLazFPDocFile);
 begin
   if ldffWriting in FFlags then exit;
@@ -595,14 +595,14 @@ begin
     InvalidateChain;
 end;
 
-procedure TLazDocEditForm.OnLazDocChanged(Sender: TObject;
+procedure TFPDocEditor.OnLazDocChanged(Sender: TObject;
   LazDocFPFile: TLazFPDocFile);
 begin
   if ldffWriting in FFlags then exit;
 
 end;
 
-procedure TLazDocEditForm.LoadGUIValues(Element: TLazDocElement);
+procedure TFPDocEditor.LoadGUIValues(Element: TLazDocElement);
 var
   EnabledState: Boolean;
   Values: TFPDocElementValues;
@@ -651,7 +651,7 @@ begin
   FModified:=OldModified;
 end;
 
-procedure TLazDocEditForm.MoveToInherited(Element: TLazDocElement);
+procedure TFPDocEditor.MoveToInherited(Element: TLazDocElement);
 var
   Values: TFPDocElementValues;
 begin
@@ -659,11 +659,11 @@ begin
   WriteNode(Element,Values,true);
 end;
 
-function TLazDocEditForm.CreateElement(Element: TLazDocElement): Boolean;
+function TFPDocEditor.CreateElement(Element: TLazDocElement): Boolean;
 var
   NewElement: TLazDocElement;
 begin
-  DebugLn(['TLazDocEditForm.CreateElement ']);
+  DebugLn(['TFPDocEditForm.CreateElement ']);
   if (Element=nil) or (Element.ElementName='') then exit(false);
   NewElement:=nil;
   Include(FFlags,ldffWriting);
@@ -678,7 +678,7 @@ begin
   InvalidateChain;
 end;
 
-procedure TLazDocEditForm.Reset;
+procedure TFPDocEditor.Reset;
 begin
   FreeAndNil(fChain);
 
@@ -695,7 +695,7 @@ begin
   CreateButton.Enabled:=false;
 end;
 
-procedure TLazDocEditForm.InvalidateChain;
+procedure TFPDocEditor.InvalidateChain;
 begin
   FreeAndNil(fChain);
   FFlags:=FFlags+[ldffChainNeedsUpdate,ldffCaptionNeedsUpdate,
@@ -703,7 +703,7 @@ begin
       ldffLinkIDComboNeedsUpdate];
 end;
 
-procedure TLazDocEditForm.UpdateLazDoc(const SrcFilename: string;
+procedure TFPDocEditor.UpdateLazDoc(const SrcFilename: string;
   const Caret: TPoint);
 var
   NewSrcFilename: String;
@@ -725,12 +725,12 @@ begin
   InvalidateChain;
 end;
 
-procedure TLazDocEditForm.BeginUpdate;
+procedure TFPDocEditor.BeginUpdate;
 begin
   inc(fUpdateLock);
 end;
 
-procedure TLazDocEditForm.EndUpdate;
+procedure TFPDocEditor.EndUpdate;
 begin
   dec(fUpdateLock);
   if fUpdateLock<0 then RaiseGDBException('');
@@ -739,7 +739,7 @@ begin
   end;
 end;
 
-procedure TLazDocEditForm.ClearEntry(DoSave: Boolean);
+procedure TFPDocEditor.ClearEntry(DoSave: Boolean);
 begin
   Modified:=true;
   ShortEdit.Text:='';
@@ -750,7 +750,7 @@ begin
   if DoSave then Save;
 end;
 
-procedure TLazDocEditForm.Save;
+procedure TFPDocEditor.Save;
 var
   Values: TFPDocElementValues;
 begin
@@ -768,7 +768,7 @@ begin
   SaveButton.Enabled:=false;
 end;
 
-function TLazDocEditForm.GetValues: TFPDocElementValues;
+function TFPDocEditor.GetValues: TFPDocElementValues;
 begin
   Result[fpdiShort]:=ShortEdit.Text;
   Result[fpdiDescription]:=DescrMemo.Text;
@@ -777,14 +777,14 @@ begin
   Result[fpdiExample]:=ExampleEdit.Text;
 end;
 
-procedure TLazDocEditForm.SetModified(const AValue: boolean);
+procedure TFPDocEditor.SetModified(const AValue: boolean);
 begin
   if FModified=AValue then exit;
   FModified:=AValue;
   SaveButton.Enabled:=FModified;
 end;
 
-function TLazDocEditForm.WriteNode(Element: TLazDocElement;
+function TFPDocEditor.WriteNode(Element: TLazDocElement;
   Values: TFPDocElementValues; Interactive: Boolean): Boolean;
 var
   TopNode: TDOMNode;
@@ -884,7 +884,7 @@ var
 begin
   Result:=false;
   if ldffWriting in FFlags then begin
-    DebugLn(['TLazDocEditForm.WriteNode inconsistency detected: recursive write']);
+    DebugLn(['TFPDocEditForm.WriteNode inconsistency detected: recursive write']);
     exit;
   end;
   
@@ -893,7 +893,7 @@ begin
   if Check(CurDocFile=nil,'Element.FPDocFile=nil') then begin
     // no fpdoc file found
     // TODO: create a new file
-    DebugLn(['TLazDocEditForm.WriteNode TODO: implement creating new fpdoc file']);
+    DebugLn(['TFPDocEditForm.WriteNode TODO: implement creating new fpdoc file']);
     exit;
   end;
   CurDoc:=CurDocFile.Doc;
@@ -924,18 +924,18 @@ begin
   end;
 
   if LazDocBoss.SaveFPDocFile(CurDocFile)<>mrOk then begin
-    DebugLn(['TLazDocEditForm.WriteNode failed writing ',CurDocFile.Filename]);
+    DebugLn(['TFPDocEditForm.WriteNode failed writing ',CurDocFile.Filename]);
     exit;
   end;
   Result:=true;
 end;
 
-procedure TLazDocEditForm.DocumentationTagChange(Sender: TObject);
+procedure TFPDocEditor.DocumentationTagChange(Sender: TObject);
 begin
   Modified := True;
 end;
 
-function TLazDocEditForm.MakeLink: String;
+function TFPDocEditor.MakeLink: String;
 begin
   if Trim(LinkTextEdit.Text) = '' then
     Result := '<link id="' + Trim(LinkIdComboBox.Text) + '"/>'
@@ -944,7 +944,7 @@ begin
       LinkTextEdit.Text + '</link>';
 end;
 
-function TLazDocEditForm.FindInheritedIndex: integer;
+function TFPDocEditor.FindInheritedIndex: integer;
 // returns Index in chain of an overriden Element with a short description
 // returns -1 if not found
 var
@@ -964,7 +964,7 @@ begin
   Result:=-1;
 end;
 
-procedure TLazDocEditForm.AddLinkButtonClick(Sender: TObject);
+procedure TFPDocEditor.AddLinkButtonClick(Sender: TObject);
 begin
   if Trim(LinkIdComboBox.Text) <> '' then
   begin
@@ -973,7 +973,7 @@ begin
   end;
 end;
 
-procedure TLazDocEditForm.BrowseExampleButtonClick(Sender: TObject);
+procedure TFPDocEditor.BrowseExampleButtonClick(Sender: TObject);
 begin
   if Doc=nil then exit;
   if OpenDialog.Execute then
@@ -981,13 +981,13 @@ begin
       ExtractFilePath(DocFile.Filename), OpenDialog.FileName));
 end;
 
-procedure TLazDocEditForm.CopyFromInheritedButtonClick(Sender: TObject);
+procedure TFPDocEditor.CopyFromInheritedButtonClick(Sender: TObject);
 var
   i: LongInt;
 begin
   i:=FindInheritedIndex;
   if i<0 then exit;
-  DebugLn(['TLazDocEditForm.CopyFromInheritedButtonClick ']);
+  DebugLn(['TFPDocEditForm.CopyFromInheritedButtonClick ']);
   if ShortEdit.Text<>'' then begin
     if QuestionDlg('Confirm replace',
       GetContextTitle(fChain[0])+' already contains the help:'+#13
@@ -998,17 +998,17 @@ begin
   Modified:=true;
 end;
 
-procedure TLazDocEditForm.CreateButtonClick(Sender: TObject);
+procedure TFPDocEditor.CreateButtonClick(Sender: TObject);
 begin
   if (fChain=nil) or (fChain.Count=0) then exit;
   CreateElement(fChain[0]);
 end;
 
-procedure TLazDocEditForm.DeleteLinkButtonClick(Sender: TObject);
+procedure TFPDocEditor.DeleteLinkButtonClick(Sender: TObject);
 begin
   if LinkListBox.ItemIndex >= 0 then begin
     LinkListBox.Items.Delete(LinkListBox.ItemIndex);
-    DebugLn(['TLazDocEditForm.DeleteLinkButtonClick ']);
+    DebugLn(['TFPDocEditForm.DeleteLinkButtonClick ']);
     Modified := True;
   end;
 end;

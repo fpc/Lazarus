@@ -433,7 +433,7 @@ begin
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
   
-  LazDocBoss:=TLazDocManager.Create;
+  LazDocBoss:=TCodeHelpManager.Create;
 
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),
