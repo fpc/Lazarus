@@ -21,9 +21,9 @@
   Author: Mattias Gaertner
   
   Abstract:
-    Hint using the lazdoc data.
+    Hint using the fpdoc data.
 }
-unit LazDocHints;
+unit FPDocHints;
 
 {$mode objfpc}{$H+}
 
@@ -37,9 +37,9 @@ uses
 
 type
 
-  { TLazDocHintProvider }
+  { TFPDocHintProvider }
 
-  TLazDocHintProvider = class(TCodeHintProvider)
+  TFPDocHintProvider = class(TCodeHintProvider)
   private
     FHintValid: boolean;
     FWaitingForIdle: boolean;
@@ -57,9 +57,9 @@ type
 
 implementation
 
-{ TLazDocHintProvider }
+{ TFPDocHintProvider }
 
-procedure TLazDocHintProvider.SetWaitingForIdle(const AValue: boolean);
+procedure TFPDocHintProvider.SetWaitingForIdle(const AValue: boolean);
 begin
   if FWaitingForIdle=AValue then exit;
   FWaitingForIdle:=AValue;
@@ -71,20 +71,20 @@ begin
   end;
 end;
 
-procedure TLazDocHintProvider.SetHintValid(const AValue: boolean);
+procedure TFPDocHintProvider.SetHintValid(const AValue: boolean);
 begin
   if FHintValid=AValue then exit;
   FHintValid:=AValue;
 end;
 
-procedure TLazDocHintProvider.ApplicationIdle(Sender: TObject; var Done: Boolean
+procedure TFPDocHintProvider.ApplicationIdle(Sender: TObject; var Done: Boolean
   );
 begin
   WaitingForIdle:=false;
   ReadLazDocData;
 end;
 
-procedure TLazDocHintProvider.ReadLazDocData;
+procedure TFPDocHintProvider.ReadLazDocData;
 var
   Position: LongInt;
   Item: TIdentifierListItem;
@@ -100,25 +100,25 @@ begin
   if (Position<0) or (Position>=CodeToolBoss.IdentifierList.GetFilteredCount) then
     exit;
   Item:=CodeToolBoss.IdentifierList.FilteredItems[Position];
-  DebugLn(['TLazDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
+  DebugLn(['TFPDocHintProvider.ReadLazDocData Identifier=',Item.Identifier]);
   Chain:=nil;
   try
     if (Item.Node<>nil) then begin
       if (Item.Tool.Scanner=nil) then exit;
       Code:=TCodeBuffer(Item.Tool.Scanner.MainCode);
       if Code=nil then begin
-        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED Tool without MainCode']);
+        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Tool without MainCode']);
         exit;
       end;
       Code.AbsoluteToLineCol(Item.Node.StartPos,Y,X);
       if (Y<1) or (X<1) then begin
-        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED X=',X,' Y=',Y]);
+        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED X=',X,' Y=',Y]);
         exit;
       end;
       LazDocBoss.GetElementChain(Code,X,Y,true,Chain,CacheWasUsed);
-      DebugLn(['TLazDocHintProvider.ReadLazDocData Chain=',Chain<>nil]);
+      DebugLn(['TFPDocHintProvider.ReadLazDocData Chain=',Chain<>nil]);
       if Chain=nil then begin
-        DebugLn(['TLazDocHintProvider.ReadLazDocData FAILED Chain=nil']);
+        DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Chain=nil']);
         exit;
       end;
     end else begin
@@ -129,19 +129,18 @@ begin
   end;
 end;
 
-destructor TLazDocHintProvider.Destroy;
+destructor TFPDocHintProvider.Destroy;
 begin
   WaitingForIdle:=false;
   inherited Destroy;
 end;
 
-procedure TLazDocHintProvider.Paint(Canvas: TCanvas; const ARect: TRect);
+procedure TFPDocHintProvider.Paint(Canvas: TCanvas; const ARect: TRect);
 begin
-
 
 end;
 
-procedure TLazDocHintProvider.UpdateHint;
+procedure TFPDocHintProvider.UpdateHint;
 begin
   WaitingForIdle:=true;
   inherited UpdateHint;
