@@ -488,9 +488,7 @@ var
 begin
   Ext := ExtractFileExt(Filename);
   System.Delete(Ext, 1, 1); // delete '.'
-  GraphicClass := GetPicFileFormats.FindExt(Ext);
-  if GraphicClass = nil then
-    raise EInvalidGraphic.CreateFmt(rsUnknownPictureExtension, [Ext]);
+  GraphicClass := FindGraphicClassWithFileExt(Ext);
 
   NewGraphic := GraphicClass.Create;
   ok:=false;
@@ -592,6 +590,19 @@ end;
 procedure TPicture.Clear;
 begin
   SetGraphic(nil);
+end;
+
+function TPicture.FindGraphicClassWithFileExt(const Ext: string;
+  ExceptionOnNotFound: boolean): TGraphicClass;
+var
+  FileExt: String;
+begin
+  FileExt:=Ext;
+  if (FileExt<>'') and (FileExt[1]='.') then
+    FileExt:=copy(FileExt,2,length(FileExt));
+  Result := GetPicFileFormats.FindExt(FileExt);
+  if (Result = nil) and ExceptionOnNotFound then
+    raise EInvalidGraphic.CreateFmt(rsUnknownPictureExtension, [Ext]);
 end;
 
 procedure TPicture.Changed(Sender: TObject);

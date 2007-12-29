@@ -8773,19 +8773,21 @@ var
   {$ENDIF}
 begin
   {$IFDEF SYN_LAZARUS}
-  LogCaret:=PhysicalToLogicalPos(CaretXY);
+  LogCaret:=LogicalCaretXY;
   CX := LogCaret.X;
   CY := LogCaret.Y;
   {$ELSE}
   CX := CaretX;
   CY := CaretY;
   {$ENDIF}
+  //DebugLn(['TCustomSynEdit.PrevWordPos ',dbgs(LogCaret)]);
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
     CX := Min(CX, Length(Line) + 1);
     CurIdentChars:=IdentChars;
     WhiteChars := [#1..#255] - CurIdentChars;
+    //DebugLn(['TCustomSynEdit.PrevWordPos Line="',dbgstr(Line),'" CX=',CX]);
     if CX <= 1 then begin
       // find last IdentChar in the previous line
       if CY > 1 then begin
@@ -8797,6 +8799,7 @@ begin
       // if previous char is a "whitespace" search for the last IdentChar
       if Line[CX - 1] in WhiteChars then
         CX := StrRScanForCharInSet(Line, CX - 1, CurIdentChars);
+      //DebugLn(['TCustomSynEdit.PrevWordPos AAA1 CX=',CX]);
       if CX > 0 then
         // search for the first IdentChar of this "word"
         CX := StrRScanForCharInSet(Line, CX - 1, WhiteChars) + 1
@@ -8807,13 +8810,16 @@ begin
           Line := Lines[CY - 1];
           CX := Length(Line) + 1;
         end;
+      //DebugLn(['TCustomSynEdit.PrevWordPos AAA2 CX=',CX]);
     end;
   end;
+  //DebugLn(['TCustomSynEdit.PrevWordPos AAA3 ',CX,',',CY]);
   {$IFDEF SYN_LAZARUS}
   Result := LogicalToPhysicalPos(Point(CX, CY));
   {$ELSE}
   Result := Point(CX, CY);
   {$ENDIF}
+  //DebugLn(['TCustomSynEdit.PrevWordPos END ',dbgs(Result)]);
 end;
 
 procedure TCustomSynEdit.SetSelectionMode(const Value: TSynSelectionMode);

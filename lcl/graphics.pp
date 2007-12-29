@@ -817,6 +817,7 @@ type
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
+    procedure LoadFromStream(const Filename: string);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat);
@@ -829,6 +830,8 @@ type
       AGraphicClass: TGraphicClass);
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
     procedure Clear; virtual;
+    function FindGraphicClassWithFileExt(const Ext: string;
+      ExceptionOnNotFound: boolean = true): TGraphicClass;
   public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Icon: TIcon read GetIcon write SetIcon;

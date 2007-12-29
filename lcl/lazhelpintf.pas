@@ -548,7 +548,7 @@ procedure FreeUnusedLCLHelpSystem;
 function FilenameToURL(const Filename: string): string;
 function FilenameToURLPath(const Filename: string): string;
 function URLPathToFilename(const URLPath: string): string;
-procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
+procedure SplitURL(const URL: string; out URLType, URLPath, URLParams: string);
 function CombineURL(const URLType, URLPath, URLParams: string): string;
 function URLFilenameIsAbsolute(const URLPath: string): boolean;
 function FindURLPathStart(const URL: string): integer;
@@ -626,7 +626,7 @@ begin
   {$warnings on}
 end;
 
-procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
+procedure SplitURL(const URL: string; out URLType, URLPath, URLParams: string);
 var
   Len: Integer;
   ColonPos: Integer;
