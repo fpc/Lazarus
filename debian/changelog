@@ -1,3 +1,58 @@
+lazarus (0.9.25-0-0) unstable; urgency=low
+
+  * Merged debian rules with official debian svn.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Fri, 28 Dec 2007 23:52:02 +0100
+
+lazarus (0.9.24-0-3) unstable; urgency=low
+
+  * Use fpc-depends to calculate dependencies more accurately.
+  * Add Recommends: fpc-source. (Closes: #413806)
+  * Use bzip2 for compressing the binary package and add
+    Pre-Depends: dpkg (>= 1.10.24).
+  * Change Standards-Version: 3.7.3.
+
+ -- Torsten Werner <twerner@debian.org>  Tue, 18 Dec 2007 20:22:02 +0100
+
+lazarus (0.9.24-0-2) unstable; urgency=low
+
+  * Set FPC=fpc for building lazarus.
+
+ -- Torsten Werner <twerner@debian.org>  Tue, 04 Dec 2007 20:56:52 +0100
+
+lazarus (0.9.24-0-1) unstable; urgency=low
+
+  * new upstream release
+  * Implement get-orig-source in debian/rules.
+  * Update Vcs and Homepage headers in debian/control.
+  * Add Architecture: arm.
+  * Remove debian/*.ex and debian/files in clean target. (Closes: #451056)
+  * Add and fix debian/menu.
+  * Do not ignore errors of 'make distclean'.
+
+ -- Torsten Werner <twerner@debian.org>  Mon, 03 Dec 2007 22:54:10 +0100
+
+lazarus (0.9.22-1) unstable; urgency=low
+
+  * Add homepage to debian/control.
+  * New upstream release. (Closes: #421850, #408512)
+  * Remove old patch and add new symlink /usr/bin/startlazarus.
+  * Add myself to Uploaders.
+  * Add XS-X-Vcs-Svn header to debian/control.
+
+ -- Torsten Werner <twerner@debian.org>  Sun,  6 May 2007 13:46:10 +0200
+
+lazarus (0.9.20-1) unstable; urgency=low
+
+  * New upstream release (Closes: #298726)
+  * Fix Build-Dependencies (Closes: #303864)
+  * Fix desktop file (Closes: #329071, #275802)
+  * debian/rules:
+    + Remove unnecessary comments
+    + Use dpatch to apply patches
+
+ -- Varun Hiremath <varunhiremath@gmail.com>  Sun, 14 Jan 2007 12:20:05 +0530
+
 lazarus (0.9.17-1) experimental; urgency=low
 
   * Snapshot.

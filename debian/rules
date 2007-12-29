@@ -16,68 +16,66 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-
+	find -name 'Makefile.fpc' | xargs fpcmake
 	touch configure-stamp
 
-
-build: build-stamp
+build: patch build-stamp
 
 build-stamp: configure-stamp 
 	dh_testdir
-
-	# Add here commands to compile the package.
-	$(MAKE) USESVN2REVISIONINC=0
-	#/usr/bin/docbook-to-man debian/lazarus.sgml > lazarus.1
-
+	$(MAKE) USESVN2REVISIONINC=0 FPC=fpc
 	touch build-stamp
 
-clean:
+clean: clean-patched unpatch
+
+clean-patched:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp
-
-	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
-
+	rm -f build-stamp configure-stamp lazbuild debian/*.ex debian/files
+	$(MAKE) distclean
 	dh_clean 
+
+patch: patch-stamp
+
+patch-stamp:
+	#dpatch apply-all
+	touch patch-stamp
+
+unpatch:
+	#dpatch deapply-all
+	rm -rf patch-stamp debian/patched
 
 install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	
-	# Add here commands to install the package into debian/lazarus.
-	
 	# copy lazarus to /usr/share
 	install -d $(LAZDEBDIR)/usr/lib/lazarus
 	install -d $(LAZDEBDIR)/usr/bin
-	
 	sh $(CURDIR)/debian/move-usr-lib.sh $(LAZDEBDIR)
-	
 	# copy icons and menu entries for the GNOME menu
 	install -d $(LAZDEBDIR)/usr/share/pixmaps
 	install -d $(LAZDEBDIR)/usr/share/applications
 	install -d $(LAZDEBDIR)/usr/bin
-	
 	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
 	chmod 644 $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
 	install -m 644 $(CURDIR)/install/lazarus.desktop $(LAZDEBDIR)/usr/share/applications/lazarus.desktop
-	
+
 # Build architecture-independent files here.
 binary-indep: build install
-# We have nothing to do by default.
 
 # Build architecture-dependent files here.
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_link usr/lib/lazarus/lazarus usr/bin/lazarus-ide
+	dh_link
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
 	dh_installmenu
 	dh_installman
+	fpc-depends
 	dh_strip
 	dh_compress
 	dh_fixperms
@@ -85,7 +83,10 @@ binary-arch: build install
 	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
-	dh_builddeb
+	dh_builddeb -- -Z bzip2
+
+get-orig-source:
+	-uscan --upstream-version=0 --rename
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure

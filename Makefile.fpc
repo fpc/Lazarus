@@ -4,7 +4,7 @@
 
 [package]
 name=lazarus
-version=0.9b
+version=0.9.25
 
 [require]
 packages=regexpr
@@ -60,7 +60,7 @@ idebig:
 #-----------------------------------------------------------------------------
 bigidecomponents:
 	$(MAKE) -C components bigidecomponents
-        
+	
 #-----------------------------------------------------------------------------
 starter:
 	$(MAKE) -C ide starter
@@ -71,8 +71,8 @@ lazbuilder:
 
 #-----------------------------------------------------------------------------
 tools: lcl components
-        $(MAKE) -C tools
-        
+	$(MAKE) -C tools
+	
 #-----------------------------------------------------------------------------
 examples: lcl components
 
@@ -84,17 +84,17 @@ cleanide:
 	$(MAKE) -C ide cleanide
 
 cleanlaz: cleanide
-        $(MAKE) -C lcl clean
-        $(MAKE) -C components clean
-        $(MAKE) -C packager clean
-        $(MAKE) -C designer clean
-        $(MAKE) -C ideintf clean
+	$(MAKE) -C lcl clean
+	$(MAKE) -C components clean
+	$(MAKE) -C packager clean
+	$(MAKE) -C designer clean
+	$(MAKE) -C ideintf clean
 
 purge: cleanlaz
-        $(MAKE) -C examples clean
-        $(MAKE) -C tools clean
-        $(MAKE) -C doceditor clean
-        $(MAKE) -C tools clean
+	$(MAKE) -C examples clean
+	$(MAKE) -C tools clean
+	$(MAKE) -C doceditor clean
+	$(MAKE) -C tools clean
 
 clean: cleanlaz
 
@@ -103,27 +103,120 @@ installbase:
 ifeq ($(OS_TARGET),win32)
 
 else
-        $(MKDIR) $(INSTALL_PREFIX)/share
-        $(MKDIR) $(INSTALL_PREFIX)/share/lazarus
-        $(MKDIR) $(INSTALL_BINDIR)
-        $(MKDIR) $(INSTALL_MAN_DIR)
-        $(MKDIR) $(INSTALL_MAN_DIR)/man1
+	$(MKDIR) $(INSTALL_PREFIX)/share
+	$(MKDIR) $(INSTALL_PREFIX)/share/lazarus
+	$(MKDIR) $(INSTALL_BINDIR)
+	$(MKDIR) $(INSTALL_MAN_DIR)
+	$(MKDIR) $(INSTALL_MAN_DIR)/man1
 endif
 #-----------------------------------------------------------------------------
 # Many C expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to the install directory and set a link
 install:
-        $(MAKE) installbase
+	$(MAKE) installbase
 	$(COPYTREE) . $(LAZARUS_INSTALL_DIR)
 ifeq ($(OS_TARGET),win32)
 
 else
-        ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
-        ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
-        ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
-        cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
+	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
+	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
+	cat $(LAZARUS_INSTALL_DIR)/docs/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
 endif
 
+
+##########################################################################
+# Debian
+##########################################################################
+
+ifdef inUnix
+
+# Build dir
+ifndef BUILDDIR
+BUILDDIR=$(BASEDIR)/build
+endif
+
+# Link Tree
+ifdef LINKISCOPY
+ifndef LINKTREE
+LINKTREE:=$(CPPROG) -Rfp
+endif
+else
+ifndef LINKTREE
+LINKTREE:=$(CPPROG) -Rfpl
+endif
+endif
+
+ifndef SVNREVISION
+SVNREVISION=$(svnversion) $(BASEDIR)
+endif
+
+ifneq ($(wildcard debian/changelog),)
+
+.PHONY: debcopy deb
+
+DEBPACKAGEVERSION:=$(shell head -n 1 debian/changelog | awk '{ print $$2 }' | tr -d '[()]')
+DEBFPCVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
+DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBFPCVERSION)
+
+debcheck:
+ifneq ($(DEBFPCVERSION),$(PACKAGE_VERSION))
+    @$(ECHO) "Debian version ($(DEBFPCVERSION)) is not correct, expect $(PACKAGE_VERSION)"
+    @exit 1
+endif
+
+debcopy: distclean
+	rm -rf ${BUILDDIR}
+	install -d $(DEBSRCDIR)
+	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
+	$(LINKTREE) COPYING $(DEBSRCDIR)
+	$(LINKTREE) COPYING.GPL $(DEBSRCDIR)
+	$(LINKTREE) COPYING.LGPL $(DEBSRCDIR)
+	$(LINKTREE) README.txt $(DEBSRCDIR)
+	$(LINKTREE) components $(DEBSRCDIR)
+	$(LINKTREE) converter $(DEBSRCDIR)
+	$(LINKTREE) debian $(DEBSRCDIR)
+	$(LINKTREE) debugger $(DEBSRCDIR)
+	$(LINKTREE) designer $(DEBSRCDIR)
+	$(LINKTREE) doceditor $(DEBSRCDIR)
+ifndef NODOCS
+	$(LINKTREE) docs $(DEBSRCDIR)
+endif
+	$(LINKTREE) examples $(DEBSRCDIR)
+	$(LINKTREE) ide $(DEBSRCDIR)
+	$(LINKTREE) ideintf $(DEBSRCDIR)
+	$(LINKTREE) images $(DEBSRCDIR)
+	$(LINKTREE) install $(DEBSRCDIR)
+	$(LINKTREE) languages $(DEBSRCDIR)
+	$(LINKTREE) lazarus.app $(DEBSRCDIR)
+	$(LINKTREE) lcl $(DEBSRCDIR)
+	$(LINKTREE) packager $(DEBSRCDIR)
+	$(LINKTREE) test $(DEBSRCDIR)
+	$(LINKTREE) tools $(DEBSRCDIR)
+	# add ide/revision.inc
+	echo "const RevisionStr = '${SVNVERSION}';" > $(DEBSRCDIR)/ide/revision.inc
+	find $(DEBSRCDIR) -name 'CVS*' | xargs rm -rf
+	find $(DEBSRCDIR) -name '.svn' | xargs rm -rf
+	find $(DEBSRCDIR) -name 'Makefile' | xargs rm -rf
+	chmod 755 $(DEBSRCDIR)/debian/rules
+
+debbuild:
+ifdef NODOCS
+	cd $(DEBSRCDIR) ; fakeroot debian/rules binary-arch
+else
+	cd $(DEBSRCDIR) ; fakeroot debian/rules binary
+endif
+	mv $(DEBSRCDIR)/../*.deb .
+
+debclean:
+	rm -rf $(DEBSRCDIR)
+	-rmdir $(BUILDDIR)
+
+deb: debcheck debcopy debbuild debclean
+
+endif   # changelog found
+
+endif
 
 # end.
 

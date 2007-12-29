@@ -2,14 +2,24 @@ Source: lazarus
 Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
-Build-Depends: debhelper (>= 4.0.0),  fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-db (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-utils (= 2.0.2-1), imagemagick, libgdk-pixbuf-dev
-Standards-Version: 3.6.1.1
+Uploaders: Torsten Werner <twerner@debian.org>
+Build-Depends: debhelper (>= 5), fp-compiler (>= 2.2.0-3), fp-units-base,
+ fp-units-db, fp-units-fcl, fp-units-gfx, fp-units-gtk, fp-units-misc,
+ fp-units-net, fp-units-rtl, fp-utils, imagemagick, libgdk-pixbuf-dev
+Standards-Version: 3.7.3
+Homepage: http://www.lazarus.freepascal.org
+Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
+Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 
 Package: lazarus
-Architecture: i386 powerpc sparc
-Depends: ${shlibs:Depends}, fp-compiler (= 2.0.2-1), fp-units-base (= 2.0.2-1), fp-units-rtl (= 2.0.2-1), fp-units-fcl (= 2.0.2-1), fp-units-gtk (= 2.0.2-1), libgtk1.2-dev, libgdk-pixbuf-dev
-Recommends: fp-units-db (= 2.0.2-1), fp-units-gfx (= 2.0.2-1), fp-units-gnome1 (= 2.0.2-1), fp-units-misc (= 2.0.2-1), fp-units-net (= 2.0.2-1)
-Suggests: fp-utils (= 2.0.2-1)
+Architecture: i386 powerpc sparc amd64 arm
+Pre-Depends: dpkg (>= 1.10.24)
+Depends: ${shlibs:Depends}, fp-compiler, fp-units-base, fp-units-rtl,
+ fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
+ ${fpc-abi:Depends}
+Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
+ fp-units-net, fpc-source
+Suggests: fp-utils
 Description: Rapid Application Development (RAD) tool for Free Pascal
  Lazarus are the class libraries for Free Pascal that emulate Delphi.
  Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
