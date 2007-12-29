@@ -817,6 +817,7 @@ type
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
+    procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat);

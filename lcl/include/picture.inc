@@ -512,6 +512,33 @@ begin
   if FGraphic <> nil then FGraphic.SaveToFile(Filename);
 end;
 
+procedure TPicture.LoadFromStreamWithFileExt(Stream: TStream;
+  const FileExt: string);
+var
+  GraphicClass: TGraphicClass;
+  NewGraphic: TGraphic;
+  ok: Boolean;
+begin
+  GraphicClass := FindGraphicClassWithFileExt(FileExt);
+
+  NewGraphic := GraphicClass.Create;
+  ok:=false;
+  try
+    NewGraphic.OnProgress := @Progress;
+    DebugLn(['TPicture.LoadFromStreamWithFileExt ',Stream.Position,' ',Stream.Size,' ',DbgSName(Stream)]);
+    NewGraphic.LoadFromStream(Stream);
+    ok:=true;
+  finally
+    // this try..finally construction will in case of an exception
+    // not alter the error backtrace output
+    if not ok then NewGraphic.Free;
+  end;
+  FGraphic.Free;
+  FGraphic := NewGraphic;
+  FGraphic.OnChange := @Changed;
+  Changed(Self);
+end;
+
 procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
 begin
   LoadFromClipboardFormatID(ctClipboard,FormatID);
