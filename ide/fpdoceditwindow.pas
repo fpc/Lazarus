@@ -112,20 +112,20 @@ type
     FFlags: TLazDocFormFlags;
     fUpdateLock: Integer;
     fSourceFilename: string;
-    fChain: TLazDocElementChain;
+    fChain: TCodeHelpElementChain;
     function GetDoc: TXMLdocument;
     function GetDocFile: TLazFPDocFile;
     function GetSourceFilename: string;
     function GetFirstElement: TDOMNode;
 
-    function GetContextTitle(Element: TLazDocElement): string;
+    function GetContextTitle(Element: TCodeHelpElement): string;
 
     function MakeLink: String;
     function FindInheritedIndex: integer;
     procedure Save;
     function GetValues: TFPDocElementValues;
     procedure SetModified(const AValue: boolean);
-    function WriteNode(Element: TLazDocElement; Values: TFPDocElementValues;
+    function WriteNode(Element: TCodeHelpElement; Values: TFPDocElementValues;
                        Interactive: Boolean): Boolean;
     procedure UpdateChain;
     procedure UpdateCaption;
@@ -134,9 +134,9 @@ type
     procedure UpdateInheritedControls;
     procedure OnLazDocChanging(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
-    procedure LoadGUIValues(Element: TLazDocElement);
-    procedure MoveToInherited(Element: TLazDocElement);
-    function CreateElement(Element: TLazDocElement): Boolean;
+    procedure LoadGUIValues(Element: TCodeHelpElement);
+    procedure MoveToInherited(Element: TCodeHelpElement);
+    function CreateElement(Element: TCodeHelpElement): Boolean;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -248,8 +248,8 @@ begin
   
   Reset;
   
-  LazDocBoss.AddHandlerOnChanging(@OnLazDocChanging);
-  LazDocBoss.AddHandlerOnChanged(@OnLazDocChanged);
+  CodeHelpBoss.AddHandlerOnChanging(@OnLazDocChanging);
+  CodeHelpBoss.AddHandlerOnChanged(@OnLazDocChanged);
   Application.AddOnIdleHandler(@ApplicationIdle);
   
   Name := NonModalIDEWindowNames[nmiwLazDocName];
@@ -260,7 +260,7 @@ procedure TFPDocEditor.FormDestroy(Sender: TObject);
 begin
   Reset;
   FreeAndNil(fChain);
-  LazDocBoss.RemoveAllHandlersOfObject(Self);
+  CodeHelpBoss.RemoveAllHandlersOfObject(Self);
   Application.RemoveAllHandlersOfObject(Self);
 end;
 
@@ -358,7 +358,7 @@ end;
 procedure TFPDocEditor.MoveToInheritedButtonClick(Sender: TObject);
 var
   i: Integer;
-  Element: TLazDocElement;
+  Element: TCodeHelpElement;
   Candidates: TFPList;
   FPDocSelectInheritedDlg: TFPDocSelectInheritedDlg;
   ShortDescr: String;
@@ -383,7 +383,7 @@ begin
     if (Candidates=nil) or (Candidates.Count=0) then exit;
     if Candidates.Count=1 then begin
       // there is only one candidate
-      Element:=TLazDocElement(Candidates[0]);
+      Element:=TCodeHelpElement(Candidates[0]);
       if (Element.ElementNode<>nil) then begin
         ShortDescr:=Element.FPDocFile.GetValueFromNode(Element.ElementNode,fpdiShort);
         if ShortDescr<>'' then begin
@@ -401,14 +401,14 @@ begin
       FPDocSelectInheritedDlg:=TFPDocSelectInheritedDlg.Create(nil);
       FPDocSelectInheritedDlg.InheritedComboBox.Items.Clear;
       for i:=0 to Candidates.Count-1 do begin
-        Element:=TLazDocElement(Candidates[i]);
+        Element:=TCodeHelpElement(Candidates[i]);
         FPDocSelectInheritedDlg.InheritedComboBox.Items.Add(
                                                       GetContextTitle(Element));
       end;
       if FPDocSelectInheritedDlg.ShowModal<>mrOk then exit;
       i:=FPDocSelectInheritedDlg.InheritedComboBox.ItemIndex;
       if i<0 then exit;
-      Element:=TLazDocElement(Candidates[i]);
+      Element:=TCodeHelpElement(Candidates[i]);
     end;
 
     // move the content of the current entry to the inherited entry
@@ -424,7 +424,7 @@ begin
   Save;
 end;
 
-function TFPDocEditor.GetContextTitle(Element: TLazDocElement): string;
+function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
 // get codetools path. for example: TButton.Align
 begin
   Result:='';
@@ -483,7 +483,7 @@ end;
 
 procedure TFPDocEditor.UpdateValueControls;
 var
-  Element: TLazDocElement;
+  Element: TCodeHelpElement;
 begin
   if fUpdateLock>0 then begin
     Include(FFLags,ldffValueControlsNeedsUpdate);
@@ -504,7 +504,7 @@ end;
 procedure TFPDocEditor.UpdateInheritedControls;
 var
   i: LongInt;
-  Element: TLazDocElement;
+  Element: TCodeHelpElement;
   ShortDescr: String;
 begin
   if fUpdateLock>0 then begin
@@ -538,8 +538,8 @@ end;
 procedure TFPDocEditor.UpdateChain;
 var
   Code: TCodeBuffer;
-  LDResult: TLazDocParseResult;
-  NewChain: TLazDocElementChain;
+  LDResult: TCodeHelpParseResult;
+  NewChain: TCodeHelpElementChain;
   CacheWasUsed: Boolean;
 begin
   FreeAndNil(fChain);
@@ -564,16 +564,16 @@ begin
     end;
 
     // start getting the lazdoc element chain
-    LDResult:=LazDocBoss.GetElementChain(Code,CaretXY.X,CaretXY.Y,true,
+    LDResult:=CodeHelpBoss.GetElementChain(Code,CaretXY.X,CaretXY.Y,true,
                                          NewChain,CacheWasUsed);
     case LDResult of
-    ldprParsing:
+    chprParsing:
       begin
         Include(FFLags,ldffChainNeedsUpdate);
         DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
-    ldprFailed:
+    chprFailed:
       begin
         DebugLn(['TFPDocEditForm.UpdateChain failed LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
@@ -602,7 +602,7 @@ begin
 
 end;
 
-procedure TFPDocEditor.LoadGUIValues(Element: TLazDocElement);
+procedure TFPDocEditor.LoadGUIValues(Element: TCodeHelpElement);
 var
   EnabledState: Boolean;
   Values: TFPDocElementValues;
@@ -651,7 +651,7 @@ begin
   FModified:=OldModified;
 end;
 
-procedure TFPDocEditor.MoveToInherited(Element: TLazDocElement);
+procedure TFPDocEditor.MoveToInherited(Element: TCodeHelpElement);
 var
   Values: TFPDocElementValues;
 begin
@@ -659,16 +659,16 @@ begin
   WriteNode(Element,Values,true);
 end;
 
-function TFPDocEditor.CreateElement(Element: TLazDocElement): Boolean;
+function TFPDocEditor.CreateElement(Element: TCodeHelpElement): Boolean;
 var
-  NewElement: TLazDocElement;
+  NewElement: TCodeHelpElement;
 begin
   DebugLn(['TFPDocEditForm.CreateElement ']);
   if (Element=nil) or (Element.ElementName='') then exit(false);
   NewElement:=nil;
   Include(FFlags,ldffWriting);
   try
-    Result:=LazDocBoss.CreateElement(Element.CodeXYPos.Code,
+    Result:=CodeHelpBoss.CreateElement(Element.CodeXYPos.Code,
                             Element.CodeXYPos.X,Element.CodeXYPos.Y,NewElement);
   finally
     Exclude(FFlags,ldffWriting);
@@ -784,7 +784,7 @@ begin
   SaveButton.Enabled:=FModified;
 end;
 
-function TFPDocEditor.WriteNode(Element: TLazDocElement;
+function TFPDocEditor.WriteNode(Element: TCodeHelpElement;
   Values: TFPDocElementValues; Interactive: Boolean): Boolean;
 var
   TopNode: TDOMNode;
@@ -923,7 +923,7 @@ begin
     Exclude(FFlags,ldffWriting);
   end;
 
-  if LazDocBoss.SaveFPDocFile(CurDocFile)<>mrOk then begin
+  if CodeHelpBoss.SaveFPDocFile(CurDocFile)<>mrOk then begin
     DebugLn(['TFPDocEditForm.WriteNode failed writing ',CurDocFile.Filename]);
     exit;
   end;
@@ -948,7 +948,7 @@ function TFPDocEditor.FindInheritedIndex: integer;
 // returns Index in chain of an overriden Element with a short description
 // returns -1 if not found
 var
-  Element: TLazDocElement;
+  Element: TCodeHelpElement;
 begin
   if (fChain<>nil) then begin
     Result:=1;

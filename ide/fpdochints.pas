@@ -90,7 +90,7 @@ var
   Item: TIdentifierListItem;
   Code: TCodeBuffer;
   CacheWasUsed: boolean;
-  Chain: TLazDocElementChain;
+  Chain: TCodeHelpElementChain;
   Y,X: integer;
 begin
   if (SourceEditorWindow=nil) or (CodeToolBoss=nil)
@@ -115,7 +115,7 @@ begin
         DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED X=',X,' Y=',Y]);
         exit;
       end;
-      LazDocBoss.GetElementChain(Code,X,Y,true,Chain,CacheWasUsed);
+      CodeHelpBoss.GetElementChain(Code,X,Y,true,Chain,CacheWasUsed);
       DebugLn(['TFPDocHintProvider.ReadLazDocData Chain=',Chain<>nil]);
       if Chain=nil then begin
         DebugLn(['TFPDocHintProvider.ReadLazDocData FAILED Chain=nil']);

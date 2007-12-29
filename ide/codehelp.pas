@@ -1,10 +1,4 @@
 {
-/***************************************************************************
-                               LazDoc.pas
-                               ----------
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -98,9 +92,9 @@ type
     procedure EndUpdate;
   end;
   
-  { TLDSourceToFPDocFile - cache item for source to FPDoc file mapping }
+  { TCHSourceToFPDocFile - cache item for source to FPDoc file mapping }
 
-  TLDSourceToFPDocFile = class
+  TCHSourceToFPDocFile = class
   public
     SourceFilename: string;
     FPDocFilename: string;
@@ -108,9 +102,9 @@ type
     FilesTimeStamp: integer;
   end;
   
-  { TLazDocElement }
+  { TCodeHelpElement }
 
-  TLazDocElement = class
+  TCodeHelpElement = class
   public
     CodeContext: TFindContext;
     CodeXYPos: TCodeXYPosition;
@@ -120,14 +114,14 @@ type
     FPDocFile: TLazFPDocFile;
   end;
   
-  { TLazDocElementChain }
+  { TCodeHelpElementChain }
 
-  TLazDocElementChain = class
+  TCodeHelpElementChain = class
   private
-    FItems: TFPList; // list of TLazDocElement
+    FItems: TFPList; // list of TCodeHelpElement
     function GetCount: integer;
-    function GetItems(Index: integer): TLazDocElement;
-    function Add: TLazDocElement;
+    function GetItems(Index: integer): TCodeHelpElement;
+    function Add: TCodeHelpElement;
   public
     CodePos: TCodePosition;
     IDEChangeStep: integer;
@@ -135,7 +129,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    property Items[Index: integer]: TLazDocElement read GetItems; default;
+    property Items[Index: integer]: TCodeHelpElement read GetItems; default;
     property Count: integer read GetCount;
     function IndexOfFile(AFile: TLazFPDocFile): integer;
     function IsValid: boolean;
@@ -143,17 +137,17 @@ type
     function DocFile: TLazFPDocFile;
   end;
   
-  TLazDocChangeEvent = procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
+  TCodeHelpChangeEvent = procedure(Sender: TObject; LazDocFPFile: TLazFPDocFile) of object;
   
-  TLazDocManagerHandler = (
-    ldmhDocChanging,
-    ldmhDocChanged
+  TCodeHelpManagerHandler = (
+    chmhDocChanging,
+    chmhDocChanged
     );
     
-  TLazDocParseResult = (
-    ldprParsing, // means: done a small step, but not yet finished the job
-    ldprFailed,
-    ldprSuccess
+  TCodeHelpParseResult = (
+    chprParsing, // means: done a small step, but not yet finished the job
+    chprFailed,
+    chprSuccess
     );
     
   { TLazDocManager }
@@ -161,14 +155,14 @@ type
   TCodeHelpManager = class
   private
     FDocs: TAvgLvlTree;// tree of loaded TLazFPDocFile
-    FHandlers: array[TLazDocManagerHandler] of TMethodList;
-    FSrcToDocMap: TAvgLvlTree; // tree of TLDSourceToFPDocFile sorted for SourceFilename
+    FHandlers: array[TCodeHelpManagerHandler] of TMethodList;
+    FSrcToDocMap: TAvgLvlTree; // tree of TCHSourceToFPDocFile sorted for SourceFilename
     FDeclarationCache: TDeclarationInheritanceCache;
-    procedure AddHandler(HandlerType: TLazDocManagerHandler;
+    procedure AddHandler(HandlerType: TCodeHelpManagerHandler;
                          const AMethod: TMethod; AsLast: boolean = false);
-    procedure RemoveHandler(HandlerType: TLazDocManagerHandler;
+    procedure RemoveHandler(HandlerType: TCodeHelpManagerHandler;
                             const AMethod: TMethod);
-    procedure CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
+    procedure CallDocChangeEvents(HandlerType: TCodeHelpManagerHandler;
                                   Doc: TLazFPDocFile);
     function DoCreateFPDocFileForSource(const SrcFilename: string): string;
     function CreateFPDocFile(const ExpandedFilename, PackageName,
@@ -196,35 +190,35 @@ type
                                    CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
                           out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
-                          out CacheWasUsed: boolean): TLazDocParseResult;
+                          out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
                                  out ListOfPCodeXYPosition: TFPList;
-                                 out CacheWasUsed: boolean): TLazDocParseResult;
+                                 out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetCodeContext(CodePos: PCodeXYPosition;
                             out FindContext: TFindContext;
                             Complete: boolean;
-                            out CacheWasUsed: boolean): TLazDocParseResult;
+                            out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
-                             out Chain: TLazDocElementChain;
-                             out CacheWasUsed: boolean): TLazDocParseResult;
+                             out Chain: TCodeHelpElementChain;
+                             out CacheWasUsed: boolean): TCodeHelpParseResult;
     function GetHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                      out Hint: string;
-                     out CacheWasUsed: boolean): TLazDocParseResult;
+                     out CacheWasUsed: boolean): TCodeHelpParseResult;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
-                           out Element: TLazDocElement): Boolean;
+                           out Element: TCodeHelpElement): Boolean;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
-    procedure AddHandlerOnChanging(const OnDocChangingEvent: TLazDocChangeEvent;
+    procedure AddHandlerOnChanging(const OnDocChangingEvent: TCodeHelpChangeEvent;
                                    AsLast: boolean = false);
-    procedure RemoveHandlerOnChanging(const OnDocChangingEvent: TLazDocChangeEvent);
-    procedure AddHandlerOnChanged(const OnDocChangedEvent: TLazDocChangeEvent;
+    procedure RemoveHandlerOnChanging(const OnDocChangingEvent: TCodeHelpChangeEvent);
+    procedure AddHandlerOnChanged(const OnDocChangedEvent: TCodeHelpChangeEvent;
                                   AsLast: boolean = false);
-    procedure RemoveHandlerOnChanged(const OnDocChangedEvent: TLazDocChangeEvent);
+    procedure RemoveHandlerOnChanged(const OnDocChangedEvent: TCodeHelpChangeEvent);
   end;
 
 var
-  LazDocBoss: TCodeHelpManager = nil;// set by the IDE
+  CodeHelpBoss: TCodeHelpManager = nil;// set by the IDE
   
 function CompareLazFPDocFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLazFPDocFile(Key, Data: Pointer): integer;
@@ -273,13 +267,13 @@ end;
 
 function CompareLDSrc2DocSrcFilenames(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareFilenames(TLDSourceToFPDocFile(Data1).SourceFilename,
-                           TLDSourceToFPDocFile(Data2).SourceFilename);
+  Result:=CompareFilenames(TCHSourceToFPDocFile(Data1).SourceFilename,
+                           TCHSourceToFPDocFile(Data2).SourceFilename);
 end;
 
 function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 begin
-  Result:=CompareFilenames(AnsiString(Key),TLDSourceToFPDocFile(Data).SourceFilename);
+  Result:=CompareFilenames(AnsiString(Key),TCHSourceToFPDocFile(Data).SourceFilename);
 end;
 
 { TLazFPDocFile }
@@ -475,7 +469,7 @@ begin
     if (ldffDocChangingCalled in FFlags) then exit;
     Include(FFlags,ldffDocChangingCalled);
   end;
-  LazDocBoss.CallDocChangeEvents(ldmhDocChanging,Self);
+  CodeHelpBoss.CallDocChangeEvents(chmhDocChanging,Self);
 end;
 
 procedure TLazFPDocFile.DocChanged;
@@ -485,7 +479,7 @@ begin
     exit;
   end;
   Exclude(FFlags,ldffDocChangedNeedsCalling);
-  LazDocBoss.CallDocChangeEvents(ldmhDocChanged,Self);
+  CodeHelpBoss.CallDocChangeEvents(chmhDocChanged,Self);
 end;
 
 procedure TLazFPDocFile.BeginUpdate;
@@ -504,7 +498,7 @@ begin
   end;
 end;
 
-procedure TCodeHelpManager.AddHandler(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.AddHandler(HandlerType: TCodeHelpManagerHandler;
   const AMethod: TMethod; AsLast: boolean);
 begin
   if FHandlers[HandlerType]=nil then
@@ -512,20 +506,20 @@ begin
   FHandlers[HandlerType].Add(AMethod);
 end;
 
-procedure TCodeHelpManager.RemoveHandler(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.RemoveHandler(HandlerType: TCodeHelpManagerHandler;
   const AMethod: TMethod);
 begin
   FHandlers[HandlerType].Remove(AMethod);
 end;
 
-procedure TCodeHelpManager.CallDocChangeEvents(HandlerType: TLazDocManagerHandler;
+procedure TCodeHelpManager.CallDocChangeEvents(HandlerType: TCodeHelpManagerHandler;
   Doc: TLazFPDocFile);
 var
   i: LongInt;
 begin
   i:=FHandlers[HandlerType].Count;
   while FHandlers[HandlerType].NextDownIndex(i) do
-    TLazDocChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
+    TCodeHelpChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
 end;
 
 function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string
@@ -781,7 +775,7 @@ begin
   {$IFDEF VerboseLazDoc}
   DebugLn(['TLazDocManager.LoadFPDocFile parsing ',ADocFile.Filename]);
   {$ENDIF}
-  CallDocChangeEvents(ldmhDocChanging,ADocFile);
+  CallDocChangeEvents(chmhDocChanging,ADocFile);
 
   // parse XML
   ADocFile.ChangeStep:=ADocFile.CodeBuffer.ChangeStep;
@@ -799,7 +793,7 @@ begin
     if not Result then
       FreeAndNil(ADocFile.Doc);
     MemStream.Free;
-    CallDocChangeEvents(ldmhDocChanging,ADocFile);
+    CallDocChangeEvents(chmhDocChanging,ADocFile);
   end;
 end;
 
@@ -937,7 +931,7 @@ var
 var
   CodeBuf: TCodeBuffer;
   AVLNode: TAvgLvlTreeNode;
-  MapEntry: TLDSourceToFPDocFile;
+  MapEntry: TCHSourceToFPDocFile;
 begin
   Result:='';
   CacheWasUsed:=true;
@@ -963,7 +957,7 @@ begin
     AVLNode:=FSrcToDocMap.FindKey(Pointer(SrcFilename),
                                   @CompareAnsistringWithLDSrc2DocSrcFile);
     if AVLNode<>nil then begin
-      MapEntry:=TLDSourceToFPDocFile(AVLNode.Data);
+      MapEntry:=TCHSourceToFPDocFile(AVLNode.Data);
       if (MapEntry.FPDocFilenameTimeStamp=CompilerParseStamp)
       and (MapEntry.FilesTimeStamp=FileStateCache.TimeStamp) then begin
         Result:=MapEntry.FPDocFilename;
@@ -992,7 +986,7 @@ begin
 
     // save to cache
     if MapEntry=nil then begin
-      MapEntry:=TLDSourceToFPDocFile.Create;
+      MapEntry:=TCHSourceToFPDocFile.Create;
       MapEntry.SourceFilename:=SrcFilename;
       FSrcToDocMap.Add(MapEntry);
     end;
@@ -1036,7 +1030,7 @@ end;
 
 function TCodeHelpManager.GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode;
   Complete: boolean; out FPDocFile: TLazFPDocFile; out DOMNode: TDOMNode;
-  out CacheWasUsed: boolean): TLazDocParseResult;
+  out CacheWasUsed: boolean): TCodeHelpParseResult;
 var
   SrcFilename: String;
   FPDocFilename: String;
@@ -1049,44 +1043,44 @@ begin
   // find corresponding FPDoc file
   SrcFilename:=Tool.MainFilename;
   FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
-  if FPDocFilename='' then exit(ldprFailed);
-  if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+  if FPDocFilename='' then exit(chprFailed);
+  if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
   // load FPDoc file
   if not LoadFPDocFile(FPDocFilename,true,false,FPDocFile,CacheWasUsed) then
-    exit(ldprFailed);
-  if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+    exit(chprFailed);
+  if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
   // find FPDoc node
   ElementName:=CodeNodeToElementName(Tool,CodeNode);
-  if ElementName='' then exit(ldprFailed);
+  if ElementName='' then exit(chprFailed);
   DOMNode:=FPDocFile.GetElementWithName(ElementName);
-  if DOMNode=nil then exit(ldprFailed);
+  if DOMNode=nil then exit(chprFailed);
   
-  Result:=ldprSuccess;
+  Result:=chprSuccess;
 end;
 
 function TCodeHelpManager.GetDeclarationChain(Code: TCodeBuffer; X, Y: integer;
   out ListOfPCodeXYPosition: TFPList; out CacheWasUsed: boolean
-  ): TLazDocParseResult;
+  ): TCodeHelpParseResult;
 begin
   if FDeclarationCache.FindDeclarations(Code,X,Y,ListOfPCodeXYPosition,
     CacheWasUsed)
   then
-    Result:=ldprSuccess
+    Result:=chprSuccess
   else
-    Result:=ldprFailed;
+    Result:=chprFailed;
 end;
 
 function TCodeHelpManager.GetCodeContext(CodePos: PCodeXYPosition; out
   FindContext: TFindContext; Complete: boolean; out CacheWasUsed: boolean
-  ): TLazDocParseResult;
+  ): TCodeHelpParseResult;
 var
   CurTool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
 begin
-  Result:=ldprFailed;
+  Result:=chprFailed;
   FindContext:=CleanFindContext;
   CacheWasUsed:=true;
 
@@ -1134,17 +1128,17 @@ begin
   // success
   FindContext.Tool:=CurTool;
   FindContext.Node:=Node;
-  Result:=ldprSuccess;
+  Result:=chprSuccess;
 end;
 
 function TCodeHelpManager.GetElementChain(Code: TCodeBuffer; X, Y: integer;
-  Complete: boolean; out Chain: TLazDocElementChain; out CacheWasUsed: boolean
-  ): TLazDocParseResult;
+  Complete: boolean; out Chain: TCodeHelpElementChain; out CacheWasUsed: boolean
+  ): TCodeHelpParseResult;
 var
   ListOfPCodeXYPosition: TFPList;
   i: Integer;
   CodePos: PCodeXYPosition;
-  LDElement: TLazDocElement;
+  LDElement: TCodeHelpElement;
   SrcFilename: String;
   FPDocFilename: String;
   FindContext: TFindContext;
@@ -1155,15 +1149,15 @@ begin
     //DebugLn(['TLazDocManager.GetElementChain GetDeclarationChain...']);
     // get the declaration chain
     Result:=GetDeclarationChain(Code,X,Y,ListOfPCodeXYPosition,CacheWasUsed);
-    if Result<>ldprSuccess then exit;
-    if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+    if Result<>chprSuccess then exit;
+    if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
     
     {$IFDEF VerboseLazDoc}
     DebugLn(['TLazDocManager.GetElementChain init the element chain: ListOfPCodeXYPosition.Count=',ListOfPCodeXYPosition.Count,' ...']);
     {$ENDIF}
     // init the element chain
-    Result:=ldprParsing;
-    Chain:=TLazDocElementChain.Create;
+    Result:=chprParsing;
+    Chain:=TCodeHelpElementChain.Create;
     Chain.CodePos.Code:=Code;
     Chain.MakeValid;
     Code.LineColToPosition(Y,X,Chain.CodePos.P);
@@ -1172,9 +1166,9 @@ begin
       // get source position of declaration
       CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
       Result:=GetCodeContext(CodePos,FindContext,Complete,CacheWasUsed);
-      if Result=ldprFailed then continue; // skip invalid contexts
-      if Result<>ldprSuccess then continue;
-      if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+      if Result=chprFailed then continue; // skip invalid contexts
+      if Result<>chprSuccess then continue;
+      if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
       // add element
       LDElement:=Chain.Add;
@@ -1186,13 +1180,13 @@ begin
       SrcFilename:=LDElement.CodeContext.Tool.MainFilename;
       FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
       //DebugLn(['TLazDocManager.GetElementChain FPDocFilename=',FPDocFilename]);
-      if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+      if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
       if FPDocFilename<>'' then begin
         // load FPDoc file
         LoadFPDocFile(FPDocFilename,true,false,LDElement.FPDocFile,
                       CacheWasUsed);
-        if (not CacheWasUsed) and (not Complete) then exit(ldprParsing);
+        if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
       end;
     end;
     
@@ -1212,38 +1206,38 @@ begin
       //DebugLn(['TLazDocManager.GetElementChain ElementNode=',LDElement.ElementNode<>nil]);
     end;
 
-    Result:=ldprSuccess;
+    Result:=chprSuccess;
   finally
-    if Result<>ldprSuccess then
+    if Result<>chprSuccess then
       FreeAndNil(Chain);
   end;
 end;
 
 function TCodeHelpManager.GetHint(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out Hint: string; out CacheWasUsed: boolean
-  ): TLazDocParseResult;
+  ): TCodeHelpParseResult;
   
-  function EndNow(var LastResult: TLazDocParseResult): boolean;
+  function EndNow(var LastResult: TCodeHelpParseResult): boolean;
   begin
-    if LastResult<>ldprSuccess then begin
+    if LastResult<>chprSuccess then begin
       Result:=true;
       if Hint<>'' then
-        LastResult:=ldprSuccess
+        LastResult:=chprSuccess
       else
-        LastResult:=ldprFailed;
+        LastResult:=chprFailed;
       exit;
     end;
     if (not CacheWasUsed) and (not Complete) then begin
       Result:=true;
-      LastResult:=ldprParsing;
+      LastResult:=chprParsing;
     end;
     Result:=false;
   end;
   
 var
-  Chain: TLazDocElementChain;
+  Chain: TCodeHelpElementChain;
   i: Integer;
-  Item: TLazDocElement;
+  Item: TCodeHelpElement;
   NodeValues: TFPDocElementValues;
   f: TFPDocItem;
   ListOfPCodeXYPosition: TFPList;
@@ -1314,7 +1308,7 @@ begin
         end;
       end;
     end;
-    Result:=ldprSuccess;
+    Result:=chprSuccess;
   finally
     FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
     Chain.Free;
@@ -1324,7 +1318,7 @@ begin
 end;
 
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
-  out Element: TLazDocElement): Boolean;
+  out Element: TCodeHelpElement): Boolean;
 var
   CacheWasUsed: boolean;
   SrcFilename: String;
@@ -1338,14 +1332,14 @@ begin
   end;
   DebugLn(['TLazDocManager.CreateElement START ',Code.Filename,' ',X,',',Y]);
   
-  Element:=TLazDocElement.Create;
+  Element:=TCodeHelpElement.Create;
   try
     // check if code context can have a fpdoc element
     Element.CodeXYPos.Code:=Code;
     Element.CodeXYPos.X:=X;
     Element.CodeXYPos.Y:=Y;
     if GetCodeContext(@Element.CodeXYPos,Element.CodeContext,true,
-      CacheWasUsed)<>ldprSuccess then
+      CacheWasUsed)<>chprSuccess then
     begin
       DebugLn(['TLazDocManager.CreateElement GetCodeContext failed for ',Code.Filename,' ',X,',',Y]);
       exit;
@@ -1385,7 +1379,7 @@ var
 begin
   AVLNode:=FDocs.FindLowest;
   while AVLNode<>nil do begin
-    CallDocChangeEvents(ldmhDocChanging,TLazFPDocFile(AVLNode.Data));
+    CallDocChangeEvents(chmhDocChanging,TLazFPDocFile(AVLNode.Data));
     AVLNode:=FDocs.FindSuccessor(AVLNode);
   end;
   FDocs.FreeAndClear;
@@ -1398,68 +1392,68 @@ end;
 
 procedure TCodeHelpManager.RemoveAllHandlersOfObject(AnObject: TObject);
 var
-  HandlerType: TLazDocManagerHandler;
+  HandlerType: TCodeHelpManagerHandler;
 begin
-  for HandlerType:=Low(TLazDocManagerHandler) to High(TLazDocManagerHandler) do
+  for HandlerType:=Low(TCodeHelpManagerHandler) to High(TCodeHelpManagerHandler) do
     FHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
 end;
 
 procedure TCodeHelpManager.AddHandlerOnChanging(
-  const OnDocChangingEvent: TLazDocChangeEvent; AsLast: boolean);
+  const OnDocChangingEvent: TCodeHelpChangeEvent; AsLast: boolean);
 begin
-  AddHandler(ldmhDocChanging,TMethod(OnDocChangingEvent),AsLast);
+  AddHandler(chmhDocChanging,TMethod(OnDocChangingEvent),AsLast);
 end;
 
 procedure TCodeHelpManager.RemoveHandlerOnChanging(
-  const OnDocChangingEvent: TLazDocChangeEvent);
+  const OnDocChangingEvent: TCodeHelpChangeEvent);
 begin
-  RemoveHandler(ldmhDocChanging,TMethod(OnDocChangingEvent));
+  RemoveHandler(chmhDocChanging,TMethod(OnDocChangingEvent));
 end;
 
 procedure TCodeHelpManager.AddHandlerOnChanged(
-  const OnDocChangedEvent: TLazDocChangeEvent; AsLast: boolean);
+  const OnDocChangedEvent: TCodeHelpChangeEvent; AsLast: boolean);
 begin
-  AddHandler(ldmhDocChanged,TMethod(OnDocChangedEvent),AsLast);
+  AddHandler(chmhDocChanged,TMethod(OnDocChangedEvent),AsLast);
 end;
 
 procedure TCodeHelpManager.RemoveHandlerOnChanged(
-  const OnDocChangedEvent: TLazDocChangeEvent);
+  const OnDocChangedEvent: TCodeHelpChangeEvent);
 begin
-  RemoveHandler(ldmhDocChanged,TMethod(OnDocChangedEvent));
+  RemoveHandler(chmhDocChanged,TMethod(OnDocChangedEvent));
 end;
 
 
-{ TLazDocElementChain }
+{ TCodeHelpElementChain }
 
-function TLazDocElementChain.GetCount: integer;
+function TCodeHelpElementChain.GetCount: integer;
 begin
   Result:=FItems.Count;
 end;
 
-function TLazDocElementChain.GetItems(Index: integer): TLazDocElement;
+function TCodeHelpElementChain.GetItems(Index: integer): TCodeHelpElement;
 begin
-  Result:=TLazDocElement(FItems[Index]);
+  Result:=TCodeHelpElement(FItems[Index]);
 end;
 
-function TLazDocElementChain.Add: TLazDocElement;
+function TCodeHelpElementChain.Add: TCodeHelpElement;
 begin
-  Result:=TLazDocElement.Create;
+  Result:=TCodeHelpElement.Create;
   FItems.Add(Result);
 end;
 
-constructor TLazDocElementChain.Create;
+constructor TCodeHelpElementChain.Create;
 begin
   FItems:=TFPList.Create;
 end;
 
-destructor TLazDocElementChain.Destroy;
+destructor TCodeHelpElementChain.Destroy;
 begin
   Clear;
   FreeAndNil(FItems);
   inherited Destroy;
 end;
 
-procedure TLazDocElementChain.Clear;
+procedure TCodeHelpElementChain.Clear;
 var
   i: Integer;
 begin
@@ -1467,7 +1461,7 @@ begin
   FItems.Clear;
 end;
 
-function TLazDocElementChain.IndexOfFile(AFile: TLazFPDocFile): integer;
+function TCodeHelpElementChain.IndexOfFile(AFile: TLazFPDocFile): integer;
 begin
   Result:=FItems.Count-1;
   while (Result>=0) do begin
@@ -1476,19 +1470,19 @@ begin
   end;
 end;
 
-function TLazDocElementChain.IsValid: boolean;
+function TCodeHelpElementChain.IsValid: boolean;
 begin
   Result:=(IDEChangeStep=CompilerParseStamp)
     and (CodetoolsChangeStep=CodeToolBoss.CodeTreeNodesDeletedStep);
 end;
 
-procedure TLazDocElementChain.MakeValid;
+procedure TCodeHelpElementChain.MakeValid;
 begin
   IDEChangeStep:=CompilerParseStamp;
   CodetoolsChangeStep:=CodeToolBoss.CodeTreeNodesDeletedStep;
 end;
 
-function TLazDocElementChain.DocFile: TLazFPDocFile;
+function TCodeHelpElementChain.DocFile: TLazFPDocFile;
 begin
   Result:=nil;
   if (Count>0) then

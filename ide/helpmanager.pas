@@ -433,7 +433,7 @@ begin
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
   
-  LazDocBoss:=TCodeHelpManager.Create;
+  CodeHelpBoss:=TCodeHelpManager.Create;
 
   // register property editors for URL handling
   RegisterPropertyEditor(TypeInfo(AnsiString),
@@ -442,7 +442,7 @@ end;
 
 destructor THelpManager.Destroy;
 begin
-  FreeThenNil(LazDocBoss);
+  FreeThenNil(CodeHelpBoss);
   FPCMessagesHelpDB:=nil;
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
@@ -889,7 +889,7 @@ begin
   Hint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit;
-  if LazDocBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=ldprSuccess
+  if CodeHelpBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
   DebugLn(['THelpManager.GetHintForSourcePosition not found']);
