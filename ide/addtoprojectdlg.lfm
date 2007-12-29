@@ -5,7 +5,7 @@ object AddToProjectDialog: TAddToProjectDialog
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 299
-  ActiveControl = FilesListView
+  ActiveControl = Notebook
   BorderStyle = bsSizeToolWin
   Caption = 'AddToProjectDialog'
   ClientHeight = 300
@@ -16,7 +16,7 @@ object AddToProjectDialog: TAddToProjectDialog
     Height = 300
     Width = 500
     Align = alClient
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object AddEditorFilePage: TPage
       Caption = 'AddEditorFilePage'
@@ -98,10 +98,10 @@ object AddToProjectDialog: TAddToProjectDialog
         ParentColor = False
       end
       object CancelDependButton: TButton
-        Left = 334
-        Height = 31
-        Top = 236
-        Width = 156
+        Left = 342
+        Height = 29
+        Top = 238
+        Width = 148
         Anchors = [akRight, akBottom]
         AutoSize = True
         Caption = 'CancelDependButton'
@@ -110,10 +110,10 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object NewDependButton: TButton
         AnchorSideRight.Control = CancelDependButton
-        Left = 188
-        Height = 31
-        Top = 236
-        Width = 140
+        Left = 204
+        Height = 29
+        Top = 238
+        Width = 132
         Anchors = [akRight, akBottom]
         AutoSize = True
         BorderSpacing.Right = 6
@@ -127,7 +127,8 @@ object AddToProjectDialog: TAddToProjectDialog
         Top = 14
         Width = 272
         Anchors = [akTop, akLeft, akRight]
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        AutoComplete = True
+        AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
         MaxLength = 0
         TabOrder = 2
         Text = 'DependPkgNameComboBox'
@@ -170,9 +171,9 @@ object AddToProjectDialog: TAddToProjectDialog
       end
       object FilesBrowseButton: TButton
         Left = 6
-        Height = 31
-        Top = 231
-        Width = 136
+        Height = 29
+        Top = 233
+        Width = 128
         Anchors = [akLeft, akBottom]
         AutoSize = True
         Caption = 'FilesBrowseButton'
@@ -182,10 +183,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesShortenButton: TButton
         AnchorSideLeft.Control = FilesBrowseButton
         AnchorSideLeft.Side = asrBottom
-        Left = 148
-        Height = 31
-        Top = 231
-        Width = 141
+        Left = 140
+        Height = 29
+        Top = 233
+        Width = 133
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -196,10 +197,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesDeleteButton: TButton
         AnchorSideLeft.Control = FilesShortenButton
         AnchorSideLeft.Side = asrBottom
-        Left = 295
-        Height = 31
-        Top = 231
-        Width = 132
+        Left = 279
+        Height = 29
+        Top = 233
+        Width = 124
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -210,10 +211,10 @@ object AddToProjectDialog: TAddToProjectDialog
       object FilesAddButton: TButton
         AnchorSideLeft.Control = FilesDeleteButton
         AnchorSideLeft.Side = asrBottom
-        Left = 433
-        Height = 31
-        Top = 231
-        Width = 115
+        Left = 409
+        Height = 29
+        Top = 233
+        Width = 107
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
