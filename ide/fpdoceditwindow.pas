@@ -1,10 +1,4 @@
 {
-/***************************************************************************
-                             LazDocFrm.pas
-                             -------------
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -27,7 +21,7 @@
   see for todo list: http://wiki.lazarus.freepascal.org/index.php/LazDoc
 }
 
-unit LazDocFrm;
+unit FPDocEditWindow;
 
 {$mode objfpc}{$H+}
 
@@ -1020,6 +1014,6 @@ begin
 end;
 
 initialization
-  {$I lazdocfrm.lrs}
+  {$I fpdoceditwindow.lrs}
 
 end.

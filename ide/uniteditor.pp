@@ -60,7 +60,7 @@ uses
   CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
-  FPDocHints, LazDocFrm,
+  FPDocHints, FPDocEditWindow,
   BaseDebugManager, Debugger, MainIntf;
 
 type
