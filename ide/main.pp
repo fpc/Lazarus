@@ -12016,6 +12016,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   Identifier, SmartHintStr: string;
   Expression, DebugEval: string;
+  BaseURL: String;
 begin
   if (SrcEdit=nil) then exit;
 
@@ -12040,6 +12041,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo,
     [{ctfActivateAbortMode}]) then exit;
 
+  BaseURL:='';
   case ToolStatus of
     itNone: begin
       {$IFDEF IDE_DEBUG}
@@ -12048,7 +12050,7 @@ begin
       {$ENDIF}
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource A');{$ENDIF}
       THelpManager(HelpBoss).GetHintForSourcePosition(ActiveUnitInfo.Filename,
-                                            CaretPos,SmartHintStr);
+                                            CaretPos,BaseURL,SmartHintStr);
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.OnSrcNotebookShowHintForSource B');{$ENDIF}
     end;
     itDebugger: begin
@@ -12066,7 +12068,7 @@ begin
   end;
 
   if SmartHintStr<>'' then
-    SrcEdit.ActivateHint(ClientPos,SmartHintStr);
+    SrcEdit.ActivateHint(ClientPos,BaseURL,SmartHintStr);
 end;
 
 procedure TMainIDE.OnSrcNoteBookActivated(Sender: TObject);

@@ -77,6 +77,7 @@ type
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property URL: string read GetURL write SetURL;
+    procedure SetHTMLContent(Stream: TStream);
   end;
 
   { TAbstractIDEHTMLProvider

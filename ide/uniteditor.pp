@@ -51,7 +51,7 @@ uses
   SynEditKeyCmds, SynCompletion,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
-  IDEWindowIntf, IDEImagesIntf,
+  IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
@@ -237,7 +237,8 @@ type
     
     // dialogs
     procedure GetDialogPosition(Width, Height:integer; out Left,Top:integer);
-    procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
+    procedure ActivateHint(ClientPos: TPoint;
+                           const BaseURL, TheHint: string);
 
     // selections
     function SelectionAvailable: boolean; override;
@@ -688,7 +689,8 @@ type
     procedure ViewJumpHistoryClicked(Sender: TObject);
 
     // hints
-    procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
+    procedure ActivateHint(const ScreenPos: TPoint;
+                           const BaseURL, TheHint: string);
     procedure HideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
     procedure StartShowCodeHelp;
@@ -1094,13 +1096,14 @@ begin
   if Top<0 then Top:=0;
 end;
 
-procedure TSourceEditor.ActivateHint(ClientPos: TPoint; const TheHint: string);
+procedure TSourceEditor.ActivateHint(ClientPos: TPoint;
+  const BaseURL, TheHint: string);
 var
   ScreenPos: TPoint;
 begin
   if SourceNotebook=nil then exit;
   ScreenPos:=EditorComponent.ClientToScreen(ClientPos);
-  SourceNotebook.ActivateHint(ScreenPos,TheHint);
+  SourceNotebook.ActivateHint(ScreenPos,BaseURL,TheHint);
 end;
 
 {------------------------------S T A R T  F I N D-----------------------------}
@@ -4768,17 +4771,47 @@ begin
 end;
 
 procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
-  const TheHint: string);
+  const BaseURL, TheHint: string);
 var
   HintWinRect: TRect;
+  IsHTML: Boolean;
+  Provider: TAbstractIDEHTMLProvider;
+  HTMLControl: TControl;
+  ms: TMemoryStream;
 begin
   if FHintWindow<>nil then
     FHintWindow.Visible:=false;
   if FHintWindow=nil then
     FHintWindow:=THintWindow.Create(Self);
-  HintWinRect := FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
-  OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
-  FHintWindow.ActivateHint(HintWinRect,TheHint);
+  IsHTML:=SysUtils.CompareText(copy(TheHint,1,6),'<HTML>')=0;
+  //DebugLn(['TSourceNotebook.ActivateHint IsHTML=',IsHTML,' TheHint=',TheHint]);
+  if IsHTML then begin
+    HintWinRect := Rect(0,0,500,200);
+    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
+    if FHintWindow.ControlCount>0 then begin
+      //DebugLn(['TSourceNotebook.ActivateHint ',dbgsName(FHintWindow.Controls[0])]);
+      FHintWindow.Controls[0].Free;
+    end;
+    Provider:=nil;
+    HTMLControl:=CreateIDEHTMLControl(FHintWindow,Provider);
+    Provider.BaseURL:=BaseURL;
+    HTMLControl.Parent:=FHintWindow;
+    HTMLControl.Align:=alClient;
+    ms:=TMemoryStream.Create;
+    try
+      if TheHint<>'' then
+        ms.Write(TheHint[1],length(TheHint));
+      ms.Position:=0;
+      Provider.ControlIntf.SetHTMLContent(ms);
+    finally
+      ms.Free;
+    end;
+    FHintWindow.ActivateHint(HintWinRect,'');
+  end else begin
+    HintWinRect := FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
+    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
+    FHintWindow.ActivateHint(HintWinRect,TheHint);
+  end;
 end;
 
 procedure TSourceNotebook.HideHint;
@@ -5941,7 +5974,7 @@ begin
         HintStr:=HintStr+CurHint;
       end;
       if HintStr<>'' then
-        ActivateHint(MousePos,HintStr);
+        ActivateHint(MousePos,'',HintStr);
     end;
   end else begin
     // hint for source

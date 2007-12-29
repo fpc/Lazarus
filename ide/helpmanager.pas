@@ -105,6 +105,7 @@ type
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
+    procedure SetHTMLContent(Stream: TStream);
   end;
 
   { TIDEHelpDatabases }
@@ -165,7 +166,7 @@ type
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     function GetHintForSourcePosition(const ExpandedFilename: string;
                                       const CodePos: TPoint;
-                                      out Hint: string): TShowHelpResult;
+                                      out BaseURL, HTMLHint: string): TShowHelpResult;
 
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                const Filename: string): TPascalHelpContextList; override;
@@ -316,6 +317,16 @@ begin
       Caption:=E.Message;
     end;
   end;
+end;
+
+procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream);
+var
+  s: string;
+begin
+  SetLength(s,Stream.Size);
+  if s<>'' then
+    Stream.Read(s[1],length(s));
+  Caption:=HTMLToCaption(s);
 end;
 
 { TLazIDEHTMLProvider }
@@ -1199,15 +1210,17 @@ begin
 end;
 
 function THelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
-  const CodePos: TPoint; out Hint: string): TShowHelpResult;
+  const CodePos: TPoint; out BaseURL, HTMLHint: string): TShowHelpResult;
 var
   Code: TCodeBuffer;
   CacheWasUsed: boolean;
 begin
-  Hint:='';
+  BaseURL:='';
+  HTMLHint:='';
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
   if Code=nil then exit;
-  if CodeHelpBoss.GetHint(Code,CodePos.X,CodePos.Y,true,Hint,CacheWasUsed)=chprSuccess
+  if CodeHelpBoss.GetHTMLHint(Code,CodePos.X,CodePos.Y,true,
+    BaseURL,HTMLHint,CacheWasUsed)=chprSuccess
   then
     exit(shrSuccess);
   DebugLn(['THelpManager.GetHintForSourcePosition not found']);

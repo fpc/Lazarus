@@ -44,6 +44,7 @@ type
     function GetURL: string;
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
+    procedure SetHTMLContent(Stream: TStream);
   end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
@@ -135,6 +136,7 @@ var
   Stream: TStream;
   NewHTML: TSimpleIpHtml;
   NewURL: String;
+  ok: Boolean;
 begin
   if Provider=nil then raise Exception.Create('TIPLazHtmlControl.SetURL missing Provider');
   if FURL=AValue then exit;
@@ -143,11 +145,15 @@ begin
   FURL:=NewURL;
   try
     Stream:=Provider.GetStream(FURL);
+    ok:=false;
+    NewHTML:=nil;
     try
-      NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically
+      NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically TIpHtmlPanel
       NewHTML.OnGetImageX:=@HTMLGetImageX;
       NewHTML.LoadFromStream(Stream);
+      ok:=true;
     finally
+      if not ok then NewHTML.Free;
       Provider.ReleaseStream(FURL);
     end;
     SetHtml(NewHTML);
@@ -158,6 +164,24 @@ begin
         +'Error: '+E.Message,mtError,[mbCancel],0);
     end;
   end;
+end;
+
+procedure TIPLazHtmlControl.SetHTMLContent(Stream: TStream);
+var
+  ok: Boolean;
+  NewHTML: TSimpleIpHtml;
+begin
+  ok:=false;
+  NewHTML:=nil;
+  try
+    NewHTML:=TSimpleIpHtml.Create; // Beware: Will be freed automatically by TIpHtmlPanel
+    NewHTML.OnGetImageX:=@HTMLGetImageX;
+    NewHTML.LoadFromStream(Stream);
+    ok:=true;
+  finally
+    if not ok then NewHTML.Free;
+  end;
+  SetHtml(NewHTML);
 end;
 
 end.

@@ -201,8 +201,8 @@ type
     function GetElementChain(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
                              out Chain: TCodeHelpElementChain;
                              out CacheWasUsed: boolean): TCodeHelpParseResult;
-    function GetHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
-                     out Hint: string;
+    function GetHTMLHint(Code: TCodeBuffer; X, Y: integer; Complete: boolean;
+                     out BaseURL, HTMLHint: string;
                      out CacheWasUsed: boolean): TCodeHelpParseResult;
     function CreateElement(Code: TCodeBuffer; X, Y: integer;
                            out Element: TCodeHelpElement): Boolean;
@@ -1213,15 +1213,19 @@ begin
   end;
 end;
 
-function TCodeHelpManager.GetHint(Code: TCodeBuffer; X, Y: integer;
-  Complete: boolean; out Hint: string; out CacheWasUsed: boolean
+function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
+  Complete: boolean; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
   ): TCodeHelpParseResult;
+const
+  le = '<BR>'#13;
+var
+  IsHTML: boolean;
   
   function EndNow(var LastResult: TCodeHelpParseResult): boolean;
   begin
     if LastResult<>chprSuccess then begin
       Result:=true;
-      if Hint<>'' then
+      if HTMLHint<>'' then
         LastResult:=chprSuccess
       else
         LastResult:=chprFailed;
@@ -1232,6 +1236,16 @@ function TCodeHelpManager.GetHint(Code: TCodeBuffer; X, Y: integer;
       LastResult:=chprParsing;
     end;
     Result:=false;
+  end;
+  
+  procedure AddHTML(const s: string);
+  begin
+    if not IsHTML then begin
+      IsHTML:=true;
+      if HTMLHint<>'' then
+        HTMLHint:=HTMLHint+le+le;
+      HTMLHint:=HTMLHint+s;
+    end;
   end;
   
 var
@@ -1250,71 +1264,74 @@ var
   j: Integer;
 begin
   //DebugLn(['TLazDocManager.GetHint ',Code.Filename,' ',X,',',Y]);
-  Hint:=CodeToolBoss.FindSmartHint(Code,X,Y);
-
-  CacheWasUsed:=true;
-  Chain:=nil;
-  ListOfPCodeXYPosition:=nil;
+  BaseURL:='lazdoc://';
+  IsHTML:=false;
   try
-    //DebugLn(['TLazDocManager.GetHint GetElementChain...']);
-    Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
-    if EndNow(Result) then exit;
+    HTMLHint:=CodeToolBoss.FindSmartHint(Code,X,Y);
 
-    if Chain<>nil then begin
-      for i:=0 to Chain.Count-1 do begin
-        Item:=Chain[i];
-        ItemAdded:=false;
-        DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
-        if Item.ElementNode<>nil then begin
-          NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
-          for f:=Low(TFPDocItem) to High(TFPDocItem) do
-            DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
-          if NodeValues[fpdiShort]<>'' then begin
-            Hint:=Hint+#13#13
-                  +Item.ElementName+#13
-                  +NodeValues[fpdiShort];
-            ItemAdded:=true;
-          end;
-        end;
-        
-        // Add comments
-        if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
-          Item.CodeXYPos.X,Item.CodeXYPos.Y,ListOfPCodeXYPosition)
-        and (ListOfPCodeXYPosition<>nil) then
-        begin
-          NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(
-                                                  Item.CodeXYPos.Code.Filename);
-          for j:=0 to ListOfPCodeXYPosition.Count-1 do begin
-            CodeXYPos:=PCodeXYPosition(ListOfPCodeXYPosition[j]);
-            CommentCode:=CodeXYPos^.Code;
-            CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
-            if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
-            then
-              continue;
-            CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
-                                              NestedComments,true,true);
-            if CommentStr<>'' then begin
-              if not ItemAdded then begin
-                Hint:=Hint+#13#13
-                      +Item.ElementName+#13
-                      +CommentStr;
-              end else begin
-                Hint:=Hint+#13
-                      +CommentStr;
-              end;
+    CacheWasUsed:=true;
+    Chain:=nil;
+    ListOfPCodeXYPosition:=nil;
+    try
+      //DebugLn(['TLazDocManager.GetHint GetElementChain...']);
+      Result:=GetElementChain(Code,X,Y,Complete,Chain,CacheWasUsed);
+      if EndNow(Result) then exit;
+
+      if Chain<>nil then begin
+        for i:=0 to Chain.Count-1 do begin
+          Item:=Chain[i];
+          ItemAdded:=false;
+          DebugLn(['TLazDocManager.GetHint ',i,' Element=',Item.ElementName]);
+          if Item.ElementNode<>nil then begin
+            NodeValues:=Item.FPDocFile.GetValuesFromNode(Item.ElementNode);
+            for f:=Low(TFPDocItem) to High(TFPDocItem) do
+              DebugLn(['TLazDocManager.GetHint ',FPDocItemNames[f],' ',NodeValues[f]]);
+            if NodeValues[fpdiShort]<>'' then begin
+              AddHTML(Item.ElementName+le
+                      +NodeValues[fpdiShort]);
               ItemAdded:=true;
+            end;
+          end;
+
+          // Add comments
+          if CodeToolBoss.GetPasDocComments(Item.CodeXYPos.Code,
+            Item.CodeXYPos.X,Item.CodeXYPos.Y,ListOfPCodeXYPosition)
+          and (ListOfPCodeXYPosition<>nil) then
+          begin
+            NestedComments:=CodeToolBoss.GetNestedCommentsFlagForFile(
+                                                    Item.CodeXYPos.Code.Filename);
+            for j:=0 to ListOfPCodeXYPosition.Count-1 do begin
+              CodeXYPos:=PCodeXYPosition(ListOfPCodeXYPosition[j]);
+              CommentCode:=CodeXYPos^.Code;
+              CommentCode.LineColToPosition(CodeXYPos^.Y,CodeXYPos^.X,CommentStart);
+              if (CommentStart<1) or (CommentStart>CommentCode.SourceLength)
+              then
+                continue;
+              CommentStr:=ExtractCommentContent(CommentCode.Source,CommentStart,
+                                                NestedComments,true,true);
+              if CommentStr<>'' then begin
+                if not ItemAdded then begin
+                  AddHTML(Item.ElementName+le
+                          +CommentStr);
+                end else begin
+                  AddHTML(CommentStr);
+                end;
+                ItemAdded:=true;
+              end;
             end;
           end;
         end;
       end;
+      Result:=chprSuccess;
+    finally
+      FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      Chain.Free;
     end;
-    Result:=chprSuccess;
   finally
-    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    Chain.Free;
+    if IsHTML then
+      HTMLHint:='<HTML><BODY>'+HTMLHint+'</BODY></HTML>';
   end;
-  
-  DebugLn(['TLazDocManager.GetHint END Hint="',Hint,'"']);
+  DebugLn(['TLazDocManager.GetHint END Hint="',HTMLHint,'"']);
 end;
 
 function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
