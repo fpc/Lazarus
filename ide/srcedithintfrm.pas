@@ -1,10 +1,4 @@
 {
-/***************************************************************************
-                             CodeHelpForm.pas
-                             -------------------
-
- ***************************************************************************/
-
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -30,7 +24,7 @@
     The base class for hint windows for the source editor for the online help.
     For example for the fpdoc and comment help.
 }
-unit CodeHelpForm;
+unit SrcEditHintFrm;
 
 {$mode objfpc}{$H+}
 

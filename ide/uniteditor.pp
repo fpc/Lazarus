@@ -55,7 +55,7 @@ uses
   // IDE units
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  MacroPromptDlg, TransferMacros, CodeContextForm, CodeHelpForm,
+  MacroPromptDlg, TransferMacros, CodeContextForm, SrcEditHintFrm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
   CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
