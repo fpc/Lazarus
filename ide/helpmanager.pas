@@ -46,7 +46,7 @@ uses
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
-  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, LazDoc,
+  OutputFilter, HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
   IDEContextHelpEdit;
 
 type

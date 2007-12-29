@@ -50,7 +50,7 @@ uses
   IDEHelpIntf, LazHelpIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts,
-  IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, LazDoc;
+  IDEProcs, LazarusIDEStrConsts, LazDocSelectInherited, CodeHelp;
 
 type
   TLazDocFormFlag = (

@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics,
   CodeToolManager, CodeCache, BasicCodeTools, IdentCompletionTool,
   SrcEditorIntf,
-  CodeHelpForm, LazDoc;
+  CodeHelpForm, CodeHelp;
 
 type
 
