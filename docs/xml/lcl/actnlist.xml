@@ -72,9 +72,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.GetIndex.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.GetIndex.Result"><short/></element>
       <!-- function Visibility: private -->
       <element name="TContainedAction.IsCategoryStored">
         <short/>
@@ -83,9 +81,7 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.IsCategoryStored.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.IsCategoryStored.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TContainedAction.SetCategory">
         <short/>
@@ -94,9 +90,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TContainedAction.SetCategory.Value">
-        <short/>
-      </element>
+      <element name="TContainedAction.SetCategory.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TContainedAction.SetIndex">
         <short/>
@@ -105,9 +99,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TContainedAction.SetIndex.Value">
-        <short/>
-      </element>
+      <element name="TContainedAction.SetIndex.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TContainedAction.SetActionList">
         <short/>
@@ -116,9 +108,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TContainedAction.SetActionList.AActionList">
-        <short/>
-      </element>
+      <element name="TContainedAction.SetActionList.AActionList"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TContainedAction.ReadState">
         <short/>
@@ -127,9 +117,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TContainedAction.ReadState.Reader">
-        <short/>
-      </element>
+      <element name="TContainedAction.ReadState.Reader"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TContainedAction.SetParentComponent">
         <short/>
@@ -138,9 +126,7 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TContainedAction.SetParentComponent.AParent">
-        <short/>
-      </element>
+      <element name="TContainedAction.SetParentComponent.AParent"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TContainedAction.Change">
         <short/>
@@ -173,9 +159,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.Execute.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.Execute.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TContainedAction.GetParentComponent">
         <short/>
@@ -184,9 +168,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.GetParentComponent.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.GetParentComponent.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TContainedAction.HasParent">
         <short/>
@@ -195,9 +177,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.HasParent.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.HasParent.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TContainedAction.Update">
         <short/>
@@ -206,9 +186,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TContainedAction.Update.Result">
-        <short/>
-      </element>
+      <element name="TContainedAction.Update.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TContainedAction.ActionList">
         <short/>
@@ -240,13 +218,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionEvent.Action">
-        <short/>
-      </element>
+      <element name="TActionEvent.Action"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TActionEvent.Handled">
-        <short/>
-      </element>
+      <element name="TActionEvent.Handled"><short/></element>
       <!-- enumeration type Visibility: default -->
       <element name="TActionListState">
         <short/>
@@ -254,34 +228,27 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TActionListState.asNormal">
-        <short/>
-      </element>
+      <element name="TActionListState.asNormal"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TActionListState.asSuspended">
-        <short/>
-      </element>
+      <element name="TActionListState.asSuspended"><short/></element>
       <!-- enumeration value Visibility: default -->
-      <element name="TActionListState.asSuspendedEnabled">
-        <short/>
-      </element>
+      <element name="TActionListState.asSuspendedEnabled"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomActionList">
         <short>A generic class for all action list components</short>
-        <descr><p>TCustomActionList is a generic class for all components that
+        <descr>
+          <p>TCustomActionList is a generic class for all components that
  represent action lists. TCustomActionList is the ancestor for TActionList.
  If you want to define your own action list class, you should use this
  class to derive it from.</p>
-<p></p>
-<p>TActionList, TAction, TActionLink and TContainedAction are used to centralize
+          <p/>
+          <p>TActionList, TAction, TActionLink and TContainedAction are used to centralize
  the implementation of user commands, and can then be linked to the apropriete
  button, menu or another component. This an Object-Oriented programming strategy
  to reuse the code, as oposed to the Event-Oriented approach of writing an
  OnClick event for each component.</p>
-</descr>
-        <seealso>
-          <link id="TActionList"/>
-        </seealso>
+        </descr>
+        <seealso><link id="TActionList"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomActionList.FActions">
@@ -333,13 +300,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.GetAction.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.GetAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.GetAction.Index">
-        <short/>
-      </element>
+      <element name="TCustomActionList.GetAction.Index"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomActionList.GetActionCount">
         <short/>
@@ -348,9 +311,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.GetActionCount.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.GetActionCount.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomActionList.ImageListChange">
         <short/>
@@ -359,9 +320,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.ImageListChange.Sender">
-        <short/>
-      </element>
+      <element name="TCustomActionList.ImageListChange.Sender"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomActionList.SetAction">
         <short/>
@@ -370,13 +329,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetAction.Index">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetAction.Index"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetAction.Value">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetAction.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomActionList.SetState">
         <short/>
@@ -385,9 +340,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetState.Value">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetState.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.AddAction">
         <short/>
@@ -396,9 +349,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.AddAction.Action">
-        <short/>
-      </element>
+      <element name="TCustomActionList.AddAction.Action"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.RemoveAction">
         <short/>
@@ -407,9 +358,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.RemoveAction.Action">
-        <short/>
-      </element>
+      <element name="TCustomActionList.RemoveAction.Action"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.Change">
         <short/>
@@ -425,13 +374,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.GetChildren.Proc">
-        <short/>
-      </element>
+      <element name="TCustomActionList.GetChildren.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.GetChildren.Root">
-        <short/>
-      </element>
+      <element name="TCustomActionList.GetChildren.Root"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.Notification">
         <short/>
@@ -440,13 +385,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.Notification.AComponent">
-        <short/>
-      </element>
+      <element name="TCustomActionList.Notification.AComponent"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomActionList.Notification.Operation"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.SetChildOrder">
         <short/>
@@ -455,13 +396,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetChildOrder.Component">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetChildOrder.Component"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetChildOrder.Order">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetChildOrder.Order"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomActionList.SetImages">
         <short/>
@@ -470,9 +407,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.SetImages.Value">
-        <short/>
-      </element>
+      <element name="TCustomActionList.SetImages.Value"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomActionList.OnChange">
         <short/>
@@ -503,9 +438,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomActionList.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomActionList.Destroy">
         <short>Deallocates an object</short>
@@ -531,13 +464,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.ExecuteAction.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.ExecuteAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.ExecuteAction.Action">
-        <short/>
-      </element>
+      <element name="TCustomActionList.ExecuteAction.Action"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomActionList.UpdateAction">
         <short/>
@@ -546,13 +475,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.UpdateAction.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.UpdateAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.UpdateAction.Action">
-        <short/>
-      </element>
+      <element name="TCustomActionList.UpdateAction.Action"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomActionList.IndexOfName">
         <short/>
@@ -561,13 +486,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.IndexOfName.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.IndexOfName.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.IndexOfName.ActionName">
-        <short/>
-      </element>
+      <element name="TCustomActionList.IndexOfName.ActionName"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomActionList.ActionByName">
         <short/>
@@ -576,13 +497,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomActionList.ActionByName.Result">
-        <short/>
-      </element>
+      <element name="TCustomActionList.ActionByName.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.ActionByName.ActionName">
-        <short/>
-      </element>
+      <element name="TCustomActionList.ActionByName.ActionName"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomActionList.Actions">
         <short/>
@@ -590,9 +507,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomActionList.Actions.Index">
-        <short/>
-      </element>
+      <element name="TCustomActionList.Actions.Index"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomActionList.ActionCount">
         <short/>
@@ -613,14 +528,16 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- object Visibility: default -->
       <element name="TActionList">
-        <short>The basic actions list class</short>
-        <descr>TActionList is the last component on the "Standard" component pallete on the Lazarus IDE.
-
-To add, remove or modify actions on the list by right-click an ActionList on the form editor and then choose "Edit action list...". This will open the "Action List Editor". You can now use the "+" and "-" buttons to add and remove actions. To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action´s name on the "Action List Editor".</descr>
-        <errors/>
-        <seealso>
-          <link id="TActionList"/>
-        </seealso>
+        <short><i>TActionList</i>  - The basic actions list class</short>
+        <descr>
+          <p><i>TActionList</i> - The basic actions list class</p>
+          <p><i>TActionList</i> is the last component on the "Standard" component pallete on the Lazarus IDE.</p>
+          <p>To use an ActionList, click on the icon on the IDE Standard Components toolbar, then click anywhere on the main form and an ActionList icon will appear. It doesn't matter where you position it, because it is not visible at run-time. </p>
+          <p>You can add, remove or modify actions on the list by right-clicking on the ActionList icon on the form editor and then choosing "Edit action list...". This will open the "Action List Editor". </p>
+          <p>You can now use the "+" and "-" buttons to add and remove actions. The ActionList editor menu allows you to select standard actions from a selection (option 'New Standard Action')  or create a new action (option 'New Action'). To edit an action, click it and then open the object inspector. To add code to be executed when an action is triggered, double-click the action's name on the "Action List Editor".</p>
+          <p>The <i>TActionList</i>
+ Class introduces very few properties of its own, but inherits a lot from its ancestor, <link id="#lcl.ActnLst.TCustomActionList">TCustomActionList</link>, and related components <link id="#lcl.ActnLst.TAction">TAction</link>, <link id="#lcl.ActnLst.TCustomAction">TCustomAction</link>, <link id="#lcl.ActnLst.TContainedAction">TContainedAction</link> and <link id="#rtl.Classes.TBasicAction">TBasicAction</link></p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TActionList.Images">
@@ -667,13 +584,9 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TShortCutList.GetShortCuts.Result">
-        <short/>
-      </element>
+      <element name="TShortCutList.GetShortCuts.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TShortCutList.GetShortCuts.Index">
-        <short/>
-      </element>
+      <element name="TShortCutList.GetShortCuts.Index"><short/></element>
       <!-- function Visibility: public -->
       <element name="TShortCutList.Add">
         <short/>
@@ -682,13 +595,9 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TShortCutList.Add.Result">
-        <short/>
-      </element>
+      <element name="TShortCutList.Add.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TShortCutList.Add.S">
-        <short/>
-      </element>
+      <element name="TShortCutList.Add.S"><short/></element>
       <!-- function Visibility: public -->
       <element name="TShortCutList.IndexOfShortCut">
         <short/>
@@ -697,13 +606,9 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TShortCutList.IndexOfShortCut.Result">
-        <short/>
-      </element>
+      <element name="TShortCutList.IndexOfShortCut.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TShortCutList.IndexOfShortCut.Shortcut">
-        <short/>
-      </element>
+      <element name="TShortCutList.IndexOfShortCut.Shortcut"><short/></element>
       <!-- property Visibility: public -->
       <element name="TShortCutList.ShortCuts">
         <short/>
@@ -711,9 +616,7 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TShortCutList.ShortCuts.Index">
-        <short/>
-      </element>
+      <element name="TShortCutList.ShortCuts.Index"><short/></element>
       <!-- procedure type Visibility: default -->
       <element name="THintEvent">
         <short/>
@@ -721,13 +624,9 @@ To add, remove or modify actions on the list by right-click an ActionList on the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="THintEvent.HintStr">
-        <short/>
-      </element>
+      <element name="THintEvent.HintStr"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="THintEvent.CanShow">
-        <short/>
-      </element>
+      <element name="THintEvent.CanShow"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomAction">
         <short>A generic class for all Action components</short>
@@ -736,9 +635,7 @@ To add, remove or modify actions on the list by right-click an ActionList on the
 TActionList, TAction, TActionLink and TContainedAction are used to centralize the implementation of user commands, and can then be linked to the appropriate button, menu or another component. This is an Object-Oriented programming strategy to reuse code, as opposed to the Event-Oriented approach of writing an OnClick event for each component.
 
 You can assign a action to a component by using the Object Inspector.</descr>
-        <seealso>
-          <link id="TAction"/>
-        </seealso>
+        <seealso><link id="TAction"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomAction.FDisableIfNoHandler">
@@ -850,9 +747,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetAutoCheck.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetAutoCheck.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetCaption">
         <short/>
@@ -861,9 +756,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetCaption.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetCaption.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetChecked">
         <short/>
@@ -872,9 +765,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetChecked.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetEnabled">
         <short/>
@@ -883,9 +774,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetEnabled.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetEnabled.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetGroupIndex">
         <short/>
@@ -894,9 +783,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetGroupIndex.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetGroupIndex.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetHelpContext">
         <short/>
@@ -905,9 +792,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetHelpContext.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetHelpContext.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetHelpKeyword">
         <short/>
@@ -916,9 +801,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetHelpKeyword.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetHelpKeyword.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetHelpType">
         <short/>
@@ -927,9 +810,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetHelpType.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetHelpType.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetHint">
         <short/>
@@ -938,9 +819,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetHint.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetHint.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetImageIndex">
         <short/>
@@ -949,9 +828,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetImageIndex.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetImageIndex.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetShortCut">
         <short/>
@@ -960,9 +837,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetShortCut.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetShortCut.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetVisible">
         <short/>
@@ -971,9 +846,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetVisible.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetVisible.Value"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomAction.GetSecondaryShortCuts">
         <short/>
@@ -982,9 +855,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomAction.GetSecondaryShortCuts.Result">
-        <short/>
-      </element>
+      <element name="TCustomAction.GetSecondaryShortCuts.Result"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TCustomAction.SetSecondaryShortCuts">
         <short/>
@@ -993,9 +864,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetSecondaryShortCuts.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetSecondaryShortCuts.Value"><short/></element>
       <!-- function Visibility: private -->
       <element name="TCustomAction.IsSecondaryShortCutsStored">
         <short/>
@@ -1004,9 +873,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomAction.IsSecondaryShortCutsStored.Result">
-        <short/>
-      </element>
+      <element name="TCustomAction.IsSecondaryShortCutsStored.Result"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TCustomAction.FImage">
         <short/>
@@ -1027,9 +894,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.AssignTo.Dest">
-        <short/>
-      </element>
+      <element name="TCustomAction.AssignTo.Dest"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomAction.SetName">
         <short/>
@@ -1038,9 +903,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.SetName.Value">
-        <short/>
-      </element>
+      <element name="TCustomAction.SetName.Value"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TCustomAction.HandleShortCut">
         <short/>
@@ -1049,9 +912,7 @@ You can assign a action to a component by using the Object Inspector.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomAction.HandleShortCut.Result">
-        <short/>
-      </element>
+      <element name="TCustomAction.HandleShortCut.Result"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TCustomAction.SavedEnabledState">
         <short/>
@@ -1070,9 +931,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TCustomAction.Create.AOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TCustomAction.Destroy">
         <short>Deallocates an object</short>
@@ -1098,13 +957,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomAction.DoHint.Result">
-        <short/>
-      </element>
+      <element name="TCustomAction.DoHint.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TCustomAction.DoHint.HintStr">
-        <short/>
-      </element>
+      <element name="TCustomAction.DoHint.HintStr"><short/></element>
       <!-- function Visibility: public -->
       <element name="TCustomAction.Execute">
         <short/>
@@ -1113,9 +968,7 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomAction.Execute.Result">
-        <short/>
-      </element>
+      <element name="TCustomAction.Execute.Result"><short/></element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.AutoCheck">
         <short/>
@@ -1212,9 +1065,7 @@ Take the following precautions when creating your own Destroy method:
         <descr>TAction is the basic action object used on the LCL.
 
 It redeclares many properties inherited from TCustomAction on the published section, but does not add any new features. For more details look at the See Also section for TCustomAction.</descr>
-        <seealso>
-          <link id="TCustomAction"/>
-        </seealso>
+        <seealso><link id="TCustomAction"/></seealso>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TAction.Create">
@@ -1228,9 +1079,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TAction.Create.AOwner">
-        <short/>
-      </element>
+      <element name="TAction.Create.AOwner"><short/></element>
       <!-- property Visibility: published -->
       <element name="TAction.AutoCheck">
         <short/>
@@ -1342,9 +1191,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetAutoCheck.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetAutoCheck.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetCaption">
         <short/>
@@ -1353,9 +1200,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetCaption.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetCaption.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetChecked">
         <short/>
@@ -1364,9 +1209,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetChecked.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetChecked.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetEnabled">
         <short/>
@@ -1375,9 +1218,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetEnabled.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetEnabled.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetGroupIndex">
         <short/>
@@ -1386,9 +1227,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetGroupIndex.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetGroupIndex.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpContext">
         <short/>
@@ -1397,9 +1236,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetHelpContext.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetHelpContext.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpKeyword">
         <short/>
@@ -1408,9 +1245,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetHelpKeyword.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetHelpKeyword.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHelpType">
         <short/>
@@ -1419,9 +1254,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetHelpType.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetHelpType.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetHint">
         <short/>
@@ -1430,9 +1263,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetHint.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetHint.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetImageIndex">
         <short/>
@@ -1441,9 +1272,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetImageIndex.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetImageIndex.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetShortCut">
         <short/>
@@ -1452,9 +1281,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetShortCut.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetShortCut.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TActionLink.SetVisible">
         <short/>
@@ -1463,9 +1290,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TActionLink.SetVisible.Value">
-        <short/>
-      </element>
+      <element name="TActionLink.SetVisible.Value"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsCaptionLinked">
         <short/>
@@ -1474,9 +1299,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsCaptionLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsCaptionLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsCheckedLinked">
         <short/>
@@ -1485,9 +1308,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsCheckedLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsCheckedLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsEnabledLinked">
         <short/>
@@ -1496,9 +1317,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsEnabledLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsEnabledLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsGroupIndexLinked">
         <short/>
@@ -1507,9 +1326,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsGroupIndexLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsGroupIndexLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHelpContextLinked">
         <short/>
@@ -1518,9 +1335,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsHelpContextLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsHelpContextLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHelpLinked">
         <short/>
@@ -1529,9 +1344,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsHelpLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsHelpLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHintLinked">
         <short/>
@@ -1540,9 +1353,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsHintLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsHintLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsImageIndexLinked">
         <short/>
@@ -1551,9 +1362,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsImageIndexLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsImageIndexLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsShortCutLinked">
         <short/>
@@ -1562,9 +1371,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsShortCutLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsShortCutLinked.Result"><short/></element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsVisibleLinked">
         <short/>
@@ -1573,9 +1380,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TActionLink.IsVisibleLinked.Result">
-        <short/>
-      </element>
+      <element name="TActionLink.IsVisibleLinked.Result"><short/></element>
       <!-- "class of" type Visibility: default -->
       <element name="TActionLinkClass">
         <short/>
@@ -1589,17 +1394,11 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TEnumActionProc.Category">
-        <short/>
-      </element>
+      <element name="TEnumActionProc.Category"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TEnumActionProc.ActionClass">
-        <short/>
-      </element>
+      <element name="TEnumActionProc.ActionClass"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TEnumActionProc.Info">
-        <short/>
-      </element>
+      <element name="TEnumActionProc.Info"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="RegisterActions">
         <short/>
@@ -1608,17 +1407,11 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="RegisterActions.CategoryName">
-        <short/>
-      </element>
+      <element name="RegisterActions.CategoryName"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="RegisterActions.AClasses">
-        <short/>
-      </element>
+      <element name="RegisterActions.AClasses"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="RegisterActions.Resource">
-        <short/>
-      </element>
+      <element name="RegisterActions.Resource"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="UnRegisterActions">
         <short/>
@@ -1627,9 +1420,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="UnRegisterActions.AClasses">
-        <short/>
-      </element>
+      <element name="UnRegisterActions.AClasses"><short/></element>
       <!-- procedure Visibility: default -->
       <element name="EnumRegisteredActions">
         <short/>
@@ -1638,13 +1429,9 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="EnumRegisteredActions.Proc">
-        <short/>
-      </element>
+      <element name="EnumRegisteredActions.Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="EnumRegisteredActions.Info">
-        <short/>
-      </element>
+      <element name="EnumRegisteredActions.Info"><short/></element>
       <!-- function Visibility: default -->
       <element name="CreateAction">
         <short/>
@@ -1653,17 +1440,11 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="CreateAction.Result">
-        <short/>
-      </element>
+      <element name="CreateAction.Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="CreateAction.TheOwner">
-        <short/>
-      </element>
+      <element name="CreateAction.TheOwner"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="CreateAction.ActionClass">
-        <short/>
-      </element>
+      <element name="CreateAction.ActionClass"><short/></element>
       <!-- constant Visibility: default -->
       <element name="RegisterActionsProc">
         <short/>
@@ -1671,13 +1452,9 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="CategoryName">
-        <short/>
-      </element>
+      <element name="CategoryName"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="Resource">
-        <short/>
-      </element>
+      <element name="Resource"><short/></element>
       <!-- constant Visibility: default -->
       <element name="UnRegisterActionsProc">
         <short/>
@@ -1685,9 +1462,7 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="AClasses">
-        <short/>
-      </element>
+      <element name="AClasses"><short/></element>
       <!-- constant Visibility: default -->
       <element name="EnumRegisteredActionsProc">
         <short/>
@@ -1695,13 +1470,9 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="Proc">
-        <short/>
-      </element>
+      <element name="Proc"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="Info">
-        <short/>
-      </element>
+      <element name="Info"><short/></element>
       <!-- constant Visibility: default -->
       <element name="CreateActionProc">
         <short/>
@@ -1709,17 +1480,11 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="Result">
-        <short/>
-      </element>
+      <element name="Result"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="TheOwner">
-        <short/>
-      </element>
+      <element name="TheOwner"><short/></element>
       <!-- argument Visibility: default -->
-      <element name="ActionClass">
-        <short/>
-      </element>
+      <element name="ActionClass"><short/></element>
       <!-- variable Visibility: default -->
       <element name="ApplicationActionComponent">
         <short/>
