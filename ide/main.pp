@@ -11047,6 +11047,8 @@ procedure TMainIDE.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
   const Filename: string; var Source, DiskEncoding, MemEncoding: string);
 begin
   //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
+  //DiskEncoding:=GuessEncoding(Source);
+  //MemEncoding:=EncodingUTF8;
 end;
 
 procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;

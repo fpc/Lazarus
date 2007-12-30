@@ -34,9 +34,9 @@ const
 
 function GuessEncoding(const s: string): string;
 
-function CPConvert(const s,from,toC:string):string;
+function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 
-function GetSystemEncoding:string;
+function GetSystemEncoding: string;
 
 
 implementation
@@ -354,14 +354,14 @@ begin
   Result:=GetSystemEncoding;
 end;
 
-function CPConvert(const s,from,toC:string):string;
+function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 var AFrom,ATo:string;
     SL:TStringList;
     FN1,FN2:string;
 begin
   Result:=s;
-  AFrom:=LowerCase(from);
-  ATo:=LowerCase(toC);
+  AFrom:=LowerCase(FromEncoding);
+  ATo:=LowerCase(ToEncoding);
   if AFrom=ATo then exit;
   if ATo='koi8r' then ATo:='koi8-r';
   if AFrom='koi8r' then AFrom:='koi8-r';
@@ -383,7 +383,7 @@ begin
   FN1:=GetTempFileName;
   SL.SaveToFile(FN1);
   FN2:=GetTempFileName;
-  fpSystem('iconv -f '+from+' -t '+toC+#60+FN1+' >'+FN2);
+  fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+#60+FN1+' >'+FN2);
   SL.LoadFromFile(FN2);
   if SL.Text<>'' then
     Result:=SL.Text
