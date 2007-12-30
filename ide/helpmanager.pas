@@ -106,6 +106,7 @@ type
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
     procedure SetHTMLContent(Stream: TStream);
+    procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
   { TIDEHelpDatabases }
@@ -327,6 +328,13 @@ begin
   if s<>'' then
     Stream.Read(s[1],length(s));
   Caption:=HTMLToCaption(s);
+end;
+
+procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
+begin
+  AWidth:=0;
+  AHeight:=0;
+  GetPreferredSize(AWidth,AHeight);
 end;
 
 { TLazIDEHTMLProvider }

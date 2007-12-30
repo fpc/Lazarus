@@ -78,6 +78,7 @@ type
     procedure SetURL(const AValue: string);
     property URL: string read GetURL write SetURL;
     procedure SetHTMLContent(Stream: TStream);
+    procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
   { TAbstractIDEHTMLProvider

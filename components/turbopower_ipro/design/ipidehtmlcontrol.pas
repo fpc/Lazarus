@@ -45,6 +45,7 @@ type
     procedure SetURL(const AValue: string);
     property Provider: TAbstractIDEHTMLProvider read FProvider write SetProvider;
     procedure SetHTMLContent(Stream: TStream);
+    procedure GetPreferredControlSize(out AWidth, AHeight: integer);
   end;
 
 function IPCreateLazIDEHTMLControl(Owner: TComponent;
@@ -182,6 +183,12 @@ begin
     if not ok then NewHTML.Free;
   end;
   SetHtml(NewHTML);
+end;
+
+procedure TIPLazHtmlControl.GetPreferredControlSize(out AWidth, AHeight: integer);
+begin
+  AWidth:=500;
+  AHeight:=250;
 end;
 
 end.
