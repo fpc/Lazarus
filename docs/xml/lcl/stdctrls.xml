@@ -5277,7 +5277,7 @@ Indicates how text is displayed in a text editing control.</p>
         <short><i>TButtonActionLink</i>   - provides a link between a button and its corresponding action</short>
         <descr>
           <p><i>TButtonActionLink</i>  - provides a link between a button and its corresponding action</p>
-          <p>This class provides very few properties of its own, but inherits a lot from its ancestors, <link id="#lcl.Controls.TWinControlActionLink">TWinControlActionLink</link>, <link id="#lcl.Controls.TControlActionLink">TControlActionLink</link>, <link id="#lcl.ActnLst.TActionLink">TActionLink</link> and <link id="#rtl.Classes.TBasicActionLink">TBasicActionLink</link></p>
+          <p>This class provides very few properties of its own, but inherits a lot from its ancestors, <link id="#lcl.Controls.TWinControlActionLink">TWinControlActionLink</link>, <link id="#lcl.Controls.TControlActionLink">TControlActionLink</link>, <link id="#lcl.ActnList.TActionLink">TActionLink</link> and <link id="#rtl.Classes.TBasicActionLink">TBasicActionLink</link></p>
         </descr>
       </element>
       <!-- variable Visibility: protected -->

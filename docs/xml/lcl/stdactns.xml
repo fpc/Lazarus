@@ -9,7 +9,7 @@
 -->
 
 <module name="StdActns">
-<short></short>
+<short>Defines some standard actions to be used in Action Lists in the LCL</short>
 <descr>
 </descr>
 
