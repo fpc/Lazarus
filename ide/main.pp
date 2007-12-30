@@ -71,9 +71,9 @@ uses
   // fpc packages
   Classes, SysUtils, Process, AsyncProcess, TypInfo,
   // lcl
-  LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
-  Forms, Buttons, Menus, FileUtil, Controls, GraphType, Graphics, ExtCtrls,
-  Dialogs, InterfaceBase,
+  LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
+  LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
+  Graphics, ExtCtrls, Dialogs, InterfaceBase,
   // codetools
   AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -491,6 +491,10 @@ type
     procedure OnCodeToolBossFindDefineProperty(Sender: TObject;
                const PersistentClassName, AncestorClassName, Identifier: string;
                var IsDefined: boolean);
+    procedure OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+         const Filename: string; var Source, DiskEncoding, MemEncoding: string);
+    procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+                                    const Filename: string; var Source: string);
     procedure CodeToolBossPrepareTree(Sender: TObject);
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
@@ -10798,6 +10802,8 @@ begin
   OpenEditorsOnCodeToolChange:=false;
 
   CodeToolBoss.SourceCache.ExpirationTimeInDays:=365;
+  CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
+  CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
@@ -11035,6 +11041,18 @@ procedure TMainIDE.OnCodeToolBossFindDefineProperty(Sender: TObject;
 begin
   FormEditor1.FindDefineProperty(PersistentClassName,AncestorClassName,
                                  Identifier,IsDefined);
+end;
+
+procedure TMainIDE.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+  const Filename: string; var Source, DiskEncoding, MemEncoding: string);
+begin
+  //DebugLn(['TMainIDE.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
+end;
+
+procedure TMainIDE.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+  const Filename: string; var Source: string);
+begin
+
 end;
 
 procedure TMainIDE.CodeToolBossPrepareTree(Sender: TObject);
@@ -11997,7 +12015,7 @@ begin
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
-Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
+procedure TMainIDE.OnSrcNotebookEditorChanged(Sender: TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
   UpdateSaveMenuItemsAndButtons(false);

@@ -54,7 +54,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList
   {$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF}
-  {$IFDEF MultiLocale},LConv{$ENDIF};
+  {$IFDEF MultiLocale},LConvEncoding{$ENDIF};
 
 type
   { TPOFileItem }

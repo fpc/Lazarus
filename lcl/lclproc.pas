@@ -290,6 +290,7 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 // find the n-th UTF8 character, ignoring BIDI
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 procedure UTF8FixBroken(P: PChar);
+function UTF8CharacterStrictLength(P: PChar): integer;
 function UTF8CStringToUTF8String(SourceStart: PChar; SourceLen: SizeInt) : string;
 function UTF8Pos(const SearchForText, SearchInText: string): integer;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
@@ -2470,6 +2471,39 @@ begin
       else
         p^:=' ';
     end
+  end;
+end;
+
+function UTF8CharacterStrictLength(P: PChar): integer;
+begin
+  if p=nil then exit(0);
+  if ord(p^)<%11000000 then begin
+    // regular single byte character
+    exit(1);
+  end
+  else if ((ord(p^) and %11100000) = %11000000) then begin
+    // should be 2 byte character
+    if (ord(p[1]) and %11000000) = %10000000 then
+      exit(2)
+    else
+      exit(0);
+  end
+  else if ((ord(p^) and %11110000) = %11100000) then begin
+    // should be 3 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000) then
+      exit(3)
+    else
+      exit(0);
+  end
+  else if ((ord(p^) and %11111000) = %11110000) then begin
+    // should be 4 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000)
+    and ((ord(p[3]) and %11000000) = %10000000) then
+      exit(4)
+    else
+      exit(0);
   end;
 end;
 

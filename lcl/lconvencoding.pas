@@ -26,43 +26,63 @@ unit LConvEncoding;
 interface
 
 uses
-  SysUtils, Classes, LCLProc
+  SysUtils, Classes, dos, LCLProc
   {$IFDEF UNIX},unix{$ENDIF};
+
+const
+  EncodingUTF8 = 'utf8';
+
+function GuessEncoding(const s: string): string;
 
 function CPConvert(const s,from,toC:string):string;
 
-function GetDefaultCodepage:string;
+function GetSystemEncoding:string;
+
 
 implementation
 
-var GotCodepage:boolean=false;
-    Codepage:string='ANSI';
 
-function GetDefaultCodepage:string;
-var Lang:string;
-    i:integer;
-    s:string;
+var EncodingValid: boolean=false;
+    SystemEncoding: string='ANSI';
+
+function GetSystemEncoding: string;
+var Lang: string;
+    i: integer;
+    s: string;
 begin
-  if GotCodepage then begin Result:=Codepage;exit;end;
+  if EncodingValid then begin
+    Result:=SystemEncoding;
+    exit;
+  end;
+
   Result:='ANSI';
-  Lang:=GetEnvironmentVariable('LANG');
-  i:=pos(#46,Lang);
-  if (i>0)and(i<=length(Lang)) then Result:=copy(Lang,i+1,length(Lang)-i);
+  lang := GetEnv('LC_ALL');
+  if Length(lang) = 0 then
+  begin
+    lang := GetEnv('LC_MESSAGES');
+    if Length(lang) = 0 then
+    begin
+      lang := GetEnv('LANG');
+    end;
+  end;
+  i:=pos('.',Lang);
+  if (i>0) and (i<=length(Lang)) then
+    Result:=copy(Lang,i+1,length(Lang)-i);
   //Check parameters
   for i:=1 to ParamCount do
   begin
     s:=ParamStr(i);
     if s='--charset=' then Result:=copy(s,pos(#61,s),length(s));
   end;
-  Codepage:=Result;
-  GotCodepage:=true;
+  SystemEncoding:=Result;
+  EncodingValid:=true;
 end;
 
 function Utf2Cp1251(s:string):string;
 var i:integer;
     Skip,DSkip:boolean;
 begin
-  //TODO Complete codepage conversion
+  //TODO Complete SystemEncoding conversion
   Skip:=false;DSkip:=false;Result:='';
   for i:=1 to length(s) do
   begin
@@ -89,7 +109,7 @@ end;
 function Cp1251toUTF(s:string):string;
 var i:integer;
 begin
-  //TODO Complete codepage conversion
+  //TODO Complete SystemEncoding conversion
   Result:='';
   for i:=1 to length(s) do
   begin
@@ -259,6 +279,79 @@ begin
      else Result:=s[i];
     end;
   end;
+end;
+
+function GuessEncoding(const s: string): string;
+var
+  l: Integer;
+  p: Integer;
+  EndPos: LongInt;
+  i: LongInt;
+  
+  function CompareI(p1, p2: PChar; Count: integer): boolean;
+  var
+    i: Integer;
+    Chr1: Byte;
+    Chr2: Byte;
+  begin
+    for i:=1 to Count do begin
+      Chr1 := byte(p1^);
+      Chr2 := byte(p2^);
+      if Chr1<>Chr2 then begin
+        if Chr1 in [97..122] then
+          dec(Chr1,32);
+        if Chr2 in [97..122] then
+          dec(Chr2,32);
+        if Chr1<>Chr2 then exit(false);
+      end;
+      inc(p1);
+      inc(p2);
+    end;
+    Result:=true;
+  end;
+  
+begin
+  l:=length(s);
+  if l=0 then begin
+    Result:='';
+    exit;
+  end;
+  
+  // try BOM
+  if CompareI(@s[1],#$EF#$BB#$BF,3) then begin
+    Result:=EncodingUTF8;
+    exit;
+  end;
+  
+  // try {%encoding eee}
+  if CompareI(@s[1],'{%encoding ',11) then begin
+    p:=12;
+    while (p<=l) and (s[p] in [' ',#9]) do inc(p);
+    EndPos:=p;
+    while (EndPos<=l) and (not (s[EndPos] in ['}',' ',#9])) do inc(EndPos);
+    Result:=copy(s,p,EndPos-p);
+    exit;
+  end;
+  
+  // try UTF-8 (this includes ASCII)
+  p:=1;
+  while (p<=l) do begin
+    if ord(s[p])<128 then begin
+      // ASCII
+      inc(p);
+    end else begin
+      i:=UTF8CharacterStrictLength(@s[p]);
+      if i=0 then break;
+      inc(p);
+    end;
+  end;
+  if p>l then begin
+    Result:=EncodingUTF8;
+    exit;
+  end;
+  
+  // use system encoding
+  Result:=GetSystemEncoding;
 end;
 
 function CPConvert(const s,from,toC:string):string;

@@ -312,15 +312,16 @@ begin
         exit;
       end;
       Result.Filename:=GetFilenameOnDisk(AFilename);
+      Result.FCodeCache:=Self;
       if (not Result.LoadFromFile(Result.Filename)) then
       begin
+        Result.FCodeCache:=nil;
         Result.Free;
         Result:=nil;
         exit;
       end;
       FItems.Add(Result);
       with Result do begin
-        FCodeCache:=Self;
         LastIncludedByFile:=FindIncludeLink(Result.Filename);
         ReadOnly:=not FileIsWritable(Result.Filename);
       end;
@@ -384,15 +385,16 @@ begin
     NewBuffer.Source:=OldBuffer.Source;
     NewBuffer.DiskEncoding:=NewBuffer.DiskEncoding;
     NewBuffer.MemEncoding:=NewBuffer.MemEncoding;
+    NewBuffer.FCodeCache:=Self;
     Result:=NewBuffer.Save;
     //DebugLn('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
+      NewBuffer.FCodeCache:=nil;
       NewBuffer.Free;
       NewBuffer:=nil;
       exit;
     end;
     FItems.Add(NewBuffer);
-    NewBuffer.FCodeCache:=Self;
     NewBuffer.LastIncludedByFile:=FindIncludeLink(AFilename);
   end else begin
     NewBuffer.Source:=OldBuffer.Source;
