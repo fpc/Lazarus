@@ -6188,13 +6188,14 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetWindowLong(Handle : hwnd; int : Integer): PtrInt;
+function TGtkWidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 
   function GetObjectData(Name: PChar): PtrInt;
   begin
     Result := PtrInt(PtrUInt(gtk_object_get_data(pgtkobject(Handle),Name)));
   end;
-
+var
+  WidgetInfo: PWidgetInfo;
 begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TGtkWidgetSet.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
@@ -6202,7 +6203,11 @@ begin
   case int of
     GWL_WNDPROC :
       begin
-        Result := GetObjectData('WNDPROC');
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          Result := WidgetInfo^.WndProc
+        else
+          Result := 0;
       end;
     GWL_HINSTANCE :
       begin
@@ -6231,11 +6236,19 @@ begin
  }
     GWL_STYLE :
       begin
-        Result := GetObjectData('Style');
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          Result := WidgetInfo^.Style
+        else
+          Result := 0;
       end;
     GWL_EXSTYLE :
       begin
-        Result := GetObjectData('ExStyle');
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          Result := WidgetInfo^.ExStyle
+        else
+          Result := 0;
       end;
     GWL_USERDATA :
       begin
@@ -8956,6 +8969,7 @@ function TGtkWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: PtrInt): PtrInt;
 var
   Data: Pointer;
+  WidgetInfo: PWidgetInfo;
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
@@ -8965,7 +8979,9 @@ begin
   case idx of
     GWL_WNDPROC :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'WNDPROC',Data);
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          WidgetInfo^.WndProc := NewLong;
       end;
     GWL_HINSTANCE :
       begin
@@ -8977,11 +8993,15 @@ begin
       end;
     GWL_STYLE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'Style',Data);
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          WidgetInfo^.Style := NewLong;
       end;
     GWL_EXSTYLE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'ExStyle',Data);
+        WidgetInfo := GetWidgetInfo(Pointer(Handle));
+        if WidgetInfo <> nil then
+          WidgetInfo^.ExStyle := NewLong;
       end;
     GWL_USERDATA :
       begin
@@ -9640,4 +9660,5 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$EndIf}
+
 

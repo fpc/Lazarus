@@ -79,9 +79,9 @@ type
   TGtkWSCustomForm = class(TWSCustomForm)
   private
   protected
-    class procedure  SetCallbacks(const AWinControl: TWinControl; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
@@ -106,6 +106,7 @@ type
   TGtkWSHintWindow = class(TWSHintWindow)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
@@ -248,9 +249,19 @@ begin
 end;
 {$ENDIF}
 
-class procedure TGtkWSCustomForm.SetCallbacks(const AWinControl: TWinControl;
+class procedure TGtkWSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
+    with TGTKWidgetSet(Widgetset) do
+    begin
+      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallBack(LM_Activate, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
   {$IFDEF GTK1}
     gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
     gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
@@ -258,23 +269,20 @@ begin
   {$IFDEF Gtk2}
     g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'window-state-event',
                      gtk_signal_func(@GTKWindowStateEventCB),
-                     AWinControl);
+                     AWidgetInfo^.LCLObject);
   {$ENDIF}
 end;
 
 class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  AWidgetInfo: PWidgetInfo;
+  WidgetInfo: PWidgetInfo;
   p: pointer;          // ptr to the newly created GtkWidget
   Box: Pointer;
   ABorderStyle: TFormBorderStyle;
-  PCaption: PChar;
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
 begin
-//  p := GtkWidgetSet.CreateForm(TCustomForm(AWinControl));
-
   // Start of old CreateForm method
 
   ACustomForm := TCustomForm(AWinControl);
@@ -308,16 +316,15 @@ begin
         FormResizableMap[ABorderStyle], 0);
     {$ENDIF}
 
-    PCaption := PChar(ACustomForm.Caption);
-    if (PCaption = nil) then PCaption := #0;
-    gtk_window_set_title(pGtkWindow(P), PCaption);
+    gtk_window_set_title(PGtkWindow(P), AParams.Caption);
 
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
       GtkWidgetSet.SetClipboardWidget(P);
 
     //drag icons
-    if Drag_Icon = nil then begin
+    if Drag_Icon = nil then
+    begin
       {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                            gtk_widget_get_colormap (P), Drag_Mask,
@@ -330,6 +337,8 @@ begin
     // create a form as child control
     P := gtk_hbox_new(false, 0);
   end;
+  
+  WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
 
   Box := CreateFormContents(ACustomForm, P);
   gtk_container_add(PGtkContainer(P), Box);
@@ -344,23 +353,24 @@ begin
   // main menu
   if (ACustomForm.Menu <> nil) and (ACustomForm.Menu.HandleAllocated) then
   begin
-    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle),False,False,0);
+    gtk_box_pack_start(Box, PGtkWidget(ACustomForm.Menu.Handle), False, False,0);
   end;
 
   // End of the old CreateForm method
 
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFNDEF NoStyle}
+  if (ACustomForm.Parent = nil) then
+    gtk_widget_set_app_paintable(P, True);
+  {$ENDIF}
 
-  AWidgetInfo := GetWidgetInfo(P);
   if not (csDesigning in AWinControl.ComponentState) then
-    AWidgetInfo^.UserData := Pointer(1);
+    WidgetInfo^.UserData := Pointer(1);
     
-  SetCallbacks(AWinControl, AWidgetInfo);
-
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
+  SetCallbacks(P, WidgetInfo);
 end;
 
 class procedure TGtkWSCustomForm.SetAllowDropFiles(const AForm: TCustomForm;
@@ -447,6 +457,17 @@ end;
 
 { TGtkWSHintWindow }
 
+class procedure TGtkWSHintWindow.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
+    with TGTKWidgetSet(Widgetset) do
+    begin
+      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
+end;
+
 class function TGtkWSHintWindow.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
@@ -454,11 +475,13 @@ var
   p          : pointer;          // ptr to the newly created GtkWidget
   ACustomForm: TCustomForm;
   AWindow: PGdkWindow;
+  WidgetInfo: PWidgetInfo;
 begin
   ACustomForm := TCustomForm(AWinControl);
 
   p := gtk_window_new(gtk_window_popup);
-  gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
+  WidgetInfo := CreateWidgetInfo(p, AWinControl, AParams);
+  gtk_window_set_policy(GTK_WINDOW(p), 0, 0, 0);
 
   // Create the form client area
   TempWidget := CreateFixedClientWidget;
@@ -477,11 +500,16 @@ begin
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
 
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
+  {$IFNDEF NoStyle}
+  if (ACustomForm.Parent = nil) then
+    gtk_widget_set_app_paintable(P, True);
+  {$ENDIF}
+
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
+  SetCallbacks(P, WidgetInfo);
 end;
 
 initialization

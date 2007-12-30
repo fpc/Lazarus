@@ -27,15 +27,16 @@ unit GtkWSExtCtrls;
 interface
 
 uses
-  LCLProc, LCLType, LCLIntf, Controls,
+  LCLProc, LCLType, LCLIntf, LMessages,
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
   gtk, gdk, glib, gtk1WSPrivate, graphics,
 {$ENDIF GTK2}
   GtkExtra, GtkWsControls,
-  GtkGlobals, GtkProc, GtkDef, ExtCtrls, Classes, Forms, SysUtils, Menus,
-  WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
+  GtkGlobals, GtkProc, GtkDef, GtkInt,
+  SysUtils, Classes, Controls, ExtCtrls, Forms, Menus,
+  WSExtCtrls, WSLCLClasses, InterfaceBase;
 
 type
 
@@ -57,6 +58,7 @@ type
   TGtkWSCustomNotebook = class(TWSCustomNotebook)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -200,6 +202,7 @@ type
   TGtkWSCustomPanel = class(TWSCustomPanel)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 //    class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -285,25 +288,33 @@ end;
 
 { TGtkWSCustomNotebook }
 
+class procedure TGtkWSCustomNotebook.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGTKWidgetSet(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+end;
+
 class function TGtkWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   AWidget: PGtkNoteBook;
+  WidgetInfo: PWidgetInfo;
 begin
   AWidget := PGtkNoteBook(gtk_notebook_new());
+  WidgetInfo := CreateWidgetInfo(AWidget, AWinControl, AParams);
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Pointer(AWidget),'notebook '+dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Pointer(AWidget), dbgsName(AWinControl));
   {$ENDIF}
-  gtk_notebook_set_scrollable(AWidget, true);
+  gtk_notebook_set_scrollable(AWidget, True);
   gtk_notebook_popup_enable(AWidget);
   if TCustomNotebook(AWinControl).PageCount=0 then
-    // a gtk notebook needs a page
-    // -> add dummy page
+    // a gtk notebook needs a page -> add dummy page
     GTKWidgetSet.AddDummyNoteBookPage(AWidget);
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
-  GTKWidgetSet.FinishComponentCreate(AWinControl, AWidget);
   Result := TLCLIntfHandle(PtrUInt(AWidget));
+  SetCallBacks(PGtkWidget(AWidget), WidgetInfo);
 end;
 
 class procedure TGtkWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
@@ -539,27 +550,35 @@ begin
   gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
+class procedure TGtkWSCustomPanel.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
 class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
-  TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
-  p          : pointer;          // ptr to the newly created GtkWidget
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  TempWidget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
 begin
   // create a fixed widget in a horizontal box
   // a fixed on a fixed has no z-order
-  p := gtk_hbox_new(false, 0);
+  Widget := gtk_hbox_new(False, 0);
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
   TempWidget := CreateFixedClientWidget;
-  gtk_container_add(GTK_CONTAINER(P), TempWidget);
+  gtk_container_add(GTK_CONTAINER(Widget), TempWidget);
   gtk_widget_show(TempWidget);
-  SetFixedWidget(p, TempWidget);
-  SetMainWidget(p, TempWidget);
-  gtk_widget_show(P);
+  SetFixedWidget(Widget, TempWidget);
+  SetMainWidget(Widget, TempWidget);
+  gtk_widget_show(Widget);
 
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  SetCallBacks(Widget, WidgetInfo);
 end;
 
 class procedure TGtkWSCustomPanel.SetColor(const AWinControl: TWinControl);

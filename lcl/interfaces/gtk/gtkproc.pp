@@ -328,7 +328,7 @@ function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
-Function GetControlWindow(Widget: Pointer): PGDKWindow;
+function GetControlWindow(Widget: Pointer): PGDKWindow;
 
 function CreateWidgetInfo(const AWidget: Pointer): PWidgetInfo;
 function CreateWidgetInfo(const AWidget: Pointer; const AObject: TObject;
@@ -664,7 +664,6 @@ procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget; NewShortCut: TShortCut);
-function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 

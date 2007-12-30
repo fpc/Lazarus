@@ -905,6 +905,8 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
+  Set_RC_Name(AWinControl, Widget);
+  
   Result := THandle(PtrUInt(Widget));
   if Result = 0 then Exit;
 

@@ -33,8 +33,9 @@ uses
   glib, gdk, gtk,
   {$ENDIF}
   GtkInt,
-  LCLProc, Spin, StdCtrls, GtkProc, gtkExtra, GtkWSStdCtrls, WSSpin,
-  WSLCLClasses, Controls, LCLType;
+  LCLProc, Spin, StdCtrls, GtkProc, GtkExtra, GtkDef,
+  GtkWSControls, GtkWSStdCtrls,
+  WSLCLClasses, WSSpin, Controls, LCLType;
 
 type
 
@@ -43,16 +44,17 @@ type
   TGtkWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): single; override;
 
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
 function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
@@ -83,6 +85,12 @@ begin
 end;
 
 { TGtkWSCustomFloatSpinEdit }
+
+class procedure TGtkWSCustomFloatSpinEdit.SetCallbacks(
+  const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSCustomEdit.SetCallbacks(AWidget, AWidgetInfo);
+end;
 
 class function TGtkWSCustomFloatSpinEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
@@ -161,13 +169,19 @@ class function TGtkWSCustomFloatSpinEdit.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
 var
-  p: PGtkWidget;
+  Adjustment: PGtkAdjustment;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
-  p := gtk_spin_button_new(PgtkAdjustment(
-                                        gtk_adjustment_new(1,1,100,1,1,1)),1,0);
-  gtk_widget_show_all(p);
-  gtkWidgetSet.FinishComponentCreate(AWinControl, P);
-  Result := THandle(PtrUInt(P));
+  Adjustment := PGtkAdjustment(gtk_adjustment_new(1, 1, 100, 1, 1, 1));
+  Widget := gtk_spin_button_new(Adjustment, 1, 0);
+  gtk_widget_show_all(Widget);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  SetCallbacks(Widget, WidgetInfo);
 end;
 
 initialization

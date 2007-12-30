@@ -57,8 +57,6 @@ type
   TGtk2WidgetSet = class(TGtkWidgetSet)
   protected
     procedure AppendText(Sender: TObject; Str: PChar);
-
-    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override; // temporary
     function GetText(Sender: TComponent; var Text: String): Boolean;
     function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; override;
     procedure SetCallbackEx(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject; Direct: boolean);override;

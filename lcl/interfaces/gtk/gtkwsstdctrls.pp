@@ -153,11 +153,11 @@ type
   TGtkWSCustomEdit = class(TWSCustomEdit)
   private
   protected
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
-    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -180,6 +180,7 @@ type
   protected
   public
     {$ifdef GTK1}
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function CreateHandle(const AWinControl: TWinControl;
                         const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo;
@@ -1103,6 +1104,9 @@ begin
     SetCallback(LM_CUTTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_COPYTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_PASTEFROMCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    {$ifdef gtk1}
+    SetCallback(LM_INSERTTEXT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    {$endif}
   end;
 end;
 
@@ -1654,11 +1658,27 @@ end;
 
 {$ifdef GTK1}
 
+class procedure TGtkWSCustomMemo.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGtkWidgetset(Widgetset) do
+  begin
+    SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_ACTIVATE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_CUTTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COPYTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_PASTEFROMCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_INSERTTEXT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
 class function TGtkWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   P: Pointer;
   TempWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
   P := gtk_scrolled_window_new(nil, nil);
   TempWidget := gtk_text_new(nil, nil);
@@ -1673,8 +1693,9 @@ begin
     gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)),
     gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
 
+  WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
   SetMainWidget(p, TempWidget);
-  GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
+  WidgetInfo^.CoreWidget := TempWidget;
 
   gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(AWinControl).ReadOnly);
   if TCustomMemo(AWinControl).WordWrap then
@@ -1685,12 +1706,12 @@ begin
 
   gtk_widget_show_all(P);
   
-  GtkWidgetSet.FinishComponentCreate(AWinControl, P);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
-  DebugLn(['TGtkWSCustomMemo.CreateHandle ']);
+  //DebugLn(['TGtkWSCustomMemo.CreateHandle ']);
+  SetCallbacks(P, WidgetInfo);
 end;
 
 class procedure TGtkWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;

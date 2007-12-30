@@ -238,15 +238,8 @@ type
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
-    procedure FinishComponentCreate(const ALCLObject: TObject;
-              const AGTKObject: Pointer); virtual;
-
     // show, hide and invalidate
     procedure ShowHide(Sender : TObject);virtual;
-
-    // control functions for messages, callbacks
-    procedure HookSignals(const AGTKObject: PGTKObject;
-                          const ALCLObject: TObject); virtual;  //hooks all signals for controls
   public
     function LCLPlatform: TLCLPlatform; override;
     // Application

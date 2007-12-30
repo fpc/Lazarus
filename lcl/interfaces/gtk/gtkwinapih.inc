@@ -121,7 +121,7 @@ function GetSystemMetrics(nIndex: Integer): Integer;  override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
-Function GetWindowLong(Handle : hwnd; int: Integer): PtrInt; override;
+Function GetWindowLong(Handle : HWND; int: Integer): PtrInt; override;
 Function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; override;
@@ -205,4 +205,5 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 
 
 // included by gtkint.pp
+
 

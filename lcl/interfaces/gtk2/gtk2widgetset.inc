@@ -263,42 +263,6 @@ begin
   end;
 end;
 
-
-procedure Tgtk2widgetset.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
-var
-  Info: PWidgetInfo;
-begin
-  if (ALCLObject is TWinControl) then
-  begin
-    inherited HookSignals(AGTKObject,ALCLObject);
-  end;
-
-  if (ALCLObject is TControl) then begin
-    Info:=GetWidgetInfo(AGTKObject,false);
-  
-    if GtkWidgetIsA(PGtkWidget(AGTKObject),GTK_TYPE_ENTRY) then begin
-      // TEdit, TSpinEdit
-      SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
-      SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-      SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-      SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-      SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-    end else if GtkWidgetIsA(Info^.CoreWidget,GTK_TYPE_TEXT_VIEW) then begin
-      // TMemo
-      // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
-      //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
-      SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
-      SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
-      SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-      //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
-    end; //case
-  end
-  else
-    If (ALCLObject is TMenuItem) then begin
-      SetCallback(LM_ACTIVATE,AGTKObject,ALCLObject);
-    end;
-end;
-
 {------------------------------------------------------------------------------
   Function: TGtk2WidgetSet.SetCallbackEx
   Params: Msg - message for which to set a callback

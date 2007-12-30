@@ -32,7 +32,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
-  GtkInt, gtkProc, gtkglobals, GTKExtra,
+  GtkInt, GtkProc, GtkGlobals, GtkDef, GtkExtra,
   Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   Graphics, Menus, Forms;
 
@@ -44,7 +44,7 @@ type
   protected
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
-    class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
+    class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
@@ -156,13 +156,64 @@ end;
 
 class function  TGtkWSMenuItem.CreateHandle(const AMenuItem: TMenuItem): HMENU;
 var
-  MenuItemWidget: PGtkWidget;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
-  MenuItemWidget := CreateMenuItem(AMenuItem);
+  // create the menuitem widget (normal, check or radio)
+  if AMenuItem.Caption='-' then // create separator
+    Widget := gtk_menu_item_new
+  else
+  if AMenuItem.RadioItem and not AMenuItem.HasIcon then
+    Widget := gtk_radio_menu_item_new(nil)
+  else
+  if AMenuItem.IsCheckItem or AMenuItem.HasIcon then
+    Widget := gtk_check_menu_item_new
+  else
+    Widget := gtk_menu_item_new;
+
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenuItem;
+
+  if GtkWidgetIsA(Widget, GTK_TYPE_CHECK_MENU_ITEM) then
+  begin
+    // set 'ShowAlwaysCheckable'
+    gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(Widget),
+      AMenuItem.ShowAlwaysCheckable);
+    // set 'Checked'
+    gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
+      AMenuItem.Checked);
+    {$ifdef GTK2}
+    if (OldCheckMenuItemToggleSize=0) then
+    begin
+      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(Widget), @OldCheckMenuItemToggleSize);
+      OldCheckMenuItemToggleSize := GTK_MENU_ITEM(Widget)^.toggle_size;
+    end;
+    {$else}
+    if (OldCheckMenuItemToggleSize=0) then
+      OldCheckMenuItemToggleSize := MENU_ITEM_CLASS(Widget)^.toggle_size;
+    {$endif}
+    g_signal_connect_after(PGTKObject(Widget), 'toggled',
+      TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(AMenuItem));
+  end;
+
+  // set attributes (enabled and rightjustify)
+  gtk_widget_set_sensitive(Widget,
+                           AMenuItem.Enabled and (AMenuItem.Caption<>'-'));
+  if AMenuItem.RightJustify then
+    gtk_menu_item_right_justify(PGtkMenuItem(Widget));
+
+  // create the hbox containing the label and the icon
+  UpdateInnerMenuItem(AMenuItem, Widget);
+
+  // connect activate signal (i.e. clicked)
+  g_signal_connect(PGTKObject(Widget), 'activate',
+                   TGTKSignalFunc(@gtkactivateCB), AMenuItem);
+
+  gtk_widget_show(Widget);
   {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(MenuItemWidget,dbgsName(AMenuItem));
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenuItem));
   {$ENDIF}
-  Result := THandle(PtrUInt(MenuItemWidget));
+  Result := HMENU(PtrUInt(Widget));
 end;
 
 class procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
@@ -176,7 +227,8 @@ class procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem;
 var
   MenuItemWidget: PGtkWidget;
 begin
-  if not AMenuItem.HandleAllocated then exit;
+  if not WSCheckMenuItem(AMenuItem, 'SetCaption') then
+    Exit;
   MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
 end;
@@ -184,8 +236,10 @@ end;
 class procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
+  if not WSCheckMenuItem(AMenuItem, 'SetShortCut') then
+    Exit;
   //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
-  UpdateInnerMenuItem(AMenuItem,PGTKWidget(AMenuItem.Handle),NewShortCut);
+  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), NewShortCut);
 end;
 
 class procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
@@ -193,9 +247,11 @@ class procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
 var
   MenuItemWidget: PGtkWidget;
 begin
-  if not AMenuItem.HandleAllocated then exit;
-  MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
-  if gtk_widget_visible(MenuItemWidget)=Visible then exit;
+  if not WSCheckMenuItem(AMenuItem, 'SetVisible') then
+    Exit;
+  MenuItemWidget := PGtkWidget(AMenuItem.Handle);
+  if gtk_widget_visible(MenuItemWidget) = Visible then
+    Exit;
   if Visible then
     gtk_widget_show(MenuItemWidget)
   else
@@ -209,6 +265,8 @@ var
   Group: PGSList;
   Item: Pointer;
 begin
+  if not WSCheckMenuItem(AMenuItem, 'SetCheck') then
+    Exit;
   Item := Pointer(AMenuItem.Handle);
   IsRadio := gtk_is_radio_menu_item(Item);
   if IsRadio or gtk_is_check_menu_item(Item)
@@ -234,7 +292,10 @@ end;
 class function TGtkWSMenuItem.SetEnable(const AMenuItem: TMenuItem;
   const Enabled: boolean): boolean;
 begin
-  gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
+  Result := False;
+  if not WSCheckMenuItem(AMenuItem, 'SetEnable') then
+    Exit;
+  gtk_widget_set_sensitive(PGtkWidget(AMenuItem.Handle),
                            Enabled and (AMenuItem.Caption<>'-'));
   Result := True;
 end;
@@ -243,7 +304,7 @@ class function TGtkWSMenuItem.SetRadioItem(const AMenuItem: TMenuItem;
   const RadioItem: boolean): boolean;
 begin
   AMenuItem.RecreateHandle;
-  Result:=true;
+  Result := True;
 end;
 
 class function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem;
@@ -251,15 +312,20 @@ class function TGtkWSMenuItem.SetRightJustify(const AMenuItem: TMenuItem;
 var
   MenuItemWidget: PGtkMenuItem;
 begin
-  MenuItemWidget:=PGtkMenuItem(AMenuItem.Handle);
+  Result := False;
+  if not WSCheckMenuItem(AMenuItem, 'SetRightJustify') then
+    Exit;
+  MenuItemWidget := PGtkMenuItem(AMenuItem.Handle);
   gtk_menu_item_set_right_justified(MenuItemWidget, Justified);
   gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
-  Result:=false;
+  Result := True;
 end;
 
 class procedure TGtkWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
   const HasIcon: Boolean; const AIcon: TBitmap);
 begin
+  if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
+    Exit;
   // TODO
 end;
 
@@ -268,6 +334,7 @@ end;
 class function  TGtkWSMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
   Box: Pointer;
   ParentForm: TCustomForm;
 begin
@@ -289,6 +356,8 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
   {$ENDIF}
   Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenu;
   // no callbacks for main menu
 end;
 
@@ -304,12 +373,15 @@ end;
 class function TGtkWSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_menu_new;
   Result := HMENU(PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(Sender));
   {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Widget);
+  WidgetInfo^.LCLObject := AMenu;
   // no callbacks for popup menu
 end;
 

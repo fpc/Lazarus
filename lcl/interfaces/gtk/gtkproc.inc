@@ -6140,69 +6140,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
-
-  Creates a new menuitem widget.
- ------------------------------------------------------------------------------}
-function CreateMenuItem(LCLMenuItem: TMenuItem): PGtkWidget;
-var
-  MenuItemWidget: PGtkWidget;
-begin
-  // create the menuitem widget (normal, check or radio)
-  if LCLMenuItem.Caption='-' then
-    // create separator
-    MenuItemWidget:=gtk_menu_item_new
-  else if LCLMenuItem.RadioItem and not LCLMenuItem.HasIcon then begin
-    MenuItemWidget:=gtk_radio_menu_item_new(nil);
-  end else if LCLMenuItem.IsCheckItem or LCLMenuItem.HasIcon then begin
-    MenuItemWidget:=gtk_check_menu_item_new;
-  end else
-    MenuItemWidget:=gtk_menu_item_new;
-    
-  if GtkWidgetIsA(MenuItemWidget,GTK_TYPE_CHECK_MENU_ITEM) then begin
-    // set 'ShowAlwaysCheckable'
-    gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(MenuItemWidget),
-      LCLMenuItem.ShowAlwaysCheckable);
-    // set 'Checked'
-    gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItemWidget),
-      LCLMenuItem.Checked);
-    {$ifdef GTK2}
-    if (OldCheckMenuItemToggleSize=0) then begin
-      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(MenuItemWidget), @OldCheckMenuItemToggleSize);
-      OldCheckMenuItemToggleSize := GTK_MENU_ITEM(MenuItemWidget)^.toggle_size;
-    end;
-    {$else}
-    if (OldCheckMenuItemToggleSize=0) then
-      OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
-    {$endif}
-    g_signal_connect_after(PGTKObject(MenuItemWidget), 'toggled',
-      TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(LCLMenuItem));
-  end;
-
-
-  // set attributes (enabled and rightjustify)
-  gtk_widget_set_sensitive(MenuItemWidget,
-                           LCLMenuItem.Enabled and (LCLMenuItem.Caption<>'-'));
-  if LCLMenuItem.RightJustify then
-    gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
-
-  // create the hbox containing the label and the icon
-  UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget);
-
-  // connect activate signal (i.e. clicked)
-  g_signal_connect(PGTKObject(MenuItemWidget), 'activate',
-                   TGTKSignalFunc(@gtkactivateCB), LCLMenuItem);
-
-  // MWE: next will be obsoleted by WinWidgetInfo
-  SetLCLObject(MenuItemWidget, LCLMenuItem);
-  gtk_object_set_data(PGtkObject(MenuItemWidget), 'Style',GtkNil);
-  gtk_object_set_data(PGtkObject(MenuItemWidget), 'ExStyle',GtkNil);
-
-  gtk_widget_show(MenuItemWidget);
-  Result:=MenuItemWidget;
-end;
-
 function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
 begin
   Result:=gtk_statusbar_new;
