@@ -171,7 +171,7 @@ type
     procedure Refresh(OnlyVisible: boolean);
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
-    procedure ClearCTNodes(ATreeView: TTreeView);
+    procedure ClearCTNodes(ATreeView: TTreeView);// remove temporary references
     procedure JumpToSelection;
     procedure CurrentCodeBufferChanged;
     procedure CodeFilterChanged;
@@ -759,6 +759,23 @@ begin
 end;
 
 procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
+
+  procedure AutoExpandNodes;
+  var
+    TVNode: TTreeNode;
+    Data: TViewNodeData;
+  begin
+    TVNode:=CodeTreeview.Items.GetFirstNode;
+    while TVNode<>nil do begin
+      Data:=TViewNodeData(TVNode.Data);
+      if Data.Desc in [ctnInterface,ctnImplementation] then begin
+        // auto expand interface and implementation nodes
+        TVNode.Expanded:=true;
+      end;
+      TVNode:=TVNode.GetNext;
+    end;
+  end;
+
 var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
@@ -821,6 +838,9 @@ begin
     OldExpanded.Apply(CodeTreeView);
     OldExpanded.Free;
     CodeTreeview.CustomSort(@CompareCodeNodes);
+    
+    AutoExpandNodes;
+    
     ClearCTNodes(CodeTreeview);
     CodeTreeview.EndUpdate;
 
