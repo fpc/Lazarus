@@ -85,8 +85,9 @@ type
     Imagelist1: TImageList;
     MainNotebook: TNotebook;
     MenuItem1: TMenuItem;
-    OptionsButton: TButton;
-    RefreshButton: TButton;
+    CodeTreeviewButtonPanel: TPanel;
+    OptionsSpeedButton: TSpeedButton;
+    RefreshSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewClose(Sender: TObject;
                                     var CloseAction: TCloseAction);
@@ -105,10 +106,10 @@ type
       Shift: TShiftState);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
-    procedure OptionsButtonClick(Sender: TObject);
-    procedure RefreshButtonClick(Sender: TObject);
+    procedure OptionsSpeedButtonClick(Sender: TObject);
     procedure RefreshMenuitemClick(Sender: TObject);
     procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
+    procedure RefreshSpeedButtonClick(Sender: TObject);
   private
     FCodeFilename: string;
     FDirectivesFilename: string;
@@ -286,8 +287,8 @@ begin
   Caption := lisMenuViewCodeExplorer;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
   
-  RefreshButton.Caption:=dlgUnitDepRefresh;
-  OptionsButton.Caption:=dlgFROpts;
+  RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
+  OptionsSpeedButton.Hint:=dlgFROpts;
   CodeFilterEdit.Text:=lisCEFilter;
   CodePage.Caption:=dlgCodeGeneration;
   DirectivesFilterEdit.Text:=lisCEFilter;
@@ -398,15 +399,10 @@ begin
   Refresh(true);
 end;
 
-procedure TCodeExplorerView.OptionsButtonClick(Sender: TObject);
+procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
 begin
   if ShowCodeExplorerOptions=mrOk then
     SaveCodeExplorerOptions;
-end;
-
-procedure TCodeExplorerView.RefreshButtonClick(Sender: TObject);
-begin
-  Refresh(true);
 end;
 
 procedure TCodeExplorerView.RefreshMenuitemCLICK(Sender: TObject);
@@ -419,6 +415,11 @@ procedure TCodeExplorerView.OnApplicationIdle(Sender: TObject; var Done: Boolean
 begin
   if (cevCheckOnIdle in FFlags) or (CodeExplorerOptions.Refresh=cerOnIdle) then
     Refresh(true);
+end;
+
+procedure TCodeExplorerView.RefreshSpeedButtonClick(Sender: TObject);
+begin
+  Refresh(true);
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
