@@ -2221,7 +2221,10 @@ begin
   if not (Sender is TIDEMenuCommand) then exit;
   Item:=TIDEMenuCommand(Sender);
   NewParentName:=Item.Caption;
-  NewParent:=TWinControl(LookupRoot.FindComponent(NewParentName));
+  if SysUtils.CompareText(LookupRoot.Name,NewParentName)=0 then
+    NewParent:=TWinControl(LookupRoot)
+  else
+    NewParent:=TWinControl(LookupRoot.FindComponent(NewParentName));
   if (NewParent=nil) or (not (NewParent is TWinControl)) then exit;
   Form.DisableAlign;
   try
@@ -2778,7 +2781,7 @@ var
         if j<0 then
           Candidates.Add(Candidate);
       end;
-      
+      Candidates.Add(LookupRoot);
     end;
     
     DesignerMenuChangeParent.Visible:=Candidates.Count>0;
