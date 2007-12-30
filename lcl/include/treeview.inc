@@ -922,9 +922,6 @@ begin
 end;
 
 function TTreeNode.GetNext: TTreeNode;
-{var
-  NodeID, ParentID: HTreeItem;
-  Handle: HWND;}
 begin
   Result:=GetFirstChild;
   if Result=nil then begin
@@ -934,16 +931,6 @@ begin
       Result:=Result.Parent;
     if Result<>nil then Result:=Result.FNextBrother;
   end;
-  {Handle := FOwner.Handle;
-  NodeID := TreeView_GetChild(Handle, ItemId);
-  if NodeID = nil then NodeID := TreeView_GetNextSibling(Handle, ItemId);
-  ParentID := ItemId;
-  while (NodeID = nil) and (ParentID <> nil) do
-  begin
-    ParentID := TreeView_GetParent(Handle, ParentID);
-    NodeID := TreeView_GetNextSibling(Handle, ParentID);
-  end;
-  Result := FOwner.GetNode(NodeID);}
 end;
 
 function TTreeNode.GetPrev: TTreeNode;

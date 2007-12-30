@@ -162,6 +162,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure ApplyCodeFilter;
     procedure ApplyDirectivesFilter;
+    function CompareCodeNodes(Node1, Node2: TTreeNode): integer;
   public
     destructor Destroy; override;
     procedure BeginUpdate;
@@ -170,6 +171,7 @@ type
     procedure Refresh(OnlyVisible: boolean);
     procedure RefreshCode(OnlyVisible: boolean);
     procedure RefreshDirectives(OnlyVisible: boolean);
+    procedure ClearCTNodes(ATreeView: TTreeView);
     procedure JumpToSelection;
     procedure CurrentCodeBufferChanged;
     procedure CodeFilterChanged;
@@ -213,6 +215,7 @@ implementation
 type
   TViewNodeData = class
   public
+    CTNode: TCodeTreeNode;
     Desc: TCodeTreeNodeDesc;
     SubDesc: TCodeTreeNodeSubDesc;
     StartPos, EndPos: integer;
@@ -252,6 +255,7 @@ end;
 
 constructor TViewNodeData.Create(CodeNode: TCodeTreeNode);
 begin
+  CTNode:=CodeNode;
   Desc:=CodeNode.Desc;
   SubDesc:=CodeNode.SubDesc;
   StartPos:=CodeNode.StartPos;
@@ -442,7 +446,7 @@ begin
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
                    
   ctnProperty:
-    Result:='property '+ACodeTool.ExtractPropName(CodeNode,false);
+    Result:=ACodeTool.ExtractPropName(CodeNode,false); // property keyword is not needed because there are icons
 
   else
     Result:=CodeNode.DescAsString;
@@ -569,6 +573,20 @@ begin
     // don't show End.
     if CodeNode.Desc=ctnEndPoint then
       ShowNode:=false;
+      
+    // ToDo: add options to CodeExplorerOptions to make this optional
+    // and add check items to the popup menu for easy toggle
+    // don't show type/var/const section nodes
+    if (CodeNode.Desc in AllDefinitionSections) then begin
+      ShowNode:=false;
+      ShowChilds:=true;
+    end;
+    
+    // don't show class visibility section nodes
+    if (CodeNode.Desc in AllClassSections) then begin
+      ShowNode:=false;
+      ShowChilds:=true;
+    end;
 
     ViewNode:=ParentViewNode;
     if ShowNode then begin
@@ -802,6 +820,8 @@ begin
     // restore old expanded state
     OldExpanded.Apply(CodeTreeView);
     OldExpanded.Free;
+    CodeTreeview.CustomSort(@CompareCodeNodes);
+    ClearCTNodes(CodeTreeview);
     CodeTreeview.EndUpdate;
 
   finally
@@ -871,10 +891,24 @@ begin
     // restore old expanded state
     OldExpanded.Apply(DirectivesTreeView);
     OldExpanded.Free;
+    ClearCTNodes(DirectivesTreeView);
     DirectivesTreeView.EndUpdate;
 
   finally
     Exclude(FFlags,cevRefreshing);
+  end;
+end;
+
+procedure TCodeExplorerView.ClearCTNodes(ATreeView: TTreeView);
+var
+  TVNode: TTreeNode;
+  NodeData: TViewNodeData;
+begin
+  TVNode:=ATreeView.Items.GetFirstNode;
+  while TVNode<>nil do begin
+    NodeData:=TViewNodeData(TVNode.Data);
+    NodeData.CTNode:=nil;
+    TVNode:=TVNode.GetNext;
   end;
 end;
 
@@ -1015,6 +1049,28 @@ begin
   cepDirectives: Result:=DirectivesTreeView;
   else  Result:=nil;
   end;
+end;
+
+function TCodeExplorerView.CompareCodeNodes(Node1, Node2: TTreeNode): integer;
+const
+  SortDesc = AllIdentifierDefinitions+[ctnProcedure,ctnProperty];
+var
+  Data1: TViewNodeData;
+  Data2: TViewNodeData;
+begin
+  Data1:=TViewNodeData(Node1.Data);
+  Data2:=TViewNodeData(Node2.Data);
+  if (Data1.Desc in SortDesc)
+  and (Data2.Desc in SortDesc) then begin
+    Result:=SysUtils.CompareText(Node1.Text,Node2.Text);
+    if Result<>0 then exit;
+  end;
+  if Data1.StartPos<Data2.StartPos then
+    Result:=-1
+  else if Data1.StartPos>Data2.StartPos then
+    Result:=1
+  else
+    Result:=0;
 end;
 
 initialization
