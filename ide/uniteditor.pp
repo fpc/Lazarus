@@ -5574,6 +5574,7 @@ begin
   end;
   Statusbar.EndUpdate;
   
+  CheckCurrentCodeBufferChanged;
   UpdateLazDoc;
 End;
 
@@ -5653,9 +5654,9 @@ Begin
     UpdateActiveEditColors;
     if Assigned(FOnEditorVisibleChanged) then
       FOnEditorVisibleChanged(sender);
-    CheckCurrentCodeBufferChanged;
   end;
   
+  CheckCurrentCodeBufferChanged;
   UpdateLazDoc;
 end;
 
