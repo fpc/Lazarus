@@ -51,6 +51,7 @@ implicitunits= \
   lclrescache \
   lclstrconsts \
   lcltype \
+  lconvencoding \
   lmessages \
   lresources \
   maskedit \
