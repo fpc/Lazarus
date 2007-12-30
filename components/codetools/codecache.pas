@@ -66,6 +66,10 @@ type
     procedure SetFilename(Value: string);
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
+  protected
+    procedure DecodeLoaded(const AFilename: string;
+                    var ASource, ADiskEncoding, AMemEncoding: string); override;
+    procedure EncodeSaving(const AFilename: string; var ASource: string); override;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -114,6 +118,11 @@ type
        ALastTimeUsed: TDateTime);
   end;
 
+  TOnCodeCacheDecodeLoaded = procedure(Code: TCodeBuffer; const Filename: string;
+                        var Source, DiskEncoding, MemEncoding: string) of object;
+  TOnCodeCacheEncodeSaving = procedure(Code: TCodeBuffer;
+                          const Filename: string; var Source: string) of object;
+
   { TCodeCache }
 
   TCodeCache = class(TObject)
@@ -129,6 +138,8 @@ type
     fLastIncludeLinkFileValid: boolean;
     fLastIncludeLinkFileChangeStep: integer;
     fChangeStep: integer;
+    FOnDecodeLoaded: TOnCodeCacheDecodeLoaded;
+    FOnEncodeSaving: TOnCodeCacheEncodeSaving;
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
     function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
@@ -144,6 +155,10 @@ type
     procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
     procedure UpdateIncludeLinks;
     procedure IncreaseChangeStep;
+    procedure DecodeLoaded(Code: TCodeBuffer; const AFilename: string;
+                           var ASource, ADiskEncoding, AMemEncoding: string);
+    procedure EncodeSaving(Code: TCodeBuffer;
+                           const AFilename: string; var ASource: string);
   public
     constructor Create;
     destructor Destroy;  override;
@@ -178,6 +193,10 @@ type
           read FGlobalWriteLockIsSet write FGlobalWriteLockIsSet;
     property GlobalWriteLockStep: integer
           read FGlobalWriteLockStep write FGlobalWriteLockStep;
+    property OnDecodeLoaded: TOnCodeCacheDecodeLoaded read FOnDecodeLoaded
+                                                      write FOnDecodeLoaded;
+    property OnEncodeSaving: TOnCodeCacheEncodeSaving read FOnEncodeSaving
+                                                      write FOnEncodeSaving;
   end;
 
 
@@ -363,6 +382,8 @@ begin
     NewBuffer:=TCodeBuffer.Create;
     NewBuffer.FileName:=AFilename;
     NewBuffer.Source:=OldBuffer.Source;
+    NewBuffer.DiskEncoding:=NewBuffer.DiskEncoding;
+    NewBuffer.MemEncoding:=NewBuffer.MemEncoding;
     Result:=NewBuffer.Save;
     //DebugLn('[TCodeCache.SaveBufferAs] C ',Result,' ',NewBuffer.IsVirtual);
     if not Result then begin
@@ -564,6 +585,20 @@ procedure TCodeCache.IncreaseChangeStep;
 begin
   inc(fChangeStep);
   if fChangeStep=$7fffffff then fChangeStep:=-$7fffffff;
+end;
+
+procedure TCodeCache.DecodeLoaded(Code: TCodeBuffer; const AFilename: string;
+  var ASource, ADiskEncoding, AMemEncoding: string);
+begin
+  if Assigned(OnDecodeLoaded) then
+    OnDecodeLoaded(Code,AFilename,ASource,ADiskEncoding,AMemEncoding);
+end;
+
+procedure TCodeCache.EncodeSaving(Code: TCodeBuffer; const AFilename: string;
+  var ASource: string);
+begin
+  if Assigned(OnEncodeSaving) then
+    OnEncodeSaving(Code,AFilename,ASource);
 end;
 
 function TCodeCache.SaveIncludeLinksToFile(const AFilename: string;
@@ -877,6 +912,22 @@ begin
     FLoadDateValid:=false;
     ReadOnly:=false;
   end;
+end;
+
+procedure TCodeBuffer.DecodeLoaded(const AFilename: string; var ASource,
+  ADiskEncoding, AMemEncoding: string);
+begin
+  inherited DecodeLoaded(AFilename,ASource,ADiskEncoding,AMemEncoding);
+  if CodeCache<>nil then
+    CodeCache.DecodeLoaded(Self,AFilename,ASource,ADiskEncoding,AMemEncoding);
+end;
+
+procedure TCodeBuffer.EncodeSaving(const AFilename: string; var ASource: string
+  );
+begin
+  inherited EncodeSaving(AFilename,ASource);
+  if CodeCache<>nil then
+    CodeCache.EncodeSaving(Self,AFilename,ASource);
 end;
 
 procedure TCodeBuffer.MakeFileDateValid;

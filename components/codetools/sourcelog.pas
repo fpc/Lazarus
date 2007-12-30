@@ -48,8 +48,7 @@ type
                         of object;
   TOnSourceLogMove = procedure(Sender: TSourceLog; Pos, Len, MoveTo: integer)
                       of object;
-  TOnSourceLogDecodeLoaded = procedure(Sender: TSourceLog;
-                        const Filename: string;
+  TOnSourceLogDecodeLoaded = procedure(Sender: TSourceLog; const Filename: string;
                         var Source, DiskEncoding, MemEncoding: string) of object;
   TOnSourceLogEncodeSaving = procedure(Sender: TSourceLog;
                           const Filename: string; var Source: string) of object;
@@ -118,6 +117,10 @@ type
     procedure IncreaseChangeStep;
     procedure SetReadOnly(const Value: boolean);
     function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
+  protected
+    procedure DecodeLoaded(const AFilename: string;
+                        var ASource, ADiskEncoding, AMemEncoding: string); virtual;
+    procedure EncodeSaving(const AFilename: string; var ASource: string); virtual;
   public
     Data: Pointer;
     function LineCount: integer;
@@ -155,8 +158,8 @@ type
     procedure LoadFromStream(s: TStream);
     procedure SaveToStream(s: TStream);
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
-    property DiskEncoding: string read FDiskEncoding;
-    property MemEncoding: string read FMemEncoding;
+    property DiskEncoding: string read FDiskEncoding write FDiskEncoding;
+    property MemEncoding: string read FMemEncoding write FMemEncoding;
     property WriteLock: integer read FWriteLock;
     procedure IncWriteLock;
     procedure DecWriteLock;
@@ -664,12 +667,9 @@ begin
       SetLength(s,fs.Size);
       if s<>'' then
         fs.Read(s[1],length(s));
-      if Assigned(OnDecodeLoaded) then
-        OnDecodeLoaded(Self,Filename,s,FDiskEncoding,FMemEncoding)
-      else begin
-        FDiskEncoding:='';
-        FMemEncoding:='';
-      end;
+      FDiskEncoding:='';
+      FMemEncoding:='';
+      DecodeLoaded(Filename,s,FDiskEncoding,FMemEncoding);
       Source:=s;
     finally
       fs.Free;
@@ -703,8 +703,7 @@ begin
     fs:=TFileStream.Create(TheFilename, fmCreate);
     try
       s:=Source;
-      if Assigned(OnEncodeSaving) then
-        OnEncodeSaving(Self,Filename,s);
+      EncodeSaving(Filename,s);
       if s<>'' then
         fs.Write(s[1],length(s));
     finally
@@ -855,6 +854,19 @@ begin
   while (Result>=0) and (FChangeHooks[Result]<>AChangeHook) do dec(Result);
 end;
 
+procedure TSourceLog.DecodeLoaded(const AFilename: string;
+  var ASource, ADiskEncoding, AMemEncoding: string);
+begin
+  if Assigned(OnDecodeLoaded) then
+    OnDecodeLoaded(Self,AFilename,ASource,ADiskEncoding,AMemEncoding);
+end;
+
+procedure TSourceLog.EncodeSaving(const AFilename: string; var ASource: string);
+begin
+  if Assigned(OnEncodeSaving) then
+    OnEncodeSaving(Self,AFilename,ASource);
+end;
+
 procedure TSourceLog.AddChangeHook(AnOnSourceChange: TOnSourceChange);
 var i: integer;
 begin
@@ -882,7 +894,6 @@ begin
     ReAllocMem(FChangeHooks,SizeOf(TOnSourceChange) * FChangeHookCount);
   end;
 end;
-
 
 end.
 
