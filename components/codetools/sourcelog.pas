@@ -48,7 +48,12 @@ type
                         of object;
   TOnSourceLogMove = procedure(Sender: TSourceLog; Pos, Len, MoveTo: integer)
                       of object;
-                      
+  TOnSourceLogDecodeLoaded = procedure(Sender: TSourceLog;
+                        const Filename: string;
+                        var Source, DiskEncoding, MemEncoding: string) of object;
+  TOnSourceLogEncodeSaving = procedure(Sender: TSourceLog;
+                          const Filename: string; var Source: string) of object;
+
   TSourceLogEntry = class
   private
   public
@@ -80,10 +85,16 @@ type
     StartPos, EndPos: integer;
   end;
 
+  { TSourceLog }
+
   TSourceLog = class
   private
+    FDiskEncoding: string;
     FLineCount: integer;
     FLineRanges: {$ifdef fpc}^{$else}array of {$endif}TLineRange;
+    FMemEncoding: string;
+    FOnDecodeLoaded: TOnSourceLogDecodeLoaded;
+    FOnEncodeSaving: TOnSourceLogEncodeSaving;
               // array of TLineRange
     FSrcLen: integer;
     FLog: TFPList; // list of TSourceLogEntry
@@ -144,6 +155,8 @@ type
     procedure LoadFromStream(s: TStream);
     procedure SaveToStream(s: TStream);
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
+    property DiskEncoding: string read FDiskEncoding;
+    property MemEncoding: string read FMemEncoding;
     property WriteLock: integer read FWriteLock;
     procedure IncWriteLock;
     procedure DecWriteLock;
@@ -157,8 +170,12 @@ type
     property OnInsert: TOnSourceLogInsert read FOnInsert write FOnInsert;
     property OnDelete: TOnSourceLogDelete read FOnDelete write FOnDelete;
     property OnMove: TOnSourceLogMove read FOnMove write FOnMove;
+    property OnDecodeLoaded: TOnSourceLogDecodeLoaded read FOnDecodeLoaded
+                                                      write FOnDecodeLoaded;
+    property OnEncodeSaving: TOnSourceLogEncodeSaving read FOnEncodeSaving
+                                                      write FOnEncodeSaving;
   end;
-
+  
 
 implementation
 
@@ -647,6 +664,12 @@ begin
       SetLength(s,fs.Size);
       if s<>'' then
         fs.Read(s[1],length(s));
+      if Assigned(OnDecodeLoaded) then
+        OnDecodeLoaded(Self,Filename,s,FDiskEncoding,FMemEncoding)
+      else begin
+        FDiskEncoding:='';
+        FMemEncoding:='';
+      end;
       Source:=s;
     finally
       fs.Free;
@@ -669,6 +692,7 @@ function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
   TheFilename: String;
+  s: String;
 begin
   //DebugLn('TSourceLog.SaveToFile Self=',DbgS(Self));
   Result:=true;
@@ -678,8 +702,11 @@ begin
     TheFilename:=FindDiskFilename(Filename);
     fs:=TFileStream.Create(TheFilename, fmCreate);
     try
-      if fSrcLen>0 then
-        fs.Write(FSource[1],length(FSource));
+      s:=Source;
+      if Assigned(OnEncodeSaving) then
+        OnEncodeSaving(Self,Filename,s);
+      if s<>'' then
+        fs.Write(s[1],length(s));
     finally
       fs.Free;
     end;
