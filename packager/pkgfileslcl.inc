@@ -56,7 +56,7 @@ AddFile('lclproc.pas','LCLProc',pftUnit,[],cpBase);
 AddFile('lclrescache.pas','LCLResCache',pftUnit,[],cpBase);
 AddFile('lclstrconsts.pas','LCLStrConsts',pftUnit,[],cpBase);
 AddFile('lcltype.pp','LCLType',pftUnit,[],cpBase);
-AddFile('lconv.pas','LConv',pftUnit,[],cpBase);
+AddFile('lconvencoding.pas','LConvEnCoding',pftUnit,[],cpBase);
 AddFile('ldockctrledit.pas','LDockCtrlEdit',pftUnit,[],cpBase);
 AddFile('ldockctrl.pas','LDockCtrl',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('ldocktree.pas','LDockTree',pftUnit,[],cpBase);

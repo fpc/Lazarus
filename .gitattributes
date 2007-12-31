@@ -3233,7 +3233,6 @@ lcl/lclrescache.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lclversion.pas svneol=native#text/plain
-lcl/lconv.pas svneol=native#text/plain
 lcl/lconvencoding.pas svneol=native#text/plain
 lcl/ldockctrl.pas svneol=native#text/plain
 lcl/ldockctrledit.lfm svneol=native#text/plain
