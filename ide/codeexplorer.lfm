@@ -56,7 +56,7 @@ object CodeExplorerView: TCodeExplorerView
         ClientWidth = 207
         TabOrder = 1
         object OptionsSpeedButton: TSpeedButton
-          Left = 182
+          Left = 180
           Height = 22
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -105,7 +105,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object RefreshSpeedButton: TSpeedButton
-          Left = 159
+          Left = 132
           Height = 22
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -153,13 +153,25 @@ object CodeExplorerView: TCodeExplorerView
           ShowHint = True
           ParentShowHint = False
         end
+        object ModeSpeedButton: TSpeedButton
+          Left = 156
+          Height = 22
+          Top = 1
+          Width = 23
+          Anchors = [akTop, akRight]
+          Color = clBtnFace
+          NumGlyphs = 0
+          OnClick = ModeSpeedButtonClick
+          ShowHint = True
+          ParentShowHint = False
+        end
         object CodeFilterEdit: TEdit
           AnchorSideLeft.Control = CodePage
           AnchorSideTop.Control = CodePage
           AnchorSideRight.Control = CodePage
           AnchorSideRight.Side = asrBottom
           Height = 23
-          Width = 157
+          Width = 130
           Anchors = [akTop, akLeft, akRight]
           AutoSelect = True
           OnChange = CodeFilterEditChange

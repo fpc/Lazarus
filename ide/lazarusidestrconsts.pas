@@ -3407,6 +3407,8 @@ resourcestring
   lisNewClass = 'New Class';
   lisOldAncestors = 'Old Ancestors';
   lisNewAncestors = 'New Ancestors';
+  lisCEModeShowCategories = 'Show Categories';
+  lisCEModeShowSourceNodes = 'Show Source Nodes';
   lisCEOCodeExplorer = 'CodeExplorer Options';
   lisCEOUpdate = 'Update';
   lisCEORefreshAutomatically = 'Refresh automatically';
@@ -3414,6 +3416,9 @@ resourcestring
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
   lisCEFollowCursor = 'Follow cursor';
+  lisCEOMode = 'Prefered Exibition Mode';
+  lisCEOModeCategory = 'Category';
+  lisCEOModeSource = 'Source';
 
   lisMenuLazDoc = 'LazDoc Editor';
   lisLazDocMainFormCaption = 'LazDoc editor';

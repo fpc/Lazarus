@@ -88,6 +88,7 @@ type
     CodeTreeviewButtonPanel: TPanel;
     OptionsSpeedButton: TSpeedButton;
     RefreshSpeedButton: TSpeedButton;
+    ModeSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
     procedure CodeExplorerViewClose(Sender: TObject;
                                     var CloseAction: TCloseAction);
@@ -106,6 +107,7 @@ type
       Shift: TShiftState);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
+    procedure ModeSpeedButtonClick(Sender: TObject);
     procedure OptionsSpeedButtonClick(Sender: TObject);
     procedure RefreshMenuitemClick(Sender: TObject);
     procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -118,6 +120,7 @@ type
     FLastCodeChangeStep: integer;
     FLastDirectivesFilter: string;
     FLastDirectivesChangeStep: integer;
+    FMode : TCodeExplorerMode;
     FOnGetCodeTree: TOnGetCodeTree;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
@@ -159,6 +162,7 @@ type
     procedure SetCodeFilter(const AValue: string);
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
     procedure SetDirectivesFilter(const AValue: string);
+    procedure SetMode(AMode: TCodeExplorerMode);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure ApplyCodeFilter;
@@ -186,6 +190,7 @@ type
     property OnGetDirectivesTree: TOnGetDirectivesTree read FOnGetDirectivesTree
                                                      write FOnGetDirectivesTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
+    property Mode: TCodeExplorerMode read FMode write FMode;
     property CodeFilename: string read FCodeFilename;
     property CodeFilter: string read GetCodeFilter write SetCodeFilter;
     property DirectivesFilename: string read FDirectivesFilename;
@@ -282,6 +287,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 
 begin
   LoadCodeExplorerOptions;
+
+  SetMode(CodeExplorerOptions.Mode);
 
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
@@ -397,6 +404,14 @@ end;
 procedure TCodeExplorerView.MainNotebookPageChanged(Sender: TObject);
 begin
   Refresh(true);
+end;
+
+procedure TCodeExplorerView.ModeSpeedButtonClick(Sender: TObject);
+begin
+  // Let's Invert Mode of Exibition
+  if Mode = cemCategory then
+    SetMode(cemSource)
+  else SetMode(cemCategory);
 end;
 
 procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
@@ -679,6 +694,22 @@ begin
   DirectivesFilterChanged;
 end;
 
+procedure TCodeExplorerView.SetMode(AMode: TCodeExplorerMode);
+begin
+  FMode:=AMode;
+  case FMode of
+    cemCategory :
+    begin
+      ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
+      ModeSpeedButton.Hint:= lisCEModeShowSourceNodes;
+    end;
+    cemSource :
+    begin
+      ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
+      ModeSpeedButton.Hint:= lisCEModeShowCategories;
+    end;
+  end;
+end;
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);

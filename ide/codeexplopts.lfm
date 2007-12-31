@@ -1,59 +1,33 @@
 object CodeExplorerDlg: TCodeExplorerDlg
-  Left = 279
-  Height = 300
-  Top = 167
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
-  ActiveControl = UpdatePage
+  Left = 378
+  Height = 340
+  Top = 170
+  Width = 321
+  HorzScrollBar.Page = 320
+  VertScrollBar.Page = 339
+  ActiveControl = MainNotebook
   BorderStyle = bsSizeToolWin
   Caption = 'CodeExplorerDlg'
-  ClientHeight = 300
-  ClientWidth = 400
+  ClientHeight = 340
+  ClientWidth = 321
   OnCreate = CodeExplorerDlgCreate
   OnDestroy = CodeExplorerDlgDestroy
   Position = poScreenCenter
-  object OkButton: TButton
-    AnchorSideRight.Control = CancelButton
-    Left = 216
-    Height = 29
-    Top = 264
-    Width = 72
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'OkButton'
-    OnClick = OkButtonClick
-    TabOrder = 0
-  end
-  object CancelButton: TButton
-    Left = 294
-    Height = 29
-    Top = 264
-    Width = 98
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'CancelButton'
-    ModalResult = 2
-    TabOrder = 1
-  end
   object MainNotebook: TNotebook
-    Height = 248
-    Width = 400
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Height = 292
+    Width = 321
+    Align = alClient
     PageIndex = 0
-    TabOrder = 2
+    TabOrder = 0
     object UpdatePage: TPage
       Caption = 'UpdatePage'
-      ClientWidth = 396
-      ClientHeight = 217
+      ClientWidth = 317
+      ClientHeight = 261
       object RefreshRadioGroup: TRadioGroup
         Left = 6
-        Height = 141
-        Top = 6
-        Width = 384
+        Height = 144
+        Top = 55
+        Width = 305
         Align = alTop
         AutoFill = True
         BorderSpacing.Around = 6
@@ -66,8 +40,8 @@ object CodeExplorerDlg: TCodeExplorerDlg
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 1
-        ClientHeight = 122
-        ClientWidth = 380
+        ClientHeight = 125
+        ClientWidth = 301
         Items.Strings = (
           'Manual'
           'SwitchPage'
@@ -76,17 +50,89 @@ object CodeExplorerDlg: TCodeExplorerDlg
         TabOrder = 0
       end
       object FollowCursorCheckBox: TCheckBox
-        Left = 6
-        Height = 22
-        Top = 165
-        Width = 384
-        Align = alTop
+        AnchorSideTop.Control = RefreshRadioGroup
+        AnchorSideTop.Side = asrBottom
+        Left = 4
+        Height = 19
+        Top = 217
+        Width = 188
+        Align = alCustom
+        AutoSize = False
         BorderSpacing.Top = 12
         BorderSpacing.Around = 6
         Caption = 'FollowCursorCheckBox'
         TabOrder = 1
         Visible = False
       end
+      object ModeRadioGroup: TRadioGroup
+        Left = 6
+        Height = 43
+        Top = 6
+        Width = 305
+        Align = alTop
+        AutoFill = True
+        BorderSpacing.Around = 6
+        Caption = 'ModeRadioGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 2
+        ClientHeight = 24
+        ClientWidth = 301
+        Columns = 2
+        ItemIndex = 0
+        Items.Strings = (
+          'Category'
+          'Source'
+        )
+        TabOrder = 2
+      end
+    end
+  end
+  object ButtonPanel: TPanel
+    Height = 48
+    Top = 292
+    Width = 321
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 321
+    TabOrder = 1
+    object OkButton: TBitBtn
+      Left = 174
+      Height = 36
+      Top = 6
+      Width = 57
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      Left = 237
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
     end
   end
 end

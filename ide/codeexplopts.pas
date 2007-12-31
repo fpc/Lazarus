@@ -46,10 +46,16 @@ type
     cerSwitchEditorPage,// everytime the source editor switches to another page
     cerOnIdle // on idle
     );
+    
+  TCodeExplorerMode = (
+    cemCategory, // Category - Delphi like
+    cemSource    // Follows Source Code
+  );
   
   TCodeExplorerOptions = class(TPersistent)
   private
     FFollowCursor: boolean;
+    FMode : TCodeExplorerMode;
     FOptionsFilename: string;
     FRefresh: TCodeExplorerRefresh;
   public
@@ -63,6 +69,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   public
     property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh;
+    property Mode: TCodeExplorerMode read FMode write FMode;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
     property FollowCursor: boolean read FFollowCursor write FFollowCursor;
   end;
@@ -70,10 +77,12 @@ type
   { TCodeExplorerDlg }
 
   TCodeExplorerDlg = class(TForm)
+    CancelButton: TBitBtn;
     FollowCursorCheckBox: TCheckBox;
     MainNotebook: TNotebook;
-    OkButton: TButton;
-    CancelButton: TButton;
+    ModeRadioGroup: TRadioGroup;
+    OkButton: TBitBtn;
+    ButtonPanel: TPanel;
     RefreshRadioGroup: TRadioGroup;
     UpdatePage: TPage;
     procedure CodeExplorerDlgCreate(Sender: TObject);
@@ -98,13 +107,16 @@ const
     'SwitchEditorPage',
     'OnIdle'
     );
-    
+  CodeExplorerModeNames: array[TCodeExplorerMode] of string = (
+    'Category',
+    'Source'
+    );
 
 var
   CodeExplorerOptions: TCodeExplorerOptions;// set by the IDE
 
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
-
+function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
 function ShowCodeExplorerOptions: TModalResult;
 
 
@@ -115,6 +127,13 @@ begin
   for Result:=Low(TCodeExplorerRefresh) to High(TCodeExplorerRefresh) do
     if CompareText(CodeExplorerRefreshNames[Result],s)=0 then exit;
   Result:=cerDefault;
+end;
+
+function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
+begin
+  for Result:=Low(TCodeExplorerMode) to High(TCodeExplorerMode) do
+    if CompareText(CodeExplorerModeNames[Result],s)=0 then exit;
+  Result:=cemCategory;
 end;
 
 function ShowCodeExplorerOptions: TModalResult;
@@ -148,6 +167,7 @@ end;
 
 procedure TCodeExplorerOptions.Clear;
 begin
+  FMode:=cemCategory;
   FRefresh:=cerDefault;
   FFollowCursor:=true;
 end;
@@ -159,6 +179,7 @@ begin
   if Source is TCodeExplorerOptions then begin
     Src:=TCodeExplorerOptions(Source);
     FRefresh:=Src.Refresh;
+    FMode:=Src.Mode;
     FFollowCursor:=Src.FollowCursor;
   end else
     inherited Assign(Source);
@@ -210,6 +231,8 @@ begin
   Clear;
   FRefresh:=CodeExplorerRefreshNameToEnum(
                                    XMLConfig.GetValue(Path+'Refresh/Value',''));
+  FMode:=CodeExplorerModeNameToEnum(
+                                   XMLConfig.GetValue(Path+'Mode/Value',''));
   FFollowCursor:=XMLConfig.GetValue(Path+'FollowCursor',true);
 end;
 
@@ -219,6 +242,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'Refresh/Value',
                            CodeExplorerRefreshNames[FRefresh],
                            CodeExplorerRefreshNames[cerDefault]);
+  XMLConfig.SetDeleteValue(Path+'Mode/Value',
+                           CodeExplorerModeNames[FMode],
+                           CodeExplorerModeNames[cemCategory]);
   XMLConfig.SetDeleteValue(Path+'FollowCursor',FFollowCursor,true);
 end;
 
@@ -246,6 +272,14 @@ begin
   else
     RefreshRadioGroup.ItemIndex:=1;
   end;
+
+  case Options.Mode of
+  cemCategory: ModeRadioGroup.ItemIndex:=0;
+  cemSource: ModeRadioGroup.ItemIndex:=1;
+  else
+    ModeRadioGroup.ItemIndex:=0;
+  end;
+
   FollowCursorCheckBox.Checked:=Options.FollowCursor;
 end;
 
@@ -256,6 +290,12 @@ begin
   1: FOptions.Refresh:=cerSwitchEditorPage;
   2: FOptions.Refresh:=cerOnIdle;
   end;
+
+  case ModeRadioGroup.ItemIndex of
+  0: FOptions.Mode:=cemCategory;
+  1: FOptions.Mode:=cemSource;
+  end;
+
   Options.FollowCursor:=FollowCursorCheckBox.Checked;
 end;
 
@@ -271,6 +311,11 @@ begin
     Items[0]:=lisCEONeverOnlyManually;
     Items[1]:=lisCEOWhenSwitchingFile;
     Items[2]:=lisCEOOnIdle;
+  end;
+  ModeRadioGroup.Caption:=lisCEOMode;
+  with ModeRadioGroup do begin
+    Items[0]:=lisCEOModeCategory;
+    Items[1]:=lisCEOModeSource;
   end;
   FollowCursorCheckBox.Caption:=lisCEFollowCursor;
 end;
