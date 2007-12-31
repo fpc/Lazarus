@@ -1359,7 +1359,9 @@ type
     procedure DoMeasureTextPosition(var TextTop: integer;
       var TextLeft: integer); virtual;
     function  HasMultiLine : boolean;
-    procedure CalcSize(var AWidth, AHeight: integer);
+    procedure CalculatePreferredSize(
+                         var PreferredWidth, PreferredHeight: integer;
+                         WithThemeSpace: Boolean); override;
     procedure DoAutoSize; override;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure TextChanged; override;

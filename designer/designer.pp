@@ -535,7 +535,7 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
-  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
+  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
 
   if ControlSelection.LookupRootSelected then begin
     SelectOnlyThisComponent(FLookupRoot);
@@ -670,7 +670,7 @@ var
 begin
   Result := false;
   if ControlSelection.Count = 0 then exit;
-  if ControlSelection.OnlyInvisiblePersistensSelected then exit;
+  if ControlSelection.OnlyInvisiblePersistentsSelected then exit;
 
   AllComponentsStream:=TMemoryStream.Create;
   try
@@ -1772,6 +1772,19 @@ var
   Shift : TShiftState;
   Command: word;
   Handled: boolean;
+  
+  procedure Nudge(x, y: integer);
+  begin
+    if (ssCtrl in Shift) then begin
+      if ssShift in Shift then begin
+        x:=x*GetGridSizeX;
+        y:=y*GetGridSizeY;
+      end;
+      NudgePosition(x,y)
+    end else if (ssShift in Shift) then
+      NudgeSize(x,y);
+  end;
+  
 Begin
   {$IFDEF VerboseDesigner}
   DebugLn(['TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData]);
@@ -1790,32 +1803,20 @@ Begin
     Handled:=true;
     case TheMessage.CharCode of
     VK_DELETE:
-      if not ControlSelection.OnlyInvisiblePersistensSelected then
+      if not ControlSelection.OnlyInvisiblePersistentsSelected then
         DoDeleteSelectedPersistents;
 
     VK_UP:
-      if (ssCtrl in Shift) then
-        NudgePosition(0,-1)
-      else if (ssShift in Shift) then
-        NudgeSize(0,-1);
+      Nudge(0,-1);
 
     VK_DOWN:
-      if (ssCtrl in Shift) then
-        NudgePosition(0,1)
-      else if (ssShift in Shift) then
-        NudgeSize(0,1);
+      Nudge(0,1);
 
     VK_RIGHT:
-      if (ssCtrl in Shift) then
-        NudgePosition(1,0)
-      else if (ssShift in Shift) then
-        NudgeSize(1,0);
+      Nudge(1,0);
 
     VK_LEFT:
-      if (ssCtrl in Shift) then
-        NudgePosition(-1,0)
-      else if (ssShift in Shift) then
-        NudgeSize(-1,0);
+      Nudge(-1,0);
 
     else
       Handled:=false;
@@ -2796,7 +2797,7 @@ begin
                         and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
   OnlyNonVisualsAreSelected := ControlSelection.OnlyNonVisualPersistentsSelected;
-  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistensSelected;
+  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistentsSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
   OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;

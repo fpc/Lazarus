@@ -1460,7 +1460,7 @@ begin
 
   ButtonTop := 2;
   ButtonLeft := 2;
-  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'menu_new_unit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
+  MainIDEBar.NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'item_unit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisMenuNewUnit);
 
   MainIDEBar.OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'menu_open'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
 
@@ -1472,7 +1472,7 @@ begin
 
   MainIDEBar.SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'menu_save'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lisHintSave);
   MainIDEBar.SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'menu_save_all', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lisHintSaveAll);
-  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'menu_new_form'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
+  MainIDEBar.NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'item_form'    , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lisMenuNewForm);
   MainIDEBar.ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'menu_view_toggle_form_unit' , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
@@ -6607,7 +6607,13 @@ begin
   debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
-  if ActiveUnitInfo=nil then exit;
+  if ActiveUnitInfo=nil then begin
+    // we need to close the page anyway or else we might enter a loop
+    DebugLn('TMainIDE.DoCloseEditorFile INCONSISTENCY: NO ActiveUnitInfo');
+    SourceNoteBook.CloseFile(PageIndex);
+    Result:=mrOk;
+    exit;
+  end;
   if (ActiveUnitInfo.Component<>nil)
   and (FLastFormActivated<>nil)
   and (TDesigner(FLastFormActivated.Designer).LookupRoot=ActiveUnitInfo.Component)

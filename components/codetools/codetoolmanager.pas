@@ -316,7 +316,7 @@ type
           out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
           const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
     function AddResourceDirective(Code: TCodeBuffer; const Filename: string;
-          SearchInCleanSrc: boolean = true): boolean;
+          SearchInCleanSrc: boolean = true; const NewSrc: string = ''): boolean;
     function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
           RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
@@ -2399,7 +2399,8 @@ begin
 end;
 
 function TCodeToolManager.AddResourceDirective(Code: TCodeBuffer;
-  const Filename: string; SearchInCleanSrc: boolean): boolean;
+  const Filename: string; SearchInCleanSrc: boolean; const NewSrc: string
+  ): boolean;
 var
   Tree: TCompilerDirectivesTree;
   Node: TCodeTreeNode;
@@ -2411,7 +2412,7 @@ begin
   if SearchInCleanSrc then begin
     if not InitCurCodeTool(Code) then exit;
     try
-      Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache);
+      Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache,NewSrc);
     except
       on e: Exception do Result:=HandleException(e);
     end;
@@ -2422,7 +2423,7 @@ begin
         Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
         Node:=Tree.FindResourceDirective(Filename);
         if Node=nil then
-          Result:=AddResourceDirective(Code,Filename,true)
+          Result:=AddResourceDirective(Code,Filename,true,NewSrc)
         else
           Result:=true;
       finally

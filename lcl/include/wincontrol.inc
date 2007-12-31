@@ -3763,8 +3763,13 @@ begin
   //DebugLn(['TWinControl.UpdateShowing ',DbgSName(Self),' FShowing=',FShowing,' AutoSizeDelayed=',AutoSizeDelayed]);
   if FShowing then
   begin
-    ResizeDelayedAutoSizeChildren;
-    AdjustSize;
+    DisableAlign;
+    try
+      ResizeDelayedAutoSizeChildren;
+      AdjustSize;
+    finally
+      EnableAlign;
+    end;
   end;
 end;
 

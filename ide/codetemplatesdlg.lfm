@@ -148,7 +148,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Left = 6
       Height = 22
       Top = 6
-      Width = 157
+      Width = 158
       BorderSpacing.Bottom = 7
       Caption = 'UseMacrosCheckBox'
       TabOrder = 0
@@ -159,7 +159,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AnchorSideTop.Control = UseMacrosCheckBox
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
-      Left = 163
+      Left = 164
       Height = 29
       Top = 3
       Width = 130
@@ -171,7 +171,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       TabOrder = 2
     end
     object TemplateSynEdit: TSynEdit
-      AnchorSideTop.Control = AutoOnCheckGroup
+      AnchorSideTop.Control = AutoOnOptionsCheckGroup
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = EditTemplateGroupBox
       AnchorSideRight.Side = asrBottom
@@ -187,8 +187,6 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Font.Name = 'courier'
       ParentColor = False
       TabOrder = 1
-      BookMarkOptions.OnChange = nil
-      Gutter.OnChange = nil
       Gutter.CodeFoldingWidth = 14
       Keystrokes = <      
         item
@@ -514,8 +512,9 @@ object CodeTemplateDialog: TCodeTemplateDialog
       Lines.Strings = (
         'TemplateSynEdit'
       )
+      SelectedColor.OnChange = nil
     end
-    object AutoOnCheckGroup: TCheckGroup
+    object AutoOnOptionsCheckGroup: TCheckGroup
       AnchorSideLeft.Control = EditTemplateGroupBox
       AnchorSideTop.Control = InsertMacroButton
       AnchorSideTop.Side = asrBottom
@@ -529,7 +528,7 @@ object CodeTemplateDialog: TCodeTemplateDialog
       AutoFill = True
       AutoSize = True
       BorderSpacing.Around = 6
-      Caption = 'AutoOnCheckGroup'
+      Caption = 'AutoOnOptionsCheckGroup'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize

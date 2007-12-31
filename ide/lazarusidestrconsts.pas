@@ -3518,7 +3518,7 @@ resourcestring
   lisAutomaticallyOnLineBreak = 'line break';
   lisAutomaticallyOnSpace = 'space';
   lisAutomaticallyOnWordEnd = 'word end';
-  lisAutomaticallyOnAddSymbol = 'symbol';
+  lisAutomaticallyRemoveCharacter = 'do not add character';
   lisPckOptsThisPackageProvidesTheSameAsTheFollowingPackages = 'This package '
     +'provides the same as the following packages:';
   lisPLDPackageLinks = 'Package Links';

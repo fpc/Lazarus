@@ -974,6 +974,7 @@ end;
 
 procedure TCustomForm.DoAutoSize;
 begin
+  //DebugLn(['TCustomForm.DoAutoSize ',DbgSName(Self),' ',WindowState=wsNormal,' ',fsDisableAutoSize in FFormState,' ',dbgs(BoundsRect),' ',dbgs(ClientRect)]);
   if (WindowState=wsNormal) and (not (fsDisableAutoSize in FFormState)) then
     inherited DoAutoSize;
 end;
@@ -1946,9 +1947,9 @@ begin
   FFormHandlers[fhtFirstShow].CallNotifyEvents(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{  TCustomForm ShowModal                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TCustomForm ShowModal
+------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal: Integer;
 
   procedure RaiseShowModalImpossible;

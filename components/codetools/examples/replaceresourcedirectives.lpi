@@ -27,10 +27,10 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="CodeTools"/>
       </Item2>
     </RequiredPackages>
     <Units Count="1">

@@ -127,6 +127,7 @@ begin
     end else begin
       Result:=Parent.ClientOrigin;
       FormOrigin:=ParentForm.ClientOrigin;
+      //DebugLn(['GetParentFormRelativeTopLeft Component=',dbgsName(Component),' Parent=',dbgsName(Parent),' ',dbgs(Result),' ParentForm=',dbgsName(ParentForm),' ',dbgs(FormOrigin)]);
       Result.X:=Result.X-FormOrigin.X+TControl(Component).Left;
       Result.Y:=Result.Y-FormOrigin.Y+TControl(Component).Top;
     end;

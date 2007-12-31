@@ -217,7 +217,8 @@ type
           var NewPos: TCodeXYPosition; var NewTopLine: integer;
           const Filename: string = ''): boolean;
     function AddResourceDirective(const Filename: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache; const NewSrc: string = ''
+          ): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer;
           SourceChangeCache: TSourceChangeCache;
           out FoundIncludeFiles: TStrings;
@@ -4611,11 +4612,12 @@ begin
 end;
 
 function TStandardCodeTool.AddResourceDirective(const Filename: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
+  SourceChangeCache: TSourceChangeCache; const NewSrc: string): boolean;
 var
   ANode: TCodeTreeNode;
   Indent: LongInt;
   InsertPos: Integer;
+  AddSrc: String;
 begin
   Result:=false;
   BuildTree(true);
@@ -4643,8 +4645,12 @@ begin
 
   // insert directive
   SourceChangeCache.MainScanner:=Scanner;
+  if NewSrc<>'' then
+    AddSrc:=NewSrc
+  else
+    AddSrc:=GetIndentStr(Indent)+'{$R '+Filename+'}';
   if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-    GetIndentStr(Indent)+'{$R '+Filename+'}') then exit;
+    AddSrc) then exit;
   if not SourceChangeCache.Apply then exit;
 
   Result:=true;

@@ -46,7 +46,9 @@ begin
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);
 
-  if not CodeToolBoss.AddResourceDirective(Code,'*.res',false) then begin
+  if not CodeToolBoss.AddResourceDirective(Code,'*.res',false,
+    '{$IFDEF SomePlatform}{$R *.res}{$ENDIF}')
+  then begin
     writeln('FAILED: unable to add resource');
     if CodeToolBoss.ErrorMessage<>'' then
       writeln('CodeToolBoss.ErrorMessage=',CodeToolBoss.ErrorMessage);

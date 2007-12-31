@@ -293,7 +293,7 @@ begin
 
     IDEDialogLayoutList.ApplyLayout(Self,550,450);
 
-    ImageIndexPackage := IDEImages.LoadImage(16, 'pkg_package');
+    ImageIndexPackage := IDEImages.LoadImage(16, 'item_package');
     ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
     ImageIndexInherited := IDEImages.LoadImage(16, 'pkg_inherited');
 
@@ -1347,7 +1347,7 @@ begin
 
   chkCreateMakefile.Caption := 'Create Makefile';
 
-  ExecuteAfterGroupBox.Caption := lisCOExecuteBefore;
+  ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
   chkExecBeforeBuild.Caption := lisCOCallOnBuild;
   chkExecBeforeCompile.Caption := lisCOCallOnCompile;
   chkExecBeforeRun.Caption := lisCOCallOnRun;
@@ -1369,7 +1369,7 @@ begin
   lblCompiler.Caption:=lisCOCommand;
   lblRunIfCompiler.Caption := lisCOCallOn;
 
-  ExecuteBeforeGroupBox.Caption := lisCOExecuteAfter;
+  ExecuteAfterGroupBox.Caption := lisCOExecuteAfter;
   chkExecAfterBuild.Caption := lisCOCallOnBuild;
   chkExecAfterCompile.Caption := lisCOCallOnCompile;
   chkExecAfterRun.Caption := lisCOCallOnRun;

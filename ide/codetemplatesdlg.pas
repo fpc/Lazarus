@@ -43,7 +43,7 @@ type
     acoLineBreak,
     acoSpace,
     acoWordEnd,
-    acoAddChar
+    acoRemoveChar
     );
 
 const
@@ -51,7 +51,7 @@ const
     'AutoOnLineBreak',
     'AutoOnSpace',
     'AutoOnWordEnd',
-    'AddChar'
+    'RemoveChar' // do not add the typed character
   );
 
 type
@@ -61,7 +61,7 @@ type
   TCodeTemplateDialog = class(TForm)
     AddButton: TButton;
     ASynPasSyn: TSynFreePascalSyn;
-    AutoOnCheckGroup: TCheckGroup;
+    AutoOnOptionsCheckGroup: TCheckGroup;
     EditTemplateGroupBox: TGroupBox;
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
@@ -670,11 +670,11 @@ begin
   FilenameGroupBox.Caption:=lisToDoLFile;
   UseMacrosCheckBox.Caption:=lisEnableMacros;
   InsertMacroButton.Caption:=lisCTInsertMacro;
-  AutoOnCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
-  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
-  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnSpace);
-  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
-  AutoOnCheckGroup.Items.Add(lisAutomaticallyOnAddSymbol);
+  AutoOnOptionsCheckGroup.Caption:=lisCodeTemplAutoCompleteOn;
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnLineBreak);
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnSpace);
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyOnWordEnd);
+  AutoOnOptionsCheckGroup.Items.Add(lisAutomaticallyRemoveCharacter);
 
   FilenameEdit.Text:=EditorOpts.CodeTemplateFileName;
 
@@ -974,7 +974,7 @@ begin
   TemplateSynEdit.Invalidate;
   UseMacrosCheckBox.Checked:=EnableMacros;
   for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
-    AutoOnCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
+    AutoOnOptionsCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
 end;
 
 procedure TCodeTemplateDialog.SaveCurCodeTemplate;
@@ -1020,7 +1020,7 @@ begin
   
   SetBooleanAttribute(CodeTemplateEnableMacros,UseMacrosCheckBox.Checked);
   for c:=low(TAutoCompleteOption) to High(TAutoCompleteOption) do
-     SetBooleanAttribute(AutoCompleteOptionNames[c],AutoOnCheckGroup.Checked[ord(c)]);
+     SetBooleanAttribute(AutoCompleteOptionNames[c],AutoOnOptionsCheckGroup.Checked[ord(c)]);
 
   //DebugLn('TCodeTemplateDialog.SaveCurCodeTemplate NewValue="',NewValue,'" SynAutoComplete.CompletionValues[a]="',SynAutoComplete.CompletionValues[a],'"');
 end;

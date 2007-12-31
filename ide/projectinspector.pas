@@ -419,8 +419,8 @@ begin
   ImageIndexRequired := IDEImages.LoadImage(16, 'pkg_required');
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
   ImageIndexRemovedRequired := IDEImages.LoadImage(16, 'pkg_removedrequired');
-  ImageIndexProject := IDEImages.LoadImage(16, 'pkg_project');
-  ImageIndexUnit := IDEImages.LoadImage(16, 'pkg_unit');
+  ImageIndexProject := IDEImages.LoadImage(16, 'item_project');
+  ImageIndexUnit := IDEImages.LoadImage(16, 'item_unit');
   ImageIndexRegisterUnit := IDEImages.LoadImage(16, 'pkg_registerunit');
   ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
