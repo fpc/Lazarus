@@ -17,7 +17,7 @@ object CodeExplorerDlg: TCodeExplorerDlg
     Height = 292
     Width = 321
     Align = alClient
-    PageIndex = 0
+    PageIndex = 1
     TabOrder = 0
     object UpdatePage: TPage
       Caption = 'UpdatePage'
@@ -92,8 +92,29 @@ object CodeExplorerDlg: TCodeExplorerDlg
         TabOrder = 2
       end
     end
+    object CategoryPage: TPage
+      Caption = 'CategoryPage'
+      ClientWidth = 317
+      ClientHeight = 261
+      object CategoriesCheckGroup: TCheckGroup
+        Height = 261
+        Width = 317
+        Align = alClient
+        AutoFill = True
+        Caption = 'CategoriesCheckGroup'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        TabOrder = 0
+      end
+    end
   end
-  object ButtonPanel: TPanel
+  object BtnPanel: TPanel
     Height = 48
     Top = 292
     Width = 321

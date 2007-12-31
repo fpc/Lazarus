@@ -52,8 +52,25 @@ type
     cemSource    // Follows Source Code
   );
   
+  TCodeExplorerCategory = (
+    cecUses,
+    cecTypes,
+    cecVariables,
+    cecConstants,
+    cecProcedures,
+    cecProperties
+    );
+  TCodeExplorerCategories = set of TCodeExplorerCategory;
+  
+const
+  DefaultCodeExplorerCategories = [cecUses,
+                              cecTypes,cecVariables,cecConstants,cecProcedures];
+
+type
+
   TCodeExplorerOptions = class(TPersistent)
   private
+    FCategories: TCodeExplorerCategories;
     FFollowCursor: boolean;
     FMode : TCodeExplorerMode;
     FOptionsFilename: string;
@@ -68,21 +85,24 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   public
-    property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh;
-    property Mode: TCodeExplorerMode read FMode write FMode;
+    property Refresh: TCodeExplorerRefresh read FRefresh write FRefresh default cerSwitchEditorPage;
+    property Mode: TCodeExplorerMode read FMode write FMode default cemCategory;
     property OptionsFilename: string read FOptionsFilename write FOptionsFilename;
-    property FollowCursor: boolean read FFollowCursor write FFollowCursor;
+    property FollowCursor: boolean read FFollowCursor write FFollowCursor default true;
+    property Categories: TCodeExplorerCategories read FCategories write FCategories default DefaultCodeExplorerCategories;
   end;
 
   { TCodeExplorerDlg }
 
   TCodeExplorerDlg = class(TForm)
     CancelButton: TBitBtn;
+    CategoriesCheckGroup: TCheckGroup;
     FollowCursorCheckBox: TCheckBox;
     MainNotebook: TNotebook;
     ModeRadioGroup: TRadioGroup;
     OkButton: TBitBtn;
-    ButtonPanel: TPanel;
+    BtnPanel: TPanel;
+    CategoryPage: TPage;
     RefreshRadioGroup: TRadioGroup;
     UpdatePage: TPage;
     procedure CodeExplorerDlgCreate(Sender: TObject);
@@ -111,16 +131,27 @@ const
     'Category',
     'Source'
     );
+  CodeExplorerCategoryNames: array[TCodeExplorerCategory] of string = (
+    'Uses',
+    'Types',
+    'Variables',
+    'Constants',
+    'Procedures',
+    'Properties'
+    );
 
 var
   CodeExplorerOptions: TCodeExplorerOptions;// set by the IDE
 
+function ShowCodeExplorerOptions: TModalResult;
+
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
-function ShowCodeExplorerOptions: TModalResult;
+function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
 
 
 implementation
+
 
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 begin
@@ -134,6 +165,13 @@ begin
   for Result:=Low(TCodeExplorerMode) to High(TCodeExplorerMode) do
     if CompareText(CodeExplorerModeNames[Result],s)=0 then exit;
   Result:=cemCategory;
+end;
+
+function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
+begin
+  for Result:=Low(TCodeExplorerCategory) to High(TCodeExplorerCategory) do
+    if CompareText(CodeExplorerCategoryNames[Result],s)=0 then exit;
+  Result:=cecTypes;
 end;
 
 function ShowCodeExplorerOptions: TModalResult;
@@ -170,6 +208,7 @@ begin
   FMode:=cemCategory;
   FRefresh:=cerDefault;
   FFollowCursor:=true;
+  FCategories:=DefaultCodeExplorerCategories;
 end;
 
 procedure TCodeExplorerOptions.Assign(Source: TPersistent);
@@ -227,6 +266,8 @@ end;
 
 procedure TCodeExplorerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  c: TCodeExplorerCategory;
 begin
   Clear;
   FRefresh:=CodeExplorerRefreshNameToEnum(
@@ -234,10 +275,18 @@ begin
   FMode:=CodeExplorerModeNameToEnum(
                                    XMLConfig.GetValue(Path+'Mode/Value',''));
   FFollowCursor:=XMLConfig.GetValue(Path+'FollowCursor',true);
+  
+  FCategories:=[];
+  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+    if XMLConfig.GetValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
+      c in DefaultCodeExplorerCategories) then
+        Include(FCategories,c);
 end;
 
 procedure TCodeExplorerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  c: TCodeExplorerCategory;
 begin
   XMLConfig.SetDeleteValue(Path+'Refresh/Value',
                            CodeExplorerRefreshNames[FRefresh],
@@ -246,6 +295,10 @@ begin
                            CodeExplorerModeNames[FMode],
                            CodeExplorerModeNames[cemCategory]);
   XMLConfig.SetDeleteValue(Path+'FollowCursor',FFollowCursor,true);
+  
+  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+    XMLConfig.SetDeleteValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
+      c in FCategories,c in DefaultCodeExplorerCategories);
 end;
 
 { TCodeExplorerDlg }
@@ -264,6 +317,8 @@ begin
 end;
 
 procedure TCodeExplorerDlg.LoadFormFromOptions;
+var
+  c: TCodeExplorerCategory;
 begin
   case Options.Refresh of
   cerManual: RefreshRadioGroup.ItemIndex:=0;
@@ -281,9 +336,15 @@ begin
   end;
 
   FollowCursorCheckBox.Checked:=Options.FollowCursor;
+  
+  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+    CategoriesCheckGroup.Checked[ord(c)]:=c in Options.Categories;
 end;
 
 procedure TCodeExplorerDlg.SaveFormToOptions;
+var
+  NewCategories: TCodeExplorerCategories;
+  c: TCodeExplorerCategory;
 begin
   case RefreshRadioGroup.ItemIndex of
   0: FOptions.Refresh:=cerManual;
@@ -297,6 +358,12 @@ begin
   end;
 
   Options.FollowCursor:=FollowCursorCheckBox.Checked;
+
+  NewCategories:=[];
+  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+    if CategoriesCheckGroup.Checked[ord(c)] then
+      include(NewCategories,c);
+  Options.Categories:=NewCategories;
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgCreate(Sender: TObject);
@@ -318,6 +385,15 @@ begin
     Items[1]:=lisCEOModeSource;
   end;
   FollowCursorCheckBox.Caption:=lisCEFollowCursor;
+  
+  CategoryPage.Caption:=lisCECategories;
+  CategoriesCheckGroup.Caption:=lisCEOnlyUsedInCategoryMode;
+  CategoriesCheckGroup.Items.Add(lisCEUses);      // 0
+  CategoriesCheckGroup.Items.Add(lisCETypes);     // 1
+  CategoriesCheckGroup.Items.Add(lisCEVariables); // 2
+  CategoriesCheckGroup.Items.Add(lisCEConstants); // 3
+  CategoriesCheckGroup.Items.Add(lisCEProcedures);// 4
+  CategoriesCheckGroup.Items.Add(lisCEProperties);// 5
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgDestroy(Sender: TObject);

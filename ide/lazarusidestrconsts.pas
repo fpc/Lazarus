@@ -3416,6 +3416,14 @@ resourcestring
   lisCEOWhenSwitchingFile = 'When switching file in source editor';
   lisCEOOnIdle = 'On idle';
   lisCEFollowCursor = 'Follow cursor';
+  lisCECategories = 'Categories';
+  lisCEUses = 'Uses';
+  lisCEOnlyUsedInCategoryMode = 'Only used in category mode';
+  lisCETypes = 'Types';
+  lisCEVariables = 'Variables';
+  lisCEConstants = 'Constants';
+  lisCEProcedures = 'Procedures';
+  lisCEProperties = 'Properties';
   lisCEOMode = 'Prefered Exibition Mode';
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
