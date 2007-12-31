@@ -418,6 +418,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -481,6 +482,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -928,8 +930,9 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate(Widget, @Allocation);
 
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -1126,6 +1129,7 @@ begin
   if Result = 0 then
     Exit;
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -1301,6 +1305,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
+  Set_RC_Name(AWinControl, PGtkWidget(Result));
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
@@ -1443,6 +1448,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
+  Set_RC_Name(AWinControl, PGtkWidget(Result));
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
@@ -1581,6 +1587,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
+  Set_RC_Name(AWinControl, PGtkWidget(Result));
   SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
@@ -1711,6 +1718,7 @@ begin
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
   //DebugLn(['TGtkWSCustomMemo.CreateHandle ']);
+  Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
 
@@ -1911,9 +1919,10 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate(P, @Allocation);
 
-  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+  Set_RC_Name(AWinControl, P);
+  SetCallbacks(P, WidgetInfo);
 end;
 
 class procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
@@ -1995,9 +2004,10 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate(Widget, @Allocation);
 
-  TGtkWSCustomCheckBox.SetCallbacks(PGtkWidget(Result), WidgetInfo);
+  Set_RC_Name(AWinControl, Widget);
+  TGtkWSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
 end;
 
 { TGtkWSToggleBox }
@@ -2020,9 +2030,10 @@ begin
   Allocation.Y := AParams.Y;
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+  gtk_widget_size_allocate(Widget, @Allocation);
 
-  TGtkWSCustomCheckBox.SetCallbacks(PGtkWidget(Result), WidgetInfo);
+  Set_RC_Name(AWinControl, Widget);
+  TGtkWSCustomCheckBox.SetCallbacks(Widget, WidgetInfo);
 end;
 
 initialization

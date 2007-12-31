@@ -181,6 +181,7 @@ begin
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 

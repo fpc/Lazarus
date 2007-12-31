@@ -96,6 +96,8 @@ begin
   WidgetInfo^.CoreWidget := CList;
   TGtkWidgetSet(WidgetSet).SetSelectionMode(AWinControl, Widget,
     CListBox.MultiSelect, CListBox.ExtendedSelect);
+
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 {$ENDIF}

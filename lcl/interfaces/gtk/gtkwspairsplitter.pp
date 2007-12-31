@@ -103,6 +103,7 @@ begin
 
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
 
+  Set_RC_Name(AWinControl, Widget);
   SetCallBacks(Widget, WidgetInfo);
 end;
 
@@ -176,6 +177,7 @@ begin
   WidgetInfo^.ExStyle := AParams.ExStyle;
   WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
 
+  Set_RC_Name(AWinControl, Widget);
   SetCallBacks(Widget, WidgetInfo);
 end;
 

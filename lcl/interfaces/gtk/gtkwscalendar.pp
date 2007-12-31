@@ -103,6 +103,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
+  Set_RC_Name(AWinControl, FrameWidget);
   SetCallBacks(FrameWidget, WidgetInfo);
 end;
 

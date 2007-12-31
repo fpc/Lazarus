@@ -183,6 +183,7 @@ begin
   SetMainWidget(Frame, Layout);
   
   Result := TLCLIntfHandle(PtrUInt(Frame));
+  Set_RC_Name(AWinControl, PGtkWidget(Frame));
   SetCallBacks(PGtkWidget(Frame), WidgetInfo);
 end;
 
@@ -370,6 +371,7 @@ begin
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
+  Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
 
@@ -509,6 +511,7 @@ begin
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(P));
+  Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
 

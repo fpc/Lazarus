@@ -857,6 +857,7 @@ begin
   Allocation.Width := AParams.Width;
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
+  Set_RC_Name(AWinControl, Widget);
 
   // SetCallbacks isn't called here, it should be done in the 'derived' class
 end;
@@ -905,8 +906,6 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
-  Set_RC_Name(AWinControl, Widget);
-  
   Result := THandle(PtrUInt(Widget));
   if Result = 0 then Exit;
 
@@ -922,6 +921,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(Widget, @Allocation);
   
+  Set_RC_Name(AWinControl, Widget);
   SetCCCallbacks(Widget, WidgetInfo);
 end;
 

@@ -187,6 +187,8 @@ begin
     True : gtk_tree_selection_set_mode(Selection, GTK_SELECTION_MULTIPLE);
     False: gtk_tree_selection_set_mode(Selection, GTK_SELECTION_SINGLE);
   end;
+
+  Set_RC_Name(AWinControl, P);  
   SetCallbacks(p, WidgetInfo);
 end;
 

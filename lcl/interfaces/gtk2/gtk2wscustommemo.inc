@@ -133,6 +133,7 @@ begin
   
   gtk_widget_show_all(Widget);
 
+  Set_RC_Name(AWinControl, Widget);  
   SetCallbacks(Widget, WidgetInfo);
 end;
 

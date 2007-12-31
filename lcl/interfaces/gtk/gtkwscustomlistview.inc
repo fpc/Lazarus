@@ -934,6 +934,7 @@ begin
   // set allocation
   // already created in TGtkWSBaseScrollingWinControl
 
+  Set_RC_Name(AWinControl, PGtkWidget(ScrollWidget));
   SetCallbacks(PGtkWidget(ScrollWidget), PGtkWidget(CListWidget), WidgetInfo);
 end;
 

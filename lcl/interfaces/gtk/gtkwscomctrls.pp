@@ -267,6 +267,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -398,6 +399,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 
@@ -475,6 +477,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);
 end;
 

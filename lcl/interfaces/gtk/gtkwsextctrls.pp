@@ -272,6 +272,7 @@ begin
   WidgetInfo^.ExStyle := AParams.ExStyle;
   WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
   
+  Set_RC_Name(AWinControl, Widget);
   SetCallBacks(Widget, WidgetInfo);
 end;
 
@@ -314,6 +315,7 @@ begin
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomNotebook(AWinControl).TabPosition]);
   Result := TLCLIntfHandle(PtrUInt(AWidget));
+  Set_RC_Name(AWinControl, PGtkWidget(AWidget));
   SetCallBacks(PGtkWidget(AWidget), WidgetInfo);
 end;
 
@@ -578,6 +580,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   Result := TLCLIntfHandle(PtrUInt(Widget));
+  Set_RC_Name(AWinControl, Widget);
   SetCallBacks(Widget, WidgetInfo);
 end;
 
