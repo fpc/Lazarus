@@ -1420,7 +1420,7 @@ begin
         inc(SourceCompletionCaretXY.x,length(AChar));
         SourceCompletionTimer.AutoEnabled:=true;
       end;
-      //DebugLn(['TSourceEditor.ProcessCommand AddCHar=',AddCHar]);
+      //DebugLn(['TSourceEditor.ProcessCommand ecChar AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
     end;
     
@@ -1428,6 +1428,7 @@ begin
     begin
       AddChar:=true;
       if AutoCompleteChar(aChar,AddChar,acoLineBreak) then ;
+      //DebugLn(['TSourceEditor.ProcessCommand ecLineBreak AddChar=',AddChar]);
       if not AddChar then Command:=ecNone;
     end;
   end;
@@ -2129,6 +2130,7 @@ begin
     and (FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)>=0)
     then begin
       Result:=true;
+      DebugLn(['TSourceEditor.AutoCompleteChar ',AToken,' SrcToken=',SrcToken,' CatName=',CatName,' Index=',FCodeTemplates.CompletionAttributes[i].IndexOfName(CatName)]);
       FCodeTemplates.ExecuteCompletion(AToken,FEditor);
       AddChar:=FCodeTemplates.CompletionAttributes[i].IndexOfName(
                                         AutoCompleteOptionNames[acoAddChar])>=0;

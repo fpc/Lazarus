@@ -1,0 +1,220 @@
+object OptionsEditorForm: TOptionsEditorForm
+  Left = 487
+  Height = 571
+  Top = 317
+  Width = 668
+  HorzScrollBar.Page = 667
+  VertScrollBar.Page = 570
+  ActiveControl = btnCancel
+  Caption = 'OptionsEditorForm'
+  ClientHeight = 571
+  ClientWidth = 668
+  Constraints.MinHeight = 500
+  Constraints.MinWidth = 500
+  OnActivate = FormActivate
+  object BottomPanel: TPanel
+    Height = 50
+    Top = 521
+    Width = 668
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 50
+    ClientWidth = 668
+    Constraints.MinWidth = 400
+    TabOrder = 0
+    object OKCancelPanel: TPanel
+      Left = 481
+      Height = 50
+      Width = 187
+      Align = alRight
+      BevelOuter = bvNone
+      ClientHeight = 50
+      ClientWidth = 187
+      TabOrder = 0
+      object btnCancel: TBitBtn
+        AnchorSideRight.Control = OKCancelPanel
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Side = asrBottom
+        Left = 103
+        Height = 26
+        Top = 13
+        Width = 78
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Cancel = True
+        Caption = 'Cancel'
+        Constraints.MinHeight = 25
+        Constraints.MinWidth = 75
+        Kind = bkCancel
+        ModalResult = 2
+        NumGlyphs = 0
+        TabOrder = 0
+      end
+      object btnOK: TBitBtn
+        AnchorSideRight.Control = btnCancel
+        AnchorSideBottom.Side = asrBottom
+        Left = 22
+        Height = 26
+        Top = 13
+        Width = 75
+        Anchors = [akTop, akRight]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Caption = '&OK'
+        Constraints.MinHeight = 25
+        Constraints.MinWidth = 75
+        Kind = bkOK
+        ModalResult = 1
+        NumGlyphs = 0
+        TabOrder = 1
+      end
+    end
+    object HelpButton: TBitBtn
+      AnchorSideLeft.Control = BottomPanel
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 26
+      Top = 14
+      Width = 75
+      AutoSize = True
+      BorderSpacing.Left = 6
+      Caption = '&Help'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      OnClick = HelpButtonClick
+      TabOrder = 1
+    end
+  end
+  object CategoriesPanel: TPanel
+    Height = 40
+    Width = 668
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 40
+    ClientWidth = 668
+    Color = clBtnShadow
+    Font.Color = clMenuText
+    ParentColor = False
+    TabOrder = 1
+    object SectionTitleLabel: TLabel
+      Height = 40
+      Width = 233
+      Align = alLeft
+      Caption = 'SectionTitleLabel'
+      Font.Color = clInactiveBorder
+      Font.Height = -27
+      Font.Style = [fsBold]
+      Layout = tlCenter
+      ParentColor = False
+    end
+    object SearchLabel: TLabel
+      Left = 344
+      Height = 22
+      Top = 8
+      Width = 93
+      Alignment = taRightJustify
+      Anchors = [akTop, akRight]
+      AutoSize = False
+      Caption = '&Search:'
+      Layout = tlCenter
+      ParentColor = False
+      OnClick = SearchLabelClick
+    end
+    object ClearFilterButton: TBitBtn
+      Left = 624
+      Height = 23
+      Top = 8
+      Width = 37
+      Anchors = [akTop, akRight]
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF003F3DED413B38EB08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00211FE3081E1CE241FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF004A47F0414F4CF2FF403EEDFD3C39EB08FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF002725E5082422E4FC312FEAFF1F1DE241FFFFFF00FFFFFF00FFFFFF005451
+        F3415856F5FF6361FAFF5855F6FF413FEDFC3D3AEC08FFFFFF00FFFFFF00302D
+        E7082C2AE6FC413FF1FF4C4AF6FF312FEAFF1F1DE241FFFFFF00FFFFFF005956
+        F52B5B58F6FF6562FAFF7170FFFF5956F6FF4240EEFC3E3BEC083937EB083532
+        E9FC4745F2FF6362FFFF4A48F4FF2F2DE9FF2220E32BFFFFFF00FFFFFF00FFFF
+        FF005A57F52B5B59F6FF6663FAFF7471FFFF5A58F6FF4341EEFC3E3CECFD504D
+        F4FF6867FFFF504EF5FF3634EBFF2A27E52BFFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF005B58F62B5C5AF6FF6764FAFF7472FFFF7370FFFF706EFFFF6E6C
+        FFFF5755F7FF3F3DEEFF3230E82BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF005C59F62B5D5BF7FF7976FFFF5956FFFF5754FFFF7270
+        FFFF4846F0FF3C39EB2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00615EF8085D5AF6FD7D79FFFF5E5BFFFF5B58FFFF7674
+        FFFF4643EFFD413FED08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF006967FB086663F9FC706DFBFF807EFFFF7E7BFFFF7C79FFFF7977
+        FFFF5E5CF7FF4744EFFC4240EE08FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00716EFD086E6BFCFC7774FDFF8682FFFF7673FCFF6462F8FF605DF7FF6D6A
+        FAFF7B79FFFF605DF7FF4845EFFC4341EE08FFFFFF00FFFFFF00FFFFFF007673
+        FF087471FEFD7D7AFEFF8A87FFFF7C79FDFF6C69FBFF6361F92B5F5CF72B615E
+        F8FF6E6CFAFF7D7AFFFF615FF7FF4946F0FC4441EE05FFFFFF00FFFFFF007774
+        FF1F7A77FFFF817EFFFF817EFEFF7471FDFF6C69FB2BFFFFFF00FFFFFF00605D
+        F72B625FF8FF6F6DFBFF7E7CFFFF625FF8FF4A47F06F4542EE02FFFFFF00FFFF
+        FF007774FF1F7A77FFFF7976FEFF726FFD2BFFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00615EF82B6461F8FF6A68F9FF5451F3A84F4DF229FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF007774FF1F7774FF2BFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00625FF82B5D5BF76F5956F53EFFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF006360F80AFFFFFF00FFFFFF00FFFFFF00
+      }
+      NumGlyphs = 0
+      OnClick = ClearFilterButtonClick
+      TabOrder = 0
+      Visible = False
+    end
+    object FilterEdit: TEdit
+      Left = 441
+      Height = 23
+      Top = 7
+      Width = 184
+      Anchors = [akTop, akRight]
+      Font.Color = clGrayText
+      OnChange = FilterEditChange
+      OnEnter = FilterEditEnter
+      OnExit = FilterEditExit
+      TabOrder = 1
+      Text = 'text to filter...'
+    end
+  end
+  object SectionsTreePanel: TPanel
+    Height = 481
+    Top = 40
+    Width = 150
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 481
+    ClientWidth = 150
+    TabOrder = 2
+    object SectionList: TListBox
+      Height = 481
+      Width = 150
+      Align = alClient
+      OnSelectionChange = SectionListSelectionChange
+      TabOrder = 0
+    end
+  end
+  object MainSplitter: TSplitter
+    Left = 150
+    Height = 481
+    Top = 40
+    Width = 5
+  end
+  object OptionsAreaPanel: TPanel
+    Left = 155
+    Height = 481
+    Top = 40
+    Width = 513
+    Align = alClient
+    BevelOuter = bvNone
+    Font.Color = clCaptionText
+    TabOrder = 3
+  end
+end

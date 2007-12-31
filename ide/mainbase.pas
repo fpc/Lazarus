@@ -573,7 +573,13 @@ begin
 
     CreateMenuItem(ParentMI,itmProjectInspector,'itmProjectInspector',lisMenuProjectInspector,'menu_project_inspector');
     CreateMenuItem(ParentMI,itmProjectOptions,'itmProjectOptions',lisMenuProjectOptions,'menu_project_options');
+    {$ifdef EnableNewDialogs}
+    CreateMenuItem(ParentMI,itmProjectOptions_new,'itmProjectOptions_new',lisMenuProjectOptions+' (new)','menu_project_options');
+    {$endif}
     CreateMenuItem(ParentMI,itmProjectCompilerOptions,'itmProjectCompilerOptions',lisMenuCompilerOptions,'menu_compiler_options');
+    {$ifdef EnableNewDialogs}
+    CreateMenuItem(ParentMI,itmProjectCompilerOptions_new,'itmProjectCompilerOptions_new',lisMenuCompilerOptions+' (new)','menu_compiler_options');
+    {$endif}
     CreateMenuItem(ParentMI,itmProjectViewToDos,'itmProjectViewToDos',lisMenuViewProjectTodos, 'menu_project_todo');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectAddRemoveSection,'itmProjectAddRemoveSection');
@@ -709,8 +715,16 @@ begin
 
     CreateMenuItem(ParentMI,itmEnvGeneralOptions,'itmEnvGeneralOptions',
                    lisMenuGeneralOptions,'menu_environment_options');
+    {$ifdef EnableNewDialogs}
+    CreateMenuItem(ParentMI,itmEnvGeneralOptions_new,'itmEnvGeneralOptions_new',
+                   lisMenuGeneralOptions+' (new)','menu_environment_options');
+    {$endif}
     CreateMenuItem(ParentMI,itmEnvEditorOptions,'itmEnvEditorOptions',
                    lisMenuEditorOptions,'menu_editor_options');
+    {$ifdef EnableNewDialogs}
+    CreateMenuItem(ParentMI,itmEnvEditorOptions_new,'itmEnvEditorOptions_new',
+                   lisMenuEditorOptions+' (new)','menu_editor_options');
+    {$endif}
     CreateMenuItem(ParentMI,itmEnvCodeTemplates,'itmEnvCodeTemplates',
                    lisMenuEditCodeTemplates,'');
     CreateMenuItem(ParentMI,itmEnvDebuggerOptions,'itmEnvDebuggerOptions',

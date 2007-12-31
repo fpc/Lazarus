@@ -65,7 +65,6 @@ type
     FUseVersionInfo: boolean;
     FVersionNr: integer;
     rcFilename: string;
-    resFilename: string;
     rcInFile: text;
     rcOutFile: text;
     rcLine: string;
@@ -79,7 +78,6 @@ type
     procedure RewriteAndSkipRCFile;
     procedure AppendToRCFile;
     procedure RewriteRCFile;
-    function DoTheRealCompile: TModalResult;
     procedure SetAutoIncrementBuild(const AValue: boolean);
     procedure SetBuildNr(const AValue: integer);
     procedure SetCommentsString(const AValue: string);
@@ -102,7 +100,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function CompileRCFile(const MainFilename, TargetOS: string): TModalResult;
+    function CreateRCFile(const MainFilename, TargetOS: string): TModalResult;
     function UpdateMainSourceFile(const AFilename: string): TModalResult;
 
     property Modified: boolean read FModified write SetModified;
@@ -310,70 +308,49 @@ begin
 end;
 
 {-----------------------------------------------------------------------------
- TProjectVersionInfo CompileRCFile
+ TProjectVersionInfo CreateRCFile
 -----------------------------------------------------------------------------}
-function TProjectVersionInfo.CompileRCFile(const MainFilename, TargetOS: string
+function TProjectVersionInfo.CreateRCFile(const MainFilename, TargetOS: string
   ): TModalResult;
 begin
-   Result := mrCancel;
-   SetFileNames(MainFilename);
-   if (TargetOS = 'win32') then
+  Result := mrCancel;
+  SetFileNames(MainFilename);
+  if (TargetOS = 'win32') then
+  begin
+    // we are building a win32 application
+    if UseVersionInfo then
+    begin
+      // project indicates to use the versioninfo
+      if AutoIncrementBuild then // project indicate to use autoincrementbuild
+        BuildNr := BuildNr + 1;
+      if ProductVersionString = '' then
+         ProductVersionString := IntToStr(VersionNr) + '.' +
+                                 IntToStr(MajorRevNr) + '.' +
+                                 IntToStr(MinorRevNr) + '.' +
+                                 IntToStr(BuildNr);
+      if (FileExists(rcFilename)) then // we found an existing .rc file
+        RewriteRCFile
+      else
       begin
-         { we are building a win32 application }
-         if UseVersionInfo then
-            begin
-               { project indicates to use the versioninfo }
-               if AutoIncrementBuild then
-                  begin
-                     { project indicate to use autoincrementbuild }
-                     BuildNr := BuildNr + 1;
-                  end;
-               if ProductVersionString = '' then
-                  ProductVersionString := IntToStr(VersionNr) + '.' +
-                                          IntToStr(MajorRevNr) + '.' +
-                                          IntToStr(MinorRevNr) + '.' +
-                                          IntToStr(BuildNr);
-               if (FileExists(rcFilename)) then
-                  begin
-                     { we found an existing .rc file }
-                     RewriteRCFile;
-                  end
-               else
-                  begin
-                     { there is no .rc file }
-                     AssignFile(rcOutFile, rcFilename);
-                     Rewrite(rcOutFile);
-                     AppendToRCFile;
-                     CloseFile(rcOutFile);
-                  end;
-               { now it's time to do the real compile }
-               Result := DoTheRealCompile;
-               if (Result = mrOk) then
-                  begin
-                     { compilation succeeded }
-                     VersionInfoMessages.Clear;
-                     VersionInfoMessages.Add('Resource file ' + rcFilename +
-                                             ' has been compiled successfully!');
-                  end
-               else
-                  begin
-                     { compilation failed }
-                     VersionInfoMessages.Add('Errors found while compiling ' +
-                                             rcFilename);
-                  end;
-            end
-         else
-            begin
-               { project indicates to not use the versioninfo }
-               Result := mrOk;
-            end;
-      end
-   else
-      begin
-         { on systems other then win32, there is nothing to do, just return
-           with Result = mrOk }
-         Result := mrOk;
+        // there is no .rc file
+        AssignFile(rcOutFile, rcFilename);
+        Rewrite(rcOutFile);
+        AppendToRCFile;
+        CloseFile(rcOutFile);
       end;
+      Result := mrOk;
+    end
+    else
+    begin
+      // project indicates to not use the versioninfo
+      Result := mrOk;
+    end;
+  end
+  else
+  begin
+    // on systems other then win32, there is nothing to do, just return with Result = mrOk
+    Result := mrOk;
+  end;
 end;
 
 {-----------------------------------------------------------------------------
@@ -472,64 +449,64 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectVersionInfo.AppendToRCFile;
 begin
-   rcLine := '1 VERSIONINFO';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := 'FILEVERSION ' + IntToStr(VersionNr) + ',' +
-                              IntToStr(MajorRevNr) + ',' +
-                              IntToStr(MinorRevNr) + ',' +
-                              IntToStr(BuildNr);
-   WriteLn(rcoutFile, rcLine);
-   rcLine := 'PRODUCTVERSION ' + StringReplace(ProductVersionString, '.', ',', [rfReplaceAll]);
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '{';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' BLOCK "StringFileInfo"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' {';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '  BLOCK "' + HexLang + HexCharSet + '"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '  {';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "Comments", "' + CommentsString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "CompanyName", "' + CompanyString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "FileDescription", "' + DescriptionString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
-                                           IntToStr(MajorRevNr) + '.' +
-                                           IntToStr(MinorRevNr) + '.' +
-                                           IntToStr(BuildNr) + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "InternalName", "' + InternalNameString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "LegalCopyright", "' + CopyrightString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "LegalTrademarks", "' + TrademarksString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "OriginalFilename", "' + OriginalFilenameString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "ProductName", "' + ProdNameString + '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '   VALUE "ProductVersion", "' +
-             StringReplace(ProductVersionString, ',', '.', [rfReplaceAll]) +
-             '\000"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '  }';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' }';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' BLOCK "VarFileInfo"';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' {';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '  VALUE "Translation", 0x' + HexLang + ', 0x' + HexCharSet;
-   WriteLn(rcoutFile, rcLine);
-   rcLine := ' }';
-   WriteLn(rcoutFile, rcLine);
-   rcLine := '}';
-   WriteLn(rcoutFile, rcLine);
+  rcLine := '1 VERSIONINFO';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := 'FILEVERSION ' + IntToStr(VersionNr) + ',' +
+                             IntToStr(MajorRevNr) + ',' +
+                             IntToStr(MinorRevNr) + ',' +
+                             IntToStr(BuildNr);
+  WriteLn(rcoutFile, rcLine);
+  rcLine := 'PRODUCTVERSION ' + StringReplace(ProductVersionString, '.', ',', [rfReplaceAll]);
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '{';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' BLOCK "StringFileInfo"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' {';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '  BLOCK "' + HexLang + HexCharSet + '"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '  {';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "Comments", "' + CommentsString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "CompanyName", "' + CompanyString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "FileDescription", "' + DescriptionString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "FileVersion", "' + IntToStr(VersionNr) + '.' +
+                                          IntToStr(MajorRevNr) + '.' +
+                                          IntToStr(MinorRevNr) + '.' +
+                                          IntToStr(BuildNr) + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "InternalName", "' + InternalNameString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "LegalCopyright", "' + CopyrightString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "LegalTrademarks", "' + TrademarksString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "OriginalFilename", "' + OriginalFilenameString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "ProductName", "' + ProdNameString + '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '   VALUE "ProductVersion", "' +
+            StringReplace(ProductVersionString, ',', '.', [rfReplaceAll]) +
+            '\000"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '  }';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' }';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' BLOCK "VarFileInfo"';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' {';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '  VALUE "Translation", 0x' + HexLang + ', 0x' + HexCharSet;
+  WriteLn(rcoutFile, rcLine);
+  rcLine := ' }';
+  WriteLn(rcoutFile, rcLine);
+  rcLine := '}';
+  WriteLn(rcoutFile, rcLine);
 end;
 
 {-----------------------------------------------------------------------------
@@ -609,58 +586,6 @@ begin
       DebugLn(['TProjectVersionInfo.RewriteRCFile ',e.Message]);
     end;
   end;
-end;
-
-{-----------------------------------------------------------------------------
- TProjectVersionInfo DoTheRealCompile
------------------------------------------------------------------------------}
-function TProjectVersionInfo.DoTheRealCompile: TModalResult;
-const READ_BYTES = 2048;
-var rcProcess: TProcess;
-    rcMemStream: TMemoryStream;
-    rcStringList: TStringList;
-    BytesRead: longint;
-    n: longint;
-begin
-   Result := mrCancel;
-   rcMemStream := TMemoryStream.Create;
-   BytesRead := 0;
-   try
-      rcProcess := TProcess.Create(nil);
-      rcProcess.CommandLine := 'windres -v ' + rcFilename + ' ' + resFilename;
-      rcProcess.ShowWindow := swoHIDE;
-      rcProcess.Options := [poUsePipes, poStdErrToOutput];
-      rcProcess.Execute;
-      while rcProcess.Running do
-         begin
-            rcMemStream.SetSize(BytesRead + READ_BYTES);
-            n := rcProcess.OutPut.Read((rcMemStream.Memory + BytesRead)^, READ_BYTES);
-            if n > 0 then
-               begin
-                  inc(BytesRead, n);
-               end
-            else
-               begin
-                  sleep(100);
-               end;
-         end;
-      repeat
-         rcMemStream.SetSize(BytesRead + READ_BYTES);
-         n := rcProcess.Output.Read((rcMemStream.Memory + BytesRead)^, READ_BYTES);
-         if n > 0 then
-            begin
-               inc(BytesRead, n);
-            end;
-      until n <= 0;
-   finally
-      if rcProcess.ExitStatus = 0 then Result := mrOk;
-      rcProcess.Free;
-   end;
-   rcMemStream.SetSize(BytesRead);
-   rcStringList := TStringList.Create;
-   rcStringList.LoadFromStream(rcMemStream);
-   for n := 1 to rcStringList.Count do
-      VersionInfoMessages.Add(rcStringList[n - 1]);
 end;
 
 procedure TProjectVersionInfo.SetAutoIncrementBuild(const AValue: boolean);
@@ -796,28 +721,46 @@ end;
  TProjectVersionInfo UpdateMainSourceFile
 -----------------------------------------------------------------------------}
 function TProjectVersionInfo.UpdateMainSourceFile(const AFilename: string
-   ): TModalResult;
+  ): TModalResult;
 var
-   NewX, NewY, NewTopLine: integer;
-   VersionInfoCodeBuf: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  VersionInfoCodeBuf: TCodeBuffer;
+  Filename: String;
+  NewCode: TCodeBuffer;
 begin
-   Result := mrCancel;
-   VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
-   if VersionInfoCodeBuf=nil then exit;
-   SetFileNames(AFilename);
-   if not CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
-                               VersionInfoCodeBuf,NewX,NewY,
-                               NewTopLine,ExtractFileName(resFilename)) then
-   begin
-     if not CodeToolBoss.AddResourceDirective(VersionInfoCodeBuf,
-                                              ExtractFileName(resFilename)) then
-        begin
-           VersionInfoMessages.Add('Could not add "{$R '
-                           + ExtractFileName(resFilename)+'}" to main source!');
-           exit;
-        end
-   end;
-   Result:=mrOk;
+  Result := mrCancel;
+  VersionInfoCodeBuf:=CodeToolBoss.LoadFile(AFilename,false,false);
+  if VersionInfoCodeBuf=nil then exit;
+  SetFileNames(AFilename);
+  Filename:=ExtractFileName(rcFilename);
+  //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile ',Filename,' UseVersionInfo=',UseVersionInfo]);
+  if CodeToolBoss.FindResourceDirective(VersionInfoCodeBuf,1,1,
+                               NewCode,NewX,NewY,
+                               NewTopLine,Filename,false) then
+  begin
+    if not UseVersionInfo then begin
+      //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile removing ',NewCode.Filename,' X=',NewX,' Y=',NewY]);
+      if not CodeToolBoss.RemoveDirective(NewCode,NewX,NewY,true) then
+      begin
+        DebugLn(['TProjectVersionInfo.UpdateMainSourceFile FAILED removing']);
+        VersionInfoMessages.Add('Could not emove "{$R '
+                             + Filename+'}" from main source!');
+        exit;
+      end
+    end;
+  end else if UseVersionInfo then begin
+    //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile adding ',AFilename]);
+    if not CodeToolBoss.AddResourceDirective(VersionInfoCodeBuf,
+      Filename,false,'{$IFDEF WINDOWS}{$R '+Filename+'}{$ENDIF}') then
+    begin
+      DebugLn(['TProjectVersionInfo.UpdateMainSourceFile FAILED adding']);
+      VersionInfoMessages.Add('Could not add "{$R '
+                           + Filename+'}" to main source!');
+      exit;
+    end
+  end;
+  //DebugLn(['TProjectVersionInfo.UpdateMainSourceFile ',VersionInfoCodeBuf.Source]);
+  Result:=mrOk;
 end;
 
 {-----------------------------------------------------------------------------
@@ -825,8 +768,7 @@ end;
 -----------------------------------------------------------------------------}
 procedure TProjectVersionInfo.SetFileNames(const MainFilename: string);
 begin
-   rcFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.rc';
-   resFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.res';
+  rcFilename := Copy(MainFilename, 1, Length(MainFilename) - 4) + '.rc';
 end;
 
 finalization

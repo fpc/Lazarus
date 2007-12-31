@@ -38,7 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
-  KeywordFuncLists, LinkScanner, CodeCache, AVL_Tree,
+  KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
   CodeToolMemManager, CodeTree;
 
 type
@@ -140,21 +140,7 @@ type
     procedure EndChildNode;
     procedure EndIFNode(const ErrorMsg: string);
 
-    procedure CheckAndImproveExpr_Brackets(Node: TCodeTreeNode;
-                                           var Changed: boolean);
-    procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
-                                                 var Changed: boolean);
-    procedure DisableAllUnusedDefines(var Changed: boolean);
-    procedure MoveIfNotThenDefsUp(var Changed: boolean);
-    procedure DisableUnreachableBlocks(Undefines, Defines: TStrings;
-                                       var Changed: boolean);
-    procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
-    procedure DisableIfNode(Node: TCodeTreeNode; WithContent: boolean;
-                            var Changed: boolean);
-    procedure RemoveNode(Node: TCodeTreeNode);
-    procedure RemoveEmptyNodes(var Changed: boolean);
-    function InsertDefine(Position: integer; const NewSrc: string;
-                          SubDesc: TCompilerDirectiveNodeDesc): TCodeTreeNode;
+    procedure InternalRemoveNode(Node: TCodeTreeNode);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -180,6 +166,11 @@ type
                                    FindDefNodes: boolean);
     procedure FixMissingH2PasDirectives(var Changed: boolean);
     
+    function FindResourceDirective(const Filename: string = '';
+                                   StartPos: integer = 1): TCodeTreeNode;
+    function IsResourceDirective(Node: TCodeTreeNode;
+                                 const Filename: string = ''): boolean;
+
     function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
@@ -194,7 +185,28 @@ type
           ): boolean;
     function DefineUsesName(DefineNode: TCodeTreeNode;
                             Identifier: PChar): boolean;
+    function NodeIsEmpty(Node: TCodeTreeNode; IgnoreComments: boolean = true): boolean;
     function FindNodeAtPos(p: integer): TCodeTreeNode;
+    function NodeStartToCodePos(Node: TCodeTreeNode;
+                                out CodePos: TCodeXYPosition): boolean;
+
+    procedure CheckAndImproveExpr_Brackets(Node: TCodeTreeNode;
+                                           var Changed: boolean);
+    procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
+                                                 var Changed: boolean);
+    procedure DisableAllUnusedDefines(var Changed: boolean);
+    procedure MoveIfNotThenDefsUp(var Changed: boolean);
+    procedure DisableUnreachableBlocks(Undefines, Defines: TStrings;
+                                       var Changed: boolean);
+    procedure DisableNode(Node: TCodeTreeNode; var Changed: boolean;
+                          WithContent: boolean);
+    procedure DisableDefineNode(Node: TCodeTreeNode; var Changed: boolean);
+    procedure DisableIfNode(Node: TCodeTreeNode; WithContent: boolean;
+                            var Changed: boolean);
+    function InsertDefine(Position: integer; const NewSrc: string;
+                          SubDesc: TCompilerDirectiveNodeDesc): TCodeTreeNode;
+    procedure RemoveEmptyNodes(var Changed: boolean);
+
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
     function ReadTilBracketClose(CloseBracket: char): boolean;
@@ -202,7 +214,9 @@ type
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
+
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+
     procedure IncreaseChangeStep;
     procedure ResetMacros;
     procedure ClearMacros;
@@ -372,7 +386,7 @@ begin
   cdnsLongSwitch  : Result:='LongSwitch';
   cdnsMode        : Result:='Mode';
   cdnsThreading   : Result:='Threading';
-  cdnsOther       : Result:='?';
+  cdnsOther       : Result:='Other';
   else              Result:='?';
   end;
 end;
@@ -540,7 +554,10 @@ function TCompilerDirectivesTree.ShortSwitchDirective: boolean;
 // example: {$H+} or {$H+, R- comment}
 begin
   Result:=true;
-  CreateChildNode(cdnDefine,cdnsShortSwitch);
+  if Src[AtomStart+3] in ['+','-'] then
+    CreateChildNode(cdnDefine,cdnsShortSwitch)
+  else
+    CreateChildNode(cdnDefine,cdnsOther);
   AtomStart:=SrcPos;
   EndChildNode;
 end;
@@ -1308,6 +1325,16 @@ begin
   {$ENDIF}
 end;
 
+procedure TCompilerDirectivesTree.DisableNode(Node: TCodeTreeNode;
+  var Changed: boolean; WithContent: boolean);
+begin
+  if Node=nil then exit;
+  case Node.Desc of
+  cdnDefine: DisableDefineNode(Node,Changed);
+  cdnIf, cdnElseIf, cdnElse: DisableIfNode(Node,WithContent,Changed);
+  end;
+end;
+
 procedure TCompilerDirectivesTree.DisableDefineNode(Node: TCodeTreeNode;
   var Changed: boolean);
 var
@@ -1332,11 +1359,11 @@ begin
     end;
     Replace(FromPos,ToPos,NewSrc);
   end else begin
-    // disable directive -> {$off Define MacroName}
+    // disable directive -> {off $Define MacroName}
     Replace(Node.StartPos+1,Node.StartPos+1,'off ');
   end;
   Changed:=true;
-  RemoveNode(Node);
+  InternalRemoveNode(Node);
 end;
 
 procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
@@ -1421,7 +1448,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
     end else begin
       // free nodes and delete code
       while Node.FirstChild<>nil do
-        RemoveNode(Node.FirstChild);
+        InternalRemoveNode(Node.FirstChild);
       FromPos:=FindCommentEnd(Src,Node.StartPos,NestedComments);
       ToPos:=Node.NextBrother.StartPos;
       if RemoveDisabledDirectives then begin
@@ -1448,6 +1475,7 @@ var
   Simplified: Boolean;
   ExprNegated: boolean;
   Expr2Negated: boolean;
+  p: LongInt;
 begin
   if (Node.NextBrother=nil) then
     RaiseImpossible;
@@ -1511,6 +1539,29 @@ begin
       ToPos:=Node.NextBrother.StartPos;
     if WithContent then begin
       // remove node source with content
+      if (FromPos>1) and (Src[FromPos-1] in [#10,#13])
+      and (ToPos<=SrcLen) and (Src[ToPos] in [#10,#13]) then begin
+        // the directive has a complete line
+        // remove the line end too
+        inc(ToPos);
+        if (ToPos<=SrcLen) and (Src[ToPos] in [#10,#13]) and (Src[ToPos]<>Src[ToPos-1])
+        then inc(ToPos);
+        if (ToPos<=SrcLen) and (Src[ToPos] in [#10,#13]) then begin
+          // there is an empty line behind the directive
+          // check if there is an empty line in front of the directive
+          p:=FromPos;
+          if (p>1) and (Src[p-1] in [#10,#13]) then begin
+            dec(p);
+            if (p>1) and (Src[p-1] in [#10,#13]) and (Src[p]<>Src[p-1]) then
+              dec(p);
+            if (p>1) and (Src[p-1] in [#10,#13]) then begin
+              // there is an empty line in front of the directive too
+              // => remove one empty line
+              FromPos:=p;
+            end;
+          end;
+        end;
+      end;
       Replace(FromPos,ToPos,'');
     end else begin
       // remove node source keeping content (child node source)
@@ -1529,24 +1580,26 @@ begin
   end;
   
   if Node.NextBrother.Desc=cdnEnd then
-    RemoveNode(Node.NextBrother);
-  RemoveNode(Node);
+    InternalRemoveNode(Node.NextBrother);
+  InternalRemoveNode(Node);
 end;
 
-procedure TCompilerDirectivesTree.RemoveNode(Node: TCodeTreeNode);
+procedure TCompilerDirectivesTree.InternalRemoveNode(Node: TCodeTreeNode);
 var
   AVLNode: TAVLTreeNode;
   MacroNode: TCompilerMacroStats;
 begin
   // clear references
-  AVLNode:=Macros.FindLowest;
-  while AVLNode<>nil do begin
-    MacroNode:=TCompilerMacroStats(AVLNode.Data);
-    if MacroNode.LastDefineNode=Node then
-      MacroNode.LastDefineNode:=nil;
-    if MacroNode.LastReadNode=Node then
-      MacroNode.LastReadNode:=nil;
-    AVLNode:=Macros.FindSuccessor(AVLNode);
+  if Macros<>nil then begin
+    AVLNode:=Macros.FindLowest;
+    while AVLNode<>nil do begin
+      MacroNode:=TCompilerMacroStats(AVLNode.Data);
+      if MacroNode.LastDefineNode=Node then
+        MacroNode.LastDefineNode:=nil;
+      if MacroNode.LastReadNode=Node then
+        MacroNode.LastReadNode:=nil;
+      AVLNode:=Macros.FindSuccessor(AVLNode);
+    end;
   end;
 
   // free node
@@ -2208,6 +2261,51 @@ begin
   end;
 end;
 
+function TCompilerDirectivesTree.NodeStartToCodePos(Node: TCodeTreeNode; out
+  CodePos: TCodeXYPosition): boolean;
+begin
+  CodePos.Code:=nil;
+  CodePos.Y:=0;
+  CodePos.X:=0;
+  if (Node=nil) or (Code=nil) then exit(false);
+  CodePos.Code:=Code;
+  Code.AbsoluteToLineCol(Node.StartPos,CodePos.Y,CodePos.X);
+  Result:=true;
+end;
+
+function TCompilerDirectivesTree.FindResourceDirective(const Filename: string;
+  StartPos: integer): TCodeTreeNode;
+begin
+  if Tree=nil then exit(nil);
+  Result:=Tree.Root;
+  while Result<>nil do begin
+    if (Result.StartPos>=StartPos)
+    and IsResourceDirective(Result,Filename) then exit;
+    Result:=Result.Next;
+  end;
+end;
+
+function TCompilerDirectivesTree.IsResourceDirective(Node: TCodeTreeNode;
+  const Filename: string): boolean;
+// search for {$R filename}
+// if filename='' then search for any {$R } directive
+// Beware: do not find {$R+}
+var
+  p: LongInt;
+begin
+  Result:=false;
+  if (Node=nil) or (Node.Desc<>cdnDefine) or (Node.SubDesc<>cdnsOther) then exit;
+  p:=Node.StartPos;
+  if (Node.EndPos-p>=5) and (Src[p]='{') and (Src[p+1]='$') and (Src[p+2]='R')
+  and IsSpaceChar[Src[p+3]] then
+  begin
+    if (Filename='') then exit(true);
+    inc(p,4);
+    while (p<Node.EndPos) and IsSpaceChar[Src[p]] do inc(p);
+    if CompareFilenames(Filename,copy(Src,p,Node.EndPos-p-1))=0 then exit(true);
+  end;
+end;
+
 function TCompilerDirectivesTree.GetDirectiveName(Node: TCodeTreeNode): string;
 begin
   Result:=GetIdentifier(@Src[Node.StartPos+2]);
@@ -2359,6 +2457,41 @@ begin
   // check name
   if p>SrcLen then exit;
   Result:=CompareIdentifierPtrs(@Src[p],Identifier)=0;
+end;
+
+function TCompilerDirectivesTree.NodeIsEmpty(Node: TCodeTreeNode;
+  IgnoreComments: boolean): boolean;
+var
+  DirectiveEndPos: LongInt;
+begin
+  if (Node=nil) then exit(true);
+  if Node.FirstChild<>nil then exit(false);
+  case Node.Desc of
+  cdnNone: exit(true);
+  cdnRoot: exit(false); // root is never empty, can not be deleted
+  cdnDefine: exit(true);
+  cdnIf,
+  cdnElseIf,
+  cdnElse:
+    begin
+      if Node.NextBrother=nil then exit(false); // maybe continued in another file
+      MoveCursorToPos(Node.StartPos);
+      // skip directive
+      ReadNextAtom;
+      DirectiveEndPos:=SrcPos;
+      // read the following atom (token or directive)
+      ReadNextAtom;
+      if AtomStart=Node.NextBrother.StartPos then begin
+        if IgnoreComments then
+          exit(true)
+        else if FindNextNonSpace(Src,DirectiveEndPos)<AtomStart then
+          exit(false)
+        else
+          exit(true);
+      end;
+    end;
+  cdnEnd: exit(false);
+  end;
 end;
 
 function TCompilerDirectivesTree.FindNodeAtPos(p: integer): TCodeTreeNode;

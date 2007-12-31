@@ -83,6 +83,12 @@ uses
   AllIDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, MacroIntf, IDECommands,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf, PackageIntf,
   ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs,
+  
+  {$ifdef EnableNewDialogs}
+  // some dialog units really need to get splitted up so structures and dialog
+  // are separated. To avoid conflicts the new units are declared first
+  ProjectOpts_new, CompilerOptionsDlg_new, EditorOptions_new, EnvironmentOpts_new,
+  {$endif}
   // protocol
   IDEProtocol,
   // compile
@@ -252,6 +258,14 @@ type
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuViewProjectTodosClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
+    {$ifdef EnableNewDialogs}
+    procedure mnuProjectOptionsClicked_new(Sender: TObject);
+    {$endif}
+    procedure mnuProjectCompilerSettingsClicked(Sender: TObject);
+    {$ifdef EnableNewDialogs}
+    procedure mnuProjectCompilerSettingsClicked_new(Sender: TObject);
+    {$endif}
+
 
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
@@ -265,7 +279,6 @@ type
     procedure mnuRunToCursorProjectClicked(Sender: TObject);
     procedure mnuStopProjectClicked(Sender: TObject);
     procedure mnuRunParametersClicked(Sender: TObject);
-    procedure mnuProjectCompilerSettingsClicked(Sender: TObject);
     procedure mnuBuildFileClicked(Sender: TObject);
     procedure mnuRunFileClicked(Sender: TObject);
     procedure mnuConfigBuildFileClicked(Sender: TObject);
@@ -291,7 +304,13 @@ type
 
     // environment menu
     procedure mnuEnvGeneralOptionsClicked(Sender: TObject);
+    {$ifdef EnableNewDialogs}
+    procedure mnuEnvGeneralOptionsClicked_new(Sender: TObject);
+    {$endif}
     procedure mnuEnvEditorOptionsClicked(Sender: TObject);
+    {$ifdef EnableNewDialogs}
+    procedure mnuEnvEditorOptionsClicked_new(Sender: TObject);
+    {$endif}
     procedure mnuEnvCodeTemplatesClicked(Sender: TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender: TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender: TObject);
@@ -2072,7 +2091,13 @@ begin
     itmProjectPublish.OnClick := @mnuPublishProjectClicked;
     itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
     itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
+    {$ifdef EnableNewDialogs}
+    itmProjectOptions_new.OnClick := @mnuProjectOptionsClicked_new;
+    {$endif}
     itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
+    {$ifdef EnableNewDialogs}
+    itmProjectCompilerOptions_new.OnClick := @mnuEnvGeneralOptionsClicked_new;
+    {$endif}
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
@@ -2132,7 +2157,13 @@ begin
   inherited SetupEnvironmentMenu;
   with MainIDEBar do begin
     itmEnvGeneralOptions.OnClick := @mnuEnvGeneralOptionsClicked;
+    {$ifdef EnableNewDialogs}
+    itmEnvGeneralOptions_new.OnClick := @mnuEnvGeneralOptionsClicked_new;
+    {$endif}
     itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
+    {$ifdef EnableNewDialogs}
+    itmEnvEditorOptions_new.OnClick := @mnuEnvEditorOptionsClicked_new;
+    {$endif}
     itmEnvCodeTemplates.OnClick := @mnuEnvCodeTemplatesClicked;
     itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
     itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
@@ -3267,6 +3298,19 @@ begin
   end;
 end;
 
+{$ifdef EnableNewDialogs}
+procedure TMainIDE.mnuProjectOptionsClicked_new(Sender: TObject);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
+  if projectopts_new.ShowProjectOptionsDialog(Project1)=mrOk then begin
+
+  end;
+end;
+{$endif}
+
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
 var
   Files: TStringList;
@@ -3404,6 +3448,34 @@ begin
     frmCompilerOptions.Free;
   end;
 end;
+
+{$ifdef EnableNewDialogs}
+procedure TMainIDE.mnuProjectCompilerSettingsClicked_new(Sender: TObject);
+var
+  frmCompilerOptions: TfrmCompilerOptionsNew;
+  NewCaption: String;
+begin
+  frmCompilerOptions:=TfrmCompilerOptionsNew.Create(nil);
+  try
+    NewCaption:=Project1.Title;
+    if NewCaption='' then
+      NewCaption:=ExtractFilenameOnly(Project1.ProjectInfoFile);
+    frmCompilerOptions.Caption:=Format(lisCompilerOptionsForProject, [NewCaption
+      ]);
+    frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
+    frmCompilerOptions.GetCompilerOptions;
+    frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
+    frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
+    if frmCompilerOptions.ShowModal=mrOk then begin
+      MainBuildBoss.RescanCompilerDefines(true);
+      Project1.DefineTemplates.AllChanged;
+      IncreaseCompilerGraphStamp;
+    end;
+  finally
+    frmCompilerOptions.Free;
+  end;
+end;
+{$endif}
 
 procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);
 begin
@@ -3650,6 +3722,113 @@ begin
   DoShowEnvGeneralOptions(eodpFiles);
 end;
 
+{$ifdef EnableNewDialogs}
+procedure TMainIDE.mnuEnvGeneralOptionsClicked_new(Sender: TObject);
+  // I really saw no way to add something temporary to show the temp new dialog
+  // so I copied the whole routine. This shouldn't be long here anyway (MWE)
+
+var
+  EnvironmentOptionsDialog: TEnvironmentOptionsDialogNew;
+  MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
+  OldCompilerFilename: string;
+  OldLanguage: String;
+
+  procedure ChangeMacroValue(const MacroName, NewValue: string);
+  begin
+    with CodeToolBoss.GlobalValues do begin
+      if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
+      FPCSrcDirChanged:=FPCSrcDirChanged or (Macroname='FPCSrcDir');
+      Variables[ExternalMacroStart+MacroName]:=NewValue;
+    end;
+    MacroValueChanged:=true;
+  end;
+
+  procedure UpdateDesigners;
+  var
+    AForm: TCustomForm;
+    AnUnitInfo: TUnitInfo;
+    ADesigner: TDesigner;
+  begin
+    AnUnitInfo:=Project1.FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      if (AnUnitInfo.Component<>nil)
+      then begin
+        AForm:=FormEditor1.GetDesignerForm(AnUnitInfo.Component);
+        ADesigner:=TDesigner(AForm.Designer);
+        if ADesigner<>nil then begin
+          ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
+          ADesigner.ShowComponentCaptionHints:=
+            EnvironmentOptions.ShowComponentCaptions;
+        end;
+      end;
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
+    InvalidateAllDesignerForms;
+  end;
+
+  procedure UpdateObjectInspector;
+  begin
+    EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  end;
+
+begin
+  EnvironmentOptionsDialog:=TEnvironmentOptionsDialogNew.Create(nil);
+  try
+    EnvironmentOptionsDialog.CategoryPage:=eodpFiles;
+    // update EnvironmentOptions (save current window positions)
+    SaveDesktopSettings(EnvironmentOptions);
+    with EnvironmentOptionsDialog do begin
+      OnLoadEnvironmentSettings:=@Self.OnLoadEnvironmentSettings;
+      OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
+      // load settings from EnvironmentOptions to EnvironmentOptionsDialog
+      ReadSettings(EnvironmentOptions);
+    end;
+    if EnvironmentOptionsDialog.ShowModal=mrOk then begin
+      // invalidate cached substituted macros
+      IncreaseCompilerParseStamp;
+
+      // load settings from EnvironmentOptionsDialog to EnvironmentOptions
+      OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
+      OldLanguage:=EnvironmentOptions.LanguageID;
+      EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
+
+      UpdateDefaultPascalFileExtensions;
+
+      //DebugLn(['TMainIDE.DoShowEnvGeneralOptions OldLanguage=',OldLanguage,' EnvironmentOptions.LanguageID=',EnvironmentOptions.LanguageID]);
+      if OldLanguage<>EnvironmentOptions.LanguageID then begin
+        TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
+                                 EnvironmentOptions.LanguageID);
+        PkgBoss.TranslateResourceStrings;
+      end;
+
+      // set global variables
+      UpdateEnglishErrorMsgFilename;
+      MacroValueChanged:=false;
+      FPCSrcDirChanged:=false;
+      FPCCompilerChanged:=
+                       OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+      ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
+      ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
+
+      if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+      if FPCCompilerChanged or FPCSrcDirChanged then begin
+        MainBuildBoss.RescanCompilerDefines(false);
+      end;
+
+      // save to disk
+      EnvironmentOptions.Save(false);
+
+      // update environment
+      UpdateDesigners;
+      UpdateObjectInspector;
+      SetupHints;
+    end;
+  finally
+    EnvironmentOptionsDialog.Free;
+  end;
+end;
+{$endif}
+
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.SaveDesktopSettings(
@@ -3821,6 +4000,26 @@ Begin
     EditorOptionsForm.Free;
   end;
 End;
+
+{$ifdef EnableNewDialogs}
+procedure TMainIDE.mnuEnvEditorOptionsClicked_new(Sender: TObject);
+var
+  EditorOptionsForm: TEditorOptionsFormNew;
+begin
+  EditorOptionsForm:=TEditorOptionsFormNew.Create(nil);
+  try
+    Project1.UpdateCustomHighlighter;
+    if EditorOptionsForm.ShowModal=mrOk
+    then begin
+      Project1.UpdateSyntaxHighlighter;
+      SourceNotebook.ReloadEditorOptions;
+      ReloadMenuShortCuts;
+    end;
+  finally
+    EditorOptionsForm.Free;
+  end;
+end;
+{$endif}
 
 procedure TMainIDE.mnuEnvCodeTemplatesClicked(Sender: TObject);
 begin
@@ -8197,7 +8396,7 @@ begin
 
     // handle versioninfo
     VersionInfo := Project1.VersionInfo;
-    Result := VersionInfo.CompileRCFile(Project1.MainFilename,
+    Result := VersionInfo.CreateRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
 
     for Count := 1 to VersionInfo.VersionInfoMessages.Count do
@@ -8206,7 +8405,7 @@ begin
     if Result <> mrOk then exit;
 
     // handle manifest
-    Result := Project1.XPManifest.CompileRCFile(Project1.MainFilename,
+    Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
       MainBuildBoss.GetTargetOS(true));
     for Count := 1 to Project1.XPManifest.Messages.Count do
       MessagesView.AddMsg(Format(Project1.XPManifest.Messages[Count - 1],

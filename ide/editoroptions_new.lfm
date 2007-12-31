@@ -1,0 +1,1692 @@
+inherited EditorOptionsFormNew: TEditorOptionsFormNew
+  Left = 406
+  Height = 606
+  Top = 141
+  Width = 747
+  HorzScrollBar.Page = 746
+  VertScrollBar.Page = 605
+  ActiveControl = btnOK
+  Caption = 'EditorOptionsForm'
+  ClientHeight = 606
+  ClientWidth = 747
+  Constraints.MinWidth = 400
+  Position = poScreenCenter
+  inherited BottomPanel: TPanel
+    Top = 556
+    Width = 747
+    ClientWidth = 747
+    TabOrder = 3
+    inherited OKCancelPanel: TPanel
+      Left = 560
+      inherited btnCancel: TBitBtn
+        ModalResult = 0
+        OnClick = CancelButtonClick
+      end
+      inherited btnOK: TBitBtn
+        ModalResult = 0
+        OnClick = OkButtonClick
+      end
+    end
+    inherited HelpButton: TBitBtn
+    end
+  end
+  inherited CategoriesPanel: TPanel
+    Width = 747
+    ClientWidth = 747
+    TabOrder = 4
+    inherited SectionTitleLabel: TLabel
+    end
+    inherited SearchLabel: TLabel
+      Left = 423
+    end
+    inherited ClearFilterButton: TBitBtn
+      Left = 703
+    end
+    inherited FilterEdit: TEdit
+      Left = 520
+    end
+  end
+  inherited SectionsTreePanel: TPanel
+    Height = 478
+    ClientHeight = 478
+    TabOrder = 1
+    inherited SectionList: TListBox
+      Height = 478
+    end
+  end
+  inherited MainSplitter: TSplitter
+    Height = 478
+  end
+  inherited OptionsAreaPanel: TPanel
+    Height = 478
+    Width = 592
+    ClientHeight = 478
+    ClientWidth = 592
+    TabOrder = 2
+    object Notebook: TNotebook
+      AnchorSideBottom.Control = BtnPanel
+      Height = 472
+      Width = 592
+      Align = alClient
+      BorderSpacing.Bottom = 6
+      PageIndex = 3
+      ShowTabs = False
+      TabOrder = 0
+      object GeneralPage: TPage
+        Caption = 'GeneralPage'
+        ClientWidth = 592
+        ClientHeight = 472
+        object BlockIndentLabel: TLabel
+          AnchorSideLeft.Control = BlockIndentComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideBottom.Control = BlockIndentComboBox
+          AnchorSideBottom.Side = asrCenter
+          Left = 112
+          Height = 13
+          Top = 373
+          Width = 97
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Around = 6
+          Caption = 'BlockIndentLabel'
+          ParentColor = False
+        end
+        object UndoLimitLabel: TLabel
+          AnchorSideLeft.Control = UndoLimitComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideBottom.Control = UndoLimitComboBox
+          AnchorSideBottom.Side = asrCenter
+          Left = 112
+          Height = 13
+          Top = 400
+          Width = 86
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Around = 6
+          Caption = 'UndoLimitLabel'
+          ParentColor = False
+        end
+        object TabWidthsLabel: TLabel
+          AnchorSideLeft.Control = TabWidthsComboBox
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideBottom.Control = TabWidthsComboBox
+          AnchorSideBottom.Side = asrCenter
+          Left = 112
+          Height = 13
+          Top = 427
+          Width = 90
+          Anchors = [akLeft, akBottom]
+          BorderSpacing.Around = 6
+          Caption = 'TabWidthsLabel'
+          ParentColor = False
+        end
+        object EditorOptionsGroupBox: TCheckGroup
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = BlockIndentLabel
+          Left = 6
+          Height = 355
+          Top = 6
+          Width = 580
+          Align = alTop
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          AutoFill = True
+          BorderSpacing.Bottom = 6
+          BorderSpacing.Around = 6
+          Caption = 'EditorOptionsGroupBox'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclTopToBottomThenLeftToRight
+          ChildSizing.ControlsPerLine = 1
+          ColumnLayout = clVerticalThenHorizontal
+          Columns = 2
+          OnItemClick = GeneralCheckBoxOnChange
+          TabOrder = 0
+        end
+        object BlockIndentComboBox: TComboBox
+          AnchorSideBottom.Control = UndoLimitComboBox
+          Left = 6
+          Height = 21
+          Top = 370
+          Width = 100
+          Anchors = [akLeft, akBottom]
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          BorderSpacing.Around = 6
+          Items.Strings = (
+            '1'
+            '2'
+            '4'
+            '8'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 1
+        end
+        object UndoLimitComboBox: TComboBox
+          AnchorSideBottom.Control = TabWidthsComboBox
+          Left = 6
+          Height = 21
+          Top = 397
+          Width = 100
+          Anchors = [akLeft, akBottom]
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          BorderSpacing.Around = 6
+          Items.Strings = (
+            '32767'
+            '4096'
+            '512'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 2
+        end
+        object TabWidthsComboBox: TComboBox
+          AnchorSideBottom.Control = GeneralPage
+          AnchorSideBottom.Side = asrBottom
+          Left = 6
+          Height = 21
+          Top = 424
+          Width = 100
+          Anchors = [akLeft, akBottom]
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          BorderSpacing.Around = 6
+          Items.Strings = (
+            '1'
+            '2'
+            '4'
+            '8'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 3
+        end
+      end
+      object DisplayPage: TPage
+        Caption = 'DisplayPage'
+        ClientWidth = 592
+        ClientHeight = 472
+        object MarginAndGutterGroupBox: TGroupBox
+          Left = 6
+          Height = 128
+          Top = 6
+          Width = 580
+          Align = alTop
+          BorderSpacing.Around = 6
+          Caption = 'MarginAndGutterGroupBox'
+          ClientHeight = 128
+          ClientWidth = 580
+          TabOrder = 0
+          object RightMarginLabel: TLabel
+            Left = 358
+            Height = 13
+            Top = 10
+            Width = 99
+            Caption = 'RightMarginLabel'
+            ParentColor = False
+          end
+          object RightMarginColorButton: TColorButton
+            Left = 246
+            Height = 21
+            Top = 36
+            Width = 100
+            BorderWidth = 2
+            ButtonColorSize = 16
+            Color = clBtnFace
+            OnColorChanged = RightMarginColorButtonColorChanged
+          end
+          object GutterColorButton: TColorButton
+            Left = 246
+            Height = 21
+            Top = 84
+            Width = 100
+            BorderWidth = 2
+            ButtonColorSize = 16
+            Color = clBtnFace
+            OnColorChanged = ColorButtonColorChanged
+          end
+          object RightMarginColorLabel: TLabel
+            Left = 358
+            Height = 13
+            Top = 34
+            Width = 129
+            Caption = 'RightMarginColorLabel'
+            ParentColor = False
+          end
+          object GutterWidthLabel: TLabel
+            Left = 358
+            Height = 13
+            Top = 60
+            Width = 96
+            Caption = 'GutterWidthLabel'
+            ParentColor = False
+          end
+          object GutterColorLabel: TLabel
+            Left = 358
+            Height = 13
+            Top = 82
+            Width = 95
+            Caption = 'GutterColorLabel'
+            ParentColor = False
+          end
+          object VisibleRightMarginCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 8
+            Width = 189
+            Caption = 'VisibleRightMarginCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 0
+          end
+          object VisibleGutterCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 32
+            Width = 155
+            Caption = 'VisibleGutterCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 1
+          end
+          object ShowLineNumbersCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 56
+            Width = 188
+            Caption = 'ShowLineNumbersCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 2
+          end
+          object RightMarginComboBox: TComboBox
+            Left = 246
+            Height = 21
+            Top = 8
+            Width = 100
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            Items.Strings = (
+              '80'
+              '78'
+              '76'
+            )
+            MaxLength = 0
+            OnChange = ComboBoxOnChange
+            OnExit = ComboBoxOnExit
+            OnKeyDown = ComboBoxOnKeyDown
+            TabOrder = 3
+          end
+          object GutterWidthComboBox: TComboBox
+            Left = 246
+            Height = 21
+            Top = 58
+            Width = 100
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            Items.Strings = (
+              '40'
+              '35'
+              '30'
+              '25'
+              '20'
+            )
+            MaxLength = 0
+            OnChange = ComboBoxOnChange
+            OnExit = ComboBoxOnExit
+            OnKeyDown = ComboBoxOnKeyDown
+            TabOrder = 4
+          end
+        end
+        object EditorFontGroupBox: TGroupBox
+          Left = 6
+          Height = 136
+          Top = 140
+          Width = 580
+          Align = alTop
+          BorderSpacing.Around = 6
+          Caption = 'EditorFontGroupBox'
+          ClientHeight = 136
+          ClientWidth = 580
+          TabOrder = 1
+          object EditorFontLabel: TLabel
+            Left = 6
+            Height = 13
+            Top = 6
+            Width = 568
+            Align = alTop
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            Caption = 'EditorFontLabel'
+            ParentColor = False
+          end
+          object EditorFontHeightLabel: TLabel
+            Left = 116
+            Height = 13
+            Top = 60
+            Width = 572
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 6
+            Caption = 'EditorFontHeightLabel'
+            ParentColor = False
+          end
+          object ExtraLineSpacingLabel: TLabel
+            Left = 116
+            Height = 13
+            Top = 90
+            Width = 572
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Around = 6
+            Caption = 'ExtraLineSpacingLabel'
+            ParentColor = False
+          end
+          object EditorFontComboBox: TComboBox
+            AnchorSideRight.Control = EditorFontButton
+            Left = 6
+            Height = 21
+            Top = 29
+            Width = 511
+            Anchors = [akTop, akLeft, akRight]
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            BorderSpacing.Around = 6
+            MaxLength = 0
+            OnEditingDone = EditorFontComboBoxEditingDone
+            TabOrder = 0
+            Text = 'EditorFontComboBox'
+          end
+          object EditorFontButton: TButton
+            Left = 523
+            Height = 25
+            Top = 29
+            Width = 25
+            Anchors = [akTop, akRight]
+            Caption = '...'
+            OnClick = EditorFontButtonClick
+            TabOrder = 1
+          end
+          object EditorFontHeightComboBox: TComboBox
+            Left = 6
+            Height = 21
+            Top = 58
+            Width = 100
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            Items.Strings = (
+              '10'
+              '11'
+              '12'
+              '13'
+              '14'
+              '15'
+              '16'
+              '17'
+              '18'
+            )
+            MaxLength = 0
+            OnChange = ComboBoxOnChange
+            OnExit = ComboBoxOnExit
+            OnKeyDown = ComboBoxOnKeyDown
+            TabOrder = 2
+          end
+          object ExtraLineSpacingComboBox: TComboBox
+            Left = 6
+            Height = 21
+            Top = 88
+            Width = 100
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            Items.Strings = (
+              '0'
+              '1'
+              '2'
+            )
+            MaxLength = 0
+            OnChange = ComboBoxOnChange
+            OnExit = ComboBoxOnExit
+            OnKeyDown = ComboBoxOnKeyDown
+            TabOrder = 3
+          end
+        end
+        object DisplayPreview: TSynEdit
+          Left = 6
+          Height = 188
+          Top = 278
+          Width = 580
+          Align = alBottom
+          BorderSpacing.Around = 6
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Font.Height = -16
+          Font.Name = 'courier'
+          ParentColor = False
+          TabOrder = 2
+          Gutter.CodeFoldingWidth = 14
+          Keystrokes = <          
+            item
+              Command = 3
+              ShortCut = 38
+            end          
+            item
+              Command = 103
+              ShortCut = 8230
+            end          
+            item
+              Command = 211
+              ShortCut = 16422
+            end          
+            item
+              Command = 4
+              ShortCut = 40
+            end          
+            item
+              Command = 104
+              ShortCut = 8232
+            end          
+            item
+              Command = 212
+              ShortCut = 16424
+            end          
+            item
+              Command = 1
+              ShortCut = 37
+            end          
+            item
+              Command = 101
+              ShortCut = 8229
+            end          
+            item
+              Command = 5
+              ShortCut = 16421
+            end          
+            item
+              Command = 105
+              ShortCut = 24613
+            end          
+            item
+              Command = 2
+              ShortCut = 39
+            end          
+            item
+              Command = 102
+              ShortCut = 8231
+            end          
+            item
+              Command = 6
+              ShortCut = 16423
+            end          
+            item
+              Command = 106
+              ShortCut = 24615
+            end          
+            item
+              Command = 10
+              ShortCut = 34
+            end          
+            item
+              Command = 110
+              ShortCut = 8226
+            end          
+            item
+              Command = 14
+              ShortCut = 16418
+            end          
+            item
+              Command = 114
+              ShortCut = 24610
+            end          
+            item
+              Command = 9
+              ShortCut = 33
+            end          
+            item
+              Command = 109
+              ShortCut = 8225
+            end          
+            item
+              Command = 13
+              ShortCut = 16417
+            end          
+            item
+              Command = 113
+              ShortCut = 24609
+            end          
+            item
+              Command = 7
+              ShortCut = 36
+            end          
+            item
+              Command = 107
+              ShortCut = 8228
+            end          
+            item
+              Command = 15
+              ShortCut = 16420
+            end          
+            item
+              Command = 115
+              ShortCut = 24612
+            end          
+            item
+              Command = 8
+              ShortCut = 35
+            end          
+            item
+              Command = 108
+              ShortCut = 8227
+            end          
+            item
+              Command = 16
+              ShortCut = 16419
+            end          
+            item
+              Command = 116
+              ShortCut = 24611
+            end          
+            item
+              Command = 223
+              ShortCut = 45
+            end          
+            item
+              Command = 201
+              ShortCut = 16429
+            end          
+            item
+              Command = 604
+              ShortCut = 8237
+            end          
+            item
+              Command = 502
+              ShortCut = 46
+            end          
+            item
+              Command = 603
+              ShortCut = 8238
+            end          
+            item
+              Command = 501
+              ShortCut = 8
+            end          
+            item
+              Command = 501
+              ShortCut = 8200
+            end          
+            item
+              Command = 504
+              ShortCut = 16392
+            end          
+            item
+              Command = 601
+              ShortCut = 32776
+            end          
+            item
+              Command = 602
+              ShortCut = 40968
+            end          
+            item
+              Command = 509
+              ShortCut = 13
+            end          
+            item
+              Command = 199
+              ShortCut = 16449
+            end          
+            item
+              Command = 201
+              ShortCut = 16451
+            end          
+            item
+              Command = 610
+              ShortCut = 24649
+            end          
+            item
+              Command = 509
+              ShortCut = 16461
+            end          
+            item
+              Command = 510
+              ShortCut = 16462
+            end          
+            item
+              Command = 503
+              ShortCut = 16468
+            end          
+            item
+              Command = 611
+              ShortCut = 24661
+            end          
+            item
+              Command = 604
+              ShortCut = 16470
+            end          
+            item
+              Command = 603
+              ShortCut = 16472
+            end          
+            item
+              Command = 507
+              ShortCut = 16473
+            end          
+            item
+              Command = 506
+              ShortCut = 24665
+            end          
+            item
+              Command = 601
+              ShortCut = 16474
+            end          
+            item
+              Command = 602
+              ShortCut = 24666
+            end          
+            item
+              Command = 301
+              ShortCut = 16432
+            end          
+            item
+              Command = 302
+              ShortCut = 16433
+            end          
+            item
+              Command = 303
+              ShortCut = 16434
+            end          
+            item
+              Command = 304
+              ShortCut = 16435
+            end          
+            item
+              Command = 305
+              ShortCut = 16436
+            end          
+            item
+              Command = 306
+              ShortCut = 16437
+            end          
+            item
+              Command = 307
+              ShortCut = 16438
+            end          
+            item
+              Command = 308
+              ShortCut = 16439
+            end          
+            item
+              Command = 309
+              ShortCut = 16440
+            end          
+            item
+              Command = 310
+              ShortCut = 16441
+            end          
+            item
+              Command = 351
+              ShortCut = 24624
+            end          
+            item
+              Command = 352
+              ShortCut = 24625
+            end          
+            item
+              Command = 353
+              ShortCut = 24626
+            end          
+            item
+              Command = 354
+              ShortCut = 24627
+            end          
+            item
+              Command = 355
+              ShortCut = 24628
+            end          
+            item
+              Command = 356
+              ShortCut = 24629
+            end          
+            item
+              Command = 357
+              ShortCut = 24630
+            end          
+            item
+              Command = 358
+              ShortCut = 24631
+            end          
+            item
+              Command = 359
+              ShortCut = 24632
+            end          
+            item
+              Command = 360
+              ShortCut = 24633
+            end          
+            item
+              Command = 231
+              ShortCut = 24654
+            end          
+            item
+              Command = 232
+              ShortCut = 24643
+            end          
+            item
+              Command = 233
+              ShortCut = 24652
+            end          
+            item
+              Command = 612
+              ShortCut = 9
+            end          
+            item
+              Command = 613
+              ShortCut = 8201
+            end          
+            item
+              Command = 250
+              ShortCut = 24642
+            end>
+          Lines.Strings = (
+            'DisplayPreview'
+          )
+          ReadOnly = True
+          OnSpecialLineColors = OnSpecialLineColors
+        end
+      end
+      object KeymappingPage: TPage
+        Caption = 'KeymappingPage'
+        ClientWidth = 592
+        ClientHeight = 472
+        object KeyMappingHelpLabel: TLabel
+          Left = 6
+          Height = 13
+          Top = 68
+          Width = 580
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'KeyMappingHelpLabel'
+          ParentColor = False
+        end
+        object KeyMappingChooseSchemeButton: TButton
+          Left = 6
+          Height = 25
+          Top = 6
+          Width = 580
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'KeyMappingChooseSchemeButton'
+          OnClick = KeyMappingChooseSchemeButtonClick
+          TabOrder = 0
+        end
+        object KeyMappingConsistencyCheckButton: TButton
+          Left = 6
+          Height = 25
+          Top = 37
+          Width = 580
+          Align = alTop
+          BorderSpacing.Left = 6
+          BorderSpacing.Top = 6
+          BorderSpacing.Right = 6
+          Caption = 'KeyMappingConsistencyCheckButton'
+          OnClick = KeyMappingConsistencyCheckButtonClick
+          TabOrder = 1
+        end
+        object KeyMappingTreeView: TTreeView
+          Left = 6
+          Height = 379
+          Top = 87
+          Width = 580
+          Align = alClient
+          BorderSpacing.Around = 6
+          DefaultItemHeight = 23
+          Images = ImageList
+          ReadOnly = True
+          RowSelect = True
+          TabOrder = 2
+          OnMouseUp = KeyMappingTreeViewMouseUp
+          Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoShowSeparators, tvoToolTips]
+        end
+      end
+      object ColorPage: TPage
+        Caption = 'ColorPage'
+        ClientWidth = 592
+        ClientHeight = 472
+        object LanguageLabel: TLabel
+          Left = 214
+          Height = 13
+          Top = 12
+          Width = 88
+          Caption = 'LanguageLabel'
+          ParentColor = False
+        end
+        object ColorSchemeLabel: TLabel
+          Left = 214
+          Height = 13
+          Top = 36
+          Width = 107
+          Caption = 'ColorSchemeLabel'
+          ParentColor = False
+        end
+        object FileExtensionsLabel: TLabel
+          Left = 214
+          Height = 13
+          Top = 60
+          Width = 113
+          Caption = 'FileExtensionsLabel'
+          ParentColor = False
+        end
+        object ColorElementLabel: TLabel
+          Left = 4
+          Height = 13
+          Top = 90
+          Width = 106
+          Caption = 'ColorElementLabel'
+          ParentColor = False
+        end
+        object LanguageComboBox: TComboBox
+          Left = 3
+          Height = 21
+          Top = 10
+          Width = 200
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 0
+          Text = 'LanguageComboBox'
+        end
+        object ColorSchemeComboBox: TComboBox
+          Left = 3
+          Height = 21
+          Top = 34
+          Width = 200
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 1
+          Text = 'ColorSchemeComboBox'
+        end
+        object FileExtensionsComboBox: TComboBox
+          Left = 3
+          Height = 21
+          Top = 58
+          Width = 200
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          Items.Strings = (
+            'pp;pas;inc;lpr;lrs;dpr;dpk'
+            'pp;pas;inc;lpr;lrs'
+            'pp;pas;inc'
+          )
+          MaxLength = 0
+          OnChange = ComboBoxOnChange
+          OnExit = ComboBoxOnExit
+          OnKeyDown = ComboBoxOnKeyDown
+          TabOrder = 2
+        end
+        object ColorPreview: TSynEdit
+          Left = 4
+          Height = 126
+          Top = 342
+          Width = 584
+          Align = alBottom
+          BorderSpacing.Around = 4
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          Font.Height = -16
+          Font.Name = 'courier'
+          ParentColor = False
+          TabOrder = 3
+          OnMouseDown = ColorPreviewMouseUp
+          Gutter.CodeFoldingWidth = 14
+          Keystrokes = <          
+            item
+              Command = 3
+              ShortCut = 38
+            end          
+            item
+              Command = 103
+              ShortCut = 8230
+            end          
+            item
+              Command = 211
+              ShortCut = 16422
+            end          
+            item
+              Command = 4
+              ShortCut = 40
+            end          
+            item
+              Command = 104
+              ShortCut = 8232
+            end          
+            item
+              Command = 212
+              ShortCut = 16424
+            end          
+            item
+              Command = 1
+              ShortCut = 37
+            end          
+            item
+              Command = 101
+              ShortCut = 8229
+            end          
+            item
+              Command = 5
+              ShortCut = 16421
+            end          
+            item
+              Command = 105
+              ShortCut = 24613
+            end          
+            item
+              Command = 2
+              ShortCut = 39
+            end          
+            item
+              Command = 102
+              ShortCut = 8231
+            end          
+            item
+              Command = 6
+              ShortCut = 16423
+            end          
+            item
+              Command = 106
+              ShortCut = 24615
+            end          
+            item
+              Command = 10
+              ShortCut = 34
+            end          
+            item
+              Command = 110
+              ShortCut = 8226
+            end          
+            item
+              Command = 14
+              ShortCut = 16418
+            end          
+            item
+              Command = 114
+              ShortCut = 24610
+            end          
+            item
+              Command = 9
+              ShortCut = 33
+            end          
+            item
+              Command = 109
+              ShortCut = 8225
+            end          
+            item
+              Command = 13
+              ShortCut = 16417
+            end          
+            item
+              Command = 113
+              ShortCut = 24609
+            end          
+            item
+              Command = 7
+              ShortCut = 36
+            end          
+            item
+              Command = 107
+              ShortCut = 8228
+            end          
+            item
+              Command = 15
+              ShortCut = 16420
+            end          
+            item
+              Command = 115
+              ShortCut = 24612
+            end          
+            item
+              Command = 8
+              ShortCut = 35
+            end          
+            item
+              Command = 108
+              ShortCut = 8227
+            end          
+            item
+              Command = 16
+              ShortCut = 16419
+            end          
+            item
+              Command = 116
+              ShortCut = 24611
+            end          
+            item
+              Command = 223
+              ShortCut = 45
+            end          
+            item
+              Command = 201
+              ShortCut = 16429
+            end          
+            item
+              Command = 604
+              ShortCut = 8237
+            end          
+            item
+              Command = 502
+              ShortCut = 46
+            end          
+            item
+              Command = 603
+              ShortCut = 8238
+            end          
+            item
+              Command = 501
+              ShortCut = 8
+            end          
+            item
+              Command = 501
+              ShortCut = 8200
+            end          
+            item
+              Command = 504
+              ShortCut = 16392
+            end          
+            item
+              Command = 601
+              ShortCut = 32776
+            end          
+            item
+              Command = 602
+              ShortCut = 40968
+            end          
+            item
+              Command = 509
+              ShortCut = 13
+            end          
+            item
+              Command = 199
+              ShortCut = 16449
+            end          
+            item
+              Command = 201
+              ShortCut = 16451
+            end          
+            item
+              Command = 610
+              ShortCut = 24649
+            end          
+            item
+              Command = 509
+              ShortCut = 16461
+            end          
+            item
+              Command = 510
+              ShortCut = 16462
+            end          
+            item
+              Command = 503
+              ShortCut = 16468
+            end          
+            item
+              Command = 611
+              ShortCut = 24661
+            end          
+            item
+              Command = 604
+              ShortCut = 16470
+            end          
+            item
+              Command = 603
+              ShortCut = 16472
+            end          
+            item
+              Command = 507
+              ShortCut = 16473
+            end          
+            item
+              Command = 506
+              ShortCut = 24665
+            end          
+            item
+              Command = 601
+              ShortCut = 16474
+            end          
+            item
+              Command = 602
+              ShortCut = 24666
+            end          
+            item
+              Command = 301
+              ShortCut = 16432
+            end          
+            item
+              Command = 302
+              ShortCut = 16433
+            end          
+            item
+              Command = 303
+              ShortCut = 16434
+            end          
+            item
+              Command = 304
+              ShortCut = 16435
+            end          
+            item
+              Command = 305
+              ShortCut = 16436
+            end          
+            item
+              Command = 306
+              ShortCut = 16437
+            end          
+            item
+              Command = 307
+              ShortCut = 16438
+            end          
+            item
+              Command = 308
+              ShortCut = 16439
+            end          
+            item
+              Command = 309
+              ShortCut = 16440
+            end          
+            item
+              Command = 310
+              ShortCut = 16441
+            end          
+            item
+              Command = 351
+              ShortCut = 24624
+            end          
+            item
+              Command = 352
+              ShortCut = 24625
+            end          
+            item
+              Command = 353
+              ShortCut = 24626
+            end          
+            item
+              Command = 354
+              ShortCut = 24627
+            end          
+            item
+              Command = 355
+              ShortCut = 24628
+            end          
+            item
+              Command = 356
+              ShortCut = 24629
+            end          
+            item
+              Command = 357
+              ShortCut = 24630
+            end          
+            item
+              Command = 358
+              ShortCut = 24631
+            end          
+            item
+              Command = 359
+              ShortCut = 24632
+            end          
+            item
+              Command = 360
+              ShortCut = 24633
+            end          
+            item
+              Command = 231
+              ShortCut = 24654
+            end          
+            item
+              Command = 232
+              ShortCut = 24643
+            end          
+            item
+              Command = 233
+              ShortCut = 24652
+            end          
+            item
+              Command = 612
+              ShortCut = 9
+            end          
+            item
+              Command = 613
+              ShortCut = 8201
+            end          
+            item
+              Command = 250
+              ShortCut = 24642
+            end>
+          Lines.Strings = (
+            'ColorPreview'
+          )
+          ReadOnly = True
+          OnSpecialLineColors = OnSpecialLineColors
+        end
+        object ColorElementListBox: TListBox
+          Left = 3
+          Height = 226
+          Top = 108
+          Width = 200
+          OnSelectionChange = ColorElementListBoxSelectionChange
+          TabOrder = 4
+          TopIndex = -1
+        end
+        object SetAttributeToDefaultButton: TButton
+          AnchorSideRight.Control = ColorPage
+          AnchorSideRight.Side = asrBottom
+          Left = 212
+          Height = 25
+          Top = 90
+          Width = 374
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          Caption = 'SetAttributeToDefaultButton'
+          OnClick = SetAttributeToDefaultButtonClick
+          TabOrder = 5
+        end
+        object SetAllAttributesToDefaultButton: TButton
+          AnchorSideRight.Control = ColorPage
+          AnchorSideRight.Side = asrBottom
+          Left = 212
+          Height = 25
+          Top = 122
+          Width = 374
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Around = 6
+          Caption = 'SetAllAttributesToDefaultButton'
+          OnClick = SetAllAttributesToDefaultButtonClick
+          TabOrder = 6
+        end
+        object TextAttributesGroupBox: TGroupBox
+          AnchorSideRight.Control = ColorPage
+          AnchorSideRight.Side = asrBottom
+          AnchorSideBottom.Control = ColorPreview
+          Left = 212
+          Height = 182
+          Top = 154
+          Width = 374
+          Anchors = [akTop, akLeft, akRight, akBottom]
+          BorderSpacing.Around = 6
+          Caption = 'Attributes'
+          ClientHeight = 165
+          ClientWidth = 370
+          TabOrder = 7
+          object ForeGroundLabel: TLabel
+            Left = 8
+            Height = 13
+            Width = 99
+            Caption = 'ForeGroundLabel'
+            ParentColor = False
+          end
+          object ForegroundColorButton: TColorButton
+            AnchorSideTop.Control = ForeGroundLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 8
+            Height = 21
+            Top = 15
+            Width = 75
+            BorderSpacing.Top = 2
+            BorderWidth = 2
+            ButtonColorSize = 16
+            Color = clBtnFace
+            OnColorChanged = ColorButtonColorChanged
+          end
+          object BackGroundColorButton: TColorButton
+            AnchorSideTop.Control = BackGroundLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 8
+            Height = 21
+            Top = 56
+            Width = 75
+            BorderSpacing.Top = 2
+            BorderWidth = 2
+            ButtonColorSize = 16
+            Color = clBtnFace
+            OnColorChanged = ColorButtonColorChanged
+          end
+          object BackGroundLabel: TLabel
+            AnchorSideTop.Control = ForeGroundLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 8
+            Height = 13
+            Top = 41
+            Width = 101
+            BorderSpacing.Top = 28
+            Caption = 'BackGroundLabel'
+            ParentColor = False
+          end
+          object ForeGroundUseDefaultCheckBox: TCheckBox
+            AnchorSideTop.Control = ForeGroundLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 94
+            Height = 20
+            Top = 15
+            Width = 219
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Top = 2
+            Caption = 'ForeGroundUseDefaultCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 0
+          end
+          object BackGroundUseDefaultCheckBox: TCheckBox
+            AnchorSideTop.Control = BackGroundLabel
+            AnchorSideTop.Side = asrBottom
+            Left = 94
+            Height = 20
+            Top = 54
+            Width = 219
+            Anchors = [akTop, akLeft, akRight]
+            BorderSpacing.Right = 2
+            Caption = 'BackGroundUseDefaultCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 1
+          end
+          object TextBoldCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 87
+            Width = 358
+            Align = alBottom
+            BorderSpacing.Around = 6
+            Caption = 'TextBoldCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 2
+          end
+          object TextItalicCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 113
+            Width = 358
+            Align = alBottom
+            BorderSpacing.Around = 6
+            Caption = 'TextItalicCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 3
+          end
+          object TextUnderlineCheckBox: TCheckBox
+            Left = 6
+            Height = 20
+            Top = 139
+            Width = 358
+            Align = alBottom
+            BorderSpacing.Around = 6
+            Caption = 'TextUnderlineCheckBox'
+            OnChange = GeneralCheckBoxOnChange
+            TabOrder = 4
+          end
+        end
+      end
+      object CodetoolsPage: TPage
+        Caption = 'CodetoolsPage'
+        ClientWidth = 592
+        ClientHeight = 472
+        object AutomaticFeaturesGroupBox: TGroupBox
+          Left = 6
+          Height = 460
+          Top = 6
+          Width = 580
+          Align = alClient
+          BorderSpacing.Around = 6
+          Caption = 'AutomaticFeaturesGroupBox'
+          ClientHeight = 460
+          ClientWidth = 580
+          TabOrder = 0
+          object AutoDelayLabel: TLabel
+            Left = 6
+            Height = 20
+            Top = 188
+            Width = 568
+            Align = alTop
+            BorderSpacing.Top = 24
+            BorderSpacing.Around = 6
+            Caption = 'AutoDelayLabel'
+            ParentColor = False
+          end
+          object AutoDelayMinLabel: TLabel
+            AnchorSideTop.Control = AutoDelayTrackBar
+            AnchorSideTop.Side = asrBottom
+            Left = 6
+            Height = 20
+            Top = 160
+            Width = 123
+            BorderSpacing.Top = 2
+            Caption = 'AutoDelayMinLabel'
+            ParentColor = False
+          end
+          object AutoDelayMaxLabel: TLabel
+            AnchorSideTop.Control = AutoDelayTrackBar
+            AnchorSideTop.Side = asrBottom
+            Left = 427
+            Height = 20
+            Top = 160
+            Width = 127
+            Alignment = taRightJustify
+            Anchors = [akTop, akRight]
+            BorderSpacing.Top = 2
+            Caption = 'AutoDelayMaxLabel'
+            ParentColor = False
+          end
+          object AutoIdentifierCompletionCheckBox: TCheckBox
+            Left = 6
+            Height = 22
+            Top = 6
+            Width = 568
+            Align = alTop
+            BorderSpacing.Around = 6
+            Caption = 'AutoIdentifierCompletionCheckBox'
+            TabOrder = 0
+          end
+          object AutoCodeParametersCheckBox: TCheckBox
+            Left = 6
+            Height = 22
+            Top = 62
+            Width = 568
+            Align = alTop
+            BorderSpacing.Around = 6
+            Caption = 'AutoCodeParametersCheckBox'
+            Enabled = False
+            TabOrder = 1
+          end
+          object AutoToolTipExprEvalCheckBox: TCheckBox
+            Left = 6
+            Height = 22
+            Top = 90
+            Width = 568
+            Align = alTop
+            BorderSpacing.Around = 6
+            Caption = 'AutoToolTipExprEvalCheckBox'
+            TabOrder = 2
+          end
+          object AutoToolTipSymbToolsCheckBox: TCheckBox
+            Left = 6
+            Height = 22
+            Top = 34
+            Width = 568
+            Align = alTop
+            BorderSpacing.Around = 6
+            Caption = 'AutoToolTipSymbToolsCheckBox'
+            TabOrder = 3
+          end
+          object AutoDelayTrackBar: TTrackBar
+            Left = 6
+            Height = 40
+            Top = 118
+            Width = 568
+            Frequency = 250
+            Max = 4000
+            Min = 500
+            Position = 500
+            ScalePos = trTop
+            Align = alTop
+            BorderSpacing.Left = 6
+            BorderSpacing.Top = 6
+            BorderSpacing.Right = 6
+            TabOrder = 4
+          end
+        end
+      end
+      object CodeFolding: TPage
+        Caption = 'CodeFolding'
+        ClientWidth = 592
+        ClientHeight = 472
+        object lblDividerDrawLevel: TLabel
+          Left = 6
+          Height = 20
+          Top = 71
+          Width = 124
+          Caption = 'lblDividerDrawLevel'
+          ParentColor = False
+        end
+        object Bevel1: TBevel
+          Left = 6
+          Height = 2
+          Top = 49
+          Width = 464
+          Anchors = [akTop, akLeft, akRight]
+        end
+        object chkCodeFoldingEnabled: TCheckBox
+          Left = 6
+          Height = 22
+          Top = 23
+          Width = 175
+          Caption = 'chkCodeFoldingEnabled'
+          OnChange = chkCodeFoldingEnabledChange
+          TabOrder = 0
+        end
+        object edDividerDrawLevel: TSpinEdit
+          Left = 211
+          Height = 23
+          Top = 66
+          Width = 50
+          MaxValue = 10
+          MinValue = 1
+          TabOrder = 1
+          Value = 1
+        end
+      end
+    end
+  end
+  object ImageList: TImageList
+    Height = 21
+    Width = 21
+    left = 360
+    top = 48
+    Bitmap = {
+      4C69020000001500000015000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000484E4BFF8B918DFFA8AE
+      AAFFC2C7C3FFD1D6D2FFA1A4A1FF000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000007A8580FFB0BAB5FF8D9390FF999C9AFF939493FFBCC0BCFFE5EA
+      E6FFAEB2B0FF4B4E4EFF00000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000AAB1ADFFA8B1ADFFBDC4
+      C0FF8C908DFF8B8D8BFF979A97FFE4E7E4FF929795FF424946FF3A403EFF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000787A78FFE7E9E7FFD0D2D1FFACB0ADFFB4B8B6FFB9BDBAFFCFD3
+      CFFF7C807EFF4D5652FF474F4CFF363D3BFF4A504EFF959B97FFA5ACA8FFCBCF
+      CBFFC1C5C0FFA7AAA7FF00000000000000000000000000000000BBBCBBFFF0F2
+      F0FFEFF0EEFFE3E5E3FFCACDCAFFBDC0BDFF939894FF6B7571FF596360FF464E
+      4BFF78817DFFB0B9B5FF949895FFA8AAA9FFD3D5D3FFCCD0CCFFE6EAE6FF9EA4
+      A0FF000000000000000000000000DADCDAFFBBBEBCFFA2A6A3FFB4BBB6FFB3B8
+      B4FFA7AAA7FF8C918DFF66726CFF5B635FFF9BA39EFFA7B0ABFFC6CDCAFF8E90
+      8FFF9A9C9BFF9D9F9DFFDADDDAFF8A8F8CFF464D4AFF00000000000000000000
+      00005C615EFF959E99FF747976FF6B6D6BFFE4E8E4FFDADDDAFFDEE2DEFFAFB4
+      B0FF717673FFEAEDEAFFD0D3D1FFA5ABA8FFA7ACA8FFD3D9D4FFD8DDD9FF7074
+      71FF505854FF484F4CFF00000000000000008C9791FFAAB7B0FF8C928EFFD0D5
+      D1FF767977FF7C7F7CFFB9BCB9FFBDBFBDFF474C4BFF646765FFF3F5F3FFEBEC
+      EBFFEAEDEAFFE5E7E5FFADB0ADFF838885FF6E7874FF5B6460FF49534EFF0000
+      00007A7D7AFFD2D6D3FFABB2AEFFB0B8B3FFCED3D0FFB8BCB8FFE1E5E1FF9FA4
+      A0FF4B514EFF49514DFF484F4CFFE4E6E4FFE7E8E7FFE2E5E2FFDEE3DEFFDDE2
+      DDFFA4ABA6FF707A75FF5E6864FF4C5752FF00000000B3B7B3FFEFF2EFFFF1F2
+      F1FFD4D7D4FFBBBEBBFFADB1AEFF919793FF5F6864FF57615CFF464F4BFF414B
+      47FFBABDBBFFE4E7E4FFDEE2DEFFDCE1DCFFDCE1DCFFA3ABA6FF6F7A75FF616B
+      66FF454E4AFF00000000DCDFDCFFEFF0EFFFE9E9E9FFE2E5E2FFE2E7E2FFD7DC
+      D7FF9BA39EFF6F7975FF5B6561FF49544FFF414B46FF00000000949794FFD5D9
+      D5FFDFE4DFFFDCE1DDFF9CA7A1FF6E7974FF4C5450FF0000000000000000BDBF
+      BDFFEBEEEBFFE5E7E5FFDFE3DFFFDCE1DCFFDADEDAFF9DA4A0FF6E7874FF5E67
+      63FF48524DFF000000000000000000000000000000008D908DFFADB0ADFF7980
+      7CFF3B413EFF000000000000000000000000000000006D6F6DFFD2D6D2FFDDE2
+      DDFFDCE1DCFFDAE0DBFF99A49EFF6E7A74FF5B645FFF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000008B8E8BFFD0D3D0FFD5D9D6FF8D97
+      92FF545E5AFF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000616262FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000C0C0C0FFCCCCCCFFCACACAFFCACACAFFC9C9C9FFC8C8C8FFC7C7
+      C7FFC6C6C6FFC5C5C5FFC1C1C1FFBABABAFFB8B8B8FFB4B4B4FFADADADFFA0A0
+      A0FF0000000000000000000000000000000000000000A0A0A0FFF6F6F6FFF6F6
+      F6FFEEEEEEFFE6E6E6FFE6E6E6FFE6E6E6FFE7E7E7FFE8E8E8FFE6E6E6FFE5E5
+      E5FFE4E4E4FFE2E2E2FFDEDEDEFFCCCCCCFFB8B8B8FF797979FF000000000000
+      00000000000000000000A5A5A5FFF9F9F9FFF6F6F6FFD9D9D9FFD7D7D7FFDBDB
+      DBFFDEDEDEFFE1E1E1FFE4E4E4FFE6E6E6FFE9E9E9FFEBEBEBFFEDEDEDFFEFEF
+      EFFFCDCDCDFFB2B2B2FF747474FF00000000000000000000000000000000A4A4
+      A4FFF7F7F7FFF5F5F5FFD8D8D8FFDADADAFFDEDEDEFFE1E1E1FFE4E4E4FFE6E6
+      E6FFE9E9E9FFEBEBEBFFEDEDEDFFEFEFEFFFF1F1F1FFCBCBCBFFA8A8A8FF6F6F
+      6FFF00000000000000000000000000000000A2A2A2FFF3F3F3FFF3F3F3FFDADA
+      DAFFDDDDDDFFE0E0E0FFE3E3E3FFE6E6E6FFE8E8E8FFE9E9E9FFB9B9B9FFD9D9
+      D9FFF1F1F1FFF3F3F3FFC6C6C6FF9E9E9EFF6D6D6DFF00000000000000000000
+      000000000000A1A1A1FFEFEFEFFFF1F1F1FFDEDEDEFFE0E0E0FFE3E3E3FFE5E5
+      E5FFE8E8E8FFEAEAEAFFE1E1E1FF8D8D8DFFE9E9E9FFF2F2F2FFF4F4F4FFC6C6
+      C6FF9D9D9DFF6B6B6BFF00000000000000000000000000000000A1A1A1FFEDED
+      EDFFF0F0F0FFE0E0E0FFE2E2E2FFE5E5E5FFE7E7E7FFEAEAEAFFE5E5E5FFB1B1
+      B1FF9E9E9EFFC8C8C8FFF3F3F3FFF5F5F5FFC3C3C3FF949494FF696969FF0000
+      0000000000000000000000000000A0A0A0FFEDEDEDFFF0F0F0FFE3E3E3FFE5E5
+      E5FFE7E7E7FFEAEAEAFFECECECFF939393FF898989FFADADADFF636363FFD9D9
+      D9FFF6F6F6FFBFBFBFFF8B8B8BFF656565FF0000000000000000000000000000
+      0000A0A0A0FFECECECFFF0F0F0FFE5E5E5FFE6E6E6FFE9E9E9FFEBEBEBFFEEEE
+      EEFFDDDDDDFFDBDBDBFFC4C4C4FF616161FFD1D1D1FFF7F7F7FFBCBCBCFF8484
+      84FF606060FF00000000000000000000000000000000A0A0A0FFEBEBEBFFF0F0
+      F0FFE7E7E7FFE9E9E9FFEBEBEBFFEDEDEDFFF0F0F0FF979797FF6E6E6EFF9696
+      96FF626262FFD2D2D2FFF8F8F8FFBABABAFF7F7F7FFF5D5D5DFF000000000000
+      000000000000000000009F9F9FFFE8E8E8FFEFEFEFFFE9E9E9FFEBEBEBFFEDED
+      EDFFEFEFEFFFF1F1F1FF555555FFDDDDDDFFD8D8D8FF5D5D5DFFD1D1D1FFF9F9
+      F9FFB8B8B8FF7B7B7BFF5C5C5CFF000000000000000000000000000000009E9E
+      9EFFE5E5E5FFECECECFFEBEBEBFFEDEDEDFFEFEFEFFFF1F1F1FFF2F2F2FFA5A5
+      A5FF7C7C7CFF8E8E8EFF909090FFCACACAFFFAFAFAFFB6B6B6FF787878FF5A5A
+      5AFF000000000000000000000000000000009C9C9CFFDFDFDFFFE8E8E8FFEEEE
+      EEFFEFEFEFFFF0F0F0FFF2F2F2FFF4F4F4FFF5F5F5FFECECECFFF5F5F5FFF9F9
+      F9FFFAFAFAFFFBFBFBFFAEAEAEFF737373FF565656FF00000000000000000000
+      0000000000009A9A9AFFD5D5D5FFE2E2E2FFDBDBDBFFC7C7C7FFBBBBBBFFB9B9
+      B9FFB9B9B9FFB7B7B7FFB4B4B4FFB2B2B2FFB1B1B1FFB1B1B1FFAAAAAAFF7B7B
+      7BFF6B6B6BFF545454FF00000000000000000000000000000000959595FFCDCD
+      CDFFC0C0C0FF777777FF484848FF454545FF474747FF4B4B4BFF4F4F4FFF5050
+      50FF4C4C4CFF474747FF484848FF4E4E4EFF565656FF6C6C6CFF515151FF0000
+      0000000000000000000000000000818181FF9C9C9CFF5C5C5CFF3E3E3EFF4242
+      42FF404040FF424242FF434343FF464646FF484848FF454545FF434343FF4343
+      43FF454545FF494949FF555555FF4C4C4CFF0000000000000000000000000000
+      00000000000000000000292929FF232323FF232323FF222222FF222222FF2222
+      22FF222222FF222222FF222222FF222222FF222222FF222222FF222222FF2424
+      24FF000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000
+    }
+  end
+end

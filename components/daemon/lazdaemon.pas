@@ -7,13 +7,13 @@ unit lazdaemon;
 interface
 
 uses
-  reglazdaemon, daemonapp, lazdaemonapp, LazarusPackageIntf; 
+  RegLazDaemon, daemonapp, lazdaemonapp, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
-  RegisterUnit('reglazdaemon', @reglazdaemon.Register); 
+  RegisterUnit('RegLazDaemon', @RegLazDaemon.Register); 
 end; 
 
 initialization

@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <PathDelim Value="\"/>
+    <PathDelim Value="/"/>
     <Version Value="6"/>
     <General>
       <Flags>
-        <MainUnitHasUsesSectionForAllUnits Value="False"/>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
       </Flags>
-      <SessionStorage Value="InIDEConfig"/>
+      <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
-      <Title Value="Lazarus"/>
+      <Title Value="reduceifdefs"/>
     </General>
     <PublishOptions>
       <Version Value="2"/>
@@ -23,45 +22,29 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="--no-splash-screen"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="CodeTools"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>
       </Item2>
-      <Item3>
-        <PackageName Value="IDEIntf"/>
-      </Item3>
-      <Item4>
-        <PackageName Value="CodeTools"/>
-      </Item4>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="1">
       <Unit0>
-        <Filename Value="lazarus.pp"/>
+        <Filename Value="replaceresourcedirectives.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Lazarus"/>
+        <UnitName Value="ReplaceResourceDirectives"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="..\debugger\gdbmidebugger.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="GDBMIDebugger"/>
-      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <PathDelim Value="\"/>
-    <Target>
-      <Filename Value="../lazarus"/>
-    </Target>
     <SearchPaths>
-      <UnitOutputDirectory Value="$(LazarusDir)\units\$(TargetCPU)-$(TargetOS)"/>
+      <OtherUnitFiles Value="scanexamples/"/>
     </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
@@ -69,6 +52,5 @@
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
-    <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
 </CONFIG>

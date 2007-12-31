@@ -313,10 +313,12 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindResourceDirective(Code: TCodeBuffer; StartX, StartY: integer;
-          var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
-          const Filename: string = ''): boolean;
-    function AddResourceDirective(Code: TCodeBuffer; const Filename: string
-          ): boolean;
+          out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+          const Filename: string = ''; SearchInCleanSrc: boolean = true): boolean;
+    function AddResourceDirective(Code: TCodeBuffer; const Filename: string;
+          SearchInCleanSrc: boolean = true): boolean;
+    function RemoveDirective(Code: TCodeBuffer; NewX, NewY: integer;
+          RemoveEmptyIFs: boolean): boolean;
     function FixIncludeFilenames(Code: TCodeBuffer; Recursive: boolean;
           out MissingIncludeFilesCodeXYPos: TFPList): boolean;
     function FixMissingH2PasDirectives(Code: TCodeBuffer;
@@ -2343,43 +2345,125 @@ end;
 
 function TCodeToolManager.FindResourceDirective(Code: TCodeBuffer; StartX,
   StartY: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
-  const Filename: string): boolean;
+  out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+  const Filename: string; SearchInCleanSrc: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
+  Tree: TCompilerDirectivesTree;
+  p: integer;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindResourceDirective A ',Code.Filename);
   {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
-  CursorPos.X:=StartX;
-  CursorPos.Y:=StartY;
-  CursorPos.Code:=Code;
-  try
-    Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine,
-                                               Filename);
-    if Result then begin
-      NewX:=NewPos.X;
-      NewY:=NewPos.Y;
-      NewCode:=NewPos.Code;
+  NewCode:=nil;
+  NewX:=0;
+  NewY:=0;
+  NewTopLine:=0;
+  if SearchInCleanSrc then begin
+    if not InitCurCodeTool(Code) then exit;
+    CursorPos.X:=StartX;
+    CursorPos.Y:=StartY;
+    CursorPos.Code:=Code;
+    try
+      Result:=FCurCodeTool.FindResourceDirective(CursorPos,NewPos,NewTopLine,
+                                                 Filename);
+      if Result then begin
+        NewX:=NewPos.X;
+        NewY:=NewPos.Y;
+        NewCode:=NewPos.Code;
+      end;
+    except
+      on e: Exception do Result:=HandleException(e);
     end;
-  except
-    on e: Exception do Result:=HandleException(e);
+  end else begin
+    try
+      Tree:=TCompilerDirectivesTree.Create;
+      try
+        Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
+        Code.LineColToPosition(StartY,StartX,p);
+        Result:=Tree.NodeStartToCodePos(Tree.FindResourceDirective(Filename,p),
+                                        CursorPos);
+        NewCode:=CursorPos.Code;
+        NewX:=CursorPos.X;
+        NewY:=CursorPos.Y;
+        NewTopLine:=NewY;
+      finally
+        Tree.Free;
+      end;
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
   end;
 end;
 
 function TCodeToolManager.AddResourceDirective(Code: TCodeBuffer;
-  const Filename: string): boolean;
+  const Filename: string; SearchInCleanSrc: boolean): boolean;
+var
+  Tree: TCompilerDirectivesTree;
+  Node: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.AddResourceDirective A ',Code.Filename,' Filename=',Filename);
   {$ENDIF}
-  if not InitCurCodeTool(Code) then exit;
+  if SearchInCleanSrc then begin
+    if not InitCurCodeTool(Code) then exit;
+    try
+      Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache);
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  end else begin
+    try
+      Tree:=TCompilerDirectivesTree.Create;
+      try
+        Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
+        Node:=Tree.FindResourceDirective(Filename);
+        if Node=nil then
+          Result:=AddResourceDirective(Code,Filename,true)
+        else
+          Result:=true;
+      finally
+        Tree.Free;
+      end;
+    except
+      on e: Exception do Result:=HandleException(e);
+    end;
+  end;
+end;
+
+function TCodeToolManager.RemoveDirective(Code: TCodeBuffer; NewX,
+  NewY: integer; RemoveEmptyIFs: boolean): boolean;
+var
+  Tree: TCompilerDirectivesTree;
+  p: integer;
+  Node: TCodeTreeNode;
+  Changed: boolean;
+  ParentNode: TCodeTreeNode;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RemoveDirective A ',Code.Filename);
+  {$ENDIF}
   try
-    Result:=FCurCodeTool.AddResourceDirective(Filename,SourceChangeCache);
+    Code.LineColToPosition(NewY,NewX,p);
+    if (p<1) or (p>Code.SourceLength) then exit;
+    Tree:=TCompilerDirectivesTree.Create;
+    try
+      Tree.Parse(Code,GetNestedCommentsFlagForFile(Code.Filename));
+      Node:=Tree.FindNodeAtPos(p);
+      if Node=nil then exit;
+      ParentNode:=Node.Parent;
+      Changed:=false;
+      Tree.DisableNode(Node,Changed,true);
+      if RemoveEmptyIFs and (ParentNode<>nil) and Tree.NodeIsEmpty(ParentNode) then
+        Tree.DisableNode(ParentNode,Changed,true);
+      Result:=Changed;
+    finally
+      Tree.Free;
+    end;
   except
     on e: Exception do Result:=HandleException(e);
   end;
