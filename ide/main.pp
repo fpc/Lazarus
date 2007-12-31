@@ -6921,9 +6921,9 @@ begin
       exit;
     end;
     NewUnitInfo.Source:=NewBuf;
-    NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     if FilenameIsPascalUnit(NewUnitInfo.Filename) then
       NewUnitInfo.ReadUnitNameFromSource(false);
+    NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
   end else begin
     // open unknown file
     Handled:=false;

@@ -1363,7 +1363,11 @@ end;
 
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
-  if fSource=ABuffer then exit;
+  if fSource=ABuffer then begin
+    if fSource<>nil then
+      fSourceChangeStep:=FSource.ChangeStep;
+    exit;
+  end;
   if (fSource<>nil) and IsAutoRevertLocked then
     fSource.UnlockAutoDiskRevert;
   fSource:=ABuffer;
