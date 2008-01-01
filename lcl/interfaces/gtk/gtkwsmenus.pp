@@ -27,13 +27,14 @@ unit GtkWSMenus;
 interface
 
 uses
-  Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf,
   {$ENDIF}
-  GtkInt, gtkProc, gtkglobals, GTKExtra, Menus;
+  GtkInt, gtkProc, gtkglobals, GTKExtra,
+  Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
+  Graphics, Menus;
 
 type
   { TGtkWSMenuItem }
@@ -52,6 +53,7 @@ type
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
+    class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
   end;
 
   { TGtkWSMenu }
@@ -255,6 +257,12 @@ begin
   gtk_menu_item_set_right_justified(MenuItemWidget, Justified);
   gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
   Result:=false;
+end;
+
+class procedure TGtkWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
+  const HasIcon: Boolean; const AIcon: TBitmap);
+begin
+  // TODO
 end;
 
 { TGtkWSMenu }

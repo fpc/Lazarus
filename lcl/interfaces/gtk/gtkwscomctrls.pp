@@ -42,12 +42,6 @@ uses
   GtkDef, GtkExtra, GtkWSPrivate;
 
 type
-  {$if Declared(TOldStyleCustomImageList)}
-    {$define IMGLIST_OLDSTYLE}
-  {$else}
-    {$note TODO: remove me}
-  {$endif}
-
   { TGtkWSStatusBar }
 
   TGtkWSStatusBar = class(TWSStatusBar)

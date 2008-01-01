@@ -100,13 +100,7 @@ type
   
   // Some temp rework defines, for old functionality both need so be set
 
-  {.$define IMGLIST_OLDSTYLE}     // Set to keep original functionality
   {.$define IMGLIST_KEEP_EXTRA}   // Not needed for Delphi compat.
-
-  {$ifdef IMGLIST_OLDSTYLE}
-  // hack to set defines in dependent widgetsets.
-  TOldstyleCustomImageList = Boolean;
-  {$endif}
 
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
@@ -115,13 +109,6 @@ type
   private
     FDrawingStyle: TDrawingStyle;
     FData: array of TRGBAQuad;
-    {$ifdef IMGLIST_OLDSTYLE}
-    FHandle: THandle;
-    FImageList: TList;
-    FMaskList: TList;
-    FBitmap: TBitmap;
-    FMaskBitmap: TBitmap;
-    {$endif}
     FImageType: TImageType;
     FHeight: Integer;
     FMasked: boolean;
@@ -137,17 +124,12 @@ type
     FChanged: boolean;
     FUpdateCount: integer;
 
-    {$ifdef IMGLIST_OLDSTYLE}
-    procedure AllocBitmap(Amount: Integer);
-    {$else}
     procedure AllocData(ACount: Integer);
-    {$endif}
-    
-    {$ifndef IMGLIST_OLDSTYLE}
+    procedure InternalInsert(AIndex: Integer; AImage, AMask: HBitmap;
+      AWidth, AHeight: Integer);
     procedure InternalMove(ACurIndex, ANewIndex: Cardinal; AIgnoreCurrent: Boolean);
+    procedure InternalReplace(AIndex: Integer; AImage, AMask: HBitmap);
     function InternalSetImage(AIndex: Integer; AImage: TRawImage): PRGBAQuad;
-    {$endif}
-
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
     procedure SetDrawingStyle(const AValue: TDrawingStyle);
@@ -155,10 +137,6 @@ type
     procedure SetMasked(const AValue: boolean);
     procedure SetShareImages(const AValue: Boolean);
     procedure SetWidth(const Value: Integer);
-
-    {$ifdef IMGLIST_OLDSTYLE}
-    procedure ShiftImages(const Source: TCanvas; Start, Shift: Integer);
-    {$endif}
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
@@ -178,10 +156,6 @@ type
     procedure EndUpdate;
 
     function Add(Image, Mask: TBitmap): Integer;
-    {$ifdef IMGLIST_OLDSTYLE}
-    function AddDirect(Image, Mask: TBitmap): Integer;
-    function AddCopy(SrcImage, SrcMask: TBitmap): Integer;
-    {$endif}
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
@@ -206,12 +180,9 @@ type
     function GetHotSpot: TPoint; virtual;
     procedure GetIcon(Index: Integer; Image: TIcon);
 
-    {$ifdef IMGLIST_OLDSTYLE}
-    function HandleAllocated: Boolean;
-    {$endif}
     procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
     procedure InsertIcon(Index: Integer; Image: TIcon);
-    procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
+    procedure InsertMasked(Index: Integer; AImage: TBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Replace(AIndex: Integer; AImage, AMask: TBitmap);
     procedure ReplaceIcon(Index: Integer; Image: TIcon);
@@ -225,11 +196,7 @@ type
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
     property Count: Integer read FCount;
     property DrawingStyle: TDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
-    {$ifdef IMGLIST_OLDSTYLE}
-    property Handle: THandle read FHandle;
-    {$else}
     property HandleAllocated;
-    {$endif}
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;

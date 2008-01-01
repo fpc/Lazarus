@@ -1,25 +1,26 @@
 object Form1: TForm1
-  Left = 290
+  Left = 265
   Height = 334
-  Top = 175
-  Width = 628
-  HorzScrollBar.Page = 627
+  Top = 150
+  Width = 781
+  HorzScrollBar.Page = 780
   VertScrollBar.Page = 333
   ActiveControl = ListBox1
   Caption = 'Form1'
   ClientHeight = 334
-  ClientWidth = 628
+  ClientWidth = 781
   OnCreate = FormCreate
+  Position = poScreenCenter
   object ListBox1: TListBox
     AnchorSideLeft.Control = GroupBox1
     AnchorSideTop.Control = GroupBox1
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = GroupBox4
+    AnchorSideRight.Control = GroupBox5
     AnchorSideRight.Side = asrBottom
     Left = 20
     Height = 120
     Top = 166
-    Width = 588
+    Width = 740
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 10
     OnSelectionChange = ListBox1SelectionChange
@@ -135,6 +136,31 @@ object Form1: TForm1
     Caption = 'Add ...'
     OnClick = Button1Click
     TabOrder = 5
+  end
+  object GroupBox5: TGroupBox
+    AnchorSideLeft.Control = GroupBox4
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Owner
+    Left = 628
+    Height = 146
+    Top = 10
+    Width = 132
+    AutoSize = True
+    BorderSpacing.Left = 20
+    BorderSpacing.Top = 10
+    Caption = '1 Bit'
+    ClientHeight = 128
+    ClientWidth = 128
+    Color = clWhite
+    ParentColor = False
+    TabOrder = 6
+    object Image5: TImage
+      AnchorSideTop.Side = asrBottom
+      Height = 128
+      Width = 128
+      Center = True
+      Transparent = False
+    end
   end
   object ImageList1: TImageList
     Height = 128

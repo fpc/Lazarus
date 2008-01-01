@@ -35,7 +35,7 @@ begin
   FBidiMode := bdLeftToRight;
   FParentBidiMode := True;
   ParentBidiModeChanged(AOwner);
-  Inherited Create(AOwner);
+  inherited Create(AOwner);
 end;
 
 {------------------------------------------------------------------------------
@@ -45,8 +45,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.SetImages(const AValue: TCustomImageList);
 begin
-  // ToDo
-  FImages:=AValue;
+  FImages := AValue;
+  FItems.UpdateImages;
 end;
 
 procedure TMenu.SetBidiMode(const AValue: TBidiMode);
@@ -265,6 +265,17 @@ procedure TMenu.MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean
 begin
   if ComponentState * [csLoading, csDestroying] = [] then
     DoChange(Source, Rebuild);
+end;
+
+procedure TMenu.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = FImages then
+    begin
+      FImages := nil;
+      FItems.UpdateImages;
+    end;
 end;
 
 procedure TMenu.SetChildOrder(Child: TComponent; Order: Integer);

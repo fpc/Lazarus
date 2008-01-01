@@ -1194,7 +1194,7 @@ procedure RedrawMenus;
 var
   I: integer;
 begin
-  for I := 0 to  ChangedMenus.Count - 1 do
+  for I := 0 to ChangedMenus.Count - 1 do
     DrawMenuBar(HWND(ChangedMenus[I]));
   ChangedMenus.Clear;
 end;
