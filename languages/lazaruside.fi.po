@@ -738,6 +738,10 @@ msgstr "Kysy"
 msgid "Ask before replacing each found text"
 msgstr "Varmistetaan vielä erikseen että korvataanko kyseinen kohta"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "At (@)"
@@ -1942,7 +1946,7 @@ msgstr ""
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr ""
 
@@ -2166,7 +2170,7 @@ msgstr ""
 msgid "Debugging:"
 msgstr ""
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr ""
 
@@ -7858,10 +7862,6 @@ msgstr ""
 msgid "Strip Symbols From Executable"
 msgstr ""
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr ""
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Aliohjelman sisäinen aliohjelma"
@@ -9829,6 +9829,10 @@ msgstr "Etsi vain kokonaisia sanoja"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Leveys:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

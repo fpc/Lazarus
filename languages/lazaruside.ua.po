@@ -738,6 +738,10 @@ msgstr "Запитати"
 msgid "Ask before replacing each found text"
 msgstr "Запитати перед заміною кожного фрагменту"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "Біля"
@@ -1942,7 +1946,7 @@ msgstr "Створити макроси FPC і шляхи до тек проек
 msgid "Create LazDoc files"
 msgstr "Створювання файлів LazDoc"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Створити Makefile"
 
@@ -2166,7 +2170,7 @@ msgstr "Тип налагоджувача і шлях"
 msgid "Debugging:"
 msgstr "Налагоджування:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Типовий"
 
@@ -7858,10 +7862,6 @@ msgstr "Рядки з тим же значенням:"
 msgid "Strip Symbols From Executable"
 msgstr "Вирізати символи з виконуваного"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Стиль:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Підпроцедура"
@@ -9829,6 +9829,10 @@ msgstr "Тільки цілі слова"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ширина:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

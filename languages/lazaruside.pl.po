@@ -753,6 +753,10 @@ msgstr "Zapytaj"
 msgid "Ask before replacing each found text"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "Na"
@@ -1957,7 +1961,7 @@ msgstr "Utwórz makra FPC i ścieżki dla katalogu z projektem fpc"
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr ""
 
@@ -2181,7 +2185,7 @@ msgstr "Rodzaj i ścieżka do odpluskwiacza"
 msgid "Debugging:"
 msgstr "Odpluskwianie:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Domyślnie"
 
@@ -7873,10 +7877,6 @@ msgstr "Stałe napisowe o tej samej wartości:"
 msgid "Strip Symbols From Executable"
 msgstr "Wyczyść z symboli plik wykonywalny"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Styl asemblera:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr ""
@@ -9844,6 +9844,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Szerokość:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

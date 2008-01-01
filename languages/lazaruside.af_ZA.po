@@ -752,6 +752,10 @@ msgstr "Vra"
 msgid "Ask before replacing each found text"
 msgstr ""
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr ""
@@ -1956,7 +1960,7 @@ msgstr ""
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr ""
 
@@ -2180,7 +2184,7 @@ msgstr ""
 msgid "Debugging:"
 msgstr ""
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr ""
 
@@ -7872,10 +7876,6 @@ msgstr ""
 msgid "Strip Symbols From Executable"
 msgstr ""
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Styl:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr ""
@@ -9843,6 +9843,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Weite:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

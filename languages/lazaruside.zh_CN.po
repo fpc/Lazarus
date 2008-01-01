@@ -752,6 +752,10 @@ msgstr "询问"
 msgid "Ask before replacing each found text"
 msgstr "在替换每个匹配文本时提醒 "
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "在"
@@ -1956,7 +1960,7 @@ msgstr "创建 FPC 宏和 fpc 工程的目录"
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "创建 makefile"
 
@@ -2180,7 +2184,7 @@ msgstr "调试器类型和路径"
 msgid "Debugging:"
 msgstr "调试:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "默认"
 
@@ -7872,10 +7876,6 @@ msgstr "字符串赋予相同的值:"
 msgid "Strip Symbols From Executable"
 msgstr "从可执行程序中除去符号,可以减小程序体积(Strip Symbol)"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "风格:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "子程序"
@@ -9843,6 +9843,10 @@ msgstr "整个单词"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "宽度:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

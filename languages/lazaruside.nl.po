@@ -749,6 +749,10 @@ msgstr "Vraag"
 msgid "Ask before replacing each found text"
 msgstr "Vraag voor het vervangen van gevonden tekst"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "Bij"
@@ -1953,7 +1957,7 @@ msgstr "Maak FPC-macro's en paden voor een fpc-projectfolder"
 msgid "Create LazDoc files"
 msgstr "Maak LazDoc bestanden"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Maak MakeFile"
 
@@ -2177,7 +2181,7 @@ msgstr "Debuggertype en pad"
 msgid "Debugging:"
 msgstr "Debugging:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Standaard"
 
@@ -7869,10 +7873,6 @@ msgstr "Strings met dezelfde waarde:"
 msgid "Strip Symbols From Executable"
 msgstr "Verwijderen symbolen uit het uitvoerbaar bestand."
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Stijl:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Subprocedure"
@@ -9840,6 +9840,10 @@ msgstr "Alleen hele woorden"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Breedte:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

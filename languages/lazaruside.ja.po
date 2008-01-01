@@ -748,6 +748,10 @@ msgstr "尋ねる"
 msgid "Ask before replacing each found text"
 msgstr "見つかったテキスト毎に置換前に尋ねる"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr ""
@@ -1952,7 +1956,7 @@ msgstr "FPCのマクロとfpcプロジェクトディレクトリのパスを作
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Makefileを作成"
 
@@ -2176,7 +2180,7 @@ msgstr "デバッガの種類とパス"
 msgid "Debugging:"
 msgstr "デバッグ中"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "デフォルト"
 
@@ -7868,10 +7872,6 @@ msgstr "同じ値の文字列"
 msgid "Strip Symbols From Executable"
 msgstr "実行ファイルからシンボルを除く"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "スタイル"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "サブ手続き"
@@ -9839,6 +9839,10 @@ msgstr "単語単位で探す"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "幅:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

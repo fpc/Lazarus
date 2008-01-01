@@ -3478,8 +3478,8 @@ msgstr ""
 msgid "Options: "
 msgstr ""
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
 msgstr ""
 
 #: lazarusidestrconsts:lisnocompileroptionsinherited
@@ -3516,6 +3516,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsyntaxoptions
 msgid "Syntax options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgassemblerdefault
+msgid "Default"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
@@ -3702,6 +3706,10 @@ msgstr ""
 msgid "Target OS specific options"
 msgstr ""
 
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
+
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr ""
@@ -3860,6 +3868,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscocallonrun
 msgid "Run"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcocreatemakefile
+msgid "Create Makefile"
 msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter

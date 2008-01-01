@@ -749,6 +749,10 @@ msgstr "Tanya"
 msgid "Ask before replacing each found text"
 msgstr "Tanya sebelum mengganti setiap teks yang ditemukan"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "Di"
@@ -1953,7 +1957,7 @@ msgstr "Buat Makro FPC dan path untuk direktori proyek fpc"
 msgid "Create LazDoc files"
 msgstr "Buat file LazDoc"
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Buat Makefile"
 
@@ -2177,7 +2181,7 @@ msgstr "Path dan Tipe Debugger"
 msgid "Debugging:"
 msgstr "Debugging:"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Default"
 
@@ -7869,10 +7873,6 @@ msgstr "String dengan nilai sama:"
 msgid "Strip Symbols From Executable"
 msgstr "Hilangkan Simbol Dari Eksekutabel"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Gaya:"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Sub Prosedur"
@@ -9840,6 +9840,10 @@ msgstr "Hanya seluruh kata"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Panjang:"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"

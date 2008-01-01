@@ -1,14 +1,8 @@
-msgid ""
+#: cgimodules:serrnomainmodule
+msgid "No CGI datamodule to handle CGI request."
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #: cgimodules:serrnorequesthandler
 msgid "%s: No CGI request handler set."
-msgstr ""
-
-#: cgimodules:serrnomainmodule
-msgid "No CGI datamodule to handle CGI request."
 msgstr ""
 

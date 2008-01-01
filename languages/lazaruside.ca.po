@@ -749,6 +749,10 @@ msgstr "Demana"
 msgid "Ask before replacing each found text"
 msgstr "Demana abans de reemplaçar cada text trobat"
 
+#: lazarusidestrconsts:dlgcoasmstyle
+msgid "Assembler style:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
 msgstr "A"
@@ -1953,7 +1957,7 @@ msgstr "Crea les macroinstruccions FPC i les trajectòries per un directori de p
 msgid "Create LazDoc files"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcreatemakefile
+#: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
 msgstr "Crea Makefile"
 
@@ -2177,7 +2181,7 @@ msgstr "Tipus i trajectòria del depurador"
 msgid "Debugging:"
 msgstr "Depuració"
 
-#: lazarusidestrconsts:rsiwpdefault
+#: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Predeterminat"
 
@@ -7869,10 +7873,6 @@ msgstr "Cadenes amb el mateix valor:"
 msgid "Strip Symbols From Executable"
 msgstr "Elimina els símbols de l'executable"
 
-#: lazarusidestrconsts:dlgcostyle
-msgid "Style:"
-msgstr "Estil"
-
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
 msgstr "Subprocediment"
@@ -9840,6 +9840,10 @@ msgstr "Només paraules senceres"
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
 msgstr "Ample"
+
+#: lazarusidestrconsts:dlgwin32guiapp
+msgid "Win32 gui application"
+msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmwindow
 msgid "Window"
