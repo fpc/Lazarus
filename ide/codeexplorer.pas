@@ -114,13 +114,15 @@ type
     procedure RefreshSpeedButtonClick(Sender: TObject);
   private
     FCodeFilename: string;
+    fCategoryNodes: array[TCodeExplorerCategory] of TTreeNode;
     FDirectivesFilename: string;
     FFlags: TCodeExplorerViewFlags;
     FLastCodeFilter: string;
     FLastCodeChangeStep: integer;
     FLastDirectivesFilter: string;
     FLastDirectivesChangeStep: integer;
-    FMode : TCodeExplorerMode;
+    FMode: TCodeExplorerMode;
+    FLastMode: TCodeExplorerMode;
     FOnGetCodeTree: TOnGetCodeTree;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
@@ -190,7 +192,7 @@ type
     property OnGetDirectivesTree: TOnGetDirectivesTree read FOnGetDirectivesTree
                                                      write FOnGetDirectivesTree;
     property OnJumpToCode: TOnJumpToCode read FOnJumpToCode write FOnJumpToCode;
-    property Mode: TCodeExplorerMode read FMode write FMode;
+    property Mode: TCodeExplorerMode read FMode write SetMode;
     property CodeFilename: string read FCodeFilename;
     property CodeFilter: string read GetCodeFilter write SetCodeFilter;
     property DirectivesFilename: string read FDirectivesFilename;
@@ -287,8 +289,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 
 begin
   LoadCodeExplorerOptions;
-
-  SetMode(CodeExplorerOptions.Mode);
+  
+  Mode:=CodeExplorerOptions.Mode;
 
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
@@ -551,6 +553,7 @@ var
   NodeImageIndex: Integer;
   ShowNode: Boolean;
   ShowChilds: Boolean;
+  Category: TCodeExplorerCategory;
 begin
   while CodeNode<>nil do begin
     ShowNode:=true;
@@ -576,7 +579,6 @@ begin
     // don't show class node (the type node is already shown)
     if (CodeNode.Desc in [ctnClass,ctnClassInterface]) then begin
       ShowNode:=false;
-      ShowChilds:=true;
     end;
 
     // don't show keyword nodes
@@ -590,21 +592,50 @@ begin
     if CodeNode.Desc=ctnEndPoint then
       ShowNode:=false;
       
-    // ToDo: add options to CodeExplorerOptions to make this optional
-    // and add check items to the popup menu for easy toggle
-    // don't show type/var/const section nodes
-    if (CodeNode.Desc in AllDefinitionSections) then begin
-      ShowNode:=false;
-      ShowChilds:=true;
-    end;
-    
     // don't show class visibility section nodes
     if (CodeNode.Desc in AllClassSections) then begin
       ShowNode:=false;
-      ShowChilds:=true;
     end;
 
-    ViewNode:=ParentViewNode;
+    if Mode=cemCategory then begin
+      // category mode: do not show sections
+      if (CodeNode.Desc in AllDefinitionSections) then begin
+        ShowNode:=false;
+      end;
+      
+      // category mode: put nodes in categories
+      Category:=cecNone;
+      case CodeNode.Desc of
+      ctnUsesSection:     Category:=cecUses;
+      ctnTypeDefinition,ctnGenericType:  Category:=cecTypes;
+      ctnVarDefinition:   Category:=cecVariables;
+      ctnConstDefinition: Category:=cecConstants;
+      ctnProcedure:       Category:=cecProcedures;
+      ctnProperty:
+        if (CodeNode.Parent=nil)
+        or (CodeNode.Parent.Desc in [ctnInterface,ctnImplementation]) then
+          Category:=cecProperties;
+      end;
+      if Category<>cecNone then begin
+        ShowNode:=Category in CodeExplorerOptions.Categories;
+        ShowChilds:=false;
+        if ShowNode then begin
+          if fCategoryNodes[Category]=nil then begin
+            NodeData:=TViewNodeData.Create(CodeNode.Parent);
+            fCategoryNodes[Category]:=CodeTreeview.Items.AddChildObject(nil,
+                                CodeExplorerLocalizedString(Category),NodeData);
+          end;
+          ParentViewNode:=fCategoryNodes[Category];
+          InFrontViewNode:=nil;
+        end;
+      end;
+
+      // category mode: do not show code sections
+      if (CodeNode.Desc in AllCodeSections) then begin
+        ShowNode:=false;
+      end;
+    end;
+    
     if ShowNode then begin
       NodeData:=TViewNodeData.Create(CodeNode);
       NodeText:=GetCodeNodeDescription(ACodeTool,CodeNode);
@@ -620,6 +651,8 @@ begin
       ViewNode.ImageIndex:=NodeImageIndex;
       ViewNode.SelectedIndex:=NodeImageIndex;
       InFrontViewNode:=ViewNode;
+    end else begin
+      ViewNode:=ParentViewNode;
     end;
     if ShowChilds then
       CreateNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
@@ -696,19 +729,18 @@ end;
 
 procedure TCodeExplorerView.SetMode(AMode: TCodeExplorerMode);
 begin
+  if FMode=AMode then exit;
   FMode:=AMode;
-  case FMode of
-    cemCategory :
-    begin
-      ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
-      ModeSpeedButton.Hint:= lisCEModeShowSourceNodes;
-    end;
-    cemSource :
-    begin
-      ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
-      ModeSpeedButton.Hint:= lisCEModeShowCategories;
-    end;
+  if FMode=cemCategory then
+  begin
+    ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
+    ModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
+  end
+  else begin
+    ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
+    ModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
+  Refresh(true);
 end;
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
@@ -811,6 +843,7 @@ procedure TCodeExplorerView.RefreshCode(OnlyVisible: boolean);
 var
   OldExpanded: TTreeNodeExpandedState;
   ACodeTool: TCodeTool;
+  c: TCodeExplorerCategory;
 begin
   if (FUpdateCount>0)
   or (OnlyVisible and ((CurrentPage<>cepCode) or (not IsVisible))) then begin
@@ -818,10 +851,10 @@ begin
     exit;
   end;
   Exclude(FFlags,cevCodeRefreshNeeded);
-  
+
   try
     Include(FFlags,cevRefreshing);
-
+    
     CodeFilterEdit.Text:=lisCEFilter;
 
     // get the codetool with the updated codetree
@@ -838,12 +871,14 @@ begin
     end else begin
       if (ACodeTool.MainFilename=FCodeFilename)
       and (ACodeTool.Scanner<>nil)
-      and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep) then begin
+      and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep)
+      and (Mode=FLastMode) then begin
         // still the same source
         exit;
       end;
     end;
 
+    FLastMode:=Mode;
     // remember the codetools ChangeStep
     if ACodeTool<>nil then begin
       FCodeFilename:=ACodeTool.MainFilename;
@@ -858,6 +893,8 @@ begin
     CodeTreeview.BeginUpdate;
     OldExpanded:=TTreeNodeExpandedState.Create(CodeTreeView);
 
+    for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+      fCategoryNodes[c]:=nil;
     if (ACodeTool=nil) or (ACodeTool.Tree=nil) or (ACodeTool.Tree.Root=nil) then
     begin
       CodeTreeview.Items.Clear;
@@ -1112,10 +1149,12 @@ var
 begin
   Data1:=TViewNodeData(Node1.Data);
   Data2:=TViewNodeData(Node2.Data);
-  if (Data1.Desc in SortDesc)
-  and (Data2.Desc in SortDesc) then begin
-    Result:=SysUtils.CompareText(Node1.Text,Node2.Text);
-    if Result<>0 then exit;
+  if (Mode=cemCategory) then begin
+    if (Data1.Desc in SortDesc)
+    and (Data2.Desc in SortDesc) then begin
+      Result:=SysUtils.CompareText(Node1.Text,Node2.Text);
+      if Result<>0 then exit;
+    end;
   end;
   if Data1.StartPos<Data2.StartPos then
     Result:=-1

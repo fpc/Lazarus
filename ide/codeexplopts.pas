@@ -53,6 +53,7 @@ type
   );
   
   TCodeExplorerCategory = (
+    cecNone,
     cecUses,
     cecTypes,
     cecVariables,
@@ -63,6 +64,7 @@ type
   TCodeExplorerCategories = set of TCodeExplorerCategory;
   
 const
+  FirstCodeExplorerCategory = cecUses;
   DefaultCodeExplorerCategories = [cecUses,
                               cecTypes,cecVariables,cecConstants,cecProcedures];
 
@@ -132,6 +134,7 @@ const
     'Source'
     );
   CodeExplorerCategoryNames: array[TCodeExplorerCategory] of string = (
+    '?',
     'Uses',
     'Types',
     'Variables',
@@ -148,6 +151,7 @@ function ShowCodeExplorerOptions: TModalResult;
 function CodeExplorerRefreshNameToEnum(const s: string): TCodeExplorerRefresh;
 function CodeExplorerModeNameToEnum(const s: string): TCodeExplorerMode;
 function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
+function CodeExplorerLocalizedString(const c: TCodeExplorerCategory): string;
 
 
 implementation
@@ -169,9 +173,22 @@ end;
 
 function CodeExplorerCategoryNameToEnum(const s: string): TCodeExplorerCategory;
 begin
-  for Result:=Low(TCodeExplorerCategory) to High(TCodeExplorerCategory) do
+  for Result:=FirstCodeExplorerCategory to High(TCodeExplorerCategory) do
     if CompareText(CodeExplorerCategoryNames[Result],s)=0 then exit;
   Result:=cecTypes;
+end;
+
+function CodeExplorerLocalizedString(const c: TCodeExplorerCategory): string;
+begin
+  case c of
+  cecUses: Result:=lisCEUses;
+  cecTypes: Result:=lisCETypes;
+  cecVariables: Result:=lisCEVariables;
+  cecConstants: Result:=lisCEConstants;
+  cecProcedures: Result:=lisCEProcedures;
+  cecProperties: Result:=lisCEProperties;
+  else Result:='?';
+  end;
 end;
 
 function ShowCodeExplorerOptions: TModalResult;
@@ -277,7 +294,7 @@ begin
   FFollowCursor:=XMLConfig.GetValue(Path+'FollowCursor',true);
   
   FCategories:=[];
-  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     if XMLConfig.GetValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
       c in DefaultCodeExplorerCategories) then
         Include(FCategories,c);
@@ -296,7 +313,7 @@ begin
                            CodeExplorerModeNames[cemCategory]);
   XMLConfig.SetDeleteValue(Path+'FollowCursor',FFollowCursor,true);
   
-  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
+  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     XMLConfig.SetDeleteValue(Path+'Categories/'+CodeExplorerCategoryNames[c],
       c in FCategories,c in DefaultCodeExplorerCategories);
 end;
@@ -337,8 +354,8 @@ begin
 
   FollowCursorCheckBox.Checked:=Options.FollowCursor;
   
-  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
-    CategoriesCheckGroup.Checked[ord(c)]:=c in Options.Categories;
+  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
+    CategoriesCheckGroup.Checked[ord(c)-1]:=c in Options.Categories;
 end;
 
 procedure TCodeExplorerDlg.SaveFormToOptions;
@@ -360,13 +377,15 @@ begin
   Options.FollowCursor:=FollowCursorCheckBox.Checked;
 
   NewCategories:=[];
-  for c:=low(TCodeExplorerCategory) to high(TCodeExplorerCategory) do
-    if CategoriesCheckGroup.Checked[ord(c)] then
+  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
+    if CategoriesCheckGroup.Checked[ord(c)-1] then
       include(NewCategories,c);
   Options.Categories:=NewCategories;
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgCreate(Sender: TObject);
+var
+  c: TCodeExplorerCategory;
 begin
   FOptions:=TCodeExplorerOptions.Create;
   Caption:=lisCEOCodeExplorer;
@@ -388,12 +407,8 @@ begin
   
   CategoryPage.Caption:=lisCECategories;
   CategoriesCheckGroup.Caption:=lisCEOnlyUsedInCategoryMode;
-  CategoriesCheckGroup.Items.Add(lisCEUses);      // 0
-  CategoriesCheckGroup.Items.Add(lisCETypes);     // 1
-  CategoriesCheckGroup.Items.Add(lisCEVariables); // 2
-  CategoriesCheckGroup.Items.Add(lisCEConstants); // 3
-  CategoriesCheckGroup.Items.Add(lisCEProcedures);// 4
-  CategoriesCheckGroup.Items.Add(lisCEProperties);// 5
+  for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
+    CategoriesCheckGroup.Items.Add(CodeExplorerLocalizedString(c));
 end;
 
 procedure TCodeExplorerDlg.CodeExplorerDlgDestroy(Sender: TObject);
