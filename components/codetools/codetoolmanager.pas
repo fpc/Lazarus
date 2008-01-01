@@ -1511,9 +1511,15 @@ begin
   end else if (AnException is ECodeToolError) then begin
     // codetool error
     ErrorSrcTool:=ECodeToolError(AnException).Sender;
-    fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
-    fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
-    fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
+    if ErrorSrcTool.ErrorNicePosition.Code<>nil then begin
+      fErrorCode:=ErrorSrcTool.ErrorNicePosition.Code;
+      fErrorColumn:=ErrorSrcTool.ErrorNicePosition.X;
+      fErrorLine:=ErrorSrcTool.ErrorNicePosition.Y;
+    end else begin
+      fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
+      fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
+      fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
+    end;
   end else if (AnException is ECDirectiveParserException) then begin
     // Compiler directive parser error
     ErrorDirTool:=ECDirectiveParserException(AnException).Sender;

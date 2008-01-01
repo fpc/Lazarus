@@ -450,7 +450,7 @@ end;
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
-  SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
+  SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom],true);
 end;
 
 function TPascalParserTool.EndOfSourceExpected: boolean;
@@ -506,7 +506,7 @@ begin
     else if UpAtomIs('LIBRARY') then
       CurSection:=ctnLibrary
     else
-      SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
+      SaveRaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom],true);
     SourceType:=CurSection;
     CreateChildNode;
     CurNode.Desc:=CurSection;
@@ -576,20 +576,20 @@ procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
   procedure RaiseClassNodeNil;
   begin
     RaiseException(
-       'TPascalParserTool.BuildSubTreeForClass: Classnode=nil');
+       'TPascalParserTool.BuildSubTreeForClass: Classnode=nil',true);
   end;
   
   procedure RaiseClassDescInvalid;
   begin
     RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
-                   +ClassNode.DescAsString);
+                   +ClassNode.DescAsString,true);
   end;
 
   procedure RaiseClassKeyWordExpected;
   begin
     RaiseException(
         'TPascalParserTool.BuildSubTreeForClass:'
-       +' class/object keyword expected, but '+GetAtom+' found');
+       +' class/object keyword expected, but '+GetAtom+' found',true);
   end;
   
 var OldPhase: integer;
@@ -674,7 +674,7 @@ procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
   begin
     SaveRaiseException(
        'TPascalParserTool.BuildSubTreeForBeginBlock: begin expected, but '
-       +GetAtom+' found');
+       +GetAtom+' found',true);
   end;
 
 var MaxPos, OldPhase: integer;

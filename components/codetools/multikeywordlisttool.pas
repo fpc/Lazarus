@@ -99,7 +99,7 @@ begin
     inc(i);
   end;
   SaveRaiseException(
-    '[TMultiKeyWordListCodeTool.SetCurKeyWordFuncList] unknown list');
+    '[TMultiKeyWordListCodeTool.SetCurKeyWordFuncList] unknown list',true);
 end;
 
 function TMultiKeyWordListCodeTool.AddKeyWordFuncList(
