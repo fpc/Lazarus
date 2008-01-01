@@ -27,7 +27,14 @@ unit GtkWSExtDlgs;
 interface
 
 uses
-  ExtDlgs, WSExtDlgs, WSLCLClasses;
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$ELSE}
+  glib, gdk, gtk, gdkpixbuf, GtkFontCache,
+  {$ENDIF}
+  Classes, Controls, ExtDlgs, LCLType,
+  WSExtDlgs, WSLCLClasses,
+  GtkDef, GtkProc, GtkWsControls, GtkInt;
 
 type
 
@@ -38,7 +45,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtkWSPreviewFileDialog }

@@ -312,7 +312,7 @@ uses
 // GtkWSDirSel,
 // GtkWSEditBtn,
  GtkWSExtCtrls,
-// GtkWSExtDlgs,
+ GtkWSExtDlgs,
 // GtkWSFileCtrl,
  GtkWSForms,
  GtkWSGrids,
