@@ -2292,11 +2292,15 @@ resourcestring
   lisTodoListGotoLine='Goto selected source line';
   lisTodoListPrintList='Print todo items';
   lisToDoListOptions='ToDo options...';
-  lisToDoLDescription = 'Description';
   lisCTInsertMacro = 'Insert Macro';
-  lisToDoLFile = 'File';
-  lisToDoLLine = 'Line';
-  
+  lisToDoLDone = 'Done';
+  lisToDoLDescription = 'Description';
+  lisToDoLPriority = 'Priority';
+  lisToDoLFile  = 'Module';
+  lisToDoLLine  = 'Line';
+  lisToDoLOwner = 'Owner';
+  listToDoLCategory = 'Category';
+
   // packages
   lisPkgFileTypeUnit = 'Unit';
   lisPkgFileTypeVirtualUnit = 'Virtual Unit';

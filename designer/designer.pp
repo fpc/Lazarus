@@ -408,11 +408,11 @@ begin
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                            'Clipboard section');
     DesignerMenuCut:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Cut',lisMenuCut, nil, nil, nil, 'menu_edit_cut');
+                                            'Cut',lisMenuCut, nil, nil, nil, 'cut');
     DesignerMenuCopy:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Copy',lisMenuCopy, nil, nil, nil, 'menu_edit_copy');
+                                            'Copy',lisMenuCopy, nil, nil, nil, 'copy');
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                            'Paste',lisMenuPaste, nil, nil, nil, 'menu_edit_paste');
+                                            'Paste',lisMenuPaste, nil, nil, nil, 'paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                          'Delete selection',fdmDeleteSelection);
 

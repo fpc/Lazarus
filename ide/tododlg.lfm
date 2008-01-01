@@ -1,16 +1,17 @@
 object TodoDialog: TTodoDialog
-  Left = 354
-  Height = 257
-  Top = 215
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 256
+  Left = 342
+  Height = 248
+  Top = 202
+  Width = 483
+  HorzScrollBar.Page = 482
+  VertScrollBar.Page = 247
   ActiveControl = OkButton
   Caption = 'Insert Todo'
-  ClientHeight = 257
-  ClientWidth = 400
+  ClientHeight = 248
+  ClientWidth = 483
+  OnCreate = FormCreate
   object TodoLabel: TLabel
-    Left = 16
+    Left = 8
     Height = 20
     Top = 8
     Width = 30
@@ -18,30 +19,76 @@ object TodoDialog: TTodoDialog
     FocusControl = TodoMemo
     ParentColor = False
   end
+  object PriorityLabel: TLabel
+    Left = 10
+    Height = 20
+    Top = 167
+    Width = 45
+    Caption = 'Priority'
+    ParentColor = False
+  end
+  object OwnerLabel: TLabel
+    Left = 56
+    Height = 20
+    Top = 168
+    Width = 41
+    Caption = 'Owner'
+    ParentColor = False
+  end
+  object CategoryLabel: TLabel
+    Left = 248
+    Height = 20
+    Top = 168
+    Width = 59
+    Caption = 'Category'
+    ParentColor = False
+  end
   object OkButton: TButton
-    Left = 112
+    Left = 312
     Height = 25
-    Top = 208
+    Top = 216
     Width = 75
     Caption = 'Ok'
     ModalResult = 1
     TabOrder = 1
   end
   object CancelButton: TButton
-    Left = 208
+    Left = 397
     Height = 25
-    Top = 208
+    Top = 216
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 2
   end
   object TodoMemo: TMemo
-    Left = 16
-    Height = 168
+    Left = 8
+    Height = 136
     Top = 24
-    Width = 368
+    Width = 464
     ScrollBars = ssAutoBoth
     TabOrder = 0
+  end
+  object PriorityEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 181
+    Width = 38
+    OnKeyPress = PriorityEditKeyPress
+    TabOrder = 3
+  end
+  object OwnerEdit: TEdit
+    Left = 56
+    Height = 23
+    Top = 181
+    Width = 182
+    TabOrder = 4
+  end
+  object CategoryEdit: TEdit
+    Left = 248
+    Height = 23
+    Top = 181
+    Width = 224
+    TabOrder = 5
   end
 end

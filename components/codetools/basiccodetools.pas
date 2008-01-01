@@ -44,6 +44,8 @@ function FindPrevNonSpace(const ASource: string; StartPos: integer): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function IsCommentEnd(const ASource: string; EndPos: integer): boolean;
+function FindNextComment(const ASource: string;
+    StartPos: integer; NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirectiveWithName(const ASource: string;
@@ -1091,6 +1093,45 @@ begin
     Result:=true;
     exit;
   end;
+end;
+
+function FindNextComment(const ASource: string; StartPos: integer;
+  NestedComments: boolean): integer;
+var
+  MaxPos: integer;
+begin
+  MaxPos:=length(ASource);
+  Result:=StartPos;
+  while (Result<=MaxPos) do begin
+    case ASource[Result] of
+    '''':
+      begin
+        inc(Result);
+        while (Result<=MaxPos) do begin
+          if (ASource[Result]<>'''') then
+            inc(Result)
+          else begin
+            break;
+          end;
+        end;
+      end;
+
+    '/':
+      if (Result<MaxPos) and (ASource[Result+1]='/') then
+        exit;
+
+    '{':
+      if (Result<MaxPos) and (ASource[Result+1]='$') then
+        exit;
+
+    '(':
+      if (Result<MaxPos) and (ASource[Result+1]='*') then
+        exit;
+
+    end;
+    inc(Result);
+  end;
+  if Result>MaxPos+1 then Result:=MaxPos+1;
 end;
 
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;

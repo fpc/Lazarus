@@ -2373,7 +2373,7 @@ var
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
-  writeln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
 
   // check state file
@@ -2443,7 +2443,7 @@ begin
   end;
 
   {$IFDEF VerbosePkgCompile}
-  writeln('TLazPackageGraph.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
+  debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
   {$ENDIF}
   Result:=mrNo;
 end;
@@ -2456,7 +2456,7 @@ var
   i: Integer;
 begin
   {$IFDEF VerbosePkgCompile}
-  writeln('TLazPackageGraph.CompileRequiredPackages A ');
+  debugln('TLazPackageGraph.CompileRequiredPackages A ');
   {$ENDIF}
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
                                                      Policies);
@@ -2476,7 +2476,7 @@ begin
     end;
   end;
   {$IFDEF VerbosePkgCompile}
-  writeln('TLazPackageGraph.CompileRequiredPackages END ');
+  debugln('TLazPackageGraph.CompileRequiredPackages END ');
   {$ENDIF}
   Result:=mrOk;
 end;
@@ -2869,7 +2869,7 @@ var
   NewShortenSrc: String;
 begin
   {$IFDEF VerbosePkgCompile}
-  writeln('TLazPackageGraph.SavePackageMainSource A');
+  debugln('TLazPackageGraph.SavePackageMainSource A');
   {$ENDIF}
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;

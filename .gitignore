@@ -349,8 +349,6 @@ images/menu/*.bak
 images/menu/units
 images/sourceeditor/*.bak
 images/sourceeditor/units
-images/unitdependencies/*.bak
-images/unitdependencies/units
 images/units
 install/*.bak
 install/units

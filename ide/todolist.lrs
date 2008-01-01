@@ -1,55 +1,30 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TfrmTodo','FORMDATA',[
-  'TPF0'#8'TfrmTodo'#7'frmTodo'#4'Left'#3'9'#1#6'Height'#3','#1#3'Top'#3'b'#2#5
-  +'Width'#3#244#1#18'HorzScrollBar.Page'#3#243#1#18'VertScrollBar.Page'#3'+'#1
-  +#13'ActiveControl'#7#6'lvTodo'#7'Caption'#6#7'frmTodo'#10'KeyPreview'#9#8'On'
-  +'Create'#7#10'FormCreate'#9'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#14'po'
-  +'ScreenCenter'#0#10'TStatusBar'#9'StatusBar'#6'Height'#2#20#3'Top'#3#24#1#5
-  +'Width'#3#244#1#6'Panels'#14#0#0#0#9'TListView'#6'lvTodo'#6'Height'#3#232#0#3
-  +'Top'#2'0'#5'Width'#3#244#1#5'Align'#7#8'alClient'#7'Columns'#14#1#8'AutoSiz'
-  +'e'#9#7'Caption'#6#7'Caption'#0#1#8'AutoSize'#9#7'Caption'#6#7'Caption'#0#1#8
-  +'AutoSize'#9#7'Caption'#6#7'Caption'#0#1#8'AutoSize'#9#7'Caption'#6#7'Captio'
-  +'n'#0#0#9'RowSelect'#9#10'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#9'Vie'
-  +'wStyle'#7#8'vsReport'#10'OnDblClick'#7#11'tbGotoClick'#0#0#8'TToolBar'#7'To'
-  +'olBar'#6'Height'#2'0'#5'Width'#3#244#1#12'ButtonHeight'#2'.'#11'ButtonWidth'
-  +#2'/'#7'Caption'#6#7'ToolBar'#4'Flat'#9#6'Images'#7#10'ImageList1'#14'Parent'
-  +'ShowHint'#8#12'ShowCaptions'#9#8'ShowHint'#9#8'TabOrder'#2#1#0#11'TToolButt'
-  +'on'#9'tbOptions'#4'Left'#3#145#0#3'Top'#2#2#7'Caption'#6#7'Options'#10'Imag'
-  +'eIndex'#2#3#7'Visible'#8#0#0#11'TToolButton'#7'tbPrint'#4'Left'#2'b'#3'Top'
-  +#2#2#7'Caption'#6#5'Print'#10'ImageIndex'#2#2#7'Visible'#8#0#0#11'TToolButto'
-  +'n'#9'tbRefresh'#4'Left'#2#1#3'Top'#2#2#7'Caption'#6#7'Refresh'#10'ImageInde'
-  +'x'#2#0#7'OnClick'#7#14'tbRefreshClick'#0#0#11'TToolButton'#6'tbGoto'#4'Left'
-  +#2'3'#3'Top'#2#2#7'Caption'#6#4'Goto'#10'ImageIndex'#2#1#7'OnClick'#7#11'tbG'
-  +'otoClick'#0#0#0#10'TImageList'#10'ImageList1'#4'left'#2'y'#3'top'#2'*'#6'Bi'
-  +'tmap'#10#232#6#0#0'li'#4#0#0#0#16#0#0#0#16#0#0#0#156#1#0#0'/* XPM */'#10'st'
-  +'atic char *graphic[] = {'#10'"16 16 3 1",'#10'". c None",'#10'", c #313131"'
-  +','#10'"- c #5AADFF",'#10'"................",'#10'"................",'#10'".'
-  +'...............",'#10'".......,,,,,,...",'#10'".....,,---,,,,..",'#10'"....'
-  +',,--,,,.....",'#10'"....,--,........",'#10'"...,,--,........",'#10'"...,--,'
-  +'.........",'#10'"...,--,.........",'#10'"...,--,.........",'#10'".,,---,,,,'
-  +'......",'#10'"..,-----,.......",'#10'"...,,-,,........",'#10'"....,,,......'
-  +'...",'#10'".....,.........."}'#10#171#1#0#0'/* XPM */'#10'static char *grap'
-  +'hic[] = {'#10'"16 16 4 1",'#10'". c None",'#10'", c #313131",'#10'"- c #FFF'
-  +'FFF",'#10'"* c #FF0000",'#10'"................",'#10'"................",'#10
-  +'"...,,,,,,,......",'#10'"...,------,.....",'#10'"...,-------,....",'#10'"..'
-  +'.,--------,...",'#10'"...,--------,...",'#10'"...,--------,...",'#10'".*.,-'
-  +'-------,...",'#10'"..***********...",'#10'".*.,--------,...",'#10'"...,----'
-  +'----,...",'#10'"...,--------,...",'#10'"...,,,,,,,,,,...",'#10'"...........'
-  +'.....",'#10'"................"}'#10#201#1#0#0'/* XPM */'#10'static char *gr'
-  +'aphic[] = {'#10'"16 16 6 1",'#10'". c #000000",'#10'", c #848484",'#10'"- c'
-  +' #313131",'#10'"* c None",'#10'"a c #C7C7C7",'#10'"b c #00FF00",'#10'"..,.-'
-  +'...........",'#10'"..,.-...........",'#10'"****************",'#10'"********'
-  +'********",'#10'"*******-------**",'#10'"******-.....-***",'#10'"*****-.....'
-  +'-****",'#10'"****-.....-----*",'#10'"***--------aa--*",'#10'"**-aaaaaaaaa-,'
-  +'-*",'#10'"**----------,,-*",'#10'"**-a.abaaa-,,--*",'#10'"**------------**"'
-  +','#10'"**-aaaaaaaa--***",'#10'"***---------****",'#10'"****************"}'
-  +#10#186#1#0#0'/* XPM */'#10'static char *graphic[] = {'#10'"16 16 5 1",'#10
-  +'". c None",'#10'", c #313131",'#10'"- c #005AC6",'#10'"* c #FFFFFF",'#10'"a'
-  +' c #FF0000",'#10'"................",'#10'".,,,,,,,,,,,,,,.",'#10'".,-------'
-  +'-----,.",'#10'".,,,,,,,,,,,,,,.",'#10'".,************,.",'#10'".,*a***aa***'
-  +'**,.",'#10'".,*aa*aa******,.",'#10'".,**aaa*******,.",'#10'".,***a********,'
-  +'.",'#10'".,*a***aa*****,.",'#10'".,*aa*aa******,.",'#10'".,**aaa*******,.",'
-  +#10'".,***a********,.",'#10'".,************,.",'#10'".,,,,,,,,,,,,,,.",'#10
-  +'"................"}'#10#0#0#0
+  'TPF0'#8'TfrmTodo'#7'frmTodo'#4'Left'#3#173#1#6'Height'#3','#1#3'Top'#3#227#0
+  +#5'Width'#3#131#2#18'HorzScrollBar.Page'#3#130#2#18'VertScrollBar.Page'#3'+'
+  +#1#13'ActiveControl'#7#6'lvTodo'#7'Caption'#6#7'frmTodo'#12'ClientHeight'#3
+  +','#1#11'ClientWidth'#3#131#2#10'KeyPreview'#9#8'OnCreate'#7#10'FormCreate'#9
+  +'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#14'poScreenCenter'#0#10'TStatusB'
+  +'ar'#9'StatusBar'#6'Height'#2#23#3'Top'#3#21#1#5'Width'#3#131#2#6'Panels'#14
+  +#0#0#0#9'TListView'#6'lvTodo'#6'Height'#3#229#0#3'Top'#2'0'#5'Width'#3#131#2
+  +#5'Align'#7#8'alClient'#7'Columns'#14#1#8'AutoSize'#9#7'Caption'#6#7'Caption'
+  +#5'Width'#2'('#0#1#8'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2'd'#0#1#8
+  +'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2'('#0#1#8'AutoSize'#9#7'Capti'
+  +'on'#6#7'Caption'#5'Width'#2'd'#0#1#7'Caption'#6#7'Caption'#0#1#7'Caption'#6
+  +#7'Caption'#0#1#7'Caption'#6#7'Caption'#0#0#9'RowSelect'#9#10'ScrollBars'#7
+  +#10'ssAutoBoth'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#7'OnClick'#7#11'l'
+  +'vTodoClick'#0#0#8'TToolBar'#7'ToolBar'#6'Height'#2'0'#5'Width'#3#131#2#8'Au'
+  +'toSize'#9#12'ButtonHeight'#2'.'#11'ButtonWidth'#2'/'#7'Caption'#6#7'ToolBar'
+  +#4'Flat'#9#14'ParentShowHint'#8#12'ShowCaptions'#9#8'ShowHint'#9#8'TabOrder'
+  +#2#1#0#11'TToolButton'#9'tbOptions'#4'Left'#2'l'#3'Top'#2#2#10'AllowAllUp'#9
+  +#8'AutoSize'#9#7'Caption'#6#7'Options'#7'Visible'#8#0#0#11'TToolButton'#7'tb'
+  +'Print'#4'Left'#2'N'#3'Top'#2#2#8'AutoSize'#9#7'Caption'#6#5'Print'#7'Visibl'
+  +'e'#8#0#0#11'TToolButton'#9'tbRefresh'#4'Left'#2#1#3'Top'#2#2#6'Action'#7#9
+  +'acRefresh'#8'AutoSize'#9#0#0#11'TToolButton'#6'tbGoto'#4'Left'#2'/'#3'Top'#2
+  +#2#6'Action'#7#6'acGoto'#8'AutoSize'#9#0#0#0#11'TActionList'#10'ActionList'#4
+  +'left'#3#158#1#3'top'#2#11#0#7'TAction'#6'acGoto'#7'Caption'#6#4'Goto'#18'Di'
+  +'sableIfNoHandler'#9#9'OnExecute'#7#13'acGotoExecute'#0#0#7'TAction'#9'acRef'
+  +'resh'#7'Caption'#6#7'Refresh'#18'DisableIfNoHandler'#9#9'OnExecute'#7#16'ac'
+  +'RefreshExecute'#0#0#0#0
 ]);

@@ -23,7 +23,6 @@ begin
   FOriginal := TBitmap.Create;
   FOriginal.Handle := 0;
   FOriginal.OnChange := @GlyphChanged;
-  FImages := TCustomImageList.Create(nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -31,38 +30,45 @@ end;
 ------------------------------------------------------------------------------}
 destructor TButtonGlyph.Destroy;
 begin
+  if FImagesCache <> nil then
+  begin
+    FImagesCache.UnregisterListener(Self);
+    FImagesCache := nil; // cache can free on unregister
+  end;
   FOriginal.Free;
   FOriginal := nil;
-  FImages.Free;
   inherited Destroy;
 end;
 
 procedure TButtonGlyph.GetImageIndexAndEffect(State: TButtonState;
   var AIndex: Integer; var AEffect: TGraphicsDrawEffect);
+var
+  AStoredState: TButtonState;
 begin
-  AIndex := 0;
+  AStoredState := bsUp;
   AEffect := gdeNormal;
   case State of
     bsDisabled:
      begin
        if NumGlyphs > 1 then
-         AIndex := 1
+         AStoredState := State
        else
          AEffect := gdeDisabled;
       end;
     bsDown:
       begin
         if NumGlyphs > 2 then
-          AIndex := 2
+          AStoredState := State
         else
           AEffect := gdeShadowed;
       end;
     bsExclusive:
       if NumGlyphs > 3 then
-        AIndex := 3
+        AStoredState := State
       else
         AEffect := gdeHighlighted;
   end;
+  AIndex := FImageIndexes[AStoredState];
 end;
 
 {------------------------------------------------------------------------------
@@ -95,12 +101,17 @@ end;
 
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
 begin
-  FImages.Clear;
+  if FImagesCache <> nil then
+  begin
+    FImagesCache.UnregisterListener(Self);
+    FImagesCache := nil; // cache can free on unregister
+  end;
+
   if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
   begin
-    FImages.Width := FOriginal.Width div Max(1, FNumGlyphs);
-    FImages.Height := FOriginal.Height;
-    FImages.Add(FOriginal, nil);
+    FImagesCache := GetImageListCache;
+    FImagesCache.RegisterListener(Self);
+    FImagesCache.RegisterBitmap(Self, FOriginal, Max(1, NumGlyphs));
   end;
 
   if Sender = FOriginal then
@@ -122,7 +133,7 @@ var
   src_wh, dst_wh: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
-  Result:=Client;
+  Result := Client;
   if (FOriginal = nil) then
     exit;
 
@@ -164,7 +175,7 @@ begin
   FImages.Draw(Canvas, DestRect.Left, DestRect.Top, ImgID, AEffect);
 
   // ToDo: VCL returns the text rectangle
-  Result:=SrcRect;
+  Result := SrcRect;
 end;
 
 
@@ -178,6 +189,35 @@ begin
     FNumGlyphs := Value;
     GlyphChanged(FOriginal);
   end;
+end;
+
+function TButtonGlyph.QueryInterface(const iid: tguid; out obj): longint; stdcall;
+begin
+  if GetInterface(iid, obj) then
+    Result := 0
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TButtonGlyph._AddRef: longint; stdcall;
+begin
+  Result := -1;
+end;
+
+function TButtonGlyph._Release: longint; stdcall;
+begin
+  Result := -1;
+end;
+
+procedure TButtonGlyph.CacheSetImageList(AImageList: TCustomImageList);
+begin
+  FImages := AImageList;
+end;
+
+procedure TButtonGlyph.CacheSetImageIndex(AIndex, AImageIndex: Integer);
+begin
+  if (AIndex >= ord(Low(TButtonState))) and (AIndex <= Ord(High(TButtonState))) then
+    FImageIndexes[TButtonState(AIndex)] := AImageIndex;
 end;
 
 // included by buttons.pp

@@ -40,14 +40,13 @@ uses
   Classes, SysUtils, LResources, Forms,
   Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, CodeTree, CodeToolManager,
-  CodeAtom;
+  CodeAtom, IDEImagesIntf;
 
 type
   { TProcedureListForm }
   TProcedureListForm = class(TForm)
     cbObjects: TComboBox;
     edMethods: TEdit;
-    ImageList1: TImageList;
     lblSearch: TLabel;
     lblObjects: TLabel;
     LV: TListView;
@@ -267,6 +266,15 @@ begin
   LV.Column[1].Caption  := lisProcedure;
   LV.Column[2].Caption  := lisPListType;
   LV.Column[3].Caption  := lisToDoLLine;
+  
+  // assign resource images to toolbuttons
+  TB.Images := IDEImages.Images_16;
+  tbCopy.ImageIndex        := IDEImages.LoadImage(16, 'copy');
+  tbChangeFont.ImageIndex  := IDEImages.LoadImage(16, 'item_font');
+  tbAbout.ImageIndex       := IDEImages.LoadImage(16, 'menu_information');
+  tbJumpTo.ImageIndex      := IDEImages.LoadImage(16, 'menu_goto_line');
+  tbFilterAny.ImageIndex   := IDEImages.LoadImage(16, 'item_filter');
+  tbFilterStart.ImageIndex := IDEImages.LoadImage(16, 'item_filter');
 
   LV.Column[0].Width  := 20;
   LV.Column[1].Width  := 300;

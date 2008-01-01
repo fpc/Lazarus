@@ -161,7 +161,6 @@ type
 
   TUnitDependenciesView = class(TForm)
     CloseButton: TBitBtn;
-    ToolbarImageList: TImageList;
     ToolBar: TToolBar;
     RefreshButton: TToolButton;
     ShowProjectButton: TToolButton;
@@ -428,6 +427,10 @@ begin
   ShowProjectButton.Caption:=dlgEnvProject;
   CloseButton.Caption:=lisClose;
   UnitTreeView.Images := IDEImages.Images_16;
+  ToolBar.Images := IDEImages.Images_16;
+  ShowProjectButton.ImageIndex := IDEImages.LoadImage(16, 'item_project');
+  SelectUnitButton.ImageIndex := IDEImages.LoadImage(16, 'open');
+  RefreshButton.ImageIndex := IDEImages.LoadImage(16, 'refresh');
 end;
 
 destructor TUnitDependenciesView.Destroy;

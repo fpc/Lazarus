@@ -57,10 +57,10 @@ uses
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MacroPromptDlg, TransferMacros, CodeContextForm,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory, CodeMacroPrompt,
-  CodeTemplatesDlg,
+  CodeTemplatesDlg, TodoDlg, TodoList,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch, LazDocFrm,
-  BaseDebugManager, Debugger, MainIntf, TodoDlg;
+  BaseDebugManager, Debugger, MainIntf;
 
 type
   TSourceNotebook = class;
@@ -896,9 +896,9 @@ begin
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                       'Clipboard');
   AParent:=SrcEditMenuSectionClipboard;
-    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'menu_edit_cut');
-    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'menu_edit_copy');
-    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'menu_edit_paste');
+    SrcEditMenuCut:=RegisterIDEMenuCommand(AParent,'Cut',uemCut, nil, nil, nil, 'cut');
+    SrcEditMenuCopy:=RegisterIDEMenuCommand(AParent,'Copy',uemCopy, nil, nil, nil, 'copy');
+    SrcEditMenuPaste:=RegisterIDEMenuCommand(AParent,'Paste',uemPaste, nil, nil, nil, 'paste');
     SrcEditMenuCopyFilename:=RegisterIDEMenuCommand(AParent,'Copy filename',
                                                     uemCopyFilename);
 
@@ -974,7 +974,7 @@ begin
                                         'InvertAssignment',uemInvertAssignment);
 
   SrcEditMenuInsertTodo:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
-                                        'InsertTodo',uemInsertTodo);
+                                        'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
 
   // register the Flags section
   SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -989,7 +989,7 @@ begin
                                                     uemShowUnitInfo);
     SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
     SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
-                                        'EditorProperties',uemEditorProperties, nil, nil, nil,  'menu_editor_options');
+                                        'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
 
 end;
 
@@ -1914,13 +1914,13 @@ end;
 
 procedure TSourceEditor.InsertTodo;
 Var
-  TodoMsg: TStrings;
+  aTodoItem: TTodoItem;
 begin
   if ReadOnly then Exit;
-  TodoMsg:= TStringList.Create;
-  if ShowTodoDialog(TodoMsg) then
-    FEditor.SelText:=CommentText('TODO: '+TodoMsg.Text, comtPascal);
-  TodoMsg.Free;
+  aTodoItem := ExecuteTodoDialog;
+  if Assigned(aTodoItem) then
+    FEditor.SelText := aTodoItem.AsComment;
+  aTodoItem.Free;
 end;
 
 procedure TSourceEditor.InsertDateTime;

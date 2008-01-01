@@ -1250,7 +1250,7 @@ begin
           then
             continue;
           if CompareText(FileInfo.Name,CurFile)=0 then begin
-            //writeln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
+            //debugln('FindDiskFilename ',FileInfo.Name,' ',CurFile);
             if FileInfo.Name=CurFile then begin
               // file found, has already the correct name
               AliasFile:='';

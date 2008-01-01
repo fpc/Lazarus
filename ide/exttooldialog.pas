@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms, Buttons,
   StdCtrls, ComCtrls, Dialogs, LResources, Laz_XMLCfg, AsyncProcess,
   LazConfigStorage, FileUtil,
-  IDEExternToolIntf,
+  IDEExternToolIntf, IDEImagesIntf,
   ExtToolEditDlg, IDECommands, KeyMapping, TransferMacros, IDEProcs,
   CompilerOptions, OutputFilter, LazarusIDEStrConsts, ExtCtrls;
 
@@ -107,7 +107,6 @@ type
   { TExternalToolDialog }
 
   TExternalToolDialog = class(TForm)
-    EnabledImageList: TImageList;
     OKButton: TBitBtn;
     CancelButton: TBitBtn;
     ListBox: TListBox;
@@ -507,6 +506,8 @@ begin
   Name:='ExternalToolDialog';
 
   Caption:=lisExtToolExternalTools;
+  
+  ToolBar.Images := IDEImages.Images_16;
 
   AddButton.Caption:=lisCodeTemplAdd;
   RemoveButton.Caption:=lisExtToolRemove;
@@ -515,6 +516,12 @@ begin
   MoveDownButton.Caption:=lisExtToolMoveDown;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+
+  AddButton.ImageIndex := IDEImages.LoadImage(16, 'add');
+  RemoveButton.ImageIndex := IDEImages.LoadImage(16, 'delete');
+  EditButton.ImageIndex := IDEImages.LoadImage(16, 'edit');
+  MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
+  MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 
   fExtToolList:=TExternalToolList.Create;
 end;

@@ -1411,7 +1411,7 @@ var
   s: String;
 begin
   {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CheckPackageGraphForCompilation A');
+  debugln('TPkgManager.CheckPackageGraphForCompilation A');
   {$ENDIF}
   PathList:=nil;
   try
@@ -1504,7 +1504,7 @@ begin
   end;
   
   {$IFDEF VerbosePkgCompile}
-  writeln('TPkgManager.CheckPackageGraphForCompilation END');
+  debugln('TPkgManager.CheckPackageGraphForCompilation END');
   {$ENDIF}
   Result:=mrOk;
 end;

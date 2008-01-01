@@ -18,6 +18,10 @@
  *                                                                         *
  ***************************************************************************
 }
+(*
+Modified by Gerard Visent <gerardusmercator@gmail.com> on 5/11/2007
+- Extended to allow adding Owner, Category and priority
+*)
 unit ToDoDlg;
 
 {$mode objfpc}{$H+}
@@ -25,37 +29,69 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, TodoList;
 
 type
 
   { TTodoDialog }
 
   TTodoDialog = class(TForm)
+    OwnerEdit: TEdit;
+    CategoryEdit: TEdit;
+    CategoryLabel: TLabel;
+    PriorityEdit: TEdit;
+    PriorityLabel: TLabel;
+    OwnerLabel: TLabel;
     OkButton: TButton;
     CancelButton: TButton;
     TodoLabel: TLabel;
     TodoMemo: TMemo;
+    procedure FormCreate(Sender: TObject);
+    procedure PriorityEditKeyPress(Sender: TObject; var Key: char);
   private
     { private declarations }
   public
     { public declarations }
   end;
+  
+Function ExecuteTodoDialog: TTodoItem;
 
-function ShowTodoDialog(TodoMessage: TStrings): Boolean;
 
 implementation
 
 { TTodoDialog }
 
-function ShowTodoDialog(TodoMessage: TStrings): Boolean;
-var
-  TodoDialog: TTodoDialog;
+procedure TTodoDialog.PriorityEditKeyPress(Sender: TObject; var Key: char);
 begin
-  TodoDialog:=TTodoDialog.Create(nil);
-  Result:=TodoDialog.ShowModal = mrOk;
-  If Result and (TodoMessage <> nil) Then TodoMessage.Assign(TodoDialog.TodoMemo.Lines);
-  TodoDialog.Free;
+  if not (Key in ['0'..'9']) then
+    Key := #0;
+end;
+
+procedure TTodoDialog.FormCreate(Sender: TObject);
+begin
+  ActiveControl:=TodoMemo;
+end;
+
+function ExecuteTodoDialog: TTodoItem;
+var
+  aTodoDialog: TTodoDialog;
+  aPriority: integer;
+begin
+  Result := nil;
+  aTodoDialog := TTodoDialog.Create(nil);
+  aTodoDialog.ShowModal;
+  if aTodoDialog.ModalResult = mrOk then
+  begin
+    Result := TTodoItem.Create;
+    Result.AltNotation := True; // TODO: Should be an option in the future
+    Result.Category    := aTodoDialog.CategoryEdit.Text;
+    Result.Done        := False;
+    Result.Owner       := aTodoDialog.OwnerEdit.Text;
+    Result.Text        := aTodoDialog.TodoMemo.Text;
+    if TryStrToInt(aTodoDialog.PriorityEdit.Text, aPriority) then
+      Result.Priority  := aPriority;
+  end;
+  aTodoDialog.Free;
 end;
 
 initialization

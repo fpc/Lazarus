@@ -3130,13 +3130,13 @@ begin
      @OnFindDeclarationPopupmenuItemClick,false,true,false);
   AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
   AddPopupMenuItem(CutPopupMenuItem,nil,'CutPopupMenuItem',
-     oisCutComponents,'Cut selected item', 'menu_edit_cut',
+     oisCutComponents,'Cut selected item', 'cut',
      @OnCutPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(CopyPopupMenuItem,nil,'CopyPopupMenuItem',
-     oisCopyComponents,'Copy selected item', 'menu_edit_copy',
+     oisCopyComponents,'Copy selected item', 'copy',
      @OnCopyPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(PastePopupMenuItem,nil,'PastePopupMenuItem',
-     oisPasteComponents,'Paste selected item', 'menu_edit_paste',
+     oisPasteComponents,'Paste selected item', 'paste',
      @OnPastePopupmenuItemClick,false,true,true);
   AddPopupMenuItem(DeletePopupMenuItem,nil,'DeletePopupMenuItem',
      oisDeleteComponents,'Delete selected item', '',

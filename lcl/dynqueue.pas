@@ -443,12 +443,12 @@ var
   DataCount: LongInt;
   DataOffset: Integer;
 begin
-  writeln('TDynamicDataQueue.WriteDebugReport FItemCapacity=',FItemCapacity,
+  debugln(['TDynamicDataQueue.WriteDebugReport FItemCapacity=',FItemCapacity,
     ' FTopIndex=',FTopIndex,' FTopItemSpace=',FTopItemSpace,
     ' FLastIndex=',FLastIndex,' FLastItemSpace=',FLastItemSpace,
     ' Size=',Size,
     ' MinimumBlockSize=',MinimumBlockSize,
-    ' MaximumBlockSize=',MaximumBlockSize);
+    ' MaximumBlockSize=',MaximumBlockSize]);
   if FItems<>nil then begin
     i:=FTopIndex;
     repeat
@@ -460,9 +460,9 @@ begin
       end;
       if i=FLastIndex then
         dec(DataCount,FLastItemSpace);
-      writeln(i,' Item=',HexStr(PtrUInt(FItems[i]),8),' Size=',fItems[i]^.Size,' Start=',DataOffset,' Count=',DataCount);
+      debugln([i,' Item=',HexStr(PtrUInt(FItems[i]),8),' Size=',fItems[i]^.Size,' Start=',DataOffset,' Count=',DataCount]);
       if WriteData then begin
-        writeln(dbgMemRange(PByte(@FItems[i]^.Data)+DataOffset,DataCount));
+        debugln(dbgMemRange(PByte(@FItems[i]^.Data)+DataOffset,DataCount));
       end;
       
       if i=FLastIndex then break;

@@ -334,11 +334,11 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileOpenSave,'itmFileOpenSave');
     ParentMI:=itmFileOpenSave;
 
-    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'menu_open');
+    CreateMenuItem(ParentMI, itmFileOpen, 'itmFileOpen', lisMenuOpen, 'open');
     CreateMenuItem(ParentMI,itmFileRevert,'itmFileRevert',lisMenuRevert, 'menu_file_revert');
     CreateMenuSubSection(ParentMI,itmFileRecentOpen,'itmFileRecentOpen',lisMenuOpenRecent);
     CreateMenuItem(ParentMI,itmFileSave,'itmFileSave',lisMenuSave,'menu_save');
-    CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas_16');
+    CreateMenuItem(ParentMI,itmFileSaveAs,'itmFileSaveAs',lisMenuSaveAs,'menu_saveas');
     CreateMenuItem(ParentMI,itmFileSaveAll,'itmFileSaveAll',lisMenuSaveAll,'menu_save_all');
     CreateMenuItem(ParentMI,itmFileClose,'itmFileClose',lisMenuClose,'menu_close',false);
     CreateMenuItem(ParentMI,itmFileCloseAll,'itmFileCloseAll',lisMenuCloseAll,'menu_close_all',false);
@@ -351,7 +351,7 @@ begin
     CreateMenuSeparatorSection(mnuFile,itmFileIDEStart,'itmFileIDEStart');
     ParentMI:=itmFileIDEStart;
 
-    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'menu_restart_16');
+    CreateMenuItem(ParentMI,itmFileRestart,'itmFileRestart',lisMenuRestart, 'refresh');
     CreateMenuItem(ParentMI,itmFileQuit,'itmFileQuit',lisMenuQuit, 'menu_exit');
   end;
 end;
@@ -371,9 +371,9 @@ begin
     CreateMenuSeparatorSection(mnuEdit,itmEditClipboard,'itmEditClipboard');
     ParentMI:=itmEditClipboard;
 
-    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'menu_edit_cut');
-    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'menu_edit_copy');
-    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'menu_edit_paste');
+    CreateMenuItem(ParentMI,itmEditCut,'itmEditCut',lisMenuCut,'cut');
+    CreateMenuItem(ParentMI,itmEditCopy,'itmEditCopy',lisMenuCopy,'copy');
+    CreateMenuItem(ParentMI,itmEditPaste,'itmEditPaste',lisMenuPaste,'paste');
 
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockIndentation,'itmEditBlockIndentation');
     ParentMI:=itmEditBlockIndentation;
@@ -381,10 +381,10 @@ begin
     CreateMenuItem(ParentMI,itmEditIndentBlock,'itmEditIndentBlock',lisMenuIndentSelection,'menu_indent');
     CreateMenuItem(ParentMI,itmEditUnindentBlock,'itmEditUnindentBlock',lisMenuUnindentSelection,'menu_unindent');
     CreateMenuItem(ParentMI,itmEditEncloseBlock,'itmEditEncloseBlock',lisMenuEncloseSelection);
-    CreateMenuItem(ParentMI,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection, 'menu_comment_16');
-    CreateMenuItem(ParentMI,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment_16');
+    CreateMenuItem(ParentMI,itmEditCommentBlock,'itmEditCommentBlock',lisMenuCommentSelection, 'menu_comment');
+    CreateMenuItem(ParentMI,itmEditUncommentBlock,'itmEditUncommentBlock',lisMenuUncommentSelection, 'menu_uncomment');
     CreateMenuItem(ParentMI,itmEditConditionalBlock,'itmEditConditionalBlock',lisMenuConditionalSelection);
-    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort_16');
+    CreateMenuItem(ParentMI,itmEditSortBlock,'itmEditSortBlock',lisMenuSortSelection, 'menu_edit_sort');
 
     CreateMenuSeparatorSection(mnuEdit,itmEditBlockCharConversion,'itmEditBlockCharConversion');
     ParentMI:=itmEditBlockCharConversion;
