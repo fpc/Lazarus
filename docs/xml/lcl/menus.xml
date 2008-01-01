@@ -97,9 +97,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMenuItem">
-        <short>Menu Item</short>
-        <descr>Menu Item: The base structure of each menu item.<br/>
-This Component does the hard work of processing the Items found in the various types of menus</descr>
+        <short><i>TMenuItem</i>  - The base structure of each item in a Menu.</short>
+        <descr>
+          <p><i>TMenuItem</i> - The base structure of each item in a Menu.</p>
+          <p>This Component does the hard work of processing the Items found in the various types of menus. It defines a lot of the properties and methods used in the various sorts of menu, including <link id="TMainMenu">TMainMenu</link>, <link id="TMenu">TMenu</link> and <link id="TPopUpMenu">TPopUpMenu</link></p>
+        </descr>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
@@ -1237,77 +1239,63 @@ This Component does the hard work of processing the Items found in the various t
       <element name="TMenuItem.MenuVisibleIndex.Result"><short/></element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Action">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Action</i> - the default action associated with this Menu Item</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.AutoCheck">
-        <short>Auto Check</short>
-        <descr>Auto Check: Whether a check mark is automatically added when the item is selected</descr>
+        <short><i>AutoCheck</i>: Whether a check mark is automatically added when the item is selected</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Caption">
-        <short>Caption</short>
-        <descr>Caption: The text that appears on the Menu Bar at run-time</descr>
+        <short><i>Caption</i>: The text that appears on the Menu Bar at run-time</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Checked">
-        <short>Checked</short>
-        <descr>Checked: boolean to show whether a check mark appears on the Menu Bar</descr>
+        <short><i>Checked</i>: whether a check mark appears on the Menu Bar</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Default">
-        <short>Default</short>
-        <descr>Defult: boolean to determine whether this option is the default selection; if so, it usually appears in Bold and is selected by hitting ENTER</descr>
+        <short><i>Default</i>: is this option the default selection? If so, it usually appears in Bold and is selected by hitting ENTER</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Enabled">
-        <short>Enabled</short>
-        <descr>Enabled: able to be selected. If Not Enabled, usually 'greyed-out'.</descr>
+        <short><i>Enabled</i>: can this option be selected? If Not Enabled, usually 'greyed-out'</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Bitmap">
-        <short>Bit Map</short>
-        <descr>Bit Map: an optional picture beside the MenuItem Caption</descr>
+        <short><i>BitMap</i>: an optional picture beside the MenuItem Caption</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.GroupIndex">
-        <short>Group Index</short>
-        <descr>Group Index: the sequence number in a group of mutually exclusive RadioItem choices</descr>
+        <short><i>GroupIndex</i>: the sequence number in a group of mutually exclusive RadioItem choices</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>HelpContext</i> - an index to the context-sensitive help string to be used</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Hint">
-        <short>Hint</short>
-        <descr>Hint: a pop-up help message that appears when the mouse hovers over an item.</descr>
+        <short><i>Hint</i>: a pop-up help message that appears when the mouse hovers over an item.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ImageIndex </i>- number in a list of images for use in illustrating menu items</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.RadioItem">
-        <short>Radio Item</short>
-        <descr>Radio Item: boolean to determine whether the item is part of a group of mutually exclusive choices.</descr>
+        <short><i>RadioItem</i>:  whether the item is part of a group of mutually exclusive choices.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.RightJustify">
-        <short>Right Justify</short>
-        <descr>Right Justify: the position of the Caption in the Menu Panel.  Default (False) is Left Justify</descr>
+        <short><i>RightJustify</i>: the position of the Caption in the Menu Panel.  Default (False) is Left Justify</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>ShortCut</i> - the quick key sequence to be used in selecting this menu item</short>
+        <descr>
+          <p><i>ShortCut</i> - the quick key sequence to be used in selecting this menu item</p>
+          <p>If you select this property in the Object Inspector, a list-box will appear with choices for various key-combinations to be used. The chosen key-sequence will be displayed, at run-time, on the menu drop-down next to the caption for the menu item.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.ShowAlwaysCheckable">
@@ -1317,21 +1305,15 @@ This Component does the hard work of processing the Items found in the various t
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.SubMenuImages">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>SubMenuImages </i>- will images be shown for sub-menu items as well as the main item?</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Visible</i> - can the item be seen?</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>OnClick </i>- event handler for selection of this menu item</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFindItemKind">
@@ -1347,8 +1329,17 @@ This Component does the hard work of processing the Items found in the various t
       <element name="TFindItemKind.fkShortCut"><short/></element>
       <!-- object Visibility: default -->
       <element name="TMenu">
-        <short>Menu</short>
-        <descr>Menu: The base structure for all menus</descr>
+        <short><i>TMenu</i>: The base class for all menus</short>
+        <descr>
+          <p><i>TMenu</i>: The base class for all menus</p>
+          <p>The class definition contains very few public or published properties or methods accessible to the application programmer, but contains the entry <i>Items </i>which points to the Menu Items that appear in the menu displays</p>
+        </descr>
+        <seealso>
+          <link id="HowToUseMenus"/>
+          <link id="TMainMenu"/>
+          <link id="TPopupMenu"/>
+          <link id="TMenuItem"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TMenu.FImageChangeLink">
@@ -1563,50 +1554,27 @@ This Component does the hard work of processing the Items found in the various t
       </element>
       <!-- property Visibility: published -->
       <element name="TMenu.Items">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Items</i> - a list of Menu Items to be included in the menu display</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenu.Images">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>Images </i>- a list of images from which entries can be selected to illustrate menu choices</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TMainMenu">
-        <short>Main Menu</short>
-        <descr>The Main Menu that appears at the top of most windows; form designers can
-customise by choosing various menu items.<br/>
-Main Menu is a non-visible component : that is, if the icon is selected from the
-Component Pallete and placed on the Form, it will not appear at Run-time.
-Instead, a Menu bar with a structure defined by the Menu Editor will appear.<br/>
-To see the Menu Editor, right-click on the Main Menu icon on your Form. A pop-up
-appears, that invites you to enter items into the Menu bar.<br/>
-An Edit box is displayed, containing a Button labelled New Item1.
-If you right-click on that box, a pop-up menu is displayed that allows you to
-add a new item before or after (along the same level) or create a sub-menu
-with the opportunity to add further items below (or above) the new item
-in a downward column.<br/>
-Any or all of the items that you add can be configured using the Object Inspector.<br/>
-At the least you should give each item a Caption which will appear on the Menu Bar
-(you may also wish to give it a more meaningful name).<br/>
-The caption should indicate the activity to be selected,
-such as "File Open" or "Close", "Run" or "Quit"
-and if you want a particular letter to be associated with
-a shortcut key, that letter should be preceded by an ampersand.
-
-The Menu item at run-time will appear with the shortcut letter underlined<br/>
-
-Each menu item must also be associated with an Action, again defined from the
-Object Inspector. <br/>Select the Events tab in the Object Inspector, click on the
-'OnClick' event and proceed to insert the code into the Source Editor for the actions
-to be associated with that menu choice. <br/>Do the same for all the Menu Items
-you have created.<br/>
-
-For further details of the properties of each Menu Item, see the description
-of TMenuItem; see also the description or TMenuActionLink which defines how
-the action is to be associated with the menu item.</descr>
+        <short><i>TMainMenu</i> - the Main Menu that appears at the top of most windows</short>
+        <descr>
+          <p><i>TMainMenu</i> - the Main Menu that appears at the top of most windows; form designers can
+customise by choosing various menu items.</p>
+          <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Pallete and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear.</p>
+          <p>To see the Menu Editor, right-click on the Main Menu icon on your Form. </p>
+        </descr>
+        <seealso>
+          <link id="HowToUseMenus"/>
+          <link id="TMenuItem"/>
+          <link id="TMenu"/>
+          <link id="TMenuActionLink"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TMainMenu.ItemChanged">
@@ -1638,9 +1606,20 @@ the action is to be associated with the menu item.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPopupMenu">
-        <short>Pop-up Menu</short>
-        <descr>Pop-up Menu: a menu panel that pops up on the desktop when the right mouse button is
-clicked. <br/>Inherits all the properties of TMenu (including the properties of TMenuItem), but has some new properties (procedure PopUp and procedure Close) that define its behaviour when actually invoked.<br/> PopupPoint defines the position of the PopUp menu, usually at the current cursor position.</descr>
+        <short><i>TPopupMenu </i> - a menu panel that pops up on the desktop when the right mouse button is clicked</short>
+        <descr>
+          <p><i>TPopupMenu</i>: a menu panel that pops up on the desktop when the right mouse button is clicked.</p>
+          <p>Inherits all the properties of <i>TMenu</i> (including the properties of <i>TMenuItem</i>), but has some new properties (procedure <i>PopUp</i> and procedure <i>Close</i>) that define its behaviour when actually invoked.</p>
+          <p>PopupPoint defines the position of the Popup menu, usually at the current cursor position.</p>
+          <p>To use a Popup menu, first create it with the MenuEditor. Then with the Object Inspector for the control that needs to use the Popup, select the property named PopupMenu, and a listbox will appear with the names of the available Menus - choose the Popup name you want</p>
+        </descr>
+        <seealso>
+          <link id="HowToUseMenus"/>
+          <link id="TMainMenu"/>
+          <link id="TMenuItem"/>
+          <link id="TMenu"/>
+          <link id="TMenuActionLink"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TPopupMenu.FAutoPopup">
@@ -1803,6 +1782,20 @@ clicked. <br/>Inherits all the properties of TMenu (including the properties of 
         <errors/>
         <seealso/>
       </element>
+      <topic name="HowToUseMenus">
+        <short><i>HowToUseMenus</i>   - hints for creating Menus for your Forms</short>
+        <descr>
+          <p><i>HowToUseMenus</i> - hints for creating Menus for your Forms</p>
+          <p><i>TMainMenu</i> is the Main Menu that appears at the top of most forms; form designers can
+customise by choosing various menu items. <i>TPopupMenu</i> is a menu window that pops up with pertinent, usually context-sensitive, details and choices when the right mouse button is clicked near a control</p>
+          <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Popup menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.</p>
+          <p>To see the Menu Editor, right-click on the Main Menu  or Popup Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.</p>
+          <p>An Edit box is displayed, containing a Button labelled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.</p>
+          <p>Any or all of the items that you add can be configured using the Object Inspector.</p>
+          <p>At the least you should give each item a <i>Caption</i> which will appear on the Menu Bar (you may also wish to give it a more meaningful name). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
+          <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the ShortCut property of the MenuItem</p>
+        </descr>
+      </topic>
     </module>
     <!-- Menus -->
   </package>
