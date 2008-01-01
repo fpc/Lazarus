@@ -1552,8 +1552,13 @@ begin
               This decision requires full control of focus and mouse, which
               do not all LCL interfaces provide. Therefore the mouse down event
               is sent immediately.
+
+              Further Note:
+                Under winapi a  LM_LBUTTONDOWN ends the drag immediate.
+              For example: If we exit here, then mouse down on TTreeView does
+                not work any longer under gtk.
             }
-            exit; //Dont send LM_LBUTTONDOWN as it ends the drag immediate
+            // VCL: exit;
           end;
           Include(FControlState,csLButtonDown);
         end;
