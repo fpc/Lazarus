@@ -622,8 +622,12 @@ begin
         if ShowNode then begin
           if fCategoryNodes[Category]=nil then begin
             NodeData:=TViewNodeData.Create(CodeNode.Parent);
+            NodeText:=CodeExplorerLocalizedString(Category);
+            NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode.Parent);
             fCategoryNodes[Category]:=CodeTreeview.Items.AddChildObject(nil,
-                                CodeExplorerLocalizedString(Category),NodeData);
+                                                             NodeText,NodeData);
+            fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
+            fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
           end;
           ParentViewNode:=fCategoryNodes[Category];
           InFrontViewNode:=nil;
