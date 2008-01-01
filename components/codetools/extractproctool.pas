@@ -43,6 +43,7 @@ interface
 
 uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  CustomCodeTool,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, SourceChanger,
   FindDeclarationTool;
@@ -62,11 +63,24 @@ type
     );
 
   TExtractProcTool = class(TCodeCompletionCodeTool)
+  protected
+    function ScanNodesForVariables(const StartPos, EndPos: TCodeXYPosition;
+        out BlockStartPos, BlockEndPos: integer; // the selection
+        out ProcNode: TCodeTreeNode;
+        VarTree: TAVLTree;  // tree of TExtractedProcVariable
+        IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
+        MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+        ): boolean;
+    function InitExtractProc(const StartPos, EndPos: TCodeXYPosition;
+      out MethodPossible, SubProcSameLvlPossible: boolean): boolean;
   public
     function CheckExtractProc(const StartPos, EndPos: TCodeXYPosition;
-      var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+      out MethodPossible, SubProcSameLvlPossible: boolean;
+      out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+      ): boolean;
     function ExtractProc(const StartPos, EndPos: TCodeXYPosition;
       ProcType: TExtractProcType; const ProcName: string;
+      IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
       out NewPos: TCodeXYPosition; out NewTopLine: integer;
       SourceChangeCache: TSourceChangeCache): boolean;
   end;
@@ -141,9 +155,9 @@ end;
 
 { TExtractProcTool }
 
-function TExtractProcTool.CheckExtractProc(const StartPos,
+function TExtractProcTool.InitExtractProc(const StartPos,
   EndPos: TCodeXYPosition;
-  var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+  out MethodPossible, SubProcSameLvlPossible: boolean): boolean;
 var
   CleanStartPos, CleanEndPos: integer;
   CursorNode: TCodeTreeNode;
@@ -157,15 +171,15 @@ begin
   MethodPossible:=false;
   SubProcSameLvlPossible:=false;
   {$IFDEF CTDebug}
-  DebugLn('TExtractProcTool.CheckExtractProc syntax and cursor check ..');
+  DebugLn('TExtractProcTool.InitExtractProc syntax and cursor check ..');
   {$ENDIF}
   // check syntax
   BuildTreeAndGetCleanPos(trAll,StartPos,CleanStartPos,[]);
   if CaretToCleanPos(EndPos,CleanEndPos)<>0 then exit;
   if CleanStartPos>=CleanEndPos then exit;
   {$IFDEF CTDebug}
-  debugln('TExtractProcTool.CheckExtractProc Selection="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
-  DebugLn('TExtractProcTool.CheckExtractProc node check ..');
+  debugln('TExtractProcTool.InitExtractProc Selection="',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
+  DebugLn('TExtractProcTool.InitExtractProc node check ..');
   {$ENDIF}
   // check if in a Begin..End block
   CursorNode:=FindDeepestNodeAtPos(CleanStartPos,true);
@@ -173,7 +187,7 @@ begin
   BeginBlockNode:=CursorNode.GetNodeOfType(ctnBeginBlock);
   if BeginBlockNode=nil then exit;
   {$IFDEF CTDebug}
-  DebugLn('TExtractProcTool.CheckExtractProc Start/End check ..');
+  DebugLn('TExtractProcTool.InitExtractProc Start/End check ..');
   {$ENDIF}
   // check if Start and End on same block level
   MoveCursorToNodeStart(CursorNode);
@@ -183,16 +197,16 @@ begin
     if (CurPos.EndPos>CleanEndPos) or (CurPos.StartPos>SrcLen)
     or (CurPos.StartPos>CursorNode.EndPos) then
       break;
-    //debugln('TExtractProcTool.CheckExtractProc A "',GetAtom,'"');
+    //debugln('TExtractProcTool.InitExtractProc A "',GetAtom,'"');
     if WordIsBlockStatementStart.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     then begin
-      //debugln('TExtractProcTool.CheckExtractProc WordIsBlockStatementStart "',GetAtom,'"');
+      //debugln('TExtractProcTool.InitExtractProc WordIsBlockStatementStart "',GetAtom,'"');
       BlockCleanStart:=CurPos.StartPos;
       if not ReadTilBlockStatementEnd(true) then exit;
       BlockCleanEnd:=CurPos.EndPos;
       debugln(copy(Src,BlockCleanStart,BlockCleanEnd-BlockCleanStart));
-      //debugln('TExtractProcTool.CheckExtractProc BlockEnd "',GetAtom,'" BlockCleanEnd=',dbgs(BlockCleanEnd),' CleanEndPos=',dbgs(CleanEndPos),' Result=',dbgs(Result),' BlockStartedInside=',dbgs(BlockCleanStart>=CleanStartPos));
+      //debugln('TExtractProcTool.InitExtractProc BlockEnd "',GetAtom,'" BlockCleanEnd=',dbgs(BlockCleanEnd),' CleanEndPos=',dbgs(CleanEndPos),' Result=',dbgs(Result),' BlockStartedInside=',dbgs(BlockCleanStart>=CleanStartPos));
       if BlockCleanStart<CleanStartPos then begin
         // this block started outside the selection
         // -> it should end outside
@@ -214,7 +228,7 @@ begin
           exit;
         end;
       end;
-      //debugln('TExtractProcTool.CheckExtractProc Block ok');
+      //debugln('TExtractProcTool.InitExtractProc Block ok');
     end
     else if WordIsBlockStatementEnd.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
@@ -234,7 +248,7 @@ begin
   // check if end not in a statement
   // ToDo
   {$IFDEF CTDebug}
-  DebugLn('TExtractProcTool.CheckExtractProc Method check ..');
+  DebugLn('TExtractProcTool.InitExtractProc Method check ..');
   {$ENDIF}
   // check if in a method body
   ANode:=CursorNode;
@@ -250,215 +264,45 @@ begin
   end;
   SubProcSameLvlPossible:=(ProcLvl>1);
   {$IFDEF CTDebug}
-  DebugLn('TExtractProcTool.CheckExtractProc END');
+  DebugLn('TExtractProcTool.InitExtractProc END');
   {$ENDIF}
+  Result:=true;
+end;
+
+function TExtractProcTool.CheckExtractProc(const StartPos,
+  EndPos: TCodeXYPosition; out MethodPossible, SubProcSameLvlPossible: boolean;
+  out MissingIdentifiers: TAVLTree): boolean;
+var
+  BlockStartPos: integer;
+  BlockEndPos: integer;
+  ProcNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
+  then exit;
+  MissingIdentifiers:=CreateTreeOfPCodeXYPosition;
+  if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
+                               ProcNode,nil,nil,MissingIdentifiers) then exit;
   Result:=true;
 end;
 
 function TExtractProcTool.ExtractProc(const StartPos, EndPos: TCodeXYPosition;
   ProcType: TExtractProcType; const ProcName: string;
+  IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
   out NewPos: TCodeXYPosition; out NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
-type
-  TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
 const
   ShortProcFormat = [phpWithoutClassKeyword];
   {$IFDEF CTDebug}
   ParameterTypeNames: array[TParameterType] of string = (
     'ptNone', 'ptConst', 'ptVar', 'ptOut', 'ptNoSpecifier');
   {$ENDIF}
+type
+  TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
 var
   BlockStartPos, BlockEndPos: integer; // the selection
   ProcNode: TCodeTreeNode; // the main proc node of the selection
   VarTree: TAVLTree;
-  
-  procedure AddVariableToTree(VarNode: TCodeTreeNode; IsInSelection,
-    IsAfterSelection, IsChanged: boolean; ParameterType: TParameterType);
-  var
-    AVLNode: TAVLTreeNode;
-    ProcVar: TExtractedProcVariable;
-  begin
-    {$IFDEF CTDebug}
-    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
-      ' IsInSelection=',dbgs(IsInSelection),
-      ' ParameterType=',ParameterTypeNames[ParameterType]);
-    {$ENDIF}
-    if VarTree=nil then
-      VarTree:=TAVLTree.Create(TListSortCompare(@CompareExtractedProcVariables));
-    AVLNode:=VarTree.FindKey(VarNode,TListSortCompare(@CompareNodeWithExtractedProcVariable));
-    if AVLNode<>nil then begin
-      ProcVar:=TExtractedProcVariable(AVLNode.Data);
-    end else begin
-      ProcVar:=TExtractedProcVariable.Create;
-      ProcVar.Node:=VarNode;
-    end;
-    ProcVar.ReadInSelection:=ProcVar.ReadInSelection or IsInSelection;
-    ProcVar.WriteInSelection:=ProcVar.WriteInSelection
-                              or (IsInSelection and IsChanged);
-    ProcVar.UsedInNonSelection:=ProcVar.UsedInNonSelection
-                              or (not IsInSelection) or (ParameterType<>ptNone);
-    if (not ProcVar.ReadAfterSelectionValid) then begin
-      // a) variable is a var or out parameter
-      //    => the variable value IS needed after the extracted proc
-      // b) just after the selection the variable is read
-      //    => the variable value IS needed after the extracted proc
-      // c) just after the selection the variable is written
-      //    => the variable value IS NOT needed after the extracted proc
-      if (ParameterType in [ptOut,ptVar]) then begin
-        ProcVar.ReadAfterSelectionValid:=true;
-        ProcVar.ReadAfterSelection:=true;
-      end else if (not IsInSelection) and IsAfterSelection then begin
-        ProcVar.ReadAfterSelectionValid:=true;
-        ProcVar.ReadAfterSelection:=not IsChanged;
-      end;
-    end;
-    if AVLNode=nil then begin
-      if ParameterType<>ptNone then
-        ProcVar.VarType:=epvtParameter
-      else
-        ProcVar.VarType:=epvtLocalVar;
-      VarTree.Add(ProcVar);
-    end;
-  end;
-  
-  function VariableIsChanged(VarStartPos: integer): boolean;
-  begin
-    Result:=false;
-    MoveCursorToCleanPos(VarStartPos);
-    // read identifier
-    ReadNextAtom;
-    if CurPos.Flag in [cafRoundBracketOpen] then
-      ReadTilBracketClose(true);
-    // read next atom
-    ReadNextAtom;
-    if AtomIs(':=') or AtomIs('+=') or AtomIs('-=') or AtomIs('*=')
-    or AtomIs('/=') then begin
-      Result:=true;
-      exit;
-    end;
-  end;
-
-  function CheckVariableAtCursor: boolean;
-  // find declaration of identifier at cursor and add to variable tree
-  var
-    Params: TFindDeclarationParams;
-    VarStartPos: Integer;
-    VarNode: TCodeTreeNode;
-    IsInSelection: Boolean;
-    ClosestProcNode: TCodeTreeNode;
-    IsParameter: boolean;
-    IsChanged: Boolean;
-    IsAfterSelection: Boolean;
-    ParameterType: TParameterType;
-  begin
-    Result:=false;
-    // find start of variable
-    VarStartPos:=FindStartOfVariable(CurPos.StartPos);
-    IsInSelection:=(VarStartPos>=BlockStartPos) and (VarStartPos<BlockEndPos);
-    IsAfterSelection:=(VarStartPos>=BlockEndPos);
-    MoveCursorToCleanPos(VarStartPos);
-    Params:=TFindDeclarationParams.Create;
-    try
-      // find declaration
-      Params.ContextNode:=FindDeepestNodeAtPos(VarStartPos,true);
-      Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
-                     fdfTopLvlResolving,fdfSearchInAncestors];
-      // ToDo: Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
-      Params.SetIdentifier(Self,@Src[VarStartPos],@CheckSrcIdentifier);
-      {$IFDEF CTDebug}
-      DebugLn('AddVariableAtCursor Searching ',GetIdentifier(Params.Identifier));
-      {$ENDIF}
-      if not FindDeclarationOfIdentAtParam(Params) then begin
-        {$IFDEF CTDebug}
-        DebugLn('AddVariableAtCursor B not found');
-        {$ENDIF}
-        exit;
-      end;
-      // check if declaration is local variable
-      if (Params.NewCodeTool=Self) and (Params.NewNode<>nil) then begin
-        VarNode:=Params.NewNode;
-        if (VarNode.Desc=ctnVarDefinition)
-        and (VarNode.HasAsParent(ProcNode)) then begin
-          // Now we know: VarNode is a variable defined in the main proc
-          // or one of its sub procs
-          ClosestProcNode:=VarNode.GetNodeOfType(ctnProcedure);
-          if ClosestProcNode=ProcNode then begin
-            // VarNode is a variable defined by the main proc
-            IsParameter:=VarNode.GetNodeOfType(ctnProcedureHead)<>nil;
-            ParameterType:=ptNone;
-            if IsParameter then begin
-              MoveCursorToParameterSpecifier(VarNode);
-              if UpAtomIs('CONST') then
-                ParameterType:=ptConst
-              else if UpAtomIs('VAR') then
-                ParameterType:=ptVar
-              else if UpAtomIs('OUT') then
-                ParameterType:=ptOut
-              else
-                ParameterType:=ptNoSpecifier;
-            end;
-            IsChanged:=VariableIsChanged(VarStartPos);
-            AddVariableToTree(VarNode,IsInSelection,IsAfterSelection,IsChanged,
-                              ParameterType);
-          end;
-        end;
-      end;
-    finally
-      Params.Free;
-    end;
-    Result:=true;
-  end;
-
-  function ScanSourceForVariables(CleanStartPos, CleanEndPos: integer): boolean;
-  // scan part of the source for variables
-  var
-    LastAtomType: TCommonAtomFlag;
-    OldCursor: Integer;
-  begin
-    Result:=false;
-    {$IFDEF CTDebug}
-    DebugLn('TExtractProcTool.ScanSourceForVariables A "',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
-    {$ENDIF}
-    MoveCursorToNearestAtom(CleanStartPos);
-    while CurPos.StartPos<CleanEndPos do begin
-      LastAtomType:=CurPos.Flag;
-      ReadNextAtom;
-      if AtomIsIdentifier(false) and (LastAtomType<>cafPoint) then begin
-        // this could be the start of a variable -> check
-        {$IFDEF CTDebug}
-        DebugLn('ScanSourceForVariables B Identifier=',GetAtom);
-        {$ENDIF}
-        OldCursor:=CurPos.StartPos;
-        if not CheckVariableAtCursor then exit;
-        // restore cursor
-        MoveCursorToCleanPos(OldCursor);
-        ReadNextAtom;
-      end;
-    end;
-    Result:=true;
-  end;
-  
-  function ScanNodesForVariables(StartNode: TCodeTreeNode): boolean;
-  // scan recursively all statements for variables
-  var
-    ChildNode: TCodeTreeNode;
-  begin
-    {$IFDEF CTDebug}
-    DebugLn('TExtractProcTool.ScanNodesForVariables A Node=',StartNode.DescAsString);
-    {$ENDIF}
-    Result:=false;
-    ChildNode:=StartNode.FirstChild;
-    while ChildNode<>nil do begin
-      if (ChildNode.Desc in [ctnBeginBlock,ctnAsmBlock])
-      and (ChildNode.Parent.Desc=ctnProcedure) then begin
-        if not ScanSourceForVariables(ChildNode.StartPos,ChildNode.EndPos) then
-          exit;
-      end;
-      if not ScanNodesForVariables(ChildNode) then exit;
-      ChildNode:=ChildNode.NextBrother;
-    end;
-    Result:=true;
-  end;
   
   function ReplaceSelectionWithCall: boolean;
   var
@@ -1154,12 +998,10 @@ var
   ProcCode: string;
 begin
   Result:=false;
-  MethodPossible:=false;
-  SubProcSameLvlPossible:=false;
   {$IFDEF CTDebug}
   DebugLn('ExtractProc A ProcName="',ProcName,'" ProcType=',ExtractProcTypeNames[ProcType]);
   {$ENDIF}
-  if not CheckExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
+  if not InitExtractProc(StartPos,EndPos,MethodPossible,SubProcSameLvlPossible)
   then exit;
   if (not MethodPossible) and (ProcType in [eptPrivateMethod,eptProtectedMethod,
     eptPublicMethod,eptPublishedMethod])
@@ -1167,16 +1009,13 @@ begin
     exit;
   if (not SubProcSameLvlPossible) and (ProcType=eptSubProcedureSameLvl) then
     exit;
-  if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
-  if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
-  BuildSubTree(BlockStartPos);
   CodeCompleteSrcChgCache:=SourceChangeCache;
-  ProcNode:=FindDeepestNodeAtPos(BlockStartPos,true).GetNodeOfType(ctnProcedure);
 
-  VarTree:=nil;
+  VarTree:=TAVLTree.Create(TListSortCompare(@CompareExtractedProcVariables));
   NewProcPath:=nil;
   try
-    if not ScanNodesForVariables(ProcNode) then exit;
+    if not ScanNodesForVariables(StartPos,EndPos,BlockStartPos,BlockEndPos,
+                                 ProcNode,VarTree,IgnoreIdentifiers,nil) then exit;
     if not ReplaceSelectionWithCall then exit;
     if not DeleteMovedLocalVariables then exit;
     if not CreateProcNameParts(ProcClassName,ProcClassNode) then exit;
@@ -1201,6 +1040,235 @@ begin
       VarTree.Free;
     end;
     NewProcPath.Free;
+  end;
+  Result:=true;
+end;
+
+function TExtractProcTool.ScanNodesForVariables(const StartPos,
+  EndPos: TCodeXYPosition; out BlockStartPos, BlockEndPos: integer;
+  out ProcNode: TCodeTreeNode;
+  VarTree: TAVLTree;  // tree of TExtractedProcVariable
+  IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
+  MissingIdentifiers: TAVLTree// tree of PCodeXYPosition
+  ): boolean;
+type
+  TParameterType = (ptNone, ptConst, ptVar, ptOut, ptNoSpecifier);
+
+  procedure AddVariableToTree(VarNode: TCodeTreeNode; IsInSelection,
+    IsAfterSelection, IsChanged: boolean; ParameterType: TParameterType);
+  var
+    AVLNode: TAVLTreeNode;
+    ProcVar: TExtractedProcVariable;
+  begin
+    {$IFDEF CTDebug}
+    DebugLn('AddVariableToTree A Ident=',GetIdentifier(@Src[VarNode.StartPos]),
+      ' IsInSelection=',dbgs(IsInSelection),
+      ' ParameterType=',ParameterTypeNames[ParameterType]);
+    {$ENDIF}
+    if VarTree=nil then exit;
+    
+    AVLNode:=VarTree.FindKey(VarNode,TListSortCompare(@CompareNodeWithExtractedProcVariable));
+    if AVLNode<>nil then begin
+      ProcVar:=TExtractedProcVariable(AVLNode.Data);
+    end else begin
+      ProcVar:=TExtractedProcVariable.Create;
+      ProcVar.Node:=VarNode;
+    end;
+    ProcVar.ReadInSelection:=ProcVar.ReadInSelection or IsInSelection;
+    ProcVar.WriteInSelection:=ProcVar.WriteInSelection
+                              or (IsInSelection and IsChanged);
+    ProcVar.UsedInNonSelection:=ProcVar.UsedInNonSelection
+                              or (not IsInSelection) or (ParameterType<>ptNone);
+    if (not ProcVar.ReadAfterSelectionValid) then begin
+      // a) variable is a var or out parameter
+      //    => the variable value IS needed after the extracted proc
+      // b) just after the selection the variable is read
+      //    => the variable value IS needed after the extracted proc
+      // c) just after the selection the variable is written
+      //    => the variable value IS NOT needed after the extracted proc
+      if (ParameterType in [ptOut,ptVar]) then begin
+        ProcVar.ReadAfterSelectionValid:=true;
+        ProcVar.ReadAfterSelection:=true;
+      end else if (not IsInSelection) and IsAfterSelection then begin
+        ProcVar.ReadAfterSelectionValid:=true;
+        ProcVar.ReadAfterSelection:=not IsChanged;
+      end;
+    end;
+    if AVLNode=nil then begin
+      if ParameterType<>ptNone then
+        ProcVar.VarType:=epvtParameter
+      else
+        ProcVar.VarType:=epvtLocalVar;
+      VarTree.Add(ProcVar);
+    end;
+  end;
+
+  function VariableIsChanged(VarStartPos: integer): boolean;
+  begin
+    Result:=false;
+    MoveCursorToCleanPos(VarStartPos);
+    // read identifier
+    ReadNextAtom;
+    if CurPos.Flag in [cafRoundBracketOpen] then
+      ReadTilBracketClose(true);
+    // read next atom
+    ReadNextAtom;
+    if AtomIs(':=') or AtomIs('+=') or AtomIs('-=') or AtomIs('*=')
+    or AtomIs('/=') then begin
+      Result:=true;
+      exit;
+    end;
+  end;
+
+  function CheckVariableAtCursor: boolean;
+  // find declaration of identifier at cursor and add to variable tree
+  var
+    Params: TFindDeclarationParams;
+    VarStartPos: Integer;
+    VarNode: TCodeTreeNode;
+    IsInSelection: Boolean;
+    ClosestProcNode: TCodeTreeNode;
+    IsParameter: boolean;
+    IsChanged: Boolean;
+    IsAfterSelection: Boolean;
+    ParameterType: TParameterType;
+    NewCodePos: TCodeXYPosition;
+  begin
+    Result:=false;
+    // find start of variable
+    VarStartPos:=FindStartOfVariable(CurPos.StartPos);
+    if (IgnoreIdentifiers<>nil) then begin
+      if not CleanPosToCaret(VarStartPos,NewCodePos) then exit;
+      if IgnoreIdentifiers.Find(@NewCodePos)<>nil then exit(true);
+    end;
+    
+    IsInSelection:=(VarStartPos>=BlockStartPos) and (VarStartPos<BlockEndPos);
+    IsAfterSelection:=(VarStartPos>=BlockEndPos);
+    MoveCursorToCleanPos(VarStartPos);
+    Params:=TFindDeclarationParams.Create;
+    try
+      // find declaration
+      Params.ContextNode:=FindDeepestNodeAtPos(VarStartPos,true);
+      Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
+                     fdfTopLvlResolving,fdfSearchInAncestors];
+      Params.SetIdentifier(Self,@Src[VarStartPos],@CheckSrcIdentifier);
+      {$IFDEF CTDebug}
+      DebugLn('AddVariableAtCursor Searching ',GetIdentifier(Params.Identifier));
+      {$ENDIF}
+      try
+        FindDeclarationOfIdentAtParam(Params);
+      except
+        on E: ECodeToolError do begin
+          {$IFDEF CTDebug}
+          DebugLn('AddVariableAtCursor identifier not found ',GetIdentifier(@Src[VarStartPos]));
+          {$ENDIF}
+          if MissingIdentifiers=nil then
+            raise;
+          // collect missing identifiers
+          if not CleanPosToCaret(VarStartPos,NewCodePos) then exit;
+          AddCodePosition(MissingIdentifiers,NewCodePos);
+          Result:=true;
+          exit;
+        end;
+      end;
+      // check if declaration is local variable
+      if (Params.NewCodeTool=Self) and (Params.NewNode<>nil) then begin
+        VarNode:=Params.NewNode;
+        if (VarNode.Desc=ctnVarDefinition)
+        and (VarNode.HasAsParent(ProcNode)) then begin
+          // Now we know: VarNode is a variable defined in the main proc
+          // or one of its sub procs
+          ClosestProcNode:=VarNode.GetNodeOfType(ctnProcedure);
+          if ClosestProcNode=ProcNode then begin
+            // VarNode is a variable defined by the main proc
+            IsParameter:=VarNode.GetNodeOfType(ctnProcedureHead)<>nil;
+            ParameterType:=ptNone;
+            if IsParameter then begin
+              MoveCursorToParameterSpecifier(VarNode);
+              if UpAtomIs('CONST') then
+                ParameterType:=ptConst
+              else if UpAtomIs('VAR') then
+                ParameterType:=ptVar
+              else if UpAtomIs('OUT') then
+                ParameterType:=ptOut
+              else
+                ParameterType:=ptNoSpecifier;
+            end;
+            IsChanged:=VariableIsChanged(VarStartPos);
+            AddVariableToTree(VarNode,IsInSelection,IsAfterSelection,IsChanged,
+                              ParameterType);
+          end;
+        end;
+      end;
+    finally
+      Params.Free;
+    end;
+    Result:=true;
+  end;
+
+  function ScanSourceForVariables(CleanStartPos, CleanEndPos: integer): boolean;
+  // scan part of the source for variables
+  var
+    LastAtomType: TCommonAtomFlag;
+    OldCursor: Integer;
+  begin
+    Result:=false;
+    {$IFDEF CTDebug}
+    DebugLn('TExtractProcTool.ScanSourceForVariables A "',copy(Src,CleanStartPos,CleanEndPos-CleanStartPos),'"');
+    {$ENDIF}
+    MoveCursorToNearestAtom(CleanStartPos);
+    while CurPos.StartPos<CleanEndPos do begin
+      LastAtomType:=CurPos.Flag;
+      ReadNextAtom;
+      if AtomIsIdentifier(false) and (LastAtomType<>cafPoint) then begin
+        // this could be the start of a variable -> check
+        {$IFDEF CTDebug}
+        DebugLn('ScanSourceForVariables B Identifier=',GetAtom);
+        {$ENDIF}
+        OldCursor:=CurPos.StartPos;
+        if not CheckVariableAtCursor then exit;
+        // restore cursor
+        MoveCursorToCleanPos(OldCursor);
+        ReadNextAtom;
+      end;
+    end;
+    Result:=true;
+  end;
+
+  function ScanNodesForVariablesRecursive(StartNode: TCodeTreeNode): boolean;
+  // scan recursively all statements for variables
+  var
+    ChildNode: TCodeTreeNode;
+  begin
+    {$IFDEF CTDebug}
+    DebugLn('ScanNodesForVariablesRecursive A Node=',StartNode.DescAsString);
+    {$ENDIF}
+    Result:=false;
+    ChildNode:=StartNode.FirstChild;
+    while ChildNode<>nil do begin
+      if (ChildNode.Desc in [ctnBeginBlock,ctnAsmBlock])
+      and (ChildNode.Parent.Desc=ctnProcedure) then begin
+        if not ScanSourceForVariables(ChildNode.StartPos,ChildNode.EndPos) then
+          exit;
+      end;
+      if not ScanNodesForVariablesRecursive(ChildNode) then exit;
+      ChildNode:=ChildNode.NextBrother;
+    end;
+    Result:=true;
+  end;
+
+begin
+  Result:=false;
+  if CaretToCleanPos(StartPos,BlockStartPos)<>0 then exit;
+  if CaretToCleanPos(EndPos,BlockEndPos)<>0 then exit;
+  BuildSubTree(BlockStartPos);
+  ProcNode:=FindDeepestNodeAtPos(BlockStartPos,true).GetNodeOfType(ctnProcedure);
+
+  ActivateGlobalWriteLock;
+  try
+    if not ScanNodesForVariablesRecursive(ProcNode) then exit;
+  finally
+    DeactivateGlobalWriteLock;
   end;
   Result:=true;
 end;

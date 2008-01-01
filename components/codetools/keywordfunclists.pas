@@ -933,7 +933,7 @@ begin
     Add('LO'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HI'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PREC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PRED'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SUCC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SETLENGTH'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -954,6 +954,8 @@ begin
     Add('EXIT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BREAK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEW'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPOSE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create;
@@ -1323,6 +1325,7 @@ begin
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VARIANT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  // functions
   WordIsPredefinedFPCIdentifier.Add(IsWordBuiltInFunc);
   
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;

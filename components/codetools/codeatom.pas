@@ -39,7 +39,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, FileProcs, CodeCache, KeywordFuncLists;
+  Classes, SysUtils, FileProcs, AVL_Tree, CodeCache, KeywordFuncLists;
 
 type
   TCodePosition = record
@@ -147,10 +147,17 @@ function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 function CompareCodePositions(Pos1, Pos2: PCodePosition): integer;
 
 procedure AddCodePosition(var ListOfPCodeXYPosition: TFPList;
-  const NewCodePos: TCodeXYPosition);
+                          const NewCodePos: TCodeXYPosition);
 function IndexOfCodePosition(var ListOfPCodeXYPosition: TFPList;
-  const APosition: PCodeXYPosition): integer;
+                             const APosition: PCodeXYPosition): integer;
 procedure FreeListOfPCodeXYPosition(ListOfPCodeXYPosition: TFPList);
+
+function CreateTreeOfPCodeXYPosition: TAVLTree;
+procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
+                          const NewCodePos: TCodeXYPosition);
+procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
+procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
+                          DestTree: TAVLTree; ClearList, CreateCopies: boolean);
 
 var
   WordToAtomFlag: TWordToAtomFlag;
@@ -242,6 +249,67 @@ begin
     Dispose(CurCodePos);
   end;
   ListOfPCodeXYPosition.Free;
+end;
+
+function CreateTreeOfPCodeXYPosition: TAVLTree;
+begin
+  Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+end;
+
+procedure AddCodePosition(var TreeOfPCodeXYPosition: TAVLTree;
+  const NewCodePos: TCodeXYPosition);
+var
+  AddCodePos: PCodeXYPosition;
+begin
+  if TreeOfPCodeXYPosition=nil then
+    TreeOfPCodeXYPosition:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+  New(AddCodePos);
+  AddCodePos^:=NewCodePos;
+  TreeOfPCodeXYPosition.Add(AddCodePos);
+end;
+
+procedure FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  CursorPos: PCodeXYPosition;
+begin
+  if TreeOfPCodeXYPosition=nil then exit;
+  ANode:=TreeOfPCodeXYPosition.FindLowest;
+  while ANode<>nil do begin
+    CursorPos:=PCodeXYPosition(ANode.Data);
+    if CursorPos<>nil then
+      Dispose(CursorPos);
+    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+  end;
+  TreeOfPCodeXYPosition.Free;
+end;
+
+procedure AddListToTreeOfPCodeXYPosition(SrcList: TFPList; DestTree: TAVLTree;
+  ClearList, CreateCopies: boolean);
+var
+  i: Integer;
+  CodePos: PCodeXYPosition;
+  NewCodePos: PCodeXYPosition;
+begin
+  if SrcList=nil then exit;
+  for i:=SrcList.Count-1 downto 0 do begin
+    CodePos:=PCodeXYPosition(SrcList[i]);
+    if DestTree.Find(CodePos)=nil then begin
+      // new position -> add
+      if CreateCopies and (not ClearList) then begin
+        // list items should be kept and copies should be added to the tree
+        New(NewCodePos);
+        NewCodePos^:=CodePos^;
+      end else
+        NewCodePos:=CodePos;
+      DestTree.Add(NewCodePos);
+    end else if ClearList then begin
+      // position alread exists and items should be deleted
+      Dispose(NewCodePos);
+    end;
+  end;
+  if ClearList then
+    SrcList.Clear;
 end;
 
 function DbgsCXY(const p: TCodeXYPosition): string;

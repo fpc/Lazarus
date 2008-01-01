@@ -1,25 +1,24 @@
 object ExtractProcDialog: TExtractProcDialog
   Left = 378
-  Height = 201
+  Height = 355
   Top = 374
-  Width = 420
-  HorzScrollBar.Page = 419
-  VertScrollBar.Page = 200
+  Width = 425
+  HorzScrollBar.Page = 424
+  VertScrollBar.Page = 354
   ActiveControl = NameEdit
   BorderIcons = [biSystemMenu]
   Caption = 'ExtractProcDialog'
-  ClientHeight = 201
-  ClientWidth = 420
+  ClientHeight = 355
+  ClientWidth = 425
   OnClose = ExtractProcDialogClose
   OnCreate = ExtractProcDialogCREATE
   object TypeRadiogroup: TRadioGroup
     AnchorSideBottom.Control = NameGroupbox
     Left = 6
-    Height = 91
+    Height = 171
     Top = 6
-    Width = 408
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Width = 413
+    Align = alClient
     AutoFill = True
     BorderSpacing.Around = 6
     Caption = 'TypeRadiogroup'
@@ -42,86 +41,110 @@ object ExtractProcDialog: TExtractProcDialog
     AnchorSideBottom.Control = CancelButton
     Left = 6
     Height = 54
-    Top = 103
-    Width = 408
-    Anchors = [akLeft, akRight, akBottom]
+    Top = 183
+    Width = 413
+    Align = alBottom
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'NameGroupbox'
     ClientHeight = 35
-    ClientWidth = 404
+    ClientWidth = 409
     ParentCtl3D = False
     TabOrder = 0
     object NameEdit: TEdit
       Left = 6
       Height = 23
       Top = 6
-      Width = 392
+      Width = 397
       Align = alTop
       BorderSpacing.Around = 6
       TabOrder = 0
       Text = 'NameEdit'
     end
   end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 36
-    Top = 159
-    Width = 75
-    Anchors = [akLeft, akBottom]
+  object BtnPanel: TPanel
+    Height = 48
+    Top = 307
+    Width = 425
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 425
     TabOrder = 2
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 341
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 0
+    end
+    object OkButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 260
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonCLICK
+      TabOrder = 1
+    end
+    object HelpButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      OnClick = HelpButtonClick
+      TabOrder = 2
+    end
   end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 336
-    Height = 32
-    Top = 163
-    Width = 78
-    Anchors = [akRight, akBottom]
-    AutoSize = True
+  object MissingIdentifiersGroupBox: TGroupBox
+    Left = 6
+    Height = 58
+    Top = 243
+    Width = 413
+    Align = alBottom
     BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
+    Caption = 'MissingIdentifiersGroupBox'
+    ClientHeight = 39
+    ClientWidth = 409
     TabOrder = 3
-  end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 255
-    Height = 36
-    Top = 159
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonCLICK
-    TabOrder = 4
+    object MissingIdentifiersListBox: TListBox
+      Height = 39
+      Width = 409
+      Align = alClient
+      TabOrder = 0
+      TopIndex = -1
+    end
   end
 end

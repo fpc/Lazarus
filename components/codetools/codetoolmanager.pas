@@ -480,9 +480,12 @@ type
     // extract proc (creates a new procedure from code in selection)
     function CheckExtractProc(Code: TCodeBuffer;
           const StartPoint, EndPoint: TPoint;
-          var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+          out MethodPossible, SubProcSameLvlPossible: boolean;
+          out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+          ): boolean;
     function ExtractProc(Code: TCodeBuffer; const StartPoint, EndPoint: TPoint;
           ProcType: TExtractProcType; const ProcName: string;
+          IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
           var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
           ): boolean;
 
@@ -1409,52 +1412,20 @@ begin
 end;
 
 procedure TCodeToolManager.FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);
-var
-  ANode: TAVLTreeNode;
-  CursorPos: PCodeXYPosition;
 begin
-  if Tree=nil then exit;
-  ANode:=Tree.FindLowest;
-  while ANode<>nil do begin
-    CursorPos:=PCodeXYPosition(ANode.Data);
-    if CursorPos<>nil then
-      Dispose(CursorPos);
-    ANode:=Tree.FindSuccessor(ANode);
-  end;
-  Tree.Free;
+  CodeAtom.FreeTreeOfPCodeXYPosition(Tree);
+  Tree:=nil;
 end;
 
 function TCodeToolManager.CreateTreeOfPCodeXYPosition: TAVLTree;
 begin
-  Result:=TAVLTree.Create(TListSortCompare(@CompareCodeXYPositions));
+  Result:=CodeAtom.CreateTreeOfPCodeXYPosition;
 end;
 
 procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TFPList;
   DestTree: TAVLTree; ClearList, CreateCopies: boolean);
-var
-  i: Integer;
-  CodePos: PCodeXYPosition;
-  NewCodePos: PCodeXYPosition;
 begin
-  if SrcList=nil then exit;
-  for i:=SrcList.Count-1 downto 0 do begin
-    CodePos:=PCodeXYPosition(SrcList[i]);
-    if DestTree.Find(CodePos)=nil then begin
-      // new position -> add
-      if CreateCopies and (not ClearList) then begin
-        // list items should be kept and copies should be added to the tree
-        New(NewCodePos);
-        NewCodePos^:=CodePos^;
-      end else
-        NewCodePos:=CodePos;
-      DestTree.Add(NewCodePos);
-    end else if ClearList then begin
-      // position alread exists and items should be deleted
-      Dispose(NewCodePos);
-    end;
-  end;
-  if ClearList then
-    SrcList.Clear;
+  CodeAtom.AddListToTreeOfPCodeXYPosition(SrcList,DestTree,ClearList,CreateCopies);
 end;
 
 function TCodeToolManager.Explore(Code: TCodeBuffer;
@@ -3350,7 +3321,9 @@ begin
 end;
 
 function TCodeToolManager.CheckExtractProc(Code: TCodeBuffer; const StartPoint,
-  EndPoint: TPoint; var MethodPossible, SubProcSameLvlPossible: boolean): boolean;
+  EndPoint: TPoint; out MethodPossible, SubProcSameLvlPossible: boolean;
+  out MissingIdentifiers: TAVLTree // tree of PCodeXYPosition
+  ): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
 begin
@@ -3367,7 +3340,7 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.CheckExtractProc(StartPos,EndPos,MethodPossible,
-                                          SubProcSameLvlPossible);
+                                     SubProcSameLvlPossible,MissingIdentifiers);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -3375,6 +3348,7 @@ end;
 
 function TCodeToolManager.ExtractProc(Code: TCodeBuffer; const StartPoint,
   EndPoint: TPoint; ProcType: TExtractProcType; const ProcName: string;
+  IgnoreIdentifiers: TAVLTree; // tree of PCodeXYPosition
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
 var
   StartPos, EndPos: TCodeXYPosition;
@@ -3393,7 +3367,7 @@ begin
   EndPos.Code:=Code;
   try
     Result:=FCurCodeTool.ExtractProc(StartPos,EndPos,ProcType,ProcName,
-                                     NewPos,NewTopLine,SourceChangeCache);
+                         IgnoreIdentifiers,NewPos,NewTopLine,SourceChangeCache);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;
