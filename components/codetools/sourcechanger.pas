@@ -93,6 +93,7 @@ type
     Src, UpperSrc: string;
     procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
+    procedure ReadTilDirectiveEnd;
   public
     LineLength: integer;
     LineEnd: string; // default: #13#10
@@ -117,6 +118,8 @@ type
     PropertyStoredIdentPostfix: string;
     PrivateVariablePrefix: string;
     CurFlags: TBeautifyCodeFlags;
+    
+    NestedComments: boolean;
 
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
@@ -967,6 +970,8 @@ begin
   PropertyWriteIdentPrefix:='Set';
   PropertyStoredIdentPostfix:='IsStored';
   PrivateVariablePrefix:='f';
+  
+  NestedComments:=true;
 end;
 
 procedure TBeautifyCodeOptions.AddAtom(var CurCode: string; NewAtom: string);
@@ -1242,6 +1247,23 @@ begin
   AtomEnd:=CurPos;
 end;
 
+procedure TBeautifyCodeOptions.ReadTilDirectiveEnd;
+var
+  Lvl: Integer;
+begin
+  Lvl:=1;
+  repeat
+    ReadNextAtom;
+    if (CurAtomType in [atCommentStart,atDirectiveStart])
+    and NestedComments then
+      inc(Lvl)
+    else if CurAtomType=atCommentEnd then begin
+      dec(Lvl);
+      if Lvl=0 then break;
+    end;
+  until CurAtomType=atNone;
+end;
+
 function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;
   IndentSize: integer; AddBeginEnd: boolean): string;
 begin
@@ -1273,6 +1295,7 @@ function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
   IndentSize: integer; BeautifyFlags: TBeautifyCodeFlags): string;
 var CurAtom: string;
   OldIndent: Integer;
+  OldAtomStart: LongInt;
 begin
   //DebugLn('**********************************************************');
   //DebugLn('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
@@ -1303,6 +1326,12 @@ begin
     while (CurPos<=SrcLen) do begin
       repeat
         ReadNextAtom;
+        if CurAtomType=atDirectiveStart then begin
+          // don't touch directives: they can contain macros and filenames
+          OldAtomStart:=AtomStart;
+          ReadTilDirectiveEnd;
+          AtomStart:=OldAtomStart;
+        end;
         CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
         if CurAtom=' ' then
           AddAtom(Result,' ')
