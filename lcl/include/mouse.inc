@@ -21,8 +21,6 @@
 constructor TMouse.Create;
 begin
   inherited Create;
-  FDragImmediate := true;
-  FDragThreshold := 5;
   FWheelScrollLines := -1;
 end;
 
@@ -70,9 +68,5 @@ begin
   Result := FWheelScrollLines;
 end;
 
-function TMouse.GetIsDragging: Boolean;
-begin
-  Result := ActiveDrag <> dopNone;
-end;
 
 // included by controls.pp

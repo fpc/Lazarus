@@ -3193,17 +3193,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl CMDrag
-------------------------------------------------------------------------------}
-Procedure TWinControl.CMDrag(var Message: TCMDrag);
-Begin
-  {$IFDEF VerboseDrag}
-  DebugLn('TWinControl.CMDrag ',Name,':',ClassName,' ',IntToStr(ord(Message.DragMessage)));
-  {$ENDIF}
-  DoDragMsg(Message);
-end;
-
-{------------------------------------------------------------------------------
   TWinControl CreateSubClass
 ------------------------------------------------------------------------------}
 procedure TWinControl.CreateSubClass(var Params: TCreateParams;
@@ -3361,28 +3350,26 @@ begin
   Result := CanFocus and TWSWinControlClass(WidgetSetClass).CanFocus(Self);
 end;
 
-procedure TWinControl.DoDragMsg(var DragMsg: TCMDrag);
+function TWinControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
 var
   TargetControl: TControl;
 begin
-  case DragMsg.DragMessage of
-
-  dmFindTarget:
-    begin
-      {$IFDEF VerboseDrag}
-      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',IntToStr(DragMsg.DragRec^.Pos.X),',',IntToStr(DragMsg.DragRec^.Pos.Y));
-      {$ENDIF}
-      TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),
-                                    [capfAllowWinControls,capfRecursive]);
-      if TargetControl = nil then TargetControl := Self;
-      {$IFDEF VerboseDrag}
-      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
-      {$ENDIF}
-      DragMsg.Result := LRESULT(TargetControl);
-    end;
-
-  else
-    inherited DoDragMsg(DragMsg);
+  case ADragMessage of
+    dmFindTarget:
+      begin
+        {$IFDEF VerboseDrag}
+        DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',IntToStr(APosition.X),',',IntToStr(APosition.Y));
+        {$ENDIF}
+        TargetControl := ControlatPos(ScreentoClient(APosition),
+                                      [capfAllowWinControls,capfRecursive]);
+        if TargetControl = nil then TargetControl := Self;
+        {$IFDEF VerboseDrag}
+        DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
+        {$ENDIF}
+        Result := LRESULT(TargetControl);
+      end;
+    else
+      Result := inherited;
   end;
 end;
 
@@ -4709,7 +4696,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
   
-  Default method for addind a dock client. Just become the new parent.
+  Default method for adding a dock client. Just become the new parent.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
@@ -4783,8 +4770,7 @@ begin
                       NewBounds.Bottom-NewBounds.Top);
   end;
 
-  // ToDo Dock
-  //Result := (Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0);
+  Result := Result and DoUndockClientMsg(NewTarget, Client);
 end;
 
 {------------------------------------------------------------------------------
@@ -4793,10 +4779,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
   MousePos: TPoint; var CanDock: Boolean);
+const
+  ADockMargin = 10;
 begin
   GetWindowRect(Handle,InfluenceRect);
-  // VCL inflates the docking rectangle. Do we need this too? Why?
-  //InflateRect(InfluenceRect,?,?);
+  //Margins to test docking (enlarged surface for test)
+  InfluenceRect.Left:= InfluenceRect.Left-ADockMargin;
+  InfluenceRect.Top:= InfluenceRect.Top-ADockMargin;
+  InfluenceRect.Right:= InfluenceRect.Right+ADockMargin;
+  InfluenceRect.Bottom:= InfluenceRect.Bottom+ADockMargin;
+
   if Assigned(FOnGetSiteInfo) then
     FOnGetSiteInfo(Self,Client,InfluenceRect,MousePos,CanDock);
 end;
@@ -4831,6 +4823,23 @@ begin
   FUseDockManager:=AValue;
   if FUseDockManager and ([csDesigning,csDestroying]*ComponentState=[]) then
     FDockManager := CreateDockManager;
+end;
+
+procedure TWinControl.DoFloatMsg(ADockSource: TDragDockObject);
+var
+  WasVisible: Boolean;
+begin
+  if FloatingDockSiteClass = ClassType then
+  begin
+    WasVisible := Visible;
+    try
+      Dock(nil, ADockSource.DockRect);
+    finally
+      if WasVisible then BringToFront;
+    end;
+  end
+  else
+    inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -5017,10 +5026,10 @@ begin
     ShiftState := KeyDataToShiftState(KeyData);
 
     // let drag object handle the key
-    if Dragging and (DragObject<>nil) then
+    if DragManager.IsDragging then
     begin
-      DragObject.KeyDown(CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then Exit;
+      DragManager.KeyDown(CharCode, ShiftState);
+      Exit;
     end;
 
     // let user handle the key
@@ -5252,10 +5261,10 @@ begin
   begin
     ShiftState := KeyDataToShiftState(KeyData);
 
-    if Dragging and (DragObject<>nil) then
+    if DragManager.IsDragging then
     begin
-      DragObject.KeyUp(CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then exit;
+      DragManager.KeyUp(CharCode, ShiftState);
+      exit;
     end;
     
     if not (csNoStdEvents in ControlStyle)
@@ -6841,15 +6850,18 @@ end;
   X, Y are only default values. More important is the DockObject.DropAlign
   property, which defines how to align DockObject.Control.
  ------------------------------------------------------------------------------}
-procedure TWinControl.DockDrop(DockObject: TDragDockObject; X, Y: Integer);
-var
+procedure TWinControl.DockDrop(DragDockObject: TDragDockObject; X, Y: Integer);
+{var
   DestRect: TRect;
   //ParentForm: TCustomForm;
   MappedLeftTop: TPoint;
-  NewBounds: TRect;
+  NewBounds: TRect;}
 begin
+  if DoDockClientMsg(DragDockObject, Point(X, Y)) and Assigned(FOnDockDrop) then
+    FOnDockDrop(Self, DragDockObject, X, Y);
+
   // get dock destination rectangle and map it to the client area
-  DestRect := DockObject.DockRect;
+  {DestRect := DockObject.DockRect;
   MappedLeftTop:=ScreenToClient(DestRect.TopLeft);
   OffsetRect(DestRect,
              DestRect.Left-MappedLeftTop.X,DestRect.Top-MappedLeftTop.Y);
@@ -6898,7 +6910,7 @@ begin
   //if ParentForm<>nil then ParentForm.BringToFront;
 
   if Assigned(FOnDockDrop) then
-    FOnDockDrop(Self, DockObject, X, Y);
+    FOnDockDrop(Self, DockObject, X, Y);}
 end;
 
 {------------------------------------------------------------------------------
@@ -6954,7 +6966,7 @@ begin
   if FDockSite=NewDockSite then exit;
   FDockSite := NewDockSite;
   if not (csDesigning in ComponentState) then begin
-    RegisterDockSite(Self,NewDockSite);
+    DragManager.RegisterDockSite(Self,NewDockSite);
     if not NewDockSite then begin
       FreeAndNil(FDockClients);
       FDockClients := nil;
@@ -6965,6 +6977,36 @@ begin
       FDockManager := CreateDockManager;
     end;
   end;
+end;
+
+function TWinControl.DoDockClientMsg(DragDockObject: TDragDockObject; Position: TPoint): boolean;
+var
+  DestRect: TRect;
+  Form: TCustomForm;
+begin
+  with DragDockObject do begin
+    DestRect := DockRect;
+    //MapWindowPoints(0, Handle, DestRect, 2);?
+    DisableAlign;
+    try
+      DragDockObject.Control.Dock(Self, DestRect);
+      if FUseDockManager and (FDockManager <> nil) then
+        FDockManager.InsertControl(DragDockObject.Control,
+          DragDockObject.DropAlign, DragDockObject.DropOnControl);
+    finally
+      EnableAlign;
+    end;
+    Form := GetParentForm(Self);
+    if Form <> nil then Form.BringToFront;
+    Result := true;
+  end;
+end;
+
+function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
+begin
+  Result := true;
+  if FUseDockManager and (FDockManager <> nil) then
+    FDockManager.RemoveControl(Client)
 end;
 
 {------------------------------------------------------------------------------

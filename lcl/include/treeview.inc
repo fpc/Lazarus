@@ -3869,28 +3869,27 @@ begin
   FLastDropTarget := nil;
 end;
 
-procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
+function TCustomTreeView.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
 begin
-  inherited CMDrag(AMessage);
+  Result:=inherited;
   {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',IntToStr(ord(AMessage.DragMessage)));
+  DebugLn('TCustomTreeView.DoDragMsg ',Name,':',ClassName,' ',IntToStr(ord(ADragMessage)));
   {$ENDIF}
-  with AMessage, DragRec^ do
-    case DragMessage of
-      {dmDragMove:
-        begin
-          P:=ScreenToClient(Pos);
-          DoDragOver(Source, P.X, P.Y, AMessage.Result <> 0);
-        end;}
-      dmDragLeave:
-        begin
-          TDragObject(Source).HideDragImage;
-          FLastDropTarget := DropTarget;
-          DropTarget := nil;
-          TDragObject(Source).ShowDragImage;
-        end;
-      dmDragDrop: FLastDropTarget := nil;
-    end;
+  case ADragMessage of
+    {dmDragMove:
+      begin
+        P:=ScreenToClient(Pos);
+        DoDragOver(Source, P.X, P.Y, AMessage.Result <> 0);
+      end;}
+    dmDragLeave:
+      begin
+        ADragObject.HideDragImage;
+        FLastDropTarget := DropTarget;
+        DropTarget := nil;
+        ADragObject.ShowDragImage;
+      end;
+    dmDragDrop: FLastDropTarget := nil;
+  end;
 end;
 
 procedure TCustomTreeView.DragOver(Source: TObject; X,Y: Integer;

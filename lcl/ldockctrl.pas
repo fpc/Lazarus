@@ -284,6 +284,11 @@ procedure Register;
 implementation
 
 
+procedure Register;
+begin
+  RegisterComponents('Misc',[TLazDockingManager,TLazControlDocker]);
+end;
+
 function LDConfigNodeTypeNameToType(const s: string): TLDConfigNodeType;
 begin
   for Result:=Low(TLDConfigNodeType) to High(TLDConfigNodeType) do
@@ -542,11 +547,6 @@ begin
     Result:=Node.Name+'{Type='+LDConfigNodeTypeNames[Node.TheType]
                      +',ChildCnt='+IntToStr(Node.ChildCount)+'}';
   end;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('Misc',[TLazDockingManager,TLazControlDocker]);
 end;
 
 { TCustomLazControlDocker }
@@ -893,12 +893,14 @@ begin
                                       TCustomForm(NeighbourControl).WindowState;
       NewParent.BoundsRect:=NeighbourControl.BoundsRect;
       NeighbourControl.Parent:=NewParent;
+      NeighbourControl.Align:=alNone;
     end;
     DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NewParent=',DbgSName(NewParent),' ',dbgs(NewParent.BoundsRect)]);
     DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter NeighbourControl=',DbgSName(NeighbourControl),' ',dbgs(NeighbourControl.BoundsRect)]);
 
     // move Control to the new parent
     Control.Parent:=NewParent;
+    Control.Align:=alNone;
     Control.BoundsRect:=SelfNode.Bounds;
     DebugLn(['TCustomLazControlDocker.CreateFormAndDockWithSplitter Control=',DbgSName(Control),' ',dbgs(Control.BoundsRect)]);
 

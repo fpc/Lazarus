@@ -2143,8 +2143,6 @@ type
     FTreeNodes: TTreeNodes;
     FUpdateCount: integer;
     procedure CanvasChanged(Sender: TObject);
-    procedure CMDrag(var AMessage: TCMDrag); message CM_DRAG;
-    //procedure EditWndProc(var Message: TLMessage);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
     function GetDropTarget: TTreeNode;
@@ -2204,6 +2202,7 @@ type
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
+    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function CanChange(Node: TTreeNode): Boolean; dynamic;
     function CanCollapse(Node: TTreeNode): Boolean; dynamic;
     function CanEdit(Node: TTreeNode): Boolean; dynamic;

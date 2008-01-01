@@ -2784,6 +2784,7 @@ lcl/include/docktree.inc svneol=native#text/pascal
 lcl/include/dockzone.inc svneol=native#text/pascal
 lcl/include/dragdock.inc svneol=native#text/pascal
 lcl/include/dragimagelist.inc svneol=native#text/pascal
+lcl/include/dragmanager.inc svneol=native#text/plain
 lcl/include/dragobject.inc svneol=native#text/pascal
 lcl/include/edit.inc svneol=native#text/pascal
 lcl/include/filedialog.inc svneol=native#text/pascal

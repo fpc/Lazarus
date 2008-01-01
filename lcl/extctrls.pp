@@ -1045,7 +1045,9 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DockSite;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -1059,17 +1061,23 @@ type
     property TabStop;
     property Visible;
     property OnClick;
+    property OnDockDrop;
+    property OnDockOver;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
+    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnStartDock;
     property OnStartDrag;
+    property OnUnDock;
   end;
 
   { TCustomTrayIcon }

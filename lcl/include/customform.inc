@@ -945,11 +945,11 @@ begin
       end;
     CM_EXIT:
       begin
-        //TODO: deal with docking                if HostDockSite <> nil then DeActivate;
+        if HostDockSite <> nil then DeActivate;
       end;
     CM_ENTER:
       begin
-        //TODO: Deal with docking                if HostDockSite <> nil then Activate;
+        if HostDockSite <> nil then Activate;
       end;
     LM_WINDOWPOSCHANGING:
       if ([csLoading, csDesigning] * ComponentState = [csLoading])
@@ -1026,9 +1026,20 @@ begin
 end;
 
 procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+//Save or restore the borderstyle
 begin
-  if (NewDockSite<>HostDockSite) then begin
-
+  if (NewDockSite <> HostDockSite) and ((NewDockSite = nil) or Floating) then
+  begin
+    if NewDockSite = nil then begin
+      //Restore the form borderstyle
+      BorderStyle := FOldBorderStyle;
+      // Note: changing the Align property must be done by the dock manager, not by default
+    end else begin
+      //Save the borderstyle & set new bordertype
+      FOldBorderStyle := BorderStyle;
+      BorderStyle := bsNone;
+      // Note: changing the Align property must be done by the dock manager, not by default
+    end;
   end;
   inherited DoDock(NewDockSite, ARect);
 end;
@@ -1964,7 +1975,7 @@ begin
   if Application.Terminated then
     ModalResult:=0;
   // cancel drags
-  CancelDrag;
+  DragManager.DragStop(false);
   // close popupmenus
   if ActivePopupMenu<>nil then ActivePopupMenu.Close;
   //DebugLn('[TCustomForm.ShowModal] START ',Classname);

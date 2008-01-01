@@ -280,7 +280,7 @@ const
   CM_CONTROLLISTCHANGE    = CM_BASE + 44;
   CM_GETDATALINK          = CM_BASE + 45;
   CM_CHILDKEY             = CM_BASE + 46;
-  CM_DRAG                 = CM_BASE + 47;
+  //CM_DRAG                 = CM_BASE + 47; //Method TControl.DoDragMsg()
   CM_HINTSHOW             = CM_BASE + 48;
   CM_DIALOGHANDLE         = CM_BASE + 49;
   CM_ISTOOLCONTROL        = CM_BASE + 50;
@@ -289,9 +289,9 @@ const
   CM_SYSFONTCHANGED       = CM_BASE + 53;
   CM_CONTROLCHANGE        = CM_BASE + 54;
   CM_CHANGED              = CM_BASE + 55;
-  CM_DOCKCLIENT           = CM_BASE + 56;
-  CM_UNDOCKCLIENT         = CM_BASE + 57;
-  CM_FLOAT                = CM_BASE + 58;
+  //CM_DOCKCLIENT           = CM_BASE + 56; //Method TWinControl.DoDockClientMsg()
+  //CM_UNDOCKCLIENT         = CM_BASE + 57; //Method TWinControl.DoUndockClientMsg()
+  //CM_FLOAT                = CM_BASE + 58; //Method TControl.DoFloatMsg()
   CM_BORDERCHANGED        = CM_BASE + 59;
   CM_BIDIMODECHANGED      = CM_BASE + 60;
   CM_PARENTBIDIMODECHANGED= CM_BASE + 61;

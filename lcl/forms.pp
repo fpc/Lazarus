@@ -375,6 +375,7 @@ type
     FKeyPreview: Boolean;
     FMenu: TMainMenu;
     FModalResult: TModalResult;
+    FOldBorderStyle: TFormBorderStyle;
     FOnActivate: TNotifyEvent;
     FOnClose: TCloseEvent;
     FOnCloseQuery: TCloseQueryEvent;
@@ -602,6 +603,8 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DragKind;
+    property DragMode;
     property DockSite;
     property Enabled;
     property Font;

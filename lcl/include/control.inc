@@ -55,38 +55,15 @@ end;
   Method: TControl.BeginDrag
   Params: Immediate: Drag behaviour
           Threshold: distance to move before dragging starts
-                     -1 uses the default value of Mouse.DragThreshold
+                     -1 uses the default value of DragManager.DragThreshold
   Returns: Nothing
 
   Starts the dragging of a control. If the Immediate flag is set, dragging
   starts immediately.
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
-var
-  P: TPoint;
 begin
-  // start a drag operation, if not already running
-  if (DragControl = nil) then
-  begin
-    // if the last mouse down was not followed by a mouse up, simulate a
-    // mouse up. This way applications need only to react to mouse up to
-    // clean up.
-    {$IFDEF VerboseDrag}
-    DebugLn('TControl.BeginDrag ',DbgSName(Self),' Immediate=',dbgs(Immediate));
-    {$endif}
-    if Immediate then
-      SetCaptureControl(nil);
-    if csLButtonDown in ControlState then
-    begin
-      GetCursorPos(p);
-      P := ScreenToClient(p);
-      Perform(LM_LBUTTONUP, 0, Integer(PointToSmallPoint(p)));
-    end;
-
-    if Threshold < 0 then
-      Threshold := Mouse.DragThreshold;
-    DragInitControl(Self, Immediate, Threshold);
-  end;
+  DragManager.DragStart(Self, Immediate, Threshold);
 end;
 
 {------------------------------------------------------------------------------
@@ -94,7 +71,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
-  BeginDrag(Mouse.DragImmediate, Mouse.DragThreshold);
+  DragManager.DragStart(Self, DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 
 {------------------------------------------------------------------------------
@@ -736,11 +713,6 @@ begin
   TextChanged;
 end;
 
-procedure TControl.CMDrag(var Message: TCMDrag);
-begin
-  DoDragMsg(Message);
-end;
-
 {------------------------------------------------------------------------------
        TControl.CMParentColorChanged
 
@@ -1114,44 +1086,43 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoDragMsg
 ------------------------------------------------------------------------------}
-Procedure TControl.DoDragMsg(var DragMsg: TCMDrag);
-var
+function TControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
+var AWinTarget: TWinControl;
   Accepts: Boolean;
-  Src: TObject;
   P: TPoint;
 Begin
+  Result := 0;
   {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',IntToStr(ord(DragMsg.DragMessage)));
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',IntToStr(ord(ADragMessage)));
   {$ENDIF}
-  Src := DragMsg.Dragrec^.Source;
-  P:=ScreenToClient(DragMsg.Dragrec^.Pos);
-  {$IFDEF VerboseDrag}
-  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',IntToStr(DragMsg.Dragrec^.Pos.X),',',IntToStr(DragMsg.Dragrec^.Pos.Y),' -> P=',IntToStr(P.X),IntToStr(P.Y));
-  //if P.X<0 then RaiseGDBException('');
-  {$ENDIF}
-  case DragMsg.DragMessage of
+
+  case ADragMessage of
 
     dmFindTarget:
-      DragMsg.Result := PtrInt(Self);
+      Result := PtrInt(Self);
 
     dmDragEnter, dmDragLeave, dmDragMove:
       begin
         Accepts := True;
-        case DragMsg.DragMessage of
-          dmDragEnter: DragOver(Src,P.X,P.Y,dsDragEnter,Accepts);
-          dmDragLeave: DragOver(Src,P.X,P.Y,dsDragLeave,Accepts);
-          dmDragMove : DragOver(Src,P.X,P.Y,dsDragMove,Accepts);
-        end;
-        if Accepts then
-          DragMsg.Result := 1
-        else
-          DragMsg.Result := 0;
+        P:=ScreenToClient(APosition);
+        if ADragObject is TDragDockObject then begin
+          AWinTarget:= TWinControl(ADragObject.DragTarget);
+          AWinTarget.DockOver(TDragDockObject(ADragObject),P.X,P.Y,TDragState(ADragMessage),Accepts);
+        end
+        else DragOver(ADragObject,P.X,P.Y,TDragState(ADragMessage),Accepts);
+        Result := Ord(Accepts);
       end;
 
-    dmDragDrop:
-      DragDrop(Src, P.X, P.Y);
+    dmDragDrop: begin
+      P:=ScreenToClient(APosition);
+      if ADragObject is TDragDockObject then begin
+        AWinTarget:= TWinControl(ADragObject.DragTarget);
+        AWinTarget.DockDrop(TDragDockObject(ADragObject), P.X, P.Y);
+      end
+      else DragDrop(ADragObject, P.X, P.Y);
+    end;
 
-  end; //case
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1207,7 +1178,7 @@ end;
 ------------------------------------------------------------------------------}
 Function TControl.Dragging: Boolean;
 Begin
-  Result := (DragControl = self);
+  Result := DragManager.Dragging(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1582,7 +1553,7 @@ begin
               do not all LCL interfaces provide. Therefore the mouse down event
               is sent immediately.
             }
-            // VCL: exit;
+            exit; //Dont send LM_LBUTTONDOWN as it ends the drag immediate
           end;
           Include(FControlState,csLButtonDown);
         end;
@@ -2420,6 +2391,26 @@ begin
   end;
 end;
 
+procedure TControl.DoFloatMsg(ADockSource: TDragDockObject);
+var
+  P: TPoint;
+  FloatHost: TWinControl;
+begin
+  if Floating and (Parent <> nil)then
+  begin
+    P := Parent.ClientToScreen(Point(Left, Top));
+    with ADockSource.DockRect do begin
+      Parent.BoundsRect := Bounds(Left + Parent.Left - P.X, Top + Parent.Top - P.Y,
+        Right - Left + Parent.Width - Width,  Bottom - Top + Parent.Height - Height);
+    end;
+  end else begin
+    FloatHost := CreateFloatingDockSite(ADockSource.DockRect);
+    if FloatHost <> nil then begin
+      ADockSource.DragTarget := FloatHost;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   TControl GetText
 ------------------------------------------------------------------------------}
@@ -2902,25 +2893,6 @@ begin
   FDragMode := Value;
 end;
 
-procedure TControl.DrawDragDockImage(DragDockObject: TDragDockObject);
-begin
-  DefaultDockImage(DragDockObject, False);
-end;
-
-procedure TControl.EraseDragDockImage(DragDockObject: TDragDockObject);
-begin
-  DefaultDockImage(DragDockObject, True);
-end;
-
-{------------------------------------------------------------------------------
-  TControl DefaultDockImage
-------------------------------------------------------------------------------}
-procedure TControl.DefaultDockImage(DragDockObject: TDragDockObject;
-  Erase: Boolean);
-begin
-  // ToDo Dock: draw or erase dock image
-end;
-
 {------------------------------------------------------------------------------
   TControl DockTrackNoTarget
 ------------------------------------------------------------------------------}
@@ -3128,15 +3100,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TControl WMDragStart
-------------------------------------------------------------------------------}
-Procedure TControl.WMDragStart(Var Message: TLMessage);
-Begin
-  //do this here?
-  BeginDrag(true);
-end;
-
-{------------------------------------------------------------------------------
   TControl WMMouseMove
 ------------------------------------------------------------------------------}
 procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
@@ -3167,11 +3130,13 @@ begin
       Form.ActiveControl.EditingDone;
   end;
 
-  if (Button in [mbLeft, mbRight]) and (DragObject <> nil) then
+  if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
   begin
     P := ClientToScreen(Point(X,Y));
-    DragObject.MouseDown(Button, Shift, P.X, P.Y);
+    DragManager.MouseDown(Button, Shift, P.X, P.Y);
+    exit;
   end;
+
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
 end;
 
@@ -3181,15 +3146,14 @@ end;
 procedure TControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   P: TPoint;
-  DragObjectDragging : Boolean;
 begin
-  DragObjectDragging := DragObject <> nil;
-
-  if DragObjectDragging then
+  if DragManager.IsDragging then
   begin
     P := ClientToScreen(Point(X, Y));
-    DragObject.MouseMove(Shift, P.X, P.Y);
+    DragManager.MouseMove(Shift, P.X, P.Y);
+    exit;
   end;
+
   if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
 end;
 
@@ -3200,14 +3164,12 @@ procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 var
   P: TPoint;
-  DragObjectDragging : Boolean;
 begin
-  DragObjectDragging := DragObject <> nil;
-    
-  if (Button in [mbLeft, mbRight]) and DragObjectDragging then
+  if (Button in [mbLeft, mbRight]) and DragManager.IsDragging then
   begin
     P := ClientToScreen(Point(X, Y));
-    DragObject.MouseUp(Button, Shift, P.X, P.Y);
+    DragManager.MouseUp(Button, Shift, P.X, P.Y);
+    exit;
   end;
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
@@ -3230,7 +3192,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.CaptureChanged;
 begin
-  if (DragObject<>nil) then DragObject.CaptureChanged(Self);
+  if DragManager.IsDragging then
+    DragManager.CaptureChanged(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -3715,7 +3678,14 @@ begin
   // make sure the capture is released
   MouseCapture := false;
   Application.ControlDestroyed(Self);
-  SetParent(nil);
+  if (FHostDockSite <> nil) and not (csDestroying in FHostDockSite.ComponentState) then
+  begin
+    FHostDockSite.DoUndockClientMsg(nil, Self);
+    SetParent(nil);
+    Dock(nil, BoundsRect);
+    FHostDockSite := nil;
+  end else
+    SetParent(nil);
   FreeThenNil(FActionLink);
   for Side:=Low(FAnchorSides) to High(FAnchorSides) do
     FreeThenNil(FAnchorSides[Side]);
