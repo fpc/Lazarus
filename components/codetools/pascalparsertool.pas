@@ -722,8 +722,9 @@ begin
     DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' ERROR: ',LastErrorMessage);
     {$ENDIF}
     if (not IgnoreErrorAfterValid)
-    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then
+    or (not IgnoreErrorAfterPositionIsInFrontOfLastErrMessage) then begin
       raise;
+    end;
     {$IFDEF ShowIgnoreErrorAfter}
     DebugLn('TPascalParserTool.BuildSubTreeForBeginBlock ',MainFilename,' IGNORING ERROR: ',LastErrorMessage);
     {$ENDIF}
@@ -2412,14 +2413,37 @@ end;
 
 function TPascalParserTool.ReadWithStatement(ExceptionOnError,
   CreateNodes: boolean): boolean;
-var WithVarNode: TCodeTreeNode;
+  
+  procedure CloseNodes;
+  var WithVarNode: TCodeTreeNode;
+  begin
+    if CreateNodes then begin
+      if CurNode.Desc=ctnWithStatement then begin
+        CurNode.EndPos:=CurPos.StartPos;
+        EndChildNode; // ctnWithStatement
+      end;
+      WithVarNode:=CurNode;
+      CurNode.EndPos:=CurPos.StartPos;
+      EndChildNode; // ctnWithVariable
+      // set all with variable ends
+      while (WithVarNode<>nil) and (WithVarNode.FirstChild=nil) do begin
+        WithVarNode.EndPos:=CurPos.StartPos;
+        WithVarNode:=WithVarNode.PriorBrother;
+      end;
+    end;
+  end;
+  
 begin
   ReadNextAtom; // read variable name
   if CreateNodes then begin
     CreateChildNode;
     CurNode.Desc:=ctnWithVariable;
   end;
-  ReadTilVariableEnd(true);
+  if not ReadTilVariableEnd(ExceptionOnError) then begin
+    CloseNodes;
+    Result:=false;
+    exit;
+  end;
   while CurPos.Flag=cafComma do begin
     if CreateNodes then
       EndChildNode;
@@ -2428,12 +2452,17 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnWithVariable
     end;
-    ReadTilVariableEnd(true);
+    if not ReadTilVariableEnd(ExceptionOnError) then begin
+      CloseNodes;
+      Result:=false;
+      exit;
+    end;
   end;
   if not UpAtomIs('DO') then begin
     if ExceptionOnError then
       RaiseStringExpectedButAtomFound('"do"')
     else begin
+      CloseNodes;
       Result:=false;
       exit;
     end;
@@ -2443,20 +2472,8 @@ begin
     CreateChildNode;
     CurNode.Desc:=ctnWithStatement;
   end;
-  ReadTilStatementEnd(true,CreateNodes);
-  if CreateNodes then begin
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode; // ctnWithStatement
-    WithVarNode:=CurNode.PriorBrother;
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode; // ctnWithVariable
-    // set all with variable ends
-    while (WithVarNode<>nil) and (WithVarNode.FirstChild=nil) do begin
-      WithVarNode.EndPos:=CurPos.StartPos;
-      WithVarNode:=WithVarNode.PriorBrother;
-    end;
-  end;
-  Result:=true;
+  Result:=ReadTilStatementEnd(ExceptionOnError,CreateNodes);
+  CloseNodes;
 end;
 
 function TPascalParserTool.ReadOnStatement(ExceptionOnError,

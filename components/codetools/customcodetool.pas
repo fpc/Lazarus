@@ -316,6 +316,7 @@ type
     function IgnoreErrorAfterPositionIsInFrontOfLastErrMessage: boolean;
     function IgnoreErrorAfterValid: boolean;
     function IgnoreErrorAfterCleanedPos: integer;
+    function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
     property OnParserProgress: TOnParserProgress
@@ -1743,14 +1744,14 @@ begin
   end else begin
     if (Scanner<>nil) then begin
       IgnoreErrorAfterCleanPos:=Scanner.IgnoreErrorAfterCleanedPos;
-      //DebugLn('  IgnoreErrorAfterCleanPos='+dbgs(IgnoreErrorAfterCleanPos)+'"'+copy(Src,IgnoreErrorAfterCleanPos-6,6)+'"',
-      //  ' LastErrorCurPos.StartPos='+dbgs(LastErrorCurPos.StartPos)+'"'+copy(Src,LastErrorCurPos.StartPos-6,6)+'"',
-      //  ' LastErrorPhase>CodeToolPhaseParse='+dbgs(LastErrorPhase>CodeToolPhaseParse));
+      //DebugLn(['  IgnoreErrorAfterCleanPos=',IgnoreErrorAfterCleanPos,' "',copy(Src,IgnoreErrorAfterCleanPos-6,6),'"',
+      //  ' LastErrorCurPos.StartPos=',LastErrorCurPos.StartPos,' "',copy(Src,LastErrorCurPos.StartPos-6,6),'"',
+      //  ' LastErrorPhase>CodeToolPhaseParse=',LastErrorPhase>CodeToolPhaseParse]);
       if IgnoreErrorAfterCleanPos>0 then begin
         // ignore position in scanned code
-        // -> check if last error is behind ignore position
+        // -> check if last error is behind or equal ignore position
         if (not LastErrorValid)
-        or (IgnoreErrorAfterCleanPos<LastErrorCurPos.StartPos) then
+        or (IgnoreErrorAfterCleanPos<=LastErrorCurPos.StartPos) then
           Result:=true
         else
           Result:=false;
@@ -1783,6 +1784,11 @@ begin
   {$IFDEF ShowIgnoreErrorAfter}
   DebugLn('TCustomCodeTool.IgnoreErrorAfterCleanedPos ',dbgs(Result));
   {$ENDIF}
+end;
+
+function TCustomCodeTool.CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
+begin
+  Result:=(Scanner<>nil) and Scanner.CleanPosIsAfterIgnorePos(CleanPos);
 end;
 
 function TCustomCodeTool.LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer

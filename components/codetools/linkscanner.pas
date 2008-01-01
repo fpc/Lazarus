@@ -293,7 +293,7 @@ type
     LastErrorIsValid: boolean;
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
-    CleanedIgnoreErrorAfterPosition: integer;
+    CleanedIgnoreErrorAfterPosition: integer;// ignore if valid and >=
     procedure RaiseExceptionFmt(const AMessage: string; Args: array of const);
     procedure RaiseException(const AMessage: string);
     procedure RaiseExceptionClass(const AMessage: string;
@@ -357,8 +357,9 @@ type
     procedure SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
     procedure ClearIgnoreErrorAfter;
     function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
-    function IgnoreErrorAfterCleanedPos: integer;
+    function IgnoreErrorAfterCleanedPos: integer;// before using this, check if valid!
     function IgnoreErrorAfterValid: boolean;
+    function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LoadSourceCaseLoUp(const AFilename: string): pointer;
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
@@ -1566,6 +1567,21 @@ begin
   {$IFDEF ShowIgnoreErrorAfter}
   DebugLn('TLinkScanner.IgnoreErrorAfterValid Result=',dbgs(Result));
   {$ENDIF}
+end;
+
+function TLinkScanner.CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
+var
+  p: LongInt;
+begin
+  if IgnoreErrorAfterValid then begin
+    p:=IgnoreErrorAfterCleanedPos;
+    if p<1 then
+      Result:=false
+    else
+      Result:=CleanPos>=p;
+  end else begin
+    Result:=false
+  end;
 end;
 
 function TLinkScanner.LastErrorIsInFrontOfCleanedPos(ACleanedPos: integer
