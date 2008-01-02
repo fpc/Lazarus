@@ -14,10 +14,10 @@ implementation
 
 procedure Register; 
 begin
-  RegisterUnit('Ipfilebroker', @Ipfilebroker.Register); 
-  RegisterUnit('IpHtml', @IpHtml.Register); 
+  RegisterUnit('Ipfilebroker', @Ipfilebroker. Register); 
+  RegisterUnit('IpHtml', @IpHtml. Register); 
 end; 
 
 initialization
   RegisterPackage('TurboPowerIPro', @Register); 
-end.
+end. 

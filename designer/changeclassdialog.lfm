@@ -1,109 +1,121 @@
 object ChangeClassDlg: TChangeClassDlg
-  Caption = 'ChangeClassDlg'
-  ClientHeight = 311
-  ClientWidth = 423
-  OnCreate = ChangeClassDlgCreate
-  HorzScrollBar.Page = 424
-  VertScrollBar.Page = 312
   Left = 291
   Height = 311
   Top = 163
   Width = 423
+  HorzScrollBar.Page = 422
+  VertScrollBar.Page = 310
+  ActiveControl = OldAncestorsListBox
+  Caption = 'ChangeClassDlg'
+  ClientHeight = 311
+  ClientWidth = 423
+  OnCreate = ChangeClassDlgCreate
   object OldGroupBox: TGroupBox
-    Caption = 'OldGroupBox'
-    ClientHeight = 231
-    ClientWidth = 196
-    ParentColor = True
-    TabOrder = 0
     Left = 8
     Height = 248
     Top = 8
     Width = 200
+    Caption = 'OldGroupBox'
+    ClientHeight = 229
+    ClientWidth = 196
+    TabOrder = 0
     object OldClassLabel: TLabel
-      Caption = 'OldClassLabel'
       Left = 6
       Height = 32
       Top = 2
       Width = 185
+      Caption = 'OldClassLabel'
+      ParentColor = False
     end
     object OldAncestorGroupBox: TGroupBox
+      Height = 192
+      Top = 37
+      Width = 196
       Align = alBottom
       Caption = 'OldAncestorGroupBox'
-      ClientHeight = 175
+      ClientHeight = 173
       ClientWidth = 192
-      ParentColor = True
-      TabOrder = 1
-      Height = 192
-      Top = 39
-      Width = 196
+      TabOrder = 0
       object OldAncestorsListBox: TListBox
+        Height = 173
+        Width = 192
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
         TopIndex = -1
-        Height = 175
-        Width = 192
       end
     end
   end
   object NewGroupBox: TGroupBox
-    Caption = 'NewGroupBox'
-    ClientHeight = 231
-    ClientWidth = 196
-    ParentColor = True
-    TabOrder = 1
     Left = 216
     Height = 248
     Top = 8
     Width = 200
+    Caption = 'NewGroupBox'
+    ClientHeight = 229
+    ClientWidth = 196
+    TabOrder = 1
     object NewClassComboBox: TComboBox
-      MaxLength = 0
-      OnEditingDone = NewClassComboBoxEditingDone
-      TabOrder = 0
-      Text = 'NewClassComboBox'
       Left = 14
       Height = 25
       Top = 9
       Width = 174
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 0
+      OnEditingDone = NewClassComboBoxEditingDone
+      TabOrder = 0
+      Text = 'NewClassComboBox'
     end
     object NewAncestorGroupBox: TGroupBox
+      Height = 192
+      Top = 37
+      Width = 196
       Align = alBottom
       Caption = 'NewAncestorGroupBox'
-      ClientHeight = 175
+      ClientHeight = 173
       ClientWidth = 192
-      ParentColor = True
       TabOrder = 1
-      Height = 192
-      Top = 39
-      Width = 196
       object NewAncestorsListBox: TListBox
+        Height = 173
+        Width = 192
         Align = alClient
         ClickOnSelChange = False
         TabOrder = 0
         TopIndex = -1
-        Height = 175
-        Width = 192
       end
     end
   end
-  object OkButton: TButton
-    Anchors = [akRight, akBottom]
-    Caption = 'Ok'
-    ModalResult = 1
+  object BtnPanel: TPanel
+    Height = 42
+    Top = 269
+    Width = 423
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 42
+    ClientWidth = 423
     TabOrder = 2
-    Left = 192
-    Height = 25
-    Top = 270
-    Width = 91
-  end
-  object CancelButton: TButton
-    Anchors = [akRight, akBottom]
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 3
-    Left = 320
-    Height = 25
-    Top = 270
-    Width = 91
+    object OkButton: TButton
+      Left = 228
+      Height = 28
+      Top = 7
+      Width = 91
+      Align = alRight
+      BorderSpacing.Around = 6
+      Caption = 'Ok'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object CancelButton: TButton
+      Left = 325
+      Height = 28
+      Top = 7
+      Width = 91
+      Align = alRight
+      BorderSpacing.Around = 6
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
   end
 end

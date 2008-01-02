@@ -39,9 +39,12 @@ uses
   StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
   // IDE
   SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
-  FormEditingIntf, CheckLFMDlg, Project, MainIntf;
+  FormEditingIntf, CheckLFMDlg, Project, MainIntf, ExtCtrls;
 
 type
+
+  { TChangeClassDlg }
+
   TChangeClassDlg = class(TForm)
     NewClassComboBox: TComboBox;
     NewAncestorGroupBox: TGroupBox;
@@ -53,6 +56,7 @@ type
     CancelButton: TButton;
     NewGroupBox: TGroupBox;
     OldGroupBox: TGroupBox;
+    BtnPanel: TPanel;
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
   private
@@ -336,8 +340,10 @@ begin
         TComponent(ThePersistent).Name+':'+ThePersistent.ClassName
     else
       OldClassLabel.Caption:=ThePersistent.ClassName;
+    Caption:=Format(lisCCDChangeClassOf, [OldClassLabel.Caption]);
   end else begin
-    OldClassLabel.Caption:='no class';
+    OldClassLabel.Caption:=lisCCDNoClass;
+    Caption:=lisChangeClass;
   end;
 end;
 

@@ -3568,6 +3568,8 @@ resourcestring
   lisPLDPackageLinks = 'Package Links';
   lisSAMOverrideFirstSelected = 'Override first selected';
   lisSAMOverrideAllSelected = 'Override all selected';
+  lisCCDNoClass = 'no class';
+  lisCCDChangeClassOf = 'Change Class of %s';
 
 implementation
 
