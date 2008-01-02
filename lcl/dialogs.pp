@@ -500,10 +500,10 @@ type
   TSelectDirOpts = set of TSelectDirOpt;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string): boolean;
+  out Directory: string): boolean;
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
-function SelectDirectory(var Directory: string;
+  out Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
+function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
 
 

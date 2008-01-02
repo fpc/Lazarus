@@ -255,13 +255,13 @@ begin
 end;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string): boolean;
+  out Directory: string): boolean;
 begin
   Result:=SelectDirectory(Caption,InitialDirectory,Directory,false);
 end;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
-  var Directory: string; ShowHidden: boolean; HelpCtx: Longint): boolean;
+  out Directory: string; ShowHidden: boolean; HelpCtx: Longint): boolean;
 var
   SelectDirectoryDialog: TSelectDirectoryDialog;
 begin
@@ -279,7 +279,7 @@ begin
     Directory:='';
 end;
 
-function SelectDirectory(var Directory: string;
+function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
 var
   SelectDirectoryDialog: TSelectDirectoryDialog;
