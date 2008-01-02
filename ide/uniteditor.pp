@@ -4778,6 +4778,7 @@ var
   Provider: TAbstractIDEHTMLProvider;
   HTMLControl: TControl;
   ms: TMemoryStream;
+  NewWidth, NewHeight: integer;
 begin
   if FHintWindow<>nil then
     FHintWindow.Visible:=false;
@@ -4785,13 +4786,11 @@ begin
     FHintWindow:=THintWindow.Create(Self);
   IsHTML:=SysUtils.CompareText(copy(TheHint,1,6),'<HTML>')=0;
   //DebugLn(['TSourceNotebook.ActivateHint IsHTML=',IsHTML,' TheHint=',TheHint]);
+  if FHintWindow.ControlCount>0 then begin
+    //DebugLn(['TSourceNotebook.ActivateHint ',dbgsName(FHintWindow.Controls[0])]);
+    FHintWindow.Controls[0].Free;
+  end;
   if IsHTML then begin
-    HintWinRect := Rect(0,0,500,200);
-    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
-    if FHintWindow.ControlCount>0 then begin
-      //DebugLn(['TSourceNotebook.ActivateHint ',dbgsName(FHintWindow.Controls[0])]);
-      FHintWindow.Controls[0].Free;
-    end;
     Provider:=nil;
     HTMLControl:=CreateIDEHTMLControl(FHintWindow,Provider);
     Provider.BaseURL:=BaseURL;
@@ -4806,6 +4805,13 @@ begin
     finally
       ms.Free;
     end;
+    Provider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
+    if NewWidth<=0 then
+      NewWidth:=500;
+    if NewHeight<=0 then
+      NewHeight:=200;
+    HintWinRect := Rect(0,0,NewWidth,NewHeight);
+    OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
     FHintWindow.ActivateHint(HintWinRect,'');
   end else begin
     HintWinRect := FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
