@@ -1164,11 +1164,16 @@ const
   begin
     case Desc of
     ctnTypeSection,
-    ctnTypeDefinition,ctnGenericType: Result:=1;
+    ctnTypeDefinition,ctnGenericType:
+      Result:=1;
     ctnVarSection,ctnConstSection,ctnResStrSection,ctnLabelSection,
-    ctnVarDefinition,ctnConstDefinition,ctnProperty: Result:=2;
-    ctnProcedure: Result:=3;
-    ctnUsesSection: Result:=4;
+    ctnVarDefinition,ctnConstDefinition,ctnProperty:
+      Result:=2;
+    ctnInterface,ctnImplementation,ctnProgram,ctnPackage,ctnLibrary,
+    ctnProcedure:
+      Result:=3;
+    ctnUsesSection:
+      Result:=4;
 
     // class sections
     ctnClassTypePrivate,
