@@ -3095,7 +3095,7 @@ end;
 
   Retrieves the dimensions of the bounding rectangle of the specified window.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.GetWindowRect(Handle: HWND; Var ARect: TRect): Integer;
+function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
 begin
@@ -3105,10 +3105,11 @@ begin
 
   Result := 0;
 
-  QWidget_pos(TQtWidget(Handle).Widget, @APos);
+  APos.x := 0;
+  APos.y := 0;
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
-  ARect.Top := APos.x;
-  ARect.Left := APos.y;
+  ARect.Left := APos.x;
+  ARect.Top := APos.y;
   ARect.Bottom := ARect.Top + TQtWidget(Handle).getHeight;
   ARect.Right := ARect.Left + TQtWidget(Handle).getWidth;
 
