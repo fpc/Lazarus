@@ -57,14 +57,16 @@ type
     bsUp,       // button is up
     bsDisabled, // button disabled (grayed)
     bsDown,     // button is down
-    bsExclusive // button is the only down in his group
+    bsExclusive,// button is the only down in his group
+    bsHot       // button is under mouse
   );
 
-  {TNumGlyphs holds the number of glyphs in an image.
-    We restrict it to 4 to stay compatible but we don't NEED to.
-    If we change this the code in SetNumGlyphs for @link(TCustomSpeedButton)
-    needs to be changed }
-  TNumGlyphs = 1..4;
+  {
+   TNumGlyphs holds the number of glyphs in an image.
+   If we change this the code in SetNumGlyphs for @link(TCustomSpeedButton)
+   needs to be changed
+  }
+  TNumGlyphs = 1..5;
 
   {Some type aliases, because TButton is now in StdCtrls,
    but was in this unit in Lazarus 0.9.22 and earlier}
@@ -81,8 +83,11 @@ type
     FNumGlyphs: TNumGlyphs;
     FOnChange: TNotifyEvent;
     FImagesCache: TImageListCache;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
     procedure SetGlyph(Value: TBitmap);
     procedure SetNumGlyphs(Value: TNumGlyphs);
+    procedure ClearImages;
   protected
     // IUnknown
     function QueryInterface(const iid: tguid; out obj): longint; stdcall;
@@ -104,6 +109,8 @@ type
     property Glyph: TBitmap read FOriginal write SetGlyph;
     property NumGlyphs: TNumGlyphs read FNumGlyphs write SetNumGlyphs;
     property Images: TCustomImageList read FImages;
+    property Width: Integer read GetWidth;
+    property Height: Integer read GetHeight;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -123,7 +130,6 @@ type
     FLayout: TButtonLayout;
     FMargin: integer;
     FSpacing: Integer;
-    FMultiGlyph: TBitmap;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: Integer;
     Function IsGlyphStored: Boolean;

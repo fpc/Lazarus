@@ -55,8 +55,10 @@ type
   TGtkWSBitBtn = class(TWSBitBtn)
   private
   protected
+    class procedure UpdateGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph; const AButtonState: TButtonState); virtual;
     class procedure UpdateLayout(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
@@ -66,8 +68,8 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
-
   end;
+  TGtkWSBitBtnClass = class of TGtkWSBitBtn;
 
   { TGtkWSSpeedButton }
 
@@ -85,7 +87,28 @@ uses
   GtkProc, GtkInt, GtkGlobals,
   GtkWSControls, GtkWSStdCtrls;
   
+const
+  GtkStateToButtonState: array[GTK_STATE_NORMAL..GTK_STATE_INSENSITIVE] of TButtonState =
+  (
+{GTK_STATE_NORMAL     } bsUp,
+{GTK_STATE_ACTIVE     } bsDown,
+{GTK_STATE_PRELIGHT   } bsHot,
+{GTK_STATE_SELECTED   } bsDown,
+{GTK_STATE_INSENSITIVE} bsDisabled
+  );
   
+type
+  TCustomBitBtnAccess = class(TCustomBitBtn)
+  end;
+
+procedure GtkWSBitBtn_StateChanged(AWidget: PGtkWidget; AState: TGtkStateType; AInfo: PWidgetInfo); cdecl;
+begin
+  //WriteLn(Astate, ' :: ', GTK_WIDGET_STATE(AWidget));
+  TGtkWSBitBtnClass(TCustomBitBtn(AInfo^.LCLObject).WidgetSetClass).UpdateGlyph(
+    TBitBtn(AInfo^.LCLObject),
+    TCustomBitBtnAccess(AInfo^.LCLObject).FButtonGlyph,
+    GtkStateToButtonState[GTK_WIDGET_STATE(AWidget)]);
+end;
 
 { TGtkWSBitBtn }
 
@@ -148,61 +171,16 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
 
-  TGtkWSButton.SetCallbacks(PGtkWidget(Result), WidgetInfo);
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
 class procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonGlyph);
-var
-  WidgetInfo: PWidgetInfo;
-  BitBtnInfo: PBitBtnWidgetInfo;
-  GDIObject: PGDIObject;
-  Mask: PGdkBitmap;
-  AGlyph: TBitmap;
-  AIndex: Integer;
-  AEffect: TGraphicsDrawEffect;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph')
   then Exit;
   
-  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
-  BitBtnInfo := WidgetInfo^.UserData;                       
-  
-  AGlyph := TBitmap.Create;
-  AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
-  if (AIndex <> -1) and (AValue.Images <> nil) then
-    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
-  // check if an image is needed
-  if (AGlyph.Handle = 0)
-  or (AGlyph.Width = 0)
-  or (AGlyph.Height = 0)
-  then begin                                  
-    if BitBtnInfo^.ImageWidget <> nil
-    then begin
-      gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.ImageWidget);
-      BitBtnInfo^.ImageWidget := nil;
-    end;
-    AGlyph.Free;
-    Exit;
-  end;
-  
-  GDIObject := PgdiObject(AGlyph.Handle);
-  Mask := CreateGdkMaskBitmap(AValue.Glyph.Handle, AValue.Glyph.MaskHandle);
-  
-  // check for image
-  if BitBtnInfo^.ImageWidget = nil
-  then begin
-    BitBtnInfo^.ImageWidget :=
-     gtk_pixmap_new(GDIObject^.GDIPixmapObject.Image, Mask);
-    gtk_widget_show(BitBtnInfo^.ImageWidget);
-    UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
-  end
-  else begin
-    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
-  end;
-  
-  gdk_pixmap_unref(Mask);
-  AGlyph.Free;
+  UpdateGlyph(ABitBtn, AValue, GtkStateToButtonState[GTK_WIDGET_STATE(PGtkWidget(ABitBtn.Handle))]);
 end;
 
 class procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
@@ -295,6 +273,57 @@ begin
     clNone,
     [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
   GtkWidgetSet.SetWidgetFont(BitBtnInfo^.LabelWidget, AFont);
+end;
+
+class procedure TGtkWSBitBtn.UpdateGlyph(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonGlyph; const AButtonState: TButtonState);
+var
+  WidgetInfo: PWidgetInfo;
+  BitBtnInfo: PBitBtnWidgetInfo;
+  GDIObject: PGDIObject;
+  Mask: PGdkBitmap;
+  AGlyph: TBitmap;
+  AIndex: Integer;
+  AEffect: TGraphicsDrawEffect;
+begin
+  WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
+  BitBtnInfo := WidgetInfo^.UserData;
+
+  AGlyph := TBitmap.Create;
+  AValue.GetImageIndexAndEffect(AButtonState, AIndex, AEffect);
+  if (AIndex <> -1) and (AValue.Images <> nil) then
+    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+  // check if an image is needed
+  if (AGlyph.Handle = 0)
+  or (AGlyph.Width = 0)
+  or (AGlyph.Height = 0)
+  then begin
+    if BitBtnInfo^.ImageWidget <> nil
+    then begin
+      gtk_container_remove(BitBtnInfo^.TableWidget, BitBtnInfo^.ImageWidget);
+      BitBtnInfo^.ImageWidget := nil;
+    end;
+    AGlyph.Free;
+    Exit;
+  end;
+
+  GDIObject := PgdiObject(AGlyph.Handle);
+  Mask := CreateGdkMaskBitmap(AValue.Glyph.Handle, AValue.Glyph.MaskHandle);
+
+  // check for image
+  if BitBtnInfo^.ImageWidget = nil
+  then begin
+    BitBtnInfo^.ImageWidget :=
+     gtk_pixmap_new(GDIObject^.GDIPixmapObject.Image, Mask);
+    gtk_widget_show(BitBtnInfo^.ImageWidget);
+    UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
+  end
+  else begin
+    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject.Image, Mask);
+  end;
+
+  gdk_pixmap_unref(Mask);
+  AGlyph.Free;
 end;
 
 class procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
@@ -428,6 +457,14 @@ begin
       end;
     end;
   end;
+end;
+
+class procedure TGtkWSBitBtn.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSButton.SetCallbacks(AGtkWidget, AWidgetInfo);
+
+  SignalConnect(AGtkWidget, 'state-changed', @GtkWSBitBtn_StateChanged, AWidgetInfo);
 end;
 
 initialization

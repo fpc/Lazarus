@@ -106,7 +106,7 @@ const
   }
 
   XPBitBtn_ImageIndexToState: array[1..6] of TButtonState =
-    (bsUp, bsExclusive, bsDown, bsDisabled, bsUp, bsUp);
+    (bsUp, bsHot, bsDown, bsDisabled, bsUp, bsHot);
   BitBtnEnabledToButtonState: array[boolean] of TButtonState =
     (bsDisabled, bsUp);
 

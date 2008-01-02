@@ -67,6 +67,11 @@ begin
       if NumGlyphs > 3 then
         AStoredState := State
       else
+        AEffect := gdeNormal;
+    bsHot:
+      if NumGlyphs > 4 then
+        AStoredState := State
+      else
         AEffect := gdeHighlighted;
   end;
   AIndex := FImageIndexes[AStoredState];
@@ -91,13 +96,29 @@ begin
   begin
     if FOriginal.Width mod FOriginal.Height = 0 then
     begin
-      GlyphCount:= FOriginal.Width div FOriginal.Height;
-      if GlyphCount > 4 then
-        GlyphCount:= 1;
-      FNumGlyphs:= TNumGlyphs(GlyphCount);
+      GlyphCount := FOriginal.Width div FOriginal.Height;
+      if GlyphCount > High(TNumGlyphs) then
+        GlyphCount := Low(TNumGlyphs);
+      FNumGlyphs := TNumGlyphs(GlyphCount);
     end;
   end;
   GlyphChanged(FOriginal);
+end;
+
+function TButtonGlyph.GetHeight: Integer;
+begin
+  if FImages <> nil then
+    Result := FImages.Height
+  else
+    Result := 0;
+end;
+
+function TButtonGlyph.GetWidth: Integer;
+begin
+  if FImages <> nil then
+    Result := FImages.Width
+  else
+    Result := 0;
 end;
 
 procedure TButtonGlyph.GlyphChanged(Sender: TObject);
@@ -106,6 +127,7 @@ begin
   begin
     FImagesCache.UnregisterListener(Self);
     FImagesCache := nil; // cache can free on unregister
+    ClearImages;
   end;
 
   if (FOriginal.Width > 0) and (FOriginal.Height > 0) then
@@ -127,56 +149,23 @@ function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
   const Offset: TPoint;  State: TButtonState;  Transparent: Boolean;
   BiDiFlags: Longint): TRect;
 var
-  gWidth: integer;
-  gHeight: integer;
-  DestRect, SrcRect: TRect;
   ImgID: integer;
-  src_wh, dst_wh: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
   Result := Client;
   if (FOriginal = nil) then
     exit;
 
-  gWidth := FOriginal.Width;
-  gHeight := FOriginal.Height;
-
-  if (gWidth = 0) or (gHeight = 0) or
+  if (Width = 0) or (Height = 0) or
      (Client.Left >= Client.Right) or (Client.Top >= Client.Bottom) then
     Exit;
   
-  if NumGlyphs > 1 then
-    gWidth := gWidth div NumGlyphs;
-    
   GetImageIndexAndEffect(State, ImgID, AEffect);
 
-  SrcRect := Rect((ImgID * gWidth), 0, ((ImgID+1) * gWidth), gHeight);
-  DestRect := Client;
-  
-  Inc(DestRect.Left, Offset.X);
-  src_wh := SrcRect.Right - SrcRect.Left;
-  dst_wh := DestRect.Right - DestRect.Left;
-
-  if (dst_wh > src_wh) then
-    DestRect.Right := DestRect.Left+src_wh // if window for image is wider
-  else
-  if (dst_wh < src_wh) then
-    SrcRect.Right := SrcRect.Left + dst_wh; // if image not fits in their window width
-
-  Inc(DestRect.Top, Offset.Y);
-  src_wh := SrcRect.Bottom - SrcRect.Top;
-  dst_wh := DestRect.Bottom - DestRect.Top;
-
-  if (dst_wh > src_wh) then
-    DestRect.Bottom := DestRect.Top + src_wh // if window for image is higher
-  else
-  if (dst_wh < src_wh) then
-      SrcRect.Bottom := SrcRect.Top + dst_wh; // if image not fits in their window height
-  
-  FImages.Draw(Canvas, DestRect.Left, DestRect.Top, ImgID, AEffect);
+  FImages.Draw(Canvas, Client.Left + Offset.X, Client.Top + Offset.y, ImgID,
+    AEffect);
 
   // ToDo: VCL returns the text rectangle
-  Result := SrcRect;
 end;
 
 
@@ -190,6 +179,15 @@ begin
     FNumGlyphs := Value;
     GlyphChanged(FOriginal);
   end;
+end;
+
+procedure TButtonGlyph.ClearImages;
+var
+  i: TButtonState;
+begin
+  FImages := nil;
+  for i := Low(TButtonState) to High(TButtonState) do
+    FImageIndexes[i] := -1;
 end;
 
 function TButtonGlyph.QueryInterface(const iid: tguid; out obj): longint; stdcall;
