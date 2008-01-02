@@ -1159,6 +1159,32 @@ end;
 function TCodeExplorerView.CompareCodeNodes(Node1, Node2: TTreeNode): integer;
 const
   SortDesc = AllIdentifierDefinitions+[ctnProcedure,ctnProperty];
+  
+  function DescToLvl(Desc: TCodeTreeNodeDesc): integer;
+  begin
+    case Desc of
+    ctnTypeDefinition,ctnGenericType: Result:=0;
+    ctnVarDefinition,ctnConstDefinition,ctnProperty: Result:=1;
+    ctnProcedure: Result:=3;
+
+    // class sections
+    ctnClassTypePublic,
+    ctnClassTypePrivate,
+    ctnClassTypeProtected,
+    ctnClassTypePublished,
+    ctnClassVarPublic,
+    ctnClassVarPrivate,
+    ctnClassVarProtected,
+    ctnClassVarPublished,
+    ctnClassPrivate,
+    ctnClassProtected,
+    ctnClassPublic,
+    ctnClassPublished   : Result:=Desc-ctnClassTypePublic;
+    
+    else Result:=1000;
+    end;
+  end;
+  
 var
   Data1: TViewNodeData;
   Data2: TViewNodeData;
@@ -1166,6 +1192,8 @@ begin
   Data1:=TViewNodeData(Node1.Data);
   Data2:=TViewNodeData(Node2.Data);
   if (Mode=cemCategory) then begin
+    Result:=DescToLvl(Data1.Desc)-DescToLvl(Data2.Desc);
+    if Result<>0 then exit;
     if (Data1.Desc in SortDesc)
     and (Data2.Desc in SortDesc) then begin
       Result:=SysUtils.CompareText(Node1.Text,Node2.Text);
