@@ -603,12 +603,20 @@ begin
         ShowNode:=false;
       end;
       
+      // don't show method bodies
+      if (CodeNode.Desc=ctnProcedure)
+      and (ACodeTool.NodeIsMethodBody(CodeNode)) then begin
+        ShowNode:=false;
+        ShowChilds:=false;
+      end;
+      
       // category mode: put nodes in categories
       Category:=cecNone;
-      if (CodeNode.Parent=nil)
+      if ShowNode
+      and ((CodeNode.Parent=nil)
       or (CodeNode.Parent.Desc in [ctnInterface,ctnImplementation])
       or (CodeNode.Parent.Parent=nil)
-      or (CodeNode.Parent.Parent.Desc in [ctnInterface,ctnImplementation]) then
+      or (CodeNode.Parent.Parent.Desc in [ctnInterface,ctnImplementation])) then
       begin
         // top level definition
         case CodeNode.Desc of
