@@ -34,8 +34,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, AVL_Tree, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  Dialogs, ExtCtrls, LResources, FileUtil,
+  Classes, SysUtils, AVL_Tree, LCLProc, LCLIntf, LCLType, Forms, Controls, Buttons,
+  StdCtrls, Dialogs, ExtCtrls, LResources, FileUtil,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
@@ -264,6 +264,8 @@ function TSimpleHTMLControl.HTMLToCaption(const s: string): string;
 var
   p: Integer;
   EndPos: Integer;
+  CurTag: String;
+  NewTag: String;
 begin
   Result:=s;
   p:=1;
@@ -284,7 +286,24 @@ begin
         end;
         inc(EndPos);
       end;
-      System.Delete(Result,p,EndPos-p);
+      CurTag:=copy(Result,p,EndPos-p);
+      if SysUtils.CompareText(CurTag,'<BR>')=0 then
+        NewTag:=LineEnding
+      else
+        NewTag:='';
+      if NewTag='' then
+        System.Delete(Result,p,EndPos-p)
+      else begin
+        Result:=copy(Result,1,p-1)+NewTag+copy(Result,EndPos,length(Result));
+        inc(p,length(NewTag));
+      end;
+    end else if Result[p] in [' ',#9,#10,#13] then begin
+      // replace spaces and newline characters with single space
+      EndPos:=p+1;
+      while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9,#10,#13]) do
+        inc(EndPos);
+      Result:=copy(Result,1,p-1)+' '+copy(Result,EndPos,length(Result));
+      inc(p);
     end else
       inc(p);
   end;
@@ -331,10 +350,30 @@ begin
 end;
 
 procedure TSimpleHTMLControl.GetPreferredControlSize(out AWidth, AHeight: integer);
+var
+  DC: HDC;
+  R: TRect;
+  OldFont: HGDIOBJ;
+  Flags: Cardinal;
+  LabelText: String;
 begin
   AWidth:=0;
   AHeight:=0;
-  GetPreferredSize(AWidth,AHeight);
+  DC := GetDC(Parent.Handle);
+  try
+    R := Rect(0, 0, 600, 200);
+    OldFont := SelectObject(DC, Font.Reference.Handle);
+    Flags := DT_CalcRect;
+    inc(Flags, DT_WordBreak);
+    LabelText := GetLabelText;
+    DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
+    SelectObject(DC, OldFont);
+    AWidth := R.Right - R.Left;
+    AHeight := R.Bottom - R.Top;
+  finally
+    ReleaseDC(Parent.Handle, DC);
+  end;
+  DebugLn(['TSimpleHTMLControl.GetPreferredControlSize Caption="',Caption,'" ',AWidth,'x',AHeight]);
 end;
 
 { TLazIDEHTMLProvider }
