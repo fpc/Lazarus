@@ -274,10 +274,10 @@ begin
   end;
   
   GetCursorPos(p);
-  FDockObject.DragPos:=p;
+  FDockObject.DragPos := p;
   AControl.CalculateDockSizes;
-  FDockObject.DockRect := AControl.BoundsRect;
-  FDockObject.EraseDockRect := Rect(Maxint, 0, MaxInt, 0);
+  FDockObject.DockRect := Rect(p.x, p.y, p.x + AControl.Width, p.y + AControl.Height);
+  FDockObject.EraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
   SetCaptureControl(AControl);
 end;
 
@@ -301,6 +301,7 @@ begin
   if FDragImageList <> nil then
     FDragImageList.BeginDrag(0, APosition.X, APosition.Y);
   DefaultDockImage(FDockObject.DockRect);
+  FDockObject.EraseDockRect := FDockObject.DockRect;
 end;
 
 procedure TDockPerformer.DragMove(APosition: TPoint);

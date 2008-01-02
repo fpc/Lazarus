@@ -1172,24 +1172,24 @@ end;
 {------------------------------------------------------------------------------
        TControl CanAutoSize
 ------------------------------------------------------------------------------}
-Function TControl.CanAutoSize(Var NewWidth, NewHeight : Integer): Boolean;
-Begin
+function TControl.CanAutoSize(Var NewWidth, NewHeight : Integer): Boolean;
+begin
   Result := True;
 end;
 
 {------------------------------------------------------------------------------
        TControl Dragging
 ------------------------------------------------------------------------------}
-Function TControl.Dragging: Boolean;
-Begin
+function TControl.Dragging: Boolean;
+begin
   Result := DragManager.Dragging(Self);
 end;
 
 {------------------------------------------------------------------------------
        TControl GetBoundsRect
 ------------------------------------------------------------------------------}
-Function TControl.GetBoundsRect: TRect;
-Begin
+function TControl.GetBoundsRect: TRect;
+begin
   Result.Left := FLeft;
   Result.Top := FTop;
   Result.Right := FLeft+FWidth;
