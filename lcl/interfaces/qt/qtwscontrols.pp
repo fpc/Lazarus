@@ -397,7 +397,6 @@ class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;
 var
   Context: TQtDeviceContext absolute ADC;
   Pixmap: TQtPixmap;
-  Image: QImageH;
   DCSize: TSize;
   APoint: TQtPoint;
   ARect: TRect;
@@ -549,7 +548,7 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
     Exit;
 
-  TQtWidget(AWinControl.Handle).setFont(TQtFont(AFont.Handle).Widget);
+  TQtWidget(AWinControl.Handle).setFont(TQtFont(AFont.Reference.Handle).Widget);
 
   if AFont.Color = CLR_INVALID then exit;
 

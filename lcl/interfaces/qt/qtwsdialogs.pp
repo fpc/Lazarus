@@ -431,7 +431,7 @@ begin
   {------------------------------------------------------------------------------
     Code to call the dialog
    ------------------------------------------------------------------------------}
-  CurrentFont := TQtFont(TFontDialog(ACommonDialog).Font.Handle).Widget;
+  CurrentFont := TQtFont(TFontDialog(ACommonDialog).Font.Reference.Handle).Widget;
 
   ReturnFont := QFont_create;
   try

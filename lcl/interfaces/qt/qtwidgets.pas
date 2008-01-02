@@ -5886,7 +5886,7 @@ begin
   
   Msg.Msg := CN_NOTIFY;
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(LVN_COLUMNCLICK);
+  NMLV.hdr.code := LVN_COLUMNCLICK;
   NMLV.iItem := -1;
   NMLV.iSubItem := logicalIndex;
   
@@ -6081,7 +6081,7 @@ begin
   Msg.Msg := LM_PRESSED;
   
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
+  NMLV.hdr.code := LVN_ITEMCHANGED;
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -6113,7 +6113,7 @@ begin
   Msg.Msg := LM_CLICKED;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(NM_CLICK);
+  NMLV.hdr.code := NM_CLICK;
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -6149,7 +6149,7 @@ begin
   Msg.Msg := LM_LBUTTONDBLCLK;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(NM_DBLCLK);
+  NMLV.hdr.code := NM_DBLCLK;
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -6179,7 +6179,7 @@ begin
   Msg.Msg := CN_NOTIFY;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
+  NMLV.hdr.code := LVN_ITEMCHANGED;
 
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Item);
 
@@ -6267,7 +6267,7 @@ begin
   Msg.Msg := CN_NOTIFY;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(LVN_ITEMCHANGING);
+  NMLV.hdr.code := LVN_ITEMCHANGING;
   
   NMLV.iItem := QTreeWidget_indexOfTopLevelItem(QTreeWidgetH(Widget), Current);
 
@@ -6313,7 +6313,7 @@ begin
 
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
-  NMLV.hdr.code := UINT(LVN_ITEMCHANGED);
+  NMLV.hdr.code := LVN_ITEMCHANGED;
 
 
   Item := QTreeWidget_currentItem(QTreeWidgetH(Widget));
