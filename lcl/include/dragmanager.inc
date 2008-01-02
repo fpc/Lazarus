@@ -108,6 +108,7 @@ type
 constructor TDragDockComon.Create(AManager: TDragManagerDefault; AControl: TControl);
 begin
   FManager := AManager;
+  FDragImageList := nil;
 end;
 
 function TDragDockComon.SendDragMessage(AControl: TControl; Msg: TDragMessage; ADragObject: TDragObject; Target: TControl; const Position: TPoint): LRESULT;
@@ -121,8 +122,8 @@ end;
 function TDragDockComon.SendCmDragMsg(ADragObject: TDragObject; ADragMsg: TDragMessage): Boolean;
 //Send a CM_DRAG message to the window..
 begin
-  Result := boolean(SendDragMessage(ADragObject.DragTarget, ADragMsg,
-    ADragObject, ADragObject.DragTarget, ADragObject.DragPos));
+  Result := SendDragMessage(ADragObject.DragTarget, ADragMsg,
+    ADragObject, ADragObject.DragTarget, ADragObject.DragPos) <> 0;
 end;
 
 { TDragPerformer }
@@ -137,7 +138,7 @@ begin
   AControl.DoStartDock(FDragObject);
   if FDragObject = nil then begin
     FDragObjectAutoFree := true;
-    FDragObject  := TDragControlObject.Create(AControl);
+    FDragObject := TDragControlObject.Create(AControl);
   end;
   
   GetCursorPos(p);
@@ -168,7 +169,8 @@ begin
 end;
 
 procedure TDragPerformer.DragMove(APosition: TPoint);
-var ATarget: TControl;
+var 
+  ATarget: TControl;
   DragCursor: TCursor;
 begin
   if FDragObject=nil
@@ -202,7 +204,8 @@ begin
 end;
 
 procedure TDragPerformer.DragStop(ADropped : Boolean);
-var ADragObjectCopy:TDragObject;
+var 
+  ADragObjectCopy: TDragObject;
   DragMsg: TDragMessage;
   Accepted: Boolean;
   TargetPos: TPoint;
