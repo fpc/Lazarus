@@ -330,6 +330,7 @@ type
 
   TDragObject = class
   private
+    FAlwaysShowDragImages: Boolean;
     FDragPos: TPoint;
     FControl: TControl;
     FDragTarget: TControl;
@@ -343,6 +344,7 @@ type
     procedure HideDragImage; virtual;
     procedure ShowDragImage; virtual;
     
+    property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
     property Control: TControl read FControl write FControl;
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTarget: TControl read FDragTarget write FDragTarget;

@@ -197,13 +197,17 @@ begin
   DragCursor := FDragObject.GetDragCursor(SendCmDragMsg(FDragObject, dmDragMove),APosition.X, APosition.Y);
   if FDragImageList <> nil then
   begin
-    if(ATarget = nil)or(csDisplayDragImage in ATarget.ControlStyle) then begin
+    if (ATarget = nil) or (csDisplayDragImage in ATarget.ControlStyle) or
+       FDragObject.AlwaysShowDragImages then
+    begin
       FDragImageList.DragCursor := DragCursor;
-      if not FDragImageList.Dragging
-      then FDragImageList.BeginDrag(0, APosition.X, APosition.Y)
-      else FDragImageList.DragMove(APosition.X, APosition.Y);
+      if not FDragImageList.Dragging then
+        FDragImageList.BeginDrag(0, APosition.X, APosition.Y)
+      else
+        FDragImageList.DragMove(APosition.X, APosition.Y);
     end
-    else FDragImageList.EndDrag;
+    else
+      FDragImageList.EndDrag;
   end;
   WidgetSet.SetCursor(Screen.Cursors[DragCursor]);
 end;
@@ -431,7 +435,8 @@ begin
   DragCursor := FDockObject.GetDragCursor(SendCmDragMsg(FDockObject, dmDragMove),APosition.X, APosition.Y);
   if FDragImageList <> nil then
   begin
-    if(ATarget = nil) or (csDisplayDragImage in ATarget.ControlStyle) then
+    if (ATarget = nil) or (csDisplayDragImage in ATarget.ControlStyle) or
+       FDockObject.AlwaysShowDragImages then
     begin
       FDragImageList.DragCursor := DragCursor;
       if not FDragImageList.Dragging then
