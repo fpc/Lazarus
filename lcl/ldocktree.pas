@@ -2009,21 +2009,23 @@ var
   Side: TAnchorSide;
   i: Integer;
   Sibling: TControl;
+  CurParent: TWinControl;
 begin
   if OldControl.Parent<>nil then begin
-    NewControl.Parent.DisableAlign;
+    CurParent:=OldControl.Parent;
+    CurParent.DisableAlign;
     try
       // put NewControl on the same Parent with the same bounds
       NewControl.Parent:=nil;
       NewControl.Align:=alNone;
       NewControl.BoundsRect:=OldControl.BoundsRect;
-      NewControl.Parent:=OldControl.Parent;
+      NewControl.Parent:=CurParent;
       // copy all four AnchorSide
       for a:=Low(TAnchorKind) to High(TAnchorKind) do
         NewControl.AnchorSide[a].Assign(OldControl.AnchorSide[a]);
       // bend all Anchors from OldControl to NewControl
-      for i:=0 to OldControl.Parent.ControlCount-1 do begin
-        Sibling:=OldControl.Parent.Controls[i];
+      for i:=0 to CurParent.ControlCount-1 do begin
+        Sibling:=CurParent.Controls[i];
         if (Sibling=NewControl) or (Sibling=OldControl) then continue;
         for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
           Side:=Sibling.AnchorSide[a];
@@ -2035,7 +2037,7 @@ begin
       // remove OldControl from its Parent
       OldControl.Parent:=nil;
     finally
-      NewControl.Parent.EnableAlign;
+      CurParent.EnableAlign;
     end;
   end else begin
     NewControl.Parent:=nil;
