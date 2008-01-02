@@ -611,7 +611,10 @@ end;
 
 procedure TDragManagerDefault.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  DragStop(true);
+  //In TControl.WndProc/LM_LBUTTONDOWN a drag session is started but a few lines
+  //later the LM_LBUTTONDOWN is send to the dragmanager which would end dragging.
+  //Dragging is only ended by a MouseUp so we can ignore this mesage anywhay.
+  //DragStop(true);
 end;
 
 procedure TDragManagerDefault.MouseMove(Shift: TShiftState; X, Y: Integer);
