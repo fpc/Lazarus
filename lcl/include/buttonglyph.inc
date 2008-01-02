@@ -20,6 +20,7 @@
 {------------------------------------------------------------------------------}
 constructor TButtonGlyph.Create;
 begin
+  FImagesCache := nil;
   FOriginal := TBitmap.Create;
   FOriginal.Handle := 0;
   FOriginal.OnChange := @GlyphChanged;
