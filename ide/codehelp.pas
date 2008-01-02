@@ -1217,7 +1217,7 @@ function TCodeHelpManager.GetHTMLHint(Code: TCodeBuffer; X, Y: integer;
   Complete: boolean; out BaseURL, HTMLHint: string; out CacheWasUsed: boolean
   ): TCodeHelpParseResult;
 const
-  le = '<BR>'#13;
+  le = '<BR>'+LineEnding;
 var
   IsHTML: boolean;
   
@@ -1238,12 +1238,33 @@ var
     Result:=false;
   end;
   
+  function TextToHTML(const s: string): string;
+  var
+    p: Integer;
+    EndPos: Integer;
+  begin
+    Result:=s;
+    // replace line breaks with <BR>
+    p:=1;
+    while (p<=length(Result)) do begin
+      if Result[p] in [#10,#13] then begin
+        EndPos:=p+1;
+        if (EndPos<=length(Result)) and (Result[EndPos] in [#10,#13]) then
+          inc(EndPos);
+        Result:=copy(Result,1,p-1)+le+copy(Result,EndPos,length(Result));
+        inc(p,length(le));
+      end else begin
+        inc(p);
+      end;
+    end;
+  end;
+
   procedure AddHTML(const s: string);
   begin
     if not IsHTML then begin
       IsHTML:=true;
       if HTMLHint<>'' then
-        HTMLHint:=HTMLHint+le+le;
+        HTMLHint:=TextToHTML(HTMLHint)+le+le;
       HTMLHint:=HTMLHint+s;
     end;
   end;
