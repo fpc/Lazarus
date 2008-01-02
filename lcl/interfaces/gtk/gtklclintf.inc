@@ -585,7 +585,7 @@ begin
     end
     else if SizeConstraints.Control is TCustomSplitter then begin
       // TCustomSplitter
-      if TCustomSplitter(SizeConstraints.Control).Align in [alTop,alBottom] then
+      if TCustomSplitter(SizeConstraints.Control).ResizeAnchor in [akTop,akBottom] then
       begin
         Widget:=GetStyleWidget(lgsHorizontalPaned);
         MinHeight:=Widget^.requisition.Height;
