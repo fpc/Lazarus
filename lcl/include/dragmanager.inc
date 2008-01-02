@@ -369,6 +369,9 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
   begin
     Result := nil;
     
+    if Manager.FDockSites = nil then
+      Exit;
+      
     QualifyingSites := TList.Create;
     try
       for i := 0 to Manager.FDockSites.Count - 1 do
@@ -639,7 +642,7 @@ begin
   begin
     FInDragStop := True;
     try
-      FPerformer.DragStop(ADropped);
+Self      FPerformer.DragStop(ADropped);
     finally
       FreeAndNil(FPerformer);
       FInDragStop := False;
