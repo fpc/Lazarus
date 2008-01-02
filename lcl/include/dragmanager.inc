@@ -129,6 +129,8 @@ end;
 
 constructor TDragPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
+var
+  p: TPoint;
 begin
   inherited Create(AManager, AControl);
 
@@ -137,7 +139,9 @@ begin
     FDragObjectAutoFree := true;
     FDragObject  := TDragControlObject.Create(AControl);
   end;
-  GetCursorPos(FDragObject.DragPos);
+  
+  GetCursorPos(p);
+  FDragObject.DragPos:=p;
   SetCaptureControl(AControl);
 end;
 
@@ -221,8 +225,7 @@ begin
         TargetPos.X := 0;
         TargetPos.Y := 0;
         DragMsg := dmDragCancel;
-        ADragObjectCopy.DragPos.X := 0;
-        ADragObjectCopy.DragPos.Y := 0;
+        ADragObjectCopy.DragPos:=Point(0,0);
         ADragObjectCopy.DragTarget := nil;
       end
       else DragMsg := dmDragDrop;
@@ -246,6 +249,8 @@ end;
 
 constructor TDockPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
+var
+  p: TPoint;
 begin
   inherited Create(AManager, AControl);
   AControl.DoStartDock(TDragObject(FDockObject));
@@ -253,10 +258,12 @@ begin
     FDragObjectAutoFree := true;
     FDockObject  := TDragDockObject.Create(AControl);
   end;
-  GetCursorPos(FDockObject.DragPos);
+  
+  GetCursorPos(p);
+  FDockObject.DragPos:=p;
   AControl.CalculateDockSizes;
   FDockObject.DockRect := AControl.BoundsRect;
-  FDockObject.EraseDockRect.Left:=Maxint;
+  FDockObject.EraseDockRect:=Rect(Maxint,0,MaxInt,0);
   SetCaptureControl(AControl);
 end;
 
@@ -463,8 +470,7 @@ begin
         TargetPos.X := 0;
         TargetPos.Y := 0;
         DragMsg := dmDragCancel;
-        ADockObjectCopy.DragPos.X := 0;
-        ADockObjectCopy.DragPos.Y := 0;
+        ADockObjectCopy.DragPos:=Point(0,0);
         ADockObjectCopy.DragTarget:=nil;
       end
       else DragMsg := dmDragDrop;
