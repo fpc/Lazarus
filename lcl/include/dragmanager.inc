@@ -80,6 +80,7 @@ type
     FStartPosition: TPoint;//mouse position at start of drag or dock
     FThresholdValue: Integer;//treshold before the drag becomes activated
     FWaitForTreshold: boolean;//are we waiting on the treshold activation
+    FInDragStop: Boolean; // semaphore to prevent second execution of dragStop
   protected
     //Support input capture
     procedure KeyUp(var Key: Word; Shift : TShiftState); override;
@@ -89,6 +90,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
   public
+    constructor Create; override;
     destructor Destroy; override;
 
     //Support methods
@@ -579,11 +581,15 @@ end;
 procedure TDragManagerDefault.DragStop(ADropped : Boolean);
 //End the drag operation
 begin
-  if FPerformer <> nil then try
-    FPerformer.DragStop(ADropped);
-  finally
-    FPerformer.Free;
-    FPerformer:=nil;
+  if (FPerformer <> nil) and not FInDragStop then
+  begin
+    FInDragStop := True;
+    try
+      FPerformer.DragStop(ADropped);
+    finally
+      FreeAndNil(FPerformer);
+      FInDragStop := False;
+    end;
   end;
 end;
 
@@ -618,6 +624,12 @@ begin
   //later the LM_LBUTTONDOWN is send to the dragmanager which would end dragging.
   //Dragging is only ended by a MouseUp so we can ignore this mesage anywhay.
   //DragStop(true);
+end;
+
+constructor TDragManagerDefault.Create;
+begin
+  inherited Create;
+  FInDragStop := False;
 end;
 
 procedure TDragManagerDefault.MouseMove(Shift: TShiftState; X, Y: Integer);
