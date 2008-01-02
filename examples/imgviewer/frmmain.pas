@@ -25,9 +25,9 @@ unit frmmain;
 interface
 
 uses
-  LCLIntf,SysUtils, Types, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ImgList, ComCtrls, ExtCtrls, ActnList, Menus,
-  ToolWin, LResources;
+  LCLIntf,SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, ActnList, Menus,
+  LResources, LCLType;
 
 type
   TMainForm = class(TForm)
@@ -117,9 +117,6 @@ var
   MainForm: TMainForm;
 
 implementation
-
-uses filectrl,lazjpeg,lcltype;
-
 
 Const
   ImageTypes = '.jpg.jpeg.bmp.xpm.png';
