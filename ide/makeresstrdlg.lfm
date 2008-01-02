@@ -1,15 +1,15 @@
 object MakeResStrDialog: TMakeResStrDialog
-  Left = 432
-  Height = 513
-  Top = 212
-  Width = 480
-  HorzScrollBar.Page = 479
-  VertScrollBar.Page = 512
+  Left = 319
+  Height = 543
+  Top = 172
+  Width = 635
+  HorzScrollBar.Page = 634
+  VertScrollBar.Page = 542
   ActiveControl = AppendResStrRadioButton
   BorderIcons = [biSystemMenu]
   Caption = 'MakeResStrDialog'
-  ClientHeight = 513
-  ClientWidth = 480
+  ClientHeight = 543
+  ClientWidth = 635
   Constraints.MinHeight = 513
   Constraints.MinWidth = 480
   OnCreate = FormCreate
@@ -18,13 +18,13 @@ object MakeResStrDialog: TMakeResStrDialog
     Left = 6
     Height = 234
     Top = 6
-    Width = 468
+    Width = 623
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'ConversionGroupBox'
     ClientHeight = 215
-    ClientWidth = 464
+    ClientWidth = 619
     TabOrder = 0
     object ResStrSectionLabel: TLabel
       AnchorSideLeft.Control = IdentifierGroupBox
@@ -107,7 +107,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 142
       Height = 25
       Top = 125
-      Width = 316
+      Width = 471
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
@@ -126,7 +126,7 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 194
       Height = 25
       Top = 156
-      Width = 264
+      Width = 419
       Anchors = [akTop, akLeft, akRight]
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       BorderSpacing.Around = 6
@@ -139,19 +139,19 @@ object MakeResStrDialog: TMakeResStrDialog
       Left = 6
       Height = 113
       Top = 6
-      Width = 452
+      Width = 607
       Align = alTop
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'IdentifierGroupBox'
       ClientHeight = 94
-      ClientWidth = 448
+      ClientWidth = 603
       TabOrder = 5
       object IdentLengthLabel: TLabel
         AnchorSideTop.Control = CustomIdentifierCheckBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentLengthComboBox
-        Left = 225
+        Left = 380
         Height = 20
         Top = 36
         Width = 111
@@ -187,7 +187,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Left = 114
         Height = 23
         Top = 65
-        Width = 328
+        Width = 483
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         Enabled = False
@@ -200,7 +200,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Left = 6
         Height = 22
         Top = 6
-        Width = 436
+        Width = 591
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'CustomIdentifierCheckBox'
@@ -213,7 +213,7 @@ object MakeResStrDialog: TMakeResStrDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = IdentifierGroupBox
         AnchorSideRight.Side = asrBottom
-        Left = 342
+        Left = 497
         Height = 25
         Top = 34
         Width = 100
@@ -243,97 +243,34 @@ object MakeResStrDialog: TMakeResStrDialog
       end
     end
   end
-  object OKButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 315
-    Height = 36
-    Top = 471
-    Width = 75
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonClick
-    TabOrder = 1
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 396
-    Height = 32
-    Top = 475
-    Width = 78
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    OnClick = CancelButtonClick
-    TabOrder = 2
-  end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = ConversionGroupBox
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 12
-    Height = 36
-    Top = 471
-    Width = 75
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
-    TabOrder = 3
-  end
   object CodePanel: TPanel
     AnchorSideBottom.Control = CancelButton
     Left = 6
-    Height = 223
+    Height = 243
     Top = 246
-    Width = 468
-    Align = alTop
-    Anchors = [akTop, akLeft, akRight, akBottom]
+    Width = 623
+    Align = alClient
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 223
-    ClientWidth = 468
-    TabOrder = 4
+    ClientHeight = 243
+    ClientWidth = 623
+    TabOrder = 1
     object SrcPreviewGroupBox: TGroupBox
       AnchorSideBottom.Control = CancelButton
-      Height = 91
-      Width = 468
+      Height = 111
+      Width = 623
       Align = alTop
       Anchors = [akTop, akLeft, akRight, akBottom]
       Caption = 'SrcPreviewGroupBox'
-      ClientHeight = 72
-      ClientWidth = 464
+      ClientHeight = 92
+      ClientWidth = 619
       TabOrder = 0
       OnResize = IdentPrefixLabelResize
       object SrcPreviewSynEdit: TSynEdit
         Left = 6
-        Height = 60
+        Height = 80
         Top = 6
-        Width = 452
+        Width = 607
         Align = alClient
         BorderSpacing.Around = 6
         Font.Color = clBlack
@@ -343,9 +280,7 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -672,23 +607,22 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object StringConstGroupBox: TGroupBox
       Height = 127
-      Top = 96
-      Width = 468
+      Top = 116
+      Width = 623
       Align = alClient
       Caption = 'StringConstGroupBox'
       ClientHeight = 108
-      ClientWidth = 464
+      ClientWidth = 619
       TabOrder = 1
       object StringConstSynEdit: TSynEdit
         Left = 6
         Height = 96
         Top = 6
-        Width = 452
+        Width = 607
         Align = alClient
         BorderSpacing.Around = 6
         Font.Color = clBlack
@@ -698,9 +632,7 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
-        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
-        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -1027,16 +959,82 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'StringConstSynEdit'
         )
-        SelectedColor.OnChange = nil
       end
     end
     object Splitter1: TSplitter
       Cursor = crVSplit
       Height = 5
-      Top = 91
-      Width = 468
+      Top = 111
+      Width = 623
       Align = alTop
       ResizeAnchor = akTop
+    end
+  end
+  object BtnPanel: TPanel
+    Height = 48
+    Top = 495
+    Width = 635
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 635
+    TabOrder = 2
+    object OKButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 470
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 551
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      OnClick = CancelButtonClick
+      TabOrder = 1
+    end
+    object HelpButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      OnClick = HelpButtonClick
+      TabOrder = 2
     end
   end
   object SynPasSyn: TSynPasSyn

@@ -62,6 +62,7 @@ type
     // options
     ConversionGroupBox: TGroupBox;
     CodePanel: TPanel;
+    BtnPanel: TPanel;
     // resourcestring section
     ResStrSectionLabel: TLabel;
     ResStrSectionComboBox: TComboBox;
