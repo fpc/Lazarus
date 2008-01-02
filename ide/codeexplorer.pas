@@ -1168,18 +1168,18 @@ const
     ctnProcedure: Result:=3;
 
     // class sections
-    ctnClassTypePublic,
     ctnClassTypePrivate,
     ctnClassTypeProtected,
+    ctnClassTypePublic,
     ctnClassTypePublished,
-    ctnClassVarPublic,
     ctnClassVarPrivate,
     ctnClassVarProtected,
+    ctnClassVarPublic,
     ctnClassVarPublished,
     ctnClassPrivate,
     ctnClassProtected,
     ctnClassPublic,
-    ctnClassPublished   : Result:=Desc-ctnClassTypePublic;
+    ctnClassPublished   : Result:=Desc-ctnClassTypePrivate;
     
     else Result:=1000;
     end;

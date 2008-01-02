@@ -81,18 +81,18 @@ const
 
   ctnClass              = 30;
   ctnClassInterface     = 31;
-  ctnClassTypePublic    = 32;
-  ctnClassTypePrivate   = 33;
-  ctnClassTypeProtected = 34;
+  ctnClassTypePrivate   = 32;
+  ctnClassTypeProtected = 33;
+  ctnClassTypePublic    = 34;
   ctnClassTypePublished = 35;
-  ctnClassVarPublic     = 36;
-  ctnClassVarPrivate    = 37;
-  ctnClassVarProtected  = 38;
+  ctnClassVarPrivate    = 36;
+  ctnClassVarProtected  = 37;
+  ctnClassVarPublic     = 38;
   ctnClassVarPublished  = 39;
-  ctnClassPublished     = 40;
-  ctnClassPrivate       = 41;
-  ctnClassProtected     = 42;
-  ctnClassPublic        = 43;
+  ctnClassPrivate       = 40;
+  ctnClassProtected     = 41;
+  ctnClassPublic        = 42;
+  ctnClassPublished     = 43;
   ctnClassGUID          = 44;
 
   ctnProperty           = 50;
