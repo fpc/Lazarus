@@ -2642,9 +2642,6 @@ type
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
 function CompareTextWithExpandedNode(Key, Data: Pointer): integer;
 
-function InitCommonControl(CC: Integer): Boolean;
-procedure CheckCommonControl(CC: Integer);
-
 procedure Register;
 
 implementation
@@ -2657,16 +2654,6 @@ const
   ScrollBarWidth=0;
 
 { Toolbar menu support }
-
-function InitCommonControl(CC: Integer): Boolean;
-begin
-  Result := True;
-end;
-
-procedure CheckCommonControl(CC: Integer);
-begin
-
-end;
 
 procedure Register;
 begin
