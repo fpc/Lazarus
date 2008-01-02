@@ -3408,10 +3408,10 @@ end;
   to the wanted position and sends a move message to the interface. It is up to
   the interface to handle moves instantly or queued.
 -------------------------------------------------------------------------------}
-Function TWinControl.GetClientOrigin: TPoint;
+function TWinControl.GetClientOrigin: TPoint;
 var
   AControl: TWinControl;
-Begin
+begin
   Result.X := 0;
   Result.Y := 0;
 //DebugLn('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
@@ -3426,6 +3426,7 @@ Begin
       AControl:=AControl.Parent;
     until AControl=nil;
   end else
+  if Parent <> nil then
     Result:=inherited GetClientOrigin;
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;

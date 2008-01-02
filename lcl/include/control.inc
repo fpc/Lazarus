@@ -1104,24 +1104,28 @@ Begin
     dmDragEnter, dmDragLeave, dmDragMove:
       begin
         Accepts := True;
-        P:=ScreenToClient(APosition);
-        if ADragObject is TDragDockObject then begin
+        P := ScreenToClient(APosition);
+        if ADragObject is TDragDockObject then
+        begin
           AWinTarget:= TWinControl(ADragObject.DragTarget);
           AWinTarget.DockOver(TDragDockObject(ADragObject),P.X,P.Y,TDragState(ADragMessage),Accepts);
         end
-        else DragOver(ADragObject,P.X,P.Y,TDragState(ADragMessage),Accepts);
+        else
+          DragOver(ADragObject,P.X,P.Y,TDragState(ADragMessage),Accepts);
         Result := Ord(Accepts);
       end;
 
-    dmDragDrop: begin
-      P:=ScreenToClient(APosition);
-      if ADragObject is TDragDockObject then begin
-        AWinTarget:= TWinControl(ADragObject.DragTarget);
-        AWinTarget.DockDrop(TDragDockObject(ADragObject), P.X, P.Y);
-      end
-      else DragDrop(ADragObject, P.X, P.Y);
-    end;
-
+    dmDragDrop:
+      begin
+        P := ScreenToClient(APosition);
+        if ADragObject is TDragDockObject then
+        begin
+          AWinTarget:= TWinControl(ADragObject.DragTarget);
+          AWinTarget.DockDrop(TDragDockObject(ADragObject), P.X, P.Y);
+        end
+        else
+          DragDrop(ADragObject, P.X, P.Y);
+      end;
   end;
 end;
 

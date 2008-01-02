@@ -117,7 +117,8 @@ function TDragDockComon.SendDragMessage(AControl: TControl; Msg: TDragMessage; A
 begin
   Result := 0;
   if AControl = nil then exit;
-  Result := AControl.DoDragMsg(Msg,Position,ADragObject,Target,ADragObject is TDragDockObject);
+  Result := AControl.DoDragMsg(Msg, Position, ADragObject, Target,
+    ADragObject is TDragDockObject);
 end;
 
 
@@ -525,7 +526,7 @@ begin
       end
       else
         DragMsg := dmDragDrop;
-      SendDragMessage(ADockObjectCopy.DragTarget, DragMsg,ADockObjectCopy, ADockObjectCopy.DragTarget, ADockObjectCopy.DragPos);
+      SendDragMessage(ADockObjectCopy.DragTarget, DragMsg, ADockObjectCopy, ADockObjectCopy.DragTarget, ADockObjectCopy.DragPos);
     end;
 
     if not Accepted then
@@ -642,7 +643,7 @@ begin
   begin
     FInDragStop := True;
     try
-Self      FPerformer.DragStop(ADropped);
+      FPerformer.DragStop(ADropped);
     finally
       FreeAndNil(FPerformer);
       FInDragStop := False;
