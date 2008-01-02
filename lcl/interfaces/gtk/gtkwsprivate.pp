@@ -269,7 +269,8 @@ end;
 
 { TGtkPrivateScrollingWinControl }
 
-class procedure TGtkPrivateScrollingWinControl.SetZPosition(const AWinControl: TWinControl; const APosition: TWSZPosition);
+class procedure TGtkPrivateScrollingWinControl.SetZPosition(
+  const AWinControl: TWinControl; const APosition: TWSZPosition);
 var
   Widget: PGtkWidget;
   ScrollWidget: PGtkScrolledWindow;
@@ -284,26 +285,30 @@ begin
   //      can be made. This is not possible now since we have a frame around us
 
   Widget := Pointer(AWinControl.Handle);
-//  WidgetInfo := GetWidgetInfo(Widget);
-  ScrollWidget := PGtkScrolledWindow(PGtkFrame(Widget)^.Bin.Child);
+  //  WidgetInfo := GetWidgetInfo(Widget);
 
   // Only do the scrollbars, leave the core to the default (we might have a viewport)
   TGtkPrivateWidget.SetZPosition(AWinControl, APosition);
 
-  case APosition of
-    wszpBack:  begin
-//      gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
-      if ScrollWidget^.hscrollbar <> nil
-      then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
-      if ScrollWidget^.vscrollbar <> nil
-      then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
-    end;
-    wszpFront: begin
-//      gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
-      if ScrollWidget^.hscrollbar <> nil
-      then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
-      if ScrollWidget^.vscrollbar <> nil
-      then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+  if GtkWidgetIsA(Widget,gtk_frame_get_type) then begin
+    ScrollWidget := PGtkScrolledWindow(PGtkFrame(Widget)^.Bin.Child);
+    if ScrollWidget<>nil then begin
+      case APosition of
+        wszpBack:  begin
+          // gdk_window_lower(WidgetInfo^.CoreWidget^.Window);
+          if ScrollWidget^.hscrollbar <> nil
+          then gdk_window_lower(ScrollWidget^.hscrollbar^.Window);
+          if ScrollWidget^.vscrollbar <> nil
+          then gdk_window_lower(ScrollWidget^.vscrollbar^.Window);
+        end;
+        wszpFront: begin
+          // gdk_window_raise(WidgetInfo^.CoreWidget^.Window);
+          if ScrollWidget^.hscrollbar <> nil
+          then gdk_window_raise(ScrollWidget^.hscrollbar^.Window);
+          if ScrollWidget^.vscrollbar <> nil
+          then gdk_window_raise(ScrollWidget^.vscrollbar^.Window);
+        end;
+      end;
     end;
   end;
 end;
