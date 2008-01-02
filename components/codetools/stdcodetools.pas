@@ -1750,7 +1750,7 @@ var
       Params.SetIdentifier(StartTool,Identifier,nil);
       try
         Params.Save(OldInput);
-        if FindIdentifierInContext(Params) then begin
+        if StartTool.FindIdentifierInContext(Params) then begin
           Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
           if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
