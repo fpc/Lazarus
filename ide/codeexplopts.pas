@@ -58,8 +58,8 @@ type
     cecTypes,
     cecVariables,
     cecConstants,
-    cecProcedures,
-    cecProperties
+    cecProperties,
+    cecProcedures
     );
   TCodeExplorerCategories = set of TCodeExplorerCategory;
   
@@ -139,8 +139,8 @@ const
     'Types',
     'Variables',
     'Constants',
-    'Procedures',
-    'Properties'
+    'Properties',
+    'Procedures'
     );
 
 var

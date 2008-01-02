@@ -1163,9 +1163,12 @@ const
   function DescToLvl(Desc: TCodeTreeNodeDesc): integer;
   begin
     case Desc of
-    ctnTypeDefinition,ctnGenericType: Result:=0;
-    ctnVarDefinition,ctnConstDefinition,ctnProperty: Result:=1;
+    ctnTypeSection,
+    ctnTypeDefinition,ctnGenericType: Result:=1;
+    ctnVarSection,ctnConstSection,ctnResStrSection,ctnLabelSection,
+    ctnVarDefinition,ctnConstDefinition,ctnProperty: Result:=2;
     ctnProcedure: Result:=3;
+    ctnUsesSection: Result:=4;
 
     // class sections
     ctnClassTypePrivate,
