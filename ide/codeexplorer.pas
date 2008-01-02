@@ -584,7 +584,7 @@ begin
     // don't show keyword nodes
     if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
       ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
-      ctnVariantType]
+      ctnVariantType,ctnEnumerationType,ctnSetType,ctnProcedureType]
     then
       ShowNode:=false;
       
@@ -605,20 +605,24 @@ begin
       
       // category mode: put nodes in categories
       Category:=cecNone;
-      case CodeNode.Desc of
-      ctnUsesSection:     Category:=cecUses;
-      ctnTypeDefinition,ctnGenericType:  Category:=cecTypes;
-      ctnVarDefinition:   Category:=cecVariables;
-      ctnConstDefinition: Category:=cecConstants;
-      ctnProcedure:       Category:=cecProcedures;
-      ctnProperty:
-        if (CodeNode.Parent=nil)
-        or (CodeNode.Parent.Desc in [ctnInterface,ctnImplementation]) then
-          Category:=cecProperties;
+      if (CodeNode.Parent=nil)
+      or (CodeNode.Parent.Desc in [ctnInterface,ctnImplementation])
+      or (CodeNode.Parent.Parent=nil)
+      or (CodeNode.Parent.Parent.Desc in [ctnInterface,ctnImplementation]) then
+      begin
+        // top level definition
+        case CodeNode.Desc of
+        ctnUsesSection:     Category:=cecUses;
+        ctnTypeDefinition,ctnGenericType:  Category:=cecTypes;
+        ctnVarDefinition:   Category:=cecVariables;
+        ctnConstDefinition: Category:=cecConstants;
+        ctnProcedure:       Category:=cecProcedures;
+        ctnProperty:        Category:=cecProperties;
+        end;
       end;
       if Category<>cecNone then begin
         ShowNode:=Category in CodeExplorerOptions.Categories;
-        ShowChilds:=false;
+        ShowChilds:=CodeNode.Desc in [ctnTypeDefinition,ctnGenericType];
         if ShowNode then begin
           if fCategoryNodes[Category]=nil then begin
             NodeData:=TViewNodeData.Create(CodeNode.Parent);
