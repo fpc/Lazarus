@@ -28,6 +28,7 @@
 {off $DEFINE VerboseAutoSizeCtrlData}
 {off $DEFINE VerboseMouseBugfix}
 
+{off $DEFINE VerboseSizeMsg}
 {off $DEFINE CHECK_POSITION}
 {$IFDEF CHECK_POSITION}
 const CheckPostionClassName = 'xxTPage';
