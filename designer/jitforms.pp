@@ -1458,10 +1458,15 @@ end;
 procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
   const ComponentName: Ansistring;  ComponentClass: TPersistentClass;
   var Component: TComponent);
+var
+  i: Integer;
 begin
   // ToDo: this is for custom form templates
-  debugln('[TJITComponentList.ReaderAncestorNotFound] ComponentName='''+ComponentName
-    +''' Component='''+dbgsName(Component)+'''');
+  debugln('[TJITComponentList.ReaderAncestorNotFound] ComponentName="'+ComponentName
+    +'" Component="'+dbgsName(Component)+'" ComponentClass="',dbgsName(ComponentClass)+'"');
+  DebugLn(['TJITComponentList.ReaderAncestorNotFound FCurReadJITComponent=',dbgsName(FCurReadJITComponent)]);
+  for i:=0 to FCurReadJITComponent.ComponentCount-1 do
+    DebugLn(['TJITComponentList.ReaderAncestorNotFound ',i,' ',dbgsName(FCurReadJITComponent.Components[i])]);
 end;
 
 procedure TJITComponentList.ReaderError(Reader: TReader;
@@ -1526,11 +1531,13 @@ procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=ComponentClass;
-//  debugln('[TJITComponentList.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
+  //debugln(['[TJITComponentList.ReaderCreateComponent] Class=',ComponentClass.ClassName,' Component=',dbgsName(Component)]);
 end;
 
 procedure TJITComponentList.ReaderReadComponent(Component: TComponent);
 begin
+  fCurReadChild:=Component;
+  fCurReadChildClass:=TComponentClass(Component.ClassType);
   DebugLn('TJITComponentList.ReaderReadComponent A ',Component.Name,':',Component.ClassName);
 end;
 

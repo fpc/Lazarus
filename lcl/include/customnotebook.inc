@@ -678,7 +678,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.ReadState(Reader: TAbstractReader);
 begin
-  fAccess.Clear;
+  // do not clear. Think about loading ancestor + loading descendant stream.
+  // fAccess.Clear;
   inherited ReadState(Reader);
 end;
 
