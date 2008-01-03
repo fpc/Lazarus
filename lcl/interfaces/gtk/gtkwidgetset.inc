@@ -4553,10 +4553,8 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateDCForWidget(AWidget: PGtkWidget; AWindow: PGdkWindow;
   AWithChildWindows: Boolean; ADoubleBuffer: PGdkDrawable): HDC;
-
 var
   DC: TGtkDeviceContext absolute Result;
-
 begin
   DC := NewDC;
   DC.SetWidget(AWidget, AWindow, AWithChildWindows, ADoubleBuffer);

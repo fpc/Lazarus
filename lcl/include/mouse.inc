@@ -68,5 +68,30 @@ begin
   Result := FWheelScrollLines;
 end;
 
+function TMouse.GetDragImmediate: Boolean;
+begin
+  Result := DragManager.DragImmediate
+end;
+
+function TMouse.GetDragThreshold: Integer;
+begin
+  Result := DragManager.DragThreshold
+end;
+
+procedure TMouse.SetDragImmediate(const AValue: Boolean);
+begin
+  DragManager.DragImmediate := AValue;
+end;
+
+procedure TMouse.SetDragThreshold(const AValue: Integer);
+begin
+  DragManager.DragThreshold := AValue;
+end;
+
+function TMouse.GetIsDragging: Boolean;
+begin
+  Result := DragManager.IsDragging;
+end;
+
 
 // included by controls.pp
