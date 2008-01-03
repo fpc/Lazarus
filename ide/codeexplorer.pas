@@ -123,6 +123,7 @@ type
     FLastDirectivesChangeStep: integer;
     FMode: TCodeExplorerMode;
     FLastMode: TCodeExplorerMode;
+    FLastCodeValid: boolean;
     FOnGetCodeTree: TOnGetCodeTree;
     FOnGetDirectivesTree: TOnGetDirectivesTree;
     FOnJumpToCode: TOnJumpToCode;
@@ -418,8 +419,11 @@ end;
 
 procedure TCodeExplorerView.OptionsSpeedButtonClick(Sender: TObject);
 begin
-  if ShowCodeExplorerOptions=mrOk then
+  if ShowCodeExplorerOptions=mrOk then begin
     SaveCodeExplorerOptions;
+    FLastCodeValid:=false;
+    Refresh(true);
+  end;
 end;
 
 procedure TCodeExplorerView.RefreshMenuitemCLICK(Sender: TObject);
@@ -630,7 +634,7 @@ begin
       end;
       if Category<>cecNone then begin
         ShowNode:=Category in CodeExplorerOptions.Categories;
-        ShowChilds:=CodeNode.Desc in [ctnTypeDefinition,ctnGenericType];
+        ShowChilds:=false;
         if ShowNode then begin
           if fCategoryNodes[Category]=nil then begin
             NodeData:=TViewNodeData.Create(CodeNode.Parent);
@@ -885,7 +889,8 @@ begin
         exit;
       end;
     end else begin
-      if (ACodeTool.MainFilename=FCodeFilename)
+      if FLastCodeValid
+      and (ACodeTool.MainFilename=FCodeFilename)
       and (ACodeTool.Scanner<>nil)
       and (ACodeTool.Scanner.ChangeStep=FLastCodeChangeStep)
       and (Mode=FLastMode) then begin
@@ -894,6 +899,7 @@ begin
       end;
     end;
 
+    FLastCodeValid:=true;
     FLastMode:=Mode;
     // remember the codetools ChangeStep
     if ACodeTool<>nil then begin

@@ -5501,7 +5501,6 @@ var
     LFMType: string;
     CurUnitInfo: TUnitInfo;
     UnitCode: TCodeBuffer;
-    i: Integer;
   begin
     Result:=false;
     TheModalResult:=mrCancel;

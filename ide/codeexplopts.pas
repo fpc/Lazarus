@@ -237,6 +237,7 @@ begin
     FRefresh:=Src.Refresh;
     FMode:=Src.Mode;
     FFollowCursor:=Src.FollowCursor;
+    FCategories:=Src.Categories;
   end else
     inherited Assign(Source);
 end;
@@ -379,7 +380,7 @@ begin
   NewCategories:=[];
   for c:=FirstCodeExplorerCategory to high(TCodeExplorerCategory) do
     if CategoriesCheckGroup.Checked[ord(c)-1] then
-      include(NewCategories,c);
+      Include(NewCategories,c);
   Options.Categories:=NewCategories;
 end;
 
