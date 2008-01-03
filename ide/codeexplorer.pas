@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                             codeexplorer.pas
@@ -611,14 +610,12 @@ begin
       
       // category mode: put nodes in categories
       Category:=cecNone;
-      //DebugLn(['TCodeExplorerView.CreateNodes AAA1 ',CodeNode.DescAsString]);
       if ShowNode
       and ((CodeNode.Parent=nil)
       or (CodeNode.Parent.Desc in AllCodeSections)
       or (CodeNode.Parent.Parent=nil)
       or (CodeNode.Parent.Parent.Desc in AllCodeSections)) then
       begin
-        //DebugLn(['TCodeExplorerView.CreateNodes AAA2 ',CodeNode.DescAsString]);
         // top level definition
         case CodeNode.Desc of
         ctnUsesSection:     Category:=cecUses;
@@ -628,25 +625,33 @@ begin
         ctnProcedure:       Category:=cecProcedures;
         ctnProperty:        Category:=cecProperties;
         end;
-      end;
-      if Category<>cecNone then begin
-        ShowNode:=Category in CodeExplorerOptions.Categories;
-        if ShowNode then begin
-          if fCategoryNodes[Category]=nil then begin
-            NodeData:=TViewNodeData.Create(CodeNode.Parent);
-            NodeText:=CodeExplorerLocalizedString(Category);
-            NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode.Parent);
-            fCategoryNodes[Category]:=CodeTreeview.Items.AddChildObject(nil,
-                                                             NodeText,NodeData);
-            fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
-            fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
+        if Category<>cecNone then begin
+          ShowNode:=Category in CodeExplorerOptions.Categories;
+          if ShowNode then begin
+            if fCategoryNodes[Category]=nil then begin
+              NodeData:=TViewNodeData.Create(CodeNode.Parent);
+              NodeText:=CodeExplorerLocalizedString(Category);
+              NodeImageIndex:=GetCodeNodeImage(ACodeTool,CodeNode.Parent);
+              fCategoryNodes[Category]:=CodeTreeview.Items.AddChildObject(nil,
+                                                               NodeText,NodeData);
+              fCategoryNodes[Category].ImageIndex:=NodeImageIndex;
+              fCategoryNodes[Category].SelectedIndex:=NodeImageIndex;
+            end;
+            ParentViewNode:=fCategoryNodes[Category];
+            InFrontViewNode:=nil;
           end;
-          ParentViewNode:=fCategoryNodes[Category];
-          InFrontViewNode:=nil;
+        end else begin
+          ShowNode:=false;
         end;
+      end else if (CodeNode.Parent<>nil)
+      and (CodeNode.Parent.Desc in (AllClassSections+[ctnRecordType+ctnClassInterface]))
+      then begin
+        // show class, interface and record nodes
+        ShowNode:=true;
       end else begin
         ShowNode:=false;
       end;
+      //DebugLn(['TCodeExplorerView.CreateNodes ',CodeNode.DescAsString,' ShowNode=',ShowNode,' ShowChilds=',ShowChilds]);
     end;
     
     if ShowNode then begin
