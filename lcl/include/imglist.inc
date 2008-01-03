@@ -246,10 +246,15 @@ begin
   if (Source=Self) then exit;
   if Source is TCustomImageList then
   begin
-    ImgSrc:=TCustomImageList(Source);
-    SetWidthHeight(ImgSrc.Width,ImgSrc.Height);
-    Clear;
-    AddImages(ImgSrc);
+    ImgSrc := TCustomImageList(Source);
+    BeginUpdate;
+    try
+      SetWidthHeight(ImgSrc.Width,ImgSrc.Height);
+      Clear;
+      AddImages(ImgSrc);
+    finally
+      EndUpdate;
+    end;
   end
   else inherited Assign(Source);
 end;
