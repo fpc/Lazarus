@@ -246,13 +246,6 @@ type
 
 implementation
 const
-  PanelBevelToQtFrameShapeMap: array[TStatusPanelBevel] of Integer =
-  (
-{pbNone   } Integer(QFrameNoFrame),
-{pbLowered} Integer(QFrameStyledPanel) or Integer(QFrameSunken),
-{pbRaised } Integer(QFrameStyledPanel) or Integer(QFrameRaised)
-  );
-
   TickMarkToQtSliderTickPositionMap: array[TTickMark] of QSliderTickPosition =
   (
 {tmBoth       } QSliderTicksBothSides,
