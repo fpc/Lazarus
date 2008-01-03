@@ -602,11 +602,6 @@ begin
     end;
 
     if Mode=cemCategory then begin
-      // category mode: do not show sections
-      if (CodeNode.Desc in AllDefinitionSections) then begin
-        ShowNode:=false;
-      end;
-      
       // don't show method bodies
       if (CodeNode.Desc=ctnProcedure)
       and (ACodeTool.NodeIsMethodBody(CodeNode)) then begin
@@ -616,12 +611,14 @@ begin
       
       // category mode: put nodes in categories
       Category:=cecNone;
+      //DebugLn(['TCodeExplorerView.CreateNodes AAA1 ',CodeNode.DescAsString]);
       if ShowNode
       and ((CodeNode.Parent=nil)
-      or (CodeNode.Parent.Desc in [ctnInterface,ctnImplementation])
+      or (CodeNode.Parent.Desc in AllCodeSections)
       or (CodeNode.Parent.Parent=nil)
-      or (CodeNode.Parent.Parent.Desc in [ctnInterface,ctnImplementation])) then
+      or (CodeNode.Parent.Parent.Desc in AllCodeSections)) then
       begin
+        //DebugLn(['TCodeExplorerView.CreateNodes AAA2 ',CodeNode.DescAsString]);
         // top level definition
         case CodeNode.Desc of
         ctnUsesSection:     Category:=cecUses;
@@ -634,7 +631,6 @@ begin
       end;
       if Category<>cecNone then begin
         ShowNode:=Category in CodeExplorerOptions.Categories;
-        ShowChilds:=false;
         if ShowNode then begin
           if fCategoryNodes[Category]=nil then begin
             NodeData:=TViewNodeData.Create(CodeNode.Parent);
@@ -648,10 +644,7 @@ begin
           ParentViewNode:=fCategoryNodes[Category];
           InFrontViewNode:=nil;
         end;
-      end;
-
-      // category mode: do not show code sections
-      if (CodeNode.Desc in AllCodeSections) then begin
+      end else begin
         ShowNode:=false;
       end;
     end;
