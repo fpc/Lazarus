@@ -1475,8 +1475,14 @@ begin
         SlotLCLMessage(Sender, Event);
         Result := True;
       end;
+    LCLQt_Destroy:
+      begin
+        Free;
+        Result := True;
+        Exit;
+      end;
   else
-    QEvent_ignore(Event);
+    Result := inherited EventFilter(Sender, Event)
   end;
   EndEventProcessing;
 end;
@@ -4487,7 +4493,6 @@ end;
  ------------------------------------------------------------------------------}
 function TQtLineEdit.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
-  BeginEventProcessing;
   case QEvent_type(Event) of
     QEventFocusIn:
     begin
@@ -4503,7 +4508,6 @@ begin
     end;
   end;
   Result := inherited EventFilter(Sender, Event);
-  EndEventProcessing;
 end;
 
 {------------------------------------------------------------------------------

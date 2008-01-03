@@ -259,7 +259,7 @@ begin
   QtFrame := TQtFrame.Create(AWinControl, AParams);
   QtFrame.AttachEvents;
 
-  // Set´s initial properties
+  // Set's initial properties
 
   QtFrame.setFrameShape(QFrameNoFrame);
   

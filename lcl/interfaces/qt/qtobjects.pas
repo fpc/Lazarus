@@ -49,7 +49,6 @@ type
   private
     FUpdateCount: Integer;
     FInEventCount: Integer;
-    FReleaseInEvent: Boolean;
   public
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
@@ -59,7 +58,7 @@ type
   public
     procedure AttachEvents; virtual;
     procedure DetachEvents; virtual;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
     procedure BeginEventProcessing;
     procedure EndEventProcessing;
   public
@@ -443,6 +442,9 @@ type
     procedure Insert(Index: Integer; const S: string); override;
     property Handle: QStringListH read FHandle;
   end;
+
+const
+  LCLQt_Destroy = QEventUser + $1000;
   
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
@@ -568,7 +570,6 @@ constructor TQtObject.Create;
 begin
   FUpdateCount := 0;
   FInEventCount := 0;
-  FReleaseInEvent := False;
 end;
 
 destructor TQtObject.Destroy;
@@ -584,15 +585,7 @@ end;
 
 procedure TQtObject.Release;
 begin
-  if Self <> nil then
-  begin
-    if FInEventCount > 0 then
-    begin
-      FReleaseInEvent := True;
-    end
-    else
-      Free;
-  end;
+  QCoreApplication_postEvent(TheObject, QEvent_create(LCLQt_Destroy));
 end;
 
 procedure TQtObject.AttachEvents;
@@ -613,6 +606,23 @@ begin
   end;
 end;
 
+function TQtObject.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+  cdecl;
+begin
+  Result := False;
+
+  QEvent_accept(Event);
+  case QEvent_type(Event) of
+    LCLQt_Destroy:
+     begin
+       Result := True;
+       Free;
+     end;
+  else
+    QEvent_ignore(Event);
+  end;
+end;
+
 procedure TQtObject.BeginEventProcessing;
 begin
   inc(FInEventCount);
@@ -622,8 +632,6 @@ procedure TQtObject.EndEventProcessing;
 begin
   if FInEventCount > 0 then
     dec(FInEventCount);
-  if (FInEventCount = 0) and FReleaseInEvent then
-    Free;
 end;
 
 procedure TQtObject.BeginUpdate;
