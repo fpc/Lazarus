@@ -97,16 +97,6 @@ begin
   Result := false;
 end;
 
-{$ifdef OldRawImageProcs}
-function TWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-begin
-  Bitmap:=0;
-  MaskBitmap:=0;
-  Result := false;
-end;
-{$endif}
-
 //todo: remove ?
 function TWidgetSet.CreateEmptyRegion: hRGN;
 begin
@@ -148,6 +138,38 @@ end;
 
 procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
+end;
+
+procedure TWidgetSet.DrawDefaultDockImage(ARect: TRect; Erase: Boolean);
+const
+  PenSize=4;
+var
+  DC: HDC;
+  OldPen, NewPen: HPen;
+  OldRop: Integer;
+  LogPen: TLogPen;
+begin
+  LogPen.lopnColor := $00FFFFFF;
+  LogPen.lopnWidth := Point(PenSize, 0);
+  LogPen.lopnStyle := PS_SOLID;
+  DC := GetDC(0);
+  try
+    NewPen := CreatePenIndirect(LogPen);
+    OldPen := SelectObject(DC, NewPen);
+    OldRop := SetROP2(DC, R2_XORPEN);
+    with ARect do
+    begin
+      MoveToEx(DC, Left+PenSize, Top+PenSize, nil);
+      LineTo(DC, Right-PenSize,Top+PenSize);
+      LineTo(DC, Right-PenSize, Bottom-PenSize);
+      LineTo(DC, Left+PenSize,Bottom-PenSize);
+      LineTo(DC, Left+PenSize, Top+PenSize);
+    end;
+  finally
+    SetROP2(DC, OldRop);
+    DeleteObject(SelectObject(DC, OldPen));
+    ReleaseDC(0, DC);
+  end;
 end;
 
 function TWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
@@ -296,14 +318,6 @@ begin
   AddKey;
 end;
 
-{$ifdef OldRawImageProcs}
-function TWidgetSet.GetBitmapRawImageDescription(Bitmap: HBITMAP;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result:=false;
-end;
-{$endif}
-
 function TWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
@@ -325,14 +339,6 @@ function TWidgetSet.GetControlConstraints(Constraints: TObject): boolean;
 begin
   Result:=true;
 end;
-
-{$ifdef OldRawImageProcs}
-function TWidgetSet.GetDeviceRawImageDescription(DC: HDC;
-  Desc: PRawImageDescription): boolean;
-begin
-  Result := false;
-end;
-{$endif}
 
 function TWidgetSet.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
@@ -360,22 +366,6 @@ begin
   then Result := TObject(GetProp(Handle,'WinControl'))
   else Result := nil;
 end;
-
-{$ifdef OldRawImageProcs}
-function TWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result:=false;
-end;
-{$endif}
-
-{$ifdef OldRawImageProcs}
-function TWidgetSet.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
-  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
-begin
-  Result:=false;
-end;
-{$endif}
 
 // TODO: remove
 function TWidgetSet.GetScrollBarSize(Handle: HWND;

@@ -66,6 +66,7 @@ function CreateStandardCursor(ACursor: SmallInt): hCursor; {$IFDEF IF_BASE_MEMBE
 function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DeallocateHWnd(Wnd: HWND); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DrawDefaultDockImage(ARect: TRect; Erase: Boolean); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

@@ -60,7 +60,7 @@ type
   TDockPerformer = class(TDragDockComon)
   private
     FDockObject: TDragDockObject;
-    procedure DefaultDockImage(ADrawRect: TRect);
+    procedure DefaultDockImage(ADrawRect: TRect; Erase: Boolean);
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -304,7 +304,7 @@ begin
   FDragImageList := FDockObject.GetDragImages;
   if FDragImageList <> nil then
     FDragImageList.BeginDrag(0, APosition.X, APosition.Y);
-  DefaultDockImage(FDockObject.DockRect);
+  DefaultDockImage(FDockObject.DockRect, False);
   FDockObject.EraseDockRect := FDockObject.DockRect;
 end;
 
@@ -468,8 +468,8 @@ begin
     if not CompareMem(@DockRect, @EraseDockRect, SizeOf(TRect)) then
     begin
       if EraseDockRect.Left <> Maxint then
-        DefaultDockImage(FDockObject.EraseDockRect);
-      DefaultDockImage(FDockObject.DockRect);
+        DefaultDockImage(FDockObject.EraseDockRect, True);
+      DefaultDockImage(FDockObject.DockRect, False);
       EraseDockRect := DockRect;
     end;
   end;
@@ -489,7 +489,7 @@ begin
     FDockObject := nil;
     SetCaptureControl(nil);
 
-    DefaultDockImage(ADockObjectCopy.EraseDockRect);
+    DefaultDockImage(ADockObjectCopy.EraseDockRect, True);
     ADockObjectCopy.Floating := ADockObjectCopy.DragTarget = nil;
 
     Accepted := ADockObjectCopy.DragTarget <> nil;
@@ -545,32 +545,9 @@ begin
 end;
 
 
-procedure TDockPerformer.DefaultDockImage(ADrawRect: TRect);
-const
-  PenSize=4;
-var
-  ACanvas: TCanvas;
-  DC: HDC;
+procedure TDockPerformer.DefaultDockImage(ADrawRect: TRect; Erase: Boolean);
 begin
-  DC := GetDC(0);
-  ACanvas:= TCanvas.Create;
-  try
-    ACanvas.Handle:= DC;
-    ACanvas.Pen.Mode := pmXOR;
-    ACanvas.Pen.Color := clWhite;
-    ACanvas.Pen.Width := PenSize;
-    with ADrawRect do
-    begin
-      ACanvas.MoveTo(Left+PenSize, Top+PenSize);
-      ACanvas.LineTo(Right-PenSize,Top+PenSize);
-      ACanvas.LineTo(Right-PenSize, Bottom-PenSize);
-      ACanvas.LineTo(Left+PenSize,Bottom-PenSize);
-      ACanvas.LineTo(Left+PenSize, Top+PenSize);
-    end;
-  finally
-    ACanvas.Free;
-    ReleaseDC(0, DC);
-  end;
+  WidgetSet.DrawDefaultDockImage(ADrawRect, Erase);
 end;
 
 { TDragManagerDefault }
