@@ -341,6 +341,7 @@ type
     function getText: WideString; override;
     procedure setColor(const Value: PQColor); override;
     procedure setIcon(AIcon: QIconH);
+    procedure setIconSize(Size: PSize);
     procedure setShortcut(AShortcut: TShortcut);
     procedure setText(const W: WideString); override;
     procedure Toggle;
@@ -3025,6 +3026,11 @@ end;
 procedure TQtAbstractButton.setIcon(AIcon: QIconH);
 begin
   QAbstractButton_setIcon(QAbstractButtonH(Widget), AIcon);
+end;
+
+procedure TQtAbstractButton.setIconSize(Size: PSize);
+begin
+  QAbstractButton_setIconSize(QAbstractButtonH(Widget), Size);
 end;
 
 procedure TQtAbstractButton.setShortcut(AShortcut: TShortcut);

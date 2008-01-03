@@ -2096,7 +2096,7 @@ begin
     {$endif}
     itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
     {$ifdef EnableNewDialogs}
-    itmProjectCompilerOptions_new.OnClick := @mnuEnvGeneralOptionsClicked_new;
+    itmProjectCompilerOptions_new.OnClick := @mnuProjectCompilerSettingsClicked_new;
     {$endif}
     itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;

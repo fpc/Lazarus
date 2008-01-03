@@ -36,8 +36,10 @@ uses
   qt4,
 {$endif}
   qtwidgets, qtobjects,
+  // RTL
+  SysUtils, Types,
   // LCL
-  SysUtils, Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics, GraphType,
+  Controls, LCLType, Forms, InterfaceBase, Buttons, LMessages, Graphics, GraphType,
   // Widgetset
   WSProc, WSButtons, WSLCLClasses;
 
@@ -89,6 +91,7 @@ var
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
   Mode: QIconMode;
+  ASize: TSize;
 begin
   if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') or
      not Assigned(AValue.Images) then
@@ -108,6 +111,9 @@ begin
   QPixmap_destroy(APixmap);
   AGlyph.Free;
 
+  ASize.cx := AValue.Images.Width;
+  ASize.cy := AValue.Images.Height;
+  TQtAbstractButton(ABitBtn.Handle).setIconSize(@ASize);
   TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
 end;
 
