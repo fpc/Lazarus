@@ -107,11 +107,13 @@ type
   public
     Handle: QImageH;
   public
+    constructor Create;
     constructor Create(vHandle: QImageH); overload;
     constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
     function AsPixmap: QPixmapH;
+    procedure CopyFrom(AImage: QImageH; x, y, w, h: integer);
   public
     function height: Integer;
     function width: Integer;
@@ -550,7 +552,7 @@ end;
 function QtScreenContext: TQtDeviceContext;
 begin
   if FScreenContext = nil then
-    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), False);
+    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), True);
   Result := FScreenContext;
 end;
   
@@ -739,6 +741,13 @@ end;
 
 { TQtImage }
 
+constructor TQtImage.Create;
+begin
+  Handle := QImage_create();
+  FData := nil;
+  FDataOwner := False;
+end;
+
 {------------------------------------------------------------------------------
   Method: TQtImage.Create
 
@@ -809,6 +818,11 @@ function TQtImage.AsPixmap: QPixmapH;
 begin
   Result := QPixmap_create();
   QPixmap_fromImage(Result, Handle);
+end;
+
+procedure TQtImage.CopyFrom(AImage: QImageH; x, y, w, h: integer);
+begin
+  QImage_copy(AImage, Handle, x, y, w, h);
 end;
 
 {------------------------------------------------------------------------------

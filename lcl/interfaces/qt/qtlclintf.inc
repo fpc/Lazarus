@@ -373,11 +373,13 @@ begin
     WorkMask := Mask;
   end
   else begin
-    // Create SubImage
-    {$note TODO: Use create subimage when size doesn't match }
-    // for now return image
-    WorkImage := Image;
-    WorkMask := Mask;
+    WorkImage := TQtImage.Create;
+    WorkImage.CopyFrom(Image.Handle, ARect.Left, ARect.Top, Width, Height);
+    if Mask <> nil then
+    begin
+      WorkMask := TQtImage.Create;
+      WorkMask.CopyFrom(Mask.Handle, ARect.Left, ARect.Top, Width, Height);
+    end;
   end;
 
   Desc.Width := WorkImage.width;
@@ -396,6 +398,11 @@ begin
     if ARawImage.MaskSize > 0 then
        Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
   end;
+  
+  if WorkImage <> Image then
+    WorkImage.Free;
+  if WorkMask <> Mask then
+    WorkMask.Free;
 
   Result := True;
 end;

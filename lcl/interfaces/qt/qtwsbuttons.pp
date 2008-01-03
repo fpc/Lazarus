@@ -73,30 +73,42 @@ uses QtWSControls;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class procedure TQtWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph);
+const
+  IconModeToButtonState: array[QIconMode] of TButtonState =
+  (
+{ QIconNormal   } bsUp,
+{ QIconDisabled } bsDisabled,
+{ QIconActive   } bsHot,
+{ QIconSelected } bsDown
+  );
+
 var
   AIcon: QIconH;
   APixmap: QPixmapH;
   AGlyph: TBitmap;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
+  Mode: QIconMode;
 begin
+  if not WSCheckHandleAllocated(ABitBtn, 'SetGlyph') or
+     not Assigned(AValue.Images) then
+    Exit;
+    
+  AIcon := QIcon_create();
+  AGlyph := TBitmap.Create;
   APixmap := QPixmap_create();
 
-  AGlyph := TBitmap.Create;
-  AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
-  AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
-
-  QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
-  try
-    if APixmap <> nil then
-    begin
-      AIcon := QIcon_create(APixmap);
-      TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
-    end;
-  finally
-    QPixmap_destroy(APixmap);
-    AGlyph.Free;
+  for Mode := QIconNormal to QIconSelected do
+  begin
+    AValue.GetImageIndexAndEffect(IconModeToButtonState[Mode], AIndex, AEffect);
+    AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
+    QPixmap_fromImage(APixmap, TQtImage(AGlyph.Handle).Handle);
+    QIcon_addPixmap(AIcon, APixmap, Mode, QIconOn);
   end;
+  QPixmap_destroy(APixmap);
+  AGlyph.Free;
+
+  TQtAbstractButton(ABitBtn.Handle).setIcon(AIcon);
 end;
 
 initialization
