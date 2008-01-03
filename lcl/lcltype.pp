@@ -67,6 +67,8 @@ type
   TCriticalSection = PtrUInt;
   PCriticalSection = ^TCriticalSection;
 
+  TDockImageOperation = (disShow, disMove, disHide);
+  
 {$ifndef WINDOWS}
   {$IFDEF CPU64}
   // temp solution for 32bit system.Thandle

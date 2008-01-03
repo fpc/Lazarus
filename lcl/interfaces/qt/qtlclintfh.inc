@@ -32,6 +32,7 @@
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
+procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;

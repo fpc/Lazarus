@@ -114,6 +114,18 @@ begin
   end;
 end;
 
+procedure TQtWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
+begin
+  if FDockImage = nil then
+    FDockImage := QRubberBand_create(QRubberBandRectangle);
+
+  QRubberBand_setGeometry(FDockImage, @ANewRect);
+  case AOperation of
+    disShow: QWidget_show(FDockImage);
+    disHide: QWidget_hide(FDockImage);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Function: FontCanUTF8
@@ -129,7 +141,7 @@ begin
     Result := False;
   {$endif}
   {$else}
-	  Result := IsValidGDIObject(Font);
+    Result := IsValidGDIObject(Font);
   {$endif}
 end;
 

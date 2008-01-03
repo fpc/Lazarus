@@ -60,6 +60,7 @@ type
     App: QApplicationH;
     SavedDCList: TList;
     FOldFocusWidget: QWidgetH;
+    FDockImage: QRubberBandH;
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;

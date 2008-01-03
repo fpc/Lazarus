@@ -60,7 +60,7 @@ type
   TDockPerformer = class(TDragDockComon)
   private
     FDockObject: TDragDockObject;
-    procedure DefaultDockImage(ADrawRect: TRect; Erase: Boolean);
+    procedure DefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
   protected
     function Dragging(AControl: TControl): boolean; override;
     procedure DragStarted(APosition: TPoint); override;
@@ -304,7 +304,7 @@ begin
   FDragImageList := FDockObject.GetDragImages;
   if FDragImageList <> nil then
     FDragImageList.BeginDrag(0, APosition.X, APosition.Y);
-  DefaultDockImage(FDockObject.DockRect, False);
+  DefaultDockImage(FDockObject.EraseDockRect, FDockObject.DockRect, disShow);
   FDockObject.EraseDockRect := FDockObject.DockRect;
 end;
 
@@ -467,9 +467,7 @@ begin
     //Draw the form outlines when the position has changed
     if not CompareMem(@DockRect, @EraseDockRect, SizeOf(TRect)) then
     begin
-      if EraseDockRect.Left <> Maxint then
-        DefaultDockImage(FDockObject.EraseDockRect, True);
-      DefaultDockImage(FDockObject.DockRect, False);
+      DefaultDockImage(FDockObject.EraseDockRect, FDockObject.DockRect, disMove);
       EraseDockRect := DockRect;
     end;
   end;
@@ -489,7 +487,7 @@ begin
     FDockObject := nil;
     SetCaptureControl(nil);
 
-    DefaultDockImage(ADockObjectCopy.EraseDockRect, True);
+    DefaultDockImage(ADockObjectCopy.EraseDockRect, ADockObjectCopy.DockRect, disHide);
     ADockObjectCopy.Floating := ADockObjectCopy.DragTarget = nil;
 
     Accepted := ADockObjectCopy.DragTarget <> nil;
@@ -545,9 +543,9 @@ begin
 end;
 
 
-procedure TDockPerformer.DefaultDockImage(ADrawRect: TRect; Erase: Boolean);
+procedure TDockPerformer.DefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 begin
-  WidgetSet.DrawDefaultDockImage(ADrawRect, Erase);
+  WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect, AOperation);
 end;
 
 { TDragManagerDefault }

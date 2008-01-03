@@ -149,9 +149,9 @@ begin
   WidgetSet.DrawArrow(Arrow, Canvas);
 end;
 
-procedure DrawDefaultDockImage(ARect: TRect; Erase: Boolean);
+procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
 begin
-  WidgetSet.DrawDefaultDockImage(ARect, Erase);
+  WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect, AOperation);
 end;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;

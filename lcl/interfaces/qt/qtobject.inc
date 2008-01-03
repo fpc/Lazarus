@@ -29,6 +29,7 @@ begin
   InitStockItems;
  
   QtWidgetSet := Self;
+  FDockImage := nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -40,6 +41,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtWidgetSet.Destroy;
 begin
+  if FDockImage <> nil then
+    QRubberBand_destroy(FDockImage);
   DestroyGlobalCaret;
   Clipboard.Free;
   FreeStockItems;

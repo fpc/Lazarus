@@ -140,36 +140,45 @@ procedure TWidgetSet.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
 end;
 
-procedure TWidgetSet.DrawDefaultDockImage(ARect: TRect; Erase: Boolean);
-const
-  PenSize=4;
-var
-  DC: HDC;
-  OldPen, NewPen: HPen;
-  OldRop: Integer;
-  LogPen: TLogPen;
-begin
-  LogPen.lopnColor := $00FFFFFF;
-  LogPen.lopnWidth := Point(PenSize, 0);
-  LogPen.lopnStyle := PS_SOLID;
-  DC := GetDC(0);
-  try
-    NewPen := CreatePenIndirect(LogPen);
-    OldPen := SelectObject(DC, NewPen);
-    OldRop := SetROP2(DC, R2_XORPEN);
-    with ARect do
-    begin
-      MoveToEx(DC, Left+PenSize, Top+PenSize, nil);
-      LineTo(DC, Right-PenSize,Top+PenSize);
-      LineTo(DC, Right-PenSize, Bottom-PenSize);
-      LineTo(DC, Left+PenSize,Bottom-PenSize);
-      LineTo(DC, Left+PenSize, Top+PenSize);
+procedure TWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
+
+  procedure DefaultDockImage(ARect: TRect);
+  const
+    PenSize=4;
+  var
+    DC: HDC;
+    OldPen, NewPen: HPen;
+    OldRop: Integer;
+    LogPen: TLogPen;
+  begin
+    LogPen.lopnColor := $00FFFFFF;
+    LogPen.lopnWidth := Point(PenSize, 0);
+    LogPen.lopnStyle := PS_SOLID;
+    DC := GetDC(0);
+    try
+      NewPen := CreatePenIndirect(LogPen);
+      OldPen := SelectObject(DC, NewPen);
+      OldRop := SetROP2(DC, R2_XORPEN);
+      with ARect do
+      begin
+        MoveToEx(DC, Left+PenSize, Top+PenSize, nil);
+        LineTo(DC, Right-PenSize,Top+PenSize);
+        LineTo(DC, Right-PenSize, Bottom-PenSize);
+        LineTo(DC, Left+PenSize,Bottom-PenSize);
+        LineTo(DC, Left+PenSize, Top+PenSize);
+      end;
+    finally
+      SetROP2(DC, OldRop);
+      DeleteObject(SelectObject(DC, OldPen));
+      ReleaseDC(0, DC);
     end;
-  finally
-    SetROP2(DC, OldRop);
-    DeleteObject(SelectObject(DC, OldPen));
-    ReleaseDC(0, DC);
   end;
+  
+begin
+  if AOperation in [disMove, disHide] then
+    DefaultDockImage(AOldRect);
+  if AOperation in [disMove, disShow] then
+    DefaultDockImage(ANewRect);
 end;
 
 function TWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
