@@ -3317,8 +3317,3 @@ finalization
   FreeThenNil(Mouse);
 
 end.
-
-
-
-
-

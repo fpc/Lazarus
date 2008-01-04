@@ -28,12 +28,11 @@ end;
 
 procedure TDockTree.SetDockZoneClass(const AValue: TDockZoneClass);
 begin
-  FDockZoneClass:=AValue;
+  FDockZoneClass := AValue;
 end;
 
 procedure TDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
 begin
-
 end;
 
 procedure TDockTree.BeginUpdate;
@@ -119,13 +118,14 @@ end;
 
 constructor TDockTree.Create(TheDockSite: TWinControl);
 begin
-  if FDockZoneClass=nil then FDockZoneClass:=TDockZone;
-  FDockSite:=TheDockSite;
+  if FDockZoneClass = nil then
+    FDockZoneClass := TDockZone;
+  FDockSite := TheDockSite;
   inherited Create;
-  FBorderWidth:=4;
-  //FGrabberSize:=DefaultDockGrabberSize;
+  FBorderWidth := 4;
+  //FGrabberSize := DefaultDockGrabberSize;
   //FGrabbersOnTop:=(FDockSite.Align <> alTop) and (FDockSite.Align <> alBottom);
-  FRootZone:=FDockZoneClass.Create(Self,TheDockSite);
+  FRootZone := FDockZoneClass.Create(Self, TheDockSite);
 end;
 
 destructor TDockTree.Destroy;

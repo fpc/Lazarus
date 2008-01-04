@@ -87,6 +87,7 @@ begin
   if (DeltaX <> 0) or (DeltaY <> 0) then
     OffsetRect(FDockRect, -DeltaX, -DeltaY);
 end;
+
 function TDragDockObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
 begin
   Result := crDefault;
