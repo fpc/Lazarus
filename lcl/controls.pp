@@ -900,13 +900,13 @@ type
     procedure SetShowHint(Value: Boolean);
     procedure SetText(const Value: TCaption); 
     procedure SetTop(Value: Integer);
-    procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
   protected
     FControlState: TControlState;
     FCursor: TCursor;
     function GetCursor: TCursor; virtual;
     procedure SetCursor(Value: TCursor); virtual;
+    procedure SetVisible(Value: Boolean); virtual;
   protected
     // sizing/aligning
     procedure DoAutoSize; virtual;
@@ -1916,7 +1916,8 @@ type
 
   { TDockTree - a tree of TDockZones - Every docked window has one tree
   
-    This is an abstract class. The real implementation is in ldocktree.pas.
+    This is an abstract class.
+    A real implementation can be found for example in ldocktree.pas.
 
     Docking means here: Combining several windows to one. A window can here be
     a TCustomForm or a floating control (undocked) or a TDockForm.
@@ -2014,11 +2015,8 @@ type
     FBorderWidth: Integer; // width of the border of the preview rectangle
     FDockSite: TWinControl;
     FDockZoneClass: TDockZoneClass;
-    //FGrabberSize: Integer;
-    //FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
     FRootZone: TDockZone;
-    //FTopXYLimit: Integer;
     FUpdateCount: Integer;
     procedure DeleteZone(Zone: TDockZone);
   protected

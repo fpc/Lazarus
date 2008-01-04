@@ -421,7 +421,6 @@ type
     procedure SetModalResult(const AValue: TModalResult);
     procedure SetPosition(Value : TPosition);
     procedure SetShowInTaskbar(Value: TShowInTaskbar);
-    procedure SetVisible(Value: boolean);
     procedure SetWindowFocus;
     procedure SetWindowState(Value : TWindowState);
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
@@ -462,6 +461,7 @@ type
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SetParent(NewParent: TWinControl); override;
     procedure UpdateShowing; override;
+    procedure SetVisible(Value: boolean); override;
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
     procedure VisibleChanging; override;
@@ -570,7 +570,7 @@ type
                                     default stDefault;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
-    property Visible write SetVisible stored VisibleIsStored default false;
+    property Visible stored VisibleIsStored default false;
     property WindowState: TWindowState read FWindowState write SetWindowState
                                        default wsNormal;
   end;

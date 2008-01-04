@@ -335,7 +335,7 @@ begin
     // will be done when finished loading
   else
   begin
-    inherited Visible:=Value;
+    inherited SetVisible(Value);
   end;
   //DebugLn(['[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',Visible]);
 end;
