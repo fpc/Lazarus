@@ -33,7 +33,7 @@
         <MinVersion Major="1" Valid="True"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="3">
+    <Units Count="4">
       <Unit0>
         <Filename Value="docking1.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -53,6 +53,10 @@
         <ResourceFilename Value="dockform2unit.lrs"/>
         <UnitName Value="DockForm2Unit"/>
       </Unit2>
+      <Unit3>
+        <Filename Value="README.txt"/>
+        <IsPartOfProject Value="True"/>
+      </Unit3>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

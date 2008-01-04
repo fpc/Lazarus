@@ -6,17 +6,16 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LDockCtrl, StdCtrls, Menus;
+  Buttons, LDockCtrl, StdCtrls, Menus, ExtCtrls;
 
 type
 
   { TDockFormX }
 
   TDockFormX = class(TForm)
-    Button1: TButton;
-    GroupBox1: TGroupBox;
     HideMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
+    Shape1: TShape;
     procedure FormCreate(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure HideMenuItemClick(Sender: TObject);

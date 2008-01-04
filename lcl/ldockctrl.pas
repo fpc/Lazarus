@@ -148,6 +148,18 @@ type
   end;
   
   TCustomLazControlDocker = class;
+  TCustomLazDockingManager = class;
+  
+  { TAnchoredDockManager }
+
+  TAnchoredDockManager = class(TCustomAnchoredDockManager)
+  private
+    FConfigs: TCustomLazDockingManager;
+  public
+    procedure DisableLayout(Control: TControl); override;
+    procedure EnableLayout(Control: TControl); override;
+    property Configs: TCustomLazDockingManager read FConfigs;
+  end;
 
   { TCustomLazDockingManager }
 
@@ -175,6 +187,8 @@ type
     function CreateUniqueName(const AName: string;
                               Ignore: TCustomLazControlDocker): string;
     function GetControlConfigName(AControl: TControl): string;
+    procedure DisableLayout(Control: TControl);
+    procedure EnableLayout(Control: TControl);
     procedure SaveToConfig(Config: TConfigStorage; const Path: string = '');
     procedure LoadFromConfig(Config: TConfigStorage; const Path: string = '');
     procedure AddOrReplaceConfig(const DockerName: string;
@@ -213,6 +227,7 @@ type
     FDockerName: string;
     FEnabled: boolean;
     FExtendPopupMenu: boolean;
+    FLayoutLock: integer;
     FLocalizedName: string;
     FManager: TCustomLazDockingManager;
     FPopupMenuItem: TMenuItem;
@@ -239,12 +254,17 @@ type
                                 StartControl: TControl;
                                 out AnchorControls: TAnchorControlsRect
                                 ): TFPList; // list of TControls
+    procedure Notification(AComponent: TComponent;
+                           Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ShowDockingEditor; virtual;
     function GetLayoutFromControl: TLazDockConfigNode;
     procedure SaveLayout;
     procedure RestoreLayout;
+    procedure DisableLayout;
+    procedure EnableLayout;
     function GetControlName(AControl: TControl): string;
     property Control: TControl read FControl write SetControl;
     property Manager: TCustomLazDockingManager read FManager write SetManager;
@@ -253,6 +273,7 @@ type
     property LocalizedName: string read FLocalizedName write SetLocalizedName;
     property DockerName: string read FDockerName write SetDockerName;
     property Enabled: boolean read FEnabled write FEnabled;// true to auto restore layout on show
+    property LayoutLock: integer read FLayoutLock;
   end;
 
   { TLazControlDocker }
@@ -711,8 +732,13 @@ begin
       DbgSName(Control),'<>',DbgSName(Sender));
     exit;
   end;
-  DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Sender=',DbgSName(Sender)]);
+  DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Sender=',DbgSName(Sender),' Control.Visible=',Control.Visible]);
   DumpStack;
+  if FLayoutLock>0 then begin
+    DebugLn(['TCustomLazControlDocker.ControlVisibleChanging ',DbgSName(Control),' ignore because FLayoutLock=',FLayoutLock]);
+    exit;
+  end;
+  
   if Control.Visible then begin
     // control will be hidden -> the layout will change
     // save the layout for later restore
@@ -725,8 +751,12 @@ end;
 
 procedure TCustomLazControlDocker.ControlVisibleChanged(Sender: TObject);
 begin
-  DebugLn(['TCustomLazControlDocker.ControlVisibleChanged Sender=',DbgSName(Sender)]);
+  DebugLn(['TCustomLazControlDocker.ControlVisibleChanged Sender=',DbgSName(Sender),' Control.Visible=',Control.Visible]);
   //DumpStack;
+  if FLayoutLock>0 then begin
+    //DebugLn(['TCustomLazControlDocker.ControlVisibleChanged ',DbgSName(Control),' ignore because FLayoutLock=',FLayoutLock]);
+    exit;
+  end;
 end;
 
 function TCustomLazControlDocker.CreateFormAndDockWithSplitter(
@@ -1595,6 +1625,18 @@ begin
   Result:=ControlList;
 end;
 
+procedure TCustomLazControlDocker.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if AComponent=FControl then begin
+      FControl.RemoveAllHandlersOfObject(Self);
+      FControl:=nil;
+    end;
+  end;
+end;
+
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
 var
   i: Integer;
@@ -1993,9 +2035,10 @@ var
 begin
   DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName,' Control=',DbgSName(Control)]);
   if (Manager=nil) or (Control=nil) then exit;
-  Layout:=Manager.CreateLayout(DockerName,Control,false);
-  if (Layout=nil) then exit;
+  Layout:=nil;
   try
+    Layout:=Manager.CreateLayout(DockerName,Control,false);
+    if (Layout=nil) then exit;
     SelfNode:=Layout.FindByName(DockerName,true);
     DebugLn(['TCustomLazControlDocker.RestoreLayout ',SelfNode<>nil,' DockerName=',DockerName]);
     if (SelfNode=nil) or (SelfNode.TheType<>ldcntControl) then exit;
@@ -2016,8 +2059,19 @@ begin
     if (Control is TCustomForm) and (Control.Parent=nil) then
       TCustomForm(Control).WindowState:=Layout.WindowState;
   finally
+    DebugLn(['TCustomLazControlDocker.RestoreLayout END Control=',DbgSName(Control),' Control.BoundsRect=',dbgs(Control.BoundsRect)]);
     Layout.Free;
   end;
+end;
+
+procedure TCustomLazControlDocker.DisableLayout;
+begin
+  inc(fLayoutLock);
+end;
+
+procedure TCustomLazControlDocker.EnableLayout;
+begin
+  dec(fLayoutLock);
 end;
 
 constructor TCustomLazControlDocker.Create(TheOwner: TComponent);
@@ -2030,6 +2084,13 @@ begin
   ExtendPopupMenu:=true;
 end;
 
+destructor TCustomLazControlDocker.Destroy;
+begin
+  Control:=nil;
+  Manager:=nil;
+  inherited Destroy;
+end;
+
 procedure TCustomLazControlDocker.PopupMenuItemClick(Sender: TObject);
 begin
   ShowDockingEditor;
@@ -2038,15 +2099,18 @@ end;
 procedure TCustomLazControlDocker.SetControl(const AValue: TControl);
 begin
   if FControl=AValue then exit;
-  if FControl<>nil then
+  if FControl<>nil then begin
     FControl.RemoveAllHandlersOfObject(Self);
+    FControl.RemoveFreeNotification(Self);
+  end;
   FControl:=AValue;
   if Control<>nil then begin
     Control.AddHandlerOnVisibleChanging(@ControlVisibleChanging);
     Control.AddHandlerOnVisibleChanged(@ControlVisibleChanged);
+    Control.FreeNotification(Self);
   end;
-  if DockerName='' then
-    DockerName:=AValue.Name;
+  if (DockerName='') and (FControl<>nil) then
+    DockerName:=FControl.Name;
   UpdatePopupMenu;
 end;
 
@@ -2117,6 +2181,7 @@ begin
   inherited Create(TheOwner);
   FDockers:=TFPList.Create;
   FManager:=TAnchoredDockManager.Create;
+  FManager.FConfigs:=Self;
 end;
 
 destructor TCustomLazDockingManager.Destroy;
@@ -2194,6 +2259,24 @@ begin
     Result:=Docker.DockerName
   else
     Result:='';
+end;
+
+procedure TCustomLazDockingManager.DisableLayout(Control: TControl);
+var
+  Docker: TCustomLazControlDocker;
+begin
+  Docker:=FindDockerByControl(Control);
+  if Docker<>nil then
+    Docker.DisableLayout;
+end;
+
+procedure TCustomLazDockingManager.EnableLayout(Control: TControl);
+var
+  Docker: TCustomLazControlDocker;
+begin
+  Docker:=FindDockerByControl(Control);
+  if Docker<>nil then
+    Docker.EnableLayout;
 end;
 
 procedure TCustomLazDockingManager.SaveToConfig(Config: TConfigStorage;
@@ -3683,6 +3766,20 @@ begin
   end else begin
     DebugLn(['  Root=nil']);
   end;
+end;
+
+{ TAnchoredDockManager }
+
+procedure TAnchoredDockManager.DisableLayout(Control: TControl);
+begin
+  FConfigs.DisableLayout(Control);
+  inherited DisableLayout(Control);
+end;
+
+procedure TAnchoredDockManager.EnableLayout(Control: TControl);
+begin
+  inherited EnableLayout(Control);
+  FConfigs.EnableLayout(Control);
 end;
 
 end.

@@ -7,34 +7,69 @@ object MainForm: TMainForm
   VertScrollBar.Page = 299
   ActiveControl = CreateNewFormButton
   Caption = 'MainForm'
+  ClientHeight = 300
+  ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnPaint = FormPaint
   PopupMenu = MainPopupMenu
   object CreateNewFormButton: TButton
-    Left = 30
-    Height = 26
-    Top = 15
-    Width = 116
+    Left = 8
+    Height = 29
+    Top = 32
+    Width = 130
     AutoSize = True
-    BorderSpacing.InnerBorder = 4
     Caption = 'Create a new form'
     OnClick = CreateNewFormButtonClick
     TabOrder = 0
   end
   object SaveLayoutButton: TButton
-    Left = 30
-    Height = 26
-    Top = 60
-    Width = 158
+    Left = 8
+    Height = 29
+    Top = 64
+    Width = 177
     AutoSize = True
-    BorderSpacing.InnerBorder = 4
     Caption = 'Save Layout to config.xml'
     OnClick = SaveLayoutButtonClick
     TabOrder = 1
   end
+  object CreateLayoutGroupBox: TGroupBox
+    Left = 16
+    Height = 95
+    Top = 104
+    Width = 115
+    AutoSize = True
+    Caption = 'Create Layout'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.HorizontalSpacing = 6
+    ChildSizing.VerticalSpacing = 6
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ClientHeight = 76
+    ClientWidth = 111
+    TabOrder = 2
+    object TwoPagesButton: TButton
+      Left = 6
+      Height = 29
+      Top = 6
+      Width = 99
+      AutoSize = True
+      Caption = 'Two Pages'
+      OnClick = TwoPagesButtonClick
+      TabOrder = 0
+    end
+    object ClearLayoutsButton: TButton
+      Left = 6
+      Height = 29
+      Top = 41
+      Width = 99
+      Caption = 'Clear Layouts'
+      OnClick = ClearLayoutsButtonClick
+      TabOrder = 1
+    end
+  end
   object MainPopupMenu: TPopupMenu
-    left = 142
-    top = 141
+    left = 192
+    top = 24
   end
 end

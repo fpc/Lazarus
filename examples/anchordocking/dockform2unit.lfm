@@ -1,38 +1,28 @@
 object DockFormX: TDockFormX
-  Left = 490
-  Height = 127
-  Top = 215
-  Width = 224
-  HorzScrollBar.Page = 223
-  VertScrollBar.Page = 126
-  ActiveControl = Button1
+  Left = 305
+  Height = 119
+  Top = 220
+  Width = 199
+  HorzScrollBar.Page = 198
+  VertScrollBar.Page = 118
   Caption = 'DockFormX'
   ChildSizing.LeftRightSpacing = 1
   ChildSizing.TopBottomSpacing = 1
+  ClientHeight = 119
+  ClientWidth = 199
   OnCreate = FormCreate
   OnPaint = FormPaint
   PopupMenu = PopupMenu1
-  object Button1: TButton
-    Left = 24
-    Height = 25
-    Top = 48
-    Width = 75
-    BorderSpacing.InnerBorder = 4
-    Caption = 'Button1'
-    TabOrder = 0
-  end
-  object GroupBox1: TGroupBox
-    Left = 118
-    Height = 125
-    Top = 1
-    Width = 105
-    Align = alRight
-    Caption = 'GroupBox1'
-    TabOrder = 1
+  object Shape1: TShape
+    Left = 31
+    Height = 71
+    Top = 25
+    Width = 57
+    Shape = stDiamond
   end
   object PopupMenu1: TPopupMenu
-    left = 86
-    top = 52
+    left = 8
+    top = 16
     object HideMenuItem: TMenuItem
       Caption = 'Hide'
       OnClick = HideMenuItemClick

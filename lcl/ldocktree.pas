@@ -147,9 +147,12 @@ type
   
   //----------------------------------------------------------------------------
   
-  { TAnchoredDockManager }
+  { TCustomAnchoredDockManager
+    This class implements an LCL TDockManager via anchoring.
+    The TCustomLazDockingManager component uses this docking manager
+    and extends it by layout that can be stored/restored. }
 
-  TAnchoredDockManager = class(TDockManager)
+  TCustomAnchoredDockManager = class(TDockManager)
   private
     FSplitterSize: integer;
     FUpdateCount: integer;
@@ -167,6 +170,8 @@ type
     procedure EndUpdate; override;
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); override;
+    procedure DisableLayout(Control: TControl); virtual;
+    procedure EnableLayout(Control: TControl); virtual;
     procedure DockControl(Control: TControl; InsertAt: TAlign;
                           DropCtl: TControl);
     procedure UndockControl(Control: TControl; Float: boolean);
@@ -174,18 +179,19 @@ type
                             DropCtl: TControl); override;
     function EnlargeControl(Control: TControl; Side: TAnchorKind;
                             Simulate: boolean = false): boolean;
-    procedure LoadFromStream(Stream: TStream); override;
-    procedure PaintSite(DC: HDC); override;
-    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
-                               var DockRect: TRect); override;
     procedure RemoveControl(Control: TControl); override;
-    procedure ResetBounds(Force: Boolean); override;
-    procedure SaveToStream(Stream: TStream); override;
-    procedure SetReplacingControl(Control: TControl); override;
     procedure ReplaceAnchoredControl(OldControl, NewControl: TControl);
     function GetSplitterWidth(Splitter: TControl): integer;
     function GetSplitterHeight(Splitter: TControl): integer;
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
+
+    procedure LoadFromStream(Stream: TStream); override;// not implemented
+    procedure PaintSite(DC: HDC); override;// not implemented
+    procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
+                               var DockRect: TRect); override;// not implemented
+    procedure ResetBounds(Force: Boolean); override;// not implemented
+    procedure SaveToStream(Stream: TStream); override;// not implemented
+    procedure SetReplacingControl(Control: TControl); override;// not implemented
   end;
   
   
@@ -210,7 +216,7 @@ function GetLazDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
 function CountAnchoredControls(Control: TControl; Side: TAnchorKind
                                ): Integer;
 function NeighbourCanBeShrinked(EnlargeControl, Neighbour: TControl;
-  Side: TAnchorKind): boolean;
+                                Side: TAnchorKind): boolean;
 function ControlIsAnchoredIndirectly(StartControl: TControl; Side: TAnchorKind;
                                      DestControl: TControl): boolean;
 procedure GetAnchorControlsRect(Control: TControl;
@@ -1054,9 +1060,9 @@ begin
   end;
 end;
 
-{ TAnchoredDockManager }
+{ TCustomAnchoredDockManager }
 
-procedure TAnchoredDockManager.DeleteSideSplitter(Splitter: TLazDockSplitter;
+procedure TCustomAnchoredDockManager.DeleteSideSplitter(Splitter: TLazDockSplitter;
   Side: TAnchorKind; NewAnchorControl: TControl);
 var
   SplitterParent: TWinControl;
@@ -1064,7 +1070,7 @@ var
   CurControl: TControl;
   NewSideRef: TAnchorSideReference;
 begin
-  //DebugLn('TAnchoredDockManager.DeleteSideSplitter Splitter=',DbgSName(Splitter),' Side=',dbgs(Side),' NewAnchorControl=',DbgSName(NewAnchorControl));
+  //DebugLn('TCustomAnchoredDockManager.DeleteSideSplitter Splitter=',DbgSName(Splitter),' Side=',dbgs(Side),' NewAnchorControl=',DbgSName(NewAnchorControl));
   SplitterParent:=Splitter.Parent;
   SplitterParent.DisableAlign;
   try
@@ -1077,7 +1083,7 @@ begin
         else
           NewSideRef:=DefaultSideForAnchorKind[Side];
         CurControl.AnchorSide[Side].Side:=NewSideRef;
-        //DebugLn('TAnchoredDockManager.DeleteSideSplitter Anchor ',DbgSName(CurControl),'(',dbgs(Side),') to ',DbgSName(NewAnchorControl));
+        //DebugLn('TCustomAnchoredDockManager.DeleteSideSplitter Anchor ',DbgSName(CurControl),'(',dbgs(Side),') to ',DbgSName(NewAnchorControl));
       end;
     end;
     Splitter.Free;
@@ -1086,7 +1092,7 @@ begin
   end;
 end;
 
-procedure TAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
+procedure TCustomAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
   Splitter2: TLazDockSplitter);
 {  Anchor all controls anchored to Splitter2 to Splitter1,
    extend Splitter1,
@@ -1137,17 +1143,17 @@ var
   i: Integer;
   CurControl: TControl;
 begin
-  DebugLn('TAnchoredDockManager.CombineSpiralSplitterPair Splitter1=',DbgSName(Splitter1),dbgs(Splitter1.BoundsRect),' Splitter2=',DbgSName(Splitter2),dbgs(Splitter2.BoundsRect));
+  DebugLn('TCustomAnchoredDockManager.CombineSpiralSplitterPair Splitter1=',DbgSName(Splitter1),dbgs(Splitter1.BoundsRect),' Splitter2=',DbgSName(Splitter2),dbgs(Splitter2.BoundsRect));
   // check splitters have the same Parent
   ParentControl:=Splitter1.Parent;
   if (ParentControl=nil) then
-    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Parent=nil');
+    RaiseGDBException('TCustomAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Parent=nil');
   if (ParentControl<>Splitter2.Parent) then
-    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Splitters not siblings');
+    RaiseGDBException('TCustomAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: Splitters not siblings');
   // check splitters have same orientation
   LeftRightSplitter:=(Splitter1.ResizeAnchor in [akLeft,akRight]);
   if LeftRightSplitter<>(Splitter2.ResizeAnchor in [akLeft,akRight]) then
-    RaiseGDBException('TAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: different orientation');
+    RaiseGDBException('TCustomAnchoredDockManager.CombineSpiralSplitterPair Inconsistency: different orientation');
 
   ParentControl.DisableAlign;
   try
@@ -1183,34 +1189,34 @@ begin
   end;
 end;
 
-procedure TAnchoredDockManager.DeletePage(Page: TLazDockPage);
+procedure TCustomAnchoredDockManager.DeletePage(Page: TLazDockPage);
 var
   Pages: TLazDockPages;
 begin
-  DebugLn('TAnchoredDockManager.DeletePage Page=',DbgSName(Page));
+  DebugLn('TCustomAnchoredDockManager.DeletePage Page=',DbgSName(Page));
   Pages:=Page.PageControl;
   Page.Free;
   if Pages.PageCount=0 then
     DeletePages(Pages);
 end;
 
-procedure TAnchoredDockManager.DeletePages(Pages: TLazDockPages);
+procedure TCustomAnchoredDockManager.DeletePages(Pages: TLazDockPages);
 begin
-  DebugLn('TAnchoredDockManager.DeletePages Pages=',DbgSName(Pages));
+  DebugLn('TCustomAnchoredDockManager.DeletePages Pages=',DbgSName(Pages));
   if Pages.Parent<>nil then
     UndockControl(Pages,false);
   Pages.Free;
 end;
 
-procedure TAnchoredDockManager.DeleteDockForm(ADockForm: TLazDockForm);
+procedure TCustomAnchoredDockManager.DeleteDockForm(ADockForm: TLazDockForm);
 begin
-  DebugLn('TAnchoredDockManager.DeleteDockForm ADockForm=',DbgSName(ADockForm));
+  DebugLn('TCustomAnchoredDockManager.DeleteDockForm ADockForm=',DbgSName(ADockForm));
   if ADockForm.Parent<>nil then
     UndockControl(ADockForm,false);
   ADockForm.Free;
 end;
 
-function TAnchoredDockManager.GetAnchorDepth(AControl: TControl;
+function TCustomAnchoredDockManager.GetAnchorDepth(AControl: TControl;
   Side: TAnchorKind): Integer;
 var
   NewControl: TControl;
@@ -1227,34 +1233,44 @@ begin
   end;
 end;
 
-constructor TAnchoredDockManager.Create;
+constructor TCustomAnchoredDockManager.Create;
 begin
   FSplitterSize:=5;
 end;
 
-procedure TAnchoredDockManager.BeginUpdate;
+procedure TCustomAnchoredDockManager.BeginUpdate;
 begin
   inc(FUpdateCount);
 end;
 
-procedure TAnchoredDockManager.EndUpdate;
+procedure TCustomAnchoredDockManager.EndUpdate;
 begin
   if FUpdateCount<=0 then
-    RaiseGDBException('TAnchoredDockManager.EndUpdate');
+    RaiseGDBException('TCustomAnchoredDockManager.EndUpdate');
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
 
   end;
 end;
 
-procedure TAnchoredDockManager.GetControlBounds(Control: TControl;
+procedure TCustomAnchoredDockManager.GetControlBounds(Control: TControl;
   out AControlBounds: TRect);
 begin
   AControlBounds:=Control.BoundsRect;
 end;
 
+procedure TCustomAnchoredDockManager.DisableLayout(Control: TControl);
+begin
+
+end;
+
+procedure TCustomAnchoredDockManager.EnableLayout(Control: TControl);
+begin
+
+end;
+
 {-------------------------------------------------------------------------------
-  procedure TAnchoredDockManager.DockControl(Control: TControl;
+  procedure TCustomAnchoredDockManager.DockControl(Control: TControl;
     InsertAt: TAlign; DropCtl: TControl);
 
   Docks Control to or into DropCtl.
@@ -1276,7 +1292,7 @@ end;
     and replaces DropCtl and DropCtl is added as page.
     Then Control is added as page.
 -------------------------------------------------------------------------------}
-procedure TAnchoredDockManager.DockControl(Control: TControl;
+procedure TCustomAnchoredDockManager.DockControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 var
   Splitter: TLazDockSplitter;
@@ -1298,196 +1314,211 @@ var
   ParentDisabledAlign: Boolean;
 begin
   if Control.Parent<>nil then
-    RaiseGDBException('TAnchoredDockManager.InsertControl Control.Parent<>nil');
+    RaiseGDBException('TCustomAnchoredDockManager.InsertControl Control.Parent<>nil');
+  if Control=DropCtl then
+    RaiseGDBException('TCustomAnchoredDockManager.InsertControl Control=DropCtl');
+  DisableLayout(Control);
+  DisableLayout(DropCtl);
+  try
 
-  // dock Control to DropCtl
-  case InsertAt of
-  alLeft,alTop,alRight,alBottom:
-    begin
-      // dock Control to a side of DropCtl
-      // e.g. alLeft: insert Control to the left of DropCtl
+    // dock Control to DropCtl
+    case InsertAt of
+    alLeft,alTop,alRight,alBottom:
+      begin
+        // dock Control to a side of DropCtl
+        // e.g. alLeft: insert Control to the left of DropCtl
 
-      DropCtlAnchor:=MainAlignAnchor[InsertAt];
-      ControlAnchor:=OppositeAnchor[DropCtlAnchor];
+        DropCtlAnchor:=MainAlignAnchor[InsertAt];
+        ControlAnchor:=OppositeAnchor[DropCtlAnchor];
 
-      ParentDisabledAlign:=false;
-      try
-        // make sure, there is a parent HostSite
-        if DropCtl.Parent=nil then begin
-          // create a TLazDockForm as new parent
-          NewParent:=TLazDockForm.Create(Application);// starts with Visible=false
-          NewParent.DisableAlign;
-          ParentDisabledAlign:=true;
-          NewParent.BoundsRect:=DropCtl.BoundsRect;
-          // move the WindowState to the new parent
-          if DropCtl is TCustomForm then begin
-            NewParent.WindowState:=TCustomForm(DropCtl).WindowState;
-            TCustomForm(DropCtl).WindowState:=wsNormal;
-          end;
-          // first move DropCtl to the invsible parent, so changes do not cause flicker
-          DropCtl.Parent:=NewParent;
-          // init anchors of DropCtl
-          DropCtl.Align:=alNone;
-          DropCtl.AnchorClient(0);
-          DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
-          NewParent.Visible:=true;
-          //DebugLn('TAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
-        end else begin
-          if (DropCtl.Parent is TLazDockForm) then begin
-            // ok
-          end else if (DropCtl.Parent is TLazDockPage) then begin
-            // ok
-          end else begin
-            RaiseGDBException('TAnchoredDockManager.InsertControl DropCtl has invalid parent');
-          end;
-        end;
-
-        if not ParentDisabledAlign then begin
-          DropCtl.Parent.DisableAlign;
-          ParentDisabledAlign:=true;
-        end;
-        // create a splitter
-        Splitter:=TLazDockSplitter.Create(Control);
-        Splitter.Align:=alNone;
-        Splitter.Beveled:=true;
-        Splitter.ResizeAnchor:=ControlAnchor;
-        //debugln('TAnchoredDockManager.InsertControl A Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
-
-        // calculate new bounds
-        NewDropCtlBounds:=DropCtl.BoundsRect;
-        NewControlBounds:=NewDropCtlBounds;
-        if InsertAt in [alLeft,alRight] then begin
-          SplitterWidth:=Splitter.Constraints.MinMaxWidth(SplitterSize);
-          NewDropCtlWidth:=NewDropCtlBounds.Right-NewDropCtlBounds.Left;
-          dec(NewDropCtlWidth,Control.Width+SplitterWidth);
-          NewDropCtlWidth:=DropCtl.Constraints.MinMaxWidth(NewDropCtlWidth);
-          if InsertAt=alLeft then begin
-            // alLeft: insert Control to the left of DropCtl
-            NewDropCtlBounds.Left:=NewDropCtlBounds.Right-NewDropCtlWidth;
-            NewControlBounds.Right:=NewDropCtlBounds.Left-SplitterWidth;
-            SplitterBounds:=Rect(NewControlBounds.Right,NewDropCtlBounds.Top,
-                                 NewDropCtlBounds.Left,NewDropCtlBounds.Bottom);
-          end else begin
-            // alRight: insert Control to the right of DropCtl
-            NewDropCtlBounds.Right:=NewDropCtlBounds.Left+NewDropCtlWidth;
-            NewControlBounds.Left:=NewDropCtlBounds.Right+SplitterWidth;
-            SplitterBounds:=Rect(NewDropCtlBounds.Right,NewDropCtlBounds.Top,
-                                 NewControlBounds.Left,NewDropCtlBounds.Bottom);
-            //debugln('TAnchoredDockManager.InsertControl A NewDropCtlBounds=',dbgs(NewDropCtlBounds),' NewControlBounds=',dbgs(NewControlBounds),' SplitterBounds=',dbgs(SplitterBounds));
-          end;
-        end else begin
-          SplitterHeight:=Splitter.Constraints.MinMaxHeight(SplitterSize);
-          NewDropCtlHeight:=NewDropCtlBounds.Bottom-NewDropCtlBounds.Top;
-          dec(NewDropCtlHeight,Control.Height+SplitterHeight);
-          NewDropCtlHeight:=DropCtl.Constraints.MinMaxHeight(NewDropCtlHeight);
-          if InsertAt=alTop then begin
-            // alTop: insert Control to the top of DropCtl
-            NewDropCtlBounds.Top:=NewDropCtlBounds.Bottom-NewDropCtlHeight;
-            NewControlBounds.Bottom:=NewDropCtlBounds.Top-SplitterHeight;
-            SplitterBounds:=Rect(NewDropCtlBounds.Left,NewControlBounds.Bottom,
-                                 NewDropCtlBounds.Right,NewDropCtlBounds.Top);
-          end else begin
-            // alBottom: insert Control to the bottom of DropCtl
-            NewDropCtlBounds.Bottom:=NewDropCtlBounds.Top+NewDropCtlHeight;
-            NewControlBounds.Top:=NewDropCtlBounds.Bottom+SplitterHeight;
-            SplitterBounds:=Rect(NewDropCtlBounds.Left,NewDropCtlBounds.Bottom,
-                                 NewDropCtlBounds.Right,NewControlBounds.Top);
-          end;
-          //debugln('TAnchoredDockManager.InsertControl A NewDropCtlBounds=',dbgs(NewDropCtlBounds),' NewControlBounds=',dbgs(NewControlBounds),' SplitterBounds=',dbgs(SplitterBounds));
-        end;
-
-        // position splitter
-        Splitter.BoundsRect:=SplitterBounds;
-        if InsertAt in [alLeft,alRight] then begin
-          Splitter.AnchorSide[akTop].Assign(DropCtl.AnchorSide[akTop]);
-          Splitter.AnchorSide[akBottom].Assign(DropCtl.AnchorSide[akBottom]);
-          Splitter.Anchors:=[akLeft,akTop,akBottom];
-        end else begin
-          Splitter.AnchorSide[akLeft].Assign(DropCtl.AnchorSide[akLeft]);
-          Splitter.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
-          Splitter.Anchors:=[akLeft,akTop,akRight];
-        end;
-        Splitter.Parent:=DropCtl.Parent;
-
-        // position Control
-        Control.Align:=alNone;
-        for a:=Low(TAnchorKind) to High(TAnchorKind) do
-          Control.AnchorSide[a].Control:=nil;
-        Control.AnchorSide[DropCtlAnchor].Assign(DropCtl.AnchorSide[DropCtlAnchor]);
-        Control.AnchorToNeighbour(ControlAnchor,0,Splitter);
-        if InsertAt in [alLeft,alRight] then begin
-          Control.AnchorSide[akTop].Assign(DropCtl.AnchorSide[akTop]);
-          Control.AnchorSide[akBottom].Assign(DropCtl.AnchorSide[akBottom]);
-        end else begin
-          Control.AnchorSide[akLeft].Assign(DropCtl.AnchorSide[akLeft]);
-          Control.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
-        end;
-        Control.Anchors:=[akLeft,akTop,akRight,akBottom];
-        Control.Parent:=DropCtl.Parent;
-
-        // position DropCtl
-        DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
-
-        //debugln('TAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
-      finally
-        if ParentDisabledAlign then
-          DropCtl.Parent.EnableAlign;
-      end;
-      //debugln('TAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
-    end;
-    
-  alClient:
-    begin
-      // docking as page
-      DebugLn('TAnchoredDockManager.InsertControl alClient DropCtl=',DbgSName(DropCtl),' Control=',DbgSName(Control));
-
-      if not (DropCtl.Parent is TLazDockPage) then begin
-        // create a new TLazDockPages
-        //DebugLn('TAnchoredDockManager.InsertControl Create TLazDockPages');
-        DockPages:=TLazDockPages.Create(nil);
-        if DropCtl.Parent<>nil then begin
-          // DockCtl is a child control
-          // => replace the anchors to and from DockCtl with the new DockPages
-          ReplaceAnchoredControl(DropCtl,DockPages);
-        end else begin
-          // DockCtl has no parent
-          // => float DockPages
-          DockPages.ManualFloat(DropCtl.BoundsRect);
-        end;
-        // add DockCtl as page to DockPages
-        DockPages.Pages.Add(DropCtl.Caption);
-        DropCtlPage:=DockPages.Page[0];
-        DropCtlPage.DisableAlign;
+        ParentDisabledAlign:=false;
         try
-          DropCtl.Parent:=DropCtlPage;
-          DropCtl.AnchorClient(0);
+          NewDropCtlBounds:=DropCtl.BoundsRect;
+
+          // make sure, there is a parent HostSite
+          if DropCtl.Parent=nil then begin
+            // remember bounds
+            NewDropCtlBounds:=Rect(0,0,DropCtl.ClientWidth,DropCtl.ClientHeight);
+            // create a TLazDockForm as new parent with the size of DropCtl
+            NewParent:=TLazDockForm.Create(Application);// starts with Visible=false
+            NewParent.DisableAlign;
+            ParentDisabledAlign:=true;
+            NewParent.BoundsRect:=DropCtl.BoundsRect;
+            // move the WindowState to the new parent
+            if DropCtl is TCustomForm then begin
+              NewParent.WindowState:=TCustomForm(DropCtl).WindowState;
+              TCustomForm(DropCtl).WindowState:=wsNormal;
+              TCustomForm(DropCtl).BorderStyle:=bsNone;
+            end;
+            // first move DropCtl to the invsible parent, so changes do not cause flicker
+            DropCtl.Parent:=NewParent;
+            // init anchors of DropCtl
+            DropCtl.Align:=alNone;
+            DropCtl.AnchorClient(0);
+            DropCtl.Anchors:=[akLeft,akTop,akRight,akBottom];
+            DropCtl.Visible:=true;
+            NewParent.Visible:=true;
+            //DebugLn('TCustomAnchoredDockManager.DockControl DropCtl=',DbgSName(DropCtl),' NewParent.BoundsRect=',dbgs(NewParent.BoundsRect));
+          end else begin
+            if (DropCtl.Parent is TLazDockForm) then begin
+              // ok
+            end else if (DropCtl.Parent is TLazDockPage) then begin
+              // ok
+            end else begin
+              RaiseGDBException('TCustomAnchoredDockManager.InsertControl DropCtl has invalid parent');
+            end;
+          end;
+
+          if not ParentDisabledAlign then begin
+            DropCtl.Parent.DisableAlign;
+            ParentDisabledAlign:=true;
+          end;
+          // create a splitter
+          Splitter:=TLazDockSplitter.Create(Control);
+          Splitter.Align:=alNone;
+          Splitter.Beveled:=true;
+          Splitter.ResizeAnchor:=ControlAnchor;
+          //debugln('TCustomAnchoredDockManager.InsertControl A Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
+
+          // calculate new bounds
+          NewControlBounds:=NewDropCtlBounds;
+          if InsertAt in [alLeft,alRight] then begin
+            SplitterWidth:=Splitter.Constraints.MinMaxWidth(SplitterSize);
+            NewDropCtlWidth:=NewDropCtlBounds.Right-NewDropCtlBounds.Left;
+            dec(NewDropCtlWidth,Control.Width+SplitterWidth);
+            NewDropCtlWidth:=DropCtl.Constraints.MinMaxWidth(NewDropCtlWidth);
+            if InsertAt=alLeft then begin
+              // alLeft: insert Control to the left of DropCtl
+              NewDropCtlBounds.Left:=NewDropCtlBounds.Right-NewDropCtlWidth;
+              NewControlBounds.Right:=NewDropCtlBounds.Left-SplitterWidth;
+              SplitterBounds:=Rect(NewControlBounds.Right,NewDropCtlBounds.Top,
+                                   NewDropCtlBounds.Left,NewDropCtlBounds.Bottom);
+            end else begin
+              // alRight: insert Control to the right of DropCtl
+              NewDropCtlBounds.Right:=NewDropCtlBounds.Left+NewDropCtlWidth;
+              NewControlBounds.Left:=NewDropCtlBounds.Right+SplitterWidth;
+              SplitterBounds:=Rect(NewDropCtlBounds.Right,NewDropCtlBounds.Top,
+                                   NewControlBounds.Left,NewDropCtlBounds.Bottom);
+              //debugln('TCustomAnchoredDockManager.InsertControl A NewDropCtlBounds=',dbgs(NewDropCtlBounds),' NewControlBounds=',dbgs(NewControlBounds),' SplitterBounds=',dbgs(SplitterBounds));
+            end;
+          end else begin
+            SplitterHeight:=Splitter.Constraints.MinMaxHeight(SplitterSize);
+            NewDropCtlHeight:=NewDropCtlBounds.Bottom-NewDropCtlBounds.Top;
+            dec(NewDropCtlHeight,Control.Height+SplitterHeight);
+            NewDropCtlHeight:=DropCtl.Constraints.MinMaxHeight(NewDropCtlHeight);
+            if InsertAt=alTop then begin
+              // alTop: insert Control to the top of DropCtl
+              NewDropCtlBounds.Top:=NewDropCtlBounds.Bottom-NewDropCtlHeight;
+              NewControlBounds.Bottom:=NewDropCtlBounds.Top-SplitterHeight;
+              SplitterBounds:=Rect(NewDropCtlBounds.Left,NewControlBounds.Bottom,
+                                   NewDropCtlBounds.Right,NewDropCtlBounds.Top);
+            end else begin
+              // alBottom: insert Control to the bottom of DropCtl
+              NewDropCtlBounds.Bottom:=NewDropCtlBounds.Top+NewDropCtlHeight;
+              NewControlBounds.Top:=NewDropCtlBounds.Bottom+SplitterHeight;
+              SplitterBounds:=Rect(NewDropCtlBounds.Left,NewDropCtlBounds.Bottom,
+                                   NewDropCtlBounds.Right,NewControlBounds.Top);
+            end;
+            //debugln('TCustomAnchoredDockManager.InsertControl A NewDropCtlBounds=',dbgs(NewDropCtlBounds),' NewControlBounds=',dbgs(NewControlBounds),' SplitterBounds=',dbgs(SplitterBounds));
+          end;
+
+          // position splitter
+          Splitter.BoundsRect:=SplitterBounds;
+          if InsertAt in [alLeft,alRight] then begin
+            Splitter.AnchorSide[akTop].Assign(DropCtl.AnchorSide[akTop]);
+            Splitter.AnchorSide[akBottom].Assign(DropCtl.AnchorSide[akBottom]);
+            Splitter.Anchors:=[akLeft,akTop,akBottom];
+          end else begin
+            Splitter.AnchorSide[akLeft].Assign(DropCtl.AnchorSide[akLeft]);
+            Splitter.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
+            Splitter.Anchors:=[akLeft,akTop,akRight];
+          end;
+          Splitter.Parent:=DropCtl.Parent;
+
+          // position Control
+          Control.Align:=alNone;
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do
+            Control.AnchorSide[a].Control:=nil;
+          Control.AnchorSide[DropCtlAnchor].Assign(DropCtl.AnchorSide[DropCtlAnchor]);
+          Control.AnchorToNeighbour(ControlAnchor,0,Splitter);
+          if InsertAt in [alLeft,alRight] then begin
+            Control.AnchorSide[akTop].Assign(DropCtl.AnchorSide[akTop]);
+            Control.AnchorSide[akBottom].Assign(DropCtl.AnchorSide[akBottom]);
+          end else begin
+            Control.AnchorSide[akLeft].Assign(DropCtl.AnchorSide[akLeft]);
+            Control.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
+          end;
+          Control.Anchors:=[akLeft,akTop,akRight,akBottom];
+          Control.Parent:=DropCtl.Parent;
+          Control.Visible:=true;
+
+          // position DropCtl
+          DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
+
+          //debugln('TCustomAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
         finally
-          DropCtlPage.EnableAlign;
+          if ParentDisabledAlign then
+            DropCtl.Parent.EnableAlign;
+        end;
+        //debugln('TCustomAnchoredDockManager.InsertControl END Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
+      end;
+
+    alClient:
+      begin
+        // docking as page
+        DebugLn('TCustomAnchoredDockManager.InsertControl alClient DropCtl=',DbgSName(DropCtl),' Control=',DbgSName(Control));
+
+        if not (DropCtl.Parent is TLazDockPage) then begin
+          // create a new TLazDockPages
+          //DebugLn('TCustomAnchoredDockManager.InsertControl Create TLazDockPages');
+          DockPages:=TLazDockPages.Create(nil);
+          if DropCtl.Parent<>nil then begin
+            // DockCtl is a child control
+            // => replace the anchors to and from DockCtl with the new DockPages
+            ReplaceAnchoredControl(DropCtl,DockPages);
+          end else begin
+            // DockCtl has no parent
+            // => float DockPages
+            DockPages.ManualFloat(DropCtl.BoundsRect);
+          end;
+          // add DockCtl as page to DockPages
+          DockPages.Pages.Add(DropCtl.Caption);
+          DropCtlPage:=DockPages.Page[0];
+          DropCtlPage.DisableAlign;
+          try
+            DropCtl.Parent:=DropCtlPage;
+            DropCtl.AnchorClient(0);
+          finally
+            DropCtlPage.EnableAlign;
+          end;
+        end;
+        // add Control as new page behind the page of DockCtl
+        DropCtlPage:=DropCtl.Parent as TLazDockPage;
+        DockPages:=DropCtlPage.PageControl as TLazDockPages;
+        NewPageIndex:=DropCtlPage.PageIndex+1;
+        DockPages.Pages.Insert(NewPageIndex,Control.Caption);
+        NewPage:=DockPages.Page[NewPageIndex];
+        NewPage.DisableAlign;
+        try
+          Control.Parent:=NewPage;
+          if Control is TCustomForm then
+            TCustomForm(Control).WindowState:=wsNormal;
+          Control.AnchorClient(0);
+        finally
+          NewPage.EnableAlign;
         end;
       end;
-      // add Control as new page behind the page of DockCtl
-      DropCtlPage:=DropCtl.Parent as TLazDockPage;
-      DockPages:=DropCtlPage.PageControl as TLazDockPages;
-      NewPageIndex:=DropCtlPage.PageIndex+1;
-      DockPages.Pages.Insert(NewPageIndex,Control.Caption);
-      NewPage:=DockPages.Page[NewPageIndex];
-      NewPage.DisableAlign;
-      try
-        Control.Parent:=NewPage;
-        if Control is TCustomForm then
-          TCustomForm(Control).WindowState:=wsNormal;
-        Control.AnchorClient(0);
-      finally
-        NewPage.EnableAlign;
-      end;
+    else
+      RaiseGDBException('TCustomAnchoredDockManager.InsertControl TODO');
     end;
-  else
-    RaiseGDBException('TAnchoredDockManager.InsertControl TODO');
+  finally
+    EnableLayout(Control);
+    EnableLayout(DropCtl);
   end;
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TAnchoredDockManager.UndockControl(Control: TControl);
+  procedure TCustomAnchoredDockManager.UndockControl(Control: TControl);
 
   Removes a control from a docking form.
   It breaks all anchors and cleans up.
@@ -1496,7 +1527,7 @@ end;
   It removes TLazDockSplitter, TLazDockPage and TLazDockPages if they are no
   longer needed.
 -------------------------------------------------------------------------------}
-procedure TAnchoredDockManager.UndockControl(Control: TControl; Float: boolean);
+procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boolean);
 {
 
   Examples:
@@ -1599,7 +1630,7 @@ var
 begin
   if Control.Parent=nil then begin
     // already undocked
-    RaiseGDBException('TAnchoredDockManager.UndockControl Control.Parent=nil');
+    RaiseGDBException('TCustomAnchoredDockManager.UndockControl Control.Parent=nil');
   end;
   
   ParentControl:=Control.Parent;
@@ -1628,14 +1659,14 @@ begin
             if (Sibling.AnchorSide[a].Control=AnchorSplitter) then begin
               // Sibling is anchored with the same side to the splitter
               // => this splitter is needed, can not be deleted.
-              //DebugLn('TAnchoredDockManager.UndockControl Splitter still needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),') by ',DbgSName(Sibling));
+              //DebugLn('TCustomAnchoredDockManager.UndockControl Splitter still needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),') by ',DbgSName(Sibling));
               break;
             end;
             dec(i);
           end;
           if i<0 then begin
             // this splitter is not needed anymore
-            //DebugLn('TAnchoredDockManager.UndockControl Splitter not needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),')');
+            //DebugLn('TCustomAnchoredDockManager.UndockControl Splitter not needed: ',DbgSName(AnchorSplitter),'(',dbgs(AnchorSplitter.BoundsRect),')');
             DeleteSideSplitter(AnchorSplitter,OppositeAnchor[a],
                                OldAnchorControls[OppositeAnchor[a]]);
             Done:=true;
@@ -1688,13 +1719,13 @@ begin
   end;
 end;
 
-procedure TAnchoredDockManager.InsertControl(Control: TControl;
+procedure TCustomAnchoredDockManager.InsertControl(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 begin
   DockControl(Control, InsertAt, DropCtl);
 end;
 
-function TAnchoredDockManager.EnlargeControl(Control: TControl;
+function TCustomAnchoredDockManager.EnlargeControl(Control: TControl;
   Side: TAnchorKind; Simulate: boolean): boolean;
 { If Simulate=true then it will only test if control can be enlarged.
 
@@ -1756,7 +1787,7 @@ var
 begin
   Result:=false;
   if Control=nil then exit;
-  DebugLn(['TAnchoredDockManager.EnlargeControl Control=',DbgSName(Control),' Side=',AnchorNames[Side]]);
+  DebugLn(['TCustomAnchoredDockManager.EnlargeControl Control=',DbgSName(Control),' Side=',AnchorNames[Side]]);
   if Side in [akLeft,akRight] then
     Side2:=akTop
   else
@@ -1774,7 +1805,7 @@ begin
     Sibling:=Parent.Controls[i];
     if (not GetLazDockSplitter(Sibling,OppositeAnchor[Side],CurSplitter))
     or (CurSplitter<>MainSplitter) then continue;
-    DebugLn(['TAnchoredDockManager.EnlargeControl neighbour Sibling=',DbgSName(Sibling)]);
+    DebugLn(['TCustomAnchoredDockManager.EnlargeControl neighbour Sibling=',DbgSName(Sibling)]);
     // Sibling is anchored to MainSplitter on the other side
     // check if it is at the same height as Control
     if Side in [akTop,akBottom] then begin
@@ -1818,14 +1849,14 @@ begin
   end;
 
   if Neighbour=nil then exit; // no neighbour found
-  DebugLn(['TAnchoredDockManager.EnlargeControl Neighbour=',DbgSName(Neighbour)]);
+  DebugLn(['TCustomAnchoredDockManager.EnlargeControl Neighbour=',DbgSName(Neighbour)]);
   
   ParentDisabledAlign:=false;
   try
     if Neighbour is TLazDockSplitter then begin
       // one splitter as Neighbour
       RotateSplitter:=TLazDockSplitter(Neighbour);
-      DebugLn(['TAnchoredDockManager.EnlargeControl rotate splitter RotateSplitter=',DbgSName(RotateSplitter)]);
+      DebugLn(['TCustomAnchoredDockManager.EnlargeControl rotate splitter RotateSplitter=',DbgSName(RotateSplitter)]);
       // check that all anchored controls of this splitter can be shrinked
       for i:=0 to Parent.ControlCount-1 do begin
         Sibling:=Parent.Controls[i];
@@ -1914,7 +1945,7 @@ begin
       
     end else begin
       // shrink a neighbour control
-      DebugLn(['TAnchoredDockManager.EnlargeControl Shrink one control: Neighbour=',DbgSName(Neighbour)]);
+      DebugLn(['TCustomAnchoredDockManager.EnlargeControl Shrink one control: Neighbour=',DbgSName(Neighbour)]);
       // check if Neighbour already shares a side with Control
       if (Neighbour.AnchorSide[Side2].Control<>Side2Anchor)
       and (Neighbour.AnchorSide[Side3].Control<>Side3Anchor) then begin
@@ -1966,43 +1997,43 @@ begin
   end;
 end;
 
-procedure TAnchoredDockManager.LoadFromStream(Stream: TStream);
+procedure TCustomAnchoredDockManager.LoadFromStream(Stream: TStream);
 begin
-  RaiseGDBException('TAnchoredDockManager.LoadFromStream TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.LoadFromStream TODO');
 end;
 
-procedure TAnchoredDockManager.PaintSite(DC: HDC);
+procedure TCustomAnchoredDockManager.PaintSite(DC: HDC);
 begin
-  RaiseGDBException('TAnchoredDockManager.PaintSite TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.PaintSite TODO');
 end;
 
-procedure TAnchoredDockManager.PositionDockRect(Client, DropCtl: TControl;
+procedure TCustomAnchoredDockManager.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
 begin
-  RaiseGDBException('TAnchoredDockManager.PositionDockRect TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.PositionDockRect TODO');
 end;
 
-procedure TAnchoredDockManager.RemoveControl(Control: TControl);
+procedure TCustomAnchoredDockManager.RemoveControl(Control: TControl);
 begin
   UndockControl(Control,false);
 end;
 
-procedure TAnchoredDockManager.ResetBounds(Force: Boolean);
+procedure TCustomAnchoredDockManager.ResetBounds(Force: Boolean);
 begin
-  RaiseGDBException('TAnchoredDockManager.ResetBounds TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.ResetBounds TODO');
 end;
 
-procedure TAnchoredDockManager.SaveToStream(Stream: TStream);
+procedure TCustomAnchoredDockManager.SaveToStream(Stream: TStream);
 begin
-  RaiseGDBException('TAnchoredDockManager.SaveToStream TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.SaveToStream TODO');
 end;
 
-procedure TAnchoredDockManager.SetReplacingControl(Control: TControl);
+procedure TCustomAnchoredDockManager.SetReplacingControl(Control: TControl);
 begin
-  RaiseGDBException('TAnchoredDockManager.SetReplacingControl TODO');
+  RaiseGDBException('TCustomAnchoredDockManager.SetReplacingControl TODO');
 end;
 
-procedure TAnchoredDockManager.ReplaceAnchoredControl(OldControl,
+procedure TCustomAnchoredDockManager.ReplaceAnchoredControl(OldControl,
   NewControl: TControl);
 var
   a: TAnchorKind;
@@ -2046,12 +2077,12 @@ begin
   end;
 end;
 
-function TAnchoredDockManager.GetSplitterWidth(Splitter: TControl): integer;
+function TCustomAnchoredDockManager.GetSplitterWidth(Splitter: TControl): integer;
 begin
   Result:=Splitter.Constraints.MinMaxWidth(SplitterSize);
 end;
 
-function TAnchoredDockManager.GetSplitterHeight(Splitter: TControl): integer;
+function TCustomAnchoredDockManager.GetSplitterHeight(Splitter: TControl): integer;
 begin
   Result:=Splitter.Constraints.MinMaxHeight(SplitterSize);
 end;
