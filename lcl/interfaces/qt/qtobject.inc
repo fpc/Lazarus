@@ -239,8 +239,9 @@ begin
   Result := TQtThemeServices.Create;
 end;
 
-function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
+function TQtWidgetSet.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  AObject: TQtObject;
 begin
   Result := False;
   case QEvent_type(Event) of
@@ -261,6 +262,12 @@ begin
           else
             FOldFocusWidget := QWidgetH(Sender);
         end;
+      end;
+    LCLQt_Destroy:
+      begin
+        AObject := TQtObject(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
+        AObject.Free;
+        Result := True;
       end;
   end;
 end;

@@ -117,6 +117,7 @@ type
     
     destructor Destroy; override;
     function GetContainerWidget: QWidgetH; virtual;
+    procedure Release; override;
   public
     function DeliverMessage(var Msg): LRESULT; virtual;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1267,6 +1268,12 @@ begin
     Result := Widget;
 end;
 
+procedure TQtWidget.Release;
+begin
+  inherited Release;
+  LCLObject := nil;
+end;
+
 {$IFDEF VerboseQt}
 function EventTypeToStr(Event:QEventH):string;
 // Qt 3 events
@@ -1416,75 +1423,74 @@ begin
     ' Event=', EventTypeToStr(Event));
   {$endif}
 
-  case QEvent_type(Event) of
-    QEventShow: SlotShow(True);
-    QEventHide: SlotShow(False);
-    QEventClose:
-      if not SlotClose then
+  if LCLObject <> nil then
+  begin
+    case QEvent_type(Event) of
+      QEventShow: SlotShow(True);
+      QEventHide: SlotShow(False);
+      QEventClose:
+        if not SlotClose then
+        begin
+          QEvent_ignore(Event);
+          Result := True;
+        end;
+      QEventDestroy: SlotDestroy;
+      QEventEnter,
+      QEventLeave: SlotMouseEnter(Sender, Event);
+      QEventFocusIn: SlotFocus(Event, True);
+      QEventFocusOut:
       begin
-        QEvent_ignore(Event);
-        Result := True;
+        SlotFocus(Event, False);
+        if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason then
+          releaseMouse;
       end;
-    QEventDestroy: SlotDestroy;
-    QEventEnter,
-    QEventLeave: SlotMouseEnter(Sender, Event);
-    QEventFocusIn: SlotFocus(Event, True);
-    QEventFocusOut:
-    begin
-      SlotFocus(Event, False);
-      if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason then
-        releaseMouse;
+
+      QEventHoverEnter,
+      QEventHoverLeave,
+      QEventHoverMove:
+        begin
+          SlotHover(Sender, Event);
+        end;
+
+      QEventKeyPress,
+      QEventKeyRelease:
+        begin
+          Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
+        end;
+
+      QEventMouseButtonPress,
+      QEventMouseButtonRelease,
+      QEventMouseButtonDblClick:
+        begin
+          SlotMouse(Sender, Event);
+        end;
+      QEventMouseMove:
+        begin
+          SlotMouseMove(Event);
+        end;
+      QEventWheel:
+        begin
+          SlotMouseWheel(Sender, Event);
+        end;
+      QEventMove: SlotMove(Event);
+      QEventResize: SlotResize(Event);
+      QEventPaint:
+        begin
+          if FHasPaint then
+            SlotPaint(Sender, Event);
+        end;
+      QEventContextMenu: SlotContextMenu(Sender, Event);
+      QEventLCLMessage:
+        begin
+          SlotLCLMessage(Sender, Event);
+          Result := True;
+        end;
+    else
+      QEvent_ignore(Event);
     end;
-
-    QEventHoverEnter,
-    QEventHoverLeave,
-    QEventHoverMove:
-      begin
-        SlotHover(Sender, Event);
-      end;
-
-    QEventKeyPress,
-    QEventKeyRelease:
-      begin
-        Result := SlotKey(Sender, Event) or (LCLObject is TCustomControl);
-      end;
-
-    QEventMouseButtonPress,
-    QEventMouseButtonRelease,
-    QEventMouseButtonDblClick:
-      begin
-        SlotMouse(Sender, Event);
-      end;
-    QEventMouseMove:
-      begin
-        SlotMouseMove(Event);
-      end;
-    QEventWheel:
-      begin
-        SlotMouseWheel(Sender, Event);
-      end;
-    QEventMove: SlotMove(Event);
-    QEventResize: SlotResize(Event);
-    QEventPaint:
-      begin
-        if FHasPaint then
-          SlotPaint(Sender, Event);
-      end;
-    QEventContextMenu: SlotContextMenu(Sender, Event);
-    QEventLCLMessage:
-      begin
-        SlotLCLMessage(Sender, Event);
-        Result := True;
-      end;
-    LCLQt_Destroy:
-      begin
-        Free;
-        Result := True;
-        Exit;
-      end;
+  end
   else
-    Result := inherited EventFilter(Sender, Event)
-  end;
+    QEvent_ignore(Event);
   EndEventProcessing;
 end;
 
@@ -3009,13 +3015,15 @@ end;
 
 function TQtWidget.DeliverMessage(var Msg): LRESULT;
 begin
+  Result := 0;
+  if LCLObject = nil then
+    Exit;
   try
     if LCLObject.HandleAllocated then
     begin
       LCLObject.WindowProc(TLMessage(Msg));
       Result := TLMessage(Msg).Result;
-    end else
-      Result := 0;
+    end;
   except
     Application.HandleException(nil);
   end;
@@ -3327,12 +3335,7 @@ var
   Msg: TLMessage;
 begin
   Msg.Msg := LM_CLICKED;
-
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 { TQtMainWindow }
@@ -3547,7 +3550,8 @@ end;
 
 procedure TQtMainWindow.OffsetMousePos(APoint: PQtPoint);
 begin
-  if TCustomForm(LCLObject).FormStyle <> fsMdiChild then
+  if (LCLObject <> nil) and
+     (TCustomForm(LCLObject).FormStyle <> fsMdiChild) then
     inherited OffsetMousePos(APoint);
 end;
 
@@ -3580,12 +3584,8 @@ begin
 
   Msg.Width := getWidth;
   Msg.Height := getHeight;
-
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  
+  DeliverMessage(Msg);
 end;
 
 procedure TQtMainWindow.setShowInTaskBar(AValue: Boolean);
@@ -4410,11 +4410,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_CHANGED;
-  try
-    DeliverMessage(Msg);
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 
@@ -4930,7 +4926,8 @@ var
   Msg: TLMNotify;
   Hdr: TNmHdr;
 begin
-
+  if LCLObject = nil then
+    Exit;
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := CN_NOTIFY;
@@ -4940,11 +4937,7 @@ begin
   Hdr.idFrom := Index;
   
   Msg.NMHdr := @Hdr;
-  try
-    DeliverMessage(Msg);
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
@@ -5277,12 +5270,7 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_ACTIVATE;
-
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtComboBox.SlotChange(p1: PWideString); cdecl;
@@ -5296,11 +5284,7 @@ begin
 
   Msg.Msg := LM_CHANGED;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtComboBox.SlotSelect(index: Integer); cdecl;
@@ -5314,11 +5298,7 @@ begin
 
   Msg.Msg := LM_SELCHANGE;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 procedure TQtComboBox.SlotDropListVisibility(AVisible: Boolean); cdecl;
@@ -5660,11 +5640,7 @@ begin
 
   Msg.Msg := LM_SELCHANGE;
 
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -6213,11 +6189,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_ENTER;
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -6231,11 +6203,7 @@ var
 begin
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
-  try
-    LCLObject.WindowProc(TLMessage(Msg));
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------

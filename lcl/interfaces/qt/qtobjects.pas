@@ -54,13 +54,14 @@ type
     TheObject: QObjectH;
     constructor Create; virtual;
     destructor Destroy; override;
-    procedure Release;
+    procedure Release; virtual;
   public
     procedure AttachEvents; virtual;
     procedure DetachEvents; virtual;
-    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; virtual; abstract;
     procedure BeginEventProcessing;
     procedure EndEventProcessing;
+    function InEvent: Boolean;
   public
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
@@ -444,7 +445,7 @@ type
   end;
 
 const
-  LCLQt_Destroy = QEventUser + $1000;
+  LCLQt_Destroy = QEventType(QEventUser + $1000);
   
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
@@ -584,8 +585,12 @@ begin
 end;
 
 procedure TQtObject.Release;
+var
+  AEvent: QLCLMessageEventH;
 begin
-  QCoreApplication_postEvent(TheObject, QEvent_create(LCLQt_Destroy));
+  AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
+  QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
+  QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, -1);
 end;
 
 procedure TQtObject.AttachEvents;
@@ -606,23 +611,6 @@ begin
   end;
 end;
 
-function TQtObject.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-  cdecl;
-begin
-  Result := False;
-
-  QEvent_accept(Event);
-  case QEvent_type(Event) of
-    LCLQt_Destroy:
-     begin
-       Result := True;
-       Free;
-     end;
-  else
-    QEvent_ignore(Event);
-  end;
-end;
-
 procedure TQtObject.BeginEventProcessing;
 begin
   inc(FInEventCount);
@@ -632,6 +620,11 @@ procedure TQtObject.EndEventProcessing;
 begin
   if FInEventCount > 0 then
     dec(FInEventCount);
+end;
+
+function TQtObject.InEvent: Boolean;
+begin
+  Result := FInEventCount > 0;
 end;
 
 procedure TQtObject.BeginUpdate;
