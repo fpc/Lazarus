@@ -129,7 +129,7 @@ endif
 # Debian
 ##########################################################################
 
-ifdef inUnix
+ifeq ($(OS_TARGET),linux)
 
 # Build dir
 ifndef BUILDDIR
