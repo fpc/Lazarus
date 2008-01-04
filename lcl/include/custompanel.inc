@@ -43,6 +43,7 @@ begin
   Color:=clBtnFace;// clBackground;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   ParentColor := True;
+  UseDockManager := True;
 end;
 
 procedure TCustomPanel.SetAlignment(const Value: TAlignment);
