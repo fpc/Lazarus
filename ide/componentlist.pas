@@ -33,7 +33,7 @@
     directly on the designed form. This avoids a lot of scrolling in my
     already overfull palette (i love having the lazarus sources!).
 }
-unit componentlist;
+unit ComponentList;
 
 {$mode objfpc}{$H+}
 
@@ -99,7 +99,7 @@ begin
   //Translations..
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
-  CloseButton.Caption := '&Close'; //TODO
+  CloseButton.Caption := lisClose;
   TabSheetListBox.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;

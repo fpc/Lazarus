@@ -31,10 +31,10 @@ object ComponentListForm: TComponentListForm
       ClientWidth = 229
       TabOrder = 0
       object CloseButton: TButton
-        Left = 144
-        Height = 26
-        Top = 4
-        Width = 73
+        Left = 134
+        Height = 23
+        Top = 7
+        Width = 83
         Anchors = [akRight, akBottom]
         AutoSize = True
         Caption = 'CloseButton'
@@ -90,27 +90,26 @@ object ComponentListForm: TComponentListForm
         TabOrder = 0
         object TabSheetListBox: TTabSheet
           Caption = 'List'
-          ClientHeight = 447
-          ClientWidth = 223
+          ClientHeight = 451
+          ClientWidth = 219
           object Panel7: TPanel
-            Height = 447
-            Width = 223
+            Height = 451
+            Width = 219
             Align = alClient
             BevelOuter = bvNone
             BorderWidth = 5
-            ClientHeight = 447
-            ClientWidth = 223
+            ClientHeight = 451
+            ClientWidth = 219
             TabOrder = 0
             object ListboxComponents: TListBox
               Left = 5
-              Height = 437
+              Height = 441
               Top = 5
-              Width = 213
+              Width = 209
               Align = alClient
               OnDblClick = ListboxComponentsDblClick
               Sorted = True
               TabOrder = 0
-              TopIndex = -1
             end
           end
         end
