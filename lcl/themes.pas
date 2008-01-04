@@ -1912,7 +1912,33 @@ begin
           TP_SEPARATORVERT:
             DrawHline(ARect);
         end;
-      end
+      end;
+    teWindow:
+      begin
+        case Details.Part of
+          WP_MINBUTTON,
+          WP_MDIMINBUTTON    : ADrawFlags := DFCS_CAPTIONMIN;
+          WP_MAXBUTTON       : ADrawFlags := DFCS_CAPTIONMAX;
+          WP_CLOSEBUTTON,
+          WP_SMALLCLOSEBUTTON,
+          WP_MDICLOSEBUTTON  : ADrawFlags := DFCS_CAPTIONCLOSE;
+          WP_RESTOREBUTTON,
+          WP_MDIRESTOREBUTTON: ADrawFlags := DFCS_CAPTIONRESTORE;
+          WP_HELPBUTTON,
+          WP_MDIHELPBUTTON   : ADrawFlags := DFCS_CAPTIONHELP;
+        else
+          ADrawFlags := 0;
+        end;
+
+        if IsDisabled(Details) then
+          ADrawFlags := ADrawFlags or DFCS_INACTIVE else
+        if IsPushed(Details) then
+          ADrawFlags := ADrawFlags or DFCS_PUSHED else
+        if IsHot(Details) then
+          ADrawFlags := ADrawFlags or DFCS_HOT;
+
+        WidgetSet.DrawFrameControl(DC, ARect, DFC_CAPTION, ADrawFlags);
+      end;
   end;
 end;
 
