@@ -121,6 +121,13 @@ begin
   SearchDirectory('')
 end;
 
+class function TLpkTest.CreateSuiteFromFile(const AName,
+  APath: string): TTestSuite;
+begin
+  Result := TTestSuite.Create(AName);
+  Result.AddTest(Create(APath, 'TestCompile'));
+end;
+
 procedure TLpkTest.TestCompile;
 var
   LazBuildPath: string;
@@ -183,22 +190,6 @@ begin
   finally
     ScriptProcess.Free;
   end;
-end;
-
-class function TLpkTest.CreateSuiteFromFile(const AName,
-  APath: string): TTestSuite;
-var
-  AhkFileName: String;
-begin
-  Result := TTestSuite.Create(AName);
-  Result.AddTest(TLpiTest.Create(APath, 'TestCompile'));
-{$IFDEF win32}
-  AhkFileName := GetScriptFileName(APath);
-  if FileExists(AhkFileName) then
-    Result.AddTest(TLpiTest.Create(APath, 'TestRun'));
-{$ELSE}
-  {$NOTE scripting is only available on win32}
-{$ENDIF}
 end;
 
 procedure TLpiTest.TestRun;
