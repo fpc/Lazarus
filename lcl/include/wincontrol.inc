@@ -2328,8 +2328,10 @@ var
       CurAnchorSide:=Control.AnchorSide[Kind];
       //if CheckPosition(Control) and (Kind=akLeft) then debugln(['GetAnchorSidePosition A Self=',DbgSName(Self),' Control=',DbgSName(Control),' CurAnchorSide.Control=',DbgSName(CurAnchorSide.Control),' Spacing=',Control.BorderSpacing.GetSpace(Kind)]);
       CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
-      if ReferenceControl<>nil then
+      if ReferenceControl<>nil then begin
+        //DebugLn(['GetAnchorSidePosition ',DbgSName(Control),' ReferenceControl=',DbgSName(ReferenceControl)]);
         Result:=Position;
+      end;
       //if CheckPosition(Control) and (Kind=akLeft) then begin
         //debugln('GetAnchorSidePosition B Self=',DbgSName(Self),' Control=',DbgSName(Control),' Result=',dbgs(Result),' ReferenceControl=',dbgsName(ReferenceControl));
         //if ReferenceControl<>nil then DebugLn(['GetAnchorSidePosition ReferenceControl.BoundsRect=',dbgs(ReferenceControl.BoundsRect)]);
@@ -4184,7 +4186,12 @@ begin
 
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
   DC := TheMessage.DC;
-  if DC = 0 then DC := BeginPaint(Handle, PS);
+  if DC = 0 then
+    DC := BeginPaint(Handle, PS);
+
+  if FDockSite and FUseDockManager then
+    FDockManager.PaintSite(DC);
+    
   try
     // check if child controls need clipping
     //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' B');
@@ -4221,7 +4228,8 @@ begin
     //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' PaintControls ...');
     PaintControls(DC, nil);
   finally
-    if TheMessage.DC = 0 then EndPaint(Handle, PS);
+    if TheMessage.DC = 0 then
+      EndPaint(Handle, PS);
   end;
   Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
 //DebugLn('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',DbgS(Message.DC,8));

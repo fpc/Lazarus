@@ -31,8 +31,8 @@ unit LDockTree;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, Forms, Controls, ExtCtrls, Menus,
-  LCLStrConsts;
+  Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
+  Graphics, Controls, ExtCtrls, Forms, Menus, Themes;
   
 type
   TLazDockPages = class;
@@ -61,10 +61,13 @@ type
   private
     FAutoFreeDockSite: boolean;
   protected
-    procedure UndockControlForDocking(AControl: TControl);
-    procedure BreakAnchors(Zone: TDockZone);
-    procedure CreateDockLayoutHelperControls(Zone: TLazDockZone);
+    procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure AnchorDockLayout(Zone: TLazDockZone);
+    procedure CreateDockLayoutHelperControls(Zone: TLazDockZone);
+    procedure BreakAnchors(Zone: TDockZone);
+    procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
+                             const ARect: TRect); override;
+    procedure UndockControlForDocking(AControl: TControl);
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
@@ -76,6 +79,7 @@ type
     function FindBorderControl(Zone: TLazDockZone; Side: TAnchorKind): TControl;
     function GetAnchorControl(Zone: TLazDockZone; Side: TAnchorKind;
                               OutSide: boolean): TControl;
+    procedure PaintSite(DC: HDC); override;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
@@ -196,6 +200,7 @@ type
   
   
 const
+  DefaultDockGrabberSize = 15;
   DockAlignOrientations: array[TAlign] of TDockOrientation = (
     doPages,     //alNone,
     doVertical,  //alTop,
@@ -602,6 +607,79 @@ begin
   BreakAnchors(Zone.NextSibling);
 end;
 
+procedure TLazDockTree.PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
+  const ARect: TRect);
+var
+  Details: TThemedElementDetails;
+  BtnRect: TRect;
+  DrawRect: TRect;
+  d: integer;
+begin
+  DrawRect := ARect;
+  InflateRect(DrawRect, -1, -1);
+  ACanvas.Brush.Color := clBtnShadow;
+  ACanvas.FrameRect(DrawRect);
+  InflateRect(DrawRect, -1, -1);
+  case AControl.DockOrientation of
+    doHorizontal:
+      begin
+        d := DrawRect.Bottom - DrawRect.Top;
+        BtnRect := DrawRect;
+        Dec(BtnRect.Right);
+        BtnRect.Left := BtnRect.Right - d;
+        Details := ThemeServices.GetElementDetails(twCloseButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Right := BtnRect.Left;
+        BtnRect := DrawRect;
+        Dec(BtnRect.Right);
+        BtnRect.Left := BtnRect.Right - d;
+        Details := ThemeServices.GetElementDetails(twRestoreButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Right := BtnRect.Left;
+        InflateRect(DrawRect, -4, 0);
+        d := (DrawRect.Bottom + DrawRect.Top) div 2;
+        
+        ACanvas.Pen.Color := clBtnHighlight;
+        ACanvas.MoveTo(DrawRect.Left, d - 1);
+        ACanvas.LineTo(DrawRect.Right, d - 1);
+
+        ACanvas.Pen.Color := clBtnShadow;
+        ACanvas.MoveTo(DrawRect.Left, d);
+        ACanvas.LineTo(DrawRect.Right, d);
+      end;
+    doVertical:
+      begin
+        d := DrawRect.Right - DrawRect.Left;
+        BtnRect := DrawRect;
+        Inc(BtnRect.Top);
+        BtnRect.Bottom := BtnRect.Top + d;
+        Details := ThemeServices.GetElementDetails(twCloseButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Top := BtnRect.Bottom;
+        BtnRect := DrawRect;
+        Inc(BtnRect.Top);
+        BtnRect.Bottom := BtnRect.Top + d;
+        Details := ThemeServices.GetElementDetails(twRestoreButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Top := BtnRect.Bottom;
+        InflateRect(DrawRect, 0, -4);
+        d := (DrawRect.Right + DrawRect.Left) div 2;
+
+        ACanvas.Pen.Color := clBtnHighlight;
+        ACanvas.MoveTo(d - 1, DrawRect.Top);
+        ACanvas.LineTo(d - 1, DrawRect.Bottom);
+
+        ACanvas.Pen.Color := clBtnShadow;
+        ACanvas.MoveTo(d, DrawRect.Top);
+        ACanvas.LineTo(d, DrawRect.Bottom);
+      end;
+  end;
+end;
+
 procedure TLazDockTree.CreateDockLayoutHelperControls(Zone: TLazDockZone);
 var
   ParentPages: TLazDockPages;
@@ -656,6 +734,15 @@ begin
   // create controls for childs and siblings
   CreateDockLayoutHelperControls(Zone.FirstChild as TLazDockZone);
   CreateDockLayoutHelperControls(Zone.NextSibling as TLazDockZone);
+end;
+
+procedure TLazDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
+begin
+  // offset one of the borders of control rect in order to get space for frame
+  case AControl.DockOrientation of
+    doHorizontal: Inc(ARect.Top, DefaultDockGrabberSize);
+    doVertical  : Inc(ARect.Left, DefaultDockGrabberSize);
+  end;
 end;
 
 procedure TLazDockTree.AnchorDockLayout(Zone: TLazDockZone);
@@ -771,6 +858,16 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
        +-Zone2 (Form1,doNoOrient)
        +-Zone3 (Form2,doNoOrient)
 }
+
+  procedure PrepareControlForResize(AControl: TControl); inline;
+  begin
+    AControl.Align := alNone;
+    AControl.Anchors := [akLeft, akTop];
+    AControl.AnchorSide[akLeft].Control := nil;
+    AControl.AnchorSide[akTop].Control := nil;
+    AControl.AutoSize := False;
+  end;
+
 const
   SplitterWidth = 5;
   SplitterHeight = 5;
@@ -803,14 +900,22 @@ begin
   if (DropZone=RootZone) and (RootZone.FirstChild=nil) then begin
     // this is the first child
     debugln('TLazDockTree.InsertControl First Child');
-    RootZone.Orientation:=NewOrientation;
+    RootZone.Orientation := NewOrientation;
     RootZone.AddAsFirstChild(NewZone);
+    AControl.DockOrientation := NewOrientation;
     if not AControl.Visible then
-      DockSite.Visible:=false;
-    DockSite.BoundsRect:=AControl.BoundsRect;
-    AControl.Parent:=DockSite;
+      DockSite.Visible := False;
+
+    NewBounds := AControl.BoundsRect;
+    AdjustDockRect(AControl, NewBounds);
+    DockSite.BoundsRect := NewBounds;
+    
+    PrepareControlForResize(AControl);
+    AControl.BoundsRect := NewBounds;
+    AControl.Parent := DockSite;
+    
     if AControl.Visible then
-      DockSite.Visible:=true;
+      DockSite.Visible := True;
   end else begin
     // there are already other childs
 
@@ -862,24 +967,20 @@ begin
       
     // break anchors and resize DockSite
     BreakAnchors(RootZone);
-    NewBounds:=DockSite.BoundsRect;
+    NewBounds := DockSite.BoundsRect;
     case InsertAt of
-    alLeft:  dec(NewBounds.Left,SplitterWidth+AControl.Width);
-    alRight: inc(NewBounds.Right,SplitterWidth+AControl.Width);
-    alTop:   dec(NewBounds.Top,SplitterHeight+AControl.Height);
-    alBottom:inc(NewBounds.Bottom,SplitterHeight+AControl.Height);
+      alLeft:  dec(NewBounds.Left,SplitterWidth+AControl.Width);
+      alRight: inc(NewBounds.Right,SplitterWidth+AControl.Width);
+      alTop:   dec(NewBounds.Top,SplitterHeight+AControl.Height);
+      alBottom:inc(NewBounds.Bottom,SplitterHeight+AControl.Height);
     else     // no change
     end;
-    DockSite.BoundsRect:=NewBounds;
+    DockSite.BoundsRect := NewBounds;
     
     // add AControl to DockSite
-    AControl.Visible:=false;
-    AControl.Parent:=nil;
-    AControl.Align:=alNone;
-    AControl.Anchors:=[akLeft,akTop];
-    AControl.AnchorSide[akLeft].Control:=nil;
-    AControl.AnchorSide[akTop].Control:=nil;
-    AControl.AutoSize:=false;
+    AControl.Visible := False;
+    AControl.Parent := nil;
+    PrepareControlForResize(AControl);
     // resize control
     RaiseGDBException('TLazDockTree.InsertControl TODO resize control');
     if NewOrientation in [doHorizontal,doVertical] then begin
@@ -892,7 +993,8 @@ begin
           AControl.Width:=ASibling.Width;
       end;
     end;
-    AControl.Parent:=NewZone.GetParentControl;
+    AControl.DockOrientation := NewOrientation;
+    AControl.Parent := NewZone.GetParentControl;
 
     // Build dock layout (anchors, splitters, pages)
     BuildDockLayout(RootZone as TLazDockZone);
@@ -1019,6 +1121,41 @@ begin
       Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
   doPages:
     Result:=GetAnchorControl(Zone.Parent as TLazDockZone,Side,false);
+  end;
+end;
+
+procedure TLazDockTree.PaintSite(DC: HDC);
+var
+  ACanvas: TCanvas;
+  ARect: TRect;
+  i: integer;
+begin
+  // paint bounds for each control and close button
+  if DockSite.ControlCount > 0 then
+  begin
+    ACanvas := TCanvas.Create;
+    ACanvas.Handle := DC;
+    try
+      for i := 0 to DockSite.ControlCount - 1 do
+      begin
+        ARect := DockSite.Controls[i].BoundsRect;
+        case DockSite.Controls[i].DockOrientation of
+          doHorizontal:
+            begin
+              ARect.Bottom := ARect.Top;
+              Dec(ARect.Top, DefaultDockGrabberSize);
+            end;
+          doVertical:
+            begin
+              ARect.Right := ARect.Left;
+              Dec(ARect.Left, DefaultDockGrabberSize);
+            end;
+        end;
+        PaintDockFrame(ACanvas, DockSite.Controls[i], ARect);
+      end;
+    finally
+      ACanvas.Free;
+    end;
   end;
 end;
 
@@ -2218,5 +2355,8 @@ begin
   BestLevel:=High(Integer);
   FindCandidate(Self,0);
 end;
+
+initialization
+  DefaultDockTreeClass := TLazDockTree;
 
 end.
