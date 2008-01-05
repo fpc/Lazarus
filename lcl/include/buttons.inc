@@ -298,7 +298,15 @@ begin
   end;
   inherited WSSetText(AText);
   //DebugLn(['TCustomButton.WSSetText ',dbgsName(Self),' Caption="',Caption,'" AutoSizeCanStart=',AutoSizeCanStart,' AutoSizeDelayed=',AutoSizeDelayed]);
+end;
+
+procedure TCustomButton.TextChanged;
+begin
+  InvalidatePreferredSize;
+  if (Parent<>nil) and Parent.AutoSize then
+    Parent.AdjustSize;
   AdjustSize;
+  inherited TextChanged;
 end;
 
 {------------------------------------------------------------------------------

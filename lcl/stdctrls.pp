@@ -1020,6 +1020,7 @@ type
     function UseRightToLeftAlignment: Boolean; override;
     procedure WSSetDefault;
     procedure WSSetText(const AText: String); override;
+    procedure TextChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteDefaultAction; override;
