@@ -596,8 +596,12 @@ resourcestring
   lisdebugging = '%s (debugging ...)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
-    +'file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search '
-    +'Paths->Other Unit Files';
+    +'file %s%s%s.%sIf it belongs to Your project, check search path '
+    +'in%sProject->Compiler Options...->Search Paths->Other Unit Files.'
+    +' If this file belongs t a package, check the appropriate package compiler'
+    +' options. If this file belongs to lazarus, make sure compiling clean.'
+    +' If the file belongs to FPC then check fpc.cfg.'
+    +' If unsure, check Project -> CompilerOptions ... -> Test';
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';
   lisClassNotFound = 'Class not found';
