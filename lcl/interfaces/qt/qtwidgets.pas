@@ -118,6 +118,7 @@ type
     
     destructor Destroy; override;
     function GetContainerWidget: QWidgetH; virtual;
+    function CanPostponeFree: Boolean; override;
     procedure Release; override;
   public
     function DeliverMessage(var Msg): LRESULT; virtual;
@@ -1267,6 +1268,12 @@ begin
     Result := FCentralWidget
   else
     Result := Widget;
+end;
+
+function TQtWidget.CanPostponeFree: Boolean;
+begin
+  Result := (LCLObject = nil) or
+         not(csDestroying in LCLObject.ComponentState);
 end;
 
 procedure TQtWidget.Release;

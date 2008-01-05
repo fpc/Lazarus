@@ -49,11 +49,13 @@ type
   private
     FUpdateCount: Integer;
     FInEventCount: Integer;
+    FReleaseInEvent: Boolean;
   public
     FEventHook: QObject_hookH;
     TheObject: QObjectH;
     constructor Create; virtual;
     destructor Destroy; override;
+    function CanPostponeFree: Boolean; virtual;
     procedure Release; virtual;
   public
     procedure AttachEvents; virtual;
@@ -571,6 +573,7 @@ constructor TQtObject.Create;
 begin
   FUpdateCount := 0;
   FInEventCount := 0;
+  FReleaseInEvent := False;
 end;
 
 destructor TQtObject.Destroy;
@@ -584,13 +587,28 @@ begin
   inherited Destroy;
 end;
 
+function TQtObject.CanPostponeFree: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TQtObject.Release;
 var
   AEvent: QLCLMessageEventH;
 begin
-  AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
-  QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
-  QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, -1);
+  if CanPostponeFree then
+  begin
+    AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
+    QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
+    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, -1);
+  end
+  else
+  begin
+    if InEvent then
+      FReleaseInEvent := True
+    else
+      Free;
+  end;
 end;
 
 procedure TQtObject.AttachEvents;
@@ -620,6 +638,8 @@ procedure TQtObject.EndEventProcessing;
 begin
   if FInEventCount > 0 then
     dec(FInEventCount);
+  if (FInEventCount = 0) and FReleaseInEvent then
+    Free;
 end;
 
 function TQtObject.InEvent: Boolean;
