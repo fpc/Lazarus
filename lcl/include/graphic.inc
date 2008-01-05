@@ -45,6 +45,11 @@ begin
   Result:=0;
 end;
 
+function TGraphic.GetResourceType: TResourceType;
+begin
+  Result := nil;
+end;
+
 procedure TGraphic.Changed(Sender: TObject);
 begin
   FModified := True;
@@ -126,7 +131,39 @@ begin
   if (DefMimeType<>'') and (MimeType=GetDefaultMimeType) then
     LoadFromStream(Stream)
   else
-    raise Exception.Create(ClassName+': Unsupported MimeType: '+MimeType);
+    raise EInvalidGraphic.Create(ClassName+': Unsupported MimeType: '+MimeType);
+end;
+
+procedure TGraphic.LoadFromResourceID(Instance: THandle; ResID: Integer);
+var
+  Stream: TResourceStream;
+  ResType: TResourceType;
+begin
+  ResType := GetResourceType;
+  if ResType = nil then Exit;
+
+  Stream := TResourceStream.CreateFromID(Instance, ResID, ResType);
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
+end;
+
+procedure TGraphic.LoadFromResourceName(Instance: THandle; const ResName: String);
+var
+  Stream: TResourceStream;
+  ResType: TResourceType;
+begin
+  ResType := GetResourceType;
+  if ResType = nil then Exit;
+
+  Stream := TResourceStream.Create(Instance, ResName, ResType);
+  try
+    LoadFromStream(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TGraphic.LoadFromClipboardFormat(FormatID: TClipboardFormat);
@@ -193,6 +230,21 @@ begin
   end;
 end;
 
+procedure TGraphic.LoadFromLazarusResource(const ResName: String);
+var
+  Stream: TLazarusResourceStream;
+begin
+  Stream := nil;
+  try
+    Stream := TLazarusResourceStream.Create(ResName, nil);
+    if LazarusResourceTypeValid(Stream.Res.ValueType)
+    then LoadFromStream(Stream)
+    else raise EInvalidGraphic.Create(ClassName+': Unsupported Resourcetype: '+Stream.Res.ValueType);
+   finally
+     Stream.Free;
+   end;
+end;
+
 procedure TGraphic.WriteData(Stream: TStream);
 begin
   SaveToStream(Stream);
@@ -201,6 +253,11 @@ end;
 function TGraphic.GetTransparent: Boolean;
 begin
   Result := FTransparent;
+end;
+
+function TGraphic.LazarusResourceTypeValid(const AResourceType: string): boolean;
+begin
+  Result := False;
 end;
 
 procedure TGraphic.SetModified(Value: Boolean);

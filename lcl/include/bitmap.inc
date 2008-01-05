@@ -270,9 +270,8 @@ end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
-  Result:=((ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon))
-     and ((AnsiCompareText(ResourceType,'XPM')=0)
-       or (AnsiCompareText(ResourceType,'BMP')=0));
+  Result := AnsiSameText(ResourceType,'XPM')
+         or AnsiSameText(ResourceType,'BMP');
 end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
@@ -442,49 +441,9 @@ begin
   // CreateMask;
 end;
 
-procedure TBitmap.LoadFromLazarusResource(const ResName: String);
-var
-  Stream: TLazarusResourceStream;
-begin
-  Stream := nil;
-  try
-    Stream := TLazarusResourceStream.Create(ResName, nil);
-    if LazarusResourceTypeValid(Stream.Res.ValueType) then
-      LoadFromStream(Stream);
-   finally
-     Stream.Free;
-   end;
-end;
-
 procedure TBitMap.LoadFromStream(Stream: TStream);
 begin
   ReadStream(Stream, true, Stream.Size - Stream.Position);
-end;
-
-procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
-var
-  Stream: TResourceStream;
-begin
-  Stream := nil;
-  try
-    Stream := TResourceStream.Create(Instance, ResName, RT_BITMAP);
-    LoadFromStream(Stream);
-  finally
-    Stream.Free;
-  end;
-end;
-
-procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
-var
-  Stream: TResourceStream;
-begin
-  Stream := nil;
-  try
-    Stream := TResourceStream.CreateFromID(Instance, ResID, RT_BITMAP);
-    LoadFromStream(Stream);
-  finally
-    Stream.Free;
-  end;
 end;
 
 procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
@@ -609,6 +568,11 @@ begin
   FImage.SaveStreamClass:=nil;
 end;
 
+function TBitmap.GetBitmapNativeType: TBitmapNativeType;
+begin
+  Result := bnWinBitmap;
+end;
+
 procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
 
   procedure RaiseInvalidBitmapHeader;
@@ -701,18 +665,6 @@ begin
     end;
   end;
   inherited LoadFromMimeStream(Stream, MimeType);
-end;
-
-procedure TBitmap.SaveToFile(const Filename: string);
-begin
-  if (ClassType=TBitmap) and (FImage.SaveStreamType<>bnWinBitmap) then begin
-    // TBitmap should always save in .bmp format
-    // but the current SaveStream is not in .bmp format.
-    // -> Clear the SaveStream.
-    UnshareImage(true);
-    FreeSaveStream;
-  end;
-  inherited SaveToFile(Filename);
 end;
 
 procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
@@ -937,9 +889,10 @@ var
   RawImage: TRawImage;
 begin
   //DebugLn(['WriteStreamWithFPImage Self=',DbgS(Self),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)]);
-  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
-  and ((FImage.SaveStreamType<>bnNone)
-    or CanReadGraphicStreams(FImage.SaveStreamClass))
+  if  (FImage.SaveStream<>nil)
+  and (FImage.SaveStream.Size>0)
+  and (FImage.SaveStreamType = GetBitmapNativeType)
+  and ((FImage.SaveStreamType<>bnNone) or CanReadGraphicStreams(FImage.SaveStreamClass))
   then begin
     // it's a stream format, that this graphic class can read
     // (important for restore)
@@ -1264,6 +1217,11 @@ function TBitmap.GetPalette: HPALETTE;
 begin
   PaletteNeeded;
   Result := FImage.FPalette;
+end;
+
+function TBitmap.GetResourceType: TResourceType;
+begin
+  Result := RT_BITMAP;
 end;
 
 function TBitmap.GetWidth: Integer;

@@ -277,18 +277,6 @@ end;
 
 { TPixmap }
 
-procedure TPixmap.SaveToFile(const Filename: string);
-begin
-  if (ClassType=TPixmap) and (FImage.SaveStreamType<>bnXPixmap) then begin
-    // TPixmap should always save in .xpm format
-    // but the current SaveStream is not in .xpm format.
-    // -> Clear the SaveStream.
-    UnshareImage(true);
-    FreeSaveStream;
-  end;
-  inherited SaveToFile(Filename);
-end;
-
 function TPixmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
   Result:=(ResourceType='XPM');
@@ -297,6 +285,11 @@ end;
 procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
   WriteStreamWithFPImage(Stream,WriteSize,TLazWriterXPM);
+end;
+
+function TPixmap.GetBitmapNativeType: TBitmapNativeType;
+begin
+  Result := bnXPixmap;
 end;
 
 class function TPixmap.GetDefaultFPReader: TFPCustomImageReaderClass;

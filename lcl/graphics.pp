@@ -695,19 +695,23 @@ type
     procedure WriteData(Stream: TStream); virtual;
   public
     constructor Create; virtual;
+    function LazarusResourceTypeValid(const AResourceType: string): boolean; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
-    procedure SaveToFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
-    procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); virtual;
-    procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
+    procedure LoadFromLazarusResource(const ResName: String); virtual;
+    procedure LoadFromResourceName(Instance: THandle; const ResName: String);
+    procedure LoadFromResourceID(Instance: THandle; ResID: Integer);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual;
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat); virtual;
+    procedure SaveToFile(const Filename: string); virtual;
+    procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual;
     procedure SaveToClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat); virtual;
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
+    function GetResourceType: TResourceType; virtual;
     function GetDefaultMimeType: string; virtual;
     class function GetFileExtensions: string; virtual;
     class function GetFPReaderForFileExt(
@@ -1152,6 +1156,7 @@ type
     function GetHandle: HBITMAP; virtual;
     function GetMaskHandle: HBITMAP; virtual;
     function GetTransparent: Boolean; override;
+    function GetBitmapNativeType: TBitmapNativeType; virtual;
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
@@ -1180,22 +1185,19 @@ type
     function MaskHandleAllocated: boolean;
     function PaletteAllocated: boolean;
     procedure CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
-    function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromLazarusResource(const ResName: String); override;
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
-    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     procedure LoadFromMimeStream(Stream: TStream; const MimeType: string); override;
-    procedure SaveToFile(const Filename: string); override;
+    procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
+    procedure LoadFromXPMFile(const Filename: String); deprecated;
+    procedure SaveToStream(Stream: TStream); override;
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
     function GetDefaultMimeType: string; override;
+    function GetResourceType: TResourceType; override;
     class function GetFileExtensions: string; override;
-    procedure LoadFromXPMFile(const Filename: String);
-    procedure LoadFromIntfImage(IntfImage: TLazIntfImage);
     procedure Mask(ATransparentColor: TColor);
     procedure SetHandles(ABitmap, AMask: HBITMAP);
-    procedure SaveToStream(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     function ReleaseHandle: HBITMAP;
@@ -1236,8 +1238,9 @@ type
   { TPixmap }
 
   TPixmap = class(TBitmap)
+  protected
+    function GetBitmapNativeType: TBitmapNativeType; override;
   public
-    procedure SaveToFile(const Filename: string); override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
@@ -1250,6 +1253,8 @@ type
     reader and writer }
 
   TFPImageBitmap = class(TBitmap)
+  protected
+    function GetBitmapNativeType: TBitmapNativeType; override;
   public
     class function GetFileExtensions: string; override;
     class function IsFileExtensionSupported(const FileExtension: string): boolean;
@@ -1297,10 +1302,14 @@ type
     Bitmaps property
     Writing is not (yet) implemented.
   }
+  
+  {.$define ICON_OLDSTYLE}     // Set to keep original functionality
+ 
   TIcon = class(TBitmap)
   private
     FBitmaps: TObjectList;
   protected
+    function GetBitmapNativeType: TBitmapNativeType; override;
     procedure ReadData(Stream: TStream); override;
     procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
   public
@@ -1310,6 +1319,7 @@ type
     procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
   end;
 
+
   { TCursorImage }
   TCursorImage = class(TIcon)
   private
@@ -1317,6 +1327,7 @@ type
     FCursorHandle: HCURSOR;
     FOwnHandle: Boolean;
   protected
+    function GetBitmapNativeType: TBitmapNativeType; override;
     function GetCursorHandle: HCURSOR;
     procedure CursorHandleNeeded;
   public
@@ -1938,6 +1949,11 @@ begin
     Result:=nil;
 end;
 
+function TFPImageBitmap.GetBitmapNativeType: TBitmapNativeType;
+begin
+  Result := bnNone;
+end;
+
 class function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=nil;
@@ -2044,12 +2060,19 @@ begin
   FreeAndNil(FBitmaps);
 end;
 
+function TIcon.GetBitmapNativeType: TBitmapNativeType;
+begin
+  Result := bnIcon;
+end;
+
 procedure TIcon.AddBitmap(Bitmap: TBitmap);
 begin
   if not Assigned(FBitmaps) then
     FBitmaps := TObjectList.create(True);
   FBitmaps.Add(Bitmap);
 end;
+
+
 
 { TCursorImage }
 
@@ -2104,6 +2127,11 @@ begin
   if (FCursorHandle <> 0) then
     WidgetSet.DestroyCursor(FCursorHandle);
   inherited Destroy;
+end;
+
+function TCursorImage.GetBitmapNativeType: TBitmapNativeType;
+begin
+  Result := bnCursor;
 end;
 
 // ------------------------------------------------------------------
