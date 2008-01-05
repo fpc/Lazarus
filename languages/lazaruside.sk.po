@@ -302,7 +302,7 @@ msgstr "&Nápoveda"
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
-msgstr "Nová unita"
+msgstr "Nová jednotka"
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
@@ -554,7 +554,7 @@ msgstr "%sžiadne"
 
 #: lazarusidestrconsts:lisunitpaths
 msgid "Unit paths"
-msgstr "Cesty unit"
+msgstr "Cesty jednotiek"
 
 #: lazarusidestrconsts:lisincludepaths
 msgid "Include paths"
@@ -698,7 +698,7 @@ msgstr "Skoč na predchádzajúcu záložku"
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
-msgstr ""
+msgstr "Inšpektor objektov"
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -722,7 +722,7 @@ msgstr "Skoč na"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
-msgstr "Unity ..."
+msgstr "Jednotky ..."
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
@@ -730,19 +730,19 @@ msgstr "Formuláre ..."
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
-msgstr "Zobraziť závislosti unity"
+msgstr "Zobraziť závislosti jednotky"
 
 #: lazarusidestrconsts:liskmviewunitinfo
 msgid "View Unit Info"
-msgstr "Zobraziť informácie o unite"
+msgstr "Zobraziť informácie o jednotke"
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
-msgstr "Zobraziť·informácie·o·unite"
+msgstr "Zobraziť·informácie·o·jednotke"
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
-msgstr "Prepnúť zobrazenie formulár/unita"
+msgstr "Prepnúť zobrazenie formulár/jednotka"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
@@ -795,11 +795,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
-msgstr ""
+msgstr "Okná ladenia"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr ""
+msgstr "Pozorovania"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -823,7 +823,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
-msgstr ""
+msgstr "Odkazy balíčkov ..."
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project ..."
@@ -863,11 +863,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmaddactiveunittoproject
 msgid "Add active unit to project"
-msgstr "Pridať aktívnu unitu do projektu"
+msgstr "Pridať aktívnu jednotku do projektu"
 
 #: lazarusidestrconsts:liskmremoveactiveunitfromproject
 msgid "Remove active unit from project"
-msgstr "Odstrániť aktívnu unitu z projektu"
+msgstr "Odstrániť aktívnu jednotku z projektu"
 
 #: lazarusidestrconsts:liskmviewprojectsource
 msgid "View project source"
@@ -1043,11 +1043,11 @@ msgstr "Otvoriť súbor balíčka (.lpk) ..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
-msgstr "Otvoriť balíček aktuálnej unity"
+msgstr "Otvoriť balíček aktuálnej jednotky"
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
 msgid "Add active unit to a package"
-msgstr "Pridať aktívnu unitu do balíčka"
+msgstr "Pridať aktívnu jednotku do balíčka"
 
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
@@ -1087,7 +1087,7 @@ msgstr "Odhadnúť neuzavretý blok"
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
-msgstr ""
+msgstr "Pravdepodobne zle umiestnený IFDEF/ENDIF"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -1107,7 +1107,7 @@ msgstr "Skontrolovať súbor LFM v editore"
 
 #: lazarusidestrconsts:lismenuconvertdelphiunit
 msgid "Convert Delphi unit to Lazarus unit ..."
-msgstr "Konvertovať unitu Deplhi na unitu Lazarus ..."
+msgstr "Konvertovať jednotku Deplhi na jednotku Lazarus ..."
 
 #: lazarusidestrconsts:lismenuconvertdelphiproject
 msgid "Convert Delphi project to Lazarus project ..."
@@ -1235,7 +1235,7 @@ msgstr "Voľby prekladača pre Projekt: %s"
 
 #: lazarusidestrconsts:lischoosedelphiunit
 msgid "Choose Delphi unit (*.pas)"
-msgstr "Zvoliť unitu Delphi (*.pas)"
+msgstr "Zvoliť jednotku Delphi (*.pas)"
 
 #: lazarusidestrconsts:lischoosedelphiproject
 msgid "Choose Delphi project (*.dpr)"
@@ -1287,15 +1287,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
-msgstr "Nenájdená·unita"
+msgstr "Jednotka nenájdená"
 
 #: lazarusidestrconsts:lisunitsnotfound2
 msgid "Units not found"
-msgstr "Nenájdené unity"
+msgstr "Jednotky nenájdené"
 
 #: lazarusidestrconsts:lisunitlfmfile
 msgid "Unit: %s%sLFM file: %s"
-msgstr "Unita:·%s%sLFM·súbor:·%s"
+msgstr "Jednotka:·%s%sLFM·súbor:·%s"
 
 #: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
 msgid "Unable to convert lfm to lrs and write lrs file."
@@ -1403,7 +1403,7 @@ msgstr "Pokračovať bez vytvorenia formulára"
 
 #: lazarusidestrconsts:liscancelloadingunit
 msgid "Cancel loading unit"
-msgstr "Zrušiť načítanie unity"
+msgstr "Zrušiť načítanie jednotky"
 
 #: lazarusidestrconsts:lisabortallloading
 msgid "Abort all loading"
@@ -1483,11 +1483,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitidentifierexists
 msgid "Unit identifier exists"
-msgstr "Identifikátor unity existuje"
+msgstr "Identifikátor jednotky existuje"
 
 #: lazarusidestrconsts:listhereisaunitwiththenameintheprojectpleasechoose
 msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
-msgstr "Unita s menom %s%s%s·už v projekte existuje.%s"
+msgstr "Jednotka s menom %s%s%s·už v projekte existuje.%s"
 
 #: lazarusidestrconsts:liserrorcreatingfile
 msgid "Error creating file"
@@ -1524,7 +1524,7 @@ msgstr "Súbor %s%s%s·bol zmenený.·Uložiť?"
 
 #: lazarusidestrconsts:lisunithaschangedsave
 msgid "Unit %s%s%s has changed. Save?"
-msgstr "Unita %s%s%s bola zmenená  Uložiť?"
+msgstr "Jednotka %s%s%s bola zmenená  Uložiť?"
 
 #: lazarusidestrconsts:lissourceofpagehaschangedsave
 msgid "Source of page %s%s%s has changed. Save?"
@@ -1564,43 +1564,44 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilenottext
 msgid "File not text"
-msgstr ""
+msgstr "Súbor nie je textový"
 
 #: lazarusidestrconsts:lisunabletorenamefile
 msgid "Unable to rename file"
-msgstr ""
+msgstr "Nemožno premenovať súbor"
 
 #: lazarusidestrconsts:lisunabletocopyfile
 msgid "Unable to copy file"
-msgstr ""
+msgstr "Nemožno kopírovať súbor"
 
 #: lazarusidestrconsts:lissourceanddestinationarethesame
 msgid "Source and Destination are the same:%s%s"
-msgstr ""
+msgstr "Zdroj a cieľ sú rovnaké: %s%s"
 
 #: lazarusidestrconsts:lisunabletorenamefileto2
 msgid "Unable to rename file %s%s%s%sto %s%s%s."
-msgstr ""
+msgstr "Nemožno premenovať súbor %s%s%s%sna %s%s%s."
 
 #: lazarusidestrconsts:lisunabletocopyfileto2
 msgid "Unable to copy file %s%s%s%sto %s%s%s."
-msgstr ""
+msgstr "Nemožno prekopírovať súbor  %s%s%s%sdo %s%s%s."
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr ""
+msgstr "Súbor %s%s%s%snevyzerá ako textový súbor.%sOtvoriť ho i tak?"
 
 #: lazarusidestrconsts:lisinvalidcommand
 msgid "Invalid command"
-msgstr ""
+msgstr "Neplatný príkaz"
 
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
+#, fuzzy
 msgid "The command after %s%s%s is not executable."
-msgstr ""
+msgstr "Príkaz za %s%s%s nie je vykonateľný."
 
 #: lazarusidestrconsts:lisinvaliddestinationdirectory
 msgid "Invalid destination directory"
-msgstr ""
+msgstr "Neplatný cieľový adresár"
 
 #: lazarusidestrconsts:lisdestinationdirectoryisinvalidpleasechooseacomplete
 msgid "Destination directory %s%s%s is invalid.%sPlease choose a complete path."
@@ -1628,19 +1629,19 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
 msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
-msgstr ""
+msgstr "Nemožno do projektu pridať %s, pretože projekt už obsahuje jednotku s rovnakým menom."
 
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
-msgstr ""
+msgstr "Pridať %s do projektu?"
 
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
-msgstr ""
+msgstr "Súbor %s%s%s"
 
 #: lazarusidestrconsts:lisaddtounitsearchpath
 msgid "Add to unit search path?"
-msgstr ""
+msgstr "Pridať do cesty hľadania jednotiek?"
 
 #: lazarusidestrconsts:listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
@@ -1648,15 +1649,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
-msgstr ""
+msgstr "%s už je časťou projektu."
 
 #: lazarusidestrconsts:lisremovefromproject
 msgid "Remove from project"
-msgstr ""
+msgstr "Odstrániť z projektu"
 
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
-msgstr ""
+msgstr "Najprv vytvorte projekt!"
 
 #: lazarusidestrconsts:listhetestdirectorycouldnotbefoundseeenvironmentopt
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
@@ -1664,7 +1665,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisbuildnewproject
 msgid "Build new project"
-msgstr ""
+msgstr "Vybudovať nový projekt"
 
 #: lazarusidestrconsts:listheprojectmustbesavedbeforebuildingifyousetthetest
 msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
@@ -1696,79 +1697,79 @@ msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."
-msgstr ""
+msgstr "Nemôžete vybudovať Lazarus počas ladenia alebo prekladu."
 
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
-msgstr ""
+msgstr "Nemožno uložiť súbor %s%s%s"
 
 #: lazarusidestrconsts:lisreaderror
 msgid "Read Error"
-msgstr ""
+msgstr "Chyba čítania"
 
 #: lazarusidestrconsts:lisunabletoreadfile2
 msgid "Unable to read file %s%s%s!"
-msgstr ""
+msgstr "Nemožno čítať súbor %s%s%s!"
 
 #: lazarusidestrconsts:liswriteerror
 msgid "Write Error"
-msgstr ""
+msgstr "Chyba zápisu"
 
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
-msgstr ""
+msgstr "Nemožno zapisovať do súboru %s%s%s!"
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway2
 msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr ""
+msgstr "Súbor %s%s%s%snevyzerá ako textový súbor.%sOtvoriť ho i tak?"
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
-msgstr ""
+msgstr "Nemožno vytvoriť záložný adresár %s%s%s."
 
 #: lazarusidestrconsts:lisambiguousunitfound2
 msgid "Ambiguous unit found"
-msgstr ""
+msgstr "Nájdená nejednoznačná jednotka"
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
-msgstr ""
+msgstr "Jednotka %s existuje dvakrát·v ceste jednotiek %s:"
 
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
-msgstr ""
+msgstr "Rada: Skontrolujte, či dva balíčky neobsahujú jednotku s rovnakým menom."
 
 #: lazarusidestrconsts:lisignoreall
 msgid "Ignore all"
-msgstr ""
+msgstr "Ignorovať všetko"
 
 #: lazarusidestrconsts:lisdeletefilefailed
 msgid "Delete file failed"
-msgstr ""
+msgstr "Zmazanie súboru zlyhalo"
 
 #: lazarusidestrconsts:lisunabletoremoveoldbackupfile
 msgid "Unable to remove old backup file %s%s%s!"
-msgstr ""
+msgstr "Nemožno odstrániť starý záložný súbor %s%s%s!"
 
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
-msgstr ""
+msgstr "Premenovanie súboru zlyhalo"
 
 #: lazarusidestrconsts:lisunabletorenamefileto
 msgid "Unable to rename file %s%s%s to %s%s%s!"
-msgstr ""
+msgstr "Nemožno premenovať súbor %s%s%s na %s%s%s!"
 
 #: lazarusidestrconsts:lisbackupfilefailed
 msgid "Backup file failed"
-msgstr ""
+msgstr "Záložný súbor zlyhal"
 
 #: lazarusidestrconsts:lisunabletobackupfileto
 msgid "Unable to backup file %s%s%s to %s%s%s!"
-msgstr ""
+msgstr "Nemožno zálohovať súbor %s%s%s na %s%s%s!"
 
 #: lazarusidestrconsts:lisfilenotlowercase
 msgid "File not lowercase"
-msgstr ""
+msgstr "Súbor nie je malými znakmi"
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
@@ -1776,7 +1777,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
-msgstr ""
+msgstr "Zmazať dvojznačný súbor?"
 
 #: lazarusidestrconsts:lisambiguousfilefoundthisfilecanbemistakenwithdelete
 msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
@@ -1784,27 +1785,27 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus IDE v%s"
-msgstr ""
+msgstr "Lazarus IDE v%s"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
-msgstr ""
+msgstr "%s - (nový projekt)"
 
 #: lazarusidestrconsts:liscompiling
 msgid "%s (compiling ...)"
-msgstr ""
+msgstr "%s (prekladanie ...)"
 
 #: lazarusidestrconsts:lisdebugging
 msgid "%s (debugging ...)"
-msgstr ""
+msgstr "%s (ladenie ...)"
 
 #: lazarusidestrconsts:lisunabletofindfile
 msgid "Unable to find file %s%s%s."
-msgstr ""
+msgstr "Nemožno nájsť súbor %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr ""
+msgstr "Nemožno·nájsť·súbor·%s%s%s.%sSkontrolujte cestu hľadaní v %sProjekt->Voľby prekladača...->Prehľadávané cesty->Ostatné súbory jednotiek"
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
@@ -1812,7 +1813,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
-msgstr ""
+msgstr "Trieda nenájdená"
 
 #: lazarusidestrconsts:lisoifclassnotfound
 msgid "Class %s%s%s not found."
@@ -2008,7 +2009,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispascalunit
 msgid "Pascal unit"
-msgstr ""
+msgstr "Jednotka pascalu"
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -2136,7 +2137,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
-msgstr ""
+msgstr "O Lazarus"
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
@@ -2208,19 +2209,19 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
+msgstr "Uložiť všetko"
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
-msgstr ""
+msgstr "Prepnúť·formulár/jednotka"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
-msgstr ""
+msgstr "Zobraziť jednotky"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr ""
+msgstr "Zobraziť formuláre"
 
 #: lazarusidestrconsts:lishintrun
 msgid "Run"
@@ -2232,11 +2233,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
-msgstr ""
+msgstr "Krok dnu"
 
 #: lazarusidestrconsts:lishintstepover
 msgid "Step Over"
-msgstr ""
+msgstr "Krok cez"
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -2288,7 +2289,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgobjinsp
 msgid "Object Inspector"
-msgstr ""
+msgstr "Inšpektor objektov"
 
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
@@ -2372,7 +2373,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
-msgstr ""
+msgstr "Meno jednotky:"
 
 #: lazarusidestrconsts:lispvutheunitnameisusedwhentheideextendsusesclauses
 msgid "The unitname is used when the IDE extends uses clauses."
@@ -2476,23 +2477,23 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
-msgstr ""
+msgstr "Načítať nastavenia plochy zo súboru"
 
 #: lazarusidestrconsts:dlgminimizeallonminimizemain
 msgid "Minimize all on minimize main"
-msgstr ""
+msgstr "Minimalizovať všetko alebo minimalizovať hlavné okno"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
-msgstr ""
+msgstr "Skryť okno IDE pri spustení"
 
 #: lazarusidestrconsts:dlgpalhints
 msgid "Hints for component palette"
-msgstr ""
+msgstr "Rady pre paletu komponentov"
 
 #: lazarusidestrconsts:lischeckchangesondiskwithloading
 msgid "Check changes on disk with loading"
-msgstr ""
+msgstr "Skontrolovať zmeny na disku pri načítaní"
 
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
@@ -2616,35 +2617,35 @@ msgstr ""
 
 #: lazarusidestrconsts:dlggridcolor
 msgid "Grid color"
-msgstr ""
+msgstr "Farba mriežky"
 
 #: lazarusidestrconsts:dlgqsnaptogrid
 msgid "Snap to grid"
-msgstr ""
+msgstr "Prichytiť k mriežke"
 
 #: lazarusidestrconsts:dlggridx
 msgid "Grid size X"
-msgstr ""
+msgstr "Veľkosť mriežky X"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr ""
+msgstr "Vodorovná veľkosť kroku mriežky"
 
 #: lazarusidestrconsts:dlggridy
 msgid "Grid size Y"
-msgstr ""
+msgstr "Veľkosť mriežky Y"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Zvislá·veľkosť·kroku·mriežky"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr ""
+msgstr "Zobraziť pomocné čiary"
 
 #: lazarusidestrconsts:dlgsnapguidelines
 msgid "Snap to Guide Lines"
-msgstr ""
+msgstr "Prichytiť k pomocným čiaram"
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
@@ -2724,7 +2725,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambiguous file action:"
-msgstr ""
+msgstr "Nejednoznačná akcia súboru:"
 
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
@@ -2812,7 +2813,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr ""
+msgstr "Zobraziť rady v Inšpektore objektov"
 
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
@@ -2932,7 +2933,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazarusunit
 msgid "Lazarus unit"
-msgstr ""
+msgstr "Jednotka Lazarus"
 
 #: lazarusidestrconsts:lislazarusinclude
 msgid "Lazarus include file"
@@ -3228,7 +3229,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
-msgstr ""
+msgstr "Šablóny kódu"
 
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
@@ -4512,11 +4513,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "&Entire Scope"
-msgstr ""
+msgstr "&Celý rozsah"
 
 #: lazarusidestrconsts:dlgscope
 msgid "Scope"
-msgstr ""
+msgstr "Rozsah"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -4796,7 +4797,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr ""
+msgstr "Pridať pozorovanie v mieste kurzora"
 
 #: lazarusidestrconsts:uemruntocursor
 msgid "&Run to Cursor"
@@ -5444,7 +5445,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liskmtogglebetweenunitandform
 msgid "Toggle between Unit and Form"
-msgstr ""
+msgstr "Prepnúť medzi Jednotkou a Formulárom"
 
 #: lazarusidestrconsts:srkmecnexteditor
 msgid "Go to next editor"
@@ -5652,15 +5653,15 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecprocedurelist
 msgid "Procedure List ..."
-msgstr ""
+msgstr "Zoznam procedúr ..."
 
 #: lazarusidestrconsts:srkmectoggleformunit
 msgid "Switch between form and unit"
-msgstr ""
+msgstr "Prepnúť medzi formulárom a jednotkou"
 
 #: lazarusidestrconsts:srkmectoggleobjectinsp
 msgid "View Object Inspector"
-msgstr ""
+msgstr "Zobraziť Inšpektor objektov"
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -5684,7 +5685,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
-msgstr ""
+msgstr "Zobraziť pozorovania"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -5704,11 +5705,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunits
 msgid "View units"
-msgstr ""
+msgstr "Zobraziť jednotky"
 
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
-msgstr ""
+msgstr "Zobraziť·formuláre"
 
 #: lazarusidestrconsts:srkmecviewcomponents
 msgid "View components"
@@ -5716,7 +5717,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
-msgstr ""
+msgstr "Zobraziť závislosti jednotiek"
 
 #: lazarusidestrconsts:srkmecviewunitinfo
 msgid "View unit information"
@@ -5860,7 +5861,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecaddwatch
 msgid "add watch"
-msgstr ""
+msgstr "pridať pozorovanie"
 
 #: lazarusidestrconsts:srkmecexttoolsettings
 msgid "External tools settings"
@@ -5888,7 +5889,7 @@ msgstr "Voľby editora"
 
 #: lazarusidestrconsts:liskmeditcodetemplates
 msgid "Edit Code Templates"
-msgstr ""
+msgstr "Upraviť šablóny kódu"
 
 #: lazarusidestrconsts:liskmcodetoolsoptions
 msgid "CodeTools options"
@@ -5924,7 +5925,7 @@ msgstr "Konvertovať súbor DFM na LFM"
 
 #: lazarusidestrconsts:liskmconvertdelphiunittolazarusunit
 msgid "Convert Delphi unit to Lazarus unit"
-msgstr "Konvertovať unitu Delphi na unitu Lazarus"
+msgstr "Konvertovať jednotku Delphi na jednotku Lazarus"
 
 #: lazarusidestrconsts:liskmconvertdelphiprojecttolazarusproject
 msgid "Convert Delphi project to Lazarus project"
@@ -6167,9 +6168,8 @@ msgid "View menu commands"
 msgstr "Príkazy menu Zobraziť"
 
 #: lazarusidestrconsts:liskmtoggleviewobjectinspector
-#, fuzzy
 msgid "Toggle view Object Inspector"
-msgstr "Prepnúť zobrazenie Object Inspector"
+msgstr "Prepnúť zobrazenie Inšpektor obejktov"
 
 #: lazarusidestrconsts:liskmtoggleviewsourceeditor
 msgid "Toggle view Source Editor"
@@ -6193,9 +6193,8 @@ msgid "Toggle view Search Results"
 msgstr "Prepnúť zobrazenie Výsledky hľadania"
 
 #: lazarusidestrconsts:liskmtoggleviewwatches
-#, fuzzy
 msgid "Toggle view Watches"
-msgstr "Prepnúť zobrazenie Watches"
+msgstr "Prepnúť zobrazenie Pozorovaní"
 
 #: lazarusidestrconsts:liskmtoggleviewbreakpoints
 msgid "Toggle view Breakpoints"
@@ -6303,7 +6302,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liskeycatobjinspector
 msgid "Object Inspector commands"
-msgstr ""
+msgstr "Príkazy Inšpektora objektov"
 
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
@@ -6399,11 +6398,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
-msgstr ""
+msgstr "Závislosti jednotky"
 
 #: lazarusidestrconsts:dlgunitdepbrowse
 msgid "Open"
-msgstr ""
+msgstr "Otvoriť"
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
@@ -6547,7 +6546,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdtemplates
 msgid "Templates"
-msgstr ""
+msgstr "Šablóny"
 
 #: lazarusidestrconsts:lissavesettings
 msgid "Save Settings"
@@ -6951,15 +6950,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefstools
 msgid "Tools"
-msgstr ""
+msgstr "Nástroje"
 
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
-msgstr ""
+msgstr "Otvoriť ukážku"
 
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
-msgstr ""
+msgstr "Vložiť šablónu"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalprojectte
 msgid "Insert Free Pascal Project Template"
@@ -7027,7 +7026,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
-msgstr ""
+msgstr "Zvolený uzol"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -7039,7 +7038,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdescription
 msgid "Description:"
-msgstr ""
+msgstr "Popis:"
 
 #: lazarusidestrconsts:liscodetoolsdefsvariable
 msgid "Variable:"
@@ -7047,31 +7046,31 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsvalueastext
 msgid "Value as Text"
-msgstr ""
+msgstr "Hodnota ako text"
 
 #: lazarusidestrconsts:liscodetoolsdefsvalueasfilepaths
 msgid "Value as File Paths"
-msgstr ""
+msgstr "Hodnota ako súborové cesty"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
-msgstr ""
+msgstr "Akcia: %s"
 
 #: lazarusidestrconsts:liscodetoolsdefsautogenerated
 msgid "%s, auto generated"
-msgstr ""
+msgstr "%s, automaticky vygenerované"
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
-msgstr ""
+msgstr "%s, špecifické pre projekt"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "nevybraté"
 
 #: lazarusidestrconsts:liscodetoolsdefsinvalidparent
 msgid "Invalid parent"
-msgstr ""
+msgstr "Neplatný rodič"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
@@ -7311,51 +7310,51 @@ msgstr ""
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
-msgstr ""
+msgstr "Tlačiť položky ToDo"
 
 #: lazarusidestrconsts:listodolistoptions
 msgid "ToDo options..."
-msgstr ""
+msgstr "Voľby ToDo ..."
 
 #: lazarusidestrconsts:lisctinsertmacro
 msgid "Insert Macro"
-msgstr ""
+msgstr "Vložiť makro"
 
 #: lazarusidestrconsts:listodoldone
 msgid "Done"
-msgstr ""
+msgstr "Hotové"
 
 #: lazarusidestrconsts:listodoldescription
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: lazarusidestrconsts:listodolpriority
 msgid "Priority"
-msgstr ""
+msgstr "Priorita"
 
 #: lazarusidestrconsts:listodolfile
 msgid "Module"
-msgstr ""
+msgstr "Modul"
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
-msgstr ""
+msgstr "Riadok"
 
 #: lazarusidestrconsts:listodolowner
 msgid "Owner"
-msgstr ""
+msgstr "Vlastník"
 
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
-msgstr ""
+msgstr "Katrgória"
 
 #: lazarusidestrconsts:lispkgfiletypeunit
 msgid "Unit"
-msgstr ""
+msgstr "Jednotka"
 
 #: lazarusidestrconsts:lispkgfiletypevirtualunit
 msgid "Virtual Unit"
-msgstr ""
+msgstr "Virtuálna jednotka"
 
 #: lazarusidestrconsts:lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
@@ -7371,47 +7370,47 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: lazarusidestrconsts:lispkgfiletypebinary
 msgid "Binary"
-msgstr ""
+msgstr "Binárny"
 
 #: lazarusidestrconsts:lisviewprojectunits
 msgid "View Project Units"
-msgstr ""
+msgstr "Zobraziť jednotky projektu"
 
 #: lazarusidestrconsts:lisinformationaboutunit
 msgid "Information about %s"
-msgstr ""
+msgstr "Informácie o %s"
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
-msgstr ""
+msgstr "áno"
 
 #: lazarusidestrconsts:lisuidno
 msgid "no"
-msgstr ""
+msgstr "nie"
 
 #: lazarusidestrconsts:lisuidbytes
 msgid "%s bytes"
-msgstr ""
+msgstr "%s bajtov"
 
 #: lazarusidestrconsts:lisuidname
 msgid "Name:"
-msgstr ""
+msgstr "Meno:"
 
 #: lazarusidestrconsts:lisuidtype
 msgid "Type:"
-msgstr ""
+msgstr "Typ:"
 
 #: lazarusidestrconsts:lisuidinproject
 msgid "in Project:"
-msgstr ""
+msgstr "v projekte:"
 
 #: lazarusidestrconsts:lisuidincludedby
 msgid "Included by:"
-msgstr ""
+msgstr "Vložil:"
 
 #: lazarusidestrconsts:lisuidclear
 msgid "Clear"
@@ -7419,11 +7418,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidpathsreadonly
 msgid "Paths (Read Only)"
-msgstr ""
+msgstr "Cesty (len na čítanie)"
 
 #: lazarusidestrconsts:lisuidunit
 msgid "Unit"
-msgstr ""
+msgstr "Jendotka"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -7431,71 +7430,71 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidok
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: lazarusidestrconsts:lisuidsize
 msgid "Size:"
-msgstr ""
+msgstr "Veľkosť:"
 
 #: lazarusidestrconsts:lisuidlines
 msgid "Lines:"
-msgstr ""
+msgstr "Riadkov:"
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr ""
+msgstr "Zobraziť hodnoty CodeTools"
 
 #: lazarusidestrconsts:lisueerrorinregularexpression
 msgid "Error in regular expression"
-msgstr ""
+msgstr "Chyba v regulárnom výraze"
 
 #: lazarusidestrconsts:lissearchfor
 msgid "Search For "
-msgstr ""
+msgstr "Hľadať"
 
 #: lazarusidestrconsts:lisuenotfound
 msgid "Not found"
-msgstr ""
+msgstr "Nenájdené"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
-msgstr ""
+msgstr "Hľadaný reťazec '%s' nenájdený!"
 
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
-msgstr ""
+msgstr "Nahradiť tento výskyt %s%s%s%s týmto %s%s%s?"
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
-msgstr ""
+msgstr "Hľadanie: %s"
 
 #: lazarusidestrconsts:lisuereadonly
 msgid "%s/ReadOnly"
-msgstr ""
+msgstr "%s/Len na čítanie"
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
-msgstr ""
+msgstr "Choď na riadok:"
 
 #: lazarusidestrconsts:listmfunctionextractfileextension
 msgid "Function: extract file extension"
-msgstr ""
+msgstr "Funkcia: vybrať príponu súboru"
 
 #: lazarusidestrconsts:listmfunctionextractfilepath
 msgid "Function: extract file path"
-msgstr ""
+msgstr "Funkcia: vybrať cestu súboru"
 
 #: lazarusidestrconsts:listmfunctionextractfilenameextension
 msgid "Function: extract file name+extension"
-msgstr ""
+msgstr "Funkcia: vybrať meno súboru + príponu"
 
 #: lazarusidestrconsts:listmfunctionextractfilenameonly
 msgid "Function: extract file name only"
-msgstr ""
+msgstr "Funkcia: vybrať len meno súboru"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
-msgstr ""
+msgstr "Funkcia: pripojiť oddeľovač cesty"
 
 #: lazarusidestrconsts:listmfunctionchomppathdelimiter
 msgid "Function: chomp path delimiter"
@@ -7503,63 +7502,63 @@ msgstr ""
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
-msgstr ""
+msgstr "(neznáme makro: %s)"
 
 #: lazarusidestrconsts:lissvuoinvalidvariablename
 msgid "Invalid variable name"
-msgstr ""
+msgstr "Neplatné meno premennej"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr ""
+msgstr "%s%s%s nie je platný identifikátor."
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
-msgstr ""
+msgstr "Identifikátor: %s"
 
 #: lazarusidestrconsts:lissvuooverridesystemvariable
 msgid "Override system variable"
-msgstr ""
+msgstr "Prepísať systémovú premennú"
 
 #: lazarusidestrconsts:lissvuook
 msgid "Ok"
-msgstr ""
+msgstr "OK"
 
 #: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
-msgstr ""
+msgstr "Zoradiť výber"
 
 #: lazarusidestrconsts:lissortselpreview
 msgid "Preview"
-msgstr ""
+msgstr "Ukážka"
 
 #: lazarusidestrconsts:lissortselascending
 msgid "Ascending"
-msgstr ""
+msgstr "Vzostupne"
 
 #: lazarusidestrconsts:lissortseldescending
 msgid "Descending"
-msgstr ""
+msgstr "Zostupne"
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
-msgstr ""
+msgstr "Doména"
 
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
-msgstr ""
+msgstr "Riadky"
 
 #: lazarusidestrconsts:lissortselwords
 msgid "Words"
-msgstr ""
+msgstr "Slová"
 
 #: lazarusidestrconsts:lissortselparagraphs
 msgid "Paragraphs"
-msgstr ""
+msgstr "Odseky"
 
 #: lazarusidestrconsts:lissortseloptions
 msgid "Options"
-msgstr ""
+msgstr "Voľby"
 
 #: lazarusidestrconsts:lissortselcasesensitive
 msgid "&Case Sensitive"
@@ -7567,23 +7566,25 @@ msgstr ""
 
 #: lazarusidestrconsts:lissortselignorespace
 msgid "Ignore Space"
-msgstr ""
+msgstr "Ignorovať medzery"
 
 #: lazarusidestrconsts:lissortselsort
 msgid "Accept"
-msgstr ""
+msgstr "Prijať"
 
 #: lazarusidestrconsts:lissortselcancel
 msgid "Cancel"
-msgstr ""
+msgstr "Zrušiť"
 
 #: lazarusidestrconsts:lispublprojinvalidincludefilter
+#, fuzzy
 msgid "Invalid Include filter"
-msgstr ""
+msgstr "Neplatný filter include"
 
 #: lazarusidestrconsts:lispublprojinvalidexcludefilter
+#, fuzzy
 msgid "Invalid Exclude filter"
-msgstr ""
+msgstr "Neplatný filter exclude"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlease fix errors first."
@@ -7591,47 +7592,47 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojoptserror
 msgid "Error"
-msgstr ""
+msgstr "Chyba"
 
 #: lazarusidestrconsts:lispatheditselectdirectory
 msgid "Select directory"
-msgstr ""
+msgstr "Vyberte adresár"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
-msgstr ""
+msgstr "Prehľadávať cesty:"
 
 #: lazarusidestrconsts:lispatheditmovepathdown
 msgid "Move path down"
-msgstr ""
+msgstr "Posunúť cestu dole"
 
 #: lazarusidestrconsts:lispatheditmovepathup
 msgid "Move path up"
-msgstr ""
+msgstr "Posunúť·cestu hore"
 
 #: lazarusidestrconsts:lispatheditbrowse
 msgid "Browse"
-msgstr ""
+msgstr "Prezerať"
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
-msgstr ""
+msgstr "Cesty šablón"
 
 #: lazarusidestrconsts:lisnewdlgnoitemselected
 msgid "No item selected"
-msgstr ""
+msgstr "Nezvolená položka"
 
 #: lazarusidestrconsts:lisnewdlgpleaseselectanitemfirst
 msgid "Please select an item first."
-msgstr ""
+msgstr "Prosím, najprv vyberte položku"
 
 #: lazarusidestrconsts:lisnewdlgcreateaneweditorfilechooseatype
 msgid "Create a new editor file.%sChoose a type."
-msgstr ""
+msgstr "Vytvoriť novú súbor editora.%sZvoľte typ"
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
-msgstr ""
+msgstr "Vytvoriť nový projekt.%sZvoľte typ"
 
 #: lazarusidestrconsts:lischooseoneoftheseitemstocreateanewfile
 msgid "Choose one of these items to create a new File"
@@ -9719,7 +9720,7 @@ msgstr "Nový"
 
 #: lazarusidestrconsts:liskmnewunit
 msgid "New Unit"
-msgstr "Nová unita"
+msgstr "Nová jednotka"
 
 #: lazarusidestrconsts:lismenutemplateopen
 msgid "Open"
@@ -10286,7 +10287,6 @@ msgid "New Ancestors"
 msgstr "Nový predok"
 
 #: lazarusidestrconsts:lisceocodeexplorer
-#, fuzzy
 msgid "CodeExplorer Options"
 msgstr "Voľby CodeExplorer"
 
@@ -10340,7 +10340,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazdocdescrtag
 msgid "Description"
-msgstr ""
+msgstr "Popis"
 
 #: lazarusidestrconsts:lislazdocerrorstag
 msgid "Errors"
@@ -10692,7 +10692,7 @@ msgstr "Dátový súbor formulára ·(*.dfm)|*.dfm"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
-msgstr ""
+msgstr "Zoznam Pozorovaní"
 
 #: lazarusidestrconsts:liswlexpression
 msgid "Expression"
