@@ -13,9 +13,9 @@ implementation
 
 procedure Register; 
 begin
-  RegisterUnit('OpenGLContext', @OpenGLContext.Register); 
+  RegisterUnit('OpenGLContext', @OpenGLContext. Register); 
 end; 
 
 initialization
   RegisterPackage('LazOpenGLContext', @Register); 
-end.
+end. 

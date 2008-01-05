@@ -28,7 +28,8 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
                     WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-                    DoubleBuffered, RGBA: boolean): HWND;
+                    DoubleBuffered, RGBA: boolean;
+                    const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 
 procedure InitWGL;
@@ -252,7 +253,7 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean): HWND;
+  DoubleBuffered, RGBA: boolean; const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
   pfd: PIXELFORMATDESCRIPTOR;

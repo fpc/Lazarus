@@ -130,10 +130,11 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
              WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-             DoubleBuffered, RGBA: boolean): HWND;
+             DoubleBuffered, RGBA: boolean;
+             const AParams: TCreateParams): HWND;
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
 function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
-  RGBA: boolean): PInteger;
+                                     RGBA: boolean): PInteger;
 
 type
   TWidgetSetWSWinControl = TGtkWSWinControl;
@@ -715,7 +716,8 @@ end;
 
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-  DoubleBuffered, RGBA: boolean): HWND;
+  DoubleBuffered, RGBA: boolean;
+  const AParams: TCreateParams): HWND;
 var
   NewWidget: PGtkWidget;
   SharedArea: PGtkGLArea;
@@ -735,9 +737,9 @@ begin
     Result:=HWND(Pointer(NewWidget));
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
-    TGTKWidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget);
+    TGTKWidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);
     {$ELSE}
-    TGTK2WidgetSet(WidgetSet).FinishComponentCreate(AWinControl,NewWidget);
+    TGTK2WidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);
     {$ENDIF}
   finally
     FreeMem(AttrList);

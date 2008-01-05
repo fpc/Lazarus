@@ -637,7 +637,6 @@ components/opengl/example/mainunit.pas svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpi svneol=native#text/plain
 components/opengl/example/testopenglcontext1.lpr svneol=native#text/plain
 components/opengl/glcarbonaglcontext.pas svneol=native#text/plain
-components/opengl/glgtk2glxcontext.pas svneol=native#text/plain
 components/opengl/glgtkglxcontext.pas svneol=native#text/plain
 components/opengl/glwin32wglcontext.pas svneol=native#text/plain
 components/opengl/lazopenglcontext.lpk svneol=native#text/plain

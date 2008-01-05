@@ -123,7 +123,7 @@ type
     property SharedControl: TCustomOpenGLControl read FSharedOpenGLControl
                                                  write SetSharedControl;
     property AutoResizeViewport: boolean read FAutoResizeViewport
-                                         write SetAutoResizeViewport;
+                                         write SetAutoResizeViewport default false;
     property DoubleBuffered: boolean read FDoubleBuffered write SetDoubleBuffered default true;
     property RGBA: boolean read FRGBA write SetRGBA default true;
   end;
@@ -427,7 +427,8 @@ begin
       AttrControl:=OpenGlControl;
     Result:=LOpenGLCreateContext(OpenGlControl,WSPrivate,
                                  OpenGlControl.SharedControl,
-                                 AttrControl.DoubleBuffered,AttrControl.RGBA);
+                                 AttrControl.DoubleBuffered,AttrControl.RGBA,
+                                 AParams);
   end;
 end;
 
