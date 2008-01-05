@@ -86,7 +86,7 @@ type
       ABorderStyle: TFormBorderStyle; ABorderIcons: TBorderIcons; AFormStyle: TFormStyle);
   protected
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm; const AFormBorderStyle: TFormBorderStyle); override;
@@ -111,7 +111,7 @@ type
   private
   protected
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TQtWSScreen }
@@ -143,7 +143,7 @@ uses QtWSControls;
   Creates a Qt Form and initializes it according to it's properties
  ------------------------------------------------------------------------------}
 class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
@@ -192,7 +192,7 @@ begin
   {$endif}
 
   // Return the handle
-  Result := THandle(QtMainWindow);
+  Result := TLCLIntfHandle(QtMainWindow);
 end;
 
 {------------------------------------------------------------------------------
@@ -362,14 +362,14 @@ end;
 
 { TQtWSHintWindow }
 
-class function TQtWSHintWindow.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSHintWindow.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtMainWindow: TQtMainWindow;
 begin
   QtMainWindow := TQtHintWindow.Create(AWinControl, AParams);
   // Sets Various Events
   QtMainWindow.AttachEvents;
-  Result := THandle(QtMainWindow);
+  Result := TLCLIntfHandle(QtMainWindow);
 end;
 
 initialization

@@ -50,7 +50,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetType(const AArrow: TArrow; const AArrowType: TArrowType;
       const AShadowType: TShadowType); override;
   end;
@@ -64,7 +64,7 @@ implementation
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function  TQtWSArrow.CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND;
+          const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtArrow: TQtArrow;
 begin
@@ -78,7 +78,7 @@ begin
   
   QtArrow.AttachEvents;
   
-  Result := THandle(QtArrow);
+  Result := TLCLIntfHandle(QtArrow);
 
   {$ifdef VerboseQt}
     WriteLn('< TQtWSArrow.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));

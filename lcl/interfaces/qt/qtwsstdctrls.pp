@@ -329,7 +329,7 @@ const
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class function TQtWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtScrollBar: TQtScrollBar;
 begin
@@ -337,7 +337,7 @@ begin
 
   QtScrollBar.AttachEvents;
   
-  Result := THandle(QtScrollbar);
+  Result := TLCLIntfHandle(QtScrollbar);
 end;
 
 {------------------------------------------------------------------------------
@@ -381,7 +381,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtListWidget: TQtListWidget;
   SelMode: QAbstractItemViewSelectionMode;
@@ -405,7 +405,7 @@ begin
 
   QtListWidget.OwnerDrawn := TCustomListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
-  Result := THandle(QtListWidget);
+  Result := TLCLIntfHandle(QtListWidget);
 end;
 
 class function TQtWSCustomListBox.GetIndexAtY(
@@ -631,7 +631,7 @@ begin
   QtTextEdit.setScrollStyle(TCustomMemo(AWinControl).ScrollBars);
   QtTextEdit.setTabChangesFocus(not TCustomMemo(AWinControl).WantTabs);
 
-  Result := THandle(QtTextEdit);
+  Result := TLCLIntfHandle(QtTextEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -743,7 +743,7 @@ begin
   QtLineEdit := TQtLineEdit.Create(AWinControl, AParams);
   QtLineEdit.AttachEvents;
 
-  Result := THandle(QtLineEdit);
+  Result := TLCLIntfHandle(QtLineEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -888,7 +888,7 @@ begin
   QtStaticText.setFrameShadow(StaticBorderFrameShadowMap[TCustomStaticText(AWinControl).BorderStyle]);
 
   // Returns the Handle
-  Result := THandle(QtStaticText);
+  Result := TLCLIntfHandle(QtStaticText);
 end;
 
 {------------------------------------------------------------------------------
@@ -928,7 +928,7 @@ begin
   QtPushButton.AttachEvents;
 
   // Returns the Handle
-  Result := THandle(QtPushButton);
+  Result := TLCLIntfHandle(QtPushButton);
 end;
 
 class procedure TQtWSButton.SetDefault(const AButton: TCustomButton;
@@ -1034,7 +1034,7 @@ begin
   QtCheckBox := TQtCheckBox.Create(AWinControl, AParams);
   QtCheckBox.AttachEvents;
 
-  Result := THandle(QtCheckBox);
+  Result := TLCLIntfHandle(QtCheckBox);
 end;
 
 { TQtWSRadioButton }
@@ -1090,7 +1090,7 @@ begin
   QtRadioButton := TQtRadioButton.Create(AWinControl, AParams);
   QtRadioButton.AttachEvents;
 
-  Result := THandle(QtRadioButton);
+  Result := TLCLIntfHandle(QtRadioButton);
 end;
 
 { TQtWSCustomGroupBox }
@@ -1110,7 +1110,7 @@ begin
   QtGroupBox := TQtGroupBox.Create(AWinControl, AParams);
   QtGroupBox.AttachEvents;
 
-  Result := THandle(QtGroupBox);
+  Result := TLCLIntfHandle(QtGroupBox);
 end;
 
 class function TQtWSCustomGroupBox.GetDefaultClientRect(
@@ -1162,7 +1162,7 @@ begin
   // create our FList helper
   QtComboBox.FList := TQtComboStrings.Create(QtComboBox);
 
-  Result := THandle(QtComboBox);
+  Result := TLCLIntfHandle(QtComboBox);
 end;
 
 {------------------------------------------------------------------------------
@@ -1301,7 +1301,7 @@ begin
   QAbstractButton_setCheckable(QAbstractButtonH(QtToggleBox.Widget), True);
   QtToggleBox.AttachEvents;
   
-  Result := THandle(QtToggleBox);
+  Result := TLCLIntfHandle(QtToggleBox);
 end;
 
 initialization

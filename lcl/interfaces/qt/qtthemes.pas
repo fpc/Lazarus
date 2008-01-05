@@ -27,7 +27,8 @@ type
     qdvNone,
     qdvPrimitive,
     qdvControl,
-    qdvComplexControl
+    qdvComplexControl,
+    qdvStandardPixmap
   );
   TQtDrawElement = record
     case DrawVariant: TQtDrawVariant of
@@ -38,6 +39,8 @@ type
       qdvComplexControl:
         (ComplexControl: QStyleComplexControl;
          SubControls: QStyleSubControls);
+      qdvStandardPixmap:
+        (StandardPixmap: QStyleStandardPixmap);
   end;
 
   { TQtThemeServices }
@@ -112,6 +115,7 @@ var
   Context: TQtDeviceContext absolute DC;
   opt: QStyleOptionH;
   ARect: TRect;
+  AIcon: QIconH;
   Element: TQtDrawElement;
   Features: QStyleOptionButtonButtonFeatures;
   Position: QStyleOptionHeaderSectionPosition;
@@ -179,6 +183,16 @@ begin
         QStyleOption_setState(opt, GetControlState(Details));
         QStyleOption_setRect(opt, @ARect);
         QStyle_drawPrimitive(Style, Element.PrimitiveElement, opt, Context.Widget);
+        QStyleOption_Destroy(opt);
+      end;
+      qdvStandardPixmap:
+      begin
+        opt := QStyleOption_create(Integer(QStyleOptionVersion), Integer(QStyleOptionSO_Default));
+        AIcon := QIcon_create();
+        QStyle_standardIcon(Style, AIcon, Element.StandardPixmap, opt);
+        QIcon_paint(AIcon, Context.Widget, ARect.Left, ARect.Top,
+          ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+        QIcon_destroy(AIcon);
         QStyleOption_Destroy(opt);
       end;
     end;
@@ -367,6 +381,24 @@ begin
         else
           Result.ComplexControl := QStyleCC_TitleBar;
         Result.DrawVariant := qdvComplexControl;
+{
+        // maybe through icon
+        Result.DrawVariant := qdvStandardPixmap;
+        case Details.Part of
+          WP_MINBUTTON: Result.StandardPixmap := QStyleSP_TitleBarMinButton;
+          WP_MDIMINBUTTON: Result.StandardPixmap := QStyleSP_TitleBarMinButton;
+          WP_MAXBUTTON: Result.StandardPixmap := QStyleSP_TitleBarMaxButton;
+          WP_CLOSEBUTTON: Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
+          WP_SMALLCLOSEBUTTON: Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
+          WP_MDICLOSEBUTTON: Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
+          WP_RESTOREBUTTON: Result.StandardPixmap := QStyleSP_TitleBarNormalButton;
+          WP_MDIRESTOREBUTTON: Result.StandardPixmap := QStyleSP_TitleBarNormalButton;
+          WP_HELPBUTTON: Result.StandardPixmap := QStyleSP_TitleBarContextHelpButton;
+          WP_MDIHELPBUTTON: Result.StandardPixmap := QStyleSP_TitleBarContextHelpButton;
+        else
+          Result.StandardPixmap := QStyleSP_TitleBarCloseButton;
+        end;
+}
       end;
   end;
 end;

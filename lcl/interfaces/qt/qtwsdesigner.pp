@@ -85,7 +85,7 @@ begin
   QtRubberBand.AttachEvents;
   QtRubberBand.setShape(RubberBandShapeMap[TCustomRubberBand(AWinControl).Shape]);
 
-  Result := THandle(QtRubberBand);
+  Result := TLCLIntfHandle(QtRubberBand);
 end;
 
 class procedure TQtWsCustomRubberBand.SetShape(ARubberBand: TCustomRubberBand;

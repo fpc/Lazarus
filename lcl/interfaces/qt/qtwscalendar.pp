@@ -70,7 +70,7 @@ begin
 
   QtCalendar.AttachEvents;
 
-  Result := THandle(QtCalendar);
+  Result := TLCLIntfHandle(QtCalendar);
 end;
 
 class procedure TQtWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar; const AReadOnly: boolean);

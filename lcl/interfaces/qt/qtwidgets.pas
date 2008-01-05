@@ -59,6 +59,7 @@ type
   { IQtTextEdit }
 
   IQtEdit = interface
+  ['{035CA259-4442-4E82-9E70-96A114DD3BC6}']
     function getMaxLength: Integer;
     function getSelectionStart: Integer;
     function getSelectionLength: Integer;

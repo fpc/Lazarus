@@ -52,7 +52,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
@@ -63,7 +63,7 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
 
     class procedure AddPage(const ANotebook: TCustomNotebook;
       const AChild: TCustomPage; const AIndex: integer); override;
@@ -210,7 +210,7 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TQtWSPanel }
@@ -252,7 +252,7 @@ const
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtFrame: TQtFrame;
 begin
@@ -265,7 +265,7 @@ begin
   
   // Return the Handle
 
-  Result := THandle(QtFrame);
+  Result := TLCLIntfHandle(QtFrame);
 end;
 
 { TQtWSCustomPage }
@@ -278,7 +278,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtPage: TQtPage;
 begin
@@ -290,7 +290,7 @@ begin
   QtPage.AttachEvents;
 
   // Returns the Handle
-  Result := THandle(QtPage);
+  Result := TLCLIntfHandle(QtPage);
 
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
@@ -326,7 +326,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+class function TQtWSCustomNotebook.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtTabWidget: TQtTabWidget;
 begin
@@ -340,7 +340,7 @@ begin
 
   // Returns the Handle
 
-  Result := THandle(QtTabWidget);
+  Result := TLCLIntfHandle(QtTabWidget);
 end;
 
 class procedure TQtWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook;
@@ -476,7 +476,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := THandle(QtGroupBox);
+  Result := TLCLIntfHandle(QtGroupBox);
 end;
 
 { TQtWSCustomCheckGroup }
@@ -501,7 +501,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := THandle(QtGroupBox);
+  Result := TLCLIntfHandle(QtGroupBox);
 end;
 
 { TQtWSCustomTrayIcon }

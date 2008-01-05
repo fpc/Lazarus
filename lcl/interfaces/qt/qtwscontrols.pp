@@ -68,7 +68,7 @@ type
   public
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
   public
@@ -113,7 +113,7 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+          const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override; //TODO: rename to SetVisible(control, visible)
   end;
 
@@ -140,7 +140,7 @@ const
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND;
+          const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtAbstractScrollArea: TQtAbstractScrollArea;
 begin
@@ -152,7 +152,7 @@ begin
   QtAbstractScrollArea.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
   QtAbstractScrollArea.viewportNeeded;
   QtAbstractScrollArea.AttachEvents;
-  Result := THandle(QtAbstractScrollArea);
+  Result := TLCLIntfHandle(QtAbstractScrollArea);
 
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
@@ -232,7 +232,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   QtWidget: TQtWidget;
 begin
@@ -246,7 +246,7 @@ begin
 
   // Finalization
 
-  Result := THandle(QtWidget);
+  Result := TLCLIntfHandle(QtWidget);
 
   {$ifdef VerboseQt}
     WriteLn('< TQtWSWinControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
