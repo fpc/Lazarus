@@ -3146,6 +3146,7 @@ var
   ClassAtomPos: TAtomPosition;
   Level: integer;
   ContextDesc: Word;
+  IsForward: Boolean;
 begin
   ContextDesc:=CurNode.Desc;
   if not (ContextDesc in [ctnTypeDefinition,ctnGenericType,
@@ -3167,8 +3168,10 @@ begin
     CurNode.StartPos:=ClassAtomPos.StartPos;
   end;
   // find end of class
+  IsForward:=true;
   ReadNextAtom;
   if UpAtomIs('OF') then begin
+    IsForward:=false;
     if ChildCreated then CurNode.Desc:=ctnClassOfType;
     ReadNextAtom;
     AtomIsIdentifier(true);
@@ -3186,11 +3189,12 @@ begin
     SaveRaiseExceptionFmt(ctsAnonymDefinitionsAreNotAllowed,['class']);
   end else if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read inheritage brackets
+    IsForward:=false;
     ReadTilBracketClose(true);
     ReadNextAtom;
   end;
   if CurPos.Flag=cafSemicolon then begin
-    if ChildCreated and (CurNode.Desc=ctnClass) then begin
+    if ChildCreated and (CurNode.Desc=ctnClass) and IsForward then begin
       // forward class definition found
       CurNode.SubDesc:=CurNode.SubDesc+ctnsForwardDeclaration;
     end;
@@ -3250,8 +3254,9 @@ begin
       ReadTilBracketClose(true);
       ReadNextAtom;
     end;
-    if CurPos.Flag=cafEdgedBracketOpen then
+    if CurPos.Flag=cafEdgedBracketOpen then begin
       ReadGUID;
+    end;
     // parse till "end" of class/object
     CurKeyWordFuncList:=ClassInterfaceKeyWordFuncList;
     try
