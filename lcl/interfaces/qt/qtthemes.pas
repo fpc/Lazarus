@@ -31,9 +31,13 @@ type
   );
   TQtDrawElement = record
     case DrawVariant: TQtDrawVariant of
-      qdvPrimitive     : (PrimitiveElement: QStylePrimitiveElement);
-      qdvControl       : (ControlElement  : QStyleControlElement);
-      qdvComplexControl: (ComplexElement  : QStyleComplexControl);
+      qdvPrimitive:
+        (PrimitiveElement: QStylePrimitiveElement);
+      qdvControl:
+        (ControlElement: QStyleControlElement);
+      qdvComplexControl:
+        (ComplexControl: QStyleComplexControl;
+         SubControls: QStyleSubControls);
   end;
 
   { TQtThemeServices }
@@ -150,14 +154,23 @@ begin
       end;
       qdvComplexControl:
       begin
-        if Element.ComplexElement = QStyleCC_ToolButton then
-          opt := QStyleOptionToolButton_create()
+        case Element.ComplexControl of
+          QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
+          QStyleCC_TitleBar,
+          QStyleCC_MdiControls:
+          begin
+            opt := QStyleOptionTitleBar_create();
+            QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
+          end;
         else
           opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
-
+        end;
+        
+        QStyleOptionComplex_setSubControls(QStyleOptionComplexH(opt), Element.SubControls);
+        
         QStyleOption_setState(opt, GetControlState(Details));
         QStyleOption_setRect(opt, @ARect);
-        QStyle_drawComplexControl(Style, Element.ComplexElement, QStyleOptionComplexH(opt), Context.Widget);
+        QStyle_drawComplexControl(Style, Element.ComplexControl, QStyleOptionComplexH(opt), Context.Widget);
         QStyleOption_Destroy(opt);
       end;
       qdvPrimitive:
@@ -278,7 +291,8 @@ begin
         else
         begin
           Result.DrawVariant := qdvComplexControl;
-          Result.ComplexElement := QStyleCC_GroupBox;
+          Result.ComplexControl := QStyleCC_GroupBox;
+          Result.SubControls := QStyleSC_GroupBoxFrame;
         end;
       end;
     teHeader:
@@ -330,6 +344,29 @@ begin
               Result.ControlElement := QStyleCE_Splitter;
             end;
         end;
+      end;
+    teWindow:
+      begin
+        case Details.Part of
+          WP_SYSBUTTON: Result.SubControls := QStyleSC_TitleBarSysMenu;
+          WP_MINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
+          WP_MDIMINBUTTON: Result.SubControls := QStyleSC_MdiMinButton;
+          WP_MAXBUTTON: Result.SubControls := QStyleSC_TitleBarMaxButton;
+          WP_CLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
+          WP_SMALLCLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
+          WP_MDICLOSEBUTTON: Result.SubControls := QStyleSC_MdiCloseButton;
+          WP_RESTOREBUTTON: Result.SubControls := QStyleSC_TitleBarNormalButton;
+          WP_MDIRESTOREBUTTON: Result.SubControls := QStyleSC_MdiNormalButton;
+          WP_HELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
+          WP_MDIHELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
+        else
+          Result.SubControls := QStyleSC_None;
+        end;
+        if Result.SubControls >= QStyleSC_MdiMinButton then
+          Result.ComplexControl := QStyleCC_MdiControls
+        else
+          Result.ComplexControl := QStyleCC_TitleBar;
+        Result.DrawVariant := qdvComplexControl;
       end;
   end;
 end;
