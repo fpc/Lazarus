@@ -45,7 +45,7 @@ uses
   InterfaceBase,
   LMessages, FileUtil, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
   DynHashArray, GraphType, GraphMath, Graphics, Menus,
-  GTKWinApiWindow, StdCtrls, ComCtrls,
+  GtkWSControls, GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,
   {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
   GtkDef, Gtk2Def, GtkFontCache, GtkInt, GtkExtra;
@@ -74,6 +74,10 @@ type
     procedure SetWidgetFont(const AWidget: PGtkWidget; const AFont: TFont); override;
 
     function AppHandle: Thandle; override;
+
+    // for gtk controls not part of the LCL:
+    procedure FinishCreateHandle(const AWinControl: TWinControl; Widget: PGtkWidget; const AParams: TCreateParams);
+
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;
