@@ -5834,6 +5834,7 @@ begin
 
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
+  FreeThenNil(FDockManager);
   FreeThenNil(FDockClients);
   FreeThenNil(FTabList);
   //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);

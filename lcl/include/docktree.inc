@@ -24,6 +24,7 @@ const
 procedure TDockTree.DeleteZone(Zone: TDockZone);
 begin
   // ToDo
+  Zone.Free;
 end;
 
 procedure TDockTree.SetDockZoneClass(const AValue: TDockZoneClass);
