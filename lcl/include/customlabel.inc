@@ -93,24 +93,19 @@ begin
   
   if AutoSizeDelayed then
     exit;
-  BeginAutoSizing;
-  try
-    GetPreferredSize(NewWidth, NewHeight);
-    //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
-    CurAnchors:=[];
-    if Align in [alLeft,alRight,alBottom,alTop,alClient] then
-      CurAnchors:=AnchorAlign[Align];
-    CurAnchors:=Anchors+CurAnchors;
-    if CurAnchors*[akLeft,akRight]=[akLeft,akRight] then
-      NewWidth:=Width;
-    if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
-      NewHeight:=Height;
+  GetPreferredSize(NewWidth, NewHeight);
+  //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Nice ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight),' Caption="',dbgstr(Caption),'"');
+  CurAnchors:=[];
+  if Align in [alLeft,alRight,alBottom,alTop,alClient] then
+    CurAnchors:=AnchorAlign[Align];
+  CurAnchors:=Anchors+CurAnchors;
+  if CurAnchors*[akLeft,akRight]=[akLeft,akRight] then
+    NewWidth:=Width;
+  if CurAnchors*[akTop,akBottom]=[akTop,akBottom] then
+    NewHeight:=Height;
 
-    //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
-    SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
-  finally
-    EndAutoSizing;
-  end;
+  //debugln('TCustomLabel.DoAutoSize ',dbgsName(Self),' Anchored ',dbgs(Left),',',dbgs(Top),',w=',dbgs(NewWidth),',h=',dbgs(NewHeight));
+  SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
 end;
 
 procedure TCustomLabel.SetAlignment(Value : TAlignment);
@@ -169,6 +164,8 @@ procedure TCustomLabel.TextChanged;
 begin
   Invalidate;
   InvalidatePreferredSize;
+  if (Parent<>nil) and Parent.AutoSize then
+    Parent.AdjustSize;
   AdjustSize;
 end;
 
