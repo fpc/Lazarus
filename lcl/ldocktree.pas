@@ -627,14 +627,14 @@ begin
         BtnRect := DrawRect;
         Dec(BtnRect.Right);
         BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twCloseButtonNormal);
+        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
 
         DrawRect.Right := BtnRect.Left;
         BtnRect := DrawRect;
         Dec(BtnRect.Right);
         BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twRestoreButtonNormal);
+        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
 
         DrawRect.Right := BtnRect.Left;
@@ -655,14 +655,14 @@ begin
         BtnRect := DrawRect;
         Inc(BtnRect.Top);
         BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twCloseButtonNormal);
+        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
 
         DrawRect.Top := BtnRect.Bottom;
         BtnRect := DrawRect;
         Inc(BtnRect.Top);
         BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twRestoreButtonNormal);
+        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
 
         DrawRect.Top := BtnRect.Bottom;
