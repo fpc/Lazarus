@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-26 22:33+0300\n"
+"PO-Revision-Date: 2007-12-30 21:25+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3393,6 +3393,10 @@ msgstr "Формы"
 msgid "Forms..."
 msgstr "Формы..."
 
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr "Найти следующее"
+
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
 msgstr "Один вперёд"
@@ -6769,6 +6773,10 @@ msgstr "Требуемые пакеты"
 msgid "Rescan FPC source directory"
 msgstr "Пересмотреть каталог исходного кода FPC"
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr "Сброс результатов"
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr "Сброс отладчика"
@@ -7192,6 +7200,10 @@ msgstr "Искать снова"
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
 msgstr "Искать и в комментариях"
+
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr "Поиск или фильтрация фраз в списке"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -7651,7 +7663,7 @@ msgstr "Всплывающие подсказки поля (лев)"
 
 #: lazarusidestrconsts:lisshowhintsinobjectinspector
 msgid "Show hints in Object Inspector"
-msgstr "Показывать всплывающие подсказки в Инспекторе Объектов"
+msgstr "Показывать всплывающие подсказки в инспекторе объектов"
 
 #: lazarusidestrconsts:lisshowidentifiers
 msgid "Show identifiers"
@@ -9503,15 +9515,15 @@ msgstr "Модуль: %s%sФайл LFM: %s"
 
 #: lazarusidestrconsts:lisa2punitnamealreadyexists
 msgid "Unitname already exists"
-msgstr "Имя модуля уже есть"
+msgstr "Модуль с таким именем уже существует"
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "Модуль с таким именем уже в проекте"
+msgstr "Модуль с таким именем уже имеется в проекте"
 
 #: lazarusidestrconsts:lispvuunitnameandfilenamedonotmatchexampleunit1pasanduni
 msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
-msgstr "Имена модуля и файла не совпадают. %sПример: unit1.pas и Unit1"
+msgstr "Имена модуля и файла не совпадают.%sПример: unit1.pas и Unit1"
 
 #: lazarusidestrconsts:lispeunitname
 msgid "Unitname:"
@@ -9563,7 +9575,7 @@ msgstr "Использовать Application Bundle для запуска и о�
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
-msgstr "Использовать Исключающий фильтр"
+msgstr "Использовать исключающий фильтр"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
@@ -9571,7 +9583,7 @@ msgstr "Использовать модуль Heaptrc"
 
 #: lazarusidestrconsts:lisuseincludefilter
 msgid "Use Include Filter"
-msgstr "Использовать Включающий фильтр"
+msgstr "Использовать включающий фильтр"
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"
