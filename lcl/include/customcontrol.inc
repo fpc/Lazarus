@@ -54,7 +54,7 @@ end;
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TCustomControl.Destroy;
+destructor TCustomControl.Destroy;
 begin
   FCanvas.Free;
   FCanvas:=nil;

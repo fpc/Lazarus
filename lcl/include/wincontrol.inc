@@ -4189,7 +4189,7 @@ begin
   if DC = 0 then
     DC := BeginPaint(Handle, PS);
 
-  if FDockSite and FUseDockManager then
+  if FDockSite and FUseDockManager and Assigned(FDockManager) then
     FDockManager.PaintSite(DC);
     
   try
