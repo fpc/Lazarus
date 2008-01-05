@@ -5470,8 +5470,6 @@ begin
     end else
       ListRemove(FControls, AControl);
     AControl.FParent := nil;
-    if AControl.FHostDockSite = Self then
-      AControl.FHostDockSite := nil;
   end;
 end;
 
@@ -5827,6 +5825,8 @@ begin
     Control := Controls[n - 1];
     //DebugLn('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
+    if Control.FHostDockSite = Self then
+      Control.FHostDockSite := nil;
     // don't free the control just set parent to nil
     // controls are freed by the owner
     //Control.Free;
