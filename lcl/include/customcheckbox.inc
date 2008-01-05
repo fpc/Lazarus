@@ -223,7 +223,15 @@ begin
     end;
   end;
   inherited WSSetText(AText);
+end;
+
+procedure TCustomCheckBox.TextChanged;
+begin
+  InvalidatePreferredSize;
+  if (Parent<>nil) and Parent.AutoSize then
+    Parent.AdjustSize;
   AdjustSize;
+  inherited TextChanged;
 end;
 
 function TCustomCheckBox.DialogChar(var Message: TLMKey): boolean;

@@ -1113,6 +1113,7 @@ type
     class function GetControlClassDefaultSize: TPoint; override;
     procedure Loaded; override;
     procedure WSSetText(const AText: String); override;
+    procedure TextChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
   public
