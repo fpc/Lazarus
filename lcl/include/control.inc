@@ -2388,14 +2388,18 @@ var
   Kind: TAnchorKind;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then begin
-    if AComponent = PopupMenu then PopupMenu := nil
-    else if AComponent = Action then Action := nil;
+  if Operation = opRemove then
+  begin
+    if AComponent = PopupMenu then
+      PopupMenu := nil
+    else
+    if AComponent = Action then
+      Action := nil;
     //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
-    for Kind:=Low(TAnchorKind) to High(TAnchorKind) do begin
-      if (FAnchorSides[Kind]<>nil) and (FAnchorSides[Kind].Control=AComponent)
-      then
-        FAnchorSides[Kind].FControl:=nil;
+    for Kind := Low(TAnchorKind) to High(TAnchorKind) do
+    begin
+      if (FAnchorSides[Kind] <> nil) and (FAnchorSides[Kind].Control = AComponent) then
+        FAnchorSides[Kind].FControl := nil;
     end;
   end;
 end;

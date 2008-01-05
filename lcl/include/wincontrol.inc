@@ -5468,8 +5468,10 @@ begin
       ListRemove(FTabList, AControl);
       ListRemove(FWInControls, ACOntrol);
     end else
-      Listremove(FControls, AControl);
-    AControl.FParent := Nil;
+      ListRemove(FControls, AControl);
+    AControl.FParent := nil;
+    if AControl.FHostDockSite = Self then
+      AControl.FHostDockSite := nil;
   end;
 end;
 
