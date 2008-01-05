@@ -75,9 +75,6 @@ type
 
     function AppHandle: Thandle; override;
 
-    // for gtk controls not part of the LCL:
-    procedure FinishCreateHandle(const AWinControl: TWinControl; Widget: PGtkWidget; const AParams: TCreateParams);
-
     {$I gtk2winapih.inc}
     {$I gtk2lclintfh.inc}
   end;

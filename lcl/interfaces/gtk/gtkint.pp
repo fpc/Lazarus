@@ -276,6 +276,9 @@ type
     function DestroyTimer(TimerHandle: THandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
 
+    // for gtk controls not part of the LCL:
+    procedure FinishCreateHandle(const AWinControl: TWinControl; Widget: PGtkWidget; const AParams: TCreateParams);
+
     {$I gtkwinapih.inc}
     {$I gtklclintfh.inc}
 

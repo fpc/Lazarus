@@ -3748,6 +3748,29 @@ begin
     LastRight:=EmptyLastMouseClick;
 end;
 
+procedure TGTKWidgetSet.FinishCreateHandle(const AWinControl: TWinControl;
+  Widget: PGtkWidget; const AParams: TCreateParams);
+var
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  WidgetInfo := GetWidgetInfo(Widget,true); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.LCLObject := AWinControl;
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+  TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), AWinControl);
+end;
+
 procedure TGtkWidgetSet.DestroyConnectedWidget(Widget: PGtkWidget;
   CheckIfDestroying: boolean);
 var
