@@ -224,8 +224,12 @@ begin
   ResultsNoteBook.Update;
 
   Caption:=lisMenuViewSearchResults;
+  gbSearchPhraseInList.Caption:=lisVSRSearchOrFilterPhrasesInList;
   btnSearchAgain.Caption:=lisSearchAgain;
   ClosePageButton.Caption:=lisSRClosePage;
+  bnFilter.Caption:=lisFilter;
+  bnForwardSearch.Caption:=lisVSRForwardSearch;
+  bnResetResults.Caption:=lisVSRResetResultList;
 
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.

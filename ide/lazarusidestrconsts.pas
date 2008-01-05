@@ -3571,6 +3571,11 @@ resourcestring
   lisCCDNoClass = 'no class';
   lisCCDChangeClassOf = 'Change Class of %s';
 
+  // View Search Results dialog
+  lisVSRSearchOrFilterPhrasesInList = 'Search or Filter Phrases In List';
+  lisVSRForwardSearch = 'Forward Search';
+  lisVSRResetResultList = 'Reset Result List';
+
 implementation
 
 end.
