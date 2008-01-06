@@ -1929,6 +1929,9 @@ begin
         else
           ADrawFlags := 0;
         end;
+        
+        if Details.Part in [WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON] then
+          ADrawFlags := ADrawFlags or DFCS_FLAT;
 
         if IsDisabled(Details) then
           ADrawFlags := ADrawFlags or DFCS_INACTIVE else
