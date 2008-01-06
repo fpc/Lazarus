@@ -2001,7 +2001,9 @@ begin
 
   Result := False;
   if (Details.Element in [teButton, teToolBar]) or
-     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
+     ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
+     (Details.Part <= WP_MDIHELPBUTTON)) then
     Result := (Details.State mod 4) = 0; // usual disabled = 4 / 8 / 12
 end;
 
@@ -2009,7 +2011,9 @@ function TThemeServices.IsPushed(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton, teToolBar, teHeader]) or
-     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
+     ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
+     (Details.Part <= WP_MDIHELPBUTTON)) then
     Result := Details.State in [3, 7, 11];
 end;
 
@@ -2017,7 +2021,9 @@ function TThemeServices.IsHot(Details: TThemedElementDetails): Boolean;
 begin
   Result := False;
   if (Details.Element in [teButton, teToolBar, teHeader]) or
-     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) then
+     ((Details.Element = teRebar) and (Details.Part >= RP_BAND)) or
+     ((Details.Element = teWindow) and (Details.Part >= WP_SYSBUTTON) and
+     (Details.Part <= WP_MDIHELPBUTTON)) then
     Result := Details.State in [2, 6, 10];
 end;
 
