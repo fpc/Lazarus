@@ -1138,20 +1138,23 @@ begin
     try
       for i := 0 to DockSite.ControlCount - 1 do
       begin
-        ARect := DockSite.Controls[i].BoundsRect;
-        case DockSite.Controls[i].DockOrientation of
-          doHorizontal:
-            begin
-              ARect.Bottom := ARect.Top;
-              Dec(ARect.Top, DefaultDockGrabberSize);
-            end;
-          doVertical:
-            begin
-              ARect.Right := ARect.Left;
-              Dec(ARect.Left, DefaultDockGrabberSize);
-            end;
+        if DockSite.Controls[i].HostDockSite = DockSite then
+        begin
+          ARect := DockSite.Controls[i].BoundsRect;
+          case DockSite.Controls[i].DockOrientation of
+            doHorizontal:
+              begin
+                ARect.Bottom := ARect.Top;
+                Dec(ARect.Top, DefaultDockGrabberSize);
+              end;
+            doVertical:
+              begin
+                ARect.Right := ARect.Left;
+                Dec(ARect.Left, DefaultDockGrabberSize);
+              end;
+          end;
+          PaintDockFrame(ACanvas, DockSite.Controls[i], ARect);
         end;
-        PaintDockFrame(ACanvas, DockSite.Controls[i], ARect);
       end;
     finally
       ACanvas.Free;

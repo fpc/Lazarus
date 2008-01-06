@@ -37,11 +37,18 @@ uses
 
 type
   TGraphicsColor = -$7FFFFFFF-1..$7FFFFFFF;
-  TGraphicsFillStyle = (
+  TGraphicsFillStyle =
+  (
     fsSurface, // fill till the color (it fills all execpt this color)
     fsBorder   // fill this color (it fills only conneted pixels of this color)
-    );
-  TGraphicsBevelCut = (bvNone, bvLowered, bvRaised, bvSpace);
+  );
+  TGraphicsBevelCut =
+  (
+    bvNone,
+    bvLowered,
+    bvRaised,
+    bvSpace
+  );
   TGraphicsDrawEffect =
   (
     gdeNormal,      // no effect
