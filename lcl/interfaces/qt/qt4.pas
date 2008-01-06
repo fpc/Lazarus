@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.55 }
+{ Version : 1.57 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -19,7 +19,7 @@ const
 {$IFDEF MSWINDOWS}
   QtIntf = 'libqt4intf.dll';
 {$ENDIF}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
   QtIntf = 'libqt4intf.so';
 {$ENDIF}
 {$IFDEF DARWIN}
@@ -1589,7 +1589,7 @@ procedure QCoreApplication_removeTranslator(messageFile: QTranslatorH); cdecl; e
 procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar = nil; encoding: QCoreApplicationEncoding = QCoreApplicationCodecForTr); overload; cdecl; external QtIntf name 'QCoreApplication_translate';
 procedure QCoreApplication_translate(retval: PWideString; context: PAnsiChar; key: PAnsiChar; comment: PAnsiChar; encoding: QCoreApplicationEncoding; n: Integer); overload; cdecl; external QtIntf name 'QCoreApplication_translate2';
 procedure QCoreApplication_flush(); cdecl; external QtIntf name 'QCoreApplication_flush';
-{$ifdef DARWIN or LINUX }
+{$ifdef UNIX or DARWIN }
 procedure QCoreApplication_watchUnixSignal(signal: Integer; watch: Boolean); cdecl; external QtIntf name 'QCoreApplication_watchUnixSignal';
 {$endif}
 function QCoreApplication_setEventFilter(handle: QCoreApplicationH; filter: TCoreApplicationEventFilter): TCoreApplicationEventFilter; cdecl; external QtIntf name 'QCoreApplication_setEventFilter';
@@ -2798,7 +2798,7 @@ function QApplication_create(argc: PInteger; argv: PPAnsiChar; p3: Integer = QT_
 procedure QApplication_destroy(handle: QApplicationH); cdecl; external QtIntf name 'QApplication_destroy'; 
 function QApplication_create(argc: PInteger; argv: PPAnsiChar; GUIenabled: Boolean; p4: Integer = QT_VERSION): QApplicationH; overload; cdecl; external QtIntf name 'QApplication_create2';
 function QApplication_create(argc: PInteger; argv: PPAnsiChar; p3: QApplicationType; p4: Integer = QT_VERSION): QApplicationH; overload; cdecl; external QtIntf name 'QApplication_create3';
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QApplication_create(dpy: PDisplay; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; p4: Integer = QT_VERSION): QApplicationH; overload; cdecl; external QtIntf name 'QApplication_create4';
 function QApplication_create(dpy: PDisplay; argc: PInteger; argv: PPAnsiChar; visual: QtHANDLE = 0; cmap: QtHANDLE = 0; p6: Integer = QT_VERSION): QApplicationH; overload; cdecl; external QtIntf name 'QApplication_create5';
 {$endif}
@@ -2860,7 +2860,7 @@ function QApplication_isRightToLeft(): Boolean; cdecl; external QtIntf name 'QAp
 function QApplication_isLeftToRight(): Boolean; cdecl; external QtIntf name 'QApplication_isLeftToRight';
 function QApplication_isEffectEnabled(p1: QtUIEffect): Boolean; cdecl; external QtIntf name 'QApplication_isEffectEnabled';
 procedure QApplication_setEffectEnabled(p1: QtUIEffect; enable: Boolean = True); cdecl; external QtIntf name 'QApplication_setEffectEnabled';
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QApplication_x11EventFilter(handle: QApplicationH; p1: PEvent): Boolean; cdecl; external QtIntf name 'QApplication_x11EventFilter';
 function QApplication_x11ClientMessage(handle: QApplicationH; p1: QWidgetH; p2: PEvent; passive_only: Boolean): Integer; cdecl; external QtIntf name 'QApplication_x11ClientMessage';
 function QApplication_x11ProcessEvent(handle: QApplicationH; p1: PEvent): Integer; cdecl; external QtIntf name 'QApplication_x11ProcessEvent';
@@ -3250,11 +3250,11 @@ function QWidget_windowType(handle: QWidgetH): QtWindowType; cdecl; external QtI
 function QWidget_find(p1: LongWord): QWidgetH; cdecl; external QtIntf name 'QWidget_find';
 function QWidget_childAt(handle: QWidgetH; x: Integer; y: Integer): QWidgetH; overload; cdecl; external QtIntf name 'QWidget_childAt';
 function QWidget_childAt(handle: QWidgetH; p: PQtPoint): QWidgetH; overload; cdecl; external QtIntf name 'QWidget_childAt2';
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QWidget_x11Info(handle: QWidgetH): QX11InfoH; cdecl; external QtIntf name 'QWidget_x11Info';
 function QWidget_x11PictureHandle(handle: QWidgetH): QtHANDLE; cdecl; external QtIntf name 'QWidget_x11PictureHandle';
 {$endif}
-{$ifdef DARWIN or LINUX }
+{$ifdef UNIX or DARWIN }
 function QWidget_handle(handle: QWidgetH): QtHANDLE; cdecl; external QtIntf name 'QWidget_handle';
 {$endif}
 procedure QWidget_setAttribute(handle: QWidgetH; p1: QtWidgetAttribute; _on: Boolean = True); cdecl; external QtIntf name 'QWidget_setAttribute';
@@ -3714,10 +3714,10 @@ procedure QCursor_hotSpot(handle: QCursorH; retval: PQtPoint); cdecl; external Q
 procedure QCursor_pos(retval: PQtPoint); cdecl; external QtIntf name 'QCursor_pos';
 procedure QCursor_setPos(x: Integer; y: Integer); overload; cdecl; external QtIntf name 'QCursor_setPos';
 procedure QCursor_setPos(p: PQtPoint); overload; cdecl; external QtIntf name 'QCursor_setPos2';
-{$ifdef DARWIN or LINUX }
+{$ifdef UNIX or DARWIN }
 function QCursor_handle(handle: QCursorH): QtHANDLE; overload; cdecl; external QtIntf name 'QCursor_handle';
 {$endif}
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QCursor_create(cursor: QtHANDLE): QCursorH; overload; cdecl; external QtIntf name 'QCursor_create6';
 function QCursor_x11Screen(): Integer; cdecl; external QtIntf name 'QCursor_x11Screen';
 {$endif}
@@ -3826,7 +3826,7 @@ procedure QToolTip_setPalette(p1: QPaletteH); cdecl; external QtIntf name 'QTool
 procedure QToolTip_font(retval: QFontH); cdecl; external QtIntf name 'QToolTip_font';
 procedure QToolTip_setFont(p1: QFontH); cdecl; external QtIntf name 'QToolTip_setFont';
 
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QX11Info_create(): QX11InfoH; overload; cdecl; external QtIntf name 'QX11Info_create';
 procedure QX11Info_destroy(handle: QX11InfoH); cdecl; external QtIntf name 'QX11Info_destroy'; 
 function QX11Info_create(other: QX11InfoH): QX11InfoH; overload; cdecl; external QtIntf name 'QX11Info_create2';
@@ -4478,7 +4478,7 @@ function QRegion_intersects(handle: QRegionH; r: QRegionH): Boolean; overload; c
 function QRegion_intersects(handle: QRegionH; r: PRect): Boolean; overload; cdecl; external QtIntf name 'QRegion_intersects2';
 procedure QRegion_boundingRect(handle: QRegionH; retval: PRect); cdecl; external QtIntf name 'QRegion_boundingRect';
 procedure QRegion_setRects(handle: QRegionH; rect: PRect; num: Integer); cdecl; external QtIntf name 'QRegion_setRects';
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QRegion_handle(handle: QRegionH): Region; overload; cdecl; external QtIntf name 'QRegion_handle';
 {$endif}
 {$ifdef MSWINDOWS }
@@ -4594,7 +4594,7 @@ procedure QPrinter_setDoubleSidedPrinting(handle: QPrinterH; enable: Boolean); c
 function QPrinter_doubleSidedPrinting(handle: QPrinterH): Boolean; cdecl; external QtIntf name 'QPrinter_doubleSidedPrinting';
 procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_paperRect';
 procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_pageRect';
-{$ifdef DARWIN or LINUX }
+{$ifdef UNIX or DARWIN }
 procedure QPrinter_printerSelectionOption(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_printerSelectionOption';
 procedure QPrinter_setPrinterSelectionOption(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setPrinterSelectionOption';
 {$endif}
@@ -4771,7 +4771,7 @@ function QFont_rawMode(handle: QFontH): Boolean; cdecl; external QtIntf name 'QF
 procedure QFont_setRawMode(handle: QFontH; p1: Boolean); cdecl; external QtIntf name 'QFont_setRawMode';
 function QFont_exactMatch(handle: QFontH): Boolean; cdecl; external QtIntf name 'QFont_exactMatch';
 function QFont_isCopyOf(handle: QFontH; p1: QFontH): Boolean; cdecl; external QtIntf name 'QFont_isCopyOf';
-{$ifdef DARWIN or LINUX }
+{$ifdef UNIX or DARWIN }
 function QFont_handle(handle: QFontH): QtHANDLE; overload; cdecl; external QtIntf name 'QFont_handle';
 {$endif}
 procedure QFont_setRawName(handle: QFontH; p1: PWideString); cdecl; external QtIntf name 'QFont_setRawName';
@@ -5207,7 +5207,7 @@ function QPixmap_serialNumber(handle: QPixmapH): Integer; cdecl; external QtIntf
 function QPixmap_isDetached(handle: QPixmapH): Boolean; cdecl; external QtIntf name 'QPixmap_isDetached';
 procedure QPixmap_detach(handle: QPixmapH); cdecl; external QtIntf name 'QPixmap_detach';
 function QPixmap_isQBitmap(handle: QPixmapH): Boolean; cdecl; external QtIntf name 'QPixmap_isQBitmap';
-{$ifdef LINUX }
+{$ifdef UNIX }
 function QPixmap_x11SetDefaultScreen(screen: Integer): Integer; cdecl; external QtIntf name 'QPixmap_x11SetDefaultScreen';
 procedure QPixmap_x11SetScreen(handle: QPixmapH; screen: Integer); cdecl; external QtIntf name 'QPixmap_x11SetScreen';
 function QPixmap_x11Info(handle: QPixmapH): QX11InfoH; cdecl; external QtIntf name 'QPixmap_x11Info';
@@ -7796,21 +7796,18 @@ type
     QMessageBoxCritical = 3,
     QMessageBoxQuestion = 4 );
 
-type
-  QMessageBoxButtonRole = cardinal; //  QMessageBox::ButtonRole (4)
-
-const
-    QMessageBoxInvalidRole = 4294967295 { $ffffffff };
-    QMessageBoxAcceptRole = 0 { $0 };
-    QMessageBoxRejectRole = 1 { $1 };
-    QMessageBoxDestructiveRole = 2 { $2 };
-    QMessageBoxActionRole = 3 { $3 };
-    QMessageBoxHelpRole = 4 { $4 };
-    QMessageBoxYesRole = 5 { $5 };
-    QMessageBoxNoRole = 6 { $6 };
-    QMessageBoxResetRole = 7 { $7 };
-    QMessageBoxApplyRole = 8 { $8 };
-    QMessageBoxNRoles = 9 { $9 };
+  QMessageBoxButtonRole = (  //QMessageBox::ButtonRole (2)
+    QMessageBoxInvalidRole = -1,
+    QMessageBoxAcceptRole,
+    QMessageBoxRejectRole,
+    QMessageBoxDestructiveRole,
+    QMessageBoxActionRole,
+    QMessageBoxHelpRole,
+    QMessageBoxYesRole,
+    QMessageBoxNoRole,
+    QMessageBoxResetRole,
+    QMessageBoxApplyRole,
+    QMessageBoxNRoles );
 
 type
   QMessageBoxStandardButton = cardinal; //  QMessageBox::StandardButton (4)
@@ -9472,13 +9469,11 @@ procedure QStyleHintReturnMask_destroy(handle: QStyleHintReturnMaskH); cdecl; ex
 procedure QStyleFactory_keys(retval: QStringListH); cdecl; external QtIntf name 'QStyleFactory_keys';
 function QStyleFactory_create(p1: PWideString): QStyleH; cdecl; external QtIntf name 'QStyleFactory_create';
 
+
 type
-  QGraphicsSceneItemIndexMethod = cardinal; //  QGraphicsScene::ItemIndexMethod (4)
-
-const
-    QGraphicsSceneBspTreeIndex = 0 { $0 };
-    QGraphicsSceneNoIndex = 4294967295 { $ffffffff };
-
+  QGraphicsSceneItemIndexMethod = (  //QGraphicsScene::ItemIndexMethod (2)
+    QGraphicsSceneBspTreeIndex,
+    QGraphicsSceneNoIndex = -1 );
 
 function QGraphicsScene_create(parent: QObjectH = nil): QGraphicsSceneH; overload; cdecl; external QtIntf name 'QGraphicsScene_create';
 procedure QGraphicsScene_destroy(handle: QGraphicsSceneH); cdecl; external QtIntf name 'QGraphicsScene_destroy'; 
@@ -10076,7 +10071,7 @@ procedure InitializePIntArray(GPP, GPL, SPL: Pointer); cdecl; external QtIntf na
 
 // Special-Purpose Global Functions Exported by Qt
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 procedure QtX11WaitForWindowManager(handle : QWidgetH); cdecl; external QtIntf name 'qtx11waitforwindowmanager';
 {$ENDIF}
 
