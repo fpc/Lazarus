@@ -158,6 +158,7 @@ begin
       end;
       qdvComplexControl:
       begin
+        Context.save;
         case Element.ComplexControl of
           QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
           QStyleCC_TitleBar,
@@ -165,6 +166,10 @@ begin
           begin
             opt := QStyleOptionTitleBar_create();
             QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
+            // workaround: qt has own minds about position of requested part -
+            // but we need a way to draw it at our position
+            Context.translate(ARect.Left, ARect.Top);
+            OffsetRect(ARect, -ARect.Left, -ARect.Top);
           end;
         else
           opt := QStyleOptionComplex_create(LongInt(QStyleOptionVersion), LongInt(QStyleOptionSO_Default));
@@ -176,6 +181,7 @@ begin
         QStyleOption_setRect(opt, @ARect);
         QStyle_drawComplexControl(Style, Element.ComplexControl, QStyleOptionComplexH(opt), Context.Widget);
         QStyleOption_Destroy(opt);
+        Context.restore;
       end;
       qdvPrimitive:
       begin
