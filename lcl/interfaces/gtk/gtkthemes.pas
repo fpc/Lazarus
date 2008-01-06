@@ -16,7 +16,7 @@ uses
   // lcl
   InterfaceBase, LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
-  gtkdef, gtkint, gtkproc, gtkglobals;
+  gtkdef, gtkint, gtkproc, gtkglobals, gtkextra;
   
 type
   TGtkPainterType =
@@ -150,8 +150,8 @@ begin
         gdk_gc_set_clip_mask(DevCtx.GC, APixmapMask);
         gdk_gc_set_clip_origin(DevCtx.GC, Area^.x, Area^.y);
       end;
-      gdk_draw_drawable(DevCtx.Drawable, DevCtx.GC, APixmap, 0, 0, Area^.x, Area^.y,
-        Area^.width, Area^.height);
+      gdk_draw_pixmap(DevCtx.Drawable, DevCtx.GC, APixmap, 0, 0, Area^.x, Area^.y,
+        Area^.Width, Area^.Height);
       if APixmapMask <> nil then
         DevCtx.ResetGCClipping;
       gdk_pixmap_unref(APixmap);
