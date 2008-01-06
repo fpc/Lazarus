@@ -4,8 +4,8 @@ const
   XPM_MDIRESTOREBUTTON: array[0..12] of PChar =
   (
     '10 10 2 1',
-    ' 	g None',
-    '.	g #000000',
+    ' 	c None',
+    '.	c #000000',
     '          ',
     '   .......',
     '   .......',
@@ -21,8 +21,8 @@ const
   XPM_MDICLOSEBUTTON: array[0..12] of PChar =
   (
     '10 10 2 1',
-    ' 	g None',
-    '.	g #000000',
+    ' 	c None',
+    '.	c #000000',
     '          ',
     ' ..    .. ',
     ' ...  ... ',
@@ -38,8 +38,8 @@ const
   XPM_MDIMINBUTTON: array[0..12] of PChar =
   (
     '10 10 2 1',
-    ' 	g None',
-    '.	g #000000',
+    ' 	c None',
+    '.	c #000000',
     '          ',
     '          ',
     '          ',
