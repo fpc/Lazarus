@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="DbCtrls">
-      <short/>
+      <short>Data-Aware controls commonly used for viewing and operating on information held in databases</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -1023,10 +1023,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBListBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBListBox </i>- a data-aware version of <i>TListBox,</i> for displaying lists of entries from a field in a database</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBListBox.FDataLink">
@@ -1389,10 +1387,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBRadioGroup">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select entries from a databse field</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBRadioGroup.FDataLink">
@@ -1732,10 +1728,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBCheckBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBCheckBox</i> - a data-aware checkbox for use with logical fields in a database</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBCheckBox.FDataLink">
@@ -2138,10 +2132,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBComboBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBComboBox</i> - a data-aware version of <i>TComboBox</i> to allow selection from a list of entries in a database field</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBComboBox.FDataLink">
@@ -2851,10 +2843,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBGroupBox">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBGroupBox</i>  - a data-aware version of <i>TGroupBox,</i>  allowing a number of data-aware objects to be grouped together on a form</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBGroupBox.FDataLink">
@@ -3424,10 +3414,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBCalendar">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TDBCalendar</i> - a data-aware version of <i>TCalendar</i>, for selecting a date to put in a database field</short>
+        <seealso><link id="HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBCalendar.FDataLink">
