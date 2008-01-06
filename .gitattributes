@@ -2988,6 +2988,7 @@ lcl/interfaces/gtk/gtkpagecallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkprivatewidget.inc svneol=native#text/plain
 lcl/interfaces/gtk/gtkproc.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkproc.pp svneol=native#text/pascal
+lcl/interfaces/gtk/gtkstdpixmaps.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkthemes.pas svneol=native#text/pascal
 lcl/interfaces/gtk/gtkwidgetset.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkwinapi.inc svneol=native#text/pascal

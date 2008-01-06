@@ -52,8 +52,8 @@ var
   //TrashCan_Open_Mask : PGdkPixmap;
   //TrashCan_Closed : PGdkPixmap;
   //TrashCan_Closed_Mask : PGdkPixmap;
-  Drag_Icon : PgdkPixmap;
-  Drag_Mask : PgdkPixmap;
+  //Drag_Icon : PgdkPixmap;
+  //Drag_Mask : PgdkPixmap;
 
   //Dragging : Boolean;
 

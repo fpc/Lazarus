@@ -1273,7 +1273,7 @@ end;
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
-  Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
+  const FrameWidth: Integer; const Style: TBevelCut): Boolean;
 const
   Edge: array[TBevelCut] of Integer =
   (

@@ -36,7 +36,8 @@ type
     gptExpander,
     gptResizeGrip,
     gptFocus,
-    gptArrow
+    gptArrow,
+    gptPixmap
   );
 
   TGtkStyleParams = record
@@ -65,6 +66,8 @@ type
   TGtkThemeServices = class(TThemeServices)
   private
   protected
+    procedure DrawPixmap(DC: HDC; Area: PGdkRectangle; PixmapIndex: Byte); virtual;
+
     function GdkRectFromRect(R: TRect): TGdkRectangle;
     function GetParamsCount(Details: TThemedElementDetails): Integer;
     function GetGtkStyleParams(DC: HDC; Details: TThemedElementDetails; AIndex: Integer): TGtkStyleParams; virtual;
@@ -114,11 +117,49 @@ const
 { MIXEDPRESSED      } GTK_STATE_ACTIVE,
 { MIXEDDISABLED     } GTK_STATE_INSENSITIVE
   );
-
+  GtkTitleButtonMap: array[0..5] of TGtkStateType =
+  (
+{ filter ?          } GTK_STATE_NORMAL,
+{ normal            } GTK_STATE_NORMAL,
+{ hot               } GTK_STATE_PRELIGHT,
+{ pressed           } GTK_STATE_ACTIVE,
+{ disabled          } GTK_STATE_INSENSITIVE,
+{ inactive          } GTK_STATE_INSENSITIVE
+  );
   
 implementation
 
+{$I gtkstdpixmaps.inc}
+
 { TGtkThemeServices }
+
+procedure TGtkThemeServices.DrawPixmap(DC: HDC; Area: PGdkRectangle; PixmapIndex: Byte);
+var
+  APixmap, APixmapMask: PGdkPixmap;
+  DevCtx: TGtkDeviceContext absolute DC;
+begin
+  if (PixmapIndex >= Low(PixmapArray)) and (PixmapIndex <= High(PixmapArray)) then
+  begin
+    APixmapMask := nil;
+    APixmap := gdk_pixmap_create_from_xpm_d(DevCtx.Drawable,
+      APixmapMask, nil, PixmapArray[PixmapIndex]);
+    if APixmap <> nil then
+    begin
+      if APixmapMask <> nil then
+      begin
+        gdk_gc_set_clip_mask(DevCtx.GC, APixmapMask);
+        gdk_gc_set_clip_origin(DevCtx.GC, Area^.x, Area^.y);
+      end;
+      gdk_draw_drawable(DevCtx.Drawable, DevCtx.GC, APixmap, 0, 0, Area^.x, Area^.y,
+        Area^.width, Area^.height);
+      if APixmapMask <> nil then
+        DevCtx.ResetGCClipping;
+      gdk_pixmap_unref(APixmap);
+    end;
+    if APixmapMask <> nil then
+      gdk_pixmap_unref(APixmapMask);
+  end;
+end;
 
 function TGtkThemeServices.GdkRectFromRect(R: TRect): TGdkRectangle;
 begin
@@ -312,6 +353,20 @@ to alternate splitter painting}
             end;
         end;
       end;
+    teWindow:
+      begin
+        if Details.Part in [WP_MDIMINBUTTON, WP_MDIRESTOREBUTTON, WP_MDICLOSEBUTTON] then
+        begin
+          Result.State := GtkTitleButtonMap[Details.State];
+          Result.Shadow := GTK_SHADOW_NONE;
+          case Details.Part of
+            WP_MDIMINBUTTON: Result.Detail := #1;
+            WP_MDIRESTOREBUTTON: Result.Detail := #2;
+            WP_MDICLOSEBUTTON: Result.Detail := #3;
+          end;
+          Result.Painter := gptPixmap;
+        end;
+      end;
   end;
 end;
 
@@ -453,6 +508,7 @@ begin
              ArrowType, Fill,
              Area.x, Area.y, Area.width, Area.height
            );
+          gptPixmap: DrawPixmap(DC, @Area, Ord(Detail[1]));
         end;
       end;
     end;

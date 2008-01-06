@@ -322,16 +322,6 @@ begin
     // the clipboard needs a widget
     if (ClipboardWidget = nil) then
       GtkWidgetSet.SetClipboardWidget(P);
-
-    //drag icons
-    if Drag_Icon = nil then
-    begin
-      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-      Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                           gtk_widget_get_colormap (P), Drag_Mask,
-                           nil, @IMGDrag_Icon[0]);
-      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-    end;
   end
   else
   begin
