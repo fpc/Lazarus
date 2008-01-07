@@ -5825,8 +5825,8 @@ begin
     Control := Controls[n - 1];
     //DebugLn('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
-    if Control.FHostDockSite = Self then
-      Control.FHostDockSite := nil;
+    if Control.HostDockSite = Self then
+      Control.HostDockSite := nil;
     // don't free the control just set parent to nil
     // controls are freed by the owner
     //Control.Free;

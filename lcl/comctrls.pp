@@ -219,11 +219,15 @@ type
     property Width stored False;
   end;
 
+  TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl; ACaption: String) of Object;
 
   { TPageControl }
 
   TPageControl = class(TCustomNotebook)
   private
+    FOnGetDockCaption: TGetDockCaptionEvent;
+    FOnPageChanged: TNotifyEvent;
+    FPageToUndock: TTabSheet;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
     function GetTabIndex: Integer;
@@ -231,6 +235,14 @@ type
     procedure SetActivePageIndex(const AValue: Integer);
     procedure SetActiveTabSheet(const AValue: TTabSheet);
     procedure SetTabIndex(const AValue: Integer);
+    function FindPageWithDockClient(Client: TControl): TTabSheet;
+  protected
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    procedure DoRemoveDockClient(Client: TControl); override;
+    function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
+    procedure PositionDockRect(DragDockObject: TDragDockObject); override;
+    function GetDockCaption(AControl: TControl): String;
+    procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
@@ -242,14 +254,16 @@ type
     property Pages[Index: Integer]: TTabSheet read GetTabSheet;
   published
     property ActivePage: TTabSheet read GetActiveTabSheet write SetActiveTabSheet;
+    property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
+    
     property Align;
     property Anchors;
     property BorderSpacing;
     //property BiDiMode;
     property Constraints;
-    //property DockSite;
+    property DockSite;
     property DragCursor;
-    //property DragKind;
+    property DragKind;
     property DragMode;
     property Enabled;
     property Font;
@@ -275,25 +289,25 @@ type
     property OnChange: TNotifyEvent read fOnPageChanged write fOnPageChanged;
     property OnChanging;
     property OnContextPopup;
-    //property OnDockDrop;
-    //property OnDockOver;
+    property OnDockDrop;
+    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
     //property OnDrawTab;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetImageIndex;
-    //property OnGetSiteInfo;
+    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnPageChanged;
     property OnResize;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
-    //property OnUnDock;
+    property OnUnDock;
   end;
 
 

@@ -1059,6 +1059,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property UseDockManager default True;
     property Visible;
     property OnClick;
     property OnDockDrop;

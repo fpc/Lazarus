@@ -58,6 +58,73 @@ begin
   inherited PageIndex:=Avalue;
 end;
 
+function TPageControl.FindPageWithDockClient(Client: TControl): TTabSheet;
+var
+  i: integer;
+begin
+  for i := 0 to PageCount - 1 do
+    if Pages[i] = Client.Parent then
+    begin
+      Result := Pages[i];
+      exit;
+    end;
+  Result := nil;
+end;
+
+procedure TPageControl.DoAddDockClient(Client: TControl; const ARect: TRect);
+var
+  TabSheet: TTabSheet;
+begin
+  // Client cannot be added to TPageControl itself but new TabSheet should be
+  // added and client placed onto it
+  TabSheet := TTabSheet.Create(Self);
+  TabSheet.Caption := GetDockCaption(Client);
+  try
+    TabSheet.PageControl := Self;
+    Client.Parent := TabSheet;
+  except
+    FreeAndNil(TabSheet);
+  end;
+end;
+
+procedure TPageControl.DoRemoveDockClient(Client: TControl);
+begin
+  // we cannot search for client page here since Client.Parent
+  // is changed at moment => search for page before parent change and free here
+  FreeAndNil(FPageToUndock);
+end;
+
+function TPageControl.DoUndockClientMsg(NewTarget, Client: TControl): boolean;
+begin
+  FPageToUndock := FindPageWithDockClient(Client);
+  Result := inherited DoUndockClientMsg(NewTarget, Client);
+end;
+
+procedure TPageControl.PositionDockRect(DragDockObject: TDragDockObject);
+var
+  P: TPoint;
+begin
+  P := Parent.ClientToScreen(Point(Left, Top));
+  DragDockObject.DockRect := Rect(P.X, P.Y, P.X + Width, P.Y + Height);
+end;
+
+function TPageControl.GetDockCaption(AControl: TControl): String;
+begin
+  // for some usual controls
+  if AControl is TCustomPanel then
+    Result := TCustomPanel(AControl).Caption
+  else
+  if AControl is TCustomForm then
+    Result := TCustomForm(AControl).Caption;
+  DoGetDockCaption(AControl, Result);
+end;
+
+procedure TPageControl.DoGetDockCaption(AControl: TControl; var ACaption: String);
+begin
+  if Assigned(FOnGetDockCaption) then
+    OnGetDockCaption(Self, AControl, ACaption);
+end;
+
 constructor TPageControl.Create(TheOwner: TComponent);
 begin
   PageClass:=TTabSheet;

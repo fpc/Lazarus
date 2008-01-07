@@ -54,6 +54,8 @@ end;
 
 destructor TTabSheet.Destroy;
 begin
+  if (ControlCount = 1) and (Controls[0].HostDockSite <> nil) then
+    Controls[0].HostDockSite := nil;
   inherited Destroy;
 end;
 
