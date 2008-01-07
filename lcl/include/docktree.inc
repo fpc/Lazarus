@@ -22,9 +22,20 @@ const
   DefaultDockGrabberSize = 12;
 
 procedure TDockTree.DeleteZone(Zone: TDockZone);
+
+  procedure Traverse(Zone: TDockZone);
+  begin
+    if Zone <> nil then
+    begin
+      Traverse(Zone.FirstChild);
+      Traverse(Zone.NextSibling);
+      Zone.Free;
+    end;
+  end;
+  
 begin
-  // ToDo
-  Zone.Free;
+  Traverse(Zone.FirstChild); // destroy all childs
+  Zone.Free; // destroy zone itself
 end;
 
 procedure TDockTree.SetDockZoneClass(const AValue: TDockZoneClass);
