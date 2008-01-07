@@ -38,7 +38,8 @@ uses
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
   WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef,
-  LCLProc, Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
+  LCLProc, Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase,
+  GtkWsPrivate, Gtk2WsPrivate;
 
 type
 
@@ -144,7 +145,6 @@ type
   TGtk2WSCustomListBox = class(TGtkWSCustomListBox)
   private
   protected
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
@@ -332,18 +332,6 @@ end;
 {$I gtk2memostrings.inc}
 
 { TGtk2WSCustomListBox }
-
-procedure Gtk2WS_ListBoxChange(Selection: PGtkTreeSelection; WidgetInfo: PWidgetInfo); cdecl;
-var
-  Mess: TLMessage;
-begin
-  {$IFDEF EventTrace}
-  EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
-  {$ENDIF}
-  FillChar(Mess,SizeOf(Mess),0);
-  Mess.msg := LM_SelChange;
-  DeliverMessage(WidgetInfo^.LCLObject, Mess);
-end;
 
 procedure StoreFirstSelectedPath(model:PGtkTreeModel; path:PGtkTreePath;
   iter:PGtkTreeIter; data:gpointer); cdecl;
@@ -575,18 +563,8 @@ begin
   end;
 
   WidgetInfo := GetWidgetInfo(p, False);
-  SetCallbacks(p, WidgetInfo);
-end;
-
-class procedure TGtk2WSCustomListBox.SetCallbacks(
-  const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
-var
-  Selection: PGtkTreeSelection;
-begin
-  TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
-
-  Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
-  SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
+  
+  TGtkPrivateListClass(WSPrivate).SetCallbacks(p, WidgetInfo);
 end;
 
 class function TGtk2WSCustomListBox.GetIndexAtY(
@@ -1462,7 +1440,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtk2WSComboBox);
-  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox, TGtk2PrivateList);
 //  RegisterWSComponent(TListBox, TGtk2WSListBox);
   RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);

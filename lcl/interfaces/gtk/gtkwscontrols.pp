@@ -37,10 +37,6 @@ uses
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, WSProc,
   Graphics, ComCtrls, Forms, LCLType,
-  GTKWSPrivate,
-  {$ifdef gtk1}
-  GTK1WSPrivate,
-  {$endif}
   GtkDef, GTKExtra;
 
 type
@@ -150,6 +146,10 @@ function GetWidgetVAdjustment(AWidget: PGTKWidget): PGTKAdjustment;
 implementation
 
 uses
+  GTKWSPrivate,
+  {$ifdef gtk1}
+  GTK1WSPrivate,
+  {$endif}
   GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
   StdCtrls, LCLProc, LCLIntf;
 

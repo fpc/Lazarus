@@ -44,7 +44,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  GtkDef, GtkProc;
+  GtkDef, GtkProc, GtkWsControls;
 
 
 type
@@ -153,6 +153,16 @@ type
   public
   end;
 
+  { TGtkPrivateList }
+  { Private class for gtklists }
+
+  TGtkPrivateListClass = class of TGtkPrivateList;
+  TGtkPrivateList = class(TGtkPrivateScrolling)
+  private
+  protected
+  public
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  end;
 
   { TGtkPrivateNotebook }
   { Private class for gtknotebooks }
@@ -177,6 +187,10 @@ function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor; ARecursive: Boolean);
 
 implementation
+
+// some circles are needed.
+uses
+  GtkInt;
 
 // Helper functions
 
@@ -314,6 +328,7 @@ begin
 end;
 
 {$I gtkprivatewidget.inc}
+{$I gtkprivatelist.inc}
 
 end.
   

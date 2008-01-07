@@ -74,7 +74,7 @@ uses
   Graphics, Menus, Maps, Themes,
   // widgetset
   GtkDebug,
-  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, gtkWSPrivate, WSLCLClasses;
+  GtkFontCache, gtkDef, GtkProc, gtkMsgQueue, GtkExtra, WSLCLClasses;
 
 
 type
@@ -326,8 +326,9 @@ uses
  GtkWSSpin,
  GtkWSStdCtrls,
 // GtkWSToolwin,
-  GtkThemes,
 ////////////////////////////////////////////////////
+  GtkWSPrivate,
+  GtkThemes,
   Buttons, StdCtrls, PairSplitter,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin,
   ExtCtrls, FileCtrl, LResources, gtkglobals;

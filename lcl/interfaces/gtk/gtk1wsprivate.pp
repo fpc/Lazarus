@@ -38,7 +38,7 @@ uses
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface
-  GtkDef, GtkProc, GtkWSPrivate;
+  GtkDef, GtkProc, GtkWSPrivate, GtkWsControls, GtkInt;
 
 
 type
@@ -101,6 +101,20 @@ type
   public
   end;
 
+
+  { TGtk1PrivateList }
+  { Private class for gtklists }
+
+  TGtk1PrivateList = class(TGtkPrivateList)
+  private
+  protected
+  public
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
+  end;
+
+  { TGtk1PrivateNotebook }
+  { Private class for gtknotebooks }
+
   TGtk1PrivateNotebook = class(TGtkPrivateNotebook)
   private
   protected
@@ -109,6 +123,7 @@ type
   
 implementation
 // {$I Gtk1PrivateWidget.inc}
+ {$I Gtk1PrivateList.inc}
 
 end.
   

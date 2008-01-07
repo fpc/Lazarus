@@ -119,7 +119,6 @@ type
   protected
   public
   {$IFDEF GTK1}
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
@@ -441,12 +440,6 @@ end;
 { TGtkWSCustomListBox }
 
 {$IFDEF GTK1}
-class procedure TGtkWSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
-begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-  TGtkWidgetset(Widgetset).SetCallback(LM_SELCHANGE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-end;
 
 class function TGtkWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -483,7 +476,8 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
   Set_RC_Name(AWinControl, Widget);
-  SetCallbacks(Widget, WidgetInfo);
+  
+  TGtkPrivateListClass(WSPrivate).SetCallbacks(Widget, WidgetInfo);
 end;
 
 class function TGtkWSCustomListBox.GetIndexAtY(
@@ -2049,12 +2043,12 @@ initialization
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
-  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtkPrivateScrolling);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit, TGtkPrivateEntry);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo, TGtkPrivateScrolling);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
 {$ifdef gtk1}
+  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox, TGtk1PrivateList);
   RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk1PrivateButton);
 {$else}
   RegisterWSComponent(TCustomButton, TGtkWSButton, TGtk2PrivateButton);
