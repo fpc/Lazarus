@@ -219,7 +219,7 @@ type
     property Width stored False;
   end;
 
-  TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl; ACaption: String) of Object;
+  TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl; var ACaption: String) of Object;
 
   { TPageControl }
 
