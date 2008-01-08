@@ -83,6 +83,9 @@ procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
 function gdk_screen_get_rgba_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
 {$endif}
+{$ifdef GTK_2_10}
+function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external gdklib;
+{$endif}
 { for future use
 function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
 function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;

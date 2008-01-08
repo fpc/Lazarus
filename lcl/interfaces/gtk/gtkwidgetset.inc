@@ -362,6 +362,9 @@ var
   QueueItem  : TGtkMessageQueueItem;
   NextQueueItem : TGtkMessageQueueItem;
 begin
+  if FDockImage <> nil then
+    gtk_widget_destroy(FDockImage);
+
   ReAllocMem(FExtUTF8OutCache,0);
   FExtUTF8OutCacheSize:=0;
 

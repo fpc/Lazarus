@@ -125,6 +125,7 @@ type
     FGlobalCursor: HCursor;
     
     FDCManager: TDeviceContextMemManager;
+    FDockImage: PGtkWidget;
 
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; virtual; abstract;
@@ -143,7 +144,7 @@ type
 
     // styles
     procedure FreeAllStyles; virtual;
-    Function GetCompStyle(Sender : TObject) : Longint; Virtual;
+    function GetCompStyle(Sender : TObject) : Longint; virtual;
 
     // create and destroy
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;

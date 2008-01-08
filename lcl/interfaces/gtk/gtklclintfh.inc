@@ -37,6 +37,7 @@ function AddProcessEventHandler(AHandle: THandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
+procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
                     Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;

@@ -80,6 +80,7 @@
     {$fatal X is required for GTK1}
   {$endif}
   {$define GTK_2_8}
+  {$define GTK_2_10}
 {$endif}
 
 
