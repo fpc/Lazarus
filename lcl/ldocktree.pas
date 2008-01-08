@@ -32,8 +32,11 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
-  Graphics, Controls, ExtCtrls, Forms, Menus, Themes,
-  LCLIntf {for fpc 2.0.4 support};
+  Graphics, Controls, ExtCtrls, Forms, Menus, Themes
+  {$IFDEF VER2_0}
+  // needed for 2.0.4
+  ,LCLIntf
+  {$ENDIF};
   
 type
   TLazDockPages = class;
