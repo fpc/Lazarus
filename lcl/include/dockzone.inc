@@ -260,4 +260,19 @@ begin
   end;
 end;
 
+procedure TDockZone.Remove(ChildZone: TDockZone);
+begin
+  if ChildZone.Parent<>Self then
+    raise Exception.Create('TDockZone.Remove');
+  if ChildZone=FFirstChildZone then FFirstChildZone:=ChildZone.FNextSibling;
+  if ChildZone.FNextSibling<>nil then
+    ChildZone.FNextSibling.FPrevSibling:=ChildZone.FPrevSibling;
+  if ChildZone.FPrevSibling<>nil then
+    ChildZone.FPrevSibling.FNextSibling:=ChildZone.FNextSibling;
+  ChildZone.FPrevSibling:=nil;
+  ChildZone.FNextSibling:=nil;
+  ChildZone.FParentZone:=nil;
+  dec(FChildCount);
+end;
+
 // included by control.pp

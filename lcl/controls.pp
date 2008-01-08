@@ -408,7 +408,7 @@ type
 
   { TDragManager }
 
-  TDragManager = class(TPersistent)
+  TDragManager = class(TComponent)
   private
     FDragImmediate: Boolean;
     FDragThreshold: Integer;
@@ -421,7 +421,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;abstract;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;abstract;
   public
-    constructor Create; virtual;
+    constructor Create(TheOwner: TComponent); override;
     
     function IsDragging: boolean; virtual;abstract;
     function Dragging(AControl: TControl): boolean; virtual;abstract;
@@ -1893,6 +1893,7 @@ type
     procedure ReplaceChild(OldChild, NewChild: TDockZone);
     function GetLastChild: TDockZone;
     function GetIndex: Integer;
+    procedure Remove(ChildZone: TDockZone);
   public
     property ChildControl: TControl read FChildControl;
     property ChildCount: Integer read FChildCount;
@@ -2019,6 +2020,7 @@ type
     FRootZone: TDockZone;
     FUpdateCount: Integer;
     procedure DeleteZone(Zone: TDockZone);
+    procedure SetDockSite(const AValue: TWinControl);
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
     function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
@@ -2045,7 +2047,7 @@ type
     procedure PaintSite(DC: HDC); override;
   public
     property DockZoneClass: TDockZoneClass read FDockZoneClass;
-    property DockSite: TWinControl read FDockSite write FDockSite;
+    property DockSite: TWinControl read FDockSite write SetDockSite;
     property RootZone: TDockZone read FRootZone;
   end;
   
@@ -3297,8 +3299,9 @@ end;
 
 { TDragManager }
 
-constructor TDragManager.Create;
+constructor TDragManager.Create(TheOwner: TComponent);
 begin
+  inherited Create(TheOwner);
   FDragImmediate := true;
   FDragThreshold := 5;
 end;
@@ -3307,7 +3310,7 @@ initialization
   //DebugLn('controls.pp - initialization');
   Mouse := TMouse.Create;
   DefaultDockTreeClass := TDockTree;
-  DragManager := TDragManagerDefault.Create;
+  DragManager := TDragManagerDefault.Create(nil);
   RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 
 finalization

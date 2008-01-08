@@ -4496,7 +4496,6 @@ begin
 
   if not PtInRect(ClientBounds,Pos) then begin
     //debugln(['TWinControl.ControlAtPos OUT OF CLIENTBOUNDS ',DbgSName(Self),' P=',dbgs(Pos),' ClientBounds=',dbgs(ClientBounds)]);
-    //DumpStack;
     Result:=nil;
     exit;
   end;
@@ -4706,10 +4705,12 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
   
-  Default method for adding a dock client. Just become the new parent.
+  Default method for adding a dock client. Become the new parent and break
+  old anchored controls.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
+  //DebugLn(['TWinControl.DoAddDockClient ',DbgSName(Self),' Client=',DbgSName(Client),' OldParent=',DbgSName(Client.Parent),' Client.AnchoredControlCount=',Client.AnchoredControlCount]);
   Client.Parent := Self;
 end;
 
@@ -4746,6 +4747,7 @@ end;
 procedure TWinControl.DoRemoveDockClient(Client: TControl);
 begin
   // empty (this method exists for descendent overrides)
+  DebugLn(['TWinControl.DoRemoveDockClient ',DbgSName(Self),' ',DbgSName(Client)]);
 end;
 
 {------------------------------------------------------------------------------
@@ -4819,6 +4821,7 @@ end;
 function TWinControl.CreateDockManager: TDockManager;
 begin
   if (FDockManager = nil) and DockSite and UseDockManager then
+    // this control can dock other controls, so it needs a TDockManager
     Result := DefaultDockTreeClass.Create(Self)
   else
     Result := FDockManager;
@@ -6864,66 +6867,9 @@ end;
   property, which defines how to align DockObject.Control.
  ------------------------------------------------------------------------------}
 procedure TWinControl.DockDrop(DragDockObject: TDragDockObject; X, Y: Integer);
-{var
-  DestRect: TRect;
-  //ParentForm: TCustomForm;
-  MappedLeftTop: TPoint;
-  NewBounds: TRect;}
 begin
   if DoDockClientMsg(DragDockObject, Point(X, Y)) and Assigned(FOnDockDrop) then
     FOnDockDrop(Self, DragDockObject, X, Y);
-
-  // get dock destination rectangle and map it to the client area
-  {DestRect := DockObject.DockRect;
-  MappedLeftTop:=ScreenToClient(DestRect.TopLeft);
-  OffsetRect(DestRect,
-             DestRect.Left-MappedLeftTop.X,DestRect.Top-MappedLeftTop.Y);
-  DebugLn('TWinControl.DockDrop A ',Name,' DockControl=',DbgSName(DockObject.Control),' DestRect=',dbgs(DestRect));
-  DisableAlign;
-  try
-    if (not UseDockManager) or (DockManager=nil) then begin
-      // Delphi ignores the DropAlign when no DockManager is available
-      // Why that?
-      DockObject.Control.Align:=DockObject.DropAlign;
-      
-      if DockObject.IncreaseDockArea then begin
-        NewBounds := BoundsRect;
-        case DockObject.DropAlign of
-        alLeft:
-          dec(NewBounds.Left,DockObject.Control.Width);
-        alTop:
-          dec(NewBounds.Top,DockObject.Control.Height);
-        alRight:
-          inc(NewBounds.Right,DockObject.Control.Width);
-        alBottom:
-          inc(NewBounds.Bottom,DockObject.Control.Height);
-        end;
-        if NewBounds.Left<0 then
-          NewBounds.Left:=0;
-        if NewBounds.Top<0 then
-          NewBounds.Top:=0;
-        if NewBounds.Right>Screen.Width then
-          NewBounds.Right:=Screen.Width;
-        if NewBounds.Bottom>Screen.Height then
-          NewBounds.Bottom:=Screen.Height;
-        debugln('TWinControl.DockDrop IncreaseDockArea ',DbgSName(Self),' ',dbgs(NewBounds));
-        SetBoundsKeepBase(NewBounds.Left,NewBounds.Top,
-                          NewBounds.Right-NewBounds.Left,
-                          NewBounds.Bottom-NewBounds.Top);
-      end;
-    end;
-    DockObject.Control.Dock(Self, DestRect);
-    if UseDockManager and (DockManager <> nil) then
-      DockManager.InsertControl(DockObject.Control,
-        DockObject.DropAlign, DockObject.DropOnControl);
-  finally
-    EnableAlign;
-  end;
-  //ParentForm := GetParentForm(Self);
-  //if ParentForm<>nil then ParentForm.BringToFront;
-
-  if Assigned(FOnDockDrop) then
-    FOnDockDrop(Self, DockObject, X, Y);}
 end;
 
 {------------------------------------------------------------------------------
@@ -6973,6 +6919,8 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TWinControl.SetDockSite(const NewDockSite: Boolean);
+  
+  If NewDockSite=true it means, this control can dock other controls.
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetDockSite(const NewDockSite: Boolean);
 begin
@@ -6999,7 +6947,6 @@ var
 begin
   with DragDockObject do begin
     DestRect := DockRect;
-    //MapWindowPoints(0, Handle, DestRect, 2);?
     DisableAlign;
     try
       DragDockObject.Control.Dock(Self, DestRect);

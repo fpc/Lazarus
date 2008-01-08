@@ -89,8 +89,9 @@ type
     procedure CaptureChanged(OldCaptureControl: TControl); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    constructor Create; override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
     //Support methods
@@ -386,7 +387,7 @@ procedure TDockPerformer.DragMove(APosition: TPoint);
         //Sanity checks..
         if not AControl.Showing then continue;
         if not AControl.Enabled then continue;
-        if not AControl.Visible then continue;
+        if not AControl.IsVisible then continue;
         if AControl=FDockObject.Control then continue;
         if IsControlChildOfClient(AControl) then continue;
 
@@ -638,10 +639,13 @@ begin
   begin
     if FDockSites = nil then
       FDockSites := TFPList.Create;
-    if DoRegister then
-      FDockSites.Add(Site)
-    else
-      FDockSites.Remove(Site)
+    if DoRegister then begin
+      FDockSites.Add(Site);
+      Site.FreeNotification(Self);
+    end else begin
+      FDockSites.Remove(Site);
+      Site.RemoveFreeNotification(Self);
+    end;
   end;
 end;
 
@@ -667,9 +671,22 @@ begin
   //DragStop(true);
 end;
 
-constructor TDragManagerDefault.Create;
+procedure TDragManagerDefault.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
-  inherited Create;
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if FDockSites<>nil then begin
+      FDockSites.Remove(AComponent);
+      if FDockSites.Count=0 then
+        FreeAndNil(FDockSites);
+    end;
+  end;
+end;
+
+constructor TDragManagerDefault.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
   FInDragStop := False;
 end;
 

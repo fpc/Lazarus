@@ -2116,7 +2116,7 @@ var
   AControl: TControl;
 begin
   AControl:=TheAnchorSide.Owner;
-  //debugln('TControl.ForeignAnchorSideChanged A ',DbgSName(TheAnchorSide.Owner),' Operation=',dbgs(ord(Operation)),' Anchor=',dbgs(ord(TheAnchorSide.Kind)));
+  //debugln('TControl.ForeignAnchorSideChanged A Self=',DbgSName(Self),' TheAnchorSide.Owner=',DbgSName(TheAnchorSide.Owner),' Operation=',dbgs(ord(Operation)),' Anchor=',dbgs(TheAnchorSide.Kind));
   if TheAnchorSide.Control=Self then begin
     if fAnchoredControls=nil then
       fAnchoredControls:=TFPList.Create;
