@@ -71,6 +71,7 @@ function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
 procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;
                                              dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
 function gdk_screen_get_default: PGdkScreen; cdecl; external gdklib;
+function gdk_screen_get_rgb_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
 
 // gdk 2.4
 function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x, y: gint): PGdkCursor; cdecl; external gdklib name 'gdk_cursor_new_from_pixbuf';
@@ -80,6 +81,7 @@ procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint
 {$ifdef GTK_2_8}
 // gdk 2.8
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
+function gdk_screen_get_rgba_colormap(screen: PGdkScreen): PGdkColormap; cdecl; external gdklib;
 {$endif}
 { for future use
 function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;

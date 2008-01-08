@@ -6295,29 +6295,15 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetWindowRect(Handle: hwnd; var ARect: TRect): Integer;
 var
-  X, Y, W, H: Integer;
   Widget: PGTKWidget;
-  Window: PGdkWindow;
 begin
   //DebugLn('GetWindowRect');
   Result := 0; //default
   if Handle <> 0 then
   begin
-    Widget := pgtkwidget(Handle);
-    Window:=GetControlWindow(Widget);
-    if Window <> nil then Begin
-      gdk_window_get_origin(Window, @X, @Y);
-      gdk_window_get_size(Window, @W, @H);
-    end
-    else
-    Begin
-      X := 0;
-      Y := 0;
-      W := 100;
-      Y := 200;
-    end;
-
-    ARect:=Rect(X,Y,X+W,Y+H);
+    Widget := PGtkWidget(Handle);
+    ARect.TopLeft := GetWidgetOrigin(Widget);
+    ARect.BottomRight := Point(ARect.Left + Widget^.allocation.width, ARect.Top + Widget^.allocation.height);
   end;
 end;
 
