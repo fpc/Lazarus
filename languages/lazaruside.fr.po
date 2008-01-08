@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-11-28 12:13+0100\n"
+"PO-Revision-Date: 2008-01-08 08:56+0100\n"
 "Language-Team: français\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -64,7 +64,7 @@ msgstr "%s fait déjà partie du projet"
 
 #: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
 msgid "%s is an abstract class, it has %s abstract methods."
-msgstr ""
+msgstr "%s est une classe abstraite, il a %s méthodes abstraites."
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
@@ -448,7 +448,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissamabstractmethodsof
 msgid "Abstract methods of %s"
-msgstr ""
+msgstr "Méthodes abstraite de %s"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -1980,7 +1980,7 @@ msgstr "Copier la sélection vers le presse-papiers"
 
 #: lazarusidestrconsts:lisvertoclipboard
 msgid "Copy version information to clipboard"
-msgstr ""
+msgstr "Copier les informations de version dans le presse-papier"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -2140,7 +2140,7 @@ msgstr "Colonne du curseur dans l'éditeur courant"
 
 #: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
 msgid "Cursor is not in a class declaration"
-msgstr ""
+msgstr "Curseur n'est pas dans une déclaration de classe"
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -3840,7 +3840,7 @@ msgstr "IDE Internes"
 
 #: lazarusidestrconsts:lissamideisbusy
 msgid "IDE is busy"
-msgstr ""
+msgstr "L'IDE est occupé"
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
@@ -4188,7 +4188,7 @@ msgstr "Insérer Todo"
 
 #: lazarusidestrconsts:srkmecinsertguid
 msgid "Insert a GUID"
-msgstr ""
+msgstr "Insérer un GUID"
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -4952,7 +4952,7 @@ msgstr "Edition des liens"
 
 #: lazarusidestrconsts:liscmplstlist
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
@@ -4988,7 +4988,7 @@ msgstr "Variables locales"
 
 #: lazarusidestrconsts:lislogo
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
@@ -5476,7 +5476,7 @@ msgstr "Section ResourceString non trouvée"
 
 #: lazarusidestrconsts:lissamnoabstractmethodsfound
 msgid "No abstract methods found"
-msgstr ""
+msgstr "Aucune méthode abstraite trouvé"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
@@ -5884,11 +5884,11 @@ msgstr "Débordement"
 
 #: lazarusidestrconsts:lissamoverrideallselected
 msgid "Override all selected"
-msgstr ""
+msgstr "Écraser la selection"
 
 #: lazarusidestrconsts:lissamoverridefirstselected
 msgid "Override first selected"
-msgstr ""
+msgstr "Écraser la première selection"
 
 #: lazarusidestrconsts:lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -6060,7 +6060,7 @@ msgstr "Dessiner les éléments du designer seulement quand inactif (réduit la 
 
 #: lazarusidestrconsts:liscmplstpalette
 msgid "Palette"
-msgstr ""
+msgstr "Palette"
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
@@ -7360,7 +7360,7 @@ msgstr "Sélection du début de ligne"
 
 #: lazarusidestrconsts:lissamselectnone
 msgid "Select none"
-msgstr ""
+msgstr "Aucune sélection"
 
 #: lazarusidestrconsts:liskmselectpagebottom
 msgid "Select page bottom"
@@ -7572,7 +7572,7 @@ msgstr "Afficher les avertissements"
 
 #: lazarusidestrconsts:srkmecshowabstractmethods
 msgid "Show abstract methods"
-msgstr ""
+msgstr "Voir les méthodes abstraites"
 
 #: lazarusidestrconsts:lisa2pshowall
 msgid "Show all"
@@ -9284,7 +9284,7 @@ msgstr "Impossible de placer la Commande latérale d'ancre "
 
 #: lazarusidestrconsts:lissamunabletoshowabstractmethodsofthecurrentclassbecaus
 msgid "Unable to show abstract methods of the current class, because"
-msgstr ""
+msgstr "Impossible de montrer les méthodes abstraites de la classe courante, parce que"
 
 #: lazarusidestrconsts:lisunabletoshowmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to show method. Please fix the error shown in the message window."
@@ -9560,7 +9560,7 @@ msgstr "Utiliser les chaînes ANSI"
 
 #: lazarusidestrconsts:dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (darwin only)"
-msgstr "Employer le paquet d'application  pour exécuter et corriger  (darwin seulement)"
+msgstr "Utiliser le paquet d'application  pour exécuter et corriger  (Darwin seulement)"
 
 #: lazarusidestrconsts:lisuseexcludefilter
 msgid "Use Exclude Filter"
@@ -9580,7 +9580,7 @@ msgstr "Utiliser un fichier de configuration supplémentaire du compilateur"
 
 #: lazarusidestrconsts:dlgedusedefcolor
 msgid "Use default color"
-msgstr "Couleur par défaut"
+msgstr "Utiliser la couleur par défaut"
 
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
@@ -9592,7 +9592,7 @@ msgstr "Utiliser une application de démarrage"
 
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
-msgstr "Etiliser le fichier manifeste pouractiver les thèmes (Windows seulement)"
+msgstr "Utiliser le fichier manifeste pour activer les thèmes (Windows seulement)"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -9604,7 +9604,7 @@ msgstr "Mise en évidence de la syntaxe"
 
 #: lazarusidestrconsts:lispkgmanguseunit
 msgid "Use unit"
-msgstr "Employer l'unité"
+msgstr "Utiliser l'unité"
 
 #: lazarusidestrconsts:rsiwpusewindowmanagersetting
 msgid "Use windowmanager setting"
@@ -9788,7 +9788,7 @@ msgstr "Afficher la palette de composant"
 
 #: lazarusidestrconsts:srkmecviewcomponents
 msgid "View components"
-msgstr ""
+msgstr "Afficher les composants"
 
 #: lazarusidestrconsts:srkmectoggledebuggerout
 msgid "View debugger output"

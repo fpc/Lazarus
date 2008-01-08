@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-09-06 21:45+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2008-01-08 08:57+0100\n"
 "Language-Team: français <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -252,7 +252,7 @@ msgstr "Supprimer"
 
 #: lclstrconsts:rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Supprimer l'enregistrement ?"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
@@ -508,7 +508,7 @@ msgstr "Format de flux incorrecte"
 
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
@@ -628,11 +628,11 @@ msgstr "Pixmap"
 
 #: lclstrconsts:rsportablebitmap
 msgid "Portable BitMap"
-msgstr ""
+msgstr "Portable BitMap"
 
 #: lclstrconsts:rsportablegraymap
 msgid "Portable GrayMap"
-msgstr ""
+msgstr "Portable GrayMap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
@@ -640,7 +640,7 @@ msgstr "Portable Network Graphic"
 
 #: lclstrconsts:rsportablepixmap
 msgid "Portable PixMap"
-msgstr ""
+msgstr "Portable PixMap"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"
