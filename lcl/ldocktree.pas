@@ -32,7 +32,8 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
-  Graphics, Controls, ExtCtrls, Forms, Menus, Themes;
+  Graphics, Controls, ExtCtrls, Forms, Menus, Themes,
+  LCLIntf {for fpc 2.0.4 support};
   
 type
   TLazDockPages = class;
@@ -982,7 +983,7 @@ begin
     AControl.Parent := nil;
     PrepareControlForResize(AControl);
     // resize control
-    RaiseGDBException('TLazDockTree.InsertControl TODO resize control');
+    DebugLn('TLazDockTree.InsertControl TODO resize control');
     if NewOrientation in [doHorizontal,doVertical] then begin
       ASibling:=NewZone.PrevSibling;
       if ASibling=nil then ASibling:=NewZone.NextSibling;
