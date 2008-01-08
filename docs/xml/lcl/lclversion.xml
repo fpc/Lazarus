@@ -18,7 +18,7 @@ at run-time.</p>
 <p>Likewise, these version constants can be used at compile time in an conditional
 expressions, such as <i>{$IFDEF lcl_major&gt;0}</i>. Currently these kinds of
 epressions are only support in <i>{$mode delphi}</i>. Recently fpc 2.3.1 added
-support for these kind of expressions in <i>{$mode delphi}</i>.</p>
+support for these kind of expressions in <i>{$mode objfpc}</i>.</p>
 </descr>
 
 <!-- constant Visibility: default -->
@@ -51,7 +51,8 @@ contains the third number.</descr>
 <element name="lcl_patch">
 <short>LCL patch version</short>
 <descr>Given a complete version string like 0.9.24.1, the lcl_patch constant
-contains the last number.
+contains the last number. If there is not fourth number, for example when the 
+version string is 0.9.25, then lcl_patch is 0.
 </descr>
 <seealso>lcl_version</seealso>
 </element>
