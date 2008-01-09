@@ -2478,6 +2478,10 @@ end;
 
 function TPascalParserTool.ReadOnStatement(ExceptionOnError,
   CreateNodes: boolean): boolean;
+// for example:
+// on E: Exception do ;
+// on Exception do ;
+// on Unit.Exception do ;
 begin
   if CreateNodes then begin
     CreateChildNode;
@@ -2487,34 +2491,43 @@ begin
   ReadNextAtom;
   AtomIsIdentifier(true);
   if CreateNodes then begin
-    // ctnOnIdentifier for the variable
+    // ctnOnIdentifier for the variable or the type
     CreateChildNode;
     CurNode.Desc:=ctnOnIdentifier;
     CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
-  // read :
-  ReadNextAtom;
-  if CurPos.Flag<>cafColon then
-    RaiseCharExpectedButAtomFound(':');
-  // read type: e.g. Exception, or unit.Exception
-  ReadNextAtom;
-  AtomIsIdentifier(true);
-  if CreateNodes then begin
-    // ctnOnIdentifier for the type
-    CreateChildNode;
-    CurNode.Desc:=ctnOnIdentifier;
   end;
   ReadNextAtom;
-  if CurPos.Flag=cafPoint then begin
+  if CurPos.Flag=cafColon then begin
+    // this is for example: on E: Exception do ;
+    if CreateNodes then begin
+      // close the variable
+      EndChildNode;
+    end;
     ReadNextAtom;
     AtomIsIdentifier(true);
+    if CreateNodes then begin
+      // ctnOnIdentifier for the type
+      CreateChildNode;
+      CurNode.Desc:=ctnOnIdentifier;
+    end;
+    ReadNextAtom;
+  end;
+  if CurPos.Flag=cafPoint then begin
+    // this is for example: on Unit.Exception do ;
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    if CreateNodes then begin
+      CurNode.EndPos:=CurPos.EndPos;
+    end;
     ReadNextAtom;
   end;
   if CreateNodes then begin
-    CurNode.EndPos:=CurPos.StartPos;
+    // close the type
     EndChildNode;
   end;
+  // read 'do'
+  if not UpAtomIs('DO') then
+    RaiseStringExpectedButAtomFound('DO');
   // ctnOnStatement
   if CreateNodes then begin
     CreateChildNode;
