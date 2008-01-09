@@ -43,15 +43,17 @@ type
 
   TTestRunner = class(TCustomApplication)
   private
-     FShowProgress: boolean;
-     FFileName: string;
-     FStyleSheet: string;
-     FLongOpts: TStrings;
+    FShowProgress: boolean;
+    FFileName: string;
+    FStyleSheet: string;
+    FLongOpts: TStrings;
+    FFormatParam: TFormat;
   protected
     property FileName: string read FFileName write FFileName;
     property LongOpts: TStrings read FLongOpts write FLongOpts;
     property ShowProgress: boolean read FShowProgress write FShowProgress;
     property StyleSheet: string read FStyleSheet write FStyleSheet;
+    property FormatParam: TFormat read FFormatParam write FFormatParam;
     procedure DoRun; override;
     procedure doTestRun(aTest: TTest); virtual;
     function GetShortOpts: string; virtual;
@@ -129,8 +131,6 @@ begin
   // do nothing
 end;
 
-var
-  FormatParam: TFormat;
 {$IFDEF VER2_0}
 procedure TTestRunner.doTestRun(aTest: TTest);
 var
