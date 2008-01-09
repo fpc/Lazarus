@@ -3339,6 +3339,9 @@ begin
   CreateChildNode;
   CurNode.Desc:=ctnProcedureType;
   ReadNextAtom;
+  CreateChildNode;
+  CurNode.Desc:=ctnProcedureHead;
+  CurNode.SubDesc:=ctnsNeedJITParsing;
   if (CurPos.Flag=cafRoundBracketOpen) then begin
     // read parameter list
     ReadParamList(true,false,[]);
@@ -3402,6 +3405,8 @@ begin
       until false;
     end;
   end;
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   Result:=true;
@@ -4022,9 +4027,10 @@ procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
 var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
   ParseAttr: TParseProcHeadAttributes;
   OldPhase: integer;
+  IsProcType: Boolean;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
+  if (ProcNode=nil) or (not (ProcNode.Desc in [ctnProcedure,ctnProcedureType]))
   or (ProcNode.FirstChild=nil) then
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
@@ -4041,16 +4047,19 @@ begin
       ReadNextAtom;
     IsFunction:=UpAtomIs('FUNCTION');
     IsOperator:=UpAtomIs('OPERATOR');
-    // read procedure head (= name + parameterlist + resulttype;)
+    IsProcType:=ProcNode.Desc=ctnProcedureType;
+    // read procedure head (= [name] + parameterlist + resulttype;)
     CurNode:=ProcNode.FirstChild;
     ReadNextAtom;// read first atom of head
-    if not IsOperator then AtomIsIdentifier(true);
-    ReadNextAtom;
-    if (CurPos.Flag=cafPoint) then begin
-      // read procedure name of a class method (the name after the . )
+    if not IsProcType then begin
+      if not IsOperator then AtomIsIdentifier(true);
       ReadNextAtom;
-      AtomIsIdentifier(true);
-      ReadNextAtom;
+      if (CurPos.Flag=cafPoint) then begin
+        // read procedure name of a class method (the name after the . )
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        ReadNextAtom;
+      end;
     end;
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
@@ -4058,6 +4067,7 @@ begin
     if IsMethod then Include(ParseAttr,pphIsMethod);
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
+    if IsProcType then Include(ParseAttr,pphIsType);
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
     CurrentPhase:=OldPhase;
   except

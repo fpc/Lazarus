@@ -34,37 +34,13 @@ uses
 const
   ConfigFilename = 'codetools.config';
 var
-  Options: TCodeToolsOptions;
   Filename: string;
   Code: TCodeBuffer;
 begin
-  // setup the Options
-  Options:=TCodeToolsOptions.Create;
-
-  // To not parse the FPC sources every time, the options are saved to a file.
-  if FileExists(ConfigFilename) then
-    Options.LoadFromFile(ConfigFilename);
-
-  // setup your paths
-  Options.FPCPath:='/usr/bin/ppc386';
-  Options.FPCSrcDir:=ExpandFileName('~/freepascal/fpc');
-  Options.LazarusSrcDir:=ExpandFileName('~/pascal/lazarus');
-
-  // optional: ProjectDir and TestPascalFile exists only to easily test some
-  // things.
-  Options.ProjectDir:=GetCurrentDir+'/scanexamples/';
-  Options.TestPascalFile:=Options.ProjectDir+'addeventexample.pas';
-
-  // init the codetools
-  if not Options.UnitLinkListValid then
-    writeln('Scanning FPC sources may take a while ...');
-  CodeToolBoss.Init(Options);
-
-  // save the options and the FPC unit links results.
-  Options.SaveToFile(ConfigFilename);
+  CodeToolBoss.SimpleInit(ConfigFilename);
 
   // load the file
-  Filename:=Options.TestPascalFile;
+  Filename:=ExpandFileName('scanexamples/addeventexample.pas');
   Code:=CodeToolBoss.LoadFile(Filename,false,false);
   if Code=nil then
     raise Exception.Create('loading failed '+Filename);

@@ -671,14 +671,34 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
   procedure AddNeededUnits(const AFindContext: TFindContext);
   var
     MethodUnitName: String;
+    ProcHeadNode: TCodeTreeNode;
+    ParamListNode: TCodeTreeNode;
+    Node: TCodeTreeNode;
+    ParamNode: TCodeTreeNode;
   begin
     MethodUnitName:=AFindContext.Tool.GetSourceName(false);
     AddNeededUnitToMainUsesSection(PChar(MethodUnitName));
-    // ToDo
-    // search every parameter type and collect units
 
+    // search every parameter type and collect units
+    if not (AFindContext.Tool is TCodeCompletionCodeTool) then exit;
+    if not (AFindContext.Node.Desc in [ctnProcedureType,ctnProcedure]) then exit;
+    ProcHeadNode:=AFindContext.Node.FirstChild;
+    if (ProcHeadNode=nil) or (ProcHeadNode.Desc<>ctnProcedureHead) then exit;
+    if ProcHeadNode.FirstChild=nil then
+      AFindContext.Tool.BuildSubTreeForProcHead(ProcHeadNode);
+    ParamListNode:=ProcHeadNode.FirstChild;
+    if (ParamListNode=nil) or (ParamListNode.Desc<>ctnParameterList) then exit;
+    Node:=ParamListNode.FirstChild;
+    while Node<>nil do begin
+      ParamNode:=Node.FirstChild;
+      if ParamNode<>nil then begin
+        TCodeCompletionCodeTool(AFindContext.Tool).
+          AddNeededUnitsToMainUsesSectionForRange(ParamNode.StartPos,ParamNode.EndPos,Self);
+      end;
+      Node:=Node.NextBrother;
+    end;
   end;
-  
+
   function FindPropertyType(out FindContext: TFindContext): boolean;
   begin
     Result:=false;

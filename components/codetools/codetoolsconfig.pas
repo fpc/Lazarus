@@ -255,11 +255,11 @@ procedure TCodeToolsOptions.InitWithEnvironmentVariables;
 begin
   if FPCPath='' then
     FPCPath:=FindDefaultCompilerFilename;
-  if FPCPath='' then
+  if GetEnvironmentVariable('PP')<>'' then
     FPCPath:=GetEnvironmentVariable('PP');
-  if FPCSrcDir='' then
+  if GetEnvironmentVariable('FPCDIR')<>'' then
     FPCSrcDir:=GetEnvironmentVariable('FPCDIR');
-  if LazarusSrcDir='' then
+  if GetEnvironmentVariable('LAZARUSDIR')<>'' then
     LazarusSrcDir:=GetEnvironmentVariable('LAZARUSDIR');
 end;
 

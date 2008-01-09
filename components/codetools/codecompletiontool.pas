@@ -128,7 +128,7 @@ type
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
     fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
-    fNewMainUsesSectionUnits: TAVLTree; // tree of PChar
+    fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
     procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
@@ -137,6 +137,7 @@ type
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
         const FoundContext: TFindContext): TIdentifierFoundResult;
+    procedure RemoveNewMainUsesSectionUnit(p: PChar);
   protected
     procedure FreeClassInsertionList;
     procedure InsertNewClassParts(PartType: TNewClassPart);
@@ -244,6 +245,8 @@ type
         const CleanDef, Def, IdentifierName: string;
         TheType: TNewClassPart; PosNode: TCodeTreeNode = nil;
         const Body: string = '');
+    procedure AddNeededUnitsToMainUsesSectionForRange(
+        StartPos, EndPos: integer; CompletionTool: TCodeCompletionCodeTool);
 
     property SetPropertyVariablename: string read FSetPropertyVariablename
                                              write FSetPropertyVariablename;
@@ -363,6 +366,20 @@ begin
   Result:=ifrSuccess;
 end;
 
+procedure TCodeCompletionCodeTool.RemoveNewMainUsesSectionUnit(p: PChar);
+var
+  AVLNode: TAVLTreeNode;
+  s: string;
+begin
+  if fNewMainUsesSectionUnits=nil then exit;
+  AVLNode:=fNewMainUsesSectionUnits.Find(p);
+  if AVLNode=nil then exit;
+  Pointer(s):=AVLNode.Data;
+  s:='';
+  fNewMainUsesSectionUnits.Delete(AVLNode);
+  if s='' then ;
+end;
+
 function TCodeCompletionCodeTool.VarExistsInCodeCompleteClass(
   const UpperName: string): boolean;
 var ANodeExt: TCodeTreeNodeExtension;
@@ -463,14 +480,26 @@ end;
 
 procedure TCodeCompletionCodeTool.FreeClassInsertionList;
 // dispose all new variables/procs definitions
-var ANodeExt: TCodeTreeNodeExtension;
+var
+  ANodeExt: TCodeTreeNodeExtension;
+  AVLNode: TAVLTreeNode;
+  s: string;
 begin
   while FirstInsert<>nil do begin
     ANodeExt:=FirstInsert;
     FirstInsert:=FirstInsert.Next;
     NodeExtMemManager.DisposeNode(ANodeExt);
   end;
-  FreeAndNil(fNewMainUsesSectionUnits);
+  if fNewMainUsesSectionUnits<>nil then begin
+    AVLNode:=fNewMainUsesSectionUnits.FindLowest;
+    while AVLNode<>nil do begin
+      Pointer(s):=AVLNode.Data;
+      s:='';
+      AVLNode:=fNewMainUsesSectionUnits.FindSuccessor(AVLNode);
+    end;
+    if s='' then ;
+    FreeAndNil(fNewMainUsesSectionUnits);
+  end;
 end;
 
 function TCodeCompletionCodeTool.NodeExtIsVariable(
@@ -896,13 +925,74 @@ end;
 
 procedure TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection(
   AnUnitName: PChar);
+var
+  s: String;
 begin
+  if GetIdentLen(AnUnitName)=0 then exit;
+  if CompareIdentifiers(AnUnitName,'System')=0 then exit;
+  if (CompareIdentifiers(AnUnitName,'ObjFPC')=0)
+  and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+  and (Scanner.PascalCompiler=pcFPC) then
+    exit;
+  if (CompareIdentifiers(AnUnitName,'MacPas')=0)
+  and (Scanner.CompilerMode=cmMacPas)
+  and (Scanner.PascalCompiler=pcFPC) then
+    exit;
+
   if fNewMainUsesSectionUnits=nil then
-    fNewMainUsesSectionUnits:=
-                         TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
+    fNewMainUsesSectionUnits:=TAVLTree.Create(TListSortCompare(@CompareIdentifiers));
   //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitToMainUsesSection AnUnitName="',AnUnitName,'"']);
   if fNewMainUsesSectionUnits.Find(AnUnitName)<>nil then exit;
-  fNewMainUsesSectionUnits.Add(AnUnitName);
+  s:=GetIdentifier(AnUnitName);
+  fNewMainUsesSectionUnits.Add(Pointer(s));
+  Pointer(s):=nil;
+end;
+
+procedure TCodeCompletionCodeTool.AddNeededUnitsToMainUsesSectionForRange(
+  StartPos, EndPos: integer; CompletionTool: TCodeCompletionCodeTool);
+var
+  Params: TFindDeclarationParams;
+  OldCursor: TAtomPosition;
+  ContextNode: TCodeTreeNode;
+  NewUnitName: String;
+begin
+  Params:=nil;
+  ContextNode:=nil;
+  try
+    MoveCursorToCleanPos(StartPos);
+    repeat
+      ReadNextAtom;
+      if (CurPos.StartPos>EndPos) or (CurPos.Flag=cafNone) then exit;
+      if AtomIsIdentifier(false) then begin
+        //DebugLn(['AddNeededUnitsForRange ',GetAtom]);
+        // save cursor
+        OldCursor:=CurPos;
+        // search identifier
+        if Params=nil then
+          Params:=TFindDeclarationParams.Create;
+        if ContextNode=nil then
+          ContextNode:=FindDeepestNodeAtPos(CurPos.StartPos,true);
+        Params.ContextNode:=ContextNode;
+        Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
+        Params.Flags:=fdfDefaultForExpressions+[fdfExceptionOnPredefinedIdent];
+        try
+          //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitsToMainUsesSectionForRange Identifier=',GetAtom]);
+          FindIdentifierInContext(Params);
+          // identifier found
+          NewUnitName:=Params.NewCodeTool.GetSourceName(false);
+          //DebugLn(['TCodeCompletionCodeTool.AddNeededUnitsToMainUsesSectionForRange NewUnitName=',NewUnitName]);
+          if NewUnitName<>'' then
+            CompletionTool.AddNeededUnitToMainUsesSection(PChar(NewUnitName));
+        except
+          on E: ECodeToolError do;
+        end;
+        // restore cursor
+        MoveCursorToAtomPos(OldCursor);
+      end;
+    until false;
+  finally
+    Params.Free;
+  end;
 end;
 
 function TCodeCompletionCodeTool.CompleteLocalVariableAssignment(
@@ -4905,14 +4995,14 @@ begin
 
   // remove units, that are already in the uses section
   CurSourceName:=GetSourceName(false);
-  fNewMainUsesSectionUnits.Remove(PChar(CurSourceName)); // the unit itself
+  RemoveNewMainUsesSectionUnit(PChar(CurSourceName)); // the unit itself
   if UsesNode<>nil then begin
     MoveCursorToNodeStart(UsesNode);
     ReadNextAtom; // read 'uses'
     repeat
       ReadNextAtom; // read name
       if AtomIsChar(';') then break;
-      fNewMainUsesSectionUnits.Remove(@Src[CurPos.StartPos]);
+      RemoveNewMainUsesSectionUnit(@Src[CurPos.StartPos]);
       ReadNextAtom;
       if UpAtomIs('IN') then begin
         ReadNextAtom;
@@ -4932,6 +5022,7 @@ begin
     if NewUsesTerm<>'' then
       NewUsesTerm:=NewUsesTerm+', ';
     NewUnitName:=GetIdentifier(PChar(AVLNode.Data));
+    //DebugLn(['TCodeCompletionCodeTool.InsertAllNewUnitsToMainUsesSection NewUnitName=',NewUnitName]);
     NewUsesTerm:=NewUsesTerm+NewUnitName;
     AVLNode:=fNewMainUsesSectionUnits.FindSuccessor(AVLNode);
   end;
