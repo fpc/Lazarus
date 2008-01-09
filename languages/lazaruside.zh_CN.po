@@ -188,7 +188,11 @@ msgstr "关闭(&C)"
 msgid "&Close Page"
 msgstr "关闭页面(&C)"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "组件(&C)"
 
@@ -1052,14 +1056,6 @@ msgstr "构建 CodeTools"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr "构建组件 (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr "构建样例"
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr "构建文件"
@@ -1094,6 +1090,14 @@ msgstr "构建所有"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
@@ -1196,6 +1200,10 @@ msgstr "大小写不敏感"
 msgid "Catalan"
 msgstr "西班牙语"
 
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
 msgstr ""
@@ -1227,6 +1235,10 @@ msgstr "更改"
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
 msgstr "更改类"
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1451,6 +1463,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "运行时清除日志"
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1813,8 +1829,8 @@ msgid "Configure installed packages ..."
 msgstr "配置已安装的包 ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
-msgstr "在重新编译 Lazarus 之前确认"
+msgid "Confirm before rebuilding Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1838,6 +1854,10 @@ msgstr "发现冲突"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
 msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
@@ -3395,6 +3415,10 @@ msgstr "窗体"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "窗体..."
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -5664,6 +5688,10 @@ msgstr "只在所选"
 msgid "Only text files"
 msgstr "只有文本文件"
 
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "打开"
@@ -6220,6 +6248,10 @@ msgstr "波兰语(ISO 8859-2)"
 msgid "Portuguese"
 msgstr "葡萄牙语"
 
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "预览"
@@ -6284,6 +6316,10 @@ msgstr "插入过程策略"
 msgid "Procedure with interface"
 msgstr "过程及其接口"
 
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "步骤"
@@ -6307,6 +6343,10 @@ msgstr "Program%s一个 freepascal 程序. 程序文件将被 Lazarus 自动维�
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
 msgstr "程序文件名:"
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6411,6 +6451,10 @@ msgstr "工程: %s"
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
 msgstr "值的表示方式"
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
+msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
@@ -6772,6 +6816,10 @@ msgstr "需要的包"
 msgid "Rescan FPC source directory"
 msgstr "重新扫描 FPC 源代码目录"
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr "重置调试器"
@@ -6797,8 +6845,8 @@ msgid "Restart"
 msgstr "重启"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
-msgstr "编译成功后重启"
+msgid "Restart after successful Build"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -7196,6 +7244,10 @@ msgstr "再次查找"
 msgid "Search in comments too"
 msgstr "同时在注释中查找"
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "查找路径:"
@@ -7380,6 +7432,10 @@ msgstr "选择一段"
 msgid "Select parent component"
 msgstr "选择父组件"
 
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
 msgstr "选择到绝对开始"
@@ -7528,6 +7584,10 @@ msgstr "文件名应该被小写为 %s%s%s%s?"
 msgid "Show All"
 msgstr "显示所有"
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
 msgstr "显示 CodeTools 值"
@@ -7567,6 +7627,10 @@ msgstr "显示选项"
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "显示窗体编辑选项"
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7791,6 +7855,10 @@ msgstr "排序所选"
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
 msgstr "排序所选 ..."
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8052,10 +8120,6 @@ msgstr "目标 CPU"
 msgid "Target CPU:"
 msgstr "目标 CPU:"
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr "目标目录:"
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "目标操作系统"
@@ -8071,6 +8135,10 @@ msgstr "目标操作系统:"
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
 msgstr "目标平台:"
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -8996,6 +9064,10 @@ msgstr "类型"
 msgid "Type:"
 msgstr "类型:"
 
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "大写"
@@ -9161,8 +9233,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "无法找到文件 %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "无法找到文件 %s%s%s.%s请检查搜索目录%s工程->编译选项...->查找路径->其余单元文件"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9632,6 +9704,10 @@ msgstr "用户定义后缀 (.pp.xxx)"
 msgid "User overrides"
 msgstr "用户强制"
 
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "值"
@@ -9663,6 +9739,10 @@ msgstr "变量:"
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
 msgstr "变量: %s"
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
@@ -9928,7 +10008,7 @@ msgstr "宽度:"
 msgid "Win32 gui application"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr "窗口"
 
@@ -9936,13 +10016,9 @@ msgstr "窗口"
 msgid "Window Positions"
 msgstr "窗口位置"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "窗口"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
-msgstr "和包一起"
+msgid "With packages"
+msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -10219,6 +10295,10 @@ msgstr "否定"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "不要自动重命名"
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
+msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"

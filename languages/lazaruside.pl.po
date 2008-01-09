@@ -189,7 +189,11 @@ msgstr "&Zamknij"
 msgid "&Close Page"
 msgstr "&Zamknij zakładkę"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponenty"
 
@@ -1053,14 +1057,6 @@ msgstr "Buduj CodeTools"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr "Buduj komponenty (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr "Buduj przykłady"
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr "Zbuduj plik"
@@ -1095,6 +1091,14 @@ msgstr "Buduj wszystko"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
@@ -1197,6 +1201,10 @@ msgstr "Bez rozróżniania wielkości liter"
 msgid "Catalan"
 msgstr "kataloński"
 
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
 msgstr ""
@@ -1227,6 +1235,10 @@ msgstr "Zmień"
 
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
+msgstr ""
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
 msgstr ""
 
 #: lazarusidestrconsts:lisplistchangefont
@@ -1451,6 +1463,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
+msgstr ""
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
@@ -1814,7 +1830,7 @@ msgid "Configure installed packages ..."
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
+msgid "Confirm before rebuilding Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
@@ -1839,6 +1855,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
 msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
@@ -3396,6 +3416,10 @@ msgstr "Formularze"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Lista formularzy"
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -5665,6 +5689,10 @@ msgstr "Tylko zaznaczenie"
 msgid "Only text files"
 msgstr "Tylko pliki tekstowe"
 
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Otwórz"
@@ -6221,6 +6249,10 @@ msgstr "polski  (ISO 8859-2)"
 msgid "Portuguese"
 msgstr "portugalski"
 
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Podgląd"
@@ -6285,6 +6317,10 @@ msgstr "Zasady wstawiania procedur"
 msgid "Procedure with interface"
 msgstr ""
 
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr ""
@@ -6308,6 +6344,10 @@ msgstr ""
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
 msgstr "Nazwa pliku programu:"
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6412,6 +6452,10 @@ msgstr "Projekt: %s"
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
 msgstr "Spytaj o wartość"
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
+msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
@@ -6773,6 +6817,10 @@ msgstr "Wymagane pakiety"
 msgid "Rescan FPC source directory"
 msgstr "Przeskanuj katalog źródeł FPC"
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr "Zresetuj odpluskwiacz"
@@ -6798,7 +6846,7 @@ msgid "Restart"
 msgstr "Uruchom ponownie"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
+msgid "Restart after successful Build"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
@@ -7197,6 +7245,10 @@ msgstr ""
 msgid "Search in comments too"
 msgstr ""
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Ścieżki poszukiwań"
@@ -7381,6 +7433,10 @@ msgstr "Zaznacz akapit"
 msgid "Select parent component"
 msgstr "Wybierz komponent-rodzica"
 
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
 msgstr "Wybierz do początku"
@@ -7529,6 +7585,10 @@ msgstr "Czy litery w nazwie pliku mają być zmienione na małe: %s%s%s%s?"
 msgid "Show All"
 msgstr "Pokaż wszystkie"
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
 msgstr "Pokaż wartości CodeTools"
@@ -7568,6 +7628,10 @@ msgstr "Pokaż opcje"
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "Pokazuj opcje edycji formularzy"
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7792,6 +7856,10 @@ msgstr "Posortuj zaznaczenie"
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
 msgstr "Posortuj zaznaczenie ..."
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8053,10 +8121,6 @@ msgstr "Docelowy procesor"
 msgid "Target CPU:"
 msgstr "Docelowy procesor:"
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr "Docelowy katalog:"
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "Docelowy system operacyjny"
@@ -8071,6 +8135,10 @@ msgstr "Docelowy OS:"
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
@@ -8997,6 +9065,10 @@ msgstr "Typ"
 msgid "Type:"
 msgstr "Typ:"
 
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "WIELKIMI LITERAMI"
@@ -9162,7 +9234,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "Nie znalazłem pliku %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9633,6 +9705,10 @@ msgstr "Inne rozszerzenie (.pp.xxx)"
 msgid "User overrides"
 msgstr "Nadpisanie zmiennych"
 
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Wartość"
@@ -9664,6 +9740,10 @@ msgstr "Zmienna:"
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
 msgstr "Zmienna: %s"
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
@@ -9929,7 +10009,7 @@ msgstr "Szerokość:"
 msgid "Win32 gui application"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr "Okno"
 
@@ -9937,13 +10017,9 @@ msgstr "Okno"
 msgid "Window Positions"
 msgstr "Pozycje okien"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "Okna"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
-msgstr "z pakietami"
+msgid "With packages"
+msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -10219,6 +10295,10 @@ msgstr "nie"
 
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
+msgstr ""
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
 msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound

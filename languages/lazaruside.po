@@ -268,8 +268,8 @@ msgstr ""
 msgid "&Run"
 msgstr ""
 
-#: lazarusidestrconsts:lismenucomponents
-msgid "&Components"
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
 msgstr ""
 
 #: lazarusidestrconsts:lismenutools
@@ -1789,7 +1789,7 @@ msgid "Unable to find file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
@@ -2022,6 +2022,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
+msgstr ""
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
+
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojectclosed
@@ -2268,8 +2280,8 @@ msgstr ""
 msgid "Desktop"
 msgstr ""
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
+#: lazarusidestrconsts:dlgwindow
+msgid "Window"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfrmeditor
@@ -6096,6 +6108,10 @@ msgstr ""
 msgid "Irregular "
 msgstr ""
 
+#: lazarusidestrconsts:srvk_none
+msgid "none"
+msgstr ""
+
 #: lazarusidestrconsts:srkm_alt
 msgid "Alt"
 msgstr ""
@@ -6473,7 +6489,7 @@ msgid "Clean all"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
+msgid "Build components (SynEdit, CodeTools)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildsynedit
@@ -6489,7 +6505,7 @@ msgid "Build IDE"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
+msgid "Build examples"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildoptions
@@ -6505,7 +6521,7 @@ msgid "Target CPU:"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
+msgid "Target directory:"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildlclinterface
@@ -6517,15 +6533,15 @@ msgid "Build JITForm"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
+msgid "With packages"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
+msgid "Restart after successful Build"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
+msgid "Confirm before rebuilding Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
@@ -10272,6 +10288,14 @@ msgstr ""
 msgid "New Ancestors"
 msgstr ""
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
+
 #: lazarusidestrconsts:lisceocodeexplorer
 msgid "CodeExplorer Options"
 msgstr ""
@@ -10298,6 +10322,50 @@ msgstr ""
 
 #: lazarusidestrconsts:liscefollowcursor
 msgid "Follow cursor"
+msgstr ""
+
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
+msgstr ""
+
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
+msgstr ""
+
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
+#: lazarusidestrconsts:lisceomodecategory
+msgid "Category"
+msgstr ""
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
 msgstr ""
 
 #: lazarusidestrconsts:lismenulazdoc
@@ -10806,5 +10874,25 @@ msgstr ""
 
 #: lazarusidestrconsts:lissamoverrideallselected
 msgid "Override all selected"
+msgstr ""
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
+msgstr ""
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
+
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
 msgstr ""
 

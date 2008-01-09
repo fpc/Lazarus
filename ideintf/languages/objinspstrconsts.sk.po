@@ -1,4 +1,3 @@
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarus 0.9.22\n"

@@ -186,7 +186,11 @@ msgstr "&Užverti"
 msgid "&Close Page"
 msgstr "&Užverti lapą"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "K&omponentai"
 
@@ -1054,14 +1058,6 @@ msgstr "Daryti CodeTools"
 msgid "Build Command"
 msgstr "Darymo komanda"
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr "Daryti komponentes (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr "Daryti pavyzdžius"
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr "Daryti failą"
@@ -1097,6 +1093,14 @@ msgstr "Daryti visus"
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
 msgstr "Daryti visus projekto/programos failus"
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
@@ -1198,6 +1202,10 @@ msgstr "Skirti didžiąsias ir mažąsias raides"
 msgid "Catalan"
 msgstr "Katalanų"
 
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
 msgstr "Kategorija"
@@ -1229,6 +1237,10 @@ msgstr "Pakeisti"
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
 msgstr "Pakeisti klasę"
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1453,6 +1465,10 @@ msgstr "Išvalyti įtraukiamų failų podėlį"
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "Išvalyti žurnalą paleidžiant"
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1815,8 +1831,8 @@ msgid "Configure installed packages ..."
 msgstr "Derinti įdiegtus paketus..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
-msgstr "Klausti sutikimo prieš darant Lazarus"
+msgid "Confirm before rebuilding Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1841,6 +1857,10 @@ msgstr "Aptiktas konfliktas"
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
 msgstr "Konsolės programa"
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
+msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -3397,6 +3417,10 @@ msgstr "Formos"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Formos..."
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -5668,6 +5692,10 @@ msgstr "Tik pažymėtoje srityje"
 msgid "Only text files"
 msgstr "Tik teksto failai"
 
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Atverti"
@@ -6224,6 +6252,10 @@ msgstr "Lenkų(ISO 8859-2)"
 msgid "Portuguese"
 msgstr "Portugalų"
 
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Peržiūra"
@@ -6288,6 +6320,10 @@ msgstr "Procedūros įterpimo politika"
 msgid "Procedure with interface"
 msgstr "Procedūra su interfeisu"
 
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "Procesas"
@@ -6311,6 +6347,10 @@ msgstr "Programa%sFreePascal programa. Lazarus automatiškai rūpinsis programos
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
 msgstr "Programos failo vardas:"
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6415,6 +6455,10 @@ msgstr "Projektui: %s"
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
 msgstr "Kvietimas įvesti reikšmę"
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
+msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
@@ -6776,6 +6820,10 @@ msgstr "Būtini paketai"
 msgid "Rescan FPC source directory"
 msgstr "Peržvelgti FPC pirminio kodo katalogą"
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr "Atstatyti derintuvę pradžion"
@@ -6801,8 +6849,8 @@ msgid "Restart"
 msgstr "Startuoti išnaujo"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
-msgstr "Padarius sėkmingai startuoti išnaujo"
+msgid "Restart after successful Build"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -7202,6 +7250,10 @@ msgstr "Ieškoti toliau"
 msgid "Search in comments too"
 msgstr "Taip pat ir komentaruose"
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "Ieškos keliai:"
@@ -7386,6 +7438,10 @@ msgstr "Pažymėti paragrafą"
 msgid "Select parent component"
 msgstr "Pažymėkite tėvinę komponentę"
 
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
 msgstr "Žymėti iki absoliučios pradžios"
@@ -7534,6 +7590,10 @@ msgstr "Failo vardą rašyti vien mažosiomis raidėmis:%s%s%s%s?"
 msgid "Show All"
 msgstr "Rodyti visus"
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
 msgstr "Rodyti CodeTools reikšmes"
@@ -7573,6 +7633,10 @@ msgstr "Rodyti parinktis"
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "Formos konstravimo parinktys"
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7797,6 +7861,10 @@ msgstr "Rūšiuoti pažymėtą"
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
 msgstr "Rūšiuoti pažymėtą..."
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8060,10 +8128,6 @@ msgstr "Paskirties procesorius"
 msgid "Target CPU:"
 msgstr "Paskirties procesorius:"
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr "Paskirties katalogas:"
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "Paskirties OS"
@@ -8079,6 +8143,10 @@ msgstr "Paskirties OS:"
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
 msgstr "Paskirties platforma:"
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -9014,6 +9082,10 @@ msgstr "Tipas"
 msgid "Type:"
 msgstr "Tipas:"
 
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "Didžiosiomis raidėmis"
@@ -9179,8 +9251,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "Nerastas failas %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "Failas %s%s%s nerastas.%sPatikrinkite kelius meniu%s\"Projektas -> Kompiliatoriaus parinktys... -> Keliai -> Kitų modulių failai\""
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9650,6 +9722,10 @@ msgstr "Naudotojo nurodytas prievardis (.pp.xxx)"
 msgid "User overrides"
 msgstr "Naudotojo pakeitimai"
 
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Reikšmė"
@@ -9681,6 +9757,10 @@ msgstr "Kintamasis:"
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
 msgstr "Kintamasis: %s"
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
@@ -9946,7 +10026,7 @@ msgstr "Plotis:"
 msgid "Win32 gui application"
 msgstr "Win32 grafinės sąsajos programa"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr "Langas"
 
@@ -9954,13 +10034,9 @@ msgstr "Langas"
 msgid "Window Positions"
 msgstr "Langų pozicijos"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "Langai"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
-msgstr "Su paketais"
+msgid "With packages"
+msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -10237,6 +10313,10 @@ msgstr "ne"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "Automatiškai nepervardyti"
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
+msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"

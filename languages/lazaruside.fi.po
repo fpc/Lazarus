@@ -180,7 +180,11 @@ msgstr "&Sulje"
 msgid "&Close Page"
 msgstr "Sulje välilehti"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponentit"
 
@@ -1044,14 +1048,6 @@ msgstr ""
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr ""
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr ""
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr ""
@@ -1086,6 +1082,14 @@ msgstr "Käännä kaikki"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
@@ -1188,6 +1192,10 @@ msgstr "Kirjaimen koolla ei väliä"
 msgid "Catalan"
 msgstr "katalaani"
 
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
 msgstr ""
@@ -1218,6 +1226,10 @@ msgstr "Muuta"
 
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
+msgstr ""
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
 msgstr ""
 
 #: lazarusidestrconsts:lisplistchangefont
@@ -1442,6 +1454,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
+msgstr ""
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
@@ -1805,8 +1821,8 @@ msgid "Configure installed packages ..."
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
-msgstr "Pyydä vahvistus ennenkuin Lazarus uudelleen muodostetaan (/käännetään)"
+msgid "Confirm before rebuilding Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1830,6 +1846,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
 msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
@@ -3387,6 +3407,10 @@ msgstr "Lomakkeet"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Lomakkeet..."
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -5656,6 +5680,10 @@ msgstr "Ainoastaan valittu osa"
 msgid "Only text files"
 msgstr ""
 
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "Avaa"
@@ -6212,6 +6240,10 @@ msgstr "puola (ISO 8859-2)"
 msgid "Portuguese"
 msgstr "portugali"
 
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Esikatselu"
@@ -6276,6 +6308,10 @@ msgstr ""
 msgid "Procedure with interface"
 msgstr "Aliohjelma ja interface osaan sen esittely"
 
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr ""
@@ -6298,6 +6334,10 @@ msgstr "Ohjelma%s Freepascal ohjelma. Ohjelmatiedosto hyödyntää lazarusta."
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
+msgstr ""
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
 msgstr ""
 
 #: lazarusidestrconsts:lispdprogress
@@ -6402,6 +6442,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
+msgstr ""
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
 msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
@@ -6764,6 +6808,10 @@ msgstr "Tarvittavat komponenttipaketit"
 msgid "Rescan FPC source directory"
 msgstr ""
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr ""
@@ -6789,7 +6837,7 @@ msgid "Restart"
 msgstr "Käynnistä Lazarus uudelleen"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
+msgid "Restart after successful Build"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
@@ -7188,6 +7236,10 @@ msgstr "Etsi uudelleen"
 msgid "Search in comments too"
 msgstr "Käy kommentit myöskin läpi"
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
 msgstr ""
@@ -7372,6 +7424,10 @@ msgstr ""
 msgid "Select parent component"
 msgstr ""
 
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
 msgstr ""
@@ -7520,6 +7576,10 @@ msgstr ""
 msgid "Show All"
 msgstr ""
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
 msgstr ""
@@ -7559,6 +7619,10 @@ msgstr ""
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "Näytä lomake editorin asetukset"
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7783,6 +7847,10 @@ msgstr "Lajittele lohko"
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
 msgstr "Lajittele lohko ..."
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8044,10 +8112,6 @@ msgstr ""
 msgid "Target CPU:"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr ""
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr ""
@@ -8062,6 +8126,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
@@ -8988,6 +9056,10 @@ msgstr "Tyyppi"
 msgid "Type:"
 msgstr ""
 
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "ISOT KIRJAIMET"
@@ -9153,7 +9225,7 @@ msgid "Unable to find file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9624,6 +9696,10 @@ msgstr "Käyttäjän määrittämä tiedostontarkennin (.pp.xxx)"
 msgid "User overrides"
 msgstr ""
 
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Arvo"
@@ -9654,6 +9730,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
+msgstr ""
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
 msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
@@ -9920,7 +10000,7 @@ msgstr "Leveys:"
 msgid "Win32 gui application"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr ""
 
@@ -9928,12 +10008,8 @@ msgstr ""
 msgid "Window Positions"
 msgstr "Ikkunoiden paikat"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "Ikkunat"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
+msgid "With packages"
 msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
@@ -10211,6 +10287,10 @@ msgstr "ei"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "Ei automaattista uudelleen nimeämistä"
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
+msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"

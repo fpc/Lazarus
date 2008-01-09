@@ -1,4 +1,3 @@
-# Slovenský preklad lazaruside. Copyright (C) 2007 Free Software Foundation, Inc. slavko <slavino@slavino.sk>, 2007.      
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarusid\n"
@@ -187,7 +186,11 @@ msgstr "&Zatvoriť"
 msgid "&Close Page"
 msgstr "&Zatvoriť stránku"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponenty"
 
@@ -1051,14 +1054,6 @@ msgstr "Vybudovať CodeTools"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr "Vybudovať komponenty (SynEdit, CodeTools)"
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr "Vybudovať príklady"
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr "Vybudovať súbor"
@@ -1093,6 +1088,14 @@ msgstr "Vybudovať všetko"
 
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
@@ -1459,6 +1462,10 @@ msgstr "Vymazať vyrovnávaciu pamäť include"
 msgid "Clear log on run"
 msgstr "Pri·spustení zmazať záznam"
 
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
 msgstr ""
@@ -1820,8 +1827,8 @@ msgid "Configure installed packages ..."
 msgstr "Konfigurovať inštalované balíčky ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
-msgstr "Potvrdiť prebudovanie Lazarus"
+msgid "Confirm before rebuilding Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -6335,6 +6342,10 @@ msgstr ""
 msgid "Programfilename:"
 msgstr ""
 
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
+
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
 msgstr ""
@@ -6832,8 +6843,8 @@ msgid "Restart"
 msgstr "Reštartovať"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
-msgstr "Reštartovať po úspešnom vybudovaní"
+msgid "Restart after successful Build"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -7418,6 +7429,10 @@ msgstr "Vybrať odsek"
 #: lazarusidestrconsts:lisdsgselectparentcomponent
 msgid "Select parent component"
 msgstr "Vybrať rodičovský komponent"
+
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
@@ -8103,10 +8118,6 @@ msgstr "Cieľový CPU"
 msgid "Target CPU:"
 msgstr "Cieľový·CPU:"
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr "Cieľový adresár:"
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "Cieľový OS"
@@ -8122,6 +8133,10 @@ msgstr "Cieľový·OS:"
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
 msgstr "Cieľová platforma:"
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -9991,7 +10006,7 @@ msgstr "Šírka:"
 msgid "Win32 gui application"
 msgstr "Aplikácia Win32 GUI"
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr "Okno"
 
@@ -9999,13 +10014,9 @@ msgstr "Okno"
 msgid "Window Positions"
 msgstr "Pozície okna"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "Okná"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
-msgstr "S balíčkami"
+msgid "With packages"
+msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"

@@ -184,7 +184,11 @@ msgstr "閉じる(&C)"
 msgid "&Close Page"
 msgstr "ページを閉じる"
 
-#: lazarusidestrconsts:lismenucomponents
+#: lazarusidestrconsts:lismenucomponent
+msgid "&Component"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "コンポーネント(&C)"
 
@@ -1048,14 +1052,6 @@ msgstr "コードツールを構築"
 msgid "Build Command"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
-msgid "Build Components (SynEdit, CodeTools)"
-msgstr "コンポーネント(SynEdit, CodeTools)を構築"
-
-#: lazarusidestrconsts:lislazbuildbuildexamples
-msgid "Build Examples"
-msgstr "例題を構築"
-
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
 msgstr "ファイルを構築"
@@ -1091,6 +1087,14 @@ msgstr "すべて構築"
 #: lazarusidestrconsts:liskmbuildallfilesofprojectprogram
 msgid "Build all files of project/program"
 msgstr "プロジェクト/プログラムの全てのファイルを構築"
+
+#: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
+msgid "Build components (SynEdit, CodeTools)"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildexamples
+msgid "Build examples"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
@@ -1192,6 +1196,10 @@ msgstr "大文字と小文字を区別しない"
 msgid "Catalan"
 msgstr "カタロニア語"
 
+#: lazarusidestrconsts:liscecategories
+msgid "Categories"
+msgstr ""
+
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
 msgstr ""
@@ -1223,6 +1231,10 @@ msgstr "変更"
 #: lazarusidestrconsts:lischangeclass
 msgid "Change Class"
 msgstr "クラスを変更"
+
+#: lazarusidestrconsts:lisccdchangeclassof
+msgid "Change Class of %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1447,6 +1459,10 @@ msgstr "インクルードキャッシュを消去"
 #: lazarusidestrconsts:lisdebugoptionsfrmclearlogonrun
 msgid "Clear log on run"
 msgstr "実行ログを消去"
+
+#: lazarusidestrconsts:lisclickheretobrowsethefilehint
+msgid "Click here to browse the file"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1809,8 +1825,8 @@ msgid "Configure installed packages ..."
 msgstr "インストール済みパッケージを設定 ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
-msgid "Confirm Before ReBuild Lazarus"
-msgstr "Lazarus再構築前に確認"
+msgid "Confirm before rebuilding Lazarus"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1834,6 +1850,10 @@ msgstr "矛盾を見つけました"
 
 #: lazarusidestrconsts:lisconsoleapplication
 msgid "Console application"
+msgstr ""
+
+#: lazarusidestrconsts:lisceconstants
+msgid "Constants"
 msgstr ""
 
 #: lazarusidestrconsts:dlginitdoneonly
@@ -3391,6 +3411,10 @@ msgstr "フォーム"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "フォーム..."
+
+#: lazarusidestrconsts:lisvsrforwardsearch
+msgid "Forward Search"
+msgstr ""
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -5660,6 +5684,10 @@ msgstr "選択対象のみ"
 msgid "Only text files"
 msgstr "テキストファイルのみ"
 
+#: lazarusidestrconsts:lisceonlyusedincategorymode
+msgid "Only used in category mode"
+msgstr ""
+
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr "開く"
@@ -6216,6 +6244,10 @@ msgstr "ポーランド語(ISO 8859-2)"
 msgid "Portuguese"
 msgstr "ポルトガル語"
 
+#: lazarusidestrconsts:lisceomode
+msgid "Prefered Exibition Mode"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "プレビュー"
@@ -6280,6 +6312,10 @@ msgstr "手続き挿入ポリシー"
 msgid "Procedure with interface"
 msgstr "宣言部をもつ手続き"
 
+#: lazarusidestrconsts:lisceprocedures
+msgid "Procedures"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
 msgstr "プロセス"
@@ -6303,6 +6339,10 @@ msgstr "プログラム%s freepascalプログラム。プログラムファイ�
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
 msgstr "プログラムファイル名"
+
+#: lazarusidestrconsts:lisexeprograms
+msgid "Programs"
+msgstr ""
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6407,6 +6447,10 @@ msgstr "プロジェクト: %s"
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
 msgstr "値を促す"
+
+#: lazarusidestrconsts:lisceproperties
+msgid "Properties"
+msgstr ""
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
@@ -6768,6 +6812,10 @@ msgstr "要求されたパッケージ"
 msgid "Rescan FPC source directory"
 msgstr "FPCソースディレクトリを再スキャン"
 
+#: lazarusidestrconsts:lisvsrresetresultlist
+msgid "Reset Result List"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
 msgstr "デバッガをリセット"
@@ -6793,8 +6841,8 @@ msgid "Restart"
 msgstr "再起動"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
-msgid "Restart After Successfull Build"
-msgstr "構築成功後に再起動"
+msgid "Restart after successful Build"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -7192,6 +7240,10 @@ msgstr "再び検索"
 msgid "Search in comments too"
 msgstr "コメントも検索"
 
+#: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
+msgid "Search or Filter Phrases In List"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
 msgstr "検索パス:"
@@ -7376,6 +7428,10 @@ msgstr "段落を選択"
 msgid "Select parent component"
 msgstr "親コンポーネントを選択"
 
+#: lazarusidestrconsts:lisselectfile
+msgid "Select the file"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
 msgstr "開始位置を選択"
@@ -7524,6 +7580,10 @@ msgstr "ファイルの名前を小文字の%s%s%s%sに変更していいです�
 msgid "Show All"
 msgstr "すべて表示"
 
+#: lazarusidestrconsts:liscemodeshowcategories
+msgid "Show Categories"
+msgstr ""
+
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
 msgstr "コードツール値を表示"
@@ -7563,6 +7623,10 @@ msgstr "オプションを表示"
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "フォーム編集のオプションを表示"
+
+#: lazarusidestrconsts:liscemodeshowsourcenodes
+msgid "Show Source Nodes"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7787,6 +7851,10 @@ msgstr "選択部分をソートする"
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection ..."
 msgstr "選択部分をソートする ..."
+
+#: lazarusidestrconsts:lisceomodesource
+msgid "Source"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8048,10 +8116,6 @@ msgstr "対象CPU"
 msgid "Target CPU:"
 msgstr "対象CPU"
 
-#: lazarusidestrconsts:lislazbuildtargetdirectory
-msgid "Target Directory:"
-msgstr "対象ディレクトリ"
-
 #: lazarusidestrconsts:listargetos
 msgid "Target OS"
 msgstr "対象OS"
@@ -8067,6 +8131,10 @@ msgstr "対象OS*"
 #: lazarusidestrconsts:dlgtargetplatform
 msgid "Target Platform:"
 msgstr "対象プラットフォーム"
+
+#: lazarusidestrconsts:lislazbuildtargetdirectory
+msgid "Target directory:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -8992,6 +9060,10 @@ msgstr "タイプ"
 msgid "Type:"
 msgstr "タイプ:"
 
+#: lazarusidestrconsts:liscetypes
+msgid "Types"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
 msgstr "大文字"
@@ -9157,8 +9229,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "が見つかりません。"
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search Paths->Other Unit Files"
-msgstr "ファイル%s%s%sが見つかりません。"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9628,6 +9700,10 @@ msgstr "ユーザー定義拡張子(.pp.xxx)"
 msgid "User overrides"
 msgstr "ユーザーオーバーライド"
 
+#: lazarusidestrconsts:lisceuses
+msgid "Uses"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "値"
@@ -9659,6 +9735,10 @@ msgstr "変数："
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
 msgstr "変数: %s"
+
+#: lazarusidestrconsts:liscevariables
+msgid "Variables"
+msgstr ""
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
@@ -9924,7 +10004,7 @@ msgstr "幅:"
 msgid "Win32 gui application"
 msgstr ""
 
-#: lazarusidestrconsts:lisdebugoptionsfrmwindow
+#: lazarusidestrconsts:dlgwindow
 msgid "Window"
 msgstr "ウィンドウ"
 
@@ -9932,13 +10012,9 @@ msgstr "ウィンドウ"
 msgid "Window Positions"
 msgstr "ウィンドウ位置"
 
-#: lazarusidestrconsts:dlgwindows
-msgid "Windows"
-msgstr "ウィンドウ"
-
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
-msgid "With Packages"
-msgstr "パッケージを用いる"
+msgid "With packages"
+msgstr ""
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -10215,6 +10291,10 @@ msgstr "いいえ"
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
 msgstr "自動的にリネームしない"
+
+#: lazarusidestrconsts:lisccdnoclass
+msgid "no class"
+msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
