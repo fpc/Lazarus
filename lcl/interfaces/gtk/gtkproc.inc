@@ -4355,6 +4355,7 @@ var
     Mask: PGdkBitmap;
     {$Else}
     Img: PGdkPixbuf;
+    x, y: gInt;
     {$EndIf}
   begin
     {$IfDef GTK1}
@@ -4370,6 +4371,11 @@ var
         // there is no close button yet
         // -> add one to the right side of the label in the tab
         TabCloseBtnWidget:=gtk_button_new;
+        {$ifdef gtk2}
+        gtk_widget_get_size_request(TabWidget, @x, @y);
+        y := 0; // will make it default fit
+        gtk_widget_set_size_request(TabCloseBtnWidget, x, y);
+        {$endif}
         gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
                             TabCloseBtnWidget);
         begin
