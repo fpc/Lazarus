@@ -524,6 +524,7 @@ type
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
     procedure Clear; virtual;
+    procedure ClearSelection;
     procedure LockSelectionChange;
     procedure UnlockSelectionChange;
     procedure Click; override; // make it public

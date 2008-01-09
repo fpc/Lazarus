@@ -323,14 +323,17 @@ procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
 begin
   CheckIndex(Index);
 
-  if not MultiSelect then begin
+  if not MultiSelect then
+  begin
     if Val then
-      ItemIndex:=Index
-    else if Index=ItemIndex then
-      ItemIndex:=-1;
-  end else begin
+      ItemIndex := Index
+    else
+    if Index = ItemIndex then
+      ItemIndex := -1;
+  end else
+  begin
     if HandleAllocated
-    then SendItemSelected(Index,Val)
+    then SendItemSelected(Index, Val)
     else PCustomListBoxItemRecord(GetCachedData(Index))^.Selected := Val;
   end;
 end;
@@ -553,6 +556,17 @@ end;
 procedure TCustomListBox.Clear;
 begin
   FItems.Clear;
+end;
+
+procedure TCustomListBox.ClearSelection;
+var
+  i: integer;
+begin
+  if MultiSelect then
+    for i := 0 to Items.Count - 1 do
+      Selected[i] := False
+  else
+    ItemIndex := -1; // no need to traverse all items - look at SetSelected
 end;
 
 procedure TCustomListBox.LockSelectionChange;
