@@ -180,8 +180,10 @@ type
   private
   public
     Widget: QBrushH;
-    constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
+    constructor Create(CreateHandle: Boolean; const AShared: Boolean = False); virtual;
     destructor Destroy; override;
+    function getColor: PQColor;
+    procedure setColor(AColor: PQColor);
     procedure setStyle(style: QtBrushStyle);
     procedure setTexture(pixmap: QPixmapH);
     procedure setTextureImage(image: QImageH);
@@ -275,6 +277,12 @@ type
     procedure CorrectCoordinates(var ARect: TRect);
   public
     { Qt functions }
+    
+    procedure qDrawPlainRect(x, y, w, h: integer; AColor: PQColor = nil;
+      lineWidth: Integer = 1; FillBrush: QBrushH = nil);
+    procedure qDrawShadeRect(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
+      lineWidth: Integer = 1; midLineWidth: Integer = 0; FillBrush: QBrushH = nil);
+    
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
@@ -1107,6 +1115,16 @@ begin
   inherited Destroy;
 end;
 
+function TQtBrush.getColor: PQColor;
+begin
+  Result := QBrush_Color(Widget);
+end;
+
+procedure TQtBrush.setColor(AColor: PQColor);
+begin
+  QBrush_setColor(Widget, AColor);
+end;
+
 {------------------------------------------------------------------------------
   Function: TQtBrush.setStyle
   Params:  None
@@ -1504,6 +1522,22 @@ begin
 {  if ARect.Right > MaxRight then ARect.Right := MaxRight;
 
   if ARect.Bottom > MaxBottom then ARect.Bottom := MaxBottom;}
+end;
+
+procedure TQtDeviceContext.qDrawPlainRect(x, y, w, h: integer; AColor: PQColor = nil;
+  lineWidth: Integer = 1; FillBrush: QBrushH = nil);
+begin
+  if AColor = nil then
+    AColor := BackgroundBrush.getColor;
+  q_DrawPlainRect(Widget, x, y, w, h, AColor, lineWidth, FillBrush);
+end;
+
+procedure TQtDeviceContext.qDrawShadeRect(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
+  lineWidth: Integer = 1; midLineWidth: Integer = 0; FillBrush: QBrushH = nil);
+begin
+  if Palette = nil then
+    Palette := QWidget_palette(Parent);
+  q_DrawShadeRect(Widget, x, y, w, h, Palette, Sunken, lineWidth, midLineWidth, FillBrush);
 end;
 
 {------------------------------------------------------------------------------
@@ -1950,21 +1984,15 @@ end;
 
 function TQtDeviceContext.SetBkColor(Color: TcolorRef): TColorRef;
 var
-  ABrush: QBrushH;
   NColor: TQColor;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.setBKColor() ');
   {$endif}
-  result := CLR_INVALID;
-  ABrush := BackgroundBrush.Widget;
-  if ABrush<>nil then
-  begin
-    NColor := QBrush_Color(aBrush)^;
-    TQColorToColorRef(NColor, Result);
-    ColorRefToTQColor(ColorToRGB(Color), NColor);
-    QBrush_setColor(ABrush, @NColor);
-  end;
+  NColor := BackgroundBrush.getColor^;
+  TQColorToColorRef(NColor, Result);
+  ColorRefToTQColor(ColorToRGB(Color), NColor);
+  BackgroundBrush.setColor(@NColor);
 end;
 
 function TQtDeviceContext.SetBkMode(BkMode: Integer): Integer;

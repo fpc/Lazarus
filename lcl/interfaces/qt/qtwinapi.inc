@@ -1658,7 +1658,6 @@ end;
 function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
 var
-  StyleOption: QStyleOptionFrameV2H;
   QtDC: TQtDeviceContext;
 begin
 
@@ -1669,17 +1668,23 @@ begin
   Result := False;
   
   if not IsValidDC(DC) then exit;
-  
+
   QtDC := TQtDeviceContext(DC);
-  StyleOption := QStyleOptionFrameV2_create;
-  try
-    QStyleOption_setRect(StyleOption, @ARect);
-    QStyle_drawPrimitive(QApplication_style, QStylePE_Frame,StyleOption, QtDC.Widget, QtDC.Parent);
-    InflateRect(ARect, -1, -1);
-    Result := True;
-  finally
-    QStyleOptionFrameV2_destroy(StyleOption);
+
+  // todo: use qDrawWinPanel
+
+  case Style of
+    bvNone: ;
+    bvLowered: QtDC.qDrawShadeRect(ARect.Left, ARect.Top,
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
+    bvRaised: QtDC.qDrawShadeRect(ARect.Left, ARect.Top,
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, True, FrameWidth);
+    bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
   end;
+  if Style <> bvNone then
+    InflateRect(ARect, -FrameWidth, -FrameWidth);
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -1694,7 +1699,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).drawRect(ARect.Left, ARect.Top,
+  TQtDeviceContext(DC).qDrawPLainRect(ARect.Left, ARect.Top,
    ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
 
   Result := 1;
