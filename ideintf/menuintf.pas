@@ -333,7 +333,7 @@ var
         itmRunMenuAddBreakpoint: TIDEMenuSection;
 
     // components menu
-    mnuComponents: TIDEMenuSection;
+    mnuComponent: TIDEMenuSection;
       itmPkgOpening: TIDEMenuSection;
         itmPkgOpenRecent: TIDEMenuSection;
       itmPkgUnits: TIDEMenuSection;

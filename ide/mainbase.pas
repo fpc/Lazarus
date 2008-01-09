@@ -311,7 +311,7 @@ begin
     CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
-    CreateMainMenuItem(mnuComponents,'Components',lisMenuComponents);
+    CreateMainMenuItem(mnuComponent,'Component',lisMenuComponent);
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
     CreateMainMenuItem(mnuEnvironment,'Environment',lisMenuEnvironent);
     CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
@@ -642,7 +642,7 @@ var
   ParentMI: TIDEMenuSection;
 begin
   with MainIDEBar do begin
-    CreateMenuSeparatorSection(mnuComponents,itmPkgOpening,'itmPkgOpening');
+    CreateMenuSeparatorSection(mnuComponent,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
 
     CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
@@ -650,12 +650,12 @@ begin
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit);
     CreateMenuSubSection(ParentMI,itmPkgOpenRecent,'itmPkgOpenRecent',lisMenuOpenRecentPkg);
 
-    CreateMenuSeparatorSection(mnuComponents,itmPkgUnits,'itmPkgUnits');
+    CreateMenuSeparatorSection(mnuComponent,itmPkgUnits,'itmPkgUnits');
     ParentMI:=itmPkgUnits;
 
     CreateMenuItem(ParentMI,itmPkgAddCurUnitToPkg,'itmPkgAddCurUnitToPkg',lisMenuAddCurUnitToPkg,'pkg_add');
 
-    CreateMenuSeparatorSection(mnuComponents,itmPkgGraphSection,'itmPkgGraphSection');
+    CreateMenuSeparatorSection(mnuComponent,itmPkgGraphSection,'itmPkgGraphSection');
     ParentMI:=itmPkgGraphSection;
 
     CreateMenuItem(ParentMI,itmPkgPkgGraph,'itmPkgPkgGraph',lisMenuPackageGraph,'pkg_graph');

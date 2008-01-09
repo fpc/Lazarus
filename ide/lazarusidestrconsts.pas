@@ -139,7 +139,7 @@ resourcestring
   lisMenuView = '&View';
   lisMenuProject = '&Project';
   lisMenuRun = '&Run';
-  lisMenuComponents = '&Components';
+  lisMenuComponent = '&Component';
   lisMenuTools = '&Tools';
   lisMenuEnvironent = 'E&nvironment';
   lisMenuWindow = '&Window';
