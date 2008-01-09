@@ -1660,7 +1660,6 @@ function TQtWidgetSet.Frame3d(DC : HDC; var ARect : TRect;
 var
   QtDC: TQtDeviceContext;
 begin
-
   {$ifdef VerboseQtWinAPI}
     DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
   {$endif}
@@ -1671,14 +1670,12 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
-  // todo: use qDrawWinPanel
-
   case Style of
     bvNone: ;
-    bvLowered: QtDC.qDrawShadeRect(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
-    bvRaised: QtDC.qDrawShadeRect(ARect.Left, ARect.Top,
+    bvLowered: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
       ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, True, FrameWidth);
+    bvRaised: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
     bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
       ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
   end;

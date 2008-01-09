@@ -200,6 +200,7 @@ type
   public
     function Width: Integer;
     function Style: QtPenStyle;
+    function getColor: TQColor;
     procedure setStyle(AStyle: QtPenStyle);
     procedure setBrush(brush: QBrushH);
     procedure setWidth(p1: Integer);
@@ -282,6 +283,8 @@ type
       lineWidth: Integer = 1; FillBrush: QBrushH = nil);
     procedure qDrawShadeRect(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
       lineWidth: Integer = 1; midLineWidth: Integer = 0; FillBrush: QBrushH = nil);
+    procedure qDrawWinPanel(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
+      lineWidth: Integer = 1; FillBrush: QBrushH = nil);
     
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
@@ -1222,6 +1225,11 @@ begin
   Result := QPen_Style(Widget);
 end;
 
+function TQtPen.getColor: TQColor;
+begin
+  QPen_color(Widget, @Result);
+end;
+
 
 {------------------------------------------------------------------------------
   Function: TQtPen.Width
@@ -1538,6 +1546,41 @@ begin
   if Palette = nil then
     Palette := QWidget_palette(Parent);
   q_DrawShadeRect(Widget, x, y, w, h, Palette, Sunken, lineWidth, midLineWidth, FillBrush);
+end;
+
+procedure TQtDeviceContext.qDrawWinPanel(x, y, w, h: integer;
+  Palette: QPaletteH; Sunken: Boolean; lineWidth: Integer; FillBrush: QBrushH);
+var
+  Color1, Color2: TQColor;
+  OldPen: QPenH;
+begin
+  // todo: use q_DrawWinPanel()
+  if Palette = nil then
+    Palette := QWidget_palette(Parent);
+  if Sunken then
+  begin
+    Color1 := QBrush_color(QPalette_shadow(Palette))^;
+    Color2 := QBrush_color(QPalette_light(Palette))^;
+  end
+  else
+  begin
+    Color1 := QBrush_color(QPalette_light(Palette))^;
+    Color2 := QBrush_color(QPalette_shadow(Palette))^;
+  end;
+  dec(w);
+  dec(h);
+  OldPen := QPainter_pen(Widget);
+  QPainter_setPen(Widget, @Color1);
+  if lineWidth > 1 then
+    QPen_setWidth(QPainter_pen(Widget), lineWidth);
+  drawLine(x, y, x + w, y);
+  drawLine(x, y, x, y + h);
+  QPainter_setPen(Widget, @Color2);
+  if lineWidth > 1 then
+    QPen_setWidth(QPainter_pen(Widget), lineWidth);
+  drawLine(x + w, y, x + w, y + h);
+  drawLine(x, y + h, x + w, y + h);
+  QPainter_setPen(Widget, oldPen);
 end;
 
 {------------------------------------------------------------------------------
