@@ -96,7 +96,9 @@ Procedure RegisterHTMLComponents;
 begin
   RegisterComponents(fpWebTab,[THTMLDatasetContentProducer,
                                THTMLSelectProducer,
-                               THTMLDatasetSelectProducer])
+                               THTMLDatasetSelectProducer
+                               {$IFNDEF VER2_0}{$IFNDEF VER2_2_0},THTMLEntityProducer{$ENDIF}{$ENDIF}
+                               ])
 
 end;
 
