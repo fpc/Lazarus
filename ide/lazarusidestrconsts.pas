@@ -2032,21 +2032,21 @@ resourcestring
   lisExamples = 'Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
-  lisLazBuildBuildComponentsSynEditCodeTools = 'Build Components (SynEdit, '
+  lisLazBuildBuildComponentsSynEditCodeTools = 'Build components (SynEdit, '
     +'CodeTools)';
   lisLazBuildBuildSynEdit = 'Build SynEdit';
   lisLazBuildBuildCodeTools = 'Build CodeTools';
   lisLazBuildBuildIDE = 'Build IDE';
-  lisLazBuildBuildExamples = 'Build Examples';
+  lisLazBuildBuildExamples = 'Build examples';
   lisLazBuildOptions = 'Options:';
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildTargetCPU = 'Target CPU:';
-  lisLazBuildTargetDirectory = 'Target Directory:';
+  lisLazBuildTargetDirectory = 'Target directory:';
   lisLazBuildLCLInterface = 'LCL interface';
   lisLazBuildBuildJITForm = 'Build JITForm';
-  lisLazBuildWithStaticPackages = 'With Packages';
-  lisLazBuildRestartAfterBuild = 'Restart After Successfull Build';
-  lisLazBuildConfirmBuild = 'Confirm Before ReBuild Lazarus';
+  lisLazBuildWithStaticPackages = 'With packages';
+  lisLazBuildRestartAfterBuild = 'Restart after successful Build';
+  lisLazBuildConfirmBuild = 'Confirm before rebuilding Lazarus';
   lisLazBuildOk = 'Ok';
   lisCTDTemplates = 'Templates';
   lisSaveSettings = 'Save Settings';
