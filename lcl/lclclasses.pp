@@ -108,7 +108,9 @@ begin
   TLCLComponent(Result).FWidgetSetClass := FindWSComponentClass(Self);
   if TLCLComponent(Result).FWidgetSetClass = nil then
   begin
+    {$IFDEF VerboseLCL}
     DebugLn(['TLCLComponent.NewInstance WARNING: missing FWidgetSetClass ',ClassName]);
+    {$ENDIF}
     TLCLComponent(Result).FWidgetSetClass := TWSLCLComponent;
   end;
 end;
