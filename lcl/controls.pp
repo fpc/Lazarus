@@ -302,14 +302,17 @@ type
   TKeyPressEvent = procedure(Sender: TObject; var Key: char) of Object;
   TUTF8KeyPressEvent = procedure(Sender: TObject; var UTF8Key: TUTF8Char) of Object;
 
-  TMouseEvent = Procedure(Sender: TObject; Button: TMouseButton;
-                          Shift: TShiftState; X, Y: Integer) of object;
-  TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState;
-                              X, Y: Integer) of object;
-  TMouseWheelEvent = Procedure(Sender: TObject; Shift: TShiftState;
-         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean) of object;
-  TMouseWheelUpDownEvent = Procedure(Sender: TObject;
-          Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of object;
+  TMouseEvent = procedure(Sender: TObject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer) of Object;
+  TMouseMoveEvent = procedure(Sender: TObject; Shift: TShiftState;
+                              X, Y: Integer) of Object;
+  TMouseWheelEvent = procedure(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean) of Object;
+  TMouseWheelUpDownEvent = procedure(Sender: TObject;
+          Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of Object;
+
+  TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl;
+    var ACaption: String) of Object;
 
 
   { TDragObject }
@@ -1006,6 +1009,7 @@ type
                        var Accept: Boolean); dynamic;
     procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
     procedure SetDragMode(Value: TDragMode); virtual;
+    function GetDefaultDockCaption: String; virtual;
     //procedure SendDockNotification; virtual; MG: probably not needed
   protected
     // key and mouse
@@ -1484,6 +1488,7 @@ type
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
     FControls: TFPList;    // the child controls (only TControl, no TWinControl)
+    FOnGetDockCaption: TGetDockCaptionEvent;
     FWinControls: TFPList; // the child controls (only TWinControl, no TControl)
     FDefWndProc: Pointer;
     FDockClients: TFPList;
@@ -1620,6 +1625,7 @@ type
                                   var AControl: TControl); dynamic;
     function CreateDockManager: TDockManager; dynamic;
     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
+    procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   protected
     // mouse and keyboard
     procedure DoEnter; dynamic;
@@ -1688,6 +1694,7 @@ type
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
+    property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
@@ -1774,6 +1781,7 @@ type
     procedure SetFocus; virtual;
     function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
+    function GetDockCaption(AControl: TControl): String; virtual;
     procedure GetTabOrderList(List: TFPList);
     function HandleAllocated: Boolean;
     procedure HandleNeeded;

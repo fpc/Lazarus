@@ -1005,6 +1005,7 @@ type
     procedure AdjustClientRect(var Rect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    function GetDefaultDockCaption: String; override;
     procedure Loaded; override;
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
@@ -1072,6 +1073,7 @@ type
     property OnEnter;
     property OnExit;
     property OnGetSiteInfo;
+    property OnGetDockCaption;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;

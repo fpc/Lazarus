@@ -165,6 +165,11 @@ begin
   inherited;
 end;
 
+function TCustomPanel.GetDefaultDockCaption: String;
+begin
+  Result := Caption;
+end;
+
 procedure TCustomPanel.RealSetText(const Value: TCaption);
 begin
   if Caption <> Value 

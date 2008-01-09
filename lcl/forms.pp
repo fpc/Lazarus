@@ -477,6 +477,7 @@ type
     // drag and dock
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
     function GetFloating: Boolean; override;
+    function GetDefaultDockCaption: String; override;
   protected
     // actions
     procedure CMActionExecute(var Message: TLMessage); message CM_ACTIONEXECUTE;

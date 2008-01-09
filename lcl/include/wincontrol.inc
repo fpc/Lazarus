@@ -4855,6 +4855,18 @@ begin
     inherited;
 end;
 
+function TWinControl.GetDockCaption(AControl: TControl): String;
+begin
+  Result := AControl.GetDefaultDockCaption;
+  DoGetDockCaption(AControl, Result);
+end;
+
+procedure TWinControl.DoGetDockCaption(AControl: TControl; var ACaption: String);
+begin
+  if Assigned(FOnGetDockCaption) then
+    OnGetDockCaption(Self, AControl, ACaption);
+end;
+
 {------------------------------------------------------------------------------
   Procedure TWinControl.MainWndProc(Var Message : TLMessage);
 

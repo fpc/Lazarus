@@ -72,6 +72,7 @@ type
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); override;
     procedure UndockControlForDocking(AControl: TControl);
+    function DefaultDockGrabberSize: Integer;
   public
     constructor Create(TheDockSite: TWinControl); override;
     destructor Destroy; override;
@@ -205,7 +206,6 @@ type
   
   
 const
-  DefaultDockGrabberSize = 15;
   DockAlignOrientations: array[TAlign] of TDockOrientation = (
     doPages,     //alNone,
     doVertical,  //alTop,
@@ -612,6 +612,11 @@ begin
   end;
 end;
 
+function TLazDockTree.DefaultDockGrabberSize: Integer;
+begin
+  Result := {Abs(DockSite.Font.Height) + 4} 20;
+end;
+
 procedure TLazDockTree.BreakAnchors(Zone: TDockZone);
 begin
   if Zone=nil then exit;
@@ -631,7 +636,19 @@ var
   BtnRect: TRect;
   DrawRect: TRect;
   d: integer;
+  DockCaption: String;
+  TextStyle: TTextStyle;
 begin
+  DockCaption := DockSite.GetDockCaption(AControl);
+  TextStyle.Alignment := taLeftJustify;
+  TextStyle.Layout := tlCenter;
+  TextStyle.SingleLine := True;
+  TextStyle.Clipping := True;
+  TextStyle.Opaque := False;
+  TextStyle.Wordbreak := False;
+  TextStyle.SystemFont := False;
+  TextStyle.RightToLeft := AControl.UseRightToLeftAlignment;
+
   DrawRect := ARect;
   InflateRect(DrawRect, -1, -1);
   ACanvas.Brush.Color := clBtnShadow;
@@ -642,7 +659,6 @@ begin
       begin
         d := DrawRect.Bottom - DrawRect.Top;
         BtnRect := DrawRect;
-        Dec(BtnRect.Right);
         BtnRect.Left := BtnRect.Right - d;
         Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
@@ -656,21 +672,13 @@ begin
 
         DrawRect.Right := BtnRect.Left;
         InflateRect(DrawRect, -4, 0);
-        d := (DrawRect.Bottom + DrawRect.Top) div 2;
-        
-        ACanvas.Pen.Color := clBtnHighlight;
-        ACanvas.MoveTo(DrawRect.Left, d - 1);
-        ACanvas.LineTo(DrawRect.Right, d - 1);
 
-        ACanvas.Pen.Color := clBtnShadow;
-        ACanvas.MoveTo(DrawRect.Left, d);
-        ACanvas.LineTo(DrawRect.Right, d);
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, DockCaption, TextStyle);
       end;
     doVertical:
       begin
         d := DrawRect.Right - DrawRect.Left;
         BtnRect := DrawRect;
-        Inc(BtnRect.Top);
         BtnRect.Bottom := BtnRect.Top + d;
         Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
         ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
@@ -684,15 +692,8 @@ begin
 
         DrawRect.Top := BtnRect.Bottom;
         InflateRect(DrawRect, 0, -4);
-        d := (DrawRect.Right + DrawRect.Left) div 2;
 
-        ACanvas.Pen.Color := clBtnHighlight;
-        ACanvas.MoveTo(d - 1, DrawRect.Top);
-        ACanvas.LineTo(d - 1, DrawRect.Bottom);
-
-        ACanvas.Pen.Color := clBtnShadow;
-        ACanvas.MoveTo(d, DrawRect.Top);
-        ACanvas.LineTo(d, DrawRect.Bottom);
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, DockCaption, TextStyle);
       end;
   end;
 end;
@@ -757,8 +758,10 @@ procedure TLazDockTree.AdjustDockRect(AControl: TControl; var ARect: TRect);
 begin
   // offset one of the borders of control rect in order to get space for frame
   case AControl.DockOrientation of
-    doHorizontal: Inc(ARect.Top, DefaultDockGrabberSize);
-    doVertical  : Inc(ARect.Left, DefaultDockGrabberSize);
+    doHorizontal:
+      Inc(ARect.Top, DefaultDockGrabberSize);
+    doVertical:
+      Inc(ARect.Left, DefaultDockGrabberSize);
   end;
 end;
 
@@ -805,16 +808,18 @@ begin
     // anchor pages
     // IMPORTANT: first set the AnchorSide, then set the Anchors
     //DebugLn(['TLazDockTree.AnchorDockLayout CurControl.Parent=',DbgSName(CurControl.Parent),' ',CurControl.Visible]);
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-      CurControl.AnchorSide[a].Control:=AnchorControls[a];
-      if (AnchorControls[a]<>nil)
-      and (AnchorControls[a].Parent=CurControl.Parent) then begin
-        CurControl.AnchorSide[a].Side:=DefaultSideForAnchorKind[a];
-      end else begin
-        CurControl.AnchorSide[a].Side:=DefaultSideForAnchorKind[OppositeAnchor[a]];
-      end;
+    for a := Low(TAnchorKind) to High(TAnchorKind) do
+    begin
+      CurControl.AnchorSide[a].Control := AnchorControls[a];
+      if (AnchorControls[a] <> nil) and (AnchorControls[a].Parent = CurControl.Parent) then
+        CurControl.AnchorSide[a].Side := DefaultSideForAnchorKind[a]
+      else
+        CurControl.AnchorSide[a].Side := DefaultSideForAnchorKind[OppositeAnchor[a]];
     end;
-    CurControl.Anchors:=NewAnchors;
+    CurControl.Anchors := NewAnchors;
+    // how to set space for header?
+    //CurControl.BorderSpacing.Top := CurControl.BoundsRect.Top;
+    //CurControl.BorderSpacing.Left := CurControl.BoundsRect.Left;
   end;
 
   // anchor controls for childs and siblings
@@ -895,7 +900,7 @@ procedure TLazDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
   begin
     AControl.Align := alNone;
     AControl.Anchors := [akLeft, akTop];
-    for a:=Low(TAnchorKind) to High(TAnchorKind) do
+    for a := Low(TAnchorKind) to High(TAnchorKind) do
       AControl.AnchorSide[a].Control := nil;
     AControl.AutoSize := False;
   end;
@@ -1049,6 +1054,7 @@ begin
 
   // Build dock layout (anchors, splitters, pages)
   BuildDockLayout(RootZone as TLazDockZone);
+  DockSite.Invalidate; // to redraw dock headers
 end;
 
 procedure TLazDockTree.BuildDockLayout(Zone: TLazDockZone);

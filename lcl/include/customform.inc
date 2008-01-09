@@ -1049,6 +1049,11 @@ begin
   Result := (HostDockSite = nil) and (FloatingDockSiteClass = ClassType);
 end;
 
+function TCustomForm.GetDefaultDockCaption: String;
+begin
+  Result := Caption;
+end;
+
 procedure TCustomForm.CMActionExecute(var Message: TLMessage);
 begin
   if DoExecuteAction(TBasicAction(Message.LParam)) then

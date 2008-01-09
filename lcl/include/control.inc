@@ -2906,6 +2906,11 @@ begin
   FDragMode := Value;
 end;
 
+function TControl.GetDefaultDockCaption: String;
+begin
+  Result := '';
+end;
+
 {------------------------------------------------------------------------------
   TControl DockTrackNoTarget
 ------------------------------------------------------------------------------}

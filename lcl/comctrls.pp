@@ -219,13 +219,10 @@ type
     property Width stored False;
   end;
 
-  TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl; var ACaption: String) of Object;
-
   { TPageControl }
 
   TPageControl = class(TCustomNotebook)
   private
-    FOnGetDockCaption: TGetDockCaptionEvent;
     FOnPageChanged: TNotifyEvent;
     FPageToUndock: TTabSheet;
     function GetActivePageIndex: Integer;
@@ -241,8 +238,6 @@ type
     procedure DoRemoveDockClient(Client: TControl); override;
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
     procedure PositionDockRect(DragDockObject: TDragDockObject); override;
-    function GetDockCaption(AControl: TControl): String;
-    procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     function FindNextPage(CurPage: TTabSheet;
@@ -254,7 +249,7 @@ type
     property Pages[Index: Integer]: TTabSheet read GetTabSheet;
   published
     property ActivePage: TTabSheet read GetActiveTabSheet write SetActiveTabSheet;
-    property OnGetDockCaption: TGetDockCaptionEvent read FOnGetDockCaption write FOnGetDockCaption;
+    property OnGetDockCaption;
     
     property Align;
     property Anchors;

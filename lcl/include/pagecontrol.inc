@@ -108,23 +108,6 @@ begin
   DragDockObject.DockRect := Rect(P.X, P.Y, P.X + Width, P.Y + Height);
 end;
 
-function TPageControl.GetDockCaption(AControl: TControl): String;
-begin
-  // for some usual controls
-  if AControl is TCustomPanel then
-    Result := TCustomPanel(AControl).Caption
-  else
-  if AControl is TCustomForm then
-    Result := TCustomForm(AControl).Caption;
-  DoGetDockCaption(AControl, Result);
-end;
-
-procedure TPageControl.DoGetDockCaption(AControl: TControl; var ACaption: String);
-begin
-  if Assigned(FOnGetDockCaption) then
-    OnGetDockCaption(Self, AControl, ACaption);
-end;
-
 constructor TPageControl.Create(TheOwner: TComponent);
 begin
   PageClass:=TTabSheet;
