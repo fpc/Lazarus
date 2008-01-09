@@ -486,7 +486,7 @@ end;
 
 procedure TEnvironmentOptionsDialogNew.SetupWindowsPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := dlgWindows;
+  NoteBook.Page[Page].Caption := dlgWindow;
 
   // windows
   MinimizeAllOnMinimizeMainCheckBox.Caption:=dlgMinimizeAllOnMinimizeMain;

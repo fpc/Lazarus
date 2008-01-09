@@ -841,7 +841,7 @@ resourcestring
   lissSearchText = 'Search text';
   
   dlgDesktop = 'Desktop';
-  dlgWindows = 'Windows';
+  dlgWindow = 'Window';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
