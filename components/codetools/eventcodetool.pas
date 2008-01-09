@@ -676,6 +676,7 @@ function TEventsCodeTool.CreateMethod(ClassNode: TCodeTreeNode;
     AddNeededUnitToMainUsesSection(PChar(MethodUnitName));
     // ToDo
     // search every parameter type and collect units
+
   end;
   
   function FindPropertyType(out FindContext: TFindContext): boolean;

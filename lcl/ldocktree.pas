@@ -52,6 +52,7 @@ type
     FSplitter: TLazDockSplitter;
   public
     destructor Destroy; override;
+    procedure FreeSubComponents;
     function GetCaption: string;
     function GetParentControl: TWinControl;
     property Splitter: TLazDockSplitter read FSplitter write FSplitter;
@@ -1045,9 +1046,7 @@ begin
   RemoveZone:=RootZone.FindZone(AControl) as TLazDockZone;
   if RemoveZone.ChildCount>0 then
     raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount>0');
-  FreeAndNil(RemoveZone.Splitter);
-  FreeAndNil(RemoveZone.Page);
-  FreeAndNil(RemoveZone.Pages);
+  RemoveZone.FreeSubComponents;
   if RemoveZone.Parent<>nil then
     RemoveZone.Parent.Remove(RemoveZone);
   RemoveZone.Free;
@@ -1229,7 +1228,12 @@ end;
 
 destructor TLazDockZone.Destroy;
 begin
+  FreeSubComponents;
   inherited Destroy;
+end;
+
+procedure TLazDockZone.FreeSubComponents;
+begin
   FreeAndNil(FSplitter);
   FreeAndNil(FPage);
   FreeAndNil(FPages);
