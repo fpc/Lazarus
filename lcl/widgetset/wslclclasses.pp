@@ -24,9 +24,9 @@ unit WSLCLClasses;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseWSRegistration}
-{off $DEFINE VerboseWSRegistration_methods}
-{off $DEFINE VerboseWSRegistration_treedump}
+{off$DEFINE VerboseWSRegistration}
+{off$DEFINE VerboseWSRegistration_methods}
+{off$DEFINE VerboseWSRegistration_treedump}
 
 interface
 ////////////////////////////////////////////////////
@@ -221,7 +221,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     Result := nil;
   end;
 
-  procedure CreateVClass(const ANode: PClassNode);
+  procedure CreateVClass(const ANode: PClassNode; AOldPrivate: TClass = nil);
   var
     ParentWSNode: PClassNode;
     CommonClass: TClass;
@@ -229,7 +229,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     Cmnt: PMethodNameTable;
     SearchAddr: Pointer;
     n, idx: Integer;
-    WSPrivate: TClass;
+    WSPrivate, OrgPrivate: TClass;
     Processed: array[0..VIRTUAL_VMT_COUNT-1] of Boolean;
     {$IFDEF VerboseWSRegistration}
     Indent: String;
@@ -245,10 +245,15 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     end
     else begin
       // keep original WSPrivate (only when different than default class)
-      if (AWSPrivate = nil) and
-         (PClass(ANode^.VClass + vmtWSPrivate)^ <> nil) and
-         (PClass(ANode^.VClass + vmtWSPrivate)^ <> TWSPrivate) then 
-        WSPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
+      OrgPrivate := PClass(ANode^.VClass + vmtWSPrivate)^;
+      
+      if  (OrgPrivate <> nil) and (OrgPrivate <> AOldPrivate) and OrgPrivate.InheritsFrom(WSPrivate)
+      then begin
+        {$IFDEF VerboseWSRegistration}
+        DebugLn('Keep org private: ', WSPrivate.ClassName, ' -> ', OrgPrivate.Classname);
+        {$ENDIF}
+        WSPrivate := OrgPrivate;
+      end;
     end;
 
     // Initially copy the WSClass
@@ -310,17 +315,17 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
         // Loop though the VMT to see what is overridden
         for n := 0 to Cmnt^.Count - 1 do
         begin
+          SearchAddr := Cmnt^.Entries[n].Addr;
           {$IFDEF VerboseWSRegistration_methods}
-          DebugLn(Indent, 'Search: ', Cmnt^.Entries[n].Name^);
+          DebugLn('%sSearch: %s (%p)', [Indent, Cmnt^.Entries[n].Name^, SearchAddr]);
           {$ENDIF}
 
-          SearchAddr := Cmnt^.Entries[n].Addr;
           for idx := 0 to VIRTUAL_VMT_COUNT - 1 do
           begin
             if Cvmt^[idx] = SearchAddr
             then begin
               {$IFDEF VerboseWSRegistration_methods}
-              DebugLn(Indent, 'Found at index: ', IntToStr(idx));
+              DebugLn('%sFound at index: %d (v=%p p=%p)', [Indent, idx, Vvmt^[idx], Pvmt^[idx]]);
               {$ENDIF}
 
               if Processed[idx]
@@ -336,7 +341,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
               and (Pvmt^[idx] <> SearchAddr) //overridden by parent
               then begin
                 {$IFDEF VerboseWSRegistration_methods}
-                DebugLn(Indent, Format('Updating %p -> %p', [Vvmt^[idx], Pvmt^[idx]]));
+                DebugLn('%sUpdating %p -> %p', [Indent, Vvmt^[idx], Pvmt^[idx]]);
                 {$ENDIF}
                 Vvmt^[idx] := Pvmt^[idx];
               end;
@@ -363,7 +368,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
   end;
 
-  procedure UpdateChildren(const ANode: PClassNode);
+  procedure UpdateChildren(const ANode: PClassNode; AOldPrivate: TClass);
   var
     Node: PClassNode;
   begin
@@ -375,30 +380,38 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
         {$IFDEF VerboseWSRegistration}
         DebugLn('Update VClass for: ', Node^.WSClass.ClassName);
         {$ENDIF}
-        CreateVClass(Node);
+        CreateVClass(Node, AOldPrivate);
       end;
-      UpdateChildren(Node);
+      UpdateChildren(Node, AOldPrivate);
       Node := Node^.Sibling;
     end;
   end;
 
 var
   Node: PClassNode;
+  OldPrivate: TClass;
 begin
   Node := GetNode(AComponent);
   if Node = nil then Exit;
 
   if Node^.WSClass = nil
   then MWSRegisterIndex.AddObject(AComponent.ClassName, TObject(Node));
-
   Node^.WSClass := AWSComponent;
+  
+  // childclasses "inherit" the private from their parent
+  // the child privates should only be updated when their private is still
+  // the same as their parents
+  if Node^.VClass = nil
+  then OldPrivate := nil
+  else OldPrivate := PClass(Node^.VClass + vmtWSPrivate)^;
+
   {$IFDEF VerboseWSRegistration}
-  DebugLn('Create VClass for: ', Node^.WSClass.ClassName);
+  DebugLn('Create VClass for: ', AComponent.ClassName, ' -> ', Node^.WSClass.ClassName);
   {$ENDIF}
   CreateVClass(Node);
 
   // Since child classes may depend on us, recreate them
-  UpdateChildren(Node);
+  UpdateChildren(Node, OldPrivate);
 end;
 
 
@@ -454,7 +467,12 @@ procedure DumpVTree;
       DbgOut(' VClass.Parent=');
       if TClass(ANode^.VClass).ClassParent = nil
       then DbgOut('nil')
-      else DbgOut(TClass(ANode^.VClass).ClassParent.ClassName)
+      else DbgOut(TClass(ANode^.VClass).ClassParent.ClassName);
+      
+      DbgOut(' Private=');
+      if PClass(ANode^.VClass + vmtWSPrivate)^ = nil
+      then DbgOut('nil')
+      else DbgOut(PClass(ANode^.VClass + vmtWSPrivate)^.ClassName);
     end;
 
     DbgOut(' VClassName=''', ANode^.VClassName, '''');
