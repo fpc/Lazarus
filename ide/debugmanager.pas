@@ -242,10 +242,13 @@ type
     procedure ResetMaster;
   end;
 
+  { TManagedWatches }
+
   TManagedWatches = class(TIDEWatches)
   private
     FMaster: TDBGWatches;
     FManager: TDebugManager;
+    procedure WatchesChanged(Sender: TObject);
     procedure SetMaster(const AMaster: TDBGWatches);
   protected
     procedure NotifyAdd(const AWatch: TIDEWatch); override;
@@ -268,6 +271,8 @@ type
     property Master: TDBGLocals read FMaster write SetMaster;
   end;
 
+  { TManagedCallStack }
+
   TManagedCallStack = class(TIDECallStack)
   private
     FMaster: TDBGCallStack;
@@ -276,7 +281,9 @@ type
     procedure SetMaster(const AMaster: TDBGCallStack);
   protected
     function CheckCount: Boolean; override;
+    function GetCurrent: TCallStackEntry; override;
     function GetStackEntry(const AIndex: Integer): TCallStackEntry; override;
+    procedure SetCurrent(const AValue: TCallStackEntry); override;
   public
     property Master: TDBGCallStack read FMaster write SetMaster;
   end;
@@ -346,11 +353,25 @@ begin
   then SetCount(Master.Count);
 end;
 
+function TManagedCallStack.GetCurrent: TCallStackEntry;
+begin
+  if Master = nil
+  then Result := nil
+  else Result := Master.Current;
+end;
+
 function TManagedCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
 begin
   Assert(FMaster <> nil);
   
-  Result := FMaster.GetStackEntry(AIndex);
+  Result := FMaster.Entries[AIndex];
+end;
+
+procedure TManagedCallStack.SetCurrent(const AValue: TCallStackEntry);
+begin
+  if Master = nil then Exit;
+
+  Master.Current := AValue;
 end;
 
 procedure TManagedCallStack.SetMaster(const AMaster: TDBGCallStack);
@@ -495,6 +516,9 @@ var
 begin
   if FMaster = AMaster then Exit;
 
+  if FMaster <> nil
+  then FMaster.OnChange := nil;
+
   FMaster := AMaster;
   if FMaster = nil
   then begin
@@ -503,7 +527,13 @@ begin
   end
   else begin
     FMaster.Assign(Self);
+    FMaster.OnChange := @WatchesChanged;
   end;
+end;
+
+procedure TManagedWatches.WatchesChanged(Sender: TObject);
+begin
+  Changed;
 end;
 
 procedure TManagedWatches.NotifyAdd(const AWatch: TIDEWatch);

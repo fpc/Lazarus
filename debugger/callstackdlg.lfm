@@ -1,20 +1,23 @@
 inherited CallStackDlg: TCallStackDlg
-  Left = 637
+  Left = 553
   Height = 200
-  Top = 321
-  Width = 500
-  HorzScrollBar.Page = 499
+  Top = 318
+  Width = 567
+  HorzScrollBar.Page = 566
   VertScrollBar.Page = 199
   ActiveControl = lvCallStack
   Caption = 'CallStack'
   ClientHeight = 200
-  ClientWidth = 500
+  ClientWidth = 567
   Visible = True
   object lvCallStack: TListView
     Height = 200
-    Width = 500
+    Width = 567
     Align = alClient
     Columns = <    
+      item
+        Width = 10
+      end    
       item
         Caption = 'Source'
         Width = 150
@@ -45,6 +48,7 @@ inherited CallStackDlg: TCallStackDlg
     end
     object popSetAsCurrent: TMenuItem
       Caption = 'Set as current'
+      OnClick = popSetAsCurrentClick
     end
     object popCopyAll: TMenuItem
       Caption = 'Copy all'

@@ -63,7 +63,8 @@ type
     dcLocal,
     dcEvaluate,
     dcModify,
-    dcEnvironment
+    dcEnvironment,
+    dcSetStackFrame
     );
   TDBGCommands = set of TDBGCommand;
   
@@ -471,12 +472,15 @@ type
   end;
   TIDEWatchClass = class of TIDEWatch;
 
+  { TDBGWatch }
+
   TDBGWatch = class(TBaseWatch)
   private
     FSlave: TBaseWatch;
     function GetDebugger: TDebugger;
   protected
     procedure DoChanged; override;
+    procedure DoChange; virtual;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property Debugger: TDebugger read GetDebugger;
   public
@@ -538,13 +542,17 @@ type
                                                       write SetItem; default;
   end;
 
+  { TDBGWatches }
+
   TDBGWatches = class(TBaseWatches)
   private
     FDebugger: TDebugger;  // reference to our debugger
+    FOnChange: TNotifyEvent;
     function GetItem(const AnIndex: Integer): TDBGWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
   protected
     procedure DoStateChange(const AOldState: TDBGState); virtual;
+    procedure Update(Item: TCollectionItem); override;
     property  Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger;
@@ -555,6 +563,7 @@ type
   public
     property Items[const AnIndex: Integer]: TDBGWatch read GetItem
                                                       write SetItem; default;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
   
 (******************************************************************************)
@@ -608,6 +617,7 @@ type
     FDebugger: TDebugger;  // reference to our debugger
     FOnChange: TNotifyEvent;
   protected
+    procedure Changed; virtual;
     procedure DoChange;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     function GetCount: Integer; virtual;
@@ -632,10 +642,13 @@ type
 (* TCallStackEntry needs to stay a readonly object so its data can be shared  *)
 (******************************************************************************)
 
+  TBaseCallStack = class;
+
   { TCallStackEntry }
 
   TCallStackEntry = class(TObject)
   private
+    FOwner: TBaseCallStack;
     FIndex: Integer;
     FAdress: TDbgPtr;
     FFunctionName: String;
@@ -645,6 +658,8 @@ type
     function GetArgumentCount: Integer; 
     function GetArgumentName(const AnIndex: Integer): String;
     function GetArgumentValue(const AnIndex: Integer): String;
+    function GetCurrent: Boolean;
+    procedure SetCurrent(const AValue: Boolean);
   protected
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
@@ -656,7 +671,9 @@ type
     property ArgumentCount: Integer read GetArgumentCount;
     property ArgumentNames[const AnIndex: Integer]: String read GetArgumentName;
     property ArgumentValues[const AnIndex: Integer]: String read GetArgumentValue;
+    property Current: Boolean read GetCurrent write SetCurrent;
     property FunctionName: String read FFunctionName;
+    property Index: Integer read FIndex;
     property Line: Integer read FLine;
     property Source: String read FSource;
   end;
@@ -673,12 +690,15 @@ type
     function CheckCount: Boolean; virtual;
     procedure Clear;
     function CreateStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    function GetCurrent: TCallStackEntry; virtual;
+    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    procedure SetCurrent(const AValue: TCallStackEntry); virtual;
     procedure SetCount(const ACount: Integer); virtual;
   public
     function Count: Integer;
     constructor Create;
     destructor Destroy; override;
-    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    property Current: TCallStackEntry read GetCurrent write SetCurrent;
     property Entries[const AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
   
@@ -712,6 +732,7 @@ type
     FOnChange: TNotifyEvent;
     FOnClear: TNotifyEvent;
   protected
+    procedure Changed;
     function CheckCount: Boolean; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
     property Debugger: TDebugger read FDebugger;
@@ -1020,7 +1041,7 @@ type
     function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
 
-  public 
+  public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TDBGCallStack read FCallStack;
@@ -1063,7 +1084,8 @@ const
     'Local',
     'Evaluate',
     'Modify',
-    'Environment'
+    'Environment',
+    'SetStackFrame'
     );
     
   DBGStateNames: array[TDBGState] of string = (
@@ -1102,7 +1124,7 @@ const
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch,
              dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
-             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment],
+             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment, dcSetStackFrame],
   {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
@@ -2636,6 +2658,10 @@ begin
   then FSlave.Changed;
 end;
 
+procedure TDBGWatch.DoChange;
+begin
+end;
+
 procedure TDBGWatch.DoStateChange(const AOldState: TDBGState);
 begin
 end;
@@ -2789,15 +2815,23 @@ end;
 
 procedure TIDEWatches.Update(Item: TCollectionItem);
 var
-  n: Integer;
+  n, m: Integer;
   Notification: TIDEWatchesNotification;
 begin
   // Note: Item will be nil in case all items need to be updated
   for n := 0 to FNotificationList.Count - 1 do
   begin
     Notification := TIDEWatchesNotification(FNotificationList[n]);
-    if Assigned(Notification.FOnUpdate)
-    then Notification.FOnUpdate(Self, TIDEWatch(Item));
+    if not Assigned(Notification.FOnUpdate) then Continue;
+    
+    if Item = nil
+    then begin
+      for m := 0 to Count - 1 do
+        Notification.FOnUpdate(Self, Items[m]);
+    end
+    else begin
+      Notification.FOnUpdate(Self, TIDEWatch(Item));
+    end;
   end;
 end;
 
@@ -2837,6 +2871,14 @@ end;
 procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
 begin
   inherited SetItem(AnIndex, AValue);
+end;
+
+procedure TDBGWatches.Update(Item: TCollectionItem);
+begin
+  inherited Update(Item);
+  // notyfy only if collection is changed
+  if (Item = nil) and Assigned(FOnChange)
+  then FOnChange(Self);
 end;
 
 
@@ -2946,6 +2988,11 @@ procedure TDBGLocals.DoStateChange(const AOldState: TDBGState);
 begin
 end;
 
+procedure TDBGLocals.Changed;
+begin
+  DoChange;
+end;
+
 function TDBGLocals.GetCount: Integer;
 begin
   Result := 0;
@@ -3005,6 +3052,21 @@ begin
   Result := GetPart('=', '', Result);
 end;
 
+function TCallStackEntry.GetCurrent: Boolean;
+begin
+  Result := (FOwner <> nil) and (FOwner.GetCurrent = Self)
+end;
+
+procedure TCallStackEntry.SetCurrent(const AValue: Boolean);
+begin
+  if FOwner = nil then Exit;
+  if GetCurrent = AValue then Exit;
+  
+  if AValue
+  then FOwner.SetCurrent(self)
+  else FOwner.SetCurrent(nil);
+end;
+
 { =========================================================================== }
 { TBaseCallStack }
 { =========================================================================== }
@@ -3054,6 +3116,11 @@ begin
   FreeAndNil(FEntryIndex);
 end;
 
+function TBaseCallStack.GetCurrent: TCallStackEntry;
+begin
+  Result := nil;
+end;
+
 function TBaseCallStack.GetEntry(const AIndex: Integer): TCallStackEntry;
 begin
   if (AIndex < 0)
@@ -3075,6 +3142,7 @@ begin
     if Result = nil then Exit;
     idx := FEntries.Add(Result);
     FEntryIndex[AIndex] := Pointer(idx);
+    Result.FOwner := Self;
   end
   else begin
     Result := TCallStackEntry(FEntries[idx]);
@@ -3094,6 +3162,10 @@ begin
     FEntryIndex[n] := Pointer(-1);
   
   FCount := ACount;
+end;
+
+procedure TBaseCallStack.SetCurrent(const AValue: TCallStackEntry);
+begin
 end;
 
 { =========================================================================== }
@@ -3147,6 +3219,11 @@ end;
 { TDBGCallStack }
 { =========================================================================== }
 
+procedure TDBGCallStack.Changed;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
 function TDBGCallStack.CheckCount: Boolean;
 begin
   Result := (FDebugger <> nil)
@@ -3165,7 +3242,7 @@ procedure TDBGCallStack.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger.State = dsPause
   then begin
-    if Assigned(FOnChange) then FOnChange(Self);
+    Changed;
   end
   else begin
     if (AOldState = dsPause) or (AOldState = dsNone) { Force clear on initialisation } 

@@ -52,6 +52,7 @@ type
     mnuPopup: TPopupMenu;
     procedure lvCallStackDBLCLICK(Sender: TObject);
     procedure popCopyAllClick(Sender: TObject);
+    procedure popSetAsCurrentClick(Sender : TObject);
     procedure popShowClick(Sender: TObject);
   private
     FCallStack: TIDECallStack;
@@ -73,6 +74,7 @@ type
 
 
 implementation
+uses BaseDebugManager;
 
 { TCallStackDlg }
 
@@ -109,15 +111,19 @@ begin
       Item := lvCallStack.Items.Add;
       Item.SubItems.Add('');
       Item.SubItems.Add('');
+      Item.SubItems.Add('');
     end;
 
     for n := 0 to lvCallStack.Items.Count - 1 do
     begin
       Item := lvCallStack.Items[n];
       Entry := CallStack.Entries[n];
-      Item.Caption := Entry.Source;
-      Item.SubItems[0] := IntToStr(Entry.Line);
-      Item.SubItems[1] := GetFunction(Entry);
+      if Entry.Current
+      then Item.Caption := '>'
+      else Item.Caption := ' ';
+      Item.SubItems[0] := Entry.Source;
+      Item.SubItems[1] := IntToStr(Entry.Line);
+      Item.SubItems[2] := GetFunction(Entry);
     end;
     
   finally
@@ -145,15 +151,19 @@ end;
 procedure TCallStackDlg.JumpToSource;
 var
   CurItem: TListItem;
+  Entry: TCallStackEntry;
   Filename: String;
-  Line: Integer;
 begin
   CurItem:=lvCallStack.Selected;
-  if CurItem=nil then exit;
-  Filename:=CurItem.Caption;
-  if DoGetFullDebugFilename(Filename,true)<>mrOk then exit;
-  Line:=StrToIntDef(CurItem.SubItems[0],0);
-  DoJumpToCodePos(Filename,Line,0);
+  if CurItem = nil then exit;
+  if CurItem.Index >= CallStack.Count then Exit;
+  
+  Entry := CallStack.Entries[CurItem.Index];
+
+  Filename := Entry.Source;
+  if DoGetFullDebugFilename(Filename,true) <> mrOk then exit;
+
+  DoJumpToCodePos(Filename, Entry.Line, 0);
 end;
 
 procedure TCallStackDlg.CopyToClipBoard;
@@ -188,6 +198,11 @@ end;
 procedure TCallStackDlg.popCopyAllClick(Sender: TObject);
 begin
   CopyToClipBoard;
+end;
+
+procedure TCallStackDlg.popSetAsCurrentClick(Sender : TObject);
+begin
+  CallStack.Current := CallStack.Entries[lvCallStack.Selected.Index];
 end;
 
 procedure TCallStackDlg.popShowClick(Sender: TObject);

@@ -111,7 +111,8 @@ type
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
     FDebuggerFlags: TGDBMIDebuggerFlags;
-    
+    FCurrentStackFrame: Integer;
+
     // GDB info (move to ?)
     FGDBVersion: String;
     FGDBCPU: String;
@@ -136,6 +137,8 @@ type
     function  GDBStepInto: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
+
+    procedure CallStackSetCurrent(AIndex: Integer);
     // ---
     procedure GDBStopCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
@@ -156,6 +159,7 @@ type
     function  ProcessRunning(var AStoppedParams: String): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     procedure ProcessFrame(const AFrame: String = '');
+    procedure SelectStackFrame(AIndex: Integer);
 
     // All ExecuteCommand functions are wrappers for the real (full) implementation
     // ExecuteCommandFull is never called directly
@@ -221,6 +225,8 @@ type
     procedure Hit(var ACanContinue: Boolean);
   end;
 
+  { TGDBMILocals }
+
   TGDBMILocals = class(TDBGLocals)
   private
     FLocals: TStringList;
@@ -229,13 +235,17 @@ type
     procedure AddLocals(const AParams:String);
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure Invalidate;
     function GetCount: Integer; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
+    procedure Changed; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
   end;
+
+  { TGDBMIWatch }
 
   TGDBMIWatch = class(TDBGWatch)
   private
@@ -245,18 +255,36 @@ type
   protected
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
+    procedure DoChange; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     function  GetValue: String; override;
     function  GetValid: TValidState; override;
   public
     constructor Create(ACollection: TCollection); override;
+    procedure Invalidate;
   end;
   
+  { TDBGWatches }
+
+  { TGDBMIWatches }
+
+  TGDBMIWatches = class(TDBGWatches)
+  private
+  protected
+    procedure Changed;
+  public
+  end;
+  
+  { TGDBMICallStack }
+
   TGDBMICallStack = class(TDBGCallStack)
   private
   protected
     function CheckCount: Boolean; override;
     function CreateStackEntry(const AIndex: Integer): TCallStackEntry; override;
+    
+    function GetCurrent: TCallStackEntry; override;
+    procedure SetCurrent(const AValue: TCallStackEntry); override;
   public
   end;
 
@@ -457,6 +485,17 @@ end;
 { =========================================================================== }
 { TGDBMIDebugger }
 { =========================================================================== }
+
+procedure TGDBMIDebugger.CallStackSetCurrent(AIndex: Integer);
+begin
+  if FCurrentStackFrame = AIndex then Exit;
+  FCurrentStackFrame := AIndex;
+  SelectStackFrame(FCurrentStackFrame);
+  
+  TGDBMICallstack(CallStack).Changed;
+  TGDBMILocals(Locals).Changed;
+  TGDBMIWatches(Watches).Changed;
+end;
 
 class function TGDBMIDebugger.Caption: String;
 begin
@@ -931,7 +970,7 @@ begin
   // Check for strings
   ResultInfo := GetGDBTypeInfo(S);
   if (ResultInfo = nil) then Exit;
-  
+
   try
     case ResultInfo.Kind of
       skPointer: begin
@@ -1292,7 +1331,8 @@ end;
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
-             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment]
+             dcBreak, dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment,
+             dcSetStackFrame];
 end;
 
 function TGDBMIDebugger.GetTargetWidth: Byte;
@@ -1510,7 +1550,7 @@ begin
   Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
-
+  
   DoCurrent(Location);
 end;
 
@@ -1843,6 +1883,8 @@ var
   CanContinue: Boolean;
 begin
   Result := True;
+  FCurrentStackFrame :=  0;
+  
   List := CreateMIValueList(AParams);
   try
     Reason := List.Values['reason'];
@@ -1960,7 +2002,7 @@ begin
     dcRunTo:    Result := GDBRunTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
     dcJumpto:   Result := GDBJumpTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
     dcEvaluate: Result := GDBEvaluate(String(APArams[0].VAnsiString), String(APArams[1].VPointer^));
-    dcEnvironment: Result := GDBEnvironment(String(APArams[0].VAnsiString), AParams[1].VBoolean);
+    dcEnvironment:   Result := GDBEnvironment(String(APArams[0].VAnsiString), AParams[1].VBoolean);
   end;
 end;
 
@@ -1974,6 +2016,11 @@ begin
     if CmdInfo<>nil then Dispose(CmdInfo);
   end;
   FCommandQueue.Clear;
+end;
+
+procedure TGDBMIDebugger.SelectStackFrame(AIndex: Integer);
+begin
+  ExecuteCommand('-stack-select-frame %d', [AIndex], [cfIgnoreError]);
 end;
 
 function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
@@ -2479,6 +2526,12 @@ begin
   FreeAndNil(LocList);
 end;
 
+procedure TGDBMILocals.Changed;
+begin
+  Invalidate;
+  inherited Changed;
+end;
+
 constructor TGDBMILocals.Create(const ADebugger: TDebugger);
 begin
   FLocals := TStringList.Create;
@@ -2501,9 +2554,14 @@ begin
     DoChange;
   end
   else begin
-    FLocalsValid := False;
-    FLocals.Clear;
+    Invalidate;
   end;
+end;
+
+procedure TGDBMILocals.Invalidate;
+begin
+  FLocalsValid:=false;
+  FLocals.Clear;
 end;
 
 function TGDBMILocals.GetCount: Integer;
@@ -2587,6 +2645,11 @@ begin
   inherited;
 end;
 
+procedure TGDBMIWatch.DoChange;
+begin
+  Changed;
+end;
+
 procedure TGDBMIWatch.DoStateChange(const AOldState: TDBGState);
 begin
   if Debugger = nil then Exit;
@@ -2594,6 +2657,11 @@ begin
   if Debugger.State in [dsPause, dsStop]
   then FEvaluated := False;
   if Debugger.State = dsPause then Changed;
+end;
+
+procedure TGDBMIWatch.Invalidate;
+begin
+  FEvaluated := False;
 end;
 
 procedure TGDBMIWatch.EvaluationNeeded;
@@ -2637,6 +2705,21 @@ begin
 end;
 
 { =========================================================================== }
+{ TGDBMIWatches }
+{ =========================================================================== }
+
+procedure TGDBMIWatches.Changed;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    TGDBMIWatch(Items[n]).Invalidate;
+  inherited Changed;
+end;
+
+
+
+{ =========================================================================== }
 { TGDBMICallStack }
 { =========================================================================== }
 
@@ -2649,8 +2732,7 @@ begin
   Result := inherited CheckCount;
   if not Result then Exit;
 
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth',
-                                          [cfIgnoreError], R);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', [cfIgnoreError], R);
   List := CreateMIValueList(R);
   cnt := StrToIntDef(List.Values['depth'], -1);
   FreeAndNil(List);
@@ -2663,8 +2745,7 @@ begin
     i:=0;
     repeat
       inc(i);
-      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth ' + IntToStr(i),
-                                              [cfIgnoreError], R);
+      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth %d', [i], [cfIgnoreError], R);
       List := CreateMIValueList(R);
       cnt := StrToIntDef(List.Values['depth'], -1);
       FreeAndNil(List);
@@ -2734,6 +2815,21 @@ begin
   
   FreeAndNil(List);
   Arguments.Free;
+end;
+
+function TGDBMICallStack.GetCurrent: TCallStackEntry;
+var
+  idx: Integer;
+begin
+  idx := TGDBMIDebugger(Debugger).FCurrentStackFrame;
+  if (idx < 0) or (idx >= Count)
+  then Result := nil
+  else Result := Entries[idx];
+end;
+
+procedure TGDBMICallStack.SetCurrent(const AValue: TCallStackEntry);
+begin
+  TGDBMIDebugger(Debugger).CallStackSetCurrent(AValue.Index);
 end;
 
 { =========================================================================== }
