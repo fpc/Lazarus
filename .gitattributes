@@ -2515,7 +2515,10 @@ images/packages/pkg_graph.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
 images/packages/pkg_open.png -text svneol=unset#image/png
+images/packages/pkg_package_autoinstall.png -text
+images/packages/pkg_package_uninstall.png -text
 images/packages/pkg_properties.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired.png -text
 images/packages/pkg_required.png -text svneol=unset#image/png
 images/penguin.xpm -text svneol=native#image/x-xpixmap
 images/pkg_binary.xpm -text svneol=native#image/x-xpixmap
