@@ -1,11 +1,11 @@
 object ViewUnitDialog: TViewUnitDialog
-  Left = 337
+  Left = 330
   Height = 300
-  Top = 295
+  Top = 280
   Width = 320
   HorzScrollBar.Page = 319
   VertScrollBar.Page = 299
-  ActiveControl = Listbox
+  ActiveControl = Edit
   BorderIcons = [biSystemMenu]
   Caption = 'View Project Units'
   ClientHeight = 300
@@ -15,9 +15,9 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Control = btnCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 153
-    Height = 28
-    Top = 266
+    Left = 158
+    Height = 30
+    Top = 264
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -38,10 +38,10 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 234
-    Height = 28
-    Top = 266
-    Width = 80
+    Left = 239
+    Height = 30
+    Top = 264
+    Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -63,7 +63,8 @@ object ViewUnitDialog: TViewUnitDialog
     Align = alTop
     Anchors = [akRight]
     BorderSpacing.Around = 6
-    Enabled = False
+    OnChange = EditChange
+    OnKeyDown = EditKeyDown
     TabOrder = 3
   end
   object Listbox: TListBox
@@ -71,13 +72,14 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = MultiSelectCheckBox
     Left = 6
-    Height = 204
+    Height = 197
     Top = 37
     Width = 308
     Align = alTop
     Anchors = [akBottom]
     BorderSpacing.Around = 6
     ClickOnSelChange = False
+    OnClick = ListboxClick
     OnDblClick = BTNOKCLICK
     OnKeyDown = ListboxKeyDown
     TabOrder = 0
@@ -87,9 +89,9 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = btnCancel
     Left = 6
-    Height = 13
-    Top = 247
-    Width = 75
+    Height = 18
+    Top = 240
+    Width = 78
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Multi Select'
@@ -101,8 +103,8 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 28
-    Top = 266
+    Height = 30
+    Top = 264
     Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True

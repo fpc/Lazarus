@@ -40,7 +40,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts, IDEWindowIntf, IDEContextHelpEdit;
+  LazarusIdeStrConsts, LCLType, IDEWindowIntf, IDEContextHelpEdit;
 
 type
   TViewUnitsEntry = class
@@ -60,11 +60,17 @@ type
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
+    procedure EditChange(Sender: TObject);
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
+    procedure ListboxClick(Sender: TObject);
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
+  private
+    FBlockEditChange: Boolean;
+    FBlockListBoxChange: Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -107,15 +113,30 @@ begin
   end;
 end;
 
+function SearchItem(Items: TStrings; Text: String): Integer;
+var
+  i: integer;
+begin
+  // Items can be unsorted => use simple traverse
+  Result := -1;
+  Text := LowerCase(Text);
+  for i := 0 to Items.Count - 1 do
+    if Pos(Text, LowerCase(Items[i])) = 1 then
+    begin
+      Result := i;
+      break;
+    end;
+end;
+
 { TViewUnitsEntry }
 
 constructor TViewUnitsEntry.Create(const AName: string; AnID: integer;
   ASelected: boolean);
 begin
   inherited Create;
-  Name:=AName;
-  ID:=AnID;
-  Selected:=ASelected;
+  Name := AName;
+  ID := AnID;
+  Selected := ASelected;
 end;
 
 { TViewUnitDialog }
@@ -131,6 +152,8 @@ begin
   CancelControl               := btnCancel;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
   MultiSelectCheckBox.Left    := btnOk.Left;
+  FBlockEditChange := False;
+  FBlockListBoxChange := False;
 end;
 
 Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
@@ -144,23 +167,89 @@ begin
   ShowContextHelpForIDE(Self);
 end;
 
+procedure TViewUnitDialog.EditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+  
+  procedure MoveItemIndex(d: integer); inline;
+  begin
+    d := ListBox.ItemIndex + d;
+    if (d >= 0) and (d < ListBox.Items.Count) then
+    begin
+      FBlockEditChange := True;
+      FBlockListBoxChange := True;
+      ListBox.ItemIndex := d;
+      Edit.Text := ListBox.Items[d];
+      Edit.SelectAll;
+      FBlockListBoxChange := False;
+      FBlockEditChange := False;
+    end;
+  end;
+  
+begin
+  case Key of
+    VK_UP:
+      begin
+        MoveItemIndex(-1);
+        Key := 0;
+      end;
+    VK_DOWN:
+      begin
+        MoveItemIndex(1);
+        Key := 0;
+      end;
+    VK_RETURN: btnOKClick(nil);
+  end;
+end;
+
+procedure TViewUnitDialog.EditChange(Sender: TObject);
+var
+  Index: Integer;
+begin
+  if FBlockEditChange then
+    Exit;
+    
+  FBlockListBoxChange := True;
+  Index := SearchItem(ListBox.Items, Edit.Text);
+  // WriteLn('Index = ', Index);
+  ListBox.ItemIndex := Index;
+  if ListBox.MultiSelect then
+  begin
+    ListBox.ClearSelection;
+    if Index <> -1 then
+      ListBox.Selected[Index] := True;
+  end;
+  FBlockListBoxChange := False;
+end;
+
 Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
 Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
 end;
 
+procedure TViewUnitDialog.ListboxClick(Sender: TObject);
+begin
+  if FBlockListBoxChange then
+    Exit;
+    
+  FBlockEditChange := True;
+  if ListBox.ItemIndex <> -1 then
+    Edit.Text := ListBox.Items[ListBox.ItemIndex]
+  else
+    Edit.Text := '';
+  FBlockEditChange := False;
+end;
+
 procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  //ENTER pressed
-  if Key = 13 then
+  if Key = VK_RETURN then
     btnOKClick(nil);
 end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);
 begin
-  ListBox.Multiselect:=MultiselectCheckBox.Checked;
+  ListBox.Multiselect := MultiselectCheckBox.Checked;
 end;
 
 initialization

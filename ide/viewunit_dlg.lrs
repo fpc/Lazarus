@@ -1,42 +1,43 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TViewUnitDialog','FORMDATA',[
-  'TPF0'#15'TViewUnitDialog'#14'ViewUnitDialog'#4'Left'#3'Q'#1#6'Height'#3','#1
-  +#3'Top'#3''''#1#5'Width'#3'@'#1#18'HorzScrollBar.Page'#3'?'#1#18'VertScrollB'
-  +'ar.Page'#3'+'#1#13'ActiveControl'#7#7'Listbox'#11'BorderIcons'#11#12'biSyst'
-  +'emMenu'#0#7'Caption'#6#18'View Project Units'#12'ClientHeight'#3','#1#11'Cl'
-  +'ientWidth'#3'@'#1#8'Position'#7#14'poScreenCenter'#0#7'TBitBtn'#5'btnOK'#23
-  +'AnchorSideRight.Control'#7#9'btnCancel'#24'AnchorSideBottom.Control'#7#5'Ow'
-  +'ner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#153#0#6'Height'#2#28
-  +#3'Top'#3#10#1#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSi'
-  +'ze'#9#20'BorderSpacing.Around'#2#6#7'Caption'#6#3'&OK'#21'Constraints.MinHe'
-  +'ight'#2#25#20'Constraints.MinWidth'#2'K'#7'Default'#9#4'Kind'#7#4'bkOK'#11
-  +'ModalResult'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#10'BTNOKCLICK'#8'TabOrder'#2
-  +#1#0#0#7'TBitBtn'#9'btnCancel'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'Anch'
-  +'orSideRight.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24
-  +'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBotto'
-  +'m'#4'Left'#3#234#0#6'Height'#2#28#3'Top'#3#10#1#5'Width'#2'P'#7'Anchors'#11
-  +#7'akRight'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#6'Cance'
-  +'l'#9#7'Caption'#6#6'Cancel'#21'Constraints.MinHeight'#2#25#20'Constraints.M'
-  +'inWidth'#2'K'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2#9'NumGlyphs'#2#0#7
-  +'OnClick'#7#14'BTNCANCELCLICK'#8'TabOrder'#2#2#0#0#5'TEdit'#4'Edit'#4'Left'#2
-  +#6#6'Height'#2#25#3'Top'#2#6#5'Width'#3'4'#1#5'Align'#7#5'alTop'#7'Anchors'
-  +#11#7'akRight'#0#20'BorderSpacing.Around'#2#6#7'Enabled'#8#8'TabOrder'#2#3#0
-  +#0#8'TListBox'#7'Listbox'#18'AnchorSideTop.Side'#7#9'asrBottom'#20'AnchorSid'
-  +'eRight.Side'#7#9'asrBottom'#24'AnchorSideBottom.Control'#7#19'MultiSelectCh'
-  +'eckBox'#4'Left'#2#6#6'Height'#3#204#0#3'Top'#2'%'#5'Width'#3'4'#1#5'Align'#7
-  +#5'alTop'#7'Anchors'#11#8'akBottom'#0#20'BorderSpacing.Around'#2#6#16'ClickO'
-  +'nSelChange'#8#10'OnDblClick'#7#10'BTNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyD'
-  +'own'#8'TabOrder'#2#0#0#0#9'TCheckBox'#19'MultiSelectCheckBox'#22'AnchorSide'
-  +'Left.Control'#7#5'Owner'#18'AnchorSideTop.Side'#7#9'asrBottom'#24'AnchorSid'
-  +'eBottom.Control'#7#9'btnCancel'#4'Left'#2#6#6'Height'#2#13#3'Top'#3#247#0#5
-  +'Width'#2'K'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#20'BorderSpacing.Around'#2
-  +#6#7'Caption'#6#12'Multi Select'#7'OnClick'#7#24'MultiselectCheckBoxClick'#8
-  +'TabOrder'#2#4#0#0#7'TBitBtn'#10'HelpButton'#22'AnchorSideLeft.Control'#7#5
-  +'Owner'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9
-  +'asrBottom'#4'Left'#2#6#6'Height'#2#28#3'Top'#3#10#1#5'Width'#2'K'#7'Anchors'
-  +#11#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Cap'
-  +'tion'#6#5'&Help'#21'Constraints.MinHeight'#2#25#20'Constraints.MinWidth'#2
-  +'K'#4'Kind'#7#6'bkHelp'#9'NumGlyphs'#2#0#7'OnClick'#7#15'HelpButtonClick'#8
-  +'TabOrder'#2#5#0#0#0
+  'TPF0'#15'TViewUnitDialog'#14'ViewUnitDialog'#4'Left'#3'J'#1#6'Height'#3','#1
+  +#3'Top'#3#24#1#5'Width'#3'@'#1#18'HorzScrollBar.Page'#3'?'#1#18'VertScrollBa'
+  +'r.Page'#3'+'#1#13'ActiveControl'#7#4'Edit'#11'BorderIcons'#11#12'biSystemMe'
+  +'nu'#0#7'Caption'#6#18'View Project Units'#12'ClientHeight'#3','#1#11'Client'
+  +'Width'#3'@'#1#8'Position'#7#14'poScreenCenter'#0#7'TBitBtn'#5'btnOK'#23'Anc'
+  +'horSideRight.Control'#7#9'btnCancel'#24'AnchorSideBottom.Control'#7#5'Owner'
+  +#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Left'#3#158#0#6'Height'#2#30#3'T'
+  +'op'#3#8#1#5'Width'#2'K'#7'Anchors'#11#7'akRight'#8'akBottom'#0#8'AutoSize'#9
+  +#20'BorderSpacing.Around'#2#6#7'Caption'#6#3'&OK'#21'Constraints.MinHeight'#2
+  +#25#20'Constraints.MinWidth'#2'K'#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalRes'
+  +'ult'#2#1#9'NumGlyphs'#2#0#7'OnClick'#7#10'BTNOKCLICK'#8'TabOrder'#2#1#0#0#7
+  +'TBitBtn'#9'btnCancel'#18'AnchorSideTop.Side'#7#9'asrBottom'#23'AnchorSideRi'
+  +'ght.Control'#7#5'Owner'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'AnchorSi'
+  +'deBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'asrBottom'#4'Lef'
+  +'t'#3#239#0#6'Height'#2#30#3'Top'#3#8#1#5'Width'#2'K'#7'Anchors'#11#7'akRigh'
+  +'t'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#6'Cancel'#9#7'C'
+  +'aption'#6#6'Cancel'#21'Constraints.MinHeight'#2#25#20'Constraints.MinWidth'
+  +#2'K'#4'Kind'#7#8'bkCancel'#11'ModalResult'#2#2#9'NumGlyphs'#2#0#7'OnClick'#7
+  +#14'BTNCANCELCLICK'#8'TabOrder'#2#2#0#0#5'TEdit'#4'Edit'#4'Left'#2#6#6'Heigh'
+  +'t'#2#25#3'Top'#2#6#5'Width'#3'4'#1#5'Align'#7#5'alTop'#7'Anchors'#11#7'akRi'
+  +'ght'#0#20'BorderSpacing.Around'#2#6#8'OnChange'#7#10'EditChange'#9'OnKeyDow'
+  +'n'#7#11'EditKeyDown'#8'TabOrder'#2#3#0#0#8'TListBox'#7'Listbox'#18'AnchorSi'
+  +'deTop.Side'#7#9'asrBottom'#20'AnchorSideRight.Side'#7#9'asrBottom'#24'Ancho'
+  +'rSideBottom.Control'#7#19'MultiSelectCheckBox'#4'Left'#2#6#6'Height'#3#197#0
+  +#3'Top'#2'%'#5'Width'#3'4'#1#5'Align'#7#5'alTop'#7'Anchors'#11#8'akBottom'#0
+  +#20'BorderSpacing.Around'#2#6#16'ClickOnSelChange'#8#7'OnClick'#7#12'Listbox'
+  +'Click'#10'OnDblClick'#7#10'BTNOKCLICK'#9'OnKeyDown'#7#14'ListboxKeyDown'#8
+  +'TabOrder'#2#0#0#0#9'TCheckBox'#19'MultiSelectCheckBox'#22'AnchorSideLeft.Co'
+  +'ntrol'#7#5'Owner'#18'AnchorSideTop.Side'#7#9'asrBottom'#24'AnchorSideBottom'
+  +'.Control'#7#9'btnCancel'#4'Left'#2#6#6'Height'#2#18#3'Top'#3#240#0#5'Width'
+  +#2'N'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#20'BorderSpacing.Around'#2#6#7'C'
+  +'aption'#6#12'Multi Select'#7'OnClick'#7#24'MultiselectCheckBoxClick'#8'TabO'
+  +'rder'#2#4#0#0#7'TBitBtn'#10'HelpButton'#22'AnchorSideLeft.Control'#7#5'Owne'
+  +'r'#24'AnchorSideBottom.Control'#7#5'Owner'#21'AnchorSideBottom.Side'#7#9'as'
+  +'rBottom'#4'Left'#2#6#6'Height'#2#30#3'Top'#3#8#1#5'Width'#2'K'#7'Anchors'#11
+  +#6'akLeft'#8'akBottom'#0#8'AutoSize'#9#20'BorderSpacing.Around'#2#6#7'Captio'
+  +'n'#6#5'&Help'#21'Constraints.MinHeight'#2#25#20'Constraints.MinWidth'#2'K'#4
+  +'Kind'#7#6'bkHelp'#9'NumGlyphs'#2#0#7'OnClick'#7#15'HelpButtonClick'#8'TabOr'
+  +'der'#2#5#0#0#0
 ]);
