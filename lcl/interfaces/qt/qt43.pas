@@ -1,6 +1,6 @@
 unit qt43;
 
-{ Version : 1.58 }
+{ Version : 1.59 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -10675,7 +10675,11 @@ procedure QIODevice_hook_hook_bytesWritten(handle: QIODevice_hookH; hook: QHookH
 procedure QIODevice_hook_hook_aboutToClose(handle: QIODevice_hookH; hook: QHookH); cdecl; external QtIntf name 'QIODevice_hook_hook_aboutToClose';
 
 procedure q_DrawShadeRect(p: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; pal: QPaletteH; sunken: Boolean = False; lineWidth: Integer = 1; midLineWidth: Integer = 0; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawShadeRect';
+procedure q_DrawShadeRect(p: QPainterH; r: PRect; pal: QPaletteH; sunken: Boolean = False; lineWidth: Integer = 1; midLineWidth: Integer = 0; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawShadeRect2';
 procedure q_DrawPlainRect(p: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; p6: PQColor; lineWidth: Integer = 1; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawPlainRect';
+procedure q_DrawPlainRect(p: QPainterH; r: PRect; p3: PQColor; lineWidth: Integer = 1; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawPlainRect2';
+procedure q_DrawWinPanel(p: QPainterH; x: Integer; y: Integer; w: Integer; h: Integer; pal: QPaletteH; sunken: Boolean = False; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawWinPanel';
+procedure q_DrawWinPanel(p: QPainterH; r: PRect; pal: QPaletteH; sunken: Boolean = False; fill: QBrushH = nil); overload; cdecl; external QtIntf name 'q_DrawWinPanel2';
 
 
 procedure initPWideStrings(CUPS, UOPS, LOPS, IPS, FPS: Pointer); cdecl; external QtIntf name 'initPWideStrings';
