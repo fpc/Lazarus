@@ -65,13 +65,16 @@ type
   {
     the editor dialog for a single external tool
   }
+
+  { TExternalToolOptionDlg }
+
   TExternalToolOptionDlg = class(TForm)
     TitleLabel: TLabel;
     TitleEdit: TEdit;
     FilenameLabel: TLabel;
+    FilenameEdit: TEdit;
     OpenDialog: TOpenDialog;
     OpenButton:TButton;
-    FilenameEdit: TEdit;
     ParametersLabel: TLabel;
     ParametersEdit: TEdit;
     WorkingDirLabel: TLabel;
@@ -88,16 +91,15 @@ type
     MacrosGroupbox: TGroupbox;
     MacrosListbox: TListbox;
     MacrosInsertButton: TButton;
-    OkButton: TButton;
-    CancelButton: TButton;
-    procedure CancelButtonClick(Sender: TObject);
-    procedure ExternalToolOptionDlgResize(Sender: TObject);
-    procedure MacrosGroupboxResize(Sender: TObject);
-    procedure OkButtonClick(Sender: TObject);
+    OKButton: TBitBtn;
+    CancelButton: TBitBtn;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure KeyGrabButtonClick(Sender: TObject);
     procedure MacrosInsertButtonClick(Sender: TObject);
     procedure MacrosListboxClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure OpenButtonClick(sender : TOBject);
   private
     fOptions: TExternalToolOptions;
@@ -112,8 +114,6 @@ type
     procedure SetOptions(TheOptions: TExternalToolOptions);
     procedure SetTransferMacros(TransferMacroList: TTransferMacroList);
   public
-    constructor Create(AnOwner: TComponent); override;
-    destructor Destroy; override;
     property Options: TExternalToolOptions read fOptions write SetOptions;
     property MacroList: TTransferMacroList
            read fTransferMacros write SetTransferMacros;
@@ -122,10 +122,8 @@ type
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   ExternalToolOptions: TExternalToolOptions):TModalResult;
-
-
+  
 implementation
-
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
   ExternalToolOptions: TExternalToolOptions):TModalResult;
@@ -146,281 +144,6 @@ end;
 
 
 { TExternalToolOptionDlg }
-
-constructor TExternalToolOptionDlg.Create(AnOwner: TComponent);
-var
-  i: word;
-  s: string;
-begin
-  inherited Create(AnOwner);
-
-  Name:='ExternalToolOptionDlg';
-  
-  GrabbingKey:=0;
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=560;
-    Height:=450;
-    Caption:=lisEdtExtToolEditTool;
-    Position:=poScreenCenter;
-
-    TitleLabel:=TLabel.Create(Self);
-    with TitleLabel do begin
-      Name:='TitleLabel';
-      Parent:=Self;
-      SetBounds(5,5,110,22);
-      Caption:=dlgPOTitle;
-    end;
-    
-    TitleEdit:=TEdit.Create(Self);
-    with TitleEdit do begin
-      Name:='TitleEdit';
-      Parent:=Self;
-      Left:=TitleLabel.Left+TitleLabel.Width+5;
-      Top:=TitleLabel.Top+2;
-      Width:=Self.ClientWidth-Left-10;
-      Height:=25;
-    end;
-    
-    FilenameLabel:=TLabel.Create(Self);
-    with FilenameLabel do begin
-      Name:='FilenameLabel';
-      Parent:=Self;
-      SetBounds(TitleLabel.Left,TitleLabel.Top+TitleLabel.Height+10,
-        TitleLabel.Width,TitleLabel.Height);
-      Caption:=lisEdtExtToolProgramfilename;
-    end;
-    
-    FilenameEdit:=TEdit.Create(Self);
-    with FilenameEdit do begin
-      Name:='FilenameEdit';
-      Parent:=Self;
-      SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width-TitleEdit.Height-5,
-        TitleEdit.Height);
-    end;
-    
-    OpenButton:=TButton.Create(Self);
-    with OpenButton do
-         begin
-           Name     := 'OpenButton';
-           Caption  := '...';
-           ShowHint := True;
-           Hint     := 'Click here to browse the file';
-           Parent   := Self;
-           SetBounds(FilenameEdit.Left+FilenameEdit.Width+5,
-                     FilenameLabel.Top+2,TitleEdit.Height,
-                     TitleEdit.Height);
-           OnClick := @OpenButtonClick;
-         end;
-    
-    OpenDialog:=TOpenDialog.Create(Self);
-    with OpenDialog do
-         begin
-           Title   := 'Select the file';
-           Filter  := 'Programs (*.exe)|*.exe|All Files (*.*)|*.*';
-           Options := [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail];
-         End;
-    
-    ParametersLabel:=TLabel.Create(Self);
-    with ParametersLabel do begin
-      Name:='ParametersLabel';
-      Parent:=Self;
-      SetBounds(FilenameLabel.Left,FilenameLabel.Top+FilenameLabel.Height+10,
-        FilenameLabel.Width,FilenameLabel.Height);
-      Caption:=lisEdtExtToolParameters;
-    end;
-    
-    ParametersEdit:=TEdit.Create(Self);
-    with ParametersEdit do begin
-      Name:='ParametersEdit';
-      Parent:=Self;
-      SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,TitleEdit.Width,
-        FilenameEdit.Height);
-    end;
-    
-    WorkingDirLabel:=TLabel.Create(Self);
-    with WorkingDirLabel do begin
-      Name:='WorkingDirLabel';
-      Parent:=Self;
-      SetBounds(ParametersLabel.Left,
-        ParametersLabel.Top+ParametersLabel.Height+10,ParametersLabel.Width,
-        ParametersLabel.Height);
-      Caption:=lisEdtExtToolWorkingDirectory;
-    end;
-    
-    WorkingDirEdit:=TEdit.Create(Self);
-    with WorkingDirEdit do begin
-      Name:='WorkingDirEdit';
-      Parent:=Self;
-      SetBounds(ParametersEdit.Left,WorkingDirLabel.Top+2,ParametersEdit.Width,
-        ParametersEdit.Height);
-    end;
-    
-    OptionsGroupBox:=TGroupBox.Create(Self);
-    with OptionsGroupBox do begin
-      Name:='OptionsGroupBox';
-      Parent:=Self;
-      Caption:=lisLazBuildOptions;
-      Left:=5;
-      Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
-      Width:=Self.ClientWidth-Left-Left;
-      Height:=66;
-    end;
-    
-    OptionScanOutputForFPCMessagesCheckBox:=TCheckBox.Create(Self);
-    with OptionScanOutputForFPCMessagesCheckBox do begin
-      Name:='OptionScanOutputForFPCMessagesCheckBox';
-      Parent:=OptionsGroupBox;
-      SetBounds(5,2,400,20);
-      Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
-    end;
-
-    OptionScanOutputForMakeMessagesCheckBox:=TCheckBox.Create(Self);
-    with OptionScanOutputForMakeMessagesCheckBox do begin
-      Name:='OptionScanOutputForMakeMessagesCheckBox';
-      Parent:=OptionsGroupBox;
-      SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
-                +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
-      Caption:=lisEdtExtToolScanOutputForMakeMessages;
-    end;
-
-    KeyGroupBox:=TGroupBox.Create(Self);
-    with KeyGroupBox do begin
-      Name:='KeyGroupBox';
-      Parent:=Self;
-      Caption:=lisEdtExtToolKey;
-      Left:=5;
-      Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
-      Width:=Self.ClientWidth-Left-Left;
-      Height:=50;
-    end;
-
-    KeyCtrlCheckBox:=TCheckBox.Create(Self);
-    with KeyCtrlCheckBox do begin
-      Name:='KeyCtrlCheckBox';
-      Parent:=KeyGroupBox;
-      Caption:=lisEdtExtToolCtrl;
-      Left:=5;
-      Top:=2;
-      Width:=50;
-      Height:=20;
-    end;
-
-    KeyAltCheckBox:=TCheckBox.Create(Self);
-    with KeyAltCheckBox do begin
-      Name:='KeyAltCheckBox';
-      Parent:=KeyGroupBox;
-      Caption:=lisEdtExtToolAlt;
-      Left:=KeyCtrlCheckBox.Left+KeyCtrlCheckBox.Width+10;
-      Top:=KeyCtrlCheckBox.Top;
-      Height:=20;
-      Width:=KeyCtrlCheckBox.Width;
-    end;
-
-    KeyShiftCheckBox:=TCheckBox.Create(Self);
-    with KeyShiftCheckBox do begin
-      Name:='KeyShiftCheckBox';
-      Parent:=KeyGroupBox;
-      Caption:=lisEdtExtToolShift;
-      Left:=KeyAltCheckBox.Left+KeyAltCheckBox.Width+10;
-      Top:=KeyCtrlCheckBox.Top;
-      Height:=20;
-      Width:=KeyCtrlCheckBox.Width;
-    end;
-
-    KeyComboBox:=TComboBox.Create(Self);
-    with KeyComboBox do begin
-      Name:='KeyComboBox';
-      Parent:=KeyGroupBox;
-      Left:=KeyShiftCheckBox.Left+KeyShiftCheckBox.Width+10;
-      Top:=KeyCtrlCheckBox.Top;
-      Width:=190;
-      Items.BeginUpdate;
-      Items.Add('none');
-      for i:=1 to 145 do begin
-        s:=KeyAndShiftStateToEditorKeyString(i,[]);
-        if not EditorKeyStringIsIrregular(s) then
-          Items.Add(s);
-      end;
-      Items.EndUpdate;
-      ItemIndex:=0;
-    end;
-    
-    KeyGrabButton:=TButton.Create(Self);
-    with KeyGrabButton do begin
-      Parent:=KeyGroupBox;
-      Left:=KeyComboBox.Left+KeyComboBox.Width+10;
-      Top:=KeyCtrlCheckBox.Top;
-      Width:=150;
-      Height:=25;
-      Caption:=srkmGrabKey;
-      Name:='KeyGrabButton';
-      OnClick:=@KeyGrabButtonClick;
-    end;
-
-    MacrosGroupbox:=TGroupbox.Create(Self);
-    with MacrosGroupbox do begin
-      Name:='MacrosGroupbox';
-      Parent:=Self;
-      Left:=KeyGroupBox.Left;
-      Top:=KeyGroupBox.Top+KeyGroupBox.Height+10;
-      Width:=KeyGroupBox.Width;
-      Height:=Self.ClientHeight-50-Top;
-      Caption:=lisEdtExtToolMacros;
-      OnResize:=@MacrosGroupboxResize;
-    end;
-    
-    MacrosListbox:=TListbox.Create(Self);
-    with MacrosListbox do begin
-      Name:='MacrosListbox';
-      Parent:=MacrosGroupbox;
-      SetBounds(5,5,MacrosGroupbox.ClientWidth-120,
-                   MacrosGroupbox.ClientHeight-30);
-      OnClick:=@MacrosListboxClick;
-    end;
-    
-    MacrosInsertButton:=TButton.Create(Self);
-    with MacrosInsertButton do begin
-      Name:='MacrosInsertButton';
-      Parent:=MacrosGroupbox;
-      SetBounds(MacrosGroupbox.ClientWidth-90,5,70,25);
-      Caption:=lisEdtExtToolInsert;
-      OnClick:=@MacrosInsertButtonClick;
-      Enabled:=false;
-    end;
-    
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      SetBounds(270,Self.ClientHeight-40,100,25);
-      Caption:=lisLazBuildOk;
-      OnClick:=@OkButtonClick;
-      Default:=true;
-    end;
-    
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      SetBounds(390,OkButton.Top,100,25);
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Cancel:=true;
-    end;
-    
-    OnResize:=@ExternalToolOptionDlgResize;
-    KeyPreview:=true;
-    OnKeyUp:=@FormKeyUp;
-  end;
-  fOptions:=TExternalToolOptions.Create;
-  ExternalToolOptionDlgResize(nil);
-end;
-
-destructor TExternalToolOptionDlg.Destroy;
-begin
-  fOptions.Free;
-  inherited Destroy;
-end;
 
 procedure TExternalToolOptionDlg.OpenButtonClick(sender : TOBject);
 begin
@@ -466,150 +189,82 @@ begin
     fOptions.ScanOutputForMakeMessages;
 end;
 
-procedure TExternalToolOptionDlg.OkButtonClick(Sender: TObject);
+procedure TExternalToolOptionDlg.FormCreate(Sender: TObject);
+var
+  i: word;
+  s: string;
 begin
-  if (TitleEdit.Text='') or (FilenameEdit.Text='') then begin
-    MessageDlg(lisEdtExtToolTitleAndFilenameRequired,
-                  lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
-                  mtError, [mbCancel], 0);
-    exit;
-  end;
-  SaveToOptions;
-  ModalResult:=mrOk;
-end;
+  GrabbingKey:=0;
+  Caption:=lisEdtExtToolEditTool;
 
-procedure TExternalToolOptionDlg.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
+  with TitleLabel do
+    Caption:=dlgPOTitle;
 
-procedure TExternalToolOptionDlg.ExternalToolOptionDlgResize(Sender: TObject);
-begin
-  with TitleLabel do begin
-    SetBounds(5,5,110,22);
+  with FilenameLabel do
+    Caption:=lisEdtExtToolProgramfilename;
+
+  with OpenButton do
+    Hint:=lisClickHereToBrowseTheFileHint;
+
+  with OpenDialog do begin
+    Title:=lisSelectFile;
+    Filter:=lisExePrograms+' (*.exe)|*.exe|'+lisAllFiles+' (*.*)|*.*';
   end;
 
-  with TitleEdit do begin
-    Left:=TitleLabel.Left+TitleLabel.Width+5;
-    Top:=TitleLabel.Top+2;
-    Width:=Self.ClientWidth-Left-10;
-    Height:=25;
-  end;
+  with ParametersLabel do
+    Caption:=lisEdtExtToolParameters;
 
-  with FilenameLabel do begin
-    SetBounds(TitleLabel.Left,TitleLabel.Top+TitleLabel.Height+10,
-      TitleLabel.Width,TitleLabel.Height);
-  end;
+  with WorkingDirLabel do
+    Caption:=lisEdtExtToolWorkingDirectory;
 
-  with FilenameEdit do begin
-    SetBounds(TitleEdit.Left,FilenameLabel.Top+2,TitleEdit.Width-TitleEdit.Height-5,
-              TitleEdit.Height);
-  end;
+  with OptionsGroupBox do
+    Caption:=lisLazBuildOptions;
 
-  with ParametersLabel do begin
-    SetBounds(FilenameLabel.Left,FilenameLabel.Top+FilenameLabel.Height+10,
-      FilenameLabel.Width,FilenameLabel.Height);
-  end;
+  with OptionScanOutputForFPCMessagesCheckBox do
+    Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
 
-  with ParametersEdit do begin
-    SetBounds(FilenameEdit.Left,ParametersLabel.Top+2,TitleEdit.Width,
-      FilenameEdit.Height);
-  end;
+  with OptionScanOutputForMakeMessagesCheckBox do
+    Caption:=lisEdtExtToolScanOutputForMakeMessages;
 
-  with WorkingDirLabel do begin
-    SetBounds(ParametersLabel.Left,
-      ParametersLabel.Top+ParametersLabel.Height+10,ParametersLabel.Width,
-      ParametersLabel.Height);
-  end;
+  with KeyGroupBox do
+    Caption:=lisEdtExtToolKey;
 
-  with WorkingDirEdit do begin
-    SetBounds(ParametersEdit.Left,WorkingDirLabel.Top+2,ParametersEdit.Width,
-      ParametersEdit.Height);
-  end;
+  with KeyCtrlCheckBox do
+    Caption:=lisEdtExtToolCtrl;
 
-  with OptionsGroupBox do begin
-    Left:=5;
-    Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
-    Width:=Self.ClientWidth-Left-Left;
-    Height:=66;
-  end;
+  with KeyAltCheckBox do
+    Caption:=lisEdtExtToolAlt;
 
-  with OptionScanOutputForFPCMessagesCheckBox do begin
-    SetBounds(5,2,400,20);
-  end;
-
-  with OptionScanOutputForMakeMessagesCheckBox do begin
-    SetBounds(5,OptionScanOutputForFPCMessagesCheckBox.Top
-              +OptionScanOutputForFPCMessagesCheckBox.Height+4,400,20);
-  end;
-
-  with KeyGroupBox do begin
-    Left:=5;
-    Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+12;
-    Width:=Self.ClientWidth-Left-Left;
-    Height:=50;
-  end;
-
-  with KeyCtrlCheckBox do begin
-    Left:=5;
-    Top:=2;
-    Width:=45;
-    Height:=20;
-  end;
-
-  with KeyAltCheckBox do begin
-    Left:=KeyCtrlCheckBox.Left+KeyCtrlCheckBox.Width+5;
-    Top:=KeyCtrlCheckBox.Top;
-    Height:=20;
-    Width:=KeyCtrlCheckBox.Width;
-  end;
-
-  with KeyShiftCheckBox do begin
-    Left:=KeyAltCheckBox.Left+KeyAltCheckBox.Width+5;
-    Top:=KeyCtrlCheckBox.Top;
-    Height:=20;
-    Width:=KeyCtrlCheckBox.Width;
-  end;
+  with KeyShiftCheckBox do
+    Caption:=lisEdtExtToolShift;
 
   with KeyComboBox do begin
-    Left:=KeyShiftCheckBox.Left+KeyShiftCheckBox.Width+5;
-    Top:=KeyCtrlCheckBox.Top;
-    Width:=190;
+    Items.BeginUpdate;
+    Items.Add(srVK_NONE);
+    for i:=1 to 145 do begin
+      s:=KeyAndShiftStateToEditorKeyString(i,[]);
+      if not EditorKeyStringIsIrregular(s) then
+        Items.Add(s);
+    end;
+    Items.EndUpdate;
+    ItemIndex:=0;
   end;
 
-  with KeyGrabButton do begin
-    Left:=KeyComboBox.Left+KeyComboBox.Width+5;
-    Top:=KeyCtrlCheckBox.Top;
-    Width:=100;
-    Height:=25;
-  end;
+  with KeyGrabButton do
+    Caption:=srkmGrabKey;
 
-  with MacrosGroupbox do begin
-    Left:=KeyGroupBox.Left;
-    Top:=KeyGroupBox.Top+KeyGroupBox.Height+10;
-    Width:=KeyGroupBox.Width;
-    Height:=Self.ClientHeight-50-Top;
-  end;
+  with MacrosGroupbox do
+    Caption:=lisEdtExtToolMacros;
 
-  with OkButton do begin
-    SetBounds(270,Self.ClientHeight-40,100,25);
-  end;
+  with MacrosInsertButton do
+    Caption:=lisCodeTemplAdd;
 
-  with CancelButton do begin
-    SetBounds(390,OkButton.Top,100,25);
-  end;
+  fOptions:=TExternalToolOptions.Create;
 end;
 
-procedure TExternalToolOptionDlg.MacrosGroupboxResize(Sender: TObject);
+procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
 begin
-  with MacrosInsertButton do begin
-    SetBounds(MacrosGroupbox.ClientWidth-75,5,70,MacrosInsertButton.Height);
-  end;
-  
-  with MacrosListbox do begin
-    SetBounds(2,2,MacrosInsertButton.Left-5,
-                 MacrosGroupbox.ClientHeight-4);
-  end;
+  fOptions.Free;
 end;
 
 procedure TExternalToolOptionDlg.KeyGrabButtonClick(Sender: TObject);
@@ -694,7 +349,7 @@ begin
     end;
   end;
   if GrabbingKey=1 then
-    KeyGrabButton.Caption:=srkmPressKey
+    KeyGrabButton.Caption:=srkmPressKey;
 end;
 
 procedure TExternalToolOptionDlg.FormKeyUp(Sender: TObject; var Key: Word;
@@ -735,6 +390,18 @@ begin
   MacrosInsertButton.Enabled:=(MacrosListbox.ItemIndex>=0);
 end;
 
+procedure TExternalToolOptionDlg.OKButtonClick(Sender: TObject);
+begin
+  if (TitleEdit.Text='') or (FilenameEdit.Text='') then begin
+    MessageDlg(lisEdtExtToolTitleAndFilenameRequired,
+                  lisEdtExtToolAValidToolNeedsAtLeastATitleAndAFilename,
+                  mtError, [mbCancel], 0);
+    exit;
+  end;
+  SaveToOptions;
+  ModalResult:=mrOk;
+end;
+
 { TExternalToolOptions }
 
 procedure TExternalToolOptions.Assign(Source: TPersistent);
@@ -755,5 +422,8 @@ begin
   fShift:=[];
   inherited Clear;
 end;
+
+initialization
+  {$I exttooleditdlg.lrs}
 
 end.

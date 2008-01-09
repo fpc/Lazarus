@@ -688,6 +688,9 @@ resourcestring
   lisOpenProjectFile = 'Open Project File';
   lisLazarusProjectInfoFile = 'Lazarus Project Info file';
   lisAllFiles = 'All Files';
+  lisExePrograms = 'Programs';
+  lisSelectFile = 'Select the file';
+  lisClickHereToBrowseTheFileHint = 'Click here to browse the file';
   lisProjectClosed = 'Project closed';
   lisTheProjectIsClosedThereAreNowThreePossibilitiesHin = 'The project is '
     +'closed. There are now three possibilities.%sHint: You do not need to '
@@ -1924,6 +1927,7 @@ resourcestring
   srVK_NUMLOCK    = 'Numlock';
   srVK_SCROLL     = 'Scroll';
   srVK_IRREGULAR  = 'Irregular ';
+  srVK_NONE       = 'none';
   srkm_Alt        = 'Alt';
   srkm_Ctrl       = 'Ctrl';
 
