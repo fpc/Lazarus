@@ -2511,11 +2511,15 @@ images/menu/menu_view_units.png -text svneol=unset#image/png
 images/mouse.xpm -text svneol=native#image/x-xpixmap
 images/notebook.xpm -text svneol=native#image/x-xpixmap
 images/packages/pkg_add.png -text svneol=unset#image/png
+images/packages/pkg_binary.png -text
+images/packages/pkg_compile.png -text
+images/packages/pkg_conflict.png -text
 images/packages/pkg_graph.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
 images/packages/pkg_open.png -text svneol=unset#image/png
 images/packages/pkg_package_autoinstall.png -text
+images/packages/pkg_package_circle.png -text
 images/packages/pkg_package_uninstall.png -text
 images/packages/pkg_properties.png -text svneol=unset#image/png
 images/packages/pkg_removedrequired.png -text
