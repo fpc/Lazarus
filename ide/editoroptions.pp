@@ -2363,6 +2363,7 @@ begin
   // Display options
   ASynEdit.Gutter.Visible := fVisibleGutter;
   ASynEdit.Gutter.ShowLineNumbers := fShowLineNumbers;
+  ASynEdit.Gutter.AutoSize := true;
   //ASynEdit.Gutter.AutoSize:= fShowLineNumbers;
   if ASynEdit.Gutter.ShowCodeFolding<>FUseCodeFolding then begin
     ASynEdit.Gutter.ShowCodeFolding := FUseCodeFolding;
