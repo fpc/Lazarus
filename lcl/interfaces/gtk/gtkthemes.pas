@@ -137,6 +137,7 @@ procedure TGtkThemeServices.DrawPixmap(DC: HDC; Area: PGdkRectangle; PixmapIndex
 var
   APixmap, APixmapMask: PGdkPixmap;
   DevCtx: TGtkDeviceContext absolute DC;
+  w, h: gint;
 begin
   if (PixmapIndex >= Low(PixmapArray)) and (PixmapIndex <= High(PixmapArray)) then
   begin
@@ -145,12 +146,19 @@ begin
       APixmapMask, nil, PixmapArray[PixmapIndex]);
     if APixmap <> nil then
     begin
+      gdk_drawable_get_size(APixmap, @w, @h);
+      w := (Area^.Width - w) div 2;
+      if w < 0 then
+        w := 0;
+      h := (Area^.Height - h) div 2;
+      if h < 0 then
+        h := 0;
       if APixmapMask <> nil then
       begin
         gdk_gc_set_clip_mask(DevCtx.GC, APixmapMask);
-        gdk_gc_set_clip_origin(DevCtx.GC, Area^.x, Area^.y);
+        gdk_gc_set_clip_origin(DevCtx.GC, Area^.x + w, Area^.y + h);
       end;
-      gdk_draw_pixmap(DevCtx.Drawable, DevCtx.GC, APixmap, 0, 0, Area^.x, Area^.y,
+      gdk_draw_pixmap(DevCtx.Drawable, DevCtx.GC, APixmap, 0, 0, Area^.x + w, Area^.y + h,
         Area^.Width, Area^.Height);
       if APixmapMask <> nil then
         DevCtx.ResetGCClipping;
