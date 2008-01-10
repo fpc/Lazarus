@@ -1551,36 +1551,21 @@ end;
 procedure TQtDeviceContext.qDrawWinPanel(x, y, w, h: integer;
   Palette: QPaletteH; Sunken: Boolean; lineWidth: Integer; FillBrush: QBrushH);
 var
-  Color1, Color2: TQColor;
-  OldPen: QPenH;
+  i: integer;
 begin
-  // todo: use q_DrawWinPanel()
   if Palette = nil then
     Palette := QWidget_palette(Parent);
-  if Sunken then
+
+  // since q_DrawWinPanel doesnot supports lineWidth we should do it ourself
+  for i := 1 to lineWidth - 1 do
   begin
-    Color1 := QBrush_color(QPalette_shadow(Palette))^;
-    Color2 := QBrush_color(QPalette_light(Palette))^;
-  end
-  else
-  begin
-    Color1 := QBrush_color(QPalette_light(Palette))^;
-    Color2 := QBrush_color(QPalette_shadow(Palette))^;
+    q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken);
+    inc(x);
+    inc(y);
+    dec(w, 2);
+    dec(h, 2);
   end;
-  dec(w);
-  dec(h);
-  OldPen := QPainter_pen(Widget);
-  QPainter_setPen(Widget, @Color1);
-  if lineWidth > 1 then
-    QPen_setWidth(QPainter_pen(Widget), lineWidth);
-  drawLine(x, y, x + w, y);
-  drawLine(x, y, x, y + h);
-  QPainter_setPen(Widget, @Color2);
-  if lineWidth > 1 then
-    QPen_setWidth(QPainter_pen(Widget), lineWidth);
-  drawLine(x + w, y, x + w, y + h);
-  drawLine(x, y + h, x + w, y + h);
-  QPainter_setPen(Widget, oldPen);
+  q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush);
 end;
 
 {------------------------------------------------------------------------------
