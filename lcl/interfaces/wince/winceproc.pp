@@ -778,7 +778,7 @@ var
   Section: Windows.TDIBSection;
 begin
   // first try if the bitmap is created as section
-  if Windows.GetObject(ABitmap, SizeOf(Section), @Section) > 0
+  if (Windows.GetObject(ABitmap, SizeOf(Section), @Section) > 0) and (Section.dsBm.bmBits <> nil)
   then begin
     with Section.dsBm do
       Result := CopyImageData(bmWidth, bmHeight, bmWidthBytes, bmBitsPixel, bmBits, ARect, riloTopToBottom, riloTopToBottom, ALineEnd, AData, ADataSize);
