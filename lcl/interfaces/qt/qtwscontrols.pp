@@ -261,8 +261,6 @@ end;
 class procedure TQtWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
   TQtWidget(AWinControl.Handle).Release;
-
-  AWinControl.Handle := 0;
 end;
 
 {------------------------------------------------------------------------------

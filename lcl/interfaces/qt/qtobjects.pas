@@ -611,7 +611,7 @@ begin
   begin
     AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
     QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
-    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, QtLowEventPriority);
+    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, Ord(QtLowEventPriority));
   end
   else
   begin
