@@ -757,9 +757,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.DrawEdge(DC: HDC; Var ARect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
 Begin
-  Assert(False, Format('trace:> [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
+  Assert(False, Format('trace:> [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
   Result := Boolean(Windows.DrawEdge(DC, @ARect, edge, grfFlags));
-  Assert(False, Format('trace:< [TWin32WidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
+  Assert(False, Format('trace:< [TWinCEWidgetSet.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom]));
 End;
 
 {------------------------------------------------------------------------------
@@ -823,7 +823,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWinCEWidgetSet.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 Begin
-  Assert(False, Format('Trace:[TWin32WidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BoolToStr(BEnable)]));
+  Assert(False, Format('Trace:[TWinCEWidgetSet.EnableWindow] HWnd: 0x%x, BEnable: %s', [HWnd, BoolToStr(BEnable)]));
   Result := Boolean(Windows.EnableWindow(HWnd, BEnable));
 End;
 

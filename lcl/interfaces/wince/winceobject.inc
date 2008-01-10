@@ -50,7 +50,7 @@ begin
   WinCEWidgetSet := Self;
 end;
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.Destroy
+  Method: TWinCEWidgetSet.Destroy
   Params:  None
   Returns: Nothing
 
@@ -61,12 +61,12 @@ var
   n: integer;
   TimerInfo : PWinCETimerInfo;
 Begin
-  Assert(False, 'Trace:TWin32WidgetSet is being destroyed');
+  Assert(False, 'Trace:TWinCEWidgetSet is being destroyed');
 
   n := FTimerData.Count;
   if (n > 0) then
   begin
-    DebugLn(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    DebugLn(Format('[TWinCEWidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
     while (n > 0) do
     begin
       dec(n);
@@ -103,7 +103,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AppInit
+  Method: TWinCEWidgetSet.AppInit
   Params:  None
   Returns: Nothing
 
@@ -204,7 +204,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AppBringToFront
+  Method: TWinCEWidgetSet.AppBringToFront
   Params:  None
   Returns: Nothing
 
@@ -370,7 +370,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AppWaitMessage
+  Method: TWinCEWidgetSet.AppWaitMessage
   Params:  None
   Returns: Nothing
 
@@ -382,7 +382,7 @@ var
   timeout,retVal: dword;
 begin
   RedrawMenus;
-  Assert(False, 'Trace:TWin32WidgetSet.WaitMessage - Start');
+  Assert(False, 'Trace:TWinCEWidgetSet.WaitMessage - Start');
   if FWaitPipeHandlers <> nil then
     timeout := 100
   else
@@ -399,7 +399,7 @@ begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AppTerminate
+  Method: TWinCEWidgetSet.AppTerminate
   Params:  None
   Returns: Nothing
 
@@ -408,7 +408,7 @@ End;
 
 procedure TWinCEWidgetSet.AppTerminate;
 begin
-  Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
+  Assert(False, 'Trace:TWinCEWidgetSet.AppTerminate - Start');
 //  roozbeh
 //  not existed in win32
 //  AppTerminated := True;
@@ -509,7 +509,7 @@ end;
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.WinRegister
+  Method: TWinCEWidgetSet.WinRegister
   Params: None
   Returns: If the window was successfully regitered
 
@@ -563,7 +563,7 @@ Begin
 //    Handle := ParentPanel;
   If TControl(Sender).HandleObjectShouldBeVisible Then
   Begin
-    Assert(False, 'Trace: [TWin32WidgetSet.ShowHide] Showing the window');
+    Assert(False, 'Trace: [TWinCEWidgetSet.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
       Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW or SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_NOOWNERZORDER);
@@ -585,13 +585,13 @@ Begin
   End
   Else
   Begin
-    Assert(False, 'TRACE: [TWin32WidgetSet.ShowHide] Hiding the window');
+    Assert(False, 'TRACE: [TWinCEWidgetSet.ShowHide] Hiding the window');
     ShowWindow(Handle, SW_HIDE);
   End;
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.DCReDraw
+  Method: TWinCEWidgetSet.DCReDraw
   Params: CanvasHandle - HDC to redraw
   Returns: Nothing
 
@@ -600,14 +600,14 @@ End;
 procedure TWinCEWidgetSet.DCRedraw(CanvasHandle: HDC);
 begin
   // TODO: implement me!
-  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Redrawing...');
+  Assert(False, 'TRACE:[TWinCEWidgetSet.ReDraw] Redrawing...');
   Assert(False, 'TRACE:Invalidating the window');
   Assert(False, 'TRACE:Updating the window');
-  Assert(False, 'TRACE:[TWin32WidgetSet.ReDraw] Finished redrawing');
+  Assert(False, 'TRACE:[TWinCEWidgetSet.ReDraw] Finished redrawing');
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetPixel
+  Method: TWinCEWidgetSet.SetPixel
   Params:  Canvas - canvas to set color on
            X, Y   - position
            AColor - new color for specified position
@@ -621,7 +621,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.GetPixel
+  Method: TWinCEWidgetSet.GetPixel
   Params:  Canvas - canvas to get color from
            X, Y   - position
   Returns: Color at specified point

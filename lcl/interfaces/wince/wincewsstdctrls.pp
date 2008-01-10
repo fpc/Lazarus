@@ -682,7 +682,7 @@ begin
   Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
   if Result = LB_ERR Then
   Begin
-    Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index '+
+    Assert(False, 'Trace:[TWinCEWidgetSet.IntSendMessage3] Could not retrieve item index '+
         'via LM_GETITEMINDEX; try selecting an item first');
     Result := -1;
   End;
@@ -748,7 +748,7 @@ var
   Handle: HWND;
   pwAText : pWideChar;
 begin
-  Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
+  Assert(False, Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
   pwAText := StringToPWideChar(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
@@ -1011,7 +1011,8 @@ begin
   // can not apply on the fly: needs window recreate
   RecreateWnd(ACustomStaticText);
 end;
-{ TWin32WSButtonControl }
+
+{ TWinCEWSButtonControl }
 
 class procedure TWinCEWSButtonControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);

@@ -624,6 +624,6 @@ initialization
 //  RegisterWSComponent(TLabeledEdit, TWinCEWSLabeledEdit);
   RegisterWSComponent(TCustomPanel, TWinCEWSCustomPanel);
 //  RegisterWSComponent(TPanel, TWinCEWSPanel);
-//  RegisterWSComponent(TCustomTrayIcon, TWin32WSCustomTrayIcon);
+//  RegisterWSComponent(TCustomTrayIcon, TWinCEWSCustomTrayIcon);
 ////////////////////////////////////////////////////
 end.

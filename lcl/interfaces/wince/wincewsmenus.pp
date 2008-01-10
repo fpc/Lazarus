@@ -54,7 +54,7 @@ type
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
   end;
 
-  { TWin32WSMenu }
+  { TWinCEWSMenu }
 
   TWinCEWSMenu = class(TWSMenu)
   private
@@ -63,7 +63,7 @@ type
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
   end;
 
-  { TWin32WSMainMenu }
+  { TWinCEWSMainMenu }
 
   TWinCEWSMainMenu = class(TWSMainMenu)
   private
@@ -71,7 +71,7 @@ type
   public
   end;
 
-  { TWin32WSPopupMenu }
+  { TWinCEWSPopupMenu }
 
   TWinCEWSPopupMenu = class(TWSPopupMenu)
   private
@@ -813,7 +813,7 @@ initialization
 ////////////////////////////////////////////////////
   RegisterWSComponent(TMenuItem, TWinCEWSMenuItem);
   RegisterWSComponent(TMenu, TWinCEWSMenu);
-//  RegisterWSComponent(TMainMenu, TWin32WSMainMenu);
+//  RegisterWSComponent(TMainMenu, TWinCEWSMainMenu);
   RegisterWSComponent(TPopupMenu, TWinCEWSPopupMenu);
 ////////////////////////////////////////////////////
 finalization

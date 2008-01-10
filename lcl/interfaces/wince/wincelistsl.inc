@@ -2,7 +2,7 @@
 
 {******************************************************************************
                                  win32listsl.inc
-                 TWin32ListStringList and TWin32CListStringList
+                 TWinCEListStringList and TWinCECListStringList
 
  ******************************************************************************
 
