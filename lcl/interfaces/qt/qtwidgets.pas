@@ -1272,14 +1272,13 @@ end;
 
 function TQtWidget.CanPostponeFree: Boolean;
 begin
-  Result := (LCLObject = nil) or
-         not(csDestroying in LCLObject.ComponentState);
+  Result := not Application.Terminated;
 end;
 
 procedure TQtWidget.Release;
 begin
-  inherited Release;
   LCLObject := nil;
+  inherited Release;
 end;
 
 {$IFDEF VerboseQt}

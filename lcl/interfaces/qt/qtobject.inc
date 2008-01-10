@@ -170,6 +170,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppTerminate;
 begin
+  AppProcessMessages; // process pending messages since there can be release messages
   QCoreApplication_quit;
 end;
 
@@ -266,8 +267,10 @@ begin
     LCLQt_Destroy:
       begin
         AObject := TQtObject(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
+        //WriteLn('Catched free for: ', PtrUInt(AObject), ' : ', AObject.ClassName);
         AObject.Free;
         Result := True;
+        QEvent_Accept(Event);
       end;
   end;
 end;

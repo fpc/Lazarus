@@ -582,6 +582,7 @@ end;
 
 constructor TQtObject.Create;
 begin
+  FEventHook := nil;
   FUpdateCount := 0;
   FInEventCount := 0;
   FReleaseInEvent := False;
@@ -589,6 +590,7 @@ end;
 
 destructor TQtObject.Destroy;
 begin
+  //WriteLn('destroying: ', PtrUInt(Self), ' : ', ClassName);
   if TheObject <> nil then
   begin
     DetachEvents;
@@ -600,18 +602,21 @@ end;
 
 function TQtObject.CanPostponeFree: Boolean;
 begin
-  Result := True;
+  Result := False;
 end;
 
 procedure TQtObject.Release;
 var
   AEvent: QLCLMessageEventH;
 begin
+  {WriteLn('Release: ', PtrUInt(Self), ' : ', ClassName);
+  DumpStack;}
   if CanPostponeFree then
   begin
     AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
     QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
     QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, Ord(QtLowEventPriority));
+    //WriteLn('Posted release event');
   end
   else
   begin
