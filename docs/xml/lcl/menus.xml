@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Menus">
-      <short/>
+      <short>Menus to be used in Forms created with the Lazarus IDE</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -90,10 +90,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="EMenuError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>EMenuError </i>- Exception handler for error in Menu access</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TMenuItem">
@@ -117,8 +114,10 @@
       <element name="TMenuChangeEvent.Rebuild"><short/></element>
       <!-- object Visibility: default -->
       <element name="TMenuActionLink">
-        <short>Menu Action Link</short>
-        <descr>Menu Action Link: defines the link between a selected menu item and its corresponding action</descr>
+        <short><i>TMenuActionLink</i>: defines the link between a selected menu item and its corresponding action</short>
+        <descr>
+          <p><i>TMenuActionLink</i>: defines the link between a selected menu item and its corresponding action. Properties are protected and not readily accessible by application programmers.</p>
+        </descr>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TMenuActionLink.FClient">
@@ -1783,7 +1782,7 @@ customise by choosing various menu items.</p>
         <seealso/>
       </element>
       <topic name="HowToUseMenus">
-        <short><i>HowToUseMenus</i>   - hints for creating Menus for your Forms</short>
+        <short><i>HowToUseMenus</i> - hints for creating Menus for your Forms</short>
         <descr>
           <p><i>HowToUseMenus</i> - hints for creating Menus for your Forms</p>
           <p><i>TMainMenu</i> is the Main Menu that appears at the top of most forms; form designers can
@@ -1791,9 +1790,11 @@ customise by choosing various menu items. <i>TPopupMenu</i> is a menu window tha
           <p>Main Menu is a non-visible component : that is, if the icon is selected from the Component Palette and placed on the Form, it will not appear at Run-time. Instead, a Menu bar with a structure defined by the Menu Editor will appear. Popup menus, placed on the form by selecting the icon from the Component Palette, do not appear at all unless the right mouse button is clicked on a control that owns such a menu.</p>
           <p>To see the Menu Editor, right-click on the Main Menu  or Popup Menu icon on your Form. A pop-up box appears, that invites you to enter items into the Menu bar.</p>
           <p>An Edit box is displayed, containing a Button labelled New Item1. If you right-click on that box, a pop-up menu is displayed that allows you to add a new item before or after (along the same level) or create a sub-menu with the opportunity to add further items below (or above) the new item in a downward column.</p>
-          <p>Any or all of the items that you add can be configured using the Object Inspector.</p>
-          <p>At the least you should give each item a <i>Caption</i> which will appear on the Menu Bar (you may also wish to give it a more meaningful name). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
-          <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the ShortCut property of the MenuItem</p>
+          <p>Any or all of the <link id="TMenuItem">MenuItems</link> that you add can be configured using the Object Inspector.</p>
+          <p>At the least you should give each item a <i>Caption</i> which will appear on the Menu Bar (you may also wish to give it a more meaningful <i>Name</i>). The caption should indicate the activity to be selected, such as "File Open" or "Close", "Run" or "Quit"</p>
+          <p>If you want a particular letter in the Caption to be associated with a shortcut key, that letter should be preceded by an ampersand. The Menu item at run-time will appear with the shortcut letter underlined, and hitting that letter key will have the same effect as selecting the menu item. Alternatively you can choose a shortcut key sequence (such as Ctrl-C for Copy or Ctrl-V for Paste - the standard Keyboard shortcuts) with the <i>ShortCut</i> property of the MenuItem.</p>
+          <p>It is often helpful to use the Menu controls in conjuction with an <link id="#lcl.ActnList.TActionList">ActionList</link> which contains a series of standard or customised <link id="#lcl.ActnList.TAction">Actions</link>. Menu Items can be linked in the Object Inspector to Actions on the list, and the same actions can be linked to <link id="#lcl.StdCtrls.TButton">Buttons</link>, <link id="#lcl.ComCtrls.TToolButton">ToolBar Buttons</link>, <link id="#lcl.Buttons.TSpeedButton">SpeedButtons</link> etc. It is obviously economic of effort to re-use the same code to respond to the various events, rather than writing separate <i>OnClick</i> event handlers for each individual control.</p>
+          <p>By default a number of standard actions is pre-loaded from <link id="#lcl.StdActns">StdActns</link> or, if DataAware controls are being used, from <link id="#lcl.DBActns">DBActns</link>, and these can be chosen using the ActionList editor which appears when you right-click on the ActionList icon on the Form Designer.</p>
         </descr>
       </topic>
     </module>
