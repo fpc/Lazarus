@@ -2516,33 +2516,24 @@ images/packages/pkg_add.png -text svneol=unset#image/png
 images/packages/pkg_binary.png -text
 images/packages/pkg_compile.png -text
 images/packages/pkg_conflict.png -text
+images/packages/pkg_files.png -text
 images/packages/pkg_graph.png -text svneol=unset#image/png
+images/packages/pkg_include.png -text
 images/packages/pkg_inherited.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
+images/packages/pkg_lfm.png -text
+images/packages/pkg_lrs.png -text
 images/packages/pkg_open.png -text svneol=unset#image/png
 images/packages/pkg_package_autoinstall.png -text
 images/packages/pkg_package_circle.png -text
 images/packages/pkg_package_uninstall.png -text
 images/packages/pkg_properties.png -text svneol=unset#image/png
+images/packages/pkg_registerunit.png -text
+images/packages/pkg_removedfiles.png -text
 images/packages/pkg_removedrequired.png -text
 images/packages/pkg_required.png -text svneol=unset#image/png
+images/packages/pkg_text.png -text
 images/penguin.xpm -text svneol=native#image/x-xpixmap
-images/pkg_binary.xpm -text svneol=native#image/x-xpixmap
-images/pkg_compile.xpm -text svneol=native#image/x-xpixmap
-images/pkg_conflict.xpm -text svneol=native#image/x-xpixmap
-images/pkg_files.xpm -text svneol=native#image/x-xpixmap
-images/pkg_include.xpm -text svneol=native#image/x-xpixmap
-images/pkg_inherited.xpm -text svneol=native#image/x-xpixmap
-images/pkg_lfm.xpm -text svneol=native#image/x-xpixmap
-images/pkg_lrs.xpm -text svneol=native#image/x-xpixmap
-images/pkg_package_autoinstall.xpm -text svneol=native#image/x-xpixmap
-images/pkg_package_circle.xpm -text svneol=native#image/x-xpixmap
-images/pkg_package_uninstall.xpm -text svneol=native#image/x-xpixmap
-images/pkg_registerunit.xpm -text svneol=native#image/x-xpixmap
-images/pkg_removedfiles.xpm -text svneol=native#image/x-xpixmap
-images/pkg_removedrequired.xpm -text svneol=native#image/x-xpixmap
-images/pkg_required.xpm -text svneol=native#image/x-xpixmap
-images/pkg_text.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/ActiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
