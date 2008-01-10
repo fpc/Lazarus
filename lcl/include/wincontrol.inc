@@ -4189,9 +4189,6 @@ begin
   if DC = 0 then
     DC := BeginPaint(Handle, PS);
 
-  if FDockSite and FUseDockManager and Assigned(FDockManager) then
-    FDockManager.PaintSite(DC);
-    
   try
     // check if child controls need clipping
     //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' B');
@@ -4226,6 +4223,8 @@ begin
     end;
     // paint controls
     //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' PaintControls ...');
+    if FDockSite and FUseDockManager and Assigned(FDockManager) then
+      FDockManager.PaintSite(DC);
     PaintControls(DC, nil);
   finally
     if TheMessage.DC = 0 then
