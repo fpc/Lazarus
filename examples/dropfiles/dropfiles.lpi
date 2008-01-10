@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
@@ -46,7 +46,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="unit1.lrs"/>
         <UnitName Value="Unit1"/>
-        <CursorPos X="21" Y="13"/>
+        <CursorPos X="78" Y="8"/>
         <TopLine Value="1"/>
         <EditorIndex Value="0"/>
         <UsageCount Value="22"/>
@@ -65,7 +65,7 @@
         <IsPartOfProject Value="True"/>
         <ResourceFilename Value="unit2.lrs"/>
         <UnitName Value="Unit2"/>
-        <CursorPos X="43" Y="43"/>
+        <CursorPos X="19" Y="37"/>
         <TopLine Value="25"/>
         <EditorIndex Value="1"/>
         <UsageCount Value="22"/>
@@ -187,6 +187,13 @@
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
