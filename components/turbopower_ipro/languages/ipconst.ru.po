@@ -5,9 +5,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-30 21:19+0300\n"
+"PO-Revision-Date: 2008-01-10 04:08+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
+
+#: ipconst:sicmpecho
+msgid ""
+"Echo reply (Hop number: %d)\n"
+"             Status = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             IpFlags = %d"
+msgstr ""
+"Эхо-ответ (Число хопов: %d)\n"
+"             Статус = %d\n"
+"             RTTime = %d\n"
+"             Ttl = %d\n"
+"             Tos = %d\n"
+"             Флаги IP = %d"
 
 #: ipconst:slognsarticle
 msgid " (nsArticle)"
@@ -912,10 +928,6 @@ msgstr "Загрузка: (%s), несоответствие размера: о�
 #: ipconst:sbrokerdownloadtitle
 msgid "Download?"
 msgstr "Загрузить?"
-
-#: ipconst:sicmpecho
-msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
-msgstr ""
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"
