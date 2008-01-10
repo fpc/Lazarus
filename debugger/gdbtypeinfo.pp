@@ -518,6 +518,9 @@ var
       end;
     end;
   end;
+  
+var
+  HasClass: Boolean;
 begin
   Create;
 
@@ -533,7 +536,9 @@ begin
 
     S := GetPart(['type = '], [' '], Line);
     if S = '' then Exit;
-    if Pos(' = class ', Line) > 0
+    HasClass := Pos(' = class ', Line) > 0;
+    if HasClass
+    and (S[2] <> '^') // pointer to class is handled next
     then begin
       FTypeName := GetPart(['^'], [' '], S);
       DoClass;
@@ -541,7 +546,9 @@ begin
     else if S[1] = '^'
     then begin
       FKind := skPointer;
-      FTypeName := GetPart(['^'], [' ='], S);
+      if HasClass
+      then FTypeName := GetPart(['^^'], [' ='], S)
+      else FTypeName := GetPart(['^'], [' ='], S);
     end
     else if S = 'set'
     then DoSet

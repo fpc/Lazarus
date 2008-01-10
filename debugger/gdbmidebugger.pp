@@ -978,14 +978,22 @@ begin
         if e <> 0 then Exit;
 
         S := Lowercase(ResultInfo.TypeName);
-        if (S = 'character')
-        or (S = 'ansistring')
-        then begin
-          if Addr = 0
-          then AResult := ''''''
-          else AResult := MakePrintable(GetText(Addr));
-        end
-        else begin
+        case StringCase(S, ['character', 'ansistring', '__vtbl_ptr_type']) of
+          0, 1: begin
+            if Addr = 0
+            then AResult := ''''''
+            else AResult := MakePrintable(GetText(Addr));
+          end;
+          2: begin
+            if Addr = 0
+            then AResult := 'nil'
+            else begin
+              S := GetClassName(Addr);
+              if S = '' then S := '???';
+              AResult := 'class of ' + S + ' ' + AResult;
+            end;
+          end;
+        else
           if Addr = 0
           then AResult := 'nil';
           if S = 'pointer' then Exit;
@@ -1001,10 +1009,13 @@ begin
       skClass: begin
         Val(AResult, addr, e);
         if e <> 0 then Exit;
-
-        S := GetInstanceClassName(Addr);
-        if S = '' then S := '???';
-        AResult := S + ' ' + AResult;
+        if Addr = 0
+        then AResult := 'nil'
+        else begin
+          S := GetInstanceClassName(Addr);
+          if S = '' then S := '???';
+          AResult := S + ' ' + AResult;
+        end;
       end;
     end;
   finally
