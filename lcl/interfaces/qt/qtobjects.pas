@@ -458,7 +458,7 @@ type
   end;
 
 const
-  LCLQt_Destroy = QEventType(QEventUser + $1000);
+  LCLQt_Destroy = QEventType(Ord(QEventUser) + $1000);
   
 procedure TQColorToColorRef(const AColor: TQColor; out AColorRef: TColorRef);
 procedure ColorRefToTQColor(const AColorRef: TColorRef; var AColor:TQColor);
@@ -611,7 +611,7 @@ begin
   begin
     AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
     QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
-    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, -1);
+    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent, QtLowEventPriority);
   end
   else
   begin
