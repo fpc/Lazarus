@@ -2403,15 +2403,9 @@ images/designer/anchor_top_bottom.png -text svneol=unset#image/png
 images/down.xpm svneol=native#text/plain
 images/folder.xpm svneol=native#text/plain
 images/fonts.xpm -text svneol=native#image/x-xpixmap
-images/formatbold.bmp -text
-images/formatitalic.bmp -text
-images/formatunderline.bmp -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
-images/insertcodetag.xpm svneol=native#text/plain
-images/insertremark.xpm svneol=native#text/plain
-images/insertvartag.xpm svneol=native#text/plain
 images/items/item_filter.png -text svneol=unset#image/png
 images/items/item_font.png -text svneol=unset#image/png
 images/items/item_form.png -text svneol=unset#image/png
@@ -2431,6 +2425,12 @@ images/lazarus64.ico -text svneol=unset#image/x-icon
 images/lazarus64.xpm -text svneol=native#image/x-xpixmap
 images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap
 images/lazaruspackage.ico -text svneol=unset#image/x-icon
+images/lazdoc/formatbold.png -text
+images/lazdoc/formatitalic.png -text
+images/lazdoc/formatunderline.png -text
+images/lazdoc/insertcodetag.png -text
+images/lazdoc/insertremark.png -text
+images/lazdoc/insertvartag.png -text
 images/lprfile.ico -text svneol=unset#image/x-icon
 images/mainicon.ico -text svneol=unset#image/x-icon
 images/mainicon.lrs svneol=native#text/pascal
