@@ -2,7 +2,7 @@
 {**************************************************************
 Implementation for winprinter
 ***************************************************************}
-Uses WinUtilPrn, InterfaceBase, LCLIntf, WinVer;
+Uses InterfaceBase, LCLIntf, WinVer, WinUtilPrn;
 
 // todo: this ^ is a mess: mixed WinUtilPrn/Windows units clean...
 
@@ -33,7 +33,7 @@ end;
 destructor TWinPrinter.Destroy;
 begin
   ClearDC;
-    
+
   DoResetPrintersList;
 
   if fPrinterHandle<>0 then
@@ -81,7 +81,7 @@ begin
   if (Printers.Count>0) and not RawMode then
   begin
     SetDC;
-    Result:=GetDeviceCaps(fDC, LOGPIXELSX);
+    Result:=windows.GetDeviceCaps(fDC, LOGPIXELSX);
   end;
 end;
 
@@ -91,7 +91,7 @@ begin
   if (Printers.Count>0) and not RawMode then
   begin
     SetDC;
-    Result:=GetDeviceCaps(fDC,LOGPIXELSY);
+    Result:=windows.GetDeviceCaps(fDC,LOGPIXELSY);
   end;
 end;
 

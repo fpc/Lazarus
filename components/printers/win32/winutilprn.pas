@@ -34,7 +34,7 @@ interface
 {$ENDIF}
 
 uses
-  Types, Classes, SysUtils, LCLType,Printers;
+  Types, Classes, SysUtils, LCLType, Printers;
 
 const
   {$i winutilprnconst.inc}
