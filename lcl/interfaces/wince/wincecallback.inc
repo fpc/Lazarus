@@ -219,6 +219,7 @@ Var
   
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
+  Info: SHRGINFO; // used by SHRecognizeGesture in WM_LBUTTONDOWN
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
@@ -1438,6 +1439,18 @@ begin
       begin
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
       end;
+      
+      // Guesture recognition process to enable popup menus.
+      if lWinControl.PopupMenu<>nil then
+      begin
+        Info.cbSize := SizeOf(SHRGINFO);
+        Info.dwFlags := SHRG_RETURNCMD;
+        Info.hwndClient := Window;
+        Info.ptDown.x := Lo(LParam);
+        Info.ptDown.y := Hi(LParam);
+
+        SHRecognizeGesture(Info);
+      end;
 
       MouseDownTime := GetTickCount;
       MouseDownWindow := Window;
@@ -2311,6 +2324,7 @@ begin
     end;
   end;
 end;
+
 
 
 
