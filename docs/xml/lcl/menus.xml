@@ -93,13 +93,7 @@
         <short><i>EMenuError </i>- Exception handler for error in Menu access</short>
       </element>
       <!-- object Visibility: default -->
-      <element name="TMenuItem">
-        <short><i>TMenuItem</i>  - The base structure of each item in a Menu.</short>
-        <descr>
-          <p><i>TMenuItem</i> - The base structure of each item in a Menu.</p>
-          <p>This Component does the hard work of processing the Items found in the various types of menus. It defines a lot of the properties and methods used in the various sorts of menu, including <link id="TMainMenu">TMainMenu</link>, <link id="TMenu">TMenu</link> and <link id="TPopUpMenu">TPopUpMenu</link></p>
-        </descr>
-      </element>
+      <element name="TMenuItem"/>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
         <short/>
@@ -331,10 +325,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMenuItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TMenuItem</i>    - The base structure of each item in a Menu.</short>
+        <descr>
+          <p><i>TMenuItem</i> - The base structure of each item in a Menu.</p>
+          <p>This Component does the hard work of processing the Items found in the various types of menus. It defines a lot of the properties and methods used in the various sorts of menu, including <link id="TMainMenu">TMainMenu</link>, <link id="TMenu">TMenu</link> and <link id="TPopUpMenu">TPopUpMenu</link></p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TMenuItem.FActionLink">

@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Dialogs">
-      <short/>
+      <short>Some dialogs commonly used in Lazarus applications. Look at the Procedures as well as the Classes</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Types">
@@ -215,8 +215,8 @@ It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
-        <short>The base type from which other dialogs are derived</short>
-        <descr>Common Dialog: the base type from which all other dialogs are derived. <br/>
+        <short><i>TCommonDialog</i>: the base type from which other dialogs are derived</short>
+        <descr>TCommonDialog: the base type from which all other dialogs are derived. <br/>
 
 Use the "Create" method to make an instance of the dialog, <br/>
 
@@ -332,10 +332,7 @@ and the "Close" method to release it and free the used resources.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCommonDialog.Create">
-        <short>Create a new dialog</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>Create</i> - constructor for dialogs</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCommonDialog.Create.TheOwner">
@@ -406,52 +403,39 @@ and then check the result to see if the user made a valid choice and pressed the
       <element name="TCommonDialog.HandleAllocated.Result"><short/></element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.OnClose">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event Handler for closing the dialog</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.OnCanClose">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event Handler when dialog is able to be closed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.OnShow">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for showing the dialog</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short><i>HelpContext</i> - an index to the context-dependent help message for this dialog</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.Width">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The width of th edialog box</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.Height">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The height of the dialog box</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.Title">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The Title or Caption to be shown at the top of the dialog box</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TFileDialog">
-        <short>File Dialog</short>
-        <descr>File Dialog: allows selection of a file from the current directory.</descr>
-        <errors/>
-        <seealso/>
+        <short><i>TFileDialog</i>: allows selection of a file from the current directory.</short>
+        <descr>
+          <p><i>TFileDialog</i>: allows selection of a file from the current directory.</p>
+          <p>This is also the base class for the Open and Save (As) dialogs</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFileDialog.FInternalFilterIndex">
@@ -583,12 +567,7 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- argument Visibility: default -->
       <element name="TFileDialog.SetHistoryList.AValue"><short/></element>
       <!-- constructor Visibility: public -->
-      <element name="TFileDialog.Create">
-        <short>Public method to create a FileDialog.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TFileDialog.Create"/>
       <!-- argument Visibility: default -->
       <element name="TFileDialog.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
@@ -636,37 +615,28 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- argument Visibility: default -->
       <element name="TFileDialog.IntfFileTypeChanged.NewFilterIndex"><short/></element>
       <!-- property Visibility: published -->
-      <element name="TFileDialog.Title">
-        <short>Specifies the caption of the dialog.</short>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TFileDialog.Title"/>
       <!-- property Visibility: published -->
       <element name="TFileDialog.DefaultExt">
-        <short>Property to set the default file extension for the file dialog box.</short>
-        <descr/>
-        <seealso/>
+        <short>Sets the default file extension for the file dialog box.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.FileName">
-        <short>String property to store the name of the file chosen by the user.</short>
-        <descr/>
-        <seealso/>
+        <short>String to store the name of the file chosen by the user.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.Filter">
-        <short>A string property which contains possible filters.</short>
+        <short>A string which contains possible filename filters (eg .doc, .xmp, .pas etc).</short>
         <descr>This is a string which contains the filters a user can choose from. <br/>
+
 The available filters and their description are separated by pipe symbols. <br/>
+
 To set this property during runtime assign a value like: "All files|*.*|Lazarus Project files|*.lpr"<br/></descr>
-        <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.FilterIndex">
-        <short>Integer property setting the used file filter.</short>
-        <descr>This property sets which file filter is the default. Set <br/>
-this porperty to 2 to set the second filter as default.</descr>
-        <seealso/>
+        <short>This property sets which file filter is the default.</short>
+        <descr>This property sets which file filter is the default. For example, set this property to 2 to set the second filter as default.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.InitialDir">
@@ -676,15 +646,11 @@ this porperty to 2 to set the second filter as default.</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.OnHelpClicked">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler when the Help button is clicked</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.OnTypeChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event Handler when the selected file type is changed</short>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TOpenOption">
@@ -754,11 +720,10 @@ this porperty to 2 to set the second filter as default.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
-        <short>Open Dialog</short>
-        <descr>Open Dialog: open a file in the current directory, selected by File Dialog. <br/>
+        <short><i>TOpenDialog</i>: open a file in the current directory, selected by File Dialog.</short>
+        <descr><i>TOpenDialog</i>: open a file in the current directory, selected by File Dialog. <br/>
+
 If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
-        <errors/>
-        <seealso/>
       </element>
       <!-- variable Visibility: private -->
       <element name="TOpenDialog.FOnFolderChange">
@@ -832,12 +797,7 @@ If the required file is not in the current directory, another directory can be s
       <!-- function result Visibility: default -->
       <element name="TOpenDialog.DoExecute.Result"><short/></element>
       <!-- constructor Visibility: public -->
-      <element name="TOpenDialog.Create">
-        <short>Public method to create a OpenDialog</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
+      <element name="TOpenDialog.Create"/>
       <!-- argument Visibility: default -->
       <element name="TOpenDialog.Create.TheOwner"><short/></element>
       <!-- procedure Visibility: public -->
@@ -856,9 +816,9 @@ If the required file is not in the current directory, another directory can be s
       </element>
       <!-- property Visibility: published -->
       <element name="TOpenDialog.Options">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Options to be used for this dialog</short>
+        <descr>Options to be used for the Open File dialog. A full list of available options is found in <link id="TOpenOptions"/></descr>
+        <seealso><link id="TOpenOptions"/></seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnFolderChange">
@@ -876,12 +836,12 @@ Note: When the user changes the folder OnSelectionChange will be called first.</
       </element>
       <!-- object Visibility: default -->
       <element name="TSaveDialog">
-        <short>Save Dialog</short>
+        <short>Dialog for saving the current buffer to a file</short>
         <descr>Save Dialog:  invoked when the application requires to save a file. <br/>
+
 If the file is already open or a filename has been specified, then the current buffer is written to that file; <br/>
+
 if no file is specified, the Save File As dialog is invoked and the buffer is saved to that file.</descr>
-        <errors/>
-        <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TSaveDialog.Create">
@@ -1333,9 +1293,7 @@ Call the Execute function to show the color dialog.</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TFontDialogOption">
-        <short>A set of constants to set the options of a Font dialog.</short>
-        <descr/>
-        <seealso/>
+        <short>An enumerated list of constants to set the options of a Font dialog.</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TFontDialogOption.fdAnsiOnly"><short/></element>
@@ -1371,9 +1329,7 @@ Call the Execute function to show the color dialog.</descr>
       <element name="TFontDialogOption.fdApplyButton"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TFontDialogOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of options for font dialogs</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TFontDialog">
@@ -1969,23 +1925,27 @@ A number of buttons appear, offering the choice to replace this instance, find n
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPrintRange">
-        <short>Type of range of papers to print.</short>
-        <descr/>
-        <seealso/>
+        <short>Type of range of pages to print.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintRange.prAllPages"><short>Print all pages.</short></element>
+      <element name="TPrintRange.prAllPages">
+        <short>Print all pages.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintRange.prSelection"><short>Print the selected range of pages.</short></element>
+      <element name="TPrintRange.prSelection">
+        <short>Print the selected range of pages.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintRange.prPageNums"><short>Print the selection of individual pages.</short></element>
+      <element name="TPrintRange.prPageNums">
+        <short>Print the selection of individual pages.</short>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintRange.prCurrentPage"><short>Print the current page.</short></element>
+      <element name="TPrintRange.prCurrentPage">
+        <short>Print the current page.</short>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TPrintDialogOption">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A list of available options for print dialogs</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TPrintDialogOption.poPrintToFile"><short/></element>
@@ -2001,9 +1961,7 @@ A number of buttons appear, offering the choice to replace this instance, find n
       <element name="TPrintDialogOption.poDisablePrintToFile"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TPrintDialogOptions">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>A set of options for the print dialog</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomPrintDialog">
@@ -2599,9 +2557,7 @@ the difference is that the password that was typed in is returned as the result 
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TSelectDirOpt">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>List of options available when selecting a directory</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TSelectDirOpt.sdAllowCreate"><short/></element>
@@ -2611,9 +2567,7 @@ the difference is that the password that was typed in is returned as the result 
       <element name="TSelectDirOpt.sdPrompt"><short/></element>
       <!-- set type Visibility: default -->
       <element name="TSelectDirOpts">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set of directory selection options</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SelectDirectory">
