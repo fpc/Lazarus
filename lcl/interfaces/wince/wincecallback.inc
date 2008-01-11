@@ -29,8 +29,8 @@ TWinControlAccess = class(TWinControl);
 
   Enumerates and removes properties for the target window
  -----------------------------------------------------------------------------}
-Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
-Begin
+function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall;
+begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
@@ -39,7 +39,7 @@ Begin
   RemoveProp(Window{, Str});
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
-End;
+end;
 
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
@@ -67,8 +67,10 @@ begin
     MessageStackDepth[depthLen] := '#';
 {$endif}
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
-  if PrevWndProc = nil then
+  if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
+  then begin
     Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+  end
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
     // to list of strings, and if appears in there, will set the text, and select it
@@ -1232,8 +1234,7 @@ begin
       end;
     End;*)
     WM_DRAWITEM:
-    Begin
-
+    begin
       if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
       begin
         menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
@@ -1285,7 +1286,7 @@ begin
         end;
         WinProcess := false;
       end;
-    End;
+    end;
     WM_ENABLE:
     Begin
       If WParam <> 0 Then
@@ -1848,8 +1849,9 @@ begin
         Windows.InvalidateRect(Window, nil, true);
     End;
     WM_MEASUREITEM:
-    Begin
-      if WParam = 0 then begin
+    begin
+      if WParam = 0 then
+      begin
         menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
         if menuItem is TMenuItem then
         begin
@@ -1862,16 +1864,20 @@ begin
         end else
           DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
       end;
-      if LWinControl<>nil then begin
-        if LWinControl is TCustomCombobox then begin
+      if LWinControl<>nil then
+      begin
+        if LWinControl is TCustomCombobox then
+        begin
           LMessage.Msg := LM_MEASUREITEM;
           LMessage.LParam := LParam;
           LMessage.WParam := WParam;
           Winprocess := False;
         end else
-        if WParam <> 0 then begin
+        if WParam <> 0 then
+        begin
           LWinControl := TWinControl(WParam);
-          if LWinControl<>nil then begin
+          if LWinControl<>nil then
+          begin
             LMessage.Msg := LM_MEASUREITEM;
             LMessage.LParam := LParam;
             LMessage.WParam := WParam;
@@ -1879,7 +1885,7 @@ begin
           end;
         end;
       end;
-    End;
+    end;
     WM_LCL_SOCK_ASYNC:
     begin
       if (Window = TWinCEWidgetSet(WidgetSet).AppHandle) and

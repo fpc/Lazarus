@@ -30,7 +30,7 @@ uses
   // Libs
   Windows,
   // LCL
-  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc ,
+  SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc,
   InterfaceBase,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WinCEInt, WinCEWSControls, WinCEExtra;
@@ -116,6 +116,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
+    class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
     class function GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
     class function GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -123,6 +124,7 @@ type
 
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetBorder(const ACustomListBox: TCustomListBox); override;
+    class procedure SetColumnCount(const ACustomListBox: TCustomListBox; ACount: Integer); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
       AMultiSelect: boolean); override;
@@ -438,6 +440,8 @@ begin
           Flags := Flags or LBS_EXTENDEDSEL
         else
           Flags := Flags or LBS_MULTIPLESEL;
+      if Columns > 1 then
+        Flags := Flags or LBS_MULTICOLUMN;
       if AWinControl.FCompStyle = csCheckListBox then
         Flags := Flags or LBS_OWNERDRAWFIXED
       else case Style of
@@ -468,15 +472,27 @@ begin
     Result := -1;
 end;
 
-//this should not be called in multiple selection things
 class function  TWinCEWSCustomListBox.GetItemIndex(const ACustomListBox: TCustomListBox): integer;
 begin
-  Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
+  if ACustomListBox.MultiSelect then
+    // Return focused item for multiselect listbox
+    Result := SendMessage(ACustomListBox.Handle, LB_GETCARETINDEX, 0, 0)
+  else
+    // LB_GETCURSEL is only for single select listbox
+    Result := SendMessage(ACustomListBox.Handle, LB_GETCURSEL, 0, 0);
   if Result = LB_ERR then
   begin
     Assert(false, 'Trace:[TWinCEWSCustomListBox.GetItemIndex] could not retrieve itemindex, try selecting an item first');
     Result := -1;
   end;
+end;
+
+class function TWinCEWSCustomListBox.GetItemRect(
+  const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
+  ): boolean;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETITEMRECT, Index,
+    LPARAM(@ARect)) <> LB_ERR;
 end;
 
 class function  TWinCEWSCustomListBox.GetSelCount(const ACustomListBox: TCustomListBox): integer;
@@ -544,6 +560,13 @@ begin
   else
     StyleEx := StyleEx and not WS_EX_CLIENTEDGE;
   SetWindowLong(Handle, GWL_EXSTYLE, StyleEx);
+end;
+
+class procedure TWinCEWSCustomListBox.SetColumnCount(const ACustomListBox: TCustomListBox;
+  ACount: Integer);
+begin
+  // The listbox styles can't be updated, so recreate the listbox
+  RecreateWnd(ACustomListBox);
 end;
 
 class procedure TWinCEWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer);
