@@ -1829,12 +1829,12 @@ end;
 
   Draws a line from the current position up to, but not including, the specified point.
  ------------------------------------------------------------------------------}
-Function TWinCEWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
-Begin
+function TWinCEWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
+begin
   Assert(False, Format('Trace:> [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := Boolean(Windows.LineTo(DC, X, Y));
   Assert(False, Format('Trace:< [TWinCEWidgetSet.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:  MessageBox
@@ -2816,21 +2816,43 @@ Begin
 //    Result := 0;
 End;
 
+procedure TWinCEWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  if CritSection<>0 then
+  begin
+    Windows.DeleteCriticalSection(LPCRITICAL_SECTION(CritSection));
+    Try
+      Dispose(LPCRITICAL_SECTION(CritSection));
+    finally
+      CritSection := 0;
+    end;
+  end;
+end;
+
+procedure TWinCEWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+  { An OS Compatible TCriticalSection needs to be defined}
+  Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
+end;
 
 {We interprete CritSection as a pointer to a LPCRITICAL_SECTION structure}
-{procedure TWinCEWidgetSet.InitializeCriticalSection(
-  var CritSection: TCriticalSection);
+procedure TWinCEWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+var
+  Crit : LPCRITICAL_SECTION;
 begin
-  inherited InitializeCriticalSection(CritSection);
-end;}
-{procedure TWinCEWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection
-  );
+  { An OS Compatible TCriticalSection needs to be defined}
+  If CritSection <> 0 then
+    DeleteCriticalSection(CritSection);
+  New(Crit);
+  Windows.InitializeCriticalSection(Crit);
+  CritSection := TCriticalSection(Crit);
+end;
+
+procedure TWinCEWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 begin
-  inherited EnterCriticalSection(CritSection);
-end;}
-
-
-
-
+  { An OS Compatible TCriticalSection needs to be defined}
+  Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
+end;
 
 //##apiwiz##epi##   // Do not remove
