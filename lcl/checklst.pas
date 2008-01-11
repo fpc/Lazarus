@@ -251,7 +251,10 @@ end;
 procedure TCustomCheckListBox.SetChecked(const AIndex: Integer;
   const AValue: Boolean);
 begin
-  SetState(AIndex, cbChecked);
+  if AValue then
+    SetState(AIndex, cbChecked)
+  else
+    SetState(AIndex, cbUnChecked);
 end;
 
 procedure TCustomCheckListBox.ClickCheck;
