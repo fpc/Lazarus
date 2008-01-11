@@ -3,10 +3,10 @@
 (******************************************************************************
   All Winapi related stuff goes here.
   This file is used by LCLIntf.pas
-  If a procedure is platform dependent then it should call:
+  if a procedure is platform dependent then it should call:
     WidgetSet.MyDependentProc
 
-  If a procedure insn't platform dependent, it is no part of InterfaseBase has
+  if a procedure insn't platform dependent, it is no part of InterfaseBase has
   to be implementerd here
 
   !! Keep this alphabetical !!
@@ -31,7 +31,7 @@
   Note:
     the section for not referring WidgetSet is at the end
  ******************************************************************************}
-//##apiwiz##sps##   // Do not remove
+//##apiwiz##sps##   // do not remove
 
 {
 ------------------------------------------------------------------------------
@@ -319,7 +319,7 @@ end;
   Method:  ClipboardGetData
   Params:  ClipboardType - clipboard type
            FormatID      - a registered format identifier (0 is invalid)
-           Stream        - If format is available, it will be appended to this
+           Stream        - if format is available, it will be appended to this
                            stream
   Returns: true on success
  ------------------------------------------------------------------------------}
@@ -347,7 +347,7 @@ end;
   Params:  ClipboardType - Type of clipboard, the win32 interface only handles
                            ctClipBoard
            OnRequestProc - TClipboardRequestEvent is defined in LCLType.pp
-                           If OnRequestProc is nil the onwership will end.
+                           if OnRequestProc is nil the onwership will end.
            FormatCount - number of formats
            Formats - array of TClipboardFormat. The supported formats the owner
                       provides.
@@ -357,7 +357,7 @@ end;
   Sets the supported formats and requests ownership for the clipboard.
   The OnRequestProc is used to get the data from the LCL and to put it on the
   clipboard.
-  If someone else requests the ownership, the OnRequestProc will be executed
+  if someone else requests the ownership, the OnRequestProc will be executed
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
@@ -448,7 +448,7 @@ begin
     AlwaysCreateMask);
 end;}
 
-function TWinCEWidgetSet.CreateBrushIndirect(Const LogBrush: TLogBrush): HBRUSH;
+function TWinCEWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   LB: Windows.LogBrush;
 begin
@@ -585,7 +585,7 @@ end;
   Creates a logical font that has the characteristics specified in the
   specified record.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.CreateFontIndirect(Const LogFont: TLogFont): HFONT;
+function TWinCEWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 var
   TempLogFont: TLogFont;
 begin
@@ -619,7 +619,7 @@ end;}
   Creates a logical cosmetic pen that has the style, width, and color specified
   in a record.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.CreatePenIndirect(Const LogPen: TLogPen): HPEN;
+function TWinCEWidgetSet.CreatePenIndirect(const LogPen: TLogPen): HPEN;
 var
   LP: TLogPen;
 begin
@@ -667,7 +667,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  DeleteDC
   Params:  HDC - handle to device context
-  Returns: If the function succeeds.
+  Returns: if the function succeeds.
 
   Deletes the specified device context (DC).
  ------------------------------------------------------------------------------}
@@ -679,7 +679,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  DeleteObject
   Params:  GDIObject - handle to graphic object
-  Returns: If the function succeeds.
+  Returns: if the function succeeds.
 
   Deletes a graphic object, freeing all system resources associated with the
   object.
@@ -693,7 +693,7 @@ end;
   Method:  DestroyCaret
   Params:  Handle - handle to the window with a caret (on Windows, there is
            only one, global caret, so this parameter is ignored)
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Destroys the caret but doesn't free the bitmap.
  ------------------------------------------------------------------------------}
@@ -705,7 +705,7 @@ end;}
 {------------------------------------------------------------------------------
   Method:  DestroyCursor
   Params:  Handle - handle to the cursor object
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Destroys the cursor
  ------------------------------------------------------------------------------}
@@ -721,7 +721,7 @@ end;
           Rect   - bounding rectangle
           UType  - frame-control type
           UState - frame-control state
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
@@ -750,7 +750,7 @@ end;
           Rect     - rectangle coordinates
           Edge     - type of inner and outer edge to draw
           GrfFlags - type of border
-  Returns: If the function succeeds.
+  Returns: if the function succeeds.
 
   Draws one or more edges of a rectangle, not including the
   right and bottom edge.
@@ -765,7 +765,7 @@ end;
 {------------------------------------------------------------------------------
   Method:  DrawText
   Params:  DC, Str, Count, Rect, Flags
-  Returns: If the string was drawn, or CalcRect run
+  Returns: if the string was drawn, or CalcRect run
 
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
@@ -789,7 +789,7 @@ end;
             Y1 - y-coord. of bounding rectangle's upper-left corner
             X2 - x-coord. of bounding rectangle's lower-right corner
             Y2 - y-coord. of bounding rectangle's lower-right corner
-  Returns:  If the function succeeds
+  Returns:  if the function succeeds
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
@@ -816,7 +816,7 @@ end;
   Method:  EnableWindow
   Params: HWnd    - handle to window
           BEnable -  whether to enable the window
-  Returns: If the window was previously disabled
+  Returns: if the window was previously disabled
 
   Enables or disables mouse and keyboard input to the specified window or
   control.
@@ -886,7 +886,7 @@ end;
            Str     - character string to be drawn
            Count   - number of characters in string
            Dx      - pointer to array of intercharacter spacing values
-  Returns: If the string was drawn.
+  Returns: if the string was drawn.
 
   Draws a character string by using the currently selected font.
  ------------------------------------------------------------------------------}
@@ -942,13 +942,13 @@ end;
   Params:  DC    - handle to device context
            Rect  - record with rectangle
            Brush - handle to brush
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   The FillRect function fills a rectangle by using the specified brush.
   This function includes the left and top borders, but excludes the right and
   bottom borders of the rectangle.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean;
+function TWinCEWidgetSet.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
 var
   R: TRect;
 begin
@@ -970,8 +970,8 @@ end;
   NOTE: This function is mapped to DrawEdge on Windows.
 ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.Frame3D(DC: HDC; var ARect: TRect;
-  Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
-Const
+  const FrameWidth: Integer; const Style: TBevelCut): Boolean;
+const
   Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDINNER, 0);
 begin
   Result := Boolean(DrawEdge(DC, ARect, Edge[Style], BF_RECT));
@@ -1030,7 +1030,7 @@ end;}
 {------------------------------------------------------------------------------
   Method:  GetCaretPos
   Params:  LPPoint - record to receive coordinates
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Gets the caret's position, in client coordinates.
  ------------------------------------------------------------------------------}
@@ -1055,7 +1055,7 @@ end;
   Method:  GetClientBounds
   Params: Handle - handle of window
           Rect   - record for client coordinates
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
@@ -1076,7 +1076,7 @@ end;
   Method:  GetClientRect
   Params: Handle - handle of window
           Rect   - record for client coordinates
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Retrieves the dimension of a window's client area.
   Left and Top are always 0,0
@@ -1445,7 +1445,7 @@ end;}
   Params:  Handle     - handle of window with scroll bar
            BarFlag    - scroll bar flag
            ScrollInfo - record for scroll parameters
-  Returns: If the function retrieved any values.
+  Returns: if the function retrieved any values.
 
   Retrieves the parameters of a scroll bar.
  ------------------------------------------------------------------------------}
@@ -1514,7 +1514,7 @@ end;
            Count - number of characters in string
            Size  - TSize record in which the dimensions of the string are to be
                    returned
-  Returns: If the function succeeded
+  Returns: if the function succeeded
 
   Computes the width and height of the specified string of text.
  ------------------------------------------------------------------------------}
@@ -1535,7 +1535,7 @@ end;
   Method:  GetTextMetrics
   Params:  DC - handle of device context
            TM - text metrics record
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Fills the specified buffer with the metrics for the currently selected font.
  ------------------------------------------------------------------------------}
@@ -1681,7 +1681,7 @@ begin
   begin
     // if the form is maximized, you can't use the normal size
     Result := Boolean(Windows.GetWindowRect(Handle,@R));
-    with R Do
+    with R do
     begin
       Width := Right - Left;
       Height := Bottom - Top;
@@ -1872,7 +1872,7 @@ end;
            X        - x-coordinate of new current position
            Y        - x-coordinate of new current position
            OldPoint - address of old current position
-  Returns: If the function succeeds.
+  Returns: if the function succeeds.
 
   Updates the current position to the specified point.
  ------------------------------------------------------------------------------}
@@ -1916,7 +1916,7 @@ end;
            Points - pointer to polygon's vertices
            NumPts - count of polygon's vertices
            Winding
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Use Polygon to draw a closed, many-sided shape on the canvas, using the value
   of Pen. After drawing the complete shape, Polygon fills the shape using the
@@ -1937,7 +1937,7 @@ var
   PFMode : Longint;
 begin
   Assert(False, Format('Trace:TWinCEWidgetSet.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
-//  If Winding then
+//  if Winding then
 //    PFMode := SetPolyFillMode(DC, Windows.WINDING)
 //  else
 //    PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
@@ -1950,7 +1950,7 @@ end;
   Params:  DC - handle of device context
            Points - address of array containing endpoints
            NumPts - number of points in the array
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Draws a series of line segments by connecting the points in the specified
   array.
@@ -2027,7 +2027,7 @@ end;}
            Y1 - y-coordinate of bounding rectangle's upper-left corner
            X2 - x-coordinate of bounding rectangle's lower-right corner
            Y2 - y-coordinate of bounding rectangle's lower-right corner
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   The Rectangle function draws a rectangle. The rectangle is outlined by using
   the current pen and filled by using the current brush.
@@ -2405,13 +2405,13 @@ end;
 function TWinCEWidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
 begin
 //  Assert(False, 'Trace:[TWinCEWidgetSet.SetScrollInfo]');
-  //With ScrollInfo Do
+  //with ScrollInfo do
    // Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
   ScrollInfo.cbSize:=sizeof(ScrollInfo);
   if (ScrollInfo.fMask and SIF_Range > 0) then
     ScrollInfo.nMax := Max(ScrollInfo.nMin, ScrollInfo.nMax - 1);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
-  With ScrollInfo Do
+  with ScrollInfo do
     Assert(False, Format('Trace:> [TWinCEWidgetSet.SetScrollInfo] --> %d', [Result]));
 end;
 
@@ -2424,7 +2424,7 @@ end;
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean;
+function TWinCEWidgetSet.SetSysColors(CElements: Integer; const LPAElements; const LPARGBValues): Boolean;
 begin
   Result := Boolean(Windows.SetSysColors(CElements, PInteger(@LPAElements)^, LPColorRef(@LPARGBValues)^));
 end;
@@ -2502,7 +2502,7 @@ end;
           CX              - width
           CY              - height
           UFlags          - window-positioning flags
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Changes the size, position, and Z order of a child, pop-up, or top-level
   window.
@@ -2553,7 +2553,7 @@ end;}
   Params:  Handle - handle of window with scroll bar
            WBar   - scroll bar flag
            BShow  - is the scroll bar visible?
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Shows or hides the specified scroll bar.
  ------------------------------------------------------------------------------}
@@ -2567,7 +2567,7 @@ end;}
   Method: ShowWindow
   Params: hWnd     - Window handle
           nCmdShow - (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED)
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
 begin
@@ -2586,7 +2586,7 @@ end;
   Returns: True if succesful
 
   The StretchBlt function copies a bitmap from a source rectangle into a
-  destination rectangle using the specified raster operation. If needed it
+  destination rectangle using the specified raster operation. if needed it
   resizes the bitmap to fit the dimensions of the destination rectangle.
   Sizing is done according to the stretching mode currently set in the
   destination device context.
@@ -2612,7 +2612,7 @@ end;
   Returns: True if succesful
 
   The StretchMaskBlt function copies a bitmap from a source rectangle into a
-  destination rectangle using the specified mask and raster operations. If
+  destination rectangle using the specified mask and raster operations. if
   needed it resizes the bitmap to fit the dimensions of the destination
   rectangle.  Sizing is done according to the stretching mode currently set in
   the destination device context.
@@ -2785,7 +2785,7 @@ end;
           Y     - y-coordinate of starting position
           Str   - string
           Count - number of characters in string
-  Returns: If the function succeeds
+  Returns: if the function succeeds
 
   Writes a character string at the specified location, using the currently
   selected font.
@@ -2842,7 +2842,7 @@ var
   Crit : LPCRITICAL_SECTION;
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  If CritSection <> 0 then
+  if CritSection <> 0 then
     DeleteCriticalSection(CritSection);
   New(Crit);
   Windows.InitializeCriticalSection(Crit);
@@ -2855,4 +2855,4 @@ begin
   Windows.LeaveCriticalSection(LPCRITICAL_SECTION(CritSection));
 end;
 
-//##apiwiz##epi##   // Do not remove
+//##apiwiz##epi##   // do not remove
