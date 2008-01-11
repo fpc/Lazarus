@@ -440,14 +440,6 @@ begin
   Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
-{
-function TWinCEWidgetSet.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
-begin
-  Result:=inherited CreateBitmapFromRawImage(RawImage, Bitmap, MaskBitmap,
-    AlwaysCreateMask);
-end;}
-
 function TWinCEWidgetSet.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 var
   LB: Windows.LogBrush;
@@ -697,10 +689,10 @@ end;
 
   Destroys the caret but doesn't free the bitmap.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.DestroyCaret(Handle: HWND): Boolean;
+function TWinCEWidgetSet.DestroyCaret(Handle: HWND): Boolean;
 begin
-  Result:=inherited DestroyCaret(Handle);
-end;}
+  Result := Boolean(Windows.DestroyCaret);
+end;
 
 {------------------------------------------------------------------------------
   Method:  DestroyCursor
@@ -730,7 +722,7 @@ var
   Flags: dword;
 begin
   // flat button border cannot be drawn by DrawFrameControl, draw ourselves
-  if (UType = DFC_BUTTON) or ((UState and DFCS_FLAT) <> 0) then
+  if (UType = DFC_BUTTON) and ((UState and DFCS_FLAT) <> 0) then
   begin
     if (UState and DFCS_PUSHED) <> 0 then
       Flags := BDR_SUNKENOUTER
@@ -770,7 +762,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 var
-WideStr : PWideChar;
+  WideStr : PWideChar;
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -793,10 +785,10 @@ end;
 
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
+function TWinCEWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 begin
-  Result:=inherited Ellipse(DC, x1, y1, x2, y2);
-end;}
+  Result := Boolean(Windows.Ellipse(DC, X1, Y1, X2, Y2));
+end;
 {------------------------------------------------------------------------------
   Method:  EnableScrollBar
   Params:  Wnd      - handle to window or scroll bar
@@ -1022,10 +1014,10 @@ end;}
 
   Retrieves the handle of the window (if any) that has captured the mouse.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.GetCapture: HWND;
+function TWinCEWidgetSet.GetCapture: HWND;
 begin
-  Result:=inherited GetCapture;
-end;}
+  Result := Windows.GetCapture;
+end;
 
 {------------------------------------------------------------------------------
   Method:  GetCaretPos
@@ -1034,12 +1026,12 @@ end;}
 
   Gets the caret's position, in client coordinates.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
+function TWinCEWidgetSet.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
-  Result:=inherited GetCaretPos(lpPoint);
+  Result := Boolean(Windows.GetCaretPos(@LPPoint));
 end;
 
-function TWinCEWidgetSet.GetCaretRespondToFocus(handle: HWND;
+{function TWinCEWidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   Result:=inherited GetCaretRespondToFocus(handle, ShowHideOnFocus);
@@ -1391,12 +1383,16 @@ end;
 
   Retrieves a pointer to data from the property list of the given window.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+function TWinCEWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
+var
+  WideStr: PWideChar;
 begin
-  Result:=inherited GetProp(Handle, Str);
+  WideStr := StringToPWideChar(String(str));
+  Result := Pointer(Windows.GetProp(Handle, WideStr));
+  FreeMem(WideStr);
 end;
 
-function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
+{function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=inherited GetRawImageFromDevice(SrcDC, SrcRect, NewRawImage);
@@ -1425,10 +1421,10 @@ end;}
  ------------------------------------------------------------------------------}
 {function TWinCEWidgetSet.GetROP2(DC: HDC): Integer;
 begin
-  Result:=inherited GetROP2(DC);
-end;
+  Result := Windows.GetROP2(DC); // not found
+end;}
 
-function TWinCEWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer
+{function TWinCEWidgetSet.GetScrollBarSize(Handle: HWND; BarKind: Integer
   ): integer;
 begin
   Result:=inherited GetScrollBarSize(Handle, BarKind);
@@ -1741,17 +1737,10 @@ end;}
 
   Removes the caret from the screen.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.HideCaret(hWnd: HWND): Boolean;
+function TWinCEWidgetSet.HideCaret(hWnd: HWND): Boolean;
 begin
-  Result:=inherited HideCaret(hWnd);
+  Result := Boolean(Windows.HideCaret(hWnd));
 end;
-}
-
-
-
-
-
-
 
 {------------------------------------------------------------------------------
   Method:  InvalidateRect
@@ -2070,10 +2059,10 @@ end;}
   The ReleaseCapture function releases the mouse capture from a window
   and restores normal mouse input processing.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ReleaseCapture: Boolean;
+function TWinCEWidgetSet.ReleaseCapture: Boolean;
 begin
-  Result:=inherited ReleaseCapture;
-end;}
+  Result := Boolean(Windows.ReleaseCapture);
+end;
 
 {------------------------------------------------------------------------------
   Method:  ReleaseDC
@@ -2089,8 +2078,6 @@ begin
   Result := Windows.ReleaseDC(Window, DC);
   Assert(False, Format('Trace:< [TWinCEWidgetSet.ReleaseDC] DC:0x%x', [DC]));
 end;
-
-
 
 {------------------------------------------------------------------------------
   Method:  RestoreDC
@@ -2288,6 +2275,7 @@ begin
   Result:=inherited SetComboMinDropDownSize(Handle, MinItemsWidth,
     MinItemsHeight, MinItemCount);
 end;}
+
 {------------------------------------------------------------------------------
   Method:  SetCapture
   Params:  Value - Handle of window to capture
@@ -2295,10 +2283,11 @@ end;}
 
   Sets the mouse capture to the specified window.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.SetCapture(AHandle: HWND): HWND;
+function TWinCEWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  Result:=inherited SetCapture(AHandle);
-end;}
+  Result := Windows.SetCapture(AHandle);
+end;
+
 {------------------------------------------------------------------------------
   Method:  SetCaretPos
   Params:  new position x, y
@@ -2306,10 +2295,10 @@ end;}
 
   Moves the caret to the specified coordinates.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
+function TWinCEWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
 begin
-  Result:=inherited SetCaretPos(X, Y);
-end;}
+  Result := Boolean(Windows.SetCaretPos(X, Y));
+end;
 {------------------------------------------------------------------------------
   Method:  SetCaretPosEx
   Params:  Handle - handle of window
@@ -2319,12 +2308,12 @@ end;}
 
   Moves the caret to the specified coordinates in the specified window.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
+function TWinCEWidgetSet.SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean;
 begin
-  Result:=inherited SetCaretPosEx(Handle, X, Y);
+  Result := Windows.SetCaretPos(X, Y);
 end;
 
-function TWinCEWidgetSet.SetCaretRespondToFocus(handle: HWND;
+{function TWinCEWidgetSet.SetCaretRespondToFocus(handle: HWND;
   ShowHideOnFocus: boolean): Boolean;
 begin
   Result:=inherited SetCaretRespondToFocus(handle, ShowHideOnFocus);
@@ -2375,11 +2364,14 @@ end;
 
   MWE: that is not really needed anymore since the RemoveProp is now implemented
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer
-  ): Boolean;
+function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
+var
+  WideStr: PWideChar;
 begin
-  Result:=inherited SetProp(Handle, Str, Data);
-end;}
+  WideStr := StringToPWideChar(String(str));
+  Result := Boolean(Windows.SetProp(Handle, WideStr, Windows.HANDLE(Data)));
+  FreeMem(WideStr);
+end;
 {------------------------------------------------------------------------------
   Method:  SetROP2
   Params:  DC			- Device Context
@@ -2544,10 +2536,10 @@ end;}
 
   Makes the caret visible on the screen at the caret's current position.
  ------------------------------------------------------------------------------}
-{function TWinCEWidgetSet.ShowCaret(hWnd: HWND): Boolean;
+function TWinCEWidgetSet.ShowCaret(hWnd: HWND): Boolean;
 begin
-  Result:=inherited ShowCaret(hWnd);
-end;}
+  Result := Boolean(Windows.ShowCaret(HWnd));
+end;
 {------------------------------------------------------------------------------
   Method:   ShowScrollBar
   Params:  Handle - handle of window with scroll bar

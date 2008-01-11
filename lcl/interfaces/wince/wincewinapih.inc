@@ -63,7 +63,6 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
-//function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
@@ -82,14 +81,14 @@ function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
-//function DestroyCaret(Handle : HWND): Boolean; override;
+function DestroyCaret(Handle : HWND): Boolean; override;
 function DrawFrameControl(DC: HDC; const Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DestroyCursor(Handle: hCursor): Boolean; override;
 function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
 
-{function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
-function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
+function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
+{function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 procedure EnterCriticalSection(var CritSection: TCriticalSection); override;
@@ -107,9 +106,9 @@ function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 function GetActiveWindow : HWND; override;
 //function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
 
-{function GetCapture: HWND; override;
+function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
-function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
+{function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;}
 function GetClientBounds(handle : HWND; var Rect : TRect) : Boolean; override;
 function GetClientRect(handle : HWND; var Rect : TRect) : Boolean; override;
@@ -128,10 +127,10 @@ function GetForegroundWindow: HWND; override;
 //function GetKeyState(nVirtKey: Integer): Smallint; override;
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 function GetParent(Handle : HWND): HWND; override;
-{function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
-function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;}
-{function GetROP2(DC: HDC): Integer; override;
-function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
+function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
+{function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;}
+//function GetROP2(DC: HDC): Integer; override;
+{function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;}
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;override;
 function GetStockObject(Value: Integer): THandle; override;
@@ -147,9 +146,9 @@ function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boole
 function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 {
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; override;}
 
-function HideCaret(hWnd: HWND): Boolean; override;}
+function HideCaret(hWnd: HWND): Boolean; override;
 
 procedure InitializeCriticalSection(var CritSection: TCriticalSection); override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
@@ -174,8 +173,8 @@ function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
 function RealizePalette(DC: HDC): Cardinal; override;}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
-{function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
-function ReleaseCapture : Boolean; override;}
+{function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;}
+function ReleaseCapture : Boolean; override;
 function ReleaseDC(Window: HWND; DC: HDC): Integer; override;
 //function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
@@ -191,15 +190,15 @@ function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: WParam; lParam: LPa
 function SetActiveWindow(Window: HWND): HWND; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
-{function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
+{function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;}
 function SetCapture(AHandle: HWND): HWND; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
-function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
+{function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;}
 function SetCursor(hCursor: HICON): HCURSOR; override;
 //function SetCursorPos(X, Y: Integer): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
-//function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
+function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
 function SetROP2(DC: HDC; Mode: Integer): Integer; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
@@ -209,8 +208,8 @@ function SetWindowLong(Handle: HWND; Idx: Integer; NewLong: PtrInt): PtrInt; ove
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; OldPoint: PPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
-{function ShowCaret(hWnd: HWND): Boolean; override;
-function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;}
+function ShowCaret(hWnd: HWND): Boolean; override;
+{function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;}
 function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; ROp: Cardinal): Boolean; override;
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;

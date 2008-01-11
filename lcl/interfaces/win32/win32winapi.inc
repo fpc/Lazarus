@@ -2706,7 +2706,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SetROP2(DC: HDC; Mode: Integer): Integer;
 begin
-	result := Windows.SetROP2(DC, Mode);
+  result := Windows.SetROP2(DC, Mode);
 end;
 
 {------------------------------------------------------------------------------
