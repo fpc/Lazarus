@@ -5,7 +5,6 @@ in xpm format.
 bookmark.lrs - Icons for bookmarks
 codetoolsdefines.lrs - Icons for CodeTools Defines Editor
 components_images.lrs - Icons and pics for lcl components
-editoroptions.lrs - Icons for editor options
 mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons, the menu (Open, Save,...),
                  package windows, codeexplorer
@@ -36,35 +35,36 @@ cd <lazarusdir>/images/codetoolsdefines
 cd <lazarusdir>/images/
 ../tools/lazres components_images.lrs @components_images_list.txt
 
-4. editoroptions.lrs
-
-cd <lazarusdir>/images/
-../tools/lazres ../editoroptions.lrs keymaprelation.xpm keymapcategory.xpm
-
-
-5. mainicon.lrs
+4. mainicon.lrs
 
 cd <lazarusdir>/images/
 ../tools/lazres mainicon.lrs mainicon.xpm
 
 
-6. laz_images.lrs
+5. laz_images.lrs
 
 cd <lazarusdir>/images/
 ../tools/lazres laz_images.lrs @laz_images_list.txt
 rm ../main.ppu
 
 
-7. splash.lrs
+6. splash.lrs
 
 cd <lazarusdir>/
 ./tools/lazres splash.lrs images/splash_logo.xpm
 
 
-8. unitdependencies.lrs
+7. unitdependencies.lrs
 
 cd <lazarusdir>/images/unitdependencies
 ../../tools/lazres ../../unitdependencies.lrs *.xpm
 
 
+Others
+
+in form ide/editoroptions_new.lfm
+images/keymaprelation.png, images/keymapcategory.png
+
+in form ide/fpdoceditwindow.lfm
+images/lazdoc/*.png
 

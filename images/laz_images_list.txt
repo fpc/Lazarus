@@ -1,5 +1,5 @@
-btn_downarrow.xpm
-folder.xpm
+btn_downarrow.png
+folder.png
 template.png
 actions/add.png
 actions/arrow_down.png

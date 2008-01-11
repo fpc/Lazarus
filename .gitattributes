@@ -2239,7 +2239,7 @@ images/actions/open.png -text svneol=unset#image/png
 images/actions/paste.png -text svneol=unset#image/png
 images/actions/refresh.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal
-images/btn_downarrow.xpm -text svneol=native#image/x-xpixmap
+images/btn_downarrow.png -text
 images/codeexplorer/ce_class.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_const.xpm -text svneol=native#image/x-xpixmap
 images/codeexplorer/ce_default.xpm -text svneol=native#image/x-xpixmap
@@ -2401,7 +2401,7 @@ images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
 images/down.xpm svneol=native#text/plain
-images/folder.xpm svneol=native#text/plain
+images/folder.png -text
 images/fonts.xpm -text svneol=native#image/x-xpixmap
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
@@ -2414,8 +2414,8 @@ images/items/item_package.png -text svneol=unset#image/png
 images/items/item_project.png -text svneol=unset#image/png
 images/items/item_todo.png -text svneol=unset#image/png
 images/items/item_unit.png -text svneol=unset#image/png
-images/keymapcategory.xpm -text svneol=native#image/x-xpixmap
-images/keymaprelation.xpm -text svneol=native#image/x-xpixmap
+images/keymapcategory.png -text
+images/keymaprelation.png -text
 images/laz_images.bat svneol=native#text/plain
 images/laz_images.lrs svneol=native#text/pascal
 images/laz_images_list.txt svneol=native#text/plain
