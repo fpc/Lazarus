@@ -517,7 +517,6 @@ function TWin32WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
 var
   FormatID: UINT;
   c: integer;
-
 begin
   Result := false;
   List := nil;
@@ -572,41 +571,69 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
   Formats: PClipboardFormat): Boolean;
 
-  procedure PutOnClipBoard(FormatID: integer);
+  procedure WriteStreamToClipBoard(FormatID: integer; SourceStream: TStream);
   var
-    DataStream: TStream;
-    Bitmap: TBitmap;
     DataHandle : THandle;//Windows.HGLOBAL;
     DataPtr: pointer;
   begin
+    DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, SourceStream.Size);
+    if (DataHandle=HWND(0)) then begin
+      debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(SourceStream.Size));
+      Result := false;
+      exit;
+    end;
+    DataPtr := GlobalLock(DataHandle);
+    try
+      SourceStream.Read(DataPtr^, SourceStream.Size);
+    finally
+      Windows.GlobalUnlock(DataHandle);
+    end;
+    Windows.SetClipboardData(FormatID, DataHandle);
+  end;
+
+  procedure PutOnClipBoard(FormatID: integer);
+  var
+    DataStream, BufferStream: TStream;
+    Bitmap: TBitmap;
+    BufferWideString: widestring;
+    BufferString: ansistring;
+  begin
     DataStream := TMemoryStream.Create;
+    BufferStream := TMemoryStream.Create;
     try
       OnClipBoardRequest(FormatID, DataStream);
       DataStream.Position:=0;
-      if FormatID=CF_BITMAP then begin
+      if FormatID=CF_BITMAP then
+      begin
         Bitmap:= TBitmap.Create;
         Bitmap.TransparentColor := clNone;
         Bitmap.LoadFromStream(DataStream);
         Windows.SetClipboardData(FormatID, Bitmap.Handle);
         Bitmap.Free;
-      end else
+      end
+      else
+      {$IFDEF WindowsUnicodeSupport}
+      { In the case of unicode text, it's necessary to
+        convert it from UTF-8 to UTF-16 before sending
+        to the clipboard }
+      if FormatID=Windows.CF_UNICODETEXT then
       begin
-        DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, DataStream.Size);
-        if (DataHandle=HWND(0)) then begin
-          debugln('TWin32WidgetSet.ClipboardGetOwnerShip DataHandle=',dbgs(DataHandle),' DataSize=',dbgs(DataStream.Size));
-          Result := false;
-          exit;
-        end;
-        DataPtr := GlobalLock(DataHandle);
-        try
-          DataStream.Read(DataPtr^, DataStream.Size);
-        finally
-          Windows.GlobalUnlock(DataHandle);
-        end;
-        Windows.SetClipboardData(FormatID, DataHandle);
+        SetLength(BufferString, DataStream.Size);
+        DataStream.Read(BufferString[1], DataStream.Size);
+        BufferWideString := Utf8Decode(BufferString);
+        BufferStream.Write(BufferWideString[1], Length(BufferString) * 2);
+        BufferStream.Position := 0;
+
+        WriteStreamToClipBoard(FormatID, BufferStream);
+      end
+      else
+      {$ENDIF}
+      begin
+        WriteStreamToClipBoard(FormatID, DataStream);
       end;
     finally
       DataStream.Free;
+      BufferStream.Free;
     end;
   end;
 
@@ -682,7 +709,11 @@ end;
 function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat;
 begin
   if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
+  {$IFDEF WindowsUnicodeSupport}
+    Result := Windows.CF_UNICODETEXT
+  {$ELSE}
     Result := Windows.CF_TEXT
+  {$ENDIF}
   else if (AMimeType=PredefinedClipboardMimeTypes[pcfBitmap]) then
     Result := Windows.CF_BITMAP
   else
