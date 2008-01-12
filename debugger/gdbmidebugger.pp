@@ -2619,8 +2619,12 @@ begin
   if FLocalsValid then Exit;
 
   // args
-  TGDBMIDebugger(Debugger).ExecuteCommand('frame', [], R);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
+    [TGDBMIDebugger(Debugger).FCurrentStackFrame], [], R);
   List := CreateMIValueList(R);
+  S := List.Values['stack-args'];
+  FreeAndNil(List);
+  List := CreateMIValueList(S);
   S := List.Values['frame'];
   FreeAndNil(List);
   List := CreateMIValueList(S);
