@@ -416,6 +416,31 @@ var
   Size: integer;
   DbgFormatID: integer;
   Bitmap: TBitmap;
+  BufferStream: TMemoryStream;
+  BufferWideString: widestring;
+  BufferString: ansistring;
+
+  function ReadClipboardToStream(DestStream: TStream): Boolean;
+  begin
+    Result := false;
+
+    DataHandle := Windows.GetClipboardData(FormatID);
+    if DataHandle<>HWND(0) then
+    begin
+      Size := Windows.GlobalSize(DataHandle);
+      if Size>0 then
+      begin
+        Data := Windows.GlobalLock(DataHandle);
+        try
+          DestStream.Write(Data^, Size);
+        finally
+          Windows.GlobalUnlock(DataHandle);
+        end;
+        Result := true;
+      end;
+    end;
+  end;
+
 begin
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
   Result := false;
@@ -436,7 +461,8 @@ begin
 
   if Windows.OpenClipboard(Windows.HWND(nil)) then
     try
-      if FormatID=Windows.CF_BITMAP then begin
+      if FormatID=Windows.CF_BITMAP then
+      begin
         Bitmap:= TBitmap.Create;
         Bitmap.TransparentColor := clNone;
         DataHandle := Windows.GetClipboardData(FormatID);
@@ -445,20 +471,32 @@ begin
         Bitmap.Free;
         Result := true;
       end
-      else begin
-        DataHandle := Windows.GetClipboardData(FormatID);
-        if DataHandle<>HWND(0) then begin
-          Size := Windows.GlobalSize(DataHandle);
-          if Size>0 then begin
-            Data := Windows.GlobalLock(DataHandle);
-            try
-              Stream.Write(Data^, Size);
-            finally
-              Windows.GlobalUnlock(DataHandle);
-            end;
-            Result := true;
+      else
+      {$IFDEF WindowsUnicodeSupport}
+      { In the case of unicode text, it's necessary to
+        convert it from UTF-16 to UTF-8 }
+      if FormatID=Windows.CF_UNICODETEXT then
+      begin
+        BufferStream := TMemoryStream.Create;
+        try
+          Result := ReadClipboardToStream(BufferStream);
+          
+          if Size>0 then
+          begin
+            BufferStream.Position := 0;
+            SetLength(BufferWideString, Size div 2);
+            BufferStream.Read(BufferWideString[1], Size);
+            BufferString := Utf8Encode(BufferWideString);
+            Stream.Write(BufferString[1], Length(BufferString));
           end;
+        finally
+          BufferStream.Free;
         end;
+      end
+      else
+      {$ENDIF}
+      begin
+        Result := ReadClipboardToStream(Stream);
       end;
     finally
       Windows.CloseClipboard;

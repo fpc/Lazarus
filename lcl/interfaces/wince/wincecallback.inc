@@ -1441,7 +1441,7 @@ begin
       end;
       
       // Guesture recognition process to enable popup menus.
-      if lWinControl.PopupMenu<>nil then
+      if (lWinControl.PopupMenu <> nil) then
       begin
         Info.cbSize := SizeOf(SHRGINFO);
         Info.dwFlags := SHRG_RETURNCMD;
