@@ -6,7 +6,7 @@ LazarusResources.Add('TCallStackDlg','FORMDATA',[
   +'r.Page'#3#199#0#13'ActiveControl'#7#11'lvCallStack'#7'Caption'#6#9'CallStac'
   +'k'#12'ClientHeight'#3#200#0#11'ClientWidth'#3'7'#2#7'Visible'#9#0#9'TListVi'
   +'ew'#11'lvCallStack'#6'Height'#3#200#0#5'Width'#3'7'#2#5'Align'#7#8'alClient'
-  +#7'Columns'#14#1#5'Width'#2#10#0#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0
+  +#7'Columns'#14#1#5'Width'#2#20#0#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0
   +#1#7'Caption'#6#4'Line'#0#1#7'Caption'#6#8'Function'#5'Width'#3'"'#1#0#0#9'P'
   +'opupMenu'#7#8'mnuPopup'#9'RowSelect'#9#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsR'
   +'eport'#10'OnDblClick'#7#19'lvCallStackDBLCLICK'#0#0#10'TPopupMenu'#8'mnuPop'

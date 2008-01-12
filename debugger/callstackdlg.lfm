@@ -16,7 +16,7 @@ inherited CallStackDlg: TCallStackDlg
     Align = alClient
     Columns = <    
       item
-        Width = 10
+        Width = 20
       end    
       item
         Caption = 'Source'
