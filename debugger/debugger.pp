@@ -270,6 +270,7 @@ type
   private
     FSlave: TBaseBreakPoint;
     function GetDebugger: TDebugger;
+    procedure SetSlave(const ASlave : TBaseBreakPoint);
   protected
     procedure DoChanged; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
@@ -278,7 +279,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     function GetSourceLine: integer; override;
-    property Slave: TBaseBreakPoint read FSlave write FSlave;
+    property Slave: TBaseBreakPoint read FSlave write SetSlave;
   end;
   TDBGBreakPointClass = class of TDBGBreakPoint;
 
@@ -478,6 +479,7 @@ type
   private
     FSlave: TBaseWatch;
     function GetDebugger: TDebugger;
+    procedure SetSlave(const ASlave : TBaseWatch);
   protected
     procedure DoChanged; override;
     procedure DoChange; virtual;
@@ -486,7 +488,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    property Slave: TBaseWatch read FSlave write FSlave;
+    property Slave: TBaseWatch read FSlave write SetSlave;
   end;
   TDBGWatchClass = class of TDBGWatch;
 
@@ -2015,7 +2017,8 @@ begin
   SBP := FSlave;
   FSlave := nil;
   if SBP <> nil
-  then SBP.Changed;
+  then SBP.DoChanged;   // In case UpdateCount  0
+
   inherited Destroy;
 end;
 
@@ -2052,6 +2055,12 @@ end;
 function TDBGBreakPoint.GetDebugger: TDebugger;
 begin
   Result := TDBGBreakPoints(Collection).FDebugger;
+end;
+
+procedure TDBGBreakPoint.SetSlave(const ASlave : TBaseBreakPoint);
+begin
+  Assert(FSlave = nil, 'TDBGBreakPoint.SetSlave already has a slave');
+  FSlave := ASlave;
 end;
 
 { =========================================================================== }
@@ -2647,7 +2656,7 @@ begin
   SW := FSlave;
   FSlave := nil;
   if SW <> nil
-  then SW.Changed;
+  then SW.DoChanged; // in case UpDateCount was 0
   inherited Destroy;
 end;
 
@@ -2669,6 +2678,12 @@ end;
 function TDBGWatch.GetDebugger: TDebugger;
 begin
   Result := TDBGWatches(Collection).FDebugger;
+end;
+
+procedure TDBGWatch.SetSlave(const ASlave : TBaseWatch);
+begin
+  Assert(FSlave = nil, 'TDBGWatch.SetSlave already has a slave');
+  FSlave := ASlave;
 end;
 
 { =========================================================================== }

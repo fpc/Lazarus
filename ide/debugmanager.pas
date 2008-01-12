@@ -207,7 +207,6 @@ type
     procedure UpdateSourceMarkImage;
     procedure UpdateSourceMarkLineColor;
   public
-    constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure ResetMaster;
     function GetSourceLine: integer; override;
@@ -233,12 +232,13 @@ type
     FMaster: TDBGWatch;
   protected
     procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
     function GetValid: TValidState; override;
     function GetValue: String; override;
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
   public
-    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
     procedure ResetMaster;
   end;
 
@@ -255,6 +255,7 @@ type
     procedure NotifyRemove(const AWatch: TIDEWatch); override;
   public
     constructor Create(const AManager: TDebugManager);
+    destructor Destroy; override;
     property Master: TDBGWatches read FMaster write SetMaster;
   end;
   
@@ -294,7 +295,6 @@ type
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
-    constructor Create(ACollection: TCollection); override;
     procedure ResetMaster;
   end;
 
@@ -315,7 +315,6 @@ type
   protected
     procedure DoChanged; override;
   public
-    constructor Create(ACollection: TCollection); override;
     procedure ResetMaster;
   end;
 
@@ -465,9 +464,20 @@ begin
   if (TManagedWatches(GetOwner).FMaster <> nil)
   and (Dest is TDBGWatch)
   then begin
+    Assert(FMaster=nil, 'TManagedWatch.AssignTo already has a master');
+    if FMaster<>nil then FMaster.Slave := nil;
     FMaster := TDBGWatch(Dest);
     FMaster.Slave := Self;
   end;
+end;
+
+procedure TManagedWatch.DoChanged;
+begin
+  if (FMaster <> nil)
+  and (FMaster.Slave = nil)
+  then FMaster := nil;
+
+  inherited DoChanged;
 end;
 
 function TManagedWatch.GetValid: TValidState;
@@ -498,13 +508,15 @@ begin
   if FMaster <> nil then FMaster.Expression := AValue;
 end;
 
-constructor TManagedWatch.Create(ACollection: TCollection);
+destructor TManagedWatch.Destroy;
 begin
-  inherited Create(ACollection);
+  ResetMaster;
+  inherited Destroy;
 end;
 
 procedure TManagedWatch.ResetMaster;
 begin
+  if FMaster <> nil then FMaster.Slave := nil;
   FMaster := nil;
 end;
 
@@ -561,13 +573,13 @@ begin
   inherited Create(TManagedWatch);
 end;
 
-{ TManagedException }
-
-constructor TManagedException.Create(ACollection: TCollection);
+destructor TManagedWatches.Destroy;
 begin
-  FMaster := nil;
-  inherited Create(ACollection);
+  if Master <> nil then FMaster.OnChange := nil;
+  inherited Destroy;
 end;
+
+{ TManagedException }
 
 procedure TManagedException.DoChanged;
 var
@@ -634,12 +646,6 @@ begin
   then begin
     FMaster := TDBGSignal(Dest);
   end;
-end;
-
-constructor TManagedSignal.Create(ACollection: TCollection);
-begin
-  FMaster := nil;
-  inherited Create(ACollection);
 end;
 
 procedure TManagedSignal.ResetMaster;
@@ -807,15 +813,11 @@ begin
   if (TManagedBreakPoints(GetOwner).FMaster <> nil)
   and (Dest is TDBGBreakPoint)
   then begin
+    Assert(FMaster=nil, 'TManagedBreakPoint.AssignTO already has Master');
+    if FMaster <> nil then FMaster.Slave := nil;
     FMaster := TDBGBreakPoint(Dest);
     FMaster.Slave := Self;
   end;
-end;
-
-constructor TManagedBreakPoint.Create(ACollection: TCollection);
-begin
-  inherited Create(ACollection);
-  FMaster := nil;
 end;
 
 destructor TManagedBreakPoint.Destroy;
@@ -854,6 +856,7 @@ end;
 
 procedure TManagedBreakPoint.ResetMaster;
 begin
+  if FMaster <> nil then FMaster.Slave := nil;
   FMaster := nil;
   Changed;
 end;
