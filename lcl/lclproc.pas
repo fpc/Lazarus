@@ -2380,8 +2380,8 @@ begin
   UTF8ToDoubleByte(PChar(s),length(s),PByte(Result));
 end;
 
+{ returns number of double bytes }
 function UTF8ToDoubleByte(UTF8Str: PChar; Len: integer; DBStr: PByte): integer;
-// returns number of double bytes
 var
   SrcPos: PChar;
   CharLen: LongInt;
@@ -2421,6 +2421,11 @@ begin
   end;
 end;
 
+{ Len is the length in bytes of UTF8Str
+  Index is the position of the desired char, in chars
+
+  This function is similar to UTF8FindNearestCharStart
+}
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 var
   CharLen: LongInt;
@@ -2438,8 +2443,8 @@ begin
   end;
 end;
 
+{ fix any broken UTF8 sequences with spaces }
 procedure UTF8FixBroken(P: PChar);
-// fix any broken UTF8 sequences with spaces
 begin
   if p=nil then exit;
   while p^<>#0 do begin

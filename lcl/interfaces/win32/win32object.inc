@@ -111,12 +111,28 @@ begin
   if InitCommonControlsEx <> nil then
     InitCommonControlsEx(@ICC);
 
-  // Create parent of all windows, `button on taskbar'
+  // Create parent of all windows, 'button on taskbar'
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    FAppHandle := CreateWindowW(@ClsNameW,
+      PWideChar(Utf8Decode(Application.Title)),
+      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+      0, 0, HWND(nil), HMENU(nil), HInstance, nil)
+  else
+    FAppHandle := CreateWindow(@ClsName, PChar(Utf8ToAnsi(Application.Title)),
+      WS_POPUP or WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
+      0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+      0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+      0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  {$else}
   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
     WS_CLIPSIBLINGS or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  {$endif}
   AllocWindowInfo(FAppHandle);
 
   // set nice main icon
@@ -369,9 +385,10 @@ End;
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
   {$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS 
-  then Windows.SetWindowTextW(FAppHandle, PWideChar(Utf8Decode(ATitle)))
-  else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
+  if UnicodeEnabledOS then
+  begin
+    Windows.SetWindowTextW(FAppHandle, PWideChar(Utf8Decode(ATitle)));
+  end else Windows.SetWindowText(FAppHandle, PChar(Utf8ToAnsi(ATitle)));
   {$else}
   Windows.SetWindowText(FAppHandle, PChar(ATitle));
   {$endif}
@@ -489,7 +506,7 @@ Begin
       hCursor := Windows.LoadCursor(0, IDC_ARROW);
       hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
       LPSzMenuName := Nil;
-      LPSzClassName := PWideChar(WideString(ClsName));
+      LPSzClassName := @ClsNameW;
     end;
     Result := Windows.RegisterClassW(@WindowClassW) <> 0;
   end

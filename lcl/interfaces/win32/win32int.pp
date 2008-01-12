@@ -230,6 +230,8 @@ const
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
 
+  ClsNameW: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
+
 {$ifdef DEBUG_DOUBLEBUFFER}
 var
   CopyBitmapToClipboard: boolean = true;
