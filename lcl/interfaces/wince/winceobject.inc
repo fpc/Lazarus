@@ -35,7 +35,7 @@
  ------------------------------------------------------------------------------}
 constructor TWinCEWidgetSet.Create;
 begin
-  Inherited Create;
+  inherited Create;
   FTimerData  := TList.Create;
   FMetrics.cbSize := SizeOf(FMetrics);
   //roozbeh:new stuff seems to be always true as we dont have that flag under ce??!!
@@ -54,13 +54,13 @@ end;
   Params:  None
   Returns: Nothing
 
-  Destructor for the class.
+  destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TWinCEWidgetSet.Destroy;
+destructor TWinCEWidgetSet.Destroy;
 var
   n: integer;
   TimerInfo : PWinCETimerInfo;
-Begin
+begin
   Assert(False, 'Trace:TWinCEWidgetSet is being destroyed');
 
   n := FTimerData.Count;
@@ -100,14 +100,14 @@ Begin
   Windows.UnregisterClass(@ClsName, System.HInstance);
 
   inherited Destroy;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppInit
   Params:  None
   Returns: Nothing
 
-  Initialize Windows
+  initialize Windows
  ------------------------------------------------------------------------------}
 procedure TWinCEWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
@@ -229,23 +229,23 @@ end;
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-Procedure TWinCEWidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
-Var
+procedure TWinCEWidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
+var
   Window: HWnd;
-Begin
+begin
   Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Start');
   Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
   Assert(False, Format('Trace:TWinCEWidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
-  If Sender Is TControlCanvas Then
+  if Sender Is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
-  Else If Sender Is TCustomForm Then
+  else if Sender Is TCustomForm then
     Window := TCustomForm(Sender).Handle
-  Else
+  else
     Window := TWinControl(Sender).Handle;
   if Window=0 then exit;
 
   Assert(False, 'Trace:TWinCEWidgetSet.SetCallback - Exit');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.RemoveCallbacks
@@ -254,18 +254,18 @@ End;
 
   Removes Call Back Signals from the sender
  ------------------------------------------------------------------------------}
-Procedure TWinCEWidgetSet.RemoveCallbacks(Sender: TObject);
-Var
+procedure TWinCEWidgetSet.RemoveCallbacks(Sender: TObject);
+var
   Window: HWnd;
-Begin
-  If Sender Is TControlCanvas Then
+begin
+  if Sender Is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
-  Else If Sender Is TCustomForm Then
+  else if Sender Is TCustomForm then
     Window := TCustomForm(Sender).Handle
-  Else
+  else
     Window := (Sender as TWinControl).Handle;
   if Window=0 then exit;
-End;
+end;
 
 //roozbeh : how can we have hints on ce?
 {
@@ -291,7 +291,7 @@ var
   AMessage: TMsg;
   AccelTable: HACCEL;
   retVal, index: dword;
-Begin
+begin
   repeat
 {$ifdef DEBUG_ASYNCEVENTS}
     if Length(FWaitHandles) > 0 then
@@ -323,19 +323,18 @@ Begin
         end;
       end;
 
-    if FWaitHandleCount = 0 then
-     break;
+      if FWaitHandleCount = 0 then
+        break;
 
     end
     else
-    if retVal = $FFFFFFFF then
-    begin
-      DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
-      break;
-    end;
-
+      if retVal = $FFFFFFFF then
+      begin
+        DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
+        break;
+      end;
   until false;
-End;
+end;
 
 procedure TWinCEWidgetSet.CheckPipeEvents;
 var
@@ -396,7 +395,7 @@ begin
     RaiseGDBException('Failaure on MsgWaitForMultipleObjects');
 
   Assert(False,'Trace:Leave wait message');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.AppTerminate
@@ -418,7 +417,7 @@ end;
 
 procedure TWinCEWidgetSet.AppSetTitle(const ATitle: string);
 var
-tmpText : PWideChar;
+  tmpText: PWideChar;
 begin
   tmpText := StringToPWideChar(ATitle);
   Windows.SetWindowText(FAppHandle, @tmpText);
@@ -432,7 +431,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateTimer
+  function: CreateTimer
   Params: Interval:
           TimerFunc: Callback
   Returns: a Timer id (use this ID to destroy timer)
@@ -461,7 +460,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: DestroyTimer
+  function: DestroyTimer
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
@@ -511,14 +510,14 @@ end;
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.WinRegister
   Params: None
-  Returns: If the window was successfully regitered
+  Returns: if the window was successfully regitered
 
   Registers the main window class
  ------------------------------------------------------------------------------}
-Function TWinCEWidgetSet.WinRegister: Boolean;
-Var
+function TWinCEWidgetSet.WinRegister: Boolean;
+var
   WindowClass: Windows.WndClass;
-Begin
+begin
   FillChar(WindowClass, SizeOf(WindowClass), #0);
 
   with WindowClass do
@@ -538,10 +537,7 @@ Begin
   end;
   
   Result := Windows.RegisterClass(@WindowClass) <> 0;
-End;
-
-
-
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.ShowHide
@@ -550,19 +546,19 @@ End;
 
   Shows or hides a control
  ------------------------------------------------------------------------------}
-Procedure TWinCEWidgetSet.ShowHide(Sender: TObject);
-Var
+procedure TWinCEWidgetSet.ShowHide(Sender: TObject);
+var
   Handle: HWND;
   ParentPanel: HWND;
   Flags: dword;
-Begin
-  //If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
+begin
+  //if (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
 //  ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
 //  if ParentPanel <> 0 then
 //    Handle := ParentPanel;
-  If TControl(Sender).HandleObjectShouldBeVisible Then
-  Begin
+  if TControl(Sender).HandleObjectShouldBeVisible then
+  begin
     Assert(False, 'Trace: [TWinCEWidgetSet.ShowHide] Showing the window');
     if TControl(Sender).FCompStyle = csHintWindow then
     begin
@@ -580,15 +576,15 @@ Begin
       if Flags = SW_SHOWMAXIMIZED then
         Windows.SendMessage(Handle, WM_SHOWWINDOW, 1, 0);
     end;
-    If (Sender Is TCustomForm) Then
+    if (Sender Is TCustomForm) then
       SetClassLong(Handle, GCL_HICON, LONG(TCustomForm(Sender).GetIconHandle));
-  End
-  Else
-  Begin
+  end
+  else
+  begin
     Assert(False, 'TRACE: [TWinCEWidgetSet.ShowHide] Hiding the window');
     ShowWindow(Handle, SW_HIDE);
-  End;
-End;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinCEWidgetSet.DCReDraw

@@ -148,7 +148,7 @@ type
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
-    Procedure AppTerminate; Override;
+    procedure AppTerminate; Override;
     procedure AppSetTitle(const ATitle: string); override;
     //Function  InitHintFont(HintFont: TObject): Boolean; override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
