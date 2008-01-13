@@ -45,7 +45,7 @@ uses
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
   Dialogs, LResources, LazConfigStorage, Laz_XMLCfg,
   IDEExternToolIntf,
-  KeyMapping, TransferMacros, IDEProcs, LazarusIDEStrConsts;
+  KeyMapping, TransferMacros, IDEProcs, LazarusIDEStrConsts, ExtCtrls;
 
 type
   { TExternalToolOptions }
@@ -69,6 +69,7 @@ type
   { TExternalToolOptionDlg }
 
   TExternalToolOptionDlg = class(TForm)
+    BtnPanel: TPanel;
     TitleLabel: TLabel;
     TitleEdit: TEdit;
     FilenameLabel: TLabel;
@@ -197,28 +198,22 @@ begin
   GrabbingKey:=0;
   Caption:=lisEdtExtToolEditTool;
 
-  with TitleLabel do
-    Caption:=dlgPOTitle;
+  TitleLabel.Caption:=dlgPOTitle;
 
-  with FilenameLabel do
-    Caption:=lisEdtExtToolProgramfilename;
+  FilenameLabel.Caption:=lisEdtExtToolProgramfilename;
 
-  with OpenButton do
-    Hint:=lisClickHereToBrowseTheFileHint;
+  OpenButton.Hint:=lisClickHereToBrowseTheFileHint;
 
   with OpenDialog do begin
     Title:=lisSelectFile;
     Filter:=lisExePrograms+' (*.exe)|*.exe|'+lisAllFiles+' (*.*)|*.*';
   end;
 
-  with ParametersLabel do
-    Caption:=lisEdtExtToolParameters;
+  ParametersLabel.Caption:=lisEdtExtToolParameters;
 
-  with WorkingDirLabel do
-    Caption:=lisEdtExtToolWorkingDirectory;
+  WorkingDirLabel.Caption:=lisEdtExtToolWorkingDirectory;
 
-  with OptionsGroupBox do
-    Caption:=lisLazBuildOptions;
+  OptionsGroupBox.Caption:=lisLazBuildOptions;
 
   with OptionScanOutputForFPCMessagesCheckBox do
     Caption:=lisEdtExtToolScanOutputForFreePascalCompilerMessages;
@@ -258,6 +253,9 @@ begin
 
   with MacrosInsertButton do
     Caption:=lisCodeTemplAdd;
+    
+  OKButton.Caption:=lisOkBtn;
+  CancelButton.Caption:=dlgCancel;
 
   fOptions:=TExternalToolOptions.Create;
 end;

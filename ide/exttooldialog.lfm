@@ -1,19 +1,19 @@
 object ExternalToolDialog: TExternalToolDialog
   Left = 334
-  Height = 400
+  Height = 424
   Top = 226
-  Width = 400
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 399
+  Width = 410
+  HorzScrollBar.Page = 409
+  VertScrollBar.Page = 423
   ActiveControl = ListBox
   BorderStyle = bsSizeToolWin
   Caption = 'ExternalToolDialog'
-  ClientHeight = 400
-  ClientWidth = 400
+  ClientHeight = 424
+  ClientWidth = 410
   Position = poScreenCenter
   object ToolBar: TToolBar
     Height = 48
-    Width = 400
+    Width = 410
     AutoSize = True
     ButtonHeight = 46
     ButtonWidth = 47
@@ -24,28 +24,28 @@ object ExternalToolDialog: TExternalToolDialog
     ShowHint = True
     TabOrder = 0
     object MoveDownButton: TToolButton
-      Left = 283
-      Top = 2
+      Left = 1
+      Top = 48
       Caption = 'MoveDownButton'
       ImageIndex = 4
       OnClick = MoveDownButtonClick
     end
     object MoveUpButton: TToolButton
-      Left = 204
+      Left = 261
       Top = 2
       Caption = 'MoveUpButton'
       ImageIndex = 3
       OnClick = MoveUpButtonClick
     end
     object EditButton: TToolButton
-      Left = 139
+      Left = 179
       Top = 2
       Caption = 'EditButton'
       ImageIndex = 2
       OnClick = EditButtonClick
     end
     object RemoveButton: TToolButton
-      Left = 60
+      Left = 77
       Top = 2
       Caption = 'RemoveButton'
       ImageIndex = 1
@@ -59,7 +59,7 @@ object ExternalToolDialog: TExternalToolDialog
       OnClick = AddButtonClick
     end
     object tbSeparator: TToolButton
-      Left = 197
+      Left = 254
       Top = 2
       Width = 7
       Caption = 'tbSeparator'
@@ -68,29 +68,30 @@ object ExternalToolDialog: TExternalToolDialog
   end
   object ListBox: TListBox
     AnchorSideBottom.Control = BtnPanel
-    Height = 308
+    Height = 322
     Top = 48
-    Width = 400
+    Width = 410
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
     OnClick = ListboxClick
     TabOrder = 1
+    TopIndex = -1
   end
   object BtnPanel: TPanel
-    Height = 38
-    Top = 362
-    Width = 400
+    Height = 48
+    Top = 376
+    Width = 410
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 400
+    ClientHeight = 48
+    ClientWidth = 410
     TabOrder = 2
     object OKButton: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 235
-      Height = 26
+      Left = 329
+      Height = 36
       Top = 6
       Width = 75
       Align = alRight
@@ -108,8 +109,8 @@ object ExternalToolDialog: TExternalToolDialog
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 316
-      Height = 26
+      Left = 245
+      Height = 36
       Top = 6
       Width = 78
       Align = alRight
