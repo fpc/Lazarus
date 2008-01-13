@@ -615,7 +615,7 @@ begin
   begin
     AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
     QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
-    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent {$IFDEF QT_USE_4_3}, Ord(QtLowEventPriority) {$ENDIF});
+    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent {$IFDEF USE_QT_4_3}, Ord(QtLowEventPriority) {$ENDIF});
     //WriteLn('Posted release event');
   end
   else
