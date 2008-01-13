@@ -3022,9 +3022,9 @@ end;
 constructor TAnchorSide.Create(TheOwner: TControl; TheKind: TAnchorKind);
 begin
   inherited Create;
-  FOwner:=TheOwner;
-  FKind:=TheKind;
-  FSide:=asrTop;
+  FOwner := TheOwner;
+  FKind := TheKind;
+  FSide := asrTop;
 end;
 
 destructor TAnchorSide.Destroy;

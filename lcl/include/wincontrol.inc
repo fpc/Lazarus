@@ -4759,10 +4759,12 @@ var
   NewBounds: TRect;
 begin
   DebugLn('TWinControl.DoUnDock ',Name,' NewTarget=',DbgSName(NewTarget),' Client=',DbgSName(Client));
-  if Assigned(FOnUnDock) then begin
-    Result := True;
-    FOnUnDock(Self,Client,NewTarget,Result);
-    if not Result then exit;
+  Result := True;
+  if Assigned(FOnUnDock) then
+  begin
+    FOnUnDock(Self, Client, NewTarget, Result);
+    if not Result then
+      Exit;
   end;
   if not KeepDockSiteSize then begin
     NewBounds:=BoundsRect;
