@@ -1922,12 +1922,12 @@ begin
     WinProcess := false;
   end;
 
-  Case Msg Of
+  case Msg of
     WM_MOVE:
-    Begin
+    begin
       PLMsg:=@LMMove;
-      With LMMove Do
-      Begin
+      with LMMove Do
+      begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
@@ -1952,20 +1952,25 @@ begin
         end;
         if lWinControl <> nil then begin
           {$IFDEF VerboseSizeMsg}
-          writeln('WinCECallBack WM_MOVE ',lWinControl.Name,':',lWinControl.ClassName,
-            ' NewPos=',XPos,',',YPos);
+          DebugLn('WinCECallBack WM_MOVE ', dbgsName(lWinControl),
+            ' NewPos=',dbgs(XPos),',',dbgs(YPos));
           {$ENDIF}
           if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
             exit;
         end;
-      End;
-    End;
+      end;
+    end;
     WM_SIZE:
-    Begin
+    begin
       With TLMSize(LMessage) Do
-      Begin
+      begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;
+        if Window = TWinCEWidgetSet(WidgetSet).AppHandle then
+        begin
+          lWinControl := Application.MainForm;
+          Window := Application.MainForm.Handle;
+        end;
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
@@ -1973,25 +1978,32 @@ begin
         begin
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          writeln('WinCECallback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
-            ' NewSize=',Width,',',Height,
-            ' HasVScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
-            ' HasHScroll=',(GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-            ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
-            ' NewClientSize=',R.Right,',',R.Bottom);
+          DebugLn('WinCECallback: WM_SIZE '+ dbgsName(lWinControl)+
+            ' NewSize=', dbgs(Width)+','+dbgs(Height)+
+            ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
+            ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
+            ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
+            ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
           {$ENDIF}
           if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
               or lWinControl.ClientRectNeedsInterfaceUpdate then
           begin
             lWinControl.InvalidateClientRectCache(true);
             lWinControl.DoAdjustClientRectChange;
+            if (lWinControl is TCustomPage)
+            and (lWinControl.Parent is TCustomNotebook) then
+            begin
+              // the TCustomPage size is the ClientRect size of the parent
+              // => invalidate the Parent.ClientRect
+              lWinControl.Parent.InvalidateClientRectCache(false);
+            end;
           end;
         end;
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
-      End;
-    End;
+      end;
+    end;
     BM_SETCHECK:
     begin
       if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
