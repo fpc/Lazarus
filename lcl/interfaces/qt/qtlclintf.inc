@@ -391,7 +391,9 @@ begin
     begin
       WorkMask := TQtImage.Create;
       WorkMask.CopyFrom(Mask.Handle, ARect.Left, ARect.Top, Width, Height);
-    end;
+    end
+    else
+      WorkMask := nil;
   end;
 
   Desc.Width := WorkImage.width;

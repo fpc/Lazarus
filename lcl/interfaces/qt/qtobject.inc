@@ -104,16 +104,14 @@ begin
   
   FOldFocusWidget := nil;
   
-  {This hook crashes linux & darwin ocasionally !
-   todo: check what happens with win32
-   and possibly remove this hook at all.
-   Tabs works under linux & darwin without this hook}
-  {$ifdef windows}
+  {
+    check whether this hook crashes on linux & darwin and why it is so
+    we need this hook to catch release messages
+  }
   // install global event filter
   FHook := QObject_hook_create(App);
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FHook, Method);
-  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -266,7 +264,7 @@ begin
       end;
     LCLQt_Destroy:
       begin
-        AObject := TQtObject(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event)));
+        AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
         //WriteLn('Catched free for: ', PtrUInt(AObject), ' : ', AObject.ClassName);
         AObject.Free;
         Result := True;
