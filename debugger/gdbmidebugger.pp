@@ -2620,22 +2620,28 @@ begin
 
   // args
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
-    [TGDBMIDebugger(Debugger).FCurrentStackFrame], [], R);
-  List := CreateMIValueList(R);
-  S := List.Values['stack-args'];
-  FreeAndNil(List);
-  List := CreateMIValueList(S);
-  S := List.Values['frame'];
-  FreeAndNil(List);
-  List := CreateMIValueList(S);
-  AddLocals(List.Values['args']);
-  FreeAndNil(List);
+    [TGDBMIDebugger(Debugger).FCurrentStackFrame], [cfIgnoreError], R);
+  if R.State <> dsError
+  then begin
+    List := CreateMIValueList(R);
+    S := List.Values['stack-args'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    S := List.Values['frame'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    AddLocals(List.Values['args']);
+    FreeAndNil(List);
+  end;
 
   // variables
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', [], R);
-  List := CreateMIValueList(R);
-  AddLocals(List.Values['locals']);
-  FreeAndNil(List);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', [cfIgnoreError], R);
+  if R.State <> dsError
+  then begin
+    List := CreateMIValueList(R);
+    AddLocals(List.Values['locals']);
+    FreeAndNil(List);
+  end;
   FLocalsValid := True;
 end;
 
@@ -2784,51 +2790,58 @@ begin
   if Debugger = nil then Exit;
 
   Arguments := TStringList.Create;
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d',
-                                          [AIndex, AIndex], [cfIgnoreError], R);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
+                                          [AIndex], [cfIgnoreError], R);
   // TODO: check what to display on error
 
-  List := CreateMIValueList(R);
-  S := List.Values['stack-args'];
-  FreeAndNil(List);
-  List := CreateMIValueList(S);
-  S := List.Values['frame']; // all arguments
-  FreeAndNil(List);
-  List := CreateMIValueList(S);   
-  S := List.Values['args'];
-  FreeAndNil(List);
+  if R.State <> dsError
+  then begin
+    List := CreateMIValueList(R);
+    S := List.Values['stack-args'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    S := List.Values['frame']; // all arguments
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    S := List.Values['args'];
+    FreeAndNil(List);
+
+    ArgList := CreateMIValueList(S);
+    for n := 0 to ArgList.Count - 1 do
+    begin
+      List := CreateMIValueList(ArgList[n]);
+      Arguments.Add(List.Values['name'] + '=' + List.Values['value']);
+      FreeAndNil(List);
+    end;
+    FreeAndNil(ArgList);
+  end;
   
-  ArgList := CreateMIValueList(S);
-  for n := 0 to ArgList.Count - 1 do
-  begin
-    List := CreateMIValueList(ArgList[n]);
-    Arguments.Add(List.Values['name'] + '=' + List.Values['value']);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %0:d %0:d',
+                                          [AIndex], [cfIgnoreError], R);
+  if R.State <> dsError
+  then begin
+    List := CreateMIValueList(R);
+    S := List.Values['stack'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    S := List.Values['frame'];
+    FreeAndNil(List);
+    List := CreateMIValueList(S);
+    addr := 0;
+    Val(List.Values['addr'], addr, e);
+    if e=0 then ;
+    Result := TCallStackEntry.Create(
+      AIndex,
+      addr,
+      Arguments,
+      List.Values['func'],
+      List.Values['file'],
+      StrToIntDef(List.Values['line'], 0)
+    );
+
     FreeAndNil(List);
   end;
-  FreeAndNil(ArgList);
   
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d',
-                                          [AIndex, AIndex], [], R);
-  List := CreateMIValueList(R);
-  S := List.Values['stack'];
-  FreeAndNil(List);
-  List := CreateMIValueList(S);   
-  S := List.Values['frame'];
-  FreeAndNil(List);
-  List := CreateMIValueList(S);
-  addr := 0;
-  Val(List.Values['addr'], addr, e);
-  if e=0 then ;
-  Result := TCallStackEntry.Create(
-    AIndex, 
-    addr,
-    Arguments,
-    List.Values['func'],
-    List.Values['file'],
-    StrToIntDef(List.Values['line'], 0)
-  );
-  
-  FreeAndNil(List);
   Arguments.Free;
 end;
 
