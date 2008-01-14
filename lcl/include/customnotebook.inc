@@ -321,19 +321,19 @@ end;
 function TCustomNotebook.CanChangePageIndex: boolean;
 begin
   Result := True;
-  if ([csDestroying] * ComponentState = []) and Assigned(OnChanging) then
-    OnChanging(Self,Result);
+  if ([csDesigning, csDestroying] * ComponentState = []) and Assigned(OnChanging) then
+    OnChanging(Self, Result);
 end;
 
 function TCustomNotebook.GetMinimumTabWidth: integer;
 begin
-  Result:=TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabWidth(Self);
+  Result := TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabWidth(Self);
   //debugln('TCustomNotebook.GetMinimumTabWidth A ',dbgs(Result));
 end;
 
 function TCustomNotebook.GetMinimumTabHeight: integer;
 begin
-  Result:=TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabHeight(Self);
+  Result := TWSCustomNotebookClass(WidgetSetClass).GetNotebookMinTabHeight(Self);
   //debugln('TCustomNotebook.GetMinimumTabHeight A ',dbgs(Result));
 end;
 
@@ -770,9 +770,9 @@ end;
 procedure TCustomNotebook.CNNotify(var Message: TLMNotify);
 var
   OldPageIndex: LongInt;
-Begin
+begin
   with Message do
-    Case NMHdr^.code of
+    case NMHdr^.code of
       TCN_SELCHANGE:
         begin
           // set the page from the NMHDR^.idfrom

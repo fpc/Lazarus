@@ -584,6 +584,7 @@ type
     
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure SignalCurrentChanged(Index: Integer); cdecl;
+    function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     function indexOf(const AWidget: QWidgetH): integer;
     function insertTab(index: Integer; page: QWidgetH; p2: WideString): Integer; overload;
@@ -4800,6 +4801,7 @@ var
   Method: TMethod;
 begin
   inherited AttachEvents;
+
   FCurrentChangedHook := QTabWidget_hook_create(Widget);
   FTabBarEventHook := QWidget_hook_create(TabBar);
 
@@ -4831,7 +4833,7 @@ begin
       QEventKeyRelease: SlotKey(Sender, Event);
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
-      QEventMouseButtonDblClick: SlotMouse(Sender, Event);
+      QEventMouseButtonDblClick: Result := SlotTabBarMouse(Sender, Event);
     else
       QEvent_ignore(Event);
     end;
@@ -4935,16 +4937,51 @@ var
 begin
   if LCLObject = nil then
     Exit;
-  FillChar(Msg, SizeOf(Msg), #0);
+    
+  FillChar(Msg, SizeOf(Msg), 0);
+  Msg.Msg := LM_NOTIFY;
+  FillChar(Hdr, SizeOf(Hdr), 0);
 
-  Msg.Msg := CN_NOTIFY;
-  
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGE;
   Hdr.idFrom := Index;
-  
   Msg.NMHdr := @Hdr;
+  Msg.Result := 0;
   DeliverMessage(Msg);
+end;
+
+function TQtTabWidget.SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+var
+  MousePos: TQtPoint;
+  NewIndex, CurIndex: Integer;
+  Msg: TLMNotify;
+  Hdr: TNmHdr;
+begin
+  Result := False;
+  MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
+  NewIndex := QTabBar_tabAt(QTabBarH(Sender), @MousePos);
+  CurIndex := QTabBar_currentIndex(QTabBarH(Sender));
+  if (NewIndex <> CurIndex) and (NewIndex <> -1) and (CurIndex <> -1) then
+  begin
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.Msg := LM_NOTIFY;
+    FillChar(Hdr, SizeOf(Hdr), 0);
+
+    Hdr.hwndFrom := LCLObject.Handle;
+    Hdr.Code := TCN_SELCHANGING;
+    Hdr.idFrom := CurIndex;
+    Msg.NMHdr := @Hdr;
+    Msg.Result := 0;
+    DeliverMessage(Msg);
+
+    if Msg.Result <> 0 then
+    begin
+      QEvent_accept(Event);
+      Result := True;
+      Exit;
+    end;
+  end;
+  SlotMouse(Sender, Event);
 end;
 
 function TQtTabWidget.indexOf(const AWidget: QWidgetH): integer;
