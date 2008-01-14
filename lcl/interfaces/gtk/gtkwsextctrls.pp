@@ -594,7 +594,7 @@ begin
     Exit;
     
   GtkNotebook := PGtkNoteBook(ANotebook.Handle);
-  if gtk_notebook_current_page(GtkNotebook) <> AIndex then
+  if gtk_notebook_get_current_page(GtkNotebook) <> AIndex then
   begin
     gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ANotebook);
     gtk_notebook_set_page(GtkNotebook, AIndex);
