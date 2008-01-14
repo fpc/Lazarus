@@ -303,9 +303,9 @@ begin
   UpdateNoteBookClientWidget(TObject(Data));
 
   // remove flag
-  IsManual := g_object_get_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
+  IsManual := gtk_object_get_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
   if IsManual then
-    g_object_set_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
+    gtk_object_set_data(PGtkObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
   if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
     Exit;
 
@@ -596,7 +596,7 @@ begin
   GtkNotebook := PGtkNoteBook(ANotebook.Handle);
   if gtk_notebook_current_page(GtkNotebook) <> AIndex then
   begin
-    g_object_set_data(PGObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ANotebook);
+    gtk_object_set_data(PGtkObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ANotebook);
     gtk_notebook_set_page(GtkNotebook, AIndex);
   end;
   UpdateNoteBookClientWidget(ANotebook);
