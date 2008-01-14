@@ -139,7 +139,7 @@ var
 begin
   inherited Create(AManager, AControl);
 
-  AControl.DoStartDock(FDragObject);
+  AControl.DoStartDrag(FDragObject);
   if FDragObject = nil then
   begin
     FDragObjectAutoFree := true;
