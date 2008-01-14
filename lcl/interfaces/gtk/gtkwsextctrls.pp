@@ -245,6 +245,8 @@ const
 { tpLeft   } GTK_POS_LEFT,
 { tpRight  } GTK_POS_RIGHT
   );
+  
+  LCL_NotebookManualPageSwitchKey = 'lcl_manual_page_switch';
 
 { TGtkWSCustomPage }
 
@@ -289,11 +291,62 @@ end;
 
 { TGtkWSCustomNotebook }
 
+function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer; data: gPointer): GBoolean; cdecl;
+var
+  Mess: TLMNotify;
+  NMHdr: tagNMHDR;
+begin
+  Result := CallBackDefaultReturn;
+
+  EventTrace('switch-page', data);
+  UpdateNoteBookClientWidget(TObject(Data));
+
+  if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
+    Exit;
+
+  // gtkswitchpage is called before the switch
+
+  if g_object_get_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey) = nil then
+  begin
+    // send first the TCN_SELCHANGING to ask if switch is allowed
+    FillChar(Mess, SizeOf(Mess), 0);
+    Mess.Msg := LM_NOTIFY;
+    FillChar(NMHdr, SizeOf(NMHdr), 0);
+    NMHdr.code := TCN_SELCHANGING;
+    NMHdr.hwndFrom := PtrUInt(widget);
+    NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
+    Mess.NMHdr := @NMHdr;
+    Mess.Result := 0;
+    DeliverMessage(Data, Mess);
+    if Mess.Result <> 0 then
+    begin
+      g_signal_stop_emission_by_name(PGtkObject(Widget), 'switch-page');
+      Result := not CallBackDefaultReturn;
+      Exit;
+    end;
+  end
+  else
+  begin
+    // remove flag
+    g_object_set_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
+  end;
+
+  // then send the new page
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.Msg := LM_NOTIFY;
+  FillChar(NMHdr, SizeOf(NMHdr), 0);
+  NMHdr.code := TCN_SELCHANGE;
+  NMHdr.hwndFrom := PtrUInt(widget);
+  NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @NMHdr;
+  DeliverMessage(Data, Mess);
+end;
+
 class procedure TGtkWSCustomNotebook.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-  TGTKWidgetSet(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+  ConnectSignal(PGtkObject(AGtkWidget), 'switch_page', @GtkWSNotebook_SwitchPage, AWidgetInfo^.LCLObject);
 end;
 
 class function TGtkWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
@@ -535,6 +588,7 @@ end;
 class procedure TGtkWSCustomNotebook.SetPageIndex(
   const ANotebook: TCustomNotebook; const AIndex: integer);
 begin
+  g_object_set_data(PGObject(ANotebook.Handle), LCL_NotebookManualPageSwitchKey, ANoteBook);
   gtk_notebook_set_page(PGtkNotebook(ANotebook.Handle), AIndex);
   UpdateNoteBookClientWidget(ANotebook);
 end;

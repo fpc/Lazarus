@@ -184,8 +184,6 @@ function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer): GBoolean; cdecl;
-function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
-  data: gPointer): GBoolean; cdecl;
 function gtkconfigureevent( widget: PGtkWidget; event: PgdkEventConfigure;
   data: gPointer): GBoolean; cdecl;
 function gtkreleasedCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;

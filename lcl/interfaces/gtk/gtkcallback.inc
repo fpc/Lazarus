@@ -1983,51 +1983,6 @@ begin
   end;
 end;
 
-function GtkSwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
-  data: gPointer): GBoolean; cdecl;
-var
-  Mess: TLMNotify;
-  NMHdr: tagNMHDR;
-begin
-  Result := CallBackDefaultReturn;
-
-  EventTrace('switch-page', data);
-  UpdateNoteBookClientWidget(TObject(Data));
-  
-  if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
-    Exit;
-
-  // gtkswitchpage is called before the switch
-
-  // send first the TCN_SELCHANGING to ask if switch is allowed
-  FillChar(Mess, SizeOf(Mess), 0);
-  Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr, SizeOf(NMHdr), 0);
-  NMHdr.code := TCN_SELCHANGING;
-  NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
-  Mess.NMHdr := @NMHdr;
-  Mess.Result := 0;
-  DeliverMessage(Data, Mess);
-  if Mess.Result <> 0 then
-  begin
-    g_signal_stop_emission_by_name(PGtkObject(Widget), 'switch-page');
-    Result := not CallBackDefaultReturn;
-    Exit;
-  end;
-
-  // then send the new page
-  FillChar(Mess, SizeOf(Mess), 0);
-  Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr, SizeOf(NMHdr), 0);
-  NMHdr.code := TCN_SELCHANGE;
-  NMHdr.hwndFrom := PtrUInt(widget);
-  NMHdr.idFrom := pagenum;  //use this to set pageindex to the correct page.
-  Mess.NMHdr := @NMHdr;
-  DeliverMessage(Data, Mess);
-end;
-
-
 function gtkconfigureevent( widget: PGtkWidget; event : PgdkEventConfigure;
   data: gPointer) : GBoolean; cdecl;
 var

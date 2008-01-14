@@ -3253,9 +3253,6 @@ begin
                       'value_changed', @gtkvaluechanged);
        end
        else
-       if ALCLObject is TCustomNotebook then
-         ConnectSenderSignal(gObject, 'switch_page', @gtkswitchpage)
-       else
        if ALCLObject is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
                    PGtkCombo(gObject)^.entry), 'changed', @gtkchangedCB)
