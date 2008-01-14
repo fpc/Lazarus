@@ -36,7 +36,7 @@ uses
   GtkExtra, GtkWsControls,
   GtkGlobals, GtkProc, GtkDef, GtkInt,
   SysUtils, Classes, Controls, ExtCtrls, Forms, Menus,
-  WSExtCtrls, WSLCLClasses, InterfaceBase;
+  WSExtCtrls, WSLCLClasses, WSProc, InterfaceBase;
 
 type
 
@@ -295,18 +295,23 @@ function GtkWSNotebook_SwitchPage(widget: PGtkWidget; page: Pgtkwidget; pagenum:
 var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
+  IsManual: Boolean;
 begin
   Result := CallBackDefaultReturn;
 
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
 
+  // remove flag
+  IsManual := g_object_get_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey) <> nil;
+  if IsManual then
+    g_object_set_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
   if PGtkNotebook(Widget)^.cur_page = nil then // for windows compatibility
     Exit;
 
   // gtkswitchpage is called before the switch
 
-  if g_object_get_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey) = nil then
+  if not IsManual then
   begin
     // send first the TCN_SELCHANGING to ask if switch is allowed
     FillChar(Mess, SizeOf(Mess), 0);
@@ -324,11 +329,6 @@ begin
       Result := not CallBackDefaultReturn;
       Exit;
     end;
-  end
-  else
-  begin
-    // remove flag
-    g_object_set_data(PGObject(Widget), LCL_NotebookManualPageSwitchKey, nil);
   end;
 
   // then send the new page
@@ -587,9 +587,18 @@ end;
 
 class procedure TGtkWSCustomNotebook.SetPageIndex(
   const ANotebook: TCustomNotebook; const AIndex: integer);
+var
+  GtkNotebook: PGtkNotebook;
 begin
-  g_object_set_data(PGObject(ANotebook.Handle), LCL_NotebookManualPageSwitchKey, ANoteBook);
-  gtk_notebook_set_page(PGtkNotebook(ANotebook.Handle), AIndex);
+  if not WSCheckHandleAllocated(ANotebook, 'SetPageIndex') then
+    Exit;
+    
+  GtkNotebook := PGtkNoteBook(ANotebook.Handle);
+  if gtk_notebook_current_page(GtkNotebook) <> AIndex then
+  begin
+    g_object_set_data(PGObject(GtkNotebook), LCL_NotebookManualPageSwitchKey, ANotebook);
+    gtk_notebook_set_page(GtkNotebook, AIndex);
+  end;
   UpdateNoteBookClientWidget(ANotebook);
 end;
 
