@@ -21,9 +21,9 @@
 type
   TDragManagerDefault = class;
 
-  { TDragDockComon }
+  { TDragDockCommon }
 
-  TDragDockComon = class
+  TDragDockCommon = class
   private
     FManager: TDragManagerDefault;
     FDragObjectAutoFree: Boolean;
@@ -42,7 +42,7 @@ type
 
   { TDragPerformer }
 
-  TDragPerformer = class(TDragDockComon)
+  TDragPerformer = class(TDragDockCommon)
   private
     FDragObject: TDragObject;
   protected
@@ -57,7 +57,7 @@ type
 
   { TDockPerformer }
 
-  TDockPerformer = class(TDragDockComon)
+  TDockPerformer = class(TDragDockCommon)
   private
     FDockObject: TDragDockObject;
     procedure DefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
@@ -76,7 +76,7 @@ type
   TDragManagerDefault = class(TDragManager)
   private
     FDockSites: TFPList;
-    FPerformer: TDragDockComon;
+    FPerformer: TDragDockCommon;
     FStartPosition: TPoint;//mouse position at start of drag or dock
     FThresholdValue: Integer;//treshold before the drag becomes activated
     FWaitForTreshold: boolean;//are we waiting on the treshold activation
@@ -106,15 +106,15 @@ type
   end;
 
 
-{ TDragDockComon }
+{ TDragDockCommon }
 
-constructor TDragDockComon.Create(AManager: TDragManagerDefault; AControl: TControl);
+constructor TDragDockCommon.Create(AManager: TDragManagerDefault; AControl: TControl);
 begin
   FManager := AManager;
   FDragImageList := nil;
 end;
 
-function TDragDockComon.SendDragMessage(AControl: TControl; Msg: TDragMessage; ADragObject: TDragObject; Target: TControl; const Position: TPoint): LRESULT;
+function TDragDockCommon.SendDragMessage(AControl: TControl; Msg: TDragMessage; ADragObject: TDragObject; Target: TControl; const Position: TPoint): LRESULT;
 begin
   Result := 0;
   if AControl = nil then exit;
@@ -123,7 +123,7 @@ begin
 end;
 
 
-function TDragDockComon.SendCmDragMsg(ADragObject: TDragObject; ADragMsg: TDragMessage): Boolean;
+function TDragDockCommon.SendCmDragMsg(ADragObject: TDragObject; ADragMsg: TDragMessage): Boolean;
 //Send a CM_DRAG message to the window..
 begin
   Result := SendDragMessage(ADragObject.DragTarget, ADragMsg,
