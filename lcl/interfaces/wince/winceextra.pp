@@ -73,6 +73,15 @@ function GetProp(Wnd: HWND{ lpString:LPCSTR}):HANDLE;
 function RemoveProp(Wnd: HWND{; lpString:LPCSTR}):HANDLE;
 function EnumProps(Wnd: HWND;lpEnumFunc:PROPENUMPROC) : integer;
 
+// missing imagelist macros and constants
+
+const
+// image list copy flags
+  ILCF_MOVE = $00000000;
+  ILCF_SWAP = $00000001;
+
+function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; stdcall; external KernelDLL;
+
 const
   // BlendOp flags
   AC_SRC_OVER = $00;

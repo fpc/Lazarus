@@ -59,6 +59,14 @@ type
   private
   protected
   public
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND;
+      AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageList); override;
+    class function HideDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
+    class function ShowDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
   { TWinCEWSControl }
@@ -267,7 +275,7 @@ begin
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
-        lhFont := AWinControl.Font.Handle;
+        lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Window, WM_SETFONT, lhFont, 0)
     end;
   end;
@@ -288,7 +296,7 @@ begin
       if AWinControl.Font.IsDefault then
         lhFont := GetStockObject(DEFAULT_GUI_FONT)
       else
-        lhFont := AWinControl.Font.Handle;
+        lhFont := AWinControl.Font.Reference.Handle;
       Windows.SendMessage(Buddy, WM_SETFONT, lhFont, 0);
     end
     else
@@ -439,7 +447,7 @@ end;
 
 class procedure TWinCEWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
-  Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
+  Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Reference.Handle), 1);
 end;
 
 class procedure TWinCEWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
@@ -482,13 +490,52 @@ begin
   TWinCEWidgetSet(WidgetSet).ShowHide(AWinControl);
 end;
 
+{ TWinCEWSDragImageList }
+
+class function TWinCEWSDragImageList.BeginDrag(
+  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
+begin
+  // No check to Handle should be done, because if there is no handle (no needed)
+  // we must create it here. This is normal for imagelist (we can never need handle)
+  Result := ImageList_BeginDrag(ADragImageList.Reference.Handle, AIndex, X, Y);
+end;
+
+class function TWinCEWSDragImageList.DragMove(const ADragImageList: TDragImageList;
+  X, Y: Integer): Boolean;
+begin
+  Result := ImageList_DragMove(X, Y);
+end;
+
+class procedure TWinCEWSDragImageList.EndDrag(const ADragImageList: TDragImageList);
+begin
+  ImageList_EndDrag;
+end;
+
+class function TWinCEWSDragImageList.HideDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; DoUnLock: Boolean): Boolean;
+begin
+  if DoUnLock then
+    Result := ImageList_DragLeave(ALockedWindow)
+  else
+    Result := ImageList_DragShowNolock(False);
+end;
+
+class function TWinCEWSDragImageList.ShowDragImage(const ADragImageList: TDragImageList;
+  ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean;
+begin
+  if DoLock then
+    Result := ImageList_DragEnter(ALockedWindow, X, Y)
+  else
+    Result := ImageList_DragShowNolock(True);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TWSDragImageList);
+  RegisterWSComponent(TDragImageList, TWinCEWSDragImageList);
 //  RegisterWSComponent(TControl, TWinCEWSControl);
   RegisterWSComponent(TWinControl, TWinCEWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWSGraphicControl);

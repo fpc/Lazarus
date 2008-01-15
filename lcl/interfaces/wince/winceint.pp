@@ -235,7 +235,7 @@ Uses
 // WinCEWSFileCtrl,
  WinCEWSForms,
 // WinCEWSGrids,
-// WinCEWSImgList,
+ WinCEWSImgList,
 // WinCEWSMaskEdit,
  WinCEWSMenus,
 // WinCEWSPairSplitter,
