@@ -393,10 +393,10 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
       if OldDependency<>nil then begin
         // stay installed
         if CurDependency.AsString<>OldDependency.AsString then
-          Result:=Result+' (old: '+OldDependency.AsString+')';
+          Result:=Result+' ('+lisOld+': '+OldDependency.AsString+')';
       end else begin
         // newly installed
-        Result:=Result+' (new)';
+        Result:=Result+' ('+lisNew+')';
       end;
       Result:=Result+#13;
       CurDependency:=CurDependency.NextRequiresDependency;
@@ -409,7 +409,7 @@ procedure TPkgManager.MainIDEitmPkgEditInstallPkgsClick(Sender: TObject);
                                                 CurDependency.PackageName);
       if NewDependency=nil then begin
         // this package will be removed
-        Result:=Result+CurDependency.AsString+' (remove)'#13;
+        Result:=Result+CurDependency.AsString+' ('+lisRemove+')'#13;
       end;
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
@@ -450,9 +450,9 @@ begin
     // which will be newly installed
     Report:=CreateChangeReport(FirstAutoInstallDependency,
                                NewFirstAutoInstallDependency);
-    if IDEMessageDialog('Confirm new package set for the IDE',
-      'This will happen:'#13#13
-      +Report+#13'Continue?',mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
+    if IDEMessageDialog(lisConfirmNewPackageSetForTheIDE,
+      Format(lisThisWillHappenContinue, [#13#13, Report, #13]), mtConfirmation,
+        [mbYes, mbNo])<>mrYes then exit;
 
     // try to commit changes -> replace install list
     PackageGraph.BeginUpdate(true);
@@ -612,7 +612,7 @@ begin
         CurResult:=IDEQuestionDialog(lisPkgMangPackageIsNoDesigntimePackage,
           Format(lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages, [
             APackage.IDAsString, #13]),
-          mtWarning,[mrIgnore,mrYesToAll,'Ignore all',mrCancel]);
+          mtWarning, [mrIgnore, mrYesToAll, lisIgnoreAll, mrCancel]);
         case CurResult of
         mrIgnore: ;
         mrYesToAll: break;
@@ -649,8 +649,8 @@ begin
   while CurDependency<>nil do begin
     OpenResult:=PackageGraph.OpenDependency(CurDependency);
     if OpenResult<>lprSuccess then begin
-      IDEMessageDialog('Error',
-        'Unable to load package "'+CurDependency.AsString+'"',
+      IDEMessageDialog(lisCCOErrorCaption,
+        Format(lisUnableToLoadPackage, ['"', CurDependency.AsString, '"']),
         mtError,[mbCancel]);
       exit;
     end;
@@ -1389,9 +1389,9 @@ begin
     // compile package
     Result:=RunExternalTool(FPCMakeTool);
     if Result<>mrOk then begin
-      Result:=IDEMessageDialog('fpcmake failed',
-        'Calling '+FPCMakeTool.Filename+' to create Makefile from '
-        +MakefileFPCFilename+' failed.',
+      Result:=IDEMessageDialog(lisFpcmakeFailed,
+        Format(lisCallingToCreateMakefileFromFailed, [FPCMakeTool.Filename,
+          MakefileFPCFilename]),
         mtError,[mbCancel]);
       exit;
     end;
@@ -1939,7 +1939,7 @@ var
 begin
   PkgFile:=GetPackageOfCurrentSourceEditor;
   if PkgFile<>nil then
-    AddMenuItemProc('Open package '+PkgFile.LazPackage.Name,true,
+    AddMenuItemProc(Format(lisOpenPackage2, [PkgFile.LazPackage.Name]), true,
                     @OnOpenPackageForCurrentSrcEditFile);
 end;
 
@@ -2206,8 +2206,8 @@ begin
       #13, #13, #13, #13, #13, #13, #13, #13]);
     for i:=0 to MissingUnits.Count-1 do begin
       PkgFile:=TPkgFile(MissingUnits[i]);
-      Msg:=Msg+' unit '+PkgFile.UnitName
-              +' in package '+PkgFile.LazPackage.IDAsString+#13;
+      Msg:=Format(lisUnitInPackage, [Msg, PkgFile.UnitName,
+        PkgFile.LazPackage.IDAsString, #13]);
     end;
     Result:=IDEMessageDialog(lisPackageNeedsInstallation,
       Msg,mtWarning,[mbIgnore,mbCancel]);
@@ -2728,8 +2728,8 @@ var
     end;
     UnitBuf:=CodeToolBoss.LoadFile(UnitFilename,false,false);
     if UnitBuf=nil then begin
-      Result:=IDEMessageDialog('Error loading file',
-        'Loading '+UnitFilename+' failed.',
+      Result:=IDEMessageDialog(lisErrorLoadingFile,
+        Format(lisLoadingFailed, [UnitFilename]),
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
@@ -3594,15 +3594,15 @@ var
 begin
   Result:=mrCancel;
   if APackage.IsVirtual then begin
-    IDEMessageDialog('Error',
+    IDEMessageDialog(lisCCOErrorCaption,
       lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe,
       mtError, [mbCancel]);
     exit;
   end;
   Filename:=APackage.GetSrcFilename;
   if (not FilenameIsAbsolute(Filename)) or (not FileExists(Filename)) then begin
-    IDEMessageDialog('Error',lisPkgMangPleaseSaveThePackageFirst, mtError,
-                     [mbCancel]);
+    IDEMessageDialog(lisCCOErrorCaption, lisPkgMangPleaseSaveThePackageFirst,
+      mtError,[mbCancel]);
     exit;
   end;
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,[ofRegularFile]);

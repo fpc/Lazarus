@@ -1032,6 +1032,11 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   dlgAllFiles = 'All files';
+  lisOld = 'old';
+  lisNew = 'new';
+  lisRemove = 'remove';
+  lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';
+  lisThisWillHappenContinue = 'This will happen:%s%s%sContinue?';
   lisSaveFileAs = 'Save file as';
   lisOpenExistingFile = 'Open existing file';
   lisLazarusUnit = 'Lazarus unit';
@@ -1349,6 +1354,7 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisUnableToLoadPackage = 'Unable to load package %s%s%s';
   lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh = 'This method can '
     +'not be overridden because it is defined in the current class';
   lisSAMIsAnAbstractClassItHasAbstractMethods = '%s is an abstract class, it '
@@ -2688,6 +2694,9 @@ resourcestring
   lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
   lisDeleteAllTheseFiles = 'Delete all these files?';
   lisPkgMangUnsavedPackage = 'Unsaved package';
+  lisFpcmakeFailed = 'fpcmake failed';
+  lisCallingToCreateMakefileFromFailed = 'Calling %s to create Makefile from %'
+    +'s failed.';
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '
     +'unsaved package in the required packages. See package graph.';
   lisPkgMangBrokenDependency = 'Broken dependency';
@@ -2734,6 +2743,7 @@ resourcestring
   lisPkgMangUnableToOpenThePackage = 'Unable to open the package %s%s%s.%'
     +'sThis package was marked for installation.';
   lisPkgMangInvalidPackageName2 = 'Invalid Package Name';
+  lisOpenPackage2 = 'Open package %s';
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name %s%s%s of%'
     +'sthe file %s%s%s is invalid.';
   lisPkgMangPackageConflicts = 'Package conflicts';
@@ -2757,6 +2767,7 @@ resourcestring
     +'sources.%s%sIt only means: It is a bad idea to open the forms for '
     +'designing, before installing the missing packages.%s%s';
   lisPackageNeedsInstallation = 'Package needs installation';
+  lisUnitInPackage = '%s unit %s in package %s%s';
   lisPkgMangSkipThisPackage = 'Skip this package';
   lisPkgMangInvalidFileExtension = 'Invalid file extension';
   lisPkgMangTheFileIsNotALazarusPackage = 'The file %s%s%s is not a lazarus '
@@ -2805,6 +2816,8 @@ resourcestring
   lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed = 'The package %s '
     +'owns the file%s%s%s%s.%sShould the file be renamed in the package as '
     +'well?';
+  lisErrorLoadingFile = 'Error loading file';
+  lisLoadingFailed = 'Loading %s failed.';
   lisPkgMangAddingNewDependencyForProjectPackage = '%sAdding new Dependency '
     +'for project %s: package %s%s';
   lisPkgMangAddingNewDependencyForPackagePackage = '%sAdding new Dependency '
