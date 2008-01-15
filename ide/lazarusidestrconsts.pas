@@ -665,6 +665,7 @@ resourcestring
 
   // file dialogs
   lisOpenFile = 'Open file';
+  lisPEEditVirtualUnit = 'Edit Virtual Unit';
   lisIECOExportFileExists = 'Export file exists';
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file %s%'
     +'s%s exists.%sOpen file and replace only compiler options?%s(Other '
@@ -3055,7 +3056,11 @@ resourcestring
   
   // package editor
   lisPckEditRemoveFile = 'Remove file';
+  lisPEMoveFileUp = 'Move file up';
+  lisPEMoveFileDown = 'Move file down';
   lisPckEditReAddFile = 'Re-Add file';
+  lisPESortFiles = 'Sort files';
+  lisPEFixFilesCase = 'Fix Files Case';
   lisPckEditRemoveDependency = 'Remove dependency';
   lisPckEditMoveDependencyUp = 'Move dependency up';
   lisPckEditMoveDependencyDown = 'Move dependency down';

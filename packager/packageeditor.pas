@@ -511,13 +511,13 @@ begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
       AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
-      AddPopupMenuItem('Move file up', @MoveFileUpMenuItemClick,
+      AddPopupMenuItem(lisPEMoveFileUp, @MoveFileUpMenuItemClick,
                        (FileIndex>0) and Writable);
-      AddPopupMenuItem('Move file down', @MoveFileDownMenuItemClick,
+      AddPopupMenuItem(lisPEMoveFileDown, @MoveFileDownMenuItemClick,
                        (FileIndex<LazPackage.FileCount-1) and Writable);
       AddFileTypeMenuItem;
       if CurFile.FileType=pftVirtualUnit then
-        AddPopupMenuItem('Edit Virtual Unit',@EditVirtualUnitMenuItemClick,
+        AddPopupMenuItem(lisPEEditVirtualUnit, @EditVirtualUnitMenuItemClick,
                          Writable);
     end else begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
@@ -526,8 +526,8 @@ begin
     end;
   end;
   if LazPackage.FileCount>1 then begin
-    AddPopupMenuItem('Sort files', @SortFilesMenuItemClick, Writable);
-    AddPopupMenuItem('Fix Files Case', @FixFilesCaseMenuItemClick, Writable);
+    AddPopupMenuItem(lisPESortFiles, @SortFilesMenuItemClick, Writable);
+    AddPopupMenuItem(lisPEFixFilesCase, @FixFilesCaseMenuItemClick, Writable);
   end;
 
   if CurDependency<>nil then begin
