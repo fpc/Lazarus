@@ -394,6 +394,7 @@ type
     property CharCase;
     property Color;
     property Ctl3D;
+    property Constraints;
     property DragCursor;
     property DragMode;
     property DropDownCount;
