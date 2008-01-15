@@ -13,6 +13,9 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    TwoSiblingsButton: TButton;
+    SpiralButton: TButton;
+    ThreePagesButton: TButton;
     ClearLayoutsButton: TButton;
     TwoPagesButton: TButton;
     CreateLayoutGroupBox: TGroupBox;
@@ -25,7 +28,10 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormPaint(Sender: TObject);
     procedure SaveLayoutButtonClick(Sender: TObject);
+    procedure SpiralButtonClick(Sender: TObject);
+    procedure ThreePagesButtonClick(Sender: TObject);
     procedure TwoPagesButtonClick(Sender: TObject);
+    procedure TwoSiblingsButtonClick(Sender: TObject);
   private
     function CreateNewForm: TCustomForm;
     procedure ClearLayout;
@@ -57,6 +63,45 @@ begin
   Config.Free;
 end;
 
+procedure TMainForm.SpiralButtonClick(Sender: TObject);
+var
+  Form1: TCustomForm;
+  Form2: TCustomForm;
+  //Form3: TCustomForm;
+  //Form4: TCustomForm;
+  //Form5: TCustomForm;
+begin
+  debugln;
+  ClearLayout;
+
+  Form1:=CreateNewForm;
+  Form2:=CreateNewForm;
+  DockingManager.Manager.InsertControl(Form2,alRight,Form1);
+  //Form3:=CreateNewForm;
+  //DockingManager.Manager.InsertControl(Form3,alLeft,Form1);
+  //Form4:=CreateNewForm;
+  //DockingManager.Manager.InsertControl(Form4,alTop,Form1);
+  //Form5:=CreateNewForm;
+  //DockingManager.Manager.InsertControl(Form5,alBottom,Form1);
+end;
+
+procedure TMainForm.ThreePagesButtonClick(Sender: TObject);
+var
+  Form1: TCustomForm;
+  Form2: TCustomForm;
+  Form3: TCustomForm;
+begin
+  debugln;
+  ClearLayout;
+
+  Form1:=CreateNewForm;
+  Form1.Width:=500;
+  Form2:=CreateNewForm;
+  DockingManager.Manager.InsertControl(Form2,alClient,Form1);
+  Form3:=CreateNewForm;
+  DockingManager.Manager.InsertControl(Form3,alClient,Form1);
+end;
+
 procedure TMainForm.TwoPagesButtonClick(Sender: TObject);
 var
   Form1: TCustomForm;
@@ -70,6 +115,19 @@ begin
   DockingManager.Manager.InsertControl(Form2,alClient,Form1);
 end;
 
+procedure TMainForm.TwoSiblingsButtonClick(Sender: TObject);
+var
+  Form1: TCustomForm;
+  Form2: TCustomForm;
+begin
+  debugln;
+  ClearLayout;
+
+  Form1:=CreateNewForm;
+  Form2:=CreateNewForm;
+  DockingManager.Manager.InsertControl(Form2,alRight,Form1);
+end;
+
 function TMainForm.CreateNewForm: TCustomForm;
 var
   DockForm: TDockFormX;
@@ -80,11 +138,13 @@ begin
   // connect the TLazControlDocker of the new form to our DockingManager
   // this will automatically create a unique name for the forms layout.
   DockForm.Docker.Manager:=DockingManager;
+
   // assign the unique name, so that the user can distinguish the forms
   // This is only done here for demonstration purpose.
   DockForm.Name:=DockForm.Docker.DockerName;
-  // To make debugging easier give each TLazControlDocker a unique name.
+  DockForm.Caption:=DockForm.Name;
   DockForm.Docker.Name:='Docker'+DockForm.Name;
+
   // finally: show the form
   // If a form with this layout was already shown in the past, then
   // the DockingManager will automatically restore the layout.
@@ -98,11 +158,8 @@ var
 begin
   // free all forms and layouts
   for i:=ComponentCount-1 downto 0 do begin
-    if Components[i] is TDockFormX then begin
-      if TDockFormX(Components[i]).Parent<>nil then
-        DockingManager.Manager.UndockControl(TDockFormX(Components[i]),false);
+    if Components[i] is TDockFormX then
       Components[i].Free;
-    end;
   end;
   DockingManager.ClearConfigs;
 end;

@@ -390,7 +390,7 @@ begin
     // OffsetMaxUpper = maximum the Splitter can be moved bottom/right
     OffsetMaxUpper := Max(0,GetParentsClientSize
                             -GetControlSize(Self)-GetControlMinPos(Self));
-
+    //DebugLn(['TCustomSplitter.MoveSplitter OffsetMaxLower=',OffsetMaxLower,' OffsetMaxUpper=',OffsetMaxUpper]);
     for i:=0 to AnchoredControlCount-1 do begin
       CurResizeControl:=AnchoredControls[i];
       //debugln('TCustomSplitter.MoveSplitter ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl));
@@ -408,24 +408,32 @@ begin
         // calculate how much the CurResizeControl can be enlarged
         CurMaxEnlarge:=Max(0,GetControlConstraintsMaxSize(CurResizeControl)
                        -GetControlSize(CurResizeControl));
-        if CurMaxEnlarge=0 then
+        if CurMaxEnlarge=0 then begin
           CurMaxEnlarge:=GetParentsClientSize;
-        //debugln('TCustomSplitter.MoveSplitter ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge),' ',dbgs(GetControlConstraintsMaxSize(CurResizeControl)));
+          if GetControlMinPos(CurResizeControl)<0 then
+            dec(CurMaxEnlarge,GetControlMinPos(CurResizeControl));
+        end;
+        //debugln('TCustomSplitter.MoveSplitter ',DbgSName(Self),' CurResizeControl=',DbgSName(CurResizeControl),' CurMaxShrink=',dbgs(CurMaxShrink),' CurMaxEnlarge=',dbgs(CurMaxEnlarge),' ConstraintsMax=',dbgs(GetControlConstraintsMaxSize(CurResizeControl)));
 
         // apply to the offset boundaries
         if (CurResizeControl.AnchorSide[akLeft].Control=Self)
         or (CurResizeControl.AnchorSide[akTop].Control=Self) then begin
-          OffsetMaxLower:=Min(OffsetMaxLower,CurMaxShrink);
-          OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxEnlarge);
+          if CurMaxShrink>0 then
+            OffsetMaxLower:=Min(OffsetMaxLower,CurMaxShrink);
+          if CurMaxEnlarge>0 then
+            OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxEnlarge);
         end else begin
-          OffsetMaxLower:=Min(OffsetMaxLower,CurMaxEnlarge);
-          OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxShrink);
+          if CurMaxEnlarge>0 then
+            OffsetMaxLower:=Min(OffsetMaxLower,CurMaxEnlarge);
+          if CurMaxShrink>0 then
+            OffsetMaxUpper:=Min(OffsetMaxUpper,CurMaxShrink);
         end;
       end;
     end;
 
     // apply the offset boundaries to the offset
     Offset:=Max(Min(Offset,OffsetMaxUpper),-OffsetMaxLower);
+    //DebugLn(['TCustomSplitter.MoveSplitter Offset=',Offset,' OffsetMaxLower=',OffsetMaxLower,' OffsetMaxUpper=',OffsetMaxUpper]);
 
     // move splitter
     if ResizeAnchor in [akLeft,akRight] then begin

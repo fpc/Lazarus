@@ -1687,6 +1687,7 @@ begin
             // DockCtl has no parent
             // => float DockPages
             DockPages.ManualFloat(DropCtl.BoundsRect);
+            DockPages.AnchorClient(0);
           end;
           // add DockCtl as page to DockPages
           DockPages.Pages.Add(DropCtl.Caption);
@@ -1705,6 +1706,7 @@ begin
         NewPageIndex:=DropCtlPage.PageIndex+1;
         DockPages.Pages.Insert(NewPageIndex,Control.Caption);
         NewPage:=DockPages.Page[NewPageIndex];
+        DebugLn(['TCustomAnchoredDockManager.DockControl NewPage=',NewPage.Caption,' Control=',Control.Caption,',',DbgSName(Control)]);
         NewPage.DisableAlign;
         try
           Control.Parent:=NewPage;
@@ -1820,6 +1822,8 @@ var
         NewOrigin:=Control.ControlOrigin;
         OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
         Control.ManualFloat(NewBounds);
+        if Control.Parent<>nil then
+          Control.AnchorClient(0);
       end else begin
         Control.Parent:=nil;
       end;
@@ -1834,6 +1838,9 @@ var
     end;
   end;
   
+var
+  OldParentPage: TLazDockPage;
+  OldParentForm: TLazDockForm;
 begin
   if Control.Parent=nil then begin
     // already undocked
@@ -1903,8 +1910,10 @@ begin
       // check if Control is the only child of a TLazDockPage
       if (ParentControl.ControlCount=1)
       and (ParentControl is TLazDockPage) then begin
+        OldParentPage:=TLazDockPage(ParentControl);
         DoFinallyForParent;
-        DeletePage(TLazDockPage(Control.Parent));
+        DeletePage(OldParentPage);
+        Done:=true;
       end;
     end;
     
@@ -1912,8 +1921,10 @@ begin
       // check if Control is the only child of a TLazDockForm
       if (ParentControl.ControlCount=1)
       and (ParentControl is TLazDockForm) then begin
+        OldParentForm:=TLazDockForm(ParentControl);
         DoFinallyForParent;
-        DeleteDockForm(TLazDockForm(ParentControl));
+        DeleteDockForm(OldParentForm);
+        Done:=true;
       end;
     end;
     

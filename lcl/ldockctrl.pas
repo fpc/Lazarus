@@ -265,6 +265,7 @@ type
     procedure RestoreLayout;
     procedure DisableLayout;
     procedure EnableLayout;
+    function ControlIsDocked: boolean;
     function GetControlName(AControl: TControl): string;
     property Control: TControl read FControl write SetControl;
     property Manager: TCustomLazDockingManager read FManager write SetManager;
@@ -651,8 +652,7 @@ begin
     end;
 
     // enable Undock button, if Control is docked
-    Dlg.UndockGroupBox.Enabled:=(Control.Parent<>nil)
-                                 and (Control.Parent.ControlCount>1);
+    Dlg.UndockGroupBox.Enabled:=ControlIsDocked;
                                  
     // enable enlarge buttons
     Dlg.EnlargeLeftSpeedButton.Visible:=
@@ -743,6 +743,7 @@ begin
     // control will be hidden -> the layout will change
     // save the layout for later restore
     SaveLayout;
+    DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Parent=',DbgSName(Control.Parent)]);
   end else if ([csDestroying,csDesigning,csLoading]*ComponentState=[]) then begin
     // the control will become visible -> dock it to restore the last layout
     RestoreLayout;
@@ -756,6 +757,19 @@ begin
   if FLayoutLock>0 then begin
     //DebugLn(['TCustomLazControlDocker.ControlVisibleChanged ',DbgSName(Control),' ignore because FLayoutLock=',FLayoutLock]);
     exit;
+  end;
+
+  if Control.Visible then begin
+    // the control has become visible
+  end else if ([csDesigning,csLoading]*ComponentState=[]) then begin
+    // control was hidden (or destroyed)
+    if ControlIsDocked
+    and (Manager<>nil)
+    and (Manager.Manager<>nil) then begin
+      // auto undock
+      DebugLn(['TCustomLazControlDocker.ControlVisibleChanged auto undock ',DbgSName(Control)]);
+      Manager.Manager.UndockControl(Control,false);
+    end;
   end;
 end;
 
@@ -2072,6 +2086,13 @@ end;
 procedure TCustomLazControlDocker.EnableLayout;
 begin
   dec(fLayoutLock);
+end;
+
+function TCustomLazControlDocker.ControlIsDocked: boolean;
+begin
+  Result:=(Control<>nil)
+      and (Control.Parent<>nil)
+      and ((Control.Parent is TLazDockForm) or (Control.Parent is TLazDockPage));
 end;
 
 constructor TCustomLazControlDocker.Create(TheOwner: TComponent);

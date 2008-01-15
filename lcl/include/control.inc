@@ -3390,7 +3390,7 @@ begin
     //debugln('TControl.Dock A ',DbgSName(Self));
 
     DoDock(NewDockSite,ARect);
-    
+
     if FHostDockSite<>NewDockSite then
     begin
       // HostDockSite has changed -> commit

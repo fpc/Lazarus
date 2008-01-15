@@ -439,7 +439,7 @@ type
   end;
   
 var
-  DragManager: TDragManager;
+  DragManager: TDragManager = nil;// created in initialization
 
 type
   { TDockManager is an abstract class for managing a dock site's docked

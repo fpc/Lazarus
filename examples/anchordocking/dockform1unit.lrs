@@ -12,15 +12,22 @@ LazarusResources.Add('TMainForm','FORMDATA',[
   +#16'SaveLayoutButton'#4'Left'#2#8#6'Height'#2#29#3'Top'#2'@'#5'Width'#3#177#0
   +#8'AutoSize'#9#7'Caption'#6#25'Save Layout to config.xml'#7'OnClick'#7#21'Sa'
   +'veLayoutButtonClick'#8'TabOrder'#2#1#0#0#9'TGroupBox'#20'CreateLayoutGroupB'
-  +'ox'#4'Left'#2#16#6'Height'#2'_'#3'Top'#2'h'#5'Width'#2's'#8'AutoSize'#9#7'C'
-  +'aption'#6#13'Create Layout'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildSi'
-  +'zing.TopBottomSpacing'#2#6#29'ChildSizing.HorizontalSpacing'#2#6#27'ChildSi'
-  +'zing.VerticalSpacing'#2#6#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTop'
-  +'ToBottom'#12'ClientHeight'#2'L'#11'ClientWidth'#2'o'#8'TabOrder'#2#2#0#7'TB'
-  +'utton'#14'TwoPagesButton'#4'Left'#2#6#6'Height'#2#29#3'Top'#2#6#5'Width'#2
-  +'c'#8'AutoSize'#9#7'Caption'#6#9'Two Pages'#7'OnClick'#7#19'TwoPagesButtonCl'
-  +'ick'#8'TabOrder'#2#0#0#0#7'TButton'#18'ClearLayoutsButton'#4'Left'#2#6#6'He'
-  +'ight'#2#29#3'Top'#2')'#5'Width'#2'c'#7'Caption'#6#13'Clear Layouts'#7'OnCli'
-  +'ck'#7#23'ClearLayoutsButtonClick'#8'TabOrder'#2#1#0#0#0#10'TPopupMenu'#13'M'
-  +'ainPopupMenu'#4'left'#3#192#0#3'top'#2#24#0#0#0
+  +'ox'#4'Left'#2#16#6'Height'#3#200#0#3'Top'#2'h'#5'Width'#2's'#8'AutoSize'#9#7
+  +'Caption'#6#13'Create Layout'#28'ChildSizing.LeftRightSpacing'#2#6#28'ChildS'
+  +'izing.TopBottomSpacing'#2#6#29'ChildSizing.HorizontalSpacing'#2#6#27'ChildS'
+  +'izing.VerticalSpacing'#2#6#18'ChildSizing.Layout'#7#29'cclLeftToRightThenTo'
+  +'pToBottom'#12'ClientHeight'#3#181#0#11'ClientWidth'#2'o'#8'TabOrder'#2#2#0#7
+  +'TButton'#18'ClearLayoutsButton'#4'Left'#2#6#6'Height'#2#29#3'Top'#2#6#5'Wid'
+  +'th'#2'c'#7'Caption'#6#13'Clear Layouts'#7'OnClick'#7#23'ClearLayoutsButtonC'
+  +'lick'#8'TabOrder'#2#1#0#0#7'TButton'#17'TwoSiblingsButton'#4'Left'#2#6#6'He'
+  +'ight'#2#29#3'Top'#2')'#5'Width'#2'c'#7'Caption'#6#12'Two Siblings'#7'OnClic'
+  +'k'#7#22'TwoSiblingsButtonClick'#8'TabOrder'#2#4#0#0#7'TButton'#14'TwoPagesB'
+  +'utton'#4'Left'#2#6#6'Height'#2#29#3'Top'#2'L'#5'Width'#2'c'#8'AutoSize'#9#7
+  +'Caption'#6#9'Two Pages'#7'OnClick'#7#19'TwoPagesButtonClick'#8'TabOrder'#2#0
+  +#0#0#7'TButton'#16'ThreePagesButton'#4'Left'#2#6#6'Height'#2#29#3'Top'#2'o'#5
+  +'Width'#2'c'#7'Caption'#6#11'Three Pages'#7'OnClick'#7#21'ThreePagesButtonCl'
+  +'ick'#8'TabOrder'#2#2#0#0#7'TButton'#12'SpiralButton'#4'Left'#2#6#6'Height'#2
+  +#29#3'Top'#3#146#0#5'Width'#2'c'#7'Caption'#6#6'Spiral'#7'Enabled'#8#7'OnCli'
+  +'ck'#7#17'SpiralButtonClick'#8'TabOrder'#2#3#0#0#0#10'TPopupMenu'#13'MainPop'
+  +'upMenu'#4'left'#3#192#0#3'top'#2#24#0#0#0
 ]);

@@ -35,7 +35,7 @@ object MainForm: TMainForm
   end
   object CreateLayoutGroupBox: TGroupBox
     Left = 16
-    Height = 95
+    Height = 200
     Top = 104
     Width = 115
     AutoSize = True
@@ -45,27 +45,55 @@ object MainForm: TMainForm
     ChildSizing.HorizontalSpacing = 6
     ChildSizing.VerticalSpacing = 6
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ClientHeight = 76
+    ClientHeight = 181
     ClientWidth = 111
     TabOrder = 2
-    object TwoPagesButton: TButton
+    object ClearLayoutsButton: TButton
       Left = 6
       Height = 29
       Top = 6
+      Width = 99
+      Caption = 'Clear Layouts'
+      OnClick = ClearLayoutsButtonClick
+      TabOrder = 1
+    end
+    object TwoSiblingsButton: TButton
+      Left = 6
+      Height = 29
+      Top = 41
+      Width = 99
+      Caption = 'Two Siblings'
+      OnClick = TwoSiblingsButtonClick
+      TabOrder = 4
+    end
+    object TwoPagesButton: TButton
+      Left = 6
+      Height = 29
+      Top = 76
       Width = 99
       AutoSize = True
       Caption = 'Two Pages'
       OnClick = TwoPagesButtonClick
       TabOrder = 0
     end
-    object ClearLayoutsButton: TButton
+    object ThreePagesButton: TButton
       Left = 6
       Height = 29
-      Top = 41
+      Top = 111
       Width = 99
-      Caption = 'Clear Layouts'
-      OnClick = ClearLayoutsButtonClick
-      TabOrder = 1
+      Caption = 'Three Pages'
+      OnClick = ThreePagesButtonClick
+      TabOrder = 2
+    end
+    object SpiralButton: TButton
+      Left = 6
+      Height = 29
+      Top = 146
+      Width = 99
+      Caption = 'Spiral'
+      Enabled = False
+      OnClick = SpiralButtonClick
+      TabOrder = 3
     end
   end
   object MainPopupMenu: TPopupMenu
