@@ -137,6 +137,7 @@ begin
   KeepTextFilesCheckbox.Caption:=lisClDirKeepAllTextFiles;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  HelpButton.Caption:=srVK_HELP;
 end;
 
 procedure TCleanDirectoryDialog.HelpButtonClick(Sender: TObject);
