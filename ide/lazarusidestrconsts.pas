@@ -1926,6 +1926,7 @@ resourcestring
   srVK_INSERT     = 'Insert';
   //srVK_DELETE     = 'Delete'; dlgeddelete
   srVK_HELP       = 'Help';
+  lisMissingIdentifiers = 'Missing identifiers';
   srVK_LWIN       = 'left windows key';
   srVK_RWIN       = 'right windows key';
   srVK_APPS       = 'application key';

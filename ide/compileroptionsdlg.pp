@@ -1524,6 +1524,7 @@ begin
   btnCheck.Caption := lisCompTest;
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.Caption := '...';
+  HelpButton.Caption:=srVK_HELP;
 end;
 
 function TfrmCompilerOptions.CheckSearchPath(const Context,

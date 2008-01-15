@@ -147,8 +147,9 @@ begin
   NameGroupbox.Caption:=lisNameOfNewProcedure;
   TypeRadiogroup.Caption:=dlgEnvType;
   NameEdit.Text:=MiscellaneousOptions.ExtractProcName;
-  MissingIdentifiersGroupBox.Caption:='Missing identifiers';
+  MissingIdentifiersGroupBox.Caption:=lisMissingIdentifiers;
   
+  HelpButton.Caption:=srVK_HELP;
   OkButton.Caption:=lisExtract;
   CancelButton.Caption:=dlgCancel;
 end;
