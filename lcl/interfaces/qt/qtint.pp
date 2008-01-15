@@ -61,6 +61,8 @@ type
     SavedDCList: TList;
     FOldFocusWidget: QWidgetH;
     FDockImage: QRubberBandH;
+    FDragImageList: QWidgetH;
+    FDragHotSpot: TPoint;
   protected
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -108,6 +110,12 @@ type
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean; virtual;
+
+    // drag image list
+    function DragImageList_BeginDrag(AImage: QImageH; AHotSpot: TPoint): Boolean;
+    procedure DragImageList_EndDrag;
+    function DragImageList_DragMove(X, Y: Integer): Boolean;
+    function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
   public
     function CreateDefaultFont: HFONT; virtual;
     function GetQtDefaultDC: HDC; virtual;

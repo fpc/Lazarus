@@ -35,7 +35,7 @@ uses
 {$else}
   qt4,
 {$endif}
-  qtwidgets, qtobjects, qtproc,
+  qtwidgets, qtobjects, qtproc, qtint,
   // LCL
   SysUtils, Classes, Types, Controls, LCLType, LCLProc, Forms, Graphics,
   StdCtrls,
@@ -50,6 +50,13 @@ type
   private
   protected
   public
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageList); override;
+    class function HideDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
+    class function ShowDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
   { TQtWSControl }
@@ -568,6 +575,54 @@ begin
     TQtFrame(Widget).setFrameShape(TBorderStyleToQtFrameShapeMap[ABorderStyle]);
 end;
 
+{ TQtWSDragImageList }
+
+class function TQtWSDragImageList.BeginDrag(
+  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean;
+var
+  ABitmap: TBitmap;
+begin
+  ABitmap := TBitmap.Create;
+  ADragImageList.GetBitmap(AIndex, ABitmap);
+
+  if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  Result := TQtWidgetset(Widgetset).DragImageList_BeginDrag(TQtImage(ABitmap.Handle).Handle, ADragImageList.DragHotSpot);
+  if Result then
+    TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
+  ABitmap.Free;
+end;
+
+class function TQtWSDragImageList.DragMove(
+  const ADragImageList: TDragImageList; X, Y: Integer): Boolean;
+begin
+  Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y);
+end;
+
+class procedure TQtWSDragImageList.EndDrag(const ADragImageList: TDragImageList
+  );
+begin
+  TQtWidgetset(Widgetset).DragImageList_EndDrag;
+end;
+
+class function TQtWSDragImageList.HideDragImage(
+  const ADragImageList: TDragImageList; ALockedWindow: HWND; DoUnLock: Boolean
+  ): Boolean;
+begin
+  Result := TQtWidgetset(Widgetset).DragImageList_SetVisible(False);
+end;
+
+class function TQtWSDragImageList.ShowDragImage(
+  const ADragImageList: TDragImageList; ALockedWindow: HWND; X, Y: Integer;
+  DoLock: Boolean): Boolean;
+begin
+  Result := TQtWidgetset(Widgetset).DragImageList_DragMove(X, Y) and TQtWidgetset(Widgetset).DragImageList_SetVisible(True);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -576,7 +631,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TQtWSDragImageList);
+  RegisterWSComponent(TDragImageList, TQtWSDragImageList);
 //  RegisterWSComponent(TControl, TQtWSControl);
   RegisterWSComponent(TWinControl, TQtWSWinControl);
 //  RegisterWSComponent(TGraphicControl, TQtWSGraphicControl);

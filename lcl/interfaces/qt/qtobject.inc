@@ -374,6 +374,65 @@ begin
   end;
 end;
 
+function TQtWidgetSet.DragImageList_BeginDrag(AImage: QImageH;
+  AHotSpot: TPoint): Boolean;
+var
+  ASize: TSize;
+  APixmap: QPixmapH;
+  AMask: QBitmapH;
+  ABrush: QBrushH;
+  APalette: QPaletteH;
+begin
+  if FDragImageList = nil then
+  begin
+    FDragImageList := QWidget_create(nil, QtSubWindow or QtFramelessWindowHint or QtWindowStaysOnTopHint);
+    QImage_size(AImage, @ASize);
+    QWidget_setFixedSize(FDragImageList, @ASize);
+    APixmap := QPixmap_create();
+    QPixmap_fromImage(APixmap, AImage);
+    AMask := QBitmap_create();
+    QPixmap_mask(APixmap, AMask);
+    QWidget_setMask(FDragImageList, AMask);
+    ABrush := QBrush_create(AImage);
+    APalette := QWidget_palette(FDragImageList);
+    QPalette_setBrush(APalette, QPaletteWindow, ABrush);
+    QBrush_destroy(ABrush);
+    QBitmap_destroy(AMask);
+    QPixmap_destroy(APixmap);
+    
+    QWidget_setAutoFillBackground(FDragImageList, True);
+    
+    FDragHotSpot := AHotSpot;
+  end;
+  Result := FDragImageList <> nil;
+end;
+
+procedure TQtWidgetSet.DragImageList_EndDrag;
+begin
+  if FDragImageList <> nil then
+  begin
+    QObject_deleteLater(FDragImageList);
+    FDragImageList := nil;
+  end;
+end;
+
+function TQtWidgetSet.DragImageList_DragMove(X, Y: Integer): Boolean;
+begin
+  Result := FDragImageList <> nil;
+  if Result then
+  begin
+    QWidget_raise(FDragImageList);
+    QWidget_move(FDragImageList, X - FDragHotSpot.X, Y - FDragHotSpot.Y);
+  end;
+end;
+
+function TQtWidgetSet.DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+begin
+  Result := FDragImageList <> nil;
+  if Result then
+    QWidget_setVisible(FDragImageList, NewVisible);
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateDefaultFont
   Params:  none
