@@ -148,7 +148,7 @@ begin
   end;
 
   with MultiLineCheckBox do begin
-    Caption:=dlgMultiLine;
+    Caption:=lisFindFileMultiLinePattern;
     Hint:=lisAllowSearchingForMultipleLines;
   end;
 

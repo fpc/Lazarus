@@ -129,7 +129,7 @@ begin
   OptionsCheckGroupBox.Items[0] := lisFindFileCaseSensitive;
   OptionsCheckGroupBox.Items[1] := lisFindFileWholeWordsOnly;
   OptionsCheckGroupBox.Items[2] := lisFindFileRegularExpressions;
-  OptionsCheckGroupBox.Items[3] := lisFindFileMultiLine;
+  OptionsCheckGroupBox.Items[3] := lisFindFileMultiLinePattern;
 
   WhereRadioGroup.Caption:=lisFindFileWhere;
   WhereRadioGroup.Items[0] := lisFindFilesearchAllFilesInProject;
