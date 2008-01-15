@@ -135,10 +135,10 @@ end;
 class procedure TGtk2WSWinControl.SetText(const AWinControl: TWinControl;
   const AText: string);
 var
-P : Pointer;
-TextBuf: PGtkTextBuffer;
-StartIter: TGtkTextIter;
-pLabel: pchar;
+  P : Pointer;
+  TextBuf: PGtkTextBuffer;
+  StartIter: TGtkTextIter;
+  pLabel: pchar;
 begin
   P := Pointer(AWinControl.Handle);
   

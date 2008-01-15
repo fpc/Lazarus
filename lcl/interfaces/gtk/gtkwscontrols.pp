@@ -47,6 +47,13 @@ type
   private
   protected
   public
+    class function BeginDrag(const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer): Boolean; override;
+    class function DragMove(const ADragImageList: TDragImageList; X, Y: Integer): Boolean; override;
+    class procedure EndDrag(const ADragImageList: TDragImageList); override;
+    class function HideDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; DoUnLock: Boolean): Boolean; override;
+    class function ShowDragImage(const ADragImageList: TDragImageList;
+      ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
   { TGtkWSControl }
@@ -925,6 +932,58 @@ begin
   SetCCCallbacks(Widget, WidgetInfo);
 end;
 
+{ TGtkWSDragImageList }
+
+class function TGtkWSDragImageList.BeginDrag(
+  const ADragImageList: TDragImageList; Window: HWND; AIndex, X, Y: Integer
+  ): Boolean;
+var
+  ABitmap: TBitmap;
+  GDIObject: PGDIObject;
+begin
+  ABitmap := TBitmap.Create;
+  ADragImageList.GetBitmap(AIndex, ABitmap);
+
+  if (ABitmap.Handle = 0) or (ABitmap.Width = 0) or (ABitmap.Height = 0) then
+  begin
+    Result := False;
+    Exit;
+  end;
+
+  GDIObject := PgdiObject(ABitmap.Handle);
+
+  Result := GtkWidgetset.DragImageList_BeginDrag(GDIObject^.GDIPixmapObject.Image, GDIObject^.GDIPixmapObject.Mask, ADragImageList.DragHotSpot);
+  if Result then
+    GtkWidgetset.DragImageList_DragMove(X, Y);
+  ABitmap.Free;
+end;
+
+class function TGtkWSDragImageList.DragMove(
+  const ADragImageList: TDragImageList; X, Y: Integer): Boolean;
+begin
+  Result := GtkWidgetset.DragImageList_DragMove(X, Y);
+end;
+
+class procedure TGtkWSDragImageList.EndDrag(
+  const ADragImageList: TDragImageList);
+begin
+  GtkWidgetset.DragImageList_EndDrag;
+end;
+
+class function TGtkWSDragImageList.HideDragImage(
+  const ADragImageList: TDragImageList; ALockedWindow: HWND; DoUnLock: Boolean
+  ): Boolean;
+begin
+  Result := GtkWidgetset.DragImageList_SetVisible(False);
+end;
+
+class function TGtkWSDragImageList.ShowDragImage(
+  const ADragImageList: TDragImageList; ALockedWindow: HWND; X, Y: Integer;
+  DoLock: Boolean): Boolean;
+begin
+  Result := GtkWidgetset.DragImageList_DragMove(X, Y) and GtkWidgetset.DragImageList_SetVisible(True);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -933,7 +992,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
+  RegisterWSComponent(TDragImageList, TGtkWSDragImageList);
 //  RegisterWSComponent(TControl, TGtkWSControl);
   RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);

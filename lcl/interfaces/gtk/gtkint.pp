@@ -126,6 +126,9 @@ type
     
     FDCManager: TDeviceContextMemManager;
     FDockImage: PGtkWidget;
+    FDragImageList: PGtkWidget;
+    FDragImageListIcon: PGtkWidget;
+    FDragHotStop: TPoint;
 
     function CreateThemeServices: TThemeServices; override;
     function GetDeviceContextClass: TGtkDeviceContextClass; virtual; abstract;
@@ -241,6 +244,13 @@ type
     procedure SendCachedGtkMessages;virtual;
     // show, hide and invalidate
     procedure ShowHide(Sender : TObject);virtual;
+    
+    // Drag ImageLsit
+    function DragImageList_BeginDrag(APixmap: PGdkPixmap; AMask: PGdkBitmap; AHotSpot: TPoint): Boolean;
+    procedure DragImageList_EndDrag;
+    function DragImageList_DragMove(X, Y: Integer): Boolean;
+    function DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+    
   public
     function LCLPlatform: TLCLPlatform; override;
     // Application

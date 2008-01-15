@@ -4259,6 +4259,60 @@ begin
   //  DebugLn('[TGtkWidgetSet.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
+function TGTKWidgetSet.DragImageList_BeginDrag(APixmap: PGdkPixmap; AMask: PGdkBitmap; AHotSpot: TPoint): Boolean;
+var
+  w, h: gint;
+begin
+  if FDragImageList = nil then
+  begin
+    FDragImageList := gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gdk_drawable_get_size(APixmap, @w, @h);
+    gtk_window_set_default_size(PGtkWindow(FDragImageList), w, h);
+    gtk_widget_realize(FDragImageList);
+    gdk_window_set_decorations(FDragImageList^.window, 0);
+    gdk_window_set_functions(FDragImageList^.window, GDK_FUNC_RESIZE or GDK_FUNC_CLOSE);
+    FDragImageListIcon := gtk_pixmap_new(APixmap, AMask);
+    gtk_container_add(PGtkContainer(FDragImageList), FDragImageListIcon);
+    gtk_widget_show(FDragImageListIcon);
+    // make window transparent outside mask
+    gdk_window_shape_combine_mask(FDragImageList^.window, AMask, 0, 0);
+    FDragHotStop := AHotSpot;
+  end;
+  Result := FDragImageList <> nil;
+end;
+
+procedure TGTKWidgetSet.DragImageList_EndDrag;
+begin
+  if FDragImageList <> nil then
+  begin
+    if FDragImageListIcon <> nil then
+      gtk_widget_destroy(FDragImageListIcon);
+    gtk_widget_destroy(FDragImageList);
+    FDragImageList := nil;
+  end;
+end;
+
+function TGTKWidgetSet.DragImageList_DragMove(X, Y: Integer): Boolean;
+begin
+  Result := FDragImageList <> nil;
+  if Result then
+  begin
+    if gdk_window_is_visible(FDragImageList^.Window) then
+      gdk_window_raise(FDragImageList^.Window);
+    gdk_window_move(FDragImageList^.Window, X + FDragHotStop.X, Y + FDragHotStop.Y);
+  end;
+end;
+
+function TGTKWidgetSet.DragImageList_SetVisible(NewVisible: Boolean): Boolean;
+begin
+  Result := FDragImageList <> nil;
+  if Result then
+    if NewVisible then
+      gtk_widget_show(FDragImageList)
+    else
+      gtk_widget_hide(FDragImageList);
+end;
+
 {-------------------------------------------------------------------------------
   method TGtkWidgetSet LoadPixbufFromLazResource
   Params: const ResourceName: string;
