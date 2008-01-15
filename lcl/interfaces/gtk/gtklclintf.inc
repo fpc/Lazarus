@@ -148,7 +148,7 @@ end;
 function TGtkWidgetSet.GetAcceleratorString(const AVKey: Byte;
   const AShiftState: TShiftState): String;
 begin
-  Result:='';
+  Result:=inherited GetAcceleratorString(AVKey,AShiftState);
 end;
 
 {------------------------------------------------------------------------------

@@ -964,6 +964,7 @@ begin
     or (CompareText(ParamStr(1),'-h')=0)) then
   begin
     TranslateResourceStrings(ProgramDirectory,'');
+
     writeln(lislazarusOptionsProjectFilename);
     writeln('');
     writeln(lisIDEOptions);

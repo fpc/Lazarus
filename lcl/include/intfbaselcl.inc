@@ -240,7 +240,8 @@ begin
 end;
 
 // MWE: Work in progress
-function TWidgetSet.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+function TWidgetSet.GetAcceleratorString(const AVKey: Byte;
+  const AShiftState: TShiftState): String;
   // If the interface has a better way to create a string it can override this
 
   procedure AddPart(const APart: string);

@@ -120,8 +120,8 @@ procedure MergeSort(List: TStrings; const OnCompare: TStringsSortCompare);
 function GetEnumValueDef(TypeInfo: PTypeInfo; const Name: string;
                          const DefaultValue: Integer): Integer;
 
-function ShortCutToText(ShortCut: TShortCut): string;
-function TextToShortCut(const ShortCutText: string): TShortCut;
+function ShortCutToText(ShortCut: TShortCut): string;// untranslated
+function TextToShortCut(const ShortCutText: string): TShortCut;// untranslated
 
 function GetCompleteText(sText: string; iSelStart: Integer;
   bCaseSensitive, bSearchAscending: Boolean; slTextList: TStrings): string;

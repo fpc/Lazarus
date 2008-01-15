@@ -6024,6 +6024,8 @@ var
     Key: Word;
     Shift: TShiftState;
     s: String;
+    CurKey: Word;
+    CurShift: TShiftState;
   begin
     //DebugLn(['UpdateShortCutLabel ',dbgsName(LCLMenuItem),' ',ShortCutToText(NewShortCut)]);
     ShortCutToKey(NewShortCut,Key,Shift);
@@ -6043,7 +6045,9 @@ var
                                PGtkObject(MenuItemWidget), 'LCLShortCutLabel'));
                                
     if NeedShortCut then begin
-      s:='    '+ShortCutToText(NewShortCut);
+      ShortCutToKey(NewShortCut,CurKey,CurShift);
+      s:='    '+GetAcceleratorString(CurKey,CurShift);
+      //  ShortCutToText(NewShortCut);
       if LabelWidget=nil then begin
         // create a label for the ShortCut
         LabelWidget:=PGtkLabel(gtk_label_new(PChar(Pointer(s))));
