@@ -52,7 +52,7 @@ end;
 
 procedure TForm1.Panel1DragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-  ShowMessage('Congratulations. You droped button on me :)')
+  ShowMessage('Congratulations. You dropped button on me :)')
 end;
 
 procedure TForm1.Panel1DragOver(Sender, Source: TObject; X, Y: Integer;

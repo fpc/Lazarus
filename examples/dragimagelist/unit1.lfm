@@ -5,22 +5,23 @@ object Form1: TForm1
   Width = 400
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 299
+  ActiveControl = Button1
   Caption = 'Form1'
   ClientHeight = 300
   ClientWidth = 400
   object Label1: TLabel
     Left = 8
-    Height = 40
-    Top = 240
-    Width = 159
+    Height = 66
+    Top = 216
+    Width = 208
     Caption = 'If DragImageList is working then '#13#10'you should see Button image '#13#10'dragged nearly mouse cursor.'
     ParentColor = False
   end
   object Button1: TButton
     Left = 16
-    Height = 25
+    Height = 32
     Top = 16
-    Width = 75
+    Width = 96
     Caption = 'Move me'
     DragMode = dmAutomatic
     OnStartDrag = Button1StartDrag
