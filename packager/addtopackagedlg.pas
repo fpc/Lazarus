@@ -1349,6 +1349,7 @@ begin
     Parent:=AddUnitPage;
     Caption:='...';
     OnClick:=@AddUnitFileBrowseButtonClick;
+    AutoSize:=true;
   end;
 
   AddUnitFileShortenButton:=TButton.Create(Self);
@@ -1357,6 +1358,7 @@ begin
     Parent:=AddUnitPage;
     Caption:='<>';
     OnClick:=@AddUnitFileShortenButtonClick;
+    AutoSize:=true;
   end;
 
   AddUnitSrcNameLabel:=TLabel.Create(Self);
@@ -1409,6 +1411,7 @@ begin
     AutoSize:=true;
     AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
     AnchorToNeighbour(akTop,5,AddSecondaryFilesCheckBox);
+    AutoSize:=true;
   end;
 
   AddUnitButton:=TButton.Create(Self);
@@ -1420,6 +1423,7 @@ begin
     AutoSize:=true;
     AnchorParallel(akLeft,0,AddUnitHasRegisterCheckBox);
     AnchorToNeighbour(akTop,25,AddUnitUpdateButton);
+    AutoSize:=true;
   end;
 
   CancelAddUnitButton:=TButton.Create(Self);
@@ -1431,6 +1435,7 @@ begin
     AutoSize:=true;
     AnchorToNeighbour(akLeft,10,AddUnitButton);
     AnchorParallel(akTop,0,AddUnitButton);
+    AutoSize:=true;
   end;
 end;
 
@@ -1573,6 +1578,7 @@ begin
     OnClick:=@ComponentUnitFileBrowseButtonClick;
     ShowHint:=true;
     Hint:=lisA2PSaveFileDialog;
+    AutoSize:=true;
   end;
 
   ComponentUnitFileShortenButton:=TButton.Create(Self);
@@ -1583,6 +1589,7 @@ begin
     OnClick:=@ComponentUnitFileShortenButtonClick;
     ShowHint:=true;
     Hint:=lisA2PShortenOrExpandFilename;
+    AutoSize:=true;
   end;
 
   ComponentUnitNameLabel:=TLabel.Create(Self);
@@ -1605,6 +1612,7 @@ begin
     Parent:=NewComponentPage;
     Caption:=lisLazBuildOk;
     OnClick:=@NewComponentButtonClick;
+    AutoSize:=true;
   end;
 
   CancelNewComponentButton:=TButton.Create(Self);
@@ -1613,6 +1621,7 @@ begin
     Parent:=NewComponentPage;
     Caption:=dlgCancel;
     OnClick:=@CancelNewComponentButtonClick;
+    AutoSize:=true;
   end;
 end;
 
@@ -1666,6 +1675,7 @@ begin
     Parent:=NewDependPage;
     Caption:=lisLazBuildOk;
     OnClick:=@NewDependButtonClick;
+    AutoSize:=true;
   end;
 
   CancelDependButton:=TButton.Create(Self);
@@ -1674,6 +1684,7 @@ begin
     Parent:=NewDependPage;
     Caption:=dlgCancel;
     ModalResult:=mrCancel;
+    AutoSize:=true;
   end;
 end;
 
@@ -1701,6 +1712,7 @@ begin
     Parent:=AddFilePage;
     Caption:='...';
     OnClick:=@AddFileBrowseButtonClick;
+    AutoSize:=true;
   end;
 
   AddFileShortenButton:=TButton.Create(Self);
@@ -1709,6 +1721,7 @@ begin
     Parent:=AddFilePage;
     Caption:='<>';
     OnClick:=@AddFileShortenButtonClick;
+    AutoSize:=true;
   end;
 
   AddFileTypeRadioGroup:=TRadioGroup.Create(Self);
@@ -1732,6 +1745,7 @@ begin
     Parent:=AddFilePage;
     Caption:=lisLazBuildOk;
     OnClick:=@AddFileButtonClick;
+    AutoSize:=true;
   end;
 
   CancelAddFileButton:=TButton.Create(Self);
@@ -1740,6 +1754,7 @@ begin
     Parent:=AddFilePage;
     Caption:=dlgCancel;
     OnClick:=@CancelAddFileButtonClick;
+    AutoSize:=true;
   end;
 end;
 
