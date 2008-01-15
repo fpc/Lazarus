@@ -81,6 +81,7 @@ type
     DatabasesListBox: TListBox;
     GeneralPage: TPage;
     OkButton: TBitBtn;
+    BtnPanel: TPanel;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
@@ -140,6 +141,7 @@ begin
   Caption:=lisHlpOptsHelpOptions;
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  HelpButton.Caption:=srVK_HELP;
   GeneralPage.Caption:=lisMenuInsertGeneral;
   FPCDocHTMLLabel.Caption:=lisHOFPCDocHTMLPath;
   ViewersPage.Caption:=lisHlpOptsViewers;

@@ -1,37 +1,37 @@
 object HelpOptionsDialog: THelpOptionsDialog
   AnchorSideBottom.Side = asrBottom
   Left = 264
-  Height = 300
+  Height = 363
   Top = 234
   Width = 500
   HorzScrollBar.Page = 499
-  VertScrollBar.Page = 299
-  ActiveControl = FPCDocHTMLEdit
+  VertScrollBar.Page = 362
+  ActiveControl = MainNotebook
   BorderIcons = [biSystemMenu]
   Caption = 'HelpOptionsDialog'
-  ClientHeight = 300
+  ClientHeight = 363
   ClientWidth = 500
   OnClose = HelpOptionsDialogClose
   OnCreate = HelpOptionsDialogCreate
   Position = poScreenCenter
   object MainNotebook: TNotebook
-    Height = 262
+    Height = 315
     Width = 500
-    Align = alTop
+    Align = alClient
     Anchors = [akTop, akLeft]
     PageIndex = 1
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
-      ClientWidth = 492
-      ClientHeight = 236
+      ClientWidth = 496
+      ClientHeight = 231
       object FPCDocHTMLLabel: TLabel
         AnchorSideLeft.Control = GeneralPage
         AnchorSideTop.Control = GeneralPage
         Left = 6
         Height = 14
         Top = 6
-        Width = 480
+        Width = 484
         Align = alTop
         BorderSpacing.Around = 6
         Caption = 'FPCDocHTMLLabel'
@@ -45,7 +45,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         Left = 6
         Height = 23
         Top = 26
-        Width = 451
+        Width = 455
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Around = 6
         TabOrder = 0
@@ -56,7 +56,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = GeneralPage
         AnchorSideRight.Side = asrBottom
-        Left = 463
+        Left = 467
         Height = 23
         Top = 26
         Width = 23
@@ -69,14 +69,14 @@ object HelpOptionsDialog: THelpOptionsDialog
     end
     object ViewersPage: TPage
       Caption = 'ViewersPage'
-      ClientWidth = 492
-      ClientHeight = 236
+      ClientWidth = 496
+      ClientHeight = 284
       object ViewersLabel: TLabel
         AnchorSideTop.Control = ViewerPropsGroupBox
         Left = 6
-        Height = 14
+        Height = 20
         Top = 6
-        Width = 63
+        Width = 84
         Caption = 'ViewersLabel'
         ParentColor = False
       end
@@ -87,22 +87,23 @@ object HelpOptionsDialog: THelpOptionsDialog
         AnchorSideBottom.Control = ViewersPage
         AnchorSideBottom.Side = asrBottom
         Left = 6
-        Height = 204
-        Top = 26
+        Height = 246
+        Top = 32
         Width = 152
         Anchors = [akTop, akLeft, akBottom]
         BorderSpacing.Around = 6
         ClickOnSelChange = False
         OnSelectionChange = ViewersListBoxSelectionChange
         TabOrder = 0
+        TopIndex = -1
       end
       object ViewerPropsGroupBox: TGroupBox
         AnchorSideLeft.Control = ViewersListBox
         AnchorSideLeft.Side = asrBottom
         Left = 164
-        Height = 224
+        Height = 272
         Top = 6
-        Width = 322
+        Width = 326
         Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
@@ -112,6 +113,8 @@ object HelpOptionsDialog: THelpOptionsDialog
     end
     object DataBasePage: TPage
       Caption = 'DataBasePage'
+      ClientWidth = 496
+      ClientHeight = 231
       object DatabasesLabel: TLabel
         AnchorSideTop.Control = DataBasesPropsGroupBox
         Left = 6
@@ -136,14 +139,15 @@ object HelpOptionsDialog: THelpOptionsDialog
         ClickOnSelChange = False
         OnSelectionChange = DatabasesListBoxSelectionChange
         TabOrder = 0
+        TopIndex = -1
       end
       object DataBasesPropsGroupBox: TGroupBox
         AnchorSideLeft.Control = DatabasesListBox
         AnchorSideLeft.Side = asrBottom
         Left = 164
-        Height = 224
+        Height = 219
         Top = 6
-        Width = 322
+        Width = 326
         Align = alRight
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Around = 6
@@ -152,67 +156,70 @@ object HelpOptionsDialog: THelpOptionsDialog
       end
     end
   end
-  object HelpButton: TBitBtn
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 26
-    Top = 268
-    Width = 75
-    Anchors = [akLeft, akBottom]
+  object BtnPanel: TPanel
+    Height = 48
+    Top = 315
+    Width = 500
+    Align = alBottom
     AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&Help'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkHelp
-    NumGlyphs = 0
-    OnClick = HelpButtonClick
+    BevelOuter = bvNone
+    ClientHeight = 48
+    ClientWidth = 500
     TabOrder = 1
-  end
-  object OkButton: TBitBtn
-    AnchorSideRight.Control = CancelButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 335
-    Height = 26
-    Top = 268
-    Width = 75
-    Align = alRight
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = '&OK'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Default = True
-    Kind = bkOK
-    ModalResult = 1
-    NumGlyphs = 0
-    OnClick = OkButtonClick
-    TabOrder = 2
-  end
-  object CancelButton: TBitBtn
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 416
-    Height = 26
-    Top = 268
-    Width = 78
-    Align = alRight
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Cancel = True
-    Caption = 'Cancel'
-    Constraints.MinHeight = 25
-    Constraints.MinWidth = 75
-    Kind = bkCancel
-    ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 3
+    object OkButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 335
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&OK'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Default = True
+      Kind = bkOK
+      ModalResult = 1
+      NumGlyphs = 0
+      OnClick = OkButtonClick
+      TabOrder = 0
+    end
+    object CancelButton: TBitBtn
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Side = asrBottom
+      Left = 416
+      Height = 36
+      Top = 6
+      Width = 78
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkCancel
+      ModalResult = 2
+      NumGlyphs = 0
+      TabOrder = 1
+    end
+    object HelpButton: TBitBtn
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 36
+      Top = 6
+      Width = 75
+      Align = alLeft
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = '&Help'
+      Constraints.MinHeight = 25
+      Constraints.MinWidth = 75
+      Kind = bkHelp
+      NumGlyphs = 0
+      OnClick = HelpButtonClick
+      TabOrder = 2
+    end
   end
 end
