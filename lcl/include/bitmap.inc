@@ -269,9 +269,22 @@ begin
 end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
+var
+  ResType: String;
 begin
-  Result := AnsiSameText(ResourceType,'XPM')
-         or AnsiSameText(ResourceType,'BMP');
+  if Length(ResourceType) < 3 then Exit(False);
+
+  ResType := UpperCase(ResourceType);
+  case ResType[1] of
+    'B': begin
+      Result := (ResType = 'BMP') or (ResType = 'BITMAP');
+    end;
+    'X': begin
+      Result := Restype = 'XPM';
+    end;
+  else
+    Result := False;
+  end;
 end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);

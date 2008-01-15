@@ -1314,6 +1314,7 @@ type
     procedure InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader); override;
   public
     class function GetFileExtensions: string; override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     property Bitmaps: TObjectList read FBitmaps;
     destructor Destroy; override;
     procedure AddBitmap(Bitmap: TBitmap); { Note that Ownership passes to TIcon }
@@ -2049,6 +2050,22 @@ begin
     TLazReaderIcon(ImgReader).Icon := self;
 end;
 
+function TIcon.LazarusResourceTypeValid(const ResourceType: string): boolean;
+var
+  ResType: String;
+begin
+  if Length(ResourceType) < 3 then Exit(False);
+
+  ResType := UpperCase(ResourceType);
+  case ResType[1] of
+    'I': begin
+      Result := (ResType = 'ICO') or (ResType = 'ICON');
+    end;
+  else
+    Result := inherited LazarusResourceTypeValid(ResType);
+  end;
+end;
+
 class function TIcon.GetFileExtensions: string;
 begin
   Result:='ico';
@@ -2082,9 +2099,19 @@ begin
 end;
 
 function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): boolean;
+var
+  ResType: String;
 begin
-  Result := inherited LazarusResourceTypeValid(ResourceType) or
-            (AnsiCompareText(ResourceType,'CUR')=0);
+  if Length(ResourceType) < 3 then Exit(False);
+
+  ResType := UpperCase(ResourceType);
+  case ResType[1] of
+    'C': begin
+      Result := (ResType = 'CUR') or (ResType = 'CURSOR');
+    end;
+  else
+    Result := inherited LazarusResourceTypeValid(ResType);
+  end;
 end;
 
 function TCursorImage.ReleaseCursorHandle: HCURSOR;
