@@ -93,7 +93,6 @@ type
                                     var CloseAction: TCloseAction);
     procedure CodeExplorerViewCreate(Sender: TObject);
     procedure CodeExplorerViewDestroy(Sender: TObject);
-    procedure CodeExplorerViewResize(Sender: TObject);
     procedure CodeTreeviewDblClick(Sender: TObject);
     procedure CodeTreeviewDeletion(Sender: TObject; Node: TTreeNode);
     procedure CodeTreeviewKeyUp(Sender: TObject; var Key: Word;
@@ -165,6 +164,7 @@ type
     procedure SetCurrentPage(const AValue: TCodeExplorerPage);
     procedure SetDirectivesFilter(const AValue: string);
     procedure SetMode(AMode: TCodeExplorerMode);
+    procedure UpdateMode;
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure ApplyCodeFilter;
@@ -290,7 +290,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 begin
   LoadCodeExplorerOptions;
   
-  Mode:=CodeExplorerOptions.Mode;
+  FMode := CodeExplorerOptions.Mode;
+  UpdateMode;
 
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
@@ -326,6 +327,7 @@ begin
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
+  // what horrible hack is this ??
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
   
@@ -335,11 +337,6 @@ end;
 procedure TCodeExplorerView.CodeExplorerViewDestroy(Sender: TObject);
 begin
   //debugln('TCodeExplorerView.CodeExplorerViewDestroy');
-end;
-
-procedure TCodeExplorerView.CodeExplorerViewRESIZE(Sender: TObject);
-begin
-
 end;
 
 procedure TCodeExplorerView.CodeTreeviewDblClick(Sender: TObject);
@@ -749,6 +746,11 @@ procedure TCodeExplorerView.SetMode(AMode: TCodeExplorerMode);
 begin
   if FMode=AMode then exit;
   FMode:=AMode;
+  UpdateMode;
+end;
+
+procedure TCodeExplorerView.UpdateMode;
+begin
   if FMode=cemCategory then
   begin
     ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
@@ -760,6 +762,7 @@ begin
   end;
   Refresh(true);
 end;
+
 procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
