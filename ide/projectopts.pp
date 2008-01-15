@@ -139,6 +139,7 @@ type
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
     procedure EnableI18NCheckBoxChange(Sender: TObject);
+    procedure FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure FormsPageResize(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure LazDocAddPathButtonClick(Sender: TObject);
@@ -736,6 +737,11 @@ begin
     Items.EndUpdate;
   end;
   SelectOnlyThisAutoCreateForm(i - 1);
+end;
+
+procedure TProjectOptionsDialog.FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
+begin
+
 end;
 
 procedure TProjectOptionsDialog.FormsMoveAutoCreatedFormDownBtnClick(
