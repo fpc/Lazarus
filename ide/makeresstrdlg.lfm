@@ -280,7 +280,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -607,6 +609,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'SrcPreviewSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object StringConstGroupBox: TGroupBox
@@ -632,7 +635,9 @@ object MakeResStrDialog: TMakeResStrDialog
         ParentColor = False
         TabOrder = 0
         BookMarkOptions.Xoffset = -18
+        BookMarkOptions.OnChange = nil
         Gutter.Visible = False
+        Gutter.OnChange = nil
         Gutter.CodeFoldingWidth = 14
         Highlighter = SynPasSyn
         Keystrokes = <        
@@ -959,6 +964,7 @@ object MakeResStrDialog: TMakeResStrDialog
         Lines.Strings = (
           'StringConstSynEdit'
         )
+        SelectedColor.OnChange = nil
       end
     end
     object Splitter1: TSplitter

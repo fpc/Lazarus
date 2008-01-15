@@ -50,7 +50,6 @@ type
   { TMakeResStrDialog }
 
   TMakeResStrDialog = class(TForm)
-    HelpButton: TBitBtn;
     CustomIdentifierCheckBox: TCheckBox;
     IdentifierGroupBox: TGroupBox;
     IdentifierEdit: TEdit;
@@ -74,10 +73,6 @@ type
     InsertAlphabeticallyResStrRadioButton: TRadioButton;
     InsertContextSensitiveRadioButton: TRadioButton;
 
-
-    // ok+cancel buttons
-    OkButton: TBitBtn;
-    CancelButton: TBitBtn;
     Splitter1: TSplitter;
     SrcPreviewGroupBox: TGroupBox;
     SrcPreviewSynEdit: TSynEdit;
@@ -86,7 +81,12 @@ type
 
     // highlighter
     SynPasSyn: TSynPasSyn;
-    
+
+    // ok+cancel buttons
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
+    HelpButton: TBitBtn;
+
     procedure CancelButtonClick(Sender: TObject);
     procedure CustomIdentifierCheckBoxClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -304,6 +304,7 @@ begin
   // ok+cancel buttons
   OkButton.Caption:=lisLazBuildOk;
   CancelButton.Caption:=dlgCancel;
+  HelpButton.Caption:=srVK_HELP;
 end;
 
 constructor TMakeResStrDialog.Create(TheOwner: TComponent);
