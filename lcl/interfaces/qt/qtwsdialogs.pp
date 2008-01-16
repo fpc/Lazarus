@@ -164,7 +164,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
-  if ACommonDialog.Handle <> 0 then
+  if ACommonDialog.HandleAllocated then
     TQtDialog(ACommonDialog.Handle).Release;
 end;
 
