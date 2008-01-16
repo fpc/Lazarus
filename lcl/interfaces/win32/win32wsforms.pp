@@ -269,6 +269,8 @@ var
 begin
   BorderStyle := GetDesigningBorderStyle(AForm);
   Flags := BorderStyleToWin32Flags(BorderStyle);
+  if AForm.Parent <> nil then
+    Flags := (Flags or WS_CHILD) and not WS_POPUP;
   FlagsEx := BorderStyleToWin32FlagsEx(BorderStyle);
   if (AForm.FormStyle in fsAllStayOnTop) and 
       not (csDesigning in AForm.ComponentState) then
