@@ -86,7 +86,6 @@ end;
 ------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
 begin
-  Focusmessages := True;
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
   FMainForm := nil;

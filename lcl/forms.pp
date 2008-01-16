@@ -402,7 +402,6 @@ type
     function IsForm : Boolean;
     function IsHelpFileStored: boolean;
     function IsIconStored: Boolean;
-    procedure ClientWndProc(var Message: TLMessage);
     procedure CloseModal;
     procedure IconChanged(Sender: TObject);
     function IsKeyPreviewStored: boolean;
@@ -1393,7 +1392,6 @@ uses
   WSForms; // Widgetset uses circle is allowed
 
 var
-  FocusMessages: Boolean=True;
   FocusCount: Integer=0;
   HandlingException: boolean=False;
   HaltingProgram: boolean=False;

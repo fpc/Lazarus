@@ -23,38 +23,6 @@
 { TCustomForm }
 
 {------------------------------------------------------------------------------
-       TCustomForm ClientWndProc
-------------------------------------------------------------------------------}
-Procedure TCustomForm.ClientWndProc(var Message: TLMessage);
-
-  procedure CallDefault;
-    begin
-      {
-      with Message do
-      Result := CallWindowProc(FDefClientProc, ClientHandle, Msg, wParam, lParam);
-     }
-    end;
-
-begin
-  with Message do
-    case Msg of
-      LM_NCHITTEST:
-        begin
-          CallDefault;
-          if Result = HTCLIENT then Result := HTTRANSPARENT;
-        end;
-      LM_ERASEBKGND:
-        begin
-          // Not sure if this will work real good.
-          //Canvas.FillRect(ClientRect);
-          Result := 1;
-        end;
-    else
-      CallDefault;
-    end;
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomForm.CloseModal;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.CloseModal;
@@ -132,14 +100,15 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.FocusControl(WinControl : TWinControl);
+procedure TCustomForm.FocusControl(WinControl : TWinControl);
 var
   WasActive: Boolean;
 begin
   WasActive := FActive;
   SetActiveControl(WinControl);
-  if not WasActive then SetFocus;
-End;
+  if not WasActive then
+    SetFocus;
+end;
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
@@ -293,7 +262,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetFocus
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetFocus;
+procedure TCustomForm.SetFocus;
 
   procedure RaiseCannotFocus;
   var
@@ -307,7 +276,7 @@ Procedure TCustomForm.SetFocus;
     {$ENDIF}
   end;
 
-Begin
+begin
   {$IFDEF VerboseFocus}
   DebugLn('TCustomForm.SetFocus ',Name,':',ClassName);
   {$ENDIF}
@@ -437,8 +406,8 @@ begin
   DebugLn('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',dbgs(Message.Active));
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
-    SetActive(Message.Active {<> WA_INACTIVE});
-  FActive:=true;
+    SetActive(Message.Active);
+
   Activate;
   if Application<>nil then Application.Activate;
 end;
@@ -675,13 +644,10 @@ end;
 procedure TCustomForm.SetActive(AValue: Boolean);
 begin
   FActive := AValue;
-  //if FActiveOleControl <> nil then
-  //  FActiveOleControl.Perform(CM_DOCWINDOWACTIVATE, WParam(Ord(Value)), 0);
   if FActive then
   begin
     if (ActiveControl = nil) and not (csDesigning in ComponentState) then
       ActiveControl := FindDefaultForActiveControl;
-    //MergeMenu(True);
     SetWindowFocus;
   end;
 end;
@@ -898,8 +864,6 @@ begin
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
       begin
-        if not FocusMessages then
-          Exit;
         if (Msg = LM_SETFOCUS) and not (csDesigning in ComponentState) then
         begin
           //DebugLn(['TCustomForm.WndProc ',DbgSName(Self),' FActiveControl=',DbgSName(FActiveControl)]);
@@ -1280,8 +1244,8 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetActiveControl
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
-Begin
+procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
+begin
   if FActiveControl <> AWinControl then
   begin
     if (AWinControl<>nil) then begin

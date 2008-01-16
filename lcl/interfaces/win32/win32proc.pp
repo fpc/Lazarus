@@ -603,16 +603,16 @@ end;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
+function DeliverMessage(const Target: TObject; var Message: TLMessage): Integer;
 begin
-  If Target = Nil Then
+  if Target = nil Then
   begin
     DebugLn('[DeliverMessage (Target: TObject)] Nil');
     Exit;
   end;
-  If Target Is TControl Then
+  if Target is TControl Then
     TControl(Target).WindowProc(Message)
-  Else
+  else
     Target.Dispatch(Message);
   Result := Message.Result;
 end;

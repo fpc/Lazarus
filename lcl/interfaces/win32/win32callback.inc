@@ -45,7 +45,7 @@ const
 
   Enumerates and removes properties for the target window
  -----------------------------------------------------------------------------}
-Function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
+function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
@@ -1800,13 +1800,15 @@ begin
     end;
     WM_NCHITTEST:
     begin
-      if (lWinControl <> nil) then begin
+      if (lWinControl <> nil) then
+      begin
         if (lWinControl.FCompStyle = csHintWindow) then
         begin
           LMessage.Result := HTTRANSPARENT;
           WinProcess := false;
         end
-        else if (lWinControl is TCustomGroupBox) then
+        else
+        if (lWinControl is TCustomGroupBox) then
         begin
           LMessage.Result := HTCLIENT;
           WinProcess := false;
@@ -1999,7 +2001,7 @@ begin
         MouseDownFocusWindow := Window;
       end;
       LMessage.Msg := LM_SETFOCUS;
-      if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
+      if (lWinControl <> nil) and (lWinControl is TCustomEdit) then
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
       // RadioButton functionality
       if (lWinControl <> nil) and (lWinControl is TRadioButton) then
