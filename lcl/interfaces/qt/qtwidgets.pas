@@ -1094,6 +1094,29 @@ var
   LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
 {$ENDIF}
 
+{$ifndef USE_QT_4_3}
+// not exists before qt 4.3
+function QTabBar_tabAt(handle: QTabBarH; pos: PQtPoint): Integer;
+var
+  i: integer;
+  TabRect: TRect;
+  P: TPoint;
+begin
+  Result := -1;
+  P.x := pos^.x;
+  P.y := pos^.y;
+  for i := 0 to QTabBar_count(Handle) - 1 do
+  begin
+    QTabBar_tabRect(handle, @TabRect, i);
+    if PtInRect(TabRect, p) then
+    begin
+      Result := i;
+      break;
+    end;
+  end;
+end;
+{$endif}
+
 { TQtWidget }
 
 {------------------------------------------------------------------------------
