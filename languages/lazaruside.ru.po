@@ -69,6 +69,10 @@ msgstr "%s - абстрактный класс, он имеет %s абстра�
 msgid "%s project directory"
 msgstr "Каталог проекта %s"
 
+#: lazarusidestrconsts:lisunitinpackage
+msgid "%s unit %s in package %s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s - некорректное имя проекта.%s Выберите другое (напр., project1.lpi)"
@@ -241,11 +245,7 @@ msgstr "&Переход по закладке"
 msgid "&Help"
 msgstr "&Справка"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "&Multiline"
-msgstr "&Многострочный текст"
-
-#: lazarusidestrconsts:lisfindfilemultiline
+#: lazarusidestrconsts:lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr "Многострочный &шаблон"
 
@@ -460,6 +460,10 @@ msgstr "Accept"
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
 msgstr "Благодарности"
+
+#: lazarusidestrconsts:lislazbuildaboaction
+msgid "Action"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -1045,6 +1049,10 @@ msgstr "Обзор (поиск компилятора) (%s)"
 msgid "Build"
 msgstr "Собрать"
 
+#: lazarusidestrconsts:lislazbuildqbobuildall
+msgid "Build All"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Собрать CodeTools"
@@ -1061,9 +1069,21 @@ msgstr "Собрать файл"
 msgid "Build IDE"
 msgstr "Собрать IDE"
 
+#: lazarusidestrconsts:lislazbuildqbobuildidewpackages
+msgid "Build IDE with Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildqbobuildidewithoutpackages
+msgid "Build IDE without Packages"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Собрать JITForm"
+
+#: lazarusidestrconsts:lislazbuildqbobuildlcl
+msgid "Build LCL"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -1140,6 +1160,10 @@ msgstr "Стек вызовов"
 #: lazarusidestrconsts:liscocallon
 msgid "Call on:"
 msgstr "Вызов:"
+
+#: lazarusidestrconsts:liscallingtocreatemakefilefromfailed
+msgid "Calling %s to create Makefile from %s failed."
+msgstr ""
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -1369,6 +1393,10 @@ msgstr "Выберите один из этих элементов для соз
 msgid "Choose one of these items to create a new Project"
 msgstr "Выберите один из этих элементов для создания нового Проекта"
 
+#: lazarusidestrconsts:lislazbuildabochooseoutputdir
+msgid "Choose output directory of the IDE executable "
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Выберите файл исходного кода программы (*.pp,*.pas,*.lpr)"
@@ -1424,6 +1452,10 @@ msgstr "Очистить каталог"
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистить каталог исходного кода Lazarus"
+
+#: lazarusidestrconsts:lislazbuildqbocleanupbuildall
+msgid "Clean Up + Build all"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
@@ -1836,6 +1868,10 @@ msgstr "Подтвердить изменения"
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
 msgstr "Подтвердите удаление зависимости"
+
+#: lazarusidestrconsts:lisconfirmnewpackagesetfortheide
+msgid "Confirm new package set for the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -2673,6 +2709,10 @@ msgstr "Изменить параметры компиляции пакета"
 msgid "Edit Tool"
 msgstr "Параметры пользовательского средства"
 
+#: lazarusidestrconsts:lispeeditvirtualunit
+msgid "Edit Virtual Unit"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
 msgstr "Править шаблоны кода"
@@ -2841,6 +2881,10 @@ msgstr "Ошибка в регулярном выражении"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Ошибка инициализации программы %s%s%s%s%sОшибка: %s"
 
+#: lazarusidestrconsts:liserrorloadingfile
+msgid "Error loading file"
+msgstr ""
+
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
 msgstr "Ошибка загрузки XML"
@@ -2893,7 +2937,7 @@ msgstr "Ошибка записи %s%s%s%s%s"
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "Ошибка записи проекта в файл %s%s%s%s%s"
 
-#: lazarusidestrconsts:lispkgmangerrorwritingfile
+#: lazarusidestrconsts:lislazbuilderrorwritingfile
 msgid "Error writing file"
 msgstr "Ошибка записи файла"
 
@@ -3364,6 +3408,10 @@ msgstr "Найти текст под курсором"
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
 msgstr "Финский"
+
+#: lazarusidestrconsts:lispefixfilescase
+msgid "Fix Files Case"
+msgstr ""
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
@@ -4997,6 +5045,10 @@ msgstr "Загрузка/сохранение"
 msgid "Loaded Packages:"
 msgstr "Загруженные пакеты:"
 
+#: lazarusidestrconsts:lisloadingfailed
+msgid "Loading %s failed."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr "Загрузка пакета %s заменит пакет %s%sиз файла %s.%sСтарый пакет изменён. Сохранить старый пакет %s?"
@@ -5181,6 +5233,10 @@ msgstr "Отсутствующие события"
 msgid "Missing Packages"
 msgstr "Отсутствующие пакеты"
 
+#: lazarusidestrconsts:lismissingidentifiers
+msgid "Missing identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:lisccomissingunit
 msgid "Missing unit"
 msgstr "Модуль отсутствует"
@@ -5328,6 +5384,14 @@ msgstr "Сместить редактор вправо"
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "Переместить в унаследованный"
+
+#: lazarusidestrconsts:lispemovefiledown
+msgid "Move file down"
+msgstr ""
+
+#: lazarusidestrconsts:lispemovefileup
+msgid "Move file up"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -5789,6 +5853,10 @@ msgstr "Открыть или загрузить параметры компил
 msgid "Open package"
 msgstr "Открыть пакет"
 
+#: lazarusidestrconsts:lisopenpackage2
+msgid "Open package %s"
+msgstr ""
+
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
 msgstr "Открыть файл пакета"
@@ -6112,6 +6180,10 @@ msgstr "Родительский элемент не может содержат
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
 msgstr "Обработка"
+
+#: lazarusidestrconsts:lislazbuildabopart
+msgid "Part"
+msgstr ""
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -7845,6 +7917,10 @@ msgstr "Извините, пока не реализовано"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
 
+#: lazarusidestrconsts:lispesortfiles
+msgid "Sort files"
+msgstr ""
+
 #: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
 msgstr "Сортировка выбранного"
@@ -8108,6 +8184,10 @@ msgstr "ТАБ в пробелы"
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
 msgstr "Преобразовать ТАБ в пробелы в выделенном"
+
+#: lazarusidestrconsts:lislazbuildqboapplcltarget
+msgid "Target"
+msgstr ""
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
@@ -8917,6 +8997,10 @@ msgstr "Исходный код используется только для к�
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "Это выражение не может быть извлечено.%sВыберите какой-то код, чтобы извлечь новую процедуру/метод."
 
+#: lazarusidestrconsts:listhiswillhappencontinue
+msgid "This will happen:%s%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
 msgstr "Тред"
@@ -9269,6 +9353,10 @@ msgstr "Невозможно загрузить старый файл ресур
 msgid "Unable to load package"
 msgstr "Невозможно загрузить пакет"
 
+#: lazarusidestrconsts:lisunabletoloadpackage
+msgid "Unable to load package %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Невозможно загрузить класс компонента %s%s%s, так как он зависит сам от себя."
@@ -9400,6 +9488,10 @@ msgstr "Невозможно записать файл %s%s%s%sОшибка: %s"
 #: lazarusidestrconsts:lisunabletowritefilename
 msgid "Unable to write file %s%s%s."
 msgstr "Невозможно записать файл %s%s%s."
+
+#: lazarusidestrconsts:lislazbuildunabletowritefile
+msgid "Unable to write file \"%s\":%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
@@ -10185,6 +10277,10 @@ msgstr "рассчитать/изменить"
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "файл, куда записывается вывод отладки. Если он не указан, вывод отладки записывается в консоль."
 
+#: lazarusidestrconsts:lisfpcmakefailed
+msgid "fpcmake failed"
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr "Программа FreePascal, использующая TCustomApplication для лёгкой проверки параметров командной строки, обработки исключений и т. д. Программный файл автоматически поддерживается lazarus."
@@ -10281,6 +10377,10 @@ msgstr "изменён"
 msgid "multiple compiler configs found: "
 msgstr "найдено несколько файлов конфигурации компилятора: "
 
+#: lazarusidestrconsts:lisnew
+msgid "new"
+msgstr ""
+
 #: lazarusidestrconsts:lisccohasnewline
 msgid "new line symbols"
 msgstr "символы конца строки"
@@ -10321,6 +10421,10 @@ msgstr "Ничего не выбрано"
 msgid "object path"
 msgstr "путь объекта"
 
+#: lazarusidestrconsts:lisold
+msgid "old"
+msgstr ""
+
 #: lazarusidestrconsts:lisor
 msgid "or"
 msgstr "или"
@@ -10360,6 +10464,10 @@ msgstr "только чтение"
 #: lazarusidestrconsts:lisccorelunitpathfoundincfg
 msgid "relative unit path found in fpc cfg: %s"
 msgstr "fpc.cfg содержит относительный путь к модулям: %s"
+
+#: lazarusidestrconsts:lisremove
+msgid "remove"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"

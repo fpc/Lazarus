@@ -728,8 +728,8 @@ begin
     end;
   except
     on E: Exception do begin
-      Result:=MessageDlg('Error writing file',
-        'Unable to write file "'+Filename+'":'#13
+      Result:=MessageDlg(lisLazBuildErrorWritingFile,
+        Format(lisLazBuildUnableToWriteFile, [Filename, #13])
         +E.Message,
         mtError,[mbCancel,mbAbort],0);
       exit;
@@ -770,12 +770,12 @@ begin
   with ItemListHeader.Sections.Add do
   begin
     Width := ItemListHeader.Width - 90 - 3 * ButtonSize;
-    Text := 'Part';
+    Text := lisLazBuildABOPart;
   end;
   with ItemListHeader.Sections.Add do
   begin
     Width := 90;
-    Text := 'Action';
+    Text := lisLazBuildABOAction;
   end;
 
   FOptions := TBuildLazarusOptions.Create;
@@ -785,6 +785,17 @@ begin
   QuickLCLInterfaceComboLabel.Caption := lisLazBuildLCLInterface;
   QuickBuildOptionsRadioGroup.Caption := lisLazBuildBuildOptions;
   QuickBuildOptionsPage.Caption := lisLazBuildQuickBuildOptions;
+  with QuickBuildOptionsRadioGroup do
+  begin
+    Items[0]:=lisLazBuildQBOBuildLCL;
+    Items[1]:=lisLazBuildQBOBuildIDEwPackages;
+    Items[2]:=lisLazBuildQBOBuildIDEwithoutPackages;
+    Items[3]:=lisLazBuildQBOBuildAll;
+    Items[4]:=lisLazBuildQBOCleanUpBuildAll;
+    Items[5]:=lisLazBuildQBOBuildOther;
+  end;
+  AppLCLLabel.Caption:=lisLazBuildQBOAppLCLTarget;
+
   AdvancedBuildOptionsPage.Caption := lisLazBuildAdvancedBuildOptions;
 
   for LCLInterface := Low(TLCLPlatform) to High(TLCLPlatform) do
@@ -938,8 +949,7 @@ begin
   DirDialog:=TSelectDirectoryDialog.Create(nil);
   try
     DirDialog.Options:=DirDialog.Options+[ofPathMustExist];
-    DirDialog.Title:='Choose output directory of the IDE executable '
-                    +'(lazarus'+GetExecutableExt(Options.TargetOS)+')';
+    DirDialog.Title:=lisLazBuildABOChooseOutputDir+'(lazarus'+GetExecutableExt(Options.TargetOS)+')';
     if DirDialog.Execute then begin
       AFilename:=CleanAndExpandDirectory(DirDialog.Filename);
       TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);

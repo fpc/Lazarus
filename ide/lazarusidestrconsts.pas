@@ -2066,8 +2066,20 @@ resourcestring
   lisLazBuildBuild = 'Build';
   lisLazBuildCleanBuild = 'Clean+Build';
   lisLazBuildBuildOptions ='Build Options';
+  lisLazBuildErrorWritingFile = 'Error writing file';
+  lisLazBuildUnableToWriteFile = 'Unable to write file "%s":%s';
   lisLazBuildQuickBuildOptions = 'Quick Build Options';
+  lisLazBuildQBOBuildLCL = 'Build LCL';
+  lisLazBuildQBOBuildIDEwPackages = 'Build IDE with Packages';
+  lisLazBuildQBOBuildIDEwithoutPackages = 'Build IDE without Packages';
+  lisLazBuildQBOBuildAll = 'Build All';
+  lisLazBuildQBOCleanUpBuildAll = 'Clean Up + Build all';
+  lisLazBuildQBOBuildOther = 'Other';
+  lisLazBuildQBOAppLCLTarget = 'Target';
   lisLazBuildAdvancedBuildOptions = 'Advanced Build Options';
+  lisLazBuildABOPart = 'Part';
+  lisLazBuildABOAction = 'Action';
+  lisLazBuildABOChooseOutputDir = 'Choose output directory of the IDE executable ';
   
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';

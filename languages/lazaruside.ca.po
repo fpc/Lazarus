@@ -69,6 +69,10 @@ msgstr ""
 msgid "%s project directory"
 msgstr "directori del projecte %s"
 
+#: lazarusidestrconsts:lisunitinpackage
+msgid "%s unit %s in package %s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s no és un nom de projecte vàlid. %s Si us plau, escolliu-ne un altre (p.e. project1.lpi)"
@@ -241,11 +245,7 @@ msgstr "&Vés al marcador"
 msgid "&Help"
 msgstr "A&juda"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "&Multiline"
-msgstr ""
-
-#: lazarusidestrconsts:lisfindfilemultiline
+#: lazarusidestrconsts:lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr ""
 
@@ -459,6 +459,10 @@ msgstr "Accepta"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildaboaction
+msgid "Action"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
@@ -1045,6 +1049,10 @@ msgstr "Navega pel Compilador (%s)"
 msgid "Build"
 msgstr "Munta"
 
+#: lazarusidestrconsts:lislazbuildqbobuildall
+msgid "Build All"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Munta les eines del codi"
@@ -1061,9 +1069,21 @@ msgstr "Munta el fitxer"
 msgid "Build IDE"
 msgstr "Munta l'IDE"
 
+#: lazarusidestrconsts:lislazbuildqbobuildidewpackages
+msgid "Build IDE with Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildqbobuildidewithoutpackages
+msgid "Build IDE without Packages"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Munta la forma JIT"
+
+#: lazarusidestrconsts:lislazbuildqbobuildlcl
+msgid "Build LCL"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -1140,6 +1160,10 @@ msgstr "Pila de les Crides"
 #: lazarusidestrconsts:liscocallon
 msgid "Call on:"
 msgstr "Marqueu:"
+
+#: lazarusidestrconsts:liscallingtocreatemakefilefromfailed
+msgid "Calling %s to create Makefile from %s failed."
+msgstr ""
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -1369,6 +1393,10 @@ msgstr "Tria un dels següents elements per crear un nou Paquet"
 msgid "Choose one of these items to create a new Project"
 msgstr "Tra un dels següents elements per crear un nou Projecte"
 
+#: lazarusidestrconsts:lislazbuildabochooseoutputdir
+msgid "Choose output directory of the IDE executable "
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Tria el codi font del programa (*.pp, *.pas, *.lpr)"
@@ -1424,6 +1452,10 @@ msgstr "Neteja el directori"
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Neteja el codi del Lazarus"
+
+#: lazarusidestrconsts:lislazbuildqbocleanupbuildall
+msgid "Clean Up + Build all"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
@@ -1836,6 +1868,10 @@ msgstr "Confirma els canvis"
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
 msgstr "Confirma l'eliminació de les dependències"
+
+#: lazarusidestrconsts:lisconfirmnewpackagesetfortheide
+msgid "Confirm new package set for the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -2673,6 +2709,10 @@ msgstr "Edita les opcions per a compilar el paquet"
 msgid "Edit Tool"
 msgstr "Edita l'eina"
 
+#: lazarusidestrconsts:lispeeditvirtualunit
+msgid "Edit Virtual Unit"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
 msgstr "Edita la plantilla del codi"
@@ -2841,6 +2881,10 @@ msgstr "Hi ha un error a l'expressió regular"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "S'ha produït un error mentre s'inicialitzava el programa%s%s%s%s%sError: %s"
 
+#: lazarusidestrconsts:liserrorloadingfile
+msgid "Error loading file"
+msgstr ""
+
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
 msgstr "Error carregant xml"
@@ -2893,7 +2937,7 @@ msgstr "S'ha produït un error mentre s'escrivia %s%s%s%s%s"
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "S'ha produït un error mentre s'escrivia l'informació del projecte al fitxer %s%s%s%s%s"
 
-#: lazarusidestrconsts:lispkgmangerrorwritingfile
+#: lazarusidestrconsts:lislazbuilderrorwritingfile
 msgid "Error writing file"
 msgstr "S'ha produït un error mentre s'escrivia el fitxer"
 
@@ -3364,6 +3408,10 @@ msgstr "Cerca el text al cursor"
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
 msgstr "Finlandès"
+
+#: lazarusidestrconsts:lispefixfilescase
+msgid "Fix Files Case"
+msgstr ""
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
@@ -4997,6 +5045,10 @@ msgstr "Carrega/Desa"
 msgid "Loaded Packages:"
 msgstr "Paquets carregats:"
 
+#: lazarusidestrconsts:lisloadingfailed
+msgid "Loading %s failed."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr "Carrega el paquet %s reemplaçarà el paquet %s%sdel fitxer %s.%sEl paquet antic està modificat.%s%sVoleu desar el paquet antic %s?"
@@ -5181,6 +5233,10 @@ msgstr ""
 msgid "Missing Packages"
 msgstr "Paquets que falten"
 
+#: lazarusidestrconsts:lismissingidentifiers
+msgid "Missing identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:lisccomissingunit
 msgid "Missing unit"
 msgstr ""
@@ -5327,6 +5383,14 @@ msgstr "Mou l'editor a la dreta"
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lispemovefiledown
+msgid "Move file down"
+msgstr ""
+
+#: lazarusidestrconsts:lispemovefileup
+msgid "Move file up"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
@@ -5789,6 +5853,10 @@ msgstr "Obre o Carrega Opcions del Compilador"
 msgid "Open package"
 msgstr "Obre el paquet"
 
+#: lazarusidestrconsts:lisopenpackage2
+msgid "Open package %s"
+msgstr ""
+
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
 msgstr ""
@@ -6112,6 +6180,10 @@ msgstr "El node pare no pot contenir nodes fills"
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
 msgstr "Analització"
+
+#: lazarusidestrconsts:lislazbuildabopart
+msgid "Part"
+msgstr ""
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -7845,6 +7917,10 @@ msgstr "Ho sento, encara no està implementat"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Ho sento, aquest tipus encara no està implementat"
 
+#: lazarusidestrconsts:lispesortfiles
+msgid "Sort files"
+msgstr ""
+
 #: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
 msgstr "Ordena la selecció"
@@ -8108,6 +8184,10 @@ msgstr "Tabuladors a espais"
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
 msgstr "Tabuladors a espais en la selecció"
+
+#: lazarusidestrconsts:lislazbuildqboapplcltarget
+msgid "Target"
+msgstr ""
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
@@ -8917,6 +8997,10 @@ msgstr "Aquesta font només s'utilitza per compilar i instal·lar el paquet."
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr "No s'ha pogut extraure aquesta declaració.%sSi us plau, seleccioneu codi per extreure'n un nou procediment/mètode."
 
+#: lazarusidestrconsts:listhiswillhappencontinue
+msgid "This will happen:%s%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
 msgstr ""
@@ -9269,6 +9353,10 @@ msgstr "No es pot carregar fitxer del recurs antic.%sEl fitxer del recurs és el
 msgid "Unable to load package"
 msgstr "No es pot carregar el paquet"
 
+#: lazarusidestrconsts:lisunabletoloadpackage
+msgid "Unable to load package %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr ""
@@ -9400,6 +9488,10 @@ msgstr "No es pot escriure el fitxer %s%s%s%sError: %s"
 #: lazarusidestrconsts:lisunabletowritefilename
 msgid "Unable to write file %s%s%s."
 msgstr "No es pot escriure el fitxer %s%s%s."
+
+#: lazarusidestrconsts:lislazbuildunabletowritefile
+msgid "Unable to write file \"%s\":%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
@@ -10185,6 +10277,10 @@ msgstr "avalua/modifica"
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr ""
 
+#: lazarusidestrconsts:lisfpcmakefailed
+msgid "fpcmake failed"
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr ""
@@ -10281,6 +10377,10 @@ msgstr "modificat"
 msgid "multiple compiler configs found: "
 msgstr ""
 
+#: lazarusidestrconsts:lisnew
+msgid "new"
+msgstr ""
+
 #: lazarusidestrconsts:lisccohasnewline
 msgid "new line symbols"
 msgstr ""
@@ -10321,6 +10421,10 @@ msgstr "cap de seleccionat"
 msgid "object path"
 msgstr "trajectòria dels objectes"
 
+#: lazarusidestrconsts:lisold
+msgid "old"
+msgstr ""
+
 #: lazarusidestrconsts:lisor
 msgid "or"
 msgstr ""
@@ -10359,6 +10463,10 @@ msgstr "només de lectura"
 
 #: lazarusidestrconsts:lisccorelunitpathfoundincfg
 msgid "relative unit path found in fpc cfg: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisremove
+msgid "remove"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
