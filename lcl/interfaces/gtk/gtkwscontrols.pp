@@ -70,10 +70,13 @@ type
   TGtkWSWinControl = class(TWSWinControl)
   private
   protected
+    class procedure SetCCCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
   public
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    
     class procedure AddControl(const AControl: TControl); override;
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
@@ -108,9 +111,7 @@ type
 
   TGtkWSCustomControl = class(TWSCustomControl)
   protected
-    class procedure SetCCCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
   end;
 
   { TGtkWSImageList }
@@ -316,6 +317,17 @@ begin
     gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[ABorderStyle]);
 end;
 
+class procedure TGtkWSWinControl.SetCCCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  with TGTKWidgetSet(Widgetset) do
+  begin
+    SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+  end;
+end;
+
 class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;
   const AComponent: TComponent);
 begin
@@ -336,6 +348,37 @@ begin
   GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_DROPFILES, AGTKObject, AComponent);
+end;
+
+class function TGtkWSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := TGtkWidgetset(Widgetset).CreateAPIWidget(AWinControl);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  Result := THandle(PtrUInt(Widget));
+  if Result = 0 then Exit;
+
+  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+  SetCCCallbacks(Widget, WidgetInfo);
 end;
 
 class procedure TGtkWSWinControl.SetChildZPosition(
@@ -888,50 +931,6 @@ begin
   );
 end;
 
-{ TGtkWSCustomControl }
-
-class procedure TGtkWSCustomControl.SetCCCallbacks(const AWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
-begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
-  with TGTKWidgetSet(Widgetset) do
-  begin
-    SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
-  end;
-end;
-
-class function TGtkWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Widget: PGtkWidget;
-  WidgetInfo: PWidgetInfo;
-  Allocation: TGTKAllocation;
-begin
-  Widget := TGtkWidgetset(Widgetset).CreateAPIWidget(AWinControl);
-  {$IFDEF DebugLCLComponents}
-  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
-  {$ENDIF}
-
-  Result := THandle(PtrUInt(Widget));
-  if Result = 0 then Exit;
-
-  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
-  WidgetInfo^.Style := AParams.Style;
-  WidgetInfo^.ExStyle := AParams.ExStyle;
-  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
-
-  // set allocation
-  Allocation.X := AParams.X;
-  Allocation.Y := AParams.Y;
-  Allocation.Width := AParams.Width;
-  Allocation.Height := AParams.Height;
-  gtk_widget_size_allocate(Widget, @Allocation);
-  
-  Set_RC_Name(AWinControl, Widget);
-  SetCCCallbacks(Widget, WidgetInfo);
-end;
-
 { TGtkWSDragImageList }
 
 class function TGtkWSDragImageList.BeginDrag(
@@ -996,7 +995,7 @@ initialization
 //  RegisterWSComponent(TControl, TGtkWSControl);
   RegisterWSComponent(TWinControl, TGtkWSWinControl, TGtkPrivateWidget);
 //  RegisterWSComponent(TGraphicControl, TGtkWSGraphicControl);
-  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
+//  RegisterWSComponent(TCustomControl, TGtkWSCustomControl);
 //  RegisterWSComponent(TImageList, TGtkWSImageList);
 ////////////////////////////////////////////////////
 end.
