@@ -1084,32 +1084,32 @@ begin
   case Application.ApplicationType of
   { Under Desktop or Handheld mode we get an application which
     looks similar to a desktop one, with sizable windows }
-  atDesktop,atHandheld:
-    begin
-      case Style of
-      bsSizeable, bsSizeToolWin:
-        Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
-      bsSingle, bsToolWindow:
-        Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
-      bsDialog:
-        Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-      bsNone:
-        Result := Result or WS_POPUP;
+    atDesktop, atHandheld:
+      begin
+        case Style of
+        bsSizeable, bsSizeToolWin:
+          Result := Result or (WS_OVERLAPPED or WS_THICKFRAME or WS_CAPTION);
+        bsSingle, bsToolWindow:
+          Result := Result or (WS_OVERLAPPED or WS_BORDER or WS_CAPTION);
+        bsDialog:
+          Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
+        bsNone:
+          Result := Result or WS_POPUP;
+        end;
       end;
-    end;
-  { Under PDA or Smartphone modes most windows are enlarged to fit the screen
-    Dialogs and borderless windows are exceptions }
-  atPDA,atSmartphone,atDefault:
-    begin
-      case Style of
-      bsDialog:
-        Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
-      bsNone:
-        Result := Result or WS_POPUP;
-      else
-        Result := WS_VISIBLE;
+    { Under PDA or Smartphone modes most windows are enlarged to fit the screen
+      Dialogs and borderless windows are exceptions }
+    atPDA, atSmartphone, atDefault:
+      begin
+        case Style of
+        bsDialog:
+          Result := Result or (WS_POPUP or WS_BORDER or WS_CAPTION);
+        bsNone:
+          Result := Result or WS_POPUP;
+        else
+          Result := WS_VISIBLE;
+        end;
       end;
-    end;
   end;
 end;
 
