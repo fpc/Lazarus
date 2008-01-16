@@ -164,7 +164,8 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
-  TQtDialog(ACommonDialog.Handle).Release;
+  if ACommonDialog.Handle <> 0 then
+    TQtDialog(ACommonDialog.Handle).Release;
 end;
 
 class procedure TQtWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
