@@ -92,8 +92,6 @@ type
 
   TWinCEWidgetSet = class(TWidgetSet)
   private
-    AppTerminated: Boolean;
-
     // The parent of all windows, represents the button of the taskbar
     // This window is also the owner of the clipboard.
     // Assoc. windowproc also acts as handler for popup menus
@@ -118,8 +116,6 @@ type
     FWaitPipeHandlers: PPipeEventInfo;
     
     FOnAsyncSocketMsg: TSocketEvent;
-    
-    FThemesActive: boolean;
 
     { event handler helper functions }
     procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
@@ -172,7 +168,6 @@ type
 
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
-    property ThemesActive: boolean read FThemesActive;//just for not removing all those refrences
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
   end;
 

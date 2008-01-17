@@ -299,12 +299,6 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   // return window handle
   Result := Params.Window;
-  if TWinCEWidgetSet(WidgetSet).ThemesActive then
-  with Params.WindowInfo^ do
-  begin
-    needParentPaint := true;
-    isTabPage := true;
-  end;
 end;
 
 class procedure TWinCEWSCustomPage.DestroyHandle(const AWinControl: TWinControl);

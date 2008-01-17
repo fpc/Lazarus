@@ -62,6 +62,10 @@ const
   
   { missing listview styles}
   LVS_EX_LABELTIP         = $00004000;
+  
+  { missing messages }
+
+  WM_HIBERNATE = $03FF;
 
 
 
@@ -198,7 +202,7 @@ end;
 
 {$goto on} // TODO: remove goto
 
-function DrawState(dc:HDC ; hbr : HBRUSH ; func: DRAWSTATEPROC ; lp:LPARAM; wp:WPARAM;x,y,cx,cy:integer;flags:UINT) : boolean;
+function DrawState(dc: HDC; hbr: HBRUSH; func: DRAWSTATEPROC; lp:LPARAM; wp:WPARAM; x, y, cx, cy: integer; flags: UINT): boolean;
 label
   cleanup;
 var
@@ -233,9 +237,9 @@ begin
   if (cx=0) or (cy=0) then
   begin
     case opcode of
-      DST_TEXT,DST_PREFIXTEXT:
+      DST_TEXT, DST_PREFIXTEXT:
         begin
-          if not GetTextExtentPoint32(dc, pwidechar(lp), len, @s) 
+          if not GetTextExtentPoint32(dc, PWideChar(lp), len, @s)
           then Exit;
         end;
 

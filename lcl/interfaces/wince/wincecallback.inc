@@ -291,7 +291,6 @@ Var
     DCIndex: integer;
     parLeft, parTop: integer;
     useDoubleBuffer: boolean;
-    isNotebook: boolean;
     isNativeControl: boolean;
     needParentPaint: boolean;
     lNotebookFound: boolean;
@@ -306,8 +305,6 @@ Var
 
     // create a paint message
     GetClassName(Window, @winClassName, 20);
-    isNotebook := TWinCEWidgetSet(WidgetSet).ThemesActive and
-      CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
     isNativeControl := not CompareMem(@winClassName, @ClsName, High(ClsName)+1);
     ParentPaintWindow := 0;
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
@@ -334,8 +331,7 @@ Var
       PushEraseBkgndCommand(ecDiscard);
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered
-      or TWinCEWidgetSet(WidgetSet).ThemesActive);
+    useDoubleBuffer := (WParam = 0) and (lWinControl.DoubleBuffered);
 {$ifdef MSG_DEBUG}
     if useDoubleBuffer and (DoubleBufferDC <> 0) then
     begin
@@ -423,7 +419,7 @@ Var
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      if not needParentPaint and not isNotebook then
+      if not needParentPaint then
       begin
         // send through message to allow message override
         //lWinControl.EraseBackground(PaintMsg.DC);
@@ -988,7 +984,7 @@ begin
   Assert(False, 'Trace:WindowProc - Checking Proc');
 //  Assert(False, Format('Trace:WindowProc - Window Value: $%S-%d; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), Window, WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
 
-  Case Msg Of
+  case Msg Of
     WM_NULL:
     begin
       CheckSynchronize;
@@ -996,7 +992,7 @@ begin
     end;
     WM_ACTIVATE:
     begin
-      Case Lo(WParam) Of
+      case Lo(WParam) Of
         WA_ACTIVE, WA_CLICKACTIVE:
         begin
           LMessage.Msg := LM_ACTIVATE
@@ -1004,24 +1000,7 @@ begin
         WA_INACTIVE:
         begin
           LMessage.Msg := LM_DEACTIVATE;
-        end;
-      end;
-    end;
-    WM_ACTIVATEAPP:
-    begin
-      if Window = TWinCEWidgetSet(WidgetSet).AppHandle then
-      begin
-        if WParam <> 0 then
-        begin
-          Windows.SetWindowPos(TWinCEWidgetSet(WidgetSet).AppHandle, HWND_TOP,
-            0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
-        end;
-        
-        // activate/deactivate main window
-        if (Application <> nil) and (Application.MainForm <> nil) and
-            Application.MainForm.HandleAllocated then
-        begin
-          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
+          // Wince => maybe cast to WM_CLOSE?
         end;
       end;
     end;
@@ -1278,7 +1257,14 @@ begin
           end;
           WinProcess := false;
         end;
-      end else begin
+      end else
+      if (lWinControl is TCustomBitBtn) and (PDrawItemStruct(LParam)^.ctlType = ODT_BUTTON) then
+      begin
+        DrawBitBtnImage(TCustomBitBtn(lWinControl), PDrawItemStruct(LParam));
+        WinProcess := False;
+      end
+      else
+      begin
         with TLMDrawItems(LMessage) do
         begin
           Msg := LM_DRAWITEM;
@@ -1300,12 +1286,6 @@ begin
 
       If (lWinControl is TCustomFloatSpinEdit) then
         EnableFloatSpinEditBuddy(Window, WParam<>0);
-      // ugly hack to give bitbtns a nice look
-      // When no theming active, the internal image needs to be
-      // recreated when the enabled state is changed
-///      if not TWinCEWidgetSet(WidgetSet).ThemesActive
-///      and (lWinControl is TCustomBitBtn)
-///      then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     end;
     WM_ERASEBKGND:
     begin
