@@ -1435,12 +1435,10 @@ begin
   inherited CreateParams(Params);
   with Params do
   begin
-    if (Parent = nil) {and (ParentWindow = 0)} then
+    if (Parent = nil) then
     begin
-//    WndParent := Application.Handle;
-      { TODO : No application handle }
       Style := Style and not Cardinal(WS_GROUP or WS_TABSTOP);
-      if Parent=nil then
+      if Parent = nil then
         Style := Style and not Cardinal(WS_CHILD);
     end;
   end;
@@ -1450,34 +1448,44 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm Method Close
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.Close;
+procedure TCustomForm.Close;
 var
   CloseAction: TCloseAction;
+  IsMainForm: Boolean;
 begin
   if fsModal in FFormState then
     ModalResult := mrCancel
-  else begin
-    //DebugLn('TCustomForm.Close A ',DbgSName(Self));
+  else
+  begin
     if CloseQuery then
     begin
-      if FormStyle = fsMDIChild then begin
-        //if biMinimize in BorderIcons then
-        //  CloseAction := caMinimize
-        //else
-          CloseAction := caNone;
-      end else begin
-        CloseAction := caHide;
+      // IsMainForm flag set if we are closeing MainForm or its parent
+      IsMainForm := (Application.MainForm = Self) or (Self.IsParentOf(Application.MainForm));
+      // Prepare default close action
+      if FormStyle = fsMDIChild then
+      begin
+        CloseAction := caNone;
+        // TODO: mdi logic
+      end
+      else
+      begin
+        if IsMainForm then
+          CloseAction := caFree
+        else
+          CloseAction := caHide;
       end;
-      //DebugLn('TCustomForm.Close B ',DbgSName(Self));
+      // call even handler - maybe use want to modify it
       DoClose(CloseAction);
-      if CloseAction <> caNone then begin
-        //DebugLn('TCustomForm.Close C ',DbgSName(Self),' ',dbgs(ord(CloseAction)));
-        if (Application.MainForm = Self)
-        or (Self.IsParentOf(Application.MainForm)) then
-          Application.Terminate
-        else if CloseAction = caHide then Hide
-        else if CloseAction = caMinimize then WindowState := wsMinimized
-        else Release;
+      // execute action according to close action
+      case CloseAction of
+        caHide: Hide;
+        caMinimize: WindowState := wsMinimized;
+        caFree:
+          begin
+            if IsMainForm then
+              Application.Terminate;
+            Release;
+          end;
       end;
     end;
   end;
@@ -1488,7 +1496,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Release;
 begin
-  if Application<>nil then
+  if Application <> nil then
     Application.ReleaseComponent(Self)
   else
     Free;
@@ -1498,19 +1506,15 @@ end;
        TCustomForm Method CloseQuery
 ------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery: boolean;
-//var i : integer;
 begin
-  { Query children forms whether we can close }
-  if FormStyle = fsMDIForm then begin
-  {  for i:= 0 to MDIChildCount - 1 do begin
-      if not MDIChildren[i].CloseQuery then begin
-        Result:= false;
-        Exit;
-       end;
-    end;}
+  if FormStyle = fsMDIForm then
+  begin
+    // Query children forms whether we can close
+    // TODO: mdi logic
   end;
-  Result := true;
-  if Assigned(FOnCloseQuery) then FOnCloseQuery(Self, Result);
+  Result := True;
+  if Assigned(FOnCloseQuery) then
+    FOnCloseQuery(Self, Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -1528,7 +1532,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
-  if (fsModal in FormState) and (ModalResult=0) then
+  if (fsModal in FormState) and (ModalResult = 0) then
     ModalResult := mrCancel;
   Visible := False;
 end;
@@ -1548,14 +1552,15 @@ end;
 procedure TCustomForm.ShowOnTop;
 begin
   Visible := True;
-  if WindowState=wsMinimized then WindowState:=wsNormal;
+  if WindowState = wsMinimized then
+    WindowState := wsNormal;
   BringToFront;
   //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
 end;
 
 function TCustomForm.NeedParentForAutoSize: Boolean;
 begin
-  Result:=false;
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1563,7 +1568,7 @@ end;
 ------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
 begin
-  Result := true;
+  Result := True;
 end;
 
 function TCustomForm.GetPixelsPerInch: Longint;
