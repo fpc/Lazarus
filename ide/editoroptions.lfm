@@ -1,11 +1,11 @@
 object EditorOptionsForm: TEditorOptionsForm
-  Left = 406
+  Left = 443
   Height = 531
-  Top = 141
+  Top = 167
   Width = 481
   HorzScrollBar.Page = 480
   VertScrollBar.Page = 530
-  ActiveControl = KeyMappingChooseSchemeButton
+  ActiveControl = MainNotebook
   Caption = 'EditorOptionsForm'
   ClientHeight = 531
   ClientWidth = 481
@@ -19,12 +19,12 @@ object EditorOptionsForm: TEditorOptionsForm
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Bottom = 6
-    PageIndex = 2
+    PageIndex = 1
     TabOrder = 0
     object GeneralPage: TPage
       Caption = 'GeneralPage'
       ClientWidth = 477
-      ClientHeight = 451
+      ClientHeight = 453
       object BlockIndentLabel: TLabel
         AnchorSideLeft.Control = BlockIndentComboBox
         AnchorSideLeft.Side = asrBottom
@@ -32,7 +32,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 360
+        Top = 362
         Width = 109
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -46,7 +46,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 391
+        Top = 393
         Width = 100
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -60,7 +60,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrCenter
         Left = 112
         Height = 20
-        Top = 422
+        Top = 424
         Width = 98
         Anchors = [akLeft, akBottom]
         BorderSpacing.Around = 6
@@ -71,7 +71,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = BlockIndentLabel
         Left = 6
-        Height = 342
+        Height = 344
         Top = 6
         Width = 465
         Align = alTop
@@ -97,7 +97,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = UndoLimitComboBox
         Left = 6
         Height = 25
-        Top = 358
+        Top = 360
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -118,7 +118,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Control = TabWidthsComboBox
         Left = 6
         Height = 25
-        Top = 389
+        Top = 391
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -139,7 +139,7 @@ object EditorOptionsForm: TEditorOptionsForm
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 25
-        Top = 420
+        Top = 422
         Width = 100
         Anchors = [akLeft, akBottom]
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
@@ -160,7 +160,7 @@ object EditorOptionsForm: TEditorOptionsForm
     object DisplayPage: TPage
       Caption = 'DisplayPage'
       ClientWidth = 477
-      ClientHeight = 451
+      ClientHeight = 453
       object MarginAndGutterGroupBox: TGroupBox
         Left = 6
         Height = 128
@@ -193,7 +193,7 @@ object EditorOptionsForm: TEditorOptionsForm
         object GutterColorButton: TColorButton
           Left = 246
           Height = 21
-          Top = 84
+          Top = 63
           Width = 100
           BorderWidth = 2
           ButtonColorSize = 16
@@ -208,18 +208,10 @@ object EditorOptionsForm: TEditorOptionsForm
           Caption = 'RightMarginColorLabel'
           ParentColor = False
         end
-        object GutterWidthLabel: TLabel
-          Left = 358
-          Height = 20
-          Top = 60
-          Width = 111
-          Caption = 'GutterWidthLabel'
-          ParentColor = False
-        end
         object GutterColorLabel: TLabel
-          Left = 358
+          Left = 355
           Height = 20
-          Top = 82
+          Top = 64
           Width = 109
           Caption = 'GutterColorLabel'
           ParentColor = False
@@ -267,25 +259,6 @@ object EditorOptionsForm: TEditorOptionsForm
           OnExit = ComboBoxOnExit
           OnKeyDown = ComboBoxOnKeyDown
           TabOrder = 3
-        end
-        object GutterWidthComboBox: TComboBox
-          Left = 246
-          Height = 25
-          Top = 58
-          Width = 100
-          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-          Items.Strings = (
-            '40'
-            '35'
-            '30'
-            '25'
-            '20'
-          )
-          MaxLength = 0
-          OnChange = ComboBoxOnChange
-          OnExit = ComboBoxOnExit
-          OnKeyDown = ComboBoxOnKeyDown
-          TabOrder = 4
         end
       end
       object EditorFontGroupBox: TGroupBox
@@ -398,7 +371,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object DisplayPreview: TSynEdit
         Left = 6
-        Height = 163
+        Height = 165
         Top = 282
         Width = 465
         Align = alBottom
@@ -801,7 +774,7 @@ object EditorOptionsForm: TEditorOptionsForm
     object ColorPage: TPage
       Caption = 'ColorPage'
       ClientWidth = 477
-      ClientHeight = 451
+      ClientHeight = 453
       object LanguageLabel: TLabel
         Left = 214
         Height = 20
@@ -879,7 +852,7 @@ object EditorOptionsForm: TEditorOptionsForm
       end
       object ColorPreview: TSynEdit
         Left = 4
-        Height = 88
+        Height = 90
         Top = 359
         Width = 469
         Align = alBottom
@@ -1378,16 +1351,16 @@ object EditorOptionsForm: TEditorOptionsForm
     object CodetoolsPage: TPage
       Caption = 'CodetoolsPage'
       ClientWidth = 477
-      ClientHeight = 451
+      ClientHeight = 453
       object AutomaticFeaturesGroupBox: TGroupBox
         Left = 6
-        Height = 439
+        Height = 441
         Top = 6
         Width = 465
         Align = alClient
         BorderSpacing.Around = 6
         Caption = 'AutomaticFeaturesGroupBox'
-        ClientHeight = 435
+        ClientHeight = 422
         ClientWidth = 461
         TabOrder = 0
         object AutoDelayLabel: TLabel
@@ -1487,7 +1460,7 @@ object EditorOptionsForm: TEditorOptionsForm
     object CodeFolding: TPage
       Caption = 'CodeFolding'
       ClientWidth = 477
-      ClientHeight = 451
+      ClientHeight = 453
       object lblDividerDrawLevel: TLabel
         Left = 6
         Height = 20

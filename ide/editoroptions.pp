@@ -368,8 +368,6 @@ type
     ShowLineNumbersCheckBox: TCheckBox;
     GutterColorButton: TColorButton;
     GutterColorLabel:  TLabel;
-    GutterWidthComboBox: TComboBox;
-    GutterWidthLabel:  TLabel;
     RightMarginComboBox: TComboBox;
     RightMarginLabel:  TLabel;
     RightMarginColorButton: TColorButton;
@@ -2917,16 +2915,6 @@ begin
           PreviewEdits[a].ExtraLineSpacing := NewVal;
     end
     else
-    if Sender = GutterWidthComboBox then
-    begin
-      NewVal := StrToIntDef(GutterWidthComboBox.Text,
-        PreviewEdits[1].Gutter.Width);
-      SetComboBoxText(GutterWidthComboBox, IntToStr(NewVal));
-      for a := Low(PreviewEdits) to High(PreviewEdits) do
-        if PreviewEdits[a] <> Nil then
-          PreviewEdits[a].Gutter.Width := NewVal;
-    end
-    else
     if Sender = RightMarginComboBox then
     begin
       NewVal := StrToIntDef(RightMarginComboBox.Text,PreviewEdits[1].RightEdge);
@@ -3722,11 +3710,6 @@ begin
   RightMarginColorLabel.Caption := dlgRightMarginColor;
 
   RightMarginColorButton.ButtonColor := EditorOpts.RightMarginColor;
-
-  GutterWidthLabel.Caption := dlgGutterWidth;
-
-  with GutterWidthComboBox do
-    SetComboBoxText(GutterWidthComboBox, IntToStr(EditorOpts.GutterWidth));
 
   GutterColorLabel.Caption := dlgGutterColor;
 
