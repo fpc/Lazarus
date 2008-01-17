@@ -291,6 +291,7 @@ var
   AMessage: TMsg;
   AccelTable: HACCEL;
   retVal, index: dword;
+  pHandles: Windows.LPHANDLE;
 begin
   repeat
 {$ifdef DEBUG_ASYNCEVENTS}
@@ -298,8 +299,13 @@ begin
       DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount),
         ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
 {$endif}
+    if FWaitHandleCount > 0 then
+      pHandles := @FWaitHandles[0]
+    else
+      pHandles := nil;
+
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
-      FWaitHandles[0], false, 0, QS_ALLINPUT);
+      pHandles, False, 0, QS_ALLINPUT);
 
     //roozbeh:added
     if FWaitHandleCount = 0 then
@@ -312,7 +318,7 @@ begin
     end else
     if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
     begin
-      while PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+      while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
         AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
         if (AccelTable = HACCEL(nil))
@@ -322,17 +328,21 @@ begin
           DispatchMessage(@AMessage);
         end;
       end;
-
       if FWaitHandleCount = 0 then
         break;
-
-    end
-    else
-      if retVal = $FFFFFFFF then
-      begin
-        DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
-        break;
-      end;
+    end else
+    if retVal = WAIT_TIMEOUT then
+    begin
+      // check for pending to-be synchronized methods
+      CheckSynchronize;
+      CheckPipeEvents;
+      break;
+    end else
+    if retVal = $FFFFFFFF then
+    begin
+      DebugLn('[TWinCEWidgetSet.AppProcessMessages] MsgWaitForMultipleObjects returned: ', IntToStr(GetLastError));
+      break;
+    end;
   until false;
 end;
 
@@ -344,8 +354,8 @@ var
   ChangedCount:integer;
 begin
   lHandler := FWaitPipeHandlers;
-  ChangedCount:=0;
-  while (lHandler <> nil) and (ChangedCount<10) do
+  ChangedCount := 0;
+  while (lHandler <> nil) and (ChangedCount < 10) do
   begin
     {
     roozbeh : ooops not supported
@@ -378,7 +388,8 @@ end;
 //roozbeh:new update...whole procedure body is added.what is it?
 procedure TWinCEWidgetSet.AppWaitMessage;
 var
-  timeout,retVal: dword;
+  timeout, retVal: DWord;
+  pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
   Assert(False, 'Trace:TWinCEWidgetSet.WaitMessage - Start');
@@ -387,8 +398,13 @@ begin
   else
     timeout := INFINITE;
 
+
+  if FWaitHandleCount > 0 then
+    pHandles := @FWaitHandles[0]
+  else
+    pHandles := nil;
 //roozbeh...remove raise after testing!
-  retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, FWaitHandles[0],
+  retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
     false, timeout, QS_ALLINPUT);
 
   if retVal = $FFFFFFFF then
@@ -408,10 +424,6 @@ end;
 procedure TWinCEWidgetSet.AppTerminate;
 begin
   Assert(False, 'Trace:TWinCEWidgetSet.AppTerminate - Start');
-//  roozbeh
-//  not existed in win32
-//  AppTerminated := True;
-//  PostQuitMessage(0);
 end;
 
 
@@ -625,8 +637,7 @@ end;
   Get the color of the specified pixel on the canvas
  -----------------------------------------------------------------------------}
 
-function TWinCEWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer
-  ): TGraphicsColor;
+function TWinCEWidgetSet.DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor;
 begin
   Result := Windows.GetPixel(CanvasHandle, X, Y);
 end;

@@ -1083,7 +1083,7 @@ begin
   WinProcess := True;
   NotifyUserInput := False;
 
-  Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
+  Assert(False, 'Trace:WindowProc - Getting Object with Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
@@ -1202,7 +1202,7 @@ begin
     CB_INSERTSTRING, LB_INSERTSTRING:
     begin
       PLMsg:=@LMInsertText;
-      With LMInsertText Do
+      with LMInsertText Do
       begin
         Msg := LM_INSERTTEXT;
         Position := WParam;
@@ -1568,7 +1568,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
-      With LMKey Do
+      with LMKey Do
       begin
         Msg := CN_KEYDOWN;
         KeyData := LParam;
@@ -1583,7 +1583,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
-      With LMKey Do
+      with LMKey Do
       begin
         Msg := CN_KEYUP;
         KeyData := LParam;
@@ -1606,7 +1606,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_LBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
@@ -1636,7 +1636,7 @@ begin
       GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_LBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
@@ -1659,7 +1659,7 @@ begin
         MouseDownFocusStatus := mfFocusSense;
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_LBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
@@ -1671,7 +1671,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_MBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
@@ -1683,7 +1683,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_MBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
@@ -1695,7 +1695,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_MBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
@@ -1717,7 +1717,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouseMove;
-      With LMMouseMove Do
+      with LMMouseMove Do
       begin
         Msg := LM_MOUSEMOVE;
         XPos := GET_X_LPARAM(LParam);
@@ -1742,7 +1742,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouseEvent;
-      With LMMouseEvent Do
+      with LMMouseEvent Do
       begin
         X := GET_X_LPARAM(LParam);
         Y := GET_Y_LPARAM(LParam);
@@ -1862,7 +1862,7 @@ begin
             WinProcess := false;
             lWinControl := WindowInfo^.WinControl;
             PLMsg:=@LMMouse;
-            With LMMouse Do
+            with LMMouse Do
             begin
               Msg := LM_RBUTTONUP;
               Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
@@ -1873,7 +1873,7 @@ begin
         end;
       else
         PLMsg:=@LMNotify;
-        With LMNotify Do
+        with LMNotify Do
         begin
           Msg := LM_NOTIFY;
           IDCtrl := WParam;
@@ -1930,7 +1930,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_RBUTTONDBLCLK;
         XPos := GET_X_LPARAM(LParam);
@@ -1942,7 +1942,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_RBUTTONDOWN;
         XPos := GET_X_LPARAM(LParam);
@@ -1956,7 +1956,7 @@ begin
       NotifyUserInput := True;
       WinProcess := false;
       PLMsg:=@LMMouse;
-      With LMMouse Do
+      with LMMouse Do
       begin
         Msg := LM_RBUTTONUP;
         XPos := GET_X_LPARAM(LParam);
@@ -2010,7 +2010,7 @@ begin
     WM_SHOWWINDOW:
     begin
       Assert(False, 'Trace:WindowProc - Got WM_SHOWWINDOW');
-      With TLMShowWindow(LMessage) Do
+      with TLMShowWindow(LMessage) Do
       begin
         Msg := LM_SHOWWINDOW;
         Show := WParam <> 0;
@@ -2031,7 +2031,7 @@ begin
     WM_SYSCHAR:
     begin
       PLMsg:=@LMChar;
-      With LMChar Do
+      with LMChar Do
       begin
         Msg := CN_SYSCHAR;
         KeyData := LParam;
@@ -2049,7 +2049,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
-      With LMKey Do
+      with LMKey Do
       begin
         Msg := CN_SYSKEYDOWN;
         KeyData := LParam;
@@ -2062,7 +2062,7 @@ begin
     begin
       NotifyUserInput := True;
       PLMsg:=@LMKey;
-      With LMKey Do
+      with LMKey Do
       begin
         Msg := CN_SYSKEYUP;
         KeyData := LParam;
@@ -2160,7 +2160,7 @@ begin
     WM_MOVE:
     begin
       PLMsg:=@LMMove;
-      With LMMove Do
+      with LMMove Do
       begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
@@ -2196,7 +2196,7 @@ begin
     end;
     WM_SIZE:
     begin
-      With TLMSize(LMessage) Do
+      with TLMSize(LMessage) Do
       begin
         Msg := LM_SIZE;
         SizeType := WParam or Size_SourceIsInterface;

@@ -148,11 +148,10 @@ type
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
-    procedure AppTerminate; Override;
+    procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
     //Function  InitHintFont(HintFont: TObject): Boolean; override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
-//    procedure AppRun(const ALoop: TApplicationMainLoop); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;

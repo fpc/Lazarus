@@ -208,23 +208,26 @@ end;
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
-Var
+procedure TWin32WidgetSet.SetCallback(Msg: LongInt; Sender: TObject);
+var
   Window: HWnd;
-Begin
+begin
   Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Start');
   Assert(False, Format('Trace:TWin32WidgetSet.SetCallback - Class Name --> %S', [Sender.ClassName]));
   Assert(False, Format('Trace:TWin32WidgetSet.SetCallback - Message Name --> %S', [GetMessageName(Msg)]));
-  If Sender Is TControlCanvas Then
+
+  if Sender is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
-  Else If Sender Is TCustomForm Then
+  else 
+  if Sender is TCustomForm then
     Window := TCustomForm(Sender).Handle
-  Else
+  else
     Window := TWinControl(Sender).Handle;
-  if Window=0 then exit;
+
+  if Window = 0 then Exit;
 
   Assert(False, 'Trace:TWin32WidgetSet.SetCallback - Exit');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.RemoveCallbacks
@@ -233,18 +236,20 @@ End;
 
   Removes Call Back Signals from the sender
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.RemoveCallbacks(Sender: TObject);
-Var
+procedure TWin32WidgetSet.RemoveCallbacks(Sender: TObject);
+var
   Window: HWnd;
-Begin
-  If Sender Is TControlCanvas Then
+begin
+  if Sender is TControlCanvas then
     Window := TControlCanvas(Sender).Handle
-  Else If Sender Is TCustomForm Then
+  else 
+  if Sender is TCustomForm then
     Window := TCustomForm(Sender).Handle
-  Else
+  else
     Window := (Sender as TWinControl).Handle;
-  if Window=0 then exit;
-End;
+
+  if Window = 0 then Exit;
+end;
 
 function TWin32WidgetSet.InitHintFont(HintFont: TObject): Boolean;
 begin
@@ -276,11 +281,12 @@ begin
       DebugLn('[ProcessMessages] WaitHandleCount=', IntToStr(FWaitHandleCount),
         ', WaitHandle[0]=', IntToHex(FWaitHandles[0], 8));
 {$endif}
-    pHandles := nil;
     if FWaitHandleCount > 0 then
-      pHandles := @FWaitHandles[0];
+      pHandles := @FWaitHandles[0]
+    else
+      pHandles := nil;
     retVal := Windows.MsgWaitForMultipleObjects(FWaitHandleCount,
-      pHandles, false, 0, QS_ALLINPUT);
+      pHandles, False, 0, QS_ALLINPUT);
     if (WAIT_OBJECT_0 <= retVal) and (retVal < WAIT_OBJECT_0 + FWaitHandleCount) then
     begin
       index := retVal-WAIT_OBJECT_0;
@@ -288,7 +294,7 @@ begin
     end else
     if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
     begin
-      while PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) do
+      while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
         AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
         if (AccelTable = HACCEL(nil))
@@ -312,7 +318,7 @@ begin
       break;
     end;
   until false;
-End;
+end;
 
 procedure TWin32WidgetSet.CheckPipeEvents;
 var
@@ -353,7 +359,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWin32WidgetSet.AppWaitMessage;
 var
-  timeout: dword;
+  timeout: DWord;
   pHandles: Windows.LPHANDLE;
 begin
   RedrawMenus;
@@ -362,13 +368,14 @@ begin
     timeout := 100
   else
     timeout := INFINITE;
-  pHandles := nil;
   if FWaitHandleCount > 0 then
-    pHandles := @FWaitHandles[0];
+    pHandles := @FWaitHandles[0]
+  else
+    pHandles := nil;
   Windows.MsgWaitForMultipleObjects(FWaitHandleCount, pHandles,
     false, timeout, QS_ALLINPUT);
   Assert(False,'Trace:Leave wait message');
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.AppTerminate
@@ -377,10 +384,10 @@ End;
 
   Tells Windows to halt and destroy
  ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.AppTerminate;
-Begin
+procedure TWin32WidgetSet.AppTerminate;
+begin
   Assert(False, 'Trace:TWin32WidgetSet.AppTerminate - Start');
-End;
+end;
 
 procedure TWin32WidgetSet.AppSetTitle(const ATitle: string);
 begin
@@ -400,7 +407,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateTimer
+  function: CreateTimer
   Params: Interval:
           TimerFunc: Callback
   Returns: a Timer id (use this ID to destroy timer)
@@ -429,7 +436,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: DestroyTimer
+  function: DestroyTimer
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
@@ -485,11 +492,11 @@ end;
 
   Registers the main window class
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.WinRegister: Boolean;
-Var
+function TWin32WidgetSet.WinRegister: Boolean;
+var
   WindowClass: WndClass;
   WindowClassW: WndClassW;
-Begin
+begin
   Assert(False, 'Trace:WinRegister - Start');
   if UnicodeEnabledOS 
   then begin
