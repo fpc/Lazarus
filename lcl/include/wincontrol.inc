@@ -2108,7 +2108,7 @@ end;
   TWinControl AdjustClientRect
 ------------------------------------------------------------------------------}
 procedure TWinControl.AdjustClientRect(var ARect: TRect);
-Begin
+begin
   //Not used.  It's a virtual procedure that should be overriden.
 end;
 
@@ -3141,7 +3141,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl BroadCast
 ------------------------------------------------------------------------------}
-Procedure TWinControl.BroadCast(var ToAllMessage);
+procedure TWinControl.BroadCast(var ToAllMessage);
 var
   I: Integer;
 begin
@@ -3174,7 +3174,7 @@ end;
   
   
 ------------------------------------------------------------------------------}
-Function TWinControl.CanFocus : Boolean;
+function TWinControl.CanFocus : Boolean;
 var
   Control: TWinControl;
   Form: TCustomForm;
@@ -3348,7 +3348,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl.CanTab
 ------------------------------------------------------------------------------}
-Function TWinControl.CanTab: Boolean;
+function TWinControl.CanTab: Boolean;
 begin
   Result := CanFocus and TWSWinControlClass(WidgetSetClass).CanFocus(Self);
 end;
@@ -3367,7 +3367,7 @@ begin
                                       [capfAllowWinControls,capfRecursive]);
         if TargetControl = nil then TargetControl := Self;
         {$IFDEF VerboseDrag}
-        DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
+        DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' end Result=',TargetControl.Name,':',TargetControl.ClassName);
         {$ENDIF}
         Result := LRESULT(TargetControl);
       end;
@@ -3379,17 +3379,17 @@ end;
 {------------------------------------------------------------------------------
   TWinControl GetChildren
 ------------------------------------------------------------------------------}
-Procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
+procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
 var
   I : Integer;
   Control : TControl;
-Begin
+begin
   for I := 0 to ControlCount-1 do
-  Begin
+  begin
     Control := Controls[i];
     if Control.Owner = Root then Proc(Control);
   end;
-End;
+end;
 
 {-------------------------------------------------------------------------------
   function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
@@ -3530,7 +3530,7 @@ function TWinControl.GetControlOrigin: TPoint;
 var
   AControl: TWinControl;
   IntfBounds: TRect;
-Begin
+begin
   if HandleAllocated then begin
     // get the interface idea where the client area is on the screen
     LCLIntf.GetWindowRect(Handle,IntfBounds);
@@ -3584,8 +3584,8 @@ end;
 {------------------------------------------------------------------------------
   TWinControl SetBorderWidth
 ------------------------------------------------------------------------------}
-Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
-Begin
+procedure TWinControl.SetBorderWidth(value : TBorderWidth);
+begin
   if FBorderWidth = Value then exit;
   FBorderWidth := Value;
   Invalidate;
@@ -4055,15 +4055,15 @@ end;
 {------------------------------------------------------------------------------
   TWinControl GetTabOrderList
 ------------------------------------------------------------------------------}
-Procedure TWinControl.GetTabOrderList(List: TFPList);
+procedure TWinControl.GetTabOrderList(List: TFPList);
 var
   I : Integer;
   lWinControl : TWinControl;
 begin
-  If FTabList <> nil then
-    For I := 0 to FTabList.Count - 1 do begin
+  if FTabList <> nil then
+    for I := 0 to FTabList.Count - 1 do begin
       lWinControl := TWinControl(FTabList[I]);
-      If lWinControl.CanTab and lWinControl.TabStop then
+      if lWinControl.CanTab and lWinControl.TabStop then
         List.Add(lWinControl);
       lWinControl.GetTabOrderList(List);
     end;
@@ -4377,9 +4377,9 @@ end;
   Searches a child (not grand child) control, which client area contains Pos.
   Pos is relative to the ClientOrigin.
 ------------------------------------------------------------------------------}
-Function TWinControl.ControlAtPos(const Pos : TPoint;
+function TWinControl.ControlAtPos(const Pos : TPoint;
   AllowDisabled : Boolean): TControl;
-Begin
+begin
   Result := ControlAtPos(Pos,AllowDisabled,false);
 end;
 
@@ -4392,7 +4392,7 @@ end;
   Searches a child (not grand child) control, which client area contains Pos.
   Pos is relative to the ClientOrigin.
 ------------------------------------------------------------------------------}
-Function TWinControl.ControlAtPos(const Pos : TPoint;
+function TWinControl.ControlAtPos(const Pos : TPoint;
   AllowDisabled, AllowWinControls: Boolean): TControl;
 var
   Flags: TControlAtPosFlags;
@@ -4619,10 +4619,10 @@ end;
 {------------------------------------------------------------------------------
   TWinControl WndPRoc
 ------------------------------------------------------------------------------}
-Procedure TWinControl.WndProc(Var Message: TLMessage);
-Var
+procedure TWinControl.WndProc(var Message: TLMessage);
+var
   Form: TCustomForm;
-Begin
+begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
 
@@ -4869,13 +4869,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TWinControl.MainWndProc(Var Message : TLMessage);
+  procedure TWinControl.MainWndProc(var Message : TLMessage);
 
   The message handler of this wincontrol.
   Only needed by controls, which needs features not yet supported by the LCL.
  ------------------------------------------------------------------------------}
-Procedure TWinControl.MainWndProc(Var Msg: TLMessage);
-Begin
+procedure TWinControl.MainWndProc(var Msg: TLMessage);
+begin
   Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Msg.Msg]));
 end;
 
@@ -4899,23 +4899,23 @@ end;
 {------------------------------------------------------------------------------
   TWinControl SetParentCtl3D
 ------------------------------------------------------------------------------}
-Procedure TWinControl.SetParentCtl3D(value : Boolean);
-Begin
+procedure TWinControl.SetParentCtl3D(value : Boolean);
+begin
   if FParentCtl3D <> Value then
-  Begin
+  begin
     FParentCtl3D := Value;
     if FParent <> nil then
-    Begin
+    begin
       // Sendmessage to do something?
-    End;
+    end;
   end;
 end;
 
 {------------------------------------------------------------------------------
   TWinControl KeyDown
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyDown(var Key: Word; shift : TShiftState);
-Begin
+procedure TWinControl.KeyDown(var Key: Word; shift : TShiftState);
+begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
 end;
 
@@ -4939,7 +4939,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyPress
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyPress(var Key: char);
+procedure TWinControl.KeyPress(var Key: char);
 begin
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
@@ -4957,7 +4957,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyUp
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyUp(var Key: Word; Shift : TShiftState);
+procedure TWinControl.KeyUp(var Key: Word; Shift : TShiftState);
 begin
   if Assigned(FOnKeyUp) then FOnKeyUp(Self, Key, Shift);
 end;
@@ -5018,7 +5018,7 @@ end;
   
   returns true if handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoKeyDownBeforeInterface(Var Message: TLMKey): Boolean;
+function TWinControl.DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -5155,7 +5155,7 @@ end;
   
   Returns True if key handled
 ------------------------------------------------------------------------------}
-Function TWinControl.DoKeyPress(Var Message : TLMKey): Boolean;
+function TWinControl.DoKeyPress(var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
   C: char;
@@ -5184,7 +5184,7 @@ begin
   end;
 
   Result := False;
-End;
+end;
 
 {------------------------------------------------------------------------------
   TWinControl DoRemainingKeyPress
@@ -5264,7 +5264,7 @@ end;
 
   Returns True if key handled
 ------------------------------------------------------------------------------}
-Function TWinControl.DoKeyUpBeforeInterface(Var Message : TLMKey): Boolean;
+function TWinControl.DoKeyUpBeforeInterface(var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -5358,8 +5358,8 @@ end;
 {------------------------------------------------------------------------------
   TWinControl Repaint
 ------------------------------------------------------------------------------}
-Procedure TWinControl.Repaint;
-Begin
+procedure TWinControl.Repaint;
+begin
   if (not HandleAllocated) or (csDestroying in ComponentState) then exit;
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
@@ -5414,7 +5414,7 @@ end;
 procedure TWinControl.Insert(AControl : TControl);
 begin
   Insert(AControl,ControlCount);
-End;
+end;
 
 {------------------------------------------------------------------------------
   procedure TWinControl.Insert(AControl: TControl; Index: integer);
@@ -5605,10 +5605,10 @@ end;
 {------------------------------------------------------------------------------
   TWinControl removeControl
 ------------------------------------------------------------------------------}
-Procedure TWinControl.RemoveControl(AControl: TControl);
+procedure TWinControl.RemoveControl(AControl: TControl);
 var
   AWinControl: TWinControl;
-Begin
+begin
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
   if AControl is TWinControl then begin
     AWinControl:=TWinControl(AControl);
@@ -5620,7 +5620,7 @@ Begin
   Remove(AControl);
   if not (csDestroying in ComponentState) then
     Realign;
-End;
+end;
 
 {------------------------------------------------------------------------------
   TWinControl AlignControl
@@ -5671,7 +5671,7 @@ begin
       for i:=0 to FWinControls.Count-1 do
         TWinControl(FWinControls[i]).RealizeBoundsRecursive;
   end;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.ContainsControl
@@ -5947,8 +5947,8 @@ end;
 
   SetFocus event handler
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
-Begin
+procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
+begin
   //DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
   if [csLoading,csDestroying,csDesigning]*ComponentState=[] then begin
@@ -6273,7 +6273,7 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWInControl.WMNotify(var Message: TLMNotify);
-Begin
+begin
   if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
   //Inherited;
 end;
@@ -6335,7 +6335,7 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMouseWheel(var Message: TLMMouseEvent);
-Var
+var
   MousePos : TPoint;
 begin
   Assert(False, Format('Trace: [TWinControl.LMMouseWheel] %s', [ClassName]));
@@ -6372,7 +6372,7 @@ end;
 
   Event handler for keys not handled by the interface
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
+procedure TWinControl.WMKeyDown(var Message: TLMKeyDown);
 begin
   if DoRemainingKeyDown(Message) then
     Message.Result := 1;
@@ -6401,7 +6401,7 @@ end;
 
   event handler.
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
+procedure TWinControl.WMKeyUp(var Message: TLMKeyUp);
 begin
   //debugln('TWinControl.WMKeyUp ',DbgSName(Self));
   if DoRemainingKeyUp(Message) then
@@ -6409,7 +6409,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TWinControl.HandleAllocated
+  function: TWinControl.HandleAllocated
   Params:   None
   Returns:  True is handle is allocated
 
