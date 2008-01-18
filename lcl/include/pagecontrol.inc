@@ -82,6 +82,8 @@ begin
   try
     TabSheet.PageControl := Self;
     Client.Parent := TabSheet;
+    // delphi compatible behaviour => align to client
+    Client.Align := alClient;
   except
     FreeAndNil(TabSheet);
   end;
