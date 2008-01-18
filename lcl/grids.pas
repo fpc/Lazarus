@@ -329,7 +329,7 @@ type
     function  GetDefaultAlignment: TAlignment;
     function  GetDefaultColor: TColor;
     function  GetDefaultLayout: TTextLayout;
-    procedure SetCaption(const AValue: string); virtual;
+    procedure SetCaption(const AValue: TCaption); virtual;
   public
     constructor Create(TheColumn: TGridColumn); virtual;
     destructor Destroy; override;
@@ -339,7 +339,7 @@ type
   published
     property Alignment: TAlignment read GetAlignment write SetAlignment stored IsAlignmentStored;
     property Layout: TTextLayout read GetLayout write SetLayout stored IsLayoutStored;
-    property Caption: string read GetCaption write SetCaption stored IsCaptionStored;
+    property Caption: TCaption read GetCaption write SetCaption stored IsCaptionStored;
     property Color: TColor read GetColor write SetColor stored IsColorStored;
     property Font: TFont read GetFont write SetFont stored IsFontStored;
   end;
@@ -8172,7 +8172,7 @@ begin
   FColumn.ColumnChanged;
 end;
 
-procedure TGridColumnTitle.SetCaption(const AValue: string);
+procedure TGridColumnTitle.SetCaption(const AValue: TCaption);
 begin
   if (FCaption=nil)or(AValue<>FCaption^) then begin
     if FCaption<>nil then
