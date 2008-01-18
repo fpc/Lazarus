@@ -3812,7 +3812,7 @@ end;
 
 function TWinControl.PerformTab(ForwardTab: boolean): boolean;
 
-  Function GetHighestParent(TopControl : TControl) : TWinControl;
+  function GetHighestParent(TopControl : TControl) : TWinControl;
   begin
     Result := nil;
     If TopControl = nil then exit;
@@ -3838,7 +3838,7 @@ begin
     List := TFPList.Create;
     TopLevel.GetTabOrderList(List);
     FirstFocus := nil;
-    For I := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
       If List[I] <> nil then begin
         If I = 0 then
           FirstFocus := TWinControl(List[I]);
@@ -3847,7 +3847,7 @@ begin
           Break;
         end;
       end;
-  Finally
+  finally
     List.Free;
   end;
 
@@ -3855,8 +3855,8 @@ begin
     NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False);
   //DebugLn('TControl.PerformTab A ',DbgSName(Self),' NewFocus=',DbgSName(NewFocus),' OldFocus=',DbgSName(OldFocus));
 
-  If (NewFocus = nil) then NewFocus:=FirstFocus;
-  If NewFocus = OldFocus then begin
+  if (NewFocus = nil) then NewFocus:=FirstFocus;
+  if NewFocus = OldFocus then begin
     Result := True;
     exit;
   end;
