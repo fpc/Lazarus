@@ -46,9 +46,9 @@ type
 
   TGtkWSStatusBar = class(TWSStatusBar)
   protected
-    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -151,9 +151,9 @@ type
   TGtkWSProgressBar = class(TWSProgressBar)
   private
   protected
-    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
@@ -187,7 +187,9 @@ type
   TGtkWSToolBar = class(TWSToolBar)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 {$ifdef OldToolbar}
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
     class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
@@ -200,9 +202,9 @@ type
   TGtkWSTrackBar = class(TWSTrackBar)
   private
   protected
-    class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -530,6 +532,48 @@ begin
   //debugln('TGtkWSStatusBar.GetPreferredSize END ',dbgs(PreferredHeight));
 end;
 
+{ TGtkWSToolBar }
+
+class procedure TGtkWSToolBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtkWSToolBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget, ClientWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  {$ifdef gtk1}
+  Widget := gtk_toolbar_new();
+  gtk_toolbar_set_space_size(PGTKToolbar(Widget), 0);
+  gtk_toolbar_set_space_style(PGTKToolbar(Widget), GTK_TOOLBAR_SPACE_EMPTY);
+  ClientWidget := gtk_fixed_new();
+  gtk_toolbar_insert_widget(PGTKToolbar(Widget), ClientWidget, nil, nil, 0);
+  {$else}
+  Widget:= gtk_hbox_new(false,0);
+  ClientWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(Widget), ClientWidget);
+  {$endif}
+
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  gtk_widget_show(ClientWidget);
+  SetFixedWidget(Widget, ClientWidget);
+  SetMainWidget(Widget, ClientWidget);
+  gtk_widget_show(Widget);
+
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -547,9 +591,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
-{$ifdef OldToolbar}
   RegisterWSComponent(TToolBar, TGtkWSToolBar);
-{$ENDIF}
   RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSTreeView);

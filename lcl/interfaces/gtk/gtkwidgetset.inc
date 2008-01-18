@@ -4030,34 +4030,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-
-  Creates a gtk_toolbar and puts a fixed widget as client area.
-  Since we are not using the gtk tool buttons, we can put any LCL control as
-  child and get all LCL TControl abilities.
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-var
-  ClientWidget: PGtkWidget;
-begin
-  {$IFDEF GTK1}
-  Result := gtk_toolbar_new();
-  gtk_toolbar_set_space_size(PGTKToolbar(Result),0);
-  gtk_toolbar_set_space_style(PGTKToolbar(Result),GTK_TOOLBAR_SPACE_EMPTY);
-  ClientWidget := gtk_fixed_new();
-  gtk_toolbar_insert_widget(PGTKToolbar(Result),ClientWidget,nil,nil,0);
-  {$ELSE}
-  Result := gtk_hbox_new(false,0);
-  ClientWidget := CreateFixedClientWidget;
-  gtk_container_add(GTK_CONTAINER(Result), ClientWidget);
-  {$ENDIF}
-  gtk_widget_show(ClientWidget);
-  SetFixedWidget(Result,ClientWidget);
-  SetMainWidget(Result,ClientWidget);
-  gtk_widget_show(Result);
-end;
-
-{------------------------------------------------------------------------------
   procedure TGtkWidgetSet.DestroyEmptySubmenu(Sender: TObject);
 
   Used by DestroyLCLComponent to destroy empty submenus, when destroying the

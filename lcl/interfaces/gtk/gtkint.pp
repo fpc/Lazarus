@@ -154,7 +154,6 @@ type
     function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
-    function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);virtual;
