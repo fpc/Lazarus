@@ -180,34 +180,35 @@ type
   TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
-    csAcceptsControls, // can have childs in the designer
+    csAcceptsControls,       // can have childs in the designer
     csCaptureMouse,
-    csDesignInteractive, // wants mouse events in design mode
+    csDesignInteractive,     // wants mouse events in design mode
     csClickEvents,
     csFramed,
     csSetCaption,
     csOpaque,
-    csDoubleClicks,// control understands mouse double clicks
-    csTripleClicks,// control understands mouse triple clicks
-    csQuadClicks,  // control understands mouse quad clicks
+    csDoubleClicks,          // control understands mouse double clicks
+    csTripleClicks,          // control understands mouse triple clicks
+    csQuadClicks,            // control understands mouse quad clicks
     csFixedWidth,
-    csFixedHeight, // control cannot change it height (for example combobox)
+    csFixedHeight,           // control cannot change it height (for example combobox)
     csNoDesignVisible,
     csReplicatable,
     csNoStdEvents,
-    csDisplayDragImage,
+    csDisplayDragImage,      // display images from dragimagelist during drag operation over control
     csReflector,
     csActionClient,
     csMenuEvents,
     csNoFocus,
-    csNeedsBorderPaint, // not implemented
-    csParentBackground, // not implemented
-    csDesignNoSmoothResize, // no WYSIWYG resizing in designer
-    csDesignFixedBounds, // control can not be moved nor resized in designer
-    csHasDefaultAction, // control implements useful ExecuteDefaultAction
-    csHasCancelAction,   // control implements useful ExecuteCancelAction
-    csNoDesignSelectable, // control can not be selected at design time
-    csOwnedChildsSelectable // child controls owned by this control are selectable in the designer
+    csNeedsBorderPaint,      // not implemented
+    csParentBackground,      // not implemented
+    csDesignNoSmoothResize,  // no WYSIWYG resizing in designer
+    csDesignFixedBounds,     // control can not be moved nor resized in designer
+    csHasDefaultAction,      // control implements useful ExecuteDefaultAction
+    csHasCancelAction,       // control implements useful ExecuteCancelAction
+    csNoDesignSelectable,    // control can not be selected at design time
+    csOwnedChildsSelectable, // child controls owned by this control are selectable in the designer
+    csHasInternalChilds      // control is a complex control with childs inside
     );
   TControlStyle = set of TControlStyleType;
 

@@ -342,7 +342,7 @@ constructor TCustomPairSplitter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csPairSplitter;
-  ControlStyle := ControlStyle - [csAcceptsControls];
+  ControlStyle := ControlStyle - [csAcceptsControls] + [csHasInternalChilds];
   FSplitterType := pstHorizontal;
   Cursor := crHSplit;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
