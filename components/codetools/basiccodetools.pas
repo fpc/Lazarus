@@ -1135,8 +1135,7 @@ begin
         exit;
 
     '{':
-      if (Result<MaxPos) and (ASource[Result+1]='$') then
-        exit;
+      exit;
 
     '(':
       if (Result<MaxPos) and (ASource[Result+1]='*') then
