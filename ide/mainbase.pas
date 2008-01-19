@@ -221,7 +221,7 @@ end;
 
 destructor TMainIDEBase.Destroy;
 begin
-  FreeThenNil(OwningComponent);
+  FreeThenNil(fOwningComponent);
   inherited Destroy;
   MainIDE:=nil;
 end;
