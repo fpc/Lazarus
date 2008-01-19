@@ -1880,10 +1880,12 @@ const
   RT_CURSOR = Windows.RT_CURSOR;
   RT_BITMAP = Windows.RT_BITMAP;
   RT_ICON   = Windows.RT_ICON;
+  RT_RCDATA = Windows.RT_RCDATA;
 {$else}
   RT_CURSOR = TResourceType(1);
   RT_BITMAP = TResourceType(2);
   RT_ICON   = TResourceType(3);
+  RT_RCDATA = TResourceType(10);
 {$endif}
 
 

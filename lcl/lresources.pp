@@ -36,11 +36,18 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLProc, LCLStrConsts,
-  LazConfigStorage, RtlConsts;
+  Classes, SysUtils, Types, FPCAdds, TypInfo, DynQueue, LCLType, LCLProc,
+  LCLStrConsts, LazConfigStorage, RtlConsts;
+
+{$DEFINE UseLRS}
 
 type
   TFilerSignature = array[1..4] of Char;
+
+// we cannot place $IF DECLARED near the uses section due to bug 8611
+{$IF DECLARED(TFPResourceHandle)}
+  {$DEFINE UseRES}
+{$IFEND}
 
   { TLResourceList }
 
@@ -76,14 +83,22 @@ type
 
   TLazarusResourceStream = class(TCustomMemoryStream)
   private
-    FRes: TLResource;
+    FLRes: TLResource;
+  {$ifdef UseRES}
+    FPRes: TFPResourceHGLOBAL;
+  {$endif}
     procedure Initialize(Name, ResType: PChar);
   public
     constructor Create(const ResName: string; ResType: PChar);
     constructor CreateFromID(ResID: Integer; ResType: PChar);
-    constructor CreateFromHandle(AHandle: TLResource);
+    constructor CreateFromHandle(AHandle: TLResource); overload;
+  {$ifdef UseRES}
+    // here from FP resource handle
+    constructor CreateFromHandle(Instance: TFPResourceHMODULE; AHandle: TFPResourceHandle); overload;
+  {$endif}
+    destructor Destroy; override;
     function Write(const Buffer; Count: Longint): Longint; override;
-    property Res: TLResource read FRes;
+    property Res: TLResource read FLRes;
   end;
 
   { TAbstractTranslator}
@@ -526,7 +541,7 @@ end;
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 begin
-  Result:=InitLazResourceComponent(Instance,RootAncestor);
+  Result := InitLazResourceComponent(Instance, RootAncestor);
 end;
 
 procedure DefineRectProperty(Filer: TFiler; const Name: string; ARect,
@@ -534,7 +549,7 @@ procedure DefineRectProperty(Filer: TFiler; const Name: string; ARect,
 var
   PropDef: TDefineRectPropertyClass;
 begin
-  PropDef:=TDefineRectPropertyClass.Create(ARect,DefaultRect);
+  PropDef := TDefineRectPropertyClass.Create(ARect, DefaultRect);
   try
     Filer.DefineProperty(Name,@PropDef.ReadData,@PropDef.WriteData,PropDef.HasData);
   finally
@@ -2683,34 +2698,59 @@ function InitLazResourceComponent(Instance: TComponent;
 
   function InitComponent(ClassType: TClass): Boolean;
   var
-    CompResource: TLResource;
-    MemStream: TMemoryStream;
+    {$ifdef UseLRS}
+    LazResource: TLResource;
+    {$endif}
+    {$ifdef UseRES}
+    FPResource: TFPResourceHandle;
+    {$endif}
+    ResName: String;
+    Stream: TStream;
     Reader: TReader;
     DestroyDriver: Boolean;
     Driver: TAbstractObjectReader;
   begin
     //DebugLn(['[InitComponent] ',ClassType.Classname,' ',Instance<>nil]);
-    Result:=false;
-    if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
+    Result := False;
+    if (ClassType = TComponent) or (ClassType = RootAncestor) then
+      Exit;
     if Assigned(ClassType.ClassParent) then
-      Result:=InitComponent(ClassType.ClassParent);
-    CompResource:=LazarusResources.Find(ClassType.ClassName);
-    if (CompResource=nil) or (CompResource.Value='') then exit;
+      Result := InitComponent(ClassType.ClassParent);
+      
+    Stream := nil;
+    ResName := ClassType.ClassName;
+    
+    {$ifdef UseLRS}
+    LazResource := LazarusResources.Find(ResName);
+    if (LazResource <> nil) and (LazResource.Value <> '') then
+      Stream := TLazarusResourceStream.CreateFromHandle(LazResource);
     //DebugLn('[InitComponent] CompResource found for ',ClassType.Classname);
-    MemStream:=TMemoryStream.Create;
+    {$endif}
+
+    {$ifdef UseRES}
+    if Stream = nil then
+    begin
+      FPResource := FindResource(HInstance, TResourceType(ResName), RT_RCDATA);
+      if FPResource <> 0 then
+        Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
+    end;
+    {$endif}
+    
+    if Stream = nil then
+      Exit;
+      
     try
-      MemStream.Write(CompResource.Value[1],length(CompResource.Value));
-      MemStream.Position:=0;
       //DebugLn('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       //try
       DestroyDriver:=false;
-      Reader := CreateLRSReader(MemStream,DestroyDriver);
+      Reader := CreateLRSReader(Stream, DestroyDriver);
       try
         Reader.ReadRootComponent(Instance);
       finally
-        Driver:=Reader.Driver;
+        Driver := Reader.Driver;
         Reader.Free;
-        if DestroyDriver then Driver.Free;
+        if DestroyDriver then
+          Driver.Free;
       end;
       //except
       //  on E: Exception do begin
@@ -2719,13 +2759,13 @@ function InitLazResourceComponent(Instance: TComponent;
       //  end;
       //end;
     finally
-      MemStream.Free;
+      Stream.Free;
     end;
-    Result:=true;
+    Result := True;
   end;
 
 begin
-  Result:=InitComponent(Instance.ClassType);
+  Result := InitComponent(Instance.ClassType);
 end;
 
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
@@ -4504,13 +4544,13 @@ end;
 procedure TLazarusResourceStream.Initialize(Name, ResType: PChar);
 begin
   if ResType <> nil then
-    FRes := LazarusResources.Find(Name, ResType)
+    FLRes := LazarusResources.Find(Name, ResType)
   else
-    FRes := LazarusResources.Find(Name);
+    FLRes := LazarusResources.Find(Name);
     
-  if FRes = nil then
+  if FLRes = nil then
     raise EResNotFound.CreateFmt(SResNotFound, [Name]);
-  SetPointer(PChar(FRes.Value), Length(FRes.Value));
+  SetPointer(PChar(FLRes.Value), Length(FLRes.Value));
 end;
 
 constructor TLazarusResourceStream.Create(const ResName: string; ResType: PChar);
@@ -4528,8 +4568,29 @@ end;
 constructor TLazarusResourceStream.CreateFromHandle(AHandle: TLResource);
 begin
   inherited Create;
-  FRes := AHandle;
-  SetPointer(PChar(FRes.Value), Length(FRes.Value));
+  FLRes := AHandle;
+  SetPointer(PChar(FLRes.Value), Length(FLRes.Value));
+end;
+
+{$ifdef UseRes}
+constructor TLazarusResourceStream.CreateFromHandle(Instance: TFPResourceHMODULE; AHandle: TFPResourceHandle);
+begin
+  FPRes := LoadResource(Instance, AHandle);
+  if FPRes <> 0 then
+    SetPointer(LockResource(FPRes), SizeOfResource(Instance, AHandle));
+end;
+{$endif}
+
+destructor TLazarusResourceStream.Destroy;
+begin
+{$ifdef UseRES}
+  if FPRes <> 0 then
+  begin
+    UnlockResource(FPRes);
+    FreeResource(FPRes);
+  end;
+{$endif}
+  inherited Destroy;
 end;
 
 function TLazarusResourceStream.Write(const Buffer; Count: Longint): Longint;
@@ -4541,8 +4602,8 @@ end;
 //------------------------------------------------------------------------------
 procedure InternalInit;
 begin
-  LazarusResources:=TLResourceList.Create;
-  RegisterInitComponentHandler(TComponent,@InitResourceComponent);
+  LazarusResources := TLResourceList.Create;
+  RegisterInitComponentHandler(TComponent, @InitResourceComponent);
 end;
 
 initialization
@@ -4550,7 +4611,7 @@ initialization
 
 finalization
   LazarusResources.Free;
-  LazarusResources:=nil;
+  LazarusResources := nil;
 
 end.
 
