@@ -1576,7 +1576,7 @@ begin
   try
     n := StrToIntDef(Unquote(List.Values['number-of-threads']), 0);
     if n < 2 then Exit; //nothing to switch
-    S := Unquote(List.EscapedValues['thread-ids']);
+    S := Unquote(List.Values['thread-ids']);
   finally
     List.Free;
   end;
