@@ -2296,6 +2296,9 @@ begin
   {$ifdef DbgVisualChange}
   DebugLn('TCustomGrid.VisualChange INIT ',DbgSName(Self));
   {$endif}
+  if FUpdateCount<>0 then
+    exit;
+    
   Include(FGridFlags, gfVisualChange);
   UpdateCachedSizes;
   
@@ -5639,7 +5642,7 @@ begin
   if FUpdateCount=0 then begin
     {$IfDef dbgPaint} DebugLn('Invalidate');{$Endif}
     inherited Invalidate;
-end;
+  end;
 end;
 
 procedure TCustomGrid.EditingDone;

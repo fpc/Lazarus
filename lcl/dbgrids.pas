@@ -305,11 +305,9 @@ type
     FGridStatus: TDBGridStatus;
     FOldControlStyle: TControlStyle;
     FCheckedBitmap, FUnCheckedBitmap, FGrayedBitmap: TBitmap;
-    FNeedUpdateWidths: boolean;
     FSelectedRows: TBookmarkList;
     FOnPrepareCanvas: TPrepareDbGridCanvasEvent;
     procedure EmptyGrid;
-    procedure CheckWidths;
     function GetCurrentColumn: TColumn;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
@@ -368,6 +366,7 @@ type
     procedure BeginLayout;
     procedure CellClick(const aCol,aRow: Integer); override;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure InvalidateSizes;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  ColumnEditorStyle(aCol: Integer; F: TField): TColumnButtonStyle;
     function  CreateColumns: TGridColumns; override;
@@ -416,7 +415,6 @@ type
     procedure Loaded; override;
     procedure MoveSelection; override;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
-    procedure Paint; override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
     procedure RemoveAutomaticColumns;
     procedure SelectEditor; override;
@@ -431,7 +429,6 @@ type
 
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property NeedUpdateWidths: boolean write FNeedUpdateWidths;
     property Options: TDBGridOptions read FOptions write SetOptions;
     property OptionsExtra: TDBGridExtraOptions read FExtraOptions write SetExtraOptions;
     property ReadOnly: Boolean read FReadOnly write FReadOnly default false;
@@ -721,14 +718,9 @@ begin
   ColWidths[0]:=12;
 end;
 
-procedure TCustomDBGrid.CheckWidths;
+procedure TCustomDBGrid.InvalidateSizes;
 begin
-  if FNeedUpdateWidths then begin
-    BeginUpdate;
-    VisualChange;
-    EndUpdate(uoNone);
-    FNeedUpdateWidths := False;
-  end;
+  GridFlags := GridFlags + [gfVisualChange];
 end;
 
 function TCustomDBGrid.GetCurrentColumn: TColumn;
@@ -2004,12 +1996,6 @@ begin
   {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown END'); {$Endif}
 end;
 
-procedure TCustomDBGrid.Paint;
-begin
-  CheckWidths;
-  inherited Paint;
-end;
-
 procedure TCustomDBGrid.PrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 begin
@@ -3204,7 +3190,7 @@ begin
       else
         result := AGrid.DefaultColWidth
     end else begin
-      aGrid.NeedUpdateWidths := True;
+      aGrid.InvalidateSizes;
       result := DEFCOLWIDTH;
     end;
     
