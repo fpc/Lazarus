@@ -136,6 +136,8 @@ type
   TGridFlagsOption = (gfEditorUpdateLock, gfNeedsSelectActive, gfEditorTab,
     gfRevEditorTab, gfVisualChange, gfDefRowHeightChanged);
   TGridFlags = set of TGridFlagsOption;
+  
+  TSortOrder = (soAscending, soDescending);
 
 const
   soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
@@ -537,6 +539,7 @@ type
     FFastEditing: boolean;
     FAltColorStartNormal: boolean;
     FFlat: Boolean;
+    FSortOrder: TSortOrder;
     FTitleStyle: TTitleStyle;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
@@ -962,6 +965,8 @@ type
     function  MouseToGridZone(X,Y: Integer): TGridZone;
     procedure SaveToFile(FileName: string);
     procedure SetFocus; override;
+    
+    property SortOrder: TSortOrder read FSortOrder write FSortOrder;
   end;
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
@@ -6663,6 +6668,7 @@ begin
   FHeaderPushZones := [gzFixedCols];
   ResetHotCell;
   ResetPushedCell;
+  FSortOrder := soAscending;
 end;
 
 destructor TCustomGrid.Destroy;
@@ -7831,8 +7837,11 @@ function TCustomStringGrid.DoCompareCells(Acol, ARow, Bcol, BRow: Integer
 begin
   if Assigned(OnCompareCells) then
     Result:=inherited DoCompareCells(Acol, ARow, Bcol, BRow)
-  else
+  else begin
     Result:=AnsiCompareText(Cells[ACol,ARow], Cells[BCol,BRow]);
+    if SortOrder=soDescending then
+      result:=-result;
+  end;
 end;
 
 procedure TCustomStringGrid.DoCopyToClipboard;
