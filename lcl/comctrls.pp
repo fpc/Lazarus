@@ -635,6 +635,7 @@ type
     procedure WSUpdateText;
     procedure WSUpdateImages;
     procedure WSUpdateChecked;
+    procedure WSUpdateState;
 
     procedure SetChecked(AValue: Boolean);
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);

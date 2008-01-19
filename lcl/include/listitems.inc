@@ -75,6 +75,7 @@ begin
     AValue.WSUpdateText;
     AValue.WSUpdateImages;
     AValue.WSUpdateChecked;
+    AValue.WSUpdateState;
   end;
 end;
 
@@ -130,6 +131,7 @@ begin
   FCacheItem.WSUpdateText;
   FCacheItem.WSUpdateImages;
   FCacheItem.WSUpdateChecked;
+  FCacheItem.WSUpdateState;
 end;
 
 {------------------------------------------------------------------------------}

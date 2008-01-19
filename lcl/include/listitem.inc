@@ -438,6 +438,26 @@ begin
   TWSCustomListViewClass(LV.WidgetSetClass).ItemSetChecked(LV, idx, Self, FChecked);
 end;
 
+procedure TListItem.WSUpdateState;
+var
+  AState: TListItemState;
+  AIsSet: Boolean;
+  LV: TCustomListView;
+  idx: Integer;
+begin
+  LV := FOwner.FOwner;
+  idx := GetIndex;
+  FStates := [];
+  for AState := Low(TListItemState) to High(TListItemState) do
+  begin
+    if TWSCustomListViewClass(LV.WidgetSetClass).ItemGetState(LV, idx, Self, AState, AIsSet) then
+    begin
+      if AIsSet then
+        include(FStates, AState);
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateAllowed                                                }
 {------------------------------------------------------------------------------}
