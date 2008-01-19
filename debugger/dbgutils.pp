@@ -54,7 +54,9 @@ type
   
 function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
-function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
+function DeleteEscapeChars(const AValue: String; const ARemoveQuotes: Boolean = True; const AEscapeChar: Char = '\'): String;
+function UnQuote(const AValue: String): String;
+
 
 procedure SmartWriteln(const s: string);
 
@@ -135,18 +137,59 @@ begin
   end;
 end;
 
-function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
+function Unquote(const AValue: String): String;
 var
-  i: Integer;
+  len: Integer;
 begin
-  Result:=AText;
-  i:=1;
-  while i<length(Result) do begin
-    if Result[i]=AEscapeChar then
-      System.Delete(Result,i,1);
-    Inc(i);
-  end;
+  len := Length(AValue);
+  if  len < 2 then Exit(AValue);
+
+  if (AValue[1] = '"') and (AValue[len] = '"')
+  then Result := Copy(AValue, 2, len - 2)
+  else Result := AValue;
 end;
+
+function DeleteEscapeChars(const AValue: String; const ARemoveQuotes: Boolean; const AEscapeChar: Char): String;
+var
+  cnt, len: Integer;
+  s: String;
+  Src, Dst: PChar;
+begin
+  len := Length(AValue);
+  if len = 0 then Exit('');
+
+  if ARemoveQuotes and (len >= 2) and (AValue[1] = '"') and (AValue[len] = '"')
+  then begin
+    Dec(len, 2);
+    Src := @AValue[2];
+    if len = 0 then Exit('');
+  end
+  else begin
+    Src := @AValue[1];
+  end;
+  cnt := len;
+  SetLength(Result, len); // allocate initial space
+
+  Dst := @Result[1];
+  while cnt > 0 do
+  begin
+    if Src^ = AEscapeChar
+    then begin
+      Dec(len);
+      Dec(cnt);
+      if cnt = 0 then Break;
+      Inc(Src);
+    end;
+    Dst^ := Src^;
+    Inc(Dst);
+    Inc(Src);
+    Dec(cnt);
+  end;
+
+  SetLength(Result, len); // adjust to actual length
+end;
+
+
 
 { TDelayedUdateItem }
 

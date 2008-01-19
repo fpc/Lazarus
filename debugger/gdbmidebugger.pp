@@ -206,6 +206,26 @@ type
 implementation
 
 type
+
+  { TGDMIValueList }
+  TGDMIValueList = Class(TStringList)
+  private
+//    function GetString(AIndex: Integer): string;
+//    function GetEscaped(AIndex: Integer): string;
+//    function GetEscapedValues(const AName: string): string;
+//    function GetValue(const AName : string): string;
+  public
+    constructor Create(const AResultValues: String);
+    constructor Create(AResult: TGDBMIExecResult);
+    constructor Create(const AResultValues: String; const APath: array of String);
+    constructor Create(AResult: TGDBMIExecResult; const APath: array of String);
+    procedure Init(AResultValues: String);
+    procedure SetPath(const APath: String); overload;
+    procedure SetPath(const APath: array of String); overload;
+//    property Strings[AIndex: Integer]: string read GetString; default;
+//    property Values[const AName: string]: string read GetValue;
+  end;
+
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
@@ -320,6 +340,152 @@ type
     Tag: Integer;
   end;
 
+{ TGDMIValueList }
+
+constructor TGDMIValueList.Create(const AResultValues: String);
+begin
+  inherited Create;
+  Init(AResultValues);
+end;
+
+constructor TGDMIValueList.Create(const AResultValues: String; const APath: array of String);
+begin
+  inherited Create;
+  Init(AResultValues);
+  SetPath(APath);
+end;
+
+constructor TGDMIValueList.Create(AResult: TGDBMIExecResult);
+begin
+  inherited Create;
+  Init(AResult.Values);
+end;
+
+constructor TGDMIValueList.Create(AResult: TGDBMIExecResult; const APath: array of String);
+begin
+  inherited Create;
+  Init(AResult.Values);
+  SetPath(APath);
+end;
+
+procedure TGDMIValueList.SetPath(const APath: String);
+begin
+  SetPath([APath]);
+end;
+
+procedure TGDMIValueList.SetPath(const APath: array of String);
+var
+  i: integer;
+begin
+  for i := low(APath) to High(APath) do
+  begin
+    Init(Unquote(Values[APath[i]]));
+  end;
+end;
+
+(*
+function TGDMIValueList.GetString(AIndex: Integer): string;
+begin
+  Result := DeleteEscapeChars(inherited Strings[AIndex], '\', True);
+end;
+
+function TGDMIValueList.GetEscaped(AIndex: Integer): string;
+begin
+  Result := Unquote(inherited Strings[AIndex]);
+end;
+
+function TGDMIValueList.GetEscapedValues(const AName: string): string;
+begin
+  Result := Unquote(inherited Values[AName]);
+end;
+
+function TGDMIValueList.GetValue(const AName: string): string;
+begin
+  Result := DeleteEscapeChars(inherited Values[AName], '\', True);
+end;
+*)
+
+procedure TGDMIValueList.Init(AResultValues: String);
+  function FindNextQuote(const S: String; idx: Integer) :Integer;
+  begin
+    while (idx <= Length(S)) do
+    begin
+      case S[idx] of
+        '\': Inc(idx, 2);
+        '"': Break;
+      else
+        inc(idx);
+      end;
+    end;
+    result := idx;
+  end;
+  
+  function FindClosingBracket(const S: String; idx: Integer) :Integer;
+  var
+    deep, len: Integer;
+    c : Char;
+  begin
+    deep := 1;
+    len := Length(S);
+    while idx <= len do
+    begin
+      case S[idx] of
+        '\': Inc(idx);
+        '"': idx := FindNextQuote(S, idx + 1);
+        '[', '{': Inc(deep);
+        ']', '}': Dec(deep);
+      end;
+      if deep = 0 then break;
+      Inc(idx);
+    end;
+    result := idx;
+  end;
+  
+var
+  n, len: Integer;
+begin
+  Clear;
+  if AResultValues = '' then Exit;
+  // strip surrounding '[]' and '{}' first
+  case AResultValues[1] of
+    '[': begin
+      if AResultValues[Length(AResultValues)] = ']'
+      then begin
+        System.Delete(AResultValues, Length(AResultValues), 1);
+        System.Delete(AResultValues, 1, 1);
+      end;
+    end;
+    '{': begin
+      if AResultValues[Length(AResultValues)] = '}'
+      then begin
+        System.Delete(AResultValues, Length(AResultValues), 1);
+        System.Delete(AResultValues, 1, 1);
+      end;
+    end;
+  end;
+
+  n := 1;
+  len := Length(AResultValues);
+  while n <= len do
+  begin
+    case AResultValues[n] of
+      '\': Inc(n); // skip escaped char
+      '"': n := FindNextQuote(AResultValues, n + 1);
+      '[', '{': n := FindClosingBracket(AResultValues, n + 1);
+      ',': begin
+        Add(Copy(AResultValues, 1, n - 1));
+        System.Delete(AResultValues, 1, n);
+        n := 1;
+        len := Length(AResultValues);
+        Continue;
+      end;
+    end;
+    Inc(n);
+  end;
+  if AResultValues <> ''
+  then Add(AResultValues);
+end;
+
 { =========================================================================== }
 { Some win32 stuff }
 { =========================================================================== }
@@ -349,98 +515,6 @@ end;
 { =========================================================================== }
 { Helpers }
 { =========================================================================== }
-
-function CreateMIValueList(AResultValues: String): TStringList;
-var
-  n: Integer;
-  InString: Boolean;
-  InList: Integer;
-  c: Char;
-begin
-  Result := TStringList.Create;
-  if AResultValues = '' then Exit;
-  // strip surrounding '[]' and '{}' first
-  case AResultValues[1] of
-    '[': begin
-      if AResultValues[Length(AResultValues)] = ']'
-      then begin
-        Delete(AResultValues, Length(AResultValues), 1);
-        Delete(AResultValues, 1, 1);
-      end;
-    end;
-    '{': begin
-      if AResultValues[Length(AResultValues)] = '}'
-      then begin
-        Delete(AResultValues, Length(AResultValues), 1);
-        Delete(AResultValues, 1, 1);
-      end;
-    end;
-  end;
-
-  n := 1;
-  InString := False;
-  InList := 0;
-  c := #0;
-  while (n <= Length(AResultValues)) do
-  begin
-    if c = '\'
-    then begin
-      // previous char was escape char
-      c := #0;
-      Inc(n);
-      Continue;
-    end;
-    c := AResultValues[n];
-    if c = '\'
-    then begin
-      Delete(AResultValues, n, 1);
-      Continue;
-    end;
-
-    if InString
-    then begin
-      if  c = '"'
-      then begin
-        InString := False;
-        Delete(AResultValues, n, 1);
-        Continue;
-      end;
-    end
-    else begin
-      if InList > 0
-      then begin
-        if c in [']', '}']
-        then Dec(InList);
-      end
-      else begin
-        if c = ','
-        then begin
-          Result.Add(Copy(AResultValues, 1, n - 1));
-          Delete(AResultValues, 1, n);
-          n := 1;
-          Continue;
-        end
-        else if c = '"'
-        then begin
-          InString := True;
-          Delete(AResultValues, n, 1);
-          Continue;
-        end;
-      end;
-      if c in ['[', '{']
-      then Inc(InList);
-    end;
-    Inc(n);
-  end;
-  if AResultValues <> ''
-  then Result.Add(AResultValues);
-end;
-
-function CreateMIValueList(AResult: TGDBMIExecResult): TStringList;
-begin
-  // TODO ? add check ?
-  Result := CreateMIValueList(AResult.Values);
-end;
 
 function CreateValueList(AResultValues: String): TStringList;
 var
@@ -512,7 +586,7 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 var
   S: String;
   R: TGDBMIExecResult;
-  List: TStringList;
+  List: TGDMIValueList;
 begin
   Result := False;
   
@@ -527,8 +601,8 @@ begin
   if  (R.State = dsError)
   and (FileName <> '')
   then begin
-    List := CreateMIValueList(R);
-    MessageDlg('Debugger', Format('Failed to load file: %s', [List.Values['msg']]), mtError, [mbOK], 0);
+    List := TGDMIValueList.Create(R);
+    MessageDlg('Debugger', Format('Failed to load file: %s', [DeleteEscapeChars((List.Values['msg']))]), mtError, [mbOK], 0);
     List.Free;
     SetState(dsStop);
     Exit;
@@ -599,7 +673,7 @@ end;
 
 function TGDBMIDebugger.CreateWatches: TDBGWatches;
 begin
-  Result := TDBGWatches.Create(Self, TGDBMIWatch);
+  Result := TGDBMIWatches.Create(Self, TGDBMIWatch);
 end;
 
 destructor TGDBMIDebugger.Destroy;
@@ -796,7 +870,7 @@ var
   OK: Boolean;
   S: String;
   R: TGDBMIExecResult;
-  ResultList: TStrings;
+  ResultList: TGDMIValueList;
 begin
   Result := '';
 
@@ -815,8 +889,8 @@ begin
 
   if OK
   then begin
-    ResultList := CreateMIValueList(R);
-    S := ResultList.Values['value'];
+    ResultList := TGDMIValueList.Create(R);
+    S := DeleteEscapeChars(ResultList.Values['value']);
     Result := GetPart('''', '''', S);
     ResultList.Free;
   end;
@@ -938,7 +1012,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
 var
   R: TGDBMIExecResult;
   S: String;
-  ResultList: TStringList;
+  ResultList: TGDMIValueList;
   ResultInfo: TGDBType;
   addr: TDbgPtr;
   e: Integer;
@@ -959,10 +1033,11 @@ begin
 
   Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
 
-  ResultList := CreateMIValueList(R);
+  ResultList := TGDMIValueList.Create(R);
   if R.State = dsError
   then AResult := ResultList.Values['msg']
   else AResult := ResultList.Values['value'];
+  AResult := DeleteEscapeChars(AResult);
   ResultList.Free;
   if R.State = dsError
   then Exit;
@@ -1179,16 +1254,12 @@ end;
 function TGDBMIDebugger.GetFrame(const AIndex: Integer): String;
 var
   R: TGDBMIExecResult;
-  S: String;
-  List: TStringList;
+  List: TGDMIValueList;
 begin
   Result := '';
   if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], [cfIgnoreError], R)
   then begin
-    List := CreateMIValueList(R);
-    S := List.Values['stack'];
-    List.Free;
-    List := CreateMIValueList(S);
+    List := TGDMIValueList.Create(R, ['stack']);
     Result := List.Values['frame'];
     List.Free;
   end;
@@ -1215,12 +1286,12 @@ end;
 function TGDBMIDebugger.GetStrValue(const AExpression: String; const AValues: array of const): String;
 var
   R: TGDBMIExecResult;
-  ResultList: TStringList;
+  ResultList: TGDMIValueList;
 begin
   if ExecuteCommand('-data-evaluate-expression %s', [Format(AExpression, AValues)], [cfIgnoreError], R)
   then begin
-    ResultList := CreateMIValueList(R);
-    Result := ResultList.Values['value'];
+    ResultList := TGDMIValueList.Create(R);
+    Result := DeleteEscapeChars(ResultList.Values['value']);
     ResultList.Free;
   end
   else Result := '';
@@ -1487,7 +1558,7 @@ procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult
 var
   R: TGDBMIExecResult;
   S: String;
-  List: TStringList;
+  List: TGDMIValueList;
   n: Integer;
   ID1, ID2: Integer;
 begin
@@ -1501,18 +1572,18 @@ begin
   
   S := '';
   if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
-  List := CreateMIValueList(R);
+  List := TGDMIValueList.Create(R);
   try
-    n := StrToIntDef(List.Values['number-of-threads'], 0);
+    n := StrToIntDef(Unquote(List.Values['number-of-threads']), 0);
     if n < 2 then Exit; //nothing to switch
-    S := List.Values['thread-ids'];
+    S := Unquote(List.EscapedValues['thread-ids']);
   finally
     List.Free;
   end;
-  List := CreateMIValueList(S);
-  ID1 := StrToIntDef(List.Values['thread-id'], 0);
+  List := TGDMIValueList.Create(S);
+  ID1 := StrToIntDef(Unquote(List.Values['thread-id']), 0);
   List.Delete(0);
-  ID2 := StrToIntDef(List.Values['thread-id'], 0);
+  ID2 := StrToIntDef(Unquote(List.Values['thread-id']), 0);
   List.Free;
   if ID1 = ID2 then Exit;
   
@@ -1543,7 +1614,7 @@ procedure TGDBMIDebugger.ProcessFrame(const AFrame: String);
 var
   S: String;
   e: Integer;
-  Frame: TStringList;
+  Frame: TGDMIValueList;
   Location: TDBGLocationRec;
 begin
   // Do we have a frame ?
@@ -1551,14 +1622,14 @@ begin
   then S := GetFrame(0)
   else S := AFrame;
 
-  Frame := CreateMIValueList(S);
+  Frame := TGDMIValueList.Create(S);
 
   Location.Address := 0;
-  Val(Frame.Values['addr'], Location.Address, e);
+  Val(Unquote(Frame.Values['addr']), Location.Address, e);
   if e=0 then ;
-  Location.FuncName := Frame.Values['func'];
-  Location.SrcFile := Frame.Values['file'];
-  Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
+  Location.FuncName := Unquote(Frame.Values['func']);
+  Location.SrcFile := Unquote(Frame.Values['file']);
+  Location.SrcLine := StrToIntDef(Unquote(Frame.Values['line']), -1);
 
   Frame.Free;
   
@@ -1827,7 +1898,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then begin
       ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
-      ExceptionMessage := DeleteEscapeChars(ExceptionMessage, '\');
+      ExceptionMessage := DeleteEscapeChars(ExceptionMessage, False);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
@@ -1861,14 +1932,14 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     ProcessFrame(GetFrame(1));
   end;
 
-  procedure ProcessSignalReceived(const AList: TStringList);
+  procedure ProcessSignalReceived(const AList: TGDMIValueList);
   var
     SigInt: Boolean;
     S: String;
   begin
     // TODO: check to run (un)handled
 
-    S := AList.Values['signal-name'];
+    S := Unquote(AList.Values['signal-name']);
     {$IFdef MSWindows}
     SigInt := S = 'SIGTRAP';
     {$ELSE}
@@ -1887,7 +1958,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   end;
 
 var
-  List: TStringList;
+  List: TGDMIValueList;
   Reason: String;
   BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
@@ -1896,9 +1967,9 @@ begin
   Result := True;
   FCurrentStackFrame :=  0;
   
-  List := CreateMIValueList(AParams);
+  List := TGDMIValueList.Create(AParams);
   try
-    Reason := List.Values['reason'];
+    Reason := Unquote(List.Values['reason']);
     if (Reason = 'exited-normally')
     then begin
       SetState(dsStop);
@@ -1907,7 +1978,7 @@ begin
     
     if Reason = 'exited'
     then begin
-      SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
+      SetExitCode(StrToIntDef(Unquote(List.Values['exit-code']), 0));
       SetState(dsStop);
       Exit;
     end;
@@ -1915,7 +1986,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
-      DoException('External: ' + List.Values['signal-name'], '');
+      DoException('External: ' + Unquote(List.Values['signal-name']), '');
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
@@ -1928,7 +1999,7 @@ begin
     
     if Reason = 'breakpoint-hit'
     then begin
-      BreakID := StrToIntDef(List.Values['bkptno'], -1);
+      BreakID := StrToIntDef(Unquote(List.Values['bkptno']), -1);
       if BreakID = -1
       then begin
         SetState(dsError);
@@ -2078,16 +2149,14 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
   function InsertBreakPoint(const AName: String): Integer;
   var
     R: TGDBMIExecResult;
-    ResultList, BkptList: TStringList;
+    ResultList: TGDMIValueList;
   begin
     ExecuteCommand('-break-insert %s', [AName], [cfIgnoreError], R);
     if R.State = dsError then Exit;
 
-    ResultList := CreateMIValueList(R);
-    BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-    Result := StrToIntDef(BkptList.Values['number'], -1);
+    ResultList := TGDMIValueList.Create(R, ['bkpt']);
+    Result := StrToIntDef(Unquote(ResultList.Values['number']), -1);
     ResultList.Free;
-    BkptList.Free;
   end;
 
   procedure SetTargetInfo(const AFileType: String);
@@ -2188,7 +2257,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
   var
     R: TGDBMIExecResult;
     S: String;
-    ResultList, BkptList: TStringList;
+    ResultList: TGDMIValueList;
   begin
     // Try to retrieve the address of main. Setting a break on main is past initialization
     if ExecuteCommand('info address main', [cfNoMICommand, cfIgnoreError], R)
@@ -2208,17 +2277,15 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     Result := R.State <> dsError;
     if not Result then Exit;
 
-    ResultList := CreateMIValueList(R);
-    BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-    FMainAddr := StrToIntDef(BkptList.Values['addr'], 0);
-    BkptList.Free;
+    ResultList := TGDMIValueList.Create(R, ['bkpt']);
+    FMainAddr := StrToIntDef(Unquote(ResultList.Values['addr']), 0);
     ResultList.Free;
   end;
   
 var
   R: TGDBMIExecResult;
-  S, FileType, EntryPoint: String;
-  List: TStringList;
+  FileType, EntryPoint: String;
+  List: TGDMIValueList;
   TargetPIDPart: String;
   TempInstalled, CanContinue: Boolean;
 begin
@@ -2283,12 +2350,9 @@ begin
     end
     else begin
       // OS X gdb has mi output here
-      List := CreateMIValueList(R);
-      S := List.Values['section-info'];
-      List.Free;
-      List := CreateMIValueList(S);
-      FileType := List.Values['filetype'];
-      EntryPoint := List.Values['entry-point'];
+      List := TGDMIValueList.Create(R, ['section-info']);
+      FileType := Unquote(List.Values['filetype']);
+      EntryPoint := Unquote(List.Values['entry-point']);
       List.Free;
     end;
     DebugLn('[Debugger] File type: ', FileType);
@@ -2428,14 +2492,13 @@ end;
 
 procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
 var
-  ResultList, BkptList: TStringList;
+  ResultList: TGDMIValueList;
 begin
   BeginUpdate;
   try
-    ResultList := CreateMIValueList(AResult);
-    BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-    FBreakID := StrToIntDef(BkptList.Values['number'], 0);
-    SetHitCount(StrToIntDef(BkptList.Values['times'], 0));
+    ResultList := TGDMIValueList.Create(AResult, ['bkpt']);
+    FBreakID := StrToIntDef(Unquote(ResultList.Values['number']), 0);
+    SetHitCount(StrToIntDef(Unquote(ResultList.Values['times']), 0));
     if FBreakID <> 0
     then SetValid(vsValid)
     else SetValid(vsInvalid);
@@ -2447,12 +2510,11 @@ begin
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if StrToIntDef(BkptList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
+      if StrToIntDef(Unquote(ResultList.Values['addr']), 0) = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
     ResultList.Free;
-    BkptList.Free;
   finally
     EndUpdate;
   end;
@@ -2507,18 +2569,19 @@ procedure TGDBMILocals.AddLocals(const AParams: String);
 var
   n, e: Integer;
   addr: TDbgPtr;
-  LocList, List: TStrings;
+  LocList, List: TGDMIValueList;
   S, Name, Value: String;
 begin
-  LocList := CreateMIValueList(AParams);
+  LocList := TGDMIValueList.Create(AParams);
+  List := TGDMIValueList.Create('');
   for n := 0 to LocList.Count - 1 do
   begin
-    List := CreateMIValueList(LocList[n]);
-    Name := List.Values['name'];
+    List.Init(LocList[n]);
+    Name := Unquote(List.Values['name']);
     if Name = 'this'
     then Name := 'Self';
 
-    Value := List.Values['value'];
+    Value := DeleteEscapeChars(List.Values['value']);
     // try to deref. strings
     S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
     if S <> ''
@@ -2532,8 +2595,8 @@ begin
     end;
 
     FLocals.Add(Name + '=' + Value);
-    FreeAndNil(List);
   end;
+  FreeAndNil(List);
   FreeAndNil(LocList);
 end;
 
@@ -2612,8 +2675,7 @@ end;
 procedure TGDBMILocals.LocalsNeeded;
 var
   R: TGDBMIExecResult;
-  S: String;
-  List: TStrings;
+  List: TGDMIValueList;
 begin
   if Debugger = nil then Exit;
   if FLocalsValid then Exit;
@@ -2623,13 +2685,7 @@ begin
     [TGDBMIDebugger(Debugger).FCurrentStackFrame], [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := CreateMIValueList(R);
-    S := List.Values['stack-args'];
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
-    S := List.Values['frame'];
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
+    List := TGDMIValueList.Create(R, ['stack-args', 'frame']);
     AddLocals(List.Values['args']);
     FreeAndNil(List);
   end;
@@ -2638,7 +2694,7 @@ begin
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := CreateMIValueList(R);
+    List := TGDMIValueList.Create(R);
     AddLocals(List.Values['locals']);
     FreeAndNil(List);
   end;
@@ -2747,15 +2803,15 @@ end;
 function TGDBMICallStack.CheckCount: Boolean;
 var
   R: TGDBMIExecResult;
-  List: TStrings;
+  List: TGDMIValueList;
   i, cnt: longint;
 begin
   Result := inherited CheckCount;
   if not Result then Exit;
 
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', [cfIgnoreError], R);
-  List := CreateMIValueList(R);
-  cnt := StrToIntDef(List.Values['depth'], -1);
+  List := TGDMIValueList.Create(R);
+  cnt := StrToIntDef(Unquote(List.Values['depth']), -1);
   FreeAndNil(List);
   if cnt = -1 then
   begin
@@ -2767,8 +2823,8 @@ begin
     repeat
       inc(i);
       TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth %d', [i], [cfIgnoreError], R);
-      List := CreateMIValueList(R);
-      cnt := StrToIntDef(List.Values['depth'], -1);
+      List := TGDMIValueList.Create(R);
+      cnt := StrToIntDef(Unquote(List.Values['depth']), -1);
       FreeAndNil(List);
       if (cnt = -1) then begin
         // no valid stack-info-depth found, so the previous was the last valid one
@@ -2783,9 +2839,9 @@ function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntr
 var                 
   n, e: Integer;
   R: TGDBMIExecResult;
-  S: String;
   addr: TDbgPtr;
-  Arguments, ArgList, List: TStrings;
+  Arguments: TStringList;
+  ArgList, List: TGDMIValueList;
 begin
   if Debugger = nil then Exit;
 
@@ -2796,21 +2852,16 @@ begin
 
   if R.State <> dsError
   then begin
-    List := CreateMIValueList(R);
-    S := List.Values['stack-args'];
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
-    S := List.Values['frame']; // all arguments
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
-    S := List.Values['args'];
-    FreeAndNil(List);
+    ArgList := TGDMIValueList.Create(R, ['stack-args', 'frame', 'args']);
 
-    ArgList := CreateMIValueList(S);
-    for n := 0 to ArgList.Count - 1 do
-    begin
-      List := CreateMIValueList(ArgList[n]);
-      Arguments.Add(List.Values['name'] + '=' + List.Values['value']);
+    if ArgList.Count > 0
+    then begin
+      List := TGDMIValueList.Create('');
+      for n := 0 to ArgList.Count - 1 do
+      begin
+        List.Init(ArgList[n]);
+        Arguments.Add(Unquote(List.Values['name']) + '=' + DeleteEscapeChars(List.Values['value']));
+      end;
       FreeAndNil(List);
     end;
     FreeAndNil(ArgList);
@@ -2820,23 +2871,17 @@ begin
                                           [AIndex], [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := CreateMIValueList(R);
-    S := List.Values['stack'];
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
-    S := List.Values['frame'];
-    FreeAndNil(List);
-    List := CreateMIValueList(S);
+    List := TGDMIValueList.Create(R, ['stack', 'frame']);
     addr := 0;
-    Val(List.Values['addr'], addr, e);
+    Val(Unquote(List.Values['addr']), addr, e);
     if e=0 then ;
     Result := TCallStackEntry.Create(
       AIndex,
       addr,
       Arguments,
-      List.Values['func'],
-      List.Values['file'],
-      StrToIntDef(List.Values['line'], 0)
+      Unquote(List.Values['func']),
+      Unquote(List.Values['file']),
+      StrToIntDef(Unquote(List.Values['line']), 0)
     );
 
     FreeAndNil(List);
