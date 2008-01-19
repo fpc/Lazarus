@@ -3087,6 +3087,7 @@ resourcestring
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
   lisPckEditViewPackgeSource = 'View Package Source';
+  lisPEViewToDoList = 'View ToDo list';
   lisPckEditGeneralOptions = 'General Options';
   lisPckEditSaveChanges = 'Save Changes?';
   lisPckEditPackageHasChangedSavePackage = 'Package %s%s%s has changed.%sSave '

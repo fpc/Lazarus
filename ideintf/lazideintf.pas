@@ -133,6 +133,8 @@ type
     procedure RemoveHandler(HandlerType: TLazarusIDEHandlerType;
                             const AMethod: TMethod);
   protected
+    fOwningComponent: TComponent;
+
     function GetActiveProject: TLazProject; virtual; abstract;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
@@ -141,6 +143,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property OwningComponent: TComponent read fOwningComponent;
     
     // the main window with the IDE menu
     function GetMainBar: TComponent; virtual; abstract;

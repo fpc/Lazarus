@@ -59,7 +59,7 @@ uses
   // Codetools
   CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
-  IDEImagesIntf, PackageIntf, ProjectIntf,
+  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs;
 
@@ -214,6 +214,7 @@ procedure TfrmTodo.SetMainSourceFilename(const AValue: String);
 begin
   if fMainSourceFilename=AValue then exit;
   fMainSourceFilename:=AValue;
+  Caption:=lisTodoListCaption+' '+fMainSourceFilename;
   acRefresh.Execute;
 end;
 
@@ -451,7 +452,11 @@ begin
         end;
       end;
     end;
-    if Assigned(OnOpenFile) then OnOpenFile(Self,CurFilename,TheLine);
+    if Assigned(OnOpenFile) then
+      OnOpenFile(Self,CurFilename,TheLine)
+    else
+      LazarusIDE.DoOpenFileAndJumpToPos(CurFilename,Point(1,TheLine),-1,-1,
+        [ofOnlyIfExists,ofRegularFile,ofVirtualFile,ofDoNotLoadResource]);
   end;
 end;
 
@@ -533,8 +538,10 @@ begin
     end;
     if CurPackage<>nil then begin
       // scan all units of package
+      DebugLn(['TfrmTodo.acRefreshExecute AAA1 ',CurPackage.Filename]);
       for i:=0 to CurPackage.FileCount-1 do begin
         CurPkgFile:=CurPackage.Files[i];
+        DebugLn(['TfrmTodo.acRefreshExecute AAA2 ',i,' ',CurPkgFile.Filename]);
         if FilenameIsPascalUnit(CurPkgFile.Filename) then
           ScanFile(CurPkgFile.Filename);
       end;
@@ -582,7 +589,7 @@ var
   CodeXYPosition: TCodeXYPosition;
   i: Integer;
 begin
-  DebugLn(['TfrmTodo.LoadFile ',aFileName]);
+  DebugLn(['TfrmTodo.ScanFile ',aFileName]);
   ExpandedFilename:=TrimFilename(aFileName);
   if not FilenameIsPascalUnit(ExpandedFilename) then exit;
 

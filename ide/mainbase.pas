@@ -77,8 +77,6 @@ type
   private
     FToolStatus: TIDEToolStatus;
   protected
-    OwningComponent: TComponent;
-
     function GetMainBar: TComponent; override;
 
     function CreateMenuSeparator : TMenuItem;
@@ -217,7 +215,7 @@ begin
   MainIDE:=Self;
   // Do not own everything in one big component hierachy. Otherwise the
   // notifications slow down everything
-  OwningComponent:=TComponent.Create(nil);
+  fOwningComponent:=TComponent.Create(nil);
   inherited Create(TheOwner);
 end;
 

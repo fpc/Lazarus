@@ -59,7 +59,7 @@ uses
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg, IDETranslations,
-  TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs,
+  TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs, TodoList,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg, InstallPkgSetDlg,
   // bosses
@@ -97,8 +97,10 @@ type
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
-    function OnPackageEditorViewPkgSourcePackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
+    function OnPackageEditorViewPkgSource(Sender: TObject;
+                                          APackage: TLazPackage): TModalResult;
+    function OnPackageEditorViewPkgToDos(Sender: TObject;
+                                         APackage: TLazPackage): TModalResult;
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
@@ -284,6 +286,7 @@ type
                                 Flags: TPkgUninstallFlags): TModalResult;
     procedure DoTranslatePackage(APackage: TLazPackage);
     function DoOpenPackageSource(APackage: TLazPackage): TModalResult;
+    function DoViewPackageToDos(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
@@ -849,10 +852,16 @@ begin
     Result:=DoSavePackage(APackage,[]);
 end;
 
-function TPkgManager.OnPackageEditorViewPkgSourcePackage(Sender: TObject;
+function TPkgManager.OnPackageEditorViewPkgSource(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
   Result:=DoOpenPackageSource(APackage);
+end;
+
+function TPkgManager.OnPackageEditorViewPkgToDos(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoViewPackageToDos(APackage);
 end;
 
 procedure TPkgManager.PackageGraphBeginUpdate(Sender: TObject);
@@ -1765,7 +1774,8 @@ begin
   PackageEditors.OnAddToProject:=@OnPackageEditorAddToProject;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
-  PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSourcePackage;
+  PackageEditors.OnViewPackageSource:=@OnPackageEditorViewPkgSource;
+  PackageEditors.OnViewPackageToDos:=@OnPackageEditorViewPkgToDos;
   PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnImExportCompilerOptions:=@OnPackageEditorImExportCompilerOptions;
   PackageEditors.OnCreateMakefile:=@OnPackageEditorCreateMakefile;
@@ -3117,6 +3127,8 @@ var
 
 var
   PkgFile: TPkgFile;
+  CurPackage: TLazPackage;
+  i: Integer;
 begin
   //DebugLn(['TPkgManager.GetPossibleOwnersOfUnit ',UnitFilename]);
   Result:=TFPList.Create;
@@ -3132,6 +3144,13 @@ begin
     PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true,true);
     if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
       Result.Add(PkgFile.LazPackage);
+    // check package source files (they usually do not have a TPkgFile)
+    for i:=0 to PackageGraph.Count-1 do begin
+      CurPackage:=PackageGraph.Packages[i];
+      if (CompareFilenames(UnitFilename,CurPackage.GetSrcFilename)=0)
+      and (Result.IndexOf(CurPackage)<0) then
+        Result.Add(CurPackage);
+    end;
   end;
 
   // clean up
@@ -3606,6 +3625,21 @@ begin
     exit;
   end;
   Result:=MainIDE.DoOpenEditorFile(Filename,-1,[ofRegularFile]);
+end;
+
+function TPkgManager.DoViewPackageToDos(APackage: TLazPackage): TModalResult;
+begin
+  Result:=mrOk;
+  if not Assigned(frmToDo) then begin
+    frmToDo:=TfrmToDo.Create(LazarusIDE.OwningComponent);
+  end;
+  if APackage.GetSrcFilename<>'' then
+    frmToDo.MainSourceFilename:=APackage.GetSrcFilename
+  else
+    frmToDo.MainSourceFilename:='';
+
+  frmToDo.ShowOnTop;
+  Result:=mrOk;
 end;
 
 function TPkgManager.DoCompileAutoInstallPackages(

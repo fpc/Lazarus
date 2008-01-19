@@ -471,10 +471,6 @@ type
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
                                        const Caret: TPoint; TopLine: integer);
 
-    // view project ToDo list events
-    procedure ViewProjectTodosOpenFile(Sender: TObject;
-      const Filename: string; const LineNumber: integer);
-
     // CodeToolBoss events
     procedure OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
                                              var Abort: boolean);
@@ -8376,7 +8372,6 @@ function TMainIDE.DoShowToDoList: TModalResult;
 begin
   if not Assigned(frmToDo) then begin
     frmToDo:=TfrmToDo.Create(OwningComponent);
-    frmToDo.OnOpenFile:=@ViewProjectTodosOpenFile;
   end;
 
   if Project1.MainUnitInfo<>nil then
@@ -10760,12 +10755,6 @@ procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
   const Filename: string; const Caret: TPoint; TopLine: integer);
 begin
   DoJumpToSourcePosition(Filename,Caret.X,Caret.Y,TopLine,true);
-end;
-
-procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
-  const Filename: string; const LineNumber: integer);
-begin
-  DoJumpToSourcePosition(Filename,1,LineNumber,-1,true);
 end;
 
 procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
