@@ -5434,9 +5434,7 @@ begin
     else
       ListAdd(FWinControls, AControl);
 
-    if TWinControl(AControl).TabStop or
-       ([csAcceptsControls, csHasInternalChilds] * AControl.ControlStyle <> []) then
-      ListAdd(FTabList, AControl);
+    ListAdd(FTabList, AControl);
 
     if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
     and AControl.CanTab then
