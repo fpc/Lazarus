@@ -148,6 +148,7 @@ type
     procedure OnApplicationActivate(Sender: TObject);
     procedure OnApplicationKeyDown(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
+    procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
     procedure OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
     procedure OnRemoteControlTimer(Sender: TObject);
 
@@ -1170,6 +1171,7 @@ begin
   Application.AddOnIdleHandler(@OnApplicationIdle);
   Application.AddOnActivateHandler(@OnApplicationActivate);
   Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
+  Application.AddOnDropFilesHandler(@OnApplicationDropFiles);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   SetupHints;
   
@@ -12737,6 +12739,36 @@ begin
   end else if Command=ecContextHelp then begin
     Key:=VK_UNKNOWN;
     ShowContextHelpForIDE(Sender);
+  end;
+end;
+
+procedure TMainIDE.OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
+var
+  OpenFlags: TOpenFlags;
+  I: Integer;
+  AFilename: String;
+begin
+  //debugln('TMainIDE.OnApplicationDropFiles FileNames=', dbgs(Length(FileNames)));
+  if Length(FileNames) > 0 then
+  begin
+    OpenFlags := [ofAddToRecent];
+    if Length(FileNames) > 1 then
+      Include(OpenFlags, ofRegularFile);
+
+    for I := 0 to High(FileNames) do
+    begin
+      AFilename := CleanAndExpandFilename(FileNames[I]);
+
+      if I < High(FileNames) then
+        Include(OpenFlags, ofMultiOpen)
+      else
+        Exclude(OpenFlags, ofMultiOpen);
+
+      if DoOpenEditorFile(AFilename, -1, OpenFlags) = mrAbort then Break;
+    end;
+    
+    SetRecentFilesMenu;
+    SaveEnvironment;
   end;
 end;
 
