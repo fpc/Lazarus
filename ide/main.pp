@@ -8379,7 +8379,10 @@ begin
     frmToDo.OnOpenFile:=@ViewProjectTodosOpenFile;
   end;
 
-  frmToDo.FileName:=Project1.MainUnitInfo.Filename;
+  if Project1.MainUnitInfo<>nil then
+    frmToDo.MainSourceFilename:=Project1.MainUnitInfo.Filename
+  else
+    frmToDo.MainSourceFilename:='';
 
   frmToDo.ShowOnTop;
   Result:=mrOk;

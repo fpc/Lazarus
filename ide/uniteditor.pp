@@ -1942,9 +1942,12 @@ Var
 begin
   if ReadOnly then Exit;
   aTodoItem := ExecuteTodoDialog;
-  if Assigned(aTodoItem) then
-    FEditor.SelText := aTodoItem.AsComment;
-  aTodoItem.Free;
+  try
+    if Assigned(aTodoItem) then
+      FEditor.SelText := aTodoItem.AsComment;
+  finally
+    aTodoItem.Free;
+  end;
 end;
 
 procedure TSourceEditor.InsertDateTime;

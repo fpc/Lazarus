@@ -54,7 +54,7 @@ type
     { public declarations }
   end;
   
-Function ExecuteTodoDialog: TTodoItem;
+function ExecuteTodoDialog: TTodoItem;
 
 
 implementation
@@ -82,7 +82,7 @@ begin
   aTodoDialog.ShowModal;
   if aTodoDialog.ModalResult = mrOk then
   begin
-    Result := TTodoItem.Create;
+    Result := TTodoItem.Create(nil);
     Result.AltNotation := True; // TODO: Should be an option in the future
     Result.Category    := aTodoDialog.CategoryEdit.Text;
     Result.Done        := False;

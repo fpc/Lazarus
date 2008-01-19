@@ -24,36 +24,26 @@
  ***************************************************************************
 
 
-  Author: Olivier GUILBAUD <golivier@free.fr>
+  Author:
+   Olivier GUILBAUD <golivier@free.fr>,
+   Gerard Visent <gerardusmercator@gmail.com>
+   Mattias Gaertner
 
   Abstract:
-    List all to do comments of current project.
+    List all to do comments of current project and the file
+    projectname.todo.
+    {TODO -oOwnerName -cCategoryName: Todo_text}
+    {DONE -oOwnerName -cCategoryName: Todo_text}
+    {#todo -oOwnerName -cCategoryName: Todo_text}
+    {#done -oOwnerName -cCategoryName: Todo_text}
+
+    the -o and -c tags are optional.
     
-    the todo comments has this syntax
-      {#todoxxx yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy}
-      or
-      //#todoxxx yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-      or
-      (.*#todoxxx yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy *.) (delete the .)
-      
-    where  xxx     is the priority
-           yyy..yy is the text of todo
-           
-   you can create an file naming projectname.todo and add list of todo
-
+    Sub comments in nested comments are ignored.
 *)
-(*
-Modified by Gerard Visent <gerardusmercator@gmail.com> on 5/11/2007
-- Extended to recognize Delphi syntax.
-- It works now with the folowing tags:
-  #todo, #done, TODO, DONE
-- Owner and Category tags are also processed and displayed
-  Syntax is -oXXXXX for the owner and -cXXXXX for the category
-- Info on the todo items is also stored in a TTodoItem object, for more flexibility
-*)
-
 {#todo options }
 {#todo print an todo report }
+
 
 unit TodoList;
 
@@ -62,11 +52,16 @@ unit TodoList;
 interface
 
 uses
+  // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StrUtils, ExtCtrls, ComCtrls, Menus, Buttons, GraphType, ActnList, AvgLvlTree,
   StdCtrls, LCLIntf, LCLType,
-  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs, IDEImagesIntf,
-  LazarusIDEStrConsts, Project;
+  // Codetools
+  CodeAtom, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
+  // IDEIntf
+  IDEImagesIntf, PackageIntf, ProjectIntf,
+  // IDE
+  LazarusIDEStrConsts, PackageDefs;
 
 
 Const
@@ -78,28 +73,31 @@ Const
 type
   TOnOpenFile = procedure(Sender: TObject; const Filename: string;
                           const LineNumber: integer) of object;
-
+  TTLScannedFile = class;
 
   { TTodoItem: Class to hold TODO item information }
 
-  TTodoItem = Class(TObject)
+  TTodoItem = class(TObject)
   private
     FAltNotation: boolean;
     FCategory: string;
     FDone: boolean;
+    FFilename: string;
     FLineNumber: integer;
-    FModule: string;
     FOwner: string;
     FPriority: integer;
     FText: string;
+    FTLFile: TTLScannedFile;
     function GetAsComment: string;
     function GetAsString: string;
-  published
+  public
+    constructor Create(aTLFile: TTLScannedFile);
+    property TLFile: TTLScannedFile read FTLFile;
     property AltNotation: boolean read FAltNotation write FAltNotation;
     property Category: string read FCategory write FCategory;
     property Done: boolean read FDone write FDone;
     property LineNumber: integer read FLineNumber write FLineNumber;
-    property Module: string read FModule write FModule;
+    property Filename: string read FFilename write FFilename;
     property Owner: string read FOwner write FOwner;
     property Priority: integer read FPriority write FPriority;
     property Text: string read FText write FText;
@@ -109,10 +107,20 @@ type
   
   { TTLScannedFiles }
 
-  TTLScannedFiles = class
+  TTLScannedFile = class
+    fItems: TFPList;// list of TTodoItem
+  private
+    function GetCount: integer;
+    function GetItems(Index: integer): TTodoItem;
   public
     Filename: string; // = Tool.MainFilename
     CodeChangeStep: integer; // = Tool.Scanner.ChangeStep
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Add(Item: TTodoItem);
+    property Count: integer read GetCount;
+    property Items[Index: integer]: TTodoItem read GetItems; default;
   end;
 
   { TfrmTodo }
@@ -121,7 +129,7 @@ type
     acGoto: TAction;
     acRefresh: TAction;
     ActionList: TActionList;
-    lvTodo: TListView;
+    lvTodo: TListView;// lvTodo.Items.Data is TTodoItem (they belong to the TTLScannedFile)
     StatusBar: TStatusBar;
     ToolBar: TToolBar;
     tbGoto: TToolButton;
@@ -134,26 +142,25 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
     procedure lvTodoClick(Sender: TObject);
   private
-    { private declarations }
     fBuild       : Boolean;
-    fFileName    : String;
+    fMainSourceFilename    : String;
     FOnOpenFile  : TOnOpenFile;
     fRootCBuffer : TCodeBuffer;
-    fScannedFiles: TAvgLvlTree;// tree of TTLScannedFiles
+    fScannedFiles: TAvgLvlTree;// tree of TTLScannedFile
 
-    procedure SetFileName(const AValue: String);
+    procedure SetMainSourceFilename(const AValue: String);
 
-    Function  GetToDoItem(const aFileName: string; const SComment, EComment: string;
-        const TokenString: string; LineNumber: Integer): TTodoItem ;
+    function  CreateToDoItem(aTLFile: TTLScannedFile;
+        const aFileName: string; const SComment, EComment: string;
+        const TokenString: string; LineNumber: Integer): TTodoItem;
     procedure AddListItem(aTodoItem: TTodoItem);
     
-    procedure LoadFile(aFileName : string);
+    procedure ScanFile(aFileName : string);
   public
-    { public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-    property FileName : String read fFileName write SetFileName;
+    property MainSourceFilename : String read fMainSourceFilename write SetMainSourceFilename;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
   end;
 
@@ -164,14 +171,14 @@ implementation
 
 function CompareTLScannedFiles(Data1, Data2: Pointer): integer;
 begin
-  Result:=CompareFilenames(TTLScannedFiles(Data1).Filename,
-                           TTLScannedFiles(Data2).Filename);
+  Result:=CompareFilenames(TTLScannedFile(Data1).Filename,
+                           TTLScannedFile(Data2).Filename);
 end;
 
 function CompareAnsiStringWithTLScannedFile(Filename, ScannedFile: Pointer): integer;
 begin
   Result:=CompareFilenames(AnsiString(Filename),
-                           TTLScannedFiles(ScannedFile).Filename);
+                           TTLScannedFile(ScannedFile).Filename);
 end;
 
 { TfrmTodo }
@@ -185,15 +192,9 @@ begin
 end;
 
 destructor TfrmTodo.Destroy;
-var
-  i: integer;
 begin
   fScannedFiles.FreeAndClear;
   FreeAndNil(fScannedFiles);
-  for i := 0 to lvTodo.Items.Count-1 do begin
-    TTodoItem(lvTodo.Items[i].Data).Free;
-    lvTodo.Items[i].Data:=nil;
-  end;
   inherited Destroy;
 end;
 
@@ -209,15 +210,16 @@ begin
 end;
 
 //Initialise the todo project and find them
-procedure TfrmTodo.SetFileName(const AValue: String);
+procedure TfrmTodo.SetMainSourceFilename(const AValue: String);
 begin
-  if fFileName=AValue then exit;
-  fFileName:=AValue;
+  if fMainSourceFilename=AValue then exit;
+  fMainSourceFilename:=AValue;
   acRefresh.Execute;
 end;
 
-function TfrmTodo.GetToDoItem(const aFileName: string; const SComment,
-  EComment: string; const TokenString: string; LineNumber: Integer): TTodoItem;
+function TfrmTodo.CreateToDoItem(aTLFile: TTLScannedFile;
+  const aFileName: string; const SComment, EComment: string;
+  const TokenString: string; LineNumber: Integer): TTodoItem;
 var
   N,Strlen    : Integer;
   TempStr       : string;
@@ -301,7 +303,8 @@ begin
   end;
   
   // Remove the ending comment chars from input string
-  if (eComment<>'') and (Pos(EComment, ParsingString)=Length(ParsingString)- Length(EComment)+1) then
+  if (eComment<>'')
+  and (Pos(EComment, ParsingString)=Length(ParsingString)- Length(EComment)+1) then
     ParsingString := Copy(ParsingString, 1, Length(ParsingString)-Length(eComment));
   
   // Remove Todo/Done flag from input string
@@ -310,11 +313,14 @@ begin
   else
     Delete(ParsingString, 1, 5);
 
-  Result := TTodoItem.Create;
+  Result := TTodoItem.Create(aTLFile);
   Result.Done := IsDone;
   Result.AltNotation := IsAltNotation;
   Result.LineNumber  := LineNumber;
-  Result.Module      := aFileName;
+  Result.Filename    := aFileName;
+  if aTLFile<>nil then begin
+    aTLFile.Add(Result);
+  end;
 
   n := 1;
   TempStr := '';
@@ -404,13 +410,13 @@ begin
   if Assigned(aListItem) and Assigned(aListItem.Data) then
   begin
     aTodoItem := TTodoItem(aListItem.Data);
-    CurFileName := aTodoItem.Module;
+    CurFileName := aTodoItem.Filename;
     TheLine     := aTodoItem.LineNumber;
     if not FileNameIsAbsolute(CurFileName) then
     begin
       if Assigned(CodeToolBoss) then
       begin
-        fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
+        fRootCBuffer:=CodeToolBoss.LoadFile(fMainSourceFilename,false,false);
         if not Assigned(fRootCBuffer) then Exit;
         if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
                                           UsedImplementationFilenames) then
@@ -451,45 +457,90 @@ end;
 
 procedure TfrmTodo.acRefreshExecute(Sender: TObject);
 var
-  UsedInterfaceFilenames,
-  UsedImplementationFilenames: TStrings;
   i: integer;
   St : String;
+  Owners: TFPList;
+  CurOwner: TObject;
+  CurProject: TLazProject;
+  CurPackage: TLazPackage;
+  CurProjFile: TLazProjectFile;
+  CurPkgFile: TPkgFile;
 begin
   if fBuild then Exit;
 
+  //DebugLn(['TfrmTodo.acRefreshExecute MainSourceFilename=',MainSourceFilename]);
+
   Screen.Cursor:=crHourGlass;
-  Try
+  Owners:=nil;
+  try
     fBuild:=True;
     lvTodo.Items.Clear;
-    //Find an '.todo' filename
-    St:=ChangeFileExt(fFileName,'.todo');
-    If FileExists(St) then
-      LoadFile(St);
+    
+    if MainSourceFilename='' then exit;
+    
+    // Find an '.todo' file of the main source
+    St:=ChangeFileExt(MainSourceFilename,'.todo');
+    if FileExists(St) then
+      ScanFile(St);
 
-    //Load project file
-    LoadFile(fFileName);
-
-    if Assigned(CodeToolBoss) then
-    begin
-      fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
-      if not Assigned(fRootCBuffer) then Exit;
-
-      if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
-                                        UsedImplementationFilenames) then
-      begin
-        try
-          for i:=0 to UsedInterfaceFilenames.Count-1 do
-            LoadFile(UsedInterfaceFilenames[i]);
-          for i:=0 to UsedImplementationFilenames.Count-1 do
-            LoadFile(UsedImplementationFilenames[i]);
-        finally
-          UsedImplementationFilenames.Free;
-          UsedInterfaceFilenames.Free;
+    // Scan main source file
+    ScanFile(MainSourceFilename);
+    
+    // find project/package
+    CurOwner:=nil;
+    CurProject:=nil;
+    CurPackage:=nil;
+    Owners:=PackageEditingInterface.GetOwnersOfUnit(MainSourceFilename);
+    if (Owners<>nil) then begin
+      i:=0;
+      while i<Owners.Count do begin
+        CurOwner:=TObject(Owners[0]);
+        if CurOwner is TLazProject then begin
+          // this file is owned by a project
+          CurProject:=TLazProject(CurOwner);
+          if (CurProject.MainFile<>nil)
+          and (CompareFilenames(CurProject.MainFile.Filename,MainSourceFilename)=0)
+          then begin
+            // create the list of todo items for this project
+            break;
+          end;
+          CurProject:=nil;
+        end else if CurOwner is TLazPackage then begin
+          // this file is owned by a package
+          CurPackage:=TLazPackage(CurOwner);
+          if (CurPackage.GetSrcFilename<>'')
+          and (CompareFilenames(CurPackage.GetSrcFilename,MainSourceFilename)=0)
+          then begin
+            // create the list of todo items for this package
+            break;
+          end;
+          CurPackage:=nil;
         end;
+        inc(i);
+      end;
+      if i=Owners.Count then
+        CurOwner:=nil;// no appropriate owner found
+    end;
+
+    if CurProject<>nil then begin
+      // scan all units of project
+      for i:=0 to CurProject.FileCount-1 do begin
+        CurProjFile:=CurProject.Files[i];
+        if CurProjFile.IsPartOfProject
+        and FilenameIsPascalUnit(CurProjFile.Filename)then
+          ScanFile(CurProjFile.Filename);
+      end;
+    end;
+    if CurPackage<>nil then begin
+      // scan all units of package
+      for i:=0 to CurPackage.FileCount-1 do begin
+        CurPkgFile:=CurPackage.Files[i];
+        if FilenameIsPascalUnit(CurPkgFile.Filename) then
+          ScanFile(CurPkgFile.Filename);
       end;
     end;
   finally
+    Owners.Free;
     Screen.Cursor:=crDefault;
     fBuild:=False;
   end;
@@ -509,33 +560,30 @@ begin
       aListItem.Caption := ' ';
     aListitem.SubItems.Add(aTodoItem.Text);
     aListitem.SubItems.Add(IntToStr(aTodoItem.Priority));
-    aListitem.SubItems.Add(aTodoItem.Module);
+    aListitem.SubItems.Add(aTodoItem.Filename);
     aListitem.SubItems.Add(IntToStr(aTodoItem.LineNumber));
     aListitem.SubItems.Add(aTodoItem.Owner);
     aListitem.SubItems.Add(aTodoItem.Category);
   end;
 end;
 
-
-procedure TfrmTodo.LoadFile(aFileName: string);
+procedure TfrmTodo.ScanFile(aFileName: string);
 var
   ExpandedFilename: String;
-  aTodoItem: TTodoItem;
   AVLNode: TAvgLvlTreeNode;
   Tool: TCodeTool;
   Code: TCodeBuffer;
-  Item: TTLScannedFiles;
+  CurFile: TTLScannedFile;
   Src: String;
   p: Integer;
   NestedComment: Boolean;
   CommentEnd: LongInt;
   CommentStr: String;
   CodeXYPosition: TCodeXYPosition;
+  i: Integer;
 begin
   DebugLn(['TfrmTodo.LoadFile ',aFileName]);
-  if not FileNameIsAbsolute(aFileName) then
-    aFileName:=AppendPathDelim(Project1.ProjectDirectory)+aFileName;
-  ExpandedFilename:=CleanAndExpandFilename(aFileName);
+  ExpandedFilename:=TrimFilename(aFileName);
   if not FilenameIsPascalUnit(ExpandedFilename) then exit;
 
   Code:=CodeToolBoss.LoadFile(ExpandedFilename,true,false);
@@ -545,25 +593,29 @@ begin
 
   AVLNode:=fScannedFiles.FindKey(Pointer(Tool.MainFilename),
                                  @CompareAnsiStringWithTLScannedFile);
-  Item:=nil;
-  if AVLNode<>nil then begin
-    Item:=TTLScannedFiles(AVLNode.Data);
-    // Abort if this file has already been scanned
-    if Item.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
-  end;
-
-  // Add file name to list of scanned files
-  if Item=nil then begin
-    Item:=TTLScannedFiles.Create;
-    Item.Filename:=Tool.MainFilename;
-    Item.CodeChangeStep:=Tool.Scanner.ChangeStep;
-  end;
-
-  // Display file name being processed
-  //StatusBar.SimpleText := aFileName;
-  //StatusBar.Repaint;
-
+  CurFile:=nil;
   try
+    if AVLNode<>nil then begin
+      CurFile:=TTLScannedFile(AVLNode.Data);
+      // Abort if this file has already been scanned and has not changed
+      if CurFile.CodeChangeStep=Tool.Scanner.ChangeStep then exit;
+    end;
+
+    // Add file name to list of scanned files
+    if CurFile=nil then begin
+      CurFile:=TTLScannedFile.Create;
+      CurFile.Filename:=Tool.MainFilename;
+      fScannedFiles.Add(CurFile);
+    end;
+    // save ChangeStep
+    CurFile.CodeChangeStep:=Tool.Scanner.ChangeStep;
+    // clear old items
+    CurFile.Clear;
+
+    // Display file name being processed
+    //StatusBar.SimpleText := aFileName;
+    //StatusBar.Repaint;
+
     Src:=Tool.Src;
     p:=1;
     NestedComment:=CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename);
@@ -575,17 +627,18 @@ begin
       CommentStr:=copy(Src,p,CommentEnd-p);
       //DebugLn(['TfrmTodo.LoadFile CommentStr="',CommentStr,'"']);
       if Src[p]='/' then
-        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '//', '', CommentStr, CodeXYPosition.Y)
       else if Src[p]='{' then
-        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
+        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '{', '}', CommentStr, CodeXYPosition.Y)
       else if Src[p]='(' then
-        aTodoItem := GetToDoItem(CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
-      if aTodoItem<>nil then
-        AddListItem(aTodoItem);
+        CreateToDoItem(CurFile,CodeXYPosition.Code.Filename, '(*', '*)', CommentStr, CodeXYPosition.Y);
       p:=CommentEnd;
     until false;
   finally
-    Self.Update;
+    if (CurFile<>nil) then begin
+      for i:=0 to CurFile.Count-1 do
+        AddListItem(CurFile[i]);
+    end;
   end;
 end;
 
@@ -621,9 +674,57 @@ begin
   Result := Result + ' : ' + Text;
 end;
 
+constructor TTodoItem.Create(aTLFile: TTLScannedFile);
+begin
+  FTLFile:=aTLFile;
+end;
+
 function TTodoItem.GetAsComment: string;
 begin
   Result := '{ '+AsString+' }';
+end;
+
+{ TTLScannedFile }
+
+function TTLScannedFile.GetCount: integer;
+begin
+  if fItems=nil then
+    Result:=0
+  else
+    Result:=fItems.Count;
+end;
+
+function TTLScannedFile.GetItems(Index: integer): TTodoItem;
+begin
+  Result:=TTodoItem(fItems[Index]);
+end;
+
+constructor TTLScannedFile.Create;
+begin
+
+end;
+
+destructor TTLScannedFile.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TTLScannedFile.Clear;
+var
+  i: Integer;
+begin
+  if fItems<>nil then begin
+    for i:=0 to fItems.Count-1 do
+      TObject(fItems[i]).Free;
+    FreeAndNil(fItems);
+  end;
+end;
+
+procedure TTLScannedFile.Add(Item: TTodoItem);
+begin
+  if fItems=nil then fItems:=TFPList.Create;
+  fItems.Add(Item);
 end;
 
 initialization
