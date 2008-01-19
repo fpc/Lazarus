@@ -14,13 +14,13 @@ object frmTodo: TfrmTodo
   OnKeyDown = FormKeyDown
   Position = poScreenCenter
   object StatusBar: TStatusBar
-    Height = 23
-    Top = 277
+    Height = 21
+    Top = 279
     Width = 643
     Panels = <>
   end
   object lvTodo: TListView
-    Height = 229
+    Height = 231
     Top = 48
     Width = 643
     Align = alClient
@@ -28,22 +28,22 @@ object frmTodo: TfrmTodo
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 40
+        Width = 59
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 100
+        Width = 59
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 40
+        Width = 59
       end    
       item
         AutoSize = True
         Caption = 'Caption'
-        Width = 100
+        Width = 59
       end    
       item
         Caption = 'Caption'
@@ -53,6 +53,7 @@ object frmTodo: TfrmTodo
       end    
       item
         Caption = 'Caption'
+        Width = 307
       end>
     RowSelect = True
     ScrollBars = ssAutoBoth
@@ -73,7 +74,7 @@ object frmTodo: TfrmTodo
     ShowHint = True
     TabOrder = 1
     object tbOptions: TToolButton
-      Left = 108
+      Left = 132
       Top = 2
       AllowAllUp = True
       AutoSize = True
@@ -81,7 +82,7 @@ object frmTodo: TfrmTodo
       Visible = False
     end
     object tbPrint: TToolButton
-      Left = 78
+      Left = 95
       Top = 2
       AutoSize = True
       Caption = 'Print'
@@ -94,7 +95,7 @@ object frmTodo: TfrmTodo
       AutoSize = True
     end
     object tbGoto: TToolButton
-      Left = 47
+      Left = 56
       Top = 2
       Action = acGoto
       AutoSize = True

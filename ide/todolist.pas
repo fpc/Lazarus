@@ -377,7 +377,7 @@ begin
 
   with lvTodo do
   begin
-    Column[0].Caption := 'Done';
+    Column[0].Caption := lisToDoLDone;
     Column[0].Width   := 45;
     Column[1].Caption := lisToDoLDescription;
     Column[1].Width   := 150;

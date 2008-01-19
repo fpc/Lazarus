@@ -6,25 +6,25 @@ LazarusResources.Add('TfrmTodo','FORMDATA',[
   +#1#13'ActiveControl'#7#6'lvTodo'#7'Caption'#6#7'frmTodo'#12'ClientHeight'#3
   +','#1#11'ClientWidth'#3#131#2#10'KeyPreview'#9#8'OnCreate'#7#10'FormCreate'#9
   +'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#14'poScreenCenter'#0#10'TStatusB'
-  +'ar'#9'StatusBar'#6'Height'#2#23#3'Top'#3#21#1#5'Width'#3#131#2#6'Panels'#14
-  +#0#0#0#9'TListView'#6'lvTodo'#6'Height'#3#229#0#3'Top'#2'0'#5'Width'#3#131#2
+  +'ar'#9'StatusBar'#6'Height'#2#21#3'Top'#3#23#1#5'Width'#3#131#2#6'Panels'#14
+  +#0#0#0#9'TListView'#6'lvTodo'#6'Height'#3#231#0#3'Top'#2'0'#5'Width'#3#131#2
   +#5'Align'#7#8'alClient'#7'Columns'#14#1#8'AutoSize'#9#7'Caption'#6#7'Caption'
-  +#5'Width'#2'('#0#1#8'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2'd'#0#1#8
-  +'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2'('#0#1#8'AutoSize'#9#7'Capti'
-  +'on'#6#7'Caption'#5'Width'#2'd'#0#1#7'Caption'#6#7'Caption'#0#1#7'Caption'#6
-  +#7'Caption'#0#1#7'Caption'#6#7'Caption'#0#0#9'RowSelect'#9#10'ScrollBars'#7
-  +#10'ssAutoBoth'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#7'OnClick'#7#11'l'
-  +'vTodoClick'#0#0#8'TToolBar'#7'ToolBar'#6'Height'#2'0'#5'Width'#3#131#2#8'Au'
-  +'toSize'#9#12'ButtonHeight'#2'.'#11'ButtonWidth'#2'/'#7'Caption'#6#7'ToolBar'
-  +#4'Flat'#9#14'ParentShowHint'#8#12'ShowCaptions'#9#8'ShowHint'#9#8'TabOrder'
-  +#2#1#0#11'TToolButton'#9'tbOptions'#4'Left'#2'l'#3'Top'#2#2#10'AllowAllUp'#9
-  +#8'AutoSize'#9#7'Caption'#6#7'Options'#7'Visible'#8#0#0#11'TToolButton'#7'tb'
-  +'Print'#4'Left'#2'N'#3'Top'#2#2#8'AutoSize'#9#7'Caption'#6#5'Print'#7'Visibl'
-  +'e'#8#0#0#11'TToolButton'#9'tbRefresh'#4'Left'#2#1#3'Top'#2#2#6'Action'#7#9
-  +'acRefresh'#8'AutoSize'#9#0#0#11'TToolButton'#6'tbGoto'#4'Left'#2'/'#3'Top'#2
-  +#2#6'Action'#7#6'acGoto'#8'AutoSize'#9#0#0#0#11'TActionList'#10'ActionList'#4
-  +'left'#3#158#1#3'top'#2#11#0#7'TAction'#6'acGoto'#7'Caption'#6#4'Goto'#18'Di'
-  +'sableIfNoHandler'#9#9'OnExecute'#7#13'acGotoExecute'#0#0#7'TAction'#9'acRef'
-  +'resh'#7'Caption'#6#7'Refresh'#18'DisableIfNoHandler'#9#9'OnExecute'#7#16'ac'
-  +'RefreshExecute'#0#0#0#0
+  +#5'Width'#2';'#0#1#8'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2';'#0#1#8
+  +'AutoSize'#9#7'Caption'#6#7'Caption'#5'Width'#2';'#0#1#8'AutoSize'#9#7'Capti'
+  +'on'#6#7'Caption'#5'Width'#2';'#0#1#7'Caption'#6#7'Caption'#0#1#7'Caption'#6
+  +#7'Caption'#0#1#7'Caption'#6#7'Caption'#5'Width'#3'3'#1#0#0#9'RowSelect'#9#10
+  +'ScrollBars'#7#10'ssAutoBoth'#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#7'O'
+  +'nClick'#7#11'lvTodoClick'#0#0#8'TToolBar'#7'ToolBar'#6'Height'#2'0'#5'Width'
+  +#3#131#2#8'AutoSize'#9#12'ButtonHeight'#2'.'#11'ButtonWidth'#2'/'#7'Caption'
+  +#6#7'ToolBar'#4'Flat'#9#14'ParentShowHint'#8#12'ShowCaptions'#9#8'ShowHint'#9
+  +#8'TabOrder'#2#1#0#11'TToolButton'#9'tbOptions'#4'Left'#3#132#0#3'Top'#2#2#10
+  +'AllowAllUp'#9#8'AutoSize'#9#7'Caption'#6#7'Options'#7'Visible'#8#0#0#11'TTo'
+  +'olButton'#7'tbPrint'#4'Left'#2'_'#3'Top'#2#2#8'AutoSize'#9#7'Caption'#6#5'P'
+  +'rint'#7'Visible'#8#0#0#11'TToolButton'#9'tbRefresh'#4'Left'#2#1#3'Top'#2#2#6
+  +'Action'#7#9'acRefresh'#8'AutoSize'#9#0#0#11'TToolButton'#6'tbGoto'#4'Left'#2
+  +'8'#3'Top'#2#2#6'Action'#7#6'acGoto'#8'AutoSize'#9#0#0#0#11'TActionList'#10
+  +'ActionList'#4'left'#3#158#1#3'top'#2#11#0#7'TAction'#6'acGoto'#7'Caption'#6
+  +#4'Goto'#18'DisableIfNoHandler'#9#9'OnExecute'#7#13'acGotoExecute'#0#0#7'TAc'
+  +'tion'#9'acRefresh'#7'Caption'#6#7'Refresh'#18'DisableIfNoHandler'#9#9'OnExe'
+  +'cute'#7#16'acRefreshExecute'#0#0#0#0
 ]);

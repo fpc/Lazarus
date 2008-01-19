@@ -11,7 +11,7 @@
 #
 
 # enable for debugging
-#set -x
+set -x
 set -e
 
 if [ ! -x tools/updatepofiles ]; then

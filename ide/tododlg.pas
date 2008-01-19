@@ -29,7 +29,9 @@ unit ToDoDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, TodoList;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls,
+  TodoList, LazarusIDEStrConsts;
 
 type
 
@@ -39,6 +41,7 @@ type
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
+    BtnPanel: TPanel;
     PriorityEdit: TEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
@@ -70,6 +73,13 @@ end;
 procedure TTodoDialog.FormCreate(Sender: TObject);
 begin
   ActiveControl:=TodoMemo;
+  Caption:=lisTDDInsertToDo;
+  TodoLabel.Caption:=lisPkgFileTypeText;
+  PriorityLabel.Caption:=lisToDoLPriority;
+  OwnerLabel.Caption:=lisToDoLOwner;
+  CategoryLabel.Caption:=listToDoLCategory;
+  OkButton.Caption:=lisOkBtn;
+  CancelButton.Caption:=dlgCancel;
 end;
 
 function ExecuteTodoDialog: TTodoItem;

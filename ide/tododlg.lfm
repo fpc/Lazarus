@@ -1,96 +1,142 @@
 object TodoDialog: TTodoDialog
   Left = 342
-  Height = 248
+  Height = 269
   Top = 202
-  Width = 483
-  HorzScrollBar.Page = 482
-  VertScrollBar.Page = 247
-  ActiveControl = OkButton
+  Width = 475
+  HorzScrollBar.Page = 474
+  VertScrollBar.Page = 268
   Caption = 'Insert Todo'
-  ClientHeight = 248
-  ClientWidth = 483
+  ClientHeight = 269
+  ClientWidth = 475
   OnCreate = FormCreate
   object TodoLabel: TLabel
     Left = 8
-    Height = 14
+    Height = 20
     Top = 8
-    Width = 27
+    Width = 30
     Caption = 'Text:'
     FocusControl = TodoMemo
     ParentColor = False
   end
   object PriorityLabel: TLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = PriorityEdit
     Left = 10
-    Height = 14
-    Top = 167
-    Width = 35
+    Height = 20
+    Top = 173
+    Width = 45
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Bottom = 2
     Caption = 'Priority'
     ParentColor = False
   end
   object OwnerLabel: TLabel
-    Left = 56
-    Height = 14
-    Top = 168
-    Width = 33
+    AnchorSideTop.Control = PriorityLabel
+    Left = 75
+    Height = 20
+    Top = 173
+    Width = 41
     Caption = 'Owner'
     ParentColor = False
   end
   object CategoryLabel: TLabel
+    AnchorSideTop.Control = PriorityLabel
     Left = 248
-    Height = 14
-    Top = 168
-    Width = 46
+    Height = 20
+    Top = 173
+    Width = 59
     Caption = 'Category'
     ParentColor = False
   end
-  object OkButton: TButton
-    Left = 312
-    Height = 25
-    Top = 216
-    Width = 75
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 4
-  end
-  object CancelButton: TButton
-    Left = 397
-    Height = 25
-    Top = 216
-    Width = 75
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 5
-  end
   object TodoMemo: TMemo
-    Left = 8
-    Height = 136
-    Top = 24
-    Width = 464
+    AnchorSideTop.Control = TodoLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = PriorityLabel
+    Left = 6
+    Height = 137
+    Top = 30
+    Width = 463
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
     ScrollBars = ssAutoBoth
     TabOrder = 0
   end
   object PriorityEdit: TEdit
-    Left = 8
-    Height = 23
-    Top = 181
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = BtnPanel
+    Left = 6
+    Height = 27
+    Top = 195
     Width = 38
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Bottom = 6
     OnKeyPress = PriorityEditKeyPress
     TabOrder = 1
   end
   object OwnerEdit: TEdit
-    Left = 56
-    Height = 23
-    Top = 181
-    Width = 182
+    AnchorSideTop.Control = PriorityEdit
+    Left = 76
+    Height = 27
+    Top = 195
+    Width = 162
+    AutoSize = True
     TabOrder = 2
   end
   object CategoryEdit: TEdit
+    AnchorSideTop.Control = PriorityEdit
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 248
-    Height = 23
-    Top = 181
-    Width = 224
+    Height = 27
+    Top = 195
+    Width = 221
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Right = 6
     TabOrder = 3
+  end
+  object BtnPanel: TPanel
+    Height = 41
+    Top = 228
+    Width = 475
+    Align = alBottom
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 41
+    ClientWidth = 475
+    TabOrder = 4
+    object OkButton: TButton
+      Left = 313
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'Ok'
+      Constraints.MinWidth = 75
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object CancelButton: TButton
+      Left = 394
+      Height = 29
+      Top = 6
+      Width = 75
+      Align = alRight
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Cancel = True
+      Caption = 'Cancel'
+      Constraints.MinWidth = 75
+      ModalResult = 2
+      TabOrder = 1
+    end
   end
 end
