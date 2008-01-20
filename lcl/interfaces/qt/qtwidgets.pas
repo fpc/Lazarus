@@ -106,7 +106,6 @@ type
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
     procedure SetHasCaret(const AValue: Boolean);
   public
-    AVariant: QVariantH;
     LCLObject: TWinControl;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
@@ -1141,6 +1140,8 @@ end;
 
 constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
   AWidget: QWidgetH);
+var
+  AVariant: QVariantH;
 begin
   inherited Create;
 
@@ -1158,10 +1159,11 @@ begin
   QWidget_cursor(Widget, FDefaultCursor);
 
   // set Handle->QWidget map
-  AVariant := QVariant_Create(Int64(ptruint(Self)));
+  AVariant := QVariant_create(Int64(PtrUInt(Self)));
   QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
+  QVariant_destroy(AVariant);
 
-  fillchar(FPaintData, sizeOf(FPaintData), 0);
+  FillChar(FPaintData, sizeOf(FPaintData), 0);
   
   // set focus policy
   if (LCLObject <> nil) and not (Self is TQtMainWindow) then
@@ -1177,6 +1179,8 @@ begin
 end;
 
 procedure TQtWidget.InitializeWidget;
+var
+  AVariant: QVariantH;
 begin
   // Creates the widget
   Widget := CreateWidget(FParams);
@@ -1191,8 +1195,9 @@ begin
   {$endif}
 
   // set Handle->QWidget map
-  AVariant := QVariant_Create(Int64(PtrUInt(Self)));
+  AVariant := QVariant_create(Int64(PtrUInt(Self)));
   QObject_setProperty(Widget, 'lclwidget', AVariant);
+  QVariant_destroy(AVariant);
 
   FillChar(FPaintData, sizeOf(FPaintData), 0);
 
@@ -1212,13 +1217,18 @@ begin
 end;
 
 procedure TQtWidget.DeInitializeWidget;
+var
+  V: QVariantH;
 begin
   if Widget <> nil then
     DetachEvents;
 
-  QVariant_destroy(AVariant);
   if Widget <> nil then
-    QObject_setProperty(Widget, 'lclwidget', QVariant_create(QVariantInvalid));
+  begin
+    V := QVariant_create(QVariantInvalid);
+    QObject_setProperty(Widget, 'lclwidget', V);
+    QVariant_destroy(V);
+  end;
 
   QCursor_destroy(FDefaultCursor);
   
@@ -3487,20 +3497,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TQtMainWindow.Destroy;
 begin
-  {$ifdef VerboseQt}
-    WriteLn('TQtMainWindow.Destroy');
-  {$endif}
-
-  if Widget <> nil then
-  begin
-    DetachEvents;
-    QObject_setProperty(Widget, 'lclwidget', QVariant_create(QVariantInvalid));
-    QObject_deleteLater(Widget);
-    Widget := nil;
-  end;
-
-  { The main window takes care of the menubar handle}
-  
+  // The main window takes care of the menubar handle
   if MenuBar <> nil then
   begin
     MenuBar.Widget := nil;
