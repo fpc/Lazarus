@@ -1071,7 +1071,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
     for n := 1 to Length(AString) do
     begin
       case AString[n] of
-        ' '..#127: begin
+        ' '..#127, #128..#255: begin
           if not InString
           then begin
             InString := True;
