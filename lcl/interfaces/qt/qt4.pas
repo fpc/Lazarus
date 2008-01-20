@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.59 }
+{ Version : 1.60 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -3690,15 +3690,15 @@ function QWindowStateChangeEvent_isOverride(handle: QWindowStateChangeEventH): B
 
 function QLCLMessageEvent_create(aType: QEventType): QLCLMessageEventH; overload; cdecl; external QtIntf name 'QLCLMessageEvent_create';
 procedure QLCLMessageEvent_destroy(handle: QLCLMessageEventH); cdecl; external QtIntf name 'QLCLMessageEvent_destroy'; 
-function QLCLMessageEvent_create(aType: QEventType; aMsg: LongWord; aWParam: LongWord; aLParam: LongWord; aMsgResult: LongWord): QLCLMessageEventH; overload; cdecl; external QtIntf name 'QLCLMessageEvent_create2';
-function QLCLMessageEvent_getMsg(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getMsg';
-function QLCLMessageEvent_getWParam(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getWParam';
-function QLCLMessageEvent_getLParam(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getLParam';
-function QLCLMessageEvent_getMsgResult(handle: QLCLMessageEventH): LongWord; cdecl; external QtIntf name 'QLCLMessageEvent_getMsgResult';
-procedure QLCLMessageEvent_setMsg(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setMsg';
-procedure QLCLMessageEvent_setWParam(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setWParam';
-procedure QLCLMessageEvent_setLParam(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setLParam';
-procedure QLCLMessageEvent_setMsgResult(handle: QLCLMessageEventH; Value: LongWord); cdecl; external QtIntf name 'QLCLMessageEvent_setMsgResult';
+function QLCLMessageEvent_create(aType: QEventType; aMsg: PTRUINT; aWParam: PTRUINT; aLParam: PTRUINT; aMsgResult: PTRUINT): QLCLMessageEventH; overload; cdecl; external QtIntf name 'QLCLMessageEvent_create2';
+function QLCLMessageEvent_getMsg(handle: QLCLMessageEventH): PTRUINT; cdecl; external QtIntf name 'QLCLMessageEvent_getMsg';
+function QLCLMessageEvent_getWParam(handle: QLCLMessageEventH): PTRUINT; cdecl; external QtIntf name 'QLCLMessageEvent_getWParam';
+function QLCLMessageEvent_getLParam(handle: QLCLMessageEventH): PTRUINT; cdecl; external QtIntf name 'QLCLMessageEvent_getLParam';
+function QLCLMessageEvent_getMsgResult(handle: QLCLMessageEventH): PTRUINT; cdecl; external QtIntf name 'QLCLMessageEvent_getMsgResult';
+procedure QLCLMessageEvent_setMsg(handle: QLCLMessageEventH; Value: PTRUINT); cdecl; external QtIntf name 'QLCLMessageEvent_setMsg';
+procedure QLCLMessageEvent_setWParam(handle: QLCLMessageEventH; Value: PTRUINT); cdecl; external QtIntf name 'QLCLMessageEvent_setWParam';
+procedure QLCLMessageEvent_setLParam(handle: QLCLMessageEventH; Value: PTRUINT); cdecl; external QtIntf name 'QLCLMessageEvent_setLParam';
+procedure QLCLMessageEvent_setMsgResult(handle: QLCLMessageEventH; Value: PTRUINT); cdecl; external QtIntf name 'QLCLMessageEvent_setMsgResult';
 
 function QCursor_create(): QCursorH; overload; cdecl; external QtIntf name 'QCursor_create';
 procedure QCursor_destroy(handle: QCursorH); cdecl; external QtIntf name 'QCursor_destroy'; 
