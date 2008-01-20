@@ -55,7 +55,6 @@ type
     TheObject: QObjectH;
     constructor Create; virtual;
     destructor Destroy; override;
-    function CanPostponeFree: Boolean; virtual;
     procedure Release; virtual;
   public
     procedure AttachEvents; virtual;
@@ -590,41 +589,21 @@ end;
 
 destructor TQtObject.Destroy;
 begin
-  //WriteLn('destroying: ', PtrUInt(Self), ' : ', ClassName);
   if TheObject <> nil then
   begin
     DetachEvents;
-    QObject_destroy(TheObject);
+    QObject_deleteLater(TheObject);
     TheObject := nil;
   end;
   inherited Destroy;
 end;
 
-function TQtObject.CanPostponeFree: Boolean;
-begin
-  Result := False;
-end;
-
 procedure TQtObject.Release;
-var
-  AEvent: QLCLMessageEventH;
 begin
-  {WriteLn('Release: ', PtrUInt(Self), ' : ', ClassName);
-  DumpStack;}
-  if CanPostponeFree then
-  begin
-    AEvent := QLCLMessageEvent_create(LCLQt_Destroy);
-    QLCLMessageEvent_setWParam(AEvent, PtrUInt(Self));
-    QCoreApplication_postEvent(QCoreApplication_instance(), AEvent {$IFDEF USE_QT_4_3}, Ord(QtLowEventPriority) {$ENDIF});
-    //WriteLn('Posted release event');
-  end
+  if InEvent then
+    FReleaseInEvent := True
   else
-  begin
-    if InEvent then
-      FReleaseInEvent := True
-    else
-      Free;
-  end;
+    Free;
 end;
 
 procedure TQtObject.AttachEvents;

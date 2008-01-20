@@ -977,7 +977,7 @@ end;
        TControl.Perform
 
 ------------------------------------------------------------------------------}
-Function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
+function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
 var
   Message : TLMessage;
 begin
@@ -1014,7 +1014,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.ScreenToClient
 ------------------------------------------------------------------------------}
-Function TControl.ScreenToClient(const APoint: TPoint): TPoint;
+function TControl.ScreenToClient(const APoint: TPoint): TPoint;
 var
   P : TPoint;
 begin
@@ -1024,9 +1024,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TControl.ClientToScreen(const APoint: TPoint): TPoint;
+  function TControl.ClientToScreen(const APoint: TPoint): TPoint;
 ------------------------------------------------------------------------------}
-Function TControl.ClientToScreen(const APoint: TPoint): TPoint;
+function TControl.ClientToScreen(const APoint: TPoint): TPoint;
 var
   P : TPoint;
 begin
@@ -1217,7 +1217,7 @@ end;
 {------------------------------------------------------------------------------
        TControl GetMouseCapture
 ------------------------------------------------------------------------------}
-Function TControl.GetMouseCapture : Boolean;
+function TControl.GetMouseCapture : Boolean;
 Begin
   Result := GetCaptureControl = Self;
 end;
@@ -2484,7 +2484,7 @@ end;
 {------------------------------------------------------------------------------
   TControl IsCaptionStored
 ------------------------------------------------------------------------------}
-Function TControl.IsCaptionStored : Boolean;
+function TControl.IsCaptionStored : Boolean;
 Begin
   Result := (ActionLink = nil) or not ActionLink.IsCaptionLinked;
 end;

@@ -2391,12 +2391,14 @@ end;
 ------------------------------------------------------------------------------}
 function FindOwnerControl(Handle: hwnd): TWinControl;
 begin
-  While Handle<>0 do begin
-    Result:=FindControl(Handle);
-    if Result<>nil then exit;
-    Handle:=GetParent(Handle);
+  while Handle<>0 do
+  begin
+    Result := FindControl(Handle);
+    if Result <> nil then
+      Exit;
+    Handle := GetParent(Handle);
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
 {------------------------------------------------------------------------------

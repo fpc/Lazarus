@@ -118,7 +118,6 @@ type
     
     destructor Destroy; override;
     function GetContainerWidget: QWidgetH; virtual;
-    function CanPostponeFree: Boolean; override;
     procedure Release; override;
   public
     function DeliverMessage(var Msg): LRESULT; virtual;
@@ -1192,10 +1191,10 @@ begin
   {$endif}
 
   // set Handle->QWidget map
-  AVariant := QVariant_Create(Int64(ptruint(Self)));
-  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
+  AVariant := QVariant_Create(Int64(PtrUInt(Self)));
+  QObject_setProperty(Widget, 'lclwidget', AVariant);
 
-  fillchar(FPaintData, sizeOf(FPaintData), 0);
+  FillChar(FPaintData, sizeOf(FPaintData), 0);
 
   // Sets it's initial properties
 
@@ -1218,18 +1217,16 @@ begin
     DetachEvents;
 
   QVariant_destroy(AVariant);
+  if Widget <> nil then
+    QObject_setProperty(Widget, 'lclwidget', QVariant_create(QVariantInvalid));
 
-  {$ifdef VerboseQt}
-    WriteLn('Calling QWidget_destroy');
-  {$endif}
-  
   QCursor_destroy(FDefaultCursor);
   
   if HasCaret then
     DestroyCaret;
-    
+
   if (Widget <> nil) and FOwnWidget then
-    QWidget_destroy(QWidgetH(Widget));
+    QObject_deleteLater(Widget);
   Widget := nil;
 end;
 
@@ -1292,11 +1289,6 @@ begin
     Result := FCentralWidget
   else
     Result := Widget;
-end;
-
-function TQtWidget.CanPostponeFree: Boolean;
-begin
-  Result := not Application.Terminated;
 end;
 
 procedure TQtWidget.Release;
@@ -3502,7 +3494,8 @@ begin
   if Widget <> nil then
   begin
     DetachEvents;
-    QWidget_destroy(Widget);
+    QObject_setProperty(Widget, 'lclwidget', QVariant_create(QVariantInvalid));
+    QObject_deleteLater(Widget);
     Widget := nil;
   end;
 
