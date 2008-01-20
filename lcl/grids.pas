@@ -687,6 +687,7 @@ type
     procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure UpdateCachedSizes;
     procedure UpdateSBVisibility;
+    procedure UpdateSizes;
     procedure WriteColumns(Writer: TWriter);
     procedure WriteColWidths(Writer: TWriter);
     procedure WriteRowHeights(Writer: TWriter);
@@ -1768,12 +1769,29 @@ begin
 end;
 
 procedure TCustomGrid.InternalSetColWidths(aCol, aValue: Integer);
+var
+  R: TRect;
+  Bigger: boolean;
 begin
   if AValue<0 then Avalue:=-1;
   if Avalue<>integer(PtrUInt(FCols[ACol])) then begin
+    Bigger := AValue>integer(PtrUInt(FCols[ACol]));
     SetRawColWidths(ACol, Avalue);
     if not (csLoading in ComponentState) then begin
-      VisualChange;
+
+      UpdateSizes;
+
+      R := CellRect(aCol, 0);
+      R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
+      if bigger then
+        R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
+      else
+        R.Right := FGCache.ClientWidth;
+      if aCol=FTopLeft.x then
+        R.Left := FGCache.FixedWidth;
+
+      InvalidateRect(handle, @R, False);
+
       if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then
         EditorWidthChanged(aCol, aValue);
       ColWidthsChanged;
@@ -2030,11 +2048,30 @@ begin
 end;
 
 procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
+var
+  R: TRect;
+  Bigger: boolean;
 begin
   if AValue<0 then AValue:=-1;
   if AValue<>integer(PtrUInt(FRows[ARow])) then begin
+  
+    bigger := aValue > RowHeights[aRow];
+
     FRows[ARow]:=Pointer(PtrInt(AValue));
-    VisualChange;
+    
+    UpdateSizes;
+    
+    R := CellRect(0, aRow);
+    R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
+    if bigger then
+      R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
+    else
+      R.Bottom := FGCache.ClientHeight;
+    if aRow=FTopLeft.y then
+      R.Top := FGCache.FixedHeight;
+
+    InvalidateRect(handle, @R, False);
+    
     if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
     RowHeightsChanged;
   end;
@@ -2304,10 +2341,7 @@ begin
   if FUpdateCount<>0 then
     exit;
     
-  Include(FGridFlags, gfVisualChange);
-  UpdateCachedSizes;
-  
-  UpdateSBVisibility;
+  UpdateSizes;
 
   Invalidate;
   {$ifdef DbgVisualChange}
@@ -2805,49 +2839,17 @@ begin
 end;
 
 procedure TCustomGrid.ResizeColumn(aCol, aWidth: Integer);
-var
-  R: TRect;
-  bigger: boolean;
 begin
-  BeginUpdate;
-  if aWidth<0 then aWidth:=0;
-  bigger := aWidth > ColWidths[aCol];
-  ColWidths[aCol]:=aWidth;
-  EndUpdate(uoNone);
-
-  R := CellRect(aCol, 0);
-  R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
-  if bigger then
-    R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
-  else
-    R.Right := FGCache.ClientWidth;
-  if aCol=FTopLeft.x then
-    R.Left := FGCache.FixedWidth;
-
-  InvalidateRect(handle, @R, False);
+  if aWidth<0 then
+    aWidth:=0;
+  ColWidths[aCol] := aWidth;
 end;
 
 procedure TCustomGrid.ResizeRow(aRow, aHeight: Integer);
-var
-  R: TRect;
-  bigger: boolean;
 begin
-  BeginUpdate;
-  if aHeight<0 then aHeight:=0;
-  bigger := aHeight > RowHeights[aRow];
+  if aHeight<0 then
+    aHeight:=0;
   RowHeights[aRow] := aHeight;
-  EndUpdate(uoNone);
-
-  R := CellRect(0, aRow);
-  R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
-  if bigger then
-    R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
-  else
-    R.Bottom := FGCache.ClientHeight;
-  if aRow=FTopLeft.y then
-    R.Top := FGCache.FixedHeight;
-
-  InvalidateRect(handle, @R, False);
 end;
 
 
@@ -3636,6 +3638,13 @@ begin
   GetSBVisibility(HSbVisible, VSbVisible);
   ScrollBarShow(SB_VERT, VSbVisible);
   ScrollBarShow(SB_HORZ, HSbVisible);
+end;
+
+procedure TCustomGrid.UpdateSizes;
+begin
+  Include(FGridFlags, gfVisualChange);
+  UpdateCachedSizes;
+  UpdateSBVisibility;
 end;
 
 procedure TCustomGrid.UpdateSelectionRange;
