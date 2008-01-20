@@ -206,24 +206,37 @@ type
 implementation
 
 type
+  PGDBMINameValue = ^TGDBMINameValue;
+  TGDBMINameValue = record
+    NamePtr: PChar;
+    NameLen: Integer;
+    ValuePtr: PChar;
+    ValueLen: Integer;
+  end;
 
-  { TGDMIValueList }
-  TGDMIValueList = Class(TStringList)
+  { TGDBMINameValueList }
+  TGDBMINameValueList = Class(TObject)
   private
-//    function GetString(AIndex: Integer): string;
-//    function GetEscaped(AIndex: Integer): string;
-//    function GetEscapedValues(const AName: string): string;
-//    function GetValue(const AName : string): string;
+    FText: String;
+    FCount: Integer;
+    FIndex: array of TGDBMINameValue;
+
+    function Find(const AName : string): PGDBMINameValue;
+    function GetItem(const AIndex: Integer): PGDBMINameValue;
+    function GetValue(const AName : string): string;
   public
     constructor Create(const AResultValues: String);
     constructor Create(AResult: TGDBMIExecResult);
     constructor Create(const AResultValues: String; const APath: array of String);
     constructor Create(AResult: TGDBMIExecResult; const APath: array of String);
-    procedure Init(AResultValues: String);
+    procedure Delete(AIndex: Integer);
+    procedure Init(const AResultValues: String);
+    procedure Init(AResultValues: PChar; ALength: Integer);
     procedure SetPath(const APath: String); overload;
     procedure SetPath(const APath: array of String); overload;
-//    property Strings[AIndex: Integer]: string read GetString; default;
-//    property Values[const AName: string]: string read GetValue;
+    property Count: Integer read FCount;
+    property Items[const AIndex: Integer]: PGDBMINameValue read GetItem;
+    property Values[const AName: string]: string read GetValue;
   end;
 
   TGDBMIBreakPoint = class(TDBGBreakPoint)
@@ -340,151 +353,237 @@ type
     Tag: Integer;
   end;
 
-{ TGDMIValueList }
+{ TGDBMINameValueList }
 
-constructor TGDMIValueList.Create(const AResultValues: String);
+constructor TGDBMINameValueList.Create(const AResultValues: String);
 begin
   inherited Create;
   Init(AResultValues);
 end;
 
-constructor TGDMIValueList.Create(const AResultValues: String; const APath: array of String);
+constructor TGDBMINameValueList.Create(const AResultValues: String; const APath: array of String);
 begin
   inherited Create;
   Init(AResultValues);
   SetPath(APath);
 end;
 
-constructor TGDMIValueList.Create(AResult: TGDBMIExecResult);
+constructor TGDBMINameValueList.Create(AResult: TGDBMIExecResult);
 begin
   inherited Create;
   Init(AResult.Values);
 end;
 
-constructor TGDMIValueList.Create(AResult: TGDBMIExecResult; const APath: array of String);
+constructor TGDBMINameValueList.Create(AResult: TGDBMIExecResult; const APath: array of String);
 begin
   inherited Create;
   Init(AResult.Values);
   SetPath(APath);
 end;
 
-procedure TGDMIValueList.SetPath(const APath: String);
+procedure TGDBMINameValueList.Delete(AIndex: Integer);
+begin
+  if AIndex < 0 then Exit;
+  if AIndex >= FCount then Exit;
+  Dec(FCount);
+  Move(FIndex[AIndex + 1], FIndex[AIndex], SizeOf(FIndex[0]) * (FCount - AIndex));
+end;
+
+function TGDBMINameValueList.Find(const AName: string): PGDBMINameValue;
+var
+  n, len: Integer;
+begin
+  if FCount = 0 then Exit(nil);
+
+  len := Length(AName);
+  Result := @FIndex[0];
+  for n := 0 to FCount - 1 do
+  begin
+    if  (Result^.NameLen = len)
+    and (strlcomp(Result^.NamePtr, PChar(AName), len) = 0)
+    then Exit;
+    Inc(Result);
+  end;
+  Result := nil;
+end;
+
+function TGDBMINameValueList.GetItem(const AIndex: Integer): PGDBMINameValue;
+begin
+  if AIndex < 0 then Exit(nil);
+  if AIndex >= FCount then Exit(nil);
+  Result := @FIndex[AIndex];
+end;
+
+function TGDBMINameValueList.GetValue(const AName: string): string;
+var
+  item: PGDBMINameValue;
+begin
+  Result := '';
+  if FCount = 0 then Exit;
+  item := Find(AName);
+  if item = nil then Exit;
+
+  SetLength(Result, Item^.ValueLen);
+  Move(Item^.ValuePtr^, Result[1], Item^.ValueLen);
+end;
+
+procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
+
+  function FindNextQuote(ACurPtr, AEndPtr: PChar): PChar;
+  begin
+    Result := ACurPtr;
+    while Result <= AEndPtr do
+    begin
+      case Result^ of
+        '\': Inc(Result, 2);
+        '"': Break;
+      else
+        Inc(Result);
+      end;
+    end;
+  end;
+
+  function FindClosingBracket(ACurPtr, AEndPtr: PChar): PChar;
+  var
+    deep: Integer;
+  begin
+    deep := 1;
+    Result := ACurPtr;
+
+    while Result <= AEndPtr do
+    begin
+      case Result^ of
+        '\': Inc(Result);
+        '"': Result := FindNextQuote(Result + 1, AEndPtr);
+        '[', '{': Inc(deep);
+        ']', '}': begin
+          Dec(deep);
+          if deep = 0 then break;
+        end;
+      end;
+      Inc(Result);
+    end;
+  end;
+
+  procedure Add(AStartPtr, AEquPtr, AEndPtr: PChar);
+  var
+    Item: PGDBMINameValue;
+  begin
+    if AEndPtr <= AStartPtr then Exit;
+
+    // check space
+    if Length(FIndex) <= FCount
+    then SetLength(FIndex, FCount + 16);
+
+    Item := @FIndex[FCount];
+    if AEquPtr < AStartPtr
+    then begin
+      // only name, no value
+      Item^.NamePtr := AStartPtr;
+      Item^.NameLen := PtrUInt(AEndPtr) - PtrUInt(AStartPtr) + 1;
+      Item^.ValuePtr := nil;
+      Item^.ValueLen := 0;
+    end
+    else begin
+      Item^.NamePtr := AStartPtr;
+      Item^.NameLen := PtrUInt(AEquPtr) - PtrUInt(AStartPtr);
+
+      if (AEquPtr < AEndPtr - 1) and (AEquPtr[1] = '"') and (AEndPtr^ = '"')
+      then begin
+        // strip surrounding "
+        Item^.ValuePtr := AEquPtr + 2;
+        Item^.ValueLen := PtrUInt(AEndPtr) - PtrUInt(AEquPtr) - 2;
+      end
+      else begin
+        Item^.ValuePtr := AEquPtr + 1;
+        Item^.ValueLen := PtrUInt(AEndPtr) - PtrUInt(AEquPtr)
+      end;
+    end;
+
+    Inc(FCount);
+  end;
+
+var
+  CurPtr, StartPtr, EquPtr, EndPtr: PChar;
+begin
+  // clear
+  FCount := 0;
+
+  if AResultValues = nil then Exit;
+  if ALength <= 0 then Exit;
+  EndPtr := AResultValues + ALength - 1;
+
+  // strip surrounding '[]' and '{}' first
+  case AResultValues^ of
+    '[': begin
+      if EndPtr^ = ']'
+      then begin
+        Inc(AResultValues);
+        Dec(EndPtr);
+      end;
+    end;
+    '{': begin
+      if EndPtr^ = '}'
+      then begin
+        Inc(AResultValues);
+        Dec(EndPtr);
+      end;
+    end;
+  end;
+
+  StartPtr := AResultValues;
+  CurPtr := AResultValues;
+  EquPtr := nil;
+  while CurPtr <= EndPtr do
+  begin
+    case CurPtr^ of
+      '\': Inc(CurPtr); // skip escaped char
+      '"': CurPtr := FindNextQuote(CurPtr + 1, EndPtr);
+      '[',
+      '{': CurPtr := FindClosingBracket(CurPtr + 1, EndPtr);
+      '=': EquPtr := CurPtr;
+      ',': begin
+        Add(StartPtr, EquPtr, CurPtr - 1);
+        Inc(CurPtr);
+        StartPtr := CurPtr;
+        Continue;
+      end;
+    end;
+    Inc(CurPtr);
+  end;
+  if StartPtr <= EndPtr
+  then Add(StartPtr, EquPtr, EndPtr);
+end;
+
+procedure TGDBMINameValueList.Init(const AResultValues: String);
+begin
+  FText := AResultValues;
+  Init(PChar(FText), Length(FText));
+end;
+
+procedure TGDBMINameValueList.SetPath(const APath: String);
 begin
   SetPath([APath]);
 end;
 
-procedure TGDMIValueList.SetPath(const APath: array of String);
+procedure TGDBMINameValueList.SetPath(const APath: array of String);
 var
   i: integer;
+  Item: PGDBMINameValue;
 begin
   for i := low(APath) to High(APath) do
   begin
-    Init(Unquote(Values[APath[i]]));
+    item := Find(APath[i]);
+    if item = nil
+    then begin
+      FCount := 0;
+      Exit;
+    end;
+    Init(Item^.ValuePtr, Item^.ValueLen);
   end;
 end;
 
-(*
-function TGDMIValueList.GetString(AIndex: Integer): string;
-begin
-  Result := DeleteEscapeChars(inherited Strings[AIndex], '\', True);
-end;
 
-function TGDMIValueList.GetEscaped(AIndex: Integer): string;
-begin
-  Result := Unquote(inherited Strings[AIndex]);
-end;
-
-function TGDMIValueList.GetEscapedValues(const AName: string): string;
-begin
-  Result := Unquote(inherited Values[AName]);
-end;
-
-function TGDMIValueList.GetValue(const AName: string): string;
-begin
-  Result := DeleteEscapeChars(inherited Values[AName], '\', True);
-end;
-*)
-
-procedure TGDMIValueList.Init(AResultValues: String);
-  function FindNextQuote(const S: String; idx: Integer) :Integer;
-  begin
-    while (idx <= Length(S)) do
-    begin
-      case S[idx] of
-        '\': Inc(idx, 2);
-        '"': Break;
-      else
-        inc(idx);
-      end;
-    end;
-    result := idx;
-  end;
-  
-  function FindClosingBracket(const S: String; idx: Integer) :Integer;
-  var
-    deep, len: Integer;
-    c : Char;
-  begin
-    deep := 1;
-    len := Length(S);
-    while idx <= len do
-    begin
-      case S[idx] of
-        '\': Inc(idx);
-        '"': idx := FindNextQuote(S, idx + 1);
-        '[', '{': Inc(deep);
-        ']', '}': Dec(deep);
-      end;
-      if deep = 0 then break;
-      Inc(idx);
-    end;
-    result := idx;
-  end;
-  
-var
-  n, len: Integer;
-begin
-  Clear;
-  if AResultValues = '' then Exit;
-  // strip surrounding '[]' and '{}' first
-  case AResultValues[1] of
-    '[': begin
-      if AResultValues[Length(AResultValues)] = ']'
-      then begin
-        System.Delete(AResultValues, Length(AResultValues), 1);
-        System.Delete(AResultValues, 1, 1);
-      end;
-    end;
-    '{': begin
-      if AResultValues[Length(AResultValues)] = '}'
-      then begin
-        System.Delete(AResultValues, Length(AResultValues), 1);
-        System.Delete(AResultValues, 1, 1);
-      end;
-    end;
-  end;
-
-  n := 1;
-  len := Length(AResultValues);
-  while n <= len do
-  begin
-    case AResultValues[n] of
-      '\': Inc(n); // skip escaped char
-      '"': n := FindNextQuote(AResultValues, n + 1);
-      '[', '{': n := FindClosingBracket(AResultValues, n + 1);
-      ',': begin
-        Add(Copy(AResultValues, 1, n - 1));
-        System.Delete(AResultValues, 1, n);
-        n := 1;
-        len := Length(AResultValues);
-        Continue;
-      end;
-    end;
-    Inc(n);
-  end;
-  if AResultValues <> ''
-  then Add(AResultValues);
-end;
 
 { =========================================================================== }
 { Some win32 stuff }
@@ -515,21 +614,6 @@ end;
 { =========================================================================== }
 { Helpers }
 { =========================================================================== }
-
-function CreateValueList(AResultValues: String): TStringList;
-var
-  n: Integer;
-begin
-  Result := TStringList.Create;
-  if AResultValues = '' then Exit;
-  n := Pos(' = ', AResultValues);
-  if n > 0
-  then begin
-    Delete(AResultValues, n, 1);
-    Delete(AResultValues, n + 1, 1);
-  end;
-  Result.Add(AResultValues);
-end;
 
 function ConvertToGDBPath(APath: string): string;
 // GDB wants forward slashes in its filenames, even on win32.
@@ -586,7 +670,7 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 var
   S: String;
   R: TGDBMIExecResult;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
 begin
   Result := False;
   
@@ -601,7 +685,7 @@ begin
   if  (R.State = dsError)
   and (FileName <> '')
   then begin
-    List := TGDMIValueList.Create(R);
+    List := TGDBMINameValueList.Create(R);
     MessageDlg('Debugger', Format('Failed to load file: %s', [DeleteEscapeChars((List.Values['msg']))]), mtError, [mbOK], 0);
     List.Free;
     SetState(dsStop);
@@ -870,7 +954,7 @@ var
   OK: Boolean;
   S: String;
   R: TGDBMIExecResult;
-  ResultList: TGDMIValueList;
+  ResultList: TGDBMINameValueList;
 begin
   Result := '';
 
@@ -889,7 +973,7 @@ begin
 
   if OK
   then begin
-    ResultList := TGDMIValueList.Create(R);
+    ResultList := TGDBMINameValueList.Create(R);
     S := DeleteEscapeChars(ResultList.Values['value']);
     Result := GetPart('''', '''', S);
     ResultList.Free;
@@ -1012,7 +1096,7 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
 var
   R: TGDBMIExecResult;
   S: String;
-  ResultList: TGDMIValueList;
+  ResultList: TGDBMINameValueList;
   ResultInfo: TGDBType;
   addr: TDbgPtr;
   e: Integer;
@@ -1033,7 +1117,7 @@ begin
 
   Result := ExecuteCommand('-data-evaluate-expression %s', [S], [cfIgnoreError, cfExternal], R);
 
-  ResultList := TGDMIValueList.Create(R);
+  ResultList := TGDBMINameValueList.Create(R);
   if R.State = dsError
   then AResult := ResultList.Values['msg']
   else AResult := ResultList.Values['value'];
@@ -1254,12 +1338,12 @@ end;
 function TGDBMIDebugger.GetFrame(const AIndex: Integer): String;
 var
   R: TGDBMIExecResult;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
 begin
   Result := '';
   if ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], [cfIgnoreError], R)
   then begin
-    List := TGDMIValueList.Create(R, ['stack']);
+    List := TGDBMINameValueList.Create(R, ['stack']);
     Result := List.Values['frame'];
     List.Free;
   end;
@@ -1286,11 +1370,11 @@ end;
 function TGDBMIDebugger.GetStrValue(const AExpression: String; const AValues: array of const): String;
 var
   R: TGDBMIExecResult;
-  ResultList: TGDMIValueList;
+  ResultList: TGDBMINameValueList;
 begin
   if ExecuteCommand('-data-evaluate-expression %s', [Format(AExpression, AValues)], [cfIgnoreError], R)
   then begin
-    ResultList := TGDMIValueList.Create(R);
+    ResultList := TGDBMINameValueList.Create(R);
     Result := DeleteEscapeChars(ResultList.Values['value']);
     ResultList.Free;
   end
@@ -1558,7 +1642,7 @@ procedure TGDBMIDebugger.InterruptTargetCallback(const AResult: TGDBMIExecResult
 var
   R: TGDBMIExecResult;
   S: String;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
   n: Integer;
   ID1, ID2: Integer;
 begin
@@ -1572,21 +1656,22 @@ begin
   
   S := '';
   if not ExecuteCommand('-thread-list-ids', [cfIgnoreError], R) then Exit;
-  List := TGDMIValueList.Create(R);
+  List := TGDBMINameValueList.Create(R);
   try
-    n := StrToIntDef(Unquote(List.Values['number-of-threads']), 0);
+    n := StrToIntDef(List.Values['number-of-threads'], 0);
     if n < 2 then Exit; //nothing to switch
-    S := Unquote(List.Values['thread-ids']);
+    List.SetPath(['thread-ids']);
+    if List.Count < 2 then Exit; // ???
+    ID1 := StrToIntDef(List.Values['thread-id'], 0);
+    List.Delete(0);
+    ID2 := StrToIntDef(List.Values['thread-id'], 0);
+
+    if ID1 = ID2 then Exit;
   finally
     List.Free;
   end;
-  List := TGDMIValueList.Create(S);
-  ID1 := StrToIntDef(Unquote(List.Values['thread-id']), 0);
-  List.Delete(0);
-  ID2 := StrToIntDef(Unquote(List.Values['thread-id']), 0);
-  List.Free;
-  if ID1 = ID2 then Exit;
-  
+
+
   if not ExecuteCommand('-thread-select %d', [ID2], [cfIgnoreError]) then Exit;
 end;
 {$ENDIF}
@@ -1614,7 +1699,7 @@ procedure TGDBMIDebugger.ProcessFrame(const AFrame: String);
 var
   S: String;
   e: Integer;
-  Frame: TGDMIValueList;
+  Frame: TGDBMINameValueList;
   Location: TDBGLocationRec;
 begin
   // Do we have a frame ?
@@ -1622,14 +1707,14 @@ begin
   then S := GetFrame(0)
   else S := AFrame;
 
-  Frame := TGDMIValueList.Create(S);
+  Frame := TGDBMINameValueList.Create(S);
 
   Location.Address := 0;
-  Val(Unquote(Frame.Values['addr']), Location.Address, e);
+  Val(Frame.Values['addr'], Location.Address, e);
   if e=0 then ;
-  Location.FuncName := Unquote(Frame.Values['func']);
-  Location.SrcFile := Unquote(Frame.Values['file']);
-  Location.SrcLine := StrToIntDef(Unquote(Frame.Values['line']), -1);
+  Location.FuncName := Frame.Values['func'];
+  Location.SrcFile := Frame.Values['file'];
+  Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
   
@@ -1898,7 +1983,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     then begin
       ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ObjAddr]);
       //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
-      ExceptionMessage := DeleteEscapeChars(ExceptionMessage, False);
+      ExceptionMessage := DeleteEscapeChars(ExceptionMessage);
     end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
@@ -1932,14 +2017,14 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     ProcessFrame(GetFrame(1));
   end;
 
-  procedure ProcessSignalReceived(const AList: TGDMIValueList);
+  procedure ProcessSignalReceived(const AList: TGDBMINameValueList);
   var
     SigInt: Boolean;
     S: String;
   begin
     // TODO: check to run (un)handled
 
-    S := Unquote(AList.Values['signal-name']);
+    S := AList.Values['signal-name'];
     {$IFdef MSWindows}
     SigInt := S = 'SIGTRAP';
     {$ELSE}
@@ -1958,7 +2043,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   end;
 
 var
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
   Reason: String;
   BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
@@ -1967,9 +2052,9 @@ begin
   Result := True;
   FCurrentStackFrame :=  0;
   
-  List := TGDMIValueList.Create(AParams);
+  List := TGDBMINameValueList.Create(AParams);
   try
-    Reason := Unquote(List.Values['reason']);
+    Reason := List.Values['reason'];
     if (Reason = 'exited-normally')
     then begin
       SetState(dsStop);
@@ -1978,7 +2063,7 @@ begin
     
     if Reason = 'exited'
     then begin
-      SetExitCode(StrToIntDef(Unquote(List.Values['exit-code']), 0));
+      SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
       SetState(dsStop);
       Exit;
     end;
@@ -1986,7 +2071,7 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
-      DoException('External: ' + Unquote(List.Values['signal-name']), '');
+      DoException('External: ' + List.Values['signal-name'], '');
       // ProcessFrame(List.Values['frame']);
       Exit;
     end;
@@ -1999,7 +2084,7 @@ begin
     
     if Reason = 'breakpoint-hit'
     then begin
-      BreakID := StrToIntDef(Unquote(List.Values['bkptno']), -1);
+      BreakID := StrToIntDef(List.Values['bkptno'], -1);
       if BreakID = -1
       then begin
         SetState(dsError);
@@ -2149,13 +2234,13 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
   function InsertBreakPoint(const AName: String): Integer;
   var
     R: TGDBMIExecResult;
-    ResultList: TGDMIValueList;
+    ResultList: TGDBMINameValueList;
   begin
     ExecuteCommand('-break-insert %s', [AName], [cfIgnoreError], R);
     if R.State = dsError then Exit;
 
-    ResultList := TGDMIValueList.Create(R, ['bkpt']);
-    Result := StrToIntDef(Unquote(ResultList.Values['number']), -1);
+    ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
+    Result := StrToIntDef(ResultList.Values['number'], -1);
     ResultList.Free;
   end;
 
@@ -2257,7 +2342,7 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
   var
     R: TGDBMIExecResult;
     S: String;
-    ResultList: TGDMIValueList;
+    ResultList: TGDBMINameValueList;
   begin
     // Try to retrieve the address of main. Setting a break on main is past initialization
     if ExecuteCommand('info address main', [cfNoMICommand, cfIgnoreError], R)
@@ -2277,15 +2362,15 @@ function TGDBMIDebugger.StartDebugging(const AContinueCommand: String): Boolean;
     Result := R.State <> dsError;
     if not Result then Exit;
 
-    ResultList := TGDMIValueList.Create(R, ['bkpt']);
-    FMainAddr := StrToIntDef(Unquote(ResultList.Values['addr']), 0);
+    ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
+    FMainAddr := StrToIntDef(ResultList.Values['addr'], 0);
     ResultList.Free;
   end;
   
 var
   R: TGDBMIExecResult;
   FileType, EntryPoint: String;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
   TargetPIDPart: String;
   TempInstalled, CanContinue: Boolean;
 begin
@@ -2350,9 +2435,9 @@ begin
     end
     else begin
       // OS X gdb has mi output here
-      List := TGDMIValueList.Create(R, ['section-info']);
-      FileType := Unquote(List.Values['filetype']);
-      EntryPoint := Unquote(List.Values['entry-point']);
+      List := TGDBMINameValueList.Create(R, ['section-info']);
+      FileType := List.Values['filetype'];
+      EntryPoint := List.Values['entry-point'];
       List.Free;
     end;
     DebugLn('[Debugger] File type: ', FileType);
@@ -2492,13 +2577,13 @@ end;
 
 procedure TGDBMIBreakPoint.SetBreakPointCallback(const AResult: TGDBMIExecResult; const ATag: Integer);
 var
-  ResultList: TGDMIValueList;
+  ResultList: TGDBMINameValueList;
 begin
   BeginUpdate;
   try
-    ResultList := TGDMIValueList.Create(AResult, ['bkpt']);
-    FBreakID := StrToIntDef(Unquote(ResultList.Values['number']), 0);
-    SetHitCount(StrToIntDef(Unquote(ResultList.Values['times']), 0));
+    ResultList := TGDBMINameValueList.Create(AResult, ['bkpt']);
+    FBreakID := StrToIntDef(ResultList.Values['number'], 0);
+    SetHitCount(StrToIntDef(ResultList.Values['times'], 0));
     if FBreakID <> 0
     then SetValid(vsValid)
     else SetValid(vsInvalid);
@@ -2510,7 +2595,7 @@ begin
     and (TGDBMIDebugger(Debugger).FBreakAtMain = nil)
     then begin
       // Check if this BP is at the same location as the temp break
-      if StrToIntDef(Unquote(ResultList.Values['addr']), 0) = TGDBMIDebugger(Debugger).FMainAddr
+      if StrToIntDef(ResultList.Values['addr'], 0) = TGDBMIDebugger(Debugger).FMainAddr
       then TGDBMIDebugger(Debugger).FBreakAtMain := Self;
     end;
 
@@ -2569,15 +2654,17 @@ procedure TGDBMILocals.AddLocals(const AParams: String);
 var
   n, e: Integer;
   addr: TDbgPtr;
-  LocList, List: TGDMIValueList;
+  LocList, List: TGDBMINameValueList;
+  Item: PGDBMINameValue;
   S, Name, Value: String;
 begin
-  LocList := TGDMIValueList.Create(AParams);
-  List := TGDMIValueList.Create('');
+  LocList := TGDBMINameValueList.Create(AParams);
+  List := TGDBMINameValueList.Create('');
   for n := 0 to LocList.Count - 1 do
   begin
-    List.Init(LocList[n]);
-    Name := Unquote(List.Values['name']);
+    Item := LocList.Items[n];
+    List.Init(Item^.NamePtr, Item^.NameLen);
+    Name := List.Values['name'];
     if Name = 'this'
     then Name := 'Self';
 
@@ -2675,7 +2762,7 @@ end;
 procedure TGDBMILocals.LocalsNeeded;
 var
   R: TGDBMIExecResult;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
 begin
   if Debugger = nil then Exit;
   if FLocalsValid then Exit;
@@ -2685,7 +2772,7 @@ begin
     [TGDBMIDebugger(Debugger).FCurrentStackFrame], [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := TGDMIValueList.Create(R, ['stack-args', 'frame']);
+    List := TGDBMINameValueList.Create(R, ['stack-args', 'frame']);
     AddLocals(List.Values['args']);
     FreeAndNil(List);
   end;
@@ -2694,7 +2781,7 @@ begin
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := TGDMIValueList.Create(R);
+    List := TGDBMINameValueList.Create(R);
     AddLocals(List.Values['locals']);
     FreeAndNil(List);
   end;
@@ -2803,15 +2890,15 @@ end;
 function TGDBMICallStack.CheckCount: Boolean;
 var
   R: TGDBMIExecResult;
-  List: TGDMIValueList;
+  List: TGDBMINameValueList;
   i, cnt: longint;
 begin
   Result := inherited CheckCount;
   if not Result then Exit;
 
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', [cfIgnoreError], R);
-  List := TGDMIValueList.Create(R);
-  cnt := StrToIntDef(Unquote(List.Values['depth']), -1);
+  List := TGDBMINameValueList.Create(R);
+  cnt := StrToIntDef(List.Values['depth'], -1);
   FreeAndNil(List);
   if cnt = -1 then
   begin
@@ -2823,8 +2910,8 @@ begin
     repeat
       inc(i);
       TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth %d', [i], [cfIgnoreError], R);
-      List := TGDMIValueList.Create(R);
-      cnt := StrToIntDef(Unquote(List.Values['depth']), -1);
+      List := TGDBMINameValueList.Create(R);
+      cnt := StrToIntDef(List.Values['depth'], -1);
       FreeAndNil(List);
       if (cnt = -1) then begin
         // no valid stack-info-depth found, so the previous was the last valid one
@@ -2841,7 +2928,8 @@ var
   R: TGDBMIExecResult;
   addr: TDbgPtr;
   Arguments: TStringList;
-  ArgList, List: TGDMIValueList;
+  ArgList, List: TGDBMINameValueList;
+  Arg: PGDBMINameValue;
 begin
   if Debugger = nil then Exit;
 
@@ -2852,15 +2940,16 @@ begin
 
   if R.State <> dsError
   then begin
-    ArgList := TGDMIValueList.Create(R, ['stack-args', 'frame', 'args']);
+    ArgList := TGDBMINameValueList.Create(R, ['stack-args', 'frame', 'args']);
 
     if ArgList.Count > 0
     then begin
-      List := TGDMIValueList.Create('');
+      List := TGDBMINameValueList.Create('');
       for n := 0 to ArgList.Count - 1 do
       begin
-        List.Init(ArgList[n]);
-        Arguments.Add(Unquote(List.Values['name']) + '=' + DeleteEscapeChars(List.Values['value']));
+        Arg := ArgList.Items[n];
+        List.Init(Arg^.NamePtr, Arg^.NameLen);
+        Arguments.Add(List.Values['name'] + '=' + DeleteEscapeChars(List.Values['value']));
       end;
       FreeAndNil(List);
     end;
@@ -2871,17 +2960,17 @@ begin
                                           [AIndex], [cfIgnoreError], R);
   if R.State <> dsError
   then begin
-    List := TGDMIValueList.Create(R, ['stack', 'frame']);
+    List := TGDBMINameValueList.Create(R, ['stack', 'frame']);
     addr := 0;
-    Val(Unquote(List.Values['addr']), addr, e);
+    Val(List.Values['addr'], addr, e);
     if e=0 then ;
     Result := TCallStackEntry.Create(
       AIndex,
       addr,
       Arguments,
-      Unquote(List.Values['func']),
-      Unquote(List.Values['file']),
-      StrToIntDef(Unquote(List.Values['line']), 0)
+      List.Values['func'],
+      List.Values['file'],
+      StrToIntDef(List.Values['line'], 0)
     );
 
     FreeAndNil(List);
@@ -3105,7 +3194,7 @@ function TGDBMIExpression.GetExpression(var AResult: String): Boolean;
 var
   R: TGDBMIExecResult;
   S: String;
-  List: TStrings;
+  List: TGDBMINameValueList;
   GDBType: TGDBType;
 begin  
   Result := False;
@@ -3149,7 +3238,7 @@ begin
       end
       else begin
         DebugLn('PType result: ', R.Values);
-        List := CreateValueList(R.Values);
+        List := TGDBMINameValueList.Create(R);
         S := List.Values['type'];
         DebugLn('PType type: ', S);
         List.Free;

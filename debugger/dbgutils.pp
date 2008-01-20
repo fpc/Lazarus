@@ -54,7 +54,7 @@ type
   
 function GetLine(var ABuffer: String): String;
 function ConvertToCString(const AText: String): String;
-function DeleteEscapeChars(const AValue: String; const ARemoveQuotes: Boolean = True; const AEscapeChar: Char = '\'): String;
+function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char = '\'): String;
 function UnQuote(const AValue: String): String;
 
 
@@ -149,7 +149,7 @@ begin
   else Result := AValue;
 end;
 
-function DeleteEscapeChars(const AValue: String; const ARemoveQuotes: Boolean; const AEscapeChar: Char): String;
+function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;
 var
   cnt, len: Integer;
   s: String;
@@ -158,15 +158,7 @@ begin
   len := Length(AValue);
   if len = 0 then Exit('');
 
-  if ARemoveQuotes and (len >= 2) and (AValue[1] = '"') and (AValue[len] = '"')
-  then begin
-    Dec(len, 2);
-    Src := @AValue[2];
-    if len = 0 then Exit('');
-  end
-  else begin
-    Src := @AValue[1];
-  end;
+  Src := @AValue[1];
   cnt := len;
   SetLength(Result, len); // allocate initial space
 
