@@ -3115,7 +3115,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.OnDropFiles">
         <short>The event invoked when file is dropped on this form.</short>
         <descr>The OnDropFiles event is invoked when user drops one or multiple files on this form. You enable this feature by setting AllowDropFiles property.</descr>
-        <seealso><link id="TCustomForm.AllowDropFiles"/></seaalso>
+        <seealso><link id="TCustomForm.AllowDropFiles"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnHelp">
@@ -6731,7 +6731,7 @@ Navigation Options is a set, so can take zero or more of the available values</d
         <seealso>
 		  <link id="TCustomForm.OnDropFiles"/>
 		  <link id="TCustomForm.AllowDropFiles"/>
-		</seaalso>
+		</seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TApplication.OnHelp">
