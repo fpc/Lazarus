@@ -527,7 +527,10 @@ begin
   if gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE then
   begin
     Path := gtk_tree_model_get_path(FGtkListStore, @ListItem);
-    gtk_tree_path_prev(Path);
+    if gtk_tree_path_get_indices(Path)^ = 0 then
+      gtk_tree_path_next(Path)
+    else
+      gtk_tree_path_prev(Path);
     gtk_tree_view_set_cursor(Widget, Path, nil, False);
   end;
   
