@@ -122,7 +122,6 @@ type
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells, gzInvalid);
   TGridZoneSet = set of TGridZone;
 
-  TUpdateOption = (uoNone, uoQuick, uoFull);
   TAutoAdvance = (aaNone,aaDown,aaRight,aaLeft, aaRightDown, aaLeftDown,
     aaRightUp, aaLeftUp);
 
@@ -952,9 +951,7 @@ type
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
-    procedure EndUpdate(UO: TUpdateOption); overload;
-    procedure EndUpdate(FullUpdate: Boolean); overload;
-    procedure EndUpdate; overload;
+    procedure EndUpdate(aRefresh: boolean = true);
     procedure EraseBackground(DC: HDC); override;
 
     function  IscellVisible(aCol, aRow: Integer): Boolean;
@@ -1779,18 +1776,20 @@ begin
     SetRawColWidths(ACol, Avalue);
     if not (csLoading in ComponentState) then begin
 
-      UpdateSizes;
+      if FUpdateCount=0 then begin
+        UpdateSizes;
 
-      R := CellRect(aCol, 0);
-      R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
-      if bigger then
-        R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
-      else
-        R.Right := FGCache.ClientWidth;
-      if aCol=FTopLeft.x then
-        R.Left := FGCache.FixedWidth;
+        R := CellRect(aCol, 0);
+        R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1;
+        if bigger then
+          R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1
+        else
+          R.Right := FGCache.ClientWidth;
+        if aCol=FTopLeft.x then
+          R.Left := FGCache.FixedWidth;
 
-      InvalidateRect(handle, @R, False);
+        InvalidateRect(handle, @R, False);
+      end;
 
       if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then
         EditorWidthChanged(aCol, aValue);
@@ -2022,10 +2021,6 @@ procedure TCustomGrid.SetOptions(const AValue: TGridOptions);
 begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
-  {
-  if goRangeSelect in Options then
-    FOptions:=FOptions - [goAlwaysShowEditor];
-  }
   UpdateSelectionRange;
   if goAlwaysShowEditor in Options then begin
     EditorShow(true);
@@ -2059,18 +2054,20 @@ begin
 
     FRows[ARow]:=Pointer(PtrInt(AValue));
     
-    UpdateSizes;
-    
-    R := CellRect(0, aRow);
-    R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
-    if bigger then
-      R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
-    else
-      R.Bottom := FGCache.ClientHeight;
-    if aRow=FTopLeft.y then
-      R.Top := FGCache.FixedHeight;
+    if FUpdateCount=0 then begin
+      UpdateSizes;
 
-    InvalidateRect(handle, @R, False);
+      R := CellRect(0, aRow);
+      R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
+      if bigger then
+        R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
+      else
+        R.Bottom := FGCache.ClientHeight;
+      if aRow=FTopLeft.y then
+        R.Top := FGCache.FixedHeight;
+
+      InvalidateRect(handle, @R, False);
+    end;
     
     if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
     RowHeightsChanged;
@@ -2281,18 +2278,13 @@ begin
   CheckIndex(not ColSorting, IndxTo);
   BeginUpdate;
   QuickSort(IndxFrom, IndxTo);
-  EndUpdate(True);
+  EndUpdate;
 end;
 
 procedure TCustomGrid.doTopleftChange(dimChg: Boolean);
 begin
   TopLeftChanged;
-  if dimchg then begin
-    VisualChange;
-  end else begin
-    CacheVisibleGrid;
-    Invalidate;
-  end;
+  VisualChange;
   updateScrollBarPos(ssBoth);
 end;
 
@@ -2335,21 +2327,17 @@ end;
 
 procedure TCustomGrid.VisualChange;
 begin
-  {$ifdef DbgVisualChange}
-  DebugLn('TCustomGrid.VisualChange INIT ',DbgSName(Self));
-  {$endif}
   if FUpdateCount<>0 then
     exit;
     
+  {$ifdef DbgVisualChange}
+  DebugLn('TCustomGrid.VisualChange INIT ',DbgSName(Self));
+  {$endif}
+
   UpdateSizes;
 
   Invalidate;
   {$ifdef DbgVisualChange}
-  with FGCache do begin
-    DebugLn('GWidth=',dbgs(GridWidth),' GHeight=',dbgs(GridHeight));
-    DebugLn('CWidth=',dbgs(ClientWidth),' CHeight=',dbgs(ClientHeight));
-    //DebugLn('HsbVis=',dbgs(HsbVisible),' VSbVis=', dbgs(VSbVisible));
-  end;
   DebugLn('TCustomGrid.VisualChange END ',DbgSName(Self));
   {$endif}
 end;
@@ -3585,6 +3573,12 @@ begin
 
   FGCache.ClientWidth := ClientWidth;
   FGCache.ClientHeight:= ClientHeight;
+  {$ifdef dbgVisualChange}
+  DebugLn('TCustomGrid.updateCachedSizes: ');
+  with FGCache do
+  DebugLn('  GWidth=%d GHeight=%d FWidth=%d FHeight=%d CWidth=%d CHeight=%d',
+    [GridWidth,GridHeight,FixedWidth,FixedHeight,ClientWidth,ClientHeight]);
+  {$endif}
 end;
 
 procedure TCustomGrid.GetSBVisibility(out HsbVisible,VsbVisible:boolean);
@@ -5585,29 +5579,11 @@ begin
   Inc(FUpdateCount);
 end;
 
-procedure TCustomGrid.EndUpdate(UO: TUpdateOption);
+procedure TCustomGrid.EndUpdate(aRefresh: boolean = true);
 begin
   Dec(FUpdateCount);
-  if FUpdateCount=0 then
-    case UO of
-      uoQuick:
-        Invalidate;
-      uoFull:
-        VisualChange;
-    end;
-end;
-
-procedure TCustomGrid.EndUpdate(FullUpdate: Boolean);
-begin
-  if FullUpdate then
-    EndUpdate(uoFull)
-  else
-    EndUpdate(uoQuick);
-end;
-
-procedure TCustomGrid.EndUpdate;
-begin
-  EndUpdate(true);
+  if (FUpdateCount=0) and aRefresh then
+    VisualChange;
 end;
 
 procedure TCustomGrid.EraseBackground(DC: HDC);
@@ -6764,7 +6740,7 @@ begin
     if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
     BeginUpdate;
     LoadContent(Cfg, Version);
-    EndUpdate(True);
+    EndUpdate;
   Finally
     FreeThenNil(Cfg);
   end;
@@ -8089,7 +8065,7 @@ begin
     for aRow:= StartRow to EndRow do
       if (CleanOptions=[]) or (CellToGridZone(aCol,aRow) in CleanOptions) then
         Cells[aCol,aRow] := '';
-  EndUpdate(false);
+  EndUpdate;
 end;
 
 

@@ -85,7 +85,7 @@ begin
       for J := 0 to Src.RowCount - 1 do
         Dest.Cells[I, J] := Src.Cells[I, J];
   finally
-    Dest.EndUpdate(uoFull);
+    Dest.EndUpdate;
   end;
 end;
 

@@ -291,9 +291,6 @@ type
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     FLayoutChangedCount: integer;
-    //FUseAutoColumns: boolean;
-    //FUseCheckBoxColumn: boolean;
-    FVisualChangeCount: Integer;
     FSelectionLock: Boolean;
     FTempText : string;
     FDrawingActiveRecord: Boolean;
@@ -342,8 +339,6 @@ type
 
     procedure UpdateGridColumnSizes;
     procedure UpdateScrollbarRange;
-    procedure BeginVisualChange;
-    procedure EndVisualChange;
     procedure DoLayoutChanged;
     //procedure WriteColumns(Writer: TWriter);
 
@@ -391,6 +386,7 @@ type
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
     function  FieldIndexFromGridColumn(Column: Integer): Integer;
+    function  GetBufferCount: integer;
     function  GetDefaultColumnAlignment(Column: Integer): TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultColumnReadOnly(Column: Integer): boolean; override;
@@ -423,7 +419,6 @@ type
     procedure UpdateActive; virtual;
     procedure UpdateData; virtual;
     function  UpdateGridCounts: Integer;
-    procedure VisualChange; override;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
 
@@ -986,22 +981,18 @@ procedure TCustomDBGrid.SetThumbTracking(const AValue: boolean);
 begin
   BeginUpdate;
   if Avalue then
-    inherited Options := Inherited Options + [goThumbTracking]
+    inherited Options := inherited Options + [goThumbTracking]
   else
-    inherited Options := Inherited Options - [goThumbTracking];
-  EndUpdate(uoNone);
+    inherited Options := inherited Options - [goThumbTracking];
+  EndUpdate(false);
 end;
 
 procedure TCustomDBGrid.UpdateBufferCount;
-var
-  BuffCount: Integer;
 begin
   if FDataLink.Active then begin
-    BuffCount := GCache.ClientHeight div DefaultRowHeight;
-    if dgTitles in Options then Dec(BuffCount, 1);
-    FDataLink.BufferCount:= BuffCount;
+    FDataLink.BufferCount:= GetBufferCount;
     {$ifdef dbgDBGrid}
-    DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=' + IntToStr(Fdatalink.BufferCount));
+    DebugLn('%s (%s), FDatalink.BufferCount=%d',[ClassName,Name,FDataLink.BufferCount]);
     {$endif}
   end;
 end;
@@ -1252,6 +1243,13 @@ begin
   end;
 end;
 
+function TCustomDBGrid.GetBufferCount: integer;
+begin
+  Result := ClientHeight div DefaultRowHeight;
+  if dgTitles in Options then
+    Dec(Result, 1);
+end;
+
 procedure TCustomDBGrid.UpdateGridColumnSizes;
 var
   i: Integer;
@@ -1304,25 +1302,16 @@ begin
    ' aPage=', IntToStr(aPage), ' aPos=', IntToStr(aPos));
   {$endif}
 end;
-procedure TCustomDBGrid.BeginVisualChange;
-begin
-  inc(FVisualChangeCount);
-end;
-
-procedure TCustomDBGrid.EndVisualChange;
-begin
-  dec(FVisualChangecount);
-  if FVisualChangeCount = 0 then
-    VisualChange;
-end;
 
 procedure TCustomDBGrid.doLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged INIT'); {$endif}
+  BeginUpdate;
   if UpdateGridCounts=0 then
     EmptyGrid;
+  EndUpdate;
   UpdateScrollbarRange;
   RestoreEditor;
   {$ifdef dbgDBGrid} DebugLn('doLayoutChanged FIN'); {$endif}
@@ -1631,7 +1620,7 @@ begin
   inherited DoOnChangeBounds;
   if HandleAllocated then
     LayoutChanged;
-  EndUpdate(False);
+  EndUpdate;
 end;
 
 procedure TCustomDBGrid.DoPrepareCanvas(aCol, aRow: Integer;
@@ -2521,7 +2510,7 @@ begin
   // there are no visible columns defined or dataset is inactive
   // or there are no visible fields, ie the grid is blank
   {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts INIT');{$endif}
-  BeginVisualChange;
+  BeginUpdate;
   try
     Result := GetColumnCount;
     if Result > 0 then begin
@@ -2529,7 +2518,7 @@ begin
       if dgTitles in Options then FRCount := 1 else FRCount := 0;
       if dgIndicator in Options then FCCount := 1 else FCCount := 0;
       InternalSetColCount(Result + FCCount);
-
+      
       if FDataLink.Active then begin
         UpdateBufferCount;
         RecCount := FDataLink.RecordCount;
@@ -2538,7 +2527,7 @@ begin
       end else begin
         RecCount := 0;
         if FRCount=0 then
-          // need to be as large enought to hold indicator
+          // need to be large enough to hold indicator
           // if there is one, and if there are no titles
           RecCount := FCCount;
       end;
@@ -2555,16 +2544,9 @@ begin
         SetColRow(Col, FixedRows + FDatalink.ActiveRecord);
     end;
   finally
-    EndVisualChange;
+    EndUpdate;
   end;
   {$IfDef dbgDBGrid}DebugLn('TCustomDbgrid.UpdateGridCounts END');{$endif}
-end;
-
-procedure TCustomDBGrid.VisualChange;
-begin
-  if FVisualChangeCount=0 then begin
-    inherited VisualChange;
-  end;
 end;
 
 constructor TCustomDBGrid.Create(AOwner: TComponent);
