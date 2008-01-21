@@ -1,14 +1,14 @@
+# Slovak translation of lazarus Ivan Masár <helix84@centrum.sk>, 2007. 
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarus 0.9.22\n"
-"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-03 13:55+0100\n"
+"PO-Revision-Date: 2007-10-26 19:56+0100\n"
 "Last-Translator: Ivan Masár <helix84@centrum.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -124,7 +124,7 @@ msgstr "1 riadok, %d znakov"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr "Činnosť"
+msgstr "Čnnosť"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
@@ -220,7 +220,7 @@ msgstr "Kategória"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
-msgstr "Vystrediť"
+msgstr "Vystredniť"
 
 #: objinspstrconsts:oischar
 msgid "Char"
@@ -256,7 +256,7 @@ msgstr "Zmazať"
 
 #: objinspstrconsts:oisclearpicture
 msgid "Clear picture"
-msgstr "Zmazať obrázok"
+msgstr "Vyčistiť obrázok"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
@@ -288,7 +288,7 @@ msgstr "Kopírovať komponenty"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr "Vytvoriť novú pascalovskú jednotku"
+msgstr "Vytvoriť nový pascalovský unit"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -348,7 +348,7 @@ msgstr "Zmazať"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr "Zmazať akciu"
+msgstr "Zmazať činnosť"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
@@ -400,7 +400,7 @@ msgstr "Upraviť polia"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr "Editovať položky ListView..."
+msgstr "Editvať položky ListView..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
@@ -464,7 +464,7 @@ msgstr "Prvý"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
-msgstr "Plávajúci"
+msgstr "Float"
 
 #: objinspstrconsts:oistdactfontedithint
 msgid "Font Select"
@@ -692,7 +692,7 @@ msgstr "Po&slať"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr "Popisy panelov"
+msgstr "Popist panelov"
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -824,7 +824,7 @@ msgstr "Zobraziť Strom komponentov"
 
 #: objinspstrconsts:oisshowhints
 msgid "Show Hints"
-msgstr "Zobraziť rady"
+msgstr "Zobariť rady"
 
 #: objinspstrconsts:nbcesshowpage
 msgid "Show page ..."
@@ -868,7 +868,7 @@ msgstr "Dialóg Editor reťazcov"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
-msgstr "Test vstupu"
+msgstr "Testvstupu"
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
@@ -880,7 +880,7 @@ msgstr "Text:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr "Položka „%s“ už je·v zozname. Chcete ju napriek tomu pridať?"
+msgstr "Položka „%s“ je už v zozname. Chcete ju napriek tomu pridať?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
