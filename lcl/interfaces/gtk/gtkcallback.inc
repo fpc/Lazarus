@@ -93,18 +93,18 @@ begin
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit;
 
   MSG.Msg := LM_GtkPAINT;
-  MSG.Data:=TLMGtkPaintData.Create;
+  MSG.Data := TLMGtkPaintData.Create;
   MSG.Data.Widget := Widget;
   MSG.Data.State := GtkPaint_LCLWidget;
-  Msg.Data.Rect:=Bounds(Area^.x,Area^.y,Area^.Width,Area^.Height);
-  Msg.Data.RepaintAll:=RepaintAll;
+  Msg.Data.Rect := Bounds(Area^.x, Area^.y, Area^.Width, Area^.Height);
+  Msg.Data.RepaintAll := RepaintAll;
 
   {$IFDEF DirectPaintMsg}
   PaintMsg:= GtkPaintMessageToPaintMessage(Msg,true);
   Result := DeliverMessage(Target,PaintMsg) = 0;
   FinalizePaintMessage(PLMessage(@PaintMsg));
   {$ELSE}
-  Result:=DeliverPostMessage(Target,Msg);
+  Result := DeliverPostMessage(Target,Msg);
   {$ENDIF}
 end;
 
@@ -531,7 +531,7 @@ begin
 
   // the expose area is ok, but some gtk widgets repaint everything on expose
   // -> maximize the area
-  DeliverGtkPaintMessage(Data,Widget,@Event^.Area,true,false);
+  DeliverGtkPaintMessage(Data, Widget, @Event^.Area, True, False);
 end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;

@@ -340,7 +340,8 @@ end;
 
 procedure TToolBar.Paint;
 begin
-  if csDesigning in ComponentState then begin
+  if csDesigning in ComponentState then
+  begin
     Canvas.Pen.Color:=clRed;
     Canvas.FrameRect(Clientrect);
   end;

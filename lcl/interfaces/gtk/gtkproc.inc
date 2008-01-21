@@ -953,16 +953,16 @@ var
 begin
   Result.Msg:=LM_PAINT;
   New(PS);
-  FillChar(PS^,SizeOf(TPaintStruct),0);
-  Widget:=GtkPaintMsg.Data.Widget;
+  FillChar(PS^, SizeOf(TPaintStruct), 0);
+  Widget := GtkPaintMsg.Data.Widget;
   If GtkPaintMsg.Data.RepaintAll then
-    PS^.rcPaint := Rect(0,0,Widget^.Allocation.Width,Widget^.Allocation.Height)
+    PS^.rcPaint := Rect(0, 0, Widget^.Allocation.Width, Widget^.Allocation.Height)
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC:=BeginPaint(THandle(PtrUInt(Widget)), PS^);
-  Result.PaintStruct:=PS;
-  Result.Result:=0;
+  Result.DC := BeginPaint(THandle(PtrUInt(Widget)), PS^);
+  Result.PaintStruct := PS;
+  Result.Result := 0;
   if FreeGtkPaintMsg then
     FreeThenNil(GtkPaintMsg.Data);
 end;
@@ -973,7 +973,7 @@ var
   DC : TGtkDeviceContext;
 begin
   if (Msg^.Msg=LM_PAINT) or (Msg^.Msg=LM_INTERNALPAINT) then begin
-    If Msg^.LParam <> 0 then begin
+    if Msg^.LParam <> 0 then begin
        PS := PPaintStruct(Msg^.LParam);
        If Msg^.WParam<>0 then
          DC := TGtkDeviceContext(Msg^.WParam)

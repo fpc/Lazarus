@@ -345,7 +345,7 @@ begin
   ControlStyle := ControlStyle - [csAcceptsControls];
   FSplitterType := pstHorizontal;
   Cursor := crHSplit;
-  SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   FPosition:=45;
   CreateSides;
 end;
