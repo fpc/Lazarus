@@ -23,12 +23,10 @@ begin
   {$IFDEF EventTrace}
   EventTrace('Gtk2WS_ListBoxChange', WidgetInfo^.LCLObject);
   {$ENDIF}
-  FillChar(Mess,SizeOf(Mess),0);
-  Mess.msg := LM_SelChange;
+  FillChar(Mess, SizeOf(Mess), 0);
+  Mess.msg := LM_SELCHANGE;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
-
-
 
 { TGtk2PrivateList }
 
@@ -36,10 +34,9 @@ class procedure TGtk2PrivateList.SetCallbacks(const AGtkWidget: PGtkWidget; cons
 var
   Selection: PGtkTreeSelection;
 begin
-  TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget,AWidgetInfo);
+  TGtkWSBaseScrollingWinControl.SetCallbacks(AGtkWidget, AWidgetInfo);
 
   Selection := gtk_tree_view_get_selection(PGtkTreeView(AWidgetInfo^.CoreWidget));
   SignalConnect(PGtkWidget(Selection), 'changed', @Gtk2WS_ListBoxChange, AWidgetInfo);
 end;
-
 

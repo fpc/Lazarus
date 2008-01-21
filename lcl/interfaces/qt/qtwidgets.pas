@@ -765,7 +765,11 @@ type
     procedure signalViewportEntered; cdecl; virtual;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
+ public
+    procedure clearSelection;
     function getModel: QAbstractItemModelH;
+    function getSelectionMode: QAbstractItemViewSelectionMode;
+
     procedure modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
     function visualRect(Index: QModelIndexH): TRect;
     procedure setEditTriggers(ATriggers: QAbstractItemViewEditTriggers);
@@ -781,7 +785,6 @@ type
 
   TQtListView = class(TQtAbstractItemView)
   public
-    procedure setSelectionMode(const AMode: QAbstractItemViewSelectionMode);
   end;
 
   { TQtListWidget }
@@ -5847,7 +5850,7 @@ begin
   if QListWidget_count(QListWidgetH(Widget)) = 1 then
   begin
     FDisableSelectionChange := True;
-    QListWidget_setCurrentRow(QListWidgetH(Widget), 0);
+    setCurrentRow(-1);
     FDisableSelectionChange := False;
   end;
 end;
@@ -5859,6 +5862,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtListWidget.setCurrentRow(row: Integer);
 begin
+  if (getSelectionMode <> QAbstractItemViewSingleSelection) and (row < 0) then
+    row := 0;
   QListWidget_setCurrentRow(QListWidgetH(Widget), row);
 end;
 
@@ -5875,10 +5880,12 @@ procedure TQtListWidget.removeItem(AIndex: Integer);
 var
   Item: QListWidgetItemH;
 begin
+  if (currentRow = AIndex) then
+    if (getSelectionMode = QAbstractItemViewSingleSelection) then
+      setCurrentRow(-1);
   Item := QListWidget_takeitem(QListWidgetH(Widget), AIndex);
   QListWidgetItem_destroy(Item);
 end;
-
 
   { TQtHeaderView }
   
@@ -7452,9 +7459,19 @@ begin
   inherited DetachEvents;
 end;
 
+procedure TQtAbstractItemView.clearSelection;
+begin
+  QAbstractItemView_clearSelection(QAbstractItemViewH(Widget));
+end;
+
 function TQtAbstractItemView.getModel: QAbstractItemModelH;
 begin
   Result := QAbstractItemView_model(QAbstractItemViewH(Widget));
+end;
+
+function TQtAbstractItemView.getSelectionMode: QAbstractItemViewSelectionMode;
+begin
+  Result := QAbstractItemView_SelectionMode(QAbstractItemViewH(Widget));
 end;
 
 procedure TQtAbstractItemView.modelIndex(retval: QModelIndexH; row, column: Integer; parent: QModelIndexH = nil);
@@ -7661,14 +7678,6 @@ end;
 procedure TQtFileDialog.getFilters(const retval: QStringListH);
 begin
   QFileDialog_filters(QFileDialogH(Widget), retval);
-end;
-
-{ TQtListView }
-
-procedure TQtListView.setSelectionMode(
-  const AMode: QAbstractItemViewSelectionMode);
-begin
-  QAbstractItemView_setSelectionMode(QAbstractItemViewH(Widget), AMode);
 end;
 
 { TQtGraphicView }

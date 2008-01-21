@@ -344,11 +344,9 @@ end;
 class function TGtk2WSCustomListBox.GetItemIndex(
   const ACustomListBox: TCustomListBox): integer;
 var
-  Handle: HWND;
   Widget: PGtkWidget;
-  TreeView: PGtkTreeView;
-  Selection: PGtkTreeSelection;
-  Index: Integer;// ! keep this integer
+  Path: PGtkTreePath;
+  Column: PGtkTreeViewColumn;
 begin
   Result := -1;
   if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
@@ -356,11 +354,11 @@ begin
   Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   if GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
   begin
-    TreeView := PGtkTreeView(Widget);
-    Selection := Gtk_tree_view_get_selection(TreeView);
-    Index := -1;
-    gtk_tree_selection_selected_foreach(Selection, @StoreFirstSelectedPath, @Index);
-    Result := Index;
+    gtk_tree_view_get_cursor(PGtkTreeView(Widget), Path, column);
+    if Path <> nil then
+      Result := gtk_tree_path_get_indices(Path)^
+    else
+      Result := -1;
   end;
 end;
 
@@ -421,11 +419,11 @@ end;
 class procedure TGtk2WSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
-  Handle: HWND;
   Widget: PGtkWidget;
   ListStoreModel: PGtkTreeModel;
   Selection: PGtkTreeSelection;
   Iter: TGtkTreeIter;
+  Path: PGtkTreePath;
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
     Exit;
@@ -438,10 +436,26 @@ begin
     ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
     if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then
     begin
+      Path := gtk_tree_model_get_path(ListStoreModel, @Iter);
+      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
       gtk_tree_selection_select_iter(Selection, @Iter);
     end;
   end else
+  begin
+    if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
+    begin
+      // how to clear cursor properly?
+      // this way we'll get gtk assertion, but cursor will be cleared
+      if GetItemIndex(ACustomListBox) = -1 then
+        Exit;
+      Path := gtk_tree_path_new;
+    end
+    else
+      Path := gtk_tree_path_new_first;
+    gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
     gtk_tree_selection_unselect_all(Selection);
+    gtk_tree_path_free(Path);
+  end;
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
@@ -622,7 +636,6 @@ end;
 class function TGtk2WSCustomListBox.GetSelected(
   const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
 var
-  Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
   ListStoreModel: PGtkTreeModel;
@@ -645,7 +658,6 @@ class function TGtk2WSCustomListBox.GetStrings(
   const ACustomListBox: TCustomListBox): TStrings;
 var
   Widget: PGtkWidget;// pointer to gtk-widget
-  Handle: HWND;
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then
     Exit;

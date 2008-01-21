@@ -509,25 +509,42 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Delete(Index : integer);
 var
-  ListItem : TGtkTreeIter;
+  ListItem: TGtkTreeIter;
+  Path: PGtkTreePath;
+  Widget: PGtkTreeView;
+  Selection: PGtkTreeSelection;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then
-    ListItem:=FCachedItems[Index]
+    ListItem := FCachedItems[Index]
   else
     gtk_tree_model_iter_nth_child(FGtkListStore, @ListItem, nil, Index);
-    
+
+  //gtk_list_store_g
+  
+  Widget := PGtkTreeView(GetWidgetInfo(Pointer(FOwner.Handle), True)^.CoreWidget);
+  Selection := gtk_tree_view_get_selection(Widget);
+
+  if gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE then
+  begin
+    Path := gtk_tree_model_get_path(FGtkListStore, @ListItem);
+    gtk_tree_path_prev(Path);
+    gtk_tree_view_set_cursor(Widget, Path, nil, False);
+  end;
+  
   gtk_list_store_remove(FGtkListStore, @ListItem);
+
   IncreaseChangeStamp;
   
   if not (glsCountNeedsUpdate in FStates) then
     dec(FCachedCount);
-  if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count) then begin
+  if (not (glsItemCacheNeedsUpdate in FStates)) and (Index=Count) then
+  begin
     // cache is valid and the last item was deleted -> just remove last item
     dec(FCachedSize);
-    if (FCachedSize<FCachedCapacity div 2) then
+    if (FCachedSize < FCachedCapacity div 2) then
       ShrinkCache;
   end else
-    Include(FStates,glsItemCacheNeedsUpdate);
+    Include(FStates, glsItemCacheNeedsUpdate);
 end;
 
 function TGtkListStoreStringList.IndexOf(const S: string): Integer;
