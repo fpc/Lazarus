@@ -323,10 +323,10 @@ uses GtkWSControls, LCLMessageGlue;
 
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 begin
-  if GtkWidgetIsA(Widget,GTK_TYPE_COMBO_BOX_ENTRY) then
-    Result:= PGtkEntry(GTK_BIN(Widget)^.child)
+  if GtkWidgetIsA(Widget, GTK_TYPE_COMBO_BOX_ENTRY) then
+    Result := PGtkEntry(GTK_BIN(Widget)^.child)
   else
-    Result:=nil;
+    Result := nil;
 end;
 
 {$I gtk2memostrings.inc}
@@ -337,7 +337,8 @@ procedure StoreFirstSelectedPath(model:PGtkTreeModel; path:PGtkTreePath;
   iter:PGtkTreeIter; data:gpointer); cdecl;
 begin
   //DebugLn(['StoreFirstSelectedPath ',PInteger(Data)^,' ',gtk_tree_path_get_indices(Path)^]);
-  if PInteger(Data)^<0 then PInteger(Data)^:=gtk_tree_path_get_indices(Path)^;
+  if PInteger(Data)^ < 0 then
+    PInteger(Data)^ := gtk_tree_path_get_indices(Path)^;
 end;
 
 class function TGtk2WSCustomListBox.GetItemIndex(
@@ -350,17 +351,16 @@ var
   Index: Integer;// ! keep this integer
 begin
   Result := -1;
-  Handle := ACustomListBox.Handle;
-  if Handle<>0 then
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetItemIndex') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  if GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
   begin
-    Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-    if GtkWidgetIsA(Widget,gtk_tree_view_get_type) then begin
-      TreeView := PGtkTreeView(Widget);
-      Selection := Gtk_tree_view_get_selection(TreeView);
-      Index:=-1;
-      gtk_tree_selection_selected_foreach(Selection,@StoreFirstSelectedPath,@Index);
-      Result:=Index;
-    end;
+    TreeView := PGtkTreeView(Widget);
+    Selection := Gtk_tree_view_get_selection(TreeView);
+    Index := -1;
+    gtk_tree_selection_selected_foreach(Selection, @StoreFirstSelectedPath, @Index);
+    Result := Index;
   end;
 end;
 
@@ -368,8 +368,8 @@ class function TGtk2WSCustomListBox.GetItemRect(
   const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect
   ): boolean;
 begin
-  Result:=false;
-  FillChar(ARect,SizeOf(ARect),0);
+  Result := False;
+  FillChar(ARect, SizeOf(ARect), 0);
   case ACustomListBox.fCompStyle of
   csListBox, csCheckListBox:
     begin
@@ -387,14 +387,14 @@ end;
 class procedure TGtk2WSCustomListBox.SelectItem(
   const ACustomListBox: TCustomListBox; AnIndex: integer; ASelected: boolean);
 var
-  Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
   ListStoreModel: PGtkTreeModel;
   Iter  : TGtkTreeIter;
 begin
-  Handle := ACustomListBox.Handle;
-  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  if not WSCheckHandleAllocated(ACustomListBox, 'SelectItem') then
+    Exit;
+  Widget:=GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
@@ -427,15 +427,17 @@ var
   Selection: PGtkTreeSelection;
   Iter: TGtkTreeIter;
 begin
-  Handle := ACustomListBox.Handle;
-  if Handle=0 then exit;
-  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-  if not GtkWidgetIsA(Widget,gtk_tree_view_get_type) then
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
-  Selection := Gtk_tree_view_get_selection(PGtkTreeView(Widget));
-  if AIndex >= 0 then begin
+  Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
+  if AIndex >= 0 then
+  begin
     ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
-    if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then begin
+    if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then
+    begin
       gtk_tree_selection_select_iter(Selection, @Iter);
     end;
   end else
@@ -446,12 +448,12 @@ class procedure TGtk2WSCustomListBox.SetSelectionMode(
   const ACustomListBox: TCustomListBox; const AExtendedSelect,
   AMultiSelect: boolean);
 var
-  Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
 begin
-  Handle := ACustomListBox.Handle;
-  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetSelectionMode') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle),True)^.CoreWidget;
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   case AMultiSelect of
@@ -484,9 +486,11 @@ var
   TreeView: PGtkTreeView;
   APath: Pointer;
 begin
-  Widget:=GetWidgetInfo(Pointer(ACustomListBox.Handle),True)^.CoreWidget;
-  TreeView:=PGtkTreeView(Widget);
-  ListStoreModel:=gtk_tree_view_get_model(TreeView);
+  if not WSCheckHandleAllocated(ACustomListBox, 'SetTopIndex') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
+  TreeView := PGtkTreeView(Widget);
+  ListStoreModel := gtk_tree_view_get_model(TreeView);
   
   if not gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, NewTopIndex)
   then exit;
@@ -501,7 +505,9 @@ class procedure TGtk2WSCustomListBox.SetFont(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
 begin
-  Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
+  if not WSCheckHandleAllocated(AWinControl, 'SetFont') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(AWinControl.Handle), True)^.CoreWidget;
 
   Gtk2WidgetSet.SetWidgetColor(Widget, AWinControl.Font.Color, clNone,
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
@@ -574,13 +580,14 @@ var
   aTreeColumn: PGtkTreeViewColumn;
   aTreePath: PGtkTreePath;
 begin
-  Result:=-1;
+  Result := -1;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetIndexAtY') then
+    Exit;
   case ACustomListBox.fCompStyle of
   csListBox, csCheckListBox:
     begin
       aTreeView :=
-        GTK_TREE_VIEW(GetWidgetInfo(Pointer(ACustomListBox.Handle), True)
-          ^.CoreWidget);
+        GTK_TREE_VIEW(GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget);
 
       if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn,
         nil, nil)
@@ -596,15 +603,15 @@ end;
 class function TGtk2WSCustomListBox.GetSelCount(
   const ACustomListBox: TCustomListBox): integer;
 var
-  Handle: HWND;
   Widget: PGtkWidget; // pointer to gtk-widget (local use when neccessary)
   Selection: PGtkTreeSelection;
   ListStoreModel: PGtkTreeModel;
   Rows: PGList;
 begin
   Result := 0;
-  Handle := ACustomListBox.Handle;
-  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelCount') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   Rows := gtk_tree_selection_get_selected_rows(Selection, @ListStoreModel);
@@ -621,13 +628,15 @@ var
   ListStoreModel: PGtkTreeModel;
   Item  : TGtkTreeIter;
 begin
-  Result := false;      { assume: nothing found }
-  Handle := ACustomListBox.Handle;
-  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  Result := False;      { assume: nothing found }
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetSelected') then
+    Exit;
+  Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
-  if gtk_tree_model_iter_nth_child(ListStoreModel, @Item, nil, AIndex) then begin
+  if gtk_tree_model_iter_nth_child(ListStoreModel, @Item, nil, AIndex) then
+  begin
     Result := gtk_tree_selection_iter_is_selected(Selection, @Item);
   end;
 end;
@@ -638,7 +647,8 @@ var
   Widget: PGtkWidget;// pointer to gtk-widget
   Handle: HWND;
 begin
-  Handle := ACustomListBox.Handle;
+  if not WSCheckHandleAllocated(ACustomListBox, 'GetStrings') then
+    Exit;
   case ACustomListBox.fCompStyle of
     {csCListBox:
       begin
@@ -652,7 +662,7 @@ begin
     }
     csCheckListBox, csListBox:
       begin
-        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+        Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
         Result := TGtkListStoreStringList.Create(
                                 gtk_tree_view_get_model(PGtkTreeView(Widget)),
                                 Ord(ACustomListBox.fCompStyle = csCheckListBox),
