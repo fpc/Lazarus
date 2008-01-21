@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-16 03:51+0300\n"
+"PO-Revision-Date: 2008-01-21 02:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4253,9 +4253,13 @@ msgstr "Вставить новый пункт (перед)"
 msgid "Insert Template"
 msgstr "Вставить шаблон"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr "Элемент списка ToDo"
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
-msgstr "Элемент списка Todo"
+msgstr "Элемент списка ToDo"
 
 #: lazarusidestrconsts:srkmecinsertguid
 msgid "Insert a GUID"
@@ -6343,7 +6347,7 @@ msgstr "Печать"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
-msgstr "Распечатать элементы todo"
+msgstr "Распечатать элементы ToDo"
 
 #: lazarusidestrconsts:srvk_prior
 msgid "Prior"
@@ -6679,7 +6683,7 @@ msgstr "Обновлять автоматически"
 
 #: lazarusidestrconsts:listodolistrefresh
 msgid "Refresh todo items"
-msgstr "Обновить элементы todo"
+msgstr "Обновить элементы ToDo"
 
 #: lazarusidestrconsts:lispkgsysregisterprocedureisnil
 msgid "Register procedure is nil"
@@ -9920,6 +9924,10 @@ msgstr "Показать редактор исходного кода"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Показать список ToDo ..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr "Показать список ToDo"
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
