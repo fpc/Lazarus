@@ -2952,7 +2952,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <element name="TCustomForm.AllowDropFiles">
         <short>Specifies if it is allowed to drop files on this form.</short>
         <descr>Set AllowDropFiles event to True to allow dropping files on this form. It is set to False by default.</descr>
-        <seealso><link id="TCustomForm.OnDropFiles"/></seaalso>
+        <seealso><link id="TCustomForm.OnDropFiles"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderIcons">
