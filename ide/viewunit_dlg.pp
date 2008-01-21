@@ -39,8 +39,8 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts, LCLType, IDEWindowIntf, IDEContextHelpEdit;
+  SysUtils, Classes, Math, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
+  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit;
 
 type
   TViewUnitsEntry = class
@@ -61,6 +61,7 @@ type
     btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
     procedure EditChange(Sender: TObject);
+    procedure EditEnter(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure HelpButtonClick(Sender: TObject);
     Procedure btnOKClick(Sender :TObject);
@@ -69,8 +70,7 @@ type
     procedure ListboxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   private
-    FBlockEditChange: Boolean;
-    FBlockListBoxChange: Boolean;
+    procedure LM_USER1(var Message: TLMessage); message LM_USER + 1;
   public
     constructor Create(TheOwner: TComponent); override;
   end;
@@ -152,8 +152,6 @@ begin
   CancelControl               := btnCancel;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
   MultiSelectCheckBox.Left    := btnOk.Left;
-  FBlockEditChange := False;
-  FBlockListBoxChange := False;
 end;
 
 Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
@@ -171,32 +169,28 @@ procedure TViewUnitDialog.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
   
   procedure MoveItemIndex(d: integer); inline;
+  var
+    NewIndex: Integer;
   begin
-    d := ListBox.ItemIndex + d;
-    if (d >= 0) and (d < ListBox.Items.Count) then
-    begin
-      FBlockEditChange := True;
-      FBlockListBoxChange := True;
-      ListBox.ItemIndex := d;
-      Edit.Text := ListBox.Items[d];
-      Edit.SelectAll;
-      FBlockListBoxChange := False;
-      FBlockEditChange := False;
-    end;
+    NewIndex := Min(ListBox.Items.Count - 1, Max(0, ListBox.ItemIndex + D));
+    ListBox.ItemIndex := NewIndex;
+    ListBoxClick(nil);
+  end;
+
+  function PageCount: Integer;
+  begin
+    if ListBox.ItemHeight > 0 then
+      Result := ListBox.Height div ListBox.ItemHeight
+    else
+      Result := 0;
   end;
   
 begin
   case Key of
-    VK_UP:
-      begin
-        MoveItemIndex(-1);
-        Key := 0;
-      end;
-    VK_DOWN:
-      begin
-        MoveItemIndex(1);
-        Key := 0;
-      end;
+    VK_UP: MoveItemIndex(-1);
+    VK_DOWN: MoveItemIndex(1);
+    VK_NEXT: MoveItemIndex(PageCount);
+    VK_PRIOR: MoveItemIndex(-PageCount);
     VK_RETURN: btnOKClick(nil);
   end;
 end;
@@ -205,20 +199,20 @@ procedure TViewUnitDialog.EditChange(Sender: TObject);
 var
   Index: Integer;
 begin
-  if FBlockEditChange then
-    Exit;
-    
-  FBlockListBoxChange := True;
   Index := SearchItem(ListBox.Items, Edit.Text);
-  // WriteLn('Index = ', Index);
   ListBox.ItemIndex := Index;
+
   if ListBox.MultiSelect then
   begin
     ListBox.ClearSelection;
     if Index <> -1 then
       ListBox.Selected[Index] := True;
   end;
-  FBlockListBoxChange := False;
+end;
+
+procedure TViewUnitDialog.EditEnter(Sender: TObject);
+begin
+  PostMessage(Handle, LM_USER + 1, 0, 0);
 end;
 
 Procedure TViewUnitDialog.btnCancelClick(Sender : TOBject);
@@ -229,15 +223,9 @@ end;
 
 procedure TViewUnitDialog.ListboxClick(Sender: TObject);
 begin
-  if FBlockListBoxChange then
-    Exit;
-    
-  FBlockEditChange := True;
   if ListBox.ItemIndex <> -1 then
-    Edit.Text := ListBox.Items[ListBox.ItemIndex]
-  else
-    Edit.Text := '';
-  FBlockEditChange := False;
+    Edit.Text := ListBox.Items[ListBox.ItemIndex];
+  PostMessage(Handle, LM_USER + 1, 0, 0);
 end;
 
 procedure TViewUnitDialog.ListboxKeyDown(Sender: TObject; var Key: Word;
@@ -251,6 +239,13 @@ procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);
 begin
   ListBox.Multiselect := MultiselectCheckBox.Checked;
 end;
+
+procedure TViewUnitDialog.LM_USER1(var Message: TLMessage);
+begin
+  Edit.SelectAll;
+  Edit.SetFocus;
+end;
+
 
 initialization
  {$I viewunit_dlg.lrs}

@@ -15,9 +15,9 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Control = btnCancel
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 158
-    Height = 30
-    Top = 264
+    Left = 155
+    Height = 26
+    Top = 268
     Width = 75
     Anchors = [akRight, akBottom]
     AutoSize = True
@@ -38,10 +38,10 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 239
-    Height = 30
-    Top = 264
-    Width = 75
+    Left = 236
+    Height = 26
+    Top = 268
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -64,6 +64,7 @@ object ViewUnitDialog: TViewUnitDialog
     Anchors = [akRight]
     BorderSpacing.Around = 6
     OnChange = EditChange
+    OnEnter = EditEnter
     OnKeyDown = EditKeyDown
     TabOrder = 3
   end
@@ -72,7 +73,7 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = MultiSelectCheckBox
     Left = 6
-    Height = 197
+    Height = 200
     Top = 37
     Width = 308
     Align = alTop
@@ -89,9 +90,9 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideBottom.Control = btnCancel
     Left = 6
-    Height = 18
-    Top = 240
-    Width = 78
+    Height = 19
+    Top = 243
+    Width = 81
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Multi Select'
@@ -103,8 +104,8 @@ object ViewUnitDialog: TViewUnitDialog
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 30
-    Top = 264
+    Height = 26
+    Top = 268
     Width = 75
     Anchors = [akLeft, akBottom]
     AutoSize = True
