@@ -8883,7 +8883,7 @@ msgstr "Istnieje moduł w FPC o nazwie takiej samej jak pakiet:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisafpcunitwiththesamenamefrom
 msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
-msgstr "Istnieje moduł w FPC o nazwie takiej samej jak pakiet:%s%s%s%s%s%s w %s%s%s"
+msgstr "Istnieje moduł w FPC o nazwie takiej samej jak pakiet:%s%s%s%s%s w %s%s%s"
 
 #: lazarusidestrconsts:lispkgmangthereisacircleintherequiredpackages
 msgid "There is a circle in the required packages. See package graph."
