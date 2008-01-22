@@ -58,7 +58,7 @@ procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgch
 function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
 
 // gtk 2.2
-function gtk_tree_path_new_from_indices(first_index: gint; list: array of const): PGtkTreePath; cdecl; external gtklib name 'gtk_tree_path_new_from_indices';
+function gtk_tree_path_new_from_indices(first_index: gint): PGtkTreePath; cdecl; varargs; external gtklib name 'gtk_tree_path_new_from_indices';
 
 // gtk 2.4
 procedure gtk_toolbar_insert(toolbar: PGtkToolBar; item: PGtkToolItem; pos: gint); cdecl; external gtklib name 'gtk_toolbar_insert';

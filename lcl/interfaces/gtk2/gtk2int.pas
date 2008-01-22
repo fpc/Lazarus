@@ -543,7 +543,7 @@ begin
       Widget^.priv^.cursor := nil;
     end;
 
-    Path := gtk_tree_path_new_from_indices(Index, [-1]);
+    Path := gtk_tree_path_new_from_indices(Index, -1);
 
     Widget^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), FGtkListStore, Path);
     gtk_tree_path_free(Path);

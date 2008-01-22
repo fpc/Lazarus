@@ -439,13 +439,28 @@ begin
     PGtkTreeView(Widget)^.priv^.cursor := nil;
   end;
 
-  if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) and (AIndex < 0) then
-    Path := gtk_tree_path_new_first
+  if (AIndex < 0) then
+    if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) then
+      Path := gtk_tree_path_new_first
+    else
+      Path := nil
   else
-    Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
+    Path := gtk_tree_path_new_from_indices(AIndex, -1);
 
-  PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
-  gtk_tree_path_free(Path);
+  if Path <> nil then
+    PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
+
+  if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
+  begin
+    // if singleselection mode then selection = itemindex
+    if Path <> nil then
+      gtk_tree_selection_select_path(Selection, Path)
+    else
+      gtk_tree_selection_unselect_all(Selection);
+  end;
+  
+  if Path <> nil then
+    gtk_tree_path_free(Path);
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
