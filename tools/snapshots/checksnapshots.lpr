@@ -4,7 +4,7 @@ program checksnapshots;
 
 uses
   Classes, consoletestrunner,
-  SnapshotsUptodate, ftplistertest, TestMonitorCfg;
+  SnapshotsUptodate;
 
 type
 
