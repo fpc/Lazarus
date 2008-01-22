@@ -52,8 +52,6 @@ type
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
-    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, 
-      AWidth, AHeight: integer); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -241,6 +239,35 @@ implementation
 
 { --- Helper routines for TWin32WSStatusBar --- }
 
+var
+  PreferredStatusBarHeight: integer = 0;
+
+procedure InitializePreferredStatusBarHeight;
+var
+  Flags: LongWord;
+  Parent: HWND;
+  PreferredSizeStatusBar: HWND;
+  R: TRect;
+begin
+  Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  Parent := TWin32WidgetSet(WidgetSet).AppHandle;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    PreferredSizeStatusBar := CreateWindowExW(0, STATUSCLASSNAMEW,
+      nil, Flags,
+      0, 0, 0, 0, Parent, 0, HInstance, Nil)
+  else
+    PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
+      Flags, 0, 0, 0, 0, Parent,0 , HInstance, Nil);
+  {$else}
+    PreferredSizeStatusBar := CreateWindowEx(0, STATUSCLASSNAME, nil,
+      Flags, 0, 0, 0, 0, Parent, 0, HInstance, Nil);
+  {$endif}
+  GetWindowRect(PreferredSizeStatusBar, R);
+  PreferredStatusBarHeight := R.Bottom - R.Top;
+  DestroyWindow(PreferredSizeStatusBar);
+end;
+
 {------------------------------------------------------------------------------
   Method: UpdateStatusBarPanel
   Params: StatusPanel - StatusPanel which needs to be update
@@ -334,23 +361,15 @@ begin
   UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
 
-class procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: integer);
-begin
-  // statusbars do their own resizing, post a size message to it's queue
-  Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
-end;
-
 class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
   R: TRect;
 begin
-  // statusbars cannot be resized by the LCL, so actual size is preferred size
-  if Windows.GetWindowRect(AWinControl.Handle, R) then begin
-    PreferredHeight:= R.Bottom - R.Top;
-    PreferredWidth:= R.Right - R.Left;
-  end;
+  if (PreferredStatusBarHeight=0) then
+    InitializePreferredStatusBarHeight;
+
+  PreferredHeight := PreferredStatusBarHeight;
 end;
 
 class procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
@@ -609,4 +628,5 @@ initialization
 //  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);
 ////////////////////////////////////////////////////
+
 end.
