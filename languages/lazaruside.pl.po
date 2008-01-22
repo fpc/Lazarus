@@ -3837,6 +3837,10 @@ msgstr ""
 msgid "Hide IDE windows on run"
 msgstr "Ukryj okna IDE przy uruchomieniu"
 
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr ""
+
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""

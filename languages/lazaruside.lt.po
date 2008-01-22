@@ -3838,6 +3838,10 @@ msgstr "Žinyno parinktys"
 msgid "Hide IDE windows on run"
 msgstr "Startuojant programą slėpti IKA langus"
 
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr ""
+
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Užuomina: Tikrinti ar du paketai turi modulius tuo pačiu vardu."
@@ -4257,6 +4261,10 @@ msgstr "Įterpti naują elementą (prieš)"
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
 msgstr "Įterpti šabloną"
+
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
@@ -7890,6 +7898,10 @@ msgstr "Neįkelti paskutinio naudoto projekto"
 msgid "Skip this package"
 msgstr "Praleisti šį paketą"
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Mažesnį kodą"
@@ -9941,6 +9953,10 @@ msgstr "Rodyti pirminio kodo redaktorių"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Rodyti ToDo sąrašą..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

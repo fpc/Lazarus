@@ -1590,6 +1590,7 @@ resourcestring
     +'be shown incorrect.%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
   uemInsertTodo = 'Insert Todo';
+  uemHighlighter = 'Highlighter';
 
   // Form designer
   lisInvalidMultiselection = 'Invalid multiselection';

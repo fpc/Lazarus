@@ -999,7 +999,8 @@ begin
     SrcEditMenuShowLineNumbers.ShowAlwaysCheckable:=true;
     SrcEditMenuShowUnitInfo:=RegisterIDEMenuCommand(AParent,'ShowUnitInfo',
                                                     uemShowUnitInfo);
-    SrcEditMenuSectionHighlighter:=RegisterIDEMenuSection(AParent,'Highlighter');
+    SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
+                                                    uemHighlighter);
     SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
                                         'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
 
@@ -4065,18 +4066,18 @@ var
   IDEMenuItem: TIDEMenuItem;
   SrcEdit: TSourceEditor;
 begin
-  SrcEditMenuSectionHighlighter.ChildsAsSubMenu:=true;
+  SrcEditSubMenuHighlighter.ChildsAsSubMenu:=true;
   SrcEdit:=GetActiveSE;
   i:=0;
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
     CurName:='Highlighter'+IntToStr(i);
     CurCaption:=LazSyntaxHighlighterNames[h];
-    if SrcEditMenuSectionHighlighter.Count=i then begin
+    if SrcEditSubMenuHighlighter.Count=i then begin
       // add new item
-      IDEMenuItem:=RegisterIDEMenuCommand(SrcEditMenuSectionHighlighter,
+      IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,
                              CurName,CurCaption,@HighlighterClicked);
     end else begin
-      IDEMenuItem:=SrcEditMenuSectionHighlighter[i];
+      IDEMenuItem:=SrcEditSubMenuHighlighter[i];
       IDEMenuItem.Caption:=CurCaption;
       IDEMenuItem.OnClick:=@HighlighterClicked;
     end;

@@ -377,7 +377,7 @@ var
     SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
     SrcEditSubMenuSetBookmarks: TIDEMenuSection;
     SrcEditMenuSectionFlags: TIDEMenuSection;
-      SrcEditMenuSectionHighlighter: TIDEMenuSection;
+    SrcEditSubMenuHighlighter: TIDEMenuSection;
     SrcEditSubMenuDebug: TIDEMenuSection;
     SrcEditMenuSectionMovePage: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;

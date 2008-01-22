@@ -3833,6 +3833,10 @@ msgstr "Help selecteren"
 msgid "Hide IDE windows on run"
 msgstr "Verberg IDE vensters bij uitvoeren"
 
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr ""
+
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""

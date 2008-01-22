@@ -4928,6 +4928,10 @@ msgstr ""
 msgid "Insert Todo"
 msgstr ""
 
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr ""
+
 #: lazarusidestrconsts:lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr ""

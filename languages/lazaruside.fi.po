@@ -3828,6 +3828,10 @@ msgstr "Ohjeen valinta"
 msgid "Hide IDE windows on run"
 msgstr "Pienennä Lazaruksen käyttöliittymä ohjelmaa suorittaessa "
 
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr ""
+
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""

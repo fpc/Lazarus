@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-22 02:29+0300\n"
+"PO-Revision-Date: 2008-01-22 03:45+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3832,6 +3832,10 @@ msgstr "Выбор справки..."
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
 msgstr "Скрыть окна IDE при пуске"
+
+#: lazarusidestrconsts:uemhighlighter
+msgid "Highlighter"
+msgstr "Подсветка синтаксиса"
 
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
