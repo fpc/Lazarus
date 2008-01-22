@@ -2530,6 +2530,12 @@ images/menu/menu_view_source_editor.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png
 images/menu/menu_view_units.png -text svneol=unset#image/png
+images/mimetypes/readme.txt svneol=native#text/plain
+images/mimetypes/text-lazarus-form.png -text
+images/mimetypes/text-lazarus-package.png -text
+images/mimetypes/text-lazarus-project-information.png -text
+images/mimetypes/text-lazarus-project-source.png -text
+images/mimetypes/text-x-pascal.png -text
 images/mouse.xpm -text svneol=native#image/x-xpixmap
 images/notebook.xpm -text svneol=native#image/x-xpixmap
 images/packages/pkg_add.png -text svneol=unset#image/png
