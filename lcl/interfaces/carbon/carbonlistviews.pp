@@ -764,7 +764,8 @@ begin
   CheckNeedsScrollBars;
 
   // removes all and adds new count of items starting with index 1
-  ClearItems;
+  OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
+    Self, 'UpdateItems', 'RemoveDataBrowserItems');
 
   if GetItemsCount <> 0 then
     OSError(AddDataBrowserItems(Widget, kDataBrowserNoItem, GetItemsCount, nil, kDataBrowserItemNoProperty),
@@ -773,6 +774,8 @@ end;
 
 procedure TCarbonDataBrowser.ClearItems;
 begin
+  FItemsCheck.Clear;
+  
   OSError(RemoveDataBrowserItems(Widget, kDataBrowserNoItem, 0, nil, kDataBrowserItemNoProperty),
     Self, 'ClearItems', 'RemoveDataBrowserItems');
 end;
@@ -1322,7 +1325,10 @@ end;
 
 function TCarbonListBox.GetItemCaption(AIndex, ASubIndex: Integer): String;
 begin
-  Result := (LCLObject as TCustomListBox).Items[AIndex];
+  if (AIndex >= 0) and (AIndex < (LCLObject as TCustomListBox).Items.Count) then
+    Result := (LCLObject as TCustomListBox).Items[AIndex]
+  else
+    Result := '';
 end;
 
 function TCarbonListBox.GetReadOnly: Boolean;
