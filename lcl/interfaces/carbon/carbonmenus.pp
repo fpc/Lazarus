@@ -477,6 +477,7 @@ procedure TCarbonMenu.SetBitmap(const ABitmap: TBitmap);
 var
   IconType: Byte;
   AHandle: FPCMacOSAll.Handle;
+  CGImage: CGImageRef;
 const
   SName = 'SetBitmap';
 begin
@@ -487,23 +488,31 @@ begin
   if FParentMenu = nil then Exit;
 
   AHandle := nil;
+  CGImage := nil;
   
   if ABitmap <> nil then
   begin
     if not CheckBitmap(ABitmap.Handle, SName) then Exit;
     IconType := kMenuCGImageRefType;
-    AHandle := Pointer(TCarbonBitmap(ABitmap.Handle).CGImage);
+    CGImage :=
+      TCarbonBitmap(ABitmap.Handle).CreateMaskedImage(TCarbonBitmap(ABitmap.MaskHandle));
+    AHandle := Pointer(CGImage);
   end;
   
   if AHandle = nil then IconType := kMenuNoIcon;
   
-  {$IFDEF VerboseMenu}
-    DebugLn('TCarbonMenu.SetBitmap IconType: ' + DbgS(IconType) + ' AIcon: ' + DbgS(AHandle));
-  {$ENDIF}
-  
-  if OSError(
-    SetMenuItemIconHandle(FParentMenu.Menu, GetIndex + 1, IconType, AHandle),
-    Self, SName, 'SetMenuItemIconHandle') then Exit;
+  try
+    {$IFDEF VerboseMenu}
+      DebugLn('TCarbonMenu.SetBitmap IconType: ' + DbgS(IconType) + ' AIcon: ' + DbgS(AHandle));
+    {$ENDIF}
+
+    if OSError(
+      SetMenuItemIconHandle(FParentMenu.Menu, GetIndex + 1, IconType, AHandle),
+      Self, SName, 'SetMenuItemIconHandle') then Exit;
+  finally
+    if CGImage <> nil then
+      CGImageRelease(CGImage);
+  end;
 end;
 
 {------------------------------------------------------------------------------

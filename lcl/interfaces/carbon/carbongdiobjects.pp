@@ -189,6 +189,8 @@ type
     destructor Destroy; override;
     procedure Update;
     function CreateSubImage(const ARect: TRect): CGImageRef;
+    function CreateMaskedImage(AMask: TCarbonBitmap): CGImageRef;
+    function CreateMaskedImage(AMask: TCarbonBitmap; const ARect: TRect): CGImageRef;
   public
     property BitsPerComponent: Integer read GetBitsPerComponent;
     property BytesPerRow: Integer read FBytesPerRow;
@@ -1244,11 +1246,42 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonBitmap.CreateSubImage(const ARect: TRect): CGImageRef;
 begin
-  if CGImage = nil
-  then Result := nil
+  if CGImage = nil then Result := nil
   else Result := CGImageCreateWithImageInRect(CGImage, RectToCGRect(ARect));
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.CreateMaskedImage
+  Returns: New image ref to masked image data
+ ------------------------------------------------------------------------------}
+function TCarbonBitmap.CreateMaskedImage(AMask: TCarbonBitmap): CGImageRef;
+begin
+  Result := CreateMaskedImage(AMask, Classes.Rect(0, 0, Width, Height));
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonBitmap.CreateMaskedImage
+  Returns: New image ref to portion of masked image data according to the rect
+ ------------------------------------------------------------------------------}
+function TCarbonBitmap.CreateMaskedImage(AMask: TCarbonBitmap;
+  const ARect: TRect): CGImageRef;
+var
+  CGSubImage: CGImageRef;
+begin
+  Result := nil;
+  if CGImage = nil then Exit;
+  if (AMask <> nil) and (AMask.CGImage <> nil) then
+  begin
+    CGSubImage := CreateSubImage(ARect);
+    try
+      Result := CGImageCreateWithMask(CGSubImage, AMask.CGImage);
+    finally
+      CGImageRelease(CGSubImage);
+    end;
+  end
+  else
+    Result := CreateSubImage(ARect);
+end;
 
 { TCarbonCursor }
 

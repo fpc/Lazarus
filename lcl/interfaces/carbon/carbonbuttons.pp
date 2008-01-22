@@ -402,15 +402,12 @@ end;
 procedure TCarbonBitBtn.SetGlyph(const AGlyph: TBitmap);
 var
   ContentInfo: ControlButtonContentInfo;
-  FreeImage: Boolean;
   BitBtn: TCustomBitBtn;
   R: TRect;
 begin
   ContentInfo.contentType := kControlContentCGImageRef;
-
-  FreeImage := False;
   ContentInfo.imageRef := nil;
-
+  
   if AGlyph <> nil then
   begin
     if TObject(AGlyph.Handle) is TCarbonBitmap then
@@ -418,13 +415,14 @@ begin
       BitBtn := LCLObject as TCustomBitBtn;
 
       if BitBtn.NumGlyphs <= 1 then
-        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CGImage
+        ContentInfo.imageRef :=
+          TCarbonBitmap(AGlyph.Handle).CreateMaskedImage(TCarbonBitmap(AGlyph.MaskHandle))
       else
       begin
         // TODO: consider button style (down, disabled)
         R := Classes.Rect(0, 0, AGlyph.Width div BitBtn.NumGlyphs, AGlyph.Height);
-        ContentInfo.imageRef := TCarbonBitmap(AGlyph.Handle).CreateSubImage(R);
-        FreeImage := True;
+        ContentInfo.imageRef :=
+          TCarbonBitmap(AGlyph.Handle).CreateMaskedImage(TCarbonBitmap(AGlyph.MaskHandle), R);
       end;
     end;
   end;
@@ -433,7 +431,7 @@ begin
     OSError(SetBevelButtonContentInfo(ControlRef(Widget), @ContentInfo),
       Self, 'SetGlyph', 'SetBevelButtonContentInfo');
   finally
-    if FreeImage then CGImageRelease(ContentInfo.imageRef);
+    CGImageRelease(ContentInfo.imageRef);
   end;
 end;
 
