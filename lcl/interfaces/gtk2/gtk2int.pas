@@ -513,6 +513,8 @@ var
   Path: PGtkTreePath;
   Widget: PGtkTreeView;
   Selection: PGtkTreeSelection;
+  OldItemIndex: Integer;
+  Column: PGtkTreeViewColumn;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then
     ListItem := FCachedItems[Index]
@@ -523,15 +525,28 @@ begin
   
   Widget := PGtkTreeView(GetWidgetInfo(Pointer(FOwner.Handle), True)^.CoreWidget);
   Selection := gtk_tree_view_get_selection(Widget);
+  
+  gtk_tree_view_get_cursor(Widget, Path, Column);
+  if Path <> nil then
+    OldItemIndex := gtk_tree_path_get_indices(Path)^
+  else
+    OldItemIndex := -1;
 
-  if gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE then
+  if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) and (OldItemIndex = Index) then
   begin
-    Path := gtk_tree_model_get_path(FGtkListStore, @ListItem);
-    if gtk_tree_path_get_indices(Path)^ = 0 then
-      gtk_tree_path_next(Path)
-    else
-      gtk_tree_path_prev(Path);
-    gtk_tree_view_set_cursor(Widget, Path, nil, False);
+    if Index > 0 then
+      dec(Index);
+
+    if gtk_tree_row_reference_valid(Widget^.priv^.cursor) then
+    begin
+      gtk_tree_row_reference_free(Widget^.priv^.cursor);
+      Widget^.priv^.cursor := nil;
+    end;
+
+    Path := gtk_tree_path_new_from_indices(Index, [-1]);
+
+    Widget^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), FGtkListStore, Path);
+    gtk_tree_path_free(Path);
   end;
   
   gtk_list_store_remove(FGtkListStore, @ListItem);

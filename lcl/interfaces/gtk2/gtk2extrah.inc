@@ -37,6 +37,9 @@ const
   gdkdll = gdklib;
 
 // missing declarations in fpc 2.0
+const
+   GTK_CELL_RENDERER_FOCUSED = 1 shl 4;
+
 {$if defined(HasX) and not defined(HasGdk2X)}
 var
   gdk_display: PDisplay; external gdklib name 'gdk_display';
@@ -54,6 +57,8 @@ type
 procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
 function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
 
+// gtk 2.2
+function gtk_tree_path_new_from_indices(first_index: gint; list: array of const): PGtkTreePath; cdecl; external gtklib name 'gtk_tree_path_new_from_indices';
 
 // gtk 2.4
 procedure gtk_toolbar_insert(toolbar: PGtkToolBar; item: PGtkToolItem; pos: gint); cdecl; external gtklib name 'gtk_toolbar_insert';

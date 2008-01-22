@@ -82,8 +82,8 @@ begin
 
   // draw default
   CellClass:=PLCLIntfCellRendererClass(gtk_object_get_class(cell));
-  CellClass^.DefaultGtkRender(cell,Window,Widget,background_area,cell_area,
-                              expose_area,flags);
+  CellClass^.DefaultGtkRender(cell, Window, Widget, background_area,cell_area,
+                              expose_area, flags);
   
   // send LM_DrawListItem message
   MainWidget:=GetMainWidget(Widget);
@@ -143,13 +143,13 @@ begin
   // collect state flags
   State:=[odPainted];
   if (flags and GTK_CELL_RENDERER_SELECTED)>0 then
-    Include(State,odSelected);
+    Include(State, odSelected);
   if not GTK_WIDGET_SENSITIVE(Widget) then
-    Include(State,odInactive);
+    Include(State, odInactive);
   if GTK_WIDGET_HAS_DEFAULT(Widget) then
-    Include(State,odDefault);
-  if GTK_WIDGET_HAS_FOCUS(Widget) then
-    Include(State,odFocused);
+    Include(State, odDefault);
+  if (flags and GTK_CELL_RENDERER_FOCUSED) <> 0 then
+    Include(State, odFocused);
     
   if AWinControl is TCustomCombobox then begin
     if TCustomComboBox(AWinControl).DroppedDown

@@ -34,12 +34,12 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls, LMessages,
+  StdCtrls, LMessages, LCLType, LCLProc,
 ////////////////////////////////////////////////////
   glib2,  gdk2, gtk2, Pango,
-  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, LCLType, GtkDef,
-  LCLProc, Gtk2CellRenderer, GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase,
-  GtkWsPrivate, Gtk2WsPrivate;
+  WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, GtkDef,
+  Gtk2CellRenderer, GTKWinApiWindow, GtkGlobals, GtkProc, InterfaceBase,
+  GtkWSPrivate, Gtk2WSPrivate, GtkExtra;
 
 type
 
@@ -422,7 +422,6 @@ var
   Widget: PGtkWidget;
   ListStoreModel: PGtkTreeModel;
   Selection: PGtkTreeSelection;
-  Iter: TGtkTreeIter;
   Path: PGtkTreePath;
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
@@ -430,32 +429,23 @@ begin
   Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
+
+  ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
-  if AIndex >= 0 then
+  
+  if gtk_tree_row_reference_valid(PGtkTreeView(Widget)^.priv^.cursor) then
   begin
-    ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
-    if gtk_tree_model_iter_nth_child(ListStoreModel, @Iter, nil, AIndex) then
-    begin
-      Path := gtk_tree_model_get_path(ListStoreModel, @Iter);
-      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
-      gtk_tree_selection_select_iter(Selection, @Iter);
-    end;
-  end else
-  begin
-    if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
-    begin
-      // how to clear cursor properly?
-      // this way we'll get gtk assertion, but cursor will be cleared
-      if GetItemIndex(ACustomListBox) = -1 then
-        Exit;
-      Path := gtk_tree_path_new;
-    end
-    else
-      Path := gtk_tree_path_new_first;
-    gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False);
-    gtk_tree_selection_unselect_all(Selection);
-    gtk_tree_path_free(Path);
+    gtk_tree_row_reference_free(PGtkTreeView(Widget)^.priv^.cursor);
+    PGtkTreeView(Widget)^.priv^.cursor := nil;
   end;
+
+  if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) and (AIndex < 0) then
+    Path := gtk_tree_path_new_first
+  else
+    Path := gtk_tree_path_new_from_indices(AIndex, [-1]);
+
+  PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
+  gtk_tree_path_free(Path);
 end;
 
 class procedure TGtk2WSCustomListBox.SetSelectionMode(
