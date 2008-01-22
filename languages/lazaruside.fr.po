@@ -4254,6 +4254,10 @@ msgstr "Insérer un nouvel élément (avant)"
 msgid "Insert Template"
 msgstr "Insérer un modèle"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr "Insérer Todo"
@@ -7882,6 +7886,10 @@ msgstr "Passer le chargement du dernier projet"
 msgid "Skip this package"
 msgstr "Sauter ce paquet"
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Code plus petit"
@@ -9921,6 +9929,10 @@ msgstr "Afficher l'éditeur de source"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Afficher la liste des ToDo ..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

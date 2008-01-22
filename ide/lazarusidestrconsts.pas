@@ -2014,6 +2014,7 @@ resourcestring
   rsLanguageIndonesian  = 'Indonesian';
   rsLanguageAfrikaans   = 'Afrikaans';
   rsLanguageLithuanian  = 'Lithuanian';
+  rsLanguageSlovak      = 'Slovak';
 
   // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';

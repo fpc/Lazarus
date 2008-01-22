@@ -4253,6 +4253,10 @@ msgstr "Sisipkan Item Baru (sebelum)"
 msgid "Insert Template"
 msgstr "Sisipkan Template"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr ""
@@ -7881,6 +7885,10 @@ msgstr "Lewati pengambilan proyek terakhir"
 msgid "Skip this package"
 msgstr "Lewati paket ini"
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Kode Lebih Kecil"
@@ -9920,6 +9928,10 @@ msgstr "Lihat Editor Sumber"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Lihat Daftar ToDo ..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

@@ -4258,6 +4258,10 @@ msgstr "Įterpti naują elementą (prieš)"
 msgid "Insert Template"
 msgstr "Įterpti šabloną"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr "Įterpti ToDo"
@@ -7890,6 +7894,10 @@ msgstr "Neįkelti paskutinio naudoto projekto"
 msgid "Skip this package"
 msgstr "Praleisti šį paketą"
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Mažesnį kodą"
@@ -9941,6 +9949,10 @@ msgstr "Rodyti pirminio kodo redaktorių"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Rodyti ToDo sąrašą..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

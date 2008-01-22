@@ -4248,6 +4248,10 @@ msgstr "Вставити новий пункт (перед)"
 msgid "Insert Template"
 msgstr "Вставити шаблон"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr ""
@@ -7876,6 +7880,10 @@ msgstr "Пропустити завантаження останнього пр�
 msgid "Skip this package"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Менший код"
@@ -9915,6 +9923,10 @@ msgstr "Показувати редактор тексту"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Показувати список ToDo ..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

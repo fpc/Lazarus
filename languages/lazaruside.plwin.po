@@ -4253,6 +4253,10 @@ msgstr "Wstaw nowy element (powy¿ej)"
 msgid "Insert Template"
 msgstr "Wstaw szablon"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr ""
@@ -7881,6 +7885,10 @@ msgstr ""
 msgid "Skip this package"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Ma³y"
@@ -9920,6 +9928,10 @@ msgstr "Poka¿ edytor Ÿróde³"
 #: lazarusidestrconsts:lismenuviewprojecttodos
 msgid "View ToDo List ..."
 msgstr "Lista \ ..."
+
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"

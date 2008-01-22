@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-21 02:33+0300\n"
+"PO-Revision-Date: 2008-01-22 02:29+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -7884,6 +7884,10 @@ msgstr "Пропустить загрузку предыдущего проек�
 #: lazarusidestrconsts:lispkgmangskipthispackage
 msgid "Skip this package"
 msgstr "Пропустить это сообщение"
+
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr "Словацкий"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"

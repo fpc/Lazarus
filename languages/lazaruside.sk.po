@@ -1,4 +1,3 @@
-# Slovenský preklad lazaruside. Copyright (C) 2007 Free Software Foundation, Inc. slavko <slavino@slavino.sk>, 2007.      
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarusid\n"
@@ -70,6 +69,10 @@ msgstr "%s je abstraktná trieda a má %s abstraktných metód."
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
 msgid "%s project directory"
 msgstr "%s adresár projektu"
+
+#: lazarusidestrconsts:lisunitinpackage
+msgid "%s unit %s in package %s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
@@ -243,11 +246,7 @@ msgstr "&Choď na záložku"
 msgid "&Help"
 msgstr "&Pomoc"
 
-#: lazarusidestrconsts:dlgmultiline
-msgid "&Multiline"
-msgstr "&Viacriadkové"
-
-#: lazarusidestrconsts:lisfindfilemultiline
+#: lazarusidestrconsts:lisfindfilemultilinepattern
 msgid "&Multiline pattern"
 msgstr "&Viacriadkový vzor"
 
@@ -462,6 +461,10 @@ msgstr "Prijať"
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
 msgstr "Poďakovanie"
+
+#: lazarusidestrconsts:lislazbuildaboaction
+msgid "Action"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -1047,6 +1050,10 @@ msgstr "Nájsť prekladač (%s)"
 msgid "Build"
 msgstr "Vybudovať"
 
+#: lazarusidestrconsts:lislazbuildqbobuildall
+msgid "Build All"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
 msgstr "Vybudovať CodeTools"
@@ -1063,9 +1070,21 @@ msgstr "Vybudovať súbor"
 msgid "Build IDE"
 msgstr "Vybudovať IDE"
 
+#: lazarusidestrconsts:lislazbuildqbobuildidewpackages
+msgid "Build IDE with Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildqbobuildidewithoutpackages
+msgid "Build IDE without Packages"
+msgstr ""
+
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Vybudovať formulár JIT"
+
+#: lazarusidestrconsts:lislazbuildqbobuildlcl
+msgid "Build LCL"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -1141,6 +1160,10 @@ msgstr "Zásobník volaní"
 
 #: lazarusidestrconsts:liscocallon
 msgid "Call on:"
+msgstr ""
+
+#: lazarusidestrconsts:liscallingtocreatemakefilefromfailed
+msgid "Calling %s to create Makefile from %s failed."
 msgstr ""
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
@@ -1371,6 +1394,10 @@ msgstr "Zvoľte·položku·pre·vytvorenie·nového balíčka"
 msgid "Choose one of these items to create a new Project"
 msgstr "Zvoľte·položku·pre·vytvorenie·nového projektu"
 
+#: lazarusidestrconsts:lislazbuildabochooseoutputdir
+msgid "Choose output directory of the IDE executable "
+msgstr ""
+
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
 msgstr "Zvoľte zdrojový kód programu (*.pp, *.pas, *.lpr)"
@@ -1426,6 +1453,10 @@ msgstr "Vyčistiť adresár"
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistiť zdrojové kódy Lazarus"
+
+#: lazarusidestrconsts:lislazbuildqbocleanupbuildall
+msgid "Clean Up + Build all"
+msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
@@ -1838,6 +1869,10 @@ msgstr "Potvrdiť zmeny"
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
 msgstr "Potvrďte zmazanie závislosti"
+
+#: lazarusidestrconsts:lisconfirmnewpackagesetfortheide
+msgid "Confirm new package set for the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -2675,6 +2710,10 @@ msgstr "Upraviť Voľby preloženia balíčka"
 msgid "Edit Tool"
 msgstr ""
 
+#: lazarusidestrconsts:lispeeditvirtualunit
+msgid "Edit Virtual Unit"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
 msgstr ""
@@ -2843,6 +2882,10 @@ msgstr "Chyba v regulárnom výraze"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Chyba inicializácie programu%s%s%s%s%sChyba: %s"
 
+#: lazarusidestrconsts:liserrorloadingfile
+msgid "Error loading file"
+msgstr ""
+
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
 msgstr "Chyba načítania XML"
@@ -2895,7 +2938,7 @@ msgstr "Chyba počas zápisu %s%s%s%s%s"
 msgid "Error while writing project info file %s%s%s%s%s"
 msgstr "Chyb počas zápisu projektu do súboru %s%s%s%s%s"
 
-#: lazarusidestrconsts:lispkgmangerrorwritingfile
+#: lazarusidestrconsts:lislazbuilderrorwritingfile
 msgid "Error writing file"
 msgstr "Chyba zapisovania súboru"
 
@@ -3365,6 +3408,10 @@ msgstr "Nájsť·text na kurzore"
 
 #: lazarusidestrconsts:rslanguagefinnish
 msgid "Finnish"
+msgstr ""
+
+#: lazarusidestrconsts:lispefixfilescase
+msgid "Fix Files Case"
 msgstr ""
 
 #: lazarusidestrconsts:lisfixlfmfile
@@ -4207,6 +4254,10 @@ msgstr "Vložiť·novú·položku·(pred)"
 msgid "Insert Template"
 msgstr "Vložiť šablónu"
 
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
+msgstr ""
+
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
 msgstr "Vložiť &ToDo"
@@ -4999,6 +5050,10 @@ msgstr ""
 msgid "Loaded Packages:"
 msgstr "Načítané balíčky:"
 
+#: lazarusidestrconsts:lisloadingfailed
+msgid "Loading %s failed."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgstr ""
@@ -5183,6 +5238,10 @@ msgstr "Chýbajúce udalosti"
 msgid "Missing Packages"
 msgstr "Chýbajúce balíčky"
 
+#: lazarusidestrconsts:lismissingidentifiers
+msgid "Missing identifiers"
+msgstr ""
+
 #: lazarusidestrconsts:lisccomissingunit
 msgid "Missing unit"
 msgstr "Chýbajúca jednotka"
@@ -5330,6 +5389,14 @@ msgstr "Okno editora vpravo"
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
 msgstr "Presunúť položky do zdedených"
+
+#: lazarusidestrconsts:lispemovefiledown
+msgid "Move file down"
+msgstr ""
+
+#: lazarusidestrconsts:lispemovefileup
+msgid "Move file up"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -5791,6 +5858,10 @@ msgstr "Otvoriť alebo načítať voľby prekladača"
 msgid "Open package"
 msgstr "Otvoriť balíček"
 
+#: lazarusidestrconsts:lisopenpackage2
+msgid "Open package %s"
+msgstr ""
+
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
 msgstr "Otvoriť·súbor balíčka"
@@ -6114,6 +6185,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
 msgstr "Analýza"
+
+#: lazarusidestrconsts:lislazbuildabopart
+msgid "Part"
+msgstr ""
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -7811,6 +7886,10 @@ msgstr "Preskočiť otváranie posledného projektu"
 msgid "Skip this package"
 msgstr "Preskočiť tento balíček"
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
 msgstr "Menší kód"
@@ -7846,6 +7925,10 @@ msgstr "Prepáčte, zatiaľ neimplementované"
 #: lazarusidestrconsts:lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Prepáčte, tento typ zatiaľ nie je implementovaný"
+
+#: lazarusidestrconsts:lispesortfiles
+msgid "Sort files"
+msgstr ""
 
 #: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
@@ -8110,6 +8193,10 @@ msgstr "Tabulátory na medzery"
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
 msgstr "Tabulátory výberu na medzery"
+
+#: lazarusidestrconsts:lislazbuildqboapplcltarget
+msgid "Target"
+msgstr ""
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
@@ -8919,6 +9006,10 @@ msgstr ""
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
 msgstr ""
 
+#: lazarusidestrconsts:listhiswillhappencontinue
+msgid "This will happen:%s%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
 msgstr "Vlákno"
@@ -9271,6 +9362,10 @@ msgstr "Nemožno načítať starý resource súbor.%sResource súbor je prvý in
 msgid "Unable to load package"
 msgstr "Nemožno·načítať balíček"
 
+#: lazarusidestrconsts:lisunabletoloadpackage
+msgid "Unable to load package %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgstr "Nemožno·načítať triedu komponentu %s%s%s, pretože závisí sama na sebe."
@@ -9402,6 +9497,10 @@ msgstr "Nemožno zapísať súbor %s%s%s%sChyba:·%s"
 #: lazarusidestrconsts:lisunabletowritefilename
 msgid "Unable to write file %s%s%s."
 msgstr "Nemožno·zapisovať do súboru %s%s%s."
+
+#: lazarusidestrconsts:lislazbuildunabletowritefile
+msgid "Unable to write file \"%s\":%s"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
@@ -9831,6 +9930,10 @@ msgstr "Zobraziť editor zdrojového kódu"
 msgid "View ToDo List ..."
 msgstr "Zobraziť zoznam ToDo..."
 
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
 msgstr "Zobraziť závislosti jednotky"
@@ -10187,6 +10290,10 @@ msgstr "vyskúšať/zmeniť"
 msgid "file, where debug output is written to. If it is not specified, debug output is written to the console."
 msgstr "súbor, do ktorého je zapísaný výstup ladenia. Ak nie je zadaný, ladiaci výstup je vypísaný do konzoly."
 
+#: lazarusidestrconsts:lisfpcmakefailed
+msgid "fpcmake failed"
+msgstr ""
+
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
 msgstr ""
@@ -10283,6 +10390,10 @@ msgstr "zmenený"
 msgid "multiple compiler configs found: "
 msgstr "nájdené viaceré konfigurácie prekladača:"
 
+#: lazarusidestrconsts:lisnew
+msgid "new"
+msgstr ""
+
 #: lazarusidestrconsts:lisccohasnewline
 msgid "new line symbols"
 msgstr "symboly nového riadku"
@@ -10323,6 +10434,10 @@ msgstr "nevybraté"
 msgid "object path"
 msgstr "cesta objektov"
 
+#: lazarusidestrconsts:lisold
+msgid "old"
+msgstr ""
+
 #: lazarusidestrconsts:lisor
 msgid "or"
 msgstr "alebo"
@@ -10362,6 +10477,10 @@ msgstr "len na čítanie"
 #: lazarusidestrconsts:lisccorelunitpathfoundincfg
 msgid "relative unit path found in fpc cfg: %s"
 msgstr "nájdená relatívna cesta jednotky v fpc cfg: %s"
+
+#: lazarusidestrconsts:lisremove
+msgid "remove"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"

@@ -6428,6 +6428,10 @@ msgstr ""
 msgid "Lithuanian"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguageslovak
+msgid "Slovak"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""
@@ -9368,6 +9372,10 @@ msgstr ""
 msgid "View Package Source"
 msgstr ""
 
+#: lazarusidestrconsts:lispeviewtodolist
+msgid "View ToDo list"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditgeneraloptions
 msgid "General Options"
 msgstr ""
@@ -11010,5 +11018,9 @@ msgstr ""
 
 #: lazarusidestrconsts:lisvsrresetresultlist
 msgid "Reset Result List"
+msgstr ""
+
+#: lazarusidestrconsts:listddinserttodo
+msgid "Insert ToDo"
 msgstr ""
 
