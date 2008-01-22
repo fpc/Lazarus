@@ -8702,6 +8702,7 @@ begin
   if FLayout<>nil then Dispose(FLayout);
   if FMaxSize<>nil then Dispose(FMaxSize);
   if FMinSize<>nil then Dispose(FMinSize);
+  if FSizePriority<>nil then Dispose(FSizePriority);
   FreeThenNil(FPickList);
   FreeThenNil(FFont);
   FreeThenNil(FTitle);
