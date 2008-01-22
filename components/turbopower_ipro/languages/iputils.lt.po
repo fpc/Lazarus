@@ -4,14 +4,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-26 00:31+0300\n"
+"PO-Revision-Date: 2008-01-21 23:25+0200\n"
 "Project-Id-Version: iputils\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 
 #: iputils:slongversion
 msgid "Version %.2f"
-msgstr "Versaja %.2f"
+msgstr "Versija %.2f"
 
 #: iputils:sshortversion
 msgid "v%.2f"

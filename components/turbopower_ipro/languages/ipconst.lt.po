@@ -4,7 +4,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-10-30 11:18+0200\n"
+"PO-Revision-Date: 2008-01-21 23:24+0200\n"
 "Project-Id-Version: ipconst\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -915,7 +915,7 @@ msgstr "Atsiųsti?"
 
 #: ipconst:sicmpecho
 msgid "Echo reply (Hop number: %d)\015\n             Status = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
-msgstr ""
+msgstr "Echo atsakas (Hop numeris: %d)\015\n             Statusas = %d\015\n             RTTime = %d\015\n             Ttl = %d\015\n             Tos = %d\015\n             IpFlags = %d"
 
 #: ipconst:sicmpechostring
 msgid "Echo string: %s"

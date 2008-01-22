@@ -1,7 +1,9 @@
+# translation of lr_const.po to Lithuanian
+# Valdas Jankūnas <skroblas@erdves.lt>, 2008.
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-10-30 10:46+0200\n"
+"PO-Revision-Date: 2008-01-21 23:08+0200\n"
 "Project-Id-Version: lr_const\n"
 "Language-Team: Lithuanian\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -567,7 +569,7 @@ msgstr "Automatiškai nustatyti dydį"
 
 #: lr_const:sdocautor
 msgid "Autor"
-msgstr ""
+msgstr "Autorius"
 
 #: lr_const:sfilterparam
 msgid "Average font height:"
@@ -675,7 +677,7 @@ msgstr "Perkelti priekin"
 
 #: lr_const:sdocbuild
 msgid "Build"
-msgstr ""
+msgstr "Sąranka"
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -1471,7 +1473,7 @@ msgstr "MONTHOF(<Data>)/Grąžina duotos <Data> mėnesio numerį (1..12)."
 
 #: lr_const:sdocmajor
 msgid "Major"
-msgstr ""
+msgstr "Didysis"
 
 #: lr_const:spgoptformmargins
 msgid "Margins"
@@ -1495,7 +1497,7 @@ msgstr "Matematika"
 
 #: lr_const:sdocminor
 msgid "Minor"
-msgstr ""
+msgstr "Mažasis"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -1723,7 +1725,7 @@ msgstr "Atstatyti atšauktą veiksmą"
 
 #: lr_const:sdocrelease
 msgid "Release"
-msgstr ""
+msgstr "Laida"
 
 #: lr_const:sfrdesignerformremovepg
 msgid "Remove page"
@@ -2051,7 +2053,7 @@ msgstr "Kintamųjų sąrašas"
 
 #: lr_const:sdocversion
 msgid "Version"
-msgstr ""
+msgstr "Versija"
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"

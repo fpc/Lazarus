@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 16:01+0300\n"
+"PO-Revision-Date: 2008-01-22 02:13+0200\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
@@ -92,7 +92,7 @@ msgstr "Ka&rtoti"
 
 #: lclstrconsts:rsmbyes
 msgid "&Yes"
-msgstr "T&aip"
+msgstr "&Taip"
 
 #: lclstrconsts:rsfileinfofilenotfound
 msgid "(file not found: \"%s\")"
@@ -252,7 +252,7 @@ msgstr "Delete"
 
 #: lclstrconsts:rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Ištrinti įrašą?"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
@@ -508,7 +508,7 @@ msgstr "Klaidingas srauto formatas"
 
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
@@ -628,11 +628,11 @@ msgstr "Pixmap"
 
 #: lclstrconsts:rsportablebitmap
 msgid "Portable BitMap"
-msgstr ""
+msgstr "Portatyvus BitMap"
 
 #: lclstrconsts:rsportablegraymap
 msgid "Portable GrayMap"
-msgstr ""
+msgstr "Portatyvus GreyMap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
@@ -640,7 +640,7 @@ msgstr "Portable Network Graphic"
 
 #: lclstrconsts:rsportablepixmap
 msgid "Portable PixMap"
-msgstr ""
+msgstr "Portatyvus PixMap"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"
@@ -812,7 +812,7 @@ msgstr "Tik visų žodžių"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr "Visa&da taip"
+msgstr "Vis&ada taip"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

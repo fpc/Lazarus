@@ -3,15 +3,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-08-27 18:38+0300\n"
+"PO-Revision-Date: 2008-01-21 23:14+0200\n"
 "Project-Id-Version: projecttemplates\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
+"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
 
 #: projecttemplates:serrcouldnotcreatedir
 msgid "Could not create directory \"%s\""
-msgstr "Nepavyko sukurti katalogą \"%s\""
+msgstr "Nepavyko sukurti katalogo \"%s\""
 
 #: projecttemplates:serrfailedtocopyfile
 msgid "Failed to copy file \"%s\" to \"%s\""
