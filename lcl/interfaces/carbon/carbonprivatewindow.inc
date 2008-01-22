@@ -88,12 +88,12 @@ const
   var
     MouseButton: EventMouseButton;
   begin
-    Result := 1;
+    Result := 0;
     
     if OSError(
       GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
         SizeOf(MouseButton), nil, @MouseButton),
-      SName, SGetEvent, 'kEventParamMouseButton') then Exit;
+      SName, SGetEvent, 'kEventParamMouseButton', eventParameterNotFoundErr) then Exit;
 
     Result := MouseButton;
   end;
