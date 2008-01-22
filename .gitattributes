@@ -2290,7 +2290,6 @@ images/codetoolsdefines/ifndef_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/undefine_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/undefineall_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/undefinerecurse_22x22.xpm -text svneol=native#image/x-xpixmap
-images/color.xpm -text svneol=native#image/x-xpixmap
 images/components/default.png -text svneol=unset#image/png
 images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tapplicationproperties.png -text svneol=unset#image/png
@@ -2420,9 +2419,7 @@ images/designer/anchor_left_right.png -text svneol=unset#image/png
 images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
-images/down.xpm svneol=native#text/plain
 images/folder.png -text
-images/fonts.xpm -text svneol=native#image/x-xpixmap
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
 images/includefile.ico -text svneol=unset#image/x-icon
@@ -2439,10 +2436,6 @@ images/keymaprelation.png -text
 images/laz_images.bat svneol=native#text/plain
 images/laz_images.lrs svneol=native#text/pascal
 images/laz_images_list.txt svneol=native#text/plain
-images/lazarus.ico -text svneol=unset#image/x-icon
-images/lazarus.xpm -text svneol=native#image/x-xpixmap
-images/lazarus64.ico -text svneol=unset#image/x-icon
-images/lazarus64.xpm -text svneol=native#image/x-xpixmap
 images/lazarus_about_logo.xpm -text svneol=native#image/x-xpixmap
 images/lazaruspackage.ico -text svneol=unset#image/x-icon
 images/lazdoc/formatbold.png -text
@@ -2536,8 +2529,6 @@ images/mimetypes/text-lazarus-package.png -text
 images/mimetypes/text-lazarus-project-information.png -text
 images/mimetypes/text-lazarus-project-source.png -text
 images/mimetypes/text-x-pascal.png -text
-images/mouse.xpm -text svneol=native#image/x-xpixmap
-images/notebook.xpm -text svneol=native#image/x-xpixmap
 images/packages/pkg_add.png -text svneol=unset#image/png
 images/packages/pkg_binary.png -text
 images/packages/pkg_compile.png -text
@@ -2559,7 +2550,6 @@ images/packages/pkg_removedfiles.png -text
 images/packages/pkg_removedrequired.png -text
 images/packages/pkg_required.png -text svneol=unset#image/png
 images/packages/pkg_text.png -text
-images/penguin.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/ActiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
@@ -2587,7 +2577,6 @@ images/states/state_not_found.png -text svneol=unset#image/png
 images/states/state_unit_circular_reference.png -text svneol=unset#image/png
 images/states/state_unknown.png -text svneol=unset#image/png
 images/template.png -text svneol=unset#image/png
-images/up.xpm svneol=native#text/plain
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
 install/lazarus-mime.xml svneol=native#text/plain
 install/lazarus.desktop svneol=native#text/plain
