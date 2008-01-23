@@ -45,9 +45,9 @@ type
   TCarbonTab = class(TCarbonCustomControl)
   private
     FParent: TCarbonTabsControl;
-    function GetIndex: Integer;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
+    procedure DestroyWidget; override;
   public
     procedure Attach(AParent: TCarbonTabsControl);
     procedure UpdateTab;
@@ -61,20 +61,31 @@ type
     FUserPane: ControlRef;
     FTabPosition: TTabPosition;
     FTabs: TObjectList; // of TCarbonTab
+    FTabIndex: Integer;
+    FFirstIndex: Integer; // index of first visible tab
+    FLastIndex: Integer;  // index of last visible tab
+    FPrevArrow: ControlRef;
+    FNextArrow: ControlRef;
+    function GetPrevArrowBounds(const R: TRect): TRect;
+    function GetNextArrowBounds(const R: TRect): TRect;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
     function GetContent: ControlRef; override;
     
     procedure ShowTab;
-    procedure UpdateTabs(AIndex: Integer; TillEnd: Boolean = False);
-    procedure SetTabCaption(AIndex: Integer; const S: String);
+    procedure UpdateTabs;
+    procedure Remove(ATab: TCarbonTab);
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
+    
+    procedure ScrollTabsLeft;
+    procedure ScrollTabsRight;
+
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
     procedure Remove(AIndex: Integer);
     procedure SetTabIndex(AIndex: Integer);
@@ -85,24 +96,9 @@ type
 
 implementation
 
-uses CarbonProc, CarbonDbgConsts, CarbonUtils;
+uses CarbonProc, CarbonDbgConsts, CarbonUtils, CarbonCanvas, CarbonGDIObjects;
 
 { TCarbonTab }
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonTab.GetIndex
-  Returns: The real index of tab
- ------------------------------------------------------------------------------}
-function TCarbonTab.GetIndex: Integer;
-begin
-  if FParent <> nil then Result := FParent.FTabs.IndexOf(Self)
-  else
-  begin
-    Result := -1;
-    DebugLn('TCarbonTab.GetIndex Error - tab ' + LCLObject.Name +
-      ' is not attached to parent!');
-  end;
-end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTab.CreateWidget
@@ -115,6 +111,18 @@ begin
   inherited CreateWidget(AParams);
   
   ShowHide(False);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.DestroyWidget
+
+  Clean-up
+ ------------------------------------------------------------------------------}
+procedure TCarbonTab.DestroyWidget;
+begin
+  FParent.Remove(Self);
+
+  inherited DestroyWidget;
 end;
 
 {------------------------------------------------------------------------------
@@ -137,7 +145,7 @@ procedure TCarbonTab.UpdateTab;
 begin
   if FParent = nil then Exit;
   
-  FParent.UpdateTabs(GetIndex);
+  FParent.UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------
@@ -151,11 +159,75 @@ begin
   if FParent = nil then Exit;
   
   Result := False;
-  FParent.SetTabCaption(GetIndex, S);
+  FParent.UpdateTabs;
   Result := True;
 end;
 
 { TCarbonTabsControl }
+
+{------------------------------------------------------------------------------
+  Name: CarbonTabsPrevArrow_Hit
+ ------------------------------------------------------------------------------}
+function CarbonTabsPrevArrow_Hit(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonTabsPrevArrow_Hit: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  (AWidget as TCarbonTabsControl).ScrollTabsLeft;
+end;
+
+{------------------------------------------------------------------------------
+  Name: CarbonTabsNextArrow_Hit
+ ------------------------------------------------------------------------------}
+function CarbonTabsNextArrow_Hit(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseControlEvent}
+    DebugLn('CarbonTabsNextArrow_Hit: ', DbgSName(AWidget.LCLObject));
+  {$ENDIF}
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+
+  (AWidget as TCarbonTabsControl).ScrollTabsRight;
+end;
+
+const
+  ArrowSize = 16;
+  TabHeight = 10;
+  TabWidth = 8;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.GetPrevArrowBounds
+  Returns: Bounds of prev arrow
+ ------------------------------------------------------------------------------}
+function TCarbonTabsControl.GetPrevArrowBounds(const R: TRect): TRect;
+var
+  P: TPoint;
+begin
+  P := Classes.Point(R.Left, R.Top + TabHeight);
+  Result := Classes.Rect(P.X, P.Y,
+    P.X + ArrowSize, P.Y + ArrowSize);
+end;
+
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.GetNextArrowBounds
+  Returns: Bounds of next arrow
+ ------------------------------------------------------------------------------}
+function TCarbonTabsControl.GetNextArrowBounds(const R: TRect): TRect;
+var
+  P: TPoint;
+begin
+  P := Classes.Point(R.Right - ArrowSize - TabWidth, R.Top + TabHeight);
+  Result := Classes.Rect(P.X, P.Y,
+    P.X + ArrowSize, P.Y + ArrowSize);
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.CreateWidget
@@ -169,26 +241,62 @@ var
   Direction: ControlTabDirection;
   TabEntry: ControlTabEntry;
   R: TRect;
+  TmpSpec: EventTypeSpec;
 begin
   case (LCLObject as TCustomNotebook).TabPosition of
-  tpTop:    Direction := kControlTabDirectionNorth;
+  tpTop: Direction := kControlTabDirectionNorth;
   tpBottom: Direction := kControlTabDirectionSouth;
-  tpLeft:   Direction := kControlTabDirectionWest;
-  tpRight:  Direction := kControlTabDirectionEast;
+  tpRight: Direction := kControlTabDirectionEast;
+  tpLeft: Direction := kControlTabDirectionWest;
   end;
-
   if OSError(
     CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       kControlTabSizeLarge, Direction, 0, TabEntry, Control),
     Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
     
+  FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
+  FTabs := TObjectList.Create(False);
+
   Widget := Control;
   
+  OSError(
+    CreateDisclosureTriangleControl(GetTopParentWindow,
+      GetCarbonRect(GetPrevArrowBounds(ParamsToRect(AParams))),
+      kControlDisclosureTrianglePointLeft, nil, 0, False, False, FPrevArrow),
+    Self, SCreateWidget, 'CreatePopupArrowControl');
+  OSError(HIViewSetVisible(FPrevArrow, False), Self, SCreateWidget, SViewVisible);
+  OSError(HIViewAddSubview(Widget, FPrevArrow), Self, SCreateWidget,
+    SViewAddView);
+    
+  OSError(
+    CreateDisclosureTriangleControl(GetTopParentWindow,
+      GetCarbonRect(GetNextArrowBounds(ParamsToRect(AParams))),
+      kControlDisclosureTrianglePointRight, nil, 0, False, False, FNextArrow),
+    Self, SCreateWidget, 'CreatePopupArrowControl');
+  OSError(HIViewSetVisible(FNextArrow, False), Self, SCreateWidget, SViewVisible);
+  OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
+    SViewAddView);
+    
+  AddControlPart(FPrevArrow);
+  AddControlPart(FNextArrow);
+  
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
+  InstallControlEventHandler(FPrevArrow,
+    RegisterEventHandler(@CarbonTabsPrevArrow_Hit),
+    1, @TmpSpec, Pointer(Self), nil);
+  InstallControlEventHandler(FNextArrow,
+    RegisterEventHandler(@CarbonTabsNextArrow_Hit),
+    1, @TmpSpec, Pointer(Self), nil);
+
   if not GetClientRect(R) then
   begin
     DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
     Exit;
   end;
+  
+  FFirstIndex := 0;
+  FLastIndex := 0;
+  FTabIndex := -1;
 
   FUserPane := CreateCustomHIView(RectToCGRect(R));
   if FUserPane = nil then RaiseCreateWidgetError(LCLObject);
@@ -197,12 +305,8 @@ begin
 
   if OSError(HIViewAddSubview(Control, FUserPane), Self, SCreateWidget,
     SViewAddView) then RaiseCreateWidgetError(LCLObject);
-
+   
   inherited;
-
-  FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
-  
-  FTabs := TObjectList.Create(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -212,9 +316,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.DestroyWidget;
 begin
-  FTabs.Free;
-  
   DisposeControl(FUserPane);
+  FreeAndNil(FTabs);
 
   inherited DestroyWidget;
 end;
@@ -235,79 +338,146 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ShowTab;
 var
-  I, VIndex: Integer;
+  I: Integer;
   R: TRect;
+  Page: TCustomPage;
 begin
-  VIndex := GetControl32BitValue(ControlRef(Widget)) - 1;
-
-  // show tab with VIndex, hide the others
+  // show tab with FTabIndex, hide the others
   for I := 0 to FTabs.Count - 1 do
   begin
-    if I = VIndex then // update tab bounds
+    Page := TCarbonTab(FTabs[I]).LCLObject as TCustomPage;
+    if Page.PageIndex = FTabIndex then // update tab bounds
     begin
       GetClientRect(R);
       OffsetRect(R, -R.Left, -R.Top);
       TCarbonTab(FTabs[I]).SetBounds(R);
     end;
     
-    TCarbonTab(FTabs[I]).ShowHide(I = VIndex);
+    TCarbonTab(FTabs[I]).ShowHide(Page.PageIndex = FTabIndex);
   end;
 end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.UpdateTabs
-  Params:  AIndex  - Start index
-           TillEnd - Till end
 
   Updates tabs properties
  ------------------------------------------------------------------------------}
-procedure TCarbonTabsControl.UpdateTabs(AIndex: Integer; TillEnd: Boolean);
+procedure TCarbonTabsControl.UpdateTabs;
+var
+  I: Integer;
+  TabSizes: Array of Integer;
+  S: String;
+  Size: TSize;
+  ControlSize: Integer;
+  TempFont: TCarbonFont;
+  TabInfo: ControlTabInfoRecV1;
+  ControlIndex: Integer;
+const
+  SName = 'UpdateTabs';
 begin
-  // update tabs count
-  SetControl32BitMaximum(ControlRef(Widget), FTabs.Count);
-  
-  // TODO imageindex
-  while AIndex < FTabs.Count do
-  begin
-    //DebugLn('TCarbonTabsControl.UpdateTabs ' + DbgS(AIndex) + ' Caption: ' +
-    //  TCarbonTab(FTabs[AIndex]).LCLObject.Caption);
-      
-    SetTabCaption(AIndex, TCarbonTab(FTabs[AIndex]).LCLObject.Caption);
+  try
+    if FTabs.Count = 0 then
+    begin
+      FFirstIndex := 0;
+      FLastIndex := 0;
+
+      // set tab count
+      SetControl32BitMaximum(ControlRef(Widget), 0);
+      ControlIndex := 0;
+      Exit;
+    end;
+
+    SetLength(TabSizes, FTabs.Count);
+    TempFont := DefaultContext.CurrentFont;
+    DefaultContext.CurrentFont := TCarbonFont(LCLObject.Font.Reference.Handle);
+    try
+      for I := 0 to High(TabSizes) do
+      begin
+        S := TCarbonTab(FTabs[I]).LCLObject.Caption;
+        DeleteAmpersands(S);
+        if DefaultContext.GetTextExtentPoint(PChar(S), Length(S), Size) then
+          TabSizes[I] := Size.cx + 20
+        else
+          TabSizes[I] := 20;
+      end;
+    finally
+      DefaultContext.CurrentFont := TempFont;
+    end;
+
+    if FFirstIndex < 0 then FFirstIndex := 0;
+    if FFirstIndex >= FTabs.Count then FFirstIndex := FTabs.Count - 1;
+    FLastIndex := FFirstIndex;
+
+    if FTabPosition in [tpTop, tpBottom] then ControlSize := LCLObject.Width
+    else ControlSize := LCLObject.Height;
+    ControlSize := ControlSize - 2 * ArrowSize - TabSizes[FFirstIndex];
+
+    // add tabs right from first
+    for I := FFirstIndex + 1 to FTabs.Count - 1 do
+    begin
+      if ControlSize >= TabSizes[I] then
+      begin
+        FLastIndex := I;
+        Dec(ControlSize, TabSizes[I]);
+      end;
+    end;
+
+    // possibly add tabs left from first
+    for I := FFirstIndex - 1 downto 0 do
+    begin
+      if ControlSize >= TabSizes[I] then
+      begin
+        FFirstIndex := I;
+        Dec(ControlSize, TabSizes[I]);
+      end;
+    end;
+
+    // set tab count
+    SetControl32BitMaximum(ControlRef(Widget), FLastIndex - FFirstIndex + 1);
+
+    ControlIndex := 0;
+    // update tabs
+    TabInfo.version := kControlTabInfoVersionOne;
+    TabInfo.iconSuiteID := 0;
+
+    // TODO: imageindex
+    for I := FFirstIndex to FLastIndex do
+    begin
+      S := TCarbonTab(FTabs[I]).LCLObject.Caption;
+      if (TCarbonTab(FTabs[I]).LCLObject as TCustomPage).PageIndex = FTabIndex then
+        ControlIndex := I - FFirstIndex + 1;
+
+      DeleteAmpersands(S);
+      CreateCFString(S, TabInfo.name);
+      try
+        if OSError(SetControlData(ControlRef(Widget), I - FFirstIndex + 1, kControlTabInfoTag,
+            SizeOf(ControlTabInfoRecV1), @TabInfo),
+          Self, SName, SSetData) then Exit;
+      finally
+        FreeCFString(TabInfo.name);
+      end;
+    end;
+
+  finally
+    // set tab index
+    SetControl32BitValue(ControlRef(Widget), ControlIndex);
+    // update arrows visible
+    OSError(HIViewSetVisible(FPrevArrow, (FFirstIndex > 0) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
+    OSError(HIViewSetVisible(FNextArrow, (FLastIndex < FTabs.Count - 1) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
     
-    if not TillEnd then Exit;
-    
-    Inc(AIndex);
+    Invalidate;
   end;
-  
-  Invalidate;
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonTabsControl.SetTabCaption
-  Params:  AIndex - Start index
-           S      - New caption
-
-  Changes the specified tab caption
- ------------------------------------------------------------------------------}
-procedure TCarbonTabsControl.SetTabCaption(AIndex: Integer; const S: String);
-var
-  Info: ControlTabInfoRecV1;
-  T: String;
-begin
-  Info.version := kControlTabInfoVersionOne;
-  Info.iconSuiteID := 0;
-
-  T := S;
-  DeleteAmpersands(T);
+  Method:  TCarbonTabsControl.Remove
   
-  CreateCFString(T, Info.name);
-  try
-    if OSError(SetControlData(ControlRef(Widget), AIndex + 1, kControlTabInfoTag,
-        SizeOf(ControlTabInfoRecV1), @Info),
-      Self, 'SetTabCaption', 'SetControlData') then Exit;
-  finally
-    FreeCFString(Info.name);
-  end;
+  Removes the specified tab
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.Remove(ATab: TCarbonTab);
+begin
+  FTabs.Remove(ATab);
+  UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------
@@ -328,11 +498,12 @@ procedure TCarbonTabsControl.ValueChanged;
 var
   Msg: TLMNotify;
   NMHdr: TNMHDR;
-  VIndex, PIndex: Integer;
+  Index, PIndex: Integer;
 begin
-  VIndex := GetControl32BitValue(ControlRef(Widget)) - 1;
-  if (VIndex >= 0) and (VIndex < FTabs.Count) then
-    PIndex := (TCarbonTab(FTabs[VIndex]).LCLObject as TCustomPage).PageIndex
+  Index := GetControl32BitValue(ControlRef(Widget)) - 1 + FFirstIndex;
+
+  if (Index >= 0) and (Index < FTabs.Count) then
+    PIndex := (TCarbonTab(FTabs[Index]).LCLObject as TCustomPage).PageIndex
   else
     PIndex := -1;
 
@@ -353,7 +524,7 @@ begin
     Exit;
   end;
 
-  ShowTab;
+  SetTabIndex(Index);
 
   // send change
   FillChar(Msg, SizeOf(TLMNotify), 0);
@@ -408,8 +579,34 @@ begin
   if inherited SetBounds(ARect) then
   begin
     UpdateContentBounds;
+    
+    OSError(HIViewSetFrame(FPrevArrow, RectToCGRect(GetPrevArrowBounds(ARect))),
+      Self, SSetBounds, SViewFrame);
+    OSError(HIViewSetFrame(FNextArrow, RectToCGRect(GetNextArrowBounds(ARect))),
+      Self, SSetBounds, SViewFrame);
+    
     Result := True;
   end;
+  
+  UpdateTabs;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.ScrollTabsLeft;
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.ScrollTabsLeft;
+begin
+  Dec(FFirstIndex);
+  UpdateTabs;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.ScrollTabsRight;
+ ------------------------------------------------------------------------------}
+procedure TCarbonTabsControl.ScrollTabsRight;
+begin
+  Inc(FFirstIndex);
+  UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------
@@ -426,7 +623,7 @@ begin
     FTabs.Insert(AIndex, ATab);
   ATab.Attach(Self);
   
-  UpdateTabs(AIndex, True);
+  UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------
@@ -440,7 +637,7 @@ begin
   //DebugLn('TCarbonTabsControl.Remove ' + DbgS(AIndex));
   FTabs.Delete(AIndex);
   
-  UpdateTabs(AIndex, True);
+  UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------
@@ -450,10 +647,8 @@ end;
   Changes the current Carbon tab
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.SetTabIndex(AIndex: Integer);
-var
-  VIndex: Integer;
 begin
-  if (AIndex < 0) or (AIndex >= (LCLObject as TCustomNotebook).PageCount) then
+  if (AIndex < 0) or (AIndex >= FTabs.Count) then
   begin
     SetControl32BitValue(ControlRef(Widget), 0);
     ShowTab;
@@ -462,8 +657,19 @@ begin
   
   //DebugLn('TCarbonTabsControl.SetTabIndex ' + DbgS(AIndex) + ' ' + DbgS((LCLObject as TCustomNotebook).PageCount));
   
-  VIndex := (LCLObject as TCustomNotebook).Page[AIndex].VisibleIndex;
-  SetControl32BitValue(ControlRef(Widget), VIndex + 1);
+  FTabIndex := AIndex;
+  if (AIndex < FFirstIndex) or (AIndex > FLastIndex) then
+  begin
+    FFirstIndex := AIndex;
+    UpdateTabs;
+  end
+  else
+  begin
+    SetControl32BitValue(ControlRef(Widget), FTabIndex - FFirstIndex + 1);
+    Invalidate;
+  end;
+
+  
   ShowTab;
 end;
 
@@ -500,7 +706,7 @@ begin
   end
   else FTabs.Clear; // remove all tabs
   
-  UpdateTabs(0, True);
+  UpdateTabs;
 end;
 
 {------------------------------------------------------------------------------

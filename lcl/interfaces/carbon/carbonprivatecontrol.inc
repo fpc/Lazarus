@@ -340,6 +340,14 @@ begin
     RegisterEventHandler(@CarbonCommon_ContextualMenuClick),
     1, @TmpSpec, Pointer(Self), nil);
     
+  if cceHit in GetValidEvents then
+  begin
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
+    InstallControlEventHandler(AControl,
+      RegisterEventHandler(@CarbonControl_Hit),
+      1, @TmpSpec, Pointer(Self), nil);
+  end;
+    
   OSError(
     SetControlProperty(AControl, LAZARUS_FOURCC, WIDGETINFO_FOURCC, SizeOf(Self), @Self),
     Self, 'AddControlPart', SSetControlProp);

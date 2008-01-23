@@ -161,7 +161,7 @@ const
     
     if (MouseButton < Low(MSGKIND[1])) or (MouseButton > High(MSGKIND[1])) then Exit;
     Msg^.Msg := MSGKIND[ClickCount, MouseButton];
-    //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Msg^.Msg=',dbgs(Msg^.Msg));
+    //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Pos=',dbgs(MousePoint));
 
     Msg^.XPos := MousePoint.X;                         
     Msg^.YPos := MousePoint.Y;
