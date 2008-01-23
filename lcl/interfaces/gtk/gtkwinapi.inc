@@ -7172,31 +7172,38 @@ function TGtkWidgetSet.PostMessage(Handle: HWND; Msg: Cardinal; wParam: WParam;
     vlItem := fMessageQueue.FindPaintMessage(NewMsg^.Hwnd);
     if vlItem = nil then exit;
     OldMsg := vlItem.Msg;
-    if OldMsg=nil then exit;
-    if (NewMsg^.Message=LM_PAINT) or (OldMsg^.Message=LM_PAINT) then begin
+    if OldMsg = nil then exit;
+    if (NewMsg^.Message = LM_PAINT) or (OldMsg^.Message = LM_PAINT) then
+    begin
       // LM_PAINT means: repaint all
       // convert NewMsg into a LM_PAINT if not already done
-      if NewMsg^.Message<>LM_PAINT then begin
+      if NewMsg^.Message <> LM_PAINT then
+      begin
         FinalizePaintTagMsg(NewMsg);
         NewMsg^.Message:=LM_PAINT;
       end;
-    end else if (NewMsg^.Message<>LM_GtkPAINT) then begin
-      RaiseGDBException('CombinePaintMessages A unknown paint message');
-    end else if (OldMsg^.Message<>LM_GtkPAINT) then begin
-      RaiseGDBException('CombinePaintMessages B unknown paint message');
-    end else begin
+    end
+    else
+    if (NewMsg^.Message <> LM_GTKPAINT) then
+      RaiseGDBException('CombinePaintMessages A unknown paint message')
+    else
+    if (OldMsg^.Message<>LM_GtkPAINT) then
+      RaiseGDBException('CombinePaintMessages B unknown paint message')
+    else
+    begin
       // combine the two LM_GtkPAINT messages
-      NewData:=TLMGtkPaintData(NewMsg^.WParam);
-      OldData:=TLMGtkPaintData(OldMsg^.WParam);
-      NewData.RepaintAll:=NewData.RepaintAll or OldData.RepaintAll;
-      if not NewData.RepaintAll then begin
-        NewData.Rect.Left:=Min(NewData.Rect.Left,OldData.Rect.Left);
-        NewData.Rect.Top:=Min(NewData.Rect.Top,OldData.Rect.Top);
-        NewData.Rect.Right:=Max(NewData.Rect.Right,OldData.Rect.Right);
-        NewData.Rect.Bottom:=Max(NewData.Rect.Bottom,OldData.Rect.Bottom);
+      NewData := TLMGtkPaintData(NewMsg^.WParam);
+      OldData := TLMGtkPaintData(OldMsg^.WParam);
+      NewData.RepaintAll := NewData.RepaintAll or OldData.RepaintAll;
+      if not NewData.RepaintAll then
+      begin
+        NewData.Rect.Left := Min(NewData.Rect.Left, OldData.Rect.Left);
+        NewData.Rect.Top := Min(NewData.Rect.Top, OldData.Rect.Top);
+        NewData.Rect.Right := Max(NewData.Rect.Right, OldData.Rect.Right);
+        NewData.Rect.Bottom := Max(NewData.Rect.Bottom, OldData.Rect.Bottom);
       end;
     end;
-    fMessageQueue.RemoveMessage(vlItem,FPMF_All,true);
+    fMessageQueue.RemoveMessage(vlItem, FPMF_All, True);
   end;
 
 var
@@ -7211,7 +7218,8 @@ begin
   AMessage^.LParam := LParam;
 //  Message^.Time :=
 
-  if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then begin
+  if (AMessage^.Message = LM_PAINT) or (AMessage^.Message = LM_GTKPAINT) then
+  begin
     { Obsolete, because InvalidateRectangle now works.
 
     // paint messages are the most expensive messages in the LCL
@@ -7227,7 +7235,7 @@ begin
     // so that the widget repaints only once
 
     CombinePaintMessages(AMessage);
-  end ;
+  end;
 
   FMessageQueue.AddMessage(AMessage);
 end;
@@ -7992,21 +8000,22 @@ var
     end;
     {$ENDIF}
     
-    if AMessage.Msg=LM_GtkPAINT
+    if AMessage.Msg = LM_GTKPAINT
     then begin
-      OldGtkPaintMsg:=TLMGtkPaint(AMessage);
-      GtkPaintData:=OldGtkPaintMsg.Data;
-      // convert LM_GtkPAINT to LM_PAINT
+      OldGtkPaintMsg := TLMGtkPaint(AMessage);
+      GtkPaintData := OldGtkPaintMsg.Data;
+      // convert LM_GTKPAINT to LM_PAINT
       AMessage := TLMessage(GtkPaintMessageToPaintMessage(
                                                 TLMGtkPaint(AMessage), False));
       {$IfNDef GTK2}
-      if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll)
+      if (GtkPaintData <> nil) and (not GtkPaintData.RepaintAll)
       then begin
-        PaintDC:=TLMPaint(AMessage).DC;
-        DCOrigin:= TGtkDeviceContext(PaintDC).Offset;
+        PaintDC := TLMPaint(AMessage).DC;
+        DCOrigin := TGtkDeviceContext(PaintDC).Offset;
         with GtkPaintData.Rect do
-          IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
-                            Right-DCOrigin.X,Bottom-DCOrigin.Y);
+          IntersectClipRect(PaintDC,
+                            Left - DCOrigin.X, Top - DCOrigin.Y,
+                            Right - DCOrigin.X, Bottom - DCOrigin.Y);
       end;
       {$EndIf}
       GtkPaintData.Free;
@@ -8015,18 +8024,21 @@ var
 
   procedure DisposePaintMessage(TargetObject: TObject; var AMessage: TLMessage);
   begin
-    if OldMsg=LM_GtkPAINT then begin
+    if OldMsg = LM_GTKPAINT then
+    begin
       FinalizePaintMessage(@AMessage);
 
       //if (csDesigning in TComponent(TargetObject).ComponentState)
       //and (TargetObject is TWinControl) then
       //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
-    end else
-    if ((AMessage.Msg=LM_PAINT) or (AMessage.Msg=LM_INTERNALPAINT))
-    and (AMessage.WParam<>0) then begin
+    end
+    else
+    if ((AMessage.Msg = LM_PAINT) or (AMessage.Msg = LM_INTERNALPAINT))
+    and (AMessage.WParam <> 0) then
+    begin
       // free DC
-      ReleaseDC(0,AMessage.WParam);
-      AMessage.WParam:=0;
+      ReleaseDC(0, AMessage.WParam);
+      AMessage.WParam := 0;
 
       //if (csDesigning in TComponent(TargetObject).ComponentState)
       //and (TargetObject is TWinControl) then
@@ -8038,7 +8050,7 @@ var
   AMessage: TLMessage;
   Target: TObject;
 begin
-  OldMsg:=Msg;
+  OldMsg := Msg;
 
   AMessage.Msg := Msg;
   AMessage.WParam := WParam;
@@ -8047,17 +8059,18 @@ begin
 
   Target := GetLCLObject(Pointer(HandleWnd));
 
-  if Target<>nil then begin
-    if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
+  if Target <> nil then
+  begin
+    if (Msg = LM_PAINT) or (Msg = LM_GTKPAINT) then
+    begin
       PreparePaintMessage(Target,AMessage);
-    end;
+      Result := DoDeliverPaintMessage(Target, TLMPaint(AMessage));
+    end
+    else
+      Result := DeliverMessage(Target, AMessage); // deliver it
 
-    // deliver it
-    Result := DeliverMessage(Target, AMessage);
-
-    if (Msg=LM_PAINT) or (Msg=LM_INTERNALPAINT) or (Msg=LM_GtkPaint) then begin
-      DisposePaintMessage(Target,AMessage);
-    end;
+    if (Msg = LM_PAINT) or (Msg = LM_INTERNALPAINT) or (Msg = LM_GTKPAINT) then
+      DisposePaintMessage(Target, AMessage);
   end;
 end;
 

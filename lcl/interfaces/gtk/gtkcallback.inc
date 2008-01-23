@@ -27,15 +27,29 @@
 
 {$ENDIF}
 
+function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
+begin
+  if (TObject(Target) is TCustomControl) and not (csOpaque in TWinControl(Target).ControlStyle) then
+  begin
+    Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
+    TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
+    Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
+  end;
+
+  Result := DeliverMessage(Target, PaintMsg);
+end;
+
 function DeliverPaintMessage(const Target: Pointer; var TheMessage): GBoolean;
 var
   PaintMsg: TLMPaint;
 begin
-  if TLMessage(TheMessage).Msg=LM_GtkPAINT then
-    PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage),true)
+  if TLMessage(TheMessage).Msg = LM_GTKPAINT then
+    PaintMsg := GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage), True)
   else
-    PaintMsg:=TLMPaint(TheMessage);
-  Result := DeliverMessage(Target,PaintMsg) = 0;
+    PaintMsg := TLMPaint(TheMessage);
+
+  Result := DoDeliverPaintMessage(TObject(Target), PaintMsg) = 0;
+  
   FinalizePaintMessage(PLMessage(@PaintMsg));
 end;
 
@@ -57,11 +71,10 @@ begin
   end
   else
   begin
-    if TLMessage(TheMessage).Msg<>LM_GtkPAINT then
+    if TLMessage(TheMessage).Msg <> LM_GTKPAINT then
       Result := DeliverMessage(Target, TheMessage) = 0
-    else begin
-      Result := DeliverPaintMessage(Target,TheMessage);
-    end;
+    else
+      Result := DeliverPaintMessage(Target, TheMessage);
   end;
 end;
 
@@ -73,9 +86,6 @@ function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget;
 {$ENDIF}
 var
   MSG: TLMGtkPaint;
-  {$IFDEF DirectPaintMsg}
-  PaintMsg: TLMPaint;
-  {$ENDIF}
 begin
   //DebugLn(['DeliverGtkPaintMessage ',DbgSName(TObject(Target)),' Widget=',GetWidgetDebugReport(Widget),' RepaintAll=',RepaintAll,' AfterGtk=',IsAfterGtk,' Area=',dbgs(Area)]);
   {$IFDEF Gtk2}
@@ -83,16 +93,18 @@ begin
   // In case of TCustomControl, there is no gtk painting only the
   // child paintings. Let the TCustomControl paint the background.
   // ToDo: Eventually there must be a 'before paint message'.
-  if IsAfterGtk then begin
+  if IsAfterGtk then
+  begin
     if TObject(Target) is TCustomControl then exit;
-  end else begin
+  end else
+  begin
     if not (TObject(Target) is TCustomControl) then exit;
   end;
   {$ENDIF}
   
   if (not RepaintAll) and ((Area^.Width<1) or (Area^.Height<1)) then exit;
 
-  MSG.Msg := LM_GtkPAINT;
+  MSG.Msg := LM_GTKPAINT;
   MSG.Data := TLMGtkPaintData.Create;
   MSG.Data.Widget := Widget;
   MSG.Data.State := GtkPaint_LCLWidget;
@@ -100,11 +112,9 @@ begin
   Msg.Data.RepaintAll := RepaintAll;
 
   {$IFDEF DirectPaintMsg}
-  PaintMsg:= GtkPaintMessageToPaintMessage(Msg,true);
-  Result := DeliverMessage(Target,PaintMsg) = 0;
-  FinalizePaintMessage(PLMessage(@PaintMsg));
+  Result := DeliverPaintMessage(Target, Msg);
   {$ELSE}
-  Result := DeliverPostMessage(Target,Msg);
+  Result := DeliverPostMessage(Target, Msg);
   {$ENDIF}
 end;
 

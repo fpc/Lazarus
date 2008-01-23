@@ -377,6 +377,7 @@ procedure SetLabelAlignment(LabelWidget: PGtkLabel;
   const NewAlignment: TAlignment);
 
 // paint messages
+function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
 function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
 procedure FinalizePaintMessage(Msg: PLMessage);
@@ -858,6 +859,9 @@ type
     time: guint32;
     constructor Create(Event: PGdkEventKey);
     function IsEqual(Event: PGdkEventKey): boolean;
+  end;
+  
+  TWinControlAccess = class(TWinControl)
   end;
 
 { TLCLHandledKeyEvent }

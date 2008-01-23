@@ -36,7 +36,7 @@ type
     fMsg : PMsg;
   public
     property Msg: PMsg read fMsg write fMsg;
-    function IsPaintMessage : boolean;
+    function IsPaintMessage: Boolean;
     procedure DestroyMessage(ParFinalInternalOnly: TFinalPaintMessageFlag;
                              DisposeMessage: boolean);
     constructor Create;
@@ -72,12 +72,12 @@ implementation
 
 {---(TGtkMessageQueueItem)----------------------}
 
-function TGtkMessageQueueItem.IsPaintMessage : boolean;
+function TGtkMessageQueueItem.IsPaintMessage: Boolean;
 begin
-  Result := false;
-  if fMsg <> nil then begin
-    Result := (Msg^.Message = LM_Paint) or (Msg^.Message = LM_GtkPaint);
-  end;
+  if fMsg <> nil then
+    Result := (Msg^.Message = LM_PAINT) or (Msg^.Message = LM_GTKPAINT)
+  else
+    Result := False;
 end;
 
 constructor TGtkMessageQueueItem.Create;
@@ -89,8 +89,8 @@ end;
 procedure TGtkMessageQueueItem.DestroyMessage(
   ParFinalInternalOnly: TFinalPaintMessageFlag; DisposeMessage: boolean);
 begin
-  if (ParFinalInternalOnly in [FPMF_All,FPMF_Internal])
-  and (fMsg^.message = LM_GtkPaint)
+  if (ParFinalInternalOnly in [FPMF_All, FPMF_Internal])
+  and (fMsg^.message = LM_GTKPAINT)
   then
     FinalizePaintTagMsg(fMsg);
   if DisposeMessage then
@@ -204,7 +204,7 @@ procedure  TGtkMessageQueue.RemoveMessage(ParItem: TGtkMessageQueueItem;
 begin
   if (ParItem.IsPaintMessage) then
     fPaintMessages.Remove(ParItem);
-  ParItem.DestroyMessage(ParFinalOnlyInternal,DisposeMessage);
+  ParItem.DestroyMessage(ParFinalOnlyInternal, DisposeMessage);
   Delete(ParItem);
 end;
 

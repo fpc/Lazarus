@@ -943,7 +943,7 @@ end;
   function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
     FreeGtkPaintMsg: boolean): TLMPaint;
 
-  Converts a LM_GtkPaint message to a LM_PAINT message
+  Converts a LM_GTKPAINT message to a LM_PAINT message
  ------------------------------------------------------------------------------}
 function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
@@ -951,7 +951,7 @@ var
   PS : PPaintStruct;
   Widget: PGtkWidget;
 begin
-  Result.Msg:=LM_PAINT;
+  Result.Msg := LM_PAINT;
   New(PS);
   FillChar(PS^, SizeOf(TPaintStruct), 0);
   Widget := GtkPaintMsg.Data.Widget;
@@ -969,56 +969,61 @@ end;
 
 procedure FinalizePaintMessage(Msg: PLMessage);
 var
-  PS : PPaintStruct;
-  DC : TGtkDeviceContext;
+  PS: PPaintStruct;
+  DC: TGtkDeviceContext;
 begin
-  if (Msg^.Msg=LM_PAINT) or (Msg^.Msg=LM_INTERNALPAINT) then begin
-    if Msg^.LParam <> 0 then begin
-       PS := PPaintStruct(Msg^.LParam);
-       If Msg^.WParam<>0 then
-         DC := TGtkDeviceContext(Msg^.WParam)
-       else
-         DC := TGtkDeviceContext(PS^.hdc);
-       EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
-       Dispose(PS);
-       Msg^.LParam:=0;
-       Msg^.WParam:=0;
-    end else
-      if Msg^.WParam<>0 then begin
-        ReleaseDC(0,Msg^.WParam);
-        Msg^.WParam:=0;
-      end;
+  if (Msg^.Msg = LM_PAINT) or (Msg^.Msg = LM_INTERNALPAINT) then
+  begin
+    if Msg^.LParam <> 0 then
+    begin
+      PS := PPaintStruct(Msg^.LParam);
+      if Msg^.WParam <> 0 then
+        DC := TGtkDeviceContext(Msg^.WParam)
+      else
+        DC := TGtkDeviceContext(PS^.hdc);
+      EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
+      Dispose(PS);
+      Msg^.LParam:=0;
+      Msg^.WParam:=0;
+    end
+    else
+    if Msg^.WParam<>0 then
+    begin
+      ReleaseDC(0, Msg^.WParam);
+      Msg^.WParam := 0;
+    end;
   end else
-  if Msg^.Msg=LM_GtkPAINT then begin
+  if Msg^.Msg = LM_GTKPAINT then
     FreeThenNil(TLMGtkPaintData(Msg^.WParam));
-  end;
 end;
 
 procedure FinalizePaintTagMsg(Msg: PMsg);
 var
-  PS : PPaintStruct;
-  DC : TGtkDeviceContext;
+  PS: PPaintStruct;
+  DC: TGtkDeviceContext;
 begin
-  if (Msg^.Message=LM_PAINT) or (Msg^.Message=LM_INTERNALPAINT) then begin
-    If Msg^.LParam <> 0 then begin
-       PS := PPaintStruct(Msg^.LParam);
-       If Msg^.WParam<>0 then
-         DC := TGtkDeviceContext(Msg^.WParam)
-       else
-         DC := TGtkDeviceContext(PS^.hdc);
-       EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
-       Dispose(PS);
-       Msg^.LParam:=0;
-       Msg^.WParam:=0;
+  if (Msg^.Message = LM_PAINT) or (Msg^.Message = LM_INTERNALPAINT) then
+  begin
+    if Msg^.LParam <> 0 then
+    begin
+      PS := PPaintStruct(Msg^.LParam);
+      if Msg^.WParam<>0 then
+        DC := TGtkDeviceContext(Msg^.WParam)
+      else
+        DC := TGtkDeviceContext(PS^.hdc);
+      EndPaint(THandle(PtrUInt(DC.Widget)), PS^);
+      Dispose(PS);
+      Msg^.LParam:=0;
+      Msg^.WParam:=0;
     end else
-      if Msg^.WParam<>0 then begin
-        ReleaseDC(0,Msg^.WParam);
-        Msg^.WParam:=0;
-      end;
+    if Msg^.WParam<>0 then
+    begin
+      ReleaseDC(0, Msg^.WParam);
+      Msg^.WParam:=0;
+    end;
   end else
-  if Msg^.Message=LM_GtkPAINT then begin
+  if Msg^.Message = LM_GTKPAINT then
     FreeThenNil(TObject(Msg^.WParam));
-  end;
 end;
 
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
@@ -3591,7 +3596,7 @@ begin
   {$ENDIF}
   if (TLMessage(AMessage).Msg=LM_PAINT)
   or (TLMessage(AMessage).Msg=LM_INTERNALPAINT)
-  or (TLMessage(AMessage).Msg=LM_GtkPaint) then
+  or (TLMessage(AMessage).Msg=LM_GTKPAINT) then
     CurrentSentPaintMessageTarget:=TObject(Target);
   try
     if TObject(Target) is TControl

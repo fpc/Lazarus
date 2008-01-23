@@ -284,7 +284,7 @@ var
 
 // Internal Paint message:
 const
-  LM_GTKPaint         = LM_INTERFACEFIRST + 0;
+  LM_GTKPAINT         = LM_INTERFACEFIRST + 0;
   
   GtkPaint_LCLWidget = 1;
   GtkPaint_GtkWidget = 2;
