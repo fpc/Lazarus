@@ -25,13 +25,13 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 0
     object CodePage: TPage
       Caption = 'CodePage'
-      ClientWidth = 211
-      ClientHeight = 485
+      ClientWidth = 207
+      ClientHeight = 489
       object CodeTreeview: TTreeView
         AnchorSideTop.Side = asrBottom
-        Height = 459
+        Height = 463
         Top = 26
-        Width = 211
+        Width = 207
         Align = alClient
         BorderSpacing.Top = 1
         DefaultItemHeight = 16
@@ -48,14 +48,14 @@ object CodeExplorerView: TCodeExplorerView
       end
       object CodeTreeviewButtonPanel: TPanel
         Height = 25
-        Width = 211
+        Width = 207
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 25
-        ClientWidth = 211
+        ClientWidth = 207
         TabOrder = 1
         object OptionsSpeedButton: TSpeedButton
-          Left = 184
+          Left = 180
           Height = 22
           Hint = 'Options for CodeExplorer'
           Top = 1
@@ -104,7 +104,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object RefreshSpeedButton: TSpeedButton
-          Left = 136
+          Left = 132
           Height = 22
           Hint = 'Refresh CodeExplorer'
           Top = 1
@@ -153,7 +153,7 @@ object CodeExplorerView: TCodeExplorerView
           ParentShowHint = False
         end
         object ModeSpeedButton: TSpeedButton
-          Left = 160
+          Left = 156
           Height = 22
           Top = 1
           Width = 23
@@ -170,7 +170,7 @@ object CodeExplorerView: TCodeExplorerView
           AnchorSideRight.Control = CodePage
           AnchorSideRight.Side = asrBottom
           Height = 23
-          Width = 134
+          Width = 130
           Anchors = [akTop, akLeft, akRight]
           AutoSelect = True
           OnChange = CodeFilterEditChange
@@ -181,8 +181,6 @@ object CodeExplorerView: TCodeExplorerView
     end
     object DirectivesPage: TPage
       Caption = 'DirectivesPage'
-      ClientWidth = 215
-      ClientHeight = 515
       object DirectivesFilterEdit: TEdit
         AnchorSideLeft.Control = DirectivesPage
         AnchorSideTop.Control = DirectivesPage
@@ -214,6 +212,8 @@ object CodeExplorerView: TCodeExplorerView
     end
   end
   object Imagelist1: TImageList
+    Height = 18
+    Width = 18
     left = 64
     top = 32
   end

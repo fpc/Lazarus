@@ -276,15 +276,25 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 
   procedure AddResImg(ImgList: TImageList; const ResName: string;
     out ImgID: integer);
-  var Pixmap: TPixmap;
+  var
+    Bitmap: TBitmap;
+    Resource: TLResource;
   begin
-    Pixmap:=TPixmap.Create;
-    if LazarusResources.Find(ResName)=nil then
+    Resource:=LazarusResources.Find(ResName);
+    if Resource=nil then
       DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
         ' WARNING: icon not found: "',ResName,'"');
-    Pixmap.LoadFromLazarusResource(ResName);
-    ImgID:=ImgList.Add(Pixmap, nil);
-    Pixmap.Free;
+    if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
+      Bitmap:=TPixmap.Create;
+    end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
+      Bitmap:=TPortableNetworkGraphic.Create;
+    end else
+      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
+        ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
+    Bitmap.LoadFromLazarusResource(ResName);
+    //DebugLn(['AddResImg ',ResName,' ',Bitmap.Width,' ',Bitmap.Height]);
+    ImgID:=ImgList.Add(Bitmap,nil);
+    Bitmap.Free;
   end;
 
 begin
