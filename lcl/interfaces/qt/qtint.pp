@@ -79,6 +79,7 @@ type
     
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure OnWakeMainThread(Sender: TObject);
   public
     function LCLPlatform: TLCLPlatform; override;
     // Application
@@ -134,9 +135,9 @@ type
     Name : String[25];
     CallBack : Procedure(Data : TObject);
     Data : Pointer;
-  End;
+  end;
 
-  CallbackProcedure = Procedure (Data : Pointer);
+  CallbackProcedure = procedure (Data : Pointer);
 
   pTRect = ^TRect;
 
@@ -146,7 +147,8 @@ type
 const
    TargetEntrys = 3;
    QEventLCLMessage = QEventUser;
-   
+   LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
+
 var
   QtWidgetSet: TQtWidgetSet;
 

@@ -99,9 +99,11 @@ procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   Method: TMethod;
   FHook: QObject_hookH;
+  ScreenDC: HDC;
 begin
   App := QApplication_Create(@argc, argv);
-  
+  WakeMainThread := @OnWakeMainThread;
+
   FOldFocusWidget := nil;
   
   {
@@ -112,6 +114,15 @@ begin
   FHook := QObject_hook_create(App);
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FHook, Method);
+
+  ScreenDC := GetDC(0);
+  try
+    ScreenInfo.PixelsPerInchX := GetDeviceCaps(ScreenDC, LOGPIXELSX);
+    ScreenInfo.PixelsPerInchY := GetDeviceCaps(ScreenDC, LOGPIXELSY);
+    ScreenInfo.ColorDepth := GetDeviceCaps(ScreenDC, BITSPIXEL);
+  finally
+    ReleaseDC(0, ScreenDC);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -270,7 +281,20 @@ begin
         Result := True;
         QEvent_Accept(Event);
       end;
+    LCLQt_CheckSynchronize:
+      begin
+        // a thread is waiting -> synchronize
+        CheckSynchronize;
+      end;
   end;
+end;
+
+procedure TQtWidgetSet.OnWakeMainThread(Sender: TObject);
+var
+  Event: QEventH;
+begin
+  Event := QEvent_create(LCLQt_CheckSynchronize);
+  QCoreApplication_postEvent(QCoreApplication_instance(), Event);
 end;
 
 function TQtWidgetSet.LCLPlatform: TLCLPlatform;
