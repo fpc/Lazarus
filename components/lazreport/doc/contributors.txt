@@ -1,6 +1,7 @@
 The following people contributed to LazReport : 
 
 Aleksey Lagunov       (ru)
+Andrey Gusev          (ru)
 Christian Ulrich      (de)
 German Basisty	      (ar)
 Javier Villarroya     (es)

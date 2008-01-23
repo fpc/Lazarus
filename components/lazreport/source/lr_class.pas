@@ -2287,7 +2287,7 @@ var
         begin
           AssignFont(Canvas);
           Ts := Canvas.TextStyle;
-          Ts.Layout    :=Layout;
+          Ts.Layout    :=tlTop;
           Ts.Alignment :=self.Alignment;
           Ts.Wordbreak :=false;
           Ts.SingleLine:=True;
@@ -2306,7 +2306,7 @@ var
             DebugLn('Rescal font ',IntToStr(Canvas.Font.Size));
             {$ENDIF}
           end;
-          th := Canvas.TextHeight('H')+Round(LineSpacing * ScaleY);
+          th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
           {$IFDEF DebugLR}
           DebugLn('Th=',Inttostr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')));
           Debugln('2 Canvas.Font.Size=',InttoStr(Canvas.Font.Size),'  TextWidth=',InttoStr(Canvas.TextWidth(St)));
@@ -2364,7 +2364,7 @@ var
   begin {OutMemo}
     cury := y + gapy;
 
-    th := Canvas.TextHeight('H')+Round(LineSpacing * ScaleY);
+    th := -Canvas.Font.Height+Round(LineSpacing * ScaleY);
     {$IFDEF DebugLR}
     DebugLn('Th=',IntToStr(Th),' Canvas.TextHeight(H)=',InttoStr(Canvas.TextHeight('H')), 'DR=',dbgs(DR));
     {$ENDIF}
