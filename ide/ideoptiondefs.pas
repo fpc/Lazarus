@@ -77,7 +77,7 @@ type
     nmiwMessagesViewName,
     nmiwUnitDependenciesName,
     nmiwCodeExplorerName,
-    nmiwLazDocName,
+    nmiwFPDocEditorName,
     nmiwClipbrdHistoryName,
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,

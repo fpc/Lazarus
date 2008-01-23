@@ -159,7 +159,7 @@ const
   ecToggleObjectInsp        = ecFirstLazarus + 302;
   ecToggleSourceEditor      = ecFirstLazarus + 303;
   ecToggleCodeExpl          = ecFirstLazarus + 304;
-  ecToggleLazDoc            = ecFirstLazarus + 305;
+  ecToggleFPDocEditor       = ecFirstLazarus + 305;
   ecToggleMessages          = ecFirstLazarus + 306;
   ecToggleWatches           = ecFirstLazarus + 307;
   ecToggleBreakPoints       = ecFirstLazarus + 308;
@@ -266,8 +266,7 @@ const
   ecConfigureHelp           = ecFirstLazarus + 902;
   ecContextHelp             = ecFirstLazarus + 903;
   ecEditContextHelp         = ecFirstLazarus + 904;
-  ecCreateLazDoc            = ecFirstLazarus + 905;
-  ecReportingBug            = ecFirstLazarus + 906;
+  ecReportingBug            = ecFirstLazarus + 905;
 
   // designer
   ecDesignerCopy            = ecFirstLazarus + 1000;

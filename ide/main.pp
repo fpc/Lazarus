@@ -235,7 +235,7 @@ type
     procedure mnuViewFormsClicked(Sender: TObject);
     procedure mnuViewUnitDependenciesClicked(Sender: TObject);
     procedure mnuViewUnitInfoClicked(Sender: TObject);
-    procedure mnuViewLazDocClicked(Sender: TObject);
+    procedure mnuViewFPDocEditorClicked(Sender: TObject);
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
     procedure mnuViewComponentsClick(Sender: TObject);
@@ -689,7 +689,7 @@ type
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
     procedure DoShowComponentList;
-    procedure DoShowLazDoc;
+    procedure DoShowFPDocEditor;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
        ): string; override;
@@ -1842,8 +1842,8 @@ begin
       DoShowCodeBrowser;
     nmiwCodeExplorerName:
       DoShowCodeExplorer;
-    nmiwLazDocName:
-      DoShowLazDoc;
+    nmiwFPDocEditorName:
+      DoShowFPDocEditor;
     nmiwAnchorEditor:
       DoViewAnchorEditor;
     nmiwMessagesViewName:
@@ -2071,7 +2071,7 @@ begin
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
     itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
-    itmViewLazDoc.OnClick := @mnuViewLazDocClicked;  //DBlaszijk 5-sep-05
+    itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
     itmViewForms.OnClick := @mnuViewFormsClicked;
     itmViewUnitDependencies.OnClick := @mnuViewUnitDependenciesClicked;
@@ -2602,8 +2602,8 @@ begin
   ecViewComponents:
     DoShowComponentList;
     
-  ecToggleLazDoc:
-    DoShowLazDoc;
+  ecToggleFPDocEditor:
+    DoShowFPDocEditor;
 
   ecViewUnits:
     DoViewUnitsAndForms(false);
@@ -3557,9 +3557,9 @@ begin
   DoDiff;
 end;
 
-procedure TMainIDE.mnuViewLazDocClicked(Sender: TObject);
+procedure TMainIDE.mnuViewFPDocEditorClicked(Sender: TObject);
 begin
-  DoShowLazDoc;
+  DoShowFPDocEditor;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -7188,9 +7188,9 @@ begin
   ComponentListForm.Show;
 end;
 
-procedure TMainIDE.DoShowLazDoc;
+procedure TMainIDE.DoShowFPDocEditor;
 begin
-  SourceNotebook.ShowLazDoc;
+  SourceNotebook.ShowFPDocEditor;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;

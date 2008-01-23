@@ -462,7 +462,7 @@ begin
   ecToggleObjectInsp: SetResult(VK_F11,[],VK_UNKNOWN,[]);
   ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecToggleLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFPDocEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetResult(VK_F,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   ecToggleWatches: SetResult(VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
@@ -547,7 +547,6 @@ begin
   ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  ecCreateLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
@@ -783,7 +782,7 @@ begin
   ecToggleObjectInsp: SetResult(VK_F11,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSourceEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeExpl: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecToggleLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleFPDocEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleMessages: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleSearchResults: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleWatches: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -868,7 +867,6 @@ begin
   ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecContextHelp: SetResult(VK_F1,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecEditContextHelp: SetResult(VK_F1,[ssCtrl,ssShift],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecCreateLazDoc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecReportingBug: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // designer
@@ -1409,7 +1407,7 @@ begin
     ecToggleObjectInsp        : Result:= srkmecToggleObjectInsp;
     ecToggleSourceEditor      : Result:= srkmecToggleSourceEditor;
     ecToggleCodeExpl          : Result:= srkmecToggleCodeExpl;
-    ecToggleLazDoc            : Result:= srkmecToggleLazDoc;
+    ecToggleFPDocEditor       : Result:= srkmecToggleFPDocEditor;
     ecToggleMessages          : Result:= srkmecToggleMessages;
     ecToggleSearchResults     : Result:= srkmecToggleSearchResults;
     ecToggleWatches           : Result:= srkmecToggleWatches;
@@ -1517,7 +1515,6 @@ begin
     ecConfigureHelp           : Result:= lisMenuConfigureHelp;
     ecContextHelp             : Result:= lisMenuContextHelp;
     ecEditContextHelp         : Result:= lisMenuEditContextHelp;
-    ecCreateLazDoc            : Result:= lisMenuCreateLazDocFiles;
     ecReportingBug            : Result:= lisMenuReportingBug;
 
     // desginer
@@ -2409,7 +2406,7 @@ begin
   AddDefault(C, 'Toggle view Code Explorer', lisKMToggleViewCodeExplorer,
     ecToggleCodeExpl);
   AddDefault(C, 'Toggle view Documentation Editor',
-    lisKMToggleViewDocumentationEditor, ecToggleLazDoc);
+    lisKMToggleViewDocumentationEditor, ecToggleFPDocEditor);
   AddDefault(C, 'Toggle view Messages', lisKMToggleViewMessages,
     ecToggleMessages);
   AddDefault(C, 'Toggle view Search Results', lisKMToggleViewSearchResults,
@@ -2541,7 +2538,6 @@ begin
     ecContextHelp);
   AddDefault(C, 'Edit context sensitive help', lisKMEditContextSensitiveHelp,
     ecEditContextHelp);
-  AddDefault(C, 'Create LazDoc files', lisMenuCreateLazDocFiles, ecCreateLazDoc);
   AddDefault(C, 'Reporting a bug', lisMenuReportingBug, ecReportingBug);
 
   // designer  - without menu items in the IDE bar (at least no direct)

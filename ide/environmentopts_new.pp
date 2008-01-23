@@ -504,7 +504,7 @@ begin
     Add(lisCodeExplorer);
     Add(lisMenuPackageGraph);
     Add(dlgUnitDepCaption);
-    Add(lisMenuLazDoc);
+    Add(lisMenuFPDocEditor);
     EndUpdate;
   end;
   WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
@@ -799,7 +799,7 @@ end;
 
 procedure TEnvironmentOptionsDialogNew.SetupLazDocPage(Page: integer);
 begin
-  NoteBook.Page[Page].Caption := lisLazDoc;
+  NoteBook.Page[Page].Caption := lisFPDocEditor;
   
   LazDocPathsGroupBox.Caption := lisLazDocPathsGroupBox;
   LazDocAddPathButton.Caption := lisLazDocAddPathButton;
@@ -1356,7 +1356,7 @@ begin
   5: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwCodeExplorerName);
   6: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwPkgGraphExplorer);
   7: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwUnitDependenciesName);
-  8: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwLazDocName);
+  8: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwFPDocEditorName);
   end;
   if Index>=0 then
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];

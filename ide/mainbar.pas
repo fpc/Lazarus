@@ -180,7 +180,7 @@ type
         itmViewInspector: TIDEMenuCommand;
         itmViewSourceEditor: TIDEMenuCommand;
         itmViewCodeExplorer: TIDEMenuCommand;
-        itmViewLazDoc: TIDEMenuCommand;
+        itmViewFPDocEditor: TIDEMenuCommand;
         itmViewCodeBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
@@ -327,7 +327,6 @@ type
       //itmInfoHelps: TIDEMenuSection;
         itmHelpAboutLazarus: TIDEMenuCommand;
       //itmHelpTools: TIDEMenuSection;
-        itmHelpCreateLazDoc: TIDEMenuCommand;
 
     // component palette
     ComponentNotebook : TNotebook;

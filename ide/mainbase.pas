@@ -508,7 +508,7 @@ begin
     CreateMenuItem(ParentMI,itmViewSourceEditor,'itmViewSourceEditor',lisMenuViewSourceEditor, 'menu_view_source_editor');
     CreateMenuItem(ParentMI,itmViewMessage,'itmViewMessage',lisMenuViewMessages);
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
-    CreateMenuItem(ParentMI,itmViewLazDoc,'itmViewLazDoc',lisMenuLazDoc);   //DBlaszijk 5-sep-05
+    CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser);
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
 
@@ -771,9 +771,6 @@ begin
 
     CreateMenuSeparatorSection(mnuHelp,itmHelpTools,'itmHelpTools');
     ParentMI:=itmHelpTools;
-
-    CreateMenuItem(ParentMI,itmHelpCreateLazDoc,'itmHelpCreateLazDoc',
-                   lisMenuCreateLazDocFiles);
   end;
 end;
 
@@ -875,7 +872,7 @@ begin
     itmViewSourceEditor.Command:=GetCommand(ecToggleSourceEditor);
     itmViewUnits.Command:=GetCommand(ecViewUnits);
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
-    itmViewLazDoc.Command:=GetCommand(ecToggleLazDoc);
+    itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);

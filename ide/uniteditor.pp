@@ -612,8 +612,8 @@ type
     procedure InitMacros(AMacroList: TTransferMacroList);
     procedure CreateCompletionForm;
 
-    procedure ShowLazDoc;
-    procedure UpdateLazDoc;
+    procedure ShowFPDocEditor;
+    procedure UpdateFPDocEditor;
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
@@ -3098,13 +3098,13 @@ begin
     aCompletion.AddEditor(Editors[i].FEditor);
 end;
 
-procedure TSourceNotebook.ShowLazDoc;
+procedure TSourceNotebook.ShowFPDocEditor;
 begin
-  DoShowLazDoc;
-  UpdateLazDoc;
+  DoShowFPDocEditor;
+  UpdateFPDocEditor;
 end;
 
-procedure TSourceNotebook.UpdateLazDoc;
+procedure TSourceNotebook.UpdateFPDocEditor;
 var
   SrcEdit: TSourceEditor;
   CaretPos: TPoint;
@@ -5585,7 +5585,7 @@ begin
   Statusbar.EndUpdate;
   
   CheckCurrentCodeBufferChanged;
-  UpdateLazDoc;
+  UpdateFPDocEditor;
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
@@ -5667,7 +5667,7 @@ Begin
   end;
   
   CheckCurrentCodeBufferChanged;
-  UpdateLazDoc;
+  UpdateFPDocEditor;
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;

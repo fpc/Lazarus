@@ -130,7 +130,6 @@ type
     // help menu of the IDE menu bar
     procedure mnuHelpAboutLazarusClicked(Sender: TObject);
     procedure mnuHelpConfigureHelpClicked(Sender: TObject);
-    procedure mnuHelpCreateLazDocClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
     procedure mnuHelpReportBugClicked(Sender: TObject);
   private
@@ -158,7 +157,6 @@ type
     procedure ShowLazarusHelpStartPage;
     procedure ShowIDEHelpForContext(HelpContext: THelpContext);
     procedure ShowIDEHelpForKeyword(const Keyword: string);
-    function CreateLazDocFiles: TModalResult;
 
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
@@ -649,11 +647,6 @@ begin
     SaveHelpOptions;
 end;
 
-procedure THelpManager.mnuHelpCreateLazDocClicked(Sender: TObject);
-begin
-  CreateLazDocFiles;
-end;
-
 procedure THelpManager.mnuHelpOnlineHelpClicked(Sender: TObject);
 begin
   ShowLazarusHelpStartPage;
@@ -942,8 +935,6 @@ begin
   itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
   itmHelpReportingBug.OnClick := @mnuHelpReportBugClicked;
   itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
-  itmHelpCreateLazDoc.OnClick :=@mnuHelpCreateLazDocClicked;
-  itmHelpCreateLazDoc.Visible:=false;
   end;
 end;
 
@@ -970,11 +961,6 @@ end;
 procedure THelpManager.ShowIDEHelpForKeyword(const Keyword: string);
 begin
   ShowHelpOrErrorForKeyword(MainHelpDB.ID,Keyword);
-end;
-
-function THelpManager.CreateLazDocFiles: TModalResult;
-begin
-  Result:=mrCancel;
 end;
 
 function THelpManager.ShowHelpForSourcePosition(const Filename: string;

@@ -381,7 +381,7 @@ resourcestring
   lisMenuConfigureHelp = 'Configure Help ...';
   lisMenuContextHelp = 'Context sensitive Help';
   lisMenuEditContextHelp = 'Edit context sensitive Help';
-  lisMenuCreateLazDocFiles = 'Create LazDoc files';
+  lisMenuCreateFPDocFiles = 'Create FPDoc files';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';
@@ -865,7 +865,7 @@ resourcestring
   lisIncludeFilter = 'Include Filter';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
-  lisLazDoc = 'LazDoc';
+  lisFPDocEditor = 'FPDoc editor';
   lisOkBtn = 'Ok';
   dlgCancel = 'Cancel';
   lisSAMSelectNone = 'Select none';
@@ -1807,7 +1807,7 @@ resourcestring
   srkmecToggleObjectInsp          = 'View Object Inspector';
   srkmecToggleSourceEditor        = 'View Source Editor';
   srkmecToggleCodeExpl            = 'View Code Explorer';
-  srkmecToggleLazDoc              = 'View Documentation Editor';
+  srkmecToggleFPDocEditor         = 'View Documentation Editor';
   srkmecToggleMessages            = 'View messages';
   srkmecToggleSearchResults       = 'View Search Results';
   srkmecToggleWatches             = 'View watches';
@@ -3469,7 +3469,7 @@ resourcestring
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
 
-  lisMenuLazDoc = 'LazDoc Editor';
+  lisMenuFPDocEditor = 'FPDoc Editor';
   lisLazDocMainFormCaption = 'LazDoc editor';
   lisLazDocNoTagCaption = '<NONE>';
   lisLazDocNoDocumentation = 'Documentation entry does not exist';

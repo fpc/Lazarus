@@ -154,17 +154,17 @@ type
 var
   FPDocEditor: TFPDocEditor = nil;
 
-procedure DoShowLazDoc;
+procedure DoShowFPDocEditor;
 
 implementation
 
 { TFPDocEditor }
 
-procedure DoShowLazDoc;
+procedure DoShowFPDocEditor;
 begin
   if FPDocEditor = Nil then begin
     Application.CreateForm(TFPDocEditor, FPDocEditor);
-    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwLazDocName).Apply;
+    EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwFPDocEditorName).Apply;
   end;
 
   FPDocEditor.Show;
@@ -252,7 +252,7 @@ begin
   CodeHelpBoss.AddHandlerOnChanged(@OnLazDocChanged);
   Application.AddOnIdleHandler(@ApplicationIdle);
   
-  Name := NonModalIDEWindowNames[nmiwLazDocName];
+  Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
 end;
 
