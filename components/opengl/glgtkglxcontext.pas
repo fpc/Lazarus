@@ -25,7 +25,7 @@ uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
   WSLCLClasses, GtkWSControls,
   {$IFDEF LCLGTK2}
-  GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
+  LMessages, GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
   {$ENDIF}
   {$IFDEF LCLGTK}
   glib, gdk, gtk, GtkInt,
@@ -715,6 +715,42 @@ begin
   Result:=gtk_gl_area_make_current(glarea);
 end;
 
+{$IFDEF LCLGtk2}
+function gtkglarea_size_allocateCB(Widget: PGtkWidget; Size: pGtkAllocation;
+  Data: gPointer): GBoolean; cdecl;
+const
+  CallBackDefaultReturn = {$IFDEF GTK2}false{$ELSE}true{$ENDIF};
+var
+  SizeMsg: TLMSize;
+  GtkWidth, GtkHeight: integer;
+  LCLControl: TWinControl;
+begin
+  Result := CallBackDefaultReturn;
+  if not GTK_WIDGET_REALIZED(Widget) then begin
+    // the widget is not yet realized, so this GTK resize was not a user change.
+    // => ignore
+    exit;
+  end;
+  LCLControl:=TWinControl(Data);
+  if LCLControl=nil then exit;
+  //DebugLn(['gtkglarea_size_allocateCB ',DbgSName(LCLControl)]);
+
+  gtk_widget_get_size_request(Widget, @GtkWidth, @GtkHeight);
+
+  FillChar(SizeMsg,SizeOf(SizeMsg),0);
+  with SizeMsg do
+  begin
+    Result := 0;
+    Msg := LM_SIZE;
+    SizeType := Size_SourceIsInterface;
+    Width := SmallInt(GtkWidth);
+    Height := SmallInt(GtkHeight);
+  end;
+  //DebugLn(['gtkglarea_size_allocateCB ',GtkWidth,',',GtkHeight]);
+  LCLControl.WindowProc(TLMessage(SizeMsg));
+end;
+{$ENDIF}
+
 function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
@@ -741,6 +777,8 @@ begin
     TGTKWidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);
     {$ELSE}
     TGTK2WidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);
+    g_signal_connect_after(PGtkObject(NewWidget), 'size-allocate',
+                       TGTKSignalFunc(@gtkglarea_size_allocateCB), AWinControl);
     {$ENDIF}
   finally
     FreeMem(AttrList);

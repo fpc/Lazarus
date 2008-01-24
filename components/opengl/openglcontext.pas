@@ -101,6 +101,7 @@ type
     procedure SetSharedControl(const AValue: TCustomOpenGLControl);
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure UpdateFrameTimeDiff;
     procedure OpenGLAttributesChanged;
     procedure EraseBackground(DC: HDC); override;
@@ -115,6 +116,7 @@ type
     function RestoreOldOpenGLControl: boolean;
     function SharingControlCount: integer;
     property SharingControls[Index: integer]: TCustomOpenGLControl read GetSharingControls;
+    procedure Invalidate; override;
   public
     property FrameDiffTimeInMSecs: integer read FFrameDiffTime;
     property OnMakeCurrent: TOpenGlCtrlMakeCurrentEvent read FOnMakeCurrent
@@ -267,6 +269,12 @@ begin
   Exclude(FControlState, csCustomPaint);
 end;
 
+procedure TCustomOpenGLControl.WMSize(var Message: TLMSize);
+begin
+  if (Message.SizeType and Size_SourceIsInterface)>0 then
+    DoOnResize;
+end;
+
 procedure TCustomOpenGLControl.UpdateFrameTimeDiff;
 begin
   FCurrentFrameTime:=integer(GetTickCount);
@@ -407,6 +415,12 @@ begin
     Result:=0
   else
     Result:=FSharingOpenGlControls.Count;
+end;
+
+procedure TCustomOpenGLControl.Invalidate;
+begin
+  if csCustomPaint in FControlState then exit;
+  inherited Invalidate;
 end;
 
 { TWSOpenGLControl }
