@@ -18,7 +18,7 @@
  *                                                                           *
  *****************************************************************************
 
-Authors: Luis Rodrigues and Philippe Martinole
+Authors: Luís Rodrigues and Philippe Martinole
 
 }
 unit TAEngine;

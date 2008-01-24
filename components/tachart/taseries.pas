@@ -70,7 +70,7 @@ type
     procedure SetShowInLegend(Value: Boolean);
   public
     ParentChart:TChart;
-    procedure Draw; virtual; abstract;
+    procedure Draw(ACanvas : TCanvas); virtual; abstract;
 
     constructor Create(AOwner:TComponent); override;
     destructor Destroy; override;
@@ -118,7 +118,7 @@ type
     Constructor Create(AOwner:TChartSeries);
     Destructor Destroy; override;
 //    Procedure Draw(px,py:Integer; ColorValue:TColor; AStyle:TSeriesPointerStyle);
-    Procedure Draw(px,py:Integer; SeriesColor: TColor);
+    Procedure Draw(ACanvas : TCanvas; px,py:Integer; SeriesColor: TColor);
 
     property ParentSeries:TChartSeries read FOwner;
     Procedure Assign(Source:TPersistent); override;
@@ -155,7 +155,7 @@ type
     destructor  Destroy; override;
 
     {from parent}
-    procedure Draw; override;
+    procedure Draw(ACanvas : TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint; override;
     //        function AddBar(Value: Double; Text: String; Color: TColor) : Longint;
   published
@@ -180,7 +180,7 @@ type
     destructor  Destroy; override;
 
     {from parent}
-    procedure Draw; override;
+    procedure Draw(ACanvas : TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint; override;
     function AddPie(Value: Double; Text: String; Color: TColor) : Longint;
   published
@@ -212,7 +212,7 @@ type
     destructor  Destroy; override;
 
     {from parent}
-    procedure Draw; override;
+    procedure Draw(ACanvas : TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint; override;
   published
      property AreaLinesPen : TChartPen read FAreaLinesPen write FAreaLinesPen;
@@ -235,7 +235,6 @@ type
     FShowLines:Boolean;
 
     UpdateInProgress:Boolean;
-
     procedure SetShowPoints(Value:Boolean);
     procedure SetShowLines(Value:Boolean);
     procedure SetPointer(Value:TSeriesPointer);
@@ -244,11 +243,12 @@ type
   public
 
     { Déclarations publiques }
+    FStyle : TPenStyle;
     constructor Create(AOwner:TComponent); override;
     destructor  Destroy; override;
 
     procedure StyleChanged(Sender:TObject);
-    procedure Draw; override;
+    procedure Draw(ACanvas : TCanvas); override;
     function AddXY(X, Y: Double; XLabel: String; Color: TColor) : Longint; override;
     function  GetXValue(Index:Integer):Double;
     function  GetYValue(Index:Integer):Double;
@@ -300,7 +300,7 @@ type
     constructor Create(AOwner:TComponent); override;
     destructor  Destroy; override;
 
-    procedure Draw; override;
+    procedure Draw(ACanvas : TCanvas); override;
     procedure StyleChanged(Sender:TObject);
 
     property  LineStyle:TLineStyle read FStyle write SetStyle;
@@ -485,46 +485,46 @@ begin
    inherited Destroy;
 end;
 
-Procedure TSeriesPointer.Draw(px,py:Integer; SeriesColor: TColor);
+Procedure TSeriesPointer.Draw(ACanvas : TCanvas; px,py:Integer; SeriesColor: TColor);
 begin
      with FOwner do begin
-        ParentChart.Canvas.Brush.Assign( FBrush );
-        ParentChart.Canvas.Pen.Assign( FPen );
+        ACanvas.Brush.Assign( FBrush );
+        ACanvas.Pen.Assign( FPen );
 
         case FStyle of
             psRectangle: begin
-               ParentChart.Canvas.Brush.Color := SeriesColor;
-               ParentChart.Canvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+               ACanvas.Brush.Color := SeriesColor;
+               ACanvas.Rectangle(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
             end;
             psCross: begin
-               ParentChart.Canvas.Pen.Color := SeriesColor;
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
-               ParentChart.Canvas.MoveTo(px,py-FVertSize);
-               ParentChart.Canvas.LineTo(px,py+FVertSize+1);
+               ACanvas.Pen.Color := SeriesColor;
+               ACanvas.MoveTo(px-FHorizSize,py);
+               ACanvas.LineTo(px+FHorizSize+1,py);
+               ACanvas.MoveTo(px,py-FVertSize);
+               ACanvas.LineTo(px,py+FVertSize+1);
             end;
             psDiagCross: begin
-               ParentChart.Canvas.Pen.Color := SeriesColor;
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py-FVertSize);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
+               ACanvas.Pen.Color := SeriesColor;
+               ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+               ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+               ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+               ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
             end;
             psStar: begin
-               ParentChart.Canvas.Pen.Color := SeriesColor;
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py);
-               ParentChart.Canvas.MoveTo(px,py-FVertSize);
-               ParentChart.Canvas.LineTo(px,py+FVertSize+1);
+               ACanvas.Pen.Color := SeriesColor;
+               ACanvas.MoveTo(px-FHorizSize,py);
+               ACanvas.LineTo(px+FHorizSize+1,py);
+               ACanvas.MoveTo(px,py-FVertSize);
+               ACanvas.LineTo(px,py+FVertSize+1);
 
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py-FVertSize);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
-               ParentChart.Canvas.MoveTo(px-FHorizSize,py+FVertSize+1);
-               ParentChart.Canvas.LineTo(px+FHorizSize+1,py-FVertSize);
+               ACanvas.MoveTo(px-FHorizSize,py-FVertSize);
+               ACanvas.LineTo(px+FHorizSize+1,py+FVertSize+1);
+               ACanvas.MoveTo(px-FHorizSize,py+FVertSize+1);
+               ACanvas.LineTo(px+FHorizSize+1,py-FVertSize);
             end;
             psCircle: begin
-               ParentChart.Canvas.Brush.Color := SeriesColor;
-               ParentChart.Canvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
+               ACanvas.Brush.Color := SeriesColor;
+               ACanvas.Ellipse(px-FHorizSize,py-FVertSize,px+FHorizSize+1,py+FVertSize+1);
             end;
         end;
      end;
@@ -555,6 +555,8 @@ begin
    FPointer.FStyle := psCross;
    FPointer.OnChange := StyleChanged;
 
+   FStyle:=psSolid;
+
    ShowPoints:=False;
    ShowLines:=True;
 
@@ -577,7 +579,7 @@ begin
      if ParentChart<>nil then ParentChart.Invalidate;
 end;
 
-procedure TSerie.Draw;
+procedure TSerie.Draw(ACanvas : TCanvas);
 var
    i,j:Integer;
 
@@ -589,7 +591,6 @@ var
    YLeft,YRight,XBottom,XTop:Double;
    XLine,YLine:array[1..2] of Integer;
    BLeft,BRight,BBottom,BTop:Boolean;
-   XLeftI,YLeftI,XRightI,YRightI,XBottomI,YBottomI,XTopI,YTopI:Integer;
    Temp:Double;
    dx,dy,dxy,qx,rx,qy,ry,u1,u2,u3,u4:Double;
    OK:Boolean;
@@ -618,11 +619,9 @@ begin
       YMax:=TempI;
    end;
 
-   with ParentChart do begin
-      Canvas.Pen.Mode:=pmCopy;
-      Canvas.Pen.Style:=psSolid;
-      Canvas.Pen.Width:=1;
-   end;
+      ACanvas.Pen.Mode:=pmCopy;
+      ACanvas.Pen.Style:=psSolid;
+      ACanvas.Pen.Width:=1;
 
    Min:=ParentChart.XGraphMin;
    Max:=ParentChart.XGraphMax;
@@ -638,14 +637,16 @@ begin
       yg2 := graphCoord^.y;
       ParentChart.GraphToImage(xg2, yg2, xi2, yi2);
 
-      ParentChart.Canvas.Pen.Color:= graphCoord^.Color;
+
+      ACanvas.Pen.Style:=FStyle;
+      ACanvas.Pen.Color:= graphCoord^.Color;
 
       if FShowLines then begin
          if (xg1>ParentChart.XGraphMin) and (xg2>ParentChart.XGraphMin) and (xg1<ParentChart.XGraphMax) and (xg2<ParentChart.XGraphMax) and
             (yg1>ParentChart.YGraphMin) and (yg2>ParentChart.YGraphMin) and (yg1<ParentChart.YGraphMax) and (yg2<ParentChart.YGraphMax) then
             begin
-               ParentChart.Canvas.MoveTo(xi1,yi1);
-               ParentChart.Canvas.LineTo(xi2,yi2);
+               ACanvas.MoveTo(xi1,yi1);
+               ACanvas.LineTo(xi2,yi2);
                goto Points;
             end;
 
@@ -665,16 +666,16 @@ begin
             end;
             if xg1<ParentChart.XGraphMin then xi1:=ParentChart.XImageMin;
             if xg2>ParentChart.XGraphMax then xi2:=ParentChart.XImageMax;
-            ParentChart.Canvas.MoveTo(xi1,yi1);
-            ParentChart.Canvas.LineTo(xi2,yi2);
+            ACanvas.MoveTo(xi1,yi1);
+            ACanvas.LineTo(xi2,yi2);
             goto Points;
          end;
 
          if xg1=xg2 then begin
             if yg1<ParentChart.YGraphMin then yi1:=ParentChart.YImageMin;
             if yg2>ParentChart.YGraphMax then yi2:=ParentChart.YImageMax;
-            ParentChart.Canvas.MoveTo(xi1,yi1);
-            ParentChart.Canvas.LineTo(xi2,yi2);
+            ACanvas.MoveTo(xi1,yi1);
+            ACanvas.LineTo(xi2,yi2);
             goto Points;
          end;
 
@@ -755,8 +756,8 @@ begin
             ParentChart.XGraphToImage(xg2,xi2);
             ParentChart.YGraphToImage(yg2,yi2);
 
-            ParentChart.Canvas.MoveTo(xi1,yi1);
-            ParentChart.Canvas.LineTo(xi2,yi2);
+            ACanvas.MoveTo(xi1,yi1);
+            ACanvas.LineTo(xi2,yi2);
 
          end;
 
@@ -765,7 +766,7 @@ begin
       Points:
         if FShowPoints and (yi1>=YMin) and (yi1<=YMax)
            and (xi1>=XMin) and (xi1<=XMax) then begin
-           FPointer.Draw(xi1, yi1, SeriesColor);
+           FPointer.Draw(ACanvas, xi1, yi1, SeriesColor);
          end;
 
    end;
@@ -778,7 +779,7 @@ begin
 
    if FShowPoints and (yi1>=YMin) and
       (yi1<=YMax) and (xi1>=XMin) and (xi1<=XMax) then begin
-         FPointer.draw( xi1, yi1, SeriesColor );
+         FPointer.draw(ACanvas, xi1, yi1, SeriesColor );
    end;
 end;
 
@@ -1086,20 +1087,20 @@ if YMin>YMax then
    end;
 
 // Draw
-ParentChart.Canvas.Pen.Assign(FPen);
+ACanvas.Pen.Assign(FPen);
 
 case LineStyle of
    lsHorizontal:
       if (PosGraph < ParentChart.XGraphMax) and (PosGraph > ParentChart.XGraphMin) then begin
          ParentChart.YGraphToImage(PosGraph,PosImage);
-         ParentChart.Canvas.MoveTo(XMin,PosImage);
-         ParentChart.Canvas.LineTo(XMax,PosImage);
+         ACanvas.MoveTo(XMin,PosImage);
+         ACanvas.LineTo(XMax,PosImage);
       end;
    lsVertical:
       if (PosGraph < ParentChart.YGraphMax) and (PosGraph > ParentChart.YGraphMin) then begin
          ParentChart.XGraphToImage(PosGraph,PosImage);
-         ParentChart.Canvas.MoveTo(PosImage,YMin);
-         ParentChart.Canvas.LineTo(PosImage,YMax);
+         ACanvas.MoveTo(PosImage,YMin);
+         ACanvas.LineTo(PosImage,YMax);
       end;
 end;
 
@@ -1193,7 +1194,7 @@ begin
    result := 0;
 end;
 
-procedure TBarSeries.Draw;
+procedure TBarSeries.Draw(ACanvas : TCanvas);
 var
    XMin,XMax,TempI:Integer;
    i: Integer;
@@ -1228,8 +1229,8 @@ begin
    end;
 
    // Draw the bars
-   ParentChart.Canvas.Pen.Assign( FBarPen );
-   ParentChart.Canvas.Brush.Assign( FBarBrush );
+   ACanvas.Pen.Assign( FBarPen );
+   ACanvas.Brush.Assign( FBarBrush );
 
    //calc the single bar width
    TotalbarWidth:=Round((FBarWidthPercent*0.01)*ParentChart.ChartWidth/FCoordList.Count);
@@ -1273,11 +1274,11 @@ begin
           //FIXME only draw if bar inside image coord (get a better way of doing this)
           if (bx1 >= XMin)  and (bx2 <= XMax) then
              if by1 = by2 then begin //draw a line when y=0 FIXME (clean)
-                ParentChart.Canvas.Pen.Color := FBarBrush.Color;
-                ParentChart.Canvas.MoveTo(bx1, by1);
-                ParentChart.Canvas.LineTo(bx2, by2);
-                ParentChart.Canvas.Pen.Assign( FBarPen );
-             end else ParentChart.Canvas.Rectangle( bx1, by1, bx2, by2);
+                ACanvas.Pen.Color := FBarBrush.Color;
+                ACanvas.MoveTo(bx1, by1);
+                ACanvas.LineTo(bx2, by2);
+                ACanvas.Pen.Assign( FBarPen );
+             end else ACanvas.Rectangle( bx1, by1, bx2, by2);
 
        end;
    end;
@@ -1531,7 +1532,6 @@ var
    YLeft,YRight,XBottom,XTop:Double;
    XLine,YLine:array[1..2] of Integer;
    BLeft,BRight,BBottom,BTop:Boolean;
-   XLeftI,YLeftI,XRightI,YRightI,XBottomI,YBottomI,XTopI,YTopI:Integer;
    Temp:Double;
    dx,dy,dxy,qx,rx,qy,ry,u1,u2,u3,u4:Double;
    OK:Boolean;
