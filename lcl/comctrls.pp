@@ -2212,6 +2212,7 @@ type
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
+    procedure BeginAutoDrag; override;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function CanChange(Node: TTreeNode): Boolean; dynamic;
     function CanCollapse(Node: TTreeNode): Boolean; dynamic;

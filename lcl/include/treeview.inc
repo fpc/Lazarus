@@ -2800,6 +2800,11 @@ begin
     TControlCanvas(Canvas).FreeHandle;
 end;
 
+procedure TCustomTreeView.BeginAutoDrag;
+begin
+  BeginDrag(False);
+end;
+
 procedure TCustomTreeView.BeginUpdate;
 begin
   inc(FUpdateCount);

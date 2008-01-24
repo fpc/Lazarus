@@ -3312,7 +3312,7 @@ end;
 constructor TDragManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FDragImmediate := true;
+  FDragImmediate := True;
   FDragThreshold := 5;
 end;
 

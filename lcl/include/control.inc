@@ -71,7 +71,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.BeginAutoDrag;
 begin
-  DragManager.DragStart(Self, DragManager.DragImmediate, DragManager.DragThreshold);
+  BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
 end;
 
 {------------------------------------------------------------------------------
