@@ -6006,6 +6006,7 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomCheckBox.TabStop">
+        <short>Is the control in the sequence of controls accessed by successive presses of the Tab key?</short>
         <descr>Use the TabStop to allow or disallow access to the control using the Tab key.
 
 If the TabStop is True, the control is in the tab order. If TabStop is False, the control is not in the tab order and the user can't press the Tab key to move to the control.</descr>

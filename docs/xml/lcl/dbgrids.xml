@@ -83,7 +83,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
-        <short><i>TCustomDBGrid </i>- the base class for <i>TDBGrid</i>, for displaying database information in the manner of a <i>StringGrid</i></short>
+        <short><i>TCustomDBGrid </i>
+- the base class for <i>TDBGrid</i>, for displaying database information in the manner of a <i>StringGrid</i></short>
         <seealso><link id="#lcl.DBCtrls.HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- object Visibility: default -->
@@ -1662,10 +1663,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TCustomDBGrid </i>    - the base class for <i>TDBGrid</i>   , for displaying database information in the manner of a <i>StringGrid</i></short>
+        <seealso><link id="#lcl.DBCtrls.HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomDbGrid.FDataLink">
@@ -2701,9 +2700,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.DataSource">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>The DataSource from which this grid displays - usually the result of a  database Query</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.Options">
@@ -2713,9 +2710,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.ReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set True to prevent writing to grid; set False to allow modification</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.TitleFont">
@@ -2725,21 +2720,15 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnCellClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for mouse click in a cell of the grid</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnColEnter">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler if mouse enters column or it gains focus</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnColExit">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler if mouse leaves column or it loses focus</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnColumnMoved">
@@ -2749,9 +2738,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnDrawColumnCell">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler if the cell in this column requires to be drawn</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnEditButtonClick">
@@ -2761,15 +2748,11 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnFieldEditMask">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler if field is associated with an edit mask</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnTitleClick">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Event handler for mouse click on Title</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomDbGrid.Create">
@@ -2810,7 +2793,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TdbGrid">
-        <short><i>TdbGrid </i>- a data-aware version of <i>TStringGrid,</i> for displaying and operating on a series of Rows and Columns from a database</short>
+        <short><i>TdbGrid </i>   - a data-aware version of <i>TStringGrid,</i>   for displaying and operating on a series of Rows and Columns from a database</short>
+        <descr>
+          <p><i>TdbGrid </i>  - a data-aware version of <i>TStringGrid,</i>  for displaying and operating on a series of Rows and Columns from a database</p>
+          <p>Inherits many of its properties from <link id="#lcl.Grids.TCustomGrid">TCustomGrid</link> and, of course, from <link id="TCustomDBGrid">TCustomDBGrid</link></p>
+        </descr>
         <seealso><link id="#lcl.DBCtrls.HowToUseDataAwareControls"/></seealso>
       </element>
       <!-- property Visibility: public -->
@@ -3078,6 +3065,8 @@
         <errors/>
         <seealso/>
       </element>
+      <element name="TDBGrid.AutoEdit"/>
+      <element name="TDBGrid.BorderSpacing"/>
     </module>
     <!-- DBGrids -->
   </package>
