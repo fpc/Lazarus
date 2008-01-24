@@ -225,7 +225,7 @@ msgid "&Find Declaration"
 msgstr "宣言の検索(&F)"
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forward search"
+msgid "&Forwar&d search"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfromcursor

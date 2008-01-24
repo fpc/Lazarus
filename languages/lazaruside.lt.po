@@ -227,7 +227,7 @@ msgid "&Find Declaration"
 msgstr "Ieškoti kur &paskelbta"
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forward search"
+msgid "&Forwar&d search"
 msgstr "Ieškoti p&irmyn"
 
 #: lazarusidestrconsts:dlgfromcursor

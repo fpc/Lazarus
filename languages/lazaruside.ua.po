@@ -221,7 +221,7 @@ msgid "&Find Declaration"
 msgstr "&Знайти опис"
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forward search"
+msgid "&Forwar&d search"
 msgstr ""
 
 #: lazarusidestrconsts:dlgfromcursor

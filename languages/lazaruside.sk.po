@@ -227,7 +227,7 @@ msgid "&Find Declaration"
 msgstr "&Nájsť deklaráciu"
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forward search"
+msgid "&Forwar&d search"
 msgstr "&Dopredné hľadanie"
 
 #: lazarusidestrconsts:dlgfromcursor

@@ -1517,7 +1517,7 @@ resourcestring
   lisPLDUser = 'User';
   dlgSelectedText = '&Selected Text';
   dlgDirection = 'Direction';
-  lisFRForwardSearch = '&Forward search';
+  lisFRForwardSearch = 'Forwar&d search';
   lisFRBackwardSearch = '&Backward search';
   dlgUpWord = 'Up';
   dlgDownWord = 'Down';
