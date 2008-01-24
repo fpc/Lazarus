@@ -113,6 +113,7 @@ type
     fUpdateLock: Integer;
     fSourceFilename: string;
     fChain: TCodeHelpElementChain;
+    FOldValues: TFPDocElementValues;
     function GetDoc: TXMLdocument;
     function GetDocFile: TLazFPDocFile;
     function GetSourceFilename: string;
@@ -605,7 +606,6 @@ end;
 procedure TFPDocEditor.LoadGUIValues(Element: TCodeHelpElement);
 var
   EnabledState: Boolean;
-  Values: TFPDocElementValues;
   OldModified: Boolean;
 begin
   OldModified:=FModified;
@@ -617,14 +617,14 @@ begin
 
   if EnabledState then
   begin
-    Values:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
-    ShortEdit.Text := ConvertLineEndings(Values[fpdiShort]);
-    DescrMemo.Lines.Text := ConvertLineEndings(Values[fpdiDescription]);
-    ErrorsMemo.Lines.Text := ConvertLineEndings(Values[fpdiErrors]);
-    LinkListBox.Items.Text := ConvertLineEndings(Values[fpdiSeeAlso]);
+    FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
+    ShortEdit.Text := ConvertLineEndings(FOldValues[fpdiShort]);
+    DescrMemo.Lines.Text := ConvertLineEndings(FOldValues[fpdiDescription]);
+    ErrorsMemo.Lines.Text := ConvertLineEndings(FOldValues[fpdiErrors]);
+    LinkListBox.Items.Text := ConvertLineEndings(FOldValues[fpdiSeeAlso]);
     LinkIdComboBox.Text := '';
     LinkTextEdit.Clear;
-    ExampleEdit.Text := ConvertLineEndings(Values[fpdiExample]);
+    ExampleEdit.Text := ConvertLineEndings(FOldValues[fpdiExample]);
   end
   else
   begin
@@ -756,8 +756,8 @@ var
 begin
   if not FModified then Exit; // nothing changed => exit
   FModified:=false;
-  if Doc=nil then exit;
   if not fChain.IsValid then exit;
+  if Doc=nil then exit;
 
   Values:=GetValues;
   if not WriteNode(fChain[0],Values,true) then begin
@@ -908,9 +908,10 @@ begin
   end;
 
   Include(FFlags,fpdefWriting);
+  DebugLn(['TFPDocEditor.WriteNode AAA1 ',dbgsName(CurDocFile)]);
+  CurDocFile.BeginUpdate;
+  DebugLn(['TFPDocEditor.WriteNode AAA2 ',dbgsName(CurDocFile)]);
   try
-    CurDocFile.BeginUpdate;
-    
     CurDocFile.SetChildValue(TopNode,'short',Values[fpdiShort]);
     CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
     CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
