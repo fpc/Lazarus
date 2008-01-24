@@ -1,4 +1,4 @@
-The following people contributed to Lazarus:
+﻿The following people contributed to Lazarus:
 
 A. J. Venter
 Aleksey Lagunov
@@ -84,6 +84,7 @@ Nikolay Ermolov
 Olivier Guilbaud
 Patrick Chevalley
 Paul Ishenin
+Paul Michell
 Pawel Trochimczuk
 Peter Dyson
 Philip J. Hess

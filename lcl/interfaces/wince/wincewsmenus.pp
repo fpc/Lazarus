@@ -49,6 +49,7 @@ type
     class function  CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
+    class function SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean; override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
     class function SetEnable(const AMenuItem: TMenuItem; const Enabled: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
@@ -750,6 +751,18 @@ end;
 class procedure TWinCEWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 begin
   UpdateCaption(AMenuItem, aCaption);
+end;
+
+class function TWinCEWSMenuItem.SetCheck(const AMenuItem: TMenuItem;
+  const Checked: boolean): boolean;
+var
+  uCheck: UINT;
+begin
+  if Checked then
+    uCheck := MF_CHECKED
+  else
+    uCheck := MF_UNCHECKED;
+  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, uCheck));
 end;
 
 class procedure TWinCEWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
