@@ -82,6 +82,16 @@
         <seealso/>
       </element>
       <!-- object Visibility: default -->
+      <element name="EInvalidGridOperation">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
         <short><i>TCustomDBGrid </i>
 - the base class for <i>TDBGrid</i>, for displaying database information in the manner of a <i>StringGrid</i></short>
@@ -177,6 +187,20 @@
       <!-- enumeration value Visibility: default -->
       <element name="TDBGridOption.dgIndicator"><short/></element>
       <!-- enumeration value Visibility: default -->
+      <element name="TDBGridOption.dgColumnMove">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDBGridOption.dgHeaderHotTracking">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDBGridOption.dgHeaderPushedLook">
+	      <short></short>
+      </element>
+     <!-- enumeration value Visibility: default -->
       <element name="TDBGridOption.dgColumnResize"><short/></element>
       <!-- enumeration value Visibility: default -->
       <element name="TDBGridOption.dgColLines"><short/></element>
@@ -196,12 +220,426 @@
       <element name="TDBGridOption.dgCancelOnExit"><short/></element>
       <!-- enumeration value Visibility: default -->
       <element name="TDBGridOption.dgMultiselect"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TDbGridExtraOption">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDbGridExtraOption.dgeAutoColumns">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDbGridExtraOption.dgeCheckboxColumn">
+	      <short></short>
+      </element>
+      
       <!-- set type Visibility: default -->
+      <element name="TDbGridExtraOptions">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+     <!-- set type Visibility: default -->
       <element name="TDbGridOptions">
         <short/>
         <descr/>
         <seealso/>
       </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TDbGridStatusItem">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDbGridStatusItem.gsUpdatingData">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDbGridStatusItem.gsAddingAutoColumns">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDbGridStatusItem.gsRemovingAutoColumns">
+	      <short></short>
+      </element>
+      
+      <!-- set type Visibility: default -->
+      <element name="TDbGridStatus">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration type Visibility: default -->
+      <element name="TDBGridCheckBoxState">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDBGridCheckBoxState.gcbpUnChecked">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDBGridCheckBoxState.gcbpChecked">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TDBGridCheckBoxState.gcbpGrayed">
+	      <short></short>
+      </element>
+      
+      <!-- procedure type Visibility: default -->
+      <element name="TUserCheckBoxBitmapEvent">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TUserCheckBoxBitmapEvent.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TUserCheckBoxBitmapEvent.CheckedState">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TUserCheckBoxBitmapEvent.ABitmap">
+	      <short></short>
+      </element>
+      
+      <!-- procedure type Visibility: default -->
+      <element name="TDbGridSelEditorEvent">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TDbGridSelEditorEvent.Sender">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TDbGridSelEditorEvent.Column">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TDbGridSelEditorEvent.Editor">
+	      <short></short>
+      </element>
+      
+      <!-- procedure type Visibility: default -->
+      <element name="TPrepareDbGridCanvasEvent">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TPrepareDbGridCanvasEvent.sender">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TPrepareDbGridCanvasEvent.DataCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TPrepareDbGridCanvasEvent.Column">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TPrepareDbGridCanvasEvent.AState">
+	      <short></short>
+      </element>
+      
+      <!-- object Visibility: default -->
+      <element name="TBookmarkList">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TBookmarkList.FList">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TBookmarkList.FGrid">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TBookmarkList.GetCount">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.GetCount.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TBookmarkList.GetCurrentRowSelected">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.GetCurrentRowSelected.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TBookmarkList.GetItem">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.GetItem.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.GetItem.AIndex">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TBookmarkList.SetCurrentRowSelected">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.SetCurrentRowSelected.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TBookmarkList.CheckActive">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- constructor Visibility: public -->
+      <element name="TBookmarkList.Create">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.Create.AGrid">
+	      <short></short>
+      </element>
+      
+      <!-- destructor Visibility: public -->
+      <element name="TBookmarkList.Destroy">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TBookmarkList.Clear">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TBookmarkList.Delete">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: public -->
+      <element name="TBookmarkList.Find">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.Find.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.Find.Item">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.Find.AIndex">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: public -->
+      <element name="TBookmarkList.IndexOf">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.IndexOf.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.IndexOf.Item">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: public -->
+      <element name="TBookmarkList.Refresh">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TBookmarkList.Refresh.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TBookmarkList.Count">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TBookmarkList.CurrentRowSelected">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TBookmarkList.Items">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TBookmarkList.Items.AIndex">
+	      <short></short>
+      </element>
+      
       <!-- object Visibility: default -->
       <element name="TCellButton">
         <short/>
@@ -233,6 +671,27 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCellButton.msg_SetPos.Msg"><short/></element>
+      <!-- function Visibility: protected -->
+      
+      <!-- enumeration type Visibility: default -->
+      <element name="TColumnOrder">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TColumnOrder.coDesignOrder">
+	      <short></short>
+      </element>
+      
+      <!-- enumeration value Visibility: default -->
+      <element name="TColumnOrder.coFieldIndexOrder">
+	      <short></short>
+      </element>
+      
       <!-- object Visibility: default -->
       <element name="TComponentDataLink">
         <short/>
@@ -725,6 +1184,21 @@
         <descr/>
         <seealso/>
       </element>
+      <element name="TColumnTitle.GetDefaultCaption">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumnTitle.GetDefaultCaption.Result">
+	      <short></short>
+      </element>
+      
       <!-- constructor Visibility: public -->
       <element name="TColumnTitle.Create">
         <short/>
@@ -1407,6 +1881,380 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FDisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FDisplayFormatChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FIsAutomaticColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FDesignIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FValueChecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TColumn.FValueUnchecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TColumn.ApplyDisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.GetDisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDisplayFormat.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.GetIsDesignColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetIsDesignColumn.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.GetValueChecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetValueChecked.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.GetValueUnchecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetValueUnchecked.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.IsDisplayFormatStored">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.IsDisplayFormatStored.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.IsValueCheckedStored">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.IsValueCheckedStored.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TColumn.IsValueUncheckedStored">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.IsValueUncheckedStored.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TColumn.SetDisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TColumn.SetDisplayFormat.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TColumn.SetValueChecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TColumn.SetValueChecked.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TColumn.SetValueUnchecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TColumn.SetValueUnchecked.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TColumn.Assign">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TColumn.Assign.Source">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TColumn.GetDefaultAlignment">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDefaultAlignment.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TColumn.GetDefaultDisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDefaultDisplayFormat.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TColumn.GetDefaultValueChecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDefaultValueChecked.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TColumn.GetDefaultValueUnchecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDefaultValueUnchecked.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TColumn.GetDefaultVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TColumn.GetDefaultVisible.Result">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TColumn.IsAutomaticColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TColumn.IsDesignColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TColumn.DesignIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TColumn.DisplayFormat">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TColumn.ValueChecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TColumn.ValueUnchecked">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
       <!-- property Visibility: published -->
       <element name="TColumn.Alignment">
         <short/>
@@ -1660,6 +2508,64 @@
         <short/>
         <descr/>
         <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TDBGridColumns.HasAutomaticColumns">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TDBGridColumns.HasAutomaticColumns.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TDBGridColumns.HasDesignColumns">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TDBGridColumns.HasDesignColumns.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TDBGridColumns.RemoveAutoColumns">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TDBGridColumns.ResetColumnsOrder">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TDBGridColumns.ResetColumnsOrder.ColumnOrder">
+	      <short></short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
@@ -2791,6 +3697,988 @@
         <descr/>
         <seealso/>
       </element>
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FExtraOptions">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FOnColumnSized">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FOnUserCheckboxBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FOnSelectEditor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FDrawingMultiSelRecord">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FDrawingEmptyDataset">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FDefaultColWidths">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FGridStatus">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FOldControlStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FCheckedBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FUnCheckedBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FGrayedBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FSelectedRows">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- variable Visibility: private -->
+      <element name="TCustomDBGrid.FOnPrepareCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.EmptyGrid">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.GetCurrentColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetCurrentColumn.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.GetSelectedIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetSelectedIndex.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.GetThumbTracking">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetThumbTracking.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.SetExtraOptions">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.SetExtraOptions.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.SetSelectedIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.SetSelectedIndex.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.SetThumbTracking">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.SetThumbTracking.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.ValidDataSet">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.ValidDataSet.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.InsertCancelable">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.InsertCancelable.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.StartUpdating">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.EndUpdating">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.UpdatingData">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.UpdatingData.Result">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.SwapCheckBox">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: private -->
+      <element name="TCustomDBGrid.ValueMatch">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.ValueMatch.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.ValueMatch.BaseValue">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.ValueMatch.TestValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.ToggleSelectedRow">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.SelectRecord">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.SelectRecord.AValue">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: private -->
+      <element name="TCustomDBGrid.GetScrollbarParams">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetScrollbarParams.aRange">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetScrollbarParams.aPage">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetScrollbarParams.aPos">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.AdjustDefaultRowHeight">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.AddAutomaticColumns">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.InvalidateSizes">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.ColumnEditorStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.ColumnEditorStyle.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.ColumnEditorStyle.aCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.ColumnEditorStyle.F">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.DoMouseWheelDown">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelDown.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelDown.Shift">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelDown.MousePos">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.DoMouseWheelUp">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelUp.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelUp.Shift">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoMouseWheelUp.MousePos">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.DoPrepareCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoPrepareCanvas.aCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoPrepareCanvas.aRow">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DoPrepareCanvas.aState">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.DrawAllRows">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.DrawCheckboxBitmaps">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawCheckboxBitmaps.aCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawCheckboxBitmaps.aRect">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawCheckboxBitmaps.F">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.DrawFixedText">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawFixedText.aCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawFixedText.aRow">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawFixedText.aRect">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.DrawFixedText.aState">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetBufferCount">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetBufferCount.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetDefaultColumnAlignment">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnAlignment.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnAlignment.Column">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetDefaultColumnWidth">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnWidth.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnWidth.Column">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetDefaultColumnReadOnly">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnReadOnly.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnReadOnly.Column">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetDefaultColumnTitle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnTitle.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultColumnTitle.Column">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetDefaultRowHeight">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetDefaultRowHeight.Result">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetImageForCheckBox">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetImageForCheckBox.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetImageForCheckBox.CheckBoxView">
+	      <short></short>
+      </element>
+      
+      <!-- function Visibility: protected -->
+      <element name="TCustomDBGrid.GetIsCellSelected">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.GetIsCellSelected.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetIsCellSelected.aCol">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetIsCellSelected.aRow">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.GetSBVisibility">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBVisibility.HsbVisible">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBVisibility.VsbVisible">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.GetSBRanges">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.HsbVisible">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.VsbVisible">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.HsbRange">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.VsbRange">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.HsbPage">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.GetSBRanges.VsbPage">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.RemoveAutomaticColumns">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomDBGrid.WndProc">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.WndProc.TheMessage">
+	      <short></short>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.GridStatus">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.OptionsExtra">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.SelectedRows">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.OnColumnSized">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.OnPrepareCanvas">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.OnSelectEditor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: protected -->
+      <element name="TCustomDBGrid.OnUserCheckboxBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TCustomDBGrid.InitiateAction">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function Visibility: public -->
+      <element name="TCustomDBGrid.EditorByStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- function result Visibility: default -->
+      <element name="TCustomDBGrid.EditorByStyle.Result">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomDBGrid.EditorByStyle.Style">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TCustomDBGrid.ResetColWidths">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomDBGrid.SelectedIndex">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomDBGrid.SelectedColumn">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TCustomDBGrid.ThumbTracking">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
       <!-- object Visibility: default -->
       <element name="TdbGrid">
         <short><i>TdbGrid </i>   - a data-aware version of <i>TStringGrid,</i>   for displaying and operating on a series of Rows and Columns from a database</short>
@@ -3057,6 +4945,266 @@
         <short/>
         <descr/>
         <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.BorderColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.DefaultTextStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.EditorBorderStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.EditorMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.ExtendedColSizing">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.FastEditing">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.FocusColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.FocusRectVisible">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.GridLineColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.GridLineStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.SelectedColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: public -->
+      <element name="TDBGrid.SelectedRows">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.AlternateColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.DragCursor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.DragMode">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.FixedHotColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.HeaderHotZones">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.HeaderPushZones">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OptionsExtra">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.Scrollbars">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.TitleStyle">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnColumnSized">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnDragDrop">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnDragOver">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnEndDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnFieldEditMask">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnSelectEditor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnStartDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TDBGrid.OnUserCheckboxBitmap">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
       </element>
       <!-- procedure Visibility: default -->
       <element name="Register">

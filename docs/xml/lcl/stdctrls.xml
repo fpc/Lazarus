@@ -2048,6 +2048,24 @@ has value -1.</p>
       <!-- property Visibility: published -->
       <element name="TComboBox.AutoSelect"/>
       <!-- property Visibility: published -->
+      <!-- property Visibility: published -->
+      <element name="TComboBox.AutoSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- property Visibility: published -->
+      <element name="TComboBox.Constraints">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+
       <element name="TComboBox.BidiMode">
         <short/>
         <descr/>
@@ -2519,7 +2537,49 @@ has value -1.</p>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomListBox.SetTopIndex.AValue"><short/></element>
-      <!-- procedure Visibility: private -->
+      <element name="TCustomListBox.RaiseIndexOutOfBounds">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomListBox.RaiseIndexOutOfBounds.AIndex">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomListBox.BeginAutoDrag">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomListBox.SetItemIndex.AIndex">
+	      <short></short>
+      </element>
+      
+      <!-- procedure Visibility: public -->
+      <element name="TCustomListBox.ClearSelection">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+<!-- procedure Visibility: private -->
       <element name="TCustomListBox.UpdateSelectionMode">
         <short/>
         <descr/>
@@ -4432,6 +4492,14 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- property Visibility: published -->
       <element name="TEdit.OnClick"/>
       <!-- property Visibility: published -->
+      <element name="TEdit.OnDblClick">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+     <!-- property Visibility: published -->
       <element name="TEdit.OnDragDrop">
         <short/>
         <descr/>
@@ -5117,6 +5185,14 @@ Indicates how text is displayed in a text editing control.</p>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
+      <element name="TStaticText.ParentColor">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <seealso>
+	      </seealso>
+      </element>
+<!-- property Visibility: published -->
       <element name="TStaticText.ParentFont">
         <short/>
         <descr/>
@@ -5489,7 +5565,18 @@ Indicates how text is displayed in a text editing control.</p>
         <descr/>
         <seealso/>
       </element>
-      <!-- function Visibility: protected -->
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomButton.TextChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+     <!-- function Visibility: protected -->
       <element name="TCustomButton.UseRightToLeftAlignment">
         <short/>
         <descr/>
@@ -5890,6 +5977,17 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- function result Visibility: default -->
       <element name="TCustomCheckBox.RetrieveState.Result"><short/></element>
       <!-- procedure Visibility: protected -->
+      <element name="TCustomCheckBox.TextChanged">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+ <!-- procedure Visibility: protected -->
       <element name="TCustomCheckBox.InitializeWnd">
         <short/>
         <descr/>
@@ -7022,7 +7120,32 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomLabel.CalculatePreferredSize">
+	      <short></short>
+	      <descr>
+	      </descr>
+	      <errors>
+	      </errors>
+	      <seealso>
+	      </seealso>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalculatePreferredSize.PreferredWidth">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalculatePreferredSize.PreferredHeight">
+	      <short></short>
+      </element>
+      
+      <!-- argument Visibility: default -->
+      <element name="TCustomLabel.CalculatePreferredSize.WithThemeSpace">
+	      <short></short>
+      </element>
+ <!-- function result Visibility: default -->
       <element name="TCustomLabel.CalcFittingFontHeight.Result"><short/></element>
       <!-- argument Visibility: default -->
       <element name="TCustomLabel.CalcFittingFontHeight.TheText"><short/></element>
