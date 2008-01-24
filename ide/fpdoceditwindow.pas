@@ -213,35 +213,35 @@ end;
 
 procedure TFPDocEditor.FormCreate(Sender: TObject);
 begin
-  Caption := lisLazDocMainFormCaption;
+  Caption := lisCodeHelpMainFormCaption;
 
   with PageControl do
   begin
-    Page[0].Caption := lisLazDocShortTag;
-    Page[1].Caption := lisLazDocDescrTag;
-    Page[2].Caption := lisLazDocErrorsTag;
-    Page[3].Caption := lisLazDocSeeAlsoTag;
-    Page[4].Caption := lisLazDocExampleTag;
-    Page[5].Caption := lisLazDocInherited;
+    Page[0].Caption := lisCodeHelpShortTag;
+    Page[1].Caption := lisCodeHelpDescrTag;
+    Page[2].Caption := lisCodeHelpErrorsTag;
+    Page[3].Caption := lisCodeHelpSeeAlsoTag;
+    Page[4].Caption := lisCodeHelpExampleTag;
+    Page[5].Caption := lisCodeHelpInherited;
     PageIndex := 0;
   end;
 
-  BoldFormatButton.Hint := lisLazDocHintBoldFormat;
-  ItalicFormatButton.Hint := lisLazDocHintItalicFormat;
-  UnderlineFormatButton.Hint := lisLazDocHintUnderlineFormat;
-  InsertCodeTagButton.Hint := lisLazDocHintInsertCodeTag;
-  InsertRemarkButton.Hint := lisLazDocHintRemarkTag;
-  InsertVarTagButton.Hint := lisLazDocHintVarTag;
+  BoldFormatButton.Hint := lisCodeHelpHintBoldFormat;
+  ItalicFormatButton.Hint := lisCodeHelpHintItalicFormat;
+  UnderlineFormatButton.Hint := lisCodeHelpHintUnderlineFormat;
+  InsertCodeTagButton.Hint := lisCodeHelpHintInsertCodeTag;
+  InsertRemarkButton.Hint := lisCodeHelpHintRemarkTag;
+  InsertVarTagButton.Hint := lisCodeHelpHintVarTag;
 
   CreateButton.Caption := 'Create help item';
   CreateButton.Enabled:=false;
   SaveButton.Caption := 'Save';
   SaveButton.Enabled:=false;
 
-  AddLinkButton.Caption := lisLazDocAddLinkButton;
-  DeleteLinkButton.Caption := lisLazDocDeleteLinkButton;
+  AddLinkButton.Caption := lisCodeHelpAddLinkButton;
+  DeleteLinkButton.Caption := lisCodeHelpDeleteLinkButton;
 
-  BrowseExampleButton.Caption := lisLazDocBrowseExampleButton;
+  BrowseExampleButton.Caption := lisCodeHelpBrowseExampleButton;
   
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
@@ -273,9 +273,9 @@ procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
 
   procedure InsertTag(starttag, endtag: String);
   begin
-    if PageControl.ActivePage.Caption = lisLazDocDescrTag then
+    if PageControl.ActivePage.Caption = lisCodeHelpDescrTag then
       DescrMemo.SelText := starttag + DescrMemo.SelText + endtag;
-    if PageControl.ActivePage.Caption = lisLazDocErrorsTag then
+    if PageControl.ActivePage.Caption = lisCodeHelpErrorsTag then
       ErrorsMemo.SelText := starttag + ErrorsMemo.SelText + endtag;
   end;
 
@@ -465,17 +465,17 @@ begin
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateCaption START']);
   {$ENDIF}
-  strCaption := lisLazDocMainFormCaption + ' - ';
+  strCaption := lisCodeHelpMainFormCaption + ' - ';
 
   if (fChain <> nil) and (fChain.Count>0) then
     strCaption := strCaption + GetContextTitle(fChain[0]) + ' - '
   else
-    strCaption := strCaption + lisLazDocNoTagCaption + ' - ';
+    strCaption := strCaption + lisCodeHelpNoTagCaption + ' - ';
 
   if DocFile<>nil then
     Caption := strCaption + DocFile.Filename
   else
-    Caption := strCaption + lisLazDocNoTagCaption;
+    Caption := strCaption + lisCodeHelpNoTagCaption;
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TLazDocForm.UpdateCaption ',Caption]);
   {$ENDIF}
@@ -628,13 +628,13 @@ begin
   end
   else
   begin
-    ShortEdit.Text := lisLazDocNoDocumentation;
-    DescrMemo.Lines.Text := lisLazDocNoDocumentation;
-    ErrorsMemo.Lines.Text := lisLazDocNoDocumentation;
-    LinkIdComboBox.Text := lisLazDocNoDocumentation;
-    LinkTextEdit.Text := lisLazDocNoDocumentation;
+    ShortEdit.Text := lisCodeHelpNoDocumentation;
+    DescrMemo.Lines.Text := lisCodeHelpNoDocumentation;
+    ErrorsMemo.Lines.Text := lisCodeHelpNoDocumentation;
+    LinkIdComboBox.Text := lisCodeHelpNoDocumentation;
+    LinkTextEdit.Text := lisCodeHelpNoDocumentation;
     LinkListBox.Clear;
-    ExampleEdit.Text := lisLazDocNoDocumentation;
+    ExampleEdit.Text := lisCodeHelpNoDocumentation;
   end;
 
   ShortEdit.Enabled := EnabledState;

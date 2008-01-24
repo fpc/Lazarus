@@ -266,9 +266,9 @@ procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
 begin
   NoteBook.Page[PageIndex].Caption := lisFPDocEditor;
 
-  LazDocPathsGroupBox.Caption := lisLazDocPathsGroupBox;
-  LazDocAddPathButton.Caption := lisLazDocAddPathButton;
-  LazDocDeletePathButton.Caption := lisLazDocDeletePathButton;
+  LazDocPathsGroupBox.Caption := lisCodeHelpPathsGroupBox;
+  LazDocAddPathButton.Caption := lisCodeHelpAddPathButton;
+  LazDocDeletePathButton.Caption := lisCodeHelpDeletePathButton;
 
   LazDocPathEdit.Clear;
 end;
