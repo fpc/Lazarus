@@ -1429,7 +1429,6 @@ docs/xml/lcl/lclrescache.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclstrconsts.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lcltype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclversion.xml svneol=native#text/plain
-docs/xml/lcl/lconv.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/lconvencoding.xml svneol=LF#text/plain eol=lf
 docs/xml/lcl/ldockctrl.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/ldockctrledit.xml svneol=LF#text/xml eol=lf
