@@ -8,9 +8,7 @@ uses
   frmLink, frmTable, frmabout, pkeditor, eleditor, fpdeutil, frmexample,
   frmbuild, fmmakeskel, frmsource, lazdemsg, lazdeopts, pgeditor;
 
-{$IFDEF WINDOWS}
-  {$R manifest.res}
-{$ENDIF}
+{$IFDEF WINDOWS}{$R manifest.rc}{$ENDIF}
 
 begin
   Application.Initialize;
