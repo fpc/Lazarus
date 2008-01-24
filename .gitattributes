@@ -2259,6 +2259,8 @@ images/codeexplorer/ce_property.png -text
 images/codeexplorer/ce_type.png -text
 images/codeexplorer/ce_unit.png -text
 images/codeexplorer/ce_variable.png -text
+images/codeexplorer/show_category.png -text
+images/codeexplorer/show_source.png -text
 images/codetoolsdefines/block_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_auto_22x22.xpm -text svneol=native#image/x-xpixmap
 images/codetoolsdefines/ctdefinestate_autoproj_22x22.xpm -text svneol=native#image/x-xpixmap

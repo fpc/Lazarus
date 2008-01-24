@@ -524,7 +524,9 @@ function TCodeExplorerView.GetCodeNodeImage(Tool: TFindDeclarationTool;
 begin
   case CodeNode.Desc of
   ctnProgram,ctnLibrary,ctnPackage:   Result:=ImgIDProgram;
-  ctnUnit:                            Result:=ImgIDInterfaceSection;
+//  ctnUnit:                            Result:=ImgIDInterfaceSection;
+  ctnUnit:                            Result:=ImgIDUnit;
+  ctnInterface:                       Result:=ImgIDInterfaceSection;
   ctnImplementation:                  Result:=ImgIDImplementation;
   ctnInitialization:                  Result:=ImgIDInitialization;
   ctnFinalization:                    Result:=ImgIDFinalization;
@@ -770,14 +772,22 @@ begin
 end;
 
 procedure TCodeExplorerView.UpdateMode;
+var
+  B: TBitmap;
 begin
   if FMode=cemCategory then
   begin
-    ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
+    B := LoadBitmapFromLazarusResource('show_category');
+    ModeSpeedButton.Glyph := B;
+    B.Free;
+    //ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
     ModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
+    B := LoadBitmapFromLazarusResource('show_source');
+    ModeSpeedButton.Glyph := B;
+    B.Free;
+    //ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
     ModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);

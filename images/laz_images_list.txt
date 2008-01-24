@@ -115,6 +115,8 @@ codeexplorer/ce_property.png
 codeexplorer/ce_type.png
 codeexplorer/ce_unit.png
 codeexplorer/ce_variable.png
+codeexplorer/show_source.png
+codeexplorer/show_category.png
 designer/anchor_bottom.png
 designer/anchor_center_horizontal.png
 designer/anchor_center_vertical.png
