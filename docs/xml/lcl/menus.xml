@@ -94,11 +94,15 @@
           <i>EMenuError </i>
 
 
+
 - Exception handler for error in Menu access</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TMenuItem">
         <short>A menu item</short>
+        <descr>An item of a TMainMenu or TPopupMenu.
+</descr>
+        <errors>no errors</errors>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TMenuChangeEvent">
@@ -124,10 +128,12 @@
           <i>TMenuActionLink</i>
 
 
+
 : defines the link between a selected menu item and its corresponding action</short>
         <descr>
           <p>
             <i>TMenuActionLink</i>
+
 
 
 : defines the link between a selected menu item and its corresponding action. Properties are protected and not readily accessible by application programmers.</p>
@@ -393,10 +399,12 @@
           <i>TMenuItem</i>
 
 
+
     - The base structure of each item in a Menu.</short>
         <descr>
           <p>
             <i>TMenuItem</i>
+
 
 
  - The base structure of each item in a Menu.</p>
@@ -1465,12 +1473,14 @@
           <i>Action</i>
 
 
+
  - the default action associated with this Menu Item</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.AutoCheck">
         <short>
           <i>AutoCheck</i>
+
 
 
 : Whether a check mark is automatically added when the item is selected</short>
@@ -1481,12 +1491,14 @@
           <i>Caption</i>
 
 
+
 : The text that appears on the Menu Bar at run-time</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Checked">
         <short>
           <i>Checked</i>
+
 
 
 : whether a check mark appears on the Menu Bar</short>
@@ -1497,12 +1509,14 @@
           <i>Default</i>
 
 
+
 : is this option the default selection? If so, it usually appears in Bold and is selected by hitting ENTER</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Enabled">
         <short>
           <i>Enabled</i>
+
 
 
 : can this option be selected? If Not Enabled, usually 'greyed-out'</short>
@@ -1513,12 +1527,14 @@
           <i>BitMap</i>
 
 
+
 : an optional picture beside the MenuItem Caption</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.GroupIndex">
         <short>
           <i>GroupIndex</i>
+
 
 
 : the sequence number in a group of mutually exclusive RadioItem choices</short>
@@ -1529,12 +1545,14 @@
           <i>HelpContext</i>
 
 
+
  - an index to the context-sensitive help string to be used</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Hint">
         <short>
           <i>Hint</i>
+
 
 
 : a pop-up help message that appears when the mouse hovers over an item.</short>
@@ -1545,12 +1563,14 @@
           <i>ImageIndex </i>
 
 
+
 - number in a list of images for use in illustrating menu items</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.RadioItem">
         <short>
           <i>RadioItem</i>
+
 
 
 :  whether the item is part of a group of mutually exclusive choices.</short>
@@ -1561,6 +1581,7 @@
           <i>RightJustify</i>
 
 
+
 : the position of the Caption in the Menu Panel.  Default (False) is Left Justify</short>
       </element>
       <!-- property Visibility: published -->
@@ -1569,10 +1590,12 @@
           <i>ShortCut</i>
 
 
+
  - the quick key sequence to be used in selecting this menu item</short>
         <descr>
           <p>
             <i>ShortCut</i>
+
 
 
  - the quick key sequence to be used in selecting this menu item</p>
@@ -1591,6 +1614,7 @@
           <i>SubMenuImages </i>
 
 
+
 - will images be shown for sub-menu items as well as the main item?</short>
       </element>
       <!-- property Visibility: published -->
@@ -1599,12 +1623,14 @@
           <i>Visible</i>
 
 
+
  - can the item be seen?</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.OnClick">
         <short>
           <i>OnClick </i>
+
 
 
 - event handler for selection of this menu item</short>
@@ -1633,10 +1659,12 @@
           <i>TMenu</i>
 
 
+
 : The base class for all menus</short>
         <descr>
           <p>
             <i>TMenu</i>
+
 
 
 : The base class for all menus</p>
@@ -1904,12 +1932,14 @@
           <i>Items</i>
 
 
+
  - a list of Menu Items to be included in the menu display</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenu.Images">
         <short>
           <i>Images </i>
+
 
 
 - a list of images from which entries can be selected to illustrate menu choices</short>
@@ -1920,10 +1950,12 @@
           <i>TMainMenu</i>
 
 
+
  - the Main Menu that appears at the top of most windows</short>
         <descr>
           <p>
             <i>TMainMenu</i>
+
 
 
  - the Main Menu that appears at the top of most windows; form designers can
@@ -1974,10 +2006,12 @@ customise by choosing various menu items.</p>
           <i>TPopupMenu </i>
 
 
+
  - a menu panel that pops up on the desktop when the right mouse button is clicked</short>
         <descr>
           <p>
             <i>TPopupMenu</i>
+
 
 
 : a menu panel that pops up on the desktop when the right mouse button is clicked.</p>
@@ -2179,15 +2213,18 @@ customise by choosing various menu items.</p>
           <i>HowToUseMenus</i>
 
 
+
  - hints for creating Menus for your Forms</short>
         <descr>
           <p>
             <i>HowToUseMenus</i>
 
 
+
  - hints for creating Menus for your Forms</p>
           <p>
             <i>TMainMenu</i>
+
 
 
  is the Main Menu that appears at the top of most forms; form designers can
