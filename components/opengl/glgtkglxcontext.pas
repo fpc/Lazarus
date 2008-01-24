@@ -403,6 +403,7 @@ begin
   dpy := GetDefaultXDisplay;
 
   {$IFDEF lclgtk2}
+  if visual=nil then ;
   vi:=glXChooseVisual(dpy, DefaultScreen(dpy), @attrList[0]);
   {$ELSE}
   if visual=nil then exit;
@@ -701,7 +702,7 @@ begin
     RaiseGDBException('LOpenGLSwapBuffers Handle=0');
   Result:=false;
 
-  Widget:=PGtkWidget(Pointer(Handle));
+  Widget:=PGtkWidget(PtrUInt(Handle));
   glarea:=PGtkGLArea(Widget);
   if not GTK_IS_GL_AREA(glarea) then
     RaiseGDBException('LOpenGLSwapBuffers not a PGtkGLArea');
@@ -734,7 +735,7 @@ begin
     end else begin
       NewWidget:=gtk_gl_area_new(AttrList);
     end;
-    Result:=HWND(Pointer(NewWidget));
+    Result:=HWND(PtrUInt(Pointer(NewWidget)));
     PGtkobject(NewWidget)^.flags:=PGtkobject(NewWidget)^.flags or GTK_CAN_FOCUS;
     {$IFDEF LCLGtk}
     TGTKWidgetSet(WidgetSet).FinishCreateHandle(AWinControl,NewWidget,AParams);
