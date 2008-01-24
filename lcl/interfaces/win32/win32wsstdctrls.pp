@@ -473,7 +473,7 @@ begin
         BuddyWindowInfo^.needParentPaint := true;
       Parent := Buddy;
     end;
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     Flags := Flags Or BS_GROUPBOX;
   end;
@@ -985,7 +985,7 @@ begin
     if (AWinControl is TCustomEdit) then
       if TCustomEdit(AWinControl).BorderStyle=bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    pClassName := 'EDIT';
+    pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
     Flags := Flags or ES_AUTOHSCROLL;
   end;
@@ -1090,7 +1090,7 @@ begin
     else
       Flags := Flags or ES_AUTOHSCROLL;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
-    pClassName := 'EDIT';
+    pClassName := @EditClsName[0];
     WindowTitle := StrCaption;
   end;
   // create window
@@ -1254,7 +1254,7 @@ begin
       Flags := Flags or BS_DEFPUSHBUTTON
     else
       Flags := Flags or BS_PUSHBUTTON;
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
   end;
   // create window
@@ -1294,7 +1294,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     if TCustomCheckBox(AWinControl).AllowGrayed then
       Flags := Flags Or BS_AUTO3STATE
@@ -1373,7 +1373,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     Flags := Flags or BS_AUTOCHECKBOX or BS_PUSHLIKE;
   end;
@@ -1395,7 +1395,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     WindowTitle := StrCaption;
     // BS_AUTORADIOBUTTON may hang the application,
     // if the radiobuttons are not consecutive controls.

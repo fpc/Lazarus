@@ -387,7 +387,7 @@ begin
   // customization of Params
   with Params do
   begin
-    pClassName := 'BUTTON';
+    pClassName := @ButtonClsName[0];
     if TCustomBitBtn(AWinControl).Default Then
       Flags := Flags or BS_DEFPUSHBUTTON
     else

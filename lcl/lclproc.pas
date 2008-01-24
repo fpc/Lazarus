@@ -278,6 +278,9 @@ type
   UTF16String = type WideString;
   PUTF16String = ^UTF16String;
 
+  { Avoids an open array on the parameter }
+  TArrayOfUTF8Char = array of PChar;
+
 function UTF8CharacterLength(p: PChar): integer;
 function UTF8Length(const s: string): integer;
 function UTF8Length(p: PChar; ByteCount: integer): integer;
@@ -296,6 +299,8 @@ function UTF8Pos(const SearchForText, SearchInText: string): integer;
 function UTF8Copy(const s: string; StartCharIndex, CharCount: integer): string;
 function FindInvalidUTF8Character(p: PChar; Count: integer;
                                   StopOnNonASCII: Boolean = false): integer;
+procedure UTF8ToArrayOfUTF8Char(Source: PChar; SourceLen: SizeInt; var Dest: TArrayOfUTF8Char);
+procedure FreeArrayOfUTF8Char(Data: TArrayOfUTF8Char);
 
 function UTF16CharacterLength(p: PWideChar): integer;
 function UTF16Length(const s: widestring): integer;
@@ -2663,6 +2668,47 @@ begin
   end;
   // ok
   Result:=-1;
+end;
+
+{ Converts a UTF-8 string into an array of UTF-8 Characters
+  This routine is designed to help in the development of
+  algorithms which depend heavely on being able to address
+  individual characters of a utf-8 string by their position.
+
+  Memory is allocated for the individual characters using GetMem
+
+  FreeArrayOfUTF8Char is suggested to free the array returned by this
+  routine. }
+procedure UTF8ToArrayOfUTF8Char(Source: PChar; SourceLen: SizeInt;
+  var Dest: TArrayOfUTF8Char);
+var
+  Len, i, CharLen: SizeInt;
+  SourceStr: PChar;
+begin
+  Len := 0;
+  i := 0;
+  SourceStr := Source;
+  
+  while Len < SourceLen do
+  begin
+    CharLen := UTF8CharacterLength(SourceStr);
+    SetLength(Dest, i + 1);
+    Dest[i] := StrAlloc(CharLen + 1);
+    FillChar(Dest[i]^, CharLen + 1, #0);
+    StrLCopy(Dest[i], SourceStr, CharLen);
+
+    Inc(SourceStr, CharLen);
+    Inc(Len, CharLen);
+    Inc(i);
+  end;
+end;
+
+procedure FreeArrayOfUTF8Char(Data: TArrayOfUTF8Char);
+var
+  i: SizeInt;
+begin
+  for i := 0 to Length(Data) - 1 do
+   StrDispose(Data[i]);
 end;
 
 function UTF16CharacterLength(p: PWideChar): integer;
