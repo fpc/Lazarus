@@ -297,6 +297,8 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
     Bitmap.Free;
   end;
 
+var
+  B: TBitmap;
 begin
   LoadCodeExplorerOptions;
   
@@ -313,6 +315,14 @@ begin
   CodePage.Caption:=dlgCodeGeneration;
   DirectivesFilterEdit.Text:=lisCEFilter;
   DirectivesPage.Caption:=lisDirectives;
+  
+  B := LoadBitmapFromLazarusResource('refresh');
+  RefreshSpeedButton.Glyph := B;
+  B.Free;
+  
+  B := LoadBitmapFromLazarusResource('menu_editor_options');
+  OptionsSpeedButton.Glyph := B;
+  B.Free;
 
   AddResImg(Imagelist1,'ce_default',ImgIDDefault);
   AddResImg(Imagelist1,'ce_program',ImgIDProgram);
