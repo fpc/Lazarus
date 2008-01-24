@@ -238,7 +238,6 @@ type
                           const ALCLObject: TObject);
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject;
                           const ALCLObject: TObject);
-    procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     // show, hide and invalidate

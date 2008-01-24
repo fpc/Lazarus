@@ -972,7 +972,7 @@ var
   PS: PPaintStruct;
   DC: TGtkDeviceContext;
 begin
-  if (Msg^.Msg = LM_PAINT) or (Msg^.Msg = LM_INTERNALPAINT) then
+  if (Msg^.Msg = LM_PAINT) then
   begin
     if Msg^.LParam <> 0 then
     begin
@@ -1002,7 +1002,7 @@ var
   PS: PPaintStruct;
   DC: TGtkDeviceContext;
 begin
-  if (Msg^.Message = LM_PAINT) or (Msg^.Message = LM_INTERNALPAINT) then
+  if (Msg^.Message = LM_PAINT) then
   begin
     if Msg^.LParam <> 0 then
     begin
@@ -3595,7 +3595,6 @@ begin
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
   if (TLMessage(AMessage).Msg=LM_PAINT)
-  or (TLMessage(AMessage).Msg=LM_INTERNALPAINT)
   or (TLMessage(AMessage).Msg=LM_GTKPAINT) then
     CurrentSentPaintMessageTarget:=TObject(Target);
   try

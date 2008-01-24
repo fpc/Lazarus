@@ -8027,22 +8027,13 @@ var
     if OldMsg = LM_GTKPAINT then
     begin
       FinalizePaintMessage(@AMessage);
-
-      //if (csDesigning in TComponent(TargetObject).ComponentState)
-      //and (TargetObject is TWinControl) then
-      //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end
     else
-    if ((AMessage.Msg = LM_PAINT) or (AMessage.Msg = LM_INTERNALPAINT))
-    and (AMessage.WParam <> 0) then
+    if (AMessage.Msg = LM_PAINT) and (AMessage.WParam <> 0) then
     begin
       // free DC
       ReleaseDC(0, AMessage.WParam);
       AMessage.WParam := 0;
-
-      //if (csDesigning in TComponent(TargetObject).ComponentState)
-      //and (TargetObject is TWinControl) then
-      //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end;
   end;
 
@@ -8069,7 +8060,7 @@ begin
     else
       Result := DeliverMessage(Target, AMessage); // deliver it
 
-    if (Msg = LM_PAINT) or (Msg = LM_INTERNALPAINT) or (Msg = LM_GTKPAINT) then
+    if (Msg = LM_PAINT) or (Msg = LM_GTKPAINT) then
       DisposePaintMessage(Target, AMessage);
   end;
 end;
