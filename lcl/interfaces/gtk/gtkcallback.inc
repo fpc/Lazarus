@@ -29,7 +29,17 @@
 
 function DoDeliverPaintMessage(const Target: TObject; var PaintMsg: TLMPaint): PtrInt;
 begin
-  if (TObject(Target) is TCustomControl) and not (csOpaque in TWinControl(Target).ControlStyle) then
+  {
+    erase backgound of not csOpaque custom controls
+    
+    Attention - TCustomForm is also TCustomControl descendant - if we erase its
+    backgound then Form.Color will work, but under gtk1 form background will erase
+    subcontrols. For example checkboxes become unvisible. If this will be solved then
+    remove line "not (TObject(Target) is TCustomForm) and" from condition.
+  }
+  if (TObject(Target) is TCustomControl) and
+     not (TObject(Target) is TCustomForm) and
+     not (csOpaque in TWinControl(Target).ControlStyle) then
   begin
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
