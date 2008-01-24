@@ -1123,7 +1123,7 @@ end;
 
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
 var
-  OldDuringPaintControl, InternalPaint: boolean;
+  OldDuringPaintControl: boolean;
 begin
   Result:=true;
 
@@ -1144,15 +1144,13 @@ begin
   if TheMessage.DC <> 0 then begin
     Include(FFlags,dfNeedPainting);
 
-    InternalPaint:=(TheMessage.Msg=LM_INTERNALPAINT);
     DDC.SetDC(Form, TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
       ' DC=',DbgS(DDC.DC,8),
      {' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,}
       ' DCOrigin=',DDC.DCOrigin.X,',',DDC.DCOrigin.Y,
-      ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y,
-      ' Internal=',InternalPaint
+      ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y
       );
     {$ENDIF}
     if LastPaintSender=Sender then begin
@@ -1163,7 +1161,7 @@ begin
     LastPaintSender:=Sender;
 
     // client grid
-    if (not InternalPaint) and (Sender is TWinControl)
+    if (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
@@ -1959,8 +1957,6 @@ Begin
     Result:=true;
     case TheMessage.Msg of
       LM_PAINT,
-      LM_INTERNALPAINT:
-                      Result:=PaintControl(Sender,TLMPaint(TheMessage));
       CN_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
       CN_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
@@ -1979,7 +1975,6 @@ Begin
     end;
   end else begin
     if (TheMessage.Msg=LM_PAINT)
-    or (TheMessage.Msg=LM_INTERNALPAINT)
     or (TheMessage.Msg=CN_KEYDOWN)
     or (TheMessage.Msg=CN_KEYUP)
     or (TheMessage.Msg=LM_LBUTTONDOWN)
