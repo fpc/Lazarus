@@ -1956,7 +1956,7 @@ Begin
   if csDesigning in Sender.ComponentState then begin
     Result:=true;
     case TheMessage.Msg of
-      LM_PAINT,
+      LM_PAINT:       Result := PaintControl(Sender, TLMPaint(TheMessage));
       CN_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
       CN_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
