@@ -3113,7 +3113,7 @@ begin
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   CaretPos := SrcEdit.EditorComponent.CaretXY;
-  FPDocEditor.UpdateLazDoc(SrcEdit.Filename,CaretPos);
+  FPDocEditor.UpdateFPDocEditor(SrcEdit.Filename,CaretPos);
 end;
 
 function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;

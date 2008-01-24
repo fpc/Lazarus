@@ -47,15 +47,15 @@ uses
   IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, CodeHelp;
 
 type
-  TLazDocFormFlag = (
-    ldffWriting,
-    ldffChainNeedsUpdate,
-    ldffCaptionNeedsUpdate,
-    ldffValueControlsNeedsUpdate,
-    ldffInheritedControlsNeedsUpdate,
-    ldffLinkIDComboNeedsUpdate
+  TFPDocEditorFlag = (
+    fpdefWriting,
+    fpdefChainNeedsUpdate,
+    fpdefCaptionNeedsUpdate,
+    fpdefValueControlsNeedsUpdate,
+    fpdefInheritedControlsNeedsUpdate,
+    fpdefLinkIDComboNeedsUpdate
     );
-  TLazDocFormFlags = set of TLazDocFormFlag;
+  TFPDocEditorFlags = set of TFPDocEditorFlag;
   
   { TFPDocEditor }
 
@@ -109,7 +109,7 @@ type
   private
     FCaretXY: TPoint;
     FModified: Boolean;
-    FFlags: TLazDocFormFlags;
+    FFlags: TFPDocEditorFlags;
     fUpdateLock: Integer;
     fSourceFilename: string;
     fChain: TCodeHelpElementChain;
@@ -140,7 +140,7 @@ type
   public
     procedure Reset;
     procedure InvalidateChain;
-    procedure UpdateLazDoc(const SrcFilename: string; const Caret: TPoint);
+    procedure UpdateFPDocEditor(const SrcFilename: string; const Caret: TPoint);
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure ClearEntry(DoSave: Boolean);
@@ -187,10 +187,10 @@ var
   sl: TStringList;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,ldffLinkIDComboNeedsUpdate);
+    Include(FFLags,fpdefLinkIDComboNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,ldffLinkIDComboNeedsUpdate);
+  Exclude(FFLags,fpdefLinkIDComboNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateLinkIdComboBox START']);
@@ -341,15 +341,15 @@ end;
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
 begin
   Done:=false;
-  if ldffChainNeedsUpdate in FFlags then
+  if fpdefChainNeedsUpdate in FFlags then
     UpdateChain
-  else if ldffCaptionNeedsUpdate in FFlags then
+  else if fpdefCaptionNeedsUpdate in FFlags then
     UpdateCaption
-  else if ldffValueControlsNeedsUpdate in FFlags then
+  else if fpdefValueControlsNeedsUpdate in FFlags then
     UpdateValueControls
-  else if ldffInheritedControlsNeedsUpdate in FFlags then
+  else if fpdefInheritedControlsNeedsUpdate in FFlags then
     UpdateInheritedControls
-  else if ldffLinkIDComboNeedsUpdate in FFlags then
+  else if fpdefLinkIDComboNeedsUpdate in FFlags then
     UpdateLinkIdComboBox
   else
     Done:=true;
@@ -457,10 +457,10 @@ var
   strCaption: String;
 begin
   if fUpdateLock>0 then begin
-    Include(FFlags,ldffCaptionNeedsUpdate);
+    Include(FFlags,fpdefCaptionNeedsUpdate);
     exit;
   end;
-  Exclude(FFlags,ldffCaptionNeedsUpdate);
+  Exclude(FFlags,fpdefCaptionNeedsUpdate);
   
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateCaption START']);
@@ -486,10 +486,10 @@ var
   Element: TCodeHelpElement;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,ldffValueControlsNeedsUpdate);
+    Include(FFLags,fpdefValueControlsNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,ldffValueControlsNeedsUpdate);
+  Exclude(FFLags,fpdefValueControlsNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateValueControls START']);
@@ -508,10 +508,10 @@ var
   ShortDescr: String;
 begin
   if fUpdateLock>0 then begin
-    Include(FFLags,ldffInheritedControlsNeedsUpdate);
+    Include(FFLags,fpdefInheritedControlsNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,ldffInheritedControlsNeedsUpdate);
+  Exclude(FFLags,fpdefInheritedControlsNeedsUpdate);
 
   {$IFDEF VerboseCodeHelp}
   DebugLn(['TFPDocEditForm.UpdateInheritedControls START']);
@@ -544,10 +544,10 @@ var
 begin
   FreeAndNil(fChain);
   if fUpdateLock>0 then begin
-    Include(FFLags,ldffChainNeedsUpdate);
+    Include(FFLags,fpdefChainNeedsUpdate);
     exit;
   end;
-  Exclude(FFLags,ldffChainNeedsUpdate);
+  Exclude(FFLags,fpdefChainNeedsUpdate);
 
   if (fSourceFilename='') or (CaretXY.X<1) or (CaretXY.Y<1) then exit;
 
@@ -569,7 +569,7 @@ begin
     case LDResult of
     chprParsing:
       begin
-        Include(FFLags,ldffChainNeedsUpdate);
+        Include(FFLags,fpdefChainNeedsUpdate);
         DebugLn(['TFPDocEditForm.UpdateChain ToDo: still parsing LazDocBoss.GetElementChain for ',fSourceFilename,' ',dbgs(CaretXY)]);
         exit;
       end;
@@ -590,7 +590,7 @@ end;
 procedure TFPDocEditor.OnLazDocChanging(Sender: TObject;
   LazDocFPFile: TLazFPDocFile);
 begin
-  if ldffWriting in FFlags then exit;
+  if fpdefWriting in FFlags then exit;
   if (fChain<>nil) and (fChain.IndexOfFile(LazDocFPFile)>=0) then
     InvalidateChain;
 end;
@@ -598,7 +598,7 @@ end;
 procedure TFPDocEditor.OnLazDocChanged(Sender: TObject;
   LazDocFPFile: TLazFPDocFile);
 begin
-  if ldffWriting in FFlags then exit;
+  if fpdefWriting in FFlags then exit;
 
 end;
 
@@ -666,12 +666,12 @@ begin
   DebugLn(['TFPDocEditForm.CreateElement ']);
   if (Element=nil) or (Element.ElementName='') then exit(false);
   NewElement:=nil;
-  Include(FFlags,ldffWriting);
+  Include(FFlags,fpdefWriting);
   try
     Result:=CodeHelpBoss.CreateElement(Element.CodeXYPos.Code,
                             Element.CodeXYPos.X,Element.CodeXYPos.Y,NewElement);
   finally
-    Exclude(FFlags,ldffWriting);
+    Exclude(FFlags,fpdefWriting);
     NewElement.Free;
   end;
   Reset;
@@ -698,12 +698,12 @@ end;
 procedure TFPDocEditor.InvalidateChain;
 begin
   FreeAndNil(fChain);
-  FFlags:=FFlags+[ldffChainNeedsUpdate,ldffCaptionNeedsUpdate,
-      ldffValueControlsNeedsUpdate,ldffInheritedControlsNeedsUpdate,
-      ldffLinkIDComboNeedsUpdate];
+  FFlags:=FFlags+[fpdefChainNeedsUpdate,fpdefCaptionNeedsUpdate,
+      fpdefValueControlsNeedsUpdate,fpdefInheritedControlsNeedsUpdate,
+      fpdefLinkIDComboNeedsUpdate];
 end;
 
-procedure TFPDocEditor.UpdateLazDoc(const SrcFilename: string;
+procedure TFPDocEditor.UpdateFPDocEditor(const SrcFilename: string;
   const Caret: TPoint);
 var
   NewSrcFilename: String;
@@ -735,7 +735,7 @@ begin
   dec(fUpdateLock);
   if fUpdateLock<0 then RaiseGDBException('');
   if fUpdateLock=0 then begin
-    if ldffCaptionNeedsUpdate in FFlags then UpdateCaption;
+    if fpdefCaptionNeedsUpdate in FFlags then UpdateCaption;
   end;
 end;
 
@@ -883,7 +883,7 @@ var
   
 begin
   Result:=false;
-  if ldffWriting in FFlags then begin
+  if fpdefWriting in FFlags then begin
     DebugLn(['TFPDocEditForm.WriteNode inconsistency detected: recursive write']);
     exit;
   end;
@@ -907,7 +907,7 @@ begin
     Exit;
   end;
 
-  Include(FFlags,ldffWriting);
+  Include(FFlags,fpdefWriting);
   try
     CurDocFile.BeginUpdate;
     
@@ -920,7 +920,7 @@ begin
   finally
     CurDocFile.EndUpdate;
     fChain.MakeValid;
-    Exclude(FFlags,ldffWriting);
+    Exclude(FFlags,fpdefWriting);
   end;
 
   if CodeHelpBoss.SaveFPDocFile(CurDocFile)<>mrOk then begin
