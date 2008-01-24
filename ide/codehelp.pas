@@ -453,9 +453,12 @@ begin
   end else if GetChildValuesAsString(Child)<>NewValue then begin
     // change node
     DocChanging;
-    while Child.FirstChild<>nil do
-      Child.FirstChild.Free;
-    DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,' ChildName=',Child.NodeName,' OldValue=',Child.FirstChild.NodeValue,' NewValue="',NewValue,'"']);
+    DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
+      ' ChildName=',Child.NodeName,
+      ' OldValue=',GetChildValuesAsString(Child),
+      ' NewValue="',NewValue,'"']);
+    while Child.LastChild<>nil do
+      Child.RemoveChild(Child.LastChild);
     TextNode := Doc.CreateTextNode(NewValue);
     Child.AppendChild(TextNode);
     DocChanged;

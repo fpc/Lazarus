@@ -756,9 +756,8 @@ var
 begin
   if not FModified then Exit; // nothing changed => exit
   FModified:=false;
+  if (fChain=nil) or (fChain.Count=0) then exit;
   if not fChain.IsValid then exit;
-  if Doc=nil then exit;
-
   Values:=GetValues;
   if not WriteNode(fChain[0],Values,true) then begin
     DebugLn(['TLazDocForm.Save FAILED']);
@@ -908,9 +907,7 @@ begin
   end;
 
   Include(FFlags,fpdefWriting);
-  DebugLn(['TFPDocEditor.WriteNode AAA1 ',dbgsName(CurDocFile)]);
   CurDocFile.BeginUpdate;
-  DebugLn(['TFPDocEditor.WriteNode AAA2 ',dbgsName(CurDocFile)]);
   try
     CurDocFile.SetChildValue(TopNode,'short',Values[fpdiShort]);
     CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
