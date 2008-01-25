@@ -184,8 +184,8 @@ end;
 procedure TFPDocEditor.UpdateLinkIdComboBox;
 // fills LinkIdComboBox.Items
 var
-  n: TDOMNode;
   sl: TStringList;
+  Node: TDOMNode;
 begin
   if fUpdateLock>0 then begin
     Include(FFLags,fpdefLinkIDComboNeedsUpdate);
@@ -198,15 +198,17 @@ begin
   {$ENDIF}
   LinkIdComboBox.Clear;
   if Doc=nil then exit;
+  Node:=DocFile.GetElementWithName('seealso',false);
+  if Node=nil then exit;
+  Node:=Node.FirstChild;
+  if Node=nil then exit;
 
-  // element nodes
   sl:=TStringList.Create;
-  n := GetFirstElement;
-  while n<>nil do
-  begin
-    if n.NodeName <> '#comment' then
-      sl.Add(TDomElement(n)['name']);
-    n := n.NextSibling;
+  // element nodes
+  while Node<>nil do begin
+    if (Node.NodeName='link') and (Node is TDomElement) then
+      sl.Add(TDomElement(Node)['name']);
+    Node := Node.NextSibling;
   end;
   LinkIdComboBox.Items.Assign(sl);
   sl.Free;
@@ -307,8 +309,7 @@ procedure TFPDocEditor.LinkChange(Sender: TObject);
 begin
   if LinkListBox.ItemIndex<0 then
     Exit;
-
-  LinkListBox.Items.Strings[LinkListBox.ItemIndex] := MakeLink;
+  LinkListBox.Items[LinkListBox.ItemIndex] := MakeLink;
 end;
 
 procedure TFPDocEditor.LinkListBoxClick(Sender: TObject);
@@ -912,9 +913,9 @@ begin
     CurDocFile.SetChildValue(TopNode,'short',Values[fpdiShort]);
     CurDocFile.SetChildValue(TopNode,'descr',Values[fpdiDescription]);
     CurDocFile.SetChildValue(TopNode,'errors',Values[fpdiErrors]);
-    CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
-    CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
-
+    // ToDo:
+    //CurDocFile.SetChildValue(TopNode,'seealso',Values[fpdiSeeAlso]);
+    //CurDocFile.SetChildValue(TopNode,'example',Values[fpdiExample]);
   finally
     CurDocFile.EndUpdate;
     fChain.MakeValid;

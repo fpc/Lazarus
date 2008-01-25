@@ -5,7 +5,7 @@ object FPDocEditor: TFPDocEditor
   Width = 753
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 116
-  ActiveControl = ShortEdit
+  ActiveControl = LinkIdComboBox
   Caption = 'FPDoc editor'
   ClientHeight = 117
   ClientWidth = 753
@@ -16,9 +16,9 @@ object FPDocEditor: TFPDocEditor
     Left = 17
     Height = 117
     Width = 736
-    ActivePage = ShortTabSheet
+    ActivePage = SeeAlsoTabSheet
     Align = alClient
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     TabPosition = tpBottom
     object ShortTabSheet: TTabSheet
@@ -103,8 +103,8 @@ object FPDocEditor: TFPDocEditor
       object LinkListBox: TListBox
         AnchorSideTop.Control = AddLinkButton
         AnchorSideTop.Side = asrBottom
-        Height = 53
-        Top = 29
+        Height = 49
+        Top = 33
         Width = 730
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -117,9 +117,9 @@ object FPDocEditor: TFPDocEditor
       end
       object AddLinkButton: TButton
         AnchorSideRight.Control = DeleteLinkButton
-        Left = 512
-        Height = 25
-        Width = 98
+        Left = 497
+        Height = 29
+        Width = 105
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 6
@@ -130,9 +130,9 @@ object FPDocEditor: TFPDocEditor
       object DeleteLinkButton: TButton
         AnchorSideRight.Control = SeeAlsoTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 616
-        Height = 25
-        Width = 110
+        Left = 608
+        Height = 29
+        Width = 122
         Anchors = [akTop, akRight]
         AutoSize = True
         BorderSpacing.Right = 2
@@ -145,10 +145,11 @@ object FPDocEditor: TFPDocEditor
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Control = AddLinkButton
         Left = 229
-        Height = 21
+        Height = 27
         Top = 1
-        Width = 279
+        Width = 264
         Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
         BorderSpacing.Left = 4
         BorderSpacing.Right = 4
         OnChange = LinkChange
@@ -156,10 +157,11 @@ object FPDocEditor: TFPDocEditor
         Text = 'LinkTextEdit'
       end
       object LinkIdComboBox: TComboBox
-        Height = 21
+        Height = 27
         Top = 1
         Width = 225
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        AutoSize = True
         MaxLength = 0
         OnChange = LinkChange
         TabOrder = 4
