@@ -712,7 +712,7 @@ var
 begin
    if Maxi>59 then Sleep(1);
    Etendue:=Maxi-Mini;
-   if Etendue=0 then begin Debut:=Mini; Pas:=1; Exit; end;
+   if Etendue<=0 then begin Debut:=Mini; Pas:=1; Exit; end;
    Mult[1]:=1;
    EtendueTmp:=Etendue;
    NbPas[1]:=EtendueTmp;
@@ -991,8 +991,8 @@ End;
 procedure TChart.PaintOnCanvas(ACanvas : TCanvas; ARect : TRect);
 var i: integer;
 begin
-     YImageMin:={Height-20}ARect.Bottom-5;
-     YImageMax:={5}ARect.Top+5;
+     YImageMin:=ARect.Bottom-5;
+     YImageMax:=ARect.Top+5;
 
      if FTitle.Visible then begin
        TmpFont.Assign( ACanvas.Font );
@@ -1018,14 +1018,14 @@ begin
                   -ACanvas.TextHeight('1');
      end;
      if FMirrorX then begin
-        XImageMin:={Width-YMarkWidth-GetLegendWidth}ARect.Right-YMarkWidth-GetLegendWidth(ACanvas);
-        XImageMax:={10}ARect.Left;
+        XImageMin:=ARect.Right-YMarkWidth-GetLegendWidth(ACanvas);
+        XImageMax:=ARect.Left;
      end else begin
          if FLeftAxis.Visible and FAxisVisible  then
             XImageMin:=YMarkWidth+ACanvas.TextHeight(FLeftAxis.Title.Caption)+ARect.Left
          else
             XImageMin:=YMarkWidth+ARect.Left;
-         XImageMax:={Width-10-GetLegendWidth}ARect.Right-10-GetLegendWidth(ACanvas);
+         XImageMax:=ARect.Right-10-GetLegendWidth(ACanvas);
      end;
      Refresh(ACanvas, ARect);
 end;
@@ -1037,7 +1037,6 @@ begin
      ACanvas.Pen.Color:=Color;
      ACanvas.Brush.Color:=Color;
      ACanvas.Brush.Style:=bsSolid;
-//     ACanvas.Rectangle(0,0,Width,Height);
      ACanvas.Rectangle(ARect.Left,ARect.Top,ARect.Right,ARect.Bottom);
 end;
 
@@ -1055,7 +1054,7 @@ begin
       for i := 0 to FTitle.Text.Count -1 do begin
           case FTitle.Alignment of
                taLeftJustify:  xpos := XImageMin;
-               taCenter:       xpos := ({Width}ARect.Left+ARect.Right-ACanvas.TextWidth(FTitle.Text[i])) div 2;
+               taCenter:       xpos := (ARect.Left+ARect.Right-ACanvas.TextWidth(FTitle.Text[i])) div 2;
                taRightJustify: xpos := XImageMax - ACanvas.TextWidth(FTitle.Text[i]);
           end;
          ACanvas.TextOut( xpos ,t,FTitle.Text[i]);
@@ -1069,11 +1068,11 @@ begin
       TmpFont.Assign( ACanvas.Font );
       ACanvas.Brush.Assign( FFoot.Brush );
       ACanvas.Font.Assign( FFoot.Font );
-      t := {Height}ARect.Bottom-5-ACanvas.TextHeight(FFoot.Text[0]);
+      t := ARect.Bottom-5-ACanvas.TextHeight(FFoot.Text[0]);
       for i := FFoot.Text.Count - 1 downto 0 do begin
           case FFoot.Alignment of
                taLeftJustify:  xpos := XImageMin;
-               taCenter:       xpos := ({Width}ARect.Left+ARect.Right-ACanvas.TextWidth(FFoot.Text[i])) div 2;
+               taCenter:       xpos := (ARect.Left+ARect.Right-ACanvas.TextWidth(FFoot.Text[i])) div 2;
                taRightJustify: xpos := XImageMax - ACanvas.TextWidth(FFoot.Text[i]);
           end;
          ACanvas.TextOut( xpos ,t,FFoot.Text[i]);
@@ -1149,12 +1148,12 @@ begin
    if MaxLargTexte+LeftAxisWidth>YMarkWidth then begin
       YMarkWidth:=MaxLargTexte+LeftAxisWidth;
       if FMirrorX then begin
-         XImageMin:={Width-YMarkWidth-GetLegendWidth(ACanvas)}ARect.Right-YMarkWidth-GetLegendWidth(ACanvas);
-         XImageMax:={10}ARect.Left+10;
+         XImageMin:=ARect.Right-YMarkWidth-GetLegendWidth(ACanvas);
+         XImageMax:=ARect.Left+10;
       end
       else begin
-         XImageMin:={YMarkWidth}ARect.Left+YMarkWidth;
-         XImageMax:={Width-10-GetLegendWidth}ARect.Right-10-GetLegendWidth(ACanvas);
+         XImageMin:=ARect.Left+YMarkWidth;
+         XImageMax:=ARect.Right-10-GetLegendWidth(ACanvas);
       end;
 
       // Update coefs
@@ -1210,7 +1209,7 @@ begin
 {      Canvas.Brush.Color:=Color;
       Canvas.Font.Color:=clBlack;
       }
-      if FMirrorX then T := {Width}ARect.Right-ACanvas.TextWidth(FLeftAxis.Title.Caption)+5
+      if FMirrorX then T := ARect.Right-ACanvas.TextWidth(FLeftAxis.Title.Caption)+5
       else T := 5;
       if FTitle.Visible then
          RotateLabel(ACanvas, T, YImageMin+((YImageMax-YImageMin) div 2)
@@ -1262,7 +1261,7 @@ begin
                         LargTexte:=ACanvas.TextWidth(MyText) div 2;
                         XPos:=XTemp-LargTexte;
                         if XPos<1 then Xpos:=1;
-                        if XPos+LargTexte*2>{Width}ARect.Right then Xpos:={Width}ARect.Right-LargTexte*2-1;
+                        if XPos+LargTexte*2>ARect.Right then Xpos:=ARect.Right-LargTexte*2-1;
                         ACanvas.TextOut(Xpos,YImageMin+4,MyText);
                      end;
                      Marque:=Marque+Pas;
@@ -1293,7 +1292,7 @@ begin
                         LargTexte:=ACanvas.TextWidth(MyText) div 2;
                         XPos:=XTemp-LargTexte;
                         if XPos<1 then Xpos:=1;
-                        if XPos+LargTexte*2>{Width}ARect.Right then Xpos:={Width}ARect.Right-LargTexte*2-1;
+                        if XPos+LargTexte*2>ARect.Right then Xpos:=ARect.Right-LargTexte*2-1;
                         ACanvas.TextOut(Xpos,YImageMin+4,MyText);
                      end;
                      Marque:=Marque-Pas;
@@ -1403,7 +1402,7 @@ begin
    end else begin
       h:=5+SeriesInLegendCount*(TH+5);
    end;
-   x1 := {Width-w-5}ARect.Right-w-5;
+   x1 := ARect.Right-w-5;
    y1 := YImageMax;
    x2 := x1+w;
    y2 := y1+h;
@@ -1691,13 +1690,13 @@ begin
       // Image coordinates calculation
       // Update max in graph
       // If one point : +/-10% of the point coordinates
-      Tolerance:=0.001; //LUIS ISTO e' o EXTRA
-//      Tolerance:=0.1; //LUIS ISTO e' o EXTRA
+      Tolerance:=0.001; //this should be cleaned eventually
+//      Tolerance:=0.1;
 
    if NBPointsMax > 0 then
    // If several points : automatic +/-10% of interval
       begin
-      Valeur:=Tolerance*(XMaxSeries-XMinSeries); //podemos acabar c esta tolerancia
+      Valeur:=Tolerance*(XMaxSeries-XMinSeries);
       if Valeur<>0 then
          begin
          if FAutoUpdateXMin then FXGraphMin:=XMinSeries-Valeur;
@@ -1846,12 +1845,7 @@ end;
 procedure TChart.DrawOnCanvas(Rect : TRect; ACanvas : TCanvas);
 var tmpCanvas : TCanvas;
 Begin
-{TmpCanvas:=Canvas;
-Canvas:=ACanvas;
-Refresh;}
-PaintOnCanvas(ACanvas,Rect);
-{Canvas:=TmpCanvas;}
-//ACanvas.CopyRect(Rect, Canvas, Rect);
+   PaintOnCanvas(ACanvas,Rect);
 End;
 
 

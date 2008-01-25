@@ -87,7 +87,6 @@ type
     function Add(aValue: Double; XLabel: String; Color: TColor) : Longint; virtual;
     procedure Delete(Index:Integer); virtual;
     procedure Clear;
-//    function AddY(X, Y: Double; XLabel: String; Color: TColor) : Longint;
 
     property Coord: TList read FCoordList;
   published
@@ -117,7 +116,6 @@ type
   public
     Constructor Create(AOwner:TChartSeries);
     Destructor Destroy; override;
-//    Procedure Draw(px,py:Integer; ColorValue:TColor; AStyle:TSeriesPointerStyle);
     Procedure Draw(ACanvas : TCanvas; px,py:Integer; SeriesColor: TColor);
 
     property ParentSeries:TChartSeries read FOwner;
@@ -368,9 +366,8 @@ begin
    i := 0;
    while (i < FCoordList.Count) and (PChartCoord(FCoordList.Items[i])^.x <= X) do inc(i);
    if i = FCoordList.Count then FCoordList.Add(Coordn)
-   else  FCoordList.Insert(I+1, Coordn);
+   else  FCoordList.Insert(i, Coordn);
 
- //  FCoordList.Add(Coord);
    result := FCoordList.IndexOf( Coordn );
 end;
 
@@ -1108,20 +1105,6 @@ end;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 constructor TBarSeries.Create(AOwner:TComponent);
 begin
      inherited Create(AOwner);
@@ -1283,13 +1266,7 @@ begin
        end;
    end;
 
-
-
-
 end;
-
-
-
 
 constructor TPieSeries.Create(AOwner:TComponent);
 begin

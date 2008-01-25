@@ -44,6 +44,7 @@ Installation
 Changes
 -------
 
+* 25/01/2008 - Code cleanups and bugfixes (bugfixes by Uwe Zimmermann and Oled)
 * 22/01/2008 - Implemented ZoomFull, PaintOnCanvas and slight modifications to add TSerie pen style (by oleg)
 * 27/09/2007 - Bugfixes and partially implemented multibar in TBarSeries
 * 29/08/2007 - Bugfixes and implement Bug fixes SaveToBitmapFile 
