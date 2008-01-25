@@ -234,9 +234,9 @@ begin
   InsertRemarkButton.Hint := lisCodeHelpHintRemarkTag;
   InsertVarTagButton.Hint := lisCodeHelpHintVarTag;
 
-  CreateButton.Caption := 'Create help item';
+  CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
-  SaveButton.Caption := 'Save';
+  SaveButton.Caption := lisCodeHelpSaveButton;
   SaveButton.Enabled:=false;
 
   AddLinkButton.Caption := lisCodeHelpAddLinkButton;
@@ -390,10 +390,10 @@ begin
         if ShortDescr<>'' then begin
           // the inherited entry already contains a description.
           // ask if it should be really replaced
-          if QuestionDlg('Confirm replace',
+          if QuestionDlg(lisCodeHelpConfirmreplace,
             GetContextTitle(Element)+' already contains the help:'+#13
             +ShortDescr,
-            mtConfirmation,[mrYes,'Replace',mrCancel],0)<>mrYes then exit;
+            mtConfirmation,[mrYes,lisCodeHelpReplaceButton,mrCancel],0)<>mrYes then exit;
         end;
       end;
     end else begin
@@ -521,13 +521,13 @@ begin
   if i<0 then begin
     InheritedShortEdit.Text:='';
     InheritedShortEdit.Enabled:=false;
-    InheritedShortLabel.Caption:='no inherited description found';
+    InheritedShortLabel.Caption:=lisCodeHelpnoinheriteddescriptionfound;
   end else begin
     Element:=fChain[i];
     ShortDescr:=Element.FPDocFile.GetValueFromNode(Element.ElementNode,fpdiShort);
     InheritedShortEdit.Text:=ShortDescr;
     InheritedShortEdit.Enabled:=true;
-    InheritedShortLabel.Caption:='Short description of '
+    InheritedShortLabel.Caption:=lisCodeHelpShortdescriptionof+' '
                                  +GetContextTitle(Element);
   end;
   MoveToInheritedButton.Enabled:=(fChain<>nil)

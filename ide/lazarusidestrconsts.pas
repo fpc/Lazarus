@@ -3472,6 +3472,8 @@ resourcestring
   lisMenuFPDocEditor = 'FPDoc Editor';
   lisCodeHelpMainFormCaption = 'FPDoc editor';
   lisCodeHelpNoTagCaption = '<NONE>';
+  lisCodeHelpnoinheriteddescriptionfound = 'no inherited description found';
+  lisCodeHelpShortdescriptionof = 'Short description of';
   lisCodeHelpNoDocumentation = 'Documentation entry does not exist';
   lisCodeHelpInherited = 'Inherited';
   lisCodeHelpShortTag = 'Short';
@@ -3482,6 +3484,8 @@ resourcestring
   lisCodeHelpDeletePathButton = 'Remove path';
   lisEONOTEOnlyAbsolutePathsAreSupportedNow = 'NOTE: only absolute paths are '
     +'supported now';
+  lisCodeHelpConfirmreplace = 'Confirm replace';
+  lisCodeHelpReplaceButton = 'Replace';
   lisCodeHelpPathsGroupBox = 'LazDoc settings';
   lisCodeHelpHintBoldFormat = 'Insert bold formatting tag';
   lisCodeHelpHintItalicFormat = 'Insert italic formatting tag';
@@ -3491,6 +3495,8 @@ resourcestring
   lisCodeHelpHintVarTag = 'Insert var formatting tag';
   lisCodeHelpAddLinkButton = 'Add link';
   lisCodeHelpDeleteLinkButton = 'Delete link';
+  lisCodeHelpCreateButton = 'Create help item';
+  lisCodeHelpSaveButton = 'Save';
   lisCodeHelpExampleTag = 'Example';
   lisCodeHelpBrowseExampleButton = 'Browse';
   lisLDMoveEntriesToInherited = 'Move entries to inherited';
