@@ -82,7 +82,6 @@ function LCLSendYearChangedMsg(const Target: TControl): PtrInt;
 function LCLSendDayChangedMsg(const Target: TControl): PtrInt;
 function LCLSendMouseMultiClickMsg(const Target: TControl; XPos, YPos: SmallInt; Button: TMouseButton; ClickCount: Byte = 2; ShiftState: TShiftState = []): PtrInt;
 function LCLSendDrawListItemMsg(const Target: TControl; const DrawListItemStruct: PDrawListItemStruct): PtrInt;
-function LCLSendInternalPaintMsg(const Target: TControl; DC: HDC): PtrInt;
 function LCLSendDropDownMsg(const Target: TControl): PtrInt;
 function LCLSendCloseUpMsg(const Target: TControl): PtrInt;
 
@@ -1164,29 +1163,6 @@ begin
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_DRAWLISTITEM;
   Mess.DrawListItemStruct := DrawListItemStruct;
-
-  Result := DeliverMessage(Target, Mess);
-end;
-
-{******************************************************************************
- *                                                                            *
- * LCLSendInternalPaintMsg                                                    *
- *                                                                            *
- * Returns       : 0 to accept the message, non-zero to reject the message    *
- *                                                                            *
- * Params                                                                     *
- *                                                                            *
- * Target        : The Control that will recieve the message LM_INTERNALPAINT *
- * DC            : DeviceContext to be painted to.                            *
- *                                                                            *
- ******************************************************************************}
-function LCLSendInternalPaintMsg(const Target: TControl; DC: HDC): PtrInt;
-var
-  Mess: TLMessage;
-begin
-  FillChar(Mess, SizeOf(Mess), 0);
-  Mess.Msg := LM_INTERNALPAINT;
-  Mess.WParam := DC;
 
   Result := DeliverMessage(Target, Mess);
 end;

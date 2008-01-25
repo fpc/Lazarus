@@ -102,7 +102,6 @@ const
   LM_GRABFOCUS      = LM_LCL + 79;
   LM_DRAWLISTITEM   = LM_LCL + 80;
   LM_CONTEXTMENU    = LM_LCL + 82;
-  LM_INTERNALPAINT  = LM_LCL + 90;
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_LCL + 99;
@@ -855,7 +854,6 @@ begin
 
 
   LM_USER           :Result:='LM_USER';
-  //WM_USER           :Result:='';
   LM_DESTROY        :Result:='LM_DESTROY';
   LM_ACTIVATEITEM   :Result:='LM_ACTIVATEITEM';
   LM_CHANGED        :Result:='LM_CHANGED';
@@ -865,9 +863,7 @@ begin
   LM_RELEASED       :Result:='LM_RELEASED';
   LM_ENTER          :Result:='LM_ENTER';
   LM_LEAVE          :Result:='LM_LEAVE';
-  //LM_SIZEALLOCATE :Result:='LM_SIZEALLOCATE';
   LM_CHECKRESIZE    :Result:='LM_CHECKRESIZE';
-  //LM_SHOW :Result:='LM_SHOW';
   LM_INSERTTEXT     :Result:='LM_INSERTTEXT';
   LM_DELETETEXT     :Result:='LM_DELETETEXT';
   LM_SETEDITABLE    :Result:='LM_SETEDITABLE';
@@ -881,15 +877,11 @@ begin
   LM_CUTTOCLIP      :Result:='LM_CUTTOCLIP';
   LM_COPYTOCLIP     :Result:='LM_COPYTOCLIP';
   LM_PASTEFROMCLIP  :Result:='LM_PASTEFROMCLIP';
-  //LM_MOVERESIZE   :Result:='LM_MOVERESIZE';
   LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
-  //LM_DRAW         :Result:='LM_DRAW';
   LM_PAINT          :Result:='LM_PAINT';
-  //LM_KEYDOWN      :Result:='LM_KEYDOWN';
-  //LM_KEYUP        :Result:='LM_KEYUP';
+  LM_KEYDOWN        :Result:='LM_KEYDOWN';
+  LM_KEYUP          :Result:='LM_KEYUP';
   LM_TIMER          :Result:='LM_TIMER';
-  //LM_MOUSEBTNPRESS  :Result:='LM_MOUSEBTNPRESS';
-  //LM_MOUSEBTNRELEASE  :Result:='LM_MOUSEBTNRELEASE';
   LM_EXIT           :Result:='LM_EXIT';
   LM_CLOSEQUERY     :Result:='LM_CLOSEQUERY';
   LM_DRAGSTART      :Result:='LM_DRAGSTART';
@@ -913,8 +905,6 @@ begin
   LM_GRABFOCUS      :Result:='LM_GRABFOCUS';
 
   LM_DRAWLISTITEM   :Result:='LM_DRAWLISTITEM';
-
-  LM_INTERNALPAINT  :Result:='LM_INTERNALPAINT';
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST :Result:='LM_INTERFACEFIRST';
