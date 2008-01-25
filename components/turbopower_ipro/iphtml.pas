@@ -779,6 +779,7 @@ type
     {$IFDEF IP_LAZARUS}
     procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
     function ElementName: String;
+    function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
     {$ENDIF}
   public                      {!!.10}
     {$IFDEF IP_LAZARUS}
@@ -6756,10 +6757,13 @@ var
   StyleStream: TStream;
 begin
   if FDataProvider = nil then
+  begin
+    //DebugLn('No dataprovider!');
     exit;
-
+  end;
   if Parent is TIpHtmlNodeHEAD then
   begin
+    Href := FDataProvider.BuildURL(CurURL, HRef);
     StyleStream := FDataProvider.DoGetStream(HRef);
     if StyleStream <> nil then
     begin
@@ -14615,35 +14619,37 @@ begin
     if Element <> nil then
       LoadCSSProps(Owner, Element, Props);
     // then load the element + class if there is one
-    Element := Owner.CSS.GetElement(ElementName, ClassId);
+    if (Element=nil)and(ClassID<>'') then
+      Element := Owner.CSS.GetElement(ElementName, ClassId);
   end;
   
-  //if FElementName = '' then
-  //  WriteLn('Element name not set for class ', ClassNAme);
-
   if (Element <> nil) and (Props <> nil) then
   begin
     {$WARNING Setting these font colors and name messes up the alignment for some reason}
     if Element.Color <> -1 then
       Props.FontColor := Element.Color;
+      
     if Element.BGColor <> -1 then
       Props.BgColor := Element.Color;
+      
     if Element.Font.Name <> '' then
       Props.FontName := FirstString(Element.Font.Name);
 
      {$WARNING TODO Set Font size from CSS Value}
     // see http://xhtml.com/en/css/reference/font-size/
-    //if Element.Font.Size <> '' then // <- is a string
-    //  Props.FontSize :=  Element.Font.Size;
+    if Element.Font.Size <> '' then
+      props.FontSize:=GetFontSizeFromCSS(Props.FontSize, Element.Font.Size);
 
     if Element.Font.Style <> cfsNormal then
+    begin
       case Element.Font.Style of
-        cfsItalic: Props.FontStyle := Props.FontStyle + [fsItalic];
-        cfsInherit: ; // what to do?
-        cfsOblique: ; // what to do?
+        cfsItalic,cfsOblique: Props.FontStyle := Props.FontStyle + [fsItalic];
+        cfsInherit: ; // what to do?: search through parent nodes looking for a computed value
       end;
+    end;
 
     if Element.Font.Weight <> cfwNormal then
+    begin
       case Element.Font.Weight of
         cfwBold    : Props.FontStyle := Props.FontStyle + [fsBold];
         cfwBolder  : Props.FontStyle := Props.FontStyle + [fsBold];
@@ -14658,6 +14664,7 @@ begin
         cfw800     : ;
         cfw900     : ;
       end;
+    end;
   end;
   
   if TmpElement = nil then
@@ -14676,6 +14683,25 @@ end;
 function TIpHtmlNodeCore.ElementName: String;
 begin
   Result := FElementName;
+end;
+
+function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
+  aFontSize: string):Integer;
+var
+  P: Integer;
+begin
+  result := CurrentFontSize;
+  // check pt
+  P := Pos('pt',aFontSize);
+  if p>0 then
+  begin
+    p := StrToIntDef(copy(aFontSize,1,P-1), -1);
+    if P>0 then
+    begin
+      result := P;
+      exit;
+    end;
+  end;
 end;
 
 destructor TIpHtmlNodeCore.Destroy;

@@ -167,7 +167,7 @@ function TIpCustomHtmlDataProvider.BuildURL(const Old,
 begin
   Result := IpUtils.BuildURL(Old, New);
   {$IFDEF IP_LAZARUS}
-  DebugLn('TIpCustomHtmlDataProvider.BuildURL Old="',old,'" new="',New,'"');
+  //DebugLn('TIpCustomHtmlDataProvider.BuildURL Old="',old,'" new="',New,'"');
   {$ENDIF}
 end;
 

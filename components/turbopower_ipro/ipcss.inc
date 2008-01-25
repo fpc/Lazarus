@@ -544,7 +544,7 @@ var
 begin
   fpos1 := Pos('{', AStatement)+1;
   fpos2 := Pos('}', AStatement)-1;
-  Commands := Copy(AStatement, fpos1, fpos2-fpos1);
+  Commands := Copy(AStatement, fpos1, fpos2-fpos1+1);
   Result := SeperateCommands(Commands);
 end;
 
@@ -612,7 +612,9 @@ end;
 procedure TCSSReader.EatWhiteSpace;
 var
   Buf: char;
+  comment: integer;
 begin
+  comment:=0;
   while not EOF do
   begin
     Buf := char(FStream.ReadByte);
@@ -686,7 +688,7 @@ begin
     if (Buf = '/') and CheckIsComment then
     begin
       FStream.Position := FStart;
-      RCount := FStream.Read(Buf1[0], FEnd-FStart);
+      RCount := FStream.Read(Buf1[0], FEnd-FStart-1);
       AStatement := AStatement + Copy(Buf1,0,RCount);
       FStream.Position := FEnd+1;
       EatComment;
@@ -797,21 +799,30 @@ end;
 function TCSSGlobalProps.GetElement(AElementID: String;
   ClassID: String; CreateIfNotExist: Boolean): TCSSProps;
 var
-  ElementIndex: Integer;
   ElementName: String;
+
+  procedure LookForElement(const aElement: string);
+  var
+    ElementIndex: Integer;
+  begin
+    if ClassID <> '' then
+      ElementName := Lowercase(aElement+'.'+ClassId)
+    else
+      ElementName := lowercase(aElement);
+      
+    ElementIndex := FElements.IndexOf(ElementName);
+    
+    if ElementIndex>=0 then
+      result := TCSSProps(FElements.Objects[ElementIndex]);
+  end;
 begin
   Result := nil;
   if (ClassID = '') and (AElementID = '') then
     exit;
-  if ClassID <> '' then
-    ElementName := LowerCase(AElementID+'.'+ClassID)
-  else
-    ElementName := LowerCase(AElementID);
-  ElementIndex := FElements.IndexOf(ElementName);
-  if ElementIndex <> -1 then
-  begin
-    Result := TCSSProps(FElements.Objects[ElementIndex]);
-  end;
+    
+  LookForElement(aElementID);
+  if (Result=nil) and not CreateIfNotExist then
+    LookForelement('*');
 
   if (Result = nil) and CreateIfNotExist then
   begin
