@@ -438,7 +438,6 @@ begin
       until false;
     end;
     Result:=copy(Result,StartPos,EndPos-StartPos);
-    
   finally
     MemStream.Free;
   end;
@@ -1380,14 +1379,25 @@ var
     end;
   end;
 
+  procedure AddText(const s: string);
+  begin
+    if IsHTML then
+      HTMLHint:=HTMLHint+le+le+TextToHTML(s)
+    else begin
+      if HTMLHint<>'' then
+        HTMLHint:=HTMLHint+LineEnding+LineEnding;
+      HTMLHint:=HTMLHint+s;
+    end;
+  end;
+
   procedure AddHTML(const s: string);
   begin
     if not IsHTML then begin
       IsHTML:=true;
       if HTMLHint<>'' then
         HTMLHint:=TextToHTML(HTMLHint)+le+le;
-      HTMLHint:=HTMLHint+s;
     end;
+    HTMLHint:=HTMLHint+s;
   end;
   
 var
@@ -1453,10 +1463,10 @@ begin
                                                 NestedComments,true,true);
               if CommentStr<>'' then begin
                 if not ItemAdded then begin
-                  AddHTML(Item.ElementName+le
+                  AddText(Item.ElementName+LineEnding
                           +CommentStr);
                 end else begin
-                  AddHTML(CommentStr);
+                  AddText(CommentStr);
                 end;
                 ItemAdded:=true;
               end;

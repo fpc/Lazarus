@@ -305,6 +305,7 @@ begin
     end else
       inc(p);
   end;
+  DebugLn(['TSimpleHTMLControl.HTMLToCaption "',dbgstr(Result),'"']);
 end;
 
 function TSimpleHTMLControl.GetURL: string;
