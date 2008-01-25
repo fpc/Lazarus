@@ -4368,6 +4368,18 @@ begin
   PaintTo(ACanvas.Handle, X, Y);
 end;
 
+procedure TWinControl.SetShape(AShape: TBitmap);
+begin
+  if not HandleAllocated then
+    Exit;
+
+  if (AShape <> nil) and (AShape.Width = Width) and (AShape.Height = Height) then
+    TWSWinControlClass(WidgetSetClass).SetShape(Self, AShape.Handle)
+  else
+  if AShape = nil then
+    TWSWinControlClass(WidgetSetClass).SetShape(Self, 0)
+end;
+
 {------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint

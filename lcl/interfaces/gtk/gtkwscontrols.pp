@@ -94,6 +94,7 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
+    class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
     class procedure PaintTo(const AWinControl: TWinControl; ADC: HDC; X, Y: Integer); override;
 
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -662,6 +663,30 @@ begin
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
+end;
+
+class procedure TGtkWSWinControl.SetShape(const AWinControl: TWinControl;
+  const AShape: HBITMAP);
+var
+  GtkWidget: PGtkWidget;
+  GdkBitmap: PGDKBitmap;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
+    Exit;
+
+  GtkWidget := PGtkWidget(AWinControl.Handle);
+
+  if AShape <> 0 then
+  begin
+    if GtkWidgetset.IsValidGDIObjectType(AShape, gdiBitmap) then
+      GdkBitmap := PGdiObject(AShape)^.GDIBitmapObject
+    else
+      GdkBitmap := nil;
+  end
+  else
+    GdkBitmap := nil;
+    
+  gtk_widget_shape_combine_mask(GtkWidget, GdkBitmap, 0, 0);
 end;
 
 {

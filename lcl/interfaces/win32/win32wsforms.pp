@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   Forms, Controls, LCLType, Classes,
 ////////////////////////////////////////////////////
-  WSForms, WSLCLClasses, Windows, SysUtils, Win32Extra,
+  WSForms, WSProc, WSLCLClasses, Windows, SysUtils, Win32Extra,
   InterfaceBase, Win32Int, Win32Proc, Win32WSControls;
 
 type

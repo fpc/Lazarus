@@ -90,6 +90,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
       var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -560,6 +561,32 @@ begin
   Color := ColorToRGB(AFont.Color);
   QColor_setRgb(QColorH(@QColor),Red(Color),Green(Color),Blue(Color));
   TQtWidget(AWinControl.Handle).SetTextColor(@QColor);
+end;
+
+class procedure TQtWSWinControl.SetShape(const AWinControl: TWinControl;
+  const AShape: HBITMAP);
+var
+  Widget: TQtWidget;
+  Shape: TQtImage;
+  AMask: QBitmapH;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
+    Exit;
+  Widget := TQtWidget(AWinControl.Handle);
+
+  if AShape <> 0 then
+  begin
+    Shape := TQtImage(AShape);
+    // invert white/black
+    Shape.invertPixels;
+    AMask := Shape.AsBitmap;
+    Widget.setMask(AMask);
+    QBitmap_destroy(AMask);
+    // invert back
+    Shape.invertPixels;
+  end
+  else
+    Widget.clearMask;
 end;
 
 class procedure TQtWSWinControl.SetBorderStyle(const AWinControl: TWinControl;

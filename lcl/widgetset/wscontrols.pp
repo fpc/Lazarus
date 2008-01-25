@@ -101,6 +101,7 @@ type
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); virtual;
+    class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); virtual;
 
     { TODO: move AdaptBounds: it is only used in winapi interfaces }
     class procedure AdaptBounds(const AWinControl: TWinControl;
@@ -254,6 +255,11 @@ begin
 end;
 
 class procedure TWSWinControl.SetCursor(const AWinControl: TWinControl; const ACursor: HCursor);
+begin
+end;
+
+class procedure TWSWinControl.SetShape(const AWinControl: TWinControl;
+  const AShape: HBITMAP);
 begin
 end;
 

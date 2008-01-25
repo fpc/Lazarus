@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Win32Extra, Classes, SysUtils,
-  LMessages, LCLType, LCLProc, Controls, Forms, Menus, GraphType;
+  LMessages, LCLType, LCLProc, Controls, Forms, Menus, GraphType, IntfGraphics;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -122,6 +122,7 @@ function GetBitmapBytes(AWinBmp: Windows.TBitmap; ABitmap: HBITMAP; const ARect:
 
 procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 function GetLastErrorText(AErrorCode: Cardinal): String;
+function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cTolerance: COLORREF  = $101010): HRGN;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1580,6 +1581,193 @@ begin
 
   if tmp <> nil
   then LocalFree(HLOCAL(tmp));
+end;
+
+(*
+   BitmapToRegion :	Create a region from the "non-transparent" pixels of a bitma
+   Author :		Jean-Edouard Lachand-Robert (http://www.geocities.com/Paris/LeftBank/1160/resume.htm), June 1998
+
+   hBmp :               Source bitmap
+   cTransparentColor :	Color base for the "transparent" pixels (default is black)
+   cTolerance :		Color tolerance for the "transparent" pixels
+
+   A pixel is assumed to be transparent if the value of each of its 3 components (blue, green and red) is
+   greater or equal to the corresponding value in cTransparentColor and is lower or equal to the
+   corresponding value in cTransparentColor + cTolerance
+*)
+
+function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cTolerance: COLORREF  = $101010): HRGN;
+
+const
+  ALLOC_UNIT = 100;
+
+var
+  AWidth, AHeight: Integer;
+
+  maxRects: DWORD;
+  hData: THANDLE;
+  pData: PRGNDATA;
+  lr, lg, lb, hr, hg, hb: Byte;
+  x, y, x0: Integer;
+  pr: PRect;
+  h: HRGN;
+
+  WinBmp: Windows.TBitmap;
+  P, Data: PRGBAQuad;
+  RS: PtrUInt;
+  ARawImage, DstRawImage: TRawImage;
+  SourceImage, DestImage: TLazIntfImage;
+
+  procedure FillDescription(out ADesc: TRawImageDescription);
+  begin
+    ADesc.Init;
+    ADesc.Format := ricfRGBA;
+    ADesc.PaletteColorCount := 0;
+    ADesc.MaskBitsPerPixel := 0;
+    ADesc.Depth := 32;
+    ADesc.Width := AWidth;
+    ADesc.Height := AHeight;
+    ADesc.BitOrder := riboBitsInOrder;
+    ADesc.ByteOrder := riboMSBFirst;
+    ADesc.LineOrder := riloTopToBottom;
+    ADesc.BitsPerPixel := 32;
+    ADesc.LineEnd := rileDWordBoundary;
+    ADesc.RedPrec := 8; // red precision. bits for red
+    ADesc.RedShift := 8;
+    ADesc.GreenPrec := 8;
+    ADesc.GreenShift := 16;
+    ADesc.BluePrec := 8;
+    ADesc.BlueShift := 24;
+    ADesc.AlphaPrec := 8;
+    ADesc.AlphaShift := 0;
+  end;
+begin
+  Result := 0;
+  
+  if Windows.GetObject(hBmp, sizeof(WinBmp), @WinBmp) = 0 then
+    Exit;
+    
+  AWidth := WinBmp.bmWidth;
+  AHeight := Abs(WinBmp.bmHeight);
+
+  if not RawImage_FromBitmap(ARawImage, hBmp, 0, Rect(0, 0, AWidth, AHeight)) then
+    Exit;
+
+  SourceImage := TLazIntfImage.Create(ARawImage, True);
+
+  DstRawImage.Init;
+  FillDescription(DstRawImage.Description);
+  DstRawImage.DataSize := AWidth * AHeight * SizeOf(TRGBAQuad);
+  Data := AllocMem(DstRawImage.DataSize);
+  DstRawImage.Data := PByte(Data);
+
+  DestImage := TLazIntfImage.Create(DstRawImage, False);
+  DestImage.CopyPixels(SourceImage);
+  SourceImage.Free;
+  DestImage.Free;
+
+  RS := GetBytesPerLine(AWidth, 32, rileDWordBoundary);
+
+  // For better performances, we will use the ExtCreateRegion() function to create the
+  // region. This function take a RGNDATA structure on entry. We will add rectangles by
+  // amount of ALLOC_UNIT number in this structure
+  maxRects := ALLOC_UNIT;
+  hData := GlobalAlloc(GMEM_MOVEABLE, sizeof(RGNDATAHEADER) + (sizeof(TRECT) * maxRects));
+  pData := GlobalLock(hData);
+  pData^.rdh.dwSize := sizeof(RGNDATAHEADER);
+  pData^.rdh.iType := RDH_RECTANGLES;
+  pData^.rdh.nCount := 0;
+  pData^.rdh.nRgnSize := 0;
+  Windows.SetRect(pData^.rdh.rcBound, MAXLONG, MAXLONG, 0, 0);
+
+  // Keep on hand highest and lowest values for the "transparent" pixel
+  lr := GetRValue(cTransparentColor);
+  lg := GetGValue(cTransparentColor);
+  lb := GetBValue(cTransparentColor);
+  hr := min($ff, lr + GetRValue(cTolerance));
+  hg := min($ff, lg + GetGValue(cTolerance));
+  hb := min($ff, lb + GetBValue(cTolerance));
+  
+  P := Data;
+
+  // Scan each bitmap row from bottom to top (the bitmap is inverted vertically)
+  for y := 0 to AHeight - 1 do
+  begin
+    // Scan each bitmap pixel from left to righ
+    x := 0;
+    while (x < AWidth) do
+    begin
+      // Search for a continuous range of "non transparent pixels"
+      x0 := x;
+      while (x < AWidth) do
+      begin
+        with P[x] do
+          if (Red >= lr) and (Red <= hr) then
+          begin
+            if (Green >= lg) and (Green <= hg) then
+            begin
+              if (Blue >= lb) and (Blue <= hb) then
+                break; //This pixel is "transparent"
+            end;
+          end;
+        inc(x);
+      end;
+      
+      if (x > x0) then
+      begin
+        // Add the pixels (x0, y) to (x, y+1) as a new rectangle in the region
+        if (pData^.rdh.nCount >= maxRects) then
+        begin
+          GlobalUnlock(hData);
+          maxRects := maxRects + ALLOC_UNIT;
+          hData := GlobalReAlloc(hData, sizeof(RGNDATAHEADER) + (sizeof(TRECT) * maxRects), GMEM_MOVEABLE);
+          pData := GlobalLock(hData);
+        end;
+        pr := PRect(PChar(pData^.Buffer));
+        SetRect(pr[pData^.rdh.nCount], x0, y, x, y+1);
+        if (x0 < pData^.rdh.rcBound.left) then
+          pData^.rdh.rcBound.left := x0;
+        if (y < pData^.rdh.rcBound.top) then
+          pData^.rdh.rcBound.top := y;
+        if (x > pData^.rdh.rcBound.right) then
+          pData^.rdh.rcBound.right := x;
+        if (y+1 > pData^.rdh.rcBound.bottom) then
+        pData^.rdh.rcBound.bottom := y+1;
+        inc(pData^.rdh.nCount);
+
+        // On Windows98, ExtCreateRegion() may fail if the number of rectangles is to
+        // large (ie: > 4000). Therefore, we have to create the region by multiple steps
+        if (pData^.rdh.nCount = 2000) then
+        begin
+          h := Windows.ExtCreateRegion(nil, sizeof(RGNDATAHEADER) + (sizeof(TRECT) * maxRects), pData^);
+          if (Result <> 0) then
+          begin
+            Windows.CombineRgn(Result, Result, h, RGN_OR);
+            Windows.DeleteObject(h);
+          end
+          else
+            Result := h;
+
+          pData^.rdh.nCount := 0;
+          Windows.SetRect(pData^.rdh.rcBound, MAXLONG, MAXLONG, 0, 0);
+        end;
+      end;
+      inc(x);
+    end;
+    // Go to next row (remember, the bitmap is inverted vertically
+    P := PRGBAQuad(PByte(P) + RS);
+  end;
+  // Create or extend the region with the remaining rectangle
+  h := Windows.ExtCreateRegion(nil, sizeof(RGNDATAHEADER) + (sizeof(TRECT) * maxRects), pData^);
+  if (Result <> 0) then
+  begin
+    Windows.CombineRgn(Result, Result, h, RGN_OR);
+    Windows.DeleteObject(h);
+  end
+  else
+    Result := h;
+
+  FreeMem(Data);
 end;
 
 

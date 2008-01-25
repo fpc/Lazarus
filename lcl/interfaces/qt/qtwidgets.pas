@@ -139,6 +139,7 @@ type
   public
     procedure Activate;
     procedure BringToFront;
+    procedure clearMask;
     procedure OffsetMousePos(APoint: PQtPoint); virtual;
     procedure Update(ARect: PRect = nil); virtual;
     procedure Repaint(ARect: PRect = nil); virtual;
@@ -179,6 +180,7 @@ type
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
     procedure setMaximumSize(AWidth, AHeight: Integer);
+    procedure setMask(AMask: QBitmapH);
     procedure setMinimumSize(AWidth, AHeight: Integer);
     procedure setParent(parent: QWidgetH); virtual;
     procedure setText(const W: WideString); virtual;
@@ -2280,6 +2282,11 @@ begin
   raiseWidget;
 end;
 
+procedure TQtWidget.clearMask;
+begin
+  QWidget_clearMask(Widget);
+end;
+
 procedure TQtWidget.OffsetMousePos(APoint: PQtPoint);
 begin
   with getClientBounds do
@@ -2558,6 +2565,11 @@ end;
 procedure TQtWidget.setMaximumSize(AWidth, AHeight: Integer);
 begin
   QWidget_setMaximumSize(Widget, AWidth, AHeight);
+end;
+
+procedure TQtWidget.setMask(AMask: QBitmapH);
+begin
+  QWidget_setMask(Widget, AMask);
 end;
 
 procedure TQtWidget.setMinimumSize(AWidth, AHeight: Integer);

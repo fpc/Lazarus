@@ -39,7 +39,7 @@ uses
   // LCL
   SysUtils, Classes, Controls, LCLType, Forms,
   // Widgetset
-  InterfaceBase, WSForms, WSLCLClasses;
+  InterfaceBase, WSForms, WSProc, WSLCLClasses;
 
 type
 

@@ -1793,6 +1793,7 @@ type
                               RepeatCount: integer; SystemKey: boolean): boolean; dynamic;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
     procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload;
+    procedure SetShape(AShape: TBitmap);
   end;
 
 

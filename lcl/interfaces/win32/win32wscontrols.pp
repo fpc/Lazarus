@@ -84,6 +84,7 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetCursor(const AWinControl: TWinControl; const ACursor: HCursor); override;
+    class procedure SetShape(const AWinControl: TWinControl; const AShape: HBITMAP); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
@@ -490,6 +491,23 @@ begin
   // by listening WM_SETCURSOR and adjusting global cursor
   if csDesigning in AWinControl.ComponentState then
     Windows.SetCursor(ACursor);
+end;
+
+class procedure TWin32WSWinControl.SetShape(const AWinControl: TWinControl;
+  const AShape: HBITMAP);
+var
+  Rgn: HRGN;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetShape') then
+    Exit;
+
+  if AShape <> 0 then
+    Rgn := BitmapToRegion(AShape)
+  else
+    Rgn := 0;
+  SetWindowRgn(AWinControl.Handle, Rgn, True);
+  if Rgn <> 0 then
+    DeleteObject(Rgn);
 end;
 
 class procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);

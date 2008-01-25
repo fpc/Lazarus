@@ -113,13 +113,15 @@ type
     constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
-    function AsPixmap: QPixmapH;
+    function AsPixmap(flags: QtImageConversionFlags = QtAutoColor): QPixmapH;
+    function AsBitmap(flags: QtImageConversionFlags = QtAutoColor): QBitmapH;
     procedure CopyFrom(AImage: QImageH; x, y, w, h: integer);
   public
     function height: Integer;
     function width: Integer;
     function bits: PByte;
     function numBytes: Integer;
+    procedure invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
   end;
 
   { TQtFont }
@@ -836,10 +838,16 @@ begin
   QPixmap_destroy(APixmap);
 end;
 
-function TQtImage.AsPixmap: QPixmapH;
+function TQtImage.AsPixmap(flags: QtImageConversionFlags = QtAutoColor): QPixmapH;
 begin
   Result := QPixmap_create();
-  QPixmap_fromImage(Result, Handle);
+  QPixmap_fromImage(Result, Handle, flags);
+end;
+
+function TQtImage.AsBitmap(flags: QtImageConversionFlags = QtAutoColor): QBitmapH;
+begin
+  Result := QBitmap_create();
+  QBitmap_fromImage(Result, Handle, flags);
 end;
 
 procedure TQtImage.CopyFrom(AImage: QImageH; x, y, w, h: integer);
@@ -885,6 +893,11 @@ end;
 function TQtImage.numBytes: Integer;
 begin
   Result := QImage_numBytes(Handle);
+end;
+
+procedure TQtImage.invertPixels(InvertMode: QImageInvertMode = QImageInvertRgb);
+begin
+  QImage_invertPixels(Handle, InvertMode);
 end;
 
 { TQtFont }

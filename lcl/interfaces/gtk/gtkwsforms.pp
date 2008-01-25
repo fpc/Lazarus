@@ -35,7 +35,7 @@ uses
   SysUtils, Classes, LCLProc, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Dialogs,Forms, Math,
   WSDialogs, WSLCLClasses, WSControls, WSForms, WSProc,
-  gtkInt, gtkProc, gtkWSControls, gtkDef, gtkExtra, gtkGlobals, GtkWSPrivate;
+  GtkInt, GtkProc, GtkDef, GtkExtra, GtkGlobals, GtkWSControls, GtkWSPrivate;
 
 type
 
