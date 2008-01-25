@@ -226,6 +226,7 @@ function CompareLDSrc2DocSrcFilenames(Data1, Data2: Pointer): integer;
 function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 
 function ToUnixLineEnding(const s: String): String;
+function ToOSLineEnding(const s: String): String;
 
 
 implementation
@@ -248,6 +249,37 @@ begin
       end else if s[p]=#13 then begin
         // single char line ending #13
         Result[p]:=#10;
+      end;
+      inc(p);
+    end;
+  end;
+end;
+
+function ToOSLineEnding(const s: String): String;
+const
+  le: shortstring = LineEnding;
+var
+  p: Integer;
+begin
+  Result:=s;
+  p:=1;
+  while (p<=length(s)) do begin
+    if not (s[p] in [#10,#13]) then begin
+      inc(p);
+    end else begin
+      // line ending
+      if (p<length(s)) and (s[p+1] in [#10,#13]) and (s[p]<>s[p+1]) then begin
+        // double character line ending
+        if (length(le)<>2)
+        or (le[1]<>s[p]) or (le[2]<>s[p+1]) then begin
+          Result:=copy(Result,1,p-1)+le+copy(Result,p+2,length(Result));
+        end;
+      end else begin
+        // single char line ending #13 or #10
+        if (length(le)<>1)
+        or (le[1]<>s[p]) then begin
+          Result:=copy(Result,1,p-1)+le+copy(Result,p+2,length(Result));
+        end;
       end;
       inc(p);
     end;
@@ -353,18 +385,83 @@ end;
 
 function TLazFPDocFile.GetChildValuesAsString(Node: TDOMNode): String;
 var
-  Child: TDOMNode;
+  MemStream: TMemoryStream;
+  StartPos: Integer;
+  EndPos: Integer;
 begin
   Result:='';
-  Child:=Node.FirstChild;
+  MemStream:=TMemoryStream.Create;
+  try
+    // write node with childs
+    WriteXML(Node,MemStream);
+    MemStream.Position:=0;
+    SetLength(Result,MemStream.Size);
+    if Result<>'' then
+      MemStream.Read(Result[1],length(Result));
+    // remove tag(s) for node, because Result should only contain the child values:
+    //   <nodename/> or <nodename>...<nodename/>
+    //   <nodename something=""/>
+    //   plus line ends
+    StartPos:=1;
+    EndPos:=length(Result)+1;
+    // skip start tag
+    if (Result<>'') and (Result[StartPos]='<') then begin
+      inc(StartPos);
+      while (StartPos<=EndPos) do begin
+        if (Result[StartPos]='>') then begin
+          inc(StartPos);
+          break;
+        end else if Result[StartPos]='"' then begin
+          repeat
+            inc(StartPos);
+          until (StartPos>=EndPos) or (Result[StartPos]='"');
+        end;
+        inc(StartPos);
+      end;
+    end;
+    // skip ending line ends
+    while (EndPos>StartPos) and (Result[EndPos-1] in [' ',#9,#10,#13]) do
+      dec(EndPos);
+    // skip end tag
+    if (EndPos>StartPos) and (Result[EndPos-1]='>') then begin
+      repeat
+        dec(EndPos);
+        if (EndPos=StartPos) then break;
+        if (Result[EndPos-1]='"') then begin
+          repeat
+            dec(EndPos);
+          until (EndPos=StartPos) or (Result[EndPos]='"');
+        end else if (Result[EndPos-1]='<') then begin
+          dec(EndPos);
+          break;
+        end;
+      until false;
+    end;
+    Result:=copy(Result,StartPos,EndPos-StartPos);
+    
+  finally
+    MemStream.Free;
+  end;
+  DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
+
+  {Child:=Node.FirstChild;
+  //DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName]);
   while Child<>nil do begin
-    //DebugLn(['TLazFPDocFile.GetChildValuesAsString ',dbgsName(Child)]);
+    //DebugLn(['TLazFPDocFile.GetChildValuesAsString ',dbgsName(Child),' ',Child.NodeName]);
     if Child is TDOMText then begin
       //DebugLn(['TLazFPDocFile.GetChildValuesAsString Data="',TDOMText(Child).Data,'" Length=',TDOMText(Child).Length]);
       Result:=Result+TDOMText(Child).Data;
+    end else if Child is TDOMElement then begin
+      if Child.FirstChild=nil then begin
+        Result:=Result+'<'+Child.NodeName+'/>';
+      end else begin
+        Result:=Result+'<'+Child.NodeName+'>'
+                      +GetChildValuesAsString(Child)
+                      +'</'+Child.NodeName+'>'
+      end;
     end;
     Child:=Child.NextSibling;
-  end;
+  end;}
 end;
 
 function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
@@ -416,9 +513,24 @@ end;
 
 procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
   NewValue: string);
+  
+  procedure ReadXMLFragmentFromString(AParentNode: TDOMNode; const s: string);
+  var
+    MemStream: TMemoryStream;
+  begin
+    if s='' then exit;
+    try
+      MemStream:=TMemoryStream.Create;
+      MemStream.Write(s[1],length(s));
+      MemStream.Position:=0;
+      ReadXMLFragment(AParentNode,MemStream);
+    finally
+      MemStream.Free;
+    end;
+  end;
+  
 var
   Child: TDOMNode;
-  TextNode: TDOMText;
 begin
   Child:=Node.FindNode(ChildName);
   NewValue:=ToUnixLineEnding(NewValue);
@@ -444,24 +556,30 @@ begin
     if NewValue<>'' then begin
       DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
       DocChanging;
-      Child := Doc.CreateElement(ChildName);
-      Node.AppendChild(Child);
-      TextNode := Doc.CreateTextNode(NewValue);
-      Child.AppendChild(TextNode);
-      DocChanged;
+      try
+        Child := Doc.CreateElement(ChildName);
+        Node.AppendChild(Child);
+        ReadXMLFragmentFromString(Child,NewValue);
+      finally
+        DocChanged;
+      end;
     end;
   end else if GetChildValuesAsString(Child)<>NewValue then begin
     // change node
     DocChanging;
-    DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
-      ' ChildName=',Child.NodeName,
-      ' OldValue=',GetChildValuesAsString(Child),
-      ' NewValue="',NewValue,'"']);
-    while Child.LastChild<>nil do
-      Child.RemoveChild(Child.LastChild);
-    TextNode := Doc.CreateTextNode(NewValue);
-    Child.AppendChild(TextNode);
-    DocChanged;
+    try
+      DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
+        ' ChildName=',Child.NodeName,
+        ' OldValue=',GetChildValuesAsString(Child),
+        ' NewValue="',NewValue,'"']);
+      // remove old content
+      while Child.LastChild<>nil do
+        Child.RemoveChild(Child.LastChild);
+      // set new content
+      ReadXMLFragmentFromString(Child,NewValue);
+    finally
+      DocChanged;
+    end;
   end;
 end;
 
