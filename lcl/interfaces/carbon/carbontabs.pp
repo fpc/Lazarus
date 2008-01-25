@@ -45,6 +45,7 @@ type
   TCarbonTab = class(TCarbonCustomControl)
   private
     FParent: TCarbonTabsControl;
+    FText: String;
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -62,12 +63,17 @@ type
     FTabPosition: TTabPosition;
     FTabs: TObjectList; // of TCarbonTab
     FTabIndex: Integer;
+    FOldTabIndex: Integer;
     FFirstIndex: Integer; // index of first visible tab
     FLastIndex: Integer;  // index of last visible tab
     FPrevArrow: ControlRef;
     FNextArrow: ControlRef;
+    FScrollingLeftTimer: TTimer;
+    FScrollingRightTimer: TTimer;
     function GetPrevArrowBounds(const R: TRect): TRect;
     function GetNextArrowBounds(const R: TRect): TRect;
+    procedure ScrollingLeftTimer(Sender: TObject);
+    procedure ScrollingRightTimer(Sender: TObject);
   protected
     procedure CreateWidget(const AParams: TCreateParams); override;
     procedure DestroyWidget; override;
@@ -85,6 +91,10 @@ type
     
     procedure ScrollTabsLeft;
     procedure ScrollTabsRight;
+    procedure StartScrollingTabsLeft;
+    procedure StartScrollingTabsRight;
+    procedure StopScrollingTabsLeft;
+    procedure StopScrollingTabsRight;
 
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
     procedure Remove(AIndex: Integer);
@@ -111,6 +121,8 @@ begin
   inherited CreateWidget(AParams);
   
   ShowHide(False);
+  
+  FText := LCLObject.Caption;
 end;
 
 {------------------------------------------------------------------------------
@@ -157,7 +169,8 @@ end;
 function TCarbonTab.SetText(const S: String): Boolean;
 begin
   if FParent = nil then Exit;
-  
+
+  FText := S;
   Result := False;
   FParent.UpdateTabs;
   Result := True;
@@ -168,33 +181,39 @@ end;
 {------------------------------------------------------------------------------
   Name: CarbonTabsPrevArrow_Hit
  ------------------------------------------------------------------------------}
-function CarbonTabsPrevArrow_Hit(ANextHandler: EventHandlerCallRef;
+function CarbonTabsPrevArrow_Track(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseControlEvent}
-    DebugLn('CarbonTabsPrevArrow_Hit: ', DbgSName(AWidget.LCLObject));
+    DebugLn('CarbonTabsPrevArrow_Track: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
 
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-
-  (AWidget as TCarbonTabsControl).ScrollTabsLeft;
+  (AWidget as TCarbonTabsControl).StartScrollingTabsLeft;
+  try
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+  finally
+    (AWidget as TCarbonTabsControl).StopScrollingTabsLeft;
+  end;
 end;
 
 {------------------------------------------------------------------------------
   Name: CarbonTabsNextArrow_Hit
  ------------------------------------------------------------------------------}
-function CarbonTabsNextArrow_Hit(ANextHandler: EventHandlerCallRef;
+function CarbonTabsNextArrow_Track(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 begin
   {$IFDEF VerboseControlEvent}
-    DebugLn('CarbonTabsNextArrow_Hit: ', DbgSName(AWidget.LCLObject));
+    DebugLn('CarbonTabsNextArrow_Track: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
 
-  Result := CallNextEventHandler(ANextHandler, AEvent);
-
-  (AWidget as TCarbonTabsControl).ScrollTabsRight;
+  (AWidget as TCarbonTabsControl).StartScrollingTabsRight;
+  try
+    Result := CallNextEventHandler(ANextHandler, AEvent);
+  finally
+    (AWidget as TCarbonTabsControl).StopScrollingTabsRight;
+  end;
 end;
 
 const
@@ -229,6 +248,16 @@ begin
     P.X + ArrowSize, P.Y + ArrowSize);
 end;
 
+procedure TCarbonTabsControl.ScrollingLeftTimer(Sender: TObject);
+begin
+  ScrollTabsLeft;
+end;
+
+procedure TCarbonTabsControl.ScrollingRightTimer(Sender: TObject);
+begin
+  ScrollTabsRight;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.CreateWidget
   Params:  AParams - Creation parameters
@@ -254,6 +283,7 @@ begin
       kControlTabSizeLarge, Direction, 0, TabEntry, Control),
     Self, SCreateWidget, 'CreateTabsControl') then RaiseCreateWidgetError(LCLObject);
     
+  FOldTabIndex := -1;
   FTabPosition := (LCLObject as TCustomNotebook).TabPosition;
   FTabs := TObjectList.Create(False);
 
@@ -276,16 +306,13 @@ begin
   OSError(HIViewSetVisible(FNextArrow, False), Self, SCreateWidget, SViewVisible);
   OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
     SViewAddView);
-    
-  AddControlPart(FPrevArrow);
-  AddControlPart(FNextArrow);
   
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit);
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
   InstallControlEventHandler(FPrevArrow,
-    RegisterEventHandler(@CarbonTabsPrevArrow_Hit),
+    RegisterEventHandler(@CarbonTabsPrevArrow_Track),
     1, @TmpSpec, Pointer(Self), nil);
   InstallControlEventHandler(FNextArrow,
-    RegisterEventHandler(@CarbonTabsNextArrow_Hit),
+    RegisterEventHandler(@CarbonTabsNextArrow_Track),
     1, @TmpSpec, Pointer(Self), nil);
 
   if not GetClientRect(R) then
@@ -307,6 +334,16 @@ begin
     SViewAddView) then RaiseCreateWidgetError(LCLObject);
    
   inherited;
+  
+  FScrollingLeftTimer := TTimer.Create(nil);
+  FScrollingLeftTimer.Interval := 200;
+  FScrollingLeftTimer.Enabled := False;
+  FScrollingLeftTimer.OnTimer := @ScrollingLeftTimer;
+  
+  FScrollingRightTimer := TTimer.Create(nil);
+  FScrollingRightTimer.Interval := 200;
+  FScrollingRightTimer.Enabled := False;
+  FScrollingRightTimer.OnTimer := @ScrollingRightTimer;
 end;
 
 {------------------------------------------------------------------------------
@@ -318,6 +355,9 @@ procedure TCarbonTabsControl.DestroyWidget;
 begin
   DisposeControl(FUserPane);
   FreeAndNil(FTabs);
+  
+  FScrollingLeftTimer.Free;
+  FScrollingRightTimer.Free;
 
   inherited DestroyWidget;
 end;
@@ -381,8 +421,9 @@ begin
       FFirstIndex := 0;
       FLastIndex := 0;
 
-      // set tab count
       SetControl32BitMaximum(ControlRef(Widget), 0);
+
+      // set tab count
       ControlIndex := 0;
       Exit;
     end;
@@ -393,12 +434,12 @@ begin
     try
       for I := 0 to High(TabSizes) do
       begin
-        S := TCarbonTab(FTabs[I]).LCLObject.Caption;
+        S := TCarbonTab(FTabs[I]).FText;
         DeleteAmpersands(S);
         if DefaultContext.GetTextExtentPoint(PChar(S), Length(S), Size) then
-          TabSizes[I] := Size.cx + 20
+          TabSizes[I] := Size.cx + 24
         else
-          TabSizes[I] := 20;
+          TabSizes[I] := 24;
       end;
     finally
       DefaultContext.CurrentFont := TempFont;
@@ -436,6 +477,9 @@ begin
     SetControl32BitMaximum(ControlRef(Widget), FLastIndex - FFirstIndex + 1);
 
     ControlIndex := 0;
+    if FTabIndex < FFirstIndex then FTabIndex := FFirstIndex
+    else
+      if FTabIndex > FLastIndex then FTabIndex := FLastIndex;
     // update tabs
     TabInfo.version := kControlTabInfoVersionOne;
     TabInfo.iconSuiteID := 0;
@@ -443,7 +487,7 @@ begin
     // TODO: imageindex
     for I := FFirstIndex to FLastIndex do
     begin
-      S := TCarbonTab(FTabs[I]).LCLObject.Caption;
+      S := TCarbonTab(FTabs[I]).FText;
       if (TCarbonTab(FTabs[I]).LCLObject as TCustomPage).PageIndex = FTabIndex then
         ControlIndex := I - FFirstIndex + 1;
 
@@ -461,11 +505,13 @@ begin
   finally
     // set tab index
     SetControl32BitValue(ControlRef(Widget), ControlIndex);
+    ValueChanged;
     // update arrows visible
     OSError(HIViewSetVisible(FPrevArrow, (FFirstIndex > 0) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
     OSError(HIViewSetVisible(FNextArrow, (FLastIndex < FTabs.Count - 1) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
     
     Invalidate;
+    ShowTab;
   end;
 end;
 
@@ -500,7 +546,11 @@ var
   NMHdr: TNMHDR;
   Index, PIndex: Integer;
 begin
-  Index := GetControl32BitValue(ControlRef(Widget)) - 1 + FFirstIndex;
+  Index := GetValue - 1;
+  if Index >= 0 then Inc(Index, FFirstIndex);
+  
+  if Index = FOldTabIndex then Exit;
+  FOldTabIndex := Index;
 
   if (Index >= 0) and (Index < FTabs.Count) then
     PIndex := (TCarbonTab(FTabs[Index]).LCLObject as TCustomPage).PageIndex
@@ -609,6 +659,28 @@ begin
   UpdateTabs;
 end;
 
+procedure TCarbonTabsControl.StartScrollingTabsLeft;
+begin
+  ScrollTabsLeft;
+  FScrollingLeftTimer.Enabled := True;
+end;
+
+procedure TCarbonTabsControl.StartScrollingTabsRight;
+begin
+  ScrollTabsRight;
+  FScrollingRightTimer.Enabled := True;
+end;
+
+procedure TCarbonTabsControl.StopScrollingTabsLeft;
+begin
+  FScrollingLeftTimer.Enabled := False;
+end;
+
+procedure TCarbonTabsControl.StopScrollingTabsRight;
+begin
+  FScrollingRightTimer.Enabled := False;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.Add
   Params:  ATab   - Tab to add
@@ -667,10 +739,8 @@ begin
   begin
     SetControl32BitValue(ControlRef(Widget), FTabIndex - FFirstIndex + 1);
     Invalidate;
+    ShowTab;
   end;
-
-  
-  ShowTab;
 end;
 
 {------------------------------------------------------------------------------

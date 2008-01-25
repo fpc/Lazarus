@@ -74,6 +74,61 @@ type
   public
     property Shape: HIShapeRef read FShape;
   end;
+  
+  TCarbonFont = class;
+  
+  { TCarbonTextLayout }
+
+  TCarbonTextLayout = class
+  private
+    FTextBefore: ATSUTextMeasurement;
+    FTextAfter: ATSUTextMeasurement;
+    FAscent: ATSUTextMeasurement;
+    FDescent: ATSUTextMeasurement;
+    FLineRotation: Fixed;
+  public
+    procedure Apply(ADC: TCarbonContext); virtual; abstract;
+    function Draw(X, Y: Integer): Boolean; virtual; abstract;
+    procedure Release; virtual;
+
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    function GetDrawBounds(X, Y: Integer): CGRect;
+
+    property TextBefore: ATSUTextMeasurement read FTextBefore;
+    property TextAfter: ATSUTextMeasurement read FTextAfter;
+    property Ascent: ATSUTextMeasurement read FAscent;
+    property Descent: ATSUTextMeasurement read FDescent;
+  end;
+  
+  { TCarbonTextLayoutBuffer }
+
+  TCarbonTextLayoutBuffer = class(TCarbonTextLayout)
+  private
+    FLayout: ATSUTextLayout;
+    FTextBuffer: WideString;
+    FDC: TCarbonContext;
+  public
+    constructor Create(const Text: String; Font: TCarbonFont; TextFractional: Boolean);
+    procedure Apply(ADC: TCarbonContext); override;
+    function Draw(X, Y: Integer): Boolean; override;
+    procedure Release; override;
+
+    property Layout: ATSUTextLayout read FLayout;
+    property TextBuffer: WideString read FTextBuffer;
+  end;
+  
+  { TCarbonTextLayoutArray }
+
+  TCarbonTextLayoutArray = class(TCarbonTextLayout)
+  private
+    FText: String;
+    FFont: TCarbonFont;
+  public
+    constructor Create(const Text: String; Font: TCarbonFont);
+    procedure Apply(ADC: TCarbonContext); override;
+    function Draw(X, Y: Integer): Boolean; override;
+  end;
 
   { TCarbonFont }
 
@@ -81,12 +136,15 @@ type
   private
     FStyle: ATSUStyle;
     FLineRotation: Fixed;
+    FCachedLayouts: Array of TCarbonTextLayoutBuffer;
   public
     constructor Create(AGlobal: Boolean); // default system font
     constructor Create(ALogFont: TLogFont; const AFaceName: String);
     function CreateStyle(ALogFont: TLogFont; const AFaceName: String): ATSUStyle;
     destructor Destroy; override;
     procedure SetColor(AColor: TColor);
+    
+    function CreateTextLayout(const Text: String; TextFractional: Boolean): TCarbonTextLayout;
   public
     property LineRotation: Fixed read FLineRotation;
     property Style: ATSUStyle read FStyle;
@@ -693,6 +751,197 @@ begin
   Result := HIShapeContainsPoint(FShape, PointToHIPoint(P));
 end;
 
+{ TCarbonTextLayout }
+
+procedure TCarbonTextLayout.Release;
+begin
+  Free;
+end;
+
+function TCarbonTextLayout.GetHeight: Integer;
+begin
+  Result := RoundFixed(Descent + Ascent);
+end;
+
+function TCarbonTextLayout.GetWidth: Integer;
+begin
+  Result := RoundFixed(TextAfter - TextBefore);
+end;
+
+function TCarbonTextLayout.GetDrawBounds(X, Y: Integer): CGRect;
+begin
+  Result := GetCGRectSorted(X - RoundFixed(FTextBefore),
+    -Y, X + RoundFixed(FTextAfter), -Y - RoundFixed(FAscent + FDescent));
+end;
+
+{ TCarbonTextLayoutBuffer }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTextLayoutBuffer.Create
+  Params:  Text           - UTF-8 text
+           Font           - Text font
+           TextFractional
+
+  Creates new Carbon text layout with buffer
+ ------------------------------------------------------------------------------}
+constructor TCarbonTextLayoutBuffer.Create(const Text: String; Font: TCarbonFont; TextFractional: Boolean);
+var
+  TextStyle: ATSUStyle;
+  TextLength: LongWord;
+  Tag: ATSUAttributeTag;
+  DataSize: ByteCount;
+  Options: ATSLineLayoutOptions;
+  PValue: ATSUAttributeValuePtr;
+begin
+  // keep copy of text
+  FTextBuffer := UTF8ToUTF16(Text);
+  
+  TextStyle := Font.Style;
+
+  // create text layout
+  TextLength := kATSUToTextEnd;
+  if OSError(ATSUCreateTextLayoutWithTextPtr(ConstUniCharArrayPtr(@FTextBuffer[1]),
+      kATSUFromTextBeginning, kATSUToTextEnd, Length(FTextBuffer), 1, @TextLength,
+      @TextStyle, FLayout), Self, SCreate, 'ATSUCreateTextLayoutWithTextPtr') then Exit;
+      
+  // set layout line orientation
+  Tag := kATSULineRotationTag;
+  DataSize := SizeOf(Fixed);
+
+  FLineRotation := Font.LineRotation;
+  PValue := @(FLineRotation);
+  if OSError(ATSUSetLayoutControls(FLayout, 1, @Tag, @DataSize, @PValue),
+    Self, SCreate, 'ATSUSetLayoutControls', 'LineRotation') then Exit;
+    
+  if not TextFractional then
+  begin
+    // disable fractional positions of glyphs in layout
+    Tag := kATSULineLayoutOptionsTag;
+    DataSize := SizeOf(ATSLineLayoutOptions);
+
+    Options := kATSLineFractDisable or kATSLineDisableAutoAdjustDisplayPos or
+      kATSLineDisableAllLayoutOperations or kATSLineUseDeviceMetrics;
+    PValue := @Options;
+    if OSError(ATSUSetLayoutControls(FLayout, 1, @Tag, @DataSize, @PValue),
+      Self, SCreate, 'ATSUSetLayoutControls', 'LineLayoutOptions') then Exit;
+  end;
+  
+  FDC := nil;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTextLayoutBuffer.Apply
+  Params:  ADC     - Context to apply to
+
+  Applies text layout to the specified context
+ ------------------------------------------------------------------------------}
+procedure TCarbonTextLayoutBuffer.Apply(ADC: TCarbonContext);
+var
+  Tag: ATSUAttributeTag;
+  DataSize: ByteCount;
+  PValue: ATSUAttributeValuePtr;
+begin
+  if FDC = ADC then Exit;
+  FDC := ADC;
+
+  // set layout context
+  Tag := kATSUCGContextTag;
+  DataSize := SizeOf(CGContextRef);
+
+  PValue := @(ADC.CGContext);
+  if OSError(ATSUSetLayoutControls(FLayout, 1, @Tag, @DataSize, @PValue),
+    Self, 'Apply', 'ATSUSetLayoutControls', 'CGContext') then Exit;
+    
+  // get text ascent
+  if OSError(
+    ATSUGetUnjustifiedBounds(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
+      FTextBefore, FTextAfter, FAscent, FDescent),
+    Self, 'Apply', SGetUnjustifiedBounds) then Exit;
+end;
+
+function TCarbonTextLayoutBuffer.Draw(X, Y: Integer): Boolean;
+var
+  MX, MY: ATSUTextMeasurement;
+  A: Single;
+begin
+  Result := False;
+  
+  if FLineRotation <> 0 then
+  begin
+    A := FLineRotation * (PI / ($10000 * 180));
+    MX := Round(Ascent * Sin(A));
+    MY := Round(Ascent - Ascent * Cos(A));
+  end
+  else
+  begin
+    MX := 0;
+    MY := 0;
+  end;
+
+  if OSError(ATSUDrawText(FLayout, kATSUFromTextBeginning, kATSUToTextEnd,
+      X shl 16 - FTextBefore + MX, -(Y shl 16) - FAscent + MY),
+    Self, 'Draw', 'ATSUDrawText') then Exit;
+    
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTextLayoutBuffer.Release
+
+  Releases text layout
+ ------------------------------------------------------------------------------}
+procedure TCarbonTextLayoutBuffer.Release;
+begin
+  if FLayout <> nil then
+    OSError(ATSUDisposeTextLayout(FLayout), Self, 'Release', 'ATSUDisposeTextLayout');
+
+  inherited;
+end;
+
+{ TCarbonTextLayoutArray }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTextLayoutArray.Create
+  Params:  Text           - UTF-8 text
+           Font           - Text font
+
+  Creates new Carbon text layout array
+ ------------------------------------------------------------------------------}
+constructor TCarbonTextLayoutArray.Create(const Text: String; Font: TCarbonFont);
+begin
+  FText := Text;
+  FFont := Font;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTextLayoutArray.Apply
+  Params:  ADC     - Context to apply to
+
+  Applies text layout to the specified context
+ ------------------------------------------------------------------------------}
+procedure TCarbonTextLayoutArray.Apply(ADC: TCarbonContext);
+var
+  I: Integer;
+begin
+  for I := 1 to Length(FText) do
+    FFont.FCachedLayouts[Ord(FText[I])].Apply(ADC);
+end;
+
+function TCarbonTextLayoutArray.Draw(X, Y: Integer): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  
+  for I := 1 to Length(FText) do
+  begin
+    Result := FFont.FCachedLayouts[Ord(FText[I])].Draw(X, Y);
+    Inc(X, FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
+  end;
+
+  Result := True;
+end;
+
 { TCarbonFont }
 
 {------------------------------------------------------------------------------
@@ -816,9 +1065,13 @@ end;
   Frees Carbon font
  ------------------------------------------------------------------------------}
 destructor TCarbonFont.Destroy;
+var
+  I: Integer;
 begin
   if FStyle <> DefaultTextStyle then
     OSError(ATSUDisposeStyle(FStyle), Self, SDestroy, SCreateStyle);
+  for I := 0 to High(FCachedLayouts) do
+    if FCachedLayouts[I] <> nil then FCachedLayouts[I].Release;
 
   inherited;
 end;
@@ -843,6 +1096,44 @@ begin
   S := SizeOf(C);
   OSError(ATSUSetAttributes(Style, 1, @Attr, @S, @A), Self, SShowModal,
     'ATSUSetAttributes', 'kATSUSizeTag');
+end;
+
+function TCarbonFont.CreateTextLayout(const Text: String;
+  TextFractional: Boolean): TCarbonTextLayout;
+  
+  function IsTextASCII: Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 1 to Length(Text) do
+      if Ord(Text[I]) > 127 then Exit;
+    Result := True;
+  end;
+var
+  I, J, L: Integer;
+  C: Byte;
+begin
+  if (FLineRotation <> 0) or TextFractional or not IsTextASCII then
+    Result := TCarbonTextLayoutBuffer.Create(Text, Self, TextFractional)
+  else
+  begin
+    for I := 1 to Length(Text) do
+    begin
+      C := Ord(Text[I]);
+      if C > High(FCachedLayouts) then
+      begin
+        L := Length(FCachedLayouts);
+        SetLength(FCachedLayouts, C + 1);
+        for J := L to C do FCachedLayouts[J] := nil;
+      end;
+      
+      if FCachedLayouts[C] = nil then
+        FCachedLayouts[C] := TCarbonTextLayoutBuffer.Create(Text[I], Self, TextFractional);
+    end;
+    
+    Result := TCarbontextLayoutArray.Create(Text, Self);
+  end;
 end;
 
 { TCarbonColorObject }
@@ -1639,6 +1930,7 @@ end;
 
 var
   LogBrush: TLogBrush;
+
 
 initialization
 
