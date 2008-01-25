@@ -261,43 +261,6 @@ function CopyImageData(AWidth, AHeight, ARowStride: Integer; ABPP: Word;
                        ADestinationOrder: TRawImageLineOrder; ADestinationEnd: TRawImageLineEnd;
                        out ADestination: Pointer; out ASize: PtrUInt): Boolean;
 
-{.$define OldRawImageProcs}
-
-// TODO: remove
-{$ifdef OldRawImageProcs}
-function RawImageMaskIsEmpty(RawImage: PRawImage; TestPixels: boolean): boolean;
-function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
-procedure FreeRawImageData(RawImage: PRawImage);
-procedure ReleaseRawImageData(RawImage: PRawImage);
-
-procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
-                             LineEnd: TRawImageLineEnd;
-                             var Data: Pointer; var DataSize: PtrUInt);
-procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
-                                   LineEnd: TRawImageLineEnd;
-                                   var LineStarts: PRawImagePosition);
-procedure CreateRawImageDescFromMask(SrcRawImageDesc,
-                                     DestRawImageDesc: PRawImageDescription);
-procedure GetRawImageXYPosition(RawImageDesc: PRawImageDescription;
-                                LineStarts: PRawImagePosition; x, y: cardinal;
-                                var Position: TRawImagePosition);
-procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
-                              DestRawImage: PRawImage);
-
-
-procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal;
-                       BitOrder: TRawImageBitOrder; var Bits: word);
-procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal;
-                       BitOrder: TRawImageBitOrder; Bits: word);
-
-procedure ReAlignRawImageLines(var Data: Pointer; var Size: PtrUInt;
-  Width, Height, BitsPerPixel: cardinal;
-  var OldLineEnd: TRawImageLineEnd; NewLineEnd: TRawImageLineEnd);
-
-{$endif}
-
 var
   MissingBits: array[0..15] of array[0..7] of word;
 
