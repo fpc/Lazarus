@@ -4735,7 +4735,7 @@ procedure TWinControl.DockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   PositionDockRect(Source);
-  DoDockOver(Source,X,Y,State,Accept);
+  DoDockOver(Source, X, Y, State, Accept);
 end;
 
 {------------------------------------------------------------------------------
@@ -4746,7 +4746,7 @@ procedure TWinControl.DoDockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   if Assigned(FOnDockOver) then
-    FOnDockOver(Self,Source,X,Y,State,Accept);
+    FOnDockOver(Self, Source, X, Y, State, Accept);
 end;
 
 {------------------------------------------------------------------------------

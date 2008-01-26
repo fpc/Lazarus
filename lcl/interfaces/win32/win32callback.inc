@@ -1821,11 +1821,14 @@ begin
       Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
 
       //Drag&Dock support TCustomForm => Start BeginDrag()
-      if lWinControl <> nil then begin
-        if WParam = HTCAPTION  then begin
-          if lWinControl is TForm then begin
-            if TForm(lWinControl).DragKind = dkDock
-            then lWinControl.BeginDrag(true);
+      if lWinControl <> nil then
+      begin
+        if WParam = HTCAPTION  then
+        begin
+          if lWinControl is TCustomForm then
+          begin
+            if TWinControlAccess(lWinControl).DragKind = dkDock then
+              lWinControl.BeginDrag(true);
           end;
         end;
       end;

@@ -128,6 +128,7 @@ type
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
+    procedure SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
     procedure SlotMouseMove(Event: QEventH); cdecl;
     procedure SlotMouseWheel(Sender: QObjectH; Event: QEventH); cdecl;
@@ -1085,6 +1086,8 @@ const
   DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
 type
+  TWinControlAccess = class(TWinControl)
+  end;
   TLastMouseInfo = record
     Widget: QObjectH;
     MousePos: TQtPoint;
@@ -1535,6 +1538,10 @@ begin
             SlotPaint(Sender, Event);
         end;
       QEventContextMenu: SlotContextMenu(Sender, Event);
+      QEventNonClientAreaMouseButtonPress:
+        begin
+          SlotNCMouse(Sender, Event);
+        end;
       QEventLCLMessage:
         begin
           SlotLCLMessage(Sender, Event);
@@ -2011,6 +2018,16 @@ begin
    end;
   end;
   DeliverMessage(Msg);
+end;
+
+procedure TQtWidget.SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
+begin
+  //Drag&Dock support TCustomForm => Start BeginDrag()
+  if LCLObject is TCustomForm then
+  begin
+     if TWinControlAccess(LCLObject).DragKind = dkDock then
+       LCLObject.BeginDrag(true);
+  end;
 end;
 
 procedure TQtWidget.SlotMouseEnter(Sender: QObjectH; Event: QEventH); cdecl;
