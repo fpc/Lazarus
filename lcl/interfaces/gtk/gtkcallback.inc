@@ -32,15 +32,16 @@ begin
   {
     erase backgound of not csOpaque custom controls
     
-    Attention - TCustomForm is also TCustomControl descendant - if we erase its
-    backgound then Form.Color will work, but under gtk1 form background will erase
-    subcontrols. For example checkboxes become unvisible. If this will be solved then
-    remove line "not (TObject(Target) is TCustomForm) and" from condition.
+    use only for real custom controls for gtk1 - that are GTKAPIWidget
   }
+
   if (TObject(Target) is TCustomControl) and
-     not (TObject(Target) is TCustomForm) and
+  {$ifdef gtk1}
+     GtkWidgetIsA(PGtkWidget(TCustomControl(Target).Handle), GTKAPIWidget_GetType) and
+  {$endif}
      not (csOpaque in TWinControl(Target).ControlStyle) then
   begin
+    //DebugLn('LM_ERASEBKGND for: ', dbgsName(TCustomControl(Target)));
     Include(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
     TWinControl(Target).Perform(LM_ERASEBKGND, PaintMsg.DC, 0);
     Exclude(TWinControlAccess(Target).FWinControlFlags, wcfEraseBackground);
