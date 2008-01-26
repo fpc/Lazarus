@@ -130,15 +130,25 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtWarning"><short/></element>
+      <element name="TMsgDlgType.mtWarning">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtError"><short/></element>
+      <element name="TMsgDlgType.mtError">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtInformation"><short/></element>
+      <element name="TMsgDlgType.mtInformation">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtConfirmation"><short/></element>
+      <element name="TMsgDlgType.mtConfirmation">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgType.mtCustom"><short/></element>
+      <element name="TMsgDlgType.mtCustom">
+        <short/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TMsgDlgBtn">
         <short>Constants to define possible buttons on a dialog.</short>
@@ -146,29 +156,53 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbYes"><short/></element>
+      <element name="TMsgDlgBtn.mbYes">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbNo"><short/></element>
+      <element name="TMsgDlgBtn.mbNo">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbOK"><short/></element>
+      <element name="TMsgDlgBtn.mbOK">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbCancel"><short/></element>
+      <element name="TMsgDlgBtn.mbCancel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbAbort"><short/></element>
+      <element name="TMsgDlgBtn.mbAbort">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbRetry"><short/></element>
+      <element name="TMsgDlgBtn.mbRetry">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbIgnore"><short/></element>
+      <element name="TMsgDlgBtn.mbIgnore">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbAll"><short/></element>
+      <element name="TMsgDlgBtn.mbAll">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbNoToAll"><short/></element>
+      <element name="TMsgDlgBtn.mbNoToAll">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbYesToAll"><short/></element>
+      <element name="TMsgDlgBtn.mbYesToAll">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbHelp"><short/></element>
+      <element name="TMsgDlgBtn.mbHelp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TMsgDlgBtn.mbClose"><short/></element>
+      <element name="TMsgDlgBtn.mbClose">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TMsgDlgButtons">
         <short>Set of button messages for dialogs</short>
@@ -215,7 +249,9 @@ It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
-        <short><i>TCommonDialog</i>: the base type from which other dialogs are derived</short>
+        <short>
+          <i>TCommonDialog</i>
+: the base type from which other dialogs are derived</short>
         <descr>TCommonDialog: the base type from which all other dialogs are derived. <br/>
 
 Use the "Create" method to make an instance of the dialog, <br/>
@@ -294,7 +330,9 @@ and the "Close" method to release it and free the used resources.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetHandle.AValue"><short/></element>
+      <element name="TCommonDialog.SetHandle.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCommonDialog.SetHeight">
         <short/>
@@ -303,7 +341,9 @@ and the "Close" method to release it and free the used resources.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetHeight.AValue"><short/></element>
+      <element name="TCommonDialog.SetHeight.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCommonDialog.SetWidth">
         <short/>
@@ -312,7 +352,9 @@ and the "Close" method to release it and free the used resources.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.SetWidth.AValue"><short/></element>
+      <element name="TCommonDialog.SetWidth.AValue">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TCommonDialog.DoExecute">
         <short>The function that actually takes care of executing the dialog</short>
@@ -332,7 +374,9 @@ and the "Close" method to release it and free the used resources.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCommonDialog.Create">
-        <short><i>Create</i> - constructor for dialogs</short>
+        <short>
+          <i>Create</i>
+ - constructor for dialogs</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCommonDialog.Create.TheOwner">
@@ -384,7 +428,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCommonDialog.DoCanClose.CanClose"><short/></element>
+      <element name="TCommonDialog.DoCanClose.CanClose">
+        <short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TCommonDialog.DoClose">
         <short>The procedure that actually closes the dialog</short>
@@ -400,7 +446,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCommonDialog.HandleAllocated.Result"><short/></element>
+      <element name="TCommonDialog.HandleAllocated.Result">
+        <short/>
+      </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.OnClose">
         <short>Event Handler for closing the dialog</short>
@@ -415,11 +463,13 @@ and then check the result to see if the user made a valid choice and pressed the
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.HelpContext">
-        <short><i>HelpContext</i> - an index to the context-dependent help message for this dialog</short>
+        <short>
+          <i>HelpContext</i>
+ - an index to the context-dependent help message for this dialog</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.Width">
-        <short>The width of th edialog box</short>
+        <short>The width of the dialog box</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCommonDialog.Height">
@@ -431,9 +481,13 @@ and then check the result to see if the user made a valid choice and pressed the
       </element>
       <!-- object Visibility: default -->
       <element name="TFileDialog">
-        <short><i>TFileDialog</i>: allows selection of a file from the current directory.</short>
+        <short>
+          <i>TFileDialog</i>
+: allows selection of a file from the current directory.</short>
         <descr>
-          <p><i>TFileDialog</i>: allows selection of a file from the current directory.</p>
+          <p>
+            <i>TFileDialog</i>
+: allows selection of a file from the current directory.</p>
           <p>This is also the base class for the Open and Save (As) dialogs</p>
         </descr>
       </element>
@@ -511,7 +565,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetDefaultExt.AValue"><short/></element>
+      <element name="TFileDialog.SetDefaultExt.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFileDialog.SetFilterIndex">
         <short/>
@@ -520,7 +576,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetFilterIndex.AValue"><short/></element>
+      <element name="TFileDialog.SetFilterIndex.AValue">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TFileDialog.DoExecute">
         <short>Internal procedure called to execute the dialog.</short>
@@ -529,7 +587,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFileDialog.DoExecute.Result"><short/></element>
+      <element name="TFileDialog.DoExecute.Result">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TFileDialog.GetFilterIndex">
         <short/>
@@ -538,7 +598,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFileDialog.GetFilterIndex.Result"><short/></element>
+      <element name="TFileDialog.GetFilterIndex.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetFileName">
         <short/>
@@ -547,7 +609,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetFileName.Value"><short/></element>
+      <element name="TFileDialog.SetFileName.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetFilter">
         <short/>
@@ -556,7 +620,9 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetFilter.Value"><short/></element>
+      <element name="TFileDialog.SetFilter.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFileDialog.SetHistoryList">
         <short/>
@@ -565,11 +631,15 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.SetHistoryList.AValue"><short/></element>
+      <element name="TFileDialog.SetHistoryList.AValue">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TFileDialog.Create"/>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.Create.TheOwner"><short/></element>
+      <element name="TFileDialog.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TFileDialog.Destroy">
         <short/>
@@ -592,10 +662,12 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFileDialog.Execute.Result"><short/></element>
+      <element name="TFileDialog.Execute.Result">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TFileDialog.Files">
-        <short>Stringlist which stored the selected files.</short>
+        <short>Stringlist which stores the selected files.</short>
         <descr/>
         <seealso/>
       </element>
@@ -613,9 +685,15 @@ and then check the result to see if the user made a valid choice and pressed the
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFileDialog.IntfFileTypeChanged.NewFilterIndex"><short/></element>
+      <element name="TFileDialog.IntfFileTypeChanged.NewFilterIndex">
+        <short/>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TFileDialog.Title"/>
+      <element name="TFileDialog.Title">
+        <short>
+          <i>Title</i>
+ - the text appearing in the title label at the top of the dialog</short>
+      </element>
       <!-- property Visibility: published -->
       <element name="TFileDialog.DefaultExt">
         <short>Sets the default file extension for the file dialog box.</short>
@@ -659,53 +737,101 @@ To set this property during runtime assign a value like: "All files|*.*|Lazarus 
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofReadOnly"><short/></element>
+      <element name="TOpenOption.ofReadOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofOverwritePrompt"><short/></element>
+      <element name="TOpenOption.ofOverwritePrompt">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofHideReadOnly"><short/></element>
+      <element name="TOpenOption.ofHideReadOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoChangeDir"><short/></element>
+      <element name="TOpenOption.ofNoChangeDir">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofShowHelp"><short/></element>
+      <element name="TOpenOption.ofShowHelp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoValidate"><short/></element>
+      <element name="TOpenOption.ofNoValidate">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofAllowMultiSelect"><short/></element>
+      <element name="TOpenOption.ofAllowMultiSelect">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofExtensionDifferent"><short/></element>
+      <element name="TOpenOption.ofExtensionDifferent">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofPathMustExist"><short/></element>
+      <element name="TOpenOption.ofPathMustExist">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofFileMustExist"><short/></element>
+      <element name="TOpenOption.ofFileMustExist">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofCreatePrompt"><short/></element>
+      <element name="TOpenOption.ofCreatePrompt">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofShareAware"><short/></element>
+      <element name="TOpenOption.ofShareAware">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoReadOnlyReturn"><short/></element>
+      <element name="TOpenOption.ofNoReadOnlyReturn">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoTestFileCreate"><short/></element>
+      <element name="TOpenOption.ofNoTestFileCreate">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoNetworkButton"><short/></element>
+      <element name="TOpenOption.ofNoNetworkButton">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoLongNames"><short/></element>
+      <element name="TOpenOption.ofNoLongNames">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofOldStyleDialog"><short/></element>
+      <element name="TOpenOption.ofOldStyleDialog">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofNoDereferenceLinks"><short/></element>
+      <element name="TOpenOption.ofNoDereferenceLinks">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofEnableIncludeNotify"><short/></element>
+      <element name="TOpenOption.ofEnableIncludeNotify">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofEnableSizing"><short/></element>
+      <element name="TOpenOption.ofEnableSizing">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofDontAddToRecent"><short/></element>
+      <element name="TOpenOption.ofDontAddToRecent">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofForceShowHidden"><short/></element>
+      <element name="TOpenOption.ofForceShowHidden">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofViewDetail"><short/></element>
+      <element name="TOpenOption.ofViewDetail">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TOpenOption.ofAutoPreview"><short/></element>
+      <element name="TOpenOption.ofAutoPreview">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TOpenOptions">
         <short>Set of TOpenOption</short>
@@ -720,8 +846,12 @@ To set this property during runtime assign a value like: "All files|*.*|Lazarus 
       </element>
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
-        <short><i>TOpenDialog</i>: open a file in the current directory, selected by File Dialog.</short>
-        <descr><i>TOpenDialog</i>: open a file in the current directory, selected by File Dialog. <br/>
+        <short>
+          <i>TOpenDialog</i>
+: open a file in the current directory, selected by File Dialog.</short>
+        <descr>
+          <i>TOpenDialog</i>
+: open a file in the current directory, selected by File Dialog. <br/>
 
 If the required file is not in the current directory, another directory can be selected with Select Directory</descr>
       </element>
@@ -764,9 +894,13 @@ If the required file is not in the current directory, another directory can be s
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.CheckFile.Result"><short/></element>
+      <element name="TOpenDialog.CheckFile.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TOpenDialog.CheckFile.AFilename"><short/></element>
+      <element name="TOpenDialog.CheckFile.AFilename">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.CheckFileMustExist">
         <short/>
@@ -775,9 +909,13 @@ If the required file is not in the current directory, another directory can be s
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.CheckFileMustExist.Result"><short/></element>
+      <element name="TOpenDialog.CheckFileMustExist.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TOpenDialog.CheckFileMustExist.AFileName"><short/></element>
+      <element name="TOpenDialog.CheckFileMustExist.AFileName">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.CheckAllFiles">
         <short>A protected method which calls CheckFile for each selected file.</short>
@@ -786,7 +924,9 @@ If the required file is not in the current directory, another directory can be s
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.CheckAllFiles.Result"><short/></element>
+      <element name="TOpenDialog.CheckAllFiles.Result">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TOpenDialog.DoExecute">
         <short>Internal procedure called to execute the dialog.</short>
@@ -795,11 +935,15 @@ If the required file is not in the current directory, another directory can be s
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TOpenDialog.DoExecute.Result"><short/></element>
+      <element name="TOpenDialog.DoExecute.Result">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TOpenDialog.Create"/>
       <!-- argument Visibility: default -->
-      <element name="TOpenDialog.Create.TheOwner"><short/></element>
+      <element name="TOpenDialog.Create.TheOwner">
+        <short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TOpenDialog.DoFolderChange">
         <short/>
@@ -818,7 +962,9 @@ If the required file is not in the current directory, another directory can be s
       <element name="TOpenDialog.Options">
         <short>Options to be used for this dialog</short>
         <descr>Options to be used for the Open File dialog. A full list of available options is found in <link id="TOpenOptions"/></descr>
-        <seealso><link id="TOpenOptions"/></seealso>
+        <seealso>
+          <link id="TOpenOptions"/>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TOpenDialog.OnFolderChange">
@@ -851,7 +997,9 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSaveDialog.Create.AOwner"><short/></element>
+      <element name="TSaveDialog.Create.AOwner">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TSelectDirectoryDialog">
         <short>Select Directory Dialog</short>
@@ -867,9 +1015,13 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSelectDirectoryDialog.CheckFileMustExist.Result"><short/></element>
+      <element name="TSelectDirectoryDialog.CheckFileMustExist.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TSelectDirectoryDialog.CheckFileMustExist.AFilename"><short/></element>
+      <element name="TSelectDirectoryDialog.CheckFileMustExist.AFilename">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TSelectDirectoryDialog.Create">
         <short/>
@@ -878,7 +1030,9 @@ if no file is specified, the Save File As dialog is invoked and the buffer is sa
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSelectDirectoryDialog.Create.AOwner"><short/></element>
+      <element name="TSelectDirectoryDialog.Create.AOwner">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TColorDialog">
         <short>Colour Dialog</short>
@@ -903,7 +1057,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorDialog.Create.TheOwner"><short/></element>
+      <element name="TColorDialog.Create.TheOwner">
+        <short/>
+      </element>
       <!-- property Visibility: published -->
       <element name="TColorDialog.Title">
         <short>The caption for the color dialog.</short>
@@ -919,7 +1075,8 @@ Call the Execute function to show the color dialog.</descr>
       <!-- object Visibility: default -->
       <element name="TColorButton">
         <short>Colour Button</short>
-        <descr>Colour Button: Pressing this button causes the Colour Dialog to be presented, allowing a choice of colour for text or graphics.</descr>
+        <descr>Colour Button: Pressing this button causes the Colour Dialog to be presented, allowing a choice of colour for text or graphics.
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -967,7 +1124,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TColorButton.IsButtonColorAutoSizeStored.Result"><short/></element>
+      <element name="TColorButton.IsButtonColorAutoSizeStored.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TColorButton.SetBorderWidth">
         <short/>
@@ -976,7 +1135,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetBorderWidth.AValue"><short/></element>
+      <element name="TColorButton.SetBorderWidth.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TColorButton.SetButtonColor">
         <short/>
@@ -985,7 +1146,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetButtonColor.AValue"><short/></element>
+      <element name="TColorButton.SetButtonColor.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TColorButton.SetButtonColorAutoSize">
         <short/>
@@ -994,7 +1157,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetButtonColorAutoSize.AValue"><short/></element>
+      <element name="TColorButton.SetButtonColorAutoSize.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TColorButton.SetButtonColorSize">
         <short/>
@@ -1003,7 +1168,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.SetButtonColorSize.AValue"><short/></element>
+      <element name="TColorButton.SetButtonColorSize.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TColorButton.Click">
         <short/>
@@ -1026,9 +1193,13 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TColorButton.GetGlyphSize.Result"><short/></element>
+      <element name="TColorButton.GetGlyphSize.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.GetGlyphSize.PaintRect"><short/></element>
+      <element name="TColorButton.GetGlyphSize.PaintRect">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TColorButton.DrawGlyph">
         <short/>
@@ -1037,19 +1208,33 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TColorButton.DrawGlyph.Result"><short/></element>
+      <element name="TColorButton.DrawGlyph.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.ACanvas"><short/></element>
+      <element name="TColorButton.DrawGlyph.ACanvas">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.AClient"><short/></element>
+      <element name="TColorButton.DrawGlyph.AClient">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.AOffset"><short/></element>
+      <element name="TColorButton.DrawGlyph.AOffset">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.AState"><short/></element>
+      <element name="TColorButton.DrawGlyph.AState">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.ATransparent"><short/></element>
+      <element name="TColorButton.DrawGlyph.ATransparent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.DrawGlyph.BiDiFlags"><short/></element>
+      <element name="TColorButton.DrawGlyph.BiDiFlags">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TColorButton.GetControlClassDefaultSize">
         <short/>
@@ -1058,7 +1243,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TColorButton.GetControlClassDefaultSize.Result"><short/></element>
+      <element name="TColorButton.GetControlClassDefaultSize.Result">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TColorButton.Create">
         <short/>
@@ -1067,7 +1254,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TColorButton.Create.AnOwner"><short/></element>
+      <element name="TColorButton.Create.AnOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TColorButton.Destroy">
         <short/>
@@ -1296,37 +1485,69 @@ Call the Execute function to show the color dialog.</descr>
         <short>An enumerated list of constants to set the options of a Font dialog.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdAnsiOnly"><short/></element>
+      <element name="TFontDialogOption.fdAnsiOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdTrueTypeOnly"><short/></element>
+      <element name="TFontDialogOption.fdTrueTypeOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdEffects"><short/></element>
+      <element name="TFontDialogOption.fdEffects">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdFixedPitchOnly"><short/></element>
+      <element name="TFontDialogOption.fdFixedPitchOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdForceFontExist"><short/></element>
+      <element name="TFontDialogOption.fdForceFontExist">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoFaceSel"><short/></element>
+      <element name="TFontDialogOption.fdNoFaceSel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoOEMFonts"><short/></element>
+      <element name="TFontDialogOption.fdNoOEMFonts">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoSimulations"><short/></element>
+      <element name="TFontDialogOption.fdNoSimulations">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoSizeSel"><short/></element>
+      <element name="TFontDialogOption.fdNoSizeSel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoStyleSel"><short/></element>
+      <element name="TFontDialogOption.fdNoStyleSel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdNoVectorFonts"><short/></element>
+      <element name="TFontDialogOption.fdNoVectorFonts">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdShowHelp"><short/></element>
+      <element name="TFontDialogOption.fdShowHelp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdWysiwyg"><short/></element>
+      <element name="TFontDialogOption.fdWysiwyg">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdLimitSize"><short/></element>
+      <element name="TFontDialogOption.fdLimitSize">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdScalableOnly"><short/></element>
+      <element name="TFontDialogOption.fdScalableOnly">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TFontDialogOption.fdApplyButton"><short/></element>
+      <element name="TFontDialogOption.fdApplyButton">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TFontDialogOptions">
         <short>A set of options for font dialogs</short>
@@ -1382,7 +1603,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFontDialog.SetFont.AValue"><short/></element>
+      <element name="TFontDialog.SetFont.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TFontDialog.ApplyClicked">
         <short/>
@@ -1398,7 +1621,9 @@ Call the Execute function to show the color dialog.</descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFontDialog.Create.AOwner"><short/></element>
+      <element name="TFontDialog.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TFontDialog.Destroy">
         <short/>
@@ -1523,7 +1748,9 @@ it contains definitions for the Replace method, <br/>
 but the Replace option does not actually appear when the dialog is displayed: <br/>
 you need to use TReplaceDialog to do that<br/></descr>
         <errors/>
-        <seealso><link id="TReplaceDialog"/></seealso>
+        <seealso>
+          <link id="TReplaceDialog"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TFindDialog.FFormLeft">
@@ -1545,7 +1772,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.GetReplaceText.Result"><short/></element>
+      <element name="TFindDialog.GetReplaceText.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFindDialog.GetFindText">
         <short/>
@@ -1554,7 +1783,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.GetFindText.Result"><short/></element>
+      <element name="TFindDialog.GetFindText.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFindDialog.GetLeft">
         <short/>
@@ -1563,7 +1794,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.GetLeft.Result"><short/></element>
+      <element name="TFindDialog.GetLeft.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFindDialog.GetPosition">
         <short/>
@@ -1572,7 +1805,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.GetPosition.Result"><short/></element>
+      <element name="TFindDialog.GetPosition.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFindDialog.GetTop">
         <short/>
@@ -1581,7 +1816,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.GetTop.Result"><short/></element>
+      <element name="TFindDialog.GetTop.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFindDialog.SetFindText">
         <short/>
@@ -1590,7 +1827,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.SetFindText.AValue"><short/></element>
+      <element name="TFindDialog.SetFindText.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFindDialog.SetLeft">
         <short/>
@@ -1599,7 +1838,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.SetLeft.AValue"><short/></element>
+      <element name="TFindDialog.SetLeft.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFindDialog.SetPosition">
         <short/>
@@ -1608,7 +1849,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.SetPosition.AValue"><short/></element>
+      <element name="TFindDialog.SetPosition.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFindDialog.SetTop">
         <short/>
@@ -1617,7 +1860,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.SetTop.AValue"><short/></element>
+      <element name="TFindDialog.SetTop.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFindDialog.SetReplaceText">
         <short/>
@@ -1626,7 +1871,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.SetReplaceText.AValue"><short/></element>
+      <element name="TFindDialog.SetReplaceText.AValue">
+        <short/>
+      </element>
       <!-- variable Visibility: protected -->
       <element name="TFindDialog.FFindForm">
         <short/>
@@ -1677,7 +1924,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.FindClick.Sender"><short/></element>
+      <element name="TFindDialog.FindClick.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFindDialog.HelpClick">
         <short/>
@@ -1686,7 +1935,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.HelpClick.Sender"><short/></element>
+      <element name="TFindDialog.HelpClick.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFindDialog.CancelClick">
         <short/>
@@ -1695,7 +1946,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.CancelClick.Sender"><short/></element>
+      <element name="TFindDialog.CancelClick.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFindDialog.UpdatePosition">
         <short/>
@@ -1711,9 +1964,13 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.DoCloseForm.Sender"><short/></element>
+      <element name="TFindDialog.DoCloseForm.Sender">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.DoCloseForm.CloseAction"><short/></element>
+      <element name="TFindDialog.DoCloseForm.CloseAction">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFindDialog.Find">
         <short/>
@@ -1743,7 +2000,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.CreateForm.Result"><short/></element>
+      <element name="TFindDialog.CreateForm.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFindDialog.SetFormValues">
         <short/>
@@ -1778,7 +2037,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFindDialog.Create.AOwner"><short/></element>
+      <element name="TFindDialog.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TFindDialog.Destroy">
         <short/>
@@ -1801,7 +2062,9 @@ you need to use TReplaceDialog to do that<br/></descr>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFindDialog.Execute.Result"><short/></element>
+      <element name="TFindDialog.Execute.Result">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TFindDialog.Left">
         <short/>
@@ -1852,7 +2115,9 @@ for example while editing a file or large piece of text. <br/>
 
 A number of buttons appear, offering the choice to replace this instance, find next, replace all</descr>
         <errors/>
-        <seealso><link id="TFindDialog"/></seealso>
+        <seealso>
+          <link id="TFindDialog"/>
+        </seealso>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TReplaceDialog.ReplaceClick">
@@ -1862,7 +2127,9 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TReplaceDialog.ReplaceClick.Sender"><short/></element>
+      <element name="TReplaceDialog.ReplaceClick.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TReplaceDialog.ReplaceAllClick">
         <short/>
@@ -1871,7 +2138,9 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TReplaceDialog.ReplaceAllClick.Sender"><short/></element>
+      <element name="TReplaceDialog.ReplaceAllClick.Sender">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TReplaceDialog.CreateForm">
         <short/>
@@ -1880,7 +2149,9 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TReplaceDialog.CreateForm.Result"><short/></element>
+      <element name="TReplaceDialog.CreateForm.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TReplaceDialog.SetFormValues">
         <short/>
@@ -1903,7 +2174,9 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TReplaceDialog.Create.AOwner"><short/></element>
+      <element name="TReplaceDialog.Create.AOwner">
+        <short/>
+      </element>
       <!-- property Visibility: published -->
       <element name="TReplaceDialog.ReplaceText">
         <short/>
@@ -1948,17 +2221,29 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <short>A list of available options for print dialogs</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poPrintToFile"><short/></element>
+      <element name="TPrintDialogOption.poPrintToFile">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poPageNums"><short/></element>
+      <element name="TPrintDialogOption.poPageNums">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poSelection"><short/></element>
+      <element name="TPrintDialogOption.poSelection">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poWarning"><short/></element>
+      <element name="TPrintDialogOption.poWarning">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poHelp"><short/></element>
+      <element name="TPrintDialogOption.poHelp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TPrintDialogOption.poDisablePrintToFile"><short/></element>
+      <element name="TPrintDialogOption.poDisablePrintToFile">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TPrintDialogOptions">
         <short>A set of options for the print dialog</short>
@@ -2032,7 +2317,9 @@ A number of buttons appear, offering the choice to replace this instance, find n
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomPrintDialog.Create.TheOwner"><short/></element>
+      <element name="TCustomPrintDialog.Create.TheOwner">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TCustomPrintDialog.Collate">
         <short/>
@@ -2187,9 +2474,13 @@ or you can make your own set.</descr>
         <descr>Sets the caption of the messagedialog shown by this function.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="MessageDlg.DefaultButton"><short/></element>
+      <element name="MessageDlg.DefaultButton">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="MessageDlg.HelpKeyword"><short/></element>
+      <element name="MessageDlg.HelpKeyword">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="MessageDlgPos">
         <short>An extended MessageDlg function.</short>
@@ -2373,7 +2664,9 @@ depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'M
         <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="QuestionDlg.HelpKeyword"><short/></element>
+      <element name="QuestionDlg.HelpKeyword">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="ShowMessage">
         <short>Show Message</short>
@@ -2402,7 +2695,9 @@ that is the box is displayed, receives focus, <br/>
 
 and does not relinquish focus until the OK box is clicked or otherwise selected.<br/><br/></descr>
         <errors/>
-        <seealso><link id="forms.TApplication.MessageBox"/></seealso>
+        <seealso>
+          <link id="forms.TApplication.MessageBox"/>
+        </seealso>
         <example file="dialogs/tryshowmessage.pas"/>
       </element>
       <!-- argument Visibility: default -->
@@ -2419,7 +2714,9 @@ and does not relinquish focus until the OK box is clicked or otherwise selected.
  procedure. The parameters it takes are the same as the <link id="#rtl.SysUtils.Format">Format</link>
  function.</descr>
         <errors/>
-        <seealso><link id="ShowMessage"/></seealso>
+        <seealso>
+          <link id="ShowMessage"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessageFmt.aMsg">
@@ -2434,7 +2731,9 @@ and does not relinquish focus until the OK box is clicked or otherwise selected.
         <short>Shows a message box at a given screen position.</short>
         <descr>Shows a message box at a given screen position.</descr>
         <errors/>
-        <seealso><link id="ShowMessage"/></seealso>
+        <seealso>
+          <link id="ShowMessage"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="ShowMessagePos.aMsg">
@@ -2495,31 +2794,41 @@ When ENTER is pressed or OK clicked, Value will be the (possibly amended) text f
       <element name="InputBox">
         <short>Displays a box with defined title and prompt, and expects user input in a text box</short>
         <descr>
-          <p><printshort id="InputBox"/>. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
+          <p>
+            <printshort id="InputBox"/>
+. A default string can optionally be displayed in the text box. The user-entered or default string is returned as the function result.
 </p>
           <p>If the user selects the OK button, the text in the text box is returned. If the user selects the Cancel button, the default string is returned.
 </p>
         </descr>
         <errors/>
-        <seealso><link id="ShowMessage"/></seealso>
+        <seealso>
+          <link id="ShowMessage"/>
+        </seealso>
         <example file="dialogs/inputbox.pas"/>
       </element>
       <!-- function result Visibility: default -->
       <element name="InputBox.Result">
         <short>The result of this function is the string the user entered in the editbox or the default string</short>
-        <descr><printshort id="InputBox.Result"/>
+        <descr>
+          <printshort id="InputBox.Result"/>
+
 .</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputBox.ACaption">
         <short>The caption for the dialogbox</short>
-        <descr><printshort id="InputBox.ACaption"/>
+        <descr>
+          <printshort id="InputBox.ACaption"/>
+
 .</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="InputBox.APrompt">
         <short>The text asking the user for his input</short>
-        <descr><printshort id="InputBox.APrompt"/>
+        <descr>
+          <printshort id="InputBox.APrompt"/>
+
 .</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -2560,11 +2869,17 @@ the difference is that the password that was typed in is returned as the result 
         <short>List of options available when selecting a directory</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TSelectDirOpt.sdAllowCreate"><short/></element>
+      <element name="TSelectDirOpt.sdAllowCreate">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TSelectDirOpt.sdPerformCreate"><short/></element>
+      <element name="TSelectDirOpt.sdPerformCreate">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TSelectDirOpt.sdPrompt"><short/></element>
+      <element name="TSelectDirOpt.sdPrompt">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TSelectDirOpts">
         <short>Set of directory selection options</short>
@@ -2607,15 +2922,21 @@ If a valid directory is given, the selected directory in the tree will be set to
         <descr>A boolean constant indicating whether hidden folders should be shown too.</descr>
       </element>
       <!-- argument Visibility: default -->
-      <element name="SelectDirectory.HelpCtx"><short/></element>
+      <element name="SelectDirectory.HelpCtx">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="SelectDirectory.Options"><short/></element>
+      <element name="SelectDirectory.Options">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short>Register the components used in the current application, so that they can be recognised</short>
         <descr/>
         <errors/>
-        <seealso><link id="#rtl.classes.registercomponents"/></seealso>
+        <seealso>
+          <link id="#rtl.classes.registercomponents"/>
+        </seealso>
       </element>
     </module>
     <!-- Dialogs -->
