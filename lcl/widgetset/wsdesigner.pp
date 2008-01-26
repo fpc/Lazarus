@@ -47,7 +47,7 @@ type
   { TWsCustomRubberBand }
 
   TWsCustomRubberBand = class(TWsWinControl)
-    class procedure SetShape(ARubberBand: TCustomRubberBand; AShape: TRubberBandShape); virtual;
+    class procedure SetShape(ARubberBand: TCustomRubberBand; AShape: TRubberBandShape); virtual; overload;
   end;
   TWsCustomRubberBandClass = class of TWsCustomRubberBand;
 

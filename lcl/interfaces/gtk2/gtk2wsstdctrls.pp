@@ -423,21 +423,26 @@ var
   ListStoreModel: PGtkTreeModel;
   Selection: PGtkTreeSelection;
   Path: PGtkTreePath;
+
+  procedure ClearCursor; inline;
+  begin
+    if gtk_tree_row_reference_valid(PGtkTreeView(Widget)^.priv^.cursor) then
+    begin
+      gtk_tree_row_reference_free(PGtkTreeView(Widget)^.priv^.cursor);
+      PGtkTreeView(Widget)^.priv^.cursor := nil;
+    end;
+  end;
+  
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetItemIndex') then
     Exit;
+
   Widget := GetWidgetInfo(Pointer(ACustomListBox.Handle), True)^.CoreWidget;
   if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
 
   ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
-  
-  if gtk_tree_row_reference_valid(PGtkTreeView(Widget)^.priv^.cursor) then
-  begin
-    gtk_tree_row_reference_free(PGtkTreeView(Widget)^.priv^.cursor);
-    PGtkTreeView(Widget)^.priv^.cursor := nil;
-  end;
 
   if (AIndex < 0) then
     if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) then
@@ -447,18 +452,26 @@ begin
   else
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
 
-  if Path <> nil then
-    PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
-
   if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
   begin
     // if singleselection mode then selection = itemindex
     if Path <> nil then
-      gtk_tree_selection_select_path(Selection, Path)
+      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False)
     else
+    begin
+      ClearCursor;
       gtk_tree_selection_unselect_all(Selection);
+    end;
+  end
+  else
+  if Path <> nil then
+  begin
+    ClearCursor;
+    // hack to prevent clearing of selection while gtk_tree_view_set_cursor
+    // it works bad with latest gtk (2.12)
+    PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
   end;
-  
+
   if Path <> nil then
     gtk_tree_path_free(Path);
 end;
