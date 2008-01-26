@@ -313,6 +313,7 @@ type
     procedure setVerticalScrollBar(AScrollBar: TQtScrollBar);
     procedure setVisible(visible: Boolean); override;
     procedure viewportNeeded;
+    procedure viewportDelete;
   end;
   
   { TQtViewPort }
@@ -6864,8 +6865,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.Destroy');
   {$endif}
-  if Assigned(FViewPortWidget) then
-    FreeAndNil(FViewPortWidget);
+  viewportDelete;
 
   inherited Destroy;
 end;
@@ -7125,6 +7125,18 @@ begin
   QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), Method);
 
   setViewport(FViewPortWidget.Widget);
+end;
+
+procedure TQtAbstractScrollArea.viewportDelete;
+var
+  NilMethod: TMethod;
+begin
+  if Assigned(FViewPortWidget) then
+  begin
+    FillChar(NilMethod, SizeOf(NilMethod), 0);
+    QLCLAbstractScrollArea_override_viewportEvent(QLCLAbstractScrollAreaH(Widget), NilMethod);
+    FreeAndNil(FViewPortWidget);
+  end;
 end;
 
 {------------------------------------------------------------------------------
