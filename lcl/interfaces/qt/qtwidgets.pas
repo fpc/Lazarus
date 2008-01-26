@@ -156,6 +156,8 @@ type
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
+    function getPos: TQtPoint;
+    function getSize: TSize;
     function getText: WideString; virtual;
     function getTextStatic: Boolean; virtual;
     function getHeight: Integer;
@@ -1194,6 +1196,10 @@ begin
   FDefaultCursor := QCursor_create();
   QWidget_cursor(Widget, FDefaultCursor);
   
+  // apply initial position and size
+  move(FParams.X, FParams.Y);
+  resize(FParams.Width, FParams.Height);
+  
   {$ifdef VerboseQt}
   DebugLn('TQtWidget.InitializeWidget: Self:%x Widget:%x was created for control %s',
     [ptrint(Self), ptrint(Widget), LCLObject.Name]);
@@ -1249,6 +1255,17 @@ procedure TQtWidget.RecreateWidget;
 var
   Parent: QWidgetH;
 begin
+  // update createparams
+  with getPos do
+  begin
+    FParams.X := X;
+    FParams.Y := Y;
+  end;
+  with getSize do
+  begin
+    FParams.Width := cx;
+    FParams.Height := cy;
+  end;
   if Widget <> nil then
     Parent := QWidget_parentWidget(Widget)
   else
@@ -2432,6 +2449,16 @@ end;
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
+end;
+
+function TQtWidget.getPos: TQtPoint;
+begin
+  QWidget_pos(Widget, @Result);
+end;
+
+function TQtWidget.getSize: TSize;
+begin
+  QWidget_size(Widget, @Result);
 end;
 
 function TQtWidget.getText: WideString;
