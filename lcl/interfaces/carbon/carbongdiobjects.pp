@@ -923,8 +923,16 @@ procedure TCarbonTextLayoutArray.Apply(ADC: TCarbonContext);
 var
   I: Integer;
 begin
+  FAscent := FFont.FCachedLayouts[Ord(FText[1])].FAscent;
+  FDescent := FFont.FCachedLayouts[Ord(FText[1])].FDescent;
+  FTextBefore := FFont.FCachedLayouts[Ord(FText[1])].FTextBefore;
+  FTextAfter := FTextBefore;
+
   for I := 1 to Length(FText) do
+  begin
     FFont.FCachedLayouts[Ord(FText[I])].Apply(ADC);
+    FTextAfter := FTextAfter + Long2Fix(FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
+  end;
 end;
 
 function TCarbonTextLayoutArray.Draw(X, Y: Integer): Boolean;
@@ -1104,10 +1112,15 @@ function TCarbonFont.CreateTextLayout(const Text: String;
   function IsTextASCII: Boolean;
   var
     I: Integer;
+    C: Byte;
   begin
     Result := False;
     for I := 1 to Length(Text) do
-      if Ord(Text[I]) > 127 then Exit;
+    begin
+      C := Ord(Text[I]);
+      if (C > 127) or (C = 10) or (C = 13) then Exit;
+    end;
+    
     Result := True;
   end;
 var
