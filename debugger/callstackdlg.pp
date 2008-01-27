@@ -37,29 +37,74 @@ interface
 
 uses
   LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd;
+  ComCtrls, Debugger, DebuggerDlg, Menus, ClipBrd, ExtCtrls, StdCtrls, Spin,
+  ActnList;
 
 type
 
   { TCallStackDlg }
 
   TCallStackDlg = class(TDebuggerDlg)
+    aclActions: TActionList;
+    actCopyAll: TAction;
+    actViewBottom: TAction;
+    actViewTop: TAction;
+    actViewLimit: TAction;
+    actViewGoto: TAction;
+    actViewMore: TAction;
+    actSetCurrent: TAction;
+    actShow: TAction;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+    txtGoto: TEdit;
     lvCallStack: TListView;
+    Panel1: TPanel;
+    popLimit50: TMenuItem;
+    popLimit25: TMenuItem;
+    popLimit10: TMenuItem;
     popCopyAll: TMenuItem;
     N1: TMenuItem;
     popSetAsCurrent: TMenuItem;
     popShow: TMenuItem;
     mnuPopup: TPopupMenu;
+    mnuLimit: TPopupMenu;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    procedure actViewBottomExecute(Sender: TObject);
+    procedure actViewGotoExecute(Sender: TObject);
+    procedure actViewMoreExecute(Sender: TObject);
+    procedure actViewLimitExecute(Sender: TObject);
+    procedure actViewTopExecute(Sender: TObject);
+    procedure popCountClick(Sender: TObject);
+    procedure txtGotoKeyPress(Sender: TObject; var Key: char);
     procedure lvCallStackDBLCLICK(Sender: TObject);
-    procedure popCopyAllClick(Sender: TObject);
-    procedure popSetAsCurrentClick(Sender : TObject);
-    procedure popShowClick(Sender: TObject);
+    procedure actCopyAllClick(Sender: TObject);
+    procedure actSetAsCurrentClick(Sender : TObject);
+    procedure actShowClick(Sender: TObject);
   private
     FCallStack: TIDECallStack;
     FCallStackNotification: TIDECallStackNotification;
+    FViewCount: Integer;
+    FViewLimit: Integer;
+    FViewStart: Integer;
+    procedure SetViewLimit(const AValue: Integer);
+    procedure SetViewStart(AStart: Integer);
+    procedure SetViewMax;
     procedure CallStackChanged(Sender: TObject);
+    procedure CallStackCurrent(Sender: TObject);
+    procedure GotoIndex(AIndex: Integer);
+    function  GetCurrentEntry: TCallStackEntry;
+    function  GetFunction(const Entry: TCallStackEntry): string;
     procedure SetCallStack(const AValue: TIDECallStack);
-    function GetFunction(const Entry: TCallStackEntry): string;
+    procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
   protected
@@ -70,11 +115,14 @@ type
     destructor Destroy; override;
 
     property CallStack: TIDECallStack read FCallStack write SetCallStack;
+    property ViewLimit: Integer read FViewLimit write SetViewLimit;
   end;
 
 
 implementation
-uses BaseDebugManager;
+
+uses
+  BaseDebugManager;
 
 { TCallStackDlg }
 
@@ -84,46 +132,72 @@ begin
   FCallStackNotification := TIDECallStackNotification.Create;
   FCallStackNotification.AddReference;
   FCallStackNotification.OnChange := @CallStackChanged;
+  FCallStackNotification.OnCurrent := @CallStackCurrent;
+  FViewLimit := 10;
+  FViewCount := 10;
+  FViewStart := 0;
+  actViewLimit.Caption := popLimit10.Caption;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
+begin
+  if FViewStart = 0
+  then UpdateView
+  else SetViewStart(0);
+  SetViewMax;
+end;
+
+procedure TCallStackDlg.CallStackCurrent(Sender: TObject);
+begin
+  UpdateView;
+end;
+
+procedure TCallStackDlg.UpdateView;
 var
   n: Integer;
   Item: TListItem;
   Entry: TCallStackEntry;
-begin       
+  First, Last  : Integer;
+begin
   BeginUpdate;
   try
-    if CallStack = nil
+    if (CallStack = nil) or (CallStack.Count=0)
     then begin
+      txtGoto.Text:= '0';
       lvCallStack.Items.Clear;
       exit;
     end;
 
+    First:= FViewStart;
+    Last := First + FViewLimit;
+    if Last > CallStack.Count - 1 then Last := CallStack.Count-1;
+
     // Reuse entries, so add and remove only
     // Remove unneded
-    for n := lvCallStack.Items.Count - 1 downto CallStack.Count do
+    for n := lvCallStack.Items.Count - 1 downto Last - First + 1 do
       lvCallStack.Items.Delete(n);
 
     // Add needed
-    for n := lvCallStack.Items.Count to CallStack.Count - 1 do
+    for n := lvCallStack.Items.Count to Last - First do
     begin
       Item := lvCallStack.Items.Add;
       Item.SubItems.Add('');
       Item.SubItems.Add('');
       Item.SubItems.Add('');
+      Item.SubItems.Add('');
     end;
 
-    for n := 0 to lvCallStack.Items.Count - 1 do
+    for n := 0 to Last - First do
     begin
       Item := lvCallStack.Items[n];
-      Entry := CallStack.Entries[n];
+      Entry := CallStack.Entries[First + n];
       if Entry.Current
       then Item.Caption := '>'
       else Item.Caption := ' ';
-      Item.SubItems[0] := Entry.Source;
-      Item.SubItems[1] := IntToStr(Entry.Line);
-      Item.SubItems[2] := GetFunction(Entry);
+      Item.SubItems[0] := IntToStr(Entry.Index);
+      Item.SubItems[1] := Entry.Source;
+      Item.SubItems[2] := IntToStr(Entry.Line);
+      Item.SubItems[3] := GetFunction(Entry);
     end;
     
   finally
@@ -148,20 +222,33 @@ begin
   lvCallStack.EndUpdate;
 end;
 
-procedure TCallStackDlg.JumpToSource;
+function TCallStackDlg.GetCurrentEntry: TCallStackEntry;
 var
   CurItem: TListItem;
+  idx: Integer;
+begin
+  Result := nil;
+  if Callstack = nil then Exit;
+  
+  CurItem := lvCallStack.Selected;
+  if CurItem = nil then Exit;
+
+  idx := FViewStart + CurItem.Index;
+  if idx >= CallStack.Count then Exit;
+
+  Result := CallStack.Entries[idx];
+end;
+
+procedure TCallStackDlg.JumpToSource;
+var
   Entry: TCallStackEntry;
   Filename: String;
 begin
-  CurItem:=lvCallStack.Selected;
-  if CurItem = nil then exit;
-  if CurItem.Index >= CallStack.Count then Exit;
-  
-  Entry := CallStack.Entries[CurItem.Index];
+  Entry := GetCurrentEntry;
+  if Entry = nil then Exit;
 
   Filename := Entry.Source;
-  if DoGetFullDebugFilename(Filename,true) <> mrOk then exit;
+  if DoGetFullDebugFilename(Filename, true) <> mrOk then exit;
 
   DoJumpToCodePos(Filename, Entry.Line, 0);
 end;
@@ -195,19 +282,90 @@ begin
   JumpToSource;
 end;
 
-procedure TCallStackDlg.popCopyAllClick(Sender: TObject);
+procedure TCallStackDlg.popCountClick(Sender: TObject);
+begin
+  if FViewCount = TMenuItem(Sender).Tag then Exit;
+  FViewCount := TMenuItem(Sender).Tag;
+  ViewLimit := FViewCount;
+  actViewLimit.Caption := TMenuItem(Sender).Caption;
+end;
+
+procedure TCallStackDlg.txtGotoKeyPress(Sender: TObject; var Key: char);
+begin
+  case Key of
+    '0'..'9', #8 : ;
+    #13 : SetViewStart(StrToIntDef(txtGoto.Text, 0));
+  else
+    Key := #0;
+  end;
+end;
+
+procedure TCallStackDlg.actCopyAllClick(Sender: TObject);
 begin
   CopyToClipBoard;
 end;
 
-procedure TCallStackDlg.popSetAsCurrentClick(Sender : TObject);
+procedure TCallStackDlg.actSetAsCurrentClick(Sender : TObject);
+var
+  Entry: TCallStackEntry;
 begin
-  CallStack.Current := CallStack.Entries[lvCallStack.Selected.Index];
+  Entry := GetCurrentEntry;
+  if Entry = nil then Exit;
+
+  CallStack.Current := Entry;
 end;
 
-procedure TCallStackDlg.popShowClick(Sender: TObject);
+procedure TCallStackDlg.actShowClick(Sender: TObject);
 begin
   JumpToSource;
+end;
+
+procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
+begin
+  if CallStack <> nil
+  then SetViewStart(CallStack.Count - 1 - FViewLimit)
+  else SetViewStart(0);
+end;
+
+procedure TCallStackDlg.actViewGotoExecute(Sender: TObject);
+begin
+  SetViewStart(StrToIntDef(txtGoto.Text, 0));
+end;
+
+procedure TCallStackDlg.actViewMoreExecute(Sender: TObject);
+begin
+  ViewLimit := ViewLimit + FViewCount;
+end;
+
+procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
+begin
+  SetViewStart(0);
+end;
+
+procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);
+begin
+  ViewLimit := FViewCount;
+end;
+
+procedure TCallStackDlg.SetViewStart(AStart: Integer);
+begin
+  if CallStack = nil then Exit;
+  
+  if (AStart > CallStack.Count - 1 - FViewLimit)
+  then AStart:= CallStack.Count - 1 - FViewLimit;
+  if AStart < 0 then AStart:= 0;
+  if FViewStart = AStart then Exit;
+  
+  FViewStart:= AStart;
+  txtGoto.Text:= IntToStr(AStart);
+  UpdateView;
+end;
+
+procedure TCallStackDlg.SetViewMax;
+begin
+//  If CallStack = nil
+//  then lblViewCnt.Caption:= '0'
+//  else lblViewCnt.Caption:= IntToStr(CallStack.Count);
 end;
 
 procedure TCallStackDlg.SetCallStack(const AValue: TIDECallStack);
@@ -234,6 +392,13 @@ begin
   end;
 end;
 
+procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
+begin
+  if FViewLimit = AValue then Exit;
+  FViewLimit := AValue;
+  UpdateView;
+end;
+
 function TCallStackDlg.GetFunction(const Entry: TCallStackEntry): string;
 var
   S: String;
@@ -249,6 +414,14 @@ begin
   if S <> '' then
     S := '(' + S + ')';
   Result := Entry.FunctionName + S;
+end;
+
+procedure TCallStackDlg.GotoIndex(AIndex: Integer);
+begin
+  if AIndex < 0 then Exit;
+  if AIndex >= FCallstack.Count then Exit;
+  
+
 end;
 
 initialization

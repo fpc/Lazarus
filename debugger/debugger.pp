@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg,
-  LCLProc, IDEProcs, DBGUtils;
+  LCLProc, IDEProcs, DBGUtils, maps;
 
 type
   // datatype pointing to data on the target
@@ -662,7 +662,6 @@ type
     function GetArgumentValue(const AnIndex: Integer): String;
     function GetCurrent: Boolean;
     procedure SetCurrent(const AValue: Boolean);
-  protected
   public
     constructor Create(const AIndex:Integer; const AnAdress: TDbgPtr;
                        const AnArguments: TStrings; const AFunctionName: String;
@@ -684,40 +683,46 @@ type
 
   TBaseCallStack = class(TObject)
   private
-    FEntries: TList;       // list of created entries
-    FEntryIndex: TList;    // index to created entries
+    FEntries: TMap; // list of created entries
     FCount: Integer;
-    function GetEntry(const AIndex: Integer): TCallStackEntry;
+    function IndexError(AIndex: Integer): TCallStackEntry;
+    function GetEntry(AIndex: Integer): TCallStackEntry;
   protected
     function CheckCount: Boolean; virtual;
     procedure Clear;
-    function CreateStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
+    function CreateStackEntry(AIndex: Integer): TCallStackEntry; virtual;
     function GetCurrent: TCallStackEntry; virtual;
-    function GetStackEntry(const AIndex: Integer): TCallStackEntry; virtual;
-    procedure SetCurrent(const AValue: TCallStackEntry); virtual;
-    procedure SetCount(const ACount: Integer); virtual;
+    function GetStackEntry(AIndex: Integer): TCallStackEntry; virtual;
+    procedure SetCurrent(AValue: TCallStackEntry); virtual;
+    procedure SetCount(ACount: Integer); virtual;
   public
     function Count: Integer;
     constructor Create;
     destructor Destroy; override;
     property Current: TCallStackEntry read GetCurrent write SetCurrent;
-    property Entries[const AIndex: Integer]: TCallStackEntry read GetEntry;
+    property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
   
-  { TIDECallStack }
+
+  { TIDECallStackNotification }
 
   TIDECallStackNotification = class(TDebuggerNotification)
   private
     FOnChange: TNotifyEvent;
+    FOnCurrent: TNotifyEvent;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
   end;
+
+  { TIDECallStack }
 
   TIDECallStack = class(TBaseCallStack)
   private
     FNotificationList: TList;
   protected
     procedure NotifyChange;
+    procedure NotifyCurrent;
   public
     constructor Create;
     destructor Destroy; override;
@@ -733,7 +738,9 @@ type
     FOldState: TDBGState;
     FOnChange: TNotifyEvent;
     FOnClear: TNotifyEvent;
+    FOnCurrent: TNotifyEvent;
   protected
+    procedure CurrentChanged;
     procedure Changed;
     function CheckCount: Boolean; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
@@ -743,6 +750,7 @@ type
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnClear: TNotifyEvent read FOnClear write FOnClear;
+    property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
   end;
 
 (******************************************************************************)
@@ -3093,42 +3101,42 @@ end;
 
 procedure TBaseCallStack.Clear;
 var
-  n:Integer;
+  Iterator: TMapIterator;
 begin
-  for n := 0 to FEntries.Count - 1 do
-    TObject(FEntries[n]).Free;
-
+  Iterator:= TMapIterator.Create(FEntries);
+  while not Iterator.EOM do
+  begin
+    TObject(Iterator.DataPtr^).Free;
+    Iterator.Next;
+  end;
+  Iterator.Free;
   FEntries.Clear;
-  FEntryIndex.Clear;
   FCount := -1;
 end;
 
-function TBaseCallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
+function TBaseCallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
 begin
   Result := nil;
 end;
 
 function TBaseCallStack.Count: Integer;
 begin
-  if (FCount = -1)
-  and not CheckCount
+  if (FCount = -1) and not CheckCount
   then Result := 0
   else Result := FCount;
 end;
 
 constructor TBaseCallStack.Create;
 begin
-  FEntries := TList.Create;
-  FEntryIndex := TList.Create;
+  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
   inherited Create;
 end;
 
 destructor TBaseCallStack.Destroy;
 begin
   Clear;
-  inherited Destroy;
   FreeAndNil(FEntries);
-  FreeAndNil(FEntryIndex);
+  inherited Destroy;
 end;
 
 function TBaseCallStack.GetCurrent: TCallStackEntry;
@@ -3136,52 +3144,47 @@ begin
   Result := nil;
 end;
 
-function TBaseCallStack.GetEntry(const AIndex: Integer): TCallStackEntry;
+function TBaseCallStack.GetEntry(AIndex: Integer): TCallStackEntry;
 begin
   if (AIndex < 0)
-  or (AIndex >= Count)
-  then raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+  or (AIndex >= Count) then IndexError(Aindex);
 
   Result := GetStackEntry(AIndex);
 end;
 
-function TBaseCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
-var
-  idx: PtrInt;
+function TBaseCallStack.GetStackEntry(AIndex: Integer): TCallStackEntry;
 begin
-  idx := PtrInt(PtrUInt(FEntryIndex[AIndex]));
-  if idx = -1
-  then begin
-    // not created yet
-    Result := CreateStackEntry(AIndex);
-    if Result = nil then Exit;
-    idx := FEntries.Add(Result);
-    FEntryIndex[AIndex] := Pointer(idx);
-    Result.FOwner := Self;
-  end
-  else begin
-    Result := TCallStackEntry(FEntries[idx]);
-  end;
+  if (AIndex < 0)
+  or (AIndex >= Count) then IndexError(AIndex);
+
+  if FEntries.GetData(AIndex, Result) then Exit;
+
+  Result := CreateStackEntry(AIndex);
+  if Result = nil then Exit;
+  FEntries.Add(AIndex, Result);
+  Result.FOwner := Self;
 end;
 
-procedure TBaseCallStack.SetCount(const ACount: Integer);
-var
-  n: integer;
+function TBaseCallStack.IndexError(AIndex: Integer): TCallStackEntry;
 begin
-  if FCount = ACount then Exit;
-  Assert(ACount >= 0);
+  raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+end;
 
-  FEntryIndex.Count := ACount;
-  if FCount < 0 then FCount := 0;
-  for n := FCount to ACount - 1 do
-    FEntryIndex[n] := Pointer(-1);
-  
+procedure TBaseCallStack.SetCount(ACount: Integer);
+  procedure Error;
+  begin
+    raise EInvalidOperation.CreateFmt('Illegal count (%d < 0)', [ACount]);
+  end;
+
+begin
+  if ACount < 0 then Error;
   FCount := ACount;
 end;
 
-procedure TBaseCallStack.SetCurrent(const AValue: TCallStackEntry);
+procedure TBaseCallStack.SetCurrent(AValue: TCallStackEntry);
 begin
 end;
+
 
 { =========================================================================== }
 { TIDECallStack }
@@ -3224,11 +3227,25 @@ begin
   end;
 end;
 
+procedure TIDECallStack.NotifyCurrent;
+var
+  n: Integer;
+  Notification: TIDECallStackNotification;
+begin
+  for n := 0 to FNotificationList.Count - 1 do
+  begin
+    Notification := TIDECallStackNotification(FNotificationList[n]);
+    if Assigned(Notification.FOnCurrent)
+    then Notification.FOnCurrent(Self);
+  end;
+end;
+
 procedure TIDECallStack.RemoveNotification(const ANotification: TIDECallStackNotification);
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
 end;
+
 
 { =========================================================================== }
 { TDBGCallStack }
@@ -3251,6 +3268,11 @@ begin
   FDebugger := ADebugger;
   FOldState := FDebugger.State;
   inherited Create;
+end;
+
+procedure TDBGCallStack.CurrentChanged;
+begin
+  if Assigned(FOnCurrent) then FOnCurrent(Self);
 end;
 
 procedure TDBGCallStack.DoStateChange(const AOldState: TDBGState);

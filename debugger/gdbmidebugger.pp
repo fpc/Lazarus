@@ -314,10 +314,10 @@ type
   private
   protected
     function CheckCount: Boolean; override;
-    function CreateStackEntry(const AIndex: Integer): TCallStackEntry; override;
+    function CreateStackEntry(AIndex: Integer): TCallStackEntry; override;
     
     function GetCurrent: TCallStackEntry; override;
-    procedure SetCurrent(const AValue: TCallStackEntry); override;
+    procedure SetCurrent(AValue: TCallStackEntry); override;
   public
   end;
 
@@ -650,7 +650,7 @@ begin
   FCurrentStackFrame := AIndex;
   SelectStackFrame(FCurrentStackFrame);
   
-  TGDBMICallstack(CallStack).Changed;
+  TGDBMICallstack(CallStack).CurrentChanged;
   TGDBMILocals(Locals).Changed;
   TGDBMIWatches(Watches).Changed;
 end;
@@ -2922,7 +2922,7 @@ begin
   SetCount(cnt);
 end;
 
-function TGDBMICallStack.CreateStackEntry(const AIndex: Integer): TCallStackEntry;
+function TGDBMICallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
 var                 
   n, e: Integer;
   R: TGDBMIExecResult;
@@ -2989,7 +2989,7 @@ begin
   else Result := Entries[idx];
 end;
 
-procedure TGDBMICallStack.SetCurrent(const AValue: TCallStackEntry);
+procedure TGDBMICallStack.SetCurrent(AValue: TCallStackEntry);
 begin
   TGDBMIDebugger(Debugger).CallStackSetCurrent(AValue.Index);
 end;

@@ -279,12 +279,13 @@ type
     FMaster: TDBGCallStack;
     procedure CallStackChanged(Sender: TObject);
     procedure CallStackClear(Sender: TObject);
-    procedure SetMaster(const AMaster: TDBGCallStack);
+    procedure CallStackCurrent(Sender: TObject);
+    procedure SetMaster(AMaster: TDBGCallStack);
   protected
     function CheckCount: Boolean; override;
     function GetCurrent: TCallStackEntry; override;
-    function GetStackEntry(const AIndex: Integer): TCallStackEntry; override;
-    procedure SetCurrent(const AValue: TCallStackEntry); override;
+    function GetStackEntry(AIndex: Integer): TCallStackEntry; override;
+    procedure SetCurrent(AValue: TCallStackEntry); override;
   public
     property Master: TDBGCallStack read FMaster write SetMaster;
   end;
@@ -345,6 +346,11 @@ begin
   NotifyChange;
 end;
 
+procedure TManagedCallStack.CallStackCurrent(Sender: TObject);
+begin
+  NotifyCurrent;
+end;
+
 function TManagedCallStack.CheckCount: Boolean;
 begin
   Result := Master <> nil;
@@ -359,21 +365,21 @@ begin
   else Result := Master.Current;
 end;
 
-function TManagedCallStack.GetStackEntry(const AIndex: Integer): TCallStackEntry;
+function TManagedCallStack.GetStackEntry(AIndex: Integer): TCallStackEntry;
 begin
   Assert(FMaster <> nil);
   
   Result := FMaster.Entries[AIndex];
 end;
 
-procedure TManagedCallStack.SetCurrent(const AValue: TCallStackEntry);
+procedure TManagedCallStack.SetCurrent(AValue: TCallStackEntry);
 begin
   if Master = nil then Exit;
 
   Master.Current := AValue;
 end;
 
-procedure TManagedCallStack.SetMaster(const AMaster: TDBGCallStack);
+procedure TManagedCallStack.SetMaster(AMaster: TDBGCallStack);
 var
   DoNotify: Boolean;
 begin
@@ -383,6 +389,7 @@ begin
   then begin
     FMaster.OnChange := nil;
     FMaster.OnClear := nil;
+    FMaster.OnCurrent := nil;
     DoNotify := FMaster.Count <> 0;
   end
   else DoNotify := False;
@@ -396,6 +403,7 @@ begin
   else begin
     FMaster.OnChange := @CallStackChanged;
     FMaster.OnClear := @CallStackClear;
+    FMaster.OnCurrent := @CallStackCurrent;
     DoNotify := DoNotify or (FMaster.Count <> 0);
   end;
 
