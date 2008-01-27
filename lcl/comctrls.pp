@@ -150,6 +150,7 @@ type
     property Canvas: TCanvas read FCanvas;
   published
     property Action;
+    property Align default alBottom;
     property AutoSize default true;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
