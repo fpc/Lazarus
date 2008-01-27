@@ -36,6 +36,8 @@ unit MsgView;
 
 interface
 
+{$I ide.inc}
+
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LResources, ClipBrd, Controls, Dialogs, FileUtil, Forms, Menus,
@@ -277,6 +279,12 @@ constructor TMessagesView.Create(TheOwner: TComponent);
 begin
   IDEMessagesWindow:=Self;
   inherited Create(TheOwner);
+
+  {$ifdef EnableDocking}
+  DragKind := dkDock;
+  DragMode := dmAutomatic;
+  {$endif}
+
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems := TFPList.Create;
   FVisibleItems := TFPList.Create;

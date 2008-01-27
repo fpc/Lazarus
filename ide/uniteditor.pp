@@ -61,7 +61,10 @@ uses
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
   FPDocHints, FPDocEditWindow,
-  BaseDebugManager, Debugger, MainIntf;
+  BaseDebugManager, Debugger, MainIntf
+{$ifdef EnableDocking}
+  ,LDockTree
+{$endif};
 
 type
   TSourceNotebook = class;
@@ -533,6 +536,18 @@ type
                                var Abort: boolean): string;
     function MacroFuncPrompt(const s:string; const Data: PtrInt;
                              var Abort: boolean): string;
+  private
+    // for docking
+    FDockPanels: array[TAlign] of TPanel;
+    FDockSplitters: array[TAlign] of TSplitter;
+    procedure DockPanelGetSiteInfo(Sender: TObject; DockClient: TControl;
+      var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
+    procedure DockPanelDockOver(Sender: TObject; Source: TDragDockObject; X,
+      Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure DockPanelDockDrop(Sender: TObject; Source: TDragDockObject; X,
+      Y: Integer);
+    procedure DockPanelUnDock(Sender: TObject; Client: TControl;
+      NewTarget: TWinControl; var Allow: Boolean);
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
@@ -2945,8 +2960,41 @@ end;
                       { TSourceNotebook }
 
 constructor TSourceNotebook.Create(AOwner: TComponent);
-begin
+{$ifdef EnableDocking}
+var
+  Al: TAlign;
+{$endif}
+begin    
   inherited Create(AOwner);
+  {$ifdef EnableDocking}
+  for Al := Low(TAlign) to High(TAlign) do
+  begin
+    if Al in [alNone, alClient] then
+      continue;
+    FDockPanels[Al] := TPanel.Create(Self);
+    with FDockPanels[Al] do
+    begin
+      Width := 0;
+      Height := 0;
+      Parent := Self;
+      Align := Al;
+      DockSite := True;
+      OnDockDrop := @DockPanelDockDrop;
+      OnDockOver := @DockPanelDockOver;
+      OnGetSiteInfo := @DockPanelGetSiteInfo;
+      OnUnDock := @DockPanelUnDock;
+    end;
+    FDockSplitters[Al] := TSplitter.Create(Self);
+    with FDockSplitters[Al] do
+    begin
+      Parent := Self;
+      Align := Al;
+      MinSize := 0;
+      AutoSnap := False;
+      Visible := False;
+    end;
+  end;
+  {$endif}
   IDESearchInText:=@SearchInText;
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
@@ -6181,6 +6229,71 @@ procedure TSourceNotebook.CloseTabClicked(Sender: TObject);
 begin
   if Assigned(FOnCloseClicked) then
     FOnCloseClicked(Sender,GetKeyState(VK_CONTROL)<0);
+end;
+
+const
+  DockZoneSize = 150;
+
+procedure TSourceNotebook.DockPanelGetSiteInfo(Sender: TObject; DockClient: TControl;
+  var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
+begin
+  CanDock := TWinControl(Sender).ControlCount = 0;
+  if CanDock then
+    case TWinControl(Sender).Align of
+      alLeft: InfluenceRect.Right := InfluenceRect.Left + DockZoneSize;
+      alTop: InfluenceRect.Bottom := InfluenceRect.Bottom + DockZoneSize;
+      alRight: InfluenceRect.Left := InfluenceRect.Right - DockZoneSize;
+      alBottom: InfluenceRect.Top := InfluenceRect.Top - DockZoneSize;
+    end;    
+end;
+
+procedure TSourceNotebook.DockPanelDockOver(Sender: TObject; Source: TDragDockObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  ARect: TRect;
+begin
+  Accept := TWinControl(Sender).ControlCount = 0;
+  if Accept then
+  begin
+    ARect := Source.DockRect;
+    case TWinControl(Sender).Align of
+      alLeft: ARect.Right := ARect.Left + DockZoneSize;
+      alTop: ARect.Bottom := ARect.Bottom + DockZoneSize;
+      alRight: ARect.Left := ARect.Right - DockZoneSize;
+      alBottom: ARect.Top := ARect.Top - DockZoneSize;
+    end;    
+    Source.DockRect := ARect;
+  end;
+end;
+
+procedure TSourceNotebook.DockPanelDockDrop(Sender: TObject; Source: TDragDockObject;
+  X, Y: Integer);
+begin
+  with TWinControl(Sender) do
+  begin
+    if (Align in [alLeft, alRight]) and (Width = 0) then
+      Width := 150
+    else
+    if (Align in [alTop, alBottom]) and (Height = 0) then
+      Height := 150;
+    if Align = alBottom then
+      Top := StatusBar.Top - Height;
+    FDockSplitters[Align].ResizeControl := TWinControl(Sender);
+    FDockSplitters[Align].Visible := True;
+    //WriteLn(FDockSplitters[Align].Left, ' ', FDockSplitters[Align].Width);
+  end;
+end;
+
+procedure TSourceNotebook.DockPanelUnDock(Sender: TObject; Client: TControl;
+  NewTarget: TWinControl; var Allow: Boolean);
+begin
+  Allow := True;
+  with TWinControl(Sender) do
+  begin
+    Width := 0;
+    Height := 0;
+    FDockSplitters[Align].Visible := False;
+  end;
 end;
 
 

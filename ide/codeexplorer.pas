@@ -35,6 +35,8 @@ unit CodeExplorer;
 
 interface
 
+{$I ide.inc}
+
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
@@ -300,6 +302,10 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 var
   B: TBitmap;
 begin
+  {$ifdef EnableDocking}
+  DragKind := dkDock;
+  DragMode := dmAutomatic;
+  {$endif}
   LoadCodeExplorerOptions;
   
   FMode := CodeExplorerOptions.Mode;
