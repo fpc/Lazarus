@@ -6516,6 +6516,7 @@ begin
   CaretXY := Runner;
   {$IFDEF SYN_LAZARUS}
   if UseUTF8 then begin
+    Delete(TempString, fBlockEnd.X, Length(TempString));
     CaretX := CaretX - Max(0, (Length(TempString) - UTF8Length(TempString)));
   end;
   {$ENDIF}
@@ -11384,5 +11385,6 @@ initialization
   {$ENDIF}
 
 end.
+
 
 
