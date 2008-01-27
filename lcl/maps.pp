@@ -117,7 +117,8 @@ type
                                  // will be set to next
     FBOM: Boolean;               // Begin Of Map
     FEOM: Boolean;               // End Of Map
-    procedure MapDestroyed;      // Called when outr map is destroyed
+    procedure MapDestroyed;      // Called when our map is destroyed
+    procedure MapCleared;        // Called when our map is cleared
     procedure ItemRemove(AData: Pointer); // Called when an Item is removed from the map
   protected
     function InternalLocate(const AId): Boolean; //True if match found. If not found, current is next and Invalid is set
@@ -260,9 +261,20 @@ begin
 end;
 
 procedure TBaseMap.Clear;
+var
+  n: Integer;
 begin
   FreeData(FTree.Root);
   FTree.Clear;
+  FFirst := nil;
+  FLast := nil;
+  
+  // notify our iterators
+  if FIterators <> nil
+  then begin
+    for n := 0 to FIterators.Count - 1 do
+      TBaseMapIterator(FIterators[n]).MapCleared;
+  end;
 end;
 
 function TBaseMap.Count: Integer;
@@ -540,6 +552,14 @@ begin
   if FMap = nil then Exit;
   FCurrent := FMap.FLast;
   FEOM := FCurrent = nil;
+end;
+
+procedure TBaseMapIterator.MapCleared;
+begin
+  FCurrent := nil;
+  FBOM := True;
+  FEOM := True;
+  FInvalid := False;
 end;
 
 procedure TBaseMapIterator.MapDestroyed;
