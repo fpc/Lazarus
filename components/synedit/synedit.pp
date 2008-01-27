@@ -6453,9 +6453,6 @@ var
   Runner: TPoint;
   TempString: string;
   IdChars: TSynIdentChars;
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-  BufChars: array of PChar;
-{$ENDIF}
 begin
   { Value is the position of the Carat in bytes }
   Value.x := MinMax(Value.x, 1, fMaxLeftChar);
@@ -6463,53 +6460,36 @@ begin
   TempString := Lines[Value.Y - 1];
   if TempString = '' then exit;
   // Click on right side of text
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-  UTF8ToArrayOfUTF8Char(PChar(TempString), Length(TempString), BufChars);
-  if Length(BufChars) < Value.X then Value.X := Length(BufChars);
-{$ELSE}
   if Length(TempString) < Value.X then Value.X := Length(TempString);
-{$ENDIF}
+
   Runner := Value;
-  if fHighlighter <> nil then
+  if Assigned(fHighlighter) then
+    {$IFDEF SYN_LAZARUS}
+    IdChars := [#1..#255] - (fHighlighter.WordBreakChars + TSynWhiteChars)
+    {$ELSE}
     IdChars := fHighlighter.IdentChars
+    {$ENDIF}
   else
+    {$IFDEF SYN_LAZARUS}
+    IDchars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+    {$ELSE}
     IDchars := [#33..#255];
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-  if not (BufChars[Runner.X - 1]^ in IdChars) then begin
-{$ELSE}
+    {$ENDIF}
   if not (TempString[Runner.X] in IdChars) then begin
-{$ENDIF}
     // no word under cursor and next char right is not start of a word
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-    if (Runner.X > 1) and (not (BufChars[Runner.X - 1]^ in IdChars)) then begin
-{$ELSE}
     if (Runner.X > 1) and (not (TempString[Runner.X] in IdChars)) then begin
-{$ENDIF}
       // find end of word on the left side
       while Runner.X > 1 do begin
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-        if (BufChars[Runner.X - 1]^ in IdChars) then break;
-{$ELSE}
         if (TempString[Runner.X] in IdChars) then break;
-{$ENDIF}
         Dec(Runner.X);
       end;
     end;
     // no word on the left side, so look to the right side
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-    if not (BufChars[Runner.X - 1]^ in IdChars) then begin
-{$ELSE}
     if not (TempString[Runner.X] in IdChars) then begin
-{$ENDIF}
       Runner := Value;
       while (Runner.X < fMaxLeftChar)
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-      {$IFDEF FPC} and (Runner.X < length(BufChars)){$ENDIF} do begin
-        if (BufChars[Runner.X - 1]^ in IdChars) then break;
-{$ELSE}
       {$IFDEF FPC} and (Runner.X < length(TempString)){$ENDIF} do begin
         if (TempString[Runner.X] in IdChars) then break;
-{$ENDIF}
         Inc(Runner.X);
       end;
       if Runner.X > fMaxLeftChar then
@@ -6518,11 +6498,7 @@ begin
     Value := Runner;
   end;
   while Runner.X > 0 do begin
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-    if not (BufChars[Runner.X - 1]^ in IdChars) then break;
-{$ELSE}
     if not (TempString[Runner.X] in IdChars) then break;
-{$ENDIF}
     Dec(Runner.X);
   end;
   Inc(Runner.X);
@@ -6530,24 +6506,21 @@ begin
   fBlockBegin := Runner;
   Runner := Value;
   while (Runner.X < fMaxLeftChar)
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-  {$IFDEF FPC} and (Runner.X <= length(BufChars)){$ENDIF} do begin
-    if not (BufChars[Runner.X - 1]^ in IdChars) then break;
-{$ELSE}
   {$IFDEF FPC} and (Runner.X <= length(TempString)){$ENDIF} do begin
     if not (TempString[Runner.X] in IdChars) then break;
-{$ENDIF}
     Inc(Runner.X);
   end;
   if Runner.X > fMaxLeftChar then Runner.X := fMaxLeftChar;
   fBlockEnd := Runner;
 // set caret to the end of selected block
   CaretXY := Runner;
+  {$IFDEF SYN_LAZARUS}
+  if UseUTF8 then begin
+    CaretX := CaretX - Max(0, (Length(TempString) - UTF8Length(TempString)));
+  end;
+  {$ENDIF}
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
-{$IFDEF NEW_UTF8_SETWORDBLOCK}
-  FreeArrayOfUTF8Char(BufChars);
-{$ENDIF}
 end;
 
 {$ENDIF}
@@ -8776,9 +8749,19 @@ begin
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
+
+    {$IFDEF SYN_LAZARUS}
+    if Assigned(Highlighter) then
+      CurIdentChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
+    else
+      CurIdentChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+    WhiteChars := TSynWhiteChars + ([#1..#255] - CurIdentChars);
+    {$ELSE}
     CurIdentChars:=IdentChars;
     WhiteChars := [#1..#255] - CurIdentChars;
+    {$ENDIF}
     LineLen := Length(Line);
+    
     if CX >= LineLen then begin
       // find first IdentChar in the next line
       if CY < Lines.Count then begin
@@ -8827,8 +8810,17 @@ begin
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
     CX := Min(CX, Length(Line) + 1);
+
+    {$IFDEF SYN_LAZARUS}
+    if Assigned(Highlighter) then
+      CurIdentChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
+    else
+      CurIdentChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+    WhiteChars := TSynWhiteChars + ([#1..#255] - CurIdentChars);
+    {$ELSE}
     CurIdentChars:=IdentChars;
     WhiteChars := [#1..#255] - CurIdentChars;
+    {$ENDIF}
     //DebugLn(['TCustomSynEdit.PrevWordPos Line="',dbgstr(Line),'" CX=',CX]);
     if CX <= 1 then begin
       // find last IdentChar in the previous line
@@ -10718,10 +10710,17 @@ begin
     Line := Lines[XY.Y - 1];
     Len := Length(Line);
     if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+      {$IFDEF SYN_LAZARUS}
+      if Assigned(Highlighter) then
+        IdChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
+      else
+        IdChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+      {$ELSE}
       if Assigned(Highlighter) then
         IdChars := Highlighter.IdentChars
       else
         IdChars := ['a'..'z', 'A'..'Z'];
+      {$ENDIF}
       EndX := XY.X;
       while (EndX <= Len) and (Line[EndX] in IdChars) do
         Inc(EndX);
@@ -10918,10 +10917,17 @@ begin
     Line := Lines[XY.Y - 1];
     Len := Length(Line);
     if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+      {$IFDEF SYN_LAZARUS}
+      if Assigned(Highlighter) then
+        IdChars := [#1..#255] - (Highlighter.WordBreakChars + TSynWhiteChars)
+      else
+        IdChars := [#1..#255] - (TSynWordBreakChars + TSynWhiteChars);
+      {$ELSE}
       if Assigned(Highlighter) then
         IdChars := Highlighter.IdentChars
       else
         IdChars := ['a'..'z', 'A'..'Z'];
+      {$ENDIF}
       Stop := XY.X;
       while (Stop <= Len) and (Line[Stop] in IdChars) do
         Inc(Stop);
@@ -11378,4 +11384,5 @@ initialization
   {$ENDIF}
 
 end.
+
 
