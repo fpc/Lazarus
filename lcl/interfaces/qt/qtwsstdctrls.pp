@@ -337,6 +337,11 @@ begin
 
   QtScrollBar.AttachEvents;
   
+  case TScrollBar(AWinControl).Kind of
+    sbHorizontal: QtScrollBar.SetOrientation(QtHorizontal);
+    sbVertical: QtScrollBar.SetOrientation(QtVertical);
+  end;
+  
   Result := TLCLIntfHandle(QtScrollbar);
 end;
 

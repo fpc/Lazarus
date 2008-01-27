@@ -2371,13 +2371,13 @@ begin
       ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
   end else
   if w is TQtScrollBar then
-  	ScrollBar := TQtScrollBar(w)
+    ScrollBar := TQtScrollBar(w)
   else
     ScrollBar := nil;
   if ScrollBar <> nil then
   begin
-  	if BarKind = SM_CYVSCROLL then
-    	Result := ScrollBar.getWidth
+    if BarKind = SM_CYVSCROLL then
+      Result := ScrollBar.getWidth
     else
       Result := ScrollBar.getHeight;
   end;
@@ -2405,7 +2405,7 @@ begin
       ScrollBar := TQtAbstractScrollArea(w).horizontalScrollBar;
   end else
   if w is TQtScrollBar then
-  	ScrollBar := TQtScrollBar(w)
+    ScrollBar := TQtScrollBar(w)
   else
     ScrollBar := nil;
     
@@ -2430,7 +2430,6 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean;
 var
-  FScrollBar: TScrollBar;
   QtScrollBar: TQtScrollBar;
 begin
   Result := False;
@@ -2441,7 +2440,6 @@ begin
    (csFreeNotification in TQtWidget(Handle).LCLObject.ComponentState) then
     exit;
 
-  FScrollBar := nil;
   QtScrollBar := nil;
 
   if not TQtWidget(Handle).LCLObject.InheritsFrom(TCustomScrollBar) then
@@ -2452,38 +2450,31 @@ begin
         SB_HORZ: QtScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
         SB_VERT: QtScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
       end;
-
-      if QtScrollBar = nil then exit
-      else FScrollBar := TScrollBar(QtScrollBar.LCLObject);
-
     end else
       Result := False;
   end
   else
-    FScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+    QtScrollBar := TQtScrollBar(TScrollBar(TQtWidget(Handle).LCLObject).Handle);
 
-  if Assigned(FScrollBar) then
+  if Assigned(QtScrollBar) then
   begin
-
-    if (csDestroying in FScrollBar.ComponentState) then exit;
-    
     // POS
     if (ScrollInfo.fMask and SIF_POS) <> 0 then
-      ScrollInfo.nPos := FScrollBar.Position;
+      ScrollInfo.nPos := QtScrollBar.getValue;
       
     // RANGE
     if (ScrollInfo.fMask and SIF_RANGE) <> 0
     then begin
-      ScrollInfo.nMin:= FScrollBar.Min;
-      ScrollInfo.nMax:= FScrollBar.Max;
+      ScrollInfo.nMin:= QtScrollBar.getMin;
+      ScrollInfo.nMax:= QtScrollBar.getMax;
     end;
     // PAGE
     if (ScrollInfo.fMask and SIF_PAGE) <> 0 then
-      ScrollInfo.nPage := FScrollBar.PageSize;
+      ScrollInfo.nPage := QtScrollBar.getPageStep;
       
     // TRACKPOS TrackPos is setted up as in gtk implementation
     if (ScrollInfo.fMask and SIF_TRACKPOS) <> 0 then
-      ScrollInfo.nTrackPos := FScrollBar.Position;
+      ScrollInfo.nTrackPos := QtScrollBar.getValue;
 
     Result := True;
   end;
@@ -4235,7 +4226,8 @@ end;
 function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 var
-  ScrollBar: TScrollBar;
+  Control: TWinControl;
+  ScrollBar: TQtScrollBar;
   FScrollInfo: TScrollInfo;
 
 function PrepareScrollInfo: Integer;
@@ -4261,14 +4253,14 @@ begin
     begin
       FScrollInfo.nMin := ScrollInfo.nMin;
       FScrollInfo.nMax := ScrollInfo.nMax;
-      ScrollBar.Min := ScrollInfo.nMin;
+      ScrollBar.setMinimum(ScrollInfo.nMin);
       
       {we must recount ScrollBar.Max since invalid value raises AV}
       iRecountMax := FScrollInfo.nMax - ScrollInfo.nPage;
       if iRecountMax < FScrollInfo.nMin then
-      iRecountMax := FScrollInfo.nMin;
+        iRecountMax := FScrollInfo.nMin;
 
-      ScrollBar.Max := iRecountMax;
+      ScrollBar.setMaximum(iRecountMax);
       { - (ScrollInfo.nMax div 4 PageStep property)); }
     end;
 
@@ -4276,8 +4268,8 @@ begin
     begin
       FScrollInfo.nPage := ScrollInfo.nPage;
       {segfaults if we don't check Enabled property !}
-      if ScrollBar.Enabled  then
-      	ScrollBar.PageSize := ScrollInfo.nPage;
+      if ScrollBar.getEnabled then
+      	ScrollBar.setPageStep(ScrollInfo.nPage);
     end;
     
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
@@ -4285,14 +4277,13 @@ begin
       FScrollInfo.nPos := ScrollInfo.nPos;
       FScrollInfo.nTrackPos := ScrollInfo.nPos;
       
-      if (FScrollInfo.nPos < ScrollBar.Min) then
-        FScrollInfo.nPos := ScrollBar.Min
+      if (FScrollInfo.nPos < ScrollBar.getMin) then
+        FScrollInfo.nPos := ScrollBar.getMin
       else
-      if (FScrollInfo.nPos > ScrollBar.Max) then
-        FScrollInfo.nPos := ScrollBar.Max;
+      if (FScrollInfo.nPos > ScrollBar.getMax) then
+        FScrollInfo.nPos := ScrollBar.getMax;
 
-      if (ScrollBar.Position <> FScrollInfo.nPos) then
-        ScrollBar.Position := FScrollInfo.nPos;
+      ScrollBar.setValue(FScrollInfo.nPos);
     end;
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
@@ -4311,9 +4302,8 @@ begin
   
   if (Handle = 0) then exit;
   
-  ScrollBar := NiL;
+  ScrollBar := nil;
   case SBStyle of
-  
     SB_BOTH:
     begin
       {TODO: SB_BOTH fixme }
@@ -4326,17 +4316,10 @@ begin
       if (csReading in TQtWidget(Handle).LCLObject.ComponentState) or
       (csDestroying in TQtWidget(Handle).LCLObject.ComponentState) then exit;
 
-      ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject);
+      ScrollBar := TQtScrollBar(Handle);
       
       if not Assigned(ScrollBar) then exit;
-
-      if not Assigned(ScrollBar.Parent) then
-      begin
-        ScrollBar := NiL;
-        exit; {still creating ... set it to Nil because of PrepareScrollInfo() }
-      end;
-
-      ScrollBar.Visible := bRedraw;
+      ScrollBar.setVisible(bRedraw);
     end; {SB_CTL}
     
     SB_HORZ:
@@ -4348,15 +4331,17 @@ begin
 
       if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
-        if TQtAbstractScrollArea(Handle).horizontalScrollBar <> nil then
-          ScrollBar := TScrollBar(TQtAbstractScrollArea(Handle).horizontalScrollBar.LCLObject);
+        ScrollBar := TQtAbstractScrollArea(Handle).horizontalScrollBar;
       end else
+      begin
         {do not localize !}
-        ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
+        Control := TWinControl(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_HSCROLLBAR'));
+        if (Control <> nil) and (Control.HandleAllocated) then
+          ScrollBar := TQtScrollBar(Control.Handle)
+      end;
 
       if Assigned(ScrollBar) then
-        ScrollBar.Visible := bRedraw;
-      
+        ScrollBar.setVisible(bRedraw);
     end; {SB_HORZ}
     
     SB_VERT:
@@ -4368,14 +4353,17 @@ begin
 
       if TQtWidget(Handle) is TQtAbstractScrollArea then
       begin
-        if TQtAbstractScrollArea(Handle).verticalScrollBar <> nil then
-          ScrollBar := TScrollBar(TQtAbstractScrollArea(Handle).verticalScrollBar.LCLObject);
+        ScrollBar := TQtAbstractScrollArea(Handle).verticalScrollBar;
       end else
+      begin
         {do not localize !}
-        ScrollBar := TScrollBar(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
+        Control := TWinControl(TQtWidget(Handle).LCLObject.FindChildControl(TQtWidget(Handle).LCLObject.Name+'_VSCROLLBAR'));
+        if (Control <> nil) and (Control.HandleAllocated) then
+          ScrollBar := TQtScrollBar(Control.Handle)
+      end;
 
       if Assigned(ScrollBar) then
-        ScrollBar.Visible := bRedraw;
+        ScrollBar.setVisible(bRedraw);
 
     end; {SB_VERT}
     
@@ -4416,34 +4404,6 @@ function TQtWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean)
 var
   w: TQtWidget;
   ScrollArea: TQtAbstractScrollArea;
-  ScrollBar: TScrollBar;
-  
-  procedure PrepareHorizontalScrollBar;
-  begin
-    if ScrollArea.horizontalScrollBar = nil then
-    begin
-      ScrollBar := TScrollBar.Create(w.LCLObject);
-      ScrollBar.Parent := w.LCLObject;
-      ScrollBar.Kind := sbHorizontal;
-      ScrollArea.sethorizontalScrollBar(TQtScrollBar(ScrollBar.Handle));
-      ScrollArea.setScrollStyle(ssAutoHorizontal);
-      ScrollArea.horizontalScrollBar.Show;
-    end;
-  end;
-
-  procedure PrepareVerticalScrollBar;
-  begin
-    if ScrollArea.verticalScrollBar = nil then
-    begin
-      ScrollBar := TScrollBar.Create(w.LCLObject);
-      ScrollBar.Parent := w.LCLObject;
-      ScrollBar.Kind := sbVertical;
-      ScrollArea.setverticalScrollBar(TQtScrollBar(ScrollBar.Handle));
-      ScrollArea.setScrollStyle(ssAutoVertical);
-      ScrollArea.verticalScrollBar.Show;
-    end;
-  end;
-
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI ShowScrollBar] Handle: ', dbghex(Handle),' wBar: ',wBar);
@@ -4461,8 +4421,6 @@ begin
     case wBar of
       SB_BOTH:
       begin
-        PrepareHorizontalScrollBar;
-        PrepareVerticalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssBoth)
         else
@@ -4471,7 +4429,6 @@ begin
       
       SB_HORZ:
       begin
-        PrepareHorizontalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssHorizontal)
         else
@@ -4480,7 +4437,6 @@ begin
       
       SB_VERT:
       begin
-        PrepareVerticalScrollBar;
         if bShow then
           ScrollArea.setScrollStyle(ssVertical)
         else

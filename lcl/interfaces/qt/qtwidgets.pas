@@ -4231,53 +4231,43 @@ end;
 
 procedure TQtAbstractSlider.SlotSliderMoved(p1: Integer); cdecl;
 var
-   Msg: PLMessage;
-   LMScroll: TLMScroll;
+  LMScroll: TLMScroll;
 begin
  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.sliderMoved() to pos=',p1);
  {$endif}
  
-  FillChar(Msg, SizeOf(Msg), #0);
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
-  LMScroll.ScrollBar := LCLObject.Handle;
+  LMScroll.ScrollBar := PtrUInt(Self);
    
   if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
-  LMScroll.Msg := LM_HSCROLL
+    LMScroll.Msg := LM_HSCROLL
   else
-  LMScroll.Msg := LM_VSCROLL;
+    LMScroll.Msg := LM_VSCROLL;
 
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS; { SIF_TRACKPOS }
 
-  Msg := @LMScroll;
-  
-  try
-    if (TScrollBar(LCLObject).Position <> p1)
-    and (Assigned(LCLObject.Parent)) then
-    LCLObject.Parent.WindowProc(Msg^);
-  except
-    Application.HandleException(nil);
-  end;
+  DeliverMessage(LMScroll);
 end;
 
 procedure TQtAbstractSlider.SlotSliderPressed; cdecl;
 begin
- {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.sliderPressed()');
- {$endif}
- FSliderPressed := True;
- FSliderReleased := False;
+  {$ifdef VerboseQt}
+   writeln('TQtAbstractSlider.sliderPressed()');
+  {$endif}
+  FSliderPressed := True;
+  FSliderReleased := False;
 end;
 
 procedure TQtAbstractSlider.SlotSliderReleased; cdecl;
 begin
- {$ifdef VerboseQt}
-  writeln('TQtAbstractSlider.sliderReleased()');
- {$endif}
- FSliderPressed := False;
- FSliderReleased := True;
+  {$ifdef VerboseQt}
+   writeln('TQtAbstractSlider.sliderReleased()');
+  {$endif}
+  FSliderPressed := False;
+  FSliderReleased := True;
 end;
 
 function TQtAbstractSlider.getOrientation: QtOrientation;
@@ -4287,36 +4277,26 @@ end;
 
 procedure TQtAbstractSlider.SlotValueChanged(p1: Integer); cdecl;
 var
-  Msg: PLMessage;
   LMScroll: TLMScroll;
 begin
  {$ifdef VerboseQt}
   writeln('TQtAbstractSlider.SlotValueChanged()');
  {$endif}
  
-  FillChar(Msg, SizeOf(Msg), #0);
   FillChar(LMScroll, SizeOf(LMScroll), #0);
 
-  LMScroll.ScrollBar := LCLObject.Handle;
+  LMScroll.ScrollBar := PtrUInt(Self);
 
   if QAbstractSlider_orientation(QAbstractSliderH(Widget)) = QtHorizontal then
-  LMScroll.Msg := LM_HSCROLL
+    LMScroll.Msg := LM_HSCROLL
   else
-  LMScroll.Msg := LM_VSCROLL;
+    LMScroll.Msg := LM_VSCROLL;
   
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
 
-  Msg := @LMScroll;
-  try
-    if not SliderPressed and Assigned(LCLObject.Parent)
-    and (p1 <> TScrollBar(LCLObject).Position) then
-    begin
-      LCLObject.Parent.WindowProc(Msg^);
-    end;
-  except
-    Application.HandleException(nil);
-  end;
+  if not SliderPressed then
+    DeliverMessage(LMScroll);
 end;
 
 
@@ -4339,7 +4319,8 @@ begin
     QEventKeyPress,
     QEventKeyRelease: Result := False;
   else
-    Result := inherited EventFilter(Sender, Event);
+    if FOwnWidget then
+      Result := inherited EventFilter(Sender, Event);
   end;
 end;
 
@@ -6866,6 +6847,8 @@ begin
     WriteLn('TQAbstractScrollArea.Destroy');
   {$endif}
   viewportDelete;
+  FreeAndNil(FHScrollBar);
+  FreeAndNil(FVScrollBar);
 
   inherited Destroy;
 end;
@@ -7043,6 +7026,11 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.horizontalScrollBar');
   {$endif}
+  if FHScrollBar = nil then
+  begin
+    FHScrollBar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_horizontalScrollBar(QAbstractScrollAreaH(Widget)));
+    FHScrollBar.AttachEvents;
+  end;
   Result := FHScrollBar;
 end;
 
@@ -7056,6 +7044,11 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQAbstractScrollArea.verticalScrollBar');
   {$endif}
+  if FVScrollBar = nil then
+  begin
+    FVScrollbar := TQtScrollBar.CreateFrom(LCLObject, QAbstractScrollArea_verticalScrollBar(QAbstractScrollAreaH(Widget)));;
+    FVScrollbar.AttachEvents;
+  end;
   Result := FVScrollBar;
 end;
 
