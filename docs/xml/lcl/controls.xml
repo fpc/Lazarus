@@ -2894,9 +2894,11 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControlHandlerType.chtOnChangeBounds"><short/></element>
       <!-- object Visibility: default -->
       <element name="TControl">
-        <short><i>TControl</i> - the main ancestor class for visual controls.</short>
+        <short><i>TControl</i>
+ - the main ancestor class for visual controls.</short>
         <descr>
           <p><i>TControl</i>
+
  is the main ancestor class for all visual controls.</p>
           <p>The definition includes a large number of constants, types and methods that are inherited by derived classes and types.</p>
           <p>These include devices for defining and controlling: </p>
@@ -3020,9 +3022,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControl.FCursor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Flag showing position of cursor</short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TControl.FDockOrientation">
@@ -3750,10 +3750,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetConstraints.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TControl.SetCursor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to set the position of the cursor</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetCursor.Value"><short/></element>
@@ -3889,10 +3886,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetTop.Value"><short/></element>
       <!-- procedure Visibility: private -->
       <element name="TControl.SetVisible">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to set Visible flag and ensure the control can be seen</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetVisible.Value"><short/></element>
@@ -3907,19 +3901,17 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetWidth.Value"><short/></element>
       <!-- variable Visibility: protected -->
       <element name="TControl.FControlState">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Flag showing the set of states for this control</short>
+        <seealso><link id="TControlState"/></seealso>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TControl.AutoSizing">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Is autosizing proceeding?</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoAutoSize">
-        <short><i>DoAutoSize </i>- method for actually performing the AutoSize</short>
+        <short><i>DoAutoSize </i>
+- method for actually performing the AutoSize</short>
         <descr>
           <p>
             <i>TControl.DoAutoSize</i>
@@ -3931,7 +3923,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.AutoSizeCanStart">
-        <short><i>AutoSizeCanStart</i> - checks whether <i>DoAutoSize </i>is permitted to start</short>
+        <short><i>AutoSizeCanStart</i>
+ - checks whether <i>DoAutoSize </i>is permitted to start</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   function TControl.AutoSizeCanStart: boolean;
@@ -3952,71 +3945,47 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.AutoSizeCanStart.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AnchorSideChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure invoked when the anchor side is changed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorSideChanged.TheAnchorSide"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAlign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Set up the Align rules for this control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetAlign.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAnchors">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Set the rules for anchoring this control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetAnchors.AValue"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Set the boolean variable that determines whether autosize can function</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetAutoSize.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.BoundsChanged">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure invoked when bounds of the control are changed</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoConstraintsChange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to execute a change in the control's constraints</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoConstraintsChange.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoBorderSpacingChange">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure to execute a change in the control's border spacing</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoBorderSpacingChange.Sender"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SendMoveSizeMessages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Send a message to the system if the size and/or position of the control change</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SendMoveSizeMessages.SizeChanged"><short/></element>
@@ -4024,10 +3993,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SendMoveSizeMessages.PosChanged"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ConstrainedResize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure for performing a resize within defined boundaries (constraints)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ConstrainedResize.MinWidth"><short/></element>
@@ -4039,13 +4005,24 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.ConstrainedResize.MaxHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
-        <short><i>CalculatePreferredSize</i>   - find default/preferred height and width</short>
-        <descr><p><i>CalculatePreferredSize</i>  - find default/preferred height and width</p><p>procedure TControl.CalculatePreferredSize </p><p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p><p>Calculates the default/preferred width and height for a control, which is used
+        <short><i>CalculatePreferredSize</i>
+   - find default/preferred height and width</short>
+        <descr>
+          <p><i>CalculatePreferredSize</i>
+  - find default/preferred height and width</p>
+          <p>procedure TControl.CalculatePreferredSize </p>
+          <p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p>
+          <p>Calculates the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
-  instead.</p><p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
-  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p><p>WithThemeSpace: If true, adds space for stacking.</p><p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
-  some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p></descr>
+  instead.</p>
+          <p><i>TWinControl</i>
+ overrides this and asks the interface for theme dependent values.
+  See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
+          <p>WithThemeSpace: If true, adds space for stacking.</p>
+          <p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+  some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p>
+        </descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.CalculatePreferredSize.PreferredWidth"><short/></element>
@@ -4053,38 +4030,23 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.CalculatePreferredSize.PreferredHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnResize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Calls OnResize</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnChangeBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Calls OnChangeBounds</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Resize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Checks for changes and calls DoOnResize</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RequestAlign">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Smart calling Parent.AlignControls</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateBaseBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Update the basic boundaries of the control - essential if there has been a lot of re-sizing</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.UpdateBaseBounds.StoreBounds"><short/></element>
@@ -4094,31 +4056,19 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.UpdateBaseBounds.UseLoadedValues"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.LockBaseBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Lock the base bounds, so that they do not change even if surrounding controls are changed</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UnlockBaseBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Unlock the base bounds so that they are free to change as surrounding controls are changed</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateAnchorRules">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Update the rules for anchoring the control</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Procedure for altering the bounds of the control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ChangeBounds.ALeft"><short/></element>
@@ -4130,10 +4080,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.ChangeBounds.AHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoSetBounds">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Perform the actual setting of the boundary rectangle</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoSetBounds.ALeft"><short/></element>
@@ -4145,10 +4092,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.DoSetBounds.AHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ChangeScale">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Change the scale factor (multiplier or divider) for drawing the control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ChangeScale.Multiplier"><short/></element>
@@ -4156,10 +4100,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.ChangeScale.Divider"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.CanAutoSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Function to determine if autosizing is possible, and if so, gets the new width and height</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.CanAutoSize.Result"><short/></element>
@@ -4169,6 +4110,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.CanAutoSize.NewHeight"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.SetAlignedBounds">
+        <short>Try to set the automatic changed bounds</short>
         <descr>
           <pre>{ try to set the automatic changed bounds
   If the interface does not like our bounds, it sends a message with the real
@@ -4188,28 +4130,19 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetAlignedBounds.aHeight"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientOrigin">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find the origin (top left pixel) of the client control</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetClientOrigin.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientRect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Visual size of client area</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetClientRect.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetScrolledClientRect">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Visual client area scrolled</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetScrolledClientRect.Result"><short/></element>
@@ -4227,19 +4160,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetClientScrollOffset">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find the offset for scrolling of the client</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetClientScrollOffset.Result"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetControlOrigin">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find the origin (top left pixel) of this control</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetControlOrigin.Result"><short/></element>
@@ -4708,7 +4635,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.SetDragMode.Value"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
-        <short><i>Click</i> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
+        <short><i>Click</i>
+ - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
@@ -4844,7 +4772,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.DefineProperties.Filer"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AssignTo">
-        <short><i>AssignTo </i>- copies some of its properties to another control (<i>Dest</i>)</short>
+        <short><i>AssignTo </i>
+- copies some of its properties to another control (<i>Dest</i>)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AssignTo.Dest"><short/></element>
@@ -4992,7 +4921,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.WndProc.TheMessage"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFormHandleInitialized">
-        <short><i>ParentFormHandleInitialized </i>- called by <i>ChildHandlesCreated</i> of parent form</short>
+        <short><i>ParentFormHandleInitialized </i>
+- called by <i>ChildHandlesCreated</i> of parent form</short>
         <descr>
           <p>The form is a real connection to the target screen.</p>
           <p>For example, the gtk under X gathers some screen information, but not before form creation. </p>
@@ -5129,7 +5059,9 @@ mrLast=mrYesToAll=10</descr>
       <!-- argument Visibility: default -->
       <element name="TControl.ActionChange.CheckDefaults"><short/></element>
       <!-- property Visibility: protected -->
-      <element name="TControl.ActionLink"/>
+      <element name="TControl.ActionLink">
+        <short>Link to the default action associated with this control</short>
+      </element>
       <!-- property Visibility: protected -->
       <element name="TControl.AutoSize">
         <short>Whether auto-size is to be used</short>
@@ -5147,47 +5079,54 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragCursor">
-        <short><i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+        <short><i>DragCursor </i>
+- the style of cursor to be used during the Drag process</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragKind">
-        <short/>
+        <short>DragKind - what sort of dragging? Drag or Dock</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragMode">
-        <short><i>DragMode </i>- whether manual or automatic</short>
+        <short><i>DragMode </i>
+- whether manual or automatic</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.MouseCapture">
-        <short/>
+        <short>Is the mouse position captured?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentFont">
-        <short><i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+        <short><i>ParentFont </i>
+- should the control use the same font as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentColor">
-        <short><i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+        <short><i>ParentColor</i>
+ - should the control have the same colour as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
-        <short><i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+        <short><i>ParentShowHint </i>
+- does the control adopt the same hinting behaviour as its parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.SessionProperties">
-        <short/>
+        <short>The stored (saved) properties of the current session, expressed as a string</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.Text">
-        <short><i>Text </i>- the character string in the name or caption of the control</short>
+        <short><i>Text </i>
+- the character string in the name or caption of the control</short>
         <descr>
-          <p><i>Text </i>- the character string in the name or caption of the control</p>
+          <p><i>Text </i>
+- the character string in the name or caption of the control</p>
           <p>But BEWARE: <i>Text</i> is used in another context in editing controls such as <link id="#lcl.StdCtrls.TEdit">TEdit</link> and <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
         </descr>
       </element>
@@ -5267,7 +5206,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- variable Visibility: public -->
       <element name="TControl.FCompStyle">
-        <short><i>FCompStyle</i> - deprecated</short>
+        <short><i>FCompStyle</i>
+ - deprecated</short>
         <descr>
           <pre>// DEPRECATED. Enables (valid) use of 'IN' operator (this
       // is a hack for speed. It will be replaced by the use of the widgetset
@@ -5294,9 +5234,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Dock">
-        <short><i>Dock</i> - Procedure governing Docking of Control</short>
+        <short><i>Dock</i>
+ - Procedure governing Docking of Control</short>
         <descr>
-          <p><i>Dock</i> - Procedure governing Docking of Control</p>
+          <p><i>Dock</i>
+ - Procedure governing Docking of Control</p>
           <p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="#lcl.Controls.TControl.DoDock">DoDock</link> to perform the actual docking process</p>
         </descr>
         <errors>An exception is raised if there is already a docking process in progress for this control</errors>
@@ -5311,7 +5253,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
-        <short><i>ManualDock</i> - permits operator-defined docking</short>
+        <short><i>ManualDock</i>
+ - permits operator-defined docking</short>
         <descr>
           <p>Docks this control to DropControl or on NewDockSite.</p>
           <p>If DropControl is not <b>nil</b>, ControlSide defines on which side of DropControl this control is docked. (alNone,alClient for stacked in pages). DropControl will become part of a TDockManager.</p>
@@ -5336,7 +5279,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
-        <short><i>ManualFloat</i> - the opposite of <i>ManualDock</i>, allows operator to Float a control</short>
+        <short><i>ManualFloat</i>
+ - the opposite of <i>ManualDock</i>, allows operator to Float a control</short>
         <descr>
           <pre>function TControl.ManualFloat(TheScreenRect: TRect;
     KeepDockSiteSize: Boolean = true): Boolean;
@@ -5395,9 +5339,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
-        <short><i>AdjustSize</i> - Smart way to <i>DoAutoSize</i></short>
+        <short><i>AdjustSize</i>
+ - Smart way to <i>DoAutoSize</i></short>
         <descr>
-          <p><i>TControl.AdjustSize</i> calls <i>DoAutoSize</i> in a smart fashion.</p>
+          <p><i>TControl.AdjustSize</i>
+ calls <i>DoAutoSize</i> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
           <p>This method initially does the same as <i>TWinControl.DoAutoSize</i>.  But since <i>DoAutoSize</i> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <i>AdjustSize</i> instead.</p>
         </descr>
@@ -5412,7 +5358,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToNeighbour">
-        <short><i>AnchorToNeighbour</i> - anchoring instructions</short>
+        <short><i>AnchorToNeighbour</i>
+ - anchoring instructions</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   procedure TControl.AnchorToNeighbour(Side: TAnchorKind; Space: integer;
@@ -5437,9 +5384,11 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorParallel">
-        <short><i>AnchorParallel </i>- instructions for anchoring beside another control</short>
+        <short><i>AnchorParallel </i>
+- instructions for anchoring beside another control</short>
         <descr>
-          <p><i>AnchorParallel </i>- instructions for anchoring beside another control</p>
+          <p><i>AnchorParallel </i>
+- instructions for anchoring beside another control</p>
           <p>Sibling - another control beside which the current control is to be anchored</p>
         </descr>
       </element>
@@ -5457,7 +5406,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorHorizontalCenterTo">
-        <short><i>AnchorHorizontal </i>- instructions for anchoring</short>
+        <short><i>AnchorHorizontal </i>
+- instructions for anchoring</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorHorizontalCenterTo.Sibling">
@@ -5465,7 +5415,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorVerticalCenterTo">
-        <short><i>AnchorVertical </i>- instructions for anchoring</short>
+        <short><i>AnchorVertical </i>
+- instructions for anchoring</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorVerticalCenterTo.Sibling">
@@ -5518,10 +5469,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetBoundsKeepBase">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Set the bounds, keeping the base values</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.SetBoundsKeepBase.aLeft"><short/></element>
@@ -5537,7 +5485,8 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetPreferredSize">
         <short>Returns default/preferred height and width, to be used in autosizing algorithms</short>
         <descr>
-          <p><i>GetPreferredSize</i>  - find default/preferred height and width</p>
+          <p><i>GetPreferredSize</i>
+  - find default/preferred height and width</p>
           <pre>procedure TControl.GetPreferredSize 
         (var PreferredWidth, PreferredHeight: integer; 
           WithThemeSpace: Boolean);</pre>
@@ -5548,7 +5497,8 @@ mrLast=mrYesToAll=10</descr>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
           <p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passes to the widgetset</p>
-          <p><i>TWinControl</i> overrides this and asks the interface for theme dependent values.
+          <p><i>TWinControl</i>
+ overrides this and asks the interface for theme dependent values.
   See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
       </element>
@@ -5560,16 +5510,15 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetPreferredSize.Raw"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TControl.InvalidatePreferredSize">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Render tne preferred size no longer valid (implies that we will look for another)</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TControl.Create">
-        <short><i>Create</i> a new Control - Constructor</short>
+        <short><i>Create</i>
+ a new Control - Constructor</short>
         <descr>
-          <p><i>Create</i> a new Control - Constructor. Overrides constructors of ancestor classes and sets a number of defaults. Often overridden by descendant classes.</p>
+          <p><i>Create</i>
+ a new Control - Constructor. Overrides constructors of ancestor classes and sets a number of defaults. Often overridden by descendant classes.</p>
         </descr>
         <seealso><link id="#rtl.Classes.TComponent.Create"/></seealso>
       </element>
@@ -5577,21 +5526,31 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.Create.TheOwner"><short/></element>
       <!-- destructor Visibility: public -->
       <element name="TControl.Destroy">
-        <short><i>Destroy</i> the Control when you have finished with it</short>
+        <short><i>Destroy</i>
+ the Control when you have finished with it</short>
         <descr>
-          <p><i>Destructor</i> for Control. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc.</p>
+          <p><i>Destructor</i>
+ for Control. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc.</p>
           <p>Overrides destructors of ancestor classes, and in turn may be overridden by descendant classes.</p>
         </descr>
         <seealso><link id="#rtl.Classes.TComponent.Destroy"/></seealso>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
-        <short><i>EditingDone</i> - what to do when you have finished editing</short>
-        <descr><p>            <i>TControl.EditingDone</i>
-          </p><p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
-          <p>For example:</p><ul>            <li>When focus switches to another control (default)</li>
+        <short><i>EditingDone</i>
+ - what to do when you have finished editing</short>
+        <descr>
+          <p>
+            <i>TControl.EditingDone</i>
+          </p>
+          <p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
+          <p>For example:</p>
+          <ul>
+            <li>When focus switches to another control (default)</li>
             <li>When user selected another item</li>
-          </ul><p>It's totally up to the control, what events will commit.</p></descr>
+          </ul>
+          <p>It's totally up to the control, what events will commit.</p>
+        </descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ExecuteDefaultAction">
@@ -5609,7 +5568,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
-        <short><i>BeginDrag </i>- starts the dragging of a control</short>
+        <short><i>BeginDrag </i>
+- starts the dragging of a control</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   Method: TControl.BeginDrag
@@ -6042,7 +6002,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
-        <short><i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+        <short><i>Caption</i>
+ - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
           <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
           <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
@@ -6060,7 +6021,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientHeight">
-        <short><i>ClientHeight</i> - determines the height of the client within which the control exists</short>
+        <short><i>ClientHeight</i>
+ - determines the height of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Finds or sets the client height, and sets a flag if it has been stored</p>
@@ -6068,7 +6030,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientOrigin">
-        <short><i>ClientOrigin </i>- Top left pixel of the client within which the control exists</short>
+        <short><i>ClientOrigin </i>
+- Top left pixel of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Finds origin of client (read-only)</p>
@@ -6076,19 +6039,23 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientRect">
-        <short><i>ClientRect </i>- finds the position of the rectangle for the client within which the control exists</short>
+        <short><i>ClientRect </i>
+- finds the position of the rectangle for the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p><i>ClientRect </i>- finds the coordinates of the rectangle for the client within which the control exists (read-only)</p>
+          <p><i>ClientRect </i>
+- finds the coordinates of the rectangle for the client within which the control exists (read-only)</p>
         </descr>
         <seealso><link id="#rtl.Classes.TRect"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ClientWidth">
-        <short><i>ClientWidth</i> - determines the width of the client within which the control exists</short>
+        <short><i>ClientWidth</i>
+ - determines the width of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p><i>ClientWidth</i> - determines the width of the client within which the control exists; reads the width of the client control or sets the value. Sets flag if value is stored</p>
+          <p><i>ClientWidth</i>
+ - determines the width of the client within which the control exists; reads the width of the client control or sets the value. Sets flag if value is stored</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -6112,7 +6079,8 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlOrigin">
-        <short><i>ControlOrigin</i> - top left pixel of this control</short>
+        <short><i>ControlOrigin</i>
+ - top left pixel of this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads value for the Origin (top left pixel) of this control. (read-only)</p>
@@ -6121,19 +6089,23 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlState">
-        <short><i>ControlState</i> - whether mouse has been clicked, data being read, control being re-drawn, etc</short>
+        <short><i>ControlState</i>
+ - whether mouse has been clicked, data being read, control being re-drawn, etc</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p><i>ControlState</i> - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
+          <p><i>ControlState</i>
+ - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
         </descr>
         <seealso><link id="TControlState"/></seealso>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ControlStyle">
-        <short><i>ControlStyle</i> - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc</short>
+        <short><i>ControlStyle</i>
+ - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p><i>ControlStyle</i> - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
+          <p><i>ControlStyle</i>
+ - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
         </descr>
         <seealso><link id="TControlStyle"/></seealso>
       </element>
@@ -6226,7 +6198,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
-        <short><i>Visible</i> - can the control be seen?</short>
+        <short><i>Visible</i>
+ - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -6329,27 +6302,33 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Left">
-        <short><i>Left</i> - the coordinate of the left edge of the control</short>
+        <short><i>Left</i>
+ - the coordinate of the left edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Height">
-        <short><i>Height</i> - the vertical dimension of the control</short>
+        <short><i>Height</i>
+ - the vertical dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Hint">
-        <short><i>Hint</i> - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
+        <short><i>Hint</i>
+ - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
         <descr>
-          <p><i>Hint</i> - a small informative pop-up box that appears when the mouse 'hovers' over a control</p>
+          <p><i>Hint</i>
+ - a small informative pop-up box that appears when the mouse 'hovers' over a control</p>
           <p>Requires <i>ShowHint</i> to be True</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Top">
-        <short><i>Top</i> - the coordinates of the top edge of the control</short>
+        <short><i>Top</i>
+ - the coordinates of the top edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Width">
-        <short><i>Width </i>- the horizontal dimension of the control</short>
+        <short><i>Width </i>
+- the horizontal dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.HelpType">
@@ -8429,7 +8408,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TWinControl.WndProc.Message"><short/></element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.BorderStyle">
-        <short><i>BorderStyle</i> - none, or single</short>
+        <short><i>BorderStyle</i>
+ - none, or single</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TWinControl.OnGetSiteInfo">
@@ -8538,7 +8518,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
-        <short><i>TabStop</i> - determines if the user can tab to a control.</short>
+        <short><i>TabStop</i>
+ - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
@@ -8559,17 +8540,21 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnEnter">
-        <short><i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+        <short><i>OnEnter</i>
+ - event handler for when the mouse enters the control, and the control receives focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnExit">
-        <short><i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+        <short><i>OnExit</i>
+ - event handler for when the mouse leaves the control and it loses focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyDown">
-        <short><i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+        <short><i>OnKeyDown</i>
+ - event handler for instance when key is down while control has focus</short>
         <descr>
-          <p><i>OnKeyDown</i> - event handler for instance when key is down while control has focus</p>
+          <p><i>OnKeyDown</i>
+ - event handler for instance when key is down while control has focus</p>
           <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
         </descr>
       </element>
@@ -8577,15 +8562,18 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TWinControl.OnKeyPress">
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
-          <p><i>OnKeyPress</i> - event controller for a key being pressed while the control has focus</p>
+          <p><i>OnKeyPress</i>
+ - event controller for a key being pressed while the control has focus</p>
           <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyUp">
-        <short><i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <short><i>OnKeyUp</i>
+  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
-          <p><i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</p>
+          <p><i>OnKeyUp</i>
+  - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
       </element>
@@ -8609,7 +8597,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUnDock">
-        <short><i>OnUnDock</i> - event handler for control becoming disconnected (undocked) from parent</short>
+        <short><i>OnUnDock</i>
+ - event handler for control becoming disconnected (undocked) from parent</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUTF8KeyPress">
@@ -9096,12 +9085,15 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <element name="TWinControl.IntfUTF8KeyPress.RepeatCount"><short/></element>
       <!-- object Visibility: default -->
       <element name="TGraphicControl">
-        <short><i>TGraphicControl</i> is the base class for all lightweight controls.</short>
+        <short><i>TGraphicControl</i>
+ is the base class for all lightweight controls.</short>
         <descr>
-          <p><i>TGraphicControl</i> supports simple lightweight controls that do not 
+          <p><i>TGraphicControl</i>
+ supports simple lightweight controls that do not 
 need the ability to accept keyboard input or contain other controls. </p>
           <p>Since lightweight controls do not wrap GUI screen objects, they are faster and use fewer resources than controls based on <i>TWinControl</i>.</p>
-          <p><i>TGraphicControl</i> provides a <i>Canvas</i> property for access to the control's drawing surface and a virtual <i>Paint</i> method called in response to paint requests received by the parent control.</p>
+          <p><i>TGraphicControl</i>
+ provides a <i>Canvas</i> property for access to the control's drawing surface and a virtual <i>Paint</i> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
           <link id="TWinControl"/>
@@ -9147,7 +9139,8 @@ need the ability to accept keyboard input or contain other controls. </p>
       <element name="TGraphicControl.Canvas">
         <short>A clipping window to the parent canvas.</short>
         <descr>
-          <p><i>The TGraphicsControl.Canvas</i> is a clipping window to the parent canvas.</p>
+          <p><i>The TGraphicsControl.Canvas</i>
+ is a clipping window to the parent canvas.</p>
           <p>If you ask for the <i>Canvas.Width</i> or <i>Canvas.Height</i>, you are actually 
 getting the parent control's Canvas dimensions.</p>
           <p>To get the dimensions of the <i>TGraphicControl,</i> you must query the <i>ClientRect</i>.</p>
@@ -9156,7 +9149,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
-        <short><i>OnPaint</i> - event handler for request to paint canvas</short>
+        <short><i>OnPaint</i>
+ - event handler for request to paint canvas</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomControl">
@@ -10337,12 +10331,2013 @@ getting the parent control's Canvas dimensions.</p>
         <seealso><link id="#rtl.classes.registercomponents"/></seealso>
       </element>
       <element name="TControl.BiDiMode">
-        <short><i>TControlBiDiMode</i> - enabling bi-directional writing</short>
+        <short><i>TControlBiDiMode</i>
+ - enabling bi-directional writing</short>
         <descr>Allows Languages such as Arabic and Hebrew to be used</descr>
       </element>
       <element name="TControl.ParentBiDiMode">
-        <short><i>ParentBiDiMode</i> - does the control follow the BiDiMode settings of its parent?</short>
+        <short><i>ParentBiDiMode</i>
+ - does the control follow the BiDiMode settings of its parent?</short>
       </element>
+      <!-- constant Visibility: default -->
+      <element name="fsSurface">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="fsBorder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="bvNone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="bvLowered">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="bvRaised">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="bvSpace">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TCMMouseWheel.XPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TCMMouseWheel.YPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TCMMouseWheel.Pos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="TCMMouseWheel.Result">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- set type Visibility: default -->
+      <element name="TCaptureMouseButtons">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlStyleType.csNoDesignSelectable"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlStyleType.csOwnedChildsSelectable"><short/></element>
+      <!-- pointer type Visibility: default -->
+      <element name="PHintInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- record type Visibility: default -->
+      <element name="THintInfo">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintWindowClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintMaxWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.CursorRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.CursorPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.ReshowTimeout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HideTimeout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintStr">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="THintInfo.HintData">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FDragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FDragging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FDragHotspot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FOldCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FLastDragPos">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragImageList.FLockedWindow">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDragImageList.SetDragCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.SetDragCursor.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragImageList.Initialize">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.BeginDrag">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.BeginDrag.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.BeginDrag.Window"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.BeginDrag.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.BeginDrag.Y"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.DragLock">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.DragLock.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.DragLock.Window"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.DragLock.XPos"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.DragLock.YPos"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.DragMove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.DragMove.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.DragMove.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.DragMove.Y"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragImageList.DragUnlock">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.EndDrag">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.EndDrag.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.GetHotSpot">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.GetHotSpot.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragImageList.HideDragImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TDragImageList.SetDragImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragImageList.SetDragImage.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.SetDragImage.Index"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.SetDragImage.HotSpotX"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragImageList.SetDragImage.HotSpotY"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragImageList.ShowDragImage">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragImageList.DragCursor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragImageList.DragHotspot">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragImageList.Dragging">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure type Visibility: default -->
+      <element name="TGetDockCaptionEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGetDockCaptionEvent.Sender"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TGetDockCaptionEvent.AControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TGetDockCaptionEvent.ACaption"><short/></element>
+      <!-- variable Visibility: private -->
+      <element name="TDragObject.FAlwaysShowDragImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragObject.FControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TDragObject.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragObject.Create.AControl"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TDragObject.AlwaysShowDragImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragObject.Control">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TDockOrientation.doPages"><short/></element>
+      <!-- variable Visibility: private -->
+      <element name="TDragDockObject.FEraseDockRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragDockObject.FIncreaseDockArea">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragDockObject.IncreaseDockArea">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragDockObject.EraseDockRect">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TDragManager">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragManager.FDragImmediate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDragManager.FDragThreshold">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.KeyUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.KeyUp.Key"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.KeyUp.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.KeyDown">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.KeyDown.Key"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.KeyDown.Shift"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.CaptureChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.CaptureChanged.OldCaptureControl"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.MouseMove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseMove.Shift"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseMove.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseMove.Y"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.MouseUp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseUp.Button"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseUp.Shift"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseUp.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseUp.Y"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDragManager.MouseDown">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseDown.Button"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseDown.Shift"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseDown.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.MouseDown.Y"><short/></element>
+      <!-- constructor Visibility: public -->
+      <element name="TDragManager.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.Create.TheOwner"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDragManager.IsDragging">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragManager.IsDragging.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDragManager.Dragging">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDragManager.Dragging.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.Dragging.AControl"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragManager.RegisterDockSite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.RegisterDockSite.Site"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.RegisterDockSite.DoRegister"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragManager.DragStart">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.DragStart.AControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.DragStart.AImmediate"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.DragStart.AThreshold"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragManager.DragMove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.DragMove.APosition"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDragManager.DragStop">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDragManager.DragStop.ADrop"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TDragManager.DragImmediate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDragManager.DragThreshold">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DragManager">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TControlCellAlign">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlCellAlign.ccaFill"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlCellAlign.ccaLeftTop"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlCellAlign.ccaRightBottom"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlCellAlign.ccaCenter"><short/></element>
+      <!-- set type Visibility: default -->
+      <element name="TControlCellAligns">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControlBorderSpacing.FCellAlignHorizontal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControlBorderSpacing.FCellAlignVertical">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControlBorderSpacing.FInnerBorder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TControlBorderSpacing.IsInnerBorderStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControlBorderSpacing.IsInnerBorderStored.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControlBorderSpacing.SetCellAlignHorizontal">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlBorderSpacing.SetCellAlignHorizontal.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControlBorderSpacing.SetCellAlignVertical">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlBorderSpacing.SetCellAlignVertical.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControlBorderSpacing.SetInnerBorder">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlBorderSpacing.SetInnerBorder.AValue"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControlBorderSpacing.Change.InnerSpaceChanged"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControlBorderSpacing.GetSideSpace">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControlBorderSpacing.GetSideSpace.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControlBorderSpacing.GetSideSpace.Kind"><short/></element>
+      <!-- property Visibility: published -->
+      <element name="TControlBorderSpacing.InnerBorder">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TControlBorderSpacing.CellAlignHorizontal">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TControlBorderSpacing.CellAlignVertical">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TAnchorSideChangeOperation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TAnchorSideChangeOperation.ascoAdd"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TAnchorSideChangeOperation.ascoRemove"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TAnchorSideChangeOperation.ascoChangeSide"><short/></element>
+      <!-- destructor Visibility: public -->
+      <element name="TAnchorSide.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfAutoSizeNeeded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfLeftLoaded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfTopLoaded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfWidthLoaded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfHeightLoaded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfBaseBoundsValid"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfPreferredMinSizeValid"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfOnResizeNeeded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlFlag.cfOnChangeBoundsNeeded"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlHandlerType.chtOnVisibleChanging"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlHandlerType.chtOnVisibleChanged"><short/></element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.fAnchoredControls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FAutoSizing">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FAutoSizingLockCount">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FCaptureMouseButtons">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.fLastAlignedBoundsTried">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FLastDoChangeClientSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FPreferredMinWidth">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FPreferredMinHeight">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FReadBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TControl.CaptureMouseButtonsIsStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.CaptureMouseButtonsIsStored.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TControl.GetAnchoredControls">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetAnchoredControls.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.GetAnchoredControls.Index"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.SetParentFont">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.SetParentFont.Value"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.GetCursor">
+        <short>Function to find position of the cursor</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetCursor.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.BeginAutoSizing">
+        <short>Procedure for the beginning of the autosizing process</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.EndAutoSizing">
+        <short>Procedure for the end of the autosizing process</short>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.ForeignAnchorSideChanged">
+        <short>Procedure invoked when the anchor side is changed of a different (not the current) control</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.ForeignAnchorSideChanged.TheAnchorSide"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.ForeignAnchorSideChanged.Operation"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoBorderSpacingChange.InnerSpaceChanged"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.IsBorderSpacingInnerBorderStored">
+        <short>Function to find if details of border spacing are stored</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsBorderSpacingInnerBorderStored.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CalculatePreferredSize.WithThemeSpace"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.CheckOnChangeBounds">
+        <short>Checks for changes and calls DoOnChangeBounds</short>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.IsAParentAligning">
+        <short>Determine if a parent control is involved in the alignment process</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsAParentAligning.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.GetLogicalClientRect">
+        <short>Logical size of client area (e.g. in a TScrollBox the logical client area can be bigger than the visual)</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetLogicalClientRect.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.IsClientHeightStored">
+        <short>Is Client Height Stored?</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsClientHeightStored.Result"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.IsClientWidthStored">
+        <short>Is Client Width Stored?</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsClientWidthStored.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.WMContextMenu">
+        <short>Protected messages to system</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.WMContextMenu.Message"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.CMTextChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CMTextChanged.Message"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.GetDragImages">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetDragImages.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.DoFloatMsg">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoFloatMsg.ADockSource"><short/></element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.DoDragMsg.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoDragMsg.ADragMessage"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoDragMsg.APosition"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoDragMsg.ADragObject"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoDragMsg.ATarget"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoDragMsg.ADocking"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.GetDefaultDockCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetDefaultDockCaption.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.UpdateMouseCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.UpdateMouseCursor.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.UpdateMouseCursor.Y"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.FormEndUpdated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.ParentFontChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.TextChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TControl.GetCachedText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetCachedText.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.GetCachedText.CachedText"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.VisibleChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TControl.DoCallNotifyHandler">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.DoCallNotifyHandler.HandlerType"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.ManualDock.KeepDockSiteSize"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.ManualFloat.KeepDockSiteSize"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.NeedParentForAutoSize">
+        <short>True - need to know parent's properties to do autosize. False - can autosize independently</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.NeedParentForAutoSize.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AnchorToCompanion">
+        <short><i>AnchorToCompanion</i> - anchor to another control, not necessarily an immediate neighbour</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorToCompanion.Side"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorToCompanion.Space"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorToCompanion.Sibling"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorToCompanion.FreeCompositeSide"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AnchorSame">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorSame.Side"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorSame.Sibling"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AnchorAsAlign">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorAsAlign.TheAlign"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorAsAlign.Space"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AnchorClient">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchorClient.Space"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.AnchoredControlCount">
+        <short>The number of controls anchored to this one</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.AnchoredControlCount.Result"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TControl.AnchoredControls">
+        <short>The index numbers of the controls anchored to this one</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AnchoredControls.Index"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.GetPreferredSize.WithThemeSpace"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetDefaultWidth">
+        <short>Find default width (by reference to ancestor)</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetDefaultWidth.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetDefaultHeight">
+        <short>Find the default height (by reference to ancestor)</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetDefaultHeight.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetControlClassDefaultSize">
+        <short>Find the default size for this class of controls (by reference to parents)</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetControlClassDefaultSize.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetSidePosition">
+        <short>Find which side is being used for anchoring</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetSidePosition.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.GetSidePosition.Side"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.CNPreferredSizeChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetAnchorsDependingOnParent">
+        <short>Find out the required anchor settings by reference to the parents</short>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetAnchorsDependingOnParent.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.GetAnchorsDependingOnParent.WithNormalAnchors"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.DisableAutoSizing">
+        <short>Turn off automatic sizing - implies that default is accepted or sizing is done manually</short>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.EnableAutoSizing">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TControl.BaseBounds">
+        <short>The rectangle defining the base bounds for this control</short>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TControl.ReadBounds">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.WriteLayoutDebugReport">
+        <short>Used for debugging</short>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.WriteLayoutDebugReport.Prefix"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.GetTopParent">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.GetTopParent.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.IsControlVisible">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsControlVisible.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.FormIsUpdating">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.FormIsUpdating.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.ActiveDefaultControlChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.ActiveDefaultControlChanged.NewControl"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.ParentDestroyingHandle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.ParentDestroyingHandle.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.ShowHelp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TControl.HasHelp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.HasHelp.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AddHandlerOnVisibleChanging">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AddHandlerOnVisibleChanging.OnVisibleChangingEvent"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AddHandlerOnVisibleChanging.AsLast"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.RemoveHandlerOnVisibleChanging">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.RemoveHandlerOnVisibleChanging.OnVisibleChangingEvent"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.AddHandlerOnVisibleChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AddHandlerOnVisibleChanged.OnVisibleChangedEvent"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.AddHandlerOnVisibleChanged.AsLast"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControl.RemoveHandlerOnVisibleChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.RemoveHandlerOnVisibleChanged.OnVisibleChangedEvent"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TControl.CaptureMouseButtons">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FBiDiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControl.FParentBiDiMode">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TControl.IsBiDiModeStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsBiDiModeStored.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.SetBiDiMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.SetBiDiMode.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.SetParentBiDiMode">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.SetParentBiDiMode.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.CMBiDiModeChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CMBiDiModeChanged.Message"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControl.CMParentBiDiModeChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControl.CMParentBiDiModeChanged.Message"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.UseRightToLeftAlignment">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.UseRightToLeftAlignment.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.UseRightToLeftReading">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.UseRightToLeftReading.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.UseRightToLeftScrollBar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.UseRightToLeftScrollBar.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TControl.IsRightToLeft">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TControl.IsRightToLeft.Result"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TChildControlResizeStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChildControlResizeStyle.crsAnchorAligning"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChildControlResizeStyle.crsScaleChilds"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChildControlResizeStyle.crsHomogenousChildResize"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TChildControlResizeStyle.crsHomogenousSpaceResize"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TControlChildrenLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlChildrenLayout.cclNone"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlChildrenLayout.cclLeftToRightThenTopToBottom"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlChildrenLayout.cclTopToBottomThenLeftToRight"><short/></element>
+      <!-- variable Visibility: private -->
+      <element name="TControlChildSizing.FControlsPerLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TControlChildSizing.FLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TControlChildSizing.SetControlsPerLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlChildSizing.SetControlsPerLine.AValue"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TControlChildSizing.SetLayout">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlChildSizing.SetLayout.AValue"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TControlChildSizing.SetGridSpacing">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TControlChildSizing.SetGridSpacing.Spacing"><short/></element>
+      <!-- property Visibility: published -->
+      <element name="TControlChildSizing.Layout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TControlChildSizing.ControlsPerLine">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TWinControlFlag.wcfHandleVisible"><short/></element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TControlAtPosFlag">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlAtPosFlag.capfAllowDisabled"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlAtPosFlag.capfAllowWinControls"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlAtPosFlag.capfOnlyClientAreas"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlAtPosFlag.capfRecursive"><short/></element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TControlAtPosFlag.capfHasScrollOffset"><short/></element>
+      <!-- set type Visibility: default -->
+      <element name="TControlAtPosFlags">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TWinControl.FOnGetDockCaption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TWinControl.AlignNonAlignedControls">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.AlignNonAlignedControls.ListOfControls"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.AlignNonAlignedControls.BoundsModified"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TWinControl.IsClientHeightStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.IsClientHeightStored.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TWinControl.IsClientWidthStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.IsClientWidthStored.Result"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.CreateControlAlignList">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.CreateControlAlignList.TheAlign"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.CreateControlAlignList.AlignList"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.CreateControlAlignList.StartControl"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.ResizeDelayedAutoSizeChildren">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.DoDragMsg.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDragMsg.ADragMessage"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDragMsg.APosition"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDragMsg.ADragObject"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDragMsg.ATarget"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDragMsg.ADocking"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.DoDockClientMsg">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.DragDockObject"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoDockClientMsg.Position"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.DoUndockClientMsg">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.DoUndockClientMsg.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoUndockClientMsg.NewTarget"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoUndockClientMsg.Client"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoSendShowHideToInterface">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.RealizeBoundsRecursive">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.CalculatePreferredSize.WithThemeSpace"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.CMBiDiModeChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.CMBiDiModeChanged.Message"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoUnDock.KeepDockSiteSize"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoFloatMsg">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoFloatMsg.ADockSource"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.DoGetDockCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoGetDockCaption.AControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DoGetDockCaption.ACaption"><short/></element>
+      <!-- function Visibility: protected -->
+      <element name="TWinControl.SendDialogChar">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.SendDialogChar.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SendDialogChar.Message"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.SelectFirst">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.FinalizeWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.FormEndUpdated">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.SetChildZPosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetChildZPosition.AChild"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetChildZPosition.APosition"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TWinControl.WSSetText">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.WSSetText.AText"><short/></element>
+      <!-- property Visibility: protected -->
+      <element name="TWinControl.OnGetDockCaption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.ControlAtPos.Flags"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.WriteLayoutDebugReport">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.WriteLayoutDebugReport.Prefix"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.DockDrop.DragDockObject"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.SetTempCursor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetTempCursor.Value"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.AddControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TWinControl.GetDockCaption">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TWinControl.GetDockCaption.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.GetDockCaption.AControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.IntfUTF8KeyPress.SystemKey"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.PaintTo">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.PaintTo.DC"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.PaintTo.X"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.PaintTo.Y"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.PaintTo.ACanvas"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TWinControl.SetShape">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TWinControl.SetShape.AShape"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TGraphicControl.FontChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TGraphicControl.FontChanged.Sender"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TGraphicControl.DoOnChangeBounds">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.FontChanged">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomControl.FontChanged.Sender"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCustomControl.SetColor">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCustomControl.SetColor.Value"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TCustomControl.DestroyWnd">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.AllocBy">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.BlendColor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.DrawingStyle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.ImageType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TImageList.ShareImages">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.Create.TheChildControl"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.FindZone">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.FindZone.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.FindZone.AControl"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.AddAsFirstChild">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.AddAsFirstChild.NewChildZone"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.AddAsLastChild">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.AddAsLastChild.NewChildZone"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.ReplaceChild">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.ReplaceChild.OldChild"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.ReplaceChild.NewChild"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.GetLastChild">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.GetLastChild.Result"><short/></element>
+      <!-- function Visibility: public -->
+      <element name="TDockZone.GetIndex">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TDockZone.GetIndex.Result"><short/></element>
+      <!-- procedure Visibility: public -->
+      <element name="TDockZone.Remove">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockZone.Remove.ChildZone"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.ChildControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.FirstChild">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.Orientation">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.Parent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.NextSibling">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TDockZone.PrevSibling">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TDockTree.FRootZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TDockTree.SetDockSite">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockTree.SetDockSite.AValue"><short/></element>
+      <!-- procedure Visibility: protected -->
+      <element name="TDockTree.SetDockZoneClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TDockTree.SetDockZoneClass.AValue"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TDockTree.RootZone">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: default -->
+      <element name="DockSplitterClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TMouse.FWheelScrollLines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TMouse.SetCursorPos">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMouse.SetCursorPos.AValue"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TMouse.GetWheelScrollLines">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMouse.GetWheelScrollLines.Result"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TMouse.GetDragImmediate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMouse.GetDragImmediate.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TMouse.SetDragImmediate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMouse.SetDragImmediate.AValue"><short/></element>
+      <!-- function Visibility: private -->
+      <element name="TMouse.GetDragThreshold">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TMouse.GetDragThreshold.Result"><short/></element>
+      <!-- procedure Visibility: private -->
+      <element name="TMouse.SetDragThreshold">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TMouse.SetDragThreshold.AValue"><short/></element>
+      <!-- property Visibility: public -->
+      <element name="TMouse.WheelScrollLines">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="MainAlignAnchor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="OppositeAnchor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="ClockwiseAnchor">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="AnchorNames">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="SetCaptureControl.AWinControl"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="SetCaptureControl.Position"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="AdjustBorderSpace.Space"><short/></element>
+      <!-- function Visibility: default -->
+      <element name="DbgS">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="DbgS.Result"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="DbgS.a"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="DbgS.Anchors"><short/></element>
+      <!-- argument Visibility: default -->
+      <element name="DbgS.Side"><short/></element>
     </module>
     <!-- Controls -->
   </package>
