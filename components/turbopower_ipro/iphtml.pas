@@ -769,6 +769,7 @@ type
     {$IFDEF IP_LAZARUS}
     FCSS: TCSSProps;
     FElementName: String;
+    FCSSPropsLoaded: boolean;
     {$ENDIF}
     FStyle: string;
     FClassId: string;
@@ -4308,7 +4309,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF IP_LAZARUS}
-  if Self.InheritsFrom(TIpHtmlNodeCore) then
+  if Self.InheritsFrom(TIpHtmlNodeCore)then
     TIpHtmlNodeCore(Self).LoadCSSProps(Owner, Elem, RenderProps);
   {$ENDIF}
   for i := 0 to Pred(FChildren.Count) do
@@ -7613,10 +7614,10 @@ begin
     if not TIpHtmlNodeHtml(Parent).HasBodyNode then
       { No. Create a body node under FHtml. }
       with TIpHtmlNodeHtml(Parent) do begin
-        {$IFDEF IP_LAZARUS}
-        with
-        {$ENDIF}
-        TIpHtmlNodeBODY.Create(Parent){$IFDEF IP_LAZARUS} do LoadCSSProps(Owner, Element, nil){$ENDIF};
+        with TIpHtmlNodeBODY.Create(Parent) do
+          {$IFDEF IP_LAZARUS}
+          LoadCSSProps(Owner, Element, nil)
+          {$ENDIF};
 
         { Make each of FHtml's current children the children of the
           Body node. }
@@ -14585,7 +14586,7 @@ end;
 
 { TIpHtmlNodeCore }
 
-procedure TIpHtmlNodeCore.ParseBaseProps;
+procedure TIpHtmlNodeCore.ParseBaseProps(Owner : TIpHtml);
 {$IFDEF IP_LAZARUS}
 var
   Commands: TStringList;
@@ -14616,6 +14617,12 @@ var
 begin
   if Owner.CSS = nil then
     exit;
+  {
+  WriteLn('FCSSPropsLoaded=',TIpHtmlNodeCore(Self).FCSSPropsLoaded);
+  if FCSSPropsLoaded then
+    exit;
+  FCSSPropsLoaded:=True;
+  }
   TmpElement := Element;
   if Element = nil then
   begin
@@ -14759,6 +14766,15 @@ begin
   if P>0 then begin
     result := round(P);
     exit;
+  end;
+  
+  // check px
+  P:=GetFSize('px');
+  if P>0 then begin
+    // calculate points based on screen resolution :(
+    // at 96dpi CSS21 recommneds 1px=0.26 mm
+    // TODO: use screen resolution, check printing!
+    Result := Round(P*0.7370241)
   end;
 
   //todo: em, ex are supposed to be based on the computed pixel size of
