@@ -301,13 +301,13 @@ var
 begin
   Initialize(FileAddrRec);
   {$IFDEF IP_LAZARUS}
-  DebugLn('TIpFileDataProvider.CanHandle('+URL+')');
+  //DebugLn('TIpFileDataProvider.CanHandle('+URL+')');
   {$ENDIF}
   FN := BuildURL(FOldURL, URL);
   IpParseURL(FN, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
   {$IFDEF IP_LAZARUS}
-  DebugLn('TIpFileDataProvider.CanHandle FN="'+FN+'"');
+  //DebugLn('TIpFileDataProvider.CanHandle FN="'+FN+'"');
   {$ENDIF}
   ContentType := UpperCase(GetLocalContent(FN));
   Result := (FileExists(FN)) and ((Pos('TEXT/HTML', ContentType) > 0) or

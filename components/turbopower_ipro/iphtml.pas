@@ -777,6 +777,8 @@ type
   protected
     procedure ParseBaseProps(Owner : TIpHtml); {virtual;}              {!!.12}
     {$IFDEF IP_LAZARUS}
+    function SelectCSSFont(const aFont: string): string;
+    procedure ApplyCSSProps(const Element: TCSSProps; const props: TIpHtmlProps);
     procedure LoadCSSProps(Owner : TIpHtml; var Element: TCSSProps; const Props: TIpHtmlProps); virtual;
     function ElementName: String;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
@@ -5303,8 +5305,14 @@ begin
     {$ENDIF}
   end;
   NextToken;
-  if CurToken <> IpHtmlTagSTYLEend then
+  if CurToken <> IpHtmlTagSTYLEend then begin
+    {$IFDEF IP_LAZARUS}
+    if (CurToken=IpHtmlTagText) and
+      (AnsiCompareText(CurStyle.Type_ , 'text/css')=0) then
+      ParseStyleSheet(CurStyle, GetTokenString);
+    {$ENDIF}
     ParseText([IpHtmlTagSTYLEend], CurStyle);
+  end;
   if CurToken = IpHtmlTagSTYLEend then
     NextToken
   else
@@ -6756,25 +6764,26 @@ procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
 begin
-  if FDataProvider = nil then
-  begin
+  if FDataProvider = nil then begin
     //DebugLn('No dataprovider!');
     exit;
   end;
-  if Parent is TIpHtmlNodeHEAD then
-  begin
+  
+  StyleStream:=nil;
+  
+  if Parent is TIpHtmlNodeHEAD then begin
     Href := FDataProvider.BuildURL(CurURL, HRef);
     StyleStream := FDataProvider.DoGetStream(HRef);
-    if StyleStream <> nil then
-    begin
-      with TCSSReader.Create(StyleStream, FCSS) do
-      begin
-        ParseCSS;
-        Free;
-      end;
+  end else
+  if Parent is TIpHtmlNodeSTYLE then
+    StyleStream := TStringStream.Create(Href);
+    
+  if StyleStream<>nil then
+    with TCSSReader.Create(StyleStream, FCSS) do begin
+      ParseCSS;
+      Free;
       StyleStream.Free;
     end;
-  end;
 end;
 {$ENDIF}
 
@@ -14610,46 +14619,87 @@ begin
   TmpElement := Element;
   if Element = nil then
   begin
+
     // process first the Main element
     Element := Owner.CSS.GetElement(ElementName, '');
-    if Element <> nil then
-      LoadCSSProps(Owner, Element, Props);
+    if Element <> nil then begin
+      ApplyCSSProps(Element, Props);
+    end;
+    
     // load the .class if there is one
-    Element := Owner.CSS.GetElement('', ClassId);
-    if Element <> nil then
-      LoadCSSProps(Owner, Element, Props);
+    if ClassID<>'' then begin
+      Element := Owner.CSS.GetElement('', ClassId);
+      if Element <> nil then begin
+        ApplyCSSProps(Element, Props);
+      end;
+    end;
+    
     // then load the element + class if there is one
-    if (Element=nil)and(ClassID<>'') then
+    if (Element=nil)and(ClassID<>'') then begin
       Element := Owner.CSS.GetElement(ElementName, ClassId);
+      if Element=nil then
+      else begin
+        ApplyCSSProps(Element, Props);
+      end;
+    end;
+    
   end;
   
-  if (Element <> nil) and (Props <> nil) then
+  if TmpElement = nil then
+  begin
+    // lookup id elements
+    TmpElement := Owner.CSS.GetElement(Id);
+    if TmpElement <> nil then begin
+      ApplyCSSProps(TmpElement, Props);
+    end;
+    // lookup local elements for this tag, not from the stylesheet
+    TmpElement := CSS;
+    if TmpElement <> nil then begin
+      ApplyCSSProps(TmpElement, Props);
+    end;
+  end;
+end;
+
+function TIpHtmlNodeCore.SelectCSSFont(const aFont: string): string;
+begin
+  // todo: implement font matching
+  result := FirstString(aFont);
+end;
+
+procedure TIpHtmlNodeCore.ApplyCSSProps(const Element: TCSSProps;
+  const props: TIpHtmlProps);
+begin
+  if (Element<>nil) and (props<>nil) then
   begin
     {$WARNING Setting these font colors and name messes up the alignment for some reason}
-    if Element.Color <> -1 then
+    if Element.Color <> -1 then begin
       Props.FontColor := Element.Color;
-      
-    if Element.BGColor <> -1 then
+    end;
+
+    if Element.BGColor <> -1 then begin
       Props.BgColor := Element.Color;
-      
-    if Element.Font.Name <> '' then
-      Props.FontName := FirstString(Element.Font.Name);
+    end;
+
+    if Element.Font.Name <> '' then begin
+      // put the code here, later refactore it
+      Props.FontName := SelectCSSFont(Element.Font.Name);
+    end;
 
      {$WARNING TODO Set Font size from CSS Value}
     // see http://xhtml.com/en/css/reference/font-size/
-    if Element.Font.Size <> '' then
+    if Element.Font.Size <> '' then begin
+      // Props.FontSize :=  Element.Font.Size;
       props.FontSize:=GetFontSizeFromCSS(Props.FontSize, Element.Font.Size);
+    end;
 
-    if Element.Font.Style <> cfsNormal then
-    begin
+    if Element.Font.Style <> cfsNormal then begin
       case Element.Font.Style of
         cfsItalic,cfsOblique: Props.FontStyle := Props.FontStyle + [fsItalic];
         cfsInherit: ; // what to do?: search through parent nodes looking for a computed value
       end;
     end;
 
-    if Element.Font.Weight <> cfwNormal then
-    begin
+    if Element.Font.Weight <> cfwNormal then begin
       case Element.Font.Weight of
         cfwBold    : Props.FontStyle := Props.FontStyle + [fsBold];
         cfwBolder  : Props.FontStyle := Props.FontStyle + [fsBold];
@@ -14666,18 +14716,6 @@ begin
       end;
     end;
   end;
-  
-  if TmpElement = nil then
-  begin
-    // lookup id elements
-    TmpElement := Owner.CSS.GetElement(Id);
-    if TmpElement <> nil then
-      LoadCSSProps(Owner, TmpElement, Props);
-    // lookup local elements for this tag, not from the stylesheet
-    TmpElement := CSS;
-    if TmpElement <> nil then
-      LoadCSSProps(Owner, TmpElement, Props);
-  end;
 end;
 
 function TIpHtmlNodeCore.ElementName: String;
@@ -14687,20 +14725,56 @@ end;
 
 function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
   aFontSize: string):Integer;
+
+  function GetFSize(aUnits: string): double;
+  var
+    i: Integer;
+  begin
+    i := pos(aUnits, aFontSize);
+    if i>0 then
+      result := StrToFloatDef(copy(aFontSize,1,i-1), -1.0)
+    else
+      result := -1.0;
+  end;
+  
+  function GetParentFontSize: integer;
+  begin
+    if (FParentNode is TIpHtmlNodeBlock) then
+      result :=TIpHtmlNodeBlock(FParentNode).Props.FontSize
+    else
+    if (FParentNode is TIpHtmlNodeGenInline) then
+      result := TIpHtmlNodeGenInline(FparentNode).Props.FontSize
+    else
+      result := CurrentFontSize;
+  end;
+  
 var
-  P: Integer;
+  P: double;
+  ParentFSize: Integer;
 begin
   result := CurrentFontSize;
+
   // check pt
-  P := Pos('pt',aFontSize);
-  if p>0 then
-  begin
-    p := StrToIntDef(copy(aFontSize,1,P-1), -1);
-    if P>0 then
-    begin
-      result := P;
-      exit;
-    end;
+  P:=GetFSize('pt');
+  if P>0 then begin
+    result := round(P);
+    exit;
+  end;
+
+  //todo: em, ex are supposed to be based on the computed pixel size of
+  //      parent node, tpipro has no provision for this....
+
+  // check %
+  P:=GetFSize('%');
+  if P>0 then begin
+    result := round(GetParentFontSize * P/100);
+    exit;
+  end;
+  
+  // check em
+  P:=GetFSize('em');
+  if P>0 then begin
+    result := round(GetParentFontSize * P);
   end;
 end;
 

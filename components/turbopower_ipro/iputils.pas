@@ -2777,7 +2777,7 @@ begin
       Reg.Free;
     end;
   end;
-  DebugLn('IpUtils.GetLocalContent File:'+TheFileName+' Result:'+result);
+  //DebugLn('IpUtils.GetLocalContent File:'+TheFileName+' Result:'+result);
 end;
 
 {$ELSE}

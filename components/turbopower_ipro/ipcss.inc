@@ -551,29 +551,32 @@ end;
 function TCSSProps.GetCommandArgs(ACommand: String): TStringList;
 var
   i: Integer;
-  WantQuote: Boolean;
   WantArg: Boolean;
   Arg: String;
   Start: Integer;
+  Quote: char;
 begin
   Result := TStringList.Create;
   Start := Pos(':', ACommand)+1;
+  
 
-  WantQuote := False;
   WantArg := True;
+  Quote := #0;
   for i := Start to Length(ACommand) do
   begin
-    if (WantQuote = False) and (ACommand[i] = '"') then
+    if (Quote = #0) and (ACommand[i] in ['"','''']) then
     begin
-      WantQuote := True;
+      Quote := ACommand[i];
       Start := i+1;
       continue;
     end;
-    if WantQuote and (ACommand[i] = '"') then
-    begin
-      WantQuote := False;
-      Arg := Copy(ACommand, Start, i-1);
-      Result.Add(Arg);
+    if Quote<>#0 then begin
+      if ACommand[i]=Quote then begin
+        Quote:=#0;
+        Arg := Copy(ACommand, Start, i-Start);
+        Result.Add(Arg);
+      end;
+      continue;
     end;
     if WantArg then
     begin
@@ -585,7 +588,9 @@ begin
     end
     else // we have an arg we are reading ...
     begin
-      if (i <> Length(ACommand)) and (not IsWhiteSpace(ACommand[i])) then
+      if (i<Length(ACommand)) and
+         (ACommand[i]<>';')
+      then
         continue;
       WantArg := True;
       Arg := Copy(ACommand, Start, i-1);
@@ -751,9 +756,6 @@ begin
     Args := GetCommandArgs(ACommand);
     Command := LowerCase(GetCommandName(ACommand));
 
-    //WriteLn('Got Command: "', Command,'" With args:');
-    //WriteLn(Args.Text);
-  
     if Command = 'color' then
       Color := ColorFromString(Args[0])
     else if Command = 'background-color' then
@@ -812,8 +814,10 @@ var
       
     ElementIndex := FElements.IndexOf(ElementName);
     
-    if ElementIndex>=0 then
+    if ElementIndex>=0 then begin
       result := TCSSProps(FElements.Objects[ElementIndex]);
+    end;
+      
   end;
 begin
   Result := nil;
