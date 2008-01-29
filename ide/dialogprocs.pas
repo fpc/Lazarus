@@ -311,7 +311,7 @@ begin
     ACodeBuffer.SaveToStream(ms);
     ms.Position:=0;
     try
-      ReadXMLFile(Config.Document,ms);
+      Config.ReadFromStream(ms);
     except
       on E: Exception do begin
         Result:=MessageDlg('XML Error',

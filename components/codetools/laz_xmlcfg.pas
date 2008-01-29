@@ -45,6 +45,8 @@ type
    is the name of the value. The path components will be mapped to XML
    elements, the name will be an element attribute.}
 
+  { TXMLConfig }
+
   TXMLConfig = class(TComponent)
   private
     FFilename: String;
@@ -62,6 +64,9 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Flush;    // Writes the XML file
+    procedure ReadFromStream(s: TStream);
+    procedure WriteToStream(s: TStream);
+
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
@@ -138,6 +143,19 @@ begin
     WriteXMLFile(doc, Filename);
     FModified := False;
   end;
+end;
+
+procedure TXMLConfig.ReadFromStream(s: TStream);
+begin
+  FreeAndNil(Doc);
+  ReadXMLFile(Doc,s);
+  if Doc=nil then
+    Clear;
+end;
+
+procedure TXMLConfig.WriteToStream(s: TStream);
+begin
+  WriteXMLFile(Doc,s);
 end;
 
 function TXMLConfig.GetValue(const APath, ADefault: String): String;
