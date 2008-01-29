@@ -7598,7 +7598,7 @@ begin
       Background := FindAttribute('BACKGROUND');
       ParseBaseProps(Self);
       {$IFDEF IP_LAZARUS}
-      LoadCSSProps(Owner, Element, nil);
+      LoadCSSProps(Owner, Element, props);
       {$ENDIF}
     end;
 
@@ -7616,7 +7616,7 @@ begin
       with TIpHtmlNodeHtml(Parent) do begin
         with TIpHtmlNodeBODY.Create(Parent) do
           {$IFDEF IP_LAZARUS}
-          LoadCSSProps(Owner, Element, nil)
+          LoadCSSProps(Owner, Element, props)
           {$ENDIF};
 
         { Make each of FHtml's current children the children of the
@@ -14774,7 +14774,8 @@ begin
     // calculate points based on screen resolution :(
     // at 96dpi CSS21 recommneds 1px=0.26 mm
     // TODO: use screen resolution, check printing!
-    Result := Round(P*0.7370241)
+    Result := Round(P*0.7370241);
+    exit;
   end;
 
   //todo: em, ex are supposed to be based on the computed pixel size of
