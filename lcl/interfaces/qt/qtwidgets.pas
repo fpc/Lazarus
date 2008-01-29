@@ -1539,10 +1539,12 @@ begin
             SlotPaint(Sender, Event);
         end;
       QEventContextMenu: SlotContextMenu(Sender, Event);
+      {$IFDEF USE_QT_4_3}
       QEventNonClientAreaMouseButtonPress:
         begin
           SlotNCMouse(Sender, Event);
         end;
+      {$ENDIF}
       QEventLCLMessage:
         begin
           SlotLCLMessage(Sender, Event);
