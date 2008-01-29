@@ -12,7 +12,8 @@
     </MakeFilename>
     <TestBuildDirectory Value="%Temp%">
     </TestBuildDirectory>
-    <Debugger Class="TProcessDebugger"/>
+    <Debugger Class="TGDBMIDebugger"/>
+    <DebuggerFilename Value="%LazDir%\mingw\bin\gdb.exe">
     <Desktop>
       <MainIDE>
         <WindowPlacement Value="RestoreWindowGeometry"/>
