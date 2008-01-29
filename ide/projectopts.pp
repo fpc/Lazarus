@@ -38,16 +38,17 @@ interface
 uses
   Arrow, Buttons, StdCtrls, SysUtils, LCLProc, Classes, CodeToolManager,
   Controls, Dialogs, LCLIntf, LResources, ExtCtrls, Forms, Graphics, Spin,
-  FileUtil, IDEContextHelpEdit,
+  FileUtil, IDEContextHelpEdit, EnvironmentOpts,
   IDEWindowIntf, ProjectIntf, IDEDialogs,
   IDEOptionDefs, LazarusIDEStrConsts, Project, IDEProcs, W32VersionInfo,
-  VersionInfoAdditionalInfo, W32Manifest;
+  VersionInfoAdditionalInfo, W32Manifest, ApplicationBundle;
 
 type
 
   { TProjectOptionsDialog }
 
   TProjectOptionsDialog = class(TForm)
+    CreateAppBundleButton: TButton;
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
     PODBtnPanel: TPanel;
@@ -138,6 +139,7 @@ type
     OKButton: TBitBtn;
 
     procedure AdditionalInfoButtonClick(Sender: TObject);
+    procedure CreateAppBundleButtonClick(Sender: TObject);
     procedure EnableI18NCheckBoxChange(Sender: TObject);
     procedure FormsPageContextPopup(Sender: TObject; MousePos: TPoint; var Handled: Boolean);
     procedure FormsPageResize(Sender: TObject);
@@ -182,6 +184,8 @@ type
 
 function ShowProjectOptionsDialog(AProject: TProject): TModalResult;
 
+function CreateProjectApplicationBundle(AProject: TProject): Boolean;
+
 function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage): string;
 function LocalizedNameToProjectSessionStorage(
                                        const s: string): TProjectSessionStorage;
@@ -198,6 +202,27 @@ begin
     finally
       Free;
     end;
+end;
+
+function CreateProjectApplicationBundle(AProject: TProject): Boolean;
+var
+  TargetExeName: String;
+begin
+  Result := False;
+  if AProject.MainUnitInfo = nil then Exit;
+  try
+    if AProject.IsVirtual then
+      TargetExeName := EnvironmentOptions.GetTestBuildDirectory + ExtractFilename(AProject.MainUnitInfo.Filename)
+    else
+      TargetExeName := AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename);
+
+    CreateApplicationBundle(TargetExeName, AProject.Title);
+    CreateSymbolicLink(TargetExeName);
+    Result := True;
+  except
+    on E: Exception do
+      MessageDlg(lisABCreationFailed + E.Message, mtError, [mbCancel], 0);
+  end;
 end;
 
 function ProjectSessionStorageToLocalizedName(s: TProjectSessionStorage
@@ -260,6 +285,7 @@ begin
   UseAppBundleCheckBox.Checked := False;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
   UseXPManifestCheckBox.Checked := False;
+  CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
 end;
 
 procedure TProjectOptionsDialog.SetupLazDocPage(PageIndex: Integer);
@@ -527,6 +553,11 @@ begin
   ShowVersionInfoAdditionailInfoForm(Project.VersionInfo,InfoModified);
   if InfoModified then
     Project.Modified:=true;
+end;
+
+procedure TProjectOptionsDialog.CreateAppBundleButtonClick(Sender: TObject);
+begin
+  CreateProjectApplicationBundle(Project);
 end;
 
 procedure TProjectOptionsDialog.EnableI18NCheckBoxChange(Sender: TObject);

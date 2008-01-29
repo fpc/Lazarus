@@ -46,7 +46,7 @@ uses
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   LazConf, DebugOptionsFrm,
-  CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
+  CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, UnitEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,
@@ -1710,11 +1710,15 @@ begin
     
     if not DirectoryExists(LaunchingApplication) then
     begin
-      MessageDlg(lisLaunchingApplicationInvalid,
-        Format(lisTheLaunchingApplicationBundleDoesNotExists, ['"',
-          LaunchingCmdLine, '"', #13, #13, #13]),
-        mtError, [mbOK],0);
-      Exit;
+      if MessageDlg(lisLaunchingApplicationInvalid,
+        Format(lisTheLaunchingApplicationBundleDoesNotExists,
+          [LaunchingCmdLine, #13, #13, #13, #13]),
+        mtError, [mbYes, mbNo, mbCancel], 0) = mrYes then
+      begin
+        if not CreateProjectApplicationBundle(Project1) then Exit;
+      end
+      else
+        Exit;
     end;
     
     if DebuggerClass = TProcessDebugger then

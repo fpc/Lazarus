@@ -1421,6 +1421,7 @@ resourcestring
   dlgPOOutputSettings = 'Output Settings';
   dlgPOTargetFileName = 'Target file name:';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (darwin only)';
+  dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (windows only)';
   dlgAutoCreateForms = 'Auto-create forms:';
   dlgAvailableForms = 'Available forms:';
@@ -2582,10 +2583,9 @@ resourcestring
     +'application %s%s%'
     +'s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> '
     +'Local';
-  lisTheLaunchingApplicationBundleDoesNotExists = 'The launching '
-    +'Application Bundle %s%s%'
-    +'s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> '
-    +'Application.';
+  lisTheLaunchingApplicationBundleDoesNotExists = 'The Application Bundle %s'
+    +'%sneeded for execution does not exist or is not executable.%sDo you want to create one?'
+    +'%s%sSee Project -> Project Options -> Application for settings.';
 
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
@@ -3623,6 +3623,10 @@ resourcestring
   lisVSRForwardSearch = 'Forward Search';
   lisVSRResetResultList = 'Reset Result List';
   lisTDDInsertToDo = 'Insert ToDo';
+
+  // Application Bundle
+  lisABCreationFailed = 'Error occured during Application Bundle creation: ';
+  
 
 implementation
 
