@@ -340,7 +340,7 @@ begin
     end;
 
     // draw separator (at runtime: just space, at designtime: a rectangle)
-    if (Style in [tbsSeparator,tbsDivider]) and (csDesigning in ComponentState) then
+    if (Style = tbsSeparator) and (csDesigning in ComponentState) then
     begin
       Canvas.Brush.Color := clBackground;
       Canvas.Pen.Color := clBlack;
