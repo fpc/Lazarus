@@ -155,3 +155,4 @@ packages/pkg_registerunit.png
 packages/pkg_removedfiles.png
 packages/pkg_removedrequired.png
 packages/pkg_text.png
+packages/pkg_unit.png

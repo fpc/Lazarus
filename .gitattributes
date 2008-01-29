@@ -2544,6 +2544,7 @@ images/packages/pkg_removedfiles.png -text
 images/packages/pkg_removedrequired.png -text
 images/packages/pkg_required.png -text svneol=unset#image/png
 images/packages/pkg_text.png -text
+images/packages/pkg_unit.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
