@@ -1488,6 +1488,7 @@ type
     procedure MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
     procedure AddButton(Button: TToolButton);
     procedure RemoveButton(Button: TToolButton);
+    function IsVertical: Boolean;
   protected
     procedure AdjustClientRect(var ARect: TRect); override;
     class function GetControlClassDefaultSize: TPoint; override;

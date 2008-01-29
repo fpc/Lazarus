@@ -194,6 +194,12 @@ begin
   FButtons.Remove(Button);
 end;
 
+function TToolBar.IsVertical: Boolean;
+begin
+  // any other logic?
+  Result := Height > Width;
+end;
+
 procedure TToolBar.ApplyFontForButtons;
 var
   i: integer;

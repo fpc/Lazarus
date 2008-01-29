@@ -142,6 +142,67 @@ procedure TToolButton.Paint;
       TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1));
     ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
   end;
+  
+  procedure DrawDivider(Details: TThemedElementDetails; ARect: TRect);
+  begin
+    // theme services have no strict rule to draw divider in the center,
+    // so we should calculate rectangle here
+    if FToolBar.IsVertical then
+    begin
+      if (ARect.Bottom - ARect.Top) > 3 then
+      begin
+        ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 1;
+        ARect.Bottom := ARect.Top + 3;
+      end;
+    end
+    else
+    begin
+      if (ARect.Right - ARect.Left) > 3 then
+      begin
+        ARect.Left := (ARect.Left + ARect.Right) div 2 - 1;
+        ARect.Right := ARect.Left + 3;
+      end;
+    end;
+    ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
+       Details, ARect);
+  end;
+  
+  procedure DrawSeparator(Details: TThemedElementDetails; ARect: TRect);
+  begin
+    // separator is just an empty space between buttons, so we should not draw anything,
+    // but vcl draws line when toolbar is flat, because there is no way to detect
+    // space between flat buttons. Better if we draw something too. One of suggestions
+    // was to draw 2 lines instead of one divider - this way separator and divider will differ
+    if FToolBar.Flat then // draw it only for flat Toolbar
+    begin
+      if FToolBar.IsVertical then
+      begin
+        if (ARect.Bottom - ARect.Top) > 6 then
+        begin
+          ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 3;
+          ARect.Bottom := ARect.Top + 3;
+          DrawDivider(Details, ARect);
+          OffsetRect(ARect, 0, 3);
+          DrawDivider(Details, ARect);
+        end
+        else
+          DrawDivider(Details, ARect);
+      end
+      else
+      begin
+        if (ARect.Right - ARect.Left) > 3 then
+        begin
+          ARect.Left := (ARect.Left + ARect.Right) div 2 - 3;
+          ARect.Right := ARect.Left + 3;
+          DrawDivider(Details, ARect);
+          OffsetRect(ARect, 3, 0);
+          DrawDivider(Details, ARect);
+        end
+        else
+          DrawDivider(Details, ARect);
+      end;
+    end;
+  end;
 
 var
   PaintRect: TRect;
@@ -228,11 +289,23 @@ begin
     end;
 
     // draw button
-    if (Style in [tbsButton, tbsDropDown, tbsCheck, tbsDivider]) then
+    if (Style in [tbsButton, tbsDropDown, tbsCheck]) then
     begin
       ThemeServices.DrawElement(Canvas.GetUpdatedHandle([csBrushValid, csPenValid]),
          Details, ButtonRect);
       ButtonRect := ThemeServices.ContentRect(Canvas.Handle, Details, ButtonRect);
+    end
+    else
+    if Style = tbsDivider then
+    begin
+      DrawDivider(Details, ButtonRect);
+      ButtonRect := Rect(0, 0, 0, 0); // nothing can be drawn on divider
+    end
+    else
+    if Style = tbsSeparator then
+    begin
+      DrawSeparator(Details, ButtonRect);
+      ButtonRect := Rect(0, 0, 0, 0); // nothing can be drawn on divider
     end;
 
     // draw dropdown button
@@ -649,8 +722,11 @@ begin
   if Style = tbsDropDown then
     ToolDetail := ttbSplitButtonNormal
   else
-  if Style = tbsDivider then
-    ToolDetail := ttbSeparatorNormal
+  if Style in [tbsDivider, tbsSeparator] then
+    if FToolBar.IsVertical then
+      ToolDetail := ttbSeparatorVertNormal
+    else
+      ToolDetail := ttbSeparatorNormal
   else
     ToolDetail := ttbButtonNormal;
     
