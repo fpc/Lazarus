@@ -33,15 +33,17 @@ unit DiskDiffsDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, LResources, Project,
-  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts, ComCtrls, ExtCtrls,
-  EnvironmentOpts;
+  Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls,
+  LResources, SynEdit, LCLType, ComCtrls, ExtCtrls,
+  FileProcs, CodeToolManager, CodeCache, Laz_XMLCfg, Laz_XMLWrite,
+  Project, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, PackageDefs;
 
 type
   PDiffItem = ^TDiffItem;
   TDiffItem = record
     Valid: boolean;
-    UnitInfo: TUnitInfo;
+    Code: TCodeBuffer;
+    Owner: TObject;
     Diff: string;
     TxtOnDisk: string;
   end;
@@ -61,29 +63,40 @@ type
           Shift: TShiftState; X, Y: Integer);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
   private
+    FPackageList: TFPList;
     FUnitList: TFPList;
     FCachedDiffs: TFPList; // List of PDiffItem
     procedure FillFilesListBox;
+    procedure SetPackageList(const AValue: TFPList);
     procedure SetUnitList(const AValue: TFPList);
     procedure ShowDiff;
-    function GetCachedDiff(AnUnitInfo: TUnitInfo): PDiffItem;
+    function GetCachedDiff(FileOwner: TObject): PDiffItem;
     procedure ClearCache;
   public
     property UnitList: TFPList read FUnitList write SetUnitList; // list of TUnitInfo
+    property PackageList: TFPList read FPackageList write SetPackageList; // list of TLazPackage
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
   
-function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
+function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
+
 
 implementation
+
 
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
-function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
+function ShowDiskDiffsDialog(AnUnitList, APackageList: TFPList): TModalResult;
 
-  procedure CheckWithLoading;
+  function ListsAreEmpty: boolean;
+  begin
+    Result:=((AnUnitList=nil) or (AnUnitList.Count=0))
+        and ((APackageList=nil) or (APackageList.Count=0));
+  end;
+
+  procedure CheckUnitsWithLoading;
   var
     i: Integer;
     CurUnit: TUnitInfo;
@@ -91,6 +104,7 @@ function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
     UnitDidNotChange: Boolean;
     s: string;
   begin
+    if AnUnitList=nil then exit;
     for i:=AnUnitList.Count-1 downto 0 do begin
       CurUnit:=TUnitInfo(AnUnitList[i]);
       UnitDidNotChange:=false;
@@ -117,18 +131,60 @@ function ShowDiskDiffsDialog(AnUnitList: TFPList): TModalResult;
     end;
   end;
   
+  procedure CheckPackagesWithLoading;
+  var
+    i: Integer;
+    CurPackage: TLazPackage;
+    PackageDidNotChange: Boolean;
+    fs: TFileStream;
+    CurSource, DiskSource: string;
+  begin
+    if APackageList=nil then exit;
+    for i:=APackageList.Count-1 downto 0 do begin
+      CurPackage:=TLazPackage(APackageList[i]);
+      PackageDidNotChange:=false;
+      if CurPackage.LPKSource=nil then
+        continue;// this package was not loaded/saved
+      try
+        CurPackage.SaveToString(CurSource);
+        fs:=TFileStream.Create(CurPackage.Filename,fmOpenRead);
+        try
+          if fs.Size=length(CurSource) then begin
+            // size has not changed => load to see difference
+            SetLength(DiskSource,fs.Size);
+            fs.Read(DiskSource[1],length(DiskSource));
+            if DiskSource=CurSource then
+              PackageDidNotChange:=true;
+          end;
+        finally
+          fs.Free;
+        end;
+      except
+        // unable to load
+        on E: Exception do begin
+          DebugLn(['CheckPackagesWithLoading Filename=',CurPackage.Filename,' Error=',E.Message]);
+        end;
+      end;
+      if PackageDidNotChange then begin
+        APackageList.Delete(i);
+      end;
+    end;
+  end;
+  
 begin
-  if (DiskDiffsDlg<>nil) or (AnUnitList=nil) then begin
+  if (DiskDiffsDlg<>nil) or ListsAreEmpty then begin
     Result:=mrIgnore;
     exit;
   end;
   if EnvironmentOptions.CheckDiskChangesWithLoading then begin
-    CheckWithLoading;
-    if AnUnitList.Count=0 then exit;
+    CheckUnitsWithLoading;
+    CheckPackagesWithLoading;
+    if ListsAreEmpty then exit;
   end;
-
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
   DiskDiffsDlg.UnitList:=AnUnitList;
+  DiskDiffsDlg.PackageList:=APackageList;
+  DiskDiffsDlg.FillFilesListBox;
   Result:=DiskDiffsDlg.ShowModal;
   DiskDiffsDlg.Free;
   DiskDiffsDlg:=nil;
@@ -161,15 +217,25 @@ var i: integer;
 begin
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
-  for i:=0 to UnitList.Count-1 do
-    FilesListBox.Items.Add(TUnitInfo(UnitList[i]).ShortFilename);
+  if UnitList<>nil then
+    for i:=0 to UnitList.Count-1 do
+      FilesListBox.Items.AddObject(TUnitInfo(UnitList[i]).ShortFilename,
+                                   TUnitInfo(UnitList[i]));
+  if PackageList<>nil then
+    for i:=0 to PackageList.Count-1 do
+      FilesListBox.Items.AddObject(TLazPackage(PackageList[i]).Filename,
+                                   TLazPackage(PackageList[i]));
   FilesListBox.Items.EndUpdate;
+end;
+
+procedure TDiskDiffsDlg.SetPackageList(const AValue: TFPList);
+begin
+  FPackageList:=AValue;
 end;
 
 procedure TDiskDiffsDlg.SetUnitList(const AValue: TFPList);
 begin
   FUnitList:=AValue;
-  FillFilesListBox;
 end;
 
 procedure TDiskDiffsDlg.ShowDiff;
@@ -178,34 +244,64 @@ var
   DiffItem: PDiffItem;
 begin
   i:=FilesListBox.ItemIndex;
-  if i>=0 then begin
-    DiffItem:=GetCachedDiff(TUnitInfo(FUnitList[i]));
+  DiffItem:=nil;
+  if (i>=0) and (UnitList<>nil) then begin
+    if i<UnitList.Count then
+      DiffItem:=GetCachedDiff(TUnitInfo(UnitList[i]))
+    else
+      dec(i,UnitList.Count);
+  end;
+  if (i>=0) and (PackageList<>nil) then begin
+    if i<PackageList.Count then
+      DiffItem:=GetCachedDiff(TLazPackage(PackageList[i]))
+    else
+      dec(i,PackageList.Count);
+  end;
+  if DiffItem<>nil then begin
     DiffSynEdit.Lines.Text:=DiffItem^.Diff;
   end else begin
     DiffSynEdit.Lines.Clear;
   end;
 end;
 
-function TDiskDiffsDlg.GetCachedDiff(AnUnitInfo: TUnitInfo): PDiffItem;
+function TDiskDiffsDlg.GetCachedDiff(FileOwner: TObject): PDiffItem;
 var
   i: integer;
   fs: TFileStream;
+  Filename: String;
+  AnUnitInfo: TUnitInfo;
+  APackage: TLazPackage;
+  Source: String;
 begin
   if FCachedDiffs=nil then
     FCachedDiffs:=TFPList.Create;
   for i:=0 to FCachedDiffs.Count-1 do begin
     Result:=PDiffItem(FCachedDiffs[i]);
-    if (Result<>nil) and (Result^.UnitInfo=AnUnitInfo) then exit;
+    if (Result<>nil) and (Result^.Owner=FileOwner) then exit;
   end;
   New(Result);
-  Result^.UnitInfo:=AnUnitInfo;
+  Result^.Owner:=FileOwner;
   try
-    fs:=TFileStream.Create(AnUnitInfo.Filename,fmOpenRead);
+    if FileOwner is TUnitInfo then begin
+      // compare disk and codetools
+      AnUnitInfo:=TUnitInfo(FileOwner);
+      Filename:=AnUnitInfo.Source.Filename;
+      Source:=AnUnitInfo.Source.Source;
+    end else if FileOwner is TLazPackage then begin
+      // compare disk and package
+      APackage:=TLazPackage(FileOwner);
+      Filename:=APackage.LPKSource.Filename;
+      APackage.SaveToString(Source);
+    end else begin
+      Filename:='';
+      Source:='';
+    end;
+    fs:=TFileStream.Create(Filename,fmOpenRead);
     SetLength(Result^.TxtOnDisk,fs.Size);
     if Result^.TxtOnDisk<>'' then
       fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
     fs.Free;
-    Result^.Diff:=CreateTextDiff(AnUnitInfo.Source.Source,Result^.TxtOnDisk,[],
+    Result^.Diff:=CreateTextDiff(Source,Result^.TxtOnDisk,[],
                                  tdoContext);
   except
     On E: Exception do

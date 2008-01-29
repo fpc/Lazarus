@@ -9619,6 +9619,7 @@ end;
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
   AnUnitList: TFPList; // list of TUnitInfo
+  APackageList: TFPList; // list of TLazPackage
   i: integer;
   CurUnit: TUnitInfo;
 begin
@@ -9635,35 +9636,48 @@ begin
 
   //debugln('TMainIDE.DoCheckFilesOnDisk');
   FCheckingFilesOnDisk:=true;
+  AnUnitList:=nil;
+  APackageList:=nil;
   try
     InvalidateFileStateCache;
     Project1.GetUnitsChangedOnDisk(AnUnitList);
-    if AnUnitList=nil then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList);
+    PkgBoss.GetPackagesChangedOnDisk(APackageList);
+    if (AnUnitList=nil) and (APackageList=nil) then exit;
+    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList);
     if Result in [mrYesToAll] then
       Result:=mrOk;
-    for i:=0 to AnUnitList.Count-1 do begin
-      CurUnit:=TUnitInfo(AnUnitList[i]);
-      //DebugLn(['TMainIDE.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
-      if Result=mrOk then begin
-        if CurUnit.EditorIndex>=0 then begin
-          Result:=DoOpenEditorFile(CurUnit.Filename,CurUnit.EditorIndex,[ofRevert]);
-          //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
-        end else if CurUnit.IsMainUnit then begin
-          Result:=DoRevertMainUnit;
-          //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
-        end else
-          Result:=mrIgnore;
-        if Result=mrAbort then exit;
-      end else begin
-        //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
-        CurUnit.IgnoreCurrentFileDateOnDisk;
+      
+    // reload units
+    if AnUnitList<>nil then begin
+      for i:=0 to AnUnitList.Count-1 do begin
+        CurUnit:=TUnitInfo(AnUnitList[i]);
+        //DebugLn(['TMainIDE.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
+        if Result=mrOk then begin
+          if CurUnit.EditorIndex>=0 then begin
+            Result:=DoOpenEditorFile(CurUnit.Filename,CurUnit.EditorIndex,[ofRevert]);
+            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
+          end else if CurUnit.IsMainUnit then begin
+            Result:=DoRevertMainUnit;
+            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
+          end else
+            Result:=mrIgnore;
+          if Result=mrAbort then exit;
+        end else begin
+          //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
+          CurUnit.IgnoreCurrentFileDateOnDisk;
+        end;
       end;
     end;
+    
+    // reload packages
+    Result:=PkgBoss.RevertPackages(APackageList);
+    if Result<>mrOk then exit;
+    
     Result:=mrOk;
-    AnUnitList.Free;
   finally
     FCheckingFilesOnDisk:=false;
+    AnUnitList.Free;
+    APackageList.Free;
   end;
 end;
 

@@ -3167,6 +3167,7 @@ end;
 
 function TBaseCallStack.IndexError(AIndex: Integer): TCallStackEntry;
 begin
+  Result:=nil;
   raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
 end;
 

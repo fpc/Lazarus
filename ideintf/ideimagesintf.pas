@@ -174,6 +174,9 @@ begin
         end;
         Stream.Free;
       except
+        on E: Exception do begin
+          DebugLn(['TIDEImages.LoadImage Image="',ImageName,' Error=',E.Message]);
+        end;
       end;
     end;
   end;

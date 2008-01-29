@@ -538,7 +538,7 @@ type
                              var Abort: boolean): string;
   private
     // for docking
-    FDockPanels: array[TAlign] of TPanel;
+    //FDockPanels: array[TAlign] of TPanel;
     FDockSplitters: array[TAlign] of TSplitter;
     procedure DockPanelGetSiteInfo(Sender: TObject; DockClient: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);

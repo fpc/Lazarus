@@ -1185,9 +1185,9 @@ begin
   fModified:=false;
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SaveTheCompilerOptions                                  }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions SaveTheCompilerOptions
+------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.SaveTheCompilerOptions(const Path: string);
 var
   P: string;
@@ -1307,8 +1307,6 @@ begin
                                CreateMakefileOnBuild,false);
 
   // write
-  InvalidateFileStateCache;
-  XMLConfigFile.Flush;
   FModified := False;
 end;
 

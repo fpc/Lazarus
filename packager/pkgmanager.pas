@@ -224,6 +224,8 @@ type
                         InObject: TObject): TPkgFile; override;
     function AddDependencyToUnitOwners(const OwnedFilename,
                               RequiredUnitname: string): TModalResult; override;
+    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList); override;
+    function RevertPackages(APackageList: TFPList): TModalResult; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -2307,6 +2309,8 @@ var
   APackage: TLazPackage;
   XMLConfig: TXMLConfig;
   AlternativePkgName: String;
+  Code: TCodeBuffer;
+  OpenEditor: Boolean;
   
   procedure DoQuestionDlg(const Caption, Message: string);
   begin
@@ -2326,7 +2330,8 @@ begin
   AFilename:=CleanAndExpandFilename(AFilename);
   
   // check file extension
-  if CompareFileExt(AFilename,'.lpk',false)<>0 then begin
+  if (CompareFileExt(AFilename,'.lpk',false)<>0)
+  and (not (pofRevert in Flags)) then begin
     DoQuestionDlg(lisPkgMangInvalidFileExtension,
       Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
@@ -2336,8 +2341,9 @@ begin
   
   // check filename
   AlternativePkgName:=ExtractFileNameOnly(AFilename);
-  if (AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)) then
-  begin
+  if (not (pofRevert in Flags))
+  and ((AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)))
+  then begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
       Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
         AlternativePkgName, '"', #13, '"', AFilename, '"']));
@@ -2353,10 +2359,15 @@ begin
     SetRecentPackagesMenu;
   end;
 
+  OpenEditor:=true;
+
   // check if package is already loaded
   APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
   if (APackage=nil) or (pofRevert in Flags) then begin
-    // package not yet loaded
+    // package not yet loaded or it should be reloaded
+    
+    if (pofRevert in Flags) and (APackage.Editor=nil) then
+      OpenEditor:=false;
     
     if not FileExists(AFilename) then begin
       IDEMessageDialog(lisFileNotFound,
@@ -2375,9 +2386,13 @@ begin
 
       // load the package file
       try
-        XMLConfig:=TXMLConfig.Create(AFilename);
+        XMLConfig:=TXMLConfig.Create(nil);
         try
           APackage.Filename:=AFilename;
+          Result:=LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
+                               Code,[lbfUpdateFromDisk,lbfRevert]);
+          if Result<>mrOk then exit;
+          APackage.LPKSource:=Code;
           APackage.LoadFromXMLConfig(XMLConfig,'Package/');
         finally
           XMLConfig.Free;
@@ -2412,7 +2427,10 @@ begin
     end;
   end;
 
-  Result:=DoOpenPackage(APackage,[]);
+  if OpenEditor then
+    Result:=DoOpenPackage(APackage,[])
+  else
+    Result:=mrOk;
 end;
 
 function TPkgManager.DoSavePackage(APackage: TLazPackage;
@@ -2420,6 +2438,7 @@ function TPkgManager.DoSavePackage(APackage: TLazPackage;
 var
   XMLConfig: TXMLConfig;
   PkgLink: TPackageLink;
+  Code: TCodeBuffer;
 begin
   // do not save during compilation
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
@@ -2470,12 +2489,14 @@ begin
 
   // save
   try
-    XMLConfig:=TXMLConfig.CreateClean(APackage.Filename);
+    XMLConfig:=TXMLConfig.Create(nil);
     try
       XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
-      InvalidateFileStateCache;
-      XMLConfig.Flush;
+      Code:=nil;
+      Result:=SaveXMLConfigToCodeBuffer(APackage.Filename,XMLConfig,Code);
+      if Result<>mrOk then exit;
+      APackage.LPKSource:=Code;
       PkgLink:=PkgLinks.AddUserLink(APackage);
       if PkgLink<>nil then begin
         PkgLink.FileDate:=FileDateToDateTime(FileAge(APackage.Filename));
@@ -3309,6 +3330,26 @@ begin
   finally
     OwnersList.Free;
   end;
+end;
+
+procedure TPkgManager.GetPackagesChangedOnDisk(var ListOfPackages: TFPList);
+begin
+  if PackageGraph=nil then exit;
+  PackageGraph.GetPackagesChangedOnDisk(ListOfPackages);
+end;
+
+function TPkgManager.RevertPackages(APackageList: TFPList): TModalResult;
+var
+  i: Integer;
+  APackage: TLazPackage;
+begin
+  if APackageList=nil then exit(mrOk);
+  for i:=0 to APackageList.Count-1 do begin
+    APackage:=TLazPackage(APackageList[i]);
+    Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
+    if Result=mrAbort then exit;
+  end;
+  Result:=mrOk;
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

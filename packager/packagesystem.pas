@@ -234,6 +234,7 @@ type
                                      Policies: TPackageUpdatePolicies): TFPList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TFPList;
+    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList);
     procedure CalculateTopologicalLevels;
     procedure SortDependencyListTopologically(
                    var FirstDependency: TPkgDependency; TopLevelFirst: boolean);
@@ -425,9 +426,11 @@ var
   AFilename: String;
   NewPackage: TLazPackage;
   XMLConfig: TXMLConfig;
+  Code: TCodeBuffer;
 begin
   Result:=false;
   NewPackage:=nil;
+  XMLConfig:=nil;
   BeginUpdate(false);
   try
     AFilename:=PkgLink.Filename;
@@ -439,11 +442,13 @@ begin
     try
       PkgLink.FileDate:=FileDateToDateTime(FileAge(AFilename));
       PkgLink.FileDateValid:=true;
-      XMLConfig:=TXMLConfig.Create(AFilename);
+      XMLConfig:=TXMLConfig.Create(nil);
       NewPackage:=TLazPackage.Create;
       NewPackage.Filename:=AFilename;
+      if LoadXMLConfigFromCodeBuffer(AFilename,XMLConfig,
+                           Code,[lbfUpdateFromDisk,lbfRevert])<>mrOk then exit;
       NewPackage.LoadFromXMLConfig(XMLConfig,'Package/');
-      XMLConfig.Free;
+      NewPackage.LPKSource:=Code;
     except
       on E: Exception do begin
         DebugLn('unable to read file "'+AFilename+'" ',E.Message);
@@ -462,6 +467,7 @@ begin
     if not Result then
       NewPackage.Free;
     EndUpdate;
+    FreeAndNil(XMLConfig);
   end;
 end;
 
@@ -3057,6 +3063,29 @@ begin
     if not Dependency.IsCompatible(NewName,NewVersion) then
       Result.Add(Dependency);
     Dependency:=Dependency.NextUsedByDependency;
+  end;
+end;
+
+procedure TLazPackageGraph.GetPackagesChangedOnDisk(
+  var ListOfPackages: TFPList);
+// if package source is changed in IDE (codetools)
+// then changes on disk are ignored
+var
+  APackage: TLazPackage;
+  i: Integer;
+begin
+  MarkNeededPackages;
+  for i:=FItems.Count-1 downto 0 do begin
+    APackage:=TLazPackage(FItems[i]);
+    if (not (lpfNeeded in APackage.Flags))
+    or APackage.ReadOnly or APackage.Modified
+    or (APackage.LPKSource=nil) then
+      continue;
+    if (not APackage.LPKSource.FileNeedsUpdate) then
+      continue;
+    if ListOfPackages=nil then
+      ListOfPackages:=TFPList.Create;
+    ListOfPackages.Add(APackage);
   end;
 end;
 

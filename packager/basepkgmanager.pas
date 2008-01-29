@@ -83,6 +83,8 @@ type
                                 InObject: TObject): TPkgFile; virtual; abstract;
     function AddDependencyToUnitOwners(const OwnedFilename,
                      RequiredUnitname: string): TModalResult; virtual; abstract;
+    procedure GetPackagesChangedOnDisk(var ListOfPackages: TFPList); virtual; abstract;
+    function RevertPackages(APackageList: TFPList): TModalResult; virtual; abstract;
 
     // project
     function OpenProjectDependencies(AProject: TProject;

@@ -133,7 +133,7 @@ end;
 
 procedure TXMLConfig.Flush;
 begin
-  if Modified then
+  if Modified and (Filename<>'') then
   begin
     WriteXMLFile(doc, Filename);
     FModified := False;

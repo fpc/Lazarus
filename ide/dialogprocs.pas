@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileUtil,
-  CodeCache, CodeToolManager, AVL_Tree,
+  Laz_XMLCfg, Laz_XMLWrite, Laz_XMLRead, CodeCache, CodeToolManager, AVL_Tree,
   LazIDEIntf,
   IDEProcs, LazarusIDEStrConsts, IDEDialogs;
 
@@ -72,7 +72,12 @@ function SaveCodeBufferToFile(ACodeBuffer: TCodeBuffer;
 function LoadStringListFromFile(const Filename, ListTitle: string;
                                 var sl: TStrings): TModalResult;
 function SaveStringListToFile(const Filename, ListTitle: string;
-                                var sl: TStrings): TModalResult;
+                              var sl: TStrings): TModalResult;
+function LoadXMLConfigFromCodeBuffer(const Filename: string; Config: TXMLConfig;
+                        out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags
+                        ): TModalResult;
+function SaveXMLConfigToCodeBuffer(const Filename: string; Config: TXMLConfig;
+                        var ACodeBuffer: TCodeBuffer): TModalResult;
 function CreateEmptyFile(const Filename: string;
                          ErrorButtons: TMsgDlgButtons): TModalResult;
 function CheckCreatingFile(const AFilename: string;
@@ -290,6 +295,63 @@ begin
   end;
 end;
 
+function LoadXMLConfigFromCodeBuffer(const Filename: string;
+  Config: TXMLConfig; out ACodeBuffer: TCodeBuffer; Flags: TLoadBufferFlags
+  ): TModalResult;
+var
+  ms: TMemoryStream;
+begin
+  Result:=LoadCodeBuffer(ACodeBuffer,Filename,Flags);
+  if Result<>mrOk then begin
+    Config.Clear;
+    exit;
+  end;
+  ms:=TMemoryStream.Create;
+  try
+    ACodeBuffer.SaveToStream(ms);
+    ms.Position:=0;
+    try
+      ReadXMLFile(Config.Document,ms);
+    except
+      on E: Exception do begin
+        Result:=MessageDlg('XML Error',
+          'XML parser error in file '+Filename+#13
+          +'Error: '+E.Message,mtError,[mbCancel],0);
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
+end;
+
+function SaveXMLConfigToCodeBuffer(const Filename: string;
+  Config: TXMLConfig; var ACodeBuffer: TCodeBuffer): TModalResult;
+var
+  ms: TMemoryStream;
+begin
+  if ACodeBuffer=nil then begin
+    ACodeBuffer:=CodeToolBoss.CreateFile(Filename);
+    if ACodeBuffer=nil then
+      exit(mrCancel);
+  end;
+  ms:=TMemoryStream.Create;
+  try
+    try
+      WriteXMLFile(Config.Document,ms);
+    except
+      on E: Exception do begin
+        Result:=MessageDlg('XML Error',
+          'Unable to write xml stream to '+Filename+#13
+          +'Error: '+E.Message,mtError,[mbCancel],0);
+      end;
+    end;
+    ms.Position:=0;
+    ACodeBuffer.LoadFromStream(ms);
+    Result:=SaveCodeBuffer(ACodeBuffer);
+  finally
+    ms.Free;
+  end;
+end;
 
 function CreateEmptyFile(const Filename: string; ErrorButtons: TMsgDlgButtons
   ): TModalResult;

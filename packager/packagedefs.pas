@@ -45,10 +45,10 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics, 
-  AVL_Tree, Laz_XMLCfg,
-  DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
-  FileUtil,
+  Classes, SysUtils, LCLProc, LResources, Graphics, Forms, FileUtil,
+  AVL_Tree,
+  DefineTemplates, CodeToolManager, Laz_XMLWrite, Laz_XMLCfg, CodeCache,
+  EditDefineTree, CompilerOptions,
   PropEdits, LazIDEIntf, MacroIntf,
   LazarusIDEStrConsts, IDEProcs, ComponentReg,
   TransferMacros, FileReferenceList, PublishModule;
@@ -592,6 +592,8 @@ type
     FLastCompilerParams: string;
     FLazDocPaths: string;
     FLicense: string;
+    FLPKSource: TCodeBuffer;
+    FLPKSourceChangeStep: integer;
     FMacros: TTransferMacroList;
     FMissing: boolean;
     FModifiedLock: integer;
@@ -631,6 +633,8 @@ type
     procedure SetInstalled(const AValue: TPackageInstallType);
     procedure SetLazDocPaths(const AValue: string);
     procedure SetLicense(const AValue: string);
+    procedure SetLPKSource(const AValue: TCodeBuffer);
+    procedure SetLPKSourceChangeStep(const AValue: integer);
     procedure SetOutputStateFile(const AValue: string);
     procedure SetProvides(const AValue: TStrings);
     procedure SetPOOutputDirectory(const AValue: string);
@@ -661,6 +665,7 @@ type
     // streaming
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToString(out s: string);
     // consistency
     procedure CheckInnerDependencies;
     function MakeSense: boolean;
@@ -672,9 +677,9 @@ type
     function GetResolvedFilename: string;
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList);
-    function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
     function GetStateFilename: string;
+    function GetCompileSourceFilename: string;// as GetSrcFilename without directory
     function GetSrcFilename: string;
     function GetCompilerFilename: string;
     function GetPOOutDirectory: string;
@@ -760,7 +765,7 @@ type
     property DefineTemplates: TLazPackageDefineTemplates read FDefineTemplates
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
-    property Directory: string read FDirectory; // the path of the .lpk file
+    property Directory: string read FDirectory; // the directory of the .lpk file
     property Editor: TBasePackageEditor read FPackageEditor
                                         write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
@@ -785,6 +790,8 @@ type
                                         write FLastCompilerParams;
     property LazDocPaths: string read FLazDocPaths write SetLazDocPaths;
     property License: string read FLicense write SetLicense;
+    property LPKSource: TCodeBuffer read FLPKSource write SetLPKSource;
+    property LPKSourceChangeStep: integer read FLPKSourceChangeStep write SetLPKSourceChangeStep;
     property Macros: TTransferMacroList read FMacros;
     property Missing: boolean read FMissing write FMissing;
     property Modified: boolean read GetModified write SetModified;
@@ -2264,6 +2271,24 @@ begin
   Modified:=true;
 end;
 
+procedure TLazPackage.SetLPKSource(const AValue: TCodeBuffer);
+begin
+  if FLPKSource=AValue then exit;
+  FLPKSource:=AValue;
+  if FLPKSource<>nil then
+    FLPKSourceChangeStep:=FLPKSource.ChangeStep;
+  // do not change Filename here.
+  // See TPkgManager.DoSavePackage and TPkgManager.DoOpenPackageFile
+  // the LPKSource is the codebuffer last used during load/save, so it is not valid
+  // for packages that were not yet loaded/saved or during renaming/loading/saving.
+end;
+
+procedure TLazPackage.SetLPKSourceChangeStep(const AValue: integer);
+begin
+  if FLPKSourceChangeStep=AValue then exit;
+  FLPKSourceChangeStep:=AValue;
+end;
+
 procedure TLazPackage.SetOutputStateFile(const AValue: string);
 var
   NewStateFile: String;
@@ -2635,6 +2660,28 @@ begin
   fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/');
   SaveStringList(XMLConfig,FProvides,Path+'Provides/');
   Modified:=false;
+end;
+
+procedure TLazPackage.SaveToString(out s: string);
+var
+  XMLConfig: TXMLConfig;
+  ms: TMemoryStream;
+begin
+  s:='';
+  XMLConfig:=TXMLConfig.Create(nil);
+  ms:=TMemoryStream.Create;
+  try
+    XMLConfig.Clear;
+    SaveToXMLConfig(XMLConfig,'Package/');
+    WriteXMLFile(XMLConfig.Document,ms);
+    ms.Position:=0;
+    SetLength(s,ms.Size);
+    if s<>'' then
+      ms.Read(s[1],length(s));
+  finally
+    XMLConfig.Free;
+    ms.Free;
+  end;
 end;
 
 function TLazPackage.IsVirtual: boolean;

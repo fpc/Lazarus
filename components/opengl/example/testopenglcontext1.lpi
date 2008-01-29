@@ -23,10 +23,10 @@
     </RunParams>
     <RequiredPackages Count="2">
       <Item1>
-        <PackageName Value="LazOpenGLContext"/>
+        <PackageName Value="LCL"/>
       </Item1>
       <Item2>
-        <PackageName Value="LCL"/>
+        <PackageName Value="LazOpenGLContext"/>
       </Item2>
     </RequiredPackages>
     <Units Count="2">
@@ -46,9 +46,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="5"/>
-    <SearchPaths>
-      <LCLWidgetType Value="gtk"/>
-    </SearchPaths>
     <CodeGeneration>
       <Generate Value="Faster"/>
     </CodeGeneration>
