@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="/"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <ProjectVersion Value=""/>
+      <Language Value=""/>
+      <CharSet Value=""/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="3">
+      <Item1>
+        <PackageName Value="lazparadox"/>
+        <MinVersion Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item3>
+    </RequiredPackages>
+    <Units Count="18">
+      <Unit0>
+        <Filename Value="testparadox.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="testparadox"/>
+        <CursorPos X="7" Y="8"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="31"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="frmmain.pp"/>
+        <ComponentName Value="MainForm"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceFilename Value="frmmain.lrs"/>
+        <UnitName Value="frmmain"/>
+        <CursorPos X="3" Y="42"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="31"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="paradox.pp"/>
+        <UnitName Value="paradox"/>
+        <CursorPos X="14" Y="717"/>
+        <TopLine Value="706"/>
+        <UsageCount Value="15"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../../../../fpc/packages/base/pxlib/pxlib.pp"/>
+        <UnitName Value="pxlib"/>
+        <CursorPos X="1" Y="481"/>
+        <TopLine Value="456"/>
+        <UsageCount Value="15"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../base/pxlib/ppxview.pp"/>
+        <UnitName Value="ppxview"/>
+        <CursorPos X="1" Y="135"/>
+        <TopLine Value="110"/>
+        <UsageCount Value="15"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../../../fpc/html/contrib/db.pp"/>
+        <UnitName Value="db"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="9"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../base/db.pas"/>
+        <UnitName Value="db"/>
+        <CursorPos X="24" Y="812"/>
+        <TopLine Value="778"/>
+        <UsageCount Value="15"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../base/fields.inc"/>
+        <CursorPos X="3" Y="2432"/>
+        <TopLine Value="2429"/>
+        <UsageCount Value="15"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../memds/memds.pp"/>
+        <UnitName Value="memds"/>
+        <CursorPos X="1" Y="465"/>
+        <TopLine Value="438"/>
+        <UsageCount Value="15"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../dbase/dbf.pas"/>
+        <UnitName Value="dbf"/>
+        <CursorPos X="3" Y="731"/>
+        <TopLine Value="722"/>
+        <UsageCount Value="15"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../../../projects/lazarus/components/sdf/registersdf.pas"/>
+        <UnitName Value="RegisterSDF"/>
+        <CursorPos X="22" Y="25"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="15"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../../../projects/lazarus/lcl/lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <CursorPos X="26" Y="789"/>
+        <TopLine Value="777"/>
+        <UsageCount Value="15"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../../../projects/lazarus/lcl/dbgrids.pas"/>
+        <UnitName Value="DBGrids"/>
+        <CursorPos X="3" Y="1600"/>
+        <TopLine Value="1593"/>
+        <UsageCount Value="14"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../base/dataset.inc"/>
+        <CursorPos X="21" Y="501"/>
+        <TopLine Value="473"/>
+        <UsageCount Value="15"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../../../projects/lazarus/lcl/include/dbmemo.inc"/>
+        <CursorPos X="1" Y="230"/>
+        <TopLine Value="195"/>
+        <UsageCount Value="11"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../../../projects/lazarus/lcl/include/dbimage.inc"/>
+        <CursorPos X="1" Y="167"/>
+        <TopLine Value="141"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../../../../projects/lazarus/lcl/dbctrls.pp"/>
+        <UnitName Value="DbCtrls"/>
+        <CursorPos X="25" Y="600"/>
+        <TopLine Value="575"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../../../projects/lazarus/lcl/include/bitmap.inc"/>
+        <CursorPos X="1" Y="595"/>
+        <TopLine Value="570"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+    </Units>
+    <JumpHistory Count="3" HistoryIndex="2">
+      <Position1>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="30" Column="1" TopLine="8"/>
+      </Position1>
+      <Position2>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="18" Column="22" TopLine="8"/>
+      </Position2>
+      <Position3>
+        <Filename Value="frmmain.pp"/>
+        <Caret Line="42" Column="3" TopLine="1"/>
+      </Position3>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="/home/michael/fpc/packages/base/pxlib/;/home/michael/fpc/packages/fcl-db/src/paradox/"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

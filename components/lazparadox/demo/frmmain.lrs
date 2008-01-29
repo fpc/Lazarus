@@ -1,0 +1,28 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TMainForm','FORMDATA',[
+  'TPF0'#9'TMainForm'#8'MainForm'#4'Left'#3#174#1#6'Height'#3#23#2#3'Top'#3#226
+  +#0#5'Width'#3#22#3#18'HorzScrollBar.Page'#3#21#3#18'VertScrollBar.Page'#3#22
+  +#2#7'Caption'#6#20'Paradox test program'#12'ClientHeight'#3#23#2#11'ClientWi'
+  +'dth'#3#22#3#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#13#3'Top'#2#18#5
+  +'Width'#2'H'#7'Caption'#6#12'Paradox File'#11'ParentColor'#8#0#0#13'TFileNam'
+  +'eEdit'#4'FEPX'#4'Left'#2'X'#6'Height'#2#23#3'Top'#2#10#5'Width'#3'F'#2#11'D'
+  +'ialogTitle'#6#27'Select paradox file to open'#6'Filter'#6' Paradox files|*.'
+  +'db|All files|*.*'#11'ButtonWidth'#2#23#9'NumGlyphs'#2#1#7'Anchors'#11#5'akT'
+  +'op'#6'akLeft'#7'akRight'#0#11'ParentColor'#8#8'TabOrder'#2#0#0#0#7'TButton'
+  +#7'Button1'#4'Left'#3#190#2#6'Height'#2#25#3'Top'#2#8#5'Width'#2'K'#7'Anchor'
+  +'s'#11#5'akTop'#7'akRight'#0#7'Caption'#6#5'&Open'#7'OnClick'#7#12'Button1Cl'
+  +'ick'#8'TabOrder'#2#1#0#0#12'TDBNavigator'#12'DBNavigator1'#4'Left'#2#8#6'He'
+  +'ight'#2#25#3'Top'#2'('#5'Width'#3#241#0#10'BevelOuter'#7#6'bvNone'#12'Clien'
+  +'tHeight'#2#25#11'ClientWidth'#3#241#0#10'DataSource'#7#5'DSPDX'#0#0#7'TDBGr'
+  +'id'#7'DBGrid1'#4'Left'#2#8#6'Height'#3#205#1#3'Top'#2'H'#5'Width'#3#1#3#7'A'
+  +'nchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#10'DataSource'#7#5'D'
+  +'SPDX'#10'FixedColor'#7#9'clBtnFace'#13'FixedHotColor'#7#9'cl3DLight'#7'Opti'
+  +'ons'#11#9'dgEditing'#8'dgTitles'#11'dgIndicator'#14'dgColumnResize'#12'dgCo'
+  +'lumnMove'#10'dgColLines'#10'dgRowLines'#6'dgTabs'#21'dgAlwaysShowSelection'
+  +#15'dgConfirmDelete'#14'dgCancelOnExit'#0#12'OptionsExtra'#11#14'dgeAutoColu'
+  +'mns'#17'dgeCheckboxColumn'#0#11'ParentColor'#8#8'TabOrder'#2#2#7'TabStop'#9
+  +#0#0#11'TDatasource'#5'DSPDX'#7'DataSet'#7#3'PDX'#4'left'#3#8#1#3'top'#2'('#0
+  +#0#8'TParadox'#3'PDX'#9'PXLibrary'#6#10'libpx.so.0'#9'FieldDefs'#14#0#4'left'
+  +#3'0'#1#3'top'#2'('#0#0#0
+]);
