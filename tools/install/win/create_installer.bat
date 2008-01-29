@@ -8,11 +8,7 @@ if [%4]==[] goto USAGE
 :: Path to the Inno Setup Compiler
 if [%ISCC%]==[] SET ISCC="C:\Program Files\Inno Setup 5\iscc.exe"
 
-:: Path to the directory containing the qtinf dll matching the from 
-:: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
-SET QTINFDIR=c:\lazarus\source\qtinf
-
-:: Path to build directory. 
+:: Path to build directory.
 :: In this directory an image of the installation will be built.
 SET BUILDDIR=c:\temp\lazbuild
 
