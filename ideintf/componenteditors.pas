@@ -958,46 +958,53 @@ begin
   Hook:=nil;
   if not GetHook(Hook) then exit;
   case Index of
-  0: NewStyle:=tbsButton;
-  1: NewStyle:=tbsCheck;
-  2: NewStyle:=tbsSeparator;
-  else exit;
+    0: NewStyle := tbsButton;
+    1: NewStyle := tbsCheck;
+    2: NewStyle := tbsSeparator;
+    3: NewStyle := tbsDivider;
+  else
+    exit;
   end;
-  CurToolBar:=ToolBar;
-  NewToolButton:=TToolButton.Create(CurToolBar.Owner);
-  NewName:=GetDesigner.CreateUniqueComponentName(NewToolButton.ClassName);
-  NewToolButton.Caption:=NewName;
-  NewToolButton.Name:=NewName;
-  NewToolButton.Style:=NewStyle;
+  CurToolBar := ToolBar;
+  NewToolButton := TToolButton.Create(CurToolBar.Owner);
+  NewName := GetDesigner.CreateUniqueComponentName(NewToolButton.ClassName);
+  NewToolButton.Caption := NewName;
+  NewToolButton.Name := NewName;
+  NewToolButton.Style := NewStyle;
+  if NewStyle = tbsDivider then
+    NewToolButton.Width := 3;
   // position the button next to the last button
-  if CurToolBar.ButtonCount>0 then begin
-    SiblingButton := CurToolBar.Buttons[CurToolBar.ButtonCount-1];
+  if CurToolBar.ButtonCount > 0 then
+  begin
+    SiblingButton := CurToolBar.Buttons[CurToolBar.ButtonCount - 1];
     NewToolButton.SetBounds(SiblingButton.Left + SiblingButton.Width,
       SiblingButton.Top, NewToolButton.Width, NewToolButton.Height);
   end;
-  NewToolButton.Parent:=CurToolBar;
-  Hook.PersistentAdded(NewToolButton,true);
+  NewToolButton.Parent := CurToolBar;
+  Hook.PersistentAdded(NewToolButton, True);
   Modified;
 end;
 
 function TToolBarComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-  0: Result:='New Button';
-  1: Result:='New Checkbutton';
-  2: Result:='New Separator';
-  else Result:='';
+    0: Result := 'New Button';
+    1: Result := 'New Checkbutton';
+    2: Result := 'New Separator';
+    3: Result := 'New Divider';
+  else
+    Result := '';
   end;
 end;
 
 function TToolBarComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=3;
+  Result := 4;
 end;
 
 function TToolBarComponentEditor.ToolBar: TToolBar;
 begin
-  Result:=TToolBar(GetComponent);
+  Result := TToolBar(GetComponent);
 end;
 
 { TCommonDialogComponentEditor }
