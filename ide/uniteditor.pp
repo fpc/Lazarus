@@ -6237,13 +6237,16 @@ const
 procedure TSourceNotebook.DockPanelGetSiteInfo(Sender: TObject; DockClient: TControl;
   var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
 begin
+  // accept only one control - docking in not ready for more
   CanDock := TWinControl(Sender).ControlCount = 0;
+
+  // make influence rect 2 times smaller that actual zone size
   if CanDock then
     case TWinControl(Sender).Align of
-      alLeft: InfluenceRect.Right := InfluenceRect.Left + DockZoneSize;
-      alTop: InfluenceRect.Bottom := InfluenceRect.Bottom + DockZoneSize;
-      alRight: InfluenceRect.Left := InfluenceRect.Right - DockZoneSize;
-      alBottom: InfluenceRect.Top := InfluenceRect.Top - DockZoneSize;
+      alLeft: InfluenceRect.Right := InfluenceRect.Left + DockZoneSize div 2;
+      alTop: InfluenceRect.Bottom := InfluenceRect.Bottom + DockZoneSize div 2;
+      alRight: InfluenceRect.Left := InfluenceRect.Right - DockZoneSize div 2;
+      alBottom: InfluenceRect.Top := InfluenceRect.Top - DockZoneSize div 2;
     end;    
 end;
 
@@ -6252,7 +6255,9 @@ procedure TSourceNotebook.DockPanelDockOver(Sender: TObject; Source: TDragDockOb
 var
   ARect: TRect;
 begin
+  // accept only one control - docking in not ready for more
   Accept := TWinControl(Sender).ControlCount = 0;
+
   if Accept then
   begin
     ARect := Source.DockRect;
