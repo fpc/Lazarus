@@ -538,7 +538,8 @@ type
                              var Abort: boolean): string;
   private
     // for docking
-    //FDockPanels: array[TAlign] of TPanel;
+{$ifdef EnableDocking}
+    FDockPanels: array[TAlign] of TPanel;
     FDockSplitters: array[TAlign] of TSplitter;
     procedure DockPanelGetSiteInfo(Sender: TObject; DockClient: TControl;
       var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
@@ -548,6 +549,7 @@ type
       Y: Integer);
     procedure DockPanelUnDock(Sender: TObject; Client: TControl;
       NewTarget: TWinControl; var Allow: Boolean);
+{$endif}
   protected
     ccSelection: String;
     States: TSourceNotebookStates;
@@ -6231,6 +6233,8 @@ begin
     FOnCloseClicked(Sender,GetKeyState(VK_CONTROL)<0);
 end;
 
+{$ifdef EnableDocking}
+
 const
   DockZoneSize = 150;
 
@@ -6300,6 +6304,7 @@ begin
     FDockSplitters[Align].Visible := False;
   end;
 end;
+{$endif}
 
 
 { GOTO DIALOG }
