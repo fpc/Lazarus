@@ -410,13 +410,13 @@ end;
 
 procedure TFormPlacement.Loaded;
 var
-  Loading: Boolean;
+  IsLoading: Boolean;
 begin
-  Loading := csLoading in ComponentState;
+  IsLoading := csLoading in ComponentState;
   inherited Loaded;
   if not (csDesigning in ComponentState) then
     begin
-    if Loading then
+    if IsLoading then
       SetEvents;
     end;
 end;
