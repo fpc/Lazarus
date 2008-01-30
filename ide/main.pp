@@ -1193,11 +1193,9 @@ begin
 
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
-  // free control selection
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
     TheControlSelection.OnSelectionFormChanged:=nil;
-    FreeThenNil(TheControlSelection);
   end;
 
   FreeAndNil(ComponentListForm);
@@ -1242,6 +1240,10 @@ begin
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
+  
+  // free control selection
+  if TheControlSelection<>nil then
+    FreeThenNil(TheControlSelection);
 
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
