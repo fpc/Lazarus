@@ -2670,8 +2670,12 @@ var
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
+    {$IFDEF EnableDoubleBuf}
   rcClip:=Rect(0,0,ClientWidth,ClientHeight);
   StartPaintBuffer(rcClip);
+    {$ELSE}
+  rcClip := Canvas.ClipRect;
+    {$ENDIF}
   Include(fStateFlags,sfPainting);
   {$ELSE}
   rcClip := Canvas.ClipRect;
@@ -2713,7 +2717,9 @@ begin
     DoOnPaint;
   finally
     {$IFDEF SYN_LAZARUS}
+      {$IFDEF EnableDoubleBuf}
     EndPaintBuffer(rcClip);
+      {$ENDIF}
     {$ENDIF}
     UpdateCaret;
     {$IFDEF SYN_LAZARUS}
