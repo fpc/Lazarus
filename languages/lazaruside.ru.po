@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-22 03:45+0300\n"
+"PO-Revision-Date: 2008-01-28 03:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -225,10 +225,6 @@ msgstr "&Найти ..."
 msgid "&Find Declaration"
 msgstr "&Найти объявление"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr "&Вперёд"
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr "От &курсора"
@@ -357,7 +353,7 @@ msgstr "(неизвестный макрос: %s)"
 msgid "<All>"
 msgstr "<Все>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<НЕТ>"
 
@@ -565,7 +561,7 @@ msgstr "Добавить точку перехода"
 msgid "Add jump point to history"
 msgstr "Добавить точку перехода в историю"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Добавить ссылку"
 
@@ -573,7 +569,7 @@ msgstr "Добавить ссылку"
 msgid "Add options to dependent packages and projects"
 msgstr "Добавление параметров к зависимым пакетам и проектам"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "Добавить путь"
 
@@ -1877,6 +1873,10 @@ msgstr "Подтвердите новый набор пакетов для IDE"
 msgid "Confirm removing file"
 msgstr "Подтвердите удаление файла"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr "Подтвердите замену"
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Конфликт "
@@ -2085,9 +2085,9 @@ msgstr "Создать определения для каталога Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Создать макросы FPC и пути к каталогу проекта FPC"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
-msgstr "Создать файлы LazDoc"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
+msgstr "Создать файлы FPDoc"
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2148,6 +2148,10 @@ msgstr "Создать модуль с модулем данных."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Создайте сперва проект!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr "Создать элемент справки"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2401,7 +2405,7 @@ msgstr "Удаление файла не удалось"
 msgid "Delete last char"
 msgstr "Удалить последний символ"
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "Удалить ссылку"
 
@@ -2633,7 +2637,7 @@ msgstr "Прикреплён"
 msgid "Documentation Editor"
 msgstr "Редактор документации"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "Записи в документации не существует"
 
@@ -2973,9 +2977,9 @@ msgstr "Вычислить/Изменить..."
 msgid "Event Log"
 msgstr "Протокол событий"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
-msgstr "Образец"
+msgstr "Пример"
 
 #: lazarusidestrconsts:lisexamples
 msgid "Examples"
@@ -3132,6 +3136,14 @@ msgstr "Каталог исходного кода FPC \"%s\" не найден.
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
 msgstr "путь к модулям FPC содержит файлы исходного кода: "
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr "Редактор FPDoc"
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
+msgstr "Редактор FPDoc"
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3460,6 +3472,10 @@ msgstr "Формы"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Формы..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr "&Вперёд"
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4273,11 +4289,11 @@ msgstr "GUID"
 msgid "Insert alphabetically"
 msgstr "Вставить по алфавиту"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Вставить тег форматирования для полужирного шрифта"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "Вставить тег форматирования для кода"
 
@@ -4305,7 +4321,7 @@ msgstr "Вставить из таблицы символов"
 msgid "Insert from Charactermap"
 msgstr "Вставить из таблицы символов"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "Вставить тег форматирования для курсива"
 
@@ -4321,7 +4337,7 @@ msgstr "Вставить элемент как дочерний"
 msgid "Insert node below"
 msgstr "Вставить элемент ниже"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "Вставить тег форматирования для замечания"
 
@@ -4337,7 +4353,7 @@ msgstr "Вставлять пробелы перед"
 msgid "Insert text"
 msgstr "Вставить текст"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "Вставить тег форматирования для подчёркнутого шрифта"
 
@@ -4345,7 +4361,7 @@ msgstr "Вставить тег форматирования для подчёр
 msgid "Insert username"
 msgstr "Вставить имя пользователя"
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "Вставить тег форматирования для var"
 
@@ -4821,23 +4837,11 @@ msgstr "Запускающее приложение недопустимо"
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr "LazDoc"
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr "LazDoc - документация для Lazarus"
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "Редактор LazDoc"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "редактор LazDoc"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "Установки LazDoc"
 
@@ -6781,7 +6785,7 @@ msgstr "Удалить из избранных свойств"
 msgid "Remove from project"
 msgstr "Удалить из проекта"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Удалить путь"
 
@@ -7357,7 +7361,7 @@ msgstr "Поиск..."
 msgid "Searching: %s"
 msgstr "Ищу: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "Смотрите также"
 
@@ -7645,9 +7649,13 @@ msgstr "Shift"
 msgid "Shift Tab"
 msgstr "Сдвинуть ТАБ"
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
-msgstr "Короткое"
+msgstr "Краткое"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr "Краткое описание"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -9889,7 +9897,7 @@ msgstr "Показать обозреватель кода"
 msgid "View Component Palette"
 msgstr "Показывать палитру компонентов"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr "Показать редактор документации"
 
@@ -10416,6 +10424,10 @@ msgstr "класс отсутствует"
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
 msgstr "не найден fpc.cfg"
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
+msgstr "не найдено унаследованного описания"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
