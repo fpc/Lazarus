@@ -4433,17 +4433,11 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.CMVisibleChanged.Message"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculateDockSizes">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Calculate the sizes required for docking</short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.CreateFloatingDockSite">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Create a floating dock site within the Bounds specified as an argument</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.CreateFloatingDockSite.Result"><short/></element>
@@ -4451,10 +4445,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.CreateFloatingDockSite.Bounds"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetDockEdge">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find out which edge is used for docking (returned in Result)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetDockEdge.Result"><short/></element>
@@ -4462,10 +4453,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetDockEdge.MousePos"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetFloating">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Find out (true or false) whether the control is floating (as opposed to fixed)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetFloating.Result"><short/></element>
@@ -4480,10 +4468,7 @@ mrLast=mrYesToAll=10</descr>
       <element name="TControl.GetFloatingDockSiteClass.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.BeginAutoDrag">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Start the AutoDrag process</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DefaultDockImage">
@@ -4640,24 +4625,15 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>DblClick</i>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnDblClick</i>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>TripleClick</i>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnTripleClick</i>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short><i>QuadClick</i>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnQuadClick</i>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
@@ -11219,19 +11195,13 @@ getting the parent control's Canvas dimensions.</p>
       <element name="TControl.CMTextChanged.Message"><short/></element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetDragImages">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Get the list of Images to be dragged - returned as a list</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetDragImages.Result"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoFloatMsg">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Sends a message to the operating system about the floating status of ADockSource</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DoFloatMsg.ADockSource"><short/></element>
