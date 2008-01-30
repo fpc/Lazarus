@@ -56,6 +56,17 @@ procedure WriteDocumentType(node: TDOMNode); forward;
 procedure WriteDocumentFragment(node: TDOMNode); forward;
 procedure WriteNotation(node: TDOMNode); forward;
 
+function NodeFrontIsText(Node: TDOMNode): boolean;
+begin
+  Result:=(Node is TDOMText) or (Node.ParentNode is TDOMText)
+          or (Node.PreviousSibling is TDOMText);
+end;
+
+function NodeAfterIsText(Node: TDOMNode): boolean;
+begin
+  Result:=(Node is TDOMText) or (Node.ParentNode is TDOMText)
+          or (Node.NextSibling is TDOMText);
+end;
 
 type
   TWriteNodeProc = procedure(node: TDOMNode);
@@ -84,7 +95,6 @@ threadvar
   f: ^Text;
   stream: TStream;
   wrt, wrtln: TOutputProc;
-  InsideTextNode: Boolean;
 
 procedure Text_Write(const Buffer; Count: Longint);
 var s: string;
@@ -241,10 +251,9 @@ procedure WriteElement(node: TDOMNode);
 var
   i: Integer;
   attr, child: TDOMNode;
-  SavedInsideTextNode: Boolean;
   s: String;
 begin
-  if not InsideTextNode then
+  if not NodeFrontIsText(Node) then
     wrtIndent;
   wrtChr('<');
   wrtStr(node.NodeName);
@@ -266,29 +275,30 @@ begin
   if Child = nil then begin
     wrtChr('/');
     wrtChr('>');
-    if not InsideTextNode then wrtLineEnd;
+    if not NodeAfterIsText(Node) then
+      wrtLineEnd;
   end else
   begin
-    SavedInsideTextNode := InsideTextNode;
     wrtChr('>');
-    if not (InsideTextNode or Child.InheritsFrom(TDOMText)) then
+    if not ((Node is TDOMText) or (Node.ParentNode is TDOMText) or
+           (Child is TDOMText))
+    then
       wrtLineEnd;
     IncIndent;
     repeat
-      if Child.InheritsFrom(TDOMText) then
-        InsideTextNode := True;
       WriteNode(Child);
       Child := Child.NextSibling;
     until child = nil;
     DecIndent;
-    if not InsideTextNode then
+    if not ((Node is TDOMText) or (Node.ParentNode is TDOMText) or
+           (Node.LastChild is TDOMText))
+    then
       wrtIndent;
-    InsideTextNode := SavedInsideTextNode;
     wrtChr('<');
     wrtChr('/');
     wrtStr(node.NodeName);
     wrtChr('>');
-    if not InsideTextNode then
+    if not NodeAfterIsText(Node) then
       wrtLineEnd;
   end;
 end;
@@ -306,7 +316,7 @@ end;
 
 procedure WriteCDATA(node: TDOMNode);
 begin
-  if not InsideTextNode then
+  if not NodeFrontIsText(Node) then
     wrtStr('<![CDATA[' + node.NodeValue + ']]>')
   else begin
     wrtIndent;
@@ -328,22 +338,22 @@ end;
 
 procedure WritePI(node: TDOMNode);
 begin
-  if not InsideTextNode then wrtIndent;
+  if not NodeFrontIsText(Node) then wrtIndent;
   wrtChr('<'); wrtChr('!');
   wrtStr(TDOMProcessingInstruction(node).Target);
   wrtChr(' ');
   wrtStr(TDOMProcessingInstruction(node).Data);
   wrtChr('>');
-  if not InsideTextNode then wrtLineEnd;
+  if not NodeAfterIsText(Node) then wrtLineEnd;
 end;
 
 procedure WriteComment(node: TDOMNode);
 begin
-  if not InsideTextNode then wrtIndent;
+  if not NodeFrontIsText(Node) then wrtIndent;
   wrtStr('<!--');
   wrtStr(node.NodeValue);
   wrtStr('-->');
-  if not InsideTextNode then wrtLineEnd;
+  if not NodeAfterIsText(Node) then wrtLineEnd;
 end;
 
 procedure WriteDocument(node: TDOMNode);
@@ -366,10 +376,8 @@ begin
   if node=nil then ;
 end;
 
-
 procedure InitWriter;
 begin
-  InsideTextNode := False;
   SetLength(Indent, 0);
 end;
 

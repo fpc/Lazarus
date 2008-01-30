@@ -460,11 +460,11 @@ begin
   SetWideStringManager(WideStringManager, OldWideStringManager);
   try
   {$ENDIF}
-    // do not call SkipWhitespace. The text is needed by ParseCharData.
+    // do not call SkipWhitespace. They are needed by ParseCharData.
     while ParseCharData(AOwner) or ParseCDSect(AOwner) or ParsePI or
       ParseComment(AOwner) or ParseElement(AOwner) or
-      ParseReference(AOwner) do
-      ;
+      ParseReference(AOwner)
+    do ;
   {$IFDEF UsesFPCWidestrings}
   finally
     SetWideStringManager(OldWideStringManager);

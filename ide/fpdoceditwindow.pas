@@ -96,7 +96,9 @@ type
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
     procedure DeleteLinkButtonClick(Sender: TObject);
-    procedure DocumentationTagChange(Sender: TObject);
+    procedure DescrMemoChange(Sender: TObject);
+    procedure ErrorsMemoChange(Sender: TObject);
+    procedure ExampleEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
@@ -106,6 +108,7 @@ type
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure MoveToInheritedButtonClick(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
+    procedure ShortEditEditingDone(Sender: TObject);
   private
     FCaretXY: TPoint;
     FModified: Boolean;
@@ -114,6 +117,7 @@ type
     fSourceFilename: string;
     fChain: TCodeHelpElementChain;
     FOldValues: TFPDocElementValues;
+    FOldVisualValues: TFPDocElementValues;
     function GetDoc: TXMLdocument;
     function GetDocFile: TLazFPDocFile;
     function GetSourceFilename: string;
@@ -426,6 +430,12 @@ begin
   Save;
 end;
 
+procedure TFPDocEditor.ShortEditEditingDone(Sender: TObject);
+begin
+  if ShortEdit.Text<>FOldVisualValues[fpdiShort] then
+    Modified:=true;
+end;
+
 function TFPDocEditor.GetContextTitle(Element: TCodeHelpElement): string;
 // get codetools path. for example: TButton.Align
 begin
@@ -619,24 +629,31 @@ begin
   if EnabledState then
   begin
     FOldValues:=Element.FPDocFile.GetValuesFromNode(Element.ElementNode);
-    ShortEdit.Text := ConvertLineEndings(FOldValues[fpdiShort]);
-    DescrMemo.Lines.Text := ConvertLineEndings(FOldValues[fpdiDescription]);
-    ErrorsMemo.Lines.Text := ConvertLineEndings(FOldValues[fpdiErrors]);
-    LinkListBox.Items.Text := ConvertLineEndings(FOldValues[fpdiSeeAlso]);
+    FOldVisualValues[fpdiShort]:=ReplaceLineEndings(FOldValues[fpdiShort],'');
+    FOldVisualValues[fpdiDescription]:=ConvertLineEndings(FOldValues[fpdiDescription]);
+    FOldVisualValues[fpdiErrors]:=ConvertLineEndings(FOldValues[fpdiErrors]);
+    FOldVisualValues[fpdiSeeAlso]:=ConvertLineEndings(FOldValues[fpdiSeeAlso]);
+    FOldVisualValues[fpdiExample]:=ConvertLineEndings(FOldValues[fpdiExample]);
+    DebugLn(['TFPDocEditor.LoadGUIValues Short="',dbgstr(FOldValues[fpdiShort]),'"']);
+    LinkListBox.Items.Text := FOldVisualValues[fpdiSeeAlso];
     LinkIdComboBox.Text := '';
     LinkTextEdit.Clear;
-    ExampleEdit.Text := ConvertLineEndings(FOldValues[fpdiExample]);
   end
   else
   begin
-    ShortEdit.Text := lisCodeHelpNoDocumentation;
-    DescrMemo.Lines.Text := lisCodeHelpNoDocumentation;
-    ErrorsMemo.Lines.Text := lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiShort]:=lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiDescription]:=lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiErrors]:=lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiSeeAlso]:=lisCodeHelpNoDocumentation;
+    FOldVisualValues[fpdiExample]:=lisCodeHelpNoDocumentation;
     LinkIdComboBox.Text := lisCodeHelpNoDocumentation;
     LinkTextEdit.Text := lisCodeHelpNoDocumentation;
     LinkListBox.Clear;
-    ExampleEdit.Text := lisCodeHelpNoDocumentation;
   end;
+  ShortEdit.Text := FOldVisualValues[fpdiShort];
+  DescrMemo.Lines.Text := FOldVisualValues[fpdiDescription];
+  ErrorsMemo.Lines.Text := FOldVisualValues[fpdiErrors];
+  ExampleEdit.Text := FOldVisualValues[fpdiExample];
 
   ShortEdit.Enabled := EnabledState;
   DescrMemo.Enabled := EnabledState;
@@ -929,9 +946,16 @@ begin
   Result:=true;
 end;
 
-procedure TFPDocEditor.DocumentationTagChange(Sender: TObject);
+procedure TFPDocEditor.ErrorsMemoChange(Sender: TObject);
 begin
-  Modified := True;
+  if ErrorsMemo.Text<>FOldVisualValues[fpdiErrors] then
+    Modified:=true;
+end;
+
+procedure TFPDocEditor.ExampleEditChange(Sender: TObject);
+begin
+  if ExampleEdit.Text<>FOldVisualValues[fpdiExample] then
+    Modified:=true;
 end;
 
 function TFPDocEditor.MakeLink: String;
@@ -1010,6 +1034,12 @@ begin
     DebugLn(['TFPDocEditForm.DeleteLinkButtonClick ']);
     Modified := True;
   end;
+end;
+
+procedure TFPDocEditor.DescrMemoChange(Sender: TObject);
+begin
+  if DescrMemo.Text<>FOldVisualValues[fpdiDescription] then
+    Modified:=true;
 end;
 
 initialization

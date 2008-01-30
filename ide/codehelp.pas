@@ -17,6 +17,12 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+  
+  Abstract:
+    This unit is part of the IDE's help system. It implements the help for sources via
+    fpdoc files and pascal comments.
 }
 unit CodeHelp;
 
@@ -65,17 +71,18 @@ type
     );
   TLazFPDocFileFlags = set of TLazFPDocFileFlag;
 
-  { TLazFPDocFile }
+  { TLazFPDocFile
+    An fpdoc xml file. The CodeBuffer is the xml source. The Doc is the parsed dom tree. }
 
   TLazFPDocFile = class
   private
     fUpdateLock: integer;
     FFlags: TLazFPDocFileFlags;
   public
-    Filename: string;
+    Filename: string;// the fpdoc xml filename
     Doc: TXMLdocument;// IMPORTANT: if you change this, call DocChanging and DocChanged to notify the references
     DocModified: boolean;
-    ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was build
+    ChangeStep: integer;// the CodeBuffer.ChangeStep value, when Doc was built
     CodeBuffer: TCodeBuffer;
     destructor Destroy; override;
     function GetModuleNode: TDOMNode;
@@ -102,7 +109,8 @@ type
     FilesTimeStamp: integer;
   end;
   
-  { TCodeHelpElement }
+  { TCodeHelpElement - mapping between one codetools position and a fpdoc xml node.
+    This data is only valid for short times, so don't store it. }
 
   TCodeHelpElement = class
   public
@@ -114,7 +122,9 @@ type
     FPDocFile: TLazFPDocFile;
   end;
   
-  { TCodeHelpElementChain }
+  { TCodeHelpElementChain - a list of TCodeHelpElement.
+    For example the list of one element plus its ancestors.
+    Only valid for short time. So always check IsValid. }
 
   TCodeHelpElementChain = class
   private
@@ -227,6 +237,7 @@ function CompareAnsistringWithLDSrc2DocSrcFile(Key, Data: Pointer): integer;
 
 function ToUnixLineEnding(const s: String): String;
 function ToOSLineEnding(const s: String): String;
+function ReplaceLineEndings(const s, NewLineEnds: string): string;
 
 
 implementation
@@ -281,6 +292,27 @@ begin
           Result:=copy(Result,1,p-1)+le+copy(Result,p+2,length(Result));
         end;
       end;
+      inc(p);
+    end;
+  end;
+end;
+
+function ReplaceLineEndings(const s, NewLineEnds: string): string;
+var
+  p: Integer;
+  StartPos: LongInt;
+begin
+  Result:=s;
+  p:=1;
+  while (p<=length(Result)) do begin
+    if Result[p] in [#10,#13] then begin
+      StartPos:=p;
+      if (p<length(Result))
+      and (Result[p+1] in [#10,#13]) and (Result[p]<>Result[p+1]) then
+        inc(p);
+      Result:=copy(Result,1,StartPos-1)+NewLineEnds+copy(Result,p+1,length(Result));
+      inc(p,length(NewLineEnds));
+    end else begin
       inc(p);
     end;
   end;
@@ -384,6 +416,22 @@ begin
 end;
 
 function TLazFPDocFile.GetChildValuesAsString(Node: TDOMNode): String;
+
+  procedure FindEndOfTag(const Src: string; var EndPos: integer);
+  begin
+    while (EndPos<=length(Src)) do begin
+      if (Src[EndPos]='>') then begin
+        inc(EndPos);
+        exit;
+      end else if Src[EndPos]='"' then begin
+        repeat
+          inc(EndPos);
+        until (EndPos>=length(Src)) or (Src[EndPos]='"');
+      end;
+      inc(EndPos);
+    end;
+  end;
+
 var
   MemStream: TMemoryStream;
   StartPos: Integer;
@@ -398,28 +446,25 @@ begin
     SetLength(Result,MemStream.Size);
     if Result<>'' then
       MemStream.Read(Result[1],length(Result));
-    // remove tag(s) for node, because Result should only contain the child values:
+    // remove enclosing tag(s) for Node, because Result should only
+    // contain the child values:
     //   <nodename/> or <nodename>...<nodename/>
     //   <nodename something=""/>
     //   plus line ends
     StartPos:=1;
     EndPos:=length(Result)+1;
-    // skip start tag
+    // skip start tag and spaces at start
+    while (StartPos<=length(Result))
+    and (Result[StartPos] in [' ',#9,#10,#13]) do
+      inc(StartPos);
     if (Result<>'') and (Result[StartPos]='<') then begin
       inc(StartPos);
-      while (StartPos<=EndPos) do begin
-        if (Result[StartPos]='>') then begin
-          inc(StartPos);
-          break;
-        end else if Result[StartPos]='"' then begin
-          repeat
-            inc(StartPos);
-          until (StartPos>=EndPos) or (Result[StartPos]='"');
-        end;
+      FindEndOfTag(Result,StartPos);
+      while (StartPos<=length(Result))
+      and (Result[StartPos] in [' ',#9,#10,#13]) do
         inc(StartPos);
-      end;
     end;
-    // skip ending line ends
+    // skip ending line ends and spaces at end
     while (EndPos>StartPos) and (Result[EndPos-1] in [' ',#9,#10,#13]) do
       dec(EndPos);
     // skip end tag
@@ -436,31 +481,37 @@ begin
           break;
         end;
       until false;
+      while (EndPos>StartPos) and (Result[EndPos-1] in [' ',#9,#10,#13]) do
+        dec(EndPos);
     end;
     Result:=copy(Result,StartPos,EndPos-StartPos);
+    
+    // the xml writer adds/removes spaces/new lines automatically
+    // add newlines after br and p tags
+    StartPos:=1;
+    while StartPos<length(Result) do begin
+      if Result[StartPos]='<' then begin
+        // search end of tag
+        EndPos:=StartPos+1;
+        FindEndOfTag(Result,EndPos);
+        if Result[StartPos+1]='/' then
+          inc(StartPos);
+        if (CompareIdentifiers(@Result[StartPos+1],'br')=0)
+            or (CompareIdentifiers(@Result[StartPos+1],'p')=0) then
+        begin
+          // add new line
+          if not (Result[EndPos] in [#10,#13]) then
+            Result:=copy(Result,1,EndPos-1)+LineEnding+copy(Result,EndPos,length(Result));
+        end;
+        StartPos:=EndPos;
+      end else begin
+        inc(StartPos);
+      end;
+    end;
   finally
     MemStream.Free;
   end;
   DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName,' Result=',Result]);
-
-  {Child:=Node.FirstChild;
-  //DebugLn(['TLazFPDocFile.GetChildValuesAsString Node=',Node.NodeName]);
-  while Child<>nil do begin
-    //DebugLn(['TLazFPDocFile.GetChildValuesAsString ',dbgsName(Child),' ',Child.NodeName]);
-    if Child is TDOMText then begin
-      //DebugLn(['TLazFPDocFile.GetChildValuesAsString Data="',TDOMText(Child).Data,'" Length=',TDOMText(Child).Length]);
-      Result:=Result+TDOMText(Child).Data;
-    end else if Child is TDOMElement then begin
-      if Child.FirstChild=nil then begin
-        Result:=Result+'<'+Child.NodeName+'/>';
-      end else begin
-        Result:=Result+'<'+Child.NodeName+'>'
-                      +GetChildValuesAsString(Child)
-                      +'</'+Child.NodeName+'>'
-      end;
-    end;
-    Child:=Child.NextSibling;
-  end;}
 end;
 
 function TLazFPDocFile.GetValuesFromNode(Node: TDOMNode): TFPDocElementValues;
@@ -530,54 +581,61 @@ procedure TLazFPDocFile.SetChildValue(Node: TDOMNode; const ChildName: string;
   
 var
   Child: TDOMNode;
+  OldNode: TDOMNode;
+  FileAttribute: TDOMAttr;
 begin
   Child:=Node.FindNode(ChildName);
   NewValue:=ToUnixLineEnding(NewValue);
-  if Child=nil then begin
-    {if ChildName = 'example' then begin
+  if ChildName = 'example' then begin
+    OldNode:=nil;
+    if Child<>nil then
       OldNode:=Child.Attributes.GetNamedItem('file');
-      NewValue:=FilenameToURLPath(NewValue);
-      if (NewValue<>'')
-      or (not (OldNode is TDOMAttr))
-      or (TDOMAttr(OldNode).Value<>NewValue) then begin
-        DebugLn(['TLazFPDocFile.SetChildValue Changing Name=',ChildName,' NewValue="',NewValue,'"']);
-        // add or change example
-        DocChanging;
+    NewValue:=FilenameToURLPath(NewValue);
+    if (NewValue<>'')
+    or (not (OldNode is TDOMAttr))
+    or (TDOMAttr(OldNode).Value<>NewValue) then begin
+      DebugLn(['TLazFPDocFile.SetChildValue Changing Name=',ChildName,' NewValue="',NewValue,'"']);
+      // add or change example
+      DocChanging;
+      try
         FileAttribute := Doc.CreateAttribute('file');
         FileAttribute.Value := NewValue;
         OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
         OldNode.Free;
-        DocChanged;
-      end;
-    end
-    else }
-    // add node
-    if NewValue<>'' then begin
-      DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
-      DocChanging;
-      try
-        Child := Doc.CreateElement(ChildName);
-        Node.AppendChild(Child);
-        ReadXMLFragmentFromString(Child,NewValue);
       finally
         DocChanged;
       end;
     end;
-  end else if GetChildValuesAsString(Child)<>NewValue then begin
-    // change node
-    DocChanging;
-    try
-      DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
-        ' ChildName=',Child.NodeName,
-        ' OldValue=',GetChildValuesAsString(Child),
-        ' NewValue="',NewValue,'"']);
-      // remove old content
-      while Child.LastChild<>nil do
-        Child.RemoveChild(Child.LastChild);
-      // set new content
-      ReadXMLFragmentFromString(Child,NewValue);
-    finally
-      DocChanged;
+  end else begin
+    if Child=nil then begin
+      // add node
+      if NewValue<>'' then begin
+        DebugLn(['TLazFPDocFile.SetChildValue Adding Name=',ChildName,' NewValue="',NewValue,'"']);
+        DocChanging;
+        try
+          Child := Doc.CreateElement(ChildName);
+          Node.AppendChild(Child);
+          ReadXMLFragmentFromString(Child,NewValue);
+        finally
+          DocChanged;
+        end;
+      end;
+    end else if GetChildValuesAsString(Child)<>NewValue then begin
+      // change node
+      DocChanging;
+      try
+        DebugLn(['TLazFPDocFile.CheckAndWriteNode Changing ',Node.NodeName,
+          ' ChildName=',Child.NodeName,
+          ' OldValue=',GetChildValuesAsString(Child),
+          ' NewValue="',NewValue,'"']);
+        // remove old content
+        while Child.LastChild<>nil do
+          Child.RemoveChild(Child.LastChild);
+        // set new content
+        ReadXMLFragmentFromString(Child,NewValue);
+      finally
+        DocChanged;
+      end;
     end;
   end;
 end;
