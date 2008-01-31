@@ -270,8 +270,8 @@ type
     function CheckIfDependenciesNeedCompilation(FirstDependency: TPkgDependency;
                                            StateFileAge: longint): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-                     const CompilerFilename, CompilerParams, SrcFilename: string
-                     ): TModalResult;
+                    const CompilerFilename, CompilerParams, SrcFilename: string;
+                    var NeedBuildAllFlag: boolean): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
@@ -2406,7 +2406,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams, SrcFilename: string): TModalResult;
+  const CompilerFilename, CompilerParams, SrcFilename: string;
+  var NeedBuildAllFlag: boolean): TModalResult;
 var
   StateFilename: String;
   StateFileAge: Integer;
@@ -2414,6 +2415,7 @@ var
   CurFile: TPkgFile;
 begin
   Result:=mrYes;
+  NeedBuildAllFlag:=true;
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
@@ -2468,6 +2470,10 @@ begin
     DebugLn('  Now="',CompilerParams,'"');
     exit;
   end;
+  
+  // compiler and parameters are the same
+  // quick compile possible
+  NeedBuildAllFlag:=false;
 
   // check package files
   if StateFileAge<FileAge(APackage.Filename) then begin
@@ -2483,7 +2489,7 @@ begin
       exit;
     end;
   end;
-
+  
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
   {$ENDIF}
@@ -2529,10 +2535,11 @@ var
   PkgCompileTool: TIDEExternalToolOptions;
   CompilerFilename: String;
   CompilerParams: String;
-  EffektiveCompilerParams: String;
+  EffectiveCompilerParams: String;
   SrcFilename: String;
   CompilePolicies: TPackageUpdatePolicies;
   BlockBegan: Boolean;
+  NeedBuildAllFlag: Boolean;
 begin
   Result:=mrCancel;
 
@@ -2565,11 +2572,12 @@ begin
                         +' '+CreateRelativePath(SrcFilename,APackage.Directory);
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
 
-    // check if compilation is neccessary
+    // check if compilation is needed and if a clean build is needed
+    NeedBuildAllFlag:=false;
+    Result:=CheckIfPackageNeedsCompilation(APackage,
+                                           CompilerFilename,CompilerParams,
+                                           SrcFilename,NeedBuildAllFlag);
     if (pcfOnlyIfNeeded in Flags) then begin
-      Result:=CheckIfPackageNeedsCompilation(APackage,
-                                             CompilerFilename,CompilerParams,
-                                             SrcFilename);
       if Result=mrNo then begin
         //DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' does not need compilation.']);
         Result:=mrOk;
@@ -2653,12 +2661,12 @@ begin
         end;
 
         // change compiler parameters for compiling clean
-        EffektiveCompilerParams:=CompilerParams;
-        if pcfCleanCompile in Flags then begin
-          if EffektiveCompilerParams<>'' then
-            EffektiveCompilerParams:='-B '+EffektiveCompilerParams
+        EffectiveCompilerParams:=CompilerParams;
+        if (pcfCleanCompile in Flags) or NeedBuildAllFlag then begin
+          if EffectiveCompilerParams<>'' then
+            EffectiveCompilerParams:='-B '+EffectiveCompilerParams
           else
-            EffektiveCompilerParams:='-B';
+            EffectiveCompilerParams:='-B';
         end;
 
         PkgCompileTool:=TIDEExternalToolOptions.Create;
@@ -2668,7 +2676,7 @@ begin
           PkgCompileTool.ScanOutputForMakeMessages:=true;
           PkgCompileTool.WorkingDirectory:=APackage.Directory;
           PkgCompileTool.Filename:=CompilerFilename;
-          PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
+          PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
 
           // clear old errors
           if SourceEditorWindow<>nil then
