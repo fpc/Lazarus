@@ -4955,9 +4955,18 @@ begin
       ProcCode:=ExtractProcHead(ANode,[phpWithStart,
                   phpWithoutClassKeyword,
                   phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
-                  phpWithCallingSpecs,phpDoNotAddSemicolon]);
+                  phpWithProcModifiers,phpDoNotAddSemicolon]);
       if ProcCode[length(ProcCode)]<>';' then begin
-        // add missing semicolon
+        // add missing semicolon at end of procedure head
+        UndoReadNextAtom;
+        if not ASourceChangeCache.Replace(gtNone,gtNone,
+          CurPos.EndPos,CurPos.EndPos,';') then
+            RaiseException('InsertMissingClassSemicolons: unable to insert semicolon');
+      end;
+      MoveCursorToFirstProcSpecifier(ANode);
+      if (CurPos.Flag<>cafSemicolon) and (CurPos.EndPos<ANode.FirstChild.EndPos)
+      then begin
+        // add missing semicolon in front of proc modifiers
         UndoReadNextAtom;
         if not ASourceChangeCache.Replace(gtNone,gtNone,
           CurPos.EndPos,CurPos.EndPos,';') then

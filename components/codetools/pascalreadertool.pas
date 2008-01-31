@@ -423,6 +423,11 @@ begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
     if not AtomIsIdentifier(false) then exit;
     ExtractNextAtom(phpWithResultType in Attr,Attr);
+    if CurPos.Flag=cafPoint then begin
+      ExtractNextAtom(phpWithResultType in Attr,Attr);
+      if not AtomIsIdentifier(false) then exit;
+      ExtractNextAtom(phpWithResultType in Attr,Attr);
+    end;
     ExtractProcHeadPos:=phepResultType;
   end;
   // read 'of object'
@@ -676,7 +681,14 @@ begin
   if (CurPos.Flag=cafColon) then begin
     // read function result type
     ReadNextAtom;
-    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      ReadNextAtom;
+      if CurPos.Flag=cafPoint then begin
+        ReadNextAtom;
+        if AtomIsIdentifier(false) then
+          ReadNextAtom;
+      end;
+    end;
   end;
   // CurPos now stands on the first proc specifier or on a semicolon
 end;
