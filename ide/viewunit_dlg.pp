@@ -40,7 +40,8 @@ interface
 
 uses
   SysUtils, Classes, Math, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit;
+  LazarusIdeStrConsts, LCLType, LCLIntf, LMessages, IDEWindowIntf, IDEContextHelpEdit,
+  ExtCtrls;
 
 type
   TViewUnitsEntry = class
@@ -60,9 +61,11 @@ type
     btnOK: TBitBtn;
     btnCancel: TBitBtn;
     MultiSelectCheckBox: TCheckBox;
+    BtnPanel: TPanel;
     procedure EditChange(Sender: TObject);
     procedure EditEnter(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
@@ -145,13 +148,10 @@ constructor TViewUnitDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEDialogLayoutList.ApplyLayout(Self,450,300);
-  btnOK.Caption               := lisOkBtn;
-  btnOk.Left                  := ClientWidth-btnOk.Width-5;
-  btnCancel.Caption           := dlgCancel;
-  btnCancel.Left              := btnOk.Left;
-  CancelControl               := btnCancel;
+  btnOK.Caption := lisOkBtn;
+  btnCancel.Caption := dlgCancel;
+  HelpButton.Caption := srVK_HELP;
   MultiSelectCheckBox.Caption := dlgMultiSelect;
-  MultiSelectCheckBox.Left    := btnOk.Left;
 end;
 
 Procedure TViewUnitDialog.btnOKClick(Sender : TOBject);
@@ -193,6 +193,11 @@ begin
     VK_PRIOR: MoveItemIndex(-PageCount);
     VK_RETURN: btnOKClick(nil);
   end;
+end;
+
+procedure TViewUnitDialog.FormCreate(Sender: TObject);
+begin
+
 end;
 
 procedure TViewUnitDialog.EditChange(Sender: TObject);
