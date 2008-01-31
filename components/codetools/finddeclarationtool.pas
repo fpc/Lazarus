@@ -3364,7 +3364,7 @@ var
     if (NewNode.Desc in AllIdentifierDefinitions)
     and (PositionInDefinitionName(NewNode,CleanPos)) then
       Result:=true
-    else if (NewNode.Desc=ctnProcedure)
+    else if (NewNode.Desc in [ctnProcedure,ctnProcedureHead])
     and (PositionInProcName(NewNode,false,CleanPos)) then
       Result:=true
     else if (NewNode.Desc=ctnProperty)

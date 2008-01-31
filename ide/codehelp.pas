@@ -28,7 +28,7 @@ unit CodeHelp;
 
 {$mode objfpc}{$H+}
 
-{off $IFDEF VerboseLazDoc}
+{off $DEFINE VerboseLazDoc}
 
 interface
 
@@ -1327,7 +1327,12 @@ begin
     //DebugLn(['TCodeHelpManager.GetElementChain GetDeclarationChain...']);
     // get the declaration chain
     Result:=GetDeclarationChain(Code,X,Y,ListOfPCodeXYPosition,CacheWasUsed);
-    if Result<>chprSuccess then exit;
+    if Result<>chprSuccess then begin
+      {$IFDEF VerboseLazDoc}
+      DebugLn(['TCodeHelpManager.GetElementChain GetDeclarationChain failed ',Code.Filename,' x=',x,' y=',y]);
+      {$ENDIF}
+      exit;
+    end;
     if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
     
     {$IFDEF VerboseLazDoc}
