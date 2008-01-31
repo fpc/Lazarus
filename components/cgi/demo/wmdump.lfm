@@ -1,0 +1,10 @@
+object DemoModule: TDemoModule
+  OnCGIRequest = DemoModuleCGIRequest
+  ContentType = 'text/html'
+  left = 433
+  top = 309
+  Height = 0
+  HorizontalOffset = 0
+  VerticalOffset = 0
+  Width = 0
+end

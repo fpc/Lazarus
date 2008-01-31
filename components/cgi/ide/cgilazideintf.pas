@@ -34,8 +34,8 @@ unit CGILazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, cgiApp, cgiModules, LazIDEIntf, ProjectIntf,
-  Controls, Forms;
+  Classes, SysUtils, cgiApp, Controls, Forms, cgiModules,
+  LazIDEIntf, ProjectIntf, FormEditingIntf;
 
 type
   { TCGIApplicationDescriptor }
@@ -73,6 +73,7 @@ begin
   RegisterProjectFileDescriptor(FileDescriptorCGIModule);
   ProjectDescriptorCGIApplication:=TCGIApplicationDescriptor.Create;
   RegisterProjectDescriptor(ProjectDescriptorCGIApplication);
+  FormEditingHook.RegisterDesignerBaseClass(TCGIDataModule);
 end;
 
 { TCGIApplicationDescriptor }
@@ -80,19 +81,21 @@ end;
 constructor TCGIApplicationDescriptor.Create;
 begin
   inherited Create;
-  Name:='CGIApplication';
+  Name:='Simple CGIApplication';
 end;
 
 function TCGIApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='CGi Application';
+  Result:='Simple CGI Application';
 end;
 
 function TCGIApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='CGi Application'#13#13'A CGI (Common Gateway Interface) program '
-          +'in Free Pascal. The program file is '
-          +'automatically maintained by Lazarus.';
+  Result:='Simple CGI Application'#13#10
+          +'A CGI (Common Gateway Interface) program in Free Pascal.'#13#10
+          +'The program file is automatically maintained by Lazarus.'#13#10
+          +'This kind of application is deprecated, for CGI programs or Apache modules, '
+          +'please use the LazWeb package instead';
 end;
 
 function TCGIApplicationDescriptor.InitProject(AProject: TLazProject): TModalResult;
@@ -148,7 +151,7 @@ end;
 constructor TFileDescPascalUnitWithCGIDataModule.Create;
 begin
   inherited Create;
-  Name:='CGIModule';
+  Name:='SimpleCGIModule';
   ResourceClass:=TCGIDataModule;
   UseCreateFormStatements:=true;
 end;
@@ -161,13 +164,15 @@ end;
 
 function TFileDescPascalUnitWithCGIDataModule.GetLocalizedName: string;
 begin
-  Result:='CGI Module';
+  Result:='Simple CGI Module';
 end;
 
 function TFileDescPascalUnitWithCGIDataModule.GetLocalizedDescription: string;
 begin
-  Result:='CGi Module'#13
-         +'A datamodule for CGI applications.';
+  Result:='Simple CGI Module'#13#10
+         +'A datamodule for CGI applications.'
+         +'This module is deprecated, please use the CGI module support '
+         +'of the lazweb package instead';
 end;
 
 end.
