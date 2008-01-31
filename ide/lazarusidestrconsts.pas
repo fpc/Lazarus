@@ -1614,7 +1614,7 @@ resourcestring
     +'editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the '
     +'error:%s%s%s%s';
   lisTheComponentEditorOfClassHasCreatedTheError = 'The component editor of '
-    +'class %s%s%shas created the error:%s%s%s%s';
+    +'class %s%s%s has created the error:%s%s%s%s';
   fdInvalidMultiselectionText='Multiselected components must be of a single form.';
   lisInvalidDelete = 'Invalid delete';
   lisTheRootComponentCanNotBeDeleted = 'The root component can not be deleted.';
