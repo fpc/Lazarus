@@ -711,8 +711,8 @@ type
     function DoUpdateProjectAutomaticFiles: TModalResult;
     function DoSaveForBuild: TModalResult; override;
     function DoCheckIfProjectNeedsCompilation(AProject: TProject;
-                                         const CompilerFilename, CompilerParams,
-                                         SrcFilename: string): TModalResult;
+                    const CompilerFilename, CompilerParams, SrcFilename: string;
+                    out NeedBuildAllFlag: boolean): TModalResult;
     function DoBuildProject(const AReason: TCompileReason;
                             Flags: TProjectBuildFlags): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -8267,20 +8267,22 @@ begin
 end;
 
 function TMainIDE.DoCheckIfProjectNeedsCompilation(AProject: TProject;
-  const CompilerFilename, CompilerParams, SrcFilename: string): TModalResult;
+  const CompilerFilename, CompilerParams, SrcFilename: string;
+  out NeedBuildAllFlag: boolean): TModalResult;
 var
   StateFilename: String;
   StateFileAge: LongInt;
   AnUnitInfo: TUnitInfo;
 begin
+  NeedBuildAllFlag:=true;
+
   // check state file
   StateFilename:=AProject.GetStateFilename;
   Result:=AProject.LoadStateFile(false);
   if Result<>mrOk then exit;
   if not (lpsfStateFileLoaded in AProject.StateFlags) then begin
     DebugLn('TMainIDE.CheckIfPackageNeedsCompilation  No state file for ',AProject.IDAsString);
-    Result:=mrYes;
-    exit;
+    exit(mrYes);
   end;
 
   StateFileAge:=FileAge(StateFilename);
@@ -8289,40 +8291,41 @@ begin
   if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
   begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  SrcFile outdated ',AProject.IDAsString);
-    Result:=mrYes;
-    exit;
+    exit(mrYes);
   end;
-
-  // check all required packages
-  Result:=PackageGraph.CheckIfDependenciesNeedCompilation(
-                                 AProject.FirstRequiredDependency,StateFileAge);
-  if Result<>mrNo then exit;
-
-  Result:=mrYes;
 
   // check compiler and params
   if CompilerFilename<>AProject.LastCompilerFilename then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if not FileExists(CompilerFilename) then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler filename not found for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if FileAge(CompilerFilename)<>AProject.LastCompilerFileDate then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler file changed for ',AProject.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if CompilerParams<>AProject.LastCompilerParams then begin
     DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Compiler params changed for ',AProject.IDAsString);
     DebugLn('  Old="',AProject.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
-    exit;
+    exit(mrYes);
   end;
+
+  // compiler and parameters are the same
+  // quick compile is possible
+  NeedBuildAllFlag:=false;
+
+  // check all required packages
+  Result:=PackageGraph.CheckCompileNeedDueToDependencies(
+                                 AProject.FirstRequiredDependency,StateFileAge);
+  if Result<>mrNo then exit;
 
   // check project files
   AnUnitInfo:=AProject.FirstPartOfProject;
@@ -8330,7 +8333,7 @@ begin
     if FileExists(AnUnitInfo.Filename)
     and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-      exit;
+      exit(mrYes);
     end;
     AnUnitInfo:=AnUnitInfo.NextPartOfProject;
   end;
@@ -8342,7 +8345,7 @@ begin
     and FileExists(AnUnitInfo.Filename)
     and (StateFileAge<FileAge(AnUnitInfo.Filename)) then begin
       DebugLn('TMainIDE.CheckIfProjectNeedsCompilation  Src has changed ',AProject.IDAsString,' ',AnUnitInfo.Filename);
-      exit;
+      exit(mrYes);
     end;
     AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
@@ -8427,8 +8430,9 @@ var
   CompilerFilename: String;
   WorkingDir: String;
   CompilerParams: String;
-  Count: integer;
+  i: integer;
   VersionInfo: TProjectVersionInfo;
+  NeedBuildAllFlag: Boolean;
 begin
   if Project1.MainUnitInfo=nil then begin
     // this project has not source to compile
@@ -8447,22 +8451,27 @@ begin
     if Result<>mrOk then exit;
 
     // handle versioninfo
-    VersionInfo := Project1.VersionInfo;
-    Result := VersionInfo.CreateRCFile(Project1.MainFilename,
-      MainBuildBoss.GetTargetOS(true));
+    if not (pbfSkipLinking in Flags) then begin
+      VersionInfo := Project1.VersionInfo;
+      Result := VersionInfo.CreateRCFile(Project1.MainFilename,
+        MainBuildBoss.GetTargetOS(true));
 
-    for Count := 1 to VersionInfo.VersionInfoMessages.Count do
-      MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[Count - 1],
-                                  ['"', Project1.ShortDescription, '"']), '' ,-1);
-    if Result <> mrOk then exit;
+      for i := 1 to VersionInfo.VersionInfoMessages.Count do
+        MessagesView.AddMsg(Format(VersionInfo.VersionInfoMessages[i - 1],
+                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
+      if Result <> mrOk then exit;
+    end else
+      VersionInfo:=nil;
 
     // handle manifest
-    Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
-      MainBuildBoss.GetTargetOS(true));
-    for Count := 1 to Project1.XPManifest.Messages.Count do
-      MessagesView.AddMsg(Format(Project1.XPManifest.Messages[Count - 1],
-                                  ['"', Project1.ShortDescription, '"']), '' ,-1);
-    if Result <> mrOk then exit;
+    if not (pbfSkipLinking in Flags) then begin
+      Result := Project1.XPManifest.CreateRCFile(Project1.MainFilename,
+        MainBuildBoss.GetTargetOS(true));
+      for i := 1 to Project1.XPManifest.Messages.Count do
+        MessagesView.AddMsg(Format(Project1.XPManifest.Messages[i - 1],
+                                    ['"', Project1.ShortDescription, '"']), '' ,-1);
+      if Result <> mrOk then exit;
+    end;
 
     // compile required packages
     if not (pbfDoNotCompileDependencies in Flags) then begin
@@ -8499,18 +8508,20 @@ begin
     if Result<>mrOk then exit;
 
     // check if build is needed (only if we will call the compiler)
-    if  (AReason in Project1.CompilerOptions.CompileReasons)
-    and (pbfOnlyIfNeeded in Flags)
-    and (not (pfAlwaysBuild in Project1.Flags))
-    then begin
+    // and check if a 'build all' is needed
+    NeedBuildAllFlag:=false;
+    if (AReason in Project1.CompilerOptions.CompileReasons) then begin
       Result:=DoCheckIfProjectNeedsCompilation(Project1,
                                                CompilerFilename,CompilerParams,
-                                               SrcFilename);
-      if Result=mrNo then begin
-        Result:=mrOk;
-        exit;
+                                               SrcFilename,NeedBuildAllFlag);
+      if  (pbfOnlyIfNeeded in Flags)
+      and (not (pfAlwaysBuild in Project1.Flags)) then begin
+        if Result=mrNo then begin
+          Result:=mrOk;
+          exit;
+        end;
+        if Result<>mrYes then exit;
       end;
-      if Result<>mrYes then exit;
     end;
 
     // execute compilation tool 'Before'
@@ -8535,7 +8546,8 @@ begin
         // compile
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
-                                pbfCleanCompile in Flags,pbfSkipLinking in Flags,
+                                (pbfCleanCompile in Flags) or NeedBuildAllFlag,
+                                pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags);
         if Result<>mrOk then begin
           DoJumpToCompilerMessage(-1,true);

@@ -267,11 +267,11 @@ type
                   const CompilerFilename, CompilerParams: string): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                       IgnoreErrors: boolean): TModalResult;
-    function CheckIfDependenciesNeedCompilation(FirstDependency: TPkgDependency;
+    function CheckCompileNeedDueToDependencies(FirstDependency: TPkgDependency;
                                            StateFileAge: longint): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                     const CompilerFilename, CompilerParams, SrcFilename: string;
-                    var NeedBuildAllFlag: boolean): TModalResult;
+                    out NeedBuildAllFlag: boolean): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
     function CheckAmbiguousPackageUnits(APackage: TLazPackage): TModalResult;
@@ -2348,7 +2348,7 @@ begin
   Result:=mrOk;
 end;
 
-function TLazPackageGraph.CheckIfDependenciesNeedCompilation(
+function TLazPackageGraph.CheckCompileNeedDueToDependencies(
   FirstDependency: TPkgDependency; StateFileAge: longint): TModalResult;
 
   function GetOwnerID: string;
@@ -2376,11 +2376,11 @@ begin
         if Result<>mrOk then exit;
         Result:=mrYes;
         if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  No state file for ',RequiredPackage.IDAsString);
+          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  No state file for ',RequiredPackage.IDAsString);
           exit;
         end;
         if StateFileAge<RequiredPackage.StateFileDate then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
             'State file ',GetOwnerID);
           exit;
@@ -2392,7 +2392,7 @@ begin
         GlobalMacroList.SubstituteStr(OtherStateFile);
         if FileExists(OtherStateFile)
         and (FileAge(OtherStateFile)>StateFileAge) then begin
-          DebugLn('TPkgManager.CheckIfDependenciesNeedCompilation  Required ',
+          DebugLn('TPkgManager.CheckCompileNeedDueToDependencies  Required ',
             RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
             ,' is newer than State file ',GetOwnerID);
           Result:=mrYes;
@@ -2407,7 +2407,7 @@ end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
   const CompilerFilename, CompilerParams, SrcFilename: string;
-  var NeedBuildAllFlag: boolean): TModalResult;
+  out NeedBuildAllFlag: boolean): TModalResult;
 var
   StateFilename: String;
   StateFileAge: Integer;
@@ -2426,8 +2426,7 @@ begin
   if Result<>mrOk then exit;
   if not (lpfStateFileLoaded in APackage.Flags) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
-    Result:=mrYes;
-    exit;
+    exit(mrYes);
   end;
 
   StateFileAge:=FileAge(StateFilename);
@@ -2436,49 +2435,46 @@ begin
   if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
   begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
-    Result:=mrYes;
-    exit;
+    exit(mrYes);
   end;
-
-  // check all required packages
-  Result:=CheckIfDependenciesNeedCompilation(APackage.FirstRequiredDependency,
-                                             StateFileAge);
-  if Result<>mrNo then exit;
-
-  Result:=mrYes;
 
   // check compiler and params
   if CompilerFilename<>APackage.LastCompilerFilename then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
     DebugLn('  Old="',APackage.LastCompilerFilename,'"');
     DebugLn('  Now="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if not FileExists(CompilerFilename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if FileAge(CompilerFilename)<>APackage.LastCompilerFileDate then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
     DebugLn('  File="',CompilerFilename,'"');
-    exit;
+    exit(mrYes);
   end;
   if CompilerParams<>APackage.LastCompilerParams then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
     DebugLn('  Old="',APackage.LastCompilerParams,'"');
     DebugLn('  Now="',CompilerParams,'"');
-    exit;
+    exit(mrYes);
   end;
   
   // compiler and parameters are the same
-  // quick compile possible
+  // quick compile is possible
   NeedBuildAllFlag:=false;
+
+  // check all required packages
+  Result:=CheckCompileNeedDueToDependencies(APackage.FirstRequiredDependency,
+                                             StateFileAge);
+  if Result<>mrNo then exit;
 
   // check package files
   if StateFileAge<FileAge(APackage.Filename) then begin
     DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
-    exit;
+    exit(mrYes);
   end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
@@ -2486,7 +2482,7 @@ begin
     if FileExists(CurFile.Filename)
     and (StateFileAge<FileAge(CurFile.Filename)) then begin
       DebugLn('TLazPackageGraph.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
-      exit;
+      exit(mrYes);
     end;
   end;
   
@@ -2573,7 +2569,6 @@ begin
     //DebugLn(['TLazPackageGraph.CompilePackage SrcFilename="',SrcFilename,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"']);
 
     // check if compilation is needed and if a clean build is needed
-    NeedBuildAllFlag:=false;
     Result:=CheckIfPackageNeedsCompilation(APackage,
                                            CompilerFilename,CompilerParams,
                                            SrcFilename,NeedBuildAllFlag);
