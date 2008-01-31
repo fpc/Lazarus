@@ -251,7 +251,7 @@ object FPDocEditor: TFPDocEditor
       end
     end
   end
-  object Panel1: TPanel
+  object LeftBtnPanel: TPanel
     Height = 117
     Width = 17
     Align = alLeft

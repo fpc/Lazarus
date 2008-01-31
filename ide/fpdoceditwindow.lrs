@@ -81,10 +81,10 @@ LazarusResources.Add('TFPDocEditor','FORMDATA',[
   +'op.Side'#7#9'asrCenter'#4'Left'#3#168#0#6'Height'#2#29#3'Top'#2'6'#5'Width'
   +#3#175#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#10#7'Caption'#6#23'CopyFromI'
   +'nheritedButton'#7'OnClick'#7#28'CopyFromInheritedButtonClick'#8'TabOrder'#2
-  +#2#0#0#0#0#6'TPanel'#6'Panel1'#6'Height'#2'u'#5'Width'#2#17#5'Align'#7#6'alL'
-  +'eft'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2'u'#11'ClientWidth'#2#17
-  +#11'FullRepaint'#8#14'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#1#0#12'T'
-  +'SpeedButton'#16'BoldFormatButton'#6'Height'#2#17#5'Width'#2#17#5'Align'#7#5
+  +#2#0#0#0#0#6'TPanel'#12'LeftBtnPanel'#6'Height'#2'u'#5'Width'#2#17#5'Align'#7
+  +#6'alLeft'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2'u'#11'ClientWidth'#2
+  +#17#11'FullRepaint'#8#14'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#1#0#12
+  +'TSpeedButton'#16'BoldFormatButton'#6'Height'#2#17#5'Width'#2#17#5'Align'#7#5
   +'alTop'#5'Color'#7#9'clBtnFace'#10'Glyph.Data'#10#190#4#0#0#186#4#0#0'BM'#186
   +#4#0#0#0#0#0#0'6'#0#0#0'('#0#0#0#17#0#0#0#17#0#0#0#1#0' '#0#0#0#0#0#132#4#0#0
   +'d'#0#0#0'd'#0#0#0#0#0#0#0#0#0#0#0#0#255#255#0#219#152' '#0#0#14#165#0#243

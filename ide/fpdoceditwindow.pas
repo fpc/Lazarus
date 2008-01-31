@@ -75,7 +75,7 @@ type
     LinkTextEdit: TEdit;
     LinkListBox: TListBox;
     OpenDialog: TOpenDialog;
-    Panel1: TPanel;
+    LeftBtnPanel: TPanel;
     ShortEdit: TEdit;
     ErrorsMemo: TMemo;
     PageControl: TPageControl;
@@ -278,12 +278,14 @@ end;
 
 procedure TFPDocEditor.FormatButtonClick(Sender: TObject);
 
-  procedure InsertTag(starttag, endtag: String);
+  procedure InsertTag(const StartTag, EndTag: String);
   begin
-    if PageControl.ActivePage.Caption = lisCodeHelpDescrTag then
-      DescrMemo.SelText := starttag + DescrMemo.SelText + endtag;
-    if PageControl.ActivePage.Caption = lisCodeHelpErrorsTag then
-      ErrorsMemo.SelText := starttag + ErrorsMemo.SelText + endtag;
+    if PageControl.ActivePage = ShortTabSheet then
+      ShortEdit.SelText := StartTag + ShortEdit.SelText + EndTag;
+    if PageControl.ActivePage = DescrTabSheet then
+      DescrMemo.SelText := StartTag + DescrMemo.SelText + EndTag;
+    if PageControl.ActivePage = ErrorsTabSheet then
+      ErrorsMemo.SelText := StartTag + ErrorsMemo.SelText + EndTag;
   end;
 
 begin
