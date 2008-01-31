@@ -354,7 +354,12 @@ begin
   IpParseURL(URL, FileAddrRec);
   FN := NetToDosPath(FileAddrRec.Path);
   Result := TMemoryStream.Create;
-  TMemoryStream(Result).LoadFromFile(FN);
+  try
+    TMemoryStream(Result).LoadFromFile(FN);
+  except
+    Result.Free;
+    Result:=nil;
+  end;
   Finalize(FileAddrRec);
 end;
 {$ENDIF}

@@ -6765,16 +6765,14 @@ procedure TIpHtml.ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
 var
   StyleStream: TStream;
 begin
-  if FDataProvider = nil then begin
-    //DebugLn('No dataprovider!');
-    exit;
-  end;
-  
+
   StyleStream:=nil;
   
   if Parent is TIpHtmlNodeHEAD then begin
-    Href := FDataProvider.BuildURL(CurURL, HRef);
-    StyleStream := FDataProvider.DoGetStream(HRef);
+    if FDataProvider<>nil then begin
+      Href := FDataProvider.BuildURL(CurURL, HRef);
+      StyleStream := FDataProvider.DoGetStream(HRef);
+    end;
   end else
   if Parent is TIpHtmlNodeSTYLE then
     StyleStream := TStringStream.Create(Href);
