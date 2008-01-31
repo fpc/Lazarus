@@ -5267,6 +5267,7 @@ begin
           // (some fpc versions have non designable TDataModule)
           AncestorType:=TDataModule;
         end else if CompareText(AncestorClassName,'TCustomForm')=0 then begin
+          // this is a common user mistake
           MessageDlg(lisCodeTemplError, Format(
             lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
             NewClassName, '"', '"', AncestorClassName, '"']),
@@ -5274,12 +5275,17 @@ begin
           Result:=mrCancel;
           exit;
         end else if CompareText(AncestorClassName,'TComponent')=0 then begin
+          // this is not yet implemented
           MessageDlg(lisCodeTemplError, Format(
             lisUnableToOpenDesignerTheClassDoesNotDescendFromADes, [#13,
             NewClassName]),
             mtError,[mbCancel],0);
           Result:=mrCancel;
           exit;
+        end else begin
+          // search in the registered classes
+          AncestorType:=
+                     FormEditor1.FindDesignerBaseClassByName(AncestorClassName);
         end;
       end else begin
         AncestorType:=TForm;
