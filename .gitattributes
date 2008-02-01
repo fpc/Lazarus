@@ -367,7 +367,6 @@ components/images/lazxpm.pas svneol=native#text/pascal
 components/images/readme.txt svneol=native#text/plain
 components/images/registerimg4laz.pas svneol=native#text/plain
 components/lazreport/doc/contributors.txt svneol=native#text/plain
-components/lazreport/doc/cvs2cl.pl -text svneol=unset#application/x-perl
 components/lazreport/doc/firststeps.odt -text
 components/lazreport/doc/fr_eng.sxw -text
 components/lazreport/doc/readme.txt svneol=native#text/plain
@@ -384,7 +383,6 @@ components/lazreport/images/bitmaps/fr_italic.bmp -text
 components/lazreport/images/bitmaps/fr_radio.bmp -text
 components/lazreport/images/bitmaps/fr_script.bmp -text
 components/lazreport/images/bitmaps/fr_undrline.bmp -text
-components/lazreport/images/bitmaps/rename_lower.pl -text svneol=unset#application/x-perl
 components/lazreport/images/bitmaps/tfrbarcodeobject.png -text svneol=unset#image/png
 components/lazreport/images/bitmaps/tfrchartobject.bmp -text
 components/lazreport/images/bitmaps/tfrcheckboxobject.png -text svneol=unset#image/png
