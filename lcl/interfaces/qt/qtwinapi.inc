@@ -2472,9 +2472,9 @@ begin
     if (ScrollInfo.fMask and SIF_PAGE) <> 0 then
       ScrollInfo.nPage := QtScrollBar.getPageStep;
       
-    // TRACKPOS TrackPos is setted up as in gtk implementation
+    // TRACKPOS
     if (ScrollInfo.fMask and SIF_TRACKPOS) <> 0 then
-      ScrollInfo.nTrackPos := QtScrollBar.getValue;
+      ScrollInfo.nTrackPos := QtScrollBar.getSliderPosition;
 
     Result := True;
   end;
@@ -4228,76 +4228,55 @@ function TQtWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
 var
   Control: TWinControl;
   ScrollBar: TQtScrollBar;
-  FScrollInfo: TScrollInfo;
 
-function PrepareScrollInfo: Integer;
-var
-  iReCountMax: Integer;
-begin
-
-  Result := 0;
-  
-  if not Assigned(ScrollBar) then exit;
-
-  FillChar(FScrollInfo, SizeOf(FScrollInfo), #0);
-  FScrollInfo.cbSize := SizeOf(FScrollInfo);
-  FScrollInfo.FMask := ScrollInfo.FMask;
-
-  if GetScrollInfo(Handle, SBStyle, FScrollInfo) then
+  function UpdateScrollInfo: Integer;
+  var
+    iReCountMax: Integer;
   begin
-    {impossible cases}
-    if (ScrollInfo.nMax < 0) or
-    (Integer(ScrollInfo.nPage) > ScrollInfo.nMax) then exit;
+    Result := 0;
 
     if (ScrollInfo.FMask and SIF_RANGE) <> 0 then
     begin
-      FScrollInfo.nMin := ScrollInfo.nMin;
-      FScrollInfo.nMax := ScrollInfo.nMax;
       ScrollBar.setMinimum(ScrollInfo.nMin);
-      
-      {we must recount ScrollBar.Max since invalid value raises AV}
-      iRecountMax := FScrollInfo.nMax - ScrollInfo.nPage;
-      if iRecountMax < FScrollInfo.nMin then
-        iRecountMax := FScrollInfo.nMin;
+
+      // we must recount ScrollBar.Max since invalid value raises AV
+      iRecountMax := ScrollInfo.nMax - ScrollInfo.nPage;
+      if iRecountMax < ScrollInfo.nMin then
+        iRecountMax := ScrollInfo.nMin;
 
       ScrollBar.setMaximum(iRecountMax);
-      { - (ScrollInfo.nMax div 4 PageStep property)); }
     end;
 
     if (ScrollInfo.FMask and SIF_PAGE) <> 0 then
     begin
-      FScrollInfo.nPage := ScrollInfo.nPage;
-      {segfaults if we don't check Enabled property !}
+      // segfaults if we don't check Enabled property
       if ScrollBar.getEnabled then
-      	ScrollBar.setPageStep(ScrollInfo.nPage);
+        ScrollBar.setPageStep(ScrollInfo.nPage);
     end;
-    
+
     if (ScrollInfo.FMask and SIF_POS) <> 0 then
     begin
-      FScrollInfo.nPos := ScrollInfo.nPos;
-      FScrollInfo.nTrackPos := ScrollInfo.nPos;
-      
-      if (FScrollInfo.nPos < ScrollBar.getMin) then
-        FScrollInfo.nPos := ScrollBar.getMin
+      if (ScrollInfo.nPos < ScrollBar.getMin) then
+        ScrollInfo.nPos := ScrollBar.getMin
       else
-      if (FScrollInfo.nPos > ScrollBar.getMax) then
-        FScrollInfo.nPos := ScrollBar.getMax;
+      if (ScrollInfo.nPos > ScrollBar.getMax) then
+        ScrollInfo.nPos := ScrollBar.getMax;
 
-      ScrollBar.setValue(FScrollInfo.nPos);
+      ScrollBar.setValue(ScrollInfo.nPos);
     end;
 
     if (ScrollInfo.FMask and SIF_TRACKPOS) <> 0 then
     begin
-      FScrollInfo.nTrackPos := ScrollInfo.nTrackPos;
-      {TODO: TQtScrollBar(ScrollBar.Handle).setTracking(True); via SB_THUMBTRACK }
+      // from MSDN: the SetScrollInfo function ignores this member
+      // ScrollBar.setSliderPosition(ScrollInfo.nTrackPos);
     end;
 
-    ScrollInfo := FScrollInfo;
-    Result := FScrollInfo.nPos;
+    Result := ScrollBar.getValue;
   end;
-end;
 
 begin
+  // bRedraw is useles with qt
+  
   Result := 0;
   
   if (Handle = 0) then exit;
@@ -4319,7 +4298,6 @@ begin
       ScrollBar := TQtScrollBar(Handle);
       
       if not Assigned(ScrollBar) then exit;
-      ScrollBar.setVisible(bRedraw);
     end; {SB_CTL}
     
     SB_HORZ:
@@ -4339,9 +4317,6 @@ begin
         if (Control <> nil) and (Control.HandleAllocated) then
           ScrollBar := TQtScrollBar(Control.Handle)
       end;
-
-      if Assigned(ScrollBar) then
-        ScrollBar.setVisible(bRedraw);
     end; {SB_HORZ}
     
     SB_VERT:
@@ -4361,17 +4336,12 @@ begin
         if (Control <> nil) and (Control.HandleAllocated) then
           ScrollBar := TQtScrollBar(Control.Handle)
       end;
-
-      if Assigned(ScrollBar) then
-        ScrollBar.setVisible(bRedraw);
-
     end; {SB_VERT}
     
   end;
   
-  if Assigned(ScrollBar) and bRedraw then
-    Result := PrepareScrollInfo;
-
+  if Assigned(ScrollBar) then
+    Result := UpdateScrollInfo;
 end;
 
 {------------------------------------------------------------------------------

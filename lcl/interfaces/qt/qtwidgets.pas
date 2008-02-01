@@ -238,6 +238,7 @@ type
     function getMin: Integer;
     function getMax: Integer;
     function getSingleStep: Integer;
+    function getSliderPosition: Integer;
 
     procedure setInvertedAppereance(p1: Boolean); virtual;
     procedure setInvertedControls(p1: Boolean); virtual;
@@ -4096,6 +4097,11 @@ end;
 function TQtAbstractSlider.getSingleStep: Integer;
 begin
   Result := QAbstractSlider_singleStep(QAbstractSliderH(Widget));
+end;
+
+function TQtAbstractSlider.getSliderPosition: Integer;
+begin
+  QAbstractSlider_sliderPosition(QAbstractSliderH(Widget));
 end;
 
 {------------------------------------------------------------------------------
