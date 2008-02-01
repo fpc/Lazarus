@@ -2096,13 +2096,6 @@ var
     end;
 
 
-    // load the Run Parameter Options
-    RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
-
-    // load the Publish Options
-    PublishOptions.LoadFromXMLConfig(xmlconfig,
-                                     Path+'PublishOptions/',fPathDelimChanged);
-
     // load editor info
     ActiveEditorIndexAtStart := xmlconfig.GetValue(
        Path+'General/ActiveEditorIndexAtStart/Value', -1);
@@ -2236,6 +2229,13 @@ begin
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
                           FFirstRequiredDependency,pdlRequires,Self,true,false);
+
+      // load the Run Parameter Options
+      RunParameterOptions.Load(xmlconfig,Path,fPathDelimChanged);
+
+      // load the Publish Options
+      PublishOptions.LoadFromXMLConfig(xmlconfig,
+                                       Path+'PublishOptions/',fPathDelimChanged);
 
       // load session info
       LoadSessionInfo(XMLConfig,Path,false);
