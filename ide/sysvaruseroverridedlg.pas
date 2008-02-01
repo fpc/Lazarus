@@ -65,6 +65,8 @@ begin
   with SysVarUserOverrideDialog do begin
     VariableEdit.Text:=Variable;
     ValueEdit.Text:=Value;
+    if Variable=''
+      then ActiveControl := VariableEdit;
     Result:=ShowModal;
     if (Result=mrOk) then begin
       Variable:=Trim(VariableEdit.Text);

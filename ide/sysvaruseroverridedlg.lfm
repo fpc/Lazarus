@@ -1,92 +1,87 @@
 object SysVarUserOverrideDialog: TSysVarUserOverrideDialog
+  Left = 344
+  Height = 147
+  Top = 361
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 146
   ActiveControl = ValueEdit
   Align = alTop
   Caption = 'SysVarUserOverrideDialog'
   ClientHeight = 147
   ClientWidth = 400
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 399
-  VertScrollBar.Page = 146
-  Left = 312
-  Height = 147
-  Top = 829
-  Width = 400
   object VariableLabel: TLabel
-    Align = alTop
-    BorderSpacing.Around = 6
-    Caption = 'VariableLabel'
-    Color = clNone
-    ParentColor = False
     Left = 6
     Height = 14
     Top = 6
     Width = 388
-  end
-  object ValueLabel: TLabel
     Align = alTop
     BorderSpacing.Around = 6
-    Caption = 'ValueLabel'
-    Color = clNone
+    Caption = 'VariableLabel'
     ParentColor = False
+  end
+  object ValueLabel: TLabel
     Left = 6
     Height = 14
     Top = 55
     Width = 388
-  end
-  object ValueEdit: TEdit
     Align = alTop
     BorderSpacing.Around = 6
-    TabOrder = 0
-    Text = 'ValueEdit'
+    Caption = 'ValueLabel'
+    ParentColor = False
+  end
+  object ValueEdit: TEdit
     Left = 6
     Height = 23
     Top = 75
     Width = 388
-  end
-  object VariableEdit: TEdit
     Align = alTop
     BorderSpacing.Around = 6
     TabOrder = 1
-    Text = 'VariableEdit'
+    Text = 'ValueEdit'
+  end
+  object VariableEdit: TEdit
     Left = 6
     Height = 23
     Top = 26
     Width = 388
+    Align = alTop
+    BorderSpacing.Around = 6
+    TabOrder = 0
+    Text = 'VariableEdit'
   end
   object OKButton: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 334
+    Height = 26
+    Top = 114
+    Width = 60
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    
     Caption = '&OK'
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     OnClick = OkButtonClick
-    TabOrder = 2
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 326
-    Height = 34
-    Top = 106
-    Width = 68
+    TabOrder = 3
   end
   object CancelButton: TBitBtn
+    AnchorSideRight.Control = OKButton
+    Left = 250
+    Height = 26
+    Top = 114
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Right = 6
-    
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
-    TabOrder = 3
-    AnchorSideRight.Control = OKButton
-    Left = 240
-    Height = 34
-    Top = 106
-    Width = 80
+    TabOrder = 2
   end
 end
