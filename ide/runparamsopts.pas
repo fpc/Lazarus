@@ -232,7 +232,6 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig; const Path: string;
   var
     i, Cnt: integer;
   begin
-    fUserOverrides.Clear;
     Cnt := XMLConfig.GetValue(APath + 'Count', 0);
     for i := 0 to Cnt - 1 do
     begin
