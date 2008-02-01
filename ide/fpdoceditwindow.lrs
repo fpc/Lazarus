@@ -1,12 +1,12 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TFPDocEditor','FORMDATA',[
-  'TPF0'#12'TFPDocEditor'#11'FPDocEditor'#4'Left'#3'/'#1#6'Height'#2'u'#3'Top'#3
+  'TPF0'#12'TFPDocEditor'#11'FPDocEditor'#4'Left'#3'/'#1#6'Height'#2'}'#3'Top'#3
   +'$'#2#5'Width'#3#241#2#18'HorzScrollBar.Page'#3#240#2#18'VertScrollBar.Page'
-  +#2't'#13'ActiveControl'#7#9'DescrMemo'#7'Caption'#6#12'FPDoc editor'#12'Clie'
-  +'ntHeight'#2'u'#11'ClientWidth'#3#241#2#8'OnCreate'#7#10'FormCreate'#9'OnDes'
+  +#2'|'#13'ActiveControl'#7#9'DescrMemo'#7'Caption'#6#12'FPDoc editor'#12'Clie'
+  +'ntHeight'#2'}'#11'ClientWidth'#3#241#2#8'OnCreate'#7#10'FormCreate'#9'OnDes'
   +'troy'#7#11'FormDestroy'#8'OnResize'#7#10'FormResize'#0#12'TPageControl'#11
-  +'PageControl'#4'Left'#2#17#6'Height'#2'u'#5'Width'#3#224#2#10'ActivePage'#7
+  +'PageControl'#4'Left'#2#17#6'Height'#2'}'#5'Width'#3#224#2#10'ActivePage'#7
   +#13'DescrTabSheet'#5'Align'#7#8'alClient'#8'TabIndex'#2#1#8'TabOrder'#2#0#11
   +'TabPosition'#7#8'tpBottom'#0#9'TTabSheet'#13'ShortTabSheet'#7'Caption'#6#13
   +'ShortTabSheet'#12'ClientHeight'#2'V'#11'ClientWidth'#3#220#2#0#5'TEdit'#9'S'
@@ -22,7 +22,7 @@ LazarusResources.Add('TFPDocEditor','FORMDATA',[
   +'t'#2#29#3'Top'#2#29#5'Width'#2'W'#8'AutoSize'#9#18'BorderSpacing.Left'#2#6#7
   +'Caption'#6#10'SaveButton'#7'OnClick'#7#15'SaveButtonClick'#8'TabOrder'#2#2#0
   +#0#0#9'TTabSheet'#13'DescrTabSheet'#7'Caption'#6#13'DescrTabSheet'#12'Client'
-  +'Height'#2'V'#11'ClientWidth'#3#220#2#0#5'TMemo'#9'DescrMemo'#6'Height'#2'R'
+  +'Height'#2'^'#11'ClientWidth'#3#220#2#0#5'TMemo'#9'DescrMemo'#6'Height'#2'Z'
   +#5'Width'#3#218#2#5'Align'#7#8'alClient'#19'BorderSpacing.Right'#2#2#20'Bord'
   +'erSpacing.Bottom'#2#4#13'Lines.Strings'#1#6#9'DescrMemo'#0#8'OnChange'#7#15
   +'DescrMemoChange'#8'TabOrder'#2#0#0#0#0#9'TTabSheet'#14'ErrorsTabSheet'#7'Ca'
@@ -81,8 +81,8 @@ LazarusResources.Add('TFPDocEditor','FORMDATA',[
   +'op.Side'#7#9'asrCenter'#4'Left'#3#168#0#6'Height'#2#29#3'Top'#2'6'#5'Width'
   +#3#175#0#8'AutoSize'#9#18'BorderSpacing.Left'#2#10#7'Caption'#6#23'CopyFromI'
   +'nheritedButton'#7'OnClick'#7#28'CopyFromInheritedButtonClick'#8'TabOrder'#2
-  +#2#0#0#0#0#6'TPanel'#12'LeftBtnPanel'#6'Height'#2'u'#5'Width'#2#17#5'Align'#7
-  +#6'alLeft'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2'u'#11'ClientWidth'#2
+  +#2#0#0#0#0#6'TPanel'#12'LeftBtnPanel'#6'Height'#2'}'#5'Width'#2#17#5'Align'#7
+  +#6'alLeft'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2'}'#11'ClientWidth'#2
   +#17#11'FullRepaint'#8#14'ParentShowHint'#8#8'ShowHint'#9#8'TabOrder'#2#1#0#12
   +'TSpeedButton'#16'BoldFormatButton'#6'Height'#2#17#5'Width'#2#17#5'Align'#7#5
   +'alTop'#5'Color'#7#9'clBtnFace'#10'Glyph.Data'#10#190#4#0#0#186#4#0#0'BM'#186
@@ -375,7 +375,10 @@ LazarusResources.Add('TFPDocEditor','FORMDATA',[
   +#236#216#233#236#216#233#236#216#233#236#216#233#236#216#233#236#216#233#236
   +#216#233#236#216#233#236#216#233#236#216#233#236#216#233#236#216#233#236#216
   +#233#236#216#233#236#216#233#236#216#233#236#0#9'NumGlyphs'#2#0#7'OnClick'#7
-  +#17'FormatButtonClick'#0#0#0#11'TOpenDialog'#10'OpenDialog'#5'Title'#6#17'Op'
-  +'en example file'#6'Filter'#6#28'pascal file|*.pas; *.pp; *.p'#11'FilterInde'
-  +'x'#2#0#4'left'#2'@'#3'top'#2#24#0#0#0
+  +#17'FormatButtonClick'#0#0#12'TSpeedButton'#26'InsertParagraphSpeedButton'#3
+  +'Tag'#2#6#6'Height'#2#17#3'Top'#2'f'#5'Width'#2#17#7'Caption'#6#1'P'#5'Color'
+  +#7#9'clBtnFace'#9'NumGlyphs'#2#0#7'OnClick'#7#17'FormatButtonClick'#0#0#0#11
+  +'TOpenDialog'#10'OpenDialog'#5'Title'#6#17'Open example file'#6'Filter'#6#28
+  +'pascal file|*.pas; *.pp; *.p'#11'FilterIndex'#2#0#4'left'#2'@'#3'top'#2#24#0
+  +#0#0
 ]);

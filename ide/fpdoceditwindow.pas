@@ -89,6 +89,7 @@ type
     InsertVarTagButton: TSpeedButton;
     ExampleTabSheet: TTabSheet;
     InheritedTabSheet: TTabSheet;
+    InsertParagraphSpeedButton: TSpeedButton;
     UnderlineFormatButton: TSpeedButton;
     SeeAlsoTabSheet: TTabSheet;
     procedure AddLinkButtonClick(Sender: TObject);
@@ -299,15 +300,18 @@ begin
     //underline
     2:
       InsertTag('<u>', '</u>');
-    //codetag
+    //code tag
     3:
       InsertTag('<p><code>', '</code></p>');
-    //remarktag
+    //remark tag
     4:
       InsertTag('<p><remark>', '</remark></p>');
-    //vartag
+    //var tag
     5:
       InsertTag('<var>', '</var>');
+    //paragraph tag
+    6:
+      InsertTag('<p>', '</p>');
   end;
 end;
 
@@ -828,78 +832,6 @@ var
     end;
   end;
 
-  {procedure CheckAndWriteNode(const NodeName: String; NodeText: String;
-    NodeIndex: TFPDocItem);
-  var
-    child: TDOMNode;
-    FileAttribute: TDOMAttr;
-    OldNode: TDOMNode;
-    NewValue: String;
-  begin
-    DebugLn('TLazDocForm.Save[CheckAndWriteNode]: checking element: ' +
-      NodeName);
-
-    if CurNodeName <> NodeName then exit;
-
-    NewValue:=ToUnixLineEnding(NodeText);
-    if CurNodeName = 'example' then begin
-      OldNode:=Node.Attributes.GetNamedItem('file');
-      NewValue:=FilenameToURLPath(NewValue);
-      if (NodeText<>'')
-      or (not (OldNode is TDOMAttr))
-      or (TDOMAttr(OldNode).Value<>NewValue) then begin
-        DebugLn(['TLazDocForm.CheckAndWriteNode Changing NodeName=',NodeName,' NodeText="',NewValue,'"']);
-        // add or change example
-        FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
-        FileAttribute.Value := NewValue;
-        OldNode:=Node.Attributes.SetNamedItem(FileAttribute);
-        OldNode.Free;
-      end;
-    end
-    else if not Assigned(Node.FirstChild) then begin
-      // add node
-      if NodeText<>'' then begin
-        DebugLn(['TLazDocForm.CheckAndWriteNode Adding NodeName=',NodeName,' NodeText="',NewValue,'"']);
-        child := Entry.DocFile.Doc.CreateTextNode(NewValue);
-        Node.AppendChild(child);
-      end;
-    end else begin
-      // change node
-      if Node.FirstChild.NodeValue <> NewValue then begin
-        DebugLn(['TLazDocForm.CheckAndWriteNode Changing NodeName=',NodeName,' NodeText="',NewValue,'"']);
-        Node.FirstChild.NodeValue := NewValue;
-      end;
-    end;
-    NodeWritten[NodeIndex] := True;
-  end;
-
-  procedure CheckAndWriteNode(const NodeName: String; NodeType: TFPDocItem);
-  begin
-    CheckAndWriteNode(NodeName,DocNode[NodeType],NodeType);
-  end;
-
-  procedure InsertNodeElement(const ElementName, ElementText: String);
-  var
-    child: TDOMNode;
-    FileAttribute: TDOMAttr;
-  begin
-    DebugLn('TLazDocForm.Save[InsertNodeElement]: inserting element: ' + ElementName);
-    if (ElementText='') then exit;
-
-    DebugLn(['InsertNodeElement Adding node ElementName=',ElementName,' ElementText="',ElementText,'"']);
-    child := Entry.DocFile.doc.CreateElement(ElementName);
-    if ElementName='example' then begin
-      FileAttribute := Entry.DocFile.Doc.CreateAttribute('file');
-      FileAttribute.Value := FilenameToURLPath(ElementText);
-      child.Attributes.SetNamedItem(FileAttribute);
-    end
-    else begin
-      child.AppendChild(Entry.DocFile.Doc.CreateTextNode(
-                                                ToUnixLineEnding(ElementText)));
-    end;
-    TopNode.AppendChild(child);
-  end;}
-  
 begin
   Result:=false;
   if fpdefWriting in FFlags then begin
@@ -911,7 +843,6 @@ begin
   CurDocFile:=Element.FPDocFile;
   if Check(CurDocFile=nil,'Element.FPDocFile=nil') then begin
     // no fpdoc file found
-    // TODO: create a new file
     DebugLn(['TFPDocEditForm.WriteNode TODO: implement creating new fpdoc file']);
     exit;
   end;
@@ -921,7 +852,6 @@ begin
   TopNode:=Element.ElementNode;
   if Check(TopNode=nil,'TopNode=nil') then begin
     // no old node found
-    // TODO: create a new node
     Check(false,'no old node found. TODO: implement creating a new.');
     Exit;
   end;
