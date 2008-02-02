@@ -1,0 +1,9 @@
+object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
+  Left = 362
+  Height = 300
+  Top = 304
+  Width = 400
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'FPDocLinkEditorDlg'
+end

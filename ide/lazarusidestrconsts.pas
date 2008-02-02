@@ -3496,6 +3496,8 @@ resourcestring
   lisCodeHelpAddLinkButton = 'Add link';
   lisCodeHelpDeleteLinkButton = 'Delete link';
   lisCodeHelpCreateButton = 'Create help item';
+  lisCodeHelpInsertALink = 'Insert a link ...';
+  lisCodeHelpInsertParagraphFormattingTag = 'Insert paragraph formatting tag';
   lisCodeHelpSaveButton = 'Save';
   lisCodeHelpExampleTag = 'Example';
   lisCodeHelpBrowseExampleButton = 'Browse';

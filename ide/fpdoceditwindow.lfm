@@ -1,33 +1,33 @@
 object FPDocEditor: TFPDocEditor
   Left = 303
-  Height = 125
+  Height = 120
   Top = 548
   Width = 753
   HorzScrollBar.Page = 752
-  VertScrollBar.Page = 124
-  ActiveControl = DescrMemo
+  VertScrollBar.Page = 119
+  ActiveControl = ShortEdit
   Caption = 'FPDoc editor'
-  ClientHeight = 125
+  ClientHeight = 120
   ClientWidth = 753
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
   object PageControl: TPageControl
-    Left = 17
-    Height = 125
-    Width = 736
-    ActivePage = DescrTabSheet
+    Left = 40
+    Height = 120
+    Width = 713
+    ActivePage = ShortTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     TabPosition = tpBottom
     object ShortTabSheet: TTabSheet
       Caption = 'ShortTabSheet'
-      ClientHeight = 86
-      ClientWidth = 732
+      ClientHeight = 89
+      ClientWidth = 709
       object ShortEdit: TEdit
         Height = 23
-        Width = 730
+        Width = 707
         Align = alTop
         BorderSpacing.Right = 2
         OnChange = ShortEditEditingDone
@@ -65,11 +65,11 @@ object FPDocEditor: TFPDocEditor
     end
     object DescrTabSheet: TTabSheet
       Caption = 'DescrTabSheet'
-      ClientHeight = 94
-      ClientWidth = 732
+      ClientHeight = 89
+      ClientWidth = 709
       object DescrMemo: TMemo
-        Height = 90
-        Width = 730
+        Height = 85
+        Width = 707
         Align = alClient
         BorderSpacing.Right = 2
         BorderSpacing.Bottom = 4
@@ -82,10 +82,10 @@ object FPDocEditor: TFPDocEditor
     end
     object ErrorsTabSheet: TTabSheet
       Caption = 'ErrorsTabSheet'
-      ClientHeight = 86
+      ClientHeight = 94
       ClientWidth = 732
       object ErrorsMemo: TMemo
-        Height = 82
+        Height = 90
         Width = 730
         Align = alClient
         BorderSpacing.Right = 2
@@ -99,12 +99,12 @@ object FPDocEditor: TFPDocEditor
     end
     object SeeAlsoTabSheet: TTabSheet
       Caption = 'SeeAlsoTabSheet'
-      ClientHeight = 86
+      ClientHeight = 94
       ClientWidth = 732
       object LinkListBox: TListBox
         AnchorSideTop.Control = AddLinkButton
         AnchorSideTop.Side = asrBottom
-        Height = 49
+        Height = 57
         Top = 33
         Width = 730
         Align = alBottom
@@ -171,7 +171,7 @@ object FPDocEditor: TFPDocEditor
     end
     object ExampleTabSheet: TTabSheet
       Caption = 'ExampleTabSheet'
-      ClientHeight = 86
+      ClientHeight = 94
       ClientWidth = 732
       object ExampleEdit: TEdit
         Height = 23
@@ -199,7 +199,7 @@ object FPDocEditor: TFPDocEditor
     end
     object InheritedTabSheet: TTabSheet
       Caption = 'InheritedTabSheet'
-      ClientHeight = 86
+      ClientHeight = 94
       ClientWidth = 732
       object InheritedShortLabel: TLabel
         Height = 20
@@ -252,19 +252,19 @@ object FPDocEditor: TFPDocEditor
     end
   end
   object LeftBtnPanel: TPanel
-    Height = 125
-    Width = 17
+    Height = 120
+    Width = 20
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 125
-    ClientWidth = 17
+    ClientHeight = 120
+    ClientWidth = 20
     FullRepaint = False
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
     object BoldFormatButton: TSpeedButton
-      Height = 17
-      Width = 17
+      Height = 23
+      Width = 20
       Align = alTop
       Color = clBtnFace
       Glyph.Data = {
@@ -312,9 +312,9 @@ object FPDocEditor: TFPDocEditor
     end
     object ItalicFormatButton: TSpeedButton
       Tag = 1
-      Height = 17
-      Top = 17
-      Width = 17
+      Height = 23
+      Top = 46
+      Width = 20
       Align = alTop
       Color = clBtnFace
       Glyph.Data = {
@@ -362,9 +362,9 @@ object FPDocEditor: TFPDocEditor
     end
     object UnderlineFormatButton: TSpeedButton
       Tag = 2
-      Height = 17
-      Top = 34
-      Width = 17
+      Height = 23
+      Top = 23
+      Width = 20
       Align = alTop
       Color = clBtnFace
       Glyph.Data = {
@@ -410,11 +410,86 @@ object FPDocEditor: TFPDocEditor
       NumGlyphs = 0
       OnClick = FormatButtonClick
     end
+    object InsertVarTagButton: TSpeedButton
+      Tag = 5
+      Height = 23
+      Top = 92
+      Width = 20
+      Align = alTop
+      Color = clBtnFace
+      Glyph.Data = {
+        AA030000424DAA03000000000000360000002800000011000000110000000100
+        1800000000007403000064000000640000000000000000000000D8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9EC00D8E9ECD8E9ECD4D4D4222222D4D4D4D8E9EC6666667777774C4C
+        4C4C4C4CBBBBBB4C4C4C4C4C4CBBBBBBD8E9ECD8E9ECD8E9EC00D8E9ECD8E9EC
+        5E5E5E4444445E5E5ED8E9EC222222BBBBBB5E5E5E808080FFFFFF8080808080
+        80D8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECE6E6E6000000CCCCCC000000E6E6E6
+        C4C4C4888888444444999999E6E6E6666666222222888888BBBBBBD8E9ECD8E9
+        EC00D8E9ECD4D4D4AAAAAAAAAAAAAAAAAAD4D4D4D4D4D4AAAAAAAAAAAAD8E9EC
+        D4D4D4AAAAAAAAAAAAAAAAAAD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
+        E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9EC
+        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
+        ECD8E9ECD8E9ECD8E9ECD8E9EC00
+      }
+      NumGlyphs = 0
+      OnClick = FormatButtonClick
+    end
+    object InsertParagraphSpeedButton: TSpeedButton
+      Tag = 6
+      Height = 23
+      Top = 69
+      Width = 20
+      Align = alTop
+      Caption = 'P'
+      Color = clBtnFace
+      NumGlyphs = 0
+      OnClick = FormatButtonClick
+    end
+  end
+  object RightBtnPanel: TPanel
+    Left = 20
+    Height = 120
+    Width = 20
+    Align = alLeft
+    BevelOuter = bvNone
+    ClientHeight = 120
+    ClientWidth = 20
+    TabOrder = 2
+    object InsertLinkSpeedButton: TSpeedButton
+      Height = 23
+      Width = 20
+      Align = alTop
+      Caption = 'Li'
+      Color = clBtnFace
+      Enabled = False
+      NumGlyphs = 0
+      OnClick = InsertLinkSpeedButtonClick
+      ShowHint = True
+      ParentShowHint = False
+    end
     object InsertCodeTagButton: TSpeedButton
       Tag = 3
-      Height = 17
-      Top = 51
-      Width = 17
+      Height = 23
+      Top = 23
+      Width = 20
       Align = alTop
       Color = clBtnFace
       Glyph.Data = {
@@ -455,12 +530,14 @@ object FPDocEditor: TFPDocEditor
       }
       NumGlyphs = 0
       OnClick = FormatButtonClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object InsertRemarkButton: TSpeedButton
       Tag = 4
-      Height = 17
-      Top = 68
-      Width = 17
+      Height = 23
+      Top = 46
+      Width = 20
       Align = alTop
       Color = clBtnFace
       Glyph.Data = {
@@ -497,58 +574,8 @@ object FPDocEditor: TFPDocEditor
       }
       NumGlyphs = 0
       OnClick = FormatButtonClick
-    end
-    object InsertVarTagButton: TSpeedButton
-      Tag = 5
-      Height = 17
-      Top = 85
-      Width = 17
-      Align = alTop
-      Color = clBtnFace
-      Glyph.Data = {
-        AA030000424DAA03000000000000360000002800000011000000110000000100
-        1800000000007403000064000000640000000000000000000000D8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9EC00D8E9ECD8E9ECD4D4D4222222D4D4D4D8E9EC6666667777774C4C
-        4C4C4C4CBBBBBB4C4C4C4C4C4CBBBBBBD8E9ECD8E9ECD8E9EC00D8E9ECD8E9EC
-        5E5E5E4444445E5E5ED8E9EC222222BBBBBB5E5E5E808080FFFFFF8080808080
-        80D8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECE6E6E6000000CCCCCC000000E6E6E6
-        C4C4C4888888444444999999E6E6E6666666222222888888BBBBBBD8E9ECD8E9
-        EC00D8E9ECD4D4D4AAAAAAAAAAAAAAAAAAD4D4D4D4D4D4AAAAAAAAAAAAD8E9EC
-        D4D4D4AAAAAAAAAAAAAAAAAAD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8
-        E9ECD8E9EC00D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9EC00D8E9ECD8E9EC
-        D8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9ECD8E9
-        ECD8E9ECD8E9ECD8E9ECD8E9EC00
-      }
-      NumGlyphs = 0
-      OnClick = FormatButtonClick
-    end
-    object InsertParagraphSpeedButton: TSpeedButton
-      Tag = 6
-      Height = 17
-      Top = 102
-      Width = 17
-      Caption = 'P'
-      Color = clBtnFace
-      NumGlyphs = 0
-      OnClick = FormatButtonClick
+      ShowHint = True
+      ParentShowHint = False
     end
   end
   object OpenDialog: TOpenDialog

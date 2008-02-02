@@ -1,0 +1,7 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFPDocLinkEditorDlg','FORMDATA',[
+  'TPF0'#19'TFPDocLinkEditorDlg'#18'FPDocLinkEditorDlg'#4'Left'#3'j'#1#6'Height'
+  +#3','#1#3'Top'#3'0'#1#5'Width'#3#144#1#18'HorzScrollBar.Page'#3#143#1#18'Ver'
+  +'tScrollBar.Page'#3'+'#1#7'Caption'#6#18'FPDocLinkEditorDlg'#0#0
+]);

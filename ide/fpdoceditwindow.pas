@@ -62,6 +62,7 @@ type
   TFPDocEditor = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
+    RightBtnPanel: TPanel;
     SaveButton: TButton;
     CreateButton: TButton;
     CopyFromInheritedButton: TButton;
@@ -90,6 +91,7 @@ type
     ExampleTabSheet: TTabSheet;
     InheritedTabSheet: TTabSheet;
     InsertParagraphSpeedButton: TSpeedButton;
+    InsertLinkSpeedButton: TSpeedButton;
     UnderlineFormatButton: TSpeedButton;
     SeeAlsoTabSheet: TTabSheet;
     procedure AddLinkButtonClick(Sender: TObject);
@@ -104,6 +106,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormatButtonClick(Sender: TObject);
+    procedure InsertLinkSpeedButtonClick(Sender: TObject);
     procedure LinkChange(Sender: TObject);
     procedure LinkListBoxClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -240,6 +243,8 @@ begin
   InsertCodeTagButton.Hint := lisCodeHelpHintInsertCodeTag;
   InsertRemarkButton.Hint := lisCodeHelpHintRemarkTag;
   InsertVarTagButton.Hint := lisCodeHelpHintVarTag;
+  InsertParagraphSpeedButton.Hint := lisCodeHelpInsertParagraphFormattingTag;
+  InsertLinkSpeedButton.Hint := lisCodeHelpInsertALink;
 
   CreateButton.Caption := lisCodeHelpCreateButton;
   CreateButton.Enabled:=false;
@@ -313,6 +318,11 @@ begin
     6:
       InsertTag('<p>', '</p>');
   end;
+end;
+
+procedure TFPDocEditor.InsertLinkSpeedButtonClick(Sender: TObject);
+begin
+
 end;
 
 procedure TFPDocEditor.LinkChange(Sender: TObject);
