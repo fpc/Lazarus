@@ -86,8 +86,9 @@ end;
 function TStringHashList.Add(const S: String; ItemData: Pointer): Integer;
 var
   Item: PStringHashItem;
-  Val, First, Last, I: Integer;
-  Larger: ByteBool;
+  First, Last, I: Integer;
+  Val: Cardinal;
+  Larger: boolean;
 begin
   New(Item);
   Val:= HashOf(S);
