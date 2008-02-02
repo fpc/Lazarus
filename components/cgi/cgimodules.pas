@@ -79,8 +79,8 @@ end;
 procedure TModuledCGIApplication.CreateForm(AClass: TCGIDataModuleClass;
   Var Reference: TCGIDataModule);
 begin
-  debugln('TModuledCGIApplication.CreateForm ',AClass.CLassName);
-  Reference:=AClass.CreateNew(Self,0);
+  //debugln('TModuledCGIApplication.CreateForm ',AClass.CLassName);
+  Reference:=AClass.Create(Self);
   If FMainModule=Nil then
     FMainModule:=Reference;
 end;

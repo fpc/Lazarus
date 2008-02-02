@@ -124,7 +124,6 @@ begin
     +'  Application:=TModuledCGIApplication.Create(nil);'+le
     +'  Application.Initialize;'+le
     +'  Application.Run;'+le
-    +'  Application.Free;'+le
     +'end.'+le
     +le;
   AProject.MainFile.SetSourceText(NewSource);

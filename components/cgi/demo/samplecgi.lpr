@@ -10,6 +10,5 @@ begin
   Application.Initialize;
   Application.CreateForm(TDemoModule, DemoModule);
   Application.Run;
-  Application.Free;
 end.
 
