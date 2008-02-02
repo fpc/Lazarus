@@ -89,9 +89,9 @@ implementation
 const
   // number of cache changes that can happen w/o rebuild
 {$IFDEF VerboseImageListCache}
-  ImageListCacheRebuildThreashold = 1;
+  ImageListCacheRebuildThreshold = 1;
 {$ELSE}
-  ImageListCacheRebuildThreashold = 20;
+  ImageListCacheRebuildThreshold = 20;
 {$ENDIF}
 
 var
@@ -109,7 +109,7 @@ end;
 
 procedure TImageListCache.CheckRebuildNeed;
 begin
-  if (FObsoletedCount >= ImageListCacheRebuildThreashold) and not Application.Terminated then
+  if (FObsoletedCount >= ImageListCacheRebuildThreshold) and not Application.Terminated then
     Rebuild;
 end;
 
