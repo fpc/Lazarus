@@ -253,7 +253,7 @@ begin
 
     if not Accepted then
       ADragObjectCopy.Control.DragCanceled;
-    ADragObjectCopy.Control.DoEndDrag(ADragObjectCopy.DragTarget, TargetPos.X, TargetPos.Y);
+    ADragObjectCopy.EndDrag(ADragObjectCopy.DragTarget, TargetPos.X, TargetPos.Y);
 
   finally
     //erase global variables (dragging stopped)

@@ -25,6 +25,12 @@ begin
   FControl := AControl;
 end;
 
+procedure TDragObject.EndDrag(Target: TObject; X, Y: Integer);
+begin
+  if FControl <> nil then
+    FControl.DoEndDrag(Target, X, Y);
+end;
+
 function TDragObject.GetDragImages: TDragImageList;
 begin
   Result := nil;

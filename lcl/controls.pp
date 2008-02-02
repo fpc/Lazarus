@@ -339,6 +339,7 @@ type
     FDragTarget: TControl;
     FDragTargetPos: TPoint;
   protected
+    procedure EndDrag(Target: TObject; X, Y: Integer); virtual;
     function GetDragImages: TDragImageList; virtual;
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; virtual;
   public
@@ -2163,6 +2164,7 @@ procedure RecreateWnd(const AWinControl:TWinControl);
 var
   DefaultDockTreeClass: TDockTreeClass;
 
+procedure CancelDrag;
 procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
 procedure SetCaptureControl(Control: TControl);
 function GetCaptureControl: TControl;
@@ -2504,6 +2506,12 @@ begin
   and (CaptureControl <> nil)
   and (CaptureControl.Parent = Result)
   then Result := CaptureControl;
+end;
+
+procedure CancelDrag;
+begin
+  if (DragManager <> nil) and DragManager.IsDragging then
+    DragManager.DragStop(False);
 end;
 
 procedure SetCaptureControl(AWinControl: TWinControl; const Position: TPoint);
