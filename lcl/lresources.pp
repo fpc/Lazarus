@@ -2710,7 +2710,7 @@ function InitLazResourceComponent(Instance: TComponent;
     DestroyDriver: Boolean;
     Driver: TAbstractObjectReader;
   begin
-    //DebugLn(['[InitComponent] ',ClassType.Classname,' ',Instance<>nil]);
+    //DebugLn(['[InitComponent] ClassType=',ClassType.Classname,' Instance=',DbgsName(Instance),' RootAncestor=',DbgsName(RootAncestor),' ClassType.ClassParent=',DbgsName(ClassType.ClassParent)]);
     Result := False;
     if (ClassType = TComponent) or (ClassType = RootAncestor) then
       Exit;
@@ -2740,7 +2740,7 @@ function InitLazResourceComponent(Instance: TComponent;
       Exit;
       
     try
-      //DebugLn('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
+      //DebugLn('Form Stream "',ClassType.ClassName,'"');
       //try
       DestroyDriver:=false;
       Reader := CreateLRSReader(Stream, DestroyDriver);
