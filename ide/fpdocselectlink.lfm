@@ -1,9 +1,86 @@
 object FPDocLinkEditorDlg: TFPDocLinkEditorDlg
   Left = 362
-  Height = 300
+  Height = 329
   Top = 304
   Width = 400
   HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
+  VertScrollBar.Page = 328
   Caption = 'FPDocLinkEditorDlg'
+  ClientHeight = 329
+  ClientWidth = 400
+  OnCreate = FormCreate
+  object LinkLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 10
+    Width = 388
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    Caption = 'LinkLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object TitleLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LinkEdit
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 20
+    Top = 71
+    Width = 388
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'TitleLabel'
+    ParentColor = False
+    WordWrap = True
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 50
+    Top = 279
+    Width = 388
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
+  end
+  object LinkEdit: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LinkLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 36
+    Width = 388
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Around = 6
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    Text = 'LinkEdit'
+  end
+  object TitleEdit: TEdit
+    AnchorSideTop.Control = TitleLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 97
+    Width = 388
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    TabOrder = 2
+    Text = 'TitleEdit'
+  end
 end

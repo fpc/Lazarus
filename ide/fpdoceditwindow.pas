@@ -44,7 +44,8 @@ uses
   IDEHelpIntf, LazHelpIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts,
-  IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, CodeHelp;
+  IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, FPDocSelectLink,
+  CodeHelp;
 
 type
   TFPDocEditorFlag = (
@@ -111,6 +112,7 @@ type
     procedure LinkListBoxClick(Sender: TObject);
     procedure ApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure MoveToInheritedButtonClick(Sender: TObject);
+    procedure PageControlChange(Sender: TObject);
     procedure SaveButtonClick(Sender: TObject);
     procedure ShortEditEditingDone(Sender: TObject);
   private
@@ -146,6 +148,7 @@ type
     procedure LoadGUIValues(Element: TCodeHelpElement);
     procedure MoveToInherited(Element: TCodeHelpElement);
     function CreateElement(Element: TCodeHelpElement): Boolean;
+    procedure UpdateButtons;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -176,6 +179,8 @@ begin
     EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(nmiwFPDocEditorName).Apply;
   end;
 
+  if not FPDocEditor.Visible then
+    FPDocEditor.UpdateButtons;
   FPDocEditor.Show;
 end;
 
@@ -321,8 +326,25 @@ begin
 end;
 
 procedure TFPDocEditor.InsertLinkSpeedButtonClick(Sender: TObject);
+var
+  Link: string;
+  LinkTitle: string;
+  LinkSrc: String;
 begin
-
+  if (ShowFPDocLinkEditorDialog(Link,LinkTitle)<>mrOk)
+  and (Link<>'') then exit;
+  LinkSrc:='<link id="'+Link+'"';
+  if LinkTitle='' then begin
+    LinkSrc:=LinkSrc+'/>';
+  end else begin
+    LinkSrc:=LinkSrc+'>'+LinkTitle+'</link>';
+  end;
+  if PageControl.ActivePage = ShortTabSheet then
+    ShortEdit.SelText := LinkSrc;
+  if PageControl.ActivePage = DescrTabSheet then
+    DescrMemo.SelText := LinkSrc;
+  if PageControl.ActivePage = ErrorsTabSheet then
+    ErrorsMemo.SelText := LinkSrc;
 end;
 
 procedure TFPDocEditor.LinkChange(Sender: TObject);
@@ -439,6 +461,11 @@ begin
     FPDocSelectInheritedDlg.Free;
     Candidates.Free;
   end;
+end;
+
+procedure TFPDocEditor.PageControlChange(Sender: TObject);
+begin
+  UpdateButtons;
 end;
 
 procedure TFPDocEditor.SaveButtonClick(Sender: TObject);
@@ -710,6 +737,23 @@ begin
   end;
   Reset;
   InvalidateChain;
+end;
+
+procedure TFPDocEditor.UpdateButtons;
+var
+  HasEdit: Boolean;
+begin
+  HasEdit:=(PageControl.ActivePage = ShortTabSheet)
+        or (PageControl.ActivePage = DescrTabSheet)
+        or (PageControl.ActivePage = ErrorsTabSheet);
+  BoldFormatButton.Enabled:=HasEdit;
+  ItalicFormatButton.Enabled:=HasEdit;
+  UnderlineFormatButton.Enabled:=HasEdit;
+  InsertCodeTagButton.Enabled:=HasEdit;
+  InsertLinkSpeedButton.Enabled:=HasEdit;
+  InsertParagraphSpeedButton.Enabled:=HasEdit;
+  InsertRemarkButton.Enabled:=HasEdit;
+  InsertVarTagButton.Enabled:=HasEdit;
 end;
 
 procedure TFPDocEditor.Reset;

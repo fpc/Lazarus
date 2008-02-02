@@ -30,18 +30,65 @@ unit FPDocSelectLink;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs; 
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
+  StdCtrls, ButtonPanel;
 
 type
+
+  { TFPDocLinkEditorDlg }
+
   TFPDocLinkEditorDlg = class(TForm)
+    ButtonPanel1: TButtonPanel;
+    TitleEdit: TEdit;
+    TitleLabel: TLabel;
+    LinkEdit: TEdit;
+    LinkLabel: TLabel;
+    procedure FormCreate(Sender: TObject);
   private
   public
   end;
 
-var
-  FPDocLinkEditorDlg: TFPDocLinkEditorDlg;
+function ShowFPDocLinkEditorDialog(out Link, LinkTitle: string): TModalResult;
 
 implementation
+
+function ShowFPDocLinkEditorDialog(out Link, LinkTitle: string): TModalResult;
+var
+  FPDocLinkEditorDlg: TFPDocLinkEditorDlg;
+begin
+  Link:='';
+  LinkTitle:='';
+  FPDocLinkEditorDlg:=TFPDocLinkEditorDlg.Create(nil);
+  try
+    Result:=FPDocLinkEditorDlg.ShowModal;
+    if Result=mrOk then begin
+      Link:=FPDocLinkEditorDlg.LinkEdit.Text;
+      LinkTitle:=FPDocLinkEditorDlg.TitleEdit.Text;
+    end;
+  finally
+    FPDocLinkEditorDlg.Free;
+  end;
+end;
+
+{ TFPDocLinkEditorDlg }
+
+procedure TFPDocLinkEditorDlg.FormCreate(Sender: TObject);
+begin
+  Caption:='Choose a FPDoc link';
+  LinkLabel.Caption:='Link target';
+  LinkLabel.Hint:='Examples:'#13
+                 +'Identifier'#13
+                 +'TMyEnum.Enum'#13
+                 +'Unitname.Identifier'#13
+                 +'#PackageName.UnitName.Identifier';
+  TitleLabel.Caption:='Title (leave empty for default)';
+  ButtonPanel1.OKButton.Caption:='Ok';
+  ButtonPanel1.CancelButton.Caption:='Cancel';
+  ButtonPanel1.HelpButton.Caption:='Help';
+  
+  LinkEdit.Text:='';
+  TitleEdit.Text:='';
+end;
 
 initialization
   {$I fpdocselectlink.lrs}
