@@ -381,7 +381,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TScrollingWinControl, TQtWSScrollingWinControl);
-//  RegisterWSComponent(TScrollBox, TQtWSScrollBox);
+  RegisterWSComponent(TScrollBox, TQtWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TQtWSCustomFrame);
 //  RegisterWSComponent(TFrame, TQtWSFrame);
   RegisterWSComponent(TCustomForm, TQtWSCustomForm);
