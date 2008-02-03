@@ -218,20 +218,19 @@ end;
 
 const
   ArrowSize = 16;
-  TabHeight = 10;
-  TabWidth = 8;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.GetPrevArrowBounds
   Returns: Bounds of prev arrow
  ------------------------------------------------------------------------------}
 function TCarbonTabsControl.GetPrevArrowBounds(const R: TRect): TRect;
-var
-  P: TPoint;
 begin
-  P := Classes.Point(R.Left, R.Top + TabHeight);
-  Result := Classes.Rect(P.X, P.Y,
-    P.X + ArrowSize, P.Y + ArrowSize);
+  case FTabPosition of
+    tpTop: Result := Classes.Bounds(R.Left, R.Top - ArrowSize, ArrowSize, ArrowSize);
+    tpBottom: Result := Classes.Bounds(R.Left, R.Bottom, ArrowSize, ArrowSize);
+    tpLeft: Result := Classes.Bounds(R.Left - ArrowSize, R.Top, ArrowSize, ArrowSize);
+    tpRight: Result := Classes.Bounds(R.Right, R.Top, ArrowSize, ArrowSize);
+  end;
 end;
 
 
@@ -240,12 +239,13 @@ end;
   Returns: Bounds of next arrow
  ------------------------------------------------------------------------------}
 function TCarbonTabsControl.GetNextArrowBounds(const R: TRect): TRect;
-var
-  P: TPoint;
 begin
-  P := Classes.Point(R.Right - ArrowSize - TabWidth, R.Top + TabHeight);
-  Result := Classes.Rect(P.X, P.Y,
-    P.X + ArrowSize, P.Y + ArrowSize);
+  case FTabPosition of
+    tpTop: Result := Classes.Bounds(R.Right - ArrowSize, R.Top - ArrowSize, ArrowSize, ArrowSize);
+    tpBottom: Result := Classes.Bounds(R.Right - ArrowSize, R.Bottom, ArrowSize, ArrowSize);
+    tpLeft: Result := Classes.Bounds(R.Left - ArrowSize, R.Bottom - ArrowSize, ArrowSize, ArrowSize);
+    tpRight: Result := Classes.Bounds(R.Right, R.Bottom - ArrowSize, ArrowSize, ArrowSize);
+  end;
 end;
 
 procedure TCarbonTabsControl.ScrollingLeftTimer(Sender: TObject);
@@ -278,6 +278,8 @@ begin
   tpRight: Direction := kControlTabDirectionEast;
   tpLeft: Direction := kControlTabDirectionWest;
   end;
+  
+  FillChar(TabEntry, SizeOf(TabEntry), 0);
   if OSError(
     CreateTabsControl(GetTopParentWindow, ParamsToCarbonRect(AParams),
       kControlTabSizeLarge, Direction, 0, TabEntry, Control),
@@ -288,25 +290,32 @@ begin
   FTabs := TObjectList.Create(False);
 
   Widget := Control;
+
+  if not GetClientRect(R) then
+  begin
+    DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
+    Exit;
+  end;
   
+  // create arrows for tabs scrolling
   OSError(
     CreateDisclosureTriangleControl(GetTopParentWindow,
-      GetCarbonRect(GetPrevArrowBounds(ParamsToRect(AParams))),
+      GetCarbonRect(GetPrevArrowBounds(R)),
       kControlDisclosureTrianglePointLeft, nil, 0, False, False, FPrevArrow),
     Self, SCreateWidget, 'CreatePopupArrowControl');
   OSError(HIViewSetVisible(FPrevArrow, False), Self, SCreateWidget, SViewVisible);
   OSError(HIViewAddSubview(Widget, FPrevArrow), Self, SCreateWidget,
     SViewAddView);
-    
+
   OSError(
     CreateDisclosureTriangleControl(GetTopParentWindow,
-      GetCarbonRect(GetNextArrowBounds(ParamsToRect(AParams))),
+      GetCarbonRect(GetNextArrowBounds(R)),
       kControlDisclosureTrianglePointRight, nil, 0, False, False, FNextArrow),
     Self, SCreateWidget, 'CreatePopupArrowControl');
   OSError(HIViewSetVisible(FNextArrow, False), Self, SCreateWidget, SViewVisible);
   OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
     SViewAddView);
-  
+
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
   InstallControlEventHandler(FPrevArrow,
     RegisterEventHandler(@CarbonTabsPrevArrow_Track),
@@ -314,12 +323,6 @@ begin
   InstallControlEventHandler(FNextArrow,
     RegisterEventHandler(@CarbonTabsNextArrow_Track),
     1, @TmpSpec, Pointer(Self), nil);
-
-  if not GetClientRect(R) then
-  begin
-    DebugLn('TCarbonTabsControl.CreateWidget Error - no content region!');
-    Exit;
-  end;
   
   FFirstIndex := 0;
   FLastIndex := 0;
@@ -404,7 +407,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.UpdateTabs;
 var
-  I: Integer;
+  I, L: Integer;
   TabSizes: Array of Integer;
   S: String;
   Size: TSize;
@@ -440,6 +443,8 @@ begin
           TabSizes[I] := Size.cx + 24
         else
           TabSizes[I] := 24;
+          
+        //DebugLn(DbgS(I), '. ', S, ' ', DbgS(TabSizes[I]));
       end;
     finally
       DefaultContext.CurrentFont := TempFont;
@@ -451,26 +456,33 @@ begin
 
     if FTabPosition in [tpTop, tpBottom] then ControlSize := LCLObject.Width
     else ControlSize := LCLObject.Height;
+    
+    //DebugLn('Size: ' + DbgS(ControlSize));
     ControlSize := ControlSize - 2 * ArrowSize - TabSizes[FFirstIndex];
 
     // add tabs right from first
     for I := FFirstIndex + 1 to FTabs.Count - 1 do
     begin
+      //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
       if ControlSize >= TabSizes[I] then
       begin
         FLastIndex := I;
         Dec(ControlSize, TabSizes[I]);
-      end;
+      end
+      else Break;
     end;
 
+    L := FFirstIndex;
     // possibly add tabs left from first
-    for I := FFirstIndex - 1 downto 0 do
+    for I := L - 1 downto 0 do
     begin
+      //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
       if ControlSize >= TabSizes[I] then
       begin
         FFirstIndex := I;
         Dec(ControlSize, TabSizes[I]);
-      end;
+      end
+      else Break;
     end;
 
     // set tab count
@@ -507,8 +519,8 @@ begin
     SetControl32BitValue(ControlRef(Widget), ControlIndex);
     ValueChanged;
     // update arrows visible
-    OSError(HIViewSetVisible(FPrevArrow, (FFirstIndex > 0) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
-    OSError(HIViewSetVisible(FNextArrow, (FLastIndex < FTabs.Count - 1) and (FTabPosition = tpTop)), Self, SName, SViewVisible);
+    OSError(HIViewSetVisible(FPrevArrow, FFirstIndex > 0), Self, SName, SViewVisible);
+    OSError(HIViewSetVisible(FNextArrow, FLastIndex < FTabs.Count - 1), Self, SName, SViewVisible);
     
     Invalidate;
     ShowTab;
@@ -624,15 +636,19 @@ end;
   parent
  ------------------------------------------------------------------------------}
 function TCarbonTabsControl.SetBounds(const ARect: TRect): Boolean;
+var
+  R: TRect;
 begin
   Result := False;
   if inherited SetBounds(ARect) then
   begin
     UpdateContentBounds;
     
-    OSError(HIViewSetFrame(FPrevArrow, RectToCGRect(GetPrevArrowBounds(ARect))),
+    GetClientRect(R);
+    
+    OSError(HIViewSetFrame(FPrevArrow, RectToCGRect(GetPrevArrowBounds(R))),
       Self, SSetBounds, SViewFrame);
-    OSError(HIViewSetFrame(FNextArrow, RectToCGRect(GetNextArrowBounds(ARect))),
+    OSError(HIViewSetFrame(FNextArrow, RectToCGRect(GetNextArrowBounds(R))),
       Self, SSetBounds, SViewFrame);
     
     Result := True;

@@ -180,8 +180,8 @@ type
     procedure DestroyWidget; override;
   public
     procedure ControlAdded; override;
-    
-    function SetBounds(const ARect: TRect): Boolean; override;
+    procedure BoundsChanged; override;
+
     procedure SetChildZPosition(AChild: TCarbonWidget; const AOldPos, ANewPos: Integer; const AChildren: TFPList); override;
     
     function GetDesignContext: TCarbonContext;
@@ -520,23 +520,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonDesignWindow.SetBounds
-  Params:  ARect - Record for window coordinates
-  Returns: If function succeeds
+  Method:  TCarbonDesignWindow.BoundsChanged
 
-  Sets the window content bounding rectangle relative to the window frame origin
+  Handles bounds change
  ------------------------------------------------------------------------------}
-function TCarbonDesignWindow.SetBounds(const ARect: TRect): Boolean;
+procedure TCarbonDesignWindow.BoundsChanged;
 var
   R: TRect;
 begin
-  Result := inherited SetBounds(ARect);
-  
-  R := ARect;
+  inherited;
+
+  GetClientRect(R);
   OffsetRect(R, -R.Left, -R.Top);
   OSError(HIViewSetFrame(FDesignControl, RectToCGRect(R)),
     Self, SSetBounds, SViewFrame);
-    
+
   BringDesignerToFront;
 end;
 
