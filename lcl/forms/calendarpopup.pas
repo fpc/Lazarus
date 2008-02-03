@@ -36,8 +36,7 @@ type
   TCalendarPopupForm = class(TForm)
     Calendar: TCalendar;
     procedure CalendarDblClick(Sender: TObject);
-    procedure CalendarKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
+    procedure CalendarKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormDeactivate(Sender: TObject);
   private

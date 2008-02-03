@@ -1986,6 +1986,7 @@ begin
   
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
+  WriteLn(QEvent_type(Event));
   case QEvent_type(Event) of
    QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
@@ -7252,6 +7253,9 @@ var
   Method: TMethod;
 begin
   inherited AttachEvents;
+  
+  // calendar itself eats some events so we will never get DoubleClick event
+  // this should be somehow solved since CalendarPopup expects DoubleClick from calendar widget
 
   FClickedHook := QCalendarWidget_hook_create(Widget);
   FActivatedHook := QCalendarWidget_hook_create(Widget);
@@ -7320,9 +7324,8 @@ begin
   y := QDate_year(ADate);
   m := QDate_month(ADate);
   d := QDate_day(ADate);
-  if (y <> aYear) or (m <> aMonth)
-  or (d <> aDay) then
-  	DeliverMessage(Msg);
+  if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
+    DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -7339,7 +7342,6 @@ var
   Msg: TLMessage;
 begin
 //  writeln('TQtCalendar.SignalSelectionChanged');
-
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   DeliverMessage(Msg);
@@ -7359,15 +7361,14 @@ var
   Msg: TLMessage;
 begin
   // writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
-
   FillChar(Msg, SizeOf(Msg), #0);
-  if AYear<>p1 then
+  if AYear <> p1 then
   begin
     Msg.Msg := LM_YEARCHANGED;
     DeliverMessage(Msg);
   end;
 
-  if AMonth<>p2 then
+  if AMonth <> p2 then
   begin
     Msg.Msg := LM_MONTHCHANGED;
     DeliverMessage(Msg);
