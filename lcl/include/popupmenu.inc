@@ -63,10 +63,12 @@ end;
 
 procedure TPopupMenu.Close;
 begin
-  if HandleAllocated then FItems.DestroyHandle;
-  if ActivePopupMenu=Self then begin
+  if HandleAllocated then
+    FItems.DestroyHandle;
+  if ActivePopupMenu = Self then
+  begin
     DoClose;
-    ActivePopupMenu:=nil;
+    ActivePopupMenu := nil;
   end;
 end;
 

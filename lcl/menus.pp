@@ -348,10 +348,10 @@ type
 
   TPopupMenu = class(TMenu)
   private
-    FAutoPopup : Boolean;
+    FAutoPopup: Boolean;
     FOnClose: TNotifyEvent;
     FOnPopup: TNotifyEvent;
-    FPopupComponent : TComponent;
+    FPopupComponent: TComponent;
     FPopupPoint: TPoint;
   protected
     procedure DoPopup(Sender: TObject); virtual;

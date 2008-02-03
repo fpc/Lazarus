@@ -78,6 +78,7 @@ type
   TGtkWSPopupMenu = class(TWSPopupMenu)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function CreateHandle(const AMenu: TMenu): HMENU; override;
     class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
@@ -370,6 +371,24 @@ begin
   Y^ := Point^.Y;
 end;
 
+function gtkWSPopupDelayedClose(WidgetInfo: Pointer): gboolean; cdecl;
+begin
+  TPopupMenu(PWidgetInfo(WidgetInfo)^.LCLObject).Close;
+  Result := False;
+end;
+
+function gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+begin
+  g_idle_add(@gtkWSPopupDelayedClose, data)
+end;
+
+class procedure TGtkWSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  g_signal_connect_after(PGtkObject(AGtkWidget), 'deactivate',
+    gtk_signal_func(@gtkWSPopupMenuDeactivate), AWidgetInfo^.LCLObject);
+end;
+
 class function TGtkWSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
 var
   Widget: PGtkWidget;
@@ -382,7 +401,7 @@ begin
   {$ENDIF}
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenu;
-  // no callbacks for popup menu
+  SetCallbacks(Widget, WidgetInfo);
 end;
 
 class procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu;
