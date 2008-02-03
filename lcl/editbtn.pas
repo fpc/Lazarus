@@ -171,7 +171,7 @@ type
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
     property DialogFiles : TStrings read FDialogFiles;
-  Published
+  published
     // TFileName properties.
     property FileName : String read GetFileName write SetFileName;
     property InitialDir : String read FInitialDir write FInitialDir;

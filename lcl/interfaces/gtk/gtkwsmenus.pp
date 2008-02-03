@@ -379,7 +379,8 @@ end;
 
 function gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
-  g_idle_add(@gtkWSPopupDelayedClose, data)
+  g_idle_add(@gtkWSPopupDelayedClose, data);
+  Result := CallBackDefaultReturn;
 end;
 
 class procedure TGtkWSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
