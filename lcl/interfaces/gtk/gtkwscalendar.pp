@@ -112,7 +112,7 @@ var
   Year, Month, Day: guint;  //used for csCalendar
 begin
   Result := 0;
-  if WSCheckHandleAllocated(ACalendar, 'GetDateTime') then
+  if not WSCheckHandleAllocated(ACalendar, 'GetDateTime') then
     Exit;
   gtk_calendar_get_date(GetCalendar(ACalendar), @Year, @Month, @Day);
   //For some reason, the month is zero based.
@@ -124,7 +124,7 @@ var
   Year, Month, Day: string;
   GtkCalendar: PGtkCalendar;
 begin
-  if WSCheckHandleAllocated(ACalendar, 'SetDateTime') then
+  if not WSCheckHandleAllocated(ACalendar, 'SetDateTime') then
     Exit;
   GtkCalendar := GetCalendar(ACalendar);
   Year := FormatDateTime('yyyy', ADateTime);
@@ -140,7 +140,7 @@ var
   num: dword;
   gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
 begin
-  if WSCheckHandleAllocated(ACalendar, 'SetDisplaySettings') then
+  if not WSCheckHandleAllocated(ACalendar, 'SetDisplaySettings') then
     Exit;
   num := 0;
   if (dsShowHeadings in ADisplaySettings) then
@@ -165,7 +165,7 @@ end;
 class procedure TGtkWSCustomCalendar.SetReadOnly(const ACalendar: TCustomCalendar;
   const AReadOnly: boolean);
 begin
-  if WSCheckHandleAllocated(ACalendar, 'SetReadOnly') then
+  if not WSCheckHandleAllocated(ACalendar, 'SetReadOnly') then
     Exit;
   if AReadOnly then
     gtk_calendar_freeze(GetCalendar(ACalendar))

@@ -161,22 +161,6 @@ begin
   TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
 end;
 
-function FilterFuc(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
-var
-  AForm: TCustomForm absolute data;
-begin
-  Result := GDK_FILTER_CONTINUE;
-  {$ifdef windows}
-  if (PMSG(xevent)^.message = WM_NCLBUTTONDOWN) and
-     (PMSG(xevent)^.wParam = HTCAPTION) and
-     (TWinControlAccess(AForm).DragKind = dkDock) then
-  begin
-    AForm.BeginDrag(True);
-    Result := GDK_FILTER_REMOVE;
-  end;
-  {$endif}
-end;
-
 {-------------------------------------------------------------------------------
   function GTKRealizeCB
   Params: Widget: PGtkWidget; Data: Pointer
@@ -213,7 +197,6 @@ begin
 
         gdk_window_set_decorations(TheWindow, decor);
         gdk_window_set_functions(TheWindow, func);
-        gdk_window_add_filter(TheWindow, @FilterFuc, TheForm)
       end;
     end;
 
