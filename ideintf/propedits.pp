@@ -6148,9 +6148,9 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
     TControl, 'AnchorSideBottom', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    nil, 'ClientWidth', THiddenPropertyEditor);
+    TControl, 'ClientWidth', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
-    nil, 'ClientHeight', THiddenPropertyEditor);
+    TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
 end;
