@@ -186,7 +186,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFieldDataLink.FieldCanModify.Result"><short/></element>
+      <element name="TFieldDataLink.FieldCanModify.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFieldDataLink.GetCanModify">
         <short/>
@@ -195,7 +197,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFieldDataLink.GetCanModify.Result"><short/></element>
+      <element name="TFieldDataLink.GetCanModify.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TFieldDataLink.SetFieldName">
         <short/>
@@ -204,7 +208,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFieldDataLink.SetFieldName.Value"><short/></element>
+      <element name="TFieldDataLink.SetFieldName.Value">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TFieldDataLink.ValidateField">
         <short/>
@@ -213,7 +219,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFieldDataLink.ValidateField.Result"><short/></element>
+      <element name="TFieldDataLink.ValidateField.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.ActiveChanged">
         <short/>
@@ -250,7 +258,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFieldDataLink.RecordChanged.aField"><short/></element>
+      <element name="TFieldDataLink.RecordChanged.aField">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TFieldDataLink.UpdateData">
         <short/>
@@ -266,7 +276,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TFieldDataLink.FocusControl.aField"><short/></element>
+      <element name="TFieldDataLink.FocusControl.aField">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TFieldDataLink.Create">
         <short/>
@@ -289,7 +301,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TFieldDataLink.Edit.Result"><short/></element>
+      <element name="TFieldDataLink.Edit.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: public -->
       <element name="TFieldDataLink.Modified">
         <short/>
@@ -366,8 +380,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBEdit">
-        <short><i>TDBEdit </i> - a data-aware edit box for processing a single text-string from a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBEdit </i> - a data-aware edit box for processing a single text-string from a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBEdit.FDataLink">
@@ -383,7 +400,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.DataChange.Sender"><short/></element>
+      <element name="TDBEdit.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.EditingChange">
         <short/>
@@ -392,7 +411,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.EditingChange.Sender"><short/></element>
+      <element name="TDBEdit.EditingChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.UpdateData">
         <short/>
@@ -401,7 +422,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.UpdateData.Sender"><short/></element>
+      <element name="TDBEdit.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.FocusRequest">
         <short/>
@@ -410,7 +433,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.FocusRequest.Sender"><short/></element>
+      <element name="TDBEdit.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.ActiveChange">
         <short/>
@@ -419,7 +444,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.ActiveChange.Sender"><short/></element>
+      <element name="TDBEdit.ActiveChange.Sender">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBEdit.GetDataField">
         <short/>
@@ -428,7 +455,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBEdit.GetDataField.Result"><short/></element>
+      <element name="TDBEdit.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBEdit.GetDataSource">
         <short/>
@@ -437,7 +466,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBEdit.GetDataSource.Result"><short/></element>
+      <element name="TDBEdit.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBEdit.GetField">
         <short/>
@@ -446,7 +477,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBEdit.GetField.Result"><short/></element>
+      <element name="TDBEdit.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBEdit.GetReadOnly">
         <short/>
@@ -455,7 +488,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBEdit.GetReadOnly.Result"><short/></element>
+      <element name="TDBEdit.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.SetReadOnly">
         <short/>
@@ -464,7 +499,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.SetReadOnly.Value"><short/></element>
+      <element name="TDBEdit.SetReadOnly.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.SetDataField">
         <short/>
@@ -473,7 +510,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.SetDataField.Value"><short/></element>
+      <element name="TDBEdit.SetDataField.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBEdit.SetDataSource">
         <short/>
@@ -482,7 +521,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.SetDataSource.Value"><short/></element>
+      <element name="TDBEdit.SetDataSource.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBEdit.KeyDown">
         <short/>
@@ -491,9 +532,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.KeyDown.Key"><short/></element>
+      <element name="TDBEdit.KeyDown.Key">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.KeyDown.Shift"><short/></element>
+      <element name="TDBEdit.KeyDown.Shift">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBEdit.Loaded">
         <short/>
@@ -509,9 +554,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.Notification.AComponent"><short/></element>
+      <element name="TDBEdit.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.Notification.Operation"><short/></element>
+      <element name="TDBEdit.Notification.Operation">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TDBEdit.EditCanModify">
         <short/>
@@ -520,7 +569,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBEdit.EditCanModify.Result"><short/></element>
+      <element name="TDBEdit.EditCanModify.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBEdit.Change">
         <short/>
@@ -557,7 +608,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBEdit.Create.AOwner"><short/></element>
+      <element name="TDBEdit.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBEdit.Destroy">
         <short/>
@@ -825,8 +878,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBText">
-        <short><i>TDBText</i> - a data-aware text component to display a single text-string from a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBText</i> - a data-aware text component to display a single text-string from a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBText.FDataLink">
@@ -842,7 +898,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.DataChange.Sender"><short/></element>
+      <element name="TDBText.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBText.ActiveChange">
         <short/>
@@ -851,7 +909,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.ActiveChange.Sender"><short/></element>
+      <element name="TDBText.ActiveChange.Sender">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBText.GetDataField">
         <short/>
@@ -860,7 +920,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBText.GetDataField.Result"><short/></element>
+      <element name="TDBText.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBText.GetDataSource">
         <short/>
@@ -869,7 +931,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBText.GetDataSource.Result"><short/></element>
+      <element name="TDBText.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBText.GetField">
         <short/>
@@ -878,7 +942,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBText.GetField.Result"><short/></element>
+      <element name="TDBText.GetField.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBText.SetDataField">
         <short/>
@@ -887,7 +953,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.SetDataField.Value"><short/></element>
+      <element name="TDBText.SetDataField.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBText.SetDataSource">
         <short/>
@@ -896,7 +964,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.SetDataSource.Value"><short/></element>
+      <element name="TDBText.SetDataSource.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBText.Loaded">
         <short/>
@@ -912,9 +982,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.Notification.AComponent"><short/></element>
+      <element name="TDBText.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.Notification.Operation"><short/></element>
+      <element name="TDBText.Notification.Operation">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TDBText.Create">
         <short/>
@@ -923,7 +997,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBText.Create.AOwner"><short/></element>
+      <element name="TDBText.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBText.Destroy">
         <short/>
@@ -1023,8 +1099,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBListBox">
-        <short><i>TDBListBox </i>- a data-aware version of <i>TListBox,</i> for displaying lists of entries from a field in a database</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBListBox </i>- a data-aware version of <i>TListBox,</i> for displaying lists of entries from a field in a database</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBListBox.FDataLink">
@@ -1040,7 +1119,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.DataChange.Sender"><short/></element>
+      <element name="TDBListBox.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.EditingChange">
         <short/>
@@ -1049,7 +1130,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.EditingChange.Sender"><short/></element>
+      <element name="TDBListBox.EditingChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.UpdateData">
         <short/>
@@ -1058,7 +1141,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.UpdateData.Sender"><short/></element>
+      <element name="TDBListBox.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.FocusRequest">
         <short/>
@@ -1067,7 +1152,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.FocusRequest.Sender"><short/></element>
+      <element name="TDBListBox.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBListBox.GetDataField">
         <short/>
@@ -1076,7 +1163,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBListBox.GetDataField.Result"><short/></element>
+      <element name="TDBListBox.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBListBox.GetDataSource">
         <short/>
@@ -1085,7 +1174,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBListBox.GetDataSource.Result"><short/></element>
+      <element name="TDBListBox.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBListBox.GetField">
         <short/>
@@ -1094,7 +1185,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBListBox.GetField.Result"><short/></element>
+      <element name="TDBListBox.GetField.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.SetItems">
         <short/>
@@ -1103,7 +1196,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.SetItems.Values"><short/></element>
+      <element name="TDBListBox.SetItems.Values">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBListBox.GetReadOnly">
         <short/>
@@ -1112,7 +1207,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBListBox.GetReadOnly.Result"><short/></element>
+      <element name="TDBListBox.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.SetReadOnly">
         <short/>
@@ -1121,7 +1218,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.SetReadOnly.Value"><short/></element>
+      <element name="TDBListBox.SetReadOnly.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.SetDataField">
         <short/>
@@ -1130,7 +1229,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.SetDataField.Value"><short/></element>
+      <element name="TDBListBox.SetDataField.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBListBox.SetDataSource">
         <short/>
@@ -1139,7 +1240,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.SetDataSource.Value"><short/></element>
+      <element name="TDBListBox.SetDataSource.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBListBox.KeyDown">
         <short/>
@@ -1148,9 +1251,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.KeyDown.Key"><short/></element>
+      <element name="TDBListBox.KeyDown.Key">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.KeyDown.Shift"><short/></element>
+      <element name="TDBListBox.KeyDown.Shift">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBListBox.Loaded">
         <short/>
@@ -1166,9 +1273,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.Notification.AComponent"><short/></element>
+      <element name="TDBListBox.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.Notification.Operation"><short/></element>
+      <element name="TDBListBox.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBListBox.Click">
         <short/>
@@ -1191,7 +1302,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBListBox.Create.AOwner"><short/></element>
+      <element name="TDBListBox.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBListBox.Destroy">
         <short/>
@@ -1387,8 +1500,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBRadioGroup">
-        <short><i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select entries from a databse field</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select entries from a databse field</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBRadioGroup.FDataLink">
@@ -1428,7 +1544,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBRadioGroup.GetDataField.Result"><short/></element>
+      <element name="TDBRadioGroup.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBRadioGroup.GetDataSource">
         <short/>
@@ -1437,7 +1555,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBRadioGroup.GetDataSource.Result"><short/></element>
+      <element name="TDBRadioGroup.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBRadioGroup.GetField">
         <short/>
@@ -1446,7 +1566,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBRadioGroup.GetField.Result"><short/></element>
+      <element name="TDBRadioGroup.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBRadioGroup.GetReadOnly">
         <short/>
@@ -1455,7 +1577,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBRadioGroup.GetReadOnly.Result"><short/></element>
+      <element name="TDBRadioGroup.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetDataField">
         <short/>
@@ -1464,7 +1588,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetDataField.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetDataSource">
         <short/>
@@ -1473,7 +1599,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetDataSource.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetItems">
         <short/>
@@ -1482,7 +1610,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetItems.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetItems.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetReadOnly">
         <short/>
@@ -1491,7 +1621,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetReadOnly.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetReadOnly.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetValue">
         <short/>
@@ -1500,7 +1632,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetValue.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetValue.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBRadioGroup.SetValues">
         <short/>
@@ -1509,7 +1643,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.SetValues.AValue"><short/></element>
+      <element name="TDBRadioGroup.SetValues.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.Change">
         <short/>
@@ -1525,9 +1661,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.Notification.AComponent"><short/></element>
+      <element name="TDBRadioGroup.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.Notification.Operation"><short/></element>
+      <element name="TDBRadioGroup.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.DataChange">
         <short/>
@@ -1536,7 +1676,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.DataChange.Sender"><short/></element>
+      <element name="TDBRadioGroup.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.UpdateData">
         <short/>
@@ -1545,7 +1687,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.UpdateData.Sender"><short/></element>
+      <element name="TDBRadioGroup.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- property Visibility: protected -->
       <element name="TDBRadioGroup.DataLink">
         <short/>
@@ -1560,9 +1704,13 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBRadioGroup.GetButtonValue.Result"><short/></element>
+      <element name="TDBRadioGroup.GetButtonValue.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.GetButtonValue.Index"><short/></element>
+      <element name="TDBRadioGroup.GetButtonValue.Index">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBRadioGroup.UpdateRadioButtonStates">
         <short/>
@@ -1592,7 +1740,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBRadioGroup.Create.TheOwner"><short/></element>
+      <element name="TDBRadioGroup.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBRadioGroup.Destroy">
         <short/>
@@ -1728,8 +1878,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBCheckBox">
-        <short><i>TDBCheckBox</i> - a data-aware checkbox for use with logical fields in a database</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBCheckBox</i> - a data-aware checkbox for use with logical fields in a database</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBCheckBox.FDataLink">
@@ -1757,7 +1910,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.GetDataField.Result"><short/></element>
+      <element name="TDBCheckBox.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBCheckBox.GetDataSource">
         <short/>
@@ -1766,7 +1921,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.GetDataSource.Result"><short/></element>
+      <element name="TDBCheckBox.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBCheckBox.GetField">
         <short/>
@@ -1775,7 +1932,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.GetField.Result"><short/></element>
+      <element name="TDBCheckBox.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBCheckBox.GetReadOnly">
         <short/>
@@ -1784,7 +1943,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.GetReadOnly.Result"><short/></element>
+      <element name="TDBCheckBox.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCheckBox.SetDataField">
         <short/>
@@ -1793,7 +1954,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.SetDataField.AValue"><short/></element>
+      <element name="TDBCheckBox.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCheckBox.SetDataSource">
         <short/>
@@ -1802,7 +1965,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.SetDataSource.AValue"><short/></element>
+      <element name="TDBCheckBox.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCheckBox.SetReadOnly">
         <short/>
@@ -1811,7 +1976,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.SetReadOnly.AValue"><short/></element>
+      <element name="TDBCheckBox.SetReadOnly.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCheckBox.SetValueCheck">
         <short/>
@@ -1820,7 +1987,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.SetValueCheck.AValue"><short/></element>
+      <element name="TDBCheckBox.SetValueCheck.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCheckBox.SetValueUncheck">
         <short/>
@@ -1829,7 +1998,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.SetValueUncheck.AValue"><short/></element>
+      <element name="TDBCheckBox.SetValueUncheck.AValue">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBCheckBox.ValueEqualsField">
         <short/>
@@ -1838,11 +2009,17 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.ValueEqualsField.Result"><short/></element>
+      <element name="TDBCheckBox.ValueEqualsField.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.ValueEqualsField.AValue"><short/></element>
+      <element name="TDBCheckBox.ValueEqualsField.AValue">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.ValueEqualsField.AFieldText"><short/></element>
+      <element name="TDBCheckBox.ValueEqualsField.AFieldText">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TDBCheckBox.GetFieldCheckState">
         <short/>
@@ -1851,7 +2028,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCheckBox.GetFieldCheckState.Result"><short/></element>
+      <element name="TDBCheckBox.GetFieldCheckState.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.DataChange">
         <short/>
@@ -1860,7 +2039,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.DataChange.Sender"><short/></element>
+      <element name="TDBCheckBox.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.UpdateData">
         <short/>
@@ -1869,7 +2050,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.UpdateData.Sender"><short/></element>
+      <element name="TDBCheckBox.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.FocusRequest">
         <short/>
@@ -1878,7 +2061,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.FocusRequest.Sender"><short/></element>
+      <element name="TDBCheckBox.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.Notification">
         <short/>
@@ -1887,9 +2072,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.Notification.AComponent"><short/></element>
+      <element name="TDBCheckBox.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.Notification.Operation"><short/></element>
+      <element name="TDBCheckBox.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCheckBox.Loaded">
         <short/>
@@ -1912,7 +2101,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCheckBox.Create.TheOwner"><short/></element>
+      <element name="TDBCheckBox.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCheckBox.Destroy">
         <short/>
@@ -2132,8 +2323,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBComboBox">
-        <short><i>TDBComboBox</i> - a data-aware version of <i>TComboBox</i> to allow selection from a list of entries in a database field</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBComboBox</i> - a data-aware version of <i>TComboBox</i> to allow selection from a list of entries in a database field</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBComboBox.FDataLink">
@@ -2149,7 +2343,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBComboBox.GetDataField.Result"><short/></element>
+      <element name="TDBComboBox.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBComboBox.GetDataSource">
         <short/>
@@ -2158,7 +2354,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBComboBox.GetDataSource.Result"><short/></element>
+      <element name="TDBComboBox.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBComboBox.GetField">
         <short/>
@@ -2167,7 +2365,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBComboBox.GetField.Result"><short/></element>
+      <element name="TDBComboBox.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBComboBox.GetReadOnly">
         <short/>
@@ -2176,7 +2376,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBComboBox.GetReadOnly.Result"><short/></element>
+      <element name="TDBComboBox.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBComboBox.SetDataField">
         <short/>
@@ -2185,7 +2387,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.SetDataField.AValue"><short/></element>
+      <element name="TDBComboBox.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBComboBox.SetDataSource">
         <short/>
@@ -2194,7 +2398,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.SetDataSource.AValue"><short/></element>
+      <element name="TDBComboBox.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBComboBox.SetReadOnly">
         <short/>
@@ -2203,7 +2409,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.SetReadOnly.AValue"><short/></element>
+      <element name="TDBComboBox.SetReadOnly.AValue">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TDBComboBox.GetComboText">
         <short/>
@@ -2212,7 +2420,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBComboBox.GetComboText.Result"><short/></element>
+      <element name="TDBComboBox.GetComboText.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.SetComboText">
         <short/>
@@ -2221,7 +2431,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.SetComboText.NewText"><short/></element>
+      <element name="TDBComboBox.SetComboText.NewText">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.DataChange">
         <short/>
@@ -2230,7 +2442,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.DataChange.Sender"><short/></element>
+      <element name="TDBComboBox.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.EditingChange">
         <short/>
@@ -2239,7 +2453,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.EditingChange.Sender"><short/></element>
+      <element name="TDBComboBox.EditingChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.Notification">
         <short/>
@@ -2248,9 +2464,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.Notification.AComponent"><short/></element>
+      <element name="TDBComboBox.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.Notification.Operation"><short/></element>
+      <element name="TDBComboBox.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.UpdateData">
         <short/>
@@ -2259,7 +2479,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.UpdateData.Sender"><short/></element>
+      <element name="TDBComboBox.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.FocusRequest">
         <short/>
@@ -2268,7 +2490,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.FocusRequest.Sender"><short/></element>
+      <element name="TDBComboBox.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBComboBox.Loaded">
         <short/>
@@ -2291,7 +2515,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBComboBox.Create.TheOwner"><short/></element>
+      <element name="TDBComboBox.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBComboBox.Destroy">
         <short/>
@@ -2517,8 +2743,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBMemo">
-        <short><i>TDBMemo </i> - a data-aware Memo box to process the multi-line text of a single field in a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBMemo </i> - a data-aware Memo box to process the multi-line text of a single field in a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBMemo.FDataLink">
@@ -2552,7 +2781,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBMemo.GetDataField.Result"><short/></element>
+      <element name="TDBMemo.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBMemo.GetDataSource">
         <short/>
@@ -2561,7 +2792,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBMemo.GetDataSource.Result"><short/></element>
+      <element name="TDBMemo.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBMemo.GetField">
         <short/>
@@ -2570,7 +2803,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBMemo.GetField.Result"><short/></element>
+      <element name="TDBMemo.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBMemo.GetReadOnly">
         <short/>
@@ -2579,7 +2814,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBMemo.GetReadOnly.Result"><short/></element>
+      <element name="TDBMemo.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBMemo.SetAutoDisplay">
         <short/>
@@ -2588,7 +2825,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.SetAutoDisplay.AValue"><short/></element>
+      <element name="TDBMemo.SetAutoDisplay.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBMemo.SetDataField">
         <short/>
@@ -2597,7 +2836,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.SetDataField.AValue"><short/></element>
+      <element name="TDBMemo.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBMemo.SetDataSource">
         <short/>
@@ -2606,7 +2847,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.SetDataSource.AValue"><short/></element>
+      <element name="TDBMemo.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBMemo.SetReadOnly">
         <short/>
@@ -2615,7 +2858,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.SetReadOnly.AValue"><short/></element>
+      <element name="TDBMemo.SetReadOnly.AValue">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TDBMemo.WordWrapIsStored">
         <short/>
@@ -2624,7 +2869,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBMemo.WordWrapIsStored.Result"><short/></element>
+      <element name="TDBMemo.WordWrapIsStored.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.DataChange">
         <short/>
@@ -2633,7 +2880,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.DataChange.Sender"><short/></element>
+      <element name="TDBMemo.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.EditingChange">
         <short/>
@@ -2642,7 +2891,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.EditingChange.Sender"><short/></element>
+      <element name="TDBMemo.EditingChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.Notification">
         <short/>
@@ -2651,9 +2902,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.Notification.AComponent"><short/></element>
+      <element name="TDBMemo.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.Notification.Operation"><short/></element>
+      <element name="TDBMemo.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.UpdateData">
         <short/>
@@ -2662,7 +2917,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.UpdateData.Sender"><short/></element>
+      <element name="TDBMemo.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.FocusRequest">
         <short/>
@@ -2671,7 +2928,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.FocusRequest.Sender"><short/></element>
+      <element name="TDBMemo.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBMemo.Loaded">
         <short/>
@@ -2694,7 +2953,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBMemo.Create.TheOwner"><short/></element>
+      <element name="TDBMemo.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBMemo.Destroy">
         <short/>
@@ -2843,8 +3104,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBGroupBox">
-        <short><i>TDBGroupBox</i>  - a data-aware version of <i>TGroupBox,</i>  allowing a number of data-aware objects to be grouped together on a form</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBGroupBox</i>  - a data-aware version of <i>TGroupBox,</i>  allowing a number of data-aware objects to be grouped together on a form</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBGroupBox.FDataLink">
@@ -2860,7 +3124,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBGroupBox.GetDataField.Result"><short/></element>
+      <element name="TDBGroupBox.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBGroupBox.GetDataSource">
         <short/>
@@ -2869,7 +3135,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBGroupBox.GetDataSource.Result"><short/></element>
+      <element name="TDBGroupBox.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBGroupBox.GetField">
         <short/>
@@ -2878,7 +3146,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBGroupBox.GetField.Result"><short/></element>
+      <element name="TDBGroupBox.GetField.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBGroupBox.SetDataField">
         <short/>
@@ -2887,7 +3157,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.SetDataField.AValue"><short/></element>
+      <element name="TDBGroupBox.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBGroupBox.SetDataSource">
         <short/>
@@ -2896,7 +3168,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.SetDataSource.AValue"><short/></element>
+      <element name="TDBGroupBox.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBGroupBox.DataChange">
         <short/>
@@ -2905,7 +3179,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.DataChange.Sender"><short/></element>
+      <element name="TDBGroupBox.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBGroupBox.Loaded">
         <short/>
@@ -2921,9 +3197,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.Notification.AComponent"><short/></element>
+      <element name="TDBGroupBox.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.Notification.Operation"><short/></element>
+      <element name="TDBGroupBox.Notification.Operation">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TDBGroupBox.Create">
         <short/>
@@ -2932,7 +3212,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBGroupBox.Create.TheOwner"><short/></element>
+      <element name="TDBGroupBox.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBGroupBox.Destroy">
         <short/>
@@ -3140,8 +3422,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBImage">
-        <short><i>TDBImage </i>- a data-aware Image box to display a single image from a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBImage </i>- a data-aware Image box to display a single image from a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBImage.FAutoDisplay">
@@ -3175,7 +3460,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBImage.GetDataField.Result"><short/></element>
+      <element name="TDBImage.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBImage.GetDataSource">
         <short/>
@@ -3184,7 +3471,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBImage.GetDataSource.Result"><short/></element>
+      <element name="TDBImage.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBImage.GetField">
         <short/>
@@ -3193,7 +3482,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBImage.GetField.Result"><short/></element>
+      <element name="TDBImage.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBImage.GetReadOnly">
         <short/>
@@ -3202,7 +3493,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBImage.GetReadOnly.Result"><short/></element>
+      <element name="TDBImage.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBImage.SetAutoDisplay">
         <short/>
@@ -3211,7 +3504,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.SetAutoDisplay.AValue"><short/></element>
+      <element name="TDBImage.SetAutoDisplay.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBImage.SetDataField">
         <short/>
@@ -3220,7 +3515,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.SetDataField.AValue"><short/></element>
+      <element name="TDBImage.SetDataField.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBImage.SetDataSource">
         <short/>
@@ -3229,7 +3526,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.SetDataSource.AValue"><short/></element>
+      <element name="TDBImage.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBImage.SetReadOnly">
         <short/>
@@ -3238,7 +3537,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.SetReadOnly.AValue"><short/></element>
+      <element name="TDBImage.SetReadOnly.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.Notification">
         <short/>
@@ -3247,9 +3548,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.Notification.AComponent"><short/></element>
+      <element name="TDBImage.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.Notification.Operation"><short/></element>
+      <element name="TDBImage.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.DataChange">
         <short/>
@@ -3258,7 +3563,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.DataChange.Sender"><short/></element>
+      <element name="TDBImage.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.UpdateData">
         <short/>
@@ -3267,7 +3574,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.UpdateData.Sender"><short/></element>
+      <element name="TDBImage.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBImage.LoadPicture">
         <short/>
@@ -3290,7 +3599,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBImage.Create.TheOwner"><short/></element>
+      <element name="TDBImage.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBImage.Destroy">
         <short/>
@@ -3414,8 +3725,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBCalendar">
-        <short><i>TDBCalendar</i> - a data-aware version of <i>TCalendar</i>, for selecting a date to put in a database field</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBCalendar</i> - a data-aware version of <i>TCalendar</i>, for selecting a date to put in a database field</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBCalendar.FDataLink">
@@ -3431,7 +3745,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.DataChange.Sender"><short/></element>
+      <element name="TDBCalendar.DataChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.EditingChange">
         <short/>
@@ -3440,7 +3756,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.EditingChange.Sender"><short/></element>
+      <element name="TDBCalendar.EditingChange.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.UpdateData">
         <short/>
@@ -3449,7 +3767,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.UpdateData.Sender"><short/></element>
+      <element name="TDBCalendar.UpdateData.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.FocusRequest">
         <short/>
@@ -3458,7 +3778,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.FocusRequest.Sender"><short/></element>
+      <element name="TDBCalendar.FocusRequest.Sender">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBCalendar.GetDataField">
         <short/>
@@ -3467,7 +3789,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCalendar.GetDataField.Result"><short/></element>
+      <element name="TDBCalendar.GetDataField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBCalendar.GetDataSource">
         <short/>
@@ -3476,7 +3800,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCalendar.GetDataSource.Result"><short/></element>
+      <element name="TDBCalendar.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBCalendar.GetField">
         <short/>
@@ -3485,7 +3811,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCalendar.GetField.Result"><short/></element>
+      <element name="TDBCalendar.GetField.Result">
+        <short/>
+      </element>
       <!-- function Visibility: default -->
       <element name="TDBCalendar.GetReadOnly">
         <short/>
@@ -3494,7 +3822,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCalendar.GetReadOnly.Result"><short/></element>
+      <element name="TDBCalendar.GetReadOnly.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.SetReadOnly">
         <short/>
@@ -3503,7 +3833,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.SetReadOnly.Value"><short/></element>
+      <element name="TDBCalendar.SetReadOnly.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.SetDate">
         <short/>
@@ -3512,7 +3844,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.SetDate.AValue"><short/></element>
+      <element name="TDBCalendar.SetDate.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.SetDataField">
         <short/>
@@ -3521,7 +3855,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.SetDataField.Value"><short/></element>
+      <element name="TDBCalendar.SetDataField.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="TDBCalendar.SetDataSource">
         <short/>
@@ -3530,7 +3866,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.SetDataSource.Value"><short/></element>
+      <element name="TDBCalendar.SetDataSource.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCalendar.Loaded">
         <short/>
@@ -3546,9 +3884,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.Notification.AComponent"><short/></element>
+      <element name="TDBCalendar.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.Notification.Operation"><short/></element>
+      <element name="TDBCalendar.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCalendar.EditingDone">
         <short/>
@@ -3564,7 +3906,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCalendar.Create.TheOwner"><short/></element>
+      <element name="TDBCalendar.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCalendar.Destroy">
         <short/>
@@ -3657,9 +4001,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavGlyph.ngEnabled"><short/></element>
+      <element name="TDBNavGlyph.ngEnabled">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavGlyph.ngDisabled"><short/></element>
+      <element name="TDBNavGlyph.ngDisabled">
+        <short/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDBNavButtonType">
         <short/>
@@ -3667,25 +4015,45 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbFirst"><short/></element>
+      <element name="TDBNavButtonType.nbFirst">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbPrior"><short/></element>
+      <element name="TDBNavButtonType.nbPrior">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbNext"><short/></element>
+      <element name="TDBNavButtonType.nbNext">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbLast"><short/></element>
+      <element name="TDBNavButtonType.nbLast">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbInsert"><short/></element>
+      <element name="TDBNavButtonType.nbInsert">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbDelete"><short/></element>
+      <element name="TDBNavButtonType.nbDelete">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbEdit"><short/></element>
+      <element name="TDBNavButtonType.nbEdit">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbPost"><short/></element>
+      <element name="TDBNavButtonType.nbPost">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbCancel"><short/></element>
+      <element name="TDBNavButtonType.nbCancel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonType.nbRefresh"><short/></element>
+      <element name="TDBNavButtonType.nbRefresh">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TDBNavButtonSet">
         <short/>
@@ -3699,9 +4067,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonStyle.nsAllowTimer"><short/></element>
+      <element name="TDBNavButtonStyle.nsAllowTimer">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonStyle.nsFocusRect"><short/></element>
+      <element name="TDBNavButtonStyle.nsFocusRect">
+        <short/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TDBNavButtonDirection">
         <short/>
@@ -3709,9 +4081,13 @@
         <seealso/>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonDirection.nbdHorizontal"><short/></element>
+      <element name="TDBNavButtonDirection.nbdHorizontal">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TDBNavButtonDirection.nbdVertical"><short/></element>
+      <element name="TDBNavButtonDirection.nbdVertical">
+        <short/>
+      </element>
       <!-- alias type Visibility: default -->
       <element name="TNavigateBtn">
         <short/>
@@ -3725,9 +4101,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBNavClickEvent.Sender"><short/></element>
+      <element name="TDBNavClickEvent.Sender">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBNavClickEvent.Button"><short/></element>
+      <element name="TDBNavClickEvent.Button">
+        <short/>
+      </element>
       <!-- constant Visibility: default -->
       <element name="DefaultDBNavigatorButtons">
         <short/>
@@ -3742,8 +4122,20 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBCustomNavigator">
-        <short><i>TDBCustomNavigator</i> - the base class for <i>TDBNavigator</i>, a tool for navigating through the records of a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBCustomNavigator</i> - the base class for <i>TDBNavigator</i>, a tool for navigating through the records of a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
+        <descr>
+          <p>
+            <i>TDBCustomNavigator</i> is the parent class for 
+<i>TDBNavigator</i>, an advanced tool for navigating through datasets held locally in response to a query sent to the database. Most of the important properties are defined here.</p>
+          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cance</b>l the changes, and to <i>Refresh</i> the display from the database. The set of buttons for display can be customised in <i>VisibleButtons</i>, which allows display of individual buttons to be suppressed</p>
+          <p>If used in conjunction with a DataAware control such as <i>TDBGrid</i> or <i>TDBMemo</i> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
+          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure  <i>BtnClick</i> to which an argument can be sent with the index value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
+          <p>The <i>DataSource</i> property must be set to link to the appropriate set of data.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBCustomNavigator.FBeforeAction">
@@ -3825,7 +4217,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCustomNavigator.GetDataSource.Result"><short/></element>
+      <element name="TDBCustomNavigator.GetDataSource.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TDBCustomNavigator.GetHints">
         <short/>
@@ -3834,7 +4228,9 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCustomNavigator.GetHints.Result"><short/></element>
+      <element name="TDBCustomNavigator.GetHints.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetDataSource">
         <short/>
@@ -3843,7 +4239,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetDataSource.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetDataSource.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetDirection">
         <short/>
@@ -3852,7 +4250,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetDirection.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetDirection.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetFlat">
         <short/>
@@ -3861,7 +4261,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetFlat.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetFlat.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetHints">
         <short/>
@@ -3870,7 +4272,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetHints.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetHints.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetShowButtonHints">
         <short/>
@@ -3879,7 +4283,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetShowButtonHints.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetShowButtonHints.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TDBCustomNavigator.SetVisibleButtons">
         <short/>
@@ -3888,10 +4294,12 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.SetVisibleButtons.AValue"><short/></element>
+      <element name="TDBCustomNavigator.SetVisibleButtons.AValue">
+        <short/>
+      </element>
       <!-- variable Visibility: protected -->
       <element name="TDBCustomNavigator.Buttons">
-        <short/>
+        <short>The list of Buttons included in the navigator tool</short>
         <descr/>
         <seealso/>
       </element>
@@ -3931,9 +4339,13 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.Notification.AComponent"><short/></element>
+      <element name="TDBCustomNavigator.Notification.AComponent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.Notification.Operation"><short/></element>
+      <element name="TDBCustomNavigator.Notification.Operation">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.UpdateButtons">
         <short/>
@@ -3956,7 +4368,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.HintsChanged.Sender"><short/></element>
+      <element name="TDBCustomNavigator.HintsChanged.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.ButtonClickHandler">
         <short/>
@@ -3965,7 +4379,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.ButtonClickHandler.Sender"><short/></element>
+      <element name="TDBCustomNavigator.ButtonClickHandler.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBCustomNavigator.DoOnResize">
         <short/>
@@ -3989,38 +4405,45 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBCustomNavigator.Create">
-        <short/>
+        <short>Create an instance of this control</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.Create.TheOwner"><short/></element>
+      <element name="TDBCustomNavigator.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBCustomNavigator.Destroy">
-        <short/>
+        <short>Destroy the control and returns its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TDBCustomNavigator.BtnClick">
-        <short/>
+        <short>
+          <i>BtnClick</i> - procedure to respond to button clicks, and select an action from a list according to the value of the <i>Index</i> of the clicked button</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBCustomNavigator.BtnClick.Index"><short/></element>
+      <element name="TDBCustomNavigator.BtnClick.Index">
+        <short/>
+      </element>
       <!-- function Visibility: public -->
       <element name="TDBCustomNavigator.VisibleButtonCount">
-        <short/>
+        <short>Finds the number of visible buttons</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TDBCustomNavigator.VisibleButtonCount.Result"><short/></element>
+      <element name="TDBCustomNavigator.VisibleButtonCount.Result">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.BeforeAction">
         <short/>
@@ -4029,19 +4452,19 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.ConfirmDelete">
-        <short/>
+        <short>Should the user be asked for confirmation before a record is deleted? If True, a dialog appears asking for confirmation</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.DataSource">
-        <short/>
+        <short>The Data Source to which the control must be linked in order to function</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.Direction">
-        <short/>
+        <short>The direction in which the buttons appear: horizontal or vertical</short>
         <descr/>
         <seealso/>
       </element>
@@ -4053,25 +4476,27 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.Hints">
-        <short/>
+        <short>A list of hints to be shown if the mouse hovers over a button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.OnClick">
-        <short/>
+        <short>The action to be taken when a navigator button is clicked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.VisibleButtons">
-        <short/>
-        <descr/>
+        <short>The set of visible buttons (some of them can be suppressed if their function appears redundant)</short>
+        <descr>
+          <p>The VisibleButtons entry in the Object Inspector can be used to set whether or not a particular button is to be visible.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBCustomNavigator.ShowButtonHints">
-        <short/>
+        <short>Determines whether button hints are to be shown</short>
         <descr/>
         <seealso/>
       </element>
@@ -4155,7 +4580,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TDBNavDataLink.Create.TheNavigator"><short/></element>
+      <element name="TDBNavDataLink.Create.TheNavigator">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TDBNavDataLink.Destroy">
         <short/>
@@ -4165,8 +4592,20 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TDBNavigator">
-        <short><i>TDBNavigator </i>- a data-aware Button-Bar to facilitate navigating between records of a dataset</short>
-        <seealso><link id="HowToUseDataAwareControls"/></seealso>
+        <short>
+          <i>TDBNavigator </i>- a data-aware Button-Bar to facilitate navigating between records of a dataset</short>
+        <seealso>
+          <link id="HowToUseDataAwareControls"/>
+        </seealso>
+        <descr>
+          <p>
+            <i>TDBNavigator</i> is an advanced tool for navigating through datasets held locally in response to a query sent to the database.</p>
+          <p>It consists of a series of toolbuttons to move to the <b>First</b>, <b>Prior</b>, <b>Next</b> or <b>Last</b> record; to <b>Insert</b> or <b>Delete</b> a record; to <b>Edit</b> a record (enter Edit mode), to <b>Post</b> the changes. to <b>Cancel</b> the changes, and to <b>Refresh</b> the display from the database.</p>
+          <p>The programmer may determine, at design time, which buttons are to be displayed or suppressed by adjusting the <i>VisibleButtons</i> property in the Object Inspector.</p>
+          <p>If used in conjunction with a DataAware control such as <link id="#lcl.DBGrids.TDBGrid">TDBGrid</link> or <link id="TDBMemo">TDBMemo</link> it controls which records are displayed , the position of the record selection cursor, and the initiation of changes to the dataset and ultimately the database.</p>
+          <p>Most of the functionality of the toolbar is already built-in to the control, but if the programmer needs to specify actions to be associated with individual buttons, there is a procedure <link id="TDBCustomNavigator.BtnClick">TDBCustomNavigator.BtnClick</link> to which an argument can be sent with the <i>Index</i> value of the button clicked, and the procedure chooses which action to call dependent on the button index.</p>
+          <p>The <i>DataSource</i> property must be set to link to the appropriate set of data.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBNavigator.Align">
@@ -4434,11 +4873,17 @@
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="ExtractFieldName.Result"><short/></element>
+      <element name="ExtractFieldName.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="ExtractFieldName.Fields"><short/></element>
+      <element name="ExtractFieldName.Fields">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="ExtractFieldName.StartPos"><short/></element>
+      <element name="ExtractFieldName.StartPos">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="FillBarChart">
         <short/>
@@ -4447,15 +4892,25 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="FillBarChart.BC"><short/></element>
+      <element name="FillBarChart.BC">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="FillBarChart.DS"><short/></element>
+      <element name="FillBarChart.DS">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="FillBarChart.LabelField"><short/></element>
+      <element name="FillBarChart.LabelField">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="FillBarChart.ValueField"><short/></element>
+      <element name="FillBarChart.ValueField">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="FillBarChart.AColor"><short/></element>
+      <element name="FillBarChart.AColor">
+        <short/>
+      </element>
       <!-- procedure Visibility: default -->
       <element name="Register">
         <short/>
@@ -4464,9 +4919,11 @@
         <seealso/>
       </element>
       <topic name="HowToUseDataAwareControls">
-        <short><i>HowToUseDataAwareControls</i>    - Hints for accessing databases</short>
+        <short>
+          <i>HowToUseDataAwareControls</i>    - Hints for accessing databases</short>
         <descr>
-          <p><i>HowToUseDataAwareControls</i> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
+          <p>
+            <i>HowToUseDataAwareControls</i> - Hints for accessing databases. A set of Data-Aware components is provided, to make it easier to access information held in databases.</p>
           <p>Before using Data-Aware components, it is necessary to make a connection with a database, and this should be done either using a TSQLConnection or a TDBf component, depending on the type of database that is being used. In any case, the components for connection with the database need to be found in $Lazdir/components/sqldb/, $Lazdir/components/tdbf/ or whatever other source is appropriate. They need to be added using the <i>Components</i> Menu Item of the IDE, and compiled ready for adding. The IDE needs to be re-built to include the new components.</p>
           <p>To make the connection with the database: first place a <i>DataBase Connection</i> on the Form (invisible at run-time, so put it anywhere convenient); set its properties to connect the user (with name and password) to the appropriate server, database and table (the connection component should deal with all the user-authentication issues, opening and closing the database etc). Then put on a <i>TDataSource</i> from the Data Access tab of the Component Palette, and perhaps items such as <i>TSQLTransaction</i> and <i>TSQLQuery</i>, depending on the particular database you are using. The various database components need to be linked to each other, for example by setting the <i>Transaction</i> property of a database connector to the appropriate transaction component, and linking the <i>DataBase</i> property of the Transaction component back to the database connector; link the DataSource's <i>DataSet</i> property to the appropriate SQLQuery or other set of data, and its <i>Transaction</i> property to the transaction component</p>
           <p>Each Data-Aware control (on the Data Controls tab of the Component Palette) has the usual set of properties to determine its shape and size, position, colour and font etc. But there are also special properties to define the data to be displayed or modified. These include the <i>DataSource</i> property which must be set to link to the defined set of data, and often a <i>Field</i> component to determine which of the columns in the database is to be displayed. </p>
@@ -4475,7 +4932,8 @@
           <p>The way database programming works is typically as follows:</p>
           <ul>
             <li>a database is opened for access by the user (Database Connection)</li>
-            <li>a command is issued (eg by <i>TSQLQuery</i>) to select or extract some or all of the records which are then stored locally in the <i>DataSet</i></li>
+            <li>a command is issued (eg by <i>TSQLQuery</i>) to select or extract some or all of the records which are then stored locally in the <i>DataSet</i>
+            </li>
             <li>the contents of the <i>DataSet</i> are acted on by the Data-Aware components, displaying one Row or record at a time from selected Columns, or perhaps the whole DataSet in a <i>DBGrid</i>, editing records, inserting or deleting records, or using the data to perform statistical tests or calculations</li>
             <li>at intervals usually prescribed by the user (sometimes after every change, sometimes after a whole series of changes), the contents of the local DataSet are sent back to the database, causing an update of the database's contents. This process is referred to as 'Commit' or 'Post' or sometimes as 'Update'</li>
           </ul>

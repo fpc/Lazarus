@@ -236,7 +236,8 @@
 
 
 
-:  the base class for <i>TScrollBar</i></short>
+:  the base class for <i>TScrollBar</i>
+        </short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomScrollBar.FKind">
@@ -535,7 +536,8 @@
 
 
 
- the size of a page - typically used for <i>LargeChange</i></short>
+ the size of a page - typically used for <i>LargeChange</i>
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomScrollBar.Position">
@@ -618,7 +620,8 @@
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i></p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -639,7 +642,8 @@
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link></p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -735,7 +739,8 @@
 
 
 
- the size of a page - typically used for <i>LargeChange</i></short>
+ the size of a page - typically used for <i>LargeChange</i>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -768,7 +773,8 @@
         <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link></descr>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -939,11 +945,13 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 
 
 
-- the base class for <i>TGroupBox</i>, <i>TRadioGroup</i> and <i>TCheckGroup</i></short>
+- the base class for <i>TGroupBox</i>, <i>TRadioGroup</i> and <i>TCheckGroup</i>
+        </short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomGroupBox.GetControlClassDefaultSize">
-        <short>Sets up default size for the class</short>
+        <short>
+          <i>GetControlClassDefaultSize</i> - finds out default size for the class</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TCustomGroupBox.GetControlClassDefaultSize.Result">
@@ -1010,7 +1018,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link></p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1129,7 +1138,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link></p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1180,7 +1190,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link></descr>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1239,7 +1250,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i></p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
         <seealso/>
@@ -1445,7 +1457,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- set type Visibility: default -->
       <element name="TComboBoxAutoCompleteText">
-        <short>Set of <i>TComboBoxAutoCompleteTextOption</i></short>
+        <short>Set of <i>TComboBoxAutoCompleteTextOption</i>
+        </short>
         <descr/>
         <seealso>
           <link id="TComboBoxAutoCompleteTextOption"/>
@@ -1540,7 +1553,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
  - the base class from which <i>TComboBox </i>is derived</p>
           <p>Despite similarities in appearance to <i>TCustomEdit</i>
  and <i>TCustomList</i>
-, the class inherits no properties from these classes, but only from <link id="#lcl.Controls.TWinControl">TWinControl</link></p>
+, the class inherits no properties from these classes, but only from <link id="#lcl.Controls.TWinControl">TWinControl</link>
+          </p>
           <p>It has some interesting properties including <i>AutoComplete</i> and <i>AutoCompleteText</i>, <i>AutoDropDown</i> and the ability to create and add a History display</p>
         </descr>
       </element>
@@ -2701,7 +2715,8 @@ has value -1.</p>
 
 
 
- - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i></short>
+ - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i>
+        </short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomComboBox.TabStop">
@@ -2724,7 +2739,8 @@ has value -1.</p>
 
 
 - a simple combination of text box for free text entry, and a drop-down list allowing one of several options to be chosen.</p>
-          <p>The default text-string (if any, entered in the Form Designer) and the value of the text string that is ultimately selected from the drop-down list, is held in <i>Text</i></p>
+          <p>The default text-string (if any, entered in the Form Designer) and the value of the text string that is ultimately selected from the drop-down list, is held in <i>Text</i>
+          </p>
           <p>The values that can be selected from the drop-down list are held in the string-array <i>Items</i>. Clicking on the ellipsis (...) next to <i>Items</i> in the Object Inspector opens a pop-up string-list editor which allows the designer to enter and edit a number of lines of text to represent the selections</p>
           <p>At run-time, the entry selected from the drop-down list in  <i>Items</i> is used to replace any information previously found in <i>Text</i>, and <i>ItemIndex</i> holds the (zero-origin) index number of the selected item</p>
           <p>If no value is selected from the drop-down list, the default text (if any) remains, or any information typed directly into <i>Text</i> will be returned, and <i>ItemIndex</i> takes the value of -1</p>
@@ -2810,7 +2826,8 @@ has value -1.</p>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines the border spacing for this control</p>
           <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link></p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -2888,7 +2905,8 @@ has value -1.</p>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link></p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -2989,7 +3007,8 @@ has value -1.</p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i></p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
         <seealso/>
@@ -3205,7 +3224,8 @@ has value -1.</p>
         <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
         <descr>// standard properties, which should be supported by all descendants<br/>
  Reads the details of the pop-up menu, or stores them.<br/>
-Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link></descr>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -3279,7 +3299,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 
 
 
- - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i></short>
+ - the string appearing in the main box. If an item on the drop-down list is selected, it replaces the contents of <i>Text</i>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3337,7 +3358,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 
 
 
-: the base class for  <i>TListBox</i></short>
+: the base class for  <i>TListBox</i>
+        </short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomListBox.FCacheValid">
@@ -4087,7 +4109,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 
 
 
- - the number of entries in the list of <i>Items</i></short>
+ - the number of entries in the list of <i>Items</i>
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ExtendedSelect">
@@ -4117,7 +4140,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
 
 
 
-- the height of the individual <i>Items</i></short>
+- the height of the individual <i>Items</i>
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.ItemIndex">
@@ -4393,7 +4417,8 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
 
 
 : a simple string list from which a choice is made</p>
-          <p>The array of strings is held in <i>Items</i></p>
+          <p>The array of strings is held in <i>Items</i>
+          </p>
           <p>Clicking on the ellipsis (...) next to the <i>Items</i> entry in the Object Inspector at design-time opens a string-list editor in which the individual text-strings for the list can be entered or edited. The editor also allows the entries to be sorted alphabetically in normal or reverse order.</p>
         </descr>
         <seealso>
@@ -5349,11 +5374,13 @@ Indicates how text is displayed in a text editing control.</p>
 
 
  - a Scroll Bar specifically for use in Memo Boxes</short>
-        <descr>Scroll Bar specifically for use in Memo Boxes. Inherits most of its properties from its ancestor, <link id="#lcl.Forms.TControlScrollBar">TControlScrollBar</link></descr>
+        <descr>Scroll Bar specifically for use in Memo Boxes. Inherits most of its properties from its ancestor, <link id="#lcl.Forms.TControlScrollBar">TControlScrollBar</link>
+        </descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TMemoScrollbar.GetHorzScrollBar">
-        <short/>
+        <short>
+          <i>GetHorzScrollBar</i> - find the position and properties of the horizontal scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5364,7 +5391,8 @@ Indicates how text is displayed in a text editing control.</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TMemoScrollbar.GetVertScrollBar">
-        <short/>
+        <short>
+          <i>GetVertScrollBar</i> - find the position and properties of the vertical scroll bar</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5422,7 +5450,8 @@ Indicates how text is displayed in a text editing control.</p>
 
 
 
-: the base class for <i>TMemo</i></short>
+: the base class for <i>TMemo</i>
+        </short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomMemo.FAlignment">
@@ -6259,7 +6288,8 @@ Indicates how text is displayed in a text editing control.</p>
 
 
 
-: the base class for <i>Static Text</i></short>
+: the base class for <i>Static Text</i>
+        </short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomStaticText.FAlignment"/>
@@ -6852,7 +6882,8 @@ Indicates how text is displayed in a text editing control.</p>
 
 
   - provides a link between a button and its corresponding action</p>
-          <p>This class provides very few properties of its own, but inherits a lot from its ancestors, <link id="#lcl.Controls.TWinControlActionLink">TWinControlActionLink</link>, <link id="#lcl.Controls.TControlActionLink">TControlActionLink</link>, <link id="#lcl.ActnList.TActionLink">TActionLink</link> and <link id="#rtl.Classes.TBasicActionLink">TBasicActionLink</link></p>
+          <p>This class provides very few properties of its own, but inherits a lot from its ancestors, <link id="#lcl.Controls.TWinControlActionLink">TWinControlActionLink</link>, <link id="#lcl.Controls.TControlActionLink">TControlActionLink</link>, <link id="#lcl.ActnList.TActionLink">TActionLink</link> and <link id="#rtl.Classes.TBasicActionLink">TBasicActionLink</link>
+          </p>
         </descr>
       </element>
       <!-- variable Visibility: protected -->
@@ -6903,11 +6934,8 @@ Indicates how text is displayed in a text editing control.</p>
       <!-- object Visibility: default -->
       <element name="TCustomButton">
         <short>
-          <i>TCustomButton</i>
-
-
-
-  - the base class for <i>TButton</i> and <i>TBitBtn</i></short>
+          <i>TCustomButton</i>  - the base class for <i>TButton</i> and <i>TBitBtn</i>
+        </short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomButton.FCancel">
@@ -7964,7 +7992,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i></p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -8169,7 +8198,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
 
 
  is an entity in itself, with a number of additional properties, whereas the buttons within <i>TRadioGroup</i>  are not separate entities, but rather are simply entries in a list of strings, each of which is associated with the on-screen image of a <i>RadioButton</i>. </p>
-          <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i></p>
+          <p>The example shows the difference between the use of <i>TRadioButton</i> and <i>TRadioGroup</i>
+          </p>
         </descr>
         <seealso>
           <link id="HowToUseStdCtrls"/>
@@ -9174,7 +9204,8 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso/>
       </element>
       <topic name="HowToUseStdCtrls">
-        <short>How to use <i>StdCtrls</i>, <i>ComCtrls</i> or <i>ExtCtrls</i></short>
+        <short>How to use <i>StdCtrls</i>, <i>ComCtrls</i> or <i>ExtCtrls</i>
+        </short>
         <descr>
           <p>The Units <i>StdCtrls</i>, <i>ComCtrls</i> and <i>ExtCtrls</i> contain definitions and descriptions of many of the most commonly used controls for constructing Forms and other Objects in Lazarus Applications.</p>
           <p>Many of the final target controls that the application developer wants to use, such as <i>TButton</i>, <i>TMemo</i>, <i>TScrollBar</i> etc, have a corresponding ancestor class such as <i>TCustomButton</i>, <i>TCustomMemo</i> or <i>TCustomScrollBar</i>. Several of the properties and methods relevant to the final target control are defined (and explained) more fully in the <i>TCustomXXX</i> class, and are <b>inherited</b> by the final target control.</p>

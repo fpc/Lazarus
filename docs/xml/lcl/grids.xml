@@ -4375,7 +4375,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.IscellVisible">
-        <short/>
+        <short>Finds out whether a particular cell is visible</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4394,7 +4394,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.LoadFromFile">
-        <short/>
+        <short>Load the grid data from a file with the specified name</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4405,7 +4405,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.MouseToCell">
-        <short/>
+        <short>Convert mouse coordinates to the position of a cell in the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4500,7 +4500,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.SaveToFile">
-        <short/>
+        <short>Save the data in the grid to a file with specified name</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9437,13 +9437,13 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AlternateColor">
-        <short/>
+        <short>The other colour which can be used in this grid (eg for highlighting selected text etc)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AutoEdit">
-        <short/>
+        <short>Whether the Edit mode is automatically entered when a cell is selected</short>
         <descr/>
         <seealso/>
       </element>
@@ -9456,7 +9456,9 @@ Segunda linea de texto</descr>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Columns">
         <short>The properties of the columns in this grid</short>
-        <descr/>
+        <descr>
+          <p>The <i>Columns</i> property of a grid refers to the physical column in the table, and determines its size, shape, colour etc. It should not be confused with the COLUMNS construct frequently used in SQL programming, which refers to <i>Fields</i> of data. The contents of Fields can be displayed as Columns in a Grid, but they must be seen as separate and distinct. It is irrelevant to refer to the colour, font or width of a data field from a database, but these are all very relevant in specifying the appearance of a column in a grid.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
@@ -9627,7 +9629,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EraseBackground">
-        <short/>
+        <short>Clear the background to the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9638,7 +9640,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.MouseCoord">
-        <short/>
+        <short>Find the mouse coordinates relative to the grid origin</short>
         <descr/>
         <errors/>
         <seealso/>
