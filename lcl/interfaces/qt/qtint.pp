@@ -148,6 +148,7 @@ const
    TargetEntrys = 3;
    QEventLCLMessage = QEventUser;
    LCLQt_CheckSynchronize = QEventType(Ord(QEventUser) + $1001);
+   LCLQt_PopupMenuClose = QEventType(Ord(QEventUser) + $1002);
 
 var
   QtWidgetSet: TQtWidgetSet;

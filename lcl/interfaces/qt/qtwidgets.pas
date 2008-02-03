@@ -901,6 +901,7 @@ type
     FMenuItem: TMenuItem;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
+    procedure DoPopupClose;
   public
     constructor Create(const AMenuItem: TMenuItem); overload;
     destructor Destroy; override;
@@ -6524,9 +6525,16 @@ begin
 end;
 
 procedure TQtMenu.SlotAboutToHide; cdecl;
+var
+  Event: QEventH;
 begin
-  // only for debug some staff
-  // DumpStack;
+  if FMenuItem.Menu is TPopupMenu then
+    QCoreApplication_postEvent(Widget, QEvent_create(LCLQt_PopupMenuClose));
+end;
+
+procedure TQtMenu.DoPopupClose;
+begin
+  TPopupMenu(FMenuItem.Menu).Close;
 end;
 
 procedure TQtMenu.SlotDestroy; cdecl;
@@ -6655,6 +6663,11 @@ begin
   Result := False;
 
   case QEvent_type(Event) of
+    LCLQt_PopupMenuClose:
+      begin
+        DoPopupClose;
+        Result := True;
+      end;
     QEventDestroy: SlotDestroy;
   end;
   EndEventProcessing;

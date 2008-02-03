@@ -231,6 +231,7 @@ type
     property Handle: HMenu read GetHandle write FHandle;
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
+    property Menu: TMenu read FMenu;
     property Parent: TMenuItem read GetParent;
     property Command: integer read FCommand;
     function MenuVisibleIndex: integer;
