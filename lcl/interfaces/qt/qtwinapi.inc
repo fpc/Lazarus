@@ -564,7 +564,9 @@ begin
 
   QtFont := TQtFont.Create(True);
   try
-    QtFont.setPixelSize(Abs(LogFont.lfHeight));
+    // -1 has different meaning - it means that font height was set using setPointSize
+    if LogFont.lfHeight <> -1 then
+      QtFont.setPixelSize(Abs(LogFont.lfHeight));
 
     // Some values at available on Qt documentation at a table
     // Others are guesses. The best would be to test different values for those
@@ -2150,8 +2152,10 @@ end;
 function TQtWidgetSet.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 var
   aObject: TObject;
+  AFont: TQtFont absolute aObject;
   Width, Height: Longint;
   BitmapSection : TDIBSECTION;
+  ALogFont: PLogFont absolute Buf;
   {$ifdef VerboseQtWinAPI}
     ObjType: string;
   {$endif}
@@ -2179,15 +2183,37 @@ begin
    ------------------------------------------------------------------------------}
   if aObject is TQtFont then
   begin
-    {$ifdef VerboseQtWinAPI}
-      ObjType := 'Font';
-    {$endif}
+    if BufSize = SizeOf(TLogFont) then
+    begin
+      Result := BufSize;
 
+      FillChar(ALogFont^, SizeOf(ALogFont^), 0);
+      ALogFont^.lfHeight := AFont.getPixelSize;
+      ALogFont^.lfEscapement := AFont.Angle;
+      case AFont.getWeight of
+        10: ALogFont^.lfWeight := FW_THIN;
+        15: ALogFont^.lfWeight := FW_EXTRALIGHT;
+        25: ALogFont^.lfWeight := FW_LIGHT;
+        50: ALogFont^.lfWeight := FW_NORMAL;
+        55: ALogFont^.lfWeight := FW_MEDIUM;
+        63: ALogFont^.lfWeight := FW_SEMIBOLD;
+        75: ALogFont^.lfWeight := FW_BOLD;
+        80: ALogFont^.lfWeight := FW_EXTRABOLD;
+        87: ALogFont^.lfWeight := FW_HEAVY;
+      end;
+
+      ALogFont^.lfItalic := Ord(AFont.getItalic) * High(Byte);
+      ALogFont^.lfUnderline := Ord(AFont.getUnderline) * High(Byte);
+      ALogFont^.lfStrikeOut := Ord(AFont.getStrikeOut) * High(Byte);
+      ALogFont^.lfCharSet := DEFAULT_CHARSET;
+      ALogFont^.lfFaceName := UTF8Encode(AFont.getFamily);
+    end;
   end
   {------------------------------------------------------------------------------
     Brush
    ------------------------------------------------------------------------------}
-  else if aObject is TQtBrush then
+  else
+  if aObject is TQtBrush then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Brush';
@@ -2196,13 +2222,15 @@ begin
   {------------------------------------------------------------------------------
     Image
    ------------------------------------------------------------------------------}
-  else if aObject is TQtImage then
+  else
+  if aObject is TQtImage then
   begin
     {$ifdef VerboseQtWinAPI}
       ObjType := 'Image';
     {$endif}
 
-    if Buf = nil then Result := SizeOf(TDIBSECTION)
+    if Buf = nil then
+      Result := SizeOf(TDIBSECTION)
     else
     begin
       Width := TQtImage(aObject).width;
@@ -3010,7 +3038,7 @@ begin
     TM.tmExternalLeading := 0;
     TM.tmAveCharWidth := QtFontMetrics.charWidth('x', 0);
     TM.tmMaxCharWidth := QtFontMetrics.maxWidth;
-    TM.tmWeight := QtDC.font.weight;
+    TM.tmWeight := QtDC.font.getWeight;
     TM.tmOverhang := 0;
     TM.tmDigitizedAspectX := 0;
     TM.tmDigitizedAspectY := 0;

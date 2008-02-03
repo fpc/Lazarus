@@ -137,11 +137,17 @@ type
     constructor Create(CreateHandle: Boolean; Const AShared: Boolean = False); virtual;
     destructor Destroy; override;
   public
-    function pointSize: Integer;
+    function getPointSize: Integer;
+    function getPixelSize: Integer;
+    function getWeight: Integer;
+    function getItalic: Boolean;
+    function getBold: Boolean;
+    function getUnderline: Boolean;
+    function getStrikeOut: Boolean;
+    function getFamily: WideString;
+
     procedure setPointSize(p1: Integer);
-    function pixelSize: Integer;
     procedure setPixelSize(p1: Integer);
-    function weight: Integer;
     procedure setWeight(p1: Integer);
     procedure setBold(p1: Boolean);
     procedure setItalic(b: Boolean);
@@ -945,7 +951,7 @@ begin
   inherited Destroy;
 end;
 
-function TQtFont.pointSize: Integer;
+function TQtFont.getPointSize: Integer;
 begin
   Result := QFont_pointSize(Widget);
 end;
@@ -956,7 +962,7 @@ begin
     QFont_setPointSize(Widget, p1);
 end;
 
-function TQtFont.pixelSize: Integer;
+function TQtFont.getPixelSize: Integer;
 begin
   Result := QFont_pixelSize(Widget);
 end;
@@ -967,9 +973,34 @@ begin
     QFont_setPixelSize(Widget, p1);
 end;
 
-function TQtFont.weight: Integer;
+function TQtFont.getWeight: Integer;
 begin
   Result := QFont_weight(Widget);
+end;
+
+function TQtFont.getItalic: Boolean;
+begin
+  Result := QFont_italic(Widget);
+end;
+
+function TQtFont.getBold: Boolean;
+begin
+  Result := QFont_bold(Widget);
+end;
+
+function TQtFont.getUnderline: Boolean;
+begin
+  Result := QFont_underline(Widget);
+end;
+
+function TQtFont.getStrikeOut: Boolean;
+begin
+  Result := QFont_strikeOut(Widget);
+end;
+
+function TQtFont.getFamily: WideString;
+begin
+  QFont_family(Widget, @Result);
 end;
 
 procedure TQtFont.setWeight(p1: Integer);
@@ -1709,6 +1740,12 @@ begin
   Write('TQtDeviceContext.drawText x: ', X, ' Y: ', Y,' w: ',w,' h: ',h);
   {$endif}
 
+  with Font do
+    if Angle <> 0 then
+    begin
+      Rotate(-0.1 * Angle);
+      // todo: something wrong with coordinates happen after that
+    end;
   RestoreTextColor;
   QPainter_DrawText(Widget, x, y, w, h, Flags, s);
   RestorePenColor;
