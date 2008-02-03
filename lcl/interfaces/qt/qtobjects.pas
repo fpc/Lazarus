@@ -575,7 +575,7 @@ end;
 function QtScreenContext: TQtDeviceContext;
 begin
   if FScreenContext = nil then
-    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), True);
+    FScreenContext := TQtDeviceContext.Create(QApplication_desktop(), False);
   Result := FScreenContext;
 end;
   
