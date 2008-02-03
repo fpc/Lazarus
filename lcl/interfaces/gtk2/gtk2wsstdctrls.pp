@@ -420,7 +420,6 @@ class procedure TGtk2WSCustomListBox.SetItemIndex(
   const ACustomListBox: TCustomListBox; const AIndex: integer);
 var
   Widget: PGtkWidget;
-  ListStoreModel: PGtkTreeModel;
   Selection: PGtkTreeSelection;
   Path: PGtkTreePath;
 
@@ -441,7 +440,6 @@ begin
   if not GtkWidgetIsA(Widget, gtk_tree_view_get_type) then
     raise Exception.Create('');
 
-  ListStoreModel := gtk_tree_view_get_model(PGtkTreeView(Widget));
   Selection := gtk_tree_view_get_selection(PGtkTreeView(Widget));
 
   if (AIndex < 0) then
@@ -452,24 +450,14 @@ begin
   else
     Path := gtk_tree_path_new_from_indices(AIndex, -1);
 
+  // if singleselection mode then selection = itemindex
+  if Path <> nil then
+    gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False)
+  else
   if gtk_tree_selection_get_mode(Selection) = GTK_SELECTION_SINGLE then
   begin
-    // if singleselection mode then selection = itemindex
-    if Path <> nil then
-      gtk_tree_view_set_cursor(PGtkTreeView(Widget), Path, nil, False)
-    else
-    begin
-      ClearCursor;
-      gtk_tree_selection_unselect_all(Selection);
-    end;
-  end
-  else
-  if Path <> nil then
-  begin
     ClearCursor;
-    // hack to prevent clearing of selection while gtk_tree_view_set_cursor
-    // it works bad with latest gtk (2.12)
-    PGtkTreeView(Widget)^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), ListStoreModel, Path);
+    gtk_tree_selection_unselect_all(Selection);
   end;
 
   if Path <> nil then

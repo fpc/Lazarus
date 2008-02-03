@@ -510,11 +510,6 @@ end;
 procedure TGtkListStoreStringList.Delete(Index : integer);
 var
   ListItem: TGtkTreeIter;
-  Path: PGtkTreePath;
-  Widget: PGtkTreeView;
-  Selection: PGtkTreeSelection;
-  OldItemIndex: Integer;
-  Column: PGtkTreeViewColumn;
 begin
   if not (glsItemCacheNeedsUpdate in FStates) then
     ListItem := FCachedItems[Index]
@@ -522,33 +517,6 @@ begin
     gtk_tree_model_iter_nth_child(FGtkListStore, @ListItem, nil, Index);
 
   //gtk_list_store_g
-  
-  Widget := PGtkTreeView(GetWidgetInfo(Pointer(FOwner.Handle), True)^.CoreWidget);
-  Selection := gtk_tree_view_get_selection(Widget);
-  
-  gtk_tree_view_get_cursor(Widget, Path, Column);
-  if Path <> nil then
-    OldItemIndex := gtk_tree_path_get_indices(Path)^
-  else
-    OldItemIndex := -1;
-
-  if (gtk_tree_selection_get_mode(Selection) <> GTK_SELECTION_SINGLE) and (OldItemIndex = Index) then
-  begin
-    if Index > 0 then
-      dec(Index);
-
-    if gtk_tree_row_reference_valid(Widget^.priv^.cursor) then
-    begin
-      gtk_tree_row_reference_free(Widget^.priv^.cursor);
-      Widget^.priv^.cursor := nil;
-    end;
-
-    Path := gtk_tree_path_new_from_indices(Index, -1);
-
-    Widget^.priv^.cursor := gtk_tree_row_reference_new_proxy(G_OBJECT(Widget), FGtkListStore, Path);
-    gtk_tree_path_free(Path);
-  end;
-  
   gtk_list_store_remove(FGtkListStore, @ListItem);
 
   IncreaseChangeStamp;
