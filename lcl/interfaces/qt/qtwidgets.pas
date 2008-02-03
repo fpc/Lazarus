@@ -4103,7 +4103,7 @@ end;
 
 function TQtAbstractSlider.getSliderPosition: Integer;
 begin
-  QAbstractSlider_sliderPosition(QAbstractSliderH(Widget));
+  Result := QAbstractSlider_sliderPosition(QAbstractSliderH(Widget));
 end;
 
 {------------------------------------------------------------------------------
@@ -6526,8 +6526,6 @@ begin
 end;
 
 procedure TQtMenu.SlotAboutToHide; cdecl;
-var
-  Event: QEventH;
 begin
   if FMenuItem.Menu is TPopupMenu then
     QCoreApplication_postEvent(Widget, QEvent_create(LCLQt_PopupMenuClose));
