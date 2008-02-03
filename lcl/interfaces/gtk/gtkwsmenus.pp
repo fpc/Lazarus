@@ -386,7 +386,7 @@ class procedure TGtkWSPopupMenu.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   g_signal_connect_after(PGtkObject(AGtkWidget), 'deactivate',
-    gtk_signal_func(@gtkWSPopupMenuDeactivate), AWidgetInfo^.LCLObject);
+    gtk_signal_func(@gtkWSPopupMenuDeactivate), AWidgetInfo);
 end;
 
 class function TGtkWSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
