@@ -1,0 +1,530 @@
+object PathEditorDialog: TPathEditorDialog
+  Left = 290
+  Height = 400
+  Top = 155
+  Width = 500
+  HorzScrollBar.Page = 499
+  VertScrollBar.Page = 399
+  Caption = 'PathEditorDialog'
+  ClientHeight = 400
+  ClientWidth = 500
+  Constraints.MinHeight = 400
+  Constraints.MinWidth = 500
+  OnCreate = FormCreate
+  OnResize = FormResize
+  Position = poScreenCenter
+  object PathGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 194
+    Top = 6
+    Width = 488
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'PathGroupBox'
+    ClientHeight = 176
+    ClientWidth = 484
+    TabOrder = 0
+    object PathEdit: TSynEdit
+      AnchorSideLeft.Control = PathGroupBox
+      AnchorSideTop.Control = PathGroupBox
+      AnchorSideRight.Control = PathGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = MoveUpButton
+      Left = 6
+      Height = 135
+      Top = 6
+      Width = 472
+      BorderSpacing.Around = 6
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      Font.Height = -16
+      Font.Name = 'courier'
+      ParentColor = False
+      TabOrder = 0
+      BookMarkOptions.Xoffset = -18
+      Gutter.Visible = False
+      Gutter.CodeFoldingWidth = 14
+      Keystrokes = <      
+        item
+          Command = 3
+          ShortCut = 38
+        end      
+        item
+          Command = 103
+          ShortCut = 8230
+        end      
+        item
+          Command = 211
+          ShortCut = 16422
+        end      
+        item
+          Command = 4
+          ShortCut = 40
+        end      
+        item
+          Command = 104
+          ShortCut = 8232
+        end      
+        item
+          Command = 212
+          ShortCut = 16424
+        end      
+        item
+          Command = 1
+          ShortCut = 37
+        end      
+        item
+          Command = 101
+          ShortCut = 8229
+        end      
+        item
+          Command = 5
+          ShortCut = 16421
+        end      
+        item
+          Command = 105
+          ShortCut = 24613
+        end      
+        item
+          Command = 2
+          ShortCut = 39
+        end      
+        item
+          Command = 102
+          ShortCut = 8231
+        end      
+        item
+          Command = 6
+          ShortCut = 16423
+        end      
+        item
+          Command = 106
+          ShortCut = 24615
+        end      
+        item
+          Command = 10
+          ShortCut = 34
+        end      
+        item
+          Command = 110
+          ShortCut = 8226
+        end      
+        item
+          Command = 14
+          ShortCut = 16418
+        end      
+        item
+          Command = 114
+          ShortCut = 24610
+        end      
+        item
+          Command = 9
+          ShortCut = 33
+        end      
+        item
+          Command = 109
+          ShortCut = 8225
+        end      
+        item
+          Command = 13
+          ShortCut = 16417
+        end      
+        item
+          Command = 113
+          ShortCut = 24609
+        end      
+        item
+          Command = 7
+          ShortCut = 36
+        end      
+        item
+          Command = 107
+          ShortCut = 8228
+        end      
+        item
+          Command = 15
+          ShortCut = 16420
+        end      
+        item
+          Command = 115
+          ShortCut = 24612
+        end      
+        item
+          Command = 8
+          ShortCut = 35
+        end      
+        item
+          Command = 108
+          ShortCut = 8227
+        end      
+        item
+          Command = 16
+          ShortCut = 16419
+        end      
+        item
+          Command = 116
+          ShortCut = 24611
+        end      
+        item
+          Command = 223
+          ShortCut = 45
+        end      
+        item
+          Command = 201
+          ShortCut = 16429
+        end      
+        item
+          Command = 604
+          ShortCut = 8237
+        end      
+        item
+          Command = 502
+          ShortCut = 46
+        end      
+        item
+          Command = 603
+          ShortCut = 8238
+        end      
+        item
+          Command = 501
+          ShortCut = 8
+        end      
+        item
+          Command = 501
+          ShortCut = 8200
+        end      
+        item
+          Command = 504
+          ShortCut = 16392
+        end      
+        item
+          Command = 601
+          ShortCut = 32776
+        end      
+        item
+          Command = 602
+          ShortCut = 40968
+        end      
+        item
+          Command = 509
+          ShortCut = 13
+        end      
+        item
+          Command = 199
+          ShortCut = 16449
+        end      
+        item
+          Command = 201
+          ShortCut = 16451
+        end      
+        item
+          Command = 610
+          ShortCut = 24649
+        end      
+        item
+          Command = 509
+          ShortCut = 16461
+        end      
+        item
+          Command = 510
+          ShortCut = 16462
+        end      
+        item
+          Command = 503
+          ShortCut = 16468
+        end      
+        item
+          Command = 611
+          ShortCut = 24661
+        end      
+        item
+          Command = 604
+          ShortCut = 16470
+        end      
+        item
+          Command = 603
+          ShortCut = 16472
+        end      
+        item
+          Command = 507
+          ShortCut = 16473
+        end      
+        item
+          Command = 506
+          ShortCut = 24665
+        end      
+        item
+          Command = 601
+          ShortCut = 16474
+        end      
+        item
+          Command = 602
+          ShortCut = 24666
+        end      
+        item
+          Command = 301
+          ShortCut = 16432
+        end      
+        item
+          Command = 302
+          ShortCut = 16433
+        end      
+        item
+          Command = 303
+          ShortCut = 16434
+        end      
+        item
+          Command = 304
+          ShortCut = 16435
+        end      
+        item
+          Command = 305
+          ShortCut = 16436
+        end      
+        item
+          Command = 306
+          ShortCut = 16437
+        end      
+        item
+          Command = 307
+          ShortCut = 16438
+        end      
+        item
+          Command = 308
+          ShortCut = 16439
+        end      
+        item
+          Command = 309
+          ShortCut = 16440
+        end      
+        item
+          Command = 310
+          ShortCut = 16441
+        end      
+        item
+          Command = 351
+          ShortCut = 24624
+        end      
+        item
+          Command = 352
+          ShortCut = 24625
+        end      
+        item
+          Command = 353
+          ShortCut = 24626
+        end      
+        item
+          Command = 354
+          ShortCut = 24627
+        end      
+        item
+          Command = 355
+          ShortCut = 24628
+        end      
+        item
+          Command = 356
+          ShortCut = 24629
+        end      
+        item
+          Command = 357
+          ShortCut = 24630
+        end      
+        item
+          Command = 358
+          ShortCut = 24631
+        end      
+        item
+          Command = 359
+          ShortCut = 24632
+        end      
+        item
+          Command = 360
+          ShortCut = 24633
+        end      
+        item
+          Command = 231
+          ShortCut = 24654
+        end      
+        item
+          Command = 232
+          ShortCut = 24643
+        end      
+        item
+          Command = 233
+          ShortCut = 24652
+        end      
+        item
+          Command = 612
+          ShortCut = 9
+        end      
+        item
+          Command = 613
+          ShortCut = 8201
+        end      
+        item
+          Command = 250
+          ShortCut = 24642
+        end>
+      Lines.Strings = (
+        'PathEdit'
+      )
+      Options = [eoDragDropEditing, eoHalfPageScroll, eoScrollByOneLess, eoScrollPastEol, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces, eoBracketHighlight, eoHideRightMargin]
+    end
+    object MoveUpButton: TButton
+      AnchorSideLeft.Control = PathGroupBox
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 147
+      Width = 98
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'MoveUpButton'
+      OnClick = MoveUpButtonClick
+      TabOrder = 1
+    end
+    object MoveDownButton: TButton
+      AnchorSideLeft.Control = MoveUpButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 110
+      Height = 23
+      Top = 147
+      Width = 112
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'MoveDownButton'
+      OnClick = MoveDownButtonClick
+      TabOrder = 2
+    end
+    object BrowseButton: TButton
+      AnchorSideLeft.Control = MoveDownButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 228
+      Height = 23
+      Top = 147
+      Width = 92
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'BrowseButton'
+      OnClick = BrowseButtonClick
+      TabOrder = 3
+    end
+    object DeleteButton: TButton
+      AnchorSideLeft.Control = BrowseButton
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideBottom.Control = PathGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 326
+      Height = 23
+      Top = 147
+      Width = 88
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'DeleteButton'
+      OnClick = DeleteButtonClick
+      TabOrder = 4
+    end
+  end
+  object TemplateGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PathGroupBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = OKBitBtn
+    Left = 6
+    Height = 152
+    Top = 206
+    Width = 488
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = 'TemplateGroupBox'
+    ClientHeight = 134
+    ClientWidth = 484
+    TabOrder = 1
+    object TemplatesListBox: TListBox
+      AnchorSideLeft.Control = TemplateGroupBox
+      AnchorSideTop.Control = TemplateGroupBox
+      AnchorSideRight.Control = TemplateGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = AddTemplateButton
+      Left = 6
+      Height = 93
+      Top = 6
+      Width = 472
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      MultiSelect = True
+      TabOrder = 0
+    end
+    object AddTemplateButton: TButton
+      AnchorSideLeft.Control = TemplateGroupBox
+      AnchorSideBottom.Control = TemplateGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 105
+      Width = 120
+      Anchors = [akLeft, akBottom]
+      AutoSize = True
+      BorderSpacing.Around = 6
+      Caption = 'AddTemplateButton'
+      OnClick = AddTemplateButtonClick
+      TabOrder = 1
+    end
+  end
+  object OKBitBtn: TBitBtn
+    AnchorSideRight.Control = CancelBitBtn
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 308
+    Height = 30
+    Top = 364
+    Width = 90
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Caption = '&ОК'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 2
+  end
+  object CancelBitBtn: TBitBtn
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 404
+    Height = 30
+    Top = 364
+    Width = 90
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Around = 6
+    Cancel = True
+    Caption = 'Отмена'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 3
+  end
+  object BrowseDialog: TSelectDirectoryDialog
+    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 440
+    top = 168
+  end
+end
