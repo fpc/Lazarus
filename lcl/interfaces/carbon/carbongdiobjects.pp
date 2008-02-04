@@ -1124,7 +1124,7 @@ function TCarbonFont.CreateTextLayout(const Text: String;
     C: Byte;
   begin
     Result := False;
-    Exit;
+
     for I := 1 to Length(Text) do
     begin
       C := Ord(Text[I]);
