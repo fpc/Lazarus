@@ -400,6 +400,7 @@ type
   protected
     procedure AdjustDockRect(ARect: TRect); virtual;
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
+    procedure EndDrag(Target: TObject; X, Y: Integer); override;
   public
     property DockRect: TRect read FDockRect write FDockRect;
     property DropAlign: TAlign read FDropAlign write FDropAlign;

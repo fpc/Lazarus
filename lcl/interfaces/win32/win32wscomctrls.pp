@@ -363,8 +363,6 @@ end;
 
 class procedure TWin32WSStatusBar.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
-var
-  R: TRect;
 begin
   if (PreferredStatusBarHeight=0) then
     InitializePreferredStatusBarHeight;

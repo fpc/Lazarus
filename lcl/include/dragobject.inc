@@ -99,6 +99,12 @@ begin
   Result := crDefault;
 end;
 
+procedure TDragDockObject.EndDrag(Target: TObject; X, Y: Integer);
+begin
+  if FControl <> nil then
+    FControl.DoEndDock(Target, X, Y);
+end;
+
 
 
 // included by controls.pp

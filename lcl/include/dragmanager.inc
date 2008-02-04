@@ -536,7 +536,7 @@ begin
 
     if not Accepted then
       ADockObjectCopy.Control.DragCanceled;
-    ADockObjectCopy.Control.DoEndDock(ADockObjectCopy.DragTarget,TargetPos.X,TargetPos.Y);
+    ADockObjectCopy.EndDrag(ADockObjectCopy.DragTarget,TargetPos.X,TargetPos.Y);
   finally
     if FDragObjectAutoFree then
       ADockObjectCopy.Free
