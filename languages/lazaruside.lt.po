@@ -226,10 +226,6 @@ msgstr "&Ieškoti..."
 msgid "&Find Declaration"
 msgstr "Ieškoti kur &paskelbta"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr "Ieškoti p&irmyn"
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr "Nuo žy&meklio"
@@ -358,7 +354,7 @@ msgstr "(nežinoma makrokomanda: %s)"
 msgid "<All>"
 msgstr "<Visi>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<JOKS>"
 
@@ -566,7 +562,7 @@ msgstr "Pridėti peršokimo tašką"
 msgid "Add jump point to history"
 msgstr "Peršokimo tašką įdėti istorijon"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Pridėti nuorodą"
 
@@ -574,7 +570,7 @@ msgstr "Pridėti nuorodą"
 msgid "Add options to dependent packages and projects"
 msgstr "Įdėti parinktis į priklausomus paketus bei projektus"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "Pridėti kelią"
 
@@ -1882,6 +1878,10 @@ msgstr "IKA paketų sąrašo patvirtinimas"
 msgid "Confirm removing file"
 msgstr "Patvirtinimas šalinant failą"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Konfliktas"
@@ -2066,6 +2066,10 @@ msgstr "Sukurti"
 msgid "Create .po files"
 msgstr "Kurti .po failus"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "Sukurti apibrėžtis %s katalogui"
@@ -2090,9 +2094,9 @@ msgstr "Sukurti apibr4=tis Lazarus katalogui"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Sukurti FPC makrokomandas ir kelius FPC projekto katalogui"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
-msgstr "Kurti LazDoc failus"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2153,6 +2157,10 @@ msgstr "Kurti naują modulį su duomenų moduliu."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Pirma sukurkite projektą!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2406,7 +2414,7 @@ msgstr "Nepavyko ištrinti failą"
 msgid "Delete last char"
 msgstr "Pašalinti paskutinį simbolį"
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "Pašalinti nuorodą"
 
@@ -2638,7 +2646,7 @@ msgstr "Įstatytas"
 msgid "Documentation Editor"
 msgstr "Dokumentacijos redaktorius"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "Dokumento įrašas neegzistuoja"
 
@@ -2906,6 +2914,10 @@ msgstr "Klaida perkeliant komponentę"
 msgid "Error moving component %s:%s"
 msgstr "Įvyko klaida perkeliant komponentę %s:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Įvyko klaida analizuojant lfm komponentės srautą."
@@ -2978,7 +2990,7 @@ msgstr "Įvertinti/Modifikuoti..."
 msgid "Event Log"
 msgstr "Įvykių žurnalas"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Pavyzdys"
 
@@ -3137,6 +3149,14 @@ msgstr "Nerastas FPC pirminio kodo katalogas \"%s\"."
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
 msgstr "FPC modulių kataloge yra pirminio kodo failas:"
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3465,6 +3485,10 @@ msgstr "Formos"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Formos..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4274,15 +4298,19 @@ msgstr "Įterpti ToDo"
 msgid "Insert a GUID"
 msgstr "Įterpti GUID"
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Įterpti pagal abėcėlę"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Įterpti pusjuodžio formatavimo gairę"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "Įterpti kodo formatavimo gairę"
 
@@ -4310,7 +4338,7 @@ msgstr "Įterpti iš simbolių lentelės"
 msgid "Insert from Charactermap"
 msgstr "Įterpti iš simbolių lentelės"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "Įterpti kursyvo formatavimo gairę"
 
@@ -4326,7 +4354,11 @@ msgstr "Įterpti mazgą kaip vaiką"
 msgid "Insert node below"
 msgstr "Įterpti mazgą žemiau"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "Įterpti pastabos formatavimo gairę"
 
@@ -4342,7 +4374,7 @@ msgstr "Įterpti tarpą priešais"
 msgid "Insert text"
 msgstr "Įterpti tekstą"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "Įterpti pabraukimo formatavimo gairę"
 
@@ -4350,7 +4382,7 @@ msgstr "Įterpti pabraukimo formatavimo gairę"
 msgid "Insert username"
 msgstr "Įterpti naudotojo vardą"
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "Įterpti kintamojo formatavimo gairę"
 
@@ -4826,23 +4858,11 @@ msgstr "Netinkama paleidžiančioji programa"
 msgid "Launching target command line"
 msgstr "Startuojamos paskirties komandinė eilutė"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr "LazDoc"
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr "LazDoc - Lazarus dokumentacija"
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "LazDoc redaktorius"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "LazDoc redaktorius"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "LazDoc nuostatos"
 
@@ -6232,6 +6252,10 @@ msgstr "Iš iškarpinės įdėti veikiamojoje vietoje"
 msgid "Paste selected components from clipboard"
 msgstr "Įterpti pažymėtas komponentes iš iškarpinės"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Kelio šablonai"
@@ -6788,7 +6812,7 @@ msgstr "Pašalinti iš mėgstamiausiųjų savybių"
 msgid "Remove from project"
 msgstr "Pašalinti iš projekto"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Pašalinti kelią"
 
@@ -7366,7 +7390,7 @@ msgstr "Ieškoma..."
 msgid "Searching: %s"
 msgstr "Ieškoma: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "Taip pat žiūrėkite"
 
@@ -7654,9 +7678,13 @@ msgstr "Shift"
 msgid "Shift Tab"
 msgstr "Shift Tab"
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr "Santrumpa"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8368,6 +8396,10 @@ msgstr "%s pagrindinis katalogas,%skuriame Borland įdiegė visus %s pirminius k
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "%s projekto katalogas,%skuriame yra .dpr ir .dpk failai."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - FreePascal komponenčių biblioteka, pateikia visas objektinio paskalio bazines klases."
@@ -8484,13 +8516,13 @@ msgstr "Kompiliatoriaus failas \"%s\" nėra paleidžiamasis."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Paketo %s kompiliatoriaus failas nėra vykdomasis:%s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "Klasės %s%s%s%s komponentų redaktorius, iššauktas veiksmažodžio #%s %s%s%s,%spadarė klaidą:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "Klasės %s%s%skomponentų redaktorius padarė klaidą:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8655,10 +8687,6 @@ msgstr "Šių modulių nepavyko rasti:%s%s%s%s 1) Ko gero šie moduliai nėra mo
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Programa-šeimininkas %s%s%s nėra vykdomasis failas."
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr "Paleidžiančioji programa-rišulys %s%s%s%s nerasta, arba ji nėra vykdomasis failas.%s%sŽvilgterėkit į \"Projektas -> Projekto parinktys -> Programa\"."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9910,7 +9938,7 @@ msgstr "Rodyti kodo tyrinėtoją"
 msgid "View Component Palette"
 msgstr "Rodyti komponenčių paletę"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr "Rodyti dokumentacijos redaktorių"
 
@@ -10437,6 +10465,10 @@ msgstr "jokia klasė"
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
 msgstr "nerastas \"fpc.cfg\""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
+msgstr ""
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"

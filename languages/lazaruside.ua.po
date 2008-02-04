@@ -220,10 +220,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "&Знайти опис"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -352,7 +348,7 @@ msgstr "(невідомий макрос: %s)"
 msgid "<All>"
 msgstr "<Всі>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<НІЧОГО>"
 
@@ -560,7 +556,7 @@ msgstr "Додати точку переходу"
 msgid "Add jump point to history"
 msgstr "Додати точку переходу до історії"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Додати зв'язок"
 
@@ -568,7 +564,7 @@ msgstr "Додати зв'язок"
 msgid "Add options to dependent packages and projects"
 msgstr "Додати параметри до підпорядкованих пакунків і проектів"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "Додати шлях"
 
@@ -1872,6 +1868,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "Підтвердити видалення файлу"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Конфлікт "
@@ -2056,6 +2056,10 @@ msgstr "Створити"
 msgid "Create .po files"
 msgstr "Створити файли .po"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "Створити означення для %s Теки"
@@ -2080,9 +2084,9 @@ msgstr "Створити означення для теки Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Створити макроси FPC і шляхи до тек проекту FPC"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
-msgstr "Створювання файлів LazDoc"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2143,6 +2147,10 @@ msgstr "Створити новий модуль з модулем даних."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Спочатку створіть проект!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2396,7 +2404,7 @@ msgstr "Видалення файлу не вдалося"
 msgid "Delete last char"
 msgstr "Видалення останнього символу"
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "Видалити посилання"
 
@@ -2628,7 +2636,7 @@ msgstr "Пришвартований"
 msgid "Documentation Editor"
 msgstr "Редактор документації"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "Документації немає"
 
@@ -2896,6 +2904,10 @@ msgstr "Помилка переміщення компонента"
 msgid "Error moving component %s:%s"
 msgstr "Помилка переміщення компонента %s:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Помилка аналізу потоку lfm компонента"
@@ -2968,7 +2980,7 @@ msgstr "Обчислити/Змінити..."
 msgid "Event Log"
 msgstr "Лог-файл подій"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Приклад"
 
@@ -3126,6 +3138,14 @@ msgstr "Не знайдена тека кодів FPC \"%s\"."
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3455,6 +3475,10 @@ msgstr "Форми"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Форми..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4264,15 +4288,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Вставити за алфавітом"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Вставити тег жирного тексту"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "Вставити тег форматування тексту програми"
 
@@ -4300,7 +4328,7 @@ msgstr "Вставити з таблиці символів"
 msgid "Insert from Charactermap"
 msgstr "Вставити з таблиці символів"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "Вставити тег форматування курсивом"
 
@@ -4316,7 +4344,11 @@ msgstr "Вставити елемент як дочірній"
 msgid "Insert node below"
 msgstr "Вставити елемент нижче"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "Вставити тег ремарок"
 
@@ -4332,7 +4364,7 @@ msgstr "Вставляти пробіл перед"
 msgid "Insert text"
 msgstr "Вставити текст"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "Вставити тег форматування підкресленням"
 
@@ -4340,7 +4372,7 @@ msgstr "Вставити тег форматування підкресленн�
 msgid "Insert username"
 msgstr "Вставити назву користувача"
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "Вставити тег форматування для змінних"
 
@@ -4816,23 +4848,11 @@ msgstr "Виконувана програма є неправильною"
 msgid "Launching target command line"
 msgstr "Командний рядок виконуваної програми"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "Редактор LazDoc"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "Редактор LazDoc"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "Налаштування LazDoc"
 
@@ -6220,6 +6240,10 @@ msgstr "Вставити з буфера в поточну позицію"
 msgid "Paste selected components from clipboard"
 msgstr "Вставити вибрані компоненти з буфера"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Шляхи шаблонів"
@@ -6776,7 +6800,7 @@ msgstr "Прибрати з улюблених властивостей"
 msgid "Remove from project"
 msgstr "Видалити з проекту"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Видалити шлях"
 
@@ -7352,7 +7376,7 @@ msgstr "Пошук..."
 msgid "Searching: %s"
 msgstr "Шукаю: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "Дивись також"
 
@@ -7640,9 +7664,13 @@ msgstr "Shift"
 msgid "Shift Tab"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr "Короткий"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8352,6 +8380,10 @@ msgstr "Головна тека %s, %sде Borland встановив всі к�
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "Тека %s проекту,%sщо вміщує файли .dpr, dpk."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - бібліотека компонентів FreePascal забезпечує базові класи для об'єктного паскаля."
@@ -8468,13 +8500,13 @@ msgstr "Файл компілятора \"%s\" не є виконуваним."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Файл компілятора для пакунку %s не є виконуваним:%s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "Редактор компонента для класу %s%s%sщо пов'язаний зі словом #%s %s%s%sвикликав помилку:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "Редактор компонента для класу %s%s%sвикликав помилку:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8639,10 +8671,6 @@ msgstr ""
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Головна програма %s%s%s не є виконуваним файлом."
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9884,7 +9912,7 @@ msgstr "Показувати оглядач коду"
 msgid "View Component Palette"
 msgstr "Переглянути Палітру Компонетів"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr "Переглянути Редактор Документації"
 
@@ -10410,6 +10438,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

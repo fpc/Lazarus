@@ -1,4 +1,3 @@
-# Slovenský preklad lazaruside. Copyright (C) 2007 Free Software Foundation, Inc. slavko <slavino@slavino.sk>, 2007.          
 msgid ""
 msgstr ""
 "Project-Id-Version: lazarusid\n"
@@ -4295,6 +4294,10 @@ msgstr "Vložiť &ToDo"
 msgid "Insert a GUID"
 msgstr "Vložiť GUID"
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr ""
@@ -4346,6 +4349,10 @@ msgstr "Vložiť podriadený uzol"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Vložiť uzol pod"
+
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
@@ -6238,6 +6245,10 @@ msgstr "Vložiť zo schránky na aktuálnu pozíciu"
 #: lazarusidestrconsts:lisdsgpastecomponents
 msgid "Paste selected components from clipboard"
 msgstr "Vložiť vybraté komponenty zo schránky"
+
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"

@@ -220,10 +220,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "&Etsi määrittely"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -352,7 +348,7 @@ msgstr ""
 msgid "<All>"
 msgstr "<Kaikki>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr ""
 
@@ -560,7 +556,7 @@ msgstr ""
 msgid "Add jump point to history"
 msgstr "Lisää hyppy historia"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr ""
 
@@ -568,7 +564,7 @@ msgstr ""
 msgid "Add options to dependent packages and projects"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr ""
 
@@ -1872,6 +1868,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "Vahvista tiedoston poistaminen"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr ""
@@ -2056,6 +2056,10 @@ msgstr "Luo"
 msgid "Create .po files"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr ""
@@ -2080,8 +2084,8 @@ msgstr ""
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr ""
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
@@ -2142,6 +2146,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
 msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
@@ -2396,7 +2404,7 @@ msgstr ""
 msgid "Delete last char"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr ""
 
@@ -2628,7 +2636,7 @@ msgstr ""
 msgid "Documentation Editor"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr ""
 
@@ -2896,6 +2904,10 @@ msgstr "Virhe siirrettäessä komponenttia"
 msgid "Error moving component %s:%s"
 msgstr "Virhe siirrettäessä %s:%s komponenttia"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr ""
@@ -2968,7 +2980,7 @@ msgstr ""
 msgid "Event Log"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr ""
 
@@ -3126,6 +3138,14 @@ msgstr "FPC:n (FreePascal:n) lähdekoodin kansiota \"%s\" ei löytynyt."
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3455,6 +3475,10 @@ msgstr "Lomakkeet"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Lomakkeet..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4264,15 +4288,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr ""
 
@@ -4300,7 +4328,7 @@ msgstr "Lisää merkkitaulukosta"
 msgid "Insert from Charactermap"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr ""
 
@@ -4316,7 +4344,11 @@ msgstr ""
 msgid "Insert node below"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr ""
 
@@ -4332,7 +4364,7 @@ msgstr "Lisää välilyönti ennen seuraavia (merkkejä)"
 msgid "Insert text"
 msgstr "Lisää seuraava teksti"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr ""
 
@@ -4340,7 +4372,7 @@ msgstr ""
 msgid "Insert username"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr ""
 
@@ -4816,23 +4848,11 @@ msgstr ""
 msgid "Launching target command line"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr ""
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr ""
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr ""
 
@@ -6220,6 +6240,10 @@ msgstr "Liitä leikepöydältä"
 msgid "Paste selected components from clipboard"
 msgstr ""
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr ""
@@ -6776,7 +6800,7 @@ msgstr ""
 msgid "Remove from project"
 msgstr "Valitse projektista poistettava käännösyksikkö"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr ""
 
@@ -7352,7 +7376,7 @@ msgstr "Etsitään..."
 msgid "Searching: %s"
 msgstr "Etsitään tiedostosta: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr ""
 
@@ -7640,8 +7664,12 @@ msgstr ""
 msgid "Shift Tab"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
@@ -8352,6 +8380,10 @@ msgstr ""
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr ""
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr ""
@@ -8468,12 +8500,12 @@ msgstr "Kääntäjän tiedosto \"%s\" ei ole ajettavissa."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
-msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
+#: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
+msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
@@ -8638,10 +8670,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
-msgstr ""
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
 msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
@@ -9884,7 +9912,7 @@ msgstr "Näytä koodiselain"
 msgid "View Component Palette"
 msgstr "Näytä tai poista komponenttipaletti näkyvistä"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr ""
 
@@ -10410,6 +10438,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

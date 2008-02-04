@@ -225,10 +225,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "&Cari Deklarasi"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -357,7 +353,7 @@ msgstr "(makro tidak dikenal: %s)"
 msgid "<All>"
 msgstr "<Semua>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<TIDAK ADA>"
 
@@ -565,7 +561,7 @@ msgstr "Tambahkan titik lompat"
 msgid "Add jump point to history"
 msgstr "Tambah titik lompatan ke histori"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Tambah link"
 
@@ -573,7 +569,7 @@ msgstr "Tambah link"
 msgid "Add options to dependent packages and projects"
 msgstr "Tambah opsi untuk paket dependen dan proyek"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "Tambah path"
 
@@ -1877,6 +1873,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "Konfirmasi penghapusan file"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Konflik"
@@ -2061,6 +2061,10 @@ msgstr "Buat"
 msgid "Create .po files"
 msgstr "Buat file .po"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "Buat Defines untuk Direktori %s"
@@ -2085,9 +2089,9 @@ msgstr "Buat Defines untuk Direktori Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Buat Makro FPC dan path untuk direktori proyek fpc"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
-msgstr "Buat file LazDoc"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2148,6 +2152,10 @@ msgstr "Buat unit baru dengan modul data."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Buat proyek dulu!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2401,7 +2409,7 @@ msgstr "Penghapusan file gagal"
 msgid "Delete last char"
 msgstr "Hapus karakter terakhir"
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "Hapus link"
 
@@ -2633,7 +2641,7 @@ msgstr "Menempel"
 msgid "Documentation Editor"
 msgstr "Editor Dokumentasi"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "Entri dokumentasi tidak ada"
 
@@ -2901,6 +2909,10 @@ msgstr "Kesalahan pemindahan komponen"
 msgid "Error moving component %s:%s"
 msgstr "Kesalahan pemindahan komponen %s:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "Pemindaian aliran komponen lfm salah."
@@ -2973,7 +2985,7 @@ msgstr "Evaluasi/Ubah ..."
 msgid "Event Log"
 msgstr "Log Event"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Contoh"
 
@@ -3131,6 +3143,14 @@ msgstr "Direktori sumber \"%s\" tidak ditemukan."
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3460,6 +3480,10 @@ msgstr "Forms"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Forms..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4269,15 +4293,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Sisipkan secara alfabetik"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Sisipkan tag format tebal"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "Sisipkan tag format kode"
 
@@ -4305,7 +4333,7 @@ msgstr "Sisipkan dari Peta Karakter"
 msgid "Insert from Charactermap"
 msgstr "Sisipkan dari Charactermap"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "Sisipkan tag format miring"
 
@@ -4321,7 +4349,11 @@ msgstr "Sisipkan node sebagai anak"
 msgid "Insert node below"
 msgstr "Sisipkan node dibawah"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "Sisipkan tag format catatan"
 
@@ -4337,7 +4369,7 @@ msgstr "Sisipkan spasi di depan"
 msgid "Insert text"
 msgstr "Sisipkan teks"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "Sisipkan tag format garis bawah"
 
@@ -4345,7 +4377,7 @@ msgstr "Sisipkan tag format garis bawah"
 msgid "Insert username"
 msgstr "Sisipkan nama pengguna"
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "Sisipkan tag format var"
 
@@ -4821,23 +4853,11 @@ msgstr "Menjalankan aplikasi tidak benar"
 msgid "Launching target command line"
 msgstr "Menjalankan baris perintah target"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr "LazDoc"
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "Editor LazDoc"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "Editor LazDoc"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "Seting LazDoc"
 
@@ -6225,6 +6245,10 @@ msgstr "Paste clipboard ke posisi saat ini"
 msgid "Paste selected components from clipboard"
 msgstr "Paste komponen yang dipilih dari clipboard"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Template Path"
@@ -6781,7 +6805,7 @@ msgstr "Hapus dari properti favorit"
 msgid "Remove from project"
 msgstr "Hapus dari proyek"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "Hapus path"
 
@@ -7357,7 +7381,7 @@ msgstr "Pencarian..."
 msgid "Searching: %s"
 msgstr "Pencarian: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "Lihat juga"
 
@@ -7645,9 +7669,13 @@ msgstr "Shift"
 msgid "Shift Tab"
 msgstr "Shift Tab"
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr "Pendek"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8357,6 +8385,10 @@ msgstr "Direktori utama %s, %sdimana Borland telah menginstalasi semua sumber %s
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "Direktori proyek %s,%syang berisi file .dpr, dpk."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - FreePascal Component Library menyediakan dasar kelas untuk objek pascal."
@@ -8473,13 +8505,13 @@ msgstr "File kompilator \"%s\" bukan eksekutabel."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "File kompilator  untuk paket %s bukan eksekutabel yang benar: %s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "Editor komponen dari class%s%s%s%sditemukan dengan verb #%s %s%s%s%stelah menghasilkan kesalahan:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "Editor komponen dari class %s%s%smenghasilkan kesalahan:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8644,10 +8676,6 @@ msgstr "Unit berikut tidak ditemukan:%s%s%s%s1) Unit ini tidak dalam path unit, 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Aplikasi induk %s%s%s bukan eksekutabel."
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr "Menjalankan Bundel Aplikasi %s%s%s%stidak ada atau bukan executable.%s%sLihat Proyek -> Opsi proyek -> Aplikasi."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9889,7 +9917,7 @@ msgstr "Lihat Eksplorer Kode"
 msgid "View Component Palette"
 msgstr "Lihat Palet Komponen"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr "Lihat Editor Dokumentasi"
 
@@ -10415,6 +10443,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

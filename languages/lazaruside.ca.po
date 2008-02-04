@@ -225,10 +225,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "&Cerca la declaració"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -357,7 +353,7 @@ msgstr "(macroinstrucció desconeguda: %s)"
 msgid "<All>"
 msgstr "<Tot>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<RES>"
 
@@ -565,7 +561,7 @@ msgstr "Afegeix un punt de salt"
 msgid "Add jump point to history"
 msgstr "Afegeix un punt de salt a la història"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Afegeix enllaçament"
 
@@ -573,7 +569,7 @@ msgstr "Afegeix enllaçament"
 msgid "Add options to dependent packages and projects"
 msgstr "Afegeix les opcions en els paquets i projectes dependents"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "Afegeix trajectòria"
 
@@ -1877,6 +1873,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "Confirma l'eliminació del fitxer"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "Conflicte"
@@ -2061,6 +2061,10 @@ msgstr "Crea"
 msgid "Create .po files"
 msgstr "Crea els fitxers .po"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "Crea les definicions pel directori %s"
@@ -2085,8 +2089,8 @@ msgstr "Crea les definicions pel directori del Lazarus"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "Crea les macroinstruccions FPC i les trajectòries per un directori de projecte FPC"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
@@ -2148,6 +2152,10 @@ msgstr "Crea una nova unitat amb un mòdul de dades."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Creeu primer un projecte!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2401,7 +2409,7 @@ msgstr "Ha fallat l'eliminació del fitxer"
 msgid "Delete last char"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr ""
 
@@ -2633,7 +2641,7 @@ msgstr "Amarrat"
 msgid "Documentation Editor"
 msgstr "Editor de documentació"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr ""
 
@@ -2901,6 +2909,10 @@ msgstr "S'ha produït un error mentre es movia el component"
 msgid "Error moving component %s:%s"
 msgstr "S'ha produït un error mentre es movia el component %s:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr ""
@@ -2973,7 +2985,7 @@ msgstr "Avalua/Modifica ..."
 msgid "Event Log"
 msgstr "Bitàcora d'events"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "Ejemple"
 
@@ -3131,6 +3143,14 @@ msgstr "No es pot trobar el directori del codi font del FPC \"%s\""
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3460,6 +3480,10 @@ msgstr "Formes"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "Formes..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4269,15 +4293,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Insereix alfabèticament"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "Insereix marca de formateig en negreta"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr ""
 
@@ -4305,7 +4333,7 @@ msgstr "Insereix desde el mapa de caràcters"
 msgid "Insert from Charactermap"
 msgstr "Insereix desde el mapa de caràcters"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "Insereix marca de formateig en cursiva"
 
@@ -4321,7 +4349,11 @@ msgstr "Insereix el node com a fill"
 msgid "Insert node below"
 msgstr "Insereix el node avall"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr ""
 
@@ -4337,7 +4369,7 @@ msgstr "Insereix espai davant de"
 msgid "Insert text"
 msgstr "Insereix el text"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr ""
 
@@ -4345,7 +4377,7 @@ msgstr ""
 msgid "Insert username"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr ""
 
@@ -4821,23 +4853,11 @@ msgstr "L'execució de l'aplicació no és vàlida"
 msgid "Launching target command line"
 msgstr "Executant línia d'ordres de destinació"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr "LazDoc"
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "Editor LazDoc"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "editor LazDoc"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr ""
 
@@ -6225,6 +6245,10 @@ msgstr "Enganxa el porta-retalls a la posició actual"
 msgid "Paste selected components from clipboard"
 msgstr "Enganxa els components seleccionats des del porta-retalls"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "Plantilles de la trajectòria"
@@ -6781,7 +6805,7 @@ msgstr ""
 msgid "Remove from project"
 msgstr "Elimina del projecte"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr ""
 
@@ -7357,7 +7381,7 @@ msgstr "Cercant..."
 msgid "Searching: %s"
 msgstr "Cercant: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "Vore tambè"
 
@@ -7645,8 +7669,12 @@ msgstr "Tecla de majúscules"
 msgid "Shift Tab"
 msgstr "Shift Tab"
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
@@ -8357,6 +8385,10 @@ msgstr "El %s directori principal, %s on Borland a instal·lat totes les fonts %
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "El directori del projecte %s, %s el qual conté el fitxer .dpr, dpk"
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "La FCL - FreePascal Component Library, proveeix les classes base per l'object pascal"
@@ -8473,13 +8505,13 @@ msgstr "El fitxer del compilador \"%s\" no és executable"
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "El fitxer de compilador pel paquet %s no és un executable vàlid:%s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "L'editor de component de classe %s%s%s%sinvocat amb el verb #%s %s%s%s%s ha generat l'error:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "L'editor de component de classe %s%s%s ha generat l'error:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8644,10 +8676,6 @@ msgstr ""
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "L'aplicació amfitriona %s%s%s no és executable"
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9889,7 +9917,7 @@ msgstr "Mostra l'explorador del codi"
 msgid "View Component Palette"
 msgstr "Vore Paleta de Components"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr ""
 
@@ -10415,6 +10443,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

@@ -228,10 +228,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "查找声明(&F)"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -360,7 +356,7 @@ msgstr "(未知的宏: %s)"
 msgid "<All>"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<无>"
 
@@ -568,7 +564,7 @@ msgstr "添加跳转点"
 msgid "Add jump point to history"
 msgstr "添加跳转点到历史"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "添加链接"
 
@@ -576,7 +572,7 @@ msgstr "添加链接"
 msgid "Add options to dependent packages and projects"
 msgstr "添加选项到依赖的包和工程"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "添加路径"
 
@@ -1880,6 +1876,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "确认移除文件"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "冲突"
@@ -2064,6 +2064,10 @@ msgstr "创建"
 msgid "Create .po files"
 msgstr "创建 .po 文件"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "为目录 %s 创建说明"
@@ -2088,8 +2092,8 @@ msgstr "为 Lazarus 的目录创建说明"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "创建 FPC 宏和 fpc 工程的目录"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
@@ -2151,6 +2155,10 @@ msgstr "使用数据模块(Datamodule)创建一个单元."
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "请先创建一个工程!"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2404,7 +2412,7 @@ msgstr "删除文件失败"
 msgid "Delete last char"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "删除链接"
 
@@ -2636,7 +2644,7 @@ msgstr "融合"
 msgid "Documentation Editor"
 msgstr "文件编辑器"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "文件条目不存在"
 
@@ -2904,6 +2912,10 @@ msgstr "移动组件错误"
 msgid "Error moving component %s:%s"
 msgstr "移动组件错误 %s:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "分析 lfm 组件流错误."
@@ -2976,7 +2988,7 @@ msgstr "赋值/更改 ..."
 msgid "Event Log"
 msgstr "事件日志"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "样例"
 
@@ -3134,6 +3146,14 @@ msgstr "FPC 源代码目录 \"%s\" 未找到."
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3463,6 +3483,10 @@ msgstr "窗体"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "窗体..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4272,15 +4296,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "按字母顺序插入"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "插入粗体格式标签"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "插入代码格式标签"
 
@@ -4308,7 +4336,7 @@ msgstr "从字符表插入"
 msgid "Insert from Charactermap"
 msgstr "从字符表插入"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "插入斜体格式标签"
 
@@ -4324,7 +4352,11 @@ msgstr "插入子节点"
 msgid "Insert node below"
 msgstr "在下面插入节点"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "插入注释格式标签"
 
@@ -4340,7 +4372,7 @@ msgstr "在之前插入空格"
 msgid "Insert text"
 msgstr "插入文本"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "插入下划线标签"
 
@@ -4348,7 +4380,7 @@ msgstr "插入下划线标签"
 msgid "Insert username"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "插入变量格式标签"
 
@@ -4824,23 +4856,11 @@ msgstr "运行应用程序失败"
 msgid "Launching target command line"
 msgstr "运行目标命令行命令"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr "LazDoc 文档"
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "LazDoc 文档编辑器"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "LazDoc 编辑器"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "LazDoc 设置"
 
@@ -6228,6 +6248,10 @@ msgstr "粘贴剪切板到当前位置"
 msgid "Paste selected components from clipboard"
 msgstr "从剪切板粘贴组件"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "模板目录"
@@ -6784,7 +6808,7 @@ msgstr "从收藏夹中移除属性"
 msgid "Remove from project"
 msgstr "从工程移除"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "移除路径"
 
@@ -7360,7 +7384,7 @@ msgstr "查找..."
 msgid "Searching: %s"
 msgstr "查找: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "参考"
 
@@ -7648,9 +7672,13 @@ msgstr "Shift"
 msgid "Shift Tab"
 msgstr "Shift Tab"
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr "Short"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8360,6 +8388,10 @@ msgstr "主目录是 %s ,%s Borland 已经安装了的 %s 的所有源代码.%s�
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "工程目录是 %s ,%s 包含 .dpr, dpk 文件的目录."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - (FreePascal Component Library) FreePascal 组件库提供了 object pascal 的基本类."
@@ -8476,13 +8508,13 @@ msgstr "编译器 \"%s\" 不是可执行文件."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "包 %s 的编译器文件不是有效的可执行文件:%s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "组件的类编辑器 %s%s%s%s调用 #%s %s%s%s%s产生一个错误:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "组件的类编辑器 %s%s%s产生一个错误%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8647,10 +8679,6 @@ msgstr "下面的单元未找到:%s%s%s%s1) 单元没有在单元目录下, 那�
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "宿主程序 %s%s%s 不是可执行程序."
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9892,7 +9920,7 @@ msgstr "查看代码浏览器"
 msgid "View Component Palette"
 msgstr "显示组件面板"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr ""
 
@@ -10418,6 +10446,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

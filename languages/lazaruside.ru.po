@@ -2061,6 +2061,10 @@ msgstr "Создать"
 msgid "Create .po files"
 msgstr "Создать файлы .po"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "Создать определения для кталога %s"
@@ -2904,6 +2908,10 @@ msgstr "Ошибка перемещения компонента"
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
 msgstr "Ошибка перемещения компонента %s:%s"
+
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -4285,6 +4293,10 @@ msgstr "Элемент списка ToDo"
 msgid "Insert a GUID"
 msgstr "GUID"
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "Вставить по алфавиту"
@@ -4336,6 +4348,10 @@ msgstr "Вставить элемент как дочерний"
 #: lazarusidestrconsts:liscodetoolsdefsinsertnodebelow
 msgid "Insert node below"
 msgstr "Вставить элемент ниже"
+
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
 
 #: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
@@ -6228,6 +6244,10 @@ msgstr "Вставить из буфера в текущую позицию"
 #: lazarusidestrconsts:lisdsgpastecomponents
 msgid "Paste selected components from clipboard"
 msgstr "Вставить выбранные компоненты из буфера"
+
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
@@ -8365,6 +8385,10 @@ msgstr "Главный каталог %s,%sгде Borland установил в�
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr "Каталог %s проекта,%sсодержащий файлы .dpr, dpk."
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - библиотека компонентов FreePascal - обеспечивает базовые классы для Объектного Паскаля."
@@ -8481,13 +8505,13 @@ msgstr "Файл компилятора \"%s\" не исполняемый."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Файл компилятора для пакета %s - недопустимый исполняемый:%s%s"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "Редактор компонента для класса %s%s%sсвязанный со словом #%s %s%s%sвызвал ошибку:%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "Редактор компонента для класса %s%s%sвызвал ошибку:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8652,10 +8676,6 @@ msgstr "Следующие модули не были найдены:%s%s%s%s1) 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s - не исполняемый файл."
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr "Запускающая Application Bundle %s%s%s%sне существует либо не является исполнимой. %s%sСм. Проект -> Параметры проекта -> Приложение."
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"

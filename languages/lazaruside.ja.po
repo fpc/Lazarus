@@ -224,10 +224,6 @@ msgstr ""
 msgid "&Find Declaration"
 msgstr "宣言の検索(&F)"
 
-#: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
-msgstr ""
-
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
 msgstr ""
@@ -356,7 +352,7 @@ msgstr "(不明マクロ: %S)"
 msgid "<All>"
 msgstr "<全て>"
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr "<無し>"
 
@@ -564,7 +560,7 @@ msgstr "移動先を追加"
 msgid "Add jump point to history"
 msgstr "履歴の移動先を追加"
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "リンク追加"
 
@@ -572,7 +568,7 @@ msgstr "リンク追加"
 msgid "Add options to dependent packages and projects"
 msgstr "単独パッケージとプロジェクトのオプションを追加"
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr "パス追加"
 
@@ -1876,6 +1872,10 @@ msgstr ""
 msgid "Confirm removing file"
 msgstr "ファイルの削除を確認"
 
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
 msgstr "矛盾"
@@ -2060,6 +2060,10 @@ msgstr "作成"
 msgid "Create .po files"
 msgstr ".poファイルを作成"
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
 msgstr "%sディレクトリの定義を作成"
@@ -2084,9 +2088,9 @@ msgstr "Lazarusディレクトリの定義を作成"
 msgid "Create FPC Macros and paths for a fpc project directory"
 msgstr "FPCのマクロとfpcプロジェクトディレクトリのパスを作成"
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
-msgstr "LazDocファイルを作成"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2147,6 +2151,10 @@ msgstr "新規にデータモジュールを有するユニットを作成"
 #: lazarusidestrconsts:liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
+
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2400,7 +2408,7 @@ msgstr "ファイル削除に失敗"
 msgid "Delete last char"
 msgstr "末尾の文字を削除"
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr "リンクを削除"
 
@@ -2632,7 +2640,7 @@ msgstr "ドックされました"
 msgid "Documentation Editor"
 msgstr "ドキュメントエディター"
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr "ドキュメントエントリーがありません"
 
@@ -2900,6 +2908,10 @@ msgstr "コンポーネントの移動中にエラー"
 msgid "Error moving component %s:%s"
 msgstr "コンポーネント%sの移動中にエラー:%s"
 
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
 msgstr "lfmコンポーネントストリームの構文解析中にエラー"
@@ -2972,7 +2984,7 @@ msgstr "評価/変更 ..."
 msgid "Event Log"
 msgstr "イベントログ"
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr "実例"
 
@@ -3130,6 +3142,14 @@ msgstr "FPCソースディレクトリ \"%s\" が見つかりません"
 
 #: lazarusidestrconsts:lisccofpcunitpathhassource
 msgid "FPC unit path contains a source: "
+msgstr ""
+
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
@@ -3459,6 +3479,10 @@ msgstr "フォーム"
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
 msgstr "フォーム..."
+
+#: lazarusidestrconsts:lisfrforwardsearch
+msgid "Forwar&d search"
+msgstr ""
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
@@ -4268,15 +4292,19 @@ msgstr ""
 msgid "Insert a GUID"
 msgstr ""
 
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
 msgstr "アルファベット順に挿入"
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr "太字設定タグを挿入"
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr "コード書式設定タグを挿入"
 
@@ -4304,7 +4332,7 @@ msgstr "キャラクターマップから挿入"
 msgid "Insert from Charactermap"
 msgstr "キャラクターマップから挿入"
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr "イタリック体タグを挿入"
 
@@ -4320,7 +4348,11 @@ msgstr "ノードを子として挿入"
 msgid "Insert node below"
 msgstr "下にノードを挿入"
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr "注釈設定タグを挿入"
 
@@ -4336,7 +4368,7 @@ msgstr "空白を以下の前に挿入："
 msgid "Insert text"
 msgstr "テキストを挿入"
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr "下線設定タグを挿入"
 
@@ -4344,7 +4376,7 @@ msgstr "下線設定タグを挿入"
 msgid "Insert username"
 msgstr "ユーザー名を挿入"
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr "var書式設定タグを挿入"
 
@@ -4820,23 +4852,11 @@ msgstr "アプリケーションの実行が無効です"
 msgid "Launching target command line"
 msgstr "対象となるコマンドラインを実行"
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
-msgstr ""
-
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "LazDoc - Lazarus documentation"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
-msgstr "LazDocエディタ"
-
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
-msgstr "LazDocエディタ"
-
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr "LazDocの設定"
 
@@ -6224,6 +6244,10 @@ msgstr "クリップボードから現在の位置に貼り付け"
 msgid "Paste selected components from clipboard"
 msgstr "クリップボードから選択されたコンポーネントを貼り付け"
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
 msgstr "テンプレートのパス"
@@ -6780,7 +6804,7 @@ msgstr "お気に入りのプロパティから削除"
 msgid "Remove from project"
 msgstr "プロジェクトから削除"
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr "パスを削除"
 
@@ -7356,7 +7380,7 @@ msgstr "検索中..."
 msgid "Searching: %s"
 msgstr "検索中: %s"
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr "参照"
 
@@ -7644,9 +7668,13 @@ msgstr ""
 msgid "Shift Tab"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr "短い"
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -8356,6 +8384,10 @@ msgstr " %s のメインディレクトリ。%sBorlandはそこに全ての %s �
 msgid "The %s project directory,%swhich contains the .dpr, dpk file."
 msgstr " %s のプロジェクトディレクトリ。 %s そこに .dpr, dpk ファイルがあります。"
 
+#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
 msgstr "FCL - FreePascal Component Libraryはobject pascalの基本クラスを提供します。"
@@ -8472,13 +8504,13 @@ msgstr "コンパイラファイル\"%s\"は実行可能ではありません。
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "パッケージ%sのコンパイラファイルは有効な実行ファイルではありません。"
 
+#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgstr "動詞#%s %s%s%s%sで呼び出されるクラス%s%s%s%sのコンポーネントエディタがエラーを発生させました：%s%s%s%s"
-
-#: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
-msgstr "クラス%s%s%s%sのコンポーネントエディタがエラーを発生させました：%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8643,10 +8675,6 @@ msgstr "以下のユニットが見つかりませんでした：%s%s%s%s1)そ�
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "そのホストアプリケーション%s%s%sは実行ファイルではありません。"
-
-#: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
-msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
 msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
@@ -9888,7 +9916,7 @@ msgstr "コードエクスプローラーを表示"
 msgid "View Component Palette"
 msgstr "コンポーネントパレットを表示"
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr "ドキュメントエディタを表示"
 
@@ -10414,6 +10442,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
 msgstr ""
 
 #: lazarusidestrconsts:lisccononascii

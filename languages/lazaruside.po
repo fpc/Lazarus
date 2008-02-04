@@ -1172,8 +1172,8 @@ msgstr ""
 msgid "Edit context sensitive Help"
 msgstr ""
 
-#: lazarusidestrconsts:lismenucreatelazdocfiles
-msgid "Create LazDoc files"
+#: lazarusidestrconsts:lismenucreatefpdocfiles
+msgid "Create FPDoc files"
 msgstr ""
 
 #: lazarusidestrconsts:lisdsgcopycomponents
@@ -2348,8 +2348,8 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdoc
-msgid "LazDoc"
+#: lazarusidestrconsts:lisfpdoceditor
+msgid "FPDoc editor"
 msgstr ""
 
 #: lazarusidestrconsts:lisokbtn
@@ -4332,6 +4332,10 @@ msgstr ""
 msgid "Use Application Bundle for running and debugging (darwin only)"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpocreateappbundle
+msgid "Create Application Bundle"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpousemanifest
 msgid "Use manifest file to enable themes (windows only)"
 msgstr ""
@@ -4673,7 +4677,7 @@ msgid "Direction"
 msgstr ""
 
 #: lazarusidestrconsts:lisfrforwardsearch
-msgid "&Forwar&d search"
+msgid "Forwar&d search"
 msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
@@ -4981,7 +4985,7 @@ msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas c
 msgstr ""
 
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%shas created the error:%s%s%s%s"
+msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmultiselectiontext
@@ -5700,7 +5704,7 @@ msgstr ""
 msgid "View Code Explorer"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectogglelazdoc
+#: lazarusidestrconsts:srkmectogglefpdoceditor
 msgid "View Documentation Editor"
 msgstr ""
 
@@ -8049,7 +8053,7 @@ msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%
 msgstr ""
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
-msgid "The launching Application Bundle %s%s%s%sdoes not exist or is not executable.%s%sSee Project -> Project options -> Application."
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
 msgstr ""
 
 #: lazarusidestrconsts:lisdebuggerinvalid
@@ -10496,47 +10500,55 @@ msgstr ""
 msgid "Source"
 msgstr ""
 
-#: lazarusidestrconsts:lismenulazdoc
-msgid "LazDoc Editor"
+#: lazarusidestrconsts:lismenufpdoceditor
+msgid "FPDoc Editor"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocmainformcaption
-msgid "LazDoc editor"
+#: lazarusidestrconsts:liscodehelpmainformcaption
+msgid "FPDoc editor"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocnotagcaption
+#: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocnodocumentation
+#: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
+msgid "no inherited description found"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpshortdescriptionof
+msgid "Short description of"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpnodocumentation
 msgid "Documentation entry does not exist"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocinherited
+#: lazarusidestrconsts:liscodehelpinherited
 msgid "Inherited"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocshorttag
+#: lazarusidestrconsts:liscodehelpshorttag
 msgid "Short"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdescrtag
+#: lazarusidestrconsts:liscodehelpdescrtag
 msgid "Description"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocerrorstag
+#: lazarusidestrconsts:liscodehelperrorstag
 msgid "Errors"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocseealsotag
+#: lazarusidestrconsts:liscodehelpseealsotag
 msgid "See also"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocaddpathbutton
+#: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdeletepathbutton
+#: lazarusidestrconsts:liscodehelpdeletepathbutton
 msgid "Remove path"
 msgstr ""
 
@@ -10544,47 +10556,71 @@ msgstr ""
 msgid "NOTE: only absolute paths are supported now"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocpathsgroupbox
+#: lazarusidestrconsts:liscodehelpconfirmreplace
+msgid "Confirm replace"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpreplacebutton
+msgid "Replace"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelppathsgroupbox
 msgid "LazDoc settings"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintboldformat
+#: lazarusidestrconsts:liscodehelphintboldformat
 msgid "Insert bold formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintitalicformat
+#: lazarusidestrconsts:liscodehelphintitalicformat
 msgid "Insert italic formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintunderlineformat
+#: lazarusidestrconsts:liscodehelphintunderlineformat
 msgid "Insert underline formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintinsertcodetag
+#: lazarusidestrconsts:liscodehelphintinsertcodetag
 msgid "Insert code formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintremarktag
+#: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdochintvartag
+#: lazarusidestrconsts:liscodehelphintvartag
 msgid "Insert var formatting tag"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocaddlinkbutton
+#: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocdeletelinkbutton
+#: lazarusidestrconsts:liscodehelpdeletelinkbutton
 msgid "Delete link"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocexampletag
+#: lazarusidestrconsts:liscodehelpcreatebutton
+msgid "Create help item"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpinsertalink
+msgid "Insert a link ..."
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
+msgid "Insert paragraph formatting tag"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpsavebutton
+msgid "Save"
+msgstr ""
+
+#: lazarusidestrconsts:liscodehelpexampletag
 msgid "Example"
 msgstr ""
 
-#: lazarusidestrconsts:lislazdocbrowseexamplebutton
+#: lazarusidestrconsts:liscodehelpbrowseexamplebutton
 msgid "Browse"
 msgstr ""
 
@@ -10856,6 +10892,10 @@ msgstr ""
 msgid "Resume Unhandled"
 msgstr ""
 
+#: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
+msgid "Path Editor"
+msgstr ""
+
 #: lazarusidestrconsts:lishfmhelpforfreepascalcompilermessage
 msgid "Help for FreePascal Compiler message"
 msgstr ""
@@ -11026,5 +11066,9 @@ msgstr ""
 
 #: lazarusidestrconsts:listddinserttodo
 msgid "Insert ToDo"
+msgstr ""
+
+#: lazarusidestrconsts:lisabcreationfailed
+msgid "Error occured during Application Bundle creation: "
 msgstr ""
 
