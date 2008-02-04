@@ -3571,6 +3571,7 @@ resourcestring
   lisDebugOptionsFrmHandledByDebugger = 'Handled by Debugger';
   lisDebugOptionsFrmResumeHandled = 'Resume Handled';
   lisDebugOptionsFrmResumeUnhandled = 'Resume Unhandled';
+  dlgDebugOptionsPathEditorDlgCaption = 'Path Editor';
   lisHFMHelpForFreePascalCompilerMessage = 'Help for FreePascal Compiler '
     +'message';
   lisRelativePaths = 'Relative paths';
