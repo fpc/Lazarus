@@ -1986,7 +1986,6 @@ begin
   
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
-  WriteLn(QEvent_type(Event));
   case QEvent_type(Event) of
    QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
@@ -7119,11 +7118,11 @@ function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
   Result := inherited getClientBounds;
 
-  if (FVScrollbar <> nil) and (FVScrollbar.getVisible) then
-    dec(Result.Right, FVScrollBar.getWidth);
+  if (verticalScrollBar.getVisible) then
+    dec(Result.Right, verticalScrollBar.getWidth);
 
-  if (FHScrollbar <> nil) and (FHScrollbar.getVisible) then
-    dec(Result.Bottom, FHScrollBar.getHeight);
+  if (horizontalScrollBar.getVisible) then
+    dec(Result.Bottom, horizontalScrollBar.getHeight);
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
@@ -7228,6 +7227,7 @@ begin
       QAbstractScrollArea_setVerticalScrollBarPolicy(QAbstractScrollAreaH(Widget), QtScrollBarAsNeeded);
     end;
   end;
+  LCLObject.InvalidateClientRectCache(True);
 end;
 
   { TQtCalendar }

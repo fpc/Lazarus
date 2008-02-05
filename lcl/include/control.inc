@@ -1219,7 +1219,7 @@ end;
        TControl GetMouseCapture
 ------------------------------------------------------------------------------}
 function TControl.GetMouseCapture : Boolean;
-Begin
+begin
   Result := GetCaptureControl = Self;
 end;
 
