@@ -2707,7 +2707,7 @@ begin
   Height := 97;
   TabStop := True;
   ParentColor := False;
-  FBackgroundColor := clWhite;
+  FBackgroundColor := clWindow;
   FDefItemHeight:=20;
   FExpandSignType:=tvestPlusMinus;
   FExpandSignSize:=9;
@@ -2732,7 +2732,6 @@ begin
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
   FTreeLineColor := cl3DLight;
   FExpandSignColor := clWindowFrame;
-
 end;
 
 destructor TCustomTreeView.Destroy;

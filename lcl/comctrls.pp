@@ -2356,7 +2356,7 @@ type
     procedure MakeSelectionVisible;
   public
     property BackgroundColor: TColor
-      read FBackgroundColor write SetBackgroundColor default clWhite;
+      read FBackgroundColor write SetBackgroundColor default clWindow;
     property BorderWidth default 0;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property DefaultItemHeight: integer
