@@ -2029,12 +2029,28 @@ begin
 end;
 
 procedure TQtWidget.SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  AHeader: TRect;
+  APoint: TQtPoint;
 begin
   //Drag&Dock support TCustomForm => Start BeginDrag()
-  if LCLObject is TCustomForm then
+  if (LCLObject is TCustomForm) and (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) then
   begin
-     if TWinControlAccess(LCLObject).DragKind = dkDock then
-       LCLObject.BeginDrag(true);
+    APoint := QMouseEvent_globalPos(QMouseEventH(Event))^;
+    AHeader := getGeometry;
+    with getFrameGeometry do
+      AHeader.Top := Top;
+
+   // remove various buttons from header (how to request their pos cross platform?):
+   Inc(AHeader.Left, 20);  // system menu
+   Dec(AHeader.Right, 80); // close, min, max buttons
+   if AHeader.Right < AHeader.Left then
+     AHeader.Right := AHeader.Left + 1;
+
+    // we can skip translation of coords to global since we already working with window
+    // check for title
+    if PtInRect(AHeader, Point(APoint.x, APoint.y)) and (TWinControlAccess(LCLObject).DragKind = dkDock) then
+      LCLObject.BeginDrag(true);
   end;
 end;
 
