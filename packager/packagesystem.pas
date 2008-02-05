@@ -815,8 +815,10 @@ function TLazPackageGraph.FindPackageProvidingName(
   function Search(ADependency: TPkgDependency; out Found: TLazPackage
     ): boolean;
   begin
+    Found:=nil;
     while ADependency<>nil do begin
       Found:=ADependency.RequiredPackage;
+      //DebugLn(['Search ',Found.Name,' ',Found.ProvidesPackage(Name),' "',Found.Provides.Text,'"']);
       if (Found<>nil) and (not (lpfVisited in Found.Flags)) then begin
         Found.Flags:=Found.Flags+[lpfVisited];
         if Found.ProvidesPackage(Name)
@@ -830,7 +832,7 @@ function TLazPackageGraph.FindPackageProvidingName(
   
 begin
   MarkAllPackagesAsNotVisited;
-  Result:=nil;
+  Search(FirstDependency,Result);
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;

@@ -3001,6 +3001,8 @@ begin
             and (RequiredPackage<>UnitOwner)
             and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,
               RequiredPackage)=nil)
+            and (PackageGraph.FindPackageProvidingName(FirstDependency,
+              RequiredPackage.Name)=nil)
             then begin
               if List=nil then List:=TObjectArray.Create;
               List.AddObject(UnitOwner,RequiredPackage);
