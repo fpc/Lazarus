@@ -3119,6 +3119,7 @@ end;
 function TQtWidgetSet.GetWindowRect(Handle: HWND; var ARect: TRect): Integer;
 var
   APos: TQtPoint;
+  AParent: QWidgetH;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowRect]');
@@ -3126,9 +3127,19 @@ begin
 
   Result := 0;
 
+{ // this code doesnot work sometimes - why? Maybe qt bug?
+  // to test bug one can create 4 pannels with 0 sizes and aligned to differnt sides
+  // then aligned to left and to right panel will return same value
+  
   APos.x := 0;
   APos.y := 0;
   QWidget_mapToGlobal(TQtWidget(Handle).Widget, @APos, @APos);
+}
+  APos := TQtWidget(Handle).getPos;
+  AParent := TQtWidget(Handle).getParent;
+  if AParent <> nil then
+    QWidget_mapToGlobal(AParent, @APos, @APos);
+
   ARect.Left := APos.x;
   ARect.Top := APos.y;
   ARect.Bottom := ARect.Top + TQtWidget(Handle).getHeight;

@@ -157,6 +157,7 @@ type
     function getFrameGeometry: TRect;
     function getGeometry: TRect; virtual;
     function getVisible: Boolean; virtual;
+    function getParent: QWidgetH;
     function getPos: TQtPoint;
     function getSize: TSize;
     function getText: WideString; virtual;
@@ -2473,6 +2474,11 @@ end;
 function TQtWidget.getVisible: boolean;
 begin
   Result := QWidget_isVisible(Widget);
+end;
+
+function TQtWidget.getParent: QWidgetH;
+begin
+  Result := QWidget_parentWidget(Widget);
 end;
 
 function TQtWidget.getPos: TQtPoint;
