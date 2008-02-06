@@ -598,7 +598,7 @@ constructor TFont.Create;
 begin
   inherited Create;
   FColor := clWindowText;
-  FPixelsPerInch := ScreenInfo.PixelsPerInchX;
+  FPixelsPerInch := ScreenInfo.PixelsPerInchY;
   FPitch := DefFontData.Pitch;
   FCharSet := DefFontData.CharSet;
   DelayAllocate := True;

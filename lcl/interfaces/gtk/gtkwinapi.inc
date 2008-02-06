@@ -5389,15 +5389,11 @@ begin
       end;
     gdiFont:
       begin
-        {$IfDef GTK2}
-        Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiFont(PANGO)');
-        {$Else}
         if Buf = nil
         then begin
           Result := SizeOf(GDIObject^.LogFont);
           Exit;
-        End;
-        
+        end;
         if BufSize >= SizeOf(GDIObject^.LogFont)
         then begin
           PLogfont(Buf)^ := GDIObject^.LogFont;
@@ -5408,7 +5404,6 @@ begin
           Move(GDIObject^.LogFont,Buf^,BufSize);
           Result:=BufSize;
         end;
-        {$EndIf}
       end;
     gdiPen:
       begin

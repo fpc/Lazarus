@@ -153,18 +153,20 @@ begin
       exit;
     end;
 
-    with LogFont do begin
+    with LogFont do
+    begin
       if lfFaceName[0] = #0
       then begin
         Assert(false,'ERROR: [Tgt2kObject.CreateFontIndirectEx] No fontname');
         Exit;
       end;
       
-      if (lfHeight=0) and (CompareText(lfFacename,'default')=0) then begin
+      if (lfHeight = 0) and (lfEscapement = 0) and (CompareText(lfFacename, 'default') = 0) then
+      begin
         {$IFDEF VerboseFonts}
         DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Creating default font']);
         {$ENDIF}
-        GdiObject:=CreateDefaultFont;
+        GdiObject := CreateDefaultFont;
         exit;
       end;
 
@@ -194,21 +196,22 @@ begin
       PangoDesc := pango_font_description_from_string(PChar(FullString));
 
       if lfWeight <> FW_DONTCARE then
-        pango_font_description_set_weight(PangoDesc,lfWeight);
+        pango_font_description_set_weight(PangoDesc, lfWeight);
 
       if lfItalic <> 0 then
-        pango_font_description_set_style(PangoDesc,PANGO_STYLE_ITALIC);
+        pango_font_description_set_style(PangoDesc, PANGO_STYLE_ITALIC);
 
-      if (aSize=0) and (lfHeight<>0) then begin
+      if (aSize=0) and (lfHeight<>0) then
+      begin
         // a size is not specified, try to calculate one based on lfHeight
         // and use this value not in the font name but set this value appart
         // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
         // which would be great with the given lfheight value, but older gtk2 version
         // doesn't have this funtion
         if lfHeight<0 then
-          aSize:= (abs(lfheight) * 72 * PANGO_SCALE) div ScreenInfo.PixelsPerInchX
+          aSize := -MulDiv(lfheight, 72, ScreenInfo.PixelsPerInchY) * PANGO_SCALE
         else
-          aSize:=lfHeight*PANGO_SCALE;
+          aSize := lfHeight * PANGO_SCALE;
         pango_font_description_set_size(PangoDesc, aSize);
       end;
       
@@ -221,31 +224,34 @@ begin
 
       pango_layout_set_font_description(CurFont,PangoDesc);
 
-      if (LogFont.lfUnderline<>0) or (LogFont.lfStrikeOut<>0) then begin
+      if (LogFont.lfUnderline<>0) or (LogFont.lfStrikeOut<>0) then
+      begin
         AttrListTemporary := false;
         AttrList := pango_layout_get_attributes(CurFont);
-        if (AttrList = nil) then begin
+        if (AttrList = nil) then
+        begin
           AttrList := pango_attr_list_new();
-          AttrListTemporary := true;
+          AttrListTemporary := True;
         end;
-        if LogFont.lfUnderline<>0 then
+        if LogFont.lfUnderline <> 0 then
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
         else
           Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-        pango_attr_list_change(AttrList,Attr);
+        pango_attr_list_change(AttrList, Attr);
 
         Attr := pango_attr_strikethrough_new(LogFont.lfStrikeOut<>0);
-        pango_attr_list_change(AttrList,Attr);
-
+        pango_attr_list_change(AttrList, Attr);
+        
         if AttrListTemporary then
           pango_attr_list_unref(AttrList);
       end;
 
-      pango_layout_set_single_paragraph_mode(CurFont, TRUE);
+      pango_layout_set_single_paragraph_mode(CurFont, True);
       pango_layout_set_width(CurFont, -1);
       pango_layout_set_alignment(CurFont, PANGO_ALIGN_LEFT);
 
-      if (lfEscapement<>0) then begin
+      if (lfEscapement <> 0) then
+      begin
         DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx rotating font is not implemented yet, because it needs pango 1.16: lfEscapement=',lfEscapement]);
         {DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx ',pango_version_check(1,16,0)]);
         if pango_version_check(1,16,0)<>null then begin
@@ -255,13 +261,14 @@ begin
       end;
     end;
   finally
-    if (CachedFont=nil)
-    and (GdiObject<>nil) and (GdiObject^.GDIFontObject <> nil) then begin
+    if (CachedFont = nil) and (GdiObject<>nil) and (GdiObject^.GDIFontObject <> nil) then
+    begin
       // add to cache
-      CachedFont:=FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
-      if CachedFont<>nil then begin
-        CachedFont.PangoFontDescription:=PangoDesc;
-        PangoDesc:=nil;
+      CachedFont := FontCache.Add(GdiObject^.GDIFontObject, LogFont, LongFontName);
+      if CachedFont <> nil then
+      begin
+        CachedFont.PangoFontDescription := PangoDesc;
+        PangoDesc := nil;
       end;
     end;
     {$IFDEF VerboseFonts}

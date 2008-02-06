@@ -1685,7 +1685,7 @@ var
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 
-  Procedure EnsureAsColor;
+  procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
     //DebugLn('EnsureAsColor ',DbgS(GDIColor^.ColorRef),' AsBackground=',AsBackground);
