@@ -112,6 +112,7 @@ type
     FMainControl: TControl;
     FPageControl: TLazDockPages;
     procedure SetMainControl(const AValue: TControl);
+    procedure PaintWindow(DC: HDC); override;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
@@ -2373,6 +2374,96 @@ begin
   if FMainControl<>nil then
     FMainControl.FreeNotification(Self);
   UpdateCaption;
+end;
+
+procedure TLazDockForm.PaintWindow(DC: HDC);
+var
+  Details: TThemedElementDetails;
+  BtnRect: TRect;
+  DrawRect: TRect;
+  d: integer;
+  DockCaption: String;
+  TextStyle: TTextStyle;
+  i: Integer;
+  Control: TControl;
+  ACanvas: TCanvas;
+begin
+  inherited PaintWindow(DC);
+  ACanvas:=nil;
+  try
+    for i:=0 to ControlCount-1 do begin
+      Control:=Controls[i];
+      if (Control.BorderSpacing.Left=0)
+      and (Control.BorderSpacing.Top=0) then
+        continue;
+
+      if ACanvas=nil then begin
+        ACanvas:=TCanvas.Create;
+        ACanvas.Handle:=DC;
+      end;
+      DockCaption := Control.Caption;
+      TextStyle.Alignment := taLeftJustify;
+      TextStyle.Layout := tlCenter;
+      TextStyle.SingleLine := True;
+      TextStyle.Clipping := True;
+      TextStyle.Opaque := False;
+      TextStyle.Wordbreak := False;
+      TextStyle.SystemFont := False;
+      TextStyle.RightToLeft := Control.UseRightToLeftAlignment;
+
+      DrawRect := Control.BoundsRect;
+      if Control.BorderSpacing.Top>0 then begin
+        DrawRect.Top:=Control.Top-Control.BorderSpacing.Top;
+        DrawRect.Bottom:=Control.Top;
+      end else begin
+        DrawRect.Left:=Control.Left-Control.BorderSpacing.Left;
+        DrawRect.Right:=Control.Left;
+      end;
+      InflateRect(DrawRect, -1, -1);
+      ACanvas.Brush.Color := clBtnShadow;
+      ACanvas.FrameRect(DrawRect);
+      InflateRect(DrawRect, -1, -1);
+      if Control.BorderSpacing.Top>0 then begin
+        d := DrawRect.Bottom - DrawRect.Top;
+        BtnRect := DrawRect;
+        BtnRect.Left := BtnRect.Right - d;
+        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Right := BtnRect.Left;
+        BtnRect := DrawRect;
+        Dec(BtnRect.Right);
+        BtnRect.Left := BtnRect.Right - d;
+        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Right := BtnRect.Left;
+        InflateRect(DrawRect, -4, 0);
+
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, DockCaption, TextStyle);
+      end else begin
+        d := DrawRect.Right - DrawRect.Left;
+        BtnRect := DrawRect;
+        BtnRect.Bottom := BtnRect.Top + d;
+        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Top := BtnRect.Bottom;
+        BtnRect := DrawRect;
+        Inc(BtnRect.Top);
+        BtnRect.Bottom := BtnRect.Top + d;
+        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
+        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+        DrawRect.Top := BtnRect.Bottom;
+        InflateRect(DrawRect, 0, -4);
+
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, DockCaption, TextStyle);
+      end;
+    end;
+  finally
+    ACanvas.Free;
+  end;
 end;
 
 procedure TLazDockForm.Notification(AComponent: TComponent;
