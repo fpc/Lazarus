@@ -2635,13 +2635,13 @@ begin
     COLOR_HIGHLIGHT               : Result:=GetColor(QPaletteActive,   QPaletteHighlight);
     COLOR_HIGHLIGHTTEXT           : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
     COLOR_BTNFACE                 : Result:=GetColor(QPaletteActive,   QPaletteButton);
-    COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteShadow);
+    COLOR_BTNSHADOW               : Result:=GetColor(QPaletteActive,   QPaletteDark);
     COLOR_GRAYTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
     COLOR_BTNTEXT                 : Result:=GetColor(QPaletteActive,   QPaletteButtonText);
     COLOR_INACTIVECAPTIONTEXT     : Result:=GetColor(QPaletteInactive, QPaletteText);
-    COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteHighlightedText);
+    COLOR_BTNHIGHLIGHT            : Result:=GetColor(QPaletteActive,   QPaletteLight);
     COLOR_3DDKSHADOW              : Result:=GetColor(QPaletteActive,   QPaletteShadow);
-    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMid);
+    COLOR_3DLIGHT                 : Result:=GetColor(QPaletteActive,   QPaletteMidlight);
     COLOR_INFOTEXT                : Result:=GetColor(QPaletteActive,   QPaletteText);
     COLOR_INFOBK                  : Result:=GetClInfoBk;
     // PBD: 25 is unassigned in all the docs I can find
