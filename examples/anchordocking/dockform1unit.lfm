@@ -1,13 +1,13 @@
 object MainForm: TMainForm
   Left = 292
-  Height = 300
+  Height = 331
   Top = 209
   Width = 400
   HorzScrollBar.Page = 399
-  VertScrollBar.Page = 299
+  VertScrollBar.Page = 330
   ActiveControl = CreateNewFormButton
   Caption = 'MainForm'
-  ClientHeight = 300
+  ClientHeight = 331
   ClientWidth = 400
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -91,7 +91,6 @@ object MainForm: TMainForm
       Top = 146
       Width = 99
       Caption = 'Spiral'
-      Enabled = False
       OnClick = SpiralButtonClick
       TabOrder = 3
     end

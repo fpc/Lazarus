@@ -67,22 +67,29 @@ procedure TMainForm.SpiralButtonClick(Sender: TObject);
 var
   Form1: TCustomForm;
   Form2: TCustomForm;
-  //Form3: TCustomForm;
-  //Form4: TCustomForm;
-  //Form5: TCustomForm;
+  Form3: TCustomForm;
+  Form4: TCustomForm;
+  Form5: TCustomForm;
 begin
   debugln;
   ClearLayout;
 
   Form1:=CreateNewForm;
+  with Form1 do SetBounds(Left,Top,600,450);
   Form2:=CreateNewForm;
+  with Form2 do SetBounds(Left,Top,150,150);
   DockingManager.Manager.InsertControl(Form2,alRight,Form1);
-  //Form3:=CreateNewForm;
-  //DockingManager.Manager.InsertControl(Form3,alLeft,Form1);
-  //Form4:=CreateNewForm;
-  //DockingManager.Manager.InsertControl(Form4,alTop,Form1);
-  //Form5:=CreateNewForm;
-  //DockingManager.Manager.InsertControl(Form5,alBottom,Form1);
+  Form3:=CreateNewForm;
+  with Form3 do SetBounds(Left,Top,150,150);
+  DockingManager.Manager.InsertControl(Form3,alLeft,Form1);
+  Form4:=CreateNewForm;
+  with Form4 do SetBounds(Left,Top,150,150);
+  DockingManager.Manager.InsertControl(Form4,alTop,Form1);
+  DockingManager.Manager.EnlargeControl(Form4,akLeft);
+  Form5:=CreateNewForm;
+  with Form5 do SetBounds(Left,Top,150,150);
+  DockingManager.Manager.InsertControl(Form5,alBottom,Form1);
+  DockingManager.Manager.EnlargeControl(Form5,akRight);
 end;
 
 procedure TMainForm.ThreePagesButtonClick(Sender: TObject);
