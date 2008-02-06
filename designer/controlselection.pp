@@ -716,12 +716,22 @@ begin
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
+var
+  M: Word;
 begin
   if FIsTControl then
     TControl(FPersistent).Left:=Aleft
-  else if FIsTComponent then
-    LongRec(TComponent(FPersistent).DesignInfo).Lo:=
-      word(Min(32000,Max(0,ALeft)));
+  else
+    if FIsTComponent then
+    begin
+      M := 32000;
+      if DesignerForm <> nil then
+        M := Max(0, Min(M, DesignerForm.ClientWidth - NonVisualCompWidth));
+      
+      LongRec(TComponent(FPersistent).DesignInfo).Lo:=
+        word(Min(M, Max(0,ALeft)));
+     end;
+     
   FCachedLeft:=ALeft;
 end;
 
@@ -742,12 +752,22 @@ begin
 end;
 
 procedure TSelectedControl.SetTop(ATop: integer);
+var
+  M: Word;
 begin
   if FIsTControl then
     TControl(FPersistent).Top:=ATop
-  else if FIsTComponent then
-    LongRec(TComponent(FPersistent).DesignInfo).Hi:=
-      word(Min(32000,Max(0,ATop)));
+  else
+    if FIsTComponent then
+    begin
+      M := 32000;
+      if DesignerForm <> nil then
+        M := Max(0, Min(M, DesignerForm.ClientHeight - NonVisualCompWidth));
+        
+      LongRec(TComponent(FPersistent).DesignInfo).Hi:=
+        word(Min(M, Max(0,ATop)));
+    end;
+    
   FCachedTop:=ATop;
 end;
 

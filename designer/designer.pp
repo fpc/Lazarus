@@ -1075,10 +1075,10 @@ end;
 
 function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
 begin
-  Result.X:=Min(LongRec(AComponent.DesignInfo).Lo,
-                Form.ClientWidth-NonVisualCompWidth);
-  Result.Y:=Min(LongRec(AComponent.DesignInfo).Hi,
-                Form.ClientHeight-NonVisualCompWidth);
+  Result.X:=Max(0, Min(LongRec(AComponent.DesignInfo).Lo,
+                Form.ClientWidth-NonVisualCompWidth));
+  Result.Y:=Max(0, Min(LongRec(AComponent.DesignInfo).Hi,
+                Form.ClientHeight-NonVisualCompWidth));
 end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
