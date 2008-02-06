@@ -932,15 +932,14 @@ begin
   begin
     FFont.FCachedLayouts[Ord(FText[I])].Apply(ADC);
     
-    if I > 1 then
-      FTextAfter := FTextAfter + Long2Fix(FFont.FCachedLayouts[Ord(FText[I])].GetWidth)
-    else
+    if I = 1 then
     begin
       FAscent := FFont.FCachedLayouts[Ord(FText[1])].FAscent;
       FDescent := FFont.FCachedLayouts[Ord(FText[1])].FDescent;
       FTextBefore := FFont.FCachedLayouts[Ord(FText[1])].FTextBefore;
       FTextAfter := FTextBefore;
     end;
+    FTextAfter := FTextAfter + Long2Fix(FFont.FCachedLayouts[Ord(FText[I])].GetWidth);
   end;
 end;
 
