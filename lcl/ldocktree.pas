@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                                LDockTree.pas
@@ -1450,7 +1449,7 @@ end;
 function TCustomAnchoredDockManager.GetPreferredTitlePosition(AWidth,
   AHeight: integer): TAnchorKind;
 begin
-  if (AWidth<=AHeight) and (AWidth<200) then
+  if AWidth>((AHeight*3) div 2) then
     Result:=akLeft
   else
     Result:=akTop;
@@ -1460,13 +1459,18 @@ procedure TCustomAnchoredDockManager.UpdateTitlePosition(Control: TControl);
 var
   TitlePos: TAnchorKind;
 begin
-  TitlePos:=GetPreferredTitlePosition(Control.Width,Control.Height);
-  if TitlePos=akLeft then begin
-    Control.BorderSpacing.Left:=TitleWidth;
-    Control.BorderSpacing.Top:=0;
+  if Control.Parent is TLazDockForm then begin
+    TitlePos:=GetPreferredTitlePosition(Control.Width,Control.Height);
+    if TitlePos=akLeft then begin
+      Control.BorderSpacing.Left:=TitleWidth;
+      Control.BorderSpacing.Top:=0;
+    end else begin
+      Control.BorderSpacing.Left:=0;
+      Control.BorderSpacing.Top:=TitleHeight;
+    end;
   end else begin
     Control.BorderSpacing.Left:=0;
-    Control.BorderSpacing.Top:=TitleHeight;
+    Control.BorderSpacing.Top:=0;
   end;
 end;
 
@@ -2205,6 +2209,7 @@ begin
             end;
           end;
         end;
+        UpdateTitlePosition(Control);
       end;
       
     end else begin
@@ -2253,6 +2258,8 @@ begin
         MainSplitter.AnchorToNeighbour(ShrinkSide,0,EnlargeSplitter);
         EnlargeSplitter.AnchorSame(Side,Neighbour);
         Control.AnchorSame(Side,Neighbour);
+        UpdateTitlePosition(Control);
+        UpdateTitlePosition(Neighbour);
       end;
     end;
   finally
