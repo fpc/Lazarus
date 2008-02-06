@@ -539,7 +539,7 @@ begin
     end;
 
     if Offset = 0 then Exit;
-    
+
     MoveSplitter(Offset);
   end;
 end;
@@ -594,19 +594,69 @@ function TCustomSplitter.FindAlignOtherControl: TControl;
 // if this splitter is aligned, then it returns the control that will be
 // resized as well. Normally an alClient aligned control.
 // Or: if alTop,alBottom the alLeft/alRight controls.
+// And distance to oposite control should be minimal
+
+  function CalcDistance(TestControl: TControl): Integer;
+  var
+    TestPosition,
+    MyPosition: Integer;
+  begin
+    case Align of
+      alLeft:
+        begin
+          MyPosition := BoundsRect.Right;
+          TestPosition := TestControl.Left;
+          Result := TestPosition - MyPosition;
+        end;
+      alRight:
+        begin
+          MyPosition := Left;
+          TestPosition := TestControl.BoundsRect.Right;
+          Result := MyPosition - TestPosition;
+        end;
+      alTop:
+        begin
+          MyPosition := BoundsRect.Bottom;
+          TestPosition := TestControl.Top;
+          Result := TestPosition - MyPosition;
+        end;
+      alBottom:
+        begin
+          MyPosition := Top;
+          TestPosition := TestControl.BoundsRect.Bottom;
+          Result := MyPosition - TestPosition;
+        end;
+      else
+        Result := -1;
+    end;
+  end;
+
 var
   CurControl: TControl;
-  i: Integer;
+  i, CurDistance, MinDistance: Integer;
 begin
   Result := nil;
-  for i := Parent.ControlCount-1 downto 0 do begin
+  MinDistance := MaxInt;
+  for i := Parent.ControlCount-1 downto 0 do
+  begin
     CurControl := Parent.Controls[i];
-    if (CurControl <> Self)
-    and ((CurControl.Align = alClient)
-         or ((Self.Align in [alTop,alBottom])
-             and (CurControl.Align in [alLeft,alRight]))) then begin
-      Result := CurControl;
-      exit;
+    if (CurControl <> Self) and (CurControl.Visible) and
+       (
+         (CurControl.Align = alClient) or
+         (
+           (Self.Align in [alTop, alBottom]) and
+           (CurControl.Align in [alLeft, alRight])
+         )
+       ) then
+    begin
+      CurDistance := CalcDistance(CurControl);
+      if (CurDistance >= 0) and (CurDistance < MinDistance) then
+      begin
+        Result := CurControl;
+        MinDistance := CurDistance;
+        if CurDistance = 0 then
+          Exit;
+      end;
     end;
   end;
 end;
