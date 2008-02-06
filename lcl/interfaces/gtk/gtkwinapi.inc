@@ -5661,10 +5661,11 @@ begin
 *)
     DEFAULT_GUI_FONT, SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
       begin
-        If FStockSystemFont <> 0 then begin //This is a Temporary Hack!!! This
+        // MG: this should only be done, when theme changed:
+        {If FStockSystemFont <> 0 then begin //This is a Temporary Hack!!! This
           DeleteObject(FStockSystemFont);   //should really only be done on
           FStockSystemFont := 0;            //theme change.
-        end;
+        end;}
 
         If FStockSystemFont = 0 then
           FStockSystemFont := HFont(PtrUInt(CreateDefaultFont));
