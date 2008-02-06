@@ -91,8 +91,7 @@
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
         <short>
-          <i>TCustomDBGrid </i>
-- the base class for <i>TDBGrid</i>, for displaying database information in the manner of a <i>StringGrid</i>
+          <i>TCustomDBGrid</i> - the Base class for <i>TDBGrid,</i> a data-aware component for displaying information from a database in the manner of a <i>Stringrid</i>
         </short>
         <seealso>
           <link id="#lcl.DBCtrls.HowToUseDataAwareControls"/>
@@ -100,8 +99,13 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TColumn">
-        <short/>
-        <descr/>
+        <short>
+          <i>TColumn </i>- one of the physical columns of the display in a DataBase Grid</short>
+        <descr>
+          <p>
+            <i>TColumn </i>- one of the physical columns of the display in a DataBase Grid</p>
+          <p>Each column may display the information held in a Field of the DataSet to which the DBGrid is attached, but the order of appearance of the columns need not correspond to the order in which the Fields exist in the DataSet, nor need all Fields be represented by a Column.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1409,7 +1413,7 @@
       </element>
       <!-- function Visibility: private -->
       <element name="TColumn.GetField">
-        <short/>
+        <short>Find which field's data is to be displayed in this column</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1816,7 +1820,7 @@
       </element>
       <!-- function Visibility: private -->
       <element name="TColumn.GetDataSet">
-        <short/>
+        <short>Find which DataSet is to be used</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1924,8 +1928,13 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TColumn.Create">
-        <short/>
-        <descr/>
+        <short>Creates a new instance of this collection item.</short>
+        <descr>
+          <var>Create</var> instantiates a new item in a <link id="TCollection"/>. It
+is called by the <link id="TCollection.Add"/> function and should under
+normal circumstances never be called directly.
+
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1935,8 +1944,15 @@
       </element>
       <!-- destructor Visibility: public -->
       <element name="TColumn.Destroy">
-        <short/>
-        <descr/>
+        <short>Destroys this collection item.</short>
+        <descr>
+          <p>
+            <var>Destroy</var> removes the item from the managing collection 
+and Destroys the item instance. 
+</p>
+          <p>This is the only way to remove items from a collection;
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1949,7 +1965,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TColumn.IsDefault">
-        <short/>
+        <short>Is this the default column for consideration in this DB grid?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1966,8 +1982,9 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TColumn.Field">
-        <short/>
-        <descr/>
+        <short>The <i>Field </i>in the <i>DataSet</i> that is to be associated with this <i>Column</i>, for display , editinig etc</short>
+        <descr>Refers to the whole entity <i>Field</i>, including contents, name, position in the dataset, properties such as read/write enabling etc
+</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
@@ -2209,7 +2226,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TColumn.DisplayFormat">
-        <short/>
+        <short>The format to be used for display in this column</short>
         <descr/>
         <seealso/>
       </element>
@@ -2257,7 +2274,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TColumn.FieldName">
-        <short/>
+        <short>The name of the field (as a string), as returned from the dataset</short>
         <descr/>
         <seealso/>
       </element>
@@ -3941,7 +3958,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDbGrid.SelectedField">
-        <short>The selected field or column, for editing, data input or simply viewing</short>
+        <short>The selected field, for editing, data input or simply viewing</short>
         <descr/>
         <seealso/>
       </element>
@@ -4617,8 +4634,9 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDBGrid.SelectedColumn">
-        <short>The selected column or field for viewing or editing</short>
-        <descr>Columns and fields are often used interchangeably, but their properties are different.</descr>
+        <short>The selected column for viewing or editing</short>
+        <descr>Columns and fields are often used interchangeably, but their properties are different.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -4690,8 +4708,9 @@
         <descr>
           <p>Refers to the physical columns of the grid, displaying the contents of the relevant <i>Fields</i>
           </p>
-          <p>The columns property deals with things like the size, shape and format of the display, and contains a link to the appropriate Field.</p>
-          <p>Do no confuse Grid columns (in the display) with the SQL usage of Columns, which corresponds to Fields in our environment. The Fields consist of a series of cells arranged in Rows, which contain the actual data which are to be displayed and operated upon.</p>
+          <p>The <i>Columns</i> property is configurable from the Object Inspector by selecting the ellipsis (...) next to the property name, in which case a pop-up memo box appears to allow editing. It deals with things like the size, shape and format of the display, and contains a link to the appropriate Field. </p>
+          <p>Do no confuse Grid columns (in the display) with the SQL usage of COLUMNS, which corresponds to Fields in our environment. The Fields consist of a series of cells arranged in Records, which contain the actual data which are to be displayed and operated upon.</p>
+          <p>It is entirely possible that not all fields of the dataset are displayed, and so fields do not correspond directly to columns; in fact the <i>Columns</i> property allows the user to configure which data field is to be displayed in each column</p>
         </descr>
         <seealso/>
       </element>

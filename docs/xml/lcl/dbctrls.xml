@@ -969,15 +969,48 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBText.Loaded">
-        <short/>
-        <descr/>
+        <short>Called when the component has finished loading.</short>
+        <descr>
+          <p>
+            <var>Loaded</var> is called by the streaming system when a root
+component was completely read from a stream and all properties and 
+references to other objects have been resolved by the streaming 
+system. Descendents of <var>TComponent</var> should override this method to
+do some additional processing of properties after all published 
+properties have been set from values obtained from the stream.
+</p>
+          <p>Application programmers should never call <var>Loaded</var> directly, this
+is done automatically by the streaming system.
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TDBText.Notification">
-        <short/>
-        <descr/>
+        <short>Called by components that are freed and which received a FreeNotification.</short>
+        <descr>
+          <p>
+            <var>Notification</var> is called whenever a child component is destroyed,
+inserted or removed from the list of owned component. Components that
+were requested to send a notification when they are freed 
+((with <link id="TComponent.FreeNotification">FreeNotification</link>)
+will also call <var>Notification</var> when they are freed.
+</p>
+          <p>The <var>AComponent</var> parameter specifies which component sends the
+notification, and <var>Operation</var> specifies whether the component is
+being inserted into or removed from the child component list, or whether it
+is being destroyed.
+</p>
+          <p>Descendents of <var>TComponent</var> can use <link id="TComponent.FreeNotification">FreeNotification</link> to request
+notification of the destruction of another object. By overriding the
+<var>Notification</var> method, they can do special processing (typically,
+set a reference to this component to <var>Nil</var>) 
+when this component is destroyed. The <var>Notification</var> method is
+called quite often in the streaming process, so speed should be a
+consideration when overriding this method.
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -991,7 +1024,7 @@
       </element>
       <!-- constructor Visibility: public -->
       <element name="TDBText.Create">
-        <short/>
+        <short>Create a new instance of a Graphic Control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1002,14 +1035,14 @@
       </element>
       <!-- destructor Visibility: public -->
       <element name="TDBText.Destroy">
-        <short/>
+        <short>Destroy this instance of a graphic control and return its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBText.Field">
-        <short/>
+        <short>The field in the DataSet to which this control is to be linked. Can be referred to by name, or as an index</short>
         <descr/>
         <seealso/>
       </element>
@@ -1051,13 +1084,13 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBText.DataField">
-        <short/>
+        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBText.DataSource">
-        <short/>
+        <short>The DataSource from which information is obtained to display in this control. Usually the result of a SQLQuery</short>
         <descr/>
         <seealso/>
       </element>
@@ -2972,7 +3005,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TDBMemo.Field">
-        <short/>
+        <short>The field in the DataSet to which this control is to be linked. Can be referred to by name, or as an index</short>
         <descr/>
         <seealso/>
       </element>
@@ -3002,13 +3035,13 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBMemo.DataField">
-        <short/>
+        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBMemo.DataSource">
-        <short/>
+        <short>The DataSource from which information is obtained to display in this control. Usually the result of a SQLQuery</short>
         <descr/>
         <seealso/>
       </element>
@@ -3224,7 +3257,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGroupBox.Field">
-        <short/>
+        <short>The field in the DataSet to which this control is to be linked. Can be referred to by name, or as an index</short>
         <descr/>
         <seealso/>
       </element>
@@ -3278,13 +3311,13 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.DataField">
-        <short/>
+        <short>The name of the field, as a string (ie cannot be referred to as an Index)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGroupBox.DataSource">
-        <short/>
+        <short>The DataSource from which information is obtained to display in this control. Usually the result of a SQLQuery</short>
         <descr/>
         <seealso/>
       </element>
