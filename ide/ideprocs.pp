@@ -219,7 +219,6 @@ procedure RaiseException(const Msg: string);
 procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 function CompareBoolean(b1, b2: boolean): integer;
-function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckList(List: TFPList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
@@ -1293,37 +1292,6 @@ begin
     Result:=1
   else
     Result:=-1;
-end;
-
-function CompareStringPointerI(Data1, Data2: Pointer): integer;
-var
-  S1: PChar;
-  S2: PChar;
-  c1: Integer;
-  c2: Integer;
-begin
-  if (Data1=nil) then begin
-    if Data2=nil then begin
-      Result:=0;
-    end else begin
-      Result:=-1;
-    end;
-  end else begin
-    if Data2=nil then begin
-      Result:=1;
-    end else begin
-      S1:=PChar(Data1);
-      S2:=PChar(Data2);
-      repeat
-        c1:=Ord(S1[0]);
-        c2:=Ord(S2[0]);
-        Result:=Ord(LowerCaseTable[c1])-Ord(LowerCaseTable[c2]); //!! Must be replaced by ansi characters !!
-        if (Result<>0) or (c1=0) or (c2=0) then exit;
-        Inc(S1);
-        Inc(S2);
-      until false;
-    end;
-  end;
 end;
 
 procedure RemoveDoubles(List: TStrings);

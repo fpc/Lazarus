@@ -39,7 +39,7 @@ end;
  ------------------------------------------------------------------------------}
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  {$IFDEF WINDOWS}
+  {$IFDEF CaseInsensitiveFilenames}
   Result:=AnsiCompareText(Filename1, Filename2);
   {$ELSE}
   Result:=CompareStr(Filename1, Filename2);
@@ -72,7 +72,9 @@ function CompareFilenames(Filename1: PChar; Len1: integer;
 var
   File1: string;
   File2: string;
+  {$IFNDEF CaseInsensitiveFilenames}
   i: Integer;
+  {$ENDIF}
 begin
   if (Len1=0) or (Len2=0) then begin
     Result:=Len1-Len2;
@@ -83,22 +85,25 @@ begin
     Move(Filename1^,File1[1],Len1);
     SetLength(File2,Len2);
     Move(Filename2^,File2[1],Len2);
-    Result:=CompareFilenames(File1,File2);
+    Result:=CompareFilenames(File1,File2,true);
   end else begin
+    {$IFDEF CaseInsensitiveFilenames}
+    SetLength(File1,Len1);
+    Move(Filename1^,File1[1],Len1);
+    SetLength(File2,Len2);
+    Move(Filename2^,File2[1],Len2);
+    Result:=CompareFilenames(File1,File2);
+    {$ELSE}
     Result:=0;
     i:=0;
     while (Result=0) and ((i<Len1) and (i<Len2)) do begin
-      {$IFDEF WINDOWS}
-      Result:=Ord(LowerCaseTable[Ord(Filename1[i])])
-             -Ord(LowerCaseTable[Ord(Filename2[i])]); //!! Must be replaced by ansi characters !!
-      {$ELSE}
       Result:=Ord(Filename1[i])
-             -Ord(Filename2[i]); //!! Must be replaced by ansi characters !!
-      {$ENDIF}
+             -Ord(Filename2[i]);
       Inc(i);
     end;
     if Result=0 Then
       Result:=Len1-Len2;
+    {$ENDIF}
   end;
 end;
 

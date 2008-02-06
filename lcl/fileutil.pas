@@ -29,6 +29,10 @@ uses
   // For Smart Linking: Do not use the LCL!
   Classes, SysUtils, LCLStrConsts;
   
+{$ifdef Windows}
+{$define CaseInsensitiveFilenames}
+{$endif}
+
 const
   UTF8FileHeader = #$ef#$bb#$bf;
 

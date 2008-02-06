@@ -498,7 +498,7 @@ type
     function SynGetText: string;
     {$IFDEF SYN_LAZARUS}
     procedure SetTabChar(const AValue: Char);
-    function RealGetText: string; override;
+    function RealGetText: TCaption; override;
     {$ENDIF}
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
@@ -1923,7 +1923,7 @@ begin
   Invalidate;
 end;
 
-function TCustomSynEdit.RealGetText: string;
+function TCustomSynEdit.RealGetText: TCaption;
 begin
   if fLines<>nil then
     Result := Lines.Text
