@@ -339,7 +339,7 @@ end;
 function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
+  DevCtx: TGtk2DeviceContext absolute DC;
   
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
@@ -347,7 +347,6 @@ var
   TxtPt: TPoint;
   DCOrigin: TPoint;
   Foreground: PGDKColor;
-  UseFont: PPangoLayout;
   CurDx: PInteger;
   CurStr: PChar;
 
@@ -356,27 +355,21 @@ var
     CurScreenX: LongInt;
     CharLen: LongInt;
   begin
-    if (Dx<>nil)
-    then begin
-      CurScreenX:=X;
-      while CurCount>0 do begin
-        CharLen:=UTF8CharacterLength(CurStr);
-        //gdk_draw_glyphs(DevCtx.drawable,DevCtx.gc );
-        pango_layout_set_text(UseFont, CurStr, CharLen);
-        gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC, CurScreenX, Y,
-                                    UseFont, Foreground, nil);
-        //gdk_draw_rectangle(DevCtx.Drawable,DevCtx.GC,1,CurScreenX,Y,3,3);
-        inc(CurScreenX,CurDx^);
+    if (Dx <> nil) then
+    begin
+      CurScreenX := X;
+      while CurCount > 0 do
+      begin
+        CharLen := UTF8CharacterLength(CurStr);
+        DevCtx.DrawTextWithColors(CurStr, CharLen, CurScreenX, Y, Foreground, nil);
+        inc(CurScreenX, CurDx^);
         inc(CurDx);
-        inc(CurStr,CharLen);
-        dec(CurCount,CharLen);
+        inc(CurStr, CharLen);
+        dec(CurCount, CharLen);
       end;
     end
-    else begin
-      pango_layout_set_text(UseFont, Str, Count);
-      gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC, X, Y, UseFont,
-                                  Foreground, nil);
-    end;
+    else
+      DevCtx.DrawTextWithColors(Str, Count, X, Y, Foreground, nil);
   end;
 
 begin
@@ -395,11 +388,9 @@ begin
     exit;
   end;
 
-  UseFont:=GetGtkFont(DevCtx);
-
   // to reduce flickering calculate first and then paint
   
-  DCOrigin:=DevCtx.Offset;
+  DCOrigin := DevCtx.Offset;
 
   if (Options and ETO_CLIPPED) <> 0
   then begin
@@ -434,26 +425,28 @@ begin
   CurDx:=Dx;
   CurStr:=Str;
   LineStart:=Str;
-  if LineLen < 0 then begin
+  if LineLen < 0 then
+  begin
     LineLen:=Count;
     if Count> 0 then
       DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
   end else
-  Begin  //write multiple lines
-    StrEnd:=Str+Count;
-    while LineStart < StrEnd do begin
-      LineEnd:=LineStart+LineLen;
+  begin  //write multiple lines
+    StrEnd := Str + Count;
+    while LineStart < StrEnd do
+    begin
+      LineEnd := LineStart + LineLen;
       if LineLen>0 then
         DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
-      inc(TxtPt.Y,LineHeight);
-      LineStart:=LineEnd+1; // skip #13
+      inc(TxtPt.Y, LineHeight);
+      LineStart := LineEnd + 1; // skip #13
       if (LineStart<StrEnd) and (LineStart^ in [#10,#13])
       and (LineStart^ <> LineEnd^) then
         inc(LineStart); // skip #10
-      Count:=StrEnd-LineStart;
-      LineLen:=FindLineLen(LineStart,Count);
-      if LineLen<0 then
-        LineLen:=Count;
+      Count := StrEnd - LineStart;
+      LineLen := FindLineLen(LineStart, Count);
+      if LineLen < 0 then
+        LineLen := Count;
     end;
   end;
 
@@ -562,32 +555,28 @@ end;
 function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 var
-  DevCtx: TGtkDeviceContext absolute DC;
+  DevCtx: TGtk2DeviceContext absolute DC;
   DCOrigin: TPoint;
   yOffset: integer;
-  UseFont: PPangoLayout;
 begin
   Result := IsValidDC(DC);
   if not Result then Exit;
   if Count <= 0 then Exit;
   
-  UseFont := GetGtkFont(DevCtx);
   UpdateDCTextMetric(DevCtx);
   DCOrigin := DevCtx.Offset;
   
   with DevCtx.DCTextMetric.TextMetric do
-    yOffset:= tmHeight-tmDescent-tmAscent;
-  if yOffset<0 then yOffset:=0;
+    yOffset := tmHeight-tmDescent-tmAscent;
+  if yOffset < 0 then
+    yOffset := 0;
     
   DevCtx.SelectedColors := dcscCustom;
   EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-  pango_layout_set_text(UseFont, Str, Count);
-  EnsureGCColor(DC, dccCurrentTextColor, True, False);
-
-    //DebugLn(['TGtk2WidgetSet.TextOut Str="',copy(Str,1,Count),'" X=',X+DCOrigin.X,',',Y+DCOrigin.Y+yOffset]);
-  gdk_draw_layout_with_colors(DevCtx.drawable, DevCtx.GC,
-                        X+DCOrigin.X, Y+DCOrigin.Y+yOffset, UseFont, nil, nil);
+  DevCtx.DrawTextWithColors(Str, Count,
+    X + DCOrigin.X, Y + DCOrigin.Y + yOffset,
+    nil, nil);
 end;
 
 function TGtk2WidgetSet.UpdateWindow(Handle: HWND): Boolean;

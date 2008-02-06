@@ -52,8 +52,63 @@ function gdk_x11_image_get_ximage(image:PGdkImage):PXImage;cdecl;external gdklib
 procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
   dashlist:Pgint8; n:gint); cdecl; external gdkdll name 'gdk_gc_set_dashes';
 
+// - - - - - - - - - pango extras - - - - - - - - -
 type
   PPPangoAttrList = ^PPangoAttrList;
+// pango 1.6
+  PPangoMatrix = ^TPangoMatrix;
+  TPangoMatrix = record
+    xx: double;
+    xy: double;
+    yx: double;
+    yy: double;
+    x0: double;
+    y0: double;
+  end;
+
+// pango 1.8
+  TPangoRenderer = pointer;
+  PPangoRenderer = ^TPangoRenderer;
+  TPangoRenderPart = (
+    PANGO_RENDER_PART_FOREGROUND,
+    PANGO_RENDER_PART_BACKGROUND,
+    PANGO_RENDER_PART_UNDERLINE,
+    PANGO_RENDER_PART_STRIKETHROUGH
+  );
+
+// pango 1.16
+  PPangoGravity = ^TPangoGravity;
+  TPangoGravity = (
+    PANGO_GRAVITY_SOUTH,
+    PANGO_GRAVITY_EAST,
+    PANGO_GRAVITY_NORTH,
+    PANGO_GRAVITY_WEST,
+    PANGO_GRAVITY_AUTO
+  );
+  
+function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
+procedure pango_context_set_base_gravity(Context: PPangoContext; gravity: TPangoGravity); cdecl; external pangolib;
+
+function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
+procedure pango_context_set_matrix(context: PPangoContext; const matrix: PPangoMatrix); cdecl; external pangolib;
+procedure pango_matrix_translate(matrix: PPangoMatrix; tx, ty: double); cdecl; external pangolib;
+procedure pango_matrix_rotate(matrix: PPangoMatrix; degrees: double); cdecl; external pangolib;
+
+function pango_font_description_get_gravity(desc: PPangoFontDescription): TPangoGravity; cdecl; external pangolib;
+procedure pango_font_description_set_gravity(desc: PPangoFontDescription; gravity: TPangoGravity); cdecl; external pangolib;
+
+function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl; external pangolib;
+
+procedure pango_renderer_draw_layout(renderer: PPangoRenderer; layout: PPangoLayout; x, y: Integer); cdecl; external pangolib;
+
+function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
+
+{$if defined(VER2_0) or defined(VER2_2_0)}
+function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
+{$ifend}
+
+// - - - - - - - - - gtk extras - - - - - - - - -
+
 procedure gtk_im_context_get_preedit_string_laz(context:PGtkIMContext; str:PPgchar; attrs:PPPangoAttrList; cursor_pos:Pgint); cdecl; external gtklib name 'gtk_im_context_get_preedit_string';
 function gdk_event_new(_type: TGdkEventType): PGdkEvent; cdecl; external gdklib;
 
@@ -68,7 +123,11 @@ procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; visible_window:
 // gtk 2.6
 function gtk_cell_view_get_displayed_row(cell_view: Pointer): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';
 
+// - - - - - - - - - gdk extras - - - - - - - - -
 
+type
+  PGdkPangoRenderer = pointer;
+  
 // gdk 2.2
 procedure gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
@@ -83,6 +142,12 @@ function gdk_cursor_new_from_pixbuf(display: PGdkDisplay; pixbuf: PGdkPixbuf; x,
 function gdk_display_get_default_cursor_size(display: PGdkDisplay): guint; cdecl; external gdklib;
 procedure gdk_display_get_maximal_cursor_size(display: PGdkDisplay; w, h: pguint); cdecl; external gdklib;
 
+// gdk 2.6
+function gdk_pango_renderer_get_default(screen: PGdkScreen): PPangoRenderer; cdecl; external gdklib;
+procedure gdk_pango_renderer_set_drawable(gdk_renderer: PGdkPangoRenderer; drawable: PGdkDrawable); cdecl; external gdklib;
+procedure gdk_pango_renderer_set_gc(gdk_renderer: PGdkPangoRenderer; gc: PGdkGC); cdecl; external gdklib;
+procedure gdk_pango_renderer_set_override_color(gdk_renderer: PGdkPangoRenderer; part: TPangoRenderPart; color: PGdkColor); cdecl; external gdklib;
+
 {$ifdef GTK_2_8}
 // gdk 2.8
 procedure gdk_display_warp_pointer(display: PGdkDisplay; screen: PGdkScreen; x, y: gint); cdecl; external gdklib;
@@ -95,42 +160,3 @@ function gdk_screen_is_composited(screen: PGdkScreen): gboolean; cdecl; external
 function gdk_display_supports_cursor_alpha(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
 function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdecl; external gdklib;
 }
-
-// pango 1.6
-type
-   PPangoMatrix = ^TPangoMatrix;
-   TPangoMatrix = record
-     xx: double;
-     xy: double;
-     yx: double;
-     yy: double;
-     x0: double;
-     y0: double;
-   end;
-   
-// pango 1.16
-   PPangoGravity = ^TPangoGravity;
-   TPangoGravity = (
-     PANGO_GRAVITY_SOUTH,
-     PANGO_GRAVITY_EAST,
-     PANGO_GRAVITY_NORTH,
-     PANGO_GRAVITY_WEST,
-     PANGO_GRAVITY_AUTO
-   );
-   
-function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
-procedure pango_context_set_base_gravity(Context: PPangoContext; gravity: TPangoGravity); cdecl; external pangolib;
-
-function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
-procedure pango_context_set_matrix(context: PPangoContext; const matrix: PPangoMatrix); cdecl; external pangolib;
-
-function pango_font_description_get_gravity(desc: PPangoFontDescription): TPangoGravity; cdecl; external pangolib;
-procedure pango_font_description_set_gravity(desc: PPangoFontDescription; gravity: TPangoGravity); cdecl; external pangolib;
-
-function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl; external pangolib;
-
-function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
-
-{$if defined(VER2_0) or defined(VER2_2_0)}
-function pango_layout_get_font_description(layout:PPangoLayout):PPangoFontDescription; cdecl; external pangolib;
-{$ifend}

@@ -1367,7 +1367,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
-  Result:=CreateFontIndirectEx(LogFont,'');
+  Result := CreateFontIndirectEx(LogFont,'');
 end;
 
 {------------------------------------------------------------------------------
@@ -3148,7 +3148,6 @@ begin
 
   if not IsValidDC(DC) then Exit(0);
   if Count < -1 then Exit(0);
-  
 
   // Don't try to use StrLen(Str) in cases count >= 0
   // In those cases str is NOT required to have a null terminator !

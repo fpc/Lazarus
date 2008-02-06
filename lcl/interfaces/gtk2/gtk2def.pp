@@ -32,9 +32,7 @@ interface
 
 uses
   glib2, gdk2pixbuf, pango, gdk2, gtk2,
-//  Classes, SysUtils, LCLIntf, LCLProc, LCLType, DynHashArray,
-//  GraphType, GtkExtra,
-  GtkDef;
+  GtkExtra, GtkDef;
 
 
 type
@@ -46,6 +44,7 @@ type
   protected
     function GetFunction: TGdkFunction; override;
   public
+    procedure DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
   end;
 
 implementation

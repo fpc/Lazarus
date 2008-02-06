@@ -41,7 +41,7 @@ function TGtk2WidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar;
   Count: Longint): Boolean;
 begin
   // all fonts are UTF-8 under gtk2 => no mapping needed
-  Result:=TextOut(DC,X,Y,Str,Count);
+  Result := TextOut(DC, X, Y, Str, Count);
 end;
 
 function TGtk2WidgetSet.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
