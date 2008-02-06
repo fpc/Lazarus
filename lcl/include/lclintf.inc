@@ -154,6 +154,11 @@ begin
   WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect, AOperation);
 end;
 
+procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+begin
+  WidgetSet.DrawGrid(DC, R, DX, DY);
+end;
+
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin

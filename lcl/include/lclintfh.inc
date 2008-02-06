@@ -67,6 +67,7 @@ function DCClipRegionValid(DC: HDC): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$E
 procedure DeallocateHWnd(Wnd: HWND); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

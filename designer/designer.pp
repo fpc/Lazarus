@@ -2101,20 +2101,12 @@ begin
     end;
 
     // paint points
-    if ShowGrid then begin
-      StepX:=GridSizeX;
-      StepY:=GridSizeY;
-      MaxX:=AWinControl.ClientWidth;
-      MaxY:=AWinControl.ClientHeight;
-      x := 0;
-      while x <= MaxX do begin
-        y := 0;
-        while y <= MaxY do begin
-          aDDC.Canvas.Pixels[x, y] := GridColor;
-          Inc(y, StepY);
-        end;
-        Inc(x, StepX);
-      end;
+    if ShowGrid then
+    begin
+      ADDC.Canvas.Pen.Color := GridColor;
+      ADDC.Canvas.Pen.Width := 1;
+      ADDC.Canvas.Pen.Style := psSolid;
+      DrawGrid(ADDC.Canvas.Handle, AWinControl.ClientRect, GridSizeX, GridSizeY);
     end;
     
     if ShowBorderSpacing then begin
