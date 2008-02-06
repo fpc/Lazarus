@@ -98,15 +98,6 @@ function gdk_display_supports_cursor_color(display: PGdkDisplay): gBoolean; cdec
 
 // pango 1.6
 type
-   PPangoGravity = ^TPangoGravity;
-   TPangoGravity = (
-     PANGO_GRAVITY_SOUTH,
-     PANGO_GRAVITY_EAST,
-     PANGO_GRAVITY_NORTH,
-     PANGO_GRAVITY_WEST,
-     PANGO_GRAVITY_AUTO
-   );
-   
    PPangoMatrix = ^TPangoMatrix;
    TPangoMatrix = record
      xx: double;
@@ -116,11 +107,28 @@ type
      x0: double;
      y0: double;
    end;
-
-function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
-function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
-
+   
 // pango 1.16
+   PPangoGravity = ^TPangoGravity;
+   TPangoGravity = (
+     PANGO_GRAVITY_SOUTH,
+     PANGO_GRAVITY_EAST,
+     PANGO_GRAVITY_NORTH,
+     PANGO_GRAVITY_WEST,
+     PANGO_GRAVITY_AUTO
+   );
+   
+function pango_context_get_gravity(Context: PPangoContext): TPangoGravity; cdecl; external pangolib;
+procedure pango_context_set_base_gravity(Context: PPangoContext; gravity: TPangoGravity); cdecl; external pangolib;
+
+function pango_context_get_matrix(Context: PPangoContext): PPangoMatrix; cdecl; external pangolib;
+procedure pango_context_set_matrix(context: PPangoContext; const matrix: PPangoMatrix); cdecl; external pangolib;
+
+function pango_font_description_get_gravity(desc: PPangoFontDescription): TPangoGravity; cdecl; external pangolib;
+procedure pango_font_description_set_gravity(desc: PPangoFontDescription; gravity: TPangoGravity); cdecl; external pangolib;
+
+function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl; external pangolib;
+
 function pango_version_check(required_major, required_minor, required_micro: integer): PChar; cdecl; external pangolib;
 
 {$if defined(VER2_0) or defined(VER2_2_0)}
