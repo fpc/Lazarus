@@ -627,10 +627,13 @@ end;
 procedure TLazDockTree.BreakAnchors(Zone: TDockZone);
 begin
   if Zone=nil then exit;
-  if (Zone.ChildControl<>nil) and (Zone.ChildControl<>DockSite) then begin
+  if (Zone.ChildControl<>nil) and (Zone.ChildControl<>DockSite) then
+  begin
     Zone.ChildControl.AnchorSide[akLeft].Control:=nil;
     Zone.ChildControl.AnchorSide[akTop].Control:=nil;
     Zone.ChildControl.Anchors:=[akLeft,akTop];
+    Zone.ChildControl.BorderSpacing.Left:=0;
+    Zone.ChildControl.BorderSpacing.Top:=0;
   end;
   BreakAnchors(Zone.FirstChild);
   BreakAnchors(Zone.NextSibling);
@@ -824,9 +827,11 @@ begin
         CurControl.AnchorSide[a].Side := DefaultSideForAnchorKind[OppositeAnchor[a]];
     end;
     CurControl.Anchors := NewAnchors;
-    // how to set space for header?
-    //CurControl.BorderSpacing.Top := CurControl.BoundsRect.Top;
-    //CurControl.BorderSpacing.Left := CurControl.BoundsRect.Left;
+    // set space for header
+    case CurControl.DockOrientation of
+      doHorizontal: CurControl.BorderSpacing.Top := DefaultDockGrabberSize;
+      doVertical: CurControl.BorderSpacing.Left := DefaultDockGrabberSize;
+    end;
   end;
 
   // anchor controls for childs and siblings
