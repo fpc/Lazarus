@@ -31,11 +31,7 @@ interface
 
 uses
   Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
-  Graphics, Controls, ExtCtrls, Forms, Menus, Themes
-  {$IFDEF VER2_0}
-  // needed for 2.0.4
-  ,LCLIntf
-  {$ENDIF};
+  Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf;
   
 type
   TLazDockPages = class;
@@ -648,10 +644,12 @@ var
   d: integer;
   DockCaption: String;
   TextStyle: TTextStyle;
+  // LCL dont handle orientation in TFont
+  OldFont, RotatedFont: HFONT;
+  ALogFont: TLogFont;
 begin
   DockCaption := DockSite.GetDockCaption(AControl);
   TextStyle.Alignment := taLeftJustify;
-  TextStyle.Layout := tlCenter;
   TextStyle.SingleLine := True;
   TextStyle.Clipping := True;
   TextStyle.Opaque := False;
@@ -667,6 +665,7 @@ begin
   case AControl.DockOrientation of
     doHorizontal:
       begin
+        TextStyle.Layout := tlCenter;
         d := DrawRect.Bottom - DrawRect.Top;
         BtnRect := DrawRect;
         BtnRect.Left := BtnRect.Right - d;
@@ -687,6 +686,7 @@ begin
       end;
     doVertical:
       begin
+        TextStyle.Layout := tlBottom;
         d := DrawRect.Right - DrawRect.Left;
         BtnRect := DrawRect;
         BtnRect.Bottom := BtnRect.Top + d;
@@ -703,7 +703,17 @@ begin
         DrawRect.Top := BtnRect.Bottom;
         InflateRect(DrawRect, 0, -4);
 
+        OldFont := 0;
+        if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
+        begin
+          ALogFont.lfEscapement := 900;
+          RotatedFont := CreateFontIndirect(ALogFont);
+          if RotatedFont <> 0 then
+            OldFont := SelectObject(ACanvas.Handle, RotatedFont);
+        end;
         ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, DockCaption, TextStyle);
+        if OldFont <> 0 then
+          DeleteObject(SelectObject(ACanvas.Handle, OldFont));
       end;
   end;
 end;
