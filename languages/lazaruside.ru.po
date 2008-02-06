@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-28 03:01+0300\n"
+"PO-Revision-Date: 2008-02-07 00:59+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2063,7 +2063,7 @@ msgstr "Создать файлы .po"
 
 #: lazarusidestrconsts:dlgpocreateappbundle
 msgid "Create Application Bundle"
-msgstr ""
+msgstr "Создать Application Bundle"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
@@ -2911,7 +2911,7 @@ msgstr "Ошибка перемещения компонента %s:%s"
 
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
-msgstr ""
+msgstr "Во время создания Application Bundle произошла ошибка: "
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -4135,7 +4135,7 @@ msgstr "Наследование"
 
 #: lazarusidestrconsts:dlgcoinherited
 msgid "Inherited"
-msgstr "Унаследованные"
+msgstr "Унаследованный"
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -4295,7 +4295,7 @@ msgstr "GUID"
 
 #: lazarusidestrconsts:liscodehelpinsertalink
 msgid "Insert a link ..."
-msgstr ""
+msgstr "Вставить ссылку ..."
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -4351,7 +4351,7 @@ msgstr "Вставить элемент ниже"
 
 #: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
 msgid "Insert paragraph formatting tag"
-msgstr ""
+msgstr "Вставить тег форматирования для абзаца"
 
 #: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
@@ -6247,7 +6247,7 @@ msgstr "Вставить выбранные компоненты из буфер
 
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
-msgstr ""
+msgstr "Редактор путей"
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
@@ -6535,7 +6535,7 @@ msgstr "Обнаружен файл сведений проекта"
 
 #: lazarusidestrconsts:lisprojectisrunnable
 msgid "Project is runnable"
-msgstr "Проект запускаемый"
+msgstr "Проект является запускаемым"
 
 #: lazarusidestrconsts:lisprojectmacroproperties
 msgid "Project macro properties"
@@ -7351,7 +7351,7 @@ msgstr "Поиск или фильтрация фраз в списке"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
-msgstr "Пути поиска:"
+msgstr "Пути поиска"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -8387,7 +8387,7 @@ msgstr "Каталог %s проекта,%sсодержащий файлы .dpr,
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
-msgstr ""
+msgstr "Требуемый для исполнения Application Bundle %s%sне существует либо не является исполнимым файлом.%sВы хотите создать его?%s%sДля настройки см. Проект -> Параметры проекта -> Приложение."
 
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
@@ -8507,7 +8507,7 @@ msgstr "Файл компилятора для пакета %s - недопус�
 
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
-msgstr ""
+msgstr "Редактор компонента для класса %s%s%s вызвал ошибку:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
