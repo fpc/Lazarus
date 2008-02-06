@@ -2077,7 +2077,6 @@ procedure TDesigner.PaintClientGrid(AWinControl: TWinControl;
 var
   Clip: integer;
   Count: integer;
-  x,y, StepX, StepY, MaxX, MaxY: integer;
   i: integer;
   CurControl: TControl;
 begin
