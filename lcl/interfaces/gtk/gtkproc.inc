@@ -1706,10 +1706,10 @@ begin
   with TGtkDeviceContext(DC) do
   begin
     case ColorType of
-    dccCurrentBackColor: GDIColor:=@CurrentBackColor;
-    dccCurrentTextColor: GDIColor:=@CurrentTextColor;
-    dccGDIBrushColor   : GDIColor:=@(GetBrush^.GDIBrushColor);
-    dccGDIPenColor     : GDIColor:=@(GetPen^.GDIPenColor);
+      dccCurrentBackColor: GDIColor:=@CurrentBackColor;
+      dccCurrentTextColor: GDIColor:=@CurrentTextColor;
+      dccGDIBrushColor   : GDIColor:=@(GetBrush^.GDIBrushColor);
+      dccGDIPenColor     : GDIColor:=@(GetPen^.GDIPenColor);
     end;
   end;
   if GDIColor=nil then exit;
@@ -8334,7 +8334,7 @@ begin
     RealizeGDKColor(nil,Color);
 end;
 
-Function GetSysGCValues(Color: TColorRef;
+function GetSysGCValues(Color: TColorRef;
   ThemeWidget: PGtkWidget): TGDKGCValues;
 // ThemeWidget can be nil
 
@@ -8361,11 +8361,11 @@ var
 begin
   BaseColor := Color and $FF;
 
-  {Set defaults in case something goes wrong}
+  // Set defaults in case something goes wrong
   FillChar(Result, SizeOf(Result), 0);
-  Style:=nil;
-  GC:=nil;
-  Pixmap:=nil;
+  Style := nil;
+  GC := nil;
+  Pixmap := nil;
 
   SysColor := ColorToRGB(BaseColor);
   Result.Fill := GDK_Solid;
@@ -8377,7 +8377,7 @@ begin
   {$IfDef Disable_GC_SysColors}
   exit;
   {$EndIf}
-  Case BaseColor of
+  case BaseColor of
     {These are WM/X defined, but might be possible to get
 
     COLOR_CAPTIONTEXT
@@ -8396,17 +8396,21 @@ begin
     COLOR_BACKGROUND:
       begin
         Style := GetStyle(lgsDefault);
-        If Style = nil then
+        if Style = nil then
           Style := GetStyle(lgsWindow);
-        If Style = nil then
+        if Style = nil then
           exit;
         Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
-        If Pixmap <> nil then begin
+        if Pixmap <> nil then
+        begin
           Result.Fill := GDK_Tiled;
           Result.Tile := Pixmap;
-        end else begin
+        end
+        else
+        begin
           GC := Style^.bg_gc[GTK_STATE_NORMAL];
-          If GC = nil then begin
+          if GC = nil then
+          begin
             Result.Fill := GDK_Solid;
             Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
           end
@@ -8418,18 +8422,22 @@ begin
     COLOR_INFOBK :
       begin
         Style := GetStyle(lgsTooltip);
-        If Style = nil then
+        if Style = nil then
           Style := GetStyle(lgsWindow);
-        If Style = nil then
+        if Style = nil then
           exit;
 
         Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
-        If Pixmap <> nil then begin
+        if Pixmap <> nil then
+        begin
           Result.Fill := GDK_Tiled;
           Result.Tile := Pixmap;
-        end else begin
+        end
+        else
+        begin
           GC := Style^.bg_gc[GTK_STATE_NORMAL];
-          If GC = nil then begin
+          if GC = nil then
+          begin
             Result.Fill := GDK_Solid;
             Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
           end
@@ -8442,14 +8450,15 @@ begin
       begin
         Style := GetStyle(lgsTooltip);
 
-        If Style = nil then
+        if Style = nil then
           Style := GetStyle(lgsWindow);
 
-        If Style = nil then
+        if Style = nil then
           exit;
 
         GC := Style^.fg_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.fg[GTK_STATE_NORMAL];
         end
@@ -8462,21 +8471,24 @@ begin
     COLOR_SCROLLBAR,
     COLOR_BTNFACE :
       begin
-        Case BaseColor of
+        case BaseColor of
           COLOR_FORM: Style := GetStyle(lgsWindow);
           COLOR_BTNFACE: Style := GetStyle(lgsButton);
           COLOR_MENU: Style := GetStyle(lgsMenu);
           COLOR_SCROLLBAR: Style := GetStyle(lgsHorizontalScrollbar);
         end;
-        If Style = nil then
+        if Style = nil then
           exit;
         Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
-        If Pixmap <> nil then begin
+        if Pixmap <> nil then
+        begin
           Result.Fill := GDK_Tiled;
           Result.Tile := Pixmap;
-        end else begin
+        end else
+        begin
           GC := Style^.bg_gc[GTK_STATE_NORMAL];
-          If GC = nil then begin
+          if GC = nil then
+          begin
             Result.Fill := GDK_Solid;
             Result.foreground := Style^.bg[GTK_STATE_NORMAL];
           end
@@ -8489,10 +8501,11 @@ begin
     COLOR_BTNSHADOW :
       begin
         Style := GetStyle(lgsButton);
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.dark_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.dark[GTK_STATE_NORMAL];
         end
@@ -8503,10 +8516,11 @@ begin
     COLOR_GRAYTEXT :
       begin
         Style := GetStyle(lgsDefault);
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.text_gc[GTK_STATE_INSENSITIVE];
-        if GC=nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.text[GTK_STATE_NORMAL];
         end else
@@ -8516,14 +8530,15 @@ begin
     COLOR_MENUTEXT,
     COLOR_BTNTEXT :
       begin
-        Case BaseColor of
+        case BaseColor of
           COLOR_BTNTEXT : Style := GetStyle(lgsButton);
           COLOR_MENUTEXT : Style := GetStyle(lgsMenuitem);
         end;
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.fg_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.fg[GTK_STATE_NORMAL];
         end
@@ -8534,10 +8549,11 @@ begin
     COLOR_WINDOWTEXT:
       begin
         Style := GetStyle(lgsDefault);
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.text_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.text[GTK_STATE_NORMAL];
         end
@@ -8549,10 +8565,11 @@ begin
     COLOR_BTNHIGHLIGHT :
       begin
         Style := GetStyle(lgsButton);
-        If Style = nil then
+        if Style = nil then
           exit;
         GC := Style^.light_gc[GTK_STATE_NORMAL];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.light[GTK_STATE_NORMAL];
         end
@@ -8566,9 +8583,11 @@ begin
         if Style = nil then
           exit;
         GC := Style^.base_gc[GTK_STATE_NORMAL];
-        if (GC = nil) then begin
+        if (GC = nil) then
+        begin
           Result.Fill := GDK_Solid;
-          if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then begin
+          if Style^.base[GTK_STATE_NORMAL].Pixel<>0 then
+          begin
             Result.foreground := Style^.base[GTK_STATE_NORMAL];
             Result.background := Style^.base[GTK_STATE_NORMAL];
           end;
@@ -8583,7 +8602,8 @@ begin
         If Style = nil then
           exit;
         GC := Style^.bg_gc[GTK_STATE_SELECTED];
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.bg[GTK_STATE_SELECTED];
         end
@@ -8594,14 +8614,15 @@ begin
     COLOR_HIGHLIGHTTEXT :
       begin
         Style := GetStyle(lgsDefault);
-        If Style = nil then
+        if Style = nil then
           exit;
         {$IFDEF Gtk1}
         GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
         {$ELSE}
         GC := Style^.text_gc[GTK_STATE_SELECTED];
         {$ENDIF}
-        If GC = nil then begin
+        if GC = nil then
+        begin
           Result.Fill := GDK_Solid;
           Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
         end
