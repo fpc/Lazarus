@@ -1701,8 +1701,13 @@ begin
   {$endif}
 
   AFont := Font;
-  if AFont.Angle <> 0 then
-    Rotate(-0.1 * AFont.Angle);
+  with AFont do
+    if Angle <> 0 then
+    begin
+      Translate(x, y);
+      Rotate(-0.1 * Angle);
+      Translate(-x, -y);
+    end;
 
   // what about AFont.Metrics.descent and AFont.Metrics.leading ?
   y := y + AFont.Metrics.ascent;
@@ -1743,7 +1748,9 @@ begin
   with Font do
     if Angle <> 0 then
     begin
+      Translate(x, y);
       Rotate(-0.1 * Angle);
+      Translate(-x, -y);
       // todo: something wrong with coordinates happen after that
     end;
   RestoreTextColor;
