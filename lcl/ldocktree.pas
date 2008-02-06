@@ -166,6 +166,8 @@ type
   TCustomAnchoredDockManager = class(TDockManager)
   private
     FSplitterSize: integer;
+    FTitleHeight: integer;
+    FTitleWidth: integer;
     FUpdateCount: integer;
   protected
     procedure DeleteSideSplitter(Splitter: TLazDockSplitter; Side: TAnchorKind;
@@ -175,6 +177,8 @@ type
     procedure DeletePages(Pages: TLazDockPages);
     procedure DeleteDockForm(ADockForm: TLazDockForm);
     function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
+    function GetPreferredTitlePosition(AWidth, AHeight: integer): TAnchorKind;
+    procedure UpdateTitlePosition(Control: TControl);
   public
     constructor Create;
     procedure BeginUpdate; override;
@@ -195,6 +199,8 @@ type
     function GetSplitterWidth(Splitter: TControl): integer;
     function GetSplitterHeight(Splitter: TControl): integer;
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
+    property TitleWidth: integer read FTitleWidth write FTitleWidth default 20;
+    property TitleHeight: integer read FTitleHeight write FTitleHeight default 20;
 
     procedure LoadFromStream(Stream: TStream); override;// not implemented
     procedure PaintSite(DC: HDC); override;// not implemented
@@ -1440,9 +1446,34 @@ begin
   end;
 end;
 
+function TCustomAnchoredDockManager.GetPreferredTitlePosition(AWidth,
+  AHeight: integer): TAnchorKind;
+begin
+  if (AWidth<=AHeight) and (AWidth<200) then
+    Result:=akLeft
+  else
+    Result:=akTop;
+end;
+
+procedure TCustomAnchoredDockManager.UpdateTitlePosition(Control: TControl);
+var
+  TitlePos: TAnchorKind;
+begin
+  TitlePos:=GetPreferredTitlePosition(Control.Width,Control.Height);
+  if TitlePos=akLeft then begin
+    Control.BorderSpacing.Left:=TitleWidth;
+    Control.BorderSpacing.Top:=0;
+  end else begin
+    Control.BorderSpacing.Left:=0;
+    Control.BorderSpacing.Top:=TitleHeight;
+  end;
+end;
+
 constructor TCustomAnchoredDockManager.Create;
 begin
   FSplitterSize:=5;
+  FTitleWidth:=20;
+  FTitleHeight:=20;
 end;
 
 procedure TCustomAnchoredDockManager.BeginUpdate;
@@ -1519,6 +1550,7 @@ var
   NewPage: TLazDockPage;
   NewParent: TLazDockForm;
   ParentDisabledAlign: Boolean;
+  DropCtlTitlePos: TAnchorKind;
 begin
   if Control.Parent<>nil then
     RaiseGDBException('TCustomAnchoredDockManager.InsertControl Control.Parent<>nil');
@@ -1537,10 +1569,17 @@ begin
 
         DropCtlAnchor:=MainAlignAnchor[InsertAt];
         ControlAnchor:=OppositeAnchor[DropCtlAnchor];
+        
+        DropCtlTitlePos:=GetPreferredTitlePosition(DropCtl.ClientWidth,
+                                                   DropCtl.ClientHeight);
 
         ParentDisabledAlign:=false;
         try
           NewDropCtlBounds:=DropCtl.BoundsRect;
+          if DropCtlTitlePos=akLeft then
+            inc(NewDropCtlBounds.Right,TitleWidth)
+          else
+            inc(NewDropCtlBounds.Bottom,TitleHeight);
 
           // make sure, there is a parent HostSite
           if DropCtl.Parent=nil then begin
@@ -1644,8 +1683,10 @@ begin
 
           // position Control
           Control.Align:=alNone;
-          for a:=Low(TAnchorKind) to High(TAnchorKind) do
+          for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
             Control.AnchorSide[a].Control:=nil;
+            Control.BorderSpacing.Space[a]:=0;
+          end;
           Control.AnchorSide[DropCtlAnchor].Assign(DropCtl.AnchorSide[DropCtlAnchor]);
           Control.AnchorToNeighbour(ControlAnchor,0,Splitter);
           if InsertAt in [alLeft,alRight] then begin
@@ -1661,6 +1702,10 @@ begin
 
           // position DropCtl
           DropCtl.AnchorToNeighbour(DropCtlAnchor,0,Splitter);
+          
+          // set titles
+          UpdateTitlePosition(DropCtl);
+          UpdateTitlePosition(Control);
 
           //debugln('TCustomAnchoredDockManager.InsertControl BEFORE ALIGNING Control.Bounds=',DbgSName(Control),dbgs(Control.BoundsRect),' DropCtl.Bounds=',DbgSName(DropCtl),dbgs(DropCtl.BoundsRect),' Splitter.Bounds=',DbgSName(Splitter),dbgs(Splitter.BoundsRect));
         finally
