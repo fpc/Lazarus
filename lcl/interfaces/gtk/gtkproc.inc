@@ -1654,32 +1654,32 @@ var
     SysGCValues:=GetSysGCValues(GDIColor^.ColorRef,
                                 TGtkDeviceContext(DC).Widget);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    With SysGCValues do begin
+    with SysGCValues do
+    begin
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
-      If AllocFG then
-        if not gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,
-                                        True,True)
-        then begin
+      if AllocFG then
+        if not gdk_colormap_alloc_color(GDK_Colormap_get_system, @Foreground,
+                                        True, True) then
           WarnAllocFailed(Foreground);
-        end;
       gdk_gc_set_foreground(GC, @foreground);
-      Case Fill of
+      case Fill of
         GDK_TILED :
-          If Tile <> nil then
+          if Tile <> nil then
           begin
             gdk_gc_set_ts_origin(GC, ts_x_origin, ts_y_origin);
             gdk_gc_set_tile(GC, Tile);
           end;
         GDK_STIPPLED,
         GDK_OPAQUE_STIPPLED:
-          If stipple <> nil then begin
+          if stipple <> nil then
+          begin
             gdk_gc_set_background(GC, @background);
             gdk_gc_set_ts_origin(GC, ts_x_origin, ts_y_origin);
             gdk_gc_set_stipple(GC, stipple);
           end;
       end;
-      If AllocFG then
+      if AllocFG then
         gdk_colormap_free_colors(GDK_Colormap_get_system, @Foreground,1);
     end;
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
@@ -1690,9 +1690,10 @@ var
     AllocGDIColor(DC, GDIColor);
     //DebugLn('EnsureAsColor ',DbgS(GDIColor^.ColorRef),' AsBackground=',AsBackground);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-    If AsBackground then
+    if AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
-    else begin
+    else
+    begin
       gdk_gc_set_fill(GC, GDK_SOLID);
       gdk_gc_set_foreground(GC, @(GDIColor^.Color));
     end;
@@ -1715,16 +1716,17 @@ begin
   
   // FPC bug workaround:
   // clScrollbar = $80000000 can't be used in case statements
-  if TColor(GDIColor^.ColorRef)=clScrollbar then begin
+  if TColor(GDIColor^.ColorRef)=clScrollbar then
+  begin
     //often have a BK Pixmap
-    If IsSolidBrush then
+    if IsSolidBrush then
       EnsureAsGCValues
     else
       EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
     exit;
   end;
 
-  Case TColor(GDIColor^.ColorRef) of
+  case TColor(GDIColor^.ColorRef) of
     //clScrollbar: see above
     clInfoBk,
     clMenu,
