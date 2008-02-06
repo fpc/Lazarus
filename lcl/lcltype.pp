@@ -218,10 +218,10 @@ const
 //------------
 // Draw frame control flags
 //------------
-  dfc_Caption = $01;
-  dfc_Menu = $02;
-  dfc_Scroll = $03;
-  dfc_Button =  $04;
+  DFC_CAPTION = $01;
+  DFC_MENU = $02;
+  DFC_SCROLL = $03;
+  DFC_BUTTON =  $04;
 
 //------------
 // Draw frame control Styles
