@@ -2991,7 +2991,7 @@ begin
     begin
       Parent := Self;
       Align := Al;
-      MinSize := 0;
+      MinSize := 1;
       AutoSnap := False;
       Visible := False;
     end;
