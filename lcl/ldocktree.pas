@@ -174,7 +174,6 @@ type
     procedure DeleteDockForm(ADockForm: TLazDockForm);
     function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
     function GetPreferredTitlePosition(AWidth, AHeight: integer): TAnchorKind;
-    procedure UpdateTitlePosition(Control: TControl);
   public
     constructor Create;
     procedure BeginUpdate; override;
@@ -197,6 +196,7 @@ type
     property SplitterSize: integer read FSplitterSize write FSplitterSize default 5;
     property TitleWidth: integer read FTitleWidth write FTitleWidth default 20;
     property TitleHeight: integer read FTitleHeight write FTitleHeight default 20;
+    procedure UpdateTitlePosition(Control: TControl);
 
     procedure LoadFromStream(Stream: TStream); override;// not implemented
     procedure PaintSite(DC: HDC); override;// not implemented

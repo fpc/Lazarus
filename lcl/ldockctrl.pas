@@ -1007,6 +1007,7 @@ begin
     else
       ShrinkNeighbourhood(Layout,Control,[akTop,akBottom]);
     FixControlBounds(Layout,Control);
+    Manager.Manager.UpdateTitlePosition(Control);
 
   finally
     Neighbours.Free;
