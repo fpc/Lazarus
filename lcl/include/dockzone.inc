@@ -167,16 +167,19 @@ end;
 
 function TDockZone.FindZone(AControl: TControl): TDockZone;
 begin
-  if AControl=ChildControl then begin
-    Result:=Self;
+  Result := nil;
+  if AControl = ChildControl then
+  begin
+    Result := Self;
     exit;
   end;
-  if FFirstChildZone<>nil then begin
-    Result:=FFirstChildZone.FindZone(AControl);
-    if Result<>nil then exit;
+  if FFirstChildZone <> nil then
+  begin
+    Result := FFirstChildZone.FindZone(AControl);
+    if Result <> nil then exit;
   end;
-  if FNextSibling<>nil then
-    Result:=FNextSibling.FindZone(AControl);
+  if FNextSibling <> nil then
+    Result := FNextSibling.FindZone(AControl);
 end;
 
 function TDockZone.FirstVisibleChild: TDockZone;

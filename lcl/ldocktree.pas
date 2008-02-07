@@ -651,7 +651,7 @@ begin
   DockCaption := DockSite.GetDockCaption(AControl);
   TextStyle.Alignment := taLeftJustify;
   TextStyle.SingleLine := True;
-  TextStyle.Clipping := True;
+  TextStyle.Clipping := False;
   TextStyle.Opaque := False;
   TextStyle.Wordbreak := False;
   TextStyle.SystemFont := False;
@@ -1064,13 +1064,16 @@ procedure TLazDockTree.RemoveControl(AControl: TControl);
 var
   RemoveZone: TLazDockZone;
 begin
-  RemoveZone:=RootZone.FindZone(AControl) as TLazDockZone;
-  if RemoveZone.ChildCount>0 then
-    raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount>0');
-  RemoveZone.FreeSubComponents;
-  if RemoveZone.Parent<>nil then
-    RemoveZone.Parent.Remove(RemoveZone);
-  RemoveZone.Free;
+  RemoveZone := RootZone.FindZone(AControl) as TLazDockZone;
+  if RemoveZone <> nil then
+  begin
+    if RemoveZone.ChildCount>0 then
+      raise Exception.Create('TLazDockTree.RemoveControl RemoveZone.ChildCount>0');
+    RemoveZone.FreeSubComponents;
+    if RemoveZone.Parent<>nil then
+      RemoveZone.Parent.Remove(RemoveZone);
+    RemoveZone.Free;
+  end;
 
   // Build dock layout (anchors, splitters, pages)
   BuildDockLayout(RootZone as TLazDockZone);
