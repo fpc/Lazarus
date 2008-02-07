@@ -491,6 +491,11 @@ begin
   Result:=true;
 end;
 
+function TWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+begin
+  Result := False;
+end;
+
 function TWidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 begin
   Mask := 0;

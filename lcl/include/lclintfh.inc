@@ -102,6 +102,7 @@ function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boole
 function IntfSendsUTF8KeyPress: Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}

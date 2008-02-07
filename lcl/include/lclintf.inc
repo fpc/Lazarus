@@ -369,6 +369,11 @@ begin
   Result := WidgetSet.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+begin
+  Result := WidgetSet.IsDesignerDC(WindowHandle, DC);
+end;
+
 function LoadStockPixmap(StockID: longint; var Mask: HBitmap) : HBitmap;
 begin
   Result := WidgetSet.LoadStockPixmap(StockID, Mask);
