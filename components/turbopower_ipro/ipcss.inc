@@ -617,9 +617,9 @@ end;
 procedure TCSSReader.EatWhiteSpace;
 var
   Buf: char;
-  comment: integer;
+  //comment: integer;
 begin
-  comment:=0;
+  //comment:=0;
   while not EOF do
   begin
     Buf := char(FStream.ReadByte);

@@ -769,7 +769,7 @@ type
     {$IFDEF IP_LAZARUS}
     FCSS: TCSSProps;
     FElementName: String;
-    FCSSPropsLoaded: boolean;
+    //FCSSPropsLoaded: boolean;
     {$ENDIF}
     FStyle: string;
     FClassId: string;
@@ -14755,7 +14755,7 @@ function TIpHtmlNodeCore.GetFontSizeFromCSS(CurrentFontSize:Integer;
   
 var
   P: double;
-  ParentFSize: Integer;
+  //ParentFSize: Integer;
 begin
   result := CurrentFontSize;
 

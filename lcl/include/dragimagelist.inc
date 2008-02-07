@@ -58,15 +58,15 @@ end;
 }
 function TDragImageList.BeginDrag(Window: HWND; X, Y: Integer): Boolean;
 begin
-   Result := TWsDragImageListClass(WidgetSetClass).BeginDrag(Self, Window,
-     FImageIndex, FDragHotspot.X, FDragHotspot.Y);
-   FDragging := Result;
-   if Result then
-   begin
-     DragLock(Window, X, Y);
-     FOldCursor := Screen.Cursor;
-     WidgetSet.SetCursor(Screen.Cursors[DragCursor])
-   end;
+  Result := TWsDragImageListClass(WidgetSetClass).BeginDrag(Self, Window,
+    FImageIndex, FDragHotspot.X, FDragHotspot.Y);
+  FDragging := Result;
+  if Result then
+  begin
+    DragLock(Window, X, Y);
+    FOldCursor := Screen.Cursor;
+    WidgetSet.SetCursor(Screen.Cursors[DragCursor])
+  end;
 end;
 
 {
@@ -91,7 +91,7 @@ begin
       XPos, YPos, True);
     if Result then
       FLastDragPos := Point(XPos, YPos);
-   end;
+  end;
 end;
 
 {

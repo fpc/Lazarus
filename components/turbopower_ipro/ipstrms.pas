@@ -1494,8 +1494,8 @@ begin
   end;
   {the item at L-2 will have the nearest smaller line number than the
    one we want; start here and read through the stream forwards}
-  CurLine := Longint(FLineIndex[L-2]);
-  Seek(Longint(FLineIndex[L-1]), soFromBeginning);
+  CurLine := Longint(PtrInt(FLineIndex[L-2]));
+  Seek(Longint(PtrInt(FLineIndex[L-1])), soFromBeginning);
   while true do begin
     atsGetLine(CurPos, EndPos, Len);
     inc(CurLine);

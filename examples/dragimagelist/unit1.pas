@@ -47,6 +47,8 @@ implementation
 
 procedure TForm1.Button1StartDrag(Sender: TObject; var DragObject: TDragObject);
 begin
+  // user started dragging on Button1
+  // create our own TDragControlObject which provides an image.
   DragObject := TMyDragObject.Create(Sender as TControl);
 end;
 

@@ -279,7 +279,7 @@ type
     FOldCursor: TCursor;
     FImageIndex: Integer;
     FLastDragPos: TPoint;
-    FLockedWindow: HWND;
+    FLockedWindow: HWND;// window where drag started and locked via DragLock, invalid=NoLockedWindow=High(PtrInt)
     procedure SetDragCursor(const AValue: TCursor);
   protected
     procedure Initialize; override;
