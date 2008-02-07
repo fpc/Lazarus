@@ -159,7 +159,6 @@ class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
       SubClassWndProc := @WindowProc;
       WindowTitle := nil;
       StrCaption := 'TWin32WSScrollBox.CreateHandle ScrollLayer';
-      WindowTitle := nil;
       Height := 50;
       Left := 0;
       //Parent := AWinControl.Parent;

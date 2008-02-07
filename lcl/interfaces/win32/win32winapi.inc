@@ -2905,13 +2905,10 @@ end;
 function TWin32WidgetSet.SetWindowPos(HWnd: HWND; HWndInsertAfter: HWND; X, Y, CX, CY: Integer; UFlags: UINT): Boolean;
 var
   Style, ExStyle: PtrInt;
-  OldRect, OldClientRect: Windows.RECT;
 begin
   //debugln('[TWin32WidgetSet.SetWindowPos] Top=',HWndInsertAfter=HWND_TOP);
   Style := GetWindowLong(HWnd, GWL_STYLE);
   ExStyle := GetWindowLong(HWnd, GWL_EXSTYLE);
-  Windows.GetWindowRect(HWnd, @OldRect);
-  Windows.GetClientRect(HWnd, @OldClientRect);
   if (Style and WS_BORDER) <> 0 then
   begin
     // convert top level lcl window coordinaties to win32 coord
