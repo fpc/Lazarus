@@ -4392,7 +4392,8 @@ of List Box - normal, owner-draw fixed, or owner-draw variable</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListBox.TopIndex">
-        <short/>
+        <short>
+          <i>Topindex </i>- the highest value of Index in this list</short>
         <descr/>
         <seealso/>
       </element>
