@@ -115,6 +115,25 @@ begin
   ArrowCanvas.Polygon(P);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  DrawGrid
+  Params:  DC     - Handle to device context
+           R      - Grid rectangle
+           DX, DY - Grid cell width and height
+
+  Draws the point grid
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+begin
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.DrawGrid Rect: ' + DbgS(R));
+  {$ENDIF}
+  
+  if not CheckDC(DC, 'DrawGrid') then Exit;
+
+  TCarbonDeviceContext(DC).DrawGrid(R, DX, DY);
+end;
+
 function TCarbonWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin

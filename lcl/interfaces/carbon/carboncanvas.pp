@@ -110,6 +110,7 @@ type
     function DrawCGImage(X, Y, Width, Height: Integer; CGImage: CGImageRef): Boolean;
   public
     procedure DrawFocusRect(const ARect: TRect);
+    procedure DrawGrid(const ARect: TRect; DX, DY: Integer);
     
     procedure Ellipse(X1, Y1, X2, Y2: Integer);
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
@@ -694,6 +695,41 @@ begin
   OSError(
     HIThemeDrawFocusRect(RectToCGRect(ARect), True, CGContext, kHIThemeOrientationNormal),
     Self, 'DrawFocusRect', 'HIThemeDrawFocusRect');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.DrawGrid
+  Params:  Arect  - Grid rectangle
+           DX, DY - Grid cell width and height
+
+  Draws the point grid
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.DrawGrid(const ARect: TRect; DX, DY: Integer);
+var
+  Y: Integer;
+  GridLine: Array [0..1] of Single;
+begin
+  CGContextSaveGState(CGContext);
+  try
+    CGContextSetShouldAntialias(CGContext, 0);
+
+    GridLine[0] := 1;
+    GridLine[1] := DX - 1;
+    CGContextSetLineDash(CGContext, 0, @GridLine[0], Length(GridLine));
+    
+    CGContextBeginPath(CGContext);
+
+    // draw horzontal dotted lines
+    for Y := 0 to (ARect.Bottom - ARect.Top - 1) div DY do
+    begin
+      CGContextMoveToPoint(CGContext, ARect.Left, ARect.Top + Y * DY + 1);
+      CGContextAddLineToPoint(CGContext, ARect.Right, ARect.Top + Y * DY + 1);
+    end;
+    
+    CGContextStrokePath(CGContext);
+  finally
+    CGContextRestoreGState(CGContext);
+  end;
 end;
 
 {------------------------------------------------------------------------------
