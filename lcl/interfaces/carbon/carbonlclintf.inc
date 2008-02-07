@@ -203,6 +203,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  IsDesignerDC
+  Params:  WindowHandle - Handle of window
+           DC           - Handle of device context
+  Returns: If the device context is designer
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+begin
+  Result := False;
+  {$IFDEF VerboseLCLIntf}
+    DebugLn('TCarbonWidgetSet.IsDesignerDC Handle: ' + DbgS(WindowHandle), ' DC: ' + DbgS(DC));
+  {$ENDIF}
+
+  if not CheckWidget(WindowHandle, 'IsDesignerDC', TCarbonDesignWindow) then Exit;
+  Result := DC = HDC(TCarbonDesignWindow(WindowHandle).GetDesignContext);
+end;
+
+{------------------------------------------------------------------------------
   Method:  PromptUser
   Params:  DialogCaption - Dialog caption
            DialogMessage - Dialog message text

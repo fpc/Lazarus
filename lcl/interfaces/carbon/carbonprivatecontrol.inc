@@ -606,6 +606,7 @@ end;
 procedure TCarbonControl.Invalidate(Rect: PRect);
 var
   I: Integer;
+  R: TRect;
 begin
   if Rect = nil then
   begin
@@ -614,9 +615,13 @@ begin
         HiViewSetNeedsDisplay(Frames[I], True), Self, SInvalidate, SViewNeedsDisplay);
   end
   else
+  begin
+    R := Rect^;
+    InflateRect(R, 1, 1);
     OSError(
-      HiViewSetNeedsDisplayInRect(Content, RectToCGRect(Rect^), True), Self,
+      HiViewSetNeedsDisplayInRect(Content, RectToCGRect(R), True), Self,
       SInvalidate, SViewNeedsDisplayRect);
+  end;
 end;
 
 {------------------------------------------------------------------------------

@@ -1124,14 +1124,20 @@ end;
   Invalidates the specified rect or entire area of window content
  ------------------------------------------------------------------------------}
 procedure TCarbonWindow.Invalidate(Rect: PRect);
+var
+  R: TRect;
 begin
   if Rect = nil then
     OSError(HiViewSetNeedsDisplay(HIViewRef(Content), True), Self, SInvalidate,
       SViewNeedsDisplay)
   else
+  begin
+    R := Rect^;
+    InflateRect(R, 1, 1);
     OSError(
-      HiViewSetNeedsDisplayInRect(HIViewRef(Content), RectToCGRect(Rect^), True),
+      HiViewSetNeedsDisplayInRect(HIViewRef(Content), RectToCGRect(R), True),
       Self, SInvalidate, SViewNeedsDisplayRect);
+  end;
 end;
 
 {------------------------------------------------------------------------------

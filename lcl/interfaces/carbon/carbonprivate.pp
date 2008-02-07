@@ -172,7 +172,6 @@ type
   private
     FDesignControl: HIViewRef;
     FDesignContext: TCarbonContext;
-    FDesignBitmap: TCarbonBitmap;
     procedure BringDesignerToFront;
   protected
     procedure RegisterEvents; override;
@@ -393,8 +392,7 @@ function CarbonDesign_Draw(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   ADesignWindow: TCarbonDesignWindow;
-  AContext: TCarbonDeviceContext;
-  ABitmap: TCarbonBitmap;
+  AStruct: PPaintStruct;
 begin
   {$IFDEF VerbosePaint}
     Debugln('CarbonDesign_Draw ', DbgSName(AWidget.LCLObject));
@@ -402,25 +400,31 @@ begin
 
   ADesignWindow := (AWidget as TCarbonDesignWindow);
 
-  AContext := TCarbonControlContext.Create(AWidget);
+  ADesignWindow.FDesignContext := TCarbonControlContext.Create(ADesignWindow);
   try
     // set canvas context
     if OSError(
       GetEventParameter(AEvent, kEventParamCGContextRef, typeCGContextRef, nil,
-        SizeOf(CGContextRef), nil, @AContext.CGContext),
+        SizeOf(CGContextRef), nil, @(ADesignWindow.FDesignContext.CGContext)),
       'CarbonDesign_Draw', SGetEvent, 'kEventParamCGContextRef') then Exit;
 
     // let carbon draw/update
     Result := CallNextEventHandler(ANextHandler, AEvent);
 
     // draw designer stuff
-    ABitmap := ADesignWindow.FDesignBitmap;
-    if ADesignWindow.FDesignContext <> nil then
-      AContext.StretchDraw(0, 0, ABitmap.Width, ABitmap.Height,
-        TCarbonBitmapContext(ADesignWindow.FDesignContext),
-        0, 0, ABitmap.Width, ABitmap.Height, nil, 0, 0, SRCCOPY);
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    AStruct^.hdc := HDC(ADesignWindow.FDesignContext);
+    try
+      {$IFDEF VerbosePaint}
+        DebugLn('CarbonDesign_Draw LM_PAINT to ', DbgSName(AWidget.LCLObject));
+      {$ENDIF}
+      LCLSendPaintMsg(AWidget.LCLObject, HDC(ADesignWindow.FDesignContext), AStruct);
+    finally
+      Dispose(AStruct);
+    end;
   finally
-    AContext.Free;
+    FreeAndNil(ADesignWindow.FDesignContext);
   end;
   {$IFDEF VerbosePaint}
     Debugln('CarbonDesign_Draw end ', DbgSName(AWidget.LCLObject));
@@ -504,9 +508,6 @@ begin
   DisposeControl(FDesignControl);
   
   inherited;
-  
-  FreeAndNil(FDesignContext);
-  FreeAndNil(FDesignBitmap);
 end;
 
 {------------------------------------------------------------------------------
@@ -560,29 +561,9 @@ end;
   Returns: Context for drawing designer stuff
  ------------------------------------------------------------------------------}
 function TCarbonDesignWindow.GetDesignContext: TCarbonContext;
-var
-  R: TRect;
 begin
-  GetClientRect(R);
-  OffsetRect(R, -R.Left, -R.Top);
-
-  if FDesignBitmap <> nil then
-    if (R.Right - R.Left = FDesignBitmap.Width) and (R.Bottom - R.Top = FDesignBitmap.Height) then
-    begin
-      // the designer area has not been resized - clear it only
-      CGContextClearRect(FDesignContext.CGContext, RectToCGRect(R));
-      Result := FDesignContext;
-      Exit;
-    end;
-    
-  FreeAndNil(FDesignContext);
-  FreeAndNil(FDesignBitmap);
-  
-  FDesignContext := TCarbonBitmapContext.Create;
-  FDesignBitmap := TCarbonBitmap.Create(R.Right - R.Left, R.Bottom - R.Top, 32, 32, cbaDQWord, cbtARGB, nil);
-  (FDesignContext as TCarbonBitmapContext).Bitmap := FDesignBitmap;
-  
-  Result := FDesignContext;
+  if FDesignContext <> nil then Result := FDesignContext
+  else Result := DefaultContext;
 end;
 
 {------------------------------------------------------------------------------
@@ -592,8 +573,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDesignWindow.ReleaseDesignContext;
 begin
-  // redraw designer
-  Invalidate;
+  // nothing
 end;
 
 { TCarbonCustomControl }

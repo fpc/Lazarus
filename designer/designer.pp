@@ -35,6 +35,10 @@ interface
 {off $DEFINE VerboseDesigner}
 {off $DEFINE VerboseDesignerDraw}
 
+{$IFDEF LCLCarbon}
+  {$DEFINE CantPaintOnIdle}
+{$ENDIF}
+
 uses
   Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
@@ -1160,15 +1164,24 @@ begin
     end;
     LastPaintSender:=Sender;
 
-    // client grid
-    if (Sender is TWinControl)
-    and (csAcceptsControls in Sender.ControlStyle) then begin
-      PaintClientGrid(TWinControl(Sender),DDC);
+    if IsDesignerDC(Form.Handle, TheMessage.DC) then
+    begin
+      DoPaintDesignerItems;
+    end
+    else
+    begin
+      // client grid
+      if (Sender is TWinControl)
+      and (csAcceptsControls in Sender.ControlStyle) then begin
+        PaintClientGrid(TWinControl(Sender),DDC);
+      end;
+
+      {$IFNDEF CantPaintOnIdle}
+      if not EnvironmentOptions.DesignerPaintLazy then
+        DoPaintDesignerItems;
+      {$ENDIF}
     end;
     
-    if not EnvironmentOptions.DesignerPaintLazy then
-      DoPaintDesignerItems;
-
     // clean up
     DDC.Clear;
   end;
@@ -2418,9 +2431,12 @@ begin
 end;
 
 procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
+{$IFNDEF CantPaintOnIdle}
 var
   DesignerDC: HDC;
+{$ENDIF}
 begin
+  {$IFNDEF CantPaintOnIdle}
   if OnlyIfNeeded and (not (dfNeedPainting in FFlags)) then exit;
   Exclude(FFlags,dfNeedPainting);
 
@@ -2432,6 +2448,7 @@ begin
   DoPaintDesignerItems;
   DDC.Clear;
   ReleaseDesignerDC(Form.Handle,DesignerDC);
+  {$ENDIF}
 end;
 
 procedure TDesigner.CheckFormBounds;
