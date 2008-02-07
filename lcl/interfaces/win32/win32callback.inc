@@ -45,7 +45,7 @@ const
 
   Enumerates and removes properties for the target window
  -----------------------------------------------------------------------------}
-function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; StdCall;
+function PropEnumProc(Window: Hwnd; Str: PChar; Data: Handle): LongBool; stdcall;
 begin
   Result:=false;
   if PtrUInt(Str) <= $FFFF then exit; // global atom handle
@@ -471,12 +471,10 @@ var
       end;
       if ParentPaintWindow <> 0 then
         GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
-      if not GetLCLClientBoundsOffset(lWinControl, ORect) then
-      begin
-        ORect.Left := 0;
-        ORect.Top := 0;
-        { we don't use ORect.Right and ORect.Bottom, initialize here if needed }
-      end;
+      //Is not necessary to check the result of GetLCLClientBoundsOffset since
+      //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
+      //The rect is always initialized with 0
+      GetLCLClientBoundsOffset(lWinControl, ORect);
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then

@@ -852,17 +852,17 @@ begin
       if HorzScrollBar <> nil then
       begin
         // left and right bounds are shifted by scroll position
-        ORect.Left := HorzScrollBar.Position;
-        ORect.Right := HorzScrollBar.Position;
+        ORect.Left := -HorzScrollBar.Position;
+        ORect.Right := -HorzScrollBar.Position;
       end;
       if VertScrollBar <> nil then
       begin
         // top and bottom bounds are shifted by scroll position
-        ORect.Top := VertScrollBar.Position;
-        ORect.Bottom := VertScrollBar.Position;
+        ORect.Top := -VertScrollBar.Position;
+        ORect.Bottom := -VertScrollBar.Position;
       end;
     end;
-  If (TheWinControl is TCustomGroupBox) Then
+  if (TheWinControl is TCustomGroupBox) then
   begin
     // The client area of a groupbox under win32 is the whole size, including
     // the frame. The LCL defines the client area without the frame.
@@ -876,8 +876,9 @@ begin
     ORect.Right := -2;
     ORect.Bottom := -2;
     ReleaseDC(Handle, DC);
-  End Else
-  If TheWinControl is TCustomNoteBook then begin
+  end else
+  if TheWinControl is TCustomNoteBook then
+  begin
     // Can't use complete client rect in win32 interface, top part contains the tabs
     Windows.GetClientRect(Handle, @ARect);
     ORect := ARect;
