@@ -669,24 +669,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.InsertIcon
-  Params:  Index: the index of the inserted image
-           Image: the Icon to be inserted
-  Returns: Nothing
-
-  Inserts an icon into the list at the index'th position.
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.InsertIcon(Index: Integer; Image: TIcon);
-begin
-  CheckIndex(Index, True);
-
-  if (Index < 0) then Index := 0;
-  
-  //No Icon Support yet
-  {$note implement}
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCustomImageList.InsertMasked
   Params:  Index: the index of the inserted image
            AImage: A bitmap to be inserted
@@ -1185,25 +1167,6 @@ begin
   then msk := 0
   else msk := AMask.Handle;
   InternalReplace(AIndex, AImage.Handle, msk);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.ReplaceIcon
-  Params:  Index: the index of the replaceded image
-           Image: an icon image
-  Returns: Nothing.
-
-  Replaces the index'th image with the image given.
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.ReplaceIcon(Index: Integer; Image: TIcon);
-begin
-  if (Index > FCount)
-  then raise EInvalidOperation.Create(SInvalidIndex);
-
-  if (Index < 0) then Index := 0;
-
-  // No Icon suppport yet
-  {$note implement}
 end;
 
 {------------------------------------------------------------------------------

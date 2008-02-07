@@ -5222,7 +5222,7 @@ begin
     Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
                                     PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   {$IFDEF GTK2}
-  {$WARNING If there are tons of new keyboard errors this is probably the cause}
+  // If there are tons of new keyboard errors this is probably the cause
   GtkModMask := gtk_accelerator_get_default_mod_mask;
   if Result and $8000 > 0 then
   begin

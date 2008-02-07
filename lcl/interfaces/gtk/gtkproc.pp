@@ -646,7 +646,8 @@ function ScalePixmapAndMask(AScaleGC: PGDKGC; AScaleMethod: TGdkInterpType;
   ASrc: PGdkPixmap; ASrcX, ASrcY, ASrcWidth, ASrcHeight: integer;
   ASrcColorMap: PGdkColormap; ASrcMask: PGdkBitmap;
   ADstWidth, ADstHeight: Integer; out ADst, ADstMask: PGdkPixmap) : Boolean;
-{$note TODO: Remove me}
+
+// obsolete:
 function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
 function CreateGdkMaskBitmap(AImage, AMask: HBITMAP): PGdkBitmap;
 function CreateGdkMaskBitmap(AImageMask, AMask: PGdkBitmap): PGdkBitmap;

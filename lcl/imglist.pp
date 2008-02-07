@@ -185,11 +185,9 @@ type
     function GetHotSpot: TPoint; virtual;
 
     procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
-    procedure InsertIcon(Index: Integer; Image: TIcon);
     procedure InsertMasked(Index: Integer; AImage: TBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
     procedure Replace(AIndex: Integer; AImage, AMask: TBitmap);
-    procedure ReplaceIcon(Index: Integer; Image: TIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);

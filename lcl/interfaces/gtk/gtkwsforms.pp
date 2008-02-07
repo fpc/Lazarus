@@ -429,21 +429,10 @@ end;
 
 class procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
   const ABorderIcons: TBorderIcons);
-  
-  procedure RaiseNotImplemented;
-  begin
-    raise Exception.Create('TGtkWSCustomForm.SetBorderIcons BorderIcons not supported by gtk interface');
-  end;
-  
 begin
   if not WSCheckHandleAllocated(AForm, 'SetBorderIcons')
   then Exit;
   
-  {$note remove check here, it belongs in the lcl}
-  if (AForm.ComponentState*[csDesigning,csLoading]=[csDesigning]) then begin
-    if (AForm.BorderIcons<>DefaultBorderIcons[AForm.BorderStyle]) then
-      RaiseNotImplemented;
-  end;
   inherited SetBorderIcons(AForm, ABorderIcons);
 end;
 
