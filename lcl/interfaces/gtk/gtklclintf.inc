@@ -65,6 +65,40 @@ begin
   end;
 end;
 
+procedure TGTKWidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+var
+  X, Y: Integer;
+  W, H: Integer;
+  SavedDC: Integer;
+  Context: TGtkDeviceContext absolute DC;
+  DCOrigin: TPoint;
+begin
+  if (Context = nil) or (Context.Drawable = nil) then Exit;
+
+  DCOrigin := Context.Offset;
+  SavedDC := SaveDC(DC);
+  try
+    Context.SelectPenProps;
+    if not (dcfPenSelected in Context.Flags) then Exit;
+
+    if Context.IsNullPen then Exit;
+  
+    W := (R.Right - R.Left - 1) div DX;
+    H := (R.Bottom - R.Top - 1) div DY;
+
+    for Y := 0 to H do
+    begin
+      for X := 0 to W do
+      begin
+        gdk_draw_point(Context.Drawable, Context.GC,
+          DCOrigin.X + R.Left + X * DX, DCOrigin.Y + R.Top + Y * DY);
+      end;
+    end;
+  finally
+    RestoreDC(DC, SavedDC);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
     Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;

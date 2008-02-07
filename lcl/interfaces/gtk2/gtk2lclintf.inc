@@ -30,6 +30,34 @@
 
 //##apiwiz##sps##   // Do not remove
 
+procedure TGtk2WidgetSet.DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer);
+var
+  X, Y: Integer;
+  W, H: Integer;
+  SavedDC: Integer;
+begin
+  SavedDC := SaveDC(DC);
+  try
+    W := (R.Right - R.Left - 1) div DX;
+    H := (R.Bottom - R.Top - 1) div DY;
+
+    // remove rows from clip rect
+    for Y := 0 to H do
+    begin
+      ExcludeClipRect(DC, R.Left, R.Top + Y * DY + 1, R.Right + 1, R.Top + (Y + 1) * DY);
+    end;
+
+    // draw vertical lines cross excluded rows -> only grid cross points painted
+    for X := 0 to W do
+    begin
+      if MoveToEx(DC, R.Left + X * DX, R.Top, nil) then
+        LineTo(DC, R.Left + X * DX, R.Bottom + 1);
+    end;
+  finally
+    RestoreDC(DC, SavedDC);
+  end;
+end;
+
 function TGtk2WidgetSet.ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin

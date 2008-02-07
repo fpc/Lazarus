@@ -29,6 +29,7 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+procedure DrawGrid(DC: HDC; const R: TRect; DX, DY: Integer); override;
 function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
   Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
