@@ -1241,7 +1241,7 @@ end;
   It is considered inside if it lies on the left top, or within the rectangle.
   It is outside ther rect if it's on the bottom or right.
  ------------------------------------------------------------------------------}
-function PtInRect(Rect : TRect; Point : TPoint) : Boolean; inline;
+function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
 Begin
   Result := ((Point.X >= Rect.Left) and
              (Point.X < Rect.Right) and

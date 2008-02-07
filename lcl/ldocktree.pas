@@ -30,13 +30,14 @@ unit LDockTree;
 interface
 
 uses
-  Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
+  Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
   Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf;
   
 type
   TLazDockPages = class;
   TLazDockPage = class;
   TLazDockSplitter = class;
+
 
   { TLazDockZone }
 
@@ -54,6 +55,7 @@ type
     property Pages: TLazDockPages read FPages write FPages;
     property Page: TLazDockPage read FPage write FPage;
   end;
+
 
   { TLazDockTree }
 
@@ -86,6 +88,7 @@ type
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
   
+  
   { TLazDockForm
     The default DockSite for a TLazDockTree
     
@@ -100,6 +103,13 @@ type
         else if DockZone.Orientation=doPages then
           Child control is a TLazDockPages
   }
+  
+  TLazDockHeaderPart = (
+    ldhpAll,
+    ldhpCaption,
+    ldhpRestoreButton,
+    ldhpCloseButton
+    );
 
   TLazDockForm = class(TCustomForm)
   private
@@ -115,10 +125,15 @@ type
   public
     procedure UpdateCaption; virtual;
     function FindMainControlCandidate: TControl;
+    function FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
+    function IsDockedControl(Control: TControl): boolean;
+    function ControlHasTitle(Control: TControl): boolean;
+    procedure GetTitleRect(Control: TControl; Part: TLazDockHeaderPart; out ARect: TRect);
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read FPageControl;
     property MainControl: TControl read FMainControl write SetMainControl;
   end;
+  
   
   { TLazDockPage
     Pretty the same as a TLazDockForm but as page of a TLazDockPages }
@@ -131,7 +146,8 @@ type
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read GetPageControl;
   end;
-  
+
+
   { TLazDockPages }
 
   TLazDockPages = class(TCustomNotebook)
@@ -149,9 +165,12 @@ type
     property Pages;
   end;
   
+  
+  { TLazDockSplitter }
+
   TLazDockSplitter = class(TCustomSplitter)
   end;
-  
+
   //----------------------------------------------------------------------------
   
   { TCustomAnchoredDockManager
@@ -2406,7 +2425,6 @@ var
   Details: TThemedElementDetails;
   BtnRect: TRect;
   DrawRect: TRect;
-  d: integer;
   DockCaption: String;
   TextStyle: TTextStyle;
   i: Integer;
@@ -2418,9 +2436,7 @@ begin
   try
     for i:=0 to ControlCount-1 do begin
       Control:=Controls[i];
-      if (Control.BorderSpacing.Left=0)
-      and (Control.BorderSpacing.Top=0) then
-        continue;
+      if not ControlHasTitle(Control) then continue;
 
       if ACanvas=nil then begin
         ACanvas:=TCanvas.Create;
@@ -2436,54 +2452,30 @@ begin
       TextStyle.SystemFont := False;
       TextStyle.RightToLeft := Control.UseRightToLeftAlignment;
 
-      DrawRect := Control.BoundsRect;
-      if Control.BorderSpacing.Top>0 then begin
-        DrawRect.Top:=Control.Top-Control.BorderSpacing.Top;
-        DrawRect.Bottom:=Control.Top;
-      end else begin
-        DrawRect.Left:=Control.Left-Control.BorderSpacing.Left;
-        DrawRect.Right:=Control.Left;
-      end;
+      // draw frame
+      GetTitleRect(Control,ldhpAll,DrawRect);
       InflateRect(DrawRect, -1, -1);
       ACanvas.Brush.Color := clBtnShadow;
       ACanvas.FrameRect(DrawRect);
-      InflateRect(DrawRect, -1, -1);
+      
+      // draw close button
+      GetTitleRect(Control,ldhpCloseButton,BtnRect);
+      Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
+      ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+      // draw restore button
+      GetTitleRect(Control,ldhpRestoreButton,BtnRect);
+      Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
+      ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+      // draw caption
+      GetTitleRect(Control,ldhpCaption,DrawRect);
       if Control.BorderSpacing.Top>0 then begin
-        d := DrawRect.Bottom - DrawRect.Top;
-        BtnRect := DrawRect;
-        BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Right := BtnRect.Left;
-        BtnRect := DrawRect;
-        Dec(BtnRect.Right);
-        BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Right := BtnRect.Left;
-        InflateRect(DrawRect, -4, 0);
-
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, DockCaption, TextStyle);
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top,
+                         DockCaption, TextStyle);
       end else begin
-        d := DrawRect.Right - DrawRect.Left;
-        BtnRect := DrawRect;
-        BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Top := BtnRect.Bottom;
-        BtnRect := DrawRect;
-        Inc(BtnRect.Top);
-        BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Top := BtnRect.Bottom;
-        InflateRect(DrawRect, 0, -4);
-
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, DockCaption, TextStyle);
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom,
+                         DockCaption, TextStyle);
       end;
     end;
   finally
@@ -2503,13 +2495,13 @@ end;
 
 procedure TLazDockForm.InsertControl(AControl: TControl; Index: integer);
 var
-  NewMainConrtrol: TControl;
+  NewMainControl: TControl;
 begin
   inherited InsertControl(AControl, Index);
   if FMainControl=nil then begin
-    NewMainConrtrol:=FindMainControlCandidate;
-    if NewMainConrtrol<>nil then
-      MainControl:=NewMainConrtrol;
+    NewMainControl:=FindMainControlCandidate;
+    if NewMainControl<>nil then
+      MainControl:=NewMainControl;
   end;
 end;
 
@@ -2596,6 +2588,108 @@ begin
   Result:=nil;
   BestLevel:=High(Integer);
   FindCandidate(Self,0);
+end;
+
+function TLazDockForm.FindHeader(x, y: integer; out Part: TLazDockHeaderPart
+  ): TControl;
+var
+  i: Integer;
+  Control: TControl;
+  TitleRect: TRect;
+  p: TPoint;
+  CurPart: TLazDockHeaderPart;
+begin
+  for i:=0 to ControlCount-1 do begin
+    Control:=Controls[i];
+    if not ControlHasTitle(Control) then continue;
+    GetTitleRect(Control,ldhpAll,TitleRect);
+    p:=Point(X,Y);
+    if not PtInRect(TitleRect,p) then continue;
+    // on header
+    // => check sub parts
+    Result:=Control;
+    for CurPart:=low(TLazDockHeaderPart) to high(TLazDockHeaderPart) do begin
+      if CurPart=ldhpAll then continue;
+      GetTitleRect(Control,CurPart,TitleRect);
+      if PtInRect(TitleRect,p) then begin
+        Part:=CurPart;
+        exit;
+      end;
+    end;
+    Part:=ldhpAll;
+    exit;
+  end;
+  Result:=nil;
+end;
+
+function TLazDockForm.IsDockedControl(Control: TControl): boolean;
+// checks if control is a child, not a TLazDockSplitter and properly anchor docked
+var
+  a: TAnchorKind;
+  AnchorControl: TControl;
+begin
+  Result:=false;
+  if (Control.Anchors<>[akLeft,akRight,akBottom,akTop])
+  or (Control.Parent<>Self) then
+    exit;
+  for a:=low(TAnchorKind) to high(TAnchorKind) do begin
+    AnchorControl:=Control.AnchorSide[a].Control;
+    if (AnchorControl=nil) then exit;
+    if (AnchorControl<>Self) and (not (AnchorControl is TLazDockSplitter)) then
+      exit;
+  end;
+  Result:=true;
+end;
+
+function TLazDockForm.ControlHasTitle(Control: TControl): boolean;
+begin
+  Result:=Control.Visible
+           and IsDockedControl(Control)
+           and ((Control.BorderSpacing.Left>0) or (Control.BorderSpacing.Top>0));
+end;
+
+procedure TLazDockForm.GetTitleRect(Control: TControl; Part: TLazDockHeaderPart;
+  out ARect: TRect);
+var
+  d: Integer;
+begin
+  ARect := Control.BoundsRect;
+  if Control.BorderSpacing.Top>0 then begin
+    ARect.Top:=Control.Top-Control.BorderSpacing.Top;
+    ARect.Bottom:=Control.Top;
+  end else begin
+    ARect.Left:=Control.Left-Control.BorderSpacing.Left;
+    ARect.Right:=Control.Left;
+  end;
+  if Part=ldhpAll then exit;
+  InflateRect(ARect, -2, -2);
+  if Control.BorderSpacing.Top>0 then begin
+    d:=ARect.Bottom-ARect.Top;
+    if Part=ldhpCloseButton then begin
+      ARect.Left:=Max(ARect.Left,ARect.Right-d);
+      exit;
+    end;
+    ARect.Right:=Max(ARect.Left,ARect.Right-d-1);
+    if Part=ldhpRestoreButton then begin
+      ARect.Left:=Max(ARect.Left,ARect.Right-d);
+      exit;
+    end;
+    ARect.Right:=Max(ARect.Left,ARect.Right-d-1);
+    InflateRect(ARect, -4, 0);
+  end else begin
+    d:=ARect.Right-ARect.Left;
+    if Part=ldhpCloseButton then begin
+      ARect.Bottom:=Min(ARect.Bottom,ARect.Top+d);
+      exit;
+    end;
+    ARect.Top:=Min(ARect.Bottom,ARect.Top+d+1);
+    if Part=ldhpRestoreButton then begin
+      ARect.Bottom:=Min(ARect.Bottom,ARect.Top+d);
+      exit;
+    end;
+    ARect.Top:=Min(ARect.Bottom,ARect.Top+d+1);
+    InflateRect(ARect, 0, -4);
+  end;
 end;
 
 initialization
