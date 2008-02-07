@@ -146,7 +146,7 @@ type
     function  GetReferenceHandle: THandle; override;
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
-    procedure SetWidthHeight(NewWidth,NewHeight: integer); virtual;
+    procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
 
     function  WSCreateReference(AParams: TCreateParams): PWSReference; override;
 

@@ -116,7 +116,8 @@ begin
     end;
   end
   else begin
-  {$note implement}
+    // ToDo:
+    raise Exception.Create('TCustomImageList.AddImages not implemented yet for other Width/Height');
   end;
 end;
 
@@ -1295,13 +1296,14 @@ begin
   SetWidthHeight(Value,Height);
 end;
 
-procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean);
+procedure TCustomImageList.StretchDraw(Canvas: TCanvas; Index: Integer;
+  ARect: TRect; Enabled: Boolean);
 var
   bmp: TBitmap;
 begin
   if (FCount = 0) or (Index >= FCount) then Exit;
 
-  {$note implement}
+  // ToDo: accelerate
   // temp workaround
   bmp := TBitmap.Create;
   GetBitmap(Index, bmp);
