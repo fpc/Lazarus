@@ -172,6 +172,7 @@ type
     procedure raiseWidget;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
+    procedure scroll(dx, dy: integer);
     procedure setAutoFillBackground(const AValue: Boolean);
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setBackgroundRole(const ARole: QPaletteColorRole);
@@ -303,6 +304,8 @@ type
     function horizontalScrollBar: TQtScrollBar;
     function verticalScrollBar: TQtScrollBar;
     function viewport: TQtViewPort;
+    function GetContainerWidget: QWidgetH; override;
+
     function getClientBounds: TRect; override;
     procedure grabMouse; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -2587,6 +2590,11 @@ begin
   // so better to look for current Capture widget to release it instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();
   QWidget_releaseMouse(AGrabWidget);
+end;
+
+procedure TQtWidget.scroll(dx, dy: integer);
+begin
+  QWidget_scroll(Widget, dx, dy);
 end;
 
 procedure TQtWidget.setAutoFillBackground(const AValue: Boolean);
@@ -6877,8 +6885,13 @@ end;
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   case QEvent_type(Event) of
-    QEventWheel,
-    QEventResize: Result := False;
+    QEventWheel: Result := False;
+    QEventResize:
+    begin
+      Result := False;
+      LCLObject.InvalidateClientRectCache(True);
+      LCLObject.DoAdjustClientRectChange;
+    end;
     QEventLayoutRequest:
     begin
       {TODO: something here  (maybe) }
@@ -7136,15 +7149,25 @@ begin
   Result := FViewPortWidget;
 end;
 
+function TQtAbstractScrollArea.GetContainerWidget: QWidgetH;
+begin
+  Result := viewport.Widget;
+end;
+
 function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
-  Result := inherited getClientBounds;
+  if LCLObject is TCustomControl then
+    Result := viewport.getClientBounds
+  else
+  begin
+    Result := inherited getClientBounds;
 
-  if (verticalScrollBar.getVisible) then
-    dec(Result.Right, verticalScrollBar.getWidth);
+    if (verticalScrollBar.getVisible) then
+      dec(Result.Right, verticalScrollBar.getWidth);
 
-  if (horizontalScrollBar.getVisible) then
-    dec(Result.Bottom, horizontalScrollBar.getHeight);
+    if (horizontalScrollBar.getVisible) then
+      dec(Result.Bottom, horizontalScrollBar.getHeight);
+  end;
 end;
 
 procedure TQtAbstractScrollArea.grabMouse;
@@ -7250,6 +7273,7 @@ begin
     end;
   end;
   LCLObject.InvalidateClientRectCache(True);
+  LCLObject.DoAdjustClientRectChange;
 end;
 
   { TQtCalendar }

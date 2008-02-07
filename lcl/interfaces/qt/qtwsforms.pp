@@ -57,6 +57,8 @@ type
   private
   protected
   public
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TQtWSCustomFrame }
@@ -370,6 +372,19 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   Result := TLCLIntfHandle(QtMainWindow);
+end;
+
+{ TQtWSScrollBox }
+
+class procedure TQtWSScrollBox.ScrollBy(
+  const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer);
+var
+  Widget: TQtAbstractScrollArea;
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'ScollBy') then
+    Exit;
+  Widget := TQtAbstractScrollArea(AWinControl.Handle);
+  Widget.viewport.scroll(-DeltaX, -DeltaY);
 end;
 
 initialization
