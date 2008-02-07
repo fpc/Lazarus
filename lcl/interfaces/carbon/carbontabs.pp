@@ -80,7 +80,7 @@ type
     function GetContent: ControlRef; override;
     
     procedure ShowTab;
-    procedure UpdateTabs;
+    procedure UpdateTabs(EnsureLastVisible: Boolean = False);
     procedure Remove(ATab: TCarbonTab);
   public
     class function GetValidEvents: TCarbonControlEvents; override;
@@ -405,7 +405,7 @@ end;
 
   Updates tabs properties
  ------------------------------------------------------------------------------}
-procedure TCarbonTabsControl.UpdateTabs;
+procedure TCarbonTabsControl.UpdateTabs(EnsureLastVisible: Boolean);
 var
   I, L: Integer;
   TabSizes: Array of Integer;
@@ -450,39 +450,76 @@ begin
       DefaultContext.CurrentFont := TempFont;
     end;
 
-    if FFirstIndex < 0 then FFirstIndex := 0;
-    if FFirstIndex >= FTabs.Count then FFirstIndex := FTabs.Count - 1;
-    FLastIndex := FFirstIndex;
-
     if FTabPosition in [tpTop, tpBottom] then ControlSize := LCLObject.Width
     else ControlSize := LCLObject.Height;
-    
+
     //DebugLn('Size: ' + DbgS(ControlSize));
     ControlSize := ControlSize - 2 * ArrowSize - TabSizes[FFirstIndex];
 
-    // add tabs right from first
-    for I := FFirstIndex + 1 to FTabs.Count - 1 do
+    if EnsureLastVisible then
     begin
-      //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
-      if ControlSize >= TabSizes[I] then
+      if FLastIndex < 0 then FLastIndex := 0;
+      if FLastIndex >= FTabs.Count then FLastIndex := FTabs.Count - 1;
+      FFirstIndex := FLastIndex;
+      
+      L := FFirstIndex;
+      // add tabs left from last
+      for I := FLastIndex - 1 downto 0 do
       begin
-        FLastIndex := I;
-        Dec(ControlSize, TabSizes[I]);
-      end
-      else Break;
-    end;
+        //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
+        if ControlSize >= TabSizes[I] then
+        begin
+          FFirstIndex := I;
+          Dec(ControlSize, TabSizes[I]);
+        end
+        else Break;
+      end;
+      
+      L := FLastIndex;
+      // possibly add tabs right from last
+      for I := L + 1 to FTabs.Count - 1 do
+      begin
+        //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
+        if ControlSize >= TabSizes[I] then
+        begin
+          FLastIndex := I;
+          Dec(ControlSize, TabSizes[I]);
+        end
+        else Break;
+      end;
 
-    L := FFirstIndex;
-    // possibly add tabs left from first
-    for I := L - 1 downto 0 do
+
+    end
+    else
     begin
-      //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
-      if ControlSize >= TabSizes[I] then
+      if FFirstIndex < 0 then FFirstIndex := 0;
+      if FFirstIndex >= FTabs.Count then FFirstIndex := FTabs.Count - 1;
+      FLastIndex := FFirstIndex;
+      
+      // add tabs right from first
+      for I := FFirstIndex + 1 to FTabs.Count - 1 do
       begin
-        FFirstIndex := I;
-        Dec(ControlSize, TabSizes[I]);
-      end
-      else Break;
+        //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
+        if ControlSize >= TabSizes[I] then
+        begin
+          FLastIndex := I;
+          Dec(ControlSize, TabSizes[I]);
+        end
+        else Break;
+      end;
+
+      L := FFirstIndex;
+      // possibly add tabs left from first
+      for I := L - 1 downto 0 do
+      begin
+        //DebugLn(DbgS(I), '. ', DbgS(ControlSize), ' >? ', DbgS(TabSizes[I]));
+        if ControlSize >= TabSizes[I] then
+        begin
+          FFirstIndex := I;
+          Dec(ControlSize, TabSizes[I]);
+        end
+        else Break;
+      end;
     end;
 
     // set tab count
@@ -671,8 +708,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.ScrollTabsRight;
 begin
-  Inc(FFirstIndex);
-  UpdateTabs;
+  Inc(FLastIndex);
+  UpdateTabs(True);
 end;
 
 procedure TCarbonTabsControl.StartScrollingTabsLeft;
