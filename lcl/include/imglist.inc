@@ -612,37 +612,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCustomImageList.GetIcon
-  Params:  Index: the index of the requested image
-           Image: an icon as a container for the bitmap
-  Returns: Nothing
-
-  Fetches the index'th image into an icon.
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.GetIcon(Index: Integer; Image: TIcon);
-begin
-  if (Index < 0) or (Index >= FCount)
-  then raise EInvalidOperation.Create(SInvalidIndex);
-
-  //No Icon Support yet
-
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCustomImageList.GetImages
-  Params:  Index: the index of the requested image
-           Image: a bitmap as a container for the bitmap
-           Mask:  a bitmap as a container for the mask
-  Returns: Nothing
-
-  Fetches the index'th image and mask into a bitmap.
- ------------------------------------------------------------------------------}
-procedure TCustomImageList.GetImages(Index: Integer; const Image, Mask: TBitmap);
-begin
-{$note implement}
-end;
-
-{------------------------------------------------------------------------------
   Method:  TCustomImageList.Initialize
   Params:  None
   Returns: Nothing

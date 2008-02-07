@@ -143,7 +143,6 @@ type
     procedure SetWidth(const Value: Integer);
   protected
     procedure CheckIndex(AIndex: Integer; AForInsert: Boolean = False);
-    procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     function  GetReferenceHandle: THandle; override;
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
@@ -184,7 +183,6 @@ type
                                var ImageRect: TRect);
     {$endif}
     function GetHotSpot: TPoint; virtual;
-    procedure GetIcon(Index: Integer; Image: TIcon);
 
     procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
     procedure InsertIcon(Index: Integer; Image: TIcon);
