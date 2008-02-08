@@ -161,7 +161,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="EDBEditError">
-        <short/>
+        <short>
+          <i>EDBEditError</i> - Exception class for handling an error in a data-aware Edit box</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -264,8 +265,10 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomMaskEdit">
-        <short>Custom Mask Edit</short>
-        <descr>Custom Mask Edit: the base type for Mask Edit</descr>
+        <short>
+          <i>TCustomMaskEdit</i> - base class for <i>TMaskEdit</i>, an Edit box with characters masked out to avoid unauthorised reading</short>
+        <descr>Custom Mask Edit: the base type for Mask Edit
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomMaskEdit.FEditMask">
@@ -484,7 +487,7 @@
       </element>
       <!-- function Visibility: private -->
       <element name="TCustomMaskEdit.GetEditText">
-        <short/>
+        <short>Get the text in the edit box (the string that has been masked)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -728,7 +731,7 @@
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomMaskEdit.EditCanModify">
-        <short/>
+        <short>If True, the Edit box is allowed to modify the contents</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -799,7 +802,7 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomMaskEdit.Reset">
-        <short/>
+        <short>Reset - put back to its default state with mask appearing in Text box and no string input</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -902,7 +905,7 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomMaskEdit.EditMask">
-        <short/>
+        <short>EditMask - the sequence of characters used to obscure the string being typed (typically a sequence of asterisks)</short>
         <descr/>
         <seealso/>
       </element>
@@ -931,7 +934,7 @@
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomMaskEdit.ValidateEdit">
-        <short/>
+        <short>Validate the string that has been typed in the edit box</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -951,7 +954,7 @@
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomMaskEdit.EditText">
-        <short/>
+        <short>The string that has been typed in the Edit Box and obscured by the Masking characters</short>
         <descr/>
         <seealso/>
       </element>
@@ -963,49 +966,87 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TMaskEdit">
-        <short>Mask Edit</short>
-        <descr>Mask Edit: Displays an Edit Box with the input text masked by a selected character specified by PasswordChar, usually an asterisk, or by EditMask (a complete string), specified in TCustomMaskEdit. <br/>Useful for inputting passwords etc.</descr>
+        <short>
+          <i>TMaskEdit</i> - an Edit box with characters masked out to avoid unauthorised reading</short>
+        <descr>Mask Edit: Displays an Edit Box with the input text masked by a selected character specified by PasswordChar, usually an asterisk, or by EditMask (a complete string), specified in TCustomMaskEdit. <br/>
+Useful for inputting passwords etc.
+</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Align">
-        <short/>
-        <descr/>
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Anchors">
-        <short/>
-        <descr/>
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.AutoSize">
-        <short/>
-        <descr/>
+        <short>Whether auto-size is to be used</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.BorderSpacing">
-        <short/>
-        <descr/>
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.CharCase">
-        <short/>
-        <descr/>
+        <short>
+          <i>TEditCharCase</i>  - rules for what case to use (upper or lower) to display text</short>
+        <descr>
+          <p>Indicates how text is displayed in a text editing control in the following ways:</p>
+          <ul>
+            <li>Normal case letters</li>
+            <li>Upper case letters</li>
+            <li>Lower case letters</li>
+          </ul>
+          <p>The rules can, of course, be overridden by use of the shift key.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Color">
-        <short/>
-        <descr/>
+        <short>Determine the colour for the current control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
+          <p>The default colour is the same as the window in which the control is located.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Constraints">
-        <short/>
-        <descr/>
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -1016,49 +1057,62 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.DragCursor">
-        <short/>
+        <short>
+          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.DragKind">
-        <short/>
+        <short>DragKind - what sort of dragging? Drag or Dock</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.DragMode">
-        <short/>
+        <short>
+          <i>DragMode </i>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Enabled">
-        <short/>
-        <descr/>
+        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.EditMask">
-        <short/>
+        <short>EditMask - the sequence of characters used to obscure the string being typed (typically a sequence of asterisks)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Font">
-        <short/>
-        <descr/>
+        <short>The <i>Font</i> to be used for text in this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.MaxLength">
-        <short/>
+        <short>
+          <i>MaxLength</i>: maximum length allowed for text string</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.ParentColor">
-        <short/>
+        <short>
+          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -1070,151 +1124,214 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.ParentFont">
-        <short/>
+        <short>
+          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.ParentShowHint">
-        <short/>
+        <short>
+          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.PasswordChar">
-        <short/>
-        <descr/>
+        <short>
+          <i>PasswordChar</i>: the character which appears in the Edit box replacing and masking the actual character typed</short>
+        <descr>
+          <p>
+            <i>PasswordChar</i>
+
+
+
+: the character which appears in the Edit box replacing and masking the actual character typed.</p>
+          <p>Typically used in password input, to prevent the typed characters from being seen by passers-by or casual observers (or even malicious observers!)</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.PopupMenu">
-        <short/>
-        <descr/>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.ReadOnly">
-        <short/>
+        <short>
+          <i>ReadOnly </i>- the contents of the edit box may only be read, not written or erased</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.ShowHint">
-        <short/>
-        <descr/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.TabOrder">
-        <short/>
-        <descr/>
+        <short>The place this control occupies in the list of tabs</short>
+        <descr>Reads or writes information in flag; default is -1
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.TabStop">
-        <short/>
-        <descr/>
+        <short>
+          <i>TabStop</i> - determines if the user can tab to a control.</short>
+        <descr>
+          <p>Reads or writes boolean flag; default is False</p>
+          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
+          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Text">
-        <short/>
-        <descr/>
+        <short>
+          <i>Text</i>: the character string contained in the Edit Box</short>
+        <descr>
+          <i>Text</i>
+
+
+
+: the character string contained in the Edit Box
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.Visible">
-        <short/>
-        <descr/>
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnChange">
-        <short/>
+        <short>OnChange - event handler for any change in text</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnClick">
-        <short/>
-        <descr/>
+        <short>Event Handler for mouse click</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
+          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnDblClick">
-        <short/>
-        <descr/>
+        <short>Event Handle for mouse double-click</short>
+        <descr>
+          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnDragDrop">
-        <short/>
+        <short>Event handler for the Drag-Drop manoeuvre</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnDragOver">
-        <short/>
+        <short>Event handler for the case when a control is dragged over another control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnEndDrag">
-        <short/>
+        <short>Event handler for the end of a dragging process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnEnter">
-        <short/>
+        <short>
+          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnExit">
-        <short/>
+        <short>
+          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnKeyDown">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyDown</i>
+ - event handler for instance when key is down while control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnKeyPress">
-        <short/>
-        <descr/>
+        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyPress</i>
+ - event controller for a key being pressed while the control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnKeyUp">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyUp</i>
+  - event handler for instance when a key is up (not pressed) while the control has focus</p>
+          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnMouseDown">
-        <short/>
+        <short>Event handler for when a mouse button is pressed down</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within the current control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnMouseUp">
-        <short/>
+        <short>Event handler for when the mouse button is released, ie "up"</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TMaskEdit.OnStartDrag">
-        <short/>
+        <short>Event handler for start of dragging process</short>
         <descr/>
         <seealso/>
       </element>
@@ -1288,6 +1405,34 @@
         <descr/>
         <errors/>
         <seealso/>
+      </element>
+      <element name="TMaskEdit.AutoSelect">
+        <short>
+          <i>AutoSelect</i>: if True, the edit control will select all its text when it receives focus or when the Enter key is pressed.</short>
+      </element>
+      <element name="TMaskEdit.EchoMode">
+        <short>
+          <i>EchoMode </i>- how to echo keypresses on screen: normal (returning the actual character for that key), all upper or lower case, or a masking character as used in entering passwords</short>
+      </element>
+      <element name="TMaskEdit.OnChangeBounds">
+        <short>Event handler for a change in bounds of the control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
+      </element>
+      <element name="TMaskEdit.OnEditingDone">
+        <short>Event handler when editing is done</short>
+      </element>
+      <element name="TMaskEdit.OnResize">
+        <short>Event Handler for resize of control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if control is re-sized.
+</descr>
+      </element>
+      <element name="TEditMask">
+        <short>
+          <i>TEditMask</i> - a string type containing a sequence of characters to act as a mask in an edit box</short>
       </element>
     </module>
     <!-- MaskEdit -->
