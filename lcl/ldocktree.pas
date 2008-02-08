@@ -31,7 +31,8 @@ interface
 
 uses
   Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
-  Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf;
+  Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
+  LMessages;
   
 type
   TLazDockPages = class;
@@ -84,6 +85,7 @@ type
     function GetAnchorControl(Zone: TLazDockZone; Side: TAnchorKind;
                               OutSide: boolean): TControl;
     procedure PaintSite(DC: HDC); override;
+    procedure MouseMessage(var Msg: TLMMouse); override;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
@@ -282,6 +284,7 @@ type
   // maybe once it will be control, so now better to move all related to header things to class
   TDockHeader = class
     class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
+    class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
     class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
   end;
   
@@ -330,6 +333,21 @@ begin
       InflateRect(Result, 0, -4);
     end;
   end;
+end;
+
+class function TDockHeader.FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
+var
+  SubRect: TRect;
+begin
+  for Result := Low(TLazDockHeaderPart) to High(TLazDockHeaderPart) do
+  begin
+    if Result = ldhpAll then
+      Continue;
+    SubRect := GetRectOfPart(AHeaderRect, AOrientation, Result);
+    if PtInRect(SubRect, APoint) then
+      Exit;
+  end;
+  Result := ldhpAll;
 end;
 
 class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
@@ -1318,6 +1336,61 @@ begin
       end;
     finally
       ACanvas.Free;
+    end;
+  end;
+end;
+
+procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
+var
+  i: integer;
+  ARect: TRect;
+  Part: TLazDockHeaderPart;
+  Pt: TPoint;
+begin
+  Pt := SmallPointToPoint(Msg.Pos);
+  for i := 0 to DockSite.ControlCount - 1 do
+  begin
+    if DockSite.Controls[i].HostDockSite = DockSite then
+    begin
+      ARect := DockSite.Controls[i].BoundsRect;
+      case DockSite.Controls[i].DockOrientation of
+        doHorizontal:
+          begin
+            ARect.Bottom := ARect.Top;
+            Dec(ARect.Top, DefaultDockGrabberSize);
+          end;
+        doVertical:
+          begin
+            ARect.Right := ARect.Left;
+            Dec(ARect.Left, DefaultDockGrabberSize);
+          end;
+        else
+          Continue;
+      end;
+      if not PtInRect(ARect, Pt) then
+        Continue;
+      // we have control here
+      Part := TDockHeader.FindPart(ARect, Pt, DockSite.Controls[i].DockOrientation);
+      case Msg.Msg of
+        LM_LBUTTONDOWN:
+          begin
+            // user left clicked on header
+            if Part in [ldhpAll,ldhpCaption] then
+            begin
+              // mouse down on not buttons => start drag
+              DockSite.Controls[i].BeginDrag(True);
+            end else
+            begin
+              // mouse down on buttons => ToDo
+            end;
+          end;
+        LM_MOUSEMOVE:
+          begin
+            // track mouse move to draw hot button state
+          end;
+      end;
+      // stop thurther processing
+      Exit;
     end;
   end;
 end;
@@ -2679,9 +2752,8 @@ function TLazDockForm.FindHeader(x, y: integer; out Part: TLazDockHeaderPart): T
 var
   i: Integer;
   Control: TControl;
-  TitleRect, SubRect: TRect;
+  TitleRect: TRect;
   p: TPoint;
-  CurPart: TLazDockHeaderPart;
   Orientation: TDockOrientation;
 begin
   for i := 0 to ControlCount-1 do
@@ -2697,18 +2769,7 @@ begin
     // => check sub parts
     Result := Control;
     Orientation := GetTitleOrientation(Control);
-    for CurPart := low(TLazDockHeaderPart) to high(TLazDockHeaderPart) do
-    begin
-      if CurPart = ldhpAll then
-        Continue;
-      SubRect := TDockHeader.GetRectOfPart(TitleRect, Orientation, CurPart);
-      if PtInRect(SubRect, p) then
-      begin
-        Part := CurPart;
-        Exit;
-      end;
-    end;
-    Part := ldhpAll;
+    Part := TDockHeader.FindPart(TitleRect, p, Orientation);
     Exit;
   end;
   Result := nil;

@@ -4686,7 +4686,12 @@ begin
        {$ENDIF}
        //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
        if IsControlMouseMSG(TLMMouse(Message)) then
-         Exit;
+         Exit
+       else
+       begin
+         if FDockSite and FUseDockManager and Assigned(FDockManager) then
+           FDockManager.MouseMessage(TLMMouse(Message));
+       end;
        {$IFDEF VerboseMouseBugfix}
        DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
        {$ENDIF}

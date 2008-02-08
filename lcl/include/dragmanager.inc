@@ -278,6 +278,9 @@ begin
     FDockObject  := TDragDockObject.Create(AControl);
   end;
   
+  // we should handle somehow difference between
+  // Control.BoundsRect.LeftTop and CursorPos
+  
   GetCursorPos(p);
   FDockObject.DragPos := p;
   AControl.CalculateDockSizes;
