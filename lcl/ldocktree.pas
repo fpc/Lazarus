@@ -97,10 +97,13 @@ type
   );
 
   { TLazDockForm
-    The default DockSite for a TLazDockTree
-    
-    Note: AnchorDocking does not use DockZone.
-  }
+    The default DockSite for a TLazDockTree and for TCustomAnchoredDockManager.
+
+    Note: There are two docking managers:
+      TLazDockTree uses TLazDockZone to allow docking in rows and columns.
+      TCustomAnchoredDockManager does not use TLazDockZone and allows arbitrary
+        layouts.
+ }
   
   TLazDockForm = class(TCustomForm)
   private
@@ -112,6 +115,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
     function CloseQuery: boolean; override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
     procedure UpdateCaption; virtual;
     function FindMainControlCandidate: TControl;
@@ -166,7 +170,7 @@ type
   { TCustomAnchoredDockManager
     This class implements an LCL TDockManager via anchoring.
     The TCustomLazDockingManager component uses this docking manager
-    and extends it by layout that can be stored/restored. }
+    and extends it by layouts that can be stored/restored. }
 
   TCustomAnchoredDockManager = class(TDockManager)
   private
@@ -2531,6 +2535,30 @@ begin
   Result:=inherited CloseQuery;
   if Result then
     Result:=QueryForms(Self);
+end;
+
+procedure TLazDockForm.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+var
+  Part: TLazDockHeaderPart;
+  Control: TControl;
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if Button=mbLeft then
+  begin
+    Control:=FindHeader(X,Y,Part);
+    if (Control<>nil) then
+    begin
+      // user left clicked on header
+      if Part in [ldhpAll,ldhpCaption] then
+      begin
+        // mouse down on not buttons => start drag
+        BeginDrag(true);
+      end else begin
+        // mouse down on buttons => ToDo
+      end;
+    end;
+  end;
 end;
 
 procedure TLazDockForm.UpdateCaption;
