@@ -50,6 +50,7 @@ type
   
   // records
   TPaintData = record
+    PaintWidget: QWidgetH;
     ClipRect: Prect;
     ClipRegion: QRegionH;
   end;
@@ -103,8 +104,13 @@ type
     function _AddRef : longint;stdcall;
     function _Release : longint;stdcall;
 
+    function GetContext: HDC; virtual;
     function CreateWidget(const Params: TCreateParams):QWidgetH; virtual;
+    procedure DestroyWidget; virtual;
     procedure SetHasCaret(const AValue: Boolean);
+    
+    class procedure removeProperty(AObject: QObjectH; APropName: PAnsiChar);
+    class procedure setProperty(AObject: QObjectH; APropName: PAnsiChar; APropValue: Int64);
   public
     LCLObject: TWinControl;
   public
@@ -166,10 +172,10 @@ type
     function getWidth: Integer;
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
-    procedure lowerWidget;
+    procedure lowerWidget; virtual;
     procedure move(ANewLeft, ANewTop: Integer);
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
-    procedure raiseWidget;
+    procedure raiseWidget; virtual;
     procedure resize(ANewWidth, ANewHeight: Integer);
     procedure releaseMouse;
     procedure scroll(dx, dy: integer);
@@ -202,7 +208,7 @@ type
     function windowFlags: QtWindowFlags;
     function windowModality: QtWindowModality;
 
-    property Context: HDC read FContext;
+    property Context: HDC read GetContext;
     property KeysToEat: TByteSet read FKeysToEat write FKeysToEat;
     property Props[AnIndex:String]:pointer read GetProps write SetProps;
     property PaintData: TPaintData read FPaintData write FPaintData;
@@ -1069,11 +1075,37 @@ type
   private
     FShape: QRubberBandShape;
   protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
     function getShape: QRubberBandShape;
     procedure setShape(AShape: QRubberBandShape);
+  end;
+  
+  { TQtDesignWidget }
+
+  TQtDesignWidget = class(TQtMainWindow)
+  protected
+    FDesignControlEventHook: QObject_hookH;
+    FDesignControl: QWidgetH;
+    FDesignContext: HDC;
+    function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
+    procedure DestroyWidget; override;
+    procedure SlotDesignControlPaint(Sender: QObjectH; Event: QEventH); cdecl;
+    procedure BringDesignerToFront;
+    procedure ResizeDesigner;
+    function GetContext: HDC; virtual;
+  public
+    function DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
+
+    procedure AttachEvents; override;
+    procedure DetachEvents; override;
+
+    procedure lowerWidget; override;
+    procedure raiseWidget; override;
+  public
+    property DesignContext: HDC read FDesignContext;
   end;
 
 const
@@ -1178,10 +1210,7 @@ begin
   QWidget_cursor(Widget, FDefaultCursor);
 
   // set Handle->QWidget map
-  AVariant := QVariant_create(Int64(PtrUInt(Self)));
-  QObject_setProperty(QObjectH(Widget), 'lclwidget', AVariant);
-  QVariant_destroy(AVariant);
-
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
   FillChar(FPaintData, sizeOf(FPaintData), 0);
   
   // set focus policy
@@ -1218,9 +1247,7 @@ begin
   {$endif}
 
   // set Handle->QWidget map
-  AVariant := QVariant_create(Int64(PtrUInt(Self)));
-  QObject_setProperty(Widget, 'lclwidget', AVariant);
-  QVariant_destroy(AVariant);
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
 
   FillChar(FPaintData, sizeOf(FPaintData), 0);
 
@@ -1240,27 +1267,19 @@ begin
 end;
 
 procedure TQtWidget.DeInitializeWidget;
-var
-  V: QVariantH;
 begin
   if Widget <> nil then
     DetachEvents;
 
   if Widget <> nil then
-  begin
-    V := QVariant_create(QVariantInvalid);
-    QObject_setProperty(Widget, 'lclwidget', V);
-    QVariant_destroy(V);
-  end;
+    removeProperty(Widget, 'lclwidget');
 
   QCursor_destroy(FDefaultCursor);
   
   if HasCaret then
     DestroyCaret;
 
-  if (Widget <> nil) and FOwnWidget then
-    QObject_deleteLater(Widget);
-  Widget := nil;
+  DestroyWidget;
 end;
 
 procedure TQtWidget.RecreateWidget;
@@ -2213,6 +2232,7 @@ begin
 
     with PaintData do
     begin
+      PaintWidget := Widget;
       ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
       if ClipRect = nil then
         New(ClipRect);
@@ -2823,6 +2843,24 @@ begin
   FHasCaret := AValue;
 end;
 
+class procedure TQtWidget.removeProperty(AObject: QObjectH; APropName: PAnsiChar);
+var
+  AVariant: QVariantH;
+begin
+  AVariant := QVariant_create(QVariantInvalid);
+  QObject_setProperty(AObject, APropName, AVariant);
+  QVariant_destroy(AVariant);
+end;
+
+class procedure TQtWidget.setProperty(AObject: QObjectH; APropName: PAnsiChar; APropValue: Int64);
+var
+  AVariant: QVariantH;
+begin
+  AVariant := QVariant_create(APropValue);
+  QObject_setProperty(AObject, APropName, AVariant);
+  QVariant_destroy(AVariant);
+end;
+
 function TQtWidget.LCLKeyToQtKey(AKey: Word): Integer;
 const
   VKKeyToQtKeyMap: array[0..255] of Integer = // Keyboard mapping table
@@ -3134,6 +3172,11 @@ begin
   result := nil;
 end;
 
+function TQtWidget.GetContext: HDC;
+begin
+  Result := FContext;
+end;
+
 function TQtWidget.GetWidget: QWidgetH;
 begin
   if TheObject <> nil then
@@ -3184,6 +3227,13 @@ begin
   FHasPaint := True;
   Widget := QWidget_create();
   Result := Widget;
+end;
+
+procedure TQtWidget.DestroyWidget;
+begin
+  if (Widget <> nil) and FOwnWidget then
+    QObject_deleteLater(Widget);
+  Widget := nil;
 end;
 
 { TQtAbstractButton }
@@ -7847,6 +7897,163 @@ begin
   FViewPortWidget := nil;
   Result := QGraphicsView_create();
   QWidget_setAttribute(Result, QtWA_NoMousePropagation);
+end;
+
+{ TQtDesignWidget }
+
+function TQtDesignWidget.CreateWidget(const AParams: TCreateParams): QWidgetH;
+begin
+  Result := inherited CreateWidget(AParams);
+  FDesignControl := QWidget_create(Result);
+  QWidget_setMouseTracking(FDesignControl, True);
+  setProperty(FDesignControl, 'lclwidget', Int64(PtrUInt(Self)));
+  BringDesignerToFront;
+end;
+
+procedure TQtDesignWidget.DestroyWidget;
+begin
+  removeProperty(FDesignControl, 'lclwidget');
+  QObject_deleteLater(FDesignControl);
+  FDesignControl := nil;
+  inherited DestroyWidget;
+end;
+
+procedure TQtDesignWidget.SlotDesignControlPaint(Sender: QObjectH; Event: QEventH); cdecl;
+var
+  Msg: TLMPaint;
+  AStruct: PPaintStruct;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtWidget.SlotPaint ', dbgsName(LCLObject));
+  {$endif}
+  if (LCLObject is TWinControl) then
+  begin
+    FillChar(Msg, SizeOf(Msg), #0);
+
+    Msg.Msg := LM_PAINT;
+    New(AStruct);
+    FillChar(AStruct^, SizeOf(TPaintStruct), 0);
+    Msg.PaintStruct := AStruct;
+
+    with PaintData do
+    begin
+      PaintWidget := FDesignControl;
+      ClipRegion := QPaintEvent_Region(QPaintEventH(Event));
+      if ClipRect = nil then
+        New(ClipRect);
+      QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
+    end;
+
+    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+    FDesignContext := Msg.DC;
+
+    Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
+    Msg.PaintStruct^.hdc := FDesignContext;
+
+
+    with getClientBounds do
+      SetWindowOrgEx(Msg.DC, -Left, -Top, nil);
+
+    // send paint message
+    try
+      // Saving clip rect and clip region
+      try
+        LCLObject.WindowProc(TLMessage(Msg));
+      finally
+        Dispose(PaintData.ClipRect);
+        Fillchar(FPaintData, SizeOf(FPaintData), 0);
+        FDesignContext := 0;
+        EndPaint(THandle(Self), AStruct^);
+        Dispose(AStruct);
+      end;
+    except
+      Application.HandleException(nil);
+    end;
+  end;
+end;
+
+procedure TQtDesignWidget.BringDesignerToFront;
+begin
+  if FDesignControl <> nil then
+    QWidget_raise(FDesignControl);
+end;
+
+procedure TQtDesignWidget.ResizeDesigner;
+begin
+  if FDesignControl = nil then
+    Exit;
+  with getClientBounds do
+  begin
+    QWidget_move(FDesignControl, Left, Top);
+    QWidget_resize(FDesignControl, Right - Left, Bottom - Top);
+  end;
+end;
+
+function TQtDesignWidget.GetContext: HDC;
+begin
+  if FDesignContext <> 0 then
+    Result := FDesignContext
+  else
+    Result := FContext;
+end;
+
+function TQtDesignWidget.DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  if LCLObject <> nil then
+  begin
+    QEvent_Accept(Event);
+    case QEvent_type(Event) of
+      QEventPaint: SlotDesignControlPaint(Sender, Event);
+    end;
+  end;
+end;
+
+function TQtDesignWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+  if LCLObject <> nil then
+  begin
+    QEvent_accept(Event);
+    case QEvent_type(Event) of
+      QEventChildAdded,
+      QEventChildRemoved: BringDesignerToFront;
+      QEventResize:
+        begin
+          Result := inherited EventFilter(Sender, Event);
+          ResizeDesigner;
+        end;
+    else
+      Result := inherited EventFilter(Sender, Event);
+    end;
+  end;
+end;
+
+procedure TQtDesignWidget.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  FDesignControlEventHook := QObject_hook_create(FDesignControl);
+  TEventFilterMethod(Method) := @DesignControlEventFilter;
+  QObject_hook_hook_events(FDesignControlEventHook, Method);
+end;
+
+procedure TQtDesignWidget.DetachEvents;
+begin
+  inherited DetachEvents;
+end;
+
+procedure TQtDesignWidget.lowerWidget;
+begin
+  inherited lowerWidget;
+  BringDesignerToFront;
+end;
+
+procedure TQtDesignWidget.raiseWidget;
+begin
+  inherited raiseWidget;
+  BringDesignerToFront;
 end;
 
 end.

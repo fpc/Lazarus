@@ -76,14 +76,9 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI BeginPaint] Handle=', dbghex(Handle));
   {$endif}
-
-{  if IsDoubleBuffered then
-    Result :=GetDoubleBufferedDC(Handle)
-  else}
-  
   Widget := TQtWidget(Handle);
   if Widget <> nil then
-    DC := TQtDeviceContext.Create(Widget.Widget, True)
+    DC := TQtDeviceContext.Create(Widget.PaintData.PaintWidget, True)
   else
     DC := TQtDeviceContext.Create(nil, True);
     
@@ -1987,10 +1982,6 @@ begin
   {$endif}
 end;
 
-function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
-begin
-  Result := GetDC(WindowHandle);
-end;
 {------------------------------------------------------------------------------
   Function: GetDeviceCaps
   Params: DC: HDC; Index: Integer

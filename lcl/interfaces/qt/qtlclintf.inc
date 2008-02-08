@@ -166,6 +166,22 @@ begin
   end;
 end;
 
+
+function TQtWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
+var
+  Widget: TQtWidget;
+begin
+  Widget := TQtWidget(WindowHandle);
+
+  if (Widget <> nil) and (Widget is TQtDesignWidget) then
+    Result := TQtDesignWidget(Widget).DesignContext
+  else
+    Result := 0;
+
+  if Result = 0 then
+    Result := GetDC(WindowHandle);
+end;
+
 {------------------------------------------------------------------------------
   Function: IntfSendsUTF8KeyPress
   Params:
@@ -175,6 +191,13 @@ end;
 function TQtWidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
   Result := True;
+end;
+
+function TQtWidgetSet.IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean;
+begin
+  Result := (WindowHandle <> 0) and (TQtWidget(WindowHandle) is TQtDesignWidget);
+  if Result then
+    Result := TQtDesignWidget(WindowHandle).DesignContext = DC;
 end;
 
 {------------------------------------------------------------------------------
@@ -510,6 +533,11 @@ begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
   {$endif}
+end;
+
+function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
+begin
+  Result := 1;
 end;
 
 function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;

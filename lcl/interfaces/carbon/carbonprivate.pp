@@ -511,7 +511,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonDesignWindow.BoundsChanged
+  Method:  TCarbonDesignWindow.ControlAdded
 
   Notifies about control added
  ------------------------------------------------------------------------------}

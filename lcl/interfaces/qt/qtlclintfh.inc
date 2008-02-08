@@ -37,7 +37,10 @@ procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImage
 function FontCanUTF8(Font: HFont): boolean; override;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
+function GetDesignerDC(WindowHandle: HWND): HDC; override;
+
 function IntfSendsUTF8KeyPress: boolean; override;
+function IsDesignerDC(WindowHandle: HWND; DC: HDC): Boolean; override;
 
 function PromptUser(const DialogCaption : string;
                     const DialogMessage : string;
@@ -55,6 +58,7 @@ function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescriptio
 
 function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean; override;
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
+function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 

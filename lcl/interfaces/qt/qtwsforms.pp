@@ -157,7 +157,10 @@ begin
 
   // Creates the window
 
-  QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
+  if csDesigning in AWinControl.ComponentState then
+    QtMainWindow := TQtDesignWidget.Create(AWinControl, AParams)
+  else
+    QtMainWindow := TQtMainWindow.Create(AWinControl, AParams);
   
   // Set´s initial properties
 
