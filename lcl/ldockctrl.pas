@@ -778,6 +778,8 @@ end;
 function TCustomLazControlDocker.CreateFormAndDockWithSplitter(
   Layout: TLazDockConfigNode; Side: TAnchorKind): boolean;
 { Add a splitter to Side and dock to it. For example:
+
+  Side=akLeft
       --------+      -------------+
           ---+|      ---+#+------+|
            A ||       A |#|      ||
@@ -846,7 +848,7 @@ function TCustomLazControlDocker.CreateFormAndDockWithSplitter(
     if Node=nil then exit;
     if CompareText(Node.Sides[OppositeAnchor[Side]],SplitterNode.Name)<>0 then
       exit;
-    // success: NewNeighbour is a neigbour on the current form and in the Layout
+    // success: NewNeighbour is a neighbour on the current form and in the Layout
     if Append then begin
       Neighbours.Add(Splitter);
       Neighbours.Add(NewNeighbour);
@@ -975,7 +977,7 @@ begin
       Neighbours.Add(NeighbourControl);
       while FindNextNeighbour(SplitterNode,Neighbours,false) do ;
       while FindNextNeighbour(SplitterNode,Neighbours,true) do ;
-      // Neighbours now contains all controls, that needs to be reanchored
+      // Neighbours now contains all controls, that need to be reanchored
       // to the new Splitter
 
       if Side in [akLeft,akRight] then
