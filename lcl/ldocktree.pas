@@ -100,20 +100,10 @@ type
     The default DockSite for a TLazDockTree
     
     Note: AnchorDocking does not use DockZone.
-
-    if DockZone<>nil then
-      If DockZone is a leaf (DockZone.ChildCount=0) then
-        Only child control is DockZone.ChildControl
-      else
-        if DockZone.Orientation in [doHorizontal,doVertical] then
-          Child controls are TLazDockForm and TSplitter
-        else if DockZone.Orientation=doPages then
-          Child control is a TLazDockPages
   }
   
   TLazDockForm = class(TCustomForm)
   private
-    FDockZone: TDockZone;
     FMainControl: TControl;
     FPageControl: TLazDockPages;
     procedure SetMainControl(const AValue: TControl);
@@ -130,7 +120,6 @@ type
     function ControlHasTitle(Control: TControl): boolean;
     function GetTitleRect(Control: TControl): TRect;
     function GetTitleOrientation(Control: TControl): TDockOrientation;
-    property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read FPageControl;
     property MainControl: TControl read FMainControl write SetMainControl;
   end;
