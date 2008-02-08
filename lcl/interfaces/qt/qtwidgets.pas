@@ -632,8 +632,6 @@ type
     // used to store values if no selection
     FSelStart: Integer;
     FSelLength: Integer;
-    // stop event processing on droplist
-    FDynPropChanged: Boolean;
     function GetDropList: TQtListWidget;
     function GetLineEdit: QLineEditH;
     procedure SetOwnerDrawn(const AValue: Boolean);
@@ -5182,7 +5180,6 @@ begin
     WriteLn('TQtComboBox.Create');
   {$endif}
   Result := QComboBox_create();
-  FDynPropChanged := False;
   FLineEdit := nil;
   FOwnerDrawn := False;
 end;
@@ -5376,6 +5373,7 @@ end;
 
 procedure TQtComboBox.DetachEvents;
 begin
+  QObject_hook_destroy(FDropListEventHook);
   QComboBox_hook_destroy(FActivateHook);
   QComboBox_hook_destroy(FChangeHook);
   QComboBox_hook_destroy(FSelectHook);
@@ -5391,14 +5389,6 @@ var
   DynPropChars: PAnsiChar;
   i: Integer;
 begin
-  Result := FDynPropChanged;
-  
-  if Result then
-  begin
-    QEvent_accept(Event);
-    exit;
-  end;
-  
   BeginEventProcessing;
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
   begin
@@ -5407,24 +5397,6 @@ begin
     QEvent_accept(Event);
     
     case QEvent_type(Event) of
-      QEventDynamicPropertyChange:
-      begin
-        DynPropName := QByteArray_create();
-        try
-          QDynamicPropertyChangeEvent_propertyName(
-            QDynamicPropertyChangeEventH(Event), DynPropName);
-          DynPropChars := QByteArray_constData(DynPropName);
-          Str := '';
-          for i := 0 to QByteArray_length(DynPropName) - 1 do
-          begin
-            Str := Str + DynPropChars^;
-            inc(DynPropChars);
-          end;
-          FDynPropChanged := Str = 'lclwidget';
-        finally
-          QByteArray_destroy(DynPropName);
-        end;
-      end;
       QEventShow: SlotDropListVisibility(True);
       QEventHide:
       begin
