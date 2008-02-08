@@ -1189,8 +1189,6 @@ end;
 
 constructor TQtWidget.CreateFrom(const AWinControl: TWinControl;
   AWidget: QWidgetH);
-var
-  AVariant: QVariantH;
 begin
   inherited Create;
 
@@ -1225,8 +1223,6 @@ begin
 end;
 
 procedure TQtWidget.InitializeWidget;
-var
-  AVariant: QVariantH;
 begin
   // Creates the widget
   Widget := CreateWidget(FParams);
@@ -5385,9 +5381,6 @@ function TQtComboBox.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cde
 var
   ev: QEventH;
   str: WideString;
-  DynPropName: QByteArrayH;
-  DynPropChars: PAnsiChar;
-  i: Integer;
 begin
   BeginEventProcessing;
   if (FDropList <> nil) and (Sender = FDropList.Widget) then
