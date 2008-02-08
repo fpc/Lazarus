@@ -2742,35 +2742,36 @@ var
     Result:=Check(Root);
   end;
   
+  // FPC bug: when this function is internal of FindNearestControlNode then get win32 linker error
+  function FindOwnSplitterSiblingWithControl(Node: TLazDockConfigNode
+    ): TLazDockConfigNode;
+  { find a sibling, that is a direct neighbour behind a splitter, and the
+    splitter is only used by the node and the sibling
+    For example:
+      ---------+
+      --+#+---+|
+      B |#| A ||
+      --+#+---+|
+      ---------+
+  }
+  var
+    a: TAnchorKind;
+    SplitterNode: TLazDockConfigNode;
+  begin
+    for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if Node.Sides[a]='' then continue;
+      SplitterNode:=FindNode(Node.Sides[a]);
+      if (SplitterNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
+      and SplitterNode.IsTheOnlyNeighbour(Node,a) then begin
+        Result:=SplitterNode.FindNeighbour(OppositeAnchor[a],true);
+        if Result<>nil then exit;
+      end;
+    end;
+    Result:=nil;
+  end;
+
   function FindNearestControlNode: TLazDockConfigNode;
   
-    function FindOwnSplitterSiblingWithControl(Node: TLazDockConfigNode
-      ): TLazDockConfigNode;
-    { find a sibling, that is a direct neighbour behind a splitter, and the
-      splitter is only used by the node and the sibling
-      For example:
-        ---------+
-        --+#+---+|
-        B |#| A ||
-        --+#+---+|
-        ---------+
-    }
-    var
-      a: TAnchorKind;
-      SplitterNode: TLazDockConfigNode;
-    begin
-      for a:=Low(TAnchorKind) to High(TAnchorKind) do begin
-        if Node.Sides[a]='' then continue;
-        SplitterNode:=FindNode(Node.Sides[a]);
-        if (SplitterNode.TheType in [ldcntSplitterLeftRight,ldcntSplitterUpDown])
-        and SplitterNode.IsTheOnlyNeighbour(Node,a) then begin
-          Result:=SplitterNode.FindNeighbour(OppositeAnchor[a],true);
-          if Result<>nil then exit;
-        end;
-      end;
-      Result:=nil;
-    end;
-    
     function FindSiblingWithControl(Node: TLazDockConfigNode
       ): TLazDockConfigNode;
     var

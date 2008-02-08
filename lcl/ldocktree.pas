@@ -88,7 +88,14 @@ type
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
   
-  
+  TLazDockHeaderPart =
+  (
+    ldhpAll,           // total header rect
+    ldhpCaption,       // header caption
+    ldhpRestoreButton, // header restore button
+    ldhpCloseButton    // header close button
+  );
+
   { TLazDockForm
     The default DockSite for a TLazDockTree
     
@@ -104,13 +111,6 @@ type
           Child control is a TLazDockPages
   }
   
-  TLazDockHeaderPart = (
-    ldhpAll,
-    ldhpCaption,
-    ldhpRestoreButton,
-    ldhpCloseButton
-    );
-
   TLazDockForm = class(TCustomForm)
   private
     FDockZone: TDockZone;
@@ -128,7 +128,8 @@ type
     function FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
     function IsDockedControl(Control: TControl): boolean;
     function ControlHasTitle(Control: TControl): boolean;
-    procedure GetTitleRect(Control: TControl; Part: TLazDockHeaderPart; out ARect: TRect);
+    function GetTitleRect(Control: TControl): TRect;
+    function GetTitleOrientation(Control: TControl): TDockOrientation;
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read FPageControl;
     property MainControl: TControl read FMainControl write SetMainControl;
@@ -228,7 +229,8 @@ type
   
   
 const
-  DockAlignOrientations: array[TAlign] of TDockOrientation = (
+  DockAlignOrientations: array[TAlign] of TDockOrientation =
+  (
     doPages,     //alNone,
     doVertical,  //alTop,
     doVertical,  //alBottom,
@@ -236,7 +238,7 @@ const
     doHorizontal,//alRight,
     doPages,     //alClient,
     doPages      //alCustom
-    );
+  );
 
 type
   TAnchorControlsRect = array[TAnchorKind] of TControl;
@@ -259,6 +261,124 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 
 implementation
+
+type
+
+  { TDockHeader }
+
+  // maybe once it will be control, so now better to move all related to header things to class
+  TDockHeader = class
+    class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
+    class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
+  end;
+  
+class function TDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
+  APart: TLazDockHeaderPart): TRect;
+var
+  d: Integer;
+begin
+  Result := AHeaderRect;
+  if APart = ldhpAll then
+    Exit;
+  InflateRect(Result, -2, -2);
+  case AOrientation of
+    doHorizontal:
+    begin
+      d := Result.Bottom - Result.Top;
+      if APart = ldhpCloseButton then
+      begin
+        Result.Left := Max(Result.Left, Result.Right - d);
+        Exit;
+      end;
+      Result.Right := Max(Result.Left, Result.Right - d - 1);
+      if APart = ldhpRestoreButton then
+      begin
+        Result.Left := Max(Result.Left, Result.Right - d);
+        Exit;
+      end;
+      Result.Right := Max(Result.Left, Result.Right - d - 1);
+      InflateRect(Result, -4, 0);
+    end;
+    doVertical:
+    begin
+      d := Result.Right - Result.Left;
+      if APart = ldhpCloseButton then
+      begin
+        Result.Bottom := Min(Result.Bottom, Result.Top + d);
+        Exit;
+      end;
+      Result.Top := Min(Result.Bottom, Result.Top + d + 1);
+      if APart = ldhpRestoreButton then
+      begin
+        Result.Bottom := Min(Result.Bottom, Result.Top + d);
+        Exit;
+      end;
+      Result.Top := Min(Result.Bottom, Result.Top + d + 1);
+      InflateRect(Result, 0, -4);
+    end;
+  end;
+end;
+
+class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
+var
+  Details: TThemedElementDetails;
+  BtnRect: TRect;
+  DrawRect: TRect;
+  TextStyle: TTextStyle;
+  // LCL dont handle orientation in TFont
+  OldFont, RotatedFont: HFONT;
+  ALogFont: TLogFont;
+begin
+  TextStyle.Alignment := taLeftJustify;
+  TextStyle.SingleLine := True;
+  TextStyle.Clipping := False;
+  TextStyle.Opaque := False;
+  TextStyle.Wordbreak := False;
+  TextStyle.SystemFont := False;
+  TextStyle.RightToLeft := False;
+
+  DrawRect := ARect;
+  InflateRect(DrawRect, -1, -1);
+  ACanvas.Brush.Color := clBtnShadow;
+  ACanvas.FrameRect(DrawRect);
+  InflateRect(DrawRect, -1, -1);
+
+  // draw close button
+  BtnRect := GetRectOfPart(ARect, AOrientation, ldhpCloseButton);
+  Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
+  ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+  // draw restore button
+  BtnRect := GetRectOfPart(ARect, AOrientation, ldhpRestoreButton);
+  Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
+  ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+
+  // draw caption
+  DrawRect := GetRectOfPart(ARect, AOrientation, ldhpCaption);
+
+  case AOrientation of
+    doHorizontal:
+      begin
+        TextStyle.Layout := tlCenter;
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, ACaption, TextStyle);
+      end;
+    doVertical:
+      begin
+        TextStyle.Layout := tlBottom;
+        OldFont := 0;
+        if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
+        begin
+          ALogFont.lfEscapement := 900;
+          RotatedFont := CreateFontIndirect(ALogFont);
+          if RotatedFont <> 0 then
+            OldFont := SelectObject(ACanvas.Handle, RotatedFont);
+        end;
+        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, ACaption, TextStyle);
+        if OldFont <> 0 then
+          DeleteObject(SelectObject(ACanvas.Handle, OldFont));
+      end;
+  end;
+end;
 
 
 function GetLazDockSplitter(Control: TControl; Side: TAnchorKind; out
@@ -654,87 +774,9 @@ begin
   BreakAnchors(Zone.NextSibling);
 end;
 
-procedure TLazDockTree.PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
-  const ARect: TRect);
-var
-  Details: TThemedElementDetails;
-  BtnRect: TRect;
-  DrawRect: TRect;
-  d: integer;
-  DockCaption: String;
-  TextStyle: TTextStyle;
-  // LCL dont handle orientation in TFont
-  OldFont, RotatedFont: HFONT;
-  ALogFont: TLogFont;
+procedure TLazDockTree.PaintDockFrame(ACanvas: TCanvas; AControl: TControl; const ARect: TRect);
 begin
-  DockCaption := DockSite.GetDockCaption(AControl);
-  TextStyle.Alignment := taLeftJustify;
-  TextStyle.SingleLine := True;
-  TextStyle.Clipping := False;
-  TextStyle.Opaque := False;
-  TextStyle.Wordbreak := False;
-  TextStyle.SystemFont := False;
-  TextStyle.RightToLeft := AControl.UseRightToLeftAlignment;
-
-  DrawRect := ARect;
-  InflateRect(DrawRect, -1, -1);
-  ACanvas.Brush.Color := clBtnShadow;
-  ACanvas.FrameRect(DrawRect);
-  InflateRect(DrawRect, -1, -1);
-  case AControl.DockOrientation of
-    doHorizontal:
-      begin
-        TextStyle.Layout := tlCenter;
-        d := DrawRect.Bottom - DrawRect.Top;
-        BtnRect := DrawRect;
-        BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Right := BtnRect.Left;
-        BtnRect := DrawRect;
-        Dec(BtnRect.Right);
-        BtnRect.Left := BtnRect.Right - d;
-        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Right := BtnRect.Left;
-        InflateRect(DrawRect, -4, 0);
-
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, DockCaption, TextStyle);
-      end;
-    doVertical:
-      begin
-        TextStyle.Layout := tlBottom;
-        d := DrawRect.Right - DrawRect.Left;
-        BtnRect := DrawRect;
-        BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Top := BtnRect.Bottom;
-        BtnRect := DrawRect;
-        Inc(BtnRect.Top);
-        BtnRect.Bottom := BtnRect.Top + d;
-        Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-        ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-        DrawRect.Top := BtnRect.Bottom;
-        InflateRect(DrawRect, 0, -4);
-
-        OldFont := 0;
-        if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
-        begin
-          ALogFont.lfEscapement := 900;
-          RotatedFont := CreateFontIndirect(ALogFont);
-          if RotatedFont <> 0 then
-            OldFont := SelectObject(ACanvas.Handle, RotatedFont);
-        end;
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, DockCaption, TextStyle);
-        if OldFont <> 0 then
-          DeleteObject(SelectObject(ACanvas.Handle, OldFont));
-      end;
-  end;
+  TDockHeader.Draw(ACanvas, DockSite.GetDockCaption(AControl), AControl.DockOrientation, ARect);
 end;
 
 procedure TLazDockTree.CreateDockLayoutHelperControls(Zone: TLazDockZone);
@@ -1739,7 +1781,7 @@ begin
             Control.AnchorSide[akRight].Assign(DropCtl.AnchorSide[akRight]);
           end;
           Control.Anchors:=[akLeft,akTop,akRight,akBottom];
-          Control.Parent:=DropCtl.Parent;
+          Control.Dock(DropCtl.Parent, Rect(0, 0, 0, 0));
           Control.Visible:=true;
 
           // position DropCtl
@@ -1796,9 +1838,12 @@ begin
         DebugLn(['TCustomAnchoredDockManager.DockControl NewPage=',NewPage.Caption,' Control=',Control.Caption,',',DbgSName(Control)]);
         NewPage.DisableAlign;
         try
-          Control.Parent:=NewPage;
-          if Control is TCustomForm then
-            TCustomForm(Control).WindowState:=wsNormal;
+          if DropCtl is TCustomForm then
+          begin
+            TCustomForm(DropCtl).WindowState:=wsNormal;
+            TCustomForm(DropCtl).BorderStyle:=bsNone;
+          end;
+          Control.Dock(NewPage, Rect(0, 0, 0, 0));
           Control.AnchorClient(0);
         finally
           NewPage.EnableAlign;
@@ -2422,11 +2467,6 @@ end;
 
 procedure TLazDockForm.PaintWindow(DC: HDC);
 var
-  Details: TThemedElementDetails;
-  BtnRect: TRect;
-  DrawRect: TRect;
-  DockCaption: String;
-  TextStyle: TTextStyle;
   i: Integer;
   Control: TControl;
   ACanvas: TCanvas;
@@ -2434,49 +2474,18 @@ begin
   inherited PaintWindow(DC);
   ACanvas:=nil;
   try
-    for i:=0 to ControlCount-1 do begin
-      Control:=Controls[i];
-      if not ControlHasTitle(Control) then continue;
+    for i := 0 to ControlCount-1 do
+    begin
+      Control := Controls[i];
+      if not ControlHasTitle(Control) then
+        continue;
 
-      if ACanvas=nil then begin
-        ACanvas:=TCanvas.Create;
-        ACanvas.Handle:=DC;
+      if ACanvas = nil then
+      begin
+        ACanvas := TCanvas.Create;
+        ACanvas.Handle := DC;
       end;
-      DockCaption := Control.Caption;
-      TextStyle.Alignment := taLeftJustify;
-      TextStyle.Layout := tlCenter;
-      TextStyle.SingleLine := True;
-      TextStyle.Clipping := True;
-      TextStyle.Opaque := False;
-      TextStyle.Wordbreak := False;
-      TextStyle.SystemFont := False;
-      TextStyle.RightToLeft := Control.UseRightToLeftAlignment;
-
-      // draw frame
-      GetTitleRect(Control,ldhpAll,DrawRect);
-      InflateRect(DrawRect, -1, -1);
-      ACanvas.Brush.Color := clBtnShadow;
-      ACanvas.FrameRect(DrawRect);
-      
-      // draw close button
-      GetTitleRect(Control,ldhpCloseButton,BtnRect);
-      Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-      ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-      // draw restore button
-      GetTitleRect(Control,ldhpRestoreButton,BtnRect);
-      Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-      ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
-
-      // draw caption
-      GetTitleRect(Control,ldhpCaption,DrawRect);
-      if Control.BorderSpacing.Top>0 then begin
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top,
-                         DockCaption, TextStyle);
-      end else begin
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom,
-                         DockCaption, TextStyle);
-      end;
+      TDockHeader.Draw(ACanvas, Control.Caption, GetTitleOrientation(Control), GetTitleRect(Control));
     end;
   finally
     ACanvas.Free;
@@ -2590,36 +2599,43 @@ begin
   FindCandidate(Self,0);
 end;
 
-function TLazDockForm.FindHeader(x, y: integer; out Part: TLazDockHeaderPart
-  ): TControl;
+function TLazDockForm.FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
 var
   i: Integer;
   Control: TControl;
-  TitleRect: TRect;
+  TitleRect, SubRect: TRect;
   p: TPoint;
   CurPart: TLazDockHeaderPart;
+  Orientation: TDockOrientation;
 begin
-  for i:=0 to ControlCount-1 do begin
-    Control:=Controls[i];
-    if not ControlHasTitle(Control) then continue;
-    GetTitleRect(Control,ldhpAll,TitleRect);
-    p:=Point(X,Y);
-    if not PtInRect(TitleRect,p) then continue;
+  for i := 0 to ControlCount-1 do
+  begin
+    Control := Controls[i];
+    if not ControlHasTitle(Control) then
+      Continue;
+    TitleRect := GetTitleRect(Control);
+    p := Point(X,Y);
+    if not PtInRect(TitleRect, p) then
+      Continue;
     // on header
     // => check sub parts
-    Result:=Control;
-    for CurPart:=low(TLazDockHeaderPart) to high(TLazDockHeaderPart) do begin
-      if CurPart=ldhpAll then continue;
-      GetTitleRect(Control,CurPart,TitleRect);
-      if PtInRect(TitleRect,p) then begin
-        Part:=CurPart;
-        exit;
+    Result := Control;
+    Orientation := GetTitleOrientation(Control);
+    for CurPart := low(TLazDockHeaderPart) to high(TLazDockHeaderPart) do
+    begin
+      if CurPart = ldhpAll then
+        Continue;
+      SubRect := TDockHeader.GetRectOfPart(TitleRect, Orientation, CurPart);
+      if PtInRect(SubRect, p) then
+      begin
+        Part := CurPart;
+        Exit;
       end;
     end;
-    Part:=ldhpAll;
-    exit;
+    Part := ldhpAll;
+    Exit;
   end;
-  Result:=nil;
+  Result := nil;
 end;
 
 function TLazDockForm.IsDockedControl(Control: TControl): boolean;
@@ -2648,48 +2664,29 @@ begin
            and ((Control.BorderSpacing.Left>0) or (Control.BorderSpacing.Top>0));
 end;
 
-procedure TLazDockForm.GetTitleRect(Control: TControl; Part: TLazDockHeaderPart;
-  out ARect: TRect);
-var
-  d: Integer;
+function TLazDockForm.GetTitleRect(Control: TControl): TRect;
 begin
-  ARect := Control.BoundsRect;
-  if Control.BorderSpacing.Top>0 then begin
-    ARect.Top:=Control.Top-Control.BorderSpacing.Top;
-    ARect.Bottom:=Control.Top;
-  end else begin
-    ARect.Left:=Control.Left-Control.BorderSpacing.Left;
-    ARect.Right:=Control.Left;
+  Result := Control.BoundsRect;
+  if Control.BorderSpacing.Top > 0 then
+  begin
+    Result.Top := Control.Top - Control.BorderSpacing.Top;
+    Result.Bottom := Control.Top;
+  end else
+  begin
+    Result.Left := Control.Left - Control.BorderSpacing.Left;
+    Result.Right := Control.Left;
   end;
-  if Part=ldhpAll then exit;
-  InflateRect(ARect, -2, -2);
-  if Control.BorderSpacing.Top>0 then begin
-    d:=ARect.Bottom-ARect.Top;
-    if Part=ldhpCloseButton then begin
-      ARect.Left:=Max(ARect.Left,ARect.Right-d);
-      exit;
-    end;
-    ARect.Right:=Max(ARect.Left,ARect.Right-d-1);
-    if Part=ldhpRestoreButton then begin
-      ARect.Left:=Max(ARect.Left,ARect.Right-d);
-      exit;
-    end;
-    ARect.Right:=Max(ARect.Left,ARect.Right-d-1);
-    InflateRect(ARect, -4, 0);
-  end else begin
-    d:=ARect.Right-ARect.Left;
-    if Part=ldhpCloseButton then begin
-      ARect.Bottom:=Min(ARect.Bottom,ARect.Top+d);
-      exit;
-    end;
-    ARect.Top:=Min(ARect.Bottom,ARect.Top+d+1);
-    if Part=ldhpRestoreButton then begin
-      ARect.Bottom:=Min(ARect.Bottom,ARect.Top+d);
-      exit;
-    end;
-    ARect.Top:=Min(ARect.Bottom,ARect.Top+d+1);
-    InflateRect(ARect, 0, -4);
-  end;
+end;
+
+function TLazDockForm.GetTitleOrientation(Control: TControl): TDockOrientation;
+begin
+  if Control.BorderSpacing.Top > 0 then
+    Result := doHorizontal
+  else
+  if Control.BorderSpacing.Left > 0 then
+    Result := doVertical
+  else
+    Result := doNoOrient;
 end;
 
 initialization
