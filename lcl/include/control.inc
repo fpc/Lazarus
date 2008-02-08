@@ -3054,7 +3054,7 @@ end;
 {------------------------------------------------------------------------------
   Procedure TControl.SetParent(NewParent : TWinControl);
 ------------------------------------------------------------------------------}
-Procedure TControl.SetParent(NewParent: TWinControl);
+procedure TControl.SetParent(NewParent: TWinControl);
 begin
   if FParent = NewParent then exit;
   CheckNewParent(NewParent);

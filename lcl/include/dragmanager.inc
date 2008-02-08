@@ -286,6 +286,8 @@ begin
   AControl.CalculateDockSizes;
   FDockObject.DockRect := Rect(p.x, p.y, p.x + AControl.Width, p.y + AControl.Height);
   FDockObject.EraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
+  
+  // we are tracking capture change to stop drag/dock is happen
   SetCaptureControl(AControl);
 end;
 
@@ -710,21 +712,32 @@ end;
 procedure TDragManagerDefault.CaptureChanged(OldCaptureControl: TControl);
 var
   i: integer;
-  AIsDragging: Boolean;
+  AIsDragging,
+  AIsDocking: Boolean;
 begin
   // if this is TWinControl, and it have controls (not TWinControls)
   // then we should check Dragging in those controls
+  AIsDocking := False;
   AIsDragging := OldCaptureControl.Dragging;
+  if AIsDragging then
+    AIsDocking := OldCaptureControl.DragKind = dkDock;
   if (not AIsDragging) and (OldCaptureControl is TWinControl) then
   begin
     for i := 0 to TWinControl(OldCaptureControl).ControlCount - 1 do
     begin
       AIsDragging := AIsDragging or TWinControl(OldCaptureControl).Controls[i].Dragging;
       if AIsDragging then
+      begin
+        AIsDocking := TWinControl(OldCaptureControl).Controls[i].DragKind = dkDock;
         break;
+      end;
     end;
   end;
-  DragStop(AIsDragging);
+  // when we are start drag/dock in TDockHeader then we should
+  // take into account that it doesnot belong to our control - it
+  // belongs to parent => we should allow parent to get capture
+  if not (AIsDocking and (CaptureControl = OldCaptureControl.Parent)) then
+    DragStop(AIsDragging);
 end;
 
 
