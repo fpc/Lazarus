@@ -25,6 +25,8 @@
     This unit contains visual components for docking and streaming.
 
   ToDo:
+    - move the docking code to TCustomAnchoredDockManager
+      and keep only the resizing code here.
     - restoring layout: pages
     - restoring layout: move form after inserting a control
     - restoring layout: spiral splitter
@@ -903,7 +905,7 @@ begin
     if NeighbourControl.Parent=nil then begin
       // NeighbourControl is a standalone control (e.g. an undocked form)
       // => create a new TLazDockForm and put both controls into it
-      NewParent:=TLazDockForm.Create(nil);
+      NewParent:=Manager.Manager.CreateForm;
       NewParentCreated:=true;
     end else begin
       // NeighbourControl is docked
@@ -1079,7 +1081,7 @@ begin
   if NeighbourControl.Parent=nil then begin
     // NeighbourControl is a top level control (no parents, no neighbours)
     // => create a TLazDockForm with a TLazDockPages and two TLazDockPage
-    TopForm:=TLazDockForm.Create(nil);
+    TopForm:=Manager.Manager.CreateForm;
     TopFormBounds:=PagesNode.Bounds;
     // TODO: shrink TopFormBounds
     TopForm.BoundsRect:=TopFormBounds;

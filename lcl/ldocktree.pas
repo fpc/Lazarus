@@ -108,7 +108,6 @@ type
   TLazDockForm = class(TCustomForm)
   private
     FMainControl: TControl;
-    FPageControl: TLazDockPages;
     procedure SetMainControl(const AValue: TControl);
     procedure PaintWindow(DC: HDC); override;
   protected
@@ -124,8 +123,7 @@ type
     function ControlHasTitle(Control: TControl): boolean;
     function GetTitleRect(Control: TControl): TRect;
     function GetTitleOrientation(Control: TControl): TDockOrientation;
-    property PageControl: TLazDockPages read FPageControl;
-    property MainControl: TControl read FMainControl write SetMainControl;
+    property MainControl: TControl read FMainControl write SetMainControl;// used for the default caption
   end;
   
   
@@ -164,13 +162,27 @@ type
 
   TLazDockSplitter = class(TCustomSplitter)
   end;
+  
+  
+  TCustomAnchoredDockManager = class;
+  
+  { TLazDockOwnerComponent
+    A TComponent owning all automatically created controls of a
+    TCustomAnchoredDockManager, like TLazDockForm }
+
+  TLazDockOwnerComponent = class(TComponent)
+  public
+    Manager: TCustomAnchoredDockManager;
+  end;
 
   //----------------------------------------------------------------------------
   
   { TCustomAnchoredDockManager
     This class implements an LCL TDockManager via anchoring.
-    The TCustomLazDockingManager component uses this docking manager
-    and extends it by layouts that can be stored/restored. }
+    It implements the docking, undocking, enlarging, shrinking.
+    
+    The TCustomLazDockingManager component in LDockCtrl uses this
+    docking manager and extends it by layouts that can be stored/restored. }
 
   TCustomAnchoredDockManager = class(TDockManager)
   private
@@ -179,6 +191,7 @@ type
     FTitleWidth: integer;
     FUpdateCount: integer;
   protected
+    FOwnerComponent: TLazDockOwnerComponent;
     procedure DeleteSideSplitter(Splitter: TLazDockSplitter; Side: TAnchorKind;
                                  NewAnchorControl: TControl);
     procedure CombineSpiralSplitterPair(Splitter1, Splitter2: TLazDockSplitter);
@@ -187,8 +200,11 @@ type
     procedure DeleteDockForm(ADockForm: TLazDockForm);
     function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
     function GetPreferredTitlePosition(AWidth, AHeight: integer): TAnchorKind;
+    procedure OnLazDockFormDragOver(Sender, Source: TObject; X, Y: Integer;
+                                    State: TDragState; var Accept: Boolean);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
     procedure GetControlBounds(Control: TControl;
@@ -218,6 +234,10 @@ type
     procedure ResetBounds(Force: Boolean); override;// not implemented
     procedure SaveToStream(Stream: TStream); override;// not implemented
     procedure SetReplacingControl(Control: TControl); override;// not implemented
+    
+    // ToDo: move this to protected, after dockig code from LDockCtrl was moved
+    // here.
+    function CreateForm: TLazDockForm;
   end;
   
   
@@ -1347,6 +1367,32 @@ end;
 
 { TCustomAnchoredDockManager }
 
+procedure TCustomAnchoredDockManager.OnLazDockFormDragOver(Sender,
+  Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  Form: TLazDockForm;
+  DragCtrlObj: TDragControlObject;
+  SrcForm: TLazDockForm;
+begin
+  Accept:=false;
+  //DebugLn(['TCustomAnchoredDockManager.CustomAnchoredDockManagerDragOver ',DbgSName(Sender),' ',DbgSName(Source)]);
+  if not (Sender is TLazDockForm) then exit;
+  Form:=TLazDockForm(Sender);
+  if Form.Owner<>FOwnerComponent then exit;
+  if (Source is TDragControlObject) then
+  begin
+    DragCtrlObj:=TDragControlObject(Source);
+    if DragCtrlObj.Control is TLazDockForm then
+    begin
+      SrcForm:=TLazDockForm(DragCtrlObj.Control);
+    end else
+      exit;
+    if SrcForm.Owner<>FOwnerComponent then exit;
+  end else
+    exit;
+  Accept:=true;
+end;
+
 procedure TCustomAnchoredDockManager.DeleteSideSplitter(Splitter: TLazDockSplitter;
   Side: TAnchorKind; NewAnchorControl: TControl);
 var
@@ -1548,9 +1594,16 @@ end;
 
 constructor TCustomAnchoredDockManager.Create;
 begin
+  FOwnerComponent:=TLazDockOwnerComponent.Create(nil);
   FSplitterSize:=5;
   FTitleWidth:=20;
   FTitleHeight:=20;
+end;
+
+destructor TCustomAnchoredDockManager.Destroy;
+begin
+  FreeAndNil(FOwnerComponent);
+  inherited Destroy;
 end;
 
 procedure TCustomAnchoredDockManager.BeginUpdate;
@@ -1663,7 +1716,7 @@ begin
             // remember bounds
             NewDropCtlBounds:=Rect(0,0,DropCtl.ClientWidth,DropCtl.ClientHeight);
             // create a TLazDockForm as new parent with the size of DropCtl
-            NewParent:=TLazDockForm.Create(Application);// starts with Visible=false
+            NewParent:=CreateForm;// starts with Visible=false
             NewParent.DisableAlign;
             ParentDisabledAlign:=true;
             NewParent.BoundsRect:=DropCtl.BoundsRect;
@@ -2377,6 +2430,12 @@ end;
 procedure TCustomAnchoredDockManager.SetReplacingControl(Control: TControl);
 begin
   RaiseGDBException('TCustomAnchoredDockManager.SetReplacingControl TODO');
+end;
+
+function TCustomAnchoredDockManager.CreateForm: TLazDockForm;
+begin
+  Result:=TLazDockForm.Create(FOwnerComponent);
+  Result.OnDragOver:=@OnLazDockFormDragOver;
 end;
 
 procedure TCustomAnchoredDockManager.ReplaceAnchoredControl(OldControl,
