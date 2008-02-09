@@ -70,8 +70,15 @@ end;
 
 procedure TDockTree.GetControlBounds(AControl: TControl;
   out ControlBounds: TRect);
+var
+  Zone: TDockZone;
 begin
-  // ToDo
+  // return bounds of control dock zone and if not exits then (0,0,0,0)
+  Zone := RootZone.FindZone(AControl);
+  if Zone <> nil then
+    ControlBounds := Rect(Zone.Left, Zone.Top, Zone.Width, Zone.Height)
+  else
+    ControlBounds := Rect(0, 0, 0, 0);
 end;
 
 function TDockTree.HitTest(const MousePos: TPoint; var HTFlag: Integer
