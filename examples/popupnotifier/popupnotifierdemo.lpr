@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms
-  { add your units here }, unit1, popupnotifierlaz;
+  { add your units here }, unit1;
 
 begin
   Application.Title:='PopupNotifierDemo';

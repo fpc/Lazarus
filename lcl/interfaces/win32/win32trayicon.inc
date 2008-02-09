@@ -211,9 +211,22 @@ end;
 *  DESCRIPTION:    Shows a small message balloon near the tray icon
 *
 *******************************************************************}
-class procedure TWin32WSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon);
+class function TWin32WSCustomTrayIcon.ShowBalloonHint(
+ const ATrayIcon: TCustomTrayIcon): Boolean;
+{var
+  NotifyData: TNotifyIconDataEx:}
 begin
+  Result := True;
+{  NotifyData.szInfo              : array[0..255] of CHAR;
+                                    DUMMYUNIONNAME      : record
+                                                           case longint of
+                                                               0 : ( uTimeout : UINT );
+                                                               1 : ( uVersion : UINT );
+                                                              end;
+                                    szInfoTitle : array[0..63] of CHAR;
+                                    dwInfoFlags : DWORD;
 
+  Shell_NotifyIconA():}
 end;
 
 {*******************************************************************
@@ -225,7 +238,42 @@ end;
 *
 *******************************************************************}
 class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+var
+  hWndTray : HWND;
+  TrayRect: TRect;
 begin
   Result := Point(0, 0);
+
+  hWndTray := FindWindow('Shell_TrayWnd', nil);
+
+  if hWndTray = 0 then Exit;
+  
+{ Here we could also try to find the position of the toolbar
+
+var
+  s : string;
+  l : integer;
+begin
+  SetLength(s, 255);
+  l := GetClassName(handle, PChar(s), Length(s));
+
+  if l = 0 then Exit(False);
+
+  SetLength(s, l);
+
+  if Pos('ToolbarWindow32', s) > 0 then
+    begin
+      lp := handle;
+      result := false;
+    end
+  else
+    result := true;
+end;
+}
+
+  Windows.GetWindowRect(hWndTray, @TrayRect);
+
+  Result.X := TrayRect.Left;
+  Result.Y := TrayRect.Top;
 end;
 

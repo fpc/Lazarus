@@ -32,7 +32,8 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf, Themes,
+  SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf,
+  Themes,
 ////////////////////////////////////////////////////
   WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
   InterfaceBase, Win32WSControls;
@@ -224,7 +225,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
-    class procedure ShowBalloonHint(const ATrayIcon: TCustomTrayIcon); override;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
   end;
 

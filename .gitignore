@@ -76,10 +76,6 @@ components/opengl/*.bak
 components/opengl/example/*.bak
 components/opengl/example/units
 components/opengl/units
-components/popupnotifier/*.bak
-components/popupnotifier/demo/*.bak
-components/popupnotifier/demo/units
-components/popupnotifier/units
 components/prettyformat/*.bak
 components/prettyformat/languages/*.bak
 components/prettyformat/languages/units
