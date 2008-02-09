@@ -107,6 +107,9 @@ type
     class procedure SetRenderer(const ACustomComboBox: TCustomComboBox; AWidget: PGtkWidget; AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetCallbacks(const AWinControl: tWinControl; const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -1057,6 +1060,16 @@ begin
   
   // g_signal_connect(ComboWidget, 'set-focus-child', TGCallback(@GtkPopupShowCB), AWidgetInfo);
   g_object_set_data(G_OBJECT(AWidget), 'Menu', APrivate^.popup_widget);
+end;
+
+class procedure TGtk2WSCustomComboBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  Ignore: Integer;
+begin
+  GetGTKDefaultWidgetSize(AWinControl, Ignore, PreferredHeight, WithThemeSpace);
+  PreferredWidth := 0;
 end;
 
 class function TGtk2WSCustomComboBox.GetSelStart(

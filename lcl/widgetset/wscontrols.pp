@@ -211,6 +211,8 @@ end;
 class procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
+  PreferredWidth := 0;
+  PreferredHeight := 0;
 end;
 
 class function TWSWinControl.GetDefaultClientRect(
