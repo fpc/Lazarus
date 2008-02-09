@@ -1825,7 +1825,8 @@ begin
         begin
           if lWinControl is TCustomForm then
           begin
-            if TWinControlAccess(lWinControl).DragKind = dkDock then
+            if (TWinControlAccess(lWinControl).DragKind = dkDock) and
+               (TWinControlAccess(lWinControl).DragMode = dmAutomatic) then
               lWinControl.BeginDrag(true);
           end;
         end;
