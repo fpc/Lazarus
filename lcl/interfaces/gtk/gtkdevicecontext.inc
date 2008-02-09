@@ -489,6 +489,7 @@ begin
 
     {$ifdef fontconsistencychecks}
     // MWE: are we paranoid or so ? (if you can't trust the cache, don't use it or stop coding)
+    // MG: some people are coding without knowing about the cache
     if FontCache.FindGTKFont(FCurrentFont^.GDIFontObject) = nil then
       RaiseGDBException('inconsistency: font added to cache, but can not be found');
     {$endif}

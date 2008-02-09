@@ -513,10 +513,10 @@ end;
 // [SIZE]         is a decimal number (size in points) (... and points in PANGO_UNITS)
 // any of these options may be absent.
 procedure FontNameToPangoFontDescStr(const LongFontName: string;
-  var aFamily,aStyle: string; var aSize: Integer);
+  out aFamily,aStyle: string; out aSize: Integer);
 
 var
-  i: Integer;
+  ParsePos: Integer;
   
   procedure addStyle(const s: string);
   begin
@@ -547,19 +547,19 @@ var
   begin
     Result := '';
     validblank := true;
-    i := Length(LongFontname);
-    while i>0 do begin
-      c := longFontName[i];
+    ParsePos := Length(LongFontname);
+    while ParsePos>0 do begin
+      c := longFontName[ParsePos];
       if IsBlank then
         if ValidBlank then begin
-          dec(i);
+          dec(ParsePos);
           continue
         end else
           break;
       ValidBlank := false;
       if IsDigit then begin
         Result := C + Result;
-        dec(i);
+        dec(ParsePos);
       end else
         break;
     end;
@@ -567,6 +567,8 @@ var
   
 begin
   aStyle := '';
+  aFamily := '';
+  aSize := 0;
   if IsFontNameXLogicalFontDesc(LongFontName) then begin
     aFamily := ExtractXLFDItem(LongFontName, XLFD_FAMILY);
     if aFamily='*' then
@@ -580,7 +582,7 @@ begin
     // this could go through, but we want to know at least the pointSize from
     // the fontname
     aSize := StrToIntDef(GetSize,0);
-    aFamily := Copy(LongFontName, 1, i);
+    aFamily := Copy(LongFontName, 1, ParsePos);
     // todo: parse aFamily to separate Family and Style
   end;
 end;

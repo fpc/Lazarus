@@ -161,8 +161,9 @@ begin
         Exit;
       end;
       
-      if (lfHeight = 0) and (lfEscapement = 0) and (CompareText(lfFacename, 'default') = 0) then
+      if (lfHeight = 0) and (CompareText(lfFacename, 'default') = 0) then
       begin
+        // use default font
         {$IFDEF VerboseFonts}
         DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx Creating default font']);
         {$ENDIF}
@@ -189,8 +190,10 @@ begin
       // using method 2
       if (aSize=0) and (lfHeight=0) then
         FullString:='10' // use some default: TODO: find out the default size of the widget
+      else if aSize>0 then
+        FullString:=IntToStr(aSize)
       else
-        FullString:=IntToStr(aSize);
+        FullString:='';
       FullString := AFamily + ' ' + aStyle + ' ' + FullString;
 
       PangoDesc := pango_font_description_from_string(PChar(FullString));
@@ -207,7 +210,7 @@ begin
         // and use this value not in the font name but set this value appart
         // NOTE: in gtk2.8 is possible to use pango_font_description_set_absolute_size
         // which would be great with the given lfheight value, but older gtk2 version
-        // doesn't have this funtion
+        // doesn't have this function
         if lfHeight<0 then
           aSize := -MulDiv(lfheight, 72, ScreenInfo.PixelsPerInchY) * PANGO_SCALE
         else
@@ -252,12 +255,8 @@ begin
 
       if (lfEscapement <> 0) then
       begin
-        DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx rotating font is not implemented yet, because it needs pango 1.16: lfEscapement=',lfEscapement]);
-        {DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx ',pango_version_check(1,16,0)]);
-        if pango_version_check(1,16,0)<>null then begin
-          DebugLn(['TGtk2WidgetSet.CreateFontIndirectEx rotating text requires pango 1.16, but this is ',pango_version_check(1,16,0)]);
-        end;}
-        //pango_context_get_base_dir(PangoDesc, aSize);
+        // the rotation is done via the pango matrix of the context
+        // it must be set by the device context
       end;
     end;
   finally

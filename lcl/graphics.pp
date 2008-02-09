@@ -1416,7 +1416,7 @@ function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
 function XLFDHeightIsSet(const LongFontName: string): boolean;
 procedure FontNameToPangoFontDescStr(const LongFontName: string;
-  var aFamily,aStyle:String; var aSize: Integer);
+  out aFamily,aStyle:String; out aSize: Integer);
 
 // graphics
 type

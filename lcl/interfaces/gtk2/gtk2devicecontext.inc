@@ -31,11 +31,12 @@ begin
   Result := GCValues._function;
 end;
 
-procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt; X, Y: Integer; FGColor, BGColor: PGdkColor);
+procedure TGtk2DeviceContext.DrawTextWithColors(AText: PChar; ALength: LongInt;
+  X, Y: Integer; FGColor, BGColor: PGdkColor);
 var
   WidgetCont: PPangoContext;
-  newmatrix: TPangoMatrix;
-  oldmatrix: PPangoMatrix;
+  NewMatrix: TPangoMatrix;
+  OldMatrix: PPangoMatrix;
   renderer: PPangoRenderer;
   AFont: PGdiObject;
   
@@ -53,28 +54,28 @@ begin
 
   if AFont^.LogFont.lfEscapement <> 0 then
   begin
-    renderer := gdk_pango_renderer_get_default(gdk_screen_get_default());
+    renderer := gdk_pango_renderer_get_default(gtk_widget_get_screen(Widget));
     gdk_pango_renderer_set_drawable(renderer, drawable);
     gdk_pango_renderer_set_gc(renderer, GC);
     SetColors(FGColor, BGColor);
 
     WidgetCont := pango_layout_get_context(AFont^.GDIFontObject);
-    oldmatrix := pango_context_get_matrix(WidgetCont);
-    newmatrix.xx := 1.0;
-    newmatrix.xy := 0.0;
-    newmatrix.yx := 0.0;
-    newmatrix.yy := 1.0;
-    newmatrix.x0 := 0.0;
-    newmatrix.y0 := 0.0;
-    pango_matrix_translate(@newmatrix, X, Y);
-    pango_matrix_rotate(@newmatrix, AFont^.LogFont.lfEscapement div 10);
+    OldMatrix := pango_context_get_matrix(WidgetCont);
+    NewMatrix.xx := 1.0;
+    NewMatrix.xy := 0.0;
+    NewMatrix.yx := 0.0;
+    NewMatrix.yy := 1.0;
+    NewMatrix.x0 := 0.0;
+    NewMatrix.y0 := 0.0;
+    pango_matrix_translate(@NewMatrix, X, Y);
+    pango_matrix_rotate(@NewMatrix, AFont^.LogFont.lfEscapement div 10);
 
-    pango_context_set_matrix(WidgetCont, @newmatrix);
+    pango_context_set_matrix(WidgetCont, @NewMatrix);
     pango_layout_context_changed(AFont^.GDIFontObject);
     pango_renderer_draw_layout(renderer, AFont^.GDIFontObject, X, Y);
 
     //now reset
-    pango_context_set_matrix(WidgetCont, oldmatrix);
+    pango_context_set_matrix(WidgetCont, OldMatrix);
     pango_layout_context_changed(AFont^.GDIFontObject);
     
     SetColors(nil, nil);
