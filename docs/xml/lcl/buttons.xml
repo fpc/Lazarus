@@ -105,25 +105,41 @@
         <short>A set of constants to define the position of a glyph on a button.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphLeft"><short/></element>
+      <element name="TButtonLayout.blGlyphLeft">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphRight"><short/></element>
+      <element name="TButtonLayout.blGlyphRight">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphTop"><short/></element>
+      <element name="TButtonLayout.blGlyphTop">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonLayout.blGlyphBottom"><short/></element>
+      <element name="TButtonLayout.blGlyphBottom">
+        <short/>
+      </element>
       <!-- enumeration type Visibility: default -->
       <element name="TButtonState">
         <short>A set of constants to define the state of a SpeedButton.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsUp"><short/></element>
+      <element name="TButtonState.bsUp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsDisabled"><short/></element>
+      <element name="TButtonState.bsDisabled">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsDown"><short/></element>
+      <element name="TButtonState.bsDown">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TButtonState.bsExclusive"><short/></element>
+      <element name="TButtonState.bsExclusive">
+        <short/>
+      </element>
       <!-- range type Visibility: default -->
       <element name="TNumGlyphs">
         <short/>
@@ -161,7 +177,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.SetGlyph.Value"><short/></element>
+      <element name="TButtonGlyph.SetGlyph.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TButtonGlyph.SetNumGlyphs">
         <short/>
@@ -170,7 +188,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.SetNumGlyphs.Value"><short/></element>
+      <element name="TButtonGlyph.SetNumGlyphs.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TButtonGlyph.GlyphChanged">
         <short/>
@@ -179,7 +199,9 @@
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.GlyphChanged.Sender"><short/></element>
+      <element name="TButtonGlyph.GlyphChanged.Sender">
+        <short/>
+      </element>
       <!-- constructor Visibility: public -->
       <element name="TButtonGlyph.Create">
         <short>Creates a new instance of the TButtonGlyph class</short>
@@ -210,40 +232,54 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- function Visibility: public -->
       <element name="TButtonGlyph.Draw">
-        <short/>
+        <short>Draw the image in the specified rectangle, within the client rectangle at specified offset, with the specified state and transparency</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TButtonGlyph.Draw.Result"><short/></element>
+      <element name="TButtonGlyph.Draw.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Canvas"><short/></element>
+      <element name="TButtonGlyph.Draw.Canvas">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Client"><short/></element>
+      <element name="TButtonGlyph.Draw.Client">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Offset"><short/></element>
+      <element name="TButtonGlyph.Draw.Offset">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.State"><short/></element>
+      <element name="TButtonGlyph.Draw.State">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.Transparent"><short/></element>
+      <element name="TButtonGlyph.Draw.Transparent">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TButtonGlyph.Draw.BiDiFlags"><short/></element>
+      <element name="TButtonGlyph.Draw.BiDiFlags">
+        <short/>
+      </element>
       <!-- property Visibility: public -->
       <element name="TButtonGlyph.Glyph">
-        <short/>
+        <short>The small bitmap image to be drawn on the button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TButtonGlyph.NumGlyphs">
-        <short/>
+        <short>The number of glyphs to be drawn</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TButtonGlyph.OnChange">
-        <short/>
+        <short>Event handler for a change in the glyph</short>
         <descr/>
         <seealso/>
       </element>
@@ -252,31 +288,57 @@ Take the following precautions when creating your own Destroy method:
         <short>A set of possible types for BitButtons.</short>
       </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkCustom"><short/></element>
+      <element name="TBitBtnKind.bkCustom">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkOK"><short/></element>
+      <element name="TBitBtnKind.bkOK">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkCancel"><short/></element>
+      <element name="TBitBtnKind.bkCancel">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkHelp"><short/></element>
+      <element name="TBitBtnKind.bkHelp">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkYes"><short/></element>
+      <element name="TBitBtnKind.bkYes">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkNo"><short/></element>
+      <element name="TBitBtnKind.bkNo">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkClose"><short/></element>
+      <element name="TBitBtnKind.bkClose">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkAbort"><short/></element>
+      <element name="TBitBtnKind.bkAbort">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkRetry"><short/></element>
+      <element name="TBitBtnKind.bkRetry">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkIgnore"><short/></element>
+      <element name="TBitBtnKind.bkIgnore">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkAll"><short/></element>
+      <element name="TBitBtnKind.bkAll">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkNoToAll"><short/></element>
+      <element name="TBitBtnKind.bkNoToAll">
+        <short/>
+      </element>
       <!-- enumeration value Visibility: default -->
-      <element name="TBitBtnKind.bkYesToAll"><short/></element>
+      <element name="TBitBtnKind.bkYesToAll">
+        <short/>
+      </element>
       <!-- set type Visibility: default -->
       <element name="TBitBtnKinds"/>
       <!-- object Visibility: default -->
@@ -322,7 +384,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetGlyph.Result"><short/></element>
+      <element name="TCustomBitBtn.GetGlyph.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TCustomBitBtn.GetNumGlyphs">
         <short/>
@@ -331,7 +395,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetNumGlyphs.Result"><short/></element>
+      <element name="TCustomBitBtn.GetNumGlyphs.Result">
+        <short/>
+      </element>
       <!-- function Visibility: private -->
       <element name="TCustomBitBtn.IsGlyphStored">
         <short/>
@@ -340,7 +406,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.IsGlyphStored.Result"><short/></element>
+      <element name="TCustomBitBtn.IsGlyphStored.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetGlyph">
         <short/>
@@ -349,7 +417,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetGlyph.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetGlyph.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetKind">
         <short/>
@@ -358,7 +428,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetKind.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetKind.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetLayout">
         <short/>
@@ -367,7 +439,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetLayout.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetLayout.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetMargin">
         <short/>
@@ -376,7 +450,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetMargin.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetMargin.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetNumGlyphs">
         <short/>
@@ -385,7 +461,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetNumGlyphs.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetNumGlyphs.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.SetSpacing">
         <short/>
@@ -394,7 +472,9 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.SetSpacing.AValue"><short/></element>
+      <element name="TCustomBitBtn.SetSpacing.AValue">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomBitBtn.RealizeKind">
         <short/>
@@ -410,39 +490,58 @@ Take the following precautions when creating your own Destroy method:
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomBitBtn.GetCaptionOfKind.Result"><short/></element>
+      <element name="TCustomBitBtn.GetCaptionOfKind.Result">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.GetCaptionOfKind.aKind"><short/></element>
+      <element name="TCustomBitBtn.GetCaptionOfKind.aKind">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.ActionChange">
-        <short/>
+        <short>Change the action associated with this BitButton</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.ActionChange.Sender"><short/></element>
+      <element name="TCustomBitBtn.ActionChange.Sender">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.ActionChange.CheckDefaults"><short/></element>
+      <element name="TCustomBitBtn.ActionChange.CheckDefaults">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.Click">
-        <short/>
-        <descr/>
+        <short>
+          <i>Click </i>- the procedure which allows programmatic simulation of a mouse click</short>
+        <descr>
+          <p>
+            <i>Click </i>
+
+
+
+- the procedure which allows programmatic simulation of a mouse click, and thus activation of the <i>Action</i> associated with the <i>OnClick</i> event
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.GlyphChanged">
-        <short/>
+        <short>What to do if the Glyph has been changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.GlyphChanged.Sender"><short/></element>
+      <element name="TCustomBitBtn.GlyphChanged.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.InitializeWnd">
-        <short/>
+        <short>Initialise the window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -459,7 +558,9 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomBitBtn.Create.TheOwner"><short/></element>
+      <element name="TCustomBitBtn.Create.TheOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomBitBtn.Destroy">
         <short>Deallocates an object</short>
@@ -479,37 +580,37 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Glyph">
-        <short/>
+        <short>The BitMap Glyph to be displayed on the button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.NumGlyphs">
-        <short/>
+        <short>The number of glyphs for display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Kind">
-        <short/>
+        <short>What kind of BitButton? Custom, OK, Cancel, Yes, No etc</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Layout">
-        <short/>
+        <short>Layout of button - Glyph at top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Margin">
-        <short/>
+        <short>The margin to be left around glyphs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomBitBtn.Spacing">
-        <short/>
+        <short>The spacing around the BitButton</short>
         <descr/>
         <seealso/>
       </element>
@@ -517,148 +618,215 @@ Take the following precautions when creating your own Destroy method:
       <element name="TBitBtn">
         <short>A Button with a small image attached</short>
         <descr>Bit Button: a push button control on a toolbar causing a particular action to be executed. It often displays a glyph or small graphic to denote its function.</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Action">
-        <short>The action executed when the user clicks the button.</short>
-        <descr>If you assign an action from an ActionList to a TBitBtn.Action the correspondig execute-method is assigned to the OnClick event of the button. Assigning a action sets other properties of the button as well, like Enabled and Caption.</descr>
+        <short>The action to be associated with this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>The (default) action to be associated with this control</p>
+          <p>Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction)</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Align">
-        <short>Is used to allign a bitbutton to a border of a parent control.</short>
-        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.<br/><br/>
-Possible values fo Allign are:<br/>
-alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
-alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
-alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
-alRight: Like alLeft but on the right side of the parent control.<br/>
-alNone: The control can be placed anywhere on the parent control.<br/>
-alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Anchors">
-        <short>Anchors are used to keep a button on a defined distance to certain borders of the parent control.</short>
-        <descr>Anchors can be used to keep control at a certain distance from a side of its parent control, when the parent control is resized.<br/><br/>
-For instance setting Anchors to [akBottom, akRight] will keep the control at a constant distance to the bottom right corner.</descr>
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.BorderSpacing">
-        <short/>
-        <descr/>
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Cancel">
-        <short>Setting this property will make the OnClick event executed when the user hits ESC.</short>
-        <descr>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</descr>
+        <short>Is this the Cancel button? (default setting is False)</short>
+        <descr>
+          <p>Setting this property to true, will have the effect that when the user hits ESC this button is Clicked, even if the button does not have focus. Usually the Button which reacts to ESC sets the ModalResult of the form to mrCancel.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Caption">
-        <short>Sets the text displayed on the button.</short>
+        <short>
+          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+        <descr>
+          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
+          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+and the developer needs to set it explicitly to some new text.</p>
+          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+introduced. These functions interface with the LCLInterface. </p>
+          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Constraints">
-        <short>Used to give a control certain minimum and or maximum dimensions.</short>
-        <descr>Sets the minimum and maximum sizes for a control. If a control is resized the new dimensions are allways within the ranges given here. You should take care when setting these options that they do not conflict with the Anchors en Allign settings.</descr>
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Default">
-        <short>Setting this property will make the OnClick event executed when the user hits ENTER</short>
+        <short>Is this the Default button? (default setting is False)</short>
+        <descr>
+          <p>Defines if a button is the <i>Default</i> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Enabled">
-        <short>Determines if the button reacts to a click.</short>
-        <descr>Setting this property determines if the control can be used. If Enabled is false a bitbutton cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.
-If an Action has been assigned to the bitbutton and this action is disabled then the enabled property is set to false as well.</descr>
+        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Font">
-        <short/>
-        <descr/>
+        <short>The <i>Font</i> to be used for text in this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Glyph">
-        <short/>
+        <short>The BitMap Glyph to be displayed on the button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Kind">
-        <short/>
+        <short>What kind of BitButton? Custom, OK, Cancel, Yes, No etc</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Layout">
-        <short/>
+        <short>Layout of button - Glyph at top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Margin">
-        <short/>
+        <short>The margin to be left around glyphs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.ModalResult">
-        <short/>
+        <short>Is a Modal Result awaited? (default is false)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnChangeBounds">
-        <short/>
-        <descr/>
+        <short>Event handler for a change in bounds of the control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnClick">
-        <short/>
-        <descr/>
+        <short>Event Handler for mouse click</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
+          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnEnter">
-        <short/>
+        <short>
+          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnExit">
-        <short/>
+        <short>
+          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnKeyDown">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyDown</i>
+ - event handler for instance when key is down while control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnKeyPress">
-        <short/>
-        <descr/>
+        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyPress</i>
+ - event controller for a key being pressed while the control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnKeyUp">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyUp</i>
+  - event handler for instance when a key is up (not pressed) while the control has focus</p>
+          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnMouseDown">
-        <short/>
+        <short>Event handler for when a mouse button is pressed down</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within the current control</short>
         <descr/>
         <seealso/>
       </element>
@@ -670,50 +838,66 @@ If an Action has been assigned to the bitbutton and this action is disabled then
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnResize">
-        <short/>
-        <descr/>
+        <short>Event Handler for resize of control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if control is re-sized.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.ParentShowHint">
-        <short/>
+        <short>
+          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.PopupMenu">
-        <short/>
-        <descr/>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.ShowHint">
-        <short/>
-        <descr/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Spacing">
-        <short/>
+        <short>The spacing around the BitButton</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.TabOrder">
-        <short/>
-        <descr/>
+        <short>The place this control occupies in the list of tabs</short>
+        <descr>Reads or writes information in flag; default is -1
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.TabStop">
-        <short/>
+        <short>Is the Button included in the TabStop list? (default setting is True)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Visible">
-        <short/>
-        <descr/>
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
@@ -728,7 +912,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.AssignClient.AClient"><short/></element>
+      <element name="TSpeedButtonActionLink.AssignClient.AClient">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TSpeedButtonActionLink.IsCheckedLinked">
         <short/>
@@ -737,7 +923,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSpeedButtonActionLink.IsCheckedLinked.Result"><short/></element>
+      <element name="TSpeedButtonActionLink.IsCheckedLinked.Result">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TSpeedButtonActionLink.IsGroupIndexLinked">
         <short/>
@@ -746,7 +934,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result"><short/></element>
+      <element name="TSpeedButtonActionLink.IsGroupIndexLinked.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TSpeedButtonActionLink.SetGroupIndex">
         <short/>
@@ -755,7 +945,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.SetGroupIndex.Value"><short/></element>
+      <element name="TSpeedButtonActionLink.SetGroupIndex.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TSpeedButtonActionLink.SetChecked">
         <short/>
@@ -764,11 +956,20 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TSpeedButtonActionLink.SetChecked.Value"><short/></element>
+      <element name="TSpeedButtonActionLink.SetChecked.Value">
+        <short/>
+      </element>
       <!-- object Visibility: default -->
       <element name="TCustomSpeedButton">
-        <short>The ancestor class for TSpeedButton</short>
-        <descr>TCustomSpeedButton is the ancestor for TSpeedButton. If you want to define your own speedbutton class, you should use this class to derive it from.</descr>
+        <short>The ancestor class for <i>TSpeedButton</i>
+        </short>
+        <descr>
+          <p>
+            <i>TCustomSpeedButton</i> is the ancestor for <i>TSpeedButton</i>. If you want to define your own speedbutton class, you should use this class to derive it from.</p>
+          <p>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. 
+</p>
+          <p>When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomSpeedButton.FAllowAllUp">
@@ -862,7 +1063,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetGlyph.Result"><short/></element>
+      <element name="TCustomSpeedButton.GetGlyph.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.UpdateExclusive">
         <short/>
@@ -878,7 +1081,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetAllowAllUp.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetAllowAllUp.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetGlyph">
         <short/>
@@ -887,7 +1092,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetGlyph.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetGlyph.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetLayout">
         <short/>
@@ -896,7 +1103,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetLayout.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetLayout.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.SetTransparent">
         <short/>
@@ -905,7 +1114,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetTransparent.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetTransparent.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.CMButtonPressed">
         <short/>
@@ -914,7 +1125,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.CMButtonPressed.Message"><short/></element>
+      <element name="TCustomSpeedButton.CMButtonPressed.Message">
+        <short/>
+      </element>
       <!-- procedure Visibility: private -->
       <element name="TCustomSpeedButton.MouseEnter">
         <short/>
@@ -937,31 +1150,37 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.CMEnabledChanged.Message"><short/></element>
+      <element name="TCustomSpeedButton.CMEnabledChanged.Message">
+        <short/>
+      </element>
       <!-- variable Visibility: protected -->
       <element name="TCustomSpeedButton.FState">
-        <short/>
+        <short>The state of the speedbutton (whether checked or not)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSpeedButton.GetNumGlyphs">
-        <short/>
+        <short>Find the number of Glyphs</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetNumGlyphs.Result"><short/></element>
+      <element name="TCustomSpeedButton.GetNumGlyphs.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.GlyphChanged">
-        <short/>
+        <short>What to do if the Glyph has changed</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.GlyphChanged.Sender"><short/></element>
+      <element name="TCustomSpeedButton.GlyphChanged.Sender">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseDown">
         <short/>
@@ -970,13 +1189,21 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Button"><short/></element>
+      <element name="TCustomSpeedButton.MouseDown.Button">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Shift"><short/></element>
+      <element name="TCustomSpeedButton.MouseDown.Shift">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.X"><short/></element>
+      <element name="TCustomSpeedButton.MouseDown.X">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseDown.Y"><short/></element>
+      <element name="TCustomSpeedButton.MouseDown.Y">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseMove">
         <short/>
@@ -985,11 +1212,17 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.Shift"><short/></element>
+      <element name="TCustomSpeedButton.MouseMove.Shift">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.X"><short/></element>
+      <element name="TCustomSpeedButton.MouseMove.X">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseMove.Y"><short/></element>
+      <element name="TCustomSpeedButton.MouseMove.Y">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.MouseUp">
         <short/>
@@ -998,16 +1231,24 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Button"><short/></element>
+      <element name="TCustomSpeedButton.MouseUp.Button">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Shift"><short/></element>
+      <element name="TCustomSpeedButton.MouseUp.Shift">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.X"><short/></element>
+      <element name="TCustomSpeedButton.MouseUp.X">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.MouseUp.Y"><short/></element>
+      <element name="TCustomSpeedButton.MouseUp.Y">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.Paint">
-        <short/>
+        <short>Paint the Glyph</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1020,7 +1261,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetDown.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetDown.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetGroupIndex">
         <short/>
@@ -1029,7 +1272,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetGroupIndex.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetGroupIndex.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetFlat">
         <short/>
@@ -1038,7 +1283,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetFlat.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetFlat.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetMargin">
         <short/>
@@ -1047,7 +1294,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetMargin.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetMargin.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetNumGlyphs">
         <short/>
@@ -1056,7 +1305,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetNumGlyphs.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetNumGlyphs.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.SetSpacing">
         <short/>
@@ -1065,16 +1316,21 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.SetSpacing.Value"><short/></element>
+      <element name="TCustomSpeedButton.SetSpacing.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.RealSetText">
-        <short/>
-        <descr/>
+        <short>Procedure to store text associated with the control in a string</short>
+        <descr>This is the procedure that is actually used by SetTextBuf, and stores text as a string rather than performing read-write to a PChar buffer
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.RealSetText.Value"><short/></element>
+      <element name="TCustomSpeedButton.RealSetText.Value">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.UpdateState">
         <short/>
@@ -1083,7 +1339,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.UpdateState.InvalidateOnChange"><short/></element>
+      <element name="TCustomSpeedButton.UpdateState.InvalidateOnChange">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSpeedButton.GetDrawFlags">
         <short/>
@@ -1092,7 +1350,9 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetDrawFlags.Result"><short/></element>
+      <element name="TCustomSpeedButton.GetDrawFlags.Result">
+        <short/>
+      </element>
       <!-- property Visibility: protected -->
       <element name="TCustomSpeedButton.MouseInControl">
         <short/>
@@ -1107,9 +1367,13 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.ActionChange.Sender"><short/></element>
+      <element name="TCustomSpeedButton.ActionChange.Sender">
+        <short/>
+      </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.ActionChange.CheckDefaults"><short/></element>
+      <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
+        <short/>
+      </element>
       <!-- function Visibility: protected -->
       <element name="TCustomSpeedButton.GetActionLinkClass">
         <short/>
@@ -1118,11 +1382,25 @@ If an Action has been assigned to the bitbutton and this action is disabled then
         <seealso/>
       </element>
       <!-- function result Visibility: default -->
-      <element name="TCustomSpeedButton.GetActionLinkClass.Result"><short/></element>
+      <element name="TCustomSpeedButton.GetActionLinkClass.Result">
+        <short/>
+      </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomSpeedButton.Loaded">
-        <short/>
-        <descr/>
+        <short>Called when the component has finished loading.</short>
+        <descr>
+          <p>
+            <var>Loaded</var> is called by the streaming system when a root
+component was completely read from a stream and all properties and 
+references to other objects have been resolved by the streaming 
+system. Descendents of <var>TComponent</var> should override this method to
+do some additional processing of properties after all published 
+properties have been set from values obtained from the stream.
+</p>
+          <p>Application programmers should never call <var>Loaded</var> directly, this
+is done automatically by the streaming system.
+</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -1138,40 +1416,33 @@ Constructors allocate memory and system resources needed by the object. They als
         <seealso/>
       </element>
       <!-- argument Visibility: default -->
-      <element name="TCustomSpeedButton.Create.AOwner"><short/></element>
+      <element name="TCustomSpeedButton.Create.AOwner">
+        <short/>
+      </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomSpeedButton.Destroy">
-        <short>Deallocates an object</short>
-        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
-
-Take the following precautions when creating your own Destroy method:
-
-* Declare Destroy with the override directive, because it is a virtual method.
-
-* Always call 'inherited Destroy;' as the last thing on the destructor code.
-
-* An exception may be raised on the constructor in case there is not enought memory to create an object, or something else goes wrong. If the exception is not handled inside the constructor, the object will be only partially built. In this case Destroy will be called, so your destructor must check if the resources were really allocated before disposing of them.
-
-* Remember to call Free for all objects created on the constructor.</descr>
+        <short>Destroy this instance of a graphic control and return its resources</short>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomSpeedButton.Click">
-        <short/>
+        <short>
+          <i>Click</i> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.AllowAllUp">
-        <short/>
+        <short>Boolean flag to determine whether all buttons are allowed to be Up (default false)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Down">
-        <short/>
+        <short>The button has been set in the Down state</short>
         <descr/>
         <seealso/>
       </element>
@@ -1183,43 +1454,43 @@ Take the following precautions when creating your own Destroy method:
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Glyph">
-        <short/>
+        <short>The Bitmap glyph to be used on this button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.GroupIndex">
-        <short/>
+        <short>The Index within the group of speedbuttons</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Layout">
-        <short/>
+        <short>The button layout - Glyph at top, bottom, left or right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Margin">
-        <short/>
+        <short>Margin - the space around glyphs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.NumGlyphs">
-        <short/>
+        <short>The number of Glyphs available</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Spacing">
-        <short/>
+        <short>Spacing around button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomSpeedButton.Transparent">
-        <short/>
+        <short>Whether button is transparent</short>
         <descr/>
         <seealso/>
       </element>
@@ -1229,63 +1500,93 @@ Take the following precautions when creating your own Destroy method:
         <descr>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. <br/>
 
 When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</descr>
-        <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.HowToUseStdCtrls">HowToUseStdCtrls</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Action">
-        <short>The action executed when the user clicks the speedbutton.</short>
-        <descr>If you assign an action from an ActionList to a TSpeedButton.Action the correspondig execute-method is assigned to the OnClick event of the SpeedButton. Assigning a action sets other properties of the button as well, like Enabled and Caption.</descr>
+        <short>The action to be associated with this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>The (default) action to be associated with this control</p>
+          <p>Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction)</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Align">
-        <short>Is used to align the button to a border of a parent control.</short>
-        <descr>Align is used to align a control to a border of a parent control, even if the parent control is resized.
-<br/><br/>
-Possible values fo Allign are:<br/>
-alTop: Places the control at the top, using the full clientwidth of its parent control.<br/>
-alBottom: Places the control at the bottom, using the full clientwidth of its parent control.<br/>
-alLeft: Places the control at the left side of its parent and uses the available height between any top or bottom alligned controls.<br/>
-alRight: Like alLeft but on the right side of the parent control.<br/>
-alNone: The control can be placed anywhere on the parent control.<br/>
-alClient: The control takes al available space on parent control next to controls aligned to the top, bottom, right or left.</descr>
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Anchors">
-        <short/>
-        <descr/>
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.AllowAllUp">
-        <short>Determines wether all speedbuttons in a group can be up.</short>
-        <descr>SpeedButtons can be grouped by setting their GroupIndex. AllowAllUp specifies whether or not all SpeedButtons in this group can be unselected (all have the state Up). Changing this property for one SpeedButtons sets this for all SpeedButtons in the same group. A GroupIndex of 0 has no effect, that is AllowAllUp has no effect if GroupIndex is 0.</descr>
+        <short>Boolean flag to determine whether all buttons are allowed to be Up (default false)</short>
+        <descr/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.BorderSpacing">
-        <short/>
-        <descr/>
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Constraints">
-        <short/>
-        <descr/>
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Caption">
-        <short>Sets the text displayed on the button.</short>
+        <short>
+          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+        <descr>
+          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
+          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+and the developer needs to set it explicitly to some new text.</p>
+          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+introduced. These functions interface with the LCLInterface. </p>
+          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Down">
-        <short>Maintains the state of the button.</short>
-        <descr>If the groupindex of a SpeedButton is unequal to 0, its state can be up or down. Use this properties to read or set the state of a speedbutton.</descr>
+        <short>The button has been set in the Down state</short>
+        <descr/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Enabled">
-        <short>Determines if the button reacts to a click.</short>
-        <descr>Setting this property determines if the control can be used. If Enabled is false a speedbutton cannot be clicked. Setting the Enabled property to false also makes its appearance grayed.<br/>
-If an Action has been assigned to the speedbutton and this action is disabled then the enabled property is set to false as well.</descr>
+        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Flat">
@@ -1295,128 +1596,145 @@ If an Action has been assigned to the speedbutton and this action is disabled th
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Glyph">
-        <short>Property to read and set the glyph.</short>
+        <short>The Bitmap glyph to be used on this button</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.GroupIndex">
-        <short>Determines how a SpeedButton reacts when it is clicked.</short>
-        <descr>If GroupIndex = 0, the speedbutton reacts like a ordinary push button. That is it appears down when the user clicks on it and it comes up again when the user releases the mouse button.
-
-If GroupIndex &gt; 0, the speedbuttons remains down after the user clicks on it, until it receives a second click.
-
-If more SpeedButtons have the same GroupIndex the behave like a group. You can use SpeedButtons in a group to present mutually exclusive choices to the user. If the user clicks on a SpeedButton in a group, this SpeedButton gets the down state, returning all other buttons to the up state.</descr>
+        <short>The Index within the group of speedbuttons</short>
+        <descr/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Layout">
-        <short>Determines the place of the glyph with respect to the caption.</short>
-        <descr>Determines the place of the glyph with respect to the caption. 
-<br/><br/>
-Possible values are:<br/>
-blGlyphBottom: The glyph is shown under the caption.<br/>
-blGlyphLeft: The glyph is shown left of the caption.<br/>
-blGlyphRight: The glyph is shown right of the caption.<br/>
-blGlyphTop: The glyph is shown above the caption.</descr>
+        <short>The button layout - Glyph at top, bottom, left or right</short>
+        <descr/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Margin">
-        <short/>
+        <short>Margin - the space around glyphs</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.NumGlyphs">
-        <short/>
+        <short>The number of Glyphs available</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Spacing">
-        <short/>
+        <short>Spacing around button</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Transparent">
-        <short/>
+        <short>Whether button is transparent</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Visible">
-        <short/>
-        <descr/>
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnClick">
-        <short/>
-        <descr/>
+        <short>Event Handler for mouse click</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
+          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnDblClick">
-        <short/>
-        <descr/>
+        <short>Event Handle for mouse double-click</short>
+        <descr>
+          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnMouseDown">
-        <short/>
+        <short>Event handler for when a mouse button is pressed down</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within the current control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnMouseUp">
-        <short/>
+        <short>Event handler for when the mouse button is released, ie "up"</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnPaint">
-        <short/>
+        <short>
+          <i>OnPaint</i> - event handler for request to paint canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnResize">
-        <short/>
-        <descr/>
+        <short>Event Handler for resize of control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if control is re-sized.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnChangeBounds">
-        <short/>
-        <descr/>
+        <short>Event handler for a change in bounds of the control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.ShowHint">
-        <short/>
-        <descr/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.ParentFont">
-        <short/>
+        <short>
+          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.ParentShowHint">
-        <short/>
+        <short>
+          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.PopupMenu">
-        <short/>
-        <descr/>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: default -->
@@ -1427,6 +1745,71 @@ blGlyphTop: The glyph is shown above the caption.</descr>
         <seealso/>
       </element>
       <element name="ENodeNameENodeName"/>
+      <element name="TButtonGlyph.GetImageIndexAndEffect">
+        <short>Find the index for the image and the effect to be used for drawing it</short>
+      </element>
+      <element name="TButtonGlyph.Images">
+        <short>The list of available images from which selection can be made</short>
+      </element>
+      <element name="TButtonGlyph.Width">
+        <short>The width of the glyph image</short>
+      </element>
+      <element name="TButtonGlyph.Height">
+        <short>The height of the glyph image</short>
+      </element>
+      <element name="TCustomBitBtn.TextChanged">
+        <short>What to do if the text of the Bitbutton has ben changed</short>
+      </element>
+      <element name="TCustomBitBtn.GetControlClassDefaultSize">
+        <short>Find the default size for this class of controls (by reference to parents)</short>
+      </element>
+      <element name="TBitBtn.Color">
+        <short>What Colour is the button? (default is the same as all other button faces)</short>
+      </element>
+      <element name="TBitBtn.NumGlyphs">
+        <short>The number of glyphs for display</short>
+      </element>
+      <element name="TCustomSpeedButton.PaintBackground">
+        <short>Paint the background</short>
+      </element>
+      <element name="TCustomSpeedButton.DrawGlyph">
+        <short>Draw the glyph in the specified canvas in the specified rectangle at a given offset within the client, with specified state and transparency</short>
+      </element>
+      <element name="TCustomSpeedButton.FindDownButton">
+        <short>Find any Down button</short>
+      </element>
+      <element name="TCustomSpeedButton.ShowAccelChar">
+        <short>Should accelerator character be shown (ie underlined character denoting key to be pressed for quick action)</short>
+      </element>
+      <element name="TCustomSpeedButton.ShowCaption">
+        <short>Should caption be displayed?</short>
+      </element>
+      <element name="TSpeedButton.Color">
+        <short>Determine the colour for the current control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
+          <p>The default colour is the same as the window in which the control is located.</p>
+        </descr>
+      </element>
+      <element name="TSpeedButton.Font">
+        <short>The <i>Font</i> to be used for text in this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
+        </descr>
+      </element>
+      <element name="TSpeedButton.OnMouseEnter">
+        <short>Event handler for when the mouse enters the area of the current control</short>
+      </element>
+      <element name="TSpeedButton.OnMouseLeave">
+        <short>Event handler for when the mouse leaves the area of the current control</short>
+      </element>
+      <element name="TSpeedButton.ShowCaption">
+        <short>Should caption be displayed?</short>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>
