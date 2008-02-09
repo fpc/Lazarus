@@ -874,6 +874,7 @@ type
     class function GetControlClassDefaultSize: TPoint; override;
     procedure BeginUpdateButtons; virtual;
     procedure EndUpdateButtons; virtual;
+    procedure SetEnabled(Value: Boolean); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
