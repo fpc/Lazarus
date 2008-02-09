@@ -46,7 +46,7 @@ const
   TSynValidStringChars = ['_', '0'..'9', 'A'..'Z', 'a'..'z'] + TSynSpecialChars;
   TSynWhiteChars = [' ', #9];
   TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
-                        ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|'];
+                 ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|','<','>'];
 
 type
   TSynIdentChars = set of char;
