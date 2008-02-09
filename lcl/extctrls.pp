@@ -1098,11 +1098,14 @@ type
     FHint: string;
     FVisible, FShowIcon: Boolean;
     FNotifier: TPopupNotifier;
+    FTimer: TTimer;
     FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;
     function GetCanvas: TCanvas;
     procedure SetVisible(Value: Boolean);
+    procedure HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure HandleNotifierTimeout(Sender: TObject);
   public
     Handle: PtrInt;
     constructor Create(TheOwner: TComponent); override;
@@ -1121,7 +1124,7 @@ type
     property PopUpMenu: TPopupMenu read FPopUpMenu write FPopUpMenu;
     property Icon: TIcon read FIcon write FIcon;
     property Hint: string read FHint write FHint;
-    property ShowIcon: Boolean read FShowIcon write FShowIcon;
+    property ShowIcon: Boolean read FShowIcon write FShowIcon default True;
     property Visible: Boolean read FVisible write SetVisible;
     { Events }
     property OnClick: TNotifyEvent read FOnClick write FOnClick;

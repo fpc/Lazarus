@@ -38,10 +38,18 @@ constructor TCustomTrayIcon.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
 
-  FIcon := TIcon.Create;
-  FNotifier := TPopupNotifier.Create(Self);
-
+  { Default property values }
+  FBalloonTimeout := 3000;
   FShowIcon := True;
+
+  FIcon := TIcon.Create;
+
+  FNotifier := TPopupNotifier.Create(Self);
+  FNotifier.OnClose := @HandleNotifierClose;
+
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := False;
+  FTimer.OnTimer := @HandleNotifierTimeout;
 end;
 
 {*******************************************************************
@@ -59,6 +67,7 @@ begin
   { Avoids an unremoved icon on the tray }
   Hide;
 
+  FTimer.Free;
   FNotifier.Free;
   FIcon.Free;
 
@@ -112,15 +121,37 @@ end;
 *
 *  DESCRIPTION:    Setter method of the Visible property
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        If successfull
-*
 *******************************************************************}
 procedure TCustomTrayIcon.SetVisible(Value: Boolean);
 begin
   if Value then Show
   else Hide;
+end;
+
+{*******************************************************************
+*  TCustomTrayIcon.HandleNotifierClose ()
+*
+*  DESCRIPTION:    Turns the timer off when the notifier closes
+*                  to avoid keep it running unnecessarely
+*
+*******************************************************************}
+procedure TCustomTrayIcon.HandleNotifierClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  FTimer.Enabled := False;
+end;
+
+{*******************************************************************
+*  TCustomTrayIcon.HandleNotifierTimeout ()
+*
+*  DESCRIPTION:    Handler for the timer that verifies when the notifier
+*                  should close.
+*
+*******************************************************************}
+procedure TCustomTrayIcon.HandleNotifierTimeout(Sender: TObject);
+begin
+  FTimer.Enabled := False;
+  
+  FNotifier.Hide;
 end;
 
 {*******************************************************************
@@ -162,6 +193,9 @@ begin
     FNotifier.Text := Self.BalloonHint;
     FNotifier.Title := Self.BalloonTitle;
     FNotifier.ShowAtPos(Pt.x, Pt.y);
+    
+    FTimer.Interval := Self.BalloonTimeout;
+    FTimer.Enabled := True;
   end;
 end;
 
