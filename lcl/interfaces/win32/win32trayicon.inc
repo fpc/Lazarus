@@ -237,30 +237,16 @@ end;
 *                  the icon
 *
 *******************************************************************}
-class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
-var
-  hWndTray : HWND;
-  TrayRect: TRect;
-begin
-  Result := Point(0, 0);
-
-  hWndTray := FindWindow('Shell_TrayWnd', nil);
-
-  if hWndTray = 0 then Exit;
-  
-{ Here we could also try to find the position of the toolbar
-
+function EnumChildProc(handle : HWND; lp : Longint): LongBool; stdcall;
 var
   s : string;
   l : integer;
 begin
   SetLength(s, 255);
   l := GetClassName(handle, PChar(s), Length(s));
-
-  if l = 0 then Exit(False);
-
+  if l = 0 then Exit(False)
+  else
   SetLength(s, l);
-
   if Pos('ToolbarWindow32', s) > 0 then
     begin
       lp := handle;
@@ -269,11 +255,32 @@ begin
   else
     result := true;
 end;
-}
 
+class function TWin32WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+var
+  hWndTaskbar, hWndTray: HWND;
+  TaskbarRect, TrayRect: TRect;
+begin
+  Result := Point(0, 0);
+
+  { First we get the Taskbar window and it's screen position }
+  hWndTaskbar := FindWindow('Shell_TrayWnd', nil);
+
+  if hWndTaskbar = 0 then Exit;
+  
+  Windows.GetWindowRect(hWndTaskbar, @TaskbarRect);
+
+  { Then we locate inside the Tray area, which is just a Toolbar control }
+  EnumChildWindows(hWndTaskbar, @EnumChildProc, Integer(hWndTray));
+
+  if hWndTray = 0 then Exit;
+
+  { And we get the size of that control }
   Windows.GetWindowRect(hWndTray, @TrayRect);
+  // OBS: Here TrayRect seams to have a wrong value, so we don't use it
 
-  Result.X := TrayRect.Left;
-  Result.Y := TrayRect.Top;
+  { Returns an aproximate position of the tray area }
+  Result.X := TaskbarRect.Right;
+  Result.Y := TaskbarRect.Top;
 end;
 
