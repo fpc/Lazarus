@@ -28,12 +28,6 @@ type
 
   TGtk1TrayIconHandle = class(TObject)
   private
-    function GetCanvas: TCanvas;
-    function NotifyExpose(Event: PGdkEventExpose; Widget: PGtkWidget): Boolean; cdecl;
-    function NotifyMouseMove(Event: PGdkEventMotion; Widget: PGtkWidget): Boolean; cdecl;
-    function NotifyMouseDown(Event: PGdkEventButton; Widget: PGtkWidget): Boolean; cdecl;
-    function NotifyMouseUp(Event: PGdkEventButton; Widget: PGtkWidget): Boolean; cdecl;
-  public
     plug: PGtkWidget;
     drawingarea: PGtkWidget;
     fDisplay: PDisplay;
@@ -45,14 +39,22 @@ type
     fEmbedded: Boolean;
     fMsgCount: Integer;
     fTrayIcon: TCustomTrayIcon;
-    function  Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
-    function  TrayParent(UseCachedValue: Boolean = True): TWindow;
-    destructor Destroy; override;
-    procedure SetEmbedded;
-    procedure Hide;
-    procedure CreateForm(id: Integer);
-    procedure SetMinSize(AWidth, AHeight: Integer);
+    function GetCanvas: TCanvas;
+    function NotifyExpose(Event: PGdkEventExpose; Widget: PGtkWidget): Boolean; cdecl;
+    function NotifyMouseMove(Event: PGdkEventMotion; Widget: PGtkWidget): Boolean; cdecl;
+    function NotifyMouseDown(Event: PGdkEventButton; Widget: PGtkWidget): Boolean; cdecl;
+    function NotifyMouseUp(Event: PGdkEventButton; Widget: PGtkWidget): Boolean; cdecl;
     procedure PaintForm(Sender: TObject);
+    function  Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
+  public
+    destructor Destroy; override;
+    procedure CreateForm(id: Integer);
+    function  GetPosition: TPoint;
+    procedure Hide;
+    procedure SetEmbedded;
+    procedure SetMinSize(AWidth, AHeight: Integer);
+    function  TrayParent(UseCachedValue: Boolean = True): TWindow;
+  public
     property Canvas: TCanvas read GetCanvas;
   end;
 
@@ -70,8 +72,8 @@ end;
 
 function TGtk1TrayIconHandle.GetCanvas: TCanvas;
 begin
-  if Assigned(FCanvas) then
-    Exit(FCanvas);
+  if Assigned(FCanvas) then Exit(FCanvas);
+  
   Result := TCanvas.Create;
   Result.Handle:= GetDC(HWND(drawingarea));
   FCanvas := Result;
@@ -80,14 +82,16 @@ end;
 function TGtk1TrayIconHandle.NotifyExpose(Event: PGdkEventExpose;
   Widget: PGtkWidget): Boolean; cdecl;
 begin
-  Result:=false;
+  Result := False;
+
   PaintForm(fTrayIcon);
 end;
 
 function TGtk1TrayIconHandle.NotifyMouseMove(Event: PGdkEventMotion;
   Widget: PGtkWidget): Boolean; cdecl;
 begin
-  Result:=false;
+  Result := False;
+
   if Assigned(fTrayIcon.OnMouseMove) then
      fTrayIcon.OnMouseMove(fTrayIcon, [], Trunc(Event^.x), Trunc(Event^.y));
 end;
@@ -97,7 +101,8 @@ function TGtk1TrayIconHandle.NotifyMouseDown(Event: PGdkEventButton;
 var
   Button: TMouseButton;
 begin
-  Result:=false;
+  Result := False;
+
   case  Event^.button of
     GDK_RIGHTBUTTON: Button := mbRight;
     GDK_MIDDLEBUTTON: Button := mbMiddle;
@@ -113,7 +118,8 @@ function TGtk1TrayIconHandle.NotifyMouseUp(Event: PGdkEventButton;
 var
   Button: TMouseButton;
 begin
-  Result:=false;
+  Result := False;
+  
   case  Event^.button of
     3: Button := mbRight;
     2: Button := mbMiddle;
@@ -130,23 +136,21 @@ begin
            fTrayIcon.OnDblClick(fTrayIcon);
     end;
 
-  
+  { Just using GetPosition to get the screen position and then add
+    Event^.x and Event^.y to it won't work. It seams that this will
+    cause a small difference with Mouse.CursorPos, and using
+    TPopupMenu.PopUp will result in a wrong position for the menu }
   if (Button = mbRight) and (fTrayIcon.PopUpMenu <> nil) then
-    fTrayIcon.PopUpMenu.PopUp(-1,-1);
+    fTrayIcon.PopUpMenu.PopUp(Mouse.CursorPos.X, Mouse.CursorPos.Y);
 
- if Assigned(fTrayIcon.OnMouseUp) then
+  if Assigned(fTrayIcon.OnMouseUp) then
     fTrayIcon.OnMouseUp(fTrayIcon, Button, [], Trunc(Event^.x), Trunc(Event^.y));
-
 end;
 
 {*******************************************************************
 *  TGtk1TrayIconHandle.Send_Message ()
 *
 *  DESCRIPTION:    Sends a message to the X client
-*
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
 *
 *******************************************************************}
 function TGtk1TrayIconHandle.Send_Message(window: TWindow; msg: Integer;data1, data2,data3: Integer): boolean;
@@ -215,10 +219,6 @@ end;
 *
 *  DESCRIPTION:
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
 *******************************************************************}
 procedure TGtk1TrayIconHandle.SetEmbedded;
 var
@@ -264,10 +264,6 @@ end;
 *
 *  DESCRIPTION:
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
 *******************************************************************}
 procedure TGtk1TrayIconHandle.CreateForm(id: Integer);
 begin
@@ -289,13 +285,30 @@ begin
 end;
 
 {*******************************************************************
+*  TGtk1TrayIconHandle.GetPosition ()
+*
+*  DESCRIPTION:    Returns the (x, y) position of the icon on the screen
+*
+*******************************************************************}
+function TGtk1TrayIconHandle.GetPosition: TPoint;
+var
+  WindowHandle: PGDKWindow;
+begin
+  Result := Point(0, 0);
+
+  if not Assigned(plug) then Exit;
+
+  WindowHandle := plug^.window;
+  
+  if not Assigned(WindowHandle) then Exit;
+  
+  gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
+end;
+
+{*******************************************************************
 *  TGtk1TrayIconHandle.SetMinSize ()
 *
 *  DESCRIPTION:    Attemps to avoid problems on Gnome
-*
-*  PARAMETERS:
-*
-*  RETURNS:        Nothing
 *
 *******************************************************************}
 procedure TGtk1TrayIconHandle.SetMinSize(AWidth, AHeight: Integer);
@@ -307,10 +320,6 @@ end;
 *  TGtk1TrayIconHandle.PaintForm ()
 *
 *  DESCRIPTION:    Paint method of the Icon Window
-*
-*  PARAMETERS:     Sender of the event
-*
-*  RETURNS:        Nothing
 *
 *******************************************************************}
 procedure TGtk1TrayIconHandle.PaintForm(Sender: TObject);
@@ -378,10 +387,6 @@ end;
 *  DESCRIPTION:    Makes modifications to the Icon while running
 *                  i.e. without hiding it and showing again
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
 *******************************************************************}
 class procedure TGtkWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
@@ -390,9 +395,6 @@ begin
   TrayIconHandle := TGtk1TrayIconHandle(ATrayIcon.Handle);
 
   if not Assigned(TrayIconHandle) then Exit;
-
-  //if Assigned(TrayIconHandle.GtkForm) then
-  // TrayIconHandle.GtkForm.PopupMenu := ATrayIcon.PopUpMenu;
 end;
 
 {*******************************************************************
@@ -402,19 +404,21 @@ end;
 *                  This function is utilized to show message boxes near
 *                  the icon
 *
-*  PARAMETERS:     None
-*
-*  RETURNS:        Nothing
-*
 *******************************************************************}
 class function TGtkWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+var
+  TrayIconHandle: TGtk1TrayIconHandle;
 begin
-  Result.X := 0;
-  Result.Y := 0;
+  Result := Point(0, 0);
+
+  TrayIconHandle := TGtk1TrayIconHandle(ATrayIcon.Handle);
+
+  if not Assigned(TrayIconHandle) then Exit;
+
+  Result := TrayIconHandle.GetPosition;
 end;
 
-class function TGtkWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon
-  ): TCanvas;
+class function TGtkWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas;
 var
   TrayIconHandle: TGtk1TrayIconHandle;
 begin
