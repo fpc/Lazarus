@@ -430,6 +430,83 @@ type
       FormatCount: integer; Formats: PClipboardFormat): boolean;
   end;
 
+  { TQtPrinter }
+  
+  TQtPrinter = class(TQtObject)
+  protected
+    FHandle: QPrinterH;
+  private
+    function getCollateCopies: Boolean;
+    function getColorMode: QPrinterColorMode;
+    function getDevType: Integer;
+    function getFullPage: Boolean;
+    function getOutputFormat: QPrinterOutputFormat;
+    procedure setCollateCopies(const AValue: Boolean);
+    procedure setColorMode(const AValue: QPrinterColorMode);
+    procedure setFullPage(const AValue: Boolean);
+    procedure setOutputFormat(const AValue: QPrinterOutputFormat);
+    procedure setPrinterName(const AValue: WideString);
+    function getPrinterName: WideString;
+    procedure setOutputFileName(const AValue: WideString);
+    function getOutputFileName: WideString;
+    procedure setOrientation(const AValue: QPrinterOrientation);
+    function getOrientation: QPrinterOrientation;
+    procedure setPageSize(const AValue: QPrinterPageSize);
+    function getPageSize: QPrinterPageSize;
+    procedure setPageOrder(const AValue: QPrinterPageOrder);
+    function getPageOrder: QPrinterPageOrder;
+    procedure setResolution(const AValue: Integer);
+    function getResolution: Integer;
+    function getNumCopies: Integer;
+    procedure setNumCopies(const AValue: Integer);
+    function getPrinterState: QPrinterPrinterState;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function NewPage: Boolean;
+    function Abort: Boolean;
+
+    {TODO: implement others .....
+    procedure QPrinter_setPrintProgram(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setPrintProgram';
+    procedure QPrinter_printProgram(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_printProgram';
+    procedure QPrinter_setDocName(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setDocName';
+    procedure QPrinter_docName(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_docName';
+    procedure QPrinter_setCreator(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setCreator';
+    procedure QPrinter_creator(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_creator';
+
+    procedure QPrinter_setPaperSource(handle: QPrinterH; p1: QPrinterPaperSource); cdecl; external QtIntf name 'QPrinter_setPaperSource';
+    function QPrinter_paperSource(handle: QPrinterH): QPrinterPaperSource; cdecl; external QtIntf name 'QPrinter_paperSource';
+    procedure QPrinter_supportedResolutions(handle: QPrinterH; retval: PIntArray); cdecl; external QtIntf name 'QPrinter_supportedResolutions';
+    procedure QPrinter_setFontEmbeddingEnabled(handle: QPrinterH; enable: Boolean); cdecl; external QtIntf name 'QPrinter_setFontEmbeddingEnabled';
+    function QPrinter_fontEmbeddingEnabled(handle: QPrinterH): Boolean; cdecl; external QtIntf name 'QPrinter_fontEmbeddingEnabled';
+    procedure QPrinter_setDoubleSidedPrinting(handle: QPrinterH; enable: Boolean); cdecl; external QtIntf name 'QPrinter_setDoubleSidedPrinting';
+    function QPrinter_doubleSidedPrinting(handle: QPrinterH): Boolean; cdecl; external QtIntf name 'QPrinter_doubleSidedPrinting';
+    procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_paperRect';
+    procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_pageRect';
+    
+    function QPrinter_paintEngine(handle: QPrinterH): QPaintEngineH; cdecl; external QtIntf name 'QPrinter_paintEngine';
+    function QPrinter_printEngine(handle: QPrinterH): QPrintEngineH; cdecl; external QtIntf name 'QPrinter_printEngine';
+    procedure QPrinter_setFromTo(handle: QPrinterH; fromPage: Integer; toPage: Integer); cdecl; external QtIntf name 'QPrinter_setFromTo';
+    function QPrinter_fromPage(handle: QPrinterH): Integer; cdecl; external QtIntf name 'QPrinter_fromPage';
+    function QPrinter_toPage(handle: QPrinterH): Integer; cdecl; external QtIntf name 'QPrinter_toPage';
+    procedure QPrinter_setPrintRange(handle: QPrinterH; range: QPrinterPrintRange); cdecl; external QtIntf name 'QPrinter_setPrintRange';
+    function QPrinter_printRange(handle: QPrinterH): QPrinterPrintRange; cdecl; external QtIntf name 'QPrinter_printRange';
+    }
+    property Collate: Boolean read getCollateCopies write setCollateCopies;
+    property ColorMode: QPrinterColorMode read getColorMode write setColorMode;
+    property DeviceType: Integer read getDevType;
+    property FullPage: Boolean read getFullPage write setFullPage;
+    property Handle: QPrinterH read FHandle;
+    property Orientation: QPrinterOrientation read getOrientation write setOrientation;
+    property OutputFormat: QPrinterOutputFormat read getOutputFormat write setOutputFormat;
+    property OutputFileName: WideString read getOutputFileName write setOutputFileName;
+    property PageOrder: QPrinterPageOrder read getPageOrder write setPageOrder;
+    property PageSize: QPrinterPageSize read getPageSize write setPageSize;
+    property PrinterName: WideString read getPrinterName write setPrinterName;
+    property PrinterState: QPrinterPrinterState read getPrinterState;
+    property Resolution: Integer read getResolution write setResolution;
+  end;
+  
   { TQtTimer }
 
   TQtTimer = class(TQtObject)
@@ -2580,6 +2657,152 @@ begin
     Result := True;
   end;
 end;
+
+{ TQtPrinter }
+
+constructor TQtPrinter.Create;
+begin
+  inherited Create;
+  FHandle := QPrinter_create();
+end;
+
+destructor TQtPrinter.Destroy;
+begin
+  if FHandle <> nil then
+    QPrinter_destroy(FHandle);
+  inherited Destroy;
+end;
+
+function TQtPrinter.getCollateCopies: Boolean;
+begin
+  Result := QPrinter_collateCopies(FHandle);
+end;
+
+function TQtPrinter.getColorMode: QPrinterColorMode;
+begin
+  Result := QPrinter_colorMode(FHandle);
+end;
+
+function TQtPrinter.getDevType: Integer;
+begin
+  Result := QPrinter_devType(FHandle);
+end;
+
+function TQtPrinter.getFullPage: Boolean;
+begin
+  Result := QPrinter_fullPage(FHandle);
+end;
+
+procedure TQtPrinter.setOutputFormat(const AValue: QPrinterOutputFormat);
+begin
+  QPrinter_setOutputFormat(FHandle, AValue);
+end;
+
+function TQtPrinter.getOutputFormat: QPrinterOutputFormat;
+begin
+  Result := QPrinter_outputFormat(FHandle);
+end;
+
+procedure TQtPrinter.setCollateCopies(const AValue: Boolean);
+begin
+  QPrinter_setCollateCopies(FHandle, AValue);
+end;
+
+procedure TQtPrinter.setColorMode(const AValue: QPrinterColorMode);
+begin
+  QPrinter_setColorMode(FHandle, AValue);
+end;
+
+procedure TQtPrinter.setFullPage(const AValue: Boolean);
+begin
+  QPrinter_setFullPage(FHandle, AValue);
+end;
+
+procedure TQtPrinter.setPrinterName(const AValue: WideString);
+begin
+  QPrinter_setPrinterName(FHandle, @AValue);
+end;
+
+function TQtPrinter.getPrinterName: WideString;
+begin
+  QPrinter_printerName(FHandle, @Result);
+end;
+
+procedure TQtPrinter.setOutputFileName(const AValue: WideString);
+begin
+  QPrinter_setOutputFileName(FHandle, @AValue);
+end;
+
+function TQtPrinter.getOutputFileName: WideString;
+begin
+  QPrinter_outputFileName(FHandle, @Result);
+end;
+
+procedure TQtPrinter.setOrientation(const AValue: QPrinterOrientation);
+begin
+  QPrinter_setOrientation(FHandle, AValue);
+end;
+
+function TQtPrinter.getOrientation: QPrinterOrientation;
+begin
+  Result := QPrinter_orientation(FHandle);
+end;
+
+procedure TQtPrinter.setPageSize(const AValue: QPrinterPageSize);
+begin
+  QPrinter_setPageSize(FHandle, AValue);
+end;
+
+function TQtPrinter.getPageSize: QPrinterPageSize;
+begin
+  Result := QPrinter_pageSize(FHandle);
+end;
+
+procedure TQtPrinter.setPageOrder(const AValue: QPrinterPageOrder);
+begin
+  QPrinter_setPageOrder(FHandle, AValue);
+end;
+
+function TQtPrinter.getPageOrder: QPrinterPageOrder;
+begin
+  Result := QPrinter_pageOrder(FHandle);
+end;
+
+procedure TQtPrinter.setResolution(const AValue: Integer);
+begin
+  QPrinter_setResolution(FHandle, AValue);
+end;
+
+function TQtPrinter.getResolution: Integer;
+begin
+  Result := QPrinter_resolution(FHandle);
+end;
+
+function TQtPrinter.getNumCopies: Integer;
+begin
+  Result := QPrinter_numCopies(FHandle);
+end;
+
+procedure TQtPrinter.setNumCopies(const AValue: Integer);
+begin
+  QPrinter_setNumCopies(FHandle, AValue);
+end;
+
+function TQtPrinter.getPrinterState: QPrinterPrinterState;
+begin
+  Result := QPrinter_printerState(FHandle);
+end;
+
+function TQtPrinter.NewPage: Boolean;
+begin
+  Result := QPrinter_newPage(FHandle);
+end;
+
+function TQtPrinter.Abort: Boolean;
+begin
+  Result := QPrinter_abort(FHandle);
+end;
+
 
 { TQtTimer }
 
