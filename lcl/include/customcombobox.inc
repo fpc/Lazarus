@@ -729,6 +729,11 @@ begin
   FAutoSelect := False;
   FAutoSelected := False;
   FCharCase := ecNormal;
+  
+  { AutoSize must be true by default to provide good cross-platform
+    development experience as some widgetsets (win32, wince) ignore the
+    combobox height and others (gtk2) look ugly with a too small height }
+  AutoSize := True;
 end;
 
 {------------------------------------------------------------------------------

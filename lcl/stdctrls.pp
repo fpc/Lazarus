@@ -361,6 +361,7 @@ type
                            read FAutoDropDown write FAutoDropDown default False;
     property AutoSelect: Boolean read FAutoSelect write FAutoSelect default False;
     property AutoSelected: Boolean read FAutoSelected write FAutoSelected;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True; // Overrides default value
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
