@@ -1336,7 +1336,8 @@ begin
     try
       for i := 0 to DockSite.ControlCount - 1 do
       begin
-        if DockSite.Controls[i].HostDockSite = DockSite then
+        if (DockSite.Controls[i].HostDockSite = DockSite) and
+           (DockSite.Controls[i].Visible) then
         begin
           ARect := DockSite.Controls[i].BoundsRect;
           case DockSite.Controls[i].DockOrientation of
