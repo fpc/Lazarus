@@ -41,7 +41,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls,
+  Classes, SysUtils, FileProcs, FileUtil, InterfaceBase, LCLProc, Forms, Controls,
   Laz_XMLCfg, ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf,
   IDEProcs, LazConf, TransferMacros;
 
@@ -454,6 +454,16 @@ const
     'Build',
     'Run'
     );
+    
+const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
+    '', // gtk
+    '', // gtk2
+    '', // win32
+    '', // wince
+    ' -k-framework -kcarbon', // carbon
+    '', // qt
+    ''  // fpgui
+  );
 
 type
   TCompilerParseStampIncreasedEvent = procedure of object;
@@ -1718,6 +1728,7 @@ var
   CurMainSrcFile: String;
   CurCustomOptions: String;
   OptimizeSwitches: String;
+  LinkerAddition: String;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2074,6 +2085,14 @@ Processor specific options:
     InhLinkerOpts:=GetInheritedOption(icoLinkerOptions,true,coptParsed);
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
+  end;
+  
+  // add Linker options for wigdet set
+  if not (ccloNoLinkerOpts in Flags) then
+  begin
+    LinkerAddition := LCLWidgetLinkerAddition[DirNameToLCLPlatform(GetEffectiveLCLWidgetType)];
+    if LinkerAddition <> '' then
+      switches := switches + ' ' + LinkerAddition;
   end;
   
   if Win32GraphicApp then

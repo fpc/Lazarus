@@ -335,7 +335,7 @@ var
   Tool: TExternalToolOptions;
   i: Integer;
   CurItem: TBuildLazarusItem;
-  ExtraOptions: String;
+  ExtraOptions, LinkerAddition: String;
   CurMakeMode: TMakeMode;
   
   {$IFDEF win32}
@@ -436,6 +436,15 @@ begin
       Result:=CreateBuildLazarusOptions(Options,i,Macros,PackageOptions,Flags,
                                         ExtraOptions);
       if Result<>mrOk then exit;
+      
+      // add Linker options for wigdet set
+      LinkerAddition := LCLWidgetLinkerAddition[Options.LCLPlatform];
+      if LinkerAddition <> '' then
+      begin
+          if ExtraOptions <> '' then ExtraOptions := ExtraOptions + ' ' + LinkerAddition
+          else ExtraOptions := LinkerAddition;
+      end;
+      
       if ExtraOptions<>'' then
         Tool.EnvironmentOverrides.Values['OPT'] := ExtraOptions;
       // add -w option to print leaving/entering messages
