@@ -286,6 +286,7 @@ type
     class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
     class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
     class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
+    class procedure PerformMouseDown(AControl: TControl; APart: TLazDockHeaderPart);
   end;
   
 class function TDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
@@ -408,6 +409,25 @@ begin
         if OldFont <> 0 then
           DeleteObject(SelectObject(ACanvas.Handle, OldFont));
       end;
+  end;
+end;
+
+class procedure TDockHeader.PerformMouseDown(AControl: TControl;
+  APart: TLazDockHeaderPart);
+begin
+  // user left clicked on header
+  case APart of
+    ldhpAll, ldhpCaption:
+      // mouse down on not buttons => start drag
+      AControl.BeginDrag(True);
+    ldhpRestoreButton:
+      AControl.ManualDock(nil, nil, alNone);
+    ldhpCloseButton:
+      if AControl is TCustomForm then
+        TCustomForm(AControl).Close
+      else
+        // not a form => doesnot have close => just hide
+        AControl.Visible := False;
   end;
 end;
 
@@ -1373,17 +1393,7 @@ begin
       Part := TDockHeader.FindPart(ARect, Pt, DockSite.Controls[i].DockOrientation);
       case Msg.Msg of
         LM_LBUTTONDOWN:
-          begin
-            // user left clicked on header
-            if Part in [ldhpAll,ldhpCaption] then
-            begin
-              // mouse down on not buttons => start drag
-              DockSite.Controls[i].BeginDrag(True);
-            end else
-            begin
-              // mouse down on buttons => ToDo
-            end;
-          end;
+          TDockHeader.PerformMouseDown(DockSite.Controls[i], Part);
         LM_MOUSEMOVE:
           begin
             // track mouse move to draw hot button state
@@ -2676,20 +2686,11 @@ var
   Control: TControl;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if Button=mbLeft then
+  if Button = mbLeft then
   begin
-    Control:=FindHeader(X,Y,Part);
-    if (Control<>nil) then
-    begin
-      // user left clicked on header
-      if Part in [ldhpAll,ldhpCaption] then
-      begin
-        // mouse down on not buttons => start drag
-        BeginDrag(true);
-      end else begin
-        // mouse down on buttons => ToDo
-      end;
-    end;
+    Control := FindHeader(X, Y, Part);
+    if (Control <> nil) then
+      TDockHeader.PerformMouseDown(Control, Part);
   end;
 end;
 
