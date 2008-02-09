@@ -360,6 +360,15 @@ begin
   end;
 end;
 
+procedure TDBCustomNavigator.SetEnabled(Value: Boolean);
+begin
+  if Value<>Enabled then begin
+    inherited SetEnabled(Value);
+    if not (csLoading in ComponentState) then
+      UpdateButtons;
+  end;
+end;
+
 constructor TDBCustomNavigator.Create(TheOwner: TComponent);
 begin
   BeginUpdateButtons;
