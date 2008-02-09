@@ -164,15 +164,16 @@ var
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
     Enabled := CheckListBox.Enabled;
 
-    // fill the background
+    { fill the background
+    
+      Note: GetSysColorBrush is more efficient then getting the
+      color and creating a brush because it uses a buffered brush
+    }
     if Enabled and Selected then
-      lgBrush.lbColor := Windows.GetSysColor(COLOR_HIGHLIGHT)
+      Brush := Windows.GetSysColorBrush(COLOR_HIGHLIGHT)
     else
-      lgBrush.lbColor := Windows.GetSysColor(COLOR_WINDOW);
-    lgBrush.lbStyle := BS_SOLID;
-    Brush := CreateBrushIndirect(lgBrush);
+      Brush := Windows.GetSysColorBrush(COLOR_WINDOW);
     Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
-    DeleteObject(Brush);
 
     Rect := Data^.rcItem;
     InflateRect(Rect, -1, -1);
@@ -186,25 +187,36 @@ var
     Rect := Windows.Rect(Data^.rcItem);
     Rect.Right := Data^.rcItem.Right;
     Rect.Left := Rect.Bottom-Rect.Top + 5;
-    if not Enabled then
-      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_GRAYTEXT))
-    else
+
+    { Don't suppose anything about the current background color
+      or text color. Always set them.
+      
+      GetSysColor doesn't seam to work on WindowsCE inside this event,
+      so we are hardcoding the colors for now until a better fix is found.
+    }
     if Selected then
     begin
       OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHT));
+      OldBackColor := Windows.SetBkColor(Data^._HDC, $00D39137); {Windows.GetSysColor(COLOR_HIGHLIGHT)}
+    end
+    else if not Enabled then
+    begin
+      OldColor := Windows.SetTextColor(Data^._HDC, $00BFBFBF); {Windows.GetSysColor(COLOR_GRAYTEXT)}
+      OldBackColor := Windows.SetBkColor(Data^._HDC, $00FFFFFF); {Windows.GetSysColor(COLOR_WINDOW)}
+    end
+    else
+    begin
+      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_CAPTIONTEXT));
+      OldBackColor := Windows.SetBkColor(Data^._HDC, $00FFFFFF); {Windows.GetSysColor(COLOR_WINDOW)}
     end;
+    
     WideBuffer := Utf8Decode(CheckListBox.Items[Data^.ItemID]);
     Windows.DrawText(Data^._HDC, PWideChar(WideBuffer), -1,
        Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    if not Enabled then
-      Windows.SetTextColor(Data^._HDC, OldColor)
-    else
-    if Selected then
-    begin
-      Windows.SetTextColor(Data^._HDC, OldColor);
-      Windows.SetBkColor(Data^._HDC, OldBackColor);
-    end;
+
+    // Return to default text and background colors
+    Windows.SetTextColor(Data^._HDC, OldColor);
+    Windows.SetBkColor(Data^._HDC, OldBackColor);
   end;
 
 begin
