@@ -8,6 +8,7 @@
       <MainUnit Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=".exe"/>
+      <Title Value="AsyncCall"/>
     </General>
     <VersionInfo>
       <ProjectVersion Value=""/>
@@ -31,16 +32,16 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="project1.lpr"/>
+        <Filename Value="asynccall.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="project1"/>
+        <UnitName Value="asynccall"/>
       </Unit0>
       <Unit1>
-        <Filename Value="unit1.pas"/>
+        <Filename Value="uasynccall.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
-        <ResourceFilename Value="unit1.lrs"/>
-        <UnitName Value="Unit1"/>
+        <ResourceFilename Value="uasynccall.lrs"/>
+        <UnitName Value="uasynccall"/>
       </Unit1>
     </Units>
   </ProjectOptions>
