@@ -88,7 +88,10 @@ type
   TQtWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   private
   protected
+    class procedure UpdateProperties(const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
   public
+    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TQtWSColorDialog }
@@ -364,6 +367,75 @@ begin
   end;
 end;
 
+{ TQtWSSelectDirectoryDialog }
+
+class procedure TQtWSSelectDirectoryDialog.UpdateProperties(
+  const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
+var
+  ATitle: WideString;
+begin
+  ATitle := GetUtf8String(AFileDialog.Title);
+  QtFileDialog.setWindowTitle(@ATitle);
+  QtFileDialog.setDirectory(GetUtf8String(AFileDialog.InitialDir));
+  QtFileDialog.setSizeGripEnabled(ofEnableSizing in TSelectDirectoryDialog(AFileDialog).Options);
+
+  if ofViewDetail in TSelectDirectoryDialog(AFileDialog).Options then
+    QtFileDialog.setViewMode(QFileDialogDetail)
+  else
+    QtFileDialog.setViewMode(QFileDialogList);
+
+  QtFileDialog.setFileMode(QFileDialogDirectoryOnly);
+
+end;
+
+class function TQtWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+var
+  FileDialog: TQtFileDialog;
+begin
+  FileDialog := TQtFileDialog.Create(ACommonDialog, TQtWSCommonDialog.GetDialogParent(ACommonDialog));
+  FileDialog.AttachEvents;
+
+  Result := THandle(FileDialog);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TQtWSSelectDirectoryDialog.ShowModal
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+class procedure TQtWSSelectDirectoryDialog.ShowModal(const ACommonDialog: TCommonDialog);
+var
+  ReturnText, saveFileName, saveTitle: WideString;
+  FileDialog: TSelectDirectoryDialog;
+  QtFileDialog: TQtFileDialog;
+begin
+  {------------------------------------------------------------------------------
+    Initialization of variables
+   ------------------------------------------------------------------------------}
+  ReturnText := '';
+  saveFileName := '';
+  saveTitle := '';
+
+  FileDialog := TSelectDirectoryDialog(ACommonDialog);
+  QtFileDialog := TQtFileDialog(FileDialog.Handle);
+
+  UpdateProperties(FileDialog, QtFileDialog);
+
+  {------------------------------------------------------------------------------
+    Code to call the dialog
+   ------------------------------------------------------------------------------}
+
+  saveTitle := GetUTF8String(FileDialog.Title);
+  saveFileName := GetUtf8String(FileDialog.InitialDir);
+  QFileDialog_getExistingDirectory(@ReturnText, QWidget_parentWidget(QtFileDialog.Widget), @SaveTitle, @saveFileName);
+  if ReturnText <> '' then
+  begin
+    FileDialog.FileName := UTF8Encode(ReturnText);
+    FileDialog.UserChoice := mrOK;
+  end else
+    FileDialog.UserChoice := mrCancel;
+end;
+
 { TQtWSColorDialog }
 
 class function TQtWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -484,7 +556,7 @@ initialization
   RegisterWSComponent(TFileDialog, TQtWSFileDialog);
 //  RegisterWSComponent(TOpenDialog, TQtWSOpenDialog);
 //  RegisterWSComponent(TSaveDialog, TQtWSSaveDialog);
-//  RegisterWSComponent(TSelectDirectoryDialog, TQtWSSelectDirectoryDialog);
+  RegisterWSComponent(TSelectDirectoryDialog, TQtWSSelectDirectoryDialog);
   RegisterWSComponent(TColorDialog, TQtWSColorDialog);
 //  RegisterWSComponent(TColorButton, TQtWSColorButton);
   RegisterWSComponent(TFontDialog, TQtWSFontDialog);
