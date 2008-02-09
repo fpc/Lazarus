@@ -43,7 +43,7 @@ uses
   Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
   StdActns, DBCtrls, DBGrids, DBActns, EditBtn, ActnList, FileCtrl, ButtonPanel,
   LResources, XMLPropStorage, IniPropStorage, Graphics, Chart, ColorBox,
-  LazHelpHTML;
+  LazHelpHTML, popupnotifier;
   
 procedure Register;
 
@@ -82,6 +82,7 @@ begin
   RegisterUnit('ButtonPanel',@ButtonPanel.Register);
   RegisterUnit('LResources',@LResources.Register);
   RegisterUnit('LazHelpHTML',@LazHelpHTML.Register);
+  RegisterUnit('popupnotifier', @popupnotifier.Register);
 end;
 
 end.

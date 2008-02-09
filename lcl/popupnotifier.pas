@@ -25,8 +25,10 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls
+  Classes, SysUtils, Forms, Controls, Graphics, StdCtrls
+  { Note: Be careful that ExtCtrls depend on popupnotifier, so
+    it should have only a minimal amount of dependencies to avoid circular
+    references. Preferably only units that ExtCtrls already has }
 {$ifdef fpc}
   , LResources
 {$endif}
@@ -35,9 +37,17 @@ uses
 type
   { TNotifierXButton }
 
+  { To avoid dependency on Buttons }
+  TNotifierXButtonButtonState =
+  (
+    nbsUp,       // button is up
+    nbsDown,     // button is down
+    nbsHot       // button is under mouse
+  );
+
   TNotifierXButton = class(TCustomControl)
   private
-    FState: TButtonState;
+    FState: TNotifierXButtonButtonState;
     procedure HandleMouseDown(Sender: TOBject; Button: TMouseButton;
      Shift: TShiftState; X, Y: Integer);
     procedure HandleMouseUp(Sender: TOBject; Button: TMouseButton;
@@ -54,7 +64,7 @@ type
   private
     lblTitle: TLabel;
     lblText: TLabel;
-    imgIcon: TImage;
+    imgIcon: TPicture;
     btnX: TNotifierXButton;
     procedure HideForm(Sender: TObject);
     procedure HandleResize(Sender: TObject);
@@ -119,7 +129,7 @@ procedure TNotifierXButton.HandleMouseDown(Sender: TOBject; Button: TMouseButton
 begin
   if (Button = mbLeft) then
   begin
-    FState := bsDown;
+    FState := nbsDown;
     Self.Invalidate;
   end;
 end;
@@ -127,7 +137,7 @@ end;
 procedure TNotifierXButton.HandleMouseUp(Sender: TOBject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  FState := bsUp;
+  FState := nbsUp;
   Self.Invalidate;
 end;
 
@@ -135,7 +145,7 @@ constructor TNotifierXButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   
-  FState := bsUp;
+  FState := nbsUp;
   
   OnMouseUp := HandleMouseUp;
   OnMouseDown := HandleMouseDown;
@@ -158,7 +168,7 @@ begin
   {*******************************************************************
   *  Show a different background color when the button is down
   *******************************************************************}
-  if FState = bsUp then Canvas.Brush.Color := Color
+  if FState = nbsUp then Canvas.Brush.Color := Color
   else Canvas.Brush.Color := clYellow;
   
   Canvas.RoundRect(0, 0, Width, Height, 10, 10);
@@ -189,11 +199,7 @@ begin
   Width := 325;
   Height := 110;
 
-  ImgIcon := TImage.Create(Self);
-  ImgIcon.Autosize := True;
-  ImgIcon.Parent := Self;
-  ImgIcon.Transparent := True;
-  ImgIcon.OnClick := HideForm;
+  ImgIcon := TPicture.Create;
 
   lblTitle := TLabel.Create(Self);
   lblTitle.Parent := Self;
@@ -217,7 +223,7 @@ begin
 
   HandleResize(Self);
 
-  Color := $DCFFFF; // Doesn´t work on Gtk
+  Color := $DCFFFF; // Doesn't work on Gtk
 
   // Connects the methods to events
   OnClick := HideForm;
@@ -262,8 +268,13 @@ end;
 *  Handles OnResize events of the form
 *******************************************************************}
 procedure TNotifierForm.HandleResize(Sender: TObject);
+var
+  IconAdjust: Integer;
 begin
-  if (ImgIcon <> nil) then
+  if (ImgIcon.Bitmap <> nil) then IconAdjust := 5 + imgIcon.Bitmap.Width
+  else IconAdjust := 0;
+  
+{  if (ImgIcon.Bitmap <> nil) then
   begin
     ImgIcon.Left := 5;
     ImgIcon.Top := 5;
@@ -271,11 +282,11 @@ begin
     // Workaround for autosize not working as expected
     ImgIcon.Width := ImgIcon.Picture.Width;
     ImgIcon.Height := ImgIcon.Picture.Height;
-  end;
+  end;}
 
   if (lblTitle <> nil) then
   begin
-    lblTitle.Left := ImgIcon.Width + ImgIcon.Left + 5;
+    lblTitle.Left := IconAdjust + 5;
     lblTitle.Top := 5;
     lblTitle.Width := Width - 25;
     lblTitle.Height := 20;
@@ -283,9 +294,9 @@ begin
 
   if (lblText <> nil) then
   begin
-    lblText.Left := ImgIcon.Width + ImgIcon.Left + 20;
+    lblText.Left := IconAdjust + 20;
     lblText.Top := LblTitle.Top + LblTitle.Height + 5;
-    lblText.Width := Width - (ImgIcon.Width + ImgIcon.Left + 5);
+    lblText.Width := Width - (IconAdjust + 5);
     lblText.Height := Height - 10 - LblText.Top;
   end;
 
@@ -301,14 +312,17 @@ end;
 {*******************************************************************
 *  TNotifierForm.HandlePaint ()
 *
-*  Temporary fix for TForm.Color not working on Gtk
-*  Remove when the bug is fixed!
 *******************************************************************}
 procedure TNotifierForm.HandlePaint(Sender: TObject);
 begin
+  { Temporary fix for TForm.Color not working on Gtk
+    Remove when the bug is fixed! }
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := Color;
   Canvas.FillRect(Rect(0,0,width,height));
+  
+  { Paints the icon. We can't use a TImage because it's on ExtCtrls }
+  if Assigned(imgIcon.Bitmap) then Canvas.Draw(5, 5, imgIcon.Bitmap);
 end;
 
 { TPopupNotifier }
@@ -360,12 +374,12 @@ end;
 
 function TPopupNotifier.GetIcon: TPicture;
 begin
-  Result := vNotifierForm.imgIcon.Picture;
+  Result := vNotifierForm.imgIcon;
 end;
 
 procedure TPopupNotifier.SetIcon(const Value: TPicture);
 begin
-  vNotifierForm.imgIcon.Picture.Assign(Value);
+  vNotifierForm.imgIcon.Assign(Value);
 end;
 
 function TPopupNotifier.GetColor: TColor;
@@ -423,11 +437,23 @@ end;
 *  TPopupNotifier.ShowAtPos ()
 *
 *  Shows the notifier at a specific position
+*
+*  The position is corrected to fit the screen, similarly to how
+*  a popup menu would have it's position corrected
+*
 *******************************************************************}
 procedure TPopupNotifier.ShowAtPos(x: Integer; y: Integer);
 begin
-  vNotifierForm.left := x;
-  vNotifierForm.top := y;
+  if x + vNotifierForm.Width > Screen.Width then
+    vNotifierForm.left := x - vNotifierForm.Width
+  else
+    vNotifierForm.left := x;
+
+  if y + vNotifierForm.Height > Screen.Height then
+    vNotifierForm.top := y - vNotifierForm.Height
+  else
+    vNotifierForm.top := y;
+
   vNotifierForm.Show;
 end;
 

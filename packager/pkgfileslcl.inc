@@ -67,6 +67,7 @@ AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('nonwin32/messages.pp','Messages',pftUnit,[],cpBase);
 AddFile('pairsplitter.pas','PairSplitter',pftUnit,[pffHasRegisterProc],cpBase);
+AddFile('popupnotifier.pas','popupnotifier',pftUnit,[pffHasRegisterProc],cpBase);
 AddFile('postscriptcanvas.pas','PostscriptCanvas',pftUnit,[],cpBase);
 AddFile('postscriptprinter.pas','PostScriptPrinter',pftUnit,[],cpBase);
 AddFile('printers.pas','Printers',pftUnit,[],cpBase);

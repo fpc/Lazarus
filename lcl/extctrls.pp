@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus;
+  LCLClasses, Menus, popupnotifier;
 
 type
   { workaround problem with fcl }
@@ -1097,6 +1097,7 @@ type
     FIcon: TIcon;
     FHint: string;
     FVisible, FShowIcon: Boolean;
+    FNotifier: TPopupNotifier;
     FOnPaint, FOnClick, FOnDblClick: TNotifyEvent;
     FOnMouseDown, FOnMouseUp: TMouseEvent;
     FOnMouseMove: TMouseMoveEvent;

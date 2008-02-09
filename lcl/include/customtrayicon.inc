@@ -39,6 +39,7 @@ begin
   inherited Create(TheOwner);
 
   FIcon := TIcon.Create;
+  FNotifier := TPopupNotifier.Create(Self);
 
   FShowIcon := True;
 end;
@@ -58,6 +59,7 @@ begin
   { Avoids an unremoved icon on the tray }
   Hide;
 
+  FNotifier.Free;
   FIcon.Free;
 
   inherited Destroy;
@@ -148,8 +150,19 @@ end;
 *
 *******************************************************************}
 procedure TCustomTrayIcon.ShowBalloonHint;
+var
+  UsePopUpNotifier: Boolean;
+  Pt: TPoint;
 begin
-  TWSCustomTrayIconClass(WidgetSetClass).ShowBalloonHint(Self);
+  UsePopUpNotifier := TWSCustomTrayIconClass(WidgetSetClass).ShowBalloonHint(Self);
+  
+  if UsePopUpNotifier then
+  begin
+    Pt := Self.GetPosition;
+    FNotifier.Text := Self.BalloonHint;
+    FNotifier.Title := Self.BalloonTitle;
+    FNotifier.ShowAtPos(Pt.x, Pt.y);
+  end;
 end;
 
 {*******************************************************************

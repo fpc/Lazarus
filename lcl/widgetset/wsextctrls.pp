@@ -168,7 +168,7 @@ type
     class function Hide(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function Show(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); virtual;
-    class procedure ShowBalloonHint(const ATrayIcon: TCustomTrayIcon); virtual;
+    class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; virtual;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; virtual;
     class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; virtual;
   end;
@@ -304,9 +304,15 @@ begin
 
 end;
 
-class procedure TWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon);
+{*******************************************************************
+*  TWSCustomTrayIcon.ShowBalloonHint ()
+*
+*  RETURNS:        If we should use the popupnotifier to implement this method
+*
+*******************************************************************}
+class function TWSCustomTrayIcon.ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean;
 begin
-
+  Result := True;
 end;
 
 class function TWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;

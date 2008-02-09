@@ -57,6 +57,7 @@ implicitunits= \
   maskedit \
   menus \
   pairsplitter \
+  popupnotifier \
   postscriptprinter \
   printers \
   propertystorage \

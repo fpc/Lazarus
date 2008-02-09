@@ -50,7 +50,7 @@ uses
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
-  CalendarPopup, Themes,
+  CalendarPopup, Themes, popupnotifier,
   LCLMessageGlue,
   RubberBand,
   // widgetset skeleton

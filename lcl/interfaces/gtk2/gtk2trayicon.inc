@@ -405,8 +405,17 @@ end;
 *
 *******************************************************************}
 class function TGtk2WSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
+var
+  WindowHandle: PGDKWindow;
 begin
-  Result.X := 0;
-  Result.Y := 0;
+  Result := Point(0, 0);
+
+  if not Assigned(GtkForm) then Exit;
+
+  WindowHandle := GtkForm^.window;
+
+  if not Assigned(WindowHandle) then Exit;
+
+  gdk_window_get_origin(WindowHandle, @Result.X, @Result.Y);
 end;
 
