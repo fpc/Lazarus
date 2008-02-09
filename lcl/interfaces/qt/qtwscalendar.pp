@@ -30,11 +30,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtwidgets,
   // LCL
   SysUtils, DateUtils, Controls, Calendar, LCLType, LCLIntf, LCLProc,
@@ -83,9 +79,7 @@ begin
    QCalendarWidget_setSelectionMode(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetNoSelection)
   else QCalendarWidget_setSelectionMode(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetSingleSelection);
 
-{$ifdef USE_QT_4_3}
   QCalendarWidget_setDateEditEnabled(QCalendarWidgetH(QtCalendar.Widget), not AReadOnly);
-{$endif}
 end;
 
 class function TQtWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
@@ -137,9 +131,7 @@ begin
    QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget),QCalendarWidgetShortDayNames)
   else QCalendarWidget_setHorizontalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetNoHorizontalHeader);
   
-{$ifdef USE_QT_4_3}
   QCalendarWidget_setNavigationBarVisible(QCalendarWidgetH(QtCalendar.Widget), not (dsNoMonthChange in ADisplaySettings));
-{$endif}
 
   if dsShowWeekNumbers in ADisplaySettings then
    QCalendarWidget_setVerticalHeaderFormat(QCalendarWidgetH(QtCalendar.Widget), QCalendarWidgetISOWeekNumbers)

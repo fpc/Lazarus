@@ -44,11 +44,7 @@ interface
 ////////////////////////////////////////////////////
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtwidgets,
 // LCL
   Classes, Controls, RubberBand, LCLType,

@@ -30,11 +30,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtprivate, qtwidgets, qtproc, QtWsControls,
   // RTL
   math,
@@ -1129,16 +1125,11 @@ begin
   begin
   end else
   begin
-    {$ifdef USE_QT_4_3}
     dx := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutLeftMargin) +
           QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutRightMargin);
     dy := QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutTopMargin) +
           QStyle_pixelMetric(QApplication_style(), QStylePM_LayoutBottomMargin);
-    {$else}
-    { Needs a proper implementation }
-    dx := 0;
-    dy := 0;
-    {$endif}
+
     aClientRect:=Rect(0,0,
                  Max(0, aWidth - dx),
                  Max(0, aHeight - dy));

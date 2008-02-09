@@ -32,11 +32,7 @@ interface
 {$I qtdefines.inc}
 
 uses
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   GraphType;
 
 procedure FillStandardDescription(var Desc: TRawImageDescription);

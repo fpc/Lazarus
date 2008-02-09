@@ -2,6 +2,3 @@
   Centralized includefile for some common qt defines
  ******************************************************************************}
 
-{$ifdef windows}
-  {$define USE_QT_4_3}
-{$endif}

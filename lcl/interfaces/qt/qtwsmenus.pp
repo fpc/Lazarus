@@ -30,11 +30,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtwidgets, qtobjects, qtproc,
   // LCL
   SysUtils, Classes, LCLType, LCLProc, Graphics, Controls, Forms, Menus,

@@ -29,11 +29,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtobjects, qtint,
   // Free Pascal
   Classes, SysUtils, Types, Math,
@@ -404,9 +400,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     IsMainForm: Boolean;
-{$ifdef USE_QT_4_3}
     MDIAreaHandle: QMDIAreaH;
-{$endif}
     MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     StatusBar: TQtStatusBar;
@@ -1141,7 +1135,6 @@ var
   LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
 {$ENDIF}
 
-{$ifndef USE_QT_4_3}
 // not exists before qt 4.3
 function QTabBar_tabAt(handle: QTabBarH; pos: PQtPoint): Integer;
 var
@@ -1162,7 +1155,6 @@ begin
     end;
   end;
 end;
-{$endif}
 
 { TQtWidget }
 
@@ -1560,12 +1552,10 @@ begin
             SlotPaint(Sender, Event);
         end;
       QEventContextMenu: SlotContextMenu(Sender, Event);
-      {$IFDEF USE_QT_4_3}
       QEventNonClientAreaMouseButtonPress:
         begin
           SlotNCMouse(Sender, Event);
         end;
-      {$ENDIF}
       QEventLCLMessage:
         begin
           SlotLCLMessage(Sender, Event);
@@ -3548,66 +3538,52 @@ begin
       MenuBar := TQtMenuBar.Create(Result);
     {$endif}
     
-    {$ifdef USE_QT_4_3}
-      if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
-      and not (csDesigning in LCLObject.ComponentState) then
-      begin
-        MDIAreaHandle := QMdiArea_create(Result);
-        FCentralWidget := MDIAreaHandle;
-        QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
-      end
-      else
-      begin
-        FCentralWidget := QWidget_create(Result);
-        MDIAreaHandle := nil;
-      end;
-      
-      if FCentralWidget <> nil then
-        QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
-      
-      if not (csDesigning in LCLObject.ComponentState) then
-        QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
-    {$else}
+    if (Application.MainForm <> nil) and (Application.MainForm.FormStyle = fsMDIForm)
+    and not (csDesigning in LCLObject.ComponentState) then
+    begin
+      MDIAreaHandle := QMdiArea_create(Result);
+      FCentralWidget := MDIAreaHandle;
+      QMainWindow_setCentralWidget(QMainWindowH(Result), MDIAreaHandle);
+    end
+    else
+    begin
       FCentralWidget := QWidget_create(Result);
-
+      MDIAreaHandle := nil;
+    end;
+    
+    if FCentralWidget <> nil then
       QMainWindow_setCentralWidget(QMainWindowH(Result), FCentralWidget);
-    {$endif}
+    
+    if not (csDesigning in LCLObject.ComponentState) then
+      QMainWindow_setDockOptions(QMainWindowH(Result), QMainWindowAnimatedDocks);
   end
   else
   begin
-    {$ifdef USE_QT_4_3}
-      if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
-          not (csDesigning in LCLObject.ComponentState) then
-      begin
-
-        if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil then
-          raise Exception.Create('MDIChild can be added to MDIForm only !');
-
-        Result := QMdiSubWindow_create(nil, QtWindow);
-
-        // QMdiSubWindow already have an layout
-
-        LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
-        if LayoutWidget <> nil then
-          QBoxLayout_destroy(LayoutWidget);
-      end
-      else
-      begin
-        if (TCustomForm(LCLObject).FormStyle = fsSplash) and
+    if (LCLObject is TCustomForm) and (TCustomForm(LCLObject).FormStyle = fsMDIChild) and
         not (csDesigning in LCLObject.ComponentState) then
-          Result := QWidget_create(nil, QtSplashScreen)
-        else
-          Result := QWidget_create(nil, QtWindow);
-        QWidget_setAttribute(Result, QtWA_Hover);
-      end;
-    {$else}
+    begin
+
+      if TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle = nil then
+        raise Exception.Create('MDIChild can be added to MDIForm only !');
+
+      Result := QMdiSubWindow_create(nil, QtWindow);
+
+      // QMdiSubWindow already have an layout
+
+      LayoutWidget := QBoxLayoutH(QWidget_layout(Result));
+      if LayoutWidget <> nil then
+        QBoxLayout_destroy(LayoutWidget);
+    end
+    else
+    begin
       if (TCustomForm(LCLObject).FormStyle = fsSplash) and
       not (csDesigning in LCLObject.ComponentState) then
         Result := QWidget_create(nil, QtSplashScreen)
       else
         Result := QWidget_create(nil, QtWindow);
-    {$endif}
-    
+      QWidget_setAttribute(Result, QtWA_Hover);
+    end;
+
     // Main menu bar
     
     {$ifdef darwin}
@@ -3619,14 +3595,9 @@ begin
     FCentralWidget := QWidget_create(Result);
     LayoutWidget := QBoxLayout_create(QBoxLayoutTopToBottom, Result);
 
-    {$ifdef USE_QT_4_3}
-      QBoxLayout_setSpacing(LayoutWidget, 0);
-      QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
-    {$else}
-      QLayout_setSpacing(LayoutWidget, 0);
-      QLayout_setMargin(LayoutWidget, 0);
-    {$endif}
-    
+    QBoxLayout_setSpacing(LayoutWidget, 0);
+    QLayout_setContentsMargins(LayoutWidget, 0, 0, 0, 0);
+
     QLayout_addWidget(LayoutWidget, FCentralWidget);
     QWidget_setLayout(Result, QLayoutH(LayoutWidget));
   end;
@@ -7748,18 +7719,14 @@ begin
   FDirecotyEnteredHook := QFileDialog_hook_create(Widget);
   FFilterSelectedHook := QFileDialog_hook_create(Widget);
 
-  {$IFDEF USE_QT_4_3}
   QFileDialog_filterSelected_Event(Method) := @FilterSelectedEvent;
   QFileDialog_hook_hook_filterSelected(FFilterSelectedHook, Method);
-  {$ENDIF}
-  
+
   QFileDialog_currentChanged_Event(Method) := @CurrentChangedEvent;
   QFileDialog_hook_hook_currentChanged(FCurrentChangedHook, Method);
 
-  {$IFDEF USE_QT_4_3}
   QFileDialog_directoryEntered_Event(Method) := @DirectoryEnteredEvent;
   QFileDialog_hook_hook_directoryEntered(FDirecotyEnteredHook, Method);
-  {$ENDIF}
 end;
 
 procedure TQtFileDialog.DetachEvents;

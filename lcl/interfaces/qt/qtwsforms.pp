@@ -30,11 +30,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtobjects, qtwidgets, qtproc,
   // LCL
   SysUtils, Classes, Controls, LCLType, Forms,
@@ -189,12 +185,10 @@ begin
   // Sets Various Events
   QtMainWindow.AttachEvents;
   
-  {$ifdef USE_QT_4_3}
   if (TCustomForm(AWinControl).FormStyle in [fsMDIChild]) and
      (Application.MainForm.FormStyle = fsMdiForm) and
      not (csDesigning in AWinControl.ComponentState) then
     QMdiArea_addSubWindow(TQtMainWindow(Application.MainForm.Handle).MDIAreaHandle, QtMainWindow.Widget, QtWindow);
-  {$endif}
 
   // Return the handle
   Result := TLCLIntfHandle(QtMainWindow);

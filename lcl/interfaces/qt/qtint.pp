@@ -37,11 +37,7 @@ interface
  
 uses 
   // Bindings - qt4 must come first to avoid type redefinition problems
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   // FPC
   Classes, SysUtils, Math, Types,
   // LCL

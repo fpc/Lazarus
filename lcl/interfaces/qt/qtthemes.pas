@@ -10,11 +10,7 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // qt bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   // lcl
   LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
@@ -161,10 +157,8 @@ begin
         Context.save;
         case Element.ComplexControl of
           QStyleCC_ToolButton: opt := QStyleOptionToolButton_create();
-          QStyleCC_TitleBar
-         {$IFDEF USE_QT_4_3}
-          ,QStyleCC_MdiControls
-         {$ENDIF}:
+          
+          QStyleCC_TitleBar, QStyleCC_MdiControls:
           begin
             opt := QStyleOptionTitleBar_create();
             QStyleOptionTitleBar_setTitleBarFlags(QStyleOptionTitleBarH(opt), QtWindow or QtWindowSystemMenuHint);
@@ -378,24 +372,18 @@ begin
           WP_RESTOREBUTTON: Result.SubControls := QStyleSC_TitleBarNormalButton;
           WP_HELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
           WP_MDIHELPBUTTON: Result.SubControls := QStyleSC_TitleBarContextHelpButton;
-         {$IFDEF USE_QT_4_3}
           WP_MDIMINBUTTON: Result.SubControls := QStyleSC_MdiMinButton;
           WP_MDICLOSEBUTTON: Result.SubControls := QStyleSC_MdiCloseButton;
           WP_MDIRESTOREBUTTON: Result.SubControls := QStyleSC_MdiNormalButton;
-         {$ELSE}
-          WP_MDIMINBUTTON: Result.SubControls := QStyleSC_TitleBarMinButton;
-          WP_MDICLOSEBUTTON: Result.SubControls := QStyleSC_TitleBarCloseButton;
-          WP_MDIRESTOREBUTTON: Result.SubControls := QStyleSC_TitleBarNormalButton;
-         {$ENDIF}
         else
           Result.SubControls := QStyleSC_None;
         end;
-       {$IFDEF USE_QT_4_3}
+
         if Result.SubControls >= QStyleSC_MdiMinButton then
           Result.ComplexControl := QStyleCC_MdiControls
         else
-       {$ENDIF}
           Result.ComplexControl := QStyleCC_TitleBar;
+          
         Result.DrawVariant := qdvComplexControl;
 {
         // maybe through icon

@@ -30,11 +30,7 @@ interface
 
 uses
   // Bindings
-{$ifdef USE_QT_4_3}
-  qt43,
-{$else}
   qt4,
-{$endif}
   qtwidgets, qtobjects, qtproc,
   // LCL
   LMessages, LCLMessageGlue,
@@ -387,23 +383,13 @@ class function TQtWSCustomNotebook.GetTabIndexAtPos(
 var
   TabWidget: TQtTabWidget;
   APoint: TQtPoint;
- {$ifndef USE_QT_4_3}
-  w: QWidgetH;
- {$endif}
 begin
   TabWidget := TQtTabWidget(ANotebook.Handle);
   if TabWidget.TabBar <> nil then
   begin
     APoint := QtPoint(AClientPos.x, AClientPos.y);
-    {$ifdef USE_QT_4_3}
+
     Result := QTabBar_tabAt(TabWidget.TabBar, @APoint);
-    {$else}
-    w := QWidget_childAt(TabWidget.TabBar, @APoint);
-    if w <> nil then
-      Result := TabWidget.indexOf(w)
-    else
-      Result := -1;
-    {$endif}
   end
   else
     Result := -1;
