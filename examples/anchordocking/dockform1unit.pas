@@ -131,6 +131,7 @@ begin
   ClearLayout;
 
   Form1:=CreateNewForm;
+  with Form1 do SetBounds(Left,Top,400,200);
   Form2:=CreateNewForm;
   DockingManager.Manager.InsertControl(Form2,alRight,Form1);
 end;
