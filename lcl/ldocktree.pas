@@ -2565,10 +2565,8 @@ end;
 function TCustomAnchoredDockManager.CreateForm: TLazDockForm;
 begin
   Result:=TLazDockForm.Create(FOwnerComponent);
-  {$IFDEF EnableAnchorDockManager}
   Result.DockManager:=Self;
   Result.UseDockManager:=true;
-  {$ENDIF}
 end;
 
 procedure TCustomAnchoredDockManager.ReplaceAnchoredControl(OldControl,

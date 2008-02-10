@@ -2144,11 +2144,9 @@ begin
     Control.FreeNotification(Self);
     if (Manager<>nil) and (FControl is TWinControl) then
     begin
-      {$IFDEF EnableAnchorDockManager}
       WinControl:=TWinControl(FControl);
       WinControl.DockManager:=Manager.Manager;
       WinControl.UseDockManager:=true;
-      {$ENDIF}
     end;
   end;
   if (DockerName='') and (FControl<>nil) then
@@ -2196,20 +2194,16 @@ begin
 end;
 
 function TCustomLazDockingManager.Add(Docker: TCustomLazControlDocker): Integer;
-{$IFDEF EnableAnchorDockManager}
 var
   WinControl: TWinControl;
-{$ENDIF}
 begin
   Docker.DockerName:=CreateUniqueName(Docker.DockerName,nil);
   Result:=FDockers.Add(Docker);
   if Docker.Control is TWinControl then
   begin
-    {$IFDEF EnableAnchorDockManager}
     WinControl:=TWinControl(Docker.Control);
     WinControl.DockManager:=Manager;
     WinControl.UseDockManager:=true;
-    {$ENDIF}
   end;
 end;
 
