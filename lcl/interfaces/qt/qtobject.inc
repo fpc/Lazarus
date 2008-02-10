@@ -27,7 +27,6 @@ begin
   inherited Create;
 
   InitStockItems;
- 
   QtWidgetSet := Self;
   FDockImage := nil;
 end;
@@ -46,7 +45,7 @@ begin
   DestroyGlobalCaret;
   Clipboard.Free;
   FreeStockItems;
- 
+  QtDefaultPrinter.Free;
   QtWidgetSet := nil;
   
   if SavedDCList<>nil then
@@ -123,6 +122,9 @@ begin
   finally
     ReleaseDC(0, ScreenDC);
   end;
+  
+  QtDefaultPrinter;
+  
 end;
 
 {------------------------------------------------------------------------------

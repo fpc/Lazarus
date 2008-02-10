@@ -434,13 +434,25 @@ type
   private
     function getCollateCopies: Boolean;
     function getColorMode: QPrinterColorMode;
+    function getCreator: WideString;
     function getDevType: Integer;
+    function getDocName: WideString;
+    function getDoubleSidedPrinting: Boolean;
+    function getFontEmbedding: Boolean;
     function getFullPage: Boolean;
     function getOutputFormat: QPrinterOutputFormat;
+    function getPaperSource: QPrinterPaperSource;
+    function getPrintProgram: WideString;
+    function getPrintRange: QPrinterPrintRange;
     procedure setCollateCopies(const AValue: Boolean);
     procedure setColorMode(const AValue: QPrinterColorMode);
+    procedure setCreator(const AValue: WideString);
+    procedure setDocName(const AValue: WideString);
+    procedure setDoubleSidedPrinting(const AValue: Boolean);
+    procedure setFontEmbedding(const AValue: Boolean);
     procedure setFullPage(const AValue: Boolean);
     procedure setOutputFormat(const AValue: QPrinterOutputFormat);
+    procedure setPaperSource(const AValue: QPrinterPaperSource);
     procedure setPrinterName(const AValue: WideString);
     function getPrinterName: WideString;
     procedure setOutputFileName(const AValue: WideString);
@@ -451,6 +463,8 @@ type
     function getPageSize: QPrinterPageSize;
     procedure setPageOrder(const AValue: QPrinterPageOrder);
     function getPageOrder: QPrinterPageOrder;
+    procedure setPrintProgram(const AValue: WideString);
+    procedure setPrintRange(const AValue: QPrinterPrintRange);
     procedure setResolution(const AValue: Integer);
     function getResolution: Integer;
     function getNumCopies: Integer;
@@ -461,36 +475,21 @@ type
     destructor Destroy; override;
     function NewPage: Boolean;
     function Abort: Boolean;
-
-    {TODO: implement others .....
-    procedure QPrinter_setPrintProgram(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setPrintProgram';
-    procedure QPrinter_printProgram(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_printProgram';
-    procedure QPrinter_setDocName(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setDocName';
-    procedure QPrinter_docName(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_docName';
-    procedure QPrinter_setCreator(handle: QPrinterH; p1: PWideString); cdecl; external QtIntf name 'QPrinter_setCreator';
-    procedure QPrinter_creator(handle: QPrinterH; retval: PWideString); cdecl; external QtIntf name 'QPrinter_creator';
-
-    procedure QPrinter_setPaperSource(handle: QPrinterH; p1: QPrinterPaperSource); cdecl; external QtIntf name 'QPrinter_setPaperSource';
-    function QPrinter_paperSource(handle: QPrinterH): QPrinterPaperSource; cdecl; external QtIntf name 'QPrinter_paperSource';
-    procedure QPrinter_supportedResolutions(handle: QPrinterH; retval: PIntArray); cdecl; external QtIntf name 'QPrinter_supportedResolutions';
-    procedure QPrinter_setFontEmbeddingEnabled(handle: QPrinterH; enable: Boolean); cdecl; external QtIntf name 'QPrinter_setFontEmbeddingEnabled';
-    function QPrinter_fontEmbeddingEnabled(handle: QPrinterH): Boolean; cdecl; external QtIntf name 'QPrinter_fontEmbeddingEnabled';
-    procedure QPrinter_setDoubleSidedPrinting(handle: QPrinterH; enable: Boolean); cdecl; external QtIntf name 'QPrinter_setDoubleSidedPrinting';
-    function QPrinter_doubleSidedPrinting(handle: QPrinterH): Boolean; cdecl; external QtIntf name 'QPrinter_doubleSidedPrinting';
-    procedure QPrinter_paperRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_paperRect';
-    procedure QPrinter_pageRect(handle: QPrinterH; retval: PRect); cdecl; external QtIntf name 'QPrinter_pageRect';
+    procedure setFromPageToPage(Const AFromPage, AToPage: Integer);
+    function fromPage: Integer;
+    function toPage: Integer;
+    function PaintEngine: QPaintEngineH;
+    function PageRect: TRect;
+    function PaperRect: TRect;
+    function PrintEngine: QPrintEngineH;
     
-    function QPrinter_paintEngine(handle: QPrinterH): QPaintEngineH; cdecl; external QtIntf name 'QPrinter_paintEngine';
-    function QPrinter_printEngine(handle: QPrinterH): QPrintEngineH; cdecl; external QtIntf name 'QPrinter_printEngine';
-    procedure QPrinter_setFromTo(handle: QPrinterH; fromPage: Integer; toPage: Integer); cdecl; external QtIntf name 'QPrinter_setFromTo';
-    function QPrinter_fromPage(handle: QPrinterH): Integer; cdecl; external QtIntf name 'QPrinter_fromPage';
-    function QPrinter_toPage(handle: QPrinterH): Integer; cdecl; external QtIntf name 'QPrinter_toPage';
-    procedure QPrinter_setPrintRange(handle: QPrinterH; range: QPrinterPrintRange); cdecl; external QtIntf name 'QPrinter_setPrintRange';
-    function QPrinter_printRange(handle: QPrinterH): QPrinterPrintRange; cdecl; external QtIntf name 'QPrinter_printRange';
-    }
     property Collate: Boolean read getCollateCopies write setCollateCopies;
     property ColorMode: QPrinterColorMode read getColorMode write setColorMode;
+    property Creator: WideString read getCreator write setCreator;
+    property DocName: WideString read getDocName write setDocName;
+    property DoubleSidedPrinting: Boolean read getDoubleSidedPrinting write setDoubleSidedPrinting;
     property DeviceType: Integer read getDevType;
+    property FontEmbedding: Boolean read getFontEmbedding write setFontEmbedding;
     property FullPage: Boolean read getFullPage write setFullPage;
     property Handle: QPrinterH read FHandle;
     property Orientation: QPrinterOrientation read getOrientation write setOrientation;
@@ -498,8 +497,11 @@ type
     property OutputFileName: WideString read getOutputFileName write setOutputFileName;
     property PageOrder: QPrinterPageOrder read getPageOrder write setPageOrder;
     property PageSize: QPrinterPageSize read getPageSize write setPageSize;
+    property PaperSource: QPrinterPaperSource read getPaperSource write setPaperSource;
     property PrinterName: WideString read getPrinterName write setPrinterName;
+    property PrintRange: QPrinterPrintRange read getPrintRange write setPrintRange;
     property PrinterState: QPrinterPrinterState read getPrinterState;
+    property PrintProgram: WideString read getPrintProgram write setPrintProgram;
     property Resolution: Integer read getResolution write setResolution;
   end;
   
@@ -548,6 +550,7 @@ function CheckGDIObject(const AGDIObject: HGDIOBJ; const AMethodName: String; AP
 function CheckBitmap(const ABitmap: HBITMAP; const AMethodName: String; AParamName: String = ''): Boolean;
 //function CheckCursor(const ACursor: HCURSOR; const AMethodName: String; AParamName: String = ''): Boolean;
 
+function QtDefaultPrinter: TQtPrinter;
 function Clipboard: TQtClipboard;
 function QtDefaultContext: TQtDeviceContext;
 function QtScreenContext: TQtDeviceContext;
@@ -572,6 +575,7 @@ var
   FClipboard: TQtClipboard = nil;
   FDefaultContext: TQtDeviceContext = nil;
   FScreenContext: TQtDeviceContext = nil;
+  FPrinter: TQtPrinter = nil;
 
 {------------------------------------------------------------------------------
   Name:    CheckGDIObject
@@ -2117,6 +2121,13 @@ begin
   WriteLn(' Empty=',Ok,' Rect=', dbgs(R));
 end;
 
+function QtDefaultPrinter: TQtPrinter;
+begin
+  if FPrinter = nil then
+    FPrinter := TQtPrinter.Create;
+  Result := FPrinter;
+end;
+
 function Clipboard: TQtClipboard;
 begin
   if FClipboard = nil then
@@ -2679,9 +2690,35 @@ begin
   Result := QPrinter_colorMode(FHandle);
 end;
 
+function TQtPrinter.getCreator: WideString;
+var
+  Str: WideString;
+begin
+  QPrinter_creator(FHandle, @Str);
+  Result := UTF8Encode(Str);
+end;
+
 function TQtPrinter.getDevType: Integer;
 begin
   Result := QPrinter_devType(FHandle);
+end;
+
+function TQtPrinter.getDocName: WideString;
+var
+  Str: WideString;
+begin
+  QPrinter_docName(FHandle, @Str);
+  Result := UTF8Encode(Str);
+end;
+
+function TQtPrinter.getDoubleSidedPrinting: Boolean;
+begin
+  Result := QPrinter_doubleSidedPrinting(FHandle);
+end;
+
+function TQtPrinter.getFontEmbedding: Boolean;
+begin
+  Result := QPrinter_fontEmbeddingEnabled(FHandle);
 end;
 
 function TQtPrinter.getFullPage: Boolean;
@@ -2694,9 +2731,32 @@ begin
   QPrinter_setOutputFormat(FHandle, AValue);
 end;
 
+procedure TQtPrinter.setPaperSource(const AValue: QPrinterPaperSource);
+begin
+  QPrinter_setPaperSource(FHandle, AValue);
+end;
+
 function TQtPrinter.getOutputFormat: QPrinterOutputFormat;
 begin
   Result := QPrinter_outputFormat(FHandle);
+end;
+
+function TQtPrinter.getPaperSource: QPrinterPaperSource;
+begin
+  Result := QPrinter_paperSource(FHandle);
+end;
+
+function TQtPrinter.getPrintProgram: WideString;
+var
+  Str: WideString;
+begin
+  QPrinter_printProgram(FHandle, @Str);
+  Result := UTF8Encode(Str);
+end;
+
+function TQtPrinter.getPrintRange: QPrinterPrintRange;
+begin
+  Result := QPrinter_printRange(FHandle);
 end;
 
 procedure TQtPrinter.setCollateCopies(const AValue: Boolean);
@@ -2709,29 +2769,67 @@ begin
   QPrinter_setColorMode(FHandle, AValue);
 end;
 
+procedure TQtPrinter.setCreator(const AValue: WideString);
+var
+  Str: WideString;
+begin
+  Str := GetUtf8String(AValue);
+  QPrinter_setCreator(FHandle, @Str);
+end;
+
+procedure TQtPrinter.setDocName(const AValue: WideString);
+var
+  Str: WideString;
+begin
+  Str := GetUtf8String(AValue);
+  QPrinter_setDocName(FHandle, @Str);
+end;
+
+procedure TQtPrinter.setDoubleSidedPrinting(const AValue: Boolean);
+begin
+  QPrinter_setDoubleSidedPrinting(FHandle, AValue);
+end;
+
+procedure TQtPrinter.setFontEmbedding(const AValue: Boolean);
+begin
+  QPrinter_setFontEmbeddingEnabled(FHandle, AValue);
+end;
+
 procedure TQtPrinter.setFullPage(const AValue: Boolean);
 begin
   QPrinter_setFullPage(FHandle, AValue);
 end;
 
 procedure TQtPrinter.setPrinterName(const AValue: WideString);
+var
+  Str: WideString;
 begin
-  QPrinter_setPrinterName(FHandle, @AValue);
+  Str := GetUtf8String(AValue);
+  QPrinter_setPrinterName(FHandle, @Str);
 end;
 
 function TQtPrinter.getPrinterName: WideString;
+var
+  Str: WideString;
 begin
-  QPrinter_printerName(FHandle, @Result);
+  QPrinter_printerName(FHandle, @Str);
+  Result := UTF8Encode(Str);
 end;
 
 procedure TQtPrinter.setOutputFileName(const AValue: WideString);
+var
+  Str: WideString;
 begin
-  QPrinter_setOutputFileName(FHandle, @AValue);
+  Str := GetUtf8String(AValue);
+  QPrinter_setOutputFileName(FHandle, @Str);
 end;
 
 function TQtPrinter.getOutputFileName: WideString;
+var
+  Str: WideString;
 begin
-  QPrinter_outputFileName(FHandle, @Result);
+  QPrinter_outputFileName(FHandle, @Str);
+  Result := UTF8Encode(Str);
 end;
 
 procedure TQtPrinter.setOrientation(const AValue: QPrinterOrientation);
@@ -2762,6 +2860,19 @@ end;
 function TQtPrinter.getPageOrder: QPrinterPageOrder;
 begin
   Result := QPrinter_pageOrder(FHandle);
+end;
+
+procedure TQtPrinter.setPrintProgram(const AValue: WideString);
+var
+  Str: WideString;
+begin
+  Str := GetUtf8String(AValue);
+  QPrinter_setPrintProgram(FHandle, @Str);
+end;
+
+procedure TQtPrinter.setPrintRange(const AValue: QPrinterPrintRange);
+begin
+  QPrinter_setPrintRange(FHandle, AValue);
 end;
 
 procedure TQtPrinter.setResolution(const AValue: Integer);
@@ -2797,6 +2908,41 @@ end;
 function TQtPrinter.Abort: Boolean;
 begin
   Result := QPrinter_abort(FHandle);
+end;
+
+procedure TQtPrinter.setFromPageToPage(const AFromPage, AToPage: Integer);
+begin
+  QPrinter_setFromTo(FHandle, AFromPage, AToPage);
+end;
+
+function TQtPrinter.fromPage: Integer;
+begin
+  Result := QPrinter_fromPage(FHandle);
+end;
+
+function TQtPrinter.toPage: Integer;
+begin
+  Result := QPrinter_toPage(FHandle);
+end;
+
+function TQtPrinter.PaintEngine: QPaintEngineH;
+begin
+  Result := QPrinter_paintEngine(FHandle);
+end;
+
+function TQtPrinter.PageRect: TRect;
+begin
+  QPrinter_pageRect(FHandle, @Result);
+end;
+
+function TQtPrinter.PaperRect: TRect;
+begin
+  QPrinter_paperRect(FHandle, @Result);
+end;
+
+function TQtPrinter.PrintEngine: QPrintEngineH;
+begin
+  Result := QPrinter_printEngine(FHandle);
 end;
 
 
