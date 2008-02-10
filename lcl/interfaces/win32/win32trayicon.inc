@@ -125,8 +125,6 @@ begin
   // Destroys the helper Windows
   PostMessage(ATrayIcon.Handle, WM_CLOSE, 0, 0);
   PostMessage(ATrayIcon.Handle, WM_DESTROY, 0, 0);
-
-  Application.ProcessMessages;
 end;
 
 {*******************************************************************
