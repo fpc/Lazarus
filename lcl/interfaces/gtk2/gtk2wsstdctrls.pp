@@ -256,10 +256,23 @@ type
 
   { TGtk2WSButton }
 
-  TGtk2WSButton = class(TWSButton)
+  TGtk2WSButton = class(TGtkWSButton)
   private
   protected
+    class function  GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
+    class function  GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
+    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
+
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
+    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
+    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
   { TGtk2WSCustomCheckBox }
@@ -1468,6 +1481,159 @@ begin
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
 
+{ TGtk2WSButton }
+
+class function TGtk2WSButton.GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
+begin
+  Result := PGtkButton(PGtkBin(AEventBox)^.child);
+end;
+
+class function TGtk2WSButton.GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
+begin
+  Result := PGtkLabel(PGtkBin(GetButtonWidget(AEventBox))^.child);
+end;
+
+{
+  Under Gtk 2 we need to put a GtkEventBox under the GtkButton, because a
+  GtkButton has no window and that causes the Z-Order to be wrong.
+}
+class function TGtk2WSButton.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Button: TCustomButton;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+  EventBox, BtnWidget: PGtkWidget;
+begin
+  Button := AWinControl as TCustomButton;
+
+  { Creates the container control for the button, the EventBox }
+  EventBox := gtk_event_box_new;
+  Result := TLCLIntfHandle(PtrUInt(EventBox));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(EventBox,'button');
+  {$ENDIF}
+
+  { Creates the button and inserts it into the EventBox }
+  BtnWidget := gtk_button_new_with_label('button');
+  gtk_container_add(PGtkContainer(EventBox), BtnWidget);
+  gtk_widget_show_all(EventBox);
+  gtk_event_box_set_visible_window(PGtkEventBox(EventBox), False);
+
+  { This commented commands can be used if we have event-related
+    problems because of the EventBox }
+//  gtk_widget_add_events(EventBox, GDK_ALL_EVENTS_MASK);
+//  gtk_event_box_set_above_child(PGtkEventBox(EventBox), True);
+
+  { The WidgetInfo is important for the form designer }
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
+  WidgetInfo^.CoreWidget := EventBox;
+  WidgetInfo^.ClientWidget := BtnWidget;
+//  gtk_object_set_data(PGtkObject(Result), 'widgetinfo', WidgetInfo);
+  SetMainWidget(EventBox, BtnWidget);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(EventBox, @Allocation);
+
+  { Some events need to be on the EventBox, others need to be on the button,
+    so for now we just assign everything for both to be sure }
+  Set_RC_Name(AWinControl, EventBox);
+  SetCallbacks(BtnWidget, WidgetInfo);
+  SetCallbacks(EventBox, WidgetInfo);
+end;
+
+class function TGtk2WSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
+begin
+  // The button text is static, so let the LCL fallback to FCaption
+  Result := False;
+end;
+
+class procedure TGtk2WSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetDefault')
+  then Exit;
+
+  if ADefault
+  and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(AButton.Handle))) then
+    //gtk_widget_grab_default(pgtkwidget(handle))
+  else begin
+    {DebugLn('LM_BTNDEFAULT_CHANGED ',TCustomButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
+      ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
+      ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
+      ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
+      '');}
+    //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+  end;
+end;
+
+class procedure TGtk2WSButton.SetShortcut(const AButton: TCustomButton;
+  const OldShortcut, NewShortcut: TShortcut);
+begin
+  if not WSCheckHandleAllocated(AButton, 'SetShortcut')
+  then Exit;
+
+  // gtk2: shortcuts are handled by the LCL
+end;
+
+class procedure TGtk2WSButton.SetText(const AWinControl: TWinControl; const AText: String);
+var
+  BtnWidget: PGtkButton;
+  LblWidget: PGtkLabel;
+begin
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
+  then Exit;
+
+  BtnWidget := GetButtonWidget(PGtkEventBox(AWinControl.Handle));
+  LblWidget := PGtkLabel(PGtkBin(BtnWidget)^.Child);
+
+  if LblWidget = nil
+  then begin
+    Assert(False, Format('trace: [WARNING] Button %s(%s) has no label', [AWinControl.Name, AWinControl.ClassName]));
+    LblWidget := PGtkLabel(gtk_label_new(''));
+    gtk_container_add(PGtkContainer(BtnWidget), PGtkWidget(LblWidget));
+  end;
+
+  Gtk2WidgetSet.SetLabelCaption(LblWidget, AText);
+end;
+
+class procedure TGtk2WSButton.SetColor(const AWinControl: TWinControl);
+var
+  BtnWidget: PGTKWidget;
+begin
+  BtnWidget := PGTKWidget(GetButtonWidget(PGtkEventBox(AWinControl.Handle)));
+  Gtk2WidgetSet.SetWidgetColor(BtnWidget, clNone, AWinControl.color,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+end;
+
+class procedure TGtk2WSButton.SetFont(const AWinControl: TWinControl;
+  const AFont : TFont);
+var
+  LblWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit;
+
+  LblWidget := PGtkWidget(GetLabelWidget(PGtkEventBox(AWinControl.Handle)));
+
+  if (LblWidget <> nil) then
+  begin
+    Gtk2WidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
+end;
+
+class procedure TGtk2WSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
+  //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1490,7 +1656,7 @@ initialization
 //  RegisterWSComponent(TCustomLabel, TGtk2WSCustomLabel);
 //  RegisterWSComponent(TLabel, TGtk2WSLabel);
 //  RegisterWSComponent(TButtonControl, TGtk2WSButtonControl);
-//  RegisterWSComponent(TCustomButton, TGtk2WSButton);
+  RegisterWSComponent(TCustomButton, TGtk2WSButton);
 //  RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
   RegisterWSComponent(TCustomCheckBox, TGtk2WSCustomCheckBox);
 //  RegisterWSComponent(TToggleBox, TGtk2WSToggleBox);

@@ -267,6 +267,7 @@ type
      TODO: move it to TGtkPrivateButton}
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
 
+    {$ifdef Gtk1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -278,6 +279,7 @@ type
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    {$endif Gtk1}
   end;
 
   { TGtkWSCustomCheckBox }
@@ -1419,6 +1421,15 @@ begin
   Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
 end;
 
+class procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+end;
+
+{$IFDEF Gtk1}
 
 class function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
@@ -1468,14 +1479,6 @@ begin
       '');}
     //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
   end;
-end;
-
-class procedure TGtkWSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
-  const AWidgetInfo: PWidgetInfo);
-begin
-  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-
-  SignalConnect(AGtkWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
 end;
 
 class procedure TGtkWSButton.SetShortcut(const AButton: TCustomButton;
@@ -1551,6 +1554,8 @@ begin
                           WithThemeSpace);
   //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
+
+{$ENDIF Gtk1}
 
 { TGtkWSCustomCheckBox }
 
