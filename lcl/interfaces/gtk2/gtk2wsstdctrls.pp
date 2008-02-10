@@ -1538,10 +1538,7 @@ begin
   Allocation.Height := AParams.Height;
   gtk_widget_size_allocate(EventBox, @Allocation);
 
-  { Some events need to be on the EventBox, others need to be on the button,
-    so for now we just assign everything for both to be sure }
   Set_RC_Name(AWinControl, EventBox);
-  SetCallbacks(BtnWidget, WidgetInfo);
   SetCallbacks(EventBox, WidgetInfo);
 end;
 
