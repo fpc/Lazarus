@@ -2123,17 +2123,33 @@ begin
 end;
 
 procedure TCustomLazControlDocker.SetControl(const AValue: TControl);
+var
+  WinControl: TWinControl;
 begin
   if FControl=AValue then exit;
   if FControl<>nil then begin
     FControl.RemoveAllHandlersOfObject(Self);
     FControl.RemoveFreeNotification(Self);
+    if (Manager<>nil) and (FControl is TWinControl) then
+    begin
+      WinControl:=TWinControl(FControl);
+      WinControl.UseDockManager:=false;
+      WinControl.DockManager:=nil;
+    end;
   end;
   FControl:=AValue;
   if Control<>nil then begin
     Control.AddHandlerOnVisibleChanging(@ControlVisibleChanging);
     Control.AddHandlerOnVisibleChanged(@ControlVisibleChanged);
     Control.FreeNotification(Self);
+    if (Manager<>nil) and (FControl is TWinControl) then
+    begin
+      {$IFDEF EnableAnchorDockManager}
+      WinControl:=TWinControl(FControl);
+      WinControl.DockManager:=Manager.Manager;
+      WinControl.UseDockManager:=true;
+      {$ENDIF}
+    end;
   end;
   if (DockerName='') and (FControl<>nil) then
     DockerName:=FControl.Name;
@@ -2167,14 +2183,34 @@ end;
 { TCustomLazDockingManager }
 
 procedure TCustomLazDockingManager.Remove(Docker: TCustomLazControlDocker);
+var
+  WinControl: TWinControl;
 begin
+  if Docker.Control is TWinControl then
+  begin
+    WinControl:=TWinControl(Docker.Control);
+    WinControl.UseDockManager:=false;
+    WinControl.DockManager:=nil;
+  end;
   FDockers.Remove(Docker);
 end;
 
 function TCustomLazDockingManager.Add(Docker: TCustomLazControlDocker): Integer;
+{$IFDEF EnableAnchorDockManager}
+var
+  WinControl: TWinControl;
+{$ENDIF}
 begin
   Docker.DockerName:=CreateUniqueName(Docker.DockerName,nil);
   Result:=FDockers.Add(Docker);
+  if Docker.Control is TWinControl then
+  begin
+    {$IFDEF EnableAnchorDockManager}
+    WinControl:=TWinControl(Docker.Control);
+    WinControl.DockManager:=Manager;
+    WinControl.UseDockManager:=true;
+    {$ENDIF}
+  end;
 end;
 
 function TCustomLazDockingManager.GetDockers(Index: Integer

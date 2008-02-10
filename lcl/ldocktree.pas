@@ -229,14 +229,15 @@ type
     property TitleHeight: integer read FTitleHeight write FTitleHeight default 20;
     procedure UpdateTitlePosition(Control: TControl);
 
-    procedure LoadFromStream(Stream: TStream); override;// not implemented
-    procedure PaintSite(DC: HDC); override;// not implemented
+    procedure PaintSite(DC: HDC); override;
+    procedure MouseMessage(var Msg: TLMMouse); override;// not implemented
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;// not implemented
     procedure ResetBounds(Force: Boolean); override;// not implemented
-    procedure SaveToStream(Stream: TStream); override;// not implemented
     procedure SetReplacingControl(Control: TControl); override;// not implemented
-    
+    procedure LoadFromStream(Stream: TStream); override;// not implemented
+    procedure SaveToStream(Stream: TStream); override;// not implemented
+
     // ToDo: move this to protected, after dockig code from LDockCtrl was moved
     // here.
     function CreateForm: TLazDockForm;
@@ -2487,7 +2488,7 @@ end;
 
 procedure TCustomAnchoredDockManager.PaintSite(DC: HDC);
 begin
-  RaiseGDBException('TCustomAnchoredDockManager.PaintSite TODO');
+  // drawing of titles is done by TLazDockForm
 end;
 
 procedure TCustomAnchoredDockManager.PositionDockRect(Client, DropCtl: TControl;
@@ -2514,6 +2515,11 @@ end;
 procedure TCustomAnchoredDockManager.SetReplacingControl(Control: TControl);
 begin
   RaiseGDBException('TCustomAnchoredDockManager.SetReplacingControl TODO');
+end;
+
+procedure TCustomAnchoredDockManager.MouseMessage(var Msg: TLMMouse);
+begin
+
 end;
 
 function TCustomAnchoredDockManager.CreateForm: TLazDockForm;
