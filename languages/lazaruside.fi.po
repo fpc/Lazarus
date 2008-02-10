@@ -166,15 +166,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "&Backward search"
-msgstr ""
+msgstr "Taaksepäin"
 
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "&Case Sensitive"
-msgstr ""
+msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:lisfindfilecasesensitive
 msgid "&Case sensitive"
-msgstr ""
+msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:lisclose
 msgid "&Close"
@@ -206,7 +206,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "&Entire Scope"
-msgstr ""
+msgstr "Ulottuvuuden alkukohta"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -214,7 +214,7 @@ msgstr "&Tiedosto"
 
 #: lazarusidestrconsts:lismenufind2
 msgid "&Find ..."
-msgstr ""
+msgstr "Etsi"
 
 #: lazarusidestrconsts:uemfinddeclaration
 msgid "&Find Declaration"
@@ -222,11 +222,11 @@ msgstr "&Etsi määrittely"
 
 #: lazarusidestrconsts:dlgfromcursor
 msgid "&From Cursor"
-msgstr ""
+msgstr "Kohdistimen osoittama kohta"
 
 #: lazarusidestrconsts:dlgglobal
 msgid "&Global"
-msgstr ""
+msgstr "Kaikki"
 
 #: lazarusidestrconsts:uemgotobookmark
 msgid "&Goto Bookmark"
@@ -258,7 +258,7 @@ msgstr "&Projekti"
 
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "&Prompt On Replace"
-msgstr ""
+msgstr "Kysy vielä muutoksille vahvistusta"
 
 #: lazarusidestrconsts:liswlproperties
 msgid "&Properties"
@@ -266,19 +266,19 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "&Regular Expressions"
-msgstr ""
+msgstr "Säännölliset lausekkeet"
 
 #: lazarusidestrconsts:lisfindfileregularexpressions
 msgid "&Regular expressions"
-msgstr ""
+msgstr "Säännölliset lausekkeet"
 
 #: lazarusidestrconsts:rsremove
 msgid "&Remove"
-msgstr ""
+msgstr "Poista"
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "&Replace ..."
-msgstr ""
+msgstr "Etsi ja korvaa..."
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -298,7 +298,7 @@ msgstr "&Etsi"
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "&Selected Text"
-msgstr ""
+msgstr "Valittu teksti"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
@@ -318,15 +318,15 @@ msgstr "&Näytä"
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "&View Source"
-msgstr ""
+msgstr "Näytä lähdekoodi"
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "&Whole Words Only"
-msgstr ""
+msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts:lisfindfilewholewordsonly
 msgid "&Whole words only"
-msgstr ""
+msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -510,7 +510,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgaddassignmentoperator
 msgid "Add assignment operator :="
-msgstr ""
+msgstr "Lisää := operaattori (saa arvokseen) "
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
@@ -2030,7 +2030,7 @@ msgstr "Kopio valittu leikepöydälle"
 
 #: lazarusidestrconsts:lisvertoclipboard
 msgid "Copy version information to clipboard"
-msgstr ""
+msgstr "Kopio versiotieto leikepöydälle"
 
 #: lazarusidestrconsts:dlgcopywordatcursoroncopynone
 msgid "Copy word on copy none"
@@ -3478,11 +3478,11 @@ msgstr "Lomakkeet..."
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forwar&d search"
-msgstr ""
+msgstr "Eteenpäin"
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
-msgstr ""
+msgstr "Eteenpäin"
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -8666,7 +8666,7 @@ msgstr "Seuraavien komponenttipakettien lataaminen epäonnistui:"
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or you can ignore the missing units and comment them out."
-msgstr ""
+msgstr "Seuraavia käännösyksiköitä (unit) ei löydetty:%s%s%s%s1) Joko nämä käännösyksiköt eivät olleet hakupolussa jolloin keskeytä ja korjaa  hakupolut sekä yritä uudelleen.%s2) Tai voit ohittaa puuttuvat käännösyksiköt ja kommentoida ne pois käytöstä."
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
@@ -10546,15 +10546,15 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfilesearchallopenfiles
 msgid "search all &open files"
-msgstr ""
+msgstr "Hae kaikista avoinna olevista tiedostoista"
 
 #: lazarusidestrconsts:lisfindfilesearchallfilesinproject
 msgid "search all files in &project"
-msgstr ""
+msgstr "Hae projektin kaikista tiedostoista"
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in &directories"
-msgstr ""
+msgstr "Etsi kansioista"
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
