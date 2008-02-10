@@ -1444,6 +1444,7 @@ docs/xml/lcl/maskedit.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/masks.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/menus.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/pairsplitter.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/popupnotifier.xml svneol=native#text/plain
 docs/xml/lcl/postscriptcanvas.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/postscriptprinter.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/printers.xml svneol=LF#text/xml eol=lf
