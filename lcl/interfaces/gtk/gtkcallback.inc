@@ -1605,7 +1605,7 @@ begin
   {$IFDEF VerboseMouseBugfix}
   debugln('[gtkMouseBtnPressAfter] ',
     DbgSName(TObject(Data)),
-    ' Widget=',DbgS(Widget), ' ', gtk_type_name(Widget^.theObject.klass^.thetype),
+    ' Widget=',DbgS(Widget), ' ', GetWidgetClassName(Widget),
     ' ',dbgs(TruncToInt(Event^.X)),',',dbgs(TruncToInt(Event^.Y)));
   {$ENDIF}
 
