@@ -6996,8 +6996,9 @@ end;
 function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   Result := true;
+  DebugLn(['TWinControl.DoUnDockClientMsg ',DbgSName(Self),' ',DbgSName(Client),' ',DbgSName(Client.Parent)]);
   if FUseDockManager and (FDockManager <> nil) then
-    FDockManager.RemoveControl(Client)
+    FDockManager.RemoveControl(Client);
 end;
 
 {------------------------------------------------------------------------------

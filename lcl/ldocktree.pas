@@ -213,8 +213,6 @@ type
     procedure DeleteDockForm(ADockForm: TLazDockForm);
     function GetAnchorDepth(AControl: TControl; Side: TAnchorKind): Integer;
     function GetPreferredTitlePosition(AWidth, AHeight: integer): TAnchorKind;
-    procedure OnLazDockFormDragOver(Sender, Source: TObject; X, Y: Integer;
-                                    State: TDragState; var Accept: Boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -1521,32 +1519,6 @@ end;
 
 { TCustomAnchoredDockManager }
 
-procedure TCustomAnchoredDockManager.OnLazDockFormDragOver(Sender,
-  Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
-var
-  Form: TLazDockForm;
-  DragCtrlObj: TDragControlObject;
-  SrcForm: TLazDockForm;
-begin
-  Accept:=false;
-  //DebugLn(['TCustomAnchoredDockManager.CustomAnchoredDockManagerDragOver ',DbgSName(Sender),' ',DbgSName(Source)]);
-  if not (Sender is TLazDockForm) then exit;
-  Form:=TLazDockForm(Sender);
-  if Form.Owner<>FOwnerComponent then exit;
-  if (Source is TDragControlObject) then
-  begin
-    DragCtrlObj:=TDragControlObject(Source);
-    if DragCtrlObj.Control is TLazDockForm then
-    begin
-      SrcForm:=TLazDockForm(DragCtrlObj.Control);
-    end else
-      exit;
-    if SrcForm.Owner<>FOwnerComponent then exit;
-  end else
-    exit;
-  Accept:=true;
-end;
-
 procedure TCustomAnchoredDockManager.DeleteSideSplitter(Splitter: TLazDockSplitter;
   Side: TAnchorKind; NewAnchorControl: TControl);
 var
@@ -2591,7 +2563,10 @@ end;
 function TCustomAnchoredDockManager.CreateForm: TLazDockForm;
 begin
   Result:=TLazDockForm.Create(FOwnerComponent);
-  Result.OnDragOver:=@OnLazDockFormDragOver;
+  {$IFDEF EnableAnchorDockManager}
+  Result.DockManager:=Self;
+  Result.UseDockManager:=true;
+  {$ENDIF}
 end;
 
 procedure TCustomAnchoredDockManager.ReplaceAnchoredControl(OldControl,

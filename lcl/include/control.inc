@@ -3490,9 +3490,16 @@ function TControl.ManualFloat(TheScreenRect: TRect;
 var
   FloatHost: TWinControl;
 begin
-  // undock from old floating host dock site
-  Result := (HostDockSite=nil)
-            or HostDockSite.DoUndock(nil,Self,KeepDockSiteSize);
+  DebugLn(['TControl.ManualFloat ',DbgSName(Self)]);
+  // undock from old host dock site
+  if HostDockSite=nil then
+  begin
+    Result := true;
+    if Parent<>nil then
+      Parent.DoUndockClientMsg(nil,Self);
+  end else begin
+    Result := HostDockSite.DoUndock(nil,Self,KeepDockSiteSize);
+  end;
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);

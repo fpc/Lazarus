@@ -1116,9 +1116,9 @@ type
     function ManualDock(NewDockSite: TWinControl;
                         DropControl: TControl = nil;
                         ControlSide: TAlign = alNone;
-                        KeepDockSiteSize: Boolean = true): Boolean;
+                        KeepDockSiteSize: Boolean = true): Boolean; dynamic;
     function ManualFloat(TheScreenRect: TRect;
-                         KeepDockSiteSize: Boolean = true): Boolean;
+                         KeepDockSiteSize: Boolean = true): Boolean; dynamic;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
                            DropControl: TControl; ControlSide: TAlign): Boolean;
     function Dragging: Boolean;
@@ -1561,9 +1561,6 @@ type
     procedure DoChildSizingChange(Sender: TObject); virtual;
     procedure ResizeDelayedAutoSizeChildren; virtual;
     function CanTab: Boolean; override;
-    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT; override;
-    function DoDockClientMsg(DragDockObject: TDragDockObject; Position: TPoint): boolean; virtual;
-    function DoUndockClientMsg(NewTarget, Client: TControl):boolean; virtual;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure DoSendShowHideToInterface; virtual;
@@ -1613,7 +1610,12 @@ type
     procedure CNSysKeyUp(var Message: TLMKeyUp); message CN_SYSKEYUP;
     procedure CNChar(var Message: TLMKeyUp); message CN_CHAR;
   protected
-    // drag and drop
+    // drag and drop/dock
+    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
+                       ADragObject: TDragObject; ATarget:
+                       TControl; ADocking: Boolean): LRESULT; override;
+    function DoDockClientMsg(DragDockObject: TDragDockObject; Position: TPoint): boolean; virtual;
+    function DoUndockClientMsg(NewTarget, Client: TControl):boolean; virtual;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
                        State: TDragState; var Accept: Boolean); dynamic;
