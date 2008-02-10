@@ -5457,16 +5457,16 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <element name="TCustomTrayIcon">
         <short>
-          <i>TCustomTrayIcon </i>- the base class for <i>TTrayIcon</i>, a small symbol that resides in the tray at the bottom of the computer screen</short>
+          <i>TCustomTrayIcon </i>- the base class for <i>TTrayIcon</i>, a multiplatform System Tray component.</short>
       </element>
       <element name="TTrayIcon">
         <short>
-          <i>TTrayIcon</i> - a small symbol that resides in the tray at the bottom of the computer screen and signifies an application that is inactive but ready to be activated</short>
+          <i>TTrayIcon</i> is a multiplatform System Tray component. It adds an icon to the tray and signifies an application that is inactive but ready to be activated. Under Windows the System tray is usually located on the bottom-right corner of the screen, but it may be elsewhere. On other operating systems this position varies.</short>
       </element>
       <element name="TCustomTrayIcon.Create">
         <short>Creates a new instance of the component.</short>
         <descr>
-          <var>Create</var> creates a new instance of a <var>TComponent</var> class.
+          <var>Create</var> creates a new instance of a <var>TCustomTrayIcon</var> class.
 If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to 
 insert itself in the list of owned components of the owner.
 </descr>
@@ -5483,17 +5483,17 @@ After that, the parent's destroy method is called.
 </descr>
       </element>
       <element name="TCustomTrayIcon.Hide">
-        <short>Hide - render the control invisbile</short>
+        <short>Hide - Removes the icon from the System Tray</short>
       </element>
       <element name="TCustomTrayIcon.Show">
-        <short>Show - make the control visible</short>
+        <short>Show - Shows the icon on the System Tray</short>
       </element>
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
-          <i>ShowBalloonHint</i> - display a smal hinting balloon when the mouse hovers over the Icon</short>
+          <i>ShowBalloonHint</i> displays a smal balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an imediate response. The Ballon window disappears after <i>BallonHintTimeout</i> milliseconds of when the user clicks it or it's close button.</short>
       </element>
       <element name="TCustomTrayIcon.GetPosition">
-        <short>Find the position of the mouse and thus the position to display the hinting balloon</short>
+        <short>Find the position of the Tray Icon and thus a position suitable to display the hinting BalloonHint. Under Windows an approximate location is detected.</short>
       </element>
       <element name="TCustomTrayIcon.BalloonFlags">
         <short>the set of kinds of ballon flag that can be displayed (may be None, Info, Warning or Error)</short>
@@ -5508,7 +5508,7 @@ After that, the parent's destroy method is called.
         <short>The title to be shown on the hinting balloon</short>
       </element>
       <element name="TCustomTrayIcon.Canvas">
-        <short>The canvas on which the icon is to be painted</short>
+        <short>The canvas of the Tray Icon</short>
       </element>
       <element name="TCustomTrayIcon.PopUpMenu">
         <short>PopUpMenu - a small menu popup that is displayed when right mouse button is clicked over icon - separate from hint balloon</short>
@@ -5517,16 +5517,16 @@ After that, the parent's destroy method is called.
         <short>The Icon or picture that is to be displayed</short>
       </element>
       <element name="TCustomTrayIcon.Hint">
-        <short>A simple hint as an alternative to the balloon hint</short>
+        <short>A simple hint that is shown when the mouse hovers over the icon.</short>
       </element>
       <element name="TCustomTrayIcon.ShowIcon">
-        <short>If True, Tray Icon is to be displayed</short>
+        <short>Determines if <i>Icon</i> should be painted to the System Tray. This can be set to false if one wishes to instead paint to the Canvas of the Tray Icon.</short>
       </element>
       <element name="TCustomTrayIcon.Visible">
-        <short>Icon is visible</short>
+        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <i>Visible</i> has the same effect as calling Hide or Show.</short>
       </element>
       <element name="TCustomTrayIcon.OnClick">
-        <short>Event Handler for Mouse Click on control</short>
+        <short>Event Handler for Mouse Click on Tray Icon</short>
       </element>
       <element name="TCustomTrayIcon.OnDblClick">
         <short>Event handler for mouse double-click</short>
@@ -5537,14 +5537,11 @@ After that, the parent's destroy method is called.
       <element name="TCustomTrayIcon.OnMouseUp">
         <short>Event handler if mouse button is up</short>
       </element>
-      <element name="TCustomTrayIcon.OnMEvent">
-        <short>Event handleer if mouse button is up</short>
-      </element>
       <element name="TCustomTrayIcon.OnMouseMove">
         <short>Event handler for mouse movement</short>
       </element>
       <element name="TCustomTrayIcon.OnPaint">
-        <short>Event handler for painting canvas</short>
+        <short>Use this to implement custom drawing to the icon. Draw using the canvas property of the icon. Note: Does not work on win32. </short>
       </element>
       <element name="TTrayIcon.BalloonFlags">
         <short>The set of kinds of ballon flag that can be displayed (may be None, Info, Warning or Error)</short>
@@ -5565,13 +5562,13 @@ After that, the parent's destroy method is called.
         <short>The Icon or picture that is to be displayed</short>
       </element>
       <element name="TTrayIcon.Hint">
-        <short>A simple hint as an alternative to the balloon hint</short>
+        <short>A simple hint that is shown when the mouse hovers over the icon.</short>
       </element>
       <element name="TTrayIcon.Visible">
-        <short>Icon is visible</short>
+        <short>It is set to true when the icon is shown and remains true until Hide is called. Setting <i>Visible</i> has the same effect as calling Hide or Show.</short>
       </element>
       <element name="TTrayIcon.OnClick">
-        <short>Event Handler for Mouse Click on control</short>
+        <short>Event Handler for Mouse Click on Tray Icon</short>
       </element>
       <element name="TTrayIcon.OnDblClick">
         <short>Event handler for mouse double-click</short>
@@ -5586,7 +5583,7 @@ After that, the parent's destroy method is called.
         <short>Event handler for mouse movement</short>
       </element>
       <element name="TTrayIcon.OnPaint">
-        <short>Event handler for painting canvas</short>
+        <short>Use this to implement custom drawing to the icon. Draw using the canvas property of the icon. Note: Does not work on win32. </short>
       </element>
     </module>
     <!-- ExtCtrls -->
