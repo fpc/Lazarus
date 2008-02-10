@@ -757,6 +757,7 @@ begin
     Name:='ValueEdit';
     Visible:=false;
     Enabled:=false;
+    AutoSize:=false;
     SetBounds(0,-30,80,25); // hidden
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
@@ -773,6 +774,7 @@ begin
     Name:='ValueComboBox';
     Visible:=false;
     Enabled:=false;
+    AutoSize:=false;
     SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
