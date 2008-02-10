@@ -261,6 +261,7 @@ type
   protected
     class function  GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
     class function  GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -1481,6 +1482,16 @@ begin
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
 
+function GtkWSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  Msg: TLMessage;
+begin
+  Result := CallBackDefaultReturn;
+  if AInfo^.ChangeLock > 0 then Exit;
+  Msg.Msg := LM_CLICKED;
+  Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
+end;
+
 { TGtk2WSButton }
 
 class function TGtk2WSButton.GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
@@ -1491,6 +1502,13 @@ end;
 class function TGtk2WSButton.GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
 begin
   Result := PGtkLabel(PGtkBin(GetButtonWidget(AEventBox))^.child);
+end;
+
+class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  SignalConnect(AWidgetInfo^.ClientWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
 end;
 
 {
@@ -1506,6 +1524,7 @@ var
   EventBox, BtnWidget: PGtkWidget;
 begin
   Button := AWinControl as TCustomButton;
+  //DebugLn(['TGtk2WSButton.CreateHandle ',dbgsName(Button)]);
 
   { Creates the container control for the button, the EventBox }
   EventBox := gtk_event_box_new;
@@ -1529,6 +1548,7 @@ begin
   WidgetInfo := CreateWidgetInfo(Pointer(Result), Button, AParams);
   WidgetInfo^.CoreWidget := EventBox;
   WidgetInfo^.ClientWidget := BtnWidget;
+  //DebugLn(['TGtk2WSButton.CreateHandle ',GetWidgetInfo(EventBox)=WidgetInfo,' ',GetWidgetInfo(EventBox)^.ClientWidget=BtnWidget]);
 //  gtk_object_set_data(PGtkObject(Result), 'widgetinfo', WidgetInfo);
   SetMainWidget(EventBox, BtnWidget);
 
