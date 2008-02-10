@@ -512,7 +512,7 @@ begin
   // ToDo: find out how to create a fully working hidden Notebook style widget
 
   if (NBWidget=nil) then begin
-    Result:=inherited GetNotebookMinTabHeight(AWinControl);
+    Result:=TWSCustomNotebook.GetNotebookMinTabHeight(AWinControl);
     exit;
   end;
   debugln('TGtkWSCustomNotebook.GetNotebookMinTabHeight NBWidget: ',GetWidgetDebugReport(NBWidget),
@@ -546,7 +546,7 @@ end;
 class function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
-  Result:=inherited GetNotebookMinTabWidth(AWinControl);
+  Result:=TWSCustomNotebook.GetNotebookMinTabWidth(AWinControl);
 end;
 
 class function TGtkWSCustomNotebook.GetTabIndexAtPos(

@@ -230,6 +230,7 @@ var
   MainWidget: PGtkWidget;
 begin
   Result := CallBackDefaultReturn;
+  //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
 
   if Data=nil then ;
   {$IFDEF EventTrace}
@@ -258,6 +259,7 @@ begin
       //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
       //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
       if (TheWinControl<>nil) then begin
+        //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
@@ -268,7 +270,8 @@ begin
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
 
         if (ClientWidget<>nil) and (GetControlWindow(ClientWidget)<>nil)
-        and (ClientWidget^.Window<>Widget^.Window) then begin
+        and (GetControlWindow(ClientWidget)<>GetControlWindow(Widget)) then begin
+          //DebugLn(['gtkRealizeAfterCB ClientWindow<>Window']);
           NewEventMask:=gdk_window_get_events(GetControlWindow(ClientWidget))
                         or WinWidgetInfo^.EventMask;
           {$IFNDEF Gtk1}

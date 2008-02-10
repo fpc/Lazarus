@@ -3475,9 +3475,9 @@ end;
 
 procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
 begin
-	{$ifdef GridTraceMsg}
-	TransMsg('GRID: ', TheMessage);
-	{$endif}
+  {$ifdef GridTraceMsg}
+  TransMsg('GRID: ', TheMessage);
+  {$endif}
   case TheMessage.Msg of
     LM_HSCROLL, LM_VSCROLL:
       if csDesigning in ComponentState then

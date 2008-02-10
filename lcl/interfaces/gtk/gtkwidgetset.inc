@@ -3780,7 +3780,16 @@ begin
   {$else}
   // Fixed w/o GdkWindow
   Result := gtk_event_box_new;
-  gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
+  { MG: Normally the event box should be made invisible as suggested
+    here: http://library.gnome.org/devel/gtk/stable/GtkEventBox.html#gtk-event-box-set-visible-window
+    But is has a sideeffect:
+    Sometimes the mouse events for gtk widgets without window don't get any
+    mouse events any longer.
+    For example: Add a PageControl (Page3, Page4) into a PageControl (Page1,Page2).
+    Start program. Click on Page2, which hides the inner PageControl. Then
+    click to return to Page1. Now the inner PageControl does no longer
+    receive mouse events and so you can not switch between Page3 and Page4.}
+  // MG: disabled: gtk_event_box_set_visible_window(PGtkEventBox(Result), False);
   TempWidget := CreateFixedClientWidget(False);
   {$ifend}
   
@@ -3793,6 +3802,10 @@ begin
   end;
   SetFixedWidget(Result, TempWidget);
   SetMainWidget(Result, TempWidget);
+  
+  // MG: should fix the invisible event box, but does not:
+  // gtk_widget_add_events (PGtkWidget(Result), GDK_BUTTON_PRESS_MASK);
+  
   gtk_widget_show(Result);
 end;
 
