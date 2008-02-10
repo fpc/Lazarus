@@ -299,6 +299,7 @@ type
     class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
     class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
     class procedure PerformMouseUp(AControl: TControl; APart: TLazDockHeaderPart);
+    class procedure PerformMouseDown(AControl: TControl; APart: TLazDockHeaderPart);
   end;
   
 class function TDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
@@ -451,11 +452,7 @@ end;
 class procedure TDockHeader.PerformMouseUp(AControl: TControl;
   APart: TLazDockHeaderPart);
 begin
-  // user left clicked on header
   case APart of
-    ldhpAll, ldhpCaption:
-      // mouse down on not buttons => start drag
-      AControl.BeginDrag(True);
     ldhpRestoreButton:
       AControl.ManualDock(nil, nil, alNone);
     ldhpCloseButton:
@@ -464,6 +461,16 @@ begin
       else
         // not a form => doesnot have close => just hide
         AControl.Visible := False;
+  end;
+end;
+
+class procedure TDockHeader.PerformMouseDown(AControl: TControl;
+  APart: TLazDockHeaderPart);
+begin
+  case APart of
+    ldhpAll, ldhpCaption:
+      // mouse down on not buttons => start drag
+      AControl.BeginDrag(True);
   end;
 end;
 
@@ -1455,7 +1462,11 @@ begin
             CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
             TDockHeader.PerformMouseUp(DockSite.Controls[i], Part);
           end;
-        LM_LBUTTONDOWN,
+        LM_LBUTTONDOWN:
+          begin
+            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
+            TDockHeader.PerformMouseDown(DockSite.Controls[i], Part);
+          end;
         LM_MOUSEMOVE:
             CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
       end;
@@ -2765,9 +2776,18 @@ end;
 
 procedure TLazDockForm.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
+var
+  Part: TLazDockHeaderPart;
+  Control: TControl;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   TrackMouse(X, Y);
+  if Button = mbLeft then
+  begin
+    Control := FindHeader(X, Y, Part);
+    if (Control <> nil) then
+      TDockHeader.PerformMouseDown(Control, Part);
+  end;
 end;
 
 procedure TLazDockForm.MouseMove(Shift: TShiftState; X, Y: Integer);
