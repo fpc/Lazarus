@@ -216,7 +216,7 @@ const
   LM_RBUTTONDOWN       = $0204;
   LM_RBUTTONUP         = $0205;
   LM_RBUTTONDBLCLK     = $0206;
-  LM_MButtonDown       = $0207;
+  LM_MBUTTONDOWN       = $0207;
   LM_MBUTTONUP         = $0208;
   LM_MBUTTONDBLCLK     = $0209;
   LM_MOUSEWHEEL        = $020A;

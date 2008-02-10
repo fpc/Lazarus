@@ -32,7 +32,7 @@ interface
 uses
   Math, Types, Classes, SysUtils, LCLProc, LCLType, LCLStrConsts,
   Graphics, Controls, ExtCtrls, Forms, Menus, Themes, LCLIntf,
-  LMessages;
+  LMessages, LResources;
   
 type
   TLazDockPages = class;
@@ -57,12 +57,17 @@ type
     property Page: TLazDockPage read FPage write FPage;
   end;
 
-
+  TDockHeaderMouseState = record
+    Rect: TRect;
+    IsMouseDown: Boolean;
+  end;
+  
   { TLazDockTree }
 
   TLazDockTree = class(TDockTree)
   private
     FAutoFreeDockSite: boolean;
+    FMouseState: TDockHeaderMouseState;
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure AnchorDockLayout(Zone: TLazDockZone);
@@ -110,14 +115,20 @@ type
   TLazDockForm = class(TCustomForm)
   private
     FMainControl: TControl;
+    FMouseState: TDockHeaderMouseState;
     procedure SetMainControl(const AValue: TControl);
     procedure PaintWindow(DC: HDC); override;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
     function CloseQuery: boolean; override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer); override;
+    procedure MouseLeave; override;
+    procedure TrackMouse(X, Y: Integer);
   public
+    constructor Create(AOwner: TComponent); override;
     procedure UpdateCaption; virtual;
     function FindMainControlCandidate: TControl;
     function FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
@@ -286,8 +297,8 @@ type
   TDockHeader = class
     class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
     class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
-    class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
-    class procedure PerformMouseDown(AControl: TControl; APart: TLazDockHeaderPart);
+    class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
+    class procedure PerformMouseUp(AControl: TControl; APart: TLazDockHeaderPart);
   end;
   
 class function TDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
@@ -352,15 +363,39 @@ begin
   Result := ldhpAll;
 end;
 
-class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect);
+class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
+
+  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; IconName: String); inline;
+  const
+    // ------------- Pressed, Hot -----------------------
+    BtnDetail: array[Boolean, Boolean] of TThemedToolBar =
+    (
+     (ttbButtonNormal, ttbButtonHot),
+     (ttbButtonNormal, ttbButtonPressed)
+    );
+  var
+    Details: TThemedElementDetails;
+    AIcon: TBitmap;
+    dx, dy: integer;
+  begin
+    Details := ThemeServices.GetElementDetails(BtnDetail[IsMouseDown, IsMouseOver]);
+    ThemeServices.DrawElement(ACanvas.Handle, Details, ARect);
+    ARect := ThemeServices.ContentRect(ACanvas.Handle, Details, ARect);
+    AIcon := LoadBitmapFromLazarusResource(IconName);
+    dx := (ARect.Right - ARect.Left - AIcon.Width) div 2;
+    dy := (ARect.Bottom - ARect.Top - AIcon.Height) div 2;
+    ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, AIcon);
+    AIcon.Free;
+  end;
+  
 var
-  Details: TThemedElementDetails;
   BtnRect: TRect;
   DrawRect: TRect;
   TextStyle: TTextStyle;
   // LCL dont handle orientation in TFont
   OldFont, RotatedFont: HFONT;
   ALogFont: TLogFont;
+  IsMouseDown: Boolean;
 begin
   TextStyle.Alignment := taLeftJustify;
   TextStyle.SingleLine := True;
@@ -375,16 +410,16 @@ begin
   ACanvas.Brush.Color := clBtnShadow;
   ACanvas.FrameRect(DrawRect);
   InflateRect(DrawRect, -1, -1);
+  
+  IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 
   // draw close button
   BtnRect := GetRectOfPart(ARect, AOrientation, ldhpCloseButton);
-  Details := ThemeServices.GetElementDetails(twMDICloseButtonNormal);
-  ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), 'lcl_dock_close');
 
   // draw restore button
   BtnRect := GetRectOfPart(ARect, AOrientation, ldhpRestoreButton);
-  Details := ThemeServices.GetElementDetails(twMDIRestoreButtonNormal);
-  ThemeServices.DrawElement(ACanvas.Handle, Details, BtnRect);
+  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), 'lcl_dock_restore');
 
   // draw caption
   DrawRect := GetRectOfPart(ARect, AOrientation, ldhpCaption);
@@ -413,7 +448,7 @@ begin
   end;
 end;
 
-class procedure TDockHeader.PerformMouseDown(AControl: TControl;
+class procedure TDockHeader.PerformMouseUp(AControl: TControl;
   APart: TLazDockHeaderPart);
 begin
   // user left clicked on header
@@ -827,8 +862,12 @@ begin
 end;
 
 procedure TLazDockTree.PaintDockFrame(ACanvas: TCanvas; AControl: TControl; const ARect: TRect);
+var
+  Pt: TPoint;
 begin
-  TDockHeader.Draw(ACanvas, DockSite.GetDockCaption(AControl), AControl.DockOrientation, ARect);
+  GetCursorPos(Pt);
+  Pt := DockSite.ScreenToClient(Pt);
+  TDockHeader.Draw(ACanvas, DockSite.GetDockCaption(AControl), AControl.DockOrientation, ARect, Pt);
 end;
 
 procedure TLazDockTree.CreateDockLayoutHelperControls(Zone: TLazDockZone);
@@ -964,11 +1003,13 @@ end;
 
 constructor TLazDockTree.Create(TheDockSite: TWinControl);
 begin
+  FillChar(FMouseState, SizeOf(FMouseState), 0);
   SetDockZoneClass(TLazDockZone);
-  if TheDockSite=nil then begin
-    TheDockSite:=TLazDockForm.Create(nil);
-    TheDockSite.DockManager:=Self;
-    FAutoFreeDockSite:=true;
+  if TheDockSite = nil then
+  begin
+    TheDockSite := TLazDockForm.Create(nil);
+    TheDockSite.DockManager := Self;
+    FAutoFreeDockSite := True;
   end;
   inherited Create(TheDockSite);
 end;
@@ -1363,6 +1404,21 @@ begin
 end;
 
 procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
+
+  procedure CheckNeedRedraw(AControl: TControl; ARect: TRect; APart: TLazDockHeaderPart);
+  var
+    NewMouseState: TDockHeaderMouseState;
+  begin
+    ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart);
+    // we cannot directly redraw this part since we should paint only in paint events
+    NewMouseState.Rect := ARect;
+    NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
+    if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
+    begin
+      FMouseState := NewMouseState;
+      InvalidateRect(DockSite.Handle, @ARect, False);
+    end;
+  end;
 var
   i: integer;
   ARect: TRect;
@@ -1394,12 +1450,14 @@ begin
       // we have control here
       Part := TDockHeader.FindPart(ARect, Pt, DockSite.Controls[i].DockOrientation);
       case Msg.Msg of
-        LM_LBUTTONDOWN:
-          TDockHeader.PerformMouseDown(DockSite.Controls[i], Part);
-        LM_MOUSEMOVE:
+        LM_LBUTTONUP:
           begin
-            // track mouse move to draw hot button state
+            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
+            TDockHeader.PerformMouseUp(DockSite.Controls[i], Part);
           end;
+        LM_LBUTTONDOWN,
+        LM_MOUSEMOVE:
+            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
       end;
       // stop thurther processing
       Exit;
@@ -2612,6 +2670,7 @@ var
   i: Integer;
   Control: TControl;
   ACanvas: TCanvas;
+  Pt: TPoint;
 begin
   inherited PaintWindow(DC);
   ACanvas:=nil;
@@ -2627,7 +2686,9 @@ begin
         ACanvas := TCanvas.Create;
         ACanvas.Handle := DC;
       end;
-      TDockHeader.Draw(ACanvas, Control.Caption, GetTitleOrientation(Control), GetTitleRect(Control));
+      GetCursorPos(Pt);
+      Pt := ScreenToClient(Pt);
+      TDockHeader.Draw(ACanvas, Control.Caption, GetTitleOrientation(Control), GetTitleRect(Control), Pt);
     end;
   finally
     ACanvas.Free;
@@ -2686,19 +2747,67 @@ begin
     Result:=QueryForms(Self);
 end;
 
-procedure TLazDockForm.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+procedure TLazDockForm.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
   Part: TLazDockHeaderPart;
   Control: TControl;
 begin
-  inherited MouseDown(Button, Shift, X, Y);
+  inherited MouseUp(Button, Shift, X, Y);
+  TrackMouse(X, Y);
   if Button = mbLeft then
   begin
     Control := FindHeader(X, Y, Part);
     if (Control <> nil) then
-      TDockHeader.PerformMouseDown(Control, Part);
+      TDockHeader.PerformMouseUp(Control, Part);
   end;
+end;
+
+procedure TLazDockForm.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  TrackMouse(X, Y);
+end;
+
+procedure TLazDockForm.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  TrackMouse(X, Y);
+end;
+
+procedure TLazDockForm.MouseLeave;
+begin
+  inherited MouseLeave;
+  TrackMouse(-1, -1);
+end;
+
+procedure TLazDockForm.TrackMouse(X, Y: Integer);
+var
+  Control: TControl;
+  Part: TLazDockHeaderPart;
+  ARect: TRect;
+  NewState: TDockHeaderMouseState;
+begin
+  Control := FindHeader(X, Y, Part);
+  if (Control <> nil) then
+  begin
+    ARect := GetTitleRect(Control);
+    ARect := TDockHeader.GetRectOfPart(ARect, GetTitleOrientation(Control), Part);
+    NewState.Rect := ARect;
+    NewState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
+    if not CompareMem(@FMouseState, @NewState, SizeOf(NewState)) then
+    begin
+      FMouseState := NewState;
+      InvalidateRect(Handle, @ARect, False);
+    end;
+  end;
+end;
+
+constructor TLazDockForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FillChar(FMouseState, SizeOf(FMouseState), 0);
 end;
 
 procedure TLazDockForm.UpdateCaption;
@@ -2836,5 +2945,6 @@ end;
 
 initialization
   DefaultDockTreeClass := TLazDockTree;
+{$I lcl_dock_images.lrs}
 
 end.
