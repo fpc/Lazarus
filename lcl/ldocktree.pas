@@ -1670,7 +1670,9 @@ begin
   DebugLn('TCustomAnchoredDockManager.DeleteDockForm ADockForm=',DbgSName(ADockForm));
   if ADockForm.Parent<>nil then
     UndockControl(ADockForm,false);
-  ADockForm.Free;
+  ADockForm.DockManager:=nil;
+  ADockForm.UseDockManager:=false;
+  Application.ReleaseComponent(ADockForm);
 end;
 
 function TCustomAnchoredDockManager.GetAnchorDepth(AControl: TControl;
