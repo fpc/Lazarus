@@ -1875,13 +1875,13 @@ begin
             ParentDisabledAlign:=true;
             NewParent.BoundsRect:=DropCtl.BoundsRect;
             // move the WindowState to the new parent
-            if DropCtl is TCustomForm then begin
+            if DropCtl is TCustomForm then
+            begin
               NewParent.WindowState:=TCustomForm(DropCtl).WindowState;
               TCustomForm(DropCtl).WindowState:=wsNormal;
-              TCustomForm(DropCtl).BorderStyle:=bsNone;
             end;
             // first move DropCtl to the invsible parent, so changes do not cause flicker
-            DropCtl.Parent:=NewParent;
+            DropCtl.Dock(NewParent, Rect(0, 0, 0, 0));
             // init anchors of DropCtl
             DropCtl.Align:=alNone;
             DropCtl.AnchorClient(0);
@@ -2023,7 +2023,7 @@ begin
           DropCtlPage:=DockPages.Page[0];
           DropCtlPage.DisableAlign;
           try
-            DropCtl.Parent:=DropCtlPage;
+            DropCtl.Dock(DropCtlPage, Rect(0,0,0,0));
             DropCtl.AnchorClient(0);
           finally
             DropCtlPage.EnableAlign;
@@ -2039,10 +2039,7 @@ begin
         NewPage.DisableAlign;
         try
           if DropCtl is TCustomForm then
-          begin
             TCustomForm(DropCtl).WindowState:=wsNormal;
-            TCustomForm(DropCtl).BorderStyle:=bsNone;
-          end;
           Control.Dock(NewPage, Rect(0, 0, 0, 0));
           Control.AnchorClient(0);
         finally
