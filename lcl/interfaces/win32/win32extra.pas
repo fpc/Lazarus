@@ -47,15 +47,10 @@ type
   PNMCustomDraw=^TNMCustomDraw;
 
   TNMLVCustomDraw = record
-    hdr          : NMHDR;
-    dwDrawStage  : DWORD;
-    hdc          : HDC;
-    rc           : TRECT;
-    dwItemSpec   : DWORD;
-    uItemState   : UINT;
-    lItemlParam  : longint;
-    clrText,clrTextBk:COLORREF;
-    iSubItem     :longint;
+    nmcd         : TNMCustomDraw;
+    clrText      : COLORREF;
+    clrTextBk    : COLORREF;
+    iSubItem     : LongInt;
   end;
   PNMLVCustomDraw=^TNMLVCustomDraw;
 

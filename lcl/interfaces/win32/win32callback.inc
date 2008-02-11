@@ -948,8 +948,8 @@ var
     ResultFlag: TCustomDrawResultFlag;
   begin
     lmNotify.result := CDRF_DODEFAULT;
-    WinProcess := false;
-    case DrawInfo^.dwDrawStage and $7 of //Get drawing state
+    WinProcess := False;
+    case DrawInfo^.nmcd.dwDrawStage and $7 of //Get drawing state
       CDDS_PREPAINT:  Stage := cdPrePaint;
       CDDS_POSTPAINT: Stage := cdPostPaint;
       CDDS_PREERASE:  Stage := cdPreErase;
@@ -958,18 +958,17 @@ var
       Exit;
     end;
 
-    case DrawInfo^.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of
-      0: begin //Whole control
-        DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.rc);
-      end;
-      CDDS_ITEM: begin
-        DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.dwItemSpec, -1, ConvState(DrawInfo^.uItemState), nil);
-      end;
-      CDDS_SUBITEM: begin
-        // subitem 0 is handled by dtItem
-        if DrawInfo^.iSubItem = 0 then Exit;
-        DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.dwItemSpec, DrawInfo^.iSubItem, ConvState(DrawInfo^.uItemState), nil);
-      end;
+    case DrawInfo^.nmcd.dwDrawStage and (CDDS_ITEM or CDDS_SUBITEM) of
+      0:
+        DrawResult := ALV.IntfCustomDraw(dtControl, Stage, -1, -1, [], @DrawInfo^.nmcd.rc); //Whole control
+      CDDS_ITEM:
+        DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec, -1, ConvState(DrawInfo^.nmcd.uItemState), nil);
+      CDDS_SUBITEM:
+        begin
+          // subitem 0 is handled by dtItem
+          if DrawInfo^.iSubItem = 0 then Exit;
+          DrawResult := ALV.IntfCustomDraw(dtItem, Stage, DrawInfo^.nmcd.dwItemSpec, DrawInfo^.iSubItem, ConvState(DrawInfo^.nmcd.uItemState), nil);
+        end;
     else
       Exit;
     end;
