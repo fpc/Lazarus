@@ -94,6 +94,16 @@ type
   end;
 
 
+  { TCommentComplexCMacros (for C header files)
+    Comment macros that contains whole functions }
+
+  TCommentComplexCMacros = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { TReplaceUnitFilenameWithUnitName -
     Replace "unit filename;" with "unit name;" }
 
@@ -299,7 +309,8 @@ type
     phReplaceEdgedBracketPairWithStar, // Replace [] with *
     phReplaceMacro0PointerWithNULL, // Replace macro values 0 pointer like (char *)0
     phConvertFunctionTypesToPointers, // Convert function types to pointers
-    phConvertEnumsToTypeDef// Convert anonymous enums to ypedef enums
+    phConvertEnumsToTypeDef, // Convert anonymous enums to ypedef enums
+    phCommentComplexCMacros // Comment macros too complex for hpas
     );
   TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
 const
@@ -3627,6 +3638,8 @@ begin
              TConvertFunctionTypesToPointers,Result) then exit;
   if not Run(phConvertEnumsToTypeDef,
              TConvertEnumsToTypeDef,Result) then exit;
+  if not Run(phCommentComplexCMacros,
+             TCommentComplexCMacros,Result) then exit;
   Result:=mrOk;
 end;
 
@@ -4414,6 +4427,101 @@ begin
     LastAtomStart:=AtomStart;
   until false;
   
+  if Changed then
+    aText.Source:=Src;
+  Result:=mrOk;
+end;
+
+{ TCommentComplexCMacros }
+
+class function TCommentComplexCMacros.ClassDescription: string;
+begin
+  Result:='Comment macros that are too complex for h2pas';
+end;
+
+function TCommentComplexCMacros.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  SrcLen: Integer;
+
+  function DefineIsTooComplex(StartPos, EndPos: integer): boolean;
+  // h2pas has problems with
+  // - backslash + newline
+  // - whole functions { }
+  begin
+    while (StartPos<EndPos) do begin
+      if Src[StartPos]='{' then begin
+        // this macro is a whole function => too complex
+        exit(true);
+      end;
+      if (Src[StartPos] in [#10,#13]) then begin
+        // this macro uses multiple lines => too complex
+        exit(true);
+      end;
+      inc(StartPos);
+    end;
+    Result:=false;
+  end;
+
+var
+  Changed: Boolean;
+  p: Integer;
+  AtomStart: Integer;
+
+  procedure AdjustAfterReplace(var APosition: integer;
+    FromPos, ToPos, NewLength: integer);
+  begin
+    if APosition<FromPos then
+      exit
+    else if APosition<ToPos then
+      APosition:=FromPos
+    else
+      inc(APosition,NewLength-(FromPos-ToPos));
+  end;
+
+  procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+  begin
+    DebugLn(['TConvertEnumsToTypeDef.Execute.Replace ',FromPos,'-',ToPos,' NewSrc="',NewSrc,'"']);
+    Src:=copy(Src,1,FromPos-1)+NewSrc+copy(Src,ToPos,length(Src));
+    AdjustAfterReplace(p,FromPos,ToPos,length(NewSrc));
+    AdjustAfterReplace(AtomStart,FromPos,ToPos,length(NewSrc));
+    Changed:=true;
+  end;
+  
+var
+  DefineStart: LongInt;
+  DefineEnd: LongInt;
+  ValueStart: LongInt;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Changed:=false;
+  Src:=aText.Source;
+  SrcLen:=length(Src);
+  p:=1;
+  AtomStart:=1;
+  repeat
+    ReadRawNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then break;
+    if (Src[AtomStart]='#') and (AtomStart<SrcLen) then begin
+      // pragma found
+      if CompareCIdentifiers(@Src[AtomStart+1],'define')=0 then begin
+        // #define found
+        DefineStart:=AtomStart;
+        inc(p,length('define'));
+        ValueStart:=p;
+        ReadTilCLineEnd(Src,p);
+        DefineEnd:=p;
+        if DefineIsTooComplex(ValueStart,DefineEnd) then begin
+          // IMPORTANT: insert in reverse order
+          Replace(DefineEnd,DefineEnd,'*/');
+          Replace(DefineStart,DefineStart,'/*');
+        end;
+      end;
+    end;
+  until false;
+
   if Changed then
     aText.Source:=Src;
   Result:=mrOk;
