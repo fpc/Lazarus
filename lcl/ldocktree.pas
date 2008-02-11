@@ -1426,8 +1426,10 @@ procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
     if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
     begin
+      if not CompareMem(@FMouseState.Rect, @NewMouseState.Rect, SizeOf(NewMouseState.Rect)) then
+        InvalidateRect(DockSite.Handle, @FMouseState.Rect, False);
       FMouseState := NewMouseState;
-      InvalidateRect(DockSite.Handle, @ARect, False);
+      InvalidateRect(DockSite.Handle, @NewMouseState.Rect, False);
     end;
   end;
 var
@@ -2821,19 +2823,21 @@ var
   Control: TControl;
   Part: TLazDockHeaderPart;
   ARect: TRect;
-  NewState: TDockHeaderMouseState;
+  NewMouseState: TDockHeaderMouseState;
 begin
   Control := FindHeader(X, Y, Part);
   if (Control <> nil) then
   begin
     ARect := GetTitleRect(Control);
     ARect := TDockHeader.GetRectOfPart(ARect, GetTitleOrientation(Control), Part);
-    NewState.Rect := ARect;
-    NewState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
-    if not CompareMem(@FMouseState, @NewState, SizeOf(NewState)) then
+    NewMouseState.Rect := ARect;
+    NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
+    if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
     begin
-      FMouseState := NewState;
-      InvalidateRect(Handle, @ARect, False);
+      if not CompareMem(@FMouseState.Rect, @NewMouseState.Rect, SizeOf(NewMouseState.Rect)) then
+        InvalidateRect(Handle, @FMouseState.Rect, False);
+      FMouseState := NewMouseState;
+      InvalidateRect(Handle, @NewMouseState.Rect, False);
     end;
   end;
 end;
