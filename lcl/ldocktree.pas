@@ -2118,6 +2118,7 @@ var
     OldParentControl: TWinControl;
     NewBounds: TRect;
     NewOrigin: TPoint;
+    OtherControl: TControl;
   begin
     try
       if Float then begin
@@ -2136,6 +2137,20 @@ var
         ParentControl:=nil;
         //DebugLn('DoFinallyForParent EnableAlign for ',DbgSName(OldParentControl));
         OldParentControl.EnableAlign;
+        
+        // check if the remaining is a TLazDockForm with only one child
+        if (OldParentControl is TLazDockForm)
+        and (OldParentControl.ControlCount=1) then
+        begin
+          OtherControl:=OldParentControl.Controls[0];
+          if (OtherControl is TWinControl)
+          and (TWinControl(OtherControl).UseDockManager)
+          and (TWinControl(OtherControl).DockManager=Self)
+          then begin
+            UndockControl(OtherControl,true);
+          end;
+        end;
+
         //OldParentControl.WriteLayoutDebugReport('X  ');
       end;
     end;
