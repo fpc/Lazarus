@@ -1489,9 +1489,7 @@ begin
   Result := CallBackDefaultReturn;
   if AInfo^.ChangeLock > 0 then Exit;
   Msg.Msg := LM_CLICKED;
-  DebugLn(['Gtk2WSButton_Clicked AAA1 ',GetWidgetDebugReport(AWidget)]);
   Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
-  DebugLn(['Gtk2WSButton_Clicked END ',dbgs(AWidget)]);
 end;
 
 { TGtk2WSButton }
