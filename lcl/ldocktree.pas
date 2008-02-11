@@ -166,6 +166,7 @@ type
     procedure SetActiveNotebookPageComponent(const AValue: TLazDockPage);
   protected
     function GetFloatingDockSiteClass: TWinControlClass; override;
+    procedure Change; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Page[Index: Integer]: TLazDockPage read GetNoteBookPage;
@@ -796,7 +797,7 @@ end;
 
 function TLazDockPages.GetActiveNotebookPageComponent: TLazDockPage;
 begin
-  Result:=TLazDockPage(ActivePageComponent);
+  Result:=TLazDockPage(inherited ActivePageComponent);
 end;
 
 function TLazDockPages.GetNoteBookPage(Index: Integer): TLazDockPage;
@@ -813,6 +814,12 @@ end;
 function TLazDockPages.GetFloatingDockSiteClass: TWinControlClass;
 begin
   Result:=TLazDockForm;
+end;
+
+procedure TLazDockPages.Change;
+begin
+  inherited Change;
+  TLazDockForm.UpdateMainControlInParents(Self);
 end;
 
 constructor TLazDockPages.Create(TheOwner: TComponent);
@@ -2737,7 +2744,7 @@ procedure TLazDockForm.UpdateMainControl;
 var
   NewMainControl: TControl;
 begin
-  if FMainControl=nil then begin
+  if (FMainControl=nil) or (not FMainControl.IsVisible) then begin
     NewMainControl:=FindMainControlCandidate;
     if NewMainControl<>nil then
       MainControl:=NewMainControl;
@@ -2858,11 +2865,17 @@ end;
 
 class procedure TLazDockForm.UpdateMainControlInParents(StartControl: TControl
   );
+var
+  Form: TLazDockForm;
 begin
   while StartControl<>nil do begin
-    if (StartControl is TLazDockForm)
-    and (TLazDockForm(StartControl).MainControl=nil) then
-      TLazDockForm(StartControl).UpdateMainControl;
+    if (StartControl is TLazDockForm) then
+    begin
+      Form:=TLazDockForm(StartControl);
+      if (Form.MainControl=nil)
+      or (not Form.MainControl.IsVisible) then
+        Form.UpdateMainControl;
+    end;
     StartControl:=StartControl.Parent;
   end;
 end;
@@ -2879,7 +2892,8 @@ var
   begin
     for i:=0 to ParentControl.ControlCount-1 do begin
       AControl:=ParentControl.Controls[i];
-      DebugLn(['FindCandidate ParentControl=',DbgSName(ParentControl),' AControl=',DbgSName(AControl)]);
+      //DebugLn(['FindCandidate ParentControl=',DbgSName(ParentControl),' AControl=',DbgSName(AControl)]);
+      if (not AControl.IsControlVisible) then continue;
       if ((AControl.Name<>'') or (AControl.Caption<>''))
       and (not (AControl is TLazDockForm))
       and (not (AControl is TLazDockSplitter))
