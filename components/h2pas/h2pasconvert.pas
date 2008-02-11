@@ -95,9 +95,19 @@ type
 
 
   { TCommentComplexCMacros (for C header files)
-    Comment macros that contains whole functions }
+    Comment macros that are too complex for h2pas }
 
   TCommentComplexCMacros = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
+  { TCommentComplexCFunctions (for C header files)
+    Comment functions that are too complex for h2pas }
+
+  TCommentComplexCFunctions = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
@@ -4482,7 +4492,7 @@ var
 
   procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
   begin
-    DebugLn(['TConvertEnumsToTypeDef.Execute.Replace ',FromPos,'-',ToPos,' NewSrc="',NewSrc,'"']);
+    //DebugLn(['TCommentComplexCMacros.Execute.Replace ',FromPos,'-',ToPos,' NewSrc="',NewSrc,'"']);
     Src:=copy(Src,1,FromPos-1)+NewSrc+copy(Src,ToPos,length(Src));
     AdjustAfterReplace(p,FromPos,ToPos,length(NewSrc));
     AdjustAfterReplace(AtomStart,FromPos,ToPos,length(NewSrc));
@@ -4514,10 +4524,126 @@ begin
         ReadTilCLineEnd(Src,p);
         DefineEnd:=p;
         if DefineIsTooComplex(ValueStart,DefineEnd) then begin
+          DebugLn(['TCommentComplexCMacros.Execute commenting macro "',dbgstr(copy(Src,DefineStart,DefineEnd-DefineStart)),'"']);
           // IMPORTANT: insert in reverse order
           Replace(DefineEnd,DefineEnd,'*/');
           Replace(DefineStart,DefineStart,'/*');
         end;
+      end;
+    end;
+  until false;
+
+  if Changed then
+    aText.Source:=Src;
+  Result:=mrOk;
+end;
+
+{ TCommentComplexCFunctions }
+
+class function TCommentComplexCFunctions.ClassDescription: string;
+begin
+  Result:='Comment functions that are too complex for h2pas';
+end;
+
+function TCommentComplexCFunctions.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  SrcLen: Integer;
+
+  function DefineIsTooComplex(StartPos, EndPos: integer): boolean;
+  // h2pas has problems with
+  // - backslash + newline
+  // - whole functions { }
+  begin
+    while (StartPos<EndPos) do begin
+      if Src[StartPos]='{' then begin
+        // this macro is a whole function => too complex
+        exit(true);
+      end;
+      if (Src[StartPos] in [#10,#13]) then begin
+        // this macro uses multiple lines => too complex
+        exit(true);
+      end;
+      inc(StartPos);
+    end;
+    Result:=false;
+  end;
+
+var
+  Changed: Boolean;
+  p: Integer;
+  AtomStart: Integer;
+
+  procedure AdjustAfterReplace(var APosition: integer;
+    FromPos, ToPos, NewLength: integer);
+  begin
+    if APosition<FromPos then
+      exit
+    else if APosition<ToPos then
+      APosition:=FromPos
+    else
+      inc(APosition,NewLength-(FromPos-ToPos));
+  end;
+
+  procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+  begin
+    Src:=copy(Src,1,FromPos-1)+NewSrc+copy(Src,ToPos,length(Src));
+    AdjustAfterReplace(p,FromPos,ToPos,length(NewSrc));
+    AdjustAfterReplace(AtomStart,FromPos,ToPos,length(NewSrc));
+    Changed:=true;
+  end;
+
+  function ReadFunction: boolean;
+  var
+    FuncStart: LongInt;
+    FuncEnd: LongInt;
+  begin
+    Result:=false;
+    // a C function works like this:
+    // [modifiers, macros] type name(param list){ statements }
+    FuncStart:=AtomStart;
+    // read type
+    if not IsIdentStartChar[Src[AtomStart]] then exit;
+    ReadNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then exit;
+    // read name
+    if not IsIdentStartChar[Src[AtomStart]] then exit;
+    ReadNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then exit;
+    // read round bracket open
+    if Src[AtomStart]<>'(' then exit;
+    p:=AtomStart;
+    if not ReadTilCBracketClose(Src,p) then exit;
+    // read curly bracket open
+    ReadNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then exit;
+    if Src[AtomStart]<>'{' then exit;
+    p:=AtomStart;
+    if not ReadTilCBracketClose(Src,p) then exit;
+    // function found
+    FuncEnd:=p;
+    Result:=true;
+    DebugLn(['TCommentComplexCFunctions.Execute.ReadFunction ',copy(Src,FuncStart,FuncEnd-FuncStart)]);
+  end;
+
+var
+  OldP: LongInt;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Changed:=false;
+  Src:=aText.Source;
+  SrcLen:=length(Src);
+  p:=1;
+  AtomStart:=1;
+  repeat
+    ReadNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then break;
+    if IsIdentStartChar[Src[p]] then begin
+      OldP:=p;
+      if not ReadFunction then begin
+        p:=OldP;
       end;
     end;
   until false;
