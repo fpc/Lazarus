@@ -235,7 +235,7 @@ end;
 *                  the icon
 *
 *******************************************************************}
-function EnumChildProc(handle : HWND; lp : Longint): LongBool; stdcall;
+function EnumChildProc(handle : HWND; lp : LParam): LongBool; stdcall;
 var
   s : string;
   l : integer;
@@ -269,7 +269,7 @@ begin
   Windows.GetWindowRect(hWndTaskbar, @TaskbarRect);
 
   { Then we locate inside the Tray area, which is just a Toolbar control }
-  EnumChildWindows(hWndTaskbar, @EnumChildProc, Integer(hWndTray));
+  EnumChildWindows(hWndTaskbar, @EnumChildProc,LParam(hWndTray));
 
   if hWndTray = 0 then Exit;
 
