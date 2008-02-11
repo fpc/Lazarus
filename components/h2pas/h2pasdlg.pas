@@ -215,6 +215,7 @@ begin
   TextConverterToolClasses.RegisterClass(TReplaceEdgedBracketPairWithStar);
   TextConverterToolClasses.RegisterClass(TReplaceMacro0PointerWithNULL);
   TextConverterToolClasses.RegisterClass(TConvertFunctionTypesToPointers);
+  TextConverterToolClasses.RegisterClass(TConvertEnumsToTypeDef);
   TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
   TextConverterToolClasses.RegisterClass(TRemoveDoubleSemicolons);

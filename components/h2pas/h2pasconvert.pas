@@ -26,8 +26,8 @@ uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
   Forms, Controls, Dialogs, FileUtil, FileProcs, AVL_Tree,
   // CodeTools
-  CodeAtom, CodeTree, KeywordFuncLists, BasicCodeTools, CodeCache,
-  SourceChanger, CodeToolManager,
+  CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
+  CodeCache, SourceChanger, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
   IDEMsgIntf, IDETextConverter;
@@ -78,6 +78,16 @@ type
     Replace function types with pointer to function type }
 
   TConvertFunctionTypesToPointers = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
+  { TConvertEnumsToTypeDef  (for C header files)
+    Give anoymous enums a name }
+
+  TConvertEnumsToTypeDef = class(TCustomTextConverterTool)
   public
     class function ClassDescription: string; override;
     function Execute(aText: TIDETextConverter): TModalResult; override;
@@ -288,7 +298,8 @@ type
     phRemoveEmptyCMacrosTool, // Remove empty C macros
     phReplaceEdgedBracketPairWithStar, // Replace [] with *
     phReplaceMacro0PointerWithNULL, // Replace macro values 0 pointer like (char *)0
-    phConvertFunctionTypesToPointers // Convert function types to pointers
+    phConvertFunctionTypesToPointers, // Convert function types to pointers
+    phConvertEnumsToTypeDef// Convert anonymous enums to ypedef enums
     );
   TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
 const
@@ -3614,6 +3625,8 @@ begin
              TReplaceMacro0PointerWithNULL,Result) then exit;
   if not Run(phConvertFunctionTypesToPointers,
              TConvertFunctionTypesToPointers,Result) then exit;
+  if not Run(phConvertEnumsToTypeDef,
+             TConvertEnumsToTypeDef,Result) then exit;
   Result:=mrOk;
 end;
 
@@ -4284,6 +4297,125 @@ begin
       NeededPointerTypes.Free;
     end;
   end;
+  Result:=mrOk;
+end;
+
+{ TConvertEnumsToTypeDef }
+
+class function TConvertEnumsToTypeDef.ClassDescription: string;
+begin
+  Result:='Give anoymous c enums a typedef name';
+end;
+
+function TConvertEnumsToTypeDef.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Src: String;
+  SrcLen: Integer;
+  
+  function CreateEnumName(StartPos, EndPos: integer): string;
+  var
+    AtomStart: LongInt;
+  begin
+    Result:='';
+    AtomStart:=StartPos;
+    while StartPos<=EndPos do begin
+      ReadNextCAtom(Src,StartPos,AtomStart);
+      if AtomStart>SrcLen then exit;
+      if IsIdentStartChar[Src[AtomStart]] then begin
+        Result:=Result+copy(Src,AtomStart,StartPos-AtomStart);
+        if length(Result)>60 then exit;
+      end;
+    end;
+  end;
+
+var
+  p: Integer;
+  AtomStart: Integer;
+  LastAtomStart: LongInt;
+  Changed: Boolean;
+
+  procedure AdjustAfterReplace(var APosition: integer;
+    FromPos, ToPos, NewLength: integer);
+  begin
+    if APosition<FromPos then
+      exit
+    else if APosition<ToPos then
+      APosition:=FromPos
+    else
+      inc(APosition,NewLength-(FromPos-ToPos));
+  end;
+  
+  procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+  begin
+    DebugLn(['TConvertEnumsToTypeDef.Execute.Replace ',FromPos,'-',ToPos,' NewSrc="',NewSrc,'"']);
+    Src:=copy(Src,1,FromPos-1)+NewSrc+copy(Src,ToPos,length(Src));
+    AdjustAfterReplace(p,FromPos,ToPos,length(NewSrc));
+    AdjustAfterReplace(AtomStart,FromPos,ToPos,length(NewSrc));
+    AdjustAfterReplace(LastAtomStart,FromPos,ToPos,length(NewSrc));
+    Changed:=true;
+  end;
+  
+var
+  EnumStart: LongInt;
+  EnumEnd: LongInt;
+  EnumName: String;
+  BracketStart: LongInt;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Changed:=false;
+  Src:=aText.Source;
+  SrcLen:=length(Src);
+  p:=1;
+  AtomStart:=1;
+  LastAtomStart:=-1;
+  repeat
+    ReadNextCAtom(Src,p,AtomStart);
+    if p>SrcLen then break;
+    //DebugLn(['TConvertEnumsToTypeDef.Execute ',AtomStart,' "',dbgstr(copy(Src,AtomStart,p-AtomStart)),'"']);
+    case Src[AtomStart] of
+    'a'..'z','A'..'Z','_':
+      begin
+        // identifier
+        if (CompareCIdentifiers(@Src[AtomStart],'enum')=0)
+        and ((LastAtomStart<1)
+             or (CompareCIdentifiers(@Src[AtomStart],'typedef')<>0)) then
+        begin
+          // enum without typedef
+          DebugLn(['TConvertEnumsToTypeDef.Execute enum without typedef found']);
+          EnumStart:=AtomStart;
+          // read curly bracket open
+          ReadNextCAtom(Src,p,AtomStart);
+          if (AtomStart>SrcLen) or (Src[AtomStart]<>'{') then break;
+          BracketStart:=AtomStart;
+          // read til curly bracket close
+          if not ReadTilCBracketClose(Src,AtomStart) then break;
+          p:=AtomStart;
+          // read semicolon
+          ReadNextCAtom(Src,p,AtomStart);
+          if (AtomStart>SrcLen) or (Src[AtomStart]<>';') then break;
+          EnumEnd:=AtomStart;
+          DebugLn(['TConvertEnumsToTypeDef.Execute Enum block: ',copy(Src,EnumStart,EnumEnd-EnumStart)]);
+          // read enums to create a unique name
+          EnumName:=CreateEnumName(BracketStart,EnumEnd);
+          if EnumName='' then begin
+            // empty enum => remove
+            Replace(EnumStart,EnumEnd,'');
+          end else begin
+            // insert 'typedef' and name
+            // IMPORTANT: insert in reverse order
+            Replace(EnumEnd,EnumEnd,EnumName);
+            Replace(EnumStart,EnumStart,'typedef ');
+          end;
+        end;
+      end;
+    end;
+    LastAtomStart:=AtomStart;
+  until false;
+  
+  if Changed then
+    aText.Source:=Src;
   Result:=mrOk;
 end;
 
