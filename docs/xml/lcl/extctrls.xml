@@ -3204,14 +3204,15 @@
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TBevel.Paint">
-        <short/>
-        <descr/>
+        <short>Virtual <i>Paint</i> method called in response to paint requests.</short>
+        <descr>Virtual <i>Paint</i> method called in response to paint requests received by the parent control.
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBevel.Create">
-        <short/>
+        <short>Create a new instance of a Graphic Control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3222,59 +3223,89 @@
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBevel.Destroy">
-        <short/>
+        <short>Destroy this instance of a graphic control and return its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBevel.Invalidate">
-        <short/>
+        <short>Render this control non-valid</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Align">
-        <short/>
-        <descr/>
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Anchors">
-        <short/>
-        <descr/>
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.BorderSpacing">
-        <short/>
-        <descr/>
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Constraints">
-        <short/>
-        <descr/>
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Height">
-        <short/>
+        <short>
+          <i>Height</i> - the vertical dimension of the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Left">
-        <short/>
+        <short>
+          <i>Left</i> - the coordinate of the left edge of the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Name">
-        <short/>
-        <descr/>
+        <short>Name of the component.</short>
+        <descr>
+          <var>Name</var> is the name of the component. This name should be a valid
+identifier, i.e. must start with a letter, and can contain only letters,
+numbers and the underscore character. When attempting to set the name of a
+component, the name will be checked for validity. Furthermore, when a
+component is owned by another component, the name must be either empty
+or must be unique among the child component names.
+</descr>
         <seealso/>
+        <errors>Attempting to set the name to an invalid value will result in an exception
+being raised.
+</errors>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Shape">
@@ -3286,7 +3317,8 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Top">
-        <short/>
+        <short>
+          <i>Top</i> - the coordinates of the top edge of the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -3300,49 +3332,63 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Visible">
-        <short/>
-        <descr/>
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.Width">
-        <short/>
+        <short>
+          <i>Width </i>- the horizontal dimension of the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnChangeBounds">
-        <short/>
-        <descr/>
+        <short>Event handler for a change in bounds of the control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnResize">
-        <short/>
-        <descr/>
+        <short>Event Handler for resize of control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if control is re-sized.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnMouseDown">
-        <short/>
+        <short>Event handler for when a mouse button is pressed down</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within the current control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnMouseUp">
-        <short/>
+        <short>Event handler for when the mouse button is released, ie "up"</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBevel.OnPaint">
-        <short/>
+        <short>
+          <i>OnPaint</i> - event handler for request to paint canvas</short>
         <descr/>
         <seealso/>
       </element>
@@ -4364,7 +4410,7 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBoundLabel.Create">
-        <short/>
+        <short>Create a new instance of a Graphic Control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4375,84 +4421,86 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- property Visibility: public -->
       <element name="TBoundLabel.FocusControl">
-        <short/>
+        <short>
+          <i>FocusControl</i> - whether this control has focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Caption">
-        <short>Caption</short>
-        <descr>Caption : the caption which will appear on the Bound Label, to identify its function</descr>
+        <short>The Caption to be used for this label</short>
+        <descr>Caption : the caption which will appear on the Bound Label, to identify its function
+</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Color">
-        <short/>
+        <short>The Colour to be used for this label</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Height">
-        <short/>
+        <short>The height (vertical dimension) of the label</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Left">
-        <short/>
+        <short>The coordinates of the left border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.ParentColor">
-        <short/>
+        <short>The colour of the parent - should we stay the same?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.ParentFont">
-        <short/>
+        <short>Do we retain the font of the parent?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.ParentShowHint">
-        <short/>
+        <short>Do we use the same hinting rules as the parent?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.PopupMenu">
-        <short/>
+        <short>A popup menu to be shown if the right mouse button is clicked over this control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.ShowAccelChar">
-        <short/>
+        <short>Should accelerator character be displayed (underlined in label)?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.ShowHint">
-        <short/>
+        <short>Should hint be shown?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Top">
-        <short/>
+        <short>Coordinates of the top edge of the label</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.Layout">
-        <short/>
+        <short>Layout - is text at top, bottom, left or right of allocated rectangle?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.WordWrap">
-        <short/>
+        <short>WordWrap - do we wrap to the next line if text is too long to fit on one line?</short>
         <descr/>
         <seealso/>
       </element>
@@ -4464,31 +4512,31 @@ either right-click on the control to see the pop-up CheckGroup editor, or in the
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.OnClick">
-        <short/>
+        <short>Event Handler for mouse click</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.OnDblClick">
-        <short/>
+        <short>Event handler for mouse double-click</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.OnMouseDown">
-        <short/>
+        <short>Event handler for mouse button pressed over the label</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within label</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBoundLabel.OnMouseUp">
-        <short/>
+        <short>Event handler for mouse button being released ('up') within label</short>
         <descr/>
         <seealso/>
       </element>
@@ -5584,6 +5632,58 @@ After that, the parent's destroy method is called.
       </element>
       <element name="TTrayIcon.OnPaint">
         <short>Use this to implement custom drawing to the icon. Draw using the canvas property of the icon. Note: Does not work on win32. </short>
+      </element>
+      <element name="TBevel.Assign">
+        <short>Assign the contents of one class to another.</short>
+        <descr>
+          <p>
+            <var>Assign</var> copies the contents of <var>Source</var> to
+<var>Self</var>, if the classes of the destination and source classes are
+compatible.
+</p>
+          <p>The <var>TPersistent</var> implementation of <var>Assign</var> does nothing
+but calling the <link id="TPersistent.AssignTo">AssignTo</link> method of
+source. This means that if the destination class does not know how to assign
+the contents of the source class, the source class instance is asked to assign
+itself to the destination class. This means that it is necessary to
+implement only one of the two methods so that two classes can be assiged to
+one another.
+</p>
+          <remark>
+            <p>In general, a statement of the form
+</p>
+            <code>Destination:=Source;
+</code>
+            <p>(where <var>Destination</var> and <var>Source</var> are classes) does not 
+achieve the same as a statement of the form
+</p>
+            <code>Destination.Assign(Source);
+</code>
+            <p>After the former statement, both <var>Source</var> and
+<var>Destination</var> will point to the same object. The latter statemtent
+will copy the <i>contents</i> of the <var>Source</var> class to the
+<var>Destination</var> class.
+</p>
+          </remark>
+        </descr>
+      </element>
+      <element name="TBoundLabel.DragCursor">
+        <short>The type of cursor to be used if this control is being dragged</short>
+      </element>
+      <element name="TBoundLabel.DragMode">
+        <short>The mode of dragging to be used</short>
+      </element>
+      <element name="TBoundLabel.OnDragDrop">
+        <short>Event handler for Drag-drop process</short>
+      </element>
+      <element name="TBoundLabel.OnDragOver">
+        <short>Event handler if another control is dragged over current label</short>
+      </element>
+      <element name="TBoundLabel.OnEndDrag">
+        <short>event handler for end of drag manoeuvre</short>
+      </element>
+      <element name="TBoundLabel.OnStartDrag">
+        <short>Event handler for beginning of drag manoeuvre</short>
       </element>
     </module>
     <!-- ExtCtrls -->

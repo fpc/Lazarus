@@ -8901,7 +8901,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- constructor Visibility: public -->
       <element name="TCustomLabel.Create">
-        <short/>
+        <short>Create a new instance of a Graphic Control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8912,7 +8912,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLabel.CalcFittingFontHeight">
-        <short/>
+        <short>Calculate the height of the font needed to fit the available space, given the MaxWidth and MaxHeight constraints</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8966,7 +8966,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLabel.ColorIsStored">
-        <short/>
+        <short>Colour is stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8977,7 +8977,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomLabel.AdjustFontForOptimalFill">
-        <short/>
+        <short>If True, attempts to adjust font for an optimal fill of the space available</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8988,21 +8988,30 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomLabel.Paint">
-        <short/>
-        <descr/>
+        <short>Virtual <i>Paint</i> method called in response to paint requests.</short>
+        <descr>Virtual <i>Paint</i> method called in response to paint requests received by the parent control.
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabel.AutoSize">
-        <short/>
-        <descr/>
+        <short>Whether auto-size is to be used</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>AutoSize permits the size of a control to be adjusted automatically, for example a button can become bigger or smaller to accommodate a longer or shorter caption.</p>
+          <p>Reads logical (boolean) flag to see whether auto-sizing is to be operated, or writes the flag to say it should be done. Default is false, ie no auto-sizing</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomLabel.Color">
-        <short/>
-        <descr/>
+        <short>Determine the colour for the current control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
+          <p>The default colour is the same as the window in which the control is located.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
@@ -9018,15 +9027,31 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         </seealso>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Align"/>
+      <element name="TLabel.Align">
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Alignment">
-        <short/>
+        <short>
+          <i>Alignment </i>- whether text is centered, left- or right-justified</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Anchors"/>
+      <element name="TLabel.Anchors">
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.AutoSize">
         <short/>
@@ -9035,159 +9060,279 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.BidiMode">
-        <short/>
-        <descr/>
+        <short>
+          <i>TControlBiDiMode</i> - enabling bi-directional writing</short>
+        <descr>Allows Languages such as Arabic and Hebrew to be used
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.BorderSpacing">
-        <short/>
-        <descr/>
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Caption"/>
+      <element name="TLabel.Caption">
+        <short>
+          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+        <descr>
+          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
+          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+and the developer needs to set it explicitly to some new text.</p>
+          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+introduced. These functions interface with the LCLInterface. </p>
+          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Color">
-        <short/>
-        <descr/>
+        <short>Determine the colour for the current control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
+          <p>The default colour is the same as the window in which the control is located.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Constraints"/>
+      <element name="TLabel.Constraints">
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.DragCursor">
-        <short/>
+        <short>
+          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.DragMode">
-        <short/>
+        <short>
+          <i>DragMode </i>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Enabled">
-        <short/>
-        <descr/>
+        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.FocusControl">
-        <short/>
+        <short>
+          <i>FocusControl</i> - whether this control has focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Font">
-        <short/>
-        <descr/>
+        <short>The <i>Font</i> to be used for text in this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
+          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Layout">
-        <short/>
+        <short>
+          <i>Layout</i> - How the Text is to be laid out in the text rectangle: at the Bottom, Centre or Top</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ParentBidiMode">
-        <short/>
+        <short>
+          <i>ParentBiDiMode</i> - does the control follow the BiDiMode settings of its parent?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ParentColor">
-        <short/>
+        <short>
+          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ParentFont">
-        <short/>
+        <short>
+          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ParentShowHint">
-        <short/>
+        <short>
+          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.PopupMenu">
-        <short/>
-        <descr/>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ShowAccelChar">
-        <short/>
-        <descr/>
+        <short>
+          <i>ShowAccelChar</i> - underline the character in the label that acts as an accelerator with a shortcut key</short>
+        <descr>
+          <p>
+            <i>ShowAccelChar</i>
+
+
+
+ - underline the character in the label that acts as an accelerator with a shortcut key</p>
+          <p>Boolean property - default True</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.ShowHint">
-        <short/>
-        <descr/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.Transparent">
-        <short/>
+        <short>
+          <i>Transparent </i>- whether the viewer can see through the control. Default True</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.Visible"/>
+      <element name="TLabel.Visible">
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.WordWrap"/>
+      <element name="TLabel.WordWrap">
+        <short>
+          <i>WordWrap</i> - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</short>
+        <descr>
+          <p>
+            <i>WordWrap</i>
+
+
+
+ - whether a word is to be wrapped to the next line if the text is about to become too long for the width available</p>
+          <p>Boolean property, default False</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnClick"/>
+      <element name="TLabel.OnClick">
+        <short>Event Handler for mouse click</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          </p>
+          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnDblClick"/>
+      <element name="TLabel.OnDblClick">
+        <short>Event Handle for mouse double-click</short>
+        <descr>
+          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnDragDrop">
-        <short/>
+        <short>Event handler for the Drag-Drop manoeuvre</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnDragOver">
-        <short/>
+        <short>Event handler for the case when a control is dragged over another control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnEndDrag">
-        <short/>
+        <short>Event handler for the end of a dragging process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseDown"/>
+      <element name="TLabel.OnMouseDown">
+        <short>Event handler for when a mouse button is pressed down</short>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseMove"/>
+      <element name="TLabel.OnMouseMove">
+        <short>Event handler for mouse movement within the current control</short>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseUp"/>
+      <element name="TLabel.OnMouseUp">
+        <short>Event handler for when the mouse button is released, ie "up"</short>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseEnter"/>
+      <element name="TLabel.OnMouseEnter">
+        <short>Event handler for when the mouse enters the area of the current control</short>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnMouseLeave"/>
+      <element name="TLabel.OnMouseLeave">
+        <short>Event handler for when the mouse leaves the area of the current control</short>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnChangeBounds"/>
+      <element name="TLabel.OnChangeBounds">
+        <short>Event handler for a change in bounds of the control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads or Writes flag if bounds are changed</p>
+        </descr>
+      </element>
       <!-- property Visibility: published -->
-      <element name="TLabel.OnResize"/>
+      <element name="TLabel.OnResize">
+        <short>Event Handler for resize of control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads or Writes flag if control is re-sized.
+</descr>
+      </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OnStartDrag">
-        <short/>
+        <short>Event handler for start of dragging process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TLabel.OptimalFill">
-        <short/>
+        <short>
+          <i>OptimalFill </i>- boolean. If True, font size is adjusted for optimal fill of available space</short>
         <descr/>
         <seealso/>
       </element>
