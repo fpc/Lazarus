@@ -261,7 +261,7 @@ type
   protected
     class function  GetButtonWidget(AEventBox: PGtkEventBox): PGtkButton;
     class function  GetLabelWidget(AEventBox: PGtkEventBox): PGtkLabel;
-    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -1482,14 +1482,16 @@ begin
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
 end;
 
-function GtkWSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
+function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;
 var
   Msg: TLMessage;
 begin
   Result := CallBackDefaultReturn;
   if AInfo^.ChangeLock > 0 then Exit;
   Msg.Msg := LM_CLICKED;
+  DebugLn(['Gtk2WSButton_Clicked AAA1 ',GetWidgetDebugReport(AWidget)]);
   Result := DeliverMessage(AInfo^.LCLObject, Msg) = 0;
+  DebugLn(['Gtk2WSButton_Clicked END ',dbgs(AWidget)]);
 end;
 
 { TGtk2WSButton }
@@ -1508,7 +1510,7 @@ class procedure TGtk2WSButton.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
-  SignalConnect(AWidgetInfo^.ClientWidget, 'clicked', @GtkWSButton_Clicked, AWidgetInfo);
+  SignalConnect(AWidgetInfo^.ClientWidget, 'clicked', @Gtk2WSButton_Clicked, AWidgetInfo);
 end;
 
 {

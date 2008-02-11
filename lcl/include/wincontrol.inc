@@ -5869,7 +5869,11 @@ begin
 
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
-  FreeThenNil(FDockManager);
+  if (FDockManager<>nil) then
+    if FDockManager.AutoFreeByControl then
+      FreeThenNil(FDockManager)
+    else
+      FDockManager:=nil;
   FreeThenNil(FDockClients);
   FreeThenNil(FTabList);
   //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);

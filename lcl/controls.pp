@@ -464,6 +464,7 @@ type
     procedure ResetBounds(Force: Boolean); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure SetReplacingControl(Control: TControl); virtual; abstract;
+    function AutoFreeByControl: Boolean; virtual;
   end;
 
 
@@ -3327,6 +3328,13 @@ begin
   inherited Create(TheOwner);
   FDragImmediate := True;
   FDragThreshold := 5;
+end;
+
+{ TDockManager }
+
+function TDockManager.AutoFreeByControl: Boolean;
+begin
+  Result:=true;
 end;
 
 initialization

@@ -246,6 +246,7 @@ type
     procedure SetReplacingControl(Control: TControl); override;// not implemented
     procedure LoadFromStream(Stream: TStream); override;// not implemented
     procedure SaveToStream(Stream: TStream); override;// not implemented
+    function AutoFreeByControl: Boolean; override;
 
     // ToDo: move this to protected, after dockig code from LDockCtrl was moved
     // here.
@@ -2565,6 +2566,11 @@ end;
 procedure TCustomAnchoredDockManager.SaveToStream(Stream: TStream);
 begin
   RaiseGDBException('TCustomAnchoredDockManager.SaveToStream TODO');
+end;
+
+function TCustomAnchoredDockManager.AutoFreeByControl: Boolean;
+begin
+  Result:=false;
 end;
 
 procedure TCustomAnchoredDockManager.SetReplacingControl(Control: TControl);
