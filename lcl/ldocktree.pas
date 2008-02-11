@@ -2130,7 +2130,7 @@ var
         Control.ManualFloat(NewBounds);
         if Control.Parent<>nil then
           Control.AnchorClient(0);
-      end else begin
+      end else if Control.Parent=nil then begin
         Control.Anchors:=[akLeft,akTop];
         for a:=Low(TAnchorKind) to High(TAnchorKind) do
           Control.AnchorSide[a].Control:=nil;
