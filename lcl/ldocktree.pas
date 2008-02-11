@@ -1429,11 +1429,12 @@ procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
   begin
     ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart);
     // we cannot directly redraw this part since we should paint only in paint events
+    FillChar(NewMouseState,SizeOf(NewMouseState),0);
     NewMouseState.Rect := ARect;
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
     if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
     begin
-      if not CompareMem(@FMouseState.Rect, @NewMouseState.Rect, SizeOf(NewMouseState.Rect)) then
+      if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
         InvalidateRect(DockSite.Handle, @FMouseState.Rect, False);
       FMouseState := NewMouseState;
       InvalidateRect(DockSite.Handle, @NewMouseState.Rect, False);
@@ -2837,11 +2838,12 @@ begin
   begin
     ARect := GetTitleRect(Control);
     ARect := TDockHeader.GetRectOfPart(ARect, GetTitleOrientation(Control), Part);
+    FillChar(NewMouseState,SizeOf(NewMouseState),0);
     NewMouseState.Rect := ARect;
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
     if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
     begin
-      if not CompareMem(@FMouseState.Rect, @NewMouseState.Rect, SizeOf(NewMouseState.Rect)) then
+      if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
         InvalidateRect(Handle, @FMouseState.Rect, False);
       FMouseState := NewMouseState;
       InvalidateRect(Handle, @NewMouseState.Rect, False);
