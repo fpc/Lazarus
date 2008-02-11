@@ -121,6 +121,7 @@ type
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure InsertControl(AControl: TControl; Index: integer); override;
+    procedure UpdateMainControl;
     function CloseQuery: boolean; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -130,6 +131,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateCaption; virtual;
+    class procedure UpdateMainControlInParents(StartControl: TControl);
     function FindMainControlCandidate: TControl;
     function FindHeader(x, y: integer; out Part: TLazDockHeaderPart): TControl;
     function IsDockedControl(Control: TControl): boolean;
@@ -147,6 +149,8 @@ type
   private
     FDockZone: TDockZone;
     function GetPageControl: TLazDockPages;
+  protected
+    procedure InsertControl(AControl: TControl; Index: integer); override;
   public
     property DockZone: TDockZone read FDockZone;
     property PageControl: TLazDockPages read GetPageControl;
@@ -2657,6 +2661,12 @@ begin
   Result:=Parent as TLazDockPages;
 end;
 
+procedure TLazDockPage.InsertControl(AControl: TControl; Index: integer);
+begin
+  inherited InsertControl(AControl, Index);
+  TLazDockForm.UpdateMainControlInParents(Self);
+end;
+
 { TLazDockForm }
 
 procedure TLazDockForm.SetMainControl(const AValue: TControl);
@@ -2716,10 +2726,15 @@ begin
 end;
 
 procedure TLazDockForm.InsertControl(AControl: TControl; Index: integer);
+begin
+  inherited InsertControl(AControl, Index);
+  UpdateMainControl;
+end;
+
+procedure TLazDockForm.UpdateMainControl;
 var
   NewMainControl: TControl;
 begin
-  inherited InsertControl(AControl, Index);
   if FMainControl=nil then begin
     NewMainControl:=FindMainControlCandidate;
     if NewMainControl<>nil then
@@ -2837,6 +2852,17 @@ begin
     Caption:='';
 end;
 
+class procedure TLazDockForm.UpdateMainControlInParents(StartControl: TControl
+  );
+begin
+  while StartControl<>nil do begin
+    if (StartControl is TLazDockForm)
+    and (TLazDockForm(StartControl).MainControl=nil) then
+      TLazDockForm(StartControl).UpdateMainControl;
+    StartControl:=StartControl.Parent;
+  end;
+end;
+
 function TLazDockForm.FindMainControlCandidate: TControl;
 var
   BestLevel: integer;
@@ -2849,7 +2875,8 @@ var
   begin
     for i:=0 to ParentControl.ControlCount-1 do begin
       AControl:=ParentControl.Controls[i];
-      if (AControl.Name<>'')
+      DebugLn(['FindCandidate ParentControl=',DbgSName(ParentControl),' AControl=',DbgSName(AControl)]);
+      if ((AControl.Name<>'') or (AControl.Caption<>''))
       and (not (AControl is TLazDockForm))
       and (not (AControl is TLazDockSplitter))
       and (not (AControl is TLazDockPages))
