@@ -20,8 +20,8 @@ uses
   CodeToolManager, CustomCodeTool, PascalParserTool, PascalReaderTool,
   FindDeclarationTool, StdCodeTools, MethodJumpTool, EventCodeTool,
   CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
-  CodeTree, CodeAtom, SourceChanger, CodeToolMemManager, CodeCache,
-  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs,
+  NonPascalCodeTools, CodeTree, CodeAtom, SourceChanger, CodeToolMemManager,
+  CodeCache, KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs,
   CodeToolsStrConsts, DirectoryCacher,
   MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs, CacheCodeTools,
   // fast xml units, changes not merged in current fpc
