@@ -61,6 +61,14 @@ type
     Rect: TRect;
     IsMouseDown: Boolean;
   end;
+
+  TDockHeaderImageKind =
+  (
+    dhiRestore,
+    dhiClose
+  );
+  
+  TDockHeaderImages = array[TDockHeaderImageKind] of TBitmap;
   
   { TLazDockTree }
 
@@ -68,6 +76,7 @@ type
   private
     FAutoFreeDockSite: boolean;
     FMouseState: TDockHeaderMouseState;
+    FDockHeaderImages: TDockHeaderImages;
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); override;
     procedure AnchorDockLayout(Zone: TLazDockZone);
@@ -116,6 +125,7 @@ type
   private
     FMainControl: TControl;
     FMouseState: TDockHeaderMouseState;
+    FDockHeaderImages: TDockHeaderImages;
     procedure SetMainControl(const AValue: TControl);
     procedure PaintWindow(DC: HDC); override;
   protected
@@ -130,6 +140,7 @@ type
     procedure TrackMouse(X, Y: Integer);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure UpdateCaption; virtual;
     class procedure UpdateMainControlInParents(StartControl: TControl);
     function FindMainControlCandidate: TControl;
@@ -293,19 +304,46 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 implementation
 
+const
+  DockHeaderImageNames: array[TDockHeaderImageKind] of String =
+  (
+{ dhiRestore } 'lcl_dock_restore',
+{ dhiClose   } 'lcl_dock_close'
+  );
+
 type
 
   { TDockHeader }
 
   // maybe once it will be control, so now better to move all related to header things to class
   TDockHeader = class
+    class procedure CreateDockHeaderImages(out Images: TDockHeaderImages);
+    class procedure DestroyDockHeaderImages(var Images: TDockHeaderImages);
+    
     class function GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation; APart: TLazDockHeaderPart): TRect;
     class function FindPart(AHeaderRect: TRect; APoint: TPoint; AOrientation: TDockOrientation): TLazDockHeaderPart;
-    class procedure Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
+    class procedure Draw(ACanvas: TCanvas; ACaption: String; DockBtnImages: TDockHeaderImages; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
     class procedure PerformMouseUp(AControl: TControl; APart: TLazDockHeaderPart);
     class procedure PerformMouseDown(AControl: TControl; APart: TLazDockHeaderPart);
   end;
-  
+
+class procedure TDockHeader.CreateDockHeaderImages(out Images: TDockHeaderImages);
+var
+  ImageKind: TDockHeaderImageKind;
+begin
+  for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
+    Images[ImageKind] := LoadBitmapFromLazarusResource(DockHeaderImageNames[ImageKind]);
+end;
+
+class procedure TDockHeader.DestroyDockHeaderImages(
+  var Images: TDockHeaderImages);
+var
+  ImageKind: TDockHeaderImageKind;
+begin
+  for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
+    FreeAndNil(Images[ImageKind]);
+end;
+
 class function TDockHeader.GetRectOfPart(AHeaderRect: TRect; AOrientation: TDockOrientation;
   APart: TLazDockHeaderPart): TRect;
 var
@@ -368,9 +406,9 @@ begin
   Result := ldhpAll;
 end;
 
-class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
+class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImages: TDockHeaderImages; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
 
-  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; IconName: String); inline;
+  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; ABitmap: TBitmap); inline;
   const
     // ------------- Pressed, Hot -----------------------
     BtnDetail: array[Boolean, Boolean] of TThemedToolBar =
@@ -380,17 +418,14 @@ class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; AOrientatio
     );
   var
     Details: TThemedElementDetails;
-    AIcon: TBitmap;
     dx, dy: integer;
   begin
     Details := ThemeServices.GetElementDetails(BtnDetail[IsMouseDown, IsMouseOver]);
     ThemeServices.DrawElement(ACanvas.Handle, Details, ARect);
     ARect := ThemeServices.ContentRect(ACanvas.Handle, Details, ARect);
-    AIcon := LoadBitmapFromLazarusResource(IconName);
-    dx := (ARect.Right - ARect.Left - AIcon.Width) div 2;
-    dy := (ARect.Bottom - ARect.Top - AIcon.Height) div 2;
-    ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, AIcon);
-    AIcon.Free;
+    dx := (ARect.Right - ARect.Left - ABitmap.Width) div 2;
+    dy := (ARect.Bottom - ARect.Top - ABitmap.Height) div 2;
+    ACanvas.Draw(ARect.Left + dx, ARect.Top + dy, ABitmap);
   end;
   
 var
@@ -418,13 +453,17 @@ begin
   
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 
+  // AIcon := LoadBitmapFromLazarusResource(IconName);
+
+  //
   // draw close button
   BtnRect := GetRectOfPart(ARect, AOrientation, ldhpCloseButton);
-  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), 'lcl_dock_close');
+
+  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), DockBtnImages[dhiClose]);
 
   // draw restore button
   BtnRect := GetRectOfPart(ARect, AOrientation, ldhpRestoreButton);
-  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), 'lcl_dock_restore');
+  DrawButton(BtnRect, IsMouseDown, PtInRect(BtnRect, MousePos), DockBtnImages[dhiRestore]);
 
   // draw caption
   DrawRect := GetRectOfPart(ARect, AOrientation, ldhpCaption);
@@ -885,7 +924,8 @@ var
 begin
   GetCursorPos(Pt);
   Pt := DockSite.ScreenToClient(Pt);
-  TDockHeader.Draw(ACanvas, DockSite.GetDockCaption(AControl), AControl.DockOrientation, ARect, Pt);
+  TDockHeader.Draw(ACanvas, DockSite.GetDockCaption(AControl), FDockHeaderImages,
+    AControl.DockOrientation, ARect, Pt);
 end;
 
 procedure TLazDockTree.CreateDockLayoutHelperControls(Zone: TLazDockZone);
@@ -1022,6 +1062,7 @@ end;
 constructor TLazDockTree.Create(TheDockSite: TWinControl);
 begin
   FillChar(FMouseState, SizeOf(FMouseState), 0);
+  TDockHeader.CreateDockHeaderImages(FDockHeaderImages);
   SetDockZoneClass(TLazDockZone);
   if TheDockSite = nil then
   begin
@@ -1034,12 +1075,14 @@ end;
 
 destructor TLazDockTree.Destroy;
 begin
-  if FAutoFreeDockSite then begin
-    if DockSite.DockManager=Self then
-      DockSite.DockManager:=nil;
+  if FAutoFreeDockSite then
+  begin
+    if DockSite.DockManager = Self then
+      DockSite.DockManager := nil;
     DockSite.Free;
-    DockSite:=nil;
+    DockSite := nil;
   end;
+  TDockHeader.DestroyDockHeaderImages(FDockHeaderImages);
   inherited Destroy;
 end;
 
@@ -2718,7 +2761,8 @@ begin
       end;
       GetCursorPos(Pt);
       Pt := ScreenToClient(Pt);
-      TDockHeader.Draw(ACanvas, Control.Caption, GetTitleOrientation(Control), GetTitleRect(Control), Pt);
+      TDockHeader.Draw(ACanvas, Control.Caption, FDockHeaderImages,
+        GetTitleOrientation(Control), GetTitleRect(Control), Pt);
     end;
   finally
     ACanvas.Free;
@@ -2855,6 +2899,13 @@ constructor TLazDockForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FillChar(FMouseState, SizeOf(FMouseState), 0);
+  TDockHeader.CreateDockHeaderImages(FDockHeaderImages);
+end;
+
+destructor TLazDockForm.Destroy;
+begin
+  TDockHeader.DestroyDockHeaderImages(FDockHeaderImages);
+  inherited Destroy;
 end;
 
 procedure TLazDockForm.UpdateCaption;
