@@ -2017,7 +2017,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.Click;
 begin
-  DebugLn(['TControl.Click ',DbgSName(Self)]);
+  //DebugLn(['TControl.Click ',DbgSName(Self)]);
   if (not (csDesigning in ComponentState)) and (ActionLink<>nil)
   and ((Action=nil) or (@FOnClick<>@Action.OnExecute) or Assigned(FOnClick))
   then
