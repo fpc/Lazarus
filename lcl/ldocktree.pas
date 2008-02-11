@@ -830,8 +830,9 @@ begin
   // undock AControl
   if AControl is TWinControl then begin
     AWinControl:=TWinControl(AControl);
-    if AWinControl.DockManager<>nil then begin
-      // anything to do here?
+    if (AWinControl.DockManager<>nil)
+    and (AWinControl.DockManager<>Self) then begin
+      raise Exception.Create('TLazDockTree.UndockControlForDocking mixing docking managers is not supported');
     end;
   end;
   if AControl.Parent<>nil then begin
@@ -2104,7 +2105,6 @@ procedure TCustomAnchoredDockManager.UndockControl(Control: TControl; Float: boo
   5. Otherwise: this control was not docked.
 }
 var
-  a: TAnchorKind;
   AnchorControl: TControl;
   AnchorSplitter: TLazDockSplitter;
   i: Integer;
@@ -2120,16 +2120,21 @@ var
     NewBounds: TRect;
     NewOrigin: TPoint;
     OtherControl: TControl;
+    a: TAnchorKind;
   begin
     try
+      NewBounds:=Control.BoundsRect;
+      NewOrigin:=Control.ControlOrigin;
+      OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
       if Float then begin
-        NewBounds:=Control.BoundsRect;
-        NewOrigin:=Control.ControlOrigin;
-        OffsetRect(NewBounds,NewOrigin.X,NewOrigin.Y);
         Control.ManualFloat(NewBounds);
         if Control.Parent<>nil then
           Control.AnchorClient(0);
       end else begin
+        Control.Anchors:=[akLeft,akTop];
+        for a:=Low(TAnchorKind) to High(TAnchorKind) do
+          Control.AnchorSide[a].Control:=nil;
+        Control.BoundsRect:=NewBounds;
         Control.Parent:=nil;
       end;
     finally
@@ -2160,6 +2165,7 @@ var
 var
   OldParentPage: TLazDockPage;
   OldParentForm: TLazDockForm;
+  a: TAnchorKind;
 begin
   if Control.Parent=nil then begin
     // already undocked
