@@ -1552,9 +1552,9 @@ end;
 
 procedure TCustomAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
   Splitter2: TLazDockSplitter);
-{  Anchor all controls anchored to Splitter2 to Splitter1,
-   extend Splitter1,
-   delete Splitter2.
+{  - Anchor all controls anchored to Splitter2 to Splitter1
+   - extend Splitter1
+   - delete Splitter2
 
    Example:
 
@@ -1591,7 +1591,7 @@ procedure TCustomAnchoredDockManager.CombineSpiralSplitterPair(Splitter1,
   
   procedure EnlargeSplitter(Side: TAnchorKind);
   begin
-    if GetAnchorDepth(Splitter1,Side)<GetAnchorDepth(Splitter2,Side) then
+    if GetAnchorDepth(Splitter1,Side)>GetAnchorDepth(Splitter2,Side) then
       Splitter1.AnchorSide[Side].Assign(Splitter2.AnchorSide[Side]);
   end;
   
