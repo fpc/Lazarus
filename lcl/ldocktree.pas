@@ -2834,20 +2834,20 @@ var
   NewMouseState: TDockHeaderMouseState;
 begin
   Control := FindHeader(X, Y, Part);
+  FillChar(NewMouseState,SizeOf(NewMouseState),0);
   if (Control <> nil) then
   begin
     ARect := GetTitleRect(Control);
     ARect := TDockHeader.GetRectOfPart(ARect, GetTitleOrientation(Control), Part);
-    FillChar(NewMouseState,SizeOf(NewMouseState),0);
     NewMouseState.Rect := ARect;
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
-    if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
-    begin
-      if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
-        InvalidateRect(Handle, @FMouseState.Rect, False);
-      FMouseState := NewMouseState;
-      InvalidateRect(Handle, @NewMouseState.Rect, False);
-    end;
+  end;
+  if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
+  begin
+    if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
+      InvalidateRect(Handle, @FMouseState.Rect, False);
+    FMouseState := NewMouseState;
+    InvalidateRect(Handle, @NewMouseState.Rect, False);
   end;
 end;
 
