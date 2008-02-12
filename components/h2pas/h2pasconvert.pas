@@ -3228,6 +3228,13 @@ begin
       or (CompareIdentifiers(PChar(CurAtom),'IMPLEMENTATION')=0)
       then begin
         Result:=Position;
+        // skip uses section
+        CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+        if (CurAtom<>'')
+        and (CompareIdentifiers(PChar(CurAtom),'USES')=0) then begin
+          ReadUntilAtom(Position,';');
+          Result:=Position;
+        end;
         break;
       end else
         break;
