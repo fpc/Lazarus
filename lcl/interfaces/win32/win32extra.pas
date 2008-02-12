@@ -68,7 +68,7 @@ type
   
   tagIMAGELISTDRAWPARAMS = record
     cbSize: DWORD;
-    himlL: HIMAGELIST;
+    himl: HIMAGELIST;
     i: integer;
     hdcDst: HDC;
     x: integer;
@@ -311,15 +311,6 @@ const
 SWP_DEFERERASE     = $2000;
 SWP_ASYNCWINDOWPOS = $4000;
 SWP_STATECHANGED   = $8000; // used by windows but not documented (used even in wine)
-
-{not used anymore
-// missing listview macros
-function ListView_GetHeader(hwndLV: HWND): HWND;
-function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;
-function ListView_SetExtendedListViewStyle(hwndLV: HWND; dw: DWORD): BOOL;
-function ListView_GetHoverTime(hwndLV: HWND): DWORD;
-function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
-}
 
 // missing imagelist macros and constants
 

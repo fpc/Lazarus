@@ -355,10 +355,10 @@ var
   Pixel: PRGBAQuad;
 begin
   case StockID of
-    idDialogWarning: IconHandle := LoadImage(0, OIC_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogError  : IconHandle := LoadImage(0, OIC_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogInfo   : IconHandle := LoadImage(0, OIC_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
-    idDialogConfirm: IconHandle := LoadImage(0, OIC_QUES, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogWarning: IconHandle := LoadImage(0, IDI_WARNING, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogError  : IconHandle := LoadImage(0, IDI_ERROR, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogInfo   : IconHandle := LoadImage(0, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
+    idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
   else
     IconHandle := 0;
   end;

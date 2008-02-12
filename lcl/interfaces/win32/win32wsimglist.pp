@@ -33,9 +33,12 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, SysUtils, Classes, ImgList, GraphType, Graphics, LCLType,
+// rtl
+  Windows, CommCtrl, SysUtils, Classes,
+// lcl
+  ImgList, GraphType, Graphics, LCLType,
+// ws
   Win32Extra, Win32Int, Win32Proc, InterfaceBase,
-////////////////////////////////////////////////////
   WSImgList, WSLCLClasses, WSProc, WSReferences;
 
 type
@@ -296,7 +299,7 @@ begin
     // if it is manifested exe then use winXP algoriphm of gray painting
     FillChar(DrawParams, SizeOf(DrawParams), 0);
     DrawParams.cbSize := SizeOf(DrawParams);
-    DrawParams.himlL := AList.Reference._Handle;
+    DrawParams.himl := AList.Reference._Handle;
     DrawParams.i := AIndex;
     DrawParams.hdcDst := ADC;
     DrawParams.x := ABounds.Left;

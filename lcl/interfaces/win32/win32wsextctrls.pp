@@ -32,9 +32,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  SysUtils, Windows, ExtCtrls, Classes, Controls, ImgList, LCLType, LCLIntf,
-  Themes,
-////////////////////////////////////////////////////
+// rtl
+  Windows, CommCtrl, SysUtils, Classes,
+// lcl
+  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, Themes,
+// ws
   WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
   InterfaceBase, Win32WSControls;
 

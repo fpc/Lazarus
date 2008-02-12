@@ -33,9 +33,12 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  LCLProc, LCLType, Dialogs, Controls, Graphics, SysUtils, Classes, Forms,
-////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses, Windows, Win32Extra, Win32Int, InterfaceBase,
+// rtl
+  Windows, ShellApi, ActiveX, SysUtils, Classes,
+// lcl
+  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms,
+// ws
+  WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
   Win32Proc;
 
 type
@@ -808,6 +811,7 @@ begin
   end;
   Result := 0;
 end;
+
 class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
   bi : TBrowseInfo;
