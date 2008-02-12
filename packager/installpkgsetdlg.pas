@@ -548,7 +548,7 @@ begin
       end;
     end;
     if Author<>'' then
-      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ': ' + Author);
+      PkgInfoMemo.Lines.Add(lisPckOptsAuthor + ' ' + Author);
     if Description<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
                             + ': ' + Description);
