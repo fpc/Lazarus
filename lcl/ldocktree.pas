@@ -431,20 +431,12 @@ class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImag
 var
   BtnRect: TRect;
   DrawRect: TRect;
-  TextStyle: TTextStyle;
   // LCL dont handle orientation in TFont
   OldFont, RotatedFont: HFONT;
+  OldMode: Integer;
   ALogFont: TLogFont;
   IsMouseDown: Boolean;
 begin
-  TextStyle.Alignment := taLeftJustify;
-  TextStyle.SingleLine := True;
-  TextStyle.Clipping := False;
-  TextStyle.Opaque := False;
-  TextStyle.Wordbreak := False;
-  TextStyle.SystemFont := False;
-  TextStyle.RightToLeft := False;
-
   DrawRect := ARect;
   InflateRect(DrawRect, -1, -1);
   ACanvas.Brush.Color := clBtnShadow;
@@ -453,9 +445,6 @@ begin
   
   IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
 
-  // AIcon := LoadBitmapFromLazarusResource(IconName);
-
-  //
   // draw close button
   BtnRect := GetRectOfPart(ARect, AOrientation, ldhpCloseButton);
 
@@ -467,16 +456,16 @@ begin
 
   // draw caption
   DrawRect := GetRectOfPart(ARect, AOrientation, ldhpCaption);
+  
+  OldMode := SetBkMode(ACanvas.Handle, TRANSPARENT);
 
   case AOrientation of
     doHorizontal:
       begin
-        TextStyle.Layout := tlCenter;
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Top, ACaption, TextStyle);
+        DrawText(ACanvas.Handle, PChar(ACaption), -1, DrawRect, DT_LEFT or DT_SINGLELINE or DT_VCENTER);
       end;
     doVertical:
       begin
-        TextStyle.Layout := tlBottom;
         OldFont := 0;
         if GetObject(ACanvas.Font.Reference.Handle, SizeOf(ALogFont), @ALogFont) <> 0 then
         begin
@@ -485,11 +474,13 @@ begin
           if RotatedFont <> 0 then
             OldFont := SelectObject(ACanvas.Handle, RotatedFont);
         end;
-        ACanvas.TextRect(DrawRect, DrawRect.Left, DrawRect.Bottom, ACaption, TextStyle);
+        // from msdn: DrawText doesnot support font with orientation and escapement <> 0
+        TextOut(ACanvas.Handle, DrawRect.Left, DrawRect.Bottom, PChar(ACaption), Length(ACaption));
         if OldFont <> 0 then
           DeleteObject(SelectObject(ACanvas.Handle, OldFont));
       end;
   end;
+  SetBkMode(ACanvas.Handle, OldMode);
 end;
 
 class procedure TDockHeader.PerformMouseUp(AControl: TControl;
