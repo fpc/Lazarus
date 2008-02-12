@@ -824,8 +824,9 @@ end;
 
 // win98 only supports dibsections, so if not a dib section,
 // we draw ourselves
-var
+{var
   AlphaBlend98: function(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
+}
 
 function _AlphaBlend98(hdcDest: HDC; nXOriginDest, nYOriginDest, nWidthDest, nHeightDest: Integer; hdcSrc: HDC; nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc: Integer; blendFunction: TBlendFunction): BOOL; stdcall;
 begin
@@ -860,7 +861,7 @@ begin
       if WindowsVersion = wv98
       then begin
         // windows 98
-        Pointer(AlphaBlend98) := p;
+        // Pointer(AlphaBlend98) := p;
         AlphaBlend := @_AlphaBlend98;
       end
       else begin
