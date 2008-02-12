@@ -3175,7 +3175,7 @@ resourcestring
   lisPckOptsAutoRebuildWhenRebuildingAll = 'Auto rebuild when rebuilding all';
   lisPckOptsManualCompilationNeverAutomatically = 'Manual compilation (never '
     +'automatically)';
-  lisPckOptsLazDocLazarusDocumentation = 'LazDoc - Lazarus documentation';
+  lisPckOptsLazDocLazarusDocumentation = 'FPDoc files path';
   lisPckOptsAddPathsToDependentPackagesProjects = 'Add paths to dependent '
     +'packages/projects';
   lisPckOptsInclude = 'Include';
@@ -3486,7 +3486,7 @@ resourcestring
     +'supported now';
   lisCodeHelpConfirmreplace = 'Confirm replace';
   lisCodeHelpReplaceButton = 'Replace';
-  lisCodeHelpPathsGroupBox = 'LazDoc settings';
+  lisCodeHelpPathsGroupBox = 'FPDoc files path';
   lisCodeHelpHintBoldFormat = 'Insert bold formatting tag';
   lisCodeHelpHintItalicFormat = 'Insert italic formatting tag';
   lisCodeHelpHintUnderlineFormat = 'Insert underline formatting tag';
