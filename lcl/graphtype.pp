@@ -1235,8 +1235,8 @@ procedure TRawImage.ExtractRect(const ARect: TRect; out ADst: TRawImage);
                         ABitOrder: TRawImageBitOrder; ALineEnd: TRawImageLineEnd;
                         ADest: PByte; ADestSize: PtrUInt);
   var
-    SrcWidth, SrcHeight: cardinal;
-    DstWidth, DstHeight: cardinal;
+    SrcWidth, SrcHeight: LongInt;
+    DstWidth, DstHeight: LongInt;
     x, y: Integer;
     LineOrder: TRawImageLineOrder;
     SrcLineStarts, DstLineStarts: TRawImageLineStarts;
@@ -1401,9 +1401,9 @@ const
   GlowShadow = 48;
   ColorMultiplier = (256 - GlowShadow) / 256;
 // 1 Bit color weights. Total weight = 1000
-   R_Weight = 222;
-   G_Weight = 707;
-   B_Weight = 071;
+   R_Weight: Word = $00DE;
+   G_Weight: Word = $02C3;
+   B_Weight: Word = $0047;
    H_Threshold = $D5; // threshold of highlight ($D5 is value from experiments. $80 is standard)
 
 var
