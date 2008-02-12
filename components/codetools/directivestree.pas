@@ -1371,7 +1371,7 @@ procedure TCompilerDirectivesTree.DisableIfNode(Node: TCodeTreeNode;
   
   procedure RaiseImpossible;
   begin
-    raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableIfNode');
+    raise ECDirectiveParserException.Create(Self,'TCompilerDirectivesTree.DisableIfNode impossible');
   end;
   
   function GetExpr(ExprNode: TCodeTreeNode; out Negated: boolean): string;
@@ -1616,27 +1616,28 @@ var
   
   procedure CheckNode;
   begin
+    //DebugLn(['CheckNode ',Node.Desc=cdnIf,' ',(Node.NextBrother<>nil),' ',(Node.FirstChild=nil),' ',GetDirective(Node)]);
     case Node.Desc of
-    cdnIf,cdnElse,cdnElseIf: ;
-    else exit;
-    end;
-    
-    if (Node.NextBrother=nil) or (Node.FirstChild<>nil) then exit;
-    case Node.NextBrother.Desc of
-    cdnEnd,cdnElse,cdnElseIf:
-      if Node.FirstChild=nil then begin
-        MoveCursorToPos(Node.StartPos);
-        // skip directive
-        ReadNextAtom;
-        // read the following atom (token or directive)
-        ReadNextAtom;
-        if AtomStart=Node.NextBrother.StartPos then begin
-          // node is empty
-          NextNode:=Node.NextBrother;
-          if NextNode.Desc=cdnEnd then
-            NextNode:=NextNode.NextSkipChilds;
-          DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes node only contains spaces and comments ',GetDirective(Node)]);
-          DisableIfNode(Node,true,Changed);
+    cdnIf,cdnElseIf,cdnElse:
+      if (Node.NextBrother<>nil) and (Node.FirstChild=nil) then begin
+        case Node.NextBrother.Desc of
+        cdnEnd,cdnElseIf,cdnElse:
+          begin
+            //DebugLn(['CheckNode Checking if empty ...']);
+            MoveCursorToPos(Node.StartPos);
+            // skip directive
+            ReadNextAtom;
+            // read the following atom (token or directive)
+            ReadNextAtom;
+            if AtomStart=Node.NextBrother.StartPos then begin
+              // node is empty
+              NextNode:=Node.NextBrother;
+              if NextNode.Desc=cdnEnd then
+                NextNode:=NextNode.NextSkipChilds;
+              DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes node only contains spaces and comments ',GetDirective(Node)]);
+              DisableIfNode(Node,true,Changed);
+            end;
+          end;
         end;
       end;
     end;

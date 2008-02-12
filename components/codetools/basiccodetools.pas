@@ -1626,7 +1626,7 @@ begin
         end;
       end;
      '/':  // comment or real division
-      if (Position<Len) and (Source[Position]='/') then begin
+      if (Position<Len) and (Source[Position+1]='/') then begin
         // comment start -> read til line end
         inc(Position);
         while (Position<=Len) and (not (Source[Position] in [#10,#13])) do
@@ -1634,7 +1634,7 @@ begin
       end else
         break;
      '(':  // comment, bracket or compiler directive
-      if (Position<Len) and (Source[Position]='*') then begin
+      if (Position<Len) and (Source[Position+1]='*') then begin
         if (Position+2<=Len) and (Source[Position]='$') then
           // compiler directive
           break
