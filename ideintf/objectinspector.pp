@@ -3668,7 +3668,7 @@ begin
     Parent:=Self;
     Align:=alTop;
     Top:=ComponentTreeHeight;
-    Height:=3;
+    Height:=5;
   end;
 end;
 
