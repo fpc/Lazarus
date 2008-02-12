@@ -102,7 +102,7 @@ end;
 function ReadTilCBracketClose(const Source: string; var Position: integer
   ): boolean;
 // Position must start on a bracket
-// at end Position will be right after closing bracket
+// at end Position will be right behind closing bracket
 var
   Len: Integer;
   CloseBracket: Char;

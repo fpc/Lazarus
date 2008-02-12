@@ -320,7 +320,8 @@ type
     phReplaceMacro0PointerWithNULL, // Replace macro values 0 pointer like (char *)0
     phConvertFunctionTypesToPointers, // Convert function types to pointers
     phConvertEnumsToTypeDef, // Convert anonymous enums to ypedef enums
-    phCommentComplexCMacros // Comment macros too complex for hpas
+    phCommentComplexCMacros, // Comment macros too complex for hpas
+    phCommentComplexCFunctions // Comment functions too complex for hpas
     );
   TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
 const
@@ -3650,6 +3651,8 @@ begin
              TConvertEnumsToTypeDef,Result) then exit;
   if not Run(phCommentComplexCMacros,
              TCommentComplexCMacros,Result) then exit;
+  if not Run(phCommentComplexCFunctions,
+             TCommentComplexCFunctions,Result) then exit;
   Result:=mrOk;
 end;
 
@@ -4574,6 +4577,7 @@ var
   Changed: Boolean;
   p: Integer;
   AtomStart: Integer;
+  DefinitionStart: Integer;
 
   procedure AdjustAfterReplace(var APosition: integer;
     FromPos, ToPos, NewLength: integer);
@@ -4591,22 +4595,20 @@ var
     Src:=copy(Src,1,FromPos-1)+NewSrc+copy(Src,ToPos,length(Src));
     AdjustAfterReplace(p,FromPos,ToPos,length(NewSrc));
     AdjustAfterReplace(AtomStart,FromPos,ToPos,length(NewSrc));
+    AdjustAfterReplace(DefinitionStart,FromPos,ToPos,length(NewSrc));
     Changed:=true;
   end;
 
   function ReadFunction: boolean;
   var
-    FuncStart: LongInt;
     FuncEnd: LongInt;
   begin
     Result:=false;
+    DebugLn(['ReadFunction START "',copy(Src,AtomStart,p-AtomStart),'"']);
     // a C function works like this:
     // [modifiers, macros] type name(param list){ statements }
-    FuncStart:=AtomStart;
-    // read type
-    if not IsIdentStartChar[Src[AtomStart]] then exit;
-    ReadNextCAtom(Src,p,AtomStart);
-    if p>SrcLen then exit;
+    // 'type' can be an identifier or identifier* or something with brackets
+
     // read name
     if not IsIdentStartChar[Src[AtomStart]] then exit;
     ReadNextCAtom(Src,p,AtomStart);
@@ -4624,7 +4626,10 @@ var
     // function found
     FuncEnd:=p;
     Result:=true;
-    DebugLn(['TCommentComplexCFunctions.Execute.ReadFunction ',copy(Src,FuncStart,FuncEnd-FuncStart)]);
+    DebugLn(['TCommentComplexCFunctions.Execute.ReadFunction Function="',copy(Src,DefinitionStart,FuncEnd-DefinitionStart),'"']);
+    // IMPORTANT: add in reverse order
+    Replace(FuncEnd,FuncEnd,'*/');
+    Replace(DefinitionStart,DefinitionStart,'/*');
   end;
 
 var
@@ -4637,13 +4642,37 @@ begin
   SrcLen:=length(Src);
   p:=1;
   AtomStart:=1;
+  DefinitionStart:=0;
   repeat
+    // read next definition
     ReadNextCAtom(Src,p,AtomStart);
     if p>SrcLen then break;
-    if IsIdentStartChar[Src[p]] then begin
-      OldP:=p;
-      if not ReadFunction then begin
-        p:=OldP;
+    if Src[AtomStart]=';' then begin
+      // definition end found
+      DefinitionStart:=0;
+      continue;
+    end else if Src[AtomStart]='{' then begin
+      // block found = definition end found
+      DefinitionStart:=0;
+      p:=AtomStart;
+      if not ReadTilCBracketClose(Src,p) then break;
+      continue;
+    end else begin
+      // in definition
+      if DefinitionStart<1 then
+        DefinitionStart:=AtomStart;
+      if Src[AtomStart] in ['(','['] then begin
+        // skip bracket
+        p:=AtomStart;
+        if not ReadTilCBracketClose(Src,p) then break;
+      end else if IsIdentStartChar[Src[AtomStart]] then begin
+        // identifier found => check if function
+        OldP:=p;
+        if ReadFunction then begin
+          DefinitionStart:=0;
+        end else begin
+          p:=OldP;
+        end;
       end;
     end;
   until false;
