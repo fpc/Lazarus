@@ -34,7 +34,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
 // rtl
-  Windows, CommCtrl, SysUtils, Classes,
+  Windows, {CommCtrl, }SysUtils, Classes,
 // lcl
   ImgList, GraphType, Graphics, LCLType,
 // ws
