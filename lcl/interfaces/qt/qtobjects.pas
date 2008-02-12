@@ -492,6 +492,7 @@ type
     property FontEmbedding: Boolean read getFontEmbedding write setFontEmbedding;
     property FullPage: Boolean read getFullPage write setFullPage;
     property Handle: QPrinterH read FHandle;
+    property NumCopies: Integer read getNumCopies write setNumCopies;
     property Orientation: QPrinterOrientation read getOrientation write setOrientation;
     property OutputFormat: QPrinterOutputFormat read getOutputFormat write setOutputFormat;
     property OutputFileName: WideString read getOutputFileName write setOutputFileName;
