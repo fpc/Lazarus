@@ -234,6 +234,7 @@ begin
   TextConverterToolClasses.RegisterClass(TReplaceConstFunctionsInUnit);
   TextConverterToolClasses.RegisterClass(TReplaceTypeCastFunctionsInUnit);
   TextConverterToolClasses.RegisterClass(TFixForwardDefinitions);
+  TextConverterToolClasses.RegisterClass(TAddToUsesSection);
 end;
 
 { TH2PasDialog }

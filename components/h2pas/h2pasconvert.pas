@@ -310,6 +310,21 @@ type
     function Execute(aText: TIDETextConverter): TModalResult; override;
   end;
 
+  { TAddToUsesSection - add units to uses section }
+
+  TAddToUsesSection = class(TCustomTextConverterTool)
+  private
+    FUseUnits: TStrings;
+    procedure SetUseUnits(const AValue: TStrings);
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  published
+    property UseUnits: TStrings read FUseUnits write SetUseUnits;
+  end;
+
 type
   { TPretH2PasTools - Combines the common tools. }
 
@@ -360,7 +375,8 @@ type
     phFixAliasDefinitionsInUnit, // fix section type of alias definitions
     phReplaceConstFunctionsInUnit, // replace simple assignment functions with constants
     phReplaceTypeCastFunctionsInUnit, // replace simple type cast functions with types
-    phFixForwardDefinitions // fix forward definitions by reordering
+    phFixForwardDefinitions, // fix forward definitions by reordering
+    phAddUnitsToUsesSection // add units to uses section
     );
   TPostH2PasToolsOptions = set of TPostH2PasToolsOption;
 const
@@ -372,8 +388,10 @@ type
     FDefines: TStrings;
     FOptions: TPostH2PasToolsOptions;
     FUndefines: TStrings;
+    FUseUnits: TStrings;
     procedure SetDefines(const AValue: TStrings);
     procedure SetUndefines(const AValue: TStrings);
+    procedure SetUseUnits(const AValue: TStrings);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -382,6 +400,7 @@ type
   published
     property Undefines: TStrings read FUndefines write SetUndefines;
     property Defines: TStrings read FDefines write SetDefines;
+    property UseUnits: TStrings read FUseUnits write SetUseUnits;
     property Options: TPostH2PasToolsOptions read FOptions write FOptions default DefaultPostH2PasToolsOptions;
   end;
 
@@ -3614,7 +3633,11 @@ begin
     +'phRemoveEmptyCMacrosTool - Remove empty C macros'#13
     +'phReplaceEdgedBracketPairWithStar - Replace [] with *'#13
     +'phReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0'#13
-    +'phConvertFunctionTypesToPointers - Convert function types to pointers'#13;
+    +'phConvertFunctionTypesToPointers - Convert function types to pointers'#13
+    +'phConvertEnumsToTypeDef - Convert anonymous enums to ypedef enums'#13
+    +'phCommentComplexCMacros - Comment macros too complex for hpas'#13
+    +'phCommentComplexCFunctions - Comment functions too complex for hpas'#13
+    ;
 end;
 
 function TPreH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
@@ -3677,11 +3700,18 @@ begin
   FUndefines.Assign(AValue);
 end;
 
+procedure TPostH2PasTools.SetUseUnits(const AValue: TStrings);
+begin
+  if FUseUnits=AValue then exit;
+  FUseUnits.Assign(FUseUnits);
+end;
+
 constructor TPostH2PasTools.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FDefines:=TStringList.Create;
   FUndefines:=TStringList.Create;
+  FUseUnits:=TStringList.Create;
   FOptions:=DefaultPostH2PasToolsOptions;
 end;
 
@@ -3708,7 +3738,9 @@ begin
     +'phFixAliasDefinitionsInUnit - fix section type of alias definitions'#13
     +'phReplaceConstFunctionsInUnit - replace simple assignment functions with constants'#13
     +'phReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types'#13
-    +'phFixForwardDefinitions - fix forward definitions by reordering'#13;
+    +'phFixForwardDefinitions - fix forward definitions by reordering'#13
+    +'phAddUnitsToUsesSection - add units to uses section'#13
+    ;
 end;
 
 function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
@@ -3752,6 +3784,34 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       AssignCodeToolBossError;
       aResult:=mrCancel;
       exit(false);
+    end;
+    aResult:=mrOk;
+    Result:=true;
+  end;
+
+  function AddToUsesSection(var Changed: boolean;
+    var aResult: TModalResult): boolean;
+  var
+    i: Integer;
+    UnitName: string;
+  begin
+    aResult:=mrOk;
+    if not (phAddUnitsToUsesSection in Options) then exit;
+    DebugLn(['TPostH2PasTools.Execute.AddToUsesSection ']);
+    for i:=0 to FUseUnits.Count-1 do begin
+      UnitName:=FUseUnits[i];
+      if (UnitName='') then continue;
+      if not IsValidIdent(UnitName) then
+        raise Exception.Create('TPostH2PasTools.Execute.AddToUsesSection invalid unitname "'+UnitName+'"');
+      Changed:=true;
+      if not CodeToolBoss.AddUnitToMainUsesSection(
+        TCodeBuffer(aText.CodeBuffer),UnitName,'')
+      then begin
+        AssignCodeToolBossError;
+        DebugLn(['TPostH2PasTools.Execute.AddToUsesSection failed ',CodeToolBoss.ErrorMessage]);
+        aResult:=mrCancel;
+        exit(false);
+      end;
     end;
     aResult:=mrOk;
     Result:=true;
@@ -3833,7 +3893,7 @@ begin
              TFixH2PasMissingIFDEFsInUnit,Result) then exit;
   // reduce compiler directives so that other tools can work with less double data
   if not ReduceCompilerDirectives(Changed,Result) then exit;
-  // remove h2pas redefinitions to data get unambiguous types
+  // remove h2pas redefinitions to get unambiguous types
   if not Run(phRemoveRedefinedPointerTypes,
              TRemoveRedefinedPointerTypes,Result) then exit;
   if not Run(phRemoveEmptyTypeVarConstSections,
@@ -3845,7 +3905,7 @@ begin
              TFixArrayOfParameterType,Result) then exit;
   if not Run(phAddMissingPointerTypes,
              TAddMissingPointerTypes,Result) then exit;
-  // remove redefinitions, to data get unambiguous types
+  // remove redefinitions, to get unambiguous types
   if not Run(phRemoveRedefinitionsInUnit,
              TRemoveRedefinitionsInUnit,Result) then exit;
 
@@ -3860,6 +3920,8 @@ begin
   // fix forward definitions
   if not Run(phFixForwardDefinitions,
              TFixForwardDefinitions,Result) then exit;
+  // add units to uses section
+  if not AddToUsesSection(Changed,Result) then exit;
 end;
 
 { TRemoveIncludeDirectives }
@@ -4626,7 +4688,7 @@ var
     FuncEnd: LongInt;
   begin
     Result:=false;
-    DebugLn(['ReadFunction START "',copy(Src,AtomStart,p-AtomStart),'"']);
+    //DebugLn(['ReadFunction START "',copy(Src,AtomStart,p-AtomStart),'"']);
     // a C function works like this:
     // [modifiers, macros] type name(param list){ statements }
     // 'type' can be an identifier or identifier* or something with brackets
@@ -4701,6 +4763,57 @@ begin
 
   if Changed then
     aText.Source:=Src;
+  Result:=mrOk;
+end;
+
+{ TAddToUsesSection }
+
+procedure TAddToUsesSection.SetUseUnits(const AValue: TStrings);
+begin
+  if FUseUnits=AValue then exit;
+  FUseUnits.Assign(AValue);
+end;
+
+constructor TAddToUsesSection.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FUseUnits:=TStringList.Create;
+end;
+
+destructor TAddToUsesSection.Destroy;
+begin
+  FreeAndNil(FUseUnits);
+  inherited Destroy;
+end;
+
+class function TAddToUsesSection.ClassDescription: string;
+begin
+  Result:='Add units to uses section';
+end;
+
+function TAddToUsesSection.Execute(aText: TIDETextConverter): TModalResult;
+var
+  UnitName: string;
+  i: Integer;
+begin
+  Result:=mrCancel;
+  if (not FilenameIsPascalUnit(aText.Filename)) then begin
+    DebugLn(['TAddToUsesSection.Execute file is not pascal: ',aText.Filename]);
+    exit(mrOk);// ignore
+  end;
+  for i:=0 to FUseUnits.Count-1 do begin
+    UnitName:=FUseUnits[i];
+    if (UnitName='') then continue;
+    if not IsValidIdent(UnitName) then
+      raise Exception.Create('TAddToUsesSection.Execute invalid unitname "'+UnitName+'"');
+    if not CodeToolBoss.AddUnitToMainUsesSection(
+      TCodeBuffer(aText.CodeBuffer),UnitName,'')
+    then begin
+      AssignCodeToolBossError;
+      DebugLn(['TAddToUsesSection.Execute failed ',CodeToolBoss.ErrorMessage]);
+      exit;
+    end;
+  end;
   Result:=mrOk;
 end;
 

@@ -1532,11 +1532,14 @@ begin
   
   FromPos:=Node.StartPos;
   if RemoveDisabledDirectives then begin
-    if Node.NextBrother.Desc=cdnEnd then begin
+    if (Node.NextBrother.Desc=cdnEnd) and (Node.Desc=cdnIf) then begin
+      // remove the whole IF..END block
       ToPos:=FindCommentEnd(Src,Node.NextBrother.StartPos,NestedComments);
       ToPos:=FindLineEndOrCodeAfterPosition(Src,ToPos,SrcLen+1,NestedComments);
-    end else
+    end else begin
+      // remove a sub block
       ToPos:=Node.NextBrother.StartPos;
+    end;
     if WithContent then begin
       // remove node source with content
       if (FromPos>1) and (Src[FromPos-1] in [#10,#13])
