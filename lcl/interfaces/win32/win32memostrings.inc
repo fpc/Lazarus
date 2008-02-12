@@ -75,8 +75,10 @@ end;
 function TWin32MemoStrings.Get(Index: Integer): string;
 var
   len: Integer;
+{$ifdef WindowsUnicodeSupport}
   WideBuffer: WideString;
   AnsiBuffer: string;
+{$endif WindowsUnicodeSupport}
 begin
   len := GetLineLength(Index);
 

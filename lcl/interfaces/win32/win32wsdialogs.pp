@@ -358,11 +358,13 @@ var
   FileName: string;
   InitialDir: String;
   FileNameBuffer: PChar;
+{$ifdef WindowsUnicodeSupport}
   FileNameWide: WideString;
   FileNameWideBuffer: PWideChar;
   FileNameBufferSize: Integer;
   FilterBuffer: WideString;
   TitleBuffer: WideString;
+{$endif WindowsUnicodeSupport}
 begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
@@ -476,7 +478,9 @@ var
   var
     I: integer;
     pName: PChar;
+  {$ifdef WindowsUnicodeSupport}
     PWideName: PWideChar;
+  {$endif WindowsUnicodeSupport}
   begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then

@@ -201,8 +201,10 @@ var
   oldFont: HFONT;
   newFont: HFONT;
   tmpRect: Windows.RECT;
+{$ifdef WindowsUnicodeSupport}
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
+{$endif WindowsUnicodeSupport}
 begin
   FillChar(tmpRect, SizeOf(tmpRect), 0);
   newFont := getMenuItemFont(aDecoration);
@@ -410,7 +412,6 @@ procedure DrawMenuItemText(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: W
 var
   crText: COLORREF;
   crBkgnd: COLORREF;
-  TmpLength: integer;
   TmpHeight: integer;
   oldFont: HFONT;
   newFont: HFONT;
@@ -420,8 +421,10 @@ var
   IsRightToLeft: Boolean;
   etoFlags: Cardinal;
   dtFlags: Word;
+{$ifdef WindowsUnicodeSupport}
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
+{$endif WindowsUnicodeSupport}
 begin
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
@@ -446,7 +449,6 @@ begin
   end;
   
   ExtTextOut(aHDC, 0, 0, etoFlags, @aRect, PChar(''), 0, nil);
-  TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
 
 {$ifdef WindowsUnicodeSupport}

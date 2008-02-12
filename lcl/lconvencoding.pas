@@ -355,9 +355,12 @@ begin
 end;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
-var AFrom,ATo:string;
-    SL:TStringList;
-    FN1,FN2:string;
+var
+  AFrom, ATo: String;
+ {$ifdef Unix}
+  SL: TStringList;
+  FN1, FN2: String;
+  {$endif}
 begin
   Result:=s;
   AFrom:=LowerCase(FromEncoding);
