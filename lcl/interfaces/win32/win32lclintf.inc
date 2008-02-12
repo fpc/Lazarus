@@ -417,7 +417,7 @@ var
     Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
   end;
   BitsPtr: Pointer;
-  DataSize: Integer;
+  DataSize: PtrUInt;
   Align: Byte;
 begin
   Result := False;

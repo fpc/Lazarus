@@ -414,11 +414,15 @@ var
   DataHandle: HGLOBAL;
   Data: pointer;
   Size: integer;
+  {$IFDEF VerboseWin32Clipbrd}
   DbgFormatID: integer;
+  {$ENDIF}
   Bitmap: TBitmap;
+  {$IFDEF WindowsUnicodeSupport}
   BufferStream: TMemoryStream;
   BufferWideString: widestring;
   BufferString: ansistring;
+  {$ENDIF}
 
   function ReadClipboardToStream(DestStream: TStream): Boolean;
   begin
@@ -595,8 +599,10 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   var
     DataStream, BufferStream: TStream;
     Bitmap: TBitmap;
+    {$IFDEF WindowsUnicodeSupport}
     BufferWideString: widestring;
     BufferString: ansistring;
+    {$ENDIF}
   begin
     DataStream := TMemoryStream.Create;
     BufferStream := TMemoryStream.Create;
