@@ -173,9 +173,9 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     procedure ExecuteTarget(Target: TObject); override;
+    property Dialog: TOpenDialog read GetDialog;
   published
     property Caption;
-    property Dialog: TOpenDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
@@ -215,9 +215,9 @@ type
     function GetDialogClass: TCommonDialogClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    property Dialog: TSaveDialog read GetSaveDialog;
   published
     property Caption;
-    property Dialog: TSaveDialog read GetSaveDialog;
     property Enabled;
     property HelpContext;
     property Hint;
@@ -396,9 +396,10 @@ type
     function GetDialog: TFontDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
+  public
+    property Dialog: TFontDialog read GetDialog;
   published
     property Caption;
-    property Dialog: TFontDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
@@ -422,9 +423,10 @@ type
     function GetDialog: TColorDialog;
   protected
     function GetDialogClass: TCommonDialogClass; override;
+  public
+    property Dialog: TColorDialog read GetDialog;
   published
     property Caption;
-    property Dialog: TColorDialog read GetDialog;
     property Enabled;
     property HelpContext;
     property HelpKeyword;
