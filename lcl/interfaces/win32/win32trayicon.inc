@@ -267,6 +267,8 @@ begin
   if hWndTaskbar = 0 then Exit;
   
   Windows.GetWindowRect(hWndTaskbar, @TaskbarRect);
+  
+  hWndTray := ATrayIcon.Handle;
 
   { Then we locate inside the Tray area, which is just a Toolbar control }
   EnumChildWindows(hWndTaskbar, @EnumChildProc,LParam(hWndTray));

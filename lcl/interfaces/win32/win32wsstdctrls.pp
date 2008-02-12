@@ -330,7 +330,7 @@ const
     WS_BORDER, // generic border
     SS_SUNKEN  // the only one special border for text static controls
   );
-  AccelCharToStaticTextFlags: array[Boolean] of dword =
+  AccelCharToStaticTextFlags: array[Boolean] of LONG =
   (
     SS_NOPREFIX,
     0
