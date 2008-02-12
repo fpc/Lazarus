@@ -4261,6 +4261,27 @@ var
     Result:=CodeToolBoss.SourceChangeCache.Replace(gtNewLine,gtNewLine,
       InsertPos,InsertPos,NewTxt);
   end;
+  
+  function CheckTypes: boolean;
+  var
+    Node: TCodeTreeNode;
+  begin
+    Node:=Tool.Tree.Root;
+    while Node<>nil do begin
+      if Node.Desc in AllPascalTypes then begin
+        Tool.MoveCursorToCleanPos(Node.StartPos);
+        while Tool.CurPos.StartPos<Node.EndPos do begin
+          Tool.ReadNextAtom;
+          if Tool.CurPos.StartPos>=Node.EndPos then break;
+          if (Tool.CurPos.Flag=cafWord) then
+            CheckIdentifier(Tool.CurPos.StartPos);
+        end;
+        Node:=Node.NextSkipChilds;
+      end else
+        Node:=Node.Next;
+    end;
+    Result:=true;
+  end;
 
   function AddNeededPointerTypesToSource: boolean;
   var
@@ -4304,13 +4325,7 @@ begin
       exit;
     end;
     // check all used identifiers
-    Tool.MoveCursorToCleanPos(1);
-    while Tool.CurPos.StartPos<Tool.SrcLen do begin
-      Tool.ReadNextAtom;
-      if Tool.CurPos.StartPos>=Tool.SrcLen then break;
-      if (Tool.CurPos.Flag=cafWord) then
-        CheckIdentifier(Tool.CurPos.StartPos);
-    end;
+    if not CheckTypes then exit;
     // add all needed pointer types
     if not AddNeededPointerTypesToSource then exit;
   finally
