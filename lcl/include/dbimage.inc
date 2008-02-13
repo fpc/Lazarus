@@ -152,7 +152,7 @@ begin
           exit;
           end;
         s := FDataLink.DataSet.CreateBlobStream(FDataLink.Field,bmRead);
-        if s.Size = 0 then
+        if (S=Nil) or (s.Size = 0) then
           begin
           Picture.Clear;
           exit;
