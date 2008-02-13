@@ -242,8 +242,9 @@ begin
 
       if Window = 0 then
       begin
-        Writeln('failed to create wince control, error: '+ IntToStr(GetLastError()));
-        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
+//        Writeln('failed to create wince control, error: '+ IntToStr(GetLastError()));
+        raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError())
+         + ' control: ' + WindowTitle);
       end;
     end;
     { after creating a child window the following happens:

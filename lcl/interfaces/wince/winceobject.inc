@@ -548,7 +548,7 @@ begin
     LPSzClassName := @ClsName;
   end;
   
-  Result := Windows.RegisterClass(@WindowClass) <> 0;
+  Result := Windows.RegisterClassW(@WindowClass) <> 0;
 end;
 
 {------------------------------------------------------------------------------
