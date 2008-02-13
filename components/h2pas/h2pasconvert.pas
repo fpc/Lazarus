@@ -2282,7 +2282,9 @@ begin
     if Line='extern "C" {' then begin
       Lines[i]:='';
     end
-    else if (i>0) and (Line='}') and (Lines[i-1]='#if defined(__cplusplus)')
+    else if (i>0) and (Line='}')
+    and ((Lines[i-1]='#if defined(__cplusplus)')
+      or (Lines[i-1]='#ifdef __cplusplus'))
     then begin
       Lines[i]:='';
     end;
