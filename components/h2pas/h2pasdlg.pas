@@ -218,6 +218,7 @@ begin
   TextConverterToolClasses.RegisterClass(TConvertEnumsToTypeDef);
   TextConverterToolClasses.RegisterClass(TCommentComplexCMacros);
   TextConverterToolClasses.RegisterClass(TCommentComplexCFunctions);
+  
   TextConverterToolClasses.RegisterClass(TPostH2PasTools);
   TextConverterToolClasses.RegisterClass(TReplaceUnitFilenameWithUnitName);
   TextConverterToolClasses.RegisterClass(TRemoveDoubleSemicolons);
@@ -791,8 +792,13 @@ begin
     s:='File: '+Filename;
     if not FileExistsCached(Filename) then
       s:=s+#13+'ERROR: file not found';
-    OutputFilename:=AFile.GetOutputFilename;
-    s:=s+#13+'Output: '+OutputFilename;
+    if AFile.MergedBy<>nil then begin
+      OutputFilename:=AFile.MergedBy.GetOutputFilename;
+      s:=s+#13+'Merged into: '+OutputFilename;
+    end else begin
+      OutputFilename:=AFile.GetOutputFilename;
+      s:=s+#13+'Output: '+OutputFilename;
+    end;
 
     AFile.ReadCIncludes(false);
     if AFile.CIncludeCount>0 then begin

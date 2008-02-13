@@ -404,14 +404,6 @@ type
     property Options: TPostH2PasToolsOptions read FOptions write FOptions default DefaultPostH2PasToolsOptions;
   end;
 
-  { Proposal:
-    - A tool to fix "constant A=B;" to type A=B; or functions
-    - A tool to reorder a unit to fix forward definitions
-       Difficulties:
-         - keep comments together
-         - keep IFDEFs
-         }
-
   TH2PasFile = class;
 
   { TH2PasFileCInclude }
@@ -451,6 +443,7 @@ type
     FEnabled: boolean;
     FFilename: string;
     FMerge: boolean;
+    FMergedBy: TH2PasFile;
     FModified: boolean;
     FProject: TH2PasProject;
     function GetCIncludeCount: integer;
@@ -492,6 +485,7 @@ type
     property CIncludedByCount: integer read GetCIncludedByCount;
     property CIncludedBy[Index: integer]: TH2PasFileCInclude read GetCIncludedBy;
     property Merge: boolean read FMerge write SetMerge;
+    property MergedBy: TH2PasFile read FMergedBy;// automatically chosen by the project
   end;
 
   { TH2PasProject }
@@ -818,6 +812,7 @@ begin
   FFilename:='';
   FModified:=false;
   FMerge:=false;
+  FMergedBy:=nil;
   ClearCIncludes;
 end;
 
@@ -1642,11 +1637,30 @@ end;
 function TH2PasProject.ReadAllCIncludes(ForceUpdate: boolean): TModalResult;
 var
   i: Integer;
+  CurFile: TH2PasFile;
+  DefaultMergeFile: TH2PasFile;
 begin
+  // read includes
+  DefaultMergeFile:=nil;
   for i:=0 to CHeaderFileCount-1 do begin
-    Result:=CHeaderFiles[i].ReadCIncludes(ForceUpdate);
+    CurFile:=CHeaderFiles[i];
+    CurFile.FMergedBy:=nil;
+    Result:=CurFile.ReadCIncludes(ForceUpdate);
     if Result=mrAbort then exit;
+    if (not CurFile.Merge) then
+      DefaultMergeFile:=CurFile;
   end;
+  
+  // create merge connections
+  for i:=0 to CHeaderFileCount-1 do begin
+    CurFile:=CHeaderFiles[i];
+    if CurFile.Merge and (CurFile.CIncludedByCount=0) then begin
+      // this file should be merged, but is not included by any other file
+      // append it to the first unit
+      CurFile.FMergedBy:=DefaultMergeFile;
+    end;
+  end;
+  
   Result:=mrOk;
 end;
 
@@ -2122,13 +2136,14 @@ end;
 function TH2PasConverter.MergeIncludeFiles(AFile: TH2PasFile;
   TextConverter: TIDETextConverter): TModalResult;
   
-  procedure GetMergeFiles(MergedFiles: TFPList; CurFile: TH2PasFile);
+  procedure GetIncludeMergeFiles(MergedFiles: TFPList; CurFile: TH2PasFile);
   var
     i: Integer;
     CInclude: TH2PasFileCInclude;
     IncFile: TH2PasFile;
   begin
     //DebugLn(['GetMergeFiles CurFile=',CurFile.Filename,' CurFile.CIncludeCount=',CurFile.CIncludeCount]);
+    // merge include files
     for i:=0 to CurFile.CIncludeCount-1 do begin
       CInclude:=CurFile.CIncludes[i];
       IncFile:=CInclude.H2PasFile;
@@ -2136,9 +2151,29 @@ function TH2PasConverter.MergeIncludeFiles(AFile: TH2PasFile;
       //DebugLn(['GetMergeFiles AFile=',AFile.Filename,' CInclude=',CInclude.Filename,' IncFile.Merge=',IncFile.Merge,' ']);
       if not IncFile.Merge then continue;
       if IncFile=AFile then continue;
-      if MergedFiles.IndexOf(IncFile)<0 then
+      if MergedFiles.IndexOf(IncFile)<0 then begin
         MergedFiles.Add(IncFile);
-      GetMergeFiles(MergedFiles,IncFile);
+        GetIncludeMergeFiles(MergedFiles,IncFile);
+      end;
+    end;
+  end;
+  
+  procedure GetProjectMergeFiles(MergedFiles: TFPList; CurFile: TH2PasFile);
+  var
+    IncFile: TH2PasFile;
+    i: Integer;
+  begin
+    // merge non include files
+    if Project<>nil then begin
+      for i:=0 to Project.CHeaderFileCount-1 do begin
+        IncFile:=Project.CHeaderFiles[i];
+        if IncFile.MergedBy=CurFile then begin
+          if MergedFiles.IndexOf(IncFile)<0 then begin
+            MergedFiles.Add(IncFile);
+            GetIncludeMergeFiles(MergedFiles,IncFile);
+          end;
+        end;
+      end;
     end;
   end;
   
@@ -2152,7 +2187,8 @@ begin
   Result:=mrCancel;
   MergedFiles:=TFPList.Create;
   try
-    GetMergeFiles(MergedFiles,AFile);
+    GetIncludeMergeFiles(MergedFiles,AFile);
+    GetProjectMergeFiles(MergedFiles,AFile);
     for i:=0 to MergedFiles.Count-1 do begin
       IncludeFile:=TH2PasFile(MergedFiles[i]);
       DebugLn(['TH2PasConverter.MergeIncludeFiles merging file '
