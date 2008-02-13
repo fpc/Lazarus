@@ -51,6 +51,7 @@ type
     CreateAppBundleButton: TButton;
     EnableI18NCheckBox: TCheckBox;
     I18NGroupBox: TGroupBox;
+    PanelOtherLabels: TPanel;
     PODBtnPanel: TPanel;
     PoOutDirLabel: TLabel;
 
