@@ -2824,9 +2824,9 @@ var
 begin
   Result := Windows.WindowFromPoint(Windows.POINT(Point));
   // check if window created by this process
-//  Windows.GetWindowThreadProcessId(Result, @ProcessID);
-//  if ProcessID <> Windows.GetCurrentProcessID then
-//    Result := 0;
+  Windows.GetWindowThreadProcessId(Result, @ProcessID);
+  if ProcessID <> Windows.GetCurrentProcessID then
+    Result := 0;
 end;
 
 procedure TWinCEWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
