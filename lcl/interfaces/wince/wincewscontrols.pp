@@ -175,9 +175,7 @@ begin
     Assert(False, 'Trace:Setting window');
 
     if AWinControl.Parent <> nil then
-    begin
-      Parent := AWinControl.Parent.Handle;
-    end
+      Parent := AWinControl.Parent.Handle
     else
       Parent := TWinCEWidgetSet(WidgetSet).AppHandle;
 
@@ -198,7 +196,7 @@ begin
     if AWinControl.TabStop then
       Flags := Flags or WS_TABSTOP;
     Assert(False, 'Trace:Setting dimentions');
-   // LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);//roozbeh:i dont think we need it yet
+    LCLBoundsToWin32Bounds(AWinControl, Left, Top, Width, Height);
     if AWinControl is TCustomControl then
       if TCustomControl(AWinControl).BorderStyle = bsSingle then
         FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;

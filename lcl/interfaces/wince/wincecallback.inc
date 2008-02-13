@@ -409,12 +409,10 @@ Var
       end;
       if ParentPaintWindow <> 0 then
         GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
-      if not GetLCLClientBoundsOffset(lWinControl, ORect) then
-      begin
-        ORect.Left := 0;
-        ORect.Top := 0;
-        { we don't use ORect.Right and ORect.Bottom, initialize here if needed }
-      end;
+      //Is not necessary to check the result of GetLCLClientBoundsOffset since
+      //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
+      //The rect is always initialized with 0
+      GetLCLClientBoundsOffset(lWinControl, ORect);
       PaintMsg.Msg := LM_PAINT;
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
@@ -1134,12 +1132,19 @@ begin
 }
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     begin
-      // it's needed for winxp themes where controls send the WM_ERASEBKGND
-      // message to their parent to clear their background and then draw
-      // transparently
-      // only static and button controls have transparent parts
-      // others need to erased with their window color
-      // scrollbar also has buttons
+      { it's needed for winxp themes where controls send the WM_ERASEBKGND
+        message to their parent to clear their background and then draw
+        transparently
+        only static and button controls have transparent parts
+        others need to erased with their window color
+        scrollbar also has buttons
+
+        Handling this message is the method provided to change the background
+        color of many Windows Standard Controls, like TGroupBox, TCheckBox, etc.
+
+        Note that here ChildWinControl represents the control about to be
+        painted. A RadioButton for example. lWinControl represents the Form.
+      }
       ChildWindowInfo := GetWindowInfo(LParam);
       ChildWinControl := ChildWindowInfo^.WinControl;
       if ChildWinControl = nil then

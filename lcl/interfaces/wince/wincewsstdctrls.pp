@@ -1164,7 +1164,6 @@ begin
   FinishCreateWindow(AWinControl, Params, false);
   FreeMem(Params.WindowTitle);
   Result := Params.Window;
-
 end;
 
 class procedure TWinCEWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
@@ -1179,6 +1178,14 @@ begin
     iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
+    if WithThemeSpace then begin
+      Inc(PreferredWidth, 6);
+      Inc(PreferredHeight, 6);
+    end;
+
+    // All TCustomCheckBox descendents were consistently too small
+    // on autosize, so an extra spacing is added it to fix that
+    Inc(PreferredWidth, 10);
   end;
 end;
 
@@ -1238,9 +1245,6 @@ class function TWinCEWSRadioButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
-  hwnd: THandle;
-  Str: array[0..255] of WideChar;
-
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSRadioButton.CreateHandle');
@@ -1252,14 +1256,13 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName;
-    WindowTitle := StringToPWideChar(AWinControl.Caption);
+    WindowTitle := StrCaption;
     // BS_AUTORADIOBUTTON may hang the application,
     // if the radiobuttons are not consecutive controls.//roozbeh:is it so in wince?
-    Flags := Flags or BS_AUTORADIOBUTTON;
+    Flags := Flags or BS_RADIOBUTTON;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 end;
 

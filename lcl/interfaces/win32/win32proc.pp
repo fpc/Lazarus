@@ -864,18 +864,18 @@ begin
     end;
   if (TheWinControl is TCustomGroupBox) then
   begin
-    // The client area of a groupbox under win32 is the whole size, including
+    // The client area of a groupbox under winapi is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
-    DC := Windows.GetDC(Handle);
     // add the upper frame with the caption
+    DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
-    // add the left frame border
+    ReleaseDC(Handle, DC);
+    // add the left, right and bottom frame borders
     ORect.Left := 2;
     ORect.Right := -2;
     ORect.Bottom := -2;
-    ReleaseDC(Handle, DC);
   end else
   if TheWinControl is TCustomNoteBook then
   begin

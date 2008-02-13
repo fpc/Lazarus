@@ -949,40 +949,51 @@ var
   Handle: HWND;
   TheWinControl: TWinControl;
   ARect: TRect;
+  Ignore: Integer;
 Begin
   Result:=false;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  ORect.Left := 0;
-  ORect.Top := 0;
+  FillChar(ORect, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
     with TScrollingWinControl(TheWinControl) do
     begin
       if HorzScrollBar <> nil then
+      begin
+        // left and right bounds are shifted by scroll position
         ORect.Left := -HorzScrollBar.Position;
+        ORect.Right := -HorzScrollBar.Position;
+      end;
       if VertScrollBar <> nil then
+      begin
+        // top and bottom bounds are shifted by scroll position
         ORect.Top := -VertScrollBar.Position;
+        ORect.Bottom := -VertScrollBar.Position;
+      end;
     end;
-  ORect.Bottom := 0;
-  ORect.Right := 0;
-  If (TheWinControl is TCustomGroupBox) Then
-  Begin
-    // The client area of a groupbox under win32 is the whole size, including
+  if (TheWinControl is TCustomGroupBox) then
+  begin
+    // The client area of a groupbox under winapi is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
-    DC := Windows.GetDC(Handle);
     // add the upper frame with the caption
+    DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
-    // add the left frame border
-    ORect.Left := 1;
-    ORect.Right := -1;
-    ORect.Bottom := -1;
     ReleaseDC(Handle, DC);
-  End Else
-  If TheWinControl is TCustomNoteBook then begin
+    { GetTextMetrics may not be supported on all devices, so we
+      have fallback to GetSystemMetrics if it doesn't work.
+      Also careful that SM_CYSMCAPTION returns 0 on the emulator }
+    if ORect.Top = 0 then ORect.Top := GetSystemMetrics(SM_CYCAPTION);
+    // add the left, right and bottom frame borders
+    ORect.Left := 2;
+    ORect.Right := -2;
+    ORect.Bottom := -2;
+  end else
+  if TheWinControl is TCustomNoteBook then
+  begin
     // Can't use complete client rect in win32 interface, top part contains the tabs
     Windows.GetClientRect(Handle, @ARect);
     ORect := ARect;
@@ -991,13 +1002,13 @@ Begin
     Dec(ORect.Bottom, ARect.Bottom);
   end;
 {
-  if (Windows.GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
+  if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
   begin
     Dec(LeftOffset, Windows.GetSystemMetrics(SM_CXEDGE));
     Dec(TopOffset, Windows.GetSystemMetrics(SM_CYEDGE));
   end;
 }
-  Result:=true;
+  Result := True;
 end;
 
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
@@ -1281,9 +1292,11 @@ begin
   canvasHandle := GetDC(winHandle);
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   DeleteAmpersands(Text);
+
   tmpText := StringToPWideChar(Text);
   Result := Windows.GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), @textSize);
   FreeMem(tmpText);
+
   if Result then
   begin
     Width := textSize.cx;
