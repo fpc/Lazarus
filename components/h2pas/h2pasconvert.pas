@@ -114,6 +114,16 @@ type
   end;
 
 
+  { TAddMissingMacroBrackets (for C header files)
+    Add missing brackets around macro values }
+
+  TAddMissingMacroBrackets = class(TCustomTextConverterTool)
+  public
+    class function ClassDescription: string; override;
+    function Execute(aText: TIDETextConverter): TModalResult; override;
+  end;
+
+
   { TReplaceUnitFilenameWithUnitName -
     Replace "unit filename;" with "unit name;" }
 
@@ -336,7 +346,8 @@ type
     phConvertFunctionTypesToPointers, // Convert function types to pointers
     phConvertEnumsToTypeDef, // Convert anonymous enums to ypedef enums
     phCommentComplexCMacros, // Comment macros too complex for hpas
-    phCommentComplexCFunctions // Comment functions too complex for hpas
+    phCommentComplexCFunctions, // Comment functions too complex for hpas
+    phAddMissingMacroBrackets // Add missing macro brackets
     );
   TPreH2PasToolsOptions = set of TPreH2PasToolsOption;
 const
@@ -3721,6 +3732,8 @@ begin
              TCommentComplexCMacros,Result) then exit;
   if not Run(phCommentComplexCFunctions,
              TCommentComplexCFunctions,Result) then exit;
+  if not Run(phAddMissingMacroBrackets,
+             TAddMissingMacroBrackets,Result) then exit;
   Result:=mrOk;
 end;
 
@@ -4851,6 +4864,45 @@ begin
       DebugLn(['TAddToUsesSection.Execute failed ',CodeToolBoss.ErrorMessage]);
       exit;
     end;
+  end;
+  Result:=mrOk;
+end;
+
+{ TAddMissingMacroBrackets }
+
+class function TAddMissingMacroBrackets.ClassDescription: string;
+begin
+  Result:='Add missing brackets around macro values';
+end;
+
+function TAddMissingMacroBrackets.Execute(aText: TIDETextConverter
+  ): TModalResult;
+var
+  Macro: String;
+  Lines: TStrings;
+  i: Integer;
+  Line: string;
+  Value: String;
+begin
+  Result:=mrCancel;
+  if aText=nil then exit;
+  Lines:=aText.Strings;
+  i:=0;
+  while i<=Lines.Count-1 do begin
+    Line:=Lines[i];
+    // example: #define READ_CURRENT_IAC_LAP_RP_SIZE 2+3*MAX_IAC_LAP
+    if REMatches(Line,'^(#define\s+[a-zA-Z0-9_]+\s+)(.+)')
+    then begin
+      Macro:=REVar(1);
+      Value:=REVar(2);
+      if (Value<>'') and (Value[1]<>'(')
+      and (REMatches(Value,'[^a-zA-Z0-9_()]')) then begin
+        // macro needs values
+        Line:=Macro+'('+Value+')';
+        Lines[i]:=Line;
+      end;
+    end;
+    inc(i);
   end;
   Result:=mrOk;
 end;
