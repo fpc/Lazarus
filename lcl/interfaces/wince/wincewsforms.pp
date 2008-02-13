@@ -175,8 +175,12 @@ end;
 
 { TWinCEWSScrollingWinControl }
 
-function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll:lpRECT; prcClip:lpRECT;hrgnUpdate:HRGN;
-prcUpdate:LPRECT; flags:UINT):longint; external KernelDll name 'ScrollWindowEx';
+{$ifdef win32}
+function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
+{$else}
+function ScrollWindowPtr(hWnd:HWND; dx:longint; dy:longint; prcScroll: lpRECT; prcClip: lpRECT;
+  hrgnUpdate: HRGN; prcUpdate: LPRECT; flags:UINT):longint; external KernelDll name 'ScrollWindowEx';
+{$endif}
 
 class procedure TWinCEWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
   const DeltaX, DeltaY: integer);
@@ -186,11 +190,16 @@ var
   rect : trect;
 begin
  lVisible := AWinControl.HandleAllocated and Windows.IsWindowVisible(AWinControl.Handle);
- rgn := 0;//roozbeh : seems to be ok?
-// GetClipRgn(AWinControl.Handle,rgn);
-//roozbeh:which flags really are rewuired?!
+ rgn := 0; //roozbeh : seems to be ok?
+ // GetClipRgn(AWinControl.Handle,rgn);
+ // roozbeh:which flags really are required?!
  if lVisible then
-    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,rgn,nil,SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
+  {$ifdef win32}
+  ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+  {$else}
+  ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil,
+    rgn, nil, SW_INVALIDATE or SW_ERASE or SW_SCROLLCHILDREN);
+  {$endif}
 end;
 
 { TWinCEWSCustomForm }

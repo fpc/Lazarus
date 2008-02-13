@@ -226,7 +226,6 @@ begin
         MenuHandle := HMENU(nil);
       end;
 
-
       Window := CreateWindowExW(
        FlagsEx,            // Extra Flags
        pClassName,         // Name of the registered class

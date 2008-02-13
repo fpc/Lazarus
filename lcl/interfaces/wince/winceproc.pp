@@ -1324,8 +1324,7 @@ begin
   DeleteAmpersands(Text);
 
   tmpText := LCLStringToPWideChar(Text);
-  Result := Windows.GetTextExtentPoint32W(canvasHandle, PWideChar(tmpText),
-    Length(Text), textSize);
+  Result := Windows.GetTextExtentPoint32W(canvasHandle, PWideChar(tmpText), Length(Text), textSize);
   FreeMem(tmpText);
 
   if Result then

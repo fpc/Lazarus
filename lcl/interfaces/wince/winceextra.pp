@@ -84,7 +84,11 @@ const
   ILCF_MOVE = $00000000;
   ILCF_SWAP = $00000001;
 
+{$ifdef win32}
+function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; stdcall; external 'comctl32';
+{$else}
 function ImageList_Copy(himlDst: HIMAGELIST; iDst: longint; himlSrc: HIMAGELIST; Src: longint; uFlags: UINT): BOOL; stdcall; external KernelDLL;
+{$endif}
 
 const
   // BlendOp flags
