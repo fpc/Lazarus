@@ -1631,9 +1631,6 @@ var
             ReadNextAtom;
             if AtomStart=Node.NextBrother.StartPos then begin
               // node is empty
-              NextNode:=Node.NextBrother;
-              if NextNode.Desc=cdnEnd then
-                NextNode:=NextNode.NextSkipChilds;
               DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes node only contains spaces and comments ',GetDirective(Node)]);
               DisableIfNode(Node,true,Changed);
             end;
@@ -1645,9 +1642,12 @@ var
   
 begin
   //DebugLn(['TCompilerDirectivesTree.RemoveEmptyNodes ']);
+  // check nodes from end to start
   Node:=Tree.Root;
+  while (Node.NextBrother<>nil) do Node:=Node.NextBrother;
+  while (Node.LastChild<>nil) do Node:=Node.LastChild;
   while Node<>nil do begin
-    NextNode:=Node.Next;
+    NextNode:=Node.Prior;
     CheckNode;
     Node:=NextNode;
   end;

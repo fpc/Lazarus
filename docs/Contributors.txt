@@ -41,6 +41,7 @@ Giulio Bernardi
 GongYu
 Graeme Geldenhuys
 Grzegorz Zakrzewski
+Hakan Kizilhan
 Hans-Joachim Ott
 Hwang Weng Sun
 Ido Kanner
