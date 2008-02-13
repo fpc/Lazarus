@@ -6,6 +6,7 @@ interface
 
 uses
   Windows, Classes, LMessages, LCLType, LCLProc, Controls, Forms, Menus,
+  {$ifdef Win32}win32compat,{$endif}
   WinCEExtra, GraphType;
   
 Type
@@ -42,6 +43,7 @@ Type
       );
   end;
 
+function LCLStringToPWideChar(inString: string): PWideChar;
 function WideStringToString(inWideString : WideString) : String;
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
@@ -67,8 +69,6 @@ function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImag
 
 
 
-//roozbeh:these are simply copy-pasted from win32...i bet most of them can be changed
-//or not that much neccessary on wince!
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 
@@ -115,17 +115,47 @@ uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
+{ Constants missing from the Windows CE RTL. Remove when the RTL has them }
+const
+  CP_UTF7 = 65000;
+  CP_UTF8 = 65001;
 
+{ Converts a LCL string into a PWideChar.
 
-//well this is diffrent from normal string(widestring) or other rtl functions becouse it uses windows local codepage
-//better name for this?!
+  With Unicode support activated the input string must be in
+  UTF-8 encoding.
+
+  Note that this function will alloc a new PWideChar
+  and the caller is responsible for freeing it with FreeMem
+}
+function LCLStringToPWideChar(inString: string): PWideChar;
+{$ifdef WindowsUnicodeSupport}
+var
+  outStrLen: integer;
+{$endif}
+begin
+  {$ifdef WindowsUnicodeSupport}
+  { First verifies how much space the new string will require }
+  outStrLen := MultiByteToWideChar(CP_UTF8, 0, PChar(inString), -1, nil, 0);
+
+  { Allocates space for the new string }
+  Result := GetMem(outStrLen*2);
+
+  { Now effectively does the conversion }
+  MultiByteToWideChar(CP_UTF8, 0, PChar(inString), -1, Result, outStrLen);
+  {$else}
+    Result := StringToPWideChar(inString);
+  {$endif}
+end;
+
+{ well this is different from normal string(widestring)
+  or other rtl functions because it uses windows local codepage
+  better name for this?! }
 function WideStringToString(inWideString : WideString) : String;
 var
-tmpStr : PChar;
-//test : string;
-inStrLen: integer;
+  tmpStr : PChar;
+  inStrLen: integer;
 begin
-//  test := string(inWideString);
   inStrLen := Length(inWideString);
   tmpStr := StrAlloc(inStrLen+1);
   WideCharToMultiByte(CP_ACP, 0, PWideChar(inWideString), -1, tmpStr, inStrLen,nil,nil);
@@ -1169,12 +1199,12 @@ var
   tmpText : PWideChar;
 begin
   Result := $FFFFFFFF;
-  tmpText := StringToPWideChar(FileName);
-  lenBuf := GetFileVersionInfoSize(tmpText, lenBuf);
+  tmpText := LCLStringToPWideChar(FileName);
+  lenBuf := GetFileVersionInfoSizeW(tmpText, lenBuf);
   if lenBuf > 0 then
   begin
     GetMem(buf, lenBuf);
-    if GetFileVersionInfo(tmpText, 0, lenBuf, buf) then
+    if GetFileVersionInfoW(tmpText, 0, lenBuf, buf) then
     begin
       VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
       Result := fixedInfo^.dwFileVersionMS;
@@ -1293,8 +1323,9 @@ begin
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   DeleteAmpersands(Text);
 
-  tmpText := StringToPWideChar(Text);
-  Result := Windows.GetTextExtentPoint32(canvasHandle, PWideChar(tmpText), Length(Text), @textSize);
+  tmpText := LCLStringToPWideChar(Text);
+  Result := Windows.GetTextExtentPoint32W(canvasHandle, PWideChar(tmpText),
+    Length(Text), textSize);
   FreeMem(tmpText);
 
   if Result then
@@ -1313,7 +1344,7 @@ var
 begin
   TextLen := GetWindowTextLength(AHandle);
   tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
-  GetWindowText(AHandle, tmpWideStr, TextLen + 1);
+  GetWindowTextW(AHandle, tmpWideStr, TextLen + 1);
   Result := WideStringToString(widestring(tmpWideStr));
   SysFreeString(tmpWideStr);
 end;

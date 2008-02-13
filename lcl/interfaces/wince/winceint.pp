@@ -41,12 +41,37 @@ Interface
   successful compilation.
 }
 Uses
+  // Compatibility
+  {$ifdef Win32}win32compat,{$endif}
+  // Everything else
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, Graphics, Menus, WinCEProc, WinCEExtra,
   WinExt, WinCEDef, Themes;
 
 const
+  {$ifdef Win32}
+  // standard windows cursors
+  // they are already defined in the rtl, however the
+  // const = const defines after this fail with an illegal expression
+  IDC_ARROW     = System.MakeIntResource(32512);
+  IDC_IBEAM     = System.MakeIntResource(32513);
+  IDC_WAIT      = System.MakeIntResource(32514);
+  IDC_CROSS     = System.MakeIntResource(32515);
+  IDC_UPARROW   = System.MakeIntResource(32516);
+  IDC_SIZE      = System.MakeIntResource(32640);
+  IDC_ICON      = System.MakeIntResource(32641);
+  IDC_SIZENWSE  = System.MakeIntResource(32642);
+  IDC_SIZENESW  = System.MakeIntResource(32643);
+  IDC_SIZEWE    = System.MakeIntResource(32644);
+  IDC_SIZENS    = System.MakeIntResource(32645);
+  IDC_SIZEALL   = System.MakeIntResource(32646);
+  IDC_NO        = System.MakeIntResource(32648);
+  IDC_HAND      = System.MakeIntResource(32649);
+  IDC_APPSTARTING = System.MakeIntResource(32650);
+  IDC_HELP      = System.MakeIntResource(32651);
+  {$endif}
+
   IDC_NODROP    = IDC_NO;
   IDC_DRAG      = IDC_ARROW;
   IDC_HSPLIT    = IDC_SIZEWE;
@@ -192,7 +217,7 @@ const
 { export for widgetset implementation }
 
 function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; cdecl;
+    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; cdecl;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;

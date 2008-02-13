@@ -1,7 +1,7 @@
-// included by win32int.pp
+{%MainUnit winceint.pp}
 
 {******************************************************************************
-                                 win32listsl.inc
+                                 wincelistsl.inc
                  TWinCEListStringList and TWinCECListStringList
 
  ******************************************************************************
@@ -37,8 +37,8 @@ Var
 Begin
   AStr:=nil;
   BStr:=nil;
-  GetWindowText(A, AStr, GetWindowTextLength(A) + 1);
-  GetWindowText(B, BStr, GetWindowTextLength(B) + 1);
+  GetWindowTextW(A, AStr, GetWindowTextLength(A) + 1);
+  GetWindowTextW(B, BStr, GetWindowTextLength(B) + 1);
   Result := WideCompareStr(widestring(AStr), widestring(BStr));//roozbeh:does this work?!
 end;
 
@@ -148,7 +148,7 @@ Begin
     Windows.SendMessage(FWinCEList, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
-      tmpStr := StringToPWideChar(s[Counter]);
+      tmpStr := LCLStringToPWideChar(s[Counter]);
       AnIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpStr))); //Insert
       FreeMem(tmpStr);
       PutObject(AnIndex, S.Objects[Counter]);
@@ -249,7 +249,7 @@ var
 tmpS : PWideChar;
 Begin
   FLastInsertedIndex := Index;
-  tmpS := StringToPWideChar(s);
+  tmpS := LCLStringToPWideChar(s);
   If FSorted Then
     FLastInsertedIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpS)))
   Else
@@ -620,7 +620,7 @@ Procedure TWinCECListStringList.Insert(Index: Integer; Const S: String);
 var
 tmpS : PWideChar;
 Begin
-  tmpS := StringToPWideChar(S);
+  tmpS := LCLStringToPWideChar(S);
   If FSorted Then
     Windows.SendMessage(FWinCECList,LB_ADDSTRING, 0, LPARAM(PWideChar(tmpS)))
   Else

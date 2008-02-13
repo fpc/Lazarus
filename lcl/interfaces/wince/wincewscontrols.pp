@@ -182,7 +182,7 @@ begin
     SubClassWndProc := @WindowProc;
     WindowTitle := nil;
 
-    StrCaption := StringToPWideChar(AWinControl.Caption);
+    StrCaption := LCLStringToPWideChar(AWinControl.Caption);
     WindowTitle := nil;
     Height := AWinControl.Height;
     Left := AWinControl.Left;
@@ -227,7 +227,7 @@ begin
       end;
 
 
-      Window := CreateWindowEx(
+      Window := CreateWindowExW(
        FlagsEx,            // Extra Flags
        pClassName,         // Name of the registered class
        WindowTitle,        // Title of the window
@@ -454,8 +454,8 @@ var
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
-  tmpStr := StringToPWideChar(AText);
-  Windows.SetWindowText(AWinControl.Handle, PWideChar(tmpStr));
+  tmpStr := LCLStringToPWideChar(AText);
+  Windows.SetWindowTextW(AWinControl.Handle, PWideChar(tmpStr));
   FreeMem(tmpStr);
 end;
 

@@ -29,7 +29,9 @@ interface
 uses
   // Libs
   Windows,
-  // LCL
+  // Compatibility
+  {$ifdef Win32}win32compat,{$endif}
+  // RTL, FCL, LCL
   SysUtils, LCLType, Classes, StdCtrls, Controls, Graphics, Forms, WinCEProc,
   InterfaceBase,
   // Widgetset
@@ -773,7 +775,7 @@ var
 begin
   Assert(False, Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
-  pwAText := StringToPWideChar(AText);
+  pwAText := LCLStringToPWideChar(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(pwAText))
   else
@@ -983,7 +985,7 @@ class procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const
 var
   tmpWideStr : PWideChar;
 begin
-  tmpWideStr := StringToPWideChar(AText);
+  tmpWideStr := LCLStringToPWideChar(AText);
   SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(tmpWideStr)));
   FreeMem(tmpWideStr);
 end;
@@ -1019,7 +1021,7 @@ begin
   with Params do
   begin
     pClassName := @LabelClsName;
-    WindowTitle := StringToPWideChar(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
+    WindowTitle := LCLStringToPWideChar(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
     Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
   end;
 
@@ -1077,7 +1079,7 @@ begin
    //   Flags := Flags or BS_PUSHBUTTON;
     Flags := WS_CHILD or WS_VISIBLE;
     pClassName := @ButtonClsName;
-    WindowTitle := StringToPWideChar(StrCaption);
+    WindowTitle := LCLStringToPWideChar(StrCaption);
     Left := AWinControl.Left;
     Top := AWinControl.Top;
     Width := AWinControl.Width;
@@ -1119,7 +1121,7 @@ var
 tmpStr : PWideChar;
 begin
   tmpstr := PWideChar(SysAllocStringLen(nil,256));
-  Result := Boolean(Windows.GetWindowText(AWinControl.Handle,tmpStr,256));
+  Result := Boolean(Windows.GetWindowTextW(AWinControl.Handle,tmpStr,256));
   AText := String(tmpStr);
   SysFreeString(tmpStr);
 end;
@@ -1131,11 +1133,11 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const AText: String);
 var
-tmpStr : PWideChar;
+  tmpStr : PWideChar;
 begin
- tmpstr := StringToPWideChar(AText);
- Windows.SetWindowText(AWinControl.Handle,tmpStr);
- FreeMem(tmpStr);
+  tmpstr := LCLStringToPWideChar(AText);
+  Windows.SetWindowTextW(AWinControl.Handle, tmpStr);
+  FreeMem(tmpStr);
 end;
 
 { TWinCEWSCustomCheckBox }
@@ -1154,7 +1156,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName;
-    WindowTitle := StringToPWideChar(AWinControl.Caption);
+    WindowTitle := LCLStringToPWideChar(AWinControl.Caption);
     if TCustomCheckBox(AWinControl).AllowGrayed then
       Flags := Flags Or BS_AUTO3STATE
     else

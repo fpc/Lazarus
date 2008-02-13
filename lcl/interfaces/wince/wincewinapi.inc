@@ -159,7 +159,7 @@ var
     Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
-    WideBuffer: WideString;
+    WideBuffer: PWideChar;
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
     Enabled := CheckListBox.Enabled;
@@ -210,9 +210,10 @@ var
       OldBackColor := Windows.SetBkColor(Data^._HDC, $00FFFFFF); {Windows.GetSysColor(COLOR_WINDOW)}
     end;
     
-    WideBuffer := Utf8Decode(CheckListBox.Items[Data^.ItemID]);
-    Windows.DrawText(Data^._HDC, PWideChar(WideBuffer), -1,
+    WideBuffer := LCLStringToPWideChar(CheckListBox.Items[Data^.ItemID]);
+    Windows.DrawTextW(Data^._HDC, WideBuffer, -1,
        Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+    FreeMem(WideBuffer);
 
     // Return to default text and background colors
     Windows.SetTextColor(Data^._HDC, OldColor);
@@ -778,8 +779,8 @@ var
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
-  WideStr := StringToPWideChar(String(str));
-  Result := Windows.DrawText(DC, WideStr, Count, @Rect, Flags);
+  WideStr := LCLStringToPWideChar(String(str));
+  Result := Windows.DrawTextW(DC, WideStr, Count, @Rect, Flags);
   FreeMem(WideStr);
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
@@ -896,11 +897,11 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-pWideStr : PWideChar;
+  pWideStr : PWideChar;
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
-  pWideStr := StringToPWideChar(string(Str));
-  Result := Boolean(Windows.ExtTextOut(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
+  pWideStr := LCLStringToPWideChar(string(Str));
+  Result := Boolean(Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
   FreeMem(pWideStr);
   Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
@@ -1399,8 +1400,12 @@ function TWinCEWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 var
   WideStr: PWideChar;
 begin
-  WideStr := StringToPWideChar(String(str));
+  WideStr := LCLStringToPWideChar(String(str));
+  {$ifdef win32}
+  Result := Pointer(Windows.GetPropW(Handle, WideStr));
+  {$else}
   Result := Pointer(Windows.GetProp(Handle, WideStr));
+  {$endif}
   FreeMem(WideStr);
 end;
 
@@ -1533,8 +1538,8 @@ WideStr : PWideChar;
 begin
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
   Result := false;
-  WideStr := StringToPWideChar(String(Str));
-  Result := Boolean(Windows.GetTextExtentExPoint(DC, WideStr, Count, 0,nil,nil,@Size));
+  WideStr := LCLStringToPWideChar(String(Str));
+  Result := Boolean(Windows.GetTextExtentExPointW(DC, WideStr, Count, 0,nil,nil,@Size));
   FreeMem(WideStr);
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Exit');
 end;
@@ -1860,9 +1865,9 @@ function TWinCEWidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType:
 var
 LPWCaption,LPWText : PWideChar;
 begin
-  LPWCaption := StringToPWideChar(String(LPCaption));
-  LPWText := StringToPWideChar(String(LPText));
-  Result := Windows.MessageBox(HWnd, LPWText, LPWCaption, UType);
+  LPWCaption := LCLStringToPWideChar(String(LPCaption));
+  LPWText := LCLStringToPWideChar(String(LPText));
+  Result := Windows.MessageBoxW(HWnd, LPWText, LPWCaption, UType);
   FreeMem(LPWCaption);
   FreeMem(LPWText);
 end;
@@ -2380,8 +2385,12 @@ function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boole
 var
   WideStr: PWideChar;
 begin
-  WideStr := StringToPWideChar(String(str));
+  WideStr := LCLStringToPWideChar(String(str));
+  {$ifdef win32}
+  Result := Boolean(Windows.SetPropW(Handle, WideStr, Windows.HANDLE(Data)));
+  {$else}
   Result := Boolean(Windows.SetProp(Handle, WideStr, Windows.HANDLE(Data)));
+  {$endif}
   FreeMem(WideStr);
 end;
 {------------------------------------------------------------------------------

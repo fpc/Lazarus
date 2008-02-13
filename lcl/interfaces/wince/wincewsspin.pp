@@ -107,7 +107,7 @@ var
 begin
   editHandle := GetBuddyWindow(ASpinHandle);
   newValueText := FloatToStrF(ANewValue, ffFixed, 20, ADecimalPlaces);
-  pwnewValueText := StringToPWideChar(newValueText);
+  pwnewValueText := LCLStringToPWideChar(newValueText);
   Windows.SendMessage(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(pwnewValueText)));
   FreeMem(pwnewValueText);
 end;
@@ -122,7 +122,7 @@ begin
   // customization of Params
   with Params do
   begin
-    Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+    Buddy := CreateWindowExW(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     {Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
       0, 0,       // size - ignored for buddy

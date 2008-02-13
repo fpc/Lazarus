@@ -189,6 +189,7 @@ end;
 end;
 
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
+{$ifndef Win32}
 var
   mbi: SHMENUBARINFO;
   mi: MENUITEMINFO;
@@ -200,7 +201,9 @@ var
   hr : HResult;
   hasLMenu,hasRMenu : boolean;
   MenuBarRLID : integer;
+{$endif}
 begin
+{$ifndef Win32}
   hasLMenu := false;
   hasRMenu := false;
   FillChar(mi, SizeOf(mi), 0);
@@ -295,6 +298,7 @@ begin
 //    SetWindowPos(wnd, 0, 0, 0, BR.Right - BR.Left, R.Top - BR.Top, SWP_NOZORDER or SWP_NOREPOSITION or SWP_NOMOVE);
 
 //DrawMenuBar(wnd);
+{$endif}
 end;
 
 
@@ -393,7 +397,7 @@ begin
   newFont := getMenuItemFont(aDecoration);
   oldFont := SelectObject(aHDC, newFont);
   wCaption := aCaption;
-  DrawText(aHDC, pWideChar(wCaption), length(aCaption), TmpRect, DT_CALCRECT);
+  DrawTextW(aHDC, pWideChar(wCaption), length(aCaption), TmpRect, DT_CALCRECT);
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
   Result.cx := TmpRect.right - TmpRect.left;
@@ -545,20 +549,20 @@ begin
   else decoration := [];
   newFont := getMenuItemFont(decoration);
   oldFont := SelectObject(aHDC, newFont);
-  ExtTextOut(aHDC, 0, 0, ETO_OPAQUE, @aRect, PWideChar(''), 0, nil);
+  ExtTextOutW(aHDC, 0, 0, ETO_OPAQUE, @aRect, PWideChar(''), 0, nil);
   TmpLength := aRect.right - aRect.left;
   TmpHeight := aRect.bottom - aRect.top;
   wCaption := aMenuItem.Caption;
-  DrawText(aHDC, pWideChar(wCaption), length(aMenuItem.Caption), WorkRect, DT_CALCRECT);
+  DrawTextW(aHDC, pWideChar(wCaption), length(aMenuItem.Caption), WorkRect, DT_CALCRECT);
   Inc(aRect.Left, leftCaptionPosition(TmpLength, WorkRect.Right - WorkRect.Left, aMenuItem));
   Inc(aRect.Top, topPosition(TmpHeight, WorkRect.Bottom - WorkRect.Top));
-  DrawText(aHDC, pWideChar(wCaption), length(aMenuItem.Caption), aRect, 0);
+  DrawTextW(aHDC, pWideChar(wCaption), length(aMenuItem.Caption), aRect, 0);
   if aMenuItem.ShortCut <> scNone then
   begin
     shortCutText := ShortCutToText(aMenuItem.ShortCut);
     Dec(aRect.Right, GetSystemMetrics(SM_CXMENUCHECK));	
     wCaption := shortCutText;
-    DrawText(aHDC, pWideChar(wCaption), Length(shortCutText), aRect, DT_RIGHT);
+    DrawTextW(aHDC, pWideChar(wCaption), Length(shortCutText), aRect, DT_RIGHT);
   end;
   SelectObject(aHDC, oldFont);
   DeleteObject(newFont);
@@ -614,7 +618,11 @@ begin
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
   wCaption := AMenuItem.Caption;
+  {$ifdef win32}
+  MenuInfo.dwTypeData := PChar(PWideChar(wCaption));
+  {$else}
   MenuInfo.dwTypeData := PWideChar(wCaption);
+  {$endif}
   Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
   TriggerFormUpdate(AMenuItem);
 end;
@@ -634,7 +642,11 @@ begin
     begin
       fType := MFT_STRING;
       fMask:=MIIM_TYPE;
+      {$ifdef win32}
+      dwTypeData:=PChar(PWideChar(wCaption));
+      {$else}
       dwTypeData:=PWideChar(wCaption);
+      {$endif}
       cch := Length(aCaption);
     end
     else fType := MFT_SEPARATOR;
@@ -645,7 +657,11 @@ begin
     cbsize := menuiteminfosize;
     fMask := MIIM_TYPE;
     fType := MFT_OWNERDRAW;
+    {$ifdef win32}
+    dwTypeData:=PChar(PWideChar(wCaption));
+    {$else}
     dwTypeData:=PWideChar(wCaption);
+    {$endif}
     cch := Length(aCaption);
   end;
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
@@ -710,7 +726,7 @@ begin
 
   i := 0;
  // if fState and MF_STRING = MF_STRING then
-    if dword(InsertMenu(ParentMenuHandle,AMenuItem.Parent.VisibleIndexOf(AMenuItem),
+    if dword(InsertMenuW(ParentMenuHandle,AMenuItem.Parent.VisibleIndexOf(AMenuItem),
      fState , cmd, PWideChar(wCaption))) = 0 then i := Windows.GetLastError;
 //  else
 //    if dword(InsertMenu(ParentMenuHandle,AMenuItem.Parent.VisibleIndexOf(AMenuItem),

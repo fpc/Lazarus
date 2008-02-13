@@ -25,8 +25,10 @@ unit WinCEWSComCtrls;
 interface
 
 uses
-  // FCL
+  // RTL, FCL
   Windows, Classes, SysUtils, {WinExt,}
+  // Compatibility
+  {$ifdef Win32}win32compat,{$endif}
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
   ImgList, StdCtrls,
@@ -34,7 +36,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
   // wince widgetset
-   WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;
+  WinCEInt, WinCEProc, WinCEWSControls, WinCEExtra;
 
 type
 
@@ -257,7 +259,7 @@ begin
     pbLowered: BevelType := 0;
     pbRaised: BevelType := Windows.SBT_POPOUT;
   end;
-  pwText := StringToPWideChar(Text);
+  pwText := LCLStringToPWideChar(Text);
   Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(pwText));
   FreeMem(pwText);
 end;
@@ -352,7 +354,7 @@ tmpSimpleText : PWideChar;
 begin
   if AStatusBar.SimplePanel then
     begin
-      tmpSimpleText := StringToPWideChar(AStatusBar.SimpleText);
+      tmpSimpleText := LCLStringToPWideChar(AStatusBar.SimpleText);
       Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PWideChar(tmpSimpleText)));
       FreeMem(tmpSimpleText);
     end

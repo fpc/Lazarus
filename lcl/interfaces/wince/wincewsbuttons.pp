@@ -160,7 +160,7 @@ begin
   // DFCS_ADJUSTRECT doesnot work
   InflateRect(DrawRect, -4, -4);
   
-  ButtonCaption := StringToPWideChar(BitBtn.Caption);
+  ButtonCaption := LCLStringToPWideChar(BitBtn.Caption);
   // gather info about bitbtn
   if BitBtn.Glyph.Empty then
   begin
@@ -174,7 +174,7 @@ begin
   BitBtnLayout := BitBtn.Layout;
 
   OldFontHandle := SelectObject(DrawStruct^._hDC, BitBtn.Font.Reference.Handle);
-  GetTextExtentPoint32(DrawStruct^._hDC, ButtonCaption, Length(BitBtn.Caption), @TextSize);
+  GetTextExtentPoint32W(DrawStruct^._hDC, ButtonCaption, Length(BitBtn.Caption), TextSize);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:

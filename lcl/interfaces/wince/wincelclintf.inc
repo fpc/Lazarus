@@ -408,7 +408,7 @@ begin
         // will be created later by CreateCursor
       end;
   else
-    Result := Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]);
+    Result := Windows.LoadCursorW(0, LclCursorToWin32CursorMap[ACursor]);
   end;
 end;
 

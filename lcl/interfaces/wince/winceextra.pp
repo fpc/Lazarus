@@ -161,7 +161,8 @@ begin
   
   case opcode of
     DST_TEXT, DST_PREFIXTEXT:
-      Result := DrawText(dc, PWideChar(lp), wp, rc, dtflags) <> 0;
+      Result := DrawTextW(dc, PWideChar(lp), wp,
+       {$ifdef win32}rc^{$else}rc{$endif}, dtflags) <> 0;
   
     DST_ICON:
       Result := DrawIcon(dc, rc^.left, rc^.top, lp);
@@ -239,7 +240,7 @@ begin
     case opcode of
       DST_TEXT, DST_PREFIXTEXT:
         begin
-          if not GetTextExtentPoint32(dc, PWideChar(lp), len, @s)
+          if not GetTextExtentPoint32W(dc, PWideChar(lp), len, s)
           then Exit;
         end;
 
@@ -735,6 +736,7 @@ var
   p: Pointer;
 begin                
   AlphaBlend := @_AlphaBlend;
+  {$ifndef win32}
   kerneldllhandle := LoadLibrary(KernelDLL);
   if kerneldllhandle <> 0
   then begin 
@@ -742,6 +744,7 @@ begin
     if p <> nil
     then Pointer(AlphaBlend) := p;
   end;
+  {$endif}
   
   {$if SizeOf(THandle) = 4}
   MPropertyLists := TMap.Create(itu4, 4);

@@ -1,3 +1,4 @@
+{%MainUnit  WinCEWSComCtrls.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -105,15 +106,20 @@ end;
 class procedure TWinCEWSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn);
 var
   lvc: TLvColumn;
-  tmpCaption :PWideChar;
+  tmpCaption: PWideChar;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := StringToPWideChar(AColumn.Caption);
 
+  {$ifdef Win32}
+  lvc.pszText := PChar(LCLStringToPWideChar(AColumn.Caption));
+  SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
+  {$else}
+  lvc.pszText := LCLStringToPWideChar(AColumn.Caption);
   ListView_InsertColumn(ALV.Handle, AIndex, lvc);
+  {$endif}
   FreeMem(lvc.pszText);
 end;
 
@@ -196,9 +202,14 @@ begin
   then Exit;
 
   lvc.Mask := LVCF_TEXT;
-  lvc.pszText := StringToPWideChar(ACaption);
 
+  {$ifdef Win32}
+  lvc.pszText := PChar(LCLStringToPWideChar(ACaption));
+  SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
+  {$else}
+  lvc.pszText := LCLStringToPWideChar(ACaption);
   ListView_SetColumn(ALV.Handle, AIndex, lvc);
+  {$endif}
   FreeMem(lvc.pszText);
 end;
 
@@ -303,9 +314,14 @@ begin
   lvi.Mask := LVIF_TEXT;
   lvi.iItem := AIndex;
   lvi.iSubItem := 0;
-  lvi.pszText := StringToPWideChar(AItem.Caption);
 
+  {$ifdef Win32}
+  lvi.pszText := PChar(LCLStringToPWideChar(AItem.Caption));
+  SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
+  {$else}
+  lvi.pszText := LCLStringToPWideChar(AItem.Caption);
   ListView_InsertItem(ALV.Handle, lvi);
+  {$endif}
   FreeMem(lvi.pszText);
 end;
 
@@ -341,14 +357,24 @@ end;
 
 class procedure TWinCEWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
 var
-tmpAText : PWideChar;
+  tmpAText : PWideChar;
+{$ifdef Win32}
+  _gnu_lvi : LV_ITEM;
+{$endif}
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemSetText')
   then Exit;
 
-  tmpAText := StringToPWideChar(AText);
-  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PWideChar(tmpAText));
+  {$ifdef Win32}
+    _gnu_lvi.iSubItem := ASubIndex;
+    _gnu_lvi.pszText := PChar(PWideChar(Utf8Decode(AText)));
+
+    SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
+  {$else}
+  tmpAText := LCLStringToPWideChar(AText);
+  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, tmpAText);
   FreeMem(tmpAText);
+  {$endif}
 end;
 
 class procedure TWinCEWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);

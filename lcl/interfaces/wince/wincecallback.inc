@@ -69,7 +69,7 @@ begin
   PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
   if (PrevWndProc = nil) or (PrevWndProc = @WindowProc) // <- prevent recursion
   then begin
-    Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
+    Result := Windows.DefWindowProcW(Window, Msg, WParam, LParam)
   end
   else begin
     // combobox child edit weirdness: combobox handling WM_SIZE will compare text
@@ -184,7 +184,7 @@ Function
   WindowProc
 {$endif}
   (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; cdecl;
+    LParam: Windows.LParam): LResult; {$ifdef win32}stdcall{$else}cdecl{$endif};
 Var
   LMessage: TLMessage;
   menuItem: TObject;
@@ -219,7 +219,9 @@ Var
   
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
+  {$ifndef win32}
   Info: SHRGINFO; // used by SHRecognizeGesture in WM_LBUTTONDOWN
+  {$endif}
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
@@ -262,6 +264,7 @@ Var
       WindowInfo^.PopupMenu := nil;
       Result := PopupMenu.FindItem(LOWORD(WParam), fkCommand);
     end;
+    {$ifndef win32}
     if Result=nil then //if Result is still nil, process main menu
     begin
       MainMenuHandle := SHFindMenuBar(Window);
@@ -272,6 +275,7 @@ Var
       {if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
         Result := TObject(MenuInfo.dwItemData);}
     end;
+    {$endif}
   end;
   
   procedure SendPaintMessage;
@@ -1425,7 +1429,8 @@ begin
         PostMessage(Window, WM_LBUTTONDBLCLK, WParam, LParam);
       end;
       
-      // Guesture recognition process to enable popup menus.
+      {$ifndef win32}
+      // Gesture recognition process to enable popup menus.
       if (lWinControl.PopupMenu <> nil) then
       begin
         Info.cbSize := SizeOf(SHRGINFO);
@@ -1436,6 +1441,7 @@ begin
 
         SHRecognizeGesture(Info);
       end;
+      {$endif}
 
       MouseDownTime := GetTickCount;
       MouseDownWindow := Window;
@@ -2306,7 +2312,8 @@ end;
  Calls the timerfunction in the Timer Object in the LCL
  ------------------------------------------------------------------------------}
 
-Procedure TimerCallBackProc(window_hwnd : hwnd; msg , idEvent: UINT; dwTime: DWORD); cdecl;
+Procedure TimerCallBackProc(window_hwnd : hwnd; msg , idEvent: UINT; dwTime: DWORD);
+ {$ifdef win32}stdcall{$else}cdecl{$endif};
 Var
   TimerInfo: PWinCETimerInfo;
   n: Integer;

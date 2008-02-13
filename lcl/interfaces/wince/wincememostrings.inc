@@ -1,3 +1,4 @@
+{%MainUnit WinCEWSStdCtrls.pp}
 {$IFDEF MEMOHEADER}
 type
 
@@ -127,7 +128,7 @@ begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
-    tmpNewLine := StringToPWideChar(NewLine);
+    tmpNewLine := LCLStringToPWideChar(NewLine);
     SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
     SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
     FreeMem(tmpNewLine);
@@ -140,7 +141,7 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    tmpNewLine := StringToPWideChar(NewLine);
+    tmpNewLine := LCLStringToPWideChar(NewLine);
     SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
     FreeMem(tmpNewLine);
   end;
@@ -150,7 +151,7 @@ procedure TWinCEMemoStrings.SetText(TheText: PChar);
 var
 tmpTheText : PWideChar;
 begin
-  tmpTheText := StringToPWideChar(TheText);
+  tmpTheText := LCLStringToPWideChar(TheText);
   SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(tmpTheText));
   FreeMem(tmpTheText);
 end;

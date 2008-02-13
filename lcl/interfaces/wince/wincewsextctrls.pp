@@ -26,14 +26,13 @@ unit WinCEWSExtCtrls;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Windows, SysUtils, ExtCtrls, Classes, Controls, LCLType, LCLIntf,
-////////////////////////////////////////////////////
+  // RTL, FCL
+  Windows, SysUtils,
+  // Compatibility
+  {$ifdef Win32}win32compat,{$endif}
+  // LCL
+  ExtCtrls, Classes, Controls, LCLType, LCLIntf,
+  // widgetset
   WSControls, WSExtCtrls, WSLCLClasses, WinCEInt, WinCEProc, InterfaceBase,
   WinCEWSControls;
 
@@ -340,8 +339,13 @@ begin
     begin
       Assert(False, Format('Trace:TWinCEWSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
-      TCI.pszText := PWideChar(Utf8Decode(AText));
+      {$ifdef Win32}
+      TCI.pszText := PChar(LCLStringToPWideChar(AText));
+      {$else}
+      TCI.pszText := LCLStringToPWideChar(AText);
+      {$endif}
       Windows.SendMessage(NotebookHandle, TCM_SETITEMW, PageIndex, LPARAM(@TCI));
+      FreeMem(TCI.pszText);
     end;
   end;
 end;
@@ -394,10 +398,15 @@ begin
   with ANotebook do
   begin
     TCI.Mask := TCIF_TEXT or TCIF_PARAM;
-    TCI.pszText := PWideChar(Utf8Decode(AChild.Caption));
+    {$ifdef Win32}
+    TCI.pszText := PChar(LCLStringToPWideChar(AChild.Caption));
+    {$else}
+    TCI.pszText := LCLStringToPWideChar(AChild.Caption);
+    {$endif}
     // store object as extra, so we can verify we got the right page later
     TCI.lParam := PtrUInt(AChild);
-    Windows.SendMessage(Handle, TCM_INSERTITEM, AIndex, LPARAM(@TCI));
+    Windows.SendMessage(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
+    FreeMem(TCI.pszText);
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
     // send it ourselves
@@ -446,8 +455,12 @@ begin
     begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM;
       TCI.lParam := PtrUInt(lPage);
-      TCI.pszText := PWideChar(Utf8Decode(lPage.Caption));
-      Windows.SendMessage(WinHandle, TCM_INSERTITEM, RealIndex, LPARAM(@TCI));
+      {$ifdef Win32}
+      TCI.pszText := PChar(LCLStringToPWideChar(lPage.Caption));
+      {$else}
+      TCI.pszText := LCLStringToPWideChar(lPage.Caption);
+      {$endif}
+      Windows.SendMessage(WinHandle, TCM_INSERTITEMW, RealIndex, LPARAM(@TCI));
     end;
     Inc(RealIndex);
   end;

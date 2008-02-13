@@ -143,13 +143,22 @@ begin
   end;
 
   // Create parent of all windows, 'button on taskbar'
-//does this work on wince?!
-  FAppHandle := CreateWindow(@ClsName, StringToPWideChar(Application.Title),
+  // does this work on wince?!
+  {$ifdef win32}
+  FAppHandle := CreateWindowW(@ClsName, LCLStringToPWideChar(Application.Title),
   WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
   AllocWindowInfo(FAppHandle);
+  {$else}
+  FAppHandle := CreateWindow(@ClsName, LCLStringToPWideChar(Application.Title),
+  WS_POPUP or WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  AllocWindowInfo(FAppHandle);
+  {$endif}
 
   // set nice main icon
   SendMessage(FAppHandle, WM_SETICON, ICON_BIG,
@@ -431,7 +440,7 @@ procedure TWinCEWidgetSet.AppSetTitle(const ATitle: string);
 var
   tmpText: PWideChar;
 begin
-  tmpText := StringToPWideChar(ATitle);
+  tmpText := LCLStringToPWideChar(ATitle);
   Windows.SetWindowText(FAppHandle, @tmpText);
   FreeMem(tmpText);
 end;
