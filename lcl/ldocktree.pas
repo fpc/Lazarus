@@ -99,7 +99,7 @@ type
     function GetAnchorControl(Zone: TLazDockZone; Side: TAnchorKind;
                               OutSide: boolean): TControl;
     procedure PaintSite(DC: HDC); override;
-    procedure MouseMessage(var Msg: TLMMouse); override;
+    procedure MouseMessage(var Message: TLMessage); override;
   public
     property AutoFreeDockSite: boolean read FAutoFreeDockSite write FAutoFreeDockSite;
   end;
@@ -255,7 +255,7 @@ type
     procedure UpdateTitlePosition(Control: TControl);
 
     procedure PaintSite(DC: HDC); override;
-    procedure MouseMessage(var Msg: TLMMouse); override;// not implemented
+    procedure MouseMessage(var Message: TLMessage); override;// not implemented
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); override;// not implemented
     procedure ResetBounds(Force: Boolean); override;// not implemented
@@ -1455,15 +1455,18 @@ begin
   end;
 end;
 
-procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
+procedure TLazDockTree.MouseMessage(var Message: TLMessage);
 
   procedure CheckNeedRedraw(AControl: TControl; ARect: TRect; APart: TLazDockHeaderPart);
   var
     NewMouseState: TDockHeaderMouseState;
   begin
-    ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart);
+    if AControl <> nil then
+      ARect := TDockHeader.GetRectOfPart(ARect, AControl.DockOrientation, APart)
+    else
+      FillChar(ARect, SizeOf(ARect), 0);
     // we cannot directly redraw this part since we should paint only in paint events
-    FillChar(NewMouseState,SizeOf(NewMouseState),0);
+    FillChar(NewMouseState, SizeOf(NewMouseState), 0);
     NewMouseState.Rect := ARect;
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
     if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
@@ -1474,54 +1477,69 @@ procedure TLazDockTree.MouseMessage(var Msg: TLMMouse);
       InvalidateRect(DockSite.Handle, @NewMouseState.Rect, False);
     end;
   end;
+  
+  function FindControlAndPart(MouseMsg: TLMMouse; out ARect: TRect; out APart: TLazDockHeaderPart): TControl;
+  var
+    i: integer;
+    Pt: TPoint;
+  begin
+    Pt := SmallPointToPoint(MouseMsg.Pos);
+    for i := 0 to DockSite.ControlCount - 1 do
+    begin
+      if DockSite.Controls[i].HostDockSite = DockSite then
+      begin
+        ARect := DockSite.Controls[i].BoundsRect;
+        case DockSite.Controls[i].DockOrientation of
+          doHorizontal:
+            begin
+              ARect.Bottom := ARect.Top;
+              Dec(ARect.Top, DefaultDockGrabberSize);
+            end;
+          doVertical:
+            begin
+              ARect.Right := ARect.Left;
+              Dec(ARect.Left, DefaultDockGrabberSize);
+            end;
+          else
+            Continue;
+        end;
+        if not PtInRect(ARect, Pt) then
+          Continue;
+        // we have control here
+        Result := DockSite.Controls[i];
+        APart := TDockHeader.FindPart(ARect, Pt, DockSite.Controls[i].DockOrientation);
+        Exit;
+      end;
+    end;
+    Result := nil;
+  end;
+  
 var
-  i: integer;
   ARect: TRect;
   Part: TLazDockHeaderPart;
-  Pt: TPoint;
+  Control: TControl;
 begin
-  Pt := SmallPointToPoint(Msg.Pos);
-  for i := 0 to DockSite.ControlCount - 1 do
-  begin
-    if DockSite.Controls[i].HostDockSite = DockSite then
-    begin
-      ARect := DockSite.Controls[i].BoundsRect;
-      case DockSite.Controls[i].DockOrientation of
-        doHorizontal:
-          begin
-            ARect.Bottom := ARect.Top;
-            Dec(ARect.Top, DefaultDockGrabberSize);
-          end;
-        doVertical:
-          begin
-            ARect.Right := ARect.Left;
-            Dec(ARect.Left, DefaultDockGrabberSize);
-          end;
-        else
-          Continue;
+  case Message.msg of
+    LM_LBUTTONUP:
+      begin
+        Control := FindControlAndPart(TLMMouse(Message), ARect, Part);
+        CheckNeedRedraw(Control, ARect, Part);
+        TDockHeader.PerformMouseUp(Control, Part);
       end;
-      if not PtInRect(ARect, Pt) then
-        Continue;
-      // we have control here
-      Part := TDockHeader.FindPart(ARect, Pt, DockSite.Controls[i].DockOrientation);
-      case Msg.Msg of
-        LM_LBUTTONUP:
-          begin
-            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
-            TDockHeader.PerformMouseUp(DockSite.Controls[i], Part);
-          end;
-        LM_LBUTTONDOWN:
-          begin
-            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
-            TDockHeader.PerformMouseDown(DockSite.Controls[i], Part);
-          end;
-        LM_MOUSEMOVE:
-            CheckNeedRedraw(DockSite.Controls[i], ARect, Part);
+    LM_LBUTTONDOWN:
+      begin
+        Control := FindControlAndPart(TLMMouse(Message), ARect, Part);
+        CheckNeedRedraw(Control, ARect, Part);
+        TDockHeader.PerformMouseDown(Control, Part);
       end;
-      // stop thurther processing
-      Exit;
-    end;
-  end;
+    LM_MOUSEMOVE:
+      begin
+        Control := FindControlAndPart(TLMMouse(Message), ARect, Part);
+        CheckNeedRedraw(Control, ARect, Part);
+      end;
+    CM_MOUSELEAVE:
+      CheckNeedRedraw(nil, Rect(0,0,0,0), ldhpAll);
+  end
 end;
 
 { TLazDockZone }
@@ -2632,7 +2650,7 @@ begin
   RaiseGDBException('TCustomAnchoredDockManager.SetReplacingControl TODO');
 end;
 
-procedure TCustomAnchoredDockManager.MouseMessage(var Msg: TLMMouse);
+procedure TCustomAnchoredDockManager.MouseMessage(var Message: TLMessage);
 begin
 
 end;

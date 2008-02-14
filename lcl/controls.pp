@@ -457,7 +457,7 @@ type
                             DropCtl: TControl); virtual; abstract;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure PaintSite(DC: HDC); virtual; abstract;
-    procedure MouseMessage(var Msg: TLMMouse); virtual; abstract;
+    procedure MouseMessage(var Message: TLMessage); virtual; abstract;
     procedure PositionDockRect(Client, DropCtl: TControl; DropAlign: TAlign;
                                var DockRect: TRect); virtual; abstract;
     procedure RemoveControl(Control: TControl); virtual; abstract;

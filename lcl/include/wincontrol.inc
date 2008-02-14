@@ -4637,76 +4637,79 @@ var
 begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
+    LM_SETFOCUS:
+      begin
+        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
+        {$IFDEF VerboseFocus}
+        DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
+        {$ENDIF}
+        if not (csDestroyingHandle in ControlState) then begin
+          Form := GetParentForm(Self);
+          if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+          Message.Result:=0;
+        end;
+      end;
 
-  LM_SETFOCUS:
-    begin
-      Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
-      {$IFDEF VerboseFocus}
-      DebugLn('TWinControl.WndProc LM_SetFocus ',DbgSName(Self));
-      {$ENDIF}
-      if not (csDestroyingHandle in ControlState) then begin
-        Form := GetParentForm(Self);
-        if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
+    LM_KILLFOCUS:
+      begin
+        Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
+        if csFocusing in ControlState then begin
+          {$IFDEF VerboseFocus}
+          DebugLn('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
+          {$ENDIF}
+          Exit;
+        end;
         Message.Result:=0;
       end;
-    end;
 
-  LM_KILLFOCUS:
-    begin
-      Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
-      if csFocusing in ControlState then begin
-        {$IFDEF VerboseFocus}
-        DebugLn('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
-        {$ENDIF}
+    LM_NCHITTEST:
+      begin
+        inherited WndPRoc(Message);
+        if (Message.Result = HTTRANSPARENT)
+        and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)),
+                          False) <> nil)
+        then  Message.Result := HTCLIENT;
         Exit;
       end;
-      Message.Result:=0;
-    end;
 
-  LM_NCHITTEST:
-    begin
-      inherited WndPRoc(Message);
-      if (Message.Result = HTTRANSPARENT)
-      and (ControlAtPos(ScreenToClient(SmallPointToPoint(TLMNCHitTest(Message).Pos)),
-                        False) <> nil)
-      then  Message.Result := HTCLIENT;
-      Exit;
-    end;
-
-  LM_MOUSEFIRST..LM_MOUSELAST,
-  LM_LBUTTONTRIPLECLK,
-  LM_LBUTTONQUADCLK,
-  LM_MBUTTONTRIPLECLK,
-  LM_MBUTTONQUADCLK,
-  LM_RBUTTONTRIPLECLK,
-  LM_RBUTTONQUADCLK:
-     begin
-       {$IFDEF VerboseMouseBugfix}
-       DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
-       {$ENDIF}
-       //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
-       if IsControlMouseMSG(TLMMouse(Message)) then
-         Exit
-       else
+    LM_MOUSEFIRST..LM_MOUSELAST,
+    LM_LBUTTONTRIPLECLK,
+    LM_LBUTTONQUADCLK,
+    LM_MBUTTONTRIPLECLK,
+    LM_MBUTTONQUADCLK,
+    LM_RBUTTONTRIPLECLK,
+    LM_RBUTTONQUADCLK:
        begin
-         if FDockSite and FUseDockManager and Assigned(FDockManager) then
-           FDockManager.MouseMessage(TLMMouse(Message));
+         {$IFDEF VerboseMouseBugfix}
+         DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
+         {$ENDIF}
+         //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
+         if IsControlMouseMSG(TLMMouse(Message)) then
+           Exit
+         else
+         begin
+           if FDockSite and FUseDockManager and Assigned(FDockManager) then
+             FDockManager.MouseMessage(Message);
+         end;
+         {$IFDEF VerboseMouseBugfix}
+         DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
+         {$ENDIF}
        end;
-       {$IFDEF VerboseMouseBugfix}
-       DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
-       {$ENDIF}
-     end;
 
-  LM_KEYFIRST..LM_KEYLAST:
-    if Dragging then Exit;
+    LM_KEYFIRST..LM_KEYLAST:
+      if Dragging then Exit;
 
-  LM_CANCELMODE:
-    if (FindOwnerControl(GetCapture) = Self)
-    and (CaptureControl <> nil)
-    and (CaptureControl.Parent = Self)
-    then CaptureControl.Perform(LM_CANCELMODE,0,0);
-
-  else
+    LM_CANCELMODE:
+      if (FindOwnerControl(GetCapture) = Self)
+      and (CaptureControl <> nil)
+      and (CaptureControl.Parent = Self)
+      then CaptureControl.Perform(LM_CANCELMODE,0,0);
+    CM_MOUSEENTER,
+    CM_MOUSELEAVE:
+      begin
+        if FDockSite and FUseDockManager and Assigned(FDockManager) then
+          FDockManager.MouseMessage(Message);
+      end;
   end;
 
   inherited WndProc(Message);
