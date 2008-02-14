@@ -115,11 +115,6 @@ uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
-{ Constants missing from the Windows CE RTL. Remove when the RTL has them }
-const
-  CP_UTF7 = 65000;
-  CP_UTF8 = 65001;
-
 { Converts a LCL string into a PWideChar.
 
   With Unicode support activated the input string must be in
@@ -131,18 +126,18 @@ const
 function LCLStringToPWideChar(inString: string): PWideChar;
 {$ifdef WindowsUnicodeSupport}
 var
-  outStrLen: integer;
+  WideBuffer: widestring;
 {$endif}
 begin
   {$ifdef WindowsUnicodeSupport}
-  { First verifies how much space the new string will require }
-  outStrLen := MultiByteToWideChar(CP_UTF8, 0, PChar(inString), -1, nil, 0);
+  { Converts to a buffer }
+  WideBuffer := Utf8Decode(inString);
+  
+  { Allocates memory for the string }
+  Result := GetMem(Length(WideBuffer) * 2 + 2);
 
-  { Allocates space for the new string }
-  Result := GetMem(outStrLen*2);
-
-  { Now effectively does the conversion }
-  MultiByteToWideChar(CP_UTF8, 0, PChar(inString), -1, Result, outStrLen);
+  { Copies to the final destination }
+  Move(WideBuffer[1], Result^, Length(WideBuffer) * 2 + 2);
   {$else}
     Result := StringToPWideChar(inString);
   {$endif}
