@@ -1183,7 +1183,7 @@ type
 
   TCheckBoxStyle = (cbsSystem, cbsCrissCross, cbsCheck);
 
-  TCheckBox = Class(TCustomControl)
+  TCheckBox = class(TCustomControl)
   Private
     FAllowGrayed,
     FWordWrap,
@@ -1193,33 +1193,33 @@ type
     FCheckBoxStyle: TCheckBoxStyle;
     FMouseIsDragging,
     FMouseInControl: Boolean;
-  Protected
-    Procedure DoAutoSize; Override;
-    Procedure SetAlignment(Value: TCBAlignment);
-    Procedure SetState(Value: TCheckBoxState);
+  protected
+    procedure DoAutoSize; override;
+    procedure SetAlignment(Value: TCBAlignment);
+    procedure SetState(Value: TCheckBoxState);
 
-    Function GetChecked: Boolean;
+    function GetChecked: Boolean;
     procedure SetChecked(Value: Boolean);
     procedure SetCheckBoxStyle(Value: TCheckBoxStyle);
     procedure SetAttachTextToBox(Value: Boolean);
 
     procedure CMMouseEnter(var Message: TLMMouse); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TLMMouse); message CM_MOUSELEAVE;
-    Procedure WMMouseDown(var Message: TLMMouseEvent); Message LM_LBUTTONDOWN;
-    Procedure WMMouseUp(var Message: TLMMouseEvent); Message LM_LBUTTONUP;
-    Procedure WMKeyDown(var Message: TLMKeyDown); Message LM_KeyDown;
-    Procedure WMKeyUp(var Message: TLMKeyUp); Message LM_KeyUp;
+    procedure WMMouseDown(var Message: TLMMouseEvent); message LM_LBUTTONDOWN;
+    procedure WMMouseUp(var Message: TLMMouseEvent); message LM_LBUTTONUP;
+    procedure WMKeyDown(var Message: TLMKeyDown); message LM_KeyDown;
+    Procedure WMKeyUp(var Message: TLMKeyUp); message LM_KeyUp;
   public
-    procedure Paint; Override;
-    Procedure PaintCheck(var PaintRect: TRect);
-    Procedure PaintText(var PaintRect: TRect);
+    procedure Paint; override;
+    procedure PaintCheck(var PaintRect: TRect);
+    procedure PaintText(var PaintRect: TRect);
 
-    Constructor Create(AOwner: TComponent); Override;
-    Function CheckBoxRect: TRect;
-    procedure Click; Override;
+    constructor Create(AOwner: TComponent); override;
+    function CheckBoxRect: TRect;
+    procedure Click; override;
 
-    Property MouseInControl: Boolean read FMouseInControl;
-    Property MouseIsDragging: Boolean read FMouseIsDragging;
+    property MouseInControl: Boolean read FMouseInControl;
+    property MouseIsDragging: Boolean read FMouseIsDragging;
   published
     property Alignment: TCBAlignment read FAlignment write SetAlignment;
     Property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
@@ -1229,7 +1229,7 @@ type
     property AttachToBox: Boolean read FAttachTextToBox write SetAttachTextToBox default True;
 
     property Align;
-    Property AutoSize;
+    property AutoSize;
     property WordWrap: Boolean read FWordWrap write FWordWrap;
     property TabStop;
 

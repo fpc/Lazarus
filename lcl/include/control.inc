@@ -657,8 +657,8 @@ end;
 {------------------------------------------------------------------------------
        TControl.CMMouseEnter
 ------------------------------------------------------------------------------}
-Procedure TControl.CMMouseEnter(var Message: TLMessage);
-Begin
+procedure TControl.CMMouseEnter(var Message: TLMessage);
+begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
   //DebugLn('TControl.CMMouseEnter ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
   if (Message.LParam=0) and (not FMouseEntered) then
