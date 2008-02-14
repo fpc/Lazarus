@@ -573,7 +573,7 @@ var i, j, FilenameEndPos: integer;
     Result:=false;
     OldStart:=p;
     if not CheckForNumber(s,p) then exit;
-    if not CheckForString(s,p,' Lines compiled, ') then exit;
+    if not CheckForString(s,p,' lines compiled, ') then exit;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,'.') then exit;
     if not CheckForNumber(s,p) then exit;
