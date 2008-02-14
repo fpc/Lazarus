@@ -1482,9 +1482,14 @@ begin
         caMinimize: WindowState := wsMinimized;
         caFree:
           begin
+            // if form is MainForm, then terminate the application
+            // the owner of the MainForm is the application,
+            // so the Application will take care of free-ing the form
+            // and Release is not necessary
             if IsMainForm then
-              Application.Terminate;
-            Release;
+              Application.Terminate
+            else
+              Release;
           end;
       end;
     end;
