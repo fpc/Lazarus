@@ -43,9 +43,11 @@ begin
 end;
 
 function TWin32MemoStrings.GetTextStr: string;
+{$ifndef WindowsUnicodeSupport}
 var
   CapLen: dword;
   Caption: PChar;
+{$endif}
 begin
 {$ifdef WindowsUnicodeSupport}
   Result := win32proc.GetControlText(fHandle);

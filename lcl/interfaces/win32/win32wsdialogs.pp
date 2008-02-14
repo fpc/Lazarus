@@ -35,6 +35,9 @@ uses
 ////////////////////////////////////////////////////
 // rtl
   Windows, ShellApi, ActiveX, SysUtils, Classes,
+{$IFNDEF VER2_2}
+  commdlg,
+{$ENDIF}
 // lcl
   LCLProc, LCLType, Dialogs, Controls, Graphics, Forms,
 // ws
@@ -755,7 +758,11 @@ begin
     begin
       LStructSize := sizeof(TChooseFont);
       HWndOwner := GetOwnerHandle(ACommonDialog);
-      LPLogFont := Windows.LPLOGFONT(@LF);
+{$ifndef ver2_2}
+      LPLogFont := commdlg.PLOGFONT(@LF);
+{$else}
+      LPLogFont := windows.PLOGFONT(@LF);
+{$endif}
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
       RGBColors := Font.Color;

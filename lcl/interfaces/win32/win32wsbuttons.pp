@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Buttons, Graphics, GraphType, Controls,
+  CommCtrl, Windows, Classes, Buttons, Graphics, GraphType, Controls,
 ////////////////////////////////////////////////////
   WSProc, WSControls, WSButtons, WSLCLClasses, 
   Win32WSControls, Win32WSImgList, LCLType, Themes;

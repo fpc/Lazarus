@@ -33,10 +33,11 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
+  Windows, CommCtrl, Win32Extra,
   Spin, Controls, StdCtrls, LCLType,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses, Windows, Win32Int, Win32Extra, Win32Proc,
-  Win32WSStdCtrls, Win32WSControls;
+  WSSpin, WSLCLClasses,
+  Win32Int, Win32Proc, Win32WSStdCtrls, Win32WSControls;
   
 type
 

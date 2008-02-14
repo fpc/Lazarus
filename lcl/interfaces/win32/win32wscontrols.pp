@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, Classes, Controls, Graphics,
+  CommCtrl, Windows, Classes, Controls, Graphics,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc, Win32Extra, WSProc,
   { TODO: needs to move }
