@@ -661,8 +661,9 @@ Procedure TControl.CMMouseEnter(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
   //DebugLn('TControl.CMMouseEnter ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
-  if (Message.LParam=0) and (not FMouseEntered) then begin
-    FMouseEntered:=true;
+  if (Message.LParam=0) and (not FMouseEntered) then
+  begin
+    FMouseEntered := True;
     MouseEnter;
     if FParent <> nil then
       FParent.Perform(CM_MOUSEENTER, 0, LParam(Self));
@@ -672,12 +673,13 @@ end;
 {------------------------------------------------------------------------------
        TControl.CMMouseLeave
 ------------------------------------------------------------------------------}
-Procedure TControl.CMMouseLeave(var Message: TLMessage);
-Begin
+procedure TControl.CMMouseLeave(var Message: TLMessage);
+begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
   //DebugLn('TControl.CMMouseLeave ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
-  if (Message.LParam=0) and FMouseEntered then begin
-    FMouseEntered:=false;
+  if (Message.LParam = 0) and FMouseEntered then
+  begin
+    FMouseEntered := False;
     MouseLeave;
     if FParent <> nil then
       FParent.Perform(CM_MOUSELEAVE, 0, LParam(Self));
