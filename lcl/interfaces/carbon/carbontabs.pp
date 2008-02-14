@@ -80,8 +80,12 @@ type
     function GetContent: ControlRef; override;
     
     procedure ShowTab;
-    procedure UpdateTabs(EnsureLastVisible: Boolean = False);
+    procedure UpdateTabs(EnsureLastVisible: Boolean = False; UpdateIndex: Boolean = True);
+    procedure UpdateTabIndex;
     procedure Remove(ATab: TCarbonTab);
+    function GetControlTabIndex: Integer;
+    function GetTabIndex(APageIndex: Integer): Integer;
+    function TabIndexToPageIndex(AIndex: Integer): Integer;
   public
     class function GetValidEvents: TCarbonControlEvents; override;
     procedure ValueChanged; override;
@@ -98,7 +102,7 @@ type
 
     procedure Add(ATab: TCarbonTab; AIndex: Integer);
     procedure Remove(AIndex: Integer);
-    procedure SetTabIndex(AIndex: Integer);
+    procedure SetPageIndex(AIndex: Integer);
     procedure ShowTabs(AShow: Boolean);
     procedure SetTabPosition(ATabPosition: TTabPosition);
   end;
@@ -132,7 +136,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTab.DestroyWidget;
 begin
-  FParent.Remove(Self);
+  if FParent <> nil then FParent.Remove(Self);
 
   inherited DestroyWidget;
 end;
@@ -168,9 +172,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCarbonTab.SetText(const S: String): Boolean;
 begin
+  FText := S;
   if FParent = nil then Exit;
 
-  FText := S;
   Result := False;
   FParent.UpdateTabs;
   Result := True;
@@ -383,20 +387,18 @@ procedure TCarbonTabsControl.ShowTab;
 var
   I: Integer;
   R: TRect;
-  Page: TCustomPage;
 begin
   // show tab with FTabIndex, hide the others
   for I := 0 to FTabs.Count - 1 do
   begin
-    Page := TCarbonTab(FTabs[I]).LCLObject as TCustomPage;
-    if Page.PageIndex = FTabIndex then // update tab bounds
+    if I = FTabIndex then // update tab bounds
     begin
       GetClientRect(R);
       OffsetRect(R, -R.Left, -R.Top);
       TCarbonTab(FTabs[I]).SetBounds(R);
     end;
     
-    TCarbonTab(FTabs[I]).ShowHide(Page.PageIndex = FTabIndex);
+    TCarbonTab(FTabs[I]).ShowHide(I = FTabIndex);
   end;
 end;
 
@@ -405,7 +407,7 @@ end;
 
   Updates tabs properties
  ------------------------------------------------------------------------------}
-procedure TCarbonTabsControl.UpdateTabs(EnsureLastVisible: Boolean);
+procedure TCarbonTabsControl.UpdateTabs(EnsureLastVisible: Boolean; UpdateIndex: Boolean = True);
 var
   I, L: Integer;
   TabSizes: Array of Integer;
@@ -414,7 +416,6 @@ var
   ControlSize: Integer;
   TempFont: TCarbonFont;
   TabInfo: ControlTabInfoRecV1;
-  ControlIndex: Integer;
 const
   SName = 'UpdateTabs';
 begin
@@ -426,8 +427,8 @@ begin
 
       SetControl32BitMaximum(ControlRef(Widget), 0);
 
+      UpdateTabIndex;
       // set tab count
-      ControlIndex := 0;
       Exit;
     end;
 
@@ -487,8 +488,6 @@ begin
         end
         else Break;
       end;
-
-
     end
     else
     begin
@@ -525,10 +524,6 @@ begin
     // set tab count
     SetControl32BitMaximum(ControlRef(Widget), FLastIndex - FFirstIndex + 1);
 
-    ControlIndex := 0;
-    if FTabIndex < FFirstIndex then FTabIndex := FFirstIndex
-    else
-      if FTabIndex > FLastIndex then FTabIndex := FLastIndex;
     // update tabs
     TabInfo.version := kControlTabInfoVersionOne;
     TabInfo.iconSuiteID := 0;
@@ -537,8 +532,6 @@ begin
     for I := FFirstIndex to FLastIndex do
     begin
       S := TCarbonTab(FTabs[I]).FText;
-      if (TCarbonTab(FTabs[I]).LCLObject as TCustomPage).PageIndex = FTabIndex then
-        ControlIndex := I - FFirstIndex + 1;
 
       DeleteAmpersands(S);
       CreateCFString(S, TabInfo.name);
@@ -552,16 +545,20 @@ begin
     end;
 
   finally
-    // set tab index
-    SetControl32BitValue(ControlRef(Widget), ControlIndex);
-    ValueChanged;
     // update arrows visible
     OSError(HIViewSetVisible(FPrevArrow, FFirstIndex > 0), Self, SName, SViewVisible);
     OSError(HIViewSetVisible(FNextArrow, FLastIndex < FTabs.Count - 1), Self, SName, SViewVisible);
     
-    Invalidate;
-    ShowTab;
+    if UpdateIndex then UpdateTabIndex;
   end;
+end;
+
+procedure TCarbonTabsControl.UpdateTabIndex;
+begin
+  // set tab index
+  SetControl32BitValue(ControlRef(Widget), GetControlTabIndex);
+  Invalidate;
+  ShowTab;
 end;
 
 {------------------------------------------------------------------------------
@@ -572,8 +569,44 @@ end;
 procedure TCarbonTabsControl.Remove(ATab: TCarbonTab);
 begin
   FTabs.Remove(ATab);
-  UpdateTabs;
+  UpdateTabs(False, False);
 end;
+
+function TCarbonTabsControl.GetControlTabIndex: Integer;
+begin
+  Result := FTabIndex - FFirstIndex + 1;
+end;
+
+function TCarbonTabsControl.GetTabIndex(APageIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := -1;
+
+  for I := 0 to FTabs.Count - 1 do
+  begin
+    if ((FTabs[I] as TCarbonTab).LCLObject as TCustomPage).PageIndex = APageIndex then
+    begin
+      Result := I;
+      Break;
+    end;
+  end;
+end;
+
+function TCarbonTabsControl.TabIndexToPageIndex(AIndex: Integer): Integer;
+var
+  I: Integer;
+begin
+  Result := AIndex;
+  if csDesigning in LCLObject.ComponentState then Exit;
+  I := 0;
+  while (I < (LCLObject as TCustomNotebook).PageCount) and (I <= Result) do
+  begin
+    if not (LCLObject as TCustomNotebook).Page[I].TabVisible then Inc(Result);
+    Inc(I);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.GetValidEvents
@@ -602,7 +635,7 @@ begin
   FOldTabIndex := Index;
 
   if (Index >= 0) and (Index < FTabs.Count) then
-    PIndex := (TCarbonTab(FTabs[Index]).LCLObject as TCustomPage).PageIndex
+    PIndex := TabIndexToPageIndex(Index)
   else
     PIndex := -1;
 
@@ -619,11 +652,11 @@ begin
 
   if DeliverMessage(LCLObject, Msg) <> 0 then
   begin // tab change cancelled
-    SetTabIndex((LCLObject as TCustomNoteBook).PageIndex);
+    SetPageIndex((LCLObject as TCustomNoteBook).PageIndex);
     Exit;
   end;
 
-  SetTabIndex(Index);
+  SetPageIndex(Index);
 
   // send change
   FillChar(Msg, SizeOf(TLMNotify), 0);
@@ -759,41 +792,39 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonTabsControl.Remove(AIndex: Integer);
 begin
-  //DebugLn('TCarbonTabsControl.Remove ' + DbgS(AIndex));
-  FTabs.Delete(AIndex);
-  
-  UpdateTabs;
+  Remove(FTabs[AIndex] as TCarbonTab);
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonTabsControl.SetTabIndex
+  Method:  TCarbonTabsControl.SetPageIndex
   Params:  AIndex - New index
 
-  Changes the current Carbon tab
+  Changes the current Carbon page
  ------------------------------------------------------------------------------}
-procedure TCarbonTabsControl.SetTabIndex(AIndex: Integer);
+procedure TCarbonTabsControl.SetPageIndex(AIndex: Integer);
+var
+  ATabIndex: Integer;
 begin
-  if (AIndex < 0) or (AIndex >= FTabs.Count) then
+  ATabIndex := GetTabIndex(AIndex);
+
+  //DebugLn('TCarbonTabsControl.SetPageIndex Page: ' + DbgS(AIndex) + ' Tab: ' + DbgS(ATabIndex));
+
+  if (ATabIndex < 0) or (ATabIndex >= FTabs.Count) then
   begin
+    ATabIndex := -1;
     SetControl32BitValue(ControlRef(Widget), 0);
     ShowTab;
     Exit;
   end;
   
-  //DebugLn('TCarbonTabsControl.SetTabIndex ' + DbgS(AIndex) + ' ' + DbgS((LCLObject as TCustomNotebook).PageCount));
-  
-  FTabIndex := AIndex;
-  if (AIndex < FFirstIndex) or (AIndex > FLastIndex) then
+  FTabIndex := ATabIndex;
+  if (ATabIndex < FFirstIndex) or (ATabIndex > FLastIndex) then
   begin
-    FFirstIndex := AIndex;
+    FFirstIndex := ATabIndex;
     UpdateTabs;
   end
   else
-  begin
-    SetControl32BitValue(ControlRef(Widget), FTabIndex - FFirstIndex + 1);
-    Invalidate;
-    ShowTab;
-  end;
+    UpdateTabIndex;
 end;
 
 {------------------------------------------------------------------------------

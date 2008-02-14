@@ -321,7 +321,7 @@ class procedure TCarbonWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNot
 begin
   if not CheckHandle(ANotebook, Self, 'SetPageIndex') then Exit;
   
-  TCarbonTabsControl(ANotebook.Handle).SetTabIndex(AIndex);
+  TCarbonTabsControl(ANotebook.Handle).SetPageIndex(AIndex);
 end;
 
 {------------------------------------------------------------------------------
