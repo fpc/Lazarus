@@ -309,6 +309,7 @@ type
 
   TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime;
     Var AcceptDate: Boolean) of Object;
+  TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
 
   { TDateEdit }
 
@@ -318,6 +319,7 @@ type
     FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
     FOnAcceptDate: TAcceptDateEvent;
+    FOnCustomDate: TCustomDateEvent;
     FOKCaption: TCaption;
     FCancelCaption: TCaption;
     FDateFormat:string;
@@ -339,6 +341,7 @@ type
     property DialogTitle:TCaption read FDialogTitle write FDialogTitle Stored IsStoreTitle;
     property CalendarDisplaySettings : TDisplaySettings read FDisplaySettings write FDisplaySettings;
     property OnAcceptDate : TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
+    property OnCustomDate : TCustomDateEvent read FOnCustomDate write FOnCustomDate;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
     property ReadOnly default true;
@@ -945,11 +948,18 @@ begin
 end;
 
 function TDateEdit.GetDate: TDateTime;
+var
+  ADate: string;
 begin
   if FDefaultToday then Result := SysUtils.Date
   else Result := NullDate;
-  if Trim(Text)<>'' then
-    Result := StrToDateDef(Text, Result);
+  ADate := Trim(Text);
+  if ADate<>'' then
+  begin
+    if Assigned(FOnCustomDate) then
+      FOnCustomDate(Self, ADate);
+    Result := StrToDateDef(ADate, Result);
+  end;
 end;
 
 function TDateEdit.IsStoreTitle: boolean;
