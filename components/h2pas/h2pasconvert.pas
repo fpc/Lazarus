@@ -4322,9 +4322,10 @@ var
     end;
     if (not (Identifier[Level] in ['p','P']))
     and (IsIdentChar[Identifier[Level]])
-    and not (IdentifierIsDefined(@Tool.Src[Position+Level])) then begin
+    and not (IdentifierIsDefined(@Identifier[Level])) then begin
       // the base type is not defined
       // => this is not a pointer type
+      exit;
     end;
     AddNeededPointerType(Position,Level);
   end;
