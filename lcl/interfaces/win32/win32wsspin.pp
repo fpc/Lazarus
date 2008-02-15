@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Windows, CommCtrl, Win32Extra,
+  CommCtrl, Windows, Win32Extra,
   Spin, Controls, StdCtrls, LCLType,
 ////////////////////////////////////////////////////
   WSSpin, WSLCLClasses,
