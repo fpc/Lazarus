@@ -1848,6 +1848,10 @@ begin
     // TODO: use the real number of chars (and not the lenght)
     w := Utf8Decode(S);
     Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
+  end else
+  begin
+    s := Utf8ToAnsi(s);
+    Result := Windows.GetTextExtentPoint32(DC, pchar(s), length(s), @Size);
   end;
 {$else}
     Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
