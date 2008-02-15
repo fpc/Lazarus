@@ -809,7 +809,7 @@ begin
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('GENERIC',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('GENERIC',{$ifdef FPC}@{$endif}AllwaysTrue); can be used as identifier
     Add('GOTO',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IF',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);

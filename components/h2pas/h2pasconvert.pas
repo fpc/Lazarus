@@ -4289,7 +4289,7 @@ var
     Identifier:=@Tool.Src[Position+Count];
     AVLNode:=NeededPointerTypes.FindKey(Identifier,
                                         @CompareImplicitTypeStringAndName);
-    //DebugLn(['AddNeededPointerType ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
+    DebugLn(['AddNeededPointerType ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
     if AVLNode<>nil then begin
       Item:=TImplicitType(AVLNode.Data);
       if Item.MaxPosition<Count then
