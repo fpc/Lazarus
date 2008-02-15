@@ -1661,12 +1661,15 @@ var
     NodeExt: TCodeTreeNodeExtension;
   begin
     DebugLn(['AddRedefinition ',NodeText,' Redefined=',CleanPosToStr(Redefinition.StartPos),' Definition=',CleanPosToStr(Definition.StartPos)]);
-    if TreeOfCodeTreeNodeExt=nil then
-      TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+    if (TreeOfCodeTreeNodeExt<>nil)
+    and (FindCodeTreeNodeExt(TreeOfCodeTreeNodeExt,NodeText)<>nil) then
+      exit;
     NodeExt:=NodeExtMemManager.NewNode;
     NodeExt.Node:=Redefinition;
     NodeExt.Data:=Definition;
     NodeExt.Txt:=NodeText;
+    if TreeOfCodeTreeNodeExt=nil then
+      TreeOfCodeTreeNodeExt:=TAVLTree.Create(@CompareCodeTreeNodeExt);
     TreeOfCodeTreeNodeExt.Add(NodeExt);
   end;
   
