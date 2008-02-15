@@ -1498,12 +1498,12 @@ begin
     if PackageGraph.FindFPCConflictUnit(APackage,FirstDependency,Directory,
       @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
     then begin
-      if (PkgFile1<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [#13, #13, '"',
-          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, #13, #13]);
-      end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
+      if (ConflictPkg<>nil) then begin
         s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [#13,
           #13, '"', ConflictPkg.IDAsString, #13, #13]);
+      end else if (PkgFile1<>nil) then begin
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [#13, #13, '"',
+          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, #13, #13]);
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'#13;
