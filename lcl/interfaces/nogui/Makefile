@@ -241,177 +241,800 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=lcl
 PACKAGEDIR_MAIN:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /lcl/Makefile.fpc,$(PACKAGESDIR))))))
-ifndef LCL_PLATFORM
-ifneq ($(findstring $(OS_TARGET),win32 win64),)
-LCL_PLATFORM=win32
-else
-ifeq ($(OS_TARGET),wince)
-LCL_PLATFORM=wince
-else
-LCL_PLATFORM=gtk
-endif
-endif
-endif
-export LCL_PLATFORM
-override DEFAULT_DIR=$(LCL_PLATFORM)
 ifeq ($(FULL_TARGET),i386-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override TARGET_DIRS+=gtk gtk2 win32 wince qt carbon fpgui nogui
+override TARGET_UNITS+=interfaces
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override COMPILER_OPTIONS+=-gl -dnogui
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override COMPILER_UNITDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET) .
+endif
+ifeq ($(FULL_TARGET),i386-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-go32v2)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-win32)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-os2)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-freebsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-beos)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-netbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-solaris)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-qnx)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-netware)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-openbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-wdosx)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-darwin)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-emx)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-watcom)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-netwlibc)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-wince)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),i386-symbian)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-freebsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-netbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-amiga)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-atari)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-openbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-palmos)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),m68k-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-netbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-amiga)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-macos)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-darwin)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-morphos)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),sparc-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),sparc-netbsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),sparc-solaris)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),sparc-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),x86_64-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),x86_64-freebsd)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),x86_64-darwin)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),x86_64-win64)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),x86_64-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-palmos)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-wince)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-gba)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-nds)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),arm-symbian)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-linux)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-darwin)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
+endif
+ifeq ($(FULL_TARGET),powerpc64-embedded)
+override COMPILER_UNITTARGETDIR+=../../units/$(CPU_TARGET)-$(OS_TARGET)/nogui
 endif
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
@@ -608,37 +1231,6 @@ endif
 endif
 else
 CROSSBINDIR=
-endif
-ifeq ($(OS_SOURCE),linux)
-ifndef GCCLIBDIR
-ifeq ($(CPU_TARGET),i386)
-ifneq ($(findstring x86_64,$(shell uname -a)),)
-ifeq ($(BINUTILSPREFIX),)
-GCCLIBDIR:=$(shell dirname `gcc -m32 -print-libgcc-file-name`)
-endif
-endif
-endif
-ifeq ($(CPU_TARGET),powerpc64)
-ifeq ($(BINUTILSPREFIX),)
-GCCLIBDIR:=$(shell dirname `gcc -m64 -print-libgcc-file-name`)
-endif
-endif
-endif
-ifndef GCCLIBDIR
-CROSSGCC=$(strip $(wildcard $(addsuffix /$(BINUTILSPREFIX)gcc$(SRCEXEEXT),$(SEARCHPATH))))
-ifneq ($(CROSSGCC),)
-GCCLIBDIR:=$(shell dirname `$(CROSSGCC) -print-libgcc-file-name`)
-endif
-endif
-ifndef OTHERLIBDIR
-OTHERLIBDIR:=$(shell grep -v "^\#" /etc/ld.so.conf | awk '{ ORS=" "; print $1 }')
-endif
-endif
-ifdef inUnix
-ifeq ($(OS_SOURCE),netbsd)
-OTHERLIBDIR+=/usr/pkg/lib
-endif
-export GCCLIBDIR OTHERLIB
 endif
 BATCHEXT=.bat
 LOADEREXT=.as
@@ -1191,342 +1783,165 @@ else
 TAROPT=vz
 TAREXT=.tar.gz
 endif
+override REQUIRE_PACKAGES=rtl rtl
 ifeq ($(FULL_TARGET),i386-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-qnx)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-freebsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-openbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-macos)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-REQUIRE_PACKAGES_X11=1
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-REQUIRE_PACKAGES_OPENGL=1
 REQUIRE_PACKAGES_RTL=1
-REQUIRE_PACKAGES_GTK=1
-endif
-ifdef REQUIRE_PACKAGES_X11
-PACKAGEDIR_X11:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /x11/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_X11),)
-ifneq ($(wildcard $(PACKAGEDIR_X11)/units/$(TARGETSUFFIX)),)
-UNITDIR_X11=$(PACKAGEDIR_X11)/units/$(TARGETSUFFIX)
-else
-UNITDIR_X11=$(PACKAGEDIR_X11)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_X11)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_X11) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_X11)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_X11=
-UNITDIR_X11:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /x11/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_X11),)
-UNITDIR_X11:=$(firstword $(UNITDIR_X11))
-else
-UNITDIR_X11=
-endif
-endif
-ifdef UNITDIR_X11
-override COMPILER_UNITDIR+=$(UNITDIR_X11)
-endif
-endif
-ifdef REQUIRE_PACKAGES_OPENGL
-PACKAGEDIR_OPENGL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /opengl/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_OPENGL),)
-ifneq ($(wildcard $(PACKAGEDIR_OPENGL)/units/$(TARGETSUFFIX)),)
-UNITDIR_OPENGL=$(PACKAGEDIR_OPENGL)/units/$(TARGETSUFFIX)
-else
-UNITDIR_OPENGL=$(PACKAGEDIR_OPENGL)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_OPENGL)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_OPENGL) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_OPENGL)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_OPENGL=
-UNITDIR_OPENGL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /opengl/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_OPENGL),)
-UNITDIR_OPENGL:=$(firstword $(UNITDIR_OPENGL))
-else
-UNITDIR_OPENGL=
-endif
-endif
-ifdef UNITDIR_OPENGL
-override COMPILER_UNITDIR+=$(UNITDIR_OPENGL)
-endif
 endif
 ifdef REQUIRE_PACKAGES_RTL
 PACKAGEDIR_RTL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /rtl/Makefile.fpc,$(PACKAGESDIR))))))
@@ -1552,32 +1967,6 @@ endif
 endif
 ifdef UNITDIR_RTL
 override COMPILER_UNITDIR+=$(UNITDIR_RTL)
-endif
-endif
-ifdef REQUIRE_PACKAGES_GTK
-PACKAGEDIR_GTK:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /gtk/Makefile.fpc,$(PACKAGESDIR))))))
-ifneq ($(PACKAGEDIR_GTK),)
-ifneq ($(wildcard $(PACKAGEDIR_GTK)/units/$(TARGETSUFFIX)),)
-UNITDIR_GTK=$(PACKAGEDIR_GTK)/units/$(TARGETSUFFIX)
-else
-UNITDIR_GTK=$(PACKAGEDIR_GTK)
-endif
-ifdef CHECKDEPEND
-$(PACKAGEDIR_GTK)/$(FPCMADE):
-	$(MAKE) -C $(PACKAGEDIR_GTK) $(FPCMADE)
-override ALLDEPENDENCIES+=$(PACKAGEDIR_GTK)/$(FPCMADE)
-endif
-else
-PACKAGEDIR_GTK=
-UNITDIR_GTK:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /gtk/Package.fpc,$(UNITSDIR)))))
-ifneq ($(UNITDIR_GTK),)
-UNITDIR_GTK:=$(firstword $(UNITDIR_GTK))
-else
-UNITDIR_GTK=
-endif
-endif
-ifdef UNITDIR_GTK
-override COMPILER_UNITDIR+=$(UNITDIR_GTK)
 endif
 endif
 ifndef NOCPUDEF
@@ -1699,12 +2088,6 @@ endif
 endif
 ifdef LINKSHARED
 endif
-ifdef GCCLIBDIR
-override FPCOPT+=-Fl$(GCCLIBDIR)
-endif
-ifdef OTHERLIBDIR
-override FPCOPT+=$(addprefix -Fl,$(OTHERLIBDIR))
-endif
 ifdef OPT
 override FPCOPT+=$(OPT)
 endif
@@ -1739,9 +2122,92 @@ EXECPPAS:=@$(PPAS)
 endif
 endif
 endif
+.PHONY: fpc_units
+ifneq ($(TARGET_UNITS),)
+override ALLTARGET+=fpc_units
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_UNITS))
+override IMPLICITUNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_IMPLICITUNITS))
+override INSTALLPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+endif
+fpc_units: $(COMPILER_UNITTARGETDIR) $(UNITPPUFILES)
 ifdef TARGET_RSTS
 override RSTFILES=$(addsuffix $(RSTEXT),$(TARGET_RSTS))
 override CLEANRSTFILES+=$(RSTFILES)
+endif
+.PHONY: fpc_all fpc_smart fpc_debug fpc_release fpc_shared
+$(FPCMADE): $(ALLDEPENDENCIES) $(ALLTARGET)
+	@$(ECHOREDIR) Compiled > $(FPCMADE)
+fpc_all: $(FPCMADE)
+fpc_smart:
+	$(MAKE) all LINKSMART=1 CREATESMART=1
+fpc_debug:
+	$(MAKE) all DEBUG=1
+fpc_release:
+	$(MAKE) all RELEASE=1
+.SUFFIXES: $(EXEEXT) $(PPUEXT) $(OEXT) .pas .lpr .dpr .pp .rc .res
+$(COMPILER_UNITTARGETDIR):
+	$(MKDIRTREE) $(COMPILER_UNITTARGETDIR)
+$(COMPILER_TARGETDIR):
+	$(MKDIRTREE) $(COMPILER_TARGETDIR)
+%$(PPUEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(PPUEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.lpr
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.dpr
+	$(COMPILER) $<
+	$(EXECPPAS)
+%.res: %.rc
+	windres -i $< -o $@
+vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.pas $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.lpr $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.dpr $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.inc $(COMPILER_INCLUDEDIR)
+vpath %$(OEXT) $(COMPILER_UNITTARGETDIR)
+vpath %$(PPUEXT) $(COMPILER_UNITTARGETDIR)
+.PHONY: fpc_shared
+override INSTALLTARGET+=fpc_shared_install
+ifndef SHARED_LIBVERSION
+SHARED_LIBVERSION=$(FPC_VERSION)
+endif
+ifndef SHARED_LIBNAME
+SHARED_LIBNAME=$(PACKAGE_NAME)
+endif
+ifndef SHARED_FULLNAME
+SHARED_FULLNAME=$(SHAREDLIBPREFIX)$(SHARED_LIBNAME)-$(SHARED_LIBVERSION)$(SHAREDLIBEXT)
+endif
+ifndef SHARED_LIBUNITS
+SHARED_LIBUNITS:=$(TARGET_UNITS) $(TARGET_IMPLICITUNITS)
+override SHARED_LIBUNITS:=$(filter-out $(INSTALL_BUILDUNIT),$(SHARED_LIBUNITS))
+endif
+fpc_shared:
+ifdef HASSHAREDLIB
+	$(MAKE) all CREATESHARED=1 LINKSHARED=1 CREATESMART=1
+ifneq ($(SHARED_BUILD),n)
+	$(PPUMOVE) -q $(SHARED_LIBUNITS) -i$(COMPILER_UNITTARGETDIR) -o$(SHARED_FULLNAME) -d$(COMPILER_UNITTARGETDIR)
+endif
+else
+	@$(ECHO) Shared Libraries not supported
+endif
+fpc_shared_install:
+ifneq ($(SHARED_BUILD),n)
+ifneq ($(SHARED_LIBUNITS),)
+ifneq ($(wildcard $(COMPILER_UNITTARGETDIR)/$(SHARED_FULLNAME)),)
+	$(INSTALL) $(COMPILER_UNITTARGETDIR)/$(SHARED_FULLNAME) $(INSTALL_SHAREDDIR)
+endif
+endif
 endif
 .PHONY: fpc_install fpc_sourceinstall fpc_exampleinstall
 ifdef INSTALL_UNITS
@@ -1986,917 +2452,31 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
-ifeq ($(FULL_TARGET),i386-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-go32v2)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-win32)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-os2)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-freebsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-beos)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-netbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-solaris)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-qnx)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-netware)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-openbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-wdosx)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-darwin)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-emx)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-watcom)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-netwlibc)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-wince)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),i386-symbian)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-freebsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-netbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-amiga)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-atari)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-openbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-palmos)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),m68k-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-netbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-amiga)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-macos)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-darwin)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-morphos)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),sparc-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),sparc-netbsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),sparc-solaris)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),sparc-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),x86_64-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),x86_64-freebsd)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),x86_64-darwin)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),x86_64-win64)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),x86_64-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-palmos)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-wince)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-gba)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-nds)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),arm-symbian)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-linux)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-darwin)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifeq ($(FULL_TARGET),powerpc64-embedded)
-TARGET_DIRS_GTK=1
-TARGET_DIRS_GTK2=1
-TARGET_DIRS_WIN32=1
-TARGET_DIRS_WINCE=1
-TARGET_DIRS_QT=1
-TARGET_DIRS_CARBON=1
-TARGET_DIRS_FPGUI=1
-TARGET_DIRS_NOGUI=1
-endif
-ifdef TARGET_DIRS_GTK
-gtk_all:
-	$(MAKE) -C gtk all
-gtk_debug:
-	$(MAKE) -C gtk debug
-gtk_smart:
-	$(MAKE) -C gtk smart
-gtk_release:
-	$(MAKE) -C gtk release
-gtk_units:
-	$(MAKE) -C gtk units
-gtk_examples:
-	$(MAKE) -C gtk examples
-gtk_shared:
-	$(MAKE) -C gtk shared
-gtk_install:
-	$(MAKE) -C gtk install
-gtk_sourceinstall:
-	$(MAKE) -C gtk sourceinstall
-gtk_exampleinstall:
-	$(MAKE) -C gtk exampleinstall
-gtk_distinstall:
-	$(MAKE) -C gtk distinstall
-gtk_zipinstall:
-	$(MAKE) -C gtk zipinstall
-gtk_zipsourceinstall:
-	$(MAKE) -C gtk zipsourceinstall
-gtk_zipexampleinstall:
-	$(MAKE) -C gtk zipexampleinstall
-gtk_zipdistinstall:
-	$(MAKE) -C gtk zipdistinstall
-gtk_clean:
-	$(MAKE) -C gtk clean
-gtk_distclean:
-	$(MAKE) -C gtk distclean
-gtk_cleanall:
-	$(MAKE) -C gtk cleanall
-gtk_info:
-	$(MAKE) -C gtk info
-gtk_makefiles:
-	$(MAKE) -C gtk makefiles
-gtk:
-	$(MAKE) -C gtk all
-.PHONY: gtk_all gtk_debug gtk_smart gtk_release gtk_units gtk_examples gtk_shared gtk_install gtk_sourceinstall gtk_exampleinstall gtk_distinstall gtk_zipinstall gtk_zipsourceinstall gtk_zipexampleinstall gtk_zipdistinstall gtk_clean gtk_distclean gtk_cleanall gtk_info gtk_makefiles gtk
-endif
-ifdef TARGET_DIRS_GTK2
-gtk2_all:
-	$(MAKE) -C gtk2 all
-gtk2_debug:
-	$(MAKE) -C gtk2 debug
-gtk2_smart:
-	$(MAKE) -C gtk2 smart
-gtk2_release:
-	$(MAKE) -C gtk2 release
-gtk2_units:
-	$(MAKE) -C gtk2 units
-gtk2_examples:
-	$(MAKE) -C gtk2 examples
-gtk2_shared:
-	$(MAKE) -C gtk2 shared
-gtk2_install:
-	$(MAKE) -C gtk2 install
-gtk2_sourceinstall:
-	$(MAKE) -C gtk2 sourceinstall
-gtk2_exampleinstall:
-	$(MAKE) -C gtk2 exampleinstall
-gtk2_distinstall:
-	$(MAKE) -C gtk2 distinstall
-gtk2_zipinstall:
-	$(MAKE) -C gtk2 zipinstall
-gtk2_zipsourceinstall:
-	$(MAKE) -C gtk2 zipsourceinstall
-gtk2_zipexampleinstall:
-	$(MAKE) -C gtk2 zipexampleinstall
-gtk2_zipdistinstall:
-	$(MAKE) -C gtk2 zipdistinstall
-gtk2_clean:
-	$(MAKE) -C gtk2 clean
-gtk2_distclean:
-	$(MAKE) -C gtk2 distclean
-gtk2_cleanall:
-	$(MAKE) -C gtk2 cleanall
-gtk2_info:
-	$(MAKE) -C gtk2 info
-gtk2_makefiles:
-	$(MAKE) -C gtk2 makefiles
-gtk2:
-	$(MAKE) -C gtk2 all
-.PHONY: gtk2_all gtk2_debug gtk2_smart gtk2_release gtk2_units gtk2_examples gtk2_shared gtk2_install gtk2_sourceinstall gtk2_exampleinstall gtk2_distinstall gtk2_zipinstall gtk2_zipsourceinstall gtk2_zipexampleinstall gtk2_zipdistinstall gtk2_clean gtk2_distclean gtk2_cleanall gtk2_info gtk2_makefiles gtk2
-endif
-ifdef TARGET_DIRS_WIN32
-win32_all:
-	$(MAKE) -C win32 all
-win32_debug:
-	$(MAKE) -C win32 debug
-win32_smart:
-	$(MAKE) -C win32 smart
-win32_release:
-	$(MAKE) -C win32 release
-win32_units:
-	$(MAKE) -C win32 units
-win32_examples:
-	$(MAKE) -C win32 examples
-win32_shared:
-	$(MAKE) -C win32 shared
-win32_install:
-	$(MAKE) -C win32 install
-win32_sourceinstall:
-	$(MAKE) -C win32 sourceinstall
-win32_exampleinstall:
-	$(MAKE) -C win32 exampleinstall
-win32_distinstall:
-	$(MAKE) -C win32 distinstall
-win32_zipinstall:
-	$(MAKE) -C win32 zipinstall
-win32_zipsourceinstall:
-	$(MAKE) -C win32 zipsourceinstall
-win32_zipexampleinstall:
-	$(MAKE) -C win32 zipexampleinstall
-win32_zipdistinstall:
-	$(MAKE) -C win32 zipdistinstall
-win32_clean:
-	$(MAKE) -C win32 clean
-win32_distclean:
-	$(MAKE) -C win32 distclean
-win32_cleanall:
-	$(MAKE) -C win32 cleanall
-win32_info:
-	$(MAKE) -C win32 info
-win32_makefiles:
-	$(MAKE) -C win32 makefiles
-win32:
-	$(MAKE) -C win32 all
-.PHONY: win32_all win32_debug win32_smart win32_release win32_units win32_examples win32_shared win32_install win32_sourceinstall win32_exampleinstall win32_distinstall win32_zipinstall win32_zipsourceinstall win32_zipexampleinstall win32_zipdistinstall win32_clean win32_distclean win32_cleanall win32_info win32_makefiles win32
-endif
-ifdef TARGET_DIRS_WINCE
-wince_all:
-	$(MAKE) -C wince all
-wince_debug:
-	$(MAKE) -C wince debug
-wince_smart:
-	$(MAKE) -C wince smart
-wince_release:
-	$(MAKE) -C wince release
-wince_units:
-	$(MAKE) -C wince units
-wince_examples:
-	$(MAKE) -C wince examples
-wince_shared:
-	$(MAKE) -C wince shared
-wince_install:
-	$(MAKE) -C wince install
-wince_sourceinstall:
-	$(MAKE) -C wince sourceinstall
-wince_exampleinstall:
-	$(MAKE) -C wince exampleinstall
-wince_distinstall:
-	$(MAKE) -C wince distinstall
-wince_zipinstall:
-	$(MAKE) -C wince zipinstall
-wince_zipsourceinstall:
-	$(MAKE) -C wince zipsourceinstall
-wince_zipexampleinstall:
-	$(MAKE) -C wince zipexampleinstall
-wince_zipdistinstall:
-	$(MAKE) -C wince zipdistinstall
-wince_clean:
-	$(MAKE) -C wince clean
-wince_distclean:
-	$(MAKE) -C wince distclean
-wince_cleanall:
-	$(MAKE) -C wince cleanall
-wince_info:
-	$(MAKE) -C wince info
-wince_makefiles:
-	$(MAKE) -C wince makefiles
-wince:
-	$(MAKE) -C wince all
-.PHONY: wince_all wince_debug wince_smart wince_release wince_units wince_examples wince_shared wince_install wince_sourceinstall wince_exampleinstall wince_distinstall wince_zipinstall wince_zipsourceinstall wince_zipexampleinstall wince_zipdistinstall wince_clean wince_distclean wince_cleanall wince_info wince_makefiles wince
-endif
-ifdef TARGET_DIRS_QT
-qt_all:
-	$(MAKE) -C qt all
-qt_debug:
-	$(MAKE) -C qt debug
-qt_smart:
-	$(MAKE) -C qt smart
-qt_release:
-	$(MAKE) -C qt release
-qt_units:
-	$(MAKE) -C qt units
-qt_examples:
-	$(MAKE) -C qt examples
-qt_shared:
-	$(MAKE) -C qt shared
-qt_install:
-	$(MAKE) -C qt install
-qt_sourceinstall:
-	$(MAKE) -C qt sourceinstall
-qt_exampleinstall:
-	$(MAKE) -C qt exampleinstall
-qt_distinstall:
-	$(MAKE) -C qt distinstall
-qt_zipinstall:
-	$(MAKE) -C qt zipinstall
-qt_zipsourceinstall:
-	$(MAKE) -C qt zipsourceinstall
-qt_zipexampleinstall:
-	$(MAKE) -C qt zipexampleinstall
-qt_zipdistinstall:
-	$(MAKE) -C qt zipdistinstall
-qt_clean:
-	$(MAKE) -C qt clean
-qt_distclean:
-	$(MAKE) -C qt distclean
-qt_cleanall:
-	$(MAKE) -C qt cleanall
-qt_info:
-	$(MAKE) -C qt info
-qt_makefiles:
-	$(MAKE) -C qt makefiles
-qt:
-	$(MAKE) -C qt all
-.PHONY: qt_all qt_debug qt_smart qt_release qt_units qt_examples qt_shared qt_install qt_sourceinstall qt_exampleinstall qt_distinstall qt_zipinstall qt_zipsourceinstall qt_zipexampleinstall qt_zipdistinstall qt_clean qt_distclean qt_cleanall qt_info qt_makefiles qt
-endif
-ifdef TARGET_DIRS_CARBON
-carbon_all:
-	$(MAKE) -C carbon all
-carbon_debug:
-	$(MAKE) -C carbon debug
-carbon_smart:
-	$(MAKE) -C carbon smart
-carbon_release:
-	$(MAKE) -C carbon release
-carbon_units:
-	$(MAKE) -C carbon units
-carbon_examples:
-	$(MAKE) -C carbon examples
-carbon_shared:
-	$(MAKE) -C carbon shared
-carbon_install:
-	$(MAKE) -C carbon install
-carbon_sourceinstall:
-	$(MAKE) -C carbon sourceinstall
-carbon_exampleinstall:
-	$(MAKE) -C carbon exampleinstall
-carbon_distinstall:
-	$(MAKE) -C carbon distinstall
-carbon_zipinstall:
-	$(MAKE) -C carbon zipinstall
-carbon_zipsourceinstall:
-	$(MAKE) -C carbon zipsourceinstall
-carbon_zipexampleinstall:
-	$(MAKE) -C carbon zipexampleinstall
-carbon_zipdistinstall:
-	$(MAKE) -C carbon zipdistinstall
-carbon_clean:
-	$(MAKE) -C carbon clean
-carbon_distclean:
-	$(MAKE) -C carbon distclean
-carbon_cleanall:
-	$(MAKE) -C carbon cleanall
-carbon_info:
-	$(MAKE) -C carbon info
-carbon_makefiles:
-	$(MAKE) -C carbon makefiles
-carbon:
-	$(MAKE) -C carbon all
-.PHONY: carbon_all carbon_debug carbon_smart carbon_release carbon_units carbon_examples carbon_shared carbon_install carbon_sourceinstall carbon_exampleinstall carbon_distinstall carbon_zipinstall carbon_zipsourceinstall carbon_zipexampleinstall carbon_zipdistinstall carbon_clean carbon_distclean carbon_cleanall carbon_info carbon_makefiles carbon
-endif
-ifdef TARGET_DIRS_FPGUI
-fpgui_all:
-	$(MAKE) -C fpgui all
-fpgui_debug:
-	$(MAKE) -C fpgui debug
-fpgui_smart:
-	$(MAKE) -C fpgui smart
-fpgui_release:
-	$(MAKE) -C fpgui release
-fpgui_units:
-	$(MAKE) -C fpgui units
-fpgui_examples:
-	$(MAKE) -C fpgui examples
-fpgui_shared:
-	$(MAKE) -C fpgui shared
-fpgui_install:
-	$(MAKE) -C fpgui install
-fpgui_sourceinstall:
-	$(MAKE) -C fpgui sourceinstall
-fpgui_exampleinstall:
-	$(MAKE) -C fpgui exampleinstall
-fpgui_distinstall:
-	$(MAKE) -C fpgui distinstall
-fpgui_zipinstall:
-	$(MAKE) -C fpgui zipinstall
-fpgui_zipsourceinstall:
-	$(MAKE) -C fpgui zipsourceinstall
-fpgui_zipexampleinstall:
-	$(MAKE) -C fpgui zipexampleinstall
-fpgui_zipdistinstall:
-	$(MAKE) -C fpgui zipdistinstall
-fpgui_clean:
-	$(MAKE) -C fpgui clean
-fpgui_distclean:
-	$(MAKE) -C fpgui distclean
-fpgui_cleanall:
-	$(MAKE) -C fpgui cleanall
-fpgui_info:
-	$(MAKE) -C fpgui info
-fpgui_makefiles:
-	$(MAKE) -C fpgui makefiles
-fpgui:
-	$(MAKE) -C fpgui all
-.PHONY: fpgui_all fpgui_debug fpgui_smart fpgui_release fpgui_units fpgui_examples fpgui_shared fpgui_install fpgui_sourceinstall fpgui_exampleinstall fpgui_distinstall fpgui_zipinstall fpgui_zipsourceinstall fpgui_zipexampleinstall fpgui_zipdistinstall fpgui_clean fpgui_distclean fpgui_cleanall fpgui_info fpgui_makefiles fpgui
-endif
-ifdef TARGET_DIRS_NOGUI
-nogui_all:
-	$(MAKE) -C nogui all
-nogui_debug:
-	$(MAKE) -C nogui debug
-nogui_smart:
-	$(MAKE) -C nogui smart
-nogui_release:
-	$(MAKE) -C nogui release
-nogui_units:
-	$(MAKE) -C nogui units
-nogui_examples:
-	$(MAKE) -C nogui examples
-nogui_shared:
-	$(MAKE) -C nogui shared
-nogui_install:
-	$(MAKE) -C nogui install
-nogui_sourceinstall:
-	$(MAKE) -C nogui sourceinstall
-nogui_exampleinstall:
-	$(MAKE) -C nogui exampleinstall
-nogui_distinstall:
-	$(MAKE) -C nogui distinstall
-nogui_zipinstall:
-	$(MAKE) -C nogui zipinstall
-nogui_zipsourceinstall:
-	$(MAKE) -C nogui zipsourceinstall
-nogui_zipexampleinstall:
-	$(MAKE) -C nogui zipexampleinstall
-nogui_zipdistinstall:
-	$(MAKE) -C nogui zipdistinstall
-nogui_clean:
-	$(MAKE) -C nogui clean
-nogui_distclean:
-	$(MAKE) -C nogui distclean
-nogui_cleanall:
-	$(MAKE) -C nogui cleanall
-nogui_info:
-	$(MAKE) -C nogui info
-nogui_makefiles:
-	$(MAKE) -C nogui makefiles
-nogui:
-	$(MAKE) -C nogui all
-.PHONY: nogui_all nogui_debug nogui_smart nogui_release nogui_units nogui_examples nogui_shared nogui_install nogui_sourceinstall nogui_exampleinstall nogui_distinstall nogui_zipinstall nogui_zipsourceinstall nogui_zipexampleinstall nogui_zipdistinstall nogui_clean nogui_distclean nogui_cleanall nogui_info nogui_makefiles nogui
-endif
-all: $(addsuffix _all,$(DEFAULT_DIR))
-debug: $(addsuffix _debug,$(DEFAULT_DIR))
-smart: $(addsuffix _smart,$(DEFAULT_DIR))
-release: $(addsuffix _release,$(DEFAULT_DIR))
-units: $(addsuffix _units,$(DEFAULT_DIR))
-examples: $(addsuffix _examples,$(DEFAULT_DIR))
-shared: $(addsuffix _shared,$(DEFAULT_DIR))
-install: fpc_install $(addsuffix _install,$(DEFAULT_DIR))
-sourceinstall: fpc_sourceinstall $(addsuffix _sourceinstall,$(DEFAULT_DIR))
-exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(DEFAULT_DIR))
-distinstall: $(addsuffix _distinstall,$(DEFAULT_DIR))
-zipinstall: $(addsuffix _zipinstall,$(DEFAULT_DIR))
-zipsourceinstall: $(addsuffix _zipsourceinstall,$(DEFAULT_DIR))
-zipexampleinstall: $(addsuffix _zipexampleinstall,$(DEFAULT_DIR))
-zipdistinstall: $(addsuffix _zipdistinstall,$(DEFAULT_DIR))
-clean: $(addsuffix _clean,$(DEFAULT_DIR))
-distclean: $(addsuffix _distclean,$(DEFAULT_DIR))
-cleanall: $(addsuffix _cleanall,$(DEFAULT_DIR))
+debug: fpc_debug
+smart: fpc_smart
+release: fpc_release
+units: fpc_units
+examples:
+shared: fpc_shared
+install: fpc_install
+sourceinstall: fpc_sourceinstall
+exampleinstall: fpc_exampleinstall
+distinstall:
+zipinstall:
+zipsourceinstall:
+zipexampleinstall:
+zipdistinstall:
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
-makefiles: fpc_makefiles $(addsuffix _makefiles,$(DEFAULT_DIR))
-.PHONY: all debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
+makefiles: fpc_makefiles
+.PHONY: debug smart release units examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
+.PHONY: cleartarget all
+cleartarget:
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+		$(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

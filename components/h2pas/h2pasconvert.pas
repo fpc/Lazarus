@@ -2161,6 +2161,7 @@ function TH2PasConverter.MergeIncludeFiles(AFile: TH2PasFile;
       if IncFile=nil then continue;
       //DebugLn(['GetMergeFiles AFile=',AFile.Filename,' CInclude=',CInclude.Filename,' IncFile.Merge=',IncFile.Merge,' ']);
       if not IncFile.Merge then continue;
+      if not IncFile.Enabled then continue;
       if IncFile=AFile then continue;
       if MergedFiles.IndexOf(IncFile)<0 then begin
         MergedFiles.Add(IncFile);
@@ -2178,6 +2179,8 @@ function TH2PasConverter.MergeIncludeFiles(AFile: TH2PasFile;
     if Project<>nil then begin
       for i:=0 to Project.CHeaderFileCount-1 do begin
         IncFile:=Project.CHeaderFiles[i];
+        if not IncFile.Enabled then continue;
+        if IncFile=CurFile then continue;
         if IncFile.MergedBy=CurFile then begin
           if MergedFiles.IndexOf(IncFile)<0 then begin
             MergedFiles.Add(IncFile);

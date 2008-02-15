@@ -53,10 +53,10 @@ type
   
 const
   LCLPlatformDirNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt', 'fpgui'
+      'gtk', 'gtk2', 'win32', 'wince', 'carbon', 'qt', 'fpgui', 'nogui'
     );
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
-      'gtk', 'gtk 2', 'win32/win64', 'wince', 'carbon', 'qt', 'fpGUI'
+      'gtk', 'gtk 2', 'win32/win64', 'wince', 'carbon', 'qt', 'fpGUI', 'NoGUI'
     );
 
 

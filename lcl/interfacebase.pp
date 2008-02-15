@@ -61,7 +61,8 @@ type
     lpWinCE,
     lpCarbon,
     lpQT,
-    lpfpGUI
+    lpfpGUI,
+    lpNoGUI
     );
 
   { TWidgetSet }
