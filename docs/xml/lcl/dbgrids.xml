@@ -4599,7 +4599,7 @@ and Destroys the item instance.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDBGrid.InitiateAction">
-        <short/>
+        <short>Initiate the action associated with this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4661,44 +4661,61 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: public -->
       <element name="TdbGrid.Canvas">
-        <short/>
-        <descr/>
+        <short>The area of a control on which its components are drawn or painted</short>
+        <descr>The Canvas is the area of screen on which the various components are drawn. <br/>
+This inherits its properties from TCanvas, <br/>
+and that description should be read to understand their definitions more fully.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Align">
-        <short/>
-        <descr/>
+        <short>Used to align the control in one of four directions.</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Anchors">
-        <short/>
-        <descr/>
+        <short>The set of anchor definitions for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines how the control is to be anchored to its client or parent conrol</p>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.AutoAdvance">
-        <short/>
+        <short>Automatically advance down the grid on successive mouse clicks</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.AutoFillColumns">
-        <short/>
+        <short>Automatically fill columns with default values if nothing else specified</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.BorderStyle">
-        <short/>
-        <descr/>
+        <short>The available border styles for this sort of control</short>
+        <descr>Only a restricted series of options is available: none or a single border.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Color">
-        <short/>
-        <descr/>
+        <short>Determine the colour for the current control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Reads the value for colour, or stores the value, and sets a flag if the colour is stored.</p>
+          <p>The default colour is the same as the window in which the control is located.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -4716,13 +4733,16 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Constraints">
-        <short/>
-        <descr/>
+        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.DataSource">
-        <short/>
+        <short>The DataSource from which this grid displays - usually the result of a  database Query</short>
         <descr/>
         <seealso/>
       </element>
@@ -4734,20 +4754,28 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.DefaultRowHeight">
-        <short/>
-        <descr/>
+        <short>Default value for the height of newly created grid rows.</short>
+        <descr>
+          <p>If new rows of the grid are created by changing the <link id="TCustomGrid.DefaultRowHeight.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p>
+          <p>After that the user may redefine this value. If the <link id="TCustomGrid.DefaultRowHeight.Options">Options</link> property includes the appropriate value, the row height may also be changed by the user at runtime.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Enabled">
-        <short/>
-        <descr/>
+        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.FixedColor">
-        <short/>
-        <descr/>
+        <short>The color for the fixed cells of the grid.</short>
+        <descr>The color used by headings.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -4770,73 +4798,93 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.ParentColor">
-        <short/>
+        <short>
+          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.ParentFont">
-        <short/>
+        <short>
+          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.PopupMenu">
-        <short/>
-        <descr/>
+        <short>PopupMenu - a context-sensitive menu that pops up when the right mouse button is clicked over this control</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+ Reads the details of the pop-up menu, or stores them.<br/>
+Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.ReadOnly">
-        <short/>
+        <short>Set True to prevent writing to grid; set False to allow modification</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.ShowHint">
-        <short/>
-        <descr/>
+        <short>Flag to determine: Is hint to be displayed for this control?</short>
+        <descr>// standard properties, which should be supported by all descendants<br/>
+Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.TabOrder">
-        <short/>
-        <descr/>
+        <short>The place this control occupies in the list of tabs</short>
+        <descr>Reads or writes information in flag; default is -1
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.TabStop">
-        <short/>
-        <descr/>
+        <short>
+          <i>TabStop</i> - determines if the user can tab to a control.</short>
+        <descr>
+          <p>Reads or writes boolean flag; default is False</p>
+          <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
+          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.TitleFont">
-        <short/>
+        <short>The font to be used in the grid's title</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Visible">
-        <short/>
-        <descr/>
+        <short>
+          <i>Visible</i> - can the control be seen?</short>
+        <descr>
+          <pre>The Visible property represents the ability to see a visual control. 
+          If Visible is True the control is shown, otherwise it is hidden.
+          Calling Show sets, among others, Visible to True.
+          Setting Visible to False is equivalent to calling Hide method.</pre>
+          <remark>The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.</remark>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnCellClick">
-        <short/>
+        <short>Event handler for mouse click in a cell of the grid</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnColEnter">
-        <short/>
+        <short>Event handler if mouse enters column or it gains focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnColExit">
-        <short/>
+        <short>Event handler if mouse leaves column or it loses focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -4848,67 +4896,88 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnDrawColumnCell">
-        <short/>
+        <short>Event handler if the cell in this column requires to be drawn</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnDblClick">
-        <short/>
-        <descr/>
+        <short>Event Handle for mouse double-click</short>
+        <descr>
+          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnEditButtonClick">
-        <short/>
+        <short>Event handler for when the Edit button is clicked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnEnter">
-        <short/>
+        <short>
+          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnExit">
-        <short/>
+        <short>
+          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnKeyDown">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyDown</i>
+ - event handler for instance when key is down while control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnKeyPress">
-        <short/>
-        <descr/>
+        <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyPress</i>
+ - event controller for a key being pressed while the control has focus</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnKeyUp">
-        <short/>
-        <descr/>
+        <short>
+          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+        <descr>
+          <p>
+            <i>OnKeyUp</i>
+  - event handler for instance when a key is up (not pressed) while the control has focus</p>
+          <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnMouseDown">
-        <short/>
+        <short>Event handler for when a mouse button is pressed down</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnMouseMove">
-        <short/>
+        <short>Event handler for mouse movement within the current control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnMouseUp">
-        <short/>
+        <short>Event handler for when the mouse button is released, ie "up"</short>
         <descr/>
         <seealso/>
       </element>
@@ -4920,31 +4989,31 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnTitleClick">
-        <short/>
+        <short>Event handler for mouse click on Title</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.BorderColor">
-        <short/>
+        <short>The colour of the border for this control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.DefaultTextStyle">
-        <short/>
+        <short>Default style for displaying text - includes alignment, layout, single or multi-lines</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.EditorBorderStyle">
-        <short/>
+        <short>The border style for the editor used in this grid</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.EditorMode">
-        <short/>
+        <short>Is grid ready to accept edits? (EditorMode True)</short>
         <descr/>
         <seealso/>
       </element>
@@ -4956,7 +5025,7 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.FastEditing">
-        <short/>
+        <short>Is the FastEditing method being used?</short>
         <descr/>
         <seealso/>
       </element>
@@ -4974,19 +5043,19 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.GridLineColor">
-        <short/>
+        <short>Colour to be used for GridLines</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.GridLineStyle">
-        <short/>
+        <short>Style to be used for GridLines</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDBGrid.SelectedColor">
-        <short/>
+        <short>Colour to be used for selected cells</short>
         <descr/>
         <seealso/>
       </element>
@@ -4998,19 +5067,21 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.AlternateColor">
-        <short/>
+        <short>The other colour which can be used in this grid (eg for highlighting selected text etc)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.DragCursor">
-        <short/>
+        <short>
+          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.DragMode">
-        <short/>
+        <short>
+          <i>DragMode </i>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
@@ -5040,13 +5111,13 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.Scrollbars">
-        <short/>
+        <short>The ScrollBars to be used with this grid</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.TitleStyle">
-        <short/>
+        <short>The style to be used for the grid's title</short>
         <descr/>
         <seealso/>
       </element>
@@ -5058,37 +5129,37 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnDragDrop">
-        <short/>
+        <short>Event handler for the Drag-Drop manoeuvre</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnDragOver">
-        <short/>
+        <short>Event handler for the case when a control is dragged over another control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnEndDrag">
-        <short/>
+        <short>Event handler for the end of a dragging process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnFieldEditMask">
-        <short/>
+        <short>Event handler if field is associated with an edit mask</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnSelectEditor">
-        <short/>
+        <short>Event handler for when the editor is selected</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.OnStartDrag">
-        <short/>
+        <short>Event handler for start of dragging process</short>
         <descr/>
         <seealso/>
       </element>
@@ -5105,8 +5176,19 @@ and Destroys the item instance.
         <errors/>
         <seealso/>
       </element>
-      <element name="TDBGrid.AutoEdit"/>
-      <element name="TDBGrid.BorderSpacing"/>
+      <element name="TDBGrid.AutoEdit">
+        <short>Whether the Edit mode is automatically entered when a cell is selected</short>
+      </element>
+      <element name="TDBGrid.BorderSpacing">
+        <short>Determines the border spacing for this control</short>
+        <descr>
+          <p>// standard properties, which should be supported by all descendants</p>
+          <p>Determines the border spacing for this control</p>
+          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
+          <p>The properties are defined in the parent class <link id="#lcl.Controls.TControlBorderSpacing">TControlBorderSpacing</link>
+          </p>
+        </descr>
+      </element>
     </module>
     <!-- DBGrids -->
   </package>
