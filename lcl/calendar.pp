@@ -151,7 +151,7 @@ begin
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls];
-  Date := FormatDateTime(ShortDateFormat,Now);
+  DateTime := Now;
 end;
 
 destructor TCustomCalendar.Destroy;
