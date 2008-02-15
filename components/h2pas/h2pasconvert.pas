@@ -4290,6 +4290,7 @@ var
     AVLNode:=NeededPointerTypes.FindKey(Identifier,
                                         @CompareImplicitTypeStringAndName);
     DebugLn(['AddNeededPointerType ',GetIdentifier(Identifier),' Position=',Position,' Count=',Count]);
+    DebugLn(['AddNeededPointerType AAA1 ',copy(Tool.Src,Position,100)]);
     if AVLNode<>nil then begin
       Item:=TImplicitType(AVLNode.Data);
       if Item.MaxPosition<Count then
@@ -4315,7 +4316,7 @@ var
       if IdentifierIsDefined(@Tool.Src[Position+Level]) then break;
       inc(Level);
     end;
-    //DebugLn(['CheckIdentifier ',GetIdentifier(Identifier),' Level=',Level]);
+    DebugLn(['CheckIdentifier ',GetIdentifier(Identifier),' Level=',Level]);
     if Level=0 then begin
       // the identifier is defined
       exit;
@@ -4415,7 +4416,10 @@ var
   begin
     Node:=Tool.Tree.Root;
     while Node<>nil do begin
-      if Node.Desc in AllPascalTypes then begin
+      if (Node.Desc in [ctnIdentifier,ctnOpenArrayType,
+        ctnRangedArrayType,ctnTypeType,ctnPointerType,ctnConstant])
+      and (Node.FirstChild=nil)
+      then begin
         Tool.MoveCursorToCleanPos(Node.StartPos);
         while Tool.CurPos.StartPos<Node.EndPos do begin
           Tool.ReadNextAtom;
