@@ -34,78 +34,7 @@ uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
   CodeTree, NonPascalCodeTools;
   
-var
-  Filename: string;
-  Code: TCodeBuffer;
-  Tree: TCompilerDirectivesTree;
-  Changed: Boolean;
-  Pass: Integer;
-  i: Integer;
-  p: String;
-  Undefines: TStringList;
-  Defines: TStringList;
 begin
-  Undefines:=nil;
-  Defines:=nil;
-  Filename:=SetDirSeparators('scanexamples/missingh2pasdirectives.pas');
-  
-  // parse parameters
-  for i:=1 to ParamCount do begin
-    p:=ParamStr(i);
-    if p='' then continue;
-    if p[1]='-' then begin
-      if Undefines=nil then Undefines:=TStringList.Create;
-      Undefines.Add(copy(p,2,length(p)));
-    end
-    else if p[1]='+' then begin
-      if Defines=nil then Defines:=TStringList.Create;
-      Defines.Add(copy(p,2,length(p)));
-    end else
-      Filename:=p;
-  end;
-  if Undefines<>nil then begin
-    writeln('Undefines: ');
-    writeln(Undefines.Text);
-  end;
-  if Defines<>nil then begin
-    writeln('Defines: ');
-    writeln(Defines.Text);
-  end;
-
-  // load the file
-  Filename:=ExpandFileName(Filename);
-  Code:=CodeToolBoss.LoadFile(Filename,false,false);
-  if Code=nil then
-    raise Exception.Create('loading failed '+Filename);
-
-  // parse the directives
-  Tree:=TCompilerDirectivesTree.Create;
-  Tree.Parse(Code,CodeToolBoss.GetNestedCommentsFlagForFile(Code.Filename));
   writeln('-----------------------------------');
-  writeln('h2pas created these directives:');
-  Tree.WriteDebugReport;
-
-  // add missing directives
-  Changed:=false;
-  Tree.FixMissingH2PasDirectives(Changed);
-  writeln('-----------------------------------');
-  writeln('after adding the missing directives:');
-  Tree.WriteDebugReport;
-  
-  // reduce directives
-  Pass:=0;
-  repeat
-    inc(Pass);
-    Changed:=false;
-    Tree.ReduceCompilerDirectives(Undefines,Defines,Changed);
-    if not Changed then break;
-    writeln('-----------------------------------');
-    writeln('after reduce number ',Pass,':');
-    Tree.WriteDebugReport;
-  until false;
-  
-  writeln('-----------------------------------');
-  writeln('Source:');
-  writeln(Code.Source);
 end.
 
