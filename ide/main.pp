@@ -60,6 +60,9 @@ interface
       {off $DEFINE UseAsyncProcess}
     {$ENDIF}
   {$ENDIF}
+  {$IFDEF windows}
+    {$DEFINE UseAsyncProcess}
+  {$ENDIF}
 {$ENDIF}
 
 {$I ide.inc}
