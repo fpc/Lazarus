@@ -1661,9 +1661,6 @@ var
     NodeExt: TCodeTreeNodeExtension;
   begin
     DebugLn(['AddRedefinition ',NodeText,' Redefined=',CleanPosToStr(Redefinition.StartPos),' Definition=',CleanPosToStr(Definition.StartPos)]);
-    if (TreeOfCodeTreeNodeExt<>nil)
-    and (FindCodeTreeNodeExt(TreeOfCodeTreeNodeExt,NodeText)<>nil) then
-      exit;
     NodeExt:=NodeExtMemManager.NewNode;
     NodeExt.Node:=Redefinition;
     NodeExt.Data:=Definition;
@@ -1708,15 +1705,16 @@ begin
           AVLNode:=FindCodeTreeNodeExtAVLNode(AllNodes,NodeText);
           if AVLNode<>nil then begin
             AddRedefinition(Node,TCodeTreeNodeExtension(AVLNode.Data).Node,NodeText);
+            Node:=Node.NextSkipChilds;
           end else begin
             AddDefinition(Node,NodeText);
+            if WithEnums
+            and (Node.FirstChild<>nil)
+            and (Node.FirstChild.Desc=ctnEnumerationType) then
+              Node:=Node.FirstChild
+            else
+              Node:=Node.NextSkipChilds;
           end;
-          if WithEnums
-          and (Node.FirstChild<>nil)
-          and (Node.FirstChild.Desc=ctnEnumerationType) then
-            Node:=Node.FirstChild
-          else
-            Node:=Node.NextSkipChilds;
         end;
       else
         Node:=Node.Next;
@@ -1733,7 +1731,7 @@ function TCodeCompletionCodeTool.RemoveRedefinitions(
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   AVLNode: TAVLTreeNode;
-  NodesToDo: TAVLTree;
+  NodesToDo: TAVLTree;// tree of TCodeTreeNode
   Node: TCodeTreeNode;
   StartNode: TCodeTreeNode;
   EndNode: TCodeTreeNode;
@@ -1753,7 +1751,8 @@ begin
     // put the nodes to remove into the NodesToDo
     AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
     while AVLNode<>nil do begin
-      NodesToDo.Add(TCodeTreeNodeExtension(AVLNode.Data).Node);
+      Node:=TCodeTreeNodeExtension(AVLNode.Data).Node;
+      NodesToDo.Add(Node);
       AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
     end;
     
@@ -1761,6 +1760,7 @@ begin
     while NodesToDo.Count>0 do begin
       // find a block of redefinitions
       StartNode:=TCodeTreeNode(NodesToDo.Root.Data);
+      //DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions ',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode)]);
       EndNode:=StartNode;
       while (StartNode.PriorBrother<>nil)
       and (NodesToDo.Find(StartNode.PriorBrother)<>nil) do
@@ -1768,7 +1768,8 @@ begin
       while (EndNode.NextBrother<>nil)
       and (NodesToDo.Find(EndNode.NextBrother)<>nil) do
         EndNode:=EndNode.NextBrother;
-        
+      //DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions Start=',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode),' End=',EndNode.StartPos,' ',GetRedefinitionNodeText(EndNode)]);
+
       // check if a whole section is deleted
       if (StartNode.PriorBrother=nil) and (EndNode.PriorBrother=nil)
       and (StartNode.Parent<>nil)
@@ -1828,9 +1829,10 @@ begin
       Node:=StartNode;
       repeat
         NodesToDo.Remove(Node);
-        if Node=EndNode then break;
+        //DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions removed ',Node.StartPos,' ',GetRedefinitionNodeText(Node),' ',NodesToDo.Find(Node)<>nil]);
         Node:=Node.Next;
-      until false;
+      until (Node=nil) or
+         ((Node.StartPos>EndNode.StartPos) and (not Node.HasAsParent(EndNode)));
     end;
   finally
     NodesToDo.Free;
