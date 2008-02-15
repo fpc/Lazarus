@@ -1850,6 +1850,9 @@ begin
     Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W), @Size);
   end else
   begin
+    // Important: Althougth the MSDN Docs point that GetTextExtentPoint32W
+    // works under Windows 9x, tests showed that this function produces
+    // a wrong output
     s := Utf8ToAnsi(s);
     Result := Windows.GetTextExtentPoint32(DC, pchar(s), length(s), @Size);
   end;
@@ -2196,8 +2199,20 @@ end;
  and includes buttons.
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer;
+{$ifdef WindowsUnicodeSupport}
+var
+  WideLPText, WideLPCaption: widestring;
+{$endif}
 begin
+  {$ifdef WindowsUnicodeSupport}
+  WideLPText := UTF8Decode(string(LPText));
+  WideLPCaption := UTF8Decode(string(LPCaption));
+
+  Result := Windows.MessageBoxW(HWnd, PWideChar(WideLPText),
+    PWideChar(WideLPCaption), UType);
+  {$else}
   Result := Windows.MessageBox(HWnd, LPText, LPCaption, UType);
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------

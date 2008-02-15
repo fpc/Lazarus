@@ -435,7 +435,8 @@ begin
       Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
 
       TitleBuffer := Utf8Decode(AOpenDialog.Title);
-      {$note AllocMem is used a workaround for a possible bug in Utf8Decode, it doesn't seem to null terminate the widestring}
+      {$note AllocMem is used a workaround for a possible bug in Utf8Decode,
+       it doesn't seem to null terminate the widestring}
       lpStrTitle := AllocMem(Length(TitleBuffer) * 2 + 2);
       Move(TitleBuffer[1], lpStrTitle^, Length(TitleBuffer) * 2);
     end

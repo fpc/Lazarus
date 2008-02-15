@@ -124,6 +124,8 @@ procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 function GetLastErrorText(AErrorCode: Cardinal): String;
 function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cTolerance: COLORREF  = $101010): HRGN;
 
+function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
@@ -1769,6 +1771,25 @@ begin
     Result := h;
 
   FreeMem(Data);
+end;
+
+{ Exactly equal to StrLCopy but for PWideChars
+  Copyes a widestring up to a maximal length, in WideChars }
+function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+var
+  counter: SizeInt;
+begin
+  counter := 0;
+
+  while (Source[counter] <> #0)  and (counter < MaxLen) do
+  begin
+    Dest[counter] := Source[counter];
+    Inc(counter);
+  end;
+
+  { terminate the string }
+  Dest[counter] := #0;
+  Result := Dest;
 end;
 
 

@@ -139,8 +139,10 @@ end;
 *******************************************************************}
 class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  tnid: TNotifyIconData;
-  buffer: PChar;
+  tnida: TNotifyIconDataA;
+  tnidw: TNotifyIconDataW;
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
   Window: Windows.TWndClassEx;
 begin
   vwsTrayIcon := ATrayIcon;
@@ -175,20 +177,57 @@ begin
         hInstance,          //* handle to application instance */
         nil);               //* pointer to window-creation data */
 
-  // Fill TNotifyIconData
-  FillChar(tnid, SizeOf(tnid), 0);
-  tnid.cbSize := SizeOf(TNotifyIconData);
-  tnid.hWnd := ATrayIcon.Handle;
-  tnid.uID := uIDTrayIcon;
-  tnid.uFlags := NIF_MESSAGE or NIF_ICON;
-  if (ATrayIcon.Hint <> '') then tnid.uFlags := tnid.uFlags or NIF_TIP;
-  tnid.uCallbackMessage := WM_USER + uIDTrayIcon;
-  tnid.hIcon := ATrayIcon.Icon.Handle;
-  buffer := PChar(ATrayIcon.Hint);
-  StrCopy(@tnid.szTip, buffer);
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    // Fill TNotifyIconDataW
+    FillChar(tnidw, SizeOf(tnidw), 0);
+    tnidw.cbSize := SizeOf(TNotifyIconDataW);
+    tnidw.hWnd := ATrayIcon.Handle;
+    tnidw.uID := uIDTrayIcon;
+    tnidw.uFlags := NIF_MESSAGE or NIF_ICON;
+    if (ATrayIcon.Hint <> '') then tnidw.uFlags := tnidw.uFlags or NIF_TIP;
+    tnidw.uCallbackMessage := WM_USER + uIDTrayIcon;
+    tnidw.hIcon := ATrayIcon.Icon.Handle;
 
-  // Create Taskbar icon
-  Result := Shell_NotifyIconA(NIM_ADD, @tnid);
+    WideBuffer := UTF8Decode(ATrayIcon.Hint);
+    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
+
+    Result := Shell_NotifyIconW(NIM_ADD, @tnidw)
+  end
+  else
+  begin
+    // Fill TNotifyIconDataA
+    FillChar(tnida, SizeOf(tnida), 0);
+    tnida.cbSize := SizeOf(TNotifyIconDataA);
+    tnida.hWnd := ATrayIcon.Handle;
+    tnida.uID := uIDTrayIcon;
+    tnida.uFlags := NIF_MESSAGE or NIF_ICON;
+    if (ATrayIcon.Hint <> '') then tnida.uFlags := tnida.uFlags or NIF_TIP;
+    tnida.uCallbackMessage := WM_USER + uIDTrayIcon;
+    tnida.hIcon := ATrayIcon.Icon.Handle;
+
+    AnsiBuffer := UTF8ToAnsi(ATrayIcon.Hint);
+    StrLCopy(@tnida.szTip, PChar(AnsiBuffer), 127);
+
+    Result := Shell_NotifyIconA(NIM_ADD, @tnida);
+  end;
+  {$else}
+  // Fill TNotifyIconDataA
+  FillChar(tnida, SizeOf(tnida), 0);
+  tnida.cbSize := SizeOf(TNotifyIconDataA);
+  tnida.hWnd := ATrayIcon.Handle;
+  tnida.uID := uIDTrayIcon;
+  tnida.uFlags := NIF_MESSAGE or NIF_ICON;
+  if (ATrayIcon.Hint <> '') then tnida.uFlags := tnida.uFlags or NIF_TIP;
+  tnida.uCallbackMessage := WM_USER + uIDTrayIcon;
+  tnida.hIcon := ATrayIcon.Icon.Handle;
+
+  StrLCopy(@tnida.szTip, PChar(ATrayIcon.Hint), 127);
+
+  //  Create Taskbar icon
+  Result := Shell_NotifyIconA(NIM_ADD, @tnida);
+  {$endif}
 end;
 
 {*******************************************************************

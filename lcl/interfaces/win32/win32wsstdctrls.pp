@@ -899,13 +899,36 @@ end;
 class procedure TWin32WSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    WideBuffer := UTF8Decode(AText);
+    
+    if TCustomComboBox(AWinControl).ReadOnly then
+      Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(WideBuffer)))
+    else
+      Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(WideBuffer)));
+  end
+  else
+  begin
+    AnsiBuffer := UTF8ToAnsi(AText);
+    
+    if TCustomComboBox(AWinControl).ReadOnly then
+      Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AnsiBuffer)))
+    else
+      Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AnsiBuffer)));
+  end;
+  {$else}
   if TCustomComboBox(AWinControl).ReadOnly then
     Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(PChar(AText)))
   else
     Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(PChar(AText)));
+  {$endif}
 end;
 
 class function TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
