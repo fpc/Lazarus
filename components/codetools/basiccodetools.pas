@@ -1818,8 +1818,7 @@ begin
     case Source[AtomStart] of
     '{','(','[':
       begin
-        if not ReadTilPascalBracketClose(Source,AtomStart) then exit;
-        Position:=AtomStart;
+        if not ReadTilPascalBracketClose(Source,Position) then exit;
       end;
     '}',')',']':
       if Source[AtomStart]=CloseBracket then begin

@@ -2704,6 +2704,28 @@ function TReplaceImplicitTypes.FindNextImplicitType(var Position: integer;
   out aTypeStart, aTypeEnd: integer): boolean;
 var
   AtomStart: LongInt;
+
+  function ReadTilTypeEnd: boolean;
+  var
+    CurAtom: String;
+  begin
+    repeat
+      CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
+      if CurAtom='' then exit(false);
+      if (length(CurAtom)=1) and (CurAtom[1] in ['(','[']) then begin
+        // skip brackets
+        if not ReadTilPascalBracketClose(Src,Position) then exit(false);
+      end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']'])
+      then begin
+        // type end found
+        aTypeEnd:=AtomStart;
+        Result:=true;
+        exit;
+      end;
+    until false;
+  end;
+  
+var
   CurAtom: string;
 begin
   Result:=false;
@@ -2713,6 +2735,7 @@ begin
   repeat
     CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
     if CurAtom='' then break;
+    //DebugLn(['TReplaceImplicitTypes.FindNextImplicitType AAA1 ',CurAtom]);
     if CurAtom=':' then begin
       // var, const, out declaration
       CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
@@ -2726,21 +2749,21 @@ begin
           // :array[
           if not ReadTilPascalBracketClose(Src,Position) then break;
           // :array[..]
-          repeat
-            CurAtom:=ReadNextPascalAtom(Src,Position,AtomStart);
-            if CurAtom='' then break;
-            if (length(CurAtom)=1) and (CurAtom[1] in ['(','[']) then begin
-              // skip brackets
-              if not ReadTilPascalBracketClose(Src,Position) then break;
-            end else if (length(CurAtom)=1) and (CurAtom[1] in [';',')',']'])
-            then begin
-              // type end found
-              aTypeEnd:=AtomStart;
-              Result:=true;
-              exit;
-            end;
-          until false;
+          Result:=ReadTilTypeEnd;
+          exit;
         end;
+      end
+      else if CompareIdentifiers(PChar(CurAtom),'function')=0 then begin
+        // :function
+        // for example: function hci_for_each_dev(func:function (dd:longint):longint):longint;
+        Result:=ReadTilTypeEnd;
+        exit;
+      end
+      else if CompareIdentifiers(PChar(CurAtom),'procedure')=0 then begin
+        // :procedure
+        // for example: procedure hci_for_each_dev(func:function (dd:longint):longint);
+        Result:=ReadTilTypeEnd;
+        exit;
       end;
     end;
   until CurAtom='';
