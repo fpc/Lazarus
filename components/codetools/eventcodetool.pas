@@ -35,8 +35,8 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
-{ $DEFINE ShowAllProcs}
+{off $DEFINE CTDEBUG}
+{off $DEFINE ShowAllProcs}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -739,7 +739,7 @@ begin
     if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
     or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
     {$IFDEF CTDEBUG}
-    DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters,' ATypeUnitName=',ATypeUnitName]);
+    DebugLn(['[TEventsCodeTool.CreateMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'" UseTypeInfoForParameters=',UseTypeInfoForParameters]);
     {$ENDIF}
     // initialize class for code completion
     CodeCompleteClassNode:=ClassNode;
@@ -897,6 +897,7 @@ var
   FirstParameterNode: TCodeTreeNode;
   ProcName: PChar;
 begin
+  //DebugLn(['TEventsCodeTool.CollectPublishedMethods Node=',FoundContext.Node.DescAsString]);
   if (FoundContext.Node.Desc=ctnProcedure)
   and (FoundContext.Node.Parent<>nil)
   and (FoundContext.Node.Parent.Desc=ctnClassPublished) then begin

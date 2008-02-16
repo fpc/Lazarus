@@ -6177,7 +6177,10 @@ begin
 
     xtString:
       begin
-        // ToDo: ask scanner for shortstring, ansistring, widestring
+        if (Scanner.PascalCompiler=pcDelphi)
+        or ((Scanner.CompilerMode=cmDELPHI)
+        or (Scanner.Values['LONGSTRINGS']='1')) then
+          Result.Desc:=xtAnsiString;
       end;
     end;
   finally
@@ -6413,7 +6416,7 @@ begin
     ParamCompatibility:=IsCompatible(TargetExprParamList.Items[i],
                                      SourceExprType,Params);
     {$IFDEF ShowExprEval}
-    DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]));
+    DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] B ',ExprTypeToString(TargetExprParamList.Items[i]),' ',TypeCompatibilityNames[ParamCompatibility]);
     {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
