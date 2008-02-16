@@ -13,7 +13,7 @@ programs=apiwizz
 packages=rtl
 
 [clean]
-#units=apiwizard
+units=apiwizard
 
 [compiler]
 options=-gl $(LAZARUS_LIBPATHS)

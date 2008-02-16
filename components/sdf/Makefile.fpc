@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/sdflaz$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) sdflaz$(PPUEXT)
+
+cleanall: clean

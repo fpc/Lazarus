@@ -37,6 +37,9 @@ packages=regexpr
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
+  $(wildcard units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
+  $(wildcard trayicon/*$(OEXT)) $(wildcard trayicon/*$(PPUEXT)) \
   hello \
   bitbutton \
   checkbox \
@@ -88,3 +91,4 @@ ifeq ($(OS_TARGET),win32)
 LAZARUS_OPT+= -WG
 endif
 
+cleanall: clean

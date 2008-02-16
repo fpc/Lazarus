@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunittestrunner$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT)
+
+cleanall: clean

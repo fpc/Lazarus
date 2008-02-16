@@ -93,10 +93,12 @@ cleanlaz: cleanide
 purge: cleanlaz
 	$(MAKE) -C examples clean
 	$(MAKE) -C tools clean
-	$(MAKE) -C doceditor clean
+#	$(MAKE) -C doceditor clean
 	$(MAKE) -C tools clean
 
 clean: cleanlaz
+
+cleanall: purge
 
 # create dirs
 installbase:

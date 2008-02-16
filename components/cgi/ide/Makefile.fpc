@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/cgilazide$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) cgilazide$(PPUEXT)
+
+cleanall: clean

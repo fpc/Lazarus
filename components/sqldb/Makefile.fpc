@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/sqldblaz$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) sqldblaz$(PPUEXT)
+
+cleanall: clean

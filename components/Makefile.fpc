@@ -10,15 +10,15 @@ dirs=synedit codetools
 files=$(wildcard ./units/*$(OEXT)) \
       $(wildcard ./units/*$(PPUEXT)) \
       $(wildcard ./units/*$(RSTEXT)) \
-      $(wildcard ./units/$(CPU_TARGET)/$(OS_TARGET)/*$(OEXT)) \
-      $(wildcard ./units/$(CPU_TARGET)/$(OS_TARGET)/*$(PPUEXT)) \
-      $(wildcard ./units/$(CPU_TARGET)/$(OS_TARGET)/*$(RSTEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(OEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(PPUEXT)) \
+      $(wildcard ./units/$(CPU_TARGET)-$(OS_TARGET)/*$(RSTEXT)) \
       $(wildcard ./custom/*$(OEXT)) \
       $(wildcard ./custom/*$(PPUEXT)) \
       $(wildcard ./custom/*$(RSTEXT))
 
 [rules]
-.phony: bigidecomponents
+.PHONY: bigidecomponents bigideclean
 
 bigidecomponents: all
         $(MAKE) -C rtticontrols
@@ -39,3 +39,23 @@ ifneq ($(OS_TARGET),darwin)
 endif
 
 cleanlaz: clean
+
+cleanall: clean bigideclean
+
+bigideclean:
+        $(MAKE) -C rtticontrols cleanall
+        $(MAKE) -C printers cleanall
+        $(MAKE) -C printers/design cleanall
+        $(MAKE) -C cgi cleanall
+        $(MAKE) -C cgi/ide cleanall
+        $(MAKE) -C turbopower_ipro cleanall
+        $(MAKE) -C fpcunit cleanall
+        $(MAKE) -C fpcunit/ide cleanall
+        $(MAKE) -C projecttemplates cleanall
+        $(MAKE) -C memds cleanall
+        $(MAKE) -C sdf cleanall
+        $(MAKE) -C tachart cleanall
+ifneq ($(OS_TARGET),darwin)
+        $(MAKE) -C tdbf cleanall
+        $(MAKE) -C sqldb cleanall
+endif

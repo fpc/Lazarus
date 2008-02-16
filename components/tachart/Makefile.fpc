@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) tachartlazaruspkg$(PPUEXT)
+
+cleanall: clean

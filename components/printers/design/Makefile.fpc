@@ -40,3 +40,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/printers4lazide$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) printers4lazide$(PPUEXT)
+
+cleanall: clean

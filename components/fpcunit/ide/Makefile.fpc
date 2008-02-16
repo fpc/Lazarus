@@ -41,3 +41,5 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunitide$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunitide$(PPUEXT)
+
+cleanall: clean
