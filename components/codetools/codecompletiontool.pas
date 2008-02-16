@@ -1752,6 +1752,7 @@ begin
     AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
     while AVLNode<>nil do begin
       Node:=TCodeTreeNodeExtension(AVLNode.Data).Node;
+      DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions AAA1 ',GetRedefinitionNodeText(Node)]);
       NodesToDo.Add(Node);
       AVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
     end;
@@ -1760,7 +1761,7 @@ begin
     while NodesToDo.Count>0 do begin
       // find a block of redefinitions
       StartNode:=TCodeTreeNode(NodesToDo.Root.Data);
-      //DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions ',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode)]);
+      DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions ',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode)]);
       EndNode:=StartNode;
       while (StartNode.PriorBrother<>nil)
       and (NodesToDo.Find(StartNode.PriorBrother)<>nil) do
@@ -1768,10 +1769,10 @@ begin
       while (EndNode.NextBrother<>nil)
       and (NodesToDo.Find(EndNode.NextBrother)<>nil) do
         EndNode:=EndNode.NextBrother;
-      //DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions Start=',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode),' End=',EndNode.StartPos,' ',GetRedefinitionNodeText(EndNode)]);
+      DebugLn(['TCodeCompletionCodeTool.RemoveRedefinitions Start=',StartNode.StartPos,' ',GetRedefinitionNodeText(StartNode),' End=',EndNode.StartPos,' ',GetRedefinitionNodeText(EndNode)]);
 
       // check if a whole section is deleted
-      if (StartNode.PriorBrother=nil) and (EndNode.PriorBrother=nil)
+      if (StartNode.PriorBrother=nil) and (EndNode.NextBrother=nil)
       and (StartNode.Parent<>nil)
       and (StartNode.Parent.Desc in AllDefinitionSections) then begin
         StartNode:=StartNode.Parent;
@@ -1789,8 +1790,9 @@ begin
         //  a,delete, delete: char;  ->   a: char;
         //  delete,delete,c: char;   ->   c: char;
         //  a,delete,delete,c: char; ->   a,c:char;
-        IsListStart:=(StartNode.PriorBrother<>nil)
-                 and (StartNode.PriorBrother.FirstChild<>nil);
+        IsListStart:=(StartNode.PriorBrother=nil)
+                 or ((StartNode.PriorBrother<>nil)
+                     and (StartNode.PriorBrother.FirstChild<>nil));
         IsListEnd:=(EndNode.FirstChild<>nil);
         if IsListStart and IsListEnd then begin
           // case 1: delete, delete: char;    ->   delete whole

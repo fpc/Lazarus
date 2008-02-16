@@ -4316,7 +4316,7 @@ var
       if IdentifierIsDefined(@Tool.Src[Position+Level]) then break;
       inc(Level);
     end;
-    DebugLn(['CheckIdentifier ',GetIdentifier(Identifier),' Level=',Level]);
+    //DebugLn(['CheckIdentifier ',GetIdentifier(Identifier),' Level=',Level]);
     if Level=0 then begin
       // the identifier is defined
       exit;
