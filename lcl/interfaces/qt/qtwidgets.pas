@@ -973,9 +973,11 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    APanels: Array of QLabelH;
+    Panels: array of QLabelH;
     procedure showMessage(text: PWideString; timeout: Integer = 0);
     procedure addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
+    function isSizeGripEnabled: Boolean;
+    procedure setSizeGripEnabled(const Value: Boolean);
   end;
   
   { TQtDialog }
@@ -6796,7 +6798,7 @@ end;
 
 function TQtStatusBar.CreateWidget(const AParams: TCreateParams): QWidgetH;
 begin
-  SetLength(APanels, 0);
+  SetLength(Panels, 0);
   Result := QStatusBar_create();
   Widget := Result;
 end;
@@ -6809,6 +6811,16 @@ end;
 procedure TQtStatusBar.addWidget(AWidget: QWidgetH; AStretch: Integer = 0);
 begin
   QStatusBar_addWidget(QStatusBarH(Widget), AWidget, AStretch);
+end;
+
+function TQtStatusBar.isSizeGripEnabled: Boolean;
+begin
+  Result := QStatusBar_isSizeGripEnabled(QStatusBarH(Widget));
+end;
+
+procedure TQtStatusBar.setSizeGripEnabled(const Value: Boolean);
+begin
+  QStatusBar_setSizeGripEnabled(QStatusBarH(Widget), Value);
 end;
 
 { TQtDialog }

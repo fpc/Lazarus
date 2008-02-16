@@ -44,6 +44,8 @@ type
   TQtWSStatusBar = class(TWSStatusBar)
   private
   protected
+    class procedure ClearPanels(const Widget: TQtStatusBar);
+    class procedure RecreatePanels(const AStatusBar: TStatusBar; const Widget: TQtStatusBar);
   public
     class procedure AddControl(const AControl: TControl); override;
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -255,6 +257,13 @@ const
 {trVertical  } QtVertical
   );
   
+  AlignmentToQtAlignmentMap: array[TAlignment] of QtAlignment =
+  (
+{taLeftJustify } QtAlignLeft,
+{taRightJustify} QtAlignRight,
+{taCenter      } QtAlignCenter
+  );
+  
 
 { TQtWSToolButton }
 
@@ -444,55 +453,82 @@ end;
 
 { TQtWSStatusBar }
 
+class procedure TQtWSStatusBar.ClearPanels(const Widget: TQtStatusBar);
+var
+  i: integer;
+begin
+  if length(Widget.Panels) > 0 then
+  begin
+    for i := High(Widget.Panels) downto 0 do
+    begin
+      QStatusBar_removeWidget(QStatusBarH(Widget.Widget), Widget.Panels[i]);
+      QLabel_destroy(Widget.Panels[i]);
+    end;
+    SetLength(Widget.Panels, 0);
+  end;
+end;
+
+class procedure TQtWSStatusBar.RecreatePanels(const AStatusBar: TStatusBar;
+  const Widget: TQtStatusBar);
+var
+  Str: WideString;
+  i: Integer;
+  R: TRect;
+begin
+  ClearPanels(Widget);
+  if AStatusBar.SimplePanel then
+  begin
+    Str := GetUtf8String(AStatusBar.SimpleText);
+    Widget.showMessage(@Str);
+  end else
+  if AStatusBar.Panels.Count > 0 then
+  begin
+    SetLength(Widget.Panels, AStatusBar.Panels.Count);
+    for i := 0 to AStatusBar.Panels.Count - 1 do
+    begin
+      Str := GetUtf8String(AStatusBar.Panels[i].Text);
+      Widget.Panels[i] := QLabel_create(@Str, Widget.Widget);
+      QLabel_setAlignment(Widget.Panels[i],
+        AlignmentToQtAlignmentMap[AStatusBar.Panels[i].Alignment]);
+      R := Widget.getFrameGeometry;
+      QWidget_setGeometry(Widget.Panels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
+      Widget.addWidget(Widget.Panels[i], AStatusBar.Panels[i].Width);
+    end;
+  end;
+end;
+
 class procedure TQtWSStatusBar.AddControl(const AControl: TControl);
 var
   QtStatusBar: TQtStatusBar;
   Parent: TQtWidget;
 begin
-  if (AControl is TStatusBar) and WSCheckHandleAllocated(TStatusBar(AControl), 'AddControl') then
+  if not WSCheckHandleAllocated(TStatusBar(AControl), 'AddControl') then
+    Exit;
+
+  TQtWSWinControl.AddControl(AControl);
+
+  QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
+
+  Parent := TQtWidget(AControl.Parent.Handle);
+  if (Parent is TQtMainWindow) and (TQtMainWindow(Parent).IsMainForm) and
+     (TQtMainWindow(Parent).StatusBar = nil) then
   begin
-    TQtWSWinControl.AddControl(AControl);
-
-    QtStatusBar := TQtStatusBar(TWinControl(AControl).Handle);
-
-    Parent := TQtWidget(AControl.Parent.Handle);
-    if (Parent is TQtMainWindow) and (TQtMainWindow(Parent).IsMainForm)
-    and (TQtMainWindow(Parent).StatusBar = nil) then
-    begin
-      TQtMainWindow(Parent).StatusBar := QtStatusBar;
-      TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
-    end;
+    TQtMainWindow(Parent).StatusBar := QtStatusBar;
+    TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
   end;
+  // dont allow resize if parent is not form
+  QtStatusBar.setSizeGripEnabled(AControl.Parent is TCustomForm);
 end;
 
 class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
 var
   AStatusBar: TStatusBar absolute AWinControl;
   QtStatusBar: TQtStatusBar;
-  Str: WideString;
-  i: Integer;
-  R: TRect;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
-  
-  if AStatusBar.SimplePanel then
-  begin
-    Str := GetUtf8String(AStatusBar.SimpleText);
-    QtStatusBar.showMessage(@Str);
-  end else
-  if AStatusBar.Panels.Count > 0 then
-  begin
-    SetLength(QtStatusBar.APanels, AStatusBar.Panels.Count);
-    for i := 0 to AStatusBar.Panels.Count - 1 do
-    begin
-      Str := GetUtf8String(AStatusBar.Panels[i].Text);
-      QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
-      R := QtStatusBar.getFrameGeometry;
-      QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
-      QtStatusBar.addWidget(QtStatusBar.APanels[i], AStatusBar.Panels[i].Width);
-    end;
-  end;
-  
+
+  RecreatePanels(TStatusBar(AWinControl), QtStatusBar);
+
   QtStatusBar.AttachEvents;
 
   // Return handle
@@ -503,24 +539,11 @@ end;
 class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
 var
   QtStatusBar: TQtStatusBar;
-  i: Integer;
 begin
-
   QtStatusBar := TQtStatusBar(AWinControl.Handle);
   
-  if length(QtStatusBar.APanels) > 0 then
-  begin
-    for i := High(QtStatusBar.APanels) downto 0 do
-    begin
-      QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
-      QLabel_destroy(QtStatusBar.APanels[i]);
-    end;
-    SetLength(QtStatusBar.APanels, 0);
-  end;
-  
+  ClearPanels(QtStatusBar);
   TQtStatusBar(AWinControl.Handle).Release;
-
-  AWinControl.Handle := 0;
 end;
 
 class procedure TQtWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
@@ -532,28 +555,29 @@ begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
   if AStatusBar.SimplePanel then
   begin
-    if Length(QtStatusBar.APanels) > 0 then
+    if Length(QtStatusBar.Panels) > 0 then
     begin
-      for i := High(QtStatusBar.APanels) downto 0 do
+      for i := High(QtStatusBar.Panels) downto 0 do
       begin
-        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
-        QLabel_destroy(QtStatusBar.APanels[i]);
+        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.Panels[i]);
+        QLabel_destroy(QtStatusBar.Panels[i]);
       end;
-      SetLength(QtStatusBar.APanels, 0);
+      SetLength(QtStatusBar.Panels, 0);
     end;
       
     Str := GetUtf8String(AStatusBar.SimpleText);
     QtStatusBar.showMessage(@Str);
-    
   end else
   if AStatusBar.Panels.Count > 0 then
   begin
     QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
     
-    if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
+    if (PanelIndex >= Low(QtStatusBar.Panels)) and (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
-      QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
+      QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
+      QLabel_setAlignment(QtStatusBar.Panels[PanelIndex],
+        AlignmentToQtAlignmentMap[AStatusBar.Panels[PanelIndex].Alignment]);
     end;
   end;
 end;
@@ -570,10 +594,10 @@ begin
     QtStatusBar.showMessage(@Str);
   end else
   begin
-    if (PanelIndex >= Low(QtStatusBar.APanels)) and (PanelIndex <= High(QtStatusBar.APanels)) then
+    if (PanelIndex >= Low(QtStatusBar.Panels)) and (PanelIndex <= High(QtStatusBar.Panels)) then
     begin
       Str := GetUtf8String(AStatusBar.Panels[PanelIndex].Text);
-      QLabel_setText(QtStatusBar.APanels[PanelIndex], @Str);
+      QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
     end;
   end;
 end;
@@ -581,55 +605,9 @@ end;
 class procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);
 var
   QtStatusBar: TQtStatusBar;
-  i: Integer;
-  Str: WideString;
-  R: TRect;
 begin
   QtStatusBar := TQtStatusBar(AStatusBar.Handle);
-  if AStatusBar.SimplePanel then
-  begin
-    if Length(QtStatusBar.APanels) > 0 then
-    begin
-    
-      for i := High(QtStatusBar.APanels) downto 0 do
-      begin
-        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
-        QLabel_destroy(QtStatusBar.APanels[i]);
-      end;
-        
-      SetLength(QtStatusBar.APanels, 0);
-    end;
-  end else
-  begin
-    if Length(QtStatusBar.APanels) <> AStatusBar.Panels.Count then
-    begin
-    
-      QStatusBar_clearMessage(QStatusBarH(QtStatusBar.Widget));
-      
-      for i := High(QtStatusBar.APanels) downto 0 do
-      begin
-        QStatusBar_removeWidget(QStatusBarH(QtStatusBar.Widget), QtStatusBar.APanels[i]);
-        QLabel_destroy(QtStatusBar.APanels[i]);
-      end;
-      
-      SetLength(QtStatusBar.APanels, 0);
-      SetLength(QtStatusBar.APanels, AStatusBar.Panels.Count);
-      
-      
-      for i := 0 to AStatusBar.Panels.Count - 1 do
-      begin
-        Str := GetUtf8String(AStatusBar.Panels[i].Text);
-        
-        QtStatusBar.APanels[i] := QLabel_create(@Str, QtStatusBar.Widget);
-
-        R := QtStatusBar.getFrameGeometry;
-        QWidget_setGeometry(QtStatusBar.APanels[i], 0, 0, AStatusBar.Panels[i].Width, R.Bottom);
-        
-        QtStatusBar.addWidget(QtStatusBar.APanels[i], AStatusBar.Panels[i].Width);
-        QWidget_show(QtStatusBar.APanels[i]);
-      end;
-    end
-  end;
+  RecreatePanels(AStatusBar, QtStatusBar);
 end;
 
 { TQtWSCustomListView }
@@ -749,24 +727,14 @@ class procedure TQtWSCustomListView.ColumnSetAlignment(const ALV: TCustomListVie
 var
   TW: QTreeWidgetH;
   TWI: QTreeWidgetItemH;
-  FAlign: QtAlignment;
 begin
   if not WSCheckHandleAllocated(ALV, 'ColumnSetAlignment') then
     Exit;
 
   TW := QTreeWidgetH(TQtTreeWidget(ALV.Handle).Widget);
   TWI := QTreeWidget_headerItem(TW);
-  
-  case AAlignment of
-    taLeftJustify: FAlign := QtAlignLeft;
-    taRightJustify: FAlign := QtAlignRight;
-    taCenter: FAlign := QtAlignCenter;
-    else
-      FAlign := QtAlignLeft;
-  end;
-  
-  QTreeWidgetItem_setTextAlignment(TWI, AIndex, FAlign);
-  
+
+  QTreeWidgetItem_setTextAlignment(TWI, AIndex, AlignmentToQtAlignmentMap[AAlignment]);
 end;
 
 {------------------------------------------------------------------------------
