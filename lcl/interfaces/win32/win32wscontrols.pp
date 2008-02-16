@@ -169,7 +169,6 @@ begin
       Parent := TWin32WidgetSet(WidgetSet).AppHandle;
 
     SubClassWndProc := @WindowProc;
-    WindowTitle := nil;
     StrCaption := PChar(AWinControl.Caption);
     WindowTitle := nil;
     Height := AWinControl.Height;
@@ -473,8 +472,8 @@ end;
 
 class procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
 Begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
-  then Exit;
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS 
   then Windows.SetWindowTextW(AWinControl.Handle, PWideChar(Utf8Decode(AText)))

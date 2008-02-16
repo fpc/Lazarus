@@ -118,6 +118,7 @@ Type
     FWinCECList: HWND;
     FSender: TWinControl; // Needed to recreate the window
     FSorted: Boolean;
+    FlastInsertedIndex: Integer;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;

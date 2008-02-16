@@ -230,7 +230,7 @@ Var
     PageHandle: HWND;
   begin
     Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
-    PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+    PageIndex := Windows.SendMessageW(NotebookHandle, TCM_GETCURSEL, 0, 0);
     //PageIndex := NotebookPageRealToLCLIndex(Notebook, PageIndex);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
@@ -438,7 +438,7 @@ Var
         // tabpage parent and got a dc to draw in, divert paint to parent
         DCIndex := Windows.SaveDC(PaintMsg.DC);
         MoveWindowOrgEx(PaintMsg.DC, -parLeft, -parTop);
-        Windows.SendMessage(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
+        Windows.SendMessageW(ParentPaintWindow, WM_PAINT, PaintMsg.DC, 0);
         Windows.RestoreDC(PaintMsg.DC, DCIndex);
       end;
       if (WParam = 0) or not needParentPaint then
@@ -487,9 +487,9 @@ Var
   begin
     MousePos.X := LMMouse.Pos.X;
     MousePos.Y := LMMouse.Pos.Y;
-    for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
+    for I := 0 to Windows.SendMessageW(Window, LB_GETCOUNT, 0, 0) - 1 do
     begin
-      Windows.SendMessage(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
+      Windows.SendMessageW(Window, LB_GETITEMRECT, I, PtrInt(@ItemRect));
       ItemRect.Right := ItemRect.Left + ItemRect.Bottom - ItemRect.Top;
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
@@ -518,7 +518,7 @@ Var
       Sibling := Parent.Controls[i];
       if (Sibling is TRadioButton) and (Sibling<>RadioButton) and
          (TRadioButton(Sibling).HandleAllocated) then
-         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK,
+         Windows.SendMessageW(TRadioButton(Sibling).Handle, BM_SETCHECK,
             Windows.WParam(BST_UNCHECKED), 0);
     end;
   end;
@@ -541,7 +541,7 @@ Var
   var
     Buddy: HWND;
   begin
-    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
+    Buddy := SendMessageW(SpinEditHandle, UDM_GETBUDDY, 0, 0);
     DestroyWindow(Buddy);
   end;
 
@@ -549,7 +549,7 @@ Var
   var
     Buddy: HWND;
   begin
-    Buddy := SendMessage(SpinEditHandle, UDM_GETBUDDY, 0, 0);
+    Buddy := SendMessageW(SpinEditHandle, UDM_GETBUDDY, 0, 0);
     Windows.EnableWindow(Buddy, Enable);
   end;
 
@@ -723,7 +723,7 @@ Var
             begin
               prevFocus := Windows.GetFocus;
               Windows.SetFocus(targetWindow);
-              PLMsg^.Result := Windows.SendMessage(targetWindow, WM_SYSCOMMAND, WParam, LParam);
+              PLMsg^.Result := Windows.SendMessageW(targetWindow, WM_SYSCOMMAND, WParam, LParam);
               Windows.SetFocus(prevFocus);
               WinProcess := false;
             end;

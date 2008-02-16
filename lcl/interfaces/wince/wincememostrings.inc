@@ -121,17 +121,14 @@ procedure TWinCEMemoStrings.Insert(Index: integer; const S: string);
 var
   LineStart: Integer;
   NewLine: String;
-  tmpNewLine : PWideChar;
 begin
   LineStart := GetLineStart(Index);
   if Index < GetRealCount then begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
-    tmpNewLine := LCLStringToPWideChar(NewLine);
-    SendMessage(fHandle, EM_SETSEL, LineStart, LineStart);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
-    FreeMem(tmpNewLine);
+    SendMessageW(fHandle, EM_SETSEL, LineStart, LineStart);
+    SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
   end
   else begin
     //append with a preceding LineEnding
@@ -141,19 +138,13 @@ begin
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-    tmpNewLine := LCLStringToPWideChar(NewLine);
-    SendMessage(fHandle, EM_REPLACESEL,0 , lparam(PWideChar(tmpNewLine)));
-    FreeMem(tmpNewLine);
+    SendMessageW(fHandle, EM_REPLACESEL, 0, lparam(PWideChar(Utf8Decode(NewLine))))
   end;
 end;
 
 procedure TWinCEMemoStrings.SetText(TheText: PChar);
-var
-tmpTheText : PWideChar;
 begin
-  tmpTheText := LCLStringToPWideChar(TheText);
-  SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(tmpTheText));
-  FreeMem(tmpTheText);
+  Windows.SetWindowTextW(fHandle, PWideChar(Utf8Decode(TheText)))
 end;
 
 {$ENDIF}

@@ -247,7 +247,6 @@ procedure UpdateStatusBarPanel(const StatusPanel: TStatusPanel);
 var
   BevelType: integer;
   Text: string;
-  pwText : PWideChar;
 begin
   Text := StatusPanel.Text;
   case StatusPanel.Alignment of
@@ -259,9 +258,8 @@ begin
     pbLowered: BevelType := 0;
     pbRaised: BevelType := Windows.SBT_POPOUT;
   end;
-  pwText := LCLStringToPWideChar(Text);
-  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(pwText));
-  FreeMem(pwText);
+  Windows.SendMessageW(StatusPanel.StatusBar.Handle, SB_SETTEXT,
+   StatusPanel.Index or BevelType, LPARAM(PWideChar(UTF8Decode(Text))));
 end;
 
 procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
@@ -272,8 +270,8 @@ var
 begin
   if StatusBar.Panels.Count=0 then begin
     // SETPARTS 0,0 does not work :S
-    Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
-    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PWideChar('')));
+    Windows.SendMessageW(StatusBar.Handle, SB_SIMPLE, 1, 0);
+    Windows.SendMessageW(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PWideChar('')));
     exit;
   end;
   Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
@@ -355,7 +353,7 @@ begin
   if AStatusBar.SimplePanel then
     begin
       tmpSimpleText := LCLStringToPWideChar(AStatusBar.SimpleText);
-      Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PWideChar(tmpSimpleText)));
+      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PWideChar(tmpSimpleText)));
       FreeMem(tmpSimpleText);
     end
   else

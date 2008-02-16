@@ -334,17 +334,17 @@ begin
   begin
     // retrieve page handle from tab as extra check (in case page isn't added yet).
     TCI.mask := TCIF_PARAM;
-    Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
+    Windows.SendMessageW(NotebookHandle, TCM_GETITEMW, PageIndex, LPARAM(@TCI));
     if PtrUInt(TCI.lParam)=PtrUInt(AWinControl) then
     begin
       Assert(False, Format('Trace:TWinCEWSCustomPage.SetText --> %S', [AText]));
       TCI.mask := TCIF_TEXT;
       {$ifdef Win32}
-      TCI.pszText := PChar(LCLStringToPWideChar(AText));
+      TCI.pszText := PChar(PWideChar(UTF8Decode(AText)));
       {$else}
-      TCI.pszText := LCLStringToPWideChar(AText);
+      TCI.pszText := PWideChar(UTF8Decode(AText));
       {$endif}
-      Windows.SendMessage(NotebookHandle, TCM_SETITEMW, PageIndex, LPARAM(@TCI));
+      Windows.SendMessageW(NotebookHandle, TCM_SETITEMW, PageIndex, LPARAM(@TCI));
       FreeMem(TCI.pszText);
     end;
   end;
@@ -399,13 +399,13 @@ begin
   begin
     TCI.Mask := TCIF_TEXT or TCIF_PARAM;
     {$ifdef Win32}
-    TCI.pszText := PChar(LCLStringToPWideChar(AChild.Caption));
+    TCI.pszText := PChar(PWideChar(UTF8Decode((AChild.Caption))));
     {$else}
-    TCI.pszText := LCLStringToPWideChar(AChild.Caption);
+    TCI.pszText := PWideChar(UTF8Decode(AChild.Caption));
     {$endif}
     // store object as extra, so we can verify we got the right page later
     TCI.lParam := PtrUInt(AChild);
-    Windows.SendMessage(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
+    Windows.SendMessageW(Handle, TCM_INSERTITEMW, AIndex, LPARAM(@TCI));
     FreeMem(TCI.pszText);
     // clientrect possible changed, adding first tab, or deleting last
     // windows should send a WM_SIZE message because of this, but it doesn't
@@ -456,11 +456,11 @@ begin
       TCI.Mask := TCIF_TEXT or TCIF_PARAM;
       TCI.lParam := PtrUInt(lPage);
       {$ifdef Win32}
-      TCI.pszText := PChar(LCLStringToPWideChar(lPage.Caption));
+      TCI.pszText := PChar(PWideChar(UTF8Decode(lPage.Caption)));
       {$else}
-      TCI.pszText := LCLStringToPWideChar(lPage.Caption);
+      TCI.pszText := PWideChar(UTF8Decode(lPage.Caption));
       {$endif}
-      Windows.SendMessage(WinHandle, TCM_INSERTITEMW, RealIndex, LPARAM(@TCI));
+      Windows.SendMessageW(WinHandle, TCM_INSERTITEMW, RealIndex, LPARAM(@TCI));
     end;
     Inc(RealIndex);
   end;

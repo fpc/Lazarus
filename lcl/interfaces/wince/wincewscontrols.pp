@@ -145,7 +145,7 @@ type
     MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
-    WindowTitle, StrCaption: PWideChar;
+    WindowTitle, StrCaption: PChar;
     pClassName: PWideChar;
   end;
 
@@ -181,9 +181,8 @@ begin
 
     SubClassWndProc := @WindowProc;
     WindowTitle := nil;
+    StrCaption := PChar(AWinControl.Caption);
 
-    StrCaption := LCLStringToPWideChar(AWinControl.Caption);
-    WindowTitle := nil;
     Height := AWinControl.Height;
     Left := AWinControl.Left;
     //Parent := AWinControl.Parent;
@@ -229,7 +228,7 @@ begin
       Window := CreateWindowExW(
        FlagsEx,            // Extra Flags
        pClassName,         // Name of the registered class
-       WindowTitle,        // Title of the window
+       PWideChar(UTF8Decode(WindowTitle)),// Title of the window
        Flags,              // Style of the window
        Left,               // x-position (at beginning)
        Top,                // y-position (at beginning)
@@ -242,9 +241,8 @@ begin
 
       if Window = 0 then
       begin
-//        Writeln('failed to create wince control, error: '+ IntToStr(GetLastError()));
         raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError())
-         + ' control: ' + WindowTitle);
+         + ' WindowTitle: ' + WindowTitle);
       end;
     end;
     { after creating a child window the following happens:
@@ -449,14 +447,10 @@ begin
 end;
 
 class procedure TWinCEWSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  tmpStr : PWideChar;
 begin
-  if not WSCheckHandleAllocated(AWincontrol, 'SetText')
-  then Exit;
-  tmpStr := LCLStringToPWideChar(AText);
-  Windows.SetWindowTextW(AWinControl.Handle, PWideChar(tmpStr));
-  FreeMem(tmpStr);
+  if not WSCheckHandleAllocated(AWincontrol, 'SetText') then Exit;
+
+  Windows.SetWindowTextW(AWinControl.Handle, PWideChar(UTF8Decode(AText)));
 end;
 
 class procedure TWinCEWSWinControl.ConstraintsChange(const AWinControl: TWinControl);

@@ -262,6 +262,7 @@ begin
     pClassName := @ClsName;
     FlagsEx := 0;
     Flags := WS_OVERLAPPEDWINDOW;
+    WindowTitle := StrCaption;
     lForm := TCustomForm(AWinControl);
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     SubClassWndProc := nil;

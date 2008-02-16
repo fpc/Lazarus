@@ -1066,7 +1066,7 @@ end;
 function TWin32WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 {$ifdef WindowsUnicodeSupport}
 var
-  s: String;
+  s: AnsiString;
   w: WideString;
 {$endif}
 begin
@@ -1075,20 +1075,22 @@ begin
 
  {$ifdef WindowsUnicodeSupport}
   // use temp buffer, if count is set, there might be no null terminator
-  if count = -1
-  then s := str
-  else begin
+  if count = -1 then
+    s := str
+  else
+  begin
     SetLength(s, count);
     move(str^, s[1], count);  
   end;
   // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
-  if UnicodeEnabledOS 
-  then begin
+  if UnicodeEnabledOS then
+  begin
     // TODO: use the real number of chars (and not the lenght)
     W := Utf8Decode(S);
     Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
   end
-  else begin
+  else
+  begin
     S := Utf8ToAnsi(S);
     Result := Windows.DrawText(DC, PChar(S), Length(S), @Rect, Flags);
   end;
@@ -1232,7 +1234,7 @@ end;
 function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 {$ifdef WindowsUnicodeSupport}
 var
-  s: String;
+  s: AnsiString;
   w: WideString;
 {$ENDIF}
 begin
@@ -1828,7 +1830,7 @@ end;
 function TWin32WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Var Size: TSize): Boolean;
 {$ifdef WindowsUnicodeSupport}
 var
-  s: String;
+  s: AnsiString;
   w: WideString;
 {$ENDIF}
 begin

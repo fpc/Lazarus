@@ -124,6 +124,7 @@ procedure BlendRect(ADC: HDC; const ARect: TRect; Color: ColorRef);
 function GetLastErrorText(AErrorCode: Cardinal): String;
 function BitmapToRegion(hBmp: HBITMAP; cTransparentColor: COLORREF = 0; cTolerance: COLORREF  = $101010): HRGN;
 
+{ String functions that may be moved to the RTL in the future }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
 
 type

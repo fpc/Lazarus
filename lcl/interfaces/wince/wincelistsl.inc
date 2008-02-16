@@ -136,7 +136,7 @@ Var
   S: TStrings;
   Counter: Integer;
   AnIndex: Integer;
-  tmpStr : PWideChar;
+  tmpStr : widestring;
 Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
@@ -148,9 +148,9 @@ Begin
     Windows.SendMessage(FWinCEList, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
     Begin
-      tmpStr := LCLStringToPWideChar(s[Counter]);
-      AnIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpStr))); //Insert
-      FreeMem(tmpStr);
+      tmpStr := UTF8Decode(s[Counter]);
+      AnIndex := Windows.SendMessageW(FWinCEList, FFlagAddString, 0,
+       LPARAM(PWideChar(tmpStr))); //Insert
       PutObject(AnIndex, S.Objects[Counter]);
     end;
   End
@@ -181,17 +181,16 @@ end;
  ------------------------------------------------------------------------------}
 Function TWinCEListStringList.Get(Index: Integer): String;
 Var
-  Item: PWideChar;
+  w: widestring;
 Begin
   If (Index < 0) Or (Index >= Count) Then
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    Item := PWideChar(SysAllocStringLen(nil,Windows.SendMessage(FWinCEList, FFlagGetTextLen, Index, 0)));
-    Windows.SendMessage(FWinCEList, FFlagGetText, Index, LPARAM(Item));
+    SetLength(w, Windows.SendMessageW(FWinCEList, FFlagGetTextLen, Index, 0));
+    Windows.SendMessageW(FWinCEList, FFlagGetText, Index, LPARAM(PWideChar(w)));
+    Result := UTF8Encode(w);
   End;
-  Result := String(WideString(Item));//roozbeh:maybe WideStringToString?
-  SysFreeString(Item);
 End;
 
 {------------------------------------------------------------------------------
@@ -235,7 +234,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWinCEListStringList.GetObject(Index: Integer): TObject;
 Begin
-  HWND(Result) := Windows.SendMessage(FWinCEList, FFlagGetItemData, Index, 0);
+  HWND(Result) := Windows.SendMessageW(FWinCEList, FFlagGetItemData, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -245,16 +244,12 @@ End;
 
  ------------------------------------------------------------------------------}
 Procedure TWinCEListStringList.Insert(Index: Integer; Const S: String);
-var
-tmpS : PWideChar;
 Begin
   FLastInsertedIndex := Index;
-  tmpS := LCLStringToPWideChar(s);
-  If FSorted Then
-    FLastInsertedIndex := Windows.SendMessage(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(tmpS)))
-  Else
-    Windows.SendMessage(FWinCEList, FFlagInsertString, Index, LPARAM(PWideChar(tmpS)));
-    FreeMem(tmpS);
+  if FSorted then
+    FLastInsertedIndex := Windows.SendMessageW(FWinCEList, FFlagAddString, 0, LPARAM(PWideChar(Utf8Decode(S))))
+  else
+    Windows.SendMessageW(FWinCEList, FFlagInsertString, Index, LPARAM(PWideChar(Utf8Decode(S))));
 End;
 
 procedure TWinCEListStringList.Put(Index: integer; const S: string);
@@ -266,14 +261,14 @@ begin
   lItemIndex := -1;
   if FFlagGetSelected <> 0 then
   begin
-    lItemIndex := SendMessage(FWinCEList, FFlagGetSelected, Index, 0);
+    lItemIndex := SendMessageW(FWinCEList, FFlagGetSelected, Index, 0);
     lSelected := lItemIndex > 0;
     if lItemIndex <> LB_ERR then
       lItemIndex := Index;
   end;
   if lItemIndex = -1 then
   begin
-    lItemIndex := SendMessage(FWinCEList, FFlagGetItemIndex, 0, 0);
+    lItemIndex := SendMessageW(FWinCEList, FFlagGetItemIndex, 0, 0);
     lSelected := true;
   end;
   
@@ -282,9 +277,9 @@ begin
   if lSelected then
   begin
     if (FFlagSetSelected = 0) 
-      or (SendMessage(FWinCEList, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
+      or (SendMessageW(FWinCEList, FFlagSetSelected, Windows.WParam(true), lItemIndex) = -1) then
     begin
-      SendMessage(FWinCEList, FFlagSetItemIndex, lItemIndex, 0);
+      SendMessageW(FWinCEList, FFlagSetItemIndex, lItemIndex, 0);
     end;
   end;
 end;
@@ -617,15 +612,12 @@ End;
 
  ------------------------------------------------------------------------------}
 Procedure TWinCECListStringList.Insert(Index: Integer; Const S: String);
-var
-tmpS : PWideChar;
 Begin
-  tmpS := LCLStringToPWideChar(S);
-  If FSorted Then
-    Windows.SendMessage(FWinCECList,LB_ADDSTRING, 0, LPARAM(PWideChar(tmpS)))
-  Else
-    Windows.SendMessage(FWinCECList,LB_INSERTSTRING, Index, LPARAM(PWideChar(tmpS)));
-  FreeMem(tmpS);
+  FLastInsertedIndex := Index;
+  if FSorted then
+    FLastInsertedIndex := Windows.SendMessageW(FWinCECList, LB_ADDSTRING, 0, LPARAM(PWideChar(Utf8Decode(S))))
+  else
+    Windows.SendMessageW(FWinCECList, LB_INSERTSTRING, Index, LPARAM(PWideChar(Utf8Decode(S))));
 End;
 
 {------------------------------------------------------------------------------

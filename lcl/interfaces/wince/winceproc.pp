@@ -96,6 +96,9 @@ procedure RedrawMenus;
 function MeasureText(const AWinControl: TWinControl; Text: string; var Width, Height: integer): boolean;
 function GetControlText(AHandle: HWND): string;
 
+{ String functions that may be moved to the RTL in the future }
+function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
@@ -124,12 +127,9 @@ uses
   and the caller is responsible for freeing it with FreeMem
 }
 function LCLStringToPWideChar(inString: string): PWideChar;
-{$ifdef WindowsUnicodeSupport}
 var
   WideBuffer: widestring;
-{$endif}
 begin
-  {$ifdef WindowsUnicodeSupport}
   { Converts to a buffer }
   WideBuffer := Utf8Decode(inString);
   
@@ -137,10 +137,7 @@ begin
   Result := GetMem(Length(WideBuffer) * 2 + 2);
 
   { Copies to the final destination }
-  Move(WideBuffer[1], Result^, Length(WideBuffer) * 2 + 2);
-  {$else}
-    Result := StringToPWideChar(inString);
-  {$endif}
+  WideStrLCopy(PWideChar(WideBuffer), Result, Length(WideBuffer));
 end;
 
 { well this is different from normal string(widestring)
@@ -1311,16 +1308,13 @@ var
   winHandle: HWND;
   canvasHandle: HDC;
   oldFontHandle: HFONT;
-  tmpText : PWideChar;
 begin
   winHandle := AWinControl.Handle;
   canvasHandle := GetDC(winHandle);
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   DeleteAmpersands(Text);
 
-  tmpText := LCLStringToPWideChar(Text);
-  Result := Windows.GetTextExtentPoint32W(canvasHandle, PWideChar(tmpText), Length(Text), textSize);
-  FreeMem(tmpText);
+  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
 
   if Result then
   begin
@@ -1341,6 +1335,25 @@ begin
   GetWindowTextW(AHandle, tmpWideStr, TextLen + 1);
   Result := WideStringToString(widestring(tmpWideStr));
   SysFreeString(tmpWideStr);
+end;
+
+{ Exactly equal to StrLCopy but for PWideChars
+  Copyes a widestring up to a maximal length, in WideChars }
+function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+var
+  counter: SizeInt;
+begin
+  counter := 0;
+
+  while (Source[counter] <> #0)  and (counter < MaxLen) do
+  begin
+    Dest[counter] := Source[counter];
+    Inc(counter);
+  end;
+
+  { terminate the string }
+  Dest[counter] := #0;
+  Result := Dest;
 end;
 
 

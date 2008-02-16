@@ -233,11 +233,8 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    class procedure DestroyHandle(const AWinControl: TWinControl); override;
-    class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
-    class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
 //    class procedure GetPreferredSize(const AWinControl: TWinControl;
 //                        var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -771,16 +768,15 @@ end;
 class procedure TWinCEWSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
-  pwAText : pWideChar;
+  pwAText: widestring;
 begin
   Assert(False, Format('Trace:TWinCEWSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;
-  pwAText := LCLStringToPWideChar(AText);
+  pwAText := UTF8Decode(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
-    Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(pwAText))
+    Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(pwAText)))
   else
-    Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(pwAText));
-  FreeMem(pwAText);
+    Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(pwAText)));
 end;
 
 class function  TWinCEWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
@@ -982,12 +978,8 @@ begin
 end;
 
 class procedure TWinCEWSCustomMemo.SetText(const AWinControl: TWinControl; const AText: string);
-var
-  tmpWideStr : PWideChar;
 begin
-  tmpWideStr := LCLStringToPWideChar(AText);
-  SendMessage(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(tmpWideStr)));
-  FreeMem(tmpWideStr);
+  SendMessageW(AWinControl.Handle, WM_SETTEXT, 0, LPARAM(PWideChar(UTF8Decode(AText))));
 end;
 
 class procedure TWinCEWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
@@ -1021,7 +1013,7 @@ begin
   with Params do
   begin
     pClassName := @LabelClsName;
-    WindowTitle := LCLStringToPWideChar(AWinControl.Caption);//roozbeh..we already have this in strcaptiob..whats the diffrence?
+    WindowTitle := StrCaption;
     Flags := WS_CHILD or WS_VISIBLE or WS_TABSTOP or SS_LEFT;//Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);//is ws_child included?
   end;
 
@@ -1079,7 +1071,7 @@ begin
    //   Flags := Flags or BS_PUSHBUTTON;
     Flags := WS_CHILD or WS_VISIBLE;
     pClassName := @ButtonClsName;
-    WindowTitle := LCLStringToPWideChar(StrCaption);
+    WindowTitle := StrCaption;
     Left := AWinControl.Left;
     Top := AWinControl.Top;
     Width := AWinControl.Width;
@@ -1102,44 +1094,6 @@ begin
   {$endif}
 end;
 
-{------------------------------------------------------------------------------
-  Function: TWinCEWSButton.DestroyHandle
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TWinCEWSButton.DestroyHandle(const AWinControl: TWinControl);
-begin
-end;
-
-{------------------------------------------------------------------------------
-  Function: TWinCEWSButton.GetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class function TWinCEWSButton.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
-var
-tmpStr : PWideChar;
-begin
-  tmpstr := PWideChar(SysAllocStringLen(nil,256));
-  Result := Boolean(Windows.GetWindowTextW(AWinControl.Handle,tmpStr,256));
-  AText := String(tmpStr);
-  SysFreeString(tmpStr);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TWinCEWSButton.SetText
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-class procedure TWinCEWSButton.SetText(const AWinControl: TWinControl; const AText: String);
-var
-  tmpStr : PWideChar;
-begin
-  tmpstr := LCLStringToPWideChar(AText);
-  Windows.SetWindowTextW(AWinControl.Handle, tmpStr);
-  FreeMem(tmpStr);
-end;
-
 { TWinCEWSCustomCheckBox }
 
 class function TWinCEWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
@@ -1156,7 +1110,7 @@ begin
   with Params do
   begin
     pClassName := @ButtonClsName;
-    WindowTitle := LCLStringToPWideChar(AWinControl.Caption);
+    WindowTitle := StrCaption;
     if TCustomCheckBox(AWinControl).AllowGrayed then
       Flags := Flags Or BS_AUTO3STATE
     else
@@ -1164,7 +1118,6 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  FreeMem(Params.WindowTitle);
   Result := Params.Window;
 end;
 

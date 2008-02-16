@@ -205,7 +205,7 @@ begin
 
   {$ifdef Win32}
   lvc.pszText := PChar(LCLStringToPWideChar(ACaption));
-  SendMessage(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
+  SendMessageW(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
   {$else}
   lvc.pszText := LCLStringToPWideChar(ACaption);
   ListView_SetColumn(ALV.Handle, AIndex, lvc);
@@ -317,7 +317,7 @@ begin
 
   {$ifdef Win32}
   lvi.pszText := PChar(LCLStringToPWideChar(AItem.Caption));
-  SendMessage(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
+  SendMessageW(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
   {$else}
   lvi.pszText := LCLStringToPWideChar(AItem.Caption);
   ListView_InsertItem(ALV.Handle, lvi);
@@ -369,7 +369,7 @@ begin
     _gnu_lvi.iSubItem := ASubIndex;
     _gnu_lvi.pszText := PChar(PWideChar(Utf8Decode(AText)));
 
-    SendMessage(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
+    SendMessageW(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
   {$else}
   tmpAText := LCLStringToPWideChar(AText);
   ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, tmpAText);

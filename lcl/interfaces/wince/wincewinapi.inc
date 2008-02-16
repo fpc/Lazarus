@@ -159,7 +159,7 @@ var
     Details: TThemedElementDetails;
     OldColor: COLORREF;
     OldBackColor: COLORREF;
-    WideBuffer: PWideChar;
+    WideBuffer: widestring;
   begin
     Selected := (Data^.itemState AND ODS_SELECTED)>0;
     Enabled := CheckListBox.Enabled;
@@ -211,10 +211,9 @@ var
       OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOW)); // $00FFFFFF
     end;
     
-    WideBuffer := LCLStringToPWideChar(CheckListBox.Items[Data^.ItemID]);
-    Windows.DrawTextW(Data^._HDC, WideBuffer, -1,
+    WideBuffer := UTF8Decode(CheckListBox.Items[Data^.ItemID]);
+    Windows.DrawTextW(Data^._HDC, PWideChar(WideBuffer), -1,
        Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
-    FreeMem(WideBuffer);
 
     // Return to default text and background colors
     Windows.SetTextColor(Data^._HDC, OldColor);
@@ -328,7 +327,7 @@ end;
   ): string;
 begin
   Result:=inherited ClipboardFormatToMimeType(FormatID);
-end;
+end; }
 {------------------------------------------------------------------------------
   Method:  ClipboardGetData
   Params:  ClipboardType - clipboard type
@@ -337,11 +336,11 @@ end;
                            stream
   Returns: true on success
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+{function TWinCEWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
   FormatID: TClipboardFormat; Stream: TStream): boolean;
 begin
   Result:=inherited ClipboardGetData(ClipboardType, FormatID, Stream);
-end;
+end;   }
 {------------------------------------------------------------------------------
   Method:  ClipboardGetFormats
   Params:  ClipboardType - the type of clipboard operation (GTK only; ignored here)
@@ -350,11 +349,11 @@ end;
                            (you must free it yourself)
   Returns: true on success
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+{function TWinCEWidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
   var Count: integer; var List: PClipboardFormat): boolean;
 begin
   Result:=inherited ClipboardGetFormats(ClipboardType, Count, List);
-end;
+end;   }
 
 {------------------------------------------------------------------------------
   Method:  ClipboardGetOwnerShip
@@ -374,13 +373,13 @@ end;
   if someone else requests the ownership, the OnRequestProc will be executed
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+{function TWinCEWidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent; FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 begin
   Result:=inherited ClipboardGetOwnerShip(ClipboardType, OnRequestProc,
     FormatCount, Formats);
-end;
+end;   }
 
 {------------------------------------------------------------------------------
   Method:  ClipboardRegisterFormat
@@ -388,7 +387,7 @@ end;
                        type to register
   Returns: the registered Format identifier (TClipboardFormat)
  ------------------------------------------------------------------------------}
-function TWinCEWidgetSet.ClipboardRegisterFormat(const AMimeType: string
+{function TWinCEWidgetSet.ClipboardRegisterFormat(const AMimeType: string
   ): TClipboardFormat;
 begin
   Result:=inherited ClipboardRegisterFormat(AMimeType);
@@ -776,13 +775,26 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 var
-  WideStr : PWideChar;
+  s: AnsiString;
+  w: WideString;
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
-  WideStr := LCLStringToPWideChar(String(str));
-  Result := Windows.DrawTextW(DC, WideStr, Count, @Rect, Flags);
-  FreeMem(WideStr);
+
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+    s := str
+  else
+  begin
+    SetLength(s, count);
+    move(str^, s[1], count);
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+
+  // TODO: use the real number of chars (and not the lenght)
+  W := Utf8Decode(S);
+  Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
+//  Result := Windows.DrawTextW(DC, WideStr, Count, @Rect, Flags);
   Assert(False, Format('trace:> [TWinCEWidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
@@ -898,12 +910,25 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
-  pWideStr : PWideChar;
+  s: AnsiString;
+  w: WideString;
 begin
   Assert(False, Format('trace:> [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
-  pWideStr := LCLStringToPWideChar(string(Str));
-  Result := Boolean(Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
-  FreeMem(pWideStr);
+
+  // use temp buffer, if count is set, there might be no null terminator
+  if count = -1 then
+   s := str
+  else
+  begin
+    SetLength(s, count);
+    move(str^, s[1], count);
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+
+  // TODO: use the real number of chars (and not the lenght)
+  W := Utf8Decode(S);
+  Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), Dx);
+//  Result := Boolean(Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), pWideStr, Count, Dx));
   Assert(False, Format('trace:< [TWinCEWidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
@@ -1399,15 +1424,14 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetProp(Handle: hwnd; Str: PChar): Pointer;
 var
-  WideStr: PWideChar;
+  WideStr: widestring;
 begin
-  WideStr := LCLStringToPWideChar(String(str));
+  WideStr := UTF8Decode(String(str));
   {$ifdef win32}
-  Result := Pointer(Windows.GetPropW(Handle, WideStr));
+  Result := Pointer(Windows.GetPropW(Handle, PWideChar(WideStr)));
   {$else}
-  Result := Pointer(Windows.GetProp(Handle, WideStr));
+  Result := Pointer(Windows.GetProp(Handle, PWideChar(WideStr)));
   {$endif}
-  FreeMem(WideStr);
 end;
 
 {function TWinCEWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
@@ -1536,13 +1560,24 @@ end;
 
 function TWinCEWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 var
-WideStr : PWideChar;
+  s: AnsiString;
+  w: WideString;
 begin
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Start');
-  Result := false;
-  WideStr := LCLStringToPWideChar(String(Str));
-  Result := Boolean(Windows.GetTextExtentExPointW(DC, WideStr, Count, 0,nil,nil,@Size));
-  FreeMem(WideStr);
+  if count = -1 then
+    s := str
+  else
+  begin
+    SetLength(s, count);
+    move(str^, s[1], count);
+  end;
+  // the length of utf8 vs Wide/Ansi the strings differ, so recalc.
+
+  // TODO: use the real number of chars (and not the lenght)
+  w := Utf8Decode(S);
+  Result := Windows.GetTextExtentPoint32W(DC, PWideChar(W), Length(W),
+   {$ifdef Win32}@Size{$else}Size{$endif});
+//  Result := Boolean(Windows.GetTextExtentExPointW(DC, WideStr, Count, 0,nil,nil,@Size));
   Assert(False, 'Trace:[TWinCEWidgetSet.GetTextExtentPoint] - Exit');
 end;
 
@@ -1865,13 +1900,13 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer;
 var
-LPWCaption,LPWText : PWideChar;
+  WideLPText, WideLPCaption: widestring;
 begin
-  LPWCaption := LCLStringToPWideChar(String(LPCaption));
-  LPWText := LCLStringToPWideChar(String(LPText));
-  Result := Windows.MessageBoxW(HWnd, LPWText, LPWCaption, UType);
-  FreeMem(LPWCaption);
-  FreeMem(LPWText);
+  WideLPText := UTF8Decode(string(LPText));
+  WideLPCaption := UTF8Decode(string(LPCaption));
+
+  Result := Windows.MessageBoxW(HWnd, PWideChar(WideLPText),
+    PWideChar(WideLPCaption), UType);
 end;
 
 {------------------------------------------------------------------------------
@@ -2385,15 +2420,14 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean;
 var
-  WideStr: PWideChar;
+  WideStr: widestring;
 begin
-  WideStr := LCLStringToPWideChar(String(str));
+  WideStr := UTF8Decode(String(str));
   {$ifdef win32}
-  Result := Boolean(Windows.SetPropW(Handle, WideStr, Windows.HANDLE(Data)));
+  Result := Boolean(Windows.SetPropW(Handle, PWideChar(WideStr), Windows.HANDLE(Data)));
   {$else}
-  Result := Boolean(Windows.SetProp(Handle, WideStr, Windows.HANDLE(Data)));
+  Result := Boolean(Windows.SetProp(Handle, PWideChar(WideStr), Windows.HANDLE(Data)));
   {$endif}
-  FreeMem(WideStr);
 end;
 {------------------------------------------------------------------------------
   Method:  SetROP2

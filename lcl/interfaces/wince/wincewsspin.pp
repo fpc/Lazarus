@@ -103,13 +103,10 @@ procedure UpdateFloatSpinEditText(const ASpinHandle: HWND; const ANewValue: sing
 var
   editHandle: HWND;
   newValueText: string;
-  pwnewValueText : PWideChar;
 begin
   editHandle := GetBuddyWindow(ASpinHandle);
   newValueText := FloatToStrF(ANewValue, ffFixed, 20, ADecimalPlaces);
-  pwnewValueText := LCLStringToPWideChar(newValueText);
-  Windows.SendMessage(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(pwnewValueText)));
-  FreeMem(pwnewValueText);
+  Windows.SendMessageW(editHandle, WM_SETTEXT, 0, Windows.LPARAM(PWideChar(UTF8Decode(newValueText))));
 end;
   
 class function TWinCEWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
@@ -122,7 +119,11 @@ begin
   // customization of Params
   with Params do
   begin
-    Buddy := CreateWindowExW(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+    Buddy := CreateWindowExW(WS_EX_CLIENTEDGE, 'EDIT',
+     PWideChar(UTF8Decode(StrCaption)),
+     Flags Or ES_AUTOHSCROLL,
+     Left, Top, Width, Height,
+     Parent, HMENU(Nil), HInstance, Nil);
     {Window := CreateUpDownControl(Flags or DWORD(WS_BORDER or UDS_ALIGNRIGHT or UDS_ARROWKEYS),
       0, 0,       // pos -  ignored for buddy
       0, 0,       // size - ignored for buddy
