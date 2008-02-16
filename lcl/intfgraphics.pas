@@ -424,12 +424,13 @@ type
     FPalette: PFPColor;      // Buffer with Palette entries.
     FBitsPerPixel: Integer;  // bits per pixel (1, 4, 8, 15, 16, 24, 32)
     FLineBuf: PByte;         // Buffer for 1 scanline. Can be Byte, Word, TColorRGB or TColorRGBA
+    FIsRLE: Boolean;         // Is data RLE compressed?
 
     procedure FreeBufs;      // Free (and nil) buffers.
   protected
 
     // SetupRead will allocate the needed buffers, and read the colormap if needed.
-    procedure SetupRead(nPalette, nRowBits: Integer; ReadPalette: Boolean); virtual;
+    procedure SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean); virtual;
     procedure ReadScanLine(Row: Integer); virtual;
     procedure WriteScanLine(Row: Cardinal); virtual;
     // required by TFPCustomImageReader
@@ -441,6 +442,7 @@ type
     property ReadSize: Integer read FReadSize;
     property LineBuf: PByte read FLineBuf;
     property BFI: TBitMapInfoHeader read FBFI;
+    property IsRLE: Boolean read FIsRLE;
   public
     constructor Create; override;
     destructor Destroy; override;
@@ -4415,11 +4417,12 @@ begin
   FPalette := nil;
 end;
 
-procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; ReadPalette: Boolean);
+procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; ReadPalette, AIsRLE: Boolean);
 var
   ColInfo: array of TColorRGBA;
   i: Integer;
 begin
+  FIsRLE := AIsRLE;
   if nPalette > 0
   then begin
     GetMem(FPalette, nPalette*SizeOf(TFPColor));
@@ -4448,13 +4451,44 @@ procedure TLazReaderBMP.ReadScanLine(Row: Integer);
 //var
 //  n: Integer;
 //{$ENDIF}
+var
+  d: array[0..1] of Byte;
+  Offset: Integer;
 begin
   // Add here support for compressed lines. The 'readsize' is the same in the end.
 
   // MWE: Note: when doing so, keep in mind that the bufer is expected to be in Little Endian.
   // for better performance, the conversion is done when writeing the buffer.
 
-  TheStream.Read(LineBuf[0], ReadSize);
+  if IsRLE then
+  begin
+    Offset := 0;
+    while True do
+    begin
+      TheStream.Read(d[0], 2);
+      if d[0] > 0 then
+      begin
+        while d[0] > 0 do
+        begin
+          LineBuf[Offset] := d[1];
+          Inc(Offset);
+          Dec(d[0]);
+        end;
+      end else
+        case d[1] of
+          0, 1: break;       // End of scanline or end of bitmap
+          2: raise FPImageException.Create('RLE code #2 is not supported');
+        else
+           begin
+             TheStream.Read(LineBuf[Offset], d[1]);
+             Inc(Offset, d[1]);
+             if Odd(d[1]) then
+               TheStream.Read(d[1], 1);      // Jump to even file position
+           end;
+        end;
+    end;
+  end else
+    TheStream.Read(LineBuf[0], ReadSize);
 
 
 (*
@@ -4627,22 +4661,20 @@ begin
     1: begin  { Monochrome }
       if BFI.biCompression <> BI_RGB then
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
-      SetupRead(2, TheImage.Width, true);
+      SetupRead(2, TheImage.Width, True, False);
     end;
     4: begin
       case BFI.biCompression of
-        BI_RGB: SetupRead(16, TheImage.Width * 4, true);
-        BI_RLE4:
-          raise FPImageException.Create('4 bit RLE Bitmaps not supported');
+        BI_RGB: SetupRead(16, TheImage.Width * 4, True, False);
+        BI_RLE4: SetupRead(16, TheImage.Width * 4, True, True);
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
     end;
     8: begin
       case BFI.biCompression of
-        BI_RGB: SetupRead(256, TheImage.Width * 8, true);
-        BI_RLE8:
-          raise FPImageException.Create('8 bit RLE Bitmaps not supported');
+        BI_RGB: SetupRead(256, TheImage.Width * 8, True, False);
+        BI_RLE8: SetupRead(256, TheImage.Width * 8, True, True);
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
@@ -4673,7 +4705,7 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
-      SetupRead(0, TheImage.Width * 16, True);
+      SetupRead(0, TheImage.Width * 16, True, False);
     end;
     24: begin
       case BFI.biCompression of
@@ -4693,7 +4725,7 @@ begin
       else
         raise FPImageException.CreateFmt(SWrongCombination, [BFI.biBitCount, BFI.biCompression]);
       end;
-      SetupRead(0, TheImage.Width * 24, True);
+      SetupRead(0, TheImage.Width * 24, True, False);
     end;
     32: begin
       case BFI.biCompression of
@@ -4716,7 +4748,7 @@ begin
       // force alpha description
       
       CheckAlphaDescription(TheImage);
-      SetupRead(0, TheImage.Width * 32, True);
+      SetupRead(0, TheImage.Width * 32, True, False);
     end;
   else
     raise FPImageException.CreateFmt('Wrong bitmap bit count: %d', [BFI.biBitCount]);
@@ -4820,7 +4852,7 @@ begin
   if BFI.biBitCount >= 32 then Exit;
 
   FReadSize := ((Img.Width + 31) div 32) shl 2;
-  SetupRead(2, Img.Width, False);
+  SetupRead(2, Img.Width, False, False);
   try
     for Row := Img.Height - 1 downto 0 do
     begin
