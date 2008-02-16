@@ -113,28 +113,6 @@ Type
     property State[AIndex: Integer]: TCheckBoxState read GetState write SetState;
   end;
 
-  TWinCECListStringList = Class(TStrings)
-  Private
-    FWinCECList: HWND;
-    FSender: TWinControl; // Needed to recreate the window
-    FSorted: Boolean;
-    FlastInsertedIndex: Integer;
-  Protected
-    Function Get(Index: Integer): String; Override;
-    Function GetCount: Integer; Override;
-    Function GetObject(Index: Integer): TObject; Override;
-    Procedure PutObject(Index: Integer; AObject: TObject); Override;
-    Procedure SetSorted(Val: Boolean); Virtual;
-  Public
-    Constructor Create(List : HWND; TheOwner: TWinControl);
-    Procedure Assign(Source: TPersistent); Override;
-    Procedure Clear; Override;
-    Procedure Delete(Index: Integer); Override;
-    Procedure Insert(Index: Integer; Const S: String); Override;
-    Procedure Sort; Virtual;
-    Property Sorted: Boolean Read FSorted Write SetSorted;
-  End;
-
 {$IFDEF H_PLUS}
   {$UNDEF H_PLUS}
 {$ELSE}
