@@ -170,9 +170,9 @@ var
       color and creating a brush because it uses a buffered brush
     }
     if Enabled and Selected then
-      Brush := Windows.GetSysColorBrush(COLOR_HIGHLIGHT)
+      Brush := Windows.GetSysColorBrush(COLOR_HIGHLIGHT or SYS_COLOR_INDEX_FLAG)
     else
-      Brush := Windows.GetSysColorBrush(COLOR_WINDOW);
+      Brush := Windows.GetSysColorBrush(COLOR_WINDOW or SYS_COLOR_INDEX_FLAG);
     Windows.FillRect(Data^._HDC, Windows.Rect(Data^.rcItem), Brush);
 
     Rect := Data^.rcItem;
@@ -191,23 +191,24 @@ var
     { Don't suppose anything about the current background color
       or text color. Always set them.
       
-      GetSysColor doesn't seam to work on WindowsCE inside this event,
-      so we are hardcoding the colors for now until a better fix is found.
+      LCLIntf.GetSysColor must be called instead of Windows.GetSysColor
+      because the LCLIntf version makes sure that SYS_COLOR_INDEX_FLAG
+      is added to the constant.
     }
     if Selected then
     begin
-      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_HIGHLIGHTTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, $00D39137); {Windows.GetSysColor(COLOR_HIGHLIGHT)}
+      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_HIGHLIGHTTEXT));
+      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_HIGHLIGHT)); // $00D39137
     end
     else if not Enabled then
     begin
-      OldColor := Windows.SetTextColor(Data^._HDC, $00BFBFBF); {Windows.GetSysColor(COLOR_GRAYTEXT)}
-      OldBackColor := Windows.SetBkColor(Data^._HDC, $00FFFFFF); {Windows.GetSysColor(COLOR_WINDOW)}
+      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_GRAYTEXT)); // $00BFBFBF
+      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOW)); // $00FFFFFF
     end
     else
     begin
-      OldColor := Windows.SetTextColor(Data^._HDC, Windows.GetSysColor(COLOR_CAPTIONTEXT));
-      OldBackColor := Windows.SetBkColor(Data^._HDC, $00FFFFFF); {Windows.GetSysColor(COLOR_WINDOW)}
+      OldColor := Windows.SetTextColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOWTEXT));
+      OldBackColor := Windows.SetBkColor(Data^._HDC, LCLIntf.GetSysColor(COLOR_WINDOW)); // $00FFFFFF
     end;
     
     WideBuffer := LCLStringToPWideChar(CheckListBox.Items[Data^.ItemID]);
@@ -1494,7 +1495,8 @@ function TWinCEWidgetSet.GetSysColor(NIndex: Integer): DWORD;
 begin
   if NIndex = COLOR_FORM then
     NIndex := COLOR_BTNFACE;
-  Result := Windows.GetSysColor(nIndex or $40000000);
+  { SYS_COLOR_INDEX_FLAG is indispensable on Windows CE }
+  Result := Windows.GetSysColor(nIndex or SYS_COLOR_INDEX_FLAG);
 end;
 
 {------------------------------------------------------------------------------

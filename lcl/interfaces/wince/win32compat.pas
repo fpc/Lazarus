@@ -69,6 +69,10 @@ const
   TCS_VERTICAL = $0080;
   TCS_MULTILINE = $0200;
 
+{ From Windows.pas (adapted for win32) }
+const
+  SYS_COLOR_INDEX_FLAG = 0;
+  
 implementation
 
 initialization

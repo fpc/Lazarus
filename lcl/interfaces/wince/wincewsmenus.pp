@@ -32,7 +32,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Menus, Forms,
+  Menus, Forms, LCLIntf, {keep before Windows }
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
   Windows, Controls, Classes, SysUtils, WinceInt, WinceProc, InterfaceBase, LCLProc;
@@ -472,12 +472,12 @@ function BackgroundColorMenu(const aSelected: boolean; const aInMainMenu: boolea
 var IsFlatMenu: Windows.BOOL;
 begin
   if aSelected then
-    Result := GetSysColor(COLOR_HIGHLIGHT)
+    Result := LCLIntf.GetSysColor(COLOR_HIGHLIGHT)
   // SPI_GETFLATMENU = 0x1022, it is not yet defined in the FPC
   else if aInMainMenu and (SystemParametersInfo($1022, 0, @IsFlatMenu, 0)) and IsFlatMenu then // COLOR_MENUBAR is not supported on Windows version < XP
-    Result := GetSysColor(COLOR_MENUBAR)
+    Result := LCLIntf.GetSysColor(COLOR_MENUBAR)
   else
-    Result := GetSysColor(COLOR_MENU);
+    Result := LCLIntf.GetSysColor(COLOR_MENU);
 end;
 
 function TextColorMenu(const aSelected: boolean; const anEnabled: boolean): COLORREF;
@@ -485,11 +485,11 @@ begin
   if anEnabled then
   begin
     if aSelected then
-      Result := GetSysColor(COLOR_HIGHLIGHTTEXT)
+      Result := LCLIntf.GetSysColor(COLOR_HIGHLIGHTTEXT)
     else
-      Result := GetSysColor(COLOR_MENUTEXT);
+      Result := LCLIntf.GetSysColor(COLOR_MENUTEXT);
   end else
-    Result := GetSysColor(COLOR_GRAYTEXT);
+    Result := LCLIntf.GetSysColor(COLOR_GRAYTEXT);
 end;
 
 procedure DrawSeparator(const aHDC: HDC; const aRect: Windows.RECT);

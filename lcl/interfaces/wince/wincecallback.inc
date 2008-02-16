@@ -381,7 +381,7 @@ Var
           ORect.Top := 0;
           ORect.Right := DoubleBufferBitmapWidth;
           ORect.Bottom := DoubleBufferBitmapHeight;
-          Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP));
+          Windows.FillRect(DoubleBufferDC, ORect, GetSysColorBrush(COLOR_DESKTOP or SYS_COLOR_INDEX_FLAG));
 {$endif}
           PaintRegion := CreateRectRgn(0, 0, 1, 1);
      {     if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then

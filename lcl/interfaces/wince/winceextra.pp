@@ -33,7 +33,8 @@ unit WinCEExtra;
 interface
 
 uses
-  LCLType {keep before windows}, Windows, Classes, SysUtils, Maps, GraphType;
+  LCLType, LCLIntf, {keep both before windows}
+  Windows, Classes, SysUtils, Maps, GraphType;
 
 type
   DrawStateProc = function(
@@ -348,10 +349,10 @@ begin
 
   if (flags and DSS_DISABLED) <> 0 
   then
-     hbrtmp := CreateSolidBrush(GetSysColor(COLOR_3DHILIGHT))
+     hbrtmp := CreateSolidBrush(LCLIntf.GetSysColor(COLOR_3DHILIGHT))
   else if (flags and DSS_DEFAULT) <> 0 
   then
-     hbrtmp := CreateSolidBrush(GetSysColor(COLOR_3DSHADOW));
+     hbrtmp := CreateSolidBrush(LCLIntf.GetSysColor(COLOR_3DSHADOW));
 
   { Draw light or dark shadow }
   if (flags and (DSS_DISABLED or DSS_DEFAULT)) <> 0 then
@@ -367,7 +368,7 @@ begin
 
   if (flags and DSS_DISABLED) <> 0 then
   begin
-    hbrtmp := CreateSolidBrush(GetSysColor(COLOR_3DSHADOW));
+    hbrtmp := CreateSolidBrush(LCLIntf.GetSysColor(COLOR_3DSHADOW));
     hbr := hbrtmp;
     if hbrtmp = 0 then goto cleanup;
   end

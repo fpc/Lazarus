@@ -423,7 +423,7 @@ var
 begin
   drawRect := TControl(Arrow).ClientRect;
   canvasHandle := TCanvas(Canvas).Handle;
-  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE));
+  Windows.FillRect(canvasHandle, drawRect, GetSysColorBrush(COLOR_BTNFACE or SYS_COLOR_INDEX_FLAG));
   dec(drawRect.Left, 2);
   dec(drawRect.Top, 2);
   inc(drawRect.Right, 2);
