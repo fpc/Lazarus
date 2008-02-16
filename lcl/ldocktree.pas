@@ -2196,7 +2196,7 @@ var
         Control.ManualFloat(NewBounds);
         if Control.Parent<>nil then
           Control.AnchorClient(0);
-      end else if Control.Parent=nil then begin
+      end else if Control.Parent<>nil then begin
         Control.Anchors:=[akLeft,akTop];
         for a:=Low(TAnchorKind) to High(TAnchorKind) do
           Control.AnchorSide[a].Control:=nil;
@@ -2207,7 +2207,7 @@ var
       if (ParentControl<>nil) then begin
         OldParentControl:=ParentControl;
         ParentControl:=nil;
-        //DebugLn('DoFinallyForParent EnableAlign for ',DbgSName(OldParentControl));
+        DebugLn(['DoFinallyForParent EnableAlign for ',DbgSName(OldParentControl),' Control=',DbgSName(Control),' OldParentControl.ControlCount=',OldParentControl.ControlCount]);
         OldParentControl.EnableAlign;
         
         // check if the remaining is a TLazDockForm with only one child
@@ -2215,6 +2215,7 @@ var
         and (OldParentControl.ControlCount=1) then
         begin
           OtherControl:=OldParentControl.Controls[0];
+          DebugLn(['DoFinallyForParent OtherControl=',DbgSName(OtherControl)]);
           if (OtherControl is TWinControl)
           and (TWinControl(OtherControl).UseDockManager)
           and (TWinControl(OtherControl).DockManager=Self)
