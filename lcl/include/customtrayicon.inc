@@ -90,8 +90,6 @@ begin
 
   FVisible := False;
 
-//  InternalUpdate;
-
   Result := TWSCustomTrayIconClass(WidgetSetClass).Hide(Self);
 end;
 
@@ -110,8 +108,6 @@ begin
   if FVisible then Exit;
 
   FVisible := True;
-
-  InternalUpdate;
 
   Result := TWSCustomTrayIconClass(WidgetSetClass).Show(Self);
 end;
@@ -160,9 +156,13 @@ end;
 *  DESCRIPTION:    Makes modifications to the Icon while running
 *                  i.e. without hiding it and showing again
 *
-*  PARAMETERS:     None
+*                  Currently only the following parameters use this:
 *
-*  RETURNS:        Nothing
+*                  - Hint
+*
+*                  For event parameters (PopUpMenu, OnMouseMove, etc)
+*                  this isn't necessary because they are handled
+*                  througth callbacks that can always call the last value.
 *
 *******************************************************************}
 procedure TCustomTrayIcon.InternalUpdate;
@@ -230,6 +230,13 @@ function TCustomTrayIcon.GetCanvas: TCanvas;
 begin
   //Result := Icon.Canvas;
   Result := TWSCustomTrayIconClass(WidgetSetClass).GetCanvas(Self);
+end;
+
+procedure TCustomTrayIcon.SetHint(const AValue: string);
+begin
+  FHint := AValue;
+
+  if FVisible then InternalUpdate;
 end;
 
 // included by extctrls.pp
