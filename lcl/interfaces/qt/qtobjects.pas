@@ -106,7 +106,8 @@ type
   public
     constructor Create;
     constructor Create(vHandle: QImageH); overload;
-    constructor Create(Adata: PByte; width: Integer; height: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
+    constructor Create(AData: PByte; width: Integer; height: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
+    constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: QImageFormat; const ADataOwner: Boolean = False); overload;
     destructor Destroy; override;
     function AsIcon(AMode: QIconMode = QIconNormal; AState: QIconState = QIconOff): QIconH;
     function AsPixmap(flags: QtImageConversionFlags = QtAutoColor): QPixmapH;
@@ -873,10 +874,9 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TQtImage.Create(Adata: PByte; width: Integer; height: Integer;
+constructor TQtImage.Create(AData: PByte; width: Integer; height: Integer;
   format: QImageFormat; const ADataOwner: Boolean = False);
 begin
-
   FData := AData;
   FDataOwner := ADataOwner;
 
@@ -884,10 +884,18 @@ begin
     Handle := QImage_create(width, height, format)
   else
     Handle := QImage_create(FData, width, height, format);
-    
-  {$ifdef VerboseQt}
-    WriteLn('TQtImage.Create Result:', dbghex(PtrInt(Handle)));
-  {$endif}
+end;
+
+constructor TQtImage.Create(AData: PByte; width: Integer; height: Integer;
+  bytesPerLine: Integer; format: QImageFormat; const ADataOwner: Boolean);
+begin
+  FData := AData;
+  FDataOwner := ADataOwner;
+
+  if FData = nil then
+    Handle := QImage_create(width, height, format)
+  else
+    Handle := QImage_create(FData, width, height, bytesPerLine, format);
 end;
 
 {------------------------------------------------------------------------------
@@ -905,7 +913,7 @@ begin
 
   if Handle <> nil then
     QImage_destroy(Handle);
-  if (FDataOwner) and (FData <> nil) then 
+  if (FDataOwner) and (FData <> nil) then
     FreeMem(FData);
 
   inherited Destroy;
@@ -1250,8 +1258,18 @@ begin
 end;
 
 procedure TQtBrush.setTextureImage(image: QImageH);
+var
+  TempImage: QImageH;
 begin
-  QBrush_setTextureImage(Widget, image);
+  // workaround thurther deletion of original image
+  // When image is deleted its data will be deleted too
+  // If image has been created with predefined data then it will be owner of it
+  // => it will Free owned data => brush will be invalid
+  // as workaround we are copying an original image so qt create new image with own data
+  TempImage := QImage_create();
+  QImage_copy(image, TempImage, 0, 0, QImage_width(image), QImage_height(image));
+  QBrush_setTextureImage(Widget, TempImage);
+  QImage_destroy(TempImage);
 end;
 
 { TQtPen }

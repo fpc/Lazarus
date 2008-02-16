@@ -325,7 +325,7 @@ function TQtWidgetSet.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
   Format: QImageFormat;
-  NewBits: Pointer;
+  NewBits: PByte;
   NewBitsSize: PtrUInt;
   ARowStride, RSS: Integer;
 begin
@@ -353,18 +353,20 @@ begin
   RSS := GetBytesPerLine(Width, BitCount, rileWordBoundary);
   if BitmapBits <> nil then
   begin
+    ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
     if not CopyImageData(Width, Height, RSS, BitCount, BitmapBits, Rect(0, 0, Width, Height),
       riloBottomToTop, riloBottomToTop, rileDWordBoundary, NewBits, NewBitsSize) then
     begin
-      ARowStride := GetBytesPerLine(Width, BitCount, rileDWordBoundary);
-      NewBits := AllocMem(ARowStride);
-      Move(BitmapBits^, NewBits^, RSS);
+      // this was never tested
+      ARowStride := RSS;
+      NewBits := AllocMem(RSS * Height);
+      Move(BitmapBits^, NewBits^, RSS * Height);
     end;
+    Result := HBitmap(TQtImage.Create(NewBits, Width, Height, ARowStride, Format, True));
   end
   else
-    NewBits := nil;
-  Result := HBitmap(TQtImage.Create(NewBits, Width, Height, Format, True));
-   
+    Result := HBitmap(TQtImage.Create(nil, Width, Height, Format));
+
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:< [WinAPI CreateBitmap] Bitmap:', dbghex(Result));
   {$endif}
