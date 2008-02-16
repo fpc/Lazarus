@@ -461,13 +461,14 @@ begin
   LB.lbColor := Windows.COLORREF(ColorToRGB(LogBrush.lbColor));
   LB.lbHatch := LogBrush.lbHatch;
   Assert(False, Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
-  Result := 0;
-  if lb.lbStyle = BS_SOLID then
-  Result := Windows.CreateSolidBrush(LB.lbColor);
+
   if lb.lbStyle= BS_NULL then
-  Result := Windows.GetStockObject(NULL_BRUSH);
-  if lb.lbStyle = BS_DIBPATTERNPT then
-  Result := CreateDIBPatternBrushPt(pointer(lb.lbHatch), lb.lbColor);
+    Result := Windows.GetStockObject(NULL_BRUSH)
+  else if lb.lbStyle = BS_DIBPATTERNPT then
+    Result := CreateDIBPatternBrushPt(pointer(lb.lbHatch), lb.lbColor)
+  else { lb.lbStyle = BS_SOLID }
+    Result := Windows.CreateSolidBrush(LB.lbColor);
+
   Assert(False, Format('Trace:< [TWinCEWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
 
