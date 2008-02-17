@@ -260,7 +260,6 @@ uses
  Win32WSButtons,
  Win32WSCalendar,
  Win32WSCheckLst,
-// Win32WSCListBox,
  Win32WSComCtrls,
  Win32WSControls,
 // Win32WSDbCtrls,
