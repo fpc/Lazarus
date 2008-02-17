@@ -212,7 +212,7 @@ begin
   BorderIcons := AForm.BorderIcons;
   if biSystemMenu in BorderIcons then
     Result := Result or WS_SYSMENU;
-  if GetDesigningBorderStyle(AForm) in [bsNone, bsSingle, bsSizeable] then
+  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
   begin
     if biMinimize in BorderIcons then
       Result := Result or WS_MINIMIZE;
@@ -225,7 +225,7 @@ procedure CalcFormWindowFlags(const AForm: TCustomForm; var Flags, FlagsEx: dwor
 var
   BorderStyle: TFormBorderStyle;
 begin
-  BorderStyle := GetDesigningBorderStyle(AForm);
+  BorderStyle := AForm.BorderStyle;
   Flags := BorderStyleToWin32Flags(BorderStyle);
   if AForm.Parent <> nil then
     Flags := (Flags or WS_CHILD) and not WS_POPUP;
@@ -267,7 +267,7 @@ begin
     CalcFormWindowFlags(lForm, Flags, FlagsEx);
     SubClassWndProc := nil;
     Parent := 0;
-    BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
+    BorderStyle := TCustomForm(AWinControl).BorderStyle;
     if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
     begin
       Left:=CW_USEDEFAULT;
@@ -320,7 +320,7 @@ begin
     Right := ALeft + AWidth;
     Bottom := ATop + AHeight;
   end;
-  BorderStyle := GetDesigningBorderStyle(TCustomForm(AWinControl));
+  BorderStyle := TCustomForm(AWinControl).BorderStyle;
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
       BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
       
@@ -335,7 +335,7 @@ var
   iconHandle: HICON;
 begin
   winHandle := AForm.Handle;
-  if GetDesigningBorderStyle(AForm) = bsDialog then
+  if AForm.BorderStyle = bsDialog then
     iconHandle := 0
 { TODO: fix icon handling
   else

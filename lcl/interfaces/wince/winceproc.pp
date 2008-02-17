@@ -55,10 +55,7 @@ procedure AssertEx(const Message: String);
 function GetShiftState: TShiftState;
 function DeliverMessage(const Target: Pointer; var Message): Integer;
 function DeliverMessage(const Target: TObject; var Message: TLMessage): Integer;
-procedure CallEvent(const Target: TObject; Event: TNotifyEvent;
-  const Data: Pointer; const EventType: TEventType);
 function ObjectToHWND(Const AObject: TObject): HWND;
-function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
 
 function BytesPerLine(nWidth, nBitsPerPixel: Integer): Integer;
 function CreateDIBSectionFromDescription(ADC: HDC; const ADesc: TRawImageDescription; out ABitsPtr: Pointer): HBITMAP;
@@ -77,7 +74,6 @@ function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 Procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 Procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
-Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
@@ -602,29 +598,6 @@ Begin
   Result := Message.Result;
 End;
 
-{-----------------------------------------------------------------------------
-  Procedure: CallEvent
-  Params: Target    - the object for which the event will be called
-          Event     - event to call
-          Data      - misc data
-          EventType - the type of event
-  Returns: Nothing
-
-  Calls an event
--------------------------------------------------------------------------------}
-Procedure CallEvent(Const Target: TObject; Event: TNotifyEvent; Const Data: Pointer; Const EventType: TEventType);
-Begin
-  If Assigned(Target) And Assigned(Event) Then
-  Begin
-    Case EventType Of
-      etNotify:
-      Begin
-        Event(Target);
-      End;
-    End;
-  End;
-End;
-
 {------------------------------------------------------------------------------
   Function: ObjectToHWND
   Params: AObject - An LCL Object
@@ -972,7 +945,7 @@ var
   TheWinControl: TWinControl;
   ARect: TRect;
   Ignore: Integer;
-Begin
+begin
   Result:=false;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
@@ -1065,23 +1038,12 @@ begin
     Right := AWidth;
     Bottom := AHeight;
   end;
-  BorderStyle := GetDesigningBorderStyle(Form);
+  BorderStyle := Form.BorderStyle;
   Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
       BorderStyle), false, BorderStyleToWin32FlagsEx(BorderStyle));
   AWidth := SizeRect.Right - SizeRect.Left;
   AHeight := SizeRect.Bottom - SizeRect.Top;
 end;
-
-//roozbeh...new update what is it?!
-Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
-var
-  ORect: TRect;
-Begin
-  if (Sender=nil) or (not (Sender is TWinControl)) then exit;
-  if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
-  dec(Left, ORect.Left);
-  dec(Top, ORect.Top);
-End;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
@@ -1170,17 +1132,6 @@ begin
       end;}
     end;
   end;
-end;
-
-//roozbeh:new update test it
-
-function GetDesigningBorderStyle(const AForm: TCustomForm): TFormBorderStyle;
-{$NOTE Belongs in Win32WSForms, but is needed in windowproc}
-begin
-//  if csDesigning in AForm.ComponentState then
-//    Result := bsSizeable
-//  else
-    Result := AForm.BorderStyle;
 end;
 
 function GetFileVersion(FileName: string): dword;
