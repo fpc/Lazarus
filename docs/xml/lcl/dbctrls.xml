@@ -1565,7 +1565,7 @@ consideration when overriding this method.
       </element>
       <!-- property Visibility: published -->
       <element name="TDBListBox.Items">
-        <short/>
+        <short>The array of strings representing the list of entries in the list box</short>
         <descr/>
         <seealso/>
       </element>
@@ -1805,10 +1805,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- object Visibility: default -->
       <element name="TDBRadioGroup">
         <short>
-          <i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select entries from a databse field</short>
+          <i>TDBRadioGroup</i> - a data-aware version of <i>TRadioGroup,</i> providing a series of mutually exclusive buttons to select an entry to insert into a database field</short>
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
+        <descr>
+          <p>The properties of TDBRadioGroup are similar to those of TRadioGroup (and TCustomRadioGroup). Access is obtained to members of the group by selecting (in the Object Inspector) the ellipsis (...) next to the entry <b>Items</b>, and then editing the stringlist. </p>
+          <p>At runtime, selecting one of the radiobuttons makes the corresponding ItemIndex available to the programmer, and the corresponding string Item gets selected and appears as the string value for the record in that field.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBRadioGroup.FDataLink">
@@ -2675,7 +2679,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: published -->
       <element name="TDBCheckBox.ReadOnly">
         <short>
-          <i>ReadOnly </i>- if True, data may be read but not written or modified (doesn't make much sense for a check-box!)</short>
+          <i>ReadOnly </i>- if True, data may be read but not written or modified (doesn't make much sense for a check-box unless the box is NOT Enabled!)</short>
         <descr/>
         <seealso/>
       </element>
@@ -2741,6 +2745,12 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
+        <descr>
+          <p>
+            <i>TDBComboBox </i>has properties similar to <i>TComboBox</i> and <i>TCustomComboBox</i>. It consists of an Edit Box which is th eData-aware part of the component, and a drop-down list box.</p>
+          <p>In a typical application a user would be presented with the drop-down list, would make a selection and then this would appear in the edit box and become the data value for that cell in the database. </p>
+          <p>So for example a list of countries might be presented, and the selected value from the list would be used to populate the appropriate field ('Country') in that record of the database.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBComboBox.FDataLink">
@@ -2940,7 +2950,7 @@ If the TabStop is True, the control is in the tab order. If TabStop is False, th
       </element>
       <!-- property Visibility: public -->
       <element name="TDBComboBox.Field">
-        <short/>
+        <short>The field in the dataset to which this control is attached</short>
         <descr/>
         <seealso/>
       </element>
@@ -4057,6 +4067,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
+        <descr>The Image is stored in the database as a Binary Large Object (BLOB)</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TDBImage.FAutoDisplay">
@@ -4313,13 +4324,13 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- property Visibility: published -->
       <element name="TDBImage.Picture">
-        <short/>
+        <short>The picture that is to be stored or displayed</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBImage.Proportional">
-        <short/>
+        <short>True if image is proportional</short>
         <descr/>
         <seealso/>
       </element>
@@ -4360,6 +4371,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <seealso>
           <link id="HowToUseDataAwareControls"/>
         </seealso>
+        <descr>A pop-up calendar appears, and the user can navigate through years, months and days to select the date that is required. When a date is selected, it is inserted into the Date field of the appropriate record in the database.</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TDBCalendar.FDataLink">
