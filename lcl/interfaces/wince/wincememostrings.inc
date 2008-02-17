@@ -34,25 +34,22 @@ TWinCEMemoStrings = class(TStrings)
 
 function TWinCEMemoStrings.GetLineLength(Index: Integer): Integer;
 begin
-  Result := SendMessage(fHandle, EM_LINELENGTH, SendMessage(fHandle, EM_LINEINDEX, Index, 0),0);
+  Result := SendMessageW(fHandle, EM_LINELENGTH, SendMessage(fHandle, EM_LINEINDEX, Index, 0),0);
 end;
 
 function TWinCEMemoStrings.GetLineStart(Index: Integer): Integer;
 begin
-  Result := SendMessage(fHandle, EM_LINEINDEX, Index, 0);
+  Result := SendMessageW(fHandle, EM_LINEINDEX, Index, 0);
 end;
 
 function TWinCEMemoStrings.GetTextStr: string;
-var
-  CapLen: dword;
-  Caption: PChar;
 begin
   Result := GetControlText(fHandle);
 end;
 
 function TWinCEMemoStrings.GetRealCount: integer;
 begin
-  Result := SendMessage(fHandle, EM_GETLINECOUNT, 0, 0);
+  Result := SendMessageW(fHandle, EM_GETLINECOUNT, 0, 0);
 end;
 
 function TWinCEMemoStrings.GetCount: integer;
@@ -63,16 +60,17 @@ end;
 
 function TWinCEMemoStrings.Get(Index: Integer): string;
 var
-textbuf: PWideChar;
-fLength: Integer;
+  textbuf: PWideChar;
+  fLength: Integer;
 begin
   fLength := GetLineLength(Index);
   if fLength = 0 then Result := ''
-  else begin
+  else
+  begin
     textbuf := PWideChar(SysAllocStringLen(nil,fLength+1));
     PWord(textbuf)^ := Word(fLength+1);
-    SendMessage(fHandle, EM_GETLINE, Index, lparam(textbuf));
-    Result := WideStringToString(WideString(textbuf));
+    SendMessageW(fHandle, EM_GETLINE, Index, lparam(textbuf));
+    Result := UTF8Encode(WideString(textbuf));
     SysFreeString(textbuf);
   end;
 end;

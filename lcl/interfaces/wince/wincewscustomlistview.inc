@@ -114,13 +114,12 @@ begin
   lvc.Mask := LVCF_TEXT;
 
   {$ifdef Win32}
-  lvc.pszText := PChar(LCLStringToPWideChar(AColumn.Caption));
+  lvc.pszText := PChar(PWideChar(UTF8Decode(AColumn.Caption)));
   SendMessage(ALV.Handle, LVM_INSERTCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
   {$else}
-  lvc.pszText := LCLStringToPWideChar(AColumn.Caption);
+  lvc.pszText := PWideChar(UTF8Decode(AColumn.Caption));
   ListView_InsertColumn(ALV.Handle, AIndex, lvc);
   {$endif}
-  FreeMem(lvc.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
@@ -204,13 +203,12 @@ begin
   lvc.Mask := LVCF_TEXT;
 
   {$ifdef Win32}
-  lvc.pszText := PChar(LCLStringToPWideChar(ACaption));
+  lvc.pszText := PChar(PWideChar(UTF8Decode(ACaption)));
   SendMessageW(ALV.Handle, LVM_SETCOLUMNW, WPARAM(AIndex), LPARAM(@lvc));
   {$else}
-  lvc.pszText := LCLStringToPWideChar(ACaption);
+  lvc.pszText := PWideChar(UTF8Decode(ACaption));
   ListView_SetColumn(ALV.Handle, AIndex, lvc);
   {$endif}
-  FreeMem(lvc.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
@@ -316,13 +314,12 @@ begin
   lvi.iSubItem := 0;
 
   {$ifdef Win32}
-  lvi.pszText := PChar(LCLStringToPWideChar(AItem.Caption));
+  lvi.pszText := PChar(PWideChar(UTF8Decode(AItem.Caption)));
   SendMessageW(ALV.Handle, LVM_INSERTITEMW, 0, LPARAM(@lvi));
   {$else}
-  lvi.pszText := LCLStringToPWideChar(AItem.Caption);
+  lvi.pszText := PWideChar(UTF8Decode(AItem.Caption));
   ListView_InsertItem(ALV.Handle, lvi);
   {$endif}
-  FreeMem(lvi.pszText);
 end;
 
 class procedure TWinCEWSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
@@ -356,9 +353,8 @@ begin
 end;
 
 class procedure TWinCEWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
-var
-  tmpAText : PWideChar;
 {$ifdef Win32}
+var
   _gnu_lvi : LV_ITEM;
 {$endif}
 begin
@@ -371,9 +367,7 @@ begin
 
     SendMessageW(ALV.Handle, LVM_SETITEMTEXTW, WPARAM(AIndex), LPARAM(@_gnu_lvi));
   {$else}
-  tmpAText := LCLStringToPWideChar(AText);
-  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, tmpAText);
-  FreeMem(tmpAText);
+  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PWideChar(UTF8Decode(AText)));
   {$endif}
 end;
 

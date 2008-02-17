@@ -188,13 +188,6 @@ type
   private
   protected
   public
-{$ifdef OldToolbar}
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
-    class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
-    class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
-    class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
-{$endif}
   end;
 
   { TWinCEWSTrackBar }
@@ -347,15 +340,12 @@ begin
 end;
 
 class procedure TWinCEWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
-var
-tmpSimpleText : PWideChar;
 begin
   if AStatusBar.SimplePanel then
-    begin
-      tmpSimpleText := LCLStringToPWideChar(AStatusBar.SimpleText);
-      Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PWideChar(tmpSimpleText)));
-      FreeMem(tmpSimpleText);
-    end
+  begin
+    Windows.SendMessageW(AStatusBar.Handle, SB_SETTEXT, 255,
+      LPARAM(PWideChar(UTF8Decode(AStatusBar.SimpleText))));
+  end
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
@@ -442,84 +432,6 @@ begin
   Windows.SendMessage(AProgressBar.Handle, PBM_SETPOS, Windows.WPARAM(NewPosition), 0);
 end;
 
-{ TWinCEWSToolbar}
-
-{$IFDEF OldToolbar}
-class function TWinCEWSToolBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
-  init : TINITCOMMONCONTROLSEX;
-begin
-  init.dwSize := Sizeof(TINITCOMMONCONTROLSEX);
-  init.dwICC := ICC_BAR_CLASSES;
-  InitCommonControlsEx(@init);
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  // customization of Params
-  with Params do
-  begin
-    FlagsEx := WS_EX_TOPMOST;
-    pClassName := TOOLBARCLASSNAME;
-    Flags := WS_CHILD or TBSTYLE_FLAT or TBSTYLE_LIST or WS_VISIBLE or TBS_HORZ or TBS_BOTH or TBS_NOTICKS or TBS_FIXEDLENGTH;//Flags {or CCS_ADJUSTABLE};
-  end;
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
-end;
-
-class function  TWinCEWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
-begin
-  Result := SendMessage(AToolbar.Handle, TB_BUTTONCOUNT, 0, 0)
-end;
-
-class procedure TWinCEWSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
-var
-  PStr, PStr2: PWideChar;
-  Num: Integer;
-  TBB: TBBUTTON;
-begin
-  // TODO: check correctness / clean up
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-  Assert(False, 'Trace:Toolbutton being inserted');
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-  If (AControl is TWinControl) Then
-  Begin
-    PStr := StringToPWideChar(TToolButton(AControl).Caption);
-  End
-  Else
-  Begin
-    Raise Exception.Create('Can not assign this control to the toolbar');
-    Exit;
-  End;
-
-  Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.IndexOf(TControl(AControl));
-  If Num < 0 Then
-    Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.Count + 1;
-  Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
-
-  With tbb Do
-  Begin
-    iBitmap := Num;
-    idCommand := Num;
-    fsState := TBSTATE_ENABLED;
-    fsStyle := TBSTYLE_BUTTON;
-    iString := Integer(PStr);
-  End;
-
-  SendMessage(TWinControl(AControl).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
-  SendMessage(TWinControl(AControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
-  FreeMem(PStr);
-  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-end;
-
-class procedure TWinCEWSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
-begin
-  // TODO: code buggy, Index of button to delete ?!
-  SendMessage(AToolBar.Handle, TB_DELETEBUTTON, 0, 0);
-end;
-{$ENDIF}
-
 { TWinCEWSTrackBar }
 
 class function TWinCEWSTrackBar.CreateHandle(const AWinControl: TWinControl;
@@ -600,9 +512,6 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TWinCEWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWinCEWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWinCEWSToolButton);
-{$ifdef OldToolbar}
-  RegisterWSComponent(TToolBar, TWinCEWSToolBar);
-{$endif}
   RegisterWSComponent(TCustomTrackBar, TWinCEWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWinCEWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWinCEWSTreeView);

@@ -94,23 +94,18 @@ type
 
   TWinCEWSCustomForm = class(TWSCustomForm)
   private
-//    class procedure SetSlots(const QtCustomForm: TQtCustomForm);
   protected
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-
-{    class procedure DestroyHandle(const AWinControl: TWinControl); override;}
-
-    procedure SetBounds(const AWinControl: TWinControl;
-                                      const ALeft, ATop, AWidth, AHeight: Integer);
-
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure SetBounds(const AWinControl: TWinControl;
+      const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+                                   const ABorderIcons: TBorderIcons); override;
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure SetShowInTaskbar(const AForm: TCustomForm; const AValue: TShowInTaskbar); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
-    class procedure SetBorderIcons(const AForm: TCustomForm;
-                                   const ABorderIcons: TBorderIcons); override;
   end;
 
   { TWinCEWSForm }
@@ -305,7 +300,7 @@ begin
   RecreateWnd(AForm);
 end;
                             
-procedure TWinCEWSCustomForm.SetBounds(const AWinControl: TWinControl;
+class procedure TWinCEWSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   SizeRect: Windows.RECT;

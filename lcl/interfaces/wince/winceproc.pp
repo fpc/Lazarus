@@ -43,8 +43,6 @@ Type
       );
   end;
 
-function LCLStringToPWideChar(inString: string): PWideChar;
-function WideStringToString(inWideString : WideString) : String;
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
@@ -113,45 +111,6 @@ implementation
 uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
-
-{ Converts a LCL string into a PWideChar.
-
-  With Unicode support activated the input string must be in
-  UTF-8 encoding.
-
-  Note that this function will alloc a new PWideChar
-  and the caller is responsible for freeing it with FreeMem
-}
-function LCLStringToPWideChar(inString: string): PWideChar;
-var
-  WideBuffer: widestring;
-begin
-  { Converts to a buffer }
-  WideBuffer := Utf8Decode(inString);
-  
-  { Allocates memory for the string }
-  Result := GetMem(Length(WideBuffer) * 2 + 2);
-
-  { Copies to the final destination }
-  WideStrLCopy(PWideChar(WideBuffer), Result, Length(WideBuffer));
-end;
-
-{ well this is different from normal string(widestring)
-  or other rtl functions because it uses windows local codepage
-  better name for this?! }
-function WideStringToString(inWideString : WideString) : String;
-var
-  tmpStr : PChar;
-  inStrLen: integer;
-begin
-  inStrLen := Length(inWideString);
-  tmpStr := StrAlloc(inStrLen+1);
-  WideCharToMultiByte(CP_ACP, 0, PWideChar(inWideString), -1, tmpStr, inStrLen,nil,nil);
-  char((tmpStr+inStrLen)^) := #0;
-  Result := string(tmpStr);
-  StrDispose(tmpStr);
-end;
-
 
 {------------------------------------------------------------------------------
   Function: WM_To_String
@@ -1139,22 +1098,21 @@ var
   buf: pointer;
   lenBuf: dword;
   fixedInfo: ^VS_FIXEDFILEINFO;
-  tmpText : PWideChar;
+  WideBuffer: widestring;
 begin
   Result := $FFFFFFFF;
-  tmpText := LCLStringToPWideChar(FileName);
-  lenBuf := GetFileVersionInfoSizeW(tmpText, lenBuf);
+  WideBuffer := UTF8Decode(FileName);
+  lenBuf := GetFileVersionInfoSizeW(PWideChar(WideBuffer), lenBuf);
   if lenBuf > 0 then
   begin
     GetMem(buf, lenBuf);
-    if GetFileVersionInfoW(tmpText, 0, lenBuf, buf) then
+    if GetFileVersionInfoW(PWideChar(WideBuffer), 0, lenBuf, buf) then
     begin
       VerQueryValue(buf, '\', pointer(fixedInfo), lenBuf);
       Result := fixedInfo^.dwFileVersionMS;
     end;
     FreeMem(buf);
   end;
-  FreeMem(tmpText);
 end;
 
 function AllocWindowInfo(Window: HWND): PWindowInfo;
@@ -1284,7 +1242,7 @@ begin
   TextLen := GetWindowTextLength(AHandle);
   tmpWideStr := PWideChar(SysAllocStringLen(nil,TextLen + 1));
   GetWindowTextW(AHandle, tmpWideStr, TextLen + 1);
-  Result := WideStringToString(widestring(tmpWideStr));
+  Result := UTF8Encode(widestring(tmpWideStr));
   SysFreeString(tmpWideStr);
 end;
 

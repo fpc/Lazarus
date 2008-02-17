@@ -160,7 +160,7 @@ begin
   // DFCS_ADJUSTRECT doesnot work
   InflateRect(DrawRect, -4, -4);
   
-  ButtonCaption := LCLStringToPWideChar(BitBtn.Caption);
+  ButtonCaption := PWideChar(UTF8Decode(BitBtn.Caption));
   // gather info about bitbtn
   if BitBtn.Glyph.Empty then
   begin
@@ -234,7 +234,6 @@ begin
   DrawBitmap;
 
   SelectObject(DrawStruct^._hDC, OldFontHandle);
-  FreeMem(ButtonCaption);
 end;
 
 

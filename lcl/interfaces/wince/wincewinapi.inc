@@ -1252,57 +1252,57 @@ function TWinCEWidgetSet.CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHead
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
 var
-hbit,htargetbit : HBITMAP;
-lpDestBits : PChar;
-dwLen : longint;
-lpH:TBitmapInfoHeader;
-orig_bitcount,nPadWidth,pad:integer;
-i,dwError:longint;
-d:PByte;
-s,s0:PWord;
-pixel:word;
-dc2:HDC;
+  hbit,htargetbit : HBITMAP;
+  lpDestBits : PChar;
+  dwLen : longint;
+  lpH:TBitmapInfoHeader;
+  orig_bitcount,nPadWidth,pad:integer;
+  i,dwError:longint;
+  d:PByte;
+  s,s0:PWord;
+  pixel:word;
+  dc2:HDC;
 begin
-nPadWidth := 4;
-lpH := InfoHeader;
-lpH.biSize:=sizeof(TBitmapInfoHeader);
+  nPadWidth := 4;
+  lpH := InfoHeader;
+  lpH.biSize:=sizeof(TBitmapInfoHeader);
 
-if lpH.biWidth mod nPadWidth <> 0  then
-pad := nPadWidth - lpH.biWidth mod nPadWidth;
-// there are problems with padding. i dont know the rules
-// anymore...
-pad := 0;
-// This is wrong when the infoheader is followed by color data...
-// We hope that biSizeImage is set then...
-dwLen := ((lpH.biWidth+pad) * abs(lpH.biHeight) * lpH.biBitCount) div 8;
-// includes colordata, if any...
-if lpH.biSizeImage <> 0 then
-dwLen := lpH.biSizeImage;
-orig_bitcount := lpH.biBitCount;
+  if lpH.biWidth mod nPadWidth <> 0  then
+  pad := nPadWidth - lpH.biWidth mod nPadWidth;
+  // there are problems with padding. i dont know the rules
+  // anymore...
+  pad := 0;
+  // This is wrong when the infoheader is followed by color data...
+  // We hope that biSizeImage is set then...
+  dwLen := ((lpH.biWidth+pad) * abs(lpH.biHeight) * lpH.biBitCount) div 8;
+  // includes colordata, if any...
+  if lpH.biSizeImage <> 0 then
+  dwLen := lpH.biSizeImage;
+  orig_bitcount := lpH.biBitCount;
 
-{if unaligned(InitInfo.bmiHeader.biBitCount) = 16 then
-unaligned(InitInfo.bmiHeader.biBitCount) := 24;}
+  {if unaligned(InitInfo.bmiHeader.biBitCount) = 16 then
+  unaligned(InitInfo.bmiHeader.biBitCount) := 24;}
 
-{hbit := windows.CreateDIBSection( dc, windows.PBITMAPINFO(@lph)^,
-        DIB_RGB_COLORS, lpDestBits, 0, 0);}
-//getmem(lpDestBits,dwLen);
-hbit := Windows.CreateBitmap( lpH.biWidth, abs(lpH.biHeight),1,InitInfo.bmiHeader.biBitCount,InitBits);
+  {hbit := windows.CreateDIBSection( dc, windows.PBITMAPINFO(@lph)^,
+          DIB_RGB_COLORS, lpDestBits, 0, 0);}
+  //getmem(lpDestBits,dwLen);
+  hbit := Windows.CreateBitmap( lpH.biWidth, abs(lpH.biHeight),1,InitInfo.bmiHeader.biBitCount,InitBits);
 
-//dc2:=windows.getdc(0);
-//htargetbit := Windows.CreateCompatibleBitmap( dc2,lpH.biWidth, abs(lpH.biHeight));
+  //dc2:=windows.getdc(0);
+  //htargetbit := Windows.CreateCompatibleBitmap( dc2,lpH.biWidth, abs(lpH.biHeight));
 
-//SelectObject(dc,hbit);
-//SelectObject(dc2,htargetbit);
-//BitBlt(dc2,0, 0, lpH.biWidth, abs(lpH.biHeight), Dc, 0, 0, SRCPAINT);
-result := hbit;
-//DeleteObject(dc2);
-//DeleteObject(hbit);
+  //SelectObject(dc,hbit);
+  //SelectObject(dc2,htargetbit);
+  //BitBlt(dc2,0, 0, lpH.biWidth, abs(lpH.biHeight), Dc, 0, 0, SRCPAINT);
+  result := hbit;
+  //DeleteObject(dc2);
+  //DeleteObject(hbit);
 
-exit;
+  exit;
 
-//hbit := CreateDIBSection(dc, InitInfo, DIB_RGB_COLORS, lpDestBits, 0, 0);
-//if (hbit <> 0) then
- begin
+  //hbit := CreateDIBSection(dc, InitInfo, DIB_RGB_COLORS, lpDestBits, 0, 0);
+  //if (hbit <> 0) then
+  begin
 
    if (orig_bitcount = 16) then
     begin
@@ -1360,7 +1360,6 @@ end;
 
   The GetFocus function retrieves the handle of the window that has the focus.
  ------------------------------------------------------------------------------}
-
 function TWinCEWidgetSet.GetFocus: HWND;
 begin
   Result := Windows.GetFocus;
@@ -1592,7 +1591,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWinCEWidgetSet.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 var
-tmw: TTextMetricW;
+  tmw: TTextMetricW;
 begin
   Assert(False, Format('Trace:> TODO FINISH[TWinCEWidgetSet.GetTextMetrics] DC: 0x%x', [DC]));
   Result := Boolean(Windows.GetTextMetrics(DC, @TMw));
