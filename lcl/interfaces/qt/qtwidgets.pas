@@ -112,7 +112,7 @@ type
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); virtual; reintroduce;
     constructor CreateFrom(const AWinControl: TWinControl; AWidget: QWidgetH); virtual;
-    procedure InitializeWidget;
+    procedure InitializeWidget; virtual;
     procedure DeInitializeWidget;
     procedure RecreateWidget;
     procedure DestroyNotify(AWidget: TQtWidget); virtual;
@@ -903,6 +903,7 @@ type
     FMenuItem: TMenuItem;
   protected
     function CreateWidget(const APrams: TCreateParams): QWidgetH; override;
+    procedure InitializeWidget; override;
     procedure DoPopupClose;
   public
     constructor Create(const AMenuItem: TMenuItem); overload;
@@ -6491,6 +6492,12 @@ begin
   FIcon := nil;
   Result := QMenu_create();
   FActionHandle := nil;;
+end;
+
+procedure TQtMenu.InitializeWidget;
+begin
+  Widget := CreateWidget(FParams);
+  setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
 end;
 
 constructor TQtMenu.Create(const AMenuItem: TMenuItem);
