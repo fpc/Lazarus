@@ -150,7 +150,7 @@ type
     constructor Create;
 
     procedure Search(const ASearchPath: String; ASearchMask: String = '';
-      ASearchSubDirs: Boolean = True; AMaskSeparator: char = PathSeparator);
+      ASearchSubDirs: Boolean = True; AMaskSeparator: char = ';');
   public
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;

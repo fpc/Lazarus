@@ -271,7 +271,7 @@ begin
   end;
 end;
 
-procedure ShowError(const S: String);
+procedure RaiseError(const S: String);
 begin
   DebugLn(S);
   raise Exception.Create(S);
@@ -282,123 +282,130 @@ var
   DocFileName: String;
   MakeSkelPath: String;
   AProcess: TProcess;
-  AStringList: TStringList;
+  AStringList, AErrorList: TStringList;
   M: TMemoryStream;
   N, BytesRead: LongInt;
   OldDoc, NewDoc: TFPDocFile;
-  Error: String;
 const
    READ_BYTES = 2048;
    
 begin
-  if not FileExists(AFileName) then
-  begin
-    ShowError('Update ' + AFileName + ' failed!');
-    Exit;
-  end;
-  
-  MakeSkelPath := FindDefaultExecutablePath(EditMakeSkel.FileName);
-  
-  if not FileIsExecutable(MakeSkelPath) then
-    ShowError('Unable to find MakeSkel tool executable "' + EditMakeSkel.Text +'"!');
-  
-  DocFileName := AppendPathDelim(EditDocs.Directory) + ExtractFileNameOnly(AFileName) + '.xml';
-  
-  if CheckBoxBackup.Checked then BackupFile(DocFileName);
-  
-  WriteStatus('Updating ' + AFileName);
-
-  AProcess := TProcess.Create(nil);
-  AStringList := TStringList.Create;
-  M := TMemoryStream.Create;
   try
-    AProcess.CommandLine :=
-      Format(MakeSkelPath + ' --package="%s" --input="%s -Fi%s"',
-        [EditPackage.Text, AFileName, EditInclude.Directory]);
-    AProcess.Options := AProcess.Options + [poUsePipes];
-    AProcess.Execute;
-    
-    BytesRead := 0;
-    while AProcess.Running do
+    if not FileExists(AFileName) then
     begin
-      M.SetSize(BytesRead + READ_BYTES);
-      N := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-      if N > 0 then Inc(BytesRead, N)
-      else Sleep(100);
+      RaiseError('Update ' + AFileName + ' failed!');
     end;
 
-    repeat
-      M.SetSize(BytesRead + READ_BYTES);
-      N := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
-      if N > 0 then Inc(BytesRead, N);
-    until N <= 0;
-    M.SetSize(BytesRead);
+    MakeSkelPath := FindDefaultExecutablePath(EditMakeSkel.FileName);
 
-    AStringList.LoadFromStream(M);
-    
-    while (AStringList.Count > 0) and
-      (AStringList[AStringList.Count - 1] = '') do
-      AStringList.Delete(AStringList.Count - 1);
-      
-    if AStringList.Count > 0 then
-      Error := AStringList[AStringList.Count - 1];
-      
-    while (AStringList.Count > 0) and
-      (AStringList.Strings[AStringList.Count - 1] <> '</fpdoc-descriptions>') do
-      AStringList.Delete(AStringList.Count - 1);
-      
-    if AStringList.Count = 0 then
-    begin
-      ShowError('Update ' + AFileName + ' failed! ' + Error);
-      Exit;
-    end;
+    if not FileIsExecutable(MakeSkelPath) then
+      RaiseError('Unable to find MakeSkel tool executable "' + EditMakeSkel.Text +'"!');
 
-    M.Clear;
-    AStringList.SaveToStream(M);
-    M.Position := 0;
-    NewDoc := TFPDocFile.Create(M);
-    if FileExists(DocFileName) then OldDoc := TFPDocFile.Create(DocFileName)
-    else OldDoc := nil;
-    
+    DocFileName := AppendPathDelim(EditDocs.Directory) + ExtractFileNameOnly(AFileName) + '.xml';
+
+    if CheckBoxBackup.Checked then BackupFile(DocFileName);
+
+    WriteStatus('Updating ' + AFileName);
+
+    AProcess := TProcess.Create(nil);
+    AStringList := TStringList.Create;
+    AErrorList := TStringList.Create;
+    M := TMemoryStream.Create;
     try
-      if OldDoc <> nil then
+      AProcess.CommandLine :=
+        Format(MakeSkelPath + ' --package="%s" --input="%s -Fi%s"',
+          [EditPackage.Text, AFileName, EditInclude.Directory]);
+      AProcess.Options := AProcess.Options + [poUsePipes, poNoConsole, poStderrToOutPut];
+      AProcess.Execute;
+
+      BytesRead := 0;
+      while AProcess.Running do
       begin
-        FormSummary.OldInfo := OldDoc.GetInfo;
-        OldDoc.AssignToSkeleton(NewDoc, @MoveElement);
-        FormSummary.NewInfo := NewDoc.GetInfo;
-      end
-      else
-      begin
-        FormSummary.OldInfo := EmptyFPDocInfo;
-        FormSummary.NewInfo := NewDoc.GetInfo;
+        M.SetSize(BytesRead + READ_BYTES);
+        N := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+        if N > 0 then Inc(BytesRead, N)
+        else Sleep(100);
       end;
-      
-      if CheckBoxShowSummary.Checked then
+
+      repeat
+        M.SetSize(BytesRead + READ_BYTES);
+        N := AProcess.Output.Read((M.Memory + BytesRead)^, READ_BYTES);
+        if N > 0 then Inc(BytesRead, N);
+      until N <= 0;
+      M.SetSize(BytesRead);
+
+      AStringList.LoadFromStream(M);
+
+      while (AStringList.Count > 0) and
+        (AStringList.Strings[AStringList.Count - 1] = '') do
+        AStringList.Delete(AStringList.Count - 1);
+
+      while (AStringList.Count > 0) and
+        (AStringList.Strings[AStringList.Count - 1] <> '') and
+        (AStringList.Strings[AStringList.Count - 1] <> '</fpdoc-descriptions>') do
       begin
-        FormSummary.LabelFileName.Caption := DocFileName;
-        if FormSummary.ShowModal = mrOk then
+        AErrorList.Add(AStringList.Strings[AStringList.Count - 1]);
+        AStringList.Delete(AStringList.Count - 1);
+      end;
+
+      while (AStringList.Count > 0) and
+        (AStringList.Strings[AStringList.Count - 1] <> '</fpdoc-descriptions>') do
+        AStringList.Delete(AStringList.Count - 1);
+
+      if AStringList.Count = 0 then
+        RaiseError('Update ' + AFileName + ' failed, because' + AErrorList.Text);
+
+      M.Clear;
+      AStringList.SaveToStream(M);
+      M.Position := 0;
+      NewDoc := TFPDocFile.Create(M);
+      if FileExists(DocFileName) then OldDoc := TFPDocFile.Create(DocFileName)
+      else OldDoc := nil;
+
+      try
+        if OldDoc <> nil then
+        begin
+          FormSummary.OldInfo := OldDoc.GetInfo;
+          OldDoc.AssignToSkeleton(NewDoc, @MoveElement);
+          FormSummary.NewInfo := NewDoc.GetInfo;
+        end
+        else
+        begin
+          FormSummary.OldInfo := EmptyFPDocInfo;
+          FormSummary.NewInfo := NewDoc.GetInfo;
+        end;
+
+        if CheckBoxShowSummary.Checked then
+        begin
+          FormSummary.LabelFileName.Caption := DocFileName;
+          if FormSummary.ShowModal = mrOk then
+          begin
+            NewDoc.SaveToFile(DocFileName);
+            WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' succeeds!');
+          end
+          else
+            WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' cancelled!');
+        end
+        else
         begin
           NewDoc.SaveToFile(DocFileName);
           WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' succeeds!');
-        end
-        else
-          WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' cancelled!');
-      end
-      else
-      begin
-        NewDoc.SaveToFile(DocFileName);
-        WriteStatus('Update ' + AFileName + ' to ' + DocFileName + ' succeeds!');
+        end;
+
+      finally
+        if OldDoc <> nil then OldDoc.Free;
+        NewDoc.Free;
       end;
-      
+
     finally
-      if OldDoc <> nil then OldDoc.Free;
-      NewDoc.Free;
+      M.Free;
+      AStringList.Free;
+      AErrorList.Free;
+      AProcess.Free;
     end;
-    
-  finally
-    M.Free;
-    AStringList.Free;
-    AProcess.Free;
+  except
+    on E: Exception do
+      MessageDlg('Error', E.Message, mtError, [mbOK], '');
   end;
 end;
 
@@ -418,7 +425,7 @@ begin
       BackupList.Add(AFileName);
     end
     else
-      ShowError('Backup ' + AFileName + ' to ' + BackupFileName + ' failed!');
+      RaiseError('Backup ' + AFileName + ' to ' + BackupFileName + ' failed!');
   end;
 end;
 
