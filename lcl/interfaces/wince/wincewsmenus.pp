@@ -121,15 +121,15 @@ type
 //menus
 
 const
-SPI_GETPLATFORMTYPE = 257;//roozbeh : should be moved to windows unit
+  SPI_GETPLATFORMTYPE = 257;//roozbeh : should be moved to windows unit
 
 function WStrCmp( W1, W2: PWideChar ): Integer;
 var
- counter: Integer;
-Begin
+  counter: Integer;
+begin
   counter := 0;
-  While W1[counter] = W2[counter] do
-  Begin
+  while W1[counter] = W2[counter] do
+  begin
     if (W2[counter] = #0) or (W1[counter] = #0) then
        break;
     Inc(counter);
@@ -138,54 +138,57 @@ Begin
 end;
 
 
-function IsSmartPhone : Boolean;
+function IsSmartPhone: Boolean;
 var
-buf:array[0..255] of WideChar;
-s:widestring;
+  buf: array[0..255] of WideChar;
+  s: widestring;
 begin
-Result := false;
-if SystemParametersInfo(SPI_GETPLATFORMTYPE,sizeof(buf),@buf,0) then
-  if WStrCmp(@buf,PWideChar('SmartPhone')) = 0  then
-    Result := true
-  else
-    Result := false//roozbeh : either it is 'PocketPC' or something else :)
-else
-  if GetLastError=ERROR_ACCESS_DENIED then
+  Result := false;
+  if SystemParametersInfo(SPI_GETPLATFORMTYPE,sizeof(buf),@buf,0) then
+  begin
+    if WStrCmp(@buf,PWideChar('SmartPhone')) = 0  then
+      Result := true
+    else
+      Result := false;//roozbeh : either it is 'PocketPC' or something else :)
+  end
+  else if GetLastError=ERROR_ACCESS_DENIED then
     Result := true;
 end;
 
 //both menus are popup menus or submenus
 procedure CeMakeMenuesSame(SrcMenu,dstMenu : HMENU);
 var
-i: integer;
-mi: MENUITEMINFO;
-buf: array[0..255] of WideChar;
-fState:integer;
-hPop : HMENU;
-uIDNewItem  : integer;
+  i: integer;
+  mi: MENUITEMINFO;
+  buf: array[0..255] of WideChar;
+  fState:integer;
+  hPop : HMENU;
+  uIDNewItem  : integer;
 begin
-while RemoveMenu(dstMenu,0,MF_BYPOSITION)  do ;
-i:=0;
-mi.cbSize:=SizeOf(mi);
-mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
-mi.dwTypeData:=@buf;
+  while RemoveMenu(dstMenu,0,MF_BYPOSITION)  do ;
 
-while GetMenuItemInfo(srcMenu, i, True, mi) do begin
-  buf[mi.cch]:=#0;
-  fState:=MF_STRING;
-  if mi.fState and MFS_DISABLED <> 0 then
-    fState:=fState or MF_GRAYED ;
-  if mi.fState and MFS_CHECKED <> 0 then
-    fState:=fState or MF_CHECKED;
-  uIDNewItem := mi.wID;
-  if mi.hSubMenu <>  0 then
+  i:=0;
+  mi.cbSize:=SizeOf(mi);
+  mi.fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
+  mi.dwTypeData:=@buf;
+
+  while GetMenuItemInfo(srcMenu, i, True, mi) do
+  begin
+    buf[mi.cch]:=#0;
+    fState:=MF_STRING;
+    if mi.fState and MFS_DISABLED <> 0 then
+      fState:=fState or MF_GRAYED;
+    if mi.fState and MFS_CHECKED <> 0 then
+      fState:=fState or MF_CHECKED;
+    uIDNewItem := mi.wID;
+    if mi.hSubMenu <>  0 then
     begin
       uIDNewItem  := mi.hSubMenu;
       fstate := fstate or MF_POPUP;
     end;
-  AppendMenu(dstMenu,fState,uIDNewItem,@buf);
-  inc(i);
-end;
+    AppendMenu(dstMenu,fState,uIDNewItem,@buf);
+    inc(i);
+  end;
 end;
 
 procedure CeSetMenu(Wnd: HWND; Menu: HMENU);
@@ -235,24 +238,29 @@ begin
   if (mbi.hwndMB = 0) or (
      (not ((boolean(SendMessage (mbi.hwndMB, TB_COMMANDTOINDEX, MenuBarID_L, 0) + 1)) xor (hasLMenu))) and
      (not ((boolean(SendMessage (mbi.hwndMB, TB_COMMANDTOINDEX, MenuBarID_R, 0) + 1)) xor (hasRMenu))))
-    then begin
+    then
+  begin
     if not SHCreateMenuBar(@mbi) then
-      begin
-        //MsgBox('not ok',0);
-        exit;
-      end;
+    begin
+      //MsgBox('not ok',0);
+      exit;
+    end;
   end;
+
   while SendMessage(mbi.hwndMB, TB_DELETEBUTTON, 0, 0) <> 0 do ;
 
-  with mi do begin
+  with mi do
+  begin
     cbSize:=SizeOf(mi);
     fMask:=MIIM_SUBMENU or MIIM_TYPE or MIIM_ID or MIIM_STATE;
     dwTypeData:=@buf;
   end;
 
-  if Menu <> 0 then begin
+  if Menu <> 0 then
+  begin
     i:=0;
-    while True do begin
+    while True do
+    begin
       mi.cch:=SizeOf(buf);
       if not GetMenuItemInfo(Menu, i, True, @mi) then
         break;
@@ -326,12 +334,13 @@ begin
 end;
 
 function FindMenuItemAccelerator(const ACharCode: char; const AMenuHandle: HMENU): integer;
-var MenuItemIndex: integer;
-    ItemInfo: MENUITEMINFO;
-    FirstMenuItem: TMenuItem;
-    SiblingMenuItem: TmenuItem;
-    HotKeyIndex: integer;
-    i: integer;
+var
+  MenuItemIndex: integer;
+  ItemInfo: MENUITEMINFO;
+  FirstMenuItem: TMenuItem;
+  SiblingMenuItem: TmenuItem;
+  HotKeyIndex: integer;
+  i: integer;
 begin
   Result := MakeLResult(0, 0);
   MenuItemIndex := -1;
@@ -387,10 +396,11 @@ end;
 
 (* Get the maximum length of the given string in pixels *)
 function StringSize(const aCaption: String; const aHDC: HDC; const aDecoration:TCaptionFlagsSet): TSize;
-var oldFont: HFONT;
-    newFont: HFONT;
-    tmpRect: Windows.RECT;
-    wCaption : WideString;
+var
+  oldFont: HFONT;
+  newFont: HFONT;
+  tmpRect: Windows.RECT;
+  wCaption : WideString;
 begin
   tmpRect.right := 0;
   tmpRect.left := 0;
@@ -503,13 +513,14 @@ begin
 end;
 
 procedure DrawMenuItemCheckMark(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
-var checkMarkWidth: integer;
-    checkMarkHeight: integer;
-    hdcMem: HDC;
-    monoBitmap: HBITMAP;
-    oldBitmap: HBITMAP;
-    checkMarkShape: integer;
-    checkMarkRect: Windows.RECT;
+var
+  checkMarkWidth: integer;
+  checkMarkHeight: integer;
+  hdcMem: HDC;
+  monoBitmap: HBITMAP;
+  oldBitmap: HBITMAP;
+  checkMarkShape: integer;
+  checkMarkRect: Windows.RECT;
 begin
   hdcMem := CreateCompatibleDC(aHDC);
   checkMarkWidth := GetSystemMetrics(SM_CXMENUCHECK);
@@ -530,23 +541,26 @@ begin
 end;
 
 procedure DrawMenuItemText(const aMenuItem: TMenuItem; const aHDC: HDC; aRect: Windows.RECT; const aSelected: boolean);
-var crText: COLORREF;
-    crBkgnd: COLORREF;
-    TmpLength: integer;
-    TmpHeight: integer;
-    oldFont: HFONT;
-    newFont: HFONT;
-    decoration: TCaptionFlagsSet;
-	shortCutText: string;
-	WorkRect: Windows.RECT;
-    wCaption : WideString;
+var
+  crText: COLORREF;
+  crBkgnd: COLORREF;
+  TmpLength: integer;
+  TmpHeight: integer;
+  oldFont: HFONT;
+  newFont: HFONT;
+  decoration: TCaptionFlagsSet;
+  shortCutText: string;
+  WorkRect: Windows.RECT;
+  wCaption : WideString;
 begin
   crText := TextColorMenu(aSelected, aMenuItem.Enabled);
   crBkgnd := BackgroundColorMenu(aSelected, aMenuItem.IsInMenuBar);
   SetTextColor(aHDC, crText);
   SetBkColor(aHDC, crBkgnd);
+
   if aMenuItem.Default then decoration := [cfBold]
   else decoration := [];
+
   newFont := getMenuItemFont(decoration);
   oldFont := SelectObject(aHDC, newFont);
   ExtTextOutW(aHDC, 0, 0, ETO_OPAQUE, @aRect, PWideChar(''), 0, nil);
@@ -569,8 +583,9 @@ begin
 end;
 
 procedure DrawMenuItemIcon(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect: Windows.RECT; const aSelected: boolean);
-var hdcMem: HDC;
-    hbmpOld: HBITMAP;
+var
+  hdcMem: HDC;
+  hbmpOld: HBITMAP;
 begin
   hdcMem := aMenuItem.Bitmap.Canvas.Handle;
   hbmpOld := SelectObject(hdcMem, aMenuItem.Bitmap.Handle);
@@ -582,7 +597,8 @@ procedure DrawMenuItem(const aMenuItem: TMenuItem; const aHDC: HDC; const aRect:
 begin
   if aMenuItem.IsLine then
     DrawSeparator(aHDC, aRect)
-  else begin
+  else
+  begin
     DrawMenuItemText(aMenuItem, aHDC, aRect, aSelected);
     if aMenuItem.Checked then
       DrawMenuItemCheckMark(aMenuItem, aHDC, aRect, aSelected);
@@ -673,8 +689,8 @@ var
   MenuInfo: MENUITEMINFO;
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
-  wCaption : WideString;
-  fstate,cmd : integer;
+  wCaption: WideString;
+  fstate, cmd: integer;
   i : integer;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
@@ -684,7 +700,8 @@ begin
   if AMenuItem.Parent.Parent<>nil then
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
-    with MenuInfo do begin
+    with MenuInfo do
+    begin
       cbSize := menuiteminfosize;
       fMask:=MIIM_SUBMENU;
     end;
@@ -700,17 +717,17 @@ begin
     end;
   end;
 
+  fState:=MF_STRING or MF_BYPOSITION;
+  if AMenuItem.Enabled then fState:=fState or MF_ENABLED else fstate:=fState or MF_GRAYED;
+  if AMenuItem.Checked then fState:=fState or MF_CHECKED;
+  cmd:=AMenuItem.Command; {value may only be 16 bit wide!}
+  if (AMenuItem.Count > 0) then
   begin
-    fState:=MF_STRING or MF_BYPOSITION;
-    if AMenuItem.Enabled then fState:=fState or MF_ENABLED else fstate:=fState or MF_GRAYED;
-    if AMenuItem.Checked then fState:=fState or MF_CHECKED;
-    cmd:=AMenuItem.Command; {value may only be 16 bit wide!}
-    if (AMenuItem.Count > 0) then
-    begin
-     cmd := AMenuItem.Handle;
-     fState := fState or MF_POPUP;
-    end else
-
+   cmd := AMenuItem.Handle;
+   fState := fState or MF_POPUP;
+  end
+  else
+  begin
     if not AMenuItem.IsLine then
     begin
       //fState:=fState or MF_OWNERDRAW;//roozbeh:couldnt make ownerdrawn menus work so far!
@@ -721,6 +738,7 @@ begin
     //if AMenuItem.RadioItem then fType := fType or MFT_RADIOCHECK;
     //if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
   end;
+
 //roozbeh..i really doubt this works!
   wCaption := AmenuItem.Caption;
 
@@ -832,8 +850,9 @@ end;
 
 initialization
 
-    menuiteminfosize:=sizeof(TMenuItemInfo);
-    MenuItemsList := TStringList.Create;
+  menuiteminfosize := sizeof(TMenuItemInfo);
+  MenuItemsList := TStringList.Create;
+
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
@@ -845,6 +864,9 @@ initialization
 //  RegisterWSComponent(TMainMenu, TWinCEWSMainMenu);
   RegisterWSComponent(TPopupMenu, TWinCEWSPopupMenu);
 ////////////////////////////////////////////////////
+
 finalization
+
    MenuItemsList.Free;
+
 end.
