@@ -83,7 +83,10 @@ type
       const AParams: TCreateParams): TLCLIntfHandle; override;
   public
     class function GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class function GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox;
       NewTraverseList: boolean); override;
@@ -91,7 +94,6 @@ type
     class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
-    class function GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
@@ -1186,6 +1188,22 @@ begin
   end
   else
     Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Set's the size of a TComboBox when autosized
+ ------------------------------------------------------------------------------}
+class procedure TQtWSCustomComboBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if AWinControl.HandleAllocated then
+    TQtWidget(AWinControl.Handle).PreferredSize(PreferredWidth,
+      PreferredHeight, WithThemeSpace);
+
+  // The correct behavior for the LCL is not forcing any specific value for
+  // TComboBox.Width, so we set it to zero to signal that here
+  PreferredWidth := 0;
 end;
 
 class procedure TQtWSCustomComboBox.SetArrowKeysTraverseList(
