@@ -282,10 +282,17 @@ type
   private
   protected
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
                                   ): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+      const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
-                             const NewState: TCheckBoxState); override;
+      const NewState: TCheckBoxState); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
   end;
 
   { TGtk2WSCheckBox }
@@ -711,6 +718,40 @@ end;
 
 { TGtk2WSCustomCheckBox }
 
+class function TGtk2WSCustomCheckBox.CreateHandle(
+  const AWinControl: TWinControl; const AParams: TCreateParams
+  ): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  {$ToDo verify if the check box has correct z-order and place a EventBox under it if not.}
+  Widget := gtk_check_button_new_with_label(AParams.Caption);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  Result := THandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  Set_RC_Name(AWinControl, PGtkWidget(Result));
+  SetCallbacks(PGtkWidget(Result), WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomCheckBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
+end;
+
 class function TGtk2WSCustomCheckBox.RetrieveState(
   const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
 var
@@ -726,6 +767,14 @@ begin
     Result := cbUnChecked;
 end;
 
+class procedure TGtk2WSCustomCheckBox.SetShortCut(
+  const ACustomCheckBox: TCustomCheckBox; const OldShortCut,
+  NewShortCut: TShortCut);
+begin
+  Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
+    'activate_item');
+end;
+
 class procedure TGtk2WSCustomCheckBox.SetState(
   const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var
@@ -739,6 +788,25 @@ begin
   gtk_toggle_button_set_active(ToggleButton, NewState=cbChecked);
   gtk_toggle_button_set_inconsistent(ToggleButton, NewState=cbGrayed);
   LockOnChange(GtkObject,-1);
+end;
+
+class procedure TGtk2WSCustomCheckBox.SetFont(const AWinControl: TWinControl;
+  const AFont: tFont);
+var
+  Widget: PGTKWidget;
+  LblWidget: PGtkWidget;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  if AFont.IsDefault then exit ;
+
+  Widget:= PGtkWidget(AWinControl.Handle);
+  LblWidget := (pGtkBin(Widget)^.Child);
+
+  if LblWidget<>nil then begin
+    Gtk2WidgetSet.SetWidgetColor(LblWidget, AWinControl.font.color, clNone,
+       [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    Gtk2WidgetSet.SetWidgetFont(LblWidget, AFont);
+  end;
 end;
 
 {$I gtk2wscustommemo.inc}

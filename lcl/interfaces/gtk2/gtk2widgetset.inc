@@ -451,24 +451,16 @@ var
 begin
   AControl:=TWinControl(Sender);
   if (AControl is TWinControl) and
-    (AControl.fCompStyle in [csListBox, csCheckListBox, csCListBox]) then
+    (AControl.fCompStyle in [csListBox, csCheckListBox]) then
   begin
     if MultiSelect then
       SelectionMode:= GTK_SELECTION_MULTIPLE
     else
       SelectionMode:= GTK_SELECTION_SINGLE;
       
-    case AControl.fCompStyle of
-
-    csListBox, csCheckListBox:
-      begin
-        Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
-           GetWidgetInfo(Widget, True)^.CoreWidget));
-        gtk_tree_selection_set_mode(Selection, SelectionMode);
-      end;
-     else
-       inherited SetSelectionMode(Sender, Widget, MultiSelect, ExtendedSelect);
-    end;
+    Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
+       GetWidgetInfo(Widget, True)^.CoreWidget));
+    gtk_tree_selection_set_mode(Selection, SelectionMode);
   end;
 end;
 

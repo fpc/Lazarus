@@ -105,7 +105,6 @@ uses
  FpGuiWSButtons,
 // FpGuiWSCalendar,
 // FpGuiWSCheckLst,
-// FpGuiWSCListBox,
 // FpGuiWSComCtrls,
  FpGuiWSControls,
 // FpGuiWSDbCtrls,

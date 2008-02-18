@@ -2756,11 +2756,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
   MultiSelect, ExtendedSelect: boolean);
-{$IFdef GTK2}
-begin
-  DebugLn('TODO: TGtkWidgetSet.SetSelectionMode');
-end;
-{$Else}
 var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
@@ -2768,7 +2763,7 @@ var
 begin
   AControl:=TWinControl(Sender);
   if (AControl is TWinControl) and
-    (AControl.fCompStyle in [csListBox, csCheckListBox, csCListBox]) then
+    (AControl.fCompStyle in [csListBox, csCheckListBox]) then
   begin
     if MultiSelect then
     begin
@@ -2776,26 +2771,18 @@ begin
           then SelectionMode:= GTK_SELECTION_EXTENDED
           else SelectionMode:= GTK_SELECTION_MULTIPLE;
     end
-    else begin
+    else
+    begin
       SelectionMode:= GTK_SELECTION_BROWSE;
     end;
-    case AControl.fCompStyle of
 
-    csListBox, csCheckListBox:
-      begin
-        GtkList:=PGtkList(GetWidgetInfo(Widget, True)^.CoreWidget);
-        if (GtkList^.selection=nil)
-        and (SelectionMode=GTK_SELECTION_BROWSE) then
-          SelectionMode:=GTK_SELECTION_SINGLE;
-        gtk_list_set_selection_mode(GtkList,SelectionMode);
-      end;
-
-    else
-      Assert (true, 'WARNING:[TGtkWidgetSet.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
-    end;
+    GtkList:=PGtkList(GetWidgetInfo(Widget, True)^.CoreWidget);
+    if (GtkList^.selection=nil)
+    and (SelectionMode=GTK_SELECTION_BROWSE) then
+      SelectionMode:=GTK_SELECTION_SINGLE;
+    gtk_list_set_selection_mode(GtkList,SelectionMode);
   end;
 end;
-{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure TGtkWidgetSet.BringFormToFront(Sender: TObject);

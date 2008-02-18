@@ -289,6 +289,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+  {$IFDEF GTK1}
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
                                   ): TCheckBoxState; override;
@@ -300,7 +301,7 @@ type
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
-
+  {$ENDIF}
   end;
 
   { TGtkWSCheckBox }
@@ -1499,6 +1500,8 @@ begin
   TGtkWidgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
 end;
 
+{$IFDEF Gtk1}
+
 class function TGtkWSCustomCheckBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
   ): TLCLIntfHandle;
@@ -1542,10 +1545,8 @@ class procedure TGtkWSCustomCheckBox.SetShortCut(
   const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);
 begin
-  {$IFDEF Gtk1}
   Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
     'activate_item');
-  {$ENDIF}
 end;
 
 class procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox;
@@ -1593,6 +1594,7 @@ begin
   end;
 end;
 
+{$ENDIF}
 
 { TGtkWSCustomMemo }
 

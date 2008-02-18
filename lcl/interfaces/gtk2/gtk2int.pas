@@ -47,7 +47,7 @@ uses
   DynHashArray, GraphType, GraphMath, Graphics, Menus,
   GtkWSControls, GTKWinApiWindow, StdCtrls, ComCtrls,
   Dialogs, ExtDlgs, Themes, LResources, Math, GTKGlobals,
-  {Buttons, CListBox, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
+  {Buttons, Calendar, Arrow, Spin, FileCtrl, CommCtrl, ExtCtrls, }
   GtkDef, Gtk2Def, GtkFontCache, GtkInt, GtkExtra;
 
 type
@@ -146,7 +146,6 @@ uses
 // Gtk2WSButtons,
 // Gtk2WSCalendar,
  Gtk2WSCheckLst,
-// Gtk2WSCListBox,
  Gtk2WSComCtrls,
  Gtk2WSControls,
 // Gtk2WSDbCtrls,

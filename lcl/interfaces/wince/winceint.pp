@@ -238,7 +238,6 @@ Uses
  WinCEWSButtons,
 // WinCEWSCalendar,
  WinCEWSCheckLst,
-// WinCEWSCListBox,
  WinCEWSComCtrls,
  WinCEWSControls,
 // WinCEWSDbCtrls,
