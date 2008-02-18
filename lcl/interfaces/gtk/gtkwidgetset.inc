@@ -2765,7 +2765,6 @@ var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
   GtkList: PGtkList;
-  GtkCList: PGtkCList;
 begin
   AControl:=TWinControl(Sender);
   if (AControl is TWinControl) and
@@ -2789,15 +2788,6 @@ begin
         and (SelectionMode=GTK_SELECTION_BROWSE) then
           SelectionMode:=GTK_SELECTION_SINGLE;
         gtk_list_set_selection_mode(GtkList,SelectionMode);
-      end;
-
-    csCListBox:
-      begin
-        GtkCList:=PGtkCList(GetWidgetInfo(Widget, True)^.CoreWidget);
-        if (GtkCList^.selection=nil)
-        and (SelectionMode=GTK_SELECTION_BROWSE) then
-          SelectionMode:=GTK_SELECTION_SINGLE;
-        gtk_clist_set_selection_mode(GtkCList,SelectionMode);
       end;
 
     else

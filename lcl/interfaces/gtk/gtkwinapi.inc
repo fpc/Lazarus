@@ -5538,7 +5538,7 @@ begin
       else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type)
       then begin
         //clist
-        //TODO: check is this is needed for listviews
+        {$TODO check is this is needed for listviews}
         DebugLn('[SetScrollInfo] Possible obsolete get use of CList (Listview ?)');
         Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
       end
@@ -5580,6 +5580,7 @@ begin
       else
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
         Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
+
     SB_BOTH:
        DebugLn('[SetScrollInfo] Got SB_BOTH ???');
   end;
@@ -8761,7 +8762,7 @@ begin
       else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type)
       then begin
         //clist
-        //TODO: check is this is needed for listviews
+        //TODO: check if this is needed for listviews
         DebugLn('[SetScrollInfo] Possible obsolete set use of CList (Listview ?)');
         Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
       end;

@@ -315,7 +315,6 @@ uses
  GtkWSButtons,
  GtkWSCalendar,
  GtkWSCheckLst,
- GtkWSCListBox,
  GtkWSComCtrls,
  GtkWSControls,
 // GtkWSDbCtrls,
@@ -339,7 +338,7 @@ uses
   GtkWSPrivate,
   GtkThemes,
   Buttons, StdCtrls, PairSplitter,
-  GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin,
+  GTKWinApiWindow, ComCtrls, Calendar, Arrow, Spin,
   ExtCtrls, FileCtrl, LResources, gtkglobals;
 
 {$I gtklistsl.inc}

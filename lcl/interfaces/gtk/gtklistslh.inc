@@ -77,24 +77,3 @@ type
     property Owner: TWinControl read FOwner;
   end;
 
-  { TGtkCListStringList }
-
-  TGtkCListStringList = class(TStrings)
-  private
-    FGtkCList : PGtkCList;
-    FSorted : boolean;
-  protected
-    function Get(Index : Integer) : string; override;
-    function GetCount : integer; override;
-    function GetObject(Index: Integer): TObject; override;
-    procedure PutObject(Index: Integer; AObject: TObject); override;
-    procedure SetSorted(Val : boolean); virtual;
-  public
-    constructor Create(List : PGtkCList);
-    procedure Assign(Source : TPersistent); override;
-    procedure Clear; override;
-    procedure Delete(Index : integer); override;
-    procedure Insert(Index : integer; const S: string); override;
-    procedure Sort; virtual;
-    property Sorted : boolean read FSorted write SetSorted;
-  end;

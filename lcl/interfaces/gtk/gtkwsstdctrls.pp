@@ -526,37 +526,25 @@ var
 begin
   Handle := ACustomListBox.Handle;
   {!$IFdef GTK1}
-  case ACustomListBox.fCompStyle of
-     csListBox, csCheckListBox:
-       begin
-         if Handle<>0 then begin
-           Widget:=nil;
-           if Widget=nil then begin
-             GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
-                              CoreWidget)^.selection;
-             if GList <> nil then
-               Widget:= PGtkWidget(GList^.data);
-           end;
-           if Widget = nil then
-             Result:= -1
-           else
-             Result:= gtk_list_child_position(PGtkList(
-                           GetWidgetInfo(Pointer(Handle), True)^.
-                                         CoreWidget), Widget);
-         end else
-           Result:=-1;
-       end;
-
-     csCListBox:
-       begin
-         GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.
-                                 CoreWidget)^.selection;
-         if GList = nil then
-           Result := -1
-         else
-           Result := PtrUInt(GList^.Data);
-       end;
-  end;
+  if Handle<>0 then
+  begin
+    Widget := nil;
+    if Widget = nil then
+    begin
+      GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.
+                        CoreWidget)^.selection;
+      if GList <> nil then
+        Widget:= PGtkWidget(GList^.data);
+    end;
+    if Widget = nil then
+      Result:= -1
+    else
+      Result:= gtk_list_child_position(PGtkList(
+                    GetWidgetInfo(Pointer(Handle), True)^.
+                                  CoreWidget), Widget);
+  end
+  else
+     Result:=-1;
   {!$EndIf}
 end;
 
@@ -581,14 +569,18 @@ begin
     ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.CoreWidget);
     ScrolledWindow:=PGtkScrolledWindow(AWidget);
     VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+
     if VertAdj=nil then
       AdjValue:=0
     else
       AdjValue:= (-RoundToInt(VertAdj^.value));
+      
     GListItem:=ListWidget^.children;
-    while GListItem<>nil do begin
+    while GListItem<>nil do
+    begin
       ListItemWidget:=PGtkWidget(GListItem^.data);
-      if Index=0 then begin
+      if Index=0 then
+      begin
         ARect.Left:=0;
         ARect.Top:=AdjValue;
         ARect.Right:=ListItemWidget^.Allocation.Width;
@@ -609,14 +601,9 @@ var
   Handle: HWND;
 begin
   Handle := ACustomListBox.Handle;
-  case ACustomListBox.fCompStyle of
-    csListBox, csCheckListBox :
-      Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
-                         True)^.CoreWidget)^.selection);
-    csCListBox:
-      Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle),
-                         True)^.CoreWidget)^.selection);
-  end;
+
+  Result := g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
+     True)^.CoreWidget)^.selection);
 end;
 
 class function TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox;
@@ -629,30 +616,14 @@ var
 begin
   Result := false;      { assume: nothing found }
   Handle := ACustomListBox.Handle;
-  case ACustomListBox.fCompStyle of
-    csListBox, csCheckListBox:
-      begin
-        { Get the child in question of that index }
-        Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-        ListItem:= g_list_nth_data(PGtkList(Widget)^.children, AIndex);
-        if (ListItem<>nil)
-        and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
-        then Result:=true
-      end;
-    csCListBox:
-      begin
-        { Get the selections }
-        Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-        GList:= PGtkCList(Widget)^.selection;
-        while Assigned(GList) do begin
-          if PtrUInt(GList^.data) = PtrUInt(AIndex) then begin
-            Result:=true;
-            exit;
-          end else
-            GList := GList^.Next;
-        end;
-      end;
-  end;
+
+  { Get the child in question of that index }
+  Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+  ListItem:= g_list_nth_data(PGtkList(Widget)^.children, AIndex);
+  if (ListItem<>nil)
+  and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
+  then Result:=true
+
   //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
   //  debugln('TGtkWSCustomListBox.GetSelected ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex),' Selected=',dbgs(Result));
 end;
@@ -664,32 +635,15 @@ var
   Handle: HWND;
 begin
   Handle := ACustomListBox.Handle;
-  case ACustomListBox.fCompStyle of
-    csCListBox:
-      begin
-        Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
 
-        Result := TGtkCListStringList.Create(PGtkCList(Widget));
-        if ACustomListBox is TCustomListBox then
-          TGtkCListStringList(Result).Sorted :=
-                                          TCustomListBox(ACustomListBox).Sorted;
-      end;
-
-    csCheckListBox, csListBox:
-      begin
-        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-        Result := TGtkListStringList.Create(PGtkList(Widget),
-          ACustomListBox, ACustomListBox.fCompStyle = csCheckListBox);
-        if ACustomListBox is TCustomListBox then
-          TGtkListStringList(Result).Sorted := ACustomListBox.Sorted;
-      end;
-  else
-    raise Exception.Create('TGtkWSCustomListBox.GetStrings');
-  end;
+  Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+  Result := TGtkListStringList.Create(PGtkList(Widget),
+    ACustomListBox, ACustomListBox.fCompStyle = csCheckListBox);
+  if ACustomListBox is TCustomListBox then
+    TGtkListStringList(Result).Sorted := ACustomListBox.Sorted;
 end;
 
-class function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox
-  ): integer;
+class function  TGtkWSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
   Result := GetIndexAtY(ACustomListBox, 0);
 end;
@@ -703,22 +657,10 @@ begin
   //if CompareText(ACustomListBox.Name,'LBProperties')=0 then
   //  debugln('TGtkWSCustomListBox.SelectItem ',DbgSName(ACustomListBox),' Index=',dbgs(AIndex),' Selected=',dbgs(ASelected));
   Handle := ACustomListBox.Handle;
-  case ACustomListBox.fCompStyle of
-    csListBox, csCheckListBox:
-      begin
-        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-        if ASelected
-        then gtk_list_select_item(PGtkList(Widget), AIndex)
-        else gtk_list_unselect_item(PGtkList(Widget), AIndex);
-      end;
-    csCListBox:
-      begin
-        Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-        if ASelected
-        then gtk_clist_select_row(PGtkCList(Widget), AIndex, 0)
-        else gtk_clist_unselect_row(PGtkCList(Widget), AIndex, 0);
-      end;
-  end;
+
+  Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
+  if ASelected then gtk_list_select_item(PGtkList(Widget), AIndex)
+  else gtk_list_unselect_item(PGtkList(Widget), AIndex);
 end;
 
 class procedure TGtkWSCustomListBox.SetBorder(const ACustomListBox: TCustomListBox);
@@ -744,16 +686,12 @@ begin
   begin
     LockOnChange(PGtkObject(Handle),+1);
     Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-    if GtkWidgetIsA(Widget,gtk_list_get_type) then begin
-      if AIndex >= 0 then
-      begin
-        gtk_list_select_item(PGtkList(Widget), AIndex)
-      end else
-        gtk_list_unselect_all(PGtkList(Widget));
-    end else if GtkWidgetIsA(Widget,gtk_clist_get_type) then begin
-      gtk_clist_select_row(PGtkCList(Widget), AIndex, 1);    // column
-    end else
-      raise Exception.Create('');
+
+    if AIndex >= 0 then
+      gtk_list_select_item(PGtkList(Widget), AIndex)
+    else
+      gtk_list_unselect_all(PGtkList(Widget));
+
     LockOnChange(PGtkObject(Handle),-1);
   end;
 end;
@@ -775,8 +713,6 @@ begin
   //  debugln('TGtkWSCustomListBox.SetSorted ',DbgSName(ACustomListBox));
   if AList is TGtkListStringList then
     TGtkListStringList(AList).Sorted := ASorted
-  else if AList is TGtkCListStringList then
-    TGtkCListStringList(AList).Sorted := ASorted
   else
     raise Exception.Create('');
 end;
@@ -843,20 +779,19 @@ begin
   if AFont.IsDefault then exit;
   //DebugLn('TGtkWSCustomListBox.SetFont ');
 
-              { Get the selections }
-        Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
-        GList:=  PGtkList(Widget)^.children;
-        while Assigned(GList) do
-            begin
+  { Get the selections }
+  Widget:=GetWidgetInfo(Pointer(AWinControl.Handle),True)^.CoreWidget;
+  GList:=  PGtkList(Widget)^.children;
+  while Assigned(GList) do
+  begin
+    //  DebugLn('TGtkWSCustomListBox.SetFont for item ',PGTKLabel(PGtkBin(GList^.data)^.child)^.thelabel);
+    ChildWidget := PGTKLabel(PGtkBin(GList^.data)^.child);
 
-         //  DebugLn('TGtkWSCustomListBox.SetFont for item ',PGTKLabel(PGtkBin(GList^.data)^.child)^.thelabel);
-          ChildWidget := PGTKLabel(PGtkBin(GList^.data)^.child);
-
-            GtkWidgetSet.SetWidgetColor(PGtkWidget(ChildWidget), AWinControl.font.color, clNone,
-            [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
-            GtkWidgetSet.SetWidgetFont(PGtkWidget(ChildWidget), AFont);
-            GList := GList^.Next;
-            end;
+    GtkWidgetSet.SetWidgetColor(PGtkWidget(ChildWidget), AWinControl.font.color, clNone,
+      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+      GtkWidgetSet.SetWidgetFont(PGtkWidget(ChildWidget), AFont);
+      GList := GList^.Next;
+  end;
 end;
 
 {$ENDIF}

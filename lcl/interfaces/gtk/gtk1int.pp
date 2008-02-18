@@ -92,7 +92,6 @@ uses
 // Gtk1WSButtons,
 // Gtk1WSCalendar,
 // Gtk1WSCheckLst,
-// Gtk1WSCListBox,
 // Gtk1WSComCtrls,
 // Gtk1WSControls,
 // Gtk1WSDbCtrls,
@@ -114,7 +113,7 @@ uses
 // Gtk1WSToolwin,
 // Gtk1Themes,
 ////////////////////////////////////////////////////
-  StdCtrls, CListBox,
+  StdCtrls,
   GTKWinApiWindow;
 
 {$include gtk1widgetset.inc}
