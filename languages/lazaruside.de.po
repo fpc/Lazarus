@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-14 16:49+0100\n"
+"PO-Revision-Date: 2008-02-18 21:55+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +74,7 @@ msgstr "%s Projektverzeichnis"
 
 #: lazarusidestrconsts:lisunitinpackage
 msgid "%s unit %s in package %s%s"
-msgstr ""
+msgstr "%s Unit %s in Package %s%s"
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
@@ -194,7 +194,7 @@ msgstr "Seite s&chließen"
 
 #: lazarusidestrconsts:lismenucomponent
 msgid "&Component"
-msgstr ""
+msgstr "&Komponente"
 
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
@@ -462,7 +462,7 @@ msgstr "Danksagung"
 
 #: lazarusidestrconsts:lislazbuildaboaction
 msgid "Action"
-msgstr ""
+msgstr "Aktion"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
@@ -1050,7 +1050,7 @@ msgstr "Erstellen"
 
 #: lazarusidestrconsts:lislazbuildqbobuildall
 msgid "Build All"
-msgstr ""
+msgstr "Alles erstellen"
 
 #: lazarusidestrconsts:lislazbuildbuildcodetools
 msgid "Build CodeTools"
@@ -1070,11 +1070,11 @@ msgstr "IDE neu erstellen"
 
 #: lazarusidestrconsts:lislazbuildqbobuildidewpackages
 msgid "Build IDE with Packages"
-msgstr ""
+msgstr "IDE mit Packages erstellen"
 
 #: lazarusidestrconsts:lislazbuildqbobuildidewithoutpackages
 msgid "Build IDE without Packages"
-msgstr ""
+msgstr "IDE ohne Packages erstellen"
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
@@ -1082,7 +1082,7 @@ msgstr "JIT-Formular erstellen"
 
 #: lazarusidestrconsts:lislazbuildqbobuildlcl
 msgid "Build LCL"
-msgstr ""
+msgstr "LCL erstellen"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
@@ -1110,11 +1110,11 @@ msgstr "Alle Dateien des Projekts/Programms neu erstellen"
 
 #: lazarusidestrconsts:lislazbuildbuildcomponentssyneditcodetools
 msgid "Build components (SynEdit, CodeTools)"
-msgstr ""
+msgstr "Komponenten erstellen (SynEdit, CodeTools)"
 
 #: lazarusidestrconsts:lislazbuildbuildexamples
 msgid "Build examples"
-msgstr ""
+msgstr "Beispiele erstellen"
 
 #: lazarusidestrconsts:srkmecbuildlazarus
 msgid "Build lazarus"
@@ -1162,7 +1162,7 @@ msgstr "Aufruf an:"
 
 #: lazarusidestrconsts:liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
-msgstr ""
+msgstr "Der Aufruf von %s um die Makedatei von %s anzulegen schlug fehl."
 
 #: lazarusidestrconsts:liscannotcopytoplevelcomponent
 msgid "Can not copy top level component."
@@ -1222,7 +1222,7 @@ msgstr "Katalanisch"
 
 #: lazarusidestrconsts:liscecategories
 msgid "Categories"
-msgstr ""
+msgstr "Kategorien"
 
 #: lazarusidestrconsts:listtodolcategory
 msgid "Category"
@@ -1258,7 +1258,7 @@ msgstr "Klasse ändern"
 
 #: lazarusidestrconsts:lisccdchangeclassof
 msgid "Change Class of %s"
-msgstr ""
+msgstr "Klasse von %s ändern"
 
 #: lazarusidestrconsts:lisplistchangefont
 msgid "Change Font"
@@ -1394,7 +1394,7 @@ msgstr "Wählen Sie einen der Einträge, um ein neues Projekt zu generieren"
 
 #: lazarusidestrconsts:lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
-msgstr ""
+msgstr "Ausgabeverzeichnis der ausführbaren IDE wählen"
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
@@ -1454,7 +1454,7 @@ msgstr "Lazarus-Quelltext aufräumen"
 
 #: lazarusidestrconsts:lislazbuildqbocleanupbuildall
 msgid "Clean Up + Build all"
-msgstr ""
+msgstr "Aufräumen und alles erstellen"
 
 #: lazarusidestrconsts:lislazbuildcleanall
 msgid "Clean all"
@@ -1494,7 +1494,7 @@ msgstr "Log beim Start löschen"
 
 #: lazarusidestrconsts:lisclickheretobrowsethefilehint
 msgid "Click here to browse the file"
-msgstr ""
+msgstr "Hier klicken um die Datei zu browsen"
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
@@ -1858,7 +1858,7 @@ msgstr "Installierte Packages einrichten ..."
 
 #: lazarusidestrconsts:lislazbuildconfirmbuild
 msgid "Confirm before rebuilding Lazarus"
-msgstr ""
+msgstr "Das Erstellen von Lazarus bestätigen "
 
 #: lazarusidestrconsts:lisconfirmchanges
 msgid "Confirm changes"
@@ -1870,7 +1870,7 @@ msgstr "Bestätigen Sie das Löschen der Abhängigkeit"
 
 #: lazarusidestrconsts:lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
-msgstr ""
+msgstr "Bestätigen Sie das neue Package-Set für die IDE"
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -1878,7 +1878,7 @@ msgstr "Bestätigen Sie das Löschen der Datei"
 
 #: lazarusidestrconsts:liscodehelpconfirmreplace
 msgid "Confirm replace"
-msgstr ""
+msgstr "Ersetzen bestätigen"
 
 #: lazarusidestrconsts:srkmconflic
 msgid "Conflict "
@@ -1894,7 +1894,7 @@ msgstr "Konsolenanwendung"
 
 #: lazarusidestrconsts:lisceconstants
 msgid "Constants"
-msgstr ""
+msgstr "Konstanten"
 
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
@@ -2066,7 +2066,7 @@ msgstr "Erzeuge .po-Dateien"
 
 #: lazarusidestrconsts:dlgpocreateappbundle
 msgid "Create Application Bundle"
-msgstr ""
+msgstr "Anwendungsbundle erzeugen"
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
@@ -2094,7 +2094,7 @@ msgstr "Erzeugen von FPC-Makros und Pfaden für ein FPC-Projektverzeichnis"
 
 #: lazarusidestrconsts:lismenucreatefpdocfiles
 msgid "Create FPDoc files"
-msgstr ""
+msgstr "FPDoc-Dateien erzeugen"
 
 #: lazarusidestrconsts:dlgcocreatemakefile
 msgid "Create Makefile"
@@ -2158,7 +2158,7 @@ msgstr "Erzeugen Sie zuerst ein Projekt!"
 
 #: lazarusidestrconsts:liscodehelpcreatebutton
 msgid "Create help item"
-msgstr ""
+msgstr "Hilfepunkt erzeugen"
 
 #: lazarusidestrconsts:rscreatenewdefine
 msgid "Create new define"
@@ -2722,7 +2722,7 @@ msgstr "Werkzeug bearbeiten"
 
 #: lazarusidestrconsts:lispeeditvirtualunit
 msgid "Edit Virtual Unit"
-msgstr ""
+msgstr "Virtuelle Unit bearbeiten"
 
 #: lazarusidestrconsts:liscodetempleditcodetemplate
 msgid "Edit code template"
@@ -2894,7 +2894,7 @@ msgstr "Fehler beim Initialisieren des Programms%s%s%s%s%sFehler: %s"
 
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
-msgstr ""
+msgstr "Fehler beim Dateiladen"
 
 #: lazarusidestrconsts:lisiecoerrorloadingxml
 msgid "Error loading xml"
@@ -2914,7 +2914,7 @@ msgstr "Fehler beim Verschieben der Komponente %s:%s"
 
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
-msgstr ""
+msgstr "Fehler während des Erzeugens des Anwendungspakets:"
 
 #: lazarusidestrconsts:liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
@@ -3150,11 +3150,11 @@ msgstr "FPC-Unitpfad enthält eine Quelle:"
 
 #: lazarusidestrconsts:lismenufpdoceditor
 msgid "FPDoc Editor"
-msgstr ""
+msgstr "FPDoc-Editor"
 
 #: lazarusidestrconsts:lisfpdoceditor
 msgid "FPDoc editor"
-msgstr ""
+msgstr "FPDoc-Editor"
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3434,7 +3434,7 @@ msgstr "Finnisch"
 
 #: lazarusidestrconsts:lispefixfilescase
 msgid "Fix Files Case"
-msgstr ""
+msgstr "Dateischreibweisen korrigieren"
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
@@ -3486,11 +3486,11 @@ msgstr "Formulare ..."
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forwar&d search"
-msgstr ""
+msgstr "&Vorwärts suchen"
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
-msgstr ""
+msgstr "Vorwärtssuche"
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -3862,7 +3862,7 @@ msgstr "IDE-Fenster beim Start verstecken"
 
 #: lazarusidestrconsts:uemhighlighter
 msgid "Highlighter"
-msgstr ""
+msgstr "Highlighter"
 
 #: lazarusidestrconsts:lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -4286,7 +4286,7 @@ msgstr "Vorlage einfügen"
 
 #: lazarusidestrconsts:listddinserttodo
 msgid "Insert ToDo"
-msgstr ""
+msgstr "ToDo einfügen"
 
 #: lazarusidestrconsts:ueminserttodo
 msgid "Insert Todo"
@@ -4298,7 +4298,7 @@ msgstr "GUID einfügen"
 
 #: lazarusidestrconsts:liscodehelpinsertalink
 msgid "Insert a link ..."
-msgstr ""
+msgstr "Einen Link einfügen ..."
 
 #: lazarusidestrconsts:lismakeresstrinsertalphabetically
 msgid "Insert alphabetically"
@@ -4354,7 +4354,7 @@ msgstr "Knoten darunter einfügen"
 
 #: lazarusidestrconsts:liscodehelpinsertparagraphformattingtag
 msgid "Insert paragraph formatting tag"
-msgstr ""
+msgstr "Absatzformat-Tag einfügen"
 
 #: lazarusidestrconsts:liscodehelphintremarktag
 msgid "Insert remark formatting tag"
@@ -5078,7 +5078,7 @@ msgstr "Geladene Packages:"
 
 #: lazarusidestrconsts:lisloadingfailed
 msgid "Loading %s failed."
-msgstr ""
+msgstr "Laden von %s fehlgeschlagen"
 
 #: lazarusidestrconsts:lispkgmangloadingpackagewillreplacepackage
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
@@ -5094,7 +5094,7 @@ msgstr "Lokale Variablen"
 
 #: lazarusidestrconsts:lislogo
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
@@ -5266,7 +5266,7 @@ msgstr "Fehlende Packages"
 
 #: lazarusidestrconsts:lismissingidentifiers
 msgid "Missing identifiers"
-msgstr ""
+msgstr "Fehlende Bezeichner"
 
 #: lazarusidestrconsts:lisccomissingunit
 msgid "Missing unit"
@@ -5418,11 +5418,11 @@ msgstr "Einträge zu den vererbten verschieben"
 
 #: lazarusidestrconsts:lispemovefiledown
 msgid "Move file down"
-msgstr ""
+msgstr "Datei nach unten bewegen"
 
 #: lazarusidestrconsts:lispemovefileup
 msgid "Move file up"
-msgstr ""
+msgstr "Datei nach oben bewegen"
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -5782,7 +5782,7 @@ msgstr "Nur Textdateien"
 
 #: lazarusidestrconsts:lisceonlyusedincategorymode
 msgid "Only used in category mode"
-msgstr ""
+msgstr "Nur im Kategorien-Modus verwendet"
 
 #: lazarusidestrconsts:lishintopen
 msgid "Open"
@@ -5886,7 +5886,7 @@ msgstr "Package  öffnen"
 
 #: lazarusidestrconsts:lisopenpackage2
 msgid "Open package %s"
-msgstr ""
+msgstr "Package %s öffnen"
 
 #: lazarusidestrconsts:liskmopenpackagefile
 msgid "Open package file"
@@ -6214,7 +6214,7 @@ msgstr "Parse"
 
 #: lazarusidestrconsts:lislazbuildabopart
 msgid "Part"
-msgstr ""
+msgstr "Teil"
 
 #: lazarusidestrconsts:lispascalsourcefile
 msgid "Pascal source file"
@@ -6250,7 +6250,7 @@ msgstr "Ausgewählte Komponenten aus der Zwischenablage einfügen"
 
 #: lazarusidestrconsts:dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
-msgstr ""
+msgstr "Pfadeditor"
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
@@ -6422,7 +6422,7 @@ msgstr "Prozedur mit Schnittstelle"
 
 #: lazarusidestrconsts:lisceprocedures
 msgid "Procedures"
-msgstr ""
+msgstr "Prozeduren"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmprocess
 msgid "Process"
@@ -6450,7 +6450,7 @@ msgstr "Programmdateiname:"
 
 #: lazarusidestrconsts:lisexeprograms
 msgid "Programs"
-msgstr ""
+msgstr "Programme"
 
 #: lazarusidestrconsts:lispdprogress
 msgid "Progress"
@@ -6558,7 +6558,7 @@ msgstr "Benutzer nach Daten fragen"
 
 #: lazarusidestrconsts:lisceproperties
 msgid "Properties"
-msgstr ""
+msgstr "Properties"
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
@@ -6922,7 +6922,7 @@ msgstr "FPC-Quelltextverzeichnis neu einlesen"
 
 #: lazarusidestrconsts:lisvsrresetresultlist
 msgid "Reset Result List"
-msgstr ""
+msgstr "Ergebnisliste zurücksetzen"
 
 #: lazarusidestrconsts:lismenuresetdebugger
 msgid "Reset debugger"
@@ -6950,7 +6950,7 @@ msgstr "Neustart"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
 msgid "Restart after successful Build"
-msgstr ""
+msgstr "Nach erfolgreichem Erstellen neu starten"
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
@@ -7350,7 +7350,7 @@ msgstr "Auch in Kommentaren suchen"
 
 #: lazarusidestrconsts:lisvsrsearchorfilterphrasesinlist
 msgid "Search or Filter Phrases In List"
-msgstr ""
+msgstr "Suchen oder Filtern von Ausdrücken in der Liste"
 
 #: lazarusidestrconsts:lispatheditsearchpaths
 msgid "Search paths:"
@@ -7538,7 +7538,7 @@ msgstr "Elternkomponente auswählen"
 
 #: lazarusidestrconsts:lisselectfile
 msgid "Select the file"
-msgstr ""
+msgstr "Die Datei auswählen"
 
 #: lazarusidestrconsts:srkmecseleditortop
 msgid "Select to absolute beginning"
@@ -7678,7 +7678,7 @@ msgstr "Kurz"
 
 #: lazarusidestrconsts:liscodehelpshortdescriptionof
 msgid "Short description of"
-msgstr ""
+msgstr "Kurzbeschreibung von"
 
 #: lazarusidestrconsts:lisa2pshortenorexpandfilename
 msgid "Shorten or expand filename"
@@ -7694,7 +7694,7 @@ msgstr "Alle anzeigen"
 
 #: lazarusidestrconsts:liscemodeshowcategories
 msgid "Show Categories"
-msgstr ""
+msgstr "Kategorien anzeigen"
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
@@ -7738,7 +7738,7 @@ msgstr "Anzeigen der Einstellungen für das Bearbeiten von Formularen"
 
 #: lazarusidestrconsts:liscemodeshowsourcenodes
 msgid "Show Source Nodes"
-msgstr ""
+msgstr "Quellknoten anzeigen"
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -7922,7 +7922,7 @@ msgstr "Dieses Package übergehen"
 
 #: lazarusidestrconsts:rslanguageslovak
 msgid "Slovak"
-msgstr ""
+msgstr "Slovakisch"
 
 #: lazarusidestrconsts:dlgcosmaller
 msgid "Smaller Code"
@@ -7962,7 +7962,7 @@ msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
 #: lazarusidestrconsts:lispesortfiles
 msgid "Sort files"
-msgstr ""
+msgstr "Dateien sortieren"
 
 #: lazarusidestrconsts:lissortselsortselection
 msgid "Sort selection"
@@ -7974,7 +7974,7 @@ msgstr "Auswahl sortieren ..."
 
 #: lazarusidestrconsts:lisceomodesource
 msgid "Source"
-msgstr ""
+msgstr "Quelle"
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
@@ -8230,7 +8230,7 @@ msgstr "Tabulatoren in Auswahl in Leerzeichen umwandeln"
 
 #: lazarusidestrconsts:lislazbuildqboapplcltarget
 msgid "Target"
-msgstr ""
+msgstr "Ziel"
 
 #: lazarusidestrconsts:listargetcpu
 msgid "Target CPU"
@@ -8258,7 +8258,7 @@ msgstr "Zielplattform:"
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target directory:"
-msgstr ""
+msgstr "Zielverzeichnis:"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -8390,7 +8390,7 @@ msgstr "Das %s Projektverzeichnis,%sdas die .dpr- und dpk-Datei enthält."
 
 #: lazarusidestrconsts:listhelaunchingapplicationbundledoesnotexists
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
-msgstr ""
+msgstr "Das Anwendungspaket %s%sdas für die Ausführung nötig ist fehlt oder ist nicht ausführbar.%sWollen Sie es anlegen?%s%sDie Einstellungen finden Sie unter Projekt -> Projektoptionen -> Anwendung."
 
 #: lazarusidestrconsts:lispkgsysthefclfreepascalcomponentlibraryprovidesthebase
 msgid "The FCL - FreePascal Component Library provides the base classes for object pascal."
@@ -8510,7 +8510,7 @@ msgstr "Die Compilerdatei des Packages %s ist keine gültige ausführbare Datei:
 
 #: lazarusidestrconsts:listhecomponenteditorofclasshascreatedtheerror
 msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
-msgstr ""
+msgstr "Der Komponenteneditor der Klasse %s%s%s hat einen Fehler erzeugt:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
@@ -9042,7 +9042,7 @@ msgstr "Diese Anweisung kann nicht extrahiert werden.%sBitte wählen Sie etwas C
 
 #: lazarusidestrconsts:listhiswillhappencontinue
 msgid "This will happen:%s%s%sContinue?"
-msgstr ""
+msgstr "Es wird folgendes passieren:%s%s%sFortfahren?"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
@@ -9190,7 +9190,7 @@ msgstr "Typ:"
 
 #: lazarusidestrconsts:liscetypes
 msgid "Types"
-msgstr ""
+msgstr "Typen"
 
 #: lazarusidestrconsts:dlgcdtuppercase
 msgid "UPPERCASE"
@@ -9398,7 +9398,7 @@ msgstr "Das Package kann nicht geladen werden"
 
 #: lazarusidestrconsts:lisunabletoloadpackage
 msgid "Unable to load package %s%s%s"
-msgstr ""
+msgstr "Kann Packagei \"%s\" nicht laden %s%s"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
@@ -9534,7 +9534,7 @@ msgstr "Kann die Datei %s%s%s nicht schreiben."
 
 #: lazarusidestrconsts:lislazbuildunabletowritefile
 msgid "Unable to write file \"%s\":%s"
-msgstr ""
+msgstr "Kann Datei \"%s\" nicht schreiben: %s"
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
@@ -9838,7 +9838,7 @@ msgstr "Benutzervorgaben"
 
 #: lazarusidestrconsts:lisceuses
 msgid "Uses"
-msgstr ""
+msgstr "Uses"
 
 #: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
@@ -9874,7 +9874,7 @@ msgstr "Variable: %s"
 
 #: lazarusidestrconsts:liscevariables
 msgid "Variables"
-msgstr ""
+msgstr "Variablen"
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity during compilation:"
@@ -9966,7 +9966,7 @@ msgstr "ToDo-Liste ..."
 
 #: lazarusidestrconsts:lispeviewtodolist
 msgid "View ToDo list"
-msgstr ""
+msgstr "ToDo-Liste ansehen"
 
 #: lazarusidestrconsts:lismenuviewunitdependencies
 msgid "View Unit Dependencies"
@@ -10154,7 +10154,7 @@ msgstr "Fensterpositionen"
 
 #: lazarusidestrconsts:lislazbuildwithstaticpackages
 msgid "With packages"
-msgstr ""
+msgstr "Mit Packages"
 
 #: lazarusidestrconsts:liswithrequiredpackages
 msgid "With required packages"
@@ -10326,7 +10326,7 @@ msgstr "Datei, in die Debug-Ausgaben geschrieben werden. Falls nichts angegeben 
 
 #: lazarusidestrconsts:lisfpcmakefailed
 msgid "fpcmake failed"
-msgstr ""
+msgstr "fpcmake fehlgeschlagen"
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
@@ -10426,7 +10426,7 @@ msgstr "Mehrfache Compilerkonfiguration gefunden:"
 
 #: lazarusidestrconsts:lisnew
 msgid "new"
-msgstr ""
+msgstr "neu"
 
 #: lazarusidestrconsts:lisccohasnewline
 msgid "new line symbols"
@@ -10442,7 +10442,7 @@ msgstr "Kein automatisches Umbenennen"
 
 #: lazarusidestrconsts:lisccdnoclass
 msgid "no class"
-msgstr ""
+msgstr "keine Klasse"
 
 #: lazarusidestrconsts:liscconocfgfound
 msgid "no fpc.cfg found"
@@ -10450,7 +10450,7 @@ msgstr "keine fpc.cfg gefunden"
 
 #: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
 msgid "no inherited description found"
-msgstr ""
+msgstr "keine vererbte Beschreibung gefunden"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
@@ -10474,7 +10474,7 @@ msgstr "Objektpfad"
 
 #: lazarusidestrconsts:lisold
 msgid "old"
-msgstr ""
+msgstr "alt"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
@@ -10518,7 +10518,7 @@ msgstr "relativer Unitpfad in der fpc.cfg: %s"
 
 #: lazarusidestrconsts:lisremove
 msgid "remove"
-msgstr ""
+msgstr "entfernen"
 
 #: lazarusidestrconsts:srkmecremovebreakpoint
 msgid "remove break point"
