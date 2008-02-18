@@ -598,7 +598,7 @@ resourcestring
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
     +'file %s%s%s.%sIf it belongs to Your project, check search path '
     +'in%sProject->Compiler Options...->Search Paths->Other Unit Files.'
-    +' If this file belongs t a package, check the appropriate package compiler'
+    +' If this file belongs to a package, check the appropriate package compiler'
     +' options. If this file belongs to lazarus, make sure compiling clean.'
     +' If the file belongs to FPC then check fpc.cfg.'
     +' If unsure, check Project -> CompilerOptions ... -> Test';
@@ -3471,7 +3471,7 @@ resourcestring
   lisCEConstants = 'Constants';
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
-  lisCEOMode = 'Prefered Exibition Mode';
+  lisCEOMode = 'Preferred Exibition Mode';
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
 
