@@ -61,16 +61,19 @@ begin
  if csDesigning in ComponentState then
     Exit;
 
-  TCustomNotebook(Parent).AddRemovePageHandle(Self);
-  if FTabVisible then
+  if Parent.HandleAllocated then
   begin
-    // check if there was no visible tab
-    if TCustomNotebook(Parent).PageIndex = -1 then
-      TCustomNotebook(Parent).PageIndex:=PageIndex;
-  end
-  else
-    // Check if the page is active and set a new pageindex
-    TCustomNotebook(Parent).PageRemoved(PageIndex);
+    TCustomNotebook(Parent).AddRemovePageHandle(Self);
+    if FTabVisible then
+    begin
+      // check if there was no visible tab
+      if TCustomNotebook(Parent).PageIndex = -1 then
+        TCustomNotebook(Parent).PageIndex:=PageIndex;
+    end
+    else
+      // Check if the page is active and set a new pageindex
+      TCustomNotebook(Parent).PageRemoved(PageIndex);
+  end;
 end;
 
 {------------------------------------------------------------------------------
