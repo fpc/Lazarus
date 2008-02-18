@@ -2516,6 +2516,12 @@ resourcestring
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
     +'dependency for the package %s%s%s.';
   lisProjAddPackageNotFound = 'Package not found';
+  lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe = 'The unit %s is '
+    +'not owned be any package or project.%sPlease add the unit to a package '
+    +'or project.%sUnable to create the fpdoc file.';
+  lisLDNoValidLazDocPath = 'No valid LazDoc path';
+  lisLDDoesNotHaveAnyValidLazDocPathUnableToCreateTheFpdo = '%s does not have '
+    +'any valid LazDoc path.%sUnable to create the fpdoc file for %s';
   lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded '
     +'package.';
   lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'
@@ -3503,6 +3509,7 @@ resourcestring
   lisCodeHelpBrowseExampleButton = 'Browse';
   lisLDMoveEntriesToInherited = 'Move entries to inherited';
   lisLDCopyFromInherited = 'Copy from inherited';
+  lisLDAddLinkToInherited = 'Add link to inherited';
   lisEnableMacros = 'Enable Macros';
   lisCTSelectCodeMacro = 'Select Code Macro';
   lisPDProgress = 'Progress';

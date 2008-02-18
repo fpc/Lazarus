@@ -28,7 +28,7 @@ unit CodeHelp;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseLazDoc}
+{$DEFINE VerboseLazDoc}
 
 interface
 
@@ -41,7 +41,8 @@ uses
   // IDEIntf
   MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf, IDEDialogs, LazIDEIntf,
   // IDE
-  CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts, DialogProcs;
+  LazarusIDEStrConsts, CompilerOptions, IDEProcs, PackageDefs, EnvironmentOpts,
+  PackageSystem, DialogProcs;
 
 type
   TFPDocItem = (
@@ -116,6 +117,9 @@ type
   public
     CodeContext: TFindContext;
     CodeXYPos: TCodeXYPosition;
+    ElementModuleName: string;
+    ElementUnitName: string;
+    ElementUnitFileName: string;
     ElementName: string;
     ElementNode: TDOMNode;
     ElementNodeValid: boolean;
@@ -174,7 +178,8 @@ type
                             const AMethod: TMethod);
     procedure CallDocChangeEvents(HandlerType: TCodeHelpManagerHandler;
                                   Doc: TLazFPDocFile);
-    function DoCreateFPDocFileForSource(const SrcFilename: string): string;
+    function DoCreateFPDocFileForSource(const SrcFilename: string;
+                                        out NewOwner: TObject): string;
     function CreateFPDocFile(const ExpandedFilename, PackageName,
                              ModuleName: string): TCodeBuffer;
   public
@@ -195,7 +200,14 @@ type
     function GetFPDocFilenameForSource(SrcFilename: string;
                                        ResolveIncludeFiles: Boolean;
                                        out CacheWasUsed: boolean;
+                                       out AnOwner: TObject;// package or project
                                        CreateIfNotExists: boolean = false): string;
+    function FindModuleOwner(const Modulename: string): TObject;
+    function GetOwnerModuleName(TheOwner: TObject): string;
+    function ExpandFPDocLinkID(const LinkID, DefaultUnitName,
+                               DefaultModule: string): string;
+    function ExpandFPDocLinkID(const LinkID, DefaultUnitName: string;
+                               TheOwner: TObject): string;
     function CodeNodeToElementName(Tool: TFindDeclarationTool;
                                    CodeNode: TCodeTreeNode): string;
     function GetFPDocNode(Tool: TCodeTool; CodeNode: TCodeTreeNode; Complete: boolean;
@@ -700,8 +712,8 @@ begin
     TCodeHelpChangeEvent(FHandlers[HandlerType].Items[i])(Self,Doc);
 end;
 
-function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string
-  ): string;
+function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string;
+  out NewOwner: TObject): string;
   
   procedure CleanUpPkgList(var PkgList: TFPList);
   var
@@ -740,7 +752,6 @@ function TCodeHelpManager.DoCreateFPDocFileForSource(const SrcFilename: string
   
 var
   PkgList: TFPList;
-  NewOwner: TObject;
   AProject: TLazProject;
   APackage: TLazPackage;
   p: Integer;
@@ -753,6 +764,7 @@ var
   AVLNode: TAvgLvlTreeNode;
 begin
   Result:='';
+  NewOwner:=nil;
   DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource ',SrcFilename]);
   if not FilenameIsAbsolute(SrcFilename) then begin
     DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource failed, because file no absolute: ',SrcFilename]);
@@ -765,15 +777,15 @@ begin
     PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
     CleanUpPkgList(PkgList);
     if (PkgList=nil) then begin
-      PkgList:=PackageEditingInterface.GetOwnersOfUnit(SrcFilename);
+      PkgList:=PackageEditingInterface.GetPossibleOwnersOfUnit(SrcFilename,
+                                               [piosfIncludeSourceDirectories]);
       CleanUpPkgList(PkgList);
     end;
     if PkgList=nil then begin
       // no package/project found
-      MessageDlg('Package not found',
-        'The unit '+SrcFilename+' is not owned be any package or project.'#13
-        +'Please add the unit to a package or project.'#13
-        +'Unable to create the fpdoc file.',mtError,[mbCancel],0);
+      MessageDlg(lisProjAddPackageNotFound,
+        Format(lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe, [
+          SrcFilename, #13, #13]), mtError, [mbCancel], 0);
       exit;
     end;
 
@@ -784,16 +796,17 @@ begin
       if AProject.LazDocPaths='' then
         AProject.LazDocPaths:=SelectNewLazDocPaths(AProject.ShortDescription,BaseDir);
       LazDocPaths:=AProject.LazDocPaths;
-      LazDocPackageName:=ExtractFileNameOnly(AProject.ProjectInfoFile);
+      LazDocPackageName:=GetOwnerModuleName(AProject);
     end else if NewOwner is TLazPackage then begin
       APackage:=TLazPackage(NewOwner);
       BaseDir:=APackage.Directory;
       if APackage.LazDocPaths='' then
         APackage.LazDocPaths:=SelectNewLazDocPaths(APackage.Name,BaseDir);
       LazDocPaths:=APackage.LazDocPaths;
-      LazDocPackageName:=APackage.Name;
+      LazDocPackageName:=GetOwnerModuleName(APackage);
     end else begin
       DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource unknown owner type ',dbgsName(NewOwner)]);
+      NewOwner:=nil;
       exit;
     end;
       
@@ -824,9 +837,9 @@ begin
     
     // no valid directory found
     DebugLn(['TCodeHelpManager.DoCreateFPDocFileForSource LazDocModul="',LazDocPackageName,'" LazDocPaths="',LazDocPaths,'" ']);
-    MessageDlg('No valid lazdoc path',
-      LazDocPackageName+' does not have any valid lazdoc path.'#13
-      +'Unable to create the fpdoc file for '+SrcFilename,mtError,[mbCancel],0);
+    MessageDlg(lisLDNoValidLazDocPath,
+      Format(lisLDDoesNotHaveAnyValidLazDocPathUnableToCreateTheFpdo, [
+        LazDocPackageName, #13, SrcFilename]), mtError, [mbCancel], 0);
   finally
     PkgList.Free;
   end;
@@ -1027,6 +1040,7 @@ function TCodeHelpManager.GetFPDocFilenameForHelpContext(
 var
   i: Integer;
   SrcFilename: String;
+  AnOwner: TObject;
 begin
   Result:='';
   CacheWasUsed:=true;
@@ -1034,27 +1048,47 @@ begin
   for i:=0 to Context.Count-1 do begin
     if Context.Items[i].Descriptor<>pihcFilename then continue;
     SrcFilename:=Context.Items[i].Context;
-    Result:=GetFPDocFilenameForSource(SrcFilename,true,CacheWasUsed);
+    Result:=GetFPDocFilenameForSource(SrcFilename,true,CacheWasUsed,AnOwner);
     exit;
   end;
 end;
 
 function TCodeHelpManager.GetFPDocFilenameForSource(SrcFilename: string;
   ResolveIncludeFiles: Boolean; out CacheWasUsed: boolean;
-  CreateIfNotExists: boolean): string;
+  out AnOwner: TObject; CreateIfNotExists: boolean): string;
 var
   FPDocName: String;
-  SearchPath: String;
+  SearchedPaths: string;
   
-  procedure AddSearchPath(Paths: string; const BaseDir: string);
+  function SearchInPath(Paths: string; const BaseDir: string;
+    out Filename: string): boolean;
+  var
+    CurPath: String;
+    p: Integer;
   begin
     if Paths='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(Paths,BaseDir) then exit;
+    //DebugLn(['SearchInPath START ',Paths]);
     if Paths='' then exit;
-    SearchPath:=SearchPath+';'+Paths;
+    p:=1;
+    repeat
+      CurPath:=GetNextDirectoryInSearchPath(Paths,p);
+      if CurPath<>'' then begin
+        CurPath:=CleanAndExpandDirectory(CurPath);
+        if SearchDirectoryInSearchPath(SearchedPaths,CurPath)<1 then begin
+          // not yet searched in this directory
+          SearchedPaths:=SearchedPaths+';'+CurPath;
+          Filename:=AppendPathDelim(CurPath)+FPDocName;
+          if FileExistsCached(Filename) then exit(true);
+        end;
+      end;
+    until p>length(Paths);
+    Filename:='';
+    Result:=false;
   end;
   
-  procedure CheckUnitOwners(CheckSourceDirectories: boolean);
+  function CheckUnitOwners(CheckSourceDirectories: boolean;
+    out Filename: string): boolean;
   var
     PkgList: TFPList;
     i: Integer;
@@ -1062,6 +1096,8 @@ var
     BaseDir: String;
     AProject: TLazProject;
   begin
+    Result:=false;
+    Filename:='';
     if not FilenameIsAbsolute(SrcFilename) then exit;
     
     if CheckSourceDirectories then begin
@@ -1079,14 +1115,20 @@ var
           BaseDir:=ExtractFilePath(AProject.ProjectInfoFile);
           if BaseDir='' then continue;
           // add lazdoc paths of project
-          AddSearchPath(AProject.LazDocPaths,BaseDir);
+          if SearchInPath(AProject.LazDocPaths,BaseDir,Filename) then begin
+            AnOwner:=AProject;
+            exit(true);
+          end;
         end else if TObject(PkgList[i]) is TLazPackage then begin
           APackage:=TLazPackage(PkgList[i]);
           if APackage.LazDocPaths='' then continue;
           BaseDir:=APackage.Directory;
           if BaseDir='' then continue;
           // add lazdoc paths of package
-          AddSearchPath(APackage.LazDocPaths,BaseDir);
+          if SearchInPath(APackage.LazDocPaths,BaseDir,Filename) then begin
+            AnOwner:=APackage;
+            exit(true);
+          end;
         end;
       end;
     finally
@@ -1094,15 +1136,28 @@ var
     end;
   end;
   
-  procedure CheckIfInLazarus;
+  function CheckIfInLazarus(out Filename: string): boolean;
   var
     LazDir: String;
+    LCLPackage: TLazPackage;
   begin
+    Result:=false;
+    Filename:='';
     if not FilenameIsAbsolute(SrcFilename) then exit;
     LazDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory);
     // check LCL
     if FileIsInPath(SrcFilename,LazDir+'lcl') then begin
-      AddSearchPath(SetDirSeparators('docs/xml/lcl'),LazDir);
+      LCLPackage:=PackageGraph.LCLPackage;
+      if SearchInPath(LCLPackage.LazDocPaths,'',Filename) then
+      begin
+        AnOwner:=LCLPackage;
+        exit(true);
+      end;
+    end;
+    if SearchInPath(EnvironmentOptions.LazDocPaths,'',Filename) then
+    begin
+      AnOwner:=nil;
+      exit(true);
     end;
   end;
 
@@ -1113,7 +1168,8 @@ var
 begin
   Result:='';
   CacheWasUsed:=true;
-  
+  AnOwner:=nil;
+
   if ResolveIncludeFiles then begin
     CodeBuf:=CodeToolBoss.FindFile(SrcFilename);
     if CodeBuf<>nil then begin
@@ -1149,18 +1205,14 @@ begin
     {$ENDIF}
 
     // first check if the file is owned by any project/package
-    SearchPath:='';
-    CheckUnitOwners(false);// first check if file is owned by a package/project
-    CheckUnitOwners(true);// then check if the file is in a source directory of a package/project
-    CheckIfInLazarus;
-
-    // finally add the default paths
-    AddSearchPath(EnvironmentOptions.LazDocPaths,'');
+    SearchedPaths:='';
     FPDocName:=lowercase(ExtractFileNameOnly(SrcFilename))+'.xml';
-    {$IFDEF VerboseLazDoc}
-    DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Search ',FPDocName,' in "',SearchPath,'"']);
-    {$ENDIF}
-    Result:=SearchFileInPath(FPDocName,'',SearchPath,';',ctsfcAllCase);
+    if (not CheckUnitOwners(false,Result)) // first check if file is owned by a package/project
+    and (not CheckUnitOwners(true,Result))// then check if the file is in a source directory of a package/project
+    and (not CheckIfInLazarus(Result))
+    then begin
+      // not found
+    end;
 
     // save to cache
     if MapEntry=nil then begin
@@ -1173,12 +1225,110 @@ begin
     MapEntry.FilesTimeStamp:=FileStateCache.TimeStamp;
   finally
     if (Result='') and CreateIfNotExists then begin
-      Result:=DoCreateFPDocFileForSource(SrcFilename);
+      Result:=DoCreateFPDocFileForSource(SrcFilename,AnOwner);
     end;
     {$IFDEF VerboseLazDoc}
     DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource SrcFilename="',SrcFilename,'" Result="',Result,'"']);
     {$ENDIF}
   end;
+end;
+
+function TCodeHelpManager.FindModuleOwner(const Modulename: string): TObject;
+var
+  AProject: TLazProject;
+begin
+  Result:=PackageGraph.FindAPackageWithName(Modulename,nil);
+  if Result<>nil then exit;
+  AProject:=LazarusIDE.ActiveProject;
+  if (AProject<>nil)
+  and (SysUtils.CompareText(GetOwnerModuleName(AProject),Modulename)=0)
+  then begin
+    Result:=AProject;
+    exit;
+  end;
+  Result:=nil;
+end;
+
+function TCodeHelpManager.GetOwnerModuleName(TheOwner: TObject): string;
+begin
+  if TheOwner is TLazPackage then
+    Result:=TLazPackage(TheOwner).Name
+  else if TheOwner is TLazProject then
+    Result:=ExtractFileNameOnly(TLazProject(TheOwner).ProjectInfoFile)
+  else
+    Result:='';
+end;
+
+function TCodeHelpManager.ExpandFPDocLinkID(const LinkID, DefaultUnitName,
+  DefaultModule: string): string;
+begin
+  Result:=LinkID;
+  if (LinkID='') or (LinkID[1]='#') then exit;
+  Result:=ExpandFPDocLinkID(LinkId,DefaultUnitName,FindModuleOwner(DefaultModule));
+end;
+
+function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
+  DefaultUnitName: string; TheOwner: TObject): string;
+  
+  function SearchLazDocFile(SearchPath: string;
+    const BaseDir, Unitname: string): string;
+  var
+    FPDocFilename: String;
+  begin
+    Result:='';
+    if BaseDir='' then exit;
+    if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
+    FPDocFilename:=lowercase(UnitName)+'.xml';
+    Result:=SearchFileInPath(FPDocFilename,'',SearchPath,';',ctsfcDefault);
+  end;
+  
+var
+  FirstPointPos: LongInt;
+  APackage: TLazPackage;
+  FirstIdentifier: String;
+  AddUnit: Boolean;
+  AProject: TLazProject;
+begin
+  Result:=LinkID;
+  if (LinkID='') or (LinkID[1]='#') then exit;
+  FirstPointPos:=System.Pos(LinkID,'.');
+  FirstIdentifier:=copy(LinkID,1,FirstPointPos);
+  if (FirstIdentifier<>'')
+  and (SysUtils.CompareText(FirstIdentifier,DefaultUnitName)<>0) then
+  begin
+    // the LinkID has sub identifiers, so the first identifier could be a unit
+    // But it is not the DefaultUnitName
+    // => check if it is another unitname of the Owner
+    AddUnit:=false;
+    if TheOwner is TLazPackage then begin
+      APackage:=TLazPackage(TheOwner);
+      if (APackage.FindUnit(FirstIdentifier)=nil) then begin
+        // the unit is not owned.
+        if SearchLazDocFile(APackage.LazDocPaths,APackage.Directory,
+          FirstIdentifier)='' then
+        begin
+          // and there is no fpdoc file for this identifier
+          // => not a unit
+          AddUnit:=true;
+        end;
+      end;
+    end else if TheOwner is TLazProject then begin
+      AProject:=TLazProject(TheOwner);
+      if SearchLazDocFile(AProject.LazDocPaths,
+        ExtractFilePath(AProject.ProjectInfoFile),FirstIdentifier)='' then
+      begin
+        // there is no fpdoc file for this identifier
+        // => not a unit
+        AddUnit:=true;
+      end;
+    end else begin
+      // unknown owner type
+      exit;
+    end;
+    if AddUnit then
+      Result:=DefaultUnitName+'.'+Result;
+  end;
+  Result:='#'+GetOwnerModuleName(TheOwner)+'.'+Result;
 end;
 
 function TCodeHelpManager.CodeNodeToElementName(Tool: TFindDeclarationTool;
@@ -1213,6 +1363,7 @@ var
   SrcFilename: String;
   FPDocFilename: String;
   ElementName: String;
+  AnOwner: TObject;
 begin
   FPDocFile:=nil;
   DOMNode:=nil;
@@ -1220,7 +1371,7 @@ begin
   
   // find corresponding FPDoc file
   SrcFilename:=Tool.MainFilename;
-  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
+  FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed,AnOwner);
   if FPDocFilename='' then exit(chprFailed);
   if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
@@ -1317,9 +1468,9 @@ var
   i: Integer;
   CodePos: PCodeXYPosition;
   LDElement: TCodeHelpElement;
-  SrcFilename: String;
   FPDocFilename: String;
   FindContext: TFindContext;
+  AnOwner: TObject;
 begin
   Chain:=nil;
   ListOfPCodeXYPosition:=nil;
@@ -1360,8 +1511,11 @@ begin
       //DebugLn(['TCodeHelpManager.GetElementChain i=',i,' CodeContext=',FindContextToString(LDElement.CodeContext)]);
 
       // find corresponding FPDoc file
-      SrcFilename:=LDElement.CodeContext.Tool.MainFilename;
-      FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed);
+      LDElement.ElementUnitFileName:=LDElement.CodeContext.Tool.MainFilename;
+      LDElement.ElementUnitName:=LDElement.CodeContext.Tool.GetSourceName(false);
+      FPDocFilename:=GetFPDocFilenameForSource(LDElement.ElementUnitFileName,
+                                            false,CacheWasUsed,AnOwner);
+      LDElement.ElementModuleName:=GetOwnerModuleName(AnOwner);
       //DebugLn(['TCodeHelpManager.GetElementChain FPDocFilename=',FPDocFilename]);
       if (not CacheWasUsed) and (not Complete) then exit(chprParsing);
 
@@ -1553,8 +1707,8 @@ function TCodeHelpManager.CreateElement(Code: TCodeBuffer; X, Y: integer;
   out Element: TCodeHelpElement): Boolean;
 var
   CacheWasUsed: boolean;
-  SrcFilename: String;
   FPDocFilename: String;
+  AnOwner: TObject;
 begin
   Result:=false;
   Element:=nil;
@@ -1581,8 +1735,10 @@ begin
     DebugLn(['TCodeHelpManager.CreateElement Element.ElementName=',Element.ElementName]);
 
     // find / create fpdoc file
-    SrcFilename:=Element.CodeContext.Tool.MainFilename;
-    FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,false,CacheWasUsed,true);
+    Element.ElementUnitFileName:=Element.CodeContext.Tool.MainFilename;
+    Element.ElementUnitName:=Element.CodeContext.Tool.GetSourceName(false);
+    FPDocFilename:=GetFPDocFilenameForSource(Element.ElementUnitFileName,false,
+                                             CacheWasUsed,AnOwner,true);
     if FPDocFilename='' then begin
       // no fpdoc file
       DebugLn(['TCodeHelpManager.CreateElement unable to create fpdoc file for ',FPDocFilename]);

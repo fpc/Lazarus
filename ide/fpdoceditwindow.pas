@@ -45,7 +45,7 @@ uses
   // IDE
   IDEOptionDefs, EnvironmentOpts,
   IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, FPDocSelectLink,
-  CodeHelp;
+  PackageSystem, CodeHelp;
 
 type
   TFPDocEditorFlag = (
@@ -63,6 +63,7 @@ type
   TFPDocEditor = class(TForm)
     AddLinkButton: TButton;
     BrowseExampleButton: TButton;
+    AddLinkToInheritedButton: TButton;
     RightBtnPanel: TPanel;
     SaveButton: TButton;
     CreateButton: TButton;
@@ -96,6 +97,7 @@ type
     UnderlineFormatButton: TSpeedButton;
     SeeAlsoTabSheet: TTabSheet;
     procedure AddLinkButtonClick(Sender: TObject);
+    procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure BrowseExampleButtonClick(Sender: TObject);
     procedure CopyFromInheritedButtonClick(Sender: TObject);
     procedure CreateButtonClick(Sender: TObject);
@@ -134,7 +136,7 @@ type
     function MakeLink: String;
     function FindInheritedIndex: integer;
     procedure Save;
-    function GetValues: TFPDocElementValues;
+    function GetGUIValues: TFPDocElementValues;
     procedure SetModified(const AValue: boolean);
     function WriteNode(Element: TCodeHelpElement; Values: TFPDocElementValues;
                        Interactive: Boolean): Boolean;
@@ -147,8 +149,13 @@ type
     procedure OnLazDocChanged(Sender: TObject; LazDocFPFile: TLazFPDocFile);
     procedure LoadGUIValues(Element: TCodeHelpElement);
     procedure MoveToInherited(Element: TCodeHelpElement);
+    procedure AddSeeAlsoLink(Link, LinkTitle: string);
+    function FindSeeAlsoLink(Link: string): integer;
+    function ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string): boolean;
     function CreateElement(Element: TCodeHelpElement): Boolean;
     procedure UpdateButtons;
+    function GetCurrentUnitName: string;
+    function GetCurrentModuleName: string;
   public
     procedure Reset;
     procedure InvalidateChain;
@@ -263,7 +270,8 @@ begin
   
   MoveToInheritedButton.Caption:=lisLDMoveEntriesToInherited;
   CopyFromInheritedButton.Caption:=lisLDCopyFromInherited;
-  
+  AddLinkToInheritedButton.Caption:=lisLDAddLinkToInherited;
+
   Reset;
   
   CodeHelpBoss.AddHandlerOnChanging(@OnLazDocChanging);
@@ -588,6 +596,7 @@ begin
                                  and (fChain.Count>1)
                                  and (ShortEdit.Text<>'');
   CopyFromInheritedButton.Enabled:=(i>=0);
+  AddLinkToInheritedButton.Enabled:=(i>=0);
 end;
 
 procedure TFPDocEditor.UpdateChain;
@@ -716,8 +725,83 @@ procedure TFPDocEditor.MoveToInherited(Element: TCodeHelpElement);
 var
   Values: TFPDocElementValues;
 begin
-  Values:=GetValues;
+  Values:=GetGUIValues;
   WriteNode(Element,Values,true);
+end;
+
+procedure TFPDocEditor.AddSeeAlsoLink(Link, LinkTitle: string);
+var
+  s: String;
+begin
+  DebugLn(['TFPDocEditor.AddSeeAlsoLink Link="',Link,'" LinkTitle="',LinkTitle,'"']);
+  if FindSeeAlsoLink(Link)>=0 then exit;
+  s:='<link id="'+Link+'"';
+  if LinkTitle<>'' then begin
+    s:=s+'>'+LinkTitle+'</link';
+  end else begin
+    s:=s+'/>';
+  end;
+  DebugLn(['TFPDocEditor.AddSeeAlsoLink Adding: ',s]);
+  LinkListBox.Items.Add(s);
+  Modified:=true;
+end;
+
+function TFPDocEditor.FindSeeAlsoLink(Link: string): integer;
+var
+  LinkTag: string;
+  ID: string;
+  Element: TCodeHelpElement;
+  ExpandedLink: String;
+  ExpandedID: String;
+begin
+  ExpandedLink:='';
+  Result:=LinkListBox.Items.Count-1;
+  while (Result>=0) do begin
+    LinkTag:=LinkListBox.Items[Result];
+    if ExtractIDFromLinkTag(LinkTag,ID) then begin
+      // check absolute: ID=Link
+      if SysUtils.CompareText(ID,Link)=0 then
+        exit;
+      // check relative
+      if (System.Pos(Link,'.')>0) and (ID<>'') then begin
+        if (fChain<>nil) and (fChain.Count>0) then begin
+          Element:=fChain[0];
+          if (ExpandedLink='') then begin
+            ExpandedLink:=CodeHelpBoss.ExpandFPDocLinkID(Link,
+                             Element.ElementUnitName,Element.ElementModuleName);
+          end;
+          ExpandedID:=CodeHelpBoss.ExpandFPDocLinkID(ID,
+                             Element.ElementUnitName,Element.ElementModuleName);
+          if SysUtils.CompareText(ExpandedID,ExpandedLink)=0 then
+            exit;
+        end;
+      end;
+    end;
+    dec(Result);
+  end;
+end;
+
+function TFPDocEditor.ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string
+  ): boolean;
+// extract id value from example:
+// <link id="TCustomControl"/>
+// <link id="#lcl.Graphics.TCanvas">TCanvas</link>
+var
+  StartPos: Integer;
+  EndPos: LongInt;
+begin
+  Result:=false;
+  StartPos:=length('<link id="')+1;
+  if copy(LinkTag,1,StartPos-1)<>'<link id="' then
+    exit;
+  EndPos:=StartPos;
+  while (EndPos<=length(LinkTag)) do begin
+    if LinkTag[EndPos]='"' then begin
+      ID:=copy(LinkTag,StartPos,EndPos-StartPos);
+      exit(true);
+    end;
+    inc(EndPos);
+  end;
 end;
 
 function TFPDocEditor.CreateElement(Element: TCodeHelpElement): Boolean;
@@ -754,6 +838,22 @@ begin
   InsertParagraphSpeedButton.Enabled:=HasEdit;
   InsertRemarkButton.Enabled:=HasEdit;
   InsertVarTagButton.Enabled:=HasEdit;
+end;
+
+function TFPDocEditor.GetCurrentUnitName: string;
+begin
+  if (fChain<>nil) and (fChain.Count>0) then
+    Result:=fChain[0].ElementUnitName
+  else
+    Result:='';
+end;
+
+function TFPDocEditor.GetCurrentModuleName: string;
+begin
+  if (fChain<>nil) and (fChain.Count>0) then
+    Result:=fChain[0].ElementModuleName
+  else
+    Result:='';
 end;
 
 procedure TFPDocEditor.Reset;
@@ -836,7 +936,7 @@ begin
   FModified:=false;
   if (fChain=nil) or (fChain.Count=0) then exit;
   if not fChain.IsValid then exit;
-  Values:=GetValues;
+  Values:=GetGUIValues;
   if not WriteNode(fChain[0],Values,true) then begin
     DebugLn(['TLazDocForm.Save FAILED']);
   end else begin
@@ -845,7 +945,7 @@ begin
   SaveButton.Enabled:=false;
 end;
 
-function TFPDocEditor.GetValues: TFPDocElementValues;
+function TFPDocEditor.GetGUIValues: TFPDocElementValues;
 begin
   Result[fpdiShort]:=ShortEdit.Text;
   Result[fpdiDescription]:=DescrMemo.Text;
@@ -980,6 +1080,27 @@ begin
     LinkListBox.Items.Add(MakeLink);
     Modified := True;
   end;
+end;
+
+procedure TFPDocEditor.AddLinkToInheritedButtonClick(Sender: TObject);
+var
+  i: LongInt;
+  Element: TCodeHelpElement;
+  Link: String;
+  LinkTitle: String;
+begin
+  i:=FindInheritedIndex;
+  if i<0 then exit;
+  DebugLn(['TFPDocEditor.AddLinkToInheritedButtonClick ']);
+  Element:=fChain[i];
+  Link:=Element.ElementName;
+  LinkTitle:=Link;
+  if Element.ElementUnitName<>'' then begin
+    Link:=Element.ElementUnitName+'.'+Link;
+    if Element.ElementModuleName<>'' then
+      Link:='#'+Element.ElementModuleName+'.'+Link;
+  end;
+  AddSeeAlsoLink(Link,LinkTitle);
 end;
 
 procedure TFPDocEditor.BrowseExampleButtonClick(Sender: TObject);

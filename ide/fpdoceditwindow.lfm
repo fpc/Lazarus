@@ -5,7 +5,7 @@ object FPDocEditor: TFPDocEditor
   Width = 753
   HorzScrollBar.Page = 752
   VertScrollBar.Page = 119
-  ActiveControl = DescrMemo
+  ActiveControl = LinkTextEdit
   Caption = 'FPDoc editor'
   ClientHeight = 120
   ClientWidth = 753
@@ -16,9 +16,9 @@ object FPDocEditor: TFPDocEditor
     Left = 40
     Height = 120
     Width = 713
-    ActivePage = DescrTabSheet
+    ActivePage = SeeAlsoTabSheet
     Align = alClient
-    TabIndex = 1
+    TabIndex = 3
     TabOrder = 0
     TabPosition = tpBottom
     OnChange = PageControlChange
@@ -159,11 +159,10 @@ object FPDocEditor: TFPDocEditor
         Text = 'LinkTextEdit'
       end
       object LinkIdComboBox: TComboBox
-        Height = 27
+        Height = 29
         Top = 1
         Width = 225
         AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-        AutoSize = True
         MaxLength = 0
         OnChange = LinkChange
         TabOrder = 4
@@ -249,6 +248,20 @@ object FPDocEditor: TFPDocEditor
         Caption = 'CopyFromInheritedButton'
         OnClick = CopyFromInheritedButtonClick
         TabOrder = 2
+      end
+      object AddLinkToInheritedButton: TButton
+        AnchorSideLeft.Control = CopyFromInheritedButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = CopyFromInheritedButton
+        Left = 353
+        Height = 25
+        Top = 54
+        Width = 75
+        AutoSize = True
+        BorderSpacing.Left = 10
+        Caption = 'AddLinkToInheritedButton'
+        OnClick = AddLinkToInheritedButtonClick
+        TabOrder = 3
       end
     end
   end

@@ -1229,6 +1229,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/';
     POOutputDirectory:='languages';
     Translated:=SystemLanguageID1;
+    LazDocPaths:=SetDirSeparators('$(LazarusDir)/docs/xml/lcl');
 
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyWithOwner(Result));
