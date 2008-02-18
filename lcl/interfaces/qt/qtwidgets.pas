@@ -1089,7 +1089,7 @@ type
     procedure SlotDesignControlPaint(Sender: QObjectH; Event: QEventH); cdecl;
     procedure BringDesignerToFront;
     procedure ResizeDesigner;
-    function GetContext: HDC; virtual;
+    function GetContext: HDC; override;
   public
     function DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -1808,6 +1808,7 @@ begin
   {$ifdef VerboseQt}
       WriteLn('handled!');
   {$endif}
+      Result := KeyMsg.CharCode=VK_UNKNOWN;
       Exit;
     end;
   end;
