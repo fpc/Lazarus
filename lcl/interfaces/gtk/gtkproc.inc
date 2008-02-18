@@ -22,6 +22,8 @@
  *****************************************************************************
 }
 
+{off $DEFINE VerboseAccelerator}
+
 {$IFOPT C-}
 // Uncomment for local trace
   //{$C+}
@@ -5148,7 +5150,7 @@ begin
   if AnAccelGroup<>nil then begin
     // attach group to widget
     {$IFDEF VerboseAccelerator}
-    DebugLn('SetAccelGroup AnAccelGroup=',DbgS(AnAccelGroup),' IsMenu=',dbgs(GtkWidgetIsA(Widget,GTK_MENU_TYPE)));
+    DebugLn(['SetAccelGroup AnAccelGroup=',DbgS(AnAccelGroup),' IsMenu=',GtkWidgetIsA(Widget,GTK_TYPE_MENU)]);
     {$ENDIF}
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
@@ -5350,12 +5352,12 @@ begin
   if (Widget = nil) then exit;
   Result:=GetAccelKey(Widget);
   if Result=nil then begin
-    if Key<>GDK_VOIDSYMBOL then begin
+    if Key>0 then begin
       New(Result);
       FillChar(Result^,SizeOf(Result),0);
     end;
   end else begin
-    if Key=GDK_VOIDSYMBOL then begin
+    if Key=0 then begin
       Dispose(Result);
       Result:=nil;
     end;
@@ -5376,7 +5378,7 @@ end;
 
 procedure ClearAccelKey(Widget: PGtkWidget);
 begin
-  SetAccelKey(Widget,GDK_VOIDSYMBOL,0,'');
+  SetAccelKey(Widget,0,0,'');
 end;
 
 procedure RealizeAccelerator(Component: TComponent; Widget : PGtkWidget);
@@ -5391,17 +5393,17 @@ begin
   AccelKey:=GetAccelKey(Widget);
   if (AccelKey=nil) or (AccelKey^.Realized) then exit;
   
-  if AccelKey^.Key<>GDK_VOIDSYMBOL then begin
+  if AccelKey^.Key<0 then begin
     AccelGroup:=GetAccelGroupForComponent(Component,true);
     if AccelGroup<>nil then begin
-      {$IFDEF VerboseAccelerator}
+      { $IFDEF VerboseAccelerator}
       DebugLn('RealizeAccelerator Add Accelerator ',
         Component.Name,':',Component.ClassName,
         ' Widget=',DbgS(Widget),
         ' Signal=',AccelKey^.Signal,
         ' Key=',dbgs(AccelKey^.Key),' Mods=',dbgs(AccelKey^.Mods),
         '');
-      {$ENDIF}
+      { $ENDIF}
       gtk_widget_add_accelerator(Widget, PChar(AccelKey^.Signal),
         AccelGroup, AccelKey^.Key, AccelKey^.Mods, GTK_ACCEL_VISIBLE);
       AccelKey^.Realized:=true;
@@ -5472,7 +5474,7 @@ begin
 
   // Set the accelerator
   SetAccelKey(Widget,Key,Mods,Signal);
-  if (Key<>GDK_VOIDSYMBOL) and (not (csDesigning in Component.ComponentState))
+  if (Key>0) and (not (csDesigning in Component.ComponentState))
   then
     RealizeAccelerator(Component,Widget);
 end;
@@ -5495,11 +5497,13 @@ begin
     then GDKModifier := GDKModifier or MModifiers[Shift].Mask;
   end;
 
+  //DebugLn(['Accelerate ',NewKey,' ',dbgs(NewModifier)]);
   // Send the unmodified keysym ?
   if (ssShift in NewModifier)
   and ((NewKey < VK_F1) or (NewKey > VK_F24))
   then GDKKey := GetVKeyInfo(NewKey).KeySym[1]
   else GDKKey := GetVKeyInfo(NewKey).KeySym[0];
+  //DebugLn(['Accelerate AAA2 ',GDKKey]);
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;

@@ -282,7 +282,8 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+                                 const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -726,7 +727,7 @@ var
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  {$ToDo verify if the check box has correct z-order and place a EventBox under it if not.}
+  { ToDo verify if the check box has correct z-order and disable GTK_WIDGET_NO_WINDOW if not.}
   Widget := gtk_check_button_new_with_label(AParams.Caption);
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
@@ -771,8 +772,11 @@ class procedure TGtk2WSCustomCheckBox.SetShortCut(
   const ACustomCheckBox: TCustomCheckBox; const OldShortCut,
   NewShortCut: TShortCut);
 begin
+  //DebugLn(['TGtk2WSCustomCheckBox.SetShortCut ',NewShortCut]);
   Accelerate(ACustomCheckBox, PGtkWidget(ACustomCheckBox.Handle), NewShortcut,
-    'activate_item');
+    'clicked'
+    //'activate_item'
+    );
 end;
 
 class procedure TGtk2WSCustomCheckBox.SetState(
