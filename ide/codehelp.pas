@@ -28,7 +28,7 @@ unit CodeHelp;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseLazDoc}
+{off $DEFINE VerboseLazDoc}
 
 interface
 

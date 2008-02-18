@@ -364,30 +364,18 @@ end;
 
 procedure TFPDocEditor.LinkListBoxClick(Sender: TObject);
 var
-  strTmp: String;
-  intTmp: Integer;
-  intStart: Integer;
   LinkIndex: LongInt;
+  LinkTag: string;
+  ID: string;
+  Title: string;
 begin
-  //split the link into Id and Text
   LinkIndex := LinkListBox.ItemIndex;
   if LinkIndex = -1 then
     Exit;
-
-  intStart := PosEx('"', LinkListBox.Items[LinkIndex], 1);
-
-  intTmp := PosEx('"', LinkListBox.Items[LinkIndex], intStart + 1);
-
-  LinkIdComboBox.Text := Copy(LinkListBox.Items[LinkIndex],
-    intStart + 1, intTmp - intStart - 1);
-
-  strTmp := Copy(LinkListBox.Items[LinkIndex], intTmp + 2,
-    Length(LinkListBox.Items[LinkIndex]));
-
-  if strTmp = '>' then
-    LinkTextEdit.Text := ''
-  else
-    LinkTextEdit.Text := Copy(strTmp, 1, Length(strTmp) - Length('</link>'));
+  LinkTag:=LinkListBox.Items[LinkIndex];
+  ExtractIDFromLinkTag(LinkTag,ID,Title);
+  LinkIdComboBox.Text := ID;
+  LinkTextEdit.Text := Title;
 end;
 
 procedure TFPDocEditor.ApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -753,12 +741,13 @@ var
   Element: TCodeHelpElement;
   ExpandedLink: String;
   ExpandedID: String;
+  Title: string;
 begin
   ExpandedLink:='';
   Result:=LinkListBox.Items.Count-1;
   while (Result>=0) do begin
     LinkTag:=LinkListBox.Items[Result];
-    if ExtractIDFromLinkTag(LinkTag,ID) then begin
+    if ExtractIDFromLinkTag(LinkTag,ID,Title) then begin
       // check absolute: ID=Link
       if SysUtils.CompareText(ID,Link)=0 then
         exit;
@@ -783,7 +772,7 @@ end;
 
 function TFPDocEditor.ExtractIDFromLinkTag(const LinkTag: string; out ID, Title: string
   ): boolean;
-// extract id value from example:
+// extract id and title from example:
 // <link id="TCustomControl"/>
 // <link id="#lcl.Graphics.TCanvas">TCanvas</link>
 var
@@ -791,6 +780,8 @@ var
   EndPos: LongInt;
 begin
   Result:=false;
+  ID:='';
+  Title:='';
   StartPos:=length('<link id="')+1;
   if copy(LinkTag,1,StartPos-1)<>'<link id="' then
     exit;
@@ -798,7 +789,21 @@ begin
   while (EndPos<=length(LinkTag)) do begin
     if LinkTag[EndPos]='"' then begin
       ID:=copy(LinkTag,StartPos,EndPos-StartPos);
-      exit(true);
+      Title:='';
+      Result:=true;
+      // extract title
+      StartPos:=EndPos;
+      while (StartPos<=length(LinkTag)) and (LinkTag[StartPos]<>'>') do inc(StartPos);
+      if LinkTag[StartPos-1]='\' then begin
+        // no title
+      end else begin
+        // has title
+        inc(StartPos);
+        EndPos:=StartPos;
+        while (EndPos<=length(LinkTag)) and (LinkTag[EndPos]<>'<') do inc(EndPos);
+        Title:=copy(LinkTag,StartPos,EndPos-StartPos);
+      end;
+      exit;
     end;
     inc(EndPos);
   end;
