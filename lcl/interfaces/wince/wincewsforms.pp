@@ -230,6 +230,40 @@ begin
   Flags := Flags or CalcBorderIconsFlags(AForm);
 end;
 
+procedure AdjustFormBounds(const AForm: TCustomForm; var SizeRect: TRect);
+begin
+  // the LCL defines the size of a form without border, win32 with.
+  // -> adjust size according to BorderStyle
+  SizeRect := AForm.BoundsRect;
+  Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(
+    AForm.BorderStyle), false, BorderStyleToWin32FlagsEx(AForm.BorderStyle));
+end;
+
+procedure CalculateDialogPosition(var Params: TCreateWindowExParams;
+ Bounds: TRect; lForm: TCustomForm);
+begin
+  if lForm.Position in [poDefault, poDefaultPosOnly] then
+  begin
+    Params.Left := CW_USEDEFAULT;
+    Params.Top := CW_USEDEFAULT;
+  end
+  else
+  begin
+    Params.Left := Bounds.Left;
+    Params.Top := Bounds.Top;
+  end;
+  if lForm.Position in [poDefault, poDefaultSizeOnly] then
+  begin
+    Params.Width := CW_USEDEFAULT;
+    Params.Height := CW_USEDEFAULT;
+  end
+  else
+  begin
+    Params.Width := Bounds.Right - Bounds.Left;
+    Params.Height := Bounds.Bottom - Bounds.Top;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TWinCEWSCustomForm.CreateHandle
   Params:  None
@@ -243,6 +277,8 @@ var
   Params: TCreateWindowExParams;
   LForm : TCustomForm;
   BorderStyle: TFormBorderStyle;
+  WR: Windows.RECT;
+  Bounds: TRect;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSCustomForm.CreateHandle');
@@ -263,16 +299,42 @@ begin
     SubClassWndProc := nil;
     Parent := 0;
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
-    if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
+    AdjustFormBounds(lForm, Bounds);
+
+    if Application.ApplicationType in [atPDA, atSmartphone, atDefault] then
     begin
-      Left:=CW_USEDEFAULT;
-      Top:=CW_USEDEFAULT;
-      Height:=CW_USEDEFAULT;
-      Width:=CW_USEDEFAULT;
+      { The position and size of common windows is ignored on PDA mode,
+        and a position and size that covers the whole workarea excluding
+        the menu is used. The Workarea size automatically excludes the
+        Taskbar.
+
+        Simply using CM_USEDEFAULT produces a too large Height, which
+        covers the menus. So the workarea size is detected (which ignores
+        the Taskbar) and then the menu is subtracted from it }
+      if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
+      begin
+        Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+
+        Left := WR.Left;
+        Top := WR.Top;
+        Height := WR.Bottom - WR.Top - GetSystemMetrics(SM_CYMENU)
+         - GetSystemMetrics(SM_CXBORDER) * 2;
+        Width := WR.Right - WR.Left;
+      end
+      else
+      { On normal dialogs we need to take into consideration the size of
+        the window decoration }
+      begin
+        Top := CW_USEDEFAULT;
+        Left := CW_USEDEFAULT;
+        Height := Bounds.Bottom - Bounds.Top;
+        Width := Bounds.Right - Bounds.Left;
+      end;
     end
     else
-      //TODO:little bit dirty but works, why the captionbar height is taken from height ? what flag does that ?
-      Height := Height+25;
+    { On Desktop mode we need to take into consideration the size of
+      the window decoration }
+      CalculateDialogPosition(Params, Bounds, lForm);
   end;
   
   // create window

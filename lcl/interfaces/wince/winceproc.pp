@@ -91,7 +91,12 @@ function MeasureText(const AWinControl: TWinControl; Text: string; var Width, He
 function GetControlText(AHandle: HWND): string;
 
 { String functions that may be moved to the RTL in the future }
+procedure WideStrCopy(Dest, Src: PWideChar);
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
+function WideStrCmp(W1, W2: PWideChar): Integer;
+
+{ Automatic detection of platform }
+function GetWinCEPlatform: TApplicationType;
 
 type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
@@ -1246,6 +1251,19 @@ begin
   SysFreeString(tmpWideStr);
 end;
 
+procedure WideStrCopy(Dest, Src: PWideChar);
+var
+  counter : longint;
+Begin
+  counter := 0;
+  while Src[counter] <> #0 do
+  begin
+    Dest[counter] := Src[counter];
+    Inc(counter);
+  end;
+  Dest[counter] := #0;
+end;
+
 { Exactly equal to StrLCopy but for PWideChars
   Copyes a widestring up to a maximal length, in WideChars }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
@@ -1263,6 +1281,43 @@ begin
   { terminate the string }
   Dest[counter] := #0;
   Result := Dest;
+end;
+
+function WideStrCmp(W1, W2: PWideChar): Integer;
+var
+  counter: Integer;
+Begin
+  counter := 0;
+  While W1[counter] = W2[counter] do
+  Begin
+    if (W2[counter] = #0) or (W1[counter] = #0) then
+       break;
+    Inc(counter);
+  end;
+  Result := ord(W1[counter]) - ord(W2[counter]);
+end;
+
+function GetWinCEPlatform: TApplicationType;
+{$ifndef Win32}
+var
+  buf: array[0..50] of WideChar;
+{$endif}
+begin
+  Result := atDefault;
+
+{$ifdef Win32}
+  Result := atDefault;//atDesktop;
+{$else}
+  if SystemParametersInfo(SPI_GETPLATFORMTYPE, sizeof(buf), @buf, 0) then
+  begin
+    if WideStrCmp(@buf, 'PocketPC') = 0 then
+      Result := atPDA
+    else if WideStrCmp(@buf, 'SmartPhone') = 0 then
+      Result := atSmartphone
+    else if GetLastError = ERROR_ACCESS_DENIED then
+      Result := atSmartphone;
+  end;
+{$endif}
 end;
 
 

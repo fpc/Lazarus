@@ -118,14 +118,18 @@ begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWidgetSet.AppInit');
   {$endif}
-
+  
   if not WinRegister then
   begin
     WriteLn('TWinCEWidgetSet.AppInit failed.');
     Exit;
   end;
   
-    //Init stock objects;
+  { Initializes the application type }
+  if Application.ApplicationType = atDefault then
+    Application.ApplicationType := GetWinCEPlatform;
+
+  //Init stock objects;
   FStockNullBrush := Windows.CreateSolidBrush(0);
   FStockBlackBrush := Windows.CreateSolidBrush($000000);
   FStockLtGrayBrush := Windows.CreateSolidBrush($C0C0C0);

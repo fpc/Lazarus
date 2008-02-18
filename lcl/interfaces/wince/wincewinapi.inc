@@ -2581,11 +2581,6 @@ begin
   Result := Boolean(Windows.SetWindowPos(HWnd, HWndInsertAfter, X, Y, CX, CY, UFlags));
 end;
 
-{function TWinCEWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND; X, Y,
-  cx, cy: Integer; uFlags: UINT): Boolean;
-begin
-  Result:=inherited SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
-end;}
 {------------------------------------------------------------------------------
   Method:  ShowCaret
   Params:  HWnd - handle of window with caret
