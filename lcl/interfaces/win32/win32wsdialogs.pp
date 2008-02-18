@@ -27,6 +27,16 @@ unit Win32WSDialogs;
 interface
 
 uses
+{$IF FPC_VERSION < 2}
+  {$DEFINE OLD_PLACE}
+{$IFEND}
+{$IF (FPC_VERSION = 2) AND (FPC_RELEASE < 2)}
+  {$DEFINE OLD_PLACE}
+{$IFEND}
+{$IF (FPC_VERSION = 2) AND (FPC_RELEASE = 2) AND (FPC_PATCH = 0)}
+  {$DEFINE OLD_PLACE}
+{$IFEND}
+
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
@@ -35,8 +45,8 @@ uses
 ////////////////////////////////////////////////////
 // rtl
   Windows, ShellApi, ActiveX, SysUtils, Classes,
-{$IFNDEF VER2_2}
-  commdlg,
+{$IFNDEF OLD_PLACE}
+  CommDlg,
 {$ENDIF}
 // lcl
   LCLProc, LCLType, Dialogs, Controls, Graphics, Forms,
@@ -759,7 +769,7 @@ begin
     begin
       LStructSize := sizeof(TChooseFont);
       HWndOwner := GetOwnerHandle(ACommonDialog);
-{$ifndef ver2_2}
+{$ifndef OLD_PLACE}
       LPLogFont := commdlg.PLOGFONT(@LF);
 {$else}
       LPLogFont := windows.PLOGFONT(@LF);
