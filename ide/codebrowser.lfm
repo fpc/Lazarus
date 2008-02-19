@@ -25,7 +25,7 @@ object CodeBrowserView: TCodeBrowserView
     TabOrder = 0
     object ScopeComboBox: TComboBox
       Left = 3
-      Height = 25
+      Height = 29
       Width = 315
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
       MaxLength = 0
@@ -68,7 +68,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 12
       Height = 22
       Top = 8
-      Width = 164
+      Width = 165
       Caption = 'ShowPrivateCheckBox'
       OnChange = ShowPrivateCheckBoxChange
       TabOrder = 0
@@ -78,7 +78,7 @@ object CodeBrowserView: TCodeBrowserView
       Left = 272
       Height = 22
       Top = 8
-      Width = 182
+      Width = 183
       Caption = 'ShowProtectedCheckBox'
       OnChange = ShowProtectedCheckBoxChange
       TabOrder = 1
@@ -88,7 +88,7 @@ object CodeBrowserView: TCodeBrowserView
   object BrowseTreeView: TTreeView
     AnchorSideTop.Control = OptionsGroupBox
     AnchorSideTop.Side = asrBottom
-    Height = 297
+    Height = 277
     Top = 246
     Width = 634
     Align = alBottom
@@ -284,6 +284,14 @@ object CodeBrowserView: TCodeBrowserView
       TabOrder = 5
       Text = 'IdentifierFilterEdit'
     end
+  end
+  object ProgressBar1: TProgressBar
+    Height = 20
+    Top = 523
+    Width = 634
+    Align = alBottom
+    Max = 10000
+    TabOrder = 5
   end
   object ImageList1: TImageList
     Height = 18

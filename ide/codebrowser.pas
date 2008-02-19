@@ -274,6 +274,7 @@ type
     PackageFilterContainsSpeedButton: TSpeedButton;
     PackageFilterEdit: TEdit;
     PopupMenu1: TPopupMenu;
+    ProgressBar1: TProgressBar;
     ScopeComboBox: TComboBox;
     ScopeGroupBox: TGroupBox;
     ScopeWithRequiredPackagesCheckBox: TCheckBox;
@@ -427,6 +428,26 @@ function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 
 implementation
 
+const
+  ProgressGetScopeStart=0;
+  ProgressGetScopeSize=10;
+  ProgressGatherPackagesStart=ProgressGetScopeStart+ProgressGetScopeSize;
+  ProgressGatherPackagesSize=30;
+  ProgressFreeUnusedPkgStart=ProgressGatherPackagesStart+ProgressGatherPackagesSize;
+  ProgressFreeUnusedPkgSize=100;
+  ProgressAddNewUnitListsStart=ProgressFreeUnusedPkgStart+ProgressFreeUnusedPkgSize;
+  ProgressAddNewUnitListsSize=300;
+  ProgressGatherFileListsStart=ProgressAddNewUnitListsStart+ProgressAddNewUnitListsSize;
+  ProgressGatherFileListsSize=300;
+  ProgressGatherOutdatedFilesStart=ProgressGatherFileListsStart+ProgressGatherFileListsSize;
+  ProgressGatherOutdatedFilesSize=300;
+  ProgressUpdateUnitsStart=ProgressGatherOutdatedFilesStart+ProgressGatherOutdatedFilesSize;
+  ProgressUpdateUnitsSize=3000;
+  ProgressGetViewOptionsStart=ProgressUpdateUnitsStart+ProgressUpdateUnitsSize;
+  ProgressGetViewOptionsSize=10;
+  ProgressUpdateTreeViewStart=ProgressGetViewOptionsStart+ProgressGetViewOptionsSize;
+  ProgressUpdateTreeViewSize=1000;
+  ProgressTotal=ProgressUpdateTreeViewStart+ProgressUpdateTreeViewSize;
 
 function CompareUnitListOwners(Data1, Data2: Pointer): integer;
 begin
@@ -516,6 +537,8 @@ begin
   IdentifierFilterBeginsSpeedButton.Hint:=lisIdentifierBeginsWith;
   IdentifierFilterContainsSpeedButton.Caption:=lisContains;
   IdentifierFilterContainsSpeedButton.Hint:=lisIdentifierContains;
+  
+  ProgressBar1.Max:=ProgressTotal;
 
   InitImageList;
   LoadOptions;
@@ -811,6 +834,7 @@ begin
   else
     UpdateNeeded:=false;
     Done:=true;
+    ProgressBar1.Position:=ProgressTotal;
     exit;
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
@@ -822,6 +846,7 @@ end;
 procedure TCodeBrowserView.WorkGetScopeOptions;
 begin
   DebugLn(['TCodeBrowserView.WorkGetScopeOptions START']);
+  ProgressBar1.Position:=ProgressGetScopeStart;
   Options.WithRequiredPackages:=ScopeWithRequiredPackagesCheckBox.Checked;
   Options.Scope:=ScopeComboBox.Text;
 
@@ -830,6 +855,7 @@ begin
     fStage:=cbwsGatherPackages
   else
     fStage:=cbwsGetViewOptions;
+  ProgressBar1.Position:=ProgressGetScopeStart+ProgressGetScopeSize;
 end;
 
 procedure TCodeBrowserView.WorkGatherPackages;
@@ -905,6 +931,7 @@ begin
   
   // this stage finished -> next stage
   fStage:=cbwsFreeUnusedPackages;
+  ProgressBar1.Position:=ProgressGatherPackagesStart+ProgressGatherPackagesSize;
 end;
 
 procedure TCodeBrowserView.WorkFreeUnusedPackages;
@@ -938,11 +965,13 @@ var
   UnusedPackage: TCodeBrowserUnitList;
 begin
   DebugLn(['TCodeBrowserView.WorkFreeUnusedPackages START']);
+
   // find an unused package
   UnusedPackage:=FindUnusedUnitList;
   if UnusedPackage=nil then begin
     // this stage finished -> next stage
     fStage:=cbwsAddNewPackages;
+    ProgressBar1.Position:=ProgressFreeUnusedPkgStart+ProgressFreeUnusedPkgSize;
     exit;
   end;
 
@@ -955,6 +984,7 @@ var
   Node: TAvgLvlTreeNode;
   List: TCodeBrowserUnitList;
 begin
+  ProgressBar1.Position:=ProgressAddNewUnitListsStart;
   if (FWorkingParserRoot<>nil) and (FWorkingParserRoot.UnitLists<>nil)
   and (FParserRoot<>nil) then begin
     Node:=FWorkingParserRoot.UnitLists.FindLowest;
@@ -971,6 +1001,7 @@ begin
   
   // this stage finished -> next stage
   fStage:=cbwsGatherFiles;
+  ProgressBar1.Position:=ProgressAddNewUnitListsStart+ProgressAddNewUnitListsSize;
 end;
 
 procedure TCodeBrowserView.WorkGatherFileLists;
@@ -1011,6 +1042,7 @@ begin
   if List=nil then begin
     // this stage finished -> next stage
     fStage:=cbwsGatherOutdatedFiles;
+    ProgressBar1.Position:=ProgressGatherFileListsStart+ProgressGatherFileListsSize;
     exit;
   end;
   
@@ -1294,6 +1326,7 @@ begin
   
   // this stage finished -> next stage
   fStage:=cbwsUpdateUnits;
+  ProgressBar1.Position:=ProgressGatherOutdatedFilesStart+ProgressGatherOutdatedFilesSize;
 end;
 
 procedure TCodeBrowserView.WorkUpdateUnits;
@@ -1325,6 +1358,7 @@ begin
       if AnUnit=nil then begin
         // this stage finished -> next stage
         fStage:=cbwsGetViewOptions;
+        ProgressBar1.Position:=ProgressUpdateUnitsStart+ProgressUpdateUnitsSize;
         exit;
       end;
 
@@ -1451,13 +1485,16 @@ begin
     fStage:=cbwsUpdateTreeView
   else
     fStage:=cbwsFinished;
+  ProgressBar1.Position:=ProgressGetViewOptionsStart+ProgressGetViewOptionsSize;
 end;
 
 procedure TCodeBrowserView.WorkUpdateTreeView;
 begin
+  ProgressBar1.Position:=ProgressUpdateTreeViewStart;
   UpdateTreeView;
   // this stage finished -> next stage
   fStage:=cbwsFinished;
+  ProgressBar1.Position:=ProgressUpdateTreeViewStart+ProgressUpdateTreeViewSize;
 end;
 
 procedure TCodeBrowserView.FreeUnitList(List: TCodeBrowserUnitList);

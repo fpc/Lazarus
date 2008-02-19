@@ -9,7 +9,7 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'TGroupBox'#13'ScopeGroupBox'#4'Left'#2#6#6'Height'#2'2'#3'Top'#2#6#5'Width'
   +#3'n'#2#5'Align'#7#5'alTop'#20'BorderSpacing.Around'#2#6#7'Caption'#6#13'Sco'
   +'peGroupBox'#12'ClientHeight'#2#31#11'ClientWidth'#3'j'#2#8'TabOrder'#2#0#0#9
-  +'TComboBox'#13'ScopeComboBox'#4'Left'#2#3#6'Height'#2#25#5'Width'#3';'#1#16
+  +'TComboBox'#13'ScopeComboBox'#4'Left'#2#3#6'Height'#2#29#5'Width'#3';'#1#16
   +'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactSearchAscending'#0#9
   +'MaxLength'#2#0#10'OnDropDown'#7#21'ScopeComboBoxDropDown'#13'OnEditingDone'
   +#7#24'ScopeComboBoxEditingDone'#8'TabOrder'#2#0#4'Text'#6#13'ScopeComboBox'#0
@@ -24,14 +24,14 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +'op'#6'akLeft'#7'akRight'#0#18'BorderSpacing.Left'#2#6#17'BorderSpacing.Top'
   +#2#6#19'BorderSpacing.Right'#2#6#7'Caption'#6#15'OptionsGroupBox'#12'ClientH'
   +'eight'#2#31#11'ClientWidth'#3'j'#2#8'TabOrder'#2#1#0#9'TCheckBox'#19'ShowPr'
-  +'ivateCheckBox'#4'Left'#2#12#6'Height'#2#22#3'Top'#2#8#5'Width'#3#164#0#7'Ca'
+  +'ivateCheckBox'#4'Left'#2#12#6'Height'#2#22#3'Top'#2#8#5'Width'#3#165#0#7'Ca'
   +'ption'#6#19'ShowPrivateCheckBox'#8'OnChange'#7#25'ShowPrivateCheckBoxChange'
   +#8'TabOrder'#2#0#11'UseOnChange'#9#0#0#9'TCheckBox'#21'ShowProtectedCheckBox'
-  +#4'Left'#3#16#1#6'Height'#2#22#3'Top'#2#8#5'Width'#3#182#0#7'Caption'#6#21'S'
+  +#4'Left'#3#16#1#6'Height'#2#22#3'Top'#2#8#5'Width'#3#183#0#7'Caption'#6#21'S'
   +'howProtectedCheckBox'#8'OnChange'#7#27'ShowProtectedCheckBoxChange'#8'TabOr'
   +'der'#2#1#11'UseOnChange'#9#0#0#0#9'TTreeView'#14'BrowseTreeView'#21'AnchorS'
   +'ideTop.Control'#7#15'OptionsGroupBox'#18'AnchorSideTop.Side'#7#9'asrBottom'
-  +#6'Height'#3')'#1#3'Top'#3#246#0#5'Width'#3'z'#2#5'Align'#7#8'alBottom'#7'An'
+  +#6'Height'#3#21#1#3'Top'#3#246#0#5'Width'#3'z'#2#5'Align'#7#8'alBottom'#7'An'
   +'chors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#17'BorderSpacing.Top'
   +#2#6#17'DefaultItemHeight'#2#19#6'Images'#7#10'ImageList1'#14'ParentShowHint'
   +#8#9'PopupMenu'#7#10'PopupMenu1'#8'ShowHint'#9#8'ShowRoot'#8#8'TabOrder'#2#2
@@ -98,27 +98,29 @@ LazarusResources.Add('TCodeBrowserView','FORMDATA',[
   +#5'TEdit'#20'IdentifierFilterEdit'#21'AnchorSideTop.Control'#7#23'ShowIdenti'
   +'fiersCheckBox'#18'AnchorSideTop.Side'#7#9'asrCenter'#4'Left'#3#223#0#6'Heig'
   +'ht'#2#23#3'Top'#2';'#5'Width'#3#201#0#13'OnEditingDone'#7#28'PackageFilterE'
-  +'ditEditingDone'#8'TabOrder'#2#5#4'Text'#6#20'IdentifierFilterEdit'#0#0#0#10
-  +'TImageList'#10'ImageList1'#6'Height'#2#18#5'Width'#2#18#4'left'#3'*'#1#3'to'
-  +'p'#3#196#0#0#0#10'TPopupMenu'#10'PopupMenu1'#7'OnPopup'#7#15'PopupMenu1Popu'
-  +'p'#4'left'#3#248#0#3'top'#3#196#0#0#9'TMenuItem'#23'CopyDescriptionMenuItem'
-  +#7'Caption'#6#23'CopyDescriptionMenuItem'#7'OnClick'#7#28'CopyDescriptionMen'
-  +'uItemClick'#0#0#9'TMenuItem'#22'CopyIdentifierMenuItem'#7'Caption'#6#22'Cop'
-  +'yIdentifierMenuItem'#7'OnClick'#7#27'CopyIdentifierMenuItemClick'#0#0#9'TMe'
-  +'nuItem'#21'CopySeparatorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#25'Exp'
-  +'andAllPackagesMenuItem'#7'Caption'#6#25'ExpandAllPackagesMenuItem'#7'OnClic'
-  +'k'#7#30'ExpandAllPackagesMenuItemClick'#0#0#9'TMenuItem'#27'CollapseAllPack'
-  +'agesMenuItem'#7'Caption'#6#27'CollapseAllPackagesMenuItem'#7'OnClick'#7' Co'
-  +'llapseAllPackagesMenuItemClick'#0#0#9'TMenuItem'#28'AllPackagesSeparatorMen'
-  +'uItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#22'ExpandAllUnitsMenuItem'#7'Capt'
-  +'ion'#6#22'ExpandAllUnitsMenuItem'#7'OnClick'#7#27'ExpandAllUnitsMenuItemCli'
-  +'ck'#0#0#9'TMenuItem'#24'CollapseAllUnitsMenuItem'#7'Caption'#6#24'CollapseA'
-  +'llUnitsMenuItem'#7'OnClick'#7#29'CollapseAllUnitsMenuItemClick'#0#0#9'TMenu'
-  +'Item'#25'AllUnitsSeparatorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#24'E'
-  +'xpandAllClassesMenuItem'#7'Caption'#6#24'ExpandAllClassesMenuItem'#7'OnClic'
-  +'k'#7#29'ExpandAllClassesMenuItemClick'#0#0#9'TMenuItem'#26'CollapseAllClass'
-  +'esMenuItem'#7'Caption'#6#26'CollapseAllClassesMenuItem'#7'OnClick'#7#31'Col'
-  +'lapseAllClassesMenuItemClick'#0#0#9'TMenuItem'#27'AllClassesSeparatorMenuIt'
-  +'em'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#14'ExportMenuItem'#7'Caption'#6#14'E'
-  +'xportMenuItem'#7'OnClick'#7#19'ExportMenuItemClick'#0#0#0#0
+  +'ditEditingDone'#8'TabOrder'#2#5#4'Text'#6#20'IdentifierFilterEdit'#0#0#0#12
+  +'TProgressBar'#12'ProgressBar1'#6'Height'#2#20#3'Top'#3#11#2#5'Width'#3'z'#2
+  +#5'Align'#7#8'alBottom'#3'Max'#3#16''''#8'TabOrder'#2#5#0#0#10'TImageList'#10
+  +'ImageList1'#6'Height'#2#18#5'Width'#2#18#4'left'#3'*'#1#3'top'#3#196#0#0#0
+  +#10'TPopupMenu'#10'PopupMenu1'#7'OnPopup'#7#15'PopupMenu1Popup'#4'left'#3#248
+  +#0#3'top'#3#196#0#0#9'TMenuItem'#23'CopyDescriptionMenuItem'#7'Caption'#6#23
+  +'CopyDescriptionMenuItem'#7'OnClick'#7#28'CopyDescriptionMenuItemClick'#0#0#9
+  +'TMenuItem'#22'CopyIdentifierMenuItem'#7'Caption'#6#22'CopyIdentifierMenuIte'
+  +'m'#7'OnClick'#7#27'CopyIdentifierMenuItemClick'#0#0#9'TMenuItem'#21'CopySep'
+  +'aratorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#25'ExpandAllPackagesMenu'
+  +'Item'#7'Caption'#6#25'ExpandAllPackagesMenuItem'#7'OnClick'#7#30'ExpandAllP'
+  +'ackagesMenuItemClick'#0#0#9'TMenuItem'#27'CollapseAllPackagesMenuItem'#7'Ca'
+  +'ption'#6#27'CollapseAllPackagesMenuItem'#7'OnClick'#7' CollapseAllPackagesM'
+  +'enuItemClick'#0#0#9'TMenuItem'#28'AllPackagesSeparatorMenuItem'#7'Caption'#6
+  +#1'-'#0#0#9'TMenuItem'#22'ExpandAllUnitsMenuItem'#7'Caption'#6#22'ExpandAllU'
+  +'nitsMenuItem'#7'OnClick'#7#27'ExpandAllUnitsMenuItemClick'#0#0#9'TMenuItem'
+  +#24'CollapseAllUnitsMenuItem'#7'Caption'#6#24'CollapseAllUnitsMenuItem'#7'On'
+  +'Click'#7#29'CollapseAllUnitsMenuItemClick'#0#0#9'TMenuItem'#25'AllUnitsSepa'
+  +'ratorMenuItem'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#24'ExpandAllClassesMenuIt'
+  +'em'#7'Caption'#6#24'ExpandAllClassesMenuItem'#7'OnClick'#7#29'ExpandAllClas'
+  +'sesMenuItemClick'#0#0#9'TMenuItem'#26'CollapseAllClassesMenuItem'#7'Caption'
+  +#6#26'CollapseAllClassesMenuItem'#7'OnClick'#7#31'CollapseAllClassesMenuItem'
+  +'Click'#0#0#9'TMenuItem'#27'AllClassesSeparatorMenuItem'#7'Caption'#6#1'-'#0
+  +#0#9'TMenuItem'#14'ExportMenuItem'#7'Caption'#6#14'ExportMenuItem'#7'OnClick'
+  +#7#19'ExportMenuItemClick'#0#0#0#0
 ]);
