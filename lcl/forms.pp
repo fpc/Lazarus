@@ -365,7 +365,6 @@ type
     FDefaultControl: TControl;
     FCancelControl: TControl;
     FDesigner: TIDesigner;
-    FDummyTextHeight: Longint;
     FFormState: TFormState;
     FFormStyle: TFormStyle;
     FFormUpdateCount: integer;
@@ -568,8 +567,6 @@ type
     property RestoredHeight: integer read FRestoredHeight;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar
                                     default stDefault;
-    property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
-                                 stored False;
     property Visible stored VisibleIsStored default false;
     property WindowState: TWindowState read FWindowState write SetWindowState
                                        default wsNormal;
@@ -652,7 +649,6 @@ type
     property SessionProperties;
     property ShowHint;
     property ShowInTaskBar;
-    property TextHeight;
     property UseDockManager;
     property Visible;
     property WindowState;
