@@ -708,6 +708,7 @@ var LinkCnt, i: integer;
   LastTimeUsed, CurrDate: TDateTime;
   IncludeFilename, IncludedByFile, APath: string;
   NewLink: TIncludedByLink;
+  CurrDateStr: String;
 begin
   try
     FIncludeLinks.FreeAndClear;
@@ -716,15 +717,14 @@ begin
         FExpirationTimeInDays);
     LinkCnt:=XMLConfig.GetValue(XMLPath+'IncludeLinks/Count',0);
     CurrDate:=Date;
+    CurrDateStr:=DateToStr(CurrDate);
     for i:=0 to LinkCnt-1 do begin
       APath:=XMLPath+'IncludeLinks/Link'+IntToStr(i)+'/';
-      try
-        LastTimeUsed:=StrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
-             DateToStr(CurrDate)));
-      except
+      if not TryStrToDate(XMLConfig.GetValue(APath+'LastTimeUsed/Value',
+           CurrDateStr),LastTimeUsed)
+      then
         LastTimeUsed:=CurrDate;
-      end;
-      
+
       // ToDo: check if link has expired
       
       IncludeFilename:=XMLConfig.GetValue(APath+'IncludeFilename/Value','');
