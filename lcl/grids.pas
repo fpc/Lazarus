@@ -8008,6 +8008,7 @@ begin
     //WordBreak := False
   end;
   ExtendedSelect := True;
+  SaveOptions := [soContent];
 end;
 
 destructor TCustomStringGrid.Destroy;
