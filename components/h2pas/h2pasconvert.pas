@@ -2025,14 +2025,13 @@ begin
       exit;
     end;
 
+    //DebugLn(['TH2PasConverter.ConvertFile CCC1 ',TextConverter.Source]);
     // run h2pas
     Tool:=TH2PasTool.Create;
     try
       Tool.Title:='h2pas';
       Tool.H2PasFile:=AFile;
-      //DebugLn(['TH2PasConverter.ConvertFile AAA TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.TargetFilename:=TextConverter.Filename;
-      //DebugLn(['TH2PasConverter.ConvertFile BBB TempCHeaderFilename="',TempCHeaderFilename,'" CurrentType=',ord(TextConverter.CurrentType),' FileSize=',FileSize(TempCHeaderFilename)]);
       Tool.Filename:=GetH2PasFilename;
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.ScanOutput:=true;
@@ -2050,6 +2049,7 @@ begin
     // run beautification tools for new pascal code
     TextConverter.InitWithFilename(OutputFilename);
     //DebugLn(['TH2PasConverter.ConvertFile Output: ',copy(TextConverter.Source,1,300)]);
+    //DebugLn(['TH2PasConverter.ConvertFile CCC2 ',TextConverter.Source]);
     Result:=ExecuteTools(Project.PostH2PasTools,OutputFilename);
     if Result<>mrOk then begin
       DebugLn(['TH2PasConverter.ConvertFile Failed running Project.PostH2PasTools on ',OutputFilename]);
@@ -4191,7 +4191,8 @@ begin
   Result:=mrCancel;
   if aText=nil then exit;
   Source:=aText.Source;
-  
+  //DebugLn(['TRemoveDoubleSemicolons.Execute START ',Source]);
+
   // find all double semicolons
   Position:=1;
   LastAtomWasSemicolon:=false;
@@ -4456,7 +4457,7 @@ var
 begin
   Result:=mrCancel;
   if aText=nil then exit;
-  //DebugLn(['TAddMissingPointerTypes.Execute ',aText.Source]);
+  DebugLn(['TAddMissingPointerTypes.Execute START ',aText.Source]);
   if (not FilenameIsPascalUnit(aText.Filename)) then begin
     DebugLn(['TAddMissingPointerTypes.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore
@@ -4492,6 +4493,7 @@ begin
       NeededPointerTypes.Free;
     end;
   end;
+  DebugLn(['TAddMissingPointerTypes.Execute END ',aText.Source]);
   Result:=mrOk;
 end;
 
