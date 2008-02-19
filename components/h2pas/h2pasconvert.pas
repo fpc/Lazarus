@@ -3530,6 +3530,7 @@ function TRemoveRedefinitionsInUnit.Execute(aText: TIDETextConverter
   ): TModalResult;
 begin
   Result:=mrCancel;
+  //DebugLn(['TRemoveRedefinitionsInUnit.Execute START ',aText.Source]);
   if (not FilenameIsPascalUnit(aText.Filename)) then begin
     DebugLn(['TRemoveRedefinitionsInUnit.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore
@@ -3539,6 +3540,7 @@ begin
     DebugLn(['TRemoveRedefinitionsInUnit.Execute RemoveAllRedefinitions failed ',CodeToolBoss.ErrorMessage]);
     exit;
   end;
+  //DebugLn(['TRemoveRedefinitionsInUnit.Execute END ',aText.Source]);
   Result:=mrOk;
 end;
 
@@ -4454,6 +4456,7 @@ var
 begin
   Result:=mrCancel;
   if aText=nil then exit;
+  //DebugLn(['TAddMissingPointerTypes.Execute ',aText.Source]);
   if (not FilenameIsPascalUnit(aText.Filename)) then begin
     DebugLn(['TAddMissingPointerTypes.Execute file is not pascal: ',aText.Filename]);
     exit(mrOk);// ignore

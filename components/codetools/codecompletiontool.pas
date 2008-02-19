@@ -1661,6 +1661,7 @@ var
     NodeExt: TCodeTreeNodeExtension;
   begin
     DebugLn(['AddRedefinition ',NodeText,' Redefined=',CleanPosToStr(Redefinition.StartPos),' Definition=',CleanPosToStr(Definition.StartPos)]);
+    //DebugLn(['AddRedefinition as source: Definition="',ExtractNode(Definition,[]),'" Redefinition="',ExtractNode(Redefinition,[]),'"']);
     NodeExt:=NodeExtMemManager.NewNode;
     NodeExt.Node:=Redefinition;
     NodeExt.Data:=Definition;
@@ -2445,7 +2446,7 @@ begin
 
     // first step: find all unit identifiers (excluding implementation section)
     if not GatherUnitDefinitions(Definitions,true,true) then exit;
-    DebugLn(['TCodeCompletionCodeTool.FindConstFunctions ',Src]);
+    //DebugLn(['TCodeCompletionCodeTool.FindConstFunctions ',Src]);
     
     // now check all functions
     Node:=Tree.Root;
