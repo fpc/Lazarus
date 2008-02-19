@@ -3210,9 +3210,10 @@ begin
     if not gdk_keymap_get_entries_for_keycode(nil, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then Continue;
     SetLength(KeySyms, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
-    g_free(KeyVals);
     g_free(KeymapKeys); // unused but we cannot pass a nil as param
+    g_free(KeyVals);
     HasKey := KeySyms[0] <> 0;
+    //DebugLn(['InitKeyboardTables ',KeyCode,' ',HasKey,' ',KeySyms[0]]);
   {$endif}
   
   {$ifdef HasX}
@@ -3231,7 +3232,7 @@ begin
     // Continue if there is no keysym found
     if not HasKey then Continue;
 
-    // Start looking fo a VKcode
+    // Start looking for a VKcode
     VKey := VK_UNDEFINED;
     for m := 0 to KeySymCount - 1 do
     begin
@@ -5497,13 +5498,11 @@ begin
     then GDKModifier := GDKModifier or MModifiers[Shift].Mask;
   end;
 
-  //DebugLn(['Accelerate ',NewKey,' ',dbgs(NewModifier)]);
   // Send the unmodified keysym ?
   if (ssShift in NewModifier)
   and ((NewKey < VK_F1) or (NewKey > VK_F24))
   then GDKKey := GetVKeyInfo(NewKey).KeySym[1]
   else GDKKey := GetVKeyInfo(NewKey).KeySym[0];
-  //DebugLn(['Accelerate AAA2 ',GDKKey]);
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
