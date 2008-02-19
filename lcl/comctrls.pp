@@ -1700,7 +1700,7 @@ type
   TTreeNode = class;
 
   TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
-                nsExpanded, nsHasChildren, nsInTree, nsDeleting);
+                nsExpanded, nsHasChildren, nsInTree, nsDeleting, nsBound);
   TNodeStates = set of TNodeState;
   TNodeAttachMode = (
     naAdd,           // add as last sibling of Destination
@@ -2153,7 +2153,6 @@ type
     FTreeLineColor: TColor;
     FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
-    FUpdateCount: integer;
     procedure CanvasChanged(Sender: TObject);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;

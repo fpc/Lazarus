@@ -577,7 +577,7 @@ begin
       TreeView.FStates:=(TreeView.FStates+[tvsTopsNeedsUpdate,
                 tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
                 tvsScrollbarChanged,tvsMaxRightNeedsUpdate]);
-      TreeView.Invalidate;
+      Update;
     end;
   end;
 end;
@@ -1096,6 +1096,8 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNode.Unbind] Self=',DbgS(Self),' Self.Text=',Text);
   {$ENDIF}
+  if not (nsBound in FStates) then exit;
+  Exclude(FStates,nsBound);
   // remove single select
   Selected:=false;
   // invalidate caches of TreeView and if root item, remove from TreeView.Items
@@ -1188,7 +1190,8 @@ procedure TTreeNode.InternalMove(ANode: TTreeNode;
   taAddFirst: add Self as first child of ANode
   taInsert:   add Self in front of ANode
 }
-var HigherNode: TTreeNode;
+var
+  HigherNode: TTreeNode;
   NewIndex, NewParentItemSize, i: integer;
   WasSelected: Boolean;
 begin
@@ -1202,6 +1205,7 @@ begin
   try
     WasSelected:=Selected;
     Unbind;
+    Include(FStates,nsBound);
     // set parent
     if AddMode in [taAdd, taAddFirst] then
       FParent:=ANode
@@ -1439,9 +1443,12 @@ begin
 end;
 
 procedure TTreeNode.Update;
+var
+  TV: TCustomTreeView;
 begin
-  if (TreeView<>nil) and (not (csLoading in TreeView.ComponentState)) then
-    TreeView.Invalidate;
+  TV:=TreeView;
+  if (TV<>nil) and (Owner.FUpdateCount=0) and (not (csLoading in TV.ComponentState)) then
+    TV.Invalidate;
 end;
 
 function TTreeNode.EditText: Boolean;
@@ -2806,16 +2813,16 @@ end;
 
 procedure TCustomTreeView.BeginUpdate;
 begin
-  inc(FUpdateCount);
+  Items.BeginUpdate;
   LockSelectionChangeEvent;
 end;
 
 procedure TCustomTreeView.EndUpdate;
 begin
   UnlockSelectionChangeEvent;
-  if FUpdateCount<=0 then RaiseGDBException('TCustomTreeView.EndUpdate');
-  dec(FUpdateCount);
-  if FUpdateCount=0 then begin
+  if Items.FUpdateCount<=0 then RaiseGDBException('TCustomTreeView.EndUpdate');
+  Items.EndUpdate;
+  if Items.FUpdateCount=0 then begin
     // ToDo: only refresh if something changed
     UpdateScrollBars;
     Invalidate;
@@ -3599,7 +3606,7 @@ var
 begin
   if not (tvsScrollbarChanged in FStates) then exit;
 
-  if not HandleAllocated or (FUpdateCount>0) then
+  if not HandleAllocated or (Items.FUpdateCount>0) then
     exit;
 
   if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
@@ -4764,8 +4771,8 @@ begin
   if FTreeNodes=nil then
     RaiseGDBException('FTreeNodes=nil');
   FTreeNodes.ConsistencyCheck;
-  if FUpdateCount<0 then
-    RaiseGDBException('FUpdateCount='+IntToStr(FUpdateCount));
+  if Items.FUpdateCount<0 then
+    RaiseGDBException('FUpdateCount='+IntToStr(Items.FUpdateCount));
   if (not (tvsTopsNeedsUpdate in FStates)) then begin
     if Items.GetLastSubNode<>nil then begin
       OldLastTop:=Items.GetLastSubNode.Top;

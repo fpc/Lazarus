@@ -1816,6 +1816,7 @@ var
 
   procedure AddTreeNodes(CodeNode: TObject; ParentViewNode: TTreeNode);
   // create visual nodes (TTreeNode)
+  {off $DEFINE DisableTreeViewNodes}
   var
     List: TCodeBrowserUnitList;
     ListName: String;
@@ -1830,6 +1831,7 @@ var
     if CodeNode=nil then exit;
     ExpandParent:=true;
     //DebugLn(['AddTreeNodes ',DbgSName(CodeNode)]);
+    TVNode:=ParentViewNode;
     if CodeNode is TCodeBrowserUnitList then begin
       // unit list
       List:=TCodeBrowserUnitList(CodeNode);
@@ -1839,10 +1841,12 @@ var
       end else begin
         ListName:=ListOwnerToText(List.Owner);
         inc(NewPackageCount);
+        {$IFNDEF DisableTreeViewNodes}
         TVNode:=BrowseTreeView.Items.AddChildObject(
                                               ParentViewNode,ListName,CodeNode);
         TVNode.ImageIndex:=GetNodeImage(CodeNode);
         TVNode.SelectedIndex:=TVNode.ImageIndex;
+        {$ENDIF}
       end;
       if List.UnitLists<>nil then begin
         Node:=List.UnitLists.FindLowest;
@@ -1871,10 +1875,12 @@ var
         if CurUnitName='' then
           CurUnitName:=ExtractFileNameOnly(CurTool.MainFilename);
         inc(NewUnitCount);
+        {$IFNDEF DisableTreeViewNodes}
         TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
                                                     CurUnitName,CodeNode);
         TVNode.ImageIndex:=GetNodeImage(CodeNode);
         TVNode.SelectedIndex:=TVNode.ImageIndex;
+        {$ENDIF}
       end else begin
         // do not add a tree node for this unit
         TVNode:=ParentViewNode;
@@ -1895,10 +1901,12 @@ var
         inc(NewIdentifierCount);
         //if (NewIdentifierCount mod 100)=0 then
         //  DebugLn(['AddTreeNodes ',NewIdentifierCount,' ',CurNode.Description]);
+        {$IFNDEF DisableTreeViewNodes}
         TVNode:=BrowseTreeView.Items.AddChildObject(ParentViewNode,
                                                   CurNode.Description,CodeNode);
         TVNode.ImageIndex:=GetNodeImage(CodeNode);
         TVNode.SelectedIndex:=TVNode.ImageIndex;
+        {$ENDIF}
 
         // create tree nodes for child code nodes
         if CurNode.ChildNodes<>nil then begin
@@ -1951,7 +1959,9 @@ begin
     AddTreeNodes(ViewRoot,RootTVNode);
   finally
     CodeToolBoss.DeactivateWriteLock;
+    DebugLn(['TCodeBrowserView.UpdateTreeView EndUpdate']);
     BrowseTreeView.EndUpdate;
+    DebugLn(['TCodeBrowserView.UpdateTreeView AFER ENDUPDATE']);
     BrowseTreeView.Cursor:=crDefault;
   end;
   VisiblePackages:=NewPackageCount;
