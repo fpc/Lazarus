@@ -1479,11 +1479,13 @@ begin
 end;
 
 function TTreeNode.DisplayExpandSignLeft: integer;
+var
+  TV: TCustomTreeView;
 begin
   Result:=0;
-  if TreeView<>nil then begin
-    inc(Result,TreeView.Indent*Level+TreeView.BorderWidth-TreeView.FScrolledLeft);
-  end;
+  TV:=TreeView;
+  if TV<>nil then
+    inc(Result,TV.Indent*Level+TV.BorderWidth-TV.FScrolledLeft);
 end;
 
 function TTreeNode.DisplayExpandSignRect: TRect;
@@ -1506,31 +1508,43 @@ begin
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
+var
+  TV: TCustomTreeView;
 begin
   Result:=DisplayExpandSignLeft;
-  if (TreeView<>nil) then
-    inc(Result,TreeView.Indent);
+  TV:=TreeView;
+  if (TV<>nil) then
+    inc(Result,TV.Indent);
 end;
 
 function TTreeNode.DisplayStateIconLeft: integer;
+var
+  TV: TCustomTreeView;
 begin
   Result:=DisplayIconLeft;
-  if (TreeView<>nil) and (TreeView.Images<>nil) then
-    inc(Result,TreeView.Images.Width+2);
+  TV:=TreeView;
+  if (TV<>nil) and (TV.Images<>nil) then
+    inc(Result,TV.Images.Width+2);
 end;
 
 function TTreeNode.DisplayTextLeft: integer;
+var
+  TV: TCustomTreeView;
 begin
   Result:=DisplayStateIconLeft;
-  if (TreeView<>nil) and (TreeView.StateImages<>nil) then
-    inc(Result,TreeView.StateImages.Width+2);
+  TV:=TreeView;
+  if (TV<>nil) and (TV.StateImages<>nil) then
+    inc(Result,TV.StateImages.Width+2);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
+var
+  TV: TCustomTreeView;
 begin
   Result:=DisplayTextLeft;
-  if TreeView<>nil then
-    Inc(Result,TreeView.Canvas.TextWidth(Text));
+  TV:=TreeView;
+  if TV<>nil then
+    Inc(Result,TV.Canvas.TextWidth(Text));
 end;
 
 function TTreeNode.AlphaSort: Boolean;
@@ -3060,13 +3074,33 @@ end;
 procedure TCustomTreeView.UpdateMaxRight;
 var Node: TTreeNode;
   i: integer;
+  FMaxTextLen: Integer;
+  Cnt: Integer;
 begin
   if not (tvsMaxRightNeedsUpdate in FStates) then exit;
   FMaxRight:=0;
+  FMaxTextLen:=0;
   Node:=Items.GetFirstNode;
+  Cnt:=0;
   while Node<>nil do begin
-    i:=Node.DisplayTextRight;
-    if FMaxRight<i then FMaxRight:=i;
+    inc(Cnt);
+    if (Cnt<100) then begin
+      i:=Node.DisplayTextRight;
+    end else begin
+      // computing DisplayTextRight is too expensive when the tree
+      // has hundreds of nodes
+      // => use a heuristic
+      if Cnt=100 then
+        i:=Node.DisplayTextRight+100
+      else if length(Node.Text)>FMaxTextLen then
+        i:=Node.DisplayTextRight+100
+      else
+        i:=FMaxRight;
+    end;
+    if FMaxRight<i then begin
+      FMaxRight:=i;
+      FMaxTextLen:=length(Node.Text);
+    end;
     Node:=Node.GetNext;
   end;
   Exclude(FStates,tvsMaxRightNeedsUpdate);
