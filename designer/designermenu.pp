@@ -36,34 +36,37 @@ unit DesignerMenu;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
+  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
   Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf,  ComCtrls, Arrow, 
   Laz_XMLCfg, LazarusIDEStrConsts,
   PropEdits, IDEProcs;
 
 type
 
+  { TTemplateMenuForm }
+
   TTemplateMenuForm = class(TForm)
-  private
+    OKBitBtn: TBitBtn;
+    CancelBitBtn: TBitBtn;
     Edit_template_description: TEdit;
-    Label_template_description: TLabel;
     Label_template_view: TLabel;
-    TemplatesListBox: TListBox;
+    Label_template_description: TLabel;
     ListBoxView: TListBox;
-    OkButton: TButton;
-    CancelButton: TButton;
+    TemplatesListBox: TListBox;
+    procedure CancelBitBtnClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
+    procedure OKBitBtnClick(Sender: TObject);
+    procedure TemplatesListBoxClick(Sender: TObject);
+  private
     SelectedMenuTemplate: Integer;
     Description: string;
     subitem_level: Integer;
     fAction: Integer;
   public
-    constructor CreateWithAction(AOwner: TComponent; TheAction: Integer);
-    procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
     function GetSelectedMenuTemplate: Integer;
     function GetDescription: string;
     procedure TemplateView(templatemenuitem: string; default_template: Integer);
-    procedure OnSelectMenuTemplateClick(Sender: TObject);
   end;
 
   PDesignerMenuItem = ^TDesignerMenuItem;
@@ -192,7 +195,7 @@ const
 
 var 
   temp_level: Integer;
-  temp_newitemcounter: Integer;
+  temp_newitemcounter, TemplateMenuFormCreateAction: Integer;
   temp_panel: TPanel;
   
   index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
@@ -948,7 +951,9 @@ var
   templatemenuitem: string;
   temp_designermenuitem: PDesignerMenuItem;
 begin
-  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 1);
+  TemplateMenuFormCreateAction:=1;
+  TemplateMenuForm:=TTemplateMenuForm.Create(self);
+  
   if (TemplateMenuForm.ShowModal = mrOK) then
   begin
   
@@ -1207,7 +1212,10 @@ begin
   i:=1;
   Str(i,str_i);
   templatemenuitem:='menu_' + str_i;
-  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 2);
+
+  TemplateMenuFormCreateAction:=2;
+  TemplateMenuForm:=TTemplateMenuForm.Create(self);
+  
   if (TemplateMenuForm.ShowModal = mrOK) then
   begin
     while (XMLConfig.GetValue(templatemenuitem + '/Name/Value','does_not_exists') <> 'does_not_exists') do
@@ -1259,7 +1267,10 @@ begin
   //SelectedDesignerMenuItem:=GetSelectedDesignerMenuItem(Root);
   i:=1;
   j:=1;
-  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 3);
+
+  TemplateMenuFormCreateAction:=3;
+  TemplateMenuForm:=TTemplateMenuForm.Create(self);
+  
   if (TemplateMenuForm.ShowModal = mrOK) and (TemplateMenuForm.GetSelectedMenuTemplate > 0) then
   begin
     i:=TemplateMenuForm.GetSelectedMenuTemplate;
@@ -1983,104 +1994,22 @@ end;
 // ---------------------/
 // TTemplateMenuForm ---/
 // ---------------------/
- 
-constructor TTemplateMenuForm.CreateWithAction(AOwner: TComponent;
-  TheAction: Integer);
+
+procedure TTemplateMenuForm.FormCreate(Sender: TObject);
 var
   i: Integer;
   templatemenuitem, str_i: string;
 begin
-  inherited Create(AOwner);
-
-  fAction:=TheAction;
-  
-  case fAction of
-  1: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorInsertFromTemplate;
-     end;
-  2: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorSaveAsTemplate;
-     end;
-  3: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorDeleteFromTemplate;
-     end;
-  end;
-  Width:=520;
-  Height:=240;
-  Position:=poScreenCenter;
-  
+  fAction:=TemplateMenuFormCreateAction;
   subitem_level:=1;
+
+  Label_template_description.Caption:=lisMenuEditorSelectTemplate;
+  Label_template_view.Caption:=lisMenuEditorTemplatePreview;
+  Edit_template_description.Text:=lisMenuEditorNewTemplateDescription;
   
-  Label_template_description:=TLabel.Create(self);
-  with Label_template_description do
-  begin
-    Parent:=self;
-    Left:=10;
-    Top:=10;
-    Width:=240;
-    Height:=20;
-    // content of "Text" is generated from LazarusIDEStrConsts
-    Text:=lisMenuEditorSelectTemplate;
-  end;
-  
-  Label_template_view:=TLabel.Create(self);
-  with Label_template_view do
-  begin
-    Parent:=self;
-    Left:=270;
-    Top:=10;
-    Width:=240;
-    Height:=20;
-    // content of "Text" is generated from LazarusIDEStrConsts
-    Text:=lisMenuEditorTemplatePreview;
-  end;
-  
-  TemplatesListBox:=TListBox.Create(self);
-  with TemplatesListBox do
-  begin
-    Parent:=self;
-    Left:=10;
-    Top:=30;
-    Width:=240;
-    Height:=150;
-    OnClick:=@OnSelectMenuTemplateClick;
-  end;
-  
-  ListBoxView:=TListBox.Create(self);
-  with ListBoxView do
-  begin
-    Parent:=self;
-    Left:=270;
-    Top:=30;
-    Width:=240;
-    Height:=150;
-  end;
-  
-  if (fAction = 2) then
-  begin
-    Edit_template_description:=TEdit.Create(self);
-    with Edit_template_description do
-    begin
-      Parent:=self;
-      Left:=10;
-      Top:=200;
-      Width:=240;
-      // content of "Text" is generated from LazarusIDEStrConsts
-      Text:=lisMenuEditorNewTemplateDescription;
-    end;
-  end;
-  
-  // Default templates
-  if (fAction = 1) then
-  begin
-    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardFileMenu);
-    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardEditMenu);
-    TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardHelpMenu);
-  end;
-  
+  OKBitBtn.Caption:=lisOkBtn;
+  CancelBitBtn.Caption:=dlgCancel;
+
   // Templates from menutemplates.xml
   i:=1;
   Str(i,str_i);
@@ -2091,47 +2020,49 @@ begin
     Inc(i);
     Str(i,str_i);
   end;
-  
+
   // Select the first menu on list and show it in "Template Preview"
   if (TemplatesListBox.Items.Count > 0) then
-  begin
     TemplatesListBox.Selected[0]:=true;
-    if (fAction = 1) then
-      TemplateView('', 1)
-    else
-      TemplateView('menu_1/subitem_', 0);
+
+  case fAction of
+  1: begin
+       // content of "Caption" is generated from LazarusIDEStrConsts
+       Caption:=lisMenuEditorInsertFromTemplate;
+       TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardFileMenu);
+       TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardEditMenu);
+       TemplatesListBox.Items.Add(lisMenuTemplateDescriptionStandardHelpMenu);
+       TemplateView('', 1);
+     end;
+  2: begin
+       // content of "Caption" is generated from LazarusIDEStrConsts
+       Caption:=lisMenuEditorSaveAsTemplate;
+       Edit_template_description.Visible:=true;
+       if TemplatesListBox.Items.Count > 0 then
+         TemplateView('menu_1/subitem_', 0);
+     end;
+  3: begin
+       // content of "Caption" is generated from LazarusIDEStrConsts
+       Caption:=lisMenuEditorDeleteFromTemplate;
+       if TemplatesListBox.Items.Count > 0 then
+         TemplateView('menu_1/subitem_', 0);
+     end;
   end;
-  
-  OkButton:=TButton.Create(self);
-  with OkButton do
-  begin
-    Parent:=self;
-    Caption:='OK';
-    Left:=360;
-    Top:=200;
-    Width:=70;
-    Height:=20;
-    OnClick:=@OkButtonClick;
-  end;
-  
-  CancelButton:=TButton.Create(self);
-  with CancelButton do
-  begin
-    Parent:=self;
-    // content of "Caption" is generated from LazarusIDEStrConsts
-    Caption:=lisMenuEditorCancel;
-    Left:=440;
-    Top:=200;
-    Width:=70;
-    Height:=20;
-    OnClick:=@CancelButtonClick;
-  end;
-  
 end;
 
-procedure TTemplateMenuForm.OkButtonClick(Sender: TObject);
-var
-  i: Integer;
+procedure TTemplateMenuForm.FormResize(Sender: TObject);
+begin
+  TemplatesListBox.Width:=(Width div 2)-14;
+end;
+
+procedure TTemplateMenuForm.CancelBitBtnClick(Sender: TObject);
+begin
+  SelectedMenuTemplate:=0;
+  ModalResult:=mrCancel;
+end;
+
+procedure TTemplateMenuForm.OKBitBtnClick(Sender: TObject);
+var i: Integer;
 begin
   for i:=0 to TemplatesListBox.Items.Count-1 do
     if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
@@ -2147,10 +2078,28 @@ begin
   ModalResult:=mrOK;
 end;
 
-procedure TTemplateMenuForm.CancelButtonClick(Sender: TObject);
+procedure TTemplateMenuForm.TemplatesListBoxClick(Sender: TObject);
+var i: Integer;
+    str_i: string;
 begin
-  SelectedMenuTemplate:=0;
-  ModalResult:=mrCancel;
+  ListBoxView.Clear;
+  for i:=0 to TemplatesListBox.Items.Count-1 do
+    if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
+
+  if (fAction <> 1) then
+  begin
+   Str(SelectedMenuTemplate, str_i);
+   TemplateView('menu_' + str_i + '/subitem_', 0);
+  end else
+  begin
+    if (SelectedMenuTemplate > NUMBER_OF_DEFAULT_TEMPLATES) then
+    begin
+      Str(SelectedMenuTemplate - NUMBER_OF_DEFAULT_TEMPLATES, str_i);
+      TemplateView('menu_' + str_i + '/subitem_', 0);
+    end else
+      TemplateView('', SelectedMenuTemplate);
+  end;
+  ListBoxView.Selected[0]:=false;
 end;
 
 function TTemplateMenuForm.GetSelectedMenuTemplate: Integer;
@@ -2230,32 +2179,8 @@ begin
   end;
 end;
 
-procedure TTemplateMenuForm.OnSelectMenuTemplateClick(Sender: TObject);
-var
-  i: Integer;
-  str_i: string;
-begin
-  ListBoxView.Clear;
-  for i:=0 to TemplatesListBox.Items.Count-1 do
-    if TemplatesListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
-
-  if (fAction <> 1) then
-  begin
-   Str(SelectedMenuTemplate, str_i);
-   TemplateView('menu_' + str_i + '/subitem_', 0);
-  end else
-  begin
-    if (SelectedMenuTemplate > NUMBER_OF_DEFAULT_TEMPLATES) then
-    begin
-      Str(SelectedMenuTemplate - NUMBER_OF_DEFAULT_TEMPLATES, str_i);
-      TemplateView('menu_' + str_i + '/subitem_', 0);
-    end else
-      TemplateView('', SelectedMenuTemplate);
-  end;
-  ListBoxView.Selected[0]:=false;
-end;
-
 initialization
+  {$I designermenu.lrs}
 
 finalization
   XMLConfig.Free;
