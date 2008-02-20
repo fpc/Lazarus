@@ -38,13 +38,6 @@ unit BuildLazDialog;
 
 {$mode objfpc}{$H+}
 
-
-// MWE: ??? changed this to a define, it was found in original submitted code
-//          I didn't notice any change
-// Original comment:
-// This is required to overcome some bugs in TNotebook. Remove whne TNotebook is fixed
-{.$define UsePageInvalidate}
-
 interface
 
 uses
@@ -1081,9 +1074,6 @@ var
 begin
   Combo := Sender as TComboBox;
   LCLInterfaceRadioGroup.ItemIndex := Combo.ItemIndex;
-  {$ifdef UsePageInvalidate}
-  AdvancedBuildOptionsPage.Invalidate;
-  {$endif}
 end;
 
 procedure TConfigureBuildLazarusDlg.CompileButtonClick(Sender: TObject);
@@ -1112,11 +1102,6 @@ end;
 procedure TConfigureBuildLazarusDlg.NotebookPageChanged(Sender: TObject);
 begin
   FAdvanced := Notebook.ActivePageComponent = AdvancedBuildOptionsPage;
-
-  {$ifdef UsePageInvalidate}
-  if Notebook.ActivePageComponent <> nil
-  then Notebook.ActivePageComponent.Invalidate;
-  {$endif}
 end;
 
 procedure TConfigureBuildLazarusDlg.QuickBuildOptionsRadioGroupClick(
@@ -1173,9 +1158,6 @@ begin
       WithStaticPackagesCheckBox.Checked := True;
     end;
   end;
-  {$ifdef UsePageInvalidate}
-  AdvancedBuildOptionsPage.Invalidate;
-  {$endif}
 end;
 
 { TBuildLazarusItem }
