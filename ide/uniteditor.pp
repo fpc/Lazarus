@@ -3316,8 +3316,9 @@ begin
   SourceCompletionTimer.Enabled:=false;
   SourceCompletionTimer.AutoEnabled:=false;
   TempEditor:=GetActiveSE;
-  if (TempEditor<>nil) and
-     (ComparePoints(TempEditor.EditorComponent.CaretXY,SourceCompletionCaretXY)=0)
+  if (TempEditor<>nil)
+  and (ComparePoints(TempEditor.EditorComponent.CaretXY,SourceCompletionCaretXY)=0)
+  and TempEditor.EditorComponent.Focused
   then begin
     if CheckStartIdentCompletion then begin
     end else if CheckTemplateCompletion then begin
@@ -3641,8 +3642,10 @@ var
   CursorToLeft: integer;
   NewValue: String;
   Editor: TSynEdit;
+  OldCompletionType: TCompletionType; 
 Begin
   if CurCompletionControl=nil then exit;
+  OldCompletionType:= CurrentCompletionType; 
   case CurrentCompletionType of
 
     ctIdentCompletion:
@@ -3698,6 +3701,15 @@ Begin
   end;
 
   DeactivateCompletionForm;
+  
+  //DebugLn(['TSourceNotebook.ccComplete ',KeyChar,' ',OldCompletionType=ctIdentCompletion]);
+  SrcEdit:=GetActiveSE;
+  Editor:=SrcEdit.EditorComponent;
+  if (KeyChar='.') and (OldCompletionType=ctIdentCompletion) then
+  begin
+    SourceCompletionCaretXY:=Editor.CaretXY;
+    SourceCompletionTimer.AutoEnabled:=true;
+  end;
 End;
 
 Procedure TSourceNotebook.ccCancel(Sender: TObject);
