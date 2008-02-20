@@ -38,8 +38,7 @@ procedure TCustomLabeledEdit.SetParent(AParent: TWinControl);
 begin
   inherited SetParent(AParent);
   if FEditLabel = nil then exit;
-  FEditLabel.Parent := Parent;
-  FEditLabel.Visible := Visible;
+  DoPositionLabel; 
 end;
 
 procedure TCustomLabeledEdit.SetName(const Value: TComponentName);
@@ -54,27 +53,42 @@ begin
     Text := '';
 end;
 
-procedure TCustomLabeledEdit.DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer
-  );
-begin
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  DoPositionLabel;
-end;
-
 procedure TCustomLabeledEdit.DoPositionLabel;
-var
-  P: TPoint;
 begin
   if FEditLabel = nil then exit;
+  if Parent<>nil then
+    Parent.DisableAlign; 
+  //DebugLn(['TCustomLabeledEdit.DoPositionLabel ']);  
+  FEditLabel.Parent := Parent;
+  FEditLabel.Visible := Visible;
   case FLabelPosition of
-    lpAbove: P := Point(Left, Top - FEditLabel.Height - FLabelSpacing);
-    lpBelow: P := Point(Left, Top + Height + FLabelSpacing);
-    lpLeft : P := Point(Left - FEditLabel.Width - FLabelSpacing,
-                    Top + ((Height - FEditLabel.Height) div 2));
-    lpRight: P := Point(Left + Width + FLabelSpacing,
-                    Top + ((Height - FEditLabel.Height) div 2));
+    lpAbove: 
+      begin
+        FEditLabel.Anchors:=[akLeft,akBottom]; 
+        FEditLabel.AnchorParallel(akLeft,0,Self); 
+        FEditLabel.AnchorToNeighbour(akBottom,FLabelSpacing,Self); 
+      end; 
+    lpBelow: 
+      begin
+        FEditLabel.Anchors:=[akLeft,akTop]; 
+        FEditLabel.AnchorParallel(akLeft,0,Self); 
+        FEditLabel.AnchorToNeighbour(akTop,FLabelSpacing,Self); 
+      end; 
+    lpLeft : 
+      begin
+        FEditLabel.Anchors:=[akRight,akTop]; 
+        FEditLabel.AnchorToNeighbour(akRight,FLabelSpacing,Self); 
+        FEditLabel.AnchorVerticalCenterTo(Self); 
+      end; 
+    lpRight:
+      begin
+        FEditLabel.Anchors:=[akLeft,akTop]; 
+        FEditLabel.AnchorToNeighbour(akLeft,FLabelSpacing,Self); 
+        FEditLabel.AnchorVerticalCenterTo(Self); 
+      end; 
   end;
-  FEditLabel.SetBounds(P.x, P.y, FEditLabel.Width, FEditLabel.Height);
+  if Parent<>nil then
+    Parent.EnableAlign; 
 end;
 
 procedure TCustomLabeledEdit.Notification(AComponent: TComponent;
