@@ -47,8 +47,8 @@ uses
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
-  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynEditAutoComplete,
-  SynEditKeyCmds, SynCompletion,
+  SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, 
+  SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   // IDE interface
   MacroIntf, ProjectIntf, SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf,
   IDEHelpIntf, IDEWindowIntf, IDEImagesIntf,
@@ -3259,6 +3259,8 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
     p: Integer;
     InStringConstant: Boolean;
     SrcEdit: TSourceEditor;
+    Token: string; 
+    Attri: TSynHighlighterAttributes; 
   begin
     Result:=false;
     SrcEdit:=GetActiveSE;
@@ -3285,6 +3287,15 @@ procedure TSourceNotebook.OnSourceCompletionTimer(Sender: TObject);
       inc(p);
     end;
     if InStringConstant then exit;
+    
+    // check if in a comment
+    Token:='';
+    Attri:=nil; 
+    if SrcEdit.EditorComponent.GetHighlighterAttriAtRowCol(LogCaret,Token,Attri)
+    and (Attri<>nil) and (Attri.Name=SYNS_AttrComment) then 
+    begin
+      exit; 
+    end;     
 
     // invoke identifier completion
     SrcEdit.StartIdentCompletion(false);
