@@ -40,14 +40,12 @@ type
     FCategory: string;
     FActionList: TCustomActionList;
     function GetIndex: Integer;
-    function IsCategoryStored: Boolean;
     procedure SetCategory(const Value: string);
     procedure SetIndex(Value: Integer);
-    procedure SetActionList(AActionList: TCustomActionList);
+    procedure SetActionList(NewActionList: TCustomActionList);
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetParentComponent(AParent: TComponent); override;
-    procedure Change; override;
   public
     destructor Destroy; override;
     function Execute: Boolean; override;
@@ -58,7 +56,7 @@ type
     property Index: Integer read GetIndex write SetIndex stored False;
   published
     property Category: string
-      read FCategory write SetCategory stored IsCategoryStored;
+      read FCategory write SetCategory;
   end;
 
   TContainedActionClass = class of TContainedAction;
@@ -71,7 +69,7 @@ type
 
   TCustomActionList = class(TLCLComponent)
   private
-    FActions: TList;
+    FActions: TFPList;// list of TContainedAction
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FOnChange: TNotifyEvent;
@@ -123,7 +121,8 @@ type
   end;
 
 
-  { TShortCutList }
+  { TShortCutList
+    List of shortcut and texts. The TShortCut values are stored in the Objects. }
 
   TShortCutList = class(TStringList)
   private
@@ -135,29 +134,30 @@ type
   end;
 
 
-  { TControlAction }
+  { TCustomAction
+    FClients is a list of TActionLink }
 
   THintEvent = procedure (var HintStr: string; var CanShow: Boolean) of object;
 
   TCustomAction = class(TContainedAction)
   private
-    FDisableIfNoHandler: Boolean;
+    FAutoCheck: Boolean;
     FCaption: TTranslateString;
-    FChecking: Boolean;
     FChecked: Boolean;
+    FChecking: Boolean;
+    FDisableIfNoHandler: Boolean;
     FEnabled: Boolean;
     FGroupIndex: Integer;
-    FHelpType: THelpType;
     FHelpContext: THelpContext;
     FHelpKeyword: string;
+    FHelpType: THelpType;
     FHint: TTranslateString;
     FImageIndex: TImageIndex;
+    FOnHint: THintEvent;
+    FSavedEnabledState: Boolean;
+    FSecondaryShortCuts: TShortCutList;// nil as default
     FShortCut: TShortCut;
     FVisible: Boolean;
-    FOnHint: THintEvent;
-    FSecondaryShortCuts: TShortCutList;
-    FSavedEnabledState: Boolean;
-    FAutoCheck: Boolean;
     procedure SetAutoCheck(Value: Boolean);
     procedure SetCaption(const Value: TTranslateString);
     procedure SetChecked(Value: Boolean);
@@ -203,11 +203,11 @@ type
     property Hint: TTranslateString read FHint write SetHint;
     property ImageIndex: TImageIndex
                                 read FImageIndex write SetImageIndex default -1;
-    property ShortCut: TShortCut read FShortCut write SetShortCut default 0;
+    property OnHint: THintEvent read FOnHint write FOnHint;
     property SecondaryShortCuts: TShortCutList read GetSecondaryShortCuts
                   write SetSecondaryShortCuts stored IsSecondaryShortCutsStored;
+    property ShortCut: TShortCut read FShortCut write SetShortCut default 0;
     property Visible: Boolean read FVisible write SetVisible default True;
-    property OnHint: THintEvent read FOnHint write FOnHint;
   end;
 
 
@@ -269,7 +269,7 @@ type
   TActionLinkClass = class of TActionLink;
 
 
-
+type
   TEnumActionProc = procedure (const Category: string;
     ActionClass: TBasicActionClass; Info: Pointer) of object;
 
@@ -292,7 +292,7 @@ const
                             ActionClass: TBasicActionClass): TBasicAction = nil;
 
 var
-  ApplicationActionComponent: TComponent;
+  ApplicationActionComponent: TComponent = nil;
 
 
 procedure Register;

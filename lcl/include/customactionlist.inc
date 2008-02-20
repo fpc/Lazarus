@@ -20,7 +20,7 @@
 constructor TCustomActionList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FActions := TList.Create;
+  FActions := TFPList.Create;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FState := asNormal;
@@ -28,28 +28,31 @@ end;
 
 destructor TCustomActionList.Destroy;
 begin
-  FImageChangeLink.Free;
+  FreeAndNil(FImageChangeLink);
   while FActions.Count > 0 do TContainedAction(FActions.Last).Free;
-  FActions.Free;
+  FreeAndNil(FActions);
   inherited Destroy;
 end;
 
 procedure TCustomActionList.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   I: Integer;
-  Action: TAction;
+  Action: TContainedAction;
 begin
   for I := 0 to FActions.Count - 1 do
   begin
-    Action := TAction(FActions.List^[I]);
+    Action := TContainedAction(FActions[I]);
     if Action.Owner = Root then Proc(Action);
   end;
 end;
 
 procedure TCustomActionList.SetChildOrder(Component: TComponent; Order: Integer);
+var
+  i: LongInt;
 begin
-  if FActions.IndexOf(Component) >= 0 then
-    (Component as TContainedAction).Index := Order;
+  i:=FActions.IndexOf(Component);
+  if (i>=0) and (i<>Order) then
+    TContainedAction(Component).Index:=Order;
 end;
 
 function TCustomActionList.GetAction(Index: Integer): TContainedAction;
@@ -64,17 +67,23 @@ end;
 
 procedure TCustomActionList.SetAction(Index: Integer; Value: TContainedAction);
 begin
+  if TObject(FActions[Index])=Value then exit;
   TContainedAction(FActions[Index]).Assign(Value);
 end;
 
 procedure TCustomActionList.SetImages(Value: TCustomImageList);
 begin
-  if Images <> nil then Images.UnRegisterChanges(FImageChangeLink);
-  FImages := Value;
-  if Images <> nil then
+  if FImages=Value then exit;
+  if FImages <> nil then
   begin
-    Images.RegisterChanges(FImageChangeLink);
-    Images.FreeNotification(Self);
+    FImages.UnRegisterChanges(FImageChangeLink);
+    FImages.RemoveFreeNotification(Self);
+  end;
+  FImages := Value;
+  if FImages <> nil then
+  begin
+    FImages.RegisterChanges(FImageChangeLink);
+    FImages.FreeNotification(Self);
   end;
 end;
 
@@ -88,14 +97,16 @@ procedure TCustomActionList.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-    if AComponent = Images then
-      Images := nil
-    else if (AComponent is TContainedAction) then
+    if AComponent = Images then begin
+      Images := nil; // call SetImages, because it can be overridden
+    end else if (AComponent is TContainedAction) then
       RemoveAction(TContainedAction(AComponent));
 end;
 
 procedure TCustomActionList.AddAction(Action: TContainedAction);
 begin
+  if Action.FActionList = Self then
+    raise Exception.Create('TCustomActionList.AddAction already added');
   FActions.Add(Action);
   Action.FActionList := Self;
   Action.FreeNotification(Self);
@@ -103,17 +114,19 @@ end;
 
 procedure TCustomActionList.RemoveAction(Action: TContainedAction);
 begin
-  if FActions.Remove(Action) >= 0 then
-    Action.FActionList := nil;
+  if Action.FActionList<>Self then exit;
+  Action.FActionList:=nil;
+  FActions.Remove(Action);
+  Action.RemoveFreeNotification(Self);
 end;
 
 procedure TCustomActionList.Change;
 var
-  I: Integer;
+  i: Integer;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
-  for I := 0 to FActions.Count - 1 do
-    TContainedAction(FActions.List^[I]).Change;
+  for i := 0 to FActions.Count - 1 do
+    TContainedAction(FActions[i]).Change;
   OwnerFormDesignerModified(Self);
 end;
 
@@ -129,14 +142,15 @@ begin
   if ShortCut <> scNone then
     for I := 0 to FActions.Count - 1 do
     begin
-      Action := TCustomAction(FActions.Items[I]);
-      if (TObject(Action) is TCustomAction) then
-        if (Action.ShortCut = ShortCut) or (Assigned(Action.FSecondaryShortCuts) and
-           (Action.SecondaryShortCuts.IndexOfShortCut(ShortCut) <> -1)) then
-        begin
-          Result := Action.HandleShortCut;
-          Exit;
-        end;
+      Action := TCustomAction(FActions[I]);
+      if (Action is TCustomAction)
+      and ((Action.ShortCut = ShortCut)
+           or ((Assigned(Action.FSecondaryShortCuts) and
+               (Action.SecondaryShortCuts.IndexOfShortCut(ShortCut) >= 0))))
+      then begin
+        Result := Action.HandleShortCut;
+        Exit;
+      end;
     end;
   Result := False;
 end;
@@ -157,7 +171,7 @@ function TCustomActionList.IndexOfName(const ActionName: string): integer;
 begin
   Result:=FActions.Count-1;
   while (Result>=0)
-  and (AnsiCompareText(TAction(FActions[Result]).Name,ActionName)<>0) do
+  and (SysUtils.CompareText(TAction(FActions[Result]).Name,ActionName)<>0) do
     dec(Result);
 end;
 
@@ -178,30 +192,27 @@ var
   I: Integer;
   Action: TCustomAction;
 begin
-  if FState <> Value then
+  if FState = Value then exit;
+  FState := Value;
+  if State = asSuspended then exit;
+  for I := 0 to FActions.Count - 1 do
   begin
-    FState := Value;
-    if State = asSuspended then exit;
-    for I := 0 to FActions.Count - 1 do
+    Action := TAction(FActions[I]);
+    if Action is TCustomAction then
     begin
-      Action := TAction(FActions.List^[I]);
       case Value of
-        asNormal:
-          begin
-            if Action is TCustomAction then
-              if State = asSuspendedEnabled then
-                 with Action as TCustomAction do
-                  Enabled := SavedEnabledState;
-            Action.Update;
-          end;
-        asSuspendedEnabled:
-          if Action is TCustomAction then
-            if Value = asSuspendedEnabled then
-              with Action as TCustomAction do
-              begin
-                SavedEnabledState := Enabled;
-                Enabled := True;
-              end;
+      asNormal:
+        begin
+          if State = asSuspendedEnabled then
+            Action.Enabled := Action.SavedEnabledState;
+          Action.Update;
+        end;
+      asSuspendedEnabled:
+        if Value = asSuspendedEnabled then
+        begin
+          Action.SavedEnabledState := Action.Enabled;
+          Action.Enabled := True;
+        end;
       end;
     end;
   end;

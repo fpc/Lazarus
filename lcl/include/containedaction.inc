@@ -27,26 +27,24 @@ end;
 function TContainedAction.GetIndex: Integer;
 begin
   if ActionList <> nil then
-    Result := ActionList.FActions.IndexOf(Self) else
+    Result := ActionList.FActions.IndexOf(Self)
+  else
     Result := -1;
-end;
-
-function TContainedAction.IsCategoryStored: Boolean;
-begin
-  Result := True;//GetParentComponent <> ActionList;
 end;
 
 function TContainedAction.GetParentComponent: TComponent;
 begin
   if ActionList <> nil then
-    Result := ActionList else
+    Result := ActionList
+  else
     Result := inherited GetParentComponent;
 end;
 
 function TContainedAction.HasParent: Boolean;
 begin
   if ActionList <> nil then
-    Result := True else
+    Result := True
+  else
     Result := inherited HasParent;
 end;
 
@@ -82,12 +80,13 @@ begin
   end;
 end;
 
-procedure TContainedAction.SetActionList(AActionList: TCustomActionList);
+procedure TContainedAction.SetActionList(NewActionList: TCustomActionList);
 begin
-  if AActionList <> ActionList then
+  if NewActionList <> ActionList then
   begin
     if ActionList <> nil then ActionList.RemoveAction(Self);
-    if AActionList <> nil then AActionList.AddAction(Self);
+    // FActionList is set by AddAction
+    if NewActionList <> nil then NewActionList.AddAction(Self);
   end;
 end;
 
@@ -97,27 +96,21 @@ begin
     ActionList := TCustomActionList(AParent);
 end;
 
-procedure TContainedAction.Change;
-begin
-  inherited Change;
-end;
-
 function TContainedAction.Execute: Boolean;
 begin
-  Result := (ActionList <> nil) and ActionList.ExecuteAction(Self)
+  Result := ((ActionList <> nil) and ActionList.ExecuteAction(Self))
     or ((ApplicationActionComponent<>nil)
          and ApplicationActionComponent.ExecuteAction(Self))
-    or inherited Execute
+    or (inherited Execute)
     or (SendApplicationMessage(CM_ACTIONEXECUTE, 0, PtrInt(Self)) = 1);
 end;
 
 function TContainedAction.Update: Boolean;
 begin
-  Result := (ActionList <> nil)
-    and ActionList.UpdateAction(Self)
+  Result := ((ActionList <> nil) and ActionList.UpdateAction(Self))
     or ((ApplicationActionComponent<>nil)
          and ApplicationActionComponent.UpdateAction(Self))
-    or inherited Update
+    or (inherited Update)
     or (SendApplicationMessage(CM_ACTIONUPDATE, 0, PtrInt(Self)) = 1);
 end;
 
