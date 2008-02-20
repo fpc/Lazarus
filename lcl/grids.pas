@@ -6020,7 +6020,7 @@ begin
         SendMessage(FEditor.Handle, CN_CHAR, Word(Ch), 0)
       else begin
       {$Endif}
-      Msg.MsgID:=GM_SETVALUE;
+      Msg.LclMsg.Msg:=GM_SETVALUE;
       Msg.Grid:=Self;
       Msg.Col:=FCol;
       Msg.Row:=FRow;
