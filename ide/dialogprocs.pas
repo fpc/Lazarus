@@ -475,7 +475,6 @@ begin
   Result:=mrCancel;
   try
     TargetFilename:=ReadAllLinks(Filename,true);
-  DebugLn(['ChooseSymlink ',Filename,' ',TargetFilename]);
     if TargetFilename<>Filename then begin
       case QuestionDlg('File is symlink',
         'The file "'+Filename+'" is a symlink.'#13
