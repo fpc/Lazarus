@@ -229,8 +229,8 @@ begin
     if ACodeBuffer.Save then begin
       Result:=mrOk;
     end else begin
-      Result:=IDEMessageDialog('Write error',
-        'Unable to write "'+ACodeBuffer.Filename+'"',
+      Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
+        Format(lisUnableToWrite2, ['"', ACodeBuffer.Filename, '"']),
         mtError,[mbAbort,mbRetry,mbIgnore]);
     end;
   until Result<>mrRetry;
@@ -271,9 +271,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      IDEMessageDialog('Error','Error loading '+ListTitle+' from'#13
-      +Filename+#13#13
-      +E.Message,mtError,[mbOk]);
+      IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorLoadingFrom, [
+        ListTitle, #13, Filename, #13#13, E.Message]), mtError, [mbOk]);
     end;
   end;
 end;
@@ -289,9 +288,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      IDEMessageDialog('Error','Error saving '+ListTitle+' to'#13
-      +Filename+#13#13
-      +E.Message,mtError,[mbOk]);
+      IDEMessageDialog(lisCCOErrorCaption, Format(lisErrorSavingTo, [ListTitle,
+        #13, Filename, #13#13, E.Message]), mtError, [mbOk]);
     end;
   end;
 end;
@@ -315,9 +313,9 @@ begin
       Config.ReadFromStream(ms);
     except
       on E: Exception do begin
-        Result:=MessageDlg('XML Error',
-          'XML parser error in file '+Filename+#13
-          +'Error: '+E.Message,mtError,[mbCancel],0);
+        Result:=MessageDlg(lisXMLError,
+          Format(lisXMLParserErrorInFileError, [Filename, #13, E.Message]),
+            mtError, [mbCancel], 0);
       end;
     end;
   finally
@@ -341,9 +339,9 @@ begin
       WriteXMLFile(Config.Document,ms);
     except
       on E: Exception do begin
-        Result:=MessageDlg('XML Error',
-          'Unable to write xml stream to '+Filename+#13
-          +'Error: '+E.Message,mtError,[mbCancel],0);
+        Result:=MessageDlg(lisXMLError,
+          Format(lisUnableToWriteXmlStreamToError, [Filename, #13, E.Message]),
+            mtError, [mbCancel], 0);
       end;
     end;
     ms.Position:=0;
@@ -476,11 +474,10 @@ begin
   try
     TargetFilename:=ReadAllLinks(Filename,true);
     if TargetFilename<>Filename then begin
-      case QuestionDlg('File is symlink',
-        'The file "'+Filename+'" is a symlink.'#13
-        +#13
-        +'Open "'+TargetFilename+'" instead?',
-        mtConfirmation,[mbYes,'Open target',mbNo,'Open symlink',mbCancel],0)
+      case QuestionDlg(lisFileIsSymlink,
+        Format(lisTheFileIsASymlinkOpenInstead, ['"', Filename, '"', #13, #13,
+          '"', TargetFilename, '"']),
+        mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel], 0)
       of
       mrYes: Filename:=TargetFilename;
       mrNo:  ;
@@ -490,7 +487,7 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg('File link error',
+      MessageDlg(lisFileLinkError,
         E.Message,mtError,[mbCancel],0);
     end;
   end;
@@ -553,10 +550,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      Result:=IDEMessageDialog('Write error',
-         'Write error: '+E.Message+#13
-         +'File: '+Filename+#13
-         +Context,
+      Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
+         Format(lisWriteErrorFile, [E.Message, #13, Filename, #13, Context]),
          mtError,[mbAbort]+ErrorButtons);
     end;
   end;
@@ -581,13 +576,9 @@ begin
     LRSMemStream:=TMemoryStream.Create;
     // convert
     if not LFMtoLRSstream(LFMMemStream,LRSMemStream) then begin
-      Result:=IDEMessageDialog('Stream Error',
-        'Unable to update the binary resource file'#13
-        +LRSFilename+#13
-        +'from file the text resource file'#13
-        +LFMFilename+#13
-        +#13
-        +'Probably the text file is corrupt.',
+      Result:=IDEMessageDialog(lisStreamError,
+        Format(lisUnableToUpdateTheBinaryResourceFileFromFileTheText, [#13,
+          LRSFilename, #13, #13, LFMFilename, #13, #13]),
         mtError,[mbCancel,mbAbort,mbIgnore]);
       exit;
     end;
@@ -627,10 +618,9 @@ begin
   ErrMsg:=CodeToolBoss.ErrorMessage;
   LazarusIDE.DoJumpToCodeToolBossError;
   if Ask then begin
-    Result:=QuestionDlg('Error',
-      'The codetools found an error:'#13
-      +ErrMsg+#13,
-      mtWarning,[mrIgnore,'Ignore and continue',mrAbort],0);
+    Result:=QuestionDlg(lisCCOErrorCaption,
+      Format(lisTheCodetoolsFoundAnError, [#13, ErrMsg, #13]),
+      mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
     if Result=mrIgnore then Result:=mrCancel;
   end else begin
     Result:=mrCancel;
@@ -639,8 +629,8 @@ end;
 
 procedure NotImplementedDialog(const Feature: string);
 begin
-  IDEMessageDialog('Not implemented','Not implemented yet:'#13+Feature,mtError,
-                   [mbCancel]);
+  IDEMessageDialog(lisNotImplemented, Format(lisNotImplementedYet, [#13, Feature]),
+                   mtError, [mbCancel]);
 end;
 
 end.

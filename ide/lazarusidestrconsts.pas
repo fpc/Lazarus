@@ -3640,6 +3640,28 @@ resourcestring
 
   // Application Bundle
   lisABCreationFailed = 'Error occured during Application Bundle creation: ';
+  lisUnableToWrite2 = 'Unable to write %s%s%s';
+  lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
+  lisErrorSavingTo = 'Error saving %s to%s%s%s%s';
+  lisXMLError = 'XML Error';
+  lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
+  lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%'
+    +'sError: %s';
+  lisFileIsSymlink = 'File is symlink';
+  lisTheFileIsASymlinkOpenInstead = 'The file %s%s%s is a symlink.%s%sOpen %s%'
+    +'s%s instead?';
+  lisOpenTarget = 'Open target';
+  lisOpenSymlink = 'Open symlink';
+  lisFileLinkError = 'File link error';
+  lisWriteErrorFile = 'Write error: %s%sFile: %s%s%s';
+  lisStreamError = 'Stream Error';
+  lisUnableToUpdateTheBinaryResourceFileFromFileTheText = 'Unable to update '
+    +'the binary resource file%s%s%sfrom file the text resource file%s%s%s%'
+    +'sProbably the text file is corrupt.';
+  lisTheCodetoolsFoundAnError = 'The codetools found an error:%s%s%s';
+  lisIgnoreAndContinue = 'Ignore and continue';
+  lisNotImplemented = 'Not implemented';
+  lisNotImplementedYet = 'Not implemented yet:%s%s';
   
 
 implementation
