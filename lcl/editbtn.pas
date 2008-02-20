@@ -61,7 +61,6 @@ type
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
     procedure SetParent(AParent: TWinControl); override;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure DoPositionButton; virtual;
     procedure DoButtonClick (Sender: TObject); virtual;
     Procedure Loaded; override;
@@ -655,6 +654,7 @@ procedure TCustomEditButton.Loaded;
 begin
   inherited Loaded;
   CheckButtonVisible;
+  DoPositionButton; 
 end;
 
 procedure TCustomEditButton.WMKillFocus(var Message: TLMKillFocus);
@@ -669,21 +669,17 @@ begin
   inherited SetParent(AParent);
   if FButton <> nil then 
   begin
-    FButton.Parent := Parent;
+    DoPositionButton; 
     CheckButtonVisible;
   end;
 end;
 
-procedure TCustomEditButton.DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer);
-begin
-  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  DoPositionButton;
-end;
-
 procedure TCustomEditButton.DoPositionButton;
 begin
-  if FButton <> nil then
-    FButton.SetBounds(Left+Width, Top, FButton.Width, Height);
+  if FButton = nil then exit; 
+  FButton.Parent := Parent;
+  FButton.Visible := Visible;
+  FButton.AnchorToCompanion(akLeft,0,Self); 
 end;
 
 procedure TCustomEditButton.WMSetFocus(var Message: TLMSetFocus);
