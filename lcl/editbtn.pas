@@ -906,6 +906,7 @@ var
 begin
   inherited Create(AOwner);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
+  ReadOnly:=true;
   DialogTitle:=rsPickDate;
   OKCaption:='OK';
   CancelCaption:='Cancel';
