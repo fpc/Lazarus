@@ -699,7 +699,7 @@ begin
         Result:='';
         exit;
       end;
-      raise Exception.Create(AText);
+      raise EFOpenError.Create(AText);
     end else begin
       if not FilenameIsAbsolute(LinkFilename) then
         Result:=ExpandFilename(ExtractFilePath(Result)+LinkFilename)

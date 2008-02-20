@@ -87,6 +87,7 @@ function CheckCreatingFile(const AFilename: string;
                            ): TModalResult;
 function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons): TModalResult;
+function ChooseSymlink(var Filename: string): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
                                    ErrorButtons: TMsgDlgButtons): TModalResult;
 function DeleteFileInteractive(const Filename: string;
@@ -464,6 +465,35 @@ begin
       Format(lisUnableToWriteToFile2, ['"', Filename, '"']),
       mtError,ErrorButtons+[mbCancel]);
     if Result<>mrRetry then exit;
+  end;
+end;
+
+function ChooseSymlink(var Filename: string): TModalResult;
+var
+  TargetFilename: String;
+begin
+  Result:=mrCancel;
+  try
+    TargetFilename:=ReadAllLinks(Filename,true);
+  DebugLn(['ChooseSymlink ',Filename,' ',TargetFilename]);
+    if TargetFilename<>Filename then begin
+      case QuestionDlg('File is symlink',
+        'The file "'+Filename+'" is a symlink.'#13
+        +#13
+        +'Open "'+TargetFilename+'" instead?',
+        mtConfirmation,[mbYes,'Open target',mbNo,'Open symlink',mbCancel],0)
+      of
+      mrYes: Filename:=TargetFilename;
+      mrNo:  ;
+      else   exit;
+      end;
+    end;
+    Result:=mrOk;
+  except
+    on E: Exception do begin
+      MessageDlg('File link error',
+        E.Message,mtError,[mbCancel],0);
+    end;
   end;
 end;
 

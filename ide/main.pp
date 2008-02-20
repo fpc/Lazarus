@@ -7748,6 +7748,10 @@ begin
     Result:=MessageDlg(ACaption, AText, mtError, [mbAbort], 0);
     exit;
   end;
+  
+  // check symbolic link
+  Result:=ChooseSymlink(AFilename);
+  if Result<>mrOk then exit;
 
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
