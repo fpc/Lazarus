@@ -95,8 +95,9 @@ type
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
-    function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; virtual; abstract;
-    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; virtual; abstract;
+    function CheckProjectHasInstalledPackages(AProject: TProject; Interactive: boolean): TModalResult; virtual; abstract;
+    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
+                                 Interactive: boolean): TModalResult; virtual; abstract;
     function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
     function OnProjectInspectorAddDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;

@@ -237,8 +237,10 @@ type
     // project
     function OpenProjectDependencies(AProject: TProject;
                                 ReportMissing: boolean): TModalResult; override;
-    function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; override;
-    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; override;
+    function CheckProjectHasInstalledPackages(AProject: TProject; 
+                                  Interactive: boolean): TModalResult; override;
+    function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
+                                 Interactive: boolean): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     function AddProjectDependency(AProject: TProject; APackage: TLazPackage;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
@@ -2202,8 +2204,8 @@ begin
   AddProjectDependency(AProject,PackageGraph.LCLPackage);
 end;
 
-function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject
-  ): TModalResult;
+function TPkgManager.CheckProjectHasInstalledPackages(AProject: TProject; 
+  Interactive: boolean): TModalResult;
 var
   MissingUnits: TFPList;
   i: Integer;
@@ -2214,17 +2216,20 @@ begin
   MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
                                               AProject.FirstRequiredDependency);
   if MissingUnits<>nil then begin
-    Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
-      #13, #13, #13, #13, #13, #13, #13, #13]);
-    for i:=0 to MissingUnits.Count-1 do begin
-      PkgFile:=TPkgFile(MissingUnits[i]);
-      Msg:=Format(lisUnitInPackage, [Msg, PkgFile.UnitName,
-        PkgFile.LazPackage.IDAsString, #13]);
-    end;
-    Result:=IDEMessageDialog(lisPackageNeedsInstallation,
-      Msg,mtWarning,[mbIgnore,mbCancel]);
-    if Result<>mrIgnore then
-      AProject.AutoOpenDesignerFormsDisabled:=true;
+    if Interactive then begin 
+      Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
+        #13, #13, #13, #13, #13, #13, #13, #13]);
+      for i:=0 to MissingUnits.Count-1 do begin
+        PkgFile:=TPkgFile(MissingUnits[i]);
+        Msg:=Format(lisUnitInPackage, [Msg, PkgFile.UnitName,
+          PkgFile.LazPackage.IDAsString, #13]);
+      end;
+      Result:=IDEMessageDialog(lisPackageNeedsInstallation,
+        Msg,mtWarning,[mbIgnore,mbCancel]);
+      if Result<>mrIgnore then
+        AProject.AutoOpenDesignerFormsDisabled:=true;
+    end else
+      Result:=mrCancel;    
     MissingUnits.Free;
   end;
 end;
@@ -3892,7 +3897,8 @@ begin
   end;
 end;
 
-function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo;
+  Interactive: boolean): TModalResult;
 var
   AProject: TProject;
 begin
@@ -3900,7 +3906,7 @@ begin
   if AnUnitInfo=nil then exit;
   AProject:=AnUnitInfo.Project;
   if AProject=nil then exit;
-  Result:=CheckProjectHasInstalledPackages(AProject);
+  Result:=CheckProjectHasInstalledPackages(AProject,Interactive);
 end;
 
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;

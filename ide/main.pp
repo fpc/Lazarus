@@ -5225,7 +5225,8 @@ begin
   if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
   and (not (ofProjectLoading in OpenFlags)) then begin
     // opening a form of the project -> check installed packages
-    Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1);
+    Result:=PkgBoss.CheckProjectHasInstalledPackages(Project1,
+                                     OpenFlags*[ofProjectLoading,ofQuiet]=[]);
     if not (Result in [mrOk,mrIgnore]) then exit;
   end;
 
