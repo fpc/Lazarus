@@ -11238,13 +11238,17 @@ begin
   
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if AddJumpPoint then begin
+    
+  if AddJumpPoint and (ActiveUnitInfo <> nil) and (ActiveSrcEdit <> nil)
+  then begin
     if (NewSource<>ActiveUnitInfo.Source)
     or (ActiveSrcEdit.EditorComponent.CaretX<>NewX)
     or (ActiveSrcEdit.EditorComponent.CaretY<>NewY) then
       SourceNotebook.AddJumpPointClicked(Self);
   end;
-  if NewSource<>ActiveUnitInfo.Source then begin
+  
+  if (ActiveUnitInfo = nil) or (NewSource<>ActiveUnitInfo.Source)
+  then begin
     // jump to other file -> open it
     Result:=DoOpenEditorFile(NewSource.Filename,-1,[ofOnlyIfExists,ofRegularFile]);
     if Result<>mrOk then begin
@@ -11253,7 +11257,8 @@ begin
     end;
     GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
       NewUnitInfo);
-  end else begin
+  end
+  else begin
     NewSrcEdit:=ActiveSrcEdit;
   end;
   if NewX<1 then NewX:=1;

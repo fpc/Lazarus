@@ -191,13 +191,23 @@ begin
     begin
       Item := lvCallStack.Items[n];
       Entry := CallStack.Entries[First + n];
-      if Entry.Current
-      then Item.Caption := '>'
-      else Item.Caption := ' ';
-      Item.SubItems[0] := IntToStr(Entry.Index);
-      Item.SubItems[1] := Entry.Source;
-      Item.SubItems[2] := IntToStr(Entry.Line);
-      Item.SubItems[3] := GetFunction(Entry);
+      if Entry = nil
+      then begin
+        Item.Caption := '';
+        Item.SubItems[0] := '????';
+        Item.SubItems[1] := '';
+        Item.SubItems[2] := '';
+        Item.SubItems[3] := '';
+      end
+      else begin
+        if Entry.Current
+        then Item.Caption := '>'
+        else Item.Caption := ' ';
+        Item.SubItems[0] := IntToStr(Entry.Index);
+        Item.SubItems[1] := Entry.Source;
+        Item.SubItems[2] := IntToStr(Entry.Line);
+        Item.SubItems[3] := GetFunction(Entry);
+      end;
     end;
     
   finally
@@ -257,24 +267,22 @@ procedure TCallStackDlg.CopyToClipBoard;
 var
   n: integer;
   Entry: TCallStackEntry;
-  EntryList: TStringList;
+  S: String;
 begin
   Clipboard.Clear;
   
   if (CallStack=nil) or (CallStack.Count=0) then exit;
   
-  EntryList:=TStringList.Create;
-  try
-    EntryList.Capacity:=CallStack.Count;
-    for n:= 0 to CallStack.Count-1 do begin
-      Entry:=CallStack.Entries[n];
-      EntryList.Add(format('#%d %s at %s:%d',
-        [n, GetFunction(Entry), Entry.Source, Entry.Line]));
-    end;
-    ClipBoard.AsText := EntryList.Text;
-  finally
-    EntryList.Free;
+  S := '';
+  for n:= 0 to CallStack.Count-1 do
+  begin
+    Entry:=CallStack.Entries[n];
+    if Entry <> nil
+    then S := S + format('#%d %s at %s:%d', [n, GetFunction(Entry), Entry.Source, Entry.Line])
+    else S := S + format('#%d ????', [n]);
+    S := S + LineEnding;
   end;
+  ClipBoard.AsText := S;
 end;
 
 procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
