@@ -164,7 +164,7 @@ type
 
   PGridMessage=^TGridMessage;
   TGridMessage=record
-    MsgID: Cardinal;
+    LclMsg: TLMessage;
     Grid: TCustomGrid;
     Col,Row: Integer;
     Value: string;
@@ -1966,7 +1966,7 @@ begin
 
     FEditor.TabStop:=False;
 
-    Msg.MsgID:=GM_SETGRID;
+    Msg.LclMsg.msg:=GM_SETGRID;
     Msg.Grid:=Self;
     Msg.Options:=0;
     FEditor.Dispatch(Msg);
@@ -5756,7 +5756,7 @@ begin
           InflateRect(Msg.CellRect, -1, -1);
       FEditor.BoundsRect := Msg.CellRect;
     end else begin
-      Msg.MsgID:=GM_SETPOS;
+      Msg.LclMsg.msg:=GM_SETPOS;
       Msg.Grid:=Self;
       Msg.Col:=FCol;
       Msg.Row:=FRow;
@@ -5773,7 +5773,7 @@ begin
   {$ifdef dbgGrid}DebugLn('EditorSelectALL INIT');{$endif}
   if FEditor<>nil then
     if FEditorOptions and EO_SELECTALL = EO_SELECTALL then begin
-      Msg.MsgID:=GM_SELECTALL;
+      Msg.LclMsg.msg:=GM_SELECTALL;
       FEditor.Dispatch(Msg);
     end;
   {$ifdef dbgGrid}DebugLn('EditorSelectALL END');{$endif}
@@ -5784,7 +5784,7 @@ var
   msg: TGridMessage;
 begin
   if (FEditor<>nil) and FEditor.Visible then begin
-    Msg.MsgID:=GM_GETVALUE;
+    Msg.LclMsg.msg:=GM_GETVALUE;
     Msg.grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
@@ -5800,14 +5800,14 @@ var
 begin
   if FEditor<>nil then begin
     // Set the editor mask
-    Msg.MsgID:=GM_SETMASK;
+    Msg.LclMsg.msg:=GM_SETMASK;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
     Msg.Value:=GetEditMask(FCol, FRow);
     FEditor.Dispatch(Msg);
     // Set the editor value
-    Msg.MsgID:=GM_SETVALUE;
+    Msg.LclMsg.msg:=GM_SETVALUE;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
