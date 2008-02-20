@@ -7927,7 +7927,7 @@ begin
             if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} > Len +1
             then begin
               // only move caret one column
-              Helper := '';
+              Helper := ' ';
               CaretX := CaretX - 1;
             end else if CaretX = 1 then begin
               // join this line with the last line if possible
