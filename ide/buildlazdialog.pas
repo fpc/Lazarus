@@ -910,7 +910,7 @@ begin
   x:=ItemsListBox.ClientWidth-90;
   ItemsListBox.Canvas.TextOut(x+2,
           ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2,
-          MakeModeNames[CurItem.MakeMode]);
+          GetTranslatedMakeModes(CurItem.MakeMode));
 end;
 
 procedure TConfigureBuildLazarusDlg.ItemsListBoxMouseDown(Sender: TOBject; Button: TMouseButton;
