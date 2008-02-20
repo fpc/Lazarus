@@ -445,6 +445,8 @@ type
     procedure InsertTodoClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
+    procedure MoveEditorFirstClicked(Sender: TObject);
+    procedure MoveEditorLastClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OpenAtCursorClicked(Sender: TObject);
@@ -600,6 +602,10 @@ type
     procedure MoveEditorRight(PageIndex: integer);
     procedure MoveActivePageLeft;
     procedure MoveActivePageRight;
+    procedure MoveEditorFirst(PageIndex: integer);
+    procedure MoveEditorLast(PageIndex: integer);
+    procedure MoveActivePageFirst;
+    procedure MoveActivePageLast;
     procedure ProcessParentCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
        var Handled: boolean);
@@ -856,6 +862,8 @@ var
   SrcEditMenuInsertTodo: TIDEMenuCommand;
   SrcEditMenuMoveEditorLeft: TIDEMenuCommand;
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
+  SrcEditMenuMoveEditorFirst: TIDEMenuCommand;
+  SrcEditMenuMoveEditorLast: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
@@ -982,6 +990,10 @@ begin
                                                       uemMoveEditorLeft);
     SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
                                                       uemMoveEditorRight);
+    SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
+                                                      uemMoveEditorLeftmost);
+    SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
+                                                      uemMoveEditorRightmost);
 
   // register the Refactoring submenu
   SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
@@ -3923,6 +3935,10 @@ begin
                                        (NoteBook<>nil) and (NoteBook.PageCount>1);
     SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
                                        (NoteBook<>nil) and (NoteBook.PageCount>1);
+    SrcEditMenuMoveEditorFirst.MenuItem.Enabled:=
+                                       (NoteBook<>nil) and (NoteBook.PageCount>1) and (NoteBook.PageIndex>0);
+    SrcEditMenuMoveEditorLast.MenuItem.Enabled:=
+                                       (NoteBook<>nil) and (NoteBook.PageCount>1) and (NoteBook.PageIndex<(NoteBook.PageCount-1));
 
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
     if EditorPopupPoint.X>EditorComp.GutterWidth then begin
@@ -4082,6 +4098,8 @@ begin
 
   SrcEditMenuMoveEditorLeft.OnClick:=@MoveEditorLeftClicked;
   SrcEditMenuMoveEditorRight.OnClick:=@MoveEditorRightClicked;
+  SrcEditMenuMoveEditorFirst.OnClick:=@MoveEditorFirstClicked;
+  SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
 
   SrcEditMenuInsertTodo.OnClick:=@InsertTodoClicked;
 
@@ -4477,6 +4495,18 @@ begin
     MoveEditor(PageIndex,0);
 end;
 
+procedure TSourceNotebook.MoveEditorFirst(PageIndex: integer);
+begin
+  if (NoteBook=nil) or (NoteBook.PageCount<=1) then exit;
+  MoveEditor(PageIndex,0)
+end;
+
+procedure TSourceNotebook.MoveEditorLast(PageIndex: integer);
+begin
+  if (NoteBook=nil) or (NoteBook.PageCount<=1) then exit;
+  MoveEditor(PageIndex,NoteBook.PageCount-1);
+end;
+
 procedure TSourceNotebook.MoveActivePageLeft;
 begin
   if (NoteBook=nil) then exit;
@@ -4487,6 +4517,18 @@ procedure TSourceNotebook.MoveActivePageRight;
 begin
   if (NoteBook=nil) then exit;
   MoveEditorRight(NoteBook.PageIndex);
+end;
+
+procedure TSourceNotebook.MoveActivePageFirst;
+begin
+  if (NoteBook=nil) then exit;
+  MoveEditorFirst(NoteBook.PageIndex);
+end;
+
+procedure TSourceNotebook.MoveActivePageLast;
+begin
+  if (NoteBook=nil) then exit;
+  MoveEditorLast(NoteBook.PageIndex);
 end;
 
 Procedure TSourceNotebook.FindClicked(Sender: TObject);
@@ -5135,6 +5177,16 @@ begin
   MoveActivePageRight;
 end;
 
+procedure TSourceNotebook.MoveEditorFirstClicked(Sender: TObject);
+begin
+  MoveActivePageFirst;
+end;
+
+procedure TSourceNotebook.MoveEditorLastClicked(Sender: TObject);
+begin
+  MoveActivePageLast;
+end;
+
 {This is called from outside to toggle a bookmark}
 Procedure TSourceNotebook.ToggleBookmark(Value: Integer);
 Begin
@@ -5749,6 +5801,12 @@ begin
 
   ecMoveEditorRight:
     MoveActivePageRight;
+
+  ecMoveEditorLeftmost:
+    MoveActivePageFirst;
+
+  ecMoveEditorRightmost:
+    MoveActivePageLast;
 
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);

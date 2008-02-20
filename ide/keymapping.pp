@@ -432,6 +432,8 @@ begin
   ecAddBreakPoint: SetResult(VK_F5,[],VK_UNKNOWN,[]);
   ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
+  ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, []);
   ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[]);
@@ -752,6 +754,8 @@ begin
   ecAddBreakPoint: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorLeft: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecMoveEditorRight: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorLeftmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecMoveEditorRightmost: SetResult(VK_UNKNOWN, [], VK_UNKNOWN, [],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor1: SetResult(VK_1,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor2: SetResult(VK_2,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGotoEditor3: SetResult(VK_3,[ssAlt],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1327,6 +1331,8 @@ begin
     ecPrevEditor              : Result:= srkmecPrevEditor;
     ecMoveEditorLeft          : Result:= srkmecMoveEditorLeft;
     ecMoveEditorRight         : Result:= srkmecMoveEditorRight;
+    ecMoveEditorLeftmost      : Result:= srkmecMoveEditorLeftmost;
+    ecMoveEditorRightmost     : Result:= srkmecMoveEditorRightmost;
     ecAddBreakPoint           : Result:= srkmecAddBreakPoint;
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
     ecGotoEditor1..
@@ -2369,6 +2375,8 @@ begin
     );
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);
+  AddDefault(C, 'Move editor leftmost', srkmecMoveEditorLeftmost, ecMoveEditorLeftmost);
+  AddDefault(C, 'Move editor rightmoust',  srkmecMoveEditorRightmost, ecMoveEditorRightmost);
   AddDefault(C, 'Go to source editor 1', lisKMGoToSourceEditor1, ecGotoEditor1);
   AddDefault(C, 'Go to source editor 2', lisKMGoToSourceEditor2, ecGotoEditor2);
   AddDefault(C, 'Go to source editor 3', lisKMGoToSourceEditor3, ecGotoEditor3);

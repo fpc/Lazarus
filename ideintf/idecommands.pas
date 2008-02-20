@@ -184,6 +184,9 @@ const
   ecMoveEditorRight         = ecFirstLazarus + 333;
   ecAddBreakPoint           = ecFirstLazarus + 334;
   ecRemoveBreakPoint        = ecFirstLazarus + 335;
+  ecMoveEditorLeftmost      = ecFirstLazarus + 336;
+  ecMoveEditorRightmost     = ecFirstLazarus + 337;
+
   ecGotoEditor1             = ecFirstLazarus + 350;
   ecGotoEditor2             = ecGotoEditor1 + 1;
   ecGotoEditor3             = ecGotoEditor2 + 1;

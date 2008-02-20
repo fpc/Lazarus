@@ -1566,6 +1566,8 @@ resourcestring
   uemViewCallStack = 'View Call Stack';
   uemMoveEditorLeft='Move Editor Left';
   uemMoveEditorRight='Move Editor Right';
+  uemMoveEditorLeftmost='Move Editor Leftmost';
+  uemMoveEditorRightmost='Move Editor Rightmost';
   uemRefactor = 'Refactoring';
   uemCompleteCode = 'Complete Code';
   uemEncloseSelection = 'Enclose Selection';
@@ -1752,6 +1754,8 @@ resourcestring
   lisKMRemoveBreakPoint = 'Remove break point';
   srkmecMoveEditorLeft        = 'Move editor left';
   srkmecMoveEditorRight       = 'Move editor right';
+  srkmecMoveEditorLeftmost    = 'Move editor leftmost';
+  srkmecMoveEditorRightmost   = 'Move editor rightmost';
   lisKMGoToSourceEditor1 = 'Go to source editor 1';
   lisKMGoToSourceEditor2 = 'Go to source editor 2';
   lisKMGoToSourceEditor3 = 'Go to source editor 3';
