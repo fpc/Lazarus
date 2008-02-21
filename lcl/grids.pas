@@ -3358,7 +3358,8 @@ begin
     R.BottomRight:= FGCache.MaxClientXY;
     if FGcache.MaxClientXY.X<FGCache.ClientWidth then
       R.BottomRight.x := FGCache.ClientWidth;
-    InvalidateRect(Handle, @R, false);
+    if not (csCustomPaint in ControlState) then
+      InvalidateRect(Handle, @R, false);
   end;
 end;
 
@@ -3439,7 +3440,8 @@ begin
     R.BottomRight:=FGCache.MaxClientXY;
     if FGcache.MaxClientXY.Y<FGCache.ClientHeight then
       R.BottomRight.y := FGCache.ClientHeight;
-    InvalidateRect(Handle, @R, false);
+    if not (csCustomPaint in ControlState) then
+      InvalidateRect(Handle, @R, false);
   end;
 end;
 
