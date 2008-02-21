@@ -29,7 +29,7 @@
 
   Description:
        updatepofiles deletes doubles in the po file and merges new strings into
-       all translated po files (filename1.po.xx)
+       all translated po files (filename1.*.po)
 
 }
 program UpdatePoFiles;
