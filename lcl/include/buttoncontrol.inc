@@ -68,7 +68,7 @@ constructor TButtonControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FUseOnChange:=DefaultButtonControlUseOnChange;
-  ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
+  ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls,csCaptureMouse];
 end;
 
 { TButtonActionLink }
