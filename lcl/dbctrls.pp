@@ -132,12 +132,12 @@ Type
     function GetField: TField;
 
     function GetReadOnly: Boolean;
-    procedure SetReadOnly(Value: Boolean);
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
     function  IsReadOnly: boolean;
   protected
+    procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: char); override;
 
@@ -570,8 +570,8 @@ Type
     procedure SetAutoDisplay(const AValue: Boolean);
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
-    procedure SetReadOnly(const AValue: Boolean);
   protected
+    procedure SetReadOnly(AValue: Boolean); override;
     function WordWrapIsStored: boolean; override;
     procedure DataChange(Sender: TObject); virtual;
     procedure EditingChange(Sender: TObject); virtual;

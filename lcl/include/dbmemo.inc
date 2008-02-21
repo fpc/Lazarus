@@ -56,7 +56,7 @@ begin
     AValue.FreeNotification(Self);
 end;
 
-procedure TDBMemo.SetReadOnly(const AValue: Boolean);
+procedure TDBMemo.SetReadOnly(AValue: Boolean);
 begin
   FDataLink.ReadOnly:=AValue;
 end;

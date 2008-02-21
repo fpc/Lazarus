@@ -662,7 +662,6 @@ type
     procedure SetMaxLength(Value: Integer);
     procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
-    procedure SetReadOnly(Value: Boolean);
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      WithThemeSpace: Boolean); override;
@@ -675,6 +674,7 @@ type
     function GetSelStart: integer; virtual;
     function GetSelText: string; virtual;
     procedure SetEchoMode(Val: TEchoMode); virtual;
+    procedure SetReadOnly(Value: Boolean); virtual;
     procedure SetSelLength(Val: integer); virtual;
     procedure SetSelStart(Val: integer); virtual;
     procedure SetSelText(const Val: string); virtual;
