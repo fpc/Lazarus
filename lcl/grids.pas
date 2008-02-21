@@ -965,6 +965,7 @@ type
     procedure SetFocus; override;
     
     property SortOrder: TSortOrder read FSortOrder write FSortOrder;
+    property TabStop default true;
   end;
 
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
