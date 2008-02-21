@@ -1177,12 +1177,12 @@ end;
 class function TQtWSCustomComboBox.GetMaxLength(
   const ACustomComboBox: TCustomComboBox): integer;
 var
-  LineEdit: QLineEditH;
+  LineEdit: TQtLineEdit;
 begin
   LineEdit := TQtComboBox(ACustomComboBox.Handle).LineEdit;
   if LineEdit <> nil then
   begin
-    Result := QLineEdit_MaxLength(LineEdit);
+    Result := LineEdit.getMaxLength;
     if Result = QtMaxEditLength then
       Result := 0;
   end

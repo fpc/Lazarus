@@ -531,6 +531,7 @@ type
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
     function hasSelectedText: Boolean;
+    procedure selectAll;
     procedure setColor(const Value: PQColor); override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setInputMask(const AMask: WideString);
@@ -621,13 +622,13 @@ type
     FSelectHook: QComboBox_hookH;
     FDropListEventHook: QObject_hookH;
     // parts
-    FLineEdit: QLineEditH;
+    FLineEdit: TQtLineEdit;
     FDropList: TQtListWidget;
     // used to store values if no selection
     FSelStart: Integer;
     FSelLength: Integer;
     function GetDropList: TQtListWidget;
-    function GetLineEdit: QLineEditH;
+    function GetLineEdit: TQtLineEdit;
     procedure SetOwnerDrawn(const AValue: Boolean);
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -657,7 +658,7 @@ type
     procedure removeItem(AIndex: Integer);
     
     property DropList: TQtListWidget read GetDropList;
-    property LineEdit: QLineEditH read GetLineEdit;
+    property LineEdit: TQtLineEdit read GetLineEdit;
     property OwnerDrawn: Boolean read FOwnerDrawn write SetOwnerDrawn;
   public
     procedure AttachEvents; override;
@@ -1137,27 +1138,6 @@ var
 {$ELSE}
   LastMouse: TLastMouseInfo = (Widget: nil; MousePos: (x:0; y:0); TheTime:0; ClickCount: 0);
 {$ENDIF}
-
-// not exists before qt 4.3
-function QTabBar_tabAt(handle: QTabBarH; pos: PQtPoint): Integer;
-var
-  i: integer;
-  TabRect: TRect;
-  P: TPoint;
-begin
-  Result := -1;
-  P.x := pos^.x;
-  P.y := pos^.y;
-  for i := 0 to QTabBar_count(Handle) - 1 do
-  begin
-    QTabBar_tabRect(handle, @TabRect, i);
-    if PtInRect(TabRect, p) then
-    begin
-      Result := i;
-      break;
-    end;
-  end;
-end;
 
 { TQtWidget }
 
@@ -1998,7 +1978,7 @@ begin
   MButton := QmouseEvent_Button(QMouseEventH(Event));
 
   case QEvent_type(Event) of
-   QEventMouseButtonPress, QEventMouseButtonDblClick:
+    QEventMouseButtonPress, QEventMouseButtonDblClick:
     begin
       Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
       case MButton of
@@ -2011,31 +1991,31 @@ begin
       Msg.Msg := LM_PRESSED;
       DeliverMessage(Msg);
     end;
-   QEventMouseButtonRelease:
-   begin
-     LastMouse.Widget := Sender;
-     LastMouse.MousePos := MousePos;
-     Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
-     case MButton of
-       QtLeftButton: Msg.Msg := LM_LBUTTONUP;
-       QtRightButton: Msg.Msg := LM_RBUTTONUP;
-       QtMidButton: Msg.Msg := LM_MBUTTONUP;
-     end;
-     NotifyApplicationUserInput(Msg.Msg);
-     DeliverMessage(Msg);
-     { Clicking on buttons operates differently, because QEventMouseButtonRelease
-       is sent if you click a control, drag the mouse out of it and release, but
-       buttons should not be clicked on this case. }
-     if not (LCLObject is TCustomButton) then
-     begin
-       Msg.Msg := LM_CLICKED;
-       DeliverMessage(Msg);
-     end;
+    QEventMouseButtonRelease:
+    begin
+      LastMouse.Widget := Sender;
+      LastMouse.MousePos := MousePos;
+      Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
+      case MButton of
+        QtLeftButton: Msg.Msg := LM_LBUTTONUP;
+        QtRightButton: Msg.Msg := LM_RBUTTONUP;
+        QtMidButton: Msg.Msg := LM_MBUTTONUP;
+      end;
 
-     Msg.Msg := LM_RELEASED;
-   end;
+      NotifyApplicationUserInput(Msg.Msg);
+      DeliverMessage(Msg);
+      { Clicking on buttons operates differently, because QEventMouseButtonRelease
+        is sent if you click a control, drag the mouse out of it and release, but
+        buttons should not be clicked on this case. }
+      if not (LCLObject is TCustomButton) then
+      begin
+        Msg.Msg := LM_CLICKED;
+        DeliverMessage(Msg);
+      end;
+      Msg.Msg := LM_RELEASED;
+      DeliverMessage(Msg);
+    end;
   end;
-  DeliverMessage(Msg);
 end;
 
 procedure TQtWidget.SlotNCMouse(Sender: QObjectH; Event: QEventH); cdecl;
@@ -2548,6 +2528,8 @@ end;
 
 procedure TQtWidget.grabMouse;
 begin
+  //DebugLn(['current grab is: ', dbgs(QWidget_mouseGrabber())]);
+  //DebugLn(['grab mouse for: ', dbgsName(LCLObject), ' : ', dbgs(Widget)]);
   QWidget_grabMouse(Widget);
 end;
 
@@ -2600,6 +2582,7 @@ begin
   // capture widget can be one of childs of Widget if Widget is complex control
   // so better to look for current Capture widget to release it instead of pass Widget as argument
   AGrabWidget := QWidget_mouseGrabber();
+  //DebugLn(['releasing current grab: ', dbgs(AGrabWidget)]);
   QWidget_releaseMouse(AGrabWidget);
 end;
 
@@ -4592,6 +4575,11 @@ begin
   Result := QLineEdit_hasSelectedText(QLineEditH(Widget));
 end;
 
+procedure TQtLineEdit.selectAll;
+begin
+  QLineEdit_selectAll(QLineEditH(Widget));
+end;
+
 procedure TQtLineEdit.AttachEvents;
 var
   Method: TMethod;
@@ -5113,7 +5101,7 @@ end;
 
 { TQtComboBox }
 
-function TQtComboBox.GetLineEdit: QLineEditH;
+function TQtComboBox.GetLineEdit: TQtLineEdit;
 begin
   if not getEditable then
   begin
@@ -5123,8 +5111,9 @@ begin
   begin
     if FLineEdit = nil then
     begin
-      FLineEdit := QComboBox_lineEdit(QComboBoxH(Widget));
-      QObject_disconnect(FLineEdit,'2returnPressed()', Widget, '1_q_returnPressed()');
+      FLineEdit := TQtLineEdit.CreateFrom(LCLObject, QComboBox_lineEdit(QComboBoxH(Widget)));
+      QObject_disconnect(FLineEdit.Widget, '2returnPressed()', Widget, '1_q_returnPressed()');
+      FLineEdit.AttachEvents;
     end;
   end;
   Result := FLineEdit;
@@ -5161,28 +5150,23 @@ end;
 function TQtComboBox.getMaxLength: Integer;
 begin
   if LineEdit <> nil then
-    Result := QLineEdit_maxLength(LineEdit)
+    Result := LineEdit.getMaxLength
   else
     Result := 0;
 end;
 
 function TQtComboBox.getSelectionStart: Integer;
 begin
-  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
-    Result := QLineEdit_selectionStart(LineEdit)
+  if (LineEdit <> nil) and LineEdit.hasSelectedText then
+    Result := LineEdit.getSelectionStart
   else
     Result := FSelStart;
 end;
 
 function TQtComboBox.getSelectionLength: Integer;
-var
-  W: WideString;
 begin
-  if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
-  begin
-    QLineEdit_selectedText(LineEdit, @W);
-    Result := Length(W);
-  end
+  if (LineEdit <> nil) and LineEdit.hasSelectedText then
+    Result := LineEdit.getSelectionLength
   else
     Result := FSelLength;
 end;
@@ -5190,13 +5174,13 @@ end;
 procedure TQtComboBox.setEchoMode(const AMode: QLineEditEchoMode);
 begin
   if LineEdit <> nil then
-    QLineEdit_setEchoMode(LineEdit, AMode);
+    LineEdit.setEchoMode(AMode);
 end;
 
 procedure TQtComboBox.setMaxLength(const ALength: Integer);
 begin
   if LineEdit <> nil then
-    QLineEdit_setMaxLength(LineEdit, ALength);
+    LineEdit.setMaxLength(ALength);
 end;
 
 procedure TQtComboBox.setReadOnly(const AReadOnly: Boolean);
@@ -5209,7 +5193,7 @@ begin
   FSelStart := AStart;
   FSelLength := ALength;
   if LineEdit <> nil then
-    QLineEdit_setSelection(LineEdit, AStart, ALength);
+    LineEdit.setSelection(AStart, ALength);
 end;
 
 {------------------------------------------------------------------------------
@@ -5220,6 +5204,7 @@ end;
 destructor TQtComboBox.Destroy;
 begin
   FDropList.Free;
+  FLineEdit.Free;
   inherited Destroy;
 end;
 
@@ -5297,10 +5282,10 @@ procedure TQtComboBox.setEditable(const AValue: Boolean);
 begin
   QComboBox_setEditable(QComboBoxH(Widget), AValue);
   if not AValue then
-    FLineEdit := nil
+    FreeAndNil(FLineEdit)
   else
   begin
-    QWidget_setFocusPolicy(LineEdit, getFocusPolicy);
+    LineEdit.setFocusPolicy(getFocusPolicy);
     setText(FText);
   end;
 end;
@@ -5389,21 +5374,19 @@ begin
           [QtTabFocusReason,QtBacktabFocusReason,QtActiveWindowFocusReason,
            QtShortcutFocusReason, QtOtherFocusReason] then
         begin
-          if Assigned(LineEdit) and
-          TComboBox(LCLObject).AutoSelect then
-            QLineEdit_selectAll(QLineEditH(LineEdit));
+          if Assigned(LineEdit) and TComboBox(LCLObject).AutoSelect then
+            LineEdit.selectAll;
         end;
       end;
 
       QEventKeyPress,
       QEventKeyRelease:
       begin
-      
         if (QEvent_type(Event) = QEventKeyRelease) and
         ((QKeyEvent_key(QKeyEventH(Event)) = QtKey_Return) or
         (QKeyEvent_key(QKeyEventH(Event)) = QtKey_Enter)) and
         (QKeyEvent_modifiers(QKeyEventH(Event)) = QtNoModifier) and
-        (FLineEdit <> nil) and (QWidget_hasFocus(FLineEdit)) then
+        (FLineEdit <> nil) and (FLineEdit.hasFocus) then
         begin
           Str := UTF8Encode(getText);
           if TCustomComboBox(LCLObject).Items.IndexOf(Str) < 0 then
@@ -5412,9 +5395,7 @@ begin
         
         QEvent_accept(Event);
       	Result := SlotKey(Sender, Event);
-       
       end;
-
     end;
     Result := inherited EventFilter(Sender, Event);
   end;
