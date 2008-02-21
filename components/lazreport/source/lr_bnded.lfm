@@ -1,4 +1,10 @@
 object frBandEditorForm: TfrBandEditorForm
+  Left = 346
+  Height = 126
+  Top = 148
+  Width = 225
+  HorzScrollBar.Page = 224
+  VertScrollBar.Page = 125
   BorderStyle = bsDialog
   Caption = 'Band data source'
   ClientHeight = 126
@@ -6,76 +12,70 @@ object frBandEditorForm: TfrBandEditorForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  PixelsPerInch = 75
   Position = poScreenCenter
-  TextHeight = 13
-  HorzScrollBar.Page = 224
-  VertScrollBar.Page = 125
-  Left = 200
-  Height = 126
-  Top = 108
-  Width = 225
   object Button1: TButton
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 0
     Left = 66
     Height = 25
     Top = 96
     Width = 75
     HelpContext = 40
+    Caption = 'Ok'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
   end
   object Button2: TButton
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
     Left = 146
     Height = 25
     Top = 96
     Width = 75
     HelpContext = 50
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
   end
   object GB1: TGroupBox
-    Caption = 'Data source'
-    ClientHeight = 64
-    ClientWidth = 213
-    ParentColor = True
-    TabOrder = 2
     Left = 4
     Height = 81
     Top = 4
     Width = 217
+    Caption = 'Data source'
+    ClientHeight = 63
+    ClientWidth = 213
+    TabOrder = 2
     object Label2: TLabel
-      Caption = '&Record count'
-      Color = clNone
-      FocusControl = Edit1
       Left = 8
       Height = 13
       Top = 39
       Width = 80
+      Caption = '&Record count'
+      FocusControl = Edit1
+      ParentColor = False
     end
     object CB1: TComboBox
-      ItemHeight = 13
-      MaxLength = 0
-      OnChange = CB1Click
-      Style = csDropDownList
-      TabOrder = 0
       Left = 7
       Height = 21
       Top = 3
       Width = 201
       HelpContext = 88
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      AutoSize = False
+      ItemHeight = 13
+      MaxLength = 0
+      OnChange = CB1Click
+      Style = csDropDownList
+      TabOrder = 0
     end
     object Edit1: TEdit
-      TabOrder = 1
-      Text = '1'
       Left = 136
       Height = 21
       Top = 35
       Width = 72
       HelpContext = 95
+      AutoSize = True
+      TabOrder = 1
+      Text = '1'
     end
   end
 end

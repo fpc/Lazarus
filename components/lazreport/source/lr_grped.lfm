@@ -1,97 +1,64 @@
 object frGroupEditorForm: TfrGroupEditorForm
-  BorderStyle = bsDialog
+  Left = 152
+  Height = 118
+  Top = 199
+  Width = 493
+  HorzScrollBar.Page = 492
+  VertScrollBar.Page = 117
+  BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Group'
-  ClientHeight = 89
-  ClientWidth = 285
-  Font.Height = 18446744073709551605
+  ClientHeight = 118
+  ClientWidth = 493
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  PixelsPerInch = 96
   Position = poScreenCenter
   ShowHint = True
-  TextHeight = 13
-  HorzScrollBar.Page = 286
-  VertScrollBar.Page = 90
-  Left = 200
-  Height = 89
-  Top = 108
-  Width = 285
-  object Button1: TButton
-    Caption = 'Ok'
-    Default = True
-    ModalResult = 1
-    TabOrder = 0
-    Left = 125
-    Height = 25
-    Top = 60
-    Width = 75
-    HelpContext = 40
-  end
-  object Button2: TButton
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 1
-    Left = 205
-    Height = 25
-    Top = 60
-    Width = 75
-    HelpContext = 50
-  end
   object GB1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonPanel1
+    Left = 6
+    Height = 66
+    Top = 6
+    Width = 481
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Around = 6
     Caption = 'Condition'
-    ClientHeight = 39
-    ClientWidth = 273
-    DragCursor = 65524
-    ParentColor = True
-    TabOrder = 2
-    Left = 8
-    Height = 56
-    Width = 277
-    object Edit1: TEdit
-      TabOrder = 0
-      Text = 'Edit1'
-      TabOrder = 0
-      Left = 5
-      Height = 21
+    ClientHeight = 48
+    ClientWidth = 477
+    TabOrder = 0
+    object Edit1: TEditButton
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
       Top = 6
-      Width = 260
-      HelpContext = 96
+      Width = 435
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      ButtonWidth = 23
+      Glyph.Data = {
+        96000000424D960000000000000076000000280000000A000000040000000100
+        04000000000020000000CE0E0000C40E00001000000000000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
+        0000700700700700000070070070070000007777777777000000
+      }
+      ParentColor = False
+      TabOrder = 0
     end
-    object Panel1: TPanel
-      BevelOuter = bvNone
-      Caption = 'Panel1'
-      ClientHeight = 17
-      ClientWidth = 17
-      FullRepaint = False
-      TabOrder = 1
-      Left = 247
-      Height = 17
-      Top = 7
-      Width = 17
-      object frSpeedButton1: TSpeedButton
-        Glyph.Data = {
-          96000000424D960000000000000076000000280000000A000000040000000100
-          04000000000020000000CE0E0000C40E00001000000000000000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
-          0000700700700700000070070070070000007777777777000000
-        }
-        NumGlyphs = 0
-        OnClick = frSpeedButton1Click
-        Glyph.Data = {
-          96000000424D960000000000000076000000280000000A000000040000000100
-          04000000000020000000CE0E0000C40E00001000000000000000000000000000
-          80000080000000808000800000008000800080800000C0C0C000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
-          0000700700700700000070070070070000007777777777000000
-        }
-        NumGlyphs = 0
-        Height = 17
-        Hint = 'Insert DB field'
-        Top = 18446744073709551615
-        Width = 17
-      end
-    end
+  end
+  object ButtonPanel1: TButtonPanel
+    Left = 6
+    Height = 40
+    Top = 78
+    Width = 481
+    Align = alBottom
+    AutoSize = True
+    TabOrder = 1
+    ShowButtons = [pbOK, pbCancel, pbHelp]
+    ShowGlyphs = [pbOK, pbCancel, pbClose, pbHelp]
   end
 end

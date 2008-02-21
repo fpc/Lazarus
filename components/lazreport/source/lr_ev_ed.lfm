@@ -1,21 +1,25 @@
 object frEvForm: TfrEvForm
-  BorderStyle = bsDialog
+  Left = 460
+  Height = 331
+  Top = 106
+  Width = 329
+  HorzScrollBar.Page = 328
+  VertScrollBar.Page = 330
+  BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Variables editor'
   ClientHeight = 331
-  ClientWidth = 326
+  ClientWidth = 329
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  PixelsPerInch = 86
   ShowHint = True
-  TextHeight = 13
-  HorzScrollBar.Page = 327
-  VertScrollBar.Page = 332
-  Left = 450
-  Height = 331
-  Top = 85
-  Width = 326
   object SB1: TSpeedButton
+    Left = 92
+    Height = 25
+    Hint = 'Copy variables'
+    Top = 300
+    Width = 25
+    Color = clBtnFace
     Glyph.Data = {
       F6000000424DF600000000000000760000002800000010000000100000000100
       04000000000080000000C30E0000C30E00001000000010000000000000000000
@@ -26,14 +30,16 @@ object frEvForm: TfrEvForm
       000778F0008BBBB0F07778FFFF8BBBB0077778F00F888880777778FFFF0F0777
       777778FFFF007777777778888807777777777777777777777777
     }
+    NumGlyphs = 0
     OnClick = SB1Click
-    Left = 92
-    Height = 25
-    Hint = 'Copy variables'
-    Top = 300
-    Width = 25
   end
   object SB2: TSpeedButton
+    Left = 117
+    Height = 25
+    Hint = 'Paste variables'
+    Top = 300
+    Width = 25
+    Color = clBtnFace
     Glyph.Data = {
       F6000000424DF600000000000000760000002800000010000000100000000100
       04000000000080000000C30E0000C30E00001000000010000000000000000000
@@ -44,50 +50,51 @@ object frEvForm: TfrEvForm
       000778FFFF8BBBB0F07778F0008BBBB0077778F0FF888880077778FF0F00F0FF
       0777778880FF0888777777777000077777777777777777777777
     }
+    NumGlyphs = 0
     OnClick = SB2Click
-    Left = 117
-    Height = 25
-    Hint = 'Paste variables'
-    Top = 300
-    Width = 25
   end
   object Bevel1: TBevel
-    Height = 2
     Left = 4
-    Name = 'Bevel1'
+    Height = 2
+    Top = 288
+    Width = 320
+    Anchors = [akTop, akLeft, akRight]
     Shape = bsTopLine
-    Top = 288
-    Width = 317
-    Left = 4
-    Height = 2
-    Top = 288
-    Width = 317
   end
   object Label1: TLabel
+    Left = 4
+    Height = 14
+    Top = 8
+    Width = 39
     Caption = '&Variable'
     FocusControl = VarCombo
-    Left = 4
-    Height = 13
-    Top = 8
-    Width = 64
+    ParentColor = False
   end
   object Label2: TLabel
+    Left = 166
+    Height = 14
+    Top = 8
+    Width = 27
     Caption = 'Va&lue'
     FocusControl = ValCombo
-    Left = 166
-    Height = 13
-    Top = 8
-    Width = 48
+    ParentColor = False
   end
   object Label3: TLabel
+    Left = 4
+    Height = 14
+    Top = 244
+    Width = 53
     Caption = '&Expression'
     FocusControl = Edit1
-    Left = 4
-    Height = 13
-    Top = 244
-    Width = 163
+    ParentColor = False
   end
   object VarCombo: TComboBox
+    Left = 4
+    Height = 21
+    Top = 24
+    Width = 155
+    HelpContext = 69
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     Enabled = False
     ItemHeight = 13
     MaxLength = 0
@@ -95,25 +102,26 @@ object frEvForm: TfrEvForm
     OnClick = VarComboClick
     Style = csDropDownList
     TabOrder = 0
-    Left = 4
-    Height = 21
-    Top = 24
-    Width = 155
-    HelpContext = 69
   end
   object VarList: TListBox
-    ClickOnSelChange = False
-    ItemHeight = 13
-    OnClick = VarListClick
-    TabOrder = 1
-    TopIndex = -1
     Left = 4
     Height = 189
     Top = 48
     Width = 155
     HelpContext = 78
+    ClickOnSelChange = False
+    ItemHeight = 13
+    OnClick = VarListClick
+    TabOrder = 1
   end
   object ValCombo: TComboBox
+    Left = 166
+    Height = 21
+    Top = 24
+    Width = 158
+    HelpContext = 87
+    Anchors = [akTop, akLeft, akRight]
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     Enabled = False
     ItemHeight = 13
     MaxLength = 0
@@ -121,65 +129,63 @@ object frEvForm: TfrEvForm
     OnClick = ValComboClick
     Style = csDropDownList
     TabOrder = 2
-    Left = 166
-    Height = 21
-    Top = 24
-    Width = 155
-    HelpContext = 87
   end
   object ValList: TListBox
+    Left = 166
+    Height = 189
+    Top = 48
+    Width = 158
+    HelpContext = 93
+    Anchors = [akTop, akLeft, akRight]
     ClickOnSelChange = False
     ItemHeight = 13
     OnClick = ValListClick
     OnExit = Edit1Exit
     TabOrder = 3
-    TopIndex = -1
-    Left = 166
-    Height = 189
-    Top = 48
-    Width = 155
-    HelpContext = 93
   end
   object Button1: TButton
+    Left = 169
+    Height = 25
+    Top = 300
+    Width = 75
+    HelpContext = 40
+    Anchors = [akTop, akRight]
     Caption = 'OK'
     Default = True
     ModalResult = 1
     OnClick = Button1Click
     TabOrder = 4
-    Left = 166
-    Height = 25
-    Top = 300
-    Width = 75
-    HelpContext = 40
   end
   object Edit1: TEdit
-    OnExit = Edit1Exit
-    TabOrder = 5
     Left = 4
     Height = 21
     Top = 260
-    Width = 317
+    Width = 320
     HelpContext = 104
+    Anchors = [akTop, akLeft, akRight]
+    OnExit = Edit1Exit
+    TabOrder = 5
   end
   object Button2: TButton
-    Cancel = True
-    Caption = 'Cancel'
-    ModalResult = 2
-    TabOrder = 6
-    Left = 246
+    Left = 249
     Height = 25
     Top = 300
     Width = 75
     HelpContext = 50
+    Anchors = [akTop, akRight]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 6
   end
   object Button3: TButton
-    Caption = 'Va&riables...'
-    OnClick = Button3Click
-    TabOrder = 7
     Left = 4
     Height = 25
     Top = 300
     Width = 85
     HelpContext = 114
+    Caption = 'Va&riables...'
+    OnClick = Button3Click
+    TabOrder = 7
   end
 end

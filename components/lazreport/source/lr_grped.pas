@@ -19,16 +19,16 @@ uses
   Forms, Controls, Graphics, Dialogs,
   Buttons, StdCtrls,ExtCtrls,
 
-  LR_Class,LR_Const;
+  LR_Class,LR_Const, ButtonPanel, EditBtn;
 
 type
+
+  { TfrGroupEditorForm }
+
   TfrGroupEditorForm = class(TForm)
-    Button1: TButton;
-    Button2: TButton;
+    ButtonPanel1: TButtonPanel;
+    Edit1: TEditButton;
     GB1: TGroupBox;
-    Edit1: TEdit;
-    Panel1: TPanel;
-    frSpeedButton1: TSpeedButton;
     procedure frSpeedButton1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -68,9 +68,7 @@ procedure TfrGroupEditorForm.FormCreate(Sender: TObject);
 begin
   Caption := sGroupEditorFormCapt;
   GB1.Caption := sGroupEditorFormCond;
-  frSpeedButton1.Hint := sGroupEditorFormAddDbField;
-  Button1.Caption := sOk;
-  Button2.Caption := sCancel;
+  Edit1.ButtonHint := sGroupEditorFormAddDbField;
 end;
 
 INITIALIZATION
