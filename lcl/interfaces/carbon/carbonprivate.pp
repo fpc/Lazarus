@@ -266,8 +266,6 @@ type
     procedure SetAlignment(AAlignment: TAlignment); virtual;
   end;
   
-procedure RaiseCreateWidgetError(AControl: TWinControl);
-
 function GetCarbonWidget(AWidget: Pointer): TCarbonWidget;
 function GetCarbonWindow(AWidget: WindowRef): TCarbonWindow;
 function GetCarbonControl(AWidget: ControlRef): TCarbonControl;
@@ -276,18 +274,6 @@ implementation
 
 uses InterfaceBase, CarbonInt, CarbonProc, CarbonDbgConsts, CarbonUtils,
   CarbonWSStdCtrls, CarbonCanvas, CarbonCaret;
-
-{------------------------------------------------------------------------------
-  Name:    RaiseCreateWidgetError
-  Params:  AControl - Which control was being created
-  
-  Raises exception for widget creation error
- ------------------------------------------------------------------------------}
-procedure RaiseCreateWidgetError(AControl: TWinControl);
-begin
-  raise Exception.CreateFmt('Unable to create Carbon widget for %s: %s!',
-    [AControl.Name, AControl.ClassName]);
-end;
 
 {------------------------------------------------------------------------------
   Name:    GetCarbonWidget

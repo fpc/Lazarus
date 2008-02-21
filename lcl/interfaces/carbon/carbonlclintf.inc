@@ -547,23 +547,65 @@ end;
           ADC:       Source dc
           ARect:     Source rect (TODO)
 
-  Returns: True if the function succeeds
+  This function is utilized when the function TBitmap.LoadFromDevice is called
 
-  Creates a raw image from the specified devicecontext
+  The main use for this function is to get a screenshot.
+
+  MWE: exept for the desktop, there is always a bitmep selected in the DC.
+       So get this internal bitmap and pass it to RawImage_FromBitmap
+       
+ The ScreenShot getting code uses OpenGL to get a CGImageRef.
+ 
+ The only way to access the bytes of a CGImageRef is by drawing it to a canvas
+ and then reading the data from the canvas. In doing it we can choose the pixel
+ format for the canvas, so we choose a convenient one: ARGB, 32-bits depth,
+ just like the standard image description.
+
+ See also: Technical Q&A QA1509 - Getting the pixel data from a CGImage object
+
+ http://developer.apple.com/qa/qa2007/qa1509.html
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 var
   CBC: TCarbonBitmapContext absolute ADC;
+  Desc: TRawImageDescription absolute ARawImage.Description;
+  displayID: CGDirectDisplayID;
+  ScreenImage: CGImageRef;
+  dataProvider: CGDataProviderRef;
+  data: CFDataRef;
 begin
   Result := False;
-  if not CheckDC(ADC, 'RawImage_FromDevice') then Exit;
-  if not (CBC is TCarbonBitmapContext)
-  then begin
-    DebugLn('[WARNING] RawImage_FromDevice: DC is not a CarbonBitmapContext');
+
+  // Verifies if we are getting the rawimage from a normal DC as opposed to a
+  // desktop DC
+  if CheckDC(ADC, 'RawImage_FromDevice') and (CBC is TCarbonBitmapContext) then
+  begin
+    Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, ARect);
     Exit;
   end;
 
-  Result := RawImage_FromCarbonBitmap(ARawImage, CBC.Bitmap, nil, ARect)
+  { Screenshot taking code starts here }
+
+  { Get's a screenshot }
+  displayID := CGMainDisplayID();
+  ScreenImage := grabViaOpenGL(displayID, CGDisplayBounds(displayID));
+  dataProvider := CGImageGetDataProvider(ScreenImage);
+
+  { Fills the image description }
+  ARawImage.Init;
+  FillStandardDescription(ARawImage.Description);
+  ARawImage.Description.Height := CGImageGetHeight(ScreenImage);
+  ARawImage.Description.Width := CGImageGetWidth(ScreenImage);
+  ARawImage.Mask := nil;
+
+  { Copies the image data to a local buffer }
+  ARawImage.Data := GetImagePixelData(ScreenImage, ARawImage.DataSize);
+
+  { clean-up }
+  CGDataProviderRelease(dataProvider);
+  CGImageRelease(ScreenImage);
+
+  Result := True;
 end;
 
 {------------------------------------------------------------------------------

@@ -460,7 +460,7 @@ const LCLWidgetLinkerAddition: array[TLCLPlatform] of string = (
     '', // gtk2
     '', // win32
     '', // wince
-    ' -k-framework -kcarbon', // carbon
+    ' -k-framework -kcarbon -k-framework -kOpenGL', // carbon
     '', // qt
     '', // fpGUI
     ''  // noGUI

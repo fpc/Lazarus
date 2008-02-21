@@ -677,6 +677,80 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonWidgetSet.GetImagePixelData
+  
+  Used by RawImage_FromDevice. Copies the data from a CGImageRef into a local
+  buffer.
+
+  The buffer is created using GetMem, and the caller is responsible for using
+  FreeMem to free the returned pointer.
+  
+  This function throws exceptions in case of errors and may return a nil pointer.
+ ------------------------------------------------------------------------------}
+function TCarbonWidgetSet.GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
+var
+  bitmapData: Pointer;
+  context: CGContextRef = nil;
+  colorSpace: CGColorSpaceRef;
+  bitmapBytesPerRow, pixelsWide, pixelsHigh: PtrUInt;
+  imageRect: CGRect;
+begin
+  Result := nil;
+
+   // Get image width, height. The entire image is used.
+  pixelsWide := CGImageGetWidth(AImage);
+  pixelsHigh := CGImageGetHeight(AImage);
+  imageRect.origin.x := 0.0;
+  imageRect.origin.y := 0.0;
+  imageRect.size.width := pixelsWide;
+  imageRect.size.height := pixelsHigh;
+
+  // The target format is fixed in ARGB, with 32-bits depth and
+  // 8-bits per channel, the default image format on the LCL
+  bitmapBytesPerRow   := (pixelsWide * 4);
+  bitmapByteCount     := (bitmapBytesPerRow * pixelsHigh);
+
+  // Use the generic RGB color space.
+  colorSpace := CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+  if (colorSpace = nil) then RaiseColorSpaceError;
+
+  // Allocate memory for image data. This is the destination in memory
+  // where any drawing to the bitmap context will be rendered.
+  bitmapData := System.GetMem( bitmapByteCount );
+  if (bitmapData = nil) then RaiseMemoryAllocationError;
+
+  { Creates the bitmap context.
+
+    Regardless of what the source image format is, it will be converted
+    over to the format specified here by CGBitmapContextCreate. }
+  context := CGBitmapContextCreate(bitmapData,
+                                   pixelsWide,
+                                   pixelsHigh,
+                                   8,      // bits per component
+                                   bitmapBytesPerRow,
+                                   colorSpace,
+                                   kCGImageAlphaFirst);
+  if (context = nil) then
+  begin
+    System.FreeMem(bitmapData);
+    RaiseContextCreationError;
+  end;
+
+  // Draw the image to the bitmap context. Once we draw, the memory
+  // allocated for the context for rendering will then contain the
+  // raw image data in the specified color space.
+  CGContextDrawImage(context, imageRect, AImage);
+
+  // Now we can get a pointer to the image data associated with the context.
+  // ToDo: Verify if we should copy this data to a new buffer
+  Result := CGBitmapContextGetData(context);
+
+  { Clean-up }
+  CGColorSpaceRelease(colorSpace);
+  CGContextRelease(context);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonWidgetSet.CreateThemeServices
   Returns: Theme Services object for Carbon interface
  ------------------------------------------------------------------------------}

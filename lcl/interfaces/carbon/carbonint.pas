@@ -47,6 +47,7 @@ uses
  {$ifdef DebugBitmaps}
   CarbonDebug,
  {$endif}
+   glgrab,
  // LCL
   LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
   GraphType, GraphMath, Graphics, Controls, Forms, Dialogs, Menus, Maps, Themes;
@@ -68,7 +69,7 @@ type
 
     function RawImage_DescriptionFromCarbonBitmap(out ADesc: TRawImageDescription; ABitmap: TCarbonBitmap): Boolean;
     function RawImage_FromCarbonBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCarbonBitmap; const ARect: TRect): Boolean;
-
+    function GetImagePixelData(AImage: CGImageRef; var bitmapByteCount: PtrUInt): Pointer;
   protected
     function CreateThemeServices: TThemeServices; override;
     procedure PassCmdLineOptions; override;

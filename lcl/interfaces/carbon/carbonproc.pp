@@ -125,6 +125,12 @@ function DbgS(const AColor: FPCMacOSAll.RGBColor): string; overload;
 function DbgS(const APoint: HIPoint): string; overload;
 function DbgS(const ASize: HISize): string; overload;
 
+// Exception raising functions to centralize error strings
+procedure RaiseCreateWidgetError(AControl: TWinControl);
+procedure RaiseColorSpaceError;
+procedure RaiseMemoryAllocationError;
+procedure RaiseContextCreationError;
+
 implementation
 
 uses CarbonDbgConsts;
@@ -1019,6 +1025,35 @@ end;
 function DbgS(const ASize: HISize): string;
 begin
   Result := 'W: ' + DbgS(ASize.width) + ' H: ' + DbgS(ASize.height);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    RaiseCreateWidgetError
+  Params:  AControl - Which control was being created
+
+  Raises exception for widget creation error
+  
+  Used on CarbonPrivate
+ ------------------------------------------------------------------------------}
+procedure RaiseCreateWidgetError(AControl: TWinControl);
+begin
+  raise Exception.CreateFmt('Unable to create Carbon widget for %s: %s!',
+    [AControl.Name, AControl.ClassName]);
+end;
+
+procedure RaiseColorSpaceError;
+begin
+  raise Exception.Create('Unable to create CGColorSpaceRef');
+end;
+
+procedure RaiseMemoryAllocationError;
+begin
+  raise Exception.Create('Unable to allocate memory');
+end;
+
+procedure RaiseContextCreationError;
+begin
+  raise Exception.Create('Unable to create CGContextRef');
 end;
 
 {------------------------------------------------------------------------------
