@@ -62,6 +62,9 @@ end;
 procedure TCustomLabel.FontChanged(Sender: TObject);
 begin
   inherited FontChanged(Sender);
+  InvalidatePreferredSize;
+  if (Parent<>nil) and Parent.AutoSize then
+    Parent.AdjustSize;
   AdjustSize;
 end;
 
@@ -141,7 +144,7 @@ begin
     FFocusControl.SetFocus;
 end;
 
-Function TCustomLabel.GetAlignment : TAlignment;
+function TCustomLabel.GetAlignment : TAlignment;
 begin
   Result := FAlignment;
 end;
@@ -151,9 +154,9 @@ begin
   Result := Caption;
 end;
 
-Procedure TCustomLabel.SetShowAccelChar(Value : Boolean);
+procedure TCustomLabel.SetShowAccelChar(Value : Boolean);
 begin
-  If FShowAccelChar <> Value then
+  if FShowAccelChar <> Value then
   begin
     FShowAccelChar := Value;
     Invalidate;
@@ -176,7 +179,7 @@ begin
     AdjustFontForOptimalFill;
 end;
 
-Function TCustomLabel.GetShowAccelChar : Boolean;
+function TCustomLabel.GetShowAccelChar : Boolean;
 begin
   Result := FShowAccelChar;
 end;
