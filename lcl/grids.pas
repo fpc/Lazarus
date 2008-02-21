@@ -2141,9 +2141,30 @@ begin
 end;
 
 procedure TCustomGrid.AdjustDefaultRowHeight;
+  procedure CalcDefRowHeight(aCanvas: TCanvas);
+  begin
+    DefaultRowHeight := ACanvas.TextHeight('Fj')+7
+  end;
+var
+  TmpCanvas: TCanvas;
+  DC: HDC;
 begin
   if not (gfDefRowHeightChanged in GridFlags) then begin
-    DefaultRowHeight := Canvas.TextHeight('Fj')+7;
+
+    if Canvas.HandleAllocated then
+      CalcDefRowHeight(Canvas)
+    else begin
+      DC := GetDC(Handle);
+      TmpCanvas := TCanvas.Create;
+      try
+        tmpCanvas.Handle:=DC;
+        TmpCanvas.Font.Assign(Font);
+        CalcDefRowHeight(TmpCanvas);
+      finally
+        TmpCanvas.Free;
+        ReleaseDC(Handle, DC);
+      end;
+    end;
     Exclude(FGridFlags, gfDefRowHeightChanged);
   end;
 end;
