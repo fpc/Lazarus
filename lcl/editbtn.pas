@@ -678,7 +678,9 @@ end;
 procedure TCustomEditButton.SetReadOnly(Value: Boolean);
 begin
   inherited SetReadOnly(Value);
-  FButton.Enabled := not Value;
+  // Paul: ReadOnly should affect only editbox to prevent editing it by hands
+
+  //FButton.Enabled := not Value;
 end;
 
 procedure TCustomEditButton.DoPositionButton;
