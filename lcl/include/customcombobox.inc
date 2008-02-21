@@ -715,6 +715,7 @@ begin
   inherited Create(TheOwner);
 
   fCompStyle := csComboBox;
+  ControlStyle := ControlStyle - [csCaptureMouse];
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   FItems := TStringlist.Create;
   FItemIndex:=-1;

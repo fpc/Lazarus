@@ -1184,7 +1184,7 @@ type
   TCheckBoxStyle = (cbsSystem, cbsCrissCross, cbsCheck);
 
   TCheckBox = class(TCustomControl)
-  Private
+  private
     FAllowGrayed,
     FWordWrap,
     FAttachTextToBox: Boolean;

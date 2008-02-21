@@ -2528,6 +2528,7 @@ end;
 
 procedure TQtWidget.grabMouse;
 begin
+  //DumpStack;
   //DebugLn(['current grab is: ', dbgs(QWidget_mouseGrabber())]);
   //DebugLn(['grab mouse for: ', dbgsName(LCLObject), ' : ', dbgs(Widget)]);
   QWidget_grabMouse(Widget);

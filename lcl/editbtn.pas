@@ -46,7 +46,7 @@ type
     function GetButtonWidth: Integer;
     function GetDirectInput: Boolean;
     function GetFlat: Boolean;
-    Procedure CheckButtonVisible;
+    procedure CheckButtonVisible;
     procedure SetButtonHint(const AValue: TTranslateString);
     procedure SetButtonNeedsFocus(const AValue: Boolean);
     procedure SetButtonWidth(const AValue: Integer);
@@ -64,7 +64,7 @@ type
     procedure SetReadOnly(Value: Boolean); override;
     procedure DoPositionButton; virtual;
     procedure DoButtonClick (Sender: TObject); virtual;
-    Procedure Loaded; override;
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
     procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
@@ -537,7 +537,6 @@ begin
 end;
 
 procedure TCustomEditButton.SetGlyph(Pic: TBitmap);
-
 Begin
   FButton.Glyph:=Pic;
 end;
