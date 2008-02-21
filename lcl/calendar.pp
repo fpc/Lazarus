@@ -150,7 +150,7 @@ begin
   fCompStyle := csCalendar;
   SetInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
-  ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls];
+  ControlStyle:=ControlStyle-[csTripleClicks,csQuadClicks,csAcceptsControls,csCaptureMouse];
   DateTime := Now;
 end;
 

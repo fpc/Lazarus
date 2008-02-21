@@ -235,7 +235,7 @@ type
     procedure SlotRangeChanged(minimum: Integer; maximum: Integer); cdecl; virtual;
     procedure SlotSliderPressed; cdecl;
     procedure SlotSliderReleased; cdecl;
- public
+  public
     function getOrientation: QtOrientation;
     function getValue: Integer;
     function getPageStep: Integer;
@@ -324,6 +324,7 @@ type
   end;
   
   { TQtViewPort }
+  
   TQtViewPort = class(TQtWidget)
   public
     function getClientBounds: TRect; override;
@@ -7337,9 +7338,8 @@ begin
   y := QDate_year(ADate);
   m := QDate_month(ADate);
   d := QDate_day(ADate);
-  if (y <> aYear) or (m <> aMonth)
-  or (d <> aDay) then
-  	DeliverMessage(Msg);
+  if (y <> aYear) or (m <> aMonth) or (d <> aDay) then
+    DeliverMessage(Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -7351,9 +7351,9 @@ end;
 procedure TQtCalendar.SignalClicked(ADate: QDateH); cdecl;
 var
   Msg: TLMessage;
-  y,m,d: Integer;
+  y, m, d: Integer;
 begin
-//  writeln('TQtCalendar.signalClicked');
+  //writeln('TQtCalendar.signalClicked');
   FillChar(Msg, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
