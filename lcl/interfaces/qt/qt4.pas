@@ -1,6 +1,6 @@
 unit qt4;
 
-{ Version : 1.60 }
+{ Version : 1.61 }
 
 {$ifdef fpc}
   {$mode delphi}
@@ -1394,6 +1394,7 @@ function QObject_thread(handle: QObjectH): QThreadH; cdecl; external QtIntf name
 procedure QObject_moveToThread(handle: QObjectH; thread: QThreadH); cdecl; external QtIntf name 'QObject_moveToThread';
 function QObject_startTimer(handle: QObjectH; interval: Integer): Integer; cdecl; external QtIntf name 'QObject_startTimer';
 procedure QObject_killTimer(handle: QObjectH; id: Integer); cdecl; external QtIntf name 'QObject_killTimer';
+procedure QObject_children(handle: QObjectH; retval: PIntArray); cdecl; external QtIntf name 'QObject_children';
 procedure QObject_setParent(handle: QObjectH; p1: QObjectH); cdecl; external QtIntf name 'QObject_setParent';
 procedure QObject_installEventFilter(handle: QObjectH; p1: QObjectH); cdecl; external QtIntf name 'QObject_installEventFilter';
 procedure QObject_removeEventFilter(handle: QObjectH; p1: QObjectH); cdecl; external QtIntf name 'QObject_removeEventFilter';
