@@ -2088,7 +2088,7 @@ Processor specific options:
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
   
-  // add Linker options for wigdet set
+  // add Linker options for widgetset
   if not (ccloNoLinkerOpts in Flags) then
   begin
     LinkerAddition := LCLWidgetLinkerAddition[DirNameToLCLPlatform(GetEffectiveLCLWidgetType)];

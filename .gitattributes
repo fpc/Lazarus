@@ -2944,7 +2944,6 @@ lcl/interfaces/carbon/carbonwsarrow.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsbuttons.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwscalendar.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwschecklst.pp svneol=native#text/pascal
-lcl/interfaces/carbon/carbonwsclistbox.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwscomctrls.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwscontrols.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwsdbctrls.pp svneol=native#text/pascal

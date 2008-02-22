@@ -143,7 +143,6 @@ uses
   CarbonWSButtons,
 // CarbonWSCalendar,
  CarbonWSCheckLst,
-// CarbonWSCListBox,
   CarbonWSComCtrls,
   CarbonWSControls,
 // CarbonWSDbCtrls,
@@ -170,7 +169,7 @@ uses
   CarbonThemes, CarbonCanvas, CarbonStrings, CarbonClipboard, CarbonCaret,
   CarbonProc, CarbonDbgConsts, CarbonUtils,
   
-  Buttons, StdCtrls, PairSplitter, ComCtrls, CListBox, Calendar, Arrow,
+  Buttons, StdCtrls, PairSplitter, ComCtrls, Calendar, Arrow,
   Spin, ExtCtrls, FileCtrl, LResources;
 
 // the implementation of the utility methods

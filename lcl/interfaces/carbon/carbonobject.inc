@@ -729,7 +729,7 @@ begin
                                    8,      // bits per component
                                    bitmapBytesPerRow,
                                    colorSpace,
-                                   kCGImageAlphaFirst);
+                                   kCGImageAlphaNoneSkipFirst); // The function fails with kCGImageAlphaFirst
   if (context = nil) then
   begin
     System.FreeMem(bitmapData);
