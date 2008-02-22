@@ -53,6 +53,7 @@ type
     procedure Attach(AParent: TCarbonTabsControl);
     procedure UpdateTab;
     function SetText(const S: String): Boolean; override;
+    procedure ShowHide(AVisible: Boolean); override;
   end;
 
   { TCarbonTabsControl }
@@ -92,6 +93,8 @@ type
   public
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
+    
+    function IsDesignInteractive(const P: TPoint): Boolean;
     
     procedure ScrollTabsLeft;
     procedure ScrollTabsRight;
@@ -178,6 +181,27 @@ begin
   Result := False;
   FParent.UpdateTabs;
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTab.ShowHide
+  Params:  AVisible - if show
+
+  Shows or hides control
+ ------------------------------------------------------------------------------}
+procedure TCarbonTab.ShowHide(AVisible: Boolean);
+begin
+  if not (csDesigning in LCLObject.ComponentState) then
+    inherited ShowHide(AVisible)
+  else
+  begin
+    if FParent <> nil then
+      AVisible :=
+        (LCLObject as TCustomPage).PageIndex = (FParent.LCLObject as TCustomNotebook).PageIndex;
+
+    OSError(HIViewSetVisible(Frames[0], AVisible),
+      Self, 'ShowHide', SViewVisible);
+  end;
 end;
 
 { TCarbonTabsControl }
@@ -725,6 +749,26 @@ begin
   end;
   
   UpdateTabs;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonTabsControl.IsDesignInteractive
+  Params:  P
+  Returns: If the pos is design interactive
+ ------------------------------------------------------------------------------}
+function TCarbonTabsControl.IsDesignInteractive(const P: TPoint): Boolean;
+var
+  R: TRect;
+begin
+  GetClientRect(R);
+  Offsetrect(R, -R.Left, -R.Top);
+  
+  case FTabPosition of
+    tpTop: Result := P.Y < R.Top;
+    tpBottom: Result := P.Y > R.Bottom;
+    tpLeft: Result := P.X < R.Left;
+    tpRight: Result := P.X > R.Right;
+  end;
 end;
 
 {------------------------------------------------------------------------------
