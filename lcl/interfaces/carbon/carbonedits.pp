@@ -53,6 +53,8 @@ type
   public
     procedure TextDidChange; dynamic;
   public
+    function GetPreferredSize: TPoint; override;
+
     function GetSelStart(var ASelStart: Integer): Boolean;
     function GetSelLength(var ASelLength: Integer): Boolean;
     function SetSelStart(ASelStart: Integer): Boolean;
@@ -86,6 +88,7 @@ type
     procedure FocusKilled; override;
   public
     function GetText(var S: String): Boolean; override;
+    function SetBounds(const ARect: TRect): Boolean; override;
     procedure SetReadOnly(AReadOnly: Boolean); override;
     
     function GetItemIndex: Integer;
@@ -280,6 +283,16 @@ begin
   FillChar(Msg, SizeOf(Msg), 0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(LCLObject, Msg);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonControlWithEdit.GetPreferredSize
+  Returns: The preffered size of control for autosizing or (0, 0)
+ ------------------------------------------------------------------------------}
+function TCarbonControlWithEdit.GetPreferredSize: TPoint;
+begin
+  Result := inherited GetPreferredSize;
+  Result.X := 0; // don not autosize width of edit like controls
 end;
 
 {------------------------------------------------------------------------------
@@ -682,6 +695,23 @@ begin
   end
   else
     Result := inherited GetText(S);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonComboBox.SetBounds
+  Params:  ARect - Record for control coordinates
+  Returns: If function succeeds
+
+  Sets the control bounding rectangle relative to the client origin of its
+  parent
+ ------------------------------------------------------------------------------}
+function TCarbonComboBox.SetBounds(const ARect: TRect): Boolean;
+var
+  R: TRect;
+begin
+  R := ARect;
+  R.Bottom := R.Top + GetPreferredSize.Y;
+  Result := inherited SetBounds(R);
 end;
 
 {------------------------------------------------------------------------------
@@ -1368,12 +1398,12 @@ begin
  Attrs[2].size := kTXNQDFontSizeAttributeSize;
  Attrs[2].data.dataValue := AFont.Size;
 
- TCarbonFont(AFont.Handle).SetColor(AFont.Color);
+ TCarbonFont(AFont.Reference.Handle).SetColor(AFont.Color);
 
  // font style
  Attrs[3].tag := kTXNATSUIStyle;
  Attrs[3].size := kTXNATSUIStyleSize;
- Attrs[3].data.dataPtr := Pointer(TCarbonFont(AFont.Handle).Style);
+ Attrs[3].data.dataPtr := Pointer(TCarbonFont(AFont.Reference.Handle).Style);
 
  // apply
  OSError(

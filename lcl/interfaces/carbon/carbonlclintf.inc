@@ -572,7 +572,6 @@ var
   displayID: CGDirectDisplayID;
   ScreenImage: CGImageRef;
   dataProvider: CGDataProviderRef;
-  data: CFDataRef;
 begin
   Result := False;
 
