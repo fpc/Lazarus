@@ -46,7 +46,7 @@ uses
   LCLClasses, AsyncProcess, Maps, HelpIntfs, LazHelpIntf, LazHelpHTML,
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
-  Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit, ButtonPanel,
+  Dialogs, Messages, ActnList, Grids, MaskEdit, ButtonPanel,
   Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
   ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics, ColorBox,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart, LDockTree, LDockCtrl,
@@ -55,7 +55,7 @@ uses
   RubberBand,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
-  WSCheckLst, WSCListBox, WSComCtrls, WSControls,
+  WSCheckLst, WSComCtrls, WSControls,
   WSDbCtrls, WSDBGrids, WSDialogs, WSDirSel,
   WSEditBtn, WSExtCtrls, WSExtDlgs, WSFileCtrl,
   WSForms, WSGrids, WSImgList, WSMaskEdit,

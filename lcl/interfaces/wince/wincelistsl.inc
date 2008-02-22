@@ -2,7 +2,7 @@
 
 {******************************************************************************
                                  wincelistsl.inc
-                 TWinCEListStringList and TWinCECListStringList
+  TWinCEListStringList, TWinCEComboBoxStringList and TWinCECheckListBoxStrings
 
  ******************************************************************************
 

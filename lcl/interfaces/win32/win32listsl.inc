@@ -2,7 +2,7 @@
 
 {******************************************************************************
                                  win32listsl.inc
-                 TWin32ListStringList and TWin32CListStringList
+  TWin32ListStringList, TWin32ComboBoxStringList and TWin32CheckListBoxStrings
 
  ******************************************************************************
 

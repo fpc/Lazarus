@@ -2,7 +2,7 @@
 
 {******************************************************************************
                                  win32listslh.inc
-                 TWinCEListStringList and TWinCECListStringList
+  TWinCEListStringList, TWinCEComboBoxStringList and TWinCECheckListBoxStrings
 
  ******************************************************************************
 
