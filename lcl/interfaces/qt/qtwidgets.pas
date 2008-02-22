@@ -1037,13 +1037,17 @@ type
     FActivatedHook: QCalendarWidget_hookH;
     FSelectionChangedHook: QCalendarWidget_hookH;
     FCurrentPageChangedHook: QCalendarWidget_hookH;
+    FChildren: TList;
+    FChildrenHooks: TList;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    procedure DestroyWidget; override;
+    function ChildEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
   public
     AYear, AMonth, ADay: Word;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
-    
+
     procedure SignalActivated(ADate: QDateH); cdecl;
     procedure SignalClicked(ADate: QDateH); cdecl;
     procedure SignalSelectionChanged; cdecl;
@@ -7276,17 +7280,37 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 function TQtCalendar.CreateWidget(const AParams: TCreateParams):QWidgetH;
+var
+  Children: TIntArray;
+  AnObject: QObjectH;
+  i: integer;
 begin
   // Creates the widget
   {$ifdef VerboseQt}
     WriteLn('TQtCalendar.Create');
   {$endif}
   Result := QCalendarWidget_create();
+  FChildren := TList.Create;
+  QObject_children(Result, @Children);
+  for i := 0 to High(Children) do
+  begin
+    AnObject := QObjectH(Children[i]);
+    if QObject_isWidgetType(AnObject) then
+      FChildren.Add(AnObject);
+  end;
+end;
+
+procedure TQtCalendar.DestroyWidget;
+begin
+  FChildren.Free;
+  inherited DestroyWidget;
 end;
 
 procedure TQtCalendar.AttachEvents;
 var
   Method: TMethod;
+  Hook: QObject_hookH;
+  i: integer;
 begin
   inherited AttachEvents;
   
@@ -7309,15 +7333,49 @@ begin
 
   QCalendarWidget_currentPageChanged_Event(Method) := @SignalCurrentPageChanged;
   QCalendarWidget_hook_hook_currentPageChanged(FCurrentPageChangedHook, Method);
+  
+  FChildrenHooks := TList.Create;
+  for i := 0 to FChildren.Count - 1 do
+  begin
+    Hook := QObject_hook_create(QObjectH(FChildren[i]));
+    TEventFilterMethod(Method) := @ChildEventFilter;
+    QObject_hook_hook_events(Hook, Method);
+    FChildrenHooks.Add(Hook);
+  end;
 end;
 
 procedure TQtCalendar.DetachEvents;
+var
+  i: integer;
+  Hook: QObject_hookH;
 begin
   QCalendarWidget_hook_destroy(FClickedHook);
   QCalendarWidget_hook_destroy(FActivatedHook);
   QCalendarWidget_hook_destroy(FSelectionChangedHook);
   QCalendarWidget_hook_destroy(FCurrentPageChangedHook);
+
+  if FChildrenHooks <> nil then
+  begin
+    for i := 0 to FChildrenHooks.Count - 1 do
+    begin
+      Hook := QObject_hookH(FChildrenHooks[i]);
+      QObject_hook_destroy(Hook);
+    end;
+    FreeAndNil(FChildrenHooks);
+  end;
   inherited DetachEvents;
+end;
+
+function TQtCalendar.ChildEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+begin
+  Result := False;
+
+  case QEvent_type(Event) of
+    QEventMouseButtonPress,
+    QEventMouseButtonRelease,
+    QEventMouseButtonDblClick:
+      debugln(['mouse event: ', QEvent_type(Event)]);
+  end;
 end;
 
 {------------------------------------------------------------------------------
