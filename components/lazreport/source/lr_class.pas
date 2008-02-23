@@ -8379,8 +8379,9 @@ begin
   if dk <> dkNone then
   begin
     if dk = dkCount then
-      DataSet := frGetDataSet(p1) else
-      frGetDataSetAndField(p1, DataSet, Field);
+      DataSet := frGetDataSet(lrGetUnBrackedStr(p1))
+    else
+      frGetDataSetAndField(lrGetUnBrackedStr(p1), DataSet, Field);
     if (DataSet <> nil) and AggrBand.Visible then
     begin
       min := 1e200; max := -1e200; sum := 0; count := 0; avg := 0;

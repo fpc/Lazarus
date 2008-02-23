@@ -49,6 +49,10 @@ function frGetWindowsVersion: String;
 
 function frTypeObjectToStr(ot : Byte):string;
 function StrTofrTypeObject(St : string) : Byte;
+
+
+function lrGetUnBrackedStr(const S:string):string; //remove '[' from begion of string and ']' from end
+
 implementation
 
 uses LR_Class, LR_DSet;
@@ -507,6 +511,23 @@ begin
         else
          if SameText(St,'gtAddIn') then
            result:=gtAddIn;
+end;
+
+function lrGetUnBrackedStr(const S: string): string;
+var
+  Cnt, i:integer;
+begin
+  Cnt:=Length(S);
+  if (Cnt>2) and (S[1]='[') then
+  begin
+    for i := Cnt downto 2 do
+      if S[i]=']' then
+      begin
+        Result:=Copy(S, 2, i-2);
+        exit;
+      end;
+  end;
+  Result:=S;
 end;
 
 end.
