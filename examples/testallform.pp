@@ -40,7 +40,7 @@ interface
 {$ASSERTIONS ON}
 
 
-uses Classes, Forms, Buttons, StdCtrls, Controls, Menus, ExtCtrls, CListBox,
+uses Classes, Forms, Buttons, StdCtrls, Controls, Menus, ExtCtrls,
      ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, ClipBrd,
      LCLIntf, LResources;
 
@@ -53,7 +53,6 @@ type
       Button1           : Array[0..15] of TButton;
       CheckBox1         : Array[1..35] of TCheckBox;
     //ClipBoard1        : TClipBoard;
-      CListBox1         : TClistBox;
       ColorDialog1      : TColorDialog;
       ComboBox1         : TComboBox;
     //DirectoryListBox1 : TDirectoryListBox;
@@ -94,6 +93,7 @@ type
       PaintBox1         : TPaintBox;
       Panel1            : TPanel;
       PixMap1           : TPixMap;
+      png               : TPortableNetworkGraphic;
       PopupMenu1        : TPopupMenu;
       Hello             : TMenuItem;
       Doctor            : TMenuItem;
@@ -326,7 +326,7 @@ implementation
       end;
     end
     else
-       writeln ('TestAll Warning: resource "', ResourceName,'" not found!');
+       //debugln ('TestAll Warning: resource "', ResourceName,'" not found!');
   end;
 
 {$I testtools.inc}
@@ -549,10 +549,6 @@ begin
   TClip.Caption := 'TClipBoard';
   TClip.OnClick := @ShowMessage1;
 
-  TClis := TMenuItem.Create(Self);
-  TClis.Caption := 'TCListBox';
-  TClis.OnClick := @ShowMessage1;
-
   TCol := TMenuItem.Create(Self);
   TCol.Caption := 'TColorDialog';
   TCol.OnClick := @ShowMessage1;
@@ -568,7 +564,6 @@ begin
   AC1.Add(TCan);
   AC1.Add(TChe);
   AC1.Add(TClip);
-  AC1.Add(TClis);
   AC1.Add(TCol);
   AC1.Add(TCom);
 
@@ -920,14 +915,9 @@ Bevel1 := TBevel.Create(Self);
     Width := 100;
   end;
 //++++++++++++++++++++++++++++++++++ TBitBtn1 +++++++++++++++++++++++++++++++++++++++
-S := TFileStream.Create('../images/mouse.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
-  end;
+  png := TPortableNetworkGraphic.Create;
+  png.LoadFromLazarusResource('topendialog');
+  
 BitBtn1 := TBitBtn.Create(Self);
   With BitBtn1 do
   begin
@@ -963,7 +953,7 @@ BitBtn1 := TBitBtn.Create(Self);
     Font.Pitch 	   := fpDefault;
     Font.Size 	   := 10;
     Font.Style 	   := BitBtn1.Font.Style+[fsBold];
-    Glyph	   := PixMap1;
+    Glyph	   := png;
   //height	   := 28;		Has to be set before Glyph
   //HelpContext    := 0;		Identifier not found
     Hint 	   := 'Settings for BitBtn1 >>';
@@ -1183,26 +1173,7 @@ end;
 //+++++++++++++++++++++++++++++++++++++ Clipboard1 ++++++++++++++++++++++++++++++++++
 //ClipBoard1 := TClipBoard.Create; //BenchForm[7]  Don´t know how to use !?!
 //+++++++++++++++++++++++++++++++++++++ CListBox1 +++++++++++++++++++++++++++++++++++
-CListBox1 := TCListBox.Create(Self);
-  with CListBox1 do
-  begin
-    Parent := BenchForm[8];
-    OnClick        := @EventOnClick;
-    OnMouseDown    := @EventOnMouseDown;
-    OnMouseUp      := @EventOnMouseUp;
-    OnMouseMove    := @EventOnMouseMove;
-    Items.Add('Hello');
-    Items.Add('Doctor');
-    Items.Add('Name');
-    Items.Add('Yesterday');
-    Items.Add('Tomorrow');
-    Left := 10;
-    ListColumns := 1;
-    Top := 10;
-    Width := 150;
-    Height := 100;
-    Visible := True;
-  end;
+
 //+++++++++++++++++++++++++++++++++++++ ColorDialog1 ++++++++++++++++++++++++++++++++
 ColorDialog1 := TColorDialog.Create(Self); //BenchForm[9]
 //+++++++++++++++++++++++++++++++++++++ ComboBox1 +++++++++++++++++++++++++++++++++++
@@ -2266,12 +2237,8 @@ ScrollBar1 := TScrollBar.Create(Self);
     Visible := True;
   end;}
 //++++++++++++++++++++++++++++++++++++ SpeedButton1..4 ++++++++++++++++++++++++++++++
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_openfile',Pixmap1) then
-  begin
-    LoadResource('default',Pixmap1);
-  end;
+   png := TPortableNetworkGraphic.Create;
+   png.LoadFromLazarusResource('open');
 
 SpeedButton1 := TSpeedButton.Create(Self);
    With SpeedButton1 do
@@ -2289,14 +2256,12 @@ SpeedButton1 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := Pixmap1;
+     Glyph := png;
      Visible := True;
   end;
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_save',Pixmap1) 
-        then LoadResource('default',Pixmap1);
+   png := TPortableNetworkGraphic.Create;
+   png.LoadFromLazarusResource('menu_save');
 
 SpeedButton2 := TSpeedButton.Create(Self);
    With SpeedButton2 do
@@ -2312,19 +2277,13 @@ SpeedButton2 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := Pixmap1;
+     Glyph := png;
      Enabled := True;
      Visible := True;
   end;
 
-S := TFileStream.Create('../images/fonts.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
-  end;
+   png := TPortableNetworkGraphic.Create;
+   png.LoadFromLazarusResource('item_font');
 
 SpeedButton3 := TSpeedButton.Create(Self);
    With SpeedButton3 do
@@ -2340,19 +2299,13 @@ SpeedButton3 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton1';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := Pixmap1;
+     Glyph := png;
      Enabled := True;
      Visible := True;
   end;
 
-S := TFileStream.Create('../images/color.xpm', fmOpenRead);
-  try
-    Pixmap1 := TPixmap.Create;
-    Pixmap1.TransparentColor := clBtnFace;
-    Pixmap1.LoadFromStream(S);
-  finally
-    S.Free;
-  end;
+   png := TPortableNetworkGraphic.Create;
+   png.LoadFromLazarusResource('tcolordialog');
 
 SpeedButton4 := TSpeedButton.Create(Self);
    With SpeedButton4 do
@@ -2368,10 +2321,11 @@ SpeedButton4 := TSpeedButton.Create(Self);
      Hint := 'SpeedButton4';
      Color := clBtnFace;
      ShowHint := True;
-     Glyph := Pixmap1;
+     Glyph:=png;
      Enabled := True;
      Visible := True;
   end;
+  
 //++++++++++++++++++++++++++++++++++++ SpinButton1 ++++++++++++++++++++++++++++++++++
 
 //++++++++++++++++++++++++++++++++++++ SpinEdit1 ++++++++++++++++++++++++++++++++++++

@@ -26,7 +26,7 @@ unit bitbtnform;
 interface
 
 uses
-  Classes, Forms, Buttons, cListbox, StdCtrls, Controls;
+  Classes, Forms, Buttons, StdCtrls, Controls;
 
 type
    TForm1 = class(TForm)
