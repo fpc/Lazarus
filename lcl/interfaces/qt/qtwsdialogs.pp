@@ -22,7 +22,7 @@
 }
 unit QtWSDialogs;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -299,7 +299,7 @@ end;
  ------------------------------------------------------------------------------}
 class procedure TQtWSFileDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
-  selectedFilter, ReturnText,
+  {selectedFilter, }ReturnText,
   saveFileName, saveTitle, saveFilter: WideString;
   FileDialog: TFileDialog;
   ReturnList: QStringListH;
@@ -310,7 +310,7 @@ begin
     Initialization of variables
    ------------------------------------------------------------------------------}
   ReturnText := '';
-  selectedFilter := '';
+  //selectedFilter := '';
   saveFileName := '';
   saveTitle := '';
 

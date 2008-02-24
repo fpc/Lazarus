@@ -22,7 +22,7 @@
 }
 unit QtWSCalendar;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
