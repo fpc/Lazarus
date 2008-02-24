@@ -57,6 +57,10 @@ msgstr "%s byte"
 msgid "%s directory"
 msgstr "direktori %s"
 
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s sudah merupakan bagian dari Proyek."
@@ -564,6 +568,10 @@ msgstr "Tambah titik lompatan ke histori"
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Tambah link"
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2889,6 +2897,10 @@ msgstr "Kesalahan dalam ekspresi reguler"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Kesalahan menginisialisasi program%s%s%s%s%sKesalahan: %s"
 
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
 msgstr ""
@@ -2940,6 +2952,10 @@ msgstr "Kesalahan pembacaan file info proyek %s%s%s%s%s"
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr "Kesalahan penggantian nama file"
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3153,6 +3169,10 @@ msgstr ""
 msgid "FPDoc editor"
 msgstr ""
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "FPDoc files path"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
 msgstr "Gagal untuk menjalankan piranti"
@@ -3229,9 +3249,17 @@ msgstr "File tidak bisa diulisi"
 msgid "File is readonly"
 msgstr "File adalah hanya-baca"
 
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
 msgstr "File sudah digunakan"
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4008,6 +4036,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
 msgstr "Abaikan besar dari karakter spasi"
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -4853,14 +4885,6 @@ msgstr "Menjalankan aplikasi tidak benar"
 msgid "Launching target command line"
 msgstr "Menjalankan baris perintah target"
 
-#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
-msgstr "Seting LazDoc"
-
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr "Lazarus"
@@ -5321,9 +5345,17 @@ msgstr "Turun (atau kanan)"
 msgid "Move Editor Left"
 msgstr "Pindahkan Editor ke Kiri"
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
 msgstr "Pindahkan Editor ke Kanan"
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5405,9 +5437,17 @@ msgstr "Naikkan dependensi"
 msgid "Move editor left"
 msgstr "Pindahkan editor ke kiri"
 
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Pindahkan editor ke kanan"
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5637,6 +5677,10 @@ msgstr "File program %s%s%s tidak ditemukan"
 msgid "No string constant found"
 msgstr "Tidak ada Konstan String Ditemukan"
 
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
 msgstr "Node dan anaknya hanya berlaku untuk proyek ini"
@@ -5677,9 +5721,17 @@ msgstr "Bukan unit Delphi"
 msgid "Not found"
 msgstr "Tidak ditemukan"
 
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "Belum Di Imlementasikan"
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5912,6 +5964,14 @@ msgstr "Buka yang terbaru"
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
 msgstr "Buka paket terbaru ..."
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6350,7 +6410,7 @@ msgid "Portuguese"
 msgstr "Portugis"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
+msgid "Preferred Exibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
@@ -8113,6 +8173,10 @@ msgstr "Simpan nama file dependensi"
 msgid "Stored postfix"
 msgstr "Akhiran Stored"
 
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
 msgstr "Pengaliran salah"
@@ -8481,6 +8545,10 @@ msgstr "Nama class %s%s%s mempunyai nama yang sama dengan%sunit %s%s%s."
 msgid "The class name %s%s%s is not a valid pascal identifier."
 msgstr "Nama class %s%s%s bukan pengenal pascal yang benar."
 
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "Perintah seteleh %s%s%s bukan eksekutabel."
@@ -8584,6 +8652,10 @@ msgstr "File %s nampaknya file program dari Proyek Lazarus yang sudah ada."
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "File %s%s%s"
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8823,6 +8895,10 @@ msgstr "Komponen teratas tidak bisa dihapus."
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9354,7 +9430,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "Tidak bisa menemukan file %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9509,6 +9585,14 @@ msgstr "Tidak bisa mentransformasi aliran komponen biner %s:T%s ke dalam teks"
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Tidak bisa memutakhirkan pernyataan CreateForm dalam sumber proyek"
 
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Tidak bisa menulis %s%s%s%s%s."
@@ -9552,6 +9636,10 @@ msgstr "Tidak bisa menulis ke file %s%s%s"
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
 msgstr "Tidak bisa menulis ke file %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10205,13 +10293,25 @@ msgstr "Tulis logo FPC"
 msgid "Write error"
 msgstr "Penulisan salah"
 
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Prefiks Write"
 
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
 msgstr "File XML"
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

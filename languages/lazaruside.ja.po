@@ -56,6 +56,10 @@ msgstr "%s バイト"
 msgid "%s directory"
 msgstr "%s ディレクトリ"
 
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s はすでにプロジェクトの一部です"
@@ -563,6 +567,10 @@ msgstr "履歴の移動先を追加"
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "リンク追加"
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2888,6 +2896,10 @@ msgstr "正規表現にエラー"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "プログラム%s%s%s%s%sの初期化エラー: %s"
 
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
 msgstr ""
@@ -2939,6 +2951,10 @@ msgstr "プロジェクト情報ファイル %s%s%s%s%s を読み取り中にエ
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr "ファイル名変更中にエラー"
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3152,6 +3168,10 @@ msgstr ""
 msgid "FPDoc editor"
 msgstr ""
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "FPDoc files path"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
 msgstr "ツールの実行に失敗"
@@ -3228,9 +3248,17 @@ msgstr "ファイルは書き込み不可です"
 msgid "File is readonly"
 msgstr "ファイルは読み込み専用です"
 
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
 msgstr "ファイルは使われています"
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4007,6 +4035,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
 msgstr "空白文字の量を無視"
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -4852,14 +4884,6 @@ msgstr "アプリケーションの実行が無効です"
 msgid "Launching target command line"
 msgstr "対象となるコマンドラインを実行"
 
-#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
-msgstr "LazDocの設定"
-
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr ""
@@ -5320,9 +5344,17 @@ msgstr "下（または右）に移動"
 msgid "Move Editor Left"
 msgstr "エディタを左に移動"
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
 msgstr "エディタを右に移動"
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5404,9 +5436,17 @@ msgstr "依存性を上に移動"
 msgid "Move editor left"
 msgstr "エディタを左に移動"
 
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "エディタを右に移動"
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5636,6 +5676,10 @@ msgstr "プログラムファイル%s%s%sが見つかりません。"
 msgid "No string constant found"
 msgstr "文字列定数が見つかりません。"
 
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
 msgstr "ノードとその子ノードはこのプロジェクトでのみ有効です。"
@@ -5676,9 +5720,17 @@ msgstr "Delphiユニットではありません"
 msgid "Not found"
 msgstr "見つかりません"
 
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "まだ実装されていません。"
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5911,6 +5963,14 @@ msgstr "最近扱ったファイルを開く"
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
 msgstr "最近扱ったプロジェクトを開く ..."
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6349,7 +6409,7 @@ msgid "Portuguese"
 msgstr "ポルトガル語"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
+msgid "Preferred Exibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
@@ -8112,6 +8172,10 @@ msgstr "依存ファイル名を保存"
 msgid "Stored postfix"
 msgstr "保存された接尾辞"
 
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
 msgstr "ストリーミングエラー"
@@ -8480,6 +8544,10 @@ msgstr "クラス名%s%s%sは%sユニット %s%s%sと同じ名前を持ってい
 msgid "The class name %s%s%s is not a valid pascal identifier."
 msgstr "クラス名%s%s%sは有効なpascal識別子ではありません。"
 
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr " %s%s%sの後のコマンドは実行できません。"
@@ -8583,6 +8651,10 @@ msgstr "ファイル %s はすでにあるlazarusプロジェクトのプログ�
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "ファイル %s%s%s"
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8822,6 +8894,10 @@ msgstr "rootコンポーネントは削除できません。"
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9353,7 +9429,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "が見つかりません。"
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9508,6 +9584,14 @@ msgstr "%s:T%sのバイナリコンポーネントストリームをテキスト
 msgid "Unable to update CreateForm statement in project source"
 msgstr "プロジェクトソースのCreateForm文をアップデートできません。"
 
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "%s%s%s%s%sを書き込めません。"
@@ -9551,6 +9635,10 @@ msgstr "ファイル%s%s%sに書き込めません。"
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
 msgstr "ファイル %s%s%s に書き込めません！"
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10204,13 +10292,25 @@ msgstr "FPC logoを書く"
 msgid "Write error"
 msgstr "書き込みエラー"
 
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "接頭辞を書く"
 
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
 msgstr "XML ファイル"
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

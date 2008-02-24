@@ -49,6 +49,10 @@ msgstr "%s bytes"
 msgid "%s directory"
 msgstr "Diretório %s"
 
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s já é parte do Projeto"
@@ -556,6 +560,10 @@ msgstr "Adicionar Ponto de Salto ao Histórico"
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Adicionar vínculo"
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2881,6 +2889,10 @@ msgstr "Error em expressão regular"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Erro inicializando o programa%s%s%s%s%sErro: %s"
 
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
 msgstr ""
@@ -2932,6 +2944,10 @@ msgstr "Erro na leitura do arquivo de informação do projeto %s%s%s%s%s"
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr "Erro na renomeação do arquivo"
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3145,6 +3161,10 @@ msgstr ""
 msgid "FPDoc editor"
 msgstr ""
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "FPDoc files path"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
 msgstr "Falha na execução da ferramenta"
@@ -3221,9 +3241,17 @@ msgstr "Arquivo não pode ser escrito"
 msgid "File is readonly"
 msgstr "Arquivo é somente leitura"
 
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
 msgstr "Arquivo está em uso"
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4000,6 +4028,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
 msgstr "Ignorar quantidade de espaços em branco"
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -4845,14 +4877,6 @@ msgstr "Inicialização de aplicação inválida"
 msgid "Launching target command line"
 msgstr "Lancando linha de comando alvo"
 
-#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
-msgstr "Configurações do LazDoc"
-
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr "Lazarus"
@@ -5313,9 +5337,17 @@ msgstr "Mover Abaixo (ou Direita)"
 msgid "Move Editor Left"
 msgstr "Mover Editor a esquerda"
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
 msgstr "Mover Editor a direita"
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5397,9 +5429,17 @@ msgstr "Mover dependência acima"
 msgid "Move editor left"
 msgstr "Mover editor a esquerda"
 
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Mover editor a direita"
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5629,6 +5669,10 @@ msgstr "Nenhum arquivo de programa %s%s%s encontrado."
 msgid "No string constant found"
 msgstr "Nenhuma Constante de Palavra Encontrada"
 
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
 msgstr "Ramificações e suas filhas não são válidas para este projeto"
@@ -5669,9 +5713,17 @@ msgstr "Não é uma unidade Delphi"
 msgid "Not found"
 msgstr "Não encontrado"
 
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "Não implementado ainda"
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5904,6 +5956,14 @@ msgstr "Abrir recente"
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
 msgstr "Abrir pacote recente ..."
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6342,7 +6402,7 @@ msgid "Portuguese"
 msgstr "Português"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
+msgid "Preferred Exibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
@@ -8105,6 +8165,10 @@ msgstr ""
 msgid "Stored postfix"
 msgstr "Armazenar sufixo"
 
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
 msgstr "Erro de 'Streaming'"
@@ -8473,6 +8537,10 @@ msgstr "O Nome da Classe %s%s%s tem o mesmo nome %sa unidade %s%s%s."
 msgid "The class name %s%s%s is not a valid pascal identifier."
 msgstr "O Nome da Classe %s%s%s não é um identificador Pascal válido."
 
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "O comando posterior %s%s%s não é um executável."
@@ -8576,6 +8644,10 @@ msgstr ""
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "O Arquivo %s%s%s"
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8815,6 +8887,10 @@ msgstr "O componente raiz não pode ser excluido."
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9346,7 +9422,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "Impossível localizar o arquivo %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9501,6 +9577,14 @@ msgstr "Impossível transformar o componente stream binario de %s:T%s em texto."
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Impossível atualizar declaração CreateForm no fonte do projeto"
 
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Impossível escrever %s%s%s%s%s."
@@ -9544,6 +9628,10 @@ msgstr "Impossível escrever arquivo %s%s%s"
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
 msgstr "Impossível escrever no arquivo %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10197,13 +10285,25 @@ msgstr "Escrever um logo FPC"
 msgid "Write error"
 msgstr "Erro de Escrita"
 
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Escrever prefixo"
 
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
 msgstr "Arquivos XML"
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

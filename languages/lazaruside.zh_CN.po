@@ -60,6 +60,10 @@ msgstr "%s 字节"
 msgid "%s directory"
 msgstr "%s 目录"
 
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s 已经是工程的一部分"
@@ -567,6 +571,10 @@ msgstr "添加跳转点到历史"
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "添加链接"
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2892,6 +2900,10 @@ msgstr "正则表达式错误"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "初始化程序错误%s%s%s%s%s错误: %s"
 
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
 msgstr ""
@@ -2943,6 +2955,10 @@ msgstr "从 %s%s%s%s%s 读取工程信息错误"
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr "重命名文件错误"
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3156,6 +3172,10 @@ msgstr ""
 msgid "FPDoc editor"
 msgstr ""
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "FPDoc files path"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
 msgstr "运行工具失败"
@@ -3232,9 +3252,17 @@ msgstr "文件不可写"
 msgid "File is readonly"
 msgstr "文件为只读"
 
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
 msgstr "文件已经被使用"
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4011,6 +4039,10 @@ msgstr ""
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
 msgstr "忽略连续的空格字符"
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -4856,14 +4888,6 @@ msgstr "运行应用程序失败"
 msgid "Launching target command line"
 msgstr "运行目标命令行命令"
 
-#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
-msgstr ""
-
-#: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
-msgstr "LazDoc 设置"
-
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr "Lazarus"
@@ -5324,9 +5348,17 @@ msgstr "下移(或右移)"
 msgid "Move Editor Left"
 msgstr "在编辑器中左移"
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
 msgstr "在编辑器中右移"
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5408,9 +5440,17 @@ msgstr "上移依赖关系"
 msgid "Move editor left"
 msgstr "左移编辑器"
 
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "右移编辑器"
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5640,6 +5680,10 @@ msgstr "未找到程序文件 %s%s%s ."
 msgid "No string constant found"
 msgstr "未找到字符串常量"
 
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
 msgstr "节点和其子节点只对这个工程有效"
@@ -5680,9 +5724,17 @@ msgstr "不是 Delphi 单元"
 msgid "Not found"
 msgstr "未找到"
 
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "还没有实现"
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5915,6 +5967,14 @@ msgstr "打开最近的文件"
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
 msgstr "打开最近的包 ..."
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6353,7 +6413,7 @@ msgid "Portuguese"
 msgstr "葡萄牙语"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
+msgid "Preferred Exibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
@@ -8116,6 +8176,10 @@ msgstr "保存依赖的文件的名称"
 msgid "Stored postfix"
 msgstr "保存后缀"
 
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
 msgstr "流错误"
@@ -8484,6 +8548,10 @@ msgstr "类名 %s%s%s 与%s单元名%s%s%s 相同."
 msgid "The class name %s%s%s is not a valid pascal identifier."
 msgstr "类名 %s%s%s 不是一个有效的 pascal 标识符r."
 
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "%s%s%s 后运行的命令不可执行."
@@ -8587,6 +8655,10 @@ msgstr "文件 %s%s%s%s 看起来是一个已经存在的 Lazarus 工程."
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "文件 %s%s%s"
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8826,6 +8898,10 @@ msgstr "根组件无法删除."
 
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
+msgstr ""
+
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
 msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
@@ -9357,7 +9433,7 @@ msgid "Unable to find file %s%s%s."
 msgstr "无法找到文件 %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
@@ -9512,6 +9588,14 @@ msgstr "无法转换二进制组件流 %s:T%s 为文本文档"
 msgid "Unable to update CreateForm statement in project source"
 msgstr "无法更新工程源代码中的 CreateForm 语句"
 
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "无法写 %s%s%s%s%s."
@@ -9555,6 +9639,10 @@ msgstr "无法写入文件 %s%s%s"
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
 msgstr "无法写入文件 %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10208,13 +10296,25 @@ msgstr "写入一个 FPC logo"
 msgid "Write error"
 msgstr "写入错误"
 
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "写入前缀"
 
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
 msgstr "XML 文件"
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

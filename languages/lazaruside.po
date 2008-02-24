@@ -1789,7 +1789,7 @@ msgid "Unable to find file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
 msgstr ""
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
@@ -4844,6 +4844,14 @@ msgstr ""
 msgid "Move Editor Right"
 msgstr ""
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
 msgstr ""
@@ -5502,6 +5510,14 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
 msgstr ""
 
 #: lazarusidestrconsts:liskmgotosourceeditor1
@@ -7884,6 +7900,18 @@ msgstr ""
 msgid "Package not found"
 msgstr ""
 
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr ""
+
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."
 msgstr ""
@@ -9653,7 +9681,7 @@ msgid "Manual compilation (never automatically)"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
+msgid "FPDoc files path"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
@@ -10489,7 +10517,7 @@ msgid "Properties"
 msgstr ""
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
+msgid "Preferred Exibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:lisceomodecategory
@@ -10565,7 +10593,7 @@ msgid "Replace"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
+msgid "FPDoc files path"
 msgstr ""
 
 #: lazarusidestrconsts:liscodehelphintboldformat
@@ -10630,6 +10658,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisldcopyfrominherited
 msgid "Copy from inherited"
+msgstr ""
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros
@@ -11070,5 +11102,77 @@ msgstr ""
 
 #: lazarusidestrconsts:lisabcreationfailed
 msgid "Error occured during Application Bundle creation: "
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
+
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
 msgstr ""
 

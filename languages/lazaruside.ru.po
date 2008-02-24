@@ -57,6 +57,10 @@ msgstr "%s байт"
 msgid "%s directory"
 msgstr "Каталог %s"
 
+#: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
+msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
+msgstr ""
+
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
 msgstr "%s - уже часть проекта."
@@ -564,6 +568,10 @@ msgstr "Добавить точку перехода в историю"
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
 msgstr "Добавить ссылку"
+
+#: lazarusidestrconsts:lisldaddlinktoinherited
+msgid "Add link to inherited"
+msgstr ""
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2889,6 +2897,10 @@ msgstr "Ошибка в регулярном выражении"
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr "Ошибка инициализации программы %s%s%s%s%sОшибка: %s"
 
+#: lazarusidestrconsts:liserrorloadingfrom
+msgid "Error loading %s from%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
 msgstr "Ошибка загрузки файла"
@@ -2940,6 +2952,10 @@ msgstr "Ошибка чтения файла сведений проекта %s%
 #: lazarusidestrconsts:liserrorrenamingfile
 msgid "Error renaming file"
 msgstr "Ошибка переименования файла"
+
+#: lazarusidestrconsts:liserrorsavingto
+msgid "Error saving %s to%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3153,6 +3169,10 @@ msgstr "Редактор FPDoc"
 msgid "FPDoc editor"
 msgstr "Редактор FPDoc"
 
+#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
+msgid "FPDoc files path"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
 msgstr "Не удалось запустить средство"
@@ -3229,9 +3249,17 @@ msgstr "В файл нельзя писать"
 msgid "File is readonly"
 msgstr "Файл только для чтения"
 
+#: lazarusidestrconsts:lisfileissymlink
+msgid "File is symlink"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
 msgstr "Файл используется"
+
+#: lazarusidestrconsts:lisfilelinkerror
+msgid "File link error"
+msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4008,6 +4036,10 @@ msgstr "Игнорировать все"
 #: lazarusidestrconsts:lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
 msgstr "Игнорировать количество пробелов"
+
+#: lazarusidestrconsts:lisignoreandcontinue
+msgid "Ignore and continue"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -4853,14 +4885,6 @@ msgstr "Запускающее приложение недопустимо"
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
 
-#: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
-msgid "LazDoc - Lazarus documentation"
-msgstr "LazDoc - документация для Lazarus"
-
-#: lazarusidestrconsts:liscodehelppathsgroupbox
-msgid "LazDoc settings"
-msgstr "Установки LazDoc"
-
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
 msgstr "Lazarus"
@@ -5321,9 +5345,17 @@ msgstr "Переместить вниз (или направо)"
 msgid "Move Editor Left"
 msgstr "Подвинуть страницу влево"
 
+#: lazarusidestrconsts:uemmoveeditorleftmost
+msgid "Move Editor Leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
 msgstr "Подвинуть страницу вправо"
+
+#: lazarusidestrconsts:uemmoveeditorrightmost
+msgid "Move Editor Rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5405,9 +5437,17 @@ msgstr "Зависимость - вверх"
 msgid "Move editor left"
 msgstr "Сместить редактор влево"
 
+#: lazarusidestrconsts:srkmecmoveeditorleftmost
+msgid "Move editor leftmost"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
 msgstr "Сместить редактор вправо"
+
+#: lazarusidestrconsts:srkmecmoveeditorrightmost
+msgid "Move editor rightmost"
+msgstr ""
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5637,6 +5677,10 @@ msgstr "Файла программы %s%s%s не найдено."
 msgid "No string constant found"
 msgstr "Не найдено строковой константы"
 
+#: lazarusidestrconsts:lisldnovalidlazdocpath
+msgid "No valid LazDoc path"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
 msgstr "Элемент и его \"потомки\" доступны только для этого проекта"
@@ -5677,9 +5721,17 @@ msgstr "Не модуль Delphi"
 msgid "Not found"
 msgstr "Не найден"
 
+#: lazarusidestrconsts:lisnotimplemented
+msgid "Not implemented"
+msgstr ""
+
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "Еще не реализовано"
+
+#: lazarusidestrconsts:lisnotimplementedyet
+msgid "Not implemented yet:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5912,6 +5964,14 @@ msgstr "Открыть недавние"
 #: lazarusidestrconsts:lismenuopenrecentpkg
 msgid "Open recent package ..."
 msgstr "Открыть недавний пакет"
+
+#: lazarusidestrconsts:lisopensymlink
+msgid "Open symlink"
+msgstr ""
+
+#: lazarusidestrconsts:lisopentarget
+msgid "Open target"
+msgstr ""
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6350,8 +6410,8 @@ msgid "Portuguese"
 msgstr "Португальский"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Prefered Exibition Mode"
-msgstr "Предпочтительный режим отображения"
+msgid "Preferred Exibition Mode"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -8113,6 +8173,10 @@ msgstr "Записать имя файла зависимости"
 msgid "Stored postfix"
 msgstr "Префикс STORED"
 
+#: lazarusidestrconsts:lisstreamerror
+msgid "Stream Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
 msgstr "Ошибка потоков"
@@ -8481,6 +8545,10 @@ msgstr "Имя класса %s%s%s совпадает с %s именем мод�
 msgid "The class name %s%s%s is not a valid pascal identifier."
 msgstr "Имя класса %s%s%s - недопустимый идентификатор Паскаля"
 
+#: lazarusidestrconsts:listhecodetoolsfoundanerror
+msgid "The codetools found an error:%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "Команда после %s%s%s"
@@ -8584,6 +8652,10 @@ msgstr "Файл %s, вероятно, является файлом прогр�
 #: lazarusidestrconsts:listhefile
 msgid "The file %s%s%s"
 msgstr "Файл %s%s%s"
+
+#: lazarusidestrconsts:listhefileisasymlinkopeninstead
+msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8824,6 +8896,10 @@ msgstr "Компонент верхнего уровня не может быт�
 #: lazarusidestrconsts:listheunitexiststwiceintheunitpathofthe
 msgid "The unit %s exists twice in the unit path of the %s:"
 msgstr "Модуль %s дублируется в путях к модулям %s:"
+
+#: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
+msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
+msgstr ""
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9354,8 +9430,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "Невозможно найти файл %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs t a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
-msgstr "Невозможно найти файл %s%s%s.%sЕсли он принадлежит проекту, проверьте пути поиска в Проект -> Параметры компилятора -> Пути -> Другие модули. Если он принадлежит пакету, проверьте соответствующие параметры компиляции пакета. Если этот файл принадлежит Lazarus, удостоверьтесь, что компилируете его после очистки. Если файл принадлежит FPC, проверьте fpc.cfg. Если не уверены, вызовите Проект -> Параметры компилятора -> Тест"
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9509,6 +9585,14 @@ msgstr "Невозможно преобразовать двоичный пот�
 msgid "Unable to update CreateForm statement in project source"
 msgstr "Невозможно обновить выражение CreateForm в исходном коде проекта"
 
+#: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
+msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletowrite2
+msgid "Unable to write %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
 msgstr "Невозможно записать %s%s%s%s%s."
@@ -9552,6 +9636,10 @@ msgstr "Невозможно записать в файл %s%s%s"
 #: lazarusidestrconsts:lisunabletowritetofile
 msgid "Unable to write to file %s%s%s!"
 msgstr "Невозможно записать в файл %s%s%s!"
+
+#: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
+msgid "Unable to write xml stream to %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10205,13 +10293,25 @@ msgstr "Вывести логотип FPC"
 msgid "Write error"
 msgstr "Ошибка записи"
 
+#: lazarusidestrconsts:liswriteerrorfile
+msgid "Write error: %s%sFile: %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Префикс WRITE"
 
+#: lazarusidestrconsts:lisxmlerror
+msgid "XML Error"
+msgstr ""
+
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
 msgstr "Файлы XML"
+
+#: lazarusidestrconsts:lisxmlparsererrorinfileerror
+msgid "XML parser error in file %s%sError: %s"
+msgstr ""
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

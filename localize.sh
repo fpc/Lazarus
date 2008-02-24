@@ -46,18 +46,31 @@ RSTFILES=(
   "lcl lclstrconsts"
 )  
 
+set -x
+
 for idx in ${!RSTFILES[@]}; do
   LINE=(${RSTFILES[idx]})
   RSTDIR=${LINE[0]}  
   RSTFILE=${LINE[1]}  
   POFILE=${LINE[2]:-$RSTFILE}
    
-  RST=`find $RSTDIR/{units,lib}/$FPCTARGET -name $RSTFILE.rst | xargs ls -1t | head -1`;
+  RST=`find $RSTDIR -name $RSTFILE.rst | xargs ls -1t | head -1`;
   
-  if [ "@"$RST != "@" ]; then
-    echo $RSTDIR/languages/$POFILE.po
-    rstconv -c UTF-8 -i $RST -o $RSTDIR/languages/$POFILE.po
-    ./tools/updatepofiles $RSTDIR/languages/$POFILE.po
+  if [ -n "$RST" ]; then
+    POFileFull=$RSTDIR/languages/$POFILE.po
+    echo $POFileFull
+    
+    echo 'msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+' > $POFileFull
+
+    rstconv -i $RST -o $POFileFull.tmp
+    cat $POFileFull.tmp >> $POFileFull
+    rm $POFileFull.tmp
+    ./tools/updatepofiles $POFileFull
   fi
 done
 
