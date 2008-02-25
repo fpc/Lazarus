@@ -7994,6 +7994,7 @@ end;
 
 function TQtDesignWidget.DesignControlEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
   if LCLObject <> nil then
   begin
@@ -8002,10 +8003,12 @@ begin
       QEventPaint: SlotDesignControlPaint(Sender, Event);
     end;
   end;
+  EndEventProcessing;
 end;
 
 function TQtDesignWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
+  BeginEventProcessing;
   Result := False;
   if LCLObject <> nil then
   begin
@@ -8022,6 +8025,7 @@ begin
       Result := inherited EventFilter(Sender, Event);
     end;
   end;
+  EndEventProcessing;
 end;
 
 procedure TQtDesignWidget.AttachEvents;
@@ -8036,6 +8040,7 @@ end;
 
 procedure TQtDesignWidget.DetachEvents;
 begin
+  QObject_hook_destroy(FDesignControlEventHook);
   inherited DetachEvents;
 end;
 
