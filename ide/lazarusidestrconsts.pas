@@ -3475,7 +3475,7 @@ resourcestring
   lisCEConstants = 'Constants';
   lisCEProcedures = 'Procedures';
   lisCEProperties = 'Properties';
-  lisCEOMode = 'Preferred Exibition Mode';
+  lisCEOMode = 'Preferred Exhibition Mode';
   lisCEOModeCategory = 'Category';
   lisCEOModeSource = 'Source';
 

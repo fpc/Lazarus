@@ -10517,7 +10517,7 @@ msgid "Properties"
 msgstr ""
 
 #: lazarusidestrconsts:lisceomode
-msgid "Preferred Exibition Mode"
+msgid "Preferred Exhibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:lisceomodecategory

@@ -5538,7 +5538,7 @@ begin
       else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type)
       then begin
         //clist
-        {$TODO check is this is needed for listviews}
+        {TODO check is this is needed for listviews}
         DebugLn('[SetScrollInfo] Possible obsolete get use of CList (Listview ?)');
         Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
       end

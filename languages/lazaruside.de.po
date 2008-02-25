@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-18 21:55+0100\n"
+"PO-Revision-Date: 2008-02-24 13:48+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -62,7 +62,7 @@ msgstr "%s Verzeichnis"
 
 #: lazarusidestrconsts:lislddoesnothaveanyvalidlazdocpathunabletocreatethefpdo
 msgid "%s does not have any valid LazDoc path.%sUnable to create the fpdoc file for %s"
-msgstr ""
+msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht schreiben"
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
@@ -574,7 +574,7 @@ msgstr "Neuer Link"
 
 #: lazarusidestrconsts:lisldaddlinktoinherited
 msgid "Add link to inherited"
-msgstr ""
+msgstr "Link zum Vorgänger hinzufügen"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
@@ -2902,7 +2902,7 @@ msgstr "Fehler beim Initialisieren des Programms%s%s%s%s%sFehler: %s"
 
 #: lazarusidestrconsts:liserrorloadingfrom
 msgid "Error loading %s from%s%s%s%s"
-msgstr ""
+msgstr "Fehler beim Laden von %s aus %s%s%s%s"
 
 #: lazarusidestrconsts:liserrorloadingfile
 msgid "Error loading file"
@@ -2958,7 +2958,7 @@ msgstr "Fehler beim Umbenennen der Datei"
 
 #: lazarusidestrconsts:liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
-msgstr ""
+msgstr "Fehler beim Speichern von %s nach %s%s%s%s"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
@@ -3174,7 +3174,7 @@ msgstr "FPDoc-Editor"
 
 #: lazarusidestrconsts:lispckoptslazdoclazarusdocumentation
 msgid "FPDoc files path"
-msgstr ""
+msgstr "FPDoc-Dateipfad"
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -3254,7 +3254,7 @@ msgstr "Datei ist nur lesbar"
 
 #: lazarusidestrconsts:lisfileissymlink
 msgid "File is symlink"
-msgstr ""
+msgstr "Datei ist ein symbolischer Link"
 
 #: lazarusidestrconsts:lisa2pfileisused
 msgid "File is used"
@@ -3262,7 +3262,7 @@ msgstr "Datei wird verwendet"
 
 #: lazarusidestrconsts:lisfilelinkerror
 msgid "File link error"
-msgstr ""
+msgstr "Datei-Link-Fehler"
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
@@ -4042,7 +4042,7 @@ msgstr "Ignoriere Zahl der Leerzeichen"
 
 #: lazarusidestrconsts:lisignoreandcontinue
 msgid "Ignore and continue"
-msgstr ""
+msgstr "Übergehen und fortsetzen"
 
 #: lazarusidestrconsts:lispkgmangignoreandsavepackagenow
 msgid "Ignore and save package now"
@@ -5350,7 +5350,7 @@ msgstr "Editor nach links bewegen"
 
 #: lazarusidestrconsts:uemmoveeditorleftmost
 msgid "Move Editor Leftmost"
-msgstr ""
+msgstr "Editor ganz nach links verschieben"
 
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
@@ -5358,7 +5358,7 @@ msgstr "Editor nach rechts bewegen"
 
 #: lazarusidestrconsts:uemmoveeditorrightmost
 msgid "Move Editor Rightmost"
-msgstr ""
+msgstr "Editor ganz nach rechts verschieben"
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5442,7 +5442,7 @@ msgstr "Editor nach links bewegen"
 
 #: lazarusidestrconsts:srkmecmoveeditorleftmost
 msgid "Move editor leftmost"
-msgstr ""
+msgstr "Editor ganz nach links verschieben"
 
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
@@ -5450,7 +5450,7 @@ msgstr "Editor nach rechts bewegen"
 
 #: lazarusidestrconsts:srkmecmoveeditorrightmost
 msgid "Move editor rightmost"
-msgstr ""
+msgstr "Editor ganz nach rechts verschieben"
 
 #: lazarusidestrconsts:lisldmoveentriestoinherited
 msgid "Move entries to inherited"
@@ -5682,7 +5682,7 @@ msgstr "Keine Stringkonstante gefunden"
 
 #: lazarusidestrconsts:lisldnovalidlazdocpath
 msgid "No valid LazDoc path"
-msgstr ""
+msgstr "Kein gültiger LazDoc-Pfad"
 
 #: lazarusidestrconsts:liscodetoolsdefsnodeanditschildrenareonly
 msgid "Node and its children are only valid for this project"
@@ -5726,7 +5726,7 @@ msgstr "Nicht gefunden"
 
 #: lazarusidestrconsts:lisnotimplemented
 msgid "Not implemented"
-msgstr ""
+msgstr "Nicht implementiert"
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
@@ -5734,7 +5734,7 @@ msgstr "Noch nicht implementiert"
 
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
-msgstr ""
+msgstr "Noch nicht implementiert:%s%s"
 
 #: lazarusidestrconsts:lisnotnow
 msgid "Not now"
@@ -5970,11 +5970,11 @@ msgstr "Letztes Package wieder öffnen ..."
 
 #: lazarusidestrconsts:lisopensymlink
 msgid "Open symlink"
-msgstr ""
+msgstr "Offener symbolischer Link"
 
 #: lazarusidestrconsts:lisopentarget
 msgid "Open target"
-msgstr ""
+msgstr "Offenes Ziel"
 
 #: lazarusidestrconsts:lisopenthefileasnormalsource
 msgid "Open the file as normal source"
@@ -6198,7 +6198,7 @@ msgstr "Package wird benötigt"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
-msgstr "Packagelinks ..."
+msgstr "Package-Links ..."
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -6413,7 +6413,7 @@ msgid "Portuguese"
 msgstr "Portugisisch"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Preferred Exibition Mode"
+msgid "Preferred Exhibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
@@ -8178,7 +8178,7 @@ msgstr "Gespeicherte Nachsilbe"
 
 #: lazarusidestrconsts:lisstreamerror
 msgid "Stream Error"
-msgstr ""
+msgstr "Stream-Fehler"
 
 #: lazarusidestrconsts:lisstreamingerror
 msgid "Streaming error"
@@ -8550,7 +8550,7 @@ msgstr "Der Klassenname %s%s%s ist kein gültiger Pascalbezeichner."
 
 #: lazarusidestrconsts:listhecodetoolsfoundanerror
 msgid "The codetools found an error:%s%s%s"
-msgstr ""
+msgstr "Die Codetools fanden einen Fehler:%s%s%"
 
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
@@ -8658,7 +8658,7 @@ msgstr "Die Datei %s%s%s"
 
 #: lazarusidestrconsts:listhefileisasymlinkopeninstead
 msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
-msgstr ""
+msgstr "Die Datei %s%s%s ist ein Symlink.%s%sStatt dessen %s%s%s öffnen?"
 
 #: lazarusidestrconsts:lisa2pthefileisalreadyinthepackage
 msgid "The file %s%s%s is already in the package."
@@ -8902,7 +8902,7 @@ msgstr "Die Unit %s existiert doppelt im Unitpfad der %s:"
 
 #: lazarusidestrconsts:lisldtheunitisnotownedbeanypackageorprojectpleaseaddthe
 msgid "The unit %s is not owned be any package or project.%sPlease add the unit to a package or project.%sUnable to create the fpdoc file."
-msgstr ""
+msgstr "Die Unit %s gehört zu keinem Package oder Projekt.%sBitte fügen Sie die Unit zu einem Package oder Projekt hinzu.%sKann die FPDoc-Datei nicht generieren."
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
@@ -9434,7 +9434,7 @@ msgstr "Datei %s%s%s kann nicht gefunden werden."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
-msgstr ""
+msgstr "Kann die Datei %s%s%s nicht finden.%sFalls sie zum Projekt gehört, prüfen Sie den Suchpfad in der Startseite von%sProjekt->Compilereinstellungen ... unter Andere Unitdateien. Wenn die Datei zu einem Package gehört, müssen dessen Einstellungen geprüft werden. Falls die Datei zu Lazarus gehört, muß sichergestellt sein, daß die IDE sauber kompiliert ist. Gehört die Datei zu FPC muß die fpc.cfg überprüft werden. Bei Unklarheiten hilft der Button Test unter Projekt -> Compilereinstellungen ..."
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9590,11 +9590,11 @@ msgstr "Kann die CreateForm-Anweisung im Projektquelltext nicht aktualisieren"
 
 #: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
 msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr ""
+msgstr "Kann die binäre Ressourcendatei%s%s%snicht aus der Textressource%s%s%s%saktualisieren.Wahrscheinlich ist die Textdatei defekt."
 
 #: lazarusidestrconsts:lisunabletowrite2
 msgid "Unable to write %s%s%s"
-msgstr ""
+msgstr "Kann Datei %s%s%s nicht schreiben"
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
@@ -9642,7 +9642,7 @@ msgstr "Kann die Datei %s%s%s nicht schreiben!"
 
 #: lazarusidestrconsts:lisunabletowritexmlstreamtoerror
 msgid "Unable to write xml stream to %s%sError: %s"
-msgstr ""
+msgstr "Kann XML-Stream nicht in %s%s schreiben. Fehler: %S"
 
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
@@ -10298,7 +10298,7 @@ msgstr "Schreibfehler"
 
 #: lazarusidestrconsts:liswriteerrorfile
 msgid "Write error: %s%sFile: %s%s%s"
-msgstr ""
+msgstr "Schreibfehler: %s%sDatei: %s%s%s"
 
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
@@ -10306,7 +10306,7 @@ msgstr "Präfix schreiben"
 
 #: lazarusidestrconsts:lisxmlerror
 msgid "XML Error"
-msgstr ""
+msgstr "XML-Fehler"
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
@@ -10314,7 +10314,7 @@ msgstr "XML-Dateien"
 
 #: lazarusidestrconsts:lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
-msgstr ""
+msgstr "XML-Parserfehler in der Datei %s%sFehler: %s"
 
 #: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You can not build lazarus while debugging or compiling."

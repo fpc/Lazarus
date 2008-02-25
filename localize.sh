@@ -54,23 +54,26 @@ for idx in ${!RSTFILES[@]}; do
   RSTFILE=${LINE[1]}  
   POFILE=${LINE[2]:-$RSTFILE}
    
-  RST=`find $RSTDIR -name $RSTFILE.rst | xargs ls -1t | head -1`;
-  
+  RST=$(find $RSTDIR -name $RSTFILE.rst)
   if [ -n "$RST" ]; then
-    POFileFull=$RSTDIR/languages/$POFILE.po
-    echo $POFileFull
-    
-    echo 'msgid ""
+    RST=`find $RSTDIR -name $RSTFILE.rst | xargs ls -1t | head -1`;
+  
+    if [ -n "$RST" ]; then
+      POFileFull=$RSTDIR/languages/$POFILE.po
+      echo $POFileFull
+
+      echo 'msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 ' > $POFileFull
 
-    rstconv -i $RST -o $POFileFull.tmp
-    cat $POFileFull.tmp >> $POFileFull
-    rm $POFileFull.tmp
-    ./tools/updatepofiles $POFileFull
+      rstconv -i $RST -o $POFileFull.tmp
+      cat $POFileFull.tmp >> $POFileFull
+      rm $POFileFull.tmp
+      ./tools/updatepofiles $POFileFull
+    fi
   fi
 done
 

@@ -6409,7 +6409,7 @@ msgid "Portuguese"
 msgstr "ポルトガル語"
 
 #: lazarusidestrconsts:lisceomode
-msgid "Preferred Exibition Mode"
+msgid "Preferred Exhibition Mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
