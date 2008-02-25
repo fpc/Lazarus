@@ -344,7 +344,10 @@ begin
   OSError(HIViewAddSubview(Widget, FNextArrow), Self, SCreateWidget,
     SViewAddView);
 
-  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
+  if csDesigning in LCLObject.ComponentState then
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlHit)
+  else
+    TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
   InstallControlEventHandler(FPrevArrow,
     RegisterEventHandler(@CarbonTabsPrevArrow_Track),
     1, @TmpSpec, Pointer(Self), nil);

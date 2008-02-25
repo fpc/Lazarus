@@ -117,6 +117,8 @@ type
     function GetText(var S: String): Boolean; virtual; abstract;
     function SetText(const S: String): Boolean; virtual; abstract;
     function Update: Boolean; virtual; abstract;
+    
+    function WidgetAtPos(const P: TPoint): ControlRef; virtual; abstract;
   public
     property BoundsReported: Boolean read FBoundsReported;
   { Content:

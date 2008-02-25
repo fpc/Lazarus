@@ -253,7 +253,9 @@ var
   Part: WindowPartCode;
   DesignControl: TControl;
   DesignWidget: TCarbonWidget;
+  DesignView: HIViewRef;
   P, ClientPt, ControlPt: TPoint;
+  DesignPt: HIPoint;
   ViewPart: HIViewPartCode;
 begin
   Result := EventNotHandledErr;
@@ -310,7 +312,7 @@ begin
   
   // interactive design
   if (Widget is TCarbonDesignWindow) and (GetMouseButton = 1) and
-    (EventKind = kEventMouseDown) and (GetClickCount = 1) then
+    (EventKind = kEventMouseDown) then
   begin
     P := GetMousePoint;
     DesignControl := Widget.LCLObject.ControlAtPos(P,
@@ -326,11 +328,15 @@ begin
         DesignWidget := TCarbonWidget((DesignControl as TWinControl).Handle);
         if DesignWidget.IsDesignInteractive(ClientPt) then
         begin
-          DebugLn('Send Design Click to control');
+          DesignView := DesignWidget.WidgetAtPos(ControlPt);
+          DesignPt := PointToHIPoint(ControlPt);
+          OSError(HIViewConvertPoint(DesignPt, DesignWidget.Widget, DesignView),
+            SName, 'HIViewConvertPoint');
+
           ViewPart := 0;
-          OSError(HIViewGetPartHit(DesignWidget.Widget, PointToHIPoint(ControlPt), ViewPart),
+          OSError(HIViewGetPartHit(DesignView, DesignPt, ViewPart),
             SName, 'HIViewGetPartHit');
-          OSError(HIViewSimulateClick(DesignWidget.Widget, ViewPart, GetCarbonMsgKeyState, nil),
+          OSError(HIViewSimulateClick(DesignView, ViewPart, GetCarbonMsgKeyState, nil),
             SName, 'HIViewSimulateClick');
         end;
       end;
@@ -486,20 +492,23 @@ const
 
     //printable keys
     //for these keys, send char or UTF8KeyPress
-    if not IsSysKey then
-    begin
-      if OSError(
-        GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
-          6, @TextLen, @Buf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
-    end
-    else
-    begin // Command modifier suppressing shift workaround
+    TextLen := 0;
+    
+    if IsSysKey then
+    begin // workaround for Command modifier suppressing shift
       DeadKeys := 0;
       OSError(KLGetCurrentKeyboardLayout(KeyboardLayout), SName, 'KLGetCurrentKeyboardLayout');
       OSError(KLGetKeyboardLayoutProperty(KeyboardLayout, kKLuchrData, Layout), SName, 'KLGetKeyboardLayoutProperty');
       OSError(UCKeyTranslate(Layout^, KeyCode, kUCKeyActionDisplay,
           (GetCurrentEventKeyModifiers and not cmdkey) shr 8, LMGetKbdType,
           kUCKeyTranslateNoDeadKeysMask, DeadKeys, 6, TextLen, @Buf[1]), SName, 'UCKeyTranslate');
+    end;
+      
+    if TextLen = 0 then
+    begin
+      if OSError(
+        GetEventParameter(AEvent, kEventParamKeyUnicodes, typeUnicodeText, nil,
+          6, @TextLen, @Buf[1]), SName, AGetEvent, 'kEventParamKeyUnicodes') then Exit;
     end;
 
     if TextLen>0 then
@@ -1434,6 +1443,16 @@ begin
   Result := False;
   if OSError(HIViewRender(Content), Self, 'Update', SViewRender) then Exit;
   Result := True;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWindow.WidgetAtPos
+  Params:  P
+  Returns: Retrieves the embedded Carbon control at the specified pos
+ ------------------------------------------------------------------------------}
+function TCarbonWindow.WidgetAtPos(const P: TPoint): ControlRef;
+begin
+  Result := Content;
 end;
 
 {------------------------------------------------------------------------------

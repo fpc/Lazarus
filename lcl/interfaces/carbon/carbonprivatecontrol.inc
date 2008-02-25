@@ -942,6 +942,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TCarbonControl.WidgetAtPos
+  Params:  P
+  Returns: Retrieves the embedded Carbon control at the specified pos
+ ------------------------------------------------------------------------------}
+function TCarbonControl.WidgetAtPos(const P: TPoint): ControlRef;
+begin
+  Result := nil;
+  OSError(HIViewGetSubviewHit(Frames[0], PointToHIPoint(P), True, Result),
+    Self, 'WidgetAtPos', 'HIViewGetSubviewHit');
+  if Result = nil then Result := Widget;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonControl.GetTopParentWindow
   Returns: Retrieves the parent window reference of the Carbon control
  ------------------------------------------------------------------------------}

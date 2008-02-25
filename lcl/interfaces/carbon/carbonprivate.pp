@@ -97,6 +97,8 @@ type
     function SetText(const S: String): Boolean; override;
     
     function Update: Boolean; override;
+    
+    function WidgetAtPos(const P: TPoint): ControlRef; override;
   public
     function GetValue: Integer;
     procedure SetValue(AValue: Integer);
@@ -146,6 +148,7 @@ type
     function SetText(const S: String): Boolean; override;
     
     function Update: Boolean; override;
+    function WidgetAtPos(const P: TPoint): ControlRef; override;
   public
     function Activate: Boolean; virtual;
 
