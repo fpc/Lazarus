@@ -899,8 +899,10 @@ end;
 class procedure TWin32WSCustomComboBox.SetText(const AWinControl: TWinControl; const AText: string);
 var
   Handle: HWND;
+  {$ifdef WindowsUnicodeSupport}
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
+  {$endif}
 begin
   Assert(False, Format('Trace:TWin32WSCustomComboBox.SetText --> %S', [AText]));
   Handle := AWinControl.Handle;

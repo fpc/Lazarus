@@ -140,9 +140,11 @@ end;
 class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
   tnida: TNotifyIconDataA;
+  {$ifdef WindowsUnicodeSupport}
   tnidw: TNotifyIconDataW;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
+  {$endif}
   Window: Windows.TWndClassEx;
 begin
   vwsTrayIcon := ATrayIcon;
@@ -240,9 +242,11 @@ end;
 class procedure TWin32WSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayIcon);
 var
   tnida: TNotifyIconDataA;
+  {$ifdef WindowsUnicodeSupport}
   tnidw: TNotifyIconDataW;
   AnsiBuffer: ansistring;
   WideBuffer: widestring;
+  {$endif}
 begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
