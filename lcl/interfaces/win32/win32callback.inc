@@ -290,7 +290,7 @@ var
     MenuInfo.cbSize := MMenuItemInfoSize;
     MenuInfo.fMask := MIIM_DATA;
 
-    MainMenuHandle := GetMenuParent(WParam, GetMenu(Window));
+    MainMenuHandle := GetMenuParent(HMENU(WParam), GetMenu(Window));
     if GetMenuItemInfo(MainMenuHandle, LOWORD(LParam), true, @MenuInfo)
     then Result := TObject(MenuInfo.dwItemData)
     else Result := nil;
