@@ -58,6 +58,7 @@ uses
   LResources,
   LMessages,
   LCLMemManager,
+  Translations,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -3231,7 +3232,7 @@ end;
 function ParseConstant(const S: string): AnsiChar;
 {$ENDIF}
 Const
-  CodeCount = 125; //JMN
+  CodeCount = 126; //JMN
   {Sorted by Size where size is Length(Name).
   Make sure you respect this when adding new items}
   Codes: array[0..Pred(CodeCount)] of record
@@ -3258,6 +3259,7 @@ Const
     (Size: 4; Name: 'copy'; Value: #169),
     (Size: 4; Name: 'Euml'; Value: #203),
     (Size: 4; Name: 'euml'; Value: #235),
+    (Size: 4; Name: 'euro'; Value: #128),
     (Size: 4; Name: 'fnof'; Value: #131),
     (Size: 4; Name: 'Iuml'; Value: #207),
     (Size: 4; Name: 'iuml'; Value: #239),
@@ -3411,12 +3413,201 @@ begin {'Complete boolean eval' must be off}
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
+{UTF8 DiBo33}
+const
+  CodeCountUTF8 = 126;
+  {Sorted by Size where size is Length(Name).
+  Make sure you respect this when adding new items}
+  CodesUTF8: array[0..Pred(CodeCountUTF8)] of record
+    Size: Integer;// = length(Name)
+    Name: String;
+    Value: String;
+  end = (
+    (Size: 2; Name: 'gt'; Value: #$3E),
+    (Size: 2; Name: 'lt'; Value: #$3C),
+    (Size: 3; Name: 'amp'; Value: #$26),
+    (Size: 3; Name: 'deg'; Value: #$C2#$B0),
+    (Size: 3; Name: 'ETH'; Value: #$C3#$90),
+    (Size: 3; Name: 'eth'; Value: #$C3#$B0),
+    (Size: 3; Name: 'not'; Value: #$C2#$AC),
+    (Size: 3; Name: 'reg'; Value: #$C2#$AE),
+    (Size: 3; Name: 'shy'; Value: ShyChar),
+    (Size: 3; Name: 'uml'; Value: #$C2#$A8),
+    (Size: 3; Name: 'yen'; Value: #$C2#$A5),
+    (Size: 4; Name: 'Auml'; Value: #$C3#$84),
+    (Size: 4; Name: 'auml'; Value: #$C3#$A4),
+    (Size: 4; Name: 'bull'; Value: #$E2#$80#$A2),
+    (Size: 4; Name: 'cent'; Value: #$C2#$A2),
+    (Size: 4; Name: 'circ'; Value: #$5E),
+    (Size: 4; Name: 'copy'; Value: #$C2#$A9),
+    (Size: 4; Name: 'Euml'; Value: #$C3#$8B),
+    (Size: 4; Name: 'euml'; Value: #$C3#$AB),
+    (Size: 4; Name: 'euro'; Value: #$E2#$82#$AC),
+    (Size: 4; Name: 'fnof'; Value: #$C6#$92),
+    (Size: 4; Name: 'Iuml'; Value: #$C3#$8F),
+    (Size: 4; Name: 'iuml'; Value: #$C3#$AF),
+    (Size: 4; Name: 'macr'; Value: #$C2#$AF),
+    (Size: 4; Name: 'nbsp'; Value: NbspChar),
+    (Size: 4; Name: 'ordf'; Value: #$C2#$AA),
+    (Size: 4; Name: 'ordm'; Value: #$C2#$BA),
+    (Size: 4; Name: 'Ouml'; Value: #$C3#$96),
+    (Size: 4; Name: 'ouml'; Value: #$C3#$B6),
+    (Size: 4; Name: 'para'; Value: #$C2#$B6),
+    (Size: 4; Name: 'quot'; Value: #$22),
+    (Size: 4; Name: 'sect'; Value: #$C2#$A7),
+    (Size: 4; Name: 'sup1'; Value: #$C2#$B9),
+    (Size: 4; Name: 'sup2'; Value: #$C2#$B2),
+    (Size: 4; Name: 'sup3'; Value: #$C2#$B3),
+    (Size: 4; Name: 'Uuml'; Value: #$C3#$9C),
+    (Size: 4; Name: 'uuml'; Value: #$C3#$BC),
+    (Size: 4; Name: 'Yuml'; Value: #$C5#$B8),
+    (Size: 4; Name: 'yuml'; Value: #$C3#$BF),
+    (Size: 5; Name: 'Acirc'; Value: #$C3#$82),
+    (Size: 5; Name: 'acirc'; Value: #$C3#$A2),
+    (Size: 5; Name: 'acute'; Value: #$C2#$B4),
+    (Size: 5; Name: 'AElig'; Value: #$C3#$86),
+    (Size: 5; Name: 'aelig'; Value: #$C3#$A6),
+    (Size: 5; Name: 'Aring'; Value: #$C3#$85),
+    (Size: 5; Name: 'aring'; Value: #$C3#$A5),
+    (Size: 5; Name: 'cedil'; Value: #$C2#$B8),
+    (Size: 5; Name: 'Ecirc'; Value: #$C3#$8A),
+    (Size: 5; Name: 'ecirc'; Value: #$C3#$AA),
+    (Size: 5; Name: 'frasl'; Value: #$2F),
+    (Size: 5; Name: 'Icirc'; Value: #$C3#$8E),
+    (Size: 5; Name: 'icirc'; Value: #$C3#$AE),
+    (Size: 5; Name: 'iexcl'; Value: #$C2#$A1),
+    (Size: 5; Name: 'laquo'; Value: #$C2#$AB),
+    (Size: 5; Name: 'ldquo'; Value: #$E2#$80#$9C),
+    (Size: 5; Name: 'lsquo'; Value: #$E2#$80#$98),
+    (Size: 5; Name: 'mdash'; Value: #$E2#$80#$94),
+    (Size: 5; Name: 'micro'; Value: #$C2#$B5),
+    (Size: 5; Name: 'minus'; Value: #$2D),
+    (Size: 5; Name: 'ndash'; Value: #$E2#$80#$93),
+    (Size: 5; Name: 'Ocirc'; Value: #$C3#$94),
+    (Size: 5; Name: 'ocirc'; Value: #$C3#$B4),
+    (Size: 5; Name: 'OElig'; Value: #$C5#$92),
+    (Size: 5; Name: 'oelig'; Value: #$C5#$93),
+    (Size: 5; Name: 'pound'; Value: #$C2#$A3),
+    (Size: 5; Name: 'raquo'; Value: #$C2#$BB),
+    (Size: 5; Name: 'rdquo'; Value: #$E2#$80#$9D),
+    (Size: 5; Name: 'rsquo'; Value: #$E2#$80#$99),
+    (Size: 5; Name: 'szlig'; Value: #$C3#$9F),
+    (Size: 5; Name: 'THORN'; Value: #$C3#$9E),
+    (Size: 5; Name: 'thorn'; Value: #$C3#$BE),
+    (Size: 5; Name: 'tilde'; Value: #$7E),
+    (Size: 5; Name: 'times'; Value: #$C3#$97),
+    (Size: 5; Name: 'trade'; Value: #$E2#$84#$A2),
+    (Size: 5; Name: 'Ucirc'; Value: #$C3#$9B),
+    (Size: 5; Name: 'ucirc'; Value: #$C3#$BB),
+    (Size: 6; Name: 'Aacute'; Value: #$C3#$81),
+    (Size: 6; Name: 'aacute'; Value: #$C3#$A1),
+    (Size: 6; Name: 'Agrave'; Value: #$C3#$80),
+    (Size: 6; Name: 'agrave'; Value: #$C3#$A0),
+    (Size: 6; Name: 'Atilde'; Value: #$C3#$83),
+    (Size: 6; Name: 'atilde'; Value: #$C3#$A3),
+    (Size: 6; Name: 'brvbar'; Value: #$C2#$A6),
+    (Size: 6; Name: 'Ccedil'; Value: #$C3#$87),
+    (Size: 6; Name: 'ccedil'; Value: #$C3#$A7),
+    (Size: 6; Name: 'curren'; Value: #$C2#$A4),
+    (Size: 6; Name: 'dagger'; Value: #$E2#$80#$A0),
+    (Size: 6; Name: 'Dagger'; Value: #$E2#$80#$A1),
+    (Size: 6; Name: 'divide'; Value: #$C3#$B7),
+    (Size: 6; Name: 'Eacute'; Value: #$C3#$89),
+    (Size: 6; Name: 'eacute'; Value: #$C3#$A9),
+    (Size: 6; Name: 'Egrave'; Value: #$C3#$88),
+    (Size: 6; Name: 'egrave'; Value: #$C3#$A8),
+    (Size: 6; Name: 'frac12'; Value: #$C2#$BD),
+    (Size: 6; Name: 'frac14'; Value: #$C2#$BC),
+    (Size: 6; Name: 'frac34'; Value: #$C2#$BE),
+    (Size: 6; Name: 'hellip'; Value: #$E2#$80#$A6),
+    (Size: 6; Name: 'Iacute'; Value: #$C3#$8D),
+    (Size: 6; Name: 'iacute'; Value: #$C3#$AD),
+    (Size: 6; Name: 'Igrave'; Value: #$C3#$8C),
+    (Size: 6; Name: 'igrave'; Value: #$C3#$AC),
+    (Size: 6; Name: 'iquest'; Value: #$C2#$BF),
+    (Size: 6; Name: 'lsaquo'; Value: #$E2#$80#$B9),
+    (Size: 6; Name: 'middot'; Value: #$C2#$B7),
+    (Size: 6; Name: 'Ntilde'; Value: #$C3#$91),
+    (Size: 6; Name: 'ntilde'; Value: #$C3#$B1),
+    (Size: 6; Name: 'Oacute'; Value: #$C3#$93),
+    (Size: 6; Name: 'oacute'; Value: #$C3#$B3),
+    (Size: 6; Name: 'Ograve'; Value: #$C3#$92),
+    (Size: 6; Name: 'ograve'; Value: #$C3#$B2),
+    (Size: 6; Name: 'Oslash'; Value: #$C3#$98),
+    (Size: 6; Name: 'oslash'; Value: #$C3#$B8),
+    (Size: 6; Name: 'Otilde'; Value: #$C3#$95),
+    (Size: 6; Name: 'otilde'; Value: #$C3#$B5),
+    (Size: 6; Name: 'permil'; Value: #$E2#$80#$B0),
+    (Size: 6; Name: 'plusmn'; Value: #$C2#$B1),
+    (Size: 6; Name: 'rsaquo'; Value: #$E2#$80#$BA),
+    (Size: 6; Name: 'Scaron'; Value: #$C5#$A0),
+    (Size: 6; Name: 'scaron'; Value: #$C5#$A1),
+    (Size: 6; Name: 'Uacute'; Value: #$C3#$9A),
+    (Size: 6; Name: 'uacute'; Value: #$C3#$BA),
+    (Size: 6; Name: 'Ugrave'; Value: #$C3#$99),
+    (Size: 6; Name: 'ugrave'; Value: #$C3#$B9),
+    (Size: 6; Name: 'Yacute'; Value: #$C3#$9D),
+    (Size: 6; Name: 'yacute'; Value: #$C3#$BD),
+    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar)
+    );
+function ParseConstantUTF8(const S: string): string;
+var
+  Error: Integer;
+  Index1: Integer;
+  Index2: Integer;
+  Size1: Integer;
+  Found: Boolean;
+begin {'Complete boolean eval' must be off}
+  Result := ' ';
+  Size1 := Length(S);
+  if Size1 = 0 then Exit;
+  if (S[1] in ['$', '0'..'9']) then
+  begin
+    Val(S, Index1, Error);
+    if (Error = 0) then
+      if (Index1 >= 32) and (Index1 < 128) then
+        Result := Chr(Index1)
+      else if (Index1 >= 128) and (Index1<256) then
+        Result := AnsiToUTF8(Chr(Index1));
+  end else
+  begin
+    Index1 := 0;
+    repeat
+      if Size1 = CodesUTF8[Index1].Size then
+      begin
+        Found := True;
+        Index2 := 1;
+        while Index2 <= Size1 do
+        begin
+          if S[Index2] <> CodesUTF8[Index1].Name[Index2] then
+          begin
+            Found := False;
+            Break;
+          end;
+          Inc(Index2);
+        end;
+        if Found then
+        begin
+          Result := CodesUTF8[Index1].Value;
+          Break;
+        end;
+      end;
+      Inc(Index1);
+    until (Index1 >= CodeCountUTF8) or (CodesUTF8[Index1].Size > Size1);
+  end;
+end;
+{$ENDIF}
+
 procedure ExpandEscapes(var S: string);
 {- returns the string with & escapes expanded}
 var
   i, j : Integer;
   Co : string;
   Ch : AnsiChar;
+{$IFDEF IP_LAZARUS}
+  St : string;
+{$ENDIF}
 begin
   i := length(S);
   while i > 0 do begin
@@ -3433,9 +3624,19 @@ begin
             Insert('$', Co, 1);
           end;
         end;
-        Ch := ParseConstant(Co);
         Delete(S, i, j - i + 1);
+      {$IFDEF IP_LAZARUS}
+        if SystemCharSetIsUTF8 then begin
+          St := ParseConstantUTF8(Co);
+          Insert(St, S, i)
+        end else begin
+          Ch := ParseConstant(Co);
+          Insert(Ch, S, i);
+        end;
+      {$ELSE}
+        Ch := ParseConstant(Co);
         Insert(Ch, S, i);
+      {$ENDIF}
       end;
     end;
     Dec(i);
