@@ -63,7 +63,6 @@ type
     class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); override;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
 
-    class function GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     //class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     //class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
     //class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
@@ -308,20 +307,6 @@ begin
   if not CheckHandle(ANotebook, Self, 'RemovePage') then Exit;
   
   TCarbonTabsControl(ANotebook.Handle).Remove(AIndex);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TCarbonWSCustomNotebook.GetDesignInteractive
-  Params:  AWinControl - LCL win control
-           AClientPos  - Pos
-  Returns: If client pos should be interactive in designer
- ------------------------------------------------------------------------------}
-class function TCarbonWSCustomNotebook.GetDesignInteractive(
-  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
-begin
-  Result := False;
-  if not CheckHandle(AWinControl, Self, 'GetDesignInteractive') then Exit;
-  Result := TCarbonTabsControl(AWinControl.Handle).IsDesignInteractive(AClientPos);
 end;
 
 {------------------------------------------------------------------------------

@@ -70,6 +70,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+    class function  GetDesignInteractive(const AWinControl: TWinControl; AClientPos: TPoint): Boolean; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
@@ -116,6 +117,20 @@ uses
   CarbonProc;
 
 { TCarbonWSWinControl }
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWSWinControl.GetDesignInteractive
+  Params:  AWinControl - LCL win control
+           AClientPos  - Pos
+  Returns: If client pos should be interactive in designer
+ ------------------------------------------------------------------------------}
+class function TCarbonWSWinControl.GetDesignInteractive(
+  const AWinControl: TWinControl; AClientPos: TPoint): Boolean;
+begin
+  Result := False;
+  if not CheckHandle(AWinControl, Self, 'GetDesignInteractive') then Exit;
+  Result := TCarbonWidget(AWinControl.Handle).IsDesignInteractive(AClientPos);
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonWSWinControl.GetPreferredSize

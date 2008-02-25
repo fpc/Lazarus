@@ -441,7 +441,6 @@ begin
   InstallControlEventHandler(FDesignControl,
     RegisterEventHandler(@CarbonDesign_Draw),
     1, @TmpSpec, Pointer(Self), nil);
-    
 
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlTrack);
   InstallControlEventHandler(FDesignControl,

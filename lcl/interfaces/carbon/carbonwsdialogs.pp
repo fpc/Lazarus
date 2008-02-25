@@ -471,7 +471,6 @@ function CarbonFontDialog_Selection(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
-  AFontDialog: TFontDialog;
   ID: ATSUFontID;
   Size: Fixed;
   Color: RGBColor;
@@ -529,8 +528,6 @@ end;
 function CarbonFontDialog_Close(ANextHandler: EventHandlerCallRef;
   AEvent: EventRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
-var
-  AFontDialog: TFontDialog;
 begin
   {$IFDEF VerboseWSClass}
     DebugLn('CarbonFontDialog_Close: ', DbgSName(FontDialog));
@@ -588,7 +585,7 @@ begin
       1, @TmpSpec, nil, nil);
 
 
-    OSError(ATSUCreateAndCopyStyle(TCarbonFont(AFontDialog.Font.Handle).Style, Style),
+    OSError(ATSUCreateAndCopyStyle(TCarbonFont(AFontDialog.Font.Reference.Handle).Style, Style),
       Self, SShowModal, 'ATSUCreateAndCopyStyle');
       
     // force set font ID

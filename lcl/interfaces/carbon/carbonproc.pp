@@ -1093,7 +1093,7 @@ begin
 
             Result := SetEventParameter(AEvent, kEventParamControlPart,
               typeControlPartCode, SizeOf(Part), @Part);
-            OSError(Result, SName, SSetEvent)
+            OSError(Result, SName, SSetEvent);
           end;
       end;
     kEventClassTextInput: Result := noErr;

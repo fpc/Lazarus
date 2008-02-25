@@ -251,7 +251,10 @@ var
   end;  
   EventKind: UInt32;
   Part: WindowPartCode;
-  
+  DesignControl: TControl;
+  DesignWidget: TCarbonWidget;
+  P, ClientPt, ControlPt: TPoint;
+  ViewPart: HIViewPartCode;
 begin
   Result := EventNotHandledErr;
   
@@ -300,8 +303,39 @@ begin
     Result := EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
   end
   else
+  begin
     // the LCL does not want the event propagated
     Result := noErr;
+  end;
+  
+  // interactive design
+  if (Widget is TCarbonDesignWindow) and (GetMouseButton = 1) and
+    (EventKind = kEventMouseDown) and (GetClickCount = 1) then
+  begin
+    P := GetMousePoint;
+    DesignControl := Widget.LCLObject.ControlAtPos(P,
+      [capfAllowDisabled, capfAllowWinControls, capfRecursive]);
+      
+    if DesignControl is TWinControl then
+    begin
+      ClientPt := DesignControl.ScreenToClient(Widget.LCLObject.ClientToScreen(P));
+      ControlPt := DesignControl.ScreenToControl(Widget.LCLObject.ClientToScreen(P));
+      
+      if (DesignControl as TWinControl).HandleAllocated then
+      begin
+        DesignWidget := TCarbonWidget((DesignControl as TWinControl).Handle);
+        if DesignWidget.IsDesignInteractive(ClientPt) then
+        begin
+          DebugLn('Send Design Click to control');
+          ViewPart := 0;
+          OSError(HIViewGetPartHit(DesignWidget.Widget, PointToHIPoint(ControlPt), ViewPart),
+            SName, 'HIViewGetPartHit');
+          OSError(HIViewSimulateClick(DesignWidget.Widget, ViewPart, GetCarbonMsgKeyState, nil),
+            SName, 'HIViewSimulateClick');
+        end;
+      end;
+    end;
+  end;
     
   NotifyApplicationUserInput(Msg.Message.Msg);
 end;

@@ -94,7 +94,7 @@ type
     function GetClientRect(var ARect: TRect): Boolean; override;
     function SetBounds(const ARect: TRect): Boolean; override;
     
-    function IsDesignInteractive(const P: TPoint): Boolean;
+    function IsDesignInteractive(const P: TPoint): Boolean; override;
     
     procedure ScrollTabsLeft;
     procedure ScrollTabsRight;
@@ -197,7 +197,7 @@ begin
   begin
     if FParent <> nil then
       AVisible :=
-        (LCLObject as TCustomPage).PageIndex = (FParent.LCLObject as TCustomNotebook).PageIndex;
+        (LCLObject as TCustomPage).PageIndex = FParent.TabIndexToPageIndex(FParent.FTabIndex);
 
     OSError(HIViewSetVisible(Frames[0], AVisible),
       Self, 'ShowHide', SViewVisible);
@@ -655,6 +655,7 @@ begin
   Index := GetValue - 1;
   if Index >= 0 then Inc(Index, FFirstIndex);
   
+  //DebugLn('TCarbonTabsControl.ValueChanged Index: ', DbgS(Index),  ' Old ', DbgS(FOldTabIndex));
   if Index = FOldTabIndex then Exit;
   FOldTabIndex := Index;
 

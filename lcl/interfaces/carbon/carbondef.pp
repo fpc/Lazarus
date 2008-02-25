@@ -94,6 +94,7 @@ type
     function GetTopParentWindow: WindowRef; virtual; abstract;
     procedure Invalidate(Rect: PRect = nil); virtual; abstract;
     procedure InvalidateRgn(AShape: HISHapeRef);
+    function IsDesignInteractive(const P: TPoint): Boolean; virtual;
     function IsEnabled: Boolean; virtual; abstract;
     function IsVisible: Boolean; virtual; abstract;
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;
@@ -606,6 +607,16 @@ begin
   else
     OSError(HIViewSetNeedsDisplayInShape(Content, AShape, True),
       Self, 'InvalidateRgn', 'HIViewSetNeedsDisplayInShape');
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.IsDesignInteractive
+  Params:  P - Client pos
+  Returns: If the pos is design interactive
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.IsDesignInteractive(const P: TPoint): Boolean;
+begin
+  Result := False;
 end;
 
 {------------------------------------------------------------------------------
