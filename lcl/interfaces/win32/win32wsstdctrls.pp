@@ -785,9 +785,12 @@ var
   StringList: TWin32ComboBoxStringList;
 begin
   WinHandle := AWinControl.Handle;
-  StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
-  if StringList <> nil then
-    Height := StringList.ComboHeight;
+  if TCustomComboBox(AWinControl).Style <> csSimple then
+  begin
+    StringList := TWin32ComboBoxStringList(GetWindowInfo(WinHandle)^.List);
+    if StringList <> nil then
+      Height := StringList.ComboHeight;
+  end;
 end;
 
 class procedure TWin32WSCustomComboBox.GetPreferredSize(
