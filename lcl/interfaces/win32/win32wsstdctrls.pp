@@ -794,15 +794,9 @@ class procedure TWin32WSCustomComboBox.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 begin
-  if not AWinControl.HandleAllocated then
-  begin
-    // any idea about?
-    PreferredHeight := 0;
-  end
-  else
-  begin
+  PreferredHeight := 0;
+  if (AWinControl.HandleAllocated) and (TCustomComboBox(AWinControl).Style <> csSimple) then
     PreferredHeight := AWinControl.Height;
-  end;
 end;
 
 class function TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
