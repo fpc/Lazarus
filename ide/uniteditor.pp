@@ -4325,6 +4325,7 @@ var
   SrcEdit: TSourceEditor;
 begin
   SrcEdit:=GetActiveSE;
+  if SrcEdit = nil then Exit;
   if FLastCodeBuffer=SrcEdit.CodeBuffer then exit;
   FLastCodeBuffer:=SrcEdit.CodeBuffer;
   if Assigned(OnCurrentCodeBufferChanged) then
