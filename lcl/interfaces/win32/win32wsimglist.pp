@@ -194,7 +194,7 @@ class procedure TWin32WSCustomImageList.AddData(AListHandle: TLCLIntfHandle; ACo
           P^ := (P^ and $FE) or ((not AData^.Alpha) shr 7);
           if x and $7 = 0
           then Inc(p)
-          else P^ := P^ shl 1;
+          else P^ := Byte(P^ shl 1);
           Inc(AData);
         end;
         // finish mask shifting

@@ -271,12 +271,12 @@ begin
   Result := Len;
   // use the last 30 characters to compute the hash
   case fCaseSensitive of
-  True:
-    for I:= Len -1 downto 0 do
-      inc(Result, cardinal(ord(P[I])) shl I);
-  False:
-    for I:= Len -1 downto 0 do
-      inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
+    True:
+      for I := Len - 1 downto 0 do
+        inc(Result, cardinal(ord(P[I])) shl I);
+    False:
+      for I := Len - 1 downto 0 do
+        inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
   end;
 end;
 
