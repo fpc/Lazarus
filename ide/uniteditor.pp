@@ -2924,7 +2924,7 @@ begin
   EditorLine := FEditor.Lines[YLine-1];
 
   if Length(Trim(EditorLine)) = 0 then Exit;
-  if XLine > Length(EditorLine) then Exit;
+  if (XLine > Length(EditorLine)) or (XLine < 1) then Exit;
   if not (EditorLine[XLine] in ALeftLimit) then Exit;
 
   //walk backwards to a space or non-standard character.
