@@ -3916,7 +3916,6 @@ var
 
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
-    TDefinePool;
     with CodeToolBoss.GlobalValues do begin
       if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
       if Macroname='FPCSrcDir' then
