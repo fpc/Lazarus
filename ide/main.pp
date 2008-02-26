@@ -3908,15 +3908,21 @@ end;
 procedure TMainIDE.DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
 var
   EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
-  MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
+  MacroValueChanged,
+  FPCSrcDirChanged, FPCCompilerChanged,
+  LazarusSrcDirChanged: boolean;
   OldCompilerFilename: string;
   OldLanguage: String;
 
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
+    TDefinePool;
     with CodeToolBoss.GlobalValues do begin
       if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
-      FPCSrcDirChanged:=FPCSrcDirChanged or (Macroname='FPCSrcDir');
+      if Macroname='FPCSrcDir' then
+        FPCSrcDirChanged:=true;
+      if Macroname='LazarusDir' then
+        LazarusSrcDirChanged:=true;
       Variables[ExternalMacroStart+MacroName]:=NewValue;
     end;
     MacroValueChanged:=true;
@@ -3984,8 +3990,8 @@ Begin
       UpdateEnglishErrorMsgFilename;
       MacroValueChanged:=false;
       FPCSrcDirChanged:=false;
-      FPCCompilerChanged:=
-                       OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+      FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+      LazarusSrcDirChanged:=false;
       ChangeMacroValue('LazarusDir',EnvironmentOptions.LazarusDirectory);
       ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
 
@@ -4001,6 +4007,11 @@ Begin
       UpdateDesigners;
       UpdateObjectInspector;
       SetupHints;
+
+      // reload lazarus packages
+      if LazarusSrcDirChanged then begin
+        PkgBoss.LazarusSrcDirChanged;
+      end;
     end;
   finally
     EnvironmentOptionsDialog.Free;

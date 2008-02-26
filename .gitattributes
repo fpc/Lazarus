@@ -74,6 +74,7 @@ components/codetools/codetemplatestool.pas svneol=native#text/pascal
 components/codetools/codetoolmanager.pas svneol=native#text/pascal
 components/codetools/codetoolmemmanager.pas svneol=native#text/pascal
 components/codetools/codetools.inc svneol=native#text/pascal
+components/codetools/codetools1.lpk svneol=native#text/plain
 components/codetools/codetoolsconfig.pas svneol=native#text/plain
 components/codetools/codetoolsstrconsts.pas svneol=native#text/pascal
 components/codetools/codetoolsstructs.pas svneol=native#text/pascal

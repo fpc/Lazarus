@@ -233,6 +233,7 @@ type
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
     procedure RebuildDefineTemplates; override;
+    procedure LazarusSrcDirChanged; override;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -2598,6 +2599,12 @@ end;
 procedure TPkgManager.RebuildDefineTemplates;
 begin
   PackageGraph.RebuildDefineTemplates;
+end;
+
+procedure TPkgManager.LazarusSrcDirChanged;
+begin
+  if PackageGraph=nil then exit;
+
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;

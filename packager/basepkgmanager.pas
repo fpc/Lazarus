@@ -119,6 +119,7 @@ type
     // package graph
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;
     procedure RebuildDefineTemplates; virtual; abstract;
+    procedure LazarusSrcDirChanged; virtual; abstract;
 
     // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
