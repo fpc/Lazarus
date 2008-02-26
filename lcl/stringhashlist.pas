@@ -216,7 +216,7 @@ end;
 
 function TStringHashList.Find(const S: String): Integer;
 var
-  Value: Integer;
+  Value: Cardinal;
   First, Last, Temp, I: Integer;
 begin
   Value:= HashOf(s);
@@ -227,7 +227,7 @@ begin
   begin
     Temp:= (First + Last) div 2;
     case CompareValue(Value, FList[Temp]^.HashValue) of
-     1: First:= Temp +1;
+     1: First:= Temp + 1;
      0:
        begin
          Result:= Temp;
@@ -268,9 +268,10 @@ var
 begin
   P:= PChar(Key);
   Len:= Length(Key);
-  Result := Len;
-  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
-  {$R-}
+  Result := Len;  
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
+  {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
+  {$R-}{Q-}
   // use the last 30 characters to compute the hash
   case fCaseSensitive of
     True:
@@ -280,6 +281,7 @@ begin
       for I := Len - 1 downto 0 do
         inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
   end;
+  {$IFDEF OverflowChecking}{$Q+}{$UNDEF OverflowChecking}{$ENDIF}
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
