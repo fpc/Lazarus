@@ -477,7 +477,7 @@ begin
     while (HashItem<>nil) and (n<MaxTraces) do
     begin
       DebugLn('DC: ', Dbgs(HashItem^.Item));
-      DumpBackTrace(TDeviceContext(HashItem^.Item).StackAddrs);
+      DumpBackTrace(TGtkDeviceContext(HashItem^.Item).StackAddrs);
       DebugLn();
       HashItem:=HashItem^.Next;
     end;
