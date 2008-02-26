@@ -248,7 +248,7 @@ begin
         begin
           itemHeight := TCustomListBox(Sender).ItemHeight;
           if TCustomListBox(Sender).Style = lbOwnerDrawVariable then
-            TCustomListBox(Sender).MeasureItem(itemID, integer(itemHeight));
+            TCustomListBox(Sender).MeasureItem(Integer(itemID), integer(itemHeight));
         end;
       end;
     end;
