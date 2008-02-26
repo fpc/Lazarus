@@ -945,7 +945,7 @@ begin
     else
       AHeight := ItemHeight;
     if FStyle = csOwnerDrawVariable then
-      MeasureItem(ItemId, AHeight);
+      MeasureItem(Integer(ItemId), AHeight);
     if AHeight > 0 then
       ItemHeight := AHeight;
   end;
