@@ -2213,7 +2213,10 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TDockManager">
         <short>A base class for managing the docking process</short>
-        <descr>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. <br/>This means that there is no implementation specified: <br/>these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes <br/>to override these methods and implement them as desired.</descr>
+        <descr>
+          <p>TDockManager is an abstract class for managing a dock site's docked controls. </p>
+          <p>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. This means that there is no implementation specified: these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes to override these methods and implement them as desired.</p>
+        </descr>
       </element>
       <!-- procedure Visibility: default -->
       <element name="TDockManager.BeginUpdate">
@@ -8029,7 +8032,10 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- object Visibility: default -->
       <element name="TWinControl">
         <short>The base class for all windowed controls</short>
-        <descr>Defines many of the properties inherited by child classes, <br/>particularly those related to size, position, bounds, docking, <br/>the responses to mouse movements and key presses. <br/>Defines procedures and functions related to windowed controls, <br/>some of which override virtual methods defined in ancestor classes.</descr>
+        <descr>
+          <p>Defines many of the properties inherited by child classes, particularly those related to size, position, bounds, docking, the responses to mouse movements and key presses. </p>
+          <p>Defines procedures and functions related to windowed controls, some of which override virtual methods defined in ancestor classes.</p>
+        </descr>
         <seealso>
           <link id="TControl"/>
         </seealso>
@@ -10158,13 +10164,13 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockDrop">
-        <short/>
+        <short>Event handler for dropping a control in a docked position</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnDockOver">
-        <short/>
+        <short>Event handler for docking a control over another control</short>
         <descr/>
         <seealso/>
       </element>
@@ -10216,19 +10222,19 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnMouseWheel">
-        <short/>
+        <short>Event handler for any movement of the mouse wheel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnMouseWheelDown">
-        <short/>
+        <short>Event handler for downward movement of the mouse wheel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnMouseWheelUp">
-        <short/>
+        <short>Event handler for upward movement of the mouse wheel</short>
         <descr/>
         <seealso/>
       </element>
@@ -10252,19 +10258,19 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Showing">
-        <short/>
+        <short>Is the window showing? (similar to Visible in other contexts)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.UseDockManager">
-        <short/>
+        <short>Use a dock manager to control docking? (default false)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.VisibleDockClientCount">
-        <short/>
+        <short>The number of visible client controls for docking</short>
         <descr/>
         <seealso/>
       </element>
@@ -11332,61 +11338,62 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Tree">
-        <short/>
+        <short>The dock tree of which this dock zone is a part</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.ChildCount">
-        <short/>
+        <short>The number of child controls for docking</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Height">
-        <short/>
+        <short>The height of the Dock Zone</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Left">
-        <short/>
+        <short>The position of the left side to the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.LimitBegin">
-        <short/>
+        <short>The beginning limit of the DockZone (Left or Top)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.LimitSize">
-        <short/>
+        <short>The size of the limits of the DockZone (Width or Height)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Top">
-        <short/>
+        <short>The top coordinate of this control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Visible">
-        <short/>
+        <short>Is the control visible?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.VisibleChildCount">
-        <short/>
+        <short>
+          <i>VisibleChildCount</i> - the number of visible child controls</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Width">
-        <short/>
+        <short>The width of this control</short>
         <descr/>
         <seealso/>
       </element>
@@ -11909,7 +11916,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TMouse.IsDragging">
-        <short/>
+        <short>Is the mouse being used to drag an object?</short>
         <descr/>
         <seealso/>
       </element>
@@ -12748,8 +12755,10 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragManager">
-        <short/>
-        <descr/>
+        <short>TDragManager - a class for managing the dragging of controls (eventually to be dropped or docked)</short>
+        <descr>
+          <p>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. This means that there is no implementation specified: these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes to override these methods and implement them as desired.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -12966,14 +12975,15 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragManager.DragImmediate">
-        <short/>
+        <short>Is the dragging process to start immediately the control receives focus (eg gets captured by mouse)?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragManager.DragThreshold">
-        <short/>
-        <descr/>
+        <short>The threshold amount by which the mouse must move before the dragging process starts.</short>
+        <descr>The threshold amount by which the mouse must move before the dragging process starts. Default is 5 pixels - irrelevant if <link id="DragImmediate"/> is true
+</descr>
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
@@ -14562,37 +14572,42 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.ChildControl">
-        <short/>
+        <short>The child control to be docked here</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.FirstChild">
-        <short/>
+        <short>The first child control in the list of controls for docking</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Orientation">
-        <short/>
-        <descr/>
+        <short>Whether docking is oriented vertically, horizontally, in pages, or not at all</short>
+        <descr>
+          <p>doNoOrient   : zone contains a TControl and no child zones.</p>
+          <p>doHorizontal : zone's children are stacked top-to-bottom.</p>
+          <p>doVertical     : zone's children are arranged left-to-right.</p>
+          <p>doPages       : zone's children are pages arranged left-to-right.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.Parent">
-        <short/>
+        <short>The parent dock zone to which this control is docked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.NextSibling">
-        <short/>
+        <short>The next sibling in the list of docked controls</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDockZone.PrevSibling">
-        <short/>
+        <short>The previous sibling in the list of docked controls</short>
         <descr/>
         <seealso/>
       </element>
@@ -14775,6 +14790,9 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <element name="TControl.AnchAnchor">
         <short>Anchor to the bottom</short>
+      </element>
+      <element name="TDockZone.Height">
+        <short>The height of this control</short>
       </element>
     </module>
     <!-- Controls -->
