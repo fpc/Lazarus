@@ -934,7 +934,7 @@ begin
   HideAllFormsWithStayOnTop;
   // handle the exception
   if ExceptObject is Exception then begin
-    if not (ExceptObject is EAbort) then
+    if not (ExceptObject is EAbort) then begin
       i:=FApplicationHandlers[ahtUserInput].Count;
       if Assigned(OnException) or (i>0) then begin
         if Assigned(OnException) then
@@ -943,6 +943,7 @@ begin
           TExceptionEvent(FApplicationHandlers[ahtException][i])(Self,Exception(ExceptObject));
       end else
         ShowException(Exception(ExceptObject));
+    end;
   end else
     SysUtils.ShowException(ExceptObject, ExceptAddr);
   Exclude(FFlags,AppHandlingException);
