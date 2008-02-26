@@ -834,6 +834,25 @@ begin
   Result := _AlphaBlend(hdcDest, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest, hdcSrc, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc, blendFunction);
 end;
 
+function _GetComboboxInfo(hwndCombo: HWND; pcbi: PComboboxInfo): BOOL; stdcall;
+begin
+  Result := (pcbi <> nil) and (pcbi^.cbSize = SizeOf(TComboboxInfo));
+  if Result then
+  begin
+    pcbi^.hwndCombo := hwndCombo;
+    if (GetWindowLong(hwndCombo, GWL_STYLE) and CBS_SIMPLE) <> 0 then
+    begin
+      pcbi^.hwndList := GetTopWindow(hwndCombo);
+      pcbi^.hwndItem := GetWindow(pcbi^.hwndList, GW_HWNDNEXT);
+    end
+    else
+    begin
+      pcbi^.hwndItem := GetTopWindow(hwndCombo);
+      pcbi^.hwndList := 0;
+    end;
+  end;
+end;
+
 
 const 
   msimg32lib = 'msimg32.dll';
@@ -876,7 +895,9 @@ begin
   begin
     p := GetProcAddress(user32handle, 'GetComboBoxInfo');
     if p <> nil then
-      Pointer(GetComboboxInfo) := p;
+      Pointer(GetComboboxInfo) := p
+    else
+      Pointer(GetComboboxInfo) := @_GetComboboxInfo;
   end;
 end;
 

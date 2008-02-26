@@ -740,6 +740,7 @@ class function TWin32WSCustomComboBox.CreateHandle(const AWinControl: TWinContro
   const AParams: TCreateParams): HWND;
 var
   Params: TCreateWindowExParams;
+  Info: TComboboxInfo;
 begin
   // general initialization of Params
   PrepareCreateWindow(AWinControl, Params);
@@ -758,10 +759,13 @@ begin
   // combobox is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.needParentPaint := false;
 
+  Info.cbSize:= SizeOf(Info);
+  Win32Extra.GetComboBoxInfo(Params.Window, @Info);
+
   // get edit window within
   with Params do
   begin
-    Buddy := Windows.GetTopWindow(Window);
+    Buddy := Info.hwndItem;
     // If the style is CBS_DROPDOWNLIST, GetTopWindow returns null,
     // because the combobox has no edit in that case.
     if Buddy <> HWND(nil) then
@@ -774,7 +778,6 @@ begin
     else
       BuddyWindowInfo:=nil;
   end;
-
   Result := Params.Window;
 end;
 

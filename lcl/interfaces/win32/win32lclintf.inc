@@ -316,7 +316,7 @@ begin
     else
     if SizeConstraints.Control is TCustomComboBox then
     begin
-      // win32 combo (bug not csSimple) has fixed height
+      // win32 combo (but not csSimple) has fixed height
       FixedHeight := TCustomComboBox(SizeConstraints.Control).Style <> csSimple;
     end;
     
