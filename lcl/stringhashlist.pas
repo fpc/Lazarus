@@ -269,6 +269,8 @@ begin
   P:= PChar(Key);
   Len:= Length(Key);
   Result := Len;
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   // use the last 30 characters to compute the hash
   case fCaseSensitive of
     True:
@@ -278,6 +280,7 @@ begin
       for I := Len - 1 downto 0 do
         inc(Result, cardinal(ord(UpperCaseChars[P[I]])) shl I);
   end;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure TStringHashList.Insert(Index: Integer; Item: PStringHashItem);
