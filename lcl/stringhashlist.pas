@@ -271,7 +271,7 @@ begin
   Result := Len;  
   {$IFOPT R+}{$DEFINE RangeChecking}{$ELSE}{$UNDEF RangeChecking}{$ENDIF}
   {$IFOPT Q+}{$DEFINE OverflowChecking}{$ELSE}{$UNDEF OverflowChecking}{$ENDIF}
-  {$R-}{Q-}
+  {$R-}{$Q-}
   // use the last 30 characters to compute the hash
   case fCaseSensitive of
     True:
