@@ -8914,12 +8914,13 @@ begin
     MainBuildBoss.SetBuildTargetIDE;
 
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
+    // but not the IDE
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          '',EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         Flags+[blfWithoutLinkingIDE]);
+                         Flags+[blfWithoutCompilingIDE,blfWithoutLinkingIDE]);
     if Result<>mrOk then begin
       DebugLn('TMainIDE.DoBuildLazarus: Build Lazarus without linking failed.');
       exit;
@@ -8982,8 +8983,7 @@ begin
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean,
-                                        blfWithoutCompilingIDE]
+                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]
                          );
     if Result<>mrOk then exit;
 

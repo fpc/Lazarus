@@ -416,7 +416,14 @@ begin
         end else
           CurMakeMode:=mmNone;
       end;
+      if (CurItem=Options.ItemIDE)
+      and (blfWithoutCompilingIDE in Flags)
+      and (blfWithoutLinkingIDE in Flags)
+      then
+        CurMakeMode:=mmNone;
+      
       if CurMakeMode=mmNone then continue;
+      
       if (blfDontClean in Flags) and (CurMakeMode=mmCleanBuild) then
         CurMakeMode:=mmBuild;
       Tool.Title:=CurItem.Description;
