@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-24 13:48+0100\n"
+"PO-Revision-Date: 2008-02-26 16:42+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -66,7 +66,7 @@ msgstr "%s hat keinen gültigen LazDoc-Pfad.%sKann die FPDoc-Datei für %s nicht
 
 #: lazarusidestrconsts:lisisalreadypartoftheproject
 msgid "%s is already part of the Project."
-msgstr "%s ist bereits im Projekt."
+msgstr "%s ist bereits im Projekt enthalten."
 
 #: lazarusidestrconsts:lissamisanabstractclassithasabstractmethods
 msgid "%s is an abstract class, it has %s abstract methods."
@@ -90,7 +90,7 @@ msgstr "%s%s%s ist als Bezeichner ungültig."
 
 #: lazarusidestrconsts:lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
-msgstr "%s%s%s ist als Unit-Name ungültig."
+msgstr "%s%s%s ist kein gültiger Unit-Name."
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if you are sure to do that."
@@ -218,7 +218,7 @@ msgstr "&Einschalten"
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "&Entire Scope"
-msgstr "&Gesamter Bereich"
+msgstr "G&esamter Bereich"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
@@ -290,7 +290,7 @@ msgstr "&Löschen"
 
 #: lazarusidestrconsts:lismenureplace2
 msgid "&Replace ..."
-msgstr "&Ersetzen ..."
+msgstr "E&rsetzen ..."
 
 #: lazarusidestrconsts:dlgreplacewith
 msgid "&Replace With"
@@ -310,7 +310,7 @@ msgstr "&Suche"
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "&Selected Text"
-msgstr "&Ausgewählter Text"
+msgstr "Au&sgewählter Text"
 
 #: lazarusidestrconsts:uemsetbookmark
 msgid "&Set Bookmark"
@@ -370,7 +370,7 @@ msgstr "<Keine>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
-msgstr "<Wählen Sie eine bestehende Datei>"
+msgstr "<Wählen Sie eine vorhandene Datei>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -390,7 +390,7 @@ msgstr "<Keine Variable gewählt>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr "%s darf keine TControls enthalten.%sSie können nur nichtvisuelle Komponenten darauf ablegen."
+msgstr "%s darf keine TControls enthalten.%sSie können hier nur nichtvisuelle Komponenten ablegen."
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -498,7 +498,7 @@ msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr "Um"
+msgstr "Umgekehrt zufügen"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -670,7 +670,7 @@ msgstr "Alle Dateien"
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
-msgstr "Alle Blöcke sehen richtig aus."
+msgstr "Alle Blöcke sehen gut aus."
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -690,7 +690,7 @@ msgstr "Alle Tests erfolgreich verlaufen."
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
-msgstr "LABEL und GOTO zulassen"
+msgstr "LABEL und GOTO erlauben"
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
@@ -726,7 +726,7 @@ msgstr "Immer sichtbares Caret"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
-msgstr "Nicht eindeutige Basisklasse"
+msgstr "Mehrdeutige Basisklasse"
 
 #: lazarusidestrconsts:lisa2pambiguousclassname
 msgid "Ambiguous Class Name"
@@ -766,7 +766,7 @@ msgstr "Mehrdeutige Dateien gefunden"
 
 #: lazarusidestrconsts:lisambiguousunitfound2
 msgid "Ambiguous unit found"
-msgstr "Unklare Unit gefunden"
+msgstr "Mehrdeutige Unit gefunden"
 
 #: lazarusidestrconsts:lispkgmangambiguousunitsfound
 msgid "Ambiguous units found"
@@ -846,7 +846,7 @@ msgstr "Fragen"
 
 #: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
 msgid "Ask before replacing each found text"
-msgstr "Vor jedem Textersetzen nachfragen"
+msgstr "Vor dem  Ersetzen immer nachfragen"
 
 #: lazarusidestrconsts:dlgcoasmstyle
 msgid "Assembler style:"
@@ -962,7 +962,7 @@ msgstr "Dateisicherung fehlgeschlagen"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
-msgstr "Hinter Methoden"
+msgstr "Nach Methoden"
 
 #: lazarusidestrconsts:lispkgfiletypebinary
 msgid "Binary"
@@ -1242,11 +1242,11 @@ msgstr "Cursorzeile zentrieren"
 
 #: lazarusidestrconsts:liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling"
-msgstr "Kontrollelement horizontal relativ zum angegebenen Geschwister zentrieren"
+msgstr "Kontrollelement waagrecht relativ zum angegebenen Geschwister zentrieren"
 
 #: lazarusidestrconsts:liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling"
-msgstr "Kontrollelement vertikal relativ zum angegebenen Geschwister zentrieren"
+msgstr "Kontrollelement senkrecht relativ zum angegebenen Geschwister zentrieren"
 
 #: lazarusidestrconsts:liscenterinwindow
 msgid "Center in window"
@@ -3930,11 +3930,11 @@ msgstr "Pos1 springt zum nächsten Anfang"
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
-msgstr "Horizontal"
+msgstr "Waagrecht"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr "Horizontale Rasterschrittweite"
+msgstr "Waagrechte Rasterschrittweite"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -4782,7 +4782,7 @@ msgstr "Taste"
 
 #: lazarusidestrconsts:srkmkey
 msgid "Key (or 2 keys combination)"
-msgstr "Taste (oder 2-Tastenkombination)"
+msgstr "Taste (oder 2-Tasten-Kombination)"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
@@ -4882,11 +4882,11 @@ msgstr "Startprogramm"
 
 #: lazarusidestrconsts:lislaunchingapplicationinvalid
 msgid "Launching application invalid"
-msgstr "Start Programm ungültig"
+msgstr "Startprogramm ungültig"
 
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
-msgstr "Startkommando des Projektes"
+msgstr "Startbefehl des Projekts"
 
 #: lazarusidestrconsts:lispkgmanglazarus
 msgid "Lazarus"
@@ -5034,7 +5034,7 @@ msgstr "Lizenz:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Lizenz: GPL/LGPL%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object-Pascal-Compiler unter (L)GPL für (unter anderem) Windows, Linux, Mac OS X und FreeBSD.%sLazarus ist das fehlende Stück des Puzzles um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sMit der Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
+msgstr "Lizenz: GPL/LGPL%sLazarus ist eine integrierte Entwicklungsumgebung für das Schreiben grafischer und Konsolenanwendungen mit Free Pascal. Free Pascal ist ein Pascal- und Object-Pascal-Compiler unter (L)GPL für (unter anderem) Windows, Linux, Mac OS X und FreeBSD.%sLazarus ist das fehlende Stück des Puzzles, um Programme für die oben genannten Plattformen in einer Delphi-artigen Umgebung zu entwickeln. Die IDE ist ein RAD-Werkzeug mit einem Formulardesigner.%sMit der Weiterentwicklung von Lazarus brauchen wir zusätzliche Unterstützung."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmlimitlinecountto
 msgid "Limit linecount to"
@@ -5086,11 +5086,11 @@ msgstr "Litauisch"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
-msgstr "Von Datei laden"
+msgstr "Desktopeinstellungen aus Datei laden"
 
 #: lazarusidestrconsts:lisiecoloadfromfile
 msgid "Load from file"
-msgstr "Laden aus Datei"
+msgstr "Aus Datei laden"
 
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
@@ -5162,7 +5162,7 @@ msgstr "Major"
 
 #: lazarusidestrconsts:rsmajorrevision
 msgid "Major revision:"
-msgstr "Hauptversionsnummer"
+msgstr "Hauptversion:"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
@@ -5210,11 +5210,11 @@ msgstr "Maximale Zeilenlänge"
 
 #: lazarusidestrconsts:dlgmaxrecentfiles
 msgid "Max recent files"
-msgstr "Maximal gemerkte Dateien"
+msgstr "Höchstens gemerkte Dateien"
 
 #: lazarusidestrconsts:dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr "Maximal gemerkte Projektdateien"
+msgstr "Höchstens gemerkte Projektdateien"
 
 #: lazarusidestrconsts:lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
@@ -5222,11 +5222,11 @@ msgstr "Maximale Zahl von Werkzeugen erreicht"
 
 #: lazarusidestrconsts:lisprojaddmaximumversionoptional
 msgid "Maximum Version (optional):"
-msgstr "Maximale Version (optional):"
+msgstr "Maximalversion (optional):"
 
 #: lazarusidestrconsts:lispckeditmaximumversion
 msgid "Maximum Version:"
-msgstr "Größte Version:"
+msgstr "Maximalversion:"
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
@@ -5254,11 +5254,11 @@ msgstr "Alles minimieren wenn Hauptfenster minimiert wird"
 
 #: lazarusidestrconsts:lisprojaddminimumversionoptional
 msgid "Minimum Version (optional):"
-msgstr "Kleinste Version (optional):"
+msgstr "Minimalversion (optional):"
 
 #: lazarusidestrconsts:lispckeditminimumversion
 msgid "Minimum Version:"
-msgstr "Kleinste Version:"
+msgstr "Minimalversion:"
 
 #: lazarusidestrconsts:lispckoptsminor
 msgid "Minor"
@@ -5266,15 +5266,15 @@ msgstr "Minor"
 
 #: lazarusidestrconsts:rsminorrevision
 msgid "Minor revision:"
-msgstr "Unterversionsnummer"
+msgstr "Unterversion:"
 
 #: lazarusidestrconsts:fdmmirrorhorizontal
 msgid "Mirror horizontal"
-msgstr "Horizontal spiegeln"
+msgstr "Waagrecht spiegeln"
 
 #: lazarusidestrconsts:fdmmirrorvertical
 msgid "Mirror vertical"
-msgstr "Vertikal spiegeln"
+msgstr "Senkrecht spiegeln"
 
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
@@ -6414,7 +6414,7 @@ msgstr "Portugisisch"
 
 #: lazarusidestrconsts:lisceomode
 msgid "Preferred Exhibition Mode"
-msgstr ""
+msgstr "Bevorzugter Darstellungsmodus"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -9986,11 +9986,11 @@ msgstr "Version:"
 
 #: lazarusidestrconsts:lisvertical
 msgid "Vertical"
-msgstr "Vertikal"
+msgstr "Senkrecht"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr "Vertikale Rasterschrittweite"
+msgstr "Senkrechte Rasterschrittweite"
 
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
@@ -10190,7 +10190,7 @@ msgstr "Warnung"
 
 #: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Warnung: Die zusätzliche Compilerkonfigurationsdatei besitzt den gleichen Namen wie eine der Standard-Konfigurationsdateien nach denen der Free-Pascal-Compiler sucht. Das kann dazu führen, daß NUR diese und nicht die Standard-Datei verwendet wird."
+msgstr "Warnung: Die zusätzliche Compilerkonfigurationsdatei besitzt den gleichen Namen wie eine der Standard-Konfigurationsdateien nach denen FPC sucht. Das kann dazu führen, daß NUR diese und nicht die Standard-Datei verwendet wird."
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
@@ -10230,7 +10230,7 @@ msgstr "Breite:"
 
 #: lazarusidestrconsts:dlgwin32guiapp
 msgid "Win32 gui application"
-msgstr "Win32 GUI Anwendung"
+msgstr "Win32-GUI-Anwendung"
 
 #: lazarusidestrconsts:dlgwindow
 msgid "Window"
@@ -10326,7 +10326,7 @@ msgstr "\" nicht gefunden."
 
 #: lazarusidestrconsts:uefilerotext2
 msgid "\" is not writable."
-msgstr "\" ist schreibgeschuetzt."
+msgstr "\" ist schreibgeschützt."
 
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
@@ -10406,7 +10406,7 @@ msgstr "Benutzerdefinierte Einstellungen"
 
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
-msgstr "Standard (%s)"
+msgstr "Voreinstellung (%s)"
 
 #: lazarusidestrconsts:lisautomaticallyremovecharacter
 msgid "do not add character"
@@ -10430,7 +10430,7 @@ msgstr "fpcmake fehlgeschlagen"
 
 #: lazarusidestrconsts:lisfreepascalprogramusingtcustomapplicationtoeasilych
 msgid "freepascal program using TCustomApplication to easily check command line options, handling exceptions, etc. The program file is automatically maintained by lazarus."
-msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeilenoptionen, Bearbeiten von Exceptions und so weiter. Die Programmdatei wird automatisch von Lazarus betreut."
+msgstr "Free-Pascal-Programm auf der Basis von TCustomApplication für das einfache Prüfen von Kommandozeilenoptionen, Bearbeiten von Exceptions und so weiter. Die Programmdatei wird von Lazarus betreut."
 
 #: lazarusidestrconsts:lisreportingbugurl
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
@@ -10462,7 +10462,7 @@ msgstr "Im Hauptprojekt"
 
 #: lazarusidestrconsts:lisfriinprojectpackageowningcurrentunit
 msgid "in project/package owning current unit"
-msgstr "im Projekt/Package dem die aktuelle Unit gehört"
+msgstr "im Projekt/Package, dem die aktuelle Unit gehört"
 
 #: lazarusidestrconsts:lisincludepath
 msgid "include path"
@@ -10486,7 +10486,7 @@ msgstr "ungültiger Compilerdateiname"
 
 #: lazarusidestrconsts:lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
-msgstr "lazarus [Optionen] <Projektdateiname>"
+msgstr "lazarus [Optionen] <Projektdatei>"
 
 #: lazarusidestrconsts:srvk_lwin
 msgid "left windows key"
@@ -10550,7 +10550,7 @@ msgstr "keine fpc.cfg gefunden"
 
 #: lazarusidestrconsts:liscodehelpnoinheriteddescriptionfound
 msgid "no inherited description found"
-msgstr "keine vererbte Beschreibung gefunden"
+msgstr "keine geerbte Beschreibung gefunden"
 
 #: lazarusidestrconsts:lisccononascii
 msgid "non ASCII"
@@ -10590,7 +10590,7 @@ msgstr "Package-Hauptquelldatei"
 
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
-msgstr "Programm pausieren"
+msgstr "Programmpause"
 
 #: lazarusidestrconsts:lisctpleaseselectamacro
 msgid "please select a macro"
