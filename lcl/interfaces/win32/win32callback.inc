@@ -238,6 +238,7 @@ var
 
   NMHdr: PNMHdr absolute LParam; // used by WM_NOTIFY
   TmpSize: TSize; // used by WM_MEASUREITEM
+  Info: TComboboxInfo;
 
   function ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean): integer;
   var
@@ -1111,6 +1112,20 @@ begin
     begin
       Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
       exit;
+    end
+    else
+    if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) then
+    begin
+      // if focus jumps inside combo then no need to notify LCL
+      Info.cbSize := SizeOf(Info);
+      GetComboBoxInfo(lWinControl.Handle, @Info);
+      if (HWND(WParam) = Info.hwndList) or
+         (HWND(WParam) = Info.hwndItem) or
+         (HWND(WParam) = Info.hwndCombo) then
+      begin
+        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+        exit;
+      end;
     end;
   end else begin
     lWinControl := WindowInfo^.WinControl;

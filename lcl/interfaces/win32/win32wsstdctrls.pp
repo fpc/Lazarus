@@ -351,14 +351,18 @@ const
  ------------------------------------------------------------------------------}
 function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
+var
+  Info: TComboboxInfo;
 begin
   // darn MS: if combobox has edit control, and combobox receives focus, it
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
   // also don't pass WM_SETFOCUS to the lcl,
   // it will get one from the edit control
 
+  Info.cbSize := SizeOf(Info);
+  GetComboBoxInfo(Window, @Info);
   if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
-     (Windows.GetTopWindow(Window) <> HWND(nil)) then
+     ((HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList)) then
   begin
     // continue normal processing, don't send to lcl
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
