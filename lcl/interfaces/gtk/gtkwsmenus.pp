@@ -371,14 +371,22 @@ begin
   Y^ := Point^.Y;
 end;
 
-function gtkWSPopupDelayedClose(WidgetInfo: Pointer): gboolean; cdecl;
+function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
+var
+  WidgetInfo: PWidgetInfo absolute Data;
 begin
-  TPopupMenu(PWidgetInfo(WidgetInfo)^.LCLObject).Close;
   Result := False;
+  if (WidgetInfo<>nil) and (wwiValidQueuedEvent in WidgetInfo^.Flags) then
+  begin
+    if WidgetInfo^.LCLObject is TPopupMenu then
+      TPopupMenu(WidgetInfo^.LCLObject).Close;
+  end
+  //else DebugLn('No valid popupDelayedClose event');
 end;
 
 function gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
+  Include(PWidgetInfo(Data)^.Flags, wwiValidQueuedEvent);
   g_idle_add(@gtkWSPopupDelayedClose, data);
   Result := CallBackDefaultReturn;
 end;
