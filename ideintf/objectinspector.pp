@@ -3184,8 +3184,6 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       MainPopupMenu.Items.Add(NewMenuItem);
   end;
 
-var
-  P: TLCLPlatform;
 begin
   inherited Create(AnOwner);
   FPropertyEditorHook:=nil;
@@ -3813,7 +3811,7 @@ end;
 
 procedure TObjectInspectorDlg.WidgetSetIssuesPaint(Sender: TObject);
 var
-  X, Y, I: Integer;
+  X, Y: Integer;
   S: TSize;
   Platform: TLCLPlatform;
   None: Boolean;
