@@ -27,6 +27,8 @@ unit KeywordFuncLists;
 
 {$ifdef FPC}{$mode objfpc}{$endif}{$H+}
 
+{$R-} // turn range checking off for speed
+
 interface
 
 { $DEFINE MEM_CHECK}
@@ -49,6 +51,8 @@ type
   end;
   PKeyWordFunctionListItem = ^TKeyWordFunctionListItem;
 
+  { TKeyWordFunctionList }
+
   TKeyWordFunctionList = class
   private
     FItems: PKeyWordFunctionListItem;
@@ -65,12 +69,14 @@ type
   public
     DefaultKeyWordFunction: TKeyWordFunction;
     function DoIt(const AKeyWord: shortstring): boolean;
-    function DoIt(const ASource: string;
-       KeyWordStart, KeyWordLen: integer): boolean;
-    function DoIt(Identifier: PChar): boolean;
-    function DoItUppercase(const AnUpperSource: string;
-       KeyWordStart, KeyWordLen: integer): boolean;
     function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
+    function DoItCaseInsensitive(const ASource: string;
+                           KeyWordStart, KeyWordLen: integer): boolean;
+    function DoIt(const ASource: string;
+                           KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItUppercase(const AnUpperSource: string;
+                           KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItCaseInsensitive(Identifier: PChar): boolean;
     function DoDataFunction(Start: PChar; Len: integer; Data: pointer): boolean;
     procedure Clear;
     procedure Add(const AKeyWord: shortstring;
@@ -145,9 +151,8 @@ function IsUpperCaseStr(const s: string): boolean;
 
 implementation
 
-
 var
-  CharToHash: array[char] of integer;
+  CharToIHash: array[char] of integer;
   UpWords: array[word] of word;
 
 function UpperCaseStr(const s: string): string;
@@ -181,11 +186,7 @@ end;
 constructor TKeyWordFunctionList.Create;
 begin
   inherited Create;
-  FItems:=nil;
-  FCount:=0;
-  FCapacity:=0;
   FSorted:=true;
-  FBucketStart:=nil;
   FMaxHashIndex:=-1;
   DefaultKeyWordFunction:={$ifdef FPC}@{$endif}AllwaysFalse;
 end;
@@ -220,7 +221,7 @@ begin
   if KeyWordLen>20 then KeyWordLen:=20;
   Result:=0;
   for i:=1 to KeyWordLen do
-    inc(Result,CharToHash[AKeyWord[i]]);
+    inc(Result,CharToIHash[AKeyWord[i]]);
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
@@ -232,7 +233,7 @@ begin
   AEnd:=AStart+ALen-1;
   Result:=0;
   for i:=AStart to AEnd do
-    inc(Result,CharToHash[ASource[i]]);
+    inc(Result,CharToIHash[ASource[i]]);
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
@@ -242,7 +243,7 @@ begin
   Result:=0;
   i:=20;
   while (i>0) and IsIdentChar[Identifier[0]] do begin
-    inc(Result,CharToHash[Identifier[0]]);
+    inc(Result,CharToIHash[Identifier[0]]);
     dec(i);
     inc(Identifier);
   end;
@@ -255,7 +256,7 @@ begin
   Result:=0;
   if Len>20 then Len:=20;
   while (Len>0) do begin
-    inc(Result,CharToHash[Start^]);
+    inc(Result,CharToIHash[Start^]);
     dec(Len);
     inc(Start);
   end;
@@ -289,7 +290,7 @@ begin
   Result:=DefaultKeyWordFunction();
 end;
 
-function TKeyWordFunctionList.DoIt(const ASource: string;
+function TKeyWordFunctionList.DoItCaseInsensitive(const ASource: string;
   KeyWordStart, KeyWordLen: integer): boolean;
 // ! does not test if length(ASource) >= KeyWordStart+KeyWordLen -1
 var i, KeyPos, WordPos: integer;
@@ -328,7 +329,47 @@ begin
   Result:=DefaultKeyWordFunction();
 end;
 
-function TKeyWordFunctionList.DoIt(Identifier: PChar): boolean;
+function TKeyWordFunctionList.DoIt(const ASource: string; KeyWordStart,
+  KeyWordLen: integer): boolean;
+// ! does not test if length(ASource) >= KeyWordStart+KeyWordLen -1
+var
+  i, KeyPos, WordPos: integer;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(ASource,KeyWordStart,KeyWordLen);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      dec(KeyWordStart);
+      repeat
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=KeyWordLen then begin
+          KeyPos:=KeyWordLen;
+          WordPos:=KeyWordStart+KeyWordLen;
+          while (KeyPos>=1)
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=ASource[WordPos]) do
+          begin
+            dec(KeyPos);
+            dec(WordPos);
+          end;
+          if KeyPos<1 then begin
+            if Assigned(KeyWordFuncItem^.DoIt) then
+              Result:=KeyWordFuncItem^.DoIt()
+            else
+              Result:=DefaultKeyWordFunction();
+            exit;
+          end;
+        end;
+        if (KeyWordFuncItem^.IsLast) then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
+
+function TKeyWordFunctionList.DoItCaseInsensitive(Identifier: PChar): boolean;
 // checks
 var i, KeyPos, KeyWordLen: integer;
   KeyWordFuncItem: PKeyWordFunctionListItem;
@@ -638,11 +679,11 @@ var
   c: char;
   w: word;
 begin
-  for c:=Low(UpChars) to High(UpChars) do begin
+  for c:=Low(char) to High(char) do begin
     case c of
-    'a'..'z':CharToHash[c]:=ord(c)-ord('a')+1;
-    'A'..'Z':CharToHash[c]:=ord(c)-ord('A')+1;
-    else CharToHash[c]:=0;
+    'a'..'z':CharToIHash[c]:=ord(c)-ord('a')+1;
+    'A'..'Z':CharToIHash[c]:=ord(c)-ord('A')+1;
+    else CharToIHash[c]:=ord(c);
     end;
     UpChars[c]:=upcase(c);
     IsLineEndChar[c]:=c in [#10,#13];

@@ -1930,7 +1930,8 @@ var
     repeat
       ReadNextAtom;
       if (AtomStart<=SrcLen)
-      and IsKeyWordProcedureSpecifier.DoIt(@Src[AtomStart]) then begin
+      and IsKeyWordProcedureSpecifier.DoItCaseInsensitive(@Src[AtomStart])
+      then begin
         if UpAtomIs('EXTERNAL') then
           IsExternal:=true;
         if UpAtomIs('FORWARD') then

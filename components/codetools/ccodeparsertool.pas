@@ -49,6 +49,7 @@ const
   
   ccnRoot      =  1+ccnBase;
   ccnDirective =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
+  ccnExtern    =  3+ccnBase;// e.g. extern "C" {}
 
 type
   TCCodeParserTool = class;
@@ -70,6 +71,7 @@ type
 
     function OtherToken: boolean;
     function DirectiveToken: boolean;
+    function ExternToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -78,6 +80,7 @@ type
     procedure CloseNodes;
     
     procedure RaiseException(const AMessage: string);
+    procedure RaiseExpectedButAtomFound(const AToken: string);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -101,6 +104,7 @@ type
     function AtomIs(const s: shortstring): boolean;
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
+    function AtomIsStringConstant: boolean;
     function GetAtom: string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
@@ -152,12 +156,25 @@ begin
   EndChildNode;
 end;
 
+function TCCodeParserTool.ExternToken: boolean;
+begin
+  Result:=true;
+  CreateChildNode(ccnExtern);
+  ReadNextAtom;
+  if not AtomIsStringConstant then
+    RaiseExpectedButAtomFound('string constant');
+  ReadNextAtom;
+  if not AtomIs('{') then
+    RaiseExpectedButAtomFound('{');
+end;
+
 procedure TCCodeParserTool.InitKeyWordList;
 begin
   if FDefaultTokenList=nil then begin
     FDefaultTokenList:=TKeyWordFunctionList.Create;
     with FDefaultTokenList do begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
+      Add('extern',{$ifdef FPC}@{$endif}ExternToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
@@ -214,6 +231,11 @@ procedure TCCodeParserTool.RaiseException(const AMessage: string);
 begin
   CloseNodes;
   raise ECCodeParserException.Create(Self,AMessage);
+end;
+
+procedure TCCodeParserTool.RaiseExpectedButAtomFound(const AToken: string);
+begin
+  RaiseException(AToken+' expected, but '+GetAtom+' found');
 end;
 
 constructor TCCodeParserTool.Create;
@@ -316,6 +338,11 @@ begin
     inc(p);
   end;
   Result:=true;
+end;
+
+function TCCodeParserTool.AtomIsStringConstant: boolean;
+begin
+  Result:=(AtomStart<SrcLen) and (Src[AtomStart]='"');
 end;
 
 function TCCodeParserTool.GetAtom: string;

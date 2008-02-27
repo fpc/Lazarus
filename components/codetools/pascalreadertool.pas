@@ -1699,7 +1699,8 @@ begin
   end;
   // read specifiers
   while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
-    if WordIsPropertySpecifier.DoIt(@Src[CurPos.StartPos]) then begin
+    if WordIsPropertySpecifier.DoItCaseInsensitive(@Src[CurPos.StartPos])
+    then begin
       if AtomIs(s) then exit(true);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
       ReadTilBracketClose(true);

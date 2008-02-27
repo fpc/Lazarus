@@ -884,7 +884,7 @@ begin
   DirLen:=SrcPos-DirStart;
   if DirLen>255 then DirLen:=255;
   FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
-  FDirectiveFuncList.DoIt(Src,DirStart,DirLen);
+  FDirectiveFuncList.DoItCaseInsensitive(Src,DirStart,DirLen);
   SrcPos:=CommentEndPos;
 end;
 
@@ -958,7 +958,7 @@ begin
         while (SrcPos<=SrcLen)
         and (IsIdentChar[Src[SrcPos]]) do
           inc(SrcPos);
-        KeywordFuncList.DoIt(Src,TokenStart,SrcPos-TokenStart);
+        KeywordFuncList.DoItCaseInsensitive(Src,TokenStart,SrcPos-TokenStart);
       end;
     '''','#':
       begin
@@ -2177,7 +2177,7 @@ begin
     DirLen:=SrcPos-DirStart;
     if DirLen>255 then DirLen:=255;
     FDirectiveName:=UpperCaseStr(copy(Src,DirStart,DirLen));
-    Result:=FDirectiveFuncList.DoIt(Src,DirStart,DirLen);
+    Result:=FDirectiveFuncList.DoItCaseInsensitive(Src,DirStart,DirLen);
   end else
     Result:=true;
 end;

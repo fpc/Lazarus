@@ -1900,7 +1900,8 @@ var
     NeededType:=ctnNone;
 
     if BracketStartPos>0 then begin
-      if WordIsKeyWord.DoIt(@Src[ReferingPos]) then exit;
+      if WordIsKeyWord.DoItCaseInsensitive(@Src[ReferingPos]) then
+        exit;
       // this is a type cast
       NeededType:=ctnConstDefinition;
       //GetReferingNode;

@@ -286,18 +286,15 @@ begin
      '"':  // string constant
       begin
         while (Position<=Len) do begin
-          case (Source[Position]) of
-          '"':
-            begin
+          if (Source[Position]='"') then
+          begin
+            inc(Position);
+            while (Position<=Len)
+            and (Source[Position]<>'"') do
               inc(Position);
-              while (Position<=Len)
-              and (Source[Position]<>'"') do
-                inc(Position);
-              inc(Position);
-            end;
-          else
+            inc(Position);
+          end else
             break;
-          end;
         end;
       end;
      '''': // char constant
