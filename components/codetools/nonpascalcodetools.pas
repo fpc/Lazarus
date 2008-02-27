@@ -91,12 +91,15 @@ var
   Len: Integer;
   AtomStart: Integer;
 begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   Len:=length(Source);
   if Position>Len then exit;
   AtomStart:=Position;
   repeat
     ReadRawNextCAtom(Source,Position,AtomStart);
   until (Position>Len) or (Source[Position] in [#10,#13]);
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 function ReadTilCBracketClose(const Source: string; var Position: integer
@@ -108,6 +111,8 @@ var
   CloseBracket: Char;
   AtomStart: LongInt;
 begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   Result:=false;
   Len:=length(Source);
   if Position>Len then exit;
@@ -135,17 +140,20 @@ begin
       if Source[AtomStart]=CloseBracket then exit(true);
     end;
   until false;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure ReadNextCAtom(const Source: string; var Position: integer; out
   AtomStart: integer);
 begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
   repeat
     ReadRawNextCAtom(Source,Position,AtomStart);
     if AtomStart>length(Source) then exit;
     case Source[AtomStart] of
     '#':
-      // skip pragma
+      // skip directive
       ReadTilCLineEnd(Source,Position);
     #0..#32:
       // skip space
@@ -154,6 +162,7 @@ begin
       exit;
     end;
   until false;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 procedure ReadRawNextCAtom(const Source: string; var Position: integer;

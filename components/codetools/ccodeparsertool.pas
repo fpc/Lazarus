@@ -44,8 +44,11 @@ type
 
 const
   // descriptors
-  ccnBase     = 1000;
-  ccnNone     =  0+ccnBase;
+  ccnBase      = 1000;
+  ccnNone      =  0+ccnBase;
+  
+  ccnRoot      =  1+ccnBase;
+  ccnDirective =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
 
 type
   TCCodeParserTool = class;
@@ -63,6 +66,18 @@ type
   TCCodeParserTool = class
   private
     FChangeStep: integer;
+    FDefaultTokenList: TKeyWordFunctionList;
+
+    function OtherToken: boolean;
+    function DirectiveToken: boolean;
+    procedure InitKeyWordList;
+
+    procedure InitParser;
+    procedure CreateChildNode(Desc: TCCodeNodeDesc);
+    procedure EndChildNode;
+    procedure CloseNodes;
+    
+    procedure RaiseException(const AMessage: string);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -104,6 +119,8 @@ function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
 begin
   case Desc of
   ccnNone     : Result:='None';
+  ccnRoot     : Result:='Root';
+  ccnDirective: Result:='Directive';
   else          Result:='?';
   end;
 end;
@@ -118,6 +135,86 @@ begin
 end;
 
 { TCCodeParserTool }
+
+function TCCodeParserTool.OtherToken: boolean;
+begin
+  Result:=false;
+  RaiseException('unexpected token '+GetAtom);
+end;
+
+function TCCodeParserTool.DirectiveToken: boolean;
+begin
+  Result:=true;
+  CreateChildNode(ccnDirective);
+  // read til end of line
+  ReadTilCLineEnd(Src,SrcPos);
+  AtomStart:=SrcPos;
+  EndChildNode;
+end;
+
+procedure TCCodeParserTool.InitKeyWordList;
+begin
+  if FDefaultTokenList=nil then begin
+    FDefaultTokenList:=TKeyWordFunctionList.Create;
+    with FDefaultTokenList do begin
+      Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
+      DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
+    end;
+  end;
+end;
+
+procedure TCCodeParserTool.InitParser;
+begin
+  ParseChangeStep:=Code.ChangeStep;
+  IncreaseChangeStep;
+  InitKeyWordList;
+  Src:=Code.Source;
+  SrcLen:=length(Src);
+  if Tree=nil then
+    Tree:=TCodeTree.Create
+  else
+    Tree.Clear;
+  SrcPos:=1;
+  AtomStart:=1;
+  CurNode:=nil;
+  CreateChildNode(ccnRoot);
+end;
+
+procedure TCCodeParserTool.CreateChildNode(Desc: TCCodeNodeDesc);
+var
+  NewNode: TCodeTreeNode;
+begin
+  NewNode:=NodeMemManager.NewNode;
+  Tree.AddNodeAsLastChild(CurNode,NewNode);
+  NewNode.Desc:=Desc;
+  CurNode:=NewNode;
+  CurNode.StartPos:=AtomStart;
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.CreateChildNode ']);
+end;
+
+procedure TCCodeParserTool.EndChildNode;
+begin
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ']);
+  CurNode.EndPos:=AtomStart;
+  CurNode:=CurNode.Parent;
+end;
+
+procedure TCCodeParserTool.CloseNodes;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=CurNode;
+  while Node<>nil do begin
+    Node.EndPos:=AtomStart;
+    Node:=Node.Parent;
+  end;
+end;
+
+procedure TCCodeParserTool.RaiseException(const AMessage: string);
+begin
+  CloseNodes;
+  raise ECCodeParserException.Create(Self,AMessage);
+end;
 
 constructor TCCodeParserTool.Create;
 begin
@@ -142,7 +239,19 @@ end;
 
 procedure TCCodeParserTool.Parse(aCode: TCodeBuffer);
 begin
-
+  if (Code=aCode) and (not UpdateNeeded) then
+    exit;
+  Code:=aCode;
+  InitParser;
+  repeat
+    ReadNextAtom;
+    if SrcPos<=SrcLen then begin
+      FDefaultTokenList.DoIt(Src,AtomStart,SrcPos-AtomStart);
+    end else begin
+      break;
+    end;
+  until false;
+  CloseNodes;
 end;
 
 function TCCodeParserTool.UpdateNeeded: boolean;
@@ -161,9 +270,11 @@ end;
 
 procedure TCCodeParserTool.ReadNextAtom;
 begin
-  //DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
-  ReadRawNextCAtom(Src,SrcPos,AtomStart);
-  //DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' ',copy(Src,AtomStart,SrcPos-AtomStart)]);
+  DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
+  repeat
+    ReadRawNextCAtom(Src,SrcPos,AtomStart);
+  until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
+  DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
 end;
 
 function TCCodeParserTool.AtomIs(const s: shortstring): boolean;

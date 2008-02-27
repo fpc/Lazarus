@@ -630,7 +630,6 @@ begin
   AtomStart:=1;
   CurNode:=nil;
   CreateChildNode(cdnRoot);
-  CurNode.Desc:=cdnRoot;
 end;
 
 procedure TCompilerDirectivesTree.CreateChildNode(

@@ -32,13 +32,14 @@ program H2PasTest;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, NonPascalCodeTools;
+  CodeTree, NonPascalCodeTools, CCodeParserTool;
   
 const
   ConfigFilename = 'codetools.config';
 var
   Filename: String;
   Code: TCodeBuffer;
+  Tool: TCCodeParserTool;
 begin
   try
     CodeToolBoss.SimpleInit(ConfigFilename);
@@ -49,7 +50,10 @@ begin
     if Code=nil then
       raise Exception.Create('loading failed '+Filename);
 
-
+    Tool:=TCCodeParserTool.Create;
+    Tool.Parse(Code);
+    Tool.WriteDebugReport;
+    Tool.Free;
   except
     on E: Exception do begin
       writeln(E.Message);
