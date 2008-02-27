@@ -1413,7 +1413,25 @@ begin
     Key:=VK_UNKNOWN;
     //debugln('TSynCompletion.EditorKeyDown B ',dbgs(Key));
   end;
-  {$ENDIF}
+
+  i := fEditors.IndexOf(Sender);
+  if i <> -1 then begin
+    ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
+    if (Shift = ShortCutShift) and (Key = ShortCutKey) then
+    with sender as TCustomSynEdit do begin
+      if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then begin
+        p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
+        Form.CurrentEditor := Sender as TCustomSynEdit;
+        Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
+        // eat it
+        Key := VK_UNKNOWN;
+        TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
+      end;
+    end;
+    if Assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
+      TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, shift);
+  end;
+  {$ELSE}
   ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
   if (Shift <> ShortCutShift) or (Key <> ShortCutKey) then exit;
 
@@ -1424,15 +1442,13 @@ begin
         p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
         Form.CurrentEditor := Sender as TCustomSynEdit;
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
-        {$IFDEF SYN_LAZARUS}
-        // eat it
-        {$ENDIF}
         Key := VK_UNKNOWN;
         TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
       end;
       if assigned(TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd) then
         TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).kd(sender, key, shift);
     end;
+  {$ENDIF}
 end;
 
 function TSynCompletion.GetPreviousToken(FEditor: TCustomSynEdit): string;
