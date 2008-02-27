@@ -88,6 +88,8 @@ type
     function AtomIsIdentifier: boolean;
     function GetAtom: string;
 
+    procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
+
     procedure IncreaseChangeStep;
     procedure WriteDebugReport;
     
@@ -208,6 +210,29 @@ end;
 function TCCodeParserTool.GetAtom: string;
 begin
   Result:=copy(Src,AtomStart,SrcPos-AtomStart);
+end;
+
+procedure TCCodeParserTool.Replace(FromPos, ToPos: integer; const NewSrc: string
+  );
+var
+  Node: TCodeTreeNode;
+  DiffPos: Integer;
+begin
+  DebugLn(['TCCodeParserTool.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  IncreaseChangeStep;
+  Code.Replace(FromPos,ToPos-FromPos,NewSrc);
+  Src:=Code.Source;
+  SrcLen:=length(Src);
+  // update positions
+  DiffPos:=length(NewSrc)-(ToPos-FromPos);
+  if DiffPos<>0 then begin
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      AdjustPositionAfterInsert(Node.StartPos,true,FromPos,ToPos,DiffPos);
+      AdjustPositionAfterInsert(Node.EndPos,false,FromPos,ToPos,DiffPos);
+      Node:=Node.Next;
+    end;
+  end;
 end;
 
 procedure TCCodeParserTool.IncreaseChangeStep;
