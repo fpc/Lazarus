@@ -5187,8 +5187,10 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
-  KEYSTATE: array[Boolean] of Smallint = (0, -32768 { $8000});
-  TOGGLESTATE: array[Boolean] of Smallint = (0, 1);
+  StateDown    = -128; // $FF80
+  StateToggled = 1;
+  KEYSTATE: array[Boolean] of Smallint = (0, StateDown);
+  TOGGLESTATE: array[Boolean] of Smallint = (0, StateToggled);
 {$IFDEF GTK2}
 var
   GtkModMask: guint32;
@@ -5208,9 +5210,8 @@ begin
   // try extended keys
   if Result = 0
   then begin
-    nVirtKey := nVirtKey or KEYMAP_EXTENDED;
     {$IFDEF Use_KeyStateList}
-    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey))) >=0];
+    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey or KEYMAP_EXTENDED))) >=0];
     {$ELSE}
     Implement this
     {$ENDIF}
@@ -5218,18 +5219,17 @@ begin
 
   {$IFDEF Use_KeyStateList}
   // add toggle
-  if Result <> 0 then
-    Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
-                                    PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
+  Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
+                                  PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   {$IFDEF GTK2}
   // If there are tons of new keyboard errors this is probably the cause
   GtkModMask := gtk_accelerator_get_default_mod_mask;
-  if Result and $8000 > 0 then
+  if (Result and StateDown) <> 0 then
   begin
     if (nVirtKey = VK_CONTROL) and (GtkModMask and GDK_CONTROL_MASK = 0) then
-      Result := Result and not $8000;
+      Result := Result and not StateDown;
     //if (nVirtKey = VK_SHIFT) and (GtkModMask and GDK_SHIFT_MASK = 0 then
-    //  Result := Result and not $8000;
+    //  Result := Result and not StateDown;
   end;
   {$ENDIF}
   {$ENDIF}
@@ -9646,5 +9646,6 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$EndIf}
+
 
 

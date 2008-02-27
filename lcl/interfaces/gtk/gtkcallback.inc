@@ -161,6 +161,23 @@ begin
   TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
 end;
 
+function FilterFuc(xevent: PGdkXEvent; event: PGdkEvent; data: gpointer): TGdkFilterReturn; cdecl;
+var
+  AForm: TCustomForm absolute data;
+begin
+  Result := GDK_FILTER_CONTINUE;
+  {$ifdef windows}
+  if (PMSG(xevent)^.message = WM_NCLBUTTONDOWN) and
+     (PMSG(xevent)^.wParam = HTCAPTION) and
+     (TWinControlAccess(AForm).DragKind = dkDock) and
+     (TWinControlAccess(AForm).DragMode = dmAutomatic) then
+  begin
+    AForm.BeginDrag(True);
+    Result := GDK_FILTER_REMOVE;
+  end;
+  {$endif}
+end;
+
 {-------------------------------------------------------------------------------
   function GTKRealizeCB
   Params: Widget: PGtkWidget; Data: Pointer
@@ -197,6 +214,9 @@ begin
 
         gdk_window_set_decorations(TheWindow, decor);
         gdk_window_set_functions(TheWindow, func);
+        {$ifdef windows} // for drag/dock
+        gdk_window_add_filter(TheWindow, @FilterFuc, TheForm)
+        {$endif}
       end;
     end;
 
@@ -2602,8 +2622,8 @@ begin
   else VKey := KCInfo.VKey1;
 
   UpdateList(VKey, Pressed);
-  if (KCInfo.Flags and KCINFO_FLAG_TOGGLE <> 0)
-  then UpdateToggleList(VKey);
+  if Pressed then
+    UpdateToggleList(VKey);
 
   // Add special left and right codes
   case Event^.KeyVal of
@@ -2979,5 +2999,6 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
+
 
 
