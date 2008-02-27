@@ -106,16 +106,19 @@ function ReadTilCBracketClose(const Source: string; var Position: integer
   ): boolean;
 // Position must start on a bracket
 // at end Position will be right behind closing bracket
+// if no closing bracket found then Position will be on the starting position
 var
   Len: Integer;
   CloseBracket: Char;
   AtomStart: LongInt;
+  StartPos: LongInt;
 begin
   {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
   {$R-}
   Result:=false;
   Len:=length(Source);
   if Position>Len then exit;
+  StartPos:=Position;
   case Source[Position] of
   '{': CloseBracket:='}';
   '[': CloseBracket:=']';
@@ -128,13 +131,17 @@ begin
   AtomStart:=Position;
   repeat
     ReadRawNextCAtom(Source,Position,AtomStart);
-    if AtomStart>Len then exit;
+    if AtomStart>Len then begin
+      Position:=StartPos;
+      exit;
+    end;
     case Source[AtomStart] of
     '{','(','[':
       // skip nested bracketss
       begin
         Position:=AtomStart;
-        if not ReadTilCBracketClose(Source,Position) then exit;
+        if not ReadTilCBracketClose(Source,Position) then
+          exit;
       end;
     else
       if Source[AtomStart]=CloseBracket then exit(true);

@@ -50,7 +50,9 @@ const
   ccnRoot      =  1+ccnBase;
   ccnDirective =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
   ccnExtern    =  3+ccnBase;// e.g. extern "C" {}
-  ccnEnum      =  4+ccnBase;// e.g. enum {};
+  ccnEnums     =  4+ccnBase;// e.g. enum {};
+  ccnEnum      =  5+ccnBase;// e.g. name = value;
+  ccnConstant  =  6+ccnBase;// e.g. 1
 
 type
   TCCodeParserTool = class;
@@ -105,6 +107,7 @@ type
     
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
+    function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function AtomIs(const s: shortstring): boolean;
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
@@ -177,7 +180,7 @@ end;
 function TCCodeParserTool.EnumToken: boolean;
 begin
   Result:=true;
-  CreateChildNode(ccnExtern);
+  CreateChildNode(ccnEnums);
   ReadNextAtom;
   if not AtomIs('{') then
     RaiseExpectedButAtomFound('{');
@@ -187,16 +190,30 @@ begin
   ReadNextAtom;
   repeat
     if AtomIsIdentifier then begin
+      // read enum
+      CreateChildNode(ccnEnum);
       ReadNextAtom;
       if AtomIs('=') then begin
+        // read value
         ReadNextAtom;
         ReadConstant;
       end;
+      EndChildNode;
+    end;
+    if AtomIs(',') then begin
+      // next enum
+      ReadNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
     end else if AtomIs('}') then begin
       break;
     end else
-      RaiseExpectedButAtomFound('{');
+      RaiseExpectedButAtomFound('}');
   until false;
+  ReadNextAtom;
+  if not AtomIs(';') then
+    RaiseExpectedButAtomFound(';');
+  EndChildNode;
 end;
 
 procedure TCCodeParserTool.InitKeyWordList;
@@ -244,7 +261,8 @@ end;
 procedure TCCodeParserTool.EndChildNode;
 begin
   DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ']);
-  CurNode.EndPos:=AtomStart;
+  if CurNode.EndPos<=0 then
+    CurNode.EndPos:=AtomStart;
   CurNode:=CurNode.Parent;
 end;
 
@@ -260,8 +278,23 @@ begin
 end;
 
 procedure TCCodeParserTool.ReadConstant;
+var
+  EndPos: LongInt;
 begin
-
+  if AtomIs(',') or AtomIs(';') then
+    RaiseExpectedButAtomFound('identifier');
+  CreateChildNode(ccnConstant);
+  repeat
+    if AtomIs('(') or AtomIs('[') then
+      ReadTilBracketClose(true);
+    EndPos:=SrcPos;
+    ReadNextAtom;
+    if AtomIs(',') or AtomIs(';') or AtomIs(')') or AtomIs(']') or AtomIs('}')
+    then
+      break;
+  until false;
+  CurNode.EndPos:=EndPos;
+  EndChildNode;
 end;
 
 procedure TCCodeParserTool.RaiseException(const AMessage: string);
@@ -334,6 +367,50 @@ begin
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
   until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
   DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+end;
+
+function TCCodeParserTool.ReadTilBracketClose(
+  ExceptionOnNotFound: boolean): boolean;
+// AtomStart must be on bracket open
+// after reading AtomStart is on closing bracket
+var
+  CloseBracket: Char;
+  StartPos: LongInt;
+begin
+  case Src[AtomStart] of
+  '{': CloseBracket:='}';
+  '[': CloseBracket:=']';
+  '(': CloseBracket:=')';
+  '<': CloseBracket:='>';
+  else
+    if ExceptionOnNotFound then
+      RaiseExpectedButAtomFound('(');
+    exit(false);
+  end;
+  StartPos:=AtomStart;
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
+  repeat
+    ReadRawNextCAtom(Src,SrcPos,AtomStart);
+    if AtomStart>SrcLen then begin
+      AtomStart:=StartPos;
+      SrcPos:=AtomStart+1;
+      if ExceptionOnNotFound then
+        RaiseException('closing bracket not found');
+      exit;
+    end;
+    case Src[AtomStart] of
+    '{','(','[':
+      // skip nested bracketss
+      begin
+        if not ReadTilBracketClose(ExceptionOnNotFound) then
+          exit;
+      end;
+    else
+      if Src[AtomStart]=CloseBracket then exit(true);
+    end;
+  until false;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 function TCCodeParserTool.AtomIs(const s: shortstring): boolean;
