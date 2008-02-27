@@ -121,6 +121,8 @@ function CountNeededLineEndsToAddForward(const Src: string;
     StartPos, MinLineEnds: integer): integer;
 function CountNeededLineEndsToAddBackward(const Src: string;
     StartPos, MinLineEnds: integer): integer;
+procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean;
+                                    FromPos, ToPos, DiffPos: integer);
 
 // comparison
 function CompareText(Txt1: PChar; Len1: integer; Txt2: PChar; Len2: integer;
@@ -4058,6 +4060,27 @@ begin
       dec(StartPos)
     else
       break;
+  end;
+end;
+
+procedure AdjustPositionAfterInsert(var p: integer; IsStart: boolean; FromPos,
+  ToPos, DiffPos: integer);
+begin
+  if (ToPos>FromPos) then begin
+    // replace
+    if p>FromPos then begin
+      if p>ToPos then
+        inc(p,DiffPos)
+      else
+        p:=FromPos;
+    end;
+  end else begin
+    // insert
+    if IsStart then begin
+      if p>=FromPos then inc(p,DiffPos);
+    end else begin
+      if p>FromPos then inc(p,DiffPos);
+    end;
   end;
 end;
 
