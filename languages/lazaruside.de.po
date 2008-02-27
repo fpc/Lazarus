@@ -9433,8 +9433,8 @@ msgid "Unable to find file %s%s%s."
 msgstr "Datei %s%s%s kann nicht gefunden werden."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
-msgstr "Kann die Datei %s%s%s nicht finden.%sFalls sie zum Projekt gehört, prüfen Sie den Suchpfad in der Startseite von%sProjekt->Compilereinstellungen ... unter Andere Unitdateien. Wenn die Datei zu einem Package gehört, müssen dessen Einstellungen geprüft werden. Falls die Datei zu Lazarus gehört, muß sichergestellt sein, daß die IDE sauber kompiliert ist. Gehört die Datei zu FPC muß die fpc.cfg überprüft werden. Bei Unklarheiten hilft der Button Test unter Projekt -> Compilereinstellungen ..."
+msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."

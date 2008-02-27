@@ -596,7 +596,7 @@ resourcestring
   lisdebugging = '%s (debugging ...)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
-    +'file %s%s%s.%sIf it belongs to Your project, check search path '
+    +'file %s%s%s.%sIf it belongs to your project, check search path '
     +'in%sProject->Compiler Options...->Search Paths->Other Unit Files.'
     +' If this file belongs to a package, check the appropriate package compiler'
     +' options. If this file belongs to lazarus, make sure compiling clean.'
