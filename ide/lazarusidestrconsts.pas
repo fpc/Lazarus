@@ -2307,7 +2307,7 @@ resourcestring
   // make resource string dialog
   lisMakeResourceString = 'Make ResourceString';
   lisMakeResStrInvalidResourcestringSect = 'Invalid Resourcestring section';
-  lisMakeResStrPleaseChooseAResourstring = 'Please choose a resourstring '
+  lisMakeResStrPleaseChooseAResourcestring = 'Please choose a resourcestring '
     +'section from the list.';
   lisMakeResStrResourcestringAlreadyExis = 'Resourcestring already exists';
   lisMakeResStrChooseAnotherName = 'The resourcestring %s%s%s already exists.%'

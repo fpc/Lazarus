@@ -250,7 +250,7 @@ begin
   Index:=ResStrSectionComboBox.ItemIndex;
   if (Index<0) or (Index>=Positions.Count) then begin
     MessageDlg(lisMakeResStrInvalidResourcestringSect,
-      lisMakeResStrPleaseChooseAResourstring,
+      lisMakeResStrPleaseChooseAResourcestring,
       mtError,[mbCancel],0);
     exit;
   end;

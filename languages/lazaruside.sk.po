@@ -6354,9 +6354,9 @@ msgstr "Prosím skontrolujte meno prekladača"
 msgid "Please check the freepascal source directory"
 msgstr "Prosím, skontrolujte adresár zdrojových kódov FreePascal"
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
-msgid "Please choose a resourstring section from the list."
-msgstr "Prosím zvoľte sekciu ResourString zo zoznamu."
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
+msgid "Please choose a resourcestring section from the list."
+msgstr ""
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."

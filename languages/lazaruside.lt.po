@@ -6360,9 +6360,9 @@ msgstr "Patikrinkite kompiliatoriaus vardą"
 msgid "Please check the freepascal source directory"
 msgstr "Patikrinkite FreePascal pirminio kodo katalogą"
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
-msgid "Please choose a resourstring section from the list."
-msgstr "Resursų eilutės sekciją pasirinkite iš sąrašo."
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
+msgid "Please choose a resourcestring section from the list."
+msgstr ""
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."

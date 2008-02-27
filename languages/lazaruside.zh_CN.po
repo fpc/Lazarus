@@ -6356,9 +6356,9 @@ msgstr "请检查编译器名称"
 msgid "Please check the freepascal source directory"
 msgstr "请检查 freepascal 源代码目录"
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
-msgid "Please choose a resourstring section from the list."
-msgstr "请从列表中选出资源字符串."
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
+msgid "Please choose a resourcestring section from the list."
+msgstr ""
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."

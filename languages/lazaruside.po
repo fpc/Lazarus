@@ -7280,8 +7280,8 @@ msgstr ""
 msgid "Invalid Resourcestring section"
 msgstr ""
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
-msgid "Please choose a resourstring section from the list."
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
+msgid "Please choose a resourcestring section from the list."
 msgstr ""
 
 #: lazarusidestrconsts:lismakeresstrresourcestringalreadyexis

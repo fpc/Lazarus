@@ -6353,9 +6353,9 @@ msgstr "Проверьте имя компилятора"
 msgid "Please check the freepascal source directory"
 msgstr "Проверьте каталог исходного кода FreePascal"
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
-msgid "Please choose a resourstring section from the list."
-msgstr "Выберите секцию resourcestring из списка."
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
+msgid "Please choose a resourcestring section from the list."
+msgstr ""
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
