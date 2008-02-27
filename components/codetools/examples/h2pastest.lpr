@@ -34,7 +34,26 @@ uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
   CodeTree, NonPascalCodeTools;
   
+const
+  ConfigFilename = 'codetools.config';
+var
+  Filename: String;
+  Code: TCodeBuffer;
 begin
-  writeln('-----------------------------------');
+  try
+    CodeToolBoss.SimpleInit(ConfigFilename);
+    Filename:=GetCurrentDir+'/scanexamples/test.h';
+    
+    // Step 1: load the file
+    Code:=CodeToolBoss.LoadFile(Filename,false,false);
+    if Code=nil then
+      raise Exception.Create('loading failed '+Filename);
+
+
+  except
+    on E: Exception do begin
+      writeln(E.Message);
+    end;
+  end;
 end.
 
