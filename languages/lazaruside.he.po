@@ -193,10 +193,6 @@ msgstr ""
 msgid "&Close Page"
 msgstr "סגור דף&"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "רכיב&"
@@ -260,6 +256,10 @@ msgstr ""
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "פתח קובץ במיקום סמן&"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

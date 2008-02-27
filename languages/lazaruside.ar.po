@@ -193,10 +193,6 @@ msgstr "أغلق"
 msgid "&Close Page"
 msgstr "أغلق الصفحة"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "عناصر"
@@ -260,6 +256,10 @@ msgstr ""
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "إفتح الجذاذة التي تحت المؤشرة"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

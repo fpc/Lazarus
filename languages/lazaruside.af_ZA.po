@@ -195,10 +195,6 @@ msgstr "Sluit"
 msgid "&Close Page"
 msgstr "Sluit Bladsy"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponente"
@@ -261,6 +257,10 @@ msgstr "&Goed"
 
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuproject

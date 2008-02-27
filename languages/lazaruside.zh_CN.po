@@ -196,10 +196,6 @@ msgstr "关闭(&C)"
 msgid "&Close Page"
 msgstr "关闭页面(&C)"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "组件(&C)"
@@ -263,6 +259,10 @@ msgstr "确定(&O)"
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "在光标处打开文件(&O)"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

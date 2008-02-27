@@ -188,10 +188,6 @@ msgstr "&Sulje"
 msgid "&Close Page"
 msgstr "Sulje välilehti"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponentit"
@@ -255,6 +251,10 @@ msgstr ""
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Avaa kohdistimen osoittama tiedosto"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

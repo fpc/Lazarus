@@ -197,10 +197,6 @@ msgstr "&Zamknij"
 msgid "&Close Page"
 msgstr "&Zamknij zakładkę"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "&Komponenty"
@@ -264,6 +260,10 @@ msgstr "&Ok"
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "&Otwórz plik przy kursorze"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

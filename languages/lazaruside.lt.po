@@ -194,10 +194,6 @@ msgstr "&Užverti"
 msgid "&Close Page"
 msgstr "&Užverti lapą"
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
-msgstr "&Paketas"
-
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr "K&omponentai"
@@ -261,6 +257,10 @@ msgstr "&Tinka"
 #: lazarusidestrconsts:uemopenfileatcursor
 msgid "&Open file at cursor"
 msgstr "Atverti ties žymekliu nurodytą &failą"
+
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"

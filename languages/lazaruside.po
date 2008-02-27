@@ -268,8 +268,8 @@ msgstr ""
 msgid "&Run"
 msgstr ""
 
-#: lazarusidestrconsts:lismenucomponent
-msgid "&Component"
+#: lazarusidestrconsts:lismenupackage
+msgid "&Package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenutools
