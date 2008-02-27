@@ -332,8 +332,9 @@ var
       itmRunDebugging: TIDEMenuSection;
         itmRunMenuAddBreakpoint: TIDEMenuSection;
 
-    // components menu
-    mnuComponent: TIDEMenuSection;
+    // package menu
+    mnuPackage: TIDEMenuSection;
+    mnuComponent: TIDEMenuSection; // for compatibility with older lazarus versions
       itmPkgOpening: TIDEMenuSection;
         itmPkgOpenRecent: TIDEMenuSection;
       itmPkgUnits: TIDEMenuSection;

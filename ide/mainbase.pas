@@ -309,7 +309,8 @@ begin
     CreateMainMenuItem(mnuView,'View',lisMenuView);
     CreateMainMenuItem(mnuProject,'Project',lisMenuProject);
     CreateMainMenuItem(mnuRun,'Run',lisMenuRun);
-    CreateMainMenuItem(mnuComponent,'Component',lisMenuComponent);
+    CreateMainMenuItem(mnuPackage,'Package',lisMenuPackage);
+    mnuComponent:=mnuPackage;
     CreateMainMenuItem(mnuTools,'Tools',lisMenuTools);
     CreateMainMenuItem(mnuEnvironment,'Environment',lisMenuEnvironent);
     CreateMainMenuItem(mnuWindow,'Window',lisMenuWindow);
