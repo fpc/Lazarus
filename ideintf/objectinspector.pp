@@ -558,8 +558,6 @@ type
   { TObjectInspectorDlg }
 
   TObjectInspectorDlg = class(TForm)
-  
-  
     AddToFavoritesPopupMenuItem: TMenuItem;
     ViewIssuesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;

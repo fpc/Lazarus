@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
-  ExtCtrls, Dialogs, Menus,
+  ExtCtrls, Dialogs, Menus, ComCtrls, Grids,
   CodeToolManager, CodeCache,
   LazIDEIntf, ProjectIntf, ObjectInspector, PropEdits,
   DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
@@ -87,9 +87,11 @@ begin
   Result:=TOIFavouriteProperties.Create;
   // TControl
   Add(TComponent,'Name');
-  Add(TControl,'Anchors');
   Add(TComponent,'Caption');
+  Add(TControl,'Anchors');
+  Add(TControl,'AutoSize');
   Add(TControl,'OnClick');
+  Add(TControl,'OnEditingDone');
   // miscellaneous
   Add(TCustomGroupBox,'Align');
   Add(TCustomImage,'Align');
@@ -97,6 +99,8 @@ begin
   Add(TCustomLabel,'WordWrap');
   Add(TCustomEdit,'Text');
   Add(TCustomMemo,'Lines');
+  Add(TCustomMemo,'Align');
+  Add(TCustomMemo,'ScrollBars');
   Add(TCustomCheckBox,'Checked');
   Add(TCustomRadioGroup,'Items');
   Add(TCustomRadioGroup,'ItemIndex');
@@ -104,6 +108,22 @@ begin
   Add(TCustomForm,'OnDestroy');
   Add(TCustomForm,'OnResize');
   Add(TCustomListBox,'Items');
+  Add(TCustomListBox,'Align');
+  Add(TCustomTreeView,'Align');
+  Add(TCustomTreeView,'Options');
+  Add(TCustomPanel,'Align');
+  Add(TMenuItem,'OnClick');
+  Add(TCustomSpeedButton,'GroupIndex');
+  Add(TCustomImage,'Picture');
+  Add(TCustomImage,'Align');
+  Add(TCustomNotebook,'Align');
+  Add(TCustomScrollBox,'Align');
+  Add(TCustomGrid,'Align');
+  Add(TCustomGrid,'Options');
+  Add(TCustomGrid,'Columns');
+  Add(TCustomGrid,'ColCount');
+  Add(TCustomTreeView,'Align');
+  Add(TCustomTreeView,'Options');
   Result.DeleteDoubles;
 end;
 
