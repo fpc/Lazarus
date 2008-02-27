@@ -113,6 +113,8 @@ begin
   FHook := QObject_hook_create(App);
   TEventFilterMethod(Method) := @EventFilter;
   QObject_hook_hook_events(FHook, Method);
+  
+  // install focus change slot
 
   ScreenDC := GetDC(0);
   try

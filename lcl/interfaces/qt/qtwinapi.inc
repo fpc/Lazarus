@@ -2076,34 +2076,39 @@ begin
 end;
 
 function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+const
+  StateDown    = SmallInt($FF80); // rather strange interpretation of "high-order bit is 1", but windows returns it
+  StateToggled = SmallInt($0001);
 begin
   Result := 0;
-
+  
   case nVirtKey of
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
   
+  // where to track toggle state?
+  
   case nVirtKey of
-    VK_MENU:
-      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
-        Result:=-1;
-    VK_SHIFT:
-      if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
-        Result:=-1;
-    VK_CONTROL:
-      if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
-        Result:=-1;
     VK_LBUTTON:
       if (QApplication_mouseButtons and QtLeftButton) > 0 then
-        Result := -1;
+        Result := Result or StateDown;
     VK_RBUTTON:
       if (QApplication_mouseButtons and QtRightButton) > 0 then
-        Result := -1;
+        Result := Result or StateDown;
     VK_MBUTTON:
       if (QApplication_mouseButtons and QtMidButton) > 0 then
-        Result := -1;
+        Result := Result or StateDown;
+    VK_MENU:
+      if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
+        Result := Result or StateDown;
+    VK_SHIFT:
+      if (QApplication_keyboardModifiers and QtShiftModifier) > 0 then
+        Result := Result or StateDown;
+    VK_CONTROL:
+      if (QApplication_keyboardModifiers and QtControlModifier) > 0 then
+        Result := Result or StateDown;
     else
       DebugLn('TQtWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
   end;
