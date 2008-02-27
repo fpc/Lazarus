@@ -22,7 +22,7 @@ uses
   CodeCompletionTool, LinkScanner, FindDeclarationCache, BasicCodeTools,
   NonPascalCodeTools, CodeTree, CodeAtom, SourceChanger, CodeToolMemManager,
   CodeCache, KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs,
-  CodeToolsStrConsts, DirectoryCacher,
+  CodeToolsStrConsts, DirectoryCacher, CCodeParserTool,
   MultiKeyWordListTool, ResourceCodeTool, CodeToolsStructs, CacheCodeTools,
   // fast xml units, changes not merged in current fpc
   Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLWrite, Laz_XMLStreaming;

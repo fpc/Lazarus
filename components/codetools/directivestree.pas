@@ -1694,7 +1694,7 @@ end;
 destructor TCompilerDirectivesTree.Destroy;
 begin
   ClearMacros;
-  Tree.Free;
+  FreeAndNil(Tree);
   FDefaultDirectiveFuncList.Free;
   inherited Destroy;
 end;
@@ -1710,7 +1710,7 @@ end;
 
 procedure TCompilerDirectivesTree.Parse;
 begin
-  Parse(Code,NestedComments)
+  Parse(Code,NestedComments);
 end;
 
 procedure TCompilerDirectivesTree.Parse(aCode: TCodeBuffer;
