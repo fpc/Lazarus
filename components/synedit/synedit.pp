@@ -5357,8 +5357,11 @@ var
         SetString(Str, Value, P - Start);
         TrimmedSetLine(CaretY - 1, sLeftSide + Str);
         TSynEditStringList(Lines).InsertLines(CaretY, CountLines(P));           // djlp 2000-09-07
-      end else
+      end else begin
         TrimmedSetLine(CaretY - 1, sLeftSide + Value + sRightSide);
+        fCaretX := LogicalToPhysicalPos(
+                     Point(1 + Length(sLeftSide + Value),CaretY)).X;
+      end;
       // step2: insert left lines of Value
       while P^ <> #0 do begin
         if P^ = #13 then
@@ -5370,30 +5373,37 @@ var
         P := GetEOL(Start);
         if P = Start then begin
           if p^ <> #0 then
-//            Lines.Insert(CaretY - 1, '')
             Lines[CaretY - 1] := ''                                             // djlp 2000-09-07
           else
-//            Lines.Insert(CaretY - 1, sRightSide);
             Lines[CaretY - 1] := sRightSide;                                    // djlp 2000-09-07
         end else begin
-//          SetLength(Str, P - Start);
-//          Move(Start^, Str[1], P - Start);
           SetString(Str, Start, P - Start);                                     //mh 2000-11-08
+          {$IFDEF SYN_LAZARUS}
           if p^ <> #0 then
-//            Lines.Insert(CaretY - 1, Str)
+            TrimmedSetLine(CaretY - 1, Str)
+          else begin
+            TrimmedSetLine(CaretY - 1, Str + sRightSide);
+          end;
+          {$ELSE}
+          if p^ <> #0 then
             Lines[CaretY - 1] := Str                                            // djlp 2000-09-07
           else
-//            Lines.Insert(CaretY - 1, Str + sRightSide);
             Lines[CaretY - 1] := Str + sRightSide                               // djlp 2000-09-07
+          {$ENDIF}
         end;
+        {$IFDEF SYN_LAZARUS}
+        if p^=#0 then
+          fCaretX := LogicalToPhysicalPos(
+                         Point(1 + Length(Lines[CaretY - 1]) - Length(sRightSide),
+                               CaretY)).X;
+        {$ELSE}
         if eoTrimTrailingSpaces in Options then                                 //JGF 2000-09-23
           Lines[CaretY - 1] := TrimRight(Lines[CaretY - 1]);
+        {$ENDIF}
         Inc(Result);
       end;
       {$IFDEF SYN_LAZARUS}
-      fCaretX := LogicalToPhysicalPos(
-                   Point(1 + Length(Lines[CaretY - 1]) - Length(sRightSide),
-                         CaretY)).X;
+      //DebugLn(['InsertNormal ',Length(Lines[CaretY - 1]),' ',Length(sRightSide),' ',fCaretX]);
       {$ELSE}
       fCaretX := 1 + Length(Lines[CaretY - 1]) - Length(sRightSide);
       {$ENDIF}
