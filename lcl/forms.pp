@@ -600,9 +600,9 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DockSite;
     property DragKind;
     property DragMode;
-    property DockSite;
     property Enabled;
     property Font;
     property FormStyle;
@@ -611,10 +611,10 @@ type
     property KeyPreview;
     property Menu;
     property OnActivate;
+    property OnChangeBounds;
     property OnClick;
     property OnClose;
     property OnCloseQuery;
-    property OnChangeBounds;
     property OnCreate;
     property OnDblClick;
     property OnDeactivate;
@@ -623,14 +623,14 @@ type
     property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
-    property OnEndDock;
     property OnDropFiles;
+    property OnEndDock;
     property OnGetSiteInfo;
+    property OnHelp;
     property OnHide;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnHelp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -641,6 +641,7 @@ type
     property OnStartDock;
     property OnUnDock;
     property OnUTF8KeyPress;
+    property OnWindowStateChange;
     property ParentBiDiMode;
     property ParentFont;
     property PixelsPerInch;
@@ -652,7 +653,6 @@ type
     property UseDockManager;
     property Visible;
     property WindowState;
-    property OnWindowStateChange;
   end;
 
   TFormClass = class of TForm;
