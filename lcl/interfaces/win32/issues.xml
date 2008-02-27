@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="lcl">
+	<widgetset name="win32">
+		<issue name="TComboBox.Height">
+			<short>Combo box height is constrined</short>
+			<descr>It's impossible to set an arbitrary height to a TComboBox under Windows. Use AutoSize to make sure the size is good on all platforms.</descr>
+		</issue>
+		<issue name="TButton.Color">
+			<short>Button color cannot be changed</short>
+			<descr>It's impossible to implement without making them owner drawn.</descr>
+		</issue>
+		<issue name="TBitBtn.Color">
+			<short>Bitmap button color cannot be changed</short>
+			<descr>It's impossible to implement without making them owner drawn.</descr>
+		</issue>
+		<issue name="TProgressBar.Height">
+			<short>Progress bar height cannot be smaller then 10 if a Windows Theme is used</short>
+			<descr>Associated bug report: http://bugs.freepascal.org/view.php?id=10626
+
+MSDN Docs: http://msdn2.microsoft.com/en-us/library/bb760816(VS.85).aspx</descr>
+		</issue>
+		<issue name="TTrayIcon.Hint">
+			<short>Tray icon hint string length is limited</short>
+			<descr>TTrayIcon.Hint may have a maximum length of 127 WideChars (will usually be more then 127 Bytes in a UTF-8 string, but may be less too, depending on the string). It's a Windows limitation, which can't be worked around.</descr>
+		</issue>
+	</widgetset>
+</package>

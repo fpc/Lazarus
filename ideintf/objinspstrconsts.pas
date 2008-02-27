@@ -44,11 +44,17 @@ resourcestring
   oisProperties='Properties';
   oisEvents='Events';
   oisFavorites = 'Favorites';
+  oisIssues = 'Issues';
+  
+  oisWidgetSetIssues = 'General Widget Set issues: ';
+  oisComponentIssues = 'Component issues: ';
 
+  
   //Object Inspector Popup Menu
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
   oisAddToFavorites = 'Add to Favorites';
+  oisViewIssues = 'View issues';
   oisRemoveFromFavorites = 'Remove from Favorites';
   oisUndo = 'Undo';
   oisFinddeclaration = 'Jump to declaration';

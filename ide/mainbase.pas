@@ -469,8 +469,8 @@ begin
     ParentMI:=itmJumpings;
 
     CreateMenuItem(ParentMI,itmGotoLine,'itmGotoLine',lisMenuGotoLine, 'menu_goto_line');
-    CreateMenuItem(ParentMI,itmJumpBack,'itmJumpBack',lisMenuJumpBack);
-    CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward);
+    CreateMenuItem(ParentMI,itmJumpBack,'itmJumpBack',lisMenuJumpBack, 'menu_search_jumpback');
+    CreateMenuItem(ParentMI,itmJumpForward,'itmJumpForward',lisMenuJumpForward, 'menu_search_jumpforward');
     CreateMenuItem(ParentMI,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory);
     CreateMenuItem(ParentMI,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory);
     CreateMenuItem(ParentMI,itmJumpToNextError,'itmJumpToNextError',lisMenuJumpToNextError);
@@ -511,6 +511,7 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
     CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser);
+    CreateMenuItem(ParentMI,itmViewIssueBrowser,'itmViewIssueBrowser',lisMenuViewIssueBrowser);
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
@@ -875,6 +876,7 @@ begin
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
     itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
+    itmViewIssueBrowser.Command:=GetCommand(ecToggleIssueBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);

@@ -176,6 +176,7 @@ const
   ecToggleCompPalette       = ecFirstLazarus + 319;
   ecToggleIDESpeedBtns      = ecFirstLazarus + 320;
   ecViewComponents          = ecFirstLazarus + 321;
+  ecToggleIssueBrowser      = ecFirstLazarus + 322;
 
   // sourcenotebook commands
   ecNextEditor              = ecFirstLazarus + 330;

@@ -133,7 +133,8 @@ uses
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
-  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
+  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager, CompatibilityIssues,
+  IssueBrowser,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -242,6 +243,7 @@ type
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
     procedure mnuViewComponentsClick(Sender: TObject);
+    procedure mnuViewIssueBrowserClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
@@ -392,12 +394,14 @@ type
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
+    procedure OIOnViewIssues(Sender: TObject);
     procedure OIOnDestroy(Sender: TObject);
     procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
+    procedure OIOnUpdateIssues(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      CheckOwner: TObject): ShortString;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
@@ -691,6 +695,7 @@ type
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
+    procedure DoShowIssueBrowser(const IssueName: String = '');
     procedure DoShowComponentList;
     procedure DoShowFPDocEditor;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -1284,6 +1289,39 @@ begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
 end;
 
+procedure TMainIDE.OIOnViewIssues(Sender: TObject);
+var
+  C: TClass;
+begin
+  C := nil;
+  if (ObjectInspector1.Selection <> nil) and
+      (ObjectInspector1.Selection.Count > 0) then
+  begin
+    C := ObjectInspector1.Selection[0].ClassType;
+    if C.InheritsFrom(TForm) then C := TForm
+    else
+      if C.InheritsFrom(TCustomForm) then C := TCustomForm
+        else
+          if C.InheritsFrom(TDataModule) then C := TDataModule;
+  end;
+      
+  
+  if ObjectInspector1.GetActivePropertyRow = nil then
+  begin
+    if C <> nil then
+      DoShowIssueBrowser(C.ClassName)
+    else
+      DoShowIssueBrowser;
+  end
+  else
+  begin
+    if C <> nil then
+      DoShowIssueBrowser(C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
+    else
+      DoShowIssueBrowser;
+  end;
+end;
+
 procedure TMainIDE.OIOnDestroy(Sender: TObject);
 begin
   if ObjectInspector1=Sender then
@@ -1319,6 +1357,15 @@ begin
     AnInspector:=TObjectInspectorDlg(Sender);
     if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
       DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,[]);
+  end;
+end;
+
+procedure TMainIDE.OIOnUpdateIssues(Sender: TObject);
+begin
+  if Sender = nil then Sender := ObjectInspector1;
+  if Sender is TObjectInspectorDlg then
+  begin
+    (Sender as TObjectInspectorDlg).Issues := GetIssueProperties;
   end;
 end;
 
@@ -1560,16 +1607,19 @@ procedure TMainIDE.SetupObjectInspector;
 begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
+  ObjectInspector1.ShowFavorites:=True;
+  ObjectInspector1.ShowIssues:=True;
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
+  ObjectInspector1.OnUpdateIssues := @OIOnUpdateIssues;
   ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
+  ObjectInspector1.OnViewIssues:=@OIOnViewIssues;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
-  ObjectInspector1.ShowFavouritePage:=true;
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
@@ -2075,6 +2125,7 @@ begin
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
     itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
+    itmViewIssueBrowser.OnClick := @mnuViewIssueBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
@@ -2604,6 +2655,9 @@ begin
   ecToggleCodeBrowser:
     DoShowCodeBrowser;
 
+  ecToggleIssueBrowser:
+    DoShowIssueBrowser;
+
   ecViewComponents:
     DoShowComponentList;
     
@@ -3130,6 +3184,11 @@ end;
 Procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
   DoShowComponentList;
+end;
+
+procedure TMainIDE.mnuViewIssueBrowserClick(Sender: TObject);
+begin
+  DoShowIssueBrowser;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -7201,6 +7260,15 @@ begin
   end;
 
   CodeBrowserView.ShowOnTop;
+end;
+
+procedure TMainIDE.DoShowIssueBrowser(const IssueName: String);
+begin
+  if IssueBrowserView = nil then
+    IssueBrowserView := TIssueBrowserView.Create(OwningComponent);
+
+  IssueBrowserView.SetIssueName(IssueName);
+  IssueBrowserView.ShowOnTop;
 end;
 
 procedure TMainIDE.DoShowComponentList;

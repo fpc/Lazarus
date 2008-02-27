@@ -74,6 +74,8 @@ menu/menu_search_files.png
 menu/menu_search_find.png
 menu/menu_search_find_next.png
 menu/menu_search_find_previous.png
+menu/menu_search_jumpback.png
+menu/menu_search_jumpforward.png
 menu/menu_search_openfile_atcursor.png
 menu/menu_search_replace.png
 menu/menu_select_all.png
@@ -146,6 +148,7 @@ packages/pkg_compile.png
 packages/pkg_conflict.png
 packages/pkg_files.png
 packages/pkg_include.png
+packages/pkg_issues.png
 packages/pkg_lfm.png
 packages/pkg_lrs.png
 packages/pkg_package_autoinstall.png
@@ -156,3 +159,12 @@ packages/pkg_removedfiles.png
 packages/pkg_removedrequired.png
 packages/pkg_text.png
 packages/pkg_unit.png
+propertygrid/issue_carbon.png
+propertygrid/issue_fpgui.png
+propertygrid/issue_carbon.png
+propertygrid/issue_gtk.png
+propertygrid/issue_gtk2.png
+propertygrid/issue_nogui.png
+propertygrid/issue_qt.png
+propertygrid/issue_win32.png
+propertygrid/issue_wince.png

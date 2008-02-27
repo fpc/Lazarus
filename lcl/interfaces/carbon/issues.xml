@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package name="lcl">
+	<widgetset name="carbon">
+		<issue name="TWidgetSet">
+			<short> No 64-bits support</short>
+			<descr>Carbon cannot be used to write 64-bits applications. Apple decided not to release a 64-bits version of Carbon. The migration path is writing a new interface in Cocoa.</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Keyboard</short>
+			<descr>* Apple Command key is mapped to ssCtrl per [http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html Apple Guidelines]
+* Apple Control key is mapped to ssMeta
+* Apple Option key is mapped to its inscription, i.e. ssAlt
+* Virtual key codes mapping is not reliable (depends on keyboard language layout!)</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Application</short>
+			<descr>* Title: You cannot change it at runtime. You have to set it in Application Bundle.
+* OnDropFiles event is fired when file is dropped on application dock icon or opened via Finder if is associated. You have to enable this event in Application Bundle.</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Drawing and measuring text precisely in parts</short>
+			<descr>If you want to draw (via TextOut, TextRect) or measure (via TextWidth, TextHeight) text divided into various parts and rely it will be displayed same each time not depending on its division, you have to disable some default typographic features (like kerning, fractional positioning, ...) of Canvas. You can choose one of the following:
+* CarbonWidgetSet.SetTextFractional(Canvas, False); // from CarbonInt unit
+* TCarbonCustomControl(CustomControl.Handle).TextFractional := False; // from CarbonPrivate unit
+* TCarbonDeviceContext(Canvas.Handle)..TextFractional := False; // from CarbonCanvas unit</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Screenshot taking</short>
+			<descr>The only possible efficient way of taking a screenshot on Mac OS X is using OpenGL. Apple provides a demonstration function which returns a CGImageRef with the screenshot. This function was converted to Pascal and is available on the glgrab.pas unit on the carbon interface directory. This function requires the Apple-specific parts of the Apple OpenGL headers, and those aren't yet on the FPC Packages, so they were translated and are located on lazarus/lcl/interfaces/carbon/opengl.pas until they are released on a stable Free Pascal.
+
+After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice method is obtaining a local copy of it's pixel data. It isn't possible to directly access the bytes of a CGImageRef, so the image needs to be drawn to a CGContextRef which uses a memory area allocated by us as buffer. This method has the great advantage of converting from the internal format of the screenshot bytes to the very convenient ARGB, 32-bits depth, 8-bits per channel format that is default to LCL.</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Mouse.CursorPos changing does not generate mouse (move) events</short>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Release mouse capture is not supported</short>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Command line parameters</short>
+			<descr>Because Carbon applications are executed via Application Bundle, command line parameters are not passed. You have to use OnDropFiles event to detect openning associated files.</descr>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Shortcuts indication is not supported</short>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Drawing on Canvas outside OnPaint event is not supported</short>
+		</issue>
+		<issue name="TWidgetSet">
+			<short>Drawing on screen device context is not supported</short>
+		</issue>
+		<issue name="TWinControl.Color">
+			<short>Window control color of clBtnFace makes its background transparent</short>
+		</issue>
+		<issue name="TWinControl.Font">
+			<short>Window control font style fsStrikeOut is not supported</short>
+		</issue>
+		<issue name="TForm.Icon">
+			<short>Form icon is not supported</short>
+		</issue>
+		<issue name="TForm.ShowInTaskbar">
+			<short>Form ShowInTaskbar property is not supported</short>
+		</issue>
+		<issue name="TEdit.PasswordChar">
+			<short>Edit PasswordChar property different then default is not supported</short>
+		</issue>
+		<issue name="TMemo.WordWrap">
+			<short>Memo WordWrap property when is disabled, does not allow to scroll text horizontally</short>
+		</issue>
+		<issue name="TListBox.Columns">
+			<short>List box Columns property is not supported</short>
+		</issue>
+		<issue name="TComboBox.Height">
+			<short>Combo box height is constrined</short>
+			<descr>It's impossible to set an arbitrary height to a TComboBox under Carbon. Use AutoSize to make sure the size is good on all platforms.</descr>
+		</issue>
+		<issue name="TComboBox.OnDropDown">
+			<short>Combo box OnDropDown event is called when set focus</short>
+		</issue>
+		<issue name="TComboBox.OnCloseUp">
+			<short>Combo box OnCloseUp event is called when released focus</short>
+		</issue>
+		<issue name="TComboBox.DroppedDown">
+			<short>Combo box DroppedDown property does not show drop down list when style is csDropDownList</short>
+		</issue>
+		<issue name="TComboBox.DropDownCount">
+			<short>Combo box DropDownCount property is not supported</short>
+		</issue>
+		<issue name="TComboBox.Style">
+			<short>Combo box styles csSimple, csOwnerDrawFixed and csOwnerDrawVariable are not supported</short>
+		</issue>
+		<issue name="TPanel.BevelInner">
+			<short>Panel bevel bvLowered and bvSpace are not supported</short>
+		</issue>
+		<issue name="TPanel.BevelOuter">
+			<short>Panel bevel bvLowered and bvSpace are not supported</short>
+		</issue>
+		<issue name="TBitBtn.Spacing">
+			<short>Bitmap button Spacing property is not supported</short>
+		</issue>
+		<issue name="TColorDialog.Title">
+			<short>Color dialog title is not supported</short>
+		</issue>
+		<issue name="TTrackBar.LineSize">
+			<short>Track bar line size is not supported</short>
+		</issue>
+		<issue name="TTrackBar.ScalePos">
+			<short>Track bar ScalePos property is not supported</short>
+		</issue>
+		<issue name="TTrackBar.TickMarks">
+			<short>Track bar tick marks are not supported</short>
+		</issue>
+		<issue name="TProgressBar.BarShowText">
+			<short>Progress bar show text is not supported</short>
+		</issue>
+		<issue name="TProgressBar.Smooth">
+			<short>Progress bar smoothing is not supported</short>
+		</issue>
+		<issue name="TProgressBar.Step">
+			<short>Progress bar step is not supported</short>
+		</issue>
+	</widgetset>
+</package>

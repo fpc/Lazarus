@@ -1237,6 +1237,10 @@ begin
     // register files
     {$I pkgfileslcl.inc}
     
+    // add issues files
+    AddFile('interfaces/carbon/issues.xml','carbon-issues.xml',pftIssues,[],cpBase);
+    AddFile('interfaces/win32/issues.xml','win32-issues.xml',pftIssues,[],cpBase);
+
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do

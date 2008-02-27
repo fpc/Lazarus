@@ -92,7 +92,8 @@ type
     // extra
     nmiwSearchResultsViewName,
     nmiwAnchorEditor,
-    nmiwCodeBrowser
+    nmiwCodeBrowser,
+    mniwIssueBrowser
     );
 
 const
@@ -130,7 +131,8 @@ const
     // extra
     'SearchResults',
     'AnchorEditor',
-    'CodeBrowser'
+    'CodeBrowser',
+    'IssueBrowser'
    );
    
 type

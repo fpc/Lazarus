@@ -35,9 +35,9 @@ unit ObjectInspector;
 interface
 
 uses
-  Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, LMessages,
-  LResources, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
+  InterfaceBase, Forms, SysUtils, Buttons, Types, Classes, Graphics, GraphType,
+  StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo,
+  LMessages, LResources, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors, IDEImagesIntf;
 
@@ -53,7 +53,8 @@ type
   TObjectInspectorPage = (
     oipgpProperties,
     oipgpEvents,
-    oipgpFavourite
+    oipgpFavourite,
+    oipgpIssues
     );
   TObjectInspectorPages = set of TObjectInspectorPage;
 
@@ -76,6 +77,15 @@ type
     procedure Assign(Src: TOIFavouriteProperty); virtual;
     function CreateCopy: TOIFavouriteProperty;
     function DebugReportAsString: string;
+  end;
+  
+  { TOIIssueProperty}
+  TOIIssueProperty = class(TOIFavouriteProperty)
+  public
+    WidgetSets: TLCLPlatforms;
+    
+    function IsIssue(AClass: TPersistentClass;
+                         const APropertyName: string): TLCLPlatforms;
   end;
 
   { TOIFavouriteProperties }
@@ -122,6 +132,19 @@ type
     property DoublesDeleted: boolean read FDoublesDeleted;
   end;
   TOIFavouritePropertiesClass = class of TOIFavouriteProperties;
+  
+  { TOIIssueProperties }
+
+  TOIIssueProperties = class(TOIFavouriteProperties)
+  public
+    WidgetSetIssues: Array [TLCLPlatform] of Integer;
+    constructor Create;
+    
+    function IsIssue(AClass: TPersistentClass;
+                         const PropertyName: string): TLCLPlatforms;
+    function AreIssues(Selection: TPersistentSelectionList;
+                           const PropertyName: string): TLCLPlatforms;
+  end;
 
 
   { TOIOptions }
@@ -209,10 +232,11 @@ type
     FNextBrother,
     FParent: TOIPropertyGridRow;
     FEditor: TPropertyEditor;
+    FWidgetSets: TLCLPlatforms;
     procedure GetLvl;
   public
     constructor Create(PropertyTree:TOICustomPropertyGrid;
-       PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow);
+       PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow; WidgetSets: TLCLPlatforms);
     destructor Destroy; override;
     function ConsistencyCheck: integer;
     function HasChild(Row: TOIPropertyGridRow): boolean;
@@ -476,6 +500,7 @@ type
     property NameFont;
     property OnChangeBounds;
     property OnClick;
+    property OnDblClick;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -536,6 +561,7 @@ type
   
   
     AddToFavoritesPopupMenuItem: TMenuItem;
+    ViewIssuesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
     ComponentTree: TComponentTreeView;
     CopyPopupmenuItem: TMenuItem;
@@ -543,6 +569,13 @@ type
     DeletePopupmenuItem: TMenuItem;
     EventGrid: TOICustomPropertyGrid;
     FavouriteGrid: TOICustomPropertyGrid;
+    IssuesGrid: TOICustomPropertyGrid;
+    IssuesPanel: TPanel;
+    IssuesInnerPanel: TPanel;
+    WidgetSetsIssuesLabel: TLabel;
+    WidgetSetsIssuesBox: TPaintBox;
+    ComponentIssuesLabel: TLabel;
+    ComponentIssuesBox: TPaintBox;
     FindDeclarationPopupmenuItem: TMenuItem;
     MainPopupMenu: TPopupMenu;
     NoteBook: TNoteBook;
@@ -562,9 +595,11 @@ type
     procedure ObjectInspectorResize(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnGridKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure OnGridDblClick(Sender: TObject);
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
+    procedure OnViewIssuesPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
     procedure OnFindDeclarationPopupmenuItemClick(Sender: TObject);
     procedure OnCutPopupmenuItemClick(Sender: TObject);
@@ -575,14 +610,22 @@ type
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
+    procedure IssuePageShow(Sender: TObject);
+    procedure WidgetSetIssuesPaint(Sender: TObject);
+    procedure ComponentIssuesPaint(Sender: TObject);
+    procedure DoUpdateIssues;
+    procedure DoViewIssues;
   private
     FFavourites: TOIFavouriteProperties;
+    FIssues: TOIIssueProperties;
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
     FOnRemainingKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavourites: TNotifyEvent;
+    FOnUpdateIssues: TNotifyEvent;
+    FOnViewIssues: TNotifyEvent;
     FSelection: TPersistentSelectionList;
     FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
@@ -593,18 +636,21 @@ type
     FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
-    FShowFavouritePage: boolean;
+    FShowFavorites: Boolean;
+    FShowIssues: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
-    procedure SetShowFavouritePage(const AValue: boolean);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
+    procedure SetIssues(const AValue: TOIIssueProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
+    procedure SetShowFavorites(const AValue: Boolean);
+    procedure SetShowIssues(const AValue: Boolean);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -616,7 +662,6 @@ type
     procedure CreateSplitter;
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
-    procedure CreateFavouritePage;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
@@ -650,19 +695,23 @@ type
                                          write FOnRemainingKeyUp;
     property OnRemainingKeyDown: TKeyEvent read FOnRemainingKeyDown
                                          write FOnRemainingKeyDown;
+    property OnUpdateIssues: TNotifyEvent read FOnUpdateIssues
+                                         write FOnUpdateIssues;
     property ShowComponentTree: boolean read FShowComponentTree
                                         write SetShowComponentTree;
+    property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
+    property ShowIssues: Boolean read FShowIssues write SetShowIssues;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
-    property ShowFavouritePage: boolean read FShowFavouritePage
-                                        write SetShowFavouritePage;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
+    property Issues: TOIIssueProperties read FIssues write SetIssues;
     property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
                                              write FOnAddToFavourites;
     property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
                                                   write FOnRemoveFromFavourites;
+    property OnViewIssues: TNotifyEvent read FOnViewIssues write FOnViewIssues;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnFindDeclarationOfProperty: TNotifyEvent
            read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
@@ -674,16 +723,21 @@ const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
     'EventPage',
-    'FavouritePage'
+    'FavouritePage',
+    'IssuesPage'
     );
   DefaultOIGridNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyGrid',
     'EventGrid',
-    'FavouriteGrid'
+    'FavouriteGrid',
+    'IssuesGrid'
     );
 
 
 function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
+
+var
+  WidgetSetImageList: TImageList;
 
 //******************************************************************************
 
@@ -1485,15 +1539,27 @@ end;
 procedure TOICustomPropertyGrid.AddPropertyEditor(PropEditor: TPropertyEditor);
 var
   NewRow: TOIPropertyGridRow;
+  WidgetSets: TLCLPlatforms;
 begin
+  WidgetSets := [];
   if Favourites<>nil then begin
     //debugln('TOICustomPropertyGrid.AddPropertyEditor A ',PropEditor.GetName);
-    if not Favourites.AreFavourites(Selection,PropEditor.GetName) then begin
-      PropEditor.Free;
-      exit;
-    end;
+    if Favourites is TOIIssueProperties then
+    begin
+      WidgetSets := (Favourites as TOIIssueProperties).AreIssues(Selection,PropEditor.GetName);
+      if WidgetSets = [] then
+      begin
+        PropEditor.Free;
+        Exit;
+      end;
+    end
+    else
+      if not Favourites.AreFavourites(Selection,PropEditor.GetName) then begin
+        PropEditor.Free;
+        exit;
+      end;
   end;
-  NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,nil);
+  NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,nil, WidgetSets);
   FRows.Add(NewRow);
   if FRows.Count>1 then begin
     NewRow.FPriorBrother:=Rows[FRows.Count-2];
@@ -1594,7 +1660,7 @@ procedure TOICustomPropertyGrid.AddSubEditor(PropEditor:TPropertyEditor);
 var NewRow:TOIPropertyGridRow;
   NewIndex:integer;
 begin
-  NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow);
+  NewRow:=TOIPropertyGridRow.Create(Self,PropEditor,FExpandingRow, []);
   NewIndex:=FExpandingRow.Index+1+FExpandingRow.ChildCount;
   FRows.Insert(NewIndex,NewRow);
   if NewIndex<FItemIndex
@@ -2098,6 +2164,8 @@ var
   CurRow:TOIPropertyGridRow;
   DrawState:TPropEditDrawState;
   OldFont:TFont;
+  Platform: TLCLPlatform;
+  X, Y: Integer;
 
   procedure DrawTreeIcon(x,y:integer;Plus:boolean);
   begin
@@ -2171,6 +2239,22 @@ begin
     Font:=FNameFont;
     Font.Color := GetPropNameColor(CurRow);
     CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
+    Font:=OldFont;
+    
+    // draw widgetsets
+    X := NameRect.Right - 2;
+    Y := (NameRect.Top + NameRect.Bottom - WidgetSetImageList.Height) div 2;
+    OldFont:=Font;
+    Font:=FNameFont;
+    Font.Color := clRed;
+    for Platform := High(TLCLPlatform) downto Low(TLCLPlatform) do
+    begin
+      if Platform in CurRow.FWidgetSets then
+      begin
+        Dec(X, WidgetSetImageList.Width);
+        WidgetSetImageList.Draw(Canvas, X, Y, Integer(Platform));
+      end;
+    end;
     Font:=OldFont;
 
     // draw value
@@ -2657,7 +2741,7 @@ end;
 { TOIPropertyGridRow }
 
 constructor TOIPropertyGridRow.Create(PropertyTree: TOICustomPropertyGrid;
-  PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow);
+  PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow; WidgetSets: TLCLPlatforms);
 begin
   inherited Create;
   // tree pointer
@@ -2678,6 +2762,7 @@ begin
   FHeight:=FTree.DefaultItemHeight;
   Index:=-1;
   LastPaintedValue:='';
+  FWidgetSets := WidgetSets;
 end;
 
 destructor TOIPropertyGridRow.Destroy;
@@ -3099,6 +3184,8 @@ constructor TObjectInspectorDlg.Create(AnOwner: TComponent);
       MainPopupMenu.Items.Add(NewMenuItem);
   end;
 
+var
+  P: TLCLPlatform;
 begin
   inherited Create(AnOwner);
   FPropertyEditorHook:=nil;
@@ -3107,7 +3194,21 @@ begin
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
-  FShowFavouritePage:=false;
+  FShowFavorites := False;
+  FShowIssues := False;
+  
+  WidgetSetImageList := TImageList.Create(Self);
+  WidgetSetImageList.Width := 16;
+  WidgetSetImageList.Height := 16;
+  
+  WidgetSetImageList.AddLazarusResource('issue_gtk');
+  WidgetSetImageList.AddLazarusResource('issue_gtk2');
+  WidgetSetImageList.AddLazarusResource('issue_win32');
+  WidgetSetImageList.AddLazarusResource('issue_wince');
+  WidgetSetImageList.AddLazarusResource('issue_carbon');
+  WidgetSetImageList.AddLazarusResource('issue_qt');
+  WidgetSetImageList.AddLazarusResource('issue_fpgui');
+  WidgetSetImageList.AddLazarusResource('issue_nogui');
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText:=oisAll;
@@ -3124,6 +3225,9 @@ begin
      'RemoveFromFavoritesPopupMenuItem',
      oisRemovefromfavorites,'Remove property from favorites properties', '',
      @OnRemoveFromFavoritesPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(ViewIssuesPopupMenuItem,nil,'ViewIssuesPopupMenuItem',
+     oisViewIssues,'View issue descriptions', '',
+     @OnViewIssuesPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
      oisUndo,'Set property value to last valid value', '',
      @OnUndoPopupmenuItemClick,false,true,true);
@@ -3251,6 +3355,14 @@ begin
   RebuildPropertyLists;
 end;
 
+procedure TObjectInspectorDlg.SetIssues(const AValue: TOIIssueProperties);
+begin
+  if FIssues = AValue then exit;
+  //DebugLn('TObjectInspectorDlg.SetIssues Count: ', DbgS(AValue.Count));
+  FIssues := AValue;
+  IssuesGrid.Favourites := FIssues;
+end;
+
 procedure TObjectInspectorDlg.SetOnShowOptions(const AValue: TNotifyEvent);
 begin
   if FOnShowOptions=AValue then exit;
@@ -3353,6 +3465,7 @@ begin
   0: Result:=PropertyGrid;
   1: Result:=EventGrid;
   2: Result:=FavouriteGrid;
+  3: Result:=IssuesGrid;
   end;
 end;
 
@@ -3400,6 +3513,15 @@ procedure TObjectInspectorDlg.RefreshSelection;
 var
   Page: TObjectInspectorPage;
 begin
+  if NoteBook.Page[3].Visible then
+  begin
+    DoUpdateIssues;
+    
+    // invalidate issues
+    WidgetSetsIssuesBox.Invalidate;
+    ComponentIssuesBox.Invalidate;
+  end;
+  
   for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     if GridControl[Page]<>nil then
       GridControl[Page].Selection := FSelection;
@@ -3502,6 +3624,11 @@ begin
   if Assigned(OnRemainingKeyUp) then OnRemainingKeyUp(Self,Key,Shift);
 end;
 
+procedure TObjectInspectorDlg.OnGridDblClick(Sender: TObject);
+begin
+  DoViewIssues;
+end;
+
 procedure TObjectInspectorDlg.OnSetDefaultPopupmenuItemClick(Sender: TObject);
 var
   CurGrid: TOICustomPropertyGrid;
@@ -3524,6 +3651,11 @@ procedure TObjectInspectorDlg.OnRemoveFromFavoritesPopupmenuItemClick(
   Sender: TObject);
 begin
   if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
+end;
+
+procedure TObjectInspectorDlg.OnViewIssuesPopupmenuItemClick(Sender: TObject);
+begin
+  DoViewIssues;
 end;
 
 procedure TObjectInspectorDlg.OnUndoPopupmenuItemClick(Sender: TObject);
@@ -3659,6 +3791,111 @@ begin
   end;
 end;
 
+procedure TObjectInspectorDlg.SetShowFavorites(const AValue: Boolean);
+begin
+  if FShowFavorites = AValue then exit;
+  FShowFavorites := AValue;
+  NoteBook.Page[2].TabVisible := AValue;
+end;
+
+procedure TObjectInspectorDlg.SetShowIssues(const AValue: Boolean);
+begin
+  if FShowIssues = AValue then exit;
+  FShowIssues := AValue;
+  NoteBook.Page[3].TabVisible := AValue;
+end;
+
+procedure TObjectInspectorDlg.IssuePageShow(Sender: TObject);
+begin
+  //DebugLn('IssuePageShow');
+  DoUpdateIssues;
+end;
+
+procedure TObjectInspectorDlg.WidgetSetIssuesPaint(Sender: TObject);
+var
+  X, Y, I: Integer;
+  S: TSize;
+  Platform: TLCLPlatform;
+  None: Boolean;
+begin
+  if Issues = nil then Exit;
+  
+  X := 0;
+  Y := (WidgetSetsIssuesBox.Height - WidgetSetImageList.Height) div 2;
+  None := True;
+  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
+  begin
+    if Issues.WidgetSetIssues[Platform] > 0 then
+    begin
+      None := False;
+      WidgetSetImageList.Draw(WidgetSetsIssuesBox.Canvas, X, Y, Integer(Platform));
+      Inc(X, 16);
+      
+      S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetIssues[Platform]));
+      WidgetSetsIssuesBox.Canvas.TextOut(X, (WidgetSetsIssuesBox.Height - S.CY) div 2,
+        IntToStr(Issues.WidgetSetIssues[Platform]));
+      Inc(X, S.CX);
+    end;
+  end;
+  
+  if None then
+  begin
+    S := WidgetSetsIssuesBox.Canvas.TextExtent(oisNone);
+    WidgetSetsIssuesBox.Canvas.TextOut(4, (WidgetSetsIssuesBox.Height - S.CY) div 2, oisNone);
+  end;
+end;
+
+procedure TObjectInspectorDlg.ComponentIssuesPaint(Sender: TObject);
+var
+  X, Y, I, J: Integer;
+  S: TSize;
+  Platform: TLCLPlatform;
+  WidgetSetIssues: Array [TLCLPlatform] of Integer;
+  None: Boolean;
+begin
+  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetIssues[Platform] := 0;
+
+  if Issues = nil then Exit;
+  if Selection = nil then Exit;
+
+  for I := 0 to Issues.Count - 1 do
+  begin
+    for J := 0 to Selection.Count - 1 do
+    begin
+      if (Issues.Items[I] is TOIIssueProperty) and
+        Selection[J].ClassType.InheritsFrom(Issues.Items[I].BaseClass) and
+        (Issues.Items[I].PropertyName = '') then
+        for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
+          if Platform in (Issues.Items[I] as TOIIssueProperty).WidgetSets then
+            Inc(WidgetSetIssues[Platform]);
+    end;
+  end;
+
+  X := 0;
+  Y := (ComponentIssuesBox.Height - WidgetSetImageList.Height) div 2;
+  None := True;
+  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
+  begin
+    if WidgetSetIssues[Platform] > 0 then
+    begin
+      None := False;
+      WidgetSetImageList.Draw(ComponentIssuesBox.Canvas, X, Y, Integer(Platform));
+      Inc(X, 16);
+
+      S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetIssues[Platform]));
+      ComponentIssuesBox.Canvas.TextOut(X, (ComponentIssuesBox.Height - S.CY) div 2,
+        IntToStr(WidgetSetIssues[Platform]));
+      Inc(X, S.CX);
+    end;
+  end;
+  
+  if None then
+  begin
+    S := ComponentIssuesBox.Canvas.TextExtent(oisNone);
+    ComponentIssuesBox.Canvas.TextOut(4, (ComponentIssuesBox.Height - S.CY) div 2, oisNone);
+  end;
+end;
+
 procedure TObjectInspectorDlg.CreateSplitter;
 begin
   // vertical splitter between component tree and notebook
@@ -3679,6 +3916,7 @@ begin
   FreeAndNil(PropertyGrid);
   FreeAndNil(EventGrid);
   FreeAndNil(FavouriteGrid);
+  FreeAndNil(IssuesGrid);
   FreeAndNil(NoteBook);
 end;
 
@@ -3697,8 +3935,19 @@ begin
     else
       Pages.Add(oisProperties);
     Page[0].Name:=DefaultOIPageNames[oipgpProperties];
+    
     Pages.Add(oisEvents);
     Page[1].Name:=DefaultOIPageNames[oipgpEvents];
+    
+    Pages.Add(oisFavorites);
+    Page[2].Name:=DefaultOIPageNames[oipgpFavourite];
+    Page[2].TabVisible := ShowFavorites;
+    
+    Pages.Add(oisIssues);
+    Page[3].Name:=DefaultOIPageNames[oipgpIssues];
+    Page[3].TabVisible := ShowIssues;
+    Page[3].OnShow := @IssuePageShow;
+    
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
   end;
@@ -3712,13 +3961,15 @@ begin
       FDefaultItemHeight);
   with PropertyGrid do begin
     Name:=DefaultOIGridNames[oipgpProperties];
-    Parent:=NoteBook.Page[0];
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
+    OnDblClick:=@OnGridDblClick;
+    
+    Parent:=NoteBook.Page[0];
   end;
 
   // event grid
@@ -3726,57 +3977,114 @@ begin
                                                  [tkMethod],FDefaultItemHeight);
   with EventGrid do begin
     Name:=DefaultOIGridNames[oipgpEvents];
-    Parent:=NoteBook.Page[1];
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
+    OnDblClick:=@OnGridDblClick;
+    
+    Parent:=NoteBook.Page[1];
   end;
-
-  CreateFavouritePage;
-end;
-
-procedure TObjectInspectorDlg.CreateFavouritePage;
-var
-  NewPage: TPage;
-  i: LongInt;
-begin
-  if FShowFavouritePage then begin
-    if FavouriteGrid=nil then begin
-      // create favourite page
-      NoteBook.Pages.Add(oisFavorites);
-      NewPage:=NoteBook.Page[NoteBook.PageCount-1];
-      NewPage.Name:=DefaultOIPageNames[oipgpFavourite];
-
-      // create favourite property grid
-      FavouriteGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
-          ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
-          , tkSString, tkLString, tkAString, tkWString, tkVariant
-          {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
-          , tkInt64, tkQWord],
-          FDefaultItemHeight);
-      with FavouriteGrid do begin
-        Name:=DefaultOIGridNames[oipgpFavourite];
-        Parent:=NewPage;
-        Selection:=Self.FSelection;
-        Align:=alClient;
-        PopupMenu:=MainPopupMenu;
-        OnModified:=@OnGridModified;
-        OnKeyUp:=@OnGridKeyUp;
-      end;
-      FavouriteGrid.Favourites:=FFavourites;
-    end;
-  end else begin
-    if FavouriteGrid<>nil then begin
-      // free and remove favourite page
-      i:=NoteBook.PageList.IndexOf(FavouriteGrid.Parent);
-      FreeAndNil(FavouriteGrid);
-      if i>=0 then
-        NoteBook.Pages.Delete(i);
-    end;
+  
+  // favourite grid
+  FavouriteGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook
+      ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
+      , tkSString, tkLString, tkAString, tkWString, tkVariant
+      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
+      , tkInt64, tkQWord],
+      FDefaultItemHeight);
+  with FavouriteGrid do begin
+    Name:=DefaultOIGridNames[oipgpFavourite];
+    Selection:=Self.FSelection;
+    Align:=alClient;
+    PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
+    OnKeyUp:=@OnGridKeyUp;
+    OnDblClick:=@OnGridDblClick;
+    
+    Parent:=NoteBook.Page[2];
   end;
+  FavouriteGrid.Favourites:=FFavourites;
+  
+  // issues grid
+  IssuesGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
+    [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
+      , tkSString, tkLString, tkAString, tkWString, tkVariant
+      {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
+      , tkInt64, tkQWord],FDefaultItemHeight);
+  with IssuesGrid do begin
+    Name:=DefaultOIGridNames[oipgpIssues];
+    Selection:=Self.FSelection;
+    Align:=alClient;
+    PopupMenu:=MainPopupMenu;
+    OnModified:=@OnGridModified;
+    OnOIKeyDown:=@OnGridKeyDown;
+    OnKeyUp:=@OnGridKeyUp;
+    OnDblClick:=@OnGridDblClick;
+    
+    Parent:=NoteBook.Page[3];
+  end;
+  
+  IssuesPanel := TPanel.Create(Self);
+  with IssuesPanel do
+  begin
+    Align := alTop;
+    BevelOuter := bvNone;
+    Parent := NoteBook.Page[3];
+  end;
+  
+  IssuesInnerPanel := TPanel.Create(Self);
+  with IssuesInnerPanel do
+  begin
+    BevelOuter := bvNone;
+    BorderSpacing.Around := 6;
+    Parent := IssuesPanel;
+  end;
+  
+  WidgetSetsIssuesLabel := TLabel.Create(Self);
+  with WidgetSetsIssuesLabel do
+  begin
+    Caption := oisWidgetSetIssues;
+    Top := 1;
+    Align := alTop;
+    AutoSize := True;
+    Parent := IssuesInnerPanel;
+  end;
+  
+  WidgetSetsIssuesBox := TPaintBox.Create(Self);
+  with WidgetSetsIssuesBox do
+  begin
+    Top := 2;
+    Align := alTop;
+    Height := 24;
+    OnPaint := @WidgetSetIssuesPaint;
+    Parent := IssuesInnerPanel;
+  end;
+  
+  ComponentIssuesLabel := TLabel.Create(Self);
+  with ComponentIssuesLabel do
+  begin
+    Caption := oisComponentIssues;
+    Top := 3;
+    Align := alTop;
+    AutoSize := True;
+    Parent := IssuesInnerPanel;
+  end;
+  
+  ComponentIssuesBox := TPaintBox.Create(Self);
+  with ComponentIssuesBox do
+  begin
+    Top := 4;
+    Align := alTop;
+    Height := 24;
+    OnPaint := @ComponentIssuesPaint;
+    Parent := IssuesInnerPanel;
+  end;
+  
+  IssuesInnerPanel.AutoSize := True;
+  IssuesPanel.AutoSize := True;
 end;
 
 procedure TObjectInspectorDlg.KeyDown(var Key: Word; Shift: TShiftState);
@@ -3832,12 +4140,10 @@ begin
   else
     SetDefaultPopupMenuItem.Caption:=oisSetToDefaultValue;
 
-  AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil)
-                and ShowFavouritePage
+  AddToFavoritesPopupMenuItem.Visible:=(Favourites<>nil) and ShowFavorites
                 and (GetActivePropertyGrid<>FavouriteGrid)
                 and Assigned(OnAddToFavourites) and (GetActivePropertyRow<>nil);
-  RemoveFromFavoritesPopupMenuItem.Visible:=(Favourites<>nil)
-           and ShowFavouritePage
+  RemoveFromFavoritesPopupMenuItem.Visible:=(Favourites<>nil) and ShowFavorites
            and (GetActivePropertyGrid=FavouriteGrid)
            and Assigned(OnRemoveFromFavourites) and (GetActivePropertyRow<>nil);
 
@@ -3864,16 +4170,19 @@ begin
   end;
 end;
 
+procedure TObjectInspectorDlg.DoUpdateIssues;
+begin
+  if Assigned(FOnUpdateIssues) then FOnUpdateIssues(Self);
+end;
+
+procedure TObjectInspectorDlg.DoViewIssues;
+begin
+  if Assigned(FOnViewIssues) then FOnViewIssues(Self);
+end;
+
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;
 begin
   RefreshPropertyValues;
-end;
-
-procedure TObjectInspectorDlg.SetShowFavouritePage(const AValue: boolean);
-begin
-  if FShowFavouritePage=AValue then exit;
-  FShowFavouritePage:=AValue;
-  CreateFavouritePage;
 end;
 
 function TObjectInspectorDlg.GetGridControl(Page: TObjectInspectorPage
@@ -3882,6 +4191,7 @@ begin
   case Page of
   oipgpFavourite: Result:=FavouriteGrid;
   oipgpEvents: Result:=EventGrid;
+  oipgpIssues: Result:=IssuesGrid;
   else  Result:=PropertyGrid;
   end;
 end;
@@ -3891,8 +4201,7 @@ begin
   //debugln('TObjectInspectorDlg.SetFavourites ',dbgsName(Self));
   if FFavourites=AValue then exit;
   FFavourites:=AValue;
-  if FavouriteGrid<>nil then
-    FavouriteGrid.Favourites:=FFavourites;
+  FavouriteGrid.Favourites:=FFavourites;
 end;
 
 { TCustomPropertiesGrid }
@@ -4412,8 +4721,65 @@ begin
       +' BaseClass='+dbgsName(BaseClass);
 end;
 
+{ TOIIssueProperty }
+
+function TOIIssueProperty.IsIssue(AClass: TPersistentClass; const APropertyName: string): TLCLPlatforms;
+begin
+  //DebugLn('IsIssue ', AClass.ClassName, ' ?= ', BaseClass.ClassName, ' ', APropertyName, ' ?= ', PropertyName);
+  Result := [];
+  if (CompareText(PropertyName,APropertyName) = 0)
+    and (AClass.InheritsFrom(BaseClass)) then Result := WidgetSets;
+end;
+
+
+{ TOIIssueProperties }
+
+constructor TOIIssueProperties.Create;
+var
+  P: TLCLPlatform;
+begin
+  inherited Create;
+  
+  for P := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetIssues[P] := 0;
+end;
+
+function TOIIssueProperties.IsIssue(AClass: TPersistentClass;
+  const PropertyName: string): TLCLPlatforms;
+var
+  I: Integer;
+  CurItem: TOIIssueProperty;
+begin
+  Result := [];
+  if (AClass=nil) or (PropertyName='') then Exit;
+  for I := 0 to Count - 1 do
+  begin
+    if not (Items[I] is TOIIssueProperty) then Continue;
+    CurItem:=Items[I] as TOIIssueProperty;
+    Result := Result + CurItem.IsIssue(AClass,PropertyName);
+  end;
+end;
+
+function TOIIssueProperties.AreIssues(Selection: TPersistentSelectionList;
+  const PropertyName: string): TLCLPlatforms;
+var
+  I: Integer;
+begin
+  Result := [];
+  if Selection = nil then Exit;
+  for i:=0 to Selection.Count-1 do
+  begin
+    Result := Result + IsIssue(TPersistentClass(Selection[i].ClassType), PropertyName);
+  end;
+end;
+
+
+
 initialization
   {$I objectinspector.lrs}
+  
+finalization
+
+
 
 end.
 

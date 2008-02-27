@@ -705,12 +705,6 @@ initialization
     TButtonGlyphPropEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TFontCharset'),
     nil, 'CharSet', TFontCharsetPropertyEditor);
-  // TButton.Color does not work on all platforms
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TGraphicsColor'),
-    TButton, 'Color', THiddenPropertyEditor);
-  // TBitBtn.Color does not work on all platforms
-  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TGraphicsColor'),
-    TBitBtn, 'Color', THiddenPropertyEditor);
 
 
 finalization

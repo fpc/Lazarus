@@ -138,6 +138,7 @@ type
     pftLFM,     // lazarus form text file
     pftLRS,     // lazarus resource file
     pftInclude, // include file
+    pftIssues,  // file is issues xml file
     pftText,    // file is text (e.g. copyright or install notes)
     pftBinary   // file is something else
     );
@@ -833,10 +834,10 @@ const
   LazPkgXMLFileVersion = 3;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
-    'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText',
-    'pftBinary');
+    'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftIssues',
+    'pftText', 'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
-    'Unit', 'Virtual Unit', 'LFM', 'LRS', 'Include', 'Text', 'Binary');
+    'Unit', 'Virtual Unit', 'LFM', 'LRS', 'Include', 'Issues', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
     'pffHasRegisterProc', 'pffAddToPkgUsesSection', 'pffReportedAsRemoved');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
@@ -942,6 +943,7 @@ begin
   pftLFM: Result:=lisPkgFileTypeLFM;
   pftLRS: Result:=lisPkgFileTypeLRS;
   pftInclude: Result:=lisPkgFileTypeInclude;
+  pftIssues: Result:=lisPkgFileTypeIssues;
   pftText: Result:=lisPkgFileTypeText;
   pftBinary: Result:=lisPkgFileTypeBinary;
   else
@@ -966,6 +968,8 @@ begin
     Result:=pftInclude
   else if FilenameIsPascalUnit(AFilename) then
     Result:=pftUnit
+  else if CompareFileExt(AFilename,'.xml',true)=0 then
+    Result:=pftIssues
   else if FileIsText(AFilename) then
     Result:=pftText
   else

@@ -64,6 +64,8 @@ type
     lpfpGUI,
     lpNoGUI
     );
+    
+  TLCLPlatforms = set of TLCLPlatform;
 
   { TWidgetSet }
 

@@ -1,0 +1,68 @@
+object IssueBrowserView: TIssueBrowserView
+  Left = 272
+  Height = 340
+  Top = 259
+  Width = 660
+  HorzScrollBar.Page = 659
+  VertScrollBar.Page = 339
+  ActiveControl = NameFilterEdit
+  Caption = 'IssueBrowserView'
+  ClientHeight = 340
+  ClientWidth = 660
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object IssueMemo: TMemo
+    Left = 264
+    Height = 306
+    Top = 18
+    Width = 390
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 0
+  end
+  object IssueFilterGroupBox: TGroupBox
+    Left = 6
+    Height = 96
+    Top = 12
+    Width = 250
+    Caption = 'IssueFilterGroupBox'
+    ClientHeight = 78
+    ClientWidth = 246
+    TabOrder = 1
+    object NameLabel: TLabel
+      Left = 10
+      Height = 14
+      Top = 44
+      Width = 53
+      Caption = 'NameLabel'
+      ParentColor = False
+    end
+    object NameFilterEdit: TEdit
+      Left = 70
+      Height = 23
+      Top = 38
+      Width = 164
+      OnChange = NameFilterEditChange
+      TabOrder = 0
+    end
+  end
+  object IssueTreeView: TTreeView
+    Left = 6
+    Height = 210
+    Top = 114
+    Width = 250
+    Anchors = [akTop, akLeft, akBottom]
+    DefaultItemHeight = 15
+    HideSelection = False
+    Indent = 2
+    RightClickSelect = True
+    RowSelect = True
+    ScrollBars = ssAutoBoth
+    ShowButtons = False
+    ShowLines = False
+    TabOrder = 2
+    OnSelectionChanged = IssueTreeViewSelectionChanged
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips]
+  end
+end

@@ -1930,6 +1930,7 @@ ide/codetoolsdefpreview.pas svneol=native#text/pascal
 ide/codetoolsoptions.lfm svneol=native#text/pascal
 ide/codetoolsoptions.lrs svneol=native#text/pascal
 ide/codetoolsoptions.pas svneol=native#text/pascal
+ide/compatibilityissues.pas svneol=native#text/pascal
 ide/compiler.pp svneol=native#text/pascal
 ide/compileroptions.pp svneol=native#text/pascal
 ide/compileroptionsdlg.lfm -text
@@ -2042,6 +2043,9 @@ ide/initialsetupdlgs.pas svneol=native#text/pascal
 ide/inputfiledialog.pas svneol=native#text/pascal
 ide/inputhistory.pas svneol=native#text/pascal
 ide/invertassigntool.pas svneol=native#text/pascal
+ide/issuebrowser.lfm svneol=native#text/plain
+ide/issuebrowser.lrs svneol=native#text/pascal
+ide/issuebrowser.pas svneol=native#text/pascal
 ide/keymapping.pp svneol=native#text/pascal
 ide/keymapschemedlg.lfm svneol=native#text/plain
 ide/keymapschemedlg.lrs svneol=native#text/pascal
@@ -2525,6 +2529,8 @@ images/menu/menu_search_files.png -text svneol=unset#image/png
 images/menu/menu_search_find.png -text svneol=unset#image/png
 images/menu/menu_search_find_next.png -text svneol=unset#image/png
 images/menu/menu_search_find_previous.png -text svneol=unset#image/png
+images/menu/menu_search_jumpback.png -text svneol=unset#image/png
+images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
@@ -2554,27 +2560,36 @@ images/mimetypes/text-lazarus-project-information.png -text
 images/mimetypes/text-lazarus-project-source.png -text
 images/mimetypes/text-x-pascal.png -text
 images/packages/pkg_add.png -text svneol=unset#image/png
-images/packages/pkg_binary.png -text
-images/packages/pkg_compile.png -text
-images/packages/pkg_conflict.png -text
-images/packages/pkg_files.png -text
+images/packages/pkg_binary.png -text svneol=unset#image/png
+images/packages/pkg_compile.png -text svneol=unset#image/png
+images/packages/pkg_conflict.png -text svneol=unset#image/png
+images/packages/pkg_files.png -text svneol=unset#image/png
 images/packages/pkg_graph.png -text svneol=unset#image/png
-images/packages/pkg_include.png -text
+images/packages/pkg_include.png -text svneol=unset#image/png
 images/packages/pkg_inherited.png -text svneol=unset#image/png
 images/packages/pkg_installed.png -text svneol=unset#image/png
-images/packages/pkg_lfm.png -text
-images/packages/pkg_lrs.png -text
+images/packages/pkg_issues.png -text svneol=unset#image/png
+images/packages/pkg_lfm.png -text svneol=unset#image/png
+images/packages/pkg_lrs.png -text svneol=unset#image/png
 images/packages/pkg_open.png -text svneol=unset#image/png
-images/packages/pkg_package_autoinstall.png -text
-images/packages/pkg_package_circle.png -text
-images/packages/pkg_package_uninstall.png -text
+images/packages/pkg_package_autoinstall.png -text svneol=unset#image/png
+images/packages/pkg_package_circle.png -text svneol=unset#image/png
+images/packages/pkg_package_uninstall.png -text svneol=unset#image/png
 images/packages/pkg_properties.png -text svneol=unset#image/png
-images/packages/pkg_registerunit.png -text
-images/packages/pkg_removedfiles.png -text
-images/packages/pkg_removedrequired.png -text
+images/packages/pkg_registerunit.png -text svneol=unset#image/png
+images/packages/pkg_removedfiles.png -text svneol=unset#image/png
+images/packages/pkg_removedrequired.png -text svneol=unset#image/png
 images/packages/pkg_required.png -text svneol=unset#image/png
-images/packages/pkg_text.png -text
+images/packages/pkg_text.png -text svneol=unset#image/png
 images/packages/pkg_unit.png -text svneol=unset#image/png
+images/propertygrid/issue_carbon.png -text svneol=unset#image/png
+images/propertygrid/issue_fpgui.png -text svneol=unset#image/png
+images/propertygrid/issue_gtk.png -text svneol=unset#image/png
+images/propertygrid/issue_gtk2.png -text svneol=unset#image/png
+images/propertygrid/issue_nogui.png -text svneol=unset#image/png
+images/propertygrid/issue_qt.png -text svneol=unset#image/png
+images/propertygrid/issue_win32.png -text svneol=unset#image/png
+images/propertygrid/issue_wince.png -text svneol=unset#image/png
 images/sourceeditor/ActiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
 images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
@@ -2966,6 +2981,7 @@ lcl/interfaces/carbon/carbonwsstdctrls.pp svneol=native#text/pascal
 lcl/interfaces/carbon/carbonwstoolwin.pp svneol=native#text/pascal
 lcl/interfaces/carbon/glgrab.pas svneol=native#text/plain
 lcl/interfaces/carbon/interfaces.pas svneol=native#text/pascal
+lcl/interfaces/carbon/issues.xml svneol=native#text/xml
 lcl/interfaces/carbon/mackeycodes.inc svneol=native#text/pascal
 lcl/interfaces/carbon/opengl.pas svneol=native#text/plain
 lcl/interfaces/fpgui/Makefile.fpc svneol=native#text/plain
@@ -3174,6 +3190,7 @@ lcl/interfaces/qt/qtwsstdctrls.pp svneol=native#text/pascal
 lcl/interfaces/qt/qtwstoolwin.pp svneol=native#text/pascal
 lcl/interfaces/win32/README.txt svneol=native#text/plain
 lcl/interfaces/win32/interfaces.pp svneol=native#text/pascal
+lcl/interfaces/win32/issues.xml svneol=native#text/xml
 lcl/interfaces/win32/win32callback.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32debug.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32def.pp svneol=native#text/pascal

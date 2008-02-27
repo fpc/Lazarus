@@ -337,6 +337,7 @@ var
   ImageIndexLFM: integer;
   ImageIndexLRS: integer;
   ImageIndexInclude: integer;
+  ImageIndexIssues: integer;
   ImageIndexText: integer;
   ImageIndexBinary: integer;
   ImageIndexConflict: integer;
@@ -1311,6 +1312,7 @@ begin
   ImageIndexLFM := IDEImages.LoadImage(16, 'pkg_lfm');
   ImageIndexLRS := IDEImages.LoadImage(16, 'pkg_lrs');
   ImageIndexInclude := IDEImages.LoadImage(16, 'pkg_include');
+  ImageIndexIssues := IDEImages.LoadImage(16, 'pkg_issues');
   ImageIndexText := IDEImages.LoadImage(16, 'pkg_text');
   ImageIndexBinary := IDEImages.LoadImage(16, 'pkg_binary');
   ImageIndexConflict := IDEImages.LoadImage(16, 'pkg_conflict');
@@ -1594,6 +1596,7 @@ procedure TPackageEditorForm.UpdateFiles;
     pftLFM: ANode.ImageIndex:=ImageIndexLFM;
     pftLRS: ANode.ImageIndex:=ImageIndexLRS;
     pftInclude: ANode.ImageIndex:=ImageIndexInclude;
+    pftIssues: ANode.ImageIndex:=ImageIndexIssues;
     pftText: ANode.ImageIndex:=ImageIndexText;
     pftBinary: ANode.ImageIndex:=ImageIndexBinary;
     else

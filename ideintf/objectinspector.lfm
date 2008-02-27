@@ -12,8 +12,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   OnResize = ObjectInspectorResize
   PopupMenu = MainPopupMenu
   object StatusBar: TStatusBar
-    Height = 23
-    Top = 646
+    Height = 20
+    Top = 649
     Width = 275
     Panels = <    
       item

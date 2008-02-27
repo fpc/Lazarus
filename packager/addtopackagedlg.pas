@@ -562,11 +562,12 @@ begin
       LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
-    OpenDialog.Filter:=lisLazarusFile+' (*.pas;*.pp;*.inc;*.lfm;*.lrs)|*.'
-      +'pas;*.pp;*.inc;*.lfm;*.lrs'
+    OpenDialog.Filter:=lisLazarusFile+' (*.pas;*.pp;*.inc;*.lfm;*.lrs;*.xml)|*.'
+      +'pas;*.pp;*.inc;*.lfm;*.lrs;*.xml'
       +'|'+lisPascalUnit+' (*.pp;*.pas)|*.pp;*.pas'
       +'|'+lisPascalSourceFile+' (*.pas)|*.pas'
       +'|'+lisFreePascalSourceFile+' (*.pp)|*.pp'
+      +'|'+lisPkgFileTypeIssues+' (*.xml)|*.xml'
       +'|'+dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
