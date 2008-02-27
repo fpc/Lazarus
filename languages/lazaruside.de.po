@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-26 16:42+0100\n"
+"PO-Revision-Date: 2008-02-27 12:38+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -198,7 +198,7 @@ msgstr "Seite s&chließen"
 
 #: lazarusidestrconsts:lismenucomponent
 msgid "&Component"
-msgstr "&Komponente"
+msgstr "&Komponenten"
 
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
@@ -306,7 +306,7 @@ msgstr "Sta&rt bis zum Cursor"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr "&Suche"
+msgstr "&Suchen"
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "&Selected Text"
@@ -406,7 +406,7 @@ msgstr "Ein benötigtes Package wurde nicht gefunden. Bitte überprüfen Sie den
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
 msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr "Eine einfache Pascal-Programmdatei.%sSie dient zum schnellen Testen.%sBesser ist es, ein neues Projekt zu beginnen."
+msgstr "Eine einfache Pascal-Programmdatei.%sSie dient dem schnellen Testen.%sBesser ist es, ein neues Projekt anzulegen."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
@@ -510,11 +510,11 @@ msgstr "Neue Unit"
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
 msgid "Add active unit to a package"
-msgstr "Aktuelle Unit zu einem Package hinzufügen"
+msgstr "Aktuelle Unit in ein Package aufnehmen"
 
 #: lazarusidestrconsts:liskmaddactiveunittoproject
 msgid "Add active unit to project"
-msgstr "Aktive Unit zum Projekt zufügen"
+msgstr "Aktuelle Unit zum Projekt zufügen"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
@@ -1430,11 +1430,11 @@ msgstr "Klasse %s%s%s nicht gefunden."
 
 #: lazarusidestrconsts:lisa2pclassnamealreadyexists
 msgid "Class Name already exists"
-msgstr "Klassenname bereits vorhanden"
+msgstr "Klassenname bereits belegt"
 
 #: lazarusidestrconsts:lisclassconflictswithlfmfiletheunitusesthetheunitwhic
 msgid "Class conflicts with .lfm file:%sThe unit %s%suses the the unit %s%swhich contains the class %s,%sbut the .lfm file contains already another class.%sThere can only be one design class per unit.%sPlease move %s to another unit."
-msgstr "Klassenkonflike mit er .lfm-Datei:%sDie Unit %s%snutzt die Unit %s%sdie die Klasse %s,%sverwendet, aber die .lfm-Datei enthält schon eine andere Klasse.%sPro Unit ist nur eine Designklasse erlaubt.%sBitte verschieben Sie %s in eine andere Unit."
+msgstr "Klassenkonflike mit der .lfm-Datei:%sDie Unit %s%snutzt die Unit %s%sdie die Klasse %s%sverwendet, aber die .lfm-Datei enthält schon eine andere Klasse.%sPro Unit ist nur eine Designklasse erlaubt.%sBitte verschieben Sie %s in eine andere Unit."
 
 #: lazarusidestrconsts:lisclassnotfound
 msgid "Class not found"
@@ -1634,7 +1634,7 @@ msgstr "CodeTools-Einstellungen"
 
 #: lazarusidestrconsts:liscollapseallclasses
 msgid "Collapse all classes"
-msgstr "Alle Klassen einklappen"
+msgstr "Alle Klassen einfalten"
 
 #: lazarusidestrconsts:liscollapseallpackages
 msgid "Collapse all packages"
@@ -2214,7 +2214,7 @@ msgstr "Cursor-Spalte im aktuellem Editor"
 
 #: lazarusidestrconsts:lissamcursorisnotinaclassdeclaration
 msgid "Cursor is not in a class declaration"
-msgstr "Cursor befindet sich nicht in einer Klassendeklaration"
+msgstr "Cursor ist nicht in einer Klassendeklaration"
 
 #: lazarusidestrconsts:srkmcatcursormoving
 msgid "Cursor moving commands"
@@ -2942,7 +2942,7 @@ msgstr "Fehler beim Lesen der Datei"
 
 #: lazarusidestrconsts:lisdiskdifferrorreadingfile
 msgid "Error reading file: %s"
-msgstr "Fehler beim Lesen der Datei; %s"
+msgstr "Fehler beim Lesen der Datei: %s"
 
 #: lazarusidestrconsts:liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
@@ -2998,7 +2998,7 @@ msgstr "Überprüfen/Ändern"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
-msgstr "Prüfen/Ändern"
+msgstr "Prüfen/Ändern ..."
 
 #: lazarusidestrconsts:lisdebugoptionsfrmeventlog
 msgid "Event Log"
@@ -3014,7 +3014,7 @@ msgstr "Beispiele"
 
 #: lazarusidestrconsts:lisexcludefilter
 msgid "Exclude Filter"
-msgstr "Ausschliessender Filter"
+msgstr "Ausschließender Filter"
 
 #: lazarusidestrconsts:srvk_execute
 msgid "Execute"
@@ -3046,11 +3046,11 @@ msgstr "Ausführung angehalten%sAdresse: $%s%sProzedur: %s%sDatei:%s%s(TODO: Ass
 
 #: lazarusidestrconsts:lisexecutionstopped
 msgid "Execution stopped"
-msgstr "Ausführung angehalten"
+msgstr "Ausführung beendet"
 
 #: lazarusidestrconsts:lisexecutionstoppedon
 msgid "Execution stopped%s"
-msgstr "Ausführung angehalten%s"
+msgstr "Ausführung beendet%s"
 
 #: lazarusidestrconsts:lispldexists
 msgid "Exists"
@@ -3066,7 +3066,7 @@ msgstr "Beenden ohne Speichern"
 
 #: lazarusidestrconsts:lisexpandallclasses
 msgid "Expand all classes"
-msgstr "Alle Klassen ausklappen"
+msgstr "Alle Klassen ausfalten"
 
 #: lazarusidestrconsts:lisexpandallpackages
 msgid "Expand all packages"
@@ -3518,7 +3518,7 @@ msgstr "&Vorwärts suchen"
 
 #: lazarusidestrconsts:lisvsrforwardsearch
 msgid "Forward Search"
-msgstr "Vorwärtssuche"
+msgstr "Vorwärts suchen"
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
@@ -4566,7 +4566,7 @@ msgstr "Ungültiges Zielverzeichnis"
 
 #: lazarusidestrconsts:lisinvalidexpressionhintthemakeresourcestringfunction
 msgid "Invalid expression.%sHint: The \"Make Resourcestring\" function expects a string constant in a single file. Please select the expression and try again."
-msgstr "Ungültiger Ausdruck.%sHinweis: Die Ressourcenstring-Funktion Make erwartet eine Zeichenkettenkonstante in einer einzelnen Datei. Bitte wählen Sie den Ausdruck und versuchen Sie es noch einmal."
+msgstr "Ungültiger Ausdruck.%sHinweis: Das \"Make\" für Ressourcenstrings erwartet eine Zeichenkettenkonstante in einer einzelnen Datei. Bitte wählen Sie den Ausdruck und versuchen Sie es noch einmal."
 
 #: lazarusidestrconsts:lisa2pinvalidfile
 msgid "Invalid file"
@@ -5638,7 +5638,7 @@ msgstr "Keine abstrakten Methoden gefunden"
 
 #: lazarusidestrconsts:lisnobackupfiles
 msgid "No backup files"
-msgstr "Keine Backup Dateien"
+msgstr "Keine Backups"
 
 #: lazarusidestrconsts:lisnochange
 msgid "No change"
@@ -5658,7 +5658,7 @@ msgstr "Kein Debugger angegeben"
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
-msgstr "Keine Fehler in der Tastaturbelegung gefunden"
+msgstr "Keine Fehler in der Tastaturbelegung."
 
 #: lazarusidestrconsts:lisnewdlgnoitemselected
 msgid "No item selected"
@@ -5670,7 +5670,7 @@ msgstr "Kein Package für die Abhängigkeit %s%s%s gefunden.%sBitte wählen Sie 
 
 #: lazarusidestrconsts:lisoipnopackageselected
 msgid "No package selected"
-msgstr "Kein Package ausgewählt"
+msgstr "Kein Package gewählt"
 
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
@@ -5810,11 +5810,11 @@ msgstr "Beim Start des Projekts statt dessen \"Datei ausführen\" aufrufen"
 
 #: lazarusidestrconsts:lismenuonlinehelp
 msgid "Online Help"
-msgstr "Onlinehilfe"
+msgstr "Online-Hilfe"
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
-msgstr "Onlinehilfe noch nicht implementiert"
+msgstr "Online-Hilfe noch nicht verfügbar"
 
 #: lazarusidestrconsts:lispldonlyexistingfiles
 msgid "Only existing files"
@@ -5822,7 +5822,7 @@ msgstr "Nur vorhandene Dateien"
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
-msgstr "Nur Suche nach ganzen Worten"
+msgstr "Suche nur nach ganzen Worten"
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
@@ -6042,7 +6042,7 @@ msgstr "Andere Quellen (.pp-/.pas-Dateien, nur von der IDE benutzt, nicht vom Co
 
 #: lazarusidestrconsts:dlgotherunitfiles
 msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgstr "Andere Unitdateien (-Fu) (Trenner ist das Semikolon):"
+msgstr "Andere Unitdateien (-Fu) (Trenner ist der Strichpunkt):"
 
 #: lazarusidestrconsts:dlgenvotherfiles
 msgid "Other files"
@@ -6086,7 +6086,7 @@ msgstr "Systemvariablen überschreiben"
 
 #: lazarusidestrconsts:srkmecoverwritemode
 msgid "Overwrite Mode"
-msgstr "Überschreiben-Modus"
+msgstr "Überschreibe-Modus"
 
 #: lazarusidestrconsts:lisoverwritefileondisk
 msgid "Overwrite file on disk"
@@ -6174,7 +6174,7 @@ msgstr "Package-Datei fehlt"
 
 #: lazarusidestrconsts:lispkgsyspackagefilenotfound
 msgid "Package file not found"
-msgstr "Packagekonflikte"
+msgstr "Package-Konflikte"
 
 #: lazarusidestrconsts:lispkgmangpackagefilenotsaved
 msgid "Package file not saved"
@@ -6186,7 +6186,7 @@ msgstr "Package-Graph"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
-msgstr "Package ist kein Entwicklungszeit-Package"
+msgstr "Das ist kein Entwicklungszeit-Package"
 
 #: lazarusidestrconsts:lisaf2ppackageisreadonly
 msgid "Package is read only"
@@ -6202,7 +6202,7 @@ msgstr "Package-Links ..."
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
-msgstr "Packagename ist schon vorhanden"
+msgstr "Package-Name ist bereits belegt"
 
 #: lazarusidestrconsts:lispackagenamebeginswith
 msgid "Package name begins with ..."
@@ -6230,7 +6230,7 @@ msgstr "Package-Typ"
 
 #: lazarusidestrconsts:lispkgmangpackagesmusthavetheextensionlpk
 msgid "Packages must have the extension .lpk"
-msgstr "Package müssen die Endung .lpk besitzen"
+msgstr "Packages müssen die Endung .lpk besitzen"
 
 #: lazarusidestrconsts:lispackagestoinstallintheide
 msgid "Packages to install in the IDE"
@@ -6242,7 +6242,7 @@ msgstr "Name des Reiters zu lang"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr "Zeichne Designerelemente nur wenn nicht beschäftigt (reduziert Prozessorbelastung, für langsamerere Rechner)"
+msgstr "Zeichne Designerelemente nur wenn unbeschäftigt (reduziert die Prozessorbelastung langsamerer Rechner)"
 
 #: lazarusidestrconsts:liscmplstpalette
 msgid "Palette"
@@ -6356,9 +6356,9 @@ msgstr "Bitte überprüfen Sie den Compilerdateinamen"
 msgid "Please check the freepascal source directory"
 msgstr "Bitte überprüfen Sie das FreePascal Source Verzeichnis"
 
-#: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
-msgid "Please choose a resourcestring section from the list."
-msgstr ""
+#: lazarusidestrconsts:lismakeresstrpleasechoosearesourstring
+msgid "Please choose a resourstring section from the list."
+msgstr "Bitte wählen Sie einen Ressourcenstring aus der Liste."
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -7014,7 +7014,7 @@ msgstr "Nach erfolgreichem Erstellen neu starten"
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"
-msgstr "Fenstermaße wiederherstellen"
+msgstr "Fensterwerte wiederherstellen"
 
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
@@ -8234,11 +8234,11 @@ msgstr "Symbol"
 
 #: lazarusidestrconsts:dlgsmbbehind
 msgid "Symbol behind (.pp~)"
-msgstr "Symbol dahinter (.pp~)"
+msgstr "Kennung angehängt (.pp~)"
 
 #: lazarusidestrconsts:dlgsmbfront
 msgid "Symbol in front (.~pp)"
-msgstr "Symbol davor (*.~pp)"
+msgstr "Kennung davor (*.~pp)"
 
 #: lazarusidestrconsts:lissynedit
 msgid "SynEdit"
@@ -8526,11 +8526,11 @@ msgstr "Die Basisklasse %s%s%s besitzt den selben Namen wie%sdie Unit %s%s%s."
 
 #: lazarusidestrconsts:lisa2ptheancestortypeisnotavalidpascalidentifier
 msgid "The ancestor type %s%s%s is not a valid pascal identifier."
-msgstr "Die Basisklassenname %s%s%sist kein gültiger Pascal-Bezeichner."
+msgstr "Der Basisklassenname %s%s%sist kein gültiger Pascal-Bezeichner."
 
 #: lazarusidestrconsts:listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
-msgstr "Die Klasse %s%s%s ist ein TControl und kann nicht auf ein Nicht-Control gepastet werden.%sKann Paste nicht durchführen."
+msgstr "Die Klasse %s%s%s ist ein TControl und kann nicht auf ein Nicht-Control kopiert werden.%sKann Paste nicht durchführen."
 
 #: lazarusidestrconsts:lisa2ptheclassnameandancestortypearethesame
 msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
@@ -8538,11 +8538,11 @@ msgstr "Der Klassenname %s%s%s und der Basisklassenname %s%s%s sind gleich."
 
 #: lazarusidestrconsts:lisa2ptheclassnameexistsalreadyinpackagefile
 msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
-msgstr "Der Klassenname %s%s%s tritt bereits im%sPackage %s%s auf. Datei %s%s%s"
+msgstr "Der Klassenname %s%s%s ist bereits im%sPackage %s%s enthalten. Datei %s%s%s"
 
 #: lazarusidestrconsts:lisa2ptheclassnamehasthesamenameastheunit
 msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
-msgstr "Der Klassename %s%s%s ist identisch zu dem%sder Unit%s%s%s."
+msgstr "Der Klassename %s%s%s lautet wie der Name der%sder Unit%s%s%s."
 
 #: lazarusidestrconsts:lisa2ptheclassnameisnotavalidpascalidentifier
 msgid "The class name %s%s%s is not a valid pascal identifier."
@@ -8582,7 +8582,7 @@ msgstr "Der Komponenteneditor der Klasse %s%s%s hat einen Fehler erzeugt:%s%s%s%
 
 #: lazarusidestrconsts:listhecomponenteditorofclassinvokedwithverbhascreated
 msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
-msgstr "Der Komponenteneditor der Klasse %s%s%s%s, aufgerufen mit dem Verb #%s %s%s%s%s hat dem folgenden Fehler erzeugt:%s%s%s%s"
+msgstr "Der Komponenteneditor der Klasse %s%s%s%s, aufgerufen mit dem Verb #%s %s%s%s%s hat den folgenden Fehler erzeugt:%s%s%s%s"
 
 #: lazarusidestrconsts:listhecurrentfreepascalsourcedirectorydoesnotlookcorr2
 msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sCheck Environment -> Environment Options -> Files"
@@ -8698,7 +8698,7 @@ msgstr "Die Datei %s%s%s%sdes packages %s muß zuerst gespeichert werden"
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
 msgid "The file %s%s%s%sseems to be a program. Close current project and create a new lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Die Datei %s%s%s%sscheint ein Programm zu sein. Aktuelles Projekt schließen und ein neues Lazarus-Projekt für dieses Programm erzeugen?%s'Nein' lädt die Datei als normalen Quelltext."
+msgstr "Die Datei %s%s%s%sscheint ein Programm zu sein. Aktuelles Projekt schließen und ein neues Lazarus-Projekt für dieses Programm erzeugen?%s\"Nein\" lädt die Datei als normalen Quelltext."
 
 #: lazarusidestrconsts:listhefilewasfoundinoneofthesourcedirectoriesofthepac
 msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
@@ -8806,7 +8806,7 @@ msgstr "Das Package %s%s%s konnte nicht kompiliert werden.%sAus der Installation
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
-msgstr "Das Package %s%s%s besitzt die Kennung für automatische Installation.%sDas bedeutet, es wird in die IDE installiert. Installationspakete%smüssen Packages für die Designzeit sein."
+msgstr "Das Package %s%s%s besitzt die Kennung für automatische Installation.%sDas bedeutet, es wird in die IDE installiert. Installationspakete%smüssen Designzeit-Packages sein."
 
 #: lazarusidestrconsts:lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
 msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
@@ -8886,7 +8886,7 @@ msgstr "Das Projekt benötigt das Package %s%s%s.%sEs wurde aber nicht gefunden.
 
 #: lazarusidestrconsts:listheresourceclassdescendsfromprobablythisisatypofor
 msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
-msgstr "Die Ressourcenklasse %s%s%s ist von %s%s%s abgeleitet. Vielleicht ist das ein Schreibfehler anstelle von TForm."
+msgstr "Die Ressourcenklasse %s%s%s ist von %s%s%s abgeleitet. Vielleicht ist das ein Schreibfehler anstelle von TForm?"
 
 #: lazarusidestrconsts:lismakeresstrchooseanothername
 msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
@@ -8974,7 +8974,7 @@ msgstr "Das Verzeichnis enthält andere Dateien mit demselben Namen,%sdie sich n
 
 #: lazarusidestrconsts:lisccoseveralcompilers
 msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
-msgstr "Es sind mehrere Free-Pascal-Compiler im Suchpfad. %s%s%sWurde vielleicht vergessen, einen alten Compiler zu löschen?"
+msgstr "Es sind mehrere Free-Pascal-Compiler im Suchpfad. %s%s%sWurde vielleicht vergessen, einen älteren Compiler zu löschen?"
 
 #: lazarusidestrconsts:lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
@@ -9078,19 +9078,19 @@ msgstr "Das ist das Standard-Package nur für Komponenten ohne Package. Solche K
 
 #: lazarusidestrconsts:lisbottomsiblingcomboboxhint
 msgid "This is the sibling control to which the bottom side is anchored. Leave empty for parent."
-msgstr "Das ist das Geschwistercontrol an das die Unterseite verankert wurde. Für den Parent leerlassen."
+msgstr "Das ist das Geschwistercontrol, an das die Unterseite verankert wurde. Für den Parent leerlassen."
 
 #: lazarusidestrconsts:lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for parent."
-msgstr "Das ist das Geschwistercontrol an das die linke Seite verankert wurde. Für den Parent leerlassen."
+msgstr "Das ist das Geschwistercontro,l an das die linke Seite verankert wurde. Für den Parent leerlassen."
 
 #: lazarusidestrconsts:lisrightsiblingcomboboxhint
 msgid "This is the sibling control to which the right side is anchored. Leave empty for parent."
-msgstr "Das ist das Geschwistercontrol an das die rechte Seite verankert wurde. Für den Parent leerlassen."
+msgstr "Das ist das Geschwistercontrol, an das die rechte Seite verankert wurde. Für den Parent leerlassen."
 
 #: lazarusidestrconsts:listopsiblingcomboboxhint
 msgid "This is the sibling control to which the top side is anchored. Leave empty for parent."
-msgstr "Das ist das Geschwistercontrol an das die Oberseite verankert wurde. Für den Parent leerlassen."
+msgstr "Das ist das Geschwistercontrol, an das die Oberseite verankert wurde. Für den Parent leerlassen."
 
 #: lazarusidestrconsts:listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -9098,7 +9098,7 @@ msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in K
 
 #: lazarusidestrconsts:lissamthismethodcannotbeoverriddenbecauseitisdefinedinth
 msgid "This method can not be overridden because it is defined in the current class"
-msgstr "Diese Methode kann nicht überschriebenw werden, da sie in der aktuellen Klasse definiert ist."
+msgstr "Diese Methode kann nicht überschrieben werden, da sie in der aktuellen Klasse definiert ist."
 
 #: lazarusidestrconsts:lispkgsysthispackageisinstalledbutthelpkfilewasnotfound
 msgid "This package is installed, but the lpk file was not found. All its components are deactivated. Please fix this."
@@ -9106,7 +9106,7 @@ msgstr "Dieses Package ist installiert, aber die lpk-Datei wurde nicht gefunden.
 
 #: lazarusidestrconsts:lispckoptsthispackageprovidesthesameasthefollowingpackages
 msgid "This package provides the same as the following packages:"
-msgstr "Dieses Package stellt dasselbe wie die folgenden Packages bereit:"
+msgstr "Dieses Package stellt das gleiche wie die folgenden Packages bereit:"
 
 #: lazarusidestrconsts:lispkgmangthissourceisonlyusedtocompileandinstallthepackage
 msgid "This source is only used to compile and install the package."
@@ -9426,15 +9426,15 @@ msgstr "In dieser oder einer anderen eingebundenen Unit befindet sich kein Resou
 
 #: lazarusidestrconsts:lisunabletofindavalidclassnamein
 msgid "Unable to find a valid classname in %s%s%s"
-msgstr "In %s%s%s ist kein gültiger Klassenname zu finden."
+msgstr "In %s%s%s ist kein gültiger Klassenname enthalten."
 
 #: lazarusidestrconsts:lisunabletofindfile
 msgid "Unable to find file %s%s%s."
 msgstr "Datei %s%s%s kann nicht gefunden werden."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
-msgstr ""
+msgid "Unable to find file %s%s%s.%sIf it belongs to Your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
+msgstr "Kann die Datei %s%s%s nicht finden.%sFalls sie zum Projekt gehört, prüfen Sie den Suchpfad in der Startseite von%sProjekt->Compilereinstellungen ... unter Andere Unitdateien. Wenn die Datei zu einem Package gehört, müssen dessen Einstellungen geprüft werden. Falls die Datei zu Lazarus gehört, muß sichergestellt sein, daß die IDE sauber kompiliert ist. Gehört die Datei zu FPC muß die fpc.cfg überprüft werden. Bei Unklarheiten hilft der Button Test unter Projekt -> Compilereinstellungen ..."
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -9478,7 +9478,7 @@ msgstr "Kann Packagei \"%s\" nicht laden %s%s"
 
 #: lazarusidestrconsts:lisunabletoloadthecomponentclassbecauseitdependsonits
 msgid "Unable to load the component class %s%s%s, because it depends on itself."
-msgstr "Kann die Komponentenklasse %s%s%s nicht laden, da sie von sich selbst abhängt."
+msgstr "Kann die Komponentenklasse %s%s%s nicht laden.Sie hängt von sich selbst ab."
 
 #: lazarusidestrconsts:lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
@@ -9590,7 +9590,7 @@ msgstr "Kann die CreateForm-Anweisung im Projektquelltext nicht aktualisieren"
 
 #: lazarusidestrconsts:lisunabletoupdatethebinaryresourcefilefromfilethetext
 msgid "Unable to update the binary resource file%s%s%sfrom file the text resource file%s%s%s%sProbably the text file is corrupt."
-msgstr "Kann die binäre Ressourcendatei%s%s%snicht aus der Textressource%s%s%s%saktualisieren.Wahrscheinlich ist die Textdatei defekt."
+msgstr "Kann die binäre Ressourcendatei%s%s%snicht aus der Textressource%s%s%s%saktualisieren. Wahrscheinlich ist die Textdatei defekt."
 
 #: lazarusidestrconsts:lisunabletowrite2
 msgid "Unable to write %s%s%s"
