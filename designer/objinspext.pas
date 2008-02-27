@@ -117,7 +117,7 @@ begin
   Add(TCustomImage,'Picture');
   Add(TCustomImage,'Align');
   Add(TCustomNotebook,'Align');
-  Add(TCustomScrollBox,'Align');
+  Add(TScrollBox,'Align');
   Add(TCustomGrid,'Align');
   Add(TCustomGrid,'Options');
   Add(TCustomGrid,'Columns');

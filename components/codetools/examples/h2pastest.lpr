@@ -1,4 +1,4 @@
-(*
+{
  ***************************************************************************
  *                                                                         *
  *   This source is free software; you can redistribute it and/or modify   *
@@ -25,7 +25,7 @@
     
   Usage:
     h2pastest [filename.h]
-*)
+}
 program H2PasTest;
 
 {$mode objfpc}{$H+}

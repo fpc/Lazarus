@@ -1719,7 +1719,7 @@ begin
         // compiler directive
         DirectiveName:=@Src[AtomStart+2];
         //DebugLn(['ParseCompilerDirectives ',GetIdentifier(DirectiveName)]);
-        FDefaultDirectiveFuncList.DoIt(DirectiveName);
+        FDefaultDirectiveFuncList.DoItCaseInsensitive(DirectiveName);
       end;
     end else begin
       break;

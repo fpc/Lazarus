@@ -68,11 +68,11 @@ type
     function KeyWordToHashIndex(Start: PChar; Len: integer): integer;
   public
     DefaultKeyWordFunction: TKeyWordFunction;
-    function DoIt(const AKeyWord: shortstring): boolean;
+    function DoItCaseSensitive(const AKeyWord: shortstring): boolean;
     function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
     function DoItCaseInsensitive(const ASource: string;
                            KeyWordStart, KeyWordLen: integer): boolean;
-    function DoIt(const ASource: string;
+    function DoItCaseSensitive(const ASource: string;
                            KeyWordStart, KeyWordLen: integer): boolean;
     function DoItUppercase(const AnUpperSource: string;
                            KeyWordStart, KeyWordLen: integer): boolean;
@@ -263,7 +263,7 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
-function TKeyWordFunctionList.DoIt(const AKeyWord: shortstring): boolean;
+function TKeyWordFunctionList.DoItCaseSensitive(const AKeyWord: shortstring): boolean;
 var
   i: integer;
   KeyWordFuncItem: PKeyWordFunctionListItem;
@@ -329,8 +329,8 @@ begin
   Result:=DefaultKeyWordFunction();
 end;
 
-function TKeyWordFunctionList.DoIt(const ASource: string; KeyWordStart,
-  KeyWordLen: integer): boolean;
+function TKeyWordFunctionList.DoItCaseSensitive(const ASource: string;
+  KeyWordStart, KeyWordLen: integer): boolean;
 // ! does not test if length(ASource) >= KeyWordStart+KeyWordLen -1
 var
   i, KeyPos, WordPos: integer;

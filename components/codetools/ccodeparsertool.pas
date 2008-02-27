@@ -50,6 +50,7 @@ const
   ccnRoot      =  1+ccnBase;
   ccnDirective =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
   ccnExtern    =  3+ccnBase;// e.g. extern "C" {}
+  ccnEnum      =  4+ccnBase;// e.g. enum {};
 
 type
   TCCodeParserTool = class;
@@ -72,12 +73,15 @@ type
     function OtherToken: boolean;
     function DirectiveToken: boolean;
     function ExternToken: boolean;
+    function EnumToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
     procedure CreateChildNode(Desc: TCCodeNodeDesc);
     procedure EndChildNode;
     procedure CloseNodes;
+    
+    procedure ReadConstant;
     
     procedure RaiseException(const AMessage: string);
     procedure RaiseExpectedButAtomFound(const AToken: string);
@@ -117,7 +121,9 @@ type
   
 function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
 
+
 implementation
+
 
 function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
 begin
@@ -168,6 +174,31 @@ begin
     RaiseExpectedButAtomFound('{');
 end;
 
+function TCCodeParserTool.EnumToken: boolean;
+begin
+  Result:=true;
+  CreateChildNode(ccnExtern);
+  ReadNextAtom;
+  if not AtomIs('{') then
+    RaiseExpectedButAtomFound('{');
+  // read enums. Examples
+  // name,
+  // name = constant,
+  ReadNextAtom;
+  repeat
+    if AtomIsIdentifier then begin
+      ReadNextAtom;
+      if AtomIs('=') then begin
+        ReadNextAtom;
+        ReadConstant;
+      end;
+    end else if AtomIs('}') then begin
+      break;
+    end else
+      RaiseExpectedButAtomFound('{');
+  until false;
+end;
+
 procedure TCCodeParserTool.InitKeyWordList;
 begin
   if FDefaultTokenList=nil then begin
@@ -175,6 +206,7 @@ begin
     with FDefaultTokenList do begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
+      Add('enum',{$ifdef FPC}@{$endif}EnumToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
@@ -227,6 +259,11 @@ begin
   end;
 end;
 
+procedure TCCodeParserTool.ReadConstant;
+begin
+
+end;
+
 procedure TCCodeParserTool.RaiseException(const AMessage: string);
 begin
   CloseNodes;
@@ -268,7 +305,7 @@ begin
   repeat
     ReadNextAtom;
     if SrcPos<=SrcLen then begin
-      FDefaultTokenList.DoIt(Src,AtomStart,SrcPos-AtomStart);
+      FDefaultTokenList.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart);
     end else begin
       break;
     end;

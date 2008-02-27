@@ -2340,9 +2340,9 @@ var
       end;
 
       // check for compiler built in operators, constants and types
-      if IsWordBuiltInFunc.DoIt(Identifier) then exit;
-      if WordIsBinaryOperator.DoIt(Identifier) then exit;
-      if WordIsPredefinedFPCIdentifier.DoIt(Identifier) then exit;
+      if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then exit;
+      if WordIsBinaryOperator.DoItCaseInsensitive(Identifier) then exit;
+      if WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(Identifier) then exit;
       Result:=false;
     end;
 

@@ -933,7 +933,7 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
-  else if IsWordBuiltInFunc.DoIt(Identifier) then
+  else if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then
     Result:=xtCompilerFunc
 
   // the delphi compiler special types
@@ -2324,7 +2324,8 @@ var
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
     if (Params.Identifier<>nil)
     and not (fdfExceptionOnPredefinedIdent in Params.Flags)
-    and WordIsPredefinedIdentifier.DoIt(Params.Identifier) then begin
+    and WordIsPredefinedIdentifier.DoItCaseInsensitive(Params.Identifier)
+    then begin
       Params.SetResult(nil,nil);
       exit;
     end;
