@@ -6139,6 +6139,8 @@ begin
     TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TFileNameEdit, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
     TControl, 'AnchorSideLeft', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TAnchorSide'),
@@ -6152,7 +6154,7 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
     TControl, 'ClientHeight', THiddenPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
-    TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
+    TForm, 'LCLVersion', THiddenPropertyEditor);
 end;
 
 procedure FinalPropEdits;

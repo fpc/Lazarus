@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, Math,
-  AvgLvlTree, Maps, LCLStrConsts, LCLType, LCLProc, LCLIntf,
+  AvgLvlTree, Maps, LCLVersion, LCLStrConsts, LCLType, LCLProc, LCLIntf,
   InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages, CustomTimer,
   ActnList, ClipBrd, CustApp, HelpIntfs, LCLClasses, Controls;
 
@@ -580,9 +580,13 @@ type
   TForm = class(TCustomForm)
   private
     FClientHandle: HWND;
+    FLCLVersion: string;
+    function LCLVersionIsStored: boolean;
   protected
     procedure CreateWnd; override;
+    procedure Loaded; override;
   public
+    constructor Create(TheOwner: TComponent); override;
     property ClientHandle: HWND read FClientHandle;
     property DockManager;
   published
@@ -651,6 +655,7 @@ type
     property ShowHint;
     property ShowInTaskBar;
     property UseDockManager;
+    property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
     property Visible;
     property WindowState;
   end;

@@ -2085,11 +2085,28 @@ end;
 
 { TForm }
 
+function TForm.LCLVersionIsStored: boolean;
+begin
+  Result:=Parent=nil;
+end;
+
 procedure TForm.CreateWnd;
 begin
   if (Application<>nil) then
     Application.UpdateMainForm(TForm(Self));
   inherited CreateWnd;
+end;
+
+procedure TForm.Loaded;
+begin
+  inherited Loaded;
+  FLCLVersion:=lcl_version;
+end;
+
+constructor TForm.Create(TheOwner: TComponent);
+begin
+  FLCLVersion:=lcl_version;
+  inherited Create(TheOwner);
 end;
 
 //==============================================================================
