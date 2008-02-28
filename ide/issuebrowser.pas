@@ -234,7 +234,7 @@ begin
       begin
         with IssueTreeView.Items.AddChild(nil, Issues[I]) do
         begin
-          ID := Integer(Issues.Objects[I]);
+          ID := PtrInt(Issues.Objects[I]);
           
           ImageIndex := IDEImages.LoadImage(16, WidgetSetImageNames[FIssueList[ID].WidgetSet]);
           StateIndex := ImageIndex;
