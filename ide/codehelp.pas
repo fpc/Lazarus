@@ -512,7 +512,7 @@ begin
             or (CompareIdentifiers(@Result[StartPos+1],'p')=0) then
         begin
           // add new line
-          if not (Result[EndPos] in [#10,#13]) then
+          if (EndPos <= Length(Result)) and not (Result[EndPos] in [#10,#13]) then
             Result:=copy(Result,1,EndPos-1)+LineEnding+copy(Result,EndPos,length(Result));
         end;
         StartPos:=EndPos;
