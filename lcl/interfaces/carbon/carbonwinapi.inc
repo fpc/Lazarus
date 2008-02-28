@@ -1315,8 +1315,11 @@ end;
   Retrieves the status of the specified virtual key
  ------------------------------------------------------------------------------}
 function TCarbonWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
+const
+  StateDown    = SmallInt($FF80);
+  StateToggled = SmallInt($0001);
 begin
-  Result:=0;
+  Result := 0;
 
   {$IFDEF VerboseKeyboard}
     DebugLn('TCarbonWidgetSet.GetKeyState ' + DbgSVKCode(nVirtKey));
@@ -1326,20 +1329,24 @@ begin
   VK_MENU:
     if (GetCurrentEventKeyModifiers and optionKey) > 0 then
       // the ssAlt/VK_MENU is mapped to optionKey under MacOS
-      Result:=-1;
+      Result := StateDown;
   VK_SHIFT:
     if (GetCurrentEventKeyModifiers and shiftKey) > 0 then
-      Result:=-1;
+      Result := StateDown;
   VK_CONTROL:
     if (GetCurrentEventKeyModifiers and cmdKey) > 0 then
       // the ssCtrl/VK_CONTROL is mapped to cmdKey under MacOS
-      Result:=-1;
+      Result := StateDown;
   VK_LBUTTON:
-    if (GetCurrentEventButtonState and 1) > 0 then Result := -1;
+    if (GetCurrentEventButtonState and $01) > 0 then Result := StateDown;
   VK_RBUTTON:
-    if (GetCurrentEventButtonState and 2) > 0 then Result := -1;
+    if (GetCurrentEventButtonState and $02) > 0 then Result := StateDown;
   VK_MBUTTON:
-    if (GetCurrentEventButtonState and 4) > 0 then Result := -1;
+    if (GetCurrentEventButtonState and $04) > 0 then Result := StateDown;
+  VK_XBUTTON1:
+    if (GetCurrentEventButtonState and $08) > 0 then Result := StateDown;
+  VK_XBUTTON2:
+    if (GetCurrentEventButtonState and $10) > 0 then Result := StateDown;
   else
     DebugLn('TCarbonWidgetSet.GetKeyState TODO ', DbgSVKCode(Word(nVirtkey)));
   end;

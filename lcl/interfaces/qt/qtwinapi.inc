@@ -2077,7 +2077,7 @@ end;
 
 function TQtWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
-  StateDown    = SmallInt($FF80); // rather strange interpretation of "high-order bit is 1", but windows returns it
+  StateDown    = SmallInt($FF80);
   StateToggled = SmallInt($0001);
 begin
   Result := 0;
