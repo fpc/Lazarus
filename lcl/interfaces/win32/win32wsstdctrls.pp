@@ -360,7 +360,7 @@ begin
   // it will get one from the edit control
 
   Info.cbSize := SizeOf(Info);
-  GetComboBoxInfo(Window, @Info);
+  Win32Extra.GetComboBoxInfo(Window, @Info);
   if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
      ((HWND(WParam) = Info.hwndItem) or (HWND(WParam) = Info.hwndList)) then
   begin
@@ -754,7 +754,7 @@ begin
     Flags := Flags or CalcComboBoxWinFlags(TCustomComboBox(AWinControl));
     if TComboBox(AWinControl).Sorted Then
       Flags:= Flags or CBS_SORT;
-    pClassName := 'COMBOBOX';
+    pClassName := ComboboxClsName;
     Flags := Flags or (WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS);
     SubClassWndProc := @ComboBoxWindowProc;
   end;
@@ -769,8 +769,12 @@ begin
   // get edit window within
   with Params do
   begin
-    Buddy := Info.hwndItem;
-    // If the style is CBS_DROPDOWNLIST, GetTopWindow returns null,
+    // win32 bug? sometimes, if combo should not have edit (apropriate style), hwndItem = hwndCombo
+    if Info.hwndItem <> Info.hwndCombo then
+      Buddy := Info.hwndItem
+    else
+      Buddy := 0;
+    // If the style is CBS_DROPDOWNLIST, Info.hwndItem is null,
     // because the combobox has no edit in that case.
     if Buddy <> HWND(nil) then
     begin
