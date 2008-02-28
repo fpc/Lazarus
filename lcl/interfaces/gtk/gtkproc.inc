@@ -5394,17 +5394,17 @@ begin
   AccelKey:=GetAccelKey(Widget);
   if (AccelKey=nil) or (AccelKey^.Realized) then exit;
   
-  if AccelKey^.Key<0 then begin
+  if AccelKey^.Key>0 then begin
     AccelGroup:=GetAccelGroupForComponent(Component,true);
     if AccelGroup<>nil then begin
-      { $IFDEF VerboseAccelerator}
+      {$IFDEF VerboseAccelerator}
       DebugLn('RealizeAccelerator Add Accelerator ',
         Component.Name,':',Component.ClassName,
         ' Widget=',DbgS(Widget),
         ' Signal=',AccelKey^.Signal,
         ' Key=',dbgs(AccelKey^.Key),' Mods=',dbgs(AccelKey^.Mods),
         '');
-      { $ENDIF}
+      {$ENDIF}
       gtk_widget_add_accelerator(Widget, PChar(AccelKey^.Signal),
         AccelGroup, AccelKey^.Key, AccelKey^.Mods, GTK_ACCEL_VISIBLE);
       AccelKey^.Realized:=true;
