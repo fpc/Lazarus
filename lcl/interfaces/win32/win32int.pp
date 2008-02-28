@@ -223,7 +223,7 @@ var
 
 
 const
-  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
+  BOOL_RESULT: array[Boolean] of String = ('False', 'True');
   ClsName: array[0..6] of char = 'Window'#0;
   EditClsName: array[0..4] of char = 'Edit'#0;
   ButtonClsName: array[0..6] of char = 'Button'#0;

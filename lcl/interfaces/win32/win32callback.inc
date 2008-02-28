@@ -57,6 +57,14 @@ begin
   Assert(False, 'Trace:PropEnumProc - Exit');
 end;
 
+function WndClassName(Wnd: HWND): String; inline;
+var
+  winClassName: array[0..19] of char;
+begin
+  GetClassName(Wnd, @winClassName, 20);
+  Result := winClassName;
+end;
+
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
  Params: Window - The window that receives a message
@@ -70,6 +78,18 @@ end;
  ------------------------------------------------------------------------------}
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
+  
+  function IsComboboxAndHasEdit(Window: HWnd): Boolean;
+  var
+    Info: TComboboxInfo;
+  begin
+    Result := WndClassName(Window) = ComboboxClsName;
+    if not Result then
+      Exit;
+    Info.cbSize := SizeOf(Info);
+    Win32Extra.GetComboBoxInfo(Window, @Info);
+    Result := (Info.hwndItem <> 0) and GetWindowInfo(Info.hwndItem)^.isComboEdit;
+  end;
 var
   PrevWndProc: Windows.WNDPROC;
 {$ifdef MSG_DEBUG}
@@ -94,8 +114,10 @@ begin
     // to list of strings, and if appears in there, will set the text, and select it
     // WM_GETTEXTLENGTH, WM_GETTEXT, WM_SETTEXT, EM_SETSEL
     // combobox sends WM_SIZE to itself indirectly, check recursion
-    setComboWindow := (Msg = WM_SIZE) and (ComboBoxHandleSizeWindow = 0)
-        and GetWindowInfo(Windows.GetTopWindow(Window))^.isComboEdit;
+    setComboWindow :=
+        (Msg = WM_SIZE) and
+        (ComboBoxHandleSizeWindow = 0) and
+        IsComboboxAndHasEdit(Window);
     if setComboWindow then
       ComboBoxHandleSizeWindow := Window;
     Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
@@ -219,7 +241,6 @@ var
   OverlayWindow: HWND;
   TargetWindow: HWND;
   eraseBkgndCommand: TEraseBkgndCommand;
-  winClassName: array[0..19] of char;
   WindowInfo: PWindowInfo;
   Flags: dword;
   WindowDC: HDC;
@@ -325,8 +346,7 @@ var
 
   function GetIsNativeControl(AWindow: HWND): Boolean;
   begin
-    GetClassName(AWindow, winClassName, 20);
-    Result := not CompareMem(@winClassName, @ClsName, High(ClsName) + 1);
+    Result := WndClassName(AWindow) <> ClsName;
   end;
   
   procedure SendPaintMessage(ControlDC: HDC);
@@ -360,9 +380,7 @@ var
     end;
 
     // create a paint message
-    GetClassName(Window, winClassName, 20);
-    isNotebook := ThemeServices.ThemesEnabled and
-      CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
+    isNotebook := ThemeServices.ThemesEnabled and (WndClassName(Window) = TabControlClsName);
     isNativeControl := GetIsNativeControl(Window);
     ParentPaintWindow := 0;
     needParentPaint := GetNeedParentPaint(WindowInfo, lWinControl);
@@ -643,9 +661,12 @@ var
   procedure DisposeComboEditWindowInfo(ComboBox: TCustomComboBox);
   var
     Buddy: HWND;
+    Info: TComboboxInfo;
   begin
-    Buddy := Windows.GetTopWindow(ComboBox.Handle);
-    if Buddy<>HWND(nil) then
+    Info.cbSize := SizeOf(Info);
+    Win32Extra.GetComboBoxInfo(Combobox.Handle, @Info);
+    Buddy := Info.hwndItem;
+    if Buddy <> HWND(nil) then
       DisposeWindowInfo(Buddy);
   end;
 
@@ -1118,7 +1139,7 @@ begin
     begin
       // if focus jumps inside combo then no need to notify LCL
       Info.cbSize := SizeOf(Info);
-      GetComboBoxInfo(lWinControl.Handle, @Info);
+      Win32Extra.GetComboBoxInfo(lWinControl.Handle, @Info);
       if (HWND(WParam) = Info.hwndList) or
          (HWND(WParam) = Info.hwndItem) or
          (HWND(WParam) = Info.hwndCombo) then
@@ -2432,8 +2453,7 @@ begin
         if (PLMsg^.Result = 0) and (Msg = WM_KEYDOWN) and (WParam = Ord('A'))
           and (GetKeyState(VK_CONTROL) < 0) and (GetKeyState(VK_MENU) >= 0) then
         begin
-          GetClassName(Window, winClassName, 20);
-          if CompareMem(@winClassName, @EditClsName, High(EditClsName)+1) then
+          if WndClassName(Window) = EditClsName then
           begin
             // select all
             Windows.SendMessage(Window, EM_SETSEL, 0, -1);
