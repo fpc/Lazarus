@@ -5191,16 +5191,29 @@ const
   StateToggled = 1;
   KEYSTATE: array[Boolean] of Smallint = (0, StateDown);
   TOGGLESTATE: array[Boolean] of Smallint = (0, StateToggled);
-{$IFDEF GTK2}
+  GDK_BUTTON_MASKS: array[VK_LBUTTON..VK_XBUTTON2] of guint32 =
+  (
+{ VK_LBUTTON  } GDK_BUTTON1_MASK,
+{ VK_RBUTTON  } GDK_BUTTON3_MASK,
+{ VK_CANCEL   } 0,
+{ VK_MBUTTON  } GDK_BUTTON2_MASK,
+{ VK_XBUTTON1 } GDK_BUTTON4_MASK,
+{ VK_XBUTTON2 } GDK_BUTTON5_MASK
+  );
 var
-  GtkModMask: guint32;
+  GdkModMask: TGdkModifierType;
+  x, y: gint;
+{$IFDEF GTK1}
+  List: PGList;
 {$ENDIF}
 begin
   case nVirtKey of
+    // remap
     VK_LSHIFT:   nVirtKey := VK_SHIFT;
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
+  
   {$IFDEF Use_KeyStateList}
   Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey))) >=0];
   {$ELSE}
@@ -5223,16 +5236,34 @@ begin
                                   PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   {$IFDEF GTK2}
   // If there are tons of new keyboard errors this is probably the cause
-  GtkModMask := gtk_accelerator_get_default_mod_mask;
+  GdkModMask := gtk_accelerator_get_default_mod_mask;
   if (Result and StateDown) <> 0 then
   begin
-    if (nVirtKey = VK_CONTROL) and (GtkModMask and GDK_CONTROL_MASK = 0) then
+    if (nVirtKey = VK_CONTROL) and (GdkModMask and GDK_CONTROL_MASK = 0) then
       Result := Result and not StateDown;
     //if (nVirtKey = VK_SHIFT) and (GtkModMask and GDK_SHIFT_MASK = 0 then
     //  Result := Result and not StateDown;
   end;
   {$ENDIF}
   {$ENDIF}
+
+  // Mouse buttons. Toggle state is not tracked
+  if nVirtKey in [VK_LBUTTON, VK_RBUTTON, VK_MBUTTON..VK_XBUTTON2] then
+  begin
+    {$ifdef gtk1}
+    List := gdk_window_get_toplevels;
+    if g_list_length(List) > 0 then
+      gdk_window_get_pointer(g_list_nth_data(List, 0), @x, @y, @GdkModMask)
+    else
+      GdkModMask := 0;
+    g_list_free(List);
+    {$else}
+    gdk_display_get_pointer(gdk_display_get_default, nil,
+      @x, @y, @GdkModMask);
+    {$endif}
+    Result := Result or KEYSTATE[GdkModMask and GDK_BUTTON_MASKS[nVirtKey] <> 0]
+  end;
+
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
 

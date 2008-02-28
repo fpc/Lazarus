@@ -2100,6 +2100,12 @@ begin
     VK_MBUTTON:
       if (QApplication_mouseButtons and QtMidButton) > 0 then
         Result := Result or StateDown;
+    VK_XBUTTON1:
+      if (QApplication_mouseButtons and QtXButton1) > 0 then
+        Result := Result or StateDown;
+    VK_XBUTTON2:
+      if (QApplication_mouseButtons and QtXButton2) > 0 then
+        Result := Result or StateDown;
     VK_MENU:
       if (QApplication_keyboardModifiers and QtMetaModifier) > 0 then
         Result := Result or StateDown;

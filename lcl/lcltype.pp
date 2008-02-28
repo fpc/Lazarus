@@ -341,6 +341,8 @@ const
   VK_RBUTTON    = 2;
   VK_CANCEL     = 3;
   VK_MBUTTON    = 4;
+  VK_XBUTTON1   = 5;
+  VK_XBUTTON2   = 6;
   VK_BACK       = 8;
   VK_TAB        = 9;
   VK_CLEAR      = 12;
