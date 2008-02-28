@@ -469,7 +469,7 @@ begin
     while (StartPos<=length(Result))
     and (Result[StartPos] in [' ',#9,#10,#13]) do
       inc(StartPos);
-    if (Result<>'') and (Result[StartPos]='<') then begin
+    if (StartPos<=length(Result)) and (Result[StartPos]='<') then begin
       inc(StartPos);
       FindEndOfTag(Result,StartPos);
       while (StartPos<=length(Result))
