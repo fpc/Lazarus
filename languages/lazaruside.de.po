@@ -1804,10 +1804,6 @@ msgstr "Der Komponentenname %s%s%s ist als Bezeichner ungültig"
 msgid "Components"
 msgstr "Komponenten"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Komponenten-Menübefehle"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Compilerschalter"
@@ -3340,6 +3336,10 @@ msgstr "Filtern, wenn ein beliebiger Bereich der Methode paßt"
 msgid "Filter by matching with start of method"
 msgstr "Filtern, wenn der Methodenstart paßt"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Endgültig"
@@ -4683,6 +4683,18 @@ msgstr "Umgekehrte Zuweisung"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregulär"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6199,6 +6211,10 @@ msgstr "Package wird benötigt"
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
 msgstr "Package-Links ..."
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -10103,6 +10119,10 @@ msgstr "Debuggerausgabe anzeigen"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Formulare anzeigen"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

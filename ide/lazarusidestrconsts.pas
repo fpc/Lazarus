@@ -1985,7 +1985,7 @@ resourcestring
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
   lisKMViewProjectOptions = 'View project options';
-  srkmCatComponentsMenu = 'Components menu commands';
+  srkmCatPackageMenu = 'Package menu commands';
   srkmCatToolMenu       = 'Tools menu commands';
   lisKMExternalToolsSettings = 'External Tools settings';
   srkmCatEnvMenu        = 'Environment menu commands';

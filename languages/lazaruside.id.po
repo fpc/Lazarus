@@ -1801,10 +1801,6 @@ msgstr "Nama komponen %s%s%s bukan pengenal yang benar"
 msgid "Components"
 msgstr "Komponen"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Perintah menu Komponen"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Definisi kondisional"
@@ -3337,6 +3333,10 @@ msgstr "Filter menyamai setiap bagian dari method"
 msgid "Filter by matching with start of method"
 msgstr "Filter menyamai setiap awal dari method"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4680,6 +4680,18 @@ msgstr "Balikkan penempatan"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregular "
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6195,6 +6207,10 @@ msgstr "Paket dibutuhkan"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10100,6 +10116,10 @@ msgstr "Lihat output debugger"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Lihat form"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

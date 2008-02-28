@@ -1800,10 +1800,6 @@ msgstr "コンポーネント名 %s%s%s は無効な識別子です"
 msgid "Components"
 msgstr "コンポーネント"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "コンポーネントメニューコマンド"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3336,6 +3332,10 @@ msgstr "メソッドの任意の位置に適合するフィルタ"
 msgid "Filter by matching with start of method"
 msgstr "メソッドの冒頭に適合するフィルタ"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "最終"
@@ -4679,6 +4679,18 @@ msgstr "代入を反転"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "不規則"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6194,6 +6206,10 @@ msgstr "パッケージが要求されています"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10099,6 +10115,10 @@ msgstr "デバッガ出力を表示"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "フォームを表示"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

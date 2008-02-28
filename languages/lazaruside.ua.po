@@ -1796,10 +1796,6 @@ msgstr "Назва компонента %s%s%s є некоректним іде�
 msgid "Components"
 msgstr "Коментарі"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Команди компонентів меню"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3332,6 +3328,10 @@ msgstr "Фільтр за збіжністю будь-якої частини м
 msgid "Filter by matching with start of method"
 msgstr "Фільтр за збіжністю початку метода"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Остаточний"
@@ -4675,6 +4675,18 @@ msgstr "Інвертувати присвоєння"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Нерегулярний "
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6190,6 +6202,10 @@ msgstr "Потрібен пакунок"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10095,6 +10111,10 @@ msgstr "Переглядання виводу налагоджувача"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Показувати форми"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

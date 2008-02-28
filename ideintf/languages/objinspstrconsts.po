@@ -96,6 +96,18 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
+#: objinspstrconsts:oisissues
+msgid "Issues"
+msgstr ""
+
+#: objinspstrconsts:oiswidgetsetissues
+msgid "General Widget Set issues: "
+msgstr ""
+
+#: objinspstrconsts:oiscomponentissues
+msgid "Component issues: "
+msgstr ""
+
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr ""
@@ -106,6 +118,10 @@ msgstr ""
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
+msgstr ""
+
+#: objinspstrconsts:oisviewissues
+msgid "View issues"
 msgstr ""
 
 #: objinspstrconsts:oisremovefromfavorites

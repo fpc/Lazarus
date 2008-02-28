@@ -2495,7 +2495,7 @@ begin
   AddDefault(C, 'Add watch', lisKMAddWatch, ecAddWatch);
 
   // components menu
-  C:=Categories[AddCategory('Components',srkmCatComponentsMenu,nil)];
+  C:=Categories[AddCategory('Components',srkmCatPackageMenu,nil)];
   AddDefault(C, 'Open package', lisCompPalOpenPackage, ecOpenPackage);
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit,

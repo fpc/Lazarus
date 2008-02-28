@@ -1806,10 +1806,6 @@ msgstr "Komponento vardas %s%s%s nėra identifikatorius"
 msgid "Components"
 msgstr "Komponentės"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Maniu \"Komponentės\" komandos"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Sąlyginės apibrėžtys"
@@ -3342,6 +3338,10 @@ msgstr "Filtruoti pagal bet kurią metodo dalį"
 msgid "Filter by matching with start of method"
 msgstr "Filtruoti pagal metodo pradžią"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4685,6 +4685,18 @@ msgstr "Sukeisti priskyrimą"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Nereguliarus"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6203,6 +6215,10 @@ msgstr "Paketas reikalingas"
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
 msgstr "Paketo saitai..."
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -10121,6 +10137,10 @@ msgstr "Rodyti derintuvės išvestį"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Rodyti formas"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

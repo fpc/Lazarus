@@ -1801,10 +1801,6 @@ msgstr "Nazwa komponentu %s%s%s nie jest prawid³owym identyfikatorem"
 msgid "Components"
 msgstr ""
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Menu komponenty"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3337,6 +3333,10 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Ostateczne"
@@ -4680,6 +4680,18 @@ msgstr ""
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Nieregularny "
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6195,6 +6207,10 @@ msgstr "Pakiet jest wymagany"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10099,6 +10115,10 @@ msgstr "Poka¿ wyjœcie debuggera"
 
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
 msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory

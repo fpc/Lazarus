@@ -1801,10 +1801,6 @@ msgstr "El nom de component %s%s%s no és un identificador vàlid"
 msgid "Components"
 msgstr "Components"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Ordres del menú de components"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3337,6 +3333,10 @@ msgstr "Flitra fent coincidir qualsevol part del mètode"
 msgid "Filter by matching with start of method"
 msgstr "Filtra fent coincidir el principi del mètode"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4680,6 +4680,18 @@ msgstr "Inverteix l'assignació"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregular"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6195,6 +6207,10 @@ msgstr "Es requereix el paquet"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10100,6 +10116,10 @@ msgstr "Mostra la sortida del depurador"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Mostra les formes"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

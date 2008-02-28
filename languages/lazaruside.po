@@ -700,6 +700,10 @@ msgstr ""
 msgid "Code Browser"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcomponents
 msgid "&Components"
 msgstr ""
@@ -2466,6 +2470,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -5780,6 +5792,10 @@ msgstr ""
 msgid "View code browser"
 msgstr ""
 
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
+
 #: lazarusidestrconsts:srkmectogglecomppalette
 msgid "View component palette"
 msgstr ""
@@ -6316,8 +6332,8 @@ msgstr ""
 msgid "View project options"
 msgstr ""
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcattoolmenu
@@ -7474,6 +7490,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeinclude
 msgid "Include file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypetext

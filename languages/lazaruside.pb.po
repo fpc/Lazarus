@@ -1793,10 +1793,6 @@ msgstr "Nome de componente %s%s%s não é um identificador válido"
 msgid "Components"
 msgstr "Componentes"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Comandos do menu Componentes"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3329,6 +3325,10 @@ msgstr "Filtrar comparando com qualquer parte do metodo"
 msgid "Filter by matching with start of method"
 msgstr "Filtrar comparando com inicio do metodo"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4672,6 +4672,18 @@ msgstr "Inverter Atribuição"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregular"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6187,6 +6199,10 @@ msgstr "Pacote é requerido"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10092,6 +10108,10 @@ msgstr "Mostrar saída do depurador"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Mostrar Formulários"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

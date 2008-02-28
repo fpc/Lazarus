@@ -265,6 +265,10 @@ msgstr ""
 msgid "Column Editor"
 msgstr ""
 
+#: objinspstrconsts:oiscomponentissues
+msgid "Component issues: "
+msgstr ""
+
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr ""
@@ -469,6 +473,10 @@ msgstr ""
 msgid "Font Select"
 msgstr ""
 
+#: objinspstrconsts:oiswidgetsetissues
+msgid "General Widget Set issues: "
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
 msgstr ""
@@ -527,6 +535,10 @@ msgstr ""
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
+msgstr ""
+
+#: objinspstrconsts:oisissues
+msgid "Issues"
 msgstr ""
 
 #: objinspstrconsts:fesnofields
@@ -915,6 +927,10 @@ msgstr "Wartoœæ:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisviewissues
+msgid "View issues"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

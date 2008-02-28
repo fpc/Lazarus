@@ -1804,10 +1804,6 @@ msgstr "组件名 %s%s%s 无效"
 msgid "Components"
 msgstr "组件"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "组件菜单命令"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -3340,6 +3336,10 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4683,6 +4683,18 @@ msgstr "交换赋值"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "不规则"
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr ""
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6198,6 +6210,10 @@ msgstr "需要包"
 
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
@@ -10103,6 +10119,10 @@ msgstr "查看调试器输出"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "查看窗体"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr ""
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-24 20:54+0300\n"
+"PO-Revision-Date: 2008-02-28 02:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -259,7 +259,7 @@ msgstr "&Открыть файл у курсора"
 
 #: lazarusidestrconsts:lismenupackage
 msgid "&Package"
-msgstr ""
+msgstr "П&акет"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
@@ -1801,10 +1801,6 @@ msgstr "Имя компонента %s%s%s - некорректный идент
 msgid "Components"
 msgstr "Компоненты"
 
-#: lazarusidestrconsts:srkmcatcomponentsmenu
-msgid "Components menu commands"
-msgstr "Команды меню Компоненты"
-
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr "Условные определения"
@@ -3337,6 +3333,10 @@ msgstr "Фильтровать по любой части метода"
 msgid "Filter by matching with start of method"
 msgstr "Фильтровать по началу метода"
 
+#: lazarusidestrconsts:lisfilterissues
+msgid "Filter issues"
+msgstr "Фильтр нюансов"
+
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4680,6 +4680,18 @@ msgstr "Инвертировать присвоение"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Нерегулярный "
+
+#: lazarusidestrconsts:lismenuviewissuebrowser
+msgid "Issue Browser"
+msgstr "Браузер нюансов"
+
+#: lazarusidestrconsts:lisissuebrowser
+msgid "Issue browser"
+msgstr "Браузер нюансов"
+
+#: lazarusidestrconsts:lispkgfiletypeissues
+msgid "Issues xml file"
+msgstr "Файл XML нюансов"
 
 #: lazarusidestrconsts:rslanguageitalian
 msgid "Italian"
@@ -6179,7 +6191,7 @@ msgstr "Файл пакета не сохранён"
 
 #: lazarusidestrconsts:liskmpackagegraph
 msgid "Package graph"
-msgstr "Граф пакетов"
+msgstr "Диаграмма пакетов"
 
 #: lazarusidestrconsts:lispkgmangpackageisnodesigntimepackage
 msgid "Package is no designtime package"
@@ -6196,6 +6208,10 @@ msgstr "Требуется пакет"
 #: lazarusidestrconsts:lismenupackagelinks
 msgid "Package links ..."
 msgstr "Ссылки на пакеты ..."
+
+#: lazarusidestrconsts:srkmcatpackagemenu
+msgid "Package menu commands"
+msgstr "Команды меню Пакет"
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -6355,7 +6371,7 @@ msgstr "Проверьте каталог исходного кода FreePascal
 
 #: lazarusidestrconsts:lismakeresstrpleasechoosearesourcestring
 msgid "Please choose a resourcestring section from the list."
-msgstr ""
+msgstr "Выберите секцию resourcestring из списка."
 
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
@@ -9431,7 +9447,7 @@ msgstr "Невозможно найти файл %s%s%s."
 
 #: lazarusidestrconsts:lisunabletofindfilechecksearchpathinprojectcompileroption
 msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject->Compiler Options...->Search Paths->Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions ... -> Test"
-msgstr ""
+msgstr "Невозможно найти файл %s%s%s.%sЕсли он принадлежит вашему проекту, проверьте пути поиска в%sПроект -> Параметры компилятора -> Пути -> Другие модули. Если он принадлежит пакету, проверьте соответствующие параметры компиляции пакета. Если этот файл принадлежит Lazarus, удостоверьтесь, что компилируете его после очистки. Если файл принадлежит FPC, проверьте fpc.cfg. Если не уверены, вызовите Проект -> Параметры компилятора -> Тест"
 
 #: lazarusidestrconsts:lisunabletofindmethodpleasefixtheerrorshowninthemessage
 msgid "Unable to find method. Please fix the error shown in the message window."
@@ -10100,6 +10116,10 @@ msgstr "Просмотр вывода отладчика"
 #: lazarusidestrconsts:srkmecviewforms
 msgid "View forms"
 msgstr "Показать формы"
+
+#: lazarusidestrconsts:srkmectoggleissuebrowser
+msgid "View issue browser"
+msgstr "Показать браузер нюансов"
 
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
