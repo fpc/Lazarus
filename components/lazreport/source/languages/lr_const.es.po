@@ -5,8 +5,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-13 00:02-0600\n"
-"Last-Translator: Jesus Reyes A. <jesusrmx@yahoo.com.mx>\n"
+"PO-Revision-Date: 2008-02-26\n"
+"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
 "Language-Team: \n"
 
 #: lr_const:spaper20
@@ -27,7 +27,7 @@ msgstr "Sobre #14, 5 x 11 1/2\""
 
 #: lr_const:sdesoptionsform18pix
 msgid "&18 pixels (5mm)"
-msgstr ""
+msgstr "&18 puntos (5mm)"
 
 #: lr_const:sfindtextfirstpg
 msgid "&1st page"
@@ -35,11 +35,11 @@ msgstr "&1ra página"
 
 #: lr_const:sdesoptionsform4pix
 msgid "&4 pixels"
-msgstr ""
+msgstr "&4 puntos"
 
 #: lr_const:sdesoptionsform8pix
 msgid "&8 pixels"
-msgstr ""
+msgstr "&8 puntos"
 
 #: lr_const:sfrdesignerform_about
 msgid "&About..."
@@ -415,7 +415,7 @@ msgstr ""
 
 #: lr_const:sformat34
 msgid "15 november 1998"
-msgstr ""
+msgstr "15 noviembre 1998"
 
 #: lr_const:spaper46
 msgid "15 x 11\""
@@ -651,7 +651,7 @@ msgstr "Negrita"
 
 #: lr_const:scateg5
 msgid "Boolean"
-msgstr ""
+msgstr "Booleano"
 
 #: lr_const:sfrdesignerformbottomalign
 msgid "Bottom align"
@@ -675,7 +675,7 @@ msgstr "Traer al frente"
 
 #: lr_const:sdocbuild
 msgid "Build"
-msgstr ""
+msgstr "Contrucción"
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -1471,7 +1471,7 @@ msgstr "MONTHOF(<Fecha>)/Regresa el número del mes (1..12) de la <Fecha> dada."
 
 #: lr_const:sdocmajor
 msgid "Major"
-msgstr ""
+msgstr "Mayor"
 
 #: lr_const:spgoptformmargins
 msgid "Margins"
@@ -1495,7 +1495,7 @@ msgstr "Matemáticas"
 
 #: lr_const:sdocminor
 msgid "Minor"
-msgstr ""
+msgstr "Menor"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -1531,7 +1531,7 @@ msgstr "Texto normal / 90 grados"
 
 #: lr_const:spaper18
 msgid "Note, 8 1/2 x 11\""
-msgstr ""
+msgstr "Nota, 8 1/2 x 11\""
 
 #: lr_const:scateg2
 msgid "Number"
@@ -1655,7 +1655,7 @@ msgstr "Archivo de imagen"
 
 #: lr_const:spixels
 msgid "Pixels"
-msgstr "Pixeles"
+msgstr "Puntos"
 
 #: lr_const:sinsertfieldsformplace
 msgid "Placement"
@@ -1723,7 +1723,7 @@ msgstr "Re-hacer acción cancelada"
 
 #: lr_const:sdocrelease
 msgid "Release"
-msgstr ""
+msgstr "Lanzamiento"
 
 #: lr_const:sfrdesignerformremovepg
 msgid "Remove page"
@@ -2051,7 +2051,7 @@ msgstr "Lista de variables"
 
 #: lr_const:sdocversion
 msgid "Version"
-msgstr ""
+msgstr "Verisón"
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"

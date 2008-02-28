@@ -6,19 +6,19 @@ msgstr ""
 
 #: maincalleditor:cereditreport
 msgid "Edit Report"
-msgstr "Editar Reporte"
+msgstr "Editar Informe"
 
 #: maincalleditor:cernewreport
 msgid "New report"
-msgstr "Nuevo Reporte"
+msgstr "Nuevo Informe"
 
 #: maincalleditor:ceropenreport
 msgid "Open report"
-msgstr "Abrir reporte"
+msgstr "Abrir Informe"
 
 #: maincalleditor:cerpreparefailed
 msgid "PrepareReport Failed!"
-msgstr ""
+msgstr "¡Falló PrepareReport!"
 
 #: maincalleditor:cerpreviewreport
 msgid "Preview report"
@@ -30,9 +30,9 @@ msgstr "Imprimir rejilla"
 
 #: maincalleditor:cerprintreport
 msgid "Print report"
-msgstr "Imprimir reporte"
+msgstr "Imprimir informe"
 
 #: maincalleditor:cernotimplemented
 msgid "This feature is not yet implemented!"
-msgstr ""
+msgstr "Esta característica no está implementada todavía"
 

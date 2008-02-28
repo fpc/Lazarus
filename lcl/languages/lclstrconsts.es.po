@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"Last-Translator: Juan Martínez <jbmartinezs@yahoo.com>\n"
-"PO-Revision-Date: 2005-09-01 22:50-0500\n"
+"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
+"PO-Revision-Date: 2008-02-26\n"
 "Language-Team: \n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
+""
 "Project-Id-Version: lcl\n"
 
 #: lclstrconsts:rsmodified
@@ -46,15 +46,15 @@ msgstr "%s ya está asociado con %s"
 
 #: lclstrconsts:rspressoktoignoreandriskdatacorruptionpresscanceltok
 msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
-msgstr ""
+msgstr "%s%sPulse Aceptar para ignorar y correr el riesgo de corromper datos.%sPulse cancelar para terminar el programa."
 
 #: lclstrconsts:rshelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: Ya está registrado"
 
 #: lclstrconsts:rshelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: No registrado"
 
 #: lclstrconsts:rsmball
 msgid "&All"
@@ -66,7 +66,7 @@ msgstr "&Cerrar"
 
 #: lclstrconsts:rsdirectory
 msgid "&Directory"
-msgstr ""
+msgstr "&Directorio"
 
 #: lclstrconsts:rsmbhelp
 msgid "&Help"
@@ -146,7 +146,7 @@ msgstr "--sync          Llama a XSynchronize (display, True) después que se hay
 
 #: lclstrconsts:rsacontrolcannothaveitselfasparent
 msgid "A control can't have itself as parent"
-msgstr "Un control no puede tener a si mismo como pariente"
+msgstr "Un control no puede tenerse a si mismo como pariente"
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"
@@ -162,7 +162,7 @@ msgstr "Todos los archivos (%s)|%s|%s"
 
 #: lclstrconsts:ifsalt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lclstrconsts:ifsvk_back
 msgid "Backspace"
@@ -170,11 +170,11 @@ msgstr "Retroceso"
 
 #: lclstrconsts:rsbackward
 msgid "Backward"
-msgstr ""
+msgstr "Retrasado"
 
 #: lclstrconsts:rsbitmaps
 msgid "Bitmaps"
-msgstr ""
+msgstr "Bitmaps"
 
 #: lclstrconsts:rsblank
 msgid "Blank"
@@ -182,11 +182,11 @@ msgstr "Vacío"
 
 #: lclstrconsts:hhshelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Navegador %s%s%s no ejecutable."
 
 #: lclstrconsts:hhshelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Navegador %s%s%s no encontrado."
 
 #: lclstrconsts:rscalculator
 msgid "Calculator"
@@ -214,7 +214,7 @@ msgstr "Mayúscula"
 
 #: lclstrconsts:rscasesensitive
 msgid "Case sensitive"
-msgstr ""
+msgstr "Sensible a MAY/min"
 
 #: lclstrconsts:ifsvk_clear
 msgid "Clear"
@@ -238,7 +238,7 @@ msgstr "Creando un error capturable por gdb"
 
 #: lclstrconsts:ifsctrl
 msgid "Ctrl"
-msgstr ""
+msgstr "Ctrl"
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
@@ -250,11 +250,11 @@ msgstr "Suprimir"
 
 #: lclstrconsts:rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "¿Borrar registro?"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
-msgstr ""
+msgstr "Dirección"
 
 #: lclstrconsts:rsfddirectorymustexist
 msgid "Directory must exist"
@@ -262,7 +262,7 @@ msgstr "Directorio debe de existir"
 
 #: lclstrconsts:rsdocking
 msgid "Docking"
-msgstr ""
+msgstr "Anclado"
 
 #: lclstrconsts:ifsvk_down
 msgid "Down"
@@ -298,11 +298,11 @@ msgstr "Error leyendo %s%s%s: %s"
 
 #: lclstrconsts:hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Error al ejecutar %s%s%s:%s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
-msgstr ""
+msgstr "Error al salvar el bitmap."
 
 #: lclstrconsts:rswin32error
 msgid "Error:"
@@ -342,11 +342,11 @@ msgstr "Final"
 
 #: lclstrconsts:rsfind
 msgid "Find"
-msgstr ""
+msgstr "Buscar"
 
 #: lclstrconsts:rsfindmore
 msgid "Find more"
-msgstr ""
+msgstr "Buscar más"
 
 #: lclstrconsts:rsfixedcolstoobig
 msgid "FixedCols can't be >= ColCount"
@@ -362,7 +362,7 @@ msgstr "Flujo de Formulario \"%s\" error: %s"
 
 #: lclstrconsts:rsforward
 msgid "Forward"
-msgstr ""
+msgstr "Adelante"
 
 #: lclstrconsts:rsgridfiledoesnotexists
 msgid "Grid file doesn't exists"
@@ -370,7 +370,7 @@ msgstr "No existe el archivo de rejilla"
 
 #: lclstrconsts:rsgridindexoutofrange
 msgid "Grid index out of range."
-msgstr ""
+msgstr "Índice de rejilla fuera de rango."
 
 #: lclstrconsts:rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
@@ -378,7 +378,7 @@ msgstr "GroupIndex no puede ser menor que un elemento de menú de GroupIndex"
 
 #: lclstrconsts:ifsvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lclstrconsts:ifsvk_help
 msgid "Help"
@@ -386,63 +386,63 @@ msgstr "Ayuda"
 
 #: lclstrconsts:rshelpcontextnotfound
 msgid "Help Context not found"
-msgstr ""
+msgstr "Contexto de ayuda no encontrado"
 
 #: lclstrconsts:rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "La base de datos de ayuda %s%s%s no encontró un visor para el tipo de página de ayuda %s"
 
 #: lclstrconsts:rshelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "Base de datos de ayuda %s%s%s no encotrada"
 
 #: lclstrconsts:rshelpdatabasenotfound
 msgid "Help Database not found"
-msgstr ""
+msgstr "Base de datos de ayuda no encontrada"
 
 #: lclstrconsts:rshelperror
 msgid "Help Error"
-msgstr ""
+msgstr "Error de la ayuda"
 
 #: lclstrconsts:rshelpselectorerror
 msgid "Help Selector Error"
-msgstr ""
+msgstr "Error del selector de ayuda"
 
 #: lclstrconsts:rshelpviewererror
 msgid "Help Viewer Error"
-msgstr ""
+msgstr "Error en el visor de ayuda"
 
 #: lclstrconsts:rshelpviewernotfound
 msgid "Help Viewer not found"
-msgstr ""
+msgstr "Visor de ayuda no encontrado"
 
 #: lclstrconsts:rshelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "Contexto de ayuda %s no encontrado en la base de datos %s%s%s."
 
 #: lclstrconsts:rshelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "Contexto de ayuda %s no encontrado."
 
 #: lclstrconsts:rshelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Clave de ayuda %s%s%s no encontrada en la base de datos %s%s%s."
 
 #: lclstrconsts:rshelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "Clave de ayuda %s%s%s no encontrada"
 
 #: lclstrconsts:rshelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "El nodo de ayuda %s%s%s no tiene base de datos de ayuda"
 
 #: lclstrconsts:rshelpnotfound
 msgid "Help not found"
-msgstr ""
+msgstr "Ayuda no encontrada"
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
-msgstr ""
+msgstr "Historial:"
 
 #: lclstrconsts:ifsvk_home
 msgid "Home"
@@ -506,15 +506,15 @@ msgstr "Formato de flujo inválido"
 
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lclstrconsts:ifsvk_kana
 msgid "Kana"
-msgstr ""
+msgstr "Kana"
 
 #: lclstrconsts:ifsvk_left
 msgid "Left"
@@ -562,7 +562,7 @@ msgstr "Siguiente"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
+msgstr "No se ha encontrado un navegador HTML.%Por favor, defina uno en Ayuda -> Configurar Ayuda -> Visores"
 
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
@@ -570,11 +570,11 @@ msgstr "No hay formulario MDI presente"
 
 #: lclstrconsts:rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr ""
+msgstr "No se ha encontrado ayuda para la línea %d, columna %d de %s."
 
 #: lclstrconsts:rshelpnohelpnodesavailable
 msgid "No help nodes available"
-msgstr ""
+msgstr "No hay nodos de ayuda disponibles"
 
 #: lclstrconsts:snotimers
 msgid "No timers available"
@@ -586,7 +586,7 @@ msgstr "No a todo"
 
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
+msgstr "No existe un objeto widgetset. Por favor, compruebe que la unidad \"interfaces\" ha sido añadida a la cláusula uses del programa"
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -598,11 +598,11 @@ msgstr "No es un archivo de rejilla válido"
 
 #: lclstrconsts:ifsvk_numlock
 msgid "Numlock"
-msgstr ""
+msgstr "BloqNum"
 
 #: lclstrconsts:ifsvk_numpad
 msgid "Numpad %d"
-msgstr ""
+msgstr "TeclaNum %d"
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -622,23 +622,23 @@ msgstr "Tecla Pausa"
 
 #: lclstrconsts:rspixmap
 msgid "Pixmap"
-msgstr ""
+msgstr "Pixmap"
 
 #: lclstrconsts:rsportablebitmap
 msgid "Portable BitMap"
-msgstr ""
+msgstr "Portable BitMap"
 
 #: lclstrconsts:rsportablegraymap
 msgid "Portable GrayMap"
-msgstr ""
+msgstr "Portable GrayMap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
-msgstr ""
+msgstr "Portable Network Graphic"
 
 #: lclstrconsts:rsportablepixmap
 msgid "Portable PixMap"
-msgstr ""
+msgstr "Portable PixMap"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"
@@ -654,11 +654,11 @@ msgstr "La propiedad %s no existe"
 
 #: lclstrconsts:rsreplace
 msgid "Replace"
-msgstr ""
+msgstr "Reemplazar"
 
 #: lclstrconsts:rsreplaceall
 msgid "Replace all"
-msgstr ""
+msgstr "Reemplazar todo"
 
 #: lclstrconsts:lislclresourcesnotfound
 msgid "Resource %s not found"
@@ -678,7 +678,7 @@ msgstr "Guardar archivo como"
 
 #: lclstrconsts:ifsvk_scroll
 msgid "Scroll"
-msgstr ""
+msgstr "Desplazar"
 
 #: lclstrconsts:rsscrollbaroutofrange
 msgid "ScrollBar property out of range"
@@ -706,7 +706,7 @@ msgstr "Escoja color"
 
 #: lclstrconsts:ifsvk_shift
 msgid "Shift"
-msgstr ""
+msgstr "Shift"
 
 #: lclstrconsts:ifsvk_snapshot
 msgid "Snapshot"
@@ -722,15 +722,15 @@ msgstr "Sub-menu no está en el menú"
 
 #: lclstrconsts:ifsvk_tab
 msgid "Tab"
-msgstr ""
+msgstr "Tabulador"
 
 #: lclstrconsts:rstext
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 #: lclstrconsts:sinvalidcharset
 msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
+msgstr "¡La máscara \"%s\" no es válida!"
 
 #: lclstrconsts:rsfddirectorynotexist
 msgid "The directory \"%s\" does not exist."
@@ -750,11 +750,11 @@ msgstr "No se puede escribir en el archivo \"%s\""
 
 #: lclstrconsts:hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "La base de datos de ayuda %s%s%s no pudo encontrar el archivo %s%s%s."
 
 #: lclstrconsts:hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "La macro %s en BrowserParams será reemplazada por la URL."
 
 #: lclstrconsts:rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
@@ -762,11 +762,11 @@ msgstr "No existe la ruta \"%s\""
 
 #: lclstrconsts:rshelpthereisnoviewerforhelptype
 msgid "There is no viewer for help type %s%s%s"
-msgstr ""
+msgstr "No hay visor de ayuda para el tipo de ayuda %s%s%s"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
-msgstr ""
+msgstr "No puedo encontrar un visor HTML"
 
 #: lclstrconsts:rsunabletoloaddefaultfont
 msgid "Unable to load default font"
@@ -778,7 +778,7 @@ msgstr "Desconocido"
 
 #: lclstrconsts:rsunknownerrorpleasereportthisbug
 msgid "Unknown Error, please report this bug"
-msgstr ""
+msgstr "Error desconocido. Por favor, informe de este fallo"
 
 #: lclstrconsts:rsunknownpictureextension
 msgid "Unknown picture extension"
@@ -806,11 +806,11 @@ msgstr "Advertencia:"
 
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
-msgstr ""
+msgstr "Sólo palabras completas"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to &All"
-msgstr ""
+msgstr "Sí &a todo"
 
 #: lclstrconsts:ifsvk_apps
 msgid "application key"

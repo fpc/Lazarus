@@ -3,6 +3,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
+"PO-Revision-Date: 2008-02-26\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -38,11 +40,11 @@ msgstr "&Editar"
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
-msgstr ""
+msgstr "&Primero"
 
 #: objinspstrconsts:oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr ""
+msgstr "A&yuda sobre la ayuda"
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
@@ -50,51 +52,51 @@ msgstr "&Insertar"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr ""
+msgstr "Ú&ltimo"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "&Cargar"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr ""
+msgstr "Siguie&nte"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
-msgstr ""
+msgstr "&Aceptar"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr ""
+msgstr "&Abrir..."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr ""
+msgstr "&Pegar"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr ""
+msgstr "An&terior"
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr ""
+msgstr "&Refrescar"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "&Guardar"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr ""
+msgstr "Buscar &tema"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr ""
+msgstr "&Deshacer"
 
 #: objinspstrconsts:clbup
 msgid "&Up"
-msgstr ""
+msgstr "&Arriba"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -106,7 +108,7 @@ msgstr "(Desconocido)"
 
 #: objinspstrconsts:oisnone
 msgid "(none)"
-msgstr ""
+msgstr "(ninguno)"
 
 #: objinspstrconsts:ois0lines0chars
 msgid "0 lines, 0 chars"
@@ -114,7 +116,7 @@ msgstr "0 líneas, 0 caracteres"
 
 #: objinspstrconsts:ois1linedchars
 msgid "1 line, %d chars"
-msgstr ""
+msgstr "1 línea, %d caracteres"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
@@ -130,11 +132,11 @@ msgstr "Añadir"
 
 #: objinspstrconsts:sccsiledtopendialog
 msgid "Add Images"
-msgstr ""
+msgstr "Añadir imágenes"
 
 #: objinspstrconsts:s_addassingle
 msgid "Add as single"
-msgstr ""
+msgstr "Añadir como único"
 
 #: objinspstrconsts:clbadd
 msgid "Add new Item"
@@ -146,7 +148,7 @@ msgstr "Añadir página"
 
 #: objinspstrconsts:tccesaddtab
 msgid "Add tab"
-msgstr ""
+msgstr "Añadir pestaña"
 
 #: objinspstrconsts:oisaddtofavorites
 msgid "Add to Favorites"
@@ -154,15 +156,15 @@ msgstr "Añadir a Favoritos"
 
 #: objinspstrconsts:sccsiledtadd
 msgid "Add..."
-msgstr ""
+msgstr "Añadir..."
 
 #: objinspstrconsts:sccsiledtadjustment
 msgid "Adjustment"
-msgstr ""
+msgstr "Ajuste"
 
 #: objinspstrconsts:rscdalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Alineación"
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -170,19 +172,19 @@ msgstr "Todo"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files"
-msgstr ""
+msgstr "Todos los archivos"
 
 #: objinspstrconsts:sccstredtapply
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr ""
+msgstr "Matriz"
 
 #: objinspstrconsts:rscdautosize
 msgid "Auto Size"
-msgstr ""
+msgstr "Tamaño automático"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
@@ -190,11 +192,11 @@ msgstr "Clases de Acción Disponibles"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
-msgstr ""
+msgstr "Booleano"
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "&Limpiar"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
@@ -202,11 +204,11 @@ msgstr "Cancelar"
 
 #: objinspstrconsts:rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Leyenda"
 
 #: objinspstrconsts:sccslvedtlabelcaption
 msgid "Caption:"
-msgstr ""
+msgstr "Leyenda:"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -214,19 +216,19 @@ msgstr "Categoría"
 
 #: objinspstrconsts:sccsiledtcenter
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 #: objinspstrconsts:oischar
 msgid "Char"
-msgstr ""
+msgstr "Caracter"
 
 #: objinspstrconsts:oischaractersforblanks
 msgid "Characters for Blanks"
-msgstr ""
+msgstr "Caracteres para blancos"
 
 #: objinspstrconsts:fescheckdset
 msgid "Check dataset settings"
-msgstr ""
+msgstr "Comprobar opciones de dataset"
 
 #: objinspstrconsts:clbcheckgroupeditor
 msgid "CheckGroup Editor"
@@ -238,11 +240,11 @@ msgstr "Editor de CheckListBox"
 
 #: objinspstrconsts:oisclass
 msgid "Class"
-msgstr ""
+msgstr "Clase"
 
 #: objinspstrconsts:sccssgedtclean
 msgid "Clean"
-msgstr ""
+msgstr "Limpiar"
 
 #: objinspstrconsts:sccsiledtclear
 msgid "Clear"
@@ -254,11 +256,11 @@ msgstr "Limpiar imagen"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
-msgstr ""
+msgstr "Selector de color"
 
 #: objinspstrconsts:rscdcolumneditor
 msgid "Column Editor"
-msgstr ""
+msgstr "Editor de columna"
 
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
@@ -270,7 +272,7 @@ msgstr "Componentes"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Confirmar borrado"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
@@ -278,19 +280,19 @@ msgstr "Copiar"
 
 #: objinspstrconsts:oiscopycomponents
 msgid "Copy components"
-msgstr ""
+msgstr "Copiar componentes"
 
 #: objinspstrconsts:oiscreateanewpascalunit
 msgid "Create a new pascal unit."
-msgstr ""
+msgstr "Crear una nueva unidad Pascal."
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr ""
+msgstr "Crear evento por defecto"
 
 #: objinspstrconsts:sccsiledtcrop
 msgid "Crop"
-msgstr ""
+msgstr "Recortar"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
@@ -318,7 +320,7 @@ msgstr ""
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "Cor&tar"
 
 #: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
@@ -326,15 +328,15 @@ msgstr "Cortar"
 
 #: objinspstrconsts:oiscutcomponents
 msgid "Cut components"
-msgstr ""
+msgstr "Cortar componentes"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
-msgstr ""
+msgstr "Base de datos"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Supr"
 
 #: objinspstrconsts:oisdelete
 msgid "Delete"
@@ -342,11 +344,11 @@ msgstr "Suprimir"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Borrar acción"
 
 #: objinspstrconsts:oisdeletecomponents
 msgid "Delete components"
-msgstr ""
+msgstr "Borrar componentes"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
@@ -358,7 +360,7 @@ msgstr "Borrar página"
 
 #: objinspstrconsts:tccesdeletetab
 msgid "Delete tab"
-msgstr ""
+msgstr "Borrar pestaña"
 
 #: objinspstrconsts:clbdelete
 msgid "Delete the Item %d \"%s\"?"
@@ -366,43 +368,43 @@ msgstr "¿Borrar el elemento %d \"%s\"?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr ""
+msgstr "Diálogo"
 
 #: objinspstrconsts:s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr ""
+msgstr "¿Desea dividir la imagen?"
 
 #: objinspstrconsts:clbdown
 msgid "Do&wn"
-msgstr ""
+msgstr "A&bajo"
 
 #: objinspstrconsts:oicoleditdown
 msgid "Down"
-msgstr ""
+msgstr "Abajo"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
-msgstr ""
+msgstr "S&alir"
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
-msgstr ""
+msgstr "Editar"
 
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
-msgstr ""
+msgstr "Editar campos"
 
 #: objinspstrconsts:sccslvedt
 msgid "Edit ListView Items..."
-msgstr ""
+msgstr "Editar elementos de ListView..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
-msgstr ""
+msgstr "Editar StringGrid..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
-msgstr ""
+msgstr "Editar elementos de TreeView..."
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -410,11 +412,11 @@ msgstr "Editor de lista de acción..."
 
 #: objinspstrconsts:oicoleditediting
 msgid "Editing"
-msgstr ""
+msgstr "Editando"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr ""
+msgstr "Enumeración"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
@@ -434,7 +436,7 @@ msgstr "Eventos"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
-msgstr ""
+msgstr "Salir"
 
 #: objinspstrconsts:oisfavorites
 msgid "Favorites"
@@ -442,7 +444,7 @@ msgstr "Favoritos"
 
 #: objinspstrconsts:fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
+msgstr "Lista de campos no disponible, no se pueden comprobar duplicados"
 
 #: objinspstrconsts:fesfltitle
 msgid "FieldDefs"
@@ -450,47 +452,47 @@ msgstr ""
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
-msgstr ""
+msgstr "Archivo"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
-msgstr ""
+msgstr "Primero"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
-msgstr ""
+msgstr "Flotante"
 
 #: objinspstrconsts:oistdactfontedithint
 msgid "Font Select"
-msgstr ""
+msgstr "Selector de fuente"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
-msgstr ""
+msgstr "Ayuda"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr ""
+msgstr "Contenidos de la ayuda"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
-msgstr ""
+msgstr "Ayuda sobre la ayuda"
 
 #: objinspstrconsts:sccstredtlabelimageindex
 msgid "Image Index:"
-msgstr ""
+msgstr "Índice de imagen:"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "ImageList Editor"
-msgstr ""
+msgstr "Editor de ImageList"
 
 #: objinspstrconsts:sccsiledtgrplcaption
 msgid "Images"
-msgstr ""
+msgstr "Imágenes"
 
 #: objinspstrconsts:oisinputmask
 msgid "Input Mask:"
-msgstr ""
+msgstr "Máscara de entrada:"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
@@ -502,7 +504,7 @@ msgstr "Insertar página"
 
 #: objinspstrconsts:tccesinserttab
 msgid "Insert tab"
-msgstr ""
+msgstr "Insertar pestaña"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -510,7 +512,7 @@ msgstr ""
 
 #: objinspstrconsts:oisinteger
 msgid "Integer"
-msgstr ""
+msgstr "Entero"
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
@@ -518,7 +520,7 @@ msgstr ""
 
 #: objinspstrconsts:rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
-msgstr ""
+msgstr "Valor numérico inválido"
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
@@ -526,63 +528,63 @@ msgstr "Valor de propiedad inválido"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr ""
+msgstr "No es posible obtener la lista de campos del dataset"
 
 #: objinspstrconsts:sccstredtitem
 msgid "Item"
-msgstr ""
+msgstr "Elemento"
 
 #: objinspstrconsts:sccstredtgrprcaption
 msgid "Item Properties"
-msgstr ""
+msgstr "Propiedades del elemento"
 
 #: objinspstrconsts:sccstredtgrplcaption
 msgid "Items"
-msgstr ""
+msgstr "Elementos"
 
 #: objinspstrconsts:oisfinddeclaration
 msgid "Jump to declaration"
-msgstr ""
+msgstr "Saltar a declaración"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
-msgstr ""
+msgstr "Último"
 
 #: objinspstrconsts:rscdleft
 msgid "Left"
-msgstr ""
+msgstr "Izquierda"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView Items Editor"
-msgstr ""
+msgstr "Editor de elementos de ListView"
 
 #: objinspstrconsts:sccstredtload
 msgid "Load"
-msgstr ""
+msgstr "Cargar"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr ""
+msgstr "Diálogo Cargar Imagen"
 
 #: objinspstrconsts:oisloadpicture
 msgid "Load picture"
-msgstr ""
+msgstr "Cargar dibujo"
 
 #: objinspstrconsts:sccssgedtload
 msgid "Load..."
-msgstr ""
+msgstr "Cargar..."
 
 #: objinspstrconsts:oismasks
 msgid "Masks..."
-msgstr ""
+msgstr "Máscaras..."
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr ""
+msgstr "Método"
 
 #: objinspstrconsts:clbmodify
 msgid "Modify the Item"
-msgstr ""
+msgstr "Modificar el elemento"
 
 #: objinspstrconsts:sccsiledtmovedown
 msgid "Move Down"
@@ -590,7 +592,7 @@ msgstr "Mover Abajo"
 
 #: objinspstrconsts:sccssgedtmoverowscols
 msgid "Move Rows/Cols"
-msgstr ""
+msgstr "Mover Filas/Columnas"
 
 #: objinspstrconsts:sccsiledtmoveup
 msgid "Move Up"
@@ -598,7 +600,7 @@ msgstr "Mover Arriba"
 
 #: objinspstrconsts:rscdmovedown
 msgid "Move down"
-msgstr ""
+msgstr "Mover abajo"
 
 #: objinspstrconsts:nbcesmovepageleft
 msgid "Move page left"
@@ -610,15 +612,15 @@ msgstr "Mover página a la derecha"
 
 #: objinspstrconsts:tccesmovetableft
 msgid "Move tab left"
-msgstr ""
+msgstr "Mover pestaña a la izquierda"
 
 #: objinspstrconsts:tccesmovetabright
 msgid "Move tab right"
-msgstr ""
+msgstr "Mover pestaña a la derecha"
 
 #: objinspstrconsts:rscdmoveup
 msgid "Move up"
-msgstr ""
+msgstr "Mover arriba"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
@@ -626,7 +628,7 @@ msgstr "Nueva Acción"
 
 #: objinspstrconsts:sccstredtnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Nuevo elemento"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
@@ -634,23 +636,23 @@ msgstr "Nueva Acción Estándar"
 
 #: objinspstrconsts:sccstredtnewsubitem
 msgid "New SubItem"
-msgstr ""
+msgstr "Nuevo SubElemento"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: objinspstrconsts:sccsiledtnone
 msgid "None"
-msgstr ""
+msgstr "Ninguno"
 
 #: objinspstrconsts:rscdok
 msgid "OK"
-msgstr ""
+msgstr "Aceptar"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr ""
+msgstr "Objeto"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -658,23 +660,23 @@ msgstr "Inspector de Objetos"
 
 #: objinspstrconsts:oisok2
 msgid "Ok"
-msgstr ""
+msgstr "Aceptar"
 
 #: objinspstrconsts:clbcheckduplicate
 msgid "On Add, Check for Duplicate in Items"
-msgstr ""
+msgstr "Al añadir, comprobar duplicados en Elementos"
 
 #: objinspstrconsts:sccstredtopendialog
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: objinspstrconsts:oispeopenimagefile
 msgid "Open image file"
-msgstr ""
+msgstr "Abrir archivo de imagen"
 
 #: objinspstrconsts:oisopenmaskfile
 msgid "Open masks file (*.dem)"
-msgstr ""
+msgstr "Abrir archivo de máscaras (*.dem)"
 
 #: objinspstrconsts:oisoptions
 msgid "Options"
@@ -682,7 +684,7 @@ msgstr "Opciones"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "P&osterior"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
@@ -694,23 +696,23 @@ msgstr "Pegar"
 
 #: objinspstrconsts:oispastecomponents
 msgid "Paste components"
-msgstr ""
+msgstr "Pegar componentes"
 
 #: objinspstrconsts:oispepicture
 msgid "Picture"
-msgstr ""
+msgstr "Dibujo"
 
 #: objinspstrconsts:clbdisable
 msgid "Popup to disable/enable items"
-msgstr ""
+msgstr "Popup para desactivar/activar elementos"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "Posterior"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
-msgstr ""
+msgstr "Anterior"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
@@ -722,11 +724,11 @@ msgstr "Propiedades de %s"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
-msgstr ""
+msgstr "Registro"
 
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
-msgstr ""
+msgstr "Refrescar"
 
 #: objinspstrconsts:oisremovefromfavorites
 msgid "Remove from Favorites"
@@ -734,19 +736,19 @@ msgstr "Quitar de Favoritos"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
-msgstr ""
+msgstr "Derecha"
 
 #: objinspstrconsts:oissamplemasks
 msgid "Sample Masks:"
-msgstr ""
+msgstr "Máscaras de ejemplo:"
 
 #: objinspstrconsts:sccstredtsave
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr ""
+msgstr "Gu&ardar Como..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
@@ -754,15 +756,15 @@ msgstr "Guardar Como"
 
 #: objinspstrconsts:sccsiledtsavedialog
 msgid "Save Image"
-msgstr ""
+msgstr "Guardar imagen"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr ""
+msgstr "Guardar caracteres literales"
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr ""
+msgstr "Guardar imagen como"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
@@ -770,19 +772,19 @@ msgstr "Guardar imagen"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
-msgstr ""
+msgstr "Guardar..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr ""
+msgstr "Seleccion&ar todo"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr ""
+msgstr "Seleccionar &Color..."
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr ""
+msgstr "Seleccionar &Fuente..."
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
@@ -790,19 +792,19 @@ msgstr "Seleccionar Todo"
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Seleccionar un archivo"
 
 #: objinspstrconsts:sccsiledtgrprcaption
 msgid "Selected Image"
-msgstr ""
+msgstr "Imagen seleccionada"
 
 #: objinspstrconsts:sccstredtlabelselindex
 msgid "Selected Index:"
-msgstr ""
+msgstr "Índice seleccionado:"
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr ""
+msgstr "Establecer"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
@@ -830,27 +832,27 @@ msgstr "Ordenar"
 
 #: objinspstrconsts:s_splitimage
 msgid "Split image"
-msgstr ""
+msgstr "Dividir imagen"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr ""
+msgstr "Clases de acción estándar"
 
 #: objinspstrconsts:sccstredtlabelstateindex
 msgid "State Index:"
-msgstr ""
+msgstr "Índice de estado:"
 
 #: objinspstrconsts:sccsiledtstretch
 msgid "Stretch"
-msgstr ""
+msgstr "Estirar"
 
 #: objinspstrconsts:oisstring
 msgid "String"
-msgstr ""
+msgstr "Cadena"
 
 #: objinspstrconsts:sccssgedtgrp
 msgid "String Grid"
-msgstr ""
+msgstr "Rejilla de cadenas"
 
 #: objinspstrconsts:sccssgedtcaption
 msgid "StringGrid Editor"
@@ -862,19 +864,19 @@ msgstr "Diálogo Editor de Strings"
 
 #: objinspstrconsts:oistestinput
 msgid "Test Input"
-msgstr ""
+msgstr "Probar entrada"
 
 #: objinspstrconsts:oistestdialog
 msgid "Test dialog..."
-msgstr ""
+msgstr "Probar diálogo"
 
 #: objinspstrconsts:sccstredtlabeltext
 msgid "Text:"
-msgstr ""
+msgstr "Texto:"
 
 #: objinspstrconsts:clbcheckduplicatemsg
 msgid "The \"%s\" Item is already listed. Add it anyway?"
-msgstr ""
+msgstr "El elemento \"%s\" está en la lista. ¿Añadir de todas maneras?"
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
@@ -882,15 +884,15 @@ msgstr "Barra de Herramientas"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
-msgstr ""
+msgstr "Buscar tema"
 
 #: objinspstrconsts:sccsiledtransparentcolor
 msgid "Transparent Color:"
-msgstr ""
+msgstr "Color transparente:"
 
 #: objinspstrconsts:sccstredtcaption
 msgid "TreeView Items Editor"
-msgstr ""
+msgstr "Editor de elementos de TreeView"
 
 #: objinspstrconsts:oisundo
 msgid "Undo"
@@ -902,7 +904,7 @@ msgstr "Desconocido"
 
 #: objinspstrconsts:oicoleditup
 msgid "Up"
-msgstr ""
+msgstr "Arriba"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
@@ -910,7 +912,7 @@ msgstr "Valor:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
-msgstr ""
+msgstr "Variante"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
@@ -918,13 +920,13 @@ msgstr ""
 
 #: objinspstrconsts:rscdwidth
 msgid "Width"
-msgstr ""
+msgstr "Ancho"
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr ""
+msgstr "Palabra"
 
 #: objinspstrconsts:clbcolumns
 msgid "n. columns"
-msgstr ""
+msgstr "num. columnas"
 

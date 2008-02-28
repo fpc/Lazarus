@@ -1,12 +1,11 @@
 msgid ""
 msgstr ""
-"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
-"PO-Revision-Date: 2004-02-27 23:02-0400\n"
+"Last-Translator: Jose Angel <angelhjose@gmail.com>\n"
+"PO-Revision-Date: 2008-02-26\n"
 "Project-Id-Version: codetools\n"
 "Language-Team: Español\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.2\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -58,11 +57,11 @@ msgstr "se esperaba ; después de \"%s\" especificador de propiedad, pero se enco
 
 #: codetoolsstrconsts:ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
-msgstr ""
+msgstr "Las definiciones anónimas de %s no están permitidas"
 
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
-msgstr ""
+msgstr "Directorio de la CPU"
 
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
@@ -90,7 +89,7 @@ msgstr "Directorio de los Componentes"
 
 #: codetoolsstrconsts:ctsconverterdirectory
 msgid "Converter Directory"
-msgstr ""
+msgstr "Directorio del conversor"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
@@ -106,7 +105,7 @@ msgstr "Por defecto ppc386 fuentes del Sistema Operativo"
 
 #: codetoolsstrconsts:ctsdefaultppc386source2operatingsystem
 msgid "Default ppc386 source Operating System 2"
-msgstr ""
+msgstr "Por defecto fuentes ppc386 del Sistema Operativo 2"
 
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
@@ -130,7 +129,7 @@ msgstr "Definir Macro %s"
 
 #: codetoolsstrconsts:ctsdefinemacrocarbon1
 msgid "Define macro carbon1"
-msgstr ""
+msgstr "Definir macro carbon1"
 
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
@@ -142,11 +141,11 @@ msgstr "Definir macro gtk2"
 
 #: codetoolsstrconsts:ctsdefinemacroqt1
 msgid "Define macro qt1"
-msgstr ""
+msgstr "Definir macro qt1"
 
 #: codetoolsstrconsts:ctsdefinemacrowince1
 msgid "Define macro wince1"
-msgstr ""
+msgstr "Definir macro wince1"
 
 #: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
@@ -198,7 +197,7 @@ msgstr "Fuentes de Free Pascal, %s"
 
 #: codetoolsstrconsts:ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
+msgstr "Directorio del IDE"
 
 #: codetoolsstrconsts:ctsideintfdirectory
 msgid "IDEIntf Directory"
@@ -214,11 +213,11 @@ msgstr "If LCLWidgetType=gtk2 then"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos
 msgid "If TargetOS<>SrcOS"
-msgstr ""
+msgstr "Si SOObjetivo<>FuenteSO"
 
 #: codetoolsstrconsts:ctsiftargetosisnotsrcos2
 msgid "If TargetOS<>SrcOS2"
-msgstr ""
+msgstr "Si SOObjetivo<>FuenteSO2"
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
@@ -238,11 +237,11 @@ msgstr "Detectado círculo en incluido"
 
 #: codetoolsstrconsts:ctsinstalldirectory
 msgid "Install Directory"
-msgstr ""
+msgstr "Directorio de instalación"
 
 #: codetoolsstrconsts:ctsinstallerdirectories
 msgid "Installer directories"
-msgstr ""
+msgstr "Directorios del instalador"
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"
@@ -254,7 +253,7 @@ msgstr "Fuentes de Lazarus"
 
 #: codetoolsstrconsts:ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Las definiciones %s anidadas no están permitidas"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
@@ -286,7 +285,7 @@ msgstr "Directorio Packager Units"
 
 #: codetoolsstrconsts:ctspositionnotinsource
 msgid "Position not in source"
-msgstr ""
+msgstr "La posición no está en el fuente"
 
 #: codetoolsstrconsts:ctsresetalldefines
 msgid "Reset all defines"
@@ -362,7 +361,7 @@ msgstr "un componente de directorio en %s no es un directorio"
 
 #: codetoolsstrconsts:ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "añadidos %s a IncPath"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -454,7 +453,7 @@ msgstr "else"
 
 #: codetoolsstrconsts:ctsfpdocsystemon
 msgid "enable FPDocSystem"
-msgstr ""
+msgstr "activar FPDocSystem"
 
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
@@ -470,7 +469,7 @@ msgstr "error durante la inserción de nueva partes de la clase"
 
 #: codetoolsstrconsts:ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "error durante la insersión de nuevas unidades a la sección uses principal"
 
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
@@ -490,7 +489,7 @@ msgstr "se esperaba end., pero se encontró %s"
 
 #: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr ""
+msgstr "La cláusula exports sólo está permitida en bibliotecas"
 
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
@@ -506,7 +505,7 @@ msgstr "archivo es de sólo lectura"
 
 #: codetoolsstrconsts:ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "identificador genérico"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
@@ -646,7 +645,7 @@ msgstr "falta tipo de identificador"
 
 #: codetoolsstrconsts:ctsnewprocbodynotfound
 msgid "new proc body not found"
-msgstr "cuerpo nuevo de proc no encontrado"
+msgstr "cuerpo nuevo de procedimiento no encontrado"
 
 #: codetoolsstrconsts:ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
@@ -718,11 +717,11 @@ msgstr "constante de cadena"
 
 #: codetoolsstrconsts:ctstypeidentifier
 msgid "type identifier"
-msgstr "tipo de identificador"
+msgstr "identificador de tipo"
 
 #: codetoolsstrconsts:ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr "sección type de class no encontrado"
+msgstr "sección type de clase no encontrada"
 
 #: codetoolsstrconsts:ctsunabletoapplychanges
 msgid "unable to apply changes"
@@ -766,9 +765,9 @@ msgstr "unidad no encontrada: %s"
 
 #: codetoolsstrconsts:ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
-msgstr "sección desconocida palabra clave %s encontrada"
+msgstr "palabra clave de sección desconocida %s encontrada"
 
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr "unidad usada no es una unidad Pascal"
+msgstr "la unidad usada no es una unidad Pascal"
 
