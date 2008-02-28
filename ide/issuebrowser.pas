@@ -136,7 +136,7 @@ var
   IssueProperty: String;
   IssueMask: TMaskList;
   S, M: String;
-  I: Integer;
+  I: PtrInt;
   Issues: TStringList;
   Issue: TIssue;
   C: TClass;
