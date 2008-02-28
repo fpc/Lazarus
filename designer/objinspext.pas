@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, TypInfo,
-  ExtCtrls, Dialogs, Menus, ComCtrls, Grids,
+  ExtCtrls, Dialogs, Menus, ComCtrls, Grids, CustomTimer,
   CodeToolManager, CodeCache,
   LazIDEIntf, ProjectIntf, ObjectInspector, PropEdits,
   DialogProcs, FileUtil, LazConf, BaseIDEIntf, LazConfigStorage,
@@ -124,6 +124,7 @@ begin
   Add(TCustomGrid,'ColCount');
   Add(TCustomTreeView,'Align');
   Add(TCustomTreeView,'Options');
+  Add(TCustomTimer,'OnTimer');
   Result.DeleteDoubles;
 end;
 
