@@ -11,6 +11,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   KeyPreview = True
   OnResize = ObjectInspectorResize
   PopupMenu = MainPopupMenu
+  LCLVersion = '0.9.25'
   object StatusBar: TStatusBar
     Height = 20
     Top = 649

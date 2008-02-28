@@ -734,8 +734,18 @@ const
 
 function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
 
-var
-  WidgetSetImageList: TImageList;
+
+const
+  WidgetSetImageNames: array [TLCLPlatform] of shortstring = (
+    'issue_gtk',
+    'issue_gtk2',
+    'issue_win32',
+    'issue_wince',
+    'issue_carbon',
+    'issue_qt',
+    'issue_fpgui',
+    'issue_nogui'
+  );
 
 //******************************************************************************
 
@@ -2241,7 +2251,7 @@ begin
     
     // draw widgetsets
     X := NameRect.Right - 2;
-    Y := (NameRect.Top + NameRect.Bottom - WidgetSetImageList.Height) div 2;
+    Y := (NameRect.Top + NameRect.Bottom - IDEImages.Images_16.Height) div 2;
     OldFont:=Font;
     Font:=FNameFont;
     Font.Color := clRed;
@@ -2249,8 +2259,8 @@ begin
     begin
       if Platform in CurRow.FWidgetSets then
       begin
-        Dec(X, WidgetSetImageList.Width);
-        WidgetSetImageList.Draw(Canvas, X, Y, Integer(Platform));
+        Dec(X, IDEImages.Images_16.Width);
+        IDEImages.Images_16.Draw(Canvas, X, Y, IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
       end;
     end;
     Font:=OldFont;
@@ -3192,19 +3202,6 @@ begin
   FShowComponentTree:=true;
   FShowFavorites := False;
   FShowIssues := False;
-  
-  WidgetSetImageList := TImageList.Create(Self);
-  WidgetSetImageList.Width := 16;
-  WidgetSetImageList.Height := 16;
-  
-  WidgetSetImageList.AddLazarusResource('issue_gtk');
-  WidgetSetImageList.AddLazarusResource('issue_gtk2');
-  WidgetSetImageList.AddLazarusResource('issue_win32');
-  WidgetSetImageList.AddLazarusResource('issue_wince');
-  WidgetSetImageList.AddLazarusResource('issue_carbon');
-  WidgetSetImageList.AddLazarusResource('issue_qt');
-  WidgetSetImageList.AddLazarusResource('issue_fpgui');
-  WidgetSetImageList.AddLazarusResource('issue_nogui');
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText:=oisAll;
@@ -3817,14 +3814,15 @@ begin
   if Issues = nil then Exit;
   
   X := 0;
-  Y := (WidgetSetsIssuesBox.Height - WidgetSetImageList.Height) div 2;
+  Y := (WidgetSetsIssuesBox.Height - IDEImages.Images_16.Height) div 2;
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
     if Issues.WidgetSetIssues[Platform] > 0 then
     begin
       None := False;
-      WidgetSetImageList.Draw(WidgetSetsIssuesBox.Canvas, X, Y, Integer(Platform));
+      IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
+        IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
       Inc(X, 16);
       
       S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetIssues[Platform]));
@@ -3868,14 +3866,15 @@ begin
   end;
 
   X := 0;
-  Y := (ComponentIssuesBox.Height - WidgetSetImageList.Height) div 2;
+  Y := (ComponentIssuesBox.Height - IDEImages.Images_16.Height) div 2;
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
     if WidgetSetIssues[Platform] > 0 then
     begin
       None := False;
-      WidgetSetImageList.Draw(ComponentIssuesBox.Canvas, X, Y, Integer(Platform));
+      IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
+        IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
       Inc(X, 16);
 
       S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetIssues[Platform]));
@@ -4773,9 +4772,8 @@ end;
 initialization
   {$I objectinspector.lrs}
   
+  
 finalization
-
-
 
 end.
 

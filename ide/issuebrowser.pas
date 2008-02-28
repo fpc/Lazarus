@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils, InterfaceBase, LCLProc, LResources, Contnrs, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ComCtrls, CompatibilityIssues, IDEOptionDefs, LazarusIDEStrConsts,
-  EnvironmentOpts, Masks, ComponentReg, ObjectInspector, ExtCtrls, Buttons, LazConf;
+  IDEImagesIntf, EnvironmentOpts, Masks, ComponentReg, ObjectInspector, ExtCtrls, Buttons,
+  LazConf;
 
 type
   { TIssueBrowserView }
@@ -76,7 +77,7 @@ begin
   
   IssueFilterGroupBox.Caption := lisFilterIssues;
   NameLabel.Caption := lisCodeToolsDefsName;
-  IssueTreeView.Images := WidgetSetImageList;
+  IssueTreeView.Images := IDEImages.Images_16;
   
   X := 10;
   // create widget set filter buttons
@@ -93,7 +94,7 @@ begin
       Down := True;
       AllowAllUp := True;
       
-      WidgetSetImageList.GetBitmap(Integer(P), Glyph);
+      IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, WidgetSetImageNames[P]), Glyph);
       ShowHint := True;
       Hint := LCLPlatformDisplayNames[P];
       OnClick := @NameFilterEditChange;
@@ -136,7 +137,7 @@ var
   IssueProperty: String;
   IssueMask: TMaskList;
   S, M: String;
-  I: PtrInt;
+  I, ID: PtrInt;
   Issues: TStringList;
   Issue: TIssue;
   C: TClass;
@@ -233,10 +234,13 @@ begin
       begin
         with IssueTreeView.Items.AddChild(nil, Issues[I]) do
         begin
-          ImageIndex := Integer(FIssueList[Integer(Issues.Objects[I])].WidgetSet);
+          ID := Integer(Issues.Objects[I]);
+          
+          ImageIndex := IDEImages.LoadImage(16, WidgetSetImageNames[FIssueList[ID].WidgetSet]);
           StateIndex := ImageIndex;
           SelectedIndex := ImageIndex;
-          Data := @FIssueList[Integer(Issues.Objects[I])];
+          
+          Data := @FIssueList[ID];
         end;
         if NameFilterEdit.Text = Issues[I] then
         begin
