@@ -32,12 +32,16 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="h2pastest.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="H2PasTest"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="scanexamples/test.h"/>
+        <IsPartOfProject Value="True"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

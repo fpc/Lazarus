@@ -316,23 +316,24 @@ begin
            end;
          end;
        end;
-     '$':  // hex constant
-      begin
-        inc(Position);
-        while (Position<=Len)
-        and (IsHexNumberChar[Source[Position]]) do
-          inc(Position);
-      end;
     else
       inc(Position);
       if Position<=Len then begin
         c2:=Source[Position];
-        // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ^^
+        // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, **, ^^, ::
         if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-        or ((c1='<') and (c2='>'))
-        or ((c1='.') and (c2='.'))
+        or ((c1='=') and (c2='='))
+        or ((c1='!') and (c2='='))
+        or ((c1=':') and (c2=':'))
         or ((c1='*') and (c2='*'))
         or ((c1='^') and (c2='^'))
+        or ((c1='|') and (c2='|'))
+        or ((c1='&') and (c2='&'))
+        or ((c1='+') and (c2='+'))
+        or ((c1='-') and (c2='-'))
+        or ((c1='-') and (c2='>'))
+        or ((c1='>') and (c2='>'))
+        or ((c1='<') and (c2='<'))
         then
           inc(Position);
       end;
