@@ -157,6 +157,16 @@ begin
   ccnNone     : Result:='None';
   ccnRoot     : Result:='Root';
   ccnDirective: Result:='Directive';
+  ccnExtern   : Result:='extern block';
+  ccnEnums    : Result:='enums';
+  ccnEnum     : Result:='enum';
+  ccnConstant : Result:='constant';
+  ccnTypedef  : Result:='typedef';
+  ccnStruct   : Result:='struct';
+  ccnVariable : Result:='variable';
+  ccnVariableName: Result:='variable name';
+  ccnFuncParamList: Result:='function param list';
+  ccnStatementBlock: Result:='statement block';
   else          Result:='?';
   end;
 end;
@@ -251,9 +261,14 @@ begin
 end;
 
 function TCCodeParserTool.CurlyBracketCloseToken: boolean;
+// examples:
+//  end of 'extern "C" {'
 begin
   Result:=true;
-
+  if CurNode.Desc=ccnExtern then
+    EndChildNode
+  else
+    RaiseException('} without {');
 end;
 
 procedure TCCodeParserTool.ReadEnum;
@@ -678,7 +693,9 @@ begin
       break;
     end;
   until false;
-  CloseNodes;
+  if (CurNode=nil) or (CurNode.Desc<>ccnRoot) then
+    RaiseException('TCCodeParserTool.Parse: internal parser error');
+  EndChildNode;
 end;
 
 function TCCodeParserTool.UpdateNeeded: boolean;
