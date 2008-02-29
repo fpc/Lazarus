@@ -911,8 +911,8 @@ components/sqlite/sqliteds.lrs svneol=native#text/pascal
 components/sqlite/sqliteicon.lrs svneol=native#text/plain
 components/sqlite/sqlitelaz.lpk svneol=native#text/plain
 components/sqlite/sqlitelaz.pas svneol=native#text/plain
-components/sqlite/tsqlite3dataset.xpm svneol=native#text/plain
-components/sqlite/tsqlitedataset.xpm -text svneol=native#image/x-xpixmap
+components/sqlite/tsqlite3dataset.png -text
+components/sqlite/tsqlitedataset.png -text
 components/synedit/allsyneditunits.pp svneol=native#text/pascal
 components/synedit/design/README.txt svneol=native#text/plain
 components/synedit/design/syneditlazdsgn.bat svneol=native#text/plain
