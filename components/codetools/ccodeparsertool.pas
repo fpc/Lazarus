@@ -321,15 +321,9 @@ begin
     end else begin
       UndoReadNextAtom;
     end;
-  end else begin
-    // this is a struct variable
-    while AtomIsChar('*') do begin
-      ReadNextAtom;
-    end;
-    if not AtomIsIdentifier then
-      RaiseExpectedButAtomFound('identifier');
-  end;
-  
+  end else
+    RaiseExpectedButAtomFound('{');
+
   // close node
   EndChildNode;
 end;
@@ -470,14 +464,19 @@ var
 begin
   DebugLn(['TCCodeParserTool.ReadVariable ']);
   CreateChildNode(ccnVariable);
-  // read function modifiers
   IsFunction:=false;
-  while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
-  do begin
-    IsFunction:=true;
+  if AtomIs('struct') then begin
     ReadNextAtom;
-    if not AtomIsIdentifier then
-      RaiseExpectedButAtomFound('identifier');
+  end else if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+  then begin
+    // read function modifiers
+    while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+    do begin
+      IsFunction:=true;
+      ReadNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
+    end;
   end;
   // read name
   ReadNextAtom;
