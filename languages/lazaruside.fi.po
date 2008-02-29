@@ -254,7 +254,7 @@ msgstr "&Avaa kohdistimen osoittama tiedosto"
 
 #: lazarusidestrconsts:lismenupackage
 msgid "&Package"
-msgstr ""
+msgstr "Komponenttipaketti"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
@@ -1710,7 +1710,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
-msgstr ""
+msgstr "Käännä"
 
 #: lazarusidestrconsts:liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
@@ -1722,7 +1722,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompilepackage
 msgid "Compile package"
-msgstr ""
+msgstr "Kääntää komponenttipaketin"
 
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
@@ -4418,7 +4418,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
-msgstr ""
+msgstr "Asenna"
 
 #: lazarusidestrconsts:lispckexplinstallonnextstart
 msgid "Install on next start"
@@ -4426,7 +4426,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditinstallpackageintheide
 msgid "Install package in the IDE"
-msgstr ""
+msgstr "Asenna komponenttipaketti kehitysympäristöön"
 
 #: lazarusidestrconsts:lisinstallselection
 msgid "Install selection"
@@ -5326,7 +5326,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
-msgstr ""
+msgstr "Näytä muut ..."
 
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
@@ -6114,7 +6114,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"
-msgstr ""
+msgstr "Komponenttipaketti %s"
 
 #: lazarusidestrconsts:lispckexplpackagenotfound
 msgid "Package %s not found"
@@ -6206,7 +6206,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmcatpackagemenu
 msgid "Package menu commands"
-msgstr ""
+msgstr "Komponenttipakettivalikon komennot"
 
 #: lazarusidestrconsts:lispkgmangpackagenamealreadyexists
 msgid "Package name already exists"
@@ -6742,7 +6742,7 @@ msgstr "Vain luettavissa"
 
 #: lazarusidestrconsts:lispkgmangrebuildlazarus
 msgid "Rebuild Lazarus?"
-msgstr ""
+msgstr "Rakennetaanko Lazarus uudelleen?"
 
 #: lazarusidestrconsts:lisiecorecentfiles
 msgid "Recent files"
@@ -10322,7 +10322,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisxmlfiles
 msgid "XML files"
-msgstr ""
+msgstr "XML tiedostot"
 
 #: lazarusidestrconsts:lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
