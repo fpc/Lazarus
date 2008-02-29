@@ -53,6 +53,7 @@ const
   ccnEnums     =  4+ccnBase;// e.g. enum {};
   ccnEnum      =  5+ccnBase;// e.g. name = value;
   ccnConstant  =  6+ccnBase;// e.g. 1
+  ccnTypedef   =  7+ccnBase;// e.g. typedef int TInt;
 
 type
   TCCodeParserTool = class;
@@ -74,8 +75,9 @@ type
 
     function OtherToken: boolean;
     function DirectiveToken: boolean;
-    function ExternToken: boolean;
     function EnumToken: boolean;
+    function ExternToken: boolean;
+    function TypedefToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -83,6 +85,7 @@ type
     procedure EndChildNode;
     procedure CloseNodes;
     
+    procedure ReadEnum;
     procedure ReadConstant;
     
     procedure RaiseException(const AMessage: string);
@@ -165,6 +168,16 @@ begin
   EndChildNode;
 end;
 
+function TCCodeParserTool.EnumToken: boolean;
+begin
+  Result:=true;
+  ReadEnum;
+  // read semicolon
+  ReadNextAtom;
+  if not AtomIs(';') then
+    RaiseExpectedButAtomFound(';');
+end;
+
 function TCCodeParserTool.ExternToken: boolean;
 begin
   Result:=true;
@@ -177,9 +190,16 @@ begin
     RaiseExpectedButAtomFound('{');
 end;
 
-function TCCodeParserTool.EnumToken: boolean;
+procedure TCCodeParserTool.ReadEnum;
+(* For example:
+  enum {
+    TEST_ENUM1 = 1, /* Enum starts at 1 */
+    TEST_ENUM2,
+    TEST_ENUM3
+  };
+
+*)
 begin
-  Result:=true;
   CreateChildNode(ccnEnums);
   ReadNextAtom;
   if not AtomIs('{') then
@@ -210,9 +230,32 @@ begin
     end else
       RaiseExpectedButAtomFound('}');
   until false;
+  EndChildNode;
+end;
+
+function TCCodeParserTool.TypedefToken: boolean;
+begin
+  Result:=true;
+  CreateChildNode(ccnTypedef);
+  // read type
   ReadNextAtom;
+  DebugLn(['TCCodeParserTool.TypedefToken AAA1 ',GetAtom]);
+  if AtomIs('enum') then
+    ReadEnum
+  else if AtomIsIdentifier then begin
+    ReadNextAtom;
+  end else
+    RaiseExpectedButAtomFound('identifier');
+  // read typedef name
+  DebugLn(['TCCodeParserTool.TypedefToken AAA2 ',GetAtom]);
+  if not AtomIsIdentifier then
+    RaiseExpectedButAtomFound('identifier');
+  // read semicolon
+  ReadNextAtom;
+  DebugLn(['TCCodeParserTool.TypedefToken AAA3 ',GetAtom]);
   if not AtomIs(';') then
     RaiseExpectedButAtomFound(';');
+  CurNode.EndPos:=SrcPos;
   EndChildNode;
 end;
 
@@ -224,6 +267,7 @@ begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
       Add('enum',{$ifdef FPC}@{$endif}EnumToken);
+      Add('typedef',{$ifdef FPC}@{$endif}TypedefToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
