@@ -404,11 +404,15 @@ type
   
   TQtClipboard = class(TQtObject)
   private
+    FClipChanged: Boolean;
+    FClipCounter: Integer;
+    FClipDataChangedHook: QClipboard_hookH;
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
   public
     constructor Create; override;
     destructor Destroy; override;
+    procedure AttachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
 
     function Clipboard: QClipboardH; inline;
@@ -425,6 +429,8 @@ type
       var List: PClipboardFormat): boolean;
     function GetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TClipboardRequestEvent;
       FormatCount: integer; Formats: PClipboardFormat): boolean;
+      
+    procedure signalDataChanged; cdecl;
   end;
 
   { TQtPrinter }
@@ -2506,6 +2512,8 @@ end;
 constructor TQtClipboard.Create;
 begin
   inherited Create;
+  FClipChanged := True;
+  FClipCounter := 0;
   FOnClipBoardRequest := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
@@ -2520,6 +2528,26 @@ begin
   inherited Destroy;
 end;
 
+procedure TQtClipboard.AttachEvents;
+var
+  Method: TMethod;
+begin
+  inherited AttachEvents;
+  
+  FClipDataChangedHook := QClipboard_hook_create(TheObject);
+  QClipboard_dataChanged_Event(Method) := @signalDataChanged;
+  QClipboard_hook_hook_dataChanged(FClipDataChangedHook, Method);
+end;
+
+procedure TQtClipboard.signalDataChanged; cdecl;
+begin
+  {$IFDEF VERBOSE_QT_CLIPBOARD}
+  writeln('signalDataChanged()');
+  {$ENDIF}
+  FClipChanged := True;
+  inc(FClipCounter);
+end;
+
 function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   BeginEventProcessing;
@@ -2527,8 +2555,15 @@ begin
 
   if QEvent_type(Event) = QEventClipboard then
   begin
-    Result := True;
+    Result := FClipChanged;
+    {$IFDEF VERBOSE_QT_CLIPBOARD}
+    writeln('TQtClipboard.EventFilter() RESULT=',Result);
+    {$ENDIF}
+    
+    if FClipCounter > 0 then
+      dec(FClipCounter);
 
+    FClipChanged := FClipCounter > 0;
     QEvent_accept(Event);
 
     // Clipboard is changed, but we have no ability at moment to pass that info
@@ -2616,7 +2651,8 @@ begin
 
   try
     Count := QStringList_size(QtList);
-    GetMem(List, Count * SizeOf(TClipboardFormat));
+    if Count > 0 then
+      GetMem(List, Count * SizeOf(TClipboardFormat));
 
     for i := 0 to Count - 1 do
     begin
@@ -2677,7 +2713,8 @@ begin
   { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
     when emptying the clipboard}
     FOnClipBoardRequest := nil;
-    Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    {Clipboard is cleared each time when setMimeData is called !}
+    // Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
     FOnClipBoardRequest := OnRequestProc;
     PutOnClipBoard;
     Result := True;

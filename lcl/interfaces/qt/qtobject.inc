@@ -126,6 +126,8 @@ begin
   end;
   
   QtDefaultPrinter;
+  // initialize clipboard
+  ClipBoard;
   
 end;
 
@@ -259,6 +261,7 @@ var
 begin
   Result := False;
   case QEvent_type(Event) of
+    {$IFNDEF DARWIN}
     QEventFocusIn:
       begin
         if QObject_isWidgetType(Sender) then
@@ -277,6 +280,7 @@ begin
             FOldFocusWidget := QWidgetH(Sender);
         end;
       end;
+      {$ENDIF}
     LCLQt_Destroy:
       begin
         AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
