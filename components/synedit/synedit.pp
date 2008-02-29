@@ -395,7 +395,7 @@ type
     fHighlighterNeedsUpdateEndLine: integer; // 1 based, 0 means invalid
     {$ENDIF}
     fLines: TStrings;
-    fLinesInWindow: Integer;
+    fLinesInWindow: Integer;// MG: fully visible lines in window
     fLeftChar: Integer;    // first visible screen column
     fMaxLeftChar: Integer; // 1024
     fPaintLock: Integer;
@@ -5652,13 +5652,25 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.MoveCaretToVisibleArea;
+// scroll to make the caret visible
+var
+  NewCaretXY: TPoint;
+  MaxY: LongInt;
 begin
-  if caretX < fLeftChar then caretX := fLeftChar
-  else if caretX >= fLeftChar + fCharsInWindow then
-    caretX := fLeftChar + fCharsInWindow - 1;
-  if caretY < fTopLine then caretY := fTopLine
-  else if caretY >= fTopLine + fLinesInWindow then
-    caretY := fTopLine + fLinesInWindow - 1;
+  NewCaretXY:=CaretXY;
+  if NewCaretXY.X < fLeftChar then
+    NewCaretXY.X := fLeftChar
+  else if NewCaretXY.X >= fLeftChar + fCharsInWindow then
+    NewCaretXY.X := fLeftChar + fCharsInWindow - 1;
+  if NewCaretXY.Y < fTopLine then
+    NewCaretXY.Y := fTopLine
+  else begin
+    MaxY:=ScreenRowToRow(fTopLine + Max(0,fLinesInWindow-1));
+    if NewCaretXY.Y > MaxY then
+      NewCaretXY.Y := MaxY;
+  end;
+  if CompareCarets(CaretXY,NewCaretXY)<>0 then
+    CaretXY:=NewCaretXY;
 end;
 
 procedure TCustomSynEdit.MoveCaretIgnoreEOL(const NewCaret: TPoint);
