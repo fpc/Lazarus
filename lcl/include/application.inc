@@ -28,11 +28,15 @@ const
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
-  if Application.FindGlobalComponentEnabled then begin
+  if Application.FindGlobalComponentEnabled then
+  begin
     Result:=Application.FindComponent(ComponentName);
     if Result=nil then
       Result:=Screen.FindForm(ComponentName);
-  end else
+    if Result=nil then
+      Result:=Screen.FindDataModule(ComponentName);
+  end
+  else
     Result:=nil;
   //debugln('FindApplicationComponent ComponentName="',ComponentName,'" Result=',DbgSName(Result));
 end;

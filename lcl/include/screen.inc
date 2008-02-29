@@ -34,8 +34,12 @@ begin
   FCustomForms:=TList.Create;
   FCustomFormsZOrdered:=TList.Create;
   FFormList := TList.Create;
+  FDataModuleList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
   FSaveFocusedList := TList.Create;
+
+  AddDataModule:=@DoAddDataModule;
+  RemoveDataModule:=@DoRemoveDataModule;
 end;
 
 {------------------------------------------------------------------------------
@@ -52,6 +56,7 @@ begin
   for HandlerType:=Low(FScreenHandlers) to High(FScreenHandlers) do
     FreeThenNil(FScreenHandlers[HandlerType]);
   FreeThenNil(FHintFont);
+  FreeThenNil(FDataModuleList);
   FreeThenNil(FFormList);
   FreeThenNil(FCustomForms);
   FreeThenNil(FCustomFormsZOrdered);
@@ -163,6 +168,19 @@ begin
   for i:=0 to FCustomForms.Count-1 do
     if CompareText(TCustomForm(FCustomForms[i]).Name,FormName)=0 then
       exit(TCustomForm(FCustomForms[i]));
+  Result:=nil;
+end;
+
+function TScreen.FindDataModule(const DataModuleName: string): TDataModule;
+var
+  i: Integer;
+begin
+  for i:=0 to FDataModuleList.Count-1 do
+    if CompareText(TDataModule(FDataModuleList[i]).Name, DataModuleName)=0 then
+    begin
+      Result:=TDataModule(FDataModuleList[i]);
+      Exit;
+    end;
   Result:=nil;
 end;
 
@@ -356,6 +374,16 @@ end;
 function TScreen.GetCustomFormsZOrdered(Index: Integer): TCustomForm;
 begin
   Result := TCustomForm(FCustomFormsZOrdered[Index]);
+end;
+
+function TScreen.GetDataModuleCount: Integer;
+begin
+  Result:=FDataModuleList.Count;
+end;
+
+function TScreen.GetDataModules(AIndex: Integer): TDataModule;
+begin
+  Result := TDataModule(FDataModuleList.Items[AIndex]);
 end;
 
 function TScreen.GetDesktopHeight: Integer;
@@ -569,6 +597,16 @@ procedure TScreen.RemoveHandler(HandlerType: TScreenNotification;
   const Handler: TMethod);
 begin
   FScreenHandlers[HandlerType].Remove(Handler);
+end;
+
+procedure TScreen.DoAddDataModule(DataModule: TDataModule);
+begin
+  FDataModuleList.Add(DataModule);
+end;
+
+procedure TScreen.DoRemoveDataModule(DataModule: TDataModule);
+begin
+  FDataModuleList.Remove(DataModule);
 end;
 
 // included by forms.pp

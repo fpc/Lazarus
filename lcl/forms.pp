@@ -735,8 +735,12 @@ type
     snActiveFormChanged
     );
 
-  { TScreen }
+{$IFNDEF UseFCLDataModule}
+{ TDataModule }
+  TDataModule = class;
+{$ENDIF}
 
+  { TScreen }
   TScreen = class(TLCLComponent)
   private
     FActiveControl: TWinControl;
@@ -752,6 +756,7 @@ type
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
     FFormList: TList;
+    FDataModuleList: TList;
     FScreenHandlers: array[TScreenNotification] of TMethodList;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
@@ -766,6 +771,8 @@ type
     function GetCustomFormZOrderCount: Integer;
     function GetCustomForms(Index: Integer): TCustomForm;
     function GetCustomFormsZOrdered(Index: Integer): TCustomForm;
+    function GetDataModuleCount: Integer;
+    function GetDataModules(AIndex: Integer): TDataModule;
     function GetDesktopHeight: Integer;
     function GetDesktopWidth: Integer;
     function GetFonts : TStrings;
@@ -782,6 +789,8 @@ type
                          const Handler: TMethod; AsLast: Boolean);
     procedure RemoveHandler(HandlerType: TScreenNotification;
                             const Handler: TMethod);
+    procedure DoAddDataModule(DataModule: TDataModule);
+    procedure DoRemoveDataModule(DataModule: TDataModule);
   protected
     function GetHintFont: TFont; virtual;
   public
@@ -796,6 +805,7 @@ type
     function GetCurrentModalFormZIndex: Integer;
     function CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
     function FindForm(const FormName: string): TCustomForm;
+    function FindDataModule(const DataModuleName: string): TDataModule;
     procedure UpdateScreen;
     // handler
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
@@ -831,6 +841,9 @@ type
     property FocusedForm: TCustomForm read FFocusedForm;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
+    property DataModuleCount: Integer read GetDataModuleCount;
+    property DataModules[Index: Integer]: TDataModule read GetDataModules;
+    
     property Fonts : TStrings read GetFonts;
     property Height : Integer read Getheight;
     property HintFont : TFont read GetHintFont;
@@ -1277,7 +1290,7 @@ type
 
 
 {$IFNDEF UseFCLDataModule}
-type
+//type
 { TDataModule }
 
   TDataModule = class(TComponent)
