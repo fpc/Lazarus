@@ -54,6 +54,8 @@ const
   ccnEnum      =  5+ccnBase;// e.g. name = value;
   ccnConstant  =  6+ccnBase;// e.g. 1
   ccnTypedef   =  7+ccnBase;// e.g. typedef int TInt;
+  ccnStruct    =  8+ccnBase;// e.g. struct{};
+  ccnVariable  =  9+ccnBase;// e.g. int i
 
 type
   TCCodeParserTool = class;
@@ -86,7 +88,9 @@ type
     procedure CloseNodes;
     
     procedure ReadEnum;
+    procedure ReadStruct;
     procedure ReadConstant;
+    procedure ReadVariable;
     
     procedure RaiseException(const AMessage: string);
     procedure RaiseExpectedButAtomFound(const AToken: string);
@@ -99,6 +103,9 @@ type
     SrcPos: Integer;
     AtomStart: integer;
     ParseChangeStep: integer;
+    
+    LastSrcPos: integer;
+    LastAtomStart: integer;
 
     constructor Create;
     destructor Destroy; override;
@@ -110,8 +117,10 @@ type
     
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
+    procedure UndoReadNextAtom;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function AtomIs(const s: shortstring): boolean;
+    function AtomIsChar(const c: char): boolean;
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
     function AtomIsStringConstant: boolean;
@@ -174,7 +183,7 @@ begin
   ReadEnum;
   // read semicolon
   ReadNextAtom;
-  if not AtomIs(';') then
+  if not AtomIsChar(';') then
     RaiseExpectedButAtomFound(';');
 end;
 
@@ -186,7 +195,7 @@ begin
   if not AtomIsStringConstant then
     RaiseExpectedButAtomFound('string constant');
   ReadNextAtom;
-  if not AtomIs('{') then
+  if not AtomIsChar('{') then
     RaiseExpectedButAtomFound('{');
 end;
 
@@ -202,7 +211,7 @@ procedure TCCodeParserTool.ReadEnum;
 begin
   CreateChildNode(ccnEnums);
   ReadNextAtom;
-  if not AtomIs('{') then
+  if not AtomIsChar('{') then
     RaiseExpectedButAtomFound('{');
   // read enums. Examples
   // name,
@@ -213,23 +222,67 @@ begin
       // read enum
       CreateChildNode(ccnEnum);
       ReadNextAtom;
-      if AtomIs('=') then begin
+      if AtomIsChar('=') then begin
         // read value
         ReadNextAtom;
         ReadConstant;
       end;
       EndChildNode;
     end;
-    if AtomIs(',') then begin
+    if AtomIsChar(',') then begin
       // next enum
       ReadNextAtom;
       if not AtomIsIdentifier then
         RaiseExpectedButAtomFound('identifier');
-    end else if AtomIs('}') then begin
+    end else if AtomIsChar('}') then begin
       break;
     end else
       RaiseExpectedButAtomFound('}');
   until false;
+  EndChildNode;
+end;
+
+procedure TCCodeParserTool.ReadStruct;
+(* For example:
+  typedef struct {
+    uint8_t b[6]; // implicit type
+  } __attribute__((packed)) bdaddr_t;
+
+*)
+begin
+  CreateChildNode(ccnStruct);
+  ReadNextAtom;
+  // read {
+  if not AtomIsChar('{') then
+    RaiseExpectedButAtomFound('{');
+  repeat
+    ReadNextAtom;
+    // read variables
+    if AtomIsIdentifier then begin
+      ReadVariable;
+      ReadNextAtom;
+      if AtomIsChar('}') then
+        break
+      else if AtomIsChar(';') then begin
+        // next identifier
+      end else
+        RaiseExpectedButAtomFound('}');
+    end else if AtomIsChar('}') then
+      break
+    else
+      RaiseExpectedButAtomFound('identifier');
+  until false;
+  // read attributes
+  ReadNextAtom;
+  if AtomIs('__attribute__') then begin
+    ReadNextAtom;
+    if not AtomIsChar('(') then
+      RaiseExpectedButAtomFound('(');
+    ReadTilBracketClose(true);
+  end else begin
+    UndoReadNextAtom;
+  end;
+  // close node
   EndChildNode;
 end;
 
@@ -239,23 +292,22 @@ begin
   CreateChildNode(ccnTypedef);
   // read type
   ReadNextAtom;
-  DebugLn(['TCCodeParserTool.TypedefToken AAA1 ',GetAtom]);
   if AtomIs('enum') then
     ReadEnum
+  else if AtomIs('struct') then
+    ReadStruct
   else if AtomIsIdentifier then begin
-    ReadNextAtom;
+
   end else
     RaiseExpectedButAtomFound('identifier');
   // read typedef name
-  DebugLn(['TCCodeParserTool.TypedefToken AAA2 ',GetAtom]);
+  ReadNextAtom;
   if not AtomIsIdentifier then
     RaiseExpectedButAtomFound('identifier');
   // read semicolon
   ReadNextAtom;
-  DebugLn(['TCCodeParserTool.TypedefToken AAA3 ',GetAtom]);
-  if not AtomIs(';') then
+  if not AtomIsChar(';') then
     RaiseExpectedButAtomFound(';');
-  CurNode.EndPos:=SrcPos;
   EndChildNode;
 end;
 
@@ -325,19 +377,40 @@ procedure TCCodeParserTool.ReadConstant;
 var
   EndPos: LongInt;
 begin
-  if AtomIs(',') or AtomIs(';') then
+  if AtomIsChar(',') or AtomIsChar(';') then
     RaiseExpectedButAtomFound('identifier');
   CreateChildNode(ccnConstant);
   repeat
-    if AtomIs('(') or AtomIs('[') then
+    if AtomIsChar('(') or AtomIsChar('[') then
       ReadTilBracketClose(true);
     EndPos:=SrcPos;
     ReadNextAtom;
-    if AtomIs(',') or AtomIs(';') or AtomIs(')') or AtomIs(']') or AtomIs('}')
+    if AtomIsChar(',') or AtomIsChar(';')
+    or AtomIsChar(')') or AtomIsChar(']') or AtomIsChar('}')
     then
       break;
   until false;
   CurNode.EndPos:=EndPos;
+  EndChildNode;
+end;
+
+procedure TCCodeParserTool.ReadVariable;
+(* Examples:
+  int i
+  uint8_t b[6]
+*)
+begin
+  CreateChildNode(ccnVariable);
+  // read name
+  ReadNextAtom;
+  if not AtomIsIdentifier then
+    RaiseExpectedButAtomFound('identifier');
+  ReadNextAtom;
+  if AtomIsChar('[') then begin
+    ReadTilBracketClose(true);
+  end else begin
+    UndoReadNextAtom;
+  end;
   EndChildNode;
 end;
 
@@ -402,15 +475,31 @@ procedure TCCodeParserTool.MoveCursorToPos(p: integer);
 begin
   SrcPos:=p;
   AtomStart:=p;
+  LastAtomStart:=0;
+  LastSrcPos:=0;
 end;
 
 procedure TCCodeParserTool.ReadNextAtom;
 begin
   DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
+  LastSrcPos:=SrcPos;
+  LastAtomStart:=AtomStart;
   repeat
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
   until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
   DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+end;
+
+procedure TCCodeParserTool.UndoReadNextAtom;
+begin
+  if LastSrcPos>0 then begin
+    SrcPos:=LastSrcPos;
+    AtomStart:=LastAtomStart;
+    LastSrcPos:=0;
+    LastAtomStart:=0;
+  end else begin
+    SrcPos:=AtomStart;
+  end;
 end;
 
 function TCCodeParserTool.ReadTilBracketClose(
@@ -467,6 +556,14 @@ begin
   if SrcPos>SrcLen then exit(false);
   for i:=1 to len do
     if Src[AtomStart+i-1]<>s[i] then exit(false);
+  Result:=true;
+end;
+
+function TCCodeParserTool.AtomIsChar(const c: char): boolean;
+begin
+  if SrcPos-AtomStart<>1 then exit(false);
+  if SrcPos>SrcLen then exit(false);
+  if Src[AtomStart]<>c then exit(false);
   Result:=true;
 end;
 
