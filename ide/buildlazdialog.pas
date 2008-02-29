@@ -366,8 +366,6 @@ begin
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformDirNames[Options.LCLPlatform];
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
-    if blfOnlyIDE in Flags then
-      Tool.EnvironmentOverrides.Values['USESVN2REVISIONINC']:= '0';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
     if not FileExists(Tool.Filename) then begin
@@ -455,9 +453,6 @@ begin
       // append target CPU
       if Options.TargetCPU<>'' then
         Tool.CmdLineParams:=Tool.CmdLineParams+' CPU_TARGET='+Options.TargetCPU;
-      // don't run svn2revisioninc when building the IDE for the second time
-      if not (blfWithoutLinkingIDE in Flags) then
-        Tool.CmdLineParams:=Tool.CmdLineParams+' USESVN2REVISIONINC=0';
       // run
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
