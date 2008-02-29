@@ -164,7 +164,7 @@ if [ $BuildCrossWin32DEB = "yes" ]; then
         # windres needs two names:
         # - the Makefiles expects without prefix fpc-
         # - the compiler expects 'windres' without any prefix
-        cp ${BinUtilsDir}${binutility} ${BinDir}${TargetCPU}-${TargetOS}-$NewName"
+        cp ${BinUtilsDir}${binutility} ${BinDir}${TargetCPU}-${TargetOS}-$NewName
       else
         NewName="fpc-${TargetCPU}-${TargetOS}-$NewName"
       fi
