@@ -150,7 +150,7 @@ var
   ActionUPP, OldActionUPP: ControlActionUPP;
   P: TPoint;
   Msg: TLMMouse;
-  MouseButton: EventMouseButton;
+  MouseButton: Integer;
   ControlPart: ControlPartCode;
 const
   SName = 'CarbonCommon_Track';
@@ -163,11 +163,8 @@ begin
     GetEventParameter(AEvent, kEventParamControlAction, typeControlActionUPP,
       nil, SizeOf(ActionUPP), nil, @OldActionUPP), SName, SGetEvent,
     SControlAction) then Exit;
-      
-  if OSError(
-    GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
-      SizeOf(EventMouseButton), nil, @MouseButton), SName, SGetEvent,
-    'kEventParamMouseButton') then Exit;
+
+  MouseButton := GetCarbonMouseButton(AEvent);
 
   ActionUPP := NewControlActionUPP(@CarbonCommon_TrackProgress);
   try

@@ -63,6 +63,7 @@ function VirtualKeyCodeToMac(AKey: Word): Word;
 
 function FormBorderToWindowAttrs(const AFormBorder: TFormBorderStyle): WindowAttributes;
 
+function GetCarbonMouseButton(AEvent: EventRef): Integer;
 function GetCarbonMsgKeyState: PtrInt;
 function GetCarbonShiftState: TShiftState;
 function ShiftStateToModifiers(const Shift: TShiftState): Byte;
@@ -330,6 +331,42 @@ begin
     Result := kWindowCloseBoxAttribute or kWindowResizableAttribute;
   else
     Result := kWindowNoAttributes;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    GetCarbonMouseButton
+  Returns: The event state of mouse
+ ------------------------------------------------------------------------------}
+function GetCarbonMouseButton(AEvent: EventRef): Integer;
+  // 1 = left, 2 = right, 3 = middle
+var
+  MouseButton: EventMouseButton;
+  Modifiers: UInt32;
+const
+  SName = 'GetCarbonMouseButton';
+begin
+  Result := 0;
+  Modifiers := 0;
+
+  if OSError(
+    GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
+      SizeOf(MouseButton), nil, @MouseButton),
+    SName, SGetEvent, 'kEventParamMouseButton', eventParameterNotFoundErr) then Exit;
+  Result := MouseButton;
+
+  if OSError(
+    GetEventParameter(AEvent, kEventParamKeyModifiers, typeUInt32, nil,
+      SizeOf(Modifiers), nil, @Modifiers),
+    SName, SGetEvent, 'kEventParamKeyModifiers', eventParameterNotFoundErr) then Exit;
+    
+  if Result = 1 then
+  begin
+    if (Modifiers and optionKey) > 0 then
+      Result := 3
+    else
+      if (Modifiers and controlKey) > 0 then
+        Result := 2;
   end;
 end;
 

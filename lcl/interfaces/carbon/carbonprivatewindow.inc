@@ -83,21 +83,6 @@ const
     //debugln('GetClickCount ClickCount=',dbgs(ClickCount));
   end;
 
-  function GetMouseButton: Integer;
-  // 1 = left, 2 = right, 3 = middle
-  var
-    MouseButton: EventMouseButton;
-  begin
-    Result := 0;
-    
-    if OSError(
-      GetEventParameter(AEvent, kEventParamMouseButton, typeMouseButton, nil,
-        SizeOf(MouseButton), nil, @MouseButton),
-      SName, SGetEvent, 'kEventParamMouseButton', eventParameterNotFoundErr) then Exit;
-
-    Result := MouseButton;
-  end;
-
   function GetMousePoint: TPoint;
   var
     MousePoint: HIPoint;
@@ -153,7 +138,7 @@ const
     Msg := @AMsg;
 
     ClickCount := GetClickCount;
-    MouseButton := GetMouseButton;
+    MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
     
     if (ClickCount < Low(MSGKIND)) or (ClickCount > High(MSGKIND)) then
@@ -185,7 +170,7 @@ const
     // perhaps mousetracking can fix this
     Msg := @AMsg;
 
-    MouseButton := GetMouseButton;
+    MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
     
     if  (MouseButton >= Low(MSGKIND)) and (MouseButton <= High(MSGKIND)) then
@@ -237,7 +222,7 @@ const
     MousePoint := GetMousePoint;
 
     Msg^.Msg := LM_MOUSEWHEEL;
-    Msg^.Button := GetMouseButton;
+    Msg^.Button := GetCarbonMouseButton(AEvent);
     Msg^.X := MousePoint.X;
     Msg^.Y := MousePoint.Y;
     Msg^.State := GetCarbonShiftState;
@@ -311,7 +296,7 @@ begin
   end;
   
   // interactive design
-  if (Widget is TCarbonDesignWindow) and (GetMouseButton = 1) and
+  if (Widget is TCarbonDesignWindow) and (GetCarbonMouseButton(AEvent) = 1) and
     (EventKind = kEventMouseDown) then
   begin
     P := GetMousePoint;
