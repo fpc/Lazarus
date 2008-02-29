@@ -83,6 +83,7 @@ type
     function EnumToken: boolean;
     function ExternToken: boolean;
     function TypedefToken: boolean;
+    function StructToken: boolean;
     procedure InitKeyWordList;
 
     procedure InitParser;
@@ -91,7 +92,7 @@ type
     procedure CloseNodes;
     
     procedure ReadEnum;
-    procedure ReadStruct;
+    procedure ReadStruct(NeedIdentifier: boolean);
     procedure ReadConstant;
     procedure ReadVariable;
     
@@ -268,16 +269,27 @@ begin
   EndChildNode;
 end;
 
-procedure TCCodeParserTool.ReadStruct;
-(* For example:
+procedure TCCodeParserTool.ReadStruct(NeedIdentifier: boolean);
+(*  Example for NeedIdentifier=false:
   typedef struct {
     uint8_t b[6]; // implicit type
   } __attribute__((packed)) bdaddr_t;
 
+  Example for NeedIdentifier=true:
+    struct hidp_connadd_req {
+      int ctrl_sock;
+    }
 *)
 begin
   CreateChildNode(ccnStruct);
+  
   ReadNextAtom;
+  if NeedIdentifier then begin
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
+    ReadNextAtom;
+  end;
+  
   // read {
   if not AtomIsChar('{') then
     RaiseExpectedButAtomFound('{');
@@ -321,7 +333,7 @@ begin
   if AtomIs('enum') then
     ReadEnum
   else if AtomIs('struct') then
-    ReadStruct
+    ReadStruct(false)
   else if AtomIsIdentifier then begin
 
   end else
@@ -337,6 +349,12 @@ begin
   EndChildNode;
 end;
 
+function TCCodeParserTool.StructToken: boolean;
+begin
+  Result:=true;
+  ReadStruct(true);
+end;
+
 procedure TCCodeParserTool.InitKeyWordList;
 begin
   if FDefaultTokenList=nil then begin
@@ -346,6 +364,7 @@ begin
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
       Add('enum',{$ifdef FPC}@{$endif}EnumToken);
       Add('typedef',{$ifdef FPC}@{$endif}TypedefToken);
+      Add('struct',{$ifdef FPC}@{$endif}StructToken);
       DefaultKeyWordFunction:={$ifdef FPC}@{$endif}OtherToken;
     end;
   end;
@@ -432,6 +451,8 @@ procedure TCCodeParserTool.ReadVariable;
   {
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
   }
+  bdaddr_t *strtoba(const char *str);
+
 
 *)
 var
@@ -450,6 +471,11 @@ begin
   end;
   // read name
   ReadNextAtom;
+  if AtomIsChar('*') then begin
+    // pointer
+    ReadNextAtom;
+  end;
+  
   DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
   if not AtomIsIdentifier then
     RaiseExpectedButAtomFound('identifier');
