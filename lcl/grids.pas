@@ -1159,7 +1159,7 @@ type
     property DefaultDrawing;
     property DefaultRowHeight;
     property DragCursor;
-    //property DragKind;
+    property DragKind;
     property DragMode;
     property Enabled;
     property FixedColor;
@@ -1224,9 +1224,9 @@ type
     //property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
-    //property OnEndDock;
+    property OnEndDock;
     property OnEndDrag;
-    //property OnStartDock;
+    property OnStartDock;
     property OnStartDrag;
   end;
 
@@ -1342,9 +1342,9 @@ type
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
-    //property DragCursor;
-    //property DragKind;
-    //property DragMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property Enabled;
     property FixedColor;
     property FixedCols;
@@ -1381,10 +1381,14 @@ type
     property OnColRowInserted;
     property OnColRowMoved;
     property OnCompareCells;
+    property OnDragDrop;
+    property OnDragOver;
     property OnDblClick;
     property OnDrawCell;
     property OnEditButtonClick;
     property OnEditingDone;
+    property OnEndDock;
+    property OnEndDrag;
     property OnEnter;
     property OnExit;
     property OnGetEditMask;
@@ -1407,16 +1411,12 @@ type
     property OnSelectCell;
     property OnSetEditText;
     property OnShowHint;
+    property OnStartDock;
+    property OnStartDrag;
     property OnTopLeftChanged;
 
 {
     property OnContextPopup;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDock;
-    property OnEndDrag;
-    property OnStartDock;
-    property OnStartDrag;
 }
   end;
 
