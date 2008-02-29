@@ -5618,7 +5618,7 @@ begin
     OldTopLine:=TopLine;
     fTopLine := Value;
     UpdateScrollBars;
-    Delta := TopLine - OldTopLine;
+    Delta := OldTopLine - TopLine;
     if Abs(Delta) < fLinesInWindow then
     begin
       // TODO: SW_SMOOTHSCROLL --> can't get it work
@@ -5680,7 +5680,9 @@ begin
       NewCaretXY.Y := MaxY;
   end;
   if CompareCarets(CaretXY,NewCaretXY)<>0 then
+  begin
     CaretXY:=NewCaretXY;
+  end;
 end;
 
 procedure TCustomSynEdit.MoveCaretIgnoreEOL(const NewCaret: TPoint);
