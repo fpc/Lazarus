@@ -280,6 +280,8 @@ procedure TCCodeParserTool.ReadStruct(NeedIdentifier: boolean);
       int ctrl_sock;
     }
     struct hidp_conninfo *ci;
+
+  typedef struct _sdp_list sdp_list_t;
 *)
 begin
   CreateChildNode(ccnStruct);
@@ -321,6 +323,8 @@ begin
     end else begin
       UndoReadNextAtom;
     end;
+  end else if AtomIsIdentifier then begin
+    // using another struct
   end else
     RaiseExpectedButAtomFound('{');
 
@@ -467,6 +471,11 @@ begin
   IsFunction:=false;
   if AtomIs('struct') then begin
     ReadNextAtom;
+  end else if AtomIs('union') then begin
+    ReadNextAtom;
+    if not AtomIsChar('{') then
+      RaiseExpectedButAtomFound('{');
+    ReadTilBracketClose(true);
   end else if IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
   then begin
     // read function modifiers
