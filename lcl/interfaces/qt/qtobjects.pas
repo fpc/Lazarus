@@ -404,9 +404,11 @@ type
   
   TQtClipboard = class(TQtObject)
   private
+    {$IFNDEF MSWINDOWS}
     FClipChanged: Boolean;
     FClipCounter: Integer;
     FClipDataChangedHook: QClipboard_hookH;
+    {$ENDIF}
     FClipBoardFormats: TStringList;
     FOnClipBoardRequest: TClipboardRequestEvent;
   public
@@ -2512,8 +2514,10 @@ end;
 constructor TQtClipboard.Create;
 begin
   inherited Create;
+  {$IFNDEF MSWINDOWS}
   FClipChanged := True;
   FClipCounter := 0;
+  {$ENDIF}
   FOnClipBoardRequest := nil;
   FClipBoardFormats := TStringList.Create;
   FClipBoardFormats.Add('foo'); // 0 is reserved
@@ -2533,19 +2537,22 @@ var
   Method: TMethod;
 begin
   inherited AttachEvents;
-  
+  {$IFNDEF MSWINDOWS}
   FClipDataChangedHook := QClipboard_hook_create(TheObject);
   QClipboard_dataChanged_Event(Method) := @signalDataChanged;
   QClipboard_hook_hook_dataChanged(FClipDataChangedHook, Method);
+  {$ENDIF}
 end;
 
 procedure TQtClipboard.signalDataChanged; cdecl;
 begin
+  {$IFNDEF MSWINDOWS}
   {$IFDEF VERBOSE_QT_CLIPBOARD}
   writeln('signalDataChanged()');
   {$ENDIF}
   FClipChanged := True;
   inc(FClipCounter);
+  {$ENDIF}
 end;
 
 function TQtClipboard.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -2555,6 +2562,9 @@ begin
 
   if QEvent_type(Event) = QEventClipboard then
   begin
+    {$IFDEF MSWINDOWS}
+    Result := True;
+    {$ELSE}
     Result := FClipChanged;
     {$IFDEF VERBOSE_QT_CLIPBOARD}
     writeln('TQtClipboard.EventFilter() RESULT=',Result);
@@ -2564,6 +2574,7 @@ begin
       dec(FClipCounter);
 
     FClipChanged := FClipCounter > 0;
+    {$ENDIF}
     QEvent_accept(Event);
 
     // Clipboard is changed, but we have no ability at moment to pass that info
@@ -2651,7 +2662,9 @@ begin
 
   try
     Count := QStringList_size(QtList);
+    {$IFNDEF MSWINDOWS}
     if Count > 0 then
+    {$ENDIF}
       GetMem(List, Count * SizeOf(TClipboardFormat));
 
     for i := 0 to Count - 1 do
@@ -2714,7 +2727,9 @@ begin
     when emptying the clipboard}
     FOnClipBoardRequest := nil;
     {Clipboard is cleared each time when setMimeData is called !}
-    // Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    {$IFNDEF MSWINDOWS}
+    Clear(ClipbBoardTypeToQtClipboard[ClipBoardType]);
+    {$ENDIF}
     FOnClipBoardRequest := OnRequestProc;
     PutOnClipBoard;
     Result := True;

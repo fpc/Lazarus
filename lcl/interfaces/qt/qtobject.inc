@@ -126,8 +126,10 @@ begin
   end;
   
   QtDefaultPrinter;
+  {$IFNDEF MSWINDOWS}
   // initialize clipboard
   ClipBoard;
+  {$ENDIF}
   
 end;
 
