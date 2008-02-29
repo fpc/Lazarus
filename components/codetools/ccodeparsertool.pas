@@ -44,18 +44,21 @@ type
 
 const
   // descriptors
-  ccnBase      = 1000;
-  ccnNone      =  0+ccnBase;
+  ccnBase           = 1000;
+  ccnNone           =  0+ccnBase;
   
-  ccnRoot      =  1+ccnBase;
-  ccnDirective =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
-  ccnExtern    =  3+ccnBase;// e.g. extern "C" {}
-  ccnEnums     =  4+ccnBase;// e.g. enum {};
-  ccnEnum      =  5+ccnBase;// e.g. name = value;
-  ccnConstant  =  6+ccnBase;// e.g. 1
-  ccnTypedef   =  7+ccnBase;// e.g. typedef int TInt;
-  ccnStruct    =  8+ccnBase;// e.g. struct{};
-  ccnVariable  =  9+ccnBase;// e.g. int i
+  ccnRoot           =  1+ccnBase;
+  ccnDirective      =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
+  ccnExtern         =  3+ccnBase;// e.g. extern "C" {}
+  ccnEnums          =  4+ccnBase;// e.g. enum {};
+  ccnEnum           =  5+ccnBase;// e.g. name = value;
+  ccnConstant       =  6+ccnBase;// e.g. 1
+  ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;
+  ccnStruct         =  8+ccnBase;// e.g. struct{};
+  ccnVariable       =  9+ccnBase;// e.g. int i
+  ccnVariableName   = 10+ccnBase;// e.g. i
+  ccnFuncParamList  = 11+ccnBase;// e.g. ()
+  ccnStatementBlock = 12+ccnBase;// e.g. {}
 
 type
   TCCodeParserTool = class;
@@ -135,10 +138,15 @@ type
   end;
   
 function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
+procedure InitCCodeKeyWordLists;
 
+var
+  IsCCodeFunctionModifier: TKeyWordFunctionList = nil;
 
 implementation
 
+var
+  KeyWordLists: TFPList;
 
 function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
 begin
@@ -147,6 +155,18 @@ begin
   ccnRoot     : Result:='Root';
   ccnDirective: Result:='Directive';
   else          Result:='?';
+  end;
+end;
+
+procedure InitCCodeKeyWordLists;
+begin
+  if KeyWordLists<>nil then exit;
+  KeyWordLists:=TFPList.Create;
+  IsCCodeFunctionModifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsCCodeFunctionModifier);
+  with IsCCodeFunctionModifier do begin
+    Add('static'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('inline'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -163,8 +183,13 @@ end;
 
 function TCCodeParserTool.OtherToken: boolean;
 begin
-  Result:=false;
-  RaiseException('unexpected token '+GetAtom);
+  Result:=true;
+  if AtomIsChar(';') then
+    // ignore
+  else if AtomIsIdentifier then
+    ReadVariable
+  else
+    RaiseException('unexpected token '+GetAtom);
 end;
 
 function TCCodeParserTool.DirectiveToken: boolean;
@@ -221,6 +246,7 @@ begin
     if AtomIsIdentifier then begin
       // read enum
       CreateChildNode(ccnEnum);
+      CurNode.EndPos:=SrcPos;
       ReadNextAtom;
       if AtomIsChar('=') then begin
         // read value
@@ -358,7 +384,7 @@ procedure TCCodeParserTool.EndChildNode;
 begin
   DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ']);
   if CurNode.EndPos<=0 then
-    CurNode.EndPos:=AtomStart;
+    CurNode.EndPos:=SrcPos;
   CurNode:=CurNode.Parent;
 end;
 
@@ -395,20 +421,66 @@ begin
 end;
 
 procedure TCCodeParserTool.ReadVariable;
-(* Examples:
+(* Read  type name [specifiers]
+
+  Examples:
+
   int i
   uint8_t b[6]
+  
+  static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
+  {
+        return memcmp(ba1, ba2, sizeof(bdaddr_t));
+  }
+
 *)
+var
+  IsFunction: Boolean;
 begin
+  DebugLn(['TCCodeParserTool.ReadVariable ']);
   CreateChildNode(ccnVariable);
+  // read function modifiers
+  IsFunction:=false;
+  while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+  do begin
+    IsFunction:=true;
+    ReadNextAtom;
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
+  end;
   // read name
   ReadNextAtom;
+  DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
   if not AtomIsIdentifier then
     RaiseExpectedButAtomFound('identifier');
+  CreateChildNode(ccnVariableName);
+  EndChildNode;
+
   ReadNextAtom;
-  if AtomIsChar('[') then begin
+  if IsFunction and (not AtomIsChar('(')) then
+    RaiseExpectedButAtomFound('(');
+  if AtomIsChar('(') then begin
+    // this is a function => read parameter list
+    CreateChildNode(ccnFuncParamList);
+    ReadTilBracketClose(true);
+    CurNode.EndPos:=SrcPos;
+    EndChildNode;
+    ReadNextAtom;
+    if AtomIsChar('{') then begin
+      // read statements {}
+      CreateChildNode(ccnStatementBlock);
+      ReadTilBracketClose(true);
+      CurNode.EndPos:=SrcPos;
+      EndChildNode;
+    end else if not AtomIsChar(';') then begin
+      // functions without statements are external and must end with a semicolon
+      RaiseExpectedButAtomFound(';');
+    end;
+  end else if AtomIsChar('[') then begin
+    // read array brackets
     ReadTilBracketClose(true);
   end else begin
+    // no postfix modifiers => move cursor back
     UndoReadNextAtom;
   end;
   EndChildNode;
@@ -428,6 +500,7 @@ end;
 constructor TCCodeParserTool.Create;
 begin
   Tree:=TCodeTree.Create;
+  InitCCOdeKeyWordLists;
 end;
 
 destructor TCCodeParserTool.Destroy;
@@ -649,6 +722,20 @@ begin
     end;
   end;
 end;
+
+procedure InternalFinal;
+var
+  i: Integer;
+begin
+  if KeyWordLists<>nil then begin
+    for i:=0 to KeyWordLists.Count-1 do
+      TObject(KeyWordLists[i]).Free;
+    FreeAndNil(KeyWordLists);
+  end;
+end;
+
+finalization
+  InternalFinal;
 
 end.
 
