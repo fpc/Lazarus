@@ -320,12 +320,11 @@ begin
       inc(Position);
       if Position<=Len then begin
         c2:=Source[Position];
-        // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, **, ^^, ::
+        // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, ^^, ::
         if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
         or ((c1='=') and (c2='='))
         or ((c1='!') and (c2='='))
         or ((c1=':') and (c2=':'))
-        or ((c1='*') and (c2='*'))
         or ((c1='^') and (c2='^'))
         or ((c1='|') and (c2='|'))
         or ((c1='&') and (c2='&'))

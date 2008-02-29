@@ -143,6 +143,7 @@ procedure InitCCodeKeyWordLists;
 
 var
   IsCCodeFunctionModifier: TKeyWordFunctionList = nil;
+  IsCCodeCustomOperator: TKeyWordFunctionList = nil;
 
 implementation
 
@@ -163,11 +164,34 @@ procedure InitCCodeKeyWordLists;
 begin
   if KeyWordLists<>nil then exit;
   KeyWordLists:=TFPList.Create;
+  
   IsCCodeFunctionModifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsCCodeFunctionModifier);
   with IsCCodeFunctionModifier do begin
     Add('static'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('inline'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  IsCCodeCustomOperator:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsCCodeCustomOperator);
+  with IsCCodeCustomOperator do begin
+    Add('+'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('*'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('|'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('&'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('='     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('++'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('--'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('+='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('-='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('*='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('/='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('&='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('|='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('=='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('!='    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -187,9 +211,9 @@ begin
   Result:=true;
   if AtomIsChar(';') then
     // ignore
-  else if AtomIsIdentifier then
-    ReadVariable
-  else
+  else if AtomIsIdentifier then begin
+    ReadVariable;
+  end else
     RaiseException('unexpected token '+GetAtom);
 end;
 
@@ -232,11 +256,15 @@ procedure TCCodeParserTool.ReadEnum;
     TEST_ENUM2,
     TEST_ENUM3
   };
+  enum e1{dark, light};
 
 *)
 begin
   CreateChildNode(ccnEnums);
   ReadNextAtom;
+  // read optional name
+  if AtomIsIdentifier then
+    ReadNextAtom;
   if not AtomIsChar('{') then
     RaiseExpectedButAtomFound('{');
   // read enums. Examples
@@ -253,6 +281,8 @@ begin
         // read value
         ReadNextAtom;
         ReadConstant;
+        CurNode.EndPos:=SrcPos;
+        ReadNextAtom;
       end;
       EndChildNode;
     end;
@@ -427,8 +457,6 @@ begin
 end;
 
 procedure TCCodeParserTool.ReadConstant;
-var
-  EndPos: LongInt;
 begin
   if AtomIsChar(',') or AtomIsChar(';') then
     RaiseExpectedButAtomFound('identifier');
@@ -436,14 +464,14 @@ begin
   repeat
     if AtomIsChar('(') or AtomIsChar('[') then
       ReadTilBracketClose(true);
-    EndPos:=SrcPos;
+    CurNode.EndPos:=SrcPos;
     ReadNextAtom;
     if AtomIsChar(',') or AtomIsChar(';')
     or AtomIsChar(')') or AtomIsChar(']') or AtomIsChar('}')
     then
       break;
   until false;
-  CurNode.EndPos:=EndPos;
+  UndoReadNextAtom;
   EndChildNode;
 end;
 
@@ -454,17 +482,19 @@ procedure TCCodeParserTool.ReadVariable;
 
   int i
   uint8_t b[6]
-  
+  int y = 7;
+
   static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
   {
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
   }
   bdaddr_t *strtoba(const char *str);
 
-
+  complex operator+(complex, complex);
 *)
 var
   IsFunction: Boolean;
+  NeedEnd: Boolean;
 begin
   DebugLn(['TCCodeParserTool.ReadVariable ']);
   CreateChildNode(ccnVariable);
@@ -487,22 +517,55 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end;
   end;
+  CreateChildNode(ccnVariableName);
+
+  // possible:
+  // int, short int, short signed int
+  // char, signed char, unsigned char
+  // long, long long, signed long, signed long long, unsigned long, unsigned long long
+  repeat
+    if AtomIs('short') then
+      ReadNextAtom
+    else if AtomIs('signed') then
+      ReadNextAtom
+    else if AtomIs('unsigned') then
+      ReadNextAtom
+    else if AtomIs('long') then begin
+      // check if 'long long'
+      ReadNextAtom;
+      if not (AtomIs('long') or AtomIs('unsigned')) then begin
+        UndoReadNextAtom;
+        break;
+      end;
+    end else
+      break;
+   until false;
+
   // read name
   ReadNextAtom;
-  while AtomIsChar('*') do begin
-    // pointer
+  if AtomIs('operator') then begin
+    IsFunction:=true;
+    // read operator
     ReadNextAtom;
+    if not IsCCodeCustomOperator.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+    then
+      RaiseExpectedButAtomFound('operator');
+  end else begin
+    while AtomIsChar('*') do begin
+      // pointer
+      ReadNextAtom;
+    end;
+
+    DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
   end;
-  
-  DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
-  if not AtomIsIdentifier then
-    RaiseExpectedButAtomFound('identifier');
-  CreateChildNode(ccnVariableName);
   EndChildNode;
 
   ReadNextAtom;
   if IsFunction and (not AtomIsChar('(')) then
     RaiseExpectedButAtomFound('(');
+  NeedEnd:=true;
   if AtomIsChar('(') then begin
     // this is a function => read parameter list
     CreateChildNode(ccnFuncParamList);
@@ -520,13 +583,29 @@ begin
       // functions without statements are external and must end with a semicolon
       RaiseExpectedButAtomFound(';');
     end;
+    NeedEnd:=false;
+    ReadNextAtom;
   end else if AtomIsChar('[') then begin
     // read array brackets
     ReadTilBracketClose(true);
-  end else begin
-    // no postfix modifiers => move cursor back
-    UndoReadNextAtom;
+    ReadNextAtom;
   end;
+  
+  // read initial constant
+  if AtomIsChar('=') then begin
+    ReadNextAtom;
+    ReadConstant;
+    ReadNextAtom;
+    NeedEnd:=true;
+  end;
+  
+  // sanity check
+  if (SrcPos<=SrcLen) and NeedEnd
+  and not (AtomIsChar(';') or AtomIsChar(',') or AtomIsChar(')')) then
+    RaiseExpectedButAtomFound('"end of variable"');
+    
+  UndoReadNextAtom;
+
   EndChildNode;
 end;
 
