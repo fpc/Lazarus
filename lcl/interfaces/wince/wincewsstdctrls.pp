@@ -774,7 +774,7 @@ begin
   Handle := AWinControl.Handle;
   pwAText := UTF8Decode(AText);
   if TCustomComboBox(AWinControl).ReadOnly then
-    Windows.SendMessageW(Handle, CB_SELECTSTRING, -1, LPARAM(PWideChar(pwAText)))
+    Windows.SendMessageW(Handle, CB_SELECTSTRING, WPARAM(-1), LPARAM(PWideChar(pwAText)))
   else
     Windows.SendMessageW(Handle, WM_SETTEXT, 0, LPARAM(PWideChar(pwAText)));
 end;
