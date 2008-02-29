@@ -369,7 +369,7 @@ begin
     begin
       s1 := Copy(Name, 1, n - 1);        // module name
       s2 := Copy(Name, n + 1, 255);      // component name
-      Owner := Application.FindComponent(S1); //FindGlobalComponent(s1);
+      Owner := FindGlobalComponent(s1);
       if Owner <> nil then
         Result := Owner.FindComponent(s2);
     end;
@@ -423,8 +423,8 @@ begin
   {$IFDEF DebugLR}
   DebugLn('frGetComponents 2');
   {$ENDIF}
-//  for i := 0 to Screen.DataModuleCount - 1 do
-//    EnumComponents(Screen.DataModules[i]);
+  for i := 0 to Screen.DataModuleCount - 1 do
+    EnumComponents(Screen.DataModules[i]);
 
   with Screen do
   begin
