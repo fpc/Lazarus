@@ -5728,7 +5728,8 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- object Visibility: default -->
       <element name="TSharedImage">
-        <short/>
+        <short>
+          <i>TSharedImage</i> -  base class for reference counted images</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5741,34 +5742,34 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TSharedImage.Reference">
-        <short/>
+        <short>Increase reference count</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TSharedImage.Release">
-        <short/>
+        <short>Decrease reference count</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TSharedImage.FreeHandle">
-        <short/>
+        <short>Release the handle for this image and free its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TSharedImage.RefCount">
-        <short/>
+        <short>The number of references to this shared image</short>
         <descr/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TSharedImage.HandleAllocated">
-        <short/>
+        <short>Has a handle been allocated for this image?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5821,8 +5822,11 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- object Visibility: default -->
       <element name="TBitmapImage">
-        <short/>
-        <descr/>
+        <short>The place where the actual image of a bitmap is stored</short>
+        <descr>
+          <p>Descendant of TSharedImage for TBitmap.</p>
+          <i>If a TBitmap is assigned to another TBitmap, only the reference count will be increased and both will share the same TBitmapImage</i>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -5871,14 +5875,14 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TBitmapImage.FreeMaskHandle">
-        <short/>
+        <short>Release the handle for the bitmap mask</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: protected -->
       <element name="TBitmapImage.ReleaseHandle">
-        <short/>
+        <short>Release the bitmap handle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5889,7 +5893,7 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- function Visibility: protected -->
       <element name="TBitmapImage.IsEmpty">
-        <short/>
+        <short>Is the bitmap image empty?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5900,7 +5904,7 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- function Visibility: protected -->
       <element name="TBitmapImage.GetPixelFormat">
-        <short/>
+        <short>Find the format for the pixels (ie the number of bits per pixel)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5917,7 +5921,7 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBitmapImage.Destroy">
-        <short/>
+        <short>BitmapImage destructor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5935,7 +5939,7 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmapImage.GetHandleType">
-        <short/>
+        <short>Determine the type of the bitmap handle</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5946,13 +5950,13 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmapImage.SaveStream">
-        <short/>
+        <short>The stream to which the data are to be saved</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmapImage.SaveStreamType">
-        <short/>
+        <short>The type of the stream for saving the data</short>
         <descr/>
         <seealso/>
       </element>
@@ -5977,10 +5981,12 @@ The boundaries of the rectangle are specified in <i>ARect</i>
         <short>
           <i>TBitmap</i> is the data of an image, and can be loaded from a file, stream or resource in .bmp  or .xpm format</short>
         <descr>
-          <i>TBitmap</i> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)<br/>
-The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files).<br/>
-When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <i>Handle</i> is interface dependent.<br/>
-To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
+          <p>
+            <i>TBitmap</i> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)</p>
+          <p>The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files) or FreePascal/Lazarus form streams (.lfm)</p>
+          <p>When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <i>Handle</i> is interface dependent.</p>
+          <p>To access the raw data, see TLazIntfImage in IntfGraphics.pas</p>
+        </descr>
         <seealso>
           <link id="#lcl.IntfGraphics.TLazIntfImage"/>
         </seealso>
@@ -6464,14 +6470,14 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.FreeImage">
-        <short/>
+        <short>Release (remove) the image, freeing the resources used</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.HandleAllocated">
-        <short/>
+        <short>Is a handle allocated for this bitmap?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6482,7 +6488,7 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.MaskHandleAllocated">
-        <short/>
+        <short>Is a handle allocated for the bitmap mask?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6493,7 +6499,7 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.PaletteAllocated">
-        <short/>
+        <short>Has a colour palette been allocated for this bitmap?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6504,7 +6510,7 @@ To access the raw data, see TLazIntfImage in IntfGraphics.pas</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.CreateFromBitmapHandles">
-        <short/>
+        <short>Create an image in the specified rectangle, using the given bitmap and mask handles</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6601,7 +6607,8 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromMimeStream">
-        <short/>
+        <short>
+          <i>LoadFromMimeStream</i> - get <i>Bitmap </i>data from the specified MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6616,7 +6623,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.GetSupportedSourceMimeTypes">
-        <short/>
+        <short>Gets a list of the supported MIME types for the source file</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6627,7 +6634,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.GetDefaultMimeType">
-        <short/>
+        <short>Finds the default MIME type</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6638,7 +6645,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.GetFileExtensions">
-        <short/>
+        <short>Finds the available file extensions</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6658,7 +6665,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Mask">
-        <short/>
+        <short>Masks the bitmap using a transparent colour</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6669,7 +6676,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.SaveToStream">
-        <short/>
+        <short>Saves bitmap data to a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6680,7 +6687,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.ReadStream">
-        <short/>
+        <short>Reads data from a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6699,7 +6706,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.WriteStream">
-        <short/>
+        <short>Writes data to a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6714,7 +6721,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.ReleaseHandle">
-        <short/>
+        <short>Release the bitmap handle, effectively freeing resources</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6725,7 +6732,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.ReleasePalette">
-        <short/>
+        <short>Release the current palette</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6736,7 +6743,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.GetFPReaderForFileExt">
-        <short/>
+        <short>Get the appropriate FPReader for the given file extension</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6766,7 +6773,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.GetDefaultFPReader">
-        <short/>
+        <short>Get the default FPReader</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6777,7 +6784,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.GetDefaultFPWriter">
-        <short/>
+        <short>Get the default FPWriter</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6811,7 +6818,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.WriteNativeStream">
-        <short/>
+        <short>Write bitmap data to a native stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6830,7 +6837,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TBitmap.CreateIntfImage">
-        <short/>
+        <short>Create an interface image</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6841,49 +6848,49 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.Canvas">
-        <short/>
+        <short>The canvas on which this bitmap is drawn</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.Handle">
-        <short/>
+        <short>The operating system Handle ssociated with this bitmap</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.HandleType">
-        <short/>
+        <short>The type of system handle</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.MaskHandle">
-        <short/>
+        <short>The system handle associated with the bitmap mask</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.Monochrome">
-        <short/>
+        <short>Whether using monochrome display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.PixelFormat">
-        <short/>
+        <short>PixelFormat - number of bits per pixel</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.TransparentColor">
-        <short/>
+        <short>The transparent colour used for masks etc</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TBitmap.TransparentMode">
-        <short/>
+        <short>The mode used for transparency</short>
         <descr/>
         <seealso/>
       </element>
@@ -6942,14 +6949,14 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- object Visibility: default -->
       <element name="TFPImageBitmap">
-        <short/>
+        <short>A class of Bitmap using the FPImage reader and writer (ie customised for FreePascal)</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetFileExtensions">
-        <short/>
+        <short>Find the file extensions for valid bitmap image files</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6960,7 +6967,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.IsFileExtensionSupported">
-        <short/>
+        <short>Is the given file extension supported?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6975,7 +6982,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetFPReaderForFileExt">
-        <short/>
+        <short>Get the FPReader tool appropriate to the given file extension</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6990,7 +6997,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetFPWriterForFileExt">
-        <short/>
+        <short>Get the FPWriter tool appropriate for the given file extension</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7005,7 +7012,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetDefaultFPReader">
-        <short/>
+        <short>Get the default FPReader, if no extension-specific tool</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7016,7 +7023,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetDefaultFPWriter">
-        <short/>
+        <short>Get the default FPWriter, if no extension-specific tool</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7042,7 +7049,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPImageBitmap.ReadStream">
-        <short/>
+        <short>Read the data from a Stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7061,7 +7068,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFPImageBitmap.WriteStream">
-        <short/>
+        <short>Write the data to a stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7076,7 +7083,7 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       </element>
       <!-- function Visibility: public -->
       <element name="TFPImageBitmap.GetDefaultMimeType">
-        <short/>
+        <short>Get the default MIME type for this bitmap</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -7968,6 +7975,67 @@ Writing is not (yet) implemented.</descr>
             <i>PNM </i>- a <b>PortableAnyMapGraphic </b>image</p>
           <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
         </descr>
+      </element>
+      <element name="TJPEGImage">
+        <short>TJPEGImage - a clas for handling images stored in JPEG (compressed) format</short>
+        <descr>JPEG images are very commonly used for storing digital photographs</descr>
+      </element>
+      <element name="TJPEGImage.InitFPImageReader">
+        <short>Initialise the FreePascal Image reader for this image type</short>
+      </element>
+      <element name="TJPEGImage.FinalizeFPImageReader">
+        <short>Finalise the FreePascal Image reader</short>
+      </element>
+      <element name="TJPEGImage.InitFPImageWriter">
+        <short>Initialise the FreePascal Image Writer for this image class</short>
+      </element>
+      <element name="TJPEGImage.CompressionQuality">
+        <short>Determine the compression quality for this image</short>
+        <descr>
+          <p>Extreme compression can lead to loss of quality at the expense of a small file size</p>
+          <p>Allowed range is 1..100 </p>
+          <p>100 = best quality, 25 = pretty awful</p>
+        </descr>
+      </element>
+      <element name="TJPEGImage.GrayScale">
+        <short>Is this a grayscale image?</short>
+      </element>
+      <element name="TJPEGImage.ProgressiveEncoding">
+        <short>Is progressive encoding used for this JPEG?</short>
+      </element>
+      <element name="TJPEGImage.Performance">
+        <short>Set for best quality or best speed</short>
+      </element>
+      <element name="TBitmap.LoadFromIntfImage">
+        <short>
+          <i>LoadFromIntfImage</i> - gets <i>Bitmap</i> data from an interface image</short>
+      </element>
+      <element name="TBitmap.GetResourceType">
+        <short>Finds the type of resource for the bitmap</short>
+      </element>
+      <element name="TBitmap.SetHandles">
+        <short>Sets handles for the bitmap and its mask</short>
+      </element>
+      <element name="TBitmap.ReleaseMaskHandle">
+        <short>Release the bitmap mask handle</short>
+      </element>
+      <element name="TBitmap.CanReadGraphicStreams">
+        <short>Determine whether this instance of the class can read graphic streams</short>
+      </element>
+      <element name="TBitmapImage.FreePalette">
+        <short>Free the colour palette used for this bitmap</short>
+      </element>
+      <element name="TBitmapImage.ReleaseMaskHandle">
+        <short>Release the handle for the bitmap mask</short>
+      </element>
+      <element name="TBitmapImage.ReleasePalette">
+        <short>Reklease the handle for the colour palette</short>
+      </element>
+      <element name="TBitmapImage.BitmapCanvas">
+        <short>The canvas for the bitmap (ie the actual contents of the picture)</short>
+      </element>
+      <element name="TBitmapImage.SaveStreamClass">
+        <short>The class of stream for saving data</short>
       </element>
     </module>
     <!-- Graphics -->
