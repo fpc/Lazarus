@@ -279,47 +279,57 @@ procedure TCCodeParserTool.ReadStruct(NeedIdentifier: boolean);
     struct hidp_connadd_req {
       int ctrl_sock;
     }
+    struct hidp_conninfo *ci;
 *)
 begin
   CreateChildNode(ccnStruct);
   
   ReadNextAtom;
   if NeedIdentifier then begin
+    // read type name
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
     ReadNextAtom;
   end;
   
-  // read {
-  if not AtomIsChar('{') then
-    RaiseExpectedButAtomFound('{');
-  repeat
-    ReadNextAtom;
-    // read variables
-    if AtomIsIdentifier then begin
-      ReadVariable;
+  if AtomIsChar('{') then begin
+    // read block {}
+    repeat
       ReadNextAtom;
-      if AtomIsChar('}') then
+      // read variables
+      if AtomIsIdentifier then begin
+        ReadVariable;
+        ReadNextAtom;
+        if AtomIsChar('}') then
+          break
+        else if AtomIsChar(';') then begin
+          // next identifier
+        end else
+          RaiseExpectedButAtomFound('}');
+      end else if AtomIsChar('}') then
         break
-      else if AtomIsChar(';') then begin
-        // next identifier
-      end else
-        RaiseExpectedButAtomFound('}');
-    end else if AtomIsChar('}') then
-      break
-    else
-      RaiseExpectedButAtomFound('identifier');
-  until false;
-  // read attributes
-  ReadNextAtom;
-  if AtomIs('__attribute__') then begin
+      else
+        RaiseExpectedButAtomFound('identifier');
+    until false;
+    // read attributes
     ReadNextAtom;
-    if not AtomIsChar('(') then
-      RaiseExpectedButAtomFound('(');
-    ReadTilBracketClose(true);
+    if AtomIs('__attribute__') then begin
+      ReadNextAtom;
+      if not AtomIsChar('(') then
+        RaiseExpectedButAtomFound('(');
+      ReadTilBracketClose(true);
+    end else begin
+      UndoReadNextAtom;
+    end;
   end else begin
-    UndoReadNextAtom;
+    // this is a struct variable
+    while AtomIsChar('*') do begin
+      ReadNextAtom;
+    end;
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
   end;
+  
   // close node
   EndChildNode;
 end;
@@ -471,7 +481,7 @@ begin
   end;
   // read name
   ReadNextAtom;
-  if AtomIsChar('*') then begin
+  while AtomIsChar('*') do begin
     // pointer
     ReadNextAtom;
   end;
