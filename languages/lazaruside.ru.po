@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-28 02:40+0300\n"
+"PO-Revision-Date: 2008-03-01 00:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -4827,7 +4827,7 @@ msgstr "Параметры LCL, зависящие от интерфейса:"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
-msgstr "Тип элемента управления LCL"
+msgstr "Библиотека виджетов LCL"
 
 #: lazarusidestrconsts:lislazbuildlclinterface
 msgid "LCL interface"

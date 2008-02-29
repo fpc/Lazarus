@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-27 00:12+0300\n"
+"PO-Revision-Date: 2008-03-01 00:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -587,7 +587,7 @@ msgstr "Нет для всех"
 
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr "Отсутствует объект набора виджетов. Проверьте, что модуль \"interfaces\" был добавлен в выражение uses программы."
+msgstr "Отсутствует объект библиотеки виджетов. Проверьте, что модуль \"interfaces\" был добавлен в выражение uses программы."
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
