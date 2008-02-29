@@ -82,6 +82,7 @@ type
     function DirectiveToken: boolean;
     function EnumToken: boolean;
     function ExternToken: boolean;
+    function CurlyBracketCloseToken: boolean;
     function TypedefToken: boolean;
     function StructToken: boolean;
     procedure InitKeyWordList;
@@ -249,6 +250,12 @@ begin
     RaiseExpectedButAtomFound('{');
 end;
 
+function TCCodeParserTool.CurlyBracketCloseToken: boolean;
+begin
+  Result:=true;
+
+end;
+
 procedure TCCodeParserTool.ReadEnum;
 (* For example:
   enum {
@@ -400,6 +407,7 @@ begin
     with FDefaultTokenList do begin
       Add('#',{$ifdef FPC}@{$endif}DirectiveToken);
       Add('extern',{$ifdef FPC}@{$endif}ExternToken);
+      Add('}',{$ifdef FPC}@{$endif}CurlyBracketCloseToken);
       Add('enum',{$ifdef FPC}@{$endif}EnumToken);
       Add('typedef',{$ifdef FPC}@{$endif}TypedefToken);
       Add('struct',{$ifdef FPC}@{$endif}StructToken);
@@ -550,6 +558,20 @@ begin
     if not IsCCodeCustomOperator.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     then
       RaiseExpectedButAtomFound('operator');
+  end else if AtomIsChar('(') then begin
+    // example: int (*fp)(char*);
+    //   pointer to function taking a char* argument; returns an int
+    ReadNextAtom;
+    while AtomIsChar('*') do begin
+      // pointer
+      ReadNextAtom;
+    end;
+    DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
+    ReadNextAtom;
+    if not AtomIsChar(')') then
+      RaiseExpectedButAtomFound(')');
   end else begin
     while AtomIsChar('*') do begin
       // pointer
