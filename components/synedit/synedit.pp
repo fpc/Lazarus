@@ -5602,6 +5602,9 @@ end;
 procedure TCustomSynEdit.SetTopLine(Value: Integer);
 var
   Delta: Integer;
+{$ifdef SYN_LAZARUS}
+  OldTopLine: LongInt;
+{$ENDIF}
 begin
   // don't use MinMax here, it will fail in design mode (Lines.Count is zero,
   // but the painting code relies on TopLine >= 1)
@@ -5611,13 +5614,12 @@ begin
     Value := Min(Value, Lines.Count + 1 - fLinesInWindow);
   Value := Max(Value, 1);
   if Value <> TopLine then begin
-    Delta := TopLine - Value;
+{$ifdef SYN_LAZARUS}
+    OldTopLine:=TopLine;
     fTopLine := Value;
     UpdateScrollBars;
+    Delta := TopLine - OldTopLine;
     if Abs(Delta) < fLinesInWindow then
-{$ifndef SYN_LAZARUS}
-      ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil);
-{$else}
     begin
       // TODO: SW_SMOOTHSCROLL --> can't get it work
       if not ScrollWindowEx(Handle, 0, fTextHeight * Delta, nil, nil, 0, nil,
@@ -5626,6 +5628,14 @@ begin
         // scrollwindow failed, invalidate all
         Invalidate;
       end;
+    end
+{$else}
+    Delta := TopLine - Value;
+    fTopLine := Value;
+    UpdateScrollBars;
+    if Abs(Delta) < fLinesInWindow then
+    begin
+      ScrollWindow(Handle, 0, fTextHeight * Delta, nil, nil);
     end
 {$endif}
     else
