@@ -197,10 +197,12 @@ begin
       if not (csDesigning in AWinControl.ComponentState) then
       begin
         QWidget_contentsRect(Widget.Widget, @R);
-        TForm(AWinControl).Left := 0;
-        TForm(AWinControl).Top := 0;
+        
         TForm(AWinControl).Width := TForm(AWinControl).Width + R.Left;
         TForm(AWinControl).Height := TForm(AWinControl).Height + R.Top;
+        TForm(AWinControl).Left := TForm(AWinControl).Left - R.Left;
+        TForm(AWinControl).Top := TForm(AWinControl).Top - R.Top;
+
         TForm(AWinControl).ReAlign;
       end;
     end;
@@ -531,7 +533,6 @@ class procedure TQtWSWinControl.SetCursor(const AWinControl: TWinControl; const 
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetCursor') then
     Exit;
-
   TQtWidget(AWinControl.Handle).SetCursor(QCursorH(ACursor));
 end;
 
