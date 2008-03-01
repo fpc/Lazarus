@@ -7765,7 +7765,9 @@ begin
   // update menu and buttons state
   UpdateSaveMenuItemsAndButtons(true);
 
+  {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoSaveProject End');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
