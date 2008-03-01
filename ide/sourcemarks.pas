@@ -679,14 +679,23 @@ end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
 var
-  APixmap: TPixmap;
+  Bitmap: TBitmap;
+  Resource: TLResource;
 begin
-  APixmap:=TPixMap.Create;
-  APixmap.TransparentColor:=clBtnFace;
-  APixmap.LoadFromLazarusResource(ResName);
-  Result:=ImgList.Count;
-  ImgList.Add(APixmap,nil);
-  APixmap.Free;
+  Resource:=LazarusResources.Find(ResName);
+  if Resource=nil then
+    DebugLn('TSourceMarks.AddImage: ',
+      ' WARNING: icon not found: "',ResName,'"');
+  if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
+    Bitmap:=TPixmap.Create;
+  end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
+    Bitmap:=TPortableNetworkGraphic.Create;
+  end else
+    DebugLn('TSourceMarks.AddImage: ',
+      ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
+  Bitmap.LoadFromLazarusResource(ResName);
+  Result:=ImgList.Add(Bitmap,nil);
+  Bitmap.Free;
 end;
 
 function TSourceMarks.GetSourceEditor(AMark: TSourceMark): TObject;
