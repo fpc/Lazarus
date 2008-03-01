@@ -122,7 +122,7 @@ type
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string; override;
 
     procedure GetFPCCompilerParamsForEnvironmentTest(out Params: string);
-    procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
+    procedure RescanCompilerDefines(ResetBuildTarget, OnlyIfCompilerChanged: boolean);
     property ScanningCompilerDisabled: boolean read FScanningCompilerDisabled
                                               write FScanningCompilerDisabled;
 
@@ -136,7 +136,8 @@ type
     function BackupFile(const Filename: string): TModalResult; override;
 
     // methods for building
-    procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string);
+    procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
+                             DoNotScanFPCSrc: boolean = false);
     procedure SetBuildTargetIDE;
   end;
   
@@ -449,7 +450,8 @@ begin
     Params:=AddCmdLineParameter(Params,'-P'+CurTargetCPU);
 end;
 
-procedure TBuildManager.RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
+procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
+  OnlyIfCompilerChanged: boolean);
 var
   CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
   CompilerUnitSearchPath, CompilerUnitLinks: string;
@@ -465,6 +467,9 @@ var
 
 begin
   if ScanningCompilerDisabled then exit;
+  if ResetBuildTarget then
+    SetBuildTarget('','','',true);
+  
   GetFPCCompilerParamsForEnvironmentTest(CurOptions);
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TMainIDE.RescanCompilerDefines A ',CurOptions,
@@ -1178,7 +1183,7 @@ begin
 end;
 
 procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
-  LCLWidgetType: string);
+  LCLWidgetType: string; DoNotScanFPCSrc: boolean);
 var
   OldTargetOS: String;
   OldTargetCPU: String;
@@ -1208,8 +1213,8 @@ begin
 
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
-  if FPCTargetChanged then
-    RescanCompilerDefines(true);
+  if FPCTargetChanged and (not DoNotScanFPCSrc) then
+    RescanCompilerDefines(false,true);
 
   if FPCTargetChanged or LCLTargetChanged then begin
     IncreaseCompilerParseStamp;

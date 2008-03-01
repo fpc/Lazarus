@@ -3521,7 +3521,7 @@ begin
     frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      MainBuildBoss.RescanCompilerDefines(true);
+      MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerParseStamp;
     end;
@@ -3548,7 +3548,7 @@ begin
     frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     frmCompilerOptions.OnImExportCompilerOptions:=@OnCompilerOptionsImExport;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      MainBuildBoss.RescanCompilerDefines(true);
+      MainBuildBoss.RescanCompilerDefines(true,true);
       Project1.DefineTemplates.AllChanged;
       IncreaseCompilerParseStamp;
     end;
@@ -3893,7 +3893,7 @@ begin
 
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        MainBuildBoss.RescanCompilerDefines(false);
+        MainBuildBoss.RescanCompilerDefines(true,false);
       end;
 
       // save to disk
@@ -4055,7 +4055,7 @@ Begin
 
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        MainBuildBoss.RescanCompilerDefines(false);
+        MainBuildBoss.RescanCompilerDefines(true,false);
       end;
 
       // save to disk
@@ -4130,7 +4130,7 @@ end;
 
 procedure TMainIDE.mnuEnvRescanFPCSrcDirClicked(Sender: TObject);
 begin
-  MainBuildBoss.RescanCompilerDefines(false);
+  MainBuildBoss.RescanCompilerDefines(true,false);
 end;
 
 procedure TMainIDE.SaveEnvironment;
@@ -6264,8 +6264,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-  MainBuildBoss.SetBuildTarget('','','');
-  MainBuildBoss.RescanCompilerDefines(true);
+  MainBuildBoss.RescanCompilerDefines(true,true);
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1,true);
@@ -7600,7 +7599,7 @@ Begin
     end;
 
     // rebuild codetools defines
-    MainBuildBoss.RescanCompilerDefines(true);
+    MainBuildBoss.RescanCompilerDefines(true,true);
     // (i.e. remove old project specific things and create new)
     IncreaseCompilerParseStamp;
     Project1.DefineTemplates.AllChanged;
