@@ -26,15 +26,15 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="lazparadox"/>
+        <MinVersion Valid="True"/>
       </Item1>
       <Item2>
         <PackageName Value="LCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="lazparadox"/>
-        <MinVersion Valid="True"/>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
       </Item3>
     </RequiredPackages>
     <Units Count="2">
