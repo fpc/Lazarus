@@ -264,6 +264,8 @@ begin
       LineTo(Self.Width,Self.Height);
       MoveTo(0,Self.Height);
       LineTo(Self.Width,0);
+      if Message.DC <> 0 then
+        Handle := 0;
     end;
   end else begin
     Paint;
