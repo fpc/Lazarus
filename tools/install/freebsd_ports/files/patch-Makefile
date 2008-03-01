@@ -1,0 +1,11 @@
+--- Makefile	Fri Sep 15 03:55:16 2006
++++ Makefile	Fri Sep 22 00:40:31 2006
+@@ -238,7 +238,7 @@
+ LAZARUS_INSTALL_DIR=C:\lazarus
+ endif
+ ifneq ($(findstring $(OS_TARGET),freebsd),)
+-LAZARUS_INSTALL_DIR=/usr/local/lazarus
++LAZARUS_INSTALL_DIR=%%DATADIR%%
+ endif
+ ifeq ($(FULL_TARGET),i386-linux)
+ override TARGET_DIRS+=lcl components packager/registration ideintf designer packager
