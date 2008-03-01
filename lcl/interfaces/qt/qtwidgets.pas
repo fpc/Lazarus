@@ -893,6 +893,27 @@ type
     procedure SignalCurrentItemChanged(current: QTreeWidgetItemH; previous: QTreeWidgetItemH) cdecl;
     procedure SignalItemSelectionChanged; cdecl;
   end;
+  
+  {TQtTableView}
+  
+  TQtTableView = class(TQtAbstractItemView)
+  private
+    FVerticalHeader: TQtHeaderView;
+    FHorizontalHeader: TQtHeaderView;
+  public
+    function verticalHeader: TQtHeaderView;
+    function horizontalHeader: TQtHeaderView;
+    function CreateWidget(const Params: TCreateParams): QWidgetH; override;
+    function getViewPort: QWidgetH;
+    function getClientBounds: TRect; override;
+    procedure grabMouse; override;
+    procedure setColor(const Value: PQColor); override;
+    procedure setVisible(visible: Boolean); override;
+    function getGridStyle: QtPenStyle;
+    procedure setGridStyle(ANewStyle: QtPenStyle);
+  public
+    destructor Destroy; override;
+  end;
 
   { TQtMenu }
 
@@ -6470,6 +6491,95 @@ begin
 
   DeliverMessage(Msg);
   
+end;
+
+{TQtTableView}
+
+function TQtTableView.CreateWidget(const Params: TCreateParams): QWidgetH;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTableView.CreateWidget');
+  {$endif}
+  HasPaint := False;
+  Result := QTableView_create();
+  QWidget_setAutoFillBackground(Result, True);
+end;
+
+function TQtTableView.verticalHeader: TQtHeaderView;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTableView.verticalHeader');
+  {$endif}
+  if FVerticalHeader = nil then
+    FVerticalHeader := TQtHeaderView.CreateFrom(LCLObject, QTableView_verticalHeader(QTableViewH(Widget)));
+  Result := FVerticalHeader;
+end;
+
+function TQtTableView.horizontalHeader: TQtHeaderView;
+var
+  AParams: TCreateParams;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTableView.horizontalHeader');
+  {$endif}
+  if FHorizontalHeader = nil then
+    FHorizontalHeader := TQtHeaderView.CreateFrom(LCLObject, QTableView_horizontalHeader(QTableViewH(Widget)));
+  Result := FHorizontalHeader;
+end;
+
+procedure TQtTableView.setColor(const Value: PQColor);
+var
+  Palette: QPaletteH;
+begin
+  {$ifdef VerboseQt}
+    WriteLn('TQtTableView.setColor');
+  {$endif}
+  Palette := QPalette_create(QWidget_palette(Widget));
+  try
+    QPalette_setColor(Palette, QPaletteWindow, Value);
+    QWidget_setPalette(Widget, Palette);
+  finally
+    QPalette_destroy(Palette);
+  end;
+end;
+
+procedure TQtTableView.setVisible(visible: Boolean);
+begin
+  QWidget_setVisible(Widget, visible);
+end;
+
+function TQtTableView.getGridStyle: QtPenStyle;
+begin
+  Result := QTableView_gridStyle(QTableViewH(Widget));
+end;
+
+procedure TQtTableView.setGridStyle(ANewStyle: QtPenStyle);
+begin
+  QTableView_setGridStyle(QTableViewH(Widget), ANewStyle);
+end;
+
+destructor TQtTableView.Destroy;
+begin
+  if FVerticalHeader <> nil then
+    FVerticalHeader.Free;
+  if FHorizontalHeader <> nil then
+    FHorizontalHeader.Free;
+  inherited Destroy;
+end;
+
+function TQtTableView.getViewPort: QWidgetH;
+begin
+  Result := QAbstractScrollArea_viewport(QAbstractScrollAreaH(Widget));
+end;
+
+function TQtTableView.getClientBounds: TRect;
+begin
+  QWidget_contentsRect(Widget, @Result);
+end;
+
+procedure TQtTableView.grabMouse;
+begin
+  QWidget_grabMouse(Widget);
 end;
 
 
