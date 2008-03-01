@@ -4262,8 +4262,8 @@ var
   var
     i: Integer;
   begin
-    if WordIsKeyWord.DoIt(Identifier) then exit(true);
-    if WordIsPredefinedFPCIdentifier.DoIt(Identifier) then exit(true);
+    if WordIsKeyWord.DoItCaseInsensitive(Identifier) then exit(true);
+    if WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(Identifier) then exit(true);
     if (Definitions<>nil)
     and (Definitions.FindKey(Identifier,@CompareIdentifierWithCodeTreeNodeExt)<>nil)
     then exit(true);
