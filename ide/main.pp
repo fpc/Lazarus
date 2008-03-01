@@ -5462,7 +5462,9 @@ begin
   if ([ofProjectLoading,ofLoadHiddenResource]*OpenFlags=[]) then
     FormEditor1.ClearSelection;
   FormEditor1.CreateComponentInterface(NewComponent,true);
+  {$IFDEF IDE_DEBUG}
   DebugLn('SUCCESS: streaming lfm="',LFMBuf.Filename,'"');
+  {$ENDIF}
   AnUnitInfo.ComponentName:=NewComponent.Name;
   AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
   DesignerForm:=nil;
@@ -6716,7 +6718,9 @@ var ActiveSrcEdit: TSourceEditor;
   ACaption, AText: string;
   i: integer;
 begin
-  //debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
+  {$IFDEF IDE_DEBUG}
+  debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
+  {$ENDIF}
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then begin
@@ -6777,7 +6781,9 @@ begin
     Project1.RemoveUnit(i);
   end;
 
+  {$IFDEF IDE_DEBUG}
   DebugLn('TMainIDE.DoCloseEditorFile end');
+  {$ENDIF}
   Result:=mrOk;
 end;
 
