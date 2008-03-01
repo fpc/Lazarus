@@ -166,6 +166,7 @@ var
   Dependency: TPkgDependency;
 begin
   GetDependency(PkgTreeView.Selected,Pkg,Dependency);
+  //DebugLn(['TPkgGraphExplorerDlg.PkgPopupMenuPopup ',Pkg<>nil,' ',(Pkg<>nil) and (Pkg.AutoInstall<>pitNope)]);
   UninstallMenuItem.Visible:=(Pkg<>nil) and (Pkg.AutoInstall<>pitNope);
   if UninstallMenuItem.Visible then
     UninstallMenuItem.Caption:='Uninstall package '+Pkg.IDAsString;
