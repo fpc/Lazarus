@@ -2283,6 +2283,8 @@ images/actions/open.png -text svneol=unset#image/png
 images/actions/paste.png -text svneol=unset#image/png
 images/actions/refresh.png -text svneol=unset#image/png
 images/bookmark.lrs svneol=native#text/pascal
+images/bookmark.sh svneol=native#text/plain
+images/bookmark_list.txt svneol=native#text/plain
 images/btn_downarrow.png -text
 images/codeexplorer/ce_class.png -text
 images/codeexplorer/ce_const.png -text
