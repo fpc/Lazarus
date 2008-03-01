@@ -6255,6 +6255,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
+  MainBuildBoss.SetBuildTarget('','','');
   MainBuildBoss.RescanCompilerDefines(true);
 
   // load required packages

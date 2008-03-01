@@ -1207,8 +1207,7 @@ begin
   //  ' New=',NewTargetCPU,'-',NewTargetOS,'-',NewLCLWidgetType,' FPC=',dbgs(FPCTargetChanged),' LCL=',dbgs(LCLTargetChanged));
 
   if LCLTargetChanged then
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType']:=
-                                                               NewLCLWidgetType;
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',NewLCLWidgetType);
   if FPCTargetChanged then
     RescanCompilerDefines(true);
 

@@ -3726,6 +3726,7 @@ begin
     Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency,
                                            EnvironmentOptions.LazarusDirectory);
     if Result<>mrOk then exit;
+    DebugLn(['TPkgManager.DoCompileAutoInstallPackages LCLUnitPath=',PackageGraph.LCLPackage.CompilerOptions.GetUnitPath(true)]);
 
     // save all open files
     if not (pcfDoNotSaveEditorFiles in Flags) then begin

@@ -240,6 +240,7 @@ var
   Info: PWGLControlInfo;
 begin
   Info:=GetWGLControlInfo(Handle);
+  // don't use wglSwapLayerBuffers or wglSwapBuffers!
   SwapBuffers(Info^.DC);
 end;
 
