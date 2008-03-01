@@ -6039,6 +6039,7 @@ var
   Ext: string;
   NewBuf: TCodeBuffer;
   OldProjectPath: string;
+  TitleWasDefault: Boolean;
 begin
   OldProjectPath:=Project1.ProjectDirectory;
 
@@ -6167,6 +6168,8 @@ begin
       if Result=mrCancel then exit;
     end;
   end;
+  
+  TitleWasDefault:=Project1.TitleIsDefault(true);
 
   // set new project filename
   Project1.ProjectInfoFile:=NewFilename;
@@ -6222,6 +6225,12 @@ begin
   Project1.CompilerOptions.DebugPath:=
     RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectPath,
                      Project1.ProjectDirectory,true);
+                     
+  // change title
+  if TitleWasDefault then begin
+    Project1.Title:=Project1.GetDefaultTitle;
+    // title does not need to be removed from source, because it was default
+  end;
 
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;

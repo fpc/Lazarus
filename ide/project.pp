@@ -608,7 +608,7 @@ type
                           
     // title
     function GetDefaultTitle: string;
-    function TitleIsDefault: boolean;
+    function TitleIsDefault(Fuzzy: boolean = false): boolean;
     function IDAsString: string;
     function IDAsWord: string;
 
@@ -1956,9 +1956,10 @@ begin
   Result:=ExtractFilenameOnly(ProjectInfoFile);
 end;
 
-function TProject.TitleIsDefault: boolean;
+function TProject.TitleIsDefault(Fuzzy: boolean): boolean;
 begin
-  Result:=(Title='') or (Title=GetDefaultTitle);
+  Result:=(Title='') or (Title=GetDefaultTitle)
+    or (Fuzzy and (SysUtils.CompareText(Title,GetDefaultTitle)=0));
 end;
 
 function TProject.IDAsString: string;
