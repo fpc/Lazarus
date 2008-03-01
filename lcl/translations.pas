@@ -313,7 +313,9 @@ begin
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
   FItems.Add(Item);
   FIdentifierToItem.Add(Identifier,Item);
+  //if FIdentifierToItem.Data[UpperCase(Identifier)]=nil then raise Exception.Create('');
   FOriginalToItem.Add(OriginalValue,Item);
+  //if FOriginalToItem.Data[OriginalValue]=nil then raise Exception.Create('');
 end;
 
 function TPOFile.Translate(const Identifier, OriginalValue: String): String;
