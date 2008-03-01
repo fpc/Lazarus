@@ -255,6 +255,8 @@ begin
   //debugln('TCustomGTKGLAreaControl.WMPaint A ',dbgsName(Self),' ',dbgsName(FCanvas));
   if (csDesigning in ComponentState) and (FCanvas<>nil) then begin
     with FCanvas do begin
+      if Message.DC <> 0 then
+        Handle := Message.DC;
       Brush.Color:=clLtGray;
       Pen.Color:=clRed;
       Rectangle(0,0,Self.Width-1,Self.Height-1);
