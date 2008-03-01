@@ -5581,6 +5581,9 @@ begin
     fLastCaretX := fCaretX;                                                     //mh 2000-10-19
     if CaretY < 1 then
       CaretY := 1;
+    {$IFDEF SYN_LAZARUS}
+    EnsureCursorPosVisible;
+    {$ENDIF}
   finally
     Lines.EndUpdate;
     DecPaintLock;
@@ -5681,6 +5684,7 @@ begin
   end;
   if CompareCarets(CaretXY,NewCaretXY)<>0 then
   begin
+    //DebugLn(['TCustomSynEdit.MoveCaretToVisibleArea Old=',dbgs(CaretXY),' New=',dbgs(NewCaretXY)]);
     CaretXY:=NewCaretXY;
   end;
 end;
@@ -7578,20 +7582,22 @@ begin
     // try to make the current selection visible as well
     MinX:=PhysCaretXY.X;
     MaxX:=PhysCaretXY.X;
-    PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
-    PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
-    if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
-    or (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then begin
-      if (SelectionMode<>smColumn) and (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then
-        PhysBlockBeginXY.X:=1;
-      if MinX>PhysBlockBeginXY.X then
-        MinX:=Max(PhysBlockBeginXY.X,PhysCaretXY.X-CharsInWindow+1);
-      if MinX>PhysBlockEndXY.X then
-        MinX:=Max(PhysBlockEndXY.X,PhysCaretXY.X-CharsInWindow+1);
-      if MaxX<PhysBlockBeginXY.X then
-        MaxX:=Min(PhysBlockBeginXY.X,MinX+CharsInWindow-1);
-      if MaxX<PhysBlockEndXY.X then
-        MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
+    if SelAvail then begin
+      PhysBlockBeginXY:=LogicalToPhysicalPos(BlockBegin);
+      PhysBlockEndXY:=LogicalToPhysicalPos(BlockEnd);
+      if (PhysBlockBeginXY.X<>PhysBlockEndXY.X)
+      or (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then begin
+        if (SelectionMode<>smColumn) and (PhysBlockBeginXY.Y<>PhysBlockEndXY.Y) then
+          PhysBlockBeginXY.X:=1;
+        if MinX>PhysBlockBeginXY.X then
+          MinX:=Max(PhysBlockBeginXY.X,PhysCaretXY.X-CharsInWindow+1);
+        if MinX>PhysBlockEndXY.X then
+          MinX:=Max(PhysBlockEndXY.X,PhysCaretXY.X-CharsInWindow+1);
+        if MaxX<PhysBlockBeginXY.X then
+          MaxX:=Min(PhysBlockBeginXY.X,MinX+CharsInWindow-1);
+        if MaxX<PhysBlockEndXY.X then
+          MaxX:=Min(PhysBlockEndXY.X,MinX+CharsInWindow-1);
+      end;
     end;
     {DebugLn('TCustomSynEdit.EnsureCursorPosVisible A CaretX=',dbgs(PhysCaretXY.X),
       ' BlockX=',dbgs(PhysBlockBeginXY.X)+'-'+dbgs(PhysBlockEndXY.X),
@@ -7606,7 +7612,7 @@ begin
       LeftChar := MaxX - (CharsInWindow - 1)
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
-    //DebugLn('TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar);
+    //DebugLn(['TCustomSynEdit.EnsureCursorPosVisible B LeftChar=',LeftChar,' MinX=',MinX,' MaxX=',MaxX,' CharsInWindow=',CharsInWindow]);
     {$ELSE}
     if PhysCaretXY.X < LeftChar then
       LeftChar := PhysCaretXY.X
