@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 set -e
 
 #------------------------------------------------------------------------------
@@ -88,19 +89,19 @@ FPCVersion="$CompilerVersion.$CompilerRelease"
 FPCVersion="$FPCVersion.$CompilerPatch"
 echo " $CompilerVersionStr-$FPCRelease"
 
-#------------------------------------------------------------------------------ 
-# architecture dependent stuff 
+#------------------------------------------------------------------------------
+# architecture dependent stuff
 
-Arch=`dpkg --print-architecture` 
+Arch=`dpkg --print-architecture`
 
 CPU_TARGET="${CPU_TARGET:-$Arch}"
 
 case "$CPU_TARGET" in
-  i386)  ppcbin=386;;
-  amd64) ppcbin=x64;;
-  powerpc) ppcbin=ppc;;
-  sparc) ppcbin=sparc;;
-  arm) ppcbin=arm;;
+  i386)    ppcbin=386;   FPCArch=i386;;
+  amd64)   ppcbin=x64;   FPCArch=x86_64;;
+  powerpc) ppcbin=ppc;   FPCArch=powerpc;;
+  sparc)   ppcbin=sparc; FPCArch=sparc;;
+  arm)     ppcbin=arm;   FPCArch=arm;;
   *)    echo "$CPU_TARGET is not supported."
         exit -1;;
 esac
@@ -112,19 +113,19 @@ then TARGET_SUFFIX="-${CPU_TARGET}"
      PPPRE=ppcross
 else
      PPPRE=ppc
-fi 
+fi
 
 if test -n "$OS_TARGET"
 then
-	TARGET_SUFFIX="${TARGET_SUFFIX}-${OS_TARGET}"
-	TARGET_RPPEFIX="${TARGET_PREFIX}${OS_TARGET}-"
-	TARGET="${CPU_TARGET}-${OS_TARGET}"
-     	CROSSINSTALL=1
+    TARGET_SUFFIX="${TARGET_SUFFIX}-${OS_TARGET}"
+    TARGET_RPPEFIX="${TARGET_PREFIX}${OS_TARGET}-"
+    TARGET="${CPU_TARGET}-${OS_TARGET}"
+        CROSSINSTALL=1
 fi
 
 if test -z "$FPC"
 then
-	FPC="`fpc -P$Arch -PB`"
+    FPC="`fpc -P$FPCArch -PB`"
 fi
 
 BINUTILS=binutils
@@ -264,11 +265,11 @@ rm -f /usr/lib/fpc/$FPCVersion/ppc$ppcbin
 sed -i -e "/^#if 2.3.1 /{:eat;s/.*//;N;/#end/d;beat}" /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 CROSS
     chmod a+rx $DebianRulezDir/prerm
-  else 
+  else
     # cross-compilerpostinst
     cat > $DebianRulezDir/postinst <<CROSS
 #! /bin/sh
-ln -sf /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin /usr/bin/ppc$ppcbin 
+ln -sf /usr/lib/fpc/$FPCVersion/$PPPRE$ppcbin /usr/bin/ppc$ppcbin
 grep 2>/dev/null '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' /usr/lib/fpc/$FPCVersion/fpc-cross.cfg || echo '#include /usr/lib/fpc/$FPCVersion/fpc${TARGET_SUFFIX}.cfg' >> /usr/lib/fpc/$FPCVersion/fpc-cross.cfg
 CROSS
     chmod a+rx $DebianRulezDir/postinst
@@ -305,9 +306,9 @@ if [ "$PackageName" = "fpc" ]; then
     # build fpc
     mkdir -p $FPCBuildDir/etc
     cd $FPCSrcDir
-    make clean all ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+    make clean all ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
     mkdir -p $DebianInstallDir
-    make install INSTALL_PREFIX=$DebianInstallDir ${CPU_TARGET:+CPU_TARGET=$CPU_TARGET} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
+    make install INSTALL_PREFIX=$DebianInstallDir ${FPCArch:+FPCArch=$FPCArch} ${OS_TARGET:+OS_TARGET=$OS_TARGET} ${FPC:+FPC=$FPC} ${BINUTILSPREFIX:+BINUTILSPREFIX=$BINUTILSPREFIX} ${CROSSINSTALL:+CROSSINSTALL=$CROSSINSTALL}
     if test -z "$BINUTILSPREFIX"
     then
       # need up to date samplecfg that chains cross compiler additions
