@@ -6717,7 +6717,7 @@ var ActiveSrcEdit: TSourceEditor;
   ACaption, AText: string;
   i: integer;
 begin
-  debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
+  //debugln('TMainIDE.DoCloseEditorFile A PageIndex=',IntToStr(PageIndex));
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then begin
