@@ -2590,21 +2590,21 @@ images/propertygrid/issue_nogui.png -text svneol=unset#image/png
 images/propertygrid/issue_qt.png -text svneol=unset#image/png
 images/propertygrid/issue_win32.png -text svneol=unset#image/png
 images/propertygrid/issue_wince.png -text svneol=unset#image/png
-images/sourceeditor/ActiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/InactiveBreakPoint.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/InvalidBreakPoint.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/MultiBreakPoint.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/UnknownBreakPoint.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark0.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark1.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark2.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark3.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark4.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark5.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark6.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark7.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark8.xpm -text svneol=native#image/x-xpixmap
-images/sourceeditor/bookmark9.xpm -text svneol=native#image/x-xpixmap
+images/sourceeditor/ActiveBreakPoint.png -text
+images/sourceeditor/InactiveBreakPoint.png -text
+images/sourceeditor/InvalidBreakPoint.png -text
+images/sourceeditor/MultiBreakPoint.png -text
+images/sourceeditor/UnknownBreakPoint.png -text
+images/sourceeditor/bookmark0.png -text
+images/sourceeditor/bookmark1.png -text
+images/sourceeditor/bookmark2.png -text
+images/sourceeditor/bookmark3.png -text
+images/sourceeditor/bookmark4.png -text
+images/sourceeditor/bookmark5.png -text
+images/sourceeditor/bookmark6.png -text
+images/sourceeditor/bookmark7.png -text
+images/sourceeditor/bookmark8.png -text
+images/sourceeditor/bookmark9.png -text
 images/splash_logo.bat svneol=native#text/plain
 images/splash_logo.lrs svneol=native#text/pascal
 images/splash_logo.png -text svneol=unset#image/png
