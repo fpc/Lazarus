@@ -1350,7 +1350,8 @@ begin
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
   // FLock will be initialized on demand, because most canvas don't use it
-  With FTextStyle do begin
+  with FTextStyle do
+  begin
     Alignment := taLeftJustify;
     Layout := tlTop;
     WordBreak := True;

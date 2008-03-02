@@ -1011,7 +1011,7 @@ type
     Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
     Procedure Rectangle(const ARect: TRect); // already in fpcanvas
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
-    Procedure RoundRect(const Rect: TRect; RX,RY: Integer);
+    procedure RoundRect(const Rect: TRect; RX,RY: Integer);
     procedure TextOut(X,Y: Integer; const Text: String); virtual; // already in fpcanvas
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;

@@ -283,6 +283,8 @@ begin
   
   GetCursorPos(p);
   FDockObject.DragPos := p;
+  // mouse click offset from control TopLeft
+  FDockObject.DockOffset := Point(p.x - AControl.Left, p.y - AControl.Top);
   AControl.CalculateDockSizes;
   FDockObject.DockRect := Rect(p.x, p.y, p.x + AControl.Width, p.y + AControl.Height);
   FDockObject.EraseDockRect := Rect(MaxInt, 0, MaxInt, 0);

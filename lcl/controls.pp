@@ -391,6 +391,7 @@ type
 
   TDragDockObject = class(TDragObject)
   private
+    FDockOffset: TPoint;
     FDockRect: TRect;
     FDropAlign: TAlign;
     FDropOnControl: TControl;
@@ -402,6 +403,7 @@ type
     function GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor; override;
     procedure EndDrag(Target: TObject; X, Y: Integer); override;
   public
+    property DockOffset: TPoint read FDockOffset write FDockOffset;
     property DockRect: TRect read FDockRect write FDockRect;
     property DropAlign: TAlign read FDropAlign write FDropAlign;
     property DropOnControl: TControl read FDropOnControl write FDropOnControl;

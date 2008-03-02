@@ -194,19 +194,21 @@ var
   NewTop: LongInt;
   WinDragTarget: TWinControl;
 begin
-  with DragDockObject do begin
-    if (DragTarget is TWinControl) and TWinControl(DragTarget).UseDockManager
-    then begin
-      WinDragTarget:=TWinControl(DragTarget);
+  with DragDockObject do
+  begin
+    if (DragTarget is TWinControl) and TWinControl(DragTarget).UseDockManager then
+    begin
+      WinDragTarget := TWinControl(DragTarget);
       GetWindowRect(WinDragTarget.Handle, FDockRect);
-      if (WinDragTarget.DockManager<>nil) then
-        WinDragTarget.DockManager.PositionDockRect(Control,DropOnControl,
-                                                   DropAlign,FDockRect);
-    end else begin
+      if (WinDragTarget.DockManager <> nil) then
+        WinDragTarget.DockManager.PositionDockRect(Control, DropOnControl,
+                                                   DropAlign, FDockRect);
+    end else
+    begin
       NewWidth := Control.UndockWidth;
       NewHeight := Control.UndockHeight;
-      NewLeft := DragPos.X;
-      NewTop := DragPos.Y;
+      NewLeft := DragPos.X - DragDockObject.DockOffset.x;
+      NewTop := DragPos.Y - DragDockObject.DockOffset.y;
       with FDockRect do
       begin
         Left := NewLeft;
