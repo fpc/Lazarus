@@ -584,7 +584,7 @@ RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</descr>
       </element>
       <!-- procedure type Visibility: default -->
       <element name="TProgressEvent">
-        <short/>
+        <short>TProgressEvent - for monitoring the progress of a drawing process</short>
         <descr/>
         <seealso/>
       </element>
@@ -2792,8 +2792,10 @@ Default is psSolid</descr>
           <i>PaletteModified</i> - Indicates in <i>OnChange</i>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/>
           <i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
   and <i>TImage OnProgress</i> events.<br/>
-          <br/> 
-  As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes </descr>
+          <br/>
+ 
+  As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TGraphic.FModified">
@@ -2934,7 +2936,7 @@ Default is psSolid</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphic.Progress">
-        <short/>
+        <short>Monitor the progress of the drawing</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3581,7 +3583,7 @@ It does not itself contain a defined area for displaying the image, but this is 
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TPicture.Progress">
-        <short/>
+        <short>Monitor progress of drawing process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3836,7 +3838,8 @@ It does not itself contain a defined area for displaying the image, but this is 
         <short>
           <i>TCanvas</i> - where most of the drawing is performed</short>
         <descr>
-          <i>TCanvas</i> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.</descr>
+          <i>TCanvas</i> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
+</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCanvas.FAutoRedraw">
@@ -7977,8 +7980,12 @@ Writing is not (yet) implemented.</descr>
         </descr>
       </element>
       <element name="TJPEGImage">
-        <short>TJPEGImage - a clas for handling images stored in JPEG (compressed) format</short>
-        <descr>JPEG images are very commonly used for storing digital photographs</descr>
+        <short>TJPEGImage - a class for handling images stored in JPEG (compressed) format</short>
+        <descr>
+          <p>
+            <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed colour photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. </p>
+          <p>The properties <i>CompressionQuality</i> (an integer between 1 and 100, with 100 representing the best quality) and <i>Performance</i> (an enumerated variable with two states: <i>BestQuality</i> or <i>BestSpeed</i> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
+        </descr>
       </element>
       <element name="TJPEGImage.InitFPImageReader">
         <short>Initialise the FreePascal Image reader for this image type</short>
@@ -8037,6 +8044,30 @@ Writing is not (yet) implemented.</descr>
       <element name="TBitmapImage.SaveStreamClass">
         <short>The class of stream for saving data</short>
       </element>
+      <element name="TJPEGImage.Create"/>
+      <element name="TJPEGImage.GetFileExtensions"/>
+      <element name="TJPEGImage.GetDefaultFPReader"/>
+      <element name="TJPEGImage.GetDefaultFPWriter"/>
+      <topic name="Progress">
+        <short>Monitoring the progress of drawing a complicated Graphic</short>
+        <descr>
+          <p>
+            <i>TProgressEvent</i> is a generic progress notification event which may be used by <i>TGraphic</i> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
+          <p>
+            <u>Event params:</u>
+          </p>
+          <p>
+            <u>Stage</u> - Indicates whether this call to the <i>OnProgress</i> event is to prepare for, process, or clean up after a graphic operation.  If <i>OnProgress</i> is called at all, the first call for a graphic operation will be with <b>Stage = psStarting</b>, to allow the <i>OnProgress</i> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <b>Stage = psStarting</b>, you are guaranteed that <i>OnProgress</i> will be called again with <b>Stage = psEnding</b> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to <i>OnProgress </i>with <b>Stage = psRunning</b> may occur between the <b>psStarting</b> and <b>psEnding</b> calls.</p>
+          <p>
+            <u>PercentDone</u> - The ratio of work done to work remaining, on a scale of 0 to 100.  Values may repeat or even regress (get smaller) in successive calls.  <i>PercentDone</i> is usually only a guess, and the guess may be dramatically altered as new information is discovered in decoding the image.</p>
+          <p>
+            <u>RedrawNow</u> - Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call <i>Update</i> to force a control to be redrawn immediately in the <i>OnProgress </i>event handler. Redrawing a graphic when <b>RedrawNow = False</b> could corrupt the image and/or cause exceptions.</p>
+          <p>
+            <u>Rect</u> - Area of image that has changed and needs to be redrawn.</p>
+          <p>
+            <u>Msg</u> - Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The <i>Msg</i> string can also be empty. <i>Msg</i> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if <b>Msg = 'Loading'</b> then...)</p>
+        </descr>
+      </topic>
     </module>
     <!-- Graphics -->
   </package>
