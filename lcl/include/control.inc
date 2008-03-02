@@ -188,10 +188,6 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.PositionDockRect(DragDockObject: TDragDockObject);
 var
-  NewWidth: LongInt;
-  NewHeight: LongInt;
-  NewLeft: LongInt;
-  NewTop: LongInt;
   WinDragTarget: TWinControl;
 begin
   with DragDockObject do
@@ -205,16 +201,13 @@ begin
                                                    DropAlign, FDockRect);
     end else
     begin
-      NewWidth := Control.UndockWidth;
-      NewHeight := Control.UndockHeight;
-      NewLeft := DragPos.X - DragDockObject.DockOffset.x;
-      NewTop := DragPos.Y - DragDockObject.DockOffset.y;
+      FDockRect.TopLeft := Point(
+        DragPos.X - DragDockObject.DockOffset.x,
+        DragPos.Y - DragDockObject.DockOffset.y);
       with FDockRect do
       begin
-        Left := NewLeft;
-        Top := NewTop;
-        Right := Left + NewWidth;
-        Bottom := Top + NewHeight;
+        Right := Left + Control.UndockWidth;
+        Bottom := Top + Control.UndockHeight;
       end;
       // let user adjust dock rect
       AdjustDockRect(FDockRect);
