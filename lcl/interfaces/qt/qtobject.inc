@@ -312,40 +312,30 @@ var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
 begin
-
+  //WriteLn('old: ', PtrUInt(old), ' new: ', PtrUInt(now));
   OldWidget := GetFirstQtObjectFromWidgetH(old);
   NewWidget := GetFirstQtObjectFromWidgetH(now);
 
   if OldWidget = NewWidget then
     Exit;
     
-  if Assigned(OldWidget) then
-  begin
-    if OldWidget.LCLObject is TCustomForm then
-    begin
-      if TCustomForm(OldWidget.LCLObject).FormStyle = fsMDIChild then
-        exit;
-    end;
-  end;
-  
-  if Assigned(NewWidget) then
-  begin
-    if NewWidget.LCLObject is TCustomForm then
-    begin
-      if TCustomForm(NewWidget.LCLObject).FormStyle = fsMDIChild then
-        exit;
-    end;
-  end;
-
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
   begin
+    //WriteLn('KILL: ', OldWidget.LCLObject.ClassName);
     Msg.msg := LM_KILLFOCUS;
     Msg.wParam := PtrUInt(NewWidget);
     OldWidget.DeliverMessage(Msg);
   end;
   if NewWidget <> nil then
   begin
+    // workaround. when form get focus it set focus to ActiveControl
+    // qt in some cases wants to return focus back to form => we have endless loop
+    if (NewWidget.LCLObject is TCustomForm) and
+       (OldWidget <> nil) and
+       (GetParentForm(OldWidget.LCLObject) = NewWidget.LCLObject) then
+      Exit;
+    //WriteLn('SET: ', NewWidget.LCLObject.ClassName);
     Msg.msg := LM_SETFOCUS;
     Msg.wParam := PtrUInt(OldWidget);
     NewWidget.DeliverMessage(Msg);
