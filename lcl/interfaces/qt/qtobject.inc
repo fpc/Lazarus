@@ -97,24 +97,26 @@ end;
 procedure TQtWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 var
   Method: TMethod;
-  FHook: QObject_hookH;
   ScreenDC: HDC;
 begin
   App := QApplication_Create(@argc, argv);
   WakeMainThread := @OnWakeMainThread;
 
   FOldFocusWidget := nil;
-  
+
   {
     check whether this hook crashes on linux & darwin and why it is so
     we need this hook to catch release messages
   }
   // install global event filter
-  FHook := QObject_hook_create(App);
+  FAppEvenFilterHook := QObject_hook_create(App);
   TEventFilterMethod(Method) := @EventFilter;
-  QObject_hook_hook_events(FHook, Method);
+  QObject_hook_hook_events(FAppEvenFilterHook, Method);
   
   // install focus change slot
+  FAppFocusChangedHook := QApplication_hook_create(App);
+  QApplication_focusChanged_Event(Method) := @FocusChanged;
+  QApplication_hook_hook_focusChanged(FAppFocusChangedHook, Method);
 
   ScreenDC := GetDC(0);
   try
@@ -187,6 +189,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppTerminate;
 begin
+  // free hooks
+  QObject_hook_destroy(FAppEvenFilterHook);
+  QApplication_hook_destroy(FAppFocusChangedHook);
+  
   AppProcessMessages; // process pending messages since there can be release messages
   QCoreApplication_quit;
 end;
@@ -296,6 +302,32 @@ begin
         // a thread is waiting -> synchronize
         CheckSynchronize;
       end;
+  end;
+end;
+
+procedure TQtWidgetSet.FocusChanged(old: QWidgetH; now: QWidgetH); cdecl;
+var
+  OldWidget, NewWidget: TQtWidget;
+  Msg: TLMessage;
+begin
+  OldWidget := GetFirstQtObjectFromWidgetH(old);
+  NewWidget := GetFirstQtObjectFromWidgetH(now);
+
+  if OldWidget = NewWidget then
+    Exit;
+
+  FillChar(Msg, SizeOf(Msg), 0);
+  if OldWidget <> nil then
+  begin
+    Msg.msg := LM_KILLFOCUS;
+    Msg.wParam := PtrUInt(NewWidget);
+    OldWidget.DeliverMessage(Msg);
+  end;
+  if NewWidget <> nil then
+  begin
+    Msg.msg := LM_SETFOCUS;
+    Msg.wParam := PtrUInt(OldWidget);
+    NewWidget.DeliverMessage(Msg);
   end;
 end;
 

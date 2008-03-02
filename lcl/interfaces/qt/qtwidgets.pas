@@ -126,7 +126,6 @@ type
     procedure SlotShow(vShow: Boolean); cdecl;
     function SlotClose: Boolean; cdecl; virtual;
     procedure SlotDestroy; cdecl;
-    procedure SlotFocus(Event: QEventH; FocusIn: Boolean); cdecl;
     procedure SlotHover(Sender: QObjectH; Event: QEventH); cdecl;
     function SlotKey(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     procedure SlotMouse(Sender: QObjectH; Event: QEventH); cdecl;
@@ -1518,14 +1517,6 @@ begin
       QEventDestroy: SlotDestroy;
       QEventEnter,
       QEventLeave: SlotMouseEnter(Sender, Event);
-      QEventFocusIn: SlotFocus(Event, True);
-      QEventFocusOut:
-      begin
-        SlotFocus(Event, False);
-        if QFocusEvent_reason(QFocusEventH(Event)) <> QtMouseFocusReason then
-          releaseMouse;
-      end;
-
       QEventHoverEnter,
       QEventHoverLeave,
       QEventHoverMove:
@@ -1645,51 +1636,6 @@ begin
   Msg.Msg := LM_DESTROY;
 
   DeliverMessage(Msg);
-end;
-
-{------------------------------------------------------------------------------
-  Function: TQtWidget.SlotFocus
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-procedure TQtWidget.SlotFocus(Event: QEventH; FocusIn: Boolean); cdecl;
-{$ifdef VerboseFocus}
-const
-  QtFocusReasonToStr: array[QtFocusReason] of String =
-  (
-{QtMouseFocusReason       } 'QtMouseFocusReason',
-{QtTabFocusReason         } 'QtTabFocusReason',
-{QtBacktabFocusReason     } 'QtBacktabFocusReason',
-{QtActiveWindowFocusReason} 'QtActiveWindowFocusReason',
-{QtPopupFocusReason       } 'QtPopupFocusReason',
-{QtShortcutFocusReason    } 'QtShortcutFocusReason',
-{QtMenuBarFocusReason     } 'QtMenuBarFocusReason',
-{QtOtherFocusReason       } 'QtOtherFocusReason',
-{QtNoFocusReason          } 'QtNoFocusReason'
-  );
-{$endif}
-var
-  Msg: TLMessage;
-begin
-  {$ifdef VerboseFocus}
-    WriteLn('TQtWidget.SlotFocus In=',FocusIn,' For ', dbgsname(LCLObject),
-      ' Reason = ', QtFocusReasonToStr[QFocusEvent_reason(QFocusEventH(Event))]);
-    if QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason then
-      DebugLn('Warning Qt handled Tab and set focus iself. Event for object ', dbgsname(LCLObject));
-  {$endif}
-
-  FillChar(Msg, SizeOf(Msg), #0);
-
-  if FocusIn then
-    Msg.Msg := LM_SETFOCUS
-  else
-    Msg.Msg := LM_KILLFOCUS;
-
-  DeliverMessage(Msg);
-
-  {$ifdef VerboseFocus}
-    WriteLn('TQtWidget.SlotFocus END');
-  {$endif}
 end;
 
 procedure TQtWidget.SlotHover(Sender: QObjectH; Event: QEventH); cdecl;

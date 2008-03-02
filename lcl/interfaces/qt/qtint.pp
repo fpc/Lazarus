@@ -55,6 +55,10 @@ type
   private
     App: QApplicationH;
     SavedDCList: TList;
+    // global hooks
+    FAppEvenFilterHook: QObject_hookH;
+    FAppFocusChangedHook: QApplication_hookH;
+    
     FOldFocusWidget: QWidgetH;
     FDockImage: QRubberBandH;
     FDragImageList: QWidgetH;
@@ -75,6 +79,7 @@ type
     
     function CreateThemeServices: TThemeServices; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure FocusChanged(old: QWidgetH; now: QWidgetH); cdecl;
     procedure OnWakeMainThread(Sender: TObject);
   public
     function LCLPlatform: TLCLPlatform; override;
@@ -240,6 +245,22 @@ begin
   finally
     QVariant_Destroy(V);
   end;
+end;
+
+function GetFirstQtObjectFromWidgetH(WidgetH: QWidgetH): TQtWidget;
+begin
+  Result := nil;
+  if WidgetH = nil then
+    Exit;
+  repeat
+    Result := QtObjectFromWidgetH(WidgetH);
+    if Result = nil then
+    begin
+      WidgetH := QWidget_parentWidget(WidgetH);
+      if WidgetH = nil then
+        break;
+    end;
+  until Result <> nil;
 end;
 
 {$I qtobject.inc}

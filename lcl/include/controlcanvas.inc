@@ -24,7 +24,7 @@
 
   Sets the owner of this canvas
  ------------------------------------------------------------------------------}
-Procedure TControlCanvas.SetControl(AControl: TControl);
+procedure TControlCanvas.SetControl(AControl: TControl);
 begin
   if FControl <> AControl then
   begin

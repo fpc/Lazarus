@@ -1754,15 +1754,7 @@ begin
   begin
     // Capture widget can be child of complex control. In any case we should return TQtWidget as result.
     // So we will look for parent while not found apropriate LCL handle.
-    repeat
-      Widget := QtObjectFromWidgetH(w);
-      if Widget = nil then
-      begin
-        w := QWidget_parentWidget(w);
-        if w = nil then
-          break;
-      end;
-    until Widget <> nil;
+    Widget := GetFirstQtObjectFromWidgetH(w);
     Result := HWND(Widget);
   end
   else
