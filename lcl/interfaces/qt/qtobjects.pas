@@ -480,7 +480,7 @@ type
     procedure setNumCopies(const AValue: Integer);
     function getPrinterState: QPrinterPrinterState;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function NewPage: Boolean;
     function Abort: Boolean;
@@ -2533,8 +2533,10 @@ begin
 end;
 
 procedure TQtClipboard.AttachEvents;
+{$IFNDEF MSWINDOWS}
 var
   Method: TMethod;
+{$ENDIF}
 begin
   inherited AttachEvents;
   {$IFNDEF MSWINDOWS}

@@ -6516,8 +6516,6 @@ begin
 end;
 
 function TQtTableView.horizontalHeader: TQtHeaderView;
-var
-  AParams: TCreateParams;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtTableView.horizontalHeader');
