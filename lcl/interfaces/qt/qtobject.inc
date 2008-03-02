@@ -114,9 +114,11 @@ begin
   QObject_hook_hook_events(FAppEvenFilterHook, Method);
   
   // install focus change slot
+
   FAppFocusChangedHook := QApplication_hook_create(App);
   QApplication_focusChanged_Event(Method) := @FocusChanged;
   QApplication_hook_hook_focusChanged(FAppFocusChangedHook, Method);
+
 
   ScreenDC := GetDC(0);
   try
@@ -310,11 +312,30 @@ var
   OldWidget, NewWidget: TQtWidget;
   Msg: TLMessage;
 begin
+
   OldWidget := GetFirstQtObjectFromWidgetH(old);
   NewWidget := GetFirstQtObjectFromWidgetH(now);
 
   if OldWidget = NewWidget then
     Exit;
+    
+  if Assigned(OldWidget) then
+  begin
+    if OldWidget.LCLObject is TCustomForm then
+    begin
+      if TCustomForm(OldWidget.LCLObject).FormStyle = fsMDIChild then
+        exit;
+    end;
+  end;
+  
+  if Assigned(NewWidget) then
+  begin
+    if NewWidget.LCLObject is TCustomForm then
+    begin
+      if TCustomForm(NewWidget.LCLObject).FormStyle = fsMDIChild then
+        exit;
+    end;
+  end;
 
   FillChar(Msg, SizeOf(Msg), 0);
   if OldWidget <> nil then
