@@ -41,5 +41,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/runtimetypeinfocontrols$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) runtimetypeinfocontrols$(PPUEXT)
-
-cleanall: clean
