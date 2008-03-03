@@ -77,6 +77,9 @@ uses
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
   Graphics, ExtCtrls, Dialogs, InterfaceBase,
+  {$IFDEF EnableIDEDocking}
+  LDockCtrl,
+  {$ENDIF}
   // codetools
   AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -1090,6 +1093,8 @@ begin
   inherited Create(TheOwner);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INHERITED');{$ENDIF}
 
+  FDockingManager:=TLazDockingManager.Create(Self);
+
   SetupDialogs;
   RunExternalTool:=@OnRunExternalTool;
   {$IFDEF UseAsyncProcess}
@@ -1260,6 +1265,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
   FreeThenNil(IDEProtocolOpts);
+  FreeThenNil(FDockingManager);
   DebugLn('[TMainIDE.Destroy] END');
 end;
 
