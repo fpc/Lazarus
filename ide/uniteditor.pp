@@ -445,6 +445,7 @@ type
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure MoveEditorFirstClicked(Sender: TObject);
     procedure MoveEditorLastClicked(Sender: TObject);
+    procedure DockingClicked(Sender: TObject);
     procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
     procedure OpenAtCursorClicked(Sender: TObject);
@@ -849,6 +850,7 @@ var
   SrcEditMenuMoveEditorRight: TIDEMenuCommand;
   SrcEditMenuMoveEditorFirst: TIDEMenuCommand;
   SrcEditMenuMoveEditorLast: TIDEMenuCommand;
+  SrcEditMenuDocking: TIDEMenuCommand;
   SrcEditMenuReadOnly: TIDEMenuCommand;
   SrcEditMenuShowLineNumbers: TIDEMenuCommand;
   SrcEditMenuShowUnitInfo: TIDEMenuCommand;
@@ -979,6 +981,11 @@ begin
                                                       uemMoveEditorLeftmost);
     SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
                                                       uemMoveEditorRightmost);
+    SrcEditMenuDocking:=RegisterIDEMenuCommand(AParent, 'Docking', lisMVDocking
+      );
+    {$IFNDEF EnableIDEDocking}
+    SrcEditMenuDocking.Visible:=false;
+    {$ENDIF}
 
   // register the Refactoring submenu
   SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,
@@ -4080,6 +4087,8 @@ begin
   SrcEditMenuMoveEditorRight.OnClick:=@MoveEditorRightClicked;
   SrcEditMenuMoveEditorFirst.OnClick:=@MoveEditorFirstClicked;
   SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
+  SrcEditMenuMoveEditorLast.OnClick:=@MoveEditorLastClicked;
+  SrcEditMenuDocking.OnClick:=@DockingClicked;
 
   SrcEditMenuInsertTodo.OnClick:=@InsertTodoClicked;
 
@@ -5166,6 +5175,11 @@ end;
 procedure TSourceNotebook.MoveEditorLastClicked(Sender: TObject);
 begin
   MoveActivePageLast;
+end;
+
+procedure TSourceNotebook.DockingClicked(Sender: TObject);
+begin
+  ControlDocker.ShowDockingEditor;
 end;
 
 {This is called from outside to toggle a bookmark}

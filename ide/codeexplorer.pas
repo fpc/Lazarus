@@ -106,6 +106,7 @@ type
     procedure DirectivesTreeViewDeletion(Sender: TObject; Node: TTreeNode);
     procedure DirectivesTreeViewKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure DockingMenuItemClick(Sender: TObject);
     procedure JumpToMenuitemClick(Sender: TObject);
     procedure MainNotebookPageChanged(Sender: TObject);
     procedure ModeSpeedButtonClick(Sender: TObject);
@@ -212,6 +213,7 @@ var
   CodeExplorerView: TCodeExplorerView;
   CEJumpToIDEMenuCommand: TIDEMenuCommand;
   CERefreshIDEMenuCommand: TIDEMenuCommand;
+  CEDockingIDEMenuCommand: TIDEMenuCommand;
 
 procedure InitCodeExplorerOptions;
 procedure LoadCodeExplorerOptions;
@@ -260,6 +262,8 @@ begin
     );
   CERefreshIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Refresh',
     dlgUnitDepRefresh);
+  CEDockingIDEMenuCommand:=RegisterIDEMenuCommand(Path, 'Docking', lisMVDocking
+    );
 end;
 
 { TViewNodeData }
@@ -355,10 +359,13 @@ begin
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
   //CodeExplorerMenuRoot.Items.WriteDebugReport(' ');
 
-  // what horrible hack is this ??
   CEJumpToIDEMenuCommand.OnClick:=@JumpToMenuitemCLICK;
   CERefreshIDEMenuCommand.OnClick:=@RefreshMenuitemCLICK;
-  
+  CEDockingIDEMenuCommand.OnClick:=@DockingMenuItemClick;
+  {$IFNDEF EnableIDEDocking}
+  CEDockingIDEMenuCommand.Visible:=false;
+  {$ENDIF}
+
   Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
 
@@ -415,6 +422,11 @@ procedure TCodeExplorerView.DirectivesTreeViewKeyUp(Sender: TObject;
 begin
   if (Key=VK_RETURN) and (Shift=[]) then
     JumpToSelection;
+end;
+
+procedure TCodeExplorerView.DockingMenuItemClick(Sender: TObject);
+begin
+  ControlDocker.ShowDockingEditor;
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
