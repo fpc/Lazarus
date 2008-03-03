@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                     main.pp  -  the "integrated" in IDE
@@ -76,10 +75,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages,
   LResources, StdCtrls, Forms, Buttons, Menus, FileUtil, Controls, GraphType,
-  Graphics, ExtCtrls, Dialogs, InterfaceBase,
-  {$IFDEF EnableIDEDocking}
-  LDockCtrl,
-  {$ENDIF}
+  Graphics, ExtCtrls, Dialogs, InterfaceBase, LDockCtrl,
   // codetools
   AVL_Tree, Laz_XMLCfg,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,

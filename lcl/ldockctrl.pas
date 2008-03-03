@@ -1,4 +1,3 @@
-{  $Id: ldocktree.pas 8153 2005-11-14 21:53:06Z mattias $  }
 {
  /***************************************************************************
                                LDockCtrl.pas
@@ -217,6 +216,14 @@ type
   TLazDockingManager = class(TCustomLazDockingManager)
   published
   end;
+  
+  { TLCDMenuItem }
+
+  TLCDMenuItem = class
+  public
+    Menu: TPopupMenu;
+    Item: TMenuItem;
+  end;
 
   { TCustomLazControlDocker
     A component to connect a form to the TLazDockingManager.
@@ -232,6 +239,7 @@ type
     FLayoutLock: integer;
     FLocalizedName: string;
     FManager: TCustomLazDockingManager;
+    FMenus: TFPList;// list of TLCDMenuItem
     FPopupMenuItem: TMenuItem;
     procedure SetControl(const AValue: TControl);
     procedure SetDockerName(const AValue: string);
@@ -258,6 +266,8 @@ type
                                 ): TFPList; // list of TControls
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
+    function FindLCDMenuItem(AMenu: TMenu): TLCDMenuItem;
+    function FindLCDMenuItem(AMenuItem: TMenuItem): TLCDMenuItem;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -269,9 +279,11 @@ type
     procedure EnableLayout;
     function ControlIsDocked: boolean;
     function GetControlName(AControl: TControl): string;
+    procedure AddPopupMenu(Menu: TPopupMenu);
+    procedure RemovePopupMenu(Menu: TPopupMenu);
     property Control: TControl read FControl write SetControl;
     property Manager: TCustomLazDockingManager read FManager write SetManager;
-    property ExtendPopupMenu: boolean read FExtendPopupMenu write SetExtendPopupMenu;
+    property ExtendPopupMenu: boolean read FExtendPopupMenu write SetExtendPopupMenu default true;
     property PopupMenuItem: TMenuItem read FPopupMenuItem;
     property LocalizedName: string read FLocalizedName write SetLocalizedName;
     property DockerName: string read FDockerName write SetDockerName;
@@ -734,8 +746,10 @@ begin
       DbgSName(Control),'<>',DbgSName(Sender));
     exit;
   end;
+  {$IFDEF VerboseAnchorDocking}
   DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Sender=',DbgSName(Sender),' Control.Visible=',Control.Visible]);
   DumpStack;
+  {$ENDIF}
   if FLayoutLock>0 then begin
     DebugLn(['TCustomLazControlDocker.ControlVisibleChanging ',DbgSName(Control),' ignore because FLayoutLock=',FLayoutLock]);
     exit;
@@ -745,7 +759,9 @@ begin
     // control will be hidden -> the layout will change
     // save the layout for later restore
     SaveLayout;
+    {$IFDEF VerboseAnchorDocking}
     DebugLn(['TCustomLazControlDocker.ControlVisibleChanging Parent=',DbgSName(Control.Parent)]);
+    {$ENDIF}
   end else if ([csDestroying,csDesigning,csLoading]*ComponentState=[]) then begin
     // the control will become visible -> dock it to restore the last layout
     RestoreLayout;
@@ -754,8 +770,10 @@ end;
 
 procedure TCustomLazControlDocker.ControlVisibleChanged(Sender: TObject);
 begin
+  {$IFDEF VerboseAnchorDocking}
   DebugLn(['TCustomLazControlDocker.ControlVisibleChanged Sender=',DbgSName(Sender),' Control.Visible=',Control.Visible]);
   //DumpStack;
+  {$ENDIF}
   if FLayoutLock>0 then begin
     //DebugLn(['TCustomLazControlDocker.ControlVisibleChanged ',DbgSName(Control),' ignore because FLayoutLock=',FLayoutLock]);
     exit;
@@ -1653,7 +1671,38 @@ begin
       FControl.RemoveAllHandlersOfObject(Self);
       FControl:=nil;
     end;
+    if (AComponent is TMenu) then begin
+
+    end;
+    if (AComponent is TMenuItem) then begin
+
+    end;
   end;
+end;
+
+function TCustomLazControlDocker.FindLCDMenuItem(AMenu: TMenu): TLCDMenuItem;
+var
+  i: Integer;
+begin
+  if FMenus<>nil then
+    for i:=0 to FMenus.Count-1 do begin
+      Result:=TLCDMenuItem(FMenus[i]);
+      if Result.Menu=AMenu then exit;
+    end;
+  Result:=nil;
+end;
+
+function TCustomLazControlDocker.FindLCDMenuItem(AMenuItem: TMenuItem
+  ): TLCDMenuItem;
+var
+  i: Integer;
+begin
+  if FMenus<>nil then
+    for i:=0 to FMenus.Count-1 do begin
+      Result:=TLCDMenuItem(FMenus[i]);
+      if Result.Item=AMenuItem then exit;
+    end;
+  Result:=nil;
 end;
 
 function TCustomLazControlDocker.GetControlName(AControl: TControl): string;
@@ -1673,6 +1722,24 @@ begin
                    +AControl.ClassName;
     end;
   end;
+end;
+
+procedure TCustomLazControlDocker.AddPopupMenu(Menu: TPopupMenu);
+var
+  AMenuItem: TMenuItem;
+begin
+  if (FMenus<>nil) and (FMenus.IndexOf(Menu)>=0) then exit;
+  if FMenus=nil then FMenus:=TFPList.Create;
+  FMenus.Add(Menu);
+  Menu.FreeNotification(Self);
+  AMenuItem:=TMenuItem.Create(Self);
+  AMenuItem.Caption:=rsDocking;
+  AMenuItem.OnClick:=@PopupMenuItemClick;
+end;
+
+procedure TCustomLazControlDocker.RemovePopupMenu(Menu: TPopupMenu);
+begin
+
 end;
 
 function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
@@ -2052,7 +2119,9 @@ var
 var
   NewBounds: TRect;
 begin
+  {$IFDEF VerboseAnchorDocking}
   DebugLn(['TCustomLazControlDocker.RestoreLayout A ',DockerName,' Control=',DbgSName(Control)]);
+  {$ENDIF}
   if (Manager=nil) or (Control=nil) then exit;
   Layout:=nil;
   try
