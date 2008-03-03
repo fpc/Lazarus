@@ -375,7 +375,7 @@ begin
   CreateChildNode(ccnStruct);
   
   ReadNextAtom;
-  if CurNode.Parent.Desc=ccnVariable then begin
+  if CurNode.Parent.Desc<>ccnTypedef then begin
     // read variable name
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
@@ -431,11 +431,17 @@ begin
   ReadNextAtom;
   if AtomIs('typedef') then
     RaiseExpectedButAtomFound('declaration')
-  else if AtomIs('struct') then
-    ReadStruct
-  else if AtomIs('enum') then
-    ReadEnum
-  else if SrcPos>SrcLen then
+  else if AtomIs('struct') then begin
+    ReadStruct;
+    ReadNextAtom;
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
+  end else if AtomIs('enum') then begin
+    ReadEnum;
+    ReadNextAtom;
+    if not AtomIsIdentifier then
+      RaiseExpectedButAtomFound('identifier');
+  end else if SrcPos>SrcLen then
     RaiseException('missing declaration')
   else
     ReadVariable;
