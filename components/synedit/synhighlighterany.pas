@@ -267,7 +267,6 @@ function TSynAnySyn.IsKeyword(const AKeyword: string): boolean;             //mh
 var
   First, Last, I, Compare: Integer;
   Token: String;
-  D: string;
 begin
   First := 0;
   Last := fKeywords.Count - 1;
