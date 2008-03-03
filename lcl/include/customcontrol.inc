@@ -75,7 +75,7 @@ end;
 
   Default paint handler. Derived classed should paint themselves
  ------------------------------------------------------------------------------}
-Procedure TCustomControl.Paint;
+procedure TCustomControl.Paint;
 begin
   if Assigned(FOnPaint) then FOnPaint(Self);
 end;

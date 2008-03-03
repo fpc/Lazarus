@@ -55,23 +55,23 @@ Type
     FFlagInitStorage: cardinal;
   Protected
     function Add(const S: string): Integer; override;
-    Function Get(Index: Integer): String; Override;
-    Function GetCount: Integer; Override;
-    Function GetObject(Index: Integer): TObject; Override;
+    function Get(Index: Integer): String; Override;
+    function GetCount: Integer; Override;
+    function GetObject(Index: Integer): TObject; Override;
     procedure Put(Index: integer; const S: string); override;
-    Procedure PutObject(Index: Integer; AObject: TObject); Override;
+    procedure PutObject(Index: Integer; AObject: TObject); Override;
     procedure SetCapacity(NewCapacity: Integer); override;
     procedure SetUpdateState(Updating: Boolean); override;
 
     procedure InitFlags; virtual;
-    Procedure SetSorted(Val: Boolean); Virtual;
+    procedure SetSorted(Val: Boolean); Virtual;
   Public
     Constructor Create(List : HWND; TheOwner: TWinControl);
     procedure AddStrings(TheStrings: TStrings); override;
-    Procedure Clear; Override;
-    Procedure Delete(Index: Integer); Override;
-    Procedure Insert(Index: Integer; Const S: String); Override;
-    Procedure Sort; Virtual;
+    procedure Clear; Override;
+    procedure Delete(Index: Integer); Override;
+    procedure Insert(Index: Integer; Const S: String); Override;
+    procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
 

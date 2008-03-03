@@ -477,7 +477,7 @@ begin
   gdk_region_destroy(EmptyRegion);
 end;
 
-Function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
+function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
 begin
   result := gdk.gdk_pixmap_create_from_xpm_d(window, @mask, transparent_color, data)
 end;

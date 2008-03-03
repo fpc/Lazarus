@@ -95,8 +95,8 @@ Type
     procedure CreateHandle; override;
     procedure CreateBrush; override;
     procedure CreateFont; override;
-    Procedure CreatePen; override;
-    Procedure CreateRegion; override;
+    procedure CreatePen; override;
+    procedure CreateRegion; override;
     procedure DeselectHandles; override;
     procedure PenChanging(APen: TObject); override;
     procedure FontChanging(APen: TObject); override;
@@ -115,7 +115,7 @@ Type
     
 
     procedure MoveTo(X1,Y1: Integer); override;
-    Procedure LineTo(X1,Y1: Integer); override;
+    procedure LineTo(X1,Y1: Integer); override;
     procedure Polyline(Points: PPoint; NumPts: Integer); override;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean = False;
@@ -126,7 +126,7 @@ Type
     procedure FrameRect(const ARect: TRect); override; // border using brush
 
     procedure FillRect(const ARect: TRect); override;
-    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
+    procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
     procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean = False); override;
 

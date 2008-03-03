@@ -29,7 +29,7 @@ type
 
   TPropStorageXMLConfig = class(TXMLConfig)
   Public
-    Procedure DeleteSubNodes (const ARootNode: String);
+    procedure DeleteSubNodes (const ARootNode: String);
   end;
   
   { TCustomXMLPropStorage }
@@ -41,16 +41,16 @@ type
     FXML: TPropStorageXMLConfig;
     FRootNodePath: String;
   protected
-    Function GetXMLFileName: string; virtual;
-    Function RootSection: String; Override;
-    Function FixPath(const APath: String): String; virtual;
+    function GetXMLFileName: string; virtual;
+    function RootSection: String; Override;
+    function FixPath(const APath: String): String; virtual;
     Property XMLConfig: TPropStorageXMLConfig Read FXML;
   public
     procedure StorageNeeded(ReadOnly: Boolean);override;
     procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, TheDefault: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
-    Procedure DoEraseSections(const ARootSection: String);override;
+    procedure DoEraseSections(const ARootSection: String);override;
   public
     property FileName: String Read FFileName Write FFileName;
     property RootNodePath: String Read FRootNodePath Write FRootNodePath;

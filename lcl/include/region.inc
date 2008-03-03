@@ -51,7 +51,7 @@ end;
 
   Copies the source brush to itself
  ------------------------------------------------------------------------------}
-Procedure TRegion.Assign(Source : Tpersistent);
+procedure TRegion.Assign(Source : Tpersistent);
 begin
   if Source is TRegion
   then begin

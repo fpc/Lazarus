@@ -101,8 +101,8 @@ type
     FOnChange: TNotifyEvent;
   protected
     procedure Changed; dynamic;
-    Procedure Lock;
-    Procedure UnLock;
+    procedure Lock;
+    procedure UnLock;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -160,11 +160,11 @@ type
     property FontFace: String read FFontFace write SetFontFace;
     property FontSize: Integer read FFontSize write SetFontSize;
     property LineSpacing: Integer read FLineSpacing write FLineSpacing;
-    Procedure MoveTo(X1,Y1 : Integer);
-    Procedure LineTo(X1,Y1 : Integer);
-    Procedure Line(X1,Y1,X2,Y2 : Integer);
-    Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
-    Procedure Rectangle(const Rect: TRect);
+    procedure MoveTo(X1,Y1 : Integer);
+    procedure LineTo(X1,Y1 : Integer);
+    procedure Line(X1,Y1,X2,Y2 : Integer);
+    procedure Rectangle(X1,Y1,X2,Y2 : Integer);
+    procedure Rectangle(const Rect: TRect);
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Ellipse(x1, y1, x2, y2: Integer);
     procedure Ellipse(const Rect: TRect);
@@ -187,11 +187,11 @@ type
     //                  NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     //procedure Polygon(Points: PPoint; NumPts: Integer;
     //                  Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
-    //Procedure Polygon(const Points: array of TPoint);
-    //Procedure FillRect(const Rect : TRect);
+    //procedure Polygon(const Points: array of TPoint);
+    //procedure FillRect(const Rect : TRect);
     //procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
-    //Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
-    //Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
+    //procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
+    //procedure RoundRect(const Rect : TRect; RX,RY : Integer);
     property Height: Integer read FHeight write FHeight; // set so we can translate Y coords
     property Color: TColor read GetColor write SetColor;
     property Pen: TPSPen read FPen write SetPen;

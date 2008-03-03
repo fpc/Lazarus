@@ -69,9 +69,9 @@ function LCLControlSizeNeedsUpdate(Sender: TWinControl;
 
 function GetLCLClientBoundsOffset(Sender: TObject; var ORect: TRect): boolean;
 function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
-Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
-Procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
+procedure LCLFormSizeToWin32Size(Form: TCustomForm; var AWidth, AHeight: Integer);
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 
 procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
@@ -380,7 +380,7 @@ end;
 
   Displays a trace about an event
  ------------------------------------------------------------------------------}
-Procedure EventTrace(Message: String; Data: TObject);
+procedure EventTrace(Message: String; Data: TObject);
 Begin
   If Data = Nil Then
     Assert(False, Format('Trace:Event [%S] fired', [Message]))
@@ -391,14 +391,14 @@ End;
 {------------------------------------------------------------------------------
   Function: AssertEx
   Params: Message  - Message sent
-          PassErr  - Pass error to a catching Procedure (default: False)
+          PassErr  - Pass error to a catching procedure (default: False)
           Severity - How severe is the error on a scale from 0 to 3
                      (default: 0)
   Returns: Nothing
 
   An expanded, better version of Assert
  ------------------------------------------------------------------------------}
-Procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
+procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
 Begin
   Case Severity Of
     0:
@@ -438,12 +438,12 @@ Begin
   End;
 End;
 
-Procedure AssertEx(Const PassErr: Boolean; Const Message: String);
+procedure AssertEx(Const PassErr: Boolean; Const Message: String);
 Begin
   AssertEx(Message, PassErr, 0);
 End;
 
-Procedure AssertEx(Const Message: String);
+procedure AssertEx(Const Message: String);
 Begin
   AssertEx(Message, False, 0);
 End;
@@ -455,7 +455,7 @@ End;
 
   Creates a TShiftState set based on the status when the function was called.
  ------------------------------------------------------------------------------}
-Function GetShiftState: TShiftState;
+function GetShiftState: TShiftState;
 Begin
 //roozbeh todo:remove the unecessary ones
   Result := [];
@@ -500,7 +500,7 @@ End;
   GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
 {
-Procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
+procedure GetWin32KeyInfo(const Event: Integer; var KeyCode, VirtualKey: Integer; var SysKey, Extended, Toggle: Boolean);
 Const
   MVK_UNIFY_SIDES = 1;
 Begin
@@ -520,7 +520,7 @@ End;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
+function DeliverMessage(Const Target: Pointer; Var Message): Integer;
 Begin
   If Target = Nil Then
   begin
@@ -548,7 +548,7 @@ End;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
+function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
 Begin
   If Target = Nil Then
   begin
@@ -569,7 +569,7 @@ End;
 
   Returns the Window handle of the given object, 0 if no object available
  ------------------------------------------------------------------------------}
-Function ObjectToHWND(Const AObject: TObject): HWND;
+function ObjectToHWND(Const AObject: TObject): HWND;
 Var
   Handle: HWND;
 Begin
@@ -800,7 +800,7 @@ end;
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
-Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
+procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
 var
   WindowInfo: PWindowInfo;
 Begin
@@ -814,13 +814,13 @@ Begin
   end;
 End;
 
-Function GetAccelGroup(Const Control: HWND): HACCEL;
+function GetAccelGroup(Const Control: HWND): HACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
   Result := GetWindowInfo(Control)^.AccelGroup;
 End;
 
-Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
+procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
 var AccelCount: integer; {number of accelerators in table}
     NewCount: integer; {total sum of accelerators in the table}
     ControlIndex: integer; {index of new (modified) accelerator in table}
@@ -883,7 +883,7 @@ Begin
   end;
 End;
 
-Function GetAccelKey(Const Control: HWND): LPACCEL;
+function GetAccelKey(Const Control: HWND): LPACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelKey');
   //Result := GetWindowInfo(Control)^.AccelKey;

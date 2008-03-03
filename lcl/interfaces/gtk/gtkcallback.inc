@@ -2954,14 +2954,14 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
+  procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
     Data: Pointer); cdecl;
 
   Handler for style changes. For example the user changes the theme.
   But also called on every widget realize, so it should not release all styles
   everytime.
 -------------------------------------------------------------------------------}
-Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
+procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
   Data: Pointer); cdecl;
 begin
   if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;

@@ -490,10 +490,10 @@ procedure ShowMessage(const aMsg: string);
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
-Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
-Function InputBox(const ACaption, APrompt, ADefault : String) : String;
-Function PasswordBox(const ACaption, APrompt : String) : String;
+function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
+function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+function InputBox(const ACaption, APrompt, ADefault : String) : String;
+function PasswordBox(const ACaption, APrompt : String) : String;
   
 type
   TSelectDirOpt = (sdAllowCreate, sdPerformCreate, sdPrompt);

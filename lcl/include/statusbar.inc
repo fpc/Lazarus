@@ -46,7 +46,7 @@ begin
   end;
 end;
 
-Procedure TStatusBar.SetSimplePanel(Value : Boolean);
+procedure TStatusBar.SetSimplePanel(Value : Boolean);
 Begin
   if FSimplePanel <> Value then
   Begin

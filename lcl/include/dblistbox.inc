@@ -73,7 +73,7 @@ begin
   Result := FDataLink.Field;
 end;
 
-Procedure TDBListBox.SetItems(Values : TStrings);
+procedure TDBListBox.SetItems(Values : TStrings);
 begin
   Items.Assign(Values);
   DataChange(Self);

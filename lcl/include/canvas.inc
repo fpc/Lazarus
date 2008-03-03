@@ -23,7 +23,7 @@ const
 {-----------------------------------------------}
 {--  TCanvas.Draw --}
 {-----------------------------------------------}
-Procedure TCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
+procedure TCanvas.Draw(X, Y: Integer; SrcGraphic: TGraphic);
 var
   ARect: TRect;
 begin
@@ -68,7 +68,7 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.CopyRect --}
 {-----------------------------------------------}
-Procedure TCanvas.CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
+procedure TCanvas.CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
   const Source: TRect);
 var
   SH, SW, DH, DW: Integer;
@@ -283,7 +283,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.SetRegion(value : TRegion);
+procedure TCanvas.SetRegion(value : TRegion);
 begin
   FRegion.Assign(Value);
 end;
@@ -521,7 +521,7 @@ end;
 procedure TCanvas.DoCopyRect(x, y: integer; SrcCanvas: TFPCustomCanvas;
   const SourceRect: TRect);
   
-  Procedure WarnNotSupported;
+  procedure WarnNotSupported;
   begin
     debugln('WARNING: TCanvas.DoCopyRect from ',DbgSName(SrcCanvas));
   end;
@@ -970,7 +970,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
+procedure TCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -984,7 +984,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.RoundRect(const Rect : TRect; RX,RY : Integer);
+procedure TCanvas.RoundRect(const Rect : TRect; RX,RY : Integer);
 begin
   RoundRect(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, RX, RY);
 end;
@@ -995,7 +995,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.TextRect(const ARect: TRect; X,Y : Integer;
+procedure TCanvas.TextRect(const ARect: TRect; X,Y : Integer;
   const Text : String);
 begin
   TextRect(ARect,X,Y,Text,TextStyle);
@@ -1168,7 +1168,7 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.MoveTo(X1, Y1: Integer);
+procedure TCanvas.MoveTo(X1, Y1: Integer);
 begin
   RequiredState([csHandleValid]);
   if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then begin

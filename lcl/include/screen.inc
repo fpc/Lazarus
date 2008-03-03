@@ -425,7 +425,7 @@ end;
 
   Returns the count of forms. (TODO: discribe this better; my English is not perfect)
  ------------------------------------------------------------------------------}
-Function TScreen.GetFormCount: Integer;
+function TScreen.GetFormCount: Integer;
 begin
   Result := FFormList.Count;
 end;
@@ -437,7 +437,7 @@ end;
 
   This function is used by the Forms property.
  ------------------------------------------------------------------------------}
-Function TScreen.GetForms(IIndex: Integer): TForm;
+function TScreen.GetForms(IIndex: Integer): TForm;
 begin
   Result := TForm(FFormList.Items[IIndex]);
 end;
@@ -449,7 +449,7 @@ end;
 
   returns the screen width
  ------------------------------------------------------------------------------}
-Function TScreen.GetWidth : Integer;
+function TScreen.GetWidth : Integer;
 begin
   Result := GetSystemMetrics(SM_CXSCREEN);
 end;
@@ -461,12 +461,12 @@ end;
 
   Returns the Screen Height
  ------------------------------------------------------------------------------}
-Function TScreen.GetHeight : Integer;
+function TScreen.GetHeight : Integer;
 begin
   Result := GetSystemMetrics(SM_CYSCREEN);
 end;
 
-Function TScreen.GetHintFont: TFont;
+function TScreen.GetHintFont: TFont;
 begin
   if (FHintFont=nil) then
     FHintFont := TFont.Create;

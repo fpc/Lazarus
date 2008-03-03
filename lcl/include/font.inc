@@ -615,7 +615,7 @@ end;
 
   Copies the Source font to itself
  ------------------------------------------------------------------------------}
-Procedure TFont.Assign(Source: TPersistent);
+procedure TFont.Assign(Source: TPersistent);
 begin
   if Source is TFont then
   begin
@@ -808,7 +808,7 @@ end;
 
   Sets the pitch of a font
  ------------------------------------------------------------------------------}
-Procedure TFont.SetPitch(Value : TFontPitch);
+procedure TFont.SetPitch(Value : TFontPitch);
 Begin
   if FPitch <> Value then
   begin

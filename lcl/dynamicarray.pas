@@ -31,27 +31,27 @@ Type
   EArray=Class(Exception);
   
   TOnNotifyItem = Procedure(Sender: TObject; Col,Row: integer; Var Item: Pointer) of Object;
-  TOnExchangeItem = Procedure (Sender: TObject; Index, WithIndex: Integer) of Object;
+  TOnExchangeItem = procedure (Sender: TObject; Index, WithIndex: Integer) of Object;
 
   TArray=Class
   Private
     FCols: TList;
     FOnDestroyItem: TOnNotifyItem;
     FOnNewItem: TonNotifyItem;
-    Function Getarr(Col, Row: Integer): Pointer;
-    Procedure Setarr(Col, Row: Integer; Const Avalue: Pointer);
-    Procedure ClearCol(L: TList; Col: Integer);
-    Procedure Aumentar_Rows(col,Rows: Integer; L: TList);
-    Procedure DestroyItem(Col,Row: Integer; P: Pointer);
+    function Getarr(Col, Row: Integer): Pointer;
+    procedure Setarr(Col, Row: Integer; Const Avalue: Pointer);
+    procedure ClearCol(L: TList; Col: Integer);
+    procedure Aumentar_Rows(col,Rows: Integer; L: TList);
+    procedure DestroyItem(Col,Row: Integer; P: Pointer);
   Public
     Constructor Create;
     Destructor Destroy; Override;
-    Procedure SetLength(Cols,Rows: Integer);
+    procedure SetLength(Cols,Rows: Integer);
 
-    Procedure DeleteColRow(IsColumn: Boolean; Index: Integer);
-    Procedure MoveColRow(IsColumn:Boolean; FromIndex, ToIndex: Integer);
-    Procedure ExchangeColRow(IsColumn:Boolean; Index, WithIndex: Integer);
-    Procedure Clear;
+    procedure DeleteColRow(IsColumn: Boolean; Index: Integer);
+    procedure MoveColRow(IsColumn:Boolean; FromIndex, ToIndex: Integer);
+    procedure ExchangeColRow(IsColumn:Boolean; Index, WithIndex: Integer);
+    procedure Clear;
     
     Property Arr[Col,Row: Integer]: Pointer Read GetArr Write SetArr; Default;
     Property OnDestroyItem: TOnNotifyItem Read FOnDestroyItem Write FOnDestroyItem;
@@ -62,19 +62,19 @@ implementation
 
 { TArray }
 
-Function Tarray.Getarr(Col, Row: Integer): Pointer;
+function TArray.Getarr(Col, Row: Integer): Pointer;
 Begin
   // Checar dimensiones
   Result:= TList(FCols[Col])[Row];
 End;
 
-Procedure Tarray.Setarr(Col, Row: Integer; Const Avalue: Pointer);
+procedure TArray.Setarr(Col, Row: Integer; Const Avalue: Pointer);
 Begin
   // Checar dimensiones
   TList(FCols[Col])[Row]:=aValue;
 End;
 
-Procedure TArray.ClearCol(L: TList; Col: Integer);
+procedure TArray.ClearCol(L: TList; Col: Integer);
 Var
    j: Integer;
 Begin
@@ -84,7 +84,7 @@ Begin
   End;
 End;
 
-Procedure Tarray.Clear;
+procedure TArray.Clear;
 Var
    i: Integer;
 Begin
@@ -96,13 +96,13 @@ Begin
   FCols.Clear;
 End;
 
-Constructor Tarray.Create;
+Constructor TArray.Create;
 Begin
   Inherited Create;
   FCols:=TList.Create;
 End;
 
-Destructor Tarray.Destroy;
+Destructor TArray.Destroy;
 Begin
   {$Ifdef dbgMem}DebugLn('TArray.Destroy FCols.Count=',dbgs(FCols.Count));{$endif}
   Clear;
@@ -110,7 +110,7 @@ Begin
   Inherited Destroy;
 End;
 
-Procedure TArray.Aumentar_Rows(col,rows: Integer; L: TList);
+procedure TArray.Aumentar_Rows(col,rows: Integer; L: TList);
 var
    i,j: Integer;
    P:Pointer;
@@ -132,7 +132,7 @@ begin
   If (P<>nil)And Assigned(OnDestroyItem) Then OnDestroyItem(Self, Col, Row, P);
 end;
 
-Procedure Tarray.SetLength(Cols, Rows: Integer);
+procedure TArray.SetLength(Cols, Rows: Integer);
 Var
    i,j: integer;
    L: TList;

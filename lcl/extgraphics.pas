@@ -59,7 +59,7 @@ procedure PaintPlus(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintQuadrangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
-Procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;
+procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
 procedure PaintSwastika(Canvas: TCanvas; const PaintRect: TRect;
   RadAngle :Extended=0.0);
@@ -174,7 +174,7 @@ begin
 end;
 
 
-Procedure PolycMinMax
+procedure PolycMinMax
   (var N:array of TPoint; const P:array of TPoint; CountPts:Integer);
 var i,Xmin,Xmax,Ymin,Ymax:Integer;
 begin
@@ -222,7 +222,7 @@ begin
     end;
 end;
 
-Procedure PolycSetHalfWidthAndHeight
+procedure PolycSetHalfWidthAndHeight
   (const PR:TRect;var hv,wv:Integer;fii:Extended);
 var h,w:Integer;
 begin
@@ -232,7 +232,7 @@ begin
   wv:=Round(h*abs(sin(fii))+w*abs(cos(fii))) div 2;
 end;
 
-Procedure PolycScale(var P:array of TPoint; CountPts:Integer;
+procedure PolycScale(var P:array of TPoint; CountPts:Integer;
   const PaintRect:TRect; cntPoint:TPoint; N:array of TPoint);
 var k,kx,ky:Extended;
     i:Integer;
@@ -609,7 +609,7 @@ begin
   NumPts:=4;
 end;
 
-Procedure InitRightTriangle
+procedure InitRightTriangle
   (var P:array of TPoint; const R: TRect; var NumPts:Integer);
 begin
   with R do begin
@@ -643,7 +643,7 @@ begin
   NumPts:=20;
 end;
 
-Procedure InitTriangle(var P:array of TPoint; const R: TRect;
+procedure InitTriangle(var P:array of TPoint; const R: TRect;
   var NumPts:Integer);
 begin
   with R do begin
@@ -716,7 +716,7 @@ begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitBoldArrow);
 end;
 
-Procedure PaintCanadianMaple(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
+procedure PaintCanadianMaple(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
 begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitCanadianMaple);
 end;
@@ -761,7 +761,7 @@ begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitQuadrangle);
 end;
 
-Procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
+procedure PaintRightTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
 begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitRightTriangle);
 end;
@@ -771,7 +771,7 @@ begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitSwastika);
 end;
 
-Procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
+procedure PaintTriangle(Canvas: TCanvas; const PaintRect: TRect;RadAngle :Extended=0.0);
 begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitTriangle);
 end;
@@ -781,7 +781,7 @@ begin
   InitPolygon(Canvas, PaintRect, RadAngle, @InitValve);
 end;
 
-Procedure PaintVArrow(Canvas: TCanvas; const PaintRect : TRect; RadAngle :Extended=0.0);
+procedure PaintVArrow(Canvas: TCanvas; const PaintRect : TRect; RadAngle :Extended=0.0);
 begin
   InitPolygon(Canvas,PaintRect,RadAngle,@InitVArrow);
 end;

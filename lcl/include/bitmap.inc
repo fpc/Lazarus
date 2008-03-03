@@ -504,7 +504,7 @@ begin
   Result:='bmp;xpm';
 end;
 
-Procedure TBitmap.LoadFromXPMFile(const Filename: String);
+procedure TBitmap.LoadFromXPMFile(const Filename: String);
 Begin
   LoadFromFile(Filename);
 end;

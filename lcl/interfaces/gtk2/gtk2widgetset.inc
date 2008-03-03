@@ -150,7 +150,7 @@ begin
   end;
 end;
 
-Procedure gtk_clb_toggle_row_activated(treeview : PGtkTreeView; arg1 : PGtkTreePath;
+procedure gtk_clb_toggle_row_activated(treeview : PGtkTreeView; arg1 : PGtkTreePath;
                                   arg2 : PGtkTreeViewColumn; data : gpointer); cdecl;
 var
   aTreeModel : PGtkTreeModel;
@@ -179,7 +179,7 @@ begin
 end;
 
 {$IfNDef GTK2_2}
-Procedure gtkTreeSelectionCountSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
+procedure gtkTreeSelectionCountSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
                                   iter : PGtkTreeIter; data : PGint); cdecl;
 begin
   If Assigned(Data) then
@@ -189,7 +189,7 @@ end;
 Type
   PPGList = ^PGList;
   
-Procedure gtkTreeSelectionGetSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
+procedure gtkTreeSelectionGetSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
                                   iter : PGtkTreeIter; data : PPGList); cdecl;
 begin
   If Assigned(Data) then

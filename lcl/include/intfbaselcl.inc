@@ -455,7 +455,7 @@ begin
   Result:=false;
 end;
 
-Function TWidgetSet.InvalidateFrame(aHandle : HWND; ARect : pRect;
+function TWidgetSet.InvalidateFrame(aHandle : HWND; ARect : pRect;
   bErase : Boolean; BorderWidth: integer) : Boolean;
 
   function Min(i1, i2: integer): integer;
@@ -510,7 +510,7 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
-Function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
+function TWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint;
 begin

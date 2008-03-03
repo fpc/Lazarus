@@ -931,8 +931,8 @@ type
     procedure CreateBrush; virtual;
     procedure CreateFont; virtual;
     procedure CreateHandle; virtual;
-    Procedure CreatePen; virtual;
-    Procedure CreateRegion; virtual;
+    procedure CreatePen; virtual;
+    procedure CreateRegion; virtual;
     procedure DeselectHandles; virtual;
     procedure PenChanging(APen: TObject); virtual;
     procedure FontChanging(APen: TObject); virtual;
@@ -942,7 +942,7 @@ type
     procedure RequiredState(ReqState: TCanvasState); virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
     procedure SetInternalPenPos(const Value: TPoint); virtual;
-    Procedure SetPixel(X,Y: Integer; Value: TColor); virtual;
+    procedure SetPixel(X,Y: Integer; Value: TColor); virtual;
     procedure FreeHandle;virtual;
   public
     constructor Create;
@@ -958,7 +958,7 @@ type
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, angle1, angle2: Integer); virtual;
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual;
-    //Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
+    //procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
     //                    TransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,
                     StartAngle16Deg, EndAngle16Deg: Integer); virtual;
@@ -1008,9 +1008,9 @@ type
                        NumPts: Integer = -1);
     procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
     procedure Polyline(const Points: array of TPoint); // already in fpcanvas
-    Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
-    Procedure Rectangle(const ARect: TRect); // already in fpcanvas
-    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
+    procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual; // already in fpcanvas
+    procedure Rectangle(const ARect: TRect); // already in fpcanvas
+    procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
     procedure RoundRect(const Rect: TRect; RX,RY: Integer);
     procedure TextOut(X,Y: Integer; const Text: String); virtual; // already in fpcanvas
     procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
@@ -1392,9 +1392,9 @@ procedure GetColorValues(Proc: TGetColorStringProc);
 function InvertColor(AColor: TColor): TColor;
 function DecColor(AColor: TColor; AQuantity: Byte): TColor;
 
-Function Blue(rgb: TColor): BYTE;
-Function Green(rgb: TColor): BYTE;
-Function Red(rgb: TColor): BYTE;
+function Blue(rgb: TColor): BYTE;
+function Green(rgb: TColor): BYTE;
+function Red(rgb: TColor): BYTE;
 function RGBToColor(R, G, B: Byte): TColor;
 procedure RedGreenBlue(rgb: TColor; out Red, Green, Blue: Byte);
 function FPColorToTColor(const FPColor: TFPColor): TColor;
@@ -1823,17 +1823,17 @@ begin
   Result := ((B and $ff) shl 16) or ((G and $ff) shl 8) or (R and $ff);
 end;
 
-Function Blue(rgb: TColor): BYTE;
+function Blue(rgb: TColor): BYTE;
 begin
   Result := (rgb shr 16) and $000000ff;
 end;
 
-Function Green(rgb: TColor): BYTE;
+function Green(rgb: TColor): BYTE;
 begin
   Result := (rgb shr 8) and $000000ff;
 end;
 
-Function Red(rgb: TColor): BYTE;
+function Red(rgb: TColor): BYTE;
 begin
   Result := rgb and $000000ff;
 end;

@@ -30,14 +30,14 @@ begin
 end;
 
 
-Function TMouse.GetCapture : HWND;
-Begin
+function TMouse.GetCapture : HWND;
+begin
   Result := FCapture;
-End;
+end;
 
 
-Procedure TMouse.SetCapture(const Value : HWND);
-Begin
+procedure TMouse.SetCapture(const Value : HWND);
+begin
   {$IFDEF VerboseMouseCapture}
   DebugLn('TMouse.SetCapture ');
   {$ENDIF}
@@ -46,16 +46,16 @@ Begin
   FCapture := GetCapture;
 end;
 
-Function TMouse.GetCursorPos : TPoint;
+function TMouse.GetCursorPos : TPoint;
 var
   p : TPoint;
-Begin
+begin
   WidgetSet.GetCursorPos(p);
   Result := P;
 end;
 
 procedure TMouse.SetCursorPos(AValue : TPoint);
-Begin
+begin
   WidgetSet.SetCursorPos(AValue.X, AValue.Y);
 end;
 

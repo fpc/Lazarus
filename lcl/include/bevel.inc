@@ -38,17 +38,17 @@ begin
     inherited;
 end;
 
-Procedure TBevel.Invalidate;
+procedure TBevel.Invalidate;
 Begin
   if Canvas.HandleAllocated then Paint;
 End;
 
-Function TBevel.GetStyle:TBevelStyle;
+function TBevel.GetStyle:TBevelStyle;
 Begin
   Result:=FStyle;
 End;
 
-Procedure TBevel.SetStyle(aStyle:TBevelStyle);
+procedure TBevel.SetStyle(aStyle:TBevelStyle);
 Begin
   If FStyle<>aStyle Then
   Begin
@@ -57,12 +57,12 @@ Begin
   End;
 End;
 
-Function TBevel.GetShape:TBevelShape;
+function TBevel.GetShape:TBevelShape;
 Begin
-  Result:=FShape;
+  Result := FShape;
 End;
 
-Procedure TBevel.SetShape(aShape:TBevelShape);
+procedure TBevel.SetShape(aShape:TBevelShape);
 Begin
   If FShape<>aShape Then
   Begin
@@ -71,7 +71,7 @@ Begin
   End;
 End;
 
-Procedure TBevel.Paint;
+procedure TBevel.Paint;
 Var
   Colora, Colorb: TColor;
   ALeft, ATop: integer;
@@ -175,7 +175,7 @@ End;
 // included by extctrls.pp
 
 {
-Procedure TBevel.Paint;
+procedure TBevel.Paint;
 Var
   Colora, Colorb:TColor;
 Begin

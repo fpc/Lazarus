@@ -123,7 +123,7 @@ begin
   OnDblClick := @DoubleClick;
 end;
 
-Procedure TUpDownButton.Paint;
+procedure TUpDownButton.Paint;
 var
   tmp : double;
   ax, ay, ah, aw : integer;
@@ -225,7 +225,7 @@ begin
   inherited destroy;
 end;
 
-Procedure TCustomUpDown.BTimerExec(Sender : TObject);
+procedure TCustomUpDown.BTimerExec(Sender : TObject);
 begin
   If Assigned(BTimerProc)
      and PtInRect(BTimerBounds,Mouse.CursorPos) then begin
@@ -304,7 +304,7 @@ begin
   end;
 end;}
 
-Function TCustomUpDown.CanChange: Boolean;
+function TCustomUpDown.CanChange: Boolean;
 begin
   Result := True;
   if Assigned(FOnChanging) then
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-Procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
+procedure TCustomUpDown.AssociateKeyDown(Sender: TObject; var Key: Word;
   ShiftState : TShiftState);
 begin
   If Assigned(OldKeyDown) then

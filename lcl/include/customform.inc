@@ -113,7 +113,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.Notification(AComponent: TComponent;
+procedure TCustomForm.Notification(AComponent: TComponent;
   Operation: TOperation);
 Begin
   inherited Notification(AComponent,Operation);
@@ -747,7 +747,7 @@ end;
 
   Calls user handler
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.PaintWindow(DC : Hdc);
+procedure TCustomForm.PaintWindow(DC : Hdc);
 begin
   // FCanvas.Lock;
   try
@@ -771,7 +771,7 @@ end;
 
   Calls user handler
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.RequestAlign;
+procedure TCustomForm.RequestAlign;
 Begin
   if Parent = nil then begin
     //Screen.AlignForm(Self);
@@ -783,7 +783,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetDesigner
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetDesigner(Value : TIDesigner);
+procedure TCustomForm.SetDesigner(Value : TIDesigner);
 Begin
   FDesigner := Value;
 end;
@@ -1140,7 +1140,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetMenu
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetMenu(Value : TMainMenu);
+procedure TCustomForm.SetMenu(Value : TMainMenu);
 var
   I: Integer;
 begin
@@ -1207,7 +1207,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm UpdateWindowState
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.UpdateWindowState;
+procedure TCustomForm.UpdateWindowState;
 Begin
 
 //TODO: Finish UpdateWindowState
@@ -1217,7 +1217,7 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm SetWindowState
 ------------------------------------------------------------------------------}
-Procedure TCustomForm.SetWindowState(Value : TWindowState);
+procedure TCustomForm.SetWindowState(Value : TWindowState);
 const
   ShowCommands: array[TWindowState] of Integer =
     (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
@@ -1933,7 +1933,7 @@ end;
 {------------------------------------------------------------------------------
   TCustomForm ShowModal
 ------------------------------------------------------------------------------}
-Function TCustomForm.ShowModal: Integer;
+function TCustomForm.ShowModal: Integer;
 
   procedure RaiseShowModalImpossible;
   begin

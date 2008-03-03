@@ -773,7 +773,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.MenuChanged(Rebuild : Boolean);
+procedure TMenuItem.MenuChanged(Rebuild : Boolean);
 var
   Source: TMenuItem;
 begin
@@ -1168,7 +1168,7 @@ end;
 
   Enables a menuItem.
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.SetParentComponent(AValue : TComponent);
+procedure TMenuItem.SetParentComponent(AValue : TComponent);
 begin
   if (FParent = AValue) then exit;
 
@@ -1219,7 +1219,7 @@ end;
 
   Set the shortcut
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.SetShortCut(const AValue : TShortCut);
+procedure TMenuItem.SetShortCut(const AValue : TShortCut);
 Begin
   if FShortCut <> AValue then begin
     ShortCutChanged(FShortCut, AValue);

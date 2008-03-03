@@ -1053,15 +1053,15 @@ type
     procedure SetHint(const Value: TTranslateString); virtual;
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(NewParent: TWinControl); virtual;
-    Procedure SetParentComponent(NewParentComponent: TComponent); override;
+    procedure SetParentComponent(NewParentComponent: TComponent); override;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure ParentFormHandleInitialized; virtual; // called by ChildHandlesCreated of parent form
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    Function CanTab: Boolean; virtual;
+    function CanTab: Boolean; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
-    Function GetEnabled: Boolean; virtual;
-    Function GetPopupMenu: TPopupMenu; dynamic;
+    function GetEnabled: Boolean; virtual;
+    function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
     procedure VisibleChanging; dynamic;
     procedure VisibleChanged; dynamic;
@@ -1540,7 +1540,7 @@ type
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
     procedure SetParentCtl3D(Value: Boolean);
-    Procedure SetTabOrder(NewTabOrder: TTabOrder);
+    procedure SetTabOrder(NewTabOrder: TTabOrder);
     procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
@@ -2078,9 +2078,9 @@ type
   private
     FCapture: HWND;
     FWheelScrollLines: Integer;
-    Procedure SetCapture(const Value: HWND);
-    Function GetCapture: HWND;
-    Function GetCursorPos: TPoint;
+    procedure SetCapture(const Value: HWND);
+    function GetCapture: HWND;
+    function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
     procedure SetCursorPos(AValue : TPoint);
     function GetWheelScrollLines: Integer;

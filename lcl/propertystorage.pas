@@ -132,16 +132,16 @@ Type
     procedure SetStoredValue(const AName: string; Value: TStoredType);
   protected
     function GetRoot: TComponent; virtual;
-    Function  RootSection: String; Virtual;
+    function  RootSection: String; Virtual;
     procedure SaveProperties; virtual;
     procedure RestoreProperties; virtual;
-    Procedure GetPropertyList(List: TStrings); virtual; abstract;
+    procedure GetPropertyList(List: TStrings); virtual; abstract;
     procedure FinishPropertyList(List: TStrings); virtual;
     function  DoReadInteger(const Section, Ident : String; DefaultValue: Integer): Integer; Virtual;
     function  DoReadString(const Section, Ident, DefaultValue: string): string; Virtual; Abstract;
     procedure DoWriteString(const Section, Ident, Value: string); Virtual; Abstract;
     procedure DoWriteInteger(const Section, Ident : String; Value: Integer); Virtual;
-    Procedure DoEraseSections(const ARootSection : String);virtual;abstract;
+    procedure DoEraseSections(const ARootSection : String);virtual;abstract;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

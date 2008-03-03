@@ -41,7 +41,7 @@ Begin
   inherited Destroy;
 end;
 
-Procedure TCustomBitBtn.Click;
+procedure TCustomBitBtn.Click;
 var
   Form : TCustomForm;
 Begin
@@ -55,7 +55,7 @@ Begin
   inherited Click;
 End;
 
-Function TCustomBitBtn.GetGlyph : TBitmap;
+function TCustomBitBtn.GetGlyph : TBitmap;
 Begin
   Result := FButtonGlyph.Glyph;
 end;
@@ -65,14 +65,14 @@ begin
   Result := FButtonGlyph.FNumGlyphs;
 end;
 
-Function TCustomBitBtn.IsGlyphStored: Boolean;
+function TCustomBitBtn.IsGlyphStored: Boolean;
 begin
   Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
             and (not FButtonGlyph.Glyph.Empty)
             and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
 end;
 
-Procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
+procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
 Begin
   FButtonGlyph.Glyph := AValue;
   InvalidatePreferredSize;
@@ -156,7 +156,7 @@ begin
   end;
 end;
 
-Procedure TCustomBitBtn.SetSpacing(AValue: Integer);
+procedure TCustomBitBtn.SetSpacing(AValue: Integer);
 Begin
   if (FSpacing = AValue) or (AValue < -1) then Exit;
   FSpacing := AValue;

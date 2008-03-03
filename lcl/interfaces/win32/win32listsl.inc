@@ -77,7 +77,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.SetSorted(Val: Boolean);
+procedure TWin32ListStringList.SetSorted(Val: Boolean);
 Begin
   If Val <> FSorted Then
   Begin
@@ -92,7 +92,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.Sort;
+procedure TWin32ListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
@@ -148,7 +148,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWin32ListStringList.Get(Index: Integer): String;
+function TWin32ListStringList.Get(Index: Integer): String;
 Var
 {$ifdef WindowsUnicodeSupport}
   s: string;
@@ -188,7 +188,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWin32ListStringList.GetCount: Integer;
+function TWin32ListStringList.GetCount: Integer;
 Begin
   Result := Windows.SendMessage(FWin32List, FFlagGetCount, 0, 0);
 End;
@@ -199,7 +199,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.Clear;
+procedure TWin32ListStringList.Clear;
 Begin
   Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
 End;
@@ -210,7 +210,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWin32ListStringList.Delete(Index: Integer);
+procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
   Windows.SendMessage(FWin32List, FFlagDeleteString, Index, 0);
 End;
@@ -221,7 +221,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWin32ListStringList.GetObject(Index: Integer): TObject;
+function TWin32ListStringList.GetObject(Index: Integer): TObject;
 Begin
   HWND(Result) := Windows.SendMessage(FWin32List, FFlagGetItemData, Index, 0);
 End;

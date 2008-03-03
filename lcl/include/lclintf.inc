@@ -359,7 +359,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
+  function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
     BorderWidth: integer) : Boolean;
 
   Calls InvalidateRect for the borderframe.

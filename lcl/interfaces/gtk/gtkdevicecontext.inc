@@ -794,7 +794,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure SelectRegion
+  procedure SelectRegion
 
   Applies the current clipping region of the DC (DeviceContext) to the
   gc (GDK Graphic context - pgdkGC)

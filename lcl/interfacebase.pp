@@ -119,7 +119,7 @@ type
   EInterfaceWarning = class(EInterfaceException);
 
 type
-  TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
+  TInputDialogFunction = function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;
 var
   InputDialogFunction: TInputDialogFunction = nil;

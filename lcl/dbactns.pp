@@ -33,12 +33,12 @@ type
   TDataSetAction = Class(TAction)
   Private
     FDataSource: TDataSource;
-    Procedure SetDataSource(Value: TDataSource);
+    procedure SetDataSource(Value: TDataSource);
   Protected
-    Procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    Function GetDataSet(Target: TObject): TDataSet; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function GetDataSet(Target: TObject): TDataSet; virtual;
   Public
-    Function HandlesTarget(Target: TObject): Boolean; override;
+    function HandlesTarget(Target: TObject): Boolean; override;
     property DataSource: TDataSource read FDataSource write SetDataSource;
   end;
 
@@ -48,40 +48,40 @@ type
   
   TDataSetFirst = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetLast = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetNext = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetPrior = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetRefresh = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
@@ -93,40 +93,40 @@ type
 
   TDataSetCancel = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetDelete = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetEdit = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetInsert = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
 
   TDataSetPost = Class(TDataSetAction)
   Public
-    Procedure ExecuteTarget(Target: TObject); override;
-    Procedure UpdateTarget(Target: TObject); override;
+    procedure ExecuteTarget(Target: TObject); override;
+    procedure UpdateTarget(Target: TObject); override;
   Published
     property DataSource;
   end;
@@ -148,12 +148,12 @@ end;
     TDatasetAction
   ---------------------------------------------------------------------}
 
-Function TDataSetAction.GetDataSet(Target: TObject): TDataSet;
+function TDataSetAction.GetDataSet(Target: TObject): TDataSet;
 begin
   Result:=(Target as TDataSource).DataSet;
 end;
 
-Function TDataSetAction.HandlesTarget(Target: TObject): Boolean;
+function TDataSetAction.HandlesTarget(Target: TObject): Boolean;
 
 begin
   Result:=(DataSource<>Nil);
@@ -164,7 +164,7 @@ begin
 end;
 
 
-Procedure TDataSetAction.Notification(AComponent: TComponent;
+procedure TDataSetAction.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent,Operation);
@@ -174,7 +174,7 @@ begin
 end;
 
 
-Procedure TDataSetAction.SetDataSource(Value: TDataSource);
+procedure TDataSetAction.SetDataSource(Value: TDataSource);
 begin
   if (Value<>FDataSource) then
     begin
@@ -189,13 +189,13 @@ end;
     TDatasetFirst
   ---------------------------------------------------------------------}
 
-Procedure TDataSetFirst.ExecuteTarget(Target: TObject);
+procedure TDataSetFirst.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).First;
 end;
 
 
-Procedure TDataSetFirst.UpdateTarget(Target: TObject);
+procedure TDataSetFirst.UpdateTarget(Target: TObject);
 begin
   With GetDataSet(Target) do
     Enabled:=Active and not BOF;
@@ -206,13 +206,13 @@ end;
     TDataSetLast
   ---------------------------------------------------------------------}
 
-Procedure TDataSetLast.ExecuteTarget(Target: TObject);
+procedure TDataSetLast.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Last;
 end;
 
 
-Procedure TDataSetLast.UpdateTarget(Target: TObject);
+procedure TDataSetLast.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and not EOF;
@@ -223,13 +223,13 @@ end;
     TDataSetNext
   ---------------------------------------------------------------------}
 
-Procedure TDataSetNext.ExecuteTarget(Target: TObject);
+procedure TDataSetNext.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Next;
 end;
 
 
-Procedure TDataSetNext.UpdateTarget(Target: TObject);
+procedure TDataSetNext.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and not Eof;
@@ -240,13 +240,13 @@ end;
     TDataSetPrior
   ---------------------------------------------------------------------}
 
-Procedure TDataSetPrior.ExecuteTarget(Target: TObject);
+procedure TDataSetPrior.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Prior;
 end;
 
 
-Procedure TDataSetPrior.UpdateTarget(Target: TObject);
+procedure TDataSetPrior.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and not BOF;
@@ -257,13 +257,13 @@ end;
     TDataSetRefresh
   ---------------------------------------------------------------------}
 
-Procedure TDataSetRefresh.ExecuteTarget(Target: TObject);
+procedure TDataSetRefresh.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Refresh;
 end;
 
 
-Procedure TDataSetRefresh.UpdateTarget(Target: TObject);
+procedure TDataSetRefresh.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active;
@@ -274,12 +274,12 @@ end;
     TDatasetInsert
   ---------------------------------------------------------------------}
 
-Procedure TDataSetInsert.ExecuteTarget(Target: TObject);
+procedure TDataSetInsert.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Insert;
 end;
 
-Procedure TDataSetInsert.UpdateTarget(Target: TObject);
+procedure TDataSetInsert.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and CanModify and not (State in dsEditModes);
@@ -290,12 +290,12 @@ end;
     TDataSetPost
   ---------------------------------------------------------------------}
 
-Procedure TDataSetPost.ExecuteTarget(Target: TObject);
+procedure TDataSetPost.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Post;
 end;
 
-Procedure TDataSetPost.UpdateTarget(Target: TObject);
+procedure TDataSetPost.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and (State in dsEditModes);
@@ -305,13 +305,13 @@ end;
     TDataSetCancel
   ---------------------------------------------------------------------}
 
-Procedure TDataSetCancel.ExecuteTarget(Target: TObject);
+procedure TDataSetCancel.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Cancel;
 end;
 
 
-Procedure TDataSetCancel.UpdateTarget(Target: TObject);
+procedure TDataSetCancel.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and (State in dsEditModes);
@@ -322,13 +322,13 @@ end;
     TDataSetEdit
   ---------------------------------------------------------------------}
 
-Procedure TDataSetEdit.ExecuteTarget(Target: TObject);
+procedure TDataSetEdit.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Edit;
 end;
 
 
-Procedure TDataSetEdit.UpdateTarget(Target: TObject);
+procedure TDataSetEdit.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and CanModify and not (State in dsEditModes);
@@ -339,13 +339,13 @@ end;
     TDataSetDelete
   ---------------------------------------------------------------------}
 
-Procedure TDataSetDelete.ExecuteTarget(Target: TObject);
+procedure TDataSetDelete.ExecuteTarget(Target: TObject);
 begin
   GetDataSet(Target).Delete;
 end;
 
 
-Procedure TDataSetDelete.UpdateTarget(Target: TObject);
+procedure TDataSetDelete.UpdateTarget(Target: TObject);
 begin
   with GetDataSet(Target) do
     Enabled:=Active and (not (BOF and EOF)) and CanModify;

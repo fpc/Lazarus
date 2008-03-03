@@ -259,7 +259,7 @@ begin
   end;
 end;
 
-Procedure TCustomSpeedButton.SetShowAccelChar(Value : Boolean);
+procedure TCustomSpeedButton.SetShowAccelChar(Value : Boolean);
 begin
   If FShowAccelChar <> Value then begin
     FShowAccelChar := Value;
@@ -458,7 +458,7 @@ end;
   Returns:  The number stored in TButtonGlyph(FGlyph).NumGlyphs
 
  ------------------------------------------------------------------------------}
-Function TCustomSpeedButton.GetNumGlyphs : Integer;
+function TCustomSpeedButton.GetNumGlyphs : Integer;
 Begin
   Result :=  TButtonGlyph(fGlyph).NumGlyphs;
 end;
@@ -469,7 +469,7 @@ end;
   Returns:  zippo
 
  ------------------------------------------------------------------------------}
-Procedure TCustomSpeedButton.GlyphChanged(Sender : TObject);
+procedure TCustomSpeedButton.GlyphChanged(Sender : TObject);
 Begin
   //redraw the button;
   Invalidate;

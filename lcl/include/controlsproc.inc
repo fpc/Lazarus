@@ -14,31 +14,31 @@
  *                                                                           *
  *****************************************************************************
 }
-Procedure ListAdd(var List : TList; Item: Pointer);
+procedure ListAdd(var List : TList; Item: Pointer);
 Begin
   if List = nil then List := TList.Create;
   List.Add(Item);
 End;
 
-Procedure ListInsert(var List : TList; Index : Longint; Item: Pointer);
+procedure ListInsert(var List : TList; Index : Longint; Item: Pointer);
 Begin
   if List = nil then List := TList.Create;
   List.Insert(Index, Item);
 End;
 
-Function ListIndexOf(var List : TList; Item: Pointer) : Longint;
+function ListIndexOf(var List : TList; Item: Pointer) : Longint;
 Begin
   Result := -1;
   if List <> nil then Result := List.IndexOf(Item);
 End;
 
-Function ListCount(List : TList) : Longint;
+function ListCount(List : TList) : Longint;
 Begin
   Result := 0;
   if List <> nil then Result := List.Count;
 End;
 
-Procedure ListRemove(var List : TList; Item: Pointer);
+procedure ListRemove(var List : TList; Item: Pointer);
 Begin
   if List=nil then exit;
   List.Remove(Item);
@@ -48,7 +48,7 @@ Begin
   End;
 End;
 
-Procedure ListDelete(var List : TList; Index: integer);
+procedure ListDelete(var List : TList; Index: integer);
 Begin
   if List=nil then exit;
   List.Delete(Index);
@@ -58,31 +58,31 @@ Begin
   End;
 End;
 
-Procedure ListAdd(var List : TFPList; Item: Pointer);
+procedure ListAdd(var List : TFPList; Item: Pointer);
 Begin
   if List = nil then List := TFPList.Create;
   List.Add(Item);
 End;
 
-Procedure ListInsert(var List : TFPList; Index : Longint; Item: Pointer);
+procedure ListInsert(var List : TFPList; Index : Longint; Item: Pointer);
 Begin
   if List = nil then List := TFPList.Create;
   List.Insert(Index, Item);
 End;
 
-Function ListIndexOf(var List : TFPList; Item: Pointer) : Longint;
+function ListIndexOf(var List : TFPList; Item: Pointer) : Longint;
 Begin
   Result := -1;
   if List <> nil then Result := List.IndexOf(Item);
 End;
 
-Function ListCount(List : TFPList) : Longint;
+function ListCount(List : TFPList) : Longint;
 Begin
   Result := 0;
   if List <> nil then Result := List.Count;
 End;
 
-Procedure ListRemove(var List : TFPList; Item: Pointer);
+procedure ListRemove(var List : TFPList; Item: Pointer);
 Begin
   if List=nil then exit;
   List.Remove(Item);
@@ -92,7 +92,7 @@ Begin
   End;
 End;
 
-Procedure ListDelete(var List : TFPList; Index: integer);
+procedure ListDelete(var List : TFPList; Index: integer);
 Begin
   if List=nil then exit;
   List.Delete(Index);

@@ -17,7 +17,7 @@
  *****************************************************************************
 }
 
-Procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
+procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
 
@@ -25,7 +25,7 @@ begin
     Application.CaptureExceptions := AValue;
 end;
 
-Procedure TApplicationProperties.SetHelpFile(Const AValue : string);
+procedure TApplicationProperties.SetHelpFile(Const AValue : string);
 begin
   FHelpFile := AValue;
 
@@ -33,7 +33,7 @@ begin
     Application.HelpFile := AValue;
 end;
 
-Procedure TApplicationProperties.SetHint(Const AValue : string);
+procedure TApplicationProperties.SetHint(Const AValue : string);
 begin
   FHint := AValue;
 
@@ -41,7 +41,7 @@ begin
     Application.Hint := AValue;
 end;
 
-Procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
+procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
 begin
   FHintColor := AValue;
 
@@ -49,7 +49,7 @@ begin
     Application.HintColor := AValue;
 end;
 
-Procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
 begin
   FHintHidePause := AValue;
 
@@ -57,7 +57,7 @@ begin
     Application.HintHidePause := AValue;
 end;
 
-Procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
 begin
   FHintPause := AValue;
 
@@ -65,7 +65,7 @@ begin
     Application.HintPause := AValue;
 end;
 
-Procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
+procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
 begin
   FHintShortCuts := AValue;
 
@@ -73,7 +73,7 @@ begin
     Application.HintShortCuts := AValue;
 end;
 
-Procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
+procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
 begin
   FHintShortPause := AValue;
 
@@ -81,7 +81,7 @@ begin
     Application.HintShortPause := AValue;
 end;
 
-Procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
+procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
 begin
   FShowHint := AValue;
 
@@ -97,7 +97,7 @@ begin
     Application.ShowMainForm := AValue;
 end;
 
-Procedure TApplicationProperties.SetTitle(Const AValue : String);
+procedure TApplicationProperties.SetTitle(Const AValue : String);
 begin
   FTitle := AValue;
 
@@ -105,7 +105,7 @@ begin
     Application.Title := AValue;
 end;
 
-Procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
+procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
 begin
   if (TMethod(FOnException).Data=TMethod(AValue).Data)
   and (TMethod(FOnException).Code=TMethod(AValue).Code) then exit;
@@ -118,7 +118,7 @@ begin
     Application.AddOnExceptionHandler(FOnException);
 end;
 
-Procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
+procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
 begin
   if (TMethod(FOnIdle).Data=TMethod(AValue).Data)
   and (TMethod(FOnIdle).Code=TMethod(AValue).Code) then exit;
@@ -131,7 +131,7 @@ begin
     Application.AddOnIdleHandler(FOnIdle);
 end;
 
-Procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnIdleEnd).Data=TMethod(AValue).Data)
   and (TMethod(FOnIdleEnd).Code=TMethod(AValue).Code) then exit;
@@ -145,7 +145,7 @@ begin
 end;
 
 
-Procedure TApplicationProperties.SetOnEndSession(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnEndSession(Const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnEndSession).Data=TMethod(AValue).Data)
   and (TMethod(FOnEndSession).Code=TMethod(AValue).Code) then exit;
@@ -159,7 +159,7 @@ begin
 end;
 
 
-Procedure TApplicationProperties.SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
+procedure TApplicationProperties.SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
 begin
   if (TMethod(FOnQueryEndSession).Data=TMethod(AValue).Data)
   and (TMethod(FOnQueryEndSession).Code=TMethod(AValue).Code) then exit;
@@ -198,7 +198,7 @@ begin
     Application.AddOnRestoreHandler(FOnRestore);
 end;
 
-Procedure TApplicationProperties.SetOnDropFiles(const AValue: TDropFilesEvent);
+procedure TApplicationProperties.SetOnDropFiles(const AValue: TDropFilesEvent);
 begin
   if (TMethod(FOnDropFiles).Data=TMethod(AValue).Data)
   and (TMethod(FOnDropFiles).Code=TMethod(AValue).Code) then exit;
@@ -211,7 +211,7 @@ begin
     Application.AddOnDropFilesHandler(FOnDropFiles);
 end;
 
-Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
+procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
 begin
   if (TMethod(FOnHelp).Data=TMethod(AValue).Data)
   and (TMethod(FOnHelp).Code=TMethod(AValue).Code) then exit;
@@ -224,7 +224,7 @@ begin
     Application.AddOnHelpHandler(FOnHelp);
 end;
 
-Procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
+procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
 begin
   if (TMethod(FOnHint).Data=TMethod(AValue).Data)
   and (TMethod(FOnHint).Code=TMethod(AValue).Code) then exit;
@@ -237,7 +237,7 @@ begin
     Application.AddOnHintHandler(FOnHint);
 end;
 
-Procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
+procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
 begin
   if (TMethod(FOnShowHint).Data=TMethod(AValue).Data)
   and (TMethod(FOnShowHint).Code=TMethod(AValue).Code) then exit;
@@ -250,7 +250,7 @@ begin
     Application.AddOnShowHintHandler(FOnShowHint);
 end;
 
-Procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent);
+procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent);
 begin
   if (TMethod(FOnUserInput).Data=TMethod(AValue).Data)
   and (TMethod(FOnUserInput).Code=TMethod(AValue).Code) then exit;

@@ -52,14 +52,14 @@ begin
   inherited Destroy;
 end;
 
-Procedure THintWindow.SetHideInterval(Value : Integer);
+procedure THintWindow.SetHideInterval(Value : Integer);
 Begin
   FHideInterval := Value;
   if FAutoHideTimer<>nil then
     TCustomTimer(FAutoHideTimer).Interval := FHideInterval;
 end;
 
-Procedure THintWindow.SetAutoHide(Value : Boolean);
+procedure THintWindow.SetAutoHide(Value : Boolean);
 Begin
   FAutoHide := Value;
   if not (value) and (FAutoHideTimer<>nil) then
@@ -67,7 +67,7 @@ Begin
 end;
 
 
-Procedure THintWindow.AutoHideHint(Sender : TObject);
+procedure THintWindow.AutoHideHint(Sender : TObject);
 Begin
   if FAutoHideTimer<>nil then
     TCustomTimer(FAutoHideTimer).Enabled := False;

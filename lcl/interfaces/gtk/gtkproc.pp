@@ -235,7 +235,7 @@ function gtkListBoxSelectionChangedAfter(widget: PGtkWidget;
                                       data: gPointer): GBoolean; cdecl;
 
 // gtkDragCallback.inc headers
-Function edit_drag_data_received(widget: pgtkWidget;
+function edit_drag_data_received(widget: pgtkWidget;
              Context: pGdkDragContext;
              X: Integer;
              Y: Integer;
@@ -243,13 +243,13 @@ Function edit_drag_data_received(widget: pgtkWidget;
              info: Integer;
              time: Integer;
                                   data: pointer): GBoolean; cdecl;
-Function edit_source_drag_data_get(widget: pgtkWidget;
+function edit_source_drag_data_get(widget: pgtkWidget;
              Context: pGdkDragContext;
              Selection_data: pGtkSelectionData;
              info: Integer;
              time: Integer;
                                   data: pointer): GBoolean; cdecl;
-Function Edit_source_drag_data_delete (widget: pGtkWidget;
+function Edit_source_drag_data_delete (widget: pGtkWidget;
                    context: pGdkDragContext;
                    data: gpointer): gBoolean ; cdecl;
 
@@ -349,8 +349,8 @@ function GetFixedChildListWidget(Item: PGList): PGtkWidget;
 
 // fixed widgets
 function CreateFixedClientWidget(WithWindow: Boolean = true): PGTKWidget;
-Procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
-Procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
+procedure FixedMoveControl(Parent, Child: PGTKWidget; Left, Top: Longint);
+procedure FixedPutControl(Parent, Child: PGTKWidget; Left, Top: Longint);
 
 // caret
 procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
@@ -384,16 +384,16 @@ procedure FinalizePaintMessage(Msg: PLMessage);
 procedure FinalizePaintTagMsg(Msg: PMsg);
 
 // region
-Function RegionType(RGN: PGDKRegion): Longint;
+function RegionType(RGN: PGDKRegion): Longint;
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 function GDKRegionAsString(RGN: PGDKRegion): string;
 
 // color
-Procedure FreeGDIColor(GDIColor: PGDIColor);
-Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
+procedure FreeGDIColor(GDIColor: PGDIColor);
+procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 procedure BuildColorRefFromGDKColor(var GDIColor: TGDIColor);
 procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
-Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
+procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush, AsBackground: Boolean);
 procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
 function AllocGDKColor(const AColor: LongInt): TGDKColor;
@@ -404,9 +404,9 @@ function IsBackgroundColor(Color: TColor): boolean;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
-Function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
+function GetSysGCValues(Color: TColorRef; ThemeWidget: PGtkWidget): TGDKGCValues;
 
-Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
+function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
   Colormap: PGDKColormap): TGDIRGB;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
@@ -602,7 +602,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 //--
   
 // accelerators
-Function DeleteAmpersands(var Str: String): Longint;
+function DeleteAmpersands(var Str: String): Longint;
 function Ampersands2Underscore(Src: PChar): PChar;
 function Ampersands2Underscore(const ASource: String): String;
 function RemoveAmpersands(Src: PChar; LineLength: Longint): PChar;
@@ -637,8 +637,8 @@ function CreatePixbufFromDrawable(ASource: PGdkDrawable; AColorMap:PGdkColormap;
 // pixmaps
 procedure GetGdkPixmapFromGraphic(AGraphic: TGraphic; out AImage: PGdkPixmap;
   out AMask: PGdkBitmap; out AWidth, AHeight: Integer);
-Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
-Procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
+procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
+procedure MergeClipping(DestinationDC: TGtkDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkBitmap;
   ClipMergeMaskX, ClipMergeMaskY: integer;
   var NewClipMask: PGdkBitmap);
@@ -780,20 +780,20 @@ function GetGtkContainerBorderWidth(Widget: PGtkContainer): gint;
 
   //we wrap our own versions to handle nil tests -->
   function gtk_object_get_class(anobject: Pointer): Pointer;
-  Function gtk_window_get_modal(window:PGtkWindow):gboolean;
+  function gtk_window_get_modal(window:PGtkWindow):gboolean;
 
   //we wrap our own versions to do gtk1 style result = new region -->
-  Function gdk_region_union_with_rect(region:PGdkRegion;
+  function gdk_region_union_with_rect(region:PGdkRegion;
                                       rect:PGdkRectangle): PGdkRegion;
-  Function gdk_region_intersect(source1:PGdkRegion;
+  function gdk_region_intersect(source1:PGdkRegion;
                                 source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_subtract(source1:PGdkRegion;
+  function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  function gdk_region_subtract(source1:PGdkRegion;
                                source2:PGdkRegion): PGdkRegion;
-  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
+  function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion): PGdkRegion;
 
   //mimic GDKFont Routines With Pango -->
-  Procedure gdk_text_extents(TheFont: TGtkIntfFont;
+  procedure gdk_text_extents(TheFont: TGtkIntfFont;
         Str: PChar; StrLength: integer;
         lbearing, rbearing, width, ascent, descent: Pgint);
 {$EndIf}

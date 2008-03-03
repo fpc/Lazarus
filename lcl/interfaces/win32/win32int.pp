@@ -189,7 +189,7 @@ type
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
-    Procedure AppTerminate; override;
+    procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
 
     function  InitHintFont(HintFont: TObject): Boolean; Override;

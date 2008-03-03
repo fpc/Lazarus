@@ -1208,7 +1208,7 @@ type
     procedure WMMouseDown(var Message: TLMMouseEvent); message LM_LBUTTONDOWN;
     procedure WMMouseUp(var Message: TLMMouseEvent); message LM_LBUTTONUP;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KeyDown;
-    Procedure WMKeyUp(var Message: TLMKeyUp); message LM_KeyUp;
+    procedure WMKeyUp(var Message: TLMKeyUp); message LM_KeyUp;
   public
     procedure Paint; override;
     procedure PaintCheck(var PaintRect: TRect);

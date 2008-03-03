@@ -47,7 +47,7 @@ begin
   inherited Destroy;
 end;
 
-Procedure TPopupMenu.PopUp(X,Y : Integer);
+procedure TPopupMenu.PopUp(X,Y : Integer);
 begin
   if ActivePopupMenu<>nil then ActivePopupMenu.Close;
   FPopupPoint := Point(X, Y);

@@ -14,7 +14,7 @@
  *****************************************************************************
 }
 
-Function ShowInputDialog(const InputCaption, InputPrompt : String;
+function ShowInputDialog(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
 var
   Form : TForm;

@@ -122,7 +122,7 @@ implementation
 
   Updates internal StringList from Qt Widget
  ------------------------------------------------------------------------------}
-Procedure TQtMemoStrings.InternalUpdate;
+procedure TQtMemoStrings.InternalUpdate;
 var
   Astr: WideString;
 begin

@@ -2579,7 +2579,7 @@ type
   NM_LISTVIEW = TNMListView;
   tagNMLISTVIEW = TNMListView;
 
-Function CS_To_String(CompStyle: Integer): String;
+function CS_To_String(CompStyle: Integer): String;
 // key mapping
 
 type
@@ -2587,7 +2587,7 @@ type
 
 function HiWord(i: integer): word;
 function LoWord(i: integer): word;
-Function Char2VK(C : Char) : Word;
+function Char2VK(C : Char) : Word;
 function MathRound(AValue: ValReal): Int64;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
@@ -2655,9 +2655,9 @@ end;
 
   Converts a component style identIfier into the correct component style name
  ------------------------------------------------------------------------------}
-Function CS_To_String(CompStyle: Integer): String;
-Begin
-  Case CompStyle of
+function CS_To_String(CompStyle: Integer): String;
+begin
+  case CompStyle of
     csNone:
       Result := 'csNone';
 {    csAlignment:
@@ -2783,9 +2783,9 @@ Begin
       Result := 'csPreviewFileDialog';
     csNonLCL:
       Result := 'csNonLCL';
-    Else
+    else
       Result := Format('Unknown component style %D', [CompStyle]);
-  End; {Case}
+  end; {case}
 End;
 
 function CharSetToString(const Charset: Integer): String;

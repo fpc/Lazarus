@@ -194,7 +194,7 @@ end;
 {------------------------------------------------------------------------------
        TApplication GetExename
 ------------------------------------------------------------------------------}
-Function TApplication.GetExeName: String;
+function TApplication.GetExeName: String;
 Begin
   Result := ParamStr(0);
 end;

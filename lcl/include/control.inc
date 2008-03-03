@@ -2077,7 +2077,7 @@ end;
 {------------------------------------------------------------------------------
        TControl SetAutoSize
 ------------------------------------------------------------------------------}
-Procedure TControl.SetAutoSize(const value : Boolean);
+procedure TControl.SetAutoSize(const value : Boolean);
 Begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
@@ -2207,7 +2207,7 @@ end;
 {------------------------------------------------------------------------------
        TControl SetBoundsRect
 ------------------------------------------------------------------------------}
-Procedure TControl.SetBoundsRect(const ARect : TRect);
+procedure TControl.SetBoundsRect(const ARect : TRect);
 Begin
   {$IFDEF CHECK_POSITION}
   if CheckPosition(Self) then
@@ -3049,7 +3049,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TControl.SetParent(NewParent : TWinControl);
+  procedure TControl.SetParent(NewParent : TWinControl);
 ------------------------------------------------------------------------------}
 procedure TControl.SetParent(NewParent: TWinControl);
 begin
@@ -3066,7 +3066,7 @@ end;
 {------------------------------------------------------------------------------
   TControl SetParentComponent
 ------------------------------------------------------------------------------}
-Procedure TControl.SetParentComponent(NewParentComponent: TComponent);
+procedure TControl.SetParentComponent(NewParentComponent: TComponent);
 Begin
   if (NewParentComponent is TWinControl) then
     SetParent(TWinControl(NewParentComponent));
@@ -3098,7 +3098,7 @@ end;
 {------------------------------------------------------------------------------
   TControl SetParentShowHint
 ------------------------------------------------------------------------------}
-Procedure TControl.SetParentShowHint(Value : Boolean);
+procedure TControl.SetParentShowHint(Value : Boolean);
 Begin
   if FParentShowHint <> Value
   then begin

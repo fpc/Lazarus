@@ -31,7 +31,7 @@
 {                      Default compare function               }
 {*************************************************************}
 
-Function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
+function DefaultCompareFunc(A, B: HWND): Integer; CDecl;
 Var
   AStr, BStr: PWideChar;
 Begin
@@ -42,7 +42,7 @@ Begin
   Result := WideCompareStr(widestring(AStr), widestring(BStr));//roozbeh:does this work?!
 end;
 
-Procedure SetComboHeight(Sender: TWinControl; AHeight:Integer);
+procedure SetComboHeight(Sender: TWinControl; AHeight:Integer);
 var
   Left, Top, Width: integer;
 begin
@@ -103,7 +103,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.SetSorted(Val: Boolean);
+procedure TWinCEListStringList.SetSorted(Val: Boolean);
 Begin
   If Val <> FSorted Then
   Begin
@@ -118,7 +118,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.Sort;
+procedure TWinCEListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
@@ -131,7 +131,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.Assign(Source: TPersistent);
+procedure TWinCEListStringList.Assign(Source: TPersistent);
 Var
   S: TStrings;
   Counter: Integer;
@@ -179,7 +179,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWinCEListStringList.Get(Index: Integer): String;
+function TWinCEListStringList.Get(Index: Integer): String;
 Var
   w: widestring;
 Begin
@@ -199,7 +199,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWinCEListStringList.GetCount: Integer;
+function TWinCEListStringList.GetCount: Integer;
 Begin
   Result := Windows.SendMessage(FWinCEList, FFlagGetCount, 0, 0);
 End;
@@ -210,7 +210,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.Clear;
+procedure TWinCEListStringList.Clear;
 Begin
   Windows.SendMessage(FWinCEList, FFlagResetContent, 0, 0);
 End;
@@ -221,7 +221,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.Delete(Index: Integer);
+procedure TWinCEListStringList.Delete(Index: Integer);
 Begin
   Windows.SendMessage(FWinCEList, FFlagDeleteString, Index, 0);
 End;
@@ -232,7 +232,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TWinCEListStringList.GetObject(Index: Integer): TObject;
+function TWinCEListStringList.GetObject(Index: Integer): TObject;
 Begin
   HWND(Result) := Windows.SendMessageW(FWinCEList, FFlagGetItemData, Index, 0);
 End;
@@ -243,7 +243,7 @@ End;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.Insert(Index: Integer; Const S: String);
+procedure TWinCEListStringList.Insert(Index: Integer; Const S: String);
 Begin
   FLastInsertedIndex := Index;
   if FSorted then
@@ -290,7 +290,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Procedure TWinCEListStringList.PutObject(Index: Integer; AObject: TObject);
+procedure TWinCEListStringList.PutObject(Index: Integer; AObject: TObject);
 Begin
   Windows.SendMessage(FWinCEList, FFlagSetItemData, Index, LPARAM(AObject));
 End;

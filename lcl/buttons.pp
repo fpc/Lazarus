@@ -132,13 +132,13 @@ type
     FSpacing: Integer;
     function GetGlyph: TBitmap;
     function GetNumGlyphs: Integer;
-    Function IsGlyphStored: Boolean;
-    Procedure SetGlyph(AValue: TBitmap);
-    Procedure SetKind(AValue: TBitBtnKind);
-    Procedure SetLayout(AValue: TButtonLayout);
+    function IsGlyphStored: Boolean;
+    procedure SetGlyph(AValue: TBitmap);
+    procedure SetKind(AValue: TBitBtnKind);
+    procedure SetLayout(AValue: TButtonLayout);
     procedure SetMargin(const AValue: integer);
     procedure SetNumGlyphs(AValue: Integer);
-    Procedure SetSpacing(AValue: Integer);
+    procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
     //Return the caption associated with the aKind value.
     function GetCaptionOfKind(aKind: TBitBtnKind): String;

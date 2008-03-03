@@ -70,11 +70,11 @@ Type
     procedure SetFieldName(const Value: string);
 
     // make sure the field/fieldname is valid before we do stuff with it
-    Function ValidateField : Boolean;
+    function ValidateField : Boolean;
   protected
     // Testing Events
     procedure ActiveChanged; override;
-    Procedure DataSetChanged; override;
+    procedure DataSetChanged; override;
     procedure EditingChanged; override;
     procedure LayoutChanged; override;
     procedure RecordChanged(aField: TField); override;
@@ -267,7 +267,7 @@ Type
     function GetDataSource: TDataSource;
     function GetField: TField;
 
-    Procedure SetItems(Values : TStrings); override;
+    procedure SetItems(Values : TStrings); override;
 
     function GetReadOnly: Boolean;
     procedure SetReadOnly(Value: Boolean);
@@ -978,7 +978,7 @@ type
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
-Procedure FillBarChart(BC: TBarChart; DS: TDataset;
+procedure FillBarChart(BC: TBarChart; DS: TDataset;
   const LabelField, ValueField: String; AColor: TColor);
 
 
@@ -1016,7 +1016,7 @@ begin
   StartPos:=i;
 end;
 
-Procedure FillBarChart(BC: TBarChart; DS: TDataset;
+procedure FillBarChart(BC: TBarChart; DS: TDataset;
   const LabelField, ValueField: String; AColor: TColor);
 Var
   LF : TList;
@@ -1131,7 +1131,7 @@ end;
   non empty FieldName and a non-nil Field, and if a valid name, but
   not a valid Field, try and re-call SetFieldName.
 }
-Function TFieldDataLink.ValidateField : Boolean;
+function TFieldDataLink.ValidateField : Boolean;
 var
   RealFieldName : String;
 begin
@@ -1178,7 +1178,7 @@ end;
   but the db version is calling RecordChange with nil,
   which is invalid if we have a real value, so just call reset
 }
-Procedure TFieldDataLink.DataSetChanged;
+procedure TFieldDataLink.DataSetChanged;
 begin
   reset;
 end;
@@ -1299,7 +1299,7 @@ end;
   need for visual dependency.
 }
 
-Procedure TFieldDataLink.FocusControl(aField: TFieldRef);
+procedure TFieldDataLink.FocusControl(aField: TFieldRef);
 begin
   If Assigned(aField) and (aField^ = FField) then
     if Assigned(FOnFocusRequest) then begin

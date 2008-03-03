@@ -20,7 +20,7 @@
 {$ENDIF}
 
 {$IFDef NewCheckBox}
-Procedure TCheckbox.DoAutoSize;
+procedure TCheckbox.DoAutoSize;
 var
   R : TRect;
   DC : hDC;
@@ -45,12 +45,12 @@ begin
   end;
 end;
 
-Function TCheckBox.GetChecked : Boolean;
+function TCheckBox.GetChecked : Boolean;
 begin
   Result := (State = cbChecked);
 end;
 
-Procedure TCheckBox.SetChecked(Value : Boolean);
+procedure TCheckBox.SetChecked(Value : Boolean);
 begin
   If Value then
     State := cbChecked
@@ -70,13 +70,13 @@ begin
   Invalidate;
 end;
 
-Procedure TCheckbox.SetAlignment(Value : TCBAlignment);
+procedure TCheckbox.SetAlignment(Value : TCBAlignment);
 begin
   FAlignment := Value;
   Invalidate;
 end;
 
-Procedure TCheckbox.SetState(Value : TCheckBoxState);
+procedure TCheckbox.SetState(Value : TCheckBoxState);
 begin
   If Value = cbGrayed then begin
     If AllowGrayed then
@@ -89,7 +89,7 @@ begin
   Invalidate;
 end;
 
-Procedure TCheckbox.CMMouseEnter(var Message: TLMMouse);
+procedure TCheckbox.CMMouseEnter(var Message: TLMMouse);
 begin
   if not MouseInControl
   and Enabled and (GetCapture = 0)
@@ -110,7 +110,7 @@ begin
   end;
 end;
 
-Procedure TCheckbox.WMMouseDown(var Message : TLMMouseEvent);
+procedure TCheckbox.WMMouseDown(var Message : TLMMouseEvent);
 begin
   if Enabled then
     If not MouseInControl then
@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-Procedure TCheckbox.WMMouseUp(var Message : TLMMouseEvent);
+procedure TCheckbox.WMMouseUp(var Message : TLMMouseEvent);
 begin
   If MouseInControl and Enabled then begin
     FMouseIsDragging := False;
@@ -142,7 +142,7 @@ begin
   end;
 end;
 
-Procedure TCheckbox.WMKeyDown(var Message : TLMKeyDown);
+procedure TCheckbox.WMKeyDown(var Message : TLMKeyDown);
 begin
   Exclude(FControlState, csClicked);
   Case Message.CharCode of
@@ -160,7 +160,7 @@ begin
   Message.Result := 1
 end;
 
-Procedure TCheckbox.WMKeyUp(var Message : TLMKeyUp);
+procedure TCheckbox.WMKeyUp(var Message : TLMKeyUp);
 begin
   Case Message.CharCode of
     32:
@@ -187,9 +187,9 @@ begin
   Message.Result := 1
 end;
 
-Procedure TCheckBox.PaintCheck(var PaintRect: TRect);
+procedure TCheckBox.PaintCheck(var PaintRect: TRect);
 
-  Procedure DrawBorder(Highlight, Shadow : TColor; Rect : TRect; Down : Boolean);
+  procedure DrawBorder(Highlight, Shadow : TColor; Rect : TRect; Down : Boolean);
   begin
     With Canvas, Rect do begin
       Pen.Style := psSolid;
@@ -314,13 +314,13 @@ begin
   end;
 end;
 
-Procedure TCheckBox.PaintText(var PaintRect: TRect);
+procedure TCheckBox.PaintText(var PaintRect: TRect);
 var
   Sz : Integer;
   AR : TRect;
   dish, dis : TColor;
 
-  Procedure DoDrawText(theRect : TRect);
+  procedure DoDrawText(theRect : TRect);
   var
     TextStyle : TTextStyle;
   begin
@@ -356,7 +356,7 @@ var
     Canvas.TextRect(theRect, ARect.Left, ARect.Top, Caption, TextStyle);
   end;
 
-  Procedure DoDisabledTextRect(Rect : TRect; Highlight, Shadow : TColor);
+  procedure DoDisabledTextRect(Rect : TRect; Highlight, Shadow : TColor);
   var
     FC : TColor;
   begin
@@ -417,7 +417,7 @@ begin
   FAttachTextToBox := True
 end;
 
-Function TCheckBox.CheckBoxRect : TRect;
+function TCheckBox.CheckBoxRect : TRect;
 var
   Sz : Integer;
 begin

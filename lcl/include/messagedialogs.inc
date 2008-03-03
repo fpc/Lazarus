@@ -30,7 +30,7 @@
     - User ability to customize Button order
 
 }
-Function ModalEscapeValue(Buttons : TMsgDlgButtons) : TModalResult;
+function ModalEscapeValue(Buttons : TMsgDlgButtons) : TModalResult;
 begin
   If mbCancel in Buttons then
     Result := mrCancel
@@ -65,7 +65,7 @@ begin
     Result:=mrCancel;
 end;
 
-Function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
+function ModalDefaultButton(Buttons : TMsgDlgButtons) : TMsgDlgbtn;
 var
   b: TMsgDlgBtn;
 begin
@@ -123,7 +123,7 @@ const
     idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
     idButtonYesToAll);
 
-Function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
+function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
   DefaultIndex, ButtonCount : Longint; UseDefButton: Boolean; DefButton: TMsgDlgBtn) : PLongint;
 var
   CurBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
@@ -242,13 +242,13 @@ end;
 
 //----------------------------------------------------------------------------//
 //-----------------------Prompt User For Information--------------------------//
-Function InputBox(const ACaption, APrompt, ADefault : String) : String;
+function InputBox(const ACaption, APrompt, ADefault : String) : String;
 begin
   Result := ADefault;
   InputQuery(ACaption, APrompt, Result);
 end;
 
-Function PasswordBox(const ACaption, APrompt : String) : String;
+function PasswordBox(const ACaption, APrompt : String) : String;
 begin
   Result := '';
   InputQuery(ACaption, APrompt, True, Result);
@@ -297,13 +297,13 @@ begin
     Directory:='';
 end;
 
-Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
+function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
   var Value : String) : Boolean;
 begin
   Result := LCLIntf.RequestInput(ACaption, APrompt, MaskInput, Value);
 end;
 
-Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
 begin
   Result := InputQuery(ACaption, APrompt, False, Value);
 end;

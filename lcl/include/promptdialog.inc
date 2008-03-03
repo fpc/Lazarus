@@ -367,7 +367,7 @@ begin
   end;
 end;
 
-Function ShowPromptDialog(const DialogCaption,
+function ShowPromptDialog(const DialogCaption,
   DialogMessage : String;
   DialogType : longint; Buttons : PLongint;
   ButtonCount, DefaultIndex, EscapeResult : Longint;

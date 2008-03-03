@@ -46,56 +46,56 @@ Type
 
   PPoint = ^TPoint;
 
-Procedure Angles2Coords(X,Y, Width, Height : Integer;
+procedure Angles2Coords(X,Y, Width, Height : Integer;
   Angle1, Angle2 : Extended; var SX, SY, EX, EY : Integer);
 
-Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
+procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
 
-Function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload;
-Function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload;
+function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload;
+function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload;
 
-Procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
+procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
   var Count : Longint);
 
-Procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
+procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : PPoint; var Count : Longint);
 
-Function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
+function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
 
-Function CenterPoint(Rect : TRect) : TPoint;
+function CenterPoint(Rect : TRect) : TPoint;
 
-Procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
+procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
   EX, EY : Integer; var Angle1, Angle2 : Extended);
 
-Function Distance(PT1,Pt2 : TPoint) : Extended; overload;
-Function Distance(Pt, SP, EP : TFloatPoint) : Extended; overload;
+function Distance(PT1,Pt2 : TPoint) : Extended; overload;
+function Distance(Pt, SP, EP : TFloatPoint) : Extended; overload;
 
-Function EccentricAngle(PT : TPoint; Rect : TRect) : Extended;
+function EccentricAngle(PT : TPoint; Rect : TRect) : Extended;
 
-Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
+function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
 
-Function FloatPoint(AX,AY : Extended): TFloatPoint;
+function FloatPoint(AX,AY : Extended): TFloatPoint;
 
-Function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : TPoint;
+function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : TPoint;
 
-Procedure PolyBezier2Polyline(Beziers: Array of TBezier;
+procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
-Procedure PolyBezier2Polyline(Beziers : Array of TPoint; 
+procedure PolyBezier2Polyline(Beziers : Array of TPoint; 
   var Points : PPoint; var Count : Longint; 
   Continuous : Boolean); Overload;
-Procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
+procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
   var Points : PPoint; var Count : Longint; 
   Continuous : Boolean); Overload;
 
-Procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1,
+procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1,
   Angle2, Rotation : Extended; var Points : PPoint; var Count : Longint);
 
-Function Quadrant(PT, Center : TPoint) : Integer;
+function Quadrant(PT, Center : TPoint) : Integer;
 
-Function RadialPoint(EccentricAngle : Extended; Rect : TRect) : TPoint;
+function RadialPoint(EccentricAngle : Extended; Rect : TRect) : TPoint;
 
-Procedure SplitBezier(Bezier : TBezier; var Left, Right : TBezier);
+procedure SplitBezier(Bezier : TBezier; var Left, Right : TBezier);
 
 Operator + (Addend1, Addend2 : TFloatPoint) : TFloatPoint;
 Operator + (Addend1 : TFloatPoint; Addend2 : Extended) : TFloatPoint;
@@ -312,7 +312,7 @@ end;
   Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-Procedure Angles2Coords(X, Y, Width, Height : Integer;
+procedure Angles2Coords(X, Y, Width, Height : Integer;
   Angle1, Angle2 : Extended; var SX, SY, EX, EY : Integer);
 var
   aRect : TRect;
@@ -350,10 +350,10 @@ end;
   position.
 
 ------------------------------------------------------------------------------}
-Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
+procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
 
-  Function Rotate(Point : TFloatPoint; Rotation : Extended) : TFloatPoint;
+  function Rotate(Point : TFloatPoint; Rotation : Extended) : TFloatPoint;
   var
     SinA,CosA : Extended;
   begin
@@ -363,7 +363,7 @@ Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
     Result.Y := Point.X*SinA - Point.Y*CosA;
   end;
 
-  Function Scale(Point : TFloatPoint; ScaleX, ScaleY : Extended) : TFloatPoint;
+  function Scale(Point : TFloatPoint; ScaleX, ScaleY : Extended) : TFloatPoint;
   begin
     Result := Point*FloatPoint(ScaleX,ScaleY);
   end;
@@ -441,7 +441,7 @@ end;
   routines.
 
 ------------------------------------------------------------------------------}
-Function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier;
+function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier;
 begin
   Result[0] := C1;
   Result[1] := C2;
@@ -458,7 +458,7 @@ end;
   routines.
 
 ------------------------------------------------------------------------------}
-Function Bezier(const C1,C2,C3,C4 : TPoint): TBezier;
+function Bezier(const C1,C2,C3,C4 : TPoint): TBezier;
 begin
   Result[0] := FloatPoint(C1.X,C1.Y);
   Result[1] := FloatPoint(C2.X,C2.Y);
@@ -480,12 +480,12 @@ end;
   by calling to ReallocMem(Points, 0) or FreeMem.
 
 ------------------------------------------------------------------------------}
-Procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
+procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
   var Count : Longint);
 var
   Pt : TPoint;
 
-  Procedure AddPoint(const Point : TFloatPoint);
+  procedure AddPoint(const Point : TFloatPoint);
   var
     P : TPoint;
   begin
@@ -499,7 +499,7 @@ var
     end;
   end;
 
-  Function Colinear(BP : TBezier; Tolerance : Extended) : Boolean;
+  function Colinear(BP : TBezier; Tolerance : Extended) : Boolean;
   var
     D : Extended;
   begin
@@ -510,7 +510,7 @@ var
       Result := Result and (D < Tolerance);
   end;
 
-  Procedure SplitRecursive(B : TBezier);
+  procedure SplitRecursive(B : TBezier);
   var
     Left,
     Right : TBezier;
@@ -559,7 +559,7 @@ end;
   should ALWAYS be Freed when done by calling ReallocMem(Points, 0) or FreeMem.
 
 ------------------------------------------------------------------------------}
-Procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
+procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : PPoint; var Count : Longint);
 var
   B : TBezier;
@@ -593,7 +593,7 @@ end;
   primarily for use in SplitBezier.
 
 ------------------------------------------------------------------------------}
-Function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
+function BezierMidPoint(Bezier : TBezier) : TFloatPoint;
 begin
   Result := (Bezier[0] + 3*Bezier[1] + 3*Bezier[2] + Bezier[3]) / 8;
 end;
@@ -607,7 +607,7 @@ end;
   for use with, and in, other routines such as Quadrant, and RadialPoint.
 
 ------------------------------------------------------------------------------}
-Function CenterPoint(Rect : TRect) : TPoint;
+function CenterPoint(Rect : TRect) : TPoint;
 var
   Tmp :  Longint;
 begin
@@ -643,7 +643,7 @@ end;
   the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-Procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
+procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
   EX, EY : Integer; var Angle1, Angle2 : Extended);
 var
   aRect : TRect;
@@ -669,7 +669,7 @@ end;
   for use in other routines such as EccentricAngle.
 
 ------------------------------------------------------------------------------}
-Function Distance(Pt1,Pt2 : TPoint) : Extended;
+function Distance(Pt1,Pt2 : TPoint) : Extended;
 begin
   Result := Sqrt(Sqr(Pt2.X - Pt1.X) + Sqr(Pt2.Y - Pt1.Y));
 end;
@@ -684,11 +684,11 @@ end;
   are TFloatPoint's, NOT TPoint's.
 
 ------------------------------------------------------------------------------}
-Function Distance(Pt, SP, EP : TFloatPoint) : Extended;
+function Distance(Pt, SP, EP : TFloatPoint) : Extended;
 var
   A, B, C : Extended;
 
-  Function Slope(PT1,Pt2 : TFloatPoint) : Extended;
+  function Slope(PT1,Pt2 : TFloatPoint) : Extended;
   begin
     If Pt2.X <> Pt1.X then
       Result := (Pt2.Y - Pt1.Y) / (Pt2.X - Pt1.X)
@@ -696,7 +696,7 @@ var
       Result := 1;
   end;
 
-  Function YIntercept(PT1,Pt2 : TFloatPoint) : Extended;
+  function YIntercept(PT1,Pt2 : TFloatPoint) : Extended;
   begin
     Result := Pt1.Y - Slope(Pt1,Pt2)*Pt1.X;
   end;
@@ -719,7 +719,7 @@ end;
   5760 (16*360).  Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-Function EccentricAngle(PT : TPoint; Rect : TRect) : Extended;
+function EccentricAngle(PT : TPoint; Rect : TRect) : Extended;
 var
   CenterPt : TPoint;
   Quad : Integer;
@@ -771,7 +771,7 @@ end;
   3'o clock position.
 
 ------------------------------------------------------------------------------}
-Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
+function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
 var
   a, b, R : Extended;
 begin
@@ -794,7 +794,7 @@ end;
   and in Bezier routines.
 
 ------------------------------------------------------------------------------}
-Function FloatPoint(AX,AY : Extended): TFloatPoint;
+function FloatPoint(AX,AY : Extended): TFloatPoint;
 begin
   With Result do begin
     X := AX;
@@ -814,7 +814,7 @@ end;
   3'o clock position.
 
 ------------------------------------------------------------------------------}
-Function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : 
+function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : 
 TPoint;
 begin
   if Angle > 360*16 then
@@ -840,7 +840,7 @@ end;
   be Freed when done by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-Procedure PolyBezier2Polyline(Beziers: Array of TBezier;
+procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint);
 var
   I : Integer;
@@ -875,14 +875,14 @@ end;
   by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-Procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : PPoint;
+procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : PPoint;
   var Count : Longint; Continuous : Boolean);
 begin  
   PolyBezier2Polyline(@Beziers[0],High(Beziers) + 1, Points, Count, 
     	              Continuous);
 end;
 
-Procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
+procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
   var Points : PPoint; var Count : Longint; Continuous : Boolean);
 var
   I : Integer;
@@ -932,7 +932,7 @@ end;
   should ALWAYS be Freed when done by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-Procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
+procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : PPoint; var Count : Longint);
 var
   I,K : Integer;
@@ -994,7 +994,7 @@ end;
   that is, it is the Center.
 
 ------------------------------------------------------------------------------}
-Function Quadrant(Pt,Center : TPoint) : Integer;
+function Quadrant(Pt,Center : TPoint) : Integer;
 var
   X,Y,CX,CY : Longint;
 begin
@@ -1051,7 +1051,7 @@ end;
   equals 5760 (16*360).  Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-Function RadialPoint(EccentricAngle : Extended; Rect : TRect) : TPoint;
+function RadialPoint(EccentricAngle : Extended; Rect : TRect) : TPoint;
 var
   R : Longint;
 Begin
@@ -1068,7 +1068,7 @@ end;
   a 'Left' and a 'Right'. It is primarily for use in Bezier2Polyline.
 
 ------------------------------------------------------------------------------}
-Procedure SplitBezier(Bezier : TBezier; var Left, Right : TBezier);
+procedure SplitBezier(Bezier : TBezier; var Left, Right : TBezier);
 var
   Tmp : TFloatPoint;
 begin

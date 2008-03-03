@@ -1072,8 +1072,8 @@ type
     procedure Minimize;
     procedure Restore;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    Procedure ProcessMessages;
-    Procedure Idle(Wait: Boolean);
+    procedure ProcessMessages;
+    procedure Idle(Wait: Boolean);
     procedure Run;
     procedure ShowException(E: Exception); override;
     procedure Terminate; override;
@@ -1204,29 +1204,29 @@ type
     FOnRestore : TNotifyEvent;
     procedure SetShowMainForm(const AValue: Boolean);
   protected
-    Procedure SetCaptureExceptions(Const AValue : boolean);
-    Procedure SetHelpFile(Const AValue : string);
-    Procedure SetHint(Const AValue : string);
-    Procedure SetHintColor(Const AValue : TColor);
-    Procedure SetHintHidePause(Const AValue : Integer);
-    Procedure SetHintPause(Const AValue : Integer);
-    Procedure SetHintShortCuts(Const AValue : Boolean);
-    Procedure SetHintShortPause(Const AValue : Integer);
-    Procedure SetShowHint(Const AValue : Boolean);
-    Procedure SetTitle(Const AValue : String);
+    procedure SetCaptureExceptions(Const AValue : boolean);
+    procedure SetHelpFile(Const AValue : string);
+    procedure SetHint(Const AValue : string);
+    procedure SetHintColor(Const AValue : TColor);
+    procedure SetHintHidePause(Const AValue : Integer);
+    procedure SetHintPause(Const AValue : Integer);
+    procedure SetHintShortCuts(Const AValue : Boolean);
+    procedure SetHintShortPause(Const AValue : Integer);
+    procedure SetShowHint(Const AValue : Boolean);
+    procedure SetTitle(Const AValue : String);
 
-    Procedure SetOnException(Const AValue : TExceptionEvent);
-    Procedure SetOnIdle(Const AValue : TIdleEvent);
-    Procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
-    Procedure SetOnEndSession(Const AValue : TNotifyEvent);
-    Procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
-    Procedure SetOnMinimize(Const AValue : TNotifyEvent);
-    Procedure SetOnRestore(Const AValue : TNotifyEvent);
-    Procedure SetOnDropFiles(const AValue: TDropFilesEvent);
-    Procedure SetOnHelp(Const AValue : THelpEvent);
-    Procedure SetOnHint(Const AValue : TNotifyEvent);
-    Procedure SetOnShowHint(Const AValue : TShowHintEvent);
-    Procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
+    procedure SetOnException(Const AValue : TExceptionEvent);
+    procedure SetOnIdle(Const AValue : TIdleEvent);
+    procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
+    procedure SetOnEndSession(Const AValue : TNotifyEvent);
+    procedure SetOnQueryEndSession(Const AValue : TQueryEndSessionEvent);
+    procedure SetOnMinimize(Const AValue : TNotifyEvent);
+    procedure SetOnRestore(Const AValue : TNotifyEvent);
+    procedure SetOnDropFiles(const AValue: TDropFilesEvent);
+    procedure SetOnHelp(Const AValue : THelpEvent);
+    procedure SetOnHint(Const AValue : TNotifyEvent);
+    procedure SetOnShowHint(Const AValue : TShowHintEvent);
+    procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
   public
     Constructor Create(AOwner: TComponent); Override;
     destructor Destroy; override;
@@ -1272,7 +1272,7 @@ type
     procedure ValidateRename(AComponent: TComponent;
       const CurName, NewName: string); virtual; abstract;
     function GetShiftState: TShiftState; virtual; abstract;
-    Procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
+    procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
     function UniqueName(const BaseName: string): string; virtual; abstract;
   end;
 

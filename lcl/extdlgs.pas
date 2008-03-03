@@ -565,7 +565,7 @@ type
     procedure CalcKeyPress(Sender: TObject; var Key: char);
     procedure Copy;
     procedure Paste;
-    Function WorkingPrecision : Integer;
+    function WorkingPrecision : Integer;
     property DisplayValue: Double read GetDisplay write SetDisplay;
     property Text: string read FText;
     property OnOkClick: TNotifyEvent read FOnOk write FOnOk;
@@ -718,7 +718,7 @@ begin
       FMemoryLabel.Caption:='';
 end;
 
-Function TCalculatorPanel.WorkingPrecision : Integer;
+function TCalculatorPanel.WorkingPrecision : Integer;
 
 begin
   Result:=2;
@@ -1051,7 +1051,7 @@ begin
 end;
 
 
-Procedure TCalculatorForm.InitForm(ALayout : TCalculatorLayout);
+procedure TCalculatorForm.InitForm(ALayout : TCalculatorLayout);
 begin
   BorderStyle:=bsDialog;
   Caption:=rsCalculator;

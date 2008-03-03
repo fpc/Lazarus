@@ -4330,7 +4330,7 @@ begin
   Result.Alpha := AlphaOpaque;
 end;
 
-Function Bmp16BitToFPColor(Const RGB: Word): TFPColor;
+function Bmp16BitToFPColor(Const RGB: Word): TFPColor;
 var
   V1, V2: Cardinal;
 begin

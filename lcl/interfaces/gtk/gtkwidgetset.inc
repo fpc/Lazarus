@@ -1227,7 +1227,7 @@ begin
   Result := TGtkThemeServices.Create;
 end;
 
-Procedure TGtkWidgetSet.InitStockItems;
+procedure TGtkWidgetSet.InitStockItems;
 var
   LogBrush: TLogBrush;
   logPen : TLogPen;
@@ -3671,7 +3671,7 @@ begin
       result := TCommonDialog(Sender).FCompStyle;
 end;
 
-Function TGtkWidgetSet.GetCaption(Sender : TObject) : String;
+function TGtkWidgetSet.GetCaption(Sender : TObject) : String;
 begin
   Result := Sender.ClassName;
   if (Sender is TControl) then

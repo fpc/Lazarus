@@ -186,7 +186,7 @@ begin
   result:=TBar(FBars.FindItemID(SId));
 end;
 
-Function TCustomBarChart.NormalizeScaleUnits(OldScale: Integer): Integer;
+function TCustomBarChart.NormalizeScaleUnits(OldScale: Integer): Integer;
 
 Var
   T: Integer;

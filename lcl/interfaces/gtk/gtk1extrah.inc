@@ -90,12 +90,12 @@ function gdk_pixmap_colormap_create_from_xpm_d (window: PGdkWindow;
 function gdk_pixmap_colormap_create_from_xpm (window: PGdkWindow;
                   colormap: PGdkColormap; var mask: PGdkBitmap;
                   transparent_color: PGdkColor; filename: Pgchar): PGdkPixmap;
-Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
+procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf: PGdkPixbuf;
   var pixmap_return: PGdkPixmap; var mask_return: PGdkBitmap;
   alpha_threshold: gint);
 
 //Wrapper around window functions like gtk2 -->
-Function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;
+function gdk_drawable_get_depth(Drawable: PGDKDrawable): gint;
 procedure gdk_drawable_get_size(Drawable: PGDKDrawable; Width, Height: PGInt);
 function gdk_drawable_get_image(Drawable: PGDKDrawable;
                                 x, y, width, height: gint): PGdkImage;

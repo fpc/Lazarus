@@ -84,12 +84,12 @@ begin
   Result:=0;
 end;
 
-Function TWidgetSet.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
+function TWidgetSet.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := False;
 end;
 
-Function TWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
+function TWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
   fnCombineMode : Longint) : Longint;
 begin
   Result := ERROR;
@@ -293,7 +293,7 @@ var
   MaxLength : Integer;
   Pt : TPoint;
 
-  Function LeftOffset : Longint;
+  function LeftOffset : Longint;
   begin
     If (Flags and DT_Right) = DT_Right then
       Result := DT_Right
@@ -304,7 +304,7 @@ var
       Result := DT_LEFT;
   end;
 
-  Function TopOffset : Longint;
+  function TopOffset : Longint;
   begin
     If (Flags and DT_BOTTOM) = DT_BOTTOM then
       Result := DT_BOTTOM
@@ -315,39 +315,39 @@ var
       Result := DT_Top;
   end;
 
-  Function SingleLine : Boolean;
+  function SingleLine : Boolean;
   begin
     Result := (Flags and DT_SingleLine) = DT_SingleLine;
   end;
 
-  Function WordWrap : Boolean;
+  function WordWrap : Boolean;
   begin
     Result := (Flags and DT_WordBreak) = DT_WordBreak;
   end;
 
-  Function CalcRect : Boolean;
+  function CalcRect : Boolean;
   begin
     Result := (Flags and DT_CalcRect) = DT_CalcRect;
   end;
 
-  Function NOCLIP : Boolean;
+  function NOCLIP : Boolean;
   begin
     Result := (Flags and DT_NOCLIP) = DT_NOCLIP;
   end;
 
-  Function NoPrefix : Boolean;
+  function NoPrefix : Boolean;
   begin
     Result := (Flags and DT_NoPrefix) = DT_NoPrefix;
   end;
 
-  Function Breakable(Breaks : TList; Index : Integer) : Boolean;
+  function Breakable(Breaks : TList; Index : Integer) : Boolean;
   begin
     If not Assigned(Breaks) then
       exit;
     Result := Breaks.IndexOf(Pointer(PtrInt(Index))) <> -1;
   end;
 
-  Function NextBreakable(Breaks : TList; Index : Integer) : Integer;
+  function NextBreakable(Breaks : TList; Index : Integer) : Integer;
   begin
     Result := -1;
     If (not Assigned(Breaks)) or
@@ -359,7 +359,7 @@ var
     Result := integer(PtrUInt(Breaks[Breaks.IndexOf(Pointer(PtrInt(Index))) + 1]));
   end;
 
-  Function GetBreakablePoints(const Source : String) : TList;
+  function GetBreakablePoints(const Source : String) : TList;
   var
     I : Integer;
   begin
@@ -376,7 +376,7 @@ var
       Result.Insert(0,nil);
   end;
 
-  Function TextExtent(Handle : hDC; const Source : String) : TSize;
+  function TextExtent(Handle : hDC; const Source : String) : TSize;
   var
     pStr : PChar;
   begin
@@ -389,7 +389,7 @@ var
     end;
   end;
 
-  Function GetStringLength(Handle : hDC; const Source : String;
+  function GetStringLength(Handle : hDC; const Source : String;
     FromPos, ToPos : Integer) : Integer;
   var
     Tmp : String;
@@ -399,7 +399,7 @@ var
     SetLength(Tmp,0);
   end;
 
-  Function GetStringHeight(Handle : hDC; const Source : String;
+  function GetStringHeight(Handle : hDC; const Source : String;
     FromPos, ToPos : Integer) : Integer;
   var
     Tmp : String;
@@ -409,7 +409,7 @@ var
     SetLength(Tmp,0);
   end;
 
-  Function BreakString(const Source : String) : TStrings;
+  function BreakString(const Source : String) : TStrings;
   var
     I, FromPos, ToPos : Integer;
     Breaks : TList;
@@ -453,7 +453,7 @@ var
     Breaks.Free;
   end;
 
-  Function DoBreakString(const AStr : String) : TStrings;
+  function DoBreakString(const AStr : String) : TStrings;
   var
     TS : TStrings;
     Num : Longint;
@@ -496,7 +496,7 @@ var
       Result.Append(AStr);
   end;
 
-  Procedure CalcTextRect;
+  procedure CalcTextRect;
   var
     J, wT,hT : Integer;
   begin
@@ -699,7 +699,7 @@ begin
   Result := False;
 end;
 
-Function TWidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+function TWidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
   Result:=1;
 end;
@@ -813,7 +813,7 @@ begin
   Result:= 0;
 end;
 
-Function TWidgetSet.GetActiveWindow : HWND;
+function TWidgetSet.GetActiveWindow : HWND;
 begin
   Result := 0;
 end;
@@ -844,13 +844,13 @@ begin
   Result := False;
 end;
 
-Function TWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+function TWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 begin
   lpRect^ := Rect(0,0,0,0);
   Result := SIMPLEREGION;
 end;
 
-Function TWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
+function TWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : Longint;
 begin
   Result := -1;
 end;
@@ -909,22 +909,22 @@ begin
   Result := 0;
 end;
 
-Function TWidgetSet.GetParent(Handle : HWND): HWND;
+function TWidgetSet.GetParent(Handle : HWND): HWND;
 begin
   Result := 0;
 end;
 
-Function TWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
+function TWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 begin
   Result := nil;
 end;
 
-Function TWidgetSet.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
+function TWidgetSet.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
 begin
   Result := SIMPLEREGION;
 end;
 
-Function TWidgetSet.GetROP2(DC: HDC): Integer;
+function TWidgetSet.GetROP2(DC: HDC): Integer;
 begin
   Result := 0;
 end;
@@ -997,7 +997,7 @@ begin
   Result := 0;
 end;
 
-Function TWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
+function TWidgetSet.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 Begin
   Result := 0;
   if P<>nil then
@@ -1062,7 +1062,7 @@ begin
   DeleteObject(RRGN);
 end;
 
-Function TWidgetSet.InvalidateRect(aHandle : HWND; ARect : pRect;
+function TWidgetSet.InvalidateRect(aHandle : HWND; ARect : pRect;
   bErase : Boolean) : Boolean;
 begin
   Result := false;
@@ -1217,7 +1217,7 @@ begin
   DeleteObject(ClipRGN);
 end;
 
-Function TWidgetSet.ReleaseCapture : Boolean;
+function TWidgetSet.ReleaseCapture : Boolean;
 Begin
   Result := True;
 end;
@@ -1394,7 +1394,7 @@ begin
   Result := false;
 end;
 
-Function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
+function TWidgetSet.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin
   Result := True;
@@ -1440,7 +1440,7 @@ begin
   Result := -1;
 end;
 
-Function TWidgetSet.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
+function TWidgetSet.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
   OldPoint: PPoint) : Boolean;
 Begin
   Result := False;
@@ -1492,7 +1492,7 @@ begin
   end
 end;
 
-Function TWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+function TWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   Result := false;
 end;
@@ -1502,7 +1502,7 @@ begin
   Result := false;
 end;
 
-Function TWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
+function TWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := 0;
 end;

@@ -339,7 +339,7 @@ var
   LineInfoCache: TAvgLvlTree = nil;
 
 
-Function DeleteAmpersands(var Str : String) : Longint;
+function DeleteAmpersands(var Str : String) : Longint;
 // Replace all &x with x
 // and return the position of the first ampersand letter in the resulting Str.
 // double ampersands && are converted to a single & and are ignored.

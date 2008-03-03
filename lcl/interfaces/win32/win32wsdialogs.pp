@@ -819,7 +819,7 @@ end;
 
   Handles the messages sent to the toolbar button by Windows
  ------------------------------------------------------------------------------}
-Function BrowseForFolderCallback(hwnd : Handle; uMsg : UINT;
+function BrowseForFolderCallback(hwnd : Handle; uMsg : UINT;
   lParam, lpData : LPARAM) : Integer; stdcall;
 begin
   case uMsg of

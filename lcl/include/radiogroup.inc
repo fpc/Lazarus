@@ -433,7 +433,7 @@ end;
   This is the callback for all radiobuttons in the group. If an OnClick
   handler is assigned it will be called
  ------------------------------------------------------------------------------}
-Procedure TCustomRadioGroup.Clicked(Sender : TObject);
+procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
   if fIgnoreClicks then exit;
   CheckItemIndexChanged;
@@ -445,7 +445,7 @@ end;
 
   Checks for changes. Does the same as Clicked for Delphi compatibility.
  ------------------------------------------------------------------------------}
-Procedure TCustomRadioGroup.Changed(Sender : TObject);
+procedure TCustomRadioGroup.Changed(Sender : TObject);
 Begin
   CheckItemIndexChanged;
 end;

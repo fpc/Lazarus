@@ -226,7 +226,7 @@ end;
   Params:  none
   Returns: FModified
  ------------------------------------------------------------------------------}
-Function TCustomEdit.GetModified : Boolean;
+function TCustomEdit.GetModified : Boolean;
 Begin
   Result := FModified;
 End;
@@ -236,7 +236,7 @@ End;
   Params:  Value to set FCharCase to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
+procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
 Begin
   if FCharCase <> value then
   Begin
@@ -399,7 +399,7 @@ end;
   Params:  Value to set FModified to
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomEdit.TextChanged;
+procedure TCustomEdit.TextChanged;
 var
   Temp : String;
 Begin
@@ -426,7 +426,7 @@ Begin
   end;
 End;
 
-Procedure TCustomEdit.Change;
+procedure TCustomEdit.Change;
 Begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;

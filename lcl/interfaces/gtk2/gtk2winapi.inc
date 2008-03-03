@@ -309,7 +309,7 @@ end;
 
  ------------------------------------------------------------------------------}
  
-Function TGtk2WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+function TGtk2WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 var
   Control: TWinControl;
 begin

@@ -909,11 +909,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
+  procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
 
   Handler for custom drawing items.
  ------------------------------------------------------------------------------}
-Procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
+procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
 begin
   with TheMessage.DrawListItemStruct^ do
   begin

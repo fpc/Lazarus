@@ -122,7 +122,7 @@ begin
     end;
 end;
 
-Procedure TDBCheckBox.FocusRequest(Sender: TObject);
+procedure TDBCheckBox.FocusRequest(Sender: TObject);
 begin
   //the FieldLink has requested the control
   //recieve focus for some reason..

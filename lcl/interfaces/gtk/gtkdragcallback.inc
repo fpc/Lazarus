@@ -16,7 +16,7 @@
 }
 //DRAG CALLBACK FUNCTIONS
 
-Function edit_drag_data_received(widget : pgtkWidget;
+function edit_drag_data_received(widget : pgtkWidget;
   Context : pGdkDragContext;
   X, Y : Integer;
   SelData : pGtkSelectionData;
@@ -40,7 +40,7 @@ Begin
   gtk_drag_finish(Context,false,false,time);
 end;
 
-Function edit_source_drag_data_get(widget : pgtkWidget;
+function edit_source_drag_data_get(widget : pgtkWidget;
   Context : pGdkDragContext;
   Selection_data : pGtkSelectionData;
   info : Integer;
@@ -76,7 +76,7 @@ Begin
 end;
 
 
-Function Edit_source_drag_data_delete (Widget: pGtkWidget;
+function Edit_source_drag_data_delete (Widget: pGtkWidget;
   Context: pGdkDragContext; Data: gpointer): gBoolean ; cdecl;
 begin
   if (Widget=nil) or (Context=nil) or (Data=nil) then ;

@@ -48,7 +48,7 @@ type
     FDir: string;
     FShowHidden: Boolean;
     //TheImageList: TImageList;
-    Procedure AddDirectories(Node: TTreeNode; Dir: string);
+    procedure AddDirectories(Node: TTreeNode; Dir: string);
     function GetAbsolutePath(Node: TTreeNode): string;
     procedure SetDir(const Value: string);
     procedure SetRootDir(const Value: string);
@@ -70,7 +70,7 @@ uses
   FileUtil, LCLStrConsts;
 
 
-{Function HasSubDirs returns True if the directory passed has subdirectories}
+{function HasSubDirs returns True if the directory passed has subdirectories}
 function HasSubDirs(const Dir: string; AShowHidden: boolean): Boolean;
 var
   FileInfo: TSearchRec;
@@ -112,7 +112,7 @@ begin
 end;//HasSubDirs
 
 
-{Procedure AddDirectories Adds Subdirectories to a passed node if they exist}
+{procedure AddDirectories Adds Subdirectories to a passed node if they exist}
 procedure TDirSelDlg.AddDirectories(Node: TTreeNode; Dir: string);
 var
   FileInfo: TSearchRec;
@@ -172,9 +172,9 @@ begin
   if Node.Level = 0 then Node.Text := Dir;
 end;//AddDirectories
 
-{Procedure SetRootNode Clear the TreeView and Add the root with it's
+{procedure SetRootNode Clear the TreeView and Add the root with it's
  subdirectories}
-Procedure TDirSelDlg.SetRootDir(const Value: string);
+procedure TDirSelDlg.SetRootDir(const Value: string);
 var
   RootNode: TTreeNode;
 begin

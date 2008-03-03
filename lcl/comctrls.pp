@@ -1197,7 +1197,7 @@ type
   private
     MinBtn: TControl;// TSpeedButton
     MaxBtn: TControl;// TSpeedButton
-    BTimerProc: Procedure of Object;
+    BTimerProc: procedure of Object;
     BTimerBounds : TRect;
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
@@ -1212,7 +1212,7 @@ type
     FOrientation: TUDOrientation;
     FOnChanging: TUDChangingEvent;
     function GetPosition: SmallInt;
-    Procedure BTimerExec(Sender : TObject);
+    procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
     procedure SetArrowKeys(Value: Boolean);
     procedure SetAssociate(Value: TWinControl);
@@ -1228,7 +1228,7 @@ type
     procedure UpdateUpDownPositionText;
   protected
     OldKeyDown : TKeyEvent;
-    Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
+    procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
     class function GetControlClassDefaultSize: TPoint; override;

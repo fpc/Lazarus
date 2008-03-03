@@ -147,13 +147,13 @@ type
     procedure CheckPipeEvents;
 
 
-    Function WinRegister: Boolean;
+    function WinRegister: Boolean;
 
   Public
     { Creates a callback of Lazarus message Msg for Sender }
-    Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
+    procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
     { Removes all callbacks for Sender }
-    Procedure RemoveCallbacks(Sender: TObject); virtual;
+    procedure RemoveCallbacks(Sender: TObject); virtual;
 
     { Constructor of the class }
     constructor Create; override;
@@ -171,8 +171,8 @@ type
     procedure AppWaitMessage; override;
     procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
-    //Function  InitHintFont(HintFont: TObject): Boolean; override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); override;
+    //function  InitHintFont(HintFont: TObject): Boolean; override;
+    procedure AttachMenuToWindow(AMenuObject: TComponent); override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;

@@ -65,13 +65,13 @@ type
   end;
 
 
-Procedure Register;
+procedure Register;
 
 
 implementation
 
 
-Procedure Register;
+procedure Register;
 begin
   RegisterComponents('Misc',[TIniPropStorage]);
 end;

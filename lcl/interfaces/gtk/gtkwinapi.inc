@@ -194,7 +194,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
+function TGtkWidgetSet.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
   Msg : UINT; wParam: WParam; lParam : LParam) : Integer;
 var
   Proc : TWndMethod;
@@ -224,7 +224,7 @@ end;
 
   Converts the client-area coordinates of P to screen coordinates.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
+function TGtkWidgetSet.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
   Position: TPoint;
 Begin
@@ -1990,7 +1990,7 @@ end;
   algorithm. NumPts indicates the number of points to use.
   The first point is always connected to the last point.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+function TGtkWidgetSet.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
   FillMode: integer): HRGN;
 var
   i: integer;
@@ -2089,7 +2089,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
+function TGtkWidgetSet.CombineRgn(Dest, Src1, Src2 : HRGN;
   fnCombineMode : Longint) : Longint;
 var
   Continue : Boolean;
@@ -4308,7 +4308,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetActiveWindow : HWND;
+function TGtkWidgetSet.GetActiveWindow : HWND;
 var
   TopList, List: PGList;
   Widget: PGTKWidget;
@@ -4487,7 +4487,7 @@ end;
   the inner area of a control, where the child controls are visible. The
   coordinates are relative to the control's left and top.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
+function TGtkWidgetSet.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
   {$IFDEF Gtk1}
@@ -4584,7 +4584,7 @@ end;
   The client rectangle is the size of the inner area of a control, where the
   child controls are visible.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
+function TGtkWidgetSet.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
   
@@ -4675,7 +4675,7 @@ end;
       SimpleRegion
       ComplexRegion
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
+function TGtkWidgetSet.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
   DevCtx: TGtkDeviceContext absolute DC;
   
@@ -4733,7 +4733,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+function TGtkWidgetSet.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
 begin
@@ -4776,7 +4776,7 @@ end;
      1 = ok
     -1 = error
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
+function TGtkWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
 var
   DCOrigin: TPoint;
   ClipRegionWithDCOffset: PGdkRegion;
@@ -4839,7 +4839,7 @@ end;
   Returns a description of the command line parameters, that are understood by
   the interface.
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetCmdLineParamDescForInterface: string;
+function TGtkWidgetSet.GetCmdLineParamDescForInterface: string;
   function b(const s: string): string;
   begin
     Result:=BreakString(s,75,22)+LineEnding+LineEnding;
@@ -5454,7 +5454,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
+function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
   //DebugLn('TGtkWidgetSet.GetParent ',DbgS(Handle));
   Result:=0;
@@ -5469,7 +5469,7 @@ end;
   Returns: Pointer
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
+function TGtkWidgetSet.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
   Result := gtk_object_get_data(pgtkobject(Handle),Str);
 end;
@@ -6362,7 +6362,7 @@ end;
 
   Returns the current widget Width and Height
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.GetWindowSize(Handle : hwnd;
+function TGtkWidgetSet.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
   if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
@@ -6398,17 +6398,17 @@ var
   DevCtx: TGtkDeviceContext absolute DC;
   
   
-  Function DoFillTriangle : Boolean;
+  function DoFillTriangle : Boolean;
   begin
     Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
   end;
 
-  Function DoFillVRect : Boolean;
+  function DoFillVRect : Boolean;
   begin
     Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
   end;
 
-  Procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
+  procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
     TotalSteps : Longint; var GradientBrush : hBrush);
   var
     R1, G1, B1 : Integer;
@@ -6432,7 +6432,7 @@ var
     GradientBrush := LCLIntf.CreateBrushIndirect(NewBrush);
   end;
 
-  Function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
+  function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
   {var
     V1, V2, V3 : tagTRIVERTEX;
     C1, C2, C3 : TColorRef;
@@ -6459,7 +6459,7 @@ var
     Result := False;
   end;
 
-  Function FillRectMesh(Mesh : tagGradientRect) : Boolean;
+  function FillRectMesh(Mesh : tagGradientRect) : Boolean;
   var
     TL,BR : tagTRIVERTEX;
     StartColor, EndColor : TColorRef;
@@ -7704,7 +7704,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+function TGtkWidgetSet.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 var
   X, Y: Integer;
   Widget: PGTKWidget;
@@ -7781,7 +7781,7 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
+function TGtkWidgetSet.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 var
   DevCtx: TGtkDeviceContext absolute DC;
 
@@ -8145,11 +8145,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
+  function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
     MinItemsWidth, MinItemsHeight: integer): boolean;
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
+function TGtkWidgetSet.SetComboMinDropDownSize(Handle: HWND;
   MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
 var
   ComboWidget: PGtkCombo;
@@ -8664,7 +8664,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar;
+  function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
@@ -8674,7 +8674,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TGtkWidgetSet.SetROPMode(Handle: hwnd; Str : PChar;
+  function TGtkWidgetSet.SetROPMode(Handle: hwnd; Str : PChar;
                               Data : Pointer) : Boolean;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetROP2(DC: HDC; Mode: Integer) : Integer;
@@ -9033,7 +9033,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
+  function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
     OldPoint: PPoint) : Boolean;
 
   Sets the DC offset for the specified device context.
@@ -9375,7 +9375,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+function TGtkWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 {$IfDef GTK2}
 begin
@@ -9475,7 +9475,7 @@ end;
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
 
  ------------------------------------------------------------------------------}
-Function TGtkWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
+function TGtkWidgetSet.WindowFromPoint(Point : TPoint) : HWND;
 var
   ev : TgdkEvent;
   Window : PgdkWindow;
@@ -9543,7 +9543,7 @@ end;
 
 {$EndIf}
 
-Procedure TGtkWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
+procedure TGtkWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   ACritSec: System.PRTLCriticalSection;
@@ -9574,7 +9574,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGtkWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
+procedure TGtkWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   ACritSec: System.PRTLCriticalSection;
@@ -9606,7 +9606,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGtkWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
+procedure TGtkWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   ACritSec: System.PRTLCriticalSection;
@@ -9638,7 +9638,7 @@ begin
 end;
 {$EndIf}
 
-Procedure TGtkWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
+procedure TGtkWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 {$IfDef pthread}
 var
   ACritSec: System.PRTLCriticalSection;

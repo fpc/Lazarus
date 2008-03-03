@@ -257,7 +257,7 @@ begin
   SetProps;
 end;
 
-Procedure TCustomCalendar.GetProps;
+procedure TCustomCalendar.GetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
@@ -269,7 +269,7 @@ begin
   end;
 end;
 
-Procedure TCustomCalendar.SetProps;
+procedure TCustomCalendar.SetProps;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin

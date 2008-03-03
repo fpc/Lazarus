@@ -145,7 +145,7 @@ type
 
   { TFileNameEdit }
 
-  TAcceptFileNameEvent = Procedure (Sender : TObject; Var Value : String) of Object;
+  TAcceptFileNameEvent = procedure (Sender : TObject; Var Value : String) of Object;
   TDialogKind = (dkOpen,dkSave,dkPictureOpen,dkPictureSave);
   
   TFileNameEdit = Class(TCustomEditButton)
@@ -162,11 +162,11 @@ type
     function GetFileName: String;
     procedure SetFileName(const AValue: String);
   protected
-    Function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
-    Procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
-    Function CreateFileOpenBitmap : TBitmap; virtual;
+    function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
+    procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
+    function CreateFileOpenBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; virtual;
+    procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
@@ -241,11 +241,11 @@ type
     function GetDirectory: String;
     procedure SetDirectory(const AValue: String);
   protected
-    Function CreateDialog : TCommonDialog; virtual;
-    Function GetDialogResult(D : TCommonDialog) : String; virtual;
-    Function CreateDirectoryBitmap : TBitmap; virtual;
+    function CreateDialog : TCommonDialog; virtual;
+    function GetDialogResult(D : TCommonDialog) : String; virtual;
+    function CreateDirectoryBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; virtual;
+    procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
@@ -307,7 +307,7 @@ type
   
   { TDateEdit }
 
-  TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime;
+  TAcceptDateEvent = procedure (Sender : TObject; Var ADate : TDateTime;
     Var AcceptDate: Boolean) of Object;
   TCustomDateEvent = procedure (Sender : TObject; var ADate : string) of object;
 
@@ -405,9 +405,9 @@ type
     function TitleStored: boolean;
   protected
     FCalcDialog : TForm;
-    Function CreateCalcBitmap : TBitmap; virtual;
+    function CreateCalcBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
-    Procedure RunDialog; virtual;
+    procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;

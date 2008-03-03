@@ -190,7 +190,7 @@ begin
       and (HorzScrollBar<>nil) and HorzScrollBar.Visible;
 end;
 
-Function TScrollingWinControl.StoreScrollBars : Boolean;
+function TScrollingWinControl.StoreScrollBars : Boolean;
 begin
   Result := Not AutoScroll;
 end;

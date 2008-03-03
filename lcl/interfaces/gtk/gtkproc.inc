@@ -182,31 +182,31 @@ begin
     result := False;
 end;
 
-Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
+function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
 begin
   result := gdk_region_copy(region);
   GDK2.gdk_region_union_with_rect(result, rect);
 end;
 
-Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_region_copy(source1);
   GDK2.gdk_region_intersect(result, source2);
 end;
 
-Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_region_copy(source1);
   GDK2.gdk_region_union(result, source2);
 end;
 
-Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_region_copy(source1);
   GDK2.gdk_region_subtract(result, source2);
 end;
 
-Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_region_copy(source1);
   GDK2.gdk_region_xor(result, source2);
@@ -1519,7 +1519,7 @@ begin
 end;
 
 
-Function RegionType(RGN: PGDKRegion) : Longint;
+function RegionType(RGN: PGDKRegion) : Longint;
 var
   aRect : TGDKRectangle;
   SimpleRGN: PGdkRegion;
@@ -2729,7 +2729,7 @@ procedure InitKeyboardTables;
       end;
       GDK_Key_Menu:         AVKey := VK_APPS;
 
-      // Function keys
+      // function keys
       GDK_KEY_F1..GDK_KEY_F24:  AVKey := VK_F1 + AKeySym - GDK_Key_F1;
 
       // Extra keys on a "internet" keyboard
@@ -3810,11 +3810,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+  procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   
   Move a childwidget on a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
-Procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+procedure FixedMoveControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 begin
   If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then begin
     // parent is layout
@@ -3829,11 +3829,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+  procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
 
   Add a childwidget onto a client area (fixed or layout widget).
 ------------------------------------------------------------------------------}
-Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 
   procedure RaiseInvalidFixedWidget;
   begin
@@ -3959,7 +3959,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function GetControlWindow(Widget: Pointer) : PGDKWindow;
+  function GetControlWindow(Widget: Pointer) : PGDKWindow;
 
   Get the gdkwindow of a widget.
 ------------------------------------------------------------------------------}
@@ -7173,7 +7173,7 @@ begin
     Result:=false;
 end;
 
-Procedure ReportNotObsolete(const Texts : String);
+procedure ReportNotObsolete(const Texts : String);
 Begin
   DebugLn('*********************************************');
   DebugLn('*********************************************');
@@ -7589,7 +7589,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Function CreateFormContents(AForm: TCustomForm;
+  function CreateFormContents(AForm: TCustomForm;
     var FormWidget: Pointer): Pointer;
 
   Creates the contents for the form (normally a hbox plus a client area.
@@ -7746,7 +7746,7 @@ begin
   end;
 end;
 
-Procedure ReleaseStyleWithName(const WName : String);
+procedure ReleaseStyleWithName(const WName : String);
 var
   l : Longint;
   s : PStyleObject;
@@ -8178,7 +8178,7 @@ begin
     Result:=GetStyleWidgetWithName(LazGtkStyleNames[aStyle]);
 end;
 
-Function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
+function GetStyleWidgetWithName(const WName : String) : PGTKWidget;
 var
   l : Longint;
 begin
@@ -8649,7 +8649,7 @@ begin
   RealizeGtkStyleColor(Style,@Result.foreground);
 end;
 
-Function StyleForegroundColor(Color: TColorRef;
+function StyleForegroundColor(Color: TColorRef;
   DefaultColor: PGDKColor): PGDKColor;
 var
   style : PGTKStyle;
@@ -9053,7 +9053,7 @@ begin
   end;
 end;
 
-Function DeleteAmpersands(var Str : String) : Longint;
+function DeleteAmpersands(var Str : String) : Longint;
 // convert double ampersands to single & and delete single &
 // return the position of the letter after the first deleted single ampersand
 // in the new string
@@ -9097,7 +9097,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Function Ampersands2Underscore(Src: PChar) : PChar;
+  function Ampersands2Underscore(Src: PChar) : PChar;
 
   Creates a new PChar. Deletes escaping ampersands, replaces the first single
   ampersand with an underscore and deleting all other single ampersands.
@@ -9211,7 +9211,7 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  Function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+  function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
   Creates a new PChar removing all escaping ampersands.
 -------------------------------------------------------------------------------}
@@ -9350,7 +9350,7 @@ end;
 
 
 {-------------------------------------------------------------------------------
-  Function GetTextExtentIgnoringAmpersands(TheFont: PGDKFont;
+  function GetTextExtentIgnoringAmpersands(TheFont: PGDKFont;
     Str : PChar; StrLength: integer;
     MaxWidth: Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 
@@ -9358,7 +9358,7 @@ end;
   That means, ampersands are not counted.
   Negative MaxWidth means no limit.
 -------------------------------------------------------------------------------}
-Procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
+procedure GetTextExtentIgnoringAmpersands(TheFont: TGtkIntfFont;
   Str : PChar; StrLength: integer;
   lbearing, rbearing, width, ascent, descent : Pgint);
 var
@@ -9451,7 +9451,7 @@ end;
   retrieved from gdk_image_get_pixel, and uses the passed Visual and Colormap
   to try and look up actual RGB values.
  ------------------------------------------------------------------------------}
-Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
+function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
   Colormap: PGDKColormap) : TGDIRGB;
 var
   Color: TGDKColor;
@@ -9471,7 +9471,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function GetWindowDecorations(AForm : TCustomForm) : Longint;
+  function GetWindowDecorations(AForm : TCustomForm) : Longint;
   
  ------------------------------------------------------------------------------}
 function GetWindowDecorations(AForm : TCustomForm) : Longint;
@@ -9521,7 +9521,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function GetWindowFunction(AForm : TCustomForm) : Longint;
+  function GetWindowFunction(AForm : TCustomForm) : Longint;
 
  ------------------------------------------------------------------------------}
 function GetWindowFunction(AForm : TCustomForm) : Longint;
@@ -9572,7 +9572,7 @@ begin
   //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
 end;
 
-Procedure FillScreenFonts(ScreenFonts : TStrings);
+procedure FillScreenFonts(ScreenFonts : TStrings);
 var
   {$ifdef gtk1}
   theFonts : PPChar;

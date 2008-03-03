@@ -198,14 +198,14 @@ function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
 
 { Miscellaneous functions }
 { Convert string Str to a PChar }
-Function StrToPChar(Const Str: String): PChar;
+function StrToPChar(Const Str: String): PChar;
 
 { Replace OrigStr with ReplStr in Str }
-Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
+function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
 
 { Creates a string list limited to Count (-1 for no limit) entries by splitting
   Str into substrings around SplitStr }
-Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
+function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
 
 //{$ifdef VER2_0}
 function GET_X_LPARAM(lp : Windows.LParam) : longint;
@@ -283,13 +283,13 @@ end;
 Var
   TmpStr: PChar;
 
-Function StrToPChar(Const Str: String): PChar;
+function StrToPChar(Const Str: String): PChar;
 Begin
   TmpStr := PChar(Str);
   Result := TmpStr;
 End;
 
-Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
+function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
 Var
   InsPt: Integer;
 Begin
@@ -307,7 +307,7 @@ Begin
   Until InsPt = 0;
 End;
 
-Function Split(Const Str: String; SplitStr: String; Count: Integer;
+function Split(Const Str: String; SplitStr: String; Count: Integer;
   Const CaseSensitive: Boolean): TStringList;
 Var
   LastP, P: Integer;
