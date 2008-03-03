@@ -218,7 +218,7 @@ end;
 procedure TCustomCalendar.SetReadOnly(const AValue: Boolean);
 begin
   if (FReadOnly <> aValue) then
-  Begin
+  begin
     FReadOnly := aValue;
     SetProps;
   end;
