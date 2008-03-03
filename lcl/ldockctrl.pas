@@ -609,24 +609,11 @@ begin
   if ExtendPopupMenu and (Control<>nil) and (Control.PopupMenu<>nil)
   and (Manager<>nil) then begin
     //DebugLn('TCustomLazControlDocker.UpdatePopupMenu ADDING');
-    if (PopupMenuItem<>nil) and (PopupMenuItem.Parent<>Control.PopupMenu.Items)
-    then begin
-      // PopupMenuItem is in the old PopupMenu -> delete it
-      FreeAndNil(FPopupMenuItem);
-    end;
-    if (PopupMenuItem=nil) then begin
-      // create a new PopupMenuItem
-      FPopupMenuItem:=TMenuItem.Create(Self);
-      PopupMenuItem.Caption:=rsDocking;
-      PopupMenuItem.OnClick:=@PopupMenuItemClick;
-    end;
-    if PopupMenuItem.Parent=nil then begin
-      // add PopupMenuItem to Control.PopupMenu
-      Control.PopupMenu.Items.Add(PopupMenuItem);
-    end;
+    AddPopupMenu(Control.PopupMenu);
   end else begin
     // delete PopupMenuItem
-    FreeAndNil(FPopupMenuItem);
+    if (Control<>nil) and (Control.PopupMenu<>nil) then
+      RemovePopupMenu(Control.PopupMenu);
   end;
 end;
 
@@ -1664,6 +1651,8 @@ end;
 
 procedure TCustomLazControlDocker.Notification(AComponent: TComponent;
   Operation: TOperation);
+var
+  Item: TLCDMenuItem;
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
@@ -1672,10 +1661,18 @@ begin
       FControl:=nil;
     end;
     if (AComponent is TMenu) then begin
-
+      Item:=FindLCDMenuItem(TMenu(AComponent));
+      FMenus.Remove(Item);
+      Item.Menu:=nil;
+      FreeAndNil(Item.Item);
+      Item.Free;
     end;
     if (AComponent is TMenuItem) then begin
-
+      Item:=FindLCDMenuItem(TMenu(AComponent));
+      FMenus.Remove(Item);
+      Item.Menu:=nil;
+      Item.Item:=nil;
+      Item.Free;
     end;
   end;
 end;
@@ -1684,7 +1681,7 @@ function TCustomLazControlDocker.FindLCDMenuItem(AMenu: TMenu): TLCDMenuItem;
 var
   i: Integer;
 begin
-  if FMenus<>nil then
+  if (FMenus<>nil) and (AMenu<>nil) then
     for i:=0 to FMenus.Count-1 do begin
       Result:=TLCDMenuItem(FMenus[i]);
       if Result.Menu=AMenu then exit;
@@ -1697,7 +1694,7 @@ function TCustomLazControlDocker.FindLCDMenuItem(AMenuItem: TMenuItem
 var
   i: Integer;
 begin
-  if FMenus<>nil then
+  if (FMenus<>nil) and (AMenuItem<>nil) then
     for i:=0 to FMenus.Count-1 do begin
       Result:=TLCDMenuItem(FMenus[i]);
       if Result.Item=AMenuItem then exit;
@@ -1727,19 +1724,30 @@ end;
 procedure TCustomLazControlDocker.AddPopupMenu(Menu: TPopupMenu);
 var
   AMenuItem: TMenuItem;
+  LCDItem: TLCDMenuItem;
 begin
-  if (FMenus<>nil) and (FMenus.IndexOf(Menu)>=0) then exit;
+  if FindLCDMenuItem(Menu)<>nil then exit;
   if FMenus=nil then FMenus:=TFPList.Create;
-  FMenus.Add(Menu);
+  LCDItem:=TLCDMenuItem.Create;
+  LCDItem.Menu:=Menu;
+  FMenus.Add(LCDItem);
   Menu.FreeNotification(Self);
-  AMenuItem:=TMenuItem.Create(Self);
-  AMenuItem.Caption:=rsDocking;
-  AMenuItem.OnClick:=@PopupMenuItemClick;
+  LCDItem.Item:=TMenuItem.Create(Self);
+  LCDItem.Item.Caption:=rsDocking;
+  LCDItem.Item.OnClick:=@PopupMenuItemClick;
+  Menu.Items.Add(LCDItem.Item);
 end;
 
 procedure TCustomLazControlDocker.RemovePopupMenu(Menu: TPopupMenu);
+var
+  Item: TLCDMenuItem;
 begin
-
+  Item:=FindLCDMenuItem(Menu);
+  if Item=nil then exit;
+  FMenus.Remove(Item);
+  FreeAndNil(Item.Item);
+  Item.Menu:=nil;
+  Item.Free;
 end;
 
 function TCustomLazControlDocker.GetLayoutFromControl: TLazDockConfigNode;
@@ -2184,6 +2192,7 @@ begin
   Control:=nil;
   Manager:=nil;
   inherited Destroy;
+  FreeAndNil(FMenus);
 end;
 
 procedure TCustomLazControlDocker.PopupMenuItemClick(Sender: TObject);
