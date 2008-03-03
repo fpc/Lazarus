@@ -121,7 +121,6 @@ Type
     FUpdatingRecord: boolean;
 
     procedure DataChange(Sender: TObject);
-    procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
     procedure ActiveChange(Sender: TObject);
@@ -574,7 +573,6 @@ Type
     procedure SetReadOnly(AValue: Boolean); override;
     function WordWrapIsStored: boolean; override;
     procedure DataChange(Sender: TObject); virtual;
-    procedure EditingChange(Sender: TObject); virtual;
     procedure ActiveChange(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
@@ -751,7 +749,6 @@ Type
     FDataLink: TFieldDataLink;
 
     procedure DataChange(Sender: TObject);
-    procedure EditingChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
 

@@ -58,6 +58,7 @@ end;
 
 procedure TDBMemo.SetReadOnly(AValue: Boolean);
 begin
+  inherited;
   FDataLink.ReadOnly:=AValue;
 end;
 
@@ -91,11 +92,6 @@ begin
       Text:='';
     FDBMemoLoaded:=False;
   end;
-end;
-
-procedure TDBMemo.EditingChange(Sender: TObject);
-begin
-  inherited ReadOnly:=not (FDataLink.Editing and FDBMemoLoaded);
 end;
 
 procedure TDBMemo.ActiveChange(Sender: TObject);
@@ -133,10 +129,8 @@ begin
   FDataLink:=TFieldDataLink.Create;
   FDataLink.Control:=Self;
   FDataLink.OnDataChange:=@DataChange;
-  FDataLink.OnEditingChange:=@EditingChange;
   FDataLInk.OnActiveChange := @ActiveChange;
   FDataLink.OnUpdateData:=@UpdateData;
-  inherited ReadOnly:=True;
 end;
 
 procedure TDBMemo.FocusRequest(Sender: TObject);
@@ -238,7 +232,6 @@ begin
       on E:EInvalidOperation do
         Lines.Text:='('+E.Message+')';
     end;
-    EditingChange(Self);
   end;
 end;
 

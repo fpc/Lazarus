@@ -63,16 +63,6 @@ begin
   DataChange(Sender);
 end;
 
-
-procedure TDBEdit.EditingChange(Sender: TObject);
-begin
-  //ok to hide the 'real' readonly state we must override it
-  //and so here when the data changes we need to set the
-  //'real' value to match the state of the FieldLink
-  //i.e. always ReadOnly unless its editing
-  inherited ReadOnly := not FDataLink.Editing;
-end;
-
 procedure TDBEdit.UpdateData(Sender: TObject);
 begin
   //the field is being updated, probably for post
@@ -114,19 +104,12 @@ end;
 
 function TDBEdit.GetReadOnly: Boolean;
 begin
-  //we want to override the readonly state so we can
-  //reflect the state of the Datalink/Field
   Result := FDataLink.ReadOnly;
 end;
 
 procedure TDBEdit.SetReadOnly(Value: Boolean);
 begin
-  //we want to override the readonly state so we can
-  //reflect the state of the Datalink/Field, so changing
-  //readonly changes the DataLink to ReadOnly, and when Editing
-  //changes the 'real' Readonly state will be updated to match
-  //according to the editing flag, which will always be false if
-  //this is true anyway. so I think all should be happy...
+  inherited;
   FDataLink.ReadOnly := Value;
 end;
 
@@ -281,12 +264,9 @@ begin
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := @DataChange;
-  FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLink.OnActiveChange := @ActiveChange;
   FDataLink.OnLayoutChange := @LayoutChange;
-
-  inherited ReadOnly := True;//start read only
 end;
 
 destructor TDBEdit.Destroy;
