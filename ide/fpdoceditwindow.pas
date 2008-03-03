@@ -34,14 +34,14 @@ uses
   Classes, SysUtils, StrUtils,
   // LCL
   LCLProc, LResources, StdCtrls, Buttons, ComCtrls, Controls, Dialogs,
-  ExtCtrls, Forms, Graphics,
+  LDockCtrl, ExtCtrls, Forms, Graphics,
   // Synedit
   SynEdit,
   // codetools
   FileProcs, CodeAtom, CodeCache, CodeToolManager,
   Laz_DOM, Laz_XMLRead, Laz_XMLWrite,
   // IDEIntf
-  IDEHelpIntf, LazHelpIntf,
+  LazIDEIntf, IDEHelpIntf, LazHelpIntf,
   // IDE
   IDEOptionDefs, EnvironmentOpts,
   IDEProcs, LazarusIDEStrConsts, FPDocSelectInherited, FPDocSelectLink,
@@ -96,6 +96,7 @@ type
     InsertLinkSpeedButton: TSpeedButton;
     UnderlineFormatButton: TSpeedButton;
     SeeAlsoTabSheet: TTabSheet;
+    ControlDocker: TLazControlDocker;
     procedure AddLinkButtonClick(Sender: TObject);
     procedure AddLinkToInheritedButtonClick(Sender: TObject);
     procedure BrowseExampleButtonClick(Sender: TObject);
@@ -280,6 +281,11 @@ begin
   
   Name := NonModalIDEWindowNames[nmiwFPDocEditorName];
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='FPDocEditor';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
 end;
 
 procedure TFPDocEditor.FormDestroy(Sender: TObject);

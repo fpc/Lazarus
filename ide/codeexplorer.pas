@@ -40,12 +40,12 @@ interface
 uses
   // FCL+LCL
   Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
-  Dialogs, Buttons, ComCtrls, Menus,
+  Dialogs, Buttons, ComCtrls, Menus, LDockCtrl,
   // CodeTools
   CodeToolManager, CodeAtom, CodeCache, CodeTree, KeywordFuncLists,
   FindDeclarationTool, DirectivesTree, PascalParserTool,
   // IDE Intf
-  IDECommands, MenuIntf,
+  LazIDEIntf, IDECommands, MenuIntf,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, IDEProcs,
   CodeExplOpts, StdCtrls, ExtCtrls;
@@ -91,6 +91,7 @@ type
     RefreshSpeedButton: TSpeedButton;
     ModeSpeedButton: TSpeedButton;
     TreePopupmenu: TPopupMenu;
+    ControlDocker: TLazControlDocker;
     procedure CodeExplorerViewClose(Sender: TObject;
                                     var CloseAction: TCloseAction);
     procedure CodeExplorerViewCreate(Sender: TObject);
@@ -310,7 +311,12 @@ begin
   Name:=NonModalIDEWindowNames[nmiwCodeExplorerName];
   Caption := lisMenuViewCodeExplorer;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
-  
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='CodeExplorer';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
+
   RefreshSpeedButton.Hint:=dlgUnitDepRefresh;
   OptionsSpeedButton.Hint:=dlgFROpts;
   CodeFilterEdit.Text:=lisCEFilter;

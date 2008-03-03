@@ -1605,6 +1605,8 @@ begin
 end;
 
 procedure TMainIDE.SetupObjectInspector;
+var
+  OIControlDocker: TLazControlDocker;
 begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
@@ -1621,6 +1623,11 @@ begin
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnViewIssues:=@OIOnViewIssues;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
+  OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
+  OIControlDocker.Name:='ObjectInspector';
+  {$IFDEF EnableIDEDocking}
+  OIControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
 
   GlobalDesignHook:=TPropertyEditorHook.Create;

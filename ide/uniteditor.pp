@@ -44,6 +44,7 @@ uses
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Translations, ClipBrd, TypInfo, Extctrls, Menus, HelpIntfs, LazHelpIntf,
+  LDockCtrl,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -612,6 +613,7 @@ type
   public
     FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
     FindReplaceDlgUserText: array[TFindDlgComponent] of string;
+    ControlDocker: TLazControlDocker;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -2969,6 +2971,11 @@ begin
   SourceEditorWindow:=Self;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='SourceEditor';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
 
   FSourceEditorList := TList.Create;
   FUnUsedEditorComponents := TList.Create;

@@ -41,8 +41,8 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   LCLProc, LResources, ClipBrd, Controls, Dialogs, FileUtil, Forms, Menus,
-  StdCtrls, ComCtrls,
-  IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf,
+  StdCtrls, ComCtrls, LDockCtrl,
+  IDEExternToolIntf, IDECommands, MenuIntf, IDEMsgIntf, LazIDEIntf,
   DialogProcs, EnvironmentOpts,
   LazarusIDEStrConsts, IDEOptionDefs, IDEProcs, InputHistory, KeyMapping;
 
@@ -110,6 +110,7 @@ type
     procedure UpdateMsgSrcPos(Line: TLazMessageLine);
     function GetLines(Index: integer): TIDEMessageLine; override;
   public
+    ControlDocker: TLazControlDocker;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DeleteLine(Index: integer);
@@ -302,7 +303,12 @@ begin
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
-  
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='Messages';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
+
   FQuickFixItems:=TFPList.Create;
 end;
 

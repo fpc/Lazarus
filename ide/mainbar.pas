@@ -40,7 +40,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, StdCtrls, Forms, Controls, Buttons, Menus, ComCtrls, ExtCtrls,
-  Dialogs, MenuIntf;
+  Dialogs, LDockCtrl,
+  // IDEIntf
+  MenuIntf, LazIDEIntf;
 
 type
   { TMainIDEBar }
@@ -335,6 +337,8 @@ type
   private
     FOldWindowState: TWindowState;
   public
+    ControlDocker: TLazControlDocker;
+    constructor Create(TheOwner: TComponent); override;
     procedure HideIDE;
     procedure UnhideIDE;
   end;
@@ -345,6 +349,17 @@ var
 implementation
 
 { TMainIDEBar }
+
+constructor TMainIDEBar.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='MainIDEBar';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
+end;
 
 procedure TMainIDEBar.HideIDE;
 begin

@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, AvgLvlTree, LResources, Forms, Controls, Buttons,
-  ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
-  IDECommands,
+  LDockCtrl, ComCtrls, StdCtrls, Menus, Dialogs, Graphics, FileUtil,
+  LazIDEIntf, IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs;
   
@@ -70,6 +70,7 @@ type
     OptionsBitBtn: TBitBtn;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
+    ControlDocker: TLazControlDocker;
     procedure AddBitBtnClick(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
@@ -689,17 +690,18 @@ begin
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
-var
-  ALayout: TIDEWindowLayout;
 begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
   KeyPreview:=true;
 
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  ControlDocker:=TLazControlDocker.Create(Self);
+  ControlDocker.Name:='ProjectInspector';
+  {$IFDEF EnableIDEDocking}
+  ControlDocker.Manager:=LazarusIDE.DockingManager;
+  {$ENDIF}
 
   SetupComponents;
   KeyPreview:=true;
