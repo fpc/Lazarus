@@ -74,24 +74,9 @@ end;
 { TDragDockObject }
 
 procedure TDragDockObject.AdjustDockRect(ARect: TRect);
-
-  function AbsMin(Value1, Value2: Integer): Integer;
-  begin
-    if Abs(Value1) < Abs(Value2) then Result := Value1
-    else Result := Value2;
-  end;
-
-var
-  DeltaX, DeltaY: Integer;
 begin
-  if (ARect.Left > FDragPos.x) or (ARect.Right < FDragPos.x) then
-    DeltaX := AbsMin(ARect.Left - FDragPos.x, ARect.Right - FDragPos.x)
-  else DeltaX := 0;
-  if (ARect.Top > FDragPos.y) or (ARect.Bottom < FDragPos.y) then
-    DeltaY := AbsMin(ARect.Top - FDragPos.y, ARect.Bottom - FDragPos.y)
-  else DeltaY := 0;
-  if (DeltaX <> 0) or (DeltaY <> 0) then
-    OffsetRect(FDockRect, -DeltaX, -DeltaY);
+  with DockOffset do
+    OffsetRect(FDockRect, -X, -Y);
 end;
 
 function TDragDockObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;
@@ -104,7 +89,5 @@ begin
   if FControl <> nil then
     FControl.DoEndDock(Target, X, Y);
 end;
-
-
 
 // included by controls.pp

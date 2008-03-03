@@ -201,11 +201,10 @@ begin
                                                    DropAlign, FDockRect);
     end else
     begin
-      FDockRect.TopLeft := Point(
-        DragPos.X - DragDockObject.DockOffset.x,
-        DragPos.Y - DragDockObject.DockOffset.y);
       with FDockRect do
       begin
+        Left := DragPos.X;
+        Top := DragPos.Y;
         Right := Left + Control.UndockWidth;
         Bottom := Top + Control.UndockHeight;
       end;
