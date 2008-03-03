@@ -166,7 +166,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Contructor for the class.
+  Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TGtkWidgetSet.Create;
 begin

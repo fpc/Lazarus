@@ -758,7 +758,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TQtAction.Create
 
-  Contructor for the class.
+  Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtAction.Create(const AHandle: QActionH);
 begin
@@ -868,7 +868,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TQtImage.Create
 
-  Contructor for the class.
+  Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtImage.Create(vHandle: QImageH);
 begin
@@ -880,7 +880,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TQtImage.Create
 
-  Contructor for the class.
+  Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtImage.Create(AData: PByte; width: Integer; height: Integer;
   format: QImageFormat; const ADataOwner: Boolean = False);

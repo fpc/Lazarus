@@ -223,7 +223,7 @@ end;
   Params:  Qt Widget Handle and Lazarus WinControl Parent Object
   Returns: Nothing
 
-  Contructor for the class.
+  Constructor for the class.
  ------------------------------------------------------------------------------}
 constructor TQtMemoStrings.Create(TextEdit: QTextEditH; TheOwner: TWinControl);
 var
