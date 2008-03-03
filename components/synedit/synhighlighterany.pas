@@ -267,6 +267,7 @@ function TSynAnySyn.IsKeyword(const AKeyword: string): boolean;             //mh
 var
   First, Last, I, Compare: Integer;
   Token: String;
+  D: string;
 begin
   First := 0;
   Last := fKeywords.Count - 1;
@@ -275,7 +276,11 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
+    {$IFDEF SYN_LAZARUS}
+    Compare := AnsiCompareStr(fKeywords[i], Token);
+    {$ELSE}
     Compare := CompareStr(fKeywords[i], Token);
+    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
@@ -298,7 +303,11 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
+    {$IFDEF SYN_LAZARUS}
+    Compare := AnsiCompareStr(fConstants[i], Token);
+    {$ELSE}
     Compare := CompareStr(fConstants[i], Token);
+    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
@@ -320,7 +329,11 @@ begin
   while First <= Last do
   begin
     I := (First + Last) shr 1;
+    {$IFDEF SYN_LAZARUS}
+    Compare := AnsiCompareStr(fObjects[i], Token);
+    {$ELSE}
     Compare := CompareStr(fObjects[i], Token);
+    {$ENDIF}
     if Compare = 0 then
     begin
       Result := True;
