@@ -1050,7 +1050,7 @@ end;
 procedure TfrPreviewForm.SaveToFile(aName:String);
 begin
   if Doc = nil then Exit;
-  name := ChangeFileExt(aName, '.frp');
+  aName := ChangeFileExt(aName, '.frp');
   ConnectBack;
   TfrReport(Doc).SavePreparedReport(aName);
   Connect(Doc);
