@@ -159,6 +159,8 @@ type
     function AtomIsIdentifier: boolean;
     function AtomIsStringConstant: boolean;
     function GetAtom: string;
+    function LastAtomIs(const s: shortstring): boolean;
+    function GetLastAtom: string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -549,6 +551,7 @@ procedure TCCodeParserTool.ReadVariable;
 var
   IsFunction: Boolean;
   NeedEnd: Boolean;
+  LastIsName: Boolean;
 begin
   DebugLn(['TCCodeParserTool.ReadVariable ']);
   CreateChildNode(ccnVariable);
@@ -573,27 +576,26 @@ begin
   end;
   CreateChildNode(ccnVariableName);
 
-  // possible:
+  // prefixes: signed, unsigned
+  // prefixes and/or names long, short
+
   // int, short int, short signed int
   // char, signed char, unsigned char
+  // singed short, unsigned short, short
   // long, long long, signed long, signed long long, unsigned long, unsigned long long
+  LastIsName:=false;
   repeat
-    if AtomIs('short') then
-      ReadNextAtom
-    else if AtomIs('signed') then
-      ReadNextAtom
-    else if AtomIs('unsigned') then
-      ReadNextAtom
-    else if AtomIs('long') then begin
-      // check if 'long long'
+    if AtomIs('signed') or AtomIs('unsigned') then begin
+      LastIsName:=false;
       ReadNextAtom;
-      if not (AtomIs('long') or AtomIs('unsigned')) then begin
-        UndoReadNextAtom;
-        break;
-      end;
+    end else if AtomIs('short') or AtomIs('long') then begin
+      LastIsName:=true;
+      ReadNextAtom;
     end else
       break;
-   until false;
+  until false;
+  if LastIsName then
+    UndoReadNextAtom;
 
   // read name
   ReadNextAtom;
@@ -872,7 +874,7 @@ end;
 
 procedure TCCodeParserTool.ReadNextAtom;
 begin
-  DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
+  //DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
   LastSrcPos:=SrcPos;
   LastAtomStart:=AtomStart;
   repeat
@@ -989,6 +991,25 @@ end;
 function TCCodeParserTool.AtomIsStringConstant: boolean;
 begin
   Result:=(AtomStart<SrcLen) and (Src[AtomStart]='"');
+end;
+
+function TCCodeParserTool.LastAtomIs(const s: shortstring): boolean;
+var
+  len: Integer;
+  i: Integer;
+begin
+  if LastAtomStart<=LastSrcPos then exit(false);
+  len:=length(s);
+  if (len<>LastSrcPos-LastAtomStart) then exit(false);
+  if LastSrcPos>SrcLen then exit(false);
+  for i:=1 to len do
+    if Src[LastAtomStart+i-1]<>s[i] then exit(false);
+  Result:=true;
+end;
+
+function TCCodeParserTool.GetLastAtom: string;
+begin
+  Result:=copy(Src,LastAtomStart,LastSrcPos-LastAtomStart);
 end;
 
 function TCCodeParserTool.GetAtom: string;
