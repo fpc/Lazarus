@@ -272,6 +272,49 @@ begin
 	DFC_SCROLL, ArrowTypeToState[TArrow(Arrow).ArrowType]);
 end;
 
+procedure TWin32WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation);
+const
+  LineSize = 4;
+
+  procedure DrawHorzLine(DC: HDC; x1, x2, y: integer);
+  begin
+    PatBlt(DC, x1, y, x2 - x1, LineSize, PATINVERT);
+  end;
+
+  procedure DrawVertLine(DC: HDC; y1, y2, x: integer);
+  begin
+    PatBlt(DC, x, y1, LineSize, y2 - y1, PATINVERT);
+  end;
+
+  procedure DefaultDockImage(ARect: TRect);
+  var
+    DC: HDC;
+    NewBrush, OldBrush: HBrush;
+  begin
+    DC := GetDCEx(0, 0, DCX_LOCKWINDOWUPDATE); // drawing during tracking
+    try
+      NewBrush := CreatePatternBrush(Win32WidgetSet.DotsPatternBitmap);
+      OldBrush := SelectObject(DC, NewBrush);
+      with ARect do
+      begin
+        DrawHorzLine(DC, Left, Right, Top);
+        DrawVertLine(DC, Top + LineSize, Bottom - LineSize, Left);
+        DrawHorzLine(DC, Left, Right, Bottom - LineSize);
+        DrawVertLine(DC, Top + LineSize, Bottom - LineSize, Right - LineSize);
+      end;
+      DeleteObject(SelectObject(DC, OldBrush));
+    finally
+      ReleaseDC(0, DC);
+    end;
+  end;
+
+begin
+  if AOperation in [disMove, disHide] then
+    DefaultDockImage(AOldRect);
+  if AOperation in [disMove, disShow] then
+    DefaultDockImage(ANewRect);
+end;
+
 {------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:

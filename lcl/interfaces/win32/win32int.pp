@@ -157,8 +157,10 @@ type
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     FOnAsyncSocketMsg: TSocketEvent;
+    FDotsPatternBitmap: HBitmap;
 
     procedure AssignSelf(Window: HWnd; Data: Pointer);
+    function GetDotsPatternBitmap: HBitmap;
 
     { event handler helper functions }
     procedure HandleProcessEvent(AData: PtrInt; AFlags: dword);
@@ -187,7 +189,7 @@ type
     procedure AppBringToFront; override;
     procedure AppProcessMessages; override;
     procedure AppWaitMessage; override;
-    Procedure AppTerminate; Override;
+    Procedure AppTerminate; override;
     procedure AppSetTitle(const ATitle: string); override;
 
     function  InitHintFont(HintFont: TObject): Boolean; Override;
@@ -214,6 +216,7 @@ type
     //property MessageFont: HFONT read FMessageFont;
     property CommonControlsVersion: DWord read FCommonControlsVersion;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
+    property DotsPatternBitmap: HBitmap read GetDotsPatternBitmap;
   end;
 
   {$I win32listslh.inc}

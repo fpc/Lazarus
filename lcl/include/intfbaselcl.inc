@@ -144,7 +144,7 @@ procedure TWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation:
 
   procedure DefaultDockImage(ARect: TRect);
   const
-    PenSize=4;
+    PenSize = 4;
   var
     DC: HDC;
     OldPen, NewPen: HPen;
@@ -162,9 +162,9 @@ procedure TWidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation:
       with ARect do
       begin
         MoveToEx(DC, Left+PenSize, Top+PenSize, nil);
-        LineTo(DC, Right-PenSize,Top+PenSize);
+        LineTo(DC, Right-PenSize, Top+PenSize);
         LineTo(DC, Right-PenSize, Bottom-PenSize);
-        LineTo(DC, Left+PenSize,Bottom-PenSize);
+        LineTo(DC, Left+PenSize, Bottom-PenSize);
         LineTo(DC, Left+PenSize, Top+PenSize);
       end;
     finally

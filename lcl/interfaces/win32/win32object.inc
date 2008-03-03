@@ -42,6 +42,7 @@ begin
   OnClipBoardRequest := nil;
   Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle(comctl32), 'InitCommonControlsEx');
   FCommonControlsVersion := GetFileVersion(comctl32);
+  FDotsPatternBitmap := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -72,6 +73,9 @@ begin
   end;
 
   FTimerData.Free;
+  
+  if FDotsPatternBitmap <> 0 then
+    DeleteObject(FDotsPatternBitmap);
 
   if FAppHandle <> 0 then
     DestroyWindow(FAppHandle);
@@ -554,6 +558,15 @@ end;
 procedure TWin32WidgetSet.AssignSelf(Window: HWnd; Data: Pointer);
 begin
   Assert(False, 'Trace:[TWin32WidgetSet.AssignSelf] Trying to code it.  It''s probably wrong.');
+end;
+
+function TWin32WidgetSet.GetDotsPatternBitmap: HBitmap;
+const
+  Dots: array[0..3] of Word = ($55, $AA, $55, $AA);
+begin
+  if FDotsPatternBitmap = 0 then
+    FDotsPatternBitmap := CreateBitmap(4, 4, 1, 1, @Dots);
+  Result := FDotsPatternBitmap;
 end;
 
 {------------------------------------------------------------------------------
