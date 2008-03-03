@@ -208,7 +208,7 @@ begin
   LayoutDialog;
 end;
 
-Destructor TPromptDialog.Destroy;
+destructor TPromptDialog.Destroy;
 begin
   FBitmap.Free;
   inherited destroy;

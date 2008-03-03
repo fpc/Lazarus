@@ -49,7 +49,7 @@ end;
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-Destructor TScreen.Destroy;
+destructor TScreen.Destroy;
 var
   HandlerType: TScreenNotification;
 begin

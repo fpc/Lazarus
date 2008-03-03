@@ -37,10 +37,10 @@
   Returns:
 
  ------------------------------------------------------------------------------}
-Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
-Begin
-  Inherited Create;
-  If List = HWND(Nil) Then
+constructor TWin32ListStringList.Create(List : HWND; TheOwner: TWinControl);
+begin
+  inherited Create;
+  if List = HWND(nil) then
     Raise Exception.Create('Unspecified list window');
     //Assert(False, 'Trace:Unspecified list window');
   FWin32List := List;
@@ -50,7 +50,7 @@ Begin
   InitFlags;
   // Determine if the list is sorted
   FSorted := (UINT(GetWindowLong(FWin32List, GWL_STYLE)) and FFlagSort <> 0);
-End;
+end;
 
 procedure TWin32ListStringList.InitFlags;
 begin

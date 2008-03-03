@@ -409,7 +409,7 @@ begin
   PaintText(PaintRect);
 end;
 
-Constructor TCheckbox.Create(AOwner: TComponent);
+constructor TCheckbox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   controlstyle := controlstyle - [csAcceptsControls];

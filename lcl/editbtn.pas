@@ -169,7 +169,7 @@ type
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
+    destructor Destroy; override;
     property DialogFiles : TStrings read FDialogFiles;
   published
     // TFileName properties.
@@ -248,7 +248,7 @@ type
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
+    destructor Destroy; override;
   published
     // TDirectory properties.
     property Directory : String read GetDirectory write SetDirectory;
@@ -410,7 +410,7 @@ type
     procedure RunDialog; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
+    destructor Destroy; override;
   published
     // CalcEdit properties
     property CalculatorLayout : TCalculatorLayout read FLayout write Flayout;

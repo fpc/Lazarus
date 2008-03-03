@@ -13,20 +13,20 @@
  *                                                                           *
  *****************************************************************************
 }
-Constructor TBevel.Create(AOwner:TComponent);
-Begin
+constructor TBevel.Create(AOwner:TComponent);
+begin
   Inherited Create(AOwner);
   ControlStyle:=ControlStyle-[csSetCaption,csOpaque];
   FStyle:=bsLowered;
   FShape:=bsBox;
 
   SetBounds(0,0,50,50);
-End;
+end;
 
-Destructor TBevel.Destroy;
-Begin
+destructor TBevel.Destroy;
+begin
   Inherited Destroy;
-End;
+end;
 
 procedure TBevel.Assign(Source: TPersistent);
 begin
@@ -39,37 +39,37 @@ begin
 end;
 
 procedure TBevel.Invalidate;
-Begin
+begin
   if Canvas.HandleAllocated then Paint;
-End;
+end;
 
 function TBevel.GetStyle:TBevelStyle;
-Begin
+begin
   Result:=FStyle;
-End;
+end;
 
 procedure TBevel.SetStyle(aStyle:TBevelStyle);
-Begin
+begin
   If FStyle<>aStyle Then
-  Begin
+  begin
     FStyle:=aStyle;
     Invalidate;
-  End;
-End;
+  end;
+end;
 
 function TBevel.GetShape:TBevelShape;
-Begin
+begin
   Result := FShape;
-End;
+end;
 
 procedure TBevel.SetShape(aShape:TBevelShape);
-Begin
-  If FShape<>aShape Then
-  Begin
+begin
+  if FShape<>aShape then
+  begin
     FShape:=aShape;
     Invalidate;
-  End;
-End;
+  end;
+end;
 
 procedure TBevel.Paint;
 Var

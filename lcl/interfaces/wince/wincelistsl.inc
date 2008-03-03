@@ -64,10 +64,10 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Constructor TWinCEListStringList.Create(List : HWND; TheOwner: TWinControl);
-Begin
-  Inherited Create;
-  If List = HWND(Nil) Then
+constructor TWinCEListStringList.Create(List : HWND; TheOwner: TWinControl);
+begin
+  inherited Create;
+  if List = HWND(nil) then
     Raise Exception.Create('Unspecified list window');
     //Assert(False, 'Trace:Unspecified list window');
   FWinCEList := List;
@@ -77,7 +77,7 @@ Begin
   InitFlags;
   // Determine if the list is sorted
   FSorted := (UINT(GetWindowLong(FWinCEList, GWL_STYLE)) and FFlagSort <> 0);
-End;
+end;
 
 procedure TWinCEListStringList.InitFlags;
 begin
