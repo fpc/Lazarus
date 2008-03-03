@@ -109,12 +109,7 @@ uses
   JITForm, JITForms, ComponentPalette, ComponentList, ComponentReg,
   ObjInspExt, Designer, FormEditor, CustomFormEditor,
   ControlSelection, AnchorEditor,
-  {$DEFINE UseNewMenuEditor}
-  {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
-  {$ELSE}
-  MenuPropEdit,
-  {$ENDIF}
   //LRT stuff
   LrtPoTools,
   // debugger
