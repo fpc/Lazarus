@@ -10403,13 +10403,15 @@ procedure TMainIDE.DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 begin
   DoShowMessagesView;
 
-  if (iwpDefault=EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
+  if (iwpDefault = EnvironmentOptions.IDEWindowLayoutList.ItemByEnum(
                                         nmiwSourceNoteBookName).WindowPlacement)
-  and ((SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top) then
+  and ((SourceNotebook.Top + SourceNotebook.Height) > MessagesView.Top) and (MessagesView.Parent = nil) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
-  if PutOnTop then begin
-    MessagesView.ShowOnTop;
+  if PutOnTop then 
+  begin
+    if MessagesView.Parent = nil then
+      MessagesView.ShowOnTop;
     SourceNotebook.ShowOnTop;
   end;
 end;
