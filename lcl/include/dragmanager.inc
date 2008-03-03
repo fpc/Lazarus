@@ -268,7 +268,7 @@ end;
 constructor TDockPerformer.Create(AManager: TDragManagerDefault; AControl: TControl);
 //Start a drag operation, if not already running
 var
-  p: TPoint;
+  p, cp: TPoint;
 begin
   inherited Create(AManager, AControl);
   AControl.DoStartDock(TDragObject(FDockObject));
@@ -283,8 +283,11 @@ begin
   
   GetCursorPos(p);
   FDockObject.DragPos := p;
-  // mouse click offset from control TopLeft
-  FDockObject.DockOffset := Point(p.x - AControl.Left, p.y - AControl.Top);
+  // mouse click offset from control TopLeft in screen coordinates
+  cp := AControl.BoundsRect.TopLeft;
+  if AControl.Parent <> nil then
+    cp := AControl.Parent.ClientToScreen(cp);
+  FDockObject.DockOffset := Point(p.x - cp.x, p.y - cp.y);
   AControl.CalculateDockSizes;
   FDockObject.DockRect := Rect(p.x, p.y, p.x + AControl.Width, p.y + AControl.Height);
   FDockObject.EraseDockRect := Rect(MaxInt, 0, MaxInt, 0);
