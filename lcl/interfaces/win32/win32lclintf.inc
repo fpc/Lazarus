@@ -276,12 +276,12 @@ procedure TWin32WidgetSet.DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOpera
 const
   LineSize = 4;
 
-  procedure DrawHorzLine(DC: HDC; x1, x2, y: integer);
+  procedure DrawHorzLine(DC: HDC; x1, x2, y: integer); inline;
   begin
     PatBlt(DC, x1, y, x2 - x1, LineSize, PATINVERT);
   end;
 
-  procedure DrawVertLine(DC: HDC; y1, y2, x: integer);
+  procedure DrawVertLine(DC: HDC; y1, y2, x: integer); inline;
   begin
     PatBlt(DC, x, y1, LineSize, y2 - y1, PATINVERT);
   end;
