@@ -116,6 +116,8 @@ struct _sdp_list {
         void *data;
 };
 
+typedef void(*sdp_list_func_t)(void *, void *);
+
 complex operator+(complex, complex);
 
 int y = 7;
@@ -132,7 +134,10 @@ int *pi; // pointer to int
 char ** ppc; // pointer to pointer to char
 int* ap[15]; // array of 15 pointers to ints
 int (*fp)(char*); // pointer to function taking a char* argument; returns an int
-int * f(char*); // fucntion taking a char* argument; returns a pointer to int
+int * f(char*); // function taking a char* argument; returns a pointer to int
+unsigned short unsigned_short;
+unsigned long long unsigned_long_long;
+
 
 #define MACRO_CONCATENATION(a,b) a##b
 

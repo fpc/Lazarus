@@ -93,7 +93,7 @@ type
     procedure CloseNodes;
     
     procedure ReadEnum;
-    procedure ReadStruct(NeedIdentifier: boolean);
+    procedure ReadStruct;
     procedure ReadConstant;
     procedure ReadVariable;
     
@@ -353,26 +353,30 @@ begin
   EndChildNode;
 end;
 
-procedure TCCodeParserTool.ReadStruct(NeedIdentifier: boolean);
+procedure TCCodeParserTool.ReadStruct;
 (*  Example for NeedIdentifier=false:
-  typedef struct {
-    uint8_t b[6]; // implicit type
-  } __attribute__((packed)) bdaddr_t;
+  As typedef:
+    typedef struct {
+      uint8_t b[6]; // implicit type
+    } __attribute__((packed)) bdaddr_t;
+    
+    typedef struct _sdp_list sdp_list_t;
 
-  Example for NeedIdentifier=true:
+  As implicit typedef:
     struct hidp_connadd_req {
       int ctrl_sock;
     }
+
+  As variable:
     struct hidp_conninfo *ci;
 
-  typedef struct _sdp_list sdp_list_t;
 *)
 begin
   CreateChildNode(ccnStruct);
   
   ReadNextAtom;
-  if NeedIdentifier then begin
-    // read type name
+  if CurNode.Parent.Desc=ccnVariable then begin
+    // read variable name
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
     ReadNextAtom;
@@ -417,25 +421,28 @@ begin
 end;
 
 function TCCodeParserTool.TypedefToken: boolean;
+{ examples:
+   typedef type name;
+}
 begin
   Result:=true;
   CreateChildNode(ccnTypedef);
   // read type
   ReadNextAtom;
-  if AtomIs('enum') then
-    ReadEnum
+  if AtomIs('typedef') then
+    RaiseExpectedButAtomFound('declaration')
   else if AtomIs('struct') then
-    ReadStruct(false)
-  else if AtomIsIdentifier then begin
-
-  end else
-    RaiseExpectedButAtomFound('identifier');
-  // read typedef name
-  ReadNextAtom;
-  if not AtomIsIdentifier then
-    RaiseExpectedButAtomFound('identifier');
+    ReadStruct
+  else if AtomIs('enum') then
+    ReadEnum
+  else if SrcPos>SrcLen then
+    RaiseException('missing declaration')
+  else
+    ReadVariable;
+  DebugLn(['TCCodeParserTool.TypedefToken AAA1 ',GetAtom]);
   // read semicolon
   ReadNextAtom;
+  DebugLn(['TCCodeParserTool.TypedefToken AAA2 ',GetAtom]);
   if not AtomIsChar(';') then
     RaiseExpectedButAtomFound(';');
   EndChildNode;
@@ -444,7 +451,7 @@ end;
 function TCCodeParserTool.StructToken: boolean;
 begin
   Result:=true;
-  ReadStruct(true);
+  ReadStruct;
 end;
 
 procedure TCCodeParserTool.InitKeyWordList;
@@ -489,12 +496,12 @@ begin
   NewNode.Desc:=Desc;
   CurNode:=NewNode;
   CurNode.StartPos:=AtomStart;
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.CreateChildNode ']);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.CreateChildNode ',CCNodeDescAsString(Desc)]);
 end;
 
 procedure TCCodeParserTool.EndChildNode;
 begin
-  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ']);
+  DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ',CCNodeDescAsString(CurNode.Desc)]);
   if CurNode.EndPos<=0 then
     CurNode.EndPos:=SrcPos;
   CurNode:=CurNode.Parent;
@@ -545,9 +552,13 @@ procedure TCCodeParserTool.ReadVariable;
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
   }
   bdaddr_t *strtoba(const char *str);
+*)
+{
+  int (*fp)(char*); // pointer to function taking a char* argument; returns an int
+  int * f(char*); // function taking a char* argument; returns a pointer to int
 
   complex operator+(complex, complex);
-*)
+}
 var
   IsFunction: Boolean;
   NeedEnd: Boolean;
@@ -642,18 +653,23 @@ begin
     ReadTilBracketClose(true);
     CurNode.EndPos:=SrcPos;
     EndChildNode;
-    ReadNextAtom;
-    if AtomIsChar('{') then begin
-      // read statements {}
-      CreateChildNode(ccnStatementBlock);
-      ReadTilBracketClose(true);
-      CurNode.EndPos:=SrcPos;
-      EndChildNode;
-    end else if not AtomIsChar(';') then begin
-      // functions without statements are external and must end with a semicolon
-      RaiseExpectedButAtomFound(';');
+    if CurNode.Parent.Desc=ccnTypedef then begin
+      if AtomIsChar('{') then
+        RaiseException('typedef can not have a statement block');
+    end else begin
+      ReadNextAtom;
+      if AtomIsChar('{') then begin
+        // read statements {}
+        CreateChildNode(ccnStatementBlock);
+        ReadTilBracketClose(true);
+        CurNode.EndPos:=SrcPos;
+        EndChildNode;
+      end else if not AtomIsChar(';') then begin
+        // functions without statements are external and must end with a semicolon
+        RaiseExpectedButAtomFound(';');
+      end;
+      NeedEnd:=false;
     end;
-    NeedEnd:=false;
     ReadNextAtom;
   end else if AtomIsChar('[') then begin
     // read array brackets
@@ -665,6 +681,8 @@ begin
   
   // read initial constant
   if AtomIsChar('=') then begin
+    if CurNode.HasParentOfType(ccnTypedef) then
+      RaiseException('typedef can not have an initial value');
     ReadNextAtom;
     ReadConstant;
     ReadNextAtom;
