@@ -280,11 +280,6 @@ begin
   IDEMessagesWindow:=Self;
   inherited Create(TheOwner);
 
-  {$ifdef EnableDocking}
-  DragKind := dkDock;
-  DragMode := dmAutomatic;
-  {$endif}
-
   Name   := NonModalIDEWindowNames[nmiwMessagesViewName];
   FItems := TFPList.Create;
   FVisibleItems := TFPList.Create;

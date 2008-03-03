@@ -302,10 +302,6 @@ procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
 var
   B: TBitmap;
 begin
-  {$ifdef EnableDocking}
-  DragKind := dkDock;
-  DragMode := dmAutomatic;
-  {$endif}
   LoadCodeExplorerOptions;
   
   FMode := CodeExplorerOptions.Mode;
