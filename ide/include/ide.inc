@@ -34,7 +34,7 @@
 {$DEFINE DisableFakeMethods}
 {$ENDIF}
 
-{$DEFINE EnableDocking}
+{ $DEFINE EnableDocking}
 
 // end.
 
