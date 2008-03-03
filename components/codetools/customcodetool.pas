@@ -192,7 +192,7 @@ type
                                                 write FOnTreeChange;
     
     function FindDeepestNodeAtPos(P: integer;
-      ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
+      ExceptionOnNotFound: boolean): TCodeTreeNode; {$IFDEF UseInline}inline;{$ENDIF}
     function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
     function CaretToCleanPos(Caret: TCodeXYPosition;
@@ -2126,7 +2126,7 @@ function TCustomCodeTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
   procedure RaiseNoNodeFoundAtCursor;
   begin
     //DebugLn('RaiseNoNodeFoundAtCursor ',MainFilename);
-    SaveRaiseException(ctsNoNodeFoundAtCursor,true);
+    RaiseException(ctsNoNodeFoundAtCursor,true);
   end;
   
 var
@@ -2136,9 +2136,9 @@ begin
   {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   Result:=nil;
   while StartNode<>nil do begin
-//DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
-//',',ANode.StartPos,',',ANode.EndPos,', p=',p,
-//' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
+    //DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
+    //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
+    //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
     if (StartNode.StartPos<=P)
     and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
       // StartNode contains P

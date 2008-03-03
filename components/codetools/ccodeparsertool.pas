@@ -37,7 +37,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStructs, BasicCodeTools,
   KeywordFuncLists, LinkScanner, CodeAtom, CodeCache, AVL_Tree,
-  CodeTree, NonPascalCodeTools;
+  CodeToolsStrConsts, CodeTree, NonPascalCodeTools;
 
 type
   TCCodeNodeDesc = word;
@@ -97,8 +97,8 @@ type
     procedure ReadConstant;
     procedure ReadVariable;
     
-    procedure RaiseException(const AMessage: string);
-    procedure RaiseExpectedButAtomFound(const AToken: string);
+    procedure RaiseException(const AMessage: string; ReportPos: integer = 0);
+    procedure RaiseExpectedButAtomFound(const AToken: string; ReportPos: integer = 0);
   public
     Code: TCodeBuffer;
     Src: string;
@@ -107,10 +107,21 @@ type
     CurNode: TCodeTreeNode;
     SrcPos: Integer;
     AtomStart: integer;
-    ParseChangeStep: integer;
-    
+    ParseChangeStep: integer;// = Code.ChangeStep at the time of last Parse
+
+    VisibleEditorLines: integer;
+    JumpCentered: boolean;
+    CursorBeyondEOL: boolean;
+
     LastSrcPos: integer;
     LastAtomStart: integer;
+    
+    LastErrorMsg: string;
+    LastErrorPos: integer;  // the position where the code does no make sense
+    LastErrorReportPos: integer; // if the position that gives a human a clue what went wrong
+                             // normally LastErrorReportPos=LastErrorPos
+                             // but if a closing bracket is missing LastErrorReportPos points
+                             // to ( and ErrorPos to next atom
 
     constructor Create;
     destructor Destroy; override;
@@ -119,7 +130,25 @@ type
     procedure Parse;
     procedure Parse(aCode: TCodeBuffer);
     function UpdateNeeded: boolean;
-    
+
+    function FindDeepestNodeAtPos(P: integer;
+      ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
+    function FindDeepestNodeAtPos(StartNode: TCodeTreeNode; P: integer;
+      ExceptionOnNotFound: boolean): TCodeTreeNode;
+    function CaretToCleanPos(Caret: TCodeXYPosition;
+        out CleanPos: integer): integer;  // 0=valid CleanPos
+                          //-1=CursorPos was skipped, CleanPos between two links
+                          // 1=CursorPos beyond scanned code
+                          //-2=X,Y beyond source
+    function CleanPosToCodePos(CleanPos: integer;
+        out CodePos:TCodePosition): boolean; // true=ok, false=invalid CleanPos
+    function CleanPosToCaret(CleanPos: integer;
+        out Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
+    function CleanPosToCaretAndTopLine(CleanPos: integer;
+        out Caret:TCodeXYPosition; out NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
+    function CleanPosToStr(CleanPos: integer): string;
+    function MainFilename: string;
+
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
@@ -135,7 +164,8 @@ type
 
     procedure IncreaseChangeStep;
     procedure WriteDebugReport;
-    
+    procedure CheckNodeTool(Node: TCodeTreeNode);
+
     property ChangeStep: integer read FChangeStep;
   end;
   
@@ -505,6 +535,7 @@ procedure TCCodeParserTool.ReadVariable;
 
   int i
   uint8_t b[6]
+  uint8_t lap[MAX_IAC_LAP][3];
   int y = 7;
 
   static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
@@ -624,8 +655,10 @@ begin
     ReadNextAtom;
   end else if AtomIsChar('[') then begin
     // read array brackets
-    ReadTilBracketClose(true);
-    ReadNextAtom;
+    while AtomIsChar('[') do begin
+      ReadTilBracketClose(true);
+      ReadNextAtom;
+    end;
   end;
   
   // read initial constant
@@ -646,21 +679,30 @@ begin
   EndChildNode;
 end;
 
-procedure TCCodeParserTool.RaiseException(const AMessage: string);
+procedure TCCodeParserTool.RaiseException(const AMessage: string; ReportPos: integer);
 begin
+  LastErrorMsg:=AMessage;
+  LastErrorPos:=AtomStart;
+  LastErrorReportPos:=LastErrorPos;
+  if ReportPos>0 then
+    LastErrorReportPos:=ReportPos;
   CloseNodes;
   raise ECCodeParserException.Create(Self,AMessage);
 end;
 
-procedure TCCodeParserTool.RaiseExpectedButAtomFound(const AToken: string);
+procedure TCCodeParserTool.RaiseExpectedButAtomFound(const AToken: string;
+  ReportPos: integer);
 begin
-  RaiseException(AToken+' expected, but '+GetAtom+' found');
+  RaiseException(AToken+' expected, but '+GetAtom+' found',ReportPos);
 end;
 
 constructor TCCodeParserTool.Create;
 begin
   Tree:=TCodeTree.Create;
   InitCCOdeKeyWordLists;
+  VisibleEditorLines:=25;
+  JumpCentered:=true;
+  CursorBeyondEOL:=true;
 end;
 
 destructor TCCodeParserTool.Destroy;
@@ -704,6 +746,120 @@ begin
   if (Code=nil) or (Tree=nil) or (Tree.Root=nil) then exit;
   if Code.ChangeStep<>ParseChangeStep then exit;
   Result:=false;
+end;
+
+function TCCodeParserTool.FindDeepestNodeAtPos(P: integer;
+  ExceptionOnNotFound: boolean): TCodeTreeNode; inline;
+begin
+  Result:=FindDeepestNodeAtPos(Tree.Root,P,ExceptionOnNotFound);
+end;
+
+function TCCodeParserTool.FindDeepestNodeAtPos(StartNode: TCodeTreeNode;
+  P: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
+
+  procedure RaiseNoNodeFoundAtCursor;
+  begin
+    //DebugLn('RaiseNoNodeFoundAtCursor ',MainFilename);
+    RaiseException(ctsNoNodeFoundAtCursor);
+  end;
+
+var
+  ChildNode: TCodeTreeNode;
+  Brother: TCodeTreeNode;
+begin
+  {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
+  Result:=nil;
+  while StartNode<>nil do begin
+    //DebugLn('SearchInNode ',NodeDescriptionAsString(ANode.Desc),
+    //',',ANode.StartPos,',',ANode.EndPos,', p=',p,
+    //' "',copy(Src,ANode.StartPos,4),'" - "',copy(Src,ANode.EndPos-5,4),'"');
+    if (StartNode.StartPos<=P)
+    and ((StartNode.EndPos>P) or (StartNode.EndPos<1)) then begin
+      // StartNode contains P
+      Result:=StartNode;
+      // -> search for a child that contains P
+      Brother:=StartNode;
+      while (Brother<>nil)
+      and (Brother.StartPos<=P) do begin
+        // brother also contains P
+        if Brother.FirstChild<>nil then begin
+          ChildNode:=FindDeepestNodeAtPos(Brother.FirstChild,P,false);
+          if ChildNode<>nil then begin
+            Result:=ChildNode;
+            exit;
+          end;
+        end;
+        Brother:=Brother.NextBrother;
+      end;
+      break;
+    end else begin
+      // search in next node
+      StartNode:=StartNode.NextBrother;
+    end;
+  end;
+  if (Result=nil) and ExceptionOnNotFound then begin
+    MoveCursorToPos(P);
+    RaiseNoNodeFoundAtCursor;
+  end;
+end;
+
+function TCCodeParserTool.CaretToCleanPos(Caret: TCodeXYPosition; out
+  CleanPos: integer): integer;
+begin
+  CleanPos:=0;
+  if Caret.Code<>Code then
+    exit(-1);
+  Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
+  if (CleanPos>=1) then
+    Result:=0
+  else
+    Result:=-2; // x,y beyond source
+end;
+
+function TCCodeParserTool.CleanPosToCodePos(CleanPos: integer; out
+  CodePos: TCodePosition): boolean;
+begin
+  CodePos.Code:=Code;
+  CodePos.P:=CleanPos;
+  Result:=(Code<>nil) and (CleanPos>0) and (CleanPos<Code.SourceLength);
+end;
+
+function TCCodeParserTool.CleanPosToCaret(CleanPos: integer; out
+  Caret: TCodeXYPosition): boolean;
+begin
+  Caret.Code:=Code;
+  Code.AbsoluteToLineCol(CleanPos,Caret.Y,Caret.X);
+  Result:=CleanPos>0;
+end;
+
+function TCCodeParserTool.CleanPosToCaretAndTopLine(CleanPos: integer; out
+  Caret: TCodeXYPosition; out NewTopLine: integer): boolean;
+begin
+  Caret:=CleanCodeXYPosition;
+  NewTopLine:=0;
+  Result:=CleanPosToCaret(CleanPos,Caret);
+  if Result then begin
+    if JumpCentered then begin
+      NewTopLine:=Caret.Y-(VisibleEditorLines shr 1);
+      if NewTopLine<1 then NewTopLine:=1;
+    end else
+      NewTopLine:=Caret.Y;
+  end;
+end;
+
+function TCCodeParserTool.CleanPosToStr(CleanPos: integer): string;
+var
+  CodePos: TCodeXYPosition;
+begin
+  if CleanPosToCaret(CleanPos,CodePos) then
+    Result:='y='+IntToStr(CodePos.Y)+',x='+IntToStr(CodePos.X)
+  else
+    Result:='y=?,x=?';
+end;
+
+function TCCodeParserTool.MainFilename: string;
+begin
+  Result:=Code.Filename;
 end;
 
 procedure TCCodeParserTool.MoveCursorToPos(p: integer);
@@ -883,6 +1039,21 @@ begin
       Node:=Node.Next;
     end;
   end;
+end;
+
+procedure TCCodeParserTool.CheckNodeTool(Node: TCodeTreeNode);
+
+  procedure RaiseForeignNode;
+  begin
+    RaiseCatchableException('TCCodeParserTool.CheckNodeTool '+DbgSName(Self)+' '+CCNodeDescAsString(Node.Desc));
+  end;
+
+begin
+  if Node=nil then exit;
+  while Node.Parent<>nil do Node:=Node.Parent;
+  while Node.PriorBrother<>nil do Node:=Node.PriorBrother;
+  if (Tree=nil) or (Tree.Root<>Node) then
+    RaiseForeignNode;
 end;
 
 procedure InternalFinal;

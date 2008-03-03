@@ -32,7 +32,7 @@ program H2PasTest;
 
 uses
   Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeTree, NonPascalCodeTools, CCodeParserTool;
+  CodeAtom, CodeTree, NonPascalCodeTools, CCodeParserTool;
   
 const
   ConfigFilename = 'codetools.config';
@@ -40,11 +40,14 @@ var
   Filename: String;
   Code: TCodeBuffer;
   Tool: TCCodeParserTool;
+  Caret: TCodeXYPosition;
 begin
   try
     CodeToolBoss.SimpleInit(ConfigFilename);
     Filename:=GetCurrentDir+'/scanexamples/test.h';
-    
+    if ParamCount=1 then
+      Filename:=ParamStr(1);
+
     // Step 1: load the file
     Code:=CodeToolBoss.LoadFile(Filename,false,false);
     if Code=nil then
@@ -55,6 +58,11 @@ begin
     Tool.WriteDebugReport;
     Tool.Free;
   except
+    on E: ECCodeParserException do begin
+      Tool:=ECCodeParserException(E).Sender;
+      Tool.CleanPosToCaret(Tool.LastErrorReportPos,Caret);
+      writeln(Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
+    end;
     on E: Exception do begin
       writeln(E.Message);
     end;
