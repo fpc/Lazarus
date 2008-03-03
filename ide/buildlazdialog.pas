@@ -1390,7 +1390,7 @@ begin
   FItems.Add(FItemIDE);
 
   // Starter
-  FItemStarter:=TBuildLazarusItem.Create('Starter',lisStarter,'',mmBuild);
+  FItemStarter:=TBuildLazarusItem.Create('Starter',lisStarter,'',mmNone);
   FItemStarter.Commands[mmBuild]:='starter';
   FItemStarter.Commands[mmCleanBuild]:='starter';
   FItems.Add(FItemStarter);
