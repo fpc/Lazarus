@@ -1,8 +1,4 @@
-# Slovenský translation of PACKAGE.
-# Copyright (C) 2008 Free Software Foundation, Inc.
-# Slavko <slavko@slavino.sk>, 2008.
-# 
-# 
+# Slovenský translation of PACKAGE. Copyright (C) 2008 Free Software Foundation, Inc. Slavko <slavko@slavino.sk>, 2008.  
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -16,19 +12,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: "
 
-#: installerstrconsts:wiseditsource
-msgid "&Edit source"
-msgstr "&Upraviť zdrojový kód"
-
 #: installerstrconsts:wiseditform
 msgid "&Edit form"
 msgstr "&Upraviť formulár"
 
-#: installerstrconsts:wisopenproject
-msgid "&Open project"
-msgstr "&Otvoriť projekt"
+#: installerstrconsts:wiseditsource
+msgid "&Edit source"
+msgstr "&Upraviť zdrojový kód"
 
 #: installerstrconsts:wisopenpackage
 msgid "&Open package"
 msgstr "&Otvoriť balíček"
+
+#: installerstrconsts:wisopenproject
+msgid "&Open project"
+msgstr "&Otvoriť projekt"
 
