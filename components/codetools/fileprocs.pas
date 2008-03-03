@@ -1353,9 +1353,9 @@ begin
         Result:=copy(Result,1,StartPos-1)+NewPath+copy(Result,EndPos,length(Result));
         EndPos:=StartPos+length(NewPath);
       end;
-      // check if path already exists
-      if FindPathInSearchPath(@Result[StartPos],EndPos-StartPos,
-                              @Result[1],StartPos-1)<>nil
+      // check if path already exists      
+      if (Length(Result) > 0) and 
+         (FindPathInSearchPath(@Result[StartPos],EndPos-StartPos, @Result[1],StartPos-1) <> nil)
       then begin
         // remove path
         System.Delete(Result,StartPos,EndPos-StartPos+1);
