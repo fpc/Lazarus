@@ -869,7 +869,9 @@ Begin
   if CompIntf <> nil then
     FComponentInterfaces.Remove(CompIntf);
 
+  {$IFDEF IDE_DEBUG}
   DebugLn(['TCustomFormEditor.DeleteComponent ',DbgSName(AComponent),' IsJITComponent=',IsJITComponent(AComponent),' FreeComponent=',FreeComponent]);
+  {$ENDIF}
   if IsJITComponent(AComponent) then begin
     // value is a top level component
     i:=AComponent.ComponentCount-1;

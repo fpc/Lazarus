@@ -1397,8 +1397,8 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnPropHookGetMethods] ************');
+  DebugLn('');
+  DebugLn('[TMainIDE.OnPropHookGetMethods] ************');
   {$ENDIF}
   if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
     ActiveUnitInfo.Component.ClassName,TypeData,Proc) then
@@ -5254,7 +5254,9 @@ begin
   LFMBuf:=nil;
   if not FileExistsInIDE(LFMFilename,[pfsfOnlyEditorFiles]) then begin
     // there is no LFM file -> ok
+    {$IFDEF IDE_DEBUG}
     debugln('TMainIDE.DoLoadLFM there is no LFM file for "',AnUnitInfo.Filename,'"');
+    {$ENDIF}
     Result:=mrOk;
     exit;
   end;
