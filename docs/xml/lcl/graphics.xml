@@ -255,7 +255,9 @@
       <!-- constant Visibility: default -->
       <element name="DefFontData">
         <short>
-          <i>Default Data</i>  for any new <i>Font</i>
+          <i>Default Data</i>  for any new 
+          
+          <i>Font</i>
         </short>
         <descr>
           <p>New <i>TFont</i> instances are initialized with the values in this structure.</p>
@@ -2073,7 +2075,11 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign">
         <short>
-          <i>Assign</i>   - copies the <i>LogFont</i>   or <i>Source</i>  settings to itself</short>
+          <i>Assign</i>   - copies the 
+          
+          <i>LogFont</i>   or 
+          
+          <i>Source</i>  settings to itself</short>
         <descr>
           <p>Method: <i>TFont.Assign</i>
           </p>
@@ -2162,7 +2168,9 @@ Copies the logfont or source settings to itself</descr>
       <!-- property Visibility: published -->
       <element name="TFont.Color">
         <short>
-          <i>Colour</i> of the current <i>Font</i>
+          <i>Colour</i> of the current 
+          
+          <i>Font</i>
         </short>
         <descr>Default is the same as the text used for the rest of the Window</descr>
       </element>
@@ -2173,13 +2181,17 @@ Copies the logfont or source settings to itself</descr>
       <!-- property Visibility: published -->
       <element name="TFont.Name">
         <short>
-          <i>Name</i> of the <i>Font</i>
+          <i>Name</i> of the 
+          
+          <i>Font</i>
         </short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Pitch">
         <short>
-          <i>Pitch</i> type of the <i>Font</i>
+          <i>Pitch</i> type of the 
+          
+          <i>Font</i>
         </short>
         <descr>Fixed or variable pitch, or Default<br/>
 Reads or writes a flag to determine pitch type</descr>
@@ -2196,7 +2208,9 @@ Reads or writes a flag to determine pitch type</descr>
       <!-- property Visibility: published -->
       <element name="TFont.Style">
         <short>
-          <i>Style</i> of the <i>Font</i>
+          <i>Style</i> of the 
+          
+          <i>Font</i>
         </short>
         <descr>Bold, Italic, Strike out, Underline<br/>
 Property is a set, so may contain zero or more of the above (if set is empty, Normal font is displayed)</descr>
@@ -2225,8 +2239,7 @@ Property is a set, so may contain zero or more of the above (if set is empty, No
       <element name="TPenData.Style">
         <short>The <i>Style</i> asociated with the current <i>Pen</i>
         </short>
-        <descr>The <i>Style</i> asociated with the current <i>Pen</i>
-          <br/>
+        <descr>The <i>Style</i> asociated with the current <i>Pen</i><br/>
 Can take any of the values:
 psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
       </element>
@@ -2384,8 +2397,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPen.Assign">
-        <short>Copies the <i>Source</i>
-          <i>Pen</i> to itself</short>
+        <short>Copies the <i>Source</i><i>Pen</i> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source">
@@ -2581,7 +2593,9 @@ Default is psSolid</descr>
       <!-- procedure Visibility: public -->
       <element name="TBrush.Assign">
         <short>
-          <i>Assign</i> - copies a <i>Source</i>
+          <i>Assign</i> - copies a 
+          
+          <i>Source</i>
           <i>Brush</i> to itself</short>
         <descr>Method: TBrush.Assign<br/>
   Params: Source: Another brush<br/>
@@ -2592,7 +2606,9 @@ Default is psSolid</descr>
       <!-- argument Visibility: default -->
       <element name="TBrush.Assign.Source">
         <short>
-          <i>Source</i> - another <i>Brush</i>
+          <i>Source</i> - another 
+          
+          <i>Brush</i>
         </short>
       </element>
       <!-- constructor Visibility: public -->
@@ -2607,7 +2623,11 @@ Default is psSolid</descr>
         <short>
           <i>Brush</i> destructor</short>
         <descr>
-          <b>Inherits</b> properties to remove <i>Brush</i> and frees <i>Handle</i>
+          <b>Inherits</b> properties to remove 
+          
+          <i>Brush</i> and frees 
+          
+          <i>Handle</i>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -2633,7 +2653,9 @@ Default is psSolid</descr>
       <!-- property Visibility: published -->
       <element name="TBrush.Style">
         <short>
-          <i>Style</i> of the <i>Brush</i>
+          <i>Style</i> of the 
+          
+          <i>Brush</i>
         </short>
         <descr>Enumerated type - default Solid</descr>
         <seealso>
@@ -2753,7 +2775,9 @@ Default is psSolid</descr>
       <!-- procedure Visibility: public -->
       <element name="TRegion.Assign">
         <short>
-          <i>Assign</i> - copies <i>Source</i> to itself</short>
+          <i>Assign</i> - copies 
+          
+          <i>Source</i> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TRegion.Assign.Source">
@@ -2775,24 +2799,10 @@ Default is psSolid</descr>
       <!-- object Visibility: default -->
       <element name="TGraphic">
         <short>Base class for dealing with <i>Graphic</i>   images</short>
-        <descr>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <i>BitMap</i>, <i>Icon</i> etc which have a <i>Canvas</i> element defined <br/>
-          <i>LoadFromFile</i> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/>
-          <i>SaveToFile</i> - Writes the graphic to disk in the file provided.<br/>
-          <i>LoadFromStream</i> - Like <i>LoadFromFile</i>  except source is a stream (e.g.  <i>TBlobStream</i>
-).<br/>
-          <i>SaveToStream</i> - stream analogue of <i>SaveToFile</i> .<br/>
-          <i>LoadFromClipboardFormat</i> - Replaces the current image with the data provided.  If the <i>TGraphic</i>
- does not support that format it will generate an exception.<br/>
-          <i>SaveToClipboardFormats</i> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/>
-          <i>Height</i> - The native, unstretched, height of the graphic.<br/>
-          <i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/>
-          <i>Transparent</i> - Some parts of the image are not opaque, ie the background can be seen through.<br/>
-          <i>Width</i> - The native, unstretched, width of the graphic.<br/>
-          <i>OnChange</i> - Called whenever the graphic changes<br/>
-          <i>PaletteModified</i> - Indicates in <i>OnChange</i>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/>
-          <i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
-  and <i>TImage OnProgress</i> events.<br/>
-          <br/>
+        <descr>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <i>BitMap</i>, <i>Icon</i> etc which have a <i>Canvas</i> element defined <br/><i>LoadFromFile</i> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><i>SaveToFile</i> - Writes the graphic to disk in the file provided.<br/><i>LoadFromStream</i> - Like <i>LoadFromFile</i>  except source is a stream (e.g.  <i>TBlobStream</i>
+).<br/><i>SaveToStream</i> - stream analogue of <i>SaveToFile</i> .<br/><i>LoadFromClipboardFormat</i> - Replaces the current image with the data provided.  If the <i>TGraphic</i>
+ does not support that format it will generate an exception.<br/><i>SaveToClipboardFormats</i> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><i>Height</i> - The native, unstretched, height of the graphic.<br/><i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><i>Transparent</i> - Some parts of the image are not opaque, ie the background can be seen through.<br/><i>Width</i> - The native, unstretched, width of the graphic.<br/><i>OnChange</i> - Called whenever the graphic changes<br/><i>PaletteModified</i> - Indicates in <i>OnChange</i>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
+  and <i>TImage OnProgress</i> events.<br/><br/>
  
   As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
 </descr>
@@ -3051,7 +3061,9 @@ Default is psSolid</descr>
         <short>
           <i>TGraphic</i> constructor</short>
         <descr>
-          <b>Virtual</b> method, so recommend that a constructor be supplied to <b>override</b> this method in descendant classes</descr>
+          <b>Virtual</b> method, so recommend that a constructor be supplied to 
+          
+          <b>override</b> this method in descendant classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromFile">
@@ -3080,11 +3092,17 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromStream">
         <short>
-          <i>LoadFromStream</i>  -reads graphic data from a stream (e.g.  <i>TBlobStream</i> )</short>
+          <i>LoadFromStream</i>  -reads graphic data from a stream (e.g.  
+          
+          <i>TBlobStream</i> )</short>
         <descr>
           <i>LoadFromStream</i>
- - Like <i>LoadFromFile</i>
- except source is a stream (e.g. <i>TBlobStream</i>)</descr>
+ - Like 
+          
+          <i>LoadFromFile</i>
+ except source is a stream (e.g. 
+          
+          <i>TBlobStream</i>)</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.LoadFromStream.Stream">
@@ -3331,49 +3349,147 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- object Visibility: default -->
       <element name="TPicture">
         <short>
-          <i>TPicture</i>     is a <i>TGraphic</i>     container, used in place of a <i>TGraphic</i>   if the graphic can be of any <i>TGraphic</i>     class.</short>
+          <i>TPicture</i>     is a 
+          
+          <i>TGraphic</i>     container, used in place of a 
+          
+          <i>TGraphic</i>   if the graphic can be of any 
+          
+          <i>TGraphic</i>     class.</short>
         <descr>
           <i>TPicture</i>
- is a <i>TGraphic</i>
- container.  It is used in place of a <i>TGraphic</i>
- if the graphic can be of any <i>TGraphic</i>
- class. <br/>
-
-
-It is not a direct descendant of <i>TGraphic</i>
-, so you will not see <i>TGraphic</i>
- listed in the <i>Inheritance</i>
- chart, but it contains a property <i>Graphic</i>
-, of type <i>TGraphic</i>
-, so can contain all the properties of a <i>TGraphic</i>
-          <br/>
+ is a 
+          
+          <i>TGraphic</i>
+ container.  It is used in place of a 
+          
+          <i>TGraphic</i>
+ if the graphic can be of any 
+          
+          <i>TGraphic</i>
+ class. 
+          
           <br/>
 
-Defines many <b>private</b>
- methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc<br/>
-It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.<br/>
-          <br/>
-          <i>LoadFromFile</i> and <i>SaveToFile</i> are polymorphic. For example, if the <i>TPicture</i> is holding an <i>Icon</i>, you can  <i>LoadFromFile</i> a bitmap file, where if the class is <i>TIcon</i> you could only read  .ICO files.<br/>
-          <br/>
-          <i>LoadFromFile</i> - Reads a picture from disk. The <i>TGraphic</i> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.<br/>
-          <i>SaveToFile</i> - Writes the picture to disk.<br/>
-          <i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.<br/>
-          <i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.<br/>
-          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i>
 
-.<br/>
-          <i>Assign</i> - Copies the contents of the given <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.<br/>
-          <i>RegisterFileFormat</i> - Register a new <i>TGraphic</i> class for use in  <i>LoadFromFile</i>.<br/>
-          <i>RegisterClipboardFormat</i> - Registers a new <i>TGraphic</i> class for use in  <i>LoadFromClipboardFormat</i>.<br/>
-          <i>UnRegisterGraphicClass</i> - Removes all references to the specified <i>TGraphic</i> class and all its descendants from the file format and clipboard format internal lists.<br/>
-          <i>Height</i> - The native, unstretched, height of the picture.<br/>
-          <i>Width</i> - The native, unstretched, width of the picture.<br/>
-          <i>Graphic</i> - The <i>TGraphic</i> object contained by the <i>TPicture</i>
+It is not a direct descendant of 
+          
+          <i>TGraphic</i>
+, so you will not see 
+          
+          <i>TGraphic</i>
+ listed in the 
+          
+          <i>Inheritance</i>
+ chart, but it contains a property 
+          
+          <i>Graphic</i>
+, of type 
+          
+          <i>TGraphic</i>
+, so can contain all the properties of a 
+          
+          <i>TGraphic</i>
           <br/>
-          <i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.<br/>
-          <i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.<br/>
-          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>) is returned.<br/>
-          <i>PNM</i> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<i>TPortableAnyMapGraphic</i>) is returned.<br/>
+          <br/>
+
+Defines many 
+          
+          <b>private</b>
+ methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc
+          
+          <br/>
+It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.
+          
+          <br/>
+          <br/>
+          <i>LoadFromFile</i> and 
+          
+          <i>SaveToFile</i> are polymorphic. For example, if the 
+          
+          <i>TPicture</i> is holding an 
+          
+          <i>Icon</i>, you can  
+          
+          <i>LoadFromFile</i> a bitmap file, where if the class is 
+          
+          <i>TIcon</i> you could only read  .ICO files.
+          
+          <br/>
+          <br/>
+          <i>LoadFromFile</i> - Reads a picture from disk. The 
+          
+          <i>TGraphic</i> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.
+          
+          <br/>
+          <i>SaveToFile</i> - Writes the picture to disk.
+          
+          <br/>
+          <i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.
+          
+          <br/>
+          <i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.
+          
+          <br/>
+          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by 
+          
+          <i>LoadFromClipboardFormat</i>
+
+.
+          
+          <br/>
+          <i>Assign</i> - Copies the contents of the given 
+          
+          <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.
+          
+          <br/>
+          <i>RegisterFileFormat</i> - Register a new 
+          
+          <i>TGraphic</i> class for use in  
+          
+          <i>LoadFromFile</i>.
+          
+          <br/>
+          <i>RegisterClipboardFormat</i> - Registers a new 
+          
+          <i>TGraphic</i> class for use in  
+          
+          <i>LoadFromClipboardFormat</i>.
+          
+          <br/>
+          <i>UnRegisterGraphicClass</i> - Removes all references to the specified 
+          
+          <i>TGraphic</i> class and all its descendants from the file format and clipboard format internal lists.
+          
+          <br/>
+          <i>Height</i> - The native, unstretched, height of the picture.
+          
+          <br/>
+          <i>Width</i> - The native, unstretched, width of the picture.
+          
+          <br/>
+          <i>Graphic</i> - The 
+          
+          <i>TGraphic</i> object contained by the 
+          
+          <i>TPicture</i>
+          <br/>
+          <i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.
+          
+          <br/>
+          <i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.
+          
+          <br/>
+          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
+          
+          <i>TPortableNetworkGraphic</i>) is returned.
+          
+          <br/>
+          <i>PNM</i> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (
+          
+          <i>TPortableAnyMapGraphic</i>) is returned.
+          
+          <br/>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -3632,7 +3748,9 @@ It does not itself contain a defined area for displaying the image, but this is 
         <short>
           <i>LoadFromFile</i> - Reads a picture from disk</short>
         <descr>
-          <i>LoadFromFile</i> - Reads a picture from disk. The <i>TGraphic</i> class created is determined by the file extension of the file.</descr>
+          <i>LoadFromFile</i> - Reads a picture from disk. The 
+          
+          <i>TGraphic</i> class created is determined by the file extension of the file.</descr>
         <errors>If the file extension is  not recognized an exception is generated</errors>
       </element>
       <!-- argument Visibility: default -->
@@ -3691,7 +3809,9 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- function Visibility: public -->
       <element name="TPicture.SupportsClipboardFormat">
         <short>
-          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by <i>LoadFromClipboardFormat</i>
+          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by 
+          
+          <i>LoadFromClipboardFormat</i>
         </short>
       </element>
       <!-- function result Visibility: default -->
@@ -3705,10 +3825,14 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.Assign">
         <short>
-          <i>Assign</i> - Copies the contents of the given <i>TPicture</i>
+          <i>Assign</i> - Copies the contents of the given 
+          
+          <i>TPicture</i>
         </short>
         <descr>
-          <i>Assign</i> - Copies the contents of the given <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.</descr>
+          <i>Assign</i> - Copies the contents of the given 
+          
+          <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.Assign.Source">
@@ -3717,7 +3841,11 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterFileFormat">
         <short>
-          <i>RegisterFileFormat</i> - Register a new <i>TGraphic</i> class for use in  <i>LoadFromFile</i>
+          <i>RegisterFileFormat</i> - Register a new 
+          
+          <i>TGraphic</i> class for use in  
+          
+          <i>LoadFromFile</i>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -3735,7 +3863,11 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterClipboardFormat">
         <short>
-          <i>RegisterClipboardFormat</i> - Registers a new <i>TGraphic</i> class for use in  <i>LoadFromClipboardFormat</i>
+          <i>RegisterClipboardFormat</i> - Registers a new 
+          
+          <i>TGraphic</i> class for use in  
+          
+          <i>LoadFromClipboardFormat</i>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -3749,11 +3881,15 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.UnregisterGraphicClass">
         <short>
-          <i>UnRegisterGraphicClass</i>  - Removes all references to the specified <i>TGraphic</i>
+          <i>UnRegisterGraphicClass</i>  - Removes all references to the specified 
+          
+          <i>TGraphic</i>
         </short>
         <descr>
           <i>UnRegisterGraphicClass</i>
- - Removes all references to the specified <i>TGraphic</i>
+ - Removes all references to the specified 
+          
+          <i>TGraphic</i>
   class and all its descendants from the file format and clipboard format internal lists</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -3784,7 +3920,9 @@ It does not itself contain a defined area for displaying the image, but this is 
         <short>
           <i>PNG</i> - Returns a png</short>
         <descr>
-          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<i>TPortableNetworkGraphic</i>) is returned</descr>
+          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
+          
+          <i>TPortableNetworkGraphic</i>) is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Icon">
@@ -3794,7 +3932,11 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- property Visibility: public -->
       <element name="TPicture.Graphic">
         <short>
-          <i>Graphic</i> - The <i>TGraphic</i> object contained by the <i>TPicture</i>
+          <i>Graphic</i> - The 
+          
+          <i>TGraphic</i> object contained by the 
+          
+          <i>TPicture</i>
         </short>
       </element>
       <!-- property Visibility: public -->
@@ -4250,7 +4392,9 @@ It does not itself contain a defined area for displaying the image, but this is 
         <short>
           <i>Canvas</i>  constructor</short>
         <descr>
-          <i>Canvas</i>  constructor: creates a new instance of the class <i>TCanvas</i>
+          <i>Canvas</i>  constructor: creates a new instance of the class 
+          
+          <i>TCanvas</i>
         </descr>
       </element>
       <!-- destructor Visibility: public -->
@@ -4258,7 +4402,9 @@ It does not itself contain a defined area for displaying the image, but this is 
         <short>
           <i>Canvas</i> destructor</short>
         <descr>
-          <i>Canvas</i> destructor: removes this instance of <i>TCanvas</i> and makes its resources available</descr>
+          <i>Canvas</i> destructor: removes this instance of 
+          
+          <i>TCanvas</i> and makes its resources available</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Lock">
@@ -4302,8 +4448,7 @@ It does not itself contain a defined area for displaying the image, but this is 
 
 Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey<br/>
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.</descr>
       </element>
@@ -4338,8 +4483,7 @@ Use Arc to draw an elliptically curved line with the current Pen. The values sx,
 
 Params:   ALeft, ATop, ARight, ABottom, angle1, angle2<br/>
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 Use Arc to draw an elliptically curved line with the current Pen.<br/>
 
@@ -4455,8 +4599,7 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
 
 
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 
 
@@ -4589,8 +4732,7 @@ Zero degrees is at the 3 o'clock position.</descr>
 
 		      Params:   X1, Y1, X2, Y2<br/>
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 Use <i>Ellipse</i>
  to draw a filled circle or ellipse on the canvas.</descr>
       </element>
@@ -4778,7 +4920,9 @@ Use <i>Ellipse</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.LineTo">
         <short>
-          <i>LineTo</i> draws a line from the current pen position to the new position: <i>X1, Y1</i>
+          <i>LineTo</i> draws a line from the current pen position to the new position: 
+          
+          <i>X1, Y1</i>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -4842,7 +4986,9 @@ Use <i>Ellipse</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
         <short>
-          <i>RadialPie</i> uses <i>Pie</i>    to draw a filled pie-shaped wedge on the canvas</short>
+          <i>RadialPie</i> uses 
+          
+          <i>Pie</i>    to draw a filled pie-shaped wedge on the canvas</short>
         <descr>Method:   TCanvas.RadialPie<br/>
 
 
@@ -4853,8 +4999,7 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
 
 
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 
 
@@ -4933,8 +5078,7 @@ Zero degrees is at the 3 o'clock position</descr>
 
 Params:   EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX, StartY, EndX, EndY<br/>
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 Use <i>Pie</i>
  to draw a filled Pie-shaped wedge on the canvas. The pie is part of an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2. The values StartX, StartY and EndX, EndY represent the starting and ending radial-points between which the Bounding-Arc is drawn. <br/>
@@ -5002,8 +5146,7 @@ Params:  Points, Filled, Continous<br/>
 
 
 
-Returns: Boolean<br/>
-          <br/>
+Returns: Boolean<br/><br/>
 
 
 
@@ -5018,18 +5161,15 @@ The first curve is drawn from the first point to the fourth point with the secon
 
 
 
-If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/>
-          <br/>
+If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
 
 
 
-If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/>
-          <br/>
+If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
 
 
 
-Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/>
-          <br/>
+Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/><br/>
 
 
 
@@ -5100,8 +5240,7 @@ Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer
 
 
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 
 
@@ -5127,8 +5266,7 @@ Use <i>Polygon</i>
 
 
 
-.<br/>
-          <br/>
+.<br/><br/>
 
 
 
@@ -5139,8 +5277,7 @@ The <i>Points</i>
 
 
 
- parameter is an array of points that give the vertices of the polygon.<br/>
-          <i>Winding</i>
+ parameter is an array of points that give the vertices of the polygon.<br/><i>Winding</i>
 
 
 
@@ -5177,14 +5314,12 @@ When <i>Winding</i>
 
 
 
- uses the even-odd (alternative) fill algorithm.<br/>
-          <i>StartIndex</i>
+ uses the even-odd (alternative) fill algorithm.<br/><i>StartIndex</i>
 
 
 
 
- gives the index of the first point in the array to use. All points before this are ignored.<br/>
-          <i>NumPts</i>
+ gives the index of the first point in the array to use. All points before this are ignored.<br/><i>NumPts</i>
 
 
 
@@ -5288,8 +5423,7 @@ Params:   Points: array of TPoint; StartIndex: Integer = 0; NumPts: Integer = -1
 
 
 
-Returns:  Nothing<br/>
-          <br/>
+Returns:  Nothing<br/><br/>
 
 
 
@@ -5327,15 +5461,13 @@ The <i>Points</i>
 
 
 
- parameter is an array of points to be connected.<br/>
-          <i>StartIndex</i>
+ parameter is an array of points to be connected.<br/><i>StartIndex</i>
 
 
 
 
 
- identifies the first point in the array to use.<br/>
-          <i>NumPts</i>
+ identifies the first point in the array to use.<br/><i>NumPts</i>
 
 
 
@@ -5533,12 +5665,8 @@ Calling the <i>MoveTo</i>
       <element name="TCanvas.TextRect">
         <short>Writes <i>Text</i> string within a specified rectangle, according to predefined <i>Style</i>
         </short>
-        <descr>Writes <i>Text</i> string within a specified rectangle, according to predefined <i>Style</i>
-          <br/>
-The boundaries of the rectangle are specified in <i>ARect</i>
-          <br/>
-          <i>X, Y</i> specify the starting point for writing the <i>Text</i> within the rectangle <br/>
-          <i>TextStyle</i> determines whether the text is justified, centered, word-wrapped etc. If the <i>Style</i> argument is omitted, defaults are assumed</descr>
+        <descr>Writes <i>Text</i> string within a specified rectangle, according to predefined <i>Style</i><br/>
+The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> specify the starting point for writing the <i>Text</i> within the rectangle <br/><i>TextStyle</i> determines whether the text is justified, centered, word-wrapped etc. If the <i>Style</i> argument is omitted, defaults are assumed</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.ARect">
@@ -6451,21 +6579,29 @@ The boundaries of the rectangle are specified in <i>ARect</i>
         <short>
           <i>BitMap</i> constructor</short>
         <descr>
-          <i>BitMap</i> constructor. The supplied code can <b>override</b> the definition from ancestor classes</descr>
+          <i>BitMap</i> constructor. The supplied code can 
+          
+          <b>override</b> the definition from ancestor classes</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBitmap.Destroy">
         <short>
           <i>BitMap</i> destructor</short>
         <descr>
-          <i>BitMap</i> destructor. The supplied code can <b>override</b> the method defined for ancestor classes</descr>
+          <i>BitMap</i> destructor. The supplied code can 
+          
+          <b>override</b> the method defined for ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Assign">
         <short>
           <i>Assign</i>: find out about the Source of the call.</short>
         <descr>
-          <i>Assign</i>: find out about the Source of the call. If the <i>BitMap</i> data are already in use, the data are shared; if not, a new <i>BitMap</i> is produced</descr>
+          <i>Assign</i>: find out about the Source of the call. If the 
+          
+          <i>BitMap</i> data are already in use, the data are shared; if not, a new 
+          
+          <i>BitMap</i> is produced</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.Assign.Source">
@@ -6533,7 +6669,11 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromDevice">
         <short>
-          <i>LoadFromDevice</i>: obtain <i>BitMap</i> data from a device with Handle <i>DC</i>
+          <i>LoadFromDevice</i>: obtain 
+          
+          <i>BitMap</i> data from a device with Handle 
+          
+          <i>DC</i>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6558,7 +6698,11 @@ The boundaries of the rectangle are specified in <i>ARect</i>
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromStream">
         <short>
-          <i>LoadFromStream</i>: obtains <i>BitMap</i> data from a <i>Stream</i>
+          <i>LoadFromStream</i>: obtains 
+          
+          <i>BitMap</i> data from a 
+          
+          <i>Stream</i>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6570,8 +6714,12 @@ The boundaries of the rectangle are specified in <i>ARect</i>
         <short>
           <i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream</short>
         <descr>
-          <i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream<br/>
-Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream</i> to acquire the data</descr>
+          <i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream
+          
+          <br/>
+Checks for the presence of a valid Lazarus Resource, then uses 
+          
+          <i>LoadFromStream</i> to acquire the data</descr>
         <seealso>
           <link id="TBitmap.LoadFromStream"/>
         </seealso>
@@ -6611,7 +6759,9 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromMimeStream">
         <short>
-          <i>LoadFromMimeStream</i> - get <i>Bitmap </i>data from the specified MIME stream</short>
+          <i>LoadFromMimeStream</i> - get 
+          
+          <i>Bitmap </i>data from the specified MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6660,7 +6810,9 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromXPMFile">
         <short>
-          <i>LoadFromXPMFile</i>: obtain data from file in native <i>PixMap</i> format</short>
+          <i>LoadFromXPMFile</i>: obtain data from file in native 
+          
+          <i>PixMap</i> format</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromXPMFile.Filename">
@@ -6900,7 +7052,9 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
       <!-- object Visibility: default -->
       <element name="TPixmap">
         <short>
-          <i>PixMap</i>  - a class derived from <i>TBitMap</i> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
+          <i>PixMap</i>  - a class derived from 
+          
+          <i>TBitMap</i> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
         <descr>
           <i>PixMap</i>
   - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organises saving and writing</descr>
@@ -7141,13 +7295,23 @@ Checks for the presence of a valid Lazarus Resource, then uses <i>LoadFromStream
           <i>TIcon</i>  - icons, small images typically associated with applications, controls, etc. Stored in files with .ico extension</short>
         <descr>
           <i>TIcon</i>
- reads and writes .ICO file format.<br/>
+ reads and writes .ICO file format.
+          
+          <br/>
 
-A .ico file typically contains several versions of the same image. <br/>
+A .ico file typically contains several versions of the same image. 
+          
+          <br/>
 
-When loading, the largest/most colourful image is loaded as the <i>TBitmap</i>
- and so can be handled as any other bitmap. Any other versions of the images are available via the  <i>Bitmaps</i>
- property<br/>
+When loading, the largest/most colourful image is loaded as the 
+          
+          <i>TBitmap</i>
+ and so can be handled as any other bitmap. Any other versions of the images are available via the  
+          
+          <i>Bitmaps</i>
+ property
+          
+          <br/>
 
 Writing is not (yet) implemented.</descr>
       </element>
@@ -7200,7 +7364,9 @@ Writing is not (yet) implemented.</descr>
         <short>
           <i>TIcon</i> destructor</short>
         <descr>
-          <i>TIcon</i> destructor. Method can <b>override</b> the destructor defined in ancestor classes</descr>
+          <i>TIcon</i> destructor. Method can 
+          
+          <b>override</b> the destructor defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TIcon.AddBitmap">
@@ -7972,10 +8138,14 @@ Writing is not (yet) implemented.</descr>
       </element>
       <element name="TPicture.PNM">
         <short>
-          <i>PNM </i>- a <b>PortableAnyMapGraphic </b>image</short>
+          <i>PNM </i>- a 
+          
+          <b>PortableAnyMapGraphic </b>image</short>
         <descr>
           <p>
-            <i>PNM </i>- a <b>PortableAnyMapGraphic </b>image</p>
+            <i>PNM </i>- a 
+            
+            <b>PortableAnyMapGraphic </b>image</p>
           <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
         </descr>
       </element>
@@ -8015,7 +8185,9 @@ Writing is not (yet) implemented.</descr>
       </element>
       <element name="TBitmap.LoadFromIntfImage">
         <short>
-          <i>LoadFromIntfImage</i> - gets <i>Bitmap</i> data from an interface image</short>
+          <i>LoadFromIntfImage</i> - gets 
+          
+          <i>Bitmap</i> data from an interface image</short>
       </element>
       <element name="TBitmap.GetResourceType">
         <short>Finds the type of resource for the bitmap</short>
@@ -8052,20 +8224,38 @@ Writing is not (yet) implemented.</descr>
         <short>Monitoring the progress of drawing a complicated Graphic</short>
         <descr>
           <p>
-            <i>TProgressEvent</i> is a generic progress notification event which may be used by <i>TGraphic</i> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
-          <p>
-            <u>Event params:</u>
-          </p>
-          <p>
-            <u>Stage</u> - Indicates whether this call to the <i>OnProgress</i> event is to prepare for, process, or clean up after a graphic operation.  If <i>OnProgress</i> is called at all, the first call for a graphic operation will be with <b>Stage = psStarting</b>, to allow the <i>OnProgress</i> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <b>Stage = psStarting</b>, you are guaranteed that <i>OnProgress</i> will be called again with <b>Stage = psEnding</b> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to <i>OnProgress </i>with <b>Stage = psRunning</b> may occur between the <b>psStarting</b> and <b>psEnding</b> calls.</p>
-          <p>
-            <u>PercentDone</u> - The ratio of work done to work remaining, on a scale of 0 to 100.  Values may repeat or even regress (get smaller) in successive calls.  <i>PercentDone</i> is usually only a guess, and the guess may be dramatically altered as new information is discovered in decoding the image.</p>
-          <p>
-            <u>RedrawNow</u> - Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call <i>Update</i> to force a control to be redrawn immediately in the <i>OnProgress </i>event handler. Redrawing a graphic when <b>RedrawNow = False</b> could corrupt the image and/or cause exceptions.</p>
-          <p>
-            <u>Rect</u> - Area of image that has changed and needs to be redrawn.</p>
-          <p>
-            <u>Msg</u> - Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The <i>Msg</i> string can also be empty. <i>Msg</i> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if <b>Msg = 'Loading'</b> then...)</p>
+            <i>TProgressEvent</i> is a generic progress notification event which may be used by 
+            <i>TGraphic</i> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
+          <table>
+            <caption>Event params:
+</caption>
+            <tr>
+              <td>Stage</td>
+              <td>Indicates whether this call to the <i>OnProgress</i> event is to prepare for, process, or clean up after a graphic operation.  If <i>OnProgress</i> is called at all, the first call for a graphic operation will be with <i>Stage = psStarting</i>, to allow the <i>OnProgress</i> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <i>Stage = psStarting</i>, you are guaranteed that  <i>OnProgress</i> will be called again with 
+<i>Stage = psEnding</i> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to  <i>OnProgress </i>with <i>Stage = psRunning</i> may occur between the <i>psStarting</i> and  <i>psEnding</i> calls.</td>
+            </tr>
+            <tr>
+              <td>PercentDone</td>
+              <td>The ratio of work done to work remaining, on a scale of 0 to 100.  Values may repeat or even regress (get smaller) in successive calls.  <i>PercentDone</i> is usually only a guess, and the guess may be dramatically altered as new information is discovered in decoding the image. The value of this property could usefully be passed to a ProgressBar to show the user how drawing is progressing</td>
+            </tr>
+            <tr>
+              <td>RedrawNow</td>
+              <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call 
+  <i>Update</i> to force a control to be redrawn immediately in the 
+  <i>OnProgress </i>event handler. Redrawing a graphic when 
+  RedrawNow = False could corrupt the image and/or cause exceptions.</td>
+            </tr>
+            <tr>
+              <td>Rect</td>
+              <td>Area of image that has changed and needs to be redrawn.</td>
+            </tr>
+            <tr>
+              <td>Msg</td>
+              <td>Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The 
+  <i>Msg</i> string can also be empty. 
+  <i>Msg</i> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if Msg = 'Loading' then...)</td>
+            </tr>
+          </table>
         </descr>
       </topic>
     </module>
