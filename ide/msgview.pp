@@ -72,6 +72,7 @@ type
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyAllAndHiddenMenuItemClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
+    procedure DockMenuItemClick(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
     procedure ClearMenuItemClick(Sender: TObject);
@@ -155,13 +156,14 @@ type
 
 var
   MessagesView: TMessagesView = nil;
+  MsgQuickFixIDEMenuSection: TIDEMenuSection;
   MsgClearIDEMenuCommand: TIDEMenuCommand;
   MsgCopyIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllIDEMenuCommand: TIDEMenuCommand;
   MsgCopyAllAndHiddenIDEMenuCommand: TIDEMenuCommand;
   MsgHelpIDEMenuCommand: TIDEMenuCommand;
   MsgSaveAllToFileIDEMenuCommand: TIDEMenuCommand;
-  MsgQuickFixIDEMenuSection: TIDEMenuSection;
+  MsgDockIDEMenuCommand: TIDEMenuCommand;
 
 const
   MessagesMenuRootName = 'Messages';
@@ -226,6 +228,7 @@ var
 begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
   Path := MessagesMenuRoot.Name;
+  MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
   MsgClearIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Clear', srVK_CLEAR);
   MsgCopyIDEMenuCommand := RegisterIDEMenuCommand(Path, 'Copy selected',
@@ -240,7 +243,8 @@ begin
   MsgSaveAllToFileIDEMenuCommand :=
     RegisterIDEMenuCommand(Path, 'Copy selected',
     lisSaveAllMessagesToFile);
-  MsgQuickFixIDEMenuSection := RegisterIDEMenuSection(Path, 'Quick Fix');
+  MsgDockIDEMenuCommand :=
+    RegisterIDEMenuCommand(Path, 'Docking', lisMVDocking);
 end;
 
 function MessageLinesAsText(ListOfTLazMessageLine: TFPList): string;
@@ -301,6 +305,10 @@ begin
   MsgCopyAllIDEMenuCommand.OnClick := @CopyAllMenuItemClick;
   MsgCopyAllAndHiddenIDEMenuCommand.OnClick := @CopyAllAndHiddenMenuItemClick;
   MsgSaveAllToFileIDEMenuCommand.OnClick := @SaveAllToFileMenuItemClick;
+  MsgDockIDEMenuCommand.OnClick :=@DockMenuItemClick;
+  {$IFNDEF EnableIDEDocking}
+  MsgDockIDEMenuCommand.Visible:=false;
+  {$ENDIF}
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   ControlDocker:=TLazControlDocker.Create(Self);
@@ -854,6 +862,11 @@ procedure TMessagesView.CopyMenuItemClick(Sender: TObject);
 begin
   if MessageTreeView.GetFirstMultiSelected=nil then exit;
   Clipboard.AsText := GetSelectedMessagesAsText;
+end;
+
+procedure TMessagesView.DockMenuItemClick(Sender: TObject);
+begin
+  ControlDocker.ShowDockingEditor;
 end;
 
 procedure TMessagesView.FormDeactivate(Sender: TObject);

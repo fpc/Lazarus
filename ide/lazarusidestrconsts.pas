@@ -268,6 +268,7 @@ resourcestring
   lisCopyAllAndHiddenMessagesToClipboard = 'Copy all and hidden messages '
                                            +'to clipboard';
   lisSaveAllMessagesToFile = 'Save all messages to file';
+  lisMVDocking = 'Docking';
   lisMenuViewSearchResults = 'Search Results';
   lisSearchAgain = 'Search again';
   lisSRClosePage = 'Close page';
