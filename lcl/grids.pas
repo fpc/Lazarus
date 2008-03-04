@@ -1276,6 +1276,7 @@ type
       procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
       procedure SetRows(index: Integer; const AValue: TStrings);
       procedure WriteCells(Writer: TWriter);
+      procedure CopyCellRectToClipboard(const R:TRect);
     protected
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
@@ -1308,6 +1309,7 @@ type
       procedure Clean(CleanOptions: TGridZoneSet); overload;
       procedure Clean(aRect: TRect; CleanOptions: TGridZoneSet); overload;
       procedure Clean(StartCol,StartRow,EndCol,EndRow: integer; CleanOptions: TGridZoneSet); overload;
+      procedure CopyToClipboard;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property DefaultTextStyle;
@@ -7770,6 +7772,24 @@ begin
   end;
 end;
 
+procedure TCustomStringGrid.CopyCellRectToClipboard(const R: TRect);
+var
+  SelStr: String;
+  i: LongInt;
+  j: LongInt;
+begin
+  SelStr := '';
+  for i:=R.Top to R.Bottom do begin
+    for j:=R.Left to R.Right do begin
+      SelStr := SelStr + Cells[j,i];
+      if j<>R.Right then
+        SelStr := SelStr + #9;
+    end;
+    SelStr := SelStr + #13#10;
+  end;
+  Clipboard.AsText := SelStr;
+end;
+
 procedure TCustomStringGrid.AutoAdjustColumn(aCol: Integer);
 var
   i,W: Integer;
@@ -7860,28 +7880,8 @@ begin
 end;
 
 procedure TCustomStringGrid.DoCopyToClipboard;
-var
-  SelStr: String;
-  Sel: TRect;
-  i: LongInt;
-  j: LongInt;
 begin
-  SelStr := '';
-  Sel := Selection;
-  for i:=Sel.Top to Sel.Bottom do begin
-    for j:=Sel.Left to Sel.Right do begin
-      SelStr := SelStr + Cells[j,i];
-      if j<>Sel.Right then
-        SelStr := SelStr + #9;
-    end;
-    SelStr := SelStr + #13#10;
-  end;
-  Clipboard.AsText := SelStr;
-  {
-  SelStr := StringReplace(SelStr, #13#10,'|', [rfReplaceAll]);
-  SelStr := StringReplace(SelStr, #9,'*', [rfReplaceAll]);
-  DebugLn('Copied: ',SelStr);
-  }
+  CopyCellRectToClipboard(Selection);
 end;
 
 procedure TCustomStringGrid.DoCutToClipboard;
@@ -8097,6 +8097,11 @@ begin
       if (CleanOptions=[]) or (CellToGridZone(aCol,aRow) in CleanOptions) then
         Cells[aCol,aRow] := '';
   EndUpdate;
+end;
+
+procedure TCustomStringGrid.CopyToClipboard;
+begin
+  CopyCellRectToClipboard(Rect(0,0,ColCount-1,RowCount-1));
 end;
 
 
