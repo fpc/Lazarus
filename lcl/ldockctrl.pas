@@ -1885,6 +1885,7 @@ begin
   Layout:=GetLayoutFromControl;
   if (Layout=nil) then exit;
   Manager.AddOrReplaceConfig(DockerName,Layout);
+  Layout.Free;
 end;
 
 procedure TCustomLazControlDocker.RestoreLayout;
@@ -2188,10 +2189,15 @@ begin
 end;
 
 destructor TCustomLazControlDocker.Destroy;
+var
+  i: integer;
 begin
   Control:=nil;
   Manager:=nil;
   inherited Destroy;
+  if FMenus <> nil then
+    for i := 0 to FMenus.Count - 1 do
+      TLCDMenuItem(FMenus[i]).Free;
   FreeAndNil(FMenus);
 end;
 
