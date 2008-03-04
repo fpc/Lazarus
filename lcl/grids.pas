@@ -913,7 +913,7 @@ type
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property SelectedColumn: TGridColumn read GetSelectedColumn;
     property Selection: TGridRect read GetSelection write SetSelection;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
     property StrictSort: boolean read FStrictSort write FStrictSort;
     property TitleFont: TFont read FTitleFont write SetTitleFont;
     property TitleStyle: TTitleStyle read FTitleStyle write SetTitleStyle;
