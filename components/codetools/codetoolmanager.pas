@@ -104,7 +104,7 @@ type
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
-    FSourceTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
+    FPascalTools: TAVLTree; // tree of TCustomCodeTool sorted TCustomCodeTool(Data).Scanner.MainCode
     FTabWidth: integer;
     FVisibleEditorLines: integer;
     FWriteExceptions: boolean;
@@ -774,7 +774,7 @@ begin
   FSourceExtensions:='.pp;.pas;.p;.lpr;.lpk;.dpr;.dpk';
   FVisibleEditorLines:=20;
   FWriteExceptions:=true;
-  FSourceTools:=TAVLTree.Create(@CompareCodeToolMainSources);
+  FPascalTools:=TAVLTree.Create(@CompareCodeToolMainSources);
   FDirectivesTools:=TAVLTree.Create(@CompareDirectivesTreeSources);
   IdentifierList:=TIdentifierList.Create;
   IdentifierHistory:=TIdentifierHistoryList.Create;
@@ -793,8 +793,8 @@ begin
   FreeAndNil(Positions);
   FreeAndNil(IdentifierHistory);
   FreeAndNil(IdentifierList);
-  FSourceTools.FreeAndClear;
-  FreeAndNil(FSourceTools);
+  FPascalTools.FreeAndClear;
+  FreeAndNil(FPascalTools);
   FDirectivesTools.FreeAndClear;
   FreeAndNil(FDirectivesTools);
   FreeAndNil(FResourceTool);
@@ -4442,7 +4442,7 @@ var
   ANode: TAVLTreeNode;
   CurSrc, SearchedSrc: Pointer;
 begin
-  ANode:=FSourceTools.Root;
+  ANode:=FPascalTools.Root;
   SearchedSrc:=Pointer(Code);
   while (ANode<>nil) do begin
     CurSrc:=Pointer(TCustomCodeTool(ANode.Data).Scanner.MainCode);
@@ -4493,7 +4493,7 @@ begin
     end;
     Result:=TCodeTool.Create;
     Result.Scanner:=Code.Scanner;
-    FSourceTools.Add(Result);
+    FPascalTools.Add(Result);
     TCodeTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
     TCodeTool(Result).OnGetDirectoryCache:=@OnGetDirectoryCache;
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
@@ -4671,14 +4671,14 @@ begin
   RootCodeTreeNode:=ANode.GetRoot;
   
   // search in codetools
-  AToolNode:=FSourceTools.FindLowest;
+  AToolNode:=FPascalTools.FindLowest;
   while (AToolNode<>nil) do begin
     CurTool:=TCustomCodeTool(AToolNode.Data);
     if (CurTool.Tree<>nil) and (CurTool.Tree.Root=RootCodeTreeNode) then begin
       Result:=CurTool;
       exit;
     end;
-    AToolNode:=FSourceTools.FindSuccessor(AToolNode);
+    AToolNode:=FPascalTools.FindSuccessor(AToolNode);
   end;
   
   // search in directivestools
@@ -4757,7 +4757,7 @@ begin
     if Result<>0 then begin
       dec(Result,60000);  exit;
     end;
-    Result:=FSourceTools.ConsistencyCheck;
+    Result:=FPascalTools.ConsistencyCheck;
     if Result<>0 then begin
       dec(Result,70000);  exit;
     end;

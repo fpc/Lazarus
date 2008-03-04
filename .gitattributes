@@ -142,6 +142,7 @@ components/codetools/extractproctool.pas svneol=native#text/pascal
 components/codetools/fileprocs.pas svneol=native#text/pascal
 components/codetools/finddeclarationcache.pas svneol=native#text/pascal
 components/codetools/finddeclarationtool.pas svneol=native#text/pascal
+components/codetools/h2pastool.pas svneol=native#text/plain
 components/codetools/identcompletiontool.pas svneol=native#text/pascal
 components/codetools/keywordfunclists.pas svneol=native#text/pascal
 components/codetools/languages/README.txt svneol=native#text/plain

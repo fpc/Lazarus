@@ -21,59 +21,54 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Demonstration of how to convert c header files to pascal interfaces.
-    
-  Usage:
-    h2pastest [filename.h]
+    A tool to help converting C header files to pascal bindings.
 }
-program H2PasTest;
+unit H2PasTool;
 
 {$mode objfpc}{$H+}
 
+interface
+
 uses
-  Classes, SysUtils, CodeCache, CodeToolManager, FileProcs,
-  CodeAtom, CodeTree, NonPascalCodeTools, CCodeParserTool,
-  H2PasTool;
+  Classes, SysUtils, FileProcs,CCodeParserTool, NonPascalCodeTools,
+  CodeCache;
   
-const
-  ConfigFilename = 'codetools.config';
-var
-  Filename: String;
-  CCode, PasCode: TCodeBuffer;
-  Tool: TH2PasTool;
-  Caret: TCodeXYPosition;
-  OutputFilename: String;
-  CCodeTool: TCCodeParserTool;
-begin
-  try
-    CodeToolBoss.SimpleInit(ConfigFilename);
-    Filename:=GetCurrentDir+'/scanexamples/test.h';
-    if ParamCount=1 then
-      Filename:=ParamStr(1);
+type
 
-    // Step 1: load the file
-    CCode:=CodeToolBoss.LoadFile(Filename,false,false);
-    if CCode=nil then
-      raise Exception.Create('loading failed '+Filename);
-    // Step 2: create the output file
-    OutputFilename:='h2pasoutput.pas';
-    PasCode:=CodeToolBoss.CreateFile(OutputFilename);
-    if PasCode=nil then
-      raise Exception.Create('creating failed '+OutputFilename);
+  { TH2PasTool }
 
-    Tool:=TH2PasTool.Create;
-    Tool.Convert(CCode,PasCode);
-    Tool.WriteDebugReport;
-    Tool.Free;
-  except
-    on E: ECCodeParserException do begin
-      CCodeTool:=ECCodeParserException(E).Sender;
-      CCodeTool.CleanPosToCaret(CCodeTool.LastErrorReportPos,Caret);
-      writeln(Caret.Code.Filename+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')'+' Error: '+E.Message);
-    end;
-    on E: Exception do begin
-      writeln(E.Message);
-    end;
+  TH2PasTool = class
+  public
+    CTool: TCCodeParserTool;
+    function Convert(CCode, PascalCode: TCodeBuffer): boolean;
+    procedure WriteDebugReport;
   end;
+
+implementation
+
+{ TH2PasTool }
+
+function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
+begin
+  Result:=false;
+  
+  CTool:=TCCodeParserTool.Create;
+  try
+    CTool.Parse(CCode);
+    CTool.WriteDebugReport;
+  finally
+    CTool.Free;
+  end;
+  
+  Result:=true;
+end;
+
+procedure TH2PasTool.WriteDebugReport;
+begin
+  DebugLn(['TH2PasTool.WriteDebugReport ']);
+  if CTool<>nil then
+    CTool.WriteDebugReport;
+end;
+
 end.
 
