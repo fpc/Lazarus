@@ -601,8 +601,7 @@ end;
 procedure TCustomLazControlDocker.UpdatePopupMenu;
 // creates or deletes the PopupMenuItem to the PopupMenu of Control
 begin
-  if [csDestroying,csDesigning]*ComponentState<>[] then exit;
-  if csLoading in ComponentState then exit;
+  if [csDesigning, csLoading, csDestroying] * ComponentState <> [] then Exit;
 
   //DebugLn('TCustomLazControlDocker.UpdatePopupMenu ',DbgSName(Control),' Manager=',DbgSName(Manager),' PopupMenu=',dbgs((Control<>nil) and (Control.PopupMenu<>nil)),' ExtendPopupMenu=',dbgs(ExtendPopupMenu));
 
@@ -1659,20 +1658,28 @@ var
   Item: TLCDMenuItem;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation=opRemove then begin
-    if AComponent=FControl then begin
+  if Operation=opRemove then 
+  begin
+    Item := nil;
+    if AComponent=FControl then 
+    begin
+      if FControl.PopupMenu <> nil then
+        Item := FindLCDMenuItem(FControl.PopupMenu);
       FControl.RemoveAllHandlersOfObject(Self);
       FControl:=nil;
     end;
-    Item:=nil;
+
     if (AComponent is TMenu) then
-      Item:=FindLCDMenuItem(TMenu(AComponent));
+      Item := FindLCDMenuItem(TMenu(AComponent));
+
     if (AComponent is TMenuItem) then
-      Item:=FindLCDMenuItem(TMenu(AComponent));
-    if Item<>nil then begin
+      Item := FindLCDMenuItem(TMenu(AComponent));
+
+    if Item <> nil then 
+    begin
       FMenus.Remove(Item);
-      Item.Menu:=nil;
-      if Item.Item<>AComponent then
+      Item.Menu := nil;
+      if Item.Item <> AComponent then
         FreeAndNil(Item.Item);
       Item.Free;
     end;
