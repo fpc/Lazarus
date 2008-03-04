@@ -2197,6 +2197,7 @@ type
     StartPos : Integer;
     FFixedTypeface: string;                                            {!!.10}
     FDefaultTypeFace: string;
+    FDefaultFontSize: integer;
     ParmBuf: PChar;                                                    {!!.12}
     ParmBufSize: Integer;                                              {!!.12}
     procedure ResetCanvasData;
@@ -2449,6 +2450,7 @@ type
     property FlagErrors : Boolean read FFlagErrors write FFlagErrors;
     property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
     property DefaultTypeFace: string read FDefaultTypeFace write FDefaultTypeFace;
+    property DefaultFontSize: integer read FDefaultFontSize write FDefaultFontSize;
     property HtmlNode : TIpHtmlNodeHtml read FHtml;
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
@@ -2760,6 +2762,7 @@ type
     FFlagErrors: Boolean;
     FFixedTypeface: string;                                            {!!.10}
     FDefaultTypeFace: string;
+    FDefaultFontSize: integer;
     FHotURL: string;
     FDataProvider: TIpAbstractHtmlDataProvider;
     URLStack : TStringList;
@@ -2805,6 +2808,7 @@ type
     function GetVersion : string;
     procedure SetVersion(const Value : string);
     procedure SetDefaultTypeFace(const Value: string);
+    procedure SetDefaultFontSize(const Value: integer);
   public
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
@@ -2854,6 +2858,8 @@ type
                 read FFixedTypeface write FFixedTypeface;              {!!.10}
     property DefaultTypeFace: string
                 read FDefaultTypeFace write SetDefaultTypeFace;
+    property DefaultFontSize: integer
+                read FDefaultFontSize write SetDefaultFontSize;
     property HotURL : string read FHotURL;
     property LinkColor : TColor
                 read FLinkColor write FLinkColor default clBlue;
@@ -2905,6 +2911,7 @@ type
     property Enabled;                                                  {!!.10}
     property FixedTypeface;                                            {!!.10}
     property DefaultTypeFace;
+    property DefaultFontSize;
     property FactBAParag;  //JMN
     property FlagErrors;
     property LinkColor;
@@ -8215,7 +8222,7 @@ begin
     {$ENDIF}
   end else
     Defaultprops.FontName := FDefaultTypeface;
-  Defaultprops.FontSize := 12;
+  Defaultprops.FontSize := FDefaultFontSize;
   DefaultProps.BaseFontSize := 3;
   Defaultprops.FontBaseline := 0;
   DefaultProps.VAlignment := hva3Baseline;
@@ -17006,6 +17013,7 @@ begin
   Html := TIpHtml.Create;
   Html.FixedTypeface := Viewer.FixedTypeface;                          {!!.10}
   Html.DefaultTypeFace := Viewer.DefaultTypeFace;
+  Html.DefaultFontSize := Viewer.DefaultFontSize;
   FFlagErrors := FlagErrors;
   FMarginWidth := MarginWidth;
   FMarginheight := MarginHeight;
@@ -18051,6 +18059,7 @@ begin
   FAllowTextSelect := True;
   FixedTypeface := 'Courier New';                                      {!!.10}
   DefaultTypeFace := Graphics.DefFontData.Name;
+  DefaultFontSize := 12;
   FPrintSettings := TIpHtmlPrintSettings.Create;                       {!!.10}
   FFactBAParag := 1;
 end;
@@ -18350,6 +18359,7 @@ begin
       NewHtml.BgColor := BgColor; //JMN
       NewHtml.FixedTypeface := FixedTypeface;                          {!!.10}
       NewHtml.DefaultTypeFace := DefaultTypeFace;
+      NewHtml.DefaultFontSize := FDefaultFontSize;
       MasterFrame.SetHtml(NewHtml);
     end;
   { LazDebug
@@ -18494,6 +18504,17 @@ begin
     FDefaultTypeFace := Value;
     if (MasterFrame<>nil)and(MasterFrame.Html<>nil) then begin
       MasterFrame.Html.DefaultTypeFace := FDefaultTypeFace;
+      Invalidate;
+    end;
+  end;
+end;
+
+procedure TIpHtmlCustomPanel.SetDefaultFontSize(const Value: integer);
+begin
+  if FDefaultFontSize<>Value then begin
+    FDefaultFontSize := Value;
+    if (MasterFrame<>nil)and(MasterFrame.Html<>nil) then begin
+      MasterFrame.Html.DefaultFontSize := FDefaultFontSize;
       Invalidate;
     end;
   end;
