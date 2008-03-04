@@ -2644,6 +2644,10 @@ msgstr "Wollen Sie Lazarus neu bauen?"
 msgid "Docked"
 msgstr "Angedockt"
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Dokumentationseditor"

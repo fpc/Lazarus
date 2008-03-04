@@ -70,7 +70,7 @@ type
     blfOnlyIDE,           // skip all but IDE
     blfDontClean,         // ignore clean up
     blfWithStaticPackages,// build with IDE static design time packages
-    blfUseMakeIDECfg
+    blfUseMakeIDECfg      // use idemake.cfg
     );
   TBuildLazarusFlags = set of TBuildLazarusFlag;
 
@@ -419,7 +419,7 @@ begin
       and (blfWithoutLinkingIDE in Flags)
       then
         CurMakeMode:=mmNone;
-      
+
       if CurMakeMode=mmNone then continue;
       
       if (blfDontClean in Flags) and (CurMakeMode=mmCleanBuild) then

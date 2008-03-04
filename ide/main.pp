@@ -9084,7 +9084,7 @@ begin
                          EnvironmentOptions.ExternalTools,GlobalMacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
                          EnvironmentOptions.MakeFilename,
-                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]
+                         IDEBuildFlags+[blfUseMakeIDECfg]
                          );
     if Result<>mrOk then exit;
 

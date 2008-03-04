@@ -2643,6 +2643,10 @@ msgstr ""
 msgid "Docked"
 msgstr ""
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Dokumentasie Redigeerder"

@@ -756,6 +756,10 @@ msgstr ""
 msgid "Save all messages to file"
 msgstr ""
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr ""

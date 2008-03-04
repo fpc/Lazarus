@@ -2636,6 +2636,10 @@ msgstr "Haluatteko uudelleen muodostaa (eli kääntää) Lazaruksen?"
 msgid "Docked"
 msgstr ""
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr ""

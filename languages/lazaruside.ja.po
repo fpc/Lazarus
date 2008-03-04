@@ -2640,6 +2640,10 @@ msgstr "本当にLazarusを再構築しますか？"
 msgid "Docked"
 msgstr "ドックされました"
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "ドキュメントエディター"

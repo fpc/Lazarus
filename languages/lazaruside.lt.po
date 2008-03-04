@@ -2646,6 +2646,10 @@ msgstr "Daryti Lazarus išnaujo?"
 msgid "Docked"
 msgstr "Įstatytas"
 
+#: lazarusidestrconsts:lismvdocking
+msgid "Docking"
+msgstr ""
+
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
 msgstr "Dokumentacijos redaktorius"
