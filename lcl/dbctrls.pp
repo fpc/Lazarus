@@ -458,6 +458,7 @@ Type
     property OnMouseUp;
     property OnStartDrag;
     property ParentColor;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
