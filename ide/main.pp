@@ -1252,11 +1252,11 @@ begin
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
   FreeThenNil(MainBuildBoss);
+  FreeThenNil(FDockingManager);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
 
   FreeThenNil(IDEProtocolOpts);
-  FreeThenNil(FDockingManager);
   DebugLn('[TMainIDE.Destroy] END');
 end;
 

@@ -1802,6 +1802,7 @@ procedure TApplication.FreeComponent(Data: PtrInt);
 var
   OldComponents: TAvgLvlTree;
 begin
+  //DebugLn(['TApplication.FreeComponent ',DbgSName(TComponent(Data))]);
   TComponent(Data).Free;
   if FComponentsToRelease<>nil then begin
     OldComponents:=FComponentsToRelease;
@@ -1816,6 +1817,7 @@ var
   IsFirstItem: Boolean;
 begin
   if csDestroying in AComponent.ComponentState then exit;
+  //DebugLn(['TApplication.ReleaseComponent ',DbgSName(AComponent)]);
   if AppDestroying in FFlags then begin
     // free immediately
     AComponent.Free;
