@@ -612,6 +612,7 @@ Type
     property OnKeyPress;
     property OnKeyUp;
     property OnStartDrag;
+    property ParentFont;
     property PopupMenu;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
     property ScrollBars;
