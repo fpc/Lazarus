@@ -1597,19 +1597,21 @@ begin
 end;
 
 function TCustomGrid.GetVisibleColCount: Integer;
-var
-  R: TRect;
 begin
-  R:=FGCache.VisibleGrid;
-  Result:=R.Right-R.left+1;
+  with FGCache do begin
+    Result := VisibleGrid.Right-VisibleGrid.Left;
+    if GridWidth<=ClientWidth then
+      inc(Result)
+  end;
 end;
 
 function TCustomGrid.GetVisibleRowCount: Integer;
-var
-  R: TRect;
 begin
-  R:=FGCache.VisibleGrid;
-  Result:=r.bottom-r.top+1;
+  with FGCache do begin
+    Result:=VisibleGrid.bottom-VisibleGrid.top;
+    if GridHeight<=ClientHeight then
+      inc(Result);
+  end;
 end;
 
 procedure TCustomGrid.HeadersMouseMove(const X, Y: Integer);
@@ -3662,6 +3664,7 @@ procedure TCustomGrid.UpdateSizes;
 begin
   Include(FGridFlags, gfVisualChange);
   UpdateCachedSizes;
+  CacheVisibleGrid;
   UpdateSBVisibility;
 end;
 
@@ -5986,15 +5989,18 @@ procedure TCustomGrid.FixPosition;
   procedure FixTopLeft;
   var
     oldTL: TPoint;
+    VisCount: Integer;
   begin
     OldTL:=FTopLeft;
-    if OldTL.X+VisibleColCount>FCols.Count then begin
-      OldTL.X := FCols.Count - VisibleColCount;
+    VisCount := FGCache.VisibleGrid.Right-FGCache.VisibleGrid.Left+1;
+    if OldTL.X+VisCount>FCols.Count then begin
+      OldTL.X := FCols.Count - VisCount;
       if OldTL.X<FixedCols then
         OldTL.X := FixedCols;
     end;
-    if OldTL.Y+VisibleRowCount>FRows.Count then begin
-      OldTL.Y := FRows.Count - VisiblerowCount;
+    VisCount := FGCache.VisibleGrid.Bottom-FGCache.VisibleGrid.Top+1;
+    if OldTL.Y+VisCount>FRows.Count then begin
+      OldTL.Y := FRows.Count - VisCount;
       if OldTL.Y<FixedRows then
         OldTL.Y:=FixedRows;
     end;
