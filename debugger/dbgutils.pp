@@ -152,7 +152,6 @@ end;
 function DeleteEscapeChars(const AValue: String; const AEscapeChar: Char): String;
 var
   cnt, len: Integer;
-  s: String;
   Src, Dst: PChar;
 begin
   len := Length(AValue);
