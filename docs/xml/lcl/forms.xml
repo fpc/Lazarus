@@ -7,7 +7,7 @@
   ====================================================================
 -->
     <module name="Forms">
-      <short/>
+      <short>Contains definitions and descriptions for constructing the Forms which are the basis of the Lazarus Graphical User Interface</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -1897,8 +1897,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomForm">
-        <short>Custom Form</short>
-        <descr>Custom Form - the base type for FORM</descr>
+        <short>TCustomForm - the base type for TForm</short>
+        <descr/>
         <errors/>
         <seealso/>
       </element>
@@ -2960,7 +2960,8 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <!-- constructor Visibility: public -->
       <element name="TCustomForm.Create">
         <short/>
-        <descr/>
+        <descr>This constructor can override the constructor of an ancestor class
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -2992,7 +2993,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.GetIconHandle">
-        <short/>
+        <short>Find the handle for the Icon</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3010,14 +3011,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Close">
-        <short/>
+        <short>Close the form and release its resources</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.CloseQuery">
-        <short/>
+        <short>Is the associated query to be closed?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3028,7 +3029,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.Release">
-        <short/>
+        <short>Set free the resources of the form </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3049,14 +3050,14 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.ShowOnTop">
-        <short/>
+        <short>Shows this form as the top (nearest) item of any stack of windows or images.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomForm.EnsureVisible">
-        <short/>
+        <short>Ensure that this form is always visible, if necessary moving it to the top (front) of the stack of images</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3145,7 +3146,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomForm.ShowModal">
-        <short/>
+        <short>Show this form as modal - ie control cannot be resumed by another form until the current form is closed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3347,7 +3348,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ActiveDefaultControl">
-        <short/>
+        <short>Specifies the active default control on the Form</short>
         <descr/>
         <seealso/>
       </element>
@@ -3375,10 +3376,13 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.BorderStyle">
-        <short>Specifies the appearance of the form's border</short>
-        <descr>Use borderstyle to get or set the appearance of the form's border. <br/>
-
-		By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</descr>
+        <short>The border style for this Form</short>
+        <descr>
+          <p>Use borderstyle to get or set the appearance of the form's border. </p>
+          <p>By default it is a sizeable window, but it could, for example, be a dialog form or a tool window, or could be non-sizeable</p>
+          <p>This property is slightly different from the <i>TCustomControl.BorderStyle</i>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3399,8 +3403,9 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Color">
-        <short>The colour of the form</short>
-        <descr>The form's colour; by default it is the same as the colour specified for button faces.</descr>
+        <short/>
+        <descr>The form's colour; by default it is the same as the colour specified for button faces.
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3434,16 +3439,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       <!-- property Visibility: public -->
       <element name="TCustomForm.FormStyle">
         <short>Determinates the style of the form</short>
-        <descr>Reads or writes flag to determine the style of the form. <br/>
-
-
-		Default is 'normal', but could be MDIChild or MDINormal, <br/>
-
-
-		could stay on top or could be a 'Splash' form.<br/>
-
-
-		FormStyle is a set, could take zero or more of these values.</descr>
+        <descr>
+          <p>Reads or writes flag to determine the style of the form.</p>
+          <p>Default is 'normal', but could be MDIChild or MDINormal, could stay on top or could be a 'Splash' form.</p>
+          <p>FormStyle is a set, so could take zero or more of these values.</p>
+        </descr>
         <seealso>
           <link id="#lcl.Controls.TFormStyle"/>
         </seealso>
@@ -3460,7 +3460,7 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.Icon">
-        <short/>
+        <short>The Icon associated with this Form (which may appear in menus, directories, ListBoxes etc)</short>
         <descr/>
         <seealso/>
       </element>
@@ -3489,31 +3489,31 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnActivate">
-        <short/>
+        <short>Event handler for activation (opening) of the form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnClose">
-        <short/>
+        <short>Event handler for closing the form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnCloseQuery">
-        <short/>
+        <short>Event handler for closing the query associated with the form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnCreate">
-        <short/>
+        <short>Event handler for creating the form</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnDeactivate">
-        <short/>
+        <short>Event handler for deactivating the form</short>
         <descr/>
         <seealso/>
       </element>
@@ -3563,16 +3563,17 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.OnWindowStateChange">
-        <short/>
+        <short>Event handler for a change in the window state</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.PixelsPerInch">
-        <short>The scaling of the form in proportion to the screen resolution</short>
-        <descr>Reads or writes a flag to determine the scaling factor (a longinteger). <br/>
-
-		Not normally stored locally</descr>
+        <short>The scaling of the form in absolute terms</short>
+        <descr>
+          <p>Reads or writes a flag to determine the scaling factor (a longinteger).</p>
+          <p>Not normally stored locally</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
@@ -3588,31 +3589,31 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredLeft">
-        <short/>
+        <short>The position of the left edge of the form when it is restored (ie changes from minimised or maximised)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredTop">
-        <short/>
+        <short>The position of the top edge of the form when it is restored (ie changes from minimised or maximised)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredWidth">
-        <short/>
+        <short>The width of the form when it is restored (ie changes from minimised or maximised)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.RestoredHeight">
-        <short/>
+        <short>The height of the form when it is restored (ie changes from minimised or maximised)</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomForm.ShowInTaskBar">
-        <short/>
+        <short>Should the form be shown in the system Task Bar?</short>
         <descr/>
         <seealso/>
       </element>
@@ -3647,10 +3648,11 @@ biHelp - When you click this button a Question Cursor appears and the help routi
       </element>
       <!-- object Visibility: default -->
       <element name="TForm">
-        <short>Form</short>
-        <descr>Form - the fundamental visual object that appears in every GUI application.<br/>
-
-Most of the properties are inherited from the ancestors</descr>
+        <short>Form - the fundamental visual object that appears in every application with a Graphical User Interface.</short>
+        <descr>
+          <p>Form - the fundamental visual object that appears in every GUI application.</p>
+          <p>Most of the properties are inherited from the ancestors</p>
+        </descr>
         <errors/>
         <seealso>
           <link id="TCustomForm"/>
@@ -3668,14 +3670,14 @@ Most of the properties are inherited from the ancestors</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TForm.CreateWnd">
-        <short/>
+        <short>Create a Window Control to contain the Form</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TForm.ClientHandle">
-        <short/>
+        <short>The operating system handle for the client</short>
         <descr/>
         <seealso/>
       </element>
@@ -3693,8 +3695,9 @@ Most of the properties are inherited from the ancestors</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TForm.ActiveControl">
-        <short>Specifies the control that has the focus on the form</short>
-        <descr>Use active control to set or get the control that has the focus on this form</descr>
+        <short/>
+        <descr>Use active control to set or get the control that has the focus on this form
+</descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
@@ -9117,6 +9120,8 @@ Navigation Options is a set, so can take zero or more of the available values</d
       <element name="TForm.LCLVersion">
         <short>The version of the LCL as string. Used to distinguish form streams of different versions.</short>
       </element>
+      <element name="TForm.Loaded"/>
+      <element name="TForm.Create"/>
     </module>
     <!-- Forms -->
   </package>
