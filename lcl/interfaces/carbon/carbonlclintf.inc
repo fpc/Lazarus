@@ -142,7 +142,7 @@ end;
 
 function TCarbonWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
-  Result:=inherited FontCanUTF8(Font);
+  Result := True;
 end;
 
 function TCarbonWidgetSet.GetAcceleratorString(const AVKey: Byte;
