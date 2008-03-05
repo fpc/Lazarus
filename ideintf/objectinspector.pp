@@ -3619,7 +3619,7 @@ end;
 
 procedure TObjectInspectorDlg.OnGridDblClick(Sender: TObject);
 begin
-  DoViewIssues;
+
 end;
 
 procedure TObjectInspectorDlg.OnSetDefaultPopupmenuItemClick(Sender: TObject);
@@ -3963,7 +3963,7 @@ begin
     OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
-    
+
     Parent:=NoteBook.Page[0];
   end;
 
