@@ -536,9 +536,11 @@ end;
 {$ifdef Unix}
 
 procedure TGtkWidgetSet.PrepareSynchronize(AObject: TObject);
+var
+  thrash: char;
 begin
   // wake up GUI thread by sending a byte through the threadsync pipe
-  fpwrite(threadsync_pipeout, ' ', 1);
+  fpwrite(threadsync_pipeout, thrash, 1);
 end;
 
 procedure TGtkWidgetSet.ProcessChildSignal;
