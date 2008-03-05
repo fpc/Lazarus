@@ -11,7 +11,10 @@ FreePascal at www.freepascal.org is a fast object pascal compiler (and more),
 that runs on more than 20 platforms (linux, windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
-The LCL currently supports linux (gtk, gnome and little bit gtk2) and windows.
+The LCL currently supports linux (gtk, gtk2 and qt4), all flavours of windows,
+even wince, Mac OS X (gtk, qt4 and carbon), FreeBSD (gtk, gtk2).
+There is experimental support for Solaris and the native pascal backend fpgui
+which runs on windows, wince and linux.
 
 --------------------------------------------------------------------------------
 Compilation:
@@ -60,7 +63,6 @@ If you find bugs, don't hesitate to use the bug tracking tool at the website,
 or send an email to the list.
 Patches can be sent as .zip or .tgz attachments directly to the mailing list if
 small, or (preferably) to the bug tracker at
-to patch@dommelstein.net.
-
-
+http://bugs.freepascal.org/my_view_page.php
+or send the patch to patch@dommelstein.net.
 
