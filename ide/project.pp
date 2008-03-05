@@ -1598,6 +1598,7 @@ begin
   FAutoCreateForms := true;
   FBookmarks := TProjectBookmarkList.Create;
   CompilerOptions := TProjectCompilerOptions.Create(Self);
+  CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';

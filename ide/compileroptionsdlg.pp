@@ -339,9 +339,9 @@ begin
   GetCompilerOptions(nil);
 end;
 
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonOKClicked                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TfrmCompilerOptions ButtonOKClicked
+------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonOKClicked(Sender: TObject);
 begin
   // Accept any changes

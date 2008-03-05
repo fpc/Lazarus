@@ -2377,6 +2377,7 @@ begin
   FMacros.MarkUnhandledMacros:=false;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
+  FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FCompilerOptions.ParsedOpts.GetWritableOutputDirectory:=
                                                     @GetWritableOutputDirectory;
