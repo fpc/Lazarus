@@ -1741,6 +1741,7 @@ begin
   or ((FCurrentEditorLookupRoot<>nil)
     and (FPropertyEditorHook<>nil)
     and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
+  or (Rows[FItemIndex].IsReadOnly)
   then begin
     {DebugLn(['TOICustomPropertyGrid.CanEditRowValue',
       ' pgsChangingItemIndex=',pgsChangingItemIndex in FStates,

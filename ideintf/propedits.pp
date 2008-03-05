@@ -2916,8 +2916,9 @@ end;
 
 function TStringPropertyEditor.GetEditLimit: Integer;
 begin
-  if GetPropType^.Kind = tkString then
-    Result := GetTypeData(GetPropType)^.MaxLength else
+  if GetPropType^.Kind = tkSString then
+    Result := GetTypeData(GetPropType)^.MaxLength
+  else
     Result := 255;
 end;
 
@@ -4940,7 +4941,7 @@ end;
 
 function TSessionPropertiesPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:=[paDialog,paRevertable];
+  Result:=[paDialog,paRevertable,paReadOnly];
 end;
 
 procedure TSessionPropertiesPropertyEditor.Edit;
