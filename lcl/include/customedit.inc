@@ -81,7 +81,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetSelText : string;
 begin
-  Result:= Copy(Text, SelStart + 1, SelLength)
+  Result := Copy(Text, SelStart + 1, SelLength)
 end;
 
 {------------------------------------------------------------------------------
@@ -227,9 +227,9 @@ end;
   Returns: FModified
  ------------------------------------------------------------------------------}
 function TCustomEdit.GetModified : Boolean;
-Begin
+begin
   Result := FModified;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetCharCase
@@ -237,9 +237,9 @@ End;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
-Begin
+begin
   if FCharCase <> value then
-  Begin
+  begin
     FCharCase := Value;
     // update interface, it might do the case conversion itself.
     if HandleAllocated then
@@ -249,7 +249,7 @@ Begin
     else if FCharCase = ecLowerCase then
       Text := Lowercase(Text);
   end;
-End;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetMaxLength
@@ -345,7 +345,7 @@ end;
 function TCustomEdit.ChildClassAllowed(ChildClass: TClass): boolean;
 begin
   // no childs
-  Result:=false;
+  Result := False;
 end;
 
 class function TCustomEdit.GetControlClassDefaultSize: TPoint;
@@ -357,15 +357,15 @@ end;
 procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
-  if Key=VK_RETURN then
-   begin
+  if Key = VK_RETURN then
+  begin
     EditingDone;
     if FAutoSelect then
-     begin
+    begin
       SelectAll;
       if (SelText = Text) then FAutoSelected := True;
-     end;//End if FAutoSelect
-   end;//End if Key=VK_RETURN
+    end;//End if FAutoSelect
+  end;//End if Key=VK_RETURN
 end;
 
 procedure TCustomEdit.WMChar(var Message: TLMChar);
@@ -382,14 +382,14 @@ end;
 
 procedure TCustomEdit.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
 begin
- inherited MouseUp(Button, Shift, X, Y);
- //AutoSelect when left mouse is clicked for the 1st time after having focus
- if (Button = mbLeft) then
+  inherited MouseUp(Button, Shift, X, Y);
+  //AutoSelect when left mouse is clicked for the 1st time after having focus
+  if (Button = mbLeft) then
   begin
-   if (FAutoSelect and not FAutoSelected) then
+    if (FAutoSelect and not FAutoSelected) then
     begin
-     SelectAll;
-     if (SelText = Text) then FAutoSelected := True;
+      SelectAll;
+      if (SelText = Text) then FAutoSelected := True;
     end;//End if (FAutoSelect and not FAutoSelected)
   end;//End if (Button = mbLeft)
 end;
@@ -402,18 +402,18 @@ end;
 procedure TCustomEdit.TextChanged;
 var
   Temp : String;
-Begin
+begin
   //debugln('TCustomEdit.TextChanged ',DbgSName(Self));
   
   //check to see if the charcase should affect the text.
   if FCharCase = ecUppercase then
-  Begin
+  begin
     Temp := Uppercase(Text);
     if Temp <> Text then Text := Temp;
   end
   else
   if FCharCase = ecLowercase then
-  Begin
+  begin
     Temp := Lowercase(Text);
     if Temp <> Text then Text := Temp;
   end;
@@ -424,28 +424,28 @@ Begin
     if HandleAllocated then
       Change;
   end;
-End;
+end;
 
 procedure TCustomEdit.Change;
-Begin
+begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
 procedure TCustomEdit.DoEnter;
 begin
- //AutoSelect when DoEnter is fired by keyboard
- if (FAutoSelect and not (csLButtonDown in ControlState)) then
+  //AutoSelect when DoEnter is fired by keyboard
+  if (FAutoSelect and not (csLButtonDown in ControlState)) then
   begin
-   SelectAll;
-   if (SelText = Text) then FAutoSelected := True;
+    SelectAll;
+    if (SelText = Text) then FAutoSelected := True;
   end;//End if FAutoSelect
- inherited DoEnter;
+  inherited DoEnter;
 end;
 
 procedure TCustomEdit.DoExit;
 begin
- FAutoSelected := False;
- inherited DoExit;
+  FAutoSelected := False;
+  inherited DoExit;
 end;
 
 

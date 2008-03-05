@@ -276,6 +276,13 @@ begin
   $00A7: Result := 'WM_NCMBUTTONDOWN';
   $00A8: Result := 'WM_NCMBUTTONUP';
   $00A9: Result := 'WM_NCMBUTTONDBLCLK';
+  // edit control messages start (todo: add more if needed)
+  $00B0: Result := 'EM_GETSEL';
+  $00B1: Result := 'EM_SETSEL';
+  $00C5: Result := 'EM_LIMITTEXT';
+  $00CC: Result := 'EM_SETPASSWORDCHAR';
+  $00CF: Result := 'EM_SETREADONLY';
+  // edit control messages end
   $0100: Result := 'WM_KEYFIRST or WM_KEYDOWN';
   $0101: Result := 'WM_KEYUP';
   $0102: Result := 'WM_CHAR';

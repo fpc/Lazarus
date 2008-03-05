@@ -1481,7 +1481,7 @@ end;
        TControl WndPRoc
 ------------------------------------------------------------------------------}
 procedure TControl.WndProc(var TheMessage : TLMessage);
-Var
+var
   Form : TCustomForm;
 begin
   //DebugLn('CCC TControl.WndPRoc ',Name,':',ClassName);
