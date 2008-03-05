@@ -121,6 +121,8 @@ begin
   if Widget <> nil then
   begin
     P := Widget.GetMousePos;
+    if (LastMousePos.X = P.X) and (LastMousePos.Y = P.Y) then Exit;
+    LastMousePos := P;
 
     if Widget is TCarbonControl then
       if cceDoAction in (Widget as TCarbonControl).GetValidEvents then
@@ -191,6 +193,8 @@ begin
   Msg.XPos := P.X;
   Msg.YPos := P.Y;
   Msg.Keys := GetCarbonMsgKeyState;
+  
+  LastMousePos := P;
   
   if (AWidget is TCarbonControl) and
     (cceHit in (AWidget as TCarbonControl).GetValidEvents) then

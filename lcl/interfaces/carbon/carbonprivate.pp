@@ -334,6 +334,9 @@ var PrevKeyModifiers: UInt32 = 0;
 // Stores mouse up message to be fired on control hit after value is updated
 var SavedMouseUpMsg: TLMMouse;
 
+// Stores last mouse pos to call mouse move only when it really has changed
+var LastMousePos: TPoint;
+
 {$I carbonprivatecommon.inc}
 {$I carbonprivatecontrol.inc}
 {$I carbonprivatewindow.inc}
