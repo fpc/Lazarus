@@ -1036,9 +1036,9 @@ begin
   begin
     SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_ACTIVATE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_CUTTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_COPYTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_PASTEFROMCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_CUT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COPY, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_PASTE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     {$ifdef gtk1}
     SetCallback(LM_INSERTTEXT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     {$endif}
@@ -1608,9 +1608,9 @@ begin
   begin
     SetCallback(LM_CHANGED, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_ACTIVATE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_CUTTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_COPYTOCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
-    SetCallback(LM_PASTEFROMCLIP, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_CUT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_COPY, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
+    SetCallback(LM_PASTE, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
     SetCallback(LM_INSERTTEXT, PGtkObject(AGtkWidget), AWidgetInfo^.LCLObject);
   end;
 end;

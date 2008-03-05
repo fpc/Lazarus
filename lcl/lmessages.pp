@@ -71,13 +71,9 @@ const
   LM_KILLCHAR       = LM_LCL + 23;
   LM_KILLWORD       = LM_LCL + 24;
   LM_KILLLINE       = LM_LCL + 25;
-  LM_CUTTOCLIP      = LM_LCL + 26;
-  LM_COPYTOCLIP     = LM_LCL + 27;
-  LM_PASTEFROMCLIP  = LM_LCL + 28;
   LM_CONFIGUREEVENT = LM_LCL + 31; // GTK internal. Should be removed later.
   LM_PAINT          = LM_LCL + 32;
   LM_TIMER          = LM_LCL + 40;
-  LM_CLEARSEL       = LM_LCL + 50; // WM_CLEAR
   LM_EXIT           = LM_LCL + 60;
   LM_CLOSEQUERY     = LM_LCL + 62;
   LM_DRAGSTART      = LM_LCL + 63;
@@ -227,7 +223,10 @@ const
   LM_DROPFILES         = $0233;
 
   LM_SELCHANGE         = $0234;
-
+  LM_CUT               = $0300;
+  LM_COPY              = $0301;
+  LM_PASTE             = $0302;
+  LM_CLEAR             = $0303;
 
 const
   // Moved from Controls to avoid circles
@@ -874,9 +873,10 @@ begin
   LM_KILLCHAR       :Result:='LM_KILLCHAR';
   LM_KILLWORD       :Result:='LM_KILLWORD';
   LM_KILLLINE       :Result:='LM_KILLLINE';
-  LM_CUTTOCLIP      :Result:='LM_CUTTOCLIP';
-  LM_COPYTOCLIP     :Result:='LM_COPYTOCLIP';
-  LM_PASTEFROMCLIP  :Result:='LM_PASTEFROMCLIP';
+  LM_CUT            :Result:='LM_CUT';
+  LM_COPY           :Result:='LM_COPY';
+  LM_PASTE          :Result:='LM_PASTE';
+  LM_CLEAR          :Result:='LM_CLEAR';
   LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
   LM_PAINT          :Result:='LM_PAINT';
   LM_KEYDOWN        :Result:='LM_KEYDOWN';

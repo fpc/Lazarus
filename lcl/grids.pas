@@ -7049,9 +7049,9 @@ begin
 	{$Endif}
   if FGrid<>nil then
     case TheMessage.Msg of
-      LM_CLEARSEL,
-      LM_CUTTOCLIP,
-      LM_PASTEFROMCLIP:
+      LM_CLEAR,
+      LM_CUT,
+      LM_PASTE:
         begin
           if FGrid.EditorIsReadOnly then
             exit;

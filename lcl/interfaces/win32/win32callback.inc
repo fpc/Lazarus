@@ -1411,15 +1411,15 @@ begin
     end;
     WM_CLEAR:
     begin
-      LMessage.Msg := LM_CLEARSEL;
+      LMessage.Msg := LM_CLEAR;
     end;
     WM_COPY:
     begin
-      LMessage.Msg := LM_COPYTOCLIP;
+      LMessage.Msg := LM_COPY;
     end;
     WM_CUT:
     begin
-      LMessage.Msg := LM_CUTTOCLIP;
+      LMessage.Msg := LM_CUT;
     end;
     WM_DESTROY:
     begin
@@ -1961,7 +1961,7 @@ begin
     end;
     WM_PASTE:
     begin
-      LMessage.Msg := LM_PASTEFROMCLIP;
+      LMessage.Msg := LM_PASTE;
     end;
     WM_RBUTTONDBLCLK:
     begin
@@ -2193,7 +2193,7 @@ begin
     WinProcess := False;
   end;
 
-  case Msg Of
+  case Msg of
     WM_MOVE:
     begin
       PLMsg:=@LMMove;

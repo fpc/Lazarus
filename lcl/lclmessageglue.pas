@@ -784,12 +784,12 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CUTTOCLIP      *
+ *  Target      : The Control that will recieve the message LM_CUT            *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCutToClipboardMsg(const Target: TControl): PtrInt;
 begin
-  Result := SendSimpleMessage(Target, LM_CUTTOCLIP);
+  Result := SendSimpleMessage(Target, LM_CUT);
 end;
 
 {******************************************************************************
@@ -800,12 +800,12 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_COPYTOCLIP     *
+ *  Target      : The Control that will recieve the message LM_COPY           *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCopyToClipboardMsg(const Target: TControl): PtrInt;
 begin
-  Result := SendSimpleMessage(Target, LM_COPYTOCLIP);
+  Result := SendSimpleMessage(Target, LM_COPY);
 end;
 
 {******************************************************************************
@@ -816,12 +816,12 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_COPYTOCLIP     *
+ *  Target      : The Control that will recieve the message LM_COPY           *
  *                                                                            *
  ******************************************************************************}
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
 begin
-  Result := SendSimpleMessage(Target, LM_PASTEFROMCLIP);
+  Result := SendSimpleMessage(Target, LM_PASTE);
 end;
 
 {******************************************************************************

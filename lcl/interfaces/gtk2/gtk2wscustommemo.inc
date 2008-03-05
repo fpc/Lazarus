@@ -17,7 +17,7 @@ var
 begin
   EventTrace('Gtk2WS_MemoCutToClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
-  Mess.msg := LM_CUTTOCLIP;
+  Mess.msg := LM_CUT;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
@@ -27,7 +27,7 @@ var
 begin
   EventTrace('Gtk2WS_MemoCopyToClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
-  Mess.msg := LM_COPYTOCLIP;
+  Mess.msg := LM_COPY;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 
@@ -37,7 +37,7 @@ var
 begin
   EventTrace('Gtk2WS_MemoPasteFromClip', WidgetInfo^.LCLObject);
   if (Widget=nil) then ;
-  Mess.msg := LM_PASTEFROMCLIP;
+  Mess.msg := LM_PASTE;
   DeliverMessage(WidgetInfo^.LCLObject, Mess);
 end;
 

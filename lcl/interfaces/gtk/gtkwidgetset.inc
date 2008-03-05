@@ -3336,7 +3336,7 @@ begin
       ConnectSenderSignal(gObject, 'kill-line', @gtkkillline);
     end;
 
-    LM_CUTTOCLIP :
+    LM_CUT:
     begin
       if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'cut-clipboard', @gtkcuttoclip)
@@ -3344,7 +3344,7 @@ begin
         ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
     end;
 
-    LM_COPYTOCLIP :
+    LM_COPY:
     begin
       if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'copy-clipboard', @gtkcopytoclip)
@@ -3352,7 +3352,7 @@ begin
         ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
     end;
 
-    LM_PASTEFROMCLIP :
+    LM_PASTE:
     begin
       if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'paste-clipboard', @gtkpastefromclip)

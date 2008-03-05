@@ -111,10 +111,10 @@ begin
     case Command.commandID of
       kHICommandUndo:;
       kHICommandRedo:;
-      kHICommandCut: SendSimpleMessage(AWidget.LCLObject, LM_CUTTOCLIP);
-      kHICommandCopy: SendSimpleMessage(AWidget.LCLObject, LM_COPYTOCLIP);
-      kHICommandPaste: SendSimpleMessage(AWidget.LCLObject, LM_PASTEFROMCLIP);
-      kHICommandClear: SendSimpleMessage(AWidget.LCLObject, LM_CLEARSEL);
+      kHICommandCut: SendSimpleMessage(AWidget.LCLObject, LM_CUT);
+      kHICommandCopy: SendSimpleMessage(AWidget.LCLObject, LM_COPY);
+      kHICommandPaste: SendSimpleMessage(AWidget.LCLObject, LM_PASTE);
+      kHICommandClear: SendSimpleMessage(AWidget.LCLObject, LM_CLEAR);
       kHICommandSelectAll:;
     end;
   end;

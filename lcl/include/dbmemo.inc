@@ -206,9 +206,9 @@ end;
 procedure TDBMemo.WndProc(var AMessage: TLMessage);
 begin
   case AMessage.Msg of
-    LM_CLEARSEL,
-    LM_CUTTOCLIP,
-    LM_PASTEFROMCLIP:
+    LM_CLEAR,
+    LM_CUT,
+    LM_PASTE:
       FDatalink.Edit;
   end;
   inherited WndProc(AMessage);

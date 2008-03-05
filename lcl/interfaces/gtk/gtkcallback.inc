@@ -2194,7 +2194,7 @@ var
 begin
   EventTrace('Cut to clip', data);
   if (Widget=nil) then ;
-  Mess.msg := LM_CUTTOCLIP;
+  Mess.msg := LM_CUT;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
@@ -2204,7 +2204,7 @@ var
 begin
   EventTrace('Copy to Clip', data);
   if (Widget=nil) then ;
-  Mess.msg := LM_COPYTOCLIP;
+  Mess.msg := LM_COPY;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
@@ -2214,7 +2214,7 @@ var
 begin
   EventTrace('Paste from clip', data);
   if (Widget=nil) then ;
-  Mess.msg := LM_PASTEFROMCLIP;
+  Mess.msg := LM_PASTE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
 
