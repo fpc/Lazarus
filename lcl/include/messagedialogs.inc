@@ -266,17 +266,21 @@ var
   SelectDirectoryDialog: TSelectDirectoryDialog;
 begin
   SelectDirectoryDialog:=TSelectDirectoryDialog.Create(nil);
-  if ShowHidden then
-    SelectDirectoryDialog.Options:=SelectDirectoryDialog.Options
-                                   +[ofForceShowHidden];
-  SelectDirectoryDialog.InitialDir:=InitialDirectory;
-  SelectDirectoryDialog.Title:=Caption;
-  SelectDirectoryDialog.HelpContext:=HelpCtx;
-  Result:=SelectDirectoryDialog.Execute;
-  if Result then
-    Directory:=SelectDirectoryDialog.Filename
-  else
-    Directory:='';
+  try
+    if ShowHidden then
+      SelectDirectoryDialog.Options:=SelectDirectoryDialog.Options
+                                     +[ofForceShowHidden];
+    SelectDirectoryDialog.InitialDir:=InitialDirectory;
+    SelectDirectoryDialog.Title:=Caption;
+    SelectDirectoryDialog.HelpContext:=HelpCtx;
+    Result:=SelectDirectoryDialog.Execute;
+    if Result then
+      Directory:=SelectDirectoryDialog.Filename
+    else
+      Directory:='';
+  finally
+    SelectDirectoryDialog.Free;
+  end;
 end;
 
 function SelectDirectory(out Directory: string;
@@ -287,14 +291,18 @@ begin
   SelectDirectoryDialog:=TSelectDirectoryDialog.Create(nil);
   // TODO: sdAllowCreate,
   // TODO: sdPrompt
-  SelectDirectoryDialog.HelpContext:=HelpCtx;
-  Result:=SelectDirectoryDialog.Execute;
-  if Result then begin
-    Directory:=SelectDirectoryDialog.Filename;
-    if (sdPerformCreate in Options) and (not DirPathExists(Directory)) then
-      ForceDirectories(Directory);
-  end else
-    Directory:='';
+  try
+    SelectDirectoryDialog.HelpContext:=HelpCtx;
+    Result:=SelectDirectoryDialog.Execute;
+    if Result then begin
+      Directory:=SelectDirectoryDialog.Filename;
+      if (sdPerformCreate in Options) and (not DirPathExists(Directory)) then
+        ForceDirectories(Directory);
+    end else
+      Directory:='';
+  finally
+    SelectDirectoryDialog.Free;
+  end;
 end;
 
 function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
