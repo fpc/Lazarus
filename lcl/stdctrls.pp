@@ -596,6 +596,7 @@ type
     property Columns;
     property Constraints;
     property DragCursor;
+    property DragKind;
     property DragMode;
     property ExtendedSelect;
     property Enabled;
