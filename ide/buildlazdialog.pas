@@ -409,9 +409,7 @@ begin
       // calculate make mode
       CurMakeMode:=CurItem.MakeMode;
       if (blfOnlyIDE in Flags) then begin
-        if (CurItem=Options.ItemIDE) then begin
-          CurMakeMode:=mmCleanBuild;
-        end else
+        if (CurItem<>Options.ItemIDE) then
           CurMakeMode:=mmNone;
       end;
       if (CurItem=Options.ItemIDE)
