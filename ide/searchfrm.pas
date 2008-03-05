@@ -706,8 +706,10 @@ begin
   fMatches:= 0;
   if Assigned(fResultsList) then
   begin
-    fResultsList.BeginUpdate;
-    fResultsListUpdating:=true;
+    if not fResultsListUpdating then begin
+      fResultsList.BeginUpdate;
+      fResultsListUpdating:=true;
+    end;
     try
       if fSearchFiles then
       begin
@@ -845,12 +847,17 @@ end;
 procedure TSearchForm.UpdateProgress(FileName: string);
 var
   DisplayFileName: string;
+  ShorterFileName: String;
 begin
   DisplayFileName := FileName;
+  //DebugLn(['TSearchForm.UpdateProgress DisplayFileName="',dbgstr(DisplayFileName),'"']);
   lblProgress.Caption:= DisplayFileName;
   while (lblProgress.Left + lblProgress.Width)> lblProgress.Parent.ClientWidth-12 do
   begin
-    DisplayFileName:= PadAndShorten(DisplayFileName);
+    ShorterFileName:= PadAndShorten(DisplayFileName);
+    if ShorterFileName=DisplayFileName then break;
+    DisplayFileName:=ShorterFileName;
+    //DebugLn(['TSearchForm.UpdateProgress Padded DisplayFileName="',dbgstr(DisplayFileName),'"']);
     lblProgress.Caption := DisplayFileName;
   end;//while
 end;//UpdateProgress
@@ -881,11 +888,12 @@ function TSearchForm.PadAndShorten(FileName: string): string;
 var
   FoundAt: integer;
 begin
-  result:= '';
-  FoundAt:= pos(PathDelim,FileName);
-  inc(FoundAt);
-  result:= copy(FileName,FoundAt,Length(FileName));
-  result:= fPad + result;
+  FoundAt:= System.Pos(PathDelim,FileName);
+  if FoundAt<1 then begin
+    Result := Filename;
+  end else begin
+    Result:= fPad + copy(FileName,FoundAt+1,Length(FileName));
+  end;
 end;//PadAndShorten
 
 initialization
