@@ -70,6 +70,7 @@ type
     fPromptOnReplace: boolean;
     fRecursive: boolean;
     FReplaceText: string;
+    fResultsListUpdating: boolean;
     fResultsList: TStrings;
     fResultsWindow: integer;
     fSearchFileList: TStringList;
@@ -81,6 +82,7 @@ type
     fAborting: boolean;
     procedure DoFindInFiles(TheFileName: string);
     procedure DoFindInSearchList;
+    procedure SetResultsList(const AValue: TStrings);
     procedure UpdateMatches;
     procedure UpdateProgress(FileName: string);
     function PadAndShorten(FileName: string): string;
@@ -89,7 +91,7 @@ type
     procedure SearchFile(const aFilename: string);
     procedure SetFlag(Flag: TSrcEditSearchOption; AValue: boolean);
   public
-    Procedure DoSearch;
+    procedure DoSearch;
     property SearchDirectory: string read fTheDirectory write fTheDirectory;
     property SearchText: string read fSearchFor write fSearchFor;
     property ReplaceText: string read FReplaceText write FReplaceText;
@@ -97,7 +99,7 @@ type
                                                         write SetOptions;
     property SearchFileList: TStringList read fSearchFileList
                                          write fSearchFileList;
-    property ResultsList: TStrings read fResultsList write fResultsList;
+    property ResultsList: TStrings read fResultsList write SetResultsList;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
     property ResultsWindow: integer read fResultsWindow write fResultsWindow;
@@ -704,15 +706,24 @@ begin
   fMatches:= 0;
   if Assigned(fResultsList) then
   begin
-    if fSearchFiles then
-    begin
-      DoFindInFiles(fTheDirectory);
-    end;//if
-    if fSearchProject or fSearchOpen then
-      DoFindInSearchList;
+    fResultsList.BeginUpdate;
+    fResultsListUpdating:=true;
+    try
+      if fSearchFiles then
+      begin
+        DoFindInFiles(fTheDirectory);
+      end;//if
+      if fSearchProject or fSearchOpen then
+        DoFindInSearchList;
+      if Assigned(fResultsList) and (fResultsList.Count = 0) then
+        fResultsList.Add(lisFileNotFound);
+    finally
+      if fResultsListUpdating then begin
+        fResultsListUpdating:=false;
+        fResultsList.EndUpdate;
+      end;
+    end;
   end;//if
-  if Assigned(fResultsList) and (fResultsList.Count = 0) then
-    fResultsList.Add(lisFileNotFound);
   Close;
 end;//DoSearch
 
@@ -809,17 +820,27 @@ begin
     begin
       UpdateProgress(fSearchFileList[i]);
       SearchFile(fSearchFileList[i]);
-    end;//for
-  end;//if
-end;//DoFindInSearchList
+    end;
+  end;
+end;
+
+procedure TSearchForm.SetResultsList(const AValue: TStrings);
+begin
+  if fResultsList=AValue then exit;
+  if fResultsListUpdating then
+  begin
+    fResultsList.EndUpdate;
+    fResultsListUpdating:=false;
+  end;
+  fResultsList:=AValue;
+end;
 
 procedure TSearchForm.UpdateMatches;
 begin
   inc(fMatches);
   //DebugLn(['TSearchForm.UpdateMatches ',lblMatches.Caption]);
   lblMatches.Caption:=IntToStr(fMatches);
-end;//UpdateMatches
-
+end;
 
 procedure TSearchForm.UpdateProgress(FileName: string);
 var
