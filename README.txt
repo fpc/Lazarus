@@ -50,9 +50,8 @@ Mailing list:
 There is a very active and helpful mailing list for lazarus, where the
 developers interact, share ideas, discuss problems, and of course answer
 questions.
-To subscribe send an email with the subject "subscribe" to
-lazarus-request@miraclec.com
-
+You can subscribe at
+http://www.lazarus.freepascal.org/mailman/listinfo/lazarus
 
 --------------------------------------------------------------------------------
 How to help lazarus:
@@ -60,7 +59,8 @@ How to help lazarus:
 If you find bugs, don't hesitate to use the bug tracking tool at the website,
 or send an email to the list.
 Patches can be sent as .zip or .tgz attachments directly to the mailing list if
-small, or (preferably) to patch@dommelstein.net.
+small, or (preferably) to the bug tracker at
+to patch@dommelstein.net.
 
 
 
