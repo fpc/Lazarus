@@ -143,6 +143,7 @@ type
     FRoot: TLazDockConfigNode;
   public
     constructor Create(const ADockerName: string; ANode: TLazDockConfigNode);
+    destructor Destroy; override;
     procedure WriteDebugReport;
     property DockerName: string read FDockerName;
     property Root: TLazDockConfigNode read FRoot;
@@ -1893,7 +1894,6 @@ begin
   Layout:=GetLayoutFromControl;
   if (Layout=nil) then exit;
   Manager.AddOrReplaceConfig(DockerName,Layout);
-  Layout.Free;
 end;
 
 procedure TCustomLazControlDocker.RestoreLayout;
@@ -3914,6 +3914,12 @@ constructor TLazDockerConfig.Create(const ADockerName: string;
 begin
   FDockerName:=ADockerName;
   FRoot:=ANode;
+end;
+
+destructor TLazDockerConfig.Destroy;
+begin
+  FRoot.Free; // who will clear it else?
+  inherited Destroy;
 end;
 
 procedure TLazDockerConfig.WriteDebugReport;
