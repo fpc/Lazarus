@@ -8389,7 +8389,14 @@ var
   StateFileAge: LongInt;
   AnUnitInfo: TUnitInfo;
 begin
-  NeedBuildAllFlag:=true;
+  NeedBuildAllFlag:=false;
+  if (AProject.LastCompilerFilename<>CompilerFilename)
+  or (AProject.LastCompilerParams<>CompilerParams)
+  or ((AProject.LastCompilerFileDate>0)
+      and FileExistsCached(CompilerFilename)
+      and (FileAge(CompilerFilename)<>AProject.LastCompilerFileDate))
+  then
+    NeedBuildAllFlag:=true;
 
   // check state file
   StateFilename:=AProject.GetStateFilename;
@@ -8665,6 +8672,10 @@ begin
                                 pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags);
         if Result<>mrOk then begin
+          // save state, so that next time the project is not compiled clean
+          Project1.LastCompilerFilename:=CompilerFilename;
+          Project1.LastCompilerParams:=CompilerParams;
+          Project1.LastCompilerFileDate:=FileAge(CompilerFilename);
           DoJumpToCompilerMessage(-1,true);
           exit;
         end;
