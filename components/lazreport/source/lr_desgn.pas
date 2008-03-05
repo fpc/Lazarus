@@ -2885,6 +2885,10 @@ var
   i, tx, ty, tx1, ty1, d, d1: Integer;
   t, t1: TfrView;
 begin
+  {$IFNDEF EXTOI}
+  if ActiveControl.Parent = ObjInsp.fPropertyGrid then
+    exit;
+  {$ENDIF}
   StepX := 0; StepY := 0;
   if (Key=VK_F11) then
     ObjInsp.Visible:=not ObjInsp.Visible;
