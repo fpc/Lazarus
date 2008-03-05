@@ -2886,7 +2886,7 @@ var
   t, t1: TfrView;
 begin
   {$IFNDEF EXTOI}
-  if ActiveControl.Parent = ObjInsp.fPropertyGrid then
+  if (ActiveControl<>nil) and (ActiveControl.Parent=ObjInsp.fPropertyGrid) then
     exit;
   {$ENDIF}
   StepX := 0; StepY := 0;
