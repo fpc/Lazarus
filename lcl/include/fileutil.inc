@@ -352,6 +352,8 @@ end;
 {------------------------------------------------------------------------------
   function CompareFileExt(const Filename, Ext: string;
     CaseSensitive: boolean): integer;
+    
+  Ext can contain a point or not
  ------------------------------------------------------------------------------}
 function CompareFileExt(const Filename, Ext: string;
   CaseSensitive: boolean): integer;

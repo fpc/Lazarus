@@ -409,6 +409,8 @@ begin
   if visual=nil then exit;
   vi := get_xvisualinfo(visual);
   {$ENDIF}
+  if vi=nil then
+    raise Exception.Create('gdk_gl_context_share_new no visual found');
 
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
   if (sharelist<>nil) then
