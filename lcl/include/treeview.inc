@@ -558,12 +558,6 @@ begin
 //DebugLn('[TTreeNode.DoExpand] Self=',DbgS(Self),' Text=',Text,
 //' HasChildren=',HasChildren,' ExpandIt=',ExpandIt,' Expanded=',Expanded);
   if HasChildren and (Expanded<>ExpandIt) then begin
-    if (TreeView<>nil) then begin
-      if ExpandIt then
-        TreeView.Expand(Self)
-      else
-        TreeView.Collapse(Self);
-    end;
     if ExpandIt then
       Include(FStates,nsExpanded)
     else begin
@@ -578,6 +572,10 @@ begin
                 tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
                 tvsScrollbarChanged,tvsMaxRightNeedsUpdate]);
       Update;
+      if ExpandIt then
+        TreeView.Expand(Self)
+      else
+        TreeView.Collapse(Self);
     end;
   end;
 end;
