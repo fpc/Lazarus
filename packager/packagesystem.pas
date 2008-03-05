@@ -2422,10 +2422,17 @@ var
   CurFile: TPkgFile;
 begin
   Result:=mrYes;
-  NeedBuildAllFlag:=true;
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
+  NeedBuildAllFlag:=false;
+  if (APackage.LastCompilerFilename<>CompilerFilename)
+  or (APackage.LastCompilerParams<>CompilerParams)
+  or ((APackage.LastCompilerFileDate>0)
+      and FileExistsCached(CompilerFilename)
+      and (FileAge(CompilerFilename)<>APackage.LastCompilerFileDate))
+  then
+    NeedBuildAllFlag:=true;
 
   // check state file
   StateFilename:=APackage.GetStateFilename;
@@ -2691,6 +2698,9 @@ begin
           Result:=SavePackageCompiledState(APackage,
                                            CompilerFilename,CompilerParams);
           if Result<>mrOk then begin
+            APackage.LastCompilerFilename:=CompilerFilename;
+            APackage.LastCompilerParams:=CompilerParams;
+            APackage.LastCompilerFileDate:=FileAge(CompilerFilename);
             DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
             exit;
           end;
