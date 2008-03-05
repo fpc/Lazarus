@@ -593,7 +593,6 @@ begin
         exit;
       end;
       
-      ProcessMessages;
     until false;
   finally
     CommitChanges;
