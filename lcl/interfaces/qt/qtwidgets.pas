@@ -152,6 +152,7 @@ type
     procedure ShowNormal;
     procedure ShowMinimized;
     procedure ShowMaximized;
+    function getActionByIndex(AIndex: Integer): QActionH;
     function getClientBounds: TRect; virtual;
     function getEnabled: Boolean;
     function getFocusPolicy: QtFocusPolicy;
@@ -942,6 +943,7 @@ type
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
     function actionHandle: QActionH;
     function addMenu(AMenu: QMenuH): QActionH;
+    function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
     function getVisible: Boolean; override;
     function getText: WideString; override;
     procedure setChecked(p1: Boolean);
@@ -965,6 +967,7 @@ type
     constructor Create(const AParent: QWidgetH); overload;
   public
     function addMenu(AMenu: QMenuH): QActionH;
+    function insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
     function getGeometry: TRect; override;
   end;
 
@@ -2431,6 +2434,17 @@ end;
 procedure TQtWidget.ShowMaximized;
 begin
   QWidget_showMaximized(Widget);
+end;
+
+function TQtWidget.getActionByIndex(AIndex: Integer): QActionH;
+var
+  ActionList: TIntArray;
+begin
+  QWidget_actions(Widget, @ActionList);
+  if (AIndex > 0) and (AIndex < Length(ActionList)) then
+    Result := QActionH(ActionList[AIndex])
+  else
+    Result := nil;
 end;
 
 function TQtWidget.getEnabled: Boolean;
@@ -6628,6 +6642,18 @@ begin
   Result := QMenu_addMenu(QMenuH(Widget), AMenu);
 end;
 
+function TQtMenu.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
+var
+  actionBefore: QActionH;
+begin
+  setHasSubmenu(True);
+  actionBefore := getActionByIndex(AIndex);
+  if actionBefore <> nil then
+    Result := QMenu_insertMenu(QMenuH(Widget), actionBefore, AMenu)
+  else
+    Result := QMenu_addMenu(QMenuH(Widget), AMenu);
+end;
+
 function TQtMenu.getVisible: Boolean;
 begin
   Result := QAction_isVisible(ActionHandle);
@@ -6760,6 +6786,22 @@ begin
     setVisible(FVisible);
   end;
   Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
+end;
+
+function TQtMenuBar.insertMenu(AIndex: Integer; AMenu: QMenuH): QActionH;
+var
+  actionBefore: QActionH;
+begin
+  if not FVisible then
+  begin
+    FVisible := True;
+    setVisible(FVisible);
+  end;
+  actionBefore := getActionByIndex(AIndex);
+  if actionBefore <> nil then
+    Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
+  else
+    Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
 end;
 
 function TQtMenuBar.getGeometry: TRect;

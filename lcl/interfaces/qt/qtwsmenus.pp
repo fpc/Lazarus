@@ -104,10 +104,12 @@ begin
 
   Widget := TQtWidget(AMenuItem.Parent.Handle);
   if Widget is TQtMenuBar then
-    TQtMenuBar(Widget).addMenu(QMenuH(TQtMenu(AMenuItem.Handle).Widget))
+    TQtMenuBar(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
+      QMenuH(TQtMenu(AMenuItem.Handle).Widget))
   else
   if Widget is TQtMenu then
-    TQtMenu(Widget).addMenu(QMenuH(TQtMenu(AMenuItem.Handle).Widget));
+    TQtMenu(Widget).insertMenu(AMenuItem.Parent.VisibleIndexOf(AMenuItem),
+      QMenuH(TQtMenu(AMenuItem.Handle).Widget));
 end;
 
 class function TQtWSMenuItem.CreateMenuFromMenuItem(const AMenuItem: TMenuItem): TQtMenu;
