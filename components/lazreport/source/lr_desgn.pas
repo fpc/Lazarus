@@ -3054,8 +3054,9 @@ begin
           SelectionChanged;
         end;
       end;
-    end;
-  end;
+    end; // if (StepX <> 0) or (StepY <> 0)
+    Key := 0;
+  end; // if SelNum > 0 then
 end;
 
 procedure TfrDesignerForm.MoveObjects(dx, dy: Integer; aResize: Boolean);
