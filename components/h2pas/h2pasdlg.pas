@@ -294,11 +294,12 @@ begin
   CloseButton.Caption:='&Close';
   
   PreH2PasEdit:=TTextConvListEditor.Create(Self);
-  with PreH2PasEdit do begin
+  with PreH2PasEdit do
+  begin
     Name:='PreH2PasEdit';
     Align:=alClient;
     OnModified:=@PreH2PasEditModified;
-    Parent:=PreH2PasGroupBox;
+    Dock(PreH2PasGroupBox, Rect(0, 0, 0, 0));
     Visible:=true;// Note: it's a form, and visible default is false
   end;
 
@@ -307,7 +308,7 @@ begin
     Name:='PostH2PasEdit';
     Align:=alClient;
     OnModified:=@PostH2PasEditModified;
-    Parent:=PostH2PasGroupBox;
+    Dock(PostH2PasGroupBox, Rect(0, 0, 0, 0));
     Visible:=true;// Note: it's a form, and visible default is false
   end;
 
@@ -507,7 +508,6 @@ end;
 
 procedure TH2PasDialog.FormDestroy(Sender: TObject);
 begin
-  FreeAndNil(fSrcEditSection);
   PreH2PasEdit.ListOfTools:=nil;
   PostH2PasEdit.ListOfTools:=nil;
   FreeAndNil(FConverter);
@@ -839,7 +839,7 @@ end;
 
 procedure TH2PasDialog.CreateLazarusMenuItems;
 begin
-  // add a context menu to the source editor
+  // add a context menu to the source editor. It will be freed by ide automatically
   fSrcEditSection:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
                                       'h2pas project','h2pas',nil,nil);
   fSrcEditSection.AddHandlerOnShow(@OnShowSrcEditSection);

@@ -814,6 +814,7 @@ begin
   end;
   Clear;
   ClearIncludedByReferences;
+  FCIncludedBy.Free;
   inherited Destroy;
 end;
 
@@ -1214,6 +1215,8 @@ begin
   if (Converter<>nil) and (Converter.Project=Self) then
     Converter.Project:=nil;
   FreeAndNil(FCHeaderFiles);
+  FreeAndNil(FPreH2PasTools);
+  FreeAndNil(FPostH2PasTools);
   inherited Destroy;
 end;
 
@@ -1245,7 +1248,8 @@ begin
   FPreH2PasTools:=TComponent.Create(nil);
   FPostH2PasTools.Free;
   FPostH2PasTools:=TComponent.Create(nil);
-  if AddDefaults then begin
+  if AddDefaults then 
+  begin
     AddDefaultPreH2PasTools;
     AddDefaultPostH2PasTools;
   end;
@@ -1771,6 +1775,7 @@ destructor TH2PasConverter.Destroy;
 begin
   FreeAndNil(FProject);
   Clear;
+  FreeAndNil(FProjectHistory);
   inherited Destroy;
 end;
 
@@ -3798,6 +3803,7 @@ destructor TPostH2PasTools.Destroy;
 begin
   FreeAndNil(FDefines);
   FreeAndNil(FUndefines);
+  FreeAndNil(FUseUnits);
   inherited Destroy;
 end;
 
