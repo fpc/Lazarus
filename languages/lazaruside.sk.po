@@ -10350,6 +10350,10 @@ msgstr "\" neexistuje."
 msgid "\" is not writable."
 msgstr "\" nie je zapisovateľný."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "zrušiť budovanie"

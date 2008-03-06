@@ -2647,6 +2647,7 @@ resourcestring
   lisExtToolMoveDown = 'Down';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
+  lisExtToolTitleCompleted = '"%s" completed';
   
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';

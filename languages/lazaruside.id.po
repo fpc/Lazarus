@@ -10349,6 +10349,10 @@ msgstr "\" tidak ada"
 msgid "\" is not writable."
 msgstr "\" tidak bisa ditulisi."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "batalkan pembangunan"

@@ -10349,6 +10349,10 @@ msgstr "\" nie istnieje."
 msgid "\" is not writable."
 msgstr "\" nie jest zapisywalny"
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr ""

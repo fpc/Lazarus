@@ -10370,6 +10370,10 @@ msgstr "\" neegzistuoja."
 msgid "\" is not writable."
 msgstr "\" nėra skirtas rašymui."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "nutraukti darymą"

@@ -10352,6 +10352,10 @@ msgstr "\" nicht gefunden."
 msgid "\" is not writable."
 msgstr "\" ist schreibgeschützt."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "Buildvorgang abbrechen"

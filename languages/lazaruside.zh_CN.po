@@ -10352,6 +10352,10 @@ msgstr "\" 不存在."
 msgid "\" is not writable."
 msgstr "\" 不可写."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "中断编译"

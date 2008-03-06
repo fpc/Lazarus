@@ -370,7 +370,7 @@ begin
             Result:=mrCancel;
             try
               if TheOutputFilter.Execute(TheProcess,Self,ExtTool) then begin
-                TheOutputFilter.ReadConstLine('"'+Title+'" completed',true);
+                TheOutputFilter.ReadConstLine(Format(lisExtToolTitleCompleted,[Title]),true);
               end;
               if TheOutputFilter.ErrorExists then begin
                 ErrorOccurred:=true;

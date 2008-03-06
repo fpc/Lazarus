@@ -10349,6 +10349,10 @@ msgstr "\" niet gevonden."
 msgid "\" is not writable."
 msgstr "\" is niet beschrijfbaar."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "Bouw afbreken"

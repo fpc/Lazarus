@@ -10344,6 +10344,10 @@ msgstr "\" не існує."
 msgid "\" is not writable."
 msgstr "\" не для запису."
 
+#: lazarusidestrconsts:lisexttooltitlecompleted
+msgid "\"%s\" completed"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecabortbuild
 msgid "abort build"
 msgstr "перервати побудову"
