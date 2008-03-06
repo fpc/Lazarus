@@ -115,10 +115,14 @@ type
   TFindSourceFlags = set of TFindSourceFlag;
   
   TModalResultFunction = function(Sender: TObject): TModalResult of object;
+  TLazProjectChangedFunction = function(Sender: TObject;
+                                 AProject: TLazProject): TModalResult of object;
 
   TLazarusIDEHandlerType = (
     lihtOnSavingAll, // called before IDE saves everything
-    lihtOnSavedAll   // called after IDE saved everything
+    lihtOnSavedAll,  // called after IDE saved everything
+    lihtOnProjectOpened,// called after IDE opened a project
+    lihtOnProjectClose  // called before IDE closes a project
     );
     
   { TLazIDEInterface }
@@ -140,6 +144,8 @@ type
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
                                         ): TModalResult;
+    function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
+                                         AProject: TLazProject): TModalResult;
     procedure SetMainBarSubTitle(const AValue: string); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -230,6 +236,16 @@ type
     procedure AddHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction;
                                    AsLast: boolean = false);
     procedure RemoveHandlerOnSavedAll(const OnSaveAllEvent: TModalResultFunction);
+    procedure AddHandlerOnProjectOpened(
+                         const OnProjectOpenedEvent: TLazProjectChangedFunction;
+                         AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectOpened(
+                        const OnProjectOpenedEvent: TLazProjectChangedFunction);
+    procedure AddHandlerOnProjectClose(
+                          const OnProjectCloseEvent: TLazProjectChangedFunction;
+                          AsLast: boolean = false);
+    procedure RemoveHandlerOnProjectClose(
+                         const OnProjectCloseEvent: TLazProjectChangedFunction);
   end;
   
 var
@@ -275,6 +291,21 @@ begin
   i:=FLazarusIDEHandlers[HandlerType].Count;
   while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
     CurResult:=TModalResultFunction(FLazarusIDEHandlers[HandlerType][i])(Self);
+    if CurResult=mrAbort then exit(mrAbort);
+    if CurResult<>mrOk then Result:=mrCancel;
+  end;
+end;
+
+function TLazIDEInterface.DoCallProjectChangedHandler(
+  HandlerType: TLazarusIDEHandlerType; AProject: TLazProject): TModalResult;
+var
+  i: Integer;
+  CurResult: TModalResult;
+begin
+  Result:=mrOk;
+  i:=FLazarusIDEHandlers[HandlerType].Count;
+  while FLazarusIDEHandlers[HandlerType].NextDownIndex(i) do begin
+    CurResult:=TLazProjectChangedFunction(FLazarusIDEHandlers[HandlerType][i])(Self,AProject);
     if CurResult=mrAbort then exit(mrAbort);
     if CurResult<>mrOk then Result:=mrCancel;
   end;
@@ -333,6 +364,30 @@ procedure TLazIDEInterface.RemoveHandlerOnSavedAll(
   const OnSaveAllEvent: TModalResultFunction);
 begin
   RemoveHandler(lihtOnSavedAll,TMethod(OnSaveAllEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectOpened(
+  const OnProjectOpenedEvent: TLazProjectChangedFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnProjectOpened,TMethod(OnProjectOpenedEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectOpened(
+  const OnProjectOpenedEvent: TLazProjectChangedFunction);
+begin
+  RemoveHandler(lihtOnProjectOpened,TMethod(OnProjectOpenedEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnProjectClose(
+  const OnProjectCloseEvent: TLazProjectChangedFunction; AsLast: boolean);
+begin
+  AddHandler(lihtOnProjectClose,TMethod(OnProjectCloseEvent));
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnProjectClose(
+  const OnProjectCloseEvent: TLazProjectChangedFunction);
+begin
+  RemoveHandler(lihtOnProjectClose,TMethod(OnProjectCloseEvent));
 end;
 
 initialization

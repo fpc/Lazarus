@@ -7561,8 +7561,10 @@ begin
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
-var i:integer;
-Begin
+var
+  i:integer;
+  HandlerResult: TModalResult;
+begin
   DebugLn('TMainIDE.DoNewProject A');
 
   // init the descriptor (it can now ask the user for options)
@@ -7597,36 +7599,45 @@ Begin
   // create new project (TProject will automatically create the mainunit)
 
   Project1:=CreateProjectObject(ProjectDesc,ProjectDescriptorProgram);
-  Project1.BeginUpdate(true);
   try
-    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-    UpdateCaption;
-    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    Project1.BeginUpdate(true);
+    try
+      Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+      UpdateCaption;
+      if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
-    // add and load default required packages
-    PkgBoss.AddDefaultDependencies(Project1);
+      // add and load default required packages
+      PkgBoss.AddDefaultDependencies(Project1);
 
-    if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
-      debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
+      if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
+        debugln('TMainIDE.DoNewProject ProjectDesc.CreateStartFiles failed');
+      end;
+
+      // rebuild codetools defines
+      MainBuildBoss.RescanCompilerDefines(true,true);
+      // (i.e. remove old project specific things and create new)
+      IncreaseCompilerParseStamp;
+      Project1.DefineTemplates.AllChanged;
+      Project1.DefineTemplates.Active:=true;
+    finally
+      Project1.EndUpdate;
     end;
 
-    // rebuild codetools defines
-    MainBuildBoss.RescanCompilerDefines(true,true);
-    // (i.e. remove old project specific things and create new)
-    IncreaseCompilerParseStamp;
-    Project1.DefineTemplates.AllChanged;
-    Project1.DefineTemplates.Active:=true;
+    // set all modified to false
+    for i:=0 to Project1.UnitCount-1 do
+      Project1.Units[i].ClearModifieds;
+    Project1.Modified:=false;
+    Result:=mrOk;
   finally
-    Project1.EndUpdate;
+    // call handlers
+    HandlerResult:=DoCallProjectChangedHandler(lihtOnProjectOpened,Project1);
+    if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
+      HandlerResult:=mrCancel;
+    if (Result=mrOk) then
+      Result:=HandlerResult;
   end;
 
-  // set all modified to false
-  for i:=0 to Project1.UnitCount-1 do
-    Project1.Units[i].ClearModifieds;
-  Project1.Modified:=false;
-
   //DebugLn('TMainIDE.DoNewProject end ');
-  Result:=mrOk;
 end;
 
 function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
@@ -7788,6 +7799,11 @@ begin
     debugln('TMainIDE.DoCloseProject DebugBoss.DoStopProject failed');
     exit;
   end;
+
+  // call handlers
+  Result:=DoCallProjectChangedHandler(lihtOnProjectClose,Project1);
+  if Result=mrAbort then exit;
+
   // close all loaded files
   while SourceNotebook.Notebook<>nil do begin
     Result:=DoCloseEditorFile(SourceNotebook.Notebook.PageCount-1,
@@ -7817,6 +7833,7 @@ var
   LastDesigner: TDesigner;
   AnUnitInfo: TUnitInfo;
   FileReadable: Boolean;
+  HandlerResult: TModalResult;
 begin
   // close the old project
   if SomethingOfProjectIsModified then begin
@@ -8007,7 +8024,14 @@ begin
         end;
       end;
     end;
+    // call handlers
+    HandlerResult:=DoCallProjectChangedHandler(lihtOnProjectOpened,Project1);
+    if not (HandlerResult in [mrOk,mrCancel,mrAbort]) then
+      HandlerResult:=mrCancel;
+    if (Result=mrOk) then
+      Result:=HandlerResult;
   end;
+  if Result=mrAbort then exit;
   {$IFDEF IDE_VERBOSE}
   debugln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
   {$ENDIF}
