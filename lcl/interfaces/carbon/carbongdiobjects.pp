@@ -198,6 +198,9 @@ type
     constructor Create(AGlobal: Boolean); // create default pen
     constructor Create(ALogPen: TLogPen);
     procedure Apply(ADC: TCarbonContext; UseROP2: Boolean = True);
+    
+    property Width: Integer read FWidth;
+    property Style: LongWord read FStyle;
   end;
 
   { TCarbonBitmap }

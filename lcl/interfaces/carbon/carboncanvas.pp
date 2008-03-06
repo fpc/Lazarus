@@ -1042,11 +1042,21 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCarbonDeviceContext.LineTo(X, Y: Integer);
 begin
-  CGContextBeginPath(CGContext);
-  // add 0.5 to both coordinates for better rasterization
-  CGContextMoveToPoint(CGContext, PenPos.x + 0.5, PenPos.y + 0.5);
-  CGContextAddLineToPoint(CGContext, X + 0.5, Y + 0.5);
-  CGContextStrokePath(CGContext);
+  if CurrentPen.Width = 1 then
+  begin
+    CGContextSaveGState(CGContext);
+    ExcludeClipRect(X, Y, X + 1, Y + 1);
+  end;
+
+  try
+    CGContextBeginPath(CGContext);
+    // add 0.5 to both coordinates for better rasterization
+    CGContextMoveToPoint(CGContext, PenPos.x + 0.5, PenPos.y + 0.5);
+    CGContextAddLineToPoint(CGContext, X + 0.5, Y + 0.5);
+    CGContextStrokePath(CGContext);
+  finally
+    if CurrentPen.Width = 1 then CGContextRestoreGState(CGContext);
+  end;
   
   FPenPos.x := X;
   FPenPos.y := Y;
