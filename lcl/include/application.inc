@@ -854,9 +854,11 @@ var
   i: Integer;
 begin
   if Self=nil then exit;
-  for i:=ComponentCount-1 downto 0 do begin
-    //debugln('TApplication.DoBeforeFinalization ',DbgSName(Components[i]));
-    if i<ComponentCount then Components[i].Free;
+  for i := ComponentCount - 1 downto 0 do 
+  begin
+    // DebugLn('TApplication.DoBeforeFinalization ',DbgSName(Components[i]));
+    if i < ComponentCount then 
+      Components[i].Free;
   end;
 end;
 

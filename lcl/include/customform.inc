@@ -749,7 +749,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.PaintWindow(DC : Hdc);
 begin
-  // FCanvas.Lock;
+  // Canvas.Lock;
   try
     Canvas.Handle := DC;
     //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',DbgS(DC,8),'  ',DbgS(FCanvas.Handle,8));
@@ -759,7 +759,7 @@ begin
       Canvas.Handle := 0;
     end;
   finally
-    // FCanvas.Unlock;
+    // Canvas.Unlock;
   end;
 end;
 

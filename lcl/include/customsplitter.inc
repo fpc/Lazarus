@@ -761,7 +761,7 @@ begin
     BgPart := trBandNormal;
 
   BgDetails := ThemeServices.GetElementDetails(BgPart);
-  ThemeServices.DrawElement(Canvas.Handle, BgDetails, Arect, nil);
+  ThemeServices.DrawElement(Canvas.Handle, BgDetails, ARect, nil);
 
   if Beveled then
     ThemeServices.DrawEdge(Canvas.Handle, BgDetails, ARect, BDR_RAISEDOUTER,

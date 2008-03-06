@@ -154,7 +154,7 @@ begin
   ScreenInfo.PixelsPerInchX := GetDeviceCaps(DC, LOGPIXELSX);
   ScreenInfo.PixelsPerInchY := GetDeviceCaps(DC, LOGPIXELSY);
   ScreenInfo.ColorDepth := GetDeviceCaps(DC, BITSPIXEL);
-  ReleaseDC(Handle, DC);
+  Windows.ReleaseDC(Handle, DC);
 
   // Thread.Synchronize support
   WakeMainThread := @HandleWakeMainThread;

@@ -586,18 +586,18 @@ end;
   Generic function which calls the WindowProc if defined, otherwise the
   dispatcher
  ------------------------------------------------------------------------------}
-function DeliverMessage(Const Target: Pointer; Var Message): Integer;
+function DeliverMessage(const Target: Pointer; var Message): Integer;
 begin
-  If Target = Nil Then
+  if Target = nil then
   begin
     DebugLn('[DeliverMessage Target: Pointer] Nil');
     Exit;
   end;
-  If TObject(Target) Is TControl Then
+  if TObject(Target) is TControl Then
   begin
     TControl(Target).WinDowProc(TLMessage(Message));
-  End
-  Else
+  end
+  else
   begin
     TObject(Target).Dispatch(TLMessage(Message));
   end;
@@ -881,7 +881,7 @@ begin
     DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight;
-    ReleaseDC(Handle, DC);
+    Windows.ReleaseDC(Handle, DC);
     // add the left, right and bottom frame borders
     ORect.Left := 2;
     ORect.Right := -2;
@@ -1248,7 +1248,7 @@ var
   oldFontHandle: HFONT;
 begin
   winHandle := AWinControl.Handle;
-  canvasHandle := GetDC(winHandle);
+  canvasHandle := Windows.GetDC(winHandle);
   oldFontHandle := SelectObject(canvasHandle, Windows.SendMessage(winHandle, WM_GetFont, 0, 0));
   DeleteAmpersands(Text);
 
@@ -1260,7 +1260,7 @@ begin
     Height := textSize.cy;
   end;
   SelectObject(canvasHandle, oldFontHandle);
-  ReleaseDC(winHandle, canvasHandle);
+  Windows.ReleaseDC(winHandle, canvasHandle);
 end;
 
 function GetControlText(AHandle: HWND): string;
