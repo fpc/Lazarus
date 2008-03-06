@@ -41,27 +41,30 @@ uses
   ComponentEditors, LazarusIDEStrConsts, PropEdits;
 
 type
+
+  { TMainMenuEditorForm }
+
   TMainMenuEditorForm = class(TForm)
-  private
-    fDesignerMainMenu: TDesignerMainMenu;
-    fPanel: TPanel;
-    fMenu: TMenu;
-    fDesigner: TComponentEditorDesigner;
     List_menus: TListBox;
     Label_menus: TLabel;
+    MenuScrollBox: TScrollBox;
+    Panel: TPanel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
+    procedure List_menusClick(Sender: TObject);
+  private
+    fDesignerMainMenu: TDesignerMainMenu;
+    fMenu: TMenu;
+    fDesigner: TComponentEditorDesigner;
     procedure OnPersistentDeleting(APersistent: TPersistent);
     procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure CreateDesignerMenu;
     procedure UpdateListOfMenus;
   public
-    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
-    destructor Destroy; override;
-    procedure Paint; override;
-    procedure SelectMenuClick(Sender: TObject);
     procedure SetMenu(NewMenu: TMenu);
     property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu
                                                  write fDesignerMainMenu;
-    property Panel: TPanel read FPanel write FPanel;
   end;
 
 { TMenuComponentEditor
@@ -106,13 +109,64 @@ procedure ShowMenuEditor(AMenu: TMenu);
 begin
   if AMenu=nil then RaiseGDBException('ShowMenuEditor AMenu=nil');
   if MainMenuEditorForm=nil then begin
-    MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,AMenu);
+    MainMenuEditorForm:=TMainMenuEditorForm.Create(Application);
   end;
   MainMenuEditorForm.SetMenu(AMenu);
   MainMenuEditorForm.ShowOnTop;
 end;
 
 { TMainMenuEditorForm }
+
+procedure TMainMenuEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption:=lisMenuEditorMenuEditor;
+  Panel.Height:=Panel.Parent.Height;
+  Label_menus.Caption:=lisMenuEditorSelectMenu;
+
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
+end;
+
+procedure TMainMenuEditorForm.FormDestroy(Sender: TObject);
+begin
+  if GlobalDesignHook<>nil then
+    GlobalDesignHook.RemoveAllHandlersForObject(Self);
+end;
+
+procedure TMainMenuEditorForm.FormPaint(Sender: TObject);
+var
+  temp_coord: TRect;
+begin
+  temp_coord:=DesignerMainMenu.GetMaxCoordinates(DesignerMainMenu.Root, 0, 0);
+  Panel.Width:=temp_coord.Right + 10;
+  Panel.Height:=temp_coord.Bottom + 10;
+  //writeln('Panel Width: ', Panel.width, ' Panel Height: ', Panel.Height);
+  DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
+end;
+
+procedure TMainMenuEditorForm.List_menusClick(Sender: TObject);
+var
+  i,j: Integer;
+  NewMenu: TMenu;
+  CurComponent: TComponent;
+begin
+  for i:=0 to List_menus.Items.Count - 1 do
+  begin
+    if (List_menus.Selected[i] = true) then
+    begin
+      for j:=0 to fDesigner.Form.ComponentCount -1 do
+      begin
+        CurComponent:=fDesigner.Form.Components[j];
+        if (List_menus.Items[i] = CurComponent.Name) and (CurComponent is TMenu)
+        then begin
+          NewMenu:=TMenu(CurComponent);
+          SetMenu(NewMenu);
+          exit;
+        end;
+      end;
+    end;
+  end;
+end;
 
 procedure TMainMenuEditorForm.OnPersistentDeleting(APersistent: TPersistent);
 var
@@ -178,105 +232,6 @@ begin
   end;
 end;
 
-constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent;
-  aMenu: TMenu);
-var
-  Cmp: TPanel;
-  Cmp2: TScrollBox;
-begin
-  inherited Create(AOwner);
-  
-  Caption:=lisMenuEditorMenuEditor;
-  width:=600;
-  height:=220;
-  position:=poScreenCenter;
-  
-  Cmp2:=TScrollBox.Create(self);
-  with Cmp2 do
-  begin
-    Parent:=self;
-    Left:=0;
-    Top:=0;
-    Width:=400;
-    Height:=Parent.Height;
-    Autoscroll:=true;
-    Anchors := [aktop, akleft, akright,akbottom];
-  end;
-  
-  Cmp:=TPanel.Create(self);
-  with Cmp do
-  begin
-   Parent:=Cmp2;
-   Left:=0;
-   Top:=0;
-   Width:=200;
-   Height:=Parent.Height;
-   Bevelouter:=bvnone;
-  end;
-  
-  Label_menus:=TLabel.Create(self);
-  with Label_menus do
-  begin
-    Parent:=self;
-    Left:=410;
-    Top:=10;
-    Width:=180;
-    Height:=20;
-    Text:=lisMenuEditorSelectMenu;
-    Anchors := [aktop, akright];
-  end;
-  
-  List_menus:=TListBox.Create(self);
-  with List_menus do
-  begin
-    Parent:=self;
-    Left:=410;
-    Top:=30;
-    Width:=180;
-    Height:=180;
-    OnClick:=@SelectMenuClick;
-    Anchors := [akright, aktop, akbottom];
-  end;
-  
-  Panel:=Cmp;
-
-  SetMenu(aMenu);
-
-  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
-  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
-end;
-
-destructor TMainMenuEditorForm.Destroy;
-begin
-  if GlobalDesignHook<>nil then
-    GlobalDesignHook.RemoveAllHandlersForObject(Self);
-  inherited Destroy;
-end;
-
-procedure TMainMenuEditorForm.SelectMenuClick(Sender: TObject);
-var
-  i,j: Integer;
-  NewMenu: TMenu;
-  CurComponent: TComponent;
-begin
-  for i:=0 to List_menus.Items.Count - 1 do
-  begin
-    if (List_menus.Selected[i] = true) then
-    begin
-      for j:=0 to fDesigner.Form.ComponentCount -1 do
-      begin
-        CurComponent:=fDesigner.Form.Components[j];
-        if (List_menus.Items[i] = CurComponent.Name) and (CurComponent is TMenu)
-        then begin
-          NewMenu:=TMenu(CurComponent);
-          SetMenu(NewMenu);
-          exit;
-        end;
-      end;
-    end;
-  end;
-end;
-
 procedure TMainMenuEditorForm.SetMenu(NewMenu: TMenu);
 begin
   if NewMenu <> fMenu then
@@ -288,18 +243,6 @@ begin
     UpdateListOfMenus;
     CreateDesignerMenu;
   end;
-end;
-
-procedure TMainMenuEditorForm.Paint;
-var
-  temp_coord: TRect;
-begin
-  inherited Paint;
-  temp_coord:=DesignerMainMenu.GetMaxCoordinates(DesignerMainMenu.Root, 0, 0);
-  Panel.Width:=temp_coord.Right + 10;
-  Panel.Height:=temp_coord.Bottom + 10;
-  //writeln('Panel Width: ', Panel.width, ' Panel Height: ', Panel.Height);
-  DesignerMainMenu.Draw(DesignerMainMenu.Root, Panel, Panel);
 end;
 
 { TMainMenuComponentEditor}
@@ -370,6 +313,8 @@ begin
 end;
 
 initialization
+  {$I menueditorform.lrs}
+
   InitMenuEditorGlobals;
 
 end.
