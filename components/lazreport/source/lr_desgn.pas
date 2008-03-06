@@ -3058,8 +3058,8 @@ begin
           SelectionChanged;
         end;
       end;
+      Key := 0;
     end; // if (StepX <> 0) or (StepY <> 0)
-    Key := 0;
   end; // if SelNum > 0 then
 end;
 
