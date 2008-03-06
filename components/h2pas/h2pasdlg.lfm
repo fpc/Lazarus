@@ -14,7 +14,7 @@ object H2PasDialog: TH2PasDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
-  Position = poDesktopCenter
+  Position = poScreenCenter
   object MainPageControl: TPageControl
     AnchorSideBottom.Control = OpenSettingsButton
     Height = 502

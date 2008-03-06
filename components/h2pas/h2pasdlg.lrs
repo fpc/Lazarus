@@ -1,13 +1,11 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TH2PasDialog','FORMDATA',[
   'TPF0'#12'TH2PasDialog'#11'H2PasDialog'#4'Left'#3#245#0#6'Height'#3'%'#2#3'To'
   +'p'#3#205#0#5'Width'#3#17#3#18'HorzScrollBar.Page'#3#16#3#18'VertScrollBar.P'
   +'age'#3'$'#2#13'ActiveControl'#7#13'ConvertButton'#7'Caption'#6#11'H2PasDial'
   +'og'#12'ClientHeight'#3'%'#2#11'ClientWidth'#3#17#3#10'KeyPreview'#9#12'OnCl'
   +'oseQuery'#7#14'FormCloseQuery'#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7
-  +#11'FormDestroy'#9'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#15'poDesktopCe'
-  +'nter'#0#12'TPageControl'#15'MainPageControl'#24'AnchorSideBottom.Control'#7
+  +#11'FormDestroy'#9'OnKeyDown'#7#11'FormKeyDown'#8'Position'#7#14'poScreenCen'
+  +'ter'#0#12'TPageControl'#15'MainPageControl'#24'AnchorSideBottom.Control'#7
   +#18'OpenSettingsButton'#6'Height'#3#246#1#5'Width'#3#17#3#10'ActivePage'#7#13
   +'FilesTabSheet'#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRig'
   +'ht'#8'akBottom'#0#8'TabIndex'#2#0#8'TabOrder'#2#4#0#9'TTabSheet'#13'FilesTa'
