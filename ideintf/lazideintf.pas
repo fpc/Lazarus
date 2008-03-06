@@ -287,7 +287,11 @@ begin
 end;
 
 destructor TLazIDEInterface.Destroy;
+var
+  HandlerType: TLazarusIDEHandlerType;
 begin
+  for HandlerType := Low(TLazarusIDEHandlerType) to High(TLazarusIDEHandlerType) do
+    FreeAndNil(FLazarusIDEHandlers[HandlerType]);
   inherited Destroy;
   LazarusIDE:=nil;
 end;

@@ -1166,8 +1166,7 @@ begin
   Clear;
   FItems.Free;
   for AHandlerType := Low(TIDEMenuSectionHandlerType) to High(TIDEMenuSectionHandlerType) do
-    if FSectionHandlers[AHandlerType] <> nil then
-      FreeAndNil(FSectionHandlers[AHandlerType]);
+    FreeAndNil(FSectionHandlers[AHandlerType]);
   inherited Destroy;
 end;
 
