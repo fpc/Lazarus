@@ -43,19 +43,19 @@ cleanlaz: clean
 cleanall: clean bigideclean
 
 bigideclean:
-        $(MAKE) -C rtticontrols cleanall
+        $(MAKE) -C rtticontrols clean
         $(MAKE) -C printers cleanall
-        $(MAKE) -C printers/design cleanall
-        $(MAKE) -C cgi cleanall
-        $(MAKE) -C cgi/ide cleanall
-        $(MAKE) -C turbopower_ipro cleanall
-        $(MAKE) -C fpcunit cleanall
-        $(MAKE) -C fpcunit/ide cleanall
-        $(MAKE) -C projecttemplates cleanall
-        $(MAKE) -C memds cleanall
-        $(MAKE) -C sdf cleanall
-        $(MAKE) -C tachart cleanall
+        $(MAKE) -C printers/design clean
+        $(MAKE) -C cgi clean
+        $(MAKE) -C cgi/ide clean
+        $(MAKE) -C turbopower_ipro clean
+        $(MAKE) -C fpcunit clean
+        $(MAKE) -C fpcunit/ide clean
+        $(MAKE) -C projecttemplates clean
+        $(MAKE) -C memds clean
+        $(MAKE) -C sdf clean
+        $(MAKE) -C tachart clean
 ifneq ($(OS_TARGET),darwin)
-        $(MAKE) -C tdbf cleanall
-        $(MAKE) -C sqldb cleanall
+        $(MAKE) -C tdbf clean
+        $(MAKE) -C sqldb clean
 endif

@@ -41,5 +41,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/cgilaz$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) cgilaz$(PPUEXT)
-
-cleanall: clean

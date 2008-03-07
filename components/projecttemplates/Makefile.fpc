@@ -41,5 +41,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/projtemplates$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) projtemplates$(PPUEXT)
-
-cleanall: clean

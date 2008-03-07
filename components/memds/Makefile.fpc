@@ -41,5 +41,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/memdslaz$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) memdslaz$(PPUEXT)
-
-cleanall: clean

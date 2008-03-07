@@ -41,5 +41,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/dbflaz$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) dbflaz$(PPUEXT)
-
-cleanall: clean
