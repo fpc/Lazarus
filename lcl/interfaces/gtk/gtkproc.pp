@@ -189,8 +189,6 @@ function gtkconfigureevent( widget: PGtkWidget; event: PgdkEventConfigure;
 function gtkreleasedCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkInsertText(widget: PGtkWidget; char: pChar; NewTextLength:
                      Integer; Position: pgint; data: gPointer): GBoolean; cdecl;
-function gtkDeleteText(widget: PGtkWidget; Startpos, EndPos: Integer;
-                       data: gPointer): GBoolean; cdecl;
 function gtkSetEditable( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkMoveWord( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkMovePage( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;

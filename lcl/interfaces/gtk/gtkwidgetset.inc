@@ -3276,16 +3276,6 @@ begin
       ConnectSenderSignal(gObject, 'check-resize', @gtkresizeCB);
     end;
 
-    LM_INSERTTEXT :
-    begin
-      ConnectSenderSignal(gCore, 'insert-text', @gtkinserttext);
-    end;
-
-    LM_DELETETEXT :
-    begin
-      ConnectSenderSignal(gObject, 'delete-text', @gtkdeletetext);
-    end;
-
     LM_SETEDITABLE :
     begin
       ConnectSenderSignal(gObject, 'set-editable', @gtkseteditable);

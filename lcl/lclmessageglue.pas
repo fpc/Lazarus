@@ -55,8 +55,6 @@ function LCLSendPressedMsg(const Target: TControl): PtrInt;
 function LCLSendReleasedMsg(const Target: TControl): PtrInt;
 function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
 function LCLSendMouseLeaveMsg(const Target: TControl): PtrInt;
-function LCLSendInsertTextMsg(const Target: TControl): PtrInt;
-function LCLSendDeleteTextMsg(const Target: TControl): PtrInt;
 function LCLSendSetEditableMsg(const Target: TControl): PtrInt;
 function LCLSendMoveWordMsg(const Target: TControl): PtrInt;
 function LCLSendMovePageMsg(const Target: TControl): PtrInt;
@@ -596,41 +594,6 @@ begin
   Result := SendSimpleMessage(Target, CM_MOUSELEAVE);
 end;
 
-{******************************************************************************
- *                                                                            *
- *  LCLSendInsertTextMsg                                                      *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_INSERTTEXT     *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendInsertTextMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_INSERTTEXT);
-end;
-
-{******************************************************************************
- *                                                                            *
- *  LCLSendDeleteTextMsg                                                      *
- *                                                                            *
- *  Returns     : 0 to accept the message, non-zero to reject the message     *
- *                                                                            *
- *  Params                                                                    *
- *                                                                            *
- *  Target      : The Control that will recieve the message LM_DELETETEXT     *
- *                                                                            *
- *  Not used by the LCL                                                       *
- *                                                                            *
- ******************************************************************************}
-function LCLSendDeleteTextMsg(const Target: TControl): PtrInt;
-begin
-  Result := SendSimpleMessage(Target, LM_DELETETEXT);
-end;
 
 {******************************************************************************
  *                                                                            *

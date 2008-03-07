@@ -61,8 +61,6 @@ const
   LM_ENTER          = LM_LCL + 11;
   LM_LEAVE          = LM_LCL + 12;
   LM_CHECKRESIZE    = LM_LCL + 14;
-  LM_INSERTTEXT     = LM_LCL + 16;
-  LM_DELETETEXT     = LM_LCL + 17;
   LM_SETEDITABLE    = LM_LCL + 18;
   LM_MOVEWORD       = LM_LCL + 19;
   LM_MOVEPAGE       = LM_LCL + 20;
@@ -863,8 +861,6 @@ begin
   LM_ENTER          :Result:='LM_ENTER';
   LM_LEAVE          :Result:='LM_LEAVE';
   LM_CHECKRESIZE    :Result:='LM_CHECKRESIZE';
-  LM_INSERTTEXT     :Result:='LM_INSERTTEXT';
-  LM_DELETETEXT     :Result:='LM_DELETETEXT';
   LM_SETEDITABLE    :Result:='LM_SETEDITABLE';
   LM_MOVEWORD       :Result:='LM_MOVEWORD';
   LM_MOVEPAGE       :Result:='LM_MOVEPAGE';

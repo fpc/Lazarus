@@ -151,18 +151,7 @@ begin
     and ((AWinControl = nil) or not (csOpaque in AWinControl.ControlStyle));
 end;
 
-//TODO: added temporarily to fix compilation,
-//should probably removed soon, as the LCL does not listen to it.
 type
-  PLMInsertText = ^TLMInsertText;
-  TLMInsertText = record
-    Msg : Cardinal;
-    NewText : String;
-    Length : Integer;
-    Position : Integer;
-    UserData : Pointer;
-  end;                 
-  
   TCustomListViewAccess = class(TCustomListView)
   end;
 
@@ -205,7 +194,6 @@ Var
   Flags: dword;
   ChildWindowInfo: PWindowInfo;
   
-  LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
   LMChar: TLMChar; // used by WM_CHAR
@@ -1013,22 +1001,6 @@ begin
     WM_CAPTURECHANGED:
     begin
       LMessage.Msg := LM_CAPTURECHANGED;
-    end;
-    CB_DELETESTRING, LB_DELETESTRING:
-    begin
-      LMessage.Msg := LM_DELETETEXT;
-    end;
-    CB_INSERTSTRING, LB_INSERTSTRING:
-    begin
-      PLMsg:=@LMInsertText;
-      with LMInsertText Do
-      begin
-        Msg := LM_INSERTTEXT;
-        Position := WParam;
-        NewText := PChar(LParam);
-        Length := System.Length(NewText);
-//        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
-      end;
     end;
     WM_CHAR:
     begin

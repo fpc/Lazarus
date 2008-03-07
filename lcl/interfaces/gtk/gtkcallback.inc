@@ -2097,17 +2097,6 @@ begin
       g_signal_stop_emission_by_name(PGtkObject(widget), 'insert_text');
 end;
 
-function gtkDeleteText( widget: PGtkWidget; Startpos, EndPos : Integer;
-  data: gPointer) : GBoolean; cdecl;
-var
-  Mess : TLMessage;
-begin
-  EventTrace('Delete Text', data);
-  if (StartPos=0) or (EndPos=0) or (Widget=nil) then ;
-  Mess.msg := LM_DELETETEXT;
-  Result:= DeliverMessage(Data, Mess) = 0;
-end;
-
 function gtkSetEditable( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
