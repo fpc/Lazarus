@@ -372,6 +372,8 @@ begin
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
+var
+  LE: string[2];
 begin
   //writeln('TCmdLineDebugger.SendCmdLn "',ACommand,'"');
   if DebugProcessRunning
@@ -379,11 +381,10 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-{$ifdef MSWindows}
+    // store LineEnding in local variable, so the same statement can be used
+    // for windows and *nix (1 or 2 character line ending)
+    LE := LineEnding;
     FDbgProcess.Input.Write(LineEnding[1], Length(LineEnding));
-{$else}
-    FDbgProcess.Input.Write(LineEnding, Length(LineEnding));
-{$endif}
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
