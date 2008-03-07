@@ -120,13 +120,13 @@ begin
 
   if Widget <> nil then
   begin
-    P := Widget.GetMousePos;
-    if (LastMousePos.X = P.X) and (LastMousePos.Y = P.Y) then Exit;
-    LastMousePos := P;
-
     if Widget is TCarbonControl then
       if cceDoAction in (Widget as TCarbonControl).GetValidEvents then
         (Widget as TCarbonControl).DoAction(APartCode);
+  
+    P := Widget.GetMousePos;
+    if (LastMousePos.X = P.X) and (LastMousePos.Y = P.Y) then Exit;
+    LastMousePos := P;
 
     FillChar(Msg, SizeOf(TLMMouseMove), 0);
     Msg.Msg := LM_MOUSEMOVE;
