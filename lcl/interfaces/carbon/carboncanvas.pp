@@ -116,6 +116,7 @@ type
     procedure ExcludeClipRect(Left, Top, Right, Bottom: Integer);
     function ExtTextOut(X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
     procedure FillRect(Rect: TRect; Brush: TCarbonBrush);
+    procedure Frame(X1, Y1, X2, Y2: Integer);
     procedure Frame3D(var ARect: TRect; const FrameWidth: integer; const Style: TBevelCut);
     function GetClipRect: TRect;
     function GetTextExtentPoint(Str: PChar; Count: Integer; var Size: TSize): Boolean;
@@ -853,6 +854,25 @@ begin
   Brush.Apply(Self, False); // do not use ROP2
   try
     CGContextFillRect(CGContext, GetCGRectSorted(Rect.Left, Rect.Top, Rect.Right, Rect.Bottom));
+  finally
+    CurrentBrush.Apply(Self); // apply current brush
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonDeviceContext.Frame
+  Params:  X1 - X-coordinate of bounding rectangle's upper-left corner
+           Y1 - Y-coordinate of bounding rectangle's upper-left corner
+           X2 - X-coordinate of bounding rectangle's lower-right corner
+           Y2 - Y-coordinate of bounding rectangle's lower-right corner
+
+  Draws a border in Carbon native style
+ ------------------------------------------------------------------------------}
+procedure TCarbonDeviceContext.Frame(X1, Y1, X2, Y2: Integer);
+begin
+  StockNullBrush.Apply(Self, False); // do not use ROP2
+  try
+    Rectangle(X1, Y1, X2 + 1, Y2 + 1);
   finally
     CurrentBrush.Apply(Self); // apply current brush
   end;

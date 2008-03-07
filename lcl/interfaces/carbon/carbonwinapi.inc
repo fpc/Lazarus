@@ -916,7 +916,9 @@ begin
   
   if not CheckDC(DC, 'Frame') then Exit;
   
-  Result := Integer(Rectangle(DC, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom));
+  TCarbonDeviceContext(DC).Frame(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+  
+  Result := 1;
 end;
 
 {------------------------------------------------------------------------------
@@ -1607,15 +1609,13 @@ begin
   //COLOR_GRADIENTINACTIVECAPTION, COLOR_INACTIVECAPTION:
   COLOR_MENU:
     R := GetThemeBrushAsColor(kThemeBrushMenuBackground, Depth, True, C);
-  //COLOR_WINDOWFRAME:
   COLOR_MENUTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
+  COLOR_WINDOWFRAME, COLOR_ACTIVEBORDER, COLOR_INACTIVEBORDER,
   COLOR_INFOTEXT, COLOR_WINDOWTEXT:
     R := GetThemeTextColor(kThemeTextColorMenuItemActive, Depth, True, C);
   COLOR_CAPTIONTEXT:
     R := GetThemeTextColor(kThemeTextColorDocumentWindowTitleActive, Depth, True, C);
-  //COLOR_ACTIVEBORDER:
-  //COLOR_INACTIVEBORDER:
   COLOR_APPWORKSPACE:
     R := GetThemeBrushAsColor(kThemeBrushUtilityWindowBackgroundActive, Depth, True, C);
   COLOR_HIGHLIGHT:
@@ -1639,7 +1639,12 @@ begin
   COLOR_3DLIGHT:
     R := GetThemeBrushAsColor(kThemeBrushButtonActiveLightShadow, Depth, True, C);
   //COLOR_HOTLIGHT:
-  COLOR_BACKGROUND, COLOR_INFOBK,
+  COLOR_INFOBK:
+    begin
+      C := ColorToRGBColor(RGB(249, 252, 201));
+      R := noErr;
+    end;
+  COLOR_BACKGROUND,
   COLOR_WINDOW, COLOR_FORM:
     R := GetThemeBrushAsColor(kThemeBrushDocumentWindowBackground, Depth, True, C);
   else

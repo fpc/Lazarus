@@ -1015,7 +1015,7 @@ end;
  ------------------------------------------------------------------------------}
 function RGBColorToColor(const AColor: RGBColor): TColor;
 begin
-  Result := RGBToColor(AColor.Red shr 8, AColor.Green shr 8, AColor.Blue shr 8);
+  Result := RGBToColor((AColor.Red shr 8) and $FF, (AColor.Green shr 8) and $FF, (AColor.Blue shr 8) and $FF);
 end;
 
 {------------------------------------------------------------------------------
