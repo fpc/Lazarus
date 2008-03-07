@@ -133,9 +133,8 @@ begin
     Msg.XPos := P.X;
     Msg.YPos := P.Y;
     Msg.Keys := GetCarbonMsgKeyState;
-    DeliverMessage(Widget.LCLObject, Msg);
-    
     NotifyApplicationUserInput(Msg.Msg);
+    DeliverMessage(Widget.LCLObject, Msg);
   end;
 end;
 

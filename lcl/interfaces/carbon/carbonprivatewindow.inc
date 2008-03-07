@@ -285,6 +285,7 @@ begin
   end;
   
   // Msg is set in the Appropriate HandleMousexxx procedure
+  NotifyApplicationUserInput(Msg.Message.Msg);
   if DeliverMessage(Widget.LCLObject, Msg) = 0 then
   begin
     Result := EventNotHandledErr //CallNextEventHandler(ANextHandler, AEvent);
@@ -327,8 +328,6 @@ begin
       end;
     end;
   end;
-    
-  NotifyApplicationUserInput(Msg.Message.Msg);
 end;
 
 {------------------------------------------------------------------------------
