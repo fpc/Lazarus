@@ -2426,6 +2426,9 @@ begin
   debugln('TLazPackageGraph.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   {$ENDIF}
   NeedBuildAllFlag:=false;
+  
+  if APackage.AutoUpdate=pupManually then exit(mrNo);
+  
   if (APackage.LastCompilerFilename<>CompilerFilename)
   or (APackage.LastCompilerParams<>CompilerParams)
   or ((APackage.LastCompilerFileDate>0)
