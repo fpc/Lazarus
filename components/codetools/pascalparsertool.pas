@@ -3819,6 +3819,8 @@ procedure TPascalParserTool.ExtractNextAtom(AddAtom: boolean;
 var
   LastAtomEndPos: integer;
   LastStreamPos: TFPCStreamSeekType;
+const
+  space: char = ' ';
 begin
   LastStreamPos:=ExtractMemStream.Position;
   if LastAtoms.Count>0 then begin
@@ -3840,7 +3842,7 @@ begin
       or ((CurPos.StartPos<=SrcLen) and (IsIdentStartChar[Src[CurPos.StartPos]])
           and ExtractStreamEndIsIdentChar))
       then begin
-        ExtractMemStream.Write(' ',1);
+        ExtractMemStream.Write(space,1);
         LastStreamPos:=ExtractMemStream.Position;
       end;
     end;

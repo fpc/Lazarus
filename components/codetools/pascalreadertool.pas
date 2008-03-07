@@ -345,6 +345,8 @@ var
   IsProcedure: Boolean;
   IsFunction: Boolean;
   IsOperator: Boolean;
+const
+  SemiColon : char = ';';
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
@@ -451,7 +453,7 @@ begin
           ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
                           Attr);
           if not (phpWithProcModifiers in Attr) then
-            ExtractMemStream.Write(';',1);
+            ExtractMemStream.Write(SemiColon,1);
         end
         else if (CurPos.Flag=cafEdgedBracketOpen) then begin
           ReadTilBracketClose(false);

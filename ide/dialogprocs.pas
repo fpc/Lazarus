@@ -425,7 +425,8 @@ begin
       fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
     try
       fs.Position:=fs.Size;
-      fs.Write(' ',1);
+      c := ' ';
+      fs.Write(c,1);
     finally
       fs.Free;
     end;
