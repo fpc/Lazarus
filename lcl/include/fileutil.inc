@@ -461,7 +461,9 @@ begin
         NewLine:=false;
         for i:=1 to length(Buf) do begin
           case Buf[i] of
-          #0..#8,#11..#12,#14..#31: exit;
+          // #10,#13: new line
+          // #12: form feed
+          #0..#8,#11,#14..#31: exit;
           #10,#13: NewLine:=true;
           end;
         end;
