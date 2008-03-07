@@ -384,7 +384,7 @@ begin
     // store LineEnding in local variable, so the same statement can be used
     // for windows and *nix (1 or 2 character line ending)
     LE := LineEnding;
-    FDbgProcess.Input.Write(LineEnding[1], Length(LineEnding));
+    FDbgProcess.Input.Write(LE, Length(LE));
   end
   else begin
     DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
