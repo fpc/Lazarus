@@ -253,7 +253,7 @@ resourcestring
   lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewCodeBrowser = 'Code Browser';
-  lisMenuViewIssueBrowser = 'Issue Browser';
+  lisMenuViewRestrictionBrowser = 'Restriction Browser';
   lisMenuViewComponents = '&Components';
   lisMenuJumpTo = 'Jump to';
   lisMenuViewUnits = 'Units...';
@@ -907,8 +907,6 @@ resourcestring
   dlgEdFiles = 'Editor files';
   dlgEnvProject = 'Project';
   lisCodeBrowser = 'Code browser';
-  lisIssueBrowser = 'Issue browser';
-  lisFilterIssues = 'Filter issues';
   dlgIntvInSec = 'Interval in secs';
   dlgDesktopFiles = 'Desktop files';
   dlgSaveDFile = 'Save desktop settings to file';
@@ -1831,7 +1829,7 @@ resourcestring
   srkmecViewUnitInfo              = 'View unit information';
   srkmecViewAnchorEditor          = 'View anchor editor';
   srkmecToggleCodeBrowser         = 'View code browser';
-  srkmecToggleIssueBrowser        = 'View issue browser';
+  srkmecToggleRestrictionBrowser  = 'View restriction browser';
   srkmecToggleCompPalette         = 'View component palette';
   srkmecToggleIDESpeedBtns        = 'View IDE speed buttons';
 

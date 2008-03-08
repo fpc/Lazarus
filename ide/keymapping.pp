@@ -1429,7 +1429,7 @@ begin
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
-    ecToggleIssueBrowser      : Result:= srkmecToggleIssueBrowser;
+    ecToggleIssueBrowser      : Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;

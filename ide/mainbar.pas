@@ -184,7 +184,7 @@ type
         itmViewCodeExplorer: TIDEMenuCommand;
         itmViewFPDocEditor: TIDEMenuCommand;
         itmViewCodeBrowser: TIDEMenuCommand;
-        itmViewIssueBrowser: TIDEMenuCommand;
+        itmViewRestrictionBrowser: TIDEMenuCommand;
         itmViewComponents: TIDEMenuCommand;
       //itmViewUnitWindows: TIDEMenuSection;
         itmViewUnits: TIDEMenuCommand;

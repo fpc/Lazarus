@@ -73,10 +73,10 @@ begin
   FIssueList := GetIssueList;
   
   Name := NonModalIDEWindowNames[mniwIssueBrowser];
-  Caption := lisIssueBrowser;
+  Caption := lisMenuViewRestrictionBrowser;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   
-  IssueFilterGroupBox.Caption := lisFilterIssues;
+  IssueFilterGroupBox.Caption := lisFilter;
   NameLabel.Caption := lisCodeToolsDefsName;
   IssueTreeView.Images := IDEImages.Images_16;
   

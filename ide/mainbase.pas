@@ -511,7 +511,7 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
     CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser);
-    CreateMenuItem(ParentMI,itmViewIssueBrowser,'itmViewIssueBrowser',lisMenuViewIssueBrowser);
+    CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser);
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');
@@ -876,7 +876,7 @@ begin
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
     itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
-    itmViewIssueBrowser.Command:=GetCommand(ecToggleIssueBrowser);
+    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleIssueBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);

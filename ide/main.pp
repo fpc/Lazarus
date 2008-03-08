@@ -237,7 +237,7 @@ type
     procedure mnuViewCodeExplorerClick(Sender: TObject);
     procedure mnuViewCodeBrowserClick(Sender: TObject);
     procedure mnuViewComponentsClick(Sender: TObject);
-    procedure mnuViewIssueBrowserClick(Sender: TObject);
+    procedure mnuViewRestrictionBrowserClick(Sender: TObject);
     procedure mnuViewMessagesClick(Sender: TObject);
     procedure mnuViewSearchResultsClick(Sender: TObject);
     procedure mnuToggleFormUnitClicked(Sender: TObject);
@@ -689,7 +689,7 @@ type
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
-    procedure DoShowIssueBrowser(const IssueName: String = '');
+    procedure DoShowRestrictionBrowser(const IssueName: String = '');
     procedure DoShowComponentList;
     procedure DoShowFPDocEditor;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -1306,16 +1306,16 @@ begin
   if ObjectInspector1.GetActivePropertyRow = nil then
   begin
     if C <> nil then
-      DoShowIssueBrowser(C.ClassName)
+      DoShowRestrictionBrowser(C.ClassName)
     else
-      DoShowIssueBrowser;
+      DoShowRestrictionBrowser;
   end
   else
   begin
     if C <> nil then
-      DoShowIssueBrowser(C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
+      DoShowRestrictionBrowser(C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
     else
-      DoShowIssueBrowser;
+      DoShowRestrictionBrowser;
   end;
 end;
 
@@ -2129,7 +2129,7 @@ begin
     itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
     itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
     itmViewCodeBrowser.OnClick := @mnuViewCodeBrowserClick;
-    itmViewIssueBrowser.OnClick := @mnuViewIssueBrowserClick;
+    itmViewRestrictionBrowser.OnClick := @mnuViewRestrictionBrowserClick;
     itmViewComponents.OnClick := @mnuViewComponentsClick;
     itmViewFPDocEditor.OnClick := @mnuViewFPDocEditorClicked;
     itmViewUnits.OnClick := @mnuViewUnitsClicked;
@@ -2660,7 +2660,7 @@ begin
     DoShowCodeBrowser;
 
   ecToggleIssueBrowser:
-    DoShowIssueBrowser;
+    DoShowRestrictionBrowser;
 
   ecViewComponents:
     DoShowComponentList;
@@ -3190,9 +3190,9 @@ begin
   DoShowComponentList;
 end;
 
-procedure TMainIDE.mnuViewIssueBrowserClick(Sender: TObject);
+procedure TMainIDE.mnuViewRestrictionBrowserClick(Sender: TObject);
 begin
-  DoShowIssueBrowser;
+  DoShowRestrictionBrowser;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -7283,7 +7283,7 @@ begin
   CodeBrowserView.ShowOnTop;
 end;
 
-procedure TMainIDE.DoShowIssueBrowser(const IssueName: String);
+procedure TMainIDE.DoShowRestrictionBrowser(const IssueName: String);
 begin
   if RestrictionBrowserView = nil then
     RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
