@@ -165,7 +165,8 @@ procedure TSizeConstraints.SetMaxWidth(Value: TConstraintSize);
 begin
   if Value <> FMaxWidth then begin
     FMaxWidth:= Value;
-    if (FMinWidth > 0) and (FMaxWidth < FMinWidth) then FMinWidth:= FMaxWidth;
+    if (FMinWidth > 0) and (FMaxWidth>0) and (FMaxWidth < FMinWidth) then
+      FMinWidth:= FMaxWidth;
     Change;
   end;
 end;
@@ -181,7 +182,8 @@ procedure TSizeConstraints.SetMaxHeight(Value: TConstraintSize);
 begin
   if Value <> FMaxHeight then begin
     FMaxHeight:= Value;
-    if (FMinHeight > 0) and (FMaxHeight < FMinHeight) then FMinHeight:= FMaxHeight;
+    if (FMinHeight > 0) and (FMaxHeight>0) and (FMaxHeight < FMinHeight) then
+      FMinHeight:= FMaxHeight;
     Change;
   end;
 end;
