@@ -2487,6 +2487,7 @@ images/menu/menu_build_all.png -text svneol=unset#image/png
 images/menu/menu_build_clean.png -text svneol=unset#image/png
 images/menu/menu_build_file.png -text svneol=unset#image/png
 images/menu/menu_build_lazarus.png -text svneol=unset#image/png
+images/menu/menu_build_run_file.png -text
 images/menu/menu_clean.png -text svneol=unset#image/png
 images/menu/menu_close.png -text svneol=unset#image/png
 images/menu/menu_close_all.png -text svneol=unset#image/png
