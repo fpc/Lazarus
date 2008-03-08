@@ -96,16 +96,16 @@ msgstr ""
 msgid "Favorites"
 msgstr ""
 
-#: objinspstrconsts:oisissues
-msgid "Issues"
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
 msgstr ""
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
 msgstr ""
 
 #: objinspstrconsts:oissettodefault
@@ -120,8 +120,8 @@ msgstr ""
 msgid "Add to Favorites"
 msgstr ""
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:oisremovefromfavorites

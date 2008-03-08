@@ -265,13 +265,13 @@ msgstr "Выбор цвета"
 msgid "Column Editor"
 msgstr "Редактор столбцов"
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr "Нюансы компонента: "
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Имя компонента %s%s%s не является корректным идентификатором"
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -473,9 +473,9 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Выбор шрифта"
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
-msgstr "Нюансы библиотеки виджетов в целом: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
+msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -536,10 +536,6 @@ msgstr "Неверное численное значение"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Неверное значение свойства"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr "Нюансы"
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -749,6 +745,10 @@ msgstr "Обновить"
 msgid "Remove from Favorites"
 msgstr "Удалить из Избранного"
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr "По правому краю"
@@ -929,9 +929,9 @@ msgstr "Значение:"
 msgid "Variant"
 msgstr "Variant"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
-msgstr "Просмотреть нюансы"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
+msgstr ""
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"

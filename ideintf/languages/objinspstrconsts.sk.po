@@ -265,13 +265,13 @@ msgstr "Výber farby"
 msgid "Column Editor"
 msgstr "Editor stĺpcov"
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -473,8 +473,8 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Výber fontu"
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -536,10 +536,6 @@ msgstr "Neplatná číselná hodnota"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Neplatná hodnota vlastnosti"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr ""
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -749,6 +745,10 @@ msgstr "Obnoviť"
 msgid "Remove from Favorites"
 msgstr "Odstrániť z Obľúbených"
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr "Vpravo"
@@ -929,8 +929,8 @@ msgstr "Hodnota:"
 msgid "Variant"
 msgstr "Variant"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

@@ -260,13 +260,13 @@ msgstr "选择颜色"
 msgid "Column Editor"
 msgstr "列编辑器"
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "组件 %s%s%s 不是一个有效的标识符"
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -468,8 +468,8 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "选择字体"
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -531,10 +531,6 @@ msgstr "无效数字"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "属性值错误"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr ""
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -744,6 +740,10 @@ msgstr "刷新"
 msgid "Remove from Favorites"
 msgstr "从收藏中移除"
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr "右"
@@ -924,8 +924,8 @@ msgstr "值:"
 msgid "Variant"
 msgstr "变量"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

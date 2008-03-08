@@ -266,13 +266,13 @@ msgstr "Išrinkti spalvą"
 msgid "Column Editor"
 msgstr "Stulpelių redaktorius"
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -474,8 +474,8 @@ msgstr "Realusis skaičius"
 msgid "Font Select"
 msgstr "Išrinkti šriftą"
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -537,10 +537,6 @@ msgstr "Klaidingas numeris"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Klaidinga savybės reikšmė"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr ""
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -753,6 +749,10 @@ msgstr "Atnaujinti"
 msgid "Remove from Favorites"
 msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr "Dešinė"
@@ -933,8 +933,8 @@ msgstr "Reikšmė:"
 msgid "Variant"
 msgstr "Įvairaus tipo"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

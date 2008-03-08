@@ -3341,7 +3341,6 @@ msgid "Filter by matching with start of method"
 msgstr "Filtern, wenn der Methodenstart paßt"
 
 #: lazarusidestrconsts:lisfilterissues
-#, fuzzy
 msgid "Filter issues"
 msgstr "Ausgaben filtern"
 
@@ -4690,17 +4689,14 @@ msgid "Irregular "
 msgstr "Irregulär"
 
 #: lazarusidestrconsts:lismenuviewissuebrowser
-#, fuzzy
 msgid "Issue Browser"
 msgstr "Ausgaben-Browser"
 
 #: lazarusidestrconsts:lisissuebrowser
-#, fuzzy
 msgid "Issue browser"
 msgstr "Ausgaben-Browser"
 
 #: lazarusidestrconsts:lispkgfiletypeissues
-#, fuzzy
 msgid "Issues xml file"
 msgstr "Ausgaben-XML-Datei"
 
@@ -10129,7 +10125,6 @@ msgid "View forms"
 msgstr "Formulare anzeigen"
 
 #: lazarusidestrconsts:srkmectoggleissuebrowser
-#, fuzzy
 msgid "View issue browser"
 msgstr "Ausgaben-Browser aufrufen"
 

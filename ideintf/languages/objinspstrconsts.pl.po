@@ -268,12 +268,12 @@ msgstr ""
 msgid "Column Editor"
 msgstr ""
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
 msgstr ""
 
 #: objinspstrconsts:oiscomponents
@@ -476,8 +476,8 @@ msgstr "Float"
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -539,10 +539,6 @@ msgstr ""
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Nieprawidłowa wartość właściwości"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr ""
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -752,6 +748,10 @@ msgstr "Odśwież"
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr ""
@@ -932,8 +932,8 @@ msgstr "Wartość:"
 msgid "Variant"
 msgstr "Variant"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

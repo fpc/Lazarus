@@ -265,13 +265,13 @@ msgstr "Selecciona el color"
 msgid "Column Editor"
 msgstr "Editor de Columnes"
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
 msgstr "El nom del component %s%s%s no es un identificador vàlid"
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
+msgstr ""
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -473,8 +473,8 @@ msgstr "Float"
 msgid "Font Select"
 msgstr "Selecciona la font"
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -536,10 +536,6 @@ msgstr "Valor numèric invàlid"
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
 msgstr "Valor invàlid per la propietat"
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
-msgstr ""
 
 #: objinspstrconsts:fesnofields
 msgid "It was not possible to get the dataset field's list"
@@ -749,6 +745,10 @@ msgstr "Refresca"
 msgid "Remove from Favorites"
 msgstr "Elimina de Favorits"
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr "Dreta"
@@ -929,8 +929,8 @@ msgstr "Valor"
 msgid "Variant"
 msgstr "Variant"
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible

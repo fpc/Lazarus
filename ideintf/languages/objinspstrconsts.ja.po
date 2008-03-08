@@ -260,12 +260,12 @@ msgstr ""
 msgid "Column Editor"
 msgstr ""
 
-#: objinspstrconsts:oiscomponentissues
-msgid "Component issues: "
-msgstr ""
-
 #: objinspstrconsts:oiscomponentnameisnotavalididentifier
 msgid "Component name %s%s%s is not a valid identifier"
+msgstr ""
+
+#: objinspstrconsts:oiscomponentrestrictions
+msgid "Component restrictions: "
 msgstr ""
 
 #: objinspstrconsts:oiscomponents
@@ -468,8 +468,8 @@ msgstr ""
 msgid "Font Select"
 msgstr ""
 
-#: objinspstrconsts:oiswidgetsetissues
-msgid "General Widget Set issues: "
+#: objinspstrconsts:oiswidgetsetrestrictions
+msgid "General widget set restrictions: "
 msgstr ""
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
@@ -530,10 +530,6 @@ msgstr ""
 
 #: objinspstrconsts:oisinvalidpropertyvalue
 msgid "Invalid property value"
-msgstr ""
-
-#: objinspstrconsts:oisissues
-msgid "Issues"
 msgstr ""
 
 #: objinspstrconsts:fesnofields
@@ -744,6 +740,10 @@ msgstr ""
 msgid "Remove from Favorites"
 msgstr ""
 
+#: objinspstrconsts:oisrestricted
+msgid "Restricted"
+msgstr ""
+
 #: objinspstrconsts:rscdright
 msgid "Right"
 msgstr ""
@@ -924,8 +924,8 @@ msgstr ""
 msgid "Variant"
 msgstr ""
 
-#: objinspstrconsts:oisviewissues
-msgid "View issues"
+#: objinspstrconsts:oisviewrestrictedproperties
+msgid "View restricted properties"
 msgstr ""
 
 #: objinspstrconsts:rscdvisible
