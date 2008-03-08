@@ -1,8 +1,8 @@
 LazarusResources.Add('TTemplateSettingsForm','FORMDATA',[
   'TPF0'#21'TTemplateSettingsForm'#20'TemplateSettingsForm'#7'Caption'#6#26'Pro'
   +'ject templates settings'#12'ClientHeight'#2''#11'ClientWidth'#3#144#1#13'P'
-  +'ixelsPerInch'#2'Z'#8'Position'#7#15'poDesktopCenter'#18'HorzScrollBar.Page'
-  +#3#143#1#18'VertScrollBar.Page'#2'~'#4'Left'#3#214#1#6'Height'#2''#3'Top'#3
+  +'ixelsPerInch'#2'Z'#8'Position'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3
+  +#143#1#18'VertScrollBar.Page'#2'~'#4'Left'#3#214#1#6'Height'#2''#3'Top'#3
   +#175#0#5'Width'#3#144#1#0#6'TLabel'#6'Label1'#8'AutoSize'#8#7'Caption'#6#26
   +'&Directory with templates:'#5'Color'#7#6'clNone'#12'FocusControl'#7#11'DETe'
   +'mplates'#6'Layout'#7#8'tlCenter'#4'Left'#2#8#6'Height'#2#24#3'Top'#2#16#5'W'

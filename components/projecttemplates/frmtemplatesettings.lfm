@@ -3,7 +3,7 @@ object TemplateSettingsForm: TTemplateSettingsForm
   ClientHeight = 127
   ClientWidth = 400
   PixelsPerInch = 90
-  Position = poDesktopCenter
+  Position = poScreenCenter
   HorzScrollBar.Page = 399
   VertScrollBar.Page = 126
   Left = 470

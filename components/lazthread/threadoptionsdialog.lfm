@@ -10,7 +10,7 @@ object ThreadOptionsDialog: TThreadOptionsDialog
   Caption = 'ThreadOptionsDialog'
   ClientHeight = 106
   ClientWidth = 283
-  Position = poDesktopCenter
+  Position = poScreenCenter
   object OptionsGroupBox: TGroupBox
     Height = 65
     Width = 283

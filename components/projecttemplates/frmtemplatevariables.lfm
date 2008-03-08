@@ -8,7 +8,7 @@ object ProjectVariablesForm: TProjectVariablesForm
   ActiveControl = BOK
   Caption = 'New project from template'
   OnShow = ProjectVariablesFormShow
-  Position = poDesktopCenter
+  Position = poScreenCenter
   object Label1: TLabel
     Left = 8
     Height = 23

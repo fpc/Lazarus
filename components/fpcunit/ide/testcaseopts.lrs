@@ -1,7 +1,7 @@
 LazarusResources.Add('TTestCaseOptionsForm','FORMDATA',[
   'TPF0'#20'TTestCaseOptionsForm'#19'TestCaseOptionsForm'#11'BorderStyle'#7#8'b'
   +'sDialog'#7'Caption'#6#16'TestCase Options'#12'ClientHeight'#3#248#0#11'Clie'
-  +'ntWidth'#3#10#1#13'PixelsPerInch'#2'_'#8'Position'#7#15'poDesktopCenter'#18
+  +'ntWidth'#3#10#1#13'PixelsPerInch'#2'_'#8'Position'#7#14'poScreenCenter'#18
   +'HorzScrollBar.Page'#3#9#1#18'VertScrollBar.Page'#3#247#0#4'Left'#3#208#1#6
   +'Height'#3#248#0#3'Top'#3#208#1#5'Width'#3#10#1#0#9'TGroupBox'#7'gbNames'#5
   +'Align'#7#5'alTop'#22'BorderSpacing.OnChange'#13#7'Caption'#6#5'Names'#12'Cl'

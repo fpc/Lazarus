@@ -30,7 +30,7 @@ object GUITestRunner: TGUITestRunner
   }
   OnCreate = GUITestRunnerCreate
   OnShow = GUITestRunnerShow
-  Position = poDesktopCenter
+  Position = poScreenCenter
   ShowHint = True
   object Panel1: TPanel
     Height = 86

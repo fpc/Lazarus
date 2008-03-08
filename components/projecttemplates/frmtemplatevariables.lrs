@@ -1,11 +1,9 @@
-{ This is an automatically generated lazarus resource file }
-
 LazarusResources.Add('TProjectVariablesForm','FORMDATA',[
   'TPF0'#21'TProjectVariablesForm'#20'ProjectVariablesForm'#4'Left'#3#12#1#6'He'
   +'ight'#3'H'#1#3'Top'#3#219#0#5'Width'#3#243#1#18'HorzScrollBar.Page'#3#242#1
   +#18'VertScrollBar.Page'#3'G'#1#13'ActiveControl'#7#3'BOK'#7'Caption'#6#25'Ne'
   +'w project from template'#6'OnShow'#7#24'ProjectVariablesFormShow'#8'Positio'
-  +'n'#7#15'poDesktopCenter'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#23#3
+  +'n'#7#14'poScreenCenter'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Height'#2#23#3
   +'Top'#2#16#5'Width'#3#131#0#9'Alignment'#7#14'taRightJustify'#8'AutoSize'#8#7
   +'Caption'#6#22'&Name for new project:'#5'Color'#7#6'clNone'#6'Layout'#7#8'tl'
   +'Center'#11'ParentColor'#8#0#0#6'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#22

@@ -4,7 +4,7 @@ object TestCaseOptionsForm: TTestCaseOptionsForm
   ClientHeight = 248
   ClientWidth = 266
   PixelsPerInch = 95
-  Position = poDesktopCenter
+  Position = poScreenCenter
   HorzScrollBar.Page = 265
   VertScrollBar.Page = 247
   Left = 464
