@@ -1,6 +1,6 @@
 { /***************************************************************************
-                  CompatibilityIssues.pas  -  Lazarus IDE unit
-                  --------------------------------------------
+              CompatibilityRestrictions.pas  -  Lazarus IDE unit
+              --------------------------------------------------
 
  ***************************************************************************/
 
@@ -38,7 +38,7 @@ uses
   ComponentReg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, LazConf, LCLProc, StringHashList;
 
 type
-  TReadRestrictedEvent = procedure (const IssueName, WidgetSetName: String) of object;
+  TReadRestrictedEvent = procedure (const RestrictedName, WidgetSetName: String) of object;
   TReadRestrictedContentEvent = procedure (const Short, Description: String) of object;
 
   PRestriction = ^TRestriction;
@@ -74,13 +74,13 @@ type
     FRestrictedFiles: TStringList;
     FClassList: TClassHashList;
     procedure AddPackage(APackage: TLazPackageID);
-    procedure AddRestricted(const IssueName, WidgetSetName: String);
+    procedure AddRestricted(const RestrictedName, WidgetSetName: String);
     procedure AddRestrictedContent(const Short, Description: String);
-    procedure AddRestrictedProperty(const IssueName, WidgetSetName: String);
+    procedure AddRestrictedProperty(const RestrictedName, WidgetSetName: String);
     procedure GatherRestrictedFiles;
-    procedure ReadRestrictedIssues(const Filename: String;
-      OnReadIssue: TReadRestrictedEvent;
-      OnReadIssueContent: TReadRestrictedContentEvent);
+    procedure ReadRestrictions(const Filename: String;
+      OnReadRestricted: TReadRestrictedEvent;
+      OnReadRestrictedContent: TReadRestrictedContentEvent);
   public
     constructor Create;
     destructor Destroy; override;
@@ -96,7 +96,7 @@ function GetRestrictedList: TRestrictedList;
 implementation
 
 var
-  IssueManager: TRestrictedManager = nil;
+  RestrictedManager: TRestrictedManager = nil;
   
 { TClassHashList }
 
@@ -140,14 +140,14 @@ end;
 
 function GetRestrictedProperties: TOIRestrictedProperties;
 begin
-  if IssueManager = nil then IssueManager := TRestrictedManager.Create;
-  Result := IssueManager.GetRestrictedProperties;
+  if RestrictedManager = nil then RestrictedManager := TRestrictedManager.Create;
+  Result := RestrictedManager.GetRestrictedProperties;
 end;
 
 function GetRestrictedList: TRestrictedList;
 begin
-  if IssueManager = nil then IssueManager := TRestrictedManager.Create;
-  Result := IssueManager.GetRestrictedList;
+  if RestrictedManager = nil then RestrictedManager := TRestrictedManager.Create;
+  Result := RestrictedManager.GetRestrictedList;
 end;
 
 { TRestrictedManager }
@@ -168,7 +168,7 @@ begin
     FClassList.Add(TDataModule);
   
     for I := 0 to FRestrictedFiles.Count - 1 do
-      ReadRestrictedIssues(FRestrictedFiles[I], @AddRestrictedProperty, nil);
+      ReadRestrictions(FRestrictedFiles[I], @AddRestrictedProperty, nil);
     
     Result := FRestrictedProperties;
   finally
@@ -183,7 +183,7 @@ begin
   SetLength(FRestrictedList, 0);
 
   for I := 0 to FRestrictedFiles.Count - 1 do
-    ReadRestrictedIssues(FRestrictedFiles[I], @AddRestricted, @AddRestrictedContent);
+    ReadRestrictions(FRestrictedFiles[I], @AddRestricted, @AddRestrictedContent);
     
   Result := FRestrictedList;
 end;
@@ -202,10 +202,10 @@ begin
       FRestrictedFiles.Add(ALazPackage.Files[I].GetFullFilename);
 end;
 
-procedure TRestrictedManager.AddRestricted(const IssueName, WidgetSetName: String);
+procedure TRestrictedManager.AddRestricted(const RestrictedName, WidgetSetName: String);
 begin
   SetLength(FRestrictedList, Succ(Length(FRestrictedList)));
-  FRestrictedList[High(FRestrictedList)].Name := IssueName;
+  FRestrictedList[High(FRestrictedList)].Name := RestrictedName;
   FRestrictedList[High(FRestrictedList)].WidgetSet := DirNameToLCLPlatform(WidgetSetName);
   FRestrictedList[High(FRestrictedList)].Short := '';
   FRestrictedList[High(FRestrictedList)].Description := '';
@@ -218,26 +218,25 @@ begin
   FRestrictedList[High(FRestrictedList)].Description := Description;
 end;
 
-procedure TRestrictedManager.AddRestrictedProperty(const IssueName, WidgetSetName: String);
+procedure TRestrictedManager.AddRestrictedProperty(const RestrictedName, WidgetSetName: String);
 var
   Issue: TOIRestrictedProperty;
   AClass: TPersistentClass;
   AProperty: String;
   P: Integer;
 begin
-  //DebugLn('TIssueManager.AddIssue ', IssueName, ' ', WidgetSetName);
-  if IssueName = '' then Exit;
+  if RestrictedName = '' then Exit;
 
-  P := Pos('.', IssueName);
+  P := Pos('.', RestrictedName);
   if P = 0 then
   begin
-    AClass := FClassList.Find(IssueName);
+    AClass := FClassList.Find(RestrictedName);
     AProperty := '';
   end
   else
   begin
-    AClass := FClassList.Find(Copy(IssueName, 0, P - 1));
-    AProperty := Copy(IssueName, P + 1, MaxInt);
+    AClass := FClassList.Find(Copy(RestrictedName, 0, P - 1));
+    AProperty := Copy(RestrictedName, P + 1, MaxInt);
   end;
   
   if AClass = nil then
@@ -250,7 +249,6 @@ begin
   Issue := TOIRestrictedProperty.Create(AClass, AProperty, True);
   Issue.WidgetSets := [DirNameToLCLPlatform(WidgetSetName)];
   FRestrictedProperties.Add(Issue);
-  //DebugLn('TIssueManager.AddIssue True');
 end;
 
 procedure TRestrictedManager.GatherRestrictedFiles;
@@ -259,8 +257,9 @@ begin
   PackageGraph.IteratePackages([fpfSearchInInstalledPckgs], @AddPackage);
 end;
 
-procedure TRestrictedManager.ReadRestrictedIssues(const Filename: String; OnReadIssue: TReadRestrictedEvent;
-  OnReadIssueContent: TReadRestrictedContentEvent);
+procedure TRestrictedManager.ReadRestrictions(const Filename: String;
+  OnReadRestricted: TReadRestrictedEvent;
+  OnReadRestrictedContent: TReadRestrictedContentEvent);
 var
   IssueFile: TXMLDocument;
   R, N: TDOMNode;
@@ -304,8 +303,9 @@ var
         if AttrNode <> nil then IssueName := AttrNode.NodeValue
         else IssueName := 'win32';
         
-        if Assigned(OnReadIssue) then OnReadIssue(IssueName, WidgetSetName);
-        if Assigned(OnReadIssueContent) then
+        if Assigned(OnReadRestricted) then
+          OnReadRestricted(IssueName, WidgetSetName);
+        if Assigned(OnReadRestrictedContent) then
         begin
           Short := '';
           Description := '';
@@ -322,7 +322,7 @@ var
             IssueContentNode := IssueContentNode.NextSibling;
           end;
           
-          OnReadIssueContent(Short, Description);
+          OnReadRestrictedContent(Short, Description);
         end;
       end;
       IssueNode := IssueNode.NextSibling;
@@ -377,7 +377,7 @@ end;
 
 finalization
 
-  FreeAndNil(IssueManager);
+  FreeAndNil(RestrictedManager);
 
 
 end.
