@@ -38,11 +38,11 @@ uses
   ComponentReg, Laz_XMLRead, Laz_XMLWrite, Laz_DOM, LazConf, LCLProc, StringHashList;
 
 type
-  TReadIssueEvent = procedure (const IssueName, WidgetSetName: String) of object;
-  TReadIssueContentEvent = procedure (const Short, Description: String) of object;
+  TReadRestrictedEvent = procedure (const IssueName, WidgetSetName: String) of object;
+  TReadRestrictedContentEvent = procedure (const Short, Description: String) of object;
 
-  PIssue = ^TIssue;
-  TIssue = record
+  PRestriction = ^TRestriction;
+  TRestriction = record
     Name: String;
     Short: String;
     Description: String;
@@ -63,39 +63,40 @@ type
     function Find(const AClassName: String): TPersistentClass;
   end;
   
-  TIssueList = array of TIssue;
+  TRestrictedList = array of TRestriction;
 
-  { TIssueManager }
+  { TRestrictedManager }
 
-  TIssueManager = class
+  TRestrictedManager = class
   private
-    FIssueProperties: TOIRestrictedProperties;
-    FIssueList: TIssueList;
-    FIssueFiles: TStringList;
+    FRestrictedProperties: TOIRestrictedProperties;
+    FRestrictedList: TRestrictedList;
+    FRestrictedFiles: TStringList;
     FClassList: TClassHashList;
     procedure AddPackage(APackage: TLazPackageID);
-    procedure AddIssue(const IssueName, WidgetSetName: String);
-    procedure AddIssueContent(const Short, Description: String);
-    procedure AddIssueProperty(const IssueName, WidgetSetName: String);
-    procedure GatherIssueFiles;
-    procedure ReadFileIssues(const Filename: String; OnReadIssue: TReadIssueEvent;
-      OnReadIssueContent: TReadIssueContentEvent);
+    procedure AddRestricted(const IssueName, WidgetSetName: String);
+    procedure AddRestrictedContent(const Short, Description: String);
+    procedure AddRestrictedProperty(const IssueName, WidgetSetName: String);
+    procedure GatherRestrictedFiles;
+    procedure ReadRestrictedIssues(const Filename: String;
+      OnReadIssue: TReadRestrictedEvent;
+      OnReadIssueContent: TReadRestrictedContentEvent);
   public
     constructor Create;
     destructor Destroy; override;
     
-    function GetIssueProperties: TOIRestrictedProperties;
-    function GetIssueList: TIssueList;
+    function GetRestrictedProperties: TOIRestrictedProperties;
+    function GetRestrictedList: TRestrictedList;
   end;
 
   
-function GetIssueProperties: TOIRestrictedProperties;
-function GetIssueList: TIssueList;
+function GetRestrictedProperties: TOIRestrictedProperties;
+function GetRestrictedList: TRestrictedList;
   
 implementation
 
 var
-  IssueManager: TIssueManager = nil;
+  IssueManager: TRestrictedManager = nil;
   
 { TClassHashList }
 
@@ -137,27 +138,27 @@ begin
 end;
 
 
-function GetIssueProperties: TOIRestrictedProperties;
+function GetRestrictedProperties: TOIRestrictedProperties;
 begin
-  if IssueManager = nil then IssueManager := TIssueManager.Create;
-  Result := IssueManager.GetIssueProperties;
+  if IssueManager = nil then IssueManager := TRestrictedManager.Create;
+  Result := IssueManager.GetRestrictedProperties;
 end;
 
-function GetIssueList: TIssueList;
+function GetRestrictedList: TRestrictedList;
 begin
-  if IssueManager = nil then IssueManager := TIssueManager.Create;
-  Result := IssueManager.GetIssueList;
+  if IssueManager = nil then IssueManager := TRestrictedManager.Create;
+  Result := IssueManager.GetRestrictedList;
 end;
 
-{ TIssueManager }
+{ TRestrictedManager }
 
-function TIssueManager.GetIssueProperties: TOIRestrictedProperties;
+function TRestrictedManager.GetRestrictedProperties: TOIRestrictedProperties;
 var
   I: Integer;
 begin
   Result := nil;
-  FreeAndNil(FIssueProperties);
-  FIssueProperties := TOIRestrictedProperties.Create;
+  FreeAndNil(FRestrictedProperties);
+  FRestrictedProperties := TOIRestrictedProperties.Create;
 
 
   FClassList := TClassHashList.Create;
@@ -166,28 +167,28 @@ begin
     FClassList.Add(TForm);
     FClassList.Add(TDataModule);
   
-    for I := 0 to FIssueFiles.Count - 1 do
-      ReadFileIssues(FIssueFiles[I], @AddIssueProperty, nil);
+    for I := 0 to FRestrictedFiles.Count - 1 do
+      ReadRestrictedIssues(FRestrictedFiles[I], @AddRestrictedProperty, nil);
     
-    Result := FIssueProperties;
+    Result := FRestrictedProperties;
   finally
     FreeAndNil(FClassList);
   end;
 end;
 
-function TIssueManager.GetIssueList: TIssueList;
+function TRestrictedManager.GetRestrictedList: TRestrictedList;
 var
   I: Integer;
 begin
-  SetLength(FIssueList, 0);
+  SetLength(FRestrictedList, 0);
 
-  for I := 0 to FIssueFiles.Count - 1 do
-    ReadFileIssues(FIssueFiles[I], @AddIssue, @AddIssueContent);
+  for I := 0 to FRestrictedFiles.Count - 1 do
+    ReadRestrictedIssues(FRestrictedFiles[I], @AddRestricted, @AddRestrictedContent);
     
-  Result := FIssueList;
+  Result := FRestrictedList;
 end;
 
-procedure TIssueManager.AddPackage(APackage: TLazPackageID);
+procedure TRestrictedManager.AddPackage(APackage: TLazPackageID);
 var
   ALazPackage: TLazPackage;
   I: Integer;
@@ -198,26 +199,26 @@ begin
   
   for I := 0 to ALazPackage.FileCount - 1 do
     if ALazPackage.Files[I].FileType = pftIssues then
-      FIssueFiles.Add(ALazPackage.Files[I].GetFullFilename);
+      FRestrictedFiles.Add(ALazPackage.Files[I].GetFullFilename);
 end;
 
-procedure TIssueManager.AddIssue(const IssueName, WidgetSetName: String);
+procedure TRestrictedManager.AddRestricted(const IssueName, WidgetSetName: String);
 begin
-  SetLength(FIssueList, Succ(Length(FIssueList)));
-  FIssueList[High(FIssueList)].Name := IssueName;
-  FIssueList[High(FIssueList)].WidgetSet := DirNameToLCLPlatform(WidgetSetName);
-  FIssueList[High(FIssueList)].Short := '';
-  FIssueList[High(FIssueList)].Description := '';
+  SetLength(FRestrictedList, Succ(Length(FRestrictedList)));
+  FRestrictedList[High(FRestrictedList)].Name := IssueName;
+  FRestrictedList[High(FRestrictedList)].WidgetSet := DirNameToLCLPlatform(WidgetSetName);
+  FRestrictedList[High(FRestrictedList)].Short := '';
+  FRestrictedList[High(FRestrictedList)].Description := '';
 end;
 
-procedure TIssueManager.AddIssueContent(const Short, Description: String);
+procedure TRestrictedManager.AddRestrictedContent(const Short, Description: String);
 begin
-  if Length(FIssueList) = 0 then Exit;
-  FIssueList[High(FIssueList)].Short := Short;
-  FIssueList[High(FIssueList)].Description := Description;
+  if Length(FRestrictedList) = 0 then Exit;
+  FRestrictedList[High(FRestrictedList)].Short := Short;
+  FRestrictedList[High(FRestrictedList)].Description := Description;
 end;
 
-procedure TIssueManager.AddIssueProperty(const IssueName, WidgetSetName: String);
+procedure TRestrictedManager.AddRestrictedProperty(const IssueName, WidgetSetName: String);
 var
   Issue: TOIRestrictedProperty;
   AClass: TPersistentClass;
@@ -242,24 +243,24 @@ begin
   if AClass = nil then
   begin
     // add as generic widgetset issue
-    Inc(FIssueProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)]);
+    Inc(FRestrictedProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)]);
     Exit;
   end;
   
   Issue := TOIRestrictedProperty.Create(AClass, AProperty, True);
   Issue.WidgetSets := [DirNameToLCLPlatform(WidgetSetName)];
-  FIssueProperties.Add(Issue);
+  FRestrictedProperties.Add(Issue);
   //DebugLn('TIssueManager.AddIssue True');
 end;
 
-procedure TIssueManager.GatherIssueFiles;
+procedure TRestrictedManager.GatherRestrictedFiles;
 begin
-  FIssueFiles.Clear;
+  FRestrictedFiles.Clear;
   PackageGraph.IteratePackages([fpfSearchInInstalledPckgs], @AddPackage);
 end;
 
-procedure TIssueManager.ReadFileIssues(const Filename: String; OnReadIssue: TReadIssueEvent;
-  OnReadIssueContent: TReadIssueContentEvent);
+procedure TRestrictedManager.ReadRestrictedIssues(const Filename: String; OnReadIssue: TReadRestrictedEvent;
+  OnReadIssueContent: TReadRestrictedContentEvent);
 var
   IssueFile: TXMLDocument;
   R, N: TDOMNode;
@@ -355,20 +356,20 @@ begin
   end;
 end;
 
-constructor TIssueManager.Create;
+constructor TRestrictedManager.Create;
 begin
   inherited;
   
-  FIssueFiles := TStringList.Create;
-  FIssueProperties := nil;
+  FRestrictedFiles := TStringList.Create;
+  FRestrictedProperties := nil;
   
-  GatherIssueFiles;
+  GatherRestrictedFiles;
 end;
 
-destructor TIssueManager.Destroy;
+destructor TRestrictedManager.Destroy;
 begin
-  FreeAndNil(FIssueFiles);
-  FreeAndNil(FIssueProperties);
+  FreeAndNil(FRestrictedFiles);
+  FreeAndNil(FRestrictedProperties);
   
   inherited Destroy;
 end;

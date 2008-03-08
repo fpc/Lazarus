@@ -49,7 +49,7 @@ type
     procedure IssueTreeViewSelectionChanged(Sender: TObject);
     procedure NameFilterEditChange(Sender: TObject);
   private
-    FIssueList: TIssueList;
+    FIssueList: TRestrictedList;
     FClasses: TClassList;
     FCanUpdate: Boolean;
     procedure GetComponentClass(const AClass: TComponentClass);
@@ -70,7 +70,7 @@ var
   P: TLCLPlatform;
   X: Integer;
 begin
-  FIssueList := GetIssueList;
+  FIssueList := GetRestrictedList;
   
   Name := NonModalIDEWindowNames[mniwIssueBrowser];
   Caption := lisMenuViewRestrictionBrowser;
@@ -111,7 +111,7 @@ begin
 end;
 procedure TRestrictionBrowserView.IssueTreeViewSelectionChanged(Sender: TObject);
 var
-  Issue: TIssue;
+  Issue: TRestriction;
 begin
   if IssueTreeView.Selected = nil then
   begin
@@ -119,7 +119,7 @@ begin
     Exit;
   end;
 
-  Issue := PIssue(IssueTreeView.Selected.Data)^;
+  Issue := PRestriction(IssueTreeView.Selected.Data)^;
   IssueMemo.Text := Issue.Short + LineEnding + LineEnding + Issue.Description;
 end;
 
@@ -141,7 +141,7 @@ var
   S, M: String;
   I, ID: PtrInt;
   Issues: TStringList;
-  Issue: TIssue;
+  Issue: TRestriction;
   C: TClass;
   AddParentClass: Boolean;
   P: TLCLPlatform;

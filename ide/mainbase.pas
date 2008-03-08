@@ -876,7 +876,7 @@ begin
     itmViewCodeExplorer.Command:=GetCommand(ecToggleCodeExpl);
     itmViewFPDocEditor.Command:=GetCommand(ecToggleFPDocEditor);
     itmViewCodeBrowser.Command:=GetCommand(ecToggleCodeBrowser);
-    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleIssueBrowser);
+    itmViewRestrictionBrowser.Command:=GetCommand(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetCommand(ecViewComponents);
     itmViewUnitDependencies.Command:=GetCommand(ecViewUnitDependencies);
     itmViewUnitInfo.Command:=GetCommand(ecViewUnitInfo);

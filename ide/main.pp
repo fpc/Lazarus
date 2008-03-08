@@ -689,7 +689,7 @@ type
     procedure DoViewUnitInfo;
     procedure DoShowCodeExplorer;
     procedure DoShowCodeBrowser;
-    procedure DoShowRestrictionBrowser(const IssueName: String = '');
+    procedure DoShowRestrictionBrowser(const RestrictedName: String = '');
     procedure DoShowComponentList;
     procedure DoShowFPDocEditor;
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -1362,7 +1362,7 @@ begin
   if Sender = nil then Sender := ObjectInspector1;
   if Sender is TObjectInspectorDlg then
   begin
-    (Sender as TObjectInspectorDlg).RestrictedProps := GetIssueProperties;
+    (Sender as TObjectInspectorDlg).RestrictedProps := GetRestrictedProperties;
   end;
 end;
 
@@ -2659,7 +2659,7 @@ begin
   ecToggleCodeBrowser:
     DoShowCodeBrowser;
 
-  ecToggleIssueBrowser:
+  ecToggleRestrictionBrowser:
     DoShowRestrictionBrowser;
 
   ecViewComponents:
@@ -7283,12 +7283,12 @@ begin
   CodeBrowserView.ShowOnTop;
 end;
 
-procedure TMainIDE.DoShowRestrictionBrowser(const IssueName: String);
+procedure TMainIDE.DoShowRestrictionBrowser(const RestrictedName: String);
 begin
   if RestrictionBrowserView = nil then
     RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
 
-  RestrictionBrowserView.SetIssueName(IssueName);
+  RestrictionBrowserView.SetIssueName(RestrictedName);
   RestrictionBrowserView.ShowOnTop;
 end;
 

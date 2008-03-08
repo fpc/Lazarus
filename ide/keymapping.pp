@@ -480,7 +480,7 @@ begin
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecToggleIssueBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -803,7 +803,7 @@ begin
   ecToggleFormUnit: SetResult(VK_F12,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecViewAnchorEditor: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCodeBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  ecToggleIssueBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecToggleRestrictionBrowser: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleCompPalette: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecToggleIDESpeedBtns: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
@@ -1429,7 +1429,7 @@ begin
     ecViewUnitInfo            : Result:= srkmecViewUnitInfo;
     ecViewAnchorEditor        : Result:= srkmecViewAnchorEditor;
     ecToggleCodeBrowser       : Result:= srkmecToggleCodeBrowser;
-    ecToggleIssueBrowser      : Result:= srkmecToggleRestrictionBrowser;
+    ecToggleRestrictionBrowser: Result:= srkmecToggleRestrictionBrowser;
     ecViewComponents          : Result:= srkmecViewComponents;
     ecToggleCompPalette       : Result:= srkmecToggleCompPalette;
     ecToggleIDESpeedBtns      : Result:= srkmecToggleIDESpeedBtns;
