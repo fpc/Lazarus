@@ -560,7 +560,7 @@ type
 
   TObjectInspectorDlg = class(TForm)
     AddToFavoritesPopupMenuItem: TMenuItem;
-    ViewIssuesPopupMenuItem: TMenuItem;
+    ViewRestrictedPropertiesPopupMenuItem: TMenuItem;
     AvailPersistentComboBox: TComboBox;
     ComponentTree: TComponentTreeView;
     CopyPopupmenuItem: TMenuItem;
@@ -571,10 +571,10 @@ type
     RestrictedGrid: TOICustomPropertyGrid;
     RestrictedPanel: TPanel;
     RestrictedInnerPanel: TPanel;
-    WidgetSetsIssuesLabel: TLabel;
-    WidgetSetsIssuesBox: TPaintBox;
-    ComponentIssuesLabel: TLabel;
-    ComponentIssuesBox: TPaintBox;
+    WidgetSetsRestrictedLabel: TLabel;
+    WidgetSetsRestrictedBox: TPaintBox;
+    ComponentRestrictedLabel: TLabel;
+    ComponentRestrictedBox: TPaintBox;
     FindDeclarationPopupmenuItem: TMenuItem;
     MainPopupMenu: TPopupMenu;
     NoteBook: TNoteBook;
@@ -598,7 +598,7 @@ type
     procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
     procedure OnAddToFavoritesPopupmenuItemClick(Sender: TObject);
     procedure OnRemoveFromFavoritesPopupmenuItemClick(Sender: TObject);
-    procedure OnViewIssuesPopupmenuItemClick(Sender: TObject);
+    procedure OnViewRestrictionsPopupmenuItemClick(Sender: TObject);
     procedure OnUndoPopupmenuItemClick(Sender: TObject);
     procedure OnFindDeclarationPopupmenuItemClick(Sender: TObject);
     procedure OnCutPopupmenuItemClick(Sender: TObject);
@@ -610,21 +610,21 @@ type
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure RestrictedPageShow(Sender: TObject);
-    procedure WidgetSetIssuesPaint(Sender: TObject);
-    procedure ComponentIssuesPaint(Sender: TObject);
-    procedure DoUpdateIssues;
-    procedure DoViewIssues;
+    procedure WidgetSetRestrictedPaint(Sender: TObject);
+    procedure ComponentRestrictedPaint(Sender: TObject);
+    procedure DoUpdateRestricted;
+    procedure DoViewRestricted;
   private
     FFavourites: TOIFavouriteProperties;
-    FIssues: TOIRestrictedProperties;
+    FRestricted: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
     FOnRemainingKeyDown: TKeyEvent;
     FOnRemainingKeyUp: TKeyEvent;
     FOnRemoveFromFavourites: TNotifyEvent;
-    FOnUpdateIssues: TNotifyEvent;
-    FOnViewIssues: TNotifyEvent;
+    FOnUpdateRestricted: TNotifyEvent;
+    FOnViewRestricted: TNotifyEvent;
     FSelection: TPersistentSelectionList;
     FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
@@ -636,20 +636,20 @@ type
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
     FShowFavorites: Boolean;
-    FShowIssues: Boolean;
+    FShowRestricted: Boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox: boolean;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
-    procedure SetIssues(const AValue: TOIRestrictedProperties);
+    procedure SetRestricted(const AValue: TOIRestrictedProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
-    procedure SetShowIssues(const AValue: Boolean);
+    procedure SetShowRestricted(const AValue: Boolean);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -694,23 +694,23 @@ type
                                          write FOnRemainingKeyUp;
     property OnRemainingKeyDown: TKeyEvent read FOnRemainingKeyDown
                                          write FOnRemainingKeyDown;
-    property OnUpdateIssues: TNotifyEvent read FOnUpdateIssues
-                                         write FOnUpdateIssues;
+    property OnUpdateRestricted: TNotifyEvent read FOnUpdateRestricted
+                                         write FOnUpdateRestricted;
     property ShowComponentTree: boolean read FShowComponentTree
                                         write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
-    property ShowIssues: Boolean read FShowIssues write SetShowIssues;
+    property ShowRestricted: Boolean read FShowRestricted write SetShowRestricted;
     property ComponentTreeHeight: integer read FComponentTreeHeight
                                           write SetComponentTreeHeight;
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
-    property Issues: TOIRestrictedProperties read FIssues write SetIssues;
+    property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
     property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
                                              write FOnAddToFavourites;
     property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
                                                   write FOnRemoveFromFavourites;
-    property OnViewIssues: TNotifyEvent read FOnViewIssues write FOnViewIssues;
+    property OnViewRestricted: TNotifyEvent read FOnViewRestricted write FOnViewRestricted;
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnFindDeclarationOfProperty: TNotifyEvent
            read FOnFindDeclarationOfProperty write FOnFindDeclarationOfProperty;
@@ -3191,7 +3191,7 @@ begin
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
   FShowFavorites := False;
-  FShowIssues := False;
+  FShowRestricted := False;
 
   Caption := oisObjectInspector;
   StatusBar.SimpleText:=oisAll;
@@ -3208,9 +3208,10 @@ begin
      'RemoveFromFavoritesPopupMenuItem',
      oisRemovefromfavorites,'Remove property from favorites properties', '',
      @OnRemoveFromFavoritesPopupmenuItemClick,false,true,true);
-  AddPopupMenuItem(ViewIssuesPopupMenuItem,nil,'ViewIssuesPopupMenuItem',
-     oisViewIssues,'View issue descriptions', '',
-     @OnViewIssuesPopupmenuItemClick,false,true,true);
+  AddPopupMenuItem(ViewRestrictedPropertiesPopupMenuItem,nil,
+     'ViewRestrictedPropertiesPopupMenuItem',
+     oisViewRestrictedProperties,'View restricted property descriptions', '',
+     @OnViewRestrictionsPopupmenuItemClick,false,true,true);
   AddPopupMenuItem(UndoPropertyPopupMenuItem,nil,'UndoPropertyPopupMenuItem',
      oisUndo,'Set property value to last valid value', '',
      @OnUndoPopupmenuItemClick,false,true,true);
@@ -3338,12 +3339,12 @@ begin
   RebuildPropertyLists;
 end;
 
-procedure TObjectInspectorDlg.SetIssues(const AValue: TOIRestrictedProperties);
+procedure TObjectInspectorDlg.SetRestricted(const AValue: TOIRestrictedProperties);
 begin
-  if FIssues = AValue then exit;
-  //DebugLn('TObjectInspectorDlg.SetIssues Count: ', DbgS(AValue.Count));
-  FIssues := AValue;
-  RestrictedGrid.Favourites := FIssues;
+  if FRestricted = AValue then exit;
+  //DebugLn('TObjectInspectorDlg.SetRestricted Count: ', DbgS(AValue.Count));
+  FRestricted := AValue;
+  RestrictedGrid.Favourites := FRestricted;
 end;
 
 procedure TObjectInspectorDlg.SetOnShowOptions(const AValue: TNotifyEvent);
@@ -3498,11 +3499,11 @@ var
 begin
   if NoteBook.Page[3].Visible then
   begin
-    DoUpdateIssues;
+    DoUpdateRestricted;
     
-    // invalidate issues
-    WidgetSetsIssuesBox.Invalidate;
-    ComponentIssuesBox.Invalidate;
+    // invalidate RestrictedProps
+    WidgetSetsRestrictedBox.Invalidate;
+    ComponentRestrictedBox.Invalidate;
   end;
   
   for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
@@ -3636,9 +3637,9 @@ begin
   if Assigned(OnRemoveFromFavourites) then OnRemoveFromFavourites(Self);
 end;
 
-procedure TObjectInspectorDlg.OnViewIssuesPopupmenuItemClick(Sender: TObject);
+procedure TObjectInspectorDlg.OnViewRestrictionsPopupmenuItemClick(Sender: TObject);
 begin
-  DoViewIssues;
+  DoViewRestricted;
 end;
 
 procedure TObjectInspectorDlg.OnUndoPopupmenuItemClick(Sender: TObject);
@@ -3781,55 +3782,55 @@ begin
   NoteBook.Page[2].TabVisible := AValue;
 end;
 
-procedure TObjectInspectorDlg.SetShowIssues(const AValue: Boolean);
+procedure TObjectInspectorDlg.SetShowRestricted(const AValue: Boolean);
 begin
-  if FShowIssues = AValue then exit;
-  FShowIssues := AValue;
+  if FShowRestricted = AValue then exit;
+  FShowRestricted := AValue;
   NoteBook.Page[3].TabVisible := AValue;
 end;
 
 procedure TObjectInspectorDlg.RestrictedPageShow(Sender: TObject);
 begin
   //DebugLn('RestrictedPageShow');
-  DoUpdateIssues;
+  DoUpdateRestricted;
 end;
 
-procedure TObjectInspectorDlg.WidgetSetIssuesPaint(Sender: TObject);
+procedure TObjectInspectorDlg.WidgetSetRestrictedPaint(Sender: TObject);
 var
   X, Y: Integer;
   S: TSize;
   Platform: TLCLPlatform;
   None: Boolean;
 begin
-  if Issues = nil then Exit;
+  if RestrictedProps = nil then Exit;
   
   X := 0;
-  Y := (WidgetSetsIssuesBox.Height - IDEImages.Images_16.Height) div 2;
+  Y := (WidgetSetsRestrictedBox.Height - IDEImages.Images_16.Height) div 2;
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
-    if Issues.WidgetSetRestrictions[Platform] > 0 then
+    if RestrictedProps.WidgetSetRestrictions[Platform] > 0 then
     begin
       None := False;
-      IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
+      IDEImages.Images_16.Draw(WidgetSetsRestrictedBox.Canvas, X, Y,
         IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
       Inc(X, 16);
       
-      S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetRestrictions[Platform]));
-      WidgetSetsIssuesBox.Canvas.TextOut(X, (WidgetSetsIssuesBox.Height - S.CY) div 2,
-        IntToStr(Issues.WidgetSetRestrictions[Platform]));
+      S := WidgetSetsRestrictedBox.Canvas.TextExtent(IntToStr(RestrictedProps.WidgetSetRestrictions[Platform]));
+      WidgetSetsRestrictedBox.Canvas.TextOut(X, (WidgetSetsRestrictedBox.Height - S.CY) div 2,
+        IntToStr(RestrictedProps.WidgetSetRestrictions[Platform]));
       Inc(X, S.CX);
     end;
   end;
   
   if None then
   begin
-    S := WidgetSetsIssuesBox.Canvas.TextExtent(oisNone);
-    WidgetSetsIssuesBox.Canvas.TextOut(4, (WidgetSetsIssuesBox.Height - S.CY) div 2, oisNone);
+    S := WidgetSetsRestrictedBox.Canvas.TextExtent(oisNone);
+    WidgetSetsRestrictedBox.Canvas.TextOut(4, (WidgetSetsRestrictedBox.Height - S.CY) div 2, oisNone);
   end;
 end;
 
-procedure TObjectInspectorDlg.ComponentIssuesPaint(Sender: TObject);
+procedure TObjectInspectorDlg.ComponentRestrictedPaint(Sender: TObject);
 var
   X, Y, I, J: Integer;
   S: TSize;
@@ -3839,36 +3840,36 @@ var
 begin
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[Platform] := 0;
 
-  if Issues = nil then Exit;
+  if RestrictedProps = nil then Exit;
   if Selection = nil then Exit;
 
-  for I := 0 to Issues.Count - 1 do
+  for I := 0 to RestrictedProps.Count - 1 do
   begin
     for J := 0 to Selection.Count - 1 do
     begin
-      if (Issues.Items[I] is TOIRestrictedProperty) and
-        Selection[J].ClassType.InheritsFrom(Issues.Items[I].BaseClass) and
-        (Issues.Items[I].PropertyName = '') then
+      if (RestrictedProps.Items[I] is TOIRestrictedProperty) and
+        Selection[J].ClassType.InheritsFrom(RestrictedProps.Items[I].BaseClass) and
+        (RestrictedProps.Items[I].PropertyName = '') then
         for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
-          if Platform in (Issues.Items[I] as TOIRestrictedProperty).WidgetSets then
+          if Platform in (RestrictedProps.Items[I] as TOIRestrictedProperty).WidgetSets then
             Inc(WidgetSetRestrictions[Platform]);
     end;
   end;
 
   X := 0;
-  Y := (ComponentIssuesBox.Height - IDEImages.Images_16.Height) div 2;
+  Y := (ComponentRestrictedBox.Height - IDEImages.Images_16.Height) div 2;
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
     if WidgetSetRestrictions[Platform] > 0 then
     begin
       None := False;
-      IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
+      IDEImages.Images_16.Draw(WidgetSetsRestrictedBox.Canvas, X, Y,
         IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
       Inc(X, 16);
 
-      S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetRestrictions[Platform]));
-      ComponentIssuesBox.Canvas.TextOut(X, (ComponentIssuesBox.Height - S.CY) div 2,
+      S := ComponentRestrictedBox.Canvas.TextExtent(IntToStr(WidgetSetRestrictions[Platform]));
+      ComponentRestrictedBox.Canvas.TextOut(X, (ComponentRestrictedBox.Height - S.CY) div 2,
         IntToStr(WidgetSetRestrictions[Platform]));
       Inc(X, S.CX);
     end;
@@ -3876,8 +3877,8 @@ begin
   
   if None then
   begin
-    S := ComponentIssuesBox.Canvas.TextExtent(oisNone);
-    ComponentIssuesBox.Canvas.TextOut(4, (ComponentIssuesBox.Height - S.CY) div 2, oisNone);
+    S := ComponentRestrictedBox.Canvas.TextExtent(oisNone);
+    ComponentRestrictedBox.Canvas.TextOut(4, (ComponentRestrictedBox.Height - S.CY) div 2, oisNone);
   end;
 end;
 
@@ -3930,7 +3931,7 @@ begin
     
     Pages.Add(oisRestricted);
     Page[3].Name:=DefaultOIPageNames[oipgpRestricted];
-    Page[3].TabVisible := ShowIssues;
+    Page[3].TabVisible := ShowRestricted;
     Page[3].OnShow := @RestrictedPageShow;
     
     PageIndex:=0;
@@ -3993,7 +3994,7 @@ begin
   end;
   FavouriteGrid.Favourites:=FFavourites;
   
-  // issues grid
+  // RestrictedProps grid
   RestrictedGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
     [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
       , tkSString, tkLString, tkAString, tkWString, tkVariant
@@ -4028,8 +4029,8 @@ begin
     Parent := RestrictedPanel;
   end;
   
-  WidgetSetsIssuesLabel := TLabel.Create(Self);
-  with WidgetSetsIssuesLabel do
+  WidgetSetsRestrictedLabel := TLabel.Create(Self);
+  with WidgetSetsRestrictedLabel do
   begin
     Caption := oisWidgetSetRestrictions;
     Top := 1;
@@ -4038,18 +4039,18 @@ begin
     Parent := RestrictedInnerPanel;
   end;
   
-  WidgetSetsIssuesBox := TPaintBox.Create(Self);
-  with WidgetSetsIssuesBox do
+  WidgetSetsRestrictedBox := TPaintBox.Create(Self);
+  with WidgetSetsRestrictedBox do
   begin
     Top := 2;
     Align := alTop;
     Height := 24;
-    OnPaint := @WidgetSetIssuesPaint;
+    OnPaint := @WidgetSetRestrictedPaint;
     Parent := RestrictedInnerPanel;
   end;
   
-  ComponentIssuesLabel := TLabel.Create(Self);
-  with ComponentIssuesLabel do
+  ComponentRestrictedLabel := TLabel.Create(Self);
+  with ComponentRestrictedLabel do
   begin
     Caption := oisComponentRestrictions;
     Top := 3;
@@ -4058,13 +4059,13 @@ begin
     Parent := RestrictedInnerPanel;
   end;
   
-  ComponentIssuesBox := TPaintBox.Create(Self);
-  with ComponentIssuesBox do
+  ComponentRestrictedBox := TPaintBox.Create(Self);
+  with ComponentRestrictedBox do
   begin
     Top := 4;
     Align := alTop;
     Height := 24;
-    OnPaint := @ComponentIssuesPaint;
+    OnPaint := @ComponentRestrictedPaint;
     Parent := RestrictedInnerPanel;
   end;
   
@@ -4155,14 +4156,14 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.DoUpdateIssues;
+procedure TObjectInspectorDlg.DoUpdateRestricted;
 begin
-  if Assigned(FOnUpdateIssues) then FOnUpdateIssues(Self);
+  if Assigned(FOnUpdateRestricted) then FOnUpdateRestricted(Self);
 end;
 
-procedure TObjectInspectorDlg.DoViewIssues;
+procedure TObjectInspectorDlg.DoViewRestricted;
 begin
-  if Assigned(FOnViewIssues) then FOnViewIssues(Self);
+  if Assigned(FOnViewRestricted) then FOnViewRestricted(Self);
 end;
 
 procedure TObjectInspectorDlg.HookRefreshPropertyValues;

@@ -388,14 +388,14 @@ type
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
-    procedure OIOnViewIssues(Sender: TObject);
+    procedure OIOnViewRestricted(Sender: TObject);
     procedure OIOnDestroy(Sender: TObject);
     procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
        Shift: TShiftState);
     procedure OIOnAddToFavourites(Sender: TObject);
     procedure OIOnRemoveFromFavourites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
-    procedure OIOnUpdateIssues(Sender: TObject);
+    procedure OIOnUpdateRestricted(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      CheckOwner: TObject): ShortString;
     procedure OnPropHookGetMethods(TypeData: PTypeData; Proc:TGetStringProc);
@@ -1286,7 +1286,7 @@ begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
 end;
 
-procedure TMainIDE.OIOnViewIssues(Sender: TObject);
+procedure TMainIDE.OIOnViewRestricted(Sender: TObject);
 var
   C: TClass;
 begin
@@ -1357,12 +1357,12 @@ begin
   end;
 end;
 
-procedure TMainIDE.OIOnUpdateIssues(Sender: TObject);
+procedure TMainIDE.OIOnUpdateRestricted(Sender: TObject);
 begin
   if Sender = nil then Sender := ObjectInspector1;
   if Sender is TObjectInspectorDlg then
   begin
-    (Sender as TObjectInspectorDlg).Issues := GetIssueProperties;
+    (Sender as TObjectInspectorDlg).RestrictedProps := GetIssueProperties;
   end;
 end;
 
@@ -1607,17 +1607,17 @@ begin
   ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
   ObjectInspector1.BorderStyle:=bsSizeable;
   ObjectInspector1.ShowFavorites:=True;
-  ObjectInspector1.ShowIssues:=True;
+  ObjectInspector1.ShowRestricted:=True;
   ObjectInspector1.Favourites:=LoadOIFavouriteProperties;
   ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnAddToFavourites:=@OIOnAddToFavourites;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
-  ObjectInspector1.OnUpdateIssues := @OIOnUpdateIssues;
+  ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;
   ObjectInspector1.OnRemainingKeyDown:=@OIRemainingKeyDown;
   ObjectInspector1.OnRemoveFromFavourites:=@OIOnRemoveFromFavourites;
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
-  ObjectInspector1.OnViewIssues:=@OIOnViewIssues;
+  ObjectInspector1.OnViewRestricted:=@OIOnViewRestricted;
   ObjectInspector1.OnDestroy:=@OIOnDestroy;
   OIControlDocker:=TLazControlDocker.Create(ObjectInspector1);
   OIControlDocker.Name:='ObjectInspector';

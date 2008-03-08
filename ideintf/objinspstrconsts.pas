@@ -54,7 +54,7 @@ resourcestring
   oisSetToDefault = 'Set to default: %s';
   oisSetToDefaultValue = 'Set to default value';
   oisAddToFavorites = 'Add to Favorites';
-  oisViewIssues = 'View issues';
+  oisViewRestrictedProperties = 'View restricted properties';
   oisRemoveFromFavorites = 'Remove from Favorites';
   oisUndo = 'Undo';
   oisFinddeclaration = 'Jump to declaration';
