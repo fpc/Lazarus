@@ -128,7 +128,7 @@ uses
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
   CleanDirDlg, CodeContextForm, AboutFrm, BuildManager, CompatibilityIssues,
-  IssueBrowser,
+  RestrictionBrowser,
   // main ide
   MainBar, MainIntf, MainBase;
 
@@ -7285,11 +7285,11 @@ end;
 
 procedure TMainIDE.DoShowIssueBrowser(const IssueName: String);
 begin
-  if IssueBrowserView = nil then
-    IssueBrowserView := TIssueBrowserView.Create(OwningComponent);
+  if RestrictionBrowserView = nil then
+    RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
 
-  IssueBrowserView.SetIssueName(IssueName);
-  IssueBrowserView.ShowOnTop;
+  RestrictionBrowserView.SetIssueName(IssueName);
+  RestrictionBrowserView.ShowOnTop;
 end;
 
 procedure TMainIDE.DoShowComponentList;

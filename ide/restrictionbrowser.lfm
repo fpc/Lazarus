@@ -1,4 +1,4 @@
-object IssueBrowserView: TIssueBrowserView
+object RestrictionBrowserView: TRestrictionBrowserView
   Left = 272
   Height = 340
   Top = 259
@@ -6,7 +6,7 @@ object IssueBrowserView: TIssueBrowserView
   HorzScrollBar.Page = 659
   VertScrollBar.Page = 339
   ActiveControl = NameFilterEdit
-  Caption = 'IssueBrowserView'
+  Caption = 'RestrictionBrowserView'
   ClientHeight = 340
   ClientWidth = 660
   OnCreate = FormCreate
@@ -27,7 +27,7 @@ object IssueBrowserView: TIssueBrowserView
     Top = 12
     Width = 250
     Caption = 'IssueFilterGroupBox'
-    ClientHeight = 78
+    ClientHeight = 77
     ClientWidth = 246
     TabOrder = 1
     object NameLabel: TLabel
@@ -53,7 +53,7 @@ object IssueBrowserView: TIssueBrowserView
     Top = 114
     Width = 250
     Anchors = [akTop, akLeft, akBottom]
-    DefaultItemHeight = 15
+    DefaultItemHeight = 19
     HideSelection = False
     Indent = 2
     RightClickSelect = True

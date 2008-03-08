@@ -69,7 +69,7 @@ type
 
   TIssueManager = class
   private
-    FIssueProperties: TOIIssueProperties;
+    FIssueProperties: TOIRestrictedProperties;
     FIssueList: TIssueList;
     FIssueFiles: TStringList;
     FClassList: TClassHashList;
@@ -84,12 +84,12 @@ type
     constructor Create;
     destructor Destroy; override;
     
-    function GetIssueProperties: TOIIssueProperties;
+    function GetIssueProperties: TOIRestrictedProperties;
     function GetIssueList: TIssueList;
   end;
 
   
-function GetIssueProperties: TOIIssueProperties;
+function GetIssueProperties: TOIRestrictedProperties;
 function GetIssueList: TIssueList;
   
 implementation
@@ -137,7 +137,7 @@ begin
 end;
 
 
-function GetIssueProperties: TOIIssueProperties;
+function GetIssueProperties: TOIRestrictedProperties;
 begin
   if IssueManager = nil then IssueManager := TIssueManager.Create;
   Result := IssueManager.GetIssueProperties;
@@ -151,13 +151,13 @@ end;
 
 { TIssueManager }
 
-function TIssueManager.GetIssueProperties: TOIIssueProperties;
+function TIssueManager.GetIssueProperties: TOIRestrictedProperties;
 var
   I: Integer;
 begin
   Result := nil;
   FreeAndNil(FIssueProperties);
-  FIssueProperties := TOIIssueProperties.Create;
+  FIssueProperties := TOIRestrictedProperties.Create;
 
 
   FClassList := TClassHashList.Create;
@@ -219,7 +219,7 @@ end;
 
 procedure TIssueManager.AddIssueProperty(const IssueName, WidgetSetName: String);
 var
-  Issue: TOIIssueProperty;
+  Issue: TOIRestrictedProperty;
   AClass: TPersistentClass;
   AProperty: String;
   P: Integer;
@@ -242,11 +242,11 @@ begin
   if AClass = nil then
   begin
     // add as generic widgetset issue
-    Inc(FIssueProperties.WidgetSetIssues[DirNameToLCLPlatform(WidgetSetName)]);
+    Inc(FIssueProperties.WidgetSetRestrictions[DirNameToLCLPlatform(WidgetSetName)]);
     Exit;
   end;
   
-  Issue := TOIIssueProperty.Create(AClass, AProperty, True);
+  Issue := TOIRestrictedProperty.Create(AClass, AProperty, True);
   Issue.WidgetSets := [DirNameToLCLPlatform(WidgetSetName)];
   FIssueProperties.Add(Issue);
   //DebugLn('TIssueManager.AddIssue True');

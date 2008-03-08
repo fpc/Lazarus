@@ -21,9 +21,9 @@
   Author: Tomas Gregorovic
 
   Abstract:
-    Browser for widget set compatibility issues
+    Browser for widget set restricted properties.
 }
-unit IssueBrowser;
+unit RestrictionBrowser;
 
 {$mode objfpc}{$H+}
 
@@ -36,9 +36,9 @@ uses
   LazConf;
 
 type
-  { TIssueBrowserView }
+  { TRestrictionBrowserView }
 
-  TIssueBrowserView = class(TForm)
+  TRestrictionBrowserView = class(TForm)
     NameFilterEdit: TEdit;
     IssueFilterGroupBox: TGroupBox;
     IssueMemo: TMemo;
@@ -58,13 +58,13 @@ type
   end;
   
 var
-  IssueBrowserView: TIssueBrowserView = nil;
+  RestrictionBrowserView: TRestrictionBrowserView = nil;
 
 implementation
 
-{ TIssueBrowserView }
+{ TRestrictionBrowserView }
 
-procedure TIssueBrowserView.FormCreate(Sender: TObject);
+procedure TRestrictionBrowserView.FormCreate(Sender: TObject);
 var
   P: TLCLPlatform;
   X: Integer;
@@ -107,7 +107,7 @@ begin
   FCanUpdate := True;
   UpdateIssueList;
 end;
-procedure TIssueBrowserView.IssueTreeViewSelectionChanged(Sender: TObject);
+procedure TRestrictionBrowserView.IssueTreeViewSelectionChanged(Sender: TObject);
 var
   Issue: TIssue;
 begin
@@ -121,17 +121,17 @@ begin
   IssueMemo.Text := Issue.Short + LineEnding + LineEnding + Issue.Description;
 end;
 
-procedure TIssueBrowserView.NameFilterEditChange(Sender: TObject);
+procedure TRestrictionBrowserView.NameFilterEditChange(Sender: TObject);
 begin
   UpdateIssueList;
 end;
 
-procedure TIssueBrowserView.GetComponentClass(const AClass: TComponentClass);
+procedure TRestrictionBrowserView.GetComponentClass(const AClass: TComponentClass);
 begin
   FClasses.Add(AClass);
 end;
 
-procedure TIssueBrowserView.UpdateIssueList;
+procedure TRestrictionBrowserView.UpdateIssueList;
 var
   IssueClass: String;
   IssueProperty: String;
@@ -264,7 +264,7 @@ begin
     IssueMemo.Clear;
 end;
 
-procedure TIssueBrowserView.SetIssueName(const AIssueName: String);
+procedure TRestrictionBrowserView.SetIssueName(const AIssueName: String);
 var
   P: TLCLPlatform;
   Component: TComponent;
@@ -289,7 +289,7 @@ begin
 end;
 
 initialization
-  {$I issuebrowser.lrs}
+  {$I restrictionbrowser.lrs}
 
 end.
 

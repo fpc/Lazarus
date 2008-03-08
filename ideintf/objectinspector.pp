@@ -54,7 +54,7 @@ type
     oipgpProperties,
     oipgpEvents,
     oipgpFavourite,
-    oipgpIssues
+    oipgpRestricted
     );
   TObjectInspectorPages = set of TObjectInspectorPage;
 
@@ -79,13 +79,13 @@ type
     function DebugReportAsString: string;
   end;
   
-  { TOIIssueProperty}
-  TOIIssueProperty = class(TOIFavouriteProperty)
+  { TOIRestrictedProperty}
+  TOIRestrictedProperty = class(TOIFavouriteProperty)
   public
     WidgetSets: TLCLPlatforms;
     
-    function IsIssue(AClass: TPersistentClass;
-                         const APropertyName: string): TLCLPlatforms;
+    function IsRestricted(AClass: TPersistentClass;
+                          const APropertyName: string): TLCLPlatforms;
   end;
 
   { TOIFavouriteProperties }
@@ -133,16 +133,16 @@ type
   end;
   TOIFavouritePropertiesClass = class of TOIFavouriteProperties;
   
-  { TOIIssueProperties }
+  { TOIRestrictedProperties }
 
-  TOIIssueProperties = class(TOIFavouriteProperties)
+  TOIRestrictedProperties = class(TOIFavouriteProperties)
   public
-    WidgetSetIssues: Array [TLCLPlatform] of Integer;
+    WidgetSetRestrictions: Array [TLCLPlatform] of Integer;
     constructor Create;
     
-    function IsIssue(AClass: TPersistentClass;
-                         const PropertyName: string): TLCLPlatforms;
-    function AreIssues(Selection: TPersistentSelectionList;
+    function IsRestricted(AClass: TPersistentClass;
+                          const PropertyName: string): TLCLPlatforms;
+    function AreRestricted(Selection: TPersistentSelectionList;
                            const PropertyName: string): TLCLPlatforms;
   end;
 
@@ -615,7 +615,7 @@ type
     procedure DoViewIssues;
   private
     FFavourites: TOIFavouriteProperties;
-    FIssues: TOIIssueProperties;
+    FIssues: TOIRestrictedProperties;
     FOnAddToFavourites: TNotifyEvent;
     FOnFindDeclarationOfProperty: TNotifyEvent;
     FOnOIKeyDown: TKeyEvent;
@@ -642,7 +642,7 @@ type
     procedure SetFavourites(const AValue: TOIFavouriteProperties);
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
-    procedure SetIssues(const AValue: TOIIssueProperties);
+    procedure SetIssues(const AValue: TOIRestrictedProperties);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
@@ -704,7 +704,7 @@ type
     property GridControl[Page: TObjectInspectorPage]: TOICustomPropertyGrid
                                                             read GetGridControl;
     property Favourites: TOIFavouriteProperties read FFavourites write SetFavourites;
-    property Issues: TOIIssueProperties read FIssues write SetIssues;
+    property Issues: TOIRestrictedProperties read FIssues write SetIssues;
     property OnAddToFavourites: TNotifyEvent read FOnAddToFavourites
                                              write FOnAddToFavourites;
     property OnRemoveFromFavourites: TNotifyEvent read FOnRemoveFromFavourites
@@ -1552,9 +1552,10 @@ begin
   WidgetSets := [];
   if Favourites<>nil then begin
     //debugln('TOICustomPropertyGrid.AddPropertyEditor A ',PropEditor.GetName);
-    if Favourites is TOIIssueProperties then
+    if Favourites is TOIRestrictedProperties then
     begin
-      WidgetSets := (Favourites as TOIIssueProperties).AreIssues(Selection,PropEditor.GetName);
+      WidgetSets := (Favourites as TOIRestrictedProperties).AreRestricted(
+                                                  Selection,PropEditor.GetName);
       if WidgetSets = [] then
       begin
         PropEditor.Free;
@@ -3349,7 +3350,7 @@ begin
   RebuildPropertyLists;
 end;
 
-procedure TObjectInspectorDlg.SetIssues(const AValue: TOIIssueProperties);
+procedure TObjectInspectorDlg.SetIssues(const AValue: TOIRestrictedProperties);
 begin
   if FIssues = AValue then exit;
   //DebugLn('TObjectInspectorDlg.SetIssues Count: ', DbgS(AValue.Count));
@@ -3819,16 +3820,16 @@ begin
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
-    if Issues.WidgetSetIssues[Platform] > 0 then
+    if Issues.WidgetSetRestrictions[Platform] > 0 then
     begin
       None := False;
       IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
         IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
       Inc(X, 16);
       
-      S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetIssues[Platform]));
+      S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetRestrictions[Platform]));
       WidgetSetsIssuesBox.Canvas.TextOut(X, (WidgetSetsIssuesBox.Height - S.CY) div 2,
-        IntToStr(Issues.WidgetSetIssues[Platform]));
+        IntToStr(Issues.WidgetSetRestrictions[Platform]));
       Inc(X, S.CX);
     end;
   end;
@@ -3845,10 +3846,10 @@ var
   X, Y, I, J: Integer;
   S: TSize;
   Platform: TLCLPlatform;
-  WidgetSetIssues: Array [TLCLPlatform] of Integer;
+  WidgetSetRestrictions: Array [TLCLPlatform] of Integer;
   None: Boolean;
 begin
-  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetIssues[Platform] := 0;
+  for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[Platform] := 0;
 
   if Issues = nil then Exit;
   if Selection = nil then Exit;
@@ -3857,12 +3858,12 @@ begin
   begin
     for J := 0 to Selection.Count - 1 do
     begin
-      if (Issues.Items[I] is TOIIssueProperty) and
+      if (Issues.Items[I] is TOIRestrictedProperty) and
         Selection[J].ClassType.InheritsFrom(Issues.Items[I].BaseClass) and
         (Issues.Items[I].PropertyName = '') then
         for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
-          if Platform in (Issues.Items[I] as TOIIssueProperty).WidgetSets then
-            Inc(WidgetSetIssues[Platform]);
+          if Platform in (Issues.Items[I] as TOIRestrictedProperty).WidgetSets then
+            Inc(WidgetSetRestrictions[Platform]);
     end;
   end;
 
@@ -3871,16 +3872,16 @@ begin
   None := True;
   for Platform := Low(TLCLPlatform) to High(TLCLPlatform) do
   begin
-    if WidgetSetIssues[Platform] > 0 then
+    if WidgetSetRestrictions[Platform] > 0 then
     begin
       None := False;
       IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
         IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
       Inc(X, 16);
 
-      S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetIssues[Platform]));
+      S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetRestrictions[Platform]));
       ComponentIssuesBox.Canvas.TextOut(X, (ComponentIssuesBox.Height - S.CY) div 2,
-        IntToStr(WidgetSetIssues[Platform]));
+        IntToStr(WidgetSetRestrictions[Platform]));
       Inc(X, S.CX);
     end;
   end;
@@ -3940,7 +3941,7 @@ begin
     Page[2].TabVisible := ShowFavorites;
     
     Pages.Add(oisIssues);
-    Page[3].Name:=DefaultOIPageNames[oipgpIssues];
+    Page[3].Name:=DefaultOIPageNames[oipgpRestricted];
     Page[3].TabVisible := ShowIssues;
     Page[3].OnShow := @IssuePageShow;
     
@@ -4011,7 +4012,7 @@ begin
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
       , tkInt64, tkQWord],FDefaultItemHeight);
   with IssuesGrid do begin
-    Name:=DefaultOIGridNames[oipgpIssues];
+    Name:=DefaultOIGridNames[oipgpRestricted];
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
@@ -4187,7 +4188,7 @@ begin
   case Page of
   oipgpFavourite: Result:=FavouriteGrid;
   oipgpEvents: Result:=EventGrid;
-  oipgpIssues: Result:=IssuesGrid;
+  oipgpRestricted: Result:=IssuesGrid;
   else  Result:=PropertyGrid;
   end;
 end;
@@ -4717,45 +4718,47 @@ begin
       +' BaseClass='+dbgsName(BaseClass);
 end;
 
-{ TOIIssueProperty }
+{ TOIRestrictedProperty }
 
-function TOIIssueProperty.IsIssue(AClass: TPersistentClass; const APropertyName: string): TLCLPlatforms;
+function TOIRestrictedProperty.IsRestricted(AClass: TPersistentClass;
+  const APropertyName: string): TLCLPlatforms;
 begin
-  //DebugLn('IsIssue ', AClass.ClassName, ' ?= ', BaseClass.ClassName, ' ', APropertyName, ' ?= ', PropertyName);
+  //DebugLn('IsRestricted ', AClass.ClassName, ' ?= ', BaseClass.ClassName, ' ', APropertyName, ' ?= ', PropertyName);
   Result := [];
   if (CompareText(PropertyName,APropertyName) = 0)
     and (AClass.InheritsFrom(BaseClass)) then Result := WidgetSets;
 end;
 
 
-{ TOIIssueProperties }
+{ TOIRestrictedProperties }
 
-constructor TOIIssueProperties.Create;
+constructor TOIRestrictedProperties.Create;
 var
   P: TLCLPlatform;
 begin
   inherited Create;
   
-  for P := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetIssues[P] := 0;
+  for P := Low(TLCLPlatform) to High(TLCLPlatform) do WidgetSetRestrictions[P] := 0;
 end;
 
-function TOIIssueProperties.IsIssue(AClass: TPersistentClass;
+function TOIRestrictedProperties.IsRestricted(AClass: TPersistentClass;
   const PropertyName: string): TLCLPlatforms;
 var
   I: Integer;
-  CurItem: TOIIssueProperty;
+  CurItem: TOIRestrictedProperty;
 begin
   Result := [];
   if (AClass=nil) or (PropertyName='') then Exit;
   for I := 0 to Count - 1 do
   begin
-    if not (Items[I] is TOIIssueProperty) then Continue;
-    CurItem:=Items[I] as TOIIssueProperty;
-    Result := Result + CurItem.IsIssue(AClass,PropertyName);
+    if not (Items[I] is TOIRestrictedProperty) then Continue;
+    CurItem:=Items[I] as TOIRestrictedProperty;
+    Result := Result + CurItem.IsRestricted(AClass,PropertyName);
   end;
 end;
 
-function TOIIssueProperties.AreIssues(Selection: TPersistentSelectionList;
+function TOIRestrictedProperties.AreRestricted(
+  Selection: TPersistentSelectionList;
   const PropertyName: string): TLCLPlatforms;
 var
   I: Integer;
@@ -4764,7 +4767,7 @@ begin
   if Selection = nil then Exit;
   for i:=0 to Selection.Count-1 do
   begin
-    Result := Result + IsIssue(TPersistentClass(Selection[i].ClassType), PropertyName);
+    Result := Result + IsRestricted(TPersistentClass(Selection[i].ClassType), PropertyName);
   end;
 end;
 
