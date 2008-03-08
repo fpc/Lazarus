@@ -1933,7 +1933,7 @@ ide/codetoolsdefpreview.pas svneol=native#text/pascal
 ide/codetoolsoptions.lfm svneol=native#text/pascal
 ide/codetoolsoptions.lrs svneol=native#text/pascal
 ide/codetoolsoptions.pas svneol=native#text/pascal
-ide/compatibilityissues.pas svneol=native#text/pascal
+ide/compatibilityrestrictions.pas svneol=native#text/pascal
 ide/compiler.pp svneol=native#text/pascal
 ide/compileroptions.pp svneol=native#text/pascal
 ide/compileroptionsdlg.lfm -text

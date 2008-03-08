@@ -24,10 +24,10 @@
  ***************************************************************************
 
   Abstract:
-    Compatiblity issues utilities
+    Compatiblity restrictions utilities
 
 }
-unit CompatibilityIssues;
+unit CompatibilityRestrictions;
 
 {$mode objfpc}{$H+}
 

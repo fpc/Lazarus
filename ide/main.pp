@@ -127,8 +127,8 @@ uses
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
   DialogProcs, FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   ProcedureList, ExtractProcDlg, FindRenameIdentifier, AbstractsMethodsDlg,
-  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager, CompatibilityIssues,
-  RestrictionBrowser,
+  CleanDirDlg, CodeContextForm, AboutFrm, BuildManager,
+  CompatibilityRestrictions, RestrictionBrowser,
   // main ide
   MainBar, MainIntf, MainBase;
 

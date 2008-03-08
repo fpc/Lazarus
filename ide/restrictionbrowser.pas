@@ -31,9 +31,10 @@ interface
 
 uses
   Classes, SysUtils, InterfaceBase, LCLProc, LResources, Contnrs, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ComCtrls, CompatibilityIssues, IDEOptionDefs, LazarusIDEStrConsts,
-  IDEImagesIntf, EnvironmentOpts, Masks, ComponentReg, ObjectInspector, ExtCtrls, Buttons,
-  LazConf;
+  Dialogs, StdCtrls, ComCtrls, Masks, ExtCtrls, Buttons,
+  IDEImagesIntf, ObjectInspector,
+  CompatibilityRestrictions, IDEOptionDefs, LazarusIDEStrConsts,
+  EnvironmentOpts, ComponentReg, LazConf;
 
 type
   { TRestrictionBrowserView }
