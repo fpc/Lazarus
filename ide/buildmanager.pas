@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree,
   // LCL
-  LCLProc, Dialogs, FileUtil, Forms, Controls,
+  InterfaceBase, LCLProc, Dialogs, FileUtil, Forms, Controls,
   // codetools
   BasicCodeTools, CodeToolManager, DefineTemplates,
   // IDEIntf

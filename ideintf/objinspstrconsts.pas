@@ -44,10 +44,10 @@ resourcestring
   oisProperties='Properties';
   oisEvents='Events';
   oisFavorites = 'Favorites';
-  oisIssues = 'Issues';
+  oisRestricted = 'Restricted';
   
-  oisWidgetSetIssues = 'General Widget Set issues: ';
-  oisComponentIssues = 'Component issues: ';
+  oisWidgetSetRestrictions = 'General widget set restrictions: ';
+  oisComponentRestrictions = 'Component restrictions: ';
 
   
   //Object Inspector Popup Menu

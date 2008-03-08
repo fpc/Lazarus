@@ -52,16 +52,6 @@ type
   TLCLPlatforms = set of TLCLPlatform;
   
 const
-  LCLPlatformDirNames: array[TLCLPlatform] of string = (
-      'gtk',
-      'gtk2',
-      'win32',
-      'wince',
-      'carbon',
-      'qt',
-      'fpgui',
-      'nogui'
-    );
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
       'gtk',
       'gtk 2 (beta)',

@@ -112,6 +112,18 @@ type
   end;
   TWidgetSetClass = class of TWidgetSet;
 
+const
+  LCLPlatformDirNames: array[TLCLPlatform] of string = (
+      'gtk',
+      'gtk2',
+      'win32',
+      'wince',
+      'carbon',
+      'qt',
+      'fpgui',
+      'nogui'
+    );
+    
 type
   EInterfaceException = class(Exception);
   EInterfaceError = class(EInterfaceException);

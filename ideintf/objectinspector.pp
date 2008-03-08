@@ -37,7 +37,8 @@ interface
 uses
   InterfaceBase, Forms, SysUtils, Buttons, Types, Classes, Graphics, GraphType,
   StdCtrls, LCLType, LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo,
-  LMessages, LResources, LazConfigStorage, Menus, Dialogs, ObjInspStrConsts,
+  LMessages, LResources, LazConfigStorage, Menus, Dialogs,
+  ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors, IDEImagesIntf;
 
@@ -567,9 +568,9 @@ type
     DeletePopupmenuItem: TMenuItem;
     EventGrid: TOICustomPropertyGrid;
     FavouriteGrid: TOICustomPropertyGrid;
-    IssuesGrid: TOICustomPropertyGrid;
-    IssuesPanel: TPanel;
-    IssuesInnerPanel: TPanel;
+    RestrictedGrid: TOICustomPropertyGrid;
+    RestrictedPanel: TPanel;
+    RestrictedInnerPanel: TPanel;
     WidgetSetsIssuesLabel: TLabel;
     WidgetSetsIssuesBox: TPaintBox;
     ComponentIssuesLabel: TLabel;
@@ -608,7 +609,7 @@ type
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
-    procedure IssuePageShow(Sender: TObject);
+    procedure RestrictedPageShow(Sender: TObject);
     procedure WidgetSetIssuesPaint(Sender: TObject);
     procedure ComponentIssuesPaint(Sender: TObject);
     procedure DoUpdateIssues;
@@ -722,35 +723,21 @@ const
     'PropertyPage',
     'EventPage',
     'FavouritePage',
-    'IssuesPage'
+    'RestrictedPage'
     );
   DefaultOIGridNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyGrid',
     'EventGrid',
     'FavouriteGrid',
-    'IssuesGrid'
+    'RestrictedGrid'
     );
 
 
 function CompareOIFavouriteProperties(Data1, Data2: Pointer): integer;
 
 
-const
-  WidgetSetImageNames: array [TLCLPlatform] of shortstring = (
-    'issue_gtk',
-    'issue_gtk2',
-    'issue_win32',
-    'issue_wince',
-    'issue_carbon',
-    'issue_qt',
-    'issue_fpgui',
-    'issue_nogui'
-  );
-
-//******************************************************************************
-
-
 implementation
+
 
 const
   ScrollBarWidth=0;
@@ -2262,7 +2249,8 @@ begin
       if Platform in CurRow.FWidgetSets then
       begin
         Dec(X, IDEImages.Images_16.Width);
-        IDEImages.Images_16.Draw(Canvas, X, Y, IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
+        IDEImages.Images_16.Draw(Canvas, X, Y,
+          IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
       end;
     end;
     Font:=OldFont;
@@ -3355,7 +3343,7 @@ begin
   if FIssues = AValue then exit;
   //DebugLn('TObjectInspectorDlg.SetIssues Count: ', DbgS(AValue.Count));
   FIssues := AValue;
-  IssuesGrid.Favourites := FIssues;
+  RestrictedGrid.Favourites := FIssues;
 end;
 
 procedure TObjectInspectorDlg.SetOnShowOptions(const AValue: TNotifyEvent);
@@ -3460,7 +3448,7 @@ begin
   0: Result:=PropertyGrid;
   1: Result:=EventGrid;
   2: Result:=FavouriteGrid;
-  3: Result:=IssuesGrid;
+  3: Result:=RestrictedGrid;
   end;
 end;
 
@@ -3800,9 +3788,9 @@ begin
   NoteBook.Page[3].TabVisible := AValue;
 end;
 
-procedure TObjectInspectorDlg.IssuePageShow(Sender: TObject);
+procedure TObjectInspectorDlg.RestrictedPageShow(Sender: TObject);
 begin
-  //DebugLn('IssuePageShow');
+  //DebugLn('RestrictedPageShow');
   DoUpdateIssues;
 end;
 
@@ -3824,7 +3812,7 @@ begin
     begin
       None := False;
       IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
-        IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
+        IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
       Inc(X, 16);
       
       S := WidgetSetsIssuesBox.Canvas.TextExtent(IntToStr(Issues.WidgetSetRestrictions[Platform]));
@@ -3876,7 +3864,7 @@ begin
     begin
       None := False;
       IDEImages.Images_16.Draw(WidgetSetsIssuesBox.Canvas, X, Y,
-        IDEImages.LoadImage(16, WidgetSetImageNames[Platform]));
+        IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[Platform]));
       Inc(X, 16);
 
       S := ComponentIssuesBox.Canvas.TextExtent(IntToStr(WidgetSetRestrictions[Platform]));
@@ -3913,7 +3901,7 @@ begin
   FreeAndNil(PropertyGrid);
   FreeAndNil(EventGrid);
   FreeAndNil(FavouriteGrid);
-  FreeAndNil(IssuesGrid);
+  FreeAndNil(RestrictedGrid);
   FreeAndNil(NoteBook);
 end;
 
@@ -3940,10 +3928,10 @@ begin
     Page[2].Name:=DefaultOIPageNames[oipgpFavourite];
     Page[2].TabVisible := ShowFavorites;
     
-    Pages.Add(oisIssues);
+    Pages.Add(oisRestricted);
     Page[3].Name:=DefaultOIPageNames[oipgpRestricted];
     Page[3].TabVisible := ShowIssues;
-    Page[3].OnShow := @IssuePageShow;
+    Page[3].OnShow := @RestrictedPageShow;
     
     PageIndex:=0;
     PopupMenu:=MainPopupMenu;
@@ -4006,12 +3994,12 @@ begin
   FavouriteGrid.Favourites:=FFavourites;
   
   // issues grid
-  IssuesGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
+  RestrictedGrid:=TOICustomPropertyGrid.CreateWithParams(Self,PropertyEditorHook,
     [tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
       , tkInt64, tkQWord],FDefaultItemHeight);
-  with IssuesGrid do begin
+  with RestrictedGrid do begin
     Name:=DefaultOIGridNames[oipgpRestricted];
     Selection:=Self.FSelection;
     Align:=alClient;
@@ -4024,30 +4012,30 @@ begin
     Parent:=NoteBook.Page[3];
   end;
   
-  IssuesPanel := TPanel.Create(Self);
-  with IssuesPanel do
+  RestrictedPanel := TPanel.Create(Self);
+  with RestrictedPanel do
   begin
     Align := alTop;
     BevelOuter := bvNone;
     Parent := NoteBook.Page[3];
   end;
   
-  IssuesInnerPanel := TPanel.Create(Self);
-  with IssuesInnerPanel do
+  RestrictedInnerPanel := TPanel.Create(Self);
+  with RestrictedInnerPanel do
   begin
     BevelOuter := bvNone;
     BorderSpacing.Around := 6;
-    Parent := IssuesPanel;
+    Parent := RestrictedPanel;
   end;
   
   WidgetSetsIssuesLabel := TLabel.Create(Self);
   with WidgetSetsIssuesLabel do
   begin
-    Caption := oisWidgetSetIssues;
+    Caption := oisWidgetSetRestrictions;
     Top := 1;
     Align := alTop;
     AutoSize := True;
-    Parent := IssuesInnerPanel;
+    Parent := RestrictedInnerPanel;
   end;
   
   WidgetSetsIssuesBox := TPaintBox.Create(Self);
@@ -4057,17 +4045,17 @@ begin
     Align := alTop;
     Height := 24;
     OnPaint := @WidgetSetIssuesPaint;
-    Parent := IssuesInnerPanel;
+    Parent := RestrictedInnerPanel;
   end;
   
   ComponentIssuesLabel := TLabel.Create(Self);
   with ComponentIssuesLabel do
   begin
-    Caption := oisComponentIssues;
+    Caption := oisComponentRestrictions;
     Top := 3;
     Align := alTop;
     AutoSize := True;
-    Parent := IssuesInnerPanel;
+    Parent := RestrictedInnerPanel;
   end;
   
   ComponentIssuesBox := TPaintBox.Create(Self);
@@ -4077,11 +4065,11 @@ begin
     Align := alTop;
     Height := 24;
     OnPaint := @ComponentIssuesPaint;
-    Parent := IssuesInnerPanel;
+    Parent := RestrictedInnerPanel;
   end;
   
-  IssuesInnerPanel.AutoSize := True;
-  IssuesPanel.AutoSize := True;
+  RestrictedInnerPanel.AutoSize := True;
+  RestrictedPanel.AutoSize := True;
 end;
 
 procedure TObjectInspectorDlg.KeyDown(var Key: Word; Shift: TShiftState);
@@ -4188,7 +4176,7 @@ begin
   case Page of
   oipgpFavourite: Result:=FavouriteGrid;
   oipgpEvents: Result:=EventGrid;
-  oipgpRestricted: Result:=IssuesGrid;
+  oipgpRestricted: Result:=RestrictedGrid;
   else  Result:=PropertyGrid;
   end;
 end;

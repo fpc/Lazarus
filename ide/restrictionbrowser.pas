@@ -94,7 +94,8 @@ begin
       Down := True;
       AllowAllUp := True;
       
-      IDEImages.Images_16.GetBitmap(IDEImages.LoadImage(16, WidgetSetImageNames[P]), Glyph);
+      IDEImages.Images_16.GetBitmap(
+               IDEImages.LoadImage(16, 'issue_'+LCLPlatformDirNames[P]), Glyph);
       ShowHint := True;
       Hint := LCLPlatformDisplayNames[P];
       OnClick := @NameFilterEditChange;
@@ -236,7 +237,8 @@ begin
         begin
           ID := PtrInt(Issues.Objects[I]);
           
-          ImageIndex := IDEImages.LoadImage(16, WidgetSetImageNames[FIssueList[ID].WidgetSet]);
+          ImageIndex := IDEImages.LoadImage(16,
+              'issue_'+LCLPlatformDirNames[FIssueList[ID].WidgetSet]);
           StateIndex := ImageIndex;
           SelectedIndex := ImageIndex;
           
