@@ -27,6 +27,7 @@ menu/menu_build_all.png
 menu/menu_build_clean.png
 menu/menu_build_file.png
 menu/menu_build_lazarus.png
+menu/menu_build_run_file.png
 menu/menu_clean.png
 menu/menu_close.png
 menu/menu_close_all.png
@@ -76,7 +77,9 @@ menu/menu_search_find_next.png
 menu/menu_search_find_previous.png
 menu/menu_search_jumpback.png
 menu/menu_search_jumpforward.png
+menu/menu_search_next_bookmark.png
 menu/menu_search_openfile_atcursor.png
+menu/menu_search_previous_bookmark.png
 menu/menu_search_replace.png
 menu/menu_select_all.png
 menu/menu_stepinto.png
@@ -91,6 +94,7 @@ menu/menu_uncomment.png
 menu/menu_undo.png
 menu/menu_unindent.png
 menu/menu_view_anchor_editor.png
+menu/menu_view_code_browser.png
 menu/menu_view_code_explorer.png
 menu/menu_view_forms.png
 menu/menu_view_inspector.png

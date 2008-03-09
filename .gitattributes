@@ -2537,7 +2537,9 @@ images/menu/menu_search_find_next.png -text svneol=unset#image/png
 images/menu/menu_search_find_previous.png -text svneol=unset#image/png
 images/menu/menu_search_jumpback.png -text svneol=unset#image/png
 images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
+images/menu/menu_search_next_bookmark.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
+images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_stepinto.png -text svneol=unset#image/png
@@ -2552,6 +2554,7 @@ images/menu/menu_uncomment.png -text
 images/menu/menu_undo.png -text svneol=unset#image/png
 images/menu/menu_unindent.png -text svneol=unset#image/png
 images/menu/menu_view_anchor_editor.png -text svneol=unset#image/png
+images/menu/menu_view_code_browser.png -text
 images/menu/menu_view_code_explorer.png -text svneol=unset#image/png
 images/menu/menu_view_forms.png -text svneol=unset#image/png
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
