@@ -1083,7 +1083,7 @@ var
   
 begin
   Assert(False, 'Trace:WindowProc - Start');
-
+  
   LMessage.Result := 0;
   LMessage.Msg := LM_NULL;
   PLMsg := @LMessage;
@@ -1858,25 +1858,34 @@ begin
           if WindowInfo^.WinControl <> nil then
             HandleSpinEditDeltaPos(PNMUpDown(LParam));
         end;
-        NM_RCLICK:
+        NM_CLICK, NM_RCLICK:
         begin
-          // A listview doesn't get a WM_RBUTTONUP message, because it keeps the
-          // message in its own event loop,
+          // A listview doesn't get a WM_LBUTTONUP, WM_RBUTTONUP message,
+          // because it keeps the message in its own event loop,
           // see msdn article about "Default List-View Message Processing"
-          // therefore we take this notification and create a LM_RBUTTONUP
-          // message out of it
+          // therefore we take this notification and create a
+          // LM_LBUTTONUP, LM_RBUTTONUP message out of it
           if (WindowInfo^.WinControl <> nil) and
             (WindowInfo^.WinControl is TCustomListView) then
           begin
-            WinProcess := false;
+            WinProcess := False;
             lWinControl := WindowInfo^.WinControl;
             PLMsg:=@LMMouse;
             with LMMouse Do
             begin
-              Msg := LM_RBUTTONUP;
+              if PNMHdr(LParam)^.code = NM_CLICK then
+                Msg := LM_LBUTTONUP
+              else
+                Msg := LM_RBUTTONUP;
               Pos := GetClientCursorPos(PNMHdr(LParam)^.hwndFrom);
               Keys := 0;  // I don't know how to get this information
               Result := 0;
+              // to make correct event sequence in LCL we should postpone this message
+              // since we are here after call of CallDefaultWindowProc
+              
+              // TODO: prevent getting more than one Up, Down message by LCL
+              PostMessage(Window, Msg, 0, MakeLParam(Pos.x, Pos.y));
+              Exit;
             end;
           end;
         end;
