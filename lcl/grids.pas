@@ -5710,14 +5710,13 @@ end;
 
 procedure TCustomGrid.EditorShow(const SelAll: boolean);
 begin
-  if csDesigning in ComponentState then
-    exit;
-    
-  if not HandleAllocated then
+  if ([csLoading,csDestroying,csDesigning]*ComponentState<>[])
+  or (not Enabled) or (not IsVisible)
+  or (not HandleAllocated) then
     Exit;
 
   if (goEditing in Options) and CanEditShow and
-     not FEditorShowing and (Editor<>nil) and not Editor.Visible then
+     (not FEditorShowing) and (Editor<>nil) and (not Editor.Visible) then
   begin
     {$ifdef dbgGrid} DebugLn('EditorShow [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$endif}
     FEditorMode:=True;

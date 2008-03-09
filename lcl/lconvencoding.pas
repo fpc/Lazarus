@@ -363,9 +363,11 @@ var
   {$endif}
 begin
   Result:=s;
+  if AFrom=ATo then exit;
   AFrom:=LowerCase(FromEncoding);
   ATo:=LowerCase(ToEncoding);
   if AFrom=ATo then exit;
+  
   if ATo='koi8r' then ATo:='koi8-r';
   if AFrom='koi8r' then AFrom:='koi8-r';
   if (AFrom='utf8') or (AFrom='utf-8') then
