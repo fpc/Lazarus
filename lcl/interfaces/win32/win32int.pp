@@ -232,6 +232,7 @@ const
   ButtonClsName: array[0..6] of char = 'Button'#0;
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
+  ListViewClsName: array[0..13] of char = 'SysListView32'#0;
 
   ClsNameW: array[0..6] of WideChar = ('W', 'i', 'n', 'd', 'o', 'w', #0);
 

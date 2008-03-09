@@ -626,11 +626,11 @@ end;
 {------------------------------------------------------------------------------
        TControl.LMCaptureChanged
 ------------------------------------------------------------------------------}
-Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
-Begin
+procedure TControl.LMCaptureChanged(Var Message: TLMessage);
+begin
   //DebugLn('[LMCaptureChanged for '+Name+':'+Classname+']');
   CaptureChanged;
-End;
+end;
 
 {------------------------------------------------------------------------------
        TControl.CMENABLEDCHANGED
@@ -1494,7 +1494,7 @@ begin
       Exit;
     end;
   end
-  else if (TheMessage.Msg >= LM_KeyFirst) and (TheMessage.Msg <= LM_KeyLast)
+  else if (TheMessage.Msg >= LM_KEYFIRST) and (TheMessage.Msg <= LM_KEYLAST)
   then begin
     // keyboard messages
     Form := GetParentForm(Self);

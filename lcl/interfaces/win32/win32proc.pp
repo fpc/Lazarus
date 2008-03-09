@@ -401,6 +401,7 @@ begin
   $03E7: Result := 'WM_DDE_POKE';
   $03E8: Result := 'WM_DDE_EXECUTE or WM_DDE_LAST';
   $0400: Result := 'WM_USER';
+  $102C: Result := 'LVM_GETITEMSTATE';
   $8000: Result := 'WM_APP';
   Else
     Result := 'Unknown(' + IntToStr(WM_Message) + ')';
