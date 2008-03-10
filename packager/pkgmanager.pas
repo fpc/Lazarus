@@ -3759,7 +3759,8 @@ begin
   StaticPackagesInc:='';
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
-    if (not Dependency.RequiredPackage.AutoCreated) then
+    if (Dependency.RequiredPackage<>nil)
+    and (not Dependency.RequiredPackage.AutoCreated) then
       StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
     Dependency:=Dependency.NextRequiresDependency;
   end;
