@@ -336,10 +336,10 @@ type
   published
     { Déclarations publiées }
     procedure StyleChanged(Sender: TObject);
-    property AutoUpdateXMin:Boolean read FAutoUpdateXMin write SetAutoUpdateXMin;
-    property AutoUpdateXMax:Boolean read FAutoUpdateXMax write SetAutoUpdateXMax;
-    property AutoUpdateYMin:Boolean read FAutoUpdateYMin write SetAutoUpdateYMin;
-    property AutoUpdateYMax:Boolean read FAutoUpdateYMax write SetAutoUpdateYMax;
+    property AutoUpdateXMin:Boolean read FAutoUpdateXMin write SetAutoUpdateXMin default True;
+    property AutoUpdateXMax:Boolean read FAutoUpdateXMax write SetAutoUpdateXMax default True;
+    property AutoUpdateYMin:Boolean read FAutoUpdateYMin write SetAutoUpdateYMin default True;
+    property AutoUpdateYMax:Boolean read FAutoUpdateYMax write SetAutoUpdateYMax default True;
     property XGraphMin:Double read FXGraphMin write SetXGraphMin;
     property YGraphMin:Double read FYGraphMin write SetYGraphMin;
     property XGraphMax:Double read FXGraphMax write SetXGraphMax;
@@ -356,7 +356,7 @@ type
     property Title: TChartTitle read FTitle write SetTitle;
     property Foot: TChartTitle read FFoot write SetFoot;
 
-    property AllowZoom: Boolean read FAllowZoom write FAllowZoom;
+    property AllowZoom: Boolean read FAllowZoom write FAllowZoom default True;
 
     property LeftAxis: TChartAxis read FLeftAxis write SetLeftAxis;
     property BottomAxis: TChartAxis read FBottomAxis write SetBottomAxis;
@@ -364,7 +364,7 @@ type
 
     property BackColor: TColor read FBackColor write SetBackColor;
 
-    property AxisVisible: boolean read FAxisVisible write SetAxisVisible;
+    property AxisVisible: boolean read FAxisVisible write SetAxisVisible default True;
 
     property Align;
     property Color;
@@ -1722,10 +1722,10 @@ begin
    else
    // 0 Points
       begin
-      FXGraphMin:=0;
-      FXGraphMax:=0;
-      FYGraphMin:=0;
-      FYGraphMax:=0;
+        if FAutoUpdateXMin then FXGraphMin:=0;
+        if FAutoUpdateXMax then FXGraphMax:=0;
+        if FAutoUpdateYMin then FYGraphMin:=0;
+        if FAutoUpdateYMax then FYGraphMax:=0; 
       end;
    end;
    // Image <-> Graph coeff calculation
