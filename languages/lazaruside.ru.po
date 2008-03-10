@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-02 00:45+0300\n"
+"PO-Revision-Date: 2008-03-10 00:40+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -2643,7 +2643,7 @@ msgstr "Прикреплён"
 
 #: lazarusidestrconsts:lismvdocking
 msgid "Docking"
-msgstr ""
+msgstr "Стыковка"
 
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
@@ -7027,7 +7027,7 @@ msgstr "Восстановить размер окна"
 
 #: lazarusidestrconsts:lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
-msgstr ""
+msgstr "Браузер ограничений"
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10151,7 +10151,7 @@ msgstr "Показать модули проекта"
 
 #: lazarusidestrconsts:srkmectogglerestrictionbrowser
 msgid "View restriction browser"
-msgstr ""
+msgstr "Показать браузер ограничений"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-01 00:51+0300\n"
+"PO-Revision-Date: 2008-03-10 00:45+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -271,7 +271,7 @@ msgstr "Имя компонента %s%s%s не является коррект�
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "Ограничения компонента: "
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -475,7 +475,7 @@ msgstr "Выбор шрифта"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "Ограничения библиотеки виджетов в целом: "
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -747,7 +747,7 @@ msgstr "Удалить из Избранного"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr ""
+msgstr "Ограничения"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -931,7 +931,7 @@ msgstr "Variant"
 
 #: objinspstrconsts:oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr ""
+msgstr "Просмотреть свойства с ограничениями"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
