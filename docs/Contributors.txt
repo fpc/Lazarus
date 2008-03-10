@@ -104,6 +104,7 @@ Sean McIlwain
 Seppo Suutarla - finnish translation
 Sergio Marcelo
 Shane Miller
+Sileno Goedicke
 Slavko Fedorik
 Stefan Hille
 Taras Boychuk
