@@ -3338,10 +3338,6 @@ msgstr "Filtrovanie s porovnávaním akejkoľvek časti metódy"
 msgid "Filter by matching with start of method"
 msgstr "Filtrovanie s porovnávaním začiatku metódy"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr ""
@@ -4685,14 +4681,6 @@ msgstr "Otočiť priradenie"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Neplatné"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7037,6 +7025,10 @@ msgstr "Obnoviť geometriu okien"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Obnoviť veľkosť okna"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10122,10 +10114,6 @@ msgstr "Zobraziť výstup debugera"
 msgid "View forms"
 msgstr "Zobraziť formuláre"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Zobraziť históriu skokov"
@@ -10161,6 +10149,10 @@ msgstr "Zobraziť zdrojový kód projektu"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Zobraziť jednotky projektu"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

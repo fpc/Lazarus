@@ -3336,10 +3336,6 @@ msgstr "メソッドの任意の位置に適合するフィルタ"
 msgid "Filter by matching with start of method"
 msgstr "メソッドの冒頭に適合するフィルタ"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "最終"
@@ -4683,14 +4679,6 @@ msgstr "代入を反転"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "不規則"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7035,6 +7023,10 @@ msgstr "ウィンドウの位置/サイズを復元"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "ウィンドウサイズを復元"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10120,10 +10112,6 @@ msgstr "デバッガ出力を表示"
 msgid "View forms"
 msgstr "フォームを表示"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "移動履歴を表示"
@@ -10159,6 +10147,10 @@ msgstr "プロジェクトソースを表示"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "プロジェクトユニットを表示"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

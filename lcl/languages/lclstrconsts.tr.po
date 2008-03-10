@@ -1,5 +1,13 @@
 msgid ""
 msgstr ""
+"Last-Translator: Hakan KIZILHAN <hakan486@yahoo.com>\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-03-11 00:06+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
@@ -31,7 +39,7 @@ msgstr " DİKKAT: %s adet kaldırılmamış LM_PAINT/LM_GtkPAINT mesaj bağlant�
 
 #: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0 .. %d"
-msgstr ""
+msgstr "%s Dizin %d sınırların dışında 0.. %d"
 
 #: lclstrconsts:rsisalreadyassociatedwith
 msgid "%s is already associated with %s"
@@ -243,7 +251,7 @@ msgstr "Sil"
 
 #: lclstrconsts:rsdeleterecord
 msgid "Delete record?"
-msgstr ""
+msgstr "Kayıt silinsin mi?"
 
 #: lclstrconsts:rsdirection
 msgid "Direction"
@@ -499,7 +507,7 @@ msgstr "Geçersiz akış biçimi"
 
 #: lclstrconsts:rsjpeg
 msgid "Joint Picture Expert Group"
-msgstr ""
+msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts:ifsvk_junja
 msgid "Junja"
@@ -579,7 +587,7 @@ msgstr "Tümüne hayır"
 
 #: lclstrconsts:rsnowidgetset
 msgid "No widgetset object. Please check if the unit \"interfaces\" was added to the programs uses clause."
-msgstr ""
+msgstr "Parçacık nesnesi yok. Lütfen  \"interfaces\" biriminin programın uses bölümüne eklenip eklenmediğini denetleyin."
 
 #: lclstrconsts:ifsvk_nonconvert
 msgid "Nonconvert"
@@ -619,11 +627,11 @@ msgstr "Pixmap"
 
 #: lclstrconsts:rsportablebitmap
 msgid "Portable BitMap"
-msgstr ""
+msgstr "Taşınabilir BitMap"
 
 #: lclstrconsts:rsportablegraymap
 msgid "Portable GrayMap"
-msgstr ""
+msgstr "Taşınabilir GrayMap"
 
 #: lclstrconsts:rsportablenetworkgraphic
 msgid "Portable Network Graphic"
@@ -631,7 +639,7 @@ msgstr "Taşınabilir ağ grafiği"
 
 #: lclstrconsts:rsportablepixmap
 msgid "Portable PixMap"
-msgstr ""
+msgstr "Taşınabilir PixMap"
 
 #: lclstrconsts:ifsvk_print
 msgid "Print"

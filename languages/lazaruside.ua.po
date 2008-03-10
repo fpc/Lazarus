@@ -3332,10 +3332,6 @@ msgstr "Фільтр за збіжністю будь-якої частини м
 msgid "Filter by matching with start of method"
 msgstr "Фільтр за збіжністю початку метода"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Остаточний"
@@ -4679,14 +4675,6 @@ msgstr "Інвертувати присвоєння"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Нерегулярний "
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7031,6 +7019,10 @@ msgstr "Відновити геометрію вікна"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Відновити розмір вікна"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10116,10 +10108,6 @@ msgstr "Переглядання виводу налагоджувача"
 msgid "View forms"
 msgstr "Показувати форми"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Переглянути історію переходів"
@@ -10155,6 +10143,10 @@ msgstr "Переглядання тексту проекту"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Показувати модулі проекту"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

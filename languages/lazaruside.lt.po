@@ -3342,10 +3342,6 @@ msgstr "Filtruoti pagal bet kurią metodo dalį"
 msgid "Filter by matching with start of method"
 msgstr "Filtruoti pagal metodo pradžią"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4689,14 +4685,6 @@ msgstr "Sukeisti priskyrimą"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Nereguliarus"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7043,6 +7031,10 @@ msgstr "Atstatyti lango geometriją"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Atstatyti lango dydį"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10142,10 +10134,6 @@ msgstr "Rodyti derintuvės išvestį"
 msgid "View forms"
 msgstr "Rodyti formas"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Rodyti peršokimų istoriją"
@@ -10181,6 +10169,10 @@ msgstr "Rodyti projekto pirminį kodą"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Rodyti projekto modulius"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

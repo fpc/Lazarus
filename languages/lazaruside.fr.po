@@ -3338,10 +3338,6 @@ msgstr "Filtre en assortissant toute partie de la méthode"
 msgid "Filter by matching with start of method"
 msgstr "Filtre par l'assortiment avec le début de la méthode"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Fin"
@@ -4685,14 +4681,6 @@ msgstr "Inverser l'assignation"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irrégulière"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7037,6 +7025,10 @@ msgstr "Restaurer la géométrie de la fenêtre"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Restaurer la taille de la fenêtre"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10122,10 +10114,6 @@ msgstr "Afficher la fenêtre de sortie du débogueur"
 msgid "View forms"
 msgstr "Afficher les fiches"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Afficher l'historique des déplacement ..."
@@ -10161,6 +10149,10 @@ msgstr "Afficher les sources du projet"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Afficher les unités du projet"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

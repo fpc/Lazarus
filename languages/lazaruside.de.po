@@ -3340,10 +3340,6 @@ msgstr "Filtern, wenn ein beliebiger Bereich der Methode paßt"
 msgid "Filter by matching with start of method"
 msgstr "Filtern, wenn der Methodenstart paßt"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr "Ausgaben filtern"
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Endgültig"
@@ -4687,14 +4683,6 @@ msgstr "Umgekehrte Zuweisung"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregulär"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr "Ausgaben-Browser"
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr "Ausgaben-Browser"
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7039,6 +7027,10 @@ msgstr "Fensterwerte wiederherstellen"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Fenstergröße wiederherstellen"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10124,10 +10116,6 @@ msgstr "Debuggerausgabe anzeigen"
 msgid "View forms"
 msgstr "Formulare anzeigen"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr "Ausgaben-Browser aufrufen"
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Sprungverlauf anzeigen"
@@ -10163,6 +10151,10 @@ msgstr "Projektquelltext anzeigen"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Projektunits anzeigen"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -3337,10 +3337,6 @@ msgstr "Фильтровать по любой части метода"
 msgid "Filter by matching with start of method"
 msgstr "Фильтровать по началу метода"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr "Фильтр нюансов"
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4684,14 +4680,6 @@ msgstr "Инвертировать присвоение"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Нерегулярный "
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr "Браузер нюансов"
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr "Браузер нюансов"
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7036,6 +7024,10 @@ msgstr "Восстановить геометрию окна"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Восстановить размер окна"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10121,10 +10113,6 @@ msgstr "Просмотр вывода отладчика"
 msgid "View forms"
 msgstr "Показать формы"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr "Показать браузер нюансов"
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr "Показать историю переходов"
@@ -10160,6 +10148,10 @@ msgstr "Показать исходный код проекта"
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Показать модули проекта"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -3329,10 +3329,6 @@ msgstr "Filtrar comparando com qualquer parte do metodo"
 msgid "Filter by matching with start of method"
 msgstr "Filtrar comparando com inicio do metodo"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4676,14 +4672,6 @@ msgstr "Inverter Atribuição"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregular"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7028,6 +7016,10 @@ msgstr "Restaurar geometria da janela"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Restaurar tamanho da janela"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10113,10 +10105,6 @@ msgstr "Mostrar saída do depurador"
 msgid "View forms"
 msgstr "Mostrar Formulários"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr ""
@@ -10152,6 +10140,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Exibir unidades do projeto"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

@@ -3337,10 +3337,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Laatste"
@@ -4684,14 +4680,6 @@ msgstr "Draai toekenning om"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Ongeregeld"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7036,6 +7024,10 @@ msgstr "Herstel window plaatsing"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Herstel window afmeting"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10121,10 +10113,6 @@ msgstr "Toon Debugger output "
 msgid "View forms"
 msgstr "Toon Forms"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr ""
@@ -10160,6 +10148,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Toon Project Units"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

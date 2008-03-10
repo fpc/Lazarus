@@ -700,8 +700,8 @@ msgstr ""
 msgid "Code Browser"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuviewcomponents
@@ -2474,14 +2474,6 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodebrowser
 msgid "Code browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -5796,8 +5788,8 @@ msgstr ""
 msgid "View code browser"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
 msgstr ""
 
 #: lazarusidestrconsts:srkmectogglecomppalette

@@ -3337,10 +3337,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr ""
@@ -4683,14 +4679,6 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
-msgstr ""
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
@@ -7036,6 +7024,10 @@ msgstr "إستعد مواقع النوافذ"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "إستعد مساحات النوافذ"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10121,10 +10113,6 @@ msgstr ""
 msgid "View forms"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr ""
@@ -10159,6 +10147,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies

@@ -3337,10 +3337,6 @@ msgstr "Flitra fent coincidir qualsevol part del mètode"
 msgid "Filter by matching with start of method"
 msgstr "Filtra fent coincidir el principi del mètode"
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Final"
@@ -4684,14 +4680,6 @@ msgstr "Inverteix l'assignació"
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Irregular"
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7036,6 +7024,10 @@ msgstr "Restaura la geometria de la finestra"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Restaura el tamany de la finestra"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10121,10 +10113,6 @@ msgstr "Mostra la sortida del depurador"
 msgid "View forms"
 msgstr "Mostra les formes"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr ""
@@ -10160,6 +10148,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Mostra les unitats del projecte"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"

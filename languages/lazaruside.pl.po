@@ -3341,10 +3341,6 @@ msgstr ""
 msgid "Filter by matching with start of method"
 msgstr ""
 
-#: lazarusidestrconsts:lisfilterissues
-msgid "Filter issues"
-msgstr ""
-
 #: lazarusidestrconsts:srvk_final
 msgid "Final"
 msgstr "Ostateczne"
@@ -4688,14 +4684,6 @@ msgstr ""
 #: lazarusidestrconsts:srvk_irregular
 msgid "Irregular "
 msgstr "Nieregularny "
-
-#: lazarusidestrconsts:lismenuviewissuebrowser
-msgid "Issue Browser"
-msgstr ""
-
-#: lazarusidestrconsts:lisissuebrowser
-msgid "Issue browser"
-msgstr ""
 
 #: lazarusidestrconsts:lispkgfiletypeissues
 msgid "Issues xml file"
@@ -7040,6 +7028,10 @@ msgstr "Przywróć położenie okna"
 #: lazarusidestrconsts:rsiwprestorewindowsize
 msgid "Restore window size"
 msgstr "Przywraca rozmiar okna"
+
+#: lazarusidestrconsts:lismenuviewrestrictionbrowser
+msgid "Restriction Browser"
+msgstr ""
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10125,10 +10117,6 @@ msgstr "Pokaż wyjście debuggera"
 msgid "View forms"
 msgstr "Pokaż formularze"
 
-#: lazarusidestrconsts:srkmectoggleissuebrowser
-msgid "View issue browser"
-msgstr ""
-
 #: lazarusidestrconsts:liskmviewjumphistory
 msgid "View jump history"
 msgstr ""
@@ -10164,6 +10152,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
 msgstr "Pokaż moduły projektu"
+
+#: lazarusidestrconsts:srkmectogglerestrictionbrowser
+msgid "View restriction browser"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
