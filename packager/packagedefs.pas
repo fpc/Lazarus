@@ -311,6 +311,8 @@ type
     function PrevRequiresDependency: TPkgDependency;
     procedure AddToList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
+    procedure AddToEndOfList(var LastDependency: TPkgDependency;
+      ListType: TPkgDependencyList);
     procedure RemoveFromList(var FirstDependency: TPkgDependency;
       ListType: TPkgDependencyList);
     procedure MoveUpInList(var FirstDependency: TPkgDependency;
@@ -985,6 +987,7 @@ var
   NewCount: Integer;
   List: TFPList;
   FileVersion: Integer;
+  Last: TPkgDependency;
 begin
   FileVersion:=XMLConfig.GetValue(ThePath+'Version',0);
   NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
@@ -1001,9 +1004,15 @@ begin
   end;
   if SortList then
     SortDependencyList(List);
+  Last:=First;
+  if Last<>nil then
+    while Last.NextDependency[ListType]<>nil do
+      Last:=Last.NextDependency[ListType];
   for i:=0 to List.Count-1 do begin
-    TPkgDependency(List[i]).AddToList(First,ListType);
-    TPkgDependency(List[i]).Owner:=Owner;
+    TPkgDependency(List[i]).AddToEndOfList(Last,ListType);
+    if First=nil then
+      First:=Last;
+    PkgDependency.Owner:=Owner;
   end;
   List.Free;
 end;
@@ -1854,6 +1863,16 @@ begin
   PrevDependency[ListType]:=nil;
   if NextDependency[ListType]<>nil then
     NextDependency[ListType].PrevDependency[ListType]:=Self;
+end;
+
+procedure TPkgDependency.AddToEndOfList(var LastDependency: TPkgDependency;
+  ListType: TPkgDependencyList);
+begin
+  PrevDependency[ListType]:=LastDependency;
+  LastDependency:=Self;
+  NextDependency[ListType]:=nil;
+  if PrevDependency[ListType]<>nil then
+    PrevDependency[ListType].NextDependency[ListType]:=Self;
 end;
 
 procedure TPkgDependency.RemoveFromList(var FirstDependency: TPkgDependency;
