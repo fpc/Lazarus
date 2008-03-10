@@ -971,6 +971,7 @@ begin
 
      FLegend.Destroy;
      FTitle.Destroy;
+     FFoot.Destroy;
      LeftAxis.Destroy;
      BottomAxis.Destroy;
      FFrame.Destroy;
