@@ -1036,10 +1036,9 @@ begin
   
   QtDC := TQtDeviceContext(DC);
   
-  Dec(Rect.Right, 1);
-  Dec(Rect.Bottom, 1);
-  
   ClientRect := Rect;
+  Dec(ClientRect.Right, 1);
+  Dec(ClientRect.Bottom, 1);
   QPainter_save(QtDC.Widget);
   try
     ColorDark := ColorToRGB(clDark);
