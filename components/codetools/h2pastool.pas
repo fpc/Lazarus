@@ -54,8 +54,10 @@ begin
   
   CTool:=TCCodeParserTool.Create;
   try
+    // pare C header file
     CTool.Parse(CCode);
     CTool.WriteDebugReport;
+    
   finally
     CTool.Free;
   end;

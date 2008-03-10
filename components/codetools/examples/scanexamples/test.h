@@ -141,6 +141,13 @@ unsigned long long unsigned_long_long;
 
 #define MACRO_CONCATENATION(a,b) a##b
 
+// const or not const
+const char a;           // A constant character
+char const b;           // A constant character (the same)
+char *const c;          // A constant pointer to a character
+const char *const d;    // A constant pointer to a constant character
+const char *e;          // A pointer to a constant character. The pointer may be modified.
+
 #ifdef __cplusplus
 }
 #endif
