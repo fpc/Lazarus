@@ -403,6 +403,13 @@ end;
 procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
 begin
   if FViewLimit = AValue then Exit;
+  if (CallStack <> nil)
+  and (FViewStart + FViewLimit >= CallStack.Count - 1)
+  and (AValue > FViewLimit)
+  then begin
+    FViewStart := CallStack.Count - 1 - AValue;
+    if FViewStart < 0 then FViewStart := 0;
+  end;
   FViewLimit := AValue;
   UpdateView;
 end;
