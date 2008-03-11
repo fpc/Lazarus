@@ -2512,6 +2512,7 @@ images/menu/menu_new.png -text svneol=unset#image/png
 images/menu/menu_pause.png -text svneol=unset#image/png
 images/menu/menu_project_add.png -text svneol=unset#image/png
 images/menu/menu_project_close.png -text svneol=unset#image/png
+images/menu/menu_project_from_file.png -text
 images/menu/menu_project_inspector.png -text svneol=unset#image/png
 images/menu/menu_project_open.png -text svneol=unset#image/png
 images/menu/menu_project_options.png -text svneol=unset#image/png
@@ -2535,6 +2536,7 @@ images/menu/menu_search_files.png -text svneol=unset#image/png
 images/menu/menu_search_find.png -text svneol=unset#image/png
 images/menu/menu_search_find_next.png -text svneol=unset#image/png
 images/menu/menu_search_find_previous.png -text svneol=unset#image/png
+images/menu/menu_search_incremental.png -text
 images/menu/menu_search_jumpback.png -text svneol=unset#image/png
 images/menu/menu_search_jumpforward.png -text svneol=unset#image/png
 images/menu/menu_search_next_bookmark.png -text

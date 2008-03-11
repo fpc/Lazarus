@@ -463,7 +463,7 @@ begin
     CreateMenuItem(ParentMI,itmSearchFindInFiles,'itmSearchFindInFiles',lisMenuFindInFiles, 'menu_search_files');
     CreateMenuItem(ParentMI, itmSearchReplace, 'itmSearchReplace',
       lisMenuReplace2, 'menu_search_replace');
-    CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind);
+    CreateMenuItem(ParentMI,itmIncrementalFind,'itmIncrementalFind',lisMenuIncrementalFind, 'menu_search_incremental');
 
     CreateMenuSeparatorSection(mnuSearch,itmJumpings,'itmJumpings');
     ParentMI:=itmJumpings;
@@ -554,7 +554,7 @@ begin
     ParentMI:=itmProjectNewSection;
 
     CreateMenuItem(ParentMI,itmProjectNew,'itmProjectNew',lisMenuNewProject, 'item_project');
-    CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile);
+    CreateMenuItem(ParentMI,itmProjectNewFromFile,'itmProjectNewFromFile',lisMenuNewProjectFromFile, 'menu_project_from_file');
 
     CreateMenuSeparatorSection(mnuProject,itmProjectOpenSection,'itmProjectOpenSection');
     ParentMI:=itmProjectOpenSection;

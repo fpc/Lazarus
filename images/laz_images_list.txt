@@ -52,6 +52,7 @@ menu/menu_new.png
 menu/menu_pause.png
 menu/menu_project_add.png
 menu/menu_project_close.png
+menu/menu_project_from_file.png
 menu/menu_project_inspector.png
 menu/menu_project_open.png
 menu/menu_project_options.png
@@ -75,6 +76,7 @@ menu/menu_search_files.png
 menu/menu_search_find.png
 menu/menu_search_find_next.png
 menu/menu_search_find_previous.png
+menu/menu_search_incremental.png
 menu/menu_search_jumpback.png
 menu/menu_search_jumpforward.png
 menu/menu_search_next_bookmark.png
