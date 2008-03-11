@@ -309,7 +309,7 @@ var
   Item: TPOFileItem;
 begin
   if (TranslatedValue='') then exit;
-  debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
+  //debugln('TPOFile.Add Identifier="',Identifier,'" OriginalValue="',OriginalValue,'" TranslatedValue="',TranslatedValue,'"');
   Item:=TPOFileItem.Create(Identifier,OriginalValue,TranslatedValue);
   FItems.Add(Item);
   FIdentifierToItem.Add(Identifier,Item);
