@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-12-13 18:10+0100\n"
+"PO-Revision-Date: 2008-03-12 21:29+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -273,7 +273,7 @@ msgstr "Komponentenname %s%s%s ist kein gültiger Bezeichner"
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "Komponenten-Einschränkungen:"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -409,7 +409,7 @@ msgstr "Listview-Einträge bearbeiten..."
 
 #: objinspstrconsts:sccssgedt
 msgid "Edit StringGrid..."
-msgstr "Stringgitter editieren..."
+msgstr "Stringgitter bearbeiten..."
 
 #: objinspstrconsts:sccstredt
 msgid "Edit TreeView Items..."
@@ -477,7 +477,7 @@ msgstr "Schriftauswahl"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "Allgem. Einschränk. durch d. Widget-Set:"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -749,7 +749,7 @@ msgstr "Von Favoriten entfernen"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr ""
+msgstr "Einschränkungen"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -825,7 +825,7 @@ msgstr "Set"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr "Auf Voreinstellung setzen"
+msgstr "Auf die Voreinstellung setzen"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
@@ -933,7 +933,7 @@ msgstr "Variant"
 
 #: objinspstrconsts:oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr ""
+msgstr "Eingeschränkte Properties anzeigen"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
