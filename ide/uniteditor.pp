@@ -1143,10 +1143,10 @@ begin
   if ReadOnly then Replace := False;
   if Replace then
     LazFindReplaceDialog.Options :=
-      LazFindReplaceDialog.Options + [ssoReplace, ssoReplaceAll, ssoPrompt]
+      LazFindReplaceDialog.Options + [ssoReplace, ssoReplaceAll]
   else
     LazFindReplaceDialog.Options :=
-      LazFindReplaceDialog.Options - [ssoReplace, ssoReplaceAll, ssoPrompt];
+      LazFindReplaceDialog.Options - [ssoReplace, ssoReplaceAll];
 
   // Fill in history items
   LazFindReplaceDialog.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
