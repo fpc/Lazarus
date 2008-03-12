@@ -1,14 +1,15 @@
 msgid ""
 msgstr ""
 "Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
-"PO-Revision-Date: 2008-01-08 08:57+0100\n"
-"Language-Team: français <fr@li.org>\n"
+"PO-Revision-Date: 2008-03-12 22:19+0100\n"
+"Language-Team: Laurent Jacques <wile64@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
 "POT-Creation-Date: \n"
 "Project-Id-Version: \n"
 "X-Poedit-Bookmarks: -1,190,-1,-1,-1,-1,-1,-1,-1,-1\n"
+"X-Poedit-Language: French\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
@@ -20,7 +21,7 @@ msgstr "  taille"
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
-msgstr " ATTENTION: Il y a %d structures TimerInfo, elles seront supprimés."
+msgstr " ATTENTION : Il y a %d structures TimerInfo, elles seront supprimés."
 
 #: lclstrconsts:rswarningunreleasedmessagesinqueue
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
@@ -276,7 +277,7 @@ msgstr "Menus doublons"
 
 #: lclstrconsts:rserrorinlcl
 msgid "ERROR in LCL: "
-msgstr "ERREUR dans LCL: "
+msgstr "ERREUR dans LCL : "
 
 #: lclstrconsts:ifsvk_end
 msgid "End"
@@ -300,7 +301,7 @@ msgstr "Erreur de lecture %s%s%s: %s"
 
 #: lclstrconsts:hhshelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr "Erreur en exécutant %s%s%s:%s%s"
+msgstr "Erreur en exécutant %s%s%s : %s%s"
 
 #: lclstrconsts:rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
@@ -336,7 +337,7 @@ msgstr "Le fichier doit exister"
 
 #: lclstrconsts:rsgtkfilter
 msgid "Filter:"
-msgstr "Filtre:"
+msgstr "Filtre :"
 
 #: lclstrconsts:ifsvk_final
 msgid "Final"
@@ -360,7 +361,7 @@ msgstr "FixedRows ne peut pas être supérieur  RowCount"
 
 #: lclstrconsts:rsformstreamingerror
 msgid "Form streaming \"%s\" error: %s"
-msgstr "Dans le flux de fiche \"%s\": erreur %s"
+msgstr "Dans le flux de fiche \"%s\" : erreur %s"
 
 #: lclstrconsts:rsforward
 msgid "Forward"
@@ -528,7 +529,7 @@ msgstr "Index de liste hors limites (%d)"
 
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
-msgstr "La liste doit tre vide"
+msgstr "La liste doit être vide"
 
 #: lclstrconsts:ifsvk_menu
 msgid "Menu"
@@ -540,7 +541,7 @@ msgstr "Index de menu hors limites"
 
 #: lclstrconsts:smenuitemisnil
 msgid "MenuItem is nil"
-msgstr "MenuItem est non assigné (nil)"
+msgstr "MenuItem n'est pas assigné (nil)"
 
 #: lclstrconsts:ifsvk_modechange
 msgid "Mode Change"
@@ -564,7 +565,7 @@ msgstr "Suivant"
 
 #: lclstrconsts:hhshelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "Aucun navigateur HTML trouvé. %s définissés en un dans Aide - > Configurer l'aide - > Visionneuses"
+msgstr "Aucun navigateur HTML trouvé. %s définissés en un dans Aide->Configurer l'aide->Visionneuses"
 
 #: lclstrconsts:snomdiform
 msgid "No MDI form present."
@@ -700,7 +701,7 @@ msgstr "Choisir une date"
 
 #: lclstrconsts:rsselectfonttitle
 msgid "Select a font"
-msgstr "Choisir une fonte"
+msgstr "Choisir une police"
 
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
@@ -804,7 +805,7 @@ msgstr "Avertissement"
 
 #: lclstrconsts:rswin32warning
 msgid "Warning:"
-msgstr "Attention:"
+msgstr "Attention :"
 
 #: lclstrconsts:rswholewordsonly
 msgid "Whole words only"
@@ -820,7 +821,7 @@ msgstr "Touche Application"
 
 #: lclstrconsts:rsinvalidformobjectstream
 msgid "invalid Form object stream"
-msgstr "Flux d'objet fiche non valide"
+msgstr "Flux d'objet fiche invalide"
 
 #: lclstrconsts:ifsvk_lwin
 msgid "left windows key"

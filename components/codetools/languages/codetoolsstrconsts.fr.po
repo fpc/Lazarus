@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-09-06 21:50+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2008-03-12 22:21+0100\n"
 "Language-Team:  <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,7 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr "options compilateur définies %s"
+msgstr "Options compilateur définies %s"
 
 #: codetoolsstrconsts:ctsnameddirectory
 msgid "%s Directory"
@@ -48,7 +48,7 @@ msgstr "(sous-descripteur %s inconnu)"
 
 #: codetoolsstrconsts:ctspointhintprocstartat
 msgid ".  Hint: proc start at "
-msgstr ". Conseil: proc commencer à "
+msgstr ". Conseil : proc commencer à "
 
 #: codetoolsstrconsts:ctspointstartat
 msgid ". start at "
