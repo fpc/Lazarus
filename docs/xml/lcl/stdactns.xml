@@ -1,2111 +1,1456 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     StdActns
   ====================================================================
 -->
-
-<module name="StdActns">
-<short>Defines some standard actions to be used in Action Lists in the LCL</short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ActnList">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Dialogs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THintAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THintAction.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THintAction.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="THintAction.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TEditAction.FControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TEditAction.SetControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.SetControl.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TEditAction.GetControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TEditAction.GetControl.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.GetControl.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TEditAction.Notification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.Notification.AComponent">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.Notification.Operation">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TEditAction.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TEditAction.HandlesTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TEditAction.HandlesTarget.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.HandlesTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditAction.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditAction.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TEditAction.Control">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditCut">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditCut.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditCut.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditCopy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditCopy.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditCopy.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditPaste">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditPaste.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditPaste.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditPaste.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditPaste.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditSelectAll">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditSelectAll.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditSelectAll.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditSelectAll.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditSelectAll.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditUndo">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditUndo.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditUndo.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditUndo.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditUndo.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TEditDelete">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditDelete.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditDelete.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TEditDelete.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TEditDelete.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpAction.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpAction.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpAction.HandlesTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpAction.HandlesTarget.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpAction.HandlesTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpAction.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpAction.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpContents">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpContents.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpContents.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpTopicSearch">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpTopicSearch.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpTopicSearch.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpOnHelp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpOnHelp.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpOnHelp.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpContextAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpContextAction.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpContextAction.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpContextAction.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpContextAction.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- "class of" type Visibility: default -->
-<element name="TCommonDialogClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCommonDialogAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCommonDialogAction.FBeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCommonDialogAction.FExecuteResult">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCommonDialogAction.FOnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCommonDialogAction.FOnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TCommonDialogAction.FDialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCommonDialogAction.DoAccept">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCommonDialogAction.DoCancel">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TCommonDialogAction.GetDialogClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCommonDialogAction.GetDialogClass.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCommonDialogAction.Notification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCommonDialogAction.Notification.AComponent">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCommonDialogAction.Notification.Operation">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCommonDialogAction.SetupDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCommonDialogAction.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCommonDialogAction.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCommonDialogAction.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCommonDialogAction.Handlestarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCommonDialogAction.Handlestarget.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCommonDialogAction.Handlestarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TCommonDialogAction.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCommonDialogAction.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCommonDialogAction.ExecuteResult">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCommonDialogAction.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCommonDialogAction.OnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCommonDialogAction.OnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFileAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFileAction.GetFileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileAction.GetFileName.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TFileAction.SetFileName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileAction.SetFileName.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFileAction.GetDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileAction.GetDialog.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TFileAction.FileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFileOpen">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileOpen.FUseDefaultApp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFileOpen.GetDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileOpen.GetDialog.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFileOpen.GetDialogClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileOpen.GetDialogClass.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TFileOpen.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileOpen.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFileOpen.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileOpen.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.Dialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.HelpKeyword">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.HelpType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.UseDefaultApp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.OnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.OnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpen.OnHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFileOpenWith">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileOpenWith.FAfterOpen">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileOpenWith.FFileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFileOpenWith.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileOpenWith.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.FileName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.HelpKeyword">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.HelpType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileOpenWith.AfterOpen">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFileSaveAs">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFileSaveAs.GetSaveDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileSaveAs.GetSaveDialog.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFileSaveAs.GetDialogClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileSaveAs.GetDialogClass.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TFileSaveAs.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileSaveAs.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.Dialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.OnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.OnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileSaveAs.OnHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFileExit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TFileExit.HandlesTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFileExit.HandlesTarget.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileExit.HandlesTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFileExit.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFileExit.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.HelpKeyword">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.HelpType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFileExit.OnHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TSearchAction">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TSearchAction.FControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: protected -->
-<element name="TSearchAction.FFindFirst">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TSearchAction.Notification">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.Notification.AComponent">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.Notification.Operation">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TSearchAction.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TSearchAction.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TSearchAction.HandlesTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TSearchAction.HandlesTarget.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.HandlesTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TSearchAction.Search">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.Search.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TSearchAction.UpdateTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.UpdateTarget.Target">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TSearchAction.ExecuteTarget">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSearchAction.ExecuteTarget.Target">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TFontEdit">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TFontEdit.GetDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontEdit.GetDialog.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TFontEdit.GetDialogClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TFontEdit.GetDialogClass.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.Dialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.HelpKeyword">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.HelpType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.OnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.OnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TFontEdit.OnHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TColorSelect">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TColorSelect.GetDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TColorSelect.GetDialog.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TColorSelect.GetDialogClass">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TColorSelect.GetDialogClass.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.Caption">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.Dialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.Enabled">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.HelpKeyword">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.HelpType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.Hint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.ImageIndex">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.ShortCut">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.SecondaryShortCuts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.BeforeExecute">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.OnAccept">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.OnCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TColorSelect.OnHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- StdActns -->
-</package>
+    <module name="StdActns">
+      <short>Defines some standard actions to be used in Action Lists in the LCL</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ActnList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Dialogs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="StdCtrls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THintAction">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="THintAction.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THintAction.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="THintAction.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditAction">
+        <short>
+          <i>TEditAction</i> - base class for actions associated with the various <i>Edit</i> menu options</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TEditAction.FControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TEditAction.SetControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.SetControl.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TEditAction.GetControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TEditAction.GetControl.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.GetControl.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TEditAction.Notification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.Notification.AComponent">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.Notification.Operation">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TEditAction.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TEditAction.HandlesTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TEditAction.HandlesTarget.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.HandlesTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditAction.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditAction.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TEditAction.Control">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditCut">
+        <short>
+          <i>TEditCut</i> - standard action associated with the <i>Edit Cut</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditCut.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditCut.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditCopy">
+        <short>
+          <i>TEditCopy</i> - standard action associated with the <i>Edit Copy</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditCopy.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditCopy.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditPaste">
+        <short>
+          <i>TEditPaste </i>- standard action associated with the <i>Edit Paste </i>menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditPaste.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditPaste.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditPaste.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditPaste.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditSelectAll">
+        <short>
+          <i>TEditSelectAll </i>- standard action associated with the <i>Edit Select All</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditSelectAll.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditSelectAll.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditSelectAll.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditSelectAll.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditUndo">
+        <short>
+          <i>TEditUndo</i> - standard action associated with the <i>Edit Undo</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditUndo.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditUndo.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditUndo.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditUndo.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TEditDelete">
+        <short>
+          <i>TEditDelete</i> - standard action associated with the <i>Edit Delete</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditDelete.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditDelete.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TEditDelete.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TEditDelete.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THelpAction">
+        <short>
+          <i>THelpAction</i> - base class for actions associated with the various <i>Help</i> menu options</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="THelpAction.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpAction.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="THelpAction.HandlesTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="THelpAction.HandlesTarget.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpAction.HandlesTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpAction.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpAction.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THelpContents">
+        <short>
+          <i>THelpContents</i> - standard action associated with the <i>Help Contents</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpContents.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpContents.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THelpTopicSearch">
+        <short>
+          <i>THelpTopicSearch</i> - standard action associated with the <i>Help Topic Search</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpTopicSearch.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpTopicSearch.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THelpOnHelp">
+        <short>
+          <i>THelpOnHelp</i> - standard action associated with the <i>Help On Help</i> menu item (ie how to get help)</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpOnHelp.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpOnHelp.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="THelpContextAction">
+        <short>
+          <i>THelpContextAction</i> - standard action for providing context-sensitive <i>Help</i>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpContextAction.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpContextAction.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="THelpContextAction.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="THelpContextAction.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- "class of" type Visibility: default -->
+      <element name="TCommonDialogClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCommonDialogAction">
+        <short>
+          <i>TCommonDialogAction</i> - base class for providing actions associated with <i>Dialogs</i>
+        </short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCommonDialogAction.FBeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCommonDialogAction.FExecuteResult">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCommonDialogAction.FOnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCommonDialogAction.FOnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TCommonDialogAction.FDialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCommonDialogAction.DoAccept">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCommonDialogAction.DoCancel">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TCommonDialogAction.GetDialogClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCommonDialogAction.GetDialogClass.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCommonDialogAction.Notification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCommonDialogAction.Notification.AComponent">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCommonDialogAction.Notification.Operation">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCommonDialogAction.SetupDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCommonDialogAction.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCommonDialogAction.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCommonDialogAction.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCommonDialogAction.Handlestarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCommonDialogAction.Handlestarget.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCommonDialogAction.Handlestarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TCommonDialogAction.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCommonDialogAction.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCommonDialogAction.ExecuteResult">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCommonDialogAction.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCommonDialogAction.OnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCommonDialogAction.OnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFileAction">
+        <short>
+          <i>TFileAction</i> - base type for providing actions associated with various <i>file dialogs</i> and menu options</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFileAction.GetFileName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileAction.GetFileName.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TFileAction.SetFileName">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileAction.SetFileName.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFileAction.GetDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileAction.GetDialog.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TFileAction.FileName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFileOpen">
+        <short>
+          <i>TFileOpen</i> - standard action (including opening a dialog) associated with the <i>File Open</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFileOpen.FUseDefaultApp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFileOpen.GetDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileOpen.GetDialog.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFileOpen.GetDialogClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileOpen.GetDialogClass.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFileOpen.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileOpen.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFileOpen.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileOpen.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.Dialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.HelpType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.SecondaryShortCuts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.UseDefaultApp">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.OnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.OnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpen.OnHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFileOpenWith">
+        <short>
+          <i>TFileOpenWith</i> - standard action (including opening a dialog) associated with the <i>File Open With</i> menu option</short>
+        <descr>
+          <p>
+            <i>TFileOpenWith</i> - standard action (including opening a dialog) associated with the <i>File Open With</i> menu option</p>
+          <p>Gives the User an opportunity to choose the application with which to open a file</p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFileOpenWith.FAfterOpen">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TFileOpenWith.FFileName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFileOpenWith.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileOpenWith.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.FileName">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.HelpType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileOpenWith.AfterOpen">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFileSaveAs">
+        <short>
+          <i>TFileSaveAs</i> - standard action (including opening a dialog) associated with the <i>File Save As</i> menu option</short>
+        <descr>
+          <p>
+            <i>TFileSaveAs</i> - standard action (including opening a dialog) associated with the <i>File Save As</i> menu option</p>
+          <p>Gives the user an opportunity to select or enter a name to use for saving the file</p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFileSaveAs.GetSaveDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileSaveAs.GetSaveDialog.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFileSaveAs.GetDialogClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileSaveAs.GetDialogClass.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TFileSaveAs.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileSaveAs.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.Dialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.SecondaryShortCuts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.OnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.OnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileSaveAs.OnHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFileExit">
+        <short>
+          <i>TFileExit</i> - standard action (closing file and terminating application) associated with the <i>File Exit</i> menu option</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TFileExit.HandlesTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFileExit.HandlesTarget.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileExit.HandlesTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TFileExit.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TFileExit.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.HelpType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.SecondaryShortCuts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFileExit.OnHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TSearchAction">
+        <short>
+          <i>TSearchAction</i> - base class for the actions associated with the various <p>Search</p> menu options</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TSearchAction.FControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: protected -->
+      <element name="TSearchAction.FFindFirst">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TSearchAction.Notification">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.Notification.AComponent">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.Notification.Operation">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TSearchAction.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TSearchAction.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TSearchAction.HandlesTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TSearchAction.HandlesTarget.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.HandlesTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSearchAction.Search">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.Search.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSearchAction.UpdateTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.UpdateTarget.Target">
+        <short/>
+      </element>
+      <!-- procedure Visibility: public -->
+      <element name="TSearchAction.ExecuteTarget">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSearchAction.ExecuteTarget.Target">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TFontEdit">
+        <short>
+          <i>TFontEdit </i>- standard action for opening a <p>Font Edit</p> dialog</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TFontEdit.GetDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontEdit.GetDialog.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TFontEdit.GetDialogClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TFontEdit.GetDialogClass.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.Dialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.HelpType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.SecondaryShortCuts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.OnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.OnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TFontEdit.OnHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TColorSelect">
+        <short>
+          <i>TColorSelect</i> - standard action for opening a <p>Colour Selection</p> dialog</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TColorSelect.GetDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorSelect.GetDialog.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TColorSelect.GetDialogClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TColorSelect.GetDialogClass.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.Caption">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.Dialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.Enabled">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.HelpKeyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.HelpType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.Hint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.ImageIndex">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.ShortCut">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.SecondaryShortCuts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.Visible">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.BeforeExecute">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.OnAccept">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.OnCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TColorSelect.OnHint">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+    </module>
+    <!-- StdActns -->
+  </package>
 </fpdoc-descriptions>
