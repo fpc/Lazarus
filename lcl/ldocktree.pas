@@ -190,6 +190,8 @@ type
   { TLazDockSplitter }
 
   TLazDockSplitter = class(TCustomSplitter)
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
   
   
@@ -3068,6 +3070,14 @@ begin
     Result := doVertical
   else
     Result := doNoOrient;
+end;
+
+{ TLazDockSplitter }
+
+constructor TLazDockSplitter.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  MinSize := 1;
 end;
 
 initialization
