@@ -3923,13 +3923,15 @@ begin
 
     // editor layout
     SrcEditMenuMoveEditorLeft.MenuItem.Enabled:=
-                                       (NoteBook<>nil) and (NoteBook.PageCount>1);
+                     (NoteBook<>nil) and (NoteBook.PageCount>1);
     SrcEditMenuMoveEditorRight.MenuItem.Enabled:=
-                                       (NoteBook<>nil) and (NoteBook.PageCount>1);
+                     (NoteBook<>nil) and (NoteBook.PageCount>1);
     SrcEditMenuMoveEditorFirst.MenuItem.Enabled:=
-                                       (NoteBook<>nil) and (NoteBook.PageCount>1) and (NoteBook.PageIndex>0);
+                     (NoteBook<>nil) and (NoteBook.PageCount>1)
+                     and (NoteBook.PageIndex>0);
     SrcEditMenuMoveEditorLast.MenuItem.Enabled:=
-                                       (NoteBook<>nil) and (NoteBook.PageCount>1) and (NoteBook.PageIndex<(NoteBook.PageCount-1));
+                     (NoteBook<>nil) and (NoteBook.PageCount>1)
+                     and (NoteBook.PageIndex<(NoteBook.PageCount-1));
 
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
     if EditorPopupPoint.X>EditorComp.GutterWidth then begin

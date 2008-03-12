@@ -379,10 +379,10 @@ var
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-    SrcEditSubMenuFlags: TIDEMenuSection;
-      SrcEditSubMenuHighlighter: TIDEMenuSection;
     SrcEditSubMenuDebug: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
+    SrcEditSubMenuFlags: TIDEMenuSection;
+      SrcEditSubMenuHighlighter: TIDEMenuSection;
 
   // Messages window popupmenu
   MessagesMenuRoot: TIDEMenuSection = nil;
