@@ -370,6 +370,7 @@ var
     SrcEditMenuSectionFirstDynamic: TIDEMenuSection;
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
+      SrcEditSubMenuOpenFile: TIDEMenuSection;
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     // Source Editor: File Specific dynamic section
     //                The items are cleared automatically after each popup.

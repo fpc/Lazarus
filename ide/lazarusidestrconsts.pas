@@ -3667,6 +3667,7 @@ resourcestring
   lisIgnoreAndContinue = 'Ignore and continue';
   lisNotImplemented = 'Not implemented';
   lisNotImplementedYet = 'Not implemented yet:%s%s';
+  lisOpenFile2 = 'Open File ...';
   
 
 implementation

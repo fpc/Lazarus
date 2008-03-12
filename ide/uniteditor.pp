@@ -822,7 +822,8 @@ var
     SrcEditMenuFindNextWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindPrevWordOccurrence: TIDEMenuCommand;
     SrcEditMenuFindinFiles: TIDEMenuCommand;
-  SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
+    // open file
+    SrcEditMenuOpenFileAtCursor: TIDEMenuCommand;
   SrcEditMenuClosePage: TIDEMenuCommand;
   SrcEditMenuCut: TIDEMenuCommand;
   SrcEditMenuCopy: TIDEMenuCommand;
@@ -907,10 +908,17 @@ begin
                   'Find previous word occurrence', srkmecFindPrevWordOccurrence, nil, nil, nil, 'menu_search_find_previous');
       SrcEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,
                   'Find in files', srkmecFindInFiles, nil, nil, nil, 'menu_search_files');
+    // register the sub menu Open File
+    SrcEditSubMenuOpenFile:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
+      'Open File ...', lisOpenFile2);
+      AParent:=SrcEditSubMenuOpenFile;
+      SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
+                                     'Open File At Cursor',uemOpenFileAtCursor);
+      // register the File Specific dynamic section
+      SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
+                                                        'File dynamic section');
 
     AParent:=SrcEditMenuSectionFirstStatic;
-    SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
-                                     'Open File At Cursor',uemOpenFileAtCursor);
     SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
                                                      'Close Page',uemClosePage);
 
@@ -962,12 +970,6 @@ begin
                                                 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
                                             'View Call Stack', uemViewCallStack, nil, nil, nil, 'debugger_call_stack');
-
-  // register the File Specific dynamic section
-  AParent:=SourceEditorMenuRoot;
-  SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
-                                                        'File dynamic section');
-
 
   // register the Move Page section
   SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(SourceEditorMenuRoot,
