@@ -455,6 +455,7 @@ type
     procedure OnPopupMenuOpenPFile(Sender: TObject);
     procedure OnPopupMenuOpenLFMFile(Sender: TObject);
     procedure OnPopupMenuOpenLRSFile(Sender: TObject);
+    procedure OnPopupMenuOpenSFile(Sender: TObject);
     procedure OnPopupMenuOpenFile(Sender: TObject);
     procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
@@ -3969,6 +3970,10 @@ begin
           AddContextPopupMenuItem(
             'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
             true,@OnPopupMenuOpenLRSFile);
+        if FileExists(ChangeFileExt(CurFilename,'.s')) then
+          AddContextPopupMenuItem(
+            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.s'),
+            true,@OnPopupMenuOpenSFile);
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
         if FileExists(ChangeFileExt(CurFilename,'.pas')) then
@@ -5014,6 +5019,13 @@ end;
 procedure TSourceNotebook.OnPopupMenuOpenLRSFile(Sender: TObject);
 begin
   MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.lrs'),
+    Notebook.PageIndex+1,
+    [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
+end;
+
+procedure TSourceNotebook.OnPopupMenuOpenSFile(Sender: TObject);
+begin
+  MainIDEInterface.DoOpenEditorFile(ChangeFileExt(GetActiveSE.Filename,'.s'),
     Notebook.PageIndex+1,
     [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
