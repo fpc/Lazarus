@@ -3668,6 +3668,7 @@ resourcestring
   lisNotImplemented = 'Not implemented';
   lisNotImplementedYet = 'Not implemented yet:%s%s';
   lisOpenFile2 = 'Open File ...';
+  lisMovePage = 'Move Page ...';
   
 
 implementation

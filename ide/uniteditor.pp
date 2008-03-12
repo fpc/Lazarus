@@ -922,6 +922,24 @@ begin
     SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
                                                      'Close Page',uemClosePage);
 
+  // register the Move Page sub menu
+  SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
+                                             'Move Page ...', lisMovePage);
+  AParent:=SrcEditSubMenuMovePage;
+    SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
+                                                      uemMoveEditorLeft);
+    SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
+                                                      uemMoveEditorRight);
+    SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
+                                                      uemMoveEditorLeftmost);
+    SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
+                                                      uemMoveEditorRightmost);
+    SrcEditMenuDocking:=RegisterIDEMenuCommand(AParent, 'Docking', lisMVDocking
+      );
+    {$IFNDEF EnableIDEDocking}
+    SrcEditMenuDocking.Visible:=false;
+    {$ENDIF}
+
   // register the Clipboard section
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
                                                       'Clipboard');
@@ -970,24 +988,6 @@ begin
                                                 'Run to cursor', uemRunToCursor, nil, nil, nil, 'menu_run_cursor');
       SrcEditMenuViewCallStack:=RegisterIDEMenuCommand(AParent,
                                             'View Call Stack', uemViewCallStack, nil, nil, nil, 'debugger_call_stack');
-
-  // register the Move Page section
-  SrcEditMenuSectionMovePage:=RegisterIDEMenuSection(SourceEditorMenuRoot,
-                                                     'Move Page section');
-  AParent:=SrcEditMenuSectionMovePage;
-    SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
-                                                      uemMoveEditorLeft);
-    SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
-                                                      uemMoveEditorRight);
-    SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
-                                                      uemMoveEditorLeftmost);
-    SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
-                                                      uemMoveEditorRightmost);
-    SrcEditMenuDocking:=RegisterIDEMenuCommand(AParent, 'Docking', lisMVDocking
-      );
-    {$IFNDEF EnableIDEDocking}
-    SrcEditMenuDocking.Visible:=false;
-    {$ENDIF}
 
   // register the Refactoring submenu
   SrcEditSubMenuRefactor:=RegisterIDESubMenu(SourceEditorMenuRoot,

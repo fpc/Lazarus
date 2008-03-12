@@ -371,17 +371,17 @@ var
     SrcEditMenuSectionFirstStatic: TIDEMenuSection;
       SrcEditSubMenuFind: TIDEMenuSection;
       SrcEditSubMenuOpenFile: TIDEMenuSection;
+        // Source Editor: File Specific dynamic section
+        //                The items are cleared automatically after each popup.
+        SrcEditMenuSectionFileDynamic: TIDEMenuSection;
     SrcEditMenuSectionClipboard: TIDEMenuSection;
-    // Source Editor: File Specific dynamic section
-    //                The items are cleared automatically after each popup.
-    SrcEditMenuSectionFileDynamic: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
-    SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
-    SrcEditSubMenuSetBookmarks: TIDEMenuSection;
+      SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
+      SrcEditSubMenuSetBookmarks: TIDEMenuSection;
     SrcEditMenuSectionFlags: TIDEMenuSection;
     SrcEditSubMenuHighlighter: TIDEMenuSection;
     SrcEditSubMenuDebug: TIDEMenuSection;
-    SrcEditMenuSectionMovePage: TIDEMenuSection;
+    SrcEditSubMenuMovePage: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
 
   // Messages window popupmenu
