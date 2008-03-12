@@ -1012,9 +1012,9 @@ begin
                                         'InsertTodo',uemInsertTodo, nil, nil, nil, 'item_todo');
 
   // register the Flags section
-  SrcEditMenuSectionFlags:=RegisterIDEMenuSection(SourceEditorMenuRoot,
-                                                  'Flags section');
-  AParent:=SrcEditMenuSectionFlags;
+  SrcEditSubMenuFlags:=RegisterIDESubMenu(SourceEditorMenuRoot,
+                                          'Flags section', lisFileSettings);
+  AParent:=SrcEditSubMenuFlags;
     SrcEditMenuReadOnly:=RegisterIDEMenuCommand(AParent,'ReadOnly',uemReadOnly);
     SrcEditMenuReadOnly.ShowAlwaysCheckable:=true;
     SrcEditMenuShowLineNumbers:=RegisterIDEMenuCommand(AParent,
@@ -1024,8 +1024,9 @@ begin
                                                     uemShowUnitInfo);
     SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
                                                     uemHighlighter);
-    SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(AParent,
-                                        'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
+
+  SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
+           'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
 
 end;
 

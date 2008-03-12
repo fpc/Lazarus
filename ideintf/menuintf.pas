@@ -374,14 +374,14 @@ var
         // Source Editor: File Specific dynamic section
         //                The items are cleared automatically after each popup.
         SrcEditMenuSectionFileDynamic: TIDEMenuSection;
+      SrcEditSubMenuMovePage: TIDEMenuSection;
     SrcEditMenuSectionClipboard: TIDEMenuSection;
     SrcEditMenuSectionMarks: TIDEMenuSection;
       SrcEditSubMenuGotoBookmarks: TIDEMenuSection;
       SrcEditSubMenuSetBookmarks: TIDEMenuSection;
-    SrcEditMenuSectionFlags: TIDEMenuSection;
-    SrcEditSubMenuHighlighter: TIDEMenuSection;
+    SrcEditSubMenuFlags: TIDEMenuSection;
+      SrcEditSubMenuHighlighter: TIDEMenuSection;
     SrcEditSubMenuDebug: TIDEMenuSection;
-    SrcEditSubMenuMovePage: TIDEMenuSection;
     SrcEditSubMenuRefactor: TIDEMenuSection;
 
   // Messages window popupmenu
