@@ -570,7 +570,7 @@ var
   NeedEnd: Boolean;
   LastIsName: Boolean;
 begin
-  DebugLn(['TCCodeParserTool.ReadVariable ']);
+  DebugLn(['TCCodeParserTool.ReadVariable START ',GetAtom]);
   CreateChildNode(ccnVariable);
   IsFunction:=false;
   if AtomIs('struct') then begin
@@ -591,6 +591,9 @@ begin
         RaiseExpectedButAtomFound('identifier');
     end;
   end;
+  
+  if AtomIs('const') then ReadNextAtom;
+  
   CreateChildNode(ccnVariableName);
 
   // prefixes: signed, unsigned
@@ -627,8 +630,8 @@ begin
     // example: int (*fp)(char*);
     //   pointer to function taking a char* argument; returns an int
     ReadNextAtom;
-    while AtomIsChar('*') do begin
-      // pointer
+    while AtomIsChar('*') or AtomIs('const') do begin
+      // pointer or const
       ReadNextAtom;
     end;
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
@@ -638,8 +641,8 @@ begin
     if not AtomIsChar(')') then
       RaiseExpectedButAtomFound(')');
   end else begin
-    while AtomIsChar('*') do begin
-      // pointer
+    while AtomIsChar('*') or AtomIs('const') do begin
+      // pointer or const
       ReadNextAtom;
     end;
 
