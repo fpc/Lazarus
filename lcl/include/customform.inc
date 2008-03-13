@@ -1248,12 +1248,16 @@ procedure TCustomForm.SetActiveControl(AWinControl: TWinControl);
 begin
   if FActiveControl <> AWinControl then
   begin
-    if (AWinControl<>nil) then begin
-      if (AWinControl=Self)
-      or (GetParentForm(AWinControl)<>Self)
-      or ((not (csLoading in ComponentState)) and (not AWinControl.CanFocus))
-      then begin
-        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',dbgs((AWinControl<>nil) and AWinControl.CanFocus),' IsControlVisible=',dbgs((AWinControl<>nil) and AWinControl.IsControlVisible),' Enabled=',dbgs((AWinControl<>nil) and AWinControl.Enabled),' GetParentForm(AWinControl)=',DbgSName(GetParentForm(AWinControl)));
+    if (AWinControl<>nil) then 
+    begin
+      if (AWinControl = Self) or 
+         (GetParentForm(AWinControl) <> Self) or 
+         not ((csLoading in ComponentState) or AWinControl.CanFocus) then 
+      begin
+        DebugLn('TCustomForm.SetActiveControl ',DbgSName(Self),' AWinControl=',DbgSName(AWinControl),' GetParentForm(AWinControl)=',
+                DbgSName(GetParentForm(AWinControl)),' csLoading=',dbgs(csLoading in ComponentState),' AWinControl.CanFocus=',
+                dbgs((AWinControl<>nil) and AWinControl.CanFocus),' IsControlVisible=',dbgs((AWinControl<>nil) and AWinControl.IsControlVisible),
+                ' Enabled=',dbgs((AWinControl<>nil) and AWinControl.Enabled));
         {$IFDEF VerboseFocus}
         RaiseGDBException(SCannotFocus);
         {$ELSE}
@@ -1261,6 +1265,7 @@ begin
         {$ENDIF}
       end;
     end;
+
     {$IFDEF VerboseFocus}
     DbgOut('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',DbgS(FActive));
     if FActiveControl<>nil then
@@ -1272,8 +1277,9 @@ begin
     else
       DebugLn(' NewActiveControl=nil');
     {$ENDIF}
+
     FActiveControl := AWinControl;
-    if ([csLoading,csDestroying]*ComponentState=[]) then
+    if ([csLoading, csDestroying] * ComponentState = []) then
     begin
       if FActive then
         SetWindowFocus;
