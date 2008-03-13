@@ -116,7 +116,7 @@ const
     'MessagesView',
     'UnitDependencies',
     'CodeExplorerView',
-    'LazDocEditor',
+    'FPDocEditor',
     'ClipBrdHistory',
     'PkgGraphExplorer',
     'ProjectInspector',
