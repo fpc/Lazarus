@@ -919,27 +919,22 @@ begin
       SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
                                                         'File dynamic section');
 
+    // register the Move Page sub menu
+    SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
+                                               'Move Page ...', lisMovePage);
+    AParent:=SrcEditSubMenuMovePage;
+      SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
+                                                        uemMoveEditorLeft);
+      SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
+                                                        uemMoveEditorRight);
+      SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
+                                                        uemMoveEditorLeftmost);
+      SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
+                                                        uemMoveEditorRightmost);
+
     AParent:=SrcEditMenuSectionFirstStatic;
     SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
                                                      'Close Page',uemClosePage);
-
-  // register the Move Page sub menu
-  SrcEditSubMenuMovePage:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
-                                             'Move Page ...', lisMovePage);
-  AParent:=SrcEditSubMenuMovePage;
-    SrcEditMenuMoveEditorLeft:=RegisterIDEMenuCommand(AParent,'MoveEditorLeft',
-                                                      uemMoveEditorLeft);
-    SrcEditMenuMoveEditorRight:=RegisterIDEMenuCommand(AParent,'MoveEditorRight',
-                                                      uemMoveEditorRight);
-    SrcEditMenuMoveEditorFirst:=RegisterIDEMenuCommand(AParent,'MoveEditorLeftmost',
-                                                      uemMoveEditorLeftmost);
-    SrcEditMenuMoveEditorLast:=RegisterIDEMenuCommand(AParent,'MoveEditorRightmost',
-                                                      uemMoveEditorRightmost);
-    SrcEditMenuDocking:=RegisterIDEMenuCommand(AParent, 'Docking', lisMVDocking
-      );
-    {$IFNDEF EnableIDEDocking}
-    SrcEditMenuDocking.Visible:=false;
-    {$ENDIF}
 
   // register the Clipboard section
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -1028,6 +1023,11 @@ begin
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
+  SrcEditMenuDocking:=RegisterIDEMenuCommand(SourceEditorMenuRoot, 'Docking',
+           lisMVDocking);
+  {$IFNDEF EnableIDEDocking}
+  SrcEditMenuDocking.Visible:=false;
+  {$ENDIF}
 
 end;
 
