@@ -47,7 +47,7 @@
       </element>
       <!-- object Visibility: default -->
       <element name="THintAction">
-        <short/>
+        <short><i>THintAction</i> - standard action for dealing with requests for a <i>Hint</i></short>
         <descr/>
         <errors/>
         <seealso/>
@@ -617,7 +617,7 @@
       <!-- object Visibility: default -->
       <element name="TFileAction">
         <short>
-          <i>TFileAction</i> - base type for providing actions associated with various <i>file dialogs</i> and menu options</short>
+          <i>TFileAction</i> - base class for providing actions associated with various <i>file dialogs</i> and menu options</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1112,7 +1112,7 @@
       <!-- object Visibility: default -->
       <element name="TSearchAction">
         <short>
-          <i>TSearchAction</i> - base class for the actions associated with the various <p>Search</p> menu options</short>
+          <i>TSearchAction</i> - base class for the actions associated with the various <i>Search</i> menu options</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1213,7 +1213,7 @@
       <!-- object Visibility: default -->
       <element name="TFontEdit">
         <short>
-          <i>TFontEdit </i>- standard action for opening a <p>Font Edit</p> dialog</short>
+          <i>TFontEdit </i>- standard action for opening a <i>Font Edit</i> dialog</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1333,7 +1333,7 @@
       <!-- object Visibility: default -->
       <element name="TColorSelect">
         <short>
-          <i>TColorSelect</i> - standard action for opening a <p>Colour Selection</p> dialog</short>
+          <i>TColorSelect</i> - standard action for opening a <i>Colour Selection</i> dialog</short>
         <descr/>
         <errors/>
         <seealso/>
