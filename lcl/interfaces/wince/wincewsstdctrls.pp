@@ -1053,7 +1053,6 @@ class function TWinCEWSButton.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   Params: TCreateWindowExParams;
-  str : array[0..255] of WideChar;
 begin
   {$ifdef VerboseWinCE}
   WriteLn('TWinCEWSButton.CreateHandle');

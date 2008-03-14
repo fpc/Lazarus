@@ -240,10 +240,10 @@ Var
     PopupMenu: TPopupMenu;
     Index: Integer;
   begin
-    Result:=nil;
-    FillChar(MenuInfo,SizeOf(MenuInfo),0);
-    MenuInfo.cbSize:=sizeof(MENUITEMINFO);
-    MenuInfo.fMask:=MIIM_DATA;
+    Result := nil;
+    FillChar(MenuInfo, SizeOf(MenuInfo), 0);
+    MenuInfo.cbSize := SizeOf(MENUITEMINFO);
+    MenuInfo.fMask := MIIM_DATA;
     {first we have to decide if the command is from a popup menu or from the window main menu}
     //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
     PopupMenu := WindowInfo^.PopupMenu;
@@ -260,8 +260,15 @@ Var
       Index := MenuItemsList.IndexOf(IntToStr(LOWORD(WParam)));
       if (Index >= 0) and (Index < MenuItemsList.Count) then
         Result := MenuItemsList.Objects[Index];
-      {if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
-        Result := TObject(MenuInfo.dwItemData);}
+    {
+      This way returns False for GetMenuItemInfo(W) - extended error is so:
+      This function is only valid in win32 mode
+      
+      if GetMenuItemInfo(MainMenuHandle, LOWORD(WParam), false, @MenuInfo) then
+        Result := TObject(MenuInfo.dwItemData)
+      else
+        DebugLn(['GetMenuItemInfo failed: ', GetLastErrorText(GetLastError)]);
+     }
     end;
     {$endif}
   end;
@@ -1196,15 +1203,6 @@ begin
     end;*)
     WM_DRAWITEM:
     begin
-      if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
-      begin
-        menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
-        if menuItem is TMenuItem then
-        begin
-          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC, PDrawItemStruct(LParam)^.rcItem, PDrawItemStruct(LParam)^.itemState and ODS_SELECTED <> 0);
-        end
-      end;
-
       // TODO: this could crash for a MenuItem.
       WindowInfo := GetWindowInfo(PDrawItemStruct(LParam)^.hwndItem);
       if WindowInfo^.WinControl<>nil then
@@ -1826,20 +1824,6 @@ begin
     end;
     WM_MEASUREITEM:
     begin
-      if WParam = 0 then
-      begin
-        menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
-        if menuItem is TMenuItem then
-        begin
-          menuHDC := GetDC(Window);
-          TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
-          PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
-          PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
-          ReleaseDC(Window, menuHDC);
-          Winprocess := False;
-        end else
-          DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
-      end;
       if LWinControl<>nil then
       begin
         if LWinControl is TCustomCombobox then
