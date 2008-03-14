@@ -600,8 +600,6 @@ begin
   
   if AtomIs('const') then ReadNextAtom;
   
-  CreateChildNode(ccnVariableName);
-
   // prefixes: signed, unsigned
   // prefixes and/or names long, short
 
@@ -625,13 +623,16 @@ begin
 
   // read name
   ReadNextAtom;
+  CreateChildNode(ccnVariableName);
   if AtomIs('operator') then begin
     IsFunction:=true;
     // read operator
     ReadNextAtom;
+    CurNode.StartPos:=AtomStart;
     if not IsCCodeCustomOperator.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     then
       RaiseExpectedButAtomFound('operator');
+    CurNode.EndPos:=SrcPos;
   end else if AtomIsChar('(') then begin
     // example: int (*fp)(char*);
     //   pointer to function taking a char* argument; returns an int
@@ -643,8 +644,10 @@ begin
     {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
+    CurNode.StartPos:=AtomStart;
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
+    CurNode.EndPos:=SrcPos;
     ReadNextAtom;
     if not AtomIsChar(')') then
       RaiseExpectedButAtomFound(')');
@@ -657,8 +660,10 @@ begin
     {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
+    CurNode.StartPos:=AtomStart;
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
+    CurNode.EndPos:=SrcPos;
   end;
   EndChildNode;
 
