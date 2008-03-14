@@ -1381,7 +1381,7 @@ begin
     try
       if QtGetFontFamilies(FontList) > 0 then
       begin
-        for i := 0 to FontList.Count-1 do
+        for i := 0 to FontList.Count - 1 do
         begin
           EnumLogFont.elfLogFont.lfFaceName := FontList[i];
           Result := Callback(EnumLogFont, Metric, FontType, LParam);
@@ -1901,13 +1901,13 @@ begin
       WriteLn(' Rgn=0');
   {$endif}
   // it assumes that clipregion object has been created some other place
-  result := -1;
+  Result := -1;
   if not IsValidDC(DC) then
     exit;
   if rgn=0 then
     exit;
   if not QPainter_HasClipping(TQtDeviceContext(DC).Widget) then
-    result := 0
+    Result := 0
   else begin
     QPainter_ClipRegion(TQtDeviceContext(DC).Widget, TQtRegion(Rgn).Widget);
     Result := 1;
@@ -3523,7 +3523,7 @@ begin
   if (CY <> PenPos.Y) and (CY > 0) and (CY > PenPos.Y) then
     CY := CY - 1;
   
-  TQtDeviceContext(DC).drawLine( PenPos.X, PenPos.Y, CX, CY);
+  TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, CX, CY);
 
   MoveToEx(DC, CX, CY, nil);
   
@@ -3663,7 +3663,7 @@ begin
 
   if not IsValidDC(DC) then Exit;
 
-  TQtDeviceContext(DC).drawRect(x1, y1, X2 - X1 - 1, Y2 - Y1 - 1);
+  TQtDeviceContext(DC).drawRect(X1, Y1, X2 - X1 - 1, Y2 - Y1 - 1);
   
   Result := True;
 end;
