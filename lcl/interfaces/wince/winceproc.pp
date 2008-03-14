@@ -62,7 +62,7 @@ procedure FillRawImageDescription(const ABitmapInfo: Windows.TBitmap; out ADesc:
 
 function GetBitmapBytes(ABitmap: HBITMAP; const ARect: TRect; ALineEnd: TRawImageLineEnd; var AData: Pointer; var ADataSize: PtrUInt): Boolean;
 
-
+function GetLastErrorText(AErrorCode: Cardinal): WideString;
 
 function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
@@ -753,6 +753,24 @@ begin
   Result := True;
 end;
 
+function GetLastErrorText(AErrorCode: Cardinal): WideString;
+var
+  r: cardinal;
+  tmp: PWideChar;
+begin
+  tmp := nil;
+  r := Windows.FormatMessage(
+    FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
+    nil, AErrorCode, LANG_NEUTRAL, @tmp, 0, nil);
+
+  if r = 0 then Exit('');
+
+  Result := tmp;
+  SetLength(Result, Length(Result)-2);
+
+  if tmp <> nil
+  then LocalFree(HLOCAL(tmp));
+end;
 
 (***********************************************************************
   Widget member Functions
