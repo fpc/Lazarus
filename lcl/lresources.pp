@@ -40,14 +40,12 @@ uses
   LCLStrConsts, LazConfigStorage, RtlConsts;
 
 {$DEFINE UseLRS}
+{$IFDEF FPC_HAS_WINLIKERESOURCES}
+  {$DEFINE UseRES}
+{$ENDIF}
 
 type
   TFilerSignature = array[1..4] of Char;
-
-// we cannot place $IF DECLARED near the uses section due to bug 8611
-{$IF DECLARED(TFPResourceHandle)}
-  {$DEFINE UseRES}
-{$IFEND}
 
   { TLResourceList }
 
