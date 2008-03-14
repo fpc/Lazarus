@@ -588,7 +588,6 @@ begin
   end;
 end;
 
-
 procedure TriggerFormUpdate(const AMenuItem: TMenuItem);
 var
   lMenu: TMenu;
@@ -678,13 +677,18 @@ begin
     end;
   end;
 
-  with MenuInfo do begin
+  with MenuInfo do
+  begin
     cbsize := menuiteminfosize;
-    if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
-    if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
-    fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
-    wID:=AMenuItem.Command; {value may only be 16 bit wide!}
-    dwItemData:=PtrInt(AMenuItem);
+    if AMenuItem.Enabled then
+      fState := MFS_ENABLED
+    else
+      fstate := MFS_GRAYED;
+    if AMenuItem.Checked then
+      fState := fState or MFS_CHECKED;
+    fMask := MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
+    wID := AMenuItem.Command; {value may only be 16 bit wide!}
+    dwItemData := PtrInt(AMenuItem);
     if (AMenuItem.Count > 0) then
     begin
       fMask := fMask or MIIM_SUBMENU;
@@ -699,14 +703,17 @@ begin
       fState:=fState or MFS_DISABLED;
     end;
     dwTypeData := PChar(AMenuItem);
-    if AMenuItem.RadioItem then fType := fType or MFT_RADIOCHECK;
+    if AMenuItem.RadioItem then
+      fType := fType or MFT_RADIOCHECK;
     if (AMenuItem.GetIsRightToLeft) then
     begin
       fType := fType or MFT_RIGHTORDER;
       //Reverse the RIGHTJUSTIFY to be left
       if not AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
     end
-    else if AMenuItem.RightJustify then fType := fType or MFT_RIGHTJUSTIFY;
+    else
+    if AMenuItem.RightJustify then
+      fType := fType or MFT_RIGHTJUSTIFY;
   end;
   if dword(InsertMenuItem(ParentMenuHandle,
        AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
@@ -806,7 +813,7 @@ begin
   AppHandle := TWin32WidgetSet(WidgetSet).AppHandle;
   GetWindowInfo(AppHandle)^.PopupMenu := APopupMenu;
   TrackPopupMenuEx(MenuHandle, lAlign[APopupMenu.IsRightToLeft] or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
-    X, Y, AppHandle, Nil);
+    X, Y, AppHandle, nil);
 end;
 
 initialization
