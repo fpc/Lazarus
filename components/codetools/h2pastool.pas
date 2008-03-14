@@ -94,6 +94,7 @@ type
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree;
     function ExtractCVariableName(CVarNode: TCodeTreeNode): string;
+    function ExtractCVariableType(CVarNode: TCodeTreeNode): string;
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
@@ -126,6 +127,7 @@ procedure TH2PasTool.BuildH2PTree;
 var
   CNode: TCodeTreeNode;
   VarName: String;
+  VarType: String;
 begin
   Tree.Clear;
   CNode:=CTool.Tree.Root;
@@ -134,7 +136,8 @@ begin
     ccnVariable:
       begin
         VarName:=ExtractCVariableName(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'"']);
+        VarType:=ExtractCVariableType(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'" Type="',VarType,'"']);
       end;
 
     end;
@@ -151,6 +154,17 @@ begin
     Result:=''
   else
     Result:=copy(CTool.Src,Node.StartPos,Node.EndPos-node.StartPos);
+end;
+
+function TH2PasTool.ExtractCVariableType(CVarNode: TCodeTreeNode): string;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=CVarNode.FirstChild;
+  if (Node=nil) or (Node.Desc<>ccnVariableName) then
+    Result:=''
+  else
+    Result:=CTool.ExtractCode(CVarNode.StartPos,Node.StartPos,true);
 end;
 
 procedure TH2PasTool.WriteDebugReport;

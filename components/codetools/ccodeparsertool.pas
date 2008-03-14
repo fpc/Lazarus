@@ -153,6 +153,7 @@ type
 
     procedure MoveCursorToPos(p: integer);
     procedure ReadNextAtom;
+    procedure ReadNextAtomSkipDirectives;
     procedure UndoReadNextAtom;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function AtomIs(const s: shortstring): boolean;
@@ -163,6 +164,8 @@ type
     function GetAtom: string;
     function LastAtomIs(const s: shortstring): boolean;
     function GetLastAtom: string;
+    function ExtractCode(StartPos, EndPos: integer;
+                         WithDirectives: boolean = false): string;// extract code without comments
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -927,6 +930,24 @@ begin
   {$ENDIF}
 end;
 
+procedure TCCodeParserTool.ReadNextAtomSkipDirectives;
+begin
+  //DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
+  LastSrcPos:=SrcPos;
+  LastAtomStart:=AtomStart;
+  repeat
+    ReadRawNextCAtom(Src,SrcPos,AtomStart);
+    if (SrcPos>SrcLen) then break;
+    if Src[AtomStart]='#' then begin
+      ReadTilCLineEnd(Src,SrcPos);
+      if (SrcPos>SrcLen) then break;
+    end;
+  until (not (Src[AtomStart] in [#10,#13]));
+  {$IFDEF VerboseCCodeParser}
+  DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  {$ENDIF}
+end;
+
 procedure TCCodeParserTool.UndoReadNextAtom;
 begin
   if LastSrcPos>0 then begin
@@ -1054,6 +1075,58 @@ end;
 function TCCodeParserTool.GetLastAtom: string;
 begin
   Result:=copy(Src,LastAtomStart,LastSrcPos-LastAtomStart);
+end;
+
+function TCCodeParserTool.ExtractCode(StartPos, EndPos: integer;
+  WithDirectives: boolean): string;
+var
+  s: string;
+  p: integer;
+
+  procedure ReadIt;
+  var
+    l: Integer;
+    NextChar: Char;
+    LastChar: Char;
+  begin
+    MoveCursorToPos(StartPos);
+    p:=1;
+    LastChar:=' ';
+    repeat
+      // read next token
+      if WithDirectives then
+        ReadNextAtom
+      else
+        ReadNextAtomSkipDirectives;
+      if (AtomStart>=EndPos) then break;
+      
+      NextChar:=Src[AtomStart];
+      if IsIdentChar[LastChar] and IsIdentStartChar[NextChar] then begin
+        // add space
+        if s<>'' then
+          s[p]:=' ';
+        inc(p);
+      end;
+      // add token
+      l:=SrcPos-AtomStart;
+      if s<>'' then begin
+        // copy token
+        System.Move(Src[AtomStart],s[p],SrcPos-AtomStart);
+      end;
+      inc(p,l);
+      // remember last char
+      LastChar:=Src[SrcPos-1];
+    until false;
+  end;
+
+begin
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  // first read and compute needed length
+  ReadIt;
+  // allocate space and copy tokens
+  SetLength(s,p-1);
+  ReadIt;
+  Result:=s;
 end;
 
 function TCCodeParserTool.GetAtom: string;
