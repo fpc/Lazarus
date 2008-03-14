@@ -343,8 +343,11 @@ var
 begin
   if aSelected then
     Result := GetSysColor(COLOR_HIGHLIGHT)
-  // SPI_GETFLATMENU = 0x1022, it is not yet defined in the FPC
-  else if aInMainMenu and (SystemParametersInfo($1022, 0, @IsFlatMenu, 0)) and IsFlatMenu then // COLOR_MENUBAR is not supported on Windows version < XP
+  else
+  // COLOR_MENUBAR is not supported on Windows version < XP
+  // SPI_GETFLATMENU is not supported on Windows 2000/NT and Windows Me/98/95
+  if aInMainMenu and not (WindowsVersion in [wvNT4, wv2000, wv95, wv98, wvMe]) and
+     (SystemParametersInfo(SPI_GETFLATMENU, 0, @IsFlatMenu, 0)) and IsFlatMenu then
     Result := GetSysColor(COLOR_MENUBAR)
   else
     Result := GetSysColor(COLOR_MENU);
