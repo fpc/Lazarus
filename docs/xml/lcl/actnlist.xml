@@ -568,7 +568,7 @@ action handles the current component.
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomActionList.ActionByName">
-        <short/>
+        <short>Returns an action identified by its name (as a string)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -583,7 +583,7 @@ action handles the current component.
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomActionList.Actions">
-        <short/>
+        <short>The indexed list of actions</short>
         <descr/>
         <seealso/>
       </element>
@@ -709,7 +709,7 @@ action handles the current component.
       </element>
       <!-- property Visibility: public -->
       <element name="TShortCutList.ShortCuts">
-        <short>The short cuts</short>
+        <short>The indexed list of short cuts</short>
         <descr/>
         <seealso/>
       </element>
@@ -1345,8 +1345,9 @@ executed at this point in time.
       </element>
       <!-- object Visibility: default -->
       <element name="TActionLink">
-        <short/>
-        <descr/>
+        <short>A link between an action and a client class</short>
+        <descr>The class definition includes a number of protected procedures for setting properties for the action (as defined in <link id="TCustomAction"/>), and a number of public boolean functions to indicate which part of the action is linked to the client
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -1484,7 +1485,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsCaptionLinked">
-        <short/>
+        <short>Is the action's <var>Caption</var> linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1495,7 +1496,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsCheckedLinked">
-        <short/>
+        <short>Is the action's <i>Checked</i> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1506,7 +1507,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsEnabledLinked">
-        <short/>
+        <short>Is the action's <var>Enabled</var> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1517,7 +1518,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsGroupIndexLinked">
-        <short/>
+        <short>Is the action's <i>GroupIndex</i> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1528,7 +1529,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHelpContextLinked">
-        <short/>
+        <short>Is the action's <var>HelpContext</var> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1539,7 +1540,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHelpLinked">
-        <short/>
+        <short>Is the action's <i>Help</i> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1550,7 +1551,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsHintLinked">
-        <short/>
+        <short>Is the action's <i>Hint</i> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1561,7 +1562,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsImageIndexLinked">
-        <short/>
+        <short>Is the action's <var>ImageIndex </var>property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1572,7 +1573,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsShortCutLinked">
-        <short/>
+        <short>Is the action's <i>ShortCut</i> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1583,7 +1584,7 @@ executed at this point in time.
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsVisibleLinked">
-        <short/>
+        <short>Is the action's <var>Visible</var> property linked to the client?</short>
         <descr/>
         <errors/>
         <seealso/>

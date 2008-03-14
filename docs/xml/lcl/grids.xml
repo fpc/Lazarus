@@ -1412,7 +1412,7 @@
         <short>The base class for all grid controls</short>
         <descr>
           <p>A grid is a collection of cells that are organized in columns and rows. 
-Grids are adequate to show data that have tabular nature, for example tables in a database.  
+Grids are adequate to show data that have tabular nature, for example tables in a database, or formulae and data in a spreasheet.  
 </p>
           <p>
             <b>Key properties:</b>
@@ -3921,7 +3921,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.DefaultDrawing">
-        <short/>
+        <short>Is the default drawing method to be used for this grid? Default is TRUE</short>
         <descr/>
         <seealso/>
       </element>
@@ -3998,7 +3998,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FocusColor">
-        <short/>
+        <short>The colour to be used for the cell receiving focus</short>
         <descr/>
         <seealso/>
       </element>
@@ -4158,7 +4158,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnSelectEditor">
-        <short>Event handler for when the editor is selected</short>
+        <short>Event handler for selecting an editor </short>
         <descr/>
         <seealso/>
       </element>
@@ -4202,14 +4202,14 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.BeginUpdate">
-        <short/>
+        <short>Begin updating the grid</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.CellRect">
-        <short/>
+        <short>The coordinates of the current cell (column, row) expressed as a standard rectangle (TRect)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4228,7 +4228,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.Clear">
-        <short>clear all cells from the grid.</short>
+        <short>Clear all cells from the grid.</short>
         <descr>
           <p>Reset Column and Row counts to 0. Grid is completely emptied.</p>
           <p>Compatibility: This property applies to Lazarus grids only , under Delphi/Kylix a grid can't be completly emptied.</p>
@@ -4251,7 +4251,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EditorExit">
-        <short/>
+        <short>Leave the cell editor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4262,7 +4262,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EditorKeyDown">
-        <short/>
+        <short>Emulate the <var>OnKeyDown</var> event handler in the cell editor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4281,7 +4281,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EditorKeyPress">
-        <short/>
+        <short>Emulate the <var>OnKeyPress</var> event handler in the cell editor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4296,7 +4296,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EditorKeyUp">
-        <short/>
+        <short>Emulate the <var>OnKeyUp</var> event handler in the cell editor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4315,7 +4315,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.EndUpdate">
-        <short/>
+        <short>Finish updating the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9437,7 +9437,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AlternateColor">
-        <short>The other colour which can be used in this grid (eg for highlighting selected text etc)</short>
+        <short>The colour to be used for the background on alternate rows of the grid. Having alternate rows in different colours can make the grid easier to read.</short>
         <descr/>
         <seealso/>
       </element>
@@ -9584,7 +9584,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.CellToGridZone">
-        <short/>
+        <short>Convert the coordinates of the current cell (col, row) to a grid zone</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9603,14 +9603,14 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.CheckPosition">
-        <short/>
+        <short>Check the position of the cursor</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.EditorByStyle">
-        <short/>
+        <short>Select a cell editor control with the specified style</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9659,7 +9659,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.SetFocus">
-        <short/>
+        <short>Set focus on the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9672,7 +9672,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDrawGrid">
-        <short/>
+        <short>Base Class for drawn grids including <var>TDrawGrid</var> and <var>TStringGrid</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10081,7 +10082,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.DeleteColRow">
-        <short/>
+        <short>Delete either a column or a row (specified by index), depending on the value of the boolean <var>IsColumn</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10096,7 +10098,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.ExchangeColRow">
-        <short/>
+        <short>Exchange either a column or a row, specified by <var>index</var>, with the col or row specified by <var>WithIndex</var>; boolean <var>IsColumn</var> determines whether rows or columns are to be exchanged</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10130,7 +10132,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.MoveColRow">
-        <short/>
+        <short>Move column or row from <var>FromIndex</var> to <var>ToIndex</var>; boolean <var>IsColumn</var> specifies whether col or row is to be moved</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10149,7 +10151,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.SortColRow">
-        <short/>
+        <short>Sort column or row specified by <var>index</var> and optionally by <var>FromIndex</var> and <var>ToIndex</var>; <var>IsColumn</var> specifies whether col or row is to be sorted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10172,7 +10174,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDrawGrid.DefaultDrawCell">
-        <short/>
+        <short>Use the default method for drawing a cell specified by <var>aCol</var>, <var>aRow</var>, at location <var>aRect</var> with state <var>aState</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10249,7 +10252,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.AltColorStartNormal">
-        <short/>
+        <short>Using the alt colour as background on alternate rows; start with the normal colour on the first row.</short>
         <descr/>
         <seealso/>
       </element>
