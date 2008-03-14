@@ -363,7 +363,6 @@ var
   {$endif}
 begin
   Result:=s;
-  if AFrom=ATo then exit;
   AFrom:=LowerCase(FromEncoding);
   ATo:=LowerCase(ToEncoding);
   if AFrom=ATo then exit;
