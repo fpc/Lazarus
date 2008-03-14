@@ -4732,10 +4732,7 @@ begin
   try
     Result:=0;
     if FCurCodeTool<>nil then begin
-      Result:=FCurCodeTool.ConsistencyCheck;
-      if Result<>0 then begin
-        dec(Result,10000);  exit;
-      end;
+      FCurCodeTool.ConsistencyCheck;
     end;
     Result:=DefinePool.ConsistencyCheck;
     if Result<>0 then begin
@@ -4778,9 +4775,7 @@ begin
   DebugLn('[TCodeToolManager.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck));
   if FCurCodeTool<>nil then begin
     if WriteTool then
-      FCurCodeTool.WriteDebugTreeReport
-    else
-      DebugLn('  FCurCodeTool.ConsistencyCheck=',dbgs(FCurCodeTool.ConsistencyCheck));
+      FCurCodeTool.WriteDebugTreeReport;
   end;
   if WriteDefPool then
     DefinePool.WriteDebugReport

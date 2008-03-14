@@ -693,7 +693,7 @@ type
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
     destructor Destroy; override;
-    function ConsistencyCheck: integer; override;
+    procedure ConsistencyCheck; override;
 
     function FindDeclaration(const CursorPos: TCodeXYPosition;
       out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
@@ -7574,36 +7574,25 @@ begin
     FDependsOnCodeTools.Add(DependOnTool);
 end;
 
-function TFindDeclarationTool.ConsistencyCheck: integer;
+procedure TFindDeclarationTool.ConsistencyCheck;
 var ANodeCache: TCodeTreeNodeCache;
 begin
-  Result:=inherited ConsistencyCheck;
-  if Result<>0 then exit;
+  inherited ConsistencyCheck;
   if FInterfaceIdentifierCache<>nil then begin
 
   end;
   ANodeCache:=FFirstNodeCache;
   while ANodeCache<>nil do begin
-    Result:=ANodeCache.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);
-      exit;
-    end;
+    ANodeCache.ConsistencyCheck;
     ANodeCache:=ANodeCache.Next;
   end;
   if FDependentCodeTools<>nil then begin
-    Result:=FDependentCodeTools.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,200);
-      exit;
-    end;
+    if FDependentCodeTools.ConsistencyCheck<>0 then
+      raise Exception.Create('');
   end;
   if FDependsOnCodeTools<>nil then begin
-    Result:=FDependsOnCodeTools.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,300);
-      exit;
-    end;
+    if FDependsOnCodeTools.ConsistencyCheck<>0 then
+      raise Exception.Create('');
   end;
 end;
 

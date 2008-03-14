@@ -237,7 +237,7 @@ type
     function FindOwner: TObject;
     procedure Clear;
     constructor Create;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; WithChilds: boolean);
   end;
 
@@ -257,7 +257,7 @@ type
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
-    function ConsistencyCheck: integer; // 0 = ok
+    procedure ConsistencyCheck;
     procedure WriteDebugReport(WithChilds: boolean);
   end;
 
@@ -616,35 +616,32 @@ begin
     Result:=Parent;
 end;
 
-function TCodeTreeNode.ConsistencyCheck: integer;
-// 0 = ok
+procedure TCodeTreeNode.ConsistencyCheck;
 begin
-  if (EndPos>0) and (StartPos>EndPos) then begin
-    Result:=-1;  exit;
-  end;
+  if (EndPos>0) and (StartPos>EndPos) then
+    raise Exception.Create('');
   if (Parent<>nil) then begin
-    if (PriorBrother=nil) and (Parent.FirstChild<>Self) then begin
-      Result:=-2;  exit;
-    end;
-    if (NextBrother=nil) and (Parent.LastChild<>Self) then begin
-      Result:=-3;  exit;
-    end;
+    if (PriorBrother=nil) and (Parent.FirstChild<>Self) then
+      raise Exception.Create('');
+    if (NextBrother=nil) and (Parent.LastChild<>Self) then
+      raise Exception.Create('');
   end;
-  if (NextBrother<>nil) and (NextBrother.PriorBrother<>Self) then begin
-    Result:=-4;  exit;
-  end;
-  if (PriorBrother<>nil) and (PriorBrother.NextBrother<>Self) then begin
-    Result:=-5;  exit;
-  end;
-  if (FirstChild<>nil) then begin
-    Result:=FirstChild.ConsistencyCheck;
-    if Result<>0 then exit;
-  end;
-  if NextBrother<>nil then begin
-    Result:=NextBrother.ConsistencyCheck;
-    if Result<>0 then exit;
-  end;
-  Result:=0;
+  if (NextBrother<>nil) and (NextBrother.Parent<>Parent) then;
+    raise Exception.Create('');
+  if (PriorBrother<>nil) and (PriorBrother.Parent<>Parent) then;
+    raise Exception.Create('');
+  if (FirstChild<>nil) and (FirstChild.Parent<>Self) then
+    raise Exception.Create('');
+  if (FirstChild=nil) <> (LastChild=nil) then
+    raise Exception.Create('');
+  if (NextBrother<>nil) and (NextBrother.PriorBrother<>Self) then
+    raise Exception.Create('');
+  if (PriorBrother<>nil) and (PriorBrother.NextBrother<>Self) then
+    raise Exception.Create('');
+  if (FirstChild<>nil) then
+    FirstChild.ConsistencyCheck;
+  if NextBrother<>nil then
+    NextBrother.ConsistencyCheck;
 end;
 
 procedure TCodeTreeNode.WriteDebugReport(const Prefix: string;
@@ -854,8 +851,7 @@ begin
   Result:=ANode=Root;
 end;
 
-function TCodeTree.ConsistencyCheck: integer;
-// 0 = ok
+procedure TCodeTree.ConsistencyCheck;
 var RealNodeCount: integer;
 
   procedure CountNodes(ANode: TCodeTreeNode);
@@ -868,26 +864,19 @@ var RealNodeCount: integer;
 
 begin
   if Root<>nil then begin
-    Result:=Root.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);  exit;
-    end;
-    if Root.Parent<>nil then begin
-      Result:=-1;  exit;
-    end;
+    if Root.Parent<>nil then
+      raise Exception.Create('');
+    Root.ConsistencyCheck;
   end;
   RealNodeCount:=0;
   CountNodes(Root);
-  if RealNodeCount<>FNodeCount then begin
-    Result:=-2;  exit;
-  end;
-  Result:=0;
+  if RealNodeCount<>FNodeCount then
+    raise Exception.Create('');
 end;
 
 procedure TCodeTree.WriteDebugReport(WithChilds: boolean);
 begin
-  DebugLn('[TCodeTree.WriteDebugReport] Consistency=',dbgs(ConsistencyCheck),
-    ' Root=',dbgs(Root<>nil));
+  DebugLn('[TCodeTree.WriteDebugReport] Root=',dbgs(Root<>nil));
   if Root<>nil then
     Root.WriteDebugReport(' ',true);
 end;

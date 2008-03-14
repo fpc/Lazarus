@@ -144,7 +144,7 @@ type
     constructor Create(AnOwner: TCodeTreeNode);
     destructor Destroy; override;
     procedure WriteDebugReport(const Prefix: string);
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
   end;
   
   {
@@ -881,30 +881,23 @@ begin
   end;
 end;
 
-function TCodeTreeNodeCache.ConsistencyCheck: integer;
+procedure TCodeTreeNodeCache.ConsistencyCheck;
 begin
   if (FItems<>nil) then begin
-    Result:=FItems.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);
-      exit;
-    end;
+    if FItems.ConsistencyCheck<>0 then
+      raise Exception.Create('');
   end;
   if Owner<>nil then begin
-    if Owner.Cache<>Self then begin
-      Result:=-1;
-      exit;
-    end;
+    if Owner.Cache<>Self then
+      raise Exception.Create('');
   end;
-  Result:=0;
 end;
 
 procedure TCodeTreeNodeCache.WriteDebugReport(const Prefix: string);
 var Node: TAVLTreeNode;
   Entry: PCodeTreeNodeCacheEntry;
 begin
-  DebugLn(Prefix+'[TCodeTreeNodeCache.WriteDebugReport] Self='+
-    DbgS(Self)+' Consistency=',dbgs(ConsistencyCheck));
+  DebugLn(Prefix+'[TCodeTreeNodeCache.WriteDebugReport] Self='+DbgS(Self));
   if FItems<>nil then begin
     Node:=FItems.FindLowest;
     while Node<>nil do begin
@@ -916,6 +909,7 @@ begin
       Node:=FItems.FindSuccessor(Node);
     end;
   end;
+  ConsistencyCheck;
 end;
 
 procedure TCodeTreeNodeCache.UnbindFromOwner;

@@ -326,7 +326,7 @@ type
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
     function NodeSubDescToStr(Desc, SubDesc: integer): string;
-    function ConsistencyCheck: integer; virtual; // 0 = ok
+    procedure ConsistencyCheck; virtual;
     procedure WriteDebugTreeReport;
     procedure CheckNodeTool(Node: TCodeTreeNode);
     constructor Create;
@@ -2045,14 +2045,9 @@ begin
   Result:=true;
 end;
 
-function TCustomCodeTool.ConsistencyCheck: integer;
-// 0 = ok
+procedure TCustomCodeTool.ConsistencyCheck;
 begin
-  Result:=Tree.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,100);  exit;
-  end;
-  Result:=0;
+  Tree.ConsistencyCheck;
 end;
 
 procedure TCustomCodeTool.WriteDebugTreeReport;
@@ -2094,9 +2089,9 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
   end;
 
 begin
-  DebugLn('[TCustomCodeTool.WriteDebugTreeReport] Consistency=',
-     dbgs(ConsistencyCheck));
+  DebugLn('[TCustomCodeTool.WriteDebugTreeReport]');
   WriteSubTree(Tree.Root,'  ');
+  ConsistencyCheck;
 end;
 
 procedure TCustomCodeTool.CheckNodeTool(Node: TCodeTreeNode);
