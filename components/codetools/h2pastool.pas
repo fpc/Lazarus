@@ -40,8 +40,8 @@ unit H2PasTool;
 interface
 
 uses
-  Classes, SysUtils, FileProcs,CCodeParserTool, NonPascalCodeTools,
-  CodeCache, CodeTree, CodeAtom;
+  Classes, SysUtils, FileProcs, BasicCodeTools, CCodeParserTool,
+  NonPascalCodeTools, CodeCache, CodeTree, CodeAtom;
   
 type
 
@@ -92,6 +92,8 @@ type
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
+    procedure BuildH2PTree;
+    function ExtractCVariableName(CVarNode: TCodeTreeNode): string;
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
@@ -110,13 +112,45 @@ begin
   try
     // pare C header file
     CTool.Parse(CCode);
-    CTool.WriteDebugReport;
-    
+    //CTool.WriteDebugReport;
+
+    BuildH2PTree;
   finally
     CTool.Free;
   end;
   
   Result:=true;
+end;
+
+procedure TH2PasTool.BuildH2PTree;
+var
+  CNode: TCodeTreeNode;
+  VarName: String;
+begin
+  Tree.Clear;
+  CNode:=CTool.Tree.Root;
+  while CNode<>nil do begin
+    case CNode.Desc of
+    ccnVariable:
+      begin
+        VarName:=ExtractCVariableName(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'"']);
+      end;
+
+    end;
+    CNode:=CNode.Next;
+  end;
+end;
+
+function TH2PasTool.ExtractCVariableName(CVarNode: TCodeTreeNode): string;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=CVarNode.FirstChild;
+  if (Node=nil) or (Node.Desc<>ccnVariableName) then
+    Result:=''
+  else
+    Result:=copy(CTool.Src,Node.StartPos,Node.EndPos-node.StartPos);
 end;
 
 procedure TH2PasTool.WriteDebugReport;

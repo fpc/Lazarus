@@ -31,6 +31,8 @@ interface
 
 {$I codetools.inc}
 
+{off $DEFINE VerboseCCodeParser}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -445,10 +447,8 @@ begin
     RaiseException('missing declaration')
   else
     ReadVariable;
-  DebugLn(['TCCodeParserTool.TypedefToken AAA1 ',GetAtom]);
   // read semicolon
   ReadNextAtom;
-  DebugLn(['TCCodeParserTool.TypedefToken AAA2 ',GetAtom]);
   if not AtomIsChar(';') then
     RaiseExpectedButAtomFound(';');
   EndChildNode;
@@ -502,12 +502,16 @@ begin
   NewNode.Desc:=Desc;
   CurNode:=NewNode;
   CurNode.StartPos:=AtomStart;
+  {$IFDEF VerboseCCodeParser}
   DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.CreateChildNode ',CCNodeDescAsString(Desc)]);
+  {$ENDIF}
 end;
 
 procedure TCCodeParserTool.EndChildNode;
 begin
+  {$IFDEF VerboseCCodeParser}
   DebugLn([GetIndentStr(CurNode.GetLevel*2),'TCCodeParserTool.EndChildNode ',CCNodeDescAsString(CurNode.Desc)]);
+  {$ENDIF}
   if CurNode.EndPos<=0 then
     CurNode.EndPos:=SrcPos;
   CurNode:=CurNode.Parent;
@@ -570,7 +574,9 @@ var
   NeedEnd: Boolean;
   LastIsName: Boolean;
 begin
+  {$IFDEF VerboseCCodeParser}
   DebugLn(['TCCodeParserTool.ReadVariable START ',GetAtom]);
+  {$ENDIF}
   CreateChildNode(ccnVariable);
   IsFunction:=false;
   if AtomIs('struct') then begin
@@ -634,7 +640,9 @@ begin
       // pointer or const
       ReadNextAtom;
     end;
+    {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    {$ENDIF}
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
     ReadNextAtom;
@@ -646,7 +654,9 @@ begin
       ReadNextAtom;
     end;
 
+    {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
+    {$ENDIF}
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
   end;
@@ -907,7 +917,9 @@ begin
   repeat
     ReadRawNextCAtom(Src,SrcPos,AtomStart);
   until (SrcPos>SrcLen) or (not (Src[AtomStart] in [#10,#13]));
+  {$IFDEF VerboseCCodeParser}
   DebugLn(['TCCodeParserTool.ReadNextAtom END ',AtomStart,'-',SrcPos,' "',copy(Src,AtomStart,SrcPos-AtomStart),'"']);
+  {$ENDIF}
 end;
 
 procedure TCCodeParserTool.UndoReadNextAtom;
@@ -1050,7 +1062,9 @@ var
   Node: TCodeTreeNode;
   DiffPos: Integer;
 begin
+  {$IFDEF VerboseCCodeParser}
   DebugLn(['TCCodeParserTool.Replace ',FromPos,'-',ToPos,' Old="',copy(Src,FromPos,ToPos-FromPos),'" New="',NewSrc,'"']);
+  {$ENDIF}
   IncreaseChangeStep;
   Code.Replace(FromPos,ToPos-FromPos,NewSrc);
   Src:=Code.Source;
