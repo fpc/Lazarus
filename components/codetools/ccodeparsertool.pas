@@ -1166,6 +1166,15 @@ begin
       // The type is result type + parameter list
       Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
                                  WithDirectives);
+    end else if (NameNode.NextBrother<>nil)
+    and (NameNode.NextBrother.Desc=ccnConstant) then begin
+      // a variable with an initial value
+      // omit the constant
+      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
+                                 WithDirectives);
+    end else begin
+      Result:=Result+ExtractCode(NameNode.EndPos,Node.EndPos,
+                                 WithDirectives);
     end;
   end;
 end;
