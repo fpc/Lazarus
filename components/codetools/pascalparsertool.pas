@@ -2579,10 +2579,15 @@ begin
     ReadNextAtom;
   end;
   if (CurNode.Parent.Desc=ctnVarSection)
-  and (UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL')) then begin
-    // for example 'var a: char; public;'
+  and (UpAtomIs('PUBLIC') or UpAtomIs('EXPORT') or UpAtomIs('EXTERNAL')) then
+  begin
+    // examples:
+    //   a: b; public;
+    //   a: b; external;
+    //   a: b; external name 'c';
+    //   a: b; external c;
     if UpAtomIs('EXTERNAL') then begin
-      // read external name
+      // read external identifier
       ReadNextAtom;
       if (not UpAtomIs('NAME')) and AtomIsIdentifier(false) then
         ReadConstant(true,false,[]);
