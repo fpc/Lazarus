@@ -3688,7 +3688,10 @@ var
   Graph: TCodeGraph;
 begin
   Result:=false;
-  if (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  if (SourceChangeCache=nil) or (Scanner=nil) then begin
+    DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions no scanner']);
+    exit;
+  end;
   Definitions:=nil;
   Graph:=nil;
   try
@@ -3697,13 +3700,25 @@ begin
     //if not MovePointerTypesToTargetSections(SourceChangeCache) then exit;
     //exit(true);
     
-    if not BuildUnitDefinitionGraph(Definitions,Graph,true) or (Graph=nil) then
+    if not BuildUnitDefinitionGraph(Definitions,Graph,true) then begin
+      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions BuildUnitDefinitionGraph failed']);
       exit;
+    end;
+    if Graph=nil then begin
+      // no definitions found
+      exit(true);
+    end;
     SourceChangeCache.MainScanner:=Scanner;
     // fix circles
-    if not CheckCircles(Definitions,Graph) then exit;
+    if not CheckCircles(Definitions,Graph) then begin
+      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions CheckCircles failed']);
+      exit;
+    end;
     // now the graph is acyclic and nodes can be moved
-    if not CheckOrder(Definitions,Graph) then exit;
+    if not CheckOrder(Definitions,Graph) then begin
+      DebugLn(['TCodeCompletionCodeTool.FixForwardDefinitions CheckOrder failed']);
+      exit;
+    end;
   finally
     UpdateGraph(Definitions,Graph,false);
   end;
@@ -3888,7 +3903,10 @@ begin
   DefinitionsTreeOfCodeTreeNodeExt:=nil;
   Graph:=nil;
   if not GatherUnitDefinitions(DefinitionsTreeOfCodeTreeNodeExt,false,true) then
+  begin
+    DebugLn(['TCodeCompletionCodeTool.BuildUnitDefinitionGraph GatherUnitDefinitions failed']);
     exit;
+  end;
   if DefinitionsTreeOfCodeTreeNodeExt=nil then exit(true);
   
   AVLNode:=DefinitionsTreeOfCodeTreeNodeExt.FindLowest;
