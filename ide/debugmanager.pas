@@ -46,7 +46,7 @@ uses
   SynEdit, CodeCache, CodeToolManager,
   MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   LazConf, DebugOptionsFrm,
-  CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, UnitEditor,
+  CompilerOptions, EditorOptions, EnvironmentOpts, ProjectOpts, KeyMapping, SourceEditor,
   ProjectDefs, Project, IDEProcs, InputHistory, Debugger,
   IDEOptionDefs, LazarusIDEStrConsts,
   MainBar, MainIntf, MainBase, BaseBuildManager,

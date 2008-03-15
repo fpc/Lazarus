@@ -67,7 +67,7 @@ uses
   TransferMacros, ObjectInspector, PropEdits, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
-  UnitEditor, BuildManager,
+  SourceEditor, BuildManager,
   MainBar, MainIntf;
 
 type

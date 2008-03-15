@@ -113,7 +113,7 @@ uses
   // packager
   PackageSystem, PkgManager, BasePkgManager,
   // source editing
-  UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
+  SourceEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, MsgQuickFixes, ViewUnit_dlg,
   // converter

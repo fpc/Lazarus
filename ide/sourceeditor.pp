@@ -1,6 +1,6 @@
 {
 /***************************************************************************
-                               UnitEditor.pp
+                               SourceEditor.pp
                              -------------------
 
  ***************************************************************************/
@@ -28,7 +28,7 @@
   It also has a class that controls the editors (TSourceEditor)
 }
 
-unit UnitEditor;
+unit SourceEditor;
 
 {$mode objfpc}
 {$H+}
@@ -6451,7 +6451,7 @@ end;
 
 initialization
   InternalInit;
-  {$I uniteditor.lrs}
+  {$I sourceeditor.lrs}
 {$I ../images/bookmark.lrs}
 
 finalization

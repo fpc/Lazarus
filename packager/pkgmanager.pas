@@ -60,7 +60,7 @@ uses
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg, IDETranslations,
   TransferMacros, MsgView, BuildLazDialog, NewDialog, IDEDialogs, TodoList,
-  ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
+  ProjectInspector, ComponentPalette, SourceEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg, InstallPkgSetDlg,
   // bosses
   BaseBuildManager, BasePkgManager,
