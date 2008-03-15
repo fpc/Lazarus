@@ -122,46 +122,76 @@ begin
     with InternalPredefinedCTypes do begin
       // int
       Add('int','cint');
+      Add('int*','pcint');
       Add('signed int','csint');
+      Add('signed int*','pcsint');
       Add('unsigned int','cuint');
+      Add('unsigned int*','pcuint');
       Add('short int','cshort');
+      Add('short int*','pcshort');
       Add('signed short int','csshort');
+      Add('signed short int*','pcsshort');
       Add('unsigned short int','csshort');
+      Add('unsigned short int*','pcsshort');
       // short
       Add('short','cshort');
+      Add('short*','pcshort');
       Add('signed short','csshort');
+      Add('signed short*','pcsshort');
       Add('unsigned short','csshort');
+      Add('unsigned short*','pcsshort');
       // int8
       Add('int8','cint8');
+      Add('int8*','pcint8');
       Add('unsigned int8','cuint8');
+      Add('unsigned int8*','pcuint8');
       // int16
       Add('int16','cint16');
+      Add('int16*','pcint16');
       Add('unsigned int16','cuint16');
+      Add('unsigned int16*','pcuint16');
       // int32
       Add('int32','cint32');
+      Add('int32*','pcint32');
       Add('unsigned int32','cuint32');
+      Add('unsigned int32*','pcuint32');
       // int64
       Add('int64','cint64');
+      Add('int64*','pcint64');
       Add('unsigned int64','cuint64');
+      Add('unsigned int64*','pcuint64');
       // long
       Add('long','clong');
+      Add('long*','pclong');
       Add('signed long','cslong');
+      Add('signed long*','pcslong');
       Add('unsigned long','culong');
+      Add('unsigned long*','pculong');
       // long long
       Add('long long','clonglong');
+      Add('long long*','pclonglong');
       Add('signed long long','cslonglong');
+      Add('signed long long*','pcslonglong');
       Add('unsigned long long','culonglong');
+      Add('unsigned long long*','pculonglong');
       // bool
       Add('bool','cbool');
+      Add('bool*','pcbool');
       // char
       Add('char','cchar');
+      Add('char*','pcchar');
       Add('signed char','cschar');
+      Add('signed char*','pcschar');
       Add('unsigned char','cuchar');
+      Add('unsigned char*','pcuchar');
       // float
       Add('float','cfloat');
+      Add('float*','pcfloat');
       // double
       Add('double','cdouble');
+      Add('double*','pcdouble');
       Add('long double','clongdouble');
+      Add('long double*','pclongdouble');
     end;
   end;
   Result:=InternalPredefinedCTypes;
