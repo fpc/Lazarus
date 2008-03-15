@@ -40,8 +40,9 @@ unit H2PasTool;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, BasicCodeTools, CCodeParserTool,
-  NonPascalCodeTools, CodeCache, CodeTree, CodeAtom;
+  Classes, SysUtils, contnrs,
+  FileProcs, BasicCodeTools, CCodeParserTool, NonPascalCodeTools,
+  CodeCache, CodeTree, CodeAtom;
   
 type
 
@@ -88,21 +89,83 @@ type
   { TH2PasTool }
 
   TH2PasTool = class
+  private
+    FPredefinedCTypes: TFPStringHashTable;
   public
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree;
     
-    function HasCVariableSimplePascalType(CVarNode: TCodeTreeNode): boolean;
-    
+    function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
+    function ConvertSimpleCTypeToPascalType(CType: string): string;
+
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    property PredefinedCTypes: TFPStringHashTable read FPredefinedCTypes;
   end;
+  
+  
+function DefaultPredefinedCTypes: TFPStringHashTable;// types in unit ctypes
 
 implementation
+
+var
+  InternalPredefinedCTypes: TFPStringHashTable = nil;// types in unit ctypes
+
+function DefaultPredefinedCTypes: TFPStringHashTable;
+begin
+  if InternalPredefinedCTypes=nil then begin
+    InternalPredefinedCTypes:=TFPStringHashTable.Create;
+    with InternalPredefinedCTypes do begin
+      // int
+      Add('int','cint');
+      Add('signed int','csint');
+      Add('unsigned int','cuint');
+      Add('short int','cshort');
+      Add('signed short int','csshort');
+      Add('unsigned short int','csshort');
+      // short
+      Add('short','cshort');
+      Add('signed short','csshort');
+      Add('unsigned short','csshort');
+      // int8
+      Add('int8','cint8');
+      Add('unsigned int8','cuint8');
+      // int16
+      Add('int16','cint16');
+      Add('unsigned int16','cuint16');
+      // int32
+      Add('int32','cint32');
+      Add('unsigned int32','cuint32');
+      // int64
+      Add('int64','cint64');
+      Add('unsigned int64','cuint64');
+      // long
+      Add('long','clong');
+      Add('signed long','cslong');
+      Add('unsigned long','culong');
+      // long long
+      Add('long long','clonglong');
+      Add('signed long long','cslonglong');
+      Add('unsigned long long','culonglong');
+      // bool
+      Add('bool','cbool');
+      // char
+      Add('char','cchar');
+      Add('signed char','cschar');
+      Add('unsigned char','cuchar');
+      // float
+      Add('float','cfloat');
+      // double
+      Add('double','cdouble');
+      Add('long double','clongdouble');
+    end;
+  end;
+  Result:=InternalPredefinedCTypes;
+end;
 
 { TH2PasTool }
 
@@ -129,6 +192,7 @@ var
   CNode: TCodeTreeNode;
   VarName: String;
   VarType: String;
+  SimpleType: String;
 begin
   Tree.Clear;
   CNode:=CTool.Tree.Root;
@@ -138,7 +202,8 @@ begin
       begin
         VarName:=CTool.ExtractVariableName(CNode);
         VarType:=CTool.ExtractVariableType(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'" Type="',VarType,'"']);
+        SimpleType:=GetSimplePascalTypeOfCVar(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'" Type="',VarType,'" SimpleType=',SimpleType]);
       end;
 
     end;
@@ -146,15 +211,45 @@ begin
   end;
 end;
 
-function TH2PasTool.HasCVariableSimplePascalType(
-  CVarNode: TCodeTreeNode): boolean;
+function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
 var
-  VarType: String;
+  SimpleType: String;
 begin
-  VarType:=CTool.ExtractVariableType(CVarNode);
-  if VarType='' then
-    exit(false);
-  Result:=IsValidIdent(VarType);
+  Result:=CTool.ExtractVariableType(CVarNode);
+  if Result='' then exit;
+  SimpleType:=ConvertSimpleCTypeToPascalType(Result);
+  if SimpleType<>'' then begin
+    Result:=SimpleType;
+    exit;
+  end;
+  if not IsValidIdent(Result) then
+    Result:='';
+end;
+
+function TH2PasTool.ConvertSimpleCTypeToPascalType(CType: string): string;
+// the type must be normalized. That means no directives,
+// no unneeded spaces, no tabs, no comments, no newlines.
+var
+  p: Integer;
+  CurAtomStart: integer;
+begin
+  // remove 'const'
+  p:=1;
+  repeat
+    ReadRawNextCAtom(CType,p,CurAtomStart);
+    if CurAtomStart>length(CType) then break;
+    if (p-CurAtomStart=5)
+    and CompareMem(PChar('const'),@CType[CurAtomStart],5) then begin
+      // remove 'const' and one space
+      if (CurAtomStart>1) and (CType[CurAtomStart]=' ') then
+        dec(CurAtomStart)
+      else if (p<=length(CType)) and (CType[p]=' ') then
+        inc(p);
+      CType:=copy(CType,1,CurAtomStart-1)+copy(CType,p,length(CType));
+      p:=CurAtomStart;
+    end;
+  until false;
+  Result:=PredefinedCTypes[CType];
 end;
 
 procedure TH2PasTool.WriteDebugReport;
@@ -166,12 +261,15 @@ end;
 
 constructor TH2PasTool.Create;
 begin
+  FPredefinedCTypes:=DefaultPredefinedCTypes;
   Tree:=TH2PTree.Create;
 end;
 
 destructor TH2PasTool.Destroy;
 begin
+  FPredefinedCTypes:=nil;
   Clear;
+  FreeAndNil(Tree);
   inherited Destroy;
 end;
 
@@ -412,6 +510,9 @@ begin
     Root.WriteDebugReport(' ',true);
   ConsistencyCheck;
 end;
+
+finalization
+  FreeAndNil(InternalPredefinedCTypes);
 
 end.
 

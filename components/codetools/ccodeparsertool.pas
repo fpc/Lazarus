@@ -169,7 +169,8 @@ type
                          WithDirectives: boolean = false): string;// extract code without comments
 
     function ExtractVariableName(Node: TCodeTreeNode): string;
-    function ExtractVariableType(Node: TCodeTreeNode): string;
+    function ExtractVariableType(Node: TCodeTreeNode;
+                                 WithDirectives: boolean = false): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -1149,7 +1150,8 @@ begin
     Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
 end;
 
-function TCCodeParserTool.ExtractVariableType(Node: TCodeTreeNode): string;
+function TCCodeParserTool.ExtractVariableType(Node: TCodeTreeNode;
+  WithDirectives: boolean): string;
 var
   NameNode: TCodeTreeNode;
 begin
@@ -1157,12 +1159,13 @@ begin
   if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
     Result:=''
   else begin
-    Result:=ExtractCode(Node.StartPos,NameNode.StartPos,true);
+    Result:=ExtractCode(Node.StartPos,NameNode.StartPos,WithDirectives);
     if (NameNode.NextBrother<>nil)
     and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
       // this is a function. The name is in between.
       // The type is result type + parameter list
-      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,true);
+      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
+                                 WithDirectives);
     end;
   end;
 end;
