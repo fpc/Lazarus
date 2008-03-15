@@ -52,15 +52,16 @@ const
   ccnRoot           =  1+ccnBase;
   ccnDirective      =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
   ccnExtern         =  3+ccnBase;// e.g. extern "C" {}
-  ccnEnums          =  4+ccnBase;// e.g. enum {};
-  ccnEnum           =  5+ccnBase;// e.g. name = value;
-  ccnConstant       =  6+ccnBase;// e.g. 1
-  ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;
-  ccnStruct         =  8+ccnBase;// e.g. struct{};
-  ccnVariable       =  9+ccnBase;// e.g. int i
-  ccnVariableName   = 10+ccnBase;// e.g. i
-  ccnFuncParamList  = 11+ccnBase;// e.g. ()
-  ccnStatementBlock = 12+ccnBase;// e.g. {}
+  ccnEnumBlock      =  4+ccnBase;// e.g. enum {};
+  ccnEnumBlockName  =  5+ccnBase;// e.g. enum {};
+  ccnEnumID         =  6+ccnBase;// e.g. name = value;
+  ccnConstant       =  7+ccnBase;// e.g. 1
+  ccnTypedef        =  8+ccnBase;// e.g. typedef int TInt;
+  ccnStruct         =  9+ccnBase;// e.g. struct{};
+  ccnVariable       = 10+ccnBase;// e.g. int i
+  ccnVariableName   = 11+ccnBase;// e.g. i
+  ccnFuncParamList  = 12+ccnBase;// e.g. ()
+  ccnStatementBlock = 13+ccnBase;// e.g. {}
 
 type
   TCCodeParserTool = class;
@@ -168,9 +169,10 @@ type
     function ExtractCode(StartPos, EndPos: integer;
                          WithDirectives: boolean = false): string;// extract code without comments
 
-    function ExtractVariableName(Node: TCodeTreeNode): string;
-    function ExtractVariableType(Node: TCodeTreeNode;
+    function ExtractVariableName(VarNode: TCodeTreeNode): string;
+    function ExtractVariableType(VarNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
+    function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -196,18 +198,19 @@ var
 function CCNodeDescAsString(Desc: TCCodeNodeDesc): string;
 begin
   case Desc of
-  ccnNone     : Result:='None';
-  ccnRoot     : Result:='Root';
-  ccnDirective: Result:='Directive';
-  ccnExtern   : Result:='extern block';
-  ccnEnums    : Result:='enums';
-  ccnEnum     : Result:='enum';
-  ccnConstant : Result:='constant';
-  ccnTypedef  : Result:='typedef';
-  ccnStruct   : Result:='struct';
-  ccnVariable : Result:='variable';
-  ccnVariableName: Result:='variable name';
-  ccnFuncParamList: Result:='function param list';
+  ccnNone          : Result:='None';
+  ccnRoot          : Result:='Root';
+  ccnDirective     : Result:='Directive';
+  ccnExtern        : Result:='extern block';
+  ccnEnumBlock     : Result:='enum block';
+  ccnEnumBlockName : Result:='enum block name';
+  ccnEnumID        : Result:='enum ID';
+  ccnConstant      : Result:='constant';
+  ccnTypedef       : Result:='typedef';
+  ccnStruct        : Result:='struct';
+  ccnVariable      : Result:='variable';
+  ccnVariableName  : Result:='variable name';
+  ccnFuncParamList : Result:='function param list';
   ccnStatementBlock: Result:='statement block';
   else          Result:='?';
   end;
@@ -324,11 +327,14 @@ procedure TCCodeParserTool.ReadEnum;
 
 *)
 begin
-  CreateChildNode(ccnEnums);
+  CreateChildNode(ccnEnumBlock);
   ReadNextAtom;
   // read optional name
-  if AtomIsIdentifier then
+  if AtomIsIdentifier then begin
+    CreateChildNode(ccnEnumBlockName);
+    EndChildNode;
     ReadNextAtom;
+  end;
   if not AtomIsChar('{') then
     RaiseExpectedButAtomFound('{');
   // read enums. Examples
@@ -338,7 +344,7 @@ begin
   repeat
     if AtomIsIdentifier then begin
       // read enum
-      CreateChildNode(ccnEnum);
+      CreateChildNode(ccnEnumID);
       CurNode.EndPos:=SrcPos;
       ReadNextAtom;
       if AtomIsChar('=') then begin
@@ -1139,27 +1145,27 @@ begin
   Result:=s;
 end;
 
-function TCCodeParserTool.ExtractVariableName(Node: TCodeTreeNode): string;
+function TCCodeParserTool.ExtractVariableName(VarNode: TCodeTreeNode): string;
 var
   NameNode: TCodeTreeNode;
 begin
-  NameNode:=Node.FirstChild;
+  NameNode:=VarNode.FirstChild;
   if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
     Result:=''
   else
     Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
 end;
 
-function TCCodeParserTool.ExtractVariableType(Node: TCodeTreeNode;
+function TCCodeParserTool.ExtractVariableType(VarNode: TCodeTreeNode;
   WithDirectives: boolean): string;
 var
   NameNode: TCodeTreeNode;
 begin
-  NameNode:=Node.FirstChild;
+  NameNode:=VarNode.FirstChild;
   if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
     Result:=''
   else begin
-    Result:=ExtractCode(Node.StartPos,NameNode.StartPos,WithDirectives);
+    Result:=ExtractCode(VarNode.StartPos,NameNode.StartPos,WithDirectives);
     if (NameNode.NextBrother<>nil)
     and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
       // this is a function. The name is in between.
@@ -1173,9 +1179,23 @@ begin
       Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
                                  WithDirectives);
     end else begin
-      Result:=Result+ExtractCode(NameNode.EndPos,Node.EndPos,
+      Result:=Result+ExtractCode(NameNode.EndPos,VarNode.EndPos,
                                  WithDirectives);
     end;
+  end;
+end;
+
+function TCCodeParserTool.ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode
+  ): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  if (EnumBlockNode.FirstChild<>nil)
+  and (EnumBlockNode.FirstChild.Desc=ccnEnumBlockName) then begin
+    NameNode:=EnumBlockNode.FirstChild;
+    Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
+  end else begin
+    Result:='';
   end;
 end;
 

@@ -220,8 +220,8 @@ end;
 procedure TH2PasTool.BuildH2PTree;
 var
   CNode: TCodeTreeNode;
-  VarName: String;
-  VarType: String;
+  CurName: String;
+  CurType: String;
   SimpleType: String;
 begin
   Tree.Clear;
@@ -230,12 +230,19 @@ begin
     case CNode.Desc of
     ccnVariable:
       begin
-        VarName:=CTool.ExtractVariableName(CNode);
-        VarType:=CTool.ExtractVariableType(CNode);
+        CurName:=CTool.ExtractVariableName(CNode);
+        CurType:=CTool.ExtractVariableType(CNode);
         SimpleType:=GetSimplePascalTypeOfCVar(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'" Type="',VarType,'" SimpleType=',SimpleType]);
+        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
+        if SimpleType='' then begin
+          // this variable has a complex type
+        end;
       end;
-
+    ccnEnumBlock:
+      begin
+        CurName:=CTool.ExtractEnumBlockName(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree EnumBlock name="',CurName,'"']);
+      end;
     end;
     CNode:=CNode.Next;
   end;
