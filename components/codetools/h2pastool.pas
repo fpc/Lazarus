@@ -277,6 +277,7 @@ begin
         inc(p);
       CType:=copy(CType,1,CurAtomStart-1)+copy(CType,p,length(CType));
       p:=CurAtomStart;
+      DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType CType="',CType,'"']);
     end;
   until false;
   Result:=PredefinedCTypes[CType];
