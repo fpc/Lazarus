@@ -268,16 +268,17 @@ begin
   repeat
     ReadRawNextCAtom(CType,p,CurAtomStart);
     if CurAtomStart>length(CType) then break;
+    //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType Atom=',copy(CType,CurAtomStart,p-CurAtomStart)]);
     if (p-CurAtomStart=5)
     and CompareMem(PChar('const'),@CType[CurAtomStart],5) then begin
       // remove 'const' and one space
-      if (CurAtomStart>1) and (CType[CurAtomStart]=' ') then
+      if (CurAtomStart>1) and (CType[CurAtomStart-1]=' ') then
         dec(CurAtomStart)
       else if (p<=length(CType)) and (CType[p]=' ') then
         inc(p);
       CType:=copy(CType,1,CurAtomStart-1)+copy(CType,p,length(CType));
       p:=CurAtomStart;
-      DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType CType="',CType,'"']);
+      //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType CType="',CType,'"']);
     end;
   until false;
   Result:=PredefinedCTypes[CType];
