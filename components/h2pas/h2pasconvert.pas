@@ -4684,7 +4684,7 @@ var
     Changed:=true;
   end;
   
-  procedure CommentDefine(StartPos, EndPos: integer);
+  procedure Comment(StartPos, EndPos: integer);
   begin
     // replace sub comments
     while (StartPos<EndPos-1) do begin
@@ -4732,7 +4732,7 @@ begin
         DefineEnd:=p;
         if DefineIsTooComplex(ValueStart,DefineEnd) then begin
           DebugLn(['TCommentComplexCMacros.Execute commenting macro "',dbgstr(copy(Src,DefineStart,DefineEnd-DefineStart)),'"']);
-          CommentDefine(DefineStart,DefineEnd);
+          Comment(DefineStart,DefineEnd);
         end;
       end;
     end;
@@ -4801,6 +4801,28 @@ var
     Changed:=true;
   end;
 
+  procedure Comment(StartPos, EndPos: integer);
+  begin
+    // replace sub comments
+    while (StartPos<EndPos-1) do begin
+      if (Src[StartPos]='/') and (Src[StartPos+1]='*') then begin
+        // sub comment found -> disable
+        // IMPORTANT: replacement must be the same size to keep the positions
+        Replace(StartPos,StartPos+1,'(');
+      end;
+      if (Src[StartPos]='*') and (Src[StartPos+1]='/') then begin
+        // sub comment found -> disable
+        // IMPORTANT: replacement must be the same size to keep the positions
+        Replace(StartPos+1,StartPos+2,')');
+      end;
+      inc(StartPos);
+    end;
+
+    // IMPORTANT: insert in reverse order
+    Replace(EndPos,EndPos,'*/');
+    Replace(StartPos,StartPos,'/*');
+  end;
+
   function ReadFunction: boolean;
   var
     FuncEnd: LongInt;
@@ -4829,9 +4851,7 @@ var
     FuncEnd:=p;
     Result:=true;
     DebugLn(['TCommentComplexCFunctions.Execute.ReadFunction Function="',copy(Src,DefinitionStart,FuncEnd-DefinitionStart),'"']);
-    // IMPORTANT: add in reverse order
-    Replace(FuncEnd,FuncEnd,'*/');
-    Replace(DefinitionStart,DefinitionStart,'/*');
+    Comment(DefinitionStart,FuncEnd);
   end;
 
 var
