@@ -98,7 +98,8 @@ begin
   AtomStart:=Position;
   repeat
     ReadRawNextCAtom(Source,Position,AtomStart);
-  until (Position>Len) or (Source[Position] in [#10,#13]);
+  until (AtomStart>Len) or (Source[AtomStart] in [#10,#13]);
+  Position:=AtomStart;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
@@ -321,7 +322,8 @@ begin
       if Position<=Len then begin
         c2:=Source[Position];
         // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, ^^, ::
-        if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+        if ((c1=#13) and (c2=#10))
+        or ((c2='=') and IsEqualOperatorStartChar[c1])
         or ((c1='=') and (c2='='))
         or ((c1='!') and (c2='='))
         or ((c1=':') and (c2=':'))

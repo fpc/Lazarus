@@ -4639,18 +4639,23 @@ var
   // h2pas has problems with
   // - backslash + newline
   // - whole functions { }
+  var
+    p: LongInt;
+    AtomStart: integer;
   begin
-    while (StartPos<EndPos) do begin
-      if Src[StartPos]='{' then begin
+    p:=StartPos;
+    repeat
+      ReadRawNextCAtom(Src,p,AtomStart);
+      if (AtomStart>=EndPos) or (AtomStart>length(Src)) then break;
+      if Src[AtomStart]='{' then begin
         // this macro is a whole function => too complex
         exit(true);
       end;
-      if (Src[StartPos] in [#10,#13]) then begin
+      if (Src[AtomStart] in [#10,#13]) then begin
         // this macro uses multiple lines => too complex
         exit(true);
       end;
-      inc(StartPos);
-    end;
+    until false;
     Result:=false;
   end;
 
@@ -4679,6 +4684,28 @@ var
     Changed:=true;
   end;
   
+  procedure CommentDefine(StartPos, EndPos: integer);
+  begin
+    // replace sub comments
+    while (StartPos<EndPos-1) do begin
+      if (Src[StartPos]='/') and (Src[StartPos+1]='*') then begin
+        // sub comment found -> disable
+        // IMPORTANT: replacement must be the same size to keep the positions
+        Replace(StartPos,StartPos+1,'(');
+      end;
+      if (Src[StartPos]='*') and (Src[StartPos+1]='/') then begin
+        // sub comment found -> disable
+        // IMPORTANT: replacement must be the same size to keep the positions
+        Replace(StartPos+1,StartPos+2,')');
+      end;
+      inc(StartPos);
+    end;
+
+    // IMPORTANT: insert in reverse order
+    Replace(EndPos,EndPos,'*/');
+    Replace(StartPos,StartPos,'/*');
+  end;
+
 var
   DefineStart: LongInt;
   DefineEnd: LongInt;
@@ -4705,9 +4732,7 @@ begin
         DefineEnd:=p;
         if DefineIsTooComplex(ValueStart,DefineEnd) then begin
           DebugLn(['TCommentComplexCMacros.Execute commenting macro "',dbgstr(copy(Src,DefineStart,DefineEnd-DefineStart)),'"']);
-          // IMPORTANT: insert in reverse order
-          Replace(DefineEnd,DefineEnd,'*/');
-          Replace(DefineStart,DefineStart,'/*');
+          CommentDefine(DefineStart,DefineEnd);
         end;
       end;
     end;
