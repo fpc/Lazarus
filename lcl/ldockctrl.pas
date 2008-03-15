@@ -3625,6 +3625,7 @@ var
       if Item=nil then break;
       Dispose(Item);
     until not  NodeInfos.GetNext(NodePtr,NodePtr,InfoPtr);
+    NodeInfos.Free;
   end;
   
   function GetNodeInfo(Node: TLazDockConfigNode): PNodeInfo;
