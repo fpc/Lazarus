@@ -2186,6 +2186,7 @@ begin
   LocalChange:=false;
   try
     GatherH2PasFunctions(ListOfH2PasFunctions,true);
+    DebugLn(['TCompilerDirectivesTree.FixMissingH2PasDirectives ',ListOfH2PasFunctions=nil]);
     if ListOfH2PasFunctions=nil then exit;
     FillChar(CurBodyBlock,SizeOf(TBodyBlock),0);
     LastDefNode:=nil;
@@ -2228,7 +2229,7 @@ begin
     EndBodyBlock;
     
   finally
-    if ListOfH2PasFunctions<>nil then;
+    if ListOfH2PasFunctions<>nil then
       for i:=0 to ListOfH2PasFunctions.Count-1 do
         TObject(ListOfH2PasFunctions[i]).Free;
     ListOfH2PasFunctions.Free;

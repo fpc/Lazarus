@@ -9043,7 +9043,10 @@ begin
   end;
   
   Result:=DoSaveAll([sfDoNotSaveVirtualFiles]);
-  if Result<>mrOk then exit;
+  if Result<>mrOk then begin
+    DebugLn('TMainIDE.DoBuildLazarus: failed because saving failed');
+    exit;
+  end;
 
   MessagesView.BeginBlock;
   try
