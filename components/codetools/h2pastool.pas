@@ -236,6 +236,7 @@ begin
         DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
         if SimpleType='' then begin
           // this variable has a complex type
+          
         end;
       end;
     ccnEnumBlock:

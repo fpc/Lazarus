@@ -1161,6 +1161,7 @@ function TCCodeParserTool.ExtractVariableType(VarNode: TCodeTreeNode;
   WithDirectives: boolean): string;
 var
   NameNode: TCodeTreeNode;
+  s: String;
 begin
   NameNode:=VarNode.FirstChild;
   if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
@@ -1177,8 +1178,10 @@ begin
     and (NameNode.NextBrother.Desc=ccnConstant) then begin
       // a variable with an initial value
       // omit the constant
-      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
+      s:=ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
                                  WithDirectives);
+      s:=copy(s,1,length(s)-1);
+      Result:=Result+s;
     end else begin
       Result:=Result+ExtractCode(NameNode.EndPos,VarNode.EndPos,
                                  WithDirectives);
