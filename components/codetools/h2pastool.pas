@@ -93,8 +93,11 @@ type
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree;
+    
     function ExtractCVariableName(CVarNode: TCodeTreeNode): string;
     function ExtractCVariableType(CVarNode: TCodeTreeNode): string;
+    function HasCVariableSimplePascalType(CVarNode: TCodeTreeNode): boolean;
+    
     procedure WriteDebugReport;
     constructor Create;
     destructor Destroy; override;
@@ -163,8 +166,23 @@ begin
   Node:=CVarNode.FirstChild;
   if (Node=nil) or (Node.Desc<>ccnVariableName) then
     Result:=''
-  else
+  else begin
     Result:=CTool.ExtractCode(CVarNode.StartPos,Node.StartPos,true);
+    if System.Pos('(',Result)>0 then begin
+      // this is a function
+    end;
+  end;
+end;
+
+function TH2PasTool.HasCVariableSimplePascalType(
+  CVarNode: TCodeTreeNode): boolean;
+var
+  VarType: String;
+begin
+  VarType:=ExtractCVariableType(CVarNode);
+  if VarType='' then
+    exit(false);
+  Result:=IsValidIdent(VarType);
 end;
 
 procedure TH2PasTool.WriteDebugReport;
