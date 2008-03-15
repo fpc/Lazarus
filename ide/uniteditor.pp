@@ -5510,8 +5510,8 @@ begin
     UpdateStatusBar;
     // set focus to new editor
     TempEditor:=FindSourceEditorWithPageIndex(Notebook.PageIndex);
-    if TempEditor<>nil then
-      ActiveControl:=TempEditor.EditorComponent;
+    if (TempEditor <> nil) then
+      TempEditor.EditorComponent.SetFocus;
   end else
   begin
     //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
@@ -6318,7 +6318,7 @@ begin
 
   Label1 := TLabel.Create(Self);
   with Label1 do
-  Begin
+  begin
     Name:='Label1';
     Parent := Self;
     Left := 6;
@@ -6329,7 +6329,7 @@ begin
 
   Edit1 := TEdit.Create(Self);
   with Edit1 do
-  Begin
+  begin
     Name:='Edit1';
     Parent := self;
     Left := 6;
@@ -6341,7 +6341,8 @@ begin
   end;
   
   ButtonPanel := TPanel.Create(Self);
-  with ButtonPanel do begin
+  with ButtonPanel do 
+  begin
     Name:='ButtonPanel';
     Align:=alBottom;
     AnchorToNeighbour(akTop,0,Edit1);
@@ -6353,7 +6354,7 @@ begin
 
   btnCancel := TBitbtn.Create(Self);
   with btnCancel do
-  Begin
+  begin
     Name:='btnCancel';
     AnchorParallel(akTop,0,ButtonPanel);
     AnchorParallel(akBottom,0,ButtonPanel);
@@ -6367,7 +6368,7 @@ begin
 
   btnOK := TBitbtn.Create(Self);
   with btnOK do
-  Begin
+  begin
     Name:='btnOK';
     AnchorParallel(akTop,0,ButtonPanel);
     AnchorParallel(akBottom,0,ButtonPanel);
@@ -6379,9 +6380,8 @@ begin
     Parent := ButtonPanel;
   end;
 
-  AutoSize:=true;
-
-  ActiveControl:=Edit1;
+  AutoSize := True;
+  ActiveControl := Edit1;
 end;
 
 procedure TfrmGoto.DoShow;
