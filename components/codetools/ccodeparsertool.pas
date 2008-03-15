@@ -173,6 +173,7 @@ type
     function ExtractVariableType(VarNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
+    function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -1197,6 +1198,13 @@ begin
   end else begin
     Result:='';
   end;
+end;
+
+function TCCodeParserTool.ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
+begin
+  MoveCursorToNode(EnumIDNode);
+  ReadNextAtom;
+  Result:=GetAtom;
 end;
 
 function TCCodeParserTool.GetAtom: string;

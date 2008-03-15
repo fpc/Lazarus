@@ -243,6 +243,11 @@ begin
         CurName:=CTool.ExtractEnumBlockName(CNode);
         DebugLn(['TH2PasTool.BuildH2PTree EnumBlock name="',CurName,'"']);
       end;
+    ccnEnumID:
+      begin
+        CurName:=CTool.ExtractEnumIDName(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree EnumID name="',CurName,'"']);
+      end;
     end;
     CNode:=CNode.Next;
   end;
