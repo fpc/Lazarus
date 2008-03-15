@@ -2073,6 +2073,7 @@ var
     NeededType: TCodeTreeNodeDesc;
     NextAVLNode: TAVLTreeNode;
   begin
+    if TreeOfCodeTreeNodeExt=nil then exit;
     AVLNode:=TreeOfCodeTreeNodeExt.FindLowest;
     while AVLNode<>nil do begin
       NextAVLNode:=TreeOfCodeTreeNodeExt.FindSuccessor(AVLNode);
