@@ -31,11 +31,6 @@ begin
   TWin32WidgetSet(WidgetSet).HandleWakeMainThread(nil);
 end;
 
-{ addition XP messages }
-
-const
-  WM_THEMECHANGED = $31A;
-
 {-----------------------------------------------------------------------------
   Function: PropEnumProc
   Params: Window - The window with the property
@@ -628,15 +623,18 @@ var
   
   procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
   var
-    i : integer;
+    i: integer;
     ChildControl: TWinControl;
   begin
-    for i := 0 to WinControl.ControlCount-1 do begin
-      if WinControl.Controls[i] is TWinControl then begin
+    for i := 0 to WinControl.ControlCount-1 do
+    begin
+      if WinControl.Controls[i] is TWinControl then
+      begin
         ChildControl := TWinControl(WinControl.Controls[i]);
-        if Enable then begin
+        if Enable then
+        begin
            if ChildControl.Enabled then
-             EnableWindow(ChildControl.Handle, true)
+             EnableWindow(ChildControl.Handle, true);
         end
         else
           EnableWindow(ChildControl.Handle, false);
@@ -1500,6 +1498,10 @@ begin
       if not ThemeServices.ThemesEnabled
       and (lWinControl is TCustomBitBtn)
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
+      // if it is groupbox and themed app then invalidate it on enable change
+      // to redraw graphic controls on it (issue 0007877)
+      if ThemeServices.ThemesAvailable and (lWinControl is TCustomGroupBox) then
+        lWinControl.Invalidate;
     end;
     WM_ERASEBKGND:
     begin

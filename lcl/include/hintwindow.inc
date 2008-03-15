@@ -144,7 +144,7 @@ begin
   Result := Rect(0,0, MaxWidth, Screen.Height-4*HintBorderWidth);
   if AHint='' then exit;
   DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
-           Result, DT_CalcRect or DT_NOPREFIX or DT_WORDBREAK);
+           Result, DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK);
   inc(Result.Right,4*HintBorderWidth);
   inc(Result.Bottom,4*HintBorderWidth);
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));

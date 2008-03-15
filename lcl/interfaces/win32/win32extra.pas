@@ -312,6 +312,9 @@ SWP_DEFERERASE     = $2000;
 SWP_ASYNCWINDOWPOS = $4000;
 SWP_STATECHANGED   = $8000; // used by windows but not documented (used even in wine)
 
+// addition XP messages
+WM_THEMECHANGED = $31A;
+  
 // missing imagelist macros and constants
 
 const
