@@ -94,8 +94,6 @@ type
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree;
     
-    function ExtractCVariableName(CVarNode: TCodeTreeNode): string;
-    function ExtractCVariableType(CVarNode: TCodeTreeNode): string;
     function HasCVariableSimplePascalType(CVarNode: TCodeTreeNode): boolean;
     
     procedure WriteDebugReport;
@@ -138,8 +136,8 @@ begin
     case CNode.Desc of
     ccnVariable:
       begin
-        VarName:=ExtractCVariableName(CNode);
-        VarType:=ExtractCVariableType(CNode);
+        VarName:=CTool.ExtractVariableName(CNode);
+        VarType:=CTool.ExtractVariableType(CNode);
         DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',VarName,'" Type="',VarType,'"']);
       end;
 
@@ -148,38 +146,12 @@ begin
   end;
 end;
 
-function TH2PasTool.ExtractCVariableName(CVarNode: TCodeTreeNode): string;
-var
-  Node: TCodeTreeNode;
-begin
-  Node:=CVarNode.FirstChild;
-  if (Node=nil) or (Node.Desc<>ccnVariableName) then
-    Result:=''
-  else
-    Result:=copy(CTool.Src,Node.StartPos,Node.EndPos-node.StartPos);
-end;
-
-function TH2PasTool.ExtractCVariableType(CVarNode: TCodeTreeNode): string;
-var
-  Node: TCodeTreeNode;
-begin
-  Node:=CVarNode.FirstChild;
-  if (Node=nil) or (Node.Desc<>ccnVariableName) then
-    Result:=''
-  else begin
-    Result:=CTool.ExtractCode(CVarNode.StartPos,Node.StartPos,true);
-    if System.Pos('(',Result)>0 then begin
-      // this is a function
-    end;
-  end;
-end;
-
 function TH2PasTool.HasCVariableSimplePascalType(
   CVarNode: TCodeTreeNode): boolean;
 var
   VarType: String;
 begin
-  VarType:=ExtractCVariableType(CVarNode);
+  VarType:=CTool.ExtractVariableType(CVarNode);
   if VarType='' then
     exit(false);
   Result:=IsValidIdent(VarType);

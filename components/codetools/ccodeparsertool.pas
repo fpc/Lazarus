@@ -152,6 +152,7 @@ type
     function MainFilename: string;
 
     procedure MoveCursorToPos(p: integer);
+    procedure MoveCursorToNode(Node: TCodeTreeNode);
     procedure ReadNextAtom;
     procedure ReadNextAtomSkipDirectives;
     procedure UndoReadNextAtom;
@@ -166,6 +167,9 @@ type
     function GetLastAtom: string;
     function ExtractCode(StartPos, EndPos: integer;
                          WithDirectives: boolean = false): string;// extract code without comments
+
+    function ExtractVariableName(Node: TCodeTreeNode): string;
+    function ExtractVariableType(Node: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -917,6 +921,11 @@ begin
   LastSrcPos:=0;
 end;
 
+procedure TCCodeParserTool.MoveCursorToNode(Node: TCodeTreeNode);
+begin
+  MoveCursorToPos(Node.StartPos);
+end;
+
 procedure TCCodeParserTool.ReadNextAtom;
 begin
   //DebugLn(['TCCodeParserTool.ReadNextAtom START ',AtomStart,'-',SrcPos,' ',Src[SrcPos]]);
@@ -1127,6 +1136,35 @@ begin
   SetLength(s,p-1);
   ReadIt;
   Result:=s;
+end;
+
+function TCCodeParserTool.ExtractVariableName(Node: TCodeTreeNode): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=Node.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
+    Result:=''
+  else
+    Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
+end;
+
+function TCCodeParserTool.ExtractVariableType(Node: TCodeTreeNode): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=Node.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
+    Result:=''
+  else begin
+    Result:=ExtractCode(Node.StartPos,NameNode.StartPos,true);
+    if (NameNode.NextBrother<>nil)
+    and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
+      // this is a function. The name is in between.
+      // The type is result type + parameter list
+      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,true);
+    end;
+  end;
 end;
 
 function TCCodeParserTool.GetAtom: string;
