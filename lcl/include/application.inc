@@ -1075,26 +1075,18 @@ end;
   control is passed to event processor.
 ------------------------------------------------------------------------------}
 procedure TApplication.RunLoop;
-
-  procedure RunMessage;
-  begin
-    HandleMessage;
-    if Assigned(FMainForm) and (FMainForm.ModalResult = mrCancel)
-    then Terminate;
-  end;
-
 begin
   repeat
     if CaptureExceptions then begin
       // run with try..except
       try
-        RunMessage;
+        HandleMessage;
       except
         on E: Exception do HandleException(E);
       end;
     end else begin
       // run without try..except
-      RunMessage;
+      HandleMessage;
     end;
   until Terminated;
 end;

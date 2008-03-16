@@ -48,7 +48,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomCheckBox.GetState: TCheckBoxState;
 begin
-  fState:=RetrieveState;
+  fState := RetrieveState;
   Result := fState;
 end;
 
