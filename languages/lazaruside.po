@@ -364,6 +364,10 @@ msgstr ""
 msgid "Show user links"
 msgstr ""
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:liskmcloseall
 msgid "Close All"
 msgstr ""

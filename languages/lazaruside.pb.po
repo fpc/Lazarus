@@ -3609,6 +3609,10 @@ msgstr "Alemão"
 msgid "Get position"
 msgstr "Pegar Posição"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "Caminho adicional para Fontes Globais"

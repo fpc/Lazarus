@@ -3612,6 +3612,10 @@ msgstr "saksa"
 msgid "Get position"
 msgstr "Hae sijainti"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr ""

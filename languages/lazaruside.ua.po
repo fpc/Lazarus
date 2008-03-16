@@ -3612,6 +3612,10 @@ msgstr "Німецька"
 msgid "Get position"
 msgstr "Задіяти позицію"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "Додавання загального шляху до текстів програм"

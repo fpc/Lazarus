@@ -3619,6 +3619,10 @@ msgstr "Duits"
 msgid "Get position"
 msgstr "Kry posisie"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr ""

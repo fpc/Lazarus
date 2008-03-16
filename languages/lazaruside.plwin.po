@@ -3617,6 +3617,10 @@ msgstr ""
 msgid "Get position"
 msgstr "Pobierz pozycjê"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "Globalny dodatek do œcie¿ki Ÿród³ówej"

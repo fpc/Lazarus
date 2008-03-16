@@ -3622,6 +3622,10 @@ msgstr "Vokiečių"
 msgid "Get position"
 msgstr "Sužinoti poziciją"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "Priedas prie pradinio kodo globalaus katalogo"

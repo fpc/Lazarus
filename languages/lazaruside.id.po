@@ -3617,6 +3617,10 @@ msgstr "Jerman"
 msgid "Get position"
 msgstr "Ambil posisi"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "tambahan Path Sumber Global"

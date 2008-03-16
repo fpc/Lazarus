@@ -161,7 +161,7 @@ begin
     PkgStringGrid.Cells[0,i]:=Link.Name;
     PkgStringGrid.Cells[1,i]:=Link.Version.AsString;
     if Link.Origin=ploGlobal then
-      OriginStr:=dlgGlobal
+      OriginStr:=lisPLDGlobal
     else
       OriginStr:=lisPLDUser;
     PkgStringGrid.Cells[2,i]:=OriginStr;

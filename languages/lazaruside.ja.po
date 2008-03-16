@@ -3616,6 +3616,10 @@ msgstr "ドイツ語"
 msgid "Get position"
 msgstr "位置を取得"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "グローバルソースパスの追加"

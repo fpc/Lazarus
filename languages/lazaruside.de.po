@@ -3620,6 +3620,10 @@ msgstr "Deutsch"
 msgid "Get position"
 msgstr "Position ermitteln"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "Dem globalen Suchpfad zufügen"

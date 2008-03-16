@@ -3620,6 +3620,10 @@ msgstr "德语"
 msgid "Get position"
 msgstr "得到位置"
 
+#: lazarusidestrconsts:lispldglobal
+msgid "Global"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
 msgstr "全局附加源代码路径"

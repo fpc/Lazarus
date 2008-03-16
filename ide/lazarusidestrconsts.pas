@@ -163,6 +163,7 @@ resourcestring
   lisPLDOnlyExistingFiles = 'Only existing files';
   lisPLDShowGlobalLinks = 'Show global links';
   lisPLDShowUserLinks = 'Show user links';
+  lisPLDGlobal = 'Global';
   lisKMCloseAll = 'Close All';
   lisCTDefDefineTemplates = 'Define templates';
   lisMenuCloseAll = 'Close all editor files';
