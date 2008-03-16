@@ -250,7 +250,7 @@ It is the reverse of BitBtnKindToMsgDlgBtn.</descr>
       <!-- object Visibility: default -->
       <element name="TCommonDialog">
         <short>
-          <i>TCommonDialog</i>
+          <var>TCommonDialog</var>
 : the base type from which other dialogs are derived</short>
         <descr>TCommonDialog: the base type from which all other dialogs are derived. <br/>
 
@@ -375,7 +375,7 @@ and the "Close" method to release it and free the used resources.</descr>
       <!-- constructor Visibility: public -->
       <element name="TCommonDialog.Create">
         <short>
-          <i>Create</i>
+          <var>Create</var>
  - constructor for dialogs</short>
       </element>
       <!-- argument Visibility: default -->
@@ -464,7 +464,7 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- property Visibility: published -->
       <element name="TCommonDialog.HelpContext">
         <short>
-          <i>HelpContext</i>
+          <var>HelpContext</var>
  - an index to the context-dependent help message for this dialog</short>
       </element>
       <!-- property Visibility: published -->
@@ -482,11 +482,11 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- object Visibility: default -->
       <element name="TFileDialog">
         <short>
-          <i>TFileDialog</i>
+          <var>TFileDialog</var>
 : allows selection of a file from the current directory.</short>
         <descr>
           <p>
-            <i>TFileDialog</i>
+            <var>TFileDialog</var>
 : allows selection of a file from the current directory.</p>
           <p>This is also the base class for the Open and Save (As) dialogs</p>
         </descr>
@@ -691,7 +691,7 @@ and then check the result to see if the user made a valid choice and pressed the
       <!-- property Visibility: published -->
       <element name="TFileDialog.Title">
         <short>
-          <i>Title</i>
+          <var>Title</var>
  - the text appearing in the title label at the top of the dialog</short>
       </element>
       <!-- property Visibility: published -->
@@ -847,10 +847,10 @@ To set this property during runtime assign a value like: "All files|*.*|Lazarus 
       <!-- object Visibility: default -->
       <element name="TOpenDialog">
         <short>
-          <i>TOpenDialog</i>
+          <var>TOpenDialog</var>
 : open a file in the current directory, selected by File Dialog.</short>
         <descr>
-          <i>TOpenDialog</i>
+          <var>TOpenDialog</var>
 : open a file in the current directory, selected by File Dialog. <br/>
 
 If the required file is not in the current directory, another directory can be selected with Select Directory</descr>

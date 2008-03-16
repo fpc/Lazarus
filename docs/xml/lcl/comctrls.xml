@@ -403,12 +403,12 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TStatusBar">
-        <short><i>TStatusBar</i> - a strip along the bottom of a form for displaying information on current status</short>
+        <short><var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status</short>
         <descr>
-          <p><i>TStatusBar</i> - a strip along the bottom of a form for displaying information on current status</p>
-          <p>The bar may consist of a single <i>SimplePanel</i>, in which case the displayed text is contained in <i>SimpleText</i>.</p>
-          <p>However if <i>SimplePanel</i> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <i>Panels</i>.</p>
-          <p>The property <i>SimpleText</i> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
+          <p><var>TStatusBar</var> - a strip along the bottom of a form for displaying information on current status</p>
+          <p>The bar may consist of a single <var>SimplePanel</var>, in which case the displayed text is contained in <var>SimpleText</var>.</p>
+          <p>However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar, whose properties are described in <var>Panels</var>.</p>
+          <p>The property <var>SimpleText</var> can be assigned programatically to display the value of some variable, such as the position of the Splitter in the example</p>
         </descr>
         <example file="extctrls/statusbar.pas"/>
       </element>
@@ -587,27 +587,27 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.Panels">
-        <short><i>Panels</i> - the list of strings to be placed in the sub-panels of <i>TStatusBar</i></short>
+        <short><var>Panels</var> - the list of strings to be placed in the sub-panels of <var>TStatusBar</var></short>
         <descr>
-          <p>If SimplePanel is false, the contents of <i>Panels</i> is displayed. </p>
-          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> in the Object Inspector is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
+          <p>If SimplePanel is false, the contents of <var>Panels</var> is displayed. </p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <var>Panels</var> in the Object Inspector is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimpleText">
-        <short><i>SimpleText</i> - a character string containing the information to be displayed in the Status Bar</short>
+        <short><var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar</short>
         <descr>
-          <p><i>SimpleText</i> - a character string containing the information to be displayed in the Status Bar</p>
+          <p><var>SimpleText</var> - a character string containing the information to be displayed in the Status Bar</p>
           <p>This is displayed if SimplePanel is true; otherwise the information in Panels is displayed.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TStatusBar.SimplePanel">
-        <short><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</short>
+        <short><var>SimplePanel </var>- boolean. Is there just one continuous panel, or several sub-panels?</short>
         <descr>
-          <p><i>SimplePanel </i>- boolean. Is there just one continuous panel, or several sub-panels?</p>
-          <p>If true, the value of <i>SimpleText</i> is displayed; if false, the contents of <i>Panels</i> is displayed. </p>
-          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <i>Panels</i> is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
+          <p><var>SimplePanel </var>- boolean. Is there just one continuous panel, or several sub-panels?</p>
+          <p>If true, the value of <var>SimpleText</var> is displayed; if false, the contents of <var>Panels</var> is displayed. </p>
+          <p>Contents can be adjusted with a stringlist editor that pops up when the ellipsis (...) next to <var>Panels</var> is selected and allows insertion of an arbitrary number of sub-panels with their own strings</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -3090,11 +3090,11 @@ cdsIndeterminate</descr>
       <element name="TListItem.MakeVisible.PartialOK"><short/></element>
       <!-- property Visibility: public -->
       <element name="TListItem.Caption">
-        <short><i>Caption</i> - the name given to this item on the list</short>
+        <short><var>Caption</var> - the name given to this item on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Cut">
-        <short><i>Cut</i> this item from the list (but can be placed on clipboard)</short>
+        <short><var>Cut</var> this item from the list (but can be placed on clipboard)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListItem.Data">
@@ -3147,7 +3147,7 @@ cdsIndeterminate</descr>
       <!-- object Visibility: default -->
       <element name="TListItems">
         <short>A list of items with a cache of the last accessed item</short>
-        <descr><i>TListitems</i>
+        <descr><var>TListitems</var>
  has a built-in cache of the last accessed item. This will speed up interface updates since Item.Index is   often used for the same item updating more properties.  If FCacheIndex = -1 then the cache is not valid.</descr>
       </element>
       <!-- variable Visibility: private -->
@@ -3939,9 +3939,9 @@ cdsIndeterminate</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomListView">
-        <short><i>TCustomListView</i> - the ancestor class for <i>TListView</i></short>
+        <short><var>TCustomListView</var> - the ancestor class for <var>TListView</var></short>
         <descr>
-          <p><i>TCustomListView</i> is the ancestor for <i>TListView</i>. If you want to define your own ListView class, you should use this class to derive it from.</p>
+          <p><var>TCustomListView</var> is the ancestor for <var>TListView</var>. If you want to define your own ListView class, you should use this class to derive it from.</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4444,9 +4444,9 @@ cdsIndeterminate</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.Change">
-        <short><i>Change</i>  - Internal procedure to simulate the <i>OnChange</i> event</short>
+        <short><var>Change</var>  - Internal procedure to simulate the <var>OnChange</var> event</short>
         <descr>
-          <p>This is an internal procedure which is called after an item has been changed. It is a programmatic method for simulating the <i>OnChange</i> event if the programmer has assigned a method to this event.</p>
+          <p>This is an internal procedure which is called after an item has been changed. It is a programmatic method for simulating the <var>OnChange</var> event if the programmer has assigned a method to this event.</p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -4455,10 +4455,10 @@ cdsIndeterminate</descr>
       <element name="TCustomListView.Change.AChange"><short/></element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomListView.ColClick">
-        <short><i>ColClick</i>  - procedure to simulate the <i>OnColumnClick</i>  event.</short>
+        <short><var>ColClick</var>  - procedure to simulate the <var>OnColumnClick</var>  event.</short>
         <descr>
-          <p><i>ColClick</i>  - procedure to simulate the <i>OnColumnClick</i>  event.</p>
-          <p>Can be used programmatically to execute the same code as is used to respond to the <i>OnColumnClick </i>event</p>
+          <p><var>ColClick</var>  - procedure to simulate the <var>OnColumnClick</var>  event.</p>
+          <p>Can be used programmatically to execute the same code as is used to respond to the <var>OnColumnClick </var>event</p>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -4561,16 +4561,16 @@ cdsIndeterminate</descr>
       <element name="TCustomListView.BorderStyle"/>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Columns">
-        <short><i>Columns </i>- define and change the columns of a ListView</short>
+        <short><var>Columns </var>- define and change the columns of a ListView</short>
         <descr>
-          <p><i>Columns</i> is a <i>TCollectionItem</i> and contains all information on the columns of a listview.</p>
+          <p><var>Columns</var> is a <var>TCollectionItem</var> and contains all information on the columns of a listview.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ColumnClick">
-        <short><i>ColumnClick </i> - determines if the <i>OnColumnClick</i>  event will be executed.</short>
+        <short><var>ColumnClick </var> - determines if the <var>OnColumnClick</var>  event will be executed.</short>
         <descr>
-          <p>The <i>ColumnClick</i> property of the ListView enables or disables the <i>OnColumnClick</i> Event. A call to <i>OnColumnClick</i> will only be done when a method has been assigned to the <i>OnColumnClick</i> event and <i>ColumnClick</i> is set to true (default).</p>
+          <p>The <var>ColumnClick</var> property of the ListView enables or disables the <var>OnColumnClick</var> Event. A call to <var>OnColumnClick</var> will only be done when a method has been assigned to the <var>OnColumnClick</var> event and <var>ColumnClick</var> is set to true (default).</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
@@ -4593,25 +4593,25 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.Items">
-        <short><i>Items</i> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</short>
+        <short><var>Items</var> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</short>
         <descr>
-          <p><i>Items</i> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</p>
-          <p><i>Items</i> is of type <i>TListitems</i> which has a built-in cache of the last accessed item. This speeds up interface updates since Item.Index is often used for the same item updating more properties. If FCacheIndex = -1 then the cache is not valid.</p>
+          <p><var>Items</var> - the list of entries in the list. Held as a linked list with a cached index of the last accessed item</p>
+          <p><var>Items</var> is of type <var>TListitems</var> which has a built-in cache of the last accessed item. This speeds up interface updates since Item.Index is often used for the same item updating more properties. If FCacheIndex = -1 then the cache is not valid.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.LargeImages">
-        <short><i>LargeImages</i>  - an ImageList to be used in association with the list of <i>Items</i></short>
+        <short><var>LargeImages</var>  - an ImageList to be used in association with the list of <var>Items</var></short>
         <descr>
-          <p><i>LargeImages</i> - an ImageList to be used in association with the list of <i>Items</i></p>
-          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p><var>LargeImages</var> - an ImageList to be used in association with the list of <var>Items</var></p>
+          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
           <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <i>TImageList</i> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.MultiSelect">
-        <short><i>MultiSelect</i> - enables the selection of more than one entry from <i>Items</i> - by pressing SHIFT or CTRL keys while selecting</short>
+        <short><var>MultiSelect</var> - enables the selection of more than one entry from <var>Items</var> - by pressing SHIFT or CTRL keys while selecting</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OwnerData">
@@ -4627,7 +4627,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ReadOnly">
-        <short><i>ReadOnly</i> - determines if the list can only be read, and not written or deleted.</short>
+        <short><var>ReadOnly</var> - determines if the list can only be read, and not written or deleted.</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrolledLeft">
@@ -4643,11 +4643,11 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ScrollBars">
-        <short><i>ScrollBars</i> - the kind of scrollbars to be used: none, auto, horizontal or vertical</short>
+        <short><var>ScrollBars</var> - the kind of scrollbars to be used: none, auto, horizontal or vertical</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowColumnHeaders">
-        <short><i>ShowColumnHeaders</i> - whether headers for columns are to be displayed</short>
+        <short><var>ShowColumnHeaders</var> - whether headers for columns are to be displayed</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ShowWorkAreas">
@@ -4657,29 +4657,29 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SmallImages">
-        <short><i>SmallImages</i>  - an ImageList of small images (icons) to be used in association with the list of <i>Items</i></short>
+        <short><var>SmallImages</var>  - an ImageList of small images (icons) to be used in association with the list of <var>Items</var></short>
         <descr>
-          <p><i>SmallImages</i>  - an ImageList of small images (icons) to be used in association with the list of <i>Items</i></p>
-          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p><var>SmallImages</var>  - an ImageList of small images (icons) to be used in association with the list of <var>Items</var></p>
+          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
           <p>SmallImages could be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated SmallImage was selected, the corresponding LargeImage would be displayed in another window.</p>
-          <p>A <i>TImageList</i> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+          <p>A <var>TImageList</var> control needs to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortType">
-        <short><i>SortType</i> - whether to sort by text, by data, both or not at all</short>
+        <short><var>SortType</var> - whether to sort by text, by data, both or not at all</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.SortColumn">
-        <short><i>SortColumn</i> - the column that is being sorted</short>
+        <short><var>SortColumn</var> - the column that is being sorted</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.StateImages">
-        <short><i>StateImages</i> - an imagelist of icons to demonstrate the state of a process or event</short>
+        <short><var>StateImages</var> - an imagelist of icons to demonstrate the state of a process or event</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.ViewStyle">
-        <short><i>ViewStyle </i>- whether to view as a simple list, a list with large or small icons, or as a report</short>
+        <short><var>ViewStyle </var>- whether to view as a simple list, a list with large or small icons, or as a report</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomListView.OnChange">
@@ -4734,19 +4734,19 @@ cdsIndeterminate</descr>
       <element name="TCustomListView.EndUpdate"/>
       <!-- property Visibility: public -->
       <element name="TCustomListView.BoundingRect">
-        <short><i>BoundingRect</i> - the coordinates of the rectangle containing the ListView</short>
+        <short><var>BoundingRect</var> - the coordinates of the rectangle containing the ListView</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Canvas">
-        <short><i>Canvas</i>  - defines the area on which all graphic material is drawn (Read-only)</short>
+        <short><var>Canvas</var>  - defines the area on which all graphic material is drawn (Read-only)</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Checkboxes">
-        <short><i>CheckBoxes</i> - determines if the ListView shows checkboxes beside the items on the list</short>
+        <short><var>CheckBoxes</var> - determines if the ListView shows checkboxes beside the items on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Column">
-        <short><i>Column </i>- reads the column information of the listview.</short>
+        <short><var>Column </var>- reads the column information of the listview.</short>
         <descr>
           <p>This property can be used to read the information of a column.</p>
           <p>The column whose information is to be retrieved is determined by an index (AIndex). As with nearly all indexes, this index is 0 based. In column[0] the caption of the listitem is show, in subsequent column the subitems of the listitem are shown.</p>
@@ -4759,11 +4759,11 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.DropTarget">
-        <short><i>DropTarget </i> - location where an item from the list is to be dropped</short>
+        <short><var>DropTarget </var> - location where an item from the list is to be dropped</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FlatScrollBars">
-        <short><i>FlatScrollBars </i>- whether the scroll bars are to be displayed flat</short>
+        <short><var>FlatScrollBars </var>- whether the scroll bars are to be displayed flat</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.FullDrag">
@@ -4791,19 +4791,19 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ItemFocused">
-        <short><i>ItemFocused</i> - the item currently receiving focus</short>
+        <short><var>ItemFocused</var> - the item currently receiving focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.RowSelect">
-        <short><i>RowSelect </i>- whether the user can select rows of items (across columns). Default false</short>
+        <short><var>RowSelect </var>- whether the user can select rows of items (across columns). Default false</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.SelCount">
-        <short><i>SelCount </i>- the number of items selected</short>
+        <short><var>SelCount </var>- the number of items selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.Selected">
-        <short><i>Selected</i> - the current list item that has been selected</short>
+        <short><var>Selected</var> - the current list item that has been selected</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TabStop">
@@ -4813,26 +4813,26 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.TopItem">
-        <short><i>TopItem</i> - the first item on the list</short>
+        <short><var>TopItem</var> - the first item on the list</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.ViewOrigin">
-        <short><i>ViewOrigin </i>- the top left coordinate for the current view</short>
+        <short><var>ViewOrigin </var>- the top left coordinate for the current view</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomListView.VisibleRowCount">
-        <short><i>VisibleRowCount</i> - the number of rows visible in the current view (some items might have scrolled outside the window)</short>
+        <short><var>VisibleRowCount</var> - the number of rows visible in the current view (some items might have scrolled outside the window)</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TListView">
-        <short><i>TListView </i> - a window showing a list of <i>Items</i>, which may or may not have associated icons</short>
+        <short><var>TListView </var> - a window showing a list of <var>Items</var>, which may or may not have associated icons</short>
         <descr>
-          <p><i>TListView </i>- a window showing a list of items, which may or may not have associated icons</p>
-          <p>At first, this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link>, but it has a much higher degree of complexity. It is capable of displaying Items in <i>Columns</i> of <i>Rows</i>, and it can have images associated with the list <i>Items</i>.</p>
-          <p>The important information is held in <i>Items</i>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (...) next to the <i>Items</i> entry in the Object Inspector.</p>
-          <p>A typical application might have two ImageLists: one of<i>LargeImages</i> and one of <i>SmallImages</i>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
-          <p><i>SmallImages</i> (if assigned to a string-list) can be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.</p>
-          <p>One or more <i>TImageList</i> controls need to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <i>TImageList</i> icon in the Form Designer. The image list can be populated by reading from files. Then in the StringList editor for <i>Items</i> the correct <i>ImageIndex</i> must be allocated to each entry in the list.</p>
+          <p><var>TListView </var>- a window showing a list of items, which may or may not have associated icons</p>
+          <p>At first, this control looks very like <link id="#lcl.StdCtrls.TListBox">TListBox</link>, but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var>, and it can have images associated with the list <var>Items</var>.</p>
+          <p>The important information is held in <var>Items</var>, a string-list that can be created using the string-list editor obtained by right-clicking on the ListView in the Form Editor or by clicking on the ellipsis (...) next to the <var>Items</var> entry in the Object Inspector.</p>
+          <p>A typical application might have two ImageLists: one of<var>LargeImages</var> and one of <var>SmallImages</var>, containing two versions of the same collection of images, in large and small format; the index numbers of the first list would correspond with those in the second list. </p>
+          <p><var>SmallImages</var> (if assigned to a string-list) can be displayed beside the text strings in the list view, and the programmer would supply code to ensure that when an item with its associated Small Image was selected, the corresponding Large Image would be displayed in another window.</p>
+          <p>One or more <var>TImageList</var> controls need to be selected and pasted on to the Form Designer, and the ImageList Editor can be opened from the pop-up menu obtained by right-clicking on <var>TImageList</var> icon in the Form Designer. The image list can be populated by reading from files. Then in the StringList editor for <var>Items</var> the correct <var>ImageIndex</var> must be allocated to each entry in the list.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
@@ -6746,7 +6746,7 @@ cdsIndeterminate</descr>
       <element name="TToolButton.GetCurrentIcon.TheIndex"><short/></element>
       <!-- property Visibility: public -->
       <element name="TToolButton.Index">
-        <short><i>Index </i>- the sequence number of the current button in the list of buttons</short>
+        <short><var>Index </var>- the sequence number of the current button in the list of buttons</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Action">
@@ -6774,7 +6774,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Down">
-        <short>Is this button <i>Down</i> (ie has it been selected)? Default false</short>
+        <short>Is this button <var>Down</var> (ie has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.DragCursor">
@@ -6796,9 +6796,9 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.DropdownMenu">
-        <short>A <i>DropDownMenu</i> that appears when this button is selected</short>
+        <short>A <var>DropDownMenu</var> that appears when this button is selected</short>
         <descr>
-          <p>A <i>DropDownMenu</i> that appears when this button is selected</p>
+          <p>A <var>DropDownMenu</var> that appears when this button is selected</p>
           <p>It uses the same code as a <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>, and offers a series of additional menu choices.</p>
         </descr>
       </element>
@@ -6824,7 +6824,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.ImageIndex">
-        <short><i>ImageIndex </i>- the index value of the image from the imagelist to be used with this button</short>
+        <short><var>ImageIndex </var>- the index value of the image from the imagelist to be used with this button</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Indeterminate">
@@ -6834,7 +6834,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.Marked">
-        <short>Is this button <i>Marked</i> (ie has it been selected)? Default false</short>
+        <short>Is this button <var>Marked</var> (ie has it been selected)? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolButton.MenuItem">
@@ -7666,15 +7666,15 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Images">
-        <short>The <i>Images</i> to be displayed on the buttons</short>
+        <short>The <var>Images</var> to be displayed on the buttons</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Indent">
-        <short><i>Indent</i> - the amount by which the buttons should be indented Default is 1</short>
+        <short><var>Indent</var> - the amount by which the buttons should be indented Default is 1</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.List">
-        <short>Should the contents of the toolbar be displayed as a <i>List</i>? Default false</short>
+        <short>Should the contents of the toolbar be displayed as a <var>List</var>? Default false</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.ParentColor">
@@ -7738,7 +7738,7 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.Wrapable">
-        <short><i>Wrapable</i> - enables wrapping buttons to the next row if there are too many for the current row</short>
+        <short><var>Wrapable</var> - enables wrapping buttons to the next row if there are too many for the current row</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TToolBar.OnClick">
@@ -7886,9 +7886,9 @@ cdsIndeterminate</descr>
       <element name="TTrackBarScalePos.trBottom"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomTrackBar">
-        <short><i>TCustomTrackBar</i>   - the base class for <i>TTrackBar</i></short>
+        <short><var>TCustomTrackBar</var>   - the base class for <var>TTrackBar</var></short>
         <descr>
-          <p><i>TCustomTrackBar</i> defines many of the properties inherited by <i>TTrackBar</i>, a device that allows the user to determine the value of a variable using a quasi-analog slider</p>
+          <p><var>TCustomTrackBar</var> defines many of the properties inherited by <var>TTrackBar</var>, a device that allows the user to determine the value of a variable using a quasi-analog slider</p>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -8129,45 +8129,45 @@ cdsIndeterminate</descr>
       <element name="TCustomTrackBar.Create.AOwner"><short/></element>
       <!-- procedure Visibility: public -->
       <element name="TCustomTrackBar.SetTick">
-        <short><i>SetTick</i> - set the interval for ticks on the taskbar (integer)</short>
+        <short><var>SetTick</var> - set the interval for ticks on the taskbar (integer)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomTrackBar.SetTick.Value"><short/></element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Frequency">
-        <short><i>Frequency </i>- how frequently the position of the slider is to be read and updated (currently unsupported)</short>
+        <short><var>Frequency </var>- how frequently the position of the slider is to be read and updated (currently unsupported)</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.LineSize">
-        <short><i>Line-Size </i>- increment for slider position when an arrow key is pressed</short>
+        <short><var>Line-Size </var>- increment for slider position when an arrow key is pressed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Max">
-        <short><i>Max </i>- the value corresponding to full movement of the slider. Default = 10</short>
+        <short><var>Max </var>- the value corresponding to full movement of the slider. Default = 10</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Min">
-        <short><i>Min</i>  - the value associated with the minimum slider position. Default = 0</short>
+        <short><var>Min</var>  - the value associated with the minimum slider position. Default = 0</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.OnChange">
-        <short><i>OnChange</i> - action to be taken on change in the slider position</short>
+        <short><var>OnChange</var> - action to be taken on change in the slider position</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Orientation">
-        <short><i>Orientation</i>  - horizontal or vertical</short>
+        <short><var>Orientation</var>  - horizontal or vertical</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.PageSize">
-        <short><i>PageSize</i> - increment for slider position when PageUp or PageDown key is pressed</short>
+        <short><var>PageSize</var> - increment for slider position when PageUp or PageDown key is pressed</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.Position">
-        <short><i>Position </i>- the location of the slider along the track bar. Represents the Return value from the control</short>
+        <short><var>Position </var>- the location of the slider along the track bar. Represents the Return value from the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.ScalePos">
-        <short><i>ScalePos </i>- whether scaling label appears at top, bottom, left or right</short>
+        <short><var>ScalePos </var>- whether scaling label appears at top, bottom, left or right</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.ShowScale">
@@ -8183,20 +8183,20 @@ cdsIndeterminate</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickMarks">
-        <short><i>Tickmarks </i>- whether the ticks are above/left, below/right, or both</short>
-        <descr><i>Tickmarks </i>- where the ticks appear relative to the bar: above/left, below/right, or both</descr>
+        <short><var>Tickmarks </var>- whether the ticks are above/left, below/right, or both</short>
+        <descr><var>Tickmarks </var>- where the ticks appear relative to the bar: above/left, below/right, or both</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTrackBar.TickStyle">
-        <short><i>TickStyle </i>- none, produced automatically, or calculated manually</short>
+        <short><var>TickStyle </var>- none, produced automatically, or calculated manually</short>
       </element>
       <!-- object Visibility: default -->
       <element name="TTrackBar">
-        <short><i>TTrackBar</i>: a device which allows the user to determine the value of a variable using a quasi-analog slider</short>
+        <short><var>TTrackBar</var>: a device which allows the user to determine the value of a variable using a quasi-analog slider</short>
         <descr>
-          <p><i>TTrackBar</i>: a device which allows the user to determine the value of a variable using a quasi-analog slider</p>
+          <p><var>TTrackBar</var>: a device which allows the user to determine the value of a variable using a quasi-analog slider</p>
           <p>The device looks like a slider-potentiometer control on a hi-fi amplifier, and consists of a slider which can be moved along a bar using the mouse. Tick marks can be displayed along one or both edges, giving an indication of the proportion of the maximum value of the controlled variable that is being selected.</p>
-          <p>The <i>Position</i> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
+          <p>The <var>Position</var> property indicates the distance along the bar that the slider has been placed, either by the program or by mouse capture and movement</p>
           <p>In the example, movement of the slider is detected and shown in the associated <link id="#lcl.ComCtrls.TProgressBar">TProgressBar</link>.</p>
         </descr>
         <seealso>
@@ -8858,8 +8858,8 @@ Const
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNode">
-        <short><i>TTreeNode</i> is a single item that holds data in <i>TTreeView</i></short>
-        <descr>A <i>TTreeNode</i> is part of a <i>TTreeView</i> and is used for storing data. This can be done by using the <i>Caption</i> property or for more complex data the <i>Data</i> property can be used. Each node can have sibling or child items associated with it.</descr>
+        <short><var>TTreeNode</var> is a single item that holds data in <var>TTreeView</var></short>
+        <descr>A <var>TTreeNode</var> is part of a <var>TTreeView</var> and is used for storing data. This can be done by using the <var>Caption</var> property or for more complex data the <var>Data</var> property can be used. Each node can have sibling or child items associated with it.</descr>
         <seealso><link id="#lcl.stdctrls.HowToUseStdCtrls"/></seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -10108,7 +10108,7 @@ Const
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeNodes">
-        <short>A collection or list of <i>TTreeNode</i></short>
+        <short>A collection or list of <var>TTreeNode</var></short>
       </element>
       <!-- variable Visibility: private -->
       <element name="TTreeNodes.FCount">
@@ -10835,8 +10835,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       <element name="TTreeViewInsertMarkType.tvimAsPrevSibling"><short/></element>
       <!-- object Visibility: default -->
       <element name="TCustomTreeView">
-        <short><i>TCustomTreeView</i> - ancestor class for <i>TTreeView</i></short>
-        <descr><i>TCustomTreeView</i> - ancestor class for <i>TTreeView</i>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by children classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.</descr>
+        <short><var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var></short>
+        <descr><var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by children classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TCustomTreeView.FBackgroundColor">
@@ -12806,8 +12806,8 @@ For the meaning of this options, see the documentation of TTreeView.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TTreeView">
-        <short><i>TTreeView</i>  is a control that displays a hierarchical list of items</short>
-        <descr>Use a <i>TTreeView</i>
+        <short><var>TTreeView</var>  is a control that displays a hierarchical list of items</short>
+        <descr>Use a <var>TTreeView</var>
  to display a hierarchical list of items. Items are shown by their caption and an optional bitmap.</descr>
         <seealso>
           <link id="#lcl.stdctrls.HowToUseStdCtrls"/>
