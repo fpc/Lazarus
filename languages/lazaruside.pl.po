@@ -3221,6 +3221,10 @@ msgstr "Plik %s%s%s%sdoes nie wygląda na tekstowy.%sChcesz go otworzyć go pomi
 msgid "File Properties"
 msgstr "Właściwości plku"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Typ pliku"
@@ -5365,6 +5369,10 @@ msgstr "Przesuń zakładkę w prawo"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr ""
@@ -5856,6 +5864,10 @@ msgstr "Otwórz..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Otwórz Diff w edytorze"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

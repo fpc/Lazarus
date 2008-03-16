@@ -3220,6 +3220,10 @@ msgstr "文件 %s%s%s%s 不是一个文本文件.仍然打开 %s 么?"
 msgid "File Properties"
 msgstr "文件属性"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "文件类型"
@@ -5364,6 +5368,10 @@ msgstr "在编辑器中右移"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "上移 (或左移)"
@@ -5855,6 +5863,10 @@ msgstr "打开 ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "在编辑器中打开不同之处"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

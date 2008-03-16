@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-10 00:40+0300\n"
+"PO-Revision-Date: 2008-03-14 01:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -3217,6 +3217,10 @@ msgstr "Файл %s%s%s%sне похож на текстовый.%sВсё рав
 msgid "File Properties"
 msgstr "Свойства файла"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr "Параметры файла"
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Тип файла"
@@ -5347,19 +5351,23 @@ msgstr "Переместить вниз (или направо)"
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
-msgstr "Подвинуть страницу влево"
+msgstr "Передвинуть страницу влево"
 
 #: lazarusidestrconsts:uemmoveeditorleftmost
 msgid "Move Editor Leftmost"
-msgstr "Поместить редактор слева"
+msgstr "Поместить страницу слева"
 
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
-msgstr "Подвинуть страницу вправо"
+msgstr "Передвинуть страницу вправо"
 
 #: lazarusidestrconsts:uemmoveeditorrightmost
 msgid "Move Editor Rightmost"
-msgstr "Поместить редактор справа"
+msgstr "Поместить страницу справа"
+
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr "Переместить страницу"
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5852,6 +5860,10 @@ msgstr "Открыть ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Откр. Diff в редакторе"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr "Открыть файл"
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

@@ -3217,6 +3217,10 @@ msgstr "El fitxer %s%s%s%sno sembla un fitxer de text.%sEl voleu obrir igualment
 msgid "File Properties"
 msgstr "Propietats del fitxer"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Tipus de fitxer"
@@ -5361,6 +5365,10 @@ msgstr "Mou l'editor a la dreta"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Mou Dalt (o a l'esquerra)"
@@ -5852,6 +5860,10 @@ msgstr "Obre ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Obre les diferències a l'editor"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

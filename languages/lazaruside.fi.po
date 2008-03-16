@@ -3212,6 +3212,10 @@ msgstr "Tiedosto %s%s%s%s ei näyttäisi olevan tekstitiedosto.%s Yritetäänkö
 msgid "File Properties"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr ""
@@ -5356,6 +5360,10 @@ msgstr "Siirry oikeanpuoleiselle välilehdelle"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Siirrä ylöspäin (tai vasemmallepäin)"
@@ -5847,6 +5855,10 @@ msgstr "Avaa ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Avaa eroavuudet editorissa"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

@@ -3216,6 +3216,10 @@ msgstr "ファイル %s%s%s%sはテキストファイルではないようです
 msgid "File Properties"
 msgstr "ファイルのプロパティ"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "ファイルのタイプ"
@@ -5360,6 +5364,10 @@ msgstr "エディタを右に移動"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "上（または左）に移動"
@@ -5851,6 +5859,10 @@ msgstr "開く ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "エディタの差分を開く"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

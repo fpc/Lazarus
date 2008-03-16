@@ -3965,36 +3965,36 @@ begin
     if (FilenameIsAbsolute(CurFilename)) then begin
       if FilenameIsPascalUnit(CurFilename) then begin
         if FileExists(ChangeFileExt(CurFilename,'.lfm')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lfm'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.lfm')]),
             true,@OnPopupMenuOpenLFMFile);
         if FileExists(ChangeFileExt(CurFilename,'.lrs')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.lrs'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.lrs')]),
             true,@OnPopupMenuOpenLRSFile);
         if FileExists(ChangeFileExt(CurFilename,'.s')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.s'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.s')]),
             true,@OnPopupMenuOpenSFile);
       end;
       if (CompareFileExt(CurFilename,'.lfm',true)=0) then begin
         if FileExists(ChangeFileExt(CurFilename,'.pas')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pas'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.pas')]),
             true,@OnPopupMenuOpenPasFile);
         if FileExists(ChangeFileExt(CurFilename,'.pp')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.pp'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.pp')]),
             true,@OnPopupMenuOpenPPFile);
         if FileExists(ChangeFileExt(CurFilename,'.p')) then
-          AddContextPopupMenuItem(
-            'Open '+ChangeFileExt(ExtractFileName(CurFilename),'.p'),
+          AddContextPopupMenuItem(Format(lisOpenLfm,
+            [ChangeFileExt(ExtractFileName(CurFilename),'.p')]),
             true,@OnPopupMenuOpenPFile);
       end;
       if (CompareFileExt(CurFilename,'.lpi',true)=0)
       or (CompareFileExt(CurFilename,'.lpk',true)=0) then begin
-        AddContextPopupMenuItem('Open '+ExtractFileName(CurFilename),true,
-                                @OnPopupMenuOpenFile);
+        AddContextPopupMenuItem(Format(lisOpenLfm,
+          [ExtractFileName(CurFilename)]),true,@OnPopupMenuOpenFile);
       end;
     end;
 

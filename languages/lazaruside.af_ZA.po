@@ -3219,6 +3219,10 @@ msgstr ""
 msgid "File Properties"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr ""
@@ -5363,6 +5367,10 @@ msgstr ""
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr ""
@@ -5853,6 +5861,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
+msgstr ""
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
 msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage

@@ -11196,3 +11196,15 @@ msgstr ""
 msgid "Not implemented yet:%s%s"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
+
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+

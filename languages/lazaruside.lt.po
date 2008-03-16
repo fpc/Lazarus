@@ -3222,6 +3222,10 @@ msgstr "Nepanašu kad failas %s%s%s%s yra teksto failas.%sVistiek jį atverti?"
 msgid "File Properties"
 msgstr "Failo savybės"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Failo tipas"
@@ -5368,6 +5372,10 @@ msgstr "Perkelti redaktorių dešinėn"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Stumti viršun (arba kairėn)"
@@ -5859,6 +5867,10 @@ msgstr "Atverti..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Diff atverti redaktoriuje"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

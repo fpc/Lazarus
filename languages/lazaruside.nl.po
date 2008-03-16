@@ -3217,6 +3217,10 @@ msgstr "Bestand %s%s%s%slijkt niet op een tekst bestand.%sToch openen?"
 msgid "File Properties"
 msgstr "Bestand eigenschappen"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Bestandstype"
@@ -5361,6 +5365,10 @@ msgstr "Editor naar rechts"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Beweeg omhoog (of naar links)"
@@ -5852,6 +5860,10 @@ msgstr "Openen ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Toon verschillen in bewerker"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

@@ -3217,6 +3217,10 @@ msgstr "File %s%s%s%ssepertinya bukan file teks.%sBuka saja?"
 msgid "File Properties"
 msgstr "Properti File"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Tipe File"
@@ -5361,6 +5365,10 @@ msgstr "Pindahkan Editor ke Kanan"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Naik (atau kiri)"
@@ -5852,6 +5860,10 @@ msgstr "Buka ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Buka Diff dalam editor"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"

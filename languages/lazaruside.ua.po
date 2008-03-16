@@ -3212,6 +3212,10 @@ msgstr "Файл %s%s%s%sне схожий на текстовий.%sВсе од
 msgid "File Properties"
 msgstr "Властивості файлу"
 
+#: lazarusidestrconsts:lisfilesettings
+msgid "File Settings ..."
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr "Тип файлу"
@@ -5356,6 +5360,10 @@ msgstr "Пересунути в редакторі вправо"
 msgid "Move Editor Rightmost"
 msgstr ""
 
+#: lazarusidestrconsts:lismovepage
+msgid "Move Page ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
 msgstr "Пересунути вгору (або вліво)"
@@ -5847,6 +5855,10 @@ msgstr "Відкрити ..."
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
 msgstr "Відкрити різницю в редакторі"
+
+#: lazarusidestrconsts:lisopenfile2
+msgid "Open File ..."
+msgstr ""
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
