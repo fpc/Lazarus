@@ -2503,6 +2503,7 @@ images/menu/menu_edit_uppercase.png -text svneol=unset#image/png
 images/menu/menu_editor_options.png -text svneol=unset#image/png
 images/menu/menu_environment_options.png -text svneol=unset#image/png
 images/menu/menu_exit.png -text svneol=unset#image/png
+images/menu/menu_file_print.png -text
 images/menu/menu_file_revert.png -text svneol=unset#image/png
 images/menu/menu_goto_line.png -text svneol=unset#image/png
 images/menu/menu_help.png -text svneol=unset#image/png

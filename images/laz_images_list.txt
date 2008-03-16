@@ -43,6 +43,7 @@ menu/menu_edit_sort.png
 menu/menu_edit_uppercase.png
 menu/menu_environment_options.png
 menu/menu_exit.png
+menu/menu_file_print.png
 menu/menu_file_revert.png
 menu/menu_goto_line.png
 menu/menu_help.png

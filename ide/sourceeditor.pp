@@ -914,7 +914,7 @@ begin
       'Open File ...', lisOpenFile2);
       AParent:=SrcEditSubMenuOpenFile;
       SrcEditMenuOpenFileAtCursor:=RegisterIDEMenuCommand(AParent,
-                                     'Open File At Cursor',uemOpenFileAtCursor);
+                                     'Open File At Cursor',uemOpenFileAtCursor, nil, nil, nil, 'menu_search_openfile_atcursor');
       // register the File Specific dynamic section
       SrcEditMenuSectionFileDynamic:=RegisterIDEMenuSection(AParent,
                                                         'File dynamic section');
@@ -934,7 +934,7 @@ begin
 
     AParent:=SrcEditMenuSectionFirstStatic;
     SrcEditMenuClosePage:=RegisterIDEMenuCommand(AParent,
-                                                     'Close Page',uemClosePage);
+                                                     'Close Page',uemClosePage, nil, nil, nil, 'menu_close');
 
   // register the Clipboard section
   SrcEditMenuSectionClipboard:=RegisterIDEMenuSection(SourceEditorMenuRoot,
@@ -957,9 +957,9 @@ begin
         RegisterIDEMenuCommand(AParent,'GotoBookmark'+IntToStr(I),
                                uemBookmarkN+IntToStr(i));
       SrcEditMenuNextBookmark:=RegisterIDEMenuCommand(AParent,
-                                          'Goto next Bookmark',uemNextBookmark);
+                                          'Goto next Bookmark',uemNextBookmark, nil, nil, nil, 'menu_search_next_bookmark');
       SrcEditMenuPrevBookmark:=RegisterIDEMenuCommand(AParent,
-                                      'Goto previous Bookmark',uemPrevBookmark);
+                                      'Goto previous Bookmark',uemPrevBookmark, nil, nil, nil, 'menu_search_previous_bookmark');
 
     // register the Set Bookmarks Submenu
     SrcEditSubMenuSetBookmarks:=RegisterIDESubMenu(SrcEditMenuSectionMarks,

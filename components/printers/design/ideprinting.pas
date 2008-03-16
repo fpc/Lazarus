@@ -62,13 +62,13 @@ begin
   RegisterIDEMenuCommand(itmFileDirectories,
                          'PrintSelection',
                          SDescrPFSelection, 
-                         nil,nil,CmdFormatSelection);
+                         nil,nil,CmdFormatSelection, 'menu_file_print');
 
   //source editor popup
   RegisterIDEMenuCommand(SourceEditorMenuRoot,
                          'PrintSelection',
                          SDescrPFSelection, 
-                         nil,nil,CmdFormatSelection);
+                         nil,nil,CmdFormatSelection, 'menu_file_print');
 end;
 
 procedure PrintFile(Sender: TObject);
