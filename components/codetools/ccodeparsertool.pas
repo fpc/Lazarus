@@ -604,6 +604,7 @@ begin
   MainNode:=CurNode;
   IsFunction:=false;
   if AtomIs('struct') then begin
+    // for example: struct structname varname
     ReadNextAtom;
   end else if AtomIs('union') then begin
     ReadNextAtom;

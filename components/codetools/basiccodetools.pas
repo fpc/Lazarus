@@ -138,7 +138,7 @@ function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
-function CompareIdentifierPtrs(Identifier1, Identifier2: Pointer): integer;
+function CompareIdentifierPtrs(Identifier1, Identifier2: Pointer): integer; {$IFDEF HasInline}inline;{$ENDIF}
 function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;

@@ -40,9 +40,9 @@ unit H2PasTool;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, contnrs, AVL_Tree,
   FileProcs, BasicCodeTools, CCodeParserTool, NonPascalCodeTools,
-  CodeCache, CodeTree, CodeAtom;
+  KeywordFuncLists, CodeCache, CodeTree, CodeAtom;
   
 type
 
@@ -50,11 +50,12 @@ type
 
   TH2PNode = class
   public
-    Name: string;
+    PascalName: string;
+    CName: string;
     CNode: TCodeTreeNode;
     PascalDesc: TCodeTreeNodeDesc;
-    Code: string;
-    NormalizedCode: string;
+    PascalCode: string;
+    NormalizedPascalCode: string;
     Parent, FirstChild, LastChild, NextBrother, PriorBrother: TH2PNode;
     function Next: TH2PNode;
     function NextSkipChilds: TH2PNode;
@@ -74,6 +75,7 @@ type
     FNodeCount: integer;
   public
     Root: TH2PNode;
+    LastRoot: TH2PNode;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -91,6 +93,8 @@ type
   TH2PasTool = class
   private
     FPredefinedCTypes: TFPStringHashTable;
+    FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
+    FCNames: TAVLTree;// tree of TH2PNode sorted for CName
   public
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
@@ -100,6 +104,10 @@ type
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
     function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
     function ConvertSimpleCTypeToPascalType(CType: string): string;
+    
+    function CreateH2PNode(const PascalName: string; CNode: TCodeTreeNode;
+       PascalDesc: TCodeTreeNodeDesc; ParentNode: TH2PNode = nil;
+       IsGlobal: boolean = true): TH2PNode;
 
     procedure WriteDebugReport;
     constructor Create;
@@ -110,6 +118,9 @@ type
   
   
 function DefaultPredefinedCTypes: TFPStringHashTable;// types in unit ctypes
+
+function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
+function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
 
 implementation
 
@@ -210,6 +221,18 @@ begin
   Result:=InternalPredefinedCTypes;
 end;
 
+function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Pointer(TH2PNode(Data1).PascalName),
+                                Pointer(TH2PNode(Data2).PascalName));
+end;
+
+function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifiersCaseSensitive(PChar(Pointer(TH2PNode(Data1).CName)),
+                                          PChar(Pointer(TH2PNode(Data2).CName)));
+end;
+
 { TH2PasTool }
 
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
@@ -249,7 +272,10 @@ begin
         DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
         if SimpleType='' then begin
           // this variable has a complex type
-          
+          //SimpleType:=CreateTypeForVarType(CNode);
+        end;
+        if SimpleType<>'' then begin
+        
         end;
       end;
     ccnEnumBlock:
@@ -315,26 +341,54 @@ function TH2PasTool.ConvertSimpleCTypeToPascalType(CType: string): string;
 var
   p: Integer;
   CurAtomStart: integer;
+  
+  function TestIsAtomAndRemove(const s: shortstring): boolean;
+  begin
+    if (p-CurAtomStart<>length(s))
+    or (not CompareMem(@s[1],@CType[CurAtomStart],length(s))) then
+      exit(false);
+    Result:=true;
+    // remove token
+    if IsIdentStartChar[s[1]] then begin
+      // token is a word => remove one space too
+      if (CurAtomStart>1) and (CType[CurAtomStart-1]=' ') then
+        dec(CurAtomStart)
+      else if (p<=length(CType)) and (CType[p]=' ') then
+        inc(p);
+    end;
+    // remove token
+    CType:=copy(CType,1,CurAtomStart-1)+copy(CType,p,length(CType));
+    p:=CurAtomStart;
+    //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType CType="',CType,'"']);
+  end;
+  
 begin
-  // remove 'const'
+  // remove 'const' and 'struct'
   p:=1;
   repeat
     ReadRawNextCAtom(CType,p,CurAtomStart);
     if CurAtomStart>length(CType) then break;
     //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType Atom=',copy(CType,CurAtomStart,p-CurAtomStart)]);
-    if (p-CurAtomStart=5)
-    and CompareMem(PChar('const'),@CType[CurAtomStart],5) then begin
-      // remove 'const' and one space
-      if (CurAtomStart>1) and (CType[CurAtomStart-1]=' ') then
-        dec(CurAtomStart)
-      else if (p<=length(CType)) and (CType[p]=' ') then
-        inc(p);
-      CType:=copy(CType,1,CurAtomStart-1)+copy(CType,p,length(CType));
-      p:=CurAtomStart;
-      //DebugLn(['TH2PasTool.ConvertSimpleCTypeToPascalType CType="',CType,'"']);
-    end;
+    if (not TestIsAtomAndRemove('const'))
+    and (not TestIsAtomAndRemove('struct')) then ;
   until false;
+  // seach in predefined ctypes
   Result:=PredefinedCTypes[CType];
+end;
+
+function TH2PasTool.CreateH2PNode(const PascalName: string;
+  CNode: TCodeTreeNode; PascalDesc: TCodeTreeNodeDesc; ParentNode: TH2PNode;
+  IsGlobal: boolean): TH2PNode;
+begin
+  Result:=TH2PNode.Create;
+  Result.PascalName:=PascalName;
+  Result.CNode:=CNode;
+  Result.PascalDesc:=PascalDesc;
+  Tree.AddNodeAsLastChild(ParentNode,Result);
+  if IsGlobal then begin
+    FPascalNames.Add(Result);
+    FCNames.Add(Result);
+  end;
 end;
 
 procedure TH2PasTool.WriteDebugReport;
@@ -348,6 +402,8 @@ constructor TH2PasTool.Create;
 begin
   FPredefinedCTypes:=DefaultPredefinedCTypes;
   Tree:=TH2PTree.Create;
+  FPascalNames:=TAVLTree.Create(@CompareH2PNodePascalNames);
+  FCNames:=TAVLTree.Create(@CompareH2PNodeCNames);
 end;
 
 destructor TH2PasTool.Destroy;
@@ -355,11 +411,15 @@ begin
   FPredefinedCTypes:=nil;
   Clear;
   FreeAndNil(Tree);
+  FreeAndNil(FPascalNames);
+  FreeAndNil(FCNames);
   inherited Destroy;
 end;
 
 procedure TH2PasTool.Clear;
 begin
+  FPascalNames.Clear;
+  FCNames.Clear;
   Tree.Clear;
 end;
 
@@ -430,7 +490,7 @@ end;
 
 function TH2PNode.DescAsString: string;
 begin
-  Result:='Name="'+Name+'"';
+  Result:='PascalName="'+PascalName+'"';
   Result:=Result+' PascalDesc='+NodeDescriptionAsString(PascalDesc);
   if CNode<>nil then begin
     Result:=Result+' CNode='+CNode.DescAsString;
@@ -518,13 +578,15 @@ begin
 end;
 
 procedure TH2PTree.AddNodeAsLastChild(ParentNode, ANode: TH2PNode);
-var TopNode: TH2PNode;
 begin
   ANode.Parent:=ParentNode;
   if Root=nil then begin
     // set as root
     Root:=ANode;
     while Root.Parent<>nil do Root:=Root.Parent;
+    LastRoot:=Root;
+    while LastRoot.NextBrother<>nil do
+      LastRoot:=LastRoot.NextBrother;
   end else if ParentNode<>nil then begin
     if ParentNode.FirstChild=nil then begin
       // add as first child
@@ -538,10 +600,11 @@ begin
     end;
   end else begin
     // add as last brother of top nodes
-    TopNode:=Root;
-    while (TopNode.NextBrother<>nil) do TopNode:=TopNode.NextBrother;
-    ANode.PriorBrother:=TopNode;
+    while (LastRoot.NextBrother<>nil) do LastRoot:=LastRoot.NextBrother;
+    ANode.PriorBrother:=LastRoot;
     ANode.PriorBrother.NextBrother:=ANode;
+    LastRoot:=ANode;
+    while (LastRoot.NextBrother<>nil) do LastRoot:=LastRoot.NextBrother;
   end;
   inc(FNodeCount);
 end;
