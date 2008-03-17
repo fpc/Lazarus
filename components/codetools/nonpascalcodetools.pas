@@ -43,6 +43,7 @@ procedure ReadNextCAtom(const Source: string;
 procedure ReadRawNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
 
+function CConstantToInt64(const s: string; out i: int64): boolean;
 
 implementation
 
@@ -341,6 +342,28 @@ begin
     end;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+end;
+
+function CConstantToInt64(const s: string; out i: int64): boolean;
+var
+  p: Integer;
+begin
+  i:=0;
+  Result:=false;
+  if s='' then exit;
+  if s[1]='0' then begin
+    DebugLn(['CConstantToInt64 ToDo: ',s]);
+    exit;
+  end else begin
+    // decimal
+    p:=length(s);
+    while (p>0) and (s[p] in ['0'..'9']) do dec(p);
+    if p>0 then exit;
+    try
+      i:=StrToInt64(s);
+    except
+    end;
+  end;
 end;
 
 end.

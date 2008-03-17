@@ -44,6 +44,9 @@ uses
   FileProcs, BasicCodeTools, CCodeParserTool, NonPascalCodeTools,
   KeywordFuncLists, CodeCache, CodeTree, CodeAtom;
   
+const
+  DefaultMaxPascalIdentLen = 70;
+
 type
 
   { TH2PNode }
@@ -287,7 +290,6 @@ begin
         CurName:=CTool.ExtractVariableName(CNode);
         CurType:=CTool.ExtractVariableType(CNode);
         SimpleType:=GetSimplePascalTypeOfCVar(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
         if SimpleType='' then begin
           // this variable has a complex type
           TypeH2PNode:=GetTypeForVarType(CNode);
@@ -297,7 +299,9 @@ begin
         if SimpleType<>'' then begin
           H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition);
           H2PNode.PascalCode:=SimpleType;
-          //DebugLn(['TH2PasTool.BuildH2PTree CNode.Desc=',CCNodeDescAsString(CNode.Desc),' ',H2PNode.DescAsString]);
+          DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+        end else begin
+          DebugLn(['TH2PasTool.BuildH2PTree invalid Variable Name="',CurName,'" Type="',CurType,'"']);
         end;
         NextCNode:=CNode.NextSkipChilds;
       end;
@@ -415,6 +419,13 @@ var
   BasePascalType: String;
   NewBasePascalType: String;
   SubH2PNode: TH2PNode;
+  PascalCode: String;
+  ConstantStartPos: LongInt;
+  ConstantEndPos: LongInt;
+  ConstantCode: String;
+  ConstantNumber: int64;
+  BracketOpenPos: LongInt;
+  NeedH2PNode: Boolean;
 begin
   Result:=nil;
   if (CVarNode.FirstChild<>nil)
@@ -484,14 +495,62 @@ begin
     end;
     
     PascalName:=BasePascalType;
+    PascalCode:=PascalName;
     
     // read arrays
-    {while (AtomStart<=length(CCode)) do begin
+    NeedH2PNode:=false;
+    while (AtomStart<=length(CCode)) do begin
       CurAtom:=copy(CCode,AtomStart,p-AtomStart);
       if CurAtom='[' then begin
-
+        NeedH2PNode:=true;
+        BracketOpenPos:=AtomStart;
+        ReadRawNextCAtom(CCode,p,AtomStart);
+        if AtomStart>length(CCode) then begin
+          DebugLn(['TH2PasTool.GetTypeForVarType untranslatable (missing ]): CCode="',dbgstr(CCode),'"']);
+          exit;
+        end;
+        CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+        if CurAtom=']' then begin
+          // [] -> open array
+          PascalCode:='array of '+PascalCode;
+          PascalName:='ArrayOf'+PascalName;
+          DebugLn(['TH2PasTool.GetTypeForVarType open array: ',PascalCode]);
+        end else begin
+          // [constant] -> array[0..constant-1]
+          ConstantStartPos:=AtomStart;
+          p:=BracketOpenPos;
+          ReadTilCBracketClose(CCode,p);
+          ConstantEndPos:=p-1;
+          ConstantCode:=copy(CCode,ConstantStartPos,ConstantEndPos-ConstantStartPos);
+          DebugLn(['TH2PasTool.GetTypeForVarType ConstantCode="',ConstantCode,'"']);
+          if CConstantToInt64(ConstantCode,ConstantNumber) then begin
+            if ConstantNumber>0 then
+              dec(ConstantNumber)
+            else
+              ConstantNumber:=0;
+            ConstantCode:=IntToStr(ConstantNumber-1);
+          end else begin
+            ConstantCode:=ConstantCode+'-1';
+          end;
+          PascalCode:='array[0..'+ConstantCode+'] of '+PascalCode;
+          PascalName:='Array_0to'+CreatePascalNameFromCCode(ConstantCode)+'_Of'+PascalName;
+          DebugLn(['TH2PasTool.GetTypeForVarType fixed array: ',PascalCode]);
+        end;
+      end else
+        break;
+      ReadRawNextCAtom(CCode,p,AtomStart);
+    end;
+    if NeedH2PNode then begin
+      PascalName:='T'+PascalName;
+      PascalName:=copy(PascalName,1,DefaultMaxPascalIdentLen);
+      SubH2PNode:=FindH2PNodeWithPascalName(PascalName);
+      if SubH2PNode=nil then begin
+        SubH2PNode:=CreateH2PNode(PascalName,PascalName,nil,ctnTypeDefinition);
+        SubH2PNode.PascalCode:=PascalCode;
       end;
-    end;}
+    end;
+    
+    // check if the whole declaration was translated
     if AtomStart<=length(CCode) then begin
       // unknown C type
       DebugLn(['TH2PasTool.GetTypeForVarType untranslatable: CCode="',dbgstr(CCode),'"']);
@@ -505,13 +564,11 @@ end;
 
 function TH2PasTool.CreatePascalNameFromCCode(const CCode: string;
   StartPos: integer; EndPos: integer): string;
-const
-  MaxIdentLen = 70;
 
   function Add(var PascalName: string; const Addition: string): boolean;
   begin
     if Addition='' then exit(true);
-    if length(PascalName)+length(Addition)>MaxIdentLen then
+    if length(PascalName)+length(Addition)>DefaultMaxPascalIdentLen then
       exit(false);
     PascalName:=PascalName+Addition;
   end;
