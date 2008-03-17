@@ -114,6 +114,7 @@ type
     function CreatePascalNameFromCCode(const CCode: string;
                                        StartPos: integer = 1;
                                        EndPos: integer = -1): string;
+    function FindH2PNodeWithPascalName(const PascalName: string): TH2PNode;
 
     procedure WriteDebugReport;
     procedure WriteH2PNodeReport;
@@ -127,6 +128,7 @@ type
 function DefaultPredefinedCTypes: TFPStringHashTable;// types in unit ctypes
 
 function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
+function CompareStringWithH2PNodePascalName(AString, ANode: Pointer): integer;
 function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
 
 implementation
@@ -234,6 +236,12 @@ function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareIdentifierPtrs(Pointer(TH2PNode(Data1).PascalName),
                                 Pointer(TH2PNode(Data2).PascalName));
+end;
+
+function CompareStringWithH2PNodePascalName(AString, ANode: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Pointer(AString),
+                                Pointer(TH2PNode(ANode).PascalName));
 end;
 
 function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
@@ -404,14 +412,18 @@ var
   p: Integer;
   CurAtom: String;
   BaseCType: String;
-  BasePascaltype: String;
+  BasePascalType: String;
+  NewBasePascalType: String;
+  SubH2PNode: TH2PNode;
 begin
   Result:=nil;
   if (CVarNode.FirstChild<>nil)
   and (CVarNode.FirstChild.Desc=ccnUnion) then begin
     // ToDo: union
   end else begin
+    SubH2PNode:=nil;
     CCode:=CTool.ExtractVariableType(CVarNode);
+    DebugLn(['TH2PasTool.GetTypeForVarType CCode="',CCode,'"']);
     { int[][3]  -> array of array[0..2] of cint
       char**    -> PPchar
       int *[15] -> array[0..14] of pcint
@@ -428,35 +440,66 @@ begin
         if BaseCType<>'' then
           BaseCType:=BaseCType+' ';
         BaseCType:=BaseCType+CurAtom;
-      end;
+      end else
+        break;
     until false;
     if BaseCType='' then begin
       DebugLn(['TH2PasTool.GetTypeForVarType no base type in c declaration: CCode="',dbgstr(CCode),'"']);
       exit;
     end;
-    BasePascaltype:=ConvertSimpleCTypeToPascalType(BaseCType,true);
-    if (BasePascaltype='') then begin
+    BasePascalType:=ConvertSimpleCTypeToPascalType(BaseCType,true);
+    if (BasePascalType='') then begin
       DebugLn(['TH2PasTool.GetTypeForVarType unknown c type: "',BaseCType,'"']);
       exit;
     end;
+    DebugLn(['TH2PasTool.GetTypeForVarType BasePascalType="',BasePascalType,'" BaseCType="',BaseCType,'"']);
     
-    // read pointer
-    {while (AtomStart<=length(CCode)) do begin
+    // read pointer(s)
+    while (AtomStart<=length(CCode)) do begin
       CurAtom:=copy(CCode,AtomStart,p-AtomStart);
       if (CurAtom='*') then begin
         BaseCType:=BaseCType+'*';
-        NewBasePascaltype:=ConvertSimpleCTypeToPascalType(BaseCType,true);
-
+        NewBasePascalType:=ConvertSimpleCTypeToPascalType(BaseCType,true);
+        if NewBasePascalType<>'' then begin
+          // for this pointer type exists already a predefined simple type
+        end else begin
+          // a new pointer type is needed
+          NewBasePascalType:='P'+BasePascalType;
+          SubH2PNode:=FindH2PNodeWithPascalName(NewBasePascalType);
+          if SubH2PNode=nil then begin
+            SubH2PNode:=CreateH2PNode(NewBasePascalType,NewBasePascalType,nil,
+                                      ctnTypeDefinition);
+            SubH2PNode.PascalCode:='^'+BasePascalType;
+            DebugLn(['TH2PasTool.GetTypeForVarType added new pointer type: ',SubH2PNode.DescAsString]);
+          end;
+        end;
+        BasePascalType:=NewBasePascalType;
+        DebugLn(['TH2PasTool.GetTypeForVarType using pointer type: BasePascalType="',BasePascalType,'" BaseCType="',BaseCType,'"']);
       end else if (CurAtom='const') then begin
         // skip 'const'
       end else begin
         break;
       end;
       ReadRawNextCAtom(CCode,p,AtomStart);
-    end;}
+    end;
     
-    PascalName:=CreatePascalNameFromCCode(CCode);
+    PascalName:=BasePascalType;
+    
+    // read arrays
+    {while (AtomStart<=length(CCode)) do begin
+      CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+      if CurAtom='[' then begin
+
+      end;
+    end;}
+    if AtomStart<=length(CCode) then begin
+      // unknown C type
+      DebugLn(['TH2PasTool.GetTypeForVarType untranslatable: CCode="',dbgstr(CCode),'"']);
+      exit;
+    end;
+    
     DebugLn(['TH2PasTool.GetTypeForVarType CCode="',dbgstr(CCode),'" PascalName="',PascalName,'"']);
+    Result:=SubH2PNode;
   end;
 end;
 
@@ -508,6 +551,19 @@ begin
       end;
     end;
   until false;
+end;
+
+function TH2PasTool.FindH2PNodeWithPascalName(const PascalName: string
+  ): TH2PNode;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FPascalNames.FindKey(Pointer(PascalName),
+                                @CompareStringWithH2PNodePascalName);
+  if AVLNode<>nil then
+    Result:=TH2PNode(AVLNode.Data)
+  else
+    Result:=nil;
 end;
 
 procedure TH2PasTool.WriteDebugReport;
