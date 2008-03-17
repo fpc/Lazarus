@@ -98,6 +98,7 @@ type
     procedure BuildH2PTree;
     
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
+    function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
     function ConvertSimpleCTypeToPascalType(CType: string): string;
 
     procedure WriteDebugReport;
@@ -127,12 +128,6 @@ begin
       Add('signed int*','pcsint');
       Add('unsigned int','cuint');
       Add('unsigned int*','pcuint');
-      Add('short int','cshort');
-      Add('short int*','pcshort');
-      Add('signed short int','csshort');
-      Add('signed short int*','pcsshort');
-      Add('unsigned short int','csshort');
-      Add('unsigned short int*','pcsshort');
       // short
       Add('short','cshort');
       Add('short*','pcshort');
@@ -140,6 +135,14 @@ begin
       Add('signed short*','pcsshort');
       Add('unsigned short','csshort');
       Add('unsigned short*','pcsshort');
+      Add('short int','cshort');
+      Add('short int*','pcshort');
+      Add('signed short int','csshort');
+      Add('signed short int*','pcsshort');
+      Add('short signed int','csshort');
+      Add('short signed int*','pcsshort');
+      Add('short unsigned int','csshort');
+      Add('short unsigned int*','pcsshort');
       // int8
       Add('int8','cint8');
       Add('int8*','pcint8');
@@ -167,6 +170,16 @@ begin
       Add('signed long*','pcslong');
       Add('unsigned long','culong');
       Add('unsigned long*','pculong');
+      Add('long int','clong');
+      Add('long int*','pclong');
+      Add('signed long int','cslong');
+      Add('signed long int*','pcslong');
+      Add('long signed int','cslong');
+      Add('long signed int*','pcslong');
+      Add('unsigned long int','culong');
+      Add('unsigned long int*','pculong');
+      Add('long unsigned int','culong');
+      Add('long unsigned int*','pculong');
       // long long
       Add('long long','clonglong');
       Add('long long*','pclonglong');
@@ -252,9 +265,9 @@ begin
     ccnFunction:
       begin
         CurName:=CTool.ExtractFunctionName(CNode);
-        CurType:=CTool.ExtractFunctionType(CNode);
-        SimpleType:=GetSimplePascalTypeOfCVar(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Function Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
+        CurType:=CTool.ExtractFunctionResultType(CNode);
+        SimpleType:=GetSimplePascalResultTypeOfCFunction(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree Function Name="',CurName,'" ResultType="',CurType,'" SimpleType=',SimpleType]);
         if SimpleType='' then begin
           // this variable has a complex type
 
@@ -270,6 +283,22 @@ var
   SimpleType: String;
 begin
   Result:=CTool.ExtractVariableType(CVarNode);
+  if Result='' then exit;
+  SimpleType:=ConvertSimpleCTypeToPascalType(Result);
+  if SimpleType<>'' then begin
+    Result:=SimpleType;
+    exit;
+  end;
+  if not IsValidIdent(Result) then
+    Result:='';
+end;
+
+function TH2PasTool.GetSimplePascalResultTypeOfCFunction(
+  CFuncNode: TCodeTreeNode): string;
+var
+  SimpleType: String;
+begin
+  Result:=CTool.ExtractFunctionResultType(CFuncNode);
   if Result='' then exit;
   SimpleType:=ConvertSimpleCTypeToPascalType(Result);
   if SimpleType<>'' then begin

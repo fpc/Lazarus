@@ -176,6 +176,8 @@ type
     function ExtractFunctionName(FuncNode: TCodeTreeNode): string;
     function ExtractFunctionType(FuncNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
+    function ExtractFunctionResultType(FuncNode: TCodeTreeNode;
+                                       WithDirectives: boolean = false): string;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
     function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
 
@@ -1214,20 +1216,42 @@ var
   NameNode: TCodeTreeNode;
 begin
   NameNode:=FuncNode.FirstChild;
-  if (NameNode=nil) or (NameNode.Desc<>ccnName) then
-    Result:=''
-  else begin
-    Result:=ExtractCode(FuncNode.StartPos,NameNode.StartPos,WithDirectives);
-    if (NameNode.NextBrother<>nil)
-    and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
-      // The name is in between.
-      // The type is result type + parameter list
-      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
-                                 WithDirectives);
-    end else begin
-      Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
-                                 WithDirectives);
-    end;
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then begin
+    Result:='';
+    exit;
+  end;
+  Result:=ExtractCode(FuncNode.StartPos,NameNode.StartPos,WithDirectives);
+  if (NameNode.NextBrother<>nil)
+  and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
+    // The name is in between.
+    // The type is result type + parameter list
+    Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
+                               WithDirectives);
+  end else begin
+    Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
+                               WithDirectives);
+  end;
+end;
+
+function TCCodeParserTool.ExtractFunctionResultType(FuncNode: TCodeTreeNode;
+  WithDirectives: boolean): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=FuncNode.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then begin
+    Result:='';
+    exit;
+  end;
+  Result:=ExtractCode(FuncNode.StartPos,NameNode.StartPos,WithDirectives);
+  if (NameNode.NextBrother<>nil)
+  and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
+    // The name is in between.
+    Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
+                               WithDirectives);
+  end else begin
+    Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
+                               WithDirectives);
   end;
 end;
 
