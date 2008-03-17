@@ -275,6 +275,7 @@ var
   MsgID: String;
   MsgStr: String;
   TextEnd: PChar;
+  i: Integer;
 begin
   if s='' then exit;
   l:=length(s);
@@ -288,6 +289,11 @@ begin
     if LineLen>0 then begin
       if CompareMem(LineStart,sCommentIdentifier,3) then begin
         Identifier:=copy(s,LineStart-p+4,LineLen-3);
+        // the RTL creates identifier paths with point instead of colons
+        // fix it:
+        for i:=1 to length(Identifier) do
+          if Identifier[i]=':' then
+            Identifier[i]:='.';
       end else if CompareMem(LineStart,sMsgID,7) then begin
         MsgID:=UTF8CStringToUTF8String(LineStart+7,LineLen-8);
       end else if CompareMem(LineStart,sMsgStr,8) then begin
