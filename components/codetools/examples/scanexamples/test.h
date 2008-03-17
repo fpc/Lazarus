@@ -25,6 +25,9 @@ enum {
         TEST_ENUM3
 };
 
+enum e1{dark, light};
+enum e2{a=3, b=9};
+
 /* Byte order conversions */
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define htobs(d)  (d)
@@ -122,13 +125,11 @@ complex operator+(complex, complex);
 
 int y = 7;
 float f(int){};
+int dim2[][3];
 bool b1 = a==b;
 char c = 'a';
 short signed int ssi_octal = 0123;
 long unsigned int lui = sizeof(char);
-
-enum e1{dark, light};
-enum e2{a=3, b=9};
 
 int *pi; // pointer to int
 char ** ppc; // pointer to pointer to char

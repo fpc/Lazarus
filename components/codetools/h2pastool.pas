@@ -103,11 +103,17 @@ type
     
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
     function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
-    function ConvertSimpleCTypeToPascalType(CType: string): string;
+    function ConvertSimpleCTypeToPascalType(CType: string;
+                  UseSingleIdentifierAsDefault: boolean): string;
     
     function CreateH2PNode(const PascalName, CName: string; CNode: TCodeTreeNode;
        PascalDesc: TCodeTreeNodeDesc; ParentNode: TH2PNode = nil;
        IsGlobal: boolean = true): TH2PNode;
+    function GetTypeForVarType(CVarNode: TCodeTreeNode;
+                               CreateIfNotExists: boolean = true): TH2PNode;
+    function CreatePascalNameFromCCode(const CCode: string;
+                                       StartPos: integer = 1;
+                                       EndPos: integer = -1): string;
 
     procedure WriteDebugReport;
     procedure WriteH2PNodeReport;
@@ -217,6 +223,8 @@ begin
       Add('double*','pcdouble');
       Add('long double','clongdouble');
       Add('long double*','pclongdouble');
+      // void
+      Add('void*','pointer');
     end;
   end;
   Result:=InternalPredefinedCTypes;
@@ -258,10 +266,13 @@ var
   CurType: String;
   SimpleType: String;
   H2PNode: TH2PNode;
+  NextCNode: TCodeTreeNode;
+  TypeH2PNode: TH2PNode;
 begin
   Tree.Clear;
   CNode:=CTool.Tree.Root;
   while CNode<>nil do begin
+    NextCNode:=CNode.Next;
     case CNode.Desc of
     ccnVariable:
       begin
@@ -271,13 +282,16 @@ begin
         DebugLn(['TH2PasTool.BuildH2PTree Variable Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
         if SimpleType='' then begin
           // this variable has a complex type
-          //SimpleType:=CreateTypeForVarType(CNode);
+          TypeH2PNode:=GetTypeForVarType(CNode);
+          if TypeH2PNode<>nil then
+            SimpleType:=TypeH2PNode.PascalName;
         end;
         if SimpleType<>'' then begin
           H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition);
           H2PNode.PascalCode:=SimpleType;
           //DebugLn(['TH2PasTool.BuildH2PTree CNode.Desc=',CCNodeDescAsString(CNode.Desc),' ',H2PNode.DescAsString]);
         end;
+        NextCNode:=CNode.NextSkipChilds;
       end;
     ccnEnumBlock:
       begin
@@ -301,42 +315,27 @@ begin
         end;
       end;
     end;
-    CNode:=CNode.Next;
+    CNode:=NextCNode;
   end;
 end;
 
 function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
-var
-  SimpleType: String;
 begin
   Result:=CTool.ExtractVariableType(CVarNode);
   if Result='' then exit;
-  SimpleType:=ConvertSimpleCTypeToPascalType(Result);
-  if SimpleType<>'' then begin
-    Result:=SimpleType;
-    exit;
-  end;
-  if not IsValidIdent(Result) then
-    Result:='';
+  Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;
 
 function TH2PasTool.GetSimplePascalResultTypeOfCFunction(
   CFuncNode: TCodeTreeNode): string;
-var
-  SimpleType: String;
 begin
   Result:=CTool.ExtractFunctionResultType(CFuncNode);
   if Result='' then exit;
-  SimpleType:=ConvertSimpleCTypeToPascalType(Result);
-  if SimpleType<>'' then begin
-    Result:=SimpleType;
-    exit;
-  end;
-  if not IsValidIdent(Result) then
-    Result:='';
+  Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;
 
-function TH2PasTool.ConvertSimpleCTypeToPascalType(CType: string): string;
+function TH2PasTool.ConvertSimpleCTypeToPascalType(CType: string;
+  UseSingleIdentifierAsDefault: boolean): string;
 // the type must be normalized. That means no directives,
 // no unneeded spaces, no tabs, no comments, no newlines.
 var
@@ -375,6 +374,9 @@ begin
   until false;
   // seach in predefined ctypes
   Result:=PredefinedCTypes[CType];
+  
+  if (Result='') and (UseSingleIdentifierAsDefault) and IsValidIdent(CType) then
+    Result:=CType;
 end;
 
 function TH2PasTool.CreateH2PNode(const PascalName, CName: string;
@@ -391,6 +393,121 @@ begin
     FPascalNames.Add(Result);
     FCNames.Add(Result);
   end;
+end;
+
+function TH2PasTool.GetTypeForVarType(CVarNode: TCodeTreeNode;
+  CreateIfNotExists: boolean): TH2PNode;
+var
+  CCode: String;
+  PascalName: String;
+  AtomStart: integer;
+  p: Integer;
+  CurAtom: String;
+  BaseCType: String;
+  BasePascaltype: String;
+begin
+  Result:=nil;
+  if (CVarNode.FirstChild<>nil)
+  and (CVarNode.FirstChild.Desc=ccnUnion) then begin
+    // ToDo: union
+  end else begin
+    CCode:=CTool.ExtractVariableType(CVarNode);
+    { int[][3]  -> array of array[0..2] of cint
+      char**    -> PPchar
+      int *[15] -> array[0..14] of pcint
+      
+    }
+    // read identifiers
+    p:=1;
+    BaseCType:='';
+    repeat
+      ReadRawNextCAtom(CCode,p,AtomStart);
+      if AtomStart>length(CCode) then break;
+      if IsIdentStartChar[CCode[AtomStart]] then begin
+        CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+        if BaseCType<>'' then
+          BaseCType:=BaseCType+' ';
+        BaseCType:=BaseCType+CurAtom;
+      end;
+    until false;
+    if BaseCType='' then begin
+      DebugLn(['TH2PasTool.GetTypeForVarType no base type in c declaration: CCode="',dbgstr(CCode),'"']);
+      exit;
+    end;
+    BasePascaltype:=ConvertSimpleCTypeToPascalType(BaseCType,true);
+    if (BasePascaltype='') then begin
+      DebugLn(['TH2PasTool.GetTypeForVarType unknown c type: "',BaseCType,'"']);
+      exit;
+    end;
+    
+    // read pointer
+    {while (AtomStart<=length(CCode)) do begin
+      CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+      if (CurAtom='*') then begin
+        BaseCType:=BaseCType+'*';
+        NewBasePascaltype:=ConvertSimpleCTypeToPascalType(BaseCType,true);
+
+      end else if (CurAtom='const') then begin
+        // skip 'const'
+      end else begin
+        break;
+      end;
+      ReadRawNextCAtom(CCode,p,AtomStart);
+    end;}
+    
+    PascalName:=CreatePascalNameFromCCode(CCode);
+    DebugLn(['TH2PasTool.GetTypeForVarType CCode="',dbgstr(CCode),'" PascalName="',PascalName,'"']);
+  end;
+end;
+
+function TH2PasTool.CreatePascalNameFromCCode(const CCode: string;
+  StartPos: integer; EndPos: integer): string;
+const
+  MaxIdentLen = 70;
+
+  function Add(var PascalName: string; const Addition: string): boolean;
+  begin
+    if Addition='' then exit(true);
+    if length(PascalName)+length(Addition)>MaxIdentLen then
+      exit(false);
+    PascalName:=PascalName+Addition;
+  end;
+  
+var
+  p: Integer;
+  AtomStart: integer;
+  i: LongInt;
+  c: Char;
+  CurAtom: String;
+begin
+  Result:='';
+  if EndPos<1 then
+    EndPos:=length(CCode)+1;
+  p:=StartPos;
+  if EndPos>length(CCode) then
+    EndPos:=length(CCode);
+  repeat
+    ReadRawNextCAtom(CCode,p,AtomStart);
+    if AtomStart>EndPos then exit;
+    
+    if IsIdentStartChar[CCode[AtomStart]] then begin
+      CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+      if (CurAtom<>'const')
+      and (CurAtom<>'struct')
+      and not Add(Result,CurAtom) then
+        exit;
+    end else begin
+      if CCode[AtomStart] in ['0'..'9'] then begin
+        CurAtom:=copy(CCode,AtomStart,p-AtomStart);
+        for i:=AtomStart to p-1 do begin
+          c:=CCode[i];
+          if not IsIdentChar[c] then
+            c:='_';
+          if not Add(Result,c) then exit;
+        end;
+      end;
+    end;
+  until false;
 end;
 
 procedure TH2PasTool.WriteDebugReport;
