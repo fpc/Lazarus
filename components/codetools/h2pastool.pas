@@ -528,7 +528,7 @@ begin
               dec(ConstantNumber)
             else
               ConstantNumber:=0;
-            ConstantCode:=IntToStr(ConstantNumber-1);
+            ConstantCode:=IntToStr(ConstantNumber);
           end else begin
             ConstantCode:=ConstantCode+'-1';
           end;

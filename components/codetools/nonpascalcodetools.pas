@@ -361,6 +361,7 @@ begin
     if p>0 then exit;
     try
       i:=StrToInt64(s);
+      Result:=true;
     except
     end;
   end;
