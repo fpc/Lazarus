@@ -1775,10 +1775,13 @@ var
   R: TRect;
   Bigger: boolean;
 begin
-  if AValue<0 then Avalue:=-1;
+  if AValue<0 then
+    Avalue:=-1;
+    
   if Avalue<>integer(PtrUInt(FCols[ACol])) then begin
     Bigger := AValue>integer(PtrUInt(FCols[ACol]));
     SetRawColWidths(ACol, Avalue);
+
     if not (csLoading in ComponentState) then begin
 
       if FUpdateCount=0 then begin
@@ -1800,6 +1803,7 @@ begin
         EditorWidthChanged(aCol, aValue);
       ColWidthsChanged;
     end;
+    
   end;
 end;
 
@@ -2052,30 +2056,35 @@ var
   R: TRect;
   Bigger: boolean;
 begin
-  if AValue<0 then AValue:=-1;
+  if AValue<0 then
+    AValue:=-1;
+    
   if AValue<>integer(PtrUInt(FRows[ARow])) then begin
   
     bigger := aValue > RowHeights[aRow];
 
     FRows[ARow]:=Pointer(PtrInt(AValue));
     
-    if FUpdateCount=0 then begin
-      UpdateSizes;
+    if not (csLoading in ComponentState) then begin
+      if FUpdateCount=0 then begin
+        UpdateSizes;
 
-      R := CellRect(0, aRow);
-      R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
-      if bigger then
-        R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
-      else
-        R.Bottom := FGCache.ClientHeight;
-      if aRow=FTopLeft.y then
-        R.Top := FGCache.FixedHeight;
+        R := CellRect(0, aRow);
+        R.Right := FGCache.MaxClientXY.X+GetBorderWidth+1;
+        if bigger then
+          R.Bottom := FGCache.MaxClientXY.Y+GetBorderWidth+1
+        else
+          R.Bottom := FGCache.ClientHeight;
+        if aRow=FTopLeft.y then
+          R.Top := FGCache.FixedHeight;
 
-      InvalidateRect(handle, @R, False);
+        InvalidateRect(handle, @R, False);
+      end;
+
+      if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
+      RowHeightsChanged;
     end;
     
-    if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
-    RowHeightsChanged;
   end;
 end;
 
