@@ -147,7 +147,7 @@ type
   end;
 
   { TGtkWSProgressBar }
-
+  {$IFDEF GTK1}
   TGtkWSProgressBar = class(TWSProgressBar)
   private
   protected
@@ -157,6 +157,7 @@ type
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
+  {$ENDIF}
 
   { TGtkWSCustomUpDown }
 
@@ -244,6 +245,7 @@ const
 
 { TGtkWSProgressBar }
 
+{$IFDEF GTK1}
 class procedure TGtkWSProgressBar.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
@@ -315,6 +317,7 @@ class procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TCustomProgres
 begin
   gtk_progress_set_value(GTK_PROGRESS(Pointer(AProgressBar.Handle)), NewPosition);
 end;
+{$ENDIF GTK1}
 
 { TGtkWSToolbar }
 
@@ -585,9 +588,12 @@ initialization
   RegisterWSComponent(TStatusBar, TGtkWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TGtkWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
+{$IFDEF GTK1}
   RegisterWSComponent(TCustomListView, TGtkWSCustomListView, TGtkPrivateScrolling);
 //  RegisterWSComponent(TCustomListView, TGtkWSListView);
+
   RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
+{$ENDIF}
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);

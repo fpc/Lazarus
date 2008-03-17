@@ -162,10 +162,14 @@ type
 
   { TGtk2WSProgressBar }
 
-  TGtk2WSProgressBar = class(TGtkWSProgressBar)
+  TGtk2WSProgressBar = class(TWSProgressBar)
   private
+    class procedure UpdateProgressBarText(const AProgressBar: TCustomProgressBar); virtual;
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
+    class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
 
   { TGtk2WSCustomUpDown }
@@ -273,6 +277,72 @@ begin
   gtk_range_set_value(Range, Trunc(NewPosition));
 end;
 
+{ TGtk2WSProgressBar }
+
+class procedure TGtk2WSProgressBar.UpdateProgressBarText(const AProgressBar: TCustomProgressBar);
+var
+  wText: String;
+begin
+  with AProgressBar do
+  begin
+    if BarShowText then
+    begin
+       wText := Format('%d from [%d-%d] (%%p%%%%)', [AProgressBar.Position, Min, Max]);
+       gtk_progress_set_format_string (GTK_PROGRESS(Pointer(Handle)), PChar(wText));
+    end;
+    gtk_progress_set_show_text (GTK_PROGRESS(Pointer(Handle)), BarShowText);
+  end;
+end;
+
+class function TGtk2WSProgressBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := gtk_progress_bar_new;
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
+
+  TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
+end;
+
+class procedure TGtk2WSProgressBar.ApplyChanges(
+  const AProgressBar: TCustomProgressBar);
+var
+  wHandle: Pointer;
+  wOrientation: TGtkProgressBarOrientation;
+begin
+  wHandle := Pointer(AProgressBar.Handle);
+  with AProgressBar do
+  begin
+    gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(wHandle),
+                                     TGtkProgressBarStyle(Ord(Smooth = False)));
+                                     // 0 = Smooth
+                                     // 1 = not Smooth :) (AH)
+    case Orientation of
+      pbHorizontal : wOrientation := GTK_PROGRESS_LEFT_TO_RIGHT;
+      pbVertical   : wOrientation := GTK_PROGRESS_BOTTOM_TO_TOP;
+      pbRightToLeft: wOrientation := GTK_PROGRESS_RIGHT_TO_LEFT;
+      pbTopDown    : wOrientation := GTK_PROGRESS_TOP_TO_BOTTOM;
+    end;
+    gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle), wOrientation);
+
+    UpdateProgressBarText(AProgressBar);
+  end;
+end;
+
+class procedure TGtk2WSProgressBar.SetPosition(
+  const AProgressBar: TCustomProgressBar; const NewPosition: integer);
+begin
+  with AProgressBar do
+    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(Pointer(Handle)),
+            (AProgressBar.Position+Abs(Min)) / (Max+Abs(Min)));
+  if AProgressBar.BarShowText then
+      UpdateProgressBarText(AProgressBar);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -286,7 +356,7 @@ initialization
 //  RegisterWSComponent(TCustomPageControl, TGtk2WSPageControl);
   RegisterWSComponent(TCustomListView, TGtk2WSCustomListView);
 //  RegisterWSComponent(TCustomListView, TGtk2WSListView);
-//  RegisterWSComponent(TCustomProgressBar, TGtk2WSProgressBar);
+  RegisterWSComponent(TCustomProgressBar, TGtk2WSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TGtk2WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtk2WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
