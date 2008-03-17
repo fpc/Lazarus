@@ -249,6 +249,17 @@ begin
         CurName:=CTool.ExtractEnumIDName(CNode);
         DebugLn(['TH2PasTool.BuildH2PTree EnumID name="',CurName,'"']);
       end;
+    ccnFunction:
+      begin
+        CurName:=CTool.ExtractFunctionName(CNode);
+        CurType:=CTool.ExtractFunctionType(CNode);
+        SimpleType:=GetSimplePascalTypeOfCVar(CNode);
+        DebugLn(['TH2PasTool.BuildH2PTree Function Name="',CurName,'" Type="',CurType,'" SimpleType=',SimpleType]);
+        if SimpleType='' then begin
+          // this variable has a complex type
+
+        end;
+      end;
     end;
     CNode:=CNode.Next;
   end;

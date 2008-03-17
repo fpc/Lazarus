@@ -59,9 +59,10 @@ const
   ccnTypedef        =  8+ccnBase;// e.g. typedef int TInt;
   ccnStruct         =  9+ccnBase;// e.g. struct{};
   ccnVariable       = 10+ccnBase;// e.g. int i
-  ccnVariableName   = 11+ccnBase;// e.g. i
-  ccnFuncParamList  = 12+ccnBase;// e.g. ()
-  ccnStatementBlock = 13+ccnBase;// e.g. {}
+  ccnFunction       = 11+ccnBase;// e.g. int i
+  ccnName           = 12+ccnBase;// e.g. i
+  ccnFuncParamList  = 13+ccnBase;// e.g. ()
+  ccnStatementBlock = 14+ccnBase;// e.g. {}
 
 type
   TCCodeParserTool = class;
@@ -172,6 +173,9 @@ type
     function ExtractVariableName(VarNode: TCodeTreeNode): string;
     function ExtractVariableType(VarNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
+    function ExtractFunctionName(FuncNode: TCodeTreeNode): string;
+    function ExtractFunctionType(FuncNode: TCodeTreeNode;
+                                 WithDirectives: boolean = false): string;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
     function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
 
@@ -210,7 +214,8 @@ begin
   ccnTypedef       : Result:='typedef';
   ccnStruct        : Result:='struct';
   ccnVariable      : Result:='variable';
-  ccnVariableName  : Result:='variable name';
+  ccnFunction      : Result:='function';
+  ccnName          : Result:='name';
   ccnFuncParamList : Result:='function param list';
   ccnStatementBlock: Result:='statement block';
   else          Result:='?';
@@ -588,11 +593,13 @@ var
   IsFunction: Boolean;
   NeedEnd: Boolean;
   LastIsName: Boolean;
+  MainNode: TCodeTreeNode;
 begin
   {$IFDEF VerboseCCodeParser}
   DebugLn(['TCCodeParserTool.ReadVariable START ',GetAtom]);
   {$ENDIF}
   CreateChildNode(ccnVariable);
+  MainNode:=CurNode;
   IsFunction:=false;
   if AtomIs('struct') then begin
     ReadNextAtom;
@@ -607,6 +614,7 @@ begin
     while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     do begin
       IsFunction:=true;
+      MainNode.Desc:=ccnFunction;
       ReadNextAtom;
       if not AtomIsIdentifier then
         RaiseExpectedButAtomFound('identifier');
@@ -638,9 +646,10 @@ begin
 
   // read name
   ReadNextAtom;
-  CreateChildNode(ccnVariableName);
+  CreateChildNode(ccnName);
   if AtomIs('operator') then begin
     IsFunction:=true;
+    MainNode.Desc:=ccnFunction;
     // read operator
     ReadNextAtom;
     CurNode.StartPos:=AtomStart;
@@ -649,6 +658,8 @@ begin
       RaiseExpectedButAtomFound('operator');
     CurNode.EndPos:=SrcPos;
   end else if AtomIsChar('(') then begin
+    IsFunction:=true;
+    MainNode.Desc:=ccnFunction;
     // example: int (*fp)(char*);
     //   pointer to function taking a char* argument; returns an int
     ReadNextAtom;
@@ -680,6 +691,7 @@ begin
       RaiseExpectedButAtomFound('identifier');
     CurNode.EndPos:=SrcPos;
   end;
+  // end of name
   EndChildNode;
 
   ReadNextAtom;
@@ -688,6 +700,8 @@ begin
   NeedEnd:=true;
   if AtomIsChar('(') then begin
     // this is a function => read parameter list
+    IsFunction:=true;
+    MainNode.Desc:=ccnFunction;
     CreateChildNode(ccnFuncParamList);
     ReadTilBracketClose(true);
     CurNode.EndPos:=SrcPos;
@@ -1151,7 +1165,7 @@ var
   NameNode: TCodeTreeNode;
 begin
   NameNode:=VarNode.FirstChild;
-  if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then
     Result:=''
   else
     Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
@@ -1164,17 +1178,11 @@ var
   s: String;
 begin
   NameNode:=VarNode.FirstChild;
-  if (NameNode=nil) or (NameNode.Desc<>ccnVariableName) then
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then
     Result:=''
   else begin
     Result:=ExtractCode(VarNode.StartPos,NameNode.StartPos,WithDirectives);
     if (NameNode.NextBrother<>nil)
-    and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
-      // this is a function. The name is in between.
-      // The type is result type + parameter list
-      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
-                                 WithDirectives);
-    end else if (NameNode.NextBrother<>nil)
     and (NameNode.NextBrother.Desc=ccnConstant) then begin
       // a variable with an initial value
       // omit the constant
@@ -1184,6 +1192,40 @@ begin
       Result:=Result+s;
     end else begin
       Result:=Result+ExtractCode(NameNode.EndPos,VarNode.EndPos,
+                                 WithDirectives);
+    end;
+  end;
+end;
+
+function TCCodeParserTool.ExtractFunctionName(FuncNode: TCodeTreeNode): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=FuncNode.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then
+    Result:=''
+  else
+    Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
+end;
+
+function TCCodeParserTool.ExtractFunctionType(FuncNode: TCodeTreeNode;
+  WithDirectives: boolean): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=FuncNode.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then
+    Result:=''
+  else begin
+    Result:=ExtractCode(FuncNode.StartPos,NameNode.StartPos,WithDirectives);
+    if (NameNode.NextBrother<>nil)
+    and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
+      // The name is in between.
+      // The type is result type + parameter list
+      Result:=Result+ExtractCode(NameNode.EndPos,NameNode.NextBrother.EndPos,
+                                 WithDirectives);
+    end else begin
+      Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
                                  WithDirectives);
     end;
   end;
