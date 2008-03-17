@@ -1016,7 +1016,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControlCanvas.FreeHandle">
-        <short/>
+        <short>Free the Operating System handle for this control once we have finished using it</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -2750,7 +2750,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlBorderSpacing">
-        <short>TControlBorderSpacing - the spacing around a Control</short>
+        <short>
+          <var>TControlBorderSpacing </var>- the spacing around a Control</short>
         <descr>
           <code>{ TControlBorderSpacing defines the spacing around a control.
 
@@ -2979,13 +2980,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlBorderSpacing.Control">
-        <short/>
+        <short>The control for which border spacing is defined</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControlBorderSpacing.Space">
-        <short/>
+        <short>The kind of anchor to used in calculating spacing</short>
         <descr/>
         <seealso/>
       </element>
@@ -2995,43 +2996,44 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.OnChange">
-        <short/>
+        <short>Event handler for a change in border spacing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.Left">
-        <short/>
+        <short>The size of the space at the left border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.Top">
-        <short/>
+        <short>The size of the space at the top border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.Right">
-        <short/>
+        <short>The size of the space at the right border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.Bottom">
-        <short/>
+        <short>The size of the space at the bottom border</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.Around">
-        <short/>
+        <short>The size of the space all around the control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TAnchorSide">
-        <short>TAnchorSide</short>
+        <short>
+          <var>TAnchorSide</var> - the side on which anchoring is to be performed for the current control</short>
         <descr>
           <pre>TAnchorSide
 
@@ -3198,13 +3200,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TAnchorSide.Control">
-        <short/>
+        <short>The control whose anchoring properties are being determined</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TAnchorSide.Side">
-        <short/>
+        <short>The side on which anchoring is to be performed</short>
         <descr/>
         <seealso/>
       </element>
@@ -3498,11 +3500,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- object Visibility: default -->
       <element name="TControl">
         <short>
-          <i>TControl</i>
+          <var>TControl</var>
  - the main ancestor class for visual controls.</short>
         <descr>
           <p>
-            <i>TControl</i>
+            <var>TControl</var>
 
  is the main ancestor class for all visual controls.</p>
           <p>The definition includes a large number of constants, types and methods that are inherited by derived classes and types.</p>
@@ -4638,22 +4640,22 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoAutoSize">
         <short>
-          <i>DoAutoSize </i>
+          <var>DoAutoSize </var>
 - method for actually performing the AutoSize</short>
         <descr>
           <p>
-            <i>TControl.DoAutoSize</i>
+            <var>TControl.DoAutoSize</var>
           </p>
           <p>IMPORTANT: Many Delphi controls override this method and many call this method directly after setting some properties.</p>
           <p>During handle creation not all interfaces can create complete Device Contexts which are needed to calculate things like text size.</p>
-          <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <i>DoAutoSize</i>.</p>
+          <p>That's why you should always call <link id="#lcl.Controls.TControl.AdjustSize">AdjustSize</link> instead of <var>DoAutoSize</var>.</p>
         </descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.AutoSizeCanStart">
         <short>
-          <i>AutoSizeCanStart</i>
- - checks whether <i>DoAutoSize </i>is permitted to start</short>
+          <var>AutoSizeCanStart</var>
+ - checks whether <var>DoAutoSize </var>is permitted to start</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
   function TControl.AutoSizeCanStart: boolean;
@@ -4761,11 +4763,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CalculatePreferredSize">
         <short>
-          <i>CalculatePreferredSize</i>
+          <var>CalculatePreferredSize</var>
    - find default/preferred height and width</short>
         <descr>
           <p>
-            <i>CalculatePreferredSize</i>
+            <var>CalculatePreferredSize</var>
   - find default/preferred height and width</p>
           <p>procedure TControl.CalculatePreferredSize </p>
           <p>(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);</p>
@@ -4774,11 +4776,11 @@ mrLast=mrYesToAll=10</descr>
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.</p>
           <p>
-            <i>TWinControl</i>
+            <var>TWinControl</var>
  overrides this and asks the interface for theme dependent values.
   See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
-          <p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+          <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passed to the widgetset.</p>
         </descr>
       </element>
@@ -4792,19 +4794,23 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnResize">
-        <short>Calls OnResize</short>
+        <short>Calls <var>OnResize</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DoOnChangeBounds">
-        <short>Calls OnChangeBounds</short>
+        <short>Calls <var>OnChangeBounds</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Resize">
-        <short>Checks for changes and calls DoOnResize</short>
+        <short>Checks for changes and calls <var>DoOnResize</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RequestAlign">
-        <short>Smart calling Parent.AlignControls</short>
+        <short>Smart calling <var>Parent.AlignControls</var>
+        </short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateBaseBounds">
@@ -5481,7 +5487,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DragOver">
-        <short>Drag the control over the source; <i>Accept</i> determines if the dragged object will be accepted</short>
+        <short>Drag the control over the source; <var>Accept</var> determines if the dragged object will be accepted</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5553,23 +5559,23 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
         <short>
-          <i>Click</i>
- - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
+          <var>Click</var>
+ - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <var>Action</var> as that associated with the <var>OnClick</var> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>
-          <i>DblClick</i>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnDblClick</i>  event</short>
+          <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnDblClick</var>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>
-          <i>TripleClick</i>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnTripleClick</i>  event</short>
+          <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnTripleClick</var>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>
-          <i>QuadClick</i>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same <i>Action</i>  as that associated with the <i>OnQuadClick</i>  event</short>
+          <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnQuadClick</var>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
@@ -5719,8 +5725,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.AssignTo">
         <short>
-          <i>AssignTo </i>
-- copies some of its properties to another control (<i>Dest</i>)</short>
+          <var>AssignTo </var>
+- copies some of its properties to another control (<var>Dest</var>)</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AssignTo.Dest">
@@ -5901,8 +5907,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ParentFormHandleInitialized">
         <short>
-          <i>ParentFormHandleInitialized </i>
-- called by <i>ChildHandlesCreated</i> of parent form</short>
+          <var>ParentFormHandleInitialized </var>
+- called by <var>ChildHandlesCreated</var> of parent form</short>
         <descr>
           <p>The form is a real connection to the target screen.</p>
           <p>For example, the gtk under X gathers some screen information, but not before form creation. </p>
@@ -6096,7 +6102,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: protected -->
       <element name="TControl.DragCursor">
         <short>
-          <i>DragCursor </i>
+          <var>DragCursor </var>
 - the style of cursor to be used during the Drag process</short>
       </element>
       <!-- property Visibility: protected -->
@@ -6108,7 +6114,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: protected -->
       <element name="TControl.DragMode">
         <short>
-          <i>DragMode </i>
+          <var>DragMode </var>
 - whether manual or automatic</short>
       </element>
       <!-- property Visibility: protected -->
@@ -6120,19 +6126,19 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentFont">
         <short>
-          <i>ParentFont </i>
+          <var>ParentFont </var>
 - should the control use the same font as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentColor">
         <short>
-          <i>ParentColor</i>
+          <var>ParentColor</var>
  - should the control have the same colour as the parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>
+          <var>ParentShowHint </var>
 - does the control adopt the same hinting behaviour as its parent? Default is true</short>
       </element>
       <!-- property Visibility: protected -->
@@ -6144,13 +6150,13 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: protected -->
       <element name="TControl.Text">
         <short>
-          <i>Text </i>
+          <var>Text </var>
 - the character string in the name or caption of the control</short>
         <descr>
           <p>
-            <i>Text </i>
+            <var>Text </var>
 - the character string in the name or caption of the control</p>
-          <p>But BEWARE: <i>Text</i> is used in another context in editing controls such as <link id="#lcl.StdCtrls.TEdit">TEdit</link> and <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
+          <p>But BEWARE: <var>Text</var> is used in another context in editing controls such as <link id="#lcl.StdCtrls.TEdit">TEdit</link> and <link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>, <link id="#lcl.ExtCtrls.TLabeledEdit">TLabeledEdit</link> and <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link>, where it contains the character string that is being edited in the Edit Box.</p>
         </descr>
       </element>
       <!-- property Visibility: protected -->
@@ -6230,7 +6236,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- variable Visibility: public -->
       <element name="TControl.FCompStyle">
         <short>
-          <i>FCompStyle</i>
+          <var>FCompStyle</var>
  - deprecated</short>
         <descr>
           <pre>// DEPRECATED. Enables (valid) use of 'IN' operator (this
@@ -6243,7 +6249,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.DragDrop">
         <short>
-          <i>DragDrop</i> - Procedure to govern Dragging/Dropping of control</short>
+          <var>DragDrop</var> - Procedure to govern Dragging/Dropping of control</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.DragDrop.Source">
@@ -6260,11 +6266,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.Dock">
         <short>
-          <i>Dock</i>
+          <var>Dock</var>
  - Procedure governing Docking of Control</short>
         <descr>
           <p>
-            <i>Dock</i>
+            <var>Dock</var>
  - Procedure governing Docking of Control</p>
           <p>Performs checks that there is already a valid host control to which the present control is to be docked, removes old controls from the list of docked controls and adds the new control to the list, then calls <link id="#lcl.Controls.TControl.DoDock">DoDock</link> to perform the actual docking process</p>
         </descr>
@@ -6281,7 +6287,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.ManualDock">
         <short>
-          <i>ManualDock</i>
+          <var>ManualDock</var>
  - permits operator-defined docking</short>
         <descr>
           <p>Docks this control to DropControl or on NewDockSite.</p>
@@ -6310,8 +6316,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.ManualFloat">
         <short>
-          <i>ManualFloat</i>
- - the opposite of <i>ManualDock</i>, allows operator to Float a control</short>
+          <var>ManualFloat</var>
+ - the opposite of <var>ManualDock</var>, allows operator to Float a control</short>
         <descr>
           <pre>function TControl.ManualFloat(TheScreenRect: TRect;
     KeepDockSiteSize: Boolean = true): Boolean;
@@ -6372,15 +6378,15 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AdjustSize">
         <short>
-          <i>AdjustSize</i>
- - Smart way to <i>DoAutoSize</i>
+          <var>AdjustSize</var>
+ - Smart way to <var>DoAutoSize</var>
         </short>
         <descr>
           <p>
-            <i>TControl.AdjustSize</i>
- calls <i>DoAutoSize</i> in a smart fashion.</p>
+            <var>TControl.AdjustSize</var>
+ calls <var>DoAutoSize</var> in a smart fashion.</p>
           <p>During loading and handle creation the calls are delayed.</p>
-          <p>This method initially does the same as <i>TWinControl.DoAutoSize</i>.  But since <i>DoAutoSize</i> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <i>AdjustSize</i> instead.</p>
+          <p>This method initially does the same as <var>TWinControl.DoAutoSize</var>.  But since <var>DoAutoSize</var> is commonly overriden by descendant components,  it is not useful to perform all tests, which can result in too much overhead. To reduce this the LCL calls <var>AdjustSize</var> instead.</p>
         </descr>
       </element>
       <!-- function Visibility: public -->
@@ -6394,7 +6400,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToNeighbour">
         <short>
-          <i>AnchorToNeighbour</i>
+          <var>AnchorToNeighbour</var>
  - anchoring instructions</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
@@ -6421,11 +6427,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorParallel">
         <short>
-          <i>AnchorParallel </i>
+          <var>AnchorParallel </var>
 - instructions for anchoring beside another control</short>
         <descr>
           <p>
-            <i>AnchorParallel </i>
+            <var>AnchorParallel </var>
 - instructions for anchoring beside another control</p>
           <p>Sibling - another control beside which the current control is to be anchored</p>
         </descr>
@@ -6445,7 +6451,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorHorizontalCenterTo">
         <short>
-          <i>AnchorHorizontal </i>
+          <var>AnchorHorizontal </var>
 - instructions for anchoring</short>
       </element>
       <!-- argument Visibility: default -->
@@ -6455,7 +6461,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorVerticalCenterTo">
         <short>
-          <i>AnchorVertical </i>
+          <var>AnchorVertical </var>
 - instructions for anchoring</short>
       </element>
       <!-- argument Visibility: default -->
@@ -6536,7 +6542,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Returns default/preferred height and width, to be used in autosizing algorithms</short>
         <descr>
           <p>
-            <i>GetPreferredSize</i>
+            <var>GetPreferredSize</var>
   - find default/preferred height and width</p>
           <pre>procedure TControl.GetPreferredSize 
         (var PreferredWidth, PreferredHeight: integer; 
@@ -6546,10 +6552,10 @@ mrLast=mrYesToAll=10</descr>
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.</p>
           <p>WithThemeSpace: If true, adds space for stacking.</p>
-          <p>For example: <i>TRadioButton</i> has a minimum size. But for stacking multiple TRadioButtons there should be
+          <p>For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be
   some space around. This space is theme dependent, so the parameter is passes to the widgetset</p>
           <p>
-            <i>TWinControl</i>
+            <var>TWinControl</var>
  overrides this and asks the interface for theme dependent values.
   See <link id="#lcl.Controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link> for more information.</p>
         </descr>
@@ -6573,11 +6579,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- constructor Visibility: public -->
       <element name="TControl.Create">
         <short>
-          <i>Create</i>
+          <var>Create</var>
  a new Control - Constructor</short>
         <descr>
           <p>
-            <i>Create</i>
+            <var>Create</var>
  a new Control - Constructor. Overrides constructors of ancestor classes and sets a number of defaults. Often overridden by descendant classes.</p>
         </descr>
         <seealso>
@@ -6591,11 +6597,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- destructor Visibility: public -->
       <element name="TControl.Destroy">
         <short>
-          <i>Destroy</i>
+          <var>Destroy</var>
  the Control when you have finished with it</short>
         <descr>
           <p>
-            <i>Destructor</i>
+            <var>Destructor</var>
  for Control. Detaches control from parents, removes graphics, frees memory and Operating System handles, pointers etc.</p>
           <p>Overrides destructors of ancestor classes, and in turn may be overridden by descendant classes.</p>
         </descr>
@@ -6606,11 +6612,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.EditingDone">
         <short>
-          <i>EditingDone</i>
+          <var>EditingDone</var>
  - what to do when you have finished editing</short>
         <descr>
           <p>
-            <i>TControl.EditingDone</i>
+            <var>TControl.EditingDone</var>
           </p>
           <p>Called when user has finished editing. This procedure can be used by data links to commit the changes.</p>
           <p>For example:</p>
@@ -6638,7 +6644,7 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.BeginDrag">
         <short>
-          <i>BeginDrag </i>
+          <var>BeginDrag </var>
 - starts the dragging of a control</short>
         <descr>
           <pre>{------------------------------------------------------------------------------
@@ -7069,7 +7075,7 @@ mrLast=mrYesToAll=10</descr>
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso>
@@ -7082,7 +7088,7 @@ mrLast=mrYesToAll=10</descr>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso>
@@ -7095,7 +7101,7 @@ mrLast=mrYesToAll=10</descr>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Finds which side is to be used to anchor this control, and what relationships it has to other controls nearby. </p>
-          <p>For complex relationships, use the <i>Side</i> property of the parent class <link id="#lcl.Controls.TAnchorSide">TAnchorSide</link>, and make a reference eg using <i>asrCenter</i>
+          <p>For complex relationships, use the <var>Side</var> property of the parent class <link id="#lcl.Controls.TAnchorSide">TAnchorSide</link>, and make a reference eg using <var>asrCenter</var>
           </p>
         </descr>
         <seealso>
@@ -7135,16 +7141,16 @@ mrLast=mrYesToAll=10</descr>
       <!-- property Visibility: public -->
       <element name="TControl.Caption">
         <short>
-          <i>Caption</i>
+          <var>Caption</var>
  - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
         <seealso>
@@ -7155,7 +7161,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ClientHeight">
         <short>
-          <i>ClientHeight</i>
+          <var>ClientHeight</var>
  - determines the height of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
@@ -7165,7 +7171,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ClientOrigin">
         <short>
-          <i>ClientOrigin </i>
+          <var>ClientOrigin </var>
 - Top left pixel of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
@@ -7175,12 +7181,12 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ClientRect">
         <short>
-          <i>ClientRect </i>
+          <var>ClientRect </var>
 - finds the position of the rectangle for the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>
-            <i>ClientRect </i>
+            <var>ClientRect </var>
 - finds the coordinates of the rectangle for the client within which the control exists (read-only)</p>
         </descr>
         <seealso>
@@ -7190,12 +7196,12 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ClientWidth">
         <short>
-          <i>ClientWidth</i>
+          <var>ClientWidth</var>
  - determines the width of the client within which the control exists</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>
-            <i>ClientWidth</i>
+            <var>ClientWidth</var>
  - determines the width of the client within which the control exists; reads the width of the client control or sets the value. Sets flag if value is stored</p>
         </descr>
       </element>
@@ -7213,10 +7219,10 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso>
           <link id="TSizeConstraints"/>
@@ -7225,7 +7231,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ControlOrigin">
         <short>
-          <i>ControlOrigin</i>
+          <var>ControlOrigin</var>
  - top left pixel of this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
@@ -7238,12 +7244,12 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ControlState">
         <short>
-          <i>ControlState</i>
+          <var>ControlState</var>
  - whether mouse has been clicked, data being read, control being re-drawn, etc</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>
-            <i>ControlState</i>
+            <var>ControlState</var>
  - whether mouse has been clicked, data being read, control being re-drawn, etc. Reads or stores the state of the control.</p>
         </descr>
         <seealso>
@@ -7253,12 +7259,12 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: public -->
       <element name="TControl.ControlStyle">
         <short>
-          <i>ControlStyle</i>
+          <var>ControlStyle</var>
  - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>
-            <i>ControlStyle</i>
+            <var>ControlStyle</var>
  - whether the control responds to mouse clicks, can be re-sized, has particular actions, etc. Reads the stored style, or saves the new style</p>
         </descr>
         <seealso>
@@ -7267,20 +7273,20 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso>
@@ -7314,7 +7320,7 @@ Reads a logical (boolean) flag or sets it to determine whether this object is a 
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -7370,7 +7376,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TControl.Visible">
         <short>
-          <i>Visible</i>
+          <var>Visible</var>
  - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
@@ -7475,37 +7481,37 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: published -->
       <element name="TControl.Left">
         <short>
-          <i>Left</i>
+          <var>Left</var>
  - the coordinate of the left edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Height">
         <short>
-          <i>Height</i>
+          <var>Height</var>
  - the vertical dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Hint">
         <short>
-          <i>Hint</i>
+          <var>Hint</var>
  - a small informative pop-up box that appears when the mouse 'hovers' over a control</short>
         <descr>
           <p>
-            <i>Hint</i>
+            <var>Hint</var>
  - a small informative pop-up box that appears when the mouse 'hovers' over a control</p>
-          <p>Requires <i>ShowHint</i> to be True</p>
+          <p>Requires <var>ShowHint</var> to be True</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Top">
         <short>
-          <i>Top</i>
+          <var>Top</var>
  - the coordinates of the top edge of the control</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.Width">
         <short>
-          <i>Width </i>
+          <var>Width </var>
 - the horizontal dimension of the control</short>
       </element>
       <!-- property Visibility: published -->
@@ -10036,7 +10042,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: protected -->
       <element name="TWinControl.BorderStyle">
         <short>
-          <i>BorderStyle</i>
+          <var>BorderStyle</var>
  - none, or single</short>
       </element>
       <!-- property Visibility: protected -->
@@ -10154,12 +10160,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TWinControl.TabStop">
         <short>
-          <i>TabStop</i>
+          <var>TabStop</var>
  - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -10177,25 +10183,25 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TWinControl.OnEnter">
         <short>
-          <i>OnEnter</i>
+          <var>OnEnter</var>
  - event handler for when the mouse enters the control, and the control receives focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnExit">
         <short>
-          <i>OnExit</i>
+          <var>OnExit</var>
  - event handler for when the mouse leaves the control and it loses focus</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyDown">
         <short>
-          <i>OnKeyDown</i>
+          <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
@@ -10203,19 +10209,19 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>
+          <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -10241,7 +10247,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- property Visibility: public -->
       <element name="TWinControl.OnUnDock">
         <short>
-          <i>OnUnDock</i>
+          <var>OnUnDock</var>
  - event handler for control becoming disconnected (undocked) from parent</short>
       </element>
       <!-- property Visibility: public -->
@@ -10854,17 +10860,17 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       <!-- object Visibility: default -->
       <element name="TGraphicControl">
         <short>
-          <i>TGraphicControl</i>
+          <var>TGraphicControl</var>
  is the base class for all lightweight controls.</short>
         <descr>
           <p>
-            <i>TGraphicControl</i>
+            <var>TGraphicControl</var>
  supports simple lightweight controls that do not 
 need the ability to accept keyboard input or contain other controls. </p>
-          <p>Since lightweight controls do not wrap GUI screen objects, they are faster and use fewer resources than controls based on <i>TWinControl</i>.</p>
+          <p>Since lightweight controls do not wrap GUI screen objects, they are faster and use fewer resources than controls based on <var>TWinControl</var>.</p>
           <p>
-            <i>TGraphicControl</i>
- provides a <i>Canvas</i> property for access to the control's drawing surface and a virtual <i>Paint</i> method called in response to paint requests received by the parent control.</p>
+            <var>TGraphicControl</var>
+ provides a <var>Canvas</var> property for access to the control's drawing surface and a virtual <var>Paint</var> method called in response to paint requests received by the parent control.</p>
         </descr>
         <seealso>
           <link id="TWinControl"/>
@@ -10895,8 +10901,8 @@ need the ability to accept keyboard input or contain other controls. </p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TGraphicControl.Paint">
-        <short>Virtual <i>Paint</i> method called in response to paint requests.</short>
-        <descr>Virtual <i>Paint</i> method called in response to paint requests received by the parent control.</descr>
+        <short>Virtual <var>Paint</var> method called in response to paint requests.</short>
+        <descr>Virtual <var>Paint</var> method called in response to paint requests received by the parent control.</descr>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TGraphicControl.Create">
@@ -10915,11 +10921,11 @@ need the ability to accept keyboard input or contain other controls. </p>
         <short>A clipping window to the parent canvas.</short>
         <descr>
           <p>
-            <i>The TGraphicsControl.Canvas</i>
+            <var>The TGraphicsControl.Canvas</var>
  is a clipping window to the parent canvas.</p>
-          <p>If you ask for the <i>Canvas.Width</i> or <i>Canvas.Height</i>, you are actually 
+          <p>If you ask for the <var>Canvas.Width</var> or <var>Canvas.Height</var>, you are actually 
 getting the parent control's Canvas dimensions.</p>
-          <p>To get the dimensions of the <i>TGraphicControl,</i> you must query the <i>ClientRect</i>.</p>
+          <p>To get the dimensions of the <var>TGraphicControl,</var> you must query the <var>ClientRect</var>.</p>
         </descr>
         <seealso>
           <link id="#lcl.Graphics.TCanvas"/>
@@ -10928,7 +10934,7 @@ getting the parent control's Canvas dimensions.</p>
       <!-- property Visibility: public -->
       <element name="TGraphicControl.OnPaint">
         <short>
-          <i>OnPaint</i>
+          <var>OnPaint</var>
  - event handler for request to paint canvas</short>
       </element>
       <!-- object Visibility: default -->
@@ -11387,7 +11393,7 @@ getting the parent control's Canvas dimensions.</p>
       <!-- property Visibility: public -->
       <element name="TDockZone.VisibleChildCount">
         <short>
-          <i>VisibleChildCount</i> - the number of visible child controls</short>
+          <var>VisibleChildCount</var> - the number of visible child controls</short>
         <descr/>
         <seealso/>
       </element>
@@ -12302,13 +12308,13 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <element name="TControl.BiDiMode">
         <short>
-          <i>TControlBiDiMode</i>
+          <var>TControlBiDiMode</var>
  - enabling bi-directional writing</short>
         <descr>Allows Languages such as Arabic and Hebrew to be used</descr>
       </element>
       <element name="TControl.ParentBiDiMode">
         <short>
-          <i>ParentBiDiMode</i>
+          <var>ParentBiDiMode</var>
  - does the control follow the BiDiMode settings of its parent?</short>
       </element>
       <!-- constant Visibility: default -->
@@ -12715,13 +12721,13 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.AlwaysShowDragImages">
-        <short/>
+        <short>Should the image of dragged objects always be shown?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TDragObject.Control">
-        <short/>
+        <short>The control that is to be dragged</short>
         <descr/>
         <seealso/>
       </element>
@@ -12755,7 +12761,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TDragManager">
-        <short>TDragManager - a class for managing the dragging of controls (eventually to be dropped or docked)</short>
+        <short>
+          <var>TDragManager</var> - a class for managing the dragging of controls (eventually to be dropped or docked)</short>
         <descr>
           <p>The declaration contains a number of procedure definitions that are 'virtual' and 'abstract'. This means that there is no implementation specified: these essentially represent 'place-holders',  and it is the responsibility of the developer of descendant classes to override these methods and implement them as desired.</p>
         </descr>
@@ -13103,7 +13110,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: published -->
       <element name="TControlBorderSpacing.InnerBorder">
-        <short/>
+        <short>The size of the inner border around the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -13337,7 +13344,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetLogicalClientRect">
-        <short>Logical size of client area (e.g. in a TScrollBox the logical client area can be bigger than the visual)</short>
+        <short>Logical size of client area (e.g. in a <var>TScrollBox</var> the logical client area can be bigger than the visual)</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetLogicalClientRect.Result">
@@ -13517,7 +13524,7 @@ getting the parent control's Canvas dimensions.</p>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorToCompanion">
         <short>
-          <i>AnchorToCompanion</i> - anchor to another control, not necessarily an immediate neighbour</short>
+          <var>AnchorToCompanion</var> - anchor to another control, not necessarily an immediate neighbour</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchorToCompanion.Side">
@@ -13715,7 +13722,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.ActiveDefaultControlChanged">
-        <short>The active default control has changed to <i>NewControl</i>
+        <short>The active default control has changed to <var>NewControl</var>
         </short>
         <descr/>
         <errors/>
