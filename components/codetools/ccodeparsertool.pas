@@ -220,7 +220,7 @@ begin
   ccnName          : Result:='name';
   ccnFuncParamList : Result:='function param list';
   ccnStatementBlock: Result:='statement block';
-  else          Result:='?';
+  else          Result:='?('+IntToStr(Desc)+')';
   end;
 end;
 

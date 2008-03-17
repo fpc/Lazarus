@@ -105,11 +105,12 @@ type
     function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
     function ConvertSimpleCTypeToPascalType(CType: string): string;
     
-    function CreateH2PNode(const PascalName: string; CNode: TCodeTreeNode;
+    function CreateH2PNode(const PascalName, CName: string; CNode: TCodeTreeNode;
        PascalDesc: TCodeTreeNodeDesc; ParentNode: TH2PNode = nil;
        IsGlobal: boolean = true): TH2PNode;
 
     procedure WriteDebugReport;
+    procedure WriteH2PNodeReport;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
@@ -238,18 +239,15 @@ end;
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
 begin
   Result:=false;
-  
-  CTool:=TCCodeParserTool.Create;
-  try
-    // pare C header file
-    CTool.Parse(CCode);
-    //CTool.WriteDebugReport;
 
-    BuildH2PTree;
-  finally
-    CTool.Free;
-  end;
-  
+  if CTool=nil then
+    CTool:=TCCodeParserTool.Create;
+  // pare C header file
+  CTool.Parse(CCode);
+  //CTool.WriteDebugReport;
+
+  BuildH2PTree;
+
   Result:=true;
 end;
 
@@ -259,6 +257,7 @@ var
   CurName: String;
   CurType: String;
   SimpleType: String;
+  H2PNode: TH2PNode;
 begin
   Tree.Clear;
   CNode:=CTool.Tree.Root;
@@ -275,7 +274,9 @@ begin
           //SimpleType:=CreateTypeForVarType(CNode);
         end;
         if SimpleType<>'' then begin
-        
+          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition);
+          H2PNode.PascalCode:=SimpleType;
+          //DebugLn(['TH2PasTool.BuildH2PTree CNode.Desc=',CCNodeDescAsString(CNode.Desc),' ',H2PNode.DescAsString]);
         end;
       end;
     ccnEnumBlock:
@@ -376,12 +377,13 @@ begin
   Result:=PredefinedCTypes[CType];
 end;
 
-function TH2PasTool.CreateH2PNode(const PascalName: string;
+function TH2PasTool.CreateH2PNode(const PascalName, CName: string;
   CNode: TCodeTreeNode; PascalDesc: TCodeTreeNodeDesc; ParentNode: TH2PNode;
   IsGlobal: boolean): TH2PNode;
 begin
   Result:=TH2PNode.Create;
   Result.PascalName:=PascalName;
+  Result.CName:=CName;
   Result.CNode:=CNode;
   Result.PascalDesc:=PascalDesc;
   Tree.AddNodeAsLastChild(ParentNode,Result);
@@ -396,6 +398,24 @@ begin
   DebugLn(['TH2PasTool.WriteDebugReport ']);
   if CTool<>nil then
     CTool.WriteDebugReport;
+  WriteH2PNodeReport;
+end;
+
+procedure TH2PasTool.WriteH2PNodeReport;
+var
+  Node: TH2PNode;
+begin
+  if (Tree=nil) then begin
+    DebugLn(['TH2PasTool.WriteH2PNodeReport Tree=nil']);
+  end else if (Tree.Root=nil) then begin
+    DebugLn(['TH2PasTool.WriteH2PNodeReport Tree.Root=nil']);
+  end else begin
+    Node:=Tree.Root;
+    while Node<>nil do begin
+      DebugLn([GetIndentStr(Node.GetLevel*2),Node.DescAsString]);
+      Node:=Node.Next;
+    end;
+  end;
 end;
 
 constructor TH2PasTool.Create;
@@ -413,6 +433,7 @@ begin
   FreeAndNil(Tree);
   FreeAndNil(FPascalNames);
   FreeAndNil(FCNames);
+  FreeAndNil(CTool);
   inherited Destroy;
 end;
 
@@ -491,12 +512,15 @@ end;
 function TH2PNode.DescAsString: string;
 begin
   Result:='PascalName="'+PascalName+'"';
+  if PascalName<>CName then
+    Result:=Result+' CName="'+CName+'"';
   Result:=Result+' PascalDesc='+NodeDescriptionAsString(PascalDesc);
   if CNode<>nil then begin
-    Result:=Result+' CNode='+CNode.DescAsString;
+    Result:=Result+' CNode='+CCNodeDescAsString(CNode.Desc);
   end else begin
     Result:=Result+' CNode=nil';
   end;
+  Result:=Result+' PascalCode="'+dbgstr(PascalCode)+'"';
 end;
 
 procedure TH2PNode.ConsistencyCheck;

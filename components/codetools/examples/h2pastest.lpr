@@ -63,7 +63,8 @@ begin
 
     Tool:=TH2PasTool.Create;
     Tool.Convert(CCode,PasCode);
-    Tool.WriteDebugReport;
+    //Tool.WriteDebugReport;
+    Tool.WriteH2PNodeReport;
     Tool.Free;
   except
     on E: ECCodeParserException do begin
