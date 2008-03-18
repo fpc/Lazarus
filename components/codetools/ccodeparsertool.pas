@@ -210,9 +210,9 @@ begin
   ccnNone          : Result:='None';
   ccnRoot          : Result:='Root';
   ccnDirective     : Result:='Directive';
-  ccnExtern        : Result:='extern block';
-  ccnEnumBlock     : Result:='enum block';
-  ccnEnumID        : Result:='enum ID';
+  ccnExtern        : Result:='extern-block';
+  ccnEnumBlock     : Result:='enum-block';
+  ccnEnumID        : Result:='enum-ID';
   ccnConstant      : Result:='constant';
   ccnTypedef       : Result:='typedef';
   ccnStruct        : Result:='struct';
@@ -220,8 +220,8 @@ begin
   ccnVariable      : Result:='variable';
   ccnFunction      : Result:='function';
   ccnName          : Result:='name';
-  ccnFuncParamList : Result:='function param list';
-  ccnStatementBlock: Result:='statement block';
+  ccnFuncParamList : Result:='function-param-list';
+  ccnStatementBlock: Result:='statement-block';
   else          Result:='?('+IntToStr(Desc)+')';
   end;
 end;
