@@ -284,9 +284,10 @@ type
   protected
     function CheckCount: Boolean; override;
     function GetCurrent: TCallStackEntry; override;
-    function GetStackEntry(AIndex: Integer): TCallStackEntry; override;
+    function InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
     procedure SetCurrent(AValue: TCallStackEntry); override;
   public
+    procedure PrepareRange(AIndex, ACount: Integer); override;
     property Master: TDBGCallStack read FMaster write SetMaster;
   end;
 
@@ -365,7 +366,7 @@ begin
   else Result := Master.Current;
 end;
 
-function TManagedCallStack.GetStackEntry(AIndex: Integer): TCallStackEntry;
+function TManagedCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
 begin
   Assert(FMaster <> nil);
   
@@ -377,6 +378,13 @@ begin
   if Master = nil then Exit;
 
   Master.Current := AValue;
+end;
+
+procedure TManagedCallStack.PrepareRange(AIndex, ACount: Integer);
+begin
+  if FMaster <> nil
+  then FMaster.PrepareRange(AIndex, ACount)
+  else inherited PrepareRange(AIndex, ACount);
 end;
 
 procedure TManagedCallStack.SetMaster(AMaster: TDBGCallStack);

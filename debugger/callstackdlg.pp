@@ -157,7 +157,7 @@ var
   n: Integer;
   Item: TListItem;
   Entry: TCallStackEntry;
-  First, Last  : Integer;
+  First, Count: Integer;
 begin
   BeginUpdate;
   try
@@ -168,17 +168,18 @@ begin
       exit;
     end;
 
-    First:= FViewStart;
-    Last := First + FViewLimit;
-    if Last > CallStack.Count - 1 then Last := CallStack.Count-1;
+    First := FViewStart;
+    if First + FViewLimit <= CallStack.Count
+    then Count := FViewLimit
+    else Count := CallStack.Count - First;
 
     // Reuse entries, so add and remove only
     // Remove unneded
-    for n := lvCallStack.Items.Count - 1 downto Last - First + 1 do
+    for n := lvCallStack.Items.Count - 1 downto Count do
       lvCallStack.Items.Delete(n);
 
     // Add needed
-    for n := lvCallStack.Items.Count to Last - First do
+    for n := lvCallStack.Items.Count to Count - 1 do
     begin
       Item := lvCallStack.Items.Add;
       Item.SubItems.Add('');
@@ -187,7 +188,8 @@ begin
       Item.SubItems.Add('');
     end;
 
-    for n := 0 to Last - First do
+    CallStack.PrepareRange(First, Count);
+    for n := 0 to Count - 1 do
     begin
       Item := lvCallStack.Items[n];
       Entry := CallStack.Entries[First + n];
@@ -331,7 +333,7 @@ end;
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);
 begin
   if CallStack <> nil
-  then SetViewStart(CallStack.Count - 1 - FViewLimit)
+  then SetViewStart(CallStack.Count - FViewLimit)
   else SetViewStart(0);
 end;
 
@@ -359,9 +361,9 @@ procedure TCallStackDlg.SetViewStart(AStart: Integer);
 begin
   if CallStack = nil then Exit;
   
-  if (AStart > CallStack.Count - 1 - FViewLimit)
-  then AStart:= CallStack.Count - 1 - FViewLimit;
-  if AStart < 0 then AStart:= 0;
+  if (AStart > CallStack.Count - FViewLimit)
+  then AStart := CallStack.Count - FViewLimit;
+  if AStart < 0 then AStart := 0;
   if FViewStart = AStart then Exit;
   
   FViewStart:= AStart;
@@ -404,10 +406,10 @@ procedure TCallStackDlg.SetViewLimit(const AValue: Integer);
 begin
   if FViewLimit = AValue then Exit;
   if (CallStack <> nil)
-  and (FViewStart + FViewLimit >= CallStack.Count - 1)
+  and (FViewStart + FViewLimit >= CallStack.Count)
   and (AValue > FViewLimit)
   then begin
-    FViewStart := CallStack.Count - 1 - AValue;
+    FViewStart := CallStack.Count - AValue;
     if FViewStart < 0 then FViewStart := 0;
   end;
   FViewLimit := AValue;

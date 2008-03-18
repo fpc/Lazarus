@@ -223,6 +223,7 @@ type
 
     function Find(const AName : string): PGDBMINameValue;
     function GetItem(const AIndex: Integer): PGDBMINameValue;
+    function GetString(const AIndex: Integer): string;
     function GetValue(const AName : string): string;
   public
     constructor Create(const AResultValues: String);
@@ -312,10 +313,12 @@ type
 
   TGDBMICallStack = class(TDBGCallStack)
   private
+    function InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo: TGDBMINameValueList): TCallStackEntry;
   protected
     function CheckCount: Boolean; override;
     function CreateStackEntry(AIndex: Integer): TCallStackEntry; override;
-    
+    procedure PrepareEntries(AIndex, ACount: Integer); override;
+
     function GetCurrent: TCallStackEntry; override;
     procedure SetCurrent(AValue: TCallStackEntry); override;
   public
@@ -412,6 +415,26 @@ begin
   if AIndex < 0 then Exit(nil);
   if AIndex >= FCount then Exit(nil);
   Result := @FIndex[AIndex];
+end;
+
+function TGDBMINameValueList.GetString(const AIndex : Integer) : string;
+var
+  len: Integer;
+  item: PGDBMINameValue;
+begin
+  Result := '';
+  if (AIndex < 0) or (AIndex >= FCount) then Exit;
+  item := @FIndex[AIndex];
+  if item = nil then Exit;
+
+  len := Item^.NameLen;
+  if Item^.ValuePtr <> nil then begin
+    if (Item^.ValuePtr-1) = '"' then inc(len, 2);
+    len := len + 1 + Item^.ValueLen;
+  end;
+
+  SetLength(Result, len);
+  Move(Item^.NamePtr^, Result[1], len);
 end;
 
 function TGDBMINameValueList.GetValue(const AName: string): string;
@@ -513,7 +536,7 @@ begin
   if ALength <= 0 then Exit;
   EndPtr := AResultValues + ALength - 1;
 
-  // strip surrounding '[]' and '{}' first
+  // strip surrounding '[]' OR '{}' first
   case AResultValues^ of
     '[': begin
       if EndPtr^ = ']'
@@ -582,7 +605,6 @@ begin
     Init(Item^.ValuePtr, Item^.ValueLen);
   end;
 end;
-
 
 
 { =========================================================================== }
@@ -2922,61 +2944,80 @@ begin
   SetCount(cnt);
 end;
 
+function TGDBMICallStack.InternalCreateEntry(AIndex: Integer; AArgInfo, AFrameInfo : TGDBMINameValueList) : TCallStackEntry;
+var
+  n, e: Integer;
+  Arguments: TStringList;
+  List: TGDBMINameValueList;
+  Arg: PGDBMINameValue;
+  addr: TDbgPtr;
+  func, filename, line : String;
+begin
+  Arguments := TStringList.Create;
+
+  if (AArgInfo <> nil) and (AArgInfo.Count > 0)
+  then begin
+    List := TGDBMINameValueList.Create('');
+    for n := 0 to AArgInfo.Count - 1 do
+    begin
+      Arg := AArgInfo.Items[n];
+      List.Init(Arg^.NamePtr, Arg^.NameLen);
+      Arguments.Add(List.Values['name'] + '=' + DeleteEscapeChars(List.Values['value']));
+    end;
+    FreeAndNil(List);
+  end;
+
+  addr := 0;
+  func := '';
+  filename := '';
+  line := '';
+  if AFrameInfo <> nil
+  then begin
+    Val(AFrameInfo.Values['addr'], addr, e);
+    func := AFrameInfo.Values['func'];
+    filename := AFrameInfo.Values['file'];
+    line := AFrameInfo.Values['line'];
+  end;
+
+  Result := TCallStackEntry.Create(
+    AIndex,
+    addr,
+    Arguments,
+    func,
+    filename,
+    StrToIntDef(line, 0)
+  );
+
+  Arguments.Free;
+end;
+
 function TGDBMICallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
 var                 
-  n, e: Integer;
   R: TGDBMIExecResult;
-  addr: TDbgPtr;
-  Arguments: TStringList;
-  ArgList, List: TGDBMINameValueList;
-  Arg: PGDBMINameValue;
+  ArgList, FrameList: TGDBMINameValueList;
 begin
   if Debugger = nil then Exit;
 
-  Arguments := TStringList.Create;
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
                                           [AIndex], [cfIgnoreError], R);
   // TODO: check what to display on error
 
   if R.State <> dsError
-  then begin
-    ArgList := TGDBMINameValueList.Create(R, ['stack-args', 'frame', 'args']);
+  then ArgList := TGDBMINameValueList.Create(R, ['stack-args', 'frame', 'args'])
+  else ArgList := nil;
 
-    if ArgList.Count > 0
-    then begin
-      List := TGDBMINameValueList.Create('');
-      for n := 0 to ArgList.Count - 1 do
-      begin
-        Arg := ArgList.Items[n];
-        List.Init(Arg^.NamePtr, Arg^.NameLen);
-        Arguments.Add(List.Values['name'] + '=' + DeleteEscapeChars(List.Values['value']));
-      end;
-      FreeAndNil(List);
-    end;
-    FreeAndNil(ArgList);
-  end;
   
   TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %0:d %0:d',
                                           [AIndex], [cfIgnoreError], R);
-  if R.State <> dsError
-  then begin
-    List := TGDBMINameValueList.Create(R, ['stack', 'frame']);
-    addr := 0;
-    Val(List.Values['addr'], addr, e);
-    if e=0 then ;
-    Result := TCallStackEntry.Create(
-      AIndex,
-      addr,
-      Arguments,
-      List.Values['func'],
-      List.Values['file'],
-      StrToIntDef(List.Values['line'], 0)
-    );
 
-    FreeAndNil(List);
-  end;
-  
-  Arguments.Free;
+  if R.State <> dsError
+  then FrameList := TGDBMINameValueList.Create(R, ['stack', 'frame'])
+  else FrameList := nil;
+
+  Result := InternalCreateEntry(AIndex, ArgList, FrameList);
+
+  FreeAndNil(ArgList);
+  FreeAndNil(FrameList);
 end;
 
 function TGDBMICallStack.GetCurrent: TCallStackEntry;
@@ -2987,6 +3028,89 @@ begin
   if (idx < 0) or (idx >= Count)
   then Result := nil
   else Result := Entries[idx];
+end;
+
+procedure TGDBMICallStack.PrepareEntries(AIndex, ACount: Integer);
+type
+  TGDBMINameValueListArray = array of TGDBMINameValueList;
+
+
+  procedure PrepareArgs(var ADest: TGDBMINameValueListArray; AStart, AStop: Integer;
+                        const ACmd, APath1, APath2: String);
+  var
+    R: TGDBMIExecResult;
+    i, lvl : Integer;
+    ResultList, SubList: TGDBMINameValueList;
+  begin
+    TGDBMIDebugger(Debugger).ExecuteCommand(ACmd, [AStart, AStop], [cfIgnoreError], R);
+
+    if R.State = dsError
+    then begin
+      i := AStop - AStart;
+      case i of
+        0   : exit;
+        1..5: begin
+          while i >= 0 do
+          begin
+            PrepareArgs(ADest, AStart+i, AStart+i, ACmd, APath1, APath2);
+            dec(i);
+          end;
+        end;
+      else
+        i := i div 2;
+        PrepareArgs(ADest, AStart, AStart+i, ACmd, APath1, APath2);
+        PrepareArgs(ADest, AStart+i+1, AStop, ACmd, APath1, APath2);
+      end;
+    end;
+
+    ResultList := TGDBMINameValueList.Create(R, [APath1]);
+    for i := 0 to ResultList.Count - 1 do
+    begin
+      SubList := TGDBMINameValueList.Create(ResultList.GetString(i), ['frame']);
+      lvl := StrToIntDef(SubList.Values['level'], -1);
+      if (lvl >= AStart) and (lvl <= AStop)
+      then begin
+        if APath2 <> ''
+        then SubList.SetPath(APath2);
+        ADest[lvl-AIndex] := SubList;
+      end
+      else SubList.Free;
+    end;
+    ResultList.Free;
+  end;
+
+  procedure FreeList(var AList: TGDBMINameValueListArray);
+  var
+    i : Integer;
+  begin
+    for i := low(AList) to high(AList) do
+      AList[i].Free;
+  end;
+
+var
+  Args, Frames: TGDBMINameValueListArray;
+  i, idx, endidx: Integer;
+begin
+  if Debugger = nil then Exit;
+  if ACount <= 0 then exit;
+
+
+  endidx := AIndex + ACount - 1;
+  SetLength(Args, ACount);
+  PrepareArgs(Args, AIndex, endidx, '-stack-list-arguments 1 %d %d', 'stack-args', 'args');
+
+  SetLength(Frames, ACount);
+  PrepareArgs(Frames, AIndex, endidx, '-stack-list-frames %d %d', 'stack', '');
+
+  idx := 0;
+  for i := AIndex to endidx do
+  begin
+    InternalSetEntry(i, InternalCreateEntry(i, Args[idx], Frames[idx]));
+    inc(idx);
+  end;
+
+  FreeList(Args);
+  FreeList(Frames);
 end;
 
 procedure TGDBMICallStack.SetCurrent(AValue: TCallStackEntry);

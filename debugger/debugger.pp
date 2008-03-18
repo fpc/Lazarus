@@ -683,22 +683,20 @@ type
 
   TBaseCallStack = class(TObject)
   private
-    FEntries: TMap; // list of created entries
     FCount: Integer;
     function IndexError(AIndex: Integer): TCallStackEntry;
     function GetEntry(AIndex: Integer): TCallStackEntry;
   protected
     function CheckCount: Boolean; virtual;
-    procedure Clear;
-    function CreateStackEntry(AIndex: Integer): TCallStackEntry; virtual;
+    procedure Clear; virtual;
     function GetCurrent: TCallStackEntry; virtual;
-    function GetStackEntry(AIndex: Integer): TCallStackEntry; virtual;
+    function InternalGetEntry(AIndex: Integer): TCallStackEntry; virtual;
     procedure SetCurrent(AValue: TCallStackEntry); virtual;
     procedure SetCount(ACount: Integer); virtual;
   public
     function Count: Integer;
-    constructor Create;
     destructor Destroy; override;
+    procedure PrepareRange(AIndex, ACount: Integer); virtual;
     property Current: TCallStackEntry read GetCurrent write SetCurrent;
     property Entries[AIndex: Integer]: TCallStackEntry read GetEntry;
   end;
@@ -735,19 +733,27 @@ type
   TDBGCallStack = class(TBaseCallStack)
   private
     FDebugger: TDebugger;  // reference to our debugger
+    FEntries: TMap;        // list of created entries
     FOldState: TDBGState;
     FOnChange: TNotifyEvent;
     FOnClear: TNotifyEvent;
     FOnCurrent: TNotifyEvent;
   protected
+    function  CreateStackEntry(AIndex: Integer): TCallStackEntry; virtual;
     procedure CurrentChanged;
     procedure Changed;
-    function CheckCount: Boolean; override;
+    function  CheckCount: Boolean; override;
+    procedure Clear; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
+    function  InternalGetEntry(AIndex: Integer): TCallStackEntry; override;
+    procedure InternalSetEntry(AIndex: Integer; AEntry: TCallStackEntry);
+    procedure PrepareEntries(AStartIndex, AEndIndex: Integer); virtual;
     property Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger);
+    destructor Destroy; override;
   public
+    procedure PrepareRange(AIndex, ACount: Integer); override;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnClear: TNotifyEvent read FOnClear write FOnClear;
     property OnCurrent: TNotifyEvent read FOnCurrent write FOnCurrent;
@@ -3100,23 +3106,8 @@ begin
 end;
 
 procedure TBaseCallStack.Clear;
-var
-  Iterator: TMapIterator;
 begin
-  Iterator:= TMapIterator.Create(FEntries);
-  while not Iterator.EOM do
-  begin
-    TObject(Iterator.DataPtr^).Free;
-    Iterator.Next;
-  end;
-  Iterator.Free;
-  FEntries.Clear;
   FCount := -1;
-end;
-
-function TBaseCallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
-begin
-  Result := nil;
 end;
 
 function TBaseCallStack.Count: Integer;
@@ -3126,16 +3117,9 @@ begin
   else Result := FCount;
 end;
 
-constructor TBaseCallStack.Create;
-begin
-  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
-  inherited Create;
-end;
-
 destructor TBaseCallStack.Destroy;
 begin
   Clear;
-  FreeAndNil(FEntries);
   inherited Destroy;
 end;
 
@@ -3149,26 +3133,22 @@ begin
   if (AIndex < 0)
   or (AIndex >= Count) then IndexError(Aindex);
 
-  Result := GetStackEntry(AIndex);
-end;
-
-function TBaseCallStack.GetStackEntry(AIndex: Integer): TCallStackEntry;
-begin
-  if (AIndex < 0)
-  or (AIndex >= Count) then IndexError(AIndex);
-
-  if FEntries.GetData(AIndex, Result) then Exit;
-
-  Result := CreateStackEntry(AIndex);
-  if Result = nil then Exit;
-  FEntries.Add(AIndex, Result);
-  Result.FOwner := Self;
+  Result := InternalGetEntry(AIndex);
 end;
 
 function TBaseCallStack.IndexError(AIndex: Integer): TCallStackEntry;
 begin
   Result:=nil;
   raise EInvalidOperation.CreateFmt('Index out of range (%d)', [AIndex]);
+end;
+
+function TBaseCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
+begin
+  Result := nil;
+end;
+
+procedure TBaseCallStack.PrepareRange(AIndex, ACount: Integer);
+begin
 end;
 
 procedure TBaseCallStack.SetCount(ACount: Integer);
@@ -3264,16 +3244,44 @@ begin
   if Result then SetCount(0);
 end;
 
+procedure TDBGCallStack.Clear;
+var
+  Iterator: TMapIterator;
+begin
+  Iterator:= TMapIterator.Create(FEntries);
+  while not Iterator.EOM do
+  begin
+    TObject(Iterator.DataPtr^).Free;
+    Iterator.Next;
+  end;
+  Iterator.Free;
+  FEntries.Clear;
+
+  inherited Clear;
+end;
+
 constructor TDBGCallStack.Create(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger;
   FOldState := FDebugger.State;
+  FEntries:= TMap.Create(its4, SizeOf(TCallStackEntry));
   inherited Create;
+end;
+
+function TDBGCallStack.CreateStackEntry(AIndex: Integer): TCallStackEntry;
+begin
+  Result := nil;
 end;
 
 procedure TDBGCallStack.CurrentChanged;
 begin
   if Assigned(FOnCurrent) then FOnCurrent(Self);
+end;
+
+destructor TDBGCallStack.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FEntries);
 end;
 
 procedure TDBGCallStack.DoStateChange(const AOldState: TDBGState);
@@ -3291,6 +3299,62 @@ begin
   end;          
 end;
 
+function TDBGCallStack.InternalGetEntry(AIndex: Integer): TCallStackEntry;
+begin
+  if FEntries.GetData(AIndex, Result) then Exit;
+
+  Result := CreateStackEntry(AIndex);
+  if Result = nil then Exit;
+  FEntries.Add(AIndex, Result);
+  Result.FOwner := Self;
+end;
+
+procedure TDBGCallStack.InternalSetEntry(AIndex: Integer; AEntry: TCallStackEntry);
+var
+  Dummy: TCallStackEntry;
+begin
+  if FEntries.GetData(AIndex, Dummy) then Exit;
+  AEntry.FOwner := Self;
+  FEntries.Add(AIndex, AEntry);
+end;
+
+procedure TDBGCallStack.PrepareEntries(AStartIndex, AEndIndex: Integer);
+begin
+end;
+
+procedure TDBGCallStack.PrepareRange(AIndex, ACount: Integer);
+var
+  It: TMapIterator;
+  EndIndex: Integer;
+begin
+  It := TMapIterator.Create(FEntries);
+
+  if It.Locate(AIndex)
+  then repeat
+    // start searching for the first unavailable
+    Inc(AIndex);
+    Dec(ACount);
+    It.Next;
+  until It.EOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> AIndex);
+
+
+  if ACount > 1
+  then begin
+    EndIndex := AIndex + ACount - 1;
+    if It.Locate(EndIndex)
+    then repeat
+      // start searching for the last unavailable
+      Dec(EndIndex);
+      Dec(ACount);
+      It.Previous;
+    until It.BOM or (ACount <= 0) or (TCallStackEntry(It.DataPtr^).Index <> EndIndex);
+  end;
+
+  It.Free;
+
+  if ACount <= 0 then Exit;
+  PrepareEntries(AIndex, ACount);
+end;
 
 (******************************************************************************)
 (******************************************************************************)
