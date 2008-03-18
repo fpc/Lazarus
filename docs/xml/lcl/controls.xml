@@ -3212,14 +3212,19 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TControlActionLink">
-        <short/>
-        <descr/>
+        <short>
+          <var>TControlActionLink</var> - links the current control to an action</short>
+        <descr>
+          <p>
+            <var>TControlActionLink</var> - links the current control to an action</p>
+          <p>Defines a number of protected methods (inherited from <link id="#lcl.ActnList.TActionLink">TActionLink</link>) for checking which parts of the control are linked to the action</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
       <!-- variable Visibility: protected -->
       <element name="TControlActionLink.FClient">
-        <short/>
+        <short>Identifies the client control that is to be linked to the action</short>
         <descr/>
         <seealso/>
       </element>
@@ -4962,7 +4967,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.GetChildsRect">
-        <short>Gets the rectangular coordinates for a child control</short>
+        <short>Gets the rectangular co-ordinates for a child control</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.GetChildsRect.Result">
@@ -5791,7 +5796,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: protected -->
       <element name="TControl.RealGetText">
         <short>Function to get a text-string associated with the control</short>
-        <descr>This is the function that is actually used by GetTextBuf, and loads a string rather than performing read-write to a PChar buffer</descr>
+        <descr>This is the function that is actually used by <var>GetTextBuf</var>, and loads a string rather than performing read-write to a <var>PChar</var> buffer
+</descr>
         <seealso>
           <link id="TControl.GetTextBuf">GetTextBuf</link>
           <link id="TControl.RealSetText">RealSetText</link>
@@ -5805,7 +5811,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.RealSetText">
         <short>Procedure to store text associated with the control in a string</short>
-        <descr>This is the procedure that is actually used by SetTextBuf, and stores text as a string rather than performing read-write to a PChar buffer</descr>
+        <descr>This is the procedure that is actually used by <var>SetTextBuf,</var> and stores text as a string rather than performing read-write to a <var>PChar</var> buffer
+</descr>
         <seealso>
           <link id="TControl.SetTextBuf">SetTextBuf</link>
           <link id="TControl.RealGetText">RealGetText</link>
@@ -6107,7 +6114,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TControl.DragKind">
-        <short>DragKind - what sort of dragging? Drag or Dock</short>
+        <short>
+          <var>DragKind</var> - what sort of dragging? Drag or Dock</short>
         <descr/>
         <seealso/>
       </element>
@@ -6492,7 +6500,8 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetInitialBounds">
         <short>Sets the bounds of the control initially, when it is created</short>
-        <descr>Checks that this is a new control, <br/>then calls SetBounds to set up coordinates defining its position</descr>
+        <descr>Checks that this is a new control, then calls SetBounds to set up coordinates defining its position
+</descr>
         <seealso>
           <link id="TControl.SetBounds">SetBounds</link>
         </seealso>
@@ -6547,7 +6556,7 @@ mrLast=mrYesToAll=10</descr>
           <pre>procedure TControl.GetPreferredSize 
         (var PreferredWidth, PreferredHeight: integer; 
           WithThemeSpace: Boolean);</pre>
-          <p>Returns the default/preferred width and height for a control, which is used
+          <p>Returns the default/preferred width and height for a control, which are used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.</p>
@@ -6574,7 +6583,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.InvalidatePreferredSize">
-        <short>Render tne preferred size no longer valid (implies that we will look for another)</short>
+        <short>Render the preferred size no longer valid (implies that we will look for another)</short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TControl.Create">
@@ -6702,6 +6711,11 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.IsParentOf">
         <short>This control is the parent of another control</short>
+        <descr>
+          <p>This control is the parent of another control.</p>
+          <p>AControl: the control of which this is a parent.</p>
+          <p>Result: true if this is a parent</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.IsParentOf.Result">
@@ -6714,6 +6728,10 @@ mrLast=mrYesToAll=10</descr>
       <!-- function Visibility: public -->
       <element name="TControl.IsVisible">
         <short>The control is visible on the current desktop</short>
+        <descr>
+          <p>The control is visible on the current desktop</p>
+          <p>Checks parents too</p>
+        </descr>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.IsVisible.Result">
@@ -6884,7 +6902,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ScreenToClient">
-        <short>Adjust from Screen coodrinates to Client-relative coordinates</short>
+        <short>Adjust from Screen co-ordinates to Client-relative co-ordinates</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ScreenToClient.Result">
@@ -6896,7 +6914,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ClientToScreen">
-        <short>Convert from Client coordinates to Screen coordinates</short>
+        <short>Convert from Client co-ordinates to Screen co-ordinates</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ClientToScreen.Result">
@@ -6908,7 +6926,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ScreenToControl">
-        <short>Adjust from Screen coordinates to Control-relative coordinates</short>
+        <short>Adjust from Screen co-ordinates to Control-relative co-ordinates</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ScreenToControl.Result">
@@ -6920,7 +6938,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.ControlToScreen">
-        <short>Convert from control-relative coordinates to absolute screen coordinates</short>
+        <short>Convert from control-relative co-ordinates to absolute screen co-ordinates</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TControl.ControlToScreen.Result">
@@ -7402,13 +7420,14 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.DockOrientation">
-        <short/>
+        <short>
+          <var>DockOrientation</var> - whether docking is oriented horizontally, vertically, according to pages or not at all</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.Floating">
-        <short/>
+        <short>Whether the control is <var>Floating</var> (as opposed to Docked)</short>
         <descr/>
         <seealso/>
       </element>
@@ -7420,31 +7439,36 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.HostDockSite">
-        <short/>
+        <short>
+          <var>HostDockSite</var> - the host site to which this control is docked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.LRDockWidth">
-        <short/>
+        <short>
+          <var>LRDockWidth</var> - the docked width from left to right</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.TBDockHeight">
-        <short/>
+        <short>
+          <var>TBDockHeight </var>- the docked height from top to bottom</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.UndockHeight">
-        <short/>
+        <short>
+          <var>UndockHeight</var> - the height of the undocked control</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.UndockWidth">
-        <short/>
+        <short>
+          <var>UnDockWidth</var> - the undocked width of the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -7468,7 +7492,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: published -->
       <element name="TControl.AnchorSideBottom">
-        <short/>
+        <short>Anchors to the bottom</short>
         <descr/>
         <seealso/>
       </element>
@@ -8680,7 +8704,7 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.ContainsControl">
-        <short/>
+        <short>This component contains a specified control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9557,7 +9581,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyDown">
-        <short/>
+        <short>
+          <var>KeyDown</var> - emulate the action of pressing the specified key (makes <var>OnKeyDown</var> respond)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9613,7 +9638,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.KeyUp">
-        <short/>
+        <short>
+          <var>KeyUp</var> - emulates the action of a key being released (makes <var>OnKeyUp</var> respond)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9718,7 +9744,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: protected -->
       <element name="TWinControl.GetChildsRect">
-        <short/>
+        <short>
+          <var>GetChildsRect</var> - find the size of any child component</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9910,7 +9937,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TWinControl.ReAlign">
-        <short/>
+        <short>
+          <var>ReAlign</var> - realign all children</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10095,11 +10123,12 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Controls">
-        <short>Finds which controls are located in this window</short>
+        <short>The indexed list of controls found in this window</short>
         <descr>// properties which are supported by all descendants
 <br/>
 
- Reads values from a flag; Index is a number signifying which control, from a list</descr>
+ Reads values from a flag; Index is a number signifying which control, from a list
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.Controls.Index">
@@ -10117,8 +10146,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.DockClients">
-        <short>The dock clients of this window</short>
-        <descr>Reads a flag to find the actual dock client controls</descr>
+        <short>The indexed list of dock clients of this window</short>
+        <descr>Reads a flag to find the actual dock client controls
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TWinControl.DockClients.Index">
@@ -10144,8 +10174,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.Handle">
-        <short>Handle for identifying and manipulating this window</short>
-        <descr>Reads from or writes handle to flag</descr>
+        <short>Operating System Handle for identifying and manipulating this window</short>
+        <descr>Reads from or writes handle to flag
+</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TWinControl.IsResizing">
@@ -10328,7 +10359,9 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlAtPos">
-        <short/>
+        <short>
+          <var>ControlAtPos</var> - the identity of the control located at the specified point <var>Pos</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10397,14 +10430,16 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DoAdjustClientRectChange">
-        <short/>
+        <short>
+          <var>DoAdjustClientRectChange</var> - perform any adjustments needed when the client rectangle changes</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.InvalidateClientRectCache">
-        <short/>
+        <short>
+          <var>InvalidateClientRectCache</var> - render invalid any information in the client rectangle cache</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10415,7 +10450,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ClientRectNeedsInterfaceUpdate">
-        <short/>
+        <short>
+          <var>ClientRectNeedsInterfaceUpdate</var> - True if update needed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10426,7 +10462,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetBounds">
-        <short/>
+        <short>
+          <var>SetBounds</var> - set the bounds (top. left, height, width) for the window</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10490,7 +10527,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DockDrop">
-        <short/>
+        <short>
+          <var>DockDrop</var> - drop a dragged object into its docking position</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10509,7 +10547,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.CanFocus">
-        <short/>
+        <short>
+          <var>CanFocus</var> -  is the current window allowed to receive focus?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10520,7 +10559,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.GetControlIndex">
-        <short/>
+        <short>
+          <var>GetControlIndex</var> - find the index value for the given control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10535,7 +10575,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetControlIndex">
-        <short/>
+        <short>
+          <var>SetControlIndex</var> - set a new index value for the given control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10550,7 +10591,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.Focused">
-        <short/>
+        <short>
+          <var>Focused</var> - is the current window receiving focus?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10561,7 +10603,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.PerformTab">
-        <short/>
+        <short>
+          <var>PerformTab</var> - perform a tab - is it in the forward direction?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10576,7 +10619,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.ControlByName">
-        <short/>
+        <short>
+          <var>ControlByName</var> - returns the identity of a control whose name is given as an argument</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10591,7 +10635,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SelectNext">
-        <short/>
+        <short>
+          <var>SelectNext</var> - move to the next windowed control and give it focus</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10610,7 +10655,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.BroadCast">
-        <short/>
+        <short>
+          <var>BroadCast</var> - send <var>ToAllMessage</var> to all recipients</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10621,7 +10667,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.NotifyControls">
-        <short/>
+        <short>
+          <var>NotifyControls</var> - send <var>Msg </var>(a message) to all controls</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10643,14 +10690,16 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.DisableAlign">
-        <short/>
+        <short>
+          <var>DisableAlign</var> - turn off any alignment</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.EnableAlign">
-        <short/>
+        <short>
+          <var>EnableAlign</var> - turn on the alignment process</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10675,7 +10724,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.InsertControl">
-        <short/>
+        <short>
+          <var>InsertControl</var> - insert the specified control into the list, optionally with the specified index</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10701,7 +10751,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.RemoveControl">
-        <short/>
+        <short>
+          <var>RemoveControl</var> - remove the specified control from the list</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10756,14 +10807,16 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetFocus">
-        <short/>
+        <short>
+          <var>SetFocus</var> - give the current control the focus</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.FindChildControl">
-        <short/>
+        <short>
+          <var>FindChildControl</var> - find what controls are descended from the current one</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10789,7 +10842,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.GetTabOrderList">
-        <short/>
+        <short>
+          <var>GetTabOrderList</var> - find the list with the Tab Order</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10800,7 +10854,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.HandleAllocated">
-        <short/>
+        <short>
+          <var>HandleAllocated</var> - find if the operating system has allocated a handle to this control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10811,14 +10866,16 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.HandleNeeded">
-        <short/>
+        <short>
+          <var>HandleNeeded</var> - tell the Operating System that this control requires a handle</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.BrushCreated">
-        <short/>
+        <short>
+          <var>BrushCreated</var> - has a brush been created for this control?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10829,7 +10886,8 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.EraseBackground">
-        <short/>
+        <short>
+          <var>EraseBackground</var> - remove all material from the background</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10939,8 +10997,10 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomControl">
-        <short>TCustomControl - a base class for many window controls</short>
-        <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border</descr>
+        <short>
+          <var>TCustomControl </var>- a base class for many window controls</short>
+        <descr>Contains simple basic definitions to create, destroy and paint window controls and set basic properties like canvas and border
+</descr>
         <seealso>
           <link id="TWinControl"/>
           <link id="TControl"/>
@@ -13304,7 +13364,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.ForeignAnchorSideChanged">
-        <short>Procedure invoked when the anchor side is changed of a different (not the current) control</short>
+        <short>Procedure invoked when the anchor side of a different control (not the current) is changed</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.ForeignAnchorSideChanged.TheAnchorSide">
@@ -13332,7 +13392,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.CheckOnChangeBounds">
-        <short>Checks for changes and calls DoOnChangeBounds</short>
+        <short>Checks for changes and calls <var>DoOnChangeBounds</var>
+        </short>
       </element>
       <!-- function Visibility: protected -->
       <element name="TControl.IsAParentAligning">
@@ -13664,7 +13725,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.EnableAutoSizing">
-        <short/>
+        <short>Turns on (enables) automatic sizing</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13689,7 +13750,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.GetTopParent">
-        <short/>
+        <short>Find which control is the top parent (ie ultimate ancestor)</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13700,8 +13761,11 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsControlVisible">
-        <short/>
-        <descr/>
+        <short>Is the control visible on the current desktop?</short>
+        <descr>
+          <p>Is the control visible on the current desktop?</p>
+          <p>Does not check parents</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -13711,7 +13775,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.FormIsUpdating">
-        <short/>
+        <short>True if the form is being updated</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13815,7 +13879,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.CaptureMouseButtons">
-        <short/>
+        <short>Which mouse button(s) to be used for capture? Default left button, but may be a set of up to three</short>
         <descr/>
         <seealso/>
       </element>
@@ -13888,8 +13952,10 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftAlignment">
-        <short/>
-        <descr/>
+        <short>
+          <var>UseRightToLeftAlignment</var> - as opposed to usual left to right</short>
+        <descr>Needs <var>BiDiMode</var> enabled
+</descr>
         <errors/>
         <seealso/>
       </element>
@@ -13899,8 +13965,9 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftReading">
-        <short/>
-        <descr/>
+        <short>
+          <var>UseRightToLeftReading </var>- as opposed to usual left to right</short>
+        <descr>Needs <var>BiDiMode</var> enabled</descr>
         <errors/>
         <seealso/>
       </element>
@@ -13910,8 +13977,9 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.UseRightToLeftScrollBar">
-        <short/>
-        <descr/>
+        <short>
+          <var>UseRightToLeftScrollBar</var> - as opposed to usual left to right</short>
+        <descr>Needs <var>BiDiMode</var> enabled</descr>
         <errors/>
         <seealso/>
       </element>
@@ -13921,8 +13989,9 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.IsRightToLeft">
-        <short/>
-        <descr/>
+        <short>
+          <var>IsRightToLeft</var> - as opposed to usual left to right</short>
+        <descr>Needs <var>BiDiMode</var> enabled</descr>
         <errors/>
         <seealso/>
       </element>
@@ -14342,7 +14411,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetTempCursor">
-        <short/>
+        <short>
+          <var>SetTempCursor</var> - set a temporary cursor</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14353,14 +14423,16 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.AddControl">
-        <short/>
+        <short>
+          <var>AddControl</var> - add this control to the list of controls</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- function Visibility: public -->
       <element name="TWinControl.GetDockCaption">
-        <short/>
+        <short>
+          <var>GetDockCaption</var> - get the caption for the specified docked control</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14379,7 +14451,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.PaintTo">
-        <short/>
+        <short>
+          <var>PaintTo</var> - Paint to a specified position on the canvas</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -14402,7 +14475,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TWinControl.SetShape">
-        <short/>
+        <short>
+          <var>SetShape</var> - make the specified shape appear on the Window</short>
         <descr/>
         <errors/>
         <seealso/>
