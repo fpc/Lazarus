@@ -62,7 +62,8 @@ const
   ccnFunction       = 11+ccnBase;// e.g. int i()
   ccnName           = 12+ccnBase;// e.g. i
   ccnFuncParamList  = 13+ccnBase;// e.g. ()
-  ccnStatementBlock = 14+ccnBase;// e.g. {}
+  ccnFuncParameter  = 14+ccnBase;// e.g. ()
+  ccnStatementBlock = 15+ccnBase;// e.g. {}
 
 type
   TCCodeParserTool = class;
@@ -97,6 +98,7 @@ type
     procedure CloseNodes;
     
     procedure ReadVariable;
+    procedure ReadParameterList;
     procedure ReadEnum;
     procedure ReadStruct;
     procedure ReadUnion;
@@ -180,6 +182,7 @@ type
                                  WithDirectives: boolean = false): string;
     function ExtractFunctionResultType(FuncNode: TCodeTreeNode;
                                        WithDirectives: boolean = false): string;
+    function IsPointerToFunction(FuncNode: TCodeTreeNode): boolean;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
     function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
     function ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
@@ -224,6 +227,7 @@ begin
   ccnFunction      : Result:='function';
   ccnName          : Result:='name';
   ccnFuncParamList : Result:='function-param-list';
+  ccnFuncParameter : Result:='function-parameter';
   ccnStatementBlock: Result:='statement-block';
   else          Result:='?('+IntToStr(Desc)+')';
   end;
@@ -752,28 +756,25 @@ begin
     // this is a function => read parameter list
     IsFunction:=true;
     MainNode.Desc:=ccnFunction;
-    CreateChildNode(ccnFuncParamList);
-    ReadTilBracketClose(true);
-    CurNode.EndPos:=SrcPos;
-    EndChildNode;
+    ReadParameterList;
+    ReadNextAtom;
     if CurNode.Parent.Desc=ccnTypedef then begin
       if AtomIsChar('{') then
         RaiseException('typedef can not have a statement block');
     end else begin
-      ReadNextAtom;
       if AtomIsChar('{') then begin
         // read statements {}
         CreateChildNode(ccnStatementBlock);
         ReadTilBracketClose(true);
         CurNode.EndPos:=SrcPos;
         EndChildNode;
+        ReadNextAtom;
       end else if not AtomIsChar(';') then begin
         // functions without statements are external and must end with a semicolon
         RaiseExpectedButAtomFound(';');
       end;
       NeedEnd:=false;
     end;
-    ReadNextAtom;
   end else if AtomIsChar('[') then begin
     // read array brackets
     while AtomIsChar('[') do begin
@@ -799,6 +800,40 @@ begin
     
   UndoReadNextAtom;
 
+  EndChildNode;
+end;
+
+procedure TCCodeParserTool.ReadParameterList;
+// start on (, end on )
+var
+  StartPos: LongInt;
+begin
+  CreateChildNode(ccnFuncParamList);
+  StartPos:=AtomStart;
+  repeat
+    ReadNextAtom;
+    if AtomStart>SrcLen then begin
+      // missing closing bracket
+      AtomStart:=StartPos;
+      SrcPos:=AtomStart+1;
+      RaiseException('closing bracket not found');
+    end;
+    if AtomIs(')') then break;
+    if AtomIs(',') then
+      RaiseExpectedButAtomFound('parameter type');
+    // read parameter
+    CreateChildNode(ccnFuncParameter);
+    repeat
+      if AtomStart>SrcLen then break;
+      if AtomIs('(') or AtomIs('[') then
+        ReadTilBracketClose(true);
+      if AtomIs(',') or AtomIs(')') then break;
+      CurNode.EndPos:=SrcPos;
+      ReadNextAtom;
+    until false;
+    EndChildNode;
+  until AtomIs(')');
+  CurNode.EndPos:=SrcPos;
   EndChildNode;
 end;
 
@@ -1318,6 +1353,29 @@ begin
     Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
                                WithDirectives);
   end;
+end;
+
+function TCCodeParserTool.IsPointerToFunction(FuncNode: TCodeTreeNode
+  ): boolean;
+// for example: int *(*fp)();
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=FuncNode.FirstChild;
+  if (NameNode=nil) or (NameNode.Desc<>ccnName) then exit(false);
+  MoveCursorToNode(FuncNode);
+  repeat
+    ReadNextAtom;
+    if AtomStart>SrcLen then exit;
+    if AtomIs('(') then exit(true);
+    if (IsIdentStartChar[Src[AtomStart]])
+    or (AtomIs('*')) then begin
+      // skip words and *
+    end else begin
+      break;
+    end;
+  until AtomStart>=NameNode.StartPos;
+  Result:=false;
 end;
 
 function TCCodeParserTool.ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode
