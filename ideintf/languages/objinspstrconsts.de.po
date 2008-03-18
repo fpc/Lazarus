@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-12 21:29+0100\n"
+"PO-Revision-Date: 2008-03-18 12:04+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -273,7 +273,7 @@ msgstr "Komponentenname %s%s%s ist kein gültiger Bezeichner"
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr "Komponenten-Einschränkungen:"
+msgstr "Bedingte Komponenteneigenschaften"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -477,7 +477,7 @@ msgstr "Schriftauswahl"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr "Allgem. Einschränk. durch d. Widget-Set:"
+msgstr "Allgem. Beschränkungen durch d. Widget-Set:"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -749,7 +749,7 @@ msgstr "Von Favoriten entfernen"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr "Einschränkungen"
+msgstr "Bedingte Eigenschaften"
 
 #: objinspstrconsts:rscdright
 msgid "Right"

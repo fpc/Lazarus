@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-12 21:28+0100\n"
+"PO-Revision-Date: 2008-03-18 12:02+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,7 +26,7 @@ msgstr " Es gibt bereits ein Token %s%s%s!"
 
 #: lazarusidestrconsts:srkmalreadyconnected
 msgid " The key \"%s\" is already connected to \"%s\"."
-msgstr " Der Taste \"%s\" ist bereits die Funktion \"%s\" zugewiesen."
+msgstr " Der Taste \"%s\" ist bereits \"%s\" zugewiesen."
 
 #: lazarusidestrconsts:srkmconflicw
 msgid " conflicts with "
@@ -2694,7 +2694,7 @@ msgstr "Niederländisch"
 
 #: lazarusidestrconsts:liswlenableall
 msgid "E&nable All"
-msgstr "Alle &Einschalten"
+msgstr "Alle &einschalten"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
@@ -3222,7 +3222,7 @@ msgstr "Dateieigenschaften"
 
 #: lazarusidestrconsts:lisfilesettings
 msgid "File Settings ..."
-msgstr ""
+msgstr "Dateieinstellungen ..."
 
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
@@ -3622,7 +3622,7 @@ msgstr "Position ermitteln"
 
 #: lazarusidestrconsts:lispldglobal
 msgid "Global"
-msgstr ""
+msgstr "Allgemein"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -5374,7 +5374,7 @@ msgstr "Editor ganz nach rechts verschieben"
 
 #: lazarusidestrconsts:lismovepage
 msgid "Move Page ..."
-msgstr ""
+msgstr "Seite verschieben ..."
 
 #: lazarusidestrconsts:lismenueditormoveup
 msgid "Move Up (or left)"
@@ -5870,7 +5870,7 @@ msgstr "Öffne Diff im Editor"
 
 #: lazarusidestrconsts:lisopenfile2
 msgid "Open File ..."
-msgstr ""
+msgstr "Datei öffnen ..."
 
 #: lazarusidestrconsts:liscpopenpackage
 msgid "Open Package %s"
@@ -7046,7 +7046,7 @@ msgstr "Fenstergröße wiederherstellen"
 
 #: lazarusidestrconsts:lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
-msgstr "Browser für Einschränkungen"
+msgstr "Browser für bedingte Eigenschaften"
 
 #: lazarusidestrconsts:dlgccoresults
 msgid "Results"
@@ -10170,7 +10170,7 @@ msgstr "Projektunits anzeigen"
 
 #: lazarusidestrconsts:srkmectogglerestrictionbrowser
 msgid "View restriction browser"
-msgstr "Browser für Einschränkungen anzeigen"
+msgstr "Browser für bedingte Eigenschaften anzeigen"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
