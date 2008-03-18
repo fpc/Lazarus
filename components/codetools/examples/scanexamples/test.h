@@ -18,6 +18,11 @@ extern "C" {
 #define constant 1
 #define macro1 1
 
+// empty macro
+#define MPI_FILE_DEFINED
+// null pointer
+#define MPI_BOTTOM      (void *)0
+ 
 /* An anonymous enum */
 enum {
         TEST_ENUM1 = 1, /* Enum starts at 1 */
