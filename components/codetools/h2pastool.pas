@@ -314,8 +314,10 @@ begin
       if CNode.FirstChild<>nil then begin
         CurName:=CTool.ExtractTypedefName(CNode);
         DebugLn(['TH2PasTool.BuildH2PTree Typedef name="',CurName,'"']);
-        case CNode.FirstChild.Desc of
-        ccnStruct:
+        ChildNode:=CNode.FirstChild;
+        case ChildNode.Desc of
+        
+        ccnStruct: // typedef struct
           begin
             ChildNode:=CNode.FirstChild.FirstChild;
             if (ChildNode<>nil)
@@ -333,11 +335,33 @@ begin
                 BuildH2PTree(TypeH2PNode,ChildNode);
             end;
           end;
-        ccnVariable:
+          
+        ccnFunction: // typedef function
           begin
-
+            CurName:=CTool.ExtractFunctionName(ChildNode);
+            CurType:=CTool.ExtractFunctionResultType(ChildNode,false,false);
+            IsPointerToFunction:=CTool.IsPointerToFunction(ChildNode);
+            SimpleType:=GetSimplePascalResultTypeOfCFunction(ChildNode);
+            if IsPointerToFunction and (SimpleType='') then begin
+              // this function has a complex result type
+              TypeH2PNode:=GetH2PNodeForComplexType(ChildNode);
+              if TypeH2PNode<>nil then
+                SimpleType:=TypeH2PNode.PascalName;
+            end;
+            if IsPointerToFunction and (SimpleType<>'') then begin
+              H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedureType,SimpleType,
+                                     nil,true);
+              DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString]);
+              // build recursively
+              if ChildNode.FirstChild<>nil then
+                BuildH2PTree(H2PNode,ChildNode.FirstChild);
+            end else begin
+              DebugLn(['TH2PasTool.BuildH2PTree typdef function CurName=',CurName,' CurType=',CTool.ExtractFunctionResultType(ChildNode),' SimpleType=',SimpleType]);
+              DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(ChildNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+            end;
           end;
-        else
+          
+        else // typedef
           DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(CNode.FirstChild.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
         end;
       end;
@@ -418,7 +442,7 @@ begin
         
         if Ok then begin
           H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
-                                 nil,ParentNode=nil);
+                                 nil,false);
           DebugLn(['TH2PasTool.BuildH2PTree function added: ',H2PNode.DescAsString]);
           // build recursively
           BuildH2PTree(H2PNode);
@@ -528,7 +552,7 @@ end;
 function TH2PasTool.GetSimplePascalResultTypeOfCFunction(
   CFuncNode: TCodeTreeNode): string;
 begin
-  Result:=CTool.ExtractFunctionResultType(CFuncNode);
+  Result:=CTool.ExtractFunctionResultType(CFuncNode,false,false);
   if Result='' then exit;
   Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;

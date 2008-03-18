@@ -182,7 +182,8 @@ type
     function ExtractFunctionType(FuncNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
     function ExtractFunctionResultType(FuncNode: TCodeTreeNode;
-                                       WithDirectives: boolean = false): string;
+                                       WithDirectives: boolean = false;
+                                       WithBrackets: boolean = true): string;
     function IsPointerToFunction(FuncNode: TCodeTreeNode): boolean;
     function ExtractParameterName(ParamNode: TCodeTreeNode): string;
     function ExtractParameterType(ParamNode: TCodeTreeNode;
@@ -1384,9 +1385,11 @@ begin
 end;
 
 function TCCodeParserTool.ExtractFunctionResultType(FuncNode: TCodeTreeNode;
-  WithDirectives: boolean): string;
+  WithDirectives: boolean; WithBrackets: boolean): string;
 var
   NameNode: TCodeTreeNode;
+  p: Integer;
+  CurAtomStart: integer;
 begin
   NameNode:=GetFirstNameNode(FuncNode);
   if (NameNode=nil) then begin
@@ -1413,6 +1416,22 @@ begin
   end else begin
     Result:=Result+ExtractCode(NameNode.EndPos,FuncNode.EndPos,
                                WithDirectives);
+  end;
+  
+  if not WithBrackets then begin
+    p:=1;
+    repeat
+      ReadRawNextCAtom(Result,p,CurAtomStart);
+      if CurAtomStart>length(Result) then break;
+      if Result[CurAtomStart]='(' then begin
+        p:=CurAtomStart;
+        if ReadTilCBracketClose(Result,p) then begin
+          Result:=copy(Result,1,CurAtomStart-1)
+                 +copy(Result,p,length(Result));
+        end;
+        break;
+      end;
+    until false;
   end;
 end;
 
@@ -1553,9 +1572,13 @@ begin
   Node:=TypedefNode.LastChild;
   while (Node<>nil) and (Node.Desc<>ccnName) do
     Node:=Node.PriorBrother;
-  if Node=nil then
-    Result:=''
-  else
+  if Node=nil then begin
+    if (TypedefNode.FirstChild<>nil)
+    and (TypedefNode.FirstChild.Desc=ccnFunction) then
+      Result:=ExtractFunctionName(TypedefNode.FirstChild)
+    else
+      Result:='';
+  end else
     Result:=GetIdentifier(@Src[Node.StartPos]);
 end;
 

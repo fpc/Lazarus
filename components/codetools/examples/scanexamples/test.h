@@ -118,7 +118,7 @@ struct struct1 {
         void *data;
 };
 
-typedef void(*sdp_list_func_t)(void *, void *);
+typedef void(*procedure_type)(void *, void *);
 
 complex operator+(complex, complex);
 
