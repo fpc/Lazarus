@@ -107,7 +107,7 @@ struct hidp_connlist_req {
 #define SDP_ATTR_SVCNAME_PRIMARY        0x0000 + SDP_PRIMARY_LANG_BASE
 
 typedef struct {
-        uint8_t type;
+        uint8_t type; // invalid pascal name
         union {
                 uint16_t  uuid16;
                 uint32_t  uuid32;

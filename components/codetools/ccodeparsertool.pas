@@ -191,6 +191,7 @@ type
     function ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
                                 WithDirectives: boolean = false): string;
     function ExtractStructName(StructNode: TCodeTreeNode): string;
+    function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -517,11 +518,15 @@ begin
     ReadNextAtom;
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
+    CreateChildNode(ccnName);
+    EndChildNode;
   end else if AtomIs('enum') then begin
     ReadEnum;
     ReadNextAtom;
     if not AtomIsIdentifier then
       RaiseExpectedButAtomFound('identifier');
+    CreateChildNode(ccnName);
+    EndChildNode;
   end else if SrcPos>SrcLen then
     RaiseException('missing declaration')
   else
@@ -1522,6 +1527,20 @@ begin
     Result:=GetIdentifier(@Src[NameNode.StartPos])
   else
     Result:='';
+end;
+
+function TCCodeParserTool.ExtractTypedefName(TypedefNode: TCodeTreeNode
+  ): string;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=TypedefNode.LastChild;
+  while (Node<>nil) and (Node.Desc<>ccnName) do
+    Node:=Node.PriorBrother;
+  if Node=nil then
+    Result:=''
+  else
+    Result:=GetIdentifier(@Src[Node.StartPos]);
 end;
 
 function TCCodeParserTool.GetAtom: string;
