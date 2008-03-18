@@ -183,6 +183,9 @@ type
     function ExtractFunctionResultType(FuncNode: TCodeTreeNode;
                                        WithDirectives: boolean = false): string;
     function IsPointerToFunction(FuncNode: TCodeTreeNode): boolean;
+    function ExtractParameterName(ParamNode: TCodeTreeNode): string;
+    function ExtractParameterType(ParamNode: TCodeTreeNode;
+                                  WithDirectives: boolean = false): string;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
     function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
     function ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
@@ -605,8 +608,9 @@ begin
 end;
 
 procedure TCCodeParserTool.ReadConstant;
+// ends on last atom of constant
 begin
-  if AtomIsChar(',') or AtomIsChar(';') then
+  if AtomIsChar(',') or AtomIsChar(';') or AtomIsChar(')') then
     RaiseExpectedButAtomFound('identifier');
   CreateChildNode(ccnConstant);
   repeat
@@ -820,8 +824,8 @@ begin
       SrcPos:=AtomStart+1;
       RaiseException('closing bracket not found');
     end;
-    if AtomIs(')') then break;
-    if AtomIs(',') then
+    if AtomIsChar(')') then break;
+    if AtomIsChar(',') then
       RaiseExpectedButAtomFound('parameter type');
     // read parameter
     CreateChildNode(ccnFuncParameter);
@@ -833,12 +837,12 @@ begin
     NamePos:=0;
     repeat
       if AtomStart>SrcLen then break;
-      if AtomIs(')') then begin
+      if AtomIsChar(')') then begin
         // end of parameter list
         break;
       end else if AtomIs('[') then
         ReadTilBracketClose(true)
-      else if AtomIs(',') then
+      else if AtomIsChar(',') then
         break
       else if IsIdentStartChar[Src[AtomStart]] then begin
         if NamePos>0 then
@@ -869,12 +873,17 @@ begin
             EndChildNode;
           end;
         end;
+      end else if AtomIsChar('=') then begin
+        if TypePos<1 then
+          RaiseExpectedButAtomFound('type');
+        ReadNextAtom;
+        ReadConstant;
       end;
       CurNode.EndPos:=SrcPos;
       ReadNextAtom;
     until false;
     EndChildNode;
-  until AtomIs(')');
+  until AtomIsChar(')');
   CurNode.EndPos:=SrcPos;
   EndChildNode;
 end;
@@ -1320,7 +1329,7 @@ begin
       // a variable with an initial value
       // omit the constant
       s:=ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
-                                 WithDirectives);
+                     WithDirectives);
       s:=copy(s,1,length(s)-1);
       Result:=Result+s;
     end else begin
@@ -1418,6 +1427,57 @@ begin
     end;
   until AtomStart>=NameNode.StartPos;
   Result:=false;
+end;
+
+function TCCodeParserTool.ExtractParameterName(ParamNode: TCodeTreeNode
+  ): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=GetFirstNameNode(ParamNode);
+  if (NameNode=nil) then
+    Result:=''
+  else
+    Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
+end;
+
+function TCCodeParserTool.ExtractParameterType(ParamNode: TCodeTreeNode;
+  WithDirectives: boolean): string;
+var
+  NameNode: TCodeTreeNode;
+  s: String;
+  ConstantNode: TCodeTreeNode;
+begin
+  NameNode:=GetFirstNameNode(ParamNode);
+  if (ParamNode.LastChild<>nil)
+  and (ParamNode.LastChild.Desc=ccnConstant) then
+    ConstantNode:=ParamNode.LastChild
+  else
+    ConstantNode:=nil;
+  if (NameNode=nil) then begin
+    if ConstantNode<>nil then begin
+      // a parameter with an initial value
+      // omit the constant
+      Result:=ExtractCode(ParamNode.StartPos,ConstantNode.StartPos,WithDirectives);
+      Result:=copy(Result,1,length(Result)-1);
+    end else begin
+      Result:=ExtractCode(ParamNode.StartPos,ParamNode.EndPos,WithDirectives);
+    end;
+  end else begin
+    Result:=ExtractCode(ParamNode.StartPos,NameNode.StartPos,WithDirectives);
+    if (NameNode.NextBrother<>nil)
+    and (NameNode.NextBrother.Desc=ccnConstant) then begin
+      // a parameter with an initial value
+      // omit the constant
+      s:=ExtractCode(NameNode.EndPos,NameNode.NextBrother.StartPos,
+                     WithDirectives);
+      s:=copy(s,1,length(s)-1);
+      Result:=Result+s;
+    end else begin
+      Result:=Result+ExtractCode(NameNode.EndPos,ParamNode.EndPos,
+                                 WithDirectives);
+    end;
+  end;
 end;
 
 function TCCodeParserTool.ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode
