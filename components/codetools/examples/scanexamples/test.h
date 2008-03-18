@@ -112,9 +112,9 @@ typedef struct {
 
 #define SDP_IS_UUID(x) ((x) == SDP_UUID16 || (x) == SDP_UUID32 || (x) ==SDP_UUID128)
 
-typedef struct _sdp_list sdp_list_t;
-struct _sdp_list {
-        sdp_list_t *next;
+typedef struct struct1 struct2;
+struct struct1 {
+        struct2 *next;
         void *data;
 };
 

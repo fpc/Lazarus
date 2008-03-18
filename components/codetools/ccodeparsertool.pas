@@ -57,13 +57,14 @@ const
   ccnConstant       =  6+ccnBase;// e.g. 1
   ccnTypedef        =  7+ccnBase;// e.g. typedef int TInt;
   ccnStruct         =  8+ccnBase;// e.g. struct{}
-  ccnUnion          =  9+ccnBase;// e.g. union{}
-  ccnVariable       = 10+ccnBase;// e.g. int i
-  ccnFunction       = 11+ccnBase;// e.g. int i()
-  ccnName           = 12+ccnBase;// e.g. i
-  ccnFuncParamList  = 13+ccnBase;// e.g. ()
-  ccnFuncParameter  = 14+ccnBase;// e.g. ()
-  ccnStatementBlock = 15+ccnBase;// e.g. {}
+  ccnStructAlias    =  9+ccnBase;// e.g. struct name
+  ccnUnion          = 10+ccnBase;// e.g. union{}
+  ccnVariable       = 11+ccnBase;// e.g. int i
+  ccnFunction       = 12+ccnBase;// e.g. int i()
+  ccnName           = 13+ccnBase;// e.g. i
+  ccnFuncParamList  = 14+ccnBase;// e.g. ()
+  ccnFuncParameter  = 15+ccnBase;// e.g. ()
+  ccnStatementBlock = 16+ccnBase;// e.g. {}
 
 type
   TCCodeParserTool = class;
@@ -227,6 +228,7 @@ begin
   ccnConstant      : Result:='constant';
   ccnTypedef       : Result:='typedef';
   ccnStruct        : Result:='struct';
+  ccnStructAlias   : Result:='struct-alias';
   ccnUnion         : Result:='union';
   ccnVariable      : Result:='variable';
   ccnFunction      : Result:='function';
@@ -454,6 +456,8 @@ begin
     end;
   end else if AtomIsIdentifier then begin
     // using another struct
+    CreateChildNode(ccnStructAlias);
+    EndChildNode;
   end else
     RaiseExpectedButAtomFound('{');
 
