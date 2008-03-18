@@ -807,6 +807,8 @@ procedure TCCodeParserTool.ReadParameterList;
 // start on (, end on )
 var
   StartPos: LongInt;
+  TypePos: Integer;
+  NamePos: Integer;
 begin
   CreateChildNode(ccnFuncParamList);
   StartPos:=AtomStart;
@@ -823,11 +825,51 @@ begin
       RaiseExpectedButAtomFound('parameter type');
     // read parameter
     CreateChildNode(ccnFuncParameter);
+    // examples:
+    //   a           a is the type
+    //   a b         a is type, b is name
+    //   signed a    a is the type
+    TypePos:=0;
+    NamePos:=0;
     repeat
       if AtomStart>SrcLen then break;
-      if AtomIs('(') or AtomIs('[') then
-        ReadTilBracketClose(true);
-      if AtomIs(',') or AtomIs(')') then break;
+      if AtomIs(')') then begin
+        // end of parameter list
+        break;
+      end else if AtomIs('[') then
+        ReadTilBracketClose(true)
+      else if AtomIs(',') then
+        break
+      else if IsIdentStartChar[Src[AtomStart]] then begin
+        if NamePos>0 then
+          RaiseExpectedButAtomFound(', or )');
+        if AtomIs('signed') or AtomIs('unsigned') or AtomIs('const') then
+        begin
+          // modifier
+        end else if AtomIs('short') or AtomIs('long') then begin
+          // modifier or type
+          TypePos:=AtomStart;
+          ReadNextAtom;
+          if AtomIs(')') or AtomIs(',') or AtomIs('(') then begin
+            // type
+          end else begin
+            // modifier
+            TypePos:=0;
+          end;
+          UndoReadNextAtom;
+        end else begin
+          // type or name
+          if TypePos<1 then begin
+            // type
+            TypePos:=AtomStart;
+          end else begin
+            // name
+            NamePos:=AtomStart;
+            CreateChildNode(ccnName);
+            EndChildNode;
+          end;
+        end;
+      end;
       CurNode.EndPos:=SrcPos;
       ReadNextAtom;
     until false;
