@@ -62,12 +62,6 @@ typedef struct {
         uint8_t b[6]; // implicit type
 } __attribute__((packed)) bdaddr_t;
 
-/* Copy, swap, convert BD Address */
-static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
-{
-        return memcmp(ba1, ba2, sizeof(bdaddr_t));
-}
-
 void baswap(bdaddr_t *dst, const bdaddr_t *src);
 bdaddr_t *strtoba(const char *str);
 int baprintf(const char *format, ...);
@@ -154,6 +148,13 @@ char const b;           // A constant character (the same)
 char *const c;          // A constant pointer to a character
 const char *const d;    // A constant pointer to a constant character
 const char *e;          // A pointer to a constant character. The pointer may be modified.
+
+/* Copy, swap, convert BD Address */
+static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
+{
+        return memcmp(ba1, ba2, sizeof(bdaddr_t));
+}
+
 
 #ifdef __cplusplus
 }

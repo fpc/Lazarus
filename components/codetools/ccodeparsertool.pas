@@ -191,6 +191,7 @@ type
     function ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
                                 WithDirectives: boolean = false): string;
     function ExtractStructName(StructNode: TCodeTreeNode): string;
+    function ExtractUnionName(UnionNode: TCodeTreeNode): string;
     function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
@@ -1523,6 +1524,17 @@ var
   NameNode: TCodeTreeNode;
 begin
   NameNode:=StructNode.FirstChild;
+  if (NameNode<>nil) and (NameNode.Desc=ccnName) then
+    Result:=GetIdentifier(@Src[NameNode.StartPos])
+  else
+    Result:='';
+end;
+
+function TCCodeParserTool.ExtractUnionName(UnionNode: TCodeTreeNode): string;
+var
+  NameNode: TCodeTreeNode;
+begin
+  NameNode:=UnionNode.FirstChild;
   if (NameNode<>nil) and (NameNode.Desc=ccnName) then
     Result:=GetIdentifier(@Src[NameNode.StartPos])
   else

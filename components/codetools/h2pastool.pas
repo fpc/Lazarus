@@ -328,7 +328,37 @@ begin
       end;
       
     ccnVariable:
-      begin
+      if (CNode.FirstChild<>nil) and (CNode.FirstChild.Desc=ccnUnion)
+      then begin
+        CurName:=CTool.ExtractVariableName(CNode);
+        if (ParentNode<>nil) and (ParentNode.PascalDesc=ctnRecordType)
+        then begin
+          // create a pascal 'record case'
+          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
+                                     ParentNode,false);
+          DebugLn(['TH2PasTool.BuildH2PTree added record case for nested union']);
+          // build recursively the record cases
+          if CNode.FirstChild.FirstChild<>nil then
+            BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
+        end else if (CurName<>'') and (ParentNode=nil) then begin
+          // this union has a name
+          // create a record type
+          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
+                                     nil,true);
+          DebugLn(['TH2PasTool.BuildH2PTree added record type for union: ',TypeH2PNode.DescAsString]);
+          // build recursively
+          if CNode.FirstChild.FirstChild<>nil then
+            BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
+          // create variable
+          CurName:=CTool.ExtractUnionName(CNode);
+          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,
+                                 TypeH2PNode.PascalName,
+                                 nil,ParentNode=nil);
+          DebugLn(['TH2PasTool.BuildH2PTree added variable for union: ',H2PNode.DescAsString]);
+        end else begin
+          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
+        end;
+      end else begin
         CurName:=CTool.ExtractVariableName(CNode);
         CurType:=CTool.ExtractVariableType(CNode);
         SimpleType:=GetSimplePascalTypeOfCVar(CNode);
@@ -438,8 +468,7 @@ begin
       begin
         CurName:=CTool.ExtractStructName(CNode);
         if CurName='' then begin
-          // this is an anonymous struct => auto generate a name
-          // ignore
+          // this is an anonymous struct -> ignore
           DebugLn(['TH2PasTool.BuildH2PTree SKIPPING anonymous struct at ',CTool.CleanPosToStr(CNode.StartPos)]);
         end else begin
           // this struct has a name
@@ -456,7 +485,9 @@ begin
                                  nil,ParentNode=nil);
         end;
       end;
+
     ccnName: ;
+
     else
       DebugLn(['TH2PasTool.BuildH2PTree SKIPPING ',CCNodeDescAsString(CNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
     end;
