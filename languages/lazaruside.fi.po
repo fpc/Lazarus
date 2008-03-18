@@ -334,7 +334,7 @@ msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
-msgstr ""
+msgstr "Ikkunat"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
@@ -658,7 +658,7 @@ msgstr "Sijoita"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
-msgstr ""
+msgstr "Kaikki tiedostot"
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
@@ -1866,7 +1866,7 @@ msgstr "Vahvista riippuvuuden poistaminen"
 
 #: lazarusidestrconsts:lisconfirmnewpackagesetfortheide
 msgid "Confirm new package set for the IDE"
-msgstr ""
+msgstr "Vahvista uusi komponettipakettien joukko kehitysympäristöön"
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -3462,7 +3462,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
-msgstr ""
+msgstr "LFM tiedoston korjaus"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -4442,7 +4442,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinstallationfailed
 msgid "Installation failed"
-msgstr ""
+msgstr "Asennus epäonnistui"
 
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
@@ -4958,7 +4958,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazaruspackage
 msgid "Lazarus package"
-msgstr ""
+msgstr "Lazarus komponenttipakettitiedostot"
 
 #: lazarusidestrconsts:lislazarusproject
 msgid "Lazarus project"
@@ -5086,7 +5086,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagelithuanian
 msgid "Lithuanian"
-msgstr ""
+msgstr "liettua"
 
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
@@ -5870,7 +5870,7 @@ msgstr "Avaa komponenttipaketti %s"
 
 #: lazarusidestrconsts:lisopenpackagefile
 msgid "Open Package File"
-msgstr ""
+msgstr "Avataan komponenttipakettitiedosto"
 
 #: lazarusidestrconsts:lisopenpackage
 msgid "Open Package?"
@@ -6126,7 +6126,7 @@ msgstr "Komponenttipaketti %s"
 
 #: lazarusidestrconsts:lispckexplpackagenotfound
 msgid "Package %s not found"
-msgstr ""
+msgstr "Komponenttipakettia %s ei löydetty"
 
 #: lazarusidestrconsts:lispkgmangpackagechangedsave
 msgid "Package %s%s%s changed. Save?"
@@ -6150,7 +6150,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispackageinfo
 msgid "Package Info"
-msgstr ""
+msgstr "Komponenttipaketin tietoja"
 
 #: lazarusidestrconsts:lispldpackagelinks
 msgid "Package Links"
@@ -6838,7 +6838,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
-msgstr "Poista kaikki vikaantuneet\toimimattomat ominaisuudet"
+msgstr "Poista kaikki vikaantuneet tai toimimattomat ominaisuudet"
 
 #: lazarusidestrconsts:liskmremovebreakpoint
 msgid "Remove break point"
@@ -8822,7 +8822,7 @@ msgstr "Komponenttipaketti %s omistaa tiedoston%s%s%s%s.%sPitäisikö tuota komp
 
 #: lazarusidestrconsts:lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
 msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
-msgstr ""
+msgstr "Komponenttipaketin %s%s%s kääntäminen epäonnistui.%sPoistetaanko se asennuksesta?"
 
 #: lazarusidestrconsts:lispckoptsthepackagehastheautoinstallflagthismeans
 msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
@@ -9138,7 +9138,7 @@ msgstr "Tästä ei voi tehdä omaa aliohjelmaa.%sOle hyvä ja valitse ensin joki
 
 #: lazarusidestrconsts:listhiswillhappencontinue
 msgid "This will happen:%s%s%sContinue?"
-msgstr ""
+msgstr "Näin tulee tapahtumaan:%s%s%sJatketaanko?"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmthread
 msgid "Thread"
@@ -9798,7 +9798,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunitnotfound
 msgid "Unit not found"
-msgstr ""
+msgstr "Käännösyksikköä (unit) ei löydetty"
 
 #: lazarusidestrconsts:lispkgsysunitnotfound
 msgid "Unit not found: %s%s%s"
@@ -10602,7 +10602,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisold
 msgid "old"
-msgstr ""
+msgstr "vanha"
 
 #: lazarusidestrconsts:lisor
 msgid "or"
