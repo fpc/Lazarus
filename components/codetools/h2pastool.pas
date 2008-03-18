@@ -614,7 +614,7 @@ begin
             ConstantCode:=ConstantCode+'-1';
           end;
           PascalCode:='array[0..'+ConstantCode+'] of '+PascalCode;
-          PascalName:='Array_0to'+CreatePascalNameFromCCode(ConstantCode)+'_Of'+PascalName;
+          PascalName:='Array0to'+CreatePascalNameFromCCode(ConstantCode)+'Of'+PascalName;
           //DebugLn(['TH2PasTool.GetTypeForVarType fixed array: ',PascalCode]);
         end;
       end else

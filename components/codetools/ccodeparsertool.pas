@@ -1297,7 +1297,18 @@ begin
     Result:='';
     exit;
   end;
-  Result:=ExtractCode(FuncNode.StartPos,NameNode.StartPos,WithDirectives);
+  
+  // skip function modifiers
+  MoveCursorToNode(FuncNode);
+  repeat
+    ReadNextAtom;
+    if AtomStart>=NameNode.StartPos then break;
+    if not IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
+    then
+      break;
+  until false;
+  
+  Result:=ExtractCode(AtomStart,NameNode.StartPos,WithDirectives);
   if (NameNode.NextBrother<>nil)
   and (NameNode.NextBrother.Desc=ccnFuncParamList) then begin
     // The name is in between.
