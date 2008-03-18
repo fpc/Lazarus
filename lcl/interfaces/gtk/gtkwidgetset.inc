@@ -540,6 +540,7 @@ var
   thrash: char;
 begin
   // wake up GUI thread by sending a byte through the threadsync pipe
+  thrash:='l';
   fpwrite(threadsync_pipeout, thrash, 1);
 end;
 
