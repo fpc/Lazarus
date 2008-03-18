@@ -182,6 +182,8 @@ type
                                        WithDirectives: boolean = false): string;
     function ExtractEnumBlockName(EnumBlockNode: TCodeTreeNode): string;
     function ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
+    function ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
+                                WithDirectives: boolean = false): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -1322,9 +1324,21 @@ end;
 
 function TCCodeParserTool.ExtractEnumIDName(EnumIDNode: TCodeTreeNode): string;
 begin
-  MoveCursorToNode(EnumIDNode);
-  ReadNextAtom;
-  Result:=GetAtom;
+  Result:=GetIdentifier(@Src[EnumIDNode.StartPos]);
+end;
+
+function TCCodeParserTool.ExtractEnumIDValue(EnumIDNode: TCodeTreeNode;
+  WithDirectives: boolean): string;
+var
+  ConstantNode: TCodeTreeNode;
+begin
+  ConstantNode:=EnumIDNode.FirstChild;
+  if (ConstantNode=nil)
+  or (ConstantNode.Desc<>ccnConstant) then
+    Result:=''
+  else
+    Result:=ExtractCode(ConstantNode.StartPos,ConstantNode.EndPos,
+                        WithDirectives);
 end;
 
 function TCCodeParserTool.GetAtom: string;

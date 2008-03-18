@@ -324,7 +324,7 @@ begin
         while CNode<>nil do begin
           if CNode.Desc=ccnEnumID then begin
             CurName:=CTool.ExtractEnumIDName(CNode);
-            CurValue:=''; //CTool.ExtractEnumIDName(CNode);
+            CurValue:=CTool.ExtractEnumIDValue(CNode);
             H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumIdentifier,CurValue,
                                    TypeH2PNode);
             DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
