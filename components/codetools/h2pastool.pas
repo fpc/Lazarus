@@ -105,6 +105,7 @@ type
     procedure BuildH2PTree(ParentNode: TH2PNode = nil);
     
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
+    function GetSimplePascalTypeOfCParameter(CParamNode: TCodeTreeNode): string;
     function GetSimplePascalResultTypeOfCFunction(CFuncNode: TCodeTreeNode): string;
     function ConvertSimpleCTypeToPascalType(CType: string;
                   UseSingleIdentifierAsDefault: boolean): string;
@@ -300,8 +301,10 @@ begin
     case CNode.Desc of
     ccnRoot, ccnExtern:
       NextCNode:=CNode.Next;
+      
     ccnDirective:
       NextCNode:=CNode.Next;
+      
     ccnVariable:
       begin
         CurName:=CTool.ExtractVariableName(CNode);
@@ -321,6 +324,7 @@ begin
           DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Variable Name="',CurName,'" Type="',CurType,'"']);
         end;
       end;
+      
     ccnFunction:
       begin
         CurName:=CTool.ExtractFunctionName(CNode);
@@ -355,13 +359,15 @@ begin
           DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Function Name="',CurName,'" Type="',CurType,'"']);
         end;
       end;
+      
     ccnFuncParamList:
       NextCNode:=CNode.FirstChild;
+      
     ccnFuncParameter:
       begin
         CurName:=CTool.ExtractParameterName(CNode);
         CurType:=CTool.ExtractParameterType(CNode);
-        SimpleType:=GetSimplePascalTypeOfCVar(CNode);
+        SimpleType:=GetSimplePascalTypeOfCParameter(CNode);
         DebugLn(['TH2PasTool.BuildH2PTree Parameter: Name="',CurName,'" Type="',CurType,'" SimpleType="',SimpleType,'"']);
         if SimpleType='' then begin
           // this variable has a complex type
@@ -377,6 +383,7 @@ begin
           DebugLn(['TH2PasTool.BuildH2PTree SKIPPING parameter Name="',CurName,'" Type="',CurType,'"']);
         end;
       end;
+      
     ccnEnumBlock:
       begin
         CurName:=CTool.ExtractEnumBlockName(CNode);
@@ -404,6 +411,7 @@ begin
           CNode:=CNode.NextBrother;
         end;
       end;
+      
     ccnStruct:
       begin
         CurName:=CTool.ExtractStructName(CNode);
@@ -420,6 +428,9 @@ begin
         // build recursively
         BuildH2PTree(TypeH2PNode);
       end;
+    ccnName: ;
+    else
+      DebugLn(['TH2PasTool.BuildH2PTree SKIPPING ',CCNodeDescAsString(CNode.Desc)]);
     end;
     // next C node
     if (ParentNode<>nil) and (not ParentNode.CNode.HasAsChild(NextCNode)) then
@@ -433,6 +444,17 @@ begin
   Result:=CTool.ExtractVariableType(CVarNode);
   if Result='' then exit;
   Result:=ConvertSimpleCTypeToPascalType(Result,true);
+end;
+
+function TH2PasTool.GetSimplePascalTypeOfCParameter(CParamNode: TCodeTreeNode
+  ): string;
+begin
+  Result:=CTool.ExtractParameterType(CParamNode);
+  if Result='' then exit;
+  if (Result='...') then
+    Result:='array of const'
+  else
+    Result:=ConvertSimpleCTypeToPascalType(Result,true);
 end;
 
 function TH2PasTool.GetSimplePascalResultTypeOfCFunction(

@@ -129,7 +129,7 @@ typedef void(*sdp_list_func_t)(void *, void *);
 complex operator+(complex, complex);
 
 int y = 7;
-float f(int){};
+float internalfunc(int){};
 int dim2[][3];
 bool b1 = a==b;
 char c = 'a';
@@ -140,7 +140,7 @@ int *pi; // pointer to int
 char ** ppc; // pointer to pointer to char
 int* ap[15]; // array of 15 pointers to ints
 int (*fp)(char*); // pointer to function taking a char* argument; returns an int
-int * f(char*); // function taking a char* argument; returns a pointer to int
+int * func1(char*); // function taking a char* argument; returns a pointer to int
 int func2(int=3); // function taking an int argument or no argument; returns an int
 unsigned short unsigned_short;
 unsigned long long unsigned_long_long;
