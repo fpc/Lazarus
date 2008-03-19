@@ -5564,28 +5564,33 @@ mrLast=mrYesToAll=10</descr>
       <!-- procedure Visibility: protected -->
       <element name="TControl.Click">
         <short>
-          <var>Click</var>
- - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <var>Action</var> as that associated with the <var>OnClick</var> event</short>
+          <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <var>Action</var> as that associated with the <link id="OnClick"/> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.DblClick">
         <short>
-          <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnDblClick</var>  event</short>
+          <var>DblClick</var>   - a procedure that allows the programmer to simulate a mouse double-click over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnDblClick"/>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.TripleClick">
         <short>
-          <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnTripleClick</var>  event</short>
+          <var>TripleClick</var>   - a procedure that allows the programmer to simulate a mouse triple-click over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnTripleClick"/> event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.QuadClick">
         <short>
-          <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same <var>Action</var>  as that associated with the <var>OnQuadClick</var>  event</short>
+          <var>QuadClick</var>   - a procedure that allows the programmer to simulate a mouse quadruple-click over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnQuadClick"/>  event</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseDown">
-        <short/>
-        <descr/>
+        <short>
+          <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseDown"/>  event</short>
+        <descr>
+          <p>
+            <var>MouseDown</var>   - a procedure that allows the programmer to simulate a mouse button being down over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseDown"/>  event</p>
+          <p>
+            <var>Button</var> specifies which mouse button; <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; <var>X, Y</var> show mouse position</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -5607,8 +5612,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseMove">
-        <short/>
-        <descr/>
+        <short>
+          <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseMove"/>  event</short>
+        <descr>
+          <p>
+            <var>MouseMove</var>   - a procedure that allows the programmer to simulate a mouse being moved over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseMove"/>  event</p>
+          <p>
+            <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; <var>X, Y</var> show mouse position</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -5626,8 +5637,14 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseUp">
-        <short/>
-        <descr/>
+        <short>
+          <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseUp"/>  event</short>
+        <descr>
+          <p>
+            <var>MouseUp</var>   - a procedure that allows the programmer to simulate a mouse button being Up over the control, and initiates the same <var>Action</var>  as that associated with the <link id="OnMouseUp"/>  event</p>
+          <p>
+            <var>Button</var> specifies which mouse button; <var>Shift</var> signifies whether Ctrl, Shift or Alt keys are also pressed; <var>X, Y</var> show mouse position</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -5649,14 +5666,16 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseEnter">
-        <short/>
+        <short>
+          <var>MouseEnter</var> - a procedure that allows the programmer to simulate a mouse entering the control, and initiates the same <var>Action</var> as that associated with the <link id="OnMouseEnter"/> event</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.MouseLeave">
-        <short/>
+        <short>
+          <var>MouseLeave</var> - a procedure that allows the programmer to simulate a mouse leaving the control, and initiates the same <var>Action</var> as that associated with the <link id="OnMouseLeave"/> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6739,7 +6758,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Hide">
-        <short>Hide this control</short>
+        <short>
+          <var>Hide </var>this control</short>
         <seealso>
           <link id="TControl.Visible"/>
           <link id="TControl.Show"/>
@@ -6747,11 +6767,13 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Refresh">
-        <short>Refresh the data on this control</short>
+        <short>
+          <var>Refresh</var> the data on this control</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Repaint">
-        <short>Repaint the control, ie refill its canvas</short>
+        <short>
+          <var>Repaint</var> the control, ie refill its canvas</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Invalidate">
@@ -6879,7 +6901,8 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.Perform">
-        <short/>
+        <short>
+          <var>Perform</var> an Action specified by the message and parameters</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6960,7 +6983,7 @@ mrLast=mrYesToAll=10</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.Update">
-        <short>Perform the Update method specified by the parent control (if there is one)</short>
+        <short>Perform the <var>Update</var> method specified by the parent control (if there is one)</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.SetZOrderPosition">
@@ -13499,7 +13522,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TControl.UpdateMouseCursor">
-        <short/>
+        <short>
+          <var>UpdateMouseCursor</var> - ensure co-ordinates <var>X, Y </var> for the cursor are correctly stored</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13620,7 +13644,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TControl.AnchorAsAlign">
-        <short/>
+        <short>
+          <var>AnchorAsAlign</var> - Anchor following same rules as Align</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -13654,7 +13679,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.AnchoredControls">
-        <short>The index numbers of the controls anchored to this one</short>
+        <short>The indexed list of controls anchored to this one</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TControl.AnchoredControls.Index">
@@ -13736,7 +13761,8 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- property Visibility: public -->
       <element name="TControl.ReadBounds">
-        <short/>
+        <short>
+          <var>ReadBounds</var> - find out what bounds have been defined</short>
         <descr/>
         <seealso/>
       </element>
@@ -13816,7 +13842,7 @@ getting the parent control's Canvas dimensions.</p>
       </element>
       <!-- function Visibility: public -->
       <element name="TControl.HasHelp">
-        <short>Indicates that this control has an entrry in the Help-file</short>
+        <short>Indicates that this control has an entry in the Help-file</short>
         <descr/>
         <errors/>
         <seealso/>
