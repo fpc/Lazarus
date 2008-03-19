@@ -97,9 +97,8 @@ begin
   Len:=length(Source);
   if Position>Len then exit;
   AtomStart:=Position;
-  repeat
+  while (AtomStart<=Len) and (not (Source[AtomStart] in [#10,#13])) do
     ReadRawNextCAtom(Source,Position,AtomStart);
-  until (AtomStart>Len) or (Source[AtomStart] in [#10,#13]);
   Position:=AtomStart;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;

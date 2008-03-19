@@ -30,17 +30,17 @@
     __TIME__  current time "hh:mm:ss"
     __STDC__  1
     
-  Predefined gcc macros:
-    __attribute__((packed))
-      Examples:
-        typedef struct {
-             uint8_t b[6];
-        } __attribute__((packed)) bdaddr_t;
-        struct __attribute__((packed)) {
-                typeof(*(ptr)) __v;
-        } *__p = (void *) (ptr);
-
 }
+//  Predefined gcc macros:
+//    __attribute__((packed))
+//      Examples:
+//        typedef struct {
+//             uint8_t b[6];
+//        } __attribute__((packed)) bdaddr_t;
+//        struct __attribute__((packed)) {
+//                typeof(*(ptr)) __v;
+//        } *__p = (void *) (ptr);
+
 unit CCodeParserTool;
 
 {$mode objfpc}{$H+}
@@ -50,6 +50,7 @@ interface
 {$I codetools.inc}
 
 {off $DEFINE VerboseCCodeParser}
+{off $DEFINE VerboseCDirectives}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -94,6 +95,11 @@ type
     Sender: TCCodeParserTool;
     constructor Create(ASender: TCCodeParserTool; const AMessage: string);
   end;
+  
+  TCCodeParserIfStackItem = record
+    StartPos: integer;
+  end;
+  PCCodeParserIfStackItem = ^TCCodeParserIfStackItem;
 
   { TCCodeParserTool }
 
@@ -101,6 +107,8 @@ type
   private
     FChangeStep: integer;
     FDefaultTokenList: TKeyWordFunctionList;
+    FIfStack: PCCodeParserIfStackItem;
+    FIfStackCapacity: integer;
 
     function OtherToken: boolean;
     function DirectiveToken: boolean;
@@ -122,6 +130,8 @@ type
     procedure ReadStruct;
     procedure ReadUnion;
     procedure ReadConstant;
+    
+    procedure IncIfLevel(StartPos: integer);
 
     procedure RaiseException(const AMessage: string; ReportPos: integer = 0);
     procedure RaiseExpectedButAtomFound(const AToken: string; ReportPos: integer = 0);
@@ -133,11 +143,13 @@ type
     CurNode: TCodeTreeNode;
     SrcPos: Integer;
     AtomStart: integer;
+    IfLevel: integer;
     ParseChangeStep: integer;// = Code.ChangeStep at the time of last Parse
 
     VisibleEditorLines: integer;
     JumpCentered: boolean;
     CursorBeyondEOL: boolean;
+    ParseDirectives: boolean;// default is true
 
     LastSrcPos: integer;
     LastAtomStart: integer;
@@ -179,10 +191,12 @@ type
     procedure MoveCursorToNode(Node: TCodeTreeNode);
     procedure ReadNextAtom;
     procedure ReadNextAtomSkipDirectives;
+    procedure ReadRawNextAtom;
     procedure UndoReadNextAtom;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function AtomIs(const s: shortstring): boolean;
     function AtomIsChar(const c: char): boolean;
+    function AtomIsCharOfSet(const s: shortstring): boolean;
     function UpAtomIs(const s: shortstring): boolean;
     function AtomIsIdentifier: boolean;
     function AtomIsStringConstant: boolean;
@@ -214,6 +228,7 @@ type
     function ExtractUnionName(UnionNode: TCodeTreeNode): string;
     function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
     function ExtractDirectiveAction(DirectiveNode: TCodeTreeNode): string;
+    function ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -318,9 +333,132 @@ begin
 end;
 
 function TCCodeParserTool.DirectiveToken: boolean;
+
+  procedure ReadExpression;
+  var
+    BracketLevel: Integer;
+  begin
+    BracketLevel:=0;
+    repeat
+      ReadRawNextCAtom(Src,SrcPos,AtomStart);
+      if AtomStart>SrcLen then
+        RaiseException('missing expression');
+      if Src[AtomStart] in [#10,#13] then begin
+        if BracketLevel>0 then
+          RaiseException('missing )');
+        break;
+      end;
+      if AtomIsChar('(') then begin
+        // in front of a ( there can
+        inc(BracketLevel);
+      end else if AtomIsChar(')') then begin
+        if BracketLevel=0 then
+          RaiseException(') without (');
+        inc(BracketLevel);
+      end else if AtomIsCharOfSet('!+-*/') or AtomIs('!=') or AtomIs('==')
+      then begin
+      end else if IsIdentChar[Src[AtomStart]] then begin
+        if AtomIs('defined') then begin
+          // read  defined(macro)
+          ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          if not AtomIsChar('(') then
+            RaiseExpectedButAtomFound('(');
+          ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          if not AtomIsIdentifier then
+            RaiseExpectedButAtomFound('macro');
+          ReadRawNextCAtom(Src,SrcPos,AtomStart);
+          if not AtomIsChar(')') then
+            RaiseExpectedButAtomFound(')');
+        end else begin
+          // constant
+        end;
+      end else begin
+        RaiseExpectedButAtomFound('constant');
+      end;
+    until false;
+  end;
+
+var
+  StartPos: LongInt;
 begin
   Result:=true;
   CreateChildNode(ccnDirective);
+  if ParseDirectives then begin
+    // read directive
+    ReadRawNextAtom;
+    if AtomIs('include') then begin
+      ReadRawNextAtom;
+      if AtomIsChar('<') then begin
+        // #include <filename>  // search independent of source position
+        StartPos:=SrcPos;
+        repeat
+          ReadRawNextAtom;
+          if AtomStart>SrcLen then begin
+            MoveCursorToPos(StartPos);
+            RaiseExpectedButAtomFound('>');
+          end;
+        until AtomIsChar('>');
+      end else if AtomIsStringConstant then begin
+        // #include "filename"  // search dependent on source position
+      end else begin
+        RaiseExpectedButAtomFound('< or "');
+      end;
+    end else if AtomIs('define') then begin
+      // #define FMAC(a,b) a here, then b
+      // #define NONFMAC some text here
+      ReadRawNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
+      ReadRawNextAtom;
+      if AtomIsChar('(') then begin
+        ReadTilBracketClose(true);
+        ReadRawNextAtom;
+      end;
+    end else if AtomIs('undef') then begin
+      ReadRawNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
+    end else if AtomIs('if') then begin
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      {$ENDIF}
+      IncIfLevel(AtomStart);
+      ReadExpression;
+    end else if AtomIs('ifdef') or AtomIs('ifndef') then begin
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      {$ENDIF}
+      IncIfLevel(AtomStart);
+      ReadRawNextAtom;
+      if not AtomIsIdentifier then
+        RaiseExpectedButAtomFound('identifier');
+    end else if AtomIs('elif') then begin
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      {$ENDIF}
+      if IfLevel=0 then
+        RaiseException('elif without if');
+      ReadExpression;
+    end else if AtomIs('else') then begin
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2-2),GetAtom]);
+      {$ENDIF}
+      if IfLevel=0 then
+        RaiseException('else without if');
+    end else if AtomIs('endif') then begin
+      if IfLevel=0 then
+        RaiseException('endif without if');
+      dec(IfLevel);
+      {$IFDEF VerboseCDirectives}
+      DebugLn(['TCCodeParserTool.DirectiveToken ',GetIndentStr(IfLevel*2),GetAtom]);
+      {$ENDIF}
+    end else if AtomIs('line') then begin
+    end else if AtomIs('error') then begin
+    end else if AtomIs('pragma') then begin
+    end else begin
+      RaiseExpectedButAtomFound('directive')
+    end;
+  end;
   // read til end of line
   ReadTilCLineEnd(Src,SrcPos);
   AtomStart:=SrcPos;
@@ -430,13 +568,13 @@ procedure TCCodeParserTool.ReadStruct;
 
   As variable:
     struct hidp_conninfo *ci;
-
-  As typecast in macros:
-    struct __attribute__((packed)) {
-            typeof(*(ptr)) __v;
-    } *__p = (void *) (ptr);
-
 *)
+//
+//  As typecast in macros:
+//    struct __attribute__((packed)) {
+//            typeof(*(ptr)) __v;
+//    } *__p = (void *) (ptr);
+//
 begin
   CreateChildNode(ccnStruct);
   
@@ -613,6 +751,7 @@ begin
   AtomStart:=1;
   CurNode:=nil;
   CreateChildNode(ccnRoot);
+  IfLevel:=0;
 end;
 
 procedure TCCodeParserTool.CreateChildNode(Desc: TCCodeNodeDesc);
@@ -668,6 +807,16 @@ begin
   until false;
   UndoReadNextAtom;
   EndChildNode;
+end;
+
+procedure TCCodeParserTool.IncIfLevel(StartPos: integer);
+begin
+  inc(IfLevel);
+  if FIfStackCapacity<IfLevel then begin
+    FIfStackCapacity:=5+FIfStackCapacity*2;
+    ReAllocMem(FIfStack,FIfStackCapacity*SizeOf(TCCodeParserIfStackItem));
+  end;
+  FIfStack[IfLevel-1].StartPos:=StartPos;
 end;
 
 procedure TCCodeParserTool.ReadVariable;
@@ -955,16 +1104,25 @@ begin
   VisibleEditorLines:=25;
   JumpCentered:=true;
   CursorBeyondEOL:=true;
+  ParseDirectives:=true;
 end;
 
 destructor TCCodeParserTool.Destroy;
 begin
+  Clear;
   FreeAndNil(Tree);
+  ReAllocMem(FIfStack,0);
+  FIfStackCapacity:=0;
   inherited Destroy;
 end;
 
 procedure TCCodeParserTool.Clear;
 begin
+  IfLevel:=0;
+  if FIfStackCapacity>10 then begin
+    ReAllocMem(FIfStack,0);
+    FIfStackCapacity:=0;
+  end;
   Tree.Clear;
 end;
 
@@ -1158,6 +1316,13 @@ begin
   {$ENDIF}
 end;
 
+procedure TCCodeParserTool.ReadRawNextAtom;
+begin
+  LastSrcPos:=SrcPos;
+  LastAtomStart:=AtomStart;
+  ReadRawNextCAtom(Src,SrcPos,AtomStart);
+end;
+
 procedure TCCodeParserTool.UndoReadNextAtom;
 begin
   if LastSrcPos>0 then begin
@@ -1233,6 +1398,19 @@ begin
   if SrcPos>SrcLen then exit(false);
   if Src[AtomStart]<>c then exit(false);
   Result:=true;
+end;
+
+function TCCodeParserTool.AtomIsCharOfSet(const s: shortstring): boolean;
+var
+  i: Integer;
+  c: Char;
+begin
+  if SrcPos-AtomStart<>1 then exit(false);
+  if SrcPos>SrcLen then exit(false);
+  c:=Src[AtomStart];
+  for i:=1 to length(s) do
+    if s[i]=c then exit(true);
+  Result:=false;
 end;
 
 function TCCodeParserTool.UpAtomIs(const s: shortstring): boolean;
@@ -1621,6 +1799,17 @@ begin
     Result:=GetIdentifier(@Src[DirectiveNode.StartPos+1])
   else
     Result:='';
+end;
+
+function TCCodeParserTool.ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode
+  ): string;
+begin
+  MoveCursorToPos(DirectiveNode.StartPos+1);
+  // read action
+  ReadNextAtom;
+  // read first atom
+  ReadNextAtom;
+  Result:=GetAtom;
 end;
 
 function TCCodeParserTool.GetAtom: string;
