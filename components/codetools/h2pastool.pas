@@ -541,6 +541,7 @@ var
   ErrorMsg: string;
   StartPos: LongInt;
   EndPos: LongInt;
+  MacroName,MacroParamList,MacroValue: string;
 begin
   Directive:=CTool.ExtractDirectiveAction(CNode);
   if Directive='include' then begin
@@ -549,8 +550,15 @@ begin
     if icspInclude in IgnoreCParts then
       exit;
   end else if Directive='define' then begin
-    // #define FMAC(a,b) a here, then b
-    // #define NONFMAC some text here
+    // #define macrofunction(a,b) a here, then b
+    // #define simplemacro some text here
+    if CTool.ExtractDefine(CNode,MacroName,MacroParamList,MacroValue)
+    then begin
+      H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+                             MacroName,ParentNode,false);
+      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+      exit;
+    end;
   end else if (Directive='undef') or (Directive='ifdef')
   or (Directive='ifndef') then begin
     // #undef NAME

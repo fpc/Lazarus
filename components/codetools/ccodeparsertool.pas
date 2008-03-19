@@ -230,6 +230,8 @@ type
     function ExtractDirectiveAction(DirectiveNode: TCodeTreeNode): string;
     function ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode): string;
     function ExtractDirectiveParams(DirectiveNode: TCodeTreeNode): string;
+    function ExtractDefine(DefineNode: TCodeTreeNode;
+                           out MacroName, MacroParamList, MacroValue: string): boolean;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -1824,6 +1826,44 @@ begin
   // read first atom
   ReadRawNextAtom;
   Result:=ExtractCode(AtomStart,DirectiveNode.EndPos);
+end;
+
+function TCCodeParserTool.ExtractDefine(DefineNode: TCodeTreeNode; out
+  MacroName, MacroParamList, MacroValue: string): boolean;
+var
+  StartPos: LongInt;
+  EndPos: LongInt;
+begin
+  Result:=false;
+  MacroName:='';
+  MacroParamList:='';
+  MacroValue:='';
+  MoveCursorToPos(DefineNode.StartPos+1);
+  // read action
+  ReadRawNextAtom;
+  if not AtomIs('define') then exit;
+  // read first atom
+  ReadRawNextAtom;
+  MacroName:=GetAtom;
+  StartPos:=SrcPos;
+  // read param list
+  if (SrcPos<=SrcLen) and (Src[SrcPos]='(') then begin
+    StartPos:=SrcPos;
+    AtomStart:=SrcPos;
+    SrcPos:=AtomStart+1;
+    if not ReadTilBracketClose(false) then exit;
+    EndPos:=SrcPos;
+    MacroParamList:=ExtractCode(StartPos,EndPos);
+    StartPos:=EndPos;
+  end;
+  // read value
+  while (StartPos<=SrcLen) and (IsSpaceChar[Src[StartPos]]) do
+    inc(StartPos);
+  EndPos:=DefineNode.EndPos;
+  while (EndPos>StartPos) and (IsSpaceChar[Src[EndPos-1]]) do
+    dec(EndPos);
+  MacroValue:=copy(Src,StartPos,EndPos-StartPos);
+  Result:=true;
 end;
 
 function TCCodeParserTool.GetAtom: string;
