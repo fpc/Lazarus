@@ -533,6 +533,7 @@ var
   Directive: String;
   PascalCode: String;
   H2PNode: TH2PNode;
+  CurName: String;
 begin
   Directive:=CTool.ExtractDirectiveAction(CNode);
   if Directive='include' then begin
@@ -545,12 +546,27 @@ begin
     // #define NONFMAC some text here
   end else if Directive='undef' then begin
     // #undef NAME
+    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
+    H2PNode:=CreateH2PNode('#undef','#undef',CNode,ctnNone,
+                           CurName,ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $undef: ',H2PNode.DescAsString]);
+    exit;
   end else if Directive='if' then begin
     // #if EXPRESSION
   end else if Directive='ifdef' then begin
     // #ifdef NAME
+    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
+    H2PNode:=CreateH2PNode('#ifdef','#ifdef',CNode,ctnNone,
+                           CurName,ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $ifdef: ',H2PNode.DescAsString]);
+    exit;
   end else if Directive='ifndef' then begin
     // #ifndef NAME
+    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
+    H2PNode:=CreateH2PNode('#ifndef','#ifndef',CNode,ctnNone,
+                           CurName,ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $ifndef: ',H2PNode.DescAsString]);
+    exit;
   end else if Directive='elif' then begin
     // #elif EXPRESSION
   end else if Directive='else' then begin
