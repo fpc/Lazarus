@@ -22,6 +22,24 @@
 
   Abstract:
     A simple C parser.
+    
+  Predefined C macros:
+    __LINE__  current source file line number as decimal
+    __FILE__  current source filename
+    __DATE__  current date: Apr 21 1990 or Jan  1 2008  (note the space in front of the 1)
+    __TIME__  current time "hh:mm:ss"
+    __STDC__  1
+    
+  Predefined gcc macros:
+    __attribute__((packed))
+      Examples:
+        typedef struct {
+             uint8_t b[6];
+        } __attribute__((packed)) bdaddr_t;
+        struct __attribute__((packed)) {
+                typeof(*(ptr)) __v;
+        } *__p = (void *) (ptr);
+
 }
 unit CCodeParserTool;
 
@@ -50,7 +68,7 @@ const
   ccnNone           =  0+ccnBase;
   
   ccnRoot           =  1+ccnBase;
-  ccnDirective      =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, without line end
+  ccnDirective      =  2+ccnBase;// e.g. "#define a" ,can be multiple lines, EndPos at line end
   ccnExtern         =  3+ccnBase;// e.g. extern "C" {}
   ccnEnumBlock      =  4+ccnBase;// e.g. enum {};
   ccnEnumID         =  5+ccnBase;// e.g. name = value;
@@ -195,6 +213,7 @@ type
     function ExtractStructName(StructNode: TCodeTreeNode): string;
     function ExtractUnionName(UnionNode: TCodeTreeNode): string;
     function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
+    function ExtractDirectiveAction(DirectiveNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -412,6 +431,11 @@ procedure TCCodeParserTool.ReadStruct;
   As variable:
     struct hidp_conninfo *ci;
 
+  As typecast in macros:
+    struct __attribute__((packed)) {
+            typeof(*(ptr)) __v;
+    } *__p = (void *) (ptr);
+
 *)
 begin
   CreateChildNode(ccnStruct);
@@ -426,6 +450,14 @@ begin
     ReadNextAtom;
   end;
   
+  // read front attributes
+  if AtomIs('__attribute__') then begin
+    ReadNextAtom;
+    if not AtomIsChar('(') then
+      RaiseExpectedButAtomFound('(');
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
   if AtomIsChar('{') then begin
     // read block {}
     repeat
@@ -445,7 +477,7 @@ begin
       else
         RaiseExpectedButAtomFound('identifier');
     until false;
-    // read attributes
+    // read after attributes
     ReadNextAtom;
     if AtomIs('__attribute__') then begin
       ReadNextAtom;
@@ -1580,6 +1612,15 @@ begin
       Result:='';
   end else
     Result:=GetIdentifier(@Src[Node.StartPos]);
+end;
+
+function TCCodeParserTool.ExtractDirectiveAction(DirectiveNode: TCodeTreeNode
+  ): string;
+begin
+  if DirectiveNode.StartPos<SrcLen then
+    Result:=GetIdentifier(@Src[DirectiveNode.StartPos+1])
+  else
+    Result:='';
 end;
 
 function TCCodeParserTool.GetAtom: string;

@@ -91,13 +91,27 @@ type
     procedure WriteDebugReport(WithChilds: boolean);
   end;
   
+  TIgnoreCSourcePart = (
+    icspInclude
+    );
+  TIgnoreCSourceParts = set of TIgnoreCSourcePart;
+  
   { TH2PasTool }
 
   TH2PasTool = class
   private
+    FIgnoreCParts: TIgnoreCSourceParts;
     FPredefinedCTypes: TFPStringHashTable;
     FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
     FCNames: TAVLTree;// tree of TH2PNode sorted for CName
+    procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertFuncParameter(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+    procedure SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
   public
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
@@ -129,6 +143,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     property PredefinedCTypes: TFPStringHashTable read FPredefinedCTypes;
+    property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write SetIgnoreCParts;
   end;
   
   
@@ -259,6 +274,324 @@ end;
 
 { TH2PasTool }
 
+procedure TH2PasTool.ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
+var
+  CurName: String;
+  TypeH2PNode: TH2PNode;
+begin
+  CurName:=CTool.ExtractStructName(CNode);
+  if CurName='' then begin
+    // this is an anonymous struct -> ignore
+    DebugLn(['TH2PasTool.ConvertStruct SKIPPING anonymous struct at ',CTool.CleanPosToStr(CNode.StartPos)]);
+  end else begin
+    // this struct has a name
+    // create a type
+    TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'',
+                               nil,ParentNode=nil);
+    // build recursively
+    BuildH2PTree(TypeH2PNode);
+  end;
+end;
+
+procedure TH2PasTool.ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode
+  );
+var
+  CurName: String;
+  TypeH2PNode: TH2PNode;
+  CurType: String;
+  SimpleType: String;
+  H2PNode: TH2PNode;
+begin
+  if (CNode.FirstChild<>nil) and (CNode.FirstChild.Desc=ccnUnion)
+  then begin
+    CurName:=CTool.ExtractVariableName(CNode);
+    if (ParentNode<>nil) and (ParentNode.PascalDesc=ctnRecordType)
+    then begin
+      // create a pascal 'record case'
+      TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
+                                 ParentNode,false);
+      DebugLn(['TH2PasTool.BuildH2PTree added record case for nested union']);
+      // build recursively the record cases
+      if CNode.FirstChild.FirstChild<>nil then
+        BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
+    end else if (CurName<>'') and (ParentNode=nil) then begin
+      // this union has a name
+      // create a record type
+      TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
+                                 nil,true);
+      DebugLn(['TH2PasTool.BuildH2PTree added record type for union: ',TypeH2PNode.DescAsString]);
+      // build recursively
+      if CNode.FirstChild.FirstChild<>nil then
+        BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
+      // create variable
+      CurName:=CTool.ExtractUnionName(CNode);
+      H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,
+                             TypeH2PNode.PascalName,
+                             nil,ParentNode=nil);
+      DebugLn(['TH2PasTool.BuildH2PTree added variable for union: ',H2PNode.DescAsString]);
+    end else begin
+      DebugLn(['TH2PasTool.BuildH2PTree SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
+    end;
+  end else begin
+    CurName:=CTool.ExtractVariableName(CNode);
+    CurType:=CTool.ExtractVariableType(CNode);
+    SimpleType:=GetSimplePascalTypeOfCVar(CNode);
+    if SimpleType='' then begin
+      // this variable has a complex type
+      TypeH2PNode:=GetH2PNodeForComplexType(CNode);
+      if TypeH2PNode<>nil then
+        SimpleType:=TypeH2PNode.PascalName;
+    end;
+    if SimpleType<>'' then begin
+      H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
+                             ParentNode,ParentNode=nil);
+      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+    end else begin
+      DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Variable Name="',CurName,'" Type="',CurType,'"']);
+    end;
+  end;
+end;
+
+procedure TH2PasTool.ConvertEnumBlock(CNode: TCodeTreeNode;
+  ParentNode: TH2PNode);
+var
+  CurName: String;
+  TypeH2PNode: TH2PNode;
+  CurValue: String;
+  H2PNode: TH2PNode;
+begin
+  CurName:=CTool.ExtractEnumBlockName(CNode);
+  if CurName='' then begin
+    // this is an anonymous enum block => auto generate a name
+    CurName:=CreatePascalNameFromCCode(CTool.Src,CNode.StartPos,CNode.EndPos);
+    TypeH2PNode:=CreateAutoGeneratedH2PNode(CurName,CNode,ctnEnumerationType,'',
+                                            nil,ParentNode=nil);
+  end else begin
+    // this enum block has a name
+    TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumerationType,'',
+                               nil,ParentNode=nil);
+  end;
+  DebugLn(['TH2PasTool.BuildH2PTree added: ',TypeH2PNode.DescAsString]);
+
+  CNode:=CNode.FirstChild;
+  while CNode<>nil do begin
+    if CNode.Desc=ccnEnumID then begin
+      CurName:=CTool.ExtractEnumIDName(CNode);
+      CurValue:=CTool.ExtractEnumIDValue(CNode);
+      H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumIdentifier,CurValue,
+                             TypeH2PNode,ParentNode=nil);
+      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+    end;
+    CNode:=CNode.NextBrother;
+  end;
+end;
+
+procedure TH2PasTool.ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode
+  );
+var
+  CurName: String;
+  CurType: String;
+  SimpleType: String;
+  IsPointerToFunction: Boolean;
+  Ok: Boolean;
+  StatementNode: TCodeTreeNode;
+  TypeH2PNode: TH2PNode;
+  H2PNode: TH2PNode;
+begin
+  CurName:=CTool.ExtractFunctionName(CNode);
+  CurType:=CTool.ExtractFunctionResultType(CNode);
+  SimpleType:=GetSimplePascalResultTypeOfCFunction(CNode);
+  IsPointerToFunction:=CTool.IsPointerToFunction(CNode);
+  StatementNode:=nil;
+  Ok:=true;
+  if (CNode.LastChild<>nil) and (CNode.LastChild.Desc=ccnStatementBlock) then
+    StatementNode:=CNode.LastChild;
+  DebugLn(['TH2PasTool.BuildH2PTree Function Name="',CurName,'" ResultType="',CurType,'" SimpleType=',SimpleType,' HasStatements=',StatementNode<>nil,' IsPointer=',IsPointerToFunction]);
+  if StatementNode<>nil then begin
+    // this function has a body
+    Ok:=false;
+  end;
+  if Ok and (SimpleType='') then begin
+    // this function has a complex result type
+    TypeH2PNode:=GetH2PNodeForComplexType(CNode);
+    if TypeH2PNode<>nil then begin
+      SimpleType:=TypeH2PNode.PascalName;
+    end else
+      Ok:=false;
+  end;
+
+  if Ok then begin
+    H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
+                           nil,false);
+    DebugLn(['TH2PasTool.BuildH2PTree function added: ',H2PNode.DescAsString]);
+    // build recursively
+    BuildH2PTree(H2PNode);
+  end else begin
+    DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Function Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
+  end;
+end;
+
+procedure TH2PasTool.ConvertFuncParameter(CNode: TCodeTreeNode;
+  ParentNode: TH2PNode);
+var
+  CurName: String;
+  CurType: String;
+  SimpleType: String;
+  TypeH2PNode: TH2PNode;
+  H2PNode: TH2PNode;
+begin
+  CurName:=CTool.ExtractParameterName(CNode);
+  CurType:=CTool.ExtractParameterType(CNode);
+  SimpleType:=GetSimplePascalTypeOfCParameter(CNode);
+  DebugLn(['TH2PasTool.BuildH2PTree Parameter: Name="',CurName,'" Type="',CurType,'" SimpleType="',SimpleType,'"']);
+  if SimpleType='' then begin
+    // this variable has a complex type
+    TypeH2PNode:=GetH2PNodeForComplexType(CNode);
+    if TypeH2PNode<>nil then
+      SimpleType:=TypeH2PNode.PascalName;
+  end;
+  if SimpleType<>'' then begin
+    H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
+                           ParentNode,false);
+    DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+  end else begin
+    DebugLn(['TH2PasTool.BuildH2PTree SKIPPING parameter Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
+  end;
+end;
+
+procedure TH2PasTool.ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode
+  );
+var
+  CurName: String;
+  ChildNode: TCodeTreeNode;
+  CurType: String;
+  TypeH2PNode: TH2PNode;
+  IsPointerToFunction: Boolean;
+  SimpleType: String;
+  H2PNode: TH2PNode;
+begin
+  if CNode.FirstChild=nil then begin
+    exit;
+  end;
+  CurName:=CTool.ExtractTypedefName(CNode);
+  DebugLn(['TH2PasTool.BuildH2PTree Typedef name="',CurName,'"']);
+  ChildNode:=CNode.FirstChild;
+  case ChildNode.Desc of
+
+  ccnStruct: // typedef struct
+    begin
+      ChildNode:=CNode.FirstChild.FirstChild;
+      if (ChildNode<>nil)
+      and (ChildNode.Desc=ccnStructAlias) then begin
+        // this is a struct alias
+        CurType:=GetIdentifier(@CTool.Src[ChildNode.StartPos]);
+        TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,
+                                   ctnTypeDefinition,CurType);
+      end else begin
+        // this is a new struct
+        TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'');
+        DebugLn(['TH2PasTool.BuildH2PTree added record: ',TypeH2PNode.DescAsString]);
+        // build recursively
+        if ChildNode<>nil then
+          BuildH2PTree(TypeH2PNode,ChildNode);
+      end;
+    end;
+
+  ccnFunction: // typedef function
+    begin
+      CurName:=CTool.ExtractFunctionName(ChildNode);
+      CurType:=CTool.ExtractFunctionResultType(ChildNode,false,false);
+      IsPointerToFunction:=CTool.IsPointerToFunction(ChildNode);
+      SimpleType:=GetSimplePascalResultTypeOfCFunction(ChildNode);
+      if IsPointerToFunction and (SimpleType='') then begin
+        // this function has a complex result type
+        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode);
+        if TypeH2PNode<>nil then
+          SimpleType:=TypeH2PNode.PascalName;
+      end;
+      if IsPointerToFunction and (SimpleType<>'') then begin
+        H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedureType,SimpleType,
+                               nil,true);
+        DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString]);
+        // build recursively
+        if ChildNode.FirstChild<>nil then
+          BuildH2PTree(H2PNode,ChildNode.FirstChild);
+      end else begin
+        DebugLn(['TH2PasTool.BuildH2PTree typdef function CurName=',CurName,' CurType=',CTool.ExtractFunctionResultType(ChildNode),' SimpleType=',SimpleType]);
+        DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(ChildNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+      end;
+    end;
+
+  else // typedef
+    DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(CNode.FirstChild.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+  end;
+end;
+
+procedure TH2PasTool.ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode
+  );
+var
+  Directive: String;
+  PascalCode: String;
+  H2PNode: TH2PNode;
+begin
+  Directive:=CTool.ExtractDirectiveAction(CNode);
+  if Directive='include' then begin
+    // #include <filename>  // search independent of source position
+    // #include "filename"  // search dependent on source position
+    if icspInclude in IgnoreCParts then
+      exit;
+  end else if Directive='define' then begin
+    // #define FMAC(a,b) a here, then b
+    // #define NONFMAC some text here
+  end else if Directive='undef' then begin
+    // #undef NAME
+  end else if Directive='if' then begin
+    // #if EXPRESSION
+  end else if Directive='ifdef' then begin
+    // #ifdef NAME
+  end else if Directive='ifndef' then begin
+    // #ifndef NAME
+  end else if Directive='elif' then begin
+    // #elif EXPRESSION
+  end else if Directive='else' then begin
+    // #else
+    H2PNode:=CreateH2PNode('#else','#else',CNode,ctnNone,
+                           '',ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $else: ',H2PNode.DescAsString]);
+    exit;
+  end else if Directive='endif' then begin
+    // #endif
+    H2PNode:=CreateH2PNode('#endif','#endif',CNode,ctnNone,
+                           '',ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $endif: ',H2PNode.DescAsString]);
+    exit;
+  end else if Directive='line' then begin
+    // #line: set the current line number -> ignore
+    exit;
+  end else if Directive='error' then begin
+    // #error
+    PascalCode:=CTool.ExtractCode(CNode.StartPos+length('#error'),
+                                  CNode.EndPos);
+    H2PNode:=CreateH2PNode('#error','#error',CNode,ctnNone,
+                           PascalCode,ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString]);
+    exit;
+  end else if Directive='pragma' then begin
+    // #pragma: implementation specifics
+    exit;
+  end else if Directive='' then begin
+    // #  : null
+    exit;
+  end;
+  DebugLn(['TH2PasTool.ConvertDirective SKIPPING directive at ',CTool.CleanPosToStr(CNode.StartPos),' Code="',dbgstr(CTool.ExtractCode(CNode.StartPos,CNode.EndPos)),'"']);
+end;
+
+procedure TH2PasTool.SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
+begin
+  if FIgnoreCParts=AValue then exit;
+  FIgnoreCParts:=AValue;
+end;
+
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
 begin
   Result:=false;
@@ -278,17 +611,7 @@ procedure TH2PasTool.BuildH2PTree(ParentNode: TH2PNode;
   StartNode: TCodeTreeNode);
 var
   CNode: TCodeTreeNode;
-  CurName: String;
-  CurType: String;
-  SimpleType: String;
-  H2PNode: TH2PNode;
   NextCNode: TCodeTreeNode;
-  TypeH2PNode: TH2PNode;
-  CurValue: String;
-  StatementNode: TCodeTreeNode;
-  Ok: Boolean;
-  IsPointerToFunction: Boolean;
-  ChildNode: TCodeTreeNode;
 begin
   //DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString]);
   if ParentNode<>nil then begin
@@ -307,220 +630,31 @@ begin
     ccnRoot, ccnExtern:
       NextCNode:=CNode.Next;
       
-    ccnDirective:
-      NextCNode:=CNode.Next;
-      
     ccnTypedef:
-      if CNode.FirstChild<>nil then begin
-        CurName:=CTool.ExtractTypedefName(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Typedef name="',CurName,'"']);
-        ChildNode:=CNode.FirstChild;
-        case ChildNode.Desc of
-        
-        ccnStruct: // typedef struct
-          begin
-            ChildNode:=CNode.FirstChild.FirstChild;
-            if (ChildNode<>nil)
-            and (ChildNode.Desc=ccnStructAlias) then begin
-              // this is a struct alias
-              CurType:=GetIdentifier(@CTool.Src[ChildNode.StartPos]);
-              TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,
-                                         ctnTypeDefinition,CurType);
-            end else begin
-              // this is a new struct
-              TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'');
-              DebugLn(['TH2PasTool.BuildH2PTree added record: ',TypeH2PNode.DescAsString]);
-              // build recursively
-              if ChildNode<>nil then
-                BuildH2PTree(TypeH2PNode,ChildNode);
-            end;
-          end;
-          
-        ccnFunction: // typedef function
-          begin
-            CurName:=CTool.ExtractFunctionName(ChildNode);
-            CurType:=CTool.ExtractFunctionResultType(ChildNode,false,false);
-            IsPointerToFunction:=CTool.IsPointerToFunction(ChildNode);
-            SimpleType:=GetSimplePascalResultTypeOfCFunction(ChildNode);
-            if IsPointerToFunction and (SimpleType='') then begin
-              // this function has a complex result type
-              TypeH2PNode:=GetH2PNodeForComplexType(ChildNode);
-              if TypeH2PNode<>nil then
-                SimpleType:=TypeH2PNode.PascalName;
-            end;
-            if IsPointerToFunction and (SimpleType<>'') then begin
-              H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedureType,SimpleType,
-                                     nil,true);
-              DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString]);
-              // build recursively
-              if ChildNode.FirstChild<>nil then
-                BuildH2PTree(H2PNode,ChildNode.FirstChild);
-            end else begin
-              DebugLn(['TH2PasTool.BuildH2PTree typdef function CurName=',CurName,' CurType=',CTool.ExtractFunctionResultType(ChildNode),' SimpleType=',SimpleType]);
-              DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(ChildNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
-            end;
-          end;
-          
-        else // typedef
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING typedef ',CCNodeDescAsString(CNode.FirstChild.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
-        end;
-      end;
-      
+      ConvertTypedef(CNode,ParentNode);
+
     ccnVariable:
-      if (CNode.FirstChild<>nil) and (CNode.FirstChild.Desc=ccnUnion)
-      then begin
-        CurName:=CTool.ExtractVariableName(CNode);
-        if (ParentNode<>nil) and (ParentNode.PascalDesc=ctnRecordType)
-        then begin
-          // create a pascal 'record case'
-          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
-                                     ParentNode,false);
-          DebugLn(['TH2PasTool.BuildH2PTree added record case for nested union']);
-          // build recursively the record cases
-          if CNode.FirstChild.FirstChild<>nil then
-            BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
-        end else if (CurName<>'') and (ParentNode=nil) then begin
-          // this union has a name
-          // create a record type
-          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
-                                     nil,true);
-          DebugLn(['TH2PasTool.BuildH2PTree added record type for union: ',TypeH2PNode.DescAsString]);
-          // build recursively
-          if CNode.FirstChild.FirstChild<>nil then
-            BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
-          // create variable
-          CurName:=CTool.ExtractUnionName(CNode);
-          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,
-                                 TypeH2PNode.PascalName,
-                                 nil,ParentNode=nil);
-          DebugLn(['TH2PasTool.BuildH2PTree added variable for union: ',H2PNode.DescAsString]);
-        end else begin
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
-        end;
-      end else begin
-        CurName:=CTool.ExtractVariableName(CNode);
-        CurType:=CTool.ExtractVariableType(CNode);
-        SimpleType:=GetSimplePascalTypeOfCVar(CNode);
-        if SimpleType='' then begin
-          // this variable has a complex type
-          TypeH2PNode:=GetH2PNodeForComplexType(CNode);
-          if TypeH2PNode<>nil then
-            SimpleType:=TypeH2PNode.PascalName;
-        end;
-        if SimpleType<>'' then begin
-          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
-                                 ParentNode,ParentNode=nil);
-          DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
-        end else begin
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Variable Name="',CurName,'" Type="',CurType,'"']);
-        end;
-      end;
-      
+      ConvertVariable(CNode,ParentNode);
+
     ccnFunction:
-      begin
-        CurName:=CTool.ExtractFunctionName(CNode);
-        CurType:=CTool.ExtractFunctionResultType(CNode);
-        SimpleType:=GetSimplePascalResultTypeOfCFunction(CNode);
-        IsPointerToFunction:=CTool.IsPointerToFunction(CNode);
-        StatementNode:=nil;
-        Ok:=true;
-        if (CNode.LastChild<>nil) and (CNode.LastChild.Desc=ccnStatementBlock) then
-          StatementNode:=CNode.LastChild;
-        DebugLn(['TH2PasTool.BuildH2PTree Function Name="',CurName,'" ResultType="',CurType,'" SimpleType=',SimpleType,' HasStatements=',StatementNode<>nil,' IsPointer=',IsPointerToFunction]);
-        if StatementNode<>nil then begin
-          // this function has a body
-          Ok:=false;
-        end;
-        if Ok and (SimpleType='') then begin
-          // this function has a complex result type
-          TypeH2PNode:=GetH2PNodeForComplexType(CNode);
-          if TypeH2PNode<>nil then begin
-            SimpleType:=TypeH2PNode.PascalName;
-          end else
-            Ok:=false;
-        end;
-        
-        if Ok then begin
-          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
-                                 nil,false);
-          DebugLn(['TH2PasTool.BuildH2PTree function added: ',H2PNode.DescAsString]);
-          // build recursively
-          BuildH2PTree(H2PNode);
-        end else begin
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Function Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
-        end;
-      end;
-      
+      ConvertFunction(CNode,ParentNode);
+
     ccnFuncParamList:
       NextCNode:=CNode.FirstChild;
       
     ccnFuncParameter:
-      begin
-        CurName:=CTool.ExtractParameterName(CNode);
-        CurType:=CTool.ExtractParameterType(CNode);
-        SimpleType:=GetSimplePascalTypeOfCParameter(CNode);
-        DebugLn(['TH2PasTool.BuildH2PTree Parameter: Name="',CurName,'" Type="',CurType,'" SimpleType="',SimpleType,'"']);
-        if SimpleType='' then begin
-          // this variable has a complex type
-          TypeH2PNode:=GetH2PNodeForComplexType(CNode);
-          if TypeH2PNode<>nil then
-            SimpleType:=TypeH2PNode.PascalName;
-        end;
-        if SimpleType<>'' then begin
-          H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
-                                 ParentNode,false);
-          DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
-        end else begin
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING parameter Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
-        end;
-      end;
-      
-    ccnEnumBlock:
-      begin
-        CurName:=CTool.ExtractEnumBlockName(CNode);
-        if CurName='' then begin
-          // this is an anonymous enum block => auto generate a name
-          CurName:=CreatePascalNameFromCCode(CTool.Src,CNode.StartPos,CNode.EndPos);
-          TypeH2PNode:=CreateAutoGeneratedH2PNode(CurName,CNode,ctnEnumerationType,'',
-                                                  nil,ParentNode=nil);
-        end else begin
-          // this enum block has a name
-          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumerationType,'',
-                                     nil,ParentNode=nil);
-        end;
-        DebugLn(['TH2PasTool.BuildH2PTree added: ',TypeH2PNode.DescAsString]);
+      ConvertFuncParameter(CNode,ParentNode);
 
-        CNode:=CNode.FirstChild;
-        while CNode<>nil do begin
-          if CNode.Desc=ccnEnumID then begin
-            CurName:=CTool.ExtractEnumIDName(CNode);
-            CurValue:=CTool.ExtractEnumIDValue(CNode);
-            H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumIdentifier,CurValue,
-                                   TypeH2PNode,ParentNode=nil);
-            DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
-          end;
-          CNode:=CNode.NextBrother;
-        end;
-      end;
-      
+    ccnEnumBlock:
+      ConvertEnumBlock(CNode,ParentNode);
+
     ccnStruct:
-      begin
-        CurName:=CTool.ExtractStructName(CNode);
-        if CurName='' then begin
-          // this is an anonymous struct -> ignore
-          DebugLn(['TH2PasTool.BuildH2PTree SKIPPING anonymous struct at ',CTool.CleanPosToStr(CNode.StartPos)]);
-        end else begin
-          // this struct has a name
-          // create a type
-          TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'',
-                                     nil,ParentNode=nil);
-          // build recursively
-          BuildH2PTree(TypeH2PNode);
-        end;
-      end;
+      ConvertStruct(CNode,ParentNode);
 
     ccnName: ;
 
+    ccnDirective:
+      ConvertDirective(CNode,ParentNode);
     else
       DebugLn(['TH2PasTool.BuildH2PTree SKIPPING ',CCNodeDescAsString(CNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
     end;
@@ -902,6 +1036,7 @@ begin
   Tree:=TH2PTree.Create;
   FPascalNames:=TAVLTree.Create(@CompareH2PNodePascalNames);
   FCNames:=TAVLTree.Create(@CompareH2PNodeCNames);
+  FIgnoreCParts:=[icspInclude];
 end;
 
 destructor TH2PasTool.Destroy;
