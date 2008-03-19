@@ -112,6 +112,9 @@ type
     procedure ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
+    function ConvertCToPascalDirectiveExpression(const CCode: string;
+           StartPos, EndPos: integer; out PasExpr: string;
+           out ErrorPos: integer; out ErrorMsg: string): boolean;
   public
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
@@ -531,9 +534,13 @@ procedure TH2PasTool.ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode
   );
 var
   Directive: String;
-  PascalCode: String;
   H2PNode: TH2PNode;
   CurName: String;
+  PascalCode: String;
+  ErrorPos: integer;
+  ErrorMsg: string;
+  StartPos: LongInt;
+  EndPos: LongInt;
 begin
   Directive:=CTool.ExtractDirectiveAction(CNode);
   if Directive='include' then begin
@@ -544,42 +551,46 @@ begin
   end else if Directive='define' then begin
     // #define FMAC(a,b) a here, then b
     // #define NONFMAC some text here
-  end else if Directive='undef' then begin
+  end else if (Directive='undef') or (Directive='ifdef')
+  or (Directive='ifndef') then begin
     // #undef NAME
-    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
-    H2PNode:=CreateH2PNode('#undef','#undef',CNode,ctnNone,
-                           CurName,ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $undef: ',H2PNode.DescAsString]);
-    exit;
-  end else if Directive='if' then begin
-    // #if EXPRESSION
-  end else if Directive='ifdef' then begin
     // #ifdef NAME
-    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
-    H2PNode:=CreateH2PNode('#ifdef','#ifdef',CNode,ctnNone,
-                           CurName,ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $ifdef: ',H2PNode.DescAsString]);
-    exit;
-  end else if Directive='ifndef' then begin
     // #ifndef NAME
     CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
-    H2PNode:=CreateH2PNode('#ifndef','#ifndef',CNode,ctnNone,
+    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            CurName,ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $ifndef: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
     exit;
-  end else if Directive='elif' then begin
+  end else if (Directive='if') or (Directive='elif') then begin
+    // #if EXPRESSION
     // #elif EXPRESSION
-  end else if Directive='else' then begin
+    CTool.MoveCursorToPos(CNode.StartPos+1);
+    // read action
+    CTool.ReadRawNextAtom;
+    // convert expression
+    StartPos:=CTool.SrcPos;
+    EndPos:=CNode.EndPos;
+    if not ConvertCToPascalDirectiveExpression(CTool.Src,StartPos,EndPos,
+      PascalCode,ErrorPos,ErrorMsg) then
+    begin
+      DebugLn(['TH2PasTool.ConvertDirective failed to convert expression at ',
+        CTool.CleanPosToStr(ErrorPos)+': '+ErrorMsg]);
+    end else begin
+      if Directive='if' then
+        CurName:='if'
+      else
+        CurName:='elseif';
+      H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
+                             PascalCode,ParentNode,false);
+      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+      exit;
+    end;
+  end else if (Directive='else') or (Directive='endif') then begin
     // #else
-    H2PNode:=CreateH2PNode('#else','#else',CNode,ctnNone,
-                           '',ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $else: ',H2PNode.DescAsString]);
-    exit;
-  end else if Directive='endif' then begin
     // #endif
-    H2PNode:=CreateH2PNode('#endif','#endif',CNode,ctnNone,
+    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $endif: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
     exit;
   end else if Directive='line' then begin
     // #line: set the current line number -> ignore
@@ -588,7 +599,7 @@ begin
     // #error
     PascalCode:=CTool.ExtractCode(CNode.StartPos+length('#error'),
                                   CNode.EndPos);
-    H2PNode:=CreateH2PNode('#error','#error',CNode,ctnNone,
+    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString]);
     exit;
@@ -606,6 +617,169 @@ procedure TH2PasTool.SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
 begin
   if FIgnoreCParts=AValue then exit;
   FIgnoreCParts:=AValue;
+end;
+
+function TH2PasTool.ConvertCToPascalDirectiveExpression(const CCode: string;
+  StartPos, EndPos: integer; out PasExpr: string;
+  out ErrorPos: integer; out ErrorMsg: string): boolean;
+type
+  TTokenType = (
+    ttNone,
+    ttValue,
+    ttBinaryOperator,
+    ttBracketOpen,
+    ttBracketClose
+    );
+var
+  p: LongInt;
+  AtomStart: integer;
+  BracketLvl: Integer;
+  LastToken: TTokenType;
+
+  function AtomIs(const s: shortstring): boolean;
+  var
+    len: Integer;
+    i: Integer;
+  begin
+    len:=length(s);
+    if (len<>p-AtomStart) then exit(false);
+    if p>EndPos then exit(false);
+    for i:=1 to len do
+      if CCode[AtomStart+i-1]<>s[i] then exit(false);
+    Result:=true;
+  end;
+  
+  function GetAtom: string;
+  begin
+    Result:=copy(CCode,AtomStart,p-AtomStart);
+  end;
+  
+  procedure ErrorExpectedButFound(const s: string);
+  begin
+    ErrorPos:=AtomStart;
+    ErrorMsg:=s+' expected, but '+GetAtom+' found';
+  end;
+  
+  procedure Add(NewToken: TTokenType; const s: string);
+  begin
+    LastToken:=NewToken;
+    if s='' then exit;
+    if (IsIdentChar[s[1]])
+    and (PasExpr<>'') and IsIdentChar[PasExpr[length(PasExpr)]] then
+      PasExpr:=PasExpr+' ';
+    PasExpr:=PasExpr+s;
+  end;
+  
+  procedure Add(NewToken: TTokenType);
+  begin
+    Add(NewToken,GetAtom);
+  end;
+  
+begin
+  Result:=false;
+  PasExpr:='';
+  ErrorMsg:='';
+  ErrorPos:=StartPos;
+  LastToken:=ttNone;
+  BracketLvl:=0;
+  p:=StartPos;
+  repeat
+    ReadRawNextCAtom(CCode,p,AtomStart);
+    if (AtomStart>=EndPos) or (CCode[AtomStart] in [#10,#13]) then begin
+      if BracketLvl>0 then begin
+        ErrorPos:=EndPos;
+        ErrorMsg:='missing closing bracket';
+        exit;
+      end else if LastToken in [ttNone,ttBinaryOperator] then begin
+        ErrorPos:=EndPos;
+        ErrorMsg:='missing value';
+        exit;
+      end;
+      Result:=true;
+      break;
+    end;
+    if IsIdentChar[CCode[AtomStart]] then begin
+      // value
+      if LastToken in [ttValue,ttBracketClose] then begin
+        ErrorPos:=AtomStart;
+        ErrorMsg:='missing operator';
+        exit;
+      end;
+      Add(ttValue);
+      if AtomIs('defined') then begin
+        // read   defined(name)
+        ReadRawNextCAtom(CCode,p,AtomStart);
+        if not AtomIs('(') then begin
+          ErrorExpectedButFound('(');
+          exit;
+        end;
+        Add(ttBracketOpen);
+        ReadRawNextCAtom(CCode,p,AtomStart);
+        if (AtomStart>=EndPos) or (not IsIdentStartChar[CCode[AtomStart]])
+        then begin
+          ErrorExpectedButFound('identifier');
+          exit;
+        end;
+        Add(ttValue);
+        ReadRawNextCAtom(CCode,p,AtomStart);
+        if not AtomIs(')') then begin
+          ErrorExpectedButFound(')');
+          exit;
+        end;
+        Add(ttBracketClose);
+      end;
+    end else if AtomIs('+') or AtomIs('-') or AtomIs('!') then begin
+      if LastToken in [ttValue,ttBracketClose] then begin
+        if AtomIs('!') then
+          Add(ttBinaryOperator,'not')
+        else
+          Add(ttBinaryOperator);
+      end else begin
+        // just a modifier, not important for the type
+      end;
+    end else if AtomIs('*') or AtomIs('/') or AtomIs('!=') or AtomIs('==')
+    then begin
+      if LastToken in [ttValue,ttBracketClose] then begin
+        if AtomIs('!=') then
+          Add(ttBinaryOperator,'<>')
+        else if AtomIs('==') then
+          Add(ttBinaryOperator,'=')
+        else
+          Add(ttBinaryOperator);
+      end else begin
+        ErrorPos:=AtomStart;
+        ErrorMsg:='value expected, but '+GetAtom+' found';
+        exit;
+      end;
+    end else if AtomIs('(') then begin
+      if LastToken in [ttNone,ttBinaryOperator] then begin
+        Add(ttBracketOpen);
+        inc(BracketLvl);
+      end else begin
+        ErrorPos:=AtomStart;
+        ErrorMsg:='operator expected, but '+GetAtom+' found';
+        exit;
+      end;
+    end else if AtomIs(')') then begin
+      if BracketLvl=0 then begin
+        ErrorPos:=AtomStart;
+        ErrorMsg:='missing opening bracket';
+        exit;
+      end;
+      if LastToken in [ttValue] then begin
+        Add(ttBracketClose);
+        dec(BracketLvl);
+      end else begin
+        ErrorPos:=AtomStart;
+        ErrorMsg:='operator expected, but '+GetAtom+' found';
+        exit;
+      end;
+    end else begin
+      ErrorPos:=AtomStart;
+      ErrorMsg:='invalid symbol '+GetAtom+' found';
+      exit;
+    end;
+  until false;
 end;
 
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;

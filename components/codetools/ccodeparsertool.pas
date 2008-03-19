@@ -229,6 +229,7 @@ type
     function ExtractTypedefName(TypedefNode: TCodeTreeNode): string;
     function ExtractDirectiveAction(DirectiveNode: TCodeTreeNode): string;
     function ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode): string;
+    function ExtractDirectiveParams(DirectiveNode: TCodeTreeNode): string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -409,8 +410,10 @@ begin
       ReadRawNextAtom;
       if not AtomIsIdentifier then
         RaiseExpectedButAtomFound('identifier');
-      ReadRawNextAtom;
-      if AtomIsChar('(') then begin
+      // if a ( follows immediately (without spaces) then it is a macro function
+      if (SrcPos<=SrcLen) and (Src[SrcPos]='(') then begin
+        AtomStart:=SrcPos;
+        SrcPos:=AtomStart+1;
         ReadTilBracketClose(true);
         ReadRawNextAtom;
       end;
@@ -1806,10 +1809,21 @@ function TCCodeParserTool.ExtractDirectiveFirstAtom(DirectiveNode: TCodeTreeNode
 begin
   MoveCursorToPos(DirectiveNode.StartPos+1);
   // read action
-  ReadNextAtom;
+  ReadRawNextAtom;
   // read first atom
-  ReadNextAtom;
+  ReadRawNextAtom;
   Result:=GetAtom;
+end;
+
+function TCCodeParserTool.ExtractDirectiveParams(DirectiveNode: TCodeTreeNode
+  ): string;
+begin
+  MoveCursorToPos(DirectiveNode.StartPos+1);
+  // read action
+  ReadRawNextAtom;
+  // read first atom
+  ReadRawNextAtom;
+  Result:=ExtractCode(AtomStart,DirectiveNode.EndPos);
 end;
 
 function TCCodeParserTool.GetAtom: string;
