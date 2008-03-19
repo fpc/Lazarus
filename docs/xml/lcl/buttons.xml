@@ -2,7 +2,7 @@
 <fpdoc-descriptions>
   <package name="LCL">
     <module name="Buttons">
-      <short/>
+      <short>Defines several specialist button classes</short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -216,7 +216,7 @@ Constructors allocate memory and system resources needed by the object. They als
       <!-- destructor Visibility: public -->
       <element name="TButtonGlyph.Destroy">
         <short>Deallocates an object</short>
-        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+        <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
 
@@ -515,14 +515,14 @@ Take the following precautions when creating your own Destroy method:
       <!-- procedure Visibility: protected -->
       <element name="TCustomBitBtn.Click">
         <short>
-          <i>Click </i>- the procedure which allows programmatic simulation of a mouse click</short>
+          <var>Click </var>- the procedure which allows programmatic simulation of a mouse click</short>
         <descr>
           <p>
-            <i>Click </i>
+            <var>Click </var>
 
 
 
-- the procedure which allows programmatic simulation of a mouse click, and thus activation of the <i>Action</i> associated with the <i>OnClick</i> event
+- the procedure which allows programmatic simulation of a mouse click, and thus activation of the <var>Action</var> associated with the <var>OnClick</var> event
 </p>
         </descr>
         <errors/>
@@ -564,7 +564,7 @@ Constructors allocate memory and system resources needed by the object. They als
       <!-- destructor Visibility: public -->
       <element name="TCustomBitBtn.Destroy">
         <short>Deallocates an object</short>
-        <descr>If you call Destroy for an object witch hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
+        <descr>If you call Destroy for an object which hasn´t being initialized yet it will generate an error. Always use the Free method to deallocate objects, because it verifies if object variable doesn´t contain the value nil.
 
 Take the following precautions when creating your own Destroy method:
 
@@ -636,7 +636,7 @@ Take the following precautions when creating your own Destroy method:
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
       </element>
@@ -646,7 +646,7 @@ Take the following precautions when creating your own Destroy method:
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
       </element>
@@ -672,49 +672,49 @@ Take the following precautions when creating your own Destroy method:
       <!-- property Visibility: published -->
       <element name="TBitBtn.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Default">
         <short>Is this the Default button? (default setting is False)</short>
         <descr>
-          <p>Defines if a button is the <i>Default</i> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
+          <p>Defines if a button is the <var>Default</var> on a form. That is, pressing ENTER will execute its onClick method, whether the control has focus or not!</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
         <seealso/>
@@ -763,7 +763,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -772,26 +772,26 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
@@ -800,19 +800,19 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TBitBtn.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -847,7 +847,7 @@ Reads or Writes flag if control is re-sized.
       <!-- property Visibility: published -->
       <element name="TBitBtn.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -890,7 +890,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TBitBtn.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -961,11 +961,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomSpeedButton">
-        <short>The ancestor class for <i>TSpeedButton</i>
+        <short>The ancestor class for <var>TSpeedButton</var>
         </short>
         <descr>
           <p>
-            <i>TCustomSpeedButton</i> is the ancestor for <i>TSpeedButton</i>. If you want to define your own speedbutton class, you should use this class to derive it from.</p>
+            <var>TCustomSpeedButton</var> is the ancestor for <var>TSpeedButton</var>. If you want to define your own speedbutton class, you should use this class to derive it from.</p>
           <p>The Speed Button is designed to automate a process when it is selected.  An user pushes a button to start an action or set a mode. 
 </p>
           <p>When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may carry an descriptive glyph, and has a state (checked or not, etc)</p>
@@ -1429,7 +1429,7 @@ Constructors allocate memory and system resources needed by the object. They als
       <!-- procedure Visibility: public -->
       <element name="TCustomSpeedButton.Click">
         <short>
-          <i>Click</i> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <i>Action</i> as that associated with the <i>OnClick</i> event</short>
+          <var>Click</var> - a procedure that allows the programmer to simulate a mouse click over the control, and initiates the same <var>Action</var> as that associated with the <var>OnClick</var> event</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1518,7 +1518,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
       </element>
@@ -1528,7 +1528,7 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -1552,25 +1552,25 @@ When a user clicks on a SpeedButton focus is not shifted; a Speed Button never g
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Caption">
         <short>
-          <i>Caption</i> - the text-string appearing on the Control, usually used to identify its function</short>
+          <var>Caption</var> - the text-string appearing on the Control, usually used to identify its function</short>
         <descr>
-          <p>Gets caption as a text-string (<i>GetText</i>), or stores the new caption (<i>SetText</i>). Shows flag if caption is stored (<i>IsCaptionStored</i>).</p>
-          <p>By default, the <i>Caption</i> appears the same as the control <i>Name</i> in the Object Inspector, 
+          <p>Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).</p>
+          <p>By default, the <var>Caption</var> appears the same as the control <var>Name</var> in the Object Inspector, 
 and the developer needs to set it explicitly to some new text.</p>
-          <p>The VCL implementation relies on the virtual <i>Get/SetTextBuf</i> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
-          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <i>RealGet/SetText</i> is
+          <p>The VCL implementation relies on the virtual <var>Get/SetTextBuf</var> to exchange text between widgets and VCL. This means a lot of (unnecesary) text copies. </p>
+          <p>The LCL uses strings for exchanging text (more efficient). To maintain VCL compatibility, the virtual <var>RealGet/SetText</var> is
 introduced. These functions interface with the LCLInterface. </p>
-          <p>The default <i>Get/SetTextBuf</i> implementation calls the <i>RealGet/SetText</i>. As long as the <i>Get/SetTextBuf</i> isn't overridden <i>Get/SetText</i> calls <i>RealGet/SetText</i> to avoid PChar copying.</p>
+          <p>The default <var>Get/SetTextBuf</var> implementation calls the <var>RealGet/SetText</var>. As long as the <var>Get/SetTextBuf</var> isn't overridden <var>Get/SetText</var> calls <var>RealGet/SetText</var> to avoid PChar copying.</p>
           <p>To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.</p>
         </descr>
       </element>
@@ -1581,10 +1581,10 @@ introduced. These functions interface with the LCLInterface. </p>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
       </element>
@@ -1635,7 +1635,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -1650,7 +1650,7 @@ introduced. These functions interface with the LCLInterface. </p>
         <short>Event Handler for mouse click</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <i>ActionList</i>
+          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be spcified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>
           </p>
           <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
         </descr>
@@ -1685,7 +1685,7 @@ introduced. These functions interface with the LCLInterface. </p>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.OnPaint">
         <short>
-          <i>OnPaint</i> - event handler for request to paint canvas</short>
+          <var>OnPaint</var> - event handler for request to paint canvas</short>
         <descr/>
         <seealso/>
       </element>
@@ -1717,14 +1717,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TSpeedButton.ParentFont">
         <short>
-          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TSpeedButton.ParentShowHint">
         <short>
-          <i>ParentShowHint </i>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
+          <var>ParentShowHint </var>- does the control adopt the same hinting behaviour as its parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -1793,11 +1793,11 @@ Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPop
         </descr>
       </element>
       <element name="TSpeedButton.Font">
-        <short>The <i>Font</i> to be used for text in this control</short>
+        <short>The <var>Font</var> to be used for text in this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so</p>
-          <p>The properties of <i>Font</i> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
+          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
           </p>
         </descr>
       </element>
