@@ -30,7 +30,7 @@ endif
 options=-gl -dfpgui
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . corelib gui corelib/$(fpGUIPlatform)
 unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/fpgui
-includedir=corelib
+includedir=corelib corelib/$(fpGUIPlatform)
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
