@@ -35,7 +35,8 @@ uses
 ////////////////////////////////////////////////////
   Controls,
 ////////////////////////////////////////////////////
-  Gtk2, Gdk2, Glib2, GtkGlobals,
+  Classes,
+  Gtk2, Gdk2, Glib2, GtkGlobals, GtkDef,
   GtkWsControls,
   gtkProc, LCLType,
   WSControls, WSLCLClasses, WSProc;
@@ -65,6 +66,8 @@ type
   private
   protected
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -94,10 +97,140 @@ type
   public
   end;
 
+function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
+                  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+
 
 implementation
+uses Gtk2Int, LMessages, Math;
 
 { TGtk2WSWinControl }
+
+function GtkScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
+begin
+  case ScrollType of
+      GTK_SCROLL_NONE          : Result := SB_ENDSCROLL;
+      GTK_SCROLL_JUMP          : Result := SB_THUMBPOSITION;
+      GTK_SCROLL_STEP_BACKWARD : Result := SB_LINELEFT;
+      GTK_SCROLL_STEP_FORWARD  : Result := SB_LINERIGHT;
+      GTK_SCROLL_PAGE_BACKWARD : Result := SB_PAGELEFT;
+      GTK_SCROLL_PAGE_FORWARD  : Result := SB_PAGERIGHT;
+      GTK_SCROLL_STEP_UP       : Result := SB_LINEUP;
+      GTK_SCROLL_STEP_DOWN     : Result := SB_LINEDOWN;
+      GTK_SCROLL_PAGE_UP       : Result := SB_PAGEUP;
+      GTK_SCROLL_PAGE_DOWN     : Result := SB_PAGEDOWN;
+      GTK_SCROLL_STEP_LEFT     : Result := SB_LINELEFT;
+      GTK_SCROLL_STEP_RIGHT    : Result := SB_LINERIGHT;
+      GTK_SCROLL_PAGE_LEFT     : Result := SB_PAGELEFT;
+      GTK_SCROLL_PAGE_RIGHT    : Result := SB_PAGERIGHT;
+      GTK_SCROLL_START         : Result := SB_TOP;
+      GTK_SCROLL_END           : Result := SB_BOTTOM;
+    end;
+end;
+
+function Gtk2RangeScrollCB(ARange: PGtkRange; AScrollType: TGtkScrollType;
+                  AValue: gdouble; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Msg: TLMVScroll;
+begin
+  Result := CallBackDefaultReturn;
+  //Assert(False, Format('Trace:[Gtk2RangeScrollCB] Value: %d', [RoundToInt(AValue)]));
+  if G_OBJECT_TYPE(ARange) = gtk_hscrollbar_get_type then
+    Msg.Msg := LM_HSCROLL
+  else
+    Msg.Msg := LM_VSCROLL;
+
+  with Msg do begin
+    Pos := Round(AValue);
+    if Pos < High(SmallPos) then
+      SmallPos := Pos
+    else
+      SmallPos := High(SmallPos);
+
+    ScrollBar := HWND(PtrUInt(ARange));
+    ScrollCode := GtkScrollTypeToScrollCode(AScrollType);
+  end;
+  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+end;
+
+function Gtk2ScrolledWindowScrollCB(AScrollWindow: PGtkScrolledWindow; AEvent: PGdkEventScroll; AWidgetInfo: PWidgetInfo): gboolean; cdecl;
+var
+  Msg: TLMVScroll;
+  AValue: Double;
+  Range: PGtkRange;
+begin
+  case AEvent^.direction of
+    GDK_SCROLL_UP,
+    GDK_SCROLL_DOWN: Msg.Msg := LM_VSCROLL;
+    GDK_SCROLL_LEFT,
+    GDK_SCROLL_RIGHT: Msg.Msg := LM_HSCROLL;
+  end;
+
+  case Msg.Msg of
+    LM_VSCROLL: Range := GTK_RANGE(AScrollWindow^.vscrollbar);
+    LM_HSCROLL: Range := GTK_RANGE(AScrollWindow^.hscrollbar);
+  end;
+  
+  AValue :=  power(Range^.adjustment^.page_size, 2 / 3);
+  
+  if AEvent^.direction = GDK_SCROLL_UP then
+    AValue := -AValue;
+    
+  AValue := gtk_range_get_value(Range) + AValue;
+  
+  AValue := Max(AValue, Range^.adjustment^.lower);
+  AValue := Min(AValue, Range^.adjustment^.upper - Range^.adjustment^.page_size);
+
+  with Msg do begin
+    Pos := Round(AValue);
+    if Pos < High(SmallPos) then
+      SmallPos := Pos
+    else
+      SmallPos := High(SmallPos);
+
+    ScrollBar := HWND(PtrUInt(Range));
+    ScrollCode := SB_THUMBPOSITION;
+  end;
+  Result := DeliverMessage(AWidgetInfo^.LCLObject, Msg) <> 0;
+end;
+
+
+class function TGtk2WSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  Widget := GTK2WidgetSet.CreateAPIWidget(AWinControl);
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  Result := THandle(PtrUInt(Widget));
+  if Result = 0 then Exit;
+
+  WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
+  WidgetInfo^.Style := AParams.Style;
+  WidgetInfo^.ExStyle := AParams.ExStyle;
+  WidgetInfo^.WndProc := PtrUInt(AParams.WindowClass.lpfnWndProc);
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  Set_RC_Name(AWinControl, Widget);
+  
+  TGtkWSWinControl.SetCallbacks(GTK_OBJECT(Widget), AWinControl);
+
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.hscrollbar, 'change-value', TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+  g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value', TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
+
+  g_signal_connect(Widget, 'scroll-event', TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
+end;
 
 class function TGtk2WSWinControl.GetText(const AWinControl: TWinControl;
   var AText: String): Boolean;

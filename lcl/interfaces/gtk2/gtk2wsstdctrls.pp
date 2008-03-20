@@ -71,10 +71,13 @@ type
   
   { TGtk2WSScrollBar }
 
-  TGtk2WSScrollBar = class(TGtkWSScrollBar)
+  TGtk2WSScrollBar = class(TWSScrollBar)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
   { TGtk2WSCustomGroupBox }
@@ -344,7 +347,7 @@ function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 
 implementation
 
-uses GtkWSControls, LCLMessageGlue;
+uses GtkWSControls, Gtk2WSControls, LCLMessageGlue, Forms;
 
 function GetComboBoxEntry(Widget: PGtkWidget): PGtkEntry;
 begin
@@ -1723,6 +1726,59 @@ begin
   //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
+{ TGtk2WSScrollBar }
+
+class procedure TGtk2WSScrollBar.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
+  
+  g_signal_connect(AGtkWidget, 'change-value', TGCallback(@Gtk2RangeScrollCB), AWidgetInfo);
+end;
+
+class function TGtk2WSScrollBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Adjustment: PGtkAdjustment = nil;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  with TScrollBar(AWinControl) do
+  begin
+{    Adjustment := GTK_ADJPgtkAdjustment(
+                   gtk_adjustment_new(1, Min, Max, SmallChange, LargeChange,
+                     Pagesize));
+
+ }   if (Kind = sbHorizontal) then
+      Widget := gtk_hscrollbar_new(Adjustment)
+    else
+      Widget := gtk_vscrollbar_new(Adjustment);
+  end;
+
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
+var
+  Adjustment: PGtkAdjustment;
+  Range: PGtkRange;
+begin
+  with AScrollBar do
+  begin
+    Range := GTK_RANGE(Pointer(Handle));
+    //set properties for the range
+    gtk_range_set_range     (Range, Min, Max);
+    gtk_range_set_increments(Range, SmallChange, LargeChange);
+    gtk_range_set_value     (Range, Position);
+  end;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1731,7 +1787,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
+  RegisterWSComponent(TScrollBar, TGtk2WSScrollBar);
   RegisterWSComponent(TCustomGroupBox, TGtk2WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtk2WSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtk2WSCustomComboBox);

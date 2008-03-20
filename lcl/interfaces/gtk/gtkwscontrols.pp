@@ -70,13 +70,16 @@ type
   TGtkWSWinControl = class(TWSWinControl)
   private
   protected
+  {$IFDEF GTK1}
     class procedure SetCCCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+  {$ENDIF}
   public
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
+  {$IFDEF GTK1}
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
-    
+  {$ENDIF}
     class procedure AddControl(const AControl: TControl); override;
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
@@ -318,6 +321,7 @@ begin
     gtk_frame_set_shadow_type(PGtkFrame(Widget), BorderStyleShadowMap[ABorderStyle]);
 end;
 
+{$IFDEF GTK1}
 class procedure TGtkWSWinControl.SetCCCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
@@ -328,6 +332,7 @@ begin
     SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
   end;
 end;
+{$ENDIF}
 
 class procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject;
   const AComponent: TComponent);
@@ -351,6 +356,7 @@ begin
   GtkWidgetSet.SetCallback(LM_DROPFILES, AGTKObject, AComponent);
 end;
 
+{$IFDEF GTK1}
 class function TGtkWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -381,6 +387,7 @@ begin
   Set_RC_Name(AWinControl, Widget);
   SetCCCallbacks(Widget, WidgetInfo);
 end;
+{$ENDIF}
 
 class procedure TGtkWSWinControl.SetChildZPosition(
   const AWinControl, AChild: TWinControl;
