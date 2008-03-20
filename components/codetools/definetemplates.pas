@@ -115,7 +115,7 @@ const
       'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
     );
 
-  Lazarus_CPU_OS_Widget_Combinations: array[1..38] of shortstring = (
+  Lazarus_CPU_OS_Widget_Combinations: array[1..39] of shortstring = (
     'i386-linux-gtk',
     'i386-linux-gtk2',
     'i386-linux-qt',
@@ -139,6 +139,7 @@ const
     'i386-darwin-gtk2',
     'i386-darwin-carbon',
     'i386-darwin-qt',
+    'i386-darwin-fpgui',
     'powerpc-darwin-gtk',
     'powerpc-darwin-gtk2',
     'powerpc-darwin-carbon',
@@ -3928,7 +3929,7 @@ var
   MainDir, DirTempl, SubDirTempl, IntfDirTemplate, IfTemplate, ElseTemplate,
   LCLUnitsDir, LCLUnitsCPUOSDir, LCLUnitsCPUOSWidgetSetDir,
   SubTempl: TDefineTemplate;
-  TargetOS, SrcOS, SrcPath, IncPath, CompiledSrcPath: string;
+  TargetOS, SrcOS, SrcPath, IncPath: string;
   i: Integer;
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
   LCLWidgetSetDir: TDefineTemplate;
@@ -3939,6 +3940,7 @@ var
   SynEditUnitsDirTempl: TDefineTemplate;
   CodeToolsDirTempl: TDefineTemplate;
   CodeToolsUnitsDirTempl: TDefineTemplate;
+  FPGUIPlatformTempl: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3947,7 +3949,6 @@ begin
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
   IncPath:='$('+ExternalMacroStart+'IncPath)';
-  CompiledSrcPath:='$('+ExternalMacroStart+'CompiledSrcPath)';
 
   // <LazarusSrcDir>
   MainDir:=TDefineTemplate.Create(
@@ -4245,8 +4246,26 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['widgetset']),
     ExternalMacroStart+'SrcPath','widgetset;'+SrcPath,da_Define));
+    // #FPGUIPlatform
+    FPGUIPlatformTempl:=TDefineTemplate.Create('Define FPGUIPlatform',
+                               'Define FPGUIPlatform','','',da_Block);
+      IfTemplate:=TDefineTemplate.Create('IFDEF windows',
+        ctsIfDefWindows, 'windows', '', da_IfDef);
+        // then set #FPGUIPlatform to gdi
+        IfTemplate.AddChild(TDefineTemplate.Create('#FPGUIPlatform:=gdi',
+          '#FPGUIPlatform:=gdi',
+          ExternalMacroStart+'FPGUIPlatform','gdi',da_DefineRecurse));
+      FPGUIPlatformTempl.AddChild(IfTemplate);
+      ElseTemplate:=TDefineTemplate.Create('Else',
+        ctsElse, '', '', da_Else);
+        // then set #FPGUIPlatform to x11
+        ElseTemplate.AddChild(TDefineTemplate.Create('#FPGUIPlatform:=x11',
+          '#FPGUIPlatform:=x11',
+          ExternalMacroStart+'FPGUIPlatform','x11',da_DefineRecurse));
+      FPGUIPlatformTempl.AddChild(ElseTemplate);
+    DirTempl.AddChild(FPGUIPlatformTempl);
   MainDir.AddChild(DirTempl);
-  
+
   // <LazarusSrcDir>/lcl/forms
   LCLWidgetSetDir:=TDefineTemplate.Create('forms',Format(ctsNamedDirectory,['WidgetSet']),
     '','forms',da_Directory);
@@ -4302,36 +4321,13 @@ begin
         ExtraSrcPath:=ExtraSrcPath+';../../../interfaces/gtk';
       if (CurWidgetSet='fpgui') then
         ExtraSrcPath:=ExtraSrcPath
-          +';../../../interfaces/fpgui/gfx'
+          +';../../../interfaces/fpgui/corelib'
+          +';../../../interfaces/fpgui/corelib/$('+ExternalMacroStart+'FPGUIPlatform)'
           +';../../../interfaces/fpgui/gui';
       LCLUnitsCPUOSWidgetSetDir.AddChild(
         TDefineTemplate.Create('CompiledSrcPath',
           ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
           d(ExtraSrcPath),da_Define));
-      if (CurWidgetSet='fpgui') then begin
-        // ifdef windows
-        IfTemplate:=TDefineTemplate.Create('IFDEF windows',
-          ctsIfDefWindows, 'windows', '', da_IfDef);
-          // then add gfx/gdi to CompiledSrcPath
-          IfTemplate.AddChild(TDefineTemplate.Create('Add gfx/gdi to CompiledSrcPath',
-            Format(ctsAddsDirToSourcePath,['gfx/gdi']),
-              ExternalMacroStart+'CompiledSrcPath',
-              d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/gdi')
-              +';'+CompiledSrcPath
-              ,da_Define));
-        LCLUnitsCPUOSWidgetSetDir.AddChild(IfTemplate);
-        // else
-        ElseTemplate:=TDefineTemplate.Create('ELSE',
-          ctsElse, '', '', da_Else);
-          // then add gfx/x11 to CompiledSrcPath
-          IfTemplate.AddChild(TDefineTemplate.Create('Add gfx/x11 to CompiledSrcPath',
-            Format(ctsAddsDirToSourcePath,['gfx/x11']),
-              ExternalMacroStart+'SrcPath',
-              d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/x11')
-              +';'+CompiledSrcPath
-              ,da_Define));
-        LCLUnitsCPUOSWidgetSetDir.AddChild(ElseTemplate);
-      end;
     end;
   end;
 
@@ -4416,42 +4412,22 @@ begin
   IntfDirTemplate:=TDefineTemplate.Create('fpgui',
     ctsIntfDirectory,'','fpgui',da_Directory);
     // add unit paths
-    IntfDirTemplate.AddChild(TDefineTemplate.Create('Add gui, gfx to SrcPath',
-    Format(ctsAddsDirToSourcePath,['gui, gfx']),
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('Add gui, corelib to SrcPath',
+    Format(ctsAddsDirToSourcePath,['gui, corelib']),
       ExternalMacroStart+'SrcPath',
       d(LazarusSrcDir+'/lcl/interfaces/fpgui/gui')
-      +';'+d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx')
+      +';'+d(LazarusSrcDir+'/lcl/interfaces/fpgui/corelib')
+      +';'+d(LazarusSrcDir+'/lcl/interfaces/fpgui/corelib/$('+ExternalMacroStart+'FPGUIPlatform)')
       +';'+SrcPath
       ,da_DefineRecurse));
-    // ifdef windows
-    IfTemplate:=TDefineTemplate.Create('IFDEF windows',
-      ctsIfDefWindows, 'windows', '', da_IfDef);
-      // then add gdi to SrcPath
-      IfTemplate.AddChild(TDefineTemplate.Create('Add gdi to SrcPath',
-        Format(ctsAddsDirToSourcePath,['gdi']),
-          ExternalMacroStart+'SrcPath',
-          d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/gdi')
-          +';'+SrcPath
-          ,da_DefineRecurse));
-    IntfDirTemplate.AddChild(IfTemplate);
-    // else
-    ElseTemplate:=TDefineTemplate.Create('ELSE',
-      ctsElse, '', '', da_Else);
-      // then add gfx/x11 to SrcPath
-      IfTemplate.AddChild(TDefineTemplate.Create('Add x11 to SrcPath',
-        Format(ctsAddsDirToSourcePath,['x11']),
-          ExternalMacroStart+'SrcPath',
-          d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx/x11')
-          +';'+SrcPath
-          ,da_DefineRecurse));
-    IntfDirTemplate.AddChild(ElseTemplate);
-    // add include paths
-    IntfDirTemplate.AddChild(TDefineTemplate.Create('Add gfx to IncPath',
-    Format(ctsAddsDirToSourcePath,['gfx']),
+    // and include path
+    IntfDirTemplate.AddChild(TDefineTemplate.Create('Add corelib to IncPath',
+    Format(ctsAddsDirToIncludePath,['corelib']),
       ExternalMacroStart+'IncPath',
-      d(LazarusSrcDir+'/lcl/interfaces/fpgui/gfx')
+      d(LazarusSrcDir+'/lcl/interfaces/fpgui/corelib')
+      +';'+d(LazarusSrcDir+'/lcl/interfaces/fpgui/corelib/$('+ExternalMacroStart+'FPGUIPlatform)')
       +';'+IncPath
-      ,da_DefineRecurse));
+      ,da_Define));
   SubDirTempl.AddChild(IntfDirTemplate);
 
   // <LazarusSrcDir>/components
