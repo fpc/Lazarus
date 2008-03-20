@@ -152,18 +152,26 @@ type
   published
     property Action;
     property Align default alBottom;
+    property Anchors;
     property AutoSize default true;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible default true;
     property Color default clBtnFace;
+    property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
+    property OnEndDock;
     property OnEndDrag;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
     property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDock;
     property OnStartDrag;
   end;
 

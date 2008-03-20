@@ -27,9 +27,8 @@ begin
   FSimplePanel := True;
   FPanels := CreatePanels;
   Color := clBtnFace;
-  Anchors:=[akLeft,akRight,akBottom];
   Align := alBottom;
-  AutoSize:=true;
+  AutoSize := True;
 end;
 
 
@@ -123,19 +122,20 @@ begin
     //DebugLn('TStatusBar.UpdateHandleObject C update all panels');
     TWSStatusBarClass(WidgetSetClass).Update(Self);
     if SimplePanel then
-      FHandlePanelCount:=1
+      FHandlePanelCount := 1
     else
-      FHandlePanelCount:=Panels.Count;
+      FHandlePanelCount := Panels.Count;
   end;
-  FHandleObjectNeedsUpdate:=false;
+  FHandleObjectNeedsUpdate := False;
 end;
 
 procedure TStatusBar.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
-  PreferredWidth:=0;
-  if PreferredHeight<=0 then PreferredHeight:=25;
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight, WithThemeSpace);
+  PreferredWidth := 0;
+  if PreferredHeight <= 0 then
+    PreferredHeight := 25;
 end;
 
 function TStatusBar.ColorIsStored: boolean;

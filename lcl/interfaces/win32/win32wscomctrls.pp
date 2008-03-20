@@ -342,13 +342,10 @@ begin
   begin
     pClassName := STATUSCLASSNAME;
     WindowTitle := StrCaption;
-    Left := LongInt(CW_USEDEFAULT);
-    Top := LongInt(CW_USEDEFAULT);
-    Width := LongInt(CW_USEDEFAULT);
-    Height := LongInt(CW_USEDEFAULT);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  Params.WindowInfo^.needParentPaint := false;
   // need to set handle for Update method
   AWinControl.Handle := Params.Window;
   Update(TStatusBar(AWinControl));
