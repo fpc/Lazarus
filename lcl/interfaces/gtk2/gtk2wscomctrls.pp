@@ -63,6 +63,7 @@ type
   private
   protected
   public
+    class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
   end;
 
   { TGtk2WSTabSheet }
@@ -343,6 +344,20 @@ begin
       UpdateProgressBarText(AProgressBar);
 end;
 
+{ TGtk2WSStatusBar }
+
+class procedure TGtk2WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
+var
+  LastWidget, Widget: PGtkWidget;
+begin
+  if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
+    Exit;
+  Widget := PGtkWidget(AStatusBar.Handle);
+  LastWidget := PGtkBoxChild(g_list_last(PGtkBox(Widget)^.children)^.data)^.widget;
+  gtk_statusbar_set_has_resize_grip(PGtkStatusBar(LastWidget), AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -351,7 +366,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomStatusBar, TGtk2WSStatusBar);
+  RegisterWSComponent(TStatusBar, TGtk2WSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TGtk2WSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TGtk2WSPageControl);
   RegisterWSComponent(TCustomListView, TGtk2WSCustomListView);

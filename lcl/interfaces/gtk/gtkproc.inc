@@ -6177,6 +6177,9 @@ var
   ListItem: PGList;
   i: Integer;
   ExpandItem: boolean;
+{$IFNDEF GTK1}
+  ShowSizeGrip: Boolean;
+{$ENDIF}
 begin
   //DebugLn('UpdateStatusBarPanels ',DbgS(StatusBar));
 
@@ -6214,9 +6217,13 @@ begin
     RaiseGDBException('');
 
   // set panel properties
-  ListItem:=PGTKBox(HBox)^.children;
-  i:=0;
-  while ListItem<>nil do begin
+  {$IFNDEF GTK1}
+  ShowSizeGrip := AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled;
+  {$ENDIF}
+  ListItem := PGTKBox(HBox)^.children;
+  i := 0;
+  while ListItem <> nil do
+  begin
     CurStatusPanelWidget:=PGtkBoxChild(PGTKWidget(ListItem^.data))^.widget;
     ExpandItem:=(ListItem^.next=nil);
     gtk_box_set_child_packing(PGtkBox(HBox),CurStatusPanelWidget,
@@ -6224,15 +6231,9 @@ begin
     UpdateStatusBarPanel(StatusBar,i,CurStatusPanelWidget);
     inc(i);
     ListItem:=ListItem^.next;
-    {$IFDEF GTK2}
-    if ListItem <> nil then begin
-      if gtk_statusbar_get_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget)) then
-        gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget), False);
-    end
-    else begin
-      if not gtk_statusbar_get_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget)) then
-        gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget), True);
-    end;
+    {$IFNDEF GTK1}
+    gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget),
+      (ListItem <> nil) and ShowSizeGrip);
     {$ENDIF}
   end;
 end;
