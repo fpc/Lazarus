@@ -6233,7 +6233,7 @@ begin
     ListItem:=ListItem^.next;
     {$IFNDEF GTK1}
     gtk_statusbar_set_has_resize_grip(PGtkStatusBar(CurStatusPanelWidget),
-      (ListItem <> nil) and ShowSizeGrip);
+      (ListItem = nil) and ShowSizeGrip);
     {$ENDIF}
   end;
 end;
