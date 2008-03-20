@@ -7,7 +7,8 @@
   ====================================================================
 -->
     <module name="Grids">
-      <short/>
+      <short>Classes for displaying tabular data in the form of a grid of rows and columns
+      </short>
       <descr/>
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes">
@@ -646,7 +647,9 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TStringCellEditor">
-        <short/>
+        <short>
+          <var>TStringCellEditor</var> - the default editor for <var>TStringGrid</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -916,7 +919,8 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TVirtualGrid">
-        <short/>
+        <short>
+          <var>TVirtualGrid</var> - an array of rows and columns containing data, which never gets displayed</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1409,10 +1413,11 @@
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomGrid">
-        <short>The base class for all grid controls</short>
+        <short>
+          <var>TCustomGrid</var> - the base class for all grid controls</short>
         <descr>
           <p>A grid is a collection of cells that are organized in columns and rows. 
-Grids are adequate to show data that have tabular nature, for example tables in a database, or formulae and data in a spreasheet.  
+Grids are suitable for showing data that have tabular nature, for example tables in a database, or formulae and data in a spreadsheet.  
 </p>
           <p>
             <b>Key properties:</b>
@@ -2649,7 +2654,8 @@ Grids are adequate to show data that have tabular nature, for example tables in 
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomGrid.AutoAdjustColumn">
-        <short/>
+        <short>
+          <var>AutoAdjustColumn</var> - automatically adjust column properties to accommodate largest object</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3852,7 +3858,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AutoAdvance">
-        <short>Automatically advance down the grid on successive mouse clicks</short>
+        <short>Automatically advance down the grid on successive mouse clicks or presses of the ENTER or TAB key</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AutoFillColumns">
@@ -3959,7 +3965,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedCols">
-        <short>Number of the fixed columns of the grid.</short>
+        <short>Number of the fixed columns of the grid (ie the columns containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
         <descr>
           <p>Contains the fixed column count of a grid. </p>
           <p>Fixed columns are normally used for headings.</p>
@@ -3971,7 +3977,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FixedRows">
-        <short>Number of the fixed rows of the grid.</short>
+        <short>Number of the fixed rows of the grid (ie the rows containing title or identifier material, that don't get scrolled when the rest of the grid moves).</short>
         <descr>
           <p>Contains the fixed row count of a grid. </p>
           <p>Fixed rows are normally used for headings.</p>
@@ -3992,7 +3998,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Flat">
-        <short/>
+        <short>Is the cell to be displayed Flat, ie with no texturing or raised/lowered effect</short>
         <descr/>
         <seealso/>
       </element>
@@ -4004,7 +4010,8 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FocusRectVisible">
-        <short/>
+        <short>
+          <var>FocusRectVisible</var> - is the rectangle receiving focus visible?</short>
         <descr/>
         <seealso/>
       </element>
@@ -4038,19 +4045,21 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.LeftCol">
-        <short/>
+        <short>
+          <var>LeftCol</var> - the left-most column</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Options">
         <short>The options available for use in this grid</short>
-        <descr/>
+        <descr>For a list of options see<link id="TGridOptions"/>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.Row">
-        <short>The current row (record) within the grid</short>
+        <short>The current <var>Row </var>(record) within the grid</short>
         <descr/>
         <seealso/>
       </element>
@@ -4104,7 +4113,7 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.ScrollBars">
-        <short>The ScrollBars to be used with this grid</short>
+        <short>The <var>ScrollBars</var> to be used with this grid</short>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.TopRow">
@@ -4132,25 +4141,25 @@ Application developers should use the <link id="TCustomGrid.SelectCell.OnSelectC
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnCompareCells">
-        <short/>
+        <short>Event handler for comparing the contents of grid cells</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnPrepareCanvas">
-        <short/>
+        <short>Event handler to prepare the <var>Canvas</var> for drawing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnDrawCell">
-        <short/>
+        <short>Event handler for drawing a cell</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnSelection">
-        <short>Event handler for when a grid cell is highlighted.</short>
+        <short>Event handler for when an area of a grid (one or a group of cells) is selected</short>
         <descr>The Col and Row parameters contain the column and the row of the highlighted cell. 
 
 Application developers may use the OnSelection and OnBeforeSelection events to react on focus changes. Component developers should use the  method instead.
@@ -4164,7 +4173,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnTopLeftChanged">
-        <short/>
+        <short>Event handler when the top left cell is changed (ie the grid has been scrolled so that a different cell occupies top left)</short>
         <descr/>
         <seealso/>
       </element>
@@ -4195,7 +4204,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomGrid.AutoAdjustColumns">
-        <short/>
+        <short>
+          <var>AutoAdjustColumns</var> - automatically adjust the columns according to the size of their contents</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4356,7 +4366,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.IscellSelected">
-        <short/>
+        <short>
+          <var>IsCellSelected</var> - is the cell specified by <var>aCol, aRow</var> selected?</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4443,7 +4454,7 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomGrid.MouseToLogcell">
-        <short/>
+        <short>Convert mouse coordinates to the position of a logical cell in the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4593,7 +4604,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- object Visibility: default -->
       <element name="TDrawGrid">
-        <short/>
+        <short>
+          <var>TDrawGrid</var> - a drawn grid. May contain images in its cells</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -5413,7 +5425,8 @@ Application developers may use the OnSelection and OnBeforeSelection events to r
       </element>
       <!-- object Visibility: default -->
       <element name="TStringGrid">
-        <short/>
+        <short>
+          <var>TStringGrid</var> - a specialised grid for displaying strings (text material) in a matrix of columns and rows</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6009,7 +6022,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TGridColumn">
-        <short/>
+        <short>
+          <var>TGridColumn</var> - a column of similar data items in a grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6046,7 +6060,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TButtonCellEditor">
-        <short/>
+        <short>
+          <var>TButtonCellEditor</var> - the editor for button cells in a grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6105,7 +6120,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TPickListCellEditor">
-        <short/>
+        <short>
+          <var>TPickListCellEditor</var> - the editor for a picklist cell in a grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6278,8 +6294,16 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TGridColumnTitle">
-        <short/>
-        <descr/>
+        <short>
+          <var>TGridColumnTitle</var> - the title for a column in a grid</short>
+        <descr>
+          <p>
+            <var>TGridColumnTitle</var> - the title for a column in a grid</p>
+          <p>The actual title is held in <var>Caption</var>
+          </p>
+          <p>
+            <var>Column</var> refers to the Grid Column to which the Title is attached</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -7464,7 +7488,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TGridColumns">
-        <short/>
+        <short>
+          <var>TGridColumns</var> - the group of columns in the grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -8568,7 +8593,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- function Visibility: protected -->
       <element name="TCustomGrid.DoCompareCells">
-        <short/>
+        <short>
+          <var>DoCompareCells</var> - perform the comparison of two or more cells in a grid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -9431,8 +9457,13 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AllowOutboundEvents">
-        <short/>
-        <descr/>
+        <short>
+          <var>AllowOutboundEvents</var> - permits mouse click on an imaginary (out-of-bounds) cell; moves cursor to nearest valid cell</short>
+        <descr>
+          <p>Normally when a user clicks on a point over the empty space after cells (for example if grid has three rows but user clicks on imaginary fourth row) the current focused cell will move to the nearest cell to clicked point; we call this an outbound event. </p>
+          <p>Default value is true, as this has been the grid's behaviour since the  beginning. </p>
+          <p>This property was added to simulate Delphi behaviour where outbound events are not available; to enable Delphi compatibility set this property to false.</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
@@ -9487,20 +9518,26 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.ExtendedSelect">
-        <short/>
+        <short>
+          <var>ExtendedSelect</var> - the ability to select cells beyond the boundary of the visible part of the grid</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.FastEditing">
-        <short>Is the FastEditing method being used?</short>
+        <short>Is the <var>FastEditing</var> method being used?</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.AltColorStartNormal">
-        <short/>
-        <descr/>
+        <short>
+          <var>AltColorStartNormal</var> - using a second colour to display alternate rows, but starting the first row with the normal colour</short>
+        <descr>
+          <p>
+            <var>AltColorStartNormal</var> - using a second colour to display alternate rows, but starting the first row with the normal colour</p>
+          <p>Using a different colour for the background of alternate rows often makes the data in a grid much easier to read</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
@@ -9529,7 +9566,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.InplaceEditor">
-        <short/>
+        <short>
+          <var>InplaceEditor</var> - the editor to be used in-place, ie in the cell itself instead of outside the grid</short>
         <descr/>
         <seealso/>
       </element>
@@ -9541,7 +9579,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.StrictSort">
-        <short/>
+        <short>
+          <var>StrictSort</var> - is strict sorting to be used?</short>
         <descr/>
         <seealso/>
       </element>
@@ -9559,8 +9598,12 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.UseXORFeatures">
-        <short/>
-        <descr/>
+        <short>
+          <var>UseXORFeatures</var>: When True, the dotted focus rectangle is painted using the XOR raster operation</short>
+        <descr>
+          <p>This property controls how the dotted focus rectangle appears in the grid. When True, the rectangle is painted using the XOR raster operation. This allow us to see the focus rectangle no matter what the cells' background color is. When False, the user can control the color of the dotted focus rectangle using the <var>FocusColor</var> property</p>
+          <p>It also controls the look of the column/row resizing. When True, a line shows visually the size that the the column or row will have if the user ends the operation. When False, the column or row resizing takes effect just as the user drags the mouse</p>
+        </descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
@@ -9571,7 +9614,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomGrid.OnPickListSelect">
-        <short/>
+        <short>Event handler for selecting an item from a picklist (eg drop-down list in <var>TComboBox</var>)</short>
         <descr/>
         <seealso/>
       </element>
@@ -9672,7 +9715,8 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomDrawGrid">
-        <short>Base Class for drawn grids including <var>TDrawGrid</var> and <var>TStringGrid</var>
+        <short>
+          <var>TCustomDrawGrid </var>- Base Class for drawn grids including <var>TDrawGrid</var> and <var>TStringGrid</var>
         </short>
         <descr/>
         <errors/>
@@ -9746,7 +9790,9 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomDrawGrid.CalcCellExtent">
-        <short/>
+        <short>
+          <var>CalcCellExtent</var> - calculate the dimensions required for the cell specified by <var>aCol, aRow</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -10564,31 +10610,31 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnColRowDeleted">
-        <short/>
+        <short>Event handler when a grid column or row is deleted</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnColRowExchanged">
-        <short/>
+        <short>Event handler when a grid column or row has its position exchanged with another</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnColRowInserted">
-        <short/>
+        <short>Event handler when a column or row is inserted into the grid</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnColRowMoved">
-        <short/>
+        <short>Event handler when a grid column or row is moved</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnCompareCells">
-        <short/>
+        <short>Event handler for comparing the contents of cells</short>
         <descr/>
         <seealso/>
       </element>
@@ -10600,7 +10646,7 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnDrawCell">
-        <short/>
+        <short>Event handler for drawing a cell</short>
         <descr/>
         <seealso/>
       </element>
@@ -10624,25 +10670,25 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnGetEditMask">
-        <short/>
+        <short>Event handler for finding the edit mask while editing a grid cell</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnGetEditText">
-        <short/>
+        <short>Event handler for finding the text to be edited in a grid cell</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnHeaderClick">
-        <short/>
+        <short>Event handler when a column or row header is clicked</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnHeaderSized">
-        <short/>
+        <short>Event handler when a column or row header is re-sized</short>
         <descr/>
         <seealso/>
       </element>
@@ -10720,13 +10766,13 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnSelectCell">
-        <short/>
+        <short>Event handler when a grid cell is selected</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomDrawGrid.OnSetEditText">
-        <short/>
+        <short>Event handler for storing the text that has been edited in a cell</short>
         <descr/>
         <seealso/>
       </element>
@@ -10858,14 +10904,17 @@ Segunda linea de texto</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TCustomStringGrid">
-        <short/>
+        <short>
+          <var>TCustomStringGrid</var> - base class for <var>TStringGrid</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TStringGridStrings">
-        <short/>
+        <short>
+          <var>TStringGridStrings</var> - the strings that populate the cells of a TStringGrid</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -11530,8 +11579,13 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.AutoSizeColumn">
-        <short/>
-        <descr/>
+        <short>
+          <var>AutoSizeColumn</var> - automatically adjust width of column to accommodate widest text</short>
+        <descr>
+          <p>This procedure sets the column width to the size of the widest text it finds in all rows for the column <var>aCol.</var>
+          </p>
+          <p>Tip: see the <var>goDblClickAutoSize</var> option to allow columns to be automatically resized when doubleClicking the column border.</p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -11541,15 +11595,26 @@ Segunda linea de texto</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.AutoSizeColumns">
-        <short/>
-        <descr/>
+        <short>
+          <var>AutoSizeColumns</var> - automatically resizes all columns by adjusting them to fit in the longest text in each column</short>
+        <descr>Automatically resizes all columns by adjusting them to fit in the longest text in each column. This is a quick method of applying <var>AutoSizeColumn()</var> for every column in the grid.
+</descr>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomStringGrid.Clean">
-        <short/>
-        <descr/>
+        <short>
+          <var>Clean </var>all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region.</short>
+        <descr>
+          <p>Cleans all cells in the grid subject to the given <var>CleanOptions</var>, optionally specifying a range of cells or a rectangular region. See <link id="TGridZoneSet"/> for more information.</p>
+          <p>Some examples:</p>
+          <ul>
+            <li>Clean all cells: grid.Clean([]); (the same as grid.clean)</li>
+            <li>Clean all non fixed cells: grid.Clean([gzNormal]);</li>
+            <li>Clean all cells but don't touch grid column headers: Grid.Clean([gzNormal, gzFixedRows]); </li>
+          </ul>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -11579,7 +11644,9 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomStringGrid.Cells">
-        <short/>
+        <short>
+          <var>Cells</var> - the text content of a cell or cells, indexed by <var>aCol, aRow</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11593,7 +11660,9 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomStringGrid.Cols">
-        <short/>
+        <short>
+          <var>Cols</var> - get or set a list of strings for column names as specified by the <var>index</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11635,7 +11704,9 @@ Segunda linea de texto</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomStringGrid.Rows">
-        <short/>
+        <short>
+          <var>Rows</var> - gets or sets a list of strings for row names as specified by <var>index</var>
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -12080,6 +12151,10 @@ Segunda linea de texto</descr>
         <short/>
         <descr/>
         <seealso/>
+      </element>
+      <element name="TCustomStringGrid.CopyToClipboard">
+        <short>
+          <var>CopyToClipboard</var> - copy the selected text to the clipboard</short>
       </element>
     </module>
     <!-- Grids -->

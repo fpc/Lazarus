@@ -219,50 +219,46 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TFontData">
-        <short>A <b>record</b> holding <i>Data</i> about the current <i>Font</i>
+        <short>A <b>record</b> holding <var>Data</var> about the current <var>Font</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Handle">
-        <short>The Operating System <i>Handle</i> for the current <i>Font</i>
+        <short>The Operating System <var>Handle</var> for the current <var>Font</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Height">
-        <short>The <i>Height</i> (in pixels) if the current <i>Font</i>
+        <short>The <var>Height</var> (in pixels) if the current <var>Font</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Pitch">
-        <short>The <i>Pitch</i> (in points) of the current<i>Font</i>
+        <short>The <var>Pitch</var> (in points) of the current<var>Font</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Style">
-        <short>The <i>Style</i> of the <i>Font</i>
+        <short>The <var>Style</var> of the <var>Font</var>
         </short>
         <descr>Bold, Italic, Strikeout or Underlined</descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.CharSet">
-        <short>The <i>Character Set</i> of the current <i>Font</i> (expresed as an integer)</short>
+        <short>The <var>Character Set</var> of the current <var>Font</var> (expresed as an integer)</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TFontData.Name">
-        <short>The <i>Name</i> (as a string) of the current <i>Font</i>
+        <short>The <var>Name</var> (as a string) of the current <var>Font</var>
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="DefFontData">
         <short>
-          <i>Default Data</i>  for any new 
-          
-          
-          
-          <i>Font</i>
+          <var>Default Data</var>  for any new <var>Font</var>
         </short>
         <descr>
-          <p>New <i>TFont</i> instances are initialized with the values in this structure.</p>
+          <p>New <var>TFont</var> instances are initialized with the values in this structure.</p>
           <p>About font default values: The default font is chosen by the interfaces depending on the context. </p>
           <p>For example, there can be a different default font for a button and a groupbox.</p>
         </descr>
@@ -272,7 +268,7 @@
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TTextLayout">
-        <short>How the <i>Text</i>  is to be laid out in the Text Rectangle</short>
+        <short>How the <var>Text</var>  is to be laid out in the Text Rectangle</short>
         <descr>At the Bottom, Centre or Top of the available window or box</descr>
       </element>
       <!-- enumeration value Visibility: default -->
@@ -289,18 +285,23 @@
       </element>
       <!-- record type Visibility: default -->
       <element name="TTextStyle">
-        <short>The <i>Style</i> of the <i>Text</i> to be drawn in a rectangle</short>
-        <descr>Alignment :  TextRect Only: horizontal alignment<br/>
-Layout    : TextRect Only: vertical alignment<br/>
-SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.<br/>
-Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle<br/>
-ExpandTabs: boolean;    currently ignored<br/>
-ShowPrefix: boolean;    TextRect Only: Process first single ampersand per line as an underscore and draw double ampersand as a single ampersand<br/>
-Wordbreak : boolean;    TextRect Only: If line of text is too long to fit between left and right boundaries,   try to break into multiple lines between words<br/>
-Opaque    : boolean;    TextRect: Fills background with current Brush<br/>
-Opaque    :             TextOut : Fills background with current foreground color<br/>
-SystemFont: Boolean;    Use the system font instead of Canvas Font<br/>
-RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</descr>
+        <short>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle</short>
+        <descr>
+          <p>The <var>Style</var> of the <var>Text</var> to be drawn in a rectangle</p>
+          <ul>
+            <li>Alignment :  TextRect Only: horizontal alignment</li>
+            <li>Layout    : TextRect Only: vertical alignment</li>
+            <li>SingleLine: boolean;    If WordBreak is false then process #13, #10 as standard chars and perform no Line breaking.</li>
+            <li>Clipping  : boolean;    TextRect Only: Clip Text to passed Rectangle</li>
+            <li>ExpandTabs: boolean;    currently ignored</li>
+            <li>ShowPrefix: boolean;    TextRect Only: Process first single ampersand per line as an underscore and draw double ampersand as a single ampersand</li>
+            <li>Wordbreak : boolean;    TextRect Only: If line of text is too long to fit between left and right boundaries,   try to break into multiple lines between words</li>
+            <li>Opaque    : boolean;    TextRect: Fills background with current Brush</li>
+            <li>Opaque    :             TextOut : Fills background with current foreground color</li>
+            <li>SystemFont: Boolean;    Use the system font instead of Canvas Font</li>
+            <li>RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</li>
+          </ul>
+        </descr>
       </element>
       <!-- variable Visibility: default -->
       <element name="TTextStyle.Alignment">
@@ -462,7 +463,7 @@ RightToLeft: Boolean;   For RightToLeft text reading (Text Direction)</descr>
       </element>
       <!-- enumeration type Visibility: default -->
       <element name="TBrushStyle">
-        <short>Style of <i>Brush</i> to be used</short>
+        <short>Style of <var>Brush</var> to be used</short>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TBrushStyle.bsSolid">
@@ -1766,7 +1767,7 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TFont">
-        <short>The <i>Font</i>  to be used for drawing <i>Text</i>
+        <short>The <var>Font</var>  to be used for drawing <var>Text</var>
         </short>
         <descr>
           <p>Most of the data about the font are dealt with by the protected procedures GetData and SetData which operate on TFontData</p>
@@ -2066,36 +2067,29 @@ Since FPC 2.0 the LCL uses TFPCanvasHelper as ancestor.</descr>
       <!-- constructor Visibility: public -->
       <element name="TFont.Create">
         <short>
-          <i>Font</i> constructor</short>
+          <var>Font</var> constructor</short>
         <descr>Opens a new instance of the class and sets defaults for character set, colour, size etc</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TFont.Destroy">
         <short>
-          <i>Font</i> destructor</short>
+          <var>Font</var> destructor</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TFont.Assign">
         <short>
-          <i>Assign</i>   - copies the 
-          
-          
-          
-          <i>LogFont</i>   or 
-          
-          
-          
-          <i>Source</i>  settings to itself</short>
+          <var>Assign</var>   - copies the <var>LogFont</var> or <var>Source</var> settings to itself</short>
         <descr>
-          <p>Method: <i>TFont.Assign</i>
+          <p>Method: <var>TFont.Assign</var>
           </p>
-          <p>Params: <i>ALogFont</i>: TLogFont or</p>
+          <p>Params: <var>ALogFont</var>: TLogFont or</p>
           <p>
-            <i>Source</i>: another font</p>
+            <var>Source</var>: another font</p>
           <p>Returns:  nothing</p>
 
 
-Copies the logfont or source settings to itself</descr>
+Copies the logfont or source settings to itself
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TFont.Assign.Source">
@@ -2168,42 +2162,35 @@ Copies the logfont or source settings to itself</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.CharSet">
-        <short>The <i>Character Set</i> to be used by the current<i>Font</i>
+        <short>The <var>Character Set</var> to be used by the current<var>Font</var>
         </short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Color">
         <short>
-          <i>Colour</i> of the current 
-          
-          
-          
-          <i>Font</i>
+          <var>Colour</var> of the current <var>Font</var>
         </short>
-        <descr>Default is the same as the text used for the rest of the Window</descr>
+        <descr>Default is the same as the text used for the rest of the Window
+</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Height">
-        <short>The <i>Height</i> of the current Font</short>
+        <short>The <var>Height</var> of the current Font</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Name">
         <short>
-          <i>Name</i> of the 
-          
-          
-          
-          <i>Font</i>
+          <var>Name</var> of the <var>Font</var>
         </short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Pitch">
         <short>
-          <i>Pitch</i> type of the 
+          <var>Pitch</var> type of the 
           
           
           
-          <i>Font</i>
+          <var>Font</var>
         </short>
         <descr>Fixed or variable pitch, or Default<br/>
 Reads or writes a flag to determine pitch type</descr>
@@ -2214,46 +2201,47 @@ Reads or writes a flag to determine pitch type</descr>
       <!-- property Visibility: published -->
       <element name="TFont.Size">
         <short>
-          <i>Font</i>
-          <i>Size</i> in pixels</short>
+          <var>Font</var>
+          <var>Size</var> in pixels</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TFont.Style">
         <short>
-          <i>Style</i> of the 
+          <var>Style</var> of the 
           
           
           
-          <i>Font</i>
+          <var>Font</var>
         </short>
         <descr>Bold, Italic, Strike out, Underline<br/>
 Property is a set, so may contain zero or more of the above (if set is empty, Normal font is displayed)</descr>
       </element>
       <!-- record type Visibility: default -->
       <element name="TPenData">
-        <short>The <i>Data</i> associated with the current <i>Pen</i>
+        <short>The <var>Data</var> associated with the current <var>Pen</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Handle">
-        <short>The Operating System <i>Handle</i> associated with the current <i>Pen</i>
+        <short>The Operating System <var>Handle</var> associated with the current <var>Pen</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Color">
-        <short>The <i>Colour</i> of the curent <i>Pen</i>
+        <short>The <var>Colour</var> of the curent <var>Pen</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Width">
-        <short>The <i>Width</i> in pixels of the current <i>Pen</i>
+        <short>The <var>Width</var> in pixels of the current <var>Pen</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TPenData.Style">
-        <short>The <i>Style</i> asociated with the current <i>Pen</i>
+        <short>The <var>Style</var> asociated with the current <var>Pen</var>
         </short>
-        <descr>The <i>Style</i> asociated with the current <i>Pen</i><br/>
+        <descr>The <var>Style</var> asociated with the current <var>Pen</var>
+          <br/>
 Can take any of the values:
 psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear</descr>
       </element>
@@ -2284,7 +2272,7 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- object Visibility: default -->
       <element name="TPen">
-        <short>The current <i>Pen</i> for drawing on the current <i>Canvas</i>
+        <short>The current <var>Pen</var> for drawing on the current <var>Canvas</var>
         </short>
       </element>
       <!-- variable Visibility: private -->
@@ -2399,19 +2387,20 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       <!-- constructor Visibility: public -->
       <element name="TPen.Create">
         <short>
-          <i>Pen</i>  Constructor</short>
+          <var>Pen</var>  Constructor</short>
         <descr>Most of its properties are <b>inherited</b>
  from the parent class</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TPen.Destroy">
         <short>
-          <i>Pen</i> Destructor</short>
+          <var>Pen</var> Destructor</short>
         <descr>Most of its properties are <b>inherited</b> from the parent class</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPen.Assign">
-        <short>Copies the <i>Source</i><i>Pen</i> to itself</short>
+        <short>Copies the <var>Source</var>
+          <var>Pen</var> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPen.Assign.Source">
@@ -2419,19 +2408,19 @@ psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClea
       </element>
       <!-- property Visibility: public -->
       <element name="TPen.Handle">
-        <short>the Operating System <i>Handle</i> for the current <i>Pen</i>
+        <short>the Operating System <var>Handle</var> for the current <var>Pen</var>
         </short>
         <descr>Reads or writes a flag to determine the handle</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Color">
-        <short>The <i>Colour </i>of the current <i>Pen</i>
+        <short>The <var>Colour </var>of the current <var>Pen</var>
         </short>
         <descr>Reads or Writes a flag to determine the colour. Default is black</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Mode">
-        <short>The <i>Mode</i> for the current <i>Pen</i>
+        <short>The <var>Mode</var> for the current <var>Pen</var>
         </short>
         <descr>Can take any of the values:<br/>
 pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy,<br/>
@@ -2441,7 +2430,7 @@ Default is pmCopy</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Style">
-        <short>The <i>Style</i> of the current <i>Pen</i>
+        <short>The <var>Style</var> of the current <var>Pen</var>
         </short>
         <descr>Can be one of the following: <br/>
 psSolid, psDash, psDot, psDashDot, psDashDotDot, psinsideFrame, psPattern,psClear<br/>
@@ -2449,33 +2438,33 @@ Default is psSolid</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TPen.Width">
-        <short>The <i>Width</i> in pixels of the current <i>Pen</i>
+        <short>The <var>Width</var> in pixels of the current <var>Pen</var>
         </short>
       </element>
       <!-- record type Visibility: default -->
       <element name="TBrushData">
-        <short>The <i>Data</i> associated with the current <i>Brush</i>
+        <short>The <var>Data</var> associated with the current <var>Brush</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Handle">
-        <short>The Operating System <i>Handle</i> associated with the current <i>Brush</i>
+        <short>The Operating System <var>Handle</var> associated with the current <var>Brush</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Color">
-        <short>The <i>Colour</i> to be used by the current <i>Brush</i>
+        <short>The <var>Colour</var> to be used by the current <var>Brush</var>
         </short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Bitmap">
-        <short>The <i>Bitmap</i> on which the current <i>Brush</i> is working</short>
+        <short>The <var>Bitmap</var> on which the current <var>Brush</var> is working</short>
       </element>
       <!-- variable Visibility: default -->
       <element name="TBrushData.Style">
-        <short>The <i>Style</i>   to be used by the current <i>Brush</i>
+        <short>The <var>Style</var>   to be used by the current <var>Brush</var>
         </short>
-        <descr>Enumerated type defined in <i>TBrushStyle</i>
+        <descr>Enumerated type defined in <var>TBrushStyle</var>
         </descr>
         <seealso>
           <link id="TBrushStyle"/>
@@ -2508,9 +2497,9 @@ Default is psSolid</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TBrush">
-        <short>The <i>Brush</i> to be used to <i>Paint</i> on the current <i>Canvas</i>
+        <short>The <var>Brush</var> to be used to <var>Paint</var> on the current <var>Canvas</var>
         </short>
-        <descr>A <i>Brush</i> is typically used to fill an enclosed area on the<i>Canvas</i> with one particular colour or coloured pattern</descr>
+        <descr>A <var>Brush</var> is typically used to fill an enclosed area on the<var>Canvas</var> with one particular colour or coloured pattern</descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TBrush.FHandle">
@@ -2607,12 +2596,12 @@ Default is psSolid</descr>
       <!-- procedure Visibility: public -->
       <element name="TBrush.Assign">
         <short>
-          <i>Assign</i> - copies a 
+          <var>Assign</var> - copies a 
           
           
           
-          <i>Source</i>
-          <i>Brush</i> to itself</short>
+          <var>Source</var>
+          <var>Brush</var> to itself</short>
         <descr>Method: TBrush.Assign<br/>
   Params: Source: Another brush<br/>
   Returns:  nothing<br/>
@@ -2622,73 +2611,70 @@ Default is psSolid</descr>
       <!-- argument Visibility: default -->
       <element name="TBrush.Assign.Source">
         <short>
-          <i>Source</i> - another 
+          <var>Source</var> - another 
           
           
           
-          <i>Brush</i>
+          <var>Brush</var>
         </short>
       </element>
       <!-- constructor Visibility: public -->
       <element name="TBrush.Create">
         <short>
-          <i>Brush</i> constructor</short>
+          <var>Brush</var> constructor</short>
         <descr>
           <b>Inherits</b> most of its properties from ancestor Classes</descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TBrush.Destroy">
         <short>
-          <i>Brush</i> destructor</short>
+          <var>Brush</var> destructor</short>
         <descr>
           <b>Inherits</b> properties to remove 
           
           
           
-          <i>Brush</i> and frees 
+          <var>Brush</var> and frees 
           
           
           
-          <i>Handle</i>
+          <var>Handle</var>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Bitmap">
-        <short>The <i>BitMap</i> associated with the current <i>Brush</i>
+        <short>The <var>BitMap</var> associated with the current <var>Brush</var>
         </short>
-        <descr>Reads or writes a flag to determine the current <i>BitMap</i>
+        <descr>Reads or writes a flag to determine the current <var>BitMap</var>
         </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TBrush.Handle">
-        <short>Operating System <i>Handle</i> for this <i>Brush</i>
+        <short>Operating System <var>Handle</var> for this <var>Brush</var>
         </short>
-        <descr>Reads or writes flag to determine system <i>Handle</i>
+        <descr>Reads or writes flag to determine system <var>Handle</var>
         </descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Color">
-        <short>The <i>Colour</i> of the current <i>Brush</i>
+        <short>The <var>Colour</var> of the current <var>Brush</var>
         </short>
-        <descr>Reads or writes a flag to determine the <i>Colour</i>. Default is White</descr>
+        <descr>Reads or writes a flag to determine the <var>Colour</var>. Default is White</descr>
       </element>
       <!-- property Visibility: published -->
       <element name="TBrush.Style">
         <short>
-          <i>Style</i> of the 
-          
-          
-          
-          <i>Brush</i>
+          <var>Style</var> of the  <var>Brush</var>
         </short>
-        <descr>Enumerated type - default Solid</descr>
+        <descr>Enumerated type - default Solid
+</descr>
         <seealso>
           <link id="TBrushStyle"/>
         </seealso>
       </element>
       <!-- record type Visibility: default -->
       <element name="TRegionData">
-        <short>The <i>Data</i> about the current <i>Region</i> on the <i>Screen</i> or <i>Canvas</i>
+        <short>The <var>Data</var> about the current <var>Region</var> on the <var>Screen</var> or <var>Canvas</var>
         </short>
         <descr>At present the Region can only be rectangular; the ability to define it as a Polygon is not yet implemented</descr>
       </element>
@@ -2724,7 +2710,7 @@ Default is psSolid</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TRegion">
-        <short>A defined <i>Region</i> on the screen, in which text is written</short>
+        <short>A defined <var>Region</var> on the screen, in which text is written</short>
         <seealso>
           <link id="TRegionData">TRegionData (in same Unit)</link>
         </seealso>
@@ -2789,21 +2775,21 @@ Default is psSolid</descr>
       <!-- constructor Visibility: public -->
       <element name="TRegion.Create">
         <short>
-          <i>TRegion</i> constructor</short>
+          <var>TRegion</var> constructor</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TRegion.Destroy">
         <short>
-          <i>TRegion</i> destructor</short>
+          <var>TRegion</var> destructor</short>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TRegion.Assign">
         <short>
-          <i>Assign</i> - copies 
+          <var>Assign</var> - copies 
           
           
           
-          <i>Source</i> to itself</short>
+          <var>Source</var> to itself</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TRegion.Assign.Source">
@@ -2811,7 +2797,7 @@ Default is psSolid</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TRegion.Handle">
-        <short>Operating System <i>Handle</i>  for this <i>Region</i>
+        <short>Operating System <var>Handle</var>  for this <var>Region</var>
         </short>
         <seealso>
           <link id="#lcl.lcltype.HRGN">HRGN </link>
@@ -2824,11 +2810,25 @@ Default is psSolid</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TGraphic">
-        <short>Base class for dealing with <i>Graphic</i>   images</short>
-        <descr>The <i>TGraphic</i> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <i>BitMap</i>, <i>Icon</i> etc which have a <i>Canvas</i> element defined <br/><i>LoadFromFile</i> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/><i>SaveToFile</i> - Writes the graphic to disk in the file provided.<br/><i>LoadFromStream</i> - Like <i>LoadFromFile</i>  except source is a stream (e.g.  <i>TBlobStream</i>
-).<br/><i>SaveToStream</i> - stream analogue of <i>SaveToFile</i> .<br/><i>LoadFromClipboardFormat</i> - Replaces the current image with the data provided.  If the <i>TGraphic</i>
- does not support that format it will generate an exception.<br/><i>SaveToClipboardFormats</i> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/><i>Height</i> - The native, unstretched, height of the graphic.<br/><i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/><i>Transparent</i> - Some parts of the image are not opaque, ie the background can be seen through.<br/><i>Width</i> - The native, unstretched, width of the graphic.<br/><i>OnChange</i> - Called whenever the graphic changes<br/><i>PaletteModified</i> - Indicates in <i>OnChange</i>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/><i>OnProgress</i> - Generic progress indicator event. Propagates out to <i>TPicture</i>
-  and <i>TImage OnProgress</i> events.<br/><br/>
+        <short>Base class for dealing with <var>Graphic</var>   images</short>
+        <descr>The <var>TGraphic</var> class is an <b>abstract</b> base class for dealing with graphic images such as bitmaps, pixmaps, icons, and other image formats. It does not contain an actual area for displaying the image; this is provided by the descendant classes eg <var>BitMap</var>, <var>Icon</var> etc which have a <var>Canvas</var> element defined <br/>
+          <var>LoadFromFile</var> - Read the graphic from the file system.  The old contents of the graphic are lost.  If the file is not of the right format, an exception will be generated.<br/>
+          <var>SaveToFile</var> - Writes the graphic to disk in the file provided.<br/>
+          <var>LoadFromStream</var> - Like <var>LoadFromFile</var>  except source is a stream (e.g.  <var>TBlobStream</var>
+).<br/>
+          <var>SaveToStream</var> - stream analogue of <var>SaveToFile</var> .<br/>
+          <var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided.  If the <var>TGraphic</var>
+ does not support that format it will generate an exception.<br/>
+          <var>SaveToClipboardFormats</var> - Converts the image to a clipboard format.  If the image does not support being translated into a clipboard format it will generate an exception.<br/>
+          <var>Height</var> - The native, unstretched, height of the graphic.<br/>
+          <var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes.<br/>
+          <var>Transparent</var> - Some parts of the image are not opaque, ie the background can be seen through.<br/>
+          <var>Width</var> - The native, unstretched, width of the graphic.<br/>
+          <var>OnChange</var> - Called whenever the graphic changes<br/>
+          <var>PaletteModified</var> - Indicates in <var>OnChange</var>  whether color palette has changed. Stays true until whoever is responsible for realizing this new palette    (ex: TImage) sets it to False.<br/>
+          <var>OnProgress</var> - Generic progress indicator event. Propagates out to <var>TPicture</var>
+  and <var>TImage OnProgress</var> events.<br/>
+          <br/>
  
   As many of the methods and properties are <b>virtual</b> and/or <b>abstract</b>, it is the responsibility of the application programmer to supply suitable methods when implementing any descendant classes
 </descr>
@@ -3085,7 +3085,7 @@ Default is psSolid</descr>
       <!-- constructor Visibility: public -->
       <element name="TGraphic.Create">
         <short>
-          <i>TGraphic</i> constructor</short>
+          <var>TGraphic</var> constructor</short>
         <descr>
           <b>Virtual</b> method, so recommend that a constructor be supplied to 
           
@@ -3096,7 +3096,7 @@ Default is psSolid</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromFile">
         <short>
-          <i>LoadFromFile</i> - Read the graphic from the file system.</short>
+          <var>LoadFromFile</var> - Read the graphic from the file system.</short>
         <descr>LoadFromFile - Read the graphic from the file system.  <br/>
 The old contents of the graphic are lost.  <br/>
 If the file is not of the right format, an exception will be generated.</descr>
@@ -3109,9 +3109,9 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.SaveToFile">
         <short>
-          <i>SaveToFile</i> - Writes the graphic to disk in the file provided.</short>
+          <var>SaveToFile</var> - Writes the graphic to disk in the file provided.</short>
         <descr>
-          <i>SaveToFile</i> - Writes the graphic to disk in the file whose name is provided.</descr>
+          <var>SaveToFile</var> - Writes the graphic to disk in the file whose name is provided.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.SaveToFile.Filename">
@@ -3120,23 +3120,20 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromStream">
         <short>
-          <i>LoadFromStream</i>  -reads graphic data from a stream (e.g.  
-          
-          
-          
-          <i>TBlobStream</i> )</short>
+          <var>LoadFromStream</var>  - reads graphic data from a stream (e.g. <var>TBlobStream</var> )</short>
         <descr>
-          <i>LoadFromStream</i>
+          <var>LoadFromStream</var>
  - Like 
           
           
           
-          <i>LoadFromFile</i>
+          <var>LoadFromFile</var>
  except source is a stream (e.g. 
           
           
           
-          <i>TBlobStream</i>)</descr>
+          <var>TBlobStream</var>)
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.LoadFromStream.Stream">
@@ -3145,9 +3142,9 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.SaveToStream">
         <short>
-          <i>SaveToStream</i> - write graphic data to a stream</short>
+          <var>SaveToStream</var> - write graphic data to a stream</short>
         <descr>
-          <i>SaveToStream</i> - write graphic data to a stream</descr>
+          <var>SaveToStream</var> - write graphic data to a stream</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.SaveToStream.Stream">
@@ -3156,7 +3153,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromMimeStream">
         <short>
-          <i>LoadFromMimeStream </i>- reads graphic data from a MIME stream</short>
+          <var>LoadFromMimeStream </var>- reads graphic data from a MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -3183,10 +3180,10 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromClipboardFormat">
         <short>
-          <i>LoadFromClipboardFormat</i> - Replace the current image with the contents of the clipboard</short>
+          <var>LoadFromClipboardFormat</var> - Replace the current image with the contents of the clipboard</short>
         <descr>
-          <i>LoadFromClipboardFormat</i> - Replaces the current image with the data provided from the clipboard.</descr>
-        <errors>If the <i>TGraphic</i> does not support that format it will generate an exception.</errors>
+          <var>LoadFromClipboardFormat</var> - Replaces the current image with the data provided from the clipboard.</descr>
+        <errors>If the <var>TGraphic</var> does not support that format it will generate an exception.</errors>
       </element>
       <!-- argument Visibility: default -->
       <element name="TGraphic.LoadFromClipboardFormat.FormatID">
@@ -3194,7 +3191,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.LoadFromClipboardFormatID">
-        <short>Load the data from the clipboard using the format type specified by <i>ClipboardType</i> and the format identifier <i>FormatID</i>
+        <short>Load the data from the clipboard using the format type specified by <var>ClipboardType</var> and the format identifier <var>FormatID</var>
         </short>
         <descr/>
         <errors/>
@@ -3211,9 +3208,9 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.SaveToClipboardFormat">
         <short>
-          <i>SaveToClipboardFormats</i> - Converts the image to a clipboard format</short>
+          <var>SaveToClipboardFormats</var> - Converts the image to a clipboard format</short>
         <descr>
-          <i>SaveToClipboardFormats</i> - Converts the image to a clipboard format</descr>
+          <var>SaveToClipboardFormats</var> - Converts the image to a clipboard format</descr>
         <errors>If the image does not support being translated into a clipboard format it will generate an exception</errors>
       </element>
       <!-- argument Visibility: default -->
@@ -3222,7 +3219,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TGraphic.SaveToClipboardFormatID">
-        <short>Saves the data to a clipboard of Type <i>ClipboardType</i> using the format <i>FormatID</i>
+        <short>Saves the data to a clipboard of Type <var>ClipboardType</var> using the format <var>FormatID</var>
         </short>
         <descr/>
         <errors/>
@@ -3330,7 +3327,7 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- property Visibility: public -->
       <element name="TGraphic.Height">
         <short>
-          <i>Height</i> - The native, unstretched, height of the graphic.</short>
+          <var>Height</var> - The native, unstretched, height of the graphic.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Modified">
@@ -3354,9 +3351,9 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- property Visibility: public -->
       <element name="TGraphic.Palette">
         <short>
-          <i>Palette</i> - Color palette of image</short>
+          <var>Palette</var> - Color palette of image</short>
         <descr>
-          <i>Palette</i> - Color palette of image.  Zero if graphic doesn't need/use palettes</descr>
+          <var>Palette</var> - Color palette of image.  Zero if graphic doesn't need/use palettes</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.PaletteModified">
@@ -3367,13 +3364,13 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- property Visibility: public -->
       <element name="TGraphic.Transparent">
         <short>
-          <i>Transparent</i> - Some parts of the image are not opaque. ie the background
+          <var>Transparent</var> - Some parts of the image are not opaque. ie the background
  can be seen through</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TGraphic.Width">
         <short>
-          <i>Width</i> - The native, unstretched, width of the graphic.</short>
+          <var>Width</var> - The native, unstretched, width of the graphic.</short>
       </element>
       <!-- "class of" type Visibility: default -->
       <element name="TGraphicClass">
@@ -3384,245 +3381,54 @@ If the file is not of the right format, an exception will be generated.</descr>
       <!-- object Visibility: default -->
       <element name="TPicture">
         <short>
-          <i>TPicture</i>     is a 
-          
-          
-          
-          <i>TGraphic</i>     container, used in place of a 
-          
-          
-          
-          <i>TGraphic</i>   if the graphic can be of any 
-          
-          
-          
-          <i>TGraphic</i>     class.</short>
+          <var>TPicture</var> is a  <var>TGraphic</var>  container, used in place of a  <var>TGraphic</var> if the graphic can be of any <var>TGraphic</var> class.</short>
         <descr>
-          <i>TPicture</i>
- is a 
-          
-          
-          
-          <i>TGraphic</i>
- container.  It is used in place of a 
-          
-          
-          
-          <i>TGraphic</i>
- if the graphic can be of any 
-          
-          
-          
-          <i>TGraphic</i>
- class. 
-          
-          
-          
-          <br/>
-
-
-It is not a direct descendant of 
-          
-          
-          
-          <i>TGraphic</i>
-, so you will not see 
-          
-          
-          
-          <i>TGraphic</i>
- listed in the 
-          
-          
-          
-          <i>Inheritance</i>
- chart, but it contains a property 
-          
-          
-          
-          <i>Graphic</i>
-, of type 
-          
-          
-          
-          <i>TGraphic</i>
-, so can contain all the properties of a 
-          
-          
-          
-          <i>TGraphic</i>
-          <br/>
-          <br/>
-
-Defines many 
-          
-          
-          
-          <b>private</b>
- methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc
-          
-          
-          
-          <br/>
-It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a Canvas property.
-          
-          
-          
-          <br/>
-          <br/>
-          <i>LoadFromFile</i> and 
-          
-          
-          
-          <i>SaveToFile</i> are polymorphic. For example, if the 
-          
-          
-          
-          <i>TPicture</i> is holding an 
-          
-          
-          
-          <i>Icon</i>, you can  
-          
-          
-          
-          <i>LoadFromFile</i> a bitmap file, where if the class is 
-          
-          
-          
-          <i>TIcon</i> you could only read  .ICO files.
-          
-          
-          
-          <br/>
-          <br/>
-          <i>LoadFromFile</i> - Reads a picture from disk. The 
-          
-          
-          
-          <i>TGraphic</i> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.
-          
-          
-          
-          <br/>
-          <i>SaveToFile</i> - Writes the picture to disk.
-          
-          
-          
-          <br/>
-          <i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.
-          
-          
-          
-          <br/>
-          <i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.
-          
-          
-          
-          <br/>
-          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by 
-          
-          
-          
-          <i>LoadFromClipboardFormat</i>
-
-.
-          
-          
-          
-          <br/>
-          <i>Assign</i> - Copies the contents of the given 
-          
-          
-          
-          <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.
-          
-          
-          
-          <br/>
-          <i>RegisterFileFormat</i> - Register a new 
-          
-          
-          
-          <i>TGraphic</i> class for use in  
-          
-          
-          
-          <i>LoadFromFile</i>.
-          
-          
-          
-          <br/>
-          <i>RegisterClipboardFormat</i> - Registers a new 
-          
-          
-          
-          <i>TGraphic</i> class for use in  
-          
-          
-          
-          <i>LoadFromClipboardFormat</i>.
-          
-          
-          
-          <br/>
-          <i>UnRegisterGraphicClass</i> - Removes all references to the specified 
-          
-          
-          
-          <i>TGraphic</i> class and all its descendants from the file format and clipboard format internal lists.
-          
-          
-          
-          <br/>
-          <i>Height</i> - The native, unstretched, height of the picture.
-          
-          
-          
-          <br/>
-          <i>Width</i> - The native, unstretched, width of the picture.
-          
-          
-          
-          <br/>
-          <i>Graphic</i> - The 
-          
-          
-          
-          <i>TGraphic</i> object contained by the 
-          
-          
-          
-          <i>TPicture</i>
-          <br/>
-          <i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.
-          
-          
-          
-          <br/>
-          <i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.
-          
-          
-          
-          <br/>
-          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
-          
-          
-          
-          <i>TPortableNetworkGraphic</i>) is returned.
-          
-          
-          
-          <br/>
-          <i>PNM</i> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (
-          
-          
-          
-          <i>TPortableAnyMapGraphic</i>) is returned.
-          
-          
-          
-          <br/>
+          <p>
+            <var>TPicture</var> is a <var>TGraphic</var> container.  It is used in place of a <var>TGraphic</var> if the graphic can be of any <var>TGraphic</var> class. </p>
+          <p>It is not a direct descendant of <var>TGraphic</var>, so you will not see <var>TGraphic</var> listed in the <var>Inheritance</var> chart, but it contains a property <var>Graphic</var>, of type <var>TGraphic</var>, so can contain all the properties of a <var>TGraphic</var>
+          </p>
+          <p>Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc</p>
+          <p>It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.</p>
+          <p>
+            <var>LoadFromFile</var> and <var>SaveToFile</var> are polymorphic. For example, if the <var>TPicture</var> is holding an <var>Icon</var>, you can <var>LoadFromFile</var> a bitmap file, whereas if the class is <var>TIcon</var> you could only read  .ICO files.</p>
+          <ul>
+            <li>
+              <var>LoadFromFile</var> - Reads a picture from disk. The <var>TGraphic</var> class created is determined by the file extension of the file. If the file extension is  not recognized an exception is generated.</li>
+            <li>
+              <var>SaveToFile</var> - Writes the picture to disk.</li>
+            <li>
+              <var>LoadFromClipboardFormat</var> - ToDo: Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.</li>
+            <li>
+              <var>SaveToClipboardFormats</var> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</li>
+            <li>
+              <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by <var>LoadFromClipboardFormat</var>
+            </li>
+            <li>
+              <var>Assign</var> - Copies the contents of the given <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.</li>
+            <li>
+              <var>RegisterFileFormat</var> - Register a new <var>TGraphic</var> class for use in <var>LoadFromFile</var>.</li>
+            <li>
+              <var>RegisterClipboardFormat</var> - Registers a new <var>TGraphic</var> class for use in <var>LoadFromClipboardFormat</var>.</li>
+            <li>
+              <var>UnRegisterGraphicClass</var> - Removes all references to the specified <var>TGraphic</var> class and all its descendants from the file format and clipboard format internal lists.</li>
+            <li>
+              <var>Height</var> - The native, unstretched, height of the picture.</li>
+            <li>
+              <var>Width</var> - The native, unstretched, width of the picture.</li>
+            <li>
+              <var>Graphic</var> - The <var>TGraphic</var> object contained by the <var>TPicture</var>
+            </li>
+            <li>
+              <var>Bitmap</var> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned.</li>
+            <li>
+              <var>Pixmap</var> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned.</li>
+            <li>
+              <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<var>TPortableNetworkGraphic</var>) is returned.</li>
+            <li>
+              <var>PNM</var> - Returns a pnm.  If the contents is not already a pnm, the contents are thrown away and a blank pnm (<var>TPortableAnyMapGraphic</var>) is returned.</li>
+            <li>
+              <var>Jpeg</var> - Returns a jpeg. If the contents is not already a jpeg, the contents are thrown away and a blank jpeg (<var>TJPegImage</var>) is returned.</li>
+          </ul>
         </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -3868,24 +3674,24 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- constructor Visibility: public -->
       <element name="TPicture.Create">
         <short>
-          <i>TPicture</i> constructor</short>
+          <var>TPicture</var> constructor</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TPicture.Destroy">
         <short>
-          <i>TPicture</i> destructor</short>
+          <var>TPicture</var> destructor</short>
         <descr>Any destructor method defined here will <b>override</b> destructors defined in ancestor classes</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromFile">
         <short>
-          <i>LoadFromFile</i> - Reads a picture from disk</short>
+          <var>LoadFromFile</var> - Reads a picture from disk</short>
         <descr>
-          <i>LoadFromFile</i> - Reads a picture from disk. The 
+          <var>LoadFromFile</var> - Reads a picture from disk. The 
           
           
           
-          <i>TGraphic</i> class created is determined by the file extension of the file.</descr>
+          <var>TGraphic</var> class created is determined by the file extension of the file.</descr>
         <errors>If the file extension is  not recognized an exception is generated</errors>
       </element>
       <!-- argument Visibility: default -->
@@ -3895,7 +3701,7 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.SaveToFile">
         <short>
-          <i>SaveToFile</i> - Writes the picture to disk</short>
+          <var>SaveToFile</var> - Writes the picture to disk</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.SaveToFile.Filename">
@@ -3904,11 +3710,12 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromClipboardFormat">
         <short>
-          <i>LoadFromClipboardFormat</i>
-        </short>
+          <var>LoadFromClipboardFormat</var> - Reads the picture from the handle provided in the given clipboard format</short>
         <descr>
-          <i>LoadFromClipboardFormat</i> - ToDo: Reads the picture from the handle provided in the given clipboard format.</descr>
-        <errors>If the format is not supported, an exception is generated</errors>
+          <var>LoadFromClipboardFormat</var> - ToDo: Reads the picture from the handle provided in the given clipboard format.
+</descr>
+        <errors>If the format is not supported, an exception is generated
+</errors>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.LoadFromClipboardFormat.FormatID">
@@ -3916,7 +3723,7 @@ It does not itself contain a defined area for displaying the image, but this is 
       </element>
       <!-- procedure Visibility: public -->
       <element name="TPicture.LoadFromClipboardFormatID">
-        <short>Reads the picture from a clipboard of type <i>ClipboardType</i> using the format <i>FormatID</i>
+        <short>Reads the picture from a clipboard of type <var>ClipboardType</var> using the format <var>FormatID</var>
         </short>
         <descr/>
         <errors/>
@@ -3933,9 +3740,9 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.SaveToClipboardFormat">
         <short>
-          <i>SaveToClipboardFormats</i> - Allocates a global handle and writes the picture in its native clipboard format</short>
+          <var>SaveToClipboardFormats</var> - Allocates a global handle and writes the picture in its native clipboard format</short>
         <descr>
-          <i>SaveToClipboardFormats</i> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</descr>
+          <var>SaveToClipboardFormats</var> - ToDo: Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are  nil.</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.SaveToClipboardFormat.FormatID">
@@ -3944,11 +3751,11 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- function Visibility: public -->
       <element name="TPicture.SupportsClipboardFormat">
         <short>
-          <i>SupportsClipboardFormat</i> - Returns true if the given clipboard format  is supported by 
+          <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by 
           
           
           
-          <i>LoadFromClipboardFormat</i>
+          <var>LoadFromClipboardFormat</var>
         </short>
       </element>
       <!-- function result Visibility: default -->
@@ -3962,18 +3769,15 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.Assign">
         <short>
-          <i>Assign</i> - Copies the contents of the given 
-          
-          
-          
-          <i>TPicture</i>
+          <var>Assign</var> - Copies the contents of the given <var>TPicture</var>
         </short>
         <descr>
-          <i>Assign</i> - Copies the contents of the given 
+          <var>Assign</var> - Copies the contents of the given 
           
           
           
-          <i>TPicture</i>.  Used most often in  the implementation of TPicture properties.</descr>
+          <var>TPicture</var>.  Used most often in  the implementation of TPicture properties.
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.Assign.Source">
@@ -3982,15 +3786,7 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterFileFormat">
         <short>
-          <i>RegisterFileFormat</i> - Register a new 
-          
-          
-          
-          <i>TGraphic</i> class for use in  
-          
-          
-          
-          <i>LoadFromFile</i>
+          <var>RegisterFileFormat</var> - Register a new <var>TGraphic</var> class for use in <var>LoadFromFile</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -4008,15 +3804,7 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.RegisterClipboardFormat">
         <short>
-          <i>RegisterClipboardFormat</i> - Registers a new 
-          
-          
-          
-          <i>TGraphic</i> class for use in  
-          
-          
-          
-          <i>LoadFromClipboardFormat</i>
+          <var>RegisterClipboardFormat</var> - Registers a new <var>TGraphic</var> class for use in  <var>LoadFromClipboardFormat</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -4030,20 +3818,17 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.UnregisterGraphicClass">
         <short>
-          <i>UnRegisterGraphicClass</i>  - Removes all references to the specified 
-          
-          
-          
-          <i>TGraphic</i>
+          <var>UnRegisterGraphicClass</var>  - Removes all references to the specified <var>TGraphic</var>
         </short>
         <descr>
-          <i>UnRegisterGraphicClass</i>
+          <var>UnRegisterGraphicClass</var>
  - Removes all references to the specified 
           
           
           
-          <i>TGraphic</i>
-  class and all its descendants from the file format and clipboard format internal lists</descr>
+          <var>TGraphic</var>
+  class and all its descendants from the file format and clipboard format internal lists
+</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPicture.UnregisterGraphicClass.AClass">
@@ -4052,61 +3837,50 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- procedure Visibility: public -->
       <element name="TPicture.Clear">
         <short>
-          <i>Clear</i> - removes the graphic</short>
+          <var>Clear</var> - removes the graphic</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Bitmap">
         <short>
-          <i>Bitmap</i> - Returns a bitmap</short>
+          <var>Bitmap</var> - Returns a bitmap</short>
         <descr>
-          <i>Bitmap</i> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned</descr>
+          <var>Bitmap</var> - Returns a bitmap.  If the contents is not already a bitmap, the contents are thrown away and a blank bitmap is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Pixmap">
         <short>
-          <i>Pixmap</i> - Returns a pixmap</short>
+          <var>Pixmap</var> - Returns a pixmap</short>
         <descr>
-          <i>Pixmap</i> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned</descr>
+          <var>Pixmap</var> - Returns a pixmap.  If the contents is not already a pixmap, the contents are thrown away and a blank pixmap is returned</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.PNG">
         <short>
-          <i>PNG</i> - Returns a png</short>
+          <var>PNG</var> - Returns a png</short>
         <descr>
-          <i>PNG</i> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (
-          
-          
-          
-          <i>TPortableNetworkGraphic</i>) is returned</descr>
+          <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are thrown away and a blank png (<var>TPortableNetworkGraphic</var>) is returned
+</descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Icon">
         <short>
-          <i>Icon</i> contained within the picture</short>
+          <var>Icon</var> contained within the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Graphic">
         <short>
-          <i>Graphic</i> - The 
-          
-          
-          
-          <i>TGraphic</i> object contained by the 
-          
-          
-          
-          <i>TPicture</i>
+          <var>Graphic</var> - The <var>TGraphic</var> object contained by the <var>TPicture</var>
         </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Height">
         <short>
-          <i>Height</i> - The native, unstretched, height of the picture</short>
+          <var>Height</var> - The native, unstretched, height of the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.Width">
         <short>
-          <i>Width</i> - The native, unstretched, width of the picture</short>
+          <var>Width</var> - The native, unstretched, width of the picture</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TPicture.OnChange">
@@ -4138,9 +3912,9 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- object Visibility: default -->
       <element name="TCanvas">
         <short>
-          <i>TCanvas</i> - where most of the drawing is performed</short>
+          <var>TCanvas</var> - where most of the drawing is performed</short>
         <descr>
-          <i>TCanvas</i> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
+          <var>TCanvas</var> is a class that defines a very large number of drawing methods including methods for pen and colour selection, producing shapes and filling them, setting or clearing individual pixels, and producing graphic text.
 </descr>
       </element>
       <!-- variable Visibility: private -->
@@ -4550,25 +4324,25 @@ It does not itself contain a defined area for displaying the image, but this is 
       <!-- constructor Visibility: public -->
       <element name="TCanvas.Create">
         <short>
-          <i>Canvas</i>  constructor</short>
+          <var>Canvas</var>  constructor</short>
         <descr>
-          <i>Canvas</i>  constructor: creates a new instance of the class 
+          <var>Canvas</var>  constructor: creates a new instance of the class 
           
           
           
-          <i>TCanvas</i>
+          <var>TCanvas</var>
         </descr>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCanvas.Destroy">
         <short>
-          <i>Canvas</i> destructor</short>
+          <var>Canvas</var> destructor</short>
         <descr>
-          <i>Canvas</i> destructor: removes this instance of 
+          <var>Canvas</var> destructor: removes this instance of 
           
           
           
-          <i>TCanvas</i> and makes its resources available</descr>
+          <var>TCanvas</var> and makes its resources available</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Lock">
@@ -4607,12 +4381,13 @@ It does not itself contain a defined area for displaying the image, but this is 
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short>Use <i>Arc</i>   to draw an elliptically curved line with the current Pen</short>
+        <short>Use <var>Arc</var>   to draw an elliptically curved line with the current Pen</short>
         <descr>Method:   TCanvas.Arc<br/>
 
 Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 Use Arc to draw an elliptically curved line with the current Pen. The values sx,sy, and ex,ey represent the starting and ending radial-points between which the Arc is drawn.</descr>
       </element>
@@ -4642,12 +4417,13 @@ Use Arc to draw an elliptically curved line with the current Pen. The values sx,
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Arc">
-        <short>Use <i>Arc</i>  to draw an elliptically curved line with the current Pen</short>
+        <short>Use <var>Arc</var>  to draw an elliptically curved line with the current Pen</short>
         <descr>Method:   TCanvas.Arc<br/>
 
 Params:   ALeft, ATop, ARight, ABottom, angle1, angle2<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 Use Arc to draw an elliptically curved line with the current Pen.<br/>
 
@@ -4655,8 +4431,8 @@ The angles angle1 and angle2 are 1/16th of a degree. <br/>
 
 For example, a full  circle equals 5760 (16*360). <br/>
 
-Positive values of <i>Angle</i>
- and <i>AngleLength</i>
+Positive values of <var>Angle</var>
+ and <var>AngleLength</var>
  mean counter-clockwise while negative values mean clockwise direction.<br/>
 
 Zero degrees is at the 3 o'clock position.</descr>
@@ -4754,7 +4530,7 @@ Zero degrees is at the 3 o'clock position.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Chord">
         <short>
-          <i>Chord</i>  draws a filled Chord-shape on the canvas</short>
+          <var>Chord</var>  draws a filled Chord-shape on the canvas</short>
         <descr>Method:   TCanvas.Chord<br/>
 
 
@@ -4763,27 +4539,28 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg<br/>
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
-Use <i>Chord</i>
+Use <var>Chord</var>
 
 
- to draw a filled Chord-shape on the canvas. The angles <i>angle1</i>
+ to draw a filled Chord-shape on the canvas. The angles <var>angle1</var>
 
 
- and <i>angle2</i>
+ and <var>angle2</var>
 
 
  are 1/16th of a degree. For example, a full circle equals 5760(16*360).<br/>
 
 
 
-Positive values of <i>Angle</i>
+Positive values of <var>Angle</var>
 
 
- and <i>AngleLength</i>
+ and <var>AngleLength</var>
 
 
  mean counter-clockwise while negative values mean clockwise direction. <br/>
@@ -4826,7 +4603,7 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.CopyRect">
-        <short>Copies the rectangle found at <i>Source</i> in <i>SrcCanvas</i> to the destination position <i>Dest</i>
+        <short>Copies the rectangle found at <var>Source</var> in <var>SrcCanvas</var> to the destination position <var>Dest</var>
         </short>
         <descr/>
         <errors/>
@@ -4846,7 +4623,7 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Draw">
-        <short>Draw a graphic stored in <i>SrcGraphic</i> at the point X, Y</short>
+        <short>Draw a graphic stored in <var>SrcGraphic</var> at the point X, Y</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4865,7 +4642,7 @@ Zero degrees is at the 3 o'clock position.</descr>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.StretchDraw">
-        <short>Draws the Graphic stored at <i>SrcGraphic</i>, stretched to fit the dimensions of the destination <p>DestRec</p>
+        <short>Draws the Graphic stored at <var>SrcGraphic</var>, stretched to fit the dimensions of the destination <p>DestRec</p>
         </short>
         <descr/>
         <errors/>
@@ -4891,13 +4668,14 @@ Zero degrees is at the 3 o'clock position.</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Ellipse">
         <short>
-          <i>Ellipse</i>  draws a filled circle or ellipse on the canvas</short>
+          <var>Ellipse</var>  draws a filled circle or ellipse on the canvas</short>
         <descr>Method:   TCanvas.Ellipse<br/>
 
 		      Params:   X1, Y1, X2, Y2<br/>
 
-Returns:  Nothing<br/><br/>
-Use <i>Ellipse</i>
+Returns:  Nothing<br/>
+          <br/>
+Use <var>Ellipse</var>
  to draw a filled circle or ellipse on the canvas.</descr>
       </element>
       <!-- argument Visibility: default -->
@@ -5062,7 +4840,7 @@ Use <i>Ellipse</i>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Line">
-        <short>Draws a <i>Line</i>  from <i>X1, Y1</i> to <i>X2, Y2</i>
+        <short>Draws a <var>Line</var>  from <var>X1, Y1</var> to <var>X2, Y2</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -5084,11 +4862,11 @@ Use <i>Ellipse</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.LineTo">
         <short>
-          <i>LineTo</i> draws a line from the current pen position to the new position: 
+          <var>LineTo</var> draws a line from the current pen position to the new position: 
           
           
           
-          <i>X1, Y1</i>
+          <var>X1, Y1</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -5101,7 +4879,7 @@ Use <i>Ellipse</i>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.MoveTo">
-        <short>Moves cursor to new position <i>X1, Y1</i> without drawing anything</short>
+        <short>Moves cursor to new position <var>X1, Y1</var> without drawing anything</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.MoveTo.X1">
@@ -5117,7 +4895,7 @@ Use <i>Ellipse</i>
           <link id="TCanvas.Pie"/>
         </seealso>
         <short>
-          <i>RadialPie</i> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
+          <var>RadialPie</var> - draw a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions</short>
         <descr>
           <p>Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer</p>
           <p>Use Pie to draw a filled pie-shaped wedge on the canvas.</p>
@@ -5152,11 +4930,11 @@ Use <i>Ellipse</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.RadialPie">
         <short>
-          <i>RadialPie</i> uses 
+          <var>RadialPie</var> uses 
           
           
           
-          <i>Pie</i>    to draw a filled pie-shaped wedge on the canvas</short>
+          <var>Pie</var>    to draw a filled pie-shaped wedge on the canvas</short>
         <descr>Method:   TCanvas.RadialPie<br/>
 
 
@@ -5167,12 +4945,13 @@ Params:   x1, y1, x2, y2, StartAngle16Deg, EndAngle16Deg: Integer<br/>
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
 
-Uses <i>Pie</i>
+Uses <var>Pie</var>
 
 
 
@@ -5181,11 +4960,11 @@ Uses <i>Pie</i>
 
 
 
-The angles <i>StartAngle16Deg</i>
+The angles <var>StartAngle16Deg</var>
 
 
 
- and <i>EndAngle16Deg</i>
+ and <var>EndAngle16Deg</var>
 
 
 
@@ -5241,14 +5020,15 @@ Zero degrees is at the 3 o'clock position</descr>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Pie">
         <short>
-          <i>Pie</i>  draws a filled Pie-shaped wedge on the canvas</short>
+          <var>Pie</var>  draws a filled Pie-shaped wedge on the canvas</short>
         <descr>Method:   TCanvas.Pie<br/>
 
 Params:   EllipseX1, EllipseY1, EllipseX2, EllipseY2, StartX, StartY, EndX, EndY<br/>
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
-Use <i>Pie</i>
+Use <var>Pie</var>
  to draw a filled Pie-shaped wedge on the canvas. The pie is part of an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2. The values StartX, StartY and EndX, EndY represent the starting and ending radial-points between which the Bounding-Arc is drawn. <br/>
         </descr>
       </element>
@@ -5305,7 +5085,7 @@ Use <i>Pie</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.PolyBezier">
         <short>
-          <i>Polybezier</i>    draws cubic Bezier curves</short>
+          <var>Polybezier</var>    draws cubic Bezier curves</short>
         <descr>Method:  TCanvas.PolyBezier<br/>
 
 
@@ -5314,11 +5094,12 @@ Params:  Points, Filled, Continous<br/>
 
 
 
-Returns: Boolean<br/><br/>
+Returns: Boolean<br/>
+          <br/>
 
 
 
-Use <i>Polybezier</i>
+Use <var>Polybezier</var>
 
 
  to draw cubic Bezier curves. <br/>
@@ -5329,15 +5110,18 @@ The first curve is drawn from the first point to the fourth point with the secon
 
 
 
-If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/><br/>
+If the Continuous flag is TRUE then each subsequent curve requires three more points, using the end-point of the previous Curve as its starting point, the first and second points being used as its control points, and the third point its end-point. <br/>
+          <br/>
 
 
 
-If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/><br/>
+If the continous flag is set to FALSE, then each subsequent Curve requires 4 additional points, which are used exactly as in the first curve. <br/>
+          <br/>
 
 
 
-Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/><br/>
+Any additonal points which do not add up to a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at least 4 points for an drawing to occur. <br/>
+          <br/>
 
 
 
@@ -5395,7 +5179,7 @@ If the Filled Flag is set to TRUE then the resulting Poly-Bezier will be drawn a
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polygon">
         <short>
-          <i>Polygon</i>    draws a closed, many-sided shape on the canvas, using the value   of Pen</short>
+          <var>Polygon</var>    draws a closed, many-sided shape on the canvas, using the value   of Pen</short>
         <descr>Method:   TCanvas.Polygon<br/>
 
 
@@ -5408,60 +5192,63 @@ Params:   Points: array of TPoint; Winding: Boolean = False; StartIndex: Integer
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
 
 
-Use <i>Polygon</i>
+Use <var>Polygon</var>
 
 
 
 
- to draw a closed, many-sided shape on the canvas, using the value of <i>Pen</i>
+ to draw a closed, many-sided shape on the canvas, using the value of <var>Pen</var>
 
 
 
 
-. After drawing the complete shape, <i>Polygon</i>
+. After drawing the complete shape, <var>Polygon</var>
 
 
 
 
- fills the shape using the value of <i>Brush</i>
+ fills the shape using the value of <var>Brush</var>
 
 
 
 
-.<br/><br/>
-
-
-
-
-
-The <i>Points</i>
-
-
-
-
- parameter is an array of points that give the vertices of the polygon.<br/><i>Winding</i>
-
-
-
-
- determines how the polygon is filled. When <i>Winding</i>
-
-
-
-
- is True, <i>Polygon</i>
+.<br/>
+          <br/>
 
 
 
 
 
-  fills the shape using the <i>Winding</i>
+The <var>Points</var>
+
+
+
+
+ parameter is an array of points that give the vertices of the polygon.<br/>
+          <var>Winding</var>
+
+
+
+
+ determines how the polygon is filled. When <var>Winding</var>
+
+
+
+
+ is True, <var>Polygon</var>
+
+
+
+
+
+  fills the shape using the <var>Winding</var>
 
 
 
@@ -5472,27 +5259,29 @@ The <i>Points</i>
 
 
 
-When <i>Winding</i>
+When <var>Winding</var>
 
 
 
 
- is False, <i>Polygon</i>
+ is False, <var>Polygon</var>
 
 
 
 
- uses the even-odd (alternative) fill algorithm.<br/><i>StartIndex</i>
+ uses the even-odd (alternative) fill algorithm.<br/>
+          <var>StartIndex</var>
 
 
 
 
- gives the index of the first point in the array to use. All points before this are ignored.<br/><i>NumPts</i>
+ gives the index of the first point in the array to use. All points before this are ignored.<br/>
+          <var>NumPts</var>
 
 
 
 
- indicates the number of points to use, starting at <i>StartIndex</i>
+ indicates the number of points to use, starting at <var>StartIndex</var>
 
 
 
@@ -5503,17 +5292,17 @@ When <i>Winding</i>
 
 
 
-If <i>NumPts</i>
+If <var>NumPts</var>
 
 
 
 
- is -1 (the default), <i>Polygon</i>
+ is -1 (the default), <var>Polygon</var>
 
 
 
 
- uses all points from <i>StartIndex</i>
+ uses all points from <var>StartIndex</var>
 
 
 
@@ -5530,7 +5319,7 @@ The first point is always connected to the last point.<br/>
 
 
 
-To draw a polygon on the canvas, without filling it, use the <i>Polyline</i>
+To draw a polygon on the canvas, without filling it, use the <var>Polyline</var>
 
 
 
@@ -5576,7 +5365,7 @@ To draw a polygon on the canvas, without filling it, use the <i>Polyline</i>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.Polyline">
         <short>
-          <i>Polyline</i>    connects a set of points on the canvas</short>
+          <var>Polyline</var>    connects a set of points on the canvas</short>
         <descr>Method:   TCanvas.Polyline<br/>
 
 
@@ -5591,26 +5380,27 @@ Params:   Points: array of TPoint; StartIndex: Integer = 0; NumPts: Integer = -1
 
 
 
-Returns:  Nothing<br/><br/>
+Returns:  Nothing<br/>
+          <br/>
 
 
 
 
 
 
-Use <i>Polyline</i>
+Use <var>Polyline</var>
 
 
 
 
 
- to connect a set of points on the <i>Canvas</i>
+ to connect a set of points on the <var>Canvas</var>
 
 
 
 
 
-. If you specify only two points, <i>Polyline</i>
+. If you specify only two points, <var>Polyline</var>
 
 
 
@@ -5623,37 +5413,39 @@ Use <i>Polyline</i>
 
 
 
-The <i>Points</i>
+The <var>Points</var>
 
 
 
 
 
- parameter is an array of points to be connected.<br/><i>StartIndex</i>
+ parameter is an array of points to be connected.<br/>
+          <var>StartIndex</var>
 
 
 
 
 
- identifies the first point in the array to use.<br/><i>NumPts</i>
+ identifies the first point in the array to use.<br/>
+          <var>NumPts</var>
 
 
 
 
 
- indicates the number of points to use. If <i>NumPts</i>
+ indicates the number of points to use. If <var>NumPts</var>
 
 
 
 
 
- is -1 (the default), <i>PolyLine</i>
+ is -1 (the default), <var>PolyLine</var>
 
 
 
 
 
- uses all the points from <i>StartIndex</i>
+ uses all the points from <var>StartIndex</var>
 
 
 
@@ -5666,31 +5458,31 @@ The <i>Points</i>
 
 
 
-Calling the <i>MoveTo</i>
+Calling the <var>MoveTo</var>
 
 
 
 
 
- function with the value of the first point, and then repeatedly calling <i>LineTo</i>
+ function with the value of the first point, and then repeatedly calling <var>LineTo</var>
 
 
 
 
 
- with all subsequent points will draw the same image on the canvas. However, unlike <i>LineTo</i>
+ with all subsequent points will draw the same image on the canvas. However, unlike <var>LineTo</var>
 
 
 
 
 
-, <i>Polyline</i>
+, <var>Polyline</var>
 
 
 
 
 
- does not change the value of <i>PenPos</i>
+ does not change the value of <var>PenPos</var>
 
 
 
@@ -5792,7 +5584,7 @@ Calling the <i>MoveTo</i>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.TextOut">
-        <short>Writes the <i>Text</i> string at the position <i>X, Y</i> on the canvas and leaves the pen at the end of the text</short>
+        <short>Writes the <var>Text</var> string at the position <var>X, Y</var> on the canvas and leaves the pen at the end of the text</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextOut.X">
@@ -5831,10 +5623,14 @@ Calling the <i>MoveTo</i>
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCanvas.TextRect">
-        <short>Writes <i>Text</i> string within a specified rectangle, according to predefined <i>Style</i>
+        <short>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
         </short>
-        <descr>Writes <i>Text</i> string within a specified rectangle, according to predefined <i>Style</i><br/>
-The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> specify the starting point for writing the <i>Text</i> within the rectangle <br/><i>TextStyle</i> determines whether the text is justified, centered, word-wrapped etc. If the <i>Style</i> argument is omitted, defaults are assumed</descr>
+        <descr>Writes <var>Text</var> string within a specified rectangle, according to predefined <var>Style</var>
+          <br/>
+The boundaries of the rectangle are specified in <var>ARect</var>
+          <br/>
+          <var>X, Y</var> specify the starting point for writing the <var>Text</var> within the rectangle <br/>
+          <var>TextStyle</var> determines whether the text is justified, centered, word-wrapped etc. If the <var>Style</var> argument is omitted, defaults are assumed</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCanvas.TextRect.ARect">
@@ -6015,20 +5811,20 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.OnChange">
-        <short/>
+        <short>Event handler for a change in the canvas</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TCanvas.OnChanging">
-        <short/>
+        <short>Event handler while canvas is changing</short>
         <descr/>
         <seealso/>
       </element>
       <!-- object Visibility: default -->
       <element name="TSharedImage">
         <short>
-          <i>TSharedImage</i> -  base class for reference counted images</short>
+          <var>TSharedImage</var> -  base class for reference counted images</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6124,7 +5920,7 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
         <short>The place where the actual image of a bitmap is stored</short>
         <descr>
           <p>Descendant of TSharedImage for TBitmap.</p>
-          <i>If a TBitmap is assigned to another TBitmap, only the reference count will be increased and both will share the same TBitmapImage</i>
+          <var>If a TBitmap is assigned to another TBitmap, only the reference count will be increased and both will share the same TBitmapImage</var>
         </descr>
         <errors/>
         <seealso/>
@@ -6278,12 +6074,12 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- object Visibility: default -->
       <element name="TBitmap">
         <short>
-          <i>TBitmap</i> is the data of an image, and can be loaded from a file, stream or resource in .bmp  or .xpm format</short>
+          <var>TBitmap</var> is the data of an image, and can be loaded from a file, stream or resource in .bmp  or .xpm format</short>
         <descr>
           <p>
-            <i>TBitmap</i> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)</p>
+            <var>TBitmap</var> is the data of an image. The image can be loaded from a file, stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)</p>
           <p>The loading routine automatically recognizes the format, so it is also used to load the images from Delphi form streams (e.g. .dfm files) or FreePascal/Lazarus form streams (.lfm)</p>
-          <p>When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <i>Handle</i> is interface dependent.</p>
+          <p>When the handle is created, it is up to the interface (gtk, win32, ...) to convert it automatically to the best internal format. That is why the <var>Handle</var> is interface dependent.</p>
           <p>To access the raw data, see <link id="#lcl.IntfGraphics.TLazIntfImage">TLazIntfImage</link>
           </p>
         </descr>
@@ -6746,9 +6542,9 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- constructor Visibility: public -->
       <element name="TBitmap.Create">
         <short>
-          <i>BitMap</i> constructor</short>
+          <var>BitMap</var> constructor</short>
         <descr>
-          <i>BitMap</i> constructor. The supplied code can 
+          <var>BitMap</var> constructor. The supplied code can 
           
           
           
@@ -6757,9 +6553,9 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- destructor Visibility: public -->
       <element name="TBitmap.Destroy">
         <short>
-          <i>BitMap</i> destructor</short>
+          <var>BitMap</var> destructor</short>
         <descr>
-          <i>BitMap</i> destructor. The supplied code can 
+          <var>BitMap</var> destructor. The supplied code can 
           
           
           
@@ -6768,17 +6564,17 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- procedure Visibility: public -->
       <element name="TBitmap.Assign">
         <short>
-          <i>Assign</i>: find out about the Source of the call.</short>
+          <var>Assign</var>: find out about the Source of the call.</short>
         <descr>
-          <i>Assign</i>: find out about the Source of the call. If the 
+          <var>Assign</var>: find out about the Source of the call. If the 
           
           
           
-          <i>BitMap</i> data are already in use, the data are shared; if not, a new 
+          <var>BitMap</var> data are already in use, the data are shared; if not, a new 
           
           
           
-          <i>BitMap</i> is produced</descr>
+          <var>BitMap</var> is produced</descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.Assign.Source">
@@ -6846,15 +6642,15 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromDevice">
         <short>
-          <i>LoadFromDevice</i>: obtain 
+          <var>LoadFromDevice</var>: obtain 
           
           
           
-          <i>BitMap</i> data from a device with Handle 
+          <var>BitMap</var> data from a device with Handle 
           
           
           
-          <i>DC</i>
+          <var>DC</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6876,15 +6672,15 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromStream">
         <short>
-          <i>LoadFromStream</i>: obtains 
+          <var>LoadFromStream</var>: obtains 
           
           
           
-          <i>BitMap</i> data from a 
+          <var>BitMap</var> data from a 
           
           
           
-          <i>Stream</i>
+          <var>Stream</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6894,9 +6690,9 @@ The boundaries of the rectangle are specified in <i>ARect</i><br/><i>X, Y</i> sp
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromLazarusResource">
         <short>
-          <i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream</short>
+          <var>LoadFromLazarusResource</var>: obtain data from a valid Lazarus Resource Stream</short>
         <descr>
-          <i>LoadFromLazarusResource</i>: obtain data from a valid Lazarus Resource Stream
+          <var>LoadFromLazarusResource</var>: obtain data from a valid Lazarus Resource Stream
           
           
           
@@ -6905,7 +6701,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
           
           
           
-          <i>LoadFromStream</i> to acquire the data</descr>
+          <var>LoadFromStream</var> to acquire the data</descr>
         <seealso>
           <link id="TBitmap.LoadFromStream"/>
         </seealso>
@@ -6917,7 +6713,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromResourceName">
         <short>
-          <i>ToDo</i>
+          <var>ToDo</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6931,7 +6727,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromResourceID">
         <short>
-          <i>ToDo</i>
+          <var>ToDo</var>
         </short>
       </element>
       <!-- argument Visibility: default -->
@@ -6945,11 +6741,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromMimeStream">
         <short>
-          <i>LoadFromMimeStream</i> - get 
+          <var>LoadFromMimeStream</var> - get 
           
           
           
-          <i>Bitmap </i>data from the specified MIME stream</short>
+          <var>Bitmap </var>data from the specified MIME stream</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -6998,11 +6794,11 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TBitmap.LoadFromXPMFile">
         <short>
-          <i>LoadFromXPMFile</i>: obtain data from file in native 
+          <var>LoadFromXPMFile</var>: obtain data from file in native 
           
           
           
-          <i>PixMap</i> format</short>
+          <var>PixMap</var> format</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TBitmap.LoadFromXPMFile.Filename">
@@ -7245,19 +7041,16 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- object Visibility: default -->
       <element name="TPixmap">
         <short>
-          <i>PixMap</i>  - a class derived from 
-          
-          
-          
-          <i>TBitMap</i> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
+          <var>PixMap</var>  - a class derived from  <var>TBitMap</var> , with wrapper to deal specifically with PixMaps (ie using 'XPM' format)</short>
         <descr>
-          <i>PixMap</i>
-  - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organises saving and writing</descr>
+          <var>PixMap</var>
+  - Checks that specified resources (PixMap image, File for storage, Stream for writing) are of correct type and format, organises saving and writing
+</descr>
       </element>
       <!-- function Visibility: public -->
       <element name="TPixmap.LazarusResourceTypeValid">
         <short>
-          <i>LazarusResourceTypeValid</i> - checks that specified resource has correct format</short>
+          <var>LazarusResourceTypeValid</var> - checks that specified resource has correct format</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TPixmap.LazarusResourceTypeValid.Result">
@@ -7270,7 +7063,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- procedure Visibility: public -->
       <element name="TPixmap.WriteStream">
         <short>
-          <i>WriteStream</i> - writes PixMap data to specified stream</short>
+          <var>WriteStream</var> - writes PixMap data to specified stream</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TPixmap.WriteStream.Stream">
@@ -7279,12 +7072,12 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- argument Visibility: default -->
       <element name="TPixmap.WriteStream.WriteSize">
         <short>
-          <i>True</i> if size of data in stream has been specified</short>
+          <var>True</var> if size of data in stream has been specified</short>
       </element>
       <!-- function Visibility: public -->
       <element name="TPixmap.GetDefaultFPReader">
         <short>
-          <i>GetDefaultFPReader</i> - obtains the correct tool</short>
+          <var>GetDefaultFPReader</var> - obtains the correct tool</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TPixmap.GetDefaultFPReader.Result">
@@ -7293,7 +7086,7 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- function Visibility: public -->
       <element name="TPixmap.GetDefaultFPWriter">
         <short>
-          <i>GetDefaultFPWriter</i> -  obtains the correct tool</short>
+          <var>GetDefaultFPWriter</var> -  obtains the correct tool</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="TPixmap.GetDefaultFPWriter.Result">
@@ -7487,38 +7280,14 @@ Checks for the presence of a valid Lazarus Resource, then uses
       <!-- object Visibility: default -->
       <element name="TIcon">
         <short>
-          <i>TIcon</i>  - icons, small images typically associated with applications, controls, etc. Stored in files with .ico extension</short>
+          <var>TIcon</var>  - icons, small images typically associated with applications, controls, etc. Stored in files with .ico extension</short>
         <descr>
-          <i>TIcon</i>
- reads and writes .ICO file format.
-          
-          
-          
-          <br/>
-
-A .ico file typically contains several versions of the same image. 
-          
-          
-          
-          <br/>
-
-When loading, the largest/most colourful image is loaded as the 
-          
-          
-          
-          <i>TBitmap</i>
- and so can be handled as any other bitmap. Any other versions of the images are available via the  
-          
-          
-          
-          <i>Bitmaps</i>
- property
-          
-          
-          
-          <br/>
-
-Writing is not (yet) implemented.</descr>
+          <p>
+            <var>TIcon</var> reads and writes .ICO file format.</p>
+          <p>A .ico file typically contains several versions of the same image. </p>
+          <p>When loading, the largest/most colourful image is loaded as the <var>TBitmap</var> and so can be handled as any other bitmap. Any other versions of the images are available via the <var>Bitmaps</var> property</p>
+          <p>Writing is not (yet) implemented.</p>
+        </descr>
       </element>
       <!-- variable Visibility: private -->
       <element name="TIcon.FBitmaps">
@@ -7562,14 +7331,14 @@ Writing is not (yet) implemented.</descr>
       <!-- property Visibility: public -->
       <element name="TIcon.Bitmaps">
         <short>
-          <i>Bitmaps</i> - the list of alternative bitmaps (of various sizes)</short>
+          <var>Bitmaps</var> - the list of alternative bitmaps (of various sizes)</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TIcon.Destroy">
         <short>
-          <i>TIcon</i> destructor</short>
+          <var>TIcon</var> destructor</short>
         <descr>
-          <i>TIcon</i> destructor. Method can 
+          <var>TIcon</var> destructor. Method can 
           
           
           
@@ -7578,7 +7347,7 @@ Writing is not (yet) implemented.</descr>
       <!-- procedure Visibility: public -->
       <element name="TIcon.AddBitmap">
         <short>Add a bitmap to the current list</short>
-        <descr>Note that Ownership passes to <i>TIcon</i>
+        <descr>Note that Ownership passes to <var>TIcon</var>
         </descr>
       </element>
       <!-- argument Visibility: default -->
@@ -8323,49 +8092,43 @@ Writing is not (yet) implemented.</descr>
         <short>The Resource type which is to be checked</short>
       </element>
       <element name="TGraphic.LoadFromResourceName">
-        <short>Load the graphic data from a resource identified by the name ResName with the Handle 'Instance'</short>
+        <short>Load the graphic data from a resource identified by the name <var>ResName</var> with the Handle '<var>Instance</var>'</short>
       </element>
       <element name="TGraphic.LoadFromResourceID">
-        <short>Load graphic data from a resource identified by the integer identifier ResID</short>
+        <short>Load graphic data from a resource identified by the integer identifier <var>ResID</var>
+        </short>
       </element>
       <element name="TPicture.LoadFromStreamWithFileExt">
         <short>Loads picture from a named data stream with a specified file extension</short>
       </element>
       <element name="TPicture.FindGraphicClassWithFileExt">
-        <short>Finds a graphic class with the named file extension <i>Ext</i>, returning an exception if not found</short>
+        <short>Finds a graphic class with the named file extension <var>Ext</var>, returning an exception if not found</short>
       </element>
       <element name="TPicture.Jpeg">
         <short>
-          <i>Jpeg</i>  - returns a JPEG image</short>
+          <var>Jpeg</var>  - returns a JPEG image</short>
         <descr>
           <p>
-            <i>Jpeg</i>  - returns a JPEG image</p>
+            <var>Jpeg</var>  - returns a JPEG image</p>
           <p>If the contents is not already a JPEG image, the contents are thrown away and a blank JPEG is returned</p>
         </descr>
       </element>
       <element name="TPicture.PNM">
         <short>
-          <i>PNM </i>- a 
-          
-          
-          
-          <b>PortableAnyMapGraphic </b>image</short>
+          <var>PNM </var>- a <b>PortableAnyMapGraphic </b>image</short>
         <descr>
           <p>
-            <i>PNM </i>- a 
-            
-            
-            
-            <b>PortableAnyMapGraphic </b>image</p>
+            <var>PNM </var>- a <b>PortableAnyMapGraphic </b>image</p>
           <p>Reads a PNM image. If it is not a valid PNM image, the contents are thrown away and a blank PNM is generated</p>
         </descr>
       </element>
       <element name="TJPEGImage">
-        <short>TJPEGImage - a class for handling images stored in JPEG (compressed) format</short>
+        <short>
+          <var>TJPEGImage</var> - a class for handling images stored in JPEG (compressed) format</short>
         <descr>
           <p>
             <b>JPEG</b> images are very commonly used for storing digital photographs. They can represent detailed colour photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality. </p>
-          <p>The properties <i>CompressionQuality</i> (an integer between 1 and 100, with 100 representing the best quality) and <i>Performance</i> (an enumerated variable with two states: <i>BestQuality</i> or <i>BestSpeed</i> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
+          <p>The properties <var>CompressionQuality</var> (an integer between 1 and 100, with 100 representing the best quality) and <var>Performance</var> (an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> ie compression) can be used to determine the balance between efficiency of storage and quality of picture.</p>
         </descr>
       </element>
       <element name="TJPEGImage.InitFPImageReader">
@@ -8396,11 +8159,11 @@ Writing is not (yet) implemented.</descr>
       </element>
       <element name="TBitmap.LoadFromIntfImage">
         <short>
-          <i>LoadFromIntfImage</i> - gets 
+          <var>LoadFromIntfImage</var> - gets 
           
           
           
-          <i>Bitmap</i> data from an interface image</short>
+          <var>Bitmap</var> data from an interface image</short>
       </element>
       <element name="TBitmap.GetResourceType">
         <short>Finds the type of resource for the bitmap</short>
@@ -8437,27 +8200,27 @@ Writing is not (yet) implemented.</descr>
         <short>Monitoring the progress of drawing a complicated Graphic</short>
         <descr>
           <p>
-            <i>TProgressEvent</i> is a generic progress notification event which may be used by 
+            <var>TProgressEvent</var> is a generic progress notification event which may be used by 
             
             
-            <i>TGraphic</i> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
+            <var>TGraphic</var> classes with computationally intensive (slow) operations, such as loading, storing, or transforming image data.</p>
           <table>
             <caption>Event params:
 </caption>
             <tr>
               <td>Stage</td>
-              <td>Indicates whether this call to the <i>OnProgress</i> event is to prepare for, process, or clean up after a graphic operation.  If <i>OnProgress</i> is called at all, the first call for a graphic operation will be with <i>Stage = psStarting</i>, to allow the <i>OnProgress</i> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <i>Stage = psStarting</i>, you are guaranteed that  <i>OnProgress</i> will be called again with 
-<i>Stage = psEnding</i> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to  <i>OnProgress </i>with <i>Stage = psRunning</i> may occur between the <i>psStarting</i> and  <i>psEnding</i> calls.</td>
+              <td>Indicates whether this call to the <var>OnProgress</var> event is to prepare for, process, or clean up after a graphic operation.  If <var>OnProgress</var> is called at all, the first call for a graphic operation will be with <var>Stage = psStarting</var>, to allow the <var>OnProgress</var> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <var>Stage = psStarting</var>, you are guaranteed that  <var>OnProgress</var> will be called again with 
+<var>Stage = psEnding</var> to allow you to free those resources, even if the graphic operation is aborted by an exception.  Zero or more calls to  <var>OnProgress </var>with <var>Stage = psRunning</var> may occur between the <var>psStarting</var> and  <var>psEnding</var> calls.</td>
             </tr>
             <tr>
               <td>PercentDone</td>
-              <td>The ratio of work done to work remaining, on a scale of 0 to 100.  Values may repeat or even regress (get smaller) in successive calls.  <i>PercentDone</i> is usually only a guess, and the guess may be dramatically altered as new information is discovered in decoding the image. The value of this property could usefully be passed to a ProgressBar to show the user how drawing is progressing</td>
+              <td>The ratio of work done to work remaining, on a scale of 0 to 100.  Values may repeat or even regress (get smaller) in successive calls.  <var>PercentDone</var> is usually only a guess, and the guess may be dramatically altered as new information is discovered in decoding the image. The value of this property could usefully be passed to a ProgressBar to show the user how drawing is progressing</td>
             </tr>
             <tr>
               <td>RedrawNow</td>
               <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call 
-  <i>Update</i> to force a control to be redrawn immediately in the 
-  <i>OnProgress </i>event handler. Redrawing a graphic when 
+  <var>Update</var> to force a control to be redrawn immediately in the 
+  <var>OnProgress </var>event handler. Redrawing a graphic when 
   RedrawNow = False could corrupt the image and/or cause exceptions.</td>
             </tr>
             <tr>
@@ -8467,8 +8230,8 @@ Writing is not (yet) implemented.</descr>
             <tr>
               <td>Msg</td>
               <td>Optional text describing in one or two words what the graphic class is currently working on.  Ex:  "Loading" "Storing" "Reducing colors".  The 
-  <i>Msg</i> string can also be empty. 
-  <i>Msg</i> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if Msg = 'Loading' then...)</td>
+  <var>Msg</var> string can also be empty. 
+  <var>Msg</var> strings should be resourced for translation,  should not contain trailing periods, and should be used only for display purposes.  (Do not use the construct: if Msg = 'Loading' then...)</td>
             </tr>
           </table>
         </descr>
