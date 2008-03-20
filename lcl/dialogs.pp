@@ -285,6 +285,7 @@ type
     property Enabled;
     property Flat;
     property Font;
+    property GroupIndex;
     property Hint;
     property Layout;
     property Margin;
