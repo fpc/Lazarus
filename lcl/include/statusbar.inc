@@ -46,14 +46,14 @@ begin
 end;
 
 procedure TStatusBar.SetSimplePanel(Value : Boolean);
-Begin
+begin
   if FSimplePanel <> Value then
-  Begin
+  begin
     FSimplePanel := Value;
     //debugln('TStatusBar.SetSimplePanel FSimplePanel=',dbgs(FSimplePanel),' ',dbgsName(Self));
     UpdateHandleObject(-1);
   end;
-End;
+end;
 
 procedure TStatusBar.SetPanels(Value: TStatusPanels);
 begin
@@ -188,10 +188,12 @@ end;
 ------------------------------------------------------------------------------}
 function TStatusBar.CreatePanel: TStatusPanel;
 var
-  LClass: TStatusPanelClass;
+  AClass: TStatusPanelClass;
 begin
-  LClass := GetPanelClass;
-  Result := LClass.Create(Panels);
+  AClass := GetPanelClass;
+  if Assigned(FOnCreatePanelClass) then
+    OnCreatePanelClass(Self, AClass);
+  Result := AClass.Create(Panels);
 end;
 {------------------------------------------------------------------------------
   function TStatusBar.CreatePanels(): TStatusPanels;
@@ -207,6 +209,5 @@ function TStatusBar.GetPanelClass: TStatusPanelClass;
 begin
   Result := TStatusPanel;
 end;
-
 
 // included by comctrls.pp

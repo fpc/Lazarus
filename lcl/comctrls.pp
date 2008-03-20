@@ -109,6 +109,8 @@ type
     property StatusBar: TStatusBar read FStatusBar;
   end;
 
+  TSBCreatePanelClassEvent = procedure(Sender: TStatusBar;
+    var PanelClass: TStatusPanelClass) of object;
 
   { TStatusBar }
 
@@ -118,10 +120,11 @@ type
     FHandlePanelCount: integer; // realized panels in the Handle object
     FHandleObjectNeedsUpdate: boolean;
     FHandleUpdatePanelIndex: integer; // which panel in the handle object needs update
+    FOnCreatePanelClass: TSBCreatePanelClassEvent;
     FUpdateLock: integer; // set by BeginUpdate/EndUpdate
-    FPanels : TStatusPanels;
-    FSimpleText : String;
-    FSimplePanel : Boolean;
+    FPanels: TStatusPanels;
+    FSimpleText: String;
+    FSimplePanel: Boolean;
     FOnHint: TNotifyEvent;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
@@ -140,7 +143,6 @@ type
     function CreatePanel: TStatusPanel; virtual;
     function CreatePanels: TStatusPanels; virtual;
     function GetPanelClass: TStatusPanelClass; virtual;
-
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,6 +163,7 @@ type
     property Color default clBtnFace;
     property OnClick;
     property OnContextPopup;
+    property OnCreatePanelClass: TSBCreatePanelClassEvent read FOnCreatePanelClass write FOnCreatePanelClass;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
