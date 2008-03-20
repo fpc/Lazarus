@@ -372,12 +372,6 @@ end;
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
-const
-  GripFlags: array[Boolean] of DWord =
-  (
-{ - grip } 0,
-{ + grip } SBARS_SIZEGRIP
-  );
 var
   Params: TCreateWindowExParams;
 begin
@@ -386,7 +380,9 @@ begin
   // customization of Params
   with Params do
   begin
-    Flags := Flags or CCS_NOPARENTALIGN or GripFlags[TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled];
+    Flags := Flags or CCS_NOPARENTALIGN;
+    if TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled then
+      Flags := Flags or SBARS_SIZEGRIP;
     pClassName := STATUSCLASSNAME;
     WindowTitle := StrCaption;
     if ThemeServices.ThemesEnabled then
