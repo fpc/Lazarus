@@ -25,6 +25,7 @@ begin
   TControlCanvas(FCanvas).Control := Self;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
+  FSizeGrip := True;
   FPanels := CreatePanels;
   Color := clBtnFace;
   Align := alBottom;
@@ -41,7 +42,7 @@ begin
   begin
     FSimpleText := Value;
     if HandleAllocated and FSimplePanel then 
-      TWSStatusBarClass(WidgetSetClass).SetPanelText(Self,0);
+      TWSStatusBarClass(WidgetSetClass).SetPanelText(Self, 0);
   end;
 end;
 
@@ -53,6 +54,15 @@ begin
     //debugln('TStatusBar.SetSimplePanel FSimplePanel=',dbgs(FSimplePanel),' ',dbgsName(Self));
     UpdateHandleObject(-1);
   end;
+end;
+
+procedure TStatusBar.SetSizeGrip(const AValue: Boolean);
+begin
+  if FSizeGrip = AValue then
+    Exit;
+  FSizeGrip := AValue;
+  if HandleAllocated then
+    TWSStatusBarClass(WidgetSetClass).SetSizeGrip(Self, AValue);
 end;
 
 procedure TStatusBar.SetPanels(Value: TStatusPanels);
@@ -165,6 +175,14 @@ begin
     if FHandleObjectNeedsUpdate then
       UpdateHandleObject(FHandleUpdatePanelIndex);
   end;
+end;
+
+function TStatusBar.SizeGripEnabled: Boolean;
+begin
+  Result := (Parent <> nil) and
+            (Parent is TCustomForm) and
+            (TCustomForm(Parent).BorderStyle in [bsSizeable, bsSizeToolWin]) and
+            (Align = alBottom);
 end;
 
 function TStatusBar.UpdatingStatusBar: boolean;

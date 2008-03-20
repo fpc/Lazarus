@@ -121,6 +121,7 @@ type
     FHandleObjectNeedsUpdate: boolean;
     FHandleUpdatePanelIndex: integer; // which panel in the handle object needs update
     FOnCreatePanelClass: TSBCreatePanelClassEvent;
+    FSizeGrip: Boolean;
     FUpdateLock: integer; // set by BeginUpdate/EndUpdate
     FPanels: TStatusPanels;
     FSimpleText: String;
@@ -129,6 +130,7 @@ type
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
+    procedure SetSizeGrip(const AValue: Boolean);
   protected
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -149,6 +151,7 @@ type
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function SizeGripEnabled: Boolean;
     function UpdatingStatusBar: boolean;
     property Canvas: TCanvas read FCanvas;
   published
@@ -159,6 +162,7 @@ type
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
+    property SizeGrip: Boolean read FSizeGrip write SetSizeGrip default True;
     property Visible default true;
     property Color default clBtnFace;
     property OnClick;

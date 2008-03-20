@@ -46,11 +46,12 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl;
+    class function CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -314,7 +315,7 @@ begin
     Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(PChar('')));
     exit;
   end;
-  Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
+  Getmem(Rights, StatusBar.Panels.Count * SizeOf(integer));
   try
     CurrentRight := 0;
     for PanelIndex := 0 to StatusBar.Panels.Count-2 do begin
@@ -371,6 +372,12 @@ end;
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
+const
+  GripFlags: array[Boolean] of DWord =
+  (
+{ - grip } 0,
+{ + grip } SBARS_SIZEGRIP
+  );
 var
   Params: TCreateWindowExParams;
 begin
@@ -379,6 +386,7 @@ begin
   // customization of Params
   with Params do
   begin
+    Flags := Flags or CCS_NOPARENTALIGN or GripFlags[TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled];
     pClassName := STATUSCLASSNAME;
     WindowTitle := StrCaption;
     if ThemeServices.ThemesEnabled then
@@ -421,6 +429,18 @@ begin
   {$endif}
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
+
+class procedure TWin32WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
+var
+  AStyle: Long;
+begin
+  if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
+    Exit;
+  AStyle := GetWindowLong(AStatusBar.Handle, GWL_STYLE);
+  if ((AStyle and SBARS_SIZEGRIP) <> 0) <> (SizeGrip and AStatusBar.SizeGripEnabled) then
+    RecreateWnd(AStatusBar);
 end;
 
 class procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl;

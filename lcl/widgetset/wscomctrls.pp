@@ -57,6 +57,7 @@ type
   TWSStatusBar = class(TWSWinControl)
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
+    class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); virtual;
     class procedure Update(const AStatusBar: TStatusBar); virtual;
   end;
 
@@ -202,6 +203,11 @@ begin
 end;
 
 class procedure TWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+end;
+
+class procedure TWSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
 begin
 end;
 

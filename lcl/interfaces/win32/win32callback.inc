@@ -2152,9 +2152,6 @@ begin
       ThemeServices.UpdateThemes;
       ThemeServices.IntfDoOnThemeChange;
     end;
-    WM_SIZE:
-      if lWinControl is TStatusBar then
-        WinProcess := False;
 
     { >= WM_USER }
 
