@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-08 21:26+0100\n"
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
+"PO-Revision-Date: 2008-03-20 14:39+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -274,7 +274,7 @@ msgstr "Le nom du composant %s%s%s n'est pas un identificateur valide"
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "Restrictions des composants"
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -478,7 +478,7 @@ msgstr "Choisir une fonte"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "Restrictions générales des Widgets"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -750,7 +750,7 @@ msgstr "Retirer des favories"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr ""
+msgstr "Restrictions"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -934,7 +934,7 @@ msgstr "Variant"
 
 #: objinspstrconsts:oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr ""
+msgstr "Afficher les propiétés restreintes"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"
