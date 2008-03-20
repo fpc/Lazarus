@@ -65,6 +65,13 @@ begin
     TWSStatusBarClass(WidgetSetClass).SetSizeGrip(Self, AValue);
 end;
 
+procedure TStatusBar.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  if HandleAllocated then
+    TWSStatusBarClass(WidgetSetClass).SetSizeGrip(Self, SizeGrip);
+end;
+
 procedure TStatusBar.SetPanels(Value: TStatusPanels);
 begin
   FPanels.Assign(Value);

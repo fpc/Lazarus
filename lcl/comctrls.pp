@@ -132,6 +132,7 @@ type
     procedure SetSimplePanel(Value : Boolean);
     procedure SetSizeGrip(const AValue: Boolean);
   protected
+    procedure BoundsChanged; override;
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure Loaded; override;
