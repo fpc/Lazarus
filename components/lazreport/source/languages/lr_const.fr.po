@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Last-Translator: laurent JACQUES <wile64@gmail.com>\n"
-"PO-Revision-Date: 2007-09-28 22:11+0100\n"
+"Last-Translator: Laurent Jacques <wile64@gmail.com>\n"
+"PO-Revision-Date: 2008-03-20 18:20+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team:  <fr@li.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,7 +68,7 @@ msgstr "&Tout"
 
 #: lr_const:sfieldsformaviabledb
 msgid "&Available DB's"
-msgstr ""
+msgstr "BDD D&isponible"
 
 #: lr_const:sinsertfieldsformaviabledset
 msgid "&Available datasets"
@@ -92,7 +92,7 @@ msgstr "&Respecter la casse"
 
 #: lr_const:svaredformcat
 msgid "&Categories and variables"
-msgstr ""
+msgstr "&Catégories et variables"
 
 #: lr_const:svarformcat
 msgid "&Category:"
@@ -128,7 +128,7 @@ msgstr "&Champ DB"
 
 #: lr_const:sfmtformdecid
 msgid "&Decimal digits"
-msgstr ""
+msgstr "Chiffres &décimaux"
 
 #: lr_const:sfrdesignerform_delete
 msgid "&Delete"
@@ -176,7 +176,7 @@ msgstr "&Horizontal"
 
 #: lr_const:sbarcodeformreadable
 msgid "&Human readable"
-msgstr ""
+msgstr "Lisible par l'&homme"
 
 #: lr_const:sdesoptionsforminch
 msgid "&Inches"
@@ -260,7 +260,7 @@ msgstr "&Imprime la page précédente"
 
 #: lr_const:sbandeditorformreccount
 msgid "&Record count"
-msgstr ""
+msgstr "&Compter les enregistrement"
 
 #: lr_const:sfrdesignerform_rect
 msgid "&Rectangle"
@@ -276,7 +276,7 @@ msgstr "&Enlever la page"
 
 #: lr_const:sfrdesignerform_rptopt
 msgid "&Report options..."
-msgstr ""
+msgstr "Options du &Rapport"
 
 #: lr_const:spgoptformright
 msgid "&Right, mm"
@@ -292,7 +292,7 @@ msgstr "&Script"
 
 #: lr_const:sdocoptformselect
 msgid "&Select when report loaded"
-msgstr ""
+msgstr "&Sélectionner au chargement du rapport"
 
 #: lr_const:sdesoptionsformshowgrd
 msgid "&Show grid"
@@ -528,19 +528,19 @@ msgstr "Agrégat"
 
 #: lr_const:sfrdesignerformalignbottoms
 msgid "Align bottoms"
-msgstr ""
+msgstr "Aligner en bas"
 
 #: lr_const:sfrdesignerformalignhorzcenter
 msgid "Align horizontal centers"
-msgstr ""
+msgstr "Aligner au centre horizontalement"
 
 #: lr_const:sfrdesignerformalignleftedge
 msgid "Align left edges"
-msgstr ""
+msgstr "Aligner au bord gauche"
 
 #: lr_const:sfrdesignerformalignrightedge
 msgid "Align right edges"
-msgstr ""
+msgstr "Aligner au bord droit"
 
 #: lr_const:sdesoptionsformaligngrd
 msgid "Align to &grid"
@@ -548,11 +548,11 @@ msgstr "Aligner sur la &grille"
 
 #: lr_const:sfrdesignerformalignetop
 msgid "Align tops"
-msgstr ""
+msgstr "Aligner en haut"
 
 #: lr_const:sfrdesignerformalignvertcenter
 msgid "Align vertical centers"
-msgstr ""
+msgstr "Aligner au centre verticalement"
 
 #: lr_const:sfrdesignerformalign
 msgid "Alignment"
@@ -564,7 +564,7 @@ msgstr "Tous les fichiers"
 
 #: lr_const:sfrdesignerformallframe
 msgid "All frame lines"
-msgstr ""
+msgstr "Toutes les lignes de trame"
 
 #: lr_const:serroroccured
 msgid "An error occured during calculating"
@@ -576,11 +576,11 @@ msgstr "Taille automatique"
 
 #: lr_const:sdocautor
 msgid "Autor"
-msgstr ""
+msgstr "Auteur"
 
 #: lr_const:sfilterparam
 msgid "Average font height:"
-msgstr ""
+msgstr "Hauteur moyenne de police :"
 
 #: lr_const:spaper42
 msgid "B4 (ISO) 250 x 353 mm"
@@ -684,7 +684,7 @@ msgstr "Bring to front"
 
 #: lr_const:sdocbuild
 msgid "Build"
-msgstr ""
+msgstr "Construire"
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -720,7 +720,7 @@ msgstr "C65 Enveloppe, 114 x 229 mm"
 
 #: lr_const:sdescriptioncount
 msgid "COUNT(<BandName>)/Returns count of data-rows given in the <BandName>. "
-msgstr ""
+msgstr "COUNT(<BandName>)/Retourne le nombre de données rangées dans <BandName>. "
 
 #: lr_const:scsvfile
 msgid "CSV File"
@@ -1228,7 +1228,7 @@ msgstr "Police..."
 
 #: lr_const:sformnewpage
 msgid "Force new page"
-msgstr ""
+msgstr "Forcer une nouvelle page"
 
 #: lr_const:sfmtformfrac
 msgid "Fraction &symbol"
@@ -1300,7 +1300,7 @@ msgstr ""
 
 #: lr_const:sinches
 msgid "Inches"
-msgstr ""
+msgstr "Pouces"
 
 #: lr_const:sinsertfieldsformband
 msgid "Include &bands"
@@ -1308,23 +1308,23 @@ msgstr "Inclure des &bandes"
 
 #: lr_const:sinsbarcode
 msgid "Insert Barcode object"
-msgstr ""
+msgstr "Insérer un objet Barcode"
 
 #: lr_const:sinschart
 msgid "Insert Chart object"
-msgstr ""
+msgstr "Insérer un objet Graphique"
 
 #: lr_const:sinscheckbox
 msgid "Insert CheckBox object"
-msgstr ""
+msgstr "Insérer un objet CheckBox"
 
 #: lr_const:sfieldsforminsert
 msgid "Insert DB field"
-msgstr ""
+msgstr "Insérer un champ BDD"
 
 #: lr_const:sinsertfields
 msgid "Insert DB fields"
-msgstr ""
+msgstr "Insérer des champs BDD"
 
 #: lr_const:sinsshape
 msgid "Insert Shape object"
@@ -1352,11 +1352,11 @@ msgstr "Insérer une image"
 
 #: lr_const:sfrdesignerforminsrect
 msgid "Insert rectangle object"
-msgstr ""
+msgstr "Insérer un objet Rectangle"
 
 #: lr_const:sfrdesignerforminssub
 msgid "Insert subreport"
-msgstr ""
+msgstr "Insérer un sous-rapport"
 
 #: lr_const:sbarcodeformvar
 msgid "Insert variable"
@@ -1388,7 +1388,7 @@ msgstr ""
 
 #: lr_const:sdescriptionlowercase
 msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
-msgstr ""
+msgstr "LOWERCASE(<String>)/Convertit <String> en minuscule."
 
 #: lr_const:slazformfile
 msgid "LazReport form"
@@ -1456,11 +1456,11 @@ msgstr ""
 
 #: lr_const:sdescriptionmaxnum
 msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
-msgstr ""
+msgstr "MAXNUM(<Value1>, <Value2>)/Retourne le maximum des valeurs données."
 
 #: lr_const:sdescriptionmessagebox
 msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
-msgstr ""
+msgstr "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Affiche une fenêtre de dialogue standard avec un titre, du texte et des boutons."
 
 #: lr_const:sdescriptionmin
 msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
@@ -1468,7 +1468,7 @@ msgstr ""
 
 #: lr_const:sdescriptionminnum
 msgid "MINNUM(<Value1>, <Value2>)/Returns min of given values."
-msgstr ""
+msgstr "MINNUM(<Value1>, <Value2>)/Retourne le minimum des valeurs données."
 
 #: lr_const:smm
 msgid "MM"
@@ -1480,7 +1480,7 @@ msgstr ""
 
 #: lr_const:sdocmajor
 msgid "Major"
-msgstr ""
+msgstr "Majeur"
 
 #: lr_const:spgoptformmargins
 msgid "Margins"
@@ -1504,7 +1504,7 @@ msgstr ""
 
 #: lr_const:sdocminor
 msgid "Minor"
-msgstr ""
+msgstr "Mineur"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -1568,11 +1568,11 @@ msgstr "OK"
 
 #: lr_const:sonfirstpage
 msgid "On first page"
-msgstr ""
+msgstr "Sur la première page"
 
 #: lr_const:sonlastpage
 msgid "On last page"
-msgstr ""
+msgstr "Sur la dernière page"
 
 #: lr_const:sfrdesignerformopenrp
 msgid "Open report"
@@ -1668,7 +1668,7 @@ msgstr "Pixels"
 
 #: lr_const:sinsertfieldsformplace
 msgid "Placement"
-msgstr ""
+msgstr "Placement"
 
 #: lr_const:sfrdesignerform_preview
 msgid "Pre&view"
@@ -1688,7 +1688,7 @@ msgstr "Imprimer"
 
 #: lr_const:sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr ""
+msgstr "Imprimez si le détail est vide"
 
 #: lr_const:spreviewformprint
 msgid "Print report"
@@ -1700,7 +1700,7 @@ msgstr "Imprimante"
 
 #: lr_const:sprintererror
 msgid "Printer selected is not valid"
-msgstr ""
+msgstr "Imprimante sélectionnée invalide"
 
 #: lr_const:spageprinting
 msgid "Printing page:"
@@ -1728,7 +1728,7 @@ msgstr "Rectangle"
 
 #: lr_const:sfrdesignerformredo
 msgid "Redo cancelled action"
-msgstr ""
+msgstr "Refaire l'action annulée"
 
 #: lr_const:sdocrelease
 msgid "Release"
@@ -1740,7 +1740,7 @@ msgstr "Enlever la page"
 
 #: lr_const:sremovepg
 msgid "Remove this page?"
-msgstr ""
+msgstr "Supprimer cette page ?"
 
 #: lr_const:srepfile
 msgid "Report file"
@@ -1752,7 +1752,7 @@ msgstr "Options du rapport"
 
 #: lr_const:sreportpreparing
 msgid "Report preparing"
-msgstr ""
+msgstr "Préparation du rapport"
 
 #: lr_const:sband2
 msgid "Report summary"
@@ -1760,7 +1760,7 @@ msgstr "Résumer du rapport"
 
 #: lr_const:sband1
 msgid "Report title"
-msgstr ""
+msgstr "Titre du rapport"
 
 #: lr_const:sdesoptionsformunits
 msgid "Report units"
@@ -1788,7 +1788,7 @@ msgstr "Rotation"
 
 #: lr_const:sshape2
 msgid "Rounded rectangle"
-msgstr ""
+msgstr "Rectangle arrondi"
 
 #: lr_const:seditorformscr
 msgid "S&cript"
@@ -1800,11 +1800,11 @@ msgstr "&Forme"
 
 #: lr_const:sdescriptionstrtodate
 msgid "STRTODATE(<String>)/Converts <String> to date."
-msgstr ""
+msgstr "STRTODATE(<String>)/Convertit <String> en date."
 
 #: lr_const:sdescriptionstrtotime
 msgid "STRTOTIME(<String>)/Converts <String> to time."
-msgstr ""
+msgstr "STRTOTIME(<String>)/Convertit <String> en heure."
 
 #: lr_const:sdescriptionsum
 msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
@@ -1828,7 +1828,7 @@ msgstr "Enregistrer le rapport"
 
 #: lr_const:spreviewformscale
 msgid "Scale"
-msgstr ""
+msgstr "Échelle"
 
 #: lr_const:sfrdesignerform_selectall
 msgid "Select &all"
@@ -1864,7 +1864,7 @@ msgstr "Type de forme"
 
 #: lr_const:sdesoptionsformshowband
 msgid "Show band &titles"
-msgstr ""
+msgstr "Afficher la bande-&titres"
 
 #: lr_const:spreviewformhelp
 msgid "Show help"
@@ -2016,7 +2016,7 @@ msgstr "Format FRF non supporté."
 
 #: lr_const:suntitled
 msgid "Untitled"
-msgstr ""
+msgstr "Sans titre"
 
 #: lr_const:sevformvalue
 msgid "Va&lue"
@@ -2060,7 +2060,7 @@ msgstr "Liste de variables"
 
 #: lr_const:sdocversion
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"
@@ -2088,7 +2088,7 @@ msgstr "Retour automatique à la ligne"
 
 #: lr_const:sdescriptionyearof
 msgid "YEAROF(<Date>)/Returns year of given <Date>."
-msgstr ""
+msgstr "YEAROF(<Date>)/Retourne l'année de la donnée <Date>."
 
 #: lr_const:syes
 msgid "Yes"
