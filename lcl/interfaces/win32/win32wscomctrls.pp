@@ -30,7 +30,7 @@ uses
   // FCL
   CommCtrl, Windows, Classes, SysUtils, Win32Extra,
   // LCL
-  ComCtrls, LCLType, Controls, Graphics,
+  ComCtrls, LCLType, Controls, Graphics, Themes,
   ImgList, StdCtrls,
   LCLProc, InterfaceBase,
   // widgetset
@@ -328,6 +328,45 @@ begin
   end;
 end;
 
+function StatusBarWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall;
+var
+  Info: PWindowInfo;
+  Control: TWinControl;
+  Details: TThemedElementDetails;
+begin
+  Info := GetWindowInfo(Window);
+  if (Info = nil) or (Info^.WinControl = nil) then
+  begin
+    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    Exit;
+  end
+  else
+    Control := Info^.WinControl;
+
+  // Paul: next is a slightly modified code of TThemeManager.StatusBarWindowProc
+  // of Mike Lischke Theme manager library (Mike granted us permition to use his code)
+  
+  case Msg of
+    WM_NCCALCSIZE:
+      begin
+        // We need to override the window class' CS_HREDRAW and CS_VREDRAW styles but the following
+        // does the job very well too.
+        // Note: this may produce trouble with embedded controls (e.g. progress bars).
+        if WParam <> 0 then
+          Result := CallDefaultWindowProc(Window, Msg, WParam, LParam) or WVR_REDRAW;
+      end;
+    WM_ERASEBKGND:
+      begin
+        Details := ThemeServices.GetElementDetails(tsStatusRoot);
+        ThemeServices.DrawElement(HDC(WParam), Details, Control.ClientRect);
+        Result := 1;
+      end;
+    else
+      Result := WindowProc(Window, Msg, WParam, LParam);
+  end;
+end;
+
 { TWin32WSStatusBar }
 
 class function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
@@ -342,6 +381,8 @@ begin
   begin
     pClassName := STATUSCLASSNAME;
     WindowTitle := StrCaption;
+    if ThemeServices.ThemesEnabled then
+      SubClassWndProc := @StatusBarWndProc;
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);

@@ -483,10 +483,10 @@ var
         PaintMsg.DC := DC;
       if not needParentPaint and not isNotebook then
       begin
-        // send through message to allow message override
-        //lWinControl.EraseBackground(PaintMsg.DC);
+        // send through message to allow message override, moreover use SendMessage
+        // to allow subclass window proc override this message too
         Include(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
-        lWinControl.Perform(LM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
+        SendMessage(lWinControl.Handle, WM_ERASEBKGND, Windows.WPARAM(PaintMsg.DC), 0);
         Exclude(TWinControlAccess(lWinControl).FWinControlFlags, wcfEraseBackground);
       end;
       if ParentPaintWindow <> 0 then
@@ -1530,22 +1530,24 @@ begin
       end;
       if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
-        if ThemeServices.ThemesEnabled and WindowInfo^.isGroupBox
-            and (lWinControl <> nil) then
+        if ThemeServices.ThemesEnabled and WindowInfo^.isGroupBox and (lWinControl <> nil) then
         begin
           // Groupbox (which is a button) doesn't erase it's background properly; force repaint
           lWinControl.EraseBackground(HDC(WParam));
           LMessage.Result := 1;
-        end else begin
+        end
+        else
+        begin
           LMessage.Msg := LM_ERASEBKGND;
           LMessage.WParam := WParam;
           LMessage.LParam := LParam;
         end;
-      end else begin
+      end else
+      begin
         SendPaintMessage(HDC(WParam));
         LMessage.Result := 1;
       end;
-      WinProcess := false;
+      WinProcess := False;
     end;
     WM_EXITMENULOOP:
       // is it a popup menu
