@@ -52,6 +52,7 @@ type
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
@@ -516,8 +517,6 @@ begin
     TQtMainWindow(Parent).StatusBar := QtStatusBar;
     TQtMainWindow(Parent).setStatusBar(QStatusBarH(QtStatusBar.Widget));
   end;
-  // dont allow resize if parent is not form
-  QtStatusBar.setSizeGripEnabled(AControl.Parent is TCustomForm);
 end;
 
 class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
@@ -526,6 +525,7 @@ var
   QtStatusBar: TQtStatusBar;
 begin
   QtStatusBar := TQtStatusBar.Create(AWinControl, AParams);
+  QtStatusBar.setSizeGripEnabled(TStatusBar(AWinControl).SizeGrip and TStatusBar(AWinControl).SizeGripEnabled);
 
   RecreatePanels(TStatusBar(AWinControl), QtStatusBar);
 
@@ -600,6 +600,17 @@ begin
       QLabel_setText(QtStatusBar.Panels[PanelIndex], @Str);
     end;
   end;
+end;
+
+class procedure TQtWSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
+  SizeGrip: Boolean);
+var
+  QtStatusBar: TQtStatusBar;
+begin
+  if not WSCheckHandleAllocated(AStatusBar, 'SetSizeGrip') then
+    Exit;
+  QtStatusBar := TQtStatusBar(AStatusBar.Handle);
+  QtStatusBar.setSizeGripEnabled(SizeGrip and AStatusBar.SizeGripEnabled);
 end;
 
 class procedure TQtWSStatusBar.Update(const AStatusBar: TStatusBar);
