@@ -48,7 +48,6 @@ uses
   qtproc;
 
 type
-
   { TQtWidgetSet }
 
   TQtWidgetSet = Class(TWidgetSet)
@@ -134,7 +133,7 @@ type
 type
   TEventProc = record
     Name : String[25];
-    CallBack : Procedure(Data : TObject);
+    CallBack : procedure(Data : TObject);
     Data : Pointer;
   end;
 

@@ -30,6 +30,27 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function TQtWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
+begin
+  // todo
+  Result := nil;
+end;
+
+function TQtWidgetSet.AddPipeEventHandler(AHandle: THandle;
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
+begin
+  // todo
+  Result := nil;
+end;
+
+function TQtWidgetSet.AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
+begin
+  // todo
+  Result := nil;
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateStandardCursor
   Params:
@@ -538,6 +559,21 @@ end;
 function TQtWidgetSet.ReleaseDesignerDC(Window: HWND; DC: HDC): Integer;
 begin
   Result := 1;
+end;
+
+procedure TQtWidgetSet.RemoveEventHandler(var AHandler: PEventHandler);
+begin
+  // todo
+end;
+
+procedure TQtWidgetSet.RemovePipeEventHandler(var AHandler: PPipeEventHandler);
+begin
+  // todo
+end;
+
+procedure TQtWidgetSet.RemoveProcessEventHandler(var AHandler: PProcessEventHandler);
+begin
+  // todo
 end;
 
 function TQtWidgetSet.TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean;

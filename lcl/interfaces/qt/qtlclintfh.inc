@@ -30,6 +30,13 @@
 
 //##apiwiz##sps##   // Do not remove
 
+function AddEventHandler(AHandle: THandle; AFlags: dword;
+  AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
+function AddPipeEventHandler(AHandle: THandle;
+  AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
+function AddProcessEventHandler(AHandle: THandle;
+  AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
+  
 function CreateStandardCursor(ACursor: SmallInt): hCursor; override;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 procedure DrawDefaultDockImage(AOldRect, ANewRect: TRect; AOperation: TDockImageOperation); override;
@@ -59,6 +66,10 @@ function RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawImageDescriptio
 function RawImage_FromBitmap(out ARawImage: TRawImage; ABitmap, AMask: HBITMAP; const ARect: TRect): Boolean; override;
 function RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean; override;
 function ReleaseDesignerDC(Window: HWND; DC: HDC): Integer; override;
+
+procedure RemoveEventHandler(var AHandler: PEventHandler); override;
+procedure RemovePipeEventHandler(var AHandler: PPipeEventHandler); override;
+procedure RemoveProcessEventHandler(var AHandler: PProcessEventHandler); override;
 
 function TextUTF8Out(DC: HDC; X, Y: Integer; Str: PChar; Count: Longint): Boolean; override;
 
