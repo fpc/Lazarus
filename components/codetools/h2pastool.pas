@@ -104,6 +104,7 @@ type
     FPredefinedCTypes: TFPStringHashTable;
     FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
     FCNames: TAVLTree;// tree of TH2PNode sorted for CName
+    FSourceName: string;
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -115,11 +116,16 @@ type
     function ConvertCToPascalDirectiveExpression(const CCode: string;
            StartPos, EndPos: integer; out PasExpr: string;
            out ErrorPos: integer; out ErrorMsg: string): boolean;
+
+    procedure WriteStr(const Line: string; s: TStream);
+    procedure WriteLnStr(const Line: string; s: TStream);
   public
     Tree: TH2PTree;
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
+    procedure WritePascal(PascalCode: TCodeBuffer);
+    procedure WritePascalToStream(s: TStream);
     
     function GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
     function GetSimplePascalTypeOfCParameter(CParamNode: TCodeTreeNode): string;
@@ -147,6 +153,7 @@ type
     procedure Clear;
     property PredefinedCTypes: TFPStringHashTable read FPredefinedCTypes;
     property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write SetIgnoreCParts;
+    property SourceName: string read FSourceName write FSourceName;
   end;
   
   
@@ -790,6 +797,17 @@ begin
   until false;
 end;
 
+procedure TH2PasTool.WriteStr(const Line: string; s: TStream);
+begin
+  if Line='' then exit;
+  s.Write(Line[1],length(Line));
+end;
+
+procedure TH2PasTool.WriteLnStr(const Line: string; s: TStream);
+begin
+  WriteStr(Line+LineEnding,s);
+end;
+
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
 begin
   Result:=false;
@@ -801,6 +819,8 @@ begin
   //CTool.WriteDebugReport;
 
   BuildH2PTree;
+  
+  WritePascal(PascalCode);
 
   Result:=true;
 end;
@@ -861,6 +881,118 @@ begin
       NextCNode:=nil;
     CNode:=NextCNode;
   end;
+end;
+
+procedure TH2PasTool.WritePascal(PascalCode: TCodeBuffer);
+var
+  ms: TMemoryStream;
+  NewSrc: string;
+begin
+  ms:=TMemoryStream.Create;
+  try
+    WritePascalToStream(ms);
+  
+    SetLength(NewSrc,ms.Size);
+    if NewSrc<>'' then begin
+      ms.Position:=0;
+      ms.Read(NewSrc[1],length(NewSrc));
+    end;
+    PascalCode.Source:=NewSrc;
+  finally
+    ms.Free;
+  end;
+end;
+
+procedure TH2PasTool.WritePascalToStream(s: TStream);
+var
+  IndentStr: string;
+  CurSection: TCodeTreeNodeDesc;
+
+  procedure W(const aStr: string);
+  begin
+    WriteLnStr(IndentStr+aStr,s);
+  end;
+  
+  procedure IncIndent;
+  begin
+    IndentStr:=IndentStr+'  ';
+  end;
+
+  procedure DecIndent;
+  begin
+    IndentStr:=copy(IndentStr,1,length(IndentStr)-2);
+  end;
+  
+  procedure SetSection(NewSection: TCodeTreeNodeDesc);
+  begin
+    if NewSection=CurSection then exit;
+    // close old section
+    case CurSection of
+    ctnVarSection:
+      begin
+        DecIndent;
+        W('');
+      end;
+    end;
+    CurSection:=NewSection;
+    // start new section
+    case CurSection of
+    ctnVarSection:
+      begin
+        W('var');
+        IncIndent;
+      end;
+    end;
+  end;
+
+var
+  H2PNode: TH2PNode;
+  UsesClause: String;
+begin
+  IndentStr:='';
+  
+  // write header
+  if SourceName<>'' then begin
+    W('unit '+SourceName+';');
+    W('');
+    W('{$mode objfpc}{$H+}');
+    W('');
+    W('interface');
+    W('');
+  end;
+  
+  // write uses
+  UsesClause:='ctypes';
+  if UsesClause<>'' then begin
+    W('uses');
+    IncIndent;
+    W(UsesClause+';');
+    DecIndent;
+    W('');
+  end;
+
+  // write interface nodes
+  CurSection:=ctnNone;
+  H2PNode:=Tree.Root;
+  while H2PNode<>nil do begin
+    case H2PNode.PascalDesc of
+    ctnVarDefinition:
+      begin
+        SetSection(ctnVarSection);
+        W(H2PNode.PascalName+': '+H2PNode.PascalCode+'; cvar; public;');
+      end;
+    end;
+    H2PNode:=H2PNode.Next;
+  end;
+  
+  // write implementation
+  SetSection(ctnNone);
+  W('implementation');
+  W('');
+
+  // write end.
+  W('end.');
+  W('');
 end;
 
 function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;

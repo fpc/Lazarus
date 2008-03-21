@@ -62,9 +62,13 @@ begin
       raise Exception.Create('creating failed '+OutputFilename);
 
     Tool:=TH2PasTool.Create;
+    Tool.SourceName:=ExtractFileNameOnly(PasCode.Filename);
     Tool.Convert(CCode,PasCode);
     //Tool.WriteDebugReport;
     Tool.WriteH2PNodeReport;
+    writeln;
+    writeln('=============================================');
+    writeln(PasCode.Source);
     Tool.Free;
   except
     on E: ECCodeParserException do begin
