@@ -54,11 +54,11 @@ type
   TLazDockControlEditorDlg = class(TForm)
     CancelButton: TButton;
     DockControlComboBox: TComboBox;
-    DockPageButton: TButton;
-    DockBottomButton: TButton;
-    DockTopButton: TButton;
-    DockRightButton: TButton;
-    DockLeftButton: TButton;
+    DockPageButton: TSpeedButton;
+    DockBottomButton: TSpeedButton;
+    DockTopButton: TSpeedButton;
+    DockRightButton: TSpeedButton;
+    DockLeftButton: TSpeedButton;
     DockGroupBox: TGroupBox;
     DockControlLabel: TLabel;
     EnlargeGroupBox: TGroupBox;
@@ -96,27 +96,44 @@ implementation
 { TLazDockControlEditorDlg }
 
 procedure TLazDockControlEditorDlg.FormCreate(Sender: TObject);
+
+  procedure AssignGlyph(AButton: TSpeedButton; ResName: String); inline;
+  var
+    B: TBitmap;
+  begin
+    B := LoadBitmapFromLazarusResource(ResName);
+    AButton.Glyph := B;
+    B.Free;
+  end;
+
 begin
-  Caption:='Docking';
+  Caption := 'Docking';
   
-  UndockGroupBox.Caption:='Undock';
-  UndockButton.Caption:='Undock (make it a single, normal window)';
+  UndockGroupBox.Caption := 'Undock';
+  UndockButton.Caption := 'Undock (make it a single, normal window)';
 
-  DockPageButton.Caption:='Dock as page';
-  DockBottomButton.Caption:='Dock to bottom';
-  DockTopButton.Caption:='Dock to top';
-  DockRightButton.Caption:='Dock to right';
-  DockLeftButton.Caption:='Dock to left';
-  DockGroupBox.Caption:='Dock to control';
-  DockControlLabel.Caption:='To control';
+  DockPageButton.Hint := 'Dock as page';
+  DockBottomButton.Hint := 'Dock to bottom';
+  DockTopButton.Hint := 'Dock to top';
+  DockRightButton.Hint := 'Dock to right';
+  DockLeftButton.Hint := 'Dock to left';
 
-  EnlargeGroupBox.Caption:='Enlarge one side';
-  EnlargeLeftSpeedButton.Hint:='Left';
-  EnlargeTopSpeedButton.Hint:='Top';
-  EnlargeRightSpeedButton.Hint:='Right';
-  EnlargeBottomSpeedButton.Hint:='Bottom';
+  AssignGlyph(DockPageButton, 'lcl_dock_to_page');
+  AssignGlyph(DockBottomButton, 'lcl_dock_to_bottom');
+  AssignGlyph(DockTopButton, 'lcl_dock_to_top');
+  AssignGlyph(DockRightButton, 'lcl_dock_to_right');
+  AssignGlyph(DockLeftButton, 'lcl_dock_to_left');
 
-  CancelButton.Caption:='Cancel';
+  DockGroupBox.Caption := 'Dock to control';
+  DockControlLabel.Caption := 'To control';
+
+  EnlargeGroupBox.Caption := 'Enlarge one side';
+  EnlargeLeftSpeedButton.Hint := 'Left';
+  EnlargeTopSpeedButton.Hint := 'Top';
+  EnlargeRightSpeedButton.Hint := 'Right';
+  EnlargeBottomSpeedButton.Hint := 'Bottom';
+
+  CancelButton.Caption := 'Cancel';
   
   UpdateButtonEnabled;
 end;
@@ -213,11 +230,10 @@ begin
   DockTopButton.Enabled:=SelectionValid;
   DockRightButton.Enabled:=SelectionValid;
   DockLeftButton.Enabled:=SelectionValid;
-  
-  
 end;
 
 initialization
   {$I ldockctrledit.lrs}
+  {$I lcl_dock_to_images.lrs}
 
 end.
