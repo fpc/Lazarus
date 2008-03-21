@@ -948,6 +948,7 @@ var
 var
   H2PNode: TH2PNode;
   UsesClause: String;
+  PascalCode: String;
 begin
   IndentStr:='';
   
@@ -977,9 +978,18 @@ begin
   while H2PNode<>nil do begin
     case H2PNode.PascalDesc of
     ctnVarDefinition:
-      begin
+      if H2PNode.Parent=nil then begin
+        // global variable
         SetSection(ctnVarSection);
-        W(H2PNode.PascalName+': '+H2PNode.PascalCode+'; cvar; public;');
+        PascalCode:=H2PNode.PascalCode+';';
+        if H2PNode.CName<>'' then begin
+          PascalCode:=PascalCode+' cvar; public';
+          if H2PNode.PascalName<>H2PNode.CName then begin
+            PascalCode:=PascalCode+' name '''+H2PNode.CName+'''';
+          end;
+          PascalCode:=PascalCode+';';
+        end;
+        W(H2PNode.PascalName+': '+PascalCode);
       end;
     end;
     H2PNode:=H2PNode.Next;
@@ -992,7 +1002,6 @@ begin
 
   // write end.
   W('end.');
-  W('');
 end;
 
 function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
