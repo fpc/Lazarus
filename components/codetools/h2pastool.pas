@@ -953,6 +953,9 @@ var
   H2PNode: TH2PNode;
   UsesClause: String;
   PascalCode: String;
+  ChildNode: TH2PNode;
+  CurName: String;
+  NoNameCount: Integer;
 begin
   IndentStr:='';
   
@@ -1010,8 +1013,23 @@ begin
         // global procedure
         SetSection(ctnNone);
         PascalCode:='';
-        if H2PNode.FirstChild<>nil then begin
-
+        ChildNode:=H2PNode.FirstChild;
+        NoNameCount:=0;
+        while ChildNode<>nil do begin
+          if ChildNode.PascalDesc=ctnVarDefinition then begin
+            if PascalCode<>'' then
+              PascalCode:=PascalCode+'; ';
+            CurName:=ChildNode.PascalName;
+            if CurName='' then begin
+              inc(NoNameCount);
+              CurName:='param'+IntToStr(NoNameCount)
+                      +CreatePascalNameFromCCode(ChildNode.PascalCode);
+            end;
+            PascalCode:=PascalCode+CurName+': '+ChildNode.PascalCode;
+          end else begin
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString]);
+          end;
+          ChildNode:=ChildNode.NextBrother;
         end;
         if PascalCode<>'' then
           PascalCode:='('+PascalCode+')';
