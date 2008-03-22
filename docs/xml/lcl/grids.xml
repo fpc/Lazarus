@@ -12156,6 +12156,120 @@ Segunda linea de texto</descr>
         <short>
           <var>CopyToClipboard</var> - copy the selected text to the clipboard</short>
       </element>
+      <topic name="HowToUseGrids">
+	      <short>How to use <var>Grids</var> including <var>StringGrids</var>, <var>DrawGrids</var> and <var>DbGrids</var></short>
+	      <descr>
+		      <p>How to use <var>Grids</var> including <var>StringGrids</var>, <var>DrawGrids</var> and <var>DbGrids</var></p>		      
+		      <p><b>Customizing grids</b></p>
+		      <p>Grid are components derived from the TCustomControl class and don't have a native widget associated with them, which means that grids are not restricted by the look of the current interface theme. This can be both an advantage and a disadvantage: usually programmers want to create a uniform-look application. The good news is that Lazarus grids are flexible enough to get something from both worlds; programmers can easily make grids look similar to other native controls, or they can customize the grid to the finest detail so they can obtain almost the same look in any platform or widget interface (that is, with the exception of scrollbars, whose look is still determined by the current theme).</p>
+		      <p>Some properties can affect the way the grid looks by acting when the cell is about to be painted in PrepareCanvas/OnPrepareCanvas by changing default canvas properties like brush color or font. Following is a list of such properties:</p>
+		 <table>
+		      <caption>Properties and Events for customizing grids</caption>
+		      <th>
+			      <td>Property</td><td>Meaning</td>
+		      </th>
+		           <tr>
+				   <td>AlternateColor</td><td>With this the user can change the background color appears on alternated rows. This is to allow easy reading off of grid rows data.</td></tr>
+			   <tr>
+				   <td>Color</td><td>This sets the primary color used to draw non fixed cells background.</td></tr>
+			   <tr>
+				   <td>FixedColor</td><td>This is the color used to draw fixed cells background.</td></tr>
+			   <tr>
+				   <td>Flat</td><td>This eliminates the 3d look of fixed cells.</td></tr>
+			   <tr>
+				   <td>TitleFont</td><td>Font used to draw the text in fixed cells.</td></tr>
+			   <tr>
+				   <td>TitleStyle</td><td>This property changes the 3D look of fixed cells, there are 3 settings:
+					   <ul>
+						   <li><var>tsLazarus</var> This is the default look</li>
+						   <li><var>tsNative</var> This tries to set a look that is in concordance with current widgetset theme.</li>
+						   <li><var>tsStandard</var> This style has a more contrasted look, like Delphi grids.</li>
+					   </ul>
+				   </td></tr>   
+			   <tr>
+				   <td>AltColorStartNormal</td><td>(Boolean). If true, alternate color is always in the second row after fixed rows, the first row after fixed rows will be always color. If false, default color is set to the first row as if there were no fixed rows.</td></tr>
+			   <tr>
+			   	<td>BorderColor</td><td>This sets the grid's border color used when <var>Flat</var>:=True and <var>BorderStyle</var>:=bsSingle;</td></tr>
+			<tr>
+				<td>EditorBorderStyle</td><td>If set to <var>bsNone</var> under Windows the cell editors will not have the border, like in Delphi; set to <var>bsSingle</var> by default because the border can be theme specific in some widgetsets and to allow a uniform look.</td></tr>
+			<tr>
+				<td>FocusColor</td><td>The color used to draw the current focused cell if <var>UseXORFeatures</var> is not set; by default this is <var>clRed</var>.</td></tr>
+			<tr>
+				<td>FocusRectVisible</td><td>Turns on/off the drawing of focused cell.</td></tr>
+			<tr>
+				<td>GridLineColor</td><td>Color of grid lines in non fixed area.</td></tr>
+			<tr>
+				<td>GridLineStyle</td><td>Pen style used to draw lines in non fixed area, possible choices are: <var>psSolid</var>, <var>psDash</var>, <var>psDot</var>, <var>psDashDot</var>, <var>psDashDotDot</var>, <var>psinsideFrame</var>, <var>psPattern</var>, <var>psClear</var>; default is <var>psSolid</var>.</td></tr>
+			<tr>
+				<td>SelectedColor</td><td>Color used to draw cell background on selected cells.</td></tr>
+			<tr>
+				<td>UseXORFeatures</td><td>If set, focus rect is drawn using XOR mode so it should make visible the focus rect in combination with any cell color ackground. It also affects the moving columns look.</td></tr>
+			<tr>
+				<td>DefaultDrawing</td><td>(Boolean). Normally the grids prepare the grid canvas using some properties according to the kind of cell is being painted. If user write an OnDrawCell event handler, DefaultDrawing if set also paints the cell background, if user is drawing fully the cell is better turn off this property so painting is not duplicated. In a StringGrid if DefaultDrawing is set it draws the text in each cell.</td></tr>
+			<tr>
+				<td>AutoAdvance</td><td>Where the cell cursor will go when pressing enter or tab/shift tab, or after editing.</td></tr>
+			<tr>
+				<td>ExtendedColSizing</td><td>If true user can resize columns not just at the headers but along the columns height.</td></tr>
+		</table>
+		
+					     <p>Other properties that also affect the grids look:</p>
+	     <table>
+		     <th>
+			     <td>Property</td><td>Meaning</td>
+		      </th>
+		      <tr>
+			      <td>Options</ts><td>This property is a set, with some elements that enable diverse functionality but others that are related directly with grid's look. These options can be set at designtime or runtime.
+				     <ul>
+					     <li><var>goFixedVertLine, goFixedHorzLine</var>: it draws a vertical or horizontal line respectively delimiting cells or columns in fixed area, active by default.</li>
+					     <li><var>goVertLine, goHorzLine</var>: the same as previous, but for normal browseable area. A grid can be made to simulate a listbox by unsetting both of this elements.</li>
+					     <li><var>goDrawFocusSelected</var>: if this element is enabled, a selection background is painted in focused the cell in addition to the focused dotted rectangle (note this doesn't work yet when <var>goRowSelect</var> option is set; in such case row is always painted as if <var>goDrawFocusSelected</var> is set)</li>
+					     <li><var>goRowSelect</var>: select the full row instead of individual cells</li>
+					     <li><var>goFixedRowNumbering</li>: if set, grid will do numbering of rows in first fixed column</li>
+					     <li><var>goHeaderHotTracking</var>: if set, the grid will try to show a different look when the mouse cursor is overing any fixed cell. In order for this to work, desired cell zone needs to be enabled with property <var>HeaderHotZones</var>. Try combining this option with property <var>TitleStyle</var>:=<var>tsNative</var> to get themed hot tracking look.</li>
+					     <li><var>goHeaderPushedLook</var>: if set, this element enables a pushed look when clicking any fixed cell. The zone of "pushable" cells is enabled using <var>HeaderPusedZones</var> property.</li>
+				     </ul>
+			     </td>
+		     </tr>
+	     </table>
+	     <p><b>Description of grid's drawing process</b></p>
+	     <p>Like other custom controls, the grid is drawn using the paint method. In general terms the grid is drawn by painting all rows, and each row by painting its individual cells.</p> 
+	     <p>The process is as follow:</p>
+	     <ul>
+		     <li>First the visible cells area is determined: each row is tested to see if it intersects the canvas clipping region; if it's ok, then the visible area is painted by drawing columns of each row.</li>
+		     <li>The column and row values are used to identify the cell that is about to be painted and again each column is tested for intersection with the clippling region; if everything is ok, some additional properties like the cell's rectangular extent and visual state are passed as arguments to the DrawCell method.</li>
+		     <li>As the drawing process is running, the visual state of each cell is adjusted according to grid options and position within grid. The visual state is retained in a variable of type TGridDrawState which is a set with following elements:
+			     <table>
+				     <tr>
+					     <td>gdSelected</td><td>The cell will have a selected look.</td></tr>
+				     <tr>
+					     <td>gdFocused</td><td>The cell will have a focused look.</td></tr>
+				     <tr>
+					     <td>gdFixed</td><td>Cell have to be painted with fixed cell look.</td></tr>
+				     <tr>
+					     <td>gdHot</td><td>the mouse is over this cell, so paint it with hot tracking look</td></tr>
+				     <tr>
+					     <td>gdPushed</td><td>the cell is being clicked, paint it with pushed look </td></tr>
+				     <tr>
+			     </table>
+		    <li>><var>DrawCell</var>The DrawCell method is virtual and may be overriden in descendent grids to do custom drawing. The information passed to <var>DrawCell</var> helps to identify the particular cell is being painted, the physical area ocuppied in screen and its visible status. See DrawCell reference for details. For each cell the following occurs:
+			    <table>
+				    <tr>
+					    <td>PrepareCanvas.</td><td>In this method, if the DefaultDrawing property is set, the grid canvas is setup with default properties for brush and font based on current visual state. For several design and runtime properties, the text alignment is set to match programmer selection in custom columns if they exists.  If DefaultDrawing is false, brush color is set to clWindow and Font color to clWindowText, the text alignment is set with grids defaultTextStyle property value.</td></tr>
+				    <tr>
+					    <td>OnPrepareCanvas.</td><td>If the programmer wrote an event handler for the <var>OnPrepareCanvas</var> event, it is called at this point. This event can be used for doing simple customization like changing cell's background color, font's properties like color, fontface and style, Text layout like different combinations of left, center, top, bottom, right alignment, etc. Any change made to the canvas in this event would be lost, because the next cell drawing will reset canvas again to a default state. So it's safe doing changes only for particular cell or cells and forget about it for the rest. Using this event sometimes helps to avoid using the <var>OnDrawCell</var> grid event, where users would be forced to duplicate the grid's drawing code.     Todo: samples of what can be made and what to leave for OnDrawCell?</td></tr>
+				    <tr>
+					    <td>OnDrawCell.</td><td>Next if no handler for the <var>OnDrawCell</var> event was specified, the grid calls the <var>DefaultDrawCell</var> method which simply paints the cell background using the current canvas brush color and style. If the <var>OnDrawCell</var> handler exists, the grid first paints the cell background but only if the  <var>DefaultDrawing</var> property was set, then it calls <var>OnDrawCell</var> event to do custom cell painting. Usually programmers want to do custom drawing only for particular cells, but standard drawing for others; in this case, they can restrict custom operation to certain cell or cells by looking into <var>ACol, ARow</var> and <var>AState</var> arguments, and for other cells simply call the <var>DefaultDrawCell</var> method and let the grid to take care of it.</td></tr>
+				    <tr>
+					    <td>Text.</td><td>At this point (only for <var>TStringGrid</var>) if the <var>DefaultDrawing</var> property is true, the cell's text content is painted.</td></tr>
+				    <tr>
+					    <td>Grid lines</td><td>The last step for each cell is to paint the grid lines: if grid options goVertLine, goHorzLine, goFixedVertLine and goFixedHorzLine are specified the cell grid is drawn at this point. Grids with only rows or only cols can be obtained by changing these options. If the programmer elected to have a "themed" look it is done at this point also (see property TitleStyle).</td></tr>
+				    <tr>
+					    <td>FocusRect</td><td>When all columns of the current row have been painted it is time to draw the focus rectangle for the current selected cell or for the whole row if the <var>goRowSelect</var> option is set.</td></tr>
+			    </table>
+		    </li>
+	    </ul>
+	</descr>
+      </topic>
     </module>
     <!-- Grids -->
   </package>
