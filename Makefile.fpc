@@ -133,6 +133,10 @@ endif
 
 ifeq ($(OS_TARGET),linux)
 
+ifndef DEBDIR
+DEBDIR=debian
+endif
+
 # Build dir
 ifndef BUILDDIR
 BUILDDIR=$(BASEDIR)/build
@@ -153,11 +157,11 @@ ifndef SVNREVISION
 SVNREVISION=$(svnversion) $(BASEDIR)
 endif
 
-ifneq ($(wildcard debian/changelog),)
+ifneq ($(wildcard ${DEBDIR}/changelog),)
 
 .PHONY: debcopy deb
 
-DEBPACKAGEVERSION:=$(shell head -n 1 debian/changelog | awk '{ print $$2 }' | tr -d '[()]')
+DEBPACKAGEVERSION:=$(shell head -n 1 ${DEBDIR}/changelog | awk '{ print $$2 }' | tr -d '[()]')
 DEBFPCVERSION:=$(shell echo $(DEBPACKAGEVERSION) | awk -F '-' '{ print $$1 }')
 DEBSRCDIR:=$(BUILDDIR)/lazarus-$(DEBFPCVERSION)
 
@@ -170,6 +174,7 @@ endif
 debcopy: distclean
 	rm -rf ${BUILDDIR}
 	install -d $(DEBSRCDIR)
+	$(LINKTREE) ${DEBDIR} $(DEBSRCDIR)/debian
 	$(LINKTREE) Makefile.fpc $(DEBSRCDIR)
 	$(LINKTREE) COPYING $(DEBSRCDIR)
 	$(LINKTREE) COPYING.GPL $(DEBSRCDIR)
@@ -177,7 +182,6 @@ debcopy: distclean
 	$(LINKTREE) README.txt $(DEBSRCDIR)
 	$(LINKTREE) components $(DEBSRCDIR)
 	$(LINKTREE) converter $(DEBSRCDIR)
-	$(LINKTREE) debian $(DEBSRCDIR)
 	$(LINKTREE) debugger $(DEBSRCDIR)
 	$(LINKTREE) designer $(DEBSRCDIR)
 	$(LINKTREE) doceditor $(DEBSRCDIR)
@@ -219,6 +223,4 @@ deb: debcheck debcopy debbuild debclean
 endif   # changelog found
 
 endif
-
-# end.
 
