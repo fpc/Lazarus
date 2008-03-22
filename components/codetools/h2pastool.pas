@@ -928,23 +928,22 @@ var
     if NewSection=CurSection then exit;
     // close old section
     case CurSection of
-    ctnVarSection,ctnTypeSection:
+    ctnVarSection,ctnTypeSection,ctnConstSection:
       begin
         DecIndent;
-        W('');
       end;
     end;
     CurSection:=NewSection;
     // start new section
+    W('');
     case CurSection of
-    ctnVarSection:
+    ctnVarSection,ctnTypeSection,ctnConstSection:
       begin
-        W('var');
-        IncIndent;
-      end;
-    ctnTypeSection:
-      begin
-        W('type');
+        case CurSection of
+        ctnVarSection: W('var');
+        ctnTypeSection: W('type');
+        ctnConstSection: W('const');
+        end;
         IncIndent;
       end;
     end;
@@ -1003,8 +1002,35 @@ begin
         if H2PNode.FirstChild=nil then begin
           PascalCode:=H2PNode.PascalCode+';';
           W(H2PNode.PascalName+': '+PascalCode);
-        end;
+        end else
+          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
       end;
+    ctnProcedure:
+      begin
+        // global procedure
+        SetSection(ctnNone);
+        PascalCode:='';
+        if H2PNode.FirstChild<>nil then begin
+
+        end;
+        if PascalCode<>'' then
+          PascalCode:='('+PascalCode+')';
+        PascalCode:=H2PNode.PascalName+PascalCode;
+        if H2PNode.PascalCode='void' then
+          PascalCode:='procedure '+PascalCode
+        else
+          PascalCode:='function '+PascalCode+': '+H2PNode.PascalCode;
+        PascalCode:=PascalCode+'; cdecl;';
+        if H2PNode.CName<>'' then begin
+          if H2PNode.CName<>H2PNode.PascalName then
+            PascalCode:=PascalCode+' external name '''+H2PNode.CName+''';'
+          else
+            PascalCode:=PascalCode+' external;';
+        end;
+        W(PascalCode);
+      end;
+    else
+      DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
     end;
     H2PNode:=H2PNode.NextBrother;
   end;
