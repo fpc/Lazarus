@@ -1303,6 +1303,8 @@ begin
 
   e:=LineEnding;
   s:='';
+  s:=s+'#   File generated automatically by Lazarus Package Manager'+e;
+  s:=s+'#'+e;
   s:=s+'#   Makefile.fpc for '+APackage.IDAsString+e;
   s:=s+''+e;
   s:=s+'[package]'+e;
