@@ -48,8 +48,8 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   StringHashList, Translations,
   // codetools
-  CodeToolManager, CodeCache, BasicCodeTools, DefineTemplates, FileProcs,
-  AVL_Tree, Laz_XMLCfg,
+  CodeToolManager, CodeCache, NonPascalCodeTools, BasicCodeTools,
+  DefineTemplates, FileProcs, AVL_Tree, Laz_XMLCfg,
   // IDE Interface
   IDEExternToolIntf, NewItemIntf, ProjectIntf, PackageIntf, MenuIntf,
   PropEdits, IDEMsgIntf, MacroIntf, LazIDEIntf,
@@ -1368,7 +1368,8 @@ begin
     end;
   end;
 
-  if CompareTextIgnoringSpace(CodeBuffer.Source,s,false)=0 then begin
+  if ExtractCodeFromMakefile(CodeBuffer.Source)=ExtractCodeFromMakefile(s)
+  then begin
     // Makefile.fpc not changed
     Result:=mrOk;
     exit;

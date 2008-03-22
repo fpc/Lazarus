@@ -50,7 +50,7 @@ begin
     Filename:=GetCurrentDir+'/scanexamples/test.h';
     if ParamCount=1 then
       Filename:=ParamStr(1);
-
+      
     // Step 1: load the file
     CCode:=CodeToolBoss.LoadFile(Filename,false,false);
     if CCode=nil then

@@ -42,6 +42,8 @@ procedure ReadNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
 procedure ReadRawNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
+   
+function ExtractCodeFromMakefile(const Source: string): string;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;
 
@@ -341,6 +343,89 @@ begin
     end;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+end;
+
+function ExtractCodeFromMakefile(const Source: string): string;
+// remove comments, empty lines, double spaces, replace newline chars with #10
+
+  procedure Run(var NewSrc: string; out NewLength: integer);
+  var
+    SrcLen: Integer;
+    SrcPos: Integer;
+    DestPos: Integer;
+    LastChar: Char;
+    LineEndPos: LongInt;
+    EndPos: LongInt;
+    IsEmptyLine: Boolean;
+    CommentStartPos: Integer;
+  begin
+    SrcPos:=1;
+    SrcLen:=length(Source);
+    DestPos:=1;
+    while SrcPos<=SrcLen do begin
+      // check if line is empty
+      LineEndPos:=SrcPos;
+      IsEmptyLine:=true;
+      CommentStartPos:=0;
+      while (LineEndPos<=SrcLen) and (not (Source[LineEndPos] in [#10,#13])) do
+      begin
+        case Source[LineEndPos] of
+        #10,#13: break;
+        ' ',#9:  ;
+        '#':     if (CommentStartPos<1) then CommentStartPos:=LineEndPos;
+        else
+          if IsEmptyLine and (CommentStartPos<1) then
+            IsEmptyLine:=false;
+        end;
+        inc(LineEndPos);
+      end;
+      //DebugLn(['Run SrcPos=',SrcPos,' LineEndPos=',LineEndPos,' Line="',dbgstr(copy(Source,SrcPos,LineEndPos-SrcPos)),'" IsEmpty=',IsEmptyLine]);
+      
+      // copy line content
+      if not IsEmptyLine then begin
+        LastChar:=#0;
+        if Source[SrcPos]=#9 then begin
+          // first character is tab
+          LastChar:=#9;
+          if NewSrc<>'' then
+            NewSrc[DestPos]:=LastChar;
+          inc(DestPos);
+          inc(SrcPos);
+        end;
+        EndPos:=LineEndPos;
+        if CommentStartPos>0 then
+          EndPos:=CommentStartPos;
+        while SrcPos<EndPos do begin
+          if (not (Source[SrcPos] in [' ',#9]))
+          or (not (LastChar in [' ',#9])) then begin
+            LastChar:=Source[SrcPos];
+            if NewSrc<>'' then
+              NewSrc[DestPos]:=LastChar;
+            inc(DestPos);
+          end;
+          inc(SrcPos);
+        end;
+        if NewSrc<>'' then
+          NewSrc[DestPos]:=#10;
+        inc(DestPos);
+      end;
+
+      // next line
+      SrcPos:=LineEndPos+1;
+      if (SrcPos<=SrcLen) and (Source[SrcLen] in [#10,#13])
+      and (Source[SrcLen]<>Source[SrcLen-1]) then
+        inc(SrcPos);
+    end;
+    NewLength:=DestPos-1;
+  end;
+
+var
+  NewLength: integer;
+begin
+  Result:='';
+  Run(Result,NewLength);
+  SetLength(Result,NewLength);
+  Run(Result,NewLength);
 end;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;
