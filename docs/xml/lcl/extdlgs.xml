@@ -1,1795 +1,1265 @@
-<?xml version="1.0" encoding="ISO8859-1"?>
+<?xml version="1.0"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
+  <package name="lcl">
+    <!--
   ====================================================================
     ExtDlgs
   ====================================================================
 -->
-
-<module name="ExtDlgs">
-<short></short>
-<descr>
-</descr>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LResources">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLStrConsts">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="FileUtil">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Dialogs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="GraphType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Graphics">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="ExtCtrls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="StdCtrls">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Calendar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Buttons">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPreviewFileControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPreviewFileControl.FPreviewFileDialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPreviewFileControl.SetPreviewFileDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPreviewFileControl.SetPreviewFileDialog.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPreviewFileControl.CreateParams">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPreviewFileControl.CreateParams.Params">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPreviewFileControl.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPreviewFileControl.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPreviewFileControl.PreviewFileDialog">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TPreviewFileDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TPreviewFileDialog.FPreviewFileControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPreviewFileDialog.CreatePreviewControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TPreviewFileDialog.InitPreviewControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TPreviewFileDialog.Execute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TPreviewFileDialog.Execute.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TPreviewFileDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TPreviewFileDialog.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TPreviewFileDialog.PreviewFileControl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TOpenPictureDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TOpenPictureDialog.FDefaultFilter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TOpenPictureDialog.FImageCtrl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TOpenPictureDialog.FPictureGroupBox">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TOpenPictureDialog.FPreviewFilename">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: protected -->
-<element name="TOpenPictureDialog.IsFilterStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TOpenPictureDialog.IsFilterStored.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.PreviewKeyDown">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOpenPictureDialog.PreviewKeyDown.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOpenPictureDialog.PreviewKeyDown.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.PreviewClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOpenPictureDialog.PreviewClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.DoClose">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.DoSelectionChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.DoShow">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TOpenPictureDialog.ImageCtrl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TOpenPictureDialog.PictureGroupBox">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.InitPreviewControl">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.ClearPreview">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TOpenPictureDialog.UpdatePreview">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TOpenPictureDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TOpenPictureDialog.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TOpenPictureDialog.DefaultFilter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TOpenPictureDialog.Filter">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TSavePictureDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TSavePictureDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TSavePictureDialog.Create.TheOwner">
-<short></short>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DefCalcPrecision">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TCalcState">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCalcState.csFirst">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCalcState.csValid">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCalcState.csError">
-<short></short>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TCalculatorLayout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCalculatorLayout.clNormal">
-<short></short>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TCalculatorLayout.clSimple">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCalculatorDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FLayout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FValue">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FMemory">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FTitle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FCtl3D">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FPrecision">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FBeepOnError">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FHelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FCalc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FOnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FOnCalcKey">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorDialog.FOnDisplayChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalculatorDialog.GetDisplay">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalculatorDialog.GetDisplay.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalculatorDialog.GetTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalculatorDialog.GetTitle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalculatorDialog.SetTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorDialog.SetTitle.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalculatorDialog.TitleStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalculatorDialog.TitleStored.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorDialog.Change">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorDialog.CalcKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorDialog.CalcKey.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorDialog.DisplayChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCalculatorDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorDialog.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCalculatorDialog.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCalculatorDialog.Execute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalculatorDialog.Execute.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCalculatorDialog.CalcDisplay">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCalculatorDialog.Memory">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.BeepOnError">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.Ctl3D">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.CalculatorLayout">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.Precision">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.Title">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.OnCalcKey">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.OnChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalculatorDialog.OnDisplayChange">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCalculatorForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorForm.FMainPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorForm.FCalcPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorForm.FDisplayPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalculatorForm.FDisplayLabel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalculatorForm.FormKeyPress">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.FormKeyPress.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.FormKeyPress.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalculatorForm.CopyItemClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CopyItemClick.Sender">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalculatorForm.GetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalculatorForm.GetValue.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalculatorForm.PasteItemClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.PasteItemClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalculatorForm.SetValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.SetValue.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorForm.OkClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.OkClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorForm.CancelClick">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CancelClick.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorForm.CalcKey">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CalcKey.Sender">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CalcKey.Key">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorForm.DisplayChange">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.DisplayChange.Sender">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalculatorForm.InitForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.InitForm.ALayout">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalculatorForm.MainPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalculatorForm.CalcPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalculatorForm.DisplayPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalculatorForm.DisplayLabel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCalculatorForm.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.Create.AOwner">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCalculatorForm.CreateLayout">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CreateLayout.AOwner">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalculatorForm.CreateLayout.ALayout">
-<short></short>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCalculatorForm.Value">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CreateCalculatorForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CreateCalculatorForm.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateCalculatorForm.AOwner">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateCalculatorForm.ALayout">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateCalculatorForm.AHelpContext">
-<short></short>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCalendarDialogForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialogForm.FCalendar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialogForm.FPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialogForm.FOK">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialogForm.FCancel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalendarDialogForm.GetDate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialogForm.GetDate.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendarDialogForm.SetDate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendarDialogForm.SetDate.Value">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalendarDialogForm.GetDisplaySettings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialogForm.GetDisplaySettings.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendarDialogForm.SetDisplaySettings">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendarDialogForm.SetDisplaySettings.AValue">
-<short></short>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalendarDialogForm.Calendar">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalendarDialogForm.ButtonPanel">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalendarDialogForm.OKButton">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCalendarDialogForm.CancelButton">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TCalendarDialogForm.InitForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCalendarDialogForm.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendarDialogForm.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCalendarDialogForm.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCalendarDialogForm.Date">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TCalendarDialogForm.DisplaySettings">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="TCalendarDialog">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FDate">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FDayChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FDisplaySettings">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FHelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FMonthChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TCalendarDialog.FYearChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalendarDialog.GetDialogTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialog.GetDialogTitle.Result">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TCalendarDialog.SetDialogTitle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendarDialog.SetDialogTitle.AValue">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TCalendarDialog.IsTitleStored">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialog.IsTitleStored.Result">
-<short></short>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="TCalendarDialog.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TCalendarDialog.Create.AOwner">
-<short></short>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="TCalendarDialog.Destroy">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCalendarDialog.Execute">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialog.Execute.Result">
-<short></short>
-</element>
-
-<!-- function Visibility: public -->
-<element name="TCalendarDialog.CreateForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TCalendarDialog.CreateForm.Result">
-<short></short>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.DialogTitle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.Date">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.DisplaySettings">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.HelpContext">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.OnDayChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.OnMonthChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TCalendarDialog.OnYearChanged">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="CreateCalendarForm">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="CreateCalendarForm.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateCalendarForm.AOwner">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="CreateCalendarForm.AHelpContext">
-<short></short>
-</element>
-
-<!-- procedure Visibility: default -->
-<element name="Register">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-</module> <!-- ExtDlgs -->
-</package>
+    <module name="ExtDlgs">
+      <short>Some useful extra dialogs such as Calendar, Calculator and Open/Save Picture</short>
+      <descr/>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Classes">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="SysUtils">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LResources">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="LCLStrConsts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="FileUtil">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Controls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Dialogs">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="GraphType">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Graphics">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="ExtCtrls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="StdCtrls">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Forms">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Calendar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- unresolved type reference Visibility: default -->
+      <element name="Buttons">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPreviewFileControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPreviewFileControl.FPreviewFileDialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPreviewFileControl.SetPreviewFileDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPreviewFileControl.SetPreviewFileDialog.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPreviewFileControl.CreateParams">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPreviewFileControl.CreateParams.Params">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPreviewFileControl.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPreviewFileControl.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPreviewFileControl.PreviewFileDialog">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TPreviewFileDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TPreviewFileDialog.FPreviewFileControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPreviewFileDialog.CreatePreviewControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TPreviewFileDialog.InitPreviewControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TPreviewFileDialog.Execute">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TPreviewFileDialog.Execute.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TPreviewFileDialog.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TPreviewFileDialog.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TPreviewFileDialog.PreviewFileControl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TOpenPictureDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TOpenPictureDialog.FDefaultFilter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TOpenPictureDialog.FImageCtrl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TOpenPictureDialog.FPictureGroupBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TOpenPictureDialog.FPreviewFilename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: protected -->
+      <element name="TOpenPictureDialog.IsFilterStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TOpenPictureDialog.IsFilterStored.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.PreviewKeyDown">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOpenPictureDialog.PreviewKeyDown.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOpenPictureDialog.PreviewKeyDown.Key">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.PreviewClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOpenPictureDialog.PreviewClick.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.DoClose">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.DoSelectionChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.DoShow">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TOpenPictureDialog.ImageCtrl">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TOpenPictureDialog.PictureGroupBox">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.InitPreviewControl">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.ClearPreview">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TOpenPictureDialog.UpdatePreview">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TOpenPictureDialog.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TOpenPictureDialog.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TOpenPictureDialog.DefaultFilter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TOpenPictureDialog.Filter">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TSavePictureDialog">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TSavePictureDialog.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TSavePictureDialog.Create.TheOwner">
+        <short/>
+      </element>
+      <!-- constant Visibility: default -->
+      <element name="DefCalcPrecision">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TCalcState">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCalcState.csFirst">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCalcState.csValid">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCalcState.csError">
+        <short/>
+      </element>
+      <!-- enumeration type Visibility: default -->
+      <element name="TCalculatorLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCalculatorLayout.clNormal">
+        <short/>
+      </element>
+      <!-- enumeration value Visibility: default -->
+      <element name="TCalculatorLayout.clSimple">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCalculatorDialog">
+        <short>
+          <var>TCalculatorDialog</var> - a small calculator window that pops up, allowing the user to perform simple calculations and return the value to the calling Component</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FLayout">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FValue">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FMemory">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FTitle">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FCtl3D">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FPrecision">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FBeepOnError">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FHelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FCalc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FOnChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FOnCalcKey">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorDialog.FOnDisplayChange">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalculatorDialog.GetDisplay">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalculatorDialog.GetDisplay.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalculatorDialog.GetTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalculatorDialog.GetTitle.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalculatorDialog.SetTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorDialog.SetTitle.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalculatorDialog.TitleStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalculatorDialog.TitleStored.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorDialog.Change">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorDialog.CalcKey">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorDialog.CalcKey.Key">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorDialog.DisplayChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCalculatorDialog.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorDialog.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCalculatorDialog.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCalculatorDialog.Execute">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalculatorDialog.Execute.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCalculatorDialog.CalcDisplay">
+        <short>
+          <var>CalcDisplay</var> - the current numerical value in the main calculator display</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCalculatorDialog.Memory">
+        <short>
+          <var>Memory</var> - the value stored in the calculator's memory</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.BeepOnError">
+        <short>
+          <var>BeepOnError</var> - if True, beeps when there is an entry eror or other calculator error</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.Ctl3D">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.CalculatorLayout">
+        <short>
+          <var>CalculatorLayout</var> - whether simple or normal</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.Precision">
+        <short>
+          <var>Precision</var> - the level of precision to be used in calculations; default is set by <var>DefCalcPrecision</var>
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.Title">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.Value">
+        <short>
+          <var>Value</var> - the numerical value (result) returned by the calculator</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.OnCalcKey">
+        <short>
+          <var>OnCalcKey</var> - event handler for a key press in the calculator</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.OnChange">
+        <short>
+          <var>OnChange</var> - event handler for any change in the calculator</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalculatorDialog.OnDisplayChange">
+        <short>
+          <var>OnDisplayChange</var> - event handler for any change in the calculator display</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCalculatorForm">
+        <short>
+          <var>TCalculatorForm</var> - a normal form with a built-in calculator</short>
+        <descr>
+          <p>
+            <var>TCalculatorForm</var> - a normal form with a built-in calculator</p>
+          <p>There is a <var>MainPanel</var> in which the standard LCL widgets can be places, and a <var>CalcPanel </var>which displays a calculator which has the functionality of a <var>TCalculatorDialog</var> but remains permanently displayed</p>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorForm.FMainPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorForm.FCalcPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorForm.FDisplayPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalculatorForm.FDisplayLabel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalculatorForm.FormKeyPress">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.FormKeyPress.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.FormKeyPress.Key">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalculatorForm.CopyItemClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CopyItemClick.Sender">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalculatorForm.GetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalculatorForm.GetValue.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalculatorForm.PasteItemClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.PasteItemClick.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalculatorForm.SetValue">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.SetValue.AValue">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorForm.OkClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.OkClick.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorForm.CancelClick">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CancelClick.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorForm.CalcKey">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CalcKey.Sender">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CalcKey.Key">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorForm.DisplayChange">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.DisplayChange.Sender">
+        <short/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalculatorForm.InitForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.InitForm.ALayout">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalculatorForm.MainPanel">
+        <short>The <var>MainPanel</var> of the Form, which can contain any sort of LCL components</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalculatorForm.CalcPanel">
+        <short>The <var>CalcPanel</var> which displays the calculator</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalculatorForm.DisplayPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalculatorForm.DisplayLabel">
+        <short>The DisplayLabel for the calculator display</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCalculatorForm.Create">
+        <short>
+          <var>Create</var> - constructor for the whole form, not just the calculator</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.Create.AOwner">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCalculatorForm.CreateLayout">
+        <short>
+          <var>CreateLayout</var> - constructor for the calculator panel using the specified layout</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CreateLayout.AOwner">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalculatorForm.CreateLayout.ALayout">
+        <short/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCalculatorForm.Value">
+        <short>
+          <var>Value</var> - the numeric value, the result of the calculation, to be returned to the main program</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateCalculatorForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CreateCalculatorForm.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateCalculatorForm.AOwner">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateCalculatorForm.ALayout">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateCalculatorForm.AHelpContext">
+        <short/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCalendarDialogForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialogForm.FCalendar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialogForm.FPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialogForm.FOK">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialogForm.FCancel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalendarDialogForm.GetDate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialogForm.GetDate.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalendarDialogForm.SetDate">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalendarDialogForm.SetDate.Value">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalendarDialogForm.GetDisplaySettings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialogForm.GetDisplaySettings.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalendarDialogForm.SetDisplaySettings">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalendarDialogForm.SetDisplaySettings.AValue">
+        <short/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalendarDialogForm.Calendar">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalendarDialogForm.ButtonPanel">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalendarDialogForm.OKButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: protected -->
+      <element name="TCalendarDialogForm.CancelButton">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- procedure Visibility: protected -->
+      <element name="TCalendarDialogForm.InitForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCalendarDialogForm.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalendarDialogForm.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCalendarDialogForm.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCalendarDialogForm.Date">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: public -->
+      <element name="TCalendarDialogForm.DisplaySettings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- object Visibility: default -->
+      <element name="TCalendarDialog">
+        <short>
+          <var>TCalendarDialog</var> - a popup calendar dialog that allows a date to be selected and returned to the main program</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FDate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FDayChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FDisplaySettings">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FHelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FMonthChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- variable Visibility: private -->
+      <element name="TCalendarDialog.FYearChanged">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalendarDialog.GetDialogTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialog.GetDialogTitle.Result">
+        <short/>
+      </element>
+      <!-- procedure Visibility: private -->
+      <element name="TCalendarDialog.SetDialogTitle">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalendarDialog.SetDialogTitle.AValue">
+        <short/>
+      </element>
+      <!-- function Visibility: private -->
+      <element name="TCalendarDialog.IsTitleStored">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialog.IsTitleStored.Result">
+        <short/>
+      </element>
+      <!-- constructor Visibility: public -->
+      <element name="TCalendarDialog.Create">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="TCalendarDialog.Create.AOwner">
+        <short/>
+      </element>
+      <!-- destructor Visibility: public -->
+      <element name="TCalendarDialog.Destroy">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCalendarDialog.Execute">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialog.Execute.Result">
+        <short/>
+      </element>
+      <!-- function Visibility: public -->
+      <element name="TCalendarDialog.CreateForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="TCalendarDialog.CreateForm.Result">
+        <short/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.DialogTitle">
+        <short>
+          <var>DialogTitle</var> - caption for the calendar dialog</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.Date">
+        <short>The selected <var>Date</var>, for return to the main program</short>
+        <descr>
+          <p>The selected <var>Date</var>, for return to the main program</p>
+          <p>This is NOT the standad RTL Date function</p>
+        </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.DisplaySettings">
+        <short>
+          <var>DisplaySettings</var> - the user-selected settings determining the appearance of the display</short>
+        <descr>
+          <p>
+            <var>DisplaySettings</var> - the user-selected settings determining the appearance of the display</p>
+          <p>Possible values are: ShowHeadings,ShowDayNames, NoMonthChange, ShowWeekNumbers, StartMonday</p>
+          <p>This is a set which may contain zero or more settings</p>
+        </descr>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.HelpContext">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.OnDayChanged">
+        <short>
+          <var>OnDayChanged</var> - event handler when a different day is selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.OnMonthChanged">
+        <short>
+          <var>OnMonthChanged</var> - event handler when a different month is selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- property Visibility: published -->
+      <element name="TCalendarDialog.OnYearChanged">
+        <short>
+          <var>OnYearChanged</var> - event handler when a different year is selected</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <!-- function Visibility: default -->
+      <element name="CreateCalendarForm">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <!-- function result Visibility: default -->
+      <element name="CreateCalendarForm.Result">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateCalendarForm.AOwner">
+        <short/>
+      </element>
+      <!-- argument Visibility: default -->
+      <element name="CreateCalendarForm.AHelpContext">
+        <short/>
+      </element>
+      <!-- procedure Visibility: default -->
+      <element name="Register">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="TCalendarDialog.DialogPosition">
+        <short>
+          <var>DialogPosition</var> - position to display the dialog - by default in the centre of the main form</short>
+      </element>
+      <element name="TCalendarDialog.OKCaption">
+        <short>
+          <var>OKCaption</var> - caption for the OK button</short>
+      </element>
+      <element name="TCalendarDialog.CancelCaption">
+        <short>
+          <var>CancelCaption</var> - caption for the Cancel button</short>
+      </element>
+      <element name="TCalendarDialog.GetNewDate">
+        <short>
+          <var>GetNewDate</var> - programmatic simulation of <var>OnClick</var> event, which transfers the selected dae to the calling program</short>
+      </element>
+    </module>
+    <!-- ExtDlgs -->
+  </package>
 </fpdoc-descriptions>
