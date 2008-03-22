@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-20 23:39+0200\n"
+"PO-Revision-Date: 2008-03-22 01:01+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -331,11 +331,11 @@ msgstr "Kaynağı görüntüle"
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "&Whole Words Only"
-msgstr ""
+msgstr "Yalnızca Eşleşen Sözcükler"
 
 #: lazarusidestrconsts:lisfindfilewholewordsonly
 msgid "&Whole words only"
-msgstr ""
+msgstr "Yalnızca eşleşen sözcükler"
 
 #: lazarusidestrconsts:lismenuwindow
 msgid "&Window"
@@ -343,7 +343,7 @@ msgstr "Pencere"
 
 #: lazarusidestrconsts:liscefilter
 msgid "(Filter)"
-msgstr ""
+msgstr "(Süzgeç)"
 
 #: lazarusidestrconsts:dlgbaknosubdirectory
 msgid "(no subdirectory)"
@@ -351,23 +351,23 @@ msgstr "(alt dizin yok)"
 
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
-msgstr ""
+msgstr "(bilinmeyen makro: %s)"
 
 #: lazarusidestrconsts:lisplistall
 msgid "<All>"
-msgstr ""
+msgstr "<Tümü>"
 
 #: lazarusidestrconsts:liscodehelpnotagcaption
 msgid "<NONE>"
-msgstr ""
+msgstr "<HİÇBİRİ>"
 
 #: lazarusidestrconsts:lisplistnone
 msgid "<None>"
-msgstr ""
+msgstr "<Hiçbiri>"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
-msgstr ""
+msgstr "<mevcut bir dosya seç>"
 
 #: lazarusidestrconsts:lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
@@ -383,11 +383,11 @@ msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis sou
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
-msgstr ""
+msgstr "<değişken seçilmemiş>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr ""
+msgstr "%s TControl nesneleri barındıramaz.%sİçine yalnızca görsel olmayan bileşenler koyabilirsin."
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -395,23 +395,23 @@ msgstr "%s%s%s dosyası zaten var.%sDeğiştirilsin mi?"
 
 #: lazarusidestrconsts:lispvuapascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Bir pascal birimi .pp ya da .pas uzantısına sahip olmalıdır."
 
 #: lazarusidestrconsts:lispkgmangarequiredpackageswasnotfound
 msgid "A required packages was not found. See package graph."
-msgstr ""
+msgstr "Gereken paketler bulunamadı. Paket grafiğine bakın."
 
 #: lazarusidestrconsts:lisasimplepascalprogramfilethiscanbeusedforquickanddi
 msgid "A simple Pascal Program file.%sThis can be used for quick and dirty testing.%sBetter create a new project."
-msgstr ""
+msgstr "Basit Pascal Program dosyası.%sBu seçenek hızlı ve önemsiz denemeler için kullanılabilir.%sDaha iyisi yeni bir proje oluşturmaktır."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
-msgstr ""
+msgstr "Geçerli bir araç en az bir başlık ve dosya adı gerektirir."
 
 #: lazarusidestrconsts:lispdabort
 msgid "Abort"
-msgstr ""
+msgstr "Durdur"
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
@@ -427,7 +427,7 @@ msgstr "Tüm yüklemeleri sonlandır"
 
 #: lazarusidestrconsts:liskmabortbuilding
 msgid "Abort building"
-msgstr ""
+msgstr "inşayı durdur"
 
 #: lazarusidestrconsts:lisabortloadingproject
 msgid "Abort loading project"
@@ -435,11 +435,11 @@ msgstr "Projenin yüklenmesini durdur"
 
 #: lazarusidestrconsts:lisabortwholeloading
 msgid "Abort whole loading"
-msgstr ""
+msgstr "Tüm yüklemeyi durdur"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
-msgstr ""
+msgstr "Hakkında"
 
 #: lazarusidestrconsts:lisaboutlazarus
 msgid "About Lazarus"
@@ -451,31 +451,31 @@ msgstr "Soyut yöntemler - henüz ezilmemiş"
 
 #: lazarusidestrconsts:lissamabstractmethodsof
 msgid "Abstract methods of %s"
-msgstr ""
+msgstr "%s için soyut yöntemler"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
-msgstr ""
+msgstr "Kabul"
 
 #: lazarusidestrconsts:lisacknowledgements
 msgid "Acknowledgements"
-msgstr ""
+msgstr "Kabul edilenler"
 
 #: lazarusidestrconsts:lislazbuildaboaction
 msgid "Action"
-msgstr ""
+msgstr "Eylem"
 
 #: lazarusidestrconsts:liscodetoolsdefsaction
 msgid "Action: %s"
-msgstr ""
+msgstr "Eylem: %s"
 
 #: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
 msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
-msgstr ""
+msgstr "metin ve yer değiştirme için düzenli ifade sözdizimini etkinleştir(hemen hemen perl gibi)"
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
-msgstr ""
+msgstr "Ekle"
 
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
@@ -483,27 +483,27 @@ msgstr "%s projeye eklensin mi?"
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
-msgstr ""
+msgstr "İmlecin Olduğu Yere İzleyici Ekle"
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
-msgstr ""
+msgstr "Dosya Ekle"
 
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
-msgstr ""
+msgstr "Dosyaları Ekle"
 
 #: lazarusidestrconsts:rsaddinverse
 msgid "Add Inverse"
-msgstr ""
+msgstr "Ters Ekle"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
-msgstr ""
+msgstr "LFM ve LRS dosyaları ekle, eğer mevcutsa"
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
-msgstr ""
+msgstr "Birim Ekle"
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
 msgid "Add active unit to a package"
@@ -515,15 +515,15 @@ msgstr "Etkin birimi projeye ekle"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
-msgstr ""
+msgstr "Bir parça ekle"
 
 #: lazarusidestrconsts:dlgaddassignmentoperator
 msgid "Add assignment operator :="
-msgstr ""
+msgstr "Atama operatörü ekle :="
 
 #: lazarusidestrconsts:liskmaddbreakpoint
 msgid "Add break point"
-msgstr ""
+msgstr "Durma noktası ekle"
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
@@ -531,7 +531,7 @@ msgstr "Durma noktası ekle"
 
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
-msgstr ""
+msgstr "Kod şablonu ekle"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
@@ -539,27 +539,27 @@ msgstr "Projeye düzenleyici dosyası ekle"
 
 #: lazarusidestrconsts:lisprojaddeditorfile
 msgid "Add editor files"
-msgstr ""
+msgstr "Düzenleyici dosyaları ekle"
 
 #: lazarusidestrconsts:lisaf2paddfiletoapackage
 msgid "Add file to a package"
-msgstr ""
+msgstr "Pakete bir dosya ekle"
 
 #: lazarusidestrconsts:lisprojaddaddfiletoproject
 msgid "Add file to project:"
-msgstr ""
+msgstr "Projeye bir dosya ekle:"
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Dosyaları ekle"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
-msgstr ""
+msgstr "Dosyaları pakete ekle"
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
-msgstr ""
+msgstr "Sıçrama noktası ekle"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -567,39 +567,39 @@ msgstr "Geçmişe atlama noktası ekle"
 
 #: lazarusidestrconsts:liscodehelpaddlinkbutton
 msgid "Add link"
-msgstr ""
+msgstr "Bağlantı ekle"
 
 #: lazarusidestrconsts:lisldaddlinktoinherited
 msgid "Add link to inherited"
-msgstr ""
+msgstr "Miras alınana bağlantı ekle"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
-msgstr ""
+msgstr "Bağımlı paketlere ve projelere seçenekler ekle"
 
 #: lazarusidestrconsts:liscodehelpaddpathbutton
 msgid "Add path"
-msgstr ""
+msgstr "Yol ekle"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
-msgstr ""
+msgstr "Bağımlı paketlere/projelere yol girdileri ekle"
 
 #: lazarusidestrconsts:dlgaddsemicolon
 msgid "Add semicolon"
-msgstr ""
+msgstr "Noktalı virgül ekle"
 
 #: lazarusidestrconsts:lisoifaddtofavouriteproperties
 msgid "Add to favourite properties"
-msgstr ""
+msgstr "Gözde özelliklere ekle"
 
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
-msgstr ""
+msgstr "Pakete ekle"
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr ""
+msgstr "Projeye ekle"
 
 #: lazarusidestrconsts:lisaddtounitsearchpath
 msgid "Add to unit search path?"
@@ -607,7 +607,7 @@ msgstr "Birim arama yoluna eklensin mi?"
 
 #: lazarusidestrconsts:lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
 msgid "Add unit to uses clause of package. Disable this only for units, that should not be compiled in all cases."
-msgstr ""
+msgstr "Birimi paketin uses bölümüne  ekle. Bunu yalnızca her zaman derlenmeyebilen birimler için kapatın."
 
 #: lazarusidestrconsts:liskmaddwatch
 msgid "Add watch"
@@ -619,47 +619,47 @@ msgstr "İzleme ekle ..."
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
-msgstr ""
+msgstr "Ekle..."
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
-msgstr ""
+msgstr "Tüm projeler için ilave kaynak kod arama yolu(.pp;.pas)"
 
 #: lazarusidestrconsts:lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
-msgstr ""
+msgstr "Paketlerden miras alınan ilave derleyici seçenekleri"
 
 #: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
-msgstr ""
+msgstr "Aranacak ilave dosyalar (Ör: /yol/*.pas;/yol2/*.pp)"
 
 #: lazarusidestrconsts:rsadditionalinfo
 msgid "Additional info"
-msgstr ""
+msgstr "İlave bilgi"
 
 #: lazarusidestrconsts:lisdebugoptionsfrmadditionalsearchpath
 msgid "Additional search path"
-msgstr ""
+msgstr "İlave arama yolu"
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
-msgstr ""
+msgstr "Yorum önde olduğundan en üstteki satırı ayarla"
 
 #: lazarusidestrconsts:lislazbuildadvancedbuildoptions
 msgid "Advanced Build Options"
-msgstr ""
+msgstr "Gelişmiş inşa seçenekleri"
 
 #: lazarusidestrconsts:rslanguageafrikaans
 msgid "Afrikaans"
-msgstr ""
+msgstr "Afrikalılar"
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
-msgstr ""
+msgstr "Hizala"
 
 #: lazarusidestrconsts:lisalignment
 msgid "Alignment"
-msgstr ""
+msgstr "Hizalama"
 
 #: lazarusidestrconsts:lisallfiles
 msgid "All Files"
@@ -667,47 +667,47 @@ msgstr "Tüm Dosyalar"
 
 #: lazarusidestrconsts:lisallblockslooksok
 msgid "All blocks looks ok."
-msgstr ""
+msgstr "Tüm bloklar sağlam görünüyor"
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
-msgstr ""
+msgstr "Tüm dosyalar"
 
 #: lazarusidestrconsts:lisedtdefallpackages
 msgid "All packages"
-msgstr ""
+msgstr "Tüm paketler"
 
 #: lazarusidestrconsts:lisedtdefsallprojects
 msgid "All projects"
-msgstr ""
+msgstr "Tüm projeler"
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
-msgstr ""
+msgstr "Tüm testler başarıyla tamamlandı."
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
-msgstr ""
+msgstr "LABEL ve GOTO deyimlerine izin ver"
 
 #: lazarusidestrconsts:lisallowsearchingformultiplelines
 msgid "Allow searching for multiple lines"
-msgstr ""
+msgstr "Çoklu satır aramaya izin ver"
 
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabetik"
 
 #: lazarusidestrconsts:srkm_alt
 msgid "Alt"
-msgstr ""
+msgstr "Alt"
 
 #: lazarusidestrconsts:dlgaltsetclmode
 msgid "Alt-Key sets column mode"
-msgstr ""
+msgstr "Alt-tuşu sütun kipini ayarlar"
 
 #: lazarusidestrconsts:srkmalternkey
 msgid "Alternative key (or 2 keys combination)"
-msgstr ""
+msgstr "Seçimlik tuş (ya da 2 tuş bileşimi)"
 
 #: lazarusidestrconsts:lisbfalwaysbuildbeforerun
 msgid "Always Build before Run"
@@ -715,11 +715,11 @@ msgstr "Çalıştırmadan Önce Daima Oluştur"
 
 #: lazarusidestrconsts:lisprojoptsalwaysbuildevenifnothingchanged
 msgid "Always build (even if nothing changed)"
-msgstr ""
+msgstr "Daima inşa et (Hiçbir şey değişmemiş olsa bile)"
 
 #: lazarusidestrconsts:dlgalwaysvisiblecaret
 msgid "Always visible caret"
-msgstr ""
+msgstr "Caret işareti(^) daima görünür"
 
 #: lazarusidestrconsts:lisa2pambiguousancestortype
 msgid "Ambiguous Ancestor Type"
