@@ -608,7 +608,7 @@
       <!-- property Visibility: published -->
       <element name="TCalculatorDialog.BeepOnError">
         <short>
-          <var>BeepOnError</var> - if True, beeps when there is an entry eror or other calculator error</short>
+          <var>BeepOnError</var> - if True, beeps when there is an entry error or other calculator error</short>
         <descr/>
         <seealso/>
       </element>
@@ -680,7 +680,7 @@
         <descr>
           <p>
             <var>TCalculatorForm</var> - a normal form with a built-in calculator</p>
-          <p>There is a <var>MainPanel</var> in which the standard LCL widgets can be places, and a <var>CalcPanel </var>which displays a calculator which has the functionality of a <var>TCalculatorDialog</var> but remains permanently displayed</p>
+          <p>There is a <var>MainPanel</var> in which the standard LCL widgets can be placed, and a <var>CalcPanel </var>which displays a calculator which has the functionality of a <var>TCalculatorDialog</var> but remains permanently displayed</p>
         </descr>
         <errors/>
         <seealso/>
@@ -841,13 +841,13 @@
       </element>
       <!-- property Visibility: protected -->
       <element name="TCalculatorForm.DisplayPanel">
-        <short/>
+        <short>The <var>DisplayPanel</var> within the calculator panel, that holds the numeric display</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCalculatorForm.DisplayLabel">
-        <short>The DisplayLabel for the calculator display</short>
+        <short>The <var>DisplayLabel </var>for the calculator display</short>
         <descr/>
         <seealso/>
       </element>
