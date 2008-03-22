@@ -928,7 +928,7 @@ var
     if NewSection=CurSection then exit;
     // close old section
     case CurSection of
-    ctnVarSection:
+    ctnVarSection,ctnTypeSection:
       begin
         DecIndent;
         W('');
@@ -940,6 +940,11 @@ var
     ctnVarSection:
       begin
         W('var');
+        IncIndent;
+      end;
+    ctnTypeSection:
+      begin
+        W('type');
         IncIndent;
       end;
     end;
@@ -978,7 +983,7 @@ begin
   while H2PNode<>nil do begin
     case H2PNode.PascalDesc of
     ctnVarDefinition:
-      if H2PNode.Parent=nil then begin
+      begin
         // global variable
         SetSection(ctnVarSection);
         PascalCode:=H2PNode.PascalCode+';';
@@ -991,8 +996,17 @@ begin
         end;
         W(H2PNode.PascalName+': '+PascalCode);
       end;
+    ctnTypeDefinition:
+      begin
+        // global variable
+        SetSection(ctnTypeSection);
+        if H2PNode.FirstChild=nil then begin
+          PascalCode:=H2PNode.PascalCode+';';
+          W(H2PNode.PascalName+': '+PascalCode);
+        end;
+      end;
     end;
-    H2PNode:=H2PNode.Next;
+    H2PNode:=H2PNode.NextBrother;
   end;
   
   // write implementation
