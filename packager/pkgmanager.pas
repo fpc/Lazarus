@@ -1306,6 +1306,8 @@ begin
   s:=s+'#   File generated automatically by Lazarus Package Manager'+e;
   s:=s+'#'+e;
   s:=s+'#   Makefile.fpc for '+APackage.IDAsString+e;
+  s:=s+'#'+e;
+  s:=s+'#   This file was generated on '+DateToStr(Now)+''+e;
   s:=s+''+e;
   s:=s+'[package]'+e;
   s:=s+'name='+lowercase(APackage.Name)+e;
