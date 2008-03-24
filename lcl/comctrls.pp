@@ -2520,7 +2520,6 @@ type
 
 
   { THeaderSection }
-  
   THeaderSectionState =
   (
     hsNormal,
@@ -2530,17 +2529,22 @@ type
   THeaderSection = class(TCollectionItem)
   private
     FAlignment: TAlignment;
+    FImageIndex: TImageIndex;
+    FMinWidth: Integer;
+    FMaxWidth: Integer;
+    FState: THeaderSectionState;
     FText: string;
     FWidth: Integer;
-    FImageIndex: TImageIndex;
-    FState: THeaderSectionState;
     function GetLeft: Integer;
     function GetRight: Integer;
     procedure SetAlignment(const AValue: TAlignment);
+    procedure SetMaxWidth(AValue: Integer);
+    procedure SetMinWidth(AValue: Integer);
     procedure SetState(const AValue: THeaderSectionState);
     procedure SetText(const Value: string);
     procedure SetWidth(Value: Integer);
     procedure SetImageIndex(const Value: TImageIndex);
+    procedure CheckConstraints; inline;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
@@ -2550,6 +2554,8 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property MaxWidth: Integer read FMaxWidth write SetMaxWidth default 10000;
+    property MinWidth: Integer read FMinWidth write SetMinWidth default 0;
     property Text: string read FText write SetText;
     property Width: Integer read FWidth write SetWidth;
   end;
@@ -2575,6 +2581,8 @@ type
     property Items[Index: Integer]: THeaderSection read GetItem write SetItem; default;
   end;
 
+  TSectionTrackState = (tsTrackBegin, tsTrackMove, tsTrackEnd);
+  TCustomSectionTrackEvent = procedure(HeaderControl: TCustomHeaderControl; Section: THeaderSection; Width: Integer; State: TSectionTrackState) of object;
   TCustomSectionNotifyEvent = procedure(HeaderControl: TCustomHeaderControl;
     Section: THeaderSection) of object;
   TCustomHCCreateSectionClassEvent = procedure(Sender: TCustomHeaderControl;
@@ -2590,9 +2598,13 @@ type
     FPaintRect: TRect;
     FDown: Boolean;
     FDownPoint: TPoint;
+    FTracking: Boolean;
+    FSelectedSelection: longint;
     FMouseInControl: Boolean;
     
     FOnSectionClick: TCustomSectionNotifyEvent;
+    FOnSectionResize: TCustomSectionNotifyEvent;
+    FOnSectionTrack: TCustomSectionTrackEvent;
     FOnCreateSectionClass: TCustomHCCreateSectionClassEvent;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetSections(const AValue: THeaderSections);
@@ -2603,6 +2615,8 @@ type
     function CreateSections: THeaderSections; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SectionClick(Section: THeaderSection); dynamic;
+    procedure SectionResize(Section: THeaderSection); dynamic;
+    procedure SectionTrack(Section: THeaderSection; State: TSectionTrackState); dynamic;
     procedure MouseEnter; override;
     procedure MouseLeave; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -2626,6 +2640,10 @@ type
 
     property OnSectionClick: TCustomSectionNotifyEvent read FOnSectionClick
       write FOnSectionClick;
+    property OnSectionResize: TCustomSectionNotifyEvent read FOnSectionResize
+      write FOnSectionResize;
+    property OnSectionTrack: TCustomSectionTrackEvent read FOnSectionTrack
+      write FOnSectionTrack;
     property OnCreateSectionClass: TCustomHCCreateSectionClassEvent read FOnCreateSectionClass
       write FOnCreateSectionClass;
   end;
@@ -2666,6 +2684,9 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
+    property OnSectionClick;
+    property OnSectionResize;
+    property OnSectionTrack;
   end;
 
 function CompareExpandedNodes(Data1, Data2: Pointer): integer;
@@ -2697,7 +2718,6 @@ end;
 {$I tabsheet.inc}
 {$I pagecontrol.inc}
 {$I tabcontrol.inc}
-{ $I alignment.inc}
 {$I listcolumns.inc}
 {$I listcolumn.inc}
 {$I listitem.inc}

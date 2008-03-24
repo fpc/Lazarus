@@ -757,26 +757,36 @@ begin
   with ItemListHeader.Sections.Add do
   begin
     Width := ButtonSize;
+    MinWidth := Width;
+    MaxWidth := Width;
     ImageIndex := IDEImages.LoadImage(16, 'menu_close');
   end;
   with ItemListHeader.Sections.Add do
   begin
     Width := ButtonSize;
+    MinWidth := Width;
+    MaxWidth := Width;
     ImageIndex := IDEImages.LoadImage(16, 'menu_build');
   end;
   with ItemListHeader.Sections.Add do
   begin
     Width := ButtonSize;
+    MinWidth := Width;
+    MaxWidth := Width;
     ImageIndex := IDEImages.LoadImage(16, 'menu_build_clean');
   end;
   with ItemListHeader.Sections.Add do
   begin
     Width := ItemListHeader.Width - 90 - 3 * ButtonSize;
+    MinWidth := Width;
+    MaxWidth := Width;
     Text := lisLazBuildABOPart;
   end;
   with ItemListHeader.Sections.Add do
   begin
     Width := 90;
+    MinWidth := Width;
+    MaxWidth := Width;
     Text := lisLazBuildABOAction;
   end;
 

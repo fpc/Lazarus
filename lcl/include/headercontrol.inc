@@ -20,6 +20,8 @@
 }
 { TCustomHeaderControl }
 
+const HeaderBorderSize = 2;
+
 procedure TCustomHeaderControl.SetImages(const AValue: TCustomImageList);
 begin
   FImages := AValue;
@@ -80,10 +82,13 @@ procedure TCustomHeaderControl.Click;
 var
   Index: Integer;
 begin
-  inherited Click;
-  Index := GetSectionAt(ScreenToClient(Mouse.CursorPos));
-  if Index <> -1 then
-    SectionClick(Sections[Index]);
+  if not FTracking then
+  begin
+    inherited Click;
+    Index := GetSectionAt(ScreenToClient(Mouse.CursorPos));
+    if Index <> -1 then
+      SectionClick(Sections[Index]);
+  end;
 end;
 
 function TCustomHeaderControl.GetSectionAt(P: TPoint): Integer;
@@ -111,6 +116,19 @@ procedure TCustomHeaderControl.SectionClick(Section: THeaderSection);
 begin
   if Assigned(FOnSectionClick) then
     OnSectionClick(Self, Section);
+end;
+
+procedure TCustomHeaderControl.SectionResize(Section: THeaderSection);
+begin
+  if Assigned(FOnSectionResize) then
+    FOnSectionResize(Self, Section);
+end;
+
+procedure TCustomHeaderControl.SectionTrack(Section: THeaderSection;
+  State: TSectionTrackState);
+begin
+  if Assigned(FOnSectionTrack) then
+    FOnSectionTrack(Self, Section, Section.FWidth, State);
 end;
 
 procedure TCustomHeaderControl.MouseEnter;
@@ -142,6 +160,21 @@ begin
   begin
     FDown := True;
     FDownPoint := Point(X, Y);
+    if Button = mbLeft then
+      if GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)) then
+      begin
+        FTracking:=true;
+        FSelectedSelection:=GetSectionAt(Point(X - HeaderBorderSize, Y));
+        if FSelectedSelection = -1 then
+          FTracking:=false
+        else
+          Cursor:=crSizeE;
+        if FTracking then
+        begin
+          FDown := False;
+          SectionTrack(Sections[FSelectedSelection], tsTrackBegin);
+        end;
+      end;
     UpdateState;
   end;
 end;
@@ -151,11 +184,25 @@ begin
   inherited MouseMove(Shift, X, Y);
   if not (csDesigning in ComponentState) then
   begin
+    if FTracking and (ssLeft in shift) then
+    begin
+      if x>=FSections[FSelectedSelection].Left then
+      begin
+        FSections[FSelectedSelection].Width := X - FSections[FSelectedSelection].Left;
+        SectionTrack(Sections[FSelectedSelection], tsTrackMove);
+      end;
+    end
+    else
     if FDown then
     begin
       if GetSectionAt(Point(X, Y)) <> GetSectionAt(FDownPoint) then
         FDown := False;
     end;
+    if shift = [] then
+      if GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y)) then
+        Cursor:=crSizeE
+       else
+        Cursor:=crDefault;
     UpdateState;
   end;
 end;
@@ -164,10 +211,14 @@ procedure TCustomHeaderControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
+  if FTracking then
   begin
-    FDown := False;
-    UpdateState;
+    SectionTrack(Sections[FSelectedSelection],tsTrackEnd);
+    SectionResize(Sections[FSelectedSelection]);
   end;
+  FDown := False;
+  FTracking:=false;
+  UpdateState;
 end;
 
 procedure TCustomHeaderControl.UpdateState;
@@ -335,6 +386,36 @@ begin
   end;
 end;
 
+procedure THeaderSection.SetMaxWidth(AValue: Integer);
+begin
+  if AValue > 10000 then
+    AValue := 10000;
+  if AValue < FMinWidth then
+    AValue := FMinWidth;
+
+  if FMaxWidth <> AValue then
+  begin
+    FMaxWidth := AValue;
+    CheckConstraints;
+    Changed(False);
+  end;
+end;
+
+procedure THeaderSection.SetMinWidth(AValue: Integer);
+begin
+  if AValue < 0 then
+    AValue := 0;
+  if AValue > FMaxWidth then
+    AValue := FMaxWidth;
+
+  if FMinWidth <> AValue then
+  begin
+    FMinWidth := AValue;
+    CheckConstraints;
+    Changed(False);
+  end;
+end;
+
 procedure THeaderSection.SetState(const AValue: THeaderSectionState);
 begin
   if FState <> AValue then
@@ -358,6 +439,7 @@ begin
   if FWidth <> Value then
   begin
     FWidth := Value;
+    CheckConstraints;
     Changed(False);
   end;
 end;
@@ -371,6 +453,14 @@ begin
   end;
 end;
 
+procedure THeaderSection.CheckConstraints; inline;
+begin
+  if FWidth < FMinWidth then
+    FWidth := FMinWidth;
+  if FWidth > FMaxWidth then
+    FWidth := FMaxWidth;
+end;
+
 constructor THeaderSection.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
@@ -379,6 +469,8 @@ begin
   FText := '';
   FAlignment := taLeftJustify;
   FState := hsNormal;
+  FMinWidth := 0;
+  FMaxWidth := 10000;
 end;
 
 procedure THeaderSection.Assign(Source: TPersistent);
