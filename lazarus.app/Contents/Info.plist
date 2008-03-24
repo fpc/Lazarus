@@ -16,8 +16,10 @@
   <string>APPL</string>
   <key>CFBundleSignature</key>
   <string>lazi</string>
+  <key>CFBundleShortVersionString</key>
+  <string>Lazarus IDE v0.9.25 beta</string>
   <key>CFBundleVersion</key>
-  <string>1.0</string>
+  <string>1</string>
   <key>CSResourcesFileMapped</key>
   <true/>
   <key>CFBundleDocumentTypes</key>
@@ -25,21 +27,23 @@
     <dict>
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
-	  <string>*</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>*</string>
+      </array>
       <key>CFBundleTypeOSTypes</key>
       <array>
         <string>****</string>
       </array>
     </dict>
 	<dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleTypeExtensions</key>
 	  <array>
 	    <string>pas</string>
 	    <string>pp</string>
-	    <string>inc</string>	  
+	    <string>inc</string>
 	  </array>
 	  <key>CFBundleTypeIconFile</key>
 	  <string>lazarussource</string>
@@ -47,17 +51,17 @@
 	  <string>text/pascal</string>
 	  <key>CFBundleTypeName</key>
 	  <string>public.pascal-source</string>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>****</string>
-      </array>
-    </dict>
+    <key>CFBundleTypeOSTypes</key>
+    <array>
+      <string>****</string>
+    </array>
+  </dict>
 	<dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleTypeExtensions</key>
 	  <array>
-	    <string>lpr</string>  
+	    <string>lpr</string>
 	  </array>
 	  <key>CFBundleTypeIconFile</key>
 	  <string>lazarusproject</string>
@@ -65,15 +69,15 @@
 	  <string>text/pascal</string>
 	  <key>CFBundleTypeName</key>
 	  <string>public.lazarus-project-source</string>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>****</string>
-      </array>
-    </dict>
+    <key>CFBundleTypeOSTypes</key>
+    <array>
+      <string>****</string>
+    </array>
+  </dict>
 	<dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleTypeExtensions</key>
 	  <array>
 	    <string>lpi</string>  
 	  </array>
@@ -83,15 +87,15 @@
 	  <string>text/xml</string>
 	  <key>CFBundleTypeName</key>
 	  <string>public.lazarus-project-info</string>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>****</string>
-      </array>
-    </dict>
+    <key>CFBundleTypeOSTypes</key>
+    <array>
+      <string>****</string>
+    </array>
+  </dict>
 	<dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleTypeExtensions</key>
 	  <array>
 	    <string>lpk</string>  
 	  </array>
@@ -101,15 +105,15 @@
 	  <string>text/xml</string>
 	  <key>CFBundleTypeName</key>
 	  <string>public.lazarus-package-info</string>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>****</string>
-      </array>
-    </dict>
+    <key>CFBundleTypeOSTypes</key>
+    <array>
+      <string>****</string>
+    </array>
+  </dict>
 	<dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleTypeExtension</key>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleTypeExtensions</key>
 	  <array>
 	    <string>lfm</string>  
 	  </array>
@@ -119,10 +123,10 @@
 	  <string>text/plain</string>
 	  <key>CFBundleTypeName</key>
 	  <string>public.lazarus-form-source</string>
-      <key>CFBundleTypeOSTypes</key>
-      <array>
-        <string>****</string>
-      </array>
+    <key>CFBundleTypeOSTypes</key>
+    <array>
+      <string>****</string>
+    </array>
     </dict>
   </array>
 </dict>

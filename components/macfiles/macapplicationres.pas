@@ -81,8 +81,10 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('    <dict>');
       sl.Add('      <key>CFBundleTypeRole</key>');
       sl.Add('      <string>Viewer</string>');
-      sl.Add('      <key>CFBundleTypeExtension</key>');
-      sl.Add('      <string>*</string>');
+      sl.Add('      <key>CFBundleTypeExtensions</key>');
+      sl.Add('      <array>');
+      sl.Add('        <string>*</string>');
+      sl.Add('      </array>');
       sl.Add('      <key>CFBundleTypeOSTypes</key>');
       sl.Add('      <array>');
       sl.Add('        <string>fold</string>');

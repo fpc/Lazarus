@@ -106,8 +106,10 @@ begin
   Add('    <dict>');
   Add('      <key>CFBundleTypeRole</key>');
   Add('      <string>Viewer</string>');
-  Add('      <key>CFBundleTypeExtension</key>');
-  Add('      <string>*</string>');
+  Add('      <key>CFBundleTypeExtensions</key>');
+  Add('      <array>');
+  Add('        <string>*</string>');
+  Add('      </array>');
   Add('      <key>CFBundleTypeOSTypes</key>');
   Add('      <array>');
   Add('        <string>fold</string>');
