@@ -45,6 +45,7 @@ var
   CarbonPrinter: TCarbonPrinter;
   DialogSettings: PMPrintSettings;
   U, V: UInt32;
+  B: Boolean;
   PMin, PMax, PFrom, PTo: Integer;
 begin
   Result := False;
@@ -83,7 +84,9 @@ begin
 
     if Result then
     begin
-      OSError(PMGetCollate(DialogSettings, Collate), Self, SExecute, 'PMGetCollate');
+      B := Collate;
+      OSError(PMGetCollate(DialogSettings, B), Self, SExecute, 'PMGetCollate');
+      Collate := B;
       
       V := Copies;
       OSError(PMGetCopies(DialogSettings, V), Self, SExecute, 'PMGetCopies');
