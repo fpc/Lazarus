@@ -91,19 +91,20 @@
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
         <short>
-          <i>TCustomDBGrid</i> - the Base class for <i>TDBGrid,</i> a data-aware component for displaying information from a database in the manner of a <i>Stringrid</i>
+          <var>TCustomDBGrid</var> - the Base class for <var>TDBGrid,</var> a data-aware component for displaying information from a database in the manner of a <var>Stringrid</var>
         </short>
         <seealso>
-          <link id="#lcl.DBCtrls.HowToUseDataAwareControls"/>
+          <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
+          <link id="#lcl.Grids.HowToUseGrids">HowToUseGrids</link>
         </seealso>
       </element>
       <!-- object Visibility: default -->
       <element name="TColumn">
         <short>
-          <i>TColumn </i>- one of the physical columns of the display in a DataBase Grid</short>
+          <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid</short>
         <descr>
           <p>
-            <i>TColumn </i>- one of the physical columns of the display in a DataBase Grid</p>
+            <var>TColumn </var>- one of the physical columns of the display in a DataBase Grid</p>
           <p>Each column may display the information held in a Field of the DataSet to which the DBGrid is attached, but the order of appearance of the columns need not correspond to the order in which the Fields exist in the DataSet, nor need all Fields be represented by a Column.</p>
         </descr>
         <errors/>
@@ -1982,8 +1983,8 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: public -->
       <element name="TColumn.Field">
-        <short>The <i>Field </i>in the <i>DataSet</i> that is to be associated with this <i>Column</i>, for display , editinig etc</short>
-        <descr>Refers to the whole entity <i>Field</i>, including contents, name, position in the dataset, properties such as read/write enabling etc
+        <short>The <var>Field </var>in the <var>DataSet</var> that is to be associated with this <var>Column</var>, for display , editinig etc</short>
+        <descr>Refers to the whole entity <var>Field</var>, including contents, name, position in the dataset, properties such as read/write enabling etc
 </descr>
         <seealso/>
       </element>
@@ -2569,10 +2570,11 @@ and Destroys the item instance.
       <!-- object Visibility: default -->
       <element name="TCustomDbGrid">
         <short>
-          <i>TCustomDBGrid </i>    - the base class for <i>TDBGrid</i>   , for displaying database information in the manner of a <i>StringGrid</i>
+          <var>TCustomDBGrid </var>    - the base class for <var>TDBGrid</var>   , for displaying database information in the manner of a <var>StringGrid</var>
         </short>
         <seealso>
-          <link id="#lcl.DBCtrls.HowToUseDataAwareControls"/>
+          <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
+          <link id="#lcl.Grids.HowToUseGrids">HowToUseGrids</link>
         </seealso>
       </element>
       <!-- variable Visibility: private -->
@@ -3893,7 +3895,8 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDbGrid.OnColumnMoved">
-        <short/>
+        <short>
+          <var>OnColumnMoved</var> - event handler for moving a column</short>
         <descr/>
         <seealso/>
       </element>
@@ -3928,7 +3931,8 @@ and Destroys the item instance.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDbGrid.DefaultDrawColumnCell">
-        <short/>
+        <short>
+          <var>DefaultDrawColumnCell</var> - the default method for drawing cells in this column</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4563,19 +4567,23 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDBGrid.OptionsExtra">
-        <short/>
-        <descr/>
+        <short>
+          <var>OptionsExtra</var> - the extra options for this grid</short>
+        <descr>
+          <var>OptionsExtra</var> - the extra options for this grid: autocolumns and enable checkboxes</descr>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDBGrid.SelectedRows">
-        <short/>
+        <short>
+          <var>SelectedRows</var> - recorded as a bookmark list</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDBGrid.OnColumnSized">
-        <short/>
+        <short>
+          <var>OnColumnSized</var> - event handler for re-sizing a column</short>
         <descr/>
         <seealso/>
       </element>
@@ -4593,8 +4601,14 @@ and Destroys the item instance.
       </element>
       <!-- property Visibility: protected -->
       <element name="TCustomDBGrid.OnUserCheckboxBitmap">
-        <short/>
-        <descr/>
+        <short>
+          <var>OnUserCheckboxBitmap</var> - event handler: user-defined bitmap for checkboxes</short>
+        <descr>
+          <p>
+            <var>OnUserCheckboxBitmap</var> - event handler: user-defined bitmap for checkboxes</p>
+          <p>The user is encouraged to provide bitmaps to represent the three states for database grid checkboxes: <var>gcbpUnChecked</var>, <var>gcbpChecked</var> and <var>gcbpGrayed</var>
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
@@ -4606,7 +4620,9 @@ and Destroys the item instance.
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomDBGrid.EditorByStyle">
-        <short/>
+        <short>
+          <var>EditorByStyle</var> - the editor to be used for this grid, specified by <var>Style</var>
+        </short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4621,7 +4637,8 @@ and Destroys the item instance.
       </element>
       <!-- procedure Visibility: public -->
       <element name="TCustomDBGrid.ResetColWidths">
-        <short/>
+        <short>
+          <var>ResetColWidths</var> - restore the column widths to their default values</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -4648,15 +4665,16 @@ and Destroys the item instance.
       <!-- object Visibility: default -->
       <element name="TdbGrid">
         <short>
-          <i>TdbGrid </i>   - a data-aware version of <i>TStringGrid,</i>   for displaying and operating on a series of Rows and Columns from a database</short>
+          <var>TdbGrid </var>   - a data-aware version of <var>TStringGrid,</var>   for displaying and operating on a series of Rows and Columns from a database</short>
         <descr>
           <p>
-            <i>TdbGrid </i>  - a data-aware version of <i>TStringGrid,</i>  for displaying and operating on a series of Rows and Columns from a database</p>
+            <var>TdbGrid </var>  - a data-aware version of <var>TStringGrid,</var>  for displaying and operating on a series of Rows and Columns from a database</p>
           <p>Inherits many of its properties from <link id="#lcl.Grids.TCustomGrid">TCustomGrid</link> and, of course, from <link id="TCustomDBGrid">TCustomDBGrid</link>
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.DBCtrls.HowToUseDataAwareControls"/>
+          <link id="#lcl.DBCtrls.HowToUseDataAwareControls">HowToUseDataAwareControls</link>
+          <link id="#lcl.Grids.HowToUseGrids">HowToUseGrids</link>
         </seealso>
       </element>
       <!-- property Visibility: public -->
@@ -4673,7 +4691,7 @@ and that description should be read to understand their definitions more fully.
         <short>Used to align the control in one of four directions.</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Either reads a flag containing alignment instructions (<i>FAlign</i>) or writes alignment instructions (<i>SetAlign</i>)</p>
+          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>)</p>
           <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right</p>
         </descr>
         <seealso/>
@@ -4684,7 +4702,7 @@ and that description should be read to understand their definitions more fully.
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
           <p>Determines how the control is to be anchored to its client or parent conrol</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <i>IsAnchorsStored</i>
+          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>
           </p>
         </descr>
         <seealso/>
@@ -4720,23 +4738,23 @@ and that description should be read to understand their definitions more fully.
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Columns">
-        <short>Refers to the physical columns of the grid, displaying the contents of the relevant <i>Fields</i>
+        <short>Refers to the physical columns of the grid, displaying the contents of the relevant <var>Fields</var>
         </short>
         <descr>
-          <p>Refers to the physical columns of the grid, displaying the contents of the relevant <i>Fields</i>
+          <p>Refers to the physical columns of the grid, displaying the contents of the relevant <var>Fields</var>
           </p>
-          <p>The <i>Columns</i> property is configurable from the Object Inspector by selecting the ellipsis (...) next to the property name, in which case a pop-up memo box appears to allow editing. It deals with things like the size, shape and format of the display, and contains a link to the appropriate Field. </p>
+          <p>The <var>Columns</var> property is configurable from the Object Inspector by selecting the ellipsis (...) next to the property name, in which case a pop-up memo box appears to allow editing. It deals with things like the size, shape and format of the display, and contains a link to the appropriate Field. </p>
           <p>Do no confuse Grid columns (in the display) with the SQL usage of COLUMNS, which corresponds to Fields in our environment. The Fields consist of a series of cells arranged in Records, which contain the actual data which are to be displayed and operated upon.</p>
-          <p>It is entirely possible that not all fields of the dataset are displayed, and so fields do not correspond directly to columns; in fact the <i>Columns</i> property allows the user to configure which data field is to be displayed in each column</p>
+          <p>It is entirely possible that not all fields of the dataset are displayed, and so fields do not correspond directly to columns; in fact the <var>Columns</var> property allows the user to configure which data field is to be displayed in each column</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Constraints">
-        <short>Determine <i>Constraints</i> (max and min height and width) for this control</short>
+        <short>Determine <var>Constraints</var> (max and min height and width) for this control</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Determine <i>Constraints</i> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
+          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
         </descr>
         <seealso/>
       </element>
@@ -4756,17 +4774,17 @@ and that description should be read to understand their definitions more fully.
       <element name="TdbGrid.DefaultRowHeight">
         <short>Default value for the height of newly created grid rows.</short>
         <descr>
-          <p>If new rows of the grid are created by changing the <link id="TCustomGrid.DefaultRowHeight.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <i>DefaultRowHeight</i>  property. </p>
+          <p>If new rows of the grid are created by changing the <link id="TCustomGrid.DefaultRowHeight.RowCount">RowCount</link> property, the height of these new rows will be set to the value of the <var>DefaultRowHeight</var>  property. </p>
           <p>After that the user may redefine this value. If the <link id="TCustomGrid.DefaultRowHeight.Options">Options</link> property includes the appropriate value, the row height may also be changed by the user at runtime.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.Enabled">
-        <short>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</short>
+        <short>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</short>
         <descr>
           <p>// standard properties, which should be supported by all descendants</p>
-          <p>Whether the control is <i>Enabled</i>. If not, it usually appears 'greyed-out'</p>
+          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'</p>
           <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
         </descr>
         <seealso/>
@@ -4799,14 +4817,14 @@ and that description should be read to understand their definitions more fully.
       <!-- property Visibility: published -->
       <element name="TdbGrid.ParentColor">
         <short>
-          <i>ParentColor</i> - should the control have the same colour as the parent? Default is true</short>
+          <var>ParentColor</var> - should the control have the same colour as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.ParentFont">
         <short>
-          <i>ParentFont </i>- should the control use the same font as the parent? Default is true</short>
+          <var>ParentFont </var>- should the control use the same font as the parent? Default is true</short>
         <descr/>
         <seealso/>
       </element>
@@ -4843,11 +4861,11 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TdbGrid.TabStop">
         <short>
-          <i>TabStop</i> - determines if the user can tab to a control.</short>
+          <var>TabStop</var> - determines if the user can tab to a control.</short>
         <descr>
           <p>Reads or writes boolean flag; default is False</p>
           <p>Use the TabStop to allow or disallow access to the control using the Tab key.</p>
-          <p>If <i>TabStop</i> is True, the control is in the tab order. If <i>TabStop</i> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
+          <p>If <var>TabStop</var> is True, the control is in the tab order. If <var>TabStop</var> is False, the control is not in the tab order and the user can't use the Tab key to move to the control.</p>
         </descr>
         <seealso/>
       </element>
@@ -4860,7 +4878,7 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TdbGrid.Visible">
         <short>
-          <i>Visible</i> - can the control be seen?</short>
+          <var>Visible</var> - can the control be seen?</short>
         <descr>
           <pre>The Visible property represents the ability to see a visual control. 
           If Visible is True the control is shown, otherwise it is hidden.
@@ -4917,26 +4935,26 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnEnter">
         <short>
-          <i>OnEnter</i> - event handler for when the mouse enters the control, and the control receives focus</short>
+          <var>OnEnter</var> - event handler for when the mouse enters the control, and the control receives focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnExit">
         <short>
-          <i>OnExit</i> - event handler for when the mouse leaves the control and it loses focus</short>
+          <var>OnExit</var> - event handler for when the mouse leaves the control and it loses focus</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnKeyDown">
         <short>
-          <i>OnKeyDown</i> - event handler for instance when key is down while control has focus</short>
+          <var>OnKeyDown</var> - event handler for instance when key is down while control has focus</short>
         <descr>
           <p>
-            <i>OnKeyDown</i>
+            <var>OnKeyDown</var>
  - event handler for instance when key is down while control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <i>OnKeyPress</i> the key needs to become pressed while the control has focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.</p>
         </descr>
         <seealso/>
       </element>
@@ -4945,19 +4963,19 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
         <short>OnKeyPress - event controller for a key being pressed while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyPress</i>
+            <var>OnKeyPress</var>
  - event controller for a key being pressed while the control has focus</p>
-          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <i>OnKeyDown</i>  the key may have already been down when the control received focus.</p>
+          <p>Differs from <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.</p>
         </descr>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TdbGrid.OnKeyUp">
         <short>
-          <i>OnKeyUp</i>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
+          <var>OnKeyUp</var>  - event handler for instance when a key is up (not pressed) while the control has focus</short>
         <descr>
           <p>
-            <i>OnKeyUp</i>
+            <var>OnKeyUp</var>
   - event handler for instance when a key is up (not pressed) while the control has focus</p>
           <p>The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.</p>
         </descr>
@@ -5074,14 +5092,14 @@ Reads flag or writes one to determine if a hint is to be shown when mouse hovers
       <!-- property Visibility: published -->
       <element name="TDBGrid.DragCursor">
         <short>
-          <i>DragCursor </i>- the style of cursor to be used during the Drag process</short>
+          <var>DragCursor </var>- the style of cursor to be used during the Drag process</short>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
       <element name="TDBGrid.DragMode">
         <short>
-          <i>DragMode </i>- whether manual or automatic</short>
+          <var>DragMode </var>- whether manual or automatic</short>
         <descr/>
         <seealso/>
       </element>
