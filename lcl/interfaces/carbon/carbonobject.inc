@@ -261,9 +261,9 @@ var
 const
   SName = 'OpenDocEventHandler';
 begin
-  //{$IFDEF VerboseAppEvent}
+  {$IFDEF VerboseAppEvent}
     DebugLn('CarbonApp_Open');
-  //{$ENDIF}
+  {$ENDIF}
   
   if OSError(AEGetParamDesc(AEvent, keyDirectObject, typeAEList, DocList),
     SName, 'AEGetParamDesc') then Exit;
@@ -308,6 +308,25 @@ begin
     end;
   finally
     AEDisposeDesc(DocList);
+  end;
+  
+  Result := noErr;
+end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonApp_Quit
+  Handles application quit
+ ------------------------------------------------------------------------------}
+function CarbonApp_Quit(var AEvent: AppleEvent; var Reply: AppleEvent;
+  Data: SInt32): OSErr; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseAppEvent}
+    DebugLn('CarbonApp_Quit');
+  {$ENDIF}
+
+  if (Application <> nil) and (Application.MainForm <> nil) then
+  begin
+    Application.MainForm.Close;
   end;
   
   Result := noErr;
@@ -529,7 +548,8 @@ destructor TCarbonWidgetSet.Destroy;
 begin
   FreeAndNil(FTimerMap);
   DisposeAEEventHandlerUPP(FOpenEventHandlerUPP);
-  
+  DisposeAEEventHandlerUPP(FQuitEventHandlerUPP);
+
   inherited Destroy;
   CarbonWidgetSet := nil;
 end;
@@ -850,11 +870,15 @@ begin
     1, @TmpSpec, nil, nil);
     
   FOpenEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Open));
+  FQuitEventHandlerUPP := NewAEEventHandlerUPP(AEEventHandlerProcPtr(@CarbonApp_Quit));
   OSError(
     AEInstallEventHandler(kCoreEventClass, kAEOpenDocuments, FOpenEventHandlerUPP, 0, False),
     Self, SName, 'AEInstallEventHandler');
   OSError(
     AEInstallEventHandler(kCoreEventClass, kAEOpenContents, FOpenEventHandlerUPP, 0, False),
+    Self, SName, 'AEInstallEventHandler');
+  OSError(
+    AEInstallEventHandler(kCoreEventClass, kAEQuitApplication, FQuitEventHandlerUPP, 0, False),
     Self, SName, 'AEInstallEventHandler');
 end;
 
