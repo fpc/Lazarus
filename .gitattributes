@@ -2434,6 +2434,11 @@ images/componenttreeview/oi_comp.png -text svneol=unset#image/png
 images/componenttreeview/oi_control.png -text svneol=unset#image/png
 images/componenttreeview/oi_form.png -text svneol=unset#image/png
 images/componenttreeview_list.txt svneol=native#text/plain
+images/debugger/callstack_bottom.png -text
+images/debugger/callstack_goto.png -text
+images/debugger/callstack_more.png -text
+images/debugger/callstack_show.png -text
+images/debugger/callstack_top.png -text
 images/debugger/debugger.png -text svneol=unset#image/png
 images/debugger/debugger_breakpoints.png -text svneol=unset#image/png
 images/debugger/debugger_call_stack.png -text svneol=unset#image/png

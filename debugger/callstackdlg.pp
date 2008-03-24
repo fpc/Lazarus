@@ -54,6 +54,7 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
+    ImageList1: TImageList;
     ToolButton10: TToolButton;
     ToolButton11: TToolButton;
     ToolButton3: TToolButton;
@@ -95,6 +96,7 @@ type
     FViewCount: Integer;
     FViewLimit: Integer;
     FViewStart: Integer;
+    procedure InitImageList;
     procedure SetViewLimit(const AValue: Integer);
     procedure SetViewStart(AStart: Integer);
     procedure SetViewMax;
@@ -122,7 +124,7 @@ type
 implementation
 
 uses
-  BaseDebugManager;
+  BaseDebugManager, LCLProc;
 
 { TCallStackDlg }
 
@@ -137,6 +139,7 @@ begin
   FViewCount := 10;
   FViewStart := 0;
   actViewLimit.Caption := popLimit10.Caption;
+  InitImageList;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
@@ -328,6 +331,38 @@ end;
 procedure TCallStackDlg.actShowClick(Sender: TObject);
 begin
   JumpToSource;
+end;
+
+procedure TCallStackDlg.InitImageList;
+
+  procedure AddResImg(ImgList: TImageList; const ResName: string);
+  var
+    Bitmap: TBitmap;
+    Resource: TLResource;
+  begin
+    Resource:=LazarusResources.Find(ResName);
+    if Resource=nil then
+      DebugLn('TCallStackDlg.InitImageList: ',
+        ' WARNING: icon not found: "',ResName,'"');
+    if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
+      Bitmap:=TPixmap.Create;
+    end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
+      Bitmap:=TPortableNetworkGraphic.Create;
+    end else
+      DebugLn('TCallStackDlg.InitImageList: ',
+        ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
+    Bitmap.LoadFromLazarusResource(ResName);
+    ImgList.Add(Bitmap, nil);
+    Bitmap.Free;
+  end;
+
+begin
+  AddResImg(Imagelist1,'callstack_show');
+  AddResImg(Imagelist1,'callstack_more');
+  AddResImg(Imagelist1,'callstack_top');
+  AddResImg(Imagelist1,'callstack_bottom');
+  AddResImg(Imagelist1,'callstack_goto');
+  AddResImg(Imagelist1,'copy');
 end;
 
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);

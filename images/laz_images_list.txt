@@ -134,6 +134,11 @@ designer/anchor_left_right.png
 designer/anchor_right.png
 designer/anchor_top.png
 designer/anchor_top_bottom.png
+debugger/callstack_bottom.png
+debugger/callstack_goto.png
+debugger/callstack_more.png
+debugger/callstack_show.png
+debugger/callstack_top.png
 debugger/debugger.png
 debugger/debugger_breakpoints.png
 debugger/debugger_call_stack.png
