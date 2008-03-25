@@ -64,6 +64,8 @@ const
   h2pdnElse     = 25+h2pdnBase;
   h2pdnEndIf    = 26+h2pdnBase;
 
+  h2pdnError    = 31+h2pdnBase;
+
 type
   TH2PNode = class;
 
@@ -93,6 +95,7 @@ type
     H2PNode: TH2PNode;
     Desc: TCodeTreeNodeDesc;// e.g. h2pdnDefine
     MacroName: string; // ifdef, ifndef, undef, define
+    MacroParams: string; // define
     Expression: string; // if, elseif, define
     function DescAsString(CTool: TCCodeParserTool = nil): string; override;
   end;
@@ -149,6 +152,7 @@ type
     FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
     FCNames: TAVLTree;// tree of TH2PNode sorted for CName
     FSourceName: string;
+    FCurDirectiveNode: TH2PDirectiveNode;
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -156,7 +160,6 @@ type
     procedure ConvertFuncParameter(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertDirective(CNode: TCodeTreeNode; ParentNode: TH2PNode);
-    procedure SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
     function ConvertCToPascalDirectiveExpression(const CCode: string;
            StartPos, EndPos: integer; out PasExpr: string;
            out ErrorPos: integer; out ErrorMsg: string): boolean;
@@ -164,7 +167,8 @@ type
     procedure WriteStr(const Line: string; s: TStream);
     procedure WriteLnStr(const Line: string; s: TStream);
   public
-    Tree: TH2PTree;
+    Tree: TH2PTree; // TH2PNode
+    DirectivesTree: TH2PTree; // TH2PDirectiveNode
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
@@ -189,14 +193,18 @@ type
                                        StartPos: integer = 1;
                                        EndPos: integer = -1): string;
     function FindH2PNodeWithPascalName(const PascalName: string): TH2PNode;
+    
+    function CreateH2PDirectiveNode(H2PNode: TH2PNode; Desc: TCodeTreeNodeDesc
+                                    ): TH2PDirectiveNode;
 
     procedure WriteDebugReport;
     procedure WriteH2PNodeReport;
+    procedure WriteH2PDirectivesNodeReport;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     property PredefinedCTypes: TFPStringHashTable read FPredefinedCTypes;
-    property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write SetIgnoreCParts;
+    property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write FIgnoreCParts;
     property SourceName: string read FSourceName write FSourceName;
   end;
   
@@ -345,6 +353,9 @@ begin
   h2pdnElseIf:  Result:='ElseIf';
   h2pdnElse:    Result:='Else';
   h2pdnEndIf:   Result:='EndIf';
+
+  h2pdnError:   Result:='Error';
+
   else          Result:='?('+IntToStr(Desc)+')';
   end;
 end;
@@ -616,6 +627,8 @@ var
   StartPos: LongInt;
   EndPos: LongInt;
   MacroName,MacroParamList,MacroValue: string;
+  DirNode: TH2PDirectiveNode;
+  Desc: TCodeTreeNodeDesc;
 begin
   Directive:=CTool.ExtractDirectiveAction(CNode);
   if Directive='include' then begin
@@ -631,6 +644,10 @@ begin
       H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                              MacroName,ParentNode,false);
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+      DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnDefine);
+      DirNode.MacroName:=MacroName;
+      DirNode.MacroParams:=MacroParamList;
+      DirNode.Expression:=MacroValue;
       exit;
     end;
   end else if (Directive='undef') or (Directive='ifdef')
@@ -642,6 +659,18 @@ begin
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            CurName,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    if (Directive='ifdef') then
+      Desc:=h2pdnIfDef
+    else if (Directive='ifndef') then
+      Desc:=h2pdnIfNDef
+    else
+      Desc:=h2pdnUndefine;
+    DirNode:=CreateH2PDirectiveNode(H2PNode,Desc);
+    DirNode.MacroName:=CurName;
+    if (Desc=h2pdnIfDef) or (Desc=h2pdnIfNDef) then begin
+      // start block
+      FCurDirectiveNode:=DirNode;
+    end;
     exit;
   end else if (Directive='if') or (Directive='elif') then begin
     // #if EXPRESSION
@@ -658,21 +687,41 @@ begin
       DebugLn(['TH2PasTool.ConvertDirective failed to convert expression at ',
         CTool.CleanPosToStr(ErrorPos)+': '+ErrorMsg]);
     end else begin
-      if Directive='if' then
-        CurName:='if'
-      else
-        CurName:='elseif';
-      H2PNode:=CreateH2PNode('$'+CurName,'#'+Directive,CNode,ctnNone,
+      H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                              PascalCode,ParentNode,false);
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+      if (Directive='if') then
+        Desc:=h2pdnIf
+      else begin
+        Desc:=h2pdnElseIf;
+        // end block
+        FCurDirectiveNode:=TH2PDirectiveNode(FCurDirectiveNode.Parent);
+      end;
+      DirNode:=CreateH2PDirectiveNode(H2PNode,Desc);
+      DirNode.Expression:=PascalCode;
+      // start block
+      FCurDirectiveNode:=DirNode;
       exit;
     end;
-  end else if (Directive='else') or (Directive='endif') then begin
+  end else if (Directive='else') then begin
     // #else
+    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+                           '',ParentNode,false);
+    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    // end block
+    FCurDirectiveNode:=TH2PDirectiveNode(FCurDirectiveNode.Parent);
+    DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnElse);
+    // start block
+    FCurDirectiveNode:=DirNode;
+    exit;
+  end else if (Directive='endif') then begin
     // #endif
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    // end block
+    FCurDirectiveNode:=TH2PDirectiveNode(FCurDirectiveNode.Parent);
+    DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnEndIf);
     exit;
   end else if Directive='line' then begin
     // #line: set the current line number -> ignore
@@ -684,6 +733,7 @@ begin
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString(CTool)]);
+    DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnError);
     exit;
   end else if Directive='pragma' then begin
     // #pragma: implementation specifics
@@ -693,12 +743,6 @@ begin
     exit;
   end;
   DebugLn(['TH2PasTool.ConvertDirective SKIPPING directive at ',CTool.CleanPosToStr(CNode.StartPos),' Code="',dbgstr(CTool.ExtractCode(CNode.StartPos,CNode.EndPos)),'"']);
-end;
-
-procedure TH2PasTool.SetIgnoreCParts(const AValue: TIgnoreCSourceParts);
-begin
-  if FIgnoreCParts=AValue then exit;
-  FIgnoreCParts:=AValue;
 end;
 
 function TH2PasTool.ConvertCToPascalDirectiveExpression(const CCode: string;
@@ -906,6 +950,10 @@ begin
     Tree.Clear;
     if StartNode=nil then
       StartNode:=CTool.Tree.Root;
+    DirectivesTree.Clear;
+    FCurDirectiveNode:=TH2PDirectiveNode.Create;
+    FCurDirectiveNode.Desc:=h2pdnRoot;
+    DirectivesTree.AddNodeAsLastChild(nil,FCurDirectiveNode);
   end;
   CNode:=StartNode;
   while CNode<>nil do begin
@@ -1569,12 +1617,23 @@ begin
     Result:=nil;
 end;
 
+function TH2PasTool.CreateH2PDirectiveNode(H2PNode: TH2PNode;
+  Desc: TCodeTreeNodeDesc): TH2PDirectiveNode;
+begin
+  Result:=TH2PDirectiveNode.Create;
+  Result.Desc:=Desc;
+  H2PNode.Directive:=Result;
+  DirectivesTree.AddNodeAsLastChild(FCurDirectiveNode,Result);
+  //DebugLn(['TH2PasTool.CreateH2PDirectiveNode Added ',Result.DescAsString,' ',FCurDirectiveNode.FirstChild<>nil]);
+end;
+
 procedure TH2PasTool.WriteDebugReport;
 begin
   DebugLn(['TH2PasTool.WriteDebugReport ']);
   if CTool<>nil then
     CTool.WriteDebugReport;
   WriteH2PNodeReport;
+  WriteH2PDirectivesNodeReport;
 end;
 
 procedure TH2PasTool.WriteH2PNodeReport;
@@ -1594,10 +1653,28 @@ begin
   end;
 end;
 
+procedure TH2PasTool.WriteH2PDirectivesNodeReport;
+var
+  Node: TH2PBaseNode;
+begin
+  if (DirectivesTree=nil) then begin
+    DebugLn(['TH2PasTool.WriteH2PDirectivesNodeReport Tree=nil']);
+  end else if (DirectivesTree.Root=nil) then begin
+    DebugLn(['TH2PasTool.WriteH2PDirectivesNodeReport Tree.Root=nil']);
+  end else begin
+    Node:=DirectivesTree.Root;
+    while Node<>nil do begin
+      DebugLn([GetIndentStr(Node.GetLevel*2),Node.DescAsString(CTool)]);
+      Node:=Node.Next;
+    end;
+  end;
+end;
+
 constructor TH2PasTool.Create;
 begin
   FPredefinedCTypes:=DefaultPredefinedCTypes;
   Tree:=TH2PTree.Create;
+  DirectivesTree:=TH2PTree.Create;
   FPascalNames:=TAVLTree.Create(@CompareH2PNodePascalNames);
   FCNames:=TAVLTree.Create(@CompareH2PNodeCNames);
   FIgnoreCParts:=[icspInclude];
@@ -1607,6 +1684,7 @@ destructor TH2PasTool.Destroy;
 begin
   FPredefinedCTypes:=nil;
   Clear;
+  FreeAndNil(DirectivesTree);
   FreeAndNil(Tree);
   FreeAndNil(FPascalNames);
   FreeAndNil(FCNames);
@@ -1619,6 +1697,7 @@ begin
   FPascalNames.Clear;
   FCNames.Clear;
   Tree.Clear;
+  DirectivesTree.Clear;
 end;
 
 { TH2PNode }

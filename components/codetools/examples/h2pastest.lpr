@@ -65,7 +65,8 @@ begin
     Tool.SourceName:=ExtractFileNameOnly(PasCode.Filename);
     Tool.Convert(CCode,PasCode);
     //Tool.WriteDebugReport;
-    Tool.WriteH2PNodeReport;
+    //Tool.WriteH2PNodeReport;
+    Tool.WriteH2PDirectivesNodeReport;
     writeln;
     writeln('=============================================');
     writeln(PasCode.Source);
