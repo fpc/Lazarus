@@ -524,7 +524,7 @@ begin
         H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedureType,SimpleType,
                                nil,true);
         DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString(CTool)]);
-        // build recursively
+        // build the param list
         if ChildNode.FirstChild<>nil then
           BuildH2PTree(H2PNode,ChildNode.FirstChild);
       end else begin
@@ -1012,10 +1012,14 @@ begin
           DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
       end;
       
-    ctnProcedure:
+    ctnProcedure, ctnProcedureType:
       begin
-        // global procedure
-        SetSection(ctnNone);
+        // global procedure or procedure type
+        if H2PNode.PascalDesc=ctnProcedure then
+          SetSection(ctnNone)
+        else
+          SetSection(ctnTypeSection);
+        // create param list
         PascalCode:='';
         ChildNode:=H2PNode.FirstChild;
         NoNameCount:=0;
@@ -1037,17 +1041,26 @@ begin
         end;
         if PascalCode<>'' then
           PascalCode:='('+PascalCode+')';
-        PascalCode:=H2PNode.PascalName+PascalCode;
-        if H2PNode.PascalCode='void' then
-          PascalCode:='procedure '+PascalCode
-        else
-          PascalCode:='function '+PascalCode+': '+H2PNode.PascalCode;
-        PascalCode:=PascalCode+'; cdecl;';
-        if H2PNode.CName<>'' then begin
-          if H2PNode.CName<>H2PNode.PascalName then
-            PascalCode:=PascalCode+' external name '''+H2PNode.CName+''';'
+        if H2PNode.PascalDesc=ctnProcedure then begin
+          PascalCode:=H2PNode.PascalName+PascalCode;
+          if H2PNode.PascalCode='void' then
+            PascalCode:='procedure '+PascalCode
           else
-            PascalCode:=PascalCode+' external;';
+            PascalCode:='function '+PascalCode+': '+H2PNode.PascalCode;
+          PascalCode:=PascalCode+'; cdecl;';
+          if H2PNode.CName<>'' then begin
+            if H2PNode.CName<>H2PNode.PascalName then
+              PascalCode:=PascalCode+' external name '''+H2PNode.CName+''';'
+            else
+              PascalCode:=PascalCode+' external;';
+          end;
+        end else begin
+          if H2PNode.PascalCode='void' then
+            PascalCode:='procedure'+PascalCode
+          else
+            PascalCode:='function'+PascalCode+': '+H2PNode.PascalCode;
+          PascalCode:=PascalCode+'; cdecl;';
+          PascalCode:=H2PNode.PascalName+' = '+PascalCode;
         end;
         W(PascalCode);
       end;
