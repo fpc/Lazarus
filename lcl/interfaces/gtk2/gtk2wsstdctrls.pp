@@ -1769,14 +1769,12 @@ var
   Adjustment: PGtkAdjustment;
   Range: PGtkRange;
 begin
-  with AScrollBar do
-  begin
-    Range := GTK_RANGE(Pointer(Handle));
-    //set properties for the range
-    gtk_range_set_range     (Range, Min, Max);
-    gtk_range_set_increments(Range, SmallChange, LargeChange);
-    gtk_range_set_value     (Range, Position);
-  end;
+  Range := GTK_RANGE(Pointer(AScrollBar.Handle));
+  //set properties for the range
+  // Note: gtk only allows: Min < Max
+  gtk_range_set_range     (Range, AScrollBar.Min, Max(AScrollBar.Min+1,AScrollBar.Max));
+  gtk_range_set_increments(Range, AScrollBar.SmallChange, AScrollBar.LargeChange);
+  gtk_range_set_value     (Range, AScrollBar.Position);
 end;
 
 initialization
