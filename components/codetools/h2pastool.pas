@@ -1276,8 +1276,65 @@ begin
       if H2PNode.Directive<>nil then begin
         DirNode:=H2PNode.Directive;
         case DirNode.Desc of
+        h2pdnIfDef:
+          begin
+            SetSection(ctnNone);
+            W('{$IfDef '+DirNode.MacroName+'}');
+            IncIndent;
+          end;
+        h2pdnIfNDef:
+          begin
+            SetSection(ctnNone);
+            W('{$IfNDef '+DirNode.MacroName+'}');
+            IncIndent;
+          end;
+        h2pdnIf:
+          begin
+            SetSection(ctnNone);
+            W('{$If '+DirNode.Expression+'}');
+            IncIndent;
+          end;
+        h2pdnElseIf:
+          begin
+            SetSection(ctnNone);
+            DecIndent;
+            W('{$ElseIf '+DirNode.Expression+'}');
+            IncIndent;
+          end;
+        h2pdnElse:
+          begin
+            SetSection(ctnNone);
+            DecIndent;
+            W('{$Else}');
+            IncIndent;
+          end;
+        h2pdnEndIf:
+          begin
+            SetSection(ctnNone);
+            DecIndent;
+            W('{$EndIf}');
+          end;
         h2pdnError:
-          W('{$ERROR '+dbgstr(DirNode.Expression)+'}');
+          begin
+            SetSection(ctnNone);
+            W('{$Error '+dbgstr(DirNode.Expression)+'}');
+          end;
+        h2pdnUndefine:
+          begin
+            SetSection(ctnNone);
+            W('{$UnDef '+DirNode.MacroName+'}');
+          end;
+        h2pdnDefine:
+          if (DirNode.MacroParams='') then begin
+            SetSection(ctnNone);
+            if DirNode.Expression='' then begin
+              W('{$Define '+DirNode.MacroName+'}');
+            end else begin
+              W('{$Define '+DirNode.MacroName+':='+dbgstr(DirNode.Expression)+'}');
+            end;
+          end else begin
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',DirNode.DescAsString(CTool)]);
+          end;
         else
           DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',DirNode.DescAsString(CTool)]);
         end;
