@@ -1006,7 +1006,7 @@ begin
         SetSection(ctnTypeSection);
         if H2PNode.FirstChild=nil then begin
           PascalCode:=H2PNode.PascalCode+';';
-          W(H2PNode.PascalName+': '+PascalCode);
+          W(H2PNode.PascalName+' = '+PascalCode);
         end else
           DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
       end;
@@ -1053,12 +1053,18 @@ begin
       
     ctnEnumerationType:
       begin
+        { for example:
+            e2 = (
+              a = 3,
+              b = 9
+            );
+        }
         SetSection(ctnTypeSection);
         // write start
         PascalCode:=H2PNode.PascalName+' = (';
         W(PascalCode);
-        IncIndent;
         // write enums
+        IncIndent;
         ChildNode:=H2PNode.FirstChild;
         while ChildNode<>nil do begin
           PascalCode:=ChildNode.PascalName;
@@ -1072,6 +1078,32 @@ begin
         DecIndent;
         // write end
         W(');');
+      end;
+      
+    ctnRecordType:
+      begin
+        { examples:
+           TRecord = record
+           end;
+        }
+        SetSection(ctnTypeSection);
+        // write header
+        PascalCode:=H2PNode.PascalName+' = record';
+        W(PascalCode);
+        // write sub variables
+        IncIndent;
+        ChildNode:=H2PNode.FirstChild;
+        while ChildNode<>nil do begin
+          if ChildNode.PascalDesc=ctnVarDefinition then
+            PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';'
+          else
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString]);
+          W(PascalCode);
+          ChildNode:=ChildNode.NextBrother;
+        end;
+        DecIndent;
+        // write end
+        W('end;');
       end;
       
     else
