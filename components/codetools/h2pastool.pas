@@ -66,9 +66,10 @@ type
     function HasAsParent(Node: TH2PNode): boolean;
     function HasAsChild(Node: TH2PNode): boolean;
     function GetLevel: integer;
-    function DescAsString: string;
+    function DescAsString(CTool: TCCodeParserTool = nil): string;
     procedure ConsistencyCheck;
-    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean);
+    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean;
+                               CTool: TCCodeParserTool = nil);
   end;
   
   { TH2PTree }
@@ -329,7 +330,7 @@ begin
       // create a record type
       TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
                                  nil,true);
-      DebugLn(['TH2PasTool.BuildH2PTree added record type for union: ',TypeH2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.BuildH2PTree added record type for union: ',TypeH2PNode.DescAsString(CTool)]);
       // build recursively
       if CNode.FirstChild.FirstChild<>nil then
         BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
@@ -338,7 +339,7 @@ begin
       H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,
                              TypeH2PNode.PascalName,
                              nil,ParentNode=nil);
-      DebugLn(['TH2PasTool.BuildH2PTree added variable for union: ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.BuildH2PTree added variable for union: ',H2PNode.DescAsString(CTool)]);
     end else begin
       DebugLn(['TH2PasTool.BuildH2PTree SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
     end;
@@ -355,7 +356,7 @@ begin
     if SimpleType<>'' then begin
       H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
                              ParentNode,ParentNode=nil);
-      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString(CTool)]);
     end else begin
       DebugLn(['TH2PasTool.BuildH2PTree SKIPPING Variable Name="',CurName,'" Type="',CurType,'"']);
     end;
@@ -381,7 +382,7 @@ begin
     TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumerationType,'',
                                nil,ParentNode=nil);
   end;
-  DebugLn(['TH2PasTool.BuildH2PTree added: ',TypeH2PNode.DescAsString]);
+  DebugLn(['TH2PasTool.BuildH2PTree added: ',TypeH2PNode.DescAsString(CTool)]);
 
   CNode:=CNode.FirstChild;
   while CNode<>nil do begin
@@ -390,7 +391,7 @@ begin
       CurValue:=CTool.ExtractEnumIDValue(CNode);
       H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnEnumIdentifier,CurValue,
                              TypeH2PNode,ParentNode=nil);
-      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString(CTool)]);
     end;
     CNode:=CNode.NextBrother;
   end;
@@ -433,7 +434,7 @@ begin
   if Ok then begin
     H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
                            nil,false);
-    DebugLn(['TH2PasTool.BuildH2PTree function added: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.BuildH2PTree function added: ',H2PNode.DescAsString(CTool)]);
     // build recursively
     BuildH2PTree(H2PNode);
   end else begin
@@ -463,7 +464,7 @@ begin
   if SimpleType<>'' then begin
     H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SimpleType,
                            ParentNode,false);
-    DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.BuildH2PTree added: ',H2PNode.DescAsString(CTool)]);
   end else begin
     DebugLn(['TH2PasTool.BuildH2PTree SKIPPING parameter Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
   end;
@@ -500,7 +501,7 @@ begin
       end else begin
         // this is a new struct
         TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'');
-        DebugLn(['TH2PasTool.BuildH2PTree added record: ',TypeH2PNode.DescAsString]);
+        DebugLn(['TH2PasTool.BuildH2PTree added record: ',TypeH2PNode.DescAsString(CTool)]);
         // build recursively
         if ChildNode<>nil then
           BuildH2PTree(TypeH2PNode,ChildNode);
@@ -522,7 +523,7 @@ begin
       if IsPointerToFunction and (SimpleType<>'') then begin
         H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedureType,SimpleType,
                                nil,true);
-        DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString]);
+        DebugLn(['TH2PasTool.BuildH2PTree function type added: ',H2PNode.DescAsString(CTool)]);
         // build recursively
         if ChildNode.FirstChild<>nil then
           BuildH2PTree(H2PNode,ChildNode.FirstChild);
@@ -563,7 +564,7 @@ begin
     then begin
       H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                              MacroName,ParentNode,false);
-      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
       exit;
     end;
   end else if (Directive='undef') or (Directive='ifdef')
@@ -574,7 +575,7 @@ begin
     CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            CurName,ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
     exit;
   end else if (Directive='if') or (Directive='elif') then begin
     // #if EXPRESSION
@@ -597,7 +598,7 @@ begin
         CurName:='elseif';
       H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                              PascalCode,ParentNode,false);
-      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
       exit;
     end;
   end else if (Directive='else') or (Directive='endif') then begin
@@ -605,7 +606,7 @@ begin
     // #endif
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
     exit;
   end else if Directive='line' then begin
     // #line: set the current line number -> ignore
@@ -616,7 +617,7 @@ begin
                                   CNode.EndPos);
     H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
-    DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString]);
+    DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString(CTool)]);
     exit;
   end else if Directive='pragma' then begin
     // #pragma: implementation specifics
@@ -831,7 +832,7 @@ var
   CNode: TCodeTreeNode;
   NextCNode: TCodeTreeNode;
 begin
-  //DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString]);
+  //DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString(CTool)]);
   if ParentNode<>nil then begin
     if StartNode=nil then
       StartNode:=ParentNode.CNode.FirstChild;
@@ -842,7 +843,7 @@ begin
   end;
   CNode:=StartNode;
   while CNode<>nil do begin
-    //DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString,' CNode=',CCNodeDescAsString(CNode.Desc)]);
+    //DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)]);
     NextCNode:=CNode.NextSkipChilds;
     case CNode.Desc of
     ccnRoot, ccnExtern:
@@ -1008,7 +1009,7 @@ begin
           PascalCode:=H2PNode.PascalCode+';';
           W(H2PNode.PascalName+' = '+PascalCode);
         end else
-          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
+          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
       end;
       
     ctnProcedure:
@@ -1030,7 +1031,7 @@ begin
             end;
             PascalCode:=PascalCode+CurName+': '+ChildNode.PascalCode;
           end else begin
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString]);
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString(CTool)]);
           end;
           ChildNode:=ChildNode.NextBrother;
         end;
@@ -1097,7 +1098,7 @@ begin
           if ChildNode.PascalDesc=ctnVarDefinition then
             PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';'
           else
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString]);
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString(CTool)]);
           W(PascalCode);
           ChildNode:=ChildNode.NextBrother;
         end;
@@ -1107,7 +1108,7 @@ begin
       end;
       
     else
-      DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
+      DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
     end;
     H2PNode:=H2PNode.NextBrother;
   end;
@@ -1323,7 +1324,7 @@ begin
           NewBasePascalType:='P'+BasePascalType;
           SubH2PNode:=CreateAutoGeneratedH2PNode(NewBasePascalType,nil,
                                     ctnTypeDefinition,'^'+BasePascalType);
-          DebugLn(['TH2PasTool.GetH2PNodeForComplexType added new pointer type: ',SubH2PNode.DescAsString]);
+          DebugLn(['TH2PasTool.GetH2PNodeForComplexType added new pointer type: ',SubH2PNode.DescAsString(CTool)]);
           NewBasePascalType:=SubH2PNode.PascalName;
         end;
         BasePascalType:=NewBasePascalType;
@@ -1480,7 +1481,7 @@ begin
   end else begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      DebugLn([GetIndentStr(Node.GetLevel*2),Node.DescAsString]);
+      DebugLn([GetIndentStr(Node.GetLevel*2),Node.DescAsString(CTool)]);
       Node:=Node.Next;
     end;
   end;
@@ -1578,7 +1579,7 @@ begin
   end;
 end;
 
-function TH2PNode.DescAsString: string;
+function TH2PNode.DescAsString(CTool: TCCodeParserTool): string;
 begin
   if Self=nil then begin
     Result:='nil';
@@ -1590,6 +1591,8 @@ begin
   Result:=Result+',PascalDesc="'+NodeDescriptionAsString(PascalDesc)+'"';
   if CNode<>nil then begin
     Result:=Result+',CNode='+CCNodeDescAsString(CNode.Desc);
+    if CTool<>nil then
+      Result:=Result+'('+CTool.CleanPosToStr(CNode.StartPos)+')';
   end else begin
     Result:=Result+', CNode=nil';
   end;
@@ -1615,15 +1618,16 @@ begin
     NextBrother.ConsistencyCheck;
 end;
 
-procedure TH2PNode.WriteDebugReport(const Prefix: string; WithChilds: boolean);
+procedure TH2PNode.WriteDebugReport(const Prefix: string; WithChilds: boolean;
+  CTool: TCCodeParserTool);
 var
   Node: TH2PNode;
 begin
-  DebugLn([Prefix,DescAsString]);
+  DebugLn([Prefix,DescAsString(CTool)]);
   if WithChilds then begin
     Node:=FirstChild;
     while Node<>nil do begin
-      Node.WriteDebugReport(Prefix+'  ',true);
+      Node.WriteDebugReport(Prefix+'  ',true,CTool);
       Node:=Node.NextBrother;
     end;
   end;
