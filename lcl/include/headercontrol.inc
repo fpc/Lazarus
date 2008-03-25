@@ -453,7 +453,7 @@ begin
   end;
 end;
 
-procedure THeaderSection.CheckConstraints; inline;
+procedure THeaderSection.CheckConstraints;
 begin
   if FWidth < FMinWidth then
     FWidth := FMinWidth;

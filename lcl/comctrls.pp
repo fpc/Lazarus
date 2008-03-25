@@ -2544,7 +2544,7 @@ type
     procedure SetText(const Value: string);
     procedure SetWidth(Value: Integer);
     procedure SetImageIndex(const Value: TImageIndex);
-    procedure CheckConstraints; inline;
+    procedure CheckConstraints;
   public
     constructor Create(ACollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
