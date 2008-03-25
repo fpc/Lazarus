@@ -43,9 +43,10 @@ unit H2PasTool;
 interface
 
 uses
-  Classes, SysUtils, contnrs, AVL_Tree,
-  FileProcs, BasicCodeTools, CCodeParserTool, NonPascalCodeTools,
-  KeywordFuncLists, CodeCache, CodeTree, CodeAtom;
+  Classes, SysUtils, CodeToolsStructs, AVL_Tree,
+  FileProcs, DirectivesTree, BasicCodeTools, CCodeParserTool,
+  NonPascalCodeTools, KeywordFuncLists, CodeCache,
+  CodeTree, CodeAtom;
   
 const
   DefaultMaxPascalIdentLen = 70;
@@ -67,9 +68,6 @@ const
   h2pdnError    = 31+h2pdnBase;
 
 type
-  TH2PNode = class;
-
-
   { TH2PBaseNode }
 
   TH2PBaseNode = class
@@ -87,6 +85,7 @@ type
                                CTool: TCCodeParserTool = nil); virtual;
   end;
 
+  TH2PNode = class;
 
   { TH2PDirectiveNode }
 
@@ -136,23 +135,42 @@ type
     procedure WriteDebugReport(WithChilds: boolean);
   end;
   
-  
+
+  TH2PMacroStatus = (
+    hmsUnknown,   // never seen
+    hmsDefined,   // set to a specific value e.g. by $Define or by $IfDef
+    hmsUndefined, // undefined e.g. by $Undef
+    hmsComplex    // value depends on complex expressions. e.g. {$if A or B}.
+    );
+
+  TH2PMacroStats = class
+  public
+    Name: string;
+    Value: string;
+    Status: TH2PMacroStatus;
+  end;
+
+
   TIgnoreCSourcePart = (
     icspInclude
     );
   TIgnoreCSourceParts = set of TIgnoreCSourcePart;
-  
-  
+
   { TH2PasTool }
 
   TH2PasTool = class
   private
+    FDefines: TStringToStringTree;
+    FDisableUnusedDefines: boolean;
     FIgnoreCParts: TIgnoreCSourceParts;
-    FPredefinedCTypes: TFPStringHashTable;
+    FPredefinedCTypes: TStringToStringTree;
     FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
     FCNames: TAVLTree;// tree of TH2PNode sorted for CName
+    FRemoveDisabledDirectives: boolean;
+    FSimplifyExpressions: boolean;
     FSourceName: string;
     FCurDirectiveNode: TH2PDirectiveNode;
+    FUndefines: TStringToStringTree;
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -170,6 +188,7 @@ type
     Tree: TH2PTree; // TH2PNode
     DirectivesTree: TH2PTree; // TH2PDirectiveNode
     CTool: TCCodeParserTool;
+    Macros: TAVLTree;// tree of TH2PMacroStats
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
     procedure SimplifyDirectives;
@@ -204,17 +223,37 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    property PredefinedCTypes: TFPStringHashTable read FPredefinedCTypes;
+    property PredefinedCTypes: TStringToStringTree read FPredefinedCTypes;
     property IgnoreCParts: TIgnoreCSourceParts read FIgnoreCParts write FIgnoreCParts;
     property SourceName: string read FSourceName write FSourceName;
+
+    // directives
+    property SimplifyExpressions: boolean read FSimplifyExpressions
+                                          write FSimplifyExpressions;
+    property DisableUnusedDefines: boolean read FDisableUnusedDefines
+                                           write FDisableUnusedDefines;
+    property RemoveDisabledDirectives: boolean read FRemoveDisabledDirectives
+                                               write FRemoveDisabledDirectives;
+    property Defines: TStringToStringTree read FDefines;
+    property Undefines: TStringToStringTree read FUndefines;// undefines take precedence over defines
+
+    procedure ResetMacros;
+    procedure ClearMacros;
+    procedure InitMacros;
+    function FindMacro(const MacroName: string;
+                       CreateIfNotExists: boolean = false): TH2PMacroStats;
+    function DefineMacro(const MacroName, AValue: string): TH2PMacroStats;
+    function UndefineMacro(const MacroName: string): TH2PMacroStats;
   end;
   
   
-function DefaultPredefinedCTypes: TFPStringHashTable;// types in unit ctypes
+function DefaultPredefinedCTypes: TStringToStringTree;// types in unit ctypes
 
 function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
 function CompareStringWithH2PNodePascalName(AString, ANode: Pointer): integer;
 function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
+function CompareH2PMacroStats(Data1, Data2: Pointer): integer;
+function ComparePCharWithH2PMacroStats(Name, MacroStats: Pointer): integer;
 
 function H2PDirectiveNodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
 
@@ -223,12 +262,12 @@ implementation
 
 
 var
-  InternalPredefinedCTypes: TFPStringHashTable = nil;// types in unit ctypes
+  InternalPredefinedCTypes: TStringToStringTree = nil;// types in unit ctypes
 
-function DefaultPredefinedCTypes: TFPStringHashTable;
+function DefaultPredefinedCTypes: TStringToStringTree;
 begin
   if InternalPredefinedCTypes=nil then begin
-    InternalPredefinedCTypes:=TFPStringHashTable.Create;
+    InternalPredefinedCTypes:=TStringToStringTree.Create(true);
     with InternalPredefinedCTypes do begin
       // int
       Add('int','cint');
@@ -337,6 +376,18 @@ function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareIdentifiersCaseSensitive(PChar(Pointer(TH2PNode(Data1).CName)),
                                           PChar(Pointer(TH2PNode(Data2).CName)));
+end;
+
+function CompareH2PMacroStats(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Pointer(TH2PMacroStats(Data1).Name),
+                                Pointer(TH2PMacroStats(Data2).Name));
+end;
+
+function ComparePCharWithH2PMacroStats(Name, MacroStats: Pointer): integer;
+begin
+  Result:=CompareIdentifierPtrs(Name,
+                                Pointer(TH2PMacroStats(MacroStats).Name));
 end;
 
 function H2PDirectiveNodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
@@ -1003,8 +1054,40 @@ begin
 end;
 
 procedure TH2PasTool.SimplifyDirectives;
-begin
+(*  Check and improve the following cases
+  1.a  {$DEFINE Name} and Name is never used afterwards -> disable
 
+  1.b  {$DEFINE Name}
+       ... Name is not used here ...
+       {$DEFINE Name}
+       -> disable first
+
+  2.  {$IFDEF Name}... only comments and spaces ...{$ENDIF}
+      -> disable the whole block
+
+  3.  {$IFNDEF Name}
+        ... only comments and spaces ...
+        {$DEFINE Name}
+        ... only comments and spaces ...
+      {$ENDIF}
+      -> disable the IFNDEF and the ENDIF and keep the DEFINE
+*)
+var
+  Node: TH2PDirectiveNode;
+  NextNode: TH2PDirectiveNode;
+begin
+  InitMacros;
+  Node:=TH2PDirectiveNode(DirectivesTree.Root);
+  while Node<>nil do begin
+    NextNode:=TH2PDirectiveNode(Node.Next);
+    case Node.Desc of
+    h2pdnIfDef, h2pdnIfNDef:
+      begin
+
+      end;
+    end;
+    Node:=NextNode;
+  end;
 end;
 
 procedure TH2PasTool.WritePascal(PascalCode: TCodeBuffer);
@@ -1757,6 +1840,8 @@ begin
   FPascalNames:=TAVLTree.Create(@CompareH2PNodePascalNames);
   FCNames:=TAVLTree.Create(@CompareH2PNodeCNames);
   FIgnoreCParts:=[icspInclude];
+  FDefines:=TStringToStringTree.Create(true);
+  FUndefines:=TStringToStringTree.Create(true);
 end;
 
 destructor TH2PasTool.Destroy;
@@ -1768,6 +1853,8 @@ begin
   FreeAndNil(FPascalNames);
   FreeAndNil(FCNames);
   FreeAndNil(CTool);
+  FreeAndNil(FDefines);
+  FreeAndNil(FUndefines);
   inherited Destroy;
 end;
 
@@ -1777,6 +1864,91 @@ begin
   FCNames.Clear;
   Tree.Clear;
   DirectivesTree.Clear;
+  ClearMacros;
+  FDefines.Clear;
+  FUndefines.Clear;
+end;
+
+procedure TH2PasTool.ResetMacros;
+begin
+  if Macros<>nil then
+    Macros.FreeAndClear
+  else
+    Macros:=TAVLTree.Create(@CompareH2PMacroStats);
+end;
+
+procedure TH2PasTool.ClearMacros;
+begin
+  if Macros<>nil then begin
+    Macros.FreeAndClear;
+    FreeAndNil(Macros);
+  end;
+end;
+
+procedure TH2PasTool.InitMacros;
+var
+  List: TStringList;
+  i: Integer;
+  CurName: string;
+  CurValue: string;
+begin
+  ResetMacros;
+  if FDefines<>nil then begin
+    List:=TStringList.Create;
+    FDefines.GetNames(List);
+    for i:=0 to List.Count-1 do begin
+      CurName:=List[i];
+      CurValue:=FDefines[CurName];
+      DefineMacro(CurName,CurValue);
+    end;
+    List.Free;
+  end;
+  if FUndefines<>nil then begin
+    List:=TStringList.Create;
+    FUndefines.GetNames(List);
+    for i:=0 to List.Count-1 do begin
+      CurName:=List[i];
+      UndefineMacro(CurName);
+    end;
+    List.Free;
+  end;
+end;
+
+function TH2PasTool.FindMacro(const MacroName: string;
+  CreateIfNotExists: boolean): TH2PMacroStats;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  Result:=nil;
+  if Macros=nil then begin
+    if not CreateIfNotExists then
+      exit;
+    Macros:=TAVLTree.Create(@CompareH2PMacroStats);
+  end;
+  AVLNode:=Macros.FindKey(Pointer(MacroName),
+                          @ComparePCharWithH2PMacroStats);
+  if AVLNode<>nil then
+    Result:=TH2PMacroStats(AVLNode.Data)
+  else if CreateIfNotExists then begin
+    Result:=TH2PMacroStats.Create;
+    Result.Name:=MacroName;
+    Result.Status:=hmsUnknown;
+    Macros.Add(Result);
+  end;
+end;
+
+function TH2PasTool.DefineMacro(const MacroName, AValue: string): TH2PMacroStats;
+begin
+  Result:=FindMacro(MacroName,true);
+  Result.Value:=AValue;
+  Result.Status:=hmsDefined;
+end;
+
+function TH2PasTool.UndefineMacro(const MacroName: string): TH2PMacroStats;
+begin
+  Result:=FindMacro(MacroName,true);
+  Result.Value:='';
+  Result.Status:=hmsUndefined;
 end;
 
 { TH2PNode }

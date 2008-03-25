@@ -112,6 +112,8 @@ type
     procedure Clear;
     function Contains(const s: string): boolean;
     function GetString(const Name: string; out Value: string): boolean;
+    procedure Add(const Name, Value: string);
+    procedure GetNames(List: TStrings);
     procedure Remove(const Name: string);
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     property CaseSensitive: boolean read FCaseSensitive;
@@ -384,6 +386,24 @@ begin
     Result:=true;
   end else begin
     Result:=false;
+  end;
+end;
+
+procedure TStringToStringTree.Add(const Name, Value: string);
+begin
+  Strings[Name]:=Value;
+end;
+
+procedure TStringToStringTree.GetNames(List: TStrings);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToStringTreeItem;
+begin
+  Node:=Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToStringTreeItem(Node.Data);
+    List.Add(Item^.Name);
+    Node:=Tree.FindSuccessor(Node);
   end;
 end;
 

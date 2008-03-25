@@ -99,6 +99,39 @@ type
     constructor Create(ASender: TCompilerDirectivesTree; const AMessage: string);
   end;
 
+  TCompilerMacroStatus = (
+    cmsUnknown,   // never seen
+    cmsDefined,   // set to a specific value e.g. by $Define or by $IfDef
+    cmsUndefined, // undefined e.g. by $Undef
+    cmsComplex    // value depends on complex expressions. e.g. {$if A or B}.
+    );
+
+  TCompilerMacroStats = class
+  public
+    Name: string;
+    Value: string;
+    Status: TCompilerMacroStatus;
+    LastDefineNode: TCodeTreeNode;// define or undef node
+    LastReadNode: TCodeTreeNode;// if node
+  end;
+
+  { TH2PasFunction }
+
+  TH2PasFunction = class
+  public
+    Name: string;
+    HeaderStart: integer;
+    HeaderEnd: integer;
+    BeginStart: integer;
+    BeginEnd: integer;
+    IsForward: boolean;
+    IsExternal: boolean;
+    InInterface: boolean;
+    DefNode: TH2PasFunction;// the corresponding node
+    function NeedsBody: boolean;
+    procedure AdjustPositionsAfterInsert(FromPos, ToPos, DiffPos: integer);
+  end;
+
   { TCompilerDirectivesTree }
 
   TCompilerDirectivesTree = class
@@ -233,39 +266,6 @@ type
     property ChangeStep: integer read FChangeStep;
   end;
 
-  TCompilerMacroStatus = (
-    cmsUnknown,   // never seen
-    cmsDefined,   // set to a specific value e.g. by $Define or by $IfDef
-    cmsUndefined, // undefined e.g. by $Undef
-    cmsComplex    // value depends on complex expressions. e.g. {$if A or B}.
-    );
-
-  TCompilerMacroStats = class
-  public
-    Name: string;
-    Value: string;
-    Status: TCompilerMacroStatus;
-    LastDefineNode: TCodeTreeNode;// define or undef node
-    LastReadNode: TCodeTreeNode;// if node
-  end;
-  
-  { TH2PasFunction }
-
-  TH2PasFunction = class
-  public
-    Name: string;
-    HeaderStart: integer;
-    HeaderEnd: integer;
-    BeginStart: integer;
-    BeginEnd: integer;
-    IsForward: boolean;
-    IsExternal: boolean;
-    InInterface: boolean;
-    DefNode: TH2PasFunction;// the corresponding node
-    function NeedsBody: boolean;
-    procedure AdjustPositionsAfterInsert(FromPos, ToPos, DiffPos: integer);
-  end;
-  
 function CompareCompilerMacroStats(Data1, Data2: Pointer): integer;
 function ComparePCharWithCompilerMacroStats(Name, MacroStats: Pointer): integer;
 function CompareH2PasFuncByNameAndPos(Data1, Data2: Pointer): integer;
@@ -1836,7 +1836,7 @@ begin
     Node:=Tree.Root;
     while Node<>nil do begin
       NextNode:=Node.Next;
-    
+
       case Node.Desc of
       cdnIf,cdnElseIf:
         if GetIfExpression(Node,ExprStart,ExprEnd) then begin
