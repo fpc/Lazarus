@@ -984,6 +984,7 @@ begin
   H2PNode:=Tree.Root;
   while H2PNode<>nil do begin
     case H2PNode.PascalDesc of
+    
     ctnVarDefinition:
       begin
         // global variable
@@ -998,6 +999,7 @@ begin
         end;
         W(H2PNode.PascalName+': '+PascalCode);
       end;
+      
     ctnTypeDefinition:
       begin
         // global variable
@@ -1008,6 +1010,7 @@ begin
         end else
           DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
       end;
+      
     ctnProcedure:
       begin
         // global procedure
@@ -1047,6 +1050,30 @@ begin
         end;
         W(PascalCode);
       end;
+      
+    ctnEnumerationType:
+      begin
+        SetSection(ctnTypeSection);
+        // write start
+        PascalCode:=H2PNode.PascalName+' = (';
+        W(PascalCode);
+        IncIndent;
+        // write enums
+        ChildNode:=H2PNode.FirstChild;
+        while ChildNode<>nil do begin
+          PascalCode:=ChildNode.PascalName;
+          if ChildNode.PascalCode<>'' then
+            PascalCode:=PascalCode+' = '+ChildNode.PascalCode;
+          if ChildNode.NextBrother<>nil then
+            PascalCode:=PascalCode+',';
+          W(PascalCode);
+          ChildNode:=ChildNode.NextBrother;
+        end;
+        DecIndent;
+        // write end
+        W(');');
+      end;
+      
     else
       DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString]);
     end;
