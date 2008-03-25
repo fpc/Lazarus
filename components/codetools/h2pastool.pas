@@ -96,7 +96,7 @@ type
     Desc: TCodeTreeNodeDesc;// e.g. h2pdnDefine
     MacroName: string; // ifdef, ifndef, undef, define
     MacroParams: string; // define
-    Expression: string; // if, elseif, define
+    Expression: string; // if, elseif, define, error
     function DescAsString(CTool: TCCodeParserTool = nil): string; override;
   end;
   
@@ -172,6 +172,7 @@ type
     CTool: TCCodeParserTool;
     function Convert(CCode, PascalCode: TCodeBuffer): boolean;
     procedure BuildH2PTree(ParentNode: TH2PNode = nil; StartNode: TCodeTreeNode = nil);
+    procedure SimplifyDirectives;
     procedure WritePascal(PascalCode: TCodeBuffer);
     procedure WritePascalToStream(s: TStream);
     
@@ -734,6 +735,7 @@ begin
                            PascalCode,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString(CTool)]);
     DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnError);
+    DirNode.Expression:=PascalCode;
     exit;
   end else if Directive='pragma' then begin
     // #pragma: implementation specifics
@@ -931,6 +933,8 @@ begin
 
   BuildH2PTree;
   
+  SimplifyDirectives;
+  
   WritePascal(PascalCode);
 
   Result:=true;
@@ -996,6 +1000,11 @@ begin
       NextCNode:=nil;
     CNode:=NextCNode;
   end;
+end;
+
+procedure TH2PasTool.SimplifyDirectives;
+begin
+
 end;
 
 procedure TH2PasTool.WritePascal(PascalCode: TCodeBuffer);
@@ -1072,6 +1081,7 @@ var
   CurName: String;
   NoNameCount: Integer;
   SubChildNode: TH2PNode;
+  DirNode: TH2PDirectiveNode;
 begin
   IndentStr:='';
   
@@ -1262,6 +1272,18 @@ begin
         W('end;');
       end;
       
+    ctnNone:
+      if H2PNode.Directive<>nil then begin
+        DirNode:=H2PNode.Directive;
+        case DirNode.Desc of
+        h2pdnError:
+          W('{$ERROR '+dbgstr(DirNode.Expression)+'}');
+        else
+          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',DirNode.DescAsString(CTool)]);
+        end;
+      end else
+        DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
+
     else
       DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
     end;
