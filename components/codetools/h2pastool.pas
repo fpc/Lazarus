@@ -596,7 +596,7 @@ begin
         CurName:='if'
       else
         CurName:='elseif';
-      H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
+      H2PNode:=CreateH2PNode('$'+CurName,'#'+Directive,CNode,ctnNone,
                              PascalCode,ParentNode,false);
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
       exit;
@@ -957,6 +957,7 @@ var
   ChildNode: TH2PNode;
   CurName: String;
   NoNameCount: Integer;
+  SubChildNode: TH2PNode;
 begin
   IndentStr:='';
   
@@ -1108,11 +1109,38 @@ begin
         IncIndent;
         ChildNode:=H2PNode.FirstChild;
         while ChildNode<>nil do begin
-          if ChildNode.PascalDesc=ctnVarDefinition then
-            PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';'
-          else
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString(CTool)]);
-          W(PascalCode);
+          if ChildNode.PascalDesc=ctnVarDefinition then begin
+            PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';';
+            W(PascalCode);
+          end else if ChildNode.PascalDesc=ctnRecordCase then begin
+            { record
+                case longint of
+                0: ( a: b );
+                2: ( c: d );
+              end;
+            }
+            // write header
+            PascalCode:=ChildNode.PascalName+': record';
+            W(PascalCode);
+            IncIndent;
+            // write childs
+            W('case longint of');
+            IncIndent;
+            NoNameCount:=0;
+            SubChildNode:=ChildNode.FirstChild;
+            while SubChildNode<>nil do begin
+              PascalCode:=IntToStr(NoNameCount)+': ('
+                 +SubChildNode.PascalName+': '+SubChildNode.PascalCode+' );';
+              W(PascalCode);
+              SubChildNode:=SubChildNode.NextBrother;
+              inc(NoNameCount);
+            end;
+            DecIndent;
+            // write footer
+            W('end;');
+            DecIndent;
+          end else
+            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING record sub ',ChildNode.DescAsString(CTool)]);
           ChildNode:=ChildNode.NextBrother;
         end;
         DecIndent;
