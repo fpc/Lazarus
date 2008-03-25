@@ -184,6 +184,9 @@ type
 
     procedure WriteStr(const Line: string; s: TStream);
     procedure WriteLnStr(const Line: string; s: TStream);
+    
+    procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
+                                  var NextNode: TH2PDirectiveNode);
   public
     Tree: TH2PTree; // TH2PNode
     DirectivesTree: TH2PTree; // TH2PDirectiveNode
@@ -237,13 +240,14 @@ type
     property Defines: TStringToStringTree read FDefines;
     property Undefines: TStringToStringTree read FUndefines;// undefines take precedence over defines
 
+    // macros - temporary values - use Defines and Undefines
     procedure ResetMacros;
     procedure ClearMacros;
     procedure InitMacros;
     function FindMacro(const MacroName: string;
                        CreateIfNotExists: boolean = false): TH2PMacroStats;
-    function DefineMacro(const MacroName, AValue: string): TH2PMacroStats;
-    function UndefineMacro(const MacroName: string): TH2PMacroStats;
+    function DefineMacro(const MacroName, AValue: string): TH2PMacroStats;// use Defines instead
+    function UndefineMacro(const MacroName: string): TH2PMacroStats;// use Undefines instead
   end;
   
   
@@ -972,6 +976,12 @@ begin
   WriteStr(Line+LineEnding,s);
 end;
 
+procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
+  const Expression: string; var NextNode: TH2PDirectiveNode);
+begin
+
+end;
+
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
 begin
   Result:=false;
@@ -1081,10 +1091,16 @@ begin
   while Node<>nil do begin
     NextNode:=TH2PDirectiveNode(Node.Next);
     case Node.Desc of
-    h2pdnIfDef, h2pdnIfNDef:
+    h2pdnDefine:
       begin
-
+        DefineMacro(Node.MacroName,Node.Expression);
       end;
+    h2pdnIfDef:
+      SimplifyIfDirective(Node,'defined('+Node.MacroName+')',NextNode);
+    h2pdnIfNDef:
+      SimplifyIfDirective(Node,'not defined('+Node.MacroName+')',NextNode);
+    h2pdnIf:
+      SimplifyIfDirective(Node,Node.Expression,NextNode);
     end;
     Node:=NextNode;
   end;
