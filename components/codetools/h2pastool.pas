@@ -25,12 +25,15 @@
     
     enum     ->  enum
     int i;   ->  var i: integer;
-    const char a; -> const a: char;
     struct   ->  var plus record
     union    ->  var plus record case
     typedef  ->  type
     void func()  -> procedure
     int func()   -> function
+    
+  ToDos:
+    const char a; -> const a: char;
+    #ifdef  -> $IFDEF
     #define name value  ->  alias  (const, var, type, proc)
 }
 unit H2PasTool;
@@ -46,12 +49,58 @@ uses
   
 const
   DefaultMaxPascalIdentLen = 70;
+  
+  h2pdnBase     = 1000;
+  h2pdnNone     =  0+h2pdnBase;
+  h2pdnRoot     =  1+h2pdnBase;
+
+  h2pdnDefine   = 11+h2pdnBase;
+  h2pdnUndefine = 12+h2pdnBase;
+
+  h2pdnIf       = 21+h2pdnBase;
+  h2pdnIfDef    = 22+h2pdnBase;
+  h2pdnIfNDef   = 23+h2pdnBase;
+  h2pdnElseIf   = 24+h2pdnBase;
+  h2pdnElse     = 25+h2pdnBase;
+  h2pdnEndIf    = 26+h2pdnBase;
 
 type
+  TH2PNode = class;
+
+
+  { TH2PBaseNode }
+
+  TH2PBaseNode = class
+  public
+    Parent, FirstChild, LastChild, NextBrother, PriorBrother: TH2PBaseNode;
+    function Next: TH2PBaseNode;
+    function NextSkipChilds: TH2PBaseNode;
+    function Prior: TH2PBaseNode;
+    function HasAsParent(Node: TH2PBaseNode): boolean;
+    function HasAsChild(Node: TH2PBaseNode): boolean;
+    function GetLevel: integer;
+    function DescAsString(CTool: TCCodeParserTool = nil): string; virtual; abstract;
+    procedure ConsistencyCheck; virtual;
+    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean;
+                               CTool: TCCodeParserTool = nil); virtual;
+  end;
+
+
+  { TH2PDirectiveNode }
+
+  TH2PDirectiveNode = class(TH2PBaseNode)
+  public
+    H2PNode: TH2PNode;
+    Desc: TCodeTreeNodeDesc;// e.g. h2pdnDefine
+    MacroName: string; // ifdef, ifndef, undef, define
+    Expression: string; // if, elseif, define
+    function DescAsString(CTool: TCCodeParserTool = nil): string; override;
+  end;
+  
 
   { TH2PNode }
 
-  TH2PNode = class
+  TH2PNode = class(TH2PBaseNode)
   public
     PascalName: string;
     CName: string;
@@ -59,18 +108,10 @@ type
     PascalDesc: TCodeTreeNodeDesc;
     PascalCode: string;
     NormalizedPascalCode: string;
-    Parent, FirstChild, LastChild, NextBrother, PriorBrother: TH2PNode;
-    function Next: TH2PNode;
-    function NextSkipChilds: TH2PNode;
-    function Prior: TH2PNode;
-    function HasAsParent(Node: TH2PNode): boolean;
-    function HasAsChild(Node: TH2PNode): boolean;
-    function GetLevel: integer;
-    function DescAsString(CTool: TCCodeParserTool = nil): string;
-    procedure ConsistencyCheck;
-    procedure WriteDebugReport(const Prefix: string; WithChilds: boolean;
-                               CTool: TCCodeParserTool = nil);
+    Directive: TH2PDirectiveNode;
+    function DescAsString(CTool: TCCodeParserTool = nil): string; override;
   end;
+  
   
   { TH2PTree }
 
@@ -78,24 +119,26 @@ type
   private
     FNodeCount: integer;
   public
-    Root: TH2PNode;
-    LastRoot: TH2PNode;
+    Root: TH2PBaseNode;
+    LastRoot: TH2PBaseNode;
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
     property NodeCount: integer read FNodeCount;
-    procedure DeleteNode(ANode: TH2PNode);
-    procedure AddNodeAsLastChild(ParentNode, ANode: TH2PNode);
-    procedure AddNodeInFrontOf(NextBrotherNode, ANode: TH2PNode);
-    function ContainsNode(ANode: TH2PNode): boolean;
+    procedure DeleteNode(ANode: TH2PBaseNode);
+    procedure AddNodeAsLastChild(ParentNode, ANode: TH2PBaseNode);
+    procedure AddNodeInFrontOf(NextBrotherNode, ANode: TH2PBaseNode);
+    function ContainsNode(ANode: TH2PBaseNode): boolean;
     procedure ConsistencyCheck;
     procedure WriteDebugReport(WithChilds: boolean);
   end;
+  
   
   TIgnoreCSourcePart = (
     icspInclude
     );
   TIgnoreCSourceParts = set of TIgnoreCSourcePart;
+  
   
   { TH2PasTool }
 
@@ -164,7 +207,11 @@ function CompareH2PNodePascalNames(Data1, Data2: Pointer): integer;
 function CompareStringWithH2PNodePascalName(AString, ANode: Pointer): integer;
 function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
 
+function H2PDirectiveNodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
+
+
 implementation
+
 
 var
   InternalPredefinedCTypes: TFPStringHashTable = nil;// types in unit ctypes
@@ -281,6 +328,25 @@ function CompareH2PNodeCNames(Data1, Data2: Pointer): integer;
 begin
   Result:=CompareIdentifiersCaseSensitive(PChar(Pointer(TH2PNode(Data1).CName)),
                                           PChar(Pointer(TH2PNode(Data2).CName)));
+end;
+
+function H2PDirectiveNodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
+begin
+  case Desc of
+  h2pdnNone:   Result:='none';
+  h2pdnRoot:   Result:='root';
+
+  h2pdnDefine:   Result:='Define';
+  h2pdnUndefine: Result:='Undef';
+
+  h2pdnIf:      Result:='If';
+  h2pdnIfDef:   Result:='IfDef';
+  h2pdnIfNDef:  Result:='IfNDef';
+  h2pdnElseIf:  Result:='ElseIf';
+  h2pdnElse:    Result:='Else';
+  h2pdnEndIf:   Result:='EndIf';
+  else          Result:='?('+IntToStr(Desc)+')';
+  end;
 end;
 
 { TH2PasTool }
@@ -983,7 +1049,7 @@ begin
 
   // write interface nodes
   CurSection:=ctnNone;
-  H2PNode:=Tree.Root;
+  H2PNode:=TH2PNode(Tree.Root);
   while H2PNode<>nil do begin
     case H2PNode.PascalDesc of
     
@@ -1022,7 +1088,7 @@ begin
           SetSection(ctnTypeSection);
         // create param list
         PascalCode:='';
-        ChildNode:=H2PNode.FirstChild;
+        ChildNode:=TH2PNode(H2PNode.FirstChild);
         NoNameCount:=0;
         while ChildNode<>nil do begin
           if ChildNode.PascalDesc=ctnVarDefinition then begin
@@ -1038,7 +1104,7 @@ begin
           end else begin
             DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString(CTool)]);
           end;
-          ChildNode:=ChildNode.NextBrother;
+          ChildNode:=TH2PNode(ChildNode.NextBrother);
         end;
         if PascalCode<>'' then
           PascalCode:='('+PascalCode+')';
@@ -1080,7 +1146,7 @@ begin
         W(PascalCode);
         // write enums
         IncIndent;
-        ChildNode:=H2PNode.FirstChild;
+        ChildNode:=TH2PNode(H2PNode.FirstChild);
         while ChildNode<>nil do begin
           PascalCode:=ChildNode.PascalName;
           if ChildNode.PascalCode<>'' then
@@ -1088,7 +1154,7 @@ begin
           if ChildNode.NextBrother<>nil then
             PascalCode:=PascalCode+',';
           W(PascalCode);
-          ChildNode:=ChildNode.NextBrother;
+          ChildNode:=TH2PNode(ChildNode.NextBrother);
         end;
         DecIndent;
         // write end
@@ -1107,7 +1173,7 @@ begin
         W(PascalCode);
         // write sub variables
         IncIndent;
-        ChildNode:=H2PNode.FirstChild;
+        ChildNode:=TH2PNode(H2PNode.FirstChild);
         while ChildNode<>nil do begin
           if ChildNode.PascalDesc=ctnVarDefinition then begin
             PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';';
@@ -1127,12 +1193,12 @@ begin
             W('case longint of');
             IncIndent;
             NoNameCount:=0;
-            SubChildNode:=ChildNode.FirstChild;
+            SubChildNode:=TH2PNode(ChildNode.FirstChild);
             while SubChildNode<>nil do begin
               PascalCode:=IntToStr(NoNameCount)+': ('
                  +SubChildNode.PascalName+': '+SubChildNode.PascalCode+' );';
               W(PascalCode);
-              SubChildNode:=SubChildNode.NextBrother;
+              SubChildNode:=TH2PNode(SubChildNode.NextBrother);
               inc(NoNameCount);
             end;
             DecIndent;
@@ -1141,7 +1207,7 @@ begin
             DecIndent;
           end else
             DebugLn(['TH2PasTool.WritePascalToStream SKIPPING record sub ',ChildNode.DescAsString(CTool)]);
-          ChildNode:=ChildNode.NextBrother;
+          ChildNode:=TH2PNode(ChildNode.NextBrother);
         end;
         DecIndent;
         // write end
@@ -1151,7 +1217,7 @@ begin
     else
       DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
     end;
-    H2PNode:=H2PNode.NextBrother;
+    H2PNode:=TH2PNode(H2PNode.NextBrother);
   end;
   
   // write implementation
@@ -1513,7 +1579,7 @@ end;
 
 procedure TH2PasTool.WriteH2PNodeReport;
 var
-  Node: TH2PNode;
+  Node: TH2PBaseNode;
 begin
   if (Tree=nil) then begin
     DebugLn(['TH2PasTool.WriteH2PNodeReport Tree=nil']);
@@ -1557,69 +1623,6 @@ end;
 
 { TH2PNode }
 
-function TH2PNode.Next: TH2PNode;
-begin
-  if FirstChild<>nil then begin
-    Result:=FirstChild;
-  end else begin
-    Result:=Self;
-    while (Result<>nil) and (Result.NextBrother=nil) do
-      Result:=Result.Parent;
-    if Result<>nil then Result:=Result.NextBrother;
-  end;
-end;
-
-function TH2PNode.NextSkipChilds: TH2PNode;
-begin
-  Result:=Self;
-  while (Result<>nil) and (Result.NextBrother=nil) do
-    Result:=Result.Parent;
-  if Result<>nil then Result:=Result.NextBrother;
-end;
-
-function TH2PNode.Prior: TH2PNode;
-begin
-  if PriorBrother<>nil then begin
-    Result:=PriorBrother;
-    while Result.LastChild<>nil do
-      Result:=Result.LastChild;
-  end else
-    Result:=Parent;
-end;
-
-function TH2PNode.HasAsParent(Node: TH2PNode): boolean;
-var CurNode: TH2PNode;
-begin
-  Result:=false;
-  if Node=nil then exit;
-  CurNode:=Parent;
-  while (CurNode<>nil) do begin
-    if CurNode=Node then begin
-      Result:=true;
-      exit;
-    end;
-    CurNode:=CurNode.Parent;
-  end;
-end;
-
-function TH2PNode.HasAsChild(Node: TH2PNode): boolean;
-begin
-  Result:=false;
-  if Node=nil then exit;
-  Result:=Node.HasAsParent(Self);
-end;
-
-function TH2PNode.GetLevel: integer;
-var ANode: TH2PNode;
-begin
-  Result:=0;
-  ANode:=Parent;
-  while ANode<>nil do begin
-    inc(Result);
-    ANode:=ANode.Parent;
-  end;
-end;
-
 function TH2PNode.DescAsString(CTool: TCCodeParserTool): string;
 begin
   if Self=nil then begin
@@ -1641,39 +1644,6 @@ begin
   Result:=Result+'}';
 end;
 
-procedure TH2PNode.ConsistencyCheck;
-begin
-  if (Parent<>nil) then begin
-    if (PriorBrother=nil) and (Parent.FirstChild<>Self) then
-      raise Exception.Create('');
-    if (NextBrother=nil) and (Parent.LastChild<>Self) then
-      raise Exception.Create('');
-  end;
-  if (NextBrother<>nil) and (NextBrother.PriorBrother<>Self) then
-    raise Exception.Create('');
-  if (PriorBrother<>nil) and (PriorBrother.NextBrother<>Self) then
-    raise Exception.Create('');
-  if (FirstChild<>nil) then
-    FirstChild.ConsistencyCheck;
-  if NextBrother<>nil then
-    NextBrother.ConsistencyCheck;
-end;
-
-procedure TH2PNode.WriteDebugReport(const Prefix: string; WithChilds: boolean;
-  CTool: TCCodeParserTool);
-var
-  Node: TH2PNode;
-begin
-  DebugLn([Prefix,DescAsString(CTool)]);
-  if WithChilds then begin
-    Node:=FirstChild;
-    while Node<>nil do begin
-      Node.WriteDebugReport(Prefix+'  ',true,CTool);
-      Node:=Node.NextBrother;
-    end;
-  end;
-end;
-
 { TH2PTree }
 
 constructor TH2PTree.Create;
@@ -1689,7 +1659,7 @@ begin
 end;
 
 procedure TH2PTree.Clear;
-var ANode: TH2PNode;
+var ANode: TH2PBaseNode;
 begin
   while Root<>nil do begin
     ANode:=Root;
@@ -1698,7 +1668,7 @@ begin
   end;
 end;
 
-procedure TH2PTree.DeleteNode(ANode: TH2PNode);
+procedure TH2PTree.DeleteNode(ANode: TH2PBaseNode);
 begin
   if ANode=nil then exit;
   while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
@@ -1720,7 +1690,7 @@ begin
   ANode.Free;
 end;
 
-procedure TH2PTree.AddNodeAsLastChild(ParentNode, ANode: TH2PNode);
+procedure TH2PTree.AddNodeAsLastChild(ParentNode, ANode: TH2PBaseNode);
 begin
   if ParentNode=ANode then RaiseCatchableException('');
   ANode.Parent:=ParentNode;
@@ -1753,7 +1723,7 @@ begin
   inc(FNodeCount);
 end;
 
-procedure TH2PTree.AddNodeInFrontOf(NextBrotherNode, ANode: TH2PNode);
+procedure TH2PTree.AddNodeInFrontOf(NextBrotherNode, ANode: TH2PBaseNode);
 begin
   ANode.Parent:=NextBrotherNode.Parent;
   ANode.NextBrother:=NextBrotherNode;
@@ -1763,7 +1733,7 @@ begin
     ANode.PriorBrother.NextBrother:=ANode;
 end;
 
-function TH2PTree.ContainsNode(ANode: TH2PNode): boolean;
+function TH2PTree.ContainsNode(ANode: TH2PBaseNode): boolean;
 begin
   if ANode=nil then exit(false);
   while ANode.Parent<>nil do ANode:=ANode.Parent;
@@ -1775,7 +1745,7 @@ procedure TH2PTree.ConsistencyCheck;
 // 0 = ok
 var RealNodeCount: integer;
 
-  procedure CountNodes(ANode: TH2PNode);
+  procedure CountNodes(ANode: TH2PBaseNode);
   begin
     if ANode=nil then exit;
     inc(RealNodeCount);
@@ -1801,6 +1771,129 @@ begin
   if Root<>nil then
     Root.WriteDebugReport(' ',true);
   ConsistencyCheck;
+end;
+
+{ TH2PDirectiveNode }
+
+function TH2PDirectiveNode.DescAsString(CTool: TCCodeParserTool): string;
+begin
+  if Self=nil then begin
+    Result:='nil';
+    exit;
+  end;
+  Result:='{'+H2PDirectiveNodeDescriptionAsString(Desc);
+  if (H2PNode<>nil) and (H2PNode.CNode<>nil) and (CTool<>nil) then begin
+    Result:=Result+'('+CTool.CleanPosToStr(H2PNode.CNode.StartPos)+')';
+  end;
+  case Desc of
+  h2pdnDefine,h2pdnUndefine,h2pdnIfDef,h2pdnIfNDef:
+    Result:=Result+',MacroName="'+dbgstr(MacroName)+'"';
+  end;
+  case Desc of
+  h2pdnDefine,h2pdnIf,h2pdnElseIf:
+    Result:=Result+',Expression="'+dbgstr(Expression)+'"';
+  end;
+  Result:=Result+'}';
+end;
+
+{ TH2PBaseNode }
+
+function TH2PBaseNode.Next: TH2PBaseNode;
+begin
+  if FirstChild<>nil then begin
+    Result:=FirstChild;
+  end else begin
+    Result:=Self;
+    while (Result<>nil) and (Result.NextBrother=nil) do
+      Result:=Result.Parent;
+    if Result<>nil then Result:=Result.NextBrother;
+  end;
+end;
+
+function TH2PBaseNode.NextSkipChilds: TH2PBaseNode;
+begin
+  Result:=Self;
+  while (Result<>nil) and (Result.NextBrother=nil) do
+    Result:=Result.Parent;
+  if Result<>nil then Result:=Result.NextBrother;
+end;
+
+function TH2PBaseNode.Prior: TH2PBaseNode;
+begin
+  if PriorBrother<>nil then begin
+    Result:=PriorBrother;
+    while Result.LastChild<>nil do
+      Result:=Result.LastChild;
+  end else
+    Result:=Parent;
+end;
+
+function TH2PBaseNode.HasAsParent(Node: TH2PBaseNode): boolean;
+var
+  CurNode: TH2PBaseNode;
+begin
+  Result:=false;
+  if Node=nil then exit;
+  CurNode:=Parent;
+  while (CurNode<>nil) do begin
+    if CurNode=Node then begin
+      Result:=true;
+      exit;
+    end;
+    CurNode:=CurNode.Parent;
+  end;
+end;
+
+function TH2PBaseNode.HasAsChild(Node: TH2PBaseNode): boolean;
+begin
+  Result:=false;
+  if Node=nil then exit;
+  Result:=Node.HasAsParent(Self);
+end;
+
+function TH2PBaseNode.GetLevel: integer;
+var
+  ANode: TH2PBaseNode;
+begin
+  Result:=0;
+  ANode:=Parent;
+  while ANode<>nil do begin
+    inc(Result);
+    ANode:=ANode.Parent;
+  end;
+end;
+
+procedure TH2PBaseNode.ConsistencyCheck;
+begin
+  if (Parent<>nil) then begin
+    if (PriorBrother=nil) and (Parent.FirstChild<>Self) then
+      raise Exception.Create('');
+    if (NextBrother=nil) and (Parent.LastChild<>Self) then
+      raise Exception.Create('');
+  end;
+  if (NextBrother<>nil) and (NextBrother.PriorBrother<>Self) then
+    raise Exception.Create('');
+  if (PriorBrother<>nil) and (PriorBrother.NextBrother<>Self) then
+    raise Exception.Create('');
+  if (FirstChild<>nil) then
+    FirstChild.ConsistencyCheck;
+  if NextBrother<>nil then
+    NextBrother.ConsistencyCheck;
+end;
+
+procedure TH2PBaseNode.WriteDebugReport(const Prefix: string;
+  WithChilds: boolean; CTool: TCCodeParserTool);
+var
+  Node: TH2PBaseNode;
+begin
+  DebugLn([Prefix,DescAsString(CTool)]);
+  if WithChilds then begin
+    Node:=FirstChild;
+    while Node<>nil do begin
+      Node.WriteDebugReport(Prefix+'  ',true,CTool);
+      Node:=Node.NextBrother;
+    end;
+  end;
 end;
 
 finalization
