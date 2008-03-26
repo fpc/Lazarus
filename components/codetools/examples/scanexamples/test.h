@@ -72,6 +72,7 @@ int baprintf(const char *format, ...);
 int bafprintf(FILE *stream, const char *format, ...);
 int basprintf(char *str, const char *format, ...);
 int basnprintf(char *str, size_t size, const char *format, ...);
+int hci_send_req(int dd, struct hci_request *req, int timeout); // implicit struct
 
 void *bt_malloc(size_t size);
 void bt_free(void *ptr);

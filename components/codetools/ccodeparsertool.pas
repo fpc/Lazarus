@@ -1047,6 +1047,8 @@ begin
         if AtomIs('signed') or AtomIs('unsigned') or AtomIs('const') then
         begin
           // modifier
+        end else if AtomIs('struct') then begin
+          // modifier
         end else if AtomIs('short') or AtomIs('long') then begin
           // modifier or type
           TypePos:=AtomStart;

@@ -1545,11 +1545,18 @@ begin
       while Sibling<>nil do begin
         case Sibling.Desc of
         h2pdnElseIf:
-          Sibling.Expression:=Sibling.Expression+' and '+Expression;
+          begin
+            Sibling.Expression:=Sibling.Expression+' and '+Expression;
+            if Node.Desc<>h2pdnElseIf then
+              Sibling.Desc:=h2pdnIf;
+          end;
         h2pdnElse:
           begin
-            Sibling.Desc:=h2pdnElseIf;
             Sibling.Expression:=Expression;
+            if Node.Desc<>h2pdnElseIf then
+              Sibling.Desc:=h2pdnIf
+            else
+              Sibling.Desc:=h2pdnElseIf;
           end;
         else break;
         end;
