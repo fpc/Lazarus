@@ -1931,6 +1931,10 @@ end;
 
 function TCCodeParserTool.NodeAsString(Node: TCodeTreeNode): string;
 begin
+  if Node=nil then begin
+    Result:='nil';
+    exit;
+  end;
   case Node.Desc of
   ccnName: Result:=copy(Src,Node.StartPos,Node.EndPos-Node.StartPos);
   else Result:='';

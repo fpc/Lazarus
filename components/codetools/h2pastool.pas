@@ -614,7 +614,7 @@ begin
       // create proc type
       ParamsNode:=CTool.GetFunctionParamListNode(CNode);
       SubTypeName:=CreatePascalNameFromCCode(CurName+CTool.ExtractFunctionParamList(CNode));
-      TypeH2PNode:=CreateH2PNode(SubTypeName,'',nil,ctnProcedureType,SimpleType,
+      TypeH2PNode:=CreateH2PNode(SubTypeName,'',ParamsNode,ctnProcedureType,SimpleType,
                                  nil,true);
       DebugLn(['TH2PasTool.ConvertFunction function type added: ',TypeH2PNode.DescAsString(CTool)]);
       // create variable

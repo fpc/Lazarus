@@ -731,7 +731,10 @@ end;
 
 function TCodeTreeNode.DescAsString: string;
 begin
-  Result:=NodeDescriptionAsString(Desc);
+  if Self=nil then
+    Result:='nil'
+  else
+    Result:=NodeDescriptionAsString(Desc);
 end;
 
 function TCodeTreeNode.GetRoot: TCodeTreeNode;
