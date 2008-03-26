@@ -382,15 +382,15 @@ begin
   DesignerMenuSectionAlign:=RegisterIDEMenuSection(DesignerMenuRoot,
                                                                'Align section');
     DesignerMenuAlign:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                         'Align',fdmAlignWord);
+                                         'Align',fdmAlignWord, nil, nil, nil, 'align');
     DesignerMenuMirrorHorizontal:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Mirror horizontal',fdmMirrorHorizontal);
+                                       'Mirror horizontal',fdmMirrorHorizontal, nil, nil, nil, 'mirror_horizontal');
     DesignerMenuMirrorVertical:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Mirror vertical',fdmMirrorVertical);
+                                       'Mirror vertical',fdmMirrorVertical, nil, nil, nil, 'mirror_vertical');
     DesignerMenuScale:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Scale',fdmScaleWord);
+                                       'Scale',fdmScaleWord, nil, nil, nil, 'scale');
     DesignerMenuSize:=RegisterIDEMenuCommand(DesignerMenuSectionAlign,
-                                       'Size',fdmSizeWord);
+                                       'Size',fdmSizeWord, nil, nil, nil, 'size');
 
   // register tab and order section
   DesignerMenuSectionOrder:=RegisterIDEMenuSection(DesignerMenuRoot,
@@ -400,13 +400,13 @@ begin
     DesignerMenuSectionZOrder:=RegisterIDESubMenu(DesignerMenuSectionOrder,
                                                   'ZOrder section','');
       DesignerMenuOrderMoveToFront:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                   'Move to z order front',fdmOrderMoveTofront);
+                                   'Move to z order front',fdmOrderMoveTofront, nil, nil, nil, 'Order_move_front');
       DesignerMenuOrderMoveToBack:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                   'Move to z order back',fdmOrderMoveToBack);
+                                   'Move to z order back',fdmOrderMoveToBack, nil, nil, nil, 'Order_move_back');
       DesignerMenuOrderForwardOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                 'Move z order forward one',fdmOrderForwardOne);
+                                 'Move z order forward one',fdmOrderForwardOne, nil, nil, nil, 'Order_forward_one');
       DesignerMenuOrderBackOne:=RegisterIDEMenuCommand(DesignerMenuSectionZOrder,
-                                  'Move z order backwards one',fdmOrderBackOne);
+                                  'Move z order backwards one',fdmOrderBackOne, nil, nil, nil, 'Order_back_one');
 
   // register clipboard section
   DesignerMenuSectionClipboard:=RegisterIDEMenuSection(DesignerMenuRoot,

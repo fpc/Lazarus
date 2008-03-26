@@ -2449,6 +2449,11 @@ images/debugger/debugger_modify.png -text svneol=unset#images/png
 images/debugger/debugger_options.png -text svneol=unset#image/png
 images/debugger/debugger_output.png -text svneol=unset#image/png
 images/debugger/debugger_watches.png -text svneol=unset#image/png
+images/designer/Order_back_one.png -text
+images/designer/Order_forward_one.png -text
+images/designer/Order_move_back.png -text
+images/designer/Order_move_front.png -text
+images/designer/align.png -text
 images/designer/anchor_bottom.png -text svneol=unset#image/png
 images/designer/anchor_center_horizontal.png -text svneol=unset#image/png
 images/designer/anchor_center_vertical.png -text svneol=unset#image/png
@@ -2457,6 +2462,10 @@ images/designer/anchor_left_right.png -text svneol=unset#image/png
 images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
+images/designer/mirror_horizontal.png -text
+images/designer/mirror_vertical.png -text
+images/designer/scale.png -text
+images/designer/size.png -text
 images/folder.png -text
 images/icon-naming-spec.xml svneol=native#text/plain
 images/ide_icon48x48.png -text svneol=unset#image/png
