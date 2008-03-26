@@ -32,8 +32,9 @@
     int func()   -> function
     
   ToDos:
+    c comments
     const char a; -> const a: char;
-    #ifdef  -> $IFDEF
+    simplify conditional directives (e.g. #ifdef)
     #define name value  ->  alias  (const, var, type, proc)
 }
 unit H2PasTool;
@@ -174,6 +175,7 @@ type
     FSimplifyExpressions: boolean;
     FSourceName: string;
     FUndefines: TStringToStringTree;
+    // converting C nodes to H2P nodes
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -185,6 +187,7 @@ type
            StartPos, EndPos: integer; out PasExpr: string;
            out ErrorPos: integer; out ErrorMsg: string): boolean;
 
+    // writing pascal
     procedure WriteStr(const Line: string);
     procedure WriteLnStr(const Line: string);
     procedure W(const aStr: string);// write indent + aStr + lineend
@@ -193,18 +196,26 @@ type
     procedure SetPasSection(NewSection: TCodeTreeNodeDesc);
     procedure WriteGlobalVarNode(H2PNode: TH2PNode);
     procedure WriteGlobalTypeNode(H2PNode: TH2PNode);
+    procedure WriteGlobalConstNode(H2PNode: TH2PNode);
     procedure WriteGlobalProcedureNode(H2PNode: TH2PNode);
     procedure WriteGlobalEnumerationTypeNode(H2PNode: TH2PNode);
     procedure WriteGlobalRecordTypeNode(H2PNode: TH2PNode);
     procedure WriteDirectiveNode(DirNode: TH2PDirectiveNode);
     function CreateDirectiveValue(const s: string): string;
 
+    // simplification
     procedure SimplifyUndefineDirective(Node: TH2PDirectiveNode;
-                                        var NextNode: TH2PDirectiveNode);
+                                        var NextNode: TH2PDirectiveNode;
+                                        var Changed: boolean);
     procedure SimplifyDefineDirective(Node: TH2PDirectiveNode;
-                                      var NextNode: TH2PDirectiveNode);
+                                      var NextNode: TH2PDirectiveNode;
+                                      var Changed: boolean);
     procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
-                                  var NextNode: TH2PDirectiveNode);
+                                  var NextNode: TH2PDirectiveNode;
+                                  var Changed: boolean);
+    function MacroValueIsConstant(Node: TH2PDirectiveNode;
+                                  out PasType, PasExpression: string): boolean;
+    procedure DeleteDirectiveNode(Node: TH2PDirectiveNode);
   public
     Tree: TH2PTree; // TH2PNode
     DirectivesTree: TH2PTree; // TH2PDirectiveNode
@@ -1064,6 +1075,17 @@ begin
   end;
 end;
 
+procedure TH2PasTool.WriteGlobalConstNode(H2PNode: TH2PNode);
+begin
+  // global const
+  SetPasSection(ctnConstSection);
+  if H2PNode.FirstChild=nil then begin
+    W(H2PNode.PascalName+H2PNode.PascalCode+';');
+  end else begin
+    DebugLn(['TH2PasTool.WriteGlobalTypeNode SKIPPING ',H2PNode.DescAsString(CTool)]);
+  end;
+end;
+
 procedure TH2PasTool.WriteGlobalProcedureNode(H2PNode: TH2PNode);
 var
   PascalCode: String;
@@ -1294,13 +1316,13 @@ begin
 end;
 
 procedure TH2PasTool.SimplifyUndefineDirective(Node: TH2PDirectiveNode;
-  var NextNode: TH2PDirectiveNode);
+  var NextNode: TH2PDirectiveNode; var Changed: boolean);
 begin
   UndefineMacro(Node.MacroName);
 end;
 
 procedure TH2PasTool.SimplifyDefineDirective(Node: TH2PDirectiveNode;
-  var NextNode: TH2PDirectiveNode);
+  var NextNode: TH2PDirectiveNode; var Changed: boolean);
 { Examples:
 
   Macro flag:
@@ -1332,14 +1354,38 @@ procedure TH2PasTool.SimplifyDefineDirective(Node: TH2PDirectiveNode;
     #define HIDPCONNADD     _IOW('H', 200, int)
     =>  comment
 }
+var
+  PasType: string;
+  PasExpr: string;
+  H2PNode: TH2PNode;
 begin
+  if (Node.H2PNode<>nil) and (Node.H2PNode.Parent<>nil) then begin
+    // this directive is in a C block
+    // ToDo: try to make it global
+    if (Node.Parent<>nil) and (TH2PDirectiveNode(Node.Parent).Desc<>h2pdnRoot)
+    then begin
+      // this define is in a conditional
+    end;
+    exit;
+  end;
+  
   if Node.MacroParams='' then begin
     // a macro without parameters
     if Node.Expression='' then begin
       // example: #define MPI_FILE_DEFINED
+      // => simple macro flag
       DefineMacro(Node.MacroName,'');
-    end else begin
-
+    end else if MacroValueIsConstant(Node,PasType,PasExpr) then begin
+      // convert node to constant
+      H2PNode:=Node.H2PNode;
+      H2PNode.PascalName:=Node.MacroName;
+      H2PNode.PascalDesc:=ctnConstDefinition;
+      H2PNode.PascalCode:=' = '+PasExpr;
+      if PasType<>'' then
+        H2PNode.PascalCode:=': '+PasType+H2PNode.PascalCode;
+      NextNode:=TH2PDirectiveNode(Node.NextSkipChilds);
+      DeleteDirectiveNode(Node);
+      DebugLn(['TH2PasTool.SimplifyDefineDirective ADDED constant ',H2PNode.DescAsString(CTool)]);
     end;
   end else begin
 
@@ -1347,9 +1393,46 @@ begin
 end;
 
 procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
-  const Expression: string; var NextNode: TH2PDirectiveNode);
+  const Expression: string; var NextNode: TH2PDirectiveNode;
+  var Changed: boolean);
 begin
 
+end;
+
+function TH2PasTool.MacroValueIsConstant(Node: TH2PDirectiveNode;
+  out PasType, PasExpression: string): boolean;
+  
+  function TrimBrackets(const s: string): string;
+  begin
+    Result:=s;
+  end;
+  
+var
+  AtomStart: integer;
+  p: Integer;
+begin
+  Result:=false;
+  PasType:='';
+  PasExpression:=TrimBrackets(Node.Expression);
+  p:=1;
+  repeat
+    ReadRawNextCAtom(PasExpression,p,AtomStart);
+    if AtomStart>length(PasExpression) then break;
+    if IsIdentStartChar[PasExpression[AtomStart]] then begin
+      exit;
+    end else if PasExpression[AtomStart]='"' then begin
+      PasExpression[AtomStart]:='''';
+      PasExpression[p-1]:='''';
+    end;
+  until false;
+  Result:=true;
+end;
+
+procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode);
+begin
+  if Node.H2PNode<>nil then
+    Node.H2PNode.Directive:=nil;
+  DirectivesTree.DeleteNode(Node);
 end;
 
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
@@ -1465,15 +1548,15 @@ begin
       NextNode:=TH2PDirectiveNode(Node.Next);
       case Node.Desc of
       h2pdnUndefine:
-        SimplifyUndefineDirective(Node,NextNode);
+        SimplifyUndefineDirective(Node,NextNode,Changed);
       h2pdnDefine:
-        SimplifyDefineDirective(Node,NextNode);
+        SimplifyDefineDirective(Node,NextNode,Changed);
       h2pdnIfDef:
-        SimplifyIfDirective(Node,'defined('+Node.MacroName+')',NextNode);
+        SimplifyIfDirective(Node,'defined('+Node.MacroName+')',NextNode,Changed);
       h2pdnIfNDef:
-        SimplifyIfDirective(Node,'not defined('+Node.MacroName+')',NextNode);
+        SimplifyIfDirective(Node,'not defined('+Node.MacroName+')',NextNode,Changed);
       h2pdnIf:
-        SimplifyIfDirective(Node,Node.Expression,NextNode);
+        SimplifyIfDirective(Node,Node.Expression,NextNode,Changed);
       end;
       Node:=NextNode;
     end;
@@ -1540,6 +1623,9 @@ begin
     ctnTypeDefinition:
       WriteGlobalTypeNode(H2PNode);
 
+    ctnConstDefinition:
+      WriteGlobalConstNode(H2PNode);
+      
     ctnProcedure, ctnProcedureType:
       WriteGlobalProcedureNode(H2PNode);
 
@@ -1919,6 +2005,7 @@ begin
   Result:=TH2PDirectiveNode.Create;
   Result.Desc:=Desc;
   H2PNode.Directive:=Result;
+  Result.H2PNode:=H2PNode;
   DirectivesTree.AddNodeAsLastChild(FCurDirectiveNode,Result);
   //DebugLn(['TH2PasTool.CreateH2PDirectiveNode Added ',Result.DescAsString,' ',FCurDirectiveNode.FirstChild<>nil]);
 end;
@@ -2111,7 +2198,8 @@ begin
   end else begin
     Result:=Result+', CNode=nil';
   end;
-  Result:=Result+',PascalCode="'+dbgstr(PascalCode)+'"';
+  if PascalCode<>'' then
+    Result:=Result+',PascalCode="'+dbgstr(PascalCode)+'"';
   Result:=Result+'}';
 end;
 
