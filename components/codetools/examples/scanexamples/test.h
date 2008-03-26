@@ -1,3 +1,7 @@
+// The macro __TEST_H is an example for a common trick in c header files
+// Undefine it. The h2p simplifier will remove it.
+#undef __TEST_H
+
 /*
   Comment
   */
@@ -22,7 +26,7 @@ extern "C" {
 #define MPI_FILE_DEFINED
 // null pointer
 #define MPI_BOTTOM      (void *)0
- 
+
 /* An anonymous enum */
 enum {
         TEST_ENUM1 = 1, /* Enum starts at 1 */
@@ -154,7 +158,6 @@ static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
 {
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
 }
-
 
 #ifdef __cplusplus
 }

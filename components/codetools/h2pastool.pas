@@ -160,16 +160,19 @@ type
 
   TH2PasTool = class
   private
+    FCNames: TAVLTree;// tree of TH2PNode sorted for CName
+    FCurDirectiveNode: TH2PDirectiveNode;
+    FCurIndentStr: string;
+    FCurPasSection: TCodeTreeNodeDesc;
+    FCurPasStream: TStream;
     FDefines: TStringToStringTree;
     FDisableUnusedDefines: boolean;
     FIgnoreCParts: TIgnoreCSourceParts;
-    FPredefinedCTypes: TStringToStringTree;
     FPascalNames: TAVLTree;// tree of TH2PNode sorted for PascalName
-    FCNames: TAVLTree;// tree of TH2PNode sorted for CName
+    FPredefinedCTypes: TStringToStringTree;
     FRemoveDisabledDirectives: boolean;
     FSimplifyExpressions: boolean;
     FSourceName: string;
-    FCurDirectiveNode: TH2PDirectiveNode;
     FUndefines: TStringToStringTree;
     procedure ConvertStruct(CNode: TCodeTreeNode; ParentNode: TH2PNode);
     procedure ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode);
@@ -182,9 +185,23 @@ type
            StartPos, EndPos: integer; out PasExpr: string;
            out ErrorPos: integer; out ErrorMsg: string): boolean;
 
-    procedure WriteStr(const Line: string; s: TStream);
-    procedure WriteLnStr(const Line: string; s: TStream);
-    
+    procedure WriteStr(const Line: string);
+    procedure WriteLnStr(const Line: string);
+    procedure W(const aStr: string);// write indent + aStr + lineend
+    procedure IncIndent;
+    procedure DecIndent;
+    procedure SetPasSection(NewSection: TCodeTreeNodeDesc);
+    procedure WriteGlobalVarNode(H2PNode: TH2PNode);
+    procedure WriteGlobalTypeNode(H2PNode: TH2PNode);
+    procedure WriteGlobalProcedureNode(H2PNode: TH2PNode);
+    procedure WriteGlobalEnumerationTypeNode(H2PNode: TH2PNode);
+    procedure WriteGlobalRecordTypeNode(H2PNode: TH2PNode);
+    procedure WriteDirectiveNode(DirNode: TH2PDirectiveNode);
+
+    procedure SimplifyUndefineDirective(Node: TH2PDirectiveNode;
+                                        var NextNode: TH2PDirectiveNode);
+    procedure SimplifyDefineDirective(Node: TH2PDirectiveNode;
+                                      var NextNode: TH2PDirectiveNode);
     procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
                                   var NextNode: TH2PDirectiveNode);
   public
@@ -239,6 +256,7 @@ type
                                                write FRemoveDisabledDirectives;
     property Defines: TStringToStringTree read FDefines;
     property Undefines: TStringToStringTree read FUndefines;// undefines take precedence over defines
+    procedure AddCommonCDefines;
 
     // macros - temporary values - use Defines and Undefines
     procedure ResetMacros;
@@ -965,15 +983,352 @@ begin
   until false;
 end;
 
-procedure TH2PasTool.WriteStr(const Line: string; s: TStream);
+procedure TH2PasTool.WriteStr(const Line: string);
 begin
   if Line='' then exit;
-  s.Write(Line[1],length(Line));
+  FCurPasStream.Write(Line[1],length(Line));
 end;
 
-procedure TH2PasTool.WriteLnStr(const Line: string; s: TStream);
+procedure TH2PasTool.WriteLnStr(const Line: string);
 begin
-  WriteStr(Line+LineEnding,s);
+  WriteStr(Line+LineEnding);
+end;
+
+procedure TH2PasTool.W(const aStr: string);
+begin
+  WriteLnStr(FCurIndentStr+aStr);
+end;
+
+procedure TH2PasTool.IncIndent;
+begin
+  FCurIndentStr:=FCurIndentStr+'  ';
+end;
+
+procedure TH2PasTool.DecIndent;
+begin
+  FCurIndentStr:=copy(FCurIndentStr,1,length(FCurIndentStr)-2);
+end;
+
+procedure TH2PasTool.SetPasSection(NewSection: TCodeTreeNodeDesc);
+begin
+  if NewSection=FCurPasSection then exit;
+  // close old section
+  case FCurPasSection of
+  ctnVarSection,ctnTypeSection,ctnConstSection:
+    begin
+      DecIndent;
+    end;
+  end;
+  FCurPasSection:=NewSection;
+  // start new section
+  W('');
+  case FCurPasSection of
+  ctnVarSection,ctnTypeSection,ctnConstSection:
+    begin
+      case FCurPasSection of
+      ctnVarSection: W('var');
+      ctnTypeSection: W('type');
+      ctnConstSection: W('const');
+      end;
+      IncIndent;
+    end;
+  end;
+end;
+
+procedure TH2PasTool.WriteGlobalVarNode(H2PNode: TH2PNode);
+var
+  PascalCode: String;
+begin
+  // global variable
+  SetPasSection(ctnVarSection);
+  PascalCode:=H2PNode.PascalCode+';';
+  if H2PNode.CName<>'' then begin
+    PascalCode:=PascalCode+' cvar; public';
+    if H2PNode.PascalName<>H2PNode.CName then begin
+      PascalCode:=PascalCode+' name '''+H2PNode.CName+'''';
+    end;
+    PascalCode:=PascalCode+';';
+  end;
+  W(H2PNode.PascalName+': '+PascalCode);
+end;
+
+procedure TH2PasTool.WriteGlobalTypeNode(H2PNode: TH2PNode);
+begin
+  // global type
+  SetPasSection(ctnTypeSection);
+  if H2PNode.FirstChild=nil then begin
+    W(H2PNode.PascalName+' = '+H2PNode.PascalCode+';');
+  end else begin
+    DebugLn(['TH2PasTool.WriteGlobalTypeNode SKIPPING ',H2PNode.DescAsString(CTool)]);
+  end;
+end;
+
+procedure TH2PasTool.WriteGlobalProcedureNode(H2PNode: TH2PNode);
+var
+  PascalCode: String;
+  ChildNode: TH2PNode;
+  NoNameCount: Integer;
+  CurName: String;
+begin
+  // global procedure or procedure type
+  if H2PNode.PascalDesc=ctnProcedure then
+    SetPasSection(ctnNone)
+  else
+    SetPasSection(ctnTypeSection);
+  // create param list
+  PascalCode:='';
+  ChildNode:=TH2PNode(H2PNode.FirstChild);
+  NoNameCount:=0;
+  while ChildNode<>nil do begin
+    if ChildNode.PascalDesc=ctnVarDefinition then begin
+      if PascalCode<>'' then
+        PascalCode:=PascalCode+'; ';
+      CurName:=ChildNode.PascalName;
+      if CurName='' then begin
+        inc(NoNameCount);
+        CurName:='param'+IntToStr(NoNameCount)
+                +CreatePascalNameFromCCode(ChildNode.PascalCode);
+      end;
+      PascalCode:=PascalCode+CurName+': '+ChildNode.PascalCode;
+    end else begin
+      DebugLn(['TH2PasTool.WriteGlobalProcedureNode SKIPPING ',ChildNode.DescAsString(CTool)]);
+    end;
+    ChildNode:=TH2PNode(ChildNode.NextBrother);
+  end;
+  if PascalCode<>'' then
+    PascalCode:='('+PascalCode+')';
+  if H2PNode.PascalDesc=ctnProcedure then begin
+    PascalCode:=H2PNode.PascalName+PascalCode;
+    if H2PNode.PascalCode='void' then
+      PascalCode:='procedure '+PascalCode
+    else
+      PascalCode:='function '+PascalCode+': '+H2PNode.PascalCode;
+    PascalCode:=PascalCode+'; cdecl;';
+    if H2PNode.CName<>'' then begin
+      if H2PNode.CName<>H2PNode.PascalName then
+        PascalCode:=PascalCode+' external name '''+H2PNode.CName+''';'
+      else
+        PascalCode:=PascalCode+' external;';
+    end;
+  end else begin
+    if H2PNode.PascalCode='void' then
+      PascalCode:='procedure'+PascalCode
+    else
+      PascalCode:='function'+PascalCode+': '+H2PNode.PascalCode;
+    PascalCode:=PascalCode+'; cdecl;';
+    PascalCode:=H2PNode.PascalName+' = '+PascalCode;
+  end;
+  W(PascalCode);
+end;
+
+procedure TH2PasTool.WriteGlobalEnumerationTypeNode(H2PNode: TH2PNode);
+var
+  PascalCode: String;
+  ChildNode: TH2PNode;
+begin
+  { for example:
+      e2 = (
+        a = 3,
+        b = 9
+      );
+  }
+  SetPasSection(ctnTypeSection);
+  // write start
+  PascalCode:=H2PNode.PascalName+' = (';
+  W(PascalCode);
+  // write enums
+  IncIndent;
+  ChildNode:=TH2PNode(H2PNode.FirstChild);
+  while ChildNode<>nil do begin
+    PascalCode:=ChildNode.PascalName;
+    if ChildNode.PascalCode<>'' then
+      PascalCode:=PascalCode+' = '+ChildNode.PascalCode;
+    if ChildNode.NextBrother<>nil then
+      PascalCode:=PascalCode+',';
+    W(PascalCode);
+    ChildNode:=TH2PNode(ChildNode.NextBrother);
+  end;
+  DecIndent;
+  // write end
+  W(');');
+end;
+
+procedure TH2PasTool.WriteGlobalRecordTypeNode(H2PNode: TH2PNode);
+var
+  PascalCode: String;
+  ChildNode: TH2PNode;
+  NoNameCount: Integer;
+  SubChildNode: TH2PNode;
+begin
+  { examples:
+     TRecord = record
+     end;
+  }
+  SetPasSection(ctnTypeSection);
+  // write header
+  PascalCode:=H2PNode.PascalName+' = record';
+  W(PascalCode);
+  // write sub variables
+  IncIndent;
+  ChildNode:=TH2PNode(H2PNode.FirstChild);
+  while ChildNode<>nil do begin
+    if ChildNode.PascalDesc=ctnVarDefinition then begin
+      PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';';
+      W(PascalCode);
+    end else if ChildNode.PascalDesc=ctnRecordCase then begin
+      { record
+          case longint of
+          0: ( a: b );
+          2: ( c: d );
+        end;
+      }
+      // write header
+      PascalCode:=ChildNode.PascalName+': record';
+      W(PascalCode);
+      IncIndent;
+      // write childs
+      W('case longint of');
+      IncIndent;
+      NoNameCount:=0;
+      SubChildNode:=TH2PNode(ChildNode.FirstChild);
+      while SubChildNode<>nil do begin
+        PascalCode:=IntToStr(NoNameCount)+': ('
+           +SubChildNode.PascalName+': '+SubChildNode.PascalCode+' );';
+        W(PascalCode);
+        SubChildNode:=TH2PNode(SubChildNode.NextBrother);
+        inc(NoNameCount);
+      end;
+      DecIndent;
+      // write footer
+      W('end;');
+      DecIndent;
+    end else
+      DebugLn(['TH2PasTool.WriteGlobalRecordTypeNode SKIPPING record sub ',ChildNode.DescAsString(CTool)]);
+    ChildNode:=TH2PNode(ChildNode.NextBrother);
+  end;
+  DecIndent;
+  // write end
+  W('end;');
+end;
+
+procedure TH2PasTool.WriteDirectiveNode(DirNode: TH2PDirectiveNode);
+begin
+  case DirNode.Desc of
+  h2pdnIfDef:
+    begin
+      SetPasSection(ctnNone);
+      W('{$IfDef '+DirNode.MacroName+'}');
+      IncIndent;
+    end;
+  h2pdnIfNDef:
+    begin
+      SetPasSection(ctnNone);
+      W('{$IfNDef '+DirNode.MacroName+'}');
+      IncIndent;
+    end;
+  h2pdnIf:
+    begin
+      SetPasSection(ctnNone);
+      W('{$If '+DirNode.Expression+'}');
+      IncIndent;
+    end;
+  h2pdnElseIf:
+    begin
+      SetPasSection(ctnNone);
+      DecIndent;
+      W('{$ElseIf '+DirNode.Expression+'}');
+      IncIndent;
+    end;
+  h2pdnElse:
+    begin
+      SetPasSection(ctnNone);
+      DecIndent;
+      W('{$Else}');
+      IncIndent;
+    end;
+  h2pdnEndIf:
+    begin
+      SetPasSection(ctnNone);
+      DecIndent;
+      W('{$EndIf}');
+    end;
+  h2pdnError:
+    begin
+      SetPasSection(ctnNone);
+      W('{$Error '+dbgstr(DirNode.Expression)+'}');
+    end;
+  h2pdnUndefine:
+    begin
+      SetPasSection(ctnNone);
+      W('{$UnDef '+DirNode.MacroName+'}');
+    end;
+  h2pdnDefine:
+    if (DirNode.MacroParams='') then begin
+      SetPasSection(ctnNone);
+      if DirNode.Expression='' then begin
+        W('{$Define '+DirNode.MacroName+'}');
+      end else begin
+        W('{$Define '+DirNode.MacroName+':='+dbgstr(DirNode.Expression)+'}');
+      end;
+    end else begin
+      DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
+    end;
+  else
+    DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
+  end;
+end;
+
+procedure TH2PasTool.SimplifyUndefineDirective(Node: TH2PDirectiveNode;
+  var NextNode: TH2PDirectiveNode);
+begin
+  UndefineMacro(Node.MacroName);
+end;
+
+procedure TH2PasTool.SimplifyDefineDirective(Node: TH2PDirectiveNode;
+  var NextNode: TH2PDirectiveNode);
+{ Examples:
+
+  Macro flag:
+    #define MPI_FILE_DEFINED
+    =>  $Define MPI_FILE_DEFINED
+
+  Simple constant:
+    #define SOME_FLAG1   31
+    =>  const SOME_FLAG1 = 31;
+
+  null pointer
+    #define MPI_BOTTOM      (void *)0
+    =>  const MPI_BOTTOM = nil;
+
+  Alias:
+    #define SOME_FLAG2  SOME_FLAG1
+    =>  const SOME_FLAG2 = SOME_FLAG1;
+     OR type SOME_FLAG2 = SOME_FLAG1;
+
+  Dummy function:
+    #define htobs(d)  (d)
+    =>  comment
+
+  Function alias:
+    #define htobs(d)  bswap_16(d)
+    =>  comment
+
+  Function without parameters:
+    #define HIDPCONNADD     _IOW('H', 200, int)
+    =>  comment
+}
+begin
+  if Node.MacroParams='' then begin
+    // a macro without parameters
+    if Node.Expression='' then begin
+      // example: #define MPI_FILE_DEFINED
+      DefineMacro(Node.MacroName,'');
+    end else begin
+
+    end;
+  end else begin
+
+  end;
 end;
 
 procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
@@ -1085,25 +1440,29 @@ procedure TH2PasTool.SimplifyDirectives;
 var
   Node: TH2PDirectiveNode;
   NextNode: TH2PDirectiveNode;
+  Changed: Boolean;
 begin
-  InitMacros;
-  Node:=TH2PDirectiveNode(DirectivesTree.Root);
-  while Node<>nil do begin
-    NextNode:=TH2PDirectiveNode(Node.Next);
-    case Node.Desc of
-    h2pdnDefine:
-      begin
-        DefineMacro(Node.MacroName,Node.Expression);
+  repeat
+    Changed:=false;
+    InitMacros;
+    Node:=TH2PDirectiveNode(DirectivesTree.Root);
+    while Node<>nil do begin
+      NextNode:=TH2PDirectiveNode(Node.Next);
+      case Node.Desc of
+      h2pdnUndefine:
+        SimplifyUndefineDirective(Node,NextNode);
+      h2pdnDefine:
+        SimplifyDefineDirective(Node,NextNode);
+      h2pdnIfDef:
+        SimplifyIfDirective(Node,'defined('+Node.MacroName+')',NextNode);
+      h2pdnIfNDef:
+        SimplifyIfDirective(Node,'not defined('+Node.MacroName+')',NextNode);
+      h2pdnIf:
+        SimplifyIfDirective(Node,Node.Expression,NextNode);
       end;
-    h2pdnIfDef:
-      SimplifyIfDirective(Node,'defined('+Node.MacroName+')',NextNode);
-    h2pdnIfNDef:
-      SimplifyIfDirective(Node,'not defined('+Node.MacroName+')',NextNode);
-    h2pdnIf:
-      SimplifyIfDirective(Node,Node.Expression,NextNode);
+      Node:=NextNode;
     end;
-    Node:=NextNode;
-  end;
+  until not Changed;
 end;
 
 procedure TH2PasTool.WritePascal(PascalCode: TCodeBuffer);
@@ -1128,62 +1487,13 @@ end;
 
 procedure TH2PasTool.WritePascalToStream(s: TStream);
 var
-  IndentStr: string;
-  CurSection: TCodeTreeNodeDesc;
-
-  procedure W(const aStr: string);
-  begin
-    WriteLnStr(IndentStr+aStr,s);
-  end;
-  
-  procedure IncIndent;
-  begin
-    IndentStr:=IndentStr+'  ';
-  end;
-
-  procedure DecIndent;
-  begin
-    IndentStr:=copy(IndentStr,1,length(IndentStr)-2);
-  end;
-  
-  procedure SetSection(NewSection: TCodeTreeNodeDesc);
-  begin
-    if NewSection=CurSection then exit;
-    // close old section
-    case CurSection of
-    ctnVarSection,ctnTypeSection,ctnConstSection:
-      begin
-        DecIndent;
-      end;
-    end;
-    CurSection:=NewSection;
-    // start new section
-    W('');
-    case CurSection of
-    ctnVarSection,ctnTypeSection,ctnConstSection:
-      begin
-        case CurSection of
-        ctnVarSection: W('var');
-        ctnTypeSection: W('type');
-        ctnConstSection: W('const');
-        end;
-        IncIndent;
-      end;
-    end;
-  end;
-
-var
   H2PNode: TH2PNode;
   UsesClause: String;
-  PascalCode: String;
-  ChildNode: TH2PNode;
-  CurName: String;
-  NoNameCount: Integer;
-  SubChildNode: TH2PNode;
-  DirNode: TH2PDirectiveNode;
 begin
-  IndentStr:='';
-  
+  FCurIndentStr:='';
+  FCurPasSection:=ctnNone;
+  FCurPasStream:=s;
+
   // write header
   if SourceName<>'' then begin
     W('unit '+SourceName+';');
@@ -1205,238 +1515,28 @@ begin
   end;
 
   // write interface nodes
-  CurSection:=ctnNone;
   H2PNode:=TH2PNode(Tree.Root);
   while H2PNode<>nil do begin
     case H2PNode.PascalDesc of
     
     ctnVarDefinition:
-      begin
-        // global variable
-        SetSection(ctnVarSection);
-        PascalCode:=H2PNode.PascalCode+';';
-        if H2PNode.CName<>'' then begin
-          PascalCode:=PascalCode+' cvar; public';
-          if H2PNode.PascalName<>H2PNode.CName then begin
-            PascalCode:=PascalCode+' name '''+H2PNode.CName+'''';
-          end;
-          PascalCode:=PascalCode+';';
-        end;
-        W(H2PNode.PascalName+': '+PascalCode);
-      end;
-      
+      WriteGlobalVarNode(H2PNode);
+
     ctnTypeDefinition:
-      begin
-        // global variable
-        SetSection(ctnTypeSection);
-        if H2PNode.FirstChild=nil then begin
-          PascalCode:=H2PNode.PascalCode+';';
-          W(H2PNode.PascalName+' = '+PascalCode);
-        end else
-          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
-      end;
-      
+      WriteGlobalTypeNode(H2PNode);
+
     ctnProcedure, ctnProcedureType:
-      begin
-        // global procedure or procedure type
-        if H2PNode.PascalDesc=ctnProcedure then
-          SetSection(ctnNone)
-        else
-          SetSection(ctnTypeSection);
-        // create param list
-        PascalCode:='';
-        ChildNode:=TH2PNode(H2PNode.FirstChild);
-        NoNameCount:=0;
-        while ChildNode<>nil do begin
-          if ChildNode.PascalDesc=ctnVarDefinition then begin
-            if PascalCode<>'' then
-              PascalCode:=PascalCode+'; ';
-            CurName:=ChildNode.PascalName;
-            if CurName='' then begin
-              inc(NoNameCount);
-              CurName:='param'+IntToStr(NoNameCount)
-                      +CreatePascalNameFromCCode(ChildNode.PascalCode);
-            end;
-            PascalCode:=PascalCode+CurName+': '+ChildNode.PascalCode;
-          end else begin
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',ChildNode.DescAsString(CTool)]);
-          end;
-          ChildNode:=TH2PNode(ChildNode.NextBrother);
-        end;
-        if PascalCode<>'' then
-          PascalCode:='('+PascalCode+')';
-        if H2PNode.PascalDesc=ctnProcedure then begin
-          PascalCode:=H2PNode.PascalName+PascalCode;
-          if H2PNode.PascalCode='void' then
-            PascalCode:='procedure '+PascalCode
-          else
-            PascalCode:='function '+PascalCode+': '+H2PNode.PascalCode;
-          PascalCode:=PascalCode+'; cdecl;';
-          if H2PNode.CName<>'' then begin
-            if H2PNode.CName<>H2PNode.PascalName then
-              PascalCode:=PascalCode+' external name '''+H2PNode.CName+''';'
-            else
-              PascalCode:=PascalCode+' external;';
-          end;
-        end else begin
-          if H2PNode.PascalCode='void' then
-            PascalCode:='procedure'+PascalCode
-          else
-            PascalCode:='function'+PascalCode+': '+H2PNode.PascalCode;
-          PascalCode:=PascalCode+'; cdecl;';
-          PascalCode:=H2PNode.PascalName+' = '+PascalCode;
-        end;
-        W(PascalCode);
-      end;
-      
+      WriteGlobalProcedureNode(H2PNode);
+
     ctnEnumerationType:
-      begin
-        { for example:
-            e2 = (
-              a = 3,
-              b = 9
-            );
-        }
-        SetSection(ctnTypeSection);
-        // write start
-        PascalCode:=H2PNode.PascalName+' = (';
-        W(PascalCode);
-        // write enums
-        IncIndent;
-        ChildNode:=TH2PNode(H2PNode.FirstChild);
-        while ChildNode<>nil do begin
-          PascalCode:=ChildNode.PascalName;
-          if ChildNode.PascalCode<>'' then
-            PascalCode:=PascalCode+' = '+ChildNode.PascalCode;
-          if ChildNode.NextBrother<>nil then
-            PascalCode:=PascalCode+',';
-          W(PascalCode);
-          ChildNode:=TH2PNode(ChildNode.NextBrother);
-        end;
-        DecIndent;
-        // write end
-        W(');');
-      end;
-      
+      WriteGlobalEnumerationTypeNode(H2PNode);
+
     ctnRecordType:
-      begin
-        { examples:
-           TRecord = record
-           end;
-        }
-        SetSection(ctnTypeSection);
-        // write header
-        PascalCode:=H2PNode.PascalName+' = record';
-        W(PascalCode);
-        // write sub variables
-        IncIndent;
-        ChildNode:=TH2PNode(H2PNode.FirstChild);
-        while ChildNode<>nil do begin
-          if ChildNode.PascalDesc=ctnVarDefinition then begin
-            PascalCode:=ChildNode.PascalName+': '+ChildNode.PascalCode+';';
-            W(PascalCode);
-          end else if ChildNode.PascalDesc=ctnRecordCase then begin
-            { record
-                case longint of
-                0: ( a: b );
-                2: ( c: d );
-              end;
-            }
-            // write header
-            PascalCode:=ChildNode.PascalName+': record';
-            W(PascalCode);
-            IncIndent;
-            // write childs
-            W('case longint of');
-            IncIndent;
-            NoNameCount:=0;
-            SubChildNode:=TH2PNode(ChildNode.FirstChild);
-            while SubChildNode<>nil do begin
-              PascalCode:=IntToStr(NoNameCount)+': ('
-                 +SubChildNode.PascalName+': '+SubChildNode.PascalCode+' );';
-              W(PascalCode);
-              SubChildNode:=TH2PNode(SubChildNode.NextBrother);
-              inc(NoNameCount);
-            end;
-            DecIndent;
-            // write footer
-            W('end;');
-            DecIndent;
-          end else
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING record sub ',ChildNode.DescAsString(CTool)]);
-          ChildNode:=TH2PNode(ChildNode.NextBrother);
-        end;
-        DecIndent;
-        // write end
-        W('end;');
-      end;
-      
+      WriteGlobalRecordTypeNode(H2PNode);
+
     ctnNone:
       if H2PNode.Directive<>nil then begin
-        DirNode:=H2PNode.Directive;
-        case DirNode.Desc of
-        h2pdnIfDef:
-          begin
-            SetSection(ctnNone);
-            W('{$IfDef '+DirNode.MacroName+'}');
-            IncIndent;
-          end;
-        h2pdnIfNDef:
-          begin
-            SetSection(ctnNone);
-            W('{$IfNDef '+DirNode.MacroName+'}');
-            IncIndent;
-          end;
-        h2pdnIf:
-          begin
-            SetSection(ctnNone);
-            W('{$If '+DirNode.Expression+'}');
-            IncIndent;
-          end;
-        h2pdnElseIf:
-          begin
-            SetSection(ctnNone);
-            DecIndent;
-            W('{$ElseIf '+DirNode.Expression+'}');
-            IncIndent;
-          end;
-        h2pdnElse:
-          begin
-            SetSection(ctnNone);
-            DecIndent;
-            W('{$Else}');
-            IncIndent;
-          end;
-        h2pdnEndIf:
-          begin
-            SetSection(ctnNone);
-            DecIndent;
-            W('{$EndIf}');
-          end;
-        h2pdnError:
-          begin
-            SetSection(ctnNone);
-            W('{$Error '+dbgstr(DirNode.Expression)+'}');
-          end;
-        h2pdnUndefine:
-          begin
-            SetSection(ctnNone);
-            W('{$UnDef '+DirNode.MacroName+'}');
-          end;
-        h2pdnDefine:
-          if (DirNode.MacroParams='') then begin
-            SetSection(ctnNone);
-            if DirNode.Expression='' then begin
-              W('{$Define '+DirNode.MacroName+'}');
-            end else begin
-              W('{$Define '+DirNode.MacroName+':='+dbgstr(DirNode.Expression)+'}');
-            end;
-          end else begin
-            DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',DirNode.DescAsString(CTool)]);
-          end;
-        else
-          DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',DirNode.DescAsString(CTool)]);
-        end;
+        WriteDirectiveNode(H2PNode.Directive);
       end else
         DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
 
@@ -1447,12 +1547,15 @@ begin
   end;
   
   // write implementation
-  SetSection(ctnNone);
+  SetPasSection(ctnNone);
   W('implementation');
   W('');
 
   // write end.
   W('end.');
+  
+  FCurPasStream:=nil;
+  FCurIndentStr:='';
 end;
 
 function TH2PasTool.GetSimplePascalTypeOfCVar(CVarNode: TCodeTreeNode): string;
@@ -1858,6 +1961,7 @@ begin
   FIgnoreCParts:=[icspInclude];
   FDefines:=TStringToStringTree.Create(true);
   FUndefines:=TStringToStringTree.Create(true);
+  AddCommonCDefines;
 end;
 
 destructor TH2PasTool.Destroy;
@@ -1883,6 +1987,12 @@ begin
   ClearMacros;
   FDefines.Clear;
   FUndefines.Clear;
+  AddCommonCDefines;
+end;
+
+procedure TH2PasTool.AddCommonCDefines;
+begin
+  Undefines['__cplusplus']:='1';
 end;
 
 procedure TH2PasTool.ResetMacros;
