@@ -58,7 +58,7 @@ type
 function GetDialogCaption(idDiag: Integer): String;
 begin
   Result:='?';
-  Case idDiag of
+  case idDiag of
     idDialogWarning : Result:=rsMtWarning;
     idDialogError   : Result:=rsMtError;
     idDialogInfo    : Result:=rsMtInformation;
@@ -608,10 +608,12 @@ var
   ok: Boolean;
 begin
   inherited Create(nil);
-  MessageTxt:=aMsg;
-  HelpContext:=HelpCtx;
-  OnKeyDown:=@ButtonKeyDown;
-  ok:=false;
+  BorderStyle := bsDialog;
+  Position := poScreenCenter;
+  MessageTxt := aMsg;
+  HelpContext := HelpCtx;
+  OnKeyDown := @ButtonKeyDown;
+  ok := false;
   try
     i:=Low(Buttons);
     while i<=High(Buttons) do begin
@@ -644,7 +646,7 @@ begin
         //DebugLn('TQuestionDlg.CreateQuestionDlg CurBtnCaption=',CurBtnCaption);
         if CurBtnCaption='' then begin
           // find default caption
-          Case CurBtnValue of
+          case CurBtnValue of
             mrOk       : CurBtnCaption:=rsmbOk;
             mrCancel   : CurBtnCaption:=rsmbCancel;
             mrYes      : CurBtnCaption:=rsmbYes;
