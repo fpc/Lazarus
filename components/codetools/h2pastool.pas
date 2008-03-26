@@ -121,6 +121,7 @@ type
   TH2PTree = class
   private
     FNodeCount: integer;
+    procedure Unbind(Node: TH2PBaseNode);
   public
     Root: TH2PBaseNode;
     LastRoot: TH2PBaseNode;
@@ -131,6 +132,7 @@ type
     procedure DeleteNode(ANode: TH2PBaseNode);
     procedure AddNodeAsLastChild(ParentNode, ANode: TH2PBaseNode);
     procedure AddNodeInFrontOf(NextBrotherNode, ANode: TH2PBaseNode);
+    procedure MoveChildsInFront(ANode: TH2PBaseNode);
     function ContainsNode(ANode: TH2PBaseNode): boolean;
     procedure ConsistencyCheck;
     procedure WriteDebugReport(WithChilds: boolean);
@@ -215,7 +217,10 @@ type
                                   var Changed: boolean);
     function MacroValueIsConstant(Node: TH2PDirectiveNode;
                                   out PasType, PasExpression: string): boolean;
-    procedure DeleteDirectiveNode(Node: TH2PDirectiveNode);
+    procedure DeleteDirectiveNode(Node: TH2PDirectiveNode;
+                                  DeleteChilds: boolean;
+                                  AdaptNeighborhood: boolean);
+    procedure DeleteH2PNode(Node: TH2PNode);
   public
     Tree: TH2PTree; // TH2PNode
     DirectivesTree: TH2PTree; // TH2PDirectiveNode
@@ -1395,8 +1400,11 @@ begin
       FPascalNames.Add(H2PNode);
       FCNames.Add(H2PNode);
       NextNode:=TH2PDirectiveNode(Node.NextSkipChilds);
-      DeleteDirectiveNode(Node);
+      Node.H2PNode:=nil;
+      H2PNode.Directive:=nil;
+      DeleteDirectiveNode(Node,true,false);
       DebugLn(['TH2PasTool.SimplifyDefineDirective ADDED constant ',H2PNode.DescAsString(CTool)]);
+      Changed:=true;
     end;
   end else begin
 
@@ -1407,7 +1415,16 @@ procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
   const Expression: string; var NextNode: TH2PDirectiveNode;
   var Changed: boolean);
 begin
+  if (Node.FirstChild=nil) and (Node.H2PNode.FirstChild=nil) then begin
+    // no content
+    DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING empty if directive: ',Node.DescAsString(CTool)]);
+    if (NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf) then
+      NextNode:=TH2PDirectiveNode(NextNode.NextSkipChilds);
+    DeleteDirectiveNode(Node,true,true);
+    Changed:=true;
+  end else begin
 
+  end;
 end;
 
 function TH2PasTool.MacroValueIsConstant(Node: TH2PDirectiveNode;
@@ -1503,11 +1520,96 @@ begin
   Result:=true;
 end;
 
-procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode);
+procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode;
+  DeleteChilds: boolean; AdaptNeighborhood: boolean);
+var
+  Expression: String;
+  Sibling: TH2PDirectiveNode;
+  H2PNode: TH2PNode;
+  EndIfNode: TH2PDirectiveNode;
 begin
-  if Node.H2PNode<>nil then
-    Node.H2PNode.Directive:=nil;
+  if (Node.H2PNode<>nil) and (Node.H2PNode.FirstChild<>nil) then begin
+    raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: a directive can not have H2P childs');
+  end;
+
+  if AdaptNeighborhood then begin
+    // adapt following Else and ElseIf directives
+    Expression:='';
+    case Node.Desc of
+    h2pdnIf,h2pdnElseIf: Expression:='not ('+Node.Expression+')';
+    h2pdnIfDef: Expression:='not defined('+Node.MacroName+')';
+    h2pdnIfNDef: Expression:='defined('+Node.MacroName+')';
+    end;
+    if Expression<>'' then begin
+      Sibling:=TH2PDirectiveNode(Node.NextBrother);
+      while Sibling<>nil do begin
+        case Sibling.Desc of
+        h2pdnElseIf:
+          Sibling.Expression:=Sibling.Expression+' and '+Expression;
+        h2pdnElse:
+          begin
+            Sibling.Desc:=h2pdnElseIf;
+            Sibling.Expression:=Expression;
+          end;
+        else break;
+        end;
+        Sibling:=TH2PDirectiveNode(Sibling.NextBrother);
+      end;
+    end;
+  end;
+  
+  // delete or move childs
+  if Node.FirstChild<>nil then begin
+    if DeleteChilds then begin
+      // delete directive childs
+      while Node.FirstChild<>nil do begin
+        DeleteDirectiveNode(TH2PDirectiveNode(Node.FirstChild),true,false);
+      end;
+    end else begin
+      // keep childs
+      // => move directive childs one level up (in front of Node)
+      if (Node.Desc<>h2pdnIf) and (Node.Desc<>h2pdnIfDef) and (Node.Desc<>h2pdnIfNDef)
+      then
+        raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: can not move childs in front');
+      DirectivesTree.MoveChildsInFront(Node);
+    end;
+  end;
+  
+  H2PNode:=Node.H2PNode;
+  if H2PNode<>nil then begin
+    H2PNode.Directive:=nil; // avoid circle between DeleteH2PNode and DeleteDirectiveNode
+    Node.H2PNode:=nil;
+    DeleteH2PNode(H2PNode);
+  end;
+
+  EndIfNode:=TH2PDirectiveNode(Node.NextBrother);
+  if (EndIfNode<>nil) and (EndIfNode.Desc<>h2pdnEndIf) then
+    EndIfNode:=nil;
+
   DirectivesTree.DeleteNode(Node);
+  if AdaptNeighborhood and (EndIfNode<>nil) then
+    DeleteDirectiveNode(EndIfNode,true,false);
+end;
+
+procedure TH2PasTool.DeleteH2PNode(Node: TH2PNode);
+var
+  DirNode: TH2PDirectiveNode;
+begin
+  if Node.PascalName<>'' then
+    FPascalNames.Remove(Node);
+  if Node.CName<>'' then
+    FCNames.Remove(Node);
+  // delete childs
+  while Node.FirstChild<>nil do
+    DeleteH2PNode(TH2PNode(Node.FirstChild));
+  // delete directives
+  DirNode:=Node.Directive;
+  if DirNode<>nil then begin
+    Node.Directive:=nil; // avoid circle between DeleteH2PNode and DeleteDirectiveNode
+    DirNode.H2PNode:=nil;
+    DeleteDirectiveNode(DirNode,false,true);
+  end;
+  Tree.DeleteNode(Node);
 end;
 
 function TH2PasTool.Convert(CCode, PascalCode: TCodeBuffer): boolean;
@@ -2294,6 +2396,25 @@ end;
 
 { TH2PTree }
 
+procedure TH2PTree.Unbind(Node: TH2PBaseNode);
+begin
+  with Node do begin
+    if (Parent<>nil) then begin
+      if (Parent.FirstChild=Node) then
+        Parent.FirstChild:=NextBrother;
+      if (Parent.LastChild=Node) then
+        Parent.LastChild:=PriorBrother;
+      Parent:=nil;
+    end;
+    if NextBrother<>nil then NextBrother.PriorBrother:=PriorBrother;
+    if PriorBrother<>nil then PriorBrother.NextBrother:=NextBrother;
+    NextBrother:=nil;
+    PriorBrother:=nil;
+  end;
+  if Node=Root then Root:=nil;
+  dec(FNodeCount);
+end;
+
 constructor TH2PTree.Create;
 begin
   Root:=nil;
@@ -2320,21 +2441,7 @@ procedure TH2PTree.DeleteNode(ANode: TH2PBaseNode);
 begin
   if ANode=nil then exit;
   while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
-  with ANode do begin
-    if (Parent<>nil) then begin
-      if (Parent.FirstChild=ANode) then
-        Parent.FirstChild:=NextBrother;
-      if (Parent.LastChild=ANode) then
-        Parent.LastChild:=PriorBrother;
-      Parent:=nil;
-    end;
-    if NextBrother<>nil then NextBrother.PriorBrother:=PriorBrother;
-    if PriorBrother<>nil then PriorBrother.NextBrother:=NextBrother;
-    NextBrother:=nil;
-    PriorBrother:=nil;
-  end;
-  if ANode=Root then Root:=nil;
-  dec(FNodeCount);
+  Unbind(ANode);
   ANode.Free;
 end;
 
@@ -2379,6 +2486,29 @@ begin
   NextBrotherNode.PriorBrother:=ANode;
   if ANode.PriorBrother<>nil then
     ANode.PriorBrother.NextBrother:=ANode;
+  if Root=NextBrotherNode then
+    Root:=ANode;
+  inc(FNodeCount);
+end;
+
+procedure TH2PTree.MoveChildsInFront(ANode: TH2PBaseNode);
+var
+  ChildNode: TH2PBaseNode;
+begin
+  if ANode.FirstChild=nil then exit;
+  ANode.LastChild.NextBrother:=ANode;
+  if ANode.PriorBrother<>nil then begin
+    ANode.FirstChild.PriorBrother:=ANode.PriorBrother;
+    ANode.PriorBrother.NextBrother:=ANode.FirstChild;
+  end;
+  ANode.PriorBrother:=ANode.LastChild;
+  ChildNode:=ANode.FirstChild;
+  while ChildNode<>nil do begin
+    ChildNode.Parent:=ANode.Parent;
+    ChildNode:=ChildNode.NextBrother;
+  end;
+  ANode.FirstChild:=nil;
+  ANode.LastChild:=nil;
 end;
 
 function TH2PTree.ContainsNode(ANode: TH2PBaseNode): boolean;
