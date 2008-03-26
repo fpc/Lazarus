@@ -1410,6 +1410,7 @@ function TH2PasTool.MacroValueIsConstant(Node: TH2PDirectiveNode;
 var
   AtomStart: integer;
   p: Integer;
+  CurAtom: String;
 begin
   Result:=false;
   PasType:='';
@@ -1418,11 +1419,31 @@ begin
   repeat
     ReadRawNextCAtom(PasExpression,p,AtomStart);
     if AtomStart>length(PasExpression) then break;
+    DebugLn(['TH2PasTool.MacroValueIsConstant AAA1 ',copy(PasExpression,AtomStart,p-AtomStart)]);
     if IsIdentStartChar[PasExpression[AtomStart]] then begin
       exit;
+    end else if IsCHexNumber(PasExpression,AtomStart) then begin
+      // hex number
+      // replace 0x with $
+      DebugLn(['TH2PasTool.MacroValueIsConstant AAA2']);
+      PasExpression:=copy(PasExpression,1,AtomStart-1)
+        +'$'+copy(PasExpression,AtomStart+2,length(PasExpression));
+      dec(p);
+    end else if IsCDecimalNumber(PasExpression,AtomStart) then begin
+      // decimal number
     end else if PasExpression[AtomStart]='"' then begin
       PasExpression[AtomStart]:='''';
       PasExpression[p-1]:='''';
+    end else begin
+      CurAtom:=copy(PasExpression,AtomStart,p-AtomStart);
+      if (CurAtom='(') or (CurAtom=')')
+      or (CurAtom='+') or (CurAtom='-') then begin
+        // same in pascal
+      end else begin
+        DebugLn(['TH2PasTool.MacroValueIsConstant AAA3 ',CurAtom]);
+        // unknown
+        exit;
+      end;
     end;
   until false;
   Result:=true;

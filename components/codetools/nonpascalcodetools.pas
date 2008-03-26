@@ -42,7 +42,9 @@ procedure ReadNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
 procedure ReadRawNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
-   
+function IsCDecimalNumber(const Source: string; Position: integer): boolean;
+function IsCHexNumber(const Source: string; Position: integer): boolean;
+
 function ExtractCodeFromMakefile(const Source: string): string;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;
@@ -273,7 +275,18 @@ begin
           inc(Position);
       end;
      '0'..'9': // number
-      begin
+      if (Source[Position+1]='x') then begin
+        inc(Position);
+        // hex number
+        repeat
+          inc(Position);
+        until (Position>Len) or (not IsHexNumberChar[Source[Position]]);
+      end else if (Source[Position+1] in ['0'..'7']) then begin
+        // octal number
+        repeat
+          inc(Position);
+        until (Position>Len) or (not (Source[Position] in ['0'..'7']));
+      end else begin
         inc(Position);
         // read numbers
         while (Position<=Len) and (Source[Position] in ['0'..'9']) do
@@ -343,6 +356,34 @@ begin
     end;
   end;
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+end;
+
+function IsCDecimalNumber(const Source: string; Position: integer): boolean;
+var
+  l: Integer;
+begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
+  Result:=false;
+  l:=length(Source);
+  if (Position<1) or (Position>l) or (not IsNumberChar[Source[Position]])
+  then exit;
+  // check octal and hex number
+  if (Source[Position]='0') and (Source[Position] in ['x','0'..'9'])
+  then exit;
+  // check float
+  inc(Position);
+  while (Position<=l) and (IsNumberChar[Source[Position]]) do
+    inc(Position);
+  if Source[Position]='.' then exit;
+  Result:=true;
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
+end;
+
+function IsCHexNumber(const Source: string; Position: integer): boolean;
+begin
+  Result:=(Position>=1) and (Position<length(Source))
+       and (Source[Position]='0') and (Source[Position+1]='x');
 end;
 
 function ExtractCodeFromMakefile(const Source: string): string;
