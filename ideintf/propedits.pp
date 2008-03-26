@@ -3717,6 +3717,7 @@ begin
     CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
   CollectionForm.EnsureVisible;
+  Result:=CollectionForm;
 end;
 
 procedure TCollectionPropertyEditor.Edit;
