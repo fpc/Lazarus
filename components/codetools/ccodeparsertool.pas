@@ -211,6 +211,8 @@ type
     function ExtractVariableType(VarNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
     function ExtractFunctionName(FuncNode: TCodeTreeNode): string;
+    function GetFunctionParamListNode(Node: TCodeTreeNode): TCodeTreeNode;
+    function ExtractFunctionParamList(FuncNode: TCodeTreeNode): string;
     function ExtractFunctionType(FuncNode: TCodeTreeNode;
                                  WithDirectives: boolean = false): string;
     function ExtractFunctionResultType(FuncNode: TCodeTreeNode;
@@ -238,6 +240,7 @@ type
     procedure IncreaseChangeStep;
     procedure WriteDebugReport;
     procedure CheckNodeTool(Node: TCodeTreeNode);
+    function NodeAsString(Node: TCodeTreeNode): string;
 
     property ChangeStep: integer read FChangeStep;
   end;
@@ -1549,6 +1552,26 @@ begin
     Result:=copy(Src,NameNode.StartPos,NameNode.EndPos-NameNode.StartPos);
 end;
 
+function TCCodeParserTool.GetFunctionParamListNode(Node: TCodeTreeNode
+  ): TCodeTreeNode;
+begin
+  Result:=Node.FirstChild;
+  while (Result<>nil) and (Result.Desc<>ccnFuncParamList) do
+    Result:=Result.NextBrother;
+end;
+
+function TCCodeParserTool.ExtractFunctionParamList(FuncNode: TCodeTreeNode
+  ): string;
+var
+  ParamsNode: TCodeTreeNode;
+begin
+  ParamsNode:=GetFunctionParamListNode(FuncNode);
+  if (ParamsNode=nil) then
+    Result:=''
+  else
+    Result:=ExtractCode(ParamsNode.StartPos,ParamsNode.EndPos);
+end;
+
 function TCCodeParserTool.ExtractFunctionType(FuncNode: TCodeTreeNode;
   WithDirectives: boolean): string;
 var
@@ -1885,7 +1908,7 @@ begin
   if Tree<>nil then begin
     Node:=Tree.Root;
     while Node<>nil do begin
-      DebugLn([GetIndentStr(Node.GetLevel*2)+CCNodeDescAsString(Node.Desc)]);
+      DebugLn([GetIndentStr(Node.GetLevel*2)+NodeAsString(Node)]);
       Node:=Node.Next;
     end;
   end;
@@ -1904,6 +1927,15 @@ begin
   while Node.PriorBrother<>nil do Node:=Node.PriorBrother;
   if (Tree=nil) or (Tree.Root<>Node) then
     RaiseForeignNode;
+end;
+
+function TCCodeParserTool.NodeAsString(Node: TCodeTreeNode): string;
+begin
+  case Node.Desc of
+  ccnName: Result:=copy(Src,Node.StartPos,Node.EndPos-Node.StartPos);
+  else Result:='';
+  end;
+  Result:=CCNodeDescAsString(Node.Desc)+'('+Result+' at '+CleanPosToStr(Node.StartPos)+')';
 end;
 
 procedure InternalFinal;

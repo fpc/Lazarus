@@ -343,7 +343,7 @@ begin
       inc(Position);
       if Position<=Len then begin
         c2:=Source[Position];
-        // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, ^^, ::
+        // test for double char operators
         if ((c1=#13) and (c2=#10))
         or ((c2='=') and (c1 in ['=','!','<','>','+','-','*','/','&','|']))
         or ((c1=':') and (c2=':'))

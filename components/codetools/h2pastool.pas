@@ -584,6 +584,8 @@ var
   StatementNode: TCodeTreeNode;
   TypeH2PNode: TH2PNode;
   H2PNode: TH2PNode;
+  SubTypeName: String;
+  ParamsNode: TCodeTreeNode;
 begin
   CurName:=CTool.ExtractFunctionName(CNode);
   CurType:=CTool.ExtractFunctionResultType(CNode);
@@ -608,11 +610,28 @@ begin
   end;
 
   if Ok then begin
-    H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
-                           nil,false);
-    DebugLn(['TH2PasTool.ConvertFunction function added: ',H2PNode.DescAsString(CTool)]);
-    // build recursively
-    BuildH2PTree(H2PNode);
+    if IsPointerToFunction then begin
+      // create proc type
+      ParamsNode:=CTool.GetFunctionParamListNode(CNode);
+      SubTypeName:=CreatePascalNameFromCCode(CurName+CTool.ExtractFunctionParamList(CNode));
+      TypeH2PNode:=CreateH2PNode(SubTypeName,'',nil,ctnProcedureType,SimpleType,
+                                 nil,true);
+      DebugLn(['TH2PasTool.ConvertFunction function type added: ',TypeH2PNode.DescAsString(CTool)]);
+      // create variable
+      H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnVarDefinition,SubTypeName,
+                             ParentNode,ParentNode=nil);
+      DebugLn(['TH2PasTool.ConvertFunction variable added: ',H2PNode.DescAsString(CTool)]);
+      // build parameters recursively
+      if ParamsNode.FirstChild<>nil then
+        BuildH2PTree(TypeH2PNode,ParamsNode.FirstChild);
+    end else begin
+      // create proc
+      H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnProcedure,SimpleType,
+                             nil,false);
+      DebugLn(['TH2PasTool.ConvertFunction function added: ',H2PNode.DescAsString(CTool)]);
+      // build parameters recursively
+      BuildH2PTree(H2PNode);
+    end;
   end else begin
     DebugLn(['TH2PasTool.ConvertFunction SKIPPING Function Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
   end;
@@ -1627,7 +1646,7 @@ begin
     CTool:=TCCodeParserTool.Create;
   // pare C header file
   CTool.Parse(CCode);
-  //CTool.WriteDebugReport;
+  CTool.WriteDebugReport;
 
   BuildH2PTree;
   

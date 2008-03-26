@@ -63,10 +63,9 @@ begin
 
     Tool:=TH2PasTool.Create;
     Tool.SourceName:=ExtractFileNameOnly(PasCode.Filename);
-    Tool.Defines['__cplusplus']:='1';
     Tool.Convert(CCode,PasCode);
     //Tool.WriteDebugReport;
-    //Tool.WriteH2PNodeReport;
+    Tool.WriteH2PNodeReport;
     Tool.WriteH2PDirectivesNodeReport;
     writeln;
     writeln('=============================================');
