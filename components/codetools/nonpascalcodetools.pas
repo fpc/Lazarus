@@ -33,6 +33,7 @@ interface
 uses
   Classes, SysUtils, AVL_Tree, KeywordFuncLists, FileProcs;
 
+// C
 function CompareCIdentifiers(Identifier1, Identifier2: PChar): integer;
 procedure ReadTilCLineEnd(const Source: string;
    var Position: integer);
@@ -45,10 +46,15 @@ procedure ReadRawNextCAtom(const Source: string;
 function IsCDecimalNumber(const Source: string; Position: integer): boolean;
 function IsCHexNumber(const Source: string; Position: integer): boolean;
 function IsCOctalNumber(const Source: string; Position: integer): boolean;
-
-function ExtractCodeFromMakefile(const Source: string): string;
+function ExtractCCode(const Source: string;
+                      StartPos: integer = 1; EndPos: integer = -1): string;
 
 function CConstantToInt64(const s: string; out i: int64): boolean;
+
+
+// Makefile
+function ExtractCodeFromMakefile(const Source: string): string;
+
 
 implementation
 
@@ -391,6 +397,44 @@ function IsCOctalNumber(const Source: string; Position: integer): boolean;
 begin
   Result:=(Position>=1) and (Position<length(Source))
        and (Source[Position]='0') and (Source[Position+1] in ['0'..'7']);
+end;
+
+function ExtractCCode(const Source: string; StartPos: integer;
+  EndPos: integer): string;
+var
+  DstPos: Integer;
+  SrcPos: Integer;
+  SrcLen: Integer;
+  AtomStart: integer;
+begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
+  Result:=Source;
+  DstPos:=1;
+  SrcPos:=1;
+  SrcLen:=length(Source);
+  if EndPos<1 then EndPos:=SrcLen+1;
+  if SrcLen>EndPos then SrcLen:=EndPos;
+  repeat
+    ReadRawNextCAtom(Source,SrcPos,AtomStart);
+    if AtomStart>=EndPos then break;
+    if not (Source[AtomStart] in [#10,#13]) then begin
+      if IsIdentChar[Source[AtomStart]]
+      and ((DstPos=1) or (IsIdentChar[Result[DstPos-1]])) then begin
+        // space needed between words/numbers
+        Result[DstPos]:=' ';
+        inc(DstPos);
+      end;
+      // copy word
+      while AtomStart<SrcPos do begin
+        Result[DstPos]:=Source[AtomStart];
+        inc(AtomStart);
+        inc(DstPos);
+      end;
+    end;
+  until false;
+  SetLength(Result,DstPos-1);
+  {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
 
 function ExtractCodeFromMakefile(const Source: string): string;

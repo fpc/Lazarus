@@ -1437,6 +1437,13 @@ begin
   Result:=false;
   PasType:='';
   PasExpression:=TrimBrackets(Node.Expression);
+  
+  // check for special constants
+  if ExtractCCode(PasExpression)='(void*)0' then begin
+    PasExpression:='nil';
+    exit(true);
+  end;
+  
   p:=1;
   repeat
     ReadRawNextCAtom(PasExpression,p,AtomStart);
@@ -1445,6 +1452,7 @@ begin
     if IsIdentStartChar[PasExpression[AtomStart]] then begin
       CurAtom:=copy(PasExpression,AtomStart,p-AtomStart);
       if CurAtom='sizeof' then begin
+        // the sizeof(type) function is a C compiler built in function
         // read (
         ReadRawNextCAtom(PasExpression,p,AtomStart);
         if (AtomStart>length(PasExpression))
