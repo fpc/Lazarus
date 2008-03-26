@@ -9,7 +9,7 @@ object CollectionPropertyEditorForm: TCollectionPropertyEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
-  Position = poDefault
+  Position = poDefaultPosOnly
   HorzScrollBar.Page = 189
   VertScrollBar.Page = 299
   Left = 290
