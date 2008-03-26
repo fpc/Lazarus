@@ -124,7 +124,7 @@ type
     procedure EndChildNode;
     procedure CloseNodes;
     
-    procedure ReadVariable;
+    procedure ReadVariable(AsParameter: boolean);
     procedure ReadParameterList;
     procedure ReadEnum;
     procedure ReadStruct;
@@ -330,7 +330,7 @@ begin
   if AtomIsChar(';') then
     // ignore
   else if AtomIsIdentifier then begin
-    ReadVariable;
+    ReadVariable(false);
   end else
     RaiseException('unexpected token '+GetAtom);
 end;
@@ -607,7 +607,7 @@ begin
       ReadNextAtom;
       // read variables
       if AtomIsIdentifier then begin
-        ReadVariable;
+        ReadVariable(false);
         ReadNextAtom;
         if AtomIsChar('}') then
           break
@@ -661,7 +661,7 @@ begin
       ReadNextAtom;
       // read variables
       if AtomIsIdentifier then begin
-        ReadVariable;
+        ReadVariable(false);
         ReadNextAtom;
         if AtomIsChar('}') then
           break
@@ -711,7 +711,7 @@ begin
   end else if SrcPos>SrcLen then
     RaiseException('missing declaration')
   else
-    ReadVariable;
+    ReadVariable(false);
   // read semicolon
   ReadNextAtom;
   if not AtomIsChar(';') then
@@ -824,8 +824,10 @@ begin
   FIfStack[IfLevel-1].StartPos:=StartPos;
 end;
 
-procedure TCCodeParserTool.ReadVariable;
+procedure TCCodeParserTool.ReadVariable(AsParameter: boolean);
 (* Read  type name [specifiers]
+
+  if AsParameter=true then name can be omitted.
 
   Examples:
 
@@ -855,7 +857,14 @@ begin
   {$IFDEF VerboseCCodeParser}
   DebugLn(['TCCodeParserTool.ReadVariable START ',GetAtom]);
   {$ENDIF}
-  CreateChildNode(ccnVariable);
+  if AsParameter then begin
+    CreateChildNode(ccnFuncParameter);
+    if AtomIs('...') then begin
+      EndChildNode;
+      exit;
+    end;
+  end else
+    CreateChildNode(ccnVariable);
   MainNode:=CurNode;
   IsFunction:=false;
   if AtomIs('struct') then begin
@@ -868,6 +877,8 @@ begin
     // read function modifiers
     while IsCCodeFunctionModifier.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     do begin
+      if AsParameter then
+        RaiseException('function modifier not allowed in parameter');
       IsFunction:=true;
       MainNode.Desc:=ccnFunction;
       ReadNextAtom;
@@ -901,16 +912,18 @@ begin
 
   // read name
   ReadNextAtom;
-  CreateChildNode(ccnName);
   if AtomIs('operator') then begin
+    if AsParameter then
+      RaiseException('operator not allowed as parameter');
     IsFunction:=true;
     MainNode.Desc:=ccnFunction;
     // read operator
     ReadNextAtom;
-    CurNode.StartPos:=AtomStart;
     if not IsCCodeCustomOperator.DoItCaseSensitive(Src,AtomStart,SrcPos-AtomStart)
     then
       RaiseExpectedButAtomFound('operator');
+    CreateChildNode(ccnName);
+    CurNode.StartPos:=AtomStart;
     CurNode.EndPos:=SrcPos;
   end else if AtomIsChar('(') then begin
     IsFunction:=true;
@@ -925,11 +938,13 @@ begin
     {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
-    CurNode.StartPos:=AtomStart;
-    if not AtomIsIdentifier then
+    if AtomIsIdentifier then begin
+      CreateChildNode(ccnName);
+      CurNode.StartPos:=AtomStart;
+      CurNode.EndPos:=SrcPos;
+      ReadNextAtom;
+    end else if not AsParameter then
       RaiseExpectedButAtomFound('identifier');
-    CurNode.EndPos:=SrcPos;
-    ReadNextAtom;
     if not AtomIsChar(')') then
       RaiseExpectedButAtomFound(')');
   end else begin
@@ -941,13 +956,19 @@ begin
     {$IFDEF VerboseCCodeParser}
     DebugLn(['TCCodeParserTool.ReadVariable name=',GetAtom]);
     {$ENDIF}
-    CurNode.StartPos:=AtomStart;
-    if not AtomIsIdentifier then
+    if AtomIsIdentifier then begin
+      CreateChildNode(ccnName);
+      CurNode.StartPos:=AtomStart;
+      CurNode.EndPos:=SrcPos;
+    end else if not AsParameter then begin
       RaiseExpectedButAtomFound('identifier');
-    CurNode.EndPos:=SrcPos;
+    end else begin
+      UndoReadNextAtom;
+    end;
   end;
   // end of name
-  EndChildNode;
+  if CurNode.Desc=ccnName then
+    EndChildNode;
 
   ReadNextAtom;
   if IsFunction and (not AtomIsChar('(')) then
@@ -959,9 +980,12 @@ begin
     MainNode.Desc:=ccnFunction;
     ReadParameterList;
     ReadNextAtom;
-    if CurNode.Parent.Desc=ccnTypedef then begin
+    if (CurNode.Parent.Desc=ccnTypedef) then begin
       if AtomIsChar('{') then
-        RaiseException('typedef can not have a statement block');
+        RaiseException('a typedef can not have a statement block');
+    end else if AsParameter then begin
+      if AtomIsChar('{') then
+        RaiseException('a parameter can not have a statement block');
     end else begin
       if AtomIsChar('{') then begin
         // read statements {}
@@ -1008,8 +1032,6 @@ procedure TCCodeParserTool.ReadParameterList;
 // start on (, end on )
 var
   StartPos: LongInt;
-  TypePos: Integer;
-  NamePos: Integer;
 begin
   CreateChildNode(ccnFuncParamList);
   StartPos:=AtomStart;
@@ -1025,64 +1047,13 @@ begin
     if AtomIsChar(',') then
       RaiseExpectedButAtomFound('parameter type');
     // read parameter
-    CreateChildNode(ccnFuncParameter);
-    // examples:
-    //   a           a is the type
-    //   a b         a is type, b is name
-    //   signed a    a is the type
-    TypePos:=0;
-    NamePos:=0;
-    repeat
-      if AtomStart>SrcLen then break;
-      if AtomIsChar(')') then begin
-        // end of parameter list
-        break;
-      end else if AtomIs('[') then
-        ReadTilBracketClose(true)
-      else if AtomIsChar(',') then
-        break
-      else if IsIdentStartChar[Src[AtomStart]] then begin
-        if NamePos>0 then
-          RaiseExpectedButAtomFound(', or )');
-        if AtomIs('signed') or AtomIs('unsigned') or AtomIs('const') then
-        begin
-          // modifier
-        end else if AtomIs('struct') then begin
-          // modifier
-        end else if AtomIs('short') or AtomIs('long') then begin
-          // modifier or type
-          TypePos:=AtomStart;
-          ReadNextAtom;
-          if AtomIs(')') or AtomIs(',') or AtomIs('(') then begin
-            // type
-          end else begin
-            // modifier
-            TypePos:=0;
-          end;
-          UndoReadNextAtom;
-        end else begin
-          // type or name
-          if TypePos<1 then begin
-            // type
-            TypePos:=AtomStart;
-          end else begin
-            // name
-            NamePos:=AtomStart;
-            CreateChildNode(ccnName);
-            EndChildNode;
-          end;
-        end;
-      end else if AtomIsChar('=') then begin
-        if TypePos<1 then
-          RaiseExpectedButAtomFound('type');
-        ReadNextAtom;
-        ReadConstant;
-      end;
-      CurNode.EndPos:=SrcPos;
-      ReadNextAtom;
-    until false;
-    EndChildNode;
-  until AtomIsChar(')');
+    ReadVariable(true);
+    // read next
+    ReadNextAtom;
+    if AtomIsChar(')') then break;
+    if not AtomIsChar(',') then
+      RaiseExpectedButAtomFound(',');
+  until false;
   CurNode.EndPos:=SrcPos;
   EndChildNode;
 end;

@@ -345,11 +345,8 @@ begin
         c2:=Source[Position];
         // test for double char operators :=, +=, -=, /=, *=, !=, ==, <=, >=, ^^, ::
         if ((c1=#13) and (c2=#10))
-        or ((c2='=') and IsEqualOperatorStartChar[c1])
-        or ((c1='=') and (c2='='))
-        or ((c1='!') and (c2='='))
+        or ((c2='=') and (c1 in ['=','!','<','>','+','-','*','/','&','|']))
         or ((c1=':') and (c2=':'))
-        or ((c1='^') and (c2='^'))
         or ((c1='|') and (c2='|'))
         or ((c1='&') and (c2='&'))
         or ((c1='+') and (c2='+'))
@@ -358,7 +355,9 @@ begin
         or ((c1='>') and (c2='>'))
         or ((c1='<') and (c2='<'))
         then
-          inc(Position);
+          inc(Position)
+        else if ((c1='.') and (c2='.') and (Source[Position+1]='.')) then
+          inc(Position,2);
       end;
     end;
   end;
