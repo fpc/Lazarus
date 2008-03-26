@@ -1,8 +1,8 @@
 { $Id$}
 {
  *****************************************************************************
- *                             Win32WSDialogs.pp                             * 
- *                             -----------------                             * 
+ *                             Win32WSDialogs.pp                             *
+ *                             -----------------                             *
  *                                                                           *
  *                                                                           *
  *****************************************************************************
@@ -38,7 +38,7 @@ uses
 {$IFEND}
 
 ////////////////////////////////////////////////////
-// I M P O R T A N T                                
+// I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
@@ -49,7 +49,7 @@ uses
   CommDlg,
 {$ENDIF}
 // lcl
-  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms,
+  LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, FileUtil,
 // ws
   WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
   Win32Proc;
@@ -91,8 +91,6 @@ type
   private
   protected
   public
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
-    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -137,7 +135,10 @@ implementation
 type
   TOpenFileDialogRec = record
     Dialog: TFileDialog;
-    FileNames: String;
+    AnsiFolderName: string;
+    AnsiFileNames: string;
+    UnicodeFolderName: widestring;
+    UnicodeFileNames: widestring
   end;
   POpenFileDialogRec = ^TOpenFileDialogRec;
 
@@ -145,6 +146,25 @@ type
 // In the initialization section the correct size is determined.
 var
   OpenFileNameSize: integer = 0;
+
+// Returns a new PWideChar containing the string UTF8 string s as widechars
+function UTF8StringToPWideChar(const s: string) : PWideChar;
+begin
+  // a string of widechars will need at most twice the amount of bytes
+  // as the corresponding UTF8 string
+  Result := GetMem(length(s)*2+2);
+  Utf8ToUnicode(Result,length(s)+1,pchar(s),length(s)+1);
+end;
+
+// Returns a new PChar containing the string UTF8 string s as ansichars
+function UTF8StringToPAnsiChar(const s: string) : PAnsiChar;
+var
+  AnsiChars: string;
+begin
+  AnsiChars:= Utf8ToAnsi(s);
+  Result := GetMem(length(AnsiChars)+1);
+  Move(AnsiChars[1], Result^, length(AnsiChars)+1);
+end;
 
 {------------------------------------------------------------------------------
   Method: GetOwnerHandle
@@ -248,12 +268,9 @@ end;
  retrieving the files is used.
 }
 
-type
-  TWinFileDialogFunc = function(OpenFile: Windows.LPOPENFILENAME): WINBOOL; stdcall;
-
 function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
   lParam: LPARAM): UINT; stdcall;
-  
+
   procedure Reposition(ADialogWnd: Handle);
   var
     Left, Top: Integer;
@@ -261,7 +278,7 @@ function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
   begin
     // Btw, setting width and height of dialog doesnot reposition child controls :(
     // So no way to set another height and width at least here
-    
+
     // do reposition only if dialog has no parent form
     if (GetParent(ADialogWnd) = Win32WidgetSet.AppHandle) then
     begin
@@ -272,12 +289,14 @@ function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
       SetWindowPos(ADialogWnd, HWND_TOP, Left, Top, 0, 0, SWP_NOSIZE);
     end;
   end;
-  
+
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
   NeededSize: SizeInt;
   DialogRec: POpenFileDialogRec;
+  FilesSize: SizeInt;
+  FolderSize: SizeInt;
 begin
   if uMsg = WM_INITDIALOG then
   begin
@@ -308,18 +327,68 @@ begin
           // for example 'c:\winnt'#0'file1.txt'#0'file2.txt'#0#0.
           // GetFolderPath returns upper limit for the path, GetSpec for the files.
           // This is not exact because the GetSpec returns the size for
-          // '"file1.txt" "file2.txt"', so that size will be two bytes per filename
-          // more than needed in thlengthe lpStrFile buffer.
-          NeededSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0) +
-                          CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
-          // test if we need to use our own storage
-          if (SizeInt(OpenFileName^.nMaxFile) < NeededSize) and (OpenFileName^.lCustData <> 0) then
+          // '"file1.txt" "file2.txt"', so that size will be two chars per filename
+          // more than needed in the lpStrFile buffer.
+          {$ifdef WindowsUnicodeSupport}
+          if UnicodeEnabledOS then
           begin
-            if length(DialogRec^.FileNames) < NeededSize then
-              SetLength(DialogRec^.FileNames, NeededSize*2);
-            CommDlg_OpenSave_GetSpec(GetParent(hwnd),
-                                       PChar(DialogRec^.FileNames), Length(DialogRec^.FileNames));
+            FolderSize := CommDlg_OpenSave_GetFolderPathW(GetParent(hwnd), nil, 0);
+            FilesSize := CommDlg_OpenSave_GetSpecW(GetParent(hwnd), nil, 0);
+            
+            // test if we need to use our own storage
+            if (SizeInt(OpenFileName^.nMaxFile) < FolderSize + FilesSize) and
+               (OpenFileName^.lCustData <> 0) then
+            begin
+              SetLength(DialogRec^.UnicodeFolderName, FolderSize-1);
+              CommDlg_OpenSave_GetFolderPathW(GetParent(hwnd),
+                                        PWideChar(DialogRec^.UnicodeFolderName),
+                                        FolderSize);
+                                        
+              if length(DialogRec^.UnicodeFileNames) < FilesSize then
+                // allocate twice the size, to prevent much relocations
+                SetLength(DialogRec^.UnicodeFileNames, FilesSize*2);
+
+              CommDlg_OpenSave_GetSpecW(GetParent(hwnd),
+                                    PWideChar(DialogRec^.UnicodeFileNames),
+                                    Length(DialogRec^.UnicodeFileNames));
           end;
+          end else
+          begin
+            FolderSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0);
+            FilesSize := CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
+            // test if we need to use our own storage
+            if (SizeInt(OpenFileName^.nMaxFile) < FolderSize + FilesSize) and
+               (OpenFileName^.lCustData <> 0) then
+            begin
+              SetLength(DialogRec^.AnsiFolderName, FolderSize-1);
+              CommDlg_OpenSave_GetFolderPath(GetParent(hwnd),
+                                  PChar(DialogRec^.AnsiFolderName), FolderSize);
+
+              if length(DialogRec^.AnsiFileNames) < FilesSize then
+                // allocate twice the size, to prevent much relocations
+                SetLength(DialogRec^.AnsiFileNames, FilesSize*2);
+              CommDlg_OpenSave_GetSpec(GetParent(hwnd),
+                PChar(DialogRec^.AnsiFileNames), Length(DialogRec^.AnsiFileNames));
+            end;
+          end;
+          {$else}
+          FolderSize := CommDlg_OpenSave_GetFolderPath(GetParent(hwnd), nil, 0);
+          FilesSize := CommDlg_OpenSave_GetSpec(GetParent(hwnd), nil, 0);
+          // test if we need to use our own storage
+          if (SizeInt(OpenFileName^.nMaxFile) < FolderSize + FilesSize) and
+             (OpenFileName^.lCustData <> 0) then
+          begin
+            SetLength(DialogRec^.AnsiFolderName, FolderSize-1);
+            CommDlg_OpenSave_GetFolderPath(GetParent(hwnd),
+                                PChar(DialogRec^.AnsiFolderName), FolderSize);
+
+            if length(DialogRec^.AnsiFileNames) < FilesSize then
+              // allocate twice the size, to prevent much relocations
+              SetLength(DialogRec^.AnsiFileNames, FilesSize*2);
+            CommDlg_OpenSave_GetSpec(GetParent(hwnd),
+              PChar(DialogRec^.AnsiFileNames), Length(DialogRec^.AnsiFileNames));
+          end;
+          {$endif}
         end;
       CDN_TYPECHANGE:
         begin
@@ -360,7 +429,7 @@ function CreateFileDialogHandle(AOpenDialog: TOpenDialog): THandle;
   begin
     for i := 1 to length(AFilter) do
       if AFilter[i] = '|' then AFilter[i]:=#0;
-    AFilter:=AFilter + #0#0;
+    AFilter:=AFilter + #0;
   end;
 const
   FileNameBufferLen = 1000;
@@ -375,19 +444,8 @@ var
   FileNameWide: WideString;
   FileNameWideBuffer: PWideChar;
   FileNameBufferSize: Integer;
-  FilterBuffer: WideString;
-  TitleBuffer: WideString;
 {$endif WindowsUnicodeSupport}
 begin
-{$ifdef WindowsUnicodeSupport}
-  if UnicodeEnabledOS then
-    FileNameWideBuffer := AllocMem(FileNameBufferLen * 2 + 2)
-  else
-    FileNameBuffer := AllocMem(FileNameBufferLen + 1);
-{$else}
-  FileNameBuffer := AllocMem(FileNameBufferLen + 1);
-{$endif}
-
   FileName := AOpenDialog.FileName;
   InitialDir := AOpenDialog.InitialDir;
   if (FileName<>'') and (FileName[length(FileName)]=PathDelim) then
@@ -401,9 +459,8 @@ begin
   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS then
     begin
+      FileNameWideBuffer := AllocMem(FileNameBufferLen * 2 + 2);
       FileNameWide := UTF8Decode(FileName);
-
-      FillChar(FileNameWideBuffer^, FileNameBufferLen * 2 + 2, #0);
 
       if Length(FileNameWide) > FileNameBufferLen then
         FileNameBufferSize := FileNameBufferLen
@@ -412,9 +469,12 @@ begin
 
       Move(FileNameWide[1], FileNameWideBuffer^, FileNameBufferSize * 2);
     end
-    else
+    else begin
+      FileNameBuffer := AllocMem(FileNameBufferLen + 1);
       StrLCopy(FileNameBuffer, PChar(UTF8ToAnsi(FileName)), FileNameBufferLen);
+    end;
   {$else}
+    FileNameBuffer := AllocMem(FileNameBufferLen + 1);
     StrLCopy(FileNameBuffer, PChar(FileName), FileNameBufferLen);
   {$endif}
 
@@ -424,7 +484,7 @@ begin
     ReplacePipe(Filter);
   end
   else
-    Filter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
+    Filter:='All File Types(*.*)'+#0+'*.*'+#0; // Default -> avoid empty combobox
 
   OpenFile := AllocMem(SizeOf(OpenFileName));
   with OpenFile^ Do
@@ -439,45 +499,38 @@ begin
     if UnicodeEnabledOS then
     begin
       lpStrFile := PChar(FileNameWideBuffer);
-
-      FilterBuffer := Utf8Decode(Filter);
-      lpStrFilter := GetMem(Length(FilterBuffer) * 2 + 2);
-      Move(FilterBuffer[1], lpStrFilter^, Length(FilterBuffer) * 2 + 2);
-
-      TitleBuffer := Utf8Decode(AOpenDialog.Title);
-      {$note AllocMem is used a workaround for a possible bug in Utf8Decode,
-       it doesn't seem to null terminate the widestring}
-      lpStrTitle := AllocMem(Length(TitleBuffer) * 2 + 2);
-      Move(TitleBuffer[1], lpStrTitle^, Length(TitleBuffer) * 2);
+      lpstrFilter:=PChar(UTF8StringToPWideChar(Filter));
+      lpstrTitle:=PChar(UTF8StringToPWideChar(AOpenDialog.Title));
+      lpstrInitialDir:=PChar(UTF8StringToPWideChar(InitialDir));
     end
     else
     begin
       lpStrFile := FileNameBuffer;
-
-      lpStrFilter := StrAlloc(Length(Filter)+1);
-      StrPCopy(lpStrFilter, Utf8ToAnsi(Filter));
-
-      lpStrTitle := GetMem(Length(AOpenDialog.Title)+1);
-      StrPCopy(lpStrTitle, Utf8ToAnsi(AOpenDialog.Title));
+      lpstrFilter:=UTF8StringToPAnsiChar(Filter);
+      lpstrTitle:=UTF8StringToPAnsiChar(AOpenDialog.Title);
+      lpstrInitialDir:=UTF8StringToPAnsiChar(InitialDir);
     end;
   {$else}
     lpStrFile := FileNameBuffer;
 
-    lpStrFilter := StrAlloc(Length(Filter)+1);
+    lpStrFilter := GetMem(Length(Filter)+1);
     StrPCopy(lpStrFilter, Filter);
 
     lpStrTitle := GetMem(Length(AOpenDialog.Title)+1);
     StrPCopy(lpStrTitle, AOpenDialog.Title);
+
+    lpStrInitialDir := GetMem(Length(InitialDir)+1);
+    StrPCopy(lpstrInitialDir, InitialDir);
   {$endif}
 
-    lpStrInitialDir := PChar(InitialDir);
 
     nMaxFile := FileNameBufferLen + 1; // Size in TCHARs
     lpfnHook := @OpenFileDialogCallBack;
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
     New(DialogRec);
+    // new initializes the filename fields, because ansistring and widestring
+    // are automated types.
     DialogRec^.Dialog := AOpenDialog;
-    DialogRec^.FileNames := '';
     lCustData := LParam(DialogRec);
   end;
   Result := THandle(OpenFile);
@@ -494,6 +547,7 @@ var
     pName: PChar;
   {$ifdef WindowsUnicodeSupport}
     PWideName: PWideChar;
+    DirName: string;
   {$endif WindowsUnicodeSupport}
   begin
   {$ifdef WindowsUnicodeSupport}
@@ -503,11 +557,14 @@ var
       I:=Length(PWideName);
       if I < OpenFile^.nFileOffset then
       begin
+        DirName := AppendPathDelim(UTF8Encode(PWideName));
         Inc(PWideName, Succ(I));
         I:=Length(PWideName);
         while I > 0 do
         begin
-          AFiles.Add(ExpandFileName(Utf8Encode(PWideName)));
+          // Don't use expand filename here, it expands directories using
+          // system encoding, not UTF-8
+          AFiles.Add(DirName + Utf8Encode(PWideName));
           Inc(PWideName,Succ(I));
           I:=Length(PWideName);
         end;
@@ -521,11 +578,12 @@ var
       I:=Length(pName);
       if I < OpenFile^.nFileOffset then
       begin
+        DirName := AppendPathDelim(AnsiToUtf8(pName));
         Inc(pName,Succ(I));
         I:=Length(pName);
         while I > 0 do
         begin
-          AFiles.Add(ExpandFileName(StrPas(pName)));
+          AFiles.Add(DirName + AnsiToUtf8(pName));
           Inc(pName,Succ(I));
           I:=Length(pName);
         end;
@@ -555,9 +613,22 @@ var
   procedure SetFilesPropertyCustomFiles(AFiles:TStrings);
   var
     i, Start: integer;
+    FolderName: string;
     FileNames: String;
   begin
-    FileNames := DialogRec^.FileNames;
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then begin
+      FolderName := UTF8Encode(DialogRec^.UnicodeFolderName);
+      FileNames := UTF8Encode(DialogRec^.UnicodeFileNames);
+    end else begin
+      FolderName := AnsiToUtf8(DialogRec^.AnsiFolderName);
+      FileNames := AnsiToUtf8(DialogRec^.AnsiFileNames);
+    end;
+    {$else}
+    FolderName:= DialogRec^.AnsiFolderName;
+    FileNames := DialogRec^.AnsiFileNames;
+    {$endif}
+    FolderName := AppendPathDelim(FolderName);
     if (FileNames[1] = '"') then
     begin
       Start := 1; // first quote is on pos 1
@@ -566,7 +637,7 @@ var
         i := Start + 1;
         while FileNames[i] <> '"' do
           inc(i);
-        AFiles.Add(ExpandFileName(Copy(FileNames, Start + 1, I - Start - 1)));
+        AFiles.Add(FolderName + Copy(FileNames, Start + 1, I - Start - 1));
         start := i+1;
         while (FileNames[Start] <> #0) and (FileNames[start] <> '"') do
           inc(Start);
@@ -595,7 +666,7 @@ var
         end;
     end;
   end;
-  
+
 var
   BufferTooSmall: boolean;
 begin
@@ -621,56 +692,6 @@ begin
     AOpenDialog.FileName := '';
 end;
 
-{ TWin32WSSaveDialog }
-
-class function TWin32WSSaveDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
-begin
-  Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
-end;
-
-class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
-var
-  OpenFile: LPOPENFILENAME;
-begin
-  if ACommonDialog.Handle <> 0 then
-  begin
-    OpenFile := LPOPENFILENAME(ACommonDialog.Handle);
-    if OpenFile^.lCustData <> 0 then
-      Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
-
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      FreeMem(OpenFile^.lpStrFilter)
-    else
-      StrDispose(OpenFile^.lpStrFilter);
-  {$else}
-    StrDispose(OpenFile^.lpStrFilter);
-  {$endif}
-
-    FreeMem(OpenFile^.lpStrFile);
-    FreeMem(OpenFile^.lpStrTitle);
-    FreeMem(OpenFile);
-  end;
-end;
-
-class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
-begin
-  if ACommonDialog.Handle <> 0 then
-  begin
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
-    else
-      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-        GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$else}
-    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
-      GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
-  {$endif}
-  end;
-end;
-
 { TWin32WSOpenDialog }
 
 class function TWin32WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
@@ -688,15 +709,8 @@ begin
     if OPENFILE^.lCustData <> 0 then
       Dispose(POpenFileDialogRec(OPENFILE^.lCustData));
 
-  {$ifdef WindowsUnicodeSupport}
-    if UnicodeEnabledOS then
-      FreeMem(OpenFile^.lpStrFilter)
-    else
-      StrDispose(OpenFile^.lpStrFilter);
-  {$else}
-    StrDispose(OpenFile^.lpStrFilter);
-  {$endif}
-
+    FreeMem(OpenFile^.lpStrFilter);
+    FreeMem(OpenFile^.lpstrInitialDir);
     FreeMem(OpenFile^.lpStrFile);
     FreeMem(OpenFile^.lpStrTitle);
     FreeMem(OpenFile);
@@ -717,6 +731,26 @@ begin
   {$else}
     ProcessFileDialogResult(TOpenDialog(ACommonDialog),
       GetOpenFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$endif}
+  end;
+end;
+
+{ TWin32WSSaveDialog }
+
+class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
+begin
+  if ACommonDialog.Handle <> 0 then
+  begin
+  {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetSaveFileNameW(LPOPENFILENAME(ACommonDialog.Handle)))
+    else
+      ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+        GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
+  {$else}
+    ProcessFileDialogResult(TOpenDialog(ACommonDialog),
+      GetSaveFileName(LPOPENFILENAME(ACommonDialog.Handle)));
   {$endif}
   end;
 end;
@@ -844,9 +878,9 @@ var
 begin
   Buffer := CoTaskMemAlloc(MAX_PATH);
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
-  
+
   Options := TSelectDirectoryDialog(ACommonDialog).Options;
-  
+
   if length(InitialDir)=0 then
     InitialDir := TSelectDirectoryDialog(ACommonDialog).InitialDir;
   if length(InitialDir)>0 then begin
