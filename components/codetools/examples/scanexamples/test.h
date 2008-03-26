@@ -103,6 +103,7 @@ struct hidp_connlist_req {
 #define SDP_PSM                 0x0001
 #define SDP_PRIMARY_LANG_BASE           0x0100
 #define SDP_ATTR_SVCNAME_PRIMARY        0x0000 + SDP_PRIMARY_LANG_BASE
+#define AnOctal                 0001
 
 typedef struct {
         uint8_t type; // invalid pascal name

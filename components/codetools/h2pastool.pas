@@ -1425,10 +1425,13 @@ begin
     end else if IsCHexNumber(PasExpression,AtomStart) then begin
       // hex number
       // replace 0x with $
-      DebugLn(['TH2PasTool.MacroValueIsConstant AAA2']);
       PasExpression:=copy(PasExpression,1,AtomStart-1)
         +'$'+copy(PasExpression,AtomStart+2,length(PasExpression));
       dec(p);
+    end else if IsCOctalNumber(PasExpression,AtomStart) then begin
+      // octal number
+      // replace 0 with &
+      PasExpression[AtomStart]:='&';
     end else if IsCDecimalNumber(PasExpression,AtomStart) then begin
       // decimal number
     end else if PasExpression[AtomStart]='"' then begin

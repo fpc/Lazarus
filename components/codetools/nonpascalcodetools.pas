@@ -44,6 +44,7 @@ procedure ReadRawNextCAtom(const Source: string;
    var Position: integer; out AtomStart: integer);
 function IsCDecimalNumber(const Source: string; Position: integer): boolean;
 function IsCHexNumber(const Source: string; Position: integer): boolean;
+function IsCOctalNumber(const Source: string; Position: integer): boolean;
 
 function ExtractCodeFromMakefile(const Source: string): string;
 
@@ -384,6 +385,12 @@ function IsCHexNumber(const Source: string; Position: integer): boolean;
 begin
   Result:=(Position>=1) and (Position<length(Source))
        and (Source[Position]='0') and (Source[Position+1]='x');
+end;
+
+function IsCOctalNumber(const Source: string; Position: integer): boolean;
+begin
+  Result:=(Position>=1) and (Position<length(Source))
+       and (Source[Position]='0') and (Source[Position+1] in ['0'..'7']);
 end;
 
 function ExtractCodeFromMakefile(const Source: string): string;
