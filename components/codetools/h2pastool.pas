@@ -197,6 +197,7 @@ type
     procedure WriteGlobalEnumerationTypeNode(H2PNode: TH2PNode);
     procedure WriteGlobalRecordTypeNode(H2PNode: TH2PNode);
     procedure WriteDirectiveNode(DirNode: TH2PDirectiveNode);
+    function CreateDirectiveValue(const s: string): string;
 
     procedure SimplifyUndefineDirective(Node: TH2PDirectiveNode;
                                         var NextNode: TH2PDirectiveNode);
@@ -1255,7 +1256,7 @@ begin
   h2pdnError:
     begin
       SetPasSection(ctnNone);
-      W('{$Error '+dbgstr(DirNode.Expression)+'}');
+      W('{$Error '+CreateDirectiveValue(DirNode.Expression)+'}');
     end;
   h2pdnUndefine:
     begin
@@ -1268,13 +1269,27 @@ begin
       if DirNode.Expression='' then begin
         W('{$Define '+DirNode.MacroName+'}');
       end else begin
-        W('{$Define '+DirNode.MacroName+':='+dbgstr(DirNode.Expression)+'}');
+        W('{$Define '+DirNode.MacroName+':='+CreateDirectiveValue(DirNode.Expression)+'}');
       end;
     end else begin
       DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
     end;
   else
     DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
+  end;
+end;
+
+function TH2PasTool.CreateDirectiveValue(const s: string): string;
+var
+  p: Integer;
+begin
+  Result:=s;
+  p:=length(Result);
+  while p>=1 do begin
+    if (Result[p] in [#0..#31,'{','}']) then begin
+      Result:=copy(Result,1,p-1)+'#'+IntToStr(ord(Result[p]))+copy(Result,p+1,length(Result));
+    end;
+    dec(p);
   end;
 end;
 
