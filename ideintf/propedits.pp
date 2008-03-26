@@ -912,6 +912,8 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
+    class function ShowCollectionEditor(ACollection: TCollection; 
+      OwnerPersistent: TPersistent; const PropName: String): TCustomForm;
   end;
 
 //==============================================================================
@@ -1442,7 +1444,7 @@ type
 
 
 procedure WritePublishedProperties(Instance: TPersistent);
-
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
 implementation
 
@@ -3706,17 +3708,25 @@ begin
   Result := [paDialog, paReadOnly];
 end;
 
-Procedure TCollectionPropertyEditor.Edit;
+class function TCollectionPropertyEditor.ShowCollectionEditor(
+  ACollection: TCollection; 
+  OwnerPersistent: TPersistent; 
+  const PropName: String): TCustomForm;
+begin
+  if CollectionForm = nil then
+    CollectionForm := TCollectionPropertyEditorForm.Create(Application);
+  CollectionForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  CollectionForm.EnsureVisible;
+end;
+
+procedure TCollectionPropertyEditor.Edit;
 var
   TheCollection: TCollection;
 begin
   TheCollection := TCollection(GetObjectValue);
-  if TheCollection=nil then
+  if TheCollection = nil then
     raise Exception.Create('Collection=nil');
-  If CollectionForm=nil then
-    CollectionForm := TCollectionPropertyEditorForm.Create(Application);
-  CollectionForm.SetCollection(TheCollection,GetComponent(0),GetName);
-  CollectionForm.EnsureVisible;
+  ShowCollectionEditor(TheCollection, GetComponent(0), GetName);
 end;
 
 { TClassPropertyEditor }
@@ -6181,6 +6191,11 @@ begin
 
   // XXX workaround for buggy typeinfo function
   DummyClassForPropTypes.Free;
+end;
+
+procedure EditCollection(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
+begin
+  TCollectionPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
 end;
 
 initialization

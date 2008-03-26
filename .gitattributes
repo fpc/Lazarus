@@ -2205,6 +2205,7 @@ ideintf/graphicpropedit.lfm svneol=native#text/plain
 ideintf/graphicpropedit.lrs svneol=native#text/plain
 ideintf/graphicpropedit.pas svneol=native#text/plain
 ideintf/graphpropedits.pas svneol=native#text/pascal
+ideintf/headercontrolpropedit.pp svneol=native#text/pascal
 ideintf/helpfpdoc.pas svneol=native#text/pascal
 ideintf/idecommands.pas svneol=native#text/pascal
 ideintf/idedialogs.pas svneol=native#text/plain

@@ -147,6 +147,9 @@ resourcestring
   sccsSGEdtSaveDialog = 'Save';
   sccsSGEdtMoveRowsCols = 'Move Rows/Cols';
 
+  // HeaderControl Editor
+  sccsHCEditSections  = 'Sections Editor ...';
+
   // component editors
   nbcesAddPage  = 'Add page';
   nbcesInsertPage = 'Insert page';

@@ -42,6 +42,7 @@ uses
   ImageListEditor,
   LazIDEIntf,
   ListViewPropEdit,
+  HeaderControlPropEdit,
   MacroIntf,
   MaskPropEdit,
   MenuIntf,
