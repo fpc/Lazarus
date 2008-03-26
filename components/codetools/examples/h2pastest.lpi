@@ -50,8 +50,19 @@
       <OtherUnitFiles Value="scanexamples/"/>
     </SearchPaths>
     <CodeGeneration>
+      <Checks>
+        <IOChecks Value="True"/>
+        <RangeChecks Value="True"/>
+        <OverflowChecks Value="True"/>
+        <StackChecks Value="True"/>
+      </Checks>
       <Generate Value="Faster"/>
     </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseHeaptrc Value="True"/>
+      </Debugging>
+    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

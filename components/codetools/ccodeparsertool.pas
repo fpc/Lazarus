@@ -1094,6 +1094,7 @@ begin
   FreeAndNil(Tree);
   ReAllocMem(FIfStack,0);
   FIfStackCapacity:=0;
+  FreeAndNil(FDefaultTokenList);
   inherited Destroy;
 end;
 
