@@ -410,28 +410,32 @@ begin
   {$R-}
   Result:=Source;
   DstPos:=1;
-  SrcPos:=1;
+  SrcPos:=StartPos;
   SrcLen:=length(Source);
   if EndPos<1 then EndPos:=SrcLen+1;
-  if SrcLen>EndPos then SrcLen:=EndPos;
-  repeat
-    ReadRawNextCAtom(Source,SrcPos,AtomStart);
-    if AtomStart>=EndPos then break;
-    if not (Source[AtomStart] in [#10,#13]) then begin
-      if IsIdentChar[Source[AtomStart]]
-      and ((DstPos=1) or (IsIdentChar[Result[DstPos-1]])) then begin
-        // space needed between words/numbers
-        Result[DstPos]:=' ';
-        inc(DstPos);
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  if SrcPos<EndPos then begin
+    repeat
+      ReadRawNextCAtom(Source,SrcPos,AtomStart);
+      if AtomStart>=EndPos then break;
+      if not (Source[AtomStart] in [#10,#13]) then begin
+        if IsIdentChar[Source[AtomStart]]
+        and ((DstPos=1) or (IsIdentChar[Result[DstPos-1]])) then begin
+          // space needed between words/numbers
+          Result[DstPos]:=' ';
+          inc(DstPos);
+        end;
+        // copy word
+        while AtomStart<SrcPos do begin
+          Result[DstPos]:=Source[AtomStart];
+          inc(AtomStart);
+          inc(DstPos);
+        end;
       end;
-      // copy word
-      while AtomStart<SrcPos do begin
-        Result[DstPos]:=Source[AtomStart];
-        inc(AtomStart);
-        inc(DstPos);
-      end;
-    end;
-  until false;
+    until false;
+  end;
+  if DstPos>length(Result)+1 then
+    raise Exception.Create('');
   SetLength(Result,DstPos-1);
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
