@@ -58,11 +58,6 @@
       </Checks>
       <Generate Value="Faster"/>
     </CodeGeneration>
-    <Linking>
-      <Debugging>
-        <UseHeaptrc Value="True"/>
-      </Debugging>
-    </Linking>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

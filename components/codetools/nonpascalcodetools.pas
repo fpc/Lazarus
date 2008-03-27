@@ -282,20 +282,20 @@ begin
           inc(Position);
       end;
      '0'..'9': // number
-      if (Source[Position+1]='x') then begin
+      if (c1='0') and (Source[Position+1]='x') then begin
         inc(Position);
         // hex number
         repeat
           inc(Position);
         until (Position>Len) or (not IsHexNumberChar[Source[Position]]);
-      end else if (Source[Position+1] in ['0'..'7']) then begin
+      end else if (c1='0') and (Source[Position+1] in ['0'..'7']) then begin
         // octal number
         repeat
           inc(Position);
         until (Position>Len) or (not (Source[Position] in ['0'..'7']));
       end else begin
         inc(Position);
-        // read numbers
+        // read number
         while (Position<=Len) and (Source[Position] in ['0'..'9']) do
           inc(Position);
         if (Position<Len) and (Source[Position]='.')
@@ -420,7 +420,7 @@ begin
       if AtomStart>=EndPos then break;
       if not (Source[AtomStart] in [#10,#13]) then begin
         if IsIdentChar[Source[AtomStart]]
-        and ((DstPos=1) or (IsIdentChar[Result[DstPos-1]])) then begin
+        and (DstPos>1) and IsIdentChar[Result[DstPos-1]] then begin
           // space needed between words/numbers
           Result[DstPos]:=' ';
           inc(DstPos);
@@ -434,8 +434,10 @@ begin
       end;
     until false;
   end;
-  if DstPos>length(Result)+1 then
+  if DstPos>length(Result)+1 then begin
+    DebugLn(['ExtractCCode Source="',Source,'"']);
     raise Exception.Create('');
+  end;
   SetLength(Result,DstPos-1);
   {$IFDEF RangeChecking}{$R+}{$UNDEF RangeChecking}{$ENDIF}
 end;
