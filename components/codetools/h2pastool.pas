@@ -31,7 +31,7 @@
     void func()     -> procedure
     int func()      -> function
     implicit types  -> explicit types
-    #ifdef,if,ifndef,undef,elseif,else,endif
+    #ifdef,if,ifndef,undef,elif,else,endif
                     ->  $ifdef,if,ifndef,...
     #define macroname
                     -> $define macroname
@@ -227,12 +227,12 @@ type
     procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
                                   var NextNode: TH2PDirectiveNode;
                                   var Changed: boolean);
-    function MacroValueIsConstant(Node: TH2PDirectiveNode;
-                                  out PasType, PasExpression: string): boolean;
     procedure SimplifyMacroRedefinition(var Node: TH2PDirectiveNode;
                          const NewValue: string; NewStatus: TH2PMacroStatus;
                          var NextNode: TH2PDirectiveNode; var Changed: boolean);
     procedure SimplifyUnusedDefines(Changed: boolean);
+    function MacroValueIsConstant(Node: TH2PDirectiveNode;
+                                  out PasType, PasExpression: string): boolean;
     procedure DeleteDirectiveNode(Node: TH2PDirectiveNode;
                                   DeleteChilds: boolean;
                                   AdaptNeighborhood: boolean);
@@ -302,6 +302,8 @@ type
                          DefineNode: TH2PNode): TH2PMacroStats;// use Defines instead
     function UndefineMacro(const MacroName: string;
                            UndefineNode: TH2PNode): TH2PMacroStats;// use Undefines instead
+    procedure MarkMacrosAsRead(Node: TH2PNode; const Src: string;
+                               StartPos: integer = 1; EndPos: integer = -1);
     function MarkMacroAsRead(const MacroName: string;
                              Node: TH2PNode): TH2PMacroStats;// use Undefines instead
   end;
@@ -1413,6 +1415,9 @@ var
   PasExpr: string;
   H2PNode: TH2PNode;
 begin
+  if Node.H2PNode<>nil then
+    MarkMacrosAsRead(Node.H2PNode,Node.Expression);
+
   if (Node.H2PNode<>nil) and (Node.H2PNode.Parent<>nil) then begin
     // this directive is in a C block
     // ToDo: try to make it global
@@ -1459,6 +1464,9 @@ procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
   const Expression: string; var NextNode: TH2PDirectiveNode;
   var Changed: boolean);
 begin
+  if Node.H2PNode<>nil then
+    MarkMacrosAsRead(Node.H2PNode,Expression);
+  
   if (Node.FirstChild=nil) and (Node.H2PNode.FirstChild=nil) then begin
     // no content
     DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING empty if directive: ',Node.DescAsString(CTool)]);
@@ -1536,7 +1544,7 @@ begin
             Replace(UsedNode.PascalName);
         end else begin
           //
-          DebugLn(['TH2PasTool.MacroValueIsConstant NO ',CurAtom]);
+          DebugLn(['TH2PasTool.MacroValueIsConstant NO, because this is not a constant: ',CurAtom]);
           exit;
         end;
       end;
@@ -1864,6 +1872,7 @@ var
   Node: TH2PDirectiveNode;
   NextNode: TH2PDirectiveNode;
   Changed: Boolean;
+  H2PNode: TH2PNode;
 begin
   repeat
     Changed:=false;
@@ -1871,6 +1880,17 @@ begin
     Node:=TH2PDirectiveNode(DirectivesTree.Root);
     while Node<>nil do begin
       NextNode:=TH2PDirectiveNode(Node.Next);
+      // mark all read macros between this node and NextNode
+      H2PNode:=Node.H2PNode;
+      if (H2PNode<>nil)
+      and (NextNode<>nil) and (NextNode.H2PNode<>nil) then begin
+        while H2PNode<>NextNode.H2PNode do begin
+          if H2PNode.Directive=nil then
+            MarkMacrosAsRead(H2PNode,H2PNode.PascalCode);
+          H2PNode:=TH2PNode(H2PNode.Next);
+        end;
+      end;
+      // simplify directive
       case Node.Desc of
       h2pdnUndefine:
         SimplifyUndefineDirective(Node,NextNode,Changed);
@@ -1883,6 +1903,7 @@ begin
       h2pdnIf:
         SimplifyIfDirective(Node,Node.Expression,NextNode,Changed);
       end;
+      
       Node:=NextNode;
     end;
     SimplifyUnusedDefines(Changed);
@@ -2525,11 +2546,28 @@ begin
   Result.LastReadNode:=nil;
 end;
 
+procedure TH2PasTool.MarkMacrosAsRead(Node: TH2PNode; const Src: string;
+  StartPos: integer; EndPos: integer);
+var
+  AtomStart: integer;
+begin
+  if EndPos<1 then EndPos:=length(Src)+1;
+  if EndPos>length(Src) then EndPos:=length(Src)+1;
+  repeat
+    ReadRawNextCAtom(Src,StartPos,AtomStart);
+    if AtomStart>=EndPos then break;
+    if IsIdentStartChar[Src[AtomStart]] then begin
+      MarkMacroAsRead(GetIdentifier(@Src[AtomStart]),Node);
+    end;
+  until false;
+end;
+
 function TH2PasTool.MarkMacroAsRead(const MacroName: string; Node: TH2PNode
   ): TH2PMacroStats;
 begin
-  Result:=FindMacro(MacroName,true);
-  Result.LastReadNode:=Node;
+  Result:=FindMacro(MacroName,false);
+  if Result<>nil then
+    Result.LastReadNode:=Node;
 end;
 
 { TH2PNode }
