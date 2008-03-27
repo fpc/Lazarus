@@ -1458,8 +1458,14 @@ var
   AtomStart: integer;
   p: Integer;
 
-  procedure Replace(const NewAtom: string);
+  procedure Replace(NewAtom: string);
   begin
+    if IsIdentChar[NewAtom[1]]
+    and (AtomStart>1) and (IsIdentChar[PasExpression[AtomStart-1]]) then
+      NewAtom:=' '+NewAtom;
+    if IsIdentChar[NewAtom[length(NewAtom)]]
+    and (p<=length(PasExpression)) and (IsIdentChar[PasExpression[p]]) then
+      NewAtom:=NewAtom+' ';
     PasExpression:=copy(PasExpression,1,AtomStart-1)+NewAtom
       +copy(PasExpression,p,length(PasExpression));
     p:=AtomStart+length(NewAtom);
@@ -1529,6 +1535,19 @@ begin
       if (CurAtom='(') or (CurAtom=')')
       or (CurAtom='+') or (CurAtom='-') then begin
         // same in pascal
+      end else if (CurAtom='*') then begin
+        // can be multiplication or dereference or pointer type
+        if (AtomStart>1) and (IsNumberChar[PasExpression[AtomStart-1]]) then
+        begin
+          // is multiplication
+        end else begin
+          // don't know
+          exit;
+        end;
+      end else if (CurAtom='|') then begin
+        Replace('or');
+      end else if (CurAtom='&') then begin
+        Replace('and');
       end else begin
         DebugLn(['TH2PasTool.MacroValueIsConstant NO ',CurAtom]);
         // unknown

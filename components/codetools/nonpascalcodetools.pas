@@ -375,7 +375,7 @@ begin
   if (Position<1) or (Position>l) or (not IsNumberChar[Source[Position]])
   then exit;
   // check octal and hex number
-  if (Source[Position]='0') and (Source[Position] in ['x','0'..'9'])
+  if (Source[Position]='0') and (Source[Position+1] in ['x','0'..'9'])
   then exit;
   // check float
   inc(Position);
