@@ -1681,16 +1681,18 @@ begin
         h2pdnElseIf:
           begin
             Sibling.Expression:='('+Sibling.Expression+') and '+Expression;
-            if TH2PDirectiveNode(Sibling.PriorBrother).Desc<>h2pdnElseIf then
+            if (Sibling.PriorBrother=Node) and (Node.Desc<>h2pdnElseIf) then
               Sibling.Desc:=h2pdnIf;
+            DebugLn(['TH2PasTool.DeleteDirectiveNode ADAPTED neighbour: ',Sibling.DescAsString(CTool)]);
           end;
         h2pdnElse:
           begin
             Sibling.Expression:=Expression;
-            if TH2PDirectiveNode(Sibling.PriorBrother).Desc<>h2pdnElseIf then
+            if (Sibling.PriorBrother=Node) and (Node.Desc<>h2pdnElseIf) then
               Sibling.Desc:=h2pdnIf
             else
               Sibling.Desc:=h2pdnElseIf;
+            DebugLn(['TH2PasTool.DeleteDirectiveNode ADAPTED neighbour: ',Sibling.DescAsString(CTool)]);
           end;
         else break;
         end;
