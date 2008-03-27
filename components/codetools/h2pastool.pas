@@ -1552,9 +1552,9 @@ begin
           // don't know
           exit;
         end;
-      end else if (CurAtom='|') then begin
+      end else if (CurAtom='|') or (CurAtom='||') then begin
         Replace('or');
-      end else if (CurAtom='&') then begin
+      end else if (CurAtom='&') or (CurAtom='&&') then begin
         Replace('and');
       end else begin
         DebugLn(['TH2PasTool.MacroValueIsConstant NO ',CurAtom]);
