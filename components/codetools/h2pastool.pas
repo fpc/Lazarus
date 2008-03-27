@@ -232,6 +232,7 @@ type
     procedure SimplifyMacroRedefinition(var Node: TH2PDirectiveNode;
                          const NewValue: string; NewStatus: TH2PMacroStatus;
                          var NextNode: TH2PDirectiveNode; var Changed: boolean);
+    procedure SimplifyUnusedDefines(Changed: boolean);
     procedure DeleteDirectiveNode(Node: TH2PDirectiveNode;
                                   DeleteChilds: boolean;
                                   AdaptNeighborhood: boolean);
@@ -1625,6 +1626,25 @@ begin
   end;
 end;
 
+procedure TH2PasTool.SimplifyUnusedDefines(Changed: boolean);
+var
+  AVLNode: TAVLTreeNode;
+  Macro: TH2PMacroStats;
+begin
+  if Macros=nil then exit;
+  AVLNode:=Macros.FindLowest;
+  while AVLNode<>nil do begin
+    Macro:=TH2PMacroStats(AVLNode.Data);
+    if (Macro.LastDefineNode<>nil)
+    and (Macro.LastReadNode=nil) then begin
+      DebugLn(['TH2PasTool.SimplifyUnusedDefines DELETE unused ',Macro.LastDefineNode.DescAsString(CTool)]);
+      DeleteH2PNode(Macro.LastDefineNode);
+      Changed:=true;
+    end;
+    AVLNode:=Macros.FindSuccessor(AVLNode);
+  end;
+end;
+
 procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode;
   DeleteChilds: boolean; AdaptNeighborhood: boolean);
 var
@@ -1636,6 +1656,7 @@ begin
   if (Node.H2PNode<>nil) and (Node.H2PNode.FirstChild<>nil) then begin
     raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: a directive can not have H2P childs');
   end;
+  DebugLn(['TH2PasTool.DeleteDirectiveNode ',Node.DescAsString(CTool)]);
 
   if AdaptNeighborhood then begin
     // adapt following Else and ElseIf directives
@@ -1651,14 +1672,14 @@ begin
         case Sibling.Desc of
         h2pdnElseIf:
           begin
-            Sibling.Expression:=Sibling.Expression+' and '+Expression;
-            if Node.Desc<>h2pdnElseIf then
+            Sibling.Expression:='('+Sibling.Expression+') and '+Expression;
+            if TH2PDirectiveNode(Sibling.PriorBrother).Desc<>h2pdnElseIf then
               Sibling.Desc:=h2pdnIf;
           end;
         h2pdnElse:
           begin
             Sibling.Expression:=Expression;
-            if Node.Desc<>h2pdnElseIf then
+            if TH2PDirectiveNode(Sibling.PriorBrother).Desc<>h2pdnElseIf then
               Sibling.Desc:=h2pdnIf
             else
               Sibling.Desc:=h2pdnElseIf;
@@ -1709,6 +1730,7 @@ var
   AVLNode: TAVLTreeNode;
   Macro: TH2PMacroStats;
 begin
+  DebugLn(['TH2PasTool.DeleteH2PNode ',Node.DescAsString(CTool)]);
   if Node.PascalName<>'' then
     FPascalNames.Remove(Node);
   if Node.CName<>'' then
@@ -1863,6 +1885,7 @@ begin
       end;
       Node:=NextNode;
     end;
+    SimplifyUnusedDefines(Changed);
   until not Changed;
 end;
 
@@ -2537,6 +2560,7 @@ end;
 
 procedure TH2PTree.Unbind(Node: TH2PBaseNode);
 begin
+  if Node=Root then Root:=Root.NextBrother;
   with Node do begin
     if (Parent<>nil) then begin
       if (Parent.FirstChild=Node) then
@@ -2550,7 +2574,6 @@ begin
     NextBrother:=nil;
     PriorBrother:=nil;
   end;
-  if Node=Root then Root:=nil;
   dec(FNodeCount);
 end;
 
