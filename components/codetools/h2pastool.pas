@@ -39,6 +39,8 @@
                     -> const macroname = constant
 
   ToDos:
+    add comments for skipped items
+    insert auto generated types in front of current node
     c comments
     const char a; -> const a: char;
     simplify conditional directives (e.g. #ifdef)
@@ -159,6 +161,8 @@ type
     Name: string;
     Value: string;
     Status: TH2PMacroStatus;
+    LastDefineNode: TH2PNode;// define or undef node
+    LastReadNode: TH2PNode;// if node
   end;
 
 
@@ -225,6 +229,9 @@ type
                                   var Changed: boolean);
     function MacroValueIsConstant(Node: TH2PDirectiveNode;
                                   out PasType, PasExpression: string): boolean;
+    procedure SimplifyMacroRedefinition(var Node: TH2PDirectiveNode;
+                         const NewValue: string; NewStatus: TH2PMacroStatus;
+                         var NextNode: TH2PDirectiveNode; var Changed: boolean);
     procedure DeleteDirectiveNode(Node: TH2PDirectiveNode;
                                   DeleteChilds: boolean;
                                   AdaptNeighborhood: boolean);
@@ -290,8 +297,12 @@ type
     procedure InitMacros;
     function FindMacro(const MacroName: string;
                        CreateIfNotExists: boolean = false): TH2PMacroStats;
-    function DefineMacro(const MacroName, AValue: string): TH2PMacroStats;// use Defines instead
-    function UndefineMacro(const MacroName: string): TH2PMacroStats;// use Undefines instead
+    function DefineMacro(const MacroName, AValue: string;
+                         DefineNode: TH2PNode): TH2PMacroStats;// use Defines instead
+    function UndefineMacro(const MacroName: string;
+                           UndefineNode: TH2PNode): TH2PMacroStats;// use Undefines instead
+    function MarkMacroAsRead(const MacroName: string;
+                             Node: TH2PNode): TH2PMacroStats;// use Undefines instead
   end;
   
   
@@ -1328,7 +1339,7 @@ begin
   h2pdnDefine:
     if (DirNode.MacroParams='') then begin
       SetPasSection(ctnNone);
-      if DirNode.Expression='' then begin
+      if ExtractCCode(DirNode.Expression)='' then begin
         W('{$Define '+DirNode.MacroName+'}');
       end else begin
         W('{$Define '+DirNode.MacroName+':='+CreateDirectiveValue(DirNode.Expression)+'}');
@@ -1358,7 +1369,9 @@ end;
 procedure TH2PasTool.SimplifyUndefineDirective(Node: TH2PDirectiveNode;
   var NextNode: TH2PDirectiveNode; var Changed: boolean);
 begin
-  UndefineMacro(Node.MacroName);
+  SimplifyMacroRedefinition(Node,'',hmsUndefined,NextNode,Changed);
+  if Node=nil then exit;
+  UndefineMacro(Node.MacroName,Node.H2PNode);
 end;
 
 procedure TH2PasTool.SimplifyDefineDirective(Node: TH2PDirectiveNode;
@@ -1411,10 +1424,12 @@ begin
   
   if Node.MacroParams='' then begin
     // a macro without parameters
-    if Node.Expression='' then begin
+    if ExtractCCode(Node.Expression)='' then begin
       // example: #define MPI_FILE_DEFINED
       // => simple macro flag
-      DefineMacro(Node.MacroName,'');
+      SimplifyMacroRedefinition(Node,'',hmsDefined,NextNode,Changed);
+      if Node=nil then exit;
+      DefineMacro(Node.MacroName,'',Node.H2PNode);
     end else if MacroValueIsConstant(Node,PasType,PasExpr) then begin
       // convert node to constant
       H2PNode:=Node.H2PNode;
@@ -1426,6 +1441,7 @@ begin
         H2PNode.PascalCode:=': '+PasType+H2PNode.PascalCode;
       FPascalNames.Add(H2PNode);
       FCNames.Add(H2PNode);
+      DefineMacro(H2PNode.CName,PasExpr,nil);
       NextNode:=TH2PDirectiveNode(Node.NextSkipChilds);
       Node.H2PNode:=nil;
       H2PNode.Directive:=nil;
@@ -1434,7 +1450,7 @@ begin
       Changed:=true;
     end;
   end else begin
-
+    DefineMacro(Node.MacroName,Node.Expression,Node.H2PNode);
   end;
 end;
 
@@ -1550,7 +1566,8 @@ begin
           // is multiplication
         end else begin
           // don't know
-          exit;
+          // At the moment all constants are allowed,
+          // so it is most probable a multiplication
         end;
       end else if (CurAtom='|') or (CurAtom='||') then begin
         Replace('or');
@@ -1564,6 +1581,48 @@ begin
     end;
   until false;
   Result:=true;
+end;
+
+procedure TH2PasTool.SimplifyMacroRedefinition(var Node: TH2PDirectiveNode;
+  const NewValue: string; NewStatus: TH2PMacroStatus;
+  var NextNode: TH2PDirectiveNode; var Changed: boolean);
+var
+  Macro: TH2PMacroStats;
+  Parent: TH2PBaseNode;
+begin
+  if Node.MacroName='' then exit;
+  Macro:=FindMacro(Node.MacroName);
+  if Macro=nil then exit;
+  if Macro.LastDefineNode=nil then exit;
+  if Macro.LastReadNode=nil then begin
+    // macro was read, so last define is needed
+    if (Node.H2PNode<>nil)
+    and (Macro.LastDefineNode.Parent=Node.H2PNode.Parent)
+    and (Macro.Status=NewStatus) and (Macro.Value=NewValue) then
+    begin
+      // value is kept => the new Node is a redefinition
+      if (NextNode=Node) or (Node.HasAsChild(NextNode)) then
+        NextNode:=TH2PDirectiveNode(Node.NextSkipChilds);
+      DebugLn(['TH2PasTool.SimplifyMacroRedefinition DELETE redefinition ',Node.DescAsString(CTool)]);
+      DeleteDirectiveNode(Node,false,false);
+      Node:=nil;
+      Changed:=true;
+    end;
+  end else begin
+    // macro was not read since last write
+    Parent:=Macro.LastDefineNode.Parent;
+    repeat
+      if Parent=Node.Parent then begin
+        // last write was on same or lower level
+        // => last write is not needed
+        DebugLn(['TH2PasTool.SimplifyMacroRedefinition DELETE unused ',Macro.LastDefineNode.DescAsString(CTool)]);
+        DeleteH2PNode(Macro.LastDefineNode);
+        Changed:=true;
+      end;
+      if Parent=nil then break;
+      Parent:=Parent.Parent;
+    until false;
+  end;
 end;
 
 procedure TH2PasTool.DeleteDirectiveNode(Node: TH2PDirectiveNode;
@@ -1647,6 +1706,8 @@ end;
 procedure TH2PasTool.DeleteH2PNode(Node: TH2PNode);
 var
   DirNode: TH2PDirectiveNode;
+  AVLNode: TAVLTreeNode;
+  Macro: TH2PMacroStats;
 begin
   if Node.PascalName<>'' then
     FPascalNames.Remove(Node);
@@ -1661,6 +1722,18 @@ begin
     Node.Directive:=nil; // avoid circle between DeleteH2PNode and DeleteDirectiveNode
     DirNode.H2PNode:=nil;
     DeleteDirectiveNode(DirNode,false,true);
+  end;
+  // check references
+  if Macros<>nil then begin
+     AVLNode:=Macros.FindLowest;
+     while AVLNode<>nil do begin
+       Macro:=TH2PMacroStats(AVLNode.Data);
+       if Macro.LastDefineNode=Node then
+         Macro.LastDefineNode:=nil;
+       if Macro.LastReadNode=Node then
+         Macro.LastReadNode:=nil;
+       AVLNode:=Macros.FindSuccessor(AVLNode);
+     end;
   end;
   Tree.DeleteNode(Node);
 end;
@@ -2371,7 +2444,7 @@ begin
     for i:=0 to List.Count-1 do begin
       CurName:=List[i];
       CurValue:=FDefines[CurName];
-      DefineMacro(CurName,CurValue);
+      DefineMacro(CurName,CurValue,nil);
     end;
     List.Free;
   end;
@@ -2380,7 +2453,7 @@ begin
     FUndefines.GetNames(List);
     for i:=0 to List.Count-1 do begin
       CurName:=List[i];
-      UndefineMacro(CurName);
+      UndefineMacro(CurName,nil);
     end;
     List.Free;
   end;
@@ -2409,18 +2482,31 @@ begin
   end;
 end;
 
-function TH2PasTool.DefineMacro(const MacroName, AValue: string): TH2PMacroStats;
+function TH2PasTool.DefineMacro(const MacroName, AValue: string;
+  DefineNode: TH2PNode): TH2PMacroStats;
 begin
   Result:=FindMacro(MacroName,true);
   Result.Value:=AValue;
   Result.Status:=hmsDefined;
+  Result.LastDefineNode:=DefineNode;
+  Result.LastReadNode:=nil;
 end;
 
-function TH2PasTool.UndefineMacro(const MacroName: string): TH2PMacroStats;
+function TH2PasTool.UndefineMacro(const MacroName: string;
+  UndefineNode: TH2PNode): TH2PMacroStats;
 begin
   Result:=FindMacro(MacroName,true);
   Result.Value:='';
   Result.Status:=hmsUndefined;
+  Result.LastDefineNode:=UndefineNode;
+  Result.LastReadNode:=nil;
+end;
+
+function TH2PasTool.MarkMacroAsRead(const MacroName: string; Node: TH2PNode
+  ): TH2PMacroStats;
+begin
+  Result:=FindMacro(MacroName,true);
+  Result.LastReadNode:=Node;
 end;
 
 { TH2PNode }

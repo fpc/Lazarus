@@ -23,6 +23,7 @@ extern "C" {
 #define macro1 1
 
 // empty macro
+#define MPI_FILE_DEFINED  // double definition, this one will be removed
 #define MPI_FILE_DEFINED
 // null pointer
 #define MPI_BOTTOM      (void *)0
