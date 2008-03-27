@@ -23,19 +23,27 @@
   Abstract:
     A tool to help converting C header files to pascal bindings.
     
-    enum     ->  enum
-    int i;   ->  var i: integer;
-    struct   ->  var plus record
-    union    ->  var plus record case
-    typedef  ->  type
-    void func()  -> procedure
-    int func()   -> function
-    
+    enum            ->  enum
+    int i           ->  var i: integer
+    struct          ->  var plus record
+    union           ->  var plus record case
+    typedef         ->  type
+    void func()     -> procedure
+    int func()      -> function
+    implicit types  -> explicit types
+    #ifdef,if,ifndef,undef,elseif,else,endif
+                    ->  $ifdef,if,ifndef,...
+    #define macroname
+                    -> $define macroname
+    #define macroname constant
+                    -> const macroname = constant
+
   ToDos:
     c comments
     const char a; -> const a: char;
     simplify conditional directives (e.g. #ifdef)
     #define name value  ->  alias  (const, var, type, proc)
+    more complex expressions and statements
 }
 unit H2PasTool;
 
