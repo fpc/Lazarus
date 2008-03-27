@@ -1464,10 +1464,13 @@ procedure TH2PasTool.SimplifyIfDirective(Node: TH2PDirectiveNode;
   const Expression: string; var NextNode: TH2PDirectiveNode;
   var Changed: boolean);
 begin
-  if Node.H2PNode<>nil then
-    MarkMacrosAsRead(Node.H2PNode,Expression);
+  if Node.H2PNode=nil then exit;
+  MarkMacrosAsRead(Node.H2PNode,Expression);
   
-  if (Node.FirstChild=nil) and (Node.H2PNode.FirstChild=nil) then begin
+  if (Node.FirstChild=nil) and (Node.H2PNode.FirstChild=nil)
+  and ((Node.NextBrother=nil)
+       or (TH2PDirectiveNode(Node.NextBrother).H2PNode=Node.H2PNode.NextBrother))
+  then begin
     // no content
     DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING empty if directive: ',Node.DescAsString(CTool)]);
     if (NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf) then
@@ -1475,7 +1478,7 @@ begin
     DeleteDirectiveNode(Node,true,true);
     Changed:=true;
   end else begin
-
+    DebugLn(['TH2PasTool.SimplifyIfDirective AAA1 Node=',Node.DescAsString(CTool),' Node.NextBrother=',TH2PDirectiveNode(Node.NextBrother).DescAsString(CTool)]);
   end;
 end;
 
