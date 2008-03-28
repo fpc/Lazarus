@@ -256,7 +256,8 @@ type
     function ConvertSimpleCTypeToPascalType(CType: string;
                   UseSingleIdentifierAsDefault: boolean): string;
     
-    function CreateH2PNode(const PascalName, CName: string; CNode: TCodeTreeNode;
+    function CreateH2PNode(var PascalName: string; const CName: string;
+       CNode: TCodeTreeNode;
        PascalDesc: TCodeTreeNodeDesc; const PascalCode: string;
        ParentNode: TH2PNode = nil; IsGlobal: boolean = true;
        InsertAsPreLast: boolean = false): TH2PNode;
@@ -268,6 +269,7 @@ type
     function CreatePascalNameFromCCode(const CCode: string;
                                        StartPos: integer = 1;
                                        EndPos: integer = -1): string;
+    function CreateUniquePascalName(const CName: string): string;
     function FindH2PNodeWithPascalName(const PascalName: string): TH2PNode;
     function FindH2PNodeWithCName(const CName: string): TH2PNode;
 
@@ -510,6 +512,7 @@ begin
     // create a type
     TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordType,'',
                                nil,ParentNode=nil);
+    DebugLn(['TH2PasTool.ConvertStruct ADDED ',TypeH2PNode.DescAsString(CTool)]);
     // build recursively
     BuildH2PTree(TypeH2PNode);
   end;
@@ -523,6 +526,7 @@ var
   CurType: String;
   SimpleType: String;
   H2PNode: TH2PNode;
+  SubTypeName: String;
 begin
   if (CNode.FirstChild<>nil) and (CNode.FirstChild.Desc=ccnUnion)
   then begin
@@ -539,7 +543,8 @@ begin
     end else if (CurName<>'') and (ParentNode=nil) then begin
       // this union has a name
       // create a record type
-      TypeH2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnRecordCase,'',
+      SubTypeName:='T'+CurName;
+      TypeH2PNode:=CreateH2PNode(SubTypeName,'',CNode,ctnRecordCase,'',
                                  nil,true);
       DebugLn(['TH2PasTool.ConvertVariable added record type for union: ',TypeH2PNode.DescAsString(CTool)]);
       // build recursively
@@ -794,7 +799,8 @@ begin
     // #define simplemacro some text here
     if CTool.ExtractDefine(CNode,MacroName,MacroParamList,MacroValue)
     then begin
-      H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+      CurName:='$'+Directive;
+      H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                              MacroName,ParentNode,false);
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
       DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnDefine);
@@ -810,9 +816,10 @@ begin
     // #undef NAME
     // #ifdef NAME
     // #ifndef NAME
-    CurName:=CTool.ExtractDirectiveFirstAtom(CNode);
-    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
-                           CurName,ParentNode,false);
+    CurName:='$'+Directive;
+    PascalCode:=CTool.ExtractDirectiveFirstAtom(CNode);
+    H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
+                           PascalCode,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
     if (Directive='ifdef') then
       Desc:=h2pdnIfDef
@@ -821,7 +828,7 @@ begin
     else
       Desc:=h2pdnUndefine;
     DirNode:=CreateH2PDirectiveNode(H2PNode,Desc);
-    DirNode.MacroName:=CurName;
+    DirNode.MacroName:=PascalCode;
     if (Desc=h2pdnIfDef) or (Desc=h2pdnIfNDef) then begin
       // start block
       FCurDirectiveNode:=DirNode;
@@ -842,7 +849,8 @@ begin
       DebugLn(['TH2PasTool.ConvertDirective failed to convert expression at ',
         CTool.CleanPosToStr(ErrorPos)+': '+ErrorMsg]);
     end else begin
-      H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+      CurName:='$'+Directive;
+      H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                              PascalCode,ParentNode,false);
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
       if (Directive='if') then
@@ -860,7 +868,8 @@ begin
     end;
   end else if (Directive='else') then begin
     // #else
-    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+    CurName:='$'+Directive;
+    H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
     // end block
@@ -871,7 +880,8 @@ begin
     exit;
   end else if (Directive='endif') then begin
     // #endif
-    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+    CurName:='$'+Directive;
+    H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
     // end block
@@ -885,7 +895,8 @@ begin
     // #error
     PascalCode:=CTool.ExtractCode(CNode.StartPos+length('#error'),
                                   CNode.EndPos);
-    H2PNode:=CreateH2PNode('$'+Directive,'#'+Directive,CNode,ctnNone,
+    CurName:='$'+Directive;
+    H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
     DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString(CTool)]);
     DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnError);
@@ -1487,7 +1498,7 @@ begin
     end else if MacroValueIsConstant(Node,PasType,PasExpr) then begin
       // convert node to constant
       H2PNode:=Node.H2PNode;
-      H2PNode.PascalName:=Node.MacroName;
+      H2PNode.PascalName:=CreateUniquePascalName(Node.MacroName);
       H2PNode.CName:=Node.MacroName;
       H2PNode.PascalDesc:=ctnConstDefinition;
       H2PNode.PascalCode:=' = '+PasExpr;
@@ -2155,11 +2166,14 @@ begin
     Result:=CType;
 end;
 
-function TH2PasTool.CreateH2PNode(const PascalName, CName: string;
+function TH2PasTool.CreateH2PNode(var PascalName: string; const CName: string;
   CNode: TCodeTreeNode; PascalDesc: TCodeTreeNodeDesc;
   const PascalCode: string;
   ParentNode: TH2PNode; IsGlobal: boolean; InsertAsPreLast: boolean): TH2PNode;
 begin
+  if (PascalName<>'') and IsGlobal and (PascalDesc<>ctnNone)
+  and IsValidIdent(PascalName) then
+    PascalName:=CreateUniquePascalName(PascalName);
   Result:=TH2PNode.Create;
   Result.PascalName:=PascalName;
   Result.CName:=CName;
@@ -2184,7 +2198,7 @@ function TH2PasTool.CreateAutoGeneratedH2PNode(var PascalName: string;
   ParentNode: TH2PNode;
   IsGlobal: boolean): TH2PNode;
   
-  function Check(const TestName: string; out Node: TH2PNode): boolean;
+  function Check(TestName: string; out Node: TH2PNode): boolean;
   begin
     Node:=FindH2PNodeWithPascalName(TestName);
     if (Node=nil) then begin
@@ -2413,6 +2427,20 @@ begin
         end;
       end;
     end;
+  until false;
+end;
+
+function TH2PasTool.CreateUniquePascalName(const CName: string): string;
+var
+  i: Integer;
+begin
+  Result:=CName;
+  if FindH2PNodeWithPascalName(Result)=nil then exit;
+  i:=1;
+  repeat
+    Result:=CName+'_'+IntToStr(i);
+    if FindH2PNodeWithPascalName(Result)=nil then exit;
+    inc(i);
   until false;
 end;
 
