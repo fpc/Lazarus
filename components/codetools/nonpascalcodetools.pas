@@ -528,23 +528,47 @@ end;
 function CConstantToInt64(const s: string; out i: int64): boolean;
 var
   p: Integer;
+  l: Integer;
 begin
   i:=0;
   Result:=false;
   if s='' then exit;
-  if s[1]='0' then begin
-    DebugLn(['CConstantToInt64 ToDo: ',s]);
-    exit;
-  end else begin
-    // decimal
-    p:=length(s);
-    while (p>0) and (s[p] in ['0'..'9']) do dec(p);
-    if p>0 then exit;
-    try
-      i:=StrToInt64(s);
+  l:=length(s);
+  try
+    if s='0' then begin
       Result:=true;
-    except
+    end else if (s[1]='0') and (s[2] in ['0'..'7']) then begin
+      // octal
+      p:=2;
+      while (p<=l) and (s[p] in ['0'..'7']) do begin
+        i:=i*8+ord(s[p])-ord('0');
+        dec(p);
+      end;
+      Result:=p>l;
+    end else if (s[1]='0') and (s[2]='x') then begin
+      // hex
+      p:=3;
+      while (p<=l) and (IsHexNumberChar[s[p]]) do begin
+        i:=i*16;
+        case s[p] of
+        '0'..'9': i:=i*16+ord(s[p])-ord('0');
+        'a'..'f': i:=i*16+ord(s[p])-ord('a');
+        'A'..'F': i:=i*16+ord(s[p])-ord('A');
+        else break;
+        end;
+        dec(p);
+      end;
+      Result:=p>l;
+    end else begin
+      // decimal
+      p:=1;
+      while (p<=l) and (s[p] in ['0'..'9']) do begin
+        i:=i*10+ord(s[p])-ord('0');
+        dec(p);
+      end;
+      Result:=p>l;
     end;
+  except
   end;
 end;
 
