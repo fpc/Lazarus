@@ -360,21 +360,29 @@ begin
       Add('int8*','pcint8');
       Add('unsigned int8','cuint8');
       Add('unsigned int8*','pcuint8');
+      Add('uint8_t','cuint8');
+      Add('uint8_t*','pcuint8');
       // int16
       Add('int16','cint16');
       Add('int16*','pcint16');
       Add('unsigned int16','cuint16');
       Add('unsigned int16*','pcuint16');
+      Add('uint16_t','cuint16');
+      Add('uint16_t*','pcuint16');
       // int32
       Add('int32','cint32');
       Add('int32*','pcint32');
       Add('unsigned int32','cuint32');
       Add('unsigned int32*','pcuint32');
+      Add('uint32_t','cuint32');
+      Add('uint32_t*','pcuint32');
       // int64
       Add('int64','cint64');
       Add('int64*','pcint64');
       Add('unsigned int64','cuint64');
       Add('unsigned int64*','pcuint64');
+      Add('uint64_t','cuint64');
+      Add('uint64_t*','pcuint64');
       // long
       Add('long','clong');
       Add('long*','pclong');
@@ -419,6 +427,8 @@ begin
       Add('long double*','pclongdouble');
       // void
       Add('void*','pointer');
+      // size_t
+      Add('size_t','PtrUInt');
     end;
   end;
   Result:=InternalPredefinedCTypes;
@@ -1381,7 +1391,7 @@ begin
       if ExtractCCode(DirNode.Expression)='' then begin
         W('{$Define '+DirNode.MacroName+'}');
       end else begin
-        W('{$Define '+DirNode.MacroName+':='+CreateDirectiveValue(DirNode.Expression)+'}');
+        W('{off $Define '+DirNode.MacroName+':='+CreateDirectiveValue(DirNode.Expression)+'}');
       end;
     end else begin
       DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
