@@ -56,11 +56,12 @@ begin
     if CCode=nil then
       raise Exception.Create('loading failed '+Filename);
     // Step 2: create the output file
-    OutputFilename:='h2pasoutput.pas';
+    OutputFilename:=CleanAndExpandFilename(AppendPathDelim(GetCurrentDir)+'h2pasoutput.pas');
     PasCode:=CodeToolBoss.CreateFile(OutputFilename);
     if PasCode=nil then
       raise Exception.Create('creating failed '+OutputFilename);
 
+    // Step3: convert
     Tool:=TH2PasTool.Create;
     Tool.SourceName:=ExtractFileNameOnly(PasCode.Filename);
     Tool.Convert(CCode,PasCode);
@@ -71,6 +72,12 @@ begin
     writeln('=============================================');
     writeln(PasCode.Source);
     Tool.Free;
+    
+    // Step 4: write unit
+    if PasCode.Save then
+      writeln('Wrote ',PasCode.Filename)
+    else
+      writeln('Failed writing ',PasCode.Filename);
   except
     on E: ECCodeParserException do begin
       CCodeTool:=ECCodeParserException(E).Sender;
