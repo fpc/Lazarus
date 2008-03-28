@@ -1625,6 +1625,11 @@ begin
       PasExpression:=copy(PasExpression,1,AtomStart-1)
         +'$'+copy(PasExpression,AtomStart+2,length(PasExpression));
       dec(p);
+      if p-AtomStart>17 then begin
+        // out of bounds
+        DebugLn(['TH2PasTool.MacroValueIsConstant hex number out of bounds: "',PasExpression,'"']);
+        exit;
+      end;
     end else if IsCOctalNumber(PasExpression,AtomStart) then begin
       // octal number
       // replace 0 with &
