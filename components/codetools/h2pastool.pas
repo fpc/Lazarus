@@ -349,16 +349,16 @@ begin
       Add('short*','pcshort');
       Add('signed short','csshort');
       Add('signed short*','pcsshort');
-      Add('unsigned short','csshort');
-      Add('unsigned short*','pcsshort');
+      Add('unsigned short','cushort');
+      Add('unsigned short*','pcushort');
       Add('short int','cshort');
       Add('short int*','pcshort');
       Add('signed short int','csshort');
       Add('signed short int*','pcsshort');
       Add('short signed int','csshort');
       Add('short signed int*','pcsshort');
-      Add('short unsigned int','csshort');
-      Add('short unsigned int*','pcsshort');
+      Add('short unsigned int','cushort');
+      Add('short unsigned int*','pcushort');
       // int8
       Add('int8','cint8');
       Add('int8*','pcint8');
@@ -731,6 +731,26 @@ begin
   DebugLn(['TH2PasTool.ConvertTypedef Typedef name="',CurName,'"']);
   ChildNode:=CNode.FirstChild;
   case ChildNode.Desc of
+  
+  ccnVariable: // typedef variable
+    begin
+      CurName:=CTool.ExtractVariableName(ChildNode);
+      CurType:=CTool.ExtractVariableType(ChildNode);
+      SimpleType:=GetSimplePascalTypeOfCVar(ChildNode);
+      if SimpleType='' then begin
+        // this variable has a complex type
+        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode);
+        if TypeH2PNode<>nil then
+          SimpleType:=TypeH2PNode.PascalName;
+      end;
+      if SimpleType<>'' then begin
+        H2PNode:=CreateH2PNode(CurName,CurName,CNode,ctnTypeDefinition,
+                               SimpleType,nil,true);
+        DebugLn(['TH2PasTool.ConvertTypedef added: ',H2PNode.DescAsString(CTool)]);
+      end else begin
+        DebugLn(['TH2PasTool.ConvertTypedef SKIPPING Typedef Variable Name="',CurName,'" Type="',CurType,'"']);
+      end;
+    end;
 
   ccnStruct: // typedef struct
     begin
@@ -777,7 +797,7 @@ begin
     end;
 
   else // typedef
-    DebugLn(['TH2PasTool.ConvertTypedef SKIPPING typedef ',CCNodeDescAsString(CNode.FirstChild.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+    DebugLn(['TH2PasTool.ConvertTypedef SKIPPING typedef ',CTool.NodeAsString(ChildNode)]);
   end;
 end;
 

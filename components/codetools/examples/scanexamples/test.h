@@ -163,6 +163,8 @@ static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
         return memcmp(ba1, ba2, sizeof(bdaddr_t));
 }
 
+typedef unsigned short sa_family_t;
+
 #ifdef __cplusplus
 }
 #endif
