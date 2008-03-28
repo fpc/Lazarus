@@ -227,6 +227,7 @@ type
     procedure SimplifyIfDirective(Node: TH2PDirectiveNode; const Expression: string;
                                   var NextNode: TH2PDirectiveNode;
                                   var Changed: boolean);
+    function SimplifyIfDirectiveExpression(var Expression: string): boolean;
     procedure SimplifyMacroRedefinition(var Node: TH2PDirectiveNode;
                          const NewValue: string; NewStatus: TH2PMacroStatus;
                          var NextNode: TH2PDirectiveNode; var Changed: boolean);
@@ -787,6 +788,8 @@ begin
       DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnDefine);
       DirNode.MacroName:=MacroName;
       DirNode.MacroParams:=MacroParamList;
+      if MacroValue='__BYTE_ORDER' then
+        MacroValue:='FPC';
       DirNode.Expression:=MacroValue;
       exit;
     end;
@@ -942,6 +945,27 @@ var
     Add(NewToken,GetAtom);
   end;
   
+  procedure Replace(const OldText,NewText: string);
+  var
+    l: Integer;
+  begin
+    p:=1;
+    l:=length(OldText);
+    repeat
+      ReadRawNextCAtom(PasExpr,p,AtomStart);
+      if AtomStart>length(PasExpr) then break;
+      if CompareMem(@PasExpr[AtomStart],@OldText[1],l)
+      and ((not IsIdentChar[OldText[l]])
+           or (AtomStart+l>length(PasExpr))
+           or (not IsIdentChar[PasExpr[AtomStart+l]]))
+      then begin
+        DebugLn(['TH2PasTool.ConvertCToPascalDirectiveExpression.Replace Old="',OldText,'" New="',NewText,'"']);
+        PasExpr:=copy(PasExpr,1,AtomStart-1)
+               +NewText+copy(PasExpr,AtomStart+length(OldText),length(PasExpr));
+      end;
+    until false;
+  end;
+  
 begin
   Result:=false;
   PasExpr:='';
@@ -972,8 +996,8 @@ begin
         ErrorMsg:='missing operator';
         exit;
       end;
-      Add(ttValue);
       if AtomIs('defined') then begin
+        Add(ttValue);
         // read   defined(name)
         ReadRawNextCAtom(CCode,p,AtomStart);
         if not AtomIs('(') then begin
@@ -987,13 +1011,19 @@ begin
           ErrorExpectedButFound('identifier');
           exit;
         end;
-        Add(ttValue);
+        // convert defined(__BYTE_ORDER) to defined(FPC)
+        if AtomIs('__BYTE_ORDER') then
+          Add(ttValue,'FPC')
+        else
+          Add(ttValue);
         ReadRawNextCAtom(CCode,p,AtomStart);
         if not AtomIs(')') then begin
           ErrorExpectedButFound(')');
           exit;
         end;
         Add(ttBracketClose);
+      end else begin
+        Add(ttValue);
       end;
     end else if AtomIs('+') or AtomIs('-') or AtomIs('!') then begin
       if LastToken in [ttValue,ttBracketClose] then begin
@@ -1047,6 +1077,12 @@ begin
       exit;
     end;
   until false;
+  
+  // now convert a few common things:
+  Replace('__BYTE_ORDER=__LITTLE_ENDIAN','defined(ENDIAN_LITTLE)');
+  Replace('__LITTLE_ENDIAN=__BYTE_ORDER','defined(ENDIAN_LITTLE)');
+  Replace('__BYTE_ORDER=__BIG_ENDIAN','defined(ENDIAN_BIG)');
+  Replace('__BIG_ENDIAN=__BYTE_ORDER','defined(ENDIAN_BIG)');
 end;
 
 procedure TH2PasTool.WriteStr(const Line: string);
@@ -1478,8 +1514,28 @@ begin
     DeleteDirectiveNode(Node,true,true);
     Changed:=true;
   end else begin
-    DebugLn(['TH2PasTool.SimplifyIfDirective AAA1 Node=',Node.DescAsString(CTool),' Node.NextBrother=',TH2PDirectiveNode(Node.NextBrother).DescAsString(CTool)]);
+  
   end;
+end;
+
+function TH2PasTool.SimplifyIfDirectiveExpression(var Expression: string
+  ): boolean;
+// returns true, if changed
+var
+  p: Integer;
+  AtomStart: integer;
+  CurAtom: String;
+begin
+  Result:=false;
+  p:=1;
+  repeat
+    ReadRawNextCAtom(Expression,p,AtomStart);
+    if AtomStart>length(Expression) then break;
+    CurAtom:=copy(Expression,AtomStart,p-AtomStart);
+    if (CurAtom='not') then begin
+
+    end;
+  until false;
 end;
 
 function TH2PasTool.MacroValueIsConstant(Node: TH2PDirectiveNode;
