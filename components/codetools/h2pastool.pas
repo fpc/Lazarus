@@ -580,7 +580,7 @@ begin
     SimpleType:=GetSimplePascalTypeOfCVar(CNode);
     if SimpleType='' then begin
       // this variable has a complex type
-      TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,false);
+      TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,ParentNode<>nil);
       if TypeH2PNode<>nil then
         SimpleType:=TypeH2PNode.PascalName;
     end;
@@ -663,7 +663,7 @@ begin
   end;
   if Ok and (SimpleType='') then begin
     // this function has a complex result type
-    TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,false);
+    TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,ParentNode<>nil);
     if TypeH2PNode<>nil then begin
       SimpleType:=TypeH2PNode.PascalName;
     end else
@@ -717,7 +717,7 @@ begin
   DebugLn(['TH2PasTool.ConvertFuncParameter Parameter: Name="',CurName,'" Type="',CurType,'" SimpleType="',SimpleType,'"']);
   if SimpleType='' then begin
     // this variable has a complex type
-    TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,false);
+    TypeH2PNode:=GetH2PNodeForComplexType(CNode,true,ParentNode<>nil);
     if TypeH2PNode<>nil then
       SimpleType:=TypeH2PNode.PascalName;
   end;
@@ -758,7 +758,7 @@ begin
       SimpleType:=GetSimplePascalTypeOfCVar(ChildNode);
       if SimpleType='' then begin
         // this variable has a complex type
-        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode,true,false);
+        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode,true,ParentNode<>nil);
         if TypeH2PNode<>nil then
           SimpleType:=TypeH2PNode.PascalName;
       end;
@@ -801,7 +801,7 @@ begin
       SimpleType:=GetSimplePascalResultTypeOfCFunction(ChildNode);
       if IsPointerToFunction and (SimpleType='') then begin
         // this function has a complex result type
-        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode,true,false);
+        TypeH2PNode:=GetH2PNodeForComplexType(ChildNode,true,ParentNode<>nil);
         if TypeH2PNode<>nil then
           SimpleType:=TypeH2PNode.PascalName;
       end;
