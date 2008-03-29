@@ -418,7 +418,7 @@ begin
     DesignerMenuPaste:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
                                             'Paste',lisMenuPaste, nil, nil, nil, 'paste');
     DesignerMenuDeleteSelection:=RegisterIDEMenuCommand(DesignerMenuSectionClipboard,
-                                         'Delete selection',fdmDeleteSelection);
+                                         'Delete selection',fdmDeleteSelection, nil, nil, nil, 'delete_selection');
 
   // register miscellaneous section
   DesignerMenuSectionMisc:=RegisterIDEMenuSection(DesignerMenuRoot,

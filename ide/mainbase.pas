@@ -511,7 +511,7 @@ begin
     CreateMenuItem(ParentMI,itmViewCodeExplorer,'itmViewCodeExplorer',lisMenuViewCodeExplorer, 'menu_view_code_explorer');
     CreateMenuItem(ParentMI,itmViewFPDocEditor,'itmViewFPDocEditor',lisMenuFPDocEditor);
     CreateMenuItem(ParentMI,itmViewCodeBrowser,'itmViewCodeBrowser',lisMenuViewCodeBrowser, 'menu_view_code_browser');
-    CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser);
+    CreateMenuItem(ParentMI,itmViewRestrictionBrowser,'itmViewRestrictionBrowser',lisMenuViewRestrictionBrowser, 'menu_view_rectriction_browser');
     CreateMenuItem(ParentMI,itmViewComponents,'itmViewComponents',lisMenuViewComponents);
 
     CreateMenuSeparatorSection(mnuView,itmViewUnitWindows,'itmViewUnitWindows');

@@ -2462,6 +2462,7 @@ images/designer/anchor_left_right.png -text svneol=unset#image/png
 images/designer/anchor_right.png -text svneol=unset#image/png
 images/designer/anchor_top.png -text svneol=unset#image/png
 images/designer/anchor_top_bottom.png -text svneol=unset#image/png
+images/designer/delete_selection.png -text
 images/designer/mirror_horizontal.png -text
 images/designer/mirror_vertical.png -text
 images/designer/scale.png -text
@@ -2576,6 +2577,7 @@ images/menu/menu_view_code_browser.png -text
 images/menu/menu_view_code_explorer.png -text svneol=unset#image/png
 images/menu/menu_view_forms.png -text svneol=unset#image/png
 images/menu/menu_view_inspector.png -text svneol=unset#image/png
+images/menu/menu_view_rectriction_browser.png -text
 images/menu/menu_view_source_editor.png -text svneol=unset#image/png
 images/menu/menu_view_toggle_form_unit.png -text svneol=unset#image/png
 images/menu/menu_view_unit_info.png -text svneol=unset#image/png

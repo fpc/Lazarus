@@ -101,6 +101,7 @@ menu/menu_view_code_browser.png
 menu/menu_view_code_explorer.png
 menu/menu_view_forms.png
 menu/menu_view_inspector.png
+menu/menu_view_rectriction_browser.png
 menu/menu_view_source_editor.png
 menu/menu_view_toggle_form_unit.png
 menu/menu_view_units.png
@@ -134,6 +135,7 @@ designer/anchor_left_right.png
 designer/anchor_right.png
 designer/anchor_top.png
 designer/anchor_top_bottom.png
+designer/delete_selection.png
 designer/align.png
 designer/mirror_horizontal.png
 designer/mirror_vertical.png
