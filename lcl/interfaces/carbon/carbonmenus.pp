@@ -51,6 +51,9 @@ type
     function GetIndex: Integer;
   protected
     procedure Update;
+    procedure RegisterEvents;
+    procedure Opening;
+    procedure Closed;
   public
     LCLMenuItem: TMenuItem; // LCL menu item which created this widget
     Menu: MenuRef;          // Reference to the Carbon menu
@@ -107,6 +110,42 @@ end;
 { TCarbonMenu }
 
 {------------------------------------------------------------------------------
+  Name:  CarbonMenu_Opening
+  Handles menu opening
+ ------------------------------------------------------------------------------}
+function CarbonMenu_Opening(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TObject): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseMenu}
+    DebugLn('CarbonMenu_Opening');
+  {$ENDIF}
+  
+  if AWidget is TCarbonMenu then
+    (AWidget as TCarbonMenu).Opening;
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
+{------------------------------------------------------------------------------
+  Name:  CarbonMenu_Closed
+  Handles menu closed
+ ------------------------------------------------------------------------------}
+function CarbonMenu_Closed(ANextHandler: EventHandlerCallRef;
+  AEvent: EventRef;
+  AWidget: TObject): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+begin
+  {$IFDEF VerboseMenu}
+    DebugLn('CarbonMenu_Closed');
+  {$ENDIF}
+
+  if AWidget is TCarbonMenu then
+    (AWidget as TCarbonMenu).Closed;
+
+  Result := CallNextEventHandler(ANextHandler, AEvent);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCarbonMenu.MenuNeeded
 
   Creates Carbon menu object for sub menu
@@ -121,6 +160,8 @@ begin
     raise Exception.CreateFmt('Unable to create Carbon menu for %s: %s!',
       [LCLMenuItem.Name, LCLMenuItem.ClassName]);
   end;
+  
+  RegisterEvents;
   
   if FParentMenu <> nil then
   begin
@@ -169,6 +210,56 @@ begin
 
   SetVisible(LCLMenuItem.Visible);
   SetEnable(LCLMenuItem.Enabled);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMenu.RegisterEvents
+
+  Register menu events
+ ------------------------------------------------------------------------------}
+procedure TCarbonMenu.RegisterEvents;
+var
+  TmpSpec: EventTypeSpec;
+begin
+  {$IFDEF VerboseMenu}
+    DebugLn('TCarbonMenu.RegisterEvents ' + LCLMenuItem.Name);
+  {$ENDIF}
+  
+  TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuOpening);
+  InstallMenuEventHandler(Menu, RegisterObjectEventHandler(@CarbonMenu_Opening),
+    1, @TmpSpec, Pointer(Self), nil);
+
+  TmpSpec := MakeEventSpec(kEventClassMenu, kEventMenuClosed);
+  InstallMenuEventHandler(Menu, RegisterObjectEventHandler(@CarbonMenu_Closed),
+    1, @TmpSpec, Pointer(Self), nil);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMenu.Opening
+ ------------------------------------------------------------------------------}
+procedure TCarbonMenu.Opening;
+var
+  Msg: TLMessage;
+begin
+  {$IFDEF VerboseMenu}
+    DebugLn('TCarbonMenu.Opening ' + LCLMenuItem.Name);
+  {$ENDIF}
+  
+  // menu item has sub menu - call click when opening
+  if LCLMenuItem.IsInMenuBar or (LCLMenuItem.Count > 0) then
+  begin
+    FillChar(Msg, SizeOf(Msg), 0);
+    Msg.msg := LM_ACTIVATE;
+    LCLMenuItem.Dispatch(Msg);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonMenu.Closed
+ ------------------------------------------------------------------------------}
+procedure TCarbonMenu.Closed;
+begin
+  //DebugLn('TCarbonMenu.Closed');
 end;
 
 {------------------------------------------------------------------------------

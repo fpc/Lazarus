@@ -195,6 +195,7 @@ begin
         {$ENDIF}
         if CarbonMenu <> nil then
         begin
+          FillChar(Msg, SizeOf(Msg), 0);
           Msg.msg := LM_ACTIVATE;
           CarbonMenu.LCLMenuItem.Dispatch(Msg);
           

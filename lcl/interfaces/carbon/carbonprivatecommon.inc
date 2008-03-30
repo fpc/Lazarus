@@ -376,10 +376,11 @@ begin
     DebugLn('CarbonCommon_GetNextFocusCandidate: ', DbgSName(AWidget.LCLObject));
   {$ENDIF}
   //Result := CallNextEventHandler(ANextHandler, AEvent);
-  
+
+  StartControl := nil;
   if OSError(GetEventParameter(AEvent, kEventParamStartControl, typeControlRef,
       nil, SizeOf(ControlRef), nil, @StartControl), SName, SGetEvent,
-    'kEventParamStartControl') then Exit;
+    'kEventParamStartControl', eventParameterNotFoundErr) then Exit;
     
   if OSError(
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
@@ -388,8 +389,21 @@ begin
   TabIndex := 0;
   TabList := TFPList.Create;
   try
-    (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
-    AControl := GetCarbonWidget(StartControl);
+    if StartControl <> nil then
+    begin
+      AControl := GetCarbonWidget(StartControl);
+      (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
+    end
+    else
+    begin
+      AControl := AWidget;
+      (AWidget.LCLObject as TWinControl).GetTabOrderList(TabList);
+      if TabList.Count = 0 then
+      begin
+        TabList.Free;
+        (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
+      end;
+    end;
     
     if AControl <> nil then
     begin
@@ -407,7 +421,9 @@ begin
           if TabIndex < 0 then TabIndex := TabList.Count - 1;
         end;
       end
-      else TabIndex := 0;
+      else
+        if FocusPart = kControlFocusNextPart then TabIndex := 0
+        else TabIndex := TabList.Count - 1;
     end;
     
     if TabIndex < TabList.Count then

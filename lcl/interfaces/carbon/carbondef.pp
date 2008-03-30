@@ -136,6 +136,10 @@ type
   end;
   
 type
+  TCarbonObjectEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
+    AEvent: EventRef;
+    AWidget: TObject): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
+
   TCarbonEventHandlerProc = function (ANextHandler: EventHandlerCallRef;
     AEvent: EventRef;
     AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
@@ -156,6 +160,7 @@ function CheckHandle(const AWinControl: TWinControl; const AClass: TClass; const
 function CheckWidget(const Handle: HWND; const AMethodName: String; AParamName: String = ''): Boolean;
 function CheckWidget(const Handle: HWND; const AMethodName: String; AClass: TClass): Boolean;
 
+function RegisterObjectEventHandler(AHandler: TCarbonObjectEventHandlerProc): EventHandlerUPP;
 function RegisterEventHandler(AHandler: TCarbonEventHandlerProc): EventHandlerUPP;
 
 implementation
@@ -289,6 +294,31 @@ begin
   end;
 
   inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  Name:    RegisterObjectEventHandler
+  Params:  AHandler - Carbon object event handler procedure
+  Returns: Event handler UPP
+
+  Registers new carbon object event handler procedure
+ ------------------------------------------------------------------------------}
+function RegisterObjectEventHandler(AHandler: TCarbonObjectEventHandlerProc): EventHandlerUPP;
+var
+  Node: TUPPAVLTreeNode;
+begin
+  if UPPTree = nil then UPPTree := TAVLTree.Create;
+
+  Node := TUPPAVLTreeNode(UPPTree.Find(AHandler));
+  if Node = nil then
+  begin
+    Node := TUPPAVLTreeNode.Create;
+    Node.Data := AHandler;
+    Node.UPP := NewEventHandlerUPP(EventHandlerProcPtr(AHandler));
+    UPPTree.Add(Node);
+  end;
+
+  Result := Node.UPP;
 end;
 
 {------------------------------------------------------------------------------

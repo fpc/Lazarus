@@ -48,6 +48,9 @@ function MakeEventSpec(AClass, AKind: UInt32): EventTypeSpec; //inline;
 function MakeFourCC(AFourCC: TFourCC): FourCharCode; //inline;
 
 // Some missing macros (params differ)
+function InstallMenuEventHandler(inMenu: MenuRef;
+  inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
+  inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
 function InstallControlEventHandler(inControl: ControlRef;
   inHandler: EventHandlerUPP; inNumTypes: UInt32; inList: EventTypeSpecPtr;
   inUserData: Pointer; outRef: EventHandlerRefPtr): Boolean;
@@ -109,6 +112,27 @@ end;
 function MakeFourCC(AFourCC: TFourCC): FourCharCode;
 begin
   Result := FourCharCode(AFourCC);
+end;
+
+{------------------------------------------------------------------------------
+  Name:    InstallMenuEventHandler
+  Params:  inMenu     - Event target menu
+           inHandler  - Event handler
+           inNumTypes - Count of event types in list
+           inList     - The list of event types
+           inUserData - User data passed to handler
+           outRef     - Reference to handler for disposing
+  Returns: If the function succeeds
+
+  Installs the handler for the specified event types on the menu
+ ------------------------------------------------------------------------------}
+function InstallMenuEventHandler(inMenu: MenuRef; inHandler: EventHandlerUPP;
+  inNumTypes: UInt32; inList: EventTypeSpecPtr; inUserData: Pointer;
+  outRef: EventHandlerRefPtr): Boolean;
+begin
+  Result := not OSError(
+    InstallEventHandler(GetMenuEventTarget(inMenu), inHandler, inNumTypes,
+      inList, inUserData, outRef), 'InstallMenuEventHandler', SInstallEvent);
 end;
 
 {------------------------------------------------------------------------------
