@@ -31,6 +31,9 @@ uses
   Classes, SysUtils, Forms, LResources, Buttons,
   StdCtrls, Dialogs, GL, OpenGLContext;
 
+const
+ GL_CLAMP_TO_EDGE = $812F;
+
 type
   TglTexture = class
   public
@@ -602,8 +605,8 @@ begin
   glGenTextures(3, @textures[0]);
   for i:=0 to 2 do begin
     glBindTexture(GL_TEXTURE_2D, Textures[i]);
-    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
-    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D,0,3,MyglTextures[i].Width,MyglTextures[i].Height,0
