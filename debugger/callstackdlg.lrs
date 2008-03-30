@@ -4,59 +4,59 @@ LazarusResources.Add('TCallStackDlg','FORMDATA',[
   'TPF0'#241#13'TCallStackDlg'#12'CallStackDlg'#4'Left'#3#247#0#6'Height'#3#246
   +#0#3'Top'#3#176#0#5'Width'#3'2'#2#18'HorzScrollBar.Page'#3'1'#2#18'VertScrol'
   +'lBar.Page'#3#245#0#13'ActiveControl'#7#11'lvCallStack'#7'Caption'#6#9'CallS'
-  +'tack'#12'ClientHeight'#3#246#0#11'ClientWidth'#3'2'#2#7'Visible'#9#0#9'TLis'
-  +'tView'#11'lvCallStack'#6'Height'#3#204#0#3'Top'#2'*'#5'Width'#3'2'#2#5'Alig'
-  +'n'#7#8'alClient'#7'Columns'#14#1#5'Width'#2#20#0#1#7'Caption'#6#5'Index'#5
-  +'Width'#2'#'#0#1#7'Caption'#6#6'Source'#5'Width'#3#150#0#0#1#7'Caption'#6#4
-  +'Line'#0#1#7'Caption'#6#8'Function'#5'Width'#3'"'#1#0#0#9'PopupMenu'#7#8'mnu'
-  +'Popup'#9'RowSelect'#9#8'TabOrder'#2#0#9'ViewStyle'#7#8'vsReport'#10'OnDblCl'
-  +'ick'#7#19'lvCallStackDBLCLICK'#0#0#8'TToolBar'#8'ToolBar1'#6'Height'#2'*'#5
-  +'Width'#3'2'#2#12'ButtonHeight'#2'('#11'ButtonWidth'#2'2'#7'Caption'#6#9'tbB'
-  +'uttons'#11'EdgeBorders'#11#0#4'Flat'#9#6'Images'#7#10'ImageList1'#12'ShowCa'
-  +'ptions'#9#8'TabOrder'#2#1#0#11'TToolButton'#11'ToolButton1'#4'Left'#2#1#6'A'
-  +'ction'#7#7'actShow'#10'ImageIndex'#2#0#0#0#11'TToolButton'#11'ToolButton2'#4
-  +'Left'#2'3'#6'Action'#7#13'actSetCurrent'#0#0#11'TToolButton'#11'ToolButton4'
-  +#4'Left'#2'e'#5'Width'#2#3#7'Caption'#6#11'ToolButton4'#5'Style'#7#12'tbsSep'
-  +'arator'#0#0#11'TToolButton'#11'ToolButton5'#4'Left'#3#159#0#6'Action'#7#11
-  +'actViewMore'#10'ImageIndex'#2#1#0#0#11'TToolButton'#11'ToolButton6'#4'Left'
-  +#2'h'#6'Action'#7#12'actViewLimit'#7'Caption'#6#6'Max 10'#12'DropdownMenu'#7
-  +#8'mnuLimit'#5'Style'#7#11'tbsDropDown'#0#0#6'TPanel'#6'Panel1'#4'Left'#3'8'
-  +#1#6'Height'#2'('#5'Width'#2'2'#10'BevelOuter'#7#6'bvNone'#12'ClientHeight'#2
-  +'('#11'ClientWidth'#2'2'#8'TabOrder'#2#0#0#5'TEdit'#7'txtGoto'#4'Left'#2#2#6
-  +'Height'#2#22#3'Top'#2#8#5'Width'#2'.'#10'OnKeyPress'#7#15'txtGotoKeyPress'#8
-  +'TabOrder'#2#0#4'Text'#6#1'0'#0#0#0#11'TToolButton'#11'ToolButton7'#4'Left'#3
-  +'j'#1#6'Action'#7#11'actViewGoto'#10'ImageIndex'#2#4#0#0#11'TToolButton'#11
-  +'ToolButton3'#4'Left'#3#159#1#6'Action'#7#10'actCopyAll'#10'ImageIndex'#2#5#0
-  +#0#11'TToolButton'#11'ToolButton8'#4'Left'#3#156#1#5'Width'#2#3#7'Caption'#6
-  +#11'ToolButton8'#5'Style'#7#12'tbsSeparator'#0#0#11'TToolButton'#11'ToolButt'
-  +'on9'#4'Left'#3#209#0#5'Width'#2#3#7'Caption'#6#11'ToolButton9'#5'Style'#7#12
-  +'tbsSeparator'#0#0#11'TToolButton'#12'ToolButton10'#4'Left'#3#212#0#6'Action'
-  +#7#10'actViewTop'#10'ImageIndex'#2#2#0#0#11'TToolButton'#12'ToolButton11'#4
-  +'Left'#3#6#1#6'Action'#7#13'actViewBottom'#10'ImageIndex'#2#3#0#0#0#10'TPopu'
-  +'pMenu'#8'mnuPopup'#4'left'#2'B'#3'top'#2'X'#0#9'TMenuItem'#7'popShow'#6'Act'
-  +'ion'#7#7'actShow'#7'Default'#9#7'OnClick'#7#12'actShowClick'#0#0#9'TMenuIte'
-  +'m'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#15'popSetAsCurrent'#6'Action'#7
-  +#13'actSetCurrent'#7'OnClick'#7#20'actSetAsCurrentClick'#0#0#9'TMenuItem'#10
-  +'popCopyAll'#6'Action'#7#10'actCopyAll'#7'OnClick'#7#15'actCopyAllClick'#0#0
-  +#0#11'TActionList'#10'aclActions'#4'left'#3#128#0#3'top'#2'h'#0#7'TAction'#7
-  +'actShow'#7'Caption'#6#4'Show'#18'DisableIfNoHandler'#9#9'OnExecute'#7#12'ac'
-  +'tShowClick'#0#0#7'TAction'#13'actSetCurrent'#7'Caption'#6#7'Current'#18'Dis'
-  +'ableIfNoHandler'#9#9'OnExecute'#7#20'actSetAsCurrentClick'#0#0#7'TAction'#10
-  +'actCopyAll'#7'Caption'#6#8'Copy All'#18'DisableIfNoHandler'#9#9'OnExecute'#7
-  +#15'actCopyAllClick'#0#0#7'TAction'#11'actViewMore'#8'Category'#6#4'View'#7
-  +'Caption'#6#4'More'#18'DisableIfNoHandler'#9#9'OnExecute'#7#18'actViewMoreEx'
-  +'ecute'#0#0#7'TAction'#11'actViewGoto'#8'Category'#6#4'View'#7'Caption'#6#4
-  +'Goto'#18'DisableIfNoHandler'#9#9'OnExecute'#7#18'actViewGotoExecute'#0#0#7
-  +'TAction'#12'actViewLimit'#8'Category'#6#4'View'#7'Caption'#6#2'10'#18'Disab'
-  +'leIfNoHandler'#9#9'OnExecute'#7#19'actViewLimitExecute'#0#0#7'TAction'#10'a'
-  +'ctViewTop'#8'Category'#6#4'View'#7'Caption'#6#3'Top'#18'DisableIfNoHandler'
-  +#9#9'OnExecute'#7#17'actViewTopExecute'#0#0#7'TAction'#13'actViewBottom'#8'C'
-  +'ategory'#6#4'View'#7'Caption'#6#6'Bottom'#18'DisableIfNoHandler'#9#9'OnExec'
-  +'ute'#7#20'actViewBottomExecute'#0#0#0#10'TPopupMenu'#8'mnuLimit'#4'left'#3
-  +#192#0#3'top'#2'p'#0#9'TMenuItem'#10'popLimit10'#3'Tag'#2#10#7'Caption'#6#6
-  +'Max 10'#7'OnClick'#7#13'popCountClick'#0#0#9'TMenuItem'#10'popLimit25'#3'Ta'
-  +'g'#2#25#7'Caption'#6#6'Max 25'#7'OnClick'#7#13'popCountClick'#0#0#9'TMenuIt'
-  +'em'#10'popLimit50'#3'Tag'#2'2'#7'Caption'#6#6'Max 50'#7'OnClick'#7#13'popCo'
-  +'untClick'#0#0#0#10'TImageList'#10'ImageList1'#4'left'#3#232#0#3'top'#2'p'#0
-  +#0#0
+  +'tack'#12'ClientHeight'#3#246#0#11'ClientWidth'#3'2'#2#8'OnCreate'#7#10'Form'
+  +'Create'#7'Visible'#9#0#9'TListView'#11'lvCallStack'#6'Height'#3#204#0#3'Top'
+  +#2'*'#5'Width'#3'2'#2#5'Align'#7#8'alClient'#7'Columns'#14#1#5'Width'#2#20#0
+  +#1#7'Caption'#6#5'Index'#5'Width'#2'#'#0#1#7'Caption'#6#6'Source'#5'Width'#3
+  +#150#0#0#1#7'Caption'#6#4'Line'#0#1#7'Caption'#6#8'Function'#5'Width'#3'"'#1
+  +#0#0#9'PopupMenu'#7#8'mnuPopup'#9'RowSelect'#9#8'TabOrder'#2#0#9'ViewStyle'#7
+  +#8'vsReport'#10'OnDblClick'#7#19'lvCallStackDBLCLICK'#0#0#8'TToolBar'#8'Tool'
+  +'Bar1'#6'Height'#2'*'#5'Width'#3'2'#2#12'ButtonHeight'#2'('#11'ButtonWidth'#2
+  +'2'#7'Caption'#6#9'tbButtons'#11'EdgeBorders'#11#0#4'Flat'#9#6'Images'#7#10
+  +'ImageList1'#12'ShowCaptions'#9#8'TabOrder'#2#1#0#11'TToolButton'#11'ToolBut'
+  +'ton1'#4'Left'#2#1#6'Action'#7#7'actShow'#10'ImageIndex'#2#0#0#0#11'TToolBut'
+  +'ton'#11'ToolButton2'#4'Left'#2'3'#6'Action'#7#13'actSetCurrent'#0#0#11'TToo'
+  +'lButton'#11'ToolButton4'#4'Left'#2'e'#5'Width'#2#3#7'Caption'#6#11'ToolButt'
+  +'on4'#5'Style'#7#12'tbsSeparator'#0#0#11'TToolButton'#11'ToolButton5'#4'Left'
+  +#3#159#0#6'Action'#7#11'actViewMore'#10'ImageIndex'#2#1#0#0#11'TToolButton'
+  +#11'ToolButton6'#4'Left'#2'h'#6'Action'#7#12'actViewLimit'#7'Caption'#6#6'Ma'
+  +'x 10'#12'DropdownMenu'#7#8'mnuLimit'#5'Style'#7#11'tbsDropDown'#0#0#6'TPane'
+  +'l'#6'Panel1'#4'Left'#3'8'#1#6'Height'#2'('#5'Width'#2'2'#10'BevelOuter'#7#6
+  +'bvNone'#12'ClientHeight'#2'('#11'ClientWidth'#2'2'#8'TabOrder'#2#0#0#5'TEdi'
+  +'t'#7'txtGoto'#4'Left'#2#2#6'Height'#2#22#3'Top'#2#8#5'Width'#2'.'#10'OnKeyP'
+  +'ress'#7#15'txtGotoKeyPress'#8'TabOrder'#2#0#4'Text'#6#1'0'#0#0#0#11'TToolBu'
+  +'tton'#11'ToolButton7'#4'Left'#3'j'#1#6'Action'#7#11'actViewGoto'#10'ImageIn'
+  +'dex'#2#4#0#0#11'TToolButton'#11'ToolButton3'#4'Left'#3#159#1#6'Action'#7#10
+  +'actCopyAll'#10'ImageIndex'#2#5#0#0#11'TToolButton'#11'ToolButton8'#4'Left'#3
+  +#156#1#5'Width'#2#3#7'Caption'#6#11'ToolButton8'#5'Style'#7#12'tbsSeparator'
+  +#0#0#11'TToolButton'#11'ToolButton9'#4'Left'#3#209#0#5'Width'#2#3#7'Caption'
+  +#6#11'ToolButton9'#5'Style'#7#12'tbsSeparator'#0#0#11'TToolButton'#12'ToolBu'
+  +'tton10'#4'Left'#3#212#0#6'Action'#7#10'actViewTop'#10'ImageIndex'#2#2#0#0#11
+  +'TToolButton'#12'ToolButton11'#4'Left'#3#6#1#6'Action'#7#13'actViewBottom'#10
+  +'ImageIndex'#2#3#0#0#0#10'TPopupMenu'#8'mnuPopup'#4'left'#2'B'#3'top'#2'X'#0
+  +#9'TMenuItem'#7'popShow'#6'Action'#7#7'actShow'#7'Default'#9#7'OnClick'#7#12
+  +'actShowClick'#0#0#9'TMenuItem'#2'N1'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#15
+  +'popSetAsCurrent'#6'Action'#7#13'actSetCurrent'#7'OnClick'#7#20'actSetAsCurr'
+  +'entClick'#0#0#9'TMenuItem'#10'popCopyAll'#6'Action'#7#10'actCopyAll'#7'OnCl'
+  +'ick'#7#15'actCopyAllClick'#0#0#0#11'TActionList'#10'aclActions'#4'left'#3
+  +#128#0#3'top'#2'h'#0#7'TAction'#7'actShow'#7'Caption'#6#4'Show'#18'DisableIf'
+  +'NoHandler'#9#9'OnExecute'#7#12'actShowClick'#0#0#7'TAction'#13'actSetCurren'
+  +'t'#7'Caption'#6#7'Current'#18'DisableIfNoHandler'#9#9'OnExecute'#7#20'actSe'
+  +'tAsCurrentClick'#0#0#7'TAction'#10'actCopyAll'#7'Caption'#6#8'Copy All'#18
+  +'DisableIfNoHandler'#9#9'OnExecute'#7#15'actCopyAllClick'#0#0#7'TAction'#11
+  +'actViewMore'#8'Category'#6#4'View'#7'Caption'#6#4'More'#18'DisableIfNoHandl'
+  +'er'#9#9'OnExecute'#7#18'actViewMoreExecute'#0#0#7'TAction'#11'actViewGoto'#8
+  +'Category'#6#4'View'#7'Caption'#6#4'Goto'#18'DisableIfNoHandler'#9#9'OnExecu'
+  +'te'#7#18'actViewGotoExecute'#0#0#7'TAction'#12'actViewLimit'#8'Category'#6#4
+  +'View'#7'Caption'#6#2'10'#18'DisableIfNoHandler'#9#9'OnExecute'#7#19'actView'
+  +'LimitExecute'#0#0#7'TAction'#10'actViewTop'#8'Category'#6#4'View'#7'Caption'
+  +#6#3'Top'#18'DisableIfNoHandler'#9#9'OnExecute'#7#17'actViewTopExecute'#0#0#7
+  +'TAction'#13'actViewBottom'#8'Category'#6#4'View'#7'Caption'#6#6'Bottom'#18
+  +'DisableIfNoHandler'#9#9'OnExecute'#7#20'actViewBottomExecute'#0#0#0#10'TPop'
+  +'upMenu'#8'mnuLimit'#4'left'#3#192#0#3'top'#2'p'#0#9'TMenuItem'#10'popLimit1'
+  +'0'#3'Tag'#2#10#7'Caption'#6#6'Max 10'#7'OnClick'#7#13'popCountClick'#0#0#9
+  +'TMenuItem'#10'popLimit25'#3'Tag'#2#25#7'Caption'#6#6'Max 25'#7'OnClick'#7#13
+  +'popCountClick'#0#0#9'TMenuItem'#10'popLimit50'#3'Tag'#2'2'#7'Caption'#6#6'M'
+  +'ax 50'#7'OnClick'#7#13'popCountClick'#0#0#0#10'TImageList'#10'ImageList1'#4
+  +'left'#3#232#0#3'top'#2'p'#0#0#0
 ]);

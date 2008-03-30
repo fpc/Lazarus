@@ -84,6 +84,7 @@ type
     procedure actViewMoreExecute(Sender: TObject);
     procedure actViewLimitExecute(Sender: TObject);
     procedure actViewTopExecute(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
     procedure popCountClick(Sender: TObject);
     procedure txtGotoKeyPress(Sender: TObject; var Key: char);
     procedure lvCallStackDBLCLICK(Sender: TObject);
@@ -129,8 +130,6 @@ uses
 { TCallStackDlg }
 
 constructor TCallStackDlg.Create(AOwner: TComponent);
-var
-  i: integer;
 begin
   inherited Create(AOwner);
   FCallStackNotification := TIDECallStackNotification.Create;
@@ -141,21 +140,6 @@ begin
   FViewCount := 10;
   FViewStart := 0;
   actViewLimit.Caption := popLimit10.Caption;
-  InitImageList;
-  Caption:= lisMenuViewCallStack;
-  ToolButtonShow.Caption:= lisShow;
-  ToolButtonCurrent:= lisCurrent;
-  for i:= 0 to mnuLimit.Items.Count-1 do
-    mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
-  ToolButtonMore:= lisMore;
-  ToolButtonTop:= lisTop;
-  ToolButtonBottom:= lisBottom;
-  ToolButtonGoto:= lisToDoGoto;
-  ToolButtonCopyAll:= lisCopyAll;
-  lvCallStack.Column[1].Caption:= lisIndex;
-  lvCallStack.Column[2].Caption:= lisCEOModeSource;
-  lvCallStack.Column[3].Caption:= lisToDoLLine;
-  lvCallStack.Column[4].Caption:= lisFunction;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
@@ -401,6 +385,27 @@ end;
 procedure TCallStackDlg.actViewTopExecute(Sender: TObject);
 begin
   SetViewStart(0);
+end;
+
+procedure TCallStackDlg.FormCreate(Sender: TObject);
+var
+  i: integer;
+begin
+  Caption:= lisMenuViewCallStack;
+  ToolButtonShow.Caption:= lisShow;
+  ToolButtonCurrent.Caption:= lisCurrent;
+  for i:= 0 to mnuLimit.Items.Count-1 do
+    mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
+  ToolButtonMore.Caption:= lisMore;
+  ToolButtonTop.Caption:= lisTop;
+  ToolButtonBottom.Caption:= lisBottom;
+  ToolButtonGoto.Caption:= lisToDoGoto;
+  ToolButtonCopyAll.Caption:= lisCopyAll;
+  lvCallStack.Columns[1].Caption:= lisIndex;
+  lvCallStack.Columns[2].Caption:= lisCEOModeSource;
+  lvCallStack.Columns[3].Caption:= lisToDoLLine;
+  lvCallStack.Columns[4].Caption:= lisFunction;
+  InitImageList;
 end;
 
 procedure TCallStackDlg.actViewLimitExecute(Sender: TObject);

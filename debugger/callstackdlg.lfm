@@ -9,6 +9,7 @@ inherited CallStackDlg: TCallStackDlg
   Caption = 'CallStack'
   ClientHeight = 246
   ClientWidth = 562
+  OnCreate = FormCreate
   Visible = True
   object lvCallStack: TListView
     Height = 204
