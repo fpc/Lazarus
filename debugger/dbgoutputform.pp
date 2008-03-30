@@ -56,6 +56,7 @@ type
   end;
 
 implementation
+uses LazarusIDEStrConsts;
 
 procedure TDbgOutputForm.AddText(const AText: String);
 begin
@@ -86,6 +87,7 @@ end;
 procedure TDbgOutputForm.FormCreate(Sender: TObject);
 begin
   txtOutput.Lines.Clear;
+  Caption:= lisMenuViewDebugOutput;
 end;
 
 procedure TDbgOutputForm.Loaded;

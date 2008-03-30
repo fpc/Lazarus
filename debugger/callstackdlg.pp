@@ -55,9 +55,9 @@ type
     actSetCurrent: TAction;
     actShow: TAction;
     ImageList1: TImageList;
-    ToolButton10: TToolButton;
-    ToolButton11: TToolButton;
-    ToolButton3: TToolButton;
+    ToolButtonTop: TToolButton;
+    ToolButtonBottom: TToolButton;
+    ToolButtonCopyAll: TToolButton;
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
     txtGoto: TEdit;
@@ -73,12 +73,12 @@ type
     mnuPopup: TPopupMenu;
     mnuLimit: TPopupMenu;
     ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    ToolButtonShow: TToolButton;
+    ToolButtonCurrent: TToolButton;
     ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
-    ToolButton6: TToolButton;
-    ToolButton7: TToolButton;
+    ToolButtonMore: TToolButton;
+    ToolButtonMax: TToolButton;
+    ToolButtonGoto: TToolButton;
     procedure actViewBottomExecute(Sender: TObject);
     procedure actViewGotoExecute(Sender: TObject);
     procedure actViewMoreExecute(Sender: TObject);
@@ -124,11 +124,13 @@ type
 implementation
 
 uses
-  BaseDebugManager, LCLProc;
+  BaseDebugManager, LCLProc, LazarusIDEStrConsts;
 
 { TCallStackDlg }
 
 constructor TCallStackDlg.Create(AOwner: TComponent);
+var
+  i: integer;
 begin
   inherited Create(AOwner);
   FCallStackNotification := TIDECallStackNotification.Create;
@@ -140,6 +142,20 @@ begin
   FViewStart := 0;
   actViewLimit.Caption := popLimit10.Caption;
   InitImageList;
+  Caption:= lisMenuViewCallStack;
+  ToolButtonShow.Caption:= lisShow;
+  ToolButtonCurrent:= lisCurrent;
+  for i:= 0 to mnuLimit.Items.Count-1 do
+    mnuLimit.Items[i].Caption:= Format(lisMaxS, [mnuLimit.Items[i].Tag]);
+  ToolButtonMore:= lisMore;
+  ToolButtonTop:= lisTop;
+  ToolButtonBottom:= lisBottom;
+  ToolButtonGoto:= lisToDoGoto;
+  ToolButtonCopyAll:= lisCopyAll;
+  lvCallStack.Column[1].Caption:= lisIndex;
+  lvCallStack.Column[2].Caption:= lisCEOModeSource;
+  lvCallStack.Column[3].Caption:= lisToDoLLine;
+  lvCallStack.Column[4].Caption:= lisFunction;
 end;
 
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);

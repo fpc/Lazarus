@@ -3670,6 +3670,17 @@ resourcestring
   lisOpenFile2 = 'Open File ...';
   lisMovePage = 'Move Page ...';
   lisFileSettings = 'File Settings ...';
+
+  // Call Stack Dialog
+  lisShow = 'Show';
+  lisCurrent = 'Current';
+  lisMaxS = 'Max %d';
+  lisMore = 'More';
+  lisTop = 'Top';
+  lisBottom = 'Bottom';
+  lisCopyAll = 'Copy All';
+  lisIndex = 'Index';
+  lisFunction = 'Function';
   
 
 implementation
