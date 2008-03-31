@@ -1905,45 +1905,53 @@ var
   Handled: Boolean;
 begin
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
-  Handled:=true;
-  case Key of
+  if Shift = [] then
+  begin
+    Handled:=true;
+    case Key of
 
-  VK_UP:
-    if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
+    VK_UP:
+      if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
 
-  VK_Down:
-    if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
+    VK_Down:
+      if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
 
-  VK_TAB:
-    DoTabKey;
+    VK_TAB:
+      DoTabKey;
 
-  VK_LEFT:
-    if (FCurrentEdit=nil)
-    and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
-      ShrinkRow(ItemIndex)
+    VK_LEFT:
+      if (FCurrentEdit=nil)
+      and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
+        ShrinkRow(ItemIndex)
+      else
+        Handled:=false;
+
+    VK_RIGHT:
+      if (FCurrentEdit=nil)
+      and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
+      and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
+        ExpandRow(ItemIndex)
+      else
+        Handled:=false;
+
+    VK_RETURN:
+      begin
+        SetRowValue;
+        if (FCurrentEdit is TCustomEdit) then
+          TCustomEdit(FCurrentEdit).SelectAll;
+      end;
     else
-      Handled:=false;
-
-  VK_RIGHT:
-    if (FCurrentEdit=nil)
-    and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
-    and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
-      ExpandRow(ItemIndex)
-    else
-      Handled:=false;
-
-  VK_RETURN:
-    begin
-      SetRowValue;
-      if (FCurrentEdit is TCustomEdit) then
-        TCustomEdit(FCurrentEdit).SelectAll;
+      Handled := false;
     end;
-
+  end
   else
-    if Assigned(OnOIKeyDown) then
-      OnOIKeyDown(Self,Key,Shift);
+    Handled := false;
+  if not Handled and Assigned(OnOIKeyDown) then
+  begin
+    OnOIKeyDown(Self,Key,Shift);
     Handled:=Key=VK_UNKNOWN;
   end;
+
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key,' Handled=',Handled);
   if Handled then Key:=VK_UNKNOWN;
 end;
