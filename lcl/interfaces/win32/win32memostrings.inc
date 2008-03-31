@@ -19,11 +19,11 @@ type
   public
     constructor Create(Handle: HWND; TheOwner: TWinControl);
     destructor Destroy; override;
-    procedure Assign(Source : TPersistent); override;
+    procedure AddStrings(TheStrings: TStrings); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
-    procedure SetText(TheText: PChar); override;
+    procedure SetTextStr(const Value: string); override;
     //procedure Sort; virtual;
   public
     //property Sorted: boolean read FSorted write SetSorted;
@@ -133,14 +133,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TWin32MemoStrings.Assign(Source: TPersistent);
+procedure TWin32MemoStrings.AddStrings(TheStrings: TStrings);
 begin
-  if (Source=Self) or (Source=nil) then exit;
-  if Source is TStrings then begin
-    SetText(PChar(TStrings(Source).Text));
-    exit;
-  end;
-  Inherited Assign(Source);
+  SetTextStr(TStrings(TheStrings).Text);
 end;
 
 procedure TWin32MemoStrings.Clear;
@@ -199,14 +194,14 @@ begin
   end;
 end;
 
-procedure TWin32MemoStrings.SetText(TheText: PChar);
+procedure TWin32MemoStrings.SetTextStr(const Value: string);
 begin
 {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS
-  then Windows.SetWindowTextW(fHandle, PWideChar(Utf8Decode(TheText)))
-  else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(TheText)));
+  then Windows.SetWindowTextW(fHandle, PWideChar(UTF8Decode(Value)))
+  else Windows.SetWindowText(fHandle, PChar(Utf8ToAnsi(Value)));
 {$else}
-  SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(TheText));
+  SendMessage(fHandle, WM_SETTEXT, 0, LPARAM(PChar(Value)));
 {$endif}
 end;
 
