@@ -2261,6 +2261,7 @@ ideintf/packageintf.pas svneol=native#text/pascal
 ideintf/projectintf.pas svneol=native#text/pascal
 ideintf/propedits.pp svneol=native#text/pascal
 ideintf/srceditorintf.pas svneol=native#text/pascal
+ideintf/statusbarpropedit.pp svneol=native#text/pascal
 ideintf/stringspropeditdlg.lfm svneol=native#text/plain
 ideintf/stringspropeditdlg.lrs svneol=native#text/plain
 ideintf/stringspropeditdlg.pas svneol=native#text/plain

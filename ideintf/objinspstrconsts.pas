@@ -150,6 +150,9 @@ resourcestring
   // HeaderControl Editor
   sccsHCEditSections  = 'Sections Editor ...';
 
+  // StatusBar Editor
+  sccsSBEditPanels    = 'Panels Editor ...';
+
   // component editors
   nbcesAddPage  = 'Add page';
   nbcesInsertPage = 'Insert page';

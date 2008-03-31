@@ -53,6 +53,7 @@ uses
   ProjectIntf,
   PropEdits,
   SrcEditorIntf,
+  StatusBarPropEdit,
   StringsPropEditDlg,
   LazStringGridEdit,
   TextTools,
