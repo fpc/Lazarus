@@ -420,8 +420,8 @@ begin
     P := DstRowPtr;
     for x := 0 to RS - 1 do
     begin
-      p^ := (SrcPtr[x] shl ShiftL) or (SrcPtr[x+1] shr ShiftR);
-      Inc(p);
+      P^ := Byte(SrcPtr[x] shl ShiftL) or Byte(SrcPtr[x+1] shr ShiftR);
+      Inc(P);
     end;
     Inc(SrcPtr, ARowStride);
     Inc(DstRowPtr, DstRowInc);
@@ -1798,10 +1798,10 @@ begin
         //DebugLn(['InternalInit CurShift=',CurShift,' DShift=',DShift]);
         if CurShift >= DShift then
           MissingBits[Prec, HighValue] :=
-            MissingBits[Prec, HighValue] or (Bits shl (CurShift - DShift))
+            word(MissingBits[Prec, HighValue] or (Bits shl (CurShift - DShift)))
         else
           MissingBits[Prec, HighValue] :=
-            MissingBits[Prec, HighValue] or (Bits shr (DShift - CurShift));
+            word(MissingBits[Prec, HighValue] or (Bits shr (DShift - CurShift)));
         Dec(CurShift, DShift);
       end;
     end;
