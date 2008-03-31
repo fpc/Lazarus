@@ -241,7 +241,6 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
-    FOnPageChanged: TNotifyEvent;
     FPageToUndock: TTabSheet;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
