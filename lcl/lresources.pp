@@ -2411,6 +2411,10 @@ var
 
   procedure ProcessProperty; forward;
 
+  {$if not declared(toWString)}
+    const toWString = char(5);
+  {$endif}
+
   procedure ProcessValue;
   
     procedure RaiseValueExpected;
@@ -2440,13 +2444,14 @@ var
           WriteLRSExtended(Output,flt);
           parser.NextToken;
         end;
-      toString:
+      toString, toWString:
         begin
           toStringBuf := parser.TokenWideString;
           while parser.NextToken = '+' do
           begin
             parser.NextToken;   // Get next string fragment
-            parser.CheckToken(toString);
+            if not (parser.Token in [toString,toWString]) then
+              parser.CheckToken(toString);
             toStringBuf := toStringBuf + parser.TokenWideString;
           end;
           if WideStringNeeded(toStringBuf) then begin

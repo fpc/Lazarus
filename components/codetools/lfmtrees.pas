@@ -405,6 +405,10 @@ begin
   if FirstError<>nil then Result:=FirstError.ErrorMessage;
 end;
 
+{$if not declared(toWString)}
+  const toWString = char(5);
+{$endif}
+
 procedure TLFMTree.ProcessValue;
 var
   s: String;
@@ -429,13 +433,14 @@ begin
       CloseChildNode;
     end;
     
-  toString:
+  toString, toWString:
     begin
       CreateChildNode(TLFMValueNode);
       TLFMValueNode(CurNode).ValueType:=lfmvString;
       while Parser.NextToken = '+' do begin
         Parser.NextToken;   // Get next string fragment
-        Parser.CheckToken(toString);
+        if not (Parser.Token in [toString,toWString]) then
+          Parser.CheckToken(toString);
       end;
       CloseChildNode;
     end;
