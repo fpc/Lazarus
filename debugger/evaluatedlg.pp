@@ -136,7 +136,6 @@ procedure TEvaluateDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
-  InputHistories.HistoryLists.GetList(ClassName, True).Assign(cmbExpression.Items);
 end;
 
 procedure TEvaluateDlg.FormShow(Sender: TObject);
@@ -156,6 +155,7 @@ var
   S, R: String;
 begin
   S := cmbExpression.Text;
+  InputHistories.HistoryLists.Add(ClassName, S);
   if DebugBoss.Evaluate(S, R)
   then begin
     if cmbExpression.Items.IndexOf(S) = -1
