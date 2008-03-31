@@ -87,6 +87,27 @@ type
   end;
   TImageListDrawParams = tagIMAGELISTDRAWPARAMS;
   PImageListDrawParams = ^TImageListDrawParams;
+  
+  {$ifdef ver2_2_0}
+  _browseinfoW = record
+    hwndOwner : HWND;
+    pidlRoot : LPCITEMIDLIST;
+    pszDisplayName : LPWSTR;    { Return display name of item selected. }
+    lpszTitle : LPCWSTR;        { text to go in the banner over the tree. }
+    ulFlags : UINT;             { Flags that control the return stuff }
+    lpfn : BFFCALLBACK;
+    lParam : LPARAM;            { extra info that's passed back in callbacks }
+    iImage : longint;           { output var: where to return the Image index. }
+  end;
+  BROWSEINFOW = _browseinfoW;
+  PBROWSEINFOW = ^BROWSEINFOW;
+  PPBROWSEINFOW = ^PBROWSEINFOW;
+  LPBROWSEINFOW = PbrowseinfoW;
+  PLPBROWSEINFOW = ^LPBROWSEINFOW;
+  TBROWSEINFOW = BROWSEINFOW;
+  {$endif}
+
+
 
 { Win32 API constants not included in windows.pp }
 const
@@ -199,11 +220,14 @@ const
     //shortcut menu commands. To use this flag, you must call OleInitialize or
     //CoInitialize before calling SHBrowseForFolder.
 
+  {$ifdef ver2_2_0}
   BFFM_INITIALIZED = 1;
   BFFM_SELCHANGED = 2;
 
   BFFM_SETSELECTION = WM_USER + 102;
-  
+  BFFM_SETSELECTIONW = (WM_USER + 103);
+  {$endif}
+
   {SpinEdit 32 bit messages}
   UDM_GETPOS32 = 1138;
   UDM_GETRANGE32 = 1136;
@@ -343,6 +367,11 @@ function GetRandomRgn(aHDC: HDC; aHRGN: HRGN; iNum: longint): longint; stdcall; 
   e.g. BrowseForFolder dialog functions}
 function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
 procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
+
+{$ifdef ver2_2_0}
+function SHGetPathFromIDListW(pidl:LPCITEMIDLIST; pszPath:LPWStr):BOOL;StdCall;external 'shell32' name 'SHGetPathFromIDListW';
+function SHBrowseForFolderW(lpbi:LPBROWSEINFOW):LPITEMIDLIST;StdCall;external 'shell32' name 'SHBrowseForFolderW';
+{$endif}
 
 const
   // BlendOp flags

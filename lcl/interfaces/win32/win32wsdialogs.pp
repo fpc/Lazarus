@@ -44,7 +44,7 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
 // rtl
-  Windows, ShellApi, ActiveX, SysUtils, Classes,
+  Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes,
 {$IFNDEF OLD_PLACE}
   CommDlg,
 {$ENDIF}
@@ -293,7 +293,6 @@ function OpenFileDialogCallBack(hWnd: Handle; uMsg: UINT; wParam: WPARAM;
 var
   OpenFileNotify: LPOFNOTIFY;
   OpenFileName: Windows.POPENFILENAME;
-  NeededSize: SizeInt;
   DialogRec: POpenFileDialogRec;
   FilesSize: SizeInt;
   FolderSize: SizeInt;
@@ -859,7 +858,12 @@ begin
   case uMsg of
     BFFM_INITIALIZED:
         // Setting root dir
-        SendMessage(hwnd, BFFM_SETSELECTION, ULONG(True), lpData);
+        {$ifdef WindowsUnicodeSupport}
+        if UnicodeEnabledOS then
+          SendMessageW(hwnd, BFFM_SETSELECTIONW, ULONG(True), lpData)
+        else
+        {$endif}
+          SendMessage(hwnd, BFFM_SETSELECTION, ULONG(True), lpData);
     //BFFM_SELCHANGED
     //  : begin
     //    if Assigned(FOnSelectionChange) then .....
@@ -870,13 +874,18 @@ end;
 
 class function TWin32WSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 var
-  bi : TBrowseInfo;
-  Options: TOpenOptions;
+  Options : TOpenOptions;
+  InitialDir : string;
   Buffer : PChar;
+  bi : TBrowseInfo;
   iidl : PItemIDList;
-  InitialDir: string;
+  {$ifdef WindowsUnicodeSupport}
+  biw : TBROWSEINFOW;
+  Bufferw : PWideChar absolute Buffer;
+  InitialDirW: widestring;
+  Title: widestring;
+  {$endif}
 begin
-  Buffer := CoTaskMemAlloc(MAX_PATH);
   InitialDir := TSelectDirectoryDialog(ACommonDialog).FileName;
 
   Options := TSelectDirectoryDialog(ACommonDialog).Options;
@@ -884,13 +893,70 @@ begin
   if length(InitialDir)=0 then
     InitialDir := TSelectDirectoryDialog(ACommonDialog).InitialDir;
   if length(InitialDir)>0 then begin
-    // remove the \ at the end.
+    // remove the \ at the end.                                                                      +
     if Copy(InitialDir,length(InitialDir),1)=PathDelim then
       InitialDir := copy(InitialDir,1, length(InitialDir)-1);
     // if it is a rootdirectory, then the InitialDir must have a \ at the end.
     if Copy(InitialDir,length(InitialDir),1)=DriveDelim then
       InitialDir := InitialDir + PathDelim;
   end;
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    Buffer := CoTaskMemAlloc(MAX_PATH*2);
+    InitialDirW:=UTF8Decode(InitialDir);
+    with biw do
+    begin
+      hwndOwner := GetOwnerHandle(ACommonDialog);
+      pidlRoot := nil;
+      pszDisplayName := BufferW;
+      Title :=  UTF8Decode(ACommonDialog.Title);
+      lpszTitle := PWideChar(Title);
+      ulFlags := BIF_RETURNONLYFSDIRS;
+      if not (ofOldStyleDialog in Options) then
+         ulFlags := ulFlags + BIF_NEWDIALOGSTYLE;
+      lpfn := @BrowseForFolderCallback;
+      // this value will be passed to callback proc as lpData
+      lParam := Windows.LParam(PWideChar(InitialDirW));
+    end;
+
+    iidl := SHBrowseForFolderW(@biw);
+
+    if Assigned(iidl) then
+    begin
+      SHGetPathFromIDListW(iidl, BufferW);
+      CoTaskMemFree(iidl);
+      TSelectDirectoryDialog(ACommonDialog).FileName := UTF8Encode(BufferW);
+    end;
+  end
+  else begin
+    Buffer := CoTaskMemAlloc(MAX_PATH);
+    InitialDir := Utf8ToAnsi(InitialDir);
+    with bi do
+    begin
+      hwndOwner := GetOwnerHandle(ACommonDialog);
+      pidlRoot := nil;
+      pszDisplayName := Buffer;
+      lpszTitle := PChar(ACommonDialog.Title);
+      ulFlags := BIF_RETURNONLYFSDIRS;
+      if not (ofOldStyleDialog in Options) then
+         ulFlags := ulFlags + BIF_NEWDIALOGSTYLE;
+      lpfn := @BrowseForFolderCallback;
+      // this value will be passed to callback proc as lpData
+      lParam := Windows.LParam(PChar(InitialDir));
+    end;
+
+    iidl := SHBrowseForFolder(@bi);
+
+    if Assigned(iidl) then
+    begin
+      SHGetPathFromIDList(iidl, Buffer);
+      CoTaskMemFree(iidl);
+      TSelectDirectoryDialog(ACommonDialog).FileName := AnsiToUtf8(Buffer);
+    end;
+  end;
+  {$else}
+  Buffer := CoTaskMemAlloc(MAX_PATH);
   with bi do
   begin
     hwndOwner := GetOwnerHandle(ACommonDialog);
@@ -913,7 +979,8 @@ begin
     CoTaskMemFree(iidl);
     TSelectDirectoryDialog(ACommonDialog).FileName := Buffer;
   end;
-
+  {$endif}
+  
   SetDialogResult(ACommonDialog, assigned(iidl));
 
   CoTaskMemFree(Buffer);
