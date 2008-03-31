@@ -382,7 +382,7 @@ begin
       ImageList_Copy(Handle, n + 1, Handle, n, ILCF_SWAP);
   end
   else begin
-    for n := ACurIndex downto ANewIndex - 1 do
+    for n := ACurIndex downto ANewIndex + 1 do
       ImageList_Copy(Handle, n - 1, Handle, n, ILCF_SWAP);
   end;
 end;
