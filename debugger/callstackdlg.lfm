@@ -52,12 +52,12 @@ inherited CallStackDlg: TCallStackDlg
     Images = ImageList1
     ShowCaptions = True
     TabOrder = 1
-    object ToolButton1: TToolButton
+    object ToolButtonShow: TToolButton
       Left = 1
       Action = actShow
       ImageIndex = 0
     end
-    object ToolButton2: TToolButton
+    object ToolButtonCurrent: TToolButton
       Left = 51
       Action = actSetCurrent
     end
@@ -67,12 +67,12 @@ inherited CallStackDlg: TCallStackDlg
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
-    object ToolButton5: TToolButton
+    object ToolButtonMore: TToolButton
       Left = 159
       Action = actViewMore
       ImageIndex = 1
     end
-    object ToolButton6: TToolButton
+    object ToolButtonMax: TToolButton
       Left = 104
       Action = actViewLimit
       Caption = 'Max 10'
@@ -97,12 +97,12 @@ inherited CallStackDlg: TCallStackDlg
         Text = '0'
       end
     end
-    object ToolButton7: TToolButton
+    object ToolButtonGoto: TToolButton
       Left = 362
       Action = actViewGoto
       ImageIndex = 4
     end
-    object ToolButton3: TToolButton
+    object ToolButtonCopyAll: TToolButton
       Left = 415
       Action = actCopyAll
       ImageIndex = 5
@@ -119,12 +119,12 @@ inherited CallStackDlg: TCallStackDlg
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
-    object ToolButton10: TToolButton
+    object ToolButtonTop: TToolButton
       Left = 212
       Action = actViewTop
       ImageIndex = 2
     end
-    object ToolButton11: TToolButton
+    object ToolButtonBottom: TToolButton
       Left = 262
       Action = actViewBottom
       ImageIndex = 3
