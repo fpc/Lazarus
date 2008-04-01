@@ -1216,7 +1216,9 @@ begin
     end;
     WM_CHAR:
     begin
-      if not UnicodeEnabledOS or not HandleUnicodeChar(Word(WParam)) then
+      // first send a IntfUTF8KeyPress to the LCL
+      // if the key was not handled send a CN_CHAR for AnsiChar<=#127
+      if not HandleUnicodeChar(Word(WParam)) and (WParam<=127) then
       begin
         PLMsg:=@LMChar;
         with LMChar do
