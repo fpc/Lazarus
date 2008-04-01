@@ -376,7 +376,7 @@ var
   FIFOption: TLazFindInFileSearchOption;
 begin
   // Find- and replace-history
-  fMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
+  FMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
   LoadRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   LoadRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   LoadRecentList(XMLConfig,FFindInFilesPathHistory,Path+

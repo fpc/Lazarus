@@ -1089,9 +1089,12 @@ begin
   SetupDialogs;
   RunExternalTool:=@OnRunExternalTool;
   {$IFDEF UseAsyncProcess}
-  TOutputFilterProcess:=TAsyncProcess;
+  if Widgetset.LCLCapability(lcAsyncProcess) = 1 then
+    TOutputFilterProcess := TAsyncProcess
+  else
+    TOutputFilterProcess := TProcess;
   {$ELSE}
-  TOutputFilterProcess:=TProcess;
+  TOutputFilterProcess := TProcess;
   {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create;

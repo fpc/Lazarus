@@ -181,6 +181,7 @@ type
     destructor Destroy; override;
 
     function LCLPlatform: TLCLPlatform; override;
+    function LCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
     { Initialize the API }
     procedure AppInit(var ScreenInfo: TScreenInfo); override;

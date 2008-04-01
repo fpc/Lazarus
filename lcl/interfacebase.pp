@@ -67,6 +67,10 @@ type
     
   TLCLPlatforms = set of TLCLPlatform;
 
+  TLCLCapability = (
+    lcAsyncProcess       // support for async process
+  );
+
   { TWidgetSet }
 
   TWidgetSet = class(TObject)
@@ -89,6 +93,7 @@ type
     procedure AppSetTitle(const ATitle: string); virtual;
     
     function  LCLPlatform: TLCLPlatform; virtual; abstract;
+    function  LCLCapability(ACapability: TLCLCapability): PtrUInt; virtual;
 
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;

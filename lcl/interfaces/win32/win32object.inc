@@ -410,6 +410,15 @@ begin
   Result:= lpWin32;
 end;
 
+function TWin32WidgetSet.LCLCapability(ACapability: TLCLCapability): PtrUInt;
+begin
+  case ACapability of
+    lcAsyncProcess: Result := 1;
+  else
+    Result := inherited;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function: CreateTimer
   Params: Interval:
