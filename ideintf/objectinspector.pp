@@ -1936,15 +1936,15 @@ begin
         DoTabKey;
 
       VK_LEFT:
-        if (FCurrentEdit=nil)
+        if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
         and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
           ShrinkRow(ItemIndex)
         else
           Handled:=false;
 
       VK_RIGHT:
-        if (FCurrentEdit=nil)
-        and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
+        if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
+        and (ItemIndex >= 0) and (not Rows[ItemIndex].Expanded)
         and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
           ExpandRow(ItemIndex)
         else
