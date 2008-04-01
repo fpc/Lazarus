@@ -14,6 +14,7 @@ object frGroupEditorForm: TfrGroupEditorForm
   OnCreate = FormCreate
   Position = poScreenCenter
   ShowHint = True
+  LCLVersion = '0.9.25'
   object GB1: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -21,13 +22,13 @@ object frGroupEditorForm: TfrGroupEditorForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 66
+    Height = 64
     Top = 6
     Width = 481
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Condition'
-    ClientHeight = 48
+    ClientHeight = 47
     ClientWidth = 477
     TabOrder = 0
     object Edit1: TEditButton
@@ -46,14 +47,15 @@ object frGroupEditorForm: TfrGroupEditorForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777700
         0000700700700700000070070070070000007777777777000000
       }
+      OnButtonClick = frSpeedButton1Click
       ParentColor = False
       TabOrder = 0
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 40
-    Top = 78
+    Height = 42
+    Top = 76
     Width = 481
     Align = alBottom
     AutoSize = True

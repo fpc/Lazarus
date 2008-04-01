@@ -87,6 +87,7 @@ type
     procedure accPreviewReportExecute(Sender: TObject);
     procedure accPrintGridExecute(Sender: TObject);
     procedure accPrintReportExecute(Sender: TObject);
+    procedure dbGrid1TitleClick(Column: TColumn);
     procedure frmMainCreate(Sender: TObject);
   private
     { private declarations }
@@ -193,6 +194,20 @@ begin
     TheReport.PrintPreparedReport('1',1)
   else
     ShowMessage(cerPrepareFailed);
+end;
+
+procedure TfrmMain.dbGrid1TitleClick(Column: TColumn);
+begin
+  if CompareText(Column.FieldName,'year')=0 then
+    dbf1.IndexName := 'ByYear'
+  else
+  if CompareText(Column.FieldName,'company')=0 then
+    dbf1.IndexName := 'ByCompany'
+  else
+  if CompareText(Column.FieldName,'country')=0 then
+    dbf1.IndexName := 'ByCountry'
+  else
+    dbf1.IndexName := '';
 end;
 
 procedure TfrmMain.frmMainCreate(Sender: TObject);

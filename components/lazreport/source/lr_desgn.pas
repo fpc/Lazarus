@@ -1503,7 +1503,9 @@ begin
       
       SelNum := 1;
       if t.Typ = gtBand then begin
+        {$IFDEF DebugLR}
         DebugLn('A new band was inserted');
+        {$ENDIF}
         Draw(10000, t.GetClipRgn(rtExtended))
       end else
       begin
@@ -4079,6 +4081,7 @@ var
   i: Integer;
   bt: TfrBandType;
 begin
+  SetCaptureControl(nil);
   t := TfrView(Objects[TopSelected]);
   if t.Typ = gtMemo then
     ShowMemoEditor

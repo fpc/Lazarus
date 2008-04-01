@@ -432,9 +432,11 @@ components/lazreport/samples/barcode/cbunit.lfm svneol=native#text/plain
 components/lazreport/samples/barcode/cbunit.lrs svneol=native#text/plain
 components/lazreport/samples/barcode/cbunit.pas svneol=native#text/pascal
 components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text/xml
+components/lazreport/samples/editor/albumsbycountry.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/calleditorwithpkg.lpi svneol=native#text/plain
 components/lazreport/samples/editor/calleditorwithpkg.lpr svneol=native#text/pascal
 components/lazreport/samples/editor/db/disco.dbf -text
+components/lazreport/samples/editor/db/disco.mdx -text
 components/lazreport/samples/editor/languages/maincalleditor.de.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/maincalleditor.es.po svneol=native#text/plain
 components/lazreport/samples/editor/languages/maincalleditor.lt.po svneol=native#text/plain

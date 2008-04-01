@@ -12,8 +12,8 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
   ClientWidth = 420
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 96
   Position = poDesktopCenter
+  LCLVersion = '0.9.25'
   object ListBox1: TListBox
     Height = 216
     Width = 181
@@ -51,6 +51,7 @@ object LR_FunctEditorForm: TLR_FunctEditorForm
       Color = clInfoBk
       ParentColor = False
       Transparent = False
+      WordWrap = True
     end
   end
   object Splitter1: TSplitter

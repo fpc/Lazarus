@@ -8378,12 +8378,18 @@ begin
   end;
   if dk <> dkNone then
   begin
+
     if dk = dkCount then
       DataSet := frGetDataSet(lrGetUnBrackedStr(p1))
     else
       frGetDataSetAndField(lrGetUnBrackedStr(p1), DataSet, Field);
+      
     if (DataSet <> nil) and AggrBand.Visible then
     begin
+      // NOTE: this will probably work only when iterating detail records
+      //       for non master-detail relationships like simple grouping on
+      //       single datasets it will iterate over all records and not only
+      //       over group records.
       min := 1e200; max := -1e200; sum := 0; count := 0; avg := 0;
       BM:=DataSet.GetBookMark;
       DataSet.DisableControls;

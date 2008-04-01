@@ -39,7 +39,7 @@ type
   end; 
 
 implementation
-uses lr_expres, StrUtils;
+uses lr_expres, lr_utils;
 
 { TLR_FunctEditor1Form }
 
@@ -99,13 +99,13 @@ function TLR_FunctEditor1Form.ResultText: string;
 begin
   Result:='';
   if FParCount>0 then
-   Result:=Result + '[' + Edit1.Text + ']';
+   Result:=Result + '[' + lrGetUnBrackedStr(Edit1.Text) + ']';
 
   if FParCount>1 then
-   Result:=Result + ', [' + Edit2.Text + ']';
+   Result:=Result + ', [' + lrGetUnBrackedStr(Edit2.Text) + ']';
 
   if FParCount>2 then
-   Result:=Result + ', [' + Edit3.Text + ']';
+   Result:=Result + ', [' + lrGetUnBrackedStr(Edit3.Text) + ']';
    
   if FParCount>0 then
     Result:='('+Result+')';
