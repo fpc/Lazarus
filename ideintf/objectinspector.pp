@@ -366,6 +366,7 @@ type
     procedure SetRowValue;
     procedure DoCallEdit;
     procedure RefreshValueEdit;
+    procedure ToggleRow;
     procedure ValueEditDblClick(Sender : TObject);
     procedure ValueControlMouseDown(Sender: TObject; Button:TMouseButton;
       Shift: TShiftState; X,Y:integer);
@@ -1946,6 +1947,17 @@ begin
     end;
   end
   else
+  if Shift = [ssCtrl] then
+  begin
+    Handled := True;
+    case Key of
+      VK_RETURN:
+        ToggleRow;
+    else
+      Handled := False;
+    end;
+  end
+  else
     Handled := false;
   if not Handled and Assigned(OnOIKeyDown) then
   begin
@@ -2685,7 +2697,7 @@ begin
                     pgsBuildPropertyListNeeded]<>[])
 end;
 
-procedure TOICustomPropertyGrid.ValueEditDblClick(Sender : TObject);
+procedure TOICustomPropertyGrid.ToggleRow;
 var
   CurRow: TOIPropertyGridRow;
   TypeKind : TTypeKind;
@@ -2704,7 +2716,7 @@ begin
   if FHintTimer<>nil then
     FHintTimer.Enabled := False;
 
-  if (FCurrentEdit=ValueComboBox) then 
+  if (FCurrentEdit = ValueComboBox) then 
   begin
     //either an Event or an enumeration or Boolean
     CurRow := Rows[FItemIndex];
@@ -2723,6 +2735,11 @@ begin
     end;
   end;
   DoCallEdit;
+end;
+
+procedure TOICustomPropertyGrid.ValueEditDblClick(Sender: TObject);
+begin
+  ToggleRow;
 end;
 
 procedure TOICustomPropertyGrid.SetBackgroundColor(const AValue: TColor);
