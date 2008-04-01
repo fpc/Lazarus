@@ -316,8 +316,9 @@ begin
       if FileExists(DefaultExe) then begin
         if FileExists(CustomExe) then begin
           // both exist
-          if FileAge(CustomExe)>FileAge(DefaultExe) then begin
-            // the custom exe is newer => use custom
+          if (FileAge(CustomExe)>=FileAge(DefaultExe)) then begin
+            // the custom exe is newer or equal => use custom
+            // Equal files ages catches the case where the two names refer to the same file on disk
             FLazarusPath:=CustomExe;
           end else begin
             // the custom exe is older => let user choose
