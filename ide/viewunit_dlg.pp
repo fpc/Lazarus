@@ -206,6 +206,7 @@ var
 begin
   Index := SearchItem(ListBox.Items, Edit.Text);
   ListBox.ItemIndex := Index;
+  ListBox.MakeCurrentVisible;
 
   if ListBox.MultiSelect then
   begin
