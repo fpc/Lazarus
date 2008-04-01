@@ -1,4 +1,10 @@
 object TabOrderDialog: TTabOrderDialog
+  Left = 381
+  Height = 387
+  Top = 167
+  Width = 310
+  HorzScrollBar.Page = 309
+  VertScrollBar.Page = 386
   ActiveControl = ItemTreeview
   BorderStyle = bsSizeToolWin
   Caption = 'TabOrderDialog'
@@ -6,15 +12,17 @@ object TabOrderDialog: TTabOrderDialog
   ClientWidth = 310
   OnClose = TabOrderDialogCLOSE
   OnCreate = TabOrderDialogCREATE
-  PixelsPerInch = 96
   Position = poScreenCenter
-  HorzScrollBar.Page = 309
-  VertScrollBar.Page = 386
-  Left = 381
-  Height = 387
-  Top = 167
-  Width = 310
+  LCLVersion = '0.9.25'
   object ItemTreeview: TTreeView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = ArrowDown
+    AnchorSideBottom.Control = ShowOldValuesCheckbox
+    Left = 6
+    Height = 318
+    Top = 6
+    Width = 267
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     DefaultItemHeight = 15
@@ -23,89 +31,79 @@ object TabOrderDialog: TTabOrderDialog
     RightClickSelect = True
     TabOrder = 0
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    AnchorSideRight.Control = ArrowDown
-    AnchorSideBottom.Control = ShowOldValuesCheckbox
-    Left = 6
-    Height = 316
-    Top = 6
-    Width = 267
   end
   object ShowOldValuesCheckbox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = CancelButton
+    Left = 6
+    Height = 19
+    Top = 330
+    Width = 149
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'ShowOldValuesCheckbox'
     OnClick = ShowOldValuesCheckboxCLICK
     TabOrder = 1
-    AnchorSideLeft.Control = Owner
-    AnchorSideBottom.Control = CancelButton
-    Left = 6
-    Height = 13
-    Top = 328
-    Width = 143
   end
   object OkButton: TBitBtn
+    AnchorSideRight.Control = CancelButton
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 160
+    Height = 26
+    Top = 355
+    Width = 60
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-
     Caption = '&OK'
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
     OnClick = OkButtonCLICK
     TabOrder = 2
+  end
+  object CancelButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 236
-    Height = 34
-    Top = 347
-    Width = 68
-  end
-  object CancelButton: TBitBtn
+    Left = 226
+    Height = 26
+    Top = 355
+    Width = 78
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
-
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
     TabOrder = 3
-    AnchorSideRight.Control = OkButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 150
-    Height = 34
-    Top = 347
-    Width = 80
   end
   object ArrowUp: TArrow
-    Anchors = [akTop, akRight]
-    ArrowType = atUp
-    BorderSpacing.Around = 6
-    OnClick = UpSpeedbuttonCLICK
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 279
     Height = 25
     Top = 120
     Width = 25
+    Anchors = [akTop, akRight]
+    ArrowType = atUp
+    BorderSpacing.Around = 6
+    OnClick = UpSpeedbuttonCLICK
   end
   object ArrowDown: TArrow
-    Anchors = [akTop, akRight]
-    ArrowType = atDown
-    BorderSpacing.Around = 6
-    OnClick = DownSpeedbuttonCLICK
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 279
     Height = 25
     Top = 176
     Width = 25
+    Anchors = [akTop, akRight]
+    ArrowType = atDown
+    BorderSpacing.Around = 6
+    OnClick = DownSpeedbuttonCLICK
   end
 end

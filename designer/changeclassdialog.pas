@@ -46,17 +46,16 @@ type
   { TChangeClassDlg }
 
   TChangeClassDlg = class(TForm)
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
     NewClassComboBox: TComboBox;
     NewAncestorGroupBox: TGroupBox;
     NewAncestorsListBox: TListBox;
     OldAncestorGroupBox: TGroupBox;
     OldAncestorsListBox: TListBox;
     OldClassLabel: TLabel;
-    OkButton: TButton;
-    CancelButton: TButton;
     NewGroupBox: TGroupBox;
     OldGroupBox: TGroupBox;
-    BtnPanel: TPanel;
     procedure ChangeClassDlgCreate(Sender: TObject);
     procedure NewClassComboBoxEditingDone(Sender: TObject);
   private
