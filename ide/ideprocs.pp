@@ -2020,8 +2020,7 @@ end;
 -------------------------------------------------------------------------------}
 function CommentText(const s: string; CommentType: TCommentType): string;
 
-  procedure GetTextInfo(var Len, LineCount: integer;
-    var LastLineEmpty: boolean);
+  procedure GetTextInfo(out Len, LineCount: integer; out LastLineEmpty: boolean);
   var
     p: integer;
   begin

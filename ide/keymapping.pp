@@ -36,7 +36,7 @@ uses
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   Dialogs, StringHashList,
   SynEditKeyCmds, Laz_XMLCfg,
-  LazarusIDEStrConsts, TextTools, IDECommands;
+  LazarusIDEStrConsts, IDECommands;
 
 type
   TKeyMapScheme = (

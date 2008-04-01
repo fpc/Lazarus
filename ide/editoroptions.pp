@@ -35,9 +35,9 @@ interface
 
 uses
   // RTL, FCL
-  Classes, Math, SysUtils,
+  Classes, SysUtils,
   // LCL
-  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, FileCtrl, Forms, Graphics,
+  Buttons, ComCtrls, Controls, Dialogs, ExtCtrls, Forms, Graphics,
   GraphType, LCLIntf, LCLProc, LCLType, LResources, StdCtrls,
   // synedit
   SynEdit, SynEditAutoComplete, SynEditHighlighter, SynEditKeyCmds,

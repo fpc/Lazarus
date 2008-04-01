@@ -48,9 +48,6 @@ interface
 uses
   SysUtils, Classes, LCLProc, DefineTemplates, FileUtil, InterfaceBase;
 
-type
-  TLCLPlatforms = set of TLCLPlatform;
-  
 const
   LCLPlatformDisplayNames: array[TLCLPlatform] of string = (
       'gtk',

@@ -46,11 +46,11 @@ type
     function GetKeymapScheme: string;
   end;
 
-function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
+function ShowChooseKeySchemeDialog(out NewScheme: string): TModalResult;
 
 implementation
 
-function ShowChooseKeySchemeDialog(var NewScheme: string): TModalResult;
+function ShowChooseKeySchemeDialog(out NewScheme: string): TModalResult;
 var
   ChooseKeySchemeDlg: TChooseKeySchemeDlg;
 begin
