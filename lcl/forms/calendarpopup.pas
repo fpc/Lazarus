@@ -113,10 +113,20 @@ begin
     Close;
 end;
 
-procedure TCalendarPopupForm.Initialize(const PopupOrigin: TPoint; ADate: TDateTime);
+procedure TCalendarPopupForm.Initialize(const PopupOrigin: TPoint;
+                                              ADate: TDateTime);
+var ScrSize: TPoint;
 begin
-  Left := PopupOrigin.x;
-  Top := PopupOrigin.y;
+  ScrSize.X := Screen.Width;
+  ScrSize.Y := Screen.Height;
+  if PopupOrigin.X + Width > ScrSize.X then
+    Left := ScrSize.X - Width
+  else
+    Left := PopupOrigin.X;
+  if PopupOrigin.Y + Height > ScrSize.Y then
+    Top := ScrSize.Y - Height
+  else
+    Top := PopupOrigin.Y;
   Calendar.DateTime := ADate;
 end;
 
