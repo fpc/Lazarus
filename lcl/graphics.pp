@@ -89,23 +89,23 @@ type
     Layout    : TTextLayout; // TextRect Only: vertical alignment
 
     SingleLine: boolean;     // If WordBreak is false then process #13, #10 as
-                              // standard chars and perform no Line breaking.
+                             // standard chars and perform no Line breaking.
 
     Clipping  : boolean;     // TextRect Only: Clip Text to passed Rectangle
 
-    ExpandTabs: boolean;     // currently ignored
+    ExpandTabs: boolean;     // Replace #9 by apropriate amount of spaces (default is usually 8)
 
     ShowPrefix: boolean;     // TextRect Only: Process first single '&' per
-                              //    line as an underscore and draw '&&' as '&'
+                             //    line as an underscore and draw '&&' as '&'
 
     Wordbreak : boolean;     // TextRect Only: If line of text is too long
-                              //    too fit between left and right boundaries
-                              //    try to break into multiple lines between
-                              //    words
+                             //    too fit between left and right boundaries
+                             //    try to break into multiple lines between
+                             //    words
 
     Opaque    : boolean;     // TextRect: Fills background with current Brush
-                              // TextOut : Fills background with current
-                              //            foreground color
+                             // TextOut : Fills background with current
+                             //            foreground color
 
     SystemFont: Boolean;     // Use the system font instead of Canvas Font
     
