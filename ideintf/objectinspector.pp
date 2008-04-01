@@ -1903,6 +1903,13 @@ end;
 
 procedure TOICustomPropertyGrid.HandleStandardKeys(var Key: Word;
   Shift: TShiftState);
+
+  function IsCurrentEditDroppedDown: Boolean;
+  begin
+    Result := (FCurrentEdit is TCustomCombobox) and
+              TCustomCombobox(FCurrentEdit).DroppedDown;
+  end;
+
 var
   Handled: Boolean;
 begin
@@ -1911,39 +1918,46 @@ begin
   begin
     Handled:=true;
     case Key of
+      VK_UP:
+        if IsCurrentEditDroppedDown then
+          Handled := False
+        else
+        if (ItemIndex > 0) then 
+          SetItemIndexAndFocus(ItemIndex - 1);
 
-    VK_UP:
-      if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
+      VK_DOWN:
+        if IsCurrentEditDroppedDown then
+          Handled := False
+        else
+        if (ItemIndex < FRows.Count - 1) then 
+          SetItemIndexAndFocus(ItemIndex + 1);
 
-    VK_DOWN:
-      if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
+      VK_TAB:
+        DoTabKey;
 
-    VK_TAB:
-      DoTabKey;
+      VK_LEFT:
+        if (FCurrentEdit=nil)
+        and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
+          ShrinkRow(ItemIndex)
+        else
+          Handled:=false;
 
-    VK_LEFT:
-      if (FCurrentEdit=nil)
-      and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
-        ShrinkRow(ItemIndex)
+      VK_RIGHT:
+        if (FCurrentEdit=nil)
+        and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
+        and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
+          ExpandRow(ItemIndex)
+        else
+          Handled:=false;
+
+      VK_RETURN:
+        begin
+          SetRowValue;
+          if (FCurrentEdit is TCustomEdit) then
+            TCustomEdit(FCurrentEdit).SelectAll;
+        end;
       else
-        Handled:=false;
-
-    VK_RIGHT:
-      if (FCurrentEdit=nil)
-      and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
-      and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
-        ExpandRow(ItemIndex)
-      else
-        Handled:=false;
-
-    VK_RETURN:
-      begin
-        SetRowValue;
-        if (FCurrentEdit is TCustomEdit) then
-          TCustomEdit(FCurrentEdit).SelectAll;
-      end;
-    else
-      Handled := false;
+        Handled := false;
     end;
   end
   else
