@@ -650,6 +650,7 @@ type
     procedure SetShowComponentTree(const AValue: boolean);
     procedure SetShowFavorites(const AValue: Boolean);
     procedure SetShowRestricted(const AValue: Boolean);
+    procedure ShowNextPage(Delta: integer);
   protected
     function PersistentToString(APersistent: TPersistent): string;
     procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
@@ -1913,7 +1914,7 @@ begin
     VK_UP:
       if (ItemIndex>0) then SetItemIndexAndFocus(ItemIndex-1);
 
-    VK_Down:
+    VK_DOWN:
       if (ItemIndex<FRows.Count-1) then SetItemIndexAndFocus(ItemIndex+1);
 
     VK_TAB:
@@ -3604,10 +3605,31 @@ end;
 
 procedure TObjectInspectorDlg.OnGridKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+var
+  Handled: Boolean;
 begin
-  if Assigned(OnOIKeyDown) then OnOIKeyDown(Self,Key,Shift);
-  if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
-    OnRemainingKeyDown(Self,Key,Shift);
+  Handled := False;
+  if Key = VK_TAB then
+  begin
+    Handled := True;
+    if Shift = [ssCtrl] then
+      ShowNextPage(1)
+    else
+    if Shift = [ssCtrl, ssShift] then
+      ShowNextPage(-1)
+    else
+      Handled := False;
+  end;
+
+  if not Handled then
+  begin
+    if Assigned(OnOIKeyDown) then 
+      OnOIKeyDown(Self,Key,Shift);
+    if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyDown) then
+      OnRemainingKeyDown(Self,Key,Shift);
+  end
+  else
+    Key := VK_UNKNOWN;
 end;
 
 procedure TObjectInspectorDlg.OnGridKeyUp(Sender: TObject; var Key: Word;
@@ -3796,6 +3818,26 @@ begin
   FShowRestricted := AValue;
   NoteBook.Page[3].TabVisible := AValue;
 end;
+
+procedure TObjectInspectorDlg.ShowNextPage(Delta: integer);
+var
+  NewPageIndex: Integer;
+begin
+  NewPageIndex := NoteBook.PageIndex;
+  repeat
+    NewPageIndex := NewPageIndex + Delta;
+    if NewPageIndex >= NoteBook.PageCount then
+      NewPageIndex := 0;
+    if NewPageIndex < 0 then
+      NewPageIndex := NoteBook.PageCount - 1;
+    if NoteBook.Page[NewPageIndex].TabVisible then
+    begin
+      NoteBook.PageIndex := NewPageIndex;
+      break;
+    end;
+  until NewPageIndex = NoteBook.PageIndex;
+end;
+
 
 procedure TObjectInspectorDlg.RestrictedPageShow(Sender: TObject);
 begin
@@ -3995,6 +4037,7 @@ begin
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
+    OnOIKeyDown:=@OnGridKeyDown;
     OnKeyUp:=@OnGridKeyUp;
     OnDblClick:=@OnGridDblClick;
     
