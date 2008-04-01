@@ -2704,18 +2704,21 @@ begin
   if FHintTimer<>nil then
     FHintTimer.Enabled := False;
 
-  if (FCurrentEdit=ValueComboBox) then Begin
+  if (FCurrentEdit=ValueComboBox) then 
+  begin
     //either an Event or an enumeration or Boolean
-    CurRow:=Rows[FItemIndex];
+    CurRow := Rows[FItemIndex];
     TypeKind := CurRow.Editor.GetPropType^.Kind;
-    if TypeKind in [tkEnumeration,tkBool, tkSet] then begin
+    if TypeKind in [tkEnumeration, tkBool, tkSet] then 
+    begin
       // set value to next value in list
       FillComboboxItems;
       if ValueComboBox.Items.Count = 0 then Exit;
-      if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count-1) then
-        ValueComboBox.ItemIndex := ValueComboBox.ItemIndex +1
+      if ValueComboBox.ItemIndex < (ValueComboBox.Items.Count - 1) then
+        ValueComboBox.ItemIndex := ValueComboBox.ItemIndex + 1
       else
         ValueComboBox.ItemIndex := 0;
+      SetRowValue;
       exit;
     end;
   end;
