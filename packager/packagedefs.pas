@@ -1009,7 +1009,8 @@ begin
     while Last.NextDependency[ListType]<>nil do
       Last:=Last.NextDependency[ListType];
   for i:=0 to List.Count-1 do begin
-    TPkgDependency(List[i]).AddToEndOfList(Last,ListType);
+    PkgDependency:=TPkgDependency(List[i]);
+    PkgDependency.AddToEndOfList(Last,ListType);
     if First=nil then
       First:=Last;
     PkgDependency.Owner:=Owner;
