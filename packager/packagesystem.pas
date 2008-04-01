@@ -827,6 +827,7 @@ function TLazPackageGraph.FindPackageProvidingName(
       end;
       ADependency:=ADependency.NextRequiresDependency;
     end;
+    Found:=nil;
     Result:=false;
   end;
   

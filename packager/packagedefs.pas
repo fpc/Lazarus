@@ -2939,9 +2939,12 @@ function TLazPackage.ProvidesPackage(const AName: string): boolean;
 var
   i: Integer;
 begin
+  if AName='' then exit(false);
   for i:=0 to Provides.Count-1 do
-    if SysUtils.CompareText(Provides[i],AName)=0 then
+    if SysUtils.CompareText(Provides[i],AName)=0 then begin
+      //DebugLn(['TLazPackage.ProvidesPackage AName=',AName,' Provides[i]="',Provides[i],'"']);
       exit(true);
+    end;
   Result:=false;
 end;
 

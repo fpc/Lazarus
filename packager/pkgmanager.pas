@@ -2154,6 +2154,7 @@ function TPkgManager.AddProjectDependency(AProject: TProject;
   APackage: TLazPackage; OnlyTestIfPossible: boolean): TModalResult;
 var
   NewDependency: TPkgDependency;
+  ProvidingAPackage: TLazPackage;
 begin
   Result:=mrCancel;
 
@@ -2165,11 +2166,12 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  if PackageGraph.FindPackageProvidingName(AProject.FirstRequiredDependency,
-    APackage.Name)<>nil then
+  ProvidingAPackage:=PackageGraph.FindPackageProvidingName(
+    AProject.FirstRequiredDependency,APackage.Name);
+  if ProvidingAPackage<>nil then
   begin
-    DebugLn(['TPkgManager.AddProjectDependency ',APackage.Name,' is already provided by another package']);
     // package is already provided by another package
+    DebugLn(['TPkgManager.AddProjectDependency ',APackage.Name,' is already provided by ',ProvidingAPackage.IDAsString]);
     Result:=mrCancel;
     exit;
   end;
