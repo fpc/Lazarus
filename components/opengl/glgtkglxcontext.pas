@@ -137,7 +137,12 @@ function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
                                      RGBA: boolean): PInteger;
 
 type
+  {$IFDEF LCLGtk}
   TWidgetSetWSWinControl = TGtkWSWinControl;
+  {$ENDIF}
+  {$IFDEF LCLGtk2}
+  TWidgetSetWSWinControl = TGtkWSWinControl;
+  {$ENDIF}
 
 implementation
 
