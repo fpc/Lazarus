@@ -3681,7 +3681,33 @@ resourcestring
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
   lisFunction = 'Function';
-  
+
+  // Break Points Dialog
+  lisFilenameAddress = 'Filename/Address';
+  lisLineLength = 'Line/Length';
+  lisCondition = 'Condition';
+  lisPassCount = 'Pass Count';
+  lisGroup = 'Group';
+  lisSourceBreakpoint = '&Source breakpoint';
+  lisEnableAll = '&Enable All';
+  lisDeleteAll = '&Delete All';
+  lisDisableAllInSameSource = 'Disable All in same source';
+  lisEnableAllInSameSource = 'Enable All in same source';
+  lisDeleteAllInSameSource = 'Delete All in same source';
+  lisNotImplementedYet2 = 'Not implemented yet.';
+  lisDeleteAllSelectedBreakpoints = 'Delete all selected breakpoints?';
+  lisDeleteBreakpointAtLine = 'Delete breakpoint at%s"%s" line %d?';
+  lisDeleteAllBreakpoints = 'Delete all breakpoints?';
+  lisDeleteAllBreakpoints2 = 'Delete all breakpoints in file %s%s%s?';
+  lisBreak = 'Break';
+  lisEnableGroup = 'Enable Group';
+  lisDisableGroup = 'Disable Group';
+  lisDisabled = 'Disabled';
+  lisInvalidOff = 'Invalid (Off)';
+  lisInvalidOn = 'Invalid (On)';
+  lisOff = '? (Off)';
+  lisOn = '? (On)';
+
 
 implementation
 

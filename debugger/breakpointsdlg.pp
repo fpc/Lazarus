@@ -119,14 +119,15 @@ function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 
 
 implementation
-
+uses
+  LazarusIDEStrConsts;
 function GetBreakPointStateDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, TValidState] of ShortString = (
                 {vsUnknown,     vsValid,   vsInvalid}
-    {Disabled} ('? (Off)','Disabled','Invalid (Off)'),
-    {Endabled} ('? (On)', 'Enabled', 'Invalid (On)'));
+    {Disabled} (lisOff, lisDisabled, lisInvalidOff),
+    {Endabled} (lisOn, lisEnabled, lisInvalidOn));
 begin
   Result:=DEBUG_STATE[ABreakpoint.Enabled,ABreakpoint.Valid];
 end;
@@ -134,7 +135,7 @@ end;
 function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 const
   DEBUG_ACTION: array[TIDEBreakPointAction] of ShortString =
-    ('Break', 'Enable Group', 'Disable Group');
+    (lisBreak, lisEnableGroup, lisDisableGroup);
 
 var
   CurBreakPoint: TIDEBreakPoint;
@@ -270,7 +271,27 @@ end;
 
 procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);
 begin
+  Caption:= lisMenuViewBreakPoints;
   lvBreakPoints.Align:=alClient;
+  lvBreakPoints.Columns[0].Caption:= lisOIPState;
+  lvBreakPoints.Columns[1].Caption:= lisFilenameAddress;
+  lvBreakPoints.Columns[2].Caption:= lisLineLength;
+  lvBreakPoints.Columns[3].Caption:= lisCondition;
+  lvBreakPoints.Columns[4].Caption:= lisLazBuildABOAction;
+  lvBreakPoints.Columns[5].Caption:= lisPassCount;
+  lvBreakPoints.Columns[6].Caption:= lisGroup;
+  popShow.Caption:= lisShow;
+  popAdd.Caption:= dlgEdAdd;
+  popAddSourceBP.Caption:= lisSourceBreakpoint;
+  popProperties.Caption:= liswlProperties;
+  popEnabled.Caption:= liswlEnabled;
+  popDelete.Caption:= liswlDelete;
+  popDisableAll.Caption:= liswlDIsableAll;
+  popEnableAll.Caption:= lisEnableAll;
+  popDeleteAll.Caption:= lisDeleteAll;
+  popDisableAllSameSource.Caption:= lisDisableAllInSameSource;
+  popEnableAllSameSource.Caption:= lisEnableAllInSameSource;
+  popDeleteAllSameSource.Caption:= lisDeleteAllInSameSource;
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
@@ -328,8 +349,8 @@ begin
   CurItem:=lvBreakPoints.Selected;
   if (CurItem=nil) then exit;
   Filename:=TIDEBreakpoint(CurItem.Data).Source;
-  if MessageDlg('Delete all breakpoints?',
-    'Delete all breakpoints in file "'+Filename+'"?',
+  if MessageDlg(lisDeleteAllBreakpoints,
+    Format(lisDeleteAllBreakpoints2, ['"', Filename, '"']),
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
   for n := lvBreakPoints.Items.Count - 1 downto 0 do
@@ -385,8 +406,8 @@ procedure TBreakPointsDlg.popDeleteAllClick(Sender: TObject);
 var
   n: Integer;
 begin                                    
-  if MessageDlg('Delete all breakpoints?',
-    'Delete all breakpoints?',
+  if MessageDlg(lisDeleteAllBreakpoints,
+    lisDeleteAllBreakpoints,
     mtConfirmation,[mbYes,mbCancel],0)<>mrYes
   then exit;
   lvBreakPoints.BeginUpdate;
@@ -404,10 +425,6 @@ begin
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
-//todo: make rsDeleteBreakpointConfirmation translatable
-const
-  rsDeleteBreakpointConfirmation = 'Delete breakpoint at'#13'''"%s" line %d?';
-  rsDeleteSelectedBreakpointConfirmation = 'Delete all selected breakpoints?';
 var
   Item: TListItem;
   CurBreakPoint: TIDEBreakPoint;
@@ -421,11 +438,11 @@ begin
   if lvBreakPoints.SelCount = 1 then
   begin
     CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    Msg := Format(rsDeleteBreakpointConfirmation, [CurBreakPoint.Source,
+    Msg := Format(lisDeleteBreakpointAtLine, [#13, CurBreakPoint.Source,
       CurBreakPoint.Line]);
   end
   else
-    Msg := rsDeleteSelectedBreakpointConfirmation;
+    Msg := lisDeleteAllSelectedBreakpoints;
   if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
   
   if lvBreakPoints.SelCount = 1
@@ -505,7 +522,7 @@ end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
 begin
-  ShowMessage('Not implemented yet.');
+  ShowMessage(lisNotImplementedYet2);
 end;
 
 procedure TBreakPointsDlg.DoEndUpdate;
