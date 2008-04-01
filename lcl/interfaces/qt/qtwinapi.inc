@@ -1150,6 +1150,17 @@ end;
  ------------------------------------------------------------------------------}
 function TQtWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var ARect: TRect; Flags: Cardinal): Integer;
+const
+  QtTextSingleLine            = $0100;
+  QtTextDontClip              = $0200;
+  QtTextExpandTabs            = $0400;
+  QtTextShowMnemonic          = $0800;
+  QtTextWordWrap              = $1000;
+  QtTextWrapAnywhere          = $2000;
+  QtTextHideMnemonic          = $8000;
+  QtTextDontPrint             = $4000;
+  QtTextIncludeTrailingSpaces =	$08000000;
+  QtTextJustificationForced   = $10000;
 var
   WideStr: WideString;
   R: TRect;
@@ -1174,33 +1185,36 @@ begin
   F := 0;
   // horizontal alignment
   if Flags and DT_CENTER <> 0 then
-    F := F or  QTAlignHCenter
+    F := F or  QtAlignHCenter
   else
   if Flags and DT_RIGHT <> 0 then
-    F := F or QTAlignRight
+    F := F or QtAlignRight
   else
-    F := F or QTAlignLeft;
+    F := F or QtAlignLeft;
   // vertical alignment
   if Flags and DT_VCENTER <> 0 then
-    F := F or QTAlignVCenter
+    F := F or QtAlignVCenter
   else
   if Flags and DT_BOTTOM <> 0 then
-    F := F or QTAlignBottom
+    F := F or QtAlignBottom
   else
-    F := F or QTAlignTop;
+    F := F or QtAlignTop;
 
   // mutually exclusive wordbreak and singleline
   if Flags and DT_WORDBREAK <> 0 then
-    F := F or $1000{QTTExtWordWrap}
+    F := F or QtTextWordWrap
   else
   if Flags and DT_SINGLELINE <> 0 then
-    F := F or $100;{QTTextSingleLine;}
+    F := F or QtTextSingleLine;
 
   if Flags and DT_NOPREFIX = 0 then
-    F := F or $800;{QTTextShowMnemonic;}
+    F := F or QtTextShowMnemonic;
 
   if Flags and DT_NOCLIP = 0 then
-    F := F or $200; {QtTextDontClip}
+    F := F or QtTextDontClip;
+
+  if Flags and DT_EXPANDTABS <> 0 then
+    F := F or QtTextExpandTabs;
   
   QtDC.font.Metrics.BoundingRect(@R, @ARect, F, @WideStr);
   

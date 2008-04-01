@@ -1041,19 +1041,22 @@ begin
     tlCenter : Options := Options or DT_VCENTER;
     tlBottom : Options := Options or DT_BOTTOM;
   end;
-  If Style.WordBreak then
+  if Style.WordBreak then
     Options := Options or DT_WORDBREAK;
 
-  If Style.SingleLine then
+  if Style.SingleLine then
     Options := Options or DT_SINGLELINE;
 
-  If not Style.Clipping then
+  if not Style.Clipping then
     Options := Options or DT_NOCLIP;
 
-  If not Style.ShowPrefix then
+  if Style.ExpandTabs then
+    Options := Options or DT_EXPANDTABS;
+
+  if not Style.ShowPrefix then
     Options := Options or DT_NOPREFIX;
 
-  If Style.RightToLeft then
+  if Style.RightToLeft then
     Options := Options or DT_RTLREADING;
 
   ReqState:=[csHandleValid];

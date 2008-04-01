@@ -41,12 +41,12 @@ begin
   try
     R := Rect(0, 0, Width, Height);
     OldFont := SelectObject(DC, Font.Reference.Handle);
-    Flags := DT_CalcRect;
+    Flags := DT_CALCRECT or DT_EXPANDTABS;
     if WordWrap then
-      inc(Flags, DT_WordBreak)
+      inc(Flags, DT_WORDBREAK)
     else
     if not HasMultiLine then
-      inc(Flags, DT_SingleLine);
+      inc(Flags, DT_SINGLELINE);
 
     LabelText := GetLabelText;
     DrawText(DC, PChar(LabelText), Length(LabelText), R, Flags);
@@ -213,10 +213,10 @@ constructor TCustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   ControlStyle := [csSetCaption, csClickEvents, csDoubleClicks, csReplicatable];
-  setInitialBounds(0,0,GetControlClassDefaultSize.X,GetControlClassDefaultSize.Y);
+  SetInitialBounds(0, 0, GetControlClassDefaultSize.X, GetControlClassDefaultSize.Y);
   FShowAccelChar := True;
   Color := clNone;
-  AutoSize:=true;
+  AutoSize := True;
 end;
 
 function TCustomLabel.GetTransparent: boolean;
@@ -325,8 +325,8 @@ begin
   MaxFontHeight:=MaxHeight*2;
   if (CurFontHeight<MinFontHeight) or (CurFontHeight>MaxFontHeight) then
     CurFontHeight:=(MinFontHeight+MaxFontHeight) div 2;
-  Flags:=DT_CalcRect or DT_NoPrefix;
-  if WordWrap then inc(Flags,DT_WordBreak);
+  Flags := DT_CALCRECT or DT_NOPREFIX or DT_EXPANDTABS;
+  if WordWrap then inc(Flags, DT_WORDBREAK);
   
   // give a clipping rectangle with space, so that the bounds returned by
   // DrawText can be bigger and we know, the tried font is too big.
@@ -451,8 +451,9 @@ begin
       SingleLine:= not WordWrap and not HasMultiLine;
       Clipping := True;
       ShowPrefix := ShowAccelChar;
-      SystemFont:=false;
-      RightToLeft:=UseRightToLeftReading;
+      SystemFont := False;
+      RightToLeft := UseRightToLeftReading;
+      ExpandTabs := True;
     end;
     DoMeasureTextPosition(TextTop, TextLeft);
     //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));

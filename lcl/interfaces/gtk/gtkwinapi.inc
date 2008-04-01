@@ -2949,6 +2949,8 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer;
   var Rect: TRect; Flags: Cardinal): Integer;
+const
+  TabString = '        ';
 var
   DevCtx: TGtkDeviceContext absolute DC;
 
@@ -2960,7 +2962,7 @@ var
   TempPen: HPEN;
   TempBrush: HBRUSH;
 
-  function LeftOffset : Longint;
+  function LeftOffset: Longint;
   begin
     if (Flags and DT_RIGHT) = DT_RIGHT then
       Result := DT_RIGHT
@@ -2971,7 +2973,7 @@ var
       Result := DT_LEFT;
   end;
 
-  function TopOffset : Longint;
+  function TopOffset: Longint;
   begin
     if (Flags and DT_BOTTOM) = DT_BOTTOM then
       Result := DT_BOTTOM
@@ -2982,9 +2984,22 @@ var
       Result := DT_TOP;
   end;
 
-  function CalcRect : Boolean;
+  function CalcRect: Boolean;
   begin
     Result := (Flags and DT_CALCRECT) = DT_CALCRECT;
+  end;
+
+  function TextExtentPoint(Str: PChar; Count: Integer; var Sz: TSize): Boolean;
+  var
+    NewStr: String;
+  begin
+    if (Flags and DT_EXPANDTABS) <> 0 then
+    begin
+      NewStr := StringReplace(Str, #9, TabString, [rfReplaceAll]);
+      Result := GetTextExtentPoint(DC, PChar(NewStr), Length(NewStr), Sz);
+    end
+    else
+      Result := GetTextExtentPoint(Dc, Str, Count, Sz);
   end;
 
   procedure DoCalcRect;
@@ -3000,7 +3015,7 @@ var
     if (Flags and DT_SINGLELINE) > 0 then
     begin
       // ignore word and line breaks
-      GetTextExtentPoint(DC, Str, Count, AP);
+      TextExtentPoint(Str, Count, AP);
       if (Flags and DT_CALCRECT)<>0 then
         theRect.Right := theRect.Left +  AP.cX
       else
@@ -3013,7 +3028,7 @@ var
       if (Flags and DT_WORDBREAK) = 0 then
       begin
         // do not break at word boundaries
-        GetTextExtentPoint(DC, Str, Count, AP);
+        TextExtentPoint(Str, Count, AP);
         MaxWidth := AP.cX;
       end;
       Self.WordWrap(DC, Str, MaxWidth, Lines, NumLines);
@@ -3025,7 +3040,7 @@ var
         begin
           for J := 0 to NumLines - 1 do
           begin
-            GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
+            TextExtentPoint(Lines[J], StrLen(Lines[J]), AP);
             LineWidth := Max(LineWidth, AP.cX);
           end;
         end;
@@ -3050,7 +3065,7 @@ var
       end;
   end;
 
-  procedure DrawLineRaw(theLine : PChar; LineLength, TopPos : Longint);
+  procedure DrawLineRaw(theLine: PChar; LineLength, TopPos: Longint);
   var
     Points: array[0..1] of TSize;
     LeftPos: Longint;
@@ -3074,7 +3089,7 @@ var
     TextUtf8Out(DC, LeftPos, TopPos, theLine, lineLength);
   end;
 
-  procedure DrawLine(theLine : PChar; LineLength, TopPos : Longint);
+  procedure DrawLine(theLine: PChar; LineLength, TopPos: Longint);
   var
     Points: array[0..1] of TSize;
     LogP: TLogPen;
@@ -3084,12 +3099,15 @@ var
   begin
     AStr := Copy(String(theLine), 1, LineLength);
 
+    if (Flags and DT_EXPANDTABS) <> 0 then
+      AStr := StringReplace(AStr, #9, TabString, [rfReplaceAll]);
+
     if (Flags and DT_NOPREFIX) <> DT_NOPREFIX then
     begin
-      pIndex := DeleteAmpersands(aStr);
-      if Length(aStr) = 0 then
+      pIndex := DeleteAmpersands(AStr);
+      if Length(AStr) = 0 then
         Exit; // String consists of '&' only
-      if pIndex > Length(aStr) then
+      if pIndex > Length(AStr) then
         pIndex := -1; // String ended in '&', which was deleted
     end
     else
@@ -3099,7 +3117,7 @@ var
       TempBrush := SelectObject(DC, GetStockObject(NULL_BRUSH));
 
     if LeftOffset <> DT_Left then
-      GetTextExtentPoint(DC, PChar(aStr), Length(aStr), Points[0]);
+      GetTextExtentPoint(DC, PChar(AStr), Length(AStr), Points[0]);
 
     case LeftOffset of
       DT_LEFT:
@@ -3112,7 +3130,7 @@ var
     end;
 
     // Draw line of Text
-    TextUtf8Out(DC, LeftPos, TopPos, PChar(aStr), Length(aStr));
+    TextUtf8Out(DC, LeftPos, TopPos, PChar(AStr), Length(AStr));
 
     // Draw Prefix
     if pIndex > 0 then
@@ -3159,7 +3177,7 @@ begin
   TempPen := HPEN(-1);
   TempBrush := HBRUSH(-1);
   try
-    if (Flags and (DT_SINGLELINE or DT_CALCRECT or DT_NOPREFIX or DT_NOCLIP)) =
+    if (Flags and (DT_SINGLELINE or DT_CALCRECT or DT_NOPREFIX or DT_NOCLIP or DT_EXPANDTABS)) =
        (DT_SINGLELINE or DT_NOPREFIX or DT_NOCLIP)
     then begin
       //DebugLn(['TGtkWidgetSet.DrawText Calc single line']);
