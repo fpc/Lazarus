@@ -2508,8 +2508,18 @@ begin
 end;
 
 function TQtWidget.getClientBounds: TRect;
+var
+  parent: QWidgetH;
+  Pt: TQtPoint;
 begin
-  QWidget_contentsRect(Widget, @Result);
+  QWidget_contentsRect(Widget, @Result); // returns with zero offset
+  parent := QWidget_parentWidget(Widget); // get offset from parent
+  if (parent <> nil) and (Result.Left = 0) and (Result.Top = 0) then
+  begin
+    Pt := QtPoint(0, 0);
+    QWidget_mapToParent(Widget, @Pt, @Pt);
+    OffsetRect(Result, Pt.x, Pt.y);
+  end;
 end;
 
 procedure TQtWidget.grabMouse;
