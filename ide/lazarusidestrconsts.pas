@@ -3712,6 +3712,22 @@ resourcestring
   lisShrinkToSmal = 'Shrink to smallest';
   lisGrowToLarges = 'Grow to Largest';
 
+  // Watch Property Dialog
+  lisWatchPropert = 'Watch Properties';
+  lisExpression = 'Expression:';
+  lisRepeatCount = 'Repeat Count:';
+  lisDigits = 'Digits:';
+  lisAllowFunctio = 'Allow Function Calls';
+  lisStyle = 'Style';
+  lisCharacter = 'Character';
+  lisString = 'String';
+  lisDecimal = 'Decimal';
+  lisHexadecimal = 'Hexadecimal';
+  lisFloatingPoin = 'Floating Point';
+  lisPointer = 'Pointer';
+  lisRecordStruct = 'Record/Structure';
+  lisMemoryDump = 'Memory Dump';
+
 
 implementation
 

@@ -70,7 +70,9 @@ type
   end;
   
 implementation
-
+uses
+  LazarusIDEStrConsts;
+  
 { TWatchPropertyDlg }
 
 procedure TWatchPropertyDlg.btnOKClick(Sender: TObject);
@@ -110,6 +112,27 @@ begin
   txtDigits.Enabled := False;
   chkAllowFunc.Enabled := False;
   rgStyle.Enabled := False;
+  
+  Caption:= lisWatchPropert;
+  lblExpression.Caption:= lisExpression;
+  lblRepCount.Caption:= lisRepeatCount;
+  lblDigits.Caption:= lisDigits;
+  chkEnabled.Caption:= lisEnabled;
+  chkAllowFunc.Caption:= lisAllowFunctio;
+  btnOK.Caption:= lisOkBtn;
+  btnCancel.Caption:= dlgCancel;
+  btnHelp.Caption:= lisPckEditHelp;
+  rgStyle.Caption:= lisStyle;
+  rgStyle.Items[0]:= lisCharacter;
+  rgStyle.Items[1]:= lisString;
+  rgStyle.Items[2]:= lisDecimal;
+  rgStyle.Items[3]:= lisHexadecimal;
+  rgStyle.Items[4]:= lisFloatingPoin;
+  rgStyle.Items[5]:= lisPointer;
+  rgStyle.Items[6]:= lisRecordStruct;
+  rgStyle.Items[7]:= dlgAssemblerDefault;
+  rgStyle.Items[8]:= lisMemoryDump;
+
 end;
 
 destructor TWatchPropertyDlg.destroy;
