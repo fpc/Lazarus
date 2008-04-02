@@ -1766,7 +1766,6 @@ end;
 
 class procedure TGtk2WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
-  Adjustment: PGtkAdjustment;
   Range: PGtkRange;
 begin
   Range := GTK_RANGE(Pointer(AScrollBar.Handle));
