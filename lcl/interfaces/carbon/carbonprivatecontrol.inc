@@ -28,6 +28,7 @@ function CarbonControl_Hit(ANextHandler: EventHandlerCallRef;
   AWidget: TCarbonWidget): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   ControlPart: ControlPartCode;
+  LCLTarget: TWinControl;
 begin
   {$IFDEF VerboseControlEvent}
     DebugLn('CarbonControl_Hit: ', DbgSName(AWidget.LCLObject));
@@ -40,10 +41,12 @@ begin
       SizeOf(ControlPartCode), nil, @ControlPart), 'CarbonControl_Hit', SGetEvent,
     SControlPart) then Exit;
 
+  // save LCL target now as the widget might be removed within hit
+  LCLTarget := AWidget.LCLObject;
   (AWidget as TCarbonControl).Hit(ControlPart);
 
   // send postponed mouse up event
-  DeliverMessage(AWidget.LCLObject, SavedMouseUpMsg);
+  DeliverMessage(LCLTarget, SavedMouseUpMsg);
   
   NotifyApplicationUserInput(SavedMouseUpMsg.Msg);
   CarbonWidgetSet.SetCaptureWidget(0); // capture is released

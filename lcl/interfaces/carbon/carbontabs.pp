@@ -684,7 +684,7 @@ begin
     Exit;
   end;
 
-  SetPageIndex(Index);
+  SetPageIndex(PIndex); // we must use page index!
 
   // send change
   FillChar(Msg, SizeOf(TLMNotify), 0);
@@ -845,7 +845,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TCarbonTabsControl.SetPageIndex
-  Params:  AIndex - New index
+  Params:  AIndex - New page index
 
   Changes the current Carbon page
  ------------------------------------------------------------------------------}
