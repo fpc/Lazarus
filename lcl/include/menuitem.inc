@@ -701,9 +701,8 @@ begin
   Item.FOnChange := @SubItemChanged;
   FItems.Insert(Index, Item);
 
-  if HandleAllocated then begin
+  if HandleAllocated and Item.Visible then
     Item.HandleNeeded;
-  end;
   MenuChanged(FItems.Count = 1);
 end;
 

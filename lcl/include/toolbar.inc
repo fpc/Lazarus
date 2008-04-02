@@ -163,10 +163,11 @@ end;
 procedure TToolBar.OnTemporaryPopupMenuClose(Sender: TObject);
 begin
   // move menu items back
-  if FSrcMenuItem=nil then exit;
-  MoveSubMenuItems(FCurrentMenu.Items,FSrcMenuItem);
-  if FDropDownButton<>nil then
-    FDropDownButton.Down:=false;
+  if FSrcMenuItem = nil then
+    Exit;
+  MoveSubMenuItems(FCurrentMenu.Items, FSrcMenuItem);
+  if FDropDownButton <> nil then
+    FDropDownButton.Down := False;
 end;
 
 procedure TToolBar.MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
@@ -174,10 +175,11 @@ var
   i: Integer;
   MovingMenuItem: TMenuItem;
 begin
-  if (SrcMenuItem=nil) or (DestMenuItem=nil) or (SrcMenuItem=DestMenuItem) then
-    exit;
-  for i := SrcMenuItem.Count - 1 downto 0 do begin
-    MovingMenuItem:=SrcMenuItem.Items[i];
+  if (SrcMenuItem = nil) or (DestMenuItem = nil) or (SrcMenuItem = DestMenuItem) then
+    Exit;
+  for i := SrcMenuItem.Count - 1 downto 0 do
+  begin
+    MovingMenuItem := SrcMenuItem.Items[i];
     SrcMenuItem.Delete(i);
     DestMenuItem.Insert(0, MovingMenuItem);
   end;
@@ -622,30 +624,34 @@ var
   APoint: TPoint;
 begin
   Result := False;
-  if Button = nil then Exit;
-  if FCurrentMenu<>nil then
+  if Button = nil then
+    Exit;
+  if FCurrentMenu <> nil then
     FCurrentMenu.Close;
-  if FCurrentMenuAutoFree then FCurrentMenu.Free;
-  FCurrentMenu:=nil;
-  FCurrentMenuAutoFree:=false;
-  FSrcMenuItem:=nil;
-  FSrcMenu:=nil;
-  FDropDownButton:=Button;
+  if FCurrentMenuAutoFree then
+    FCurrentMenu.Free;
+  FCurrentMenu := nil;
+  FCurrentMenuAutoFree := False;
+  FSrcMenuItem := nil;
+  FSrcMenu := nil;
+  FDropDownButton := Button;
   if Button.DropdownMenu <> nil then
     // the button has a popupenu
     FCurrentMenu := Button.DropdownMenu
-  else if Button.MenuItem <> nil then begin
+  else
+  if Button.MenuItem <> nil then
+  begin
     // the button has a menuitem
     // -> create a temporary TPopupMenu and move all child menuitems
-    FCurrentMenuAutoFree:=true;
+    FCurrentMenuAutoFree := True;
     FCurrentMenu := TPopupMenu.Create(Self);
-    FSrcMenuItem:=Button.MenuItem;
+    FSrcMenuItem := Button.MenuItem;
     FSrcMenu := FSrcMenuItem.GetParentMenu;
     FCurrentMenu.Items.HelpContext := FSrcMenuItem.HelpContext;
     if FSrcMenu <> nil then
       FCurrentMenu.Images := FSrcMenu.Images;
-    MoveSubMenuItems(FSrcMenuItem,FCurrentMenu.Items);
-    FCurrentMenu.OnClose:=@OnTemporaryPopupMenuClose;
+    MoveSubMenuItems(FSrcMenuItem, FCurrentMenu.Items);
+    FCurrentMenu.OnClose := @OnTemporaryPopupMenuClose;
   end
   else
     Exit;
