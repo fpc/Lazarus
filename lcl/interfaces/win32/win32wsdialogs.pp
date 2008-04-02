@@ -809,7 +809,7 @@ begin
 {$endif}
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags or CF_INITTOLOGFONTSTRUCT or CF_BOTH;
-      RGBColors := Font.Color;
+      RGBColors := DWORD(Font.Color);
     end;
   end;
 
