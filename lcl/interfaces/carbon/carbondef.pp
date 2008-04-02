@@ -39,8 +39,8 @@ uses
   // wdgetset
   WSLCLClasses, LCLClasses,
   // LCL + RTL
-  Types, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Math, AVL_Tree,
-  LMessages, LCLMessageGlue;
+  Types, Classes, SysUtils, Controls, LCLType, LCLProc, Graphics, Math, Contnrs,
+  AVL_Tree, LMessages, LCLMessageGlue;
 
 var
   LAZARUS_FOURCC: FourCharCode;    // = 'Laz ';
@@ -99,6 +99,7 @@ type
     function IsVisible: Boolean; virtual; abstract;
     function Enable(AEnable: Boolean): Boolean; virtual; abstract;
     
+    function GetNextFocus(Start: TCarbonWidget; Next: Boolean): ControlRef;
     procedure GetScrollInfo(SBStyle: Integer; var ScrollInfo: TScrollInfo); virtual;
     function GetBounds(var ARect: TRect): Boolean; virtual; abstract;
     function GetScreenBounds(var ARect: TRect): Boolean; virtual; abstract;
@@ -649,6 +650,70 @@ end;
 function TCarbonWidget.IsDesignInteractive(const P: TPoint): Boolean;
 begin
   Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.GetNextFocus
+  Params:  Start - Focus start
+           Next  - Next or previous?
+  Returns: Next control to focus
+ ------------------------------------------------------------------------------}
+function TCarbonWidget.GetNextFocus(Start: TCarbonWidget; Next: Boolean): ControlRef;
+var
+  StartControl, ParentControl, ResultControl: TWinControl;
+  TabList: TFPObjectList;
+  TabIndex: Integer;
+begin
+  Result := nil;
+  ResultControl := nil;
+  
+  if Start <> nil then
+    StartControl := Start.LCLObject
+  else
+    StartControl := nil;
+
+  //DebugLn('TCarbonWidget.GetNextFocus ', LCLObject.Name, ' Start: ', DbgSName(StartControl), ' Next: ', DbgS(Next));
+        
+  ParentControl := LCLObject;
+  TabList := TFPObjectList.Create(False);
+  try
+    while (ParentControl <> nil) and (ResultControl = nil) do
+    begin
+      TabList.Clear;
+      ParentControl.GetTabOrderList(TabList.List);
+
+      TabIndex := -1;
+      if StartControl <> nil then
+        TabIndex := TabList.IndexOf(StartControl);
+
+      if (TabList.Count = 0) or
+        (Next and (TabIndex > TabList.Count - 2)) or
+        (not Next and (TabIndex < 1)) then
+      begin
+        StartControl := ParentControl;
+      end
+      else
+        if TabIndex = -1 then
+        begin
+          if Next then
+            ResultControl := TabList.First as TWinControl
+          else
+            ResultControl := TabList.Last as TWinControl;
+        end
+        else
+          if Next then
+            ResultControl := TabList[TabIndex + 1] as TWinControl
+          else
+            ResultControl := TabList[TabIndex - 1] as TWinControl;
+            
+      ParentControl := ParentControl.Parent;
+    end;
+  finally
+    TabList.Free;
+  end;
+  
+  if ResultControl <> nil then
+    Result := TCarbonWidget(ResultControl.Handle).Widget;
 end;
 
 {------------------------------------------------------------------------------

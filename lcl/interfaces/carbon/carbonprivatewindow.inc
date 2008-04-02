@@ -970,6 +970,11 @@ begin
     RegisterEventHandler(@CarbonCommon_SetFocusPart),
     1, @TmpSpec, Pointer(Self), nil);
     
+  TmpSpec := MakeEventSpec(kEventClassControl, kEventControlGetNextFocusCandidate);
+  InstallControlEventHandler(Content,
+    RegisterEventHandler(@CarbonCommon_GetNextFocusCandidate),
+    1, @TmpSpec, Pointer(Self), nil);
+    
   // cursor set
   TmpSpec := MakeEventSpec(kEventClassControl, kEventControlSetCursor);
   InstallControlEventHandler(Content,

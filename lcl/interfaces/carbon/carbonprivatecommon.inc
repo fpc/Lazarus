@@ -366,9 +366,6 @@ function CarbonCommon_GetNextFocusCandidate(ANextHandler: EventHandlerCallRef;
 var
   StartControl, NextControl: ControlRef;
   FocusPart: ControlPartCode;
-  TabIndex: Integer;
-  TabList: TFPList;
-  AControl: TCarbonWidget;
 const
   SName = 'CarbonCommon_GetNextFocusCandidate';
 begin
@@ -386,56 +383,10 @@ begin
     GetEventParameter(AEvent, kEventParamControlPart, typeControlPartCode, nil,
       SizeOf(ControlPartCode), nil, @FocusPart), SName, SGetEvent, SControlPart) then Exit;
   
-  TabIndex := 0;
-  TabList := TFPList.Create;
-  try
-    if StartControl <> nil then
-    begin
-      AControl := GetCarbonWidget(StartControl);
-      (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
-    end
-    else
-    begin
-      AControl := AWidget;
-      (AWidget.LCLObject as TWinControl).GetTabOrderList(TabList);
-      if TabList.Count = 0 then
-      begin
-        TabList.Free;
-        (AWidget.LCLObject.GetTopParent as TWinControl).GetTabOrderList(TabList);
-      end;
-    end;
+  NextControl := AWidget.GetNextFocus(GetCarbonWidget(StartControl), FocusPart = kControlFocusNextPart);
     
-    if AControl <> nil then
-    begin
-      TabIndex := TabList.IndexOf(AControl.LCLObject);
-      if TabIndex >= 0 then
-      begin
-        if FocusPart = kControlFocusNextPart then
-        begin
-          Inc(TabIndex);
-          if TabIndex >= TabList.Count then TabIndex := 0;
-        end
-        else
-        begin
-          Dec(TabIndex);
-          if TabIndex < 0 then TabIndex := TabList.Count - 1;
-        end;
-      end
-      else
-        if FocusPart = kControlFocusNextPart then TabIndex := 0
-        else TabIndex := TabList.Count - 1;
-    end;
-    
-    if TabIndex < TabList.Count then
-      NextControl := TCarbonControl(TWinControl(TabList[TabIndex]).Handle).Widget
-    else
-      NextControl := nil;
-    
-    OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
-        SizeOf(ControlRef), @NextControl), SName, SSetEvent, 'kEventParamNextControl');
-  finally
-    TabList.Free;
-  end;
+  OSError(SetEventParameter(AEvent, kEventParamNextControl, typeControlRef,
+    SizeOf(ControlRef), @NextControl), SName, SSetEvent, 'kEventParamNextControl');
   
   Result := noErr;
 end;
