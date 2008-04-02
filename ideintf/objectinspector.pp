@@ -1916,49 +1916,44 @@ begin
   //writeln('TOICustomPropertyGrid.HandleStandardKeys ',Key);
   if Shift = [] then
   begin
-    Handled:=true;
-    case Key of
-      VK_UP:
-        if IsCurrentEditDroppedDown then
-          Handled := False
+    Handled := not IsCurrentEditDroppedDown;
+    if Handled then
+      case Key of
+        VK_UP:
+          if (ItemIndex > 0) then 
+            SetItemIndexAndFocus(ItemIndex - 1);
+
+        VK_DOWN:
+          if (ItemIndex < FRows.Count - 1) then 
+            SetItemIndexAndFocus(ItemIndex + 1);
+
+        VK_TAB:
+          DoTabKey;
+
+        VK_LEFT:
+          if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
+          and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
+            ShrinkRow(ItemIndex)
+          else
+            Handled:=false;
+
+        VK_RIGHT:
+          if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
+          and (ItemIndex >= 0) and (not Rows[ItemIndex].Expanded)
+          and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
+            ExpandRow(ItemIndex)
+          else
+            Handled:=false;
+
+        VK_RETURN:
+          begin
+            SetRowValue;
+            if (FCurrentEdit is TCustomEdit) then
+              TCustomEdit(FCurrentEdit).SelectAll;
+          end;
         else
-        if (ItemIndex > 0) then 
-          SetItemIndexAndFocus(ItemIndex - 1);
-
-      VK_DOWN:
-        if IsCurrentEditDroppedDown then
-          Handled := False
-        else
-        if (ItemIndex < FRows.Count - 1) then 
-          SetItemIndexAndFocus(ItemIndex + 1);
-
-      VK_TAB:
-        DoTabKey;
-
-      VK_LEFT:
-        if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
-        and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
-          ShrinkRow(ItemIndex)
-        else
-          Handled:=false;
-
-      VK_RIGHT:
-        if ((FCurrentEdit = nil) or not FCurrentEdit.Focused)
-        and (ItemIndex >= 0) and (not Rows[ItemIndex].Expanded)
-        and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
-          ExpandRow(ItemIndex)
-        else
-          Handled:=false;
-
-      VK_RETURN:
-        begin
-          SetRowValue;
-          if (FCurrentEdit is TCustomEdit) then
-            TCustomEdit(FCurrentEdit).SelectAll;
-        end;
-      else
-        Handled := false;
-    end;
+          Handled := false;
+      end;
   end
   else
   if Shift = [ssCtrl] then
