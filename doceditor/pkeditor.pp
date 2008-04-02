@@ -232,19 +232,21 @@ Var
 
 begin
   If (FCurrentTopic<>T) then
-    begin
-    N:=T.ParentNode as TDomElement;
-    if IsModuleNode(N) then
-      CurrentModule:=N
-    else if IsPackageNode(N) then
-      begin
-      CurrentModule:=Nil;
-      CurrentPackage:=N;
-      end
-    else
-      Raise Exception.Create('Unknown parent node for topic node '+TDomElement(T)['name']);
-    FCurrentTopic:=T;
+  begin
+    if assigned(T) then begin
+      N:=T.ParentNode as TDomElement;
+      if IsModuleNode(N) then
+        CurrentModule:=N
+      else if IsPackageNode(N) then
+        begin
+        CurrentModule:=Nil;
+        CurrentPackage:=N;
+        end
+      else
+        Raise Exception.Create('Unknown parent node for topic node '+TDomElement(T)['name']);
     end;
+    FCurrentTopic:=T;
+  end;
 end;
 
 procedure TCustomPackageEditor.SetDescriptionNode(Value: TDomNode);
@@ -1025,21 +1027,24 @@ Var
   
 begin
   If (CurrentTopic<>T) then
+  begin
+    if assigned(T) then
     begin
-    N:=T.ParentNode as TDomElement;
-    if IsModuleNode(N) then
-      begin
-      CurrentModule:=N;
-      PN:=FindModuleNodeInNode(N,Nil);
-      end
-    else if IsPackageNode(N) then
-      begin
-      CurrentModule:=Nil;
-      CurrentPackage:=N;
-      PN:=FindPackageNode(n);
-      end;
-    SetCurrentTopicNode(FindTopicNodeInNode(T,PN));
+      N:=T.ParentNode as TDomElement;
+      if IsModuleNode(N) then
+        begin
+        CurrentModule:=N;
+        PN:=FindModuleNodeInNode(N,Nil);
+        end
+      else if IsPackageNode(N) then
+        begin
+        CurrentModule:=Nil;
+        CurrentPackage:=N;
+        PN:=FindPackageNode(n);
+        end;
+      SetCurrentTopicNode(FindTopicNodeInNode(T,PN));
     end;
+  end;
   Inherited;
 end;
 
