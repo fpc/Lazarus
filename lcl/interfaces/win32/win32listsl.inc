@@ -339,7 +339,7 @@ begin
   Windows.GetClientRect(FWin32List, @R);
   FEditHeight := R.Bottom;
   FItemHeight := Windows.SendMessage(FWin32List, CB_GETITEMHEIGHT, 0, 0);
-  FDropDownCount := TComboBox(FSender).DropDownCount;
+  FDropDownCount := TCustomComboBox(FSender).DropDownCount;
   if FDropDownCount = 0 then
     FDropDownCount := 8;
 end;

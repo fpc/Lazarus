@@ -327,7 +327,6 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     function SelectItem(const AnItem: String): Boolean;
 
-    property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
     property ItemWidth: Integer read GetItemWidth write SetItemWidth;
     property MaxLength: integer read GetMaxLength write SetMaxLength default -1;
@@ -365,6 +364,7 @@ type
     property ArrowKeysTraverseList: Boolean read FArrowKeysTraverseList
                                     write SetArrowKeysTraverseList default True;
     property Canvas: TCanvas read FCanvas;
+    property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly stored IsReadOnlyStored;
