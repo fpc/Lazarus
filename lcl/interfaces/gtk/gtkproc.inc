@@ -3142,7 +3142,11 @@ begin
   FillChar(XKeyEvent, SizeOf(XKeyEvent), 0);
   XKeyEvent._Type := GDK_KEY_PRESS;
   XKeyEvent.Display := XDisplay;
+{$ifdef ver2_2}
   XKeyEvent.Same_Screen := True;
+{$else}
+  XKeyEvent.Same_Screen := 1;
+{$endif}
 
   // Retrieve the KeyCode bounds
   XDisplayKeyCodes(XDisplay, @LoKey, @HiKey);
