@@ -23,12 +23,12 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, X, XUtil, XLib, gl, InterfaceBase,
-  WSLCLClasses, GtkWSControls,
+  WSLCLClasses,
   {$IFDEF LCLGTK2}
-  LMessages, GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int,
+  LMessages, GtkDef, gdk2x, glib2, gdk2, gtk2, Gtk2Int, Gtk2WSControls,
   {$ENDIF}
   {$IFDEF LCLGTK}
-  glib, gdk, gtk, GtkInt,
+  glib, gdk, gtk, GtkInt, GtkWSControls,
   {$ENDIF}
   Controls;
 
@@ -141,7 +141,7 @@ type
   TWidgetSetWSWinControl = TGtkWSWinControl;
   {$ENDIF}
   {$IFDEF LCLGtk2}
-  TWidgetSetWSWinControl = TGtkWSWinControl;
+  TWidgetSetWSWinControl = TGtk2WSWinControl;
   {$ENDIF}
 
 implementation
