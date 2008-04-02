@@ -3728,7 +3728,11 @@ resourcestring
   lisRecordStruct = 'Record/Structure';
   lisMemoryDump = 'Memory Dump';
 
-
+  // Locals Dialog
+  lisLocals = 'Locals';
+  lisLocalsDlgName = 'Name';
+  lisLocalsDlgValue = 'Value';
+  
 implementation
 
 end.

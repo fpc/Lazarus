@@ -59,7 +59,9 @@ type
 
 
 implementation
-
+uses
+  LazarusIDEStrConsts;
+  
 { TLocalsDlg }
 
 constructor TLocalsDlg.Create(AOwner: TComponent);
@@ -68,6 +70,9 @@ begin
   FLocalsNotification := TIDELocalsNotification.Create;
   FLocalsNotification.AddReference;
   FLocalsNotification.OnChange := @LocalsChanged;
+  Caption:= lisLocals;
+  lvLocals.Columns[0].Caption:= lisDebugOptionsFrmName;
+  lvLocals.Columns[1].Caption:= dlgValueColor;
 end;
 
 destructor TLocalsDlg.Destroy;
