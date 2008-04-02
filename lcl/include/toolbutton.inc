@@ -64,21 +64,32 @@ end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  NewFlags: TToolButtonFlags;
 begin
-  //DebugLn('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
-  if (Button=mbLeft) and (not (tbfPressed in FToolButtonFlags)) then begin
-    Include(FToolButtonFlags,tbfPressed);
-    Invalidate;
+  NewFlags := FToolButtonFlags - [tbfPressed, tbfArrowPressed];
+  if (Button = mbLeft) then
+  begin
+    if (Style = tbsDropDown) and Enabled then
+    begin
+      if (FToolBar <> nil) and (X > ClientWidth - FToolBar.FDropDownWidth) then
+        Include(NewFlags, tbfArrowPressed)
+      else
+        Include(NewFlags, tbfPressed);
+    end;
+    if NewFlags <> FToolButtonFlags then
+    begin
+      FToolButtonFlags := NewFlags;
+      Invalidate;
+    end;
   end;
 
-  inherited MouseDown(Button,Shift,X,Y);
+  inherited MouseDown(Button, Shift, X, Y);
 
-  if (Style=tbsDropDown) and (Button=mbLeft) and Enabled then begin
-    if (FToolBar<>nil) and (X>ClientWidth-FToolBar.FDropDownWidth) then begin
-    
-    end else begin
-      Down := true;
-    end;
+  if (Style = tbsDropDown) and (Button = mbLeft) and Enabled then
+  begin
+    if NewFlags * [tbfArrowPressed] = [] then
+      Down := True;
   end;
 end;
 
@@ -90,30 +101,39 @@ end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var DropDownMenuDropped:boolean;
+var
+  DropDownMenuDropped: Boolean;
 begin
   //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',dbgs(X),',',dbgs(Y));
-  if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
-    Exclude(FToolButtonFlags,tbfPressed);
+  if (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []) then
+  begin
+    Exclude(FToolButtonFlags, tbfPressed);
+    Exclude(FToolButtonFlags, tbfArrowPressed);
     Invalidate;
   end;
 
   inherited MouseUp(Button, Shift, X, Y);
   
-  if (Button=mbLeft) then begin
-    DropDownMenuDropped:=false;
+  if (Button = mbLeft) then
+  begin
+    DropDownMenuDropped := False;
     //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
-    if (Style=tbsButton) then Down:=false;
-    if (Style=tbsDropDown) then begin
-      if (FToolBar<>nil) and FMouseInControl
-      and (X>ClientWidth-FToolBar.FDropDownWidth) then begin
-        DropDownMenuDropped:=CheckMenuDropdown;
+    if (Style = tbsButton) then
+      Down := False;
+    if (Style = tbsDropDown) then
+    begin
+      if (FToolBar <> nil) and FMouseInControl and
+          (X > ClientWidth - FToolBar.FDropDownWidth) then
+      begin
+        DropDownMenuDropped := CheckMenuDropdown;
       end;
-      Down:=false;
+      Down := False;
     end;
 
-    if FMouseInControl and not DropDownMenuDropped then begin
-      if (Style=tbsCheck) then Down:=not Down;
+    if FMouseInControl and not DropDownMenuDropped then
+    begin
+      if (Style = tbsCheck) then
+        Down := not Down;
       Click;
     end;
   end;
@@ -137,9 +157,12 @@ procedure TToolButton.Paint;
   procedure DrawDropDownArrow(OwnerDetails: TThemedElementDetails; const DropDownButtonRect: TRect);
   var
     Details: TThemedElementDetails;
+    ArrowState: TThemedToolBar;
   begin
-    Details := ThemeServices.GetElementDetails(
-      TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1));
+    ArrowState := TThemedToolBar(ord(ttbSplitButtonDropDownNormal) + OwnerDetails.State - 1);
+    if (tbfArrowPressed in FToolButtonFlags) and FMouseInControl and Enabled then
+      ArrowState := ttbSplitButtonDropDownPressed;
+    Details := ThemeServices.GetElementDetails(ArrowState);
     ThemeServices.DrawElement(Canvas.Handle, Details, DropDownButtonRect);
   end;
   
@@ -425,9 +448,10 @@ begin
   //DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
   SetMouseInControl(false);
-  if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then
+  if (not MouseCapture) and ([tbfPressed, tbfArrowPressed] * FToolButtonFlags <> []) then
   begin
-    Exclude(FToolButtonFlags,tbfPressed);
+    Exclude(FToolButtonFlags, tbfPressed);
+    Exclude(FToolButtonFlags, tbfArrowPressed);
     Invalidate;
   end;
 end;

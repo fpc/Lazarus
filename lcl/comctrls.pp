@@ -1310,17 +1310,20 @@ const
   CN_DROPDOWNCLOSED = LM_USER + $1000;
 
 type
-  TToolButtonStyle = (
+  TToolButtonStyle =
+  (
     tbsButton,    // button (can be clicked)
     tbsCheck,     // check item (click to toggle state, can be grouped)
     tbsDropDown,  // button with dropdown button to show a popup menu
     tbsSeparator, // space holder
     tbsDivider    // space holder with line
-    );
+  );
     
-  TToolButtonFlag = (
-    tbfPressed // set while mouse is pressed on button
-    );
+  TToolButtonFlag =
+  (
+    tbfPressed,     // set while mouse is pressed on button
+    tbfArrowPressed // set while mouse is pressed on arrow button
+  );
   TToolButtonFlags = set of TToolButtonFlag;
 
   { TToolButtonActionLink }
