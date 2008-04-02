@@ -68,6 +68,10 @@ var
   S, S1:string;
   i:integer;
 begin
+
+  // TODO: context sensitive inpunts, for example for
+  //       bandname use the list of available bands.
+
   FD:=AFD;
   S:=FD.funDescription;
   S1:=Copy(S, 1, Pos('/', S)-1);
