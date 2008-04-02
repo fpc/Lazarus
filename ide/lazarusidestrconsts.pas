@@ -3708,6 +3708,10 @@ resourcestring
   lisOff = '? (Off)';
   lisOn = '? (On)';
 
+  // Designer Size Components Dialog
+  lisShrinkToSmal = 'Shrink to smallest';
+  lisGrowToLarges = 'Grow to Largest';
+
 
 implementation
 

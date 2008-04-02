@@ -52,6 +52,7 @@ function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
 
 implementation
+uses LazarusIDEStrConsts;
 
 function ShowSizeComponentsDialog(var HorizSizingID, FixedWidth,
   VertSizingID, FixedHeight: integer): TModalResult;
@@ -86,29 +87,29 @@ constructor TSizeComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  Caption:='Size';
+  Caption:=fdmSizeWord;
 
   with WidthRadioGroup do begin
-    Caption:='Width:';
+    Caption:=dlgWidthPos;
     with Items do begin
       BeginUpdate;
-      Add('No change');
-      Add('Shrink to smallest');
-      Add('Grow to Largest');
-      Add('Width:');
+      Add(lisNoChange);
+      Add(lisShrinkToSmal);
+      Add(lisGrowToLarges);
+      Add(dlgWidthPos);
       EndUpdate;
     end;
     ItemIndex:=0;
   end;
 
   with HeightRadioGroup do begin
-    Caption:='Height:';
+    Caption:=DlgHeightPos;
     with Items do begin
       BeginUpdate;
-      Add('No change');
-      Add('Shrink to smallest');
-      Add('Grow to Largest');
-      Add('Height:');
+      Add(lisNoChange);
+      Add(lisShrinkToSmal);
+      Add(lisGrowToLarges);
+      Add(DlgHeightPos);
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -117,7 +118,7 @@ begin
   WidthEdit.Text:='';
   HeightEdit.Text:='';
 
-  OkButton.Caption:='Ok';
+  OkButton.Caption:=lisOkBtn;
 end;
 
 initialization
