@@ -3002,6 +3002,7 @@ begin
   ShowControlsInComponentalette:=(FLastFormActivated=nil)
     or (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
   IDEComponentPalette.ShowHideControls(ShowControlsInComponentalette);
+  SetupHints;
 end;
 
 procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
