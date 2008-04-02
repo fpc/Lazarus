@@ -327,7 +327,6 @@ type
   
   TQtViewPort = class(TQtWidget)
   public
-    function getClientBounds: TRect; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
   end;
   
@@ -2508,18 +2507,8 @@ begin
 end;
 
 function TQtWidget.getClientBounds: TRect;
-var
-  parent: QWidgetH;
-  Pt: TQtPoint;
 begin
-  QWidget_contentsRect(Widget, @Result); // returns with zero offset
-  parent := QWidget_parentWidget(Widget); // get offset from parent
-  if (parent <> nil) and (Result.Left = 0) and (Result.Top = 0) then
-  begin
-    Pt := QtPoint(0, 0);
-    QWidget_mapToParent(Widget, @Pt, @Pt);
-    OffsetRect(Result, Pt.x, Pt.y);
-  end;
+  QWidget_contentsRect(Widget, @Result);
 end;
 
 procedure TQtWidget.grabMouse;
@@ -6979,11 +6968,6 @@ end;
 
 { TQtViewPort }
 
-function TQtViewPort.getClientBounds: TRect;
-begin
-  Result := inherited getClientBounds;
-end;
-
 function TQtViewPort.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 begin
   case QEvent_type(Event) of
@@ -7258,9 +7242,9 @@ end;
 
 function TQtAbstractScrollArea.getClientBounds: TRect;
 begin
-  if LCLObject is TCustomControl then
+{  if LCLObject is TCustomControl then
     Result := viewport.getClientBounds
-  else
+  else}
   begin
     Result := inherited getClientBounds;
 
