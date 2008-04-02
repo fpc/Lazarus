@@ -509,6 +509,7 @@ var
   DefaultTargetCPU: string;
   NewTargetOS: String;
   NewTargetCPU: String;
+  CrossCompiling: Boolean;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -554,6 +555,14 @@ begin
     NewTargetFilename:='';
     NewUnitDirectory:='';
     NewTargetDirectory:='';
+    DefaultTargetOS:=GetDefaultTargetOS;
+    DefaultTargetCPU:=GetDefaultTargetCPU;
+    NewTargetOS:=Options.TargetOS;
+    NewTargetCPU:=Options.TargetCPU;
+    if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
+    if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
+    CrossCompiling:=(CompareText(NewTargetOS,DefaultTargetOS)<>0) or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0);
+    DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
     if (Options.TargetDirectory<>'') then begin
       // Case 1. the user has set a target directory
       NewTargetDirectory:=Options.TargetDirectory;
@@ -566,19 +575,17 @@ begin
       debugln('CreateBuildLazarusOptions Options.TargetDirectory=',NewTargetDirectory);
       Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
       if Result<>mrOk then exit;
+      if OSLocksExecutables and not CrossCompiling then begin
+        // Allow for the case where this correspnds to the current executable
+        NewTargetFilename:='lazarus'+GetExecutableExt(NewTargetOS);
+        if FileExists(AppendPathDelim(NewTargetDirectory)+NewTargetFilename) then
+          NewTargetFilename:='lazarus.new'+GetExecutableExt(NewTargetOS)
+      end;
     end else begin
       // no user defined target directory
       // => find it automatically
 
-      DefaultTargetOS:=GetDefaultTargetOS;
-      DefaultTargetCPU:=GetDefaultTargetCPU;
-      NewTargetOS:=Options.TargetOS;
-      NewTargetCPU:=Options.TargetCPU;
-      if NewTargetOS='' then NewTargetOS:=DefaultTargetOS;
-      if NewTargetCPU='' then NewTargetCPU:=DefaultTargetCPU;
-      DebugLn(['CreateBuildLazarusOptions NewTargetOS=',NewTargetOS,' NewTargetCPU=',NewTargetCPU]);
-      if(CompareText(NewTargetOS,DefaultTargetOS)<>0)
-      or (CompareText(NewTargetCPU,DefaultTargetCPU)<>0) then
+      if CrossCompiling then
       begin
         // Case 2. crosscompiling the IDE
         // create directory <primary config dir>/bin/<TargetCPU>-<TargetOS>
