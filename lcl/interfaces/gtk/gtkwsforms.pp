@@ -48,6 +48,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure ScrollBy(const AWinControl: TScrollingWinControl; const DeltaX, DeltaY: integer); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSScrollBox }
@@ -91,6 +92,7 @@ type
     class procedure ShowModal(const AForm: TCustomForm); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
                                    const ABorderIcons: TBorderIcons); override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
   { TGtkWSForm }
@@ -193,6 +195,17 @@ begin
   {$note implement me}
 end;
 
+class procedure TGtkWSScrollingWinControl.SetColor(
+  const AWinControl: TWinControl);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetColor')
+  then Exit;
+
+  GtkWidgetSet.SetWidgetColor(PGtkBin(PGtkBin(AWinControl.Handle)^.child)^.child,
+                              clNone, AWinControl.Color,
+                              [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,
+                               GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+end;
 
 { TGtkWSCustomForm }
 
@@ -434,6 +447,11 @@ begin
   then Exit;
   
   inherited SetBorderIcons(AForm, ABorderIcons);
+end;
+
+class procedure TGtkWSCustomForm.SetColor(const AWinControl: TWinControl);
+begin
+  TGtkWSWinControl.SetColor(AWinControl);
 end;
 
 { TGtkWSHintWindow }
