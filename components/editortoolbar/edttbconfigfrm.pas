@@ -196,15 +196,18 @@ begin
     for i := 0 to c - 1 do
     begin
       value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
-      if value = cDivider then
+      if value <> '' then
       begin
-        lbToolbar.Items.Add(value);
-        Continue;
-      end;
+       if value = cDivider then
+       begin
+         lbToolbar.Items.Add(value);
+         Continue;
+       end;
       
-      mi := IDEMenuRoots.FindByPath(value, true);
-      if Assigned(mi) then
-        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+       mi := IDEMenuRoots.FindByPath(value, false);
+       if Assigned(mi) then
+         lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+      end;
     end;
   finally
     cfg.Free;

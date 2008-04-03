@@ -205,15 +205,18 @@ begin
     for i := 1 to c do
     begin
       value := cfg.GetValue('Button' + Format('%2.2d', [i]) + '/Value', '');
-      if value = cDivider then
-        AddDivider
-      else
-      begin
-        mi := IDEMenuRoots.FindByPath(value, True);
-        if Assigned(mi) then
-          AddButton(mi);
-      end;
-    end;
+       if value <> '' then
+       begin
+        if value = cDivider then
+          AddDivider
+        else
+        begin
+          mi := IDEMenuRoots.FindByPath(value,false);
+          if Assigned(mi) then
+            AddButton(mi);
+        end;
+       end;
+  end;
   finally
     cfg.Free;
     TB.EndUpdate;
