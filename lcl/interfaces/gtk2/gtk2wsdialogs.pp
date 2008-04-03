@@ -327,7 +327,7 @@ begin
   end;
 
   if ofAllowMultiSelect in OpenDialog.Options then
-    gtk_file_chooser_set_select_multiple(FileSelWidget, True);
+    gtk_file_chooser_set_select_multiple(FileSelWidget, gboolean(gtrue));
 
   // History List - a frame with an option menu
   CreateOpenDialogHistory(OpenDialog, FileSelWidget);
