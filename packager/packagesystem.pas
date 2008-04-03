@@ -1241,6 +1241,8 @@ begin
     // add issues files
     AddFile('interfaces/carbon/issues.xml','carbon-issues.xml',pftIssues,[],cpBase);
     AddFile('interfaces/win32/issues.xml','win32-issues.xml',pftIssues,[],cpBase);
+    AddFile('interfaces/gtk/issues.xml','gtk-issues.xml',pftIssues,[],cpBase);
+    AddFile('interfaces/gtk2/issues.xml','gtk2-issues.xml',pftIssues,[],cpBase);
 
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
