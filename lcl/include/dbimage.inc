@@ -68,6 +68,11 @@ begin
   FDataLink.ReadOnly:=AValue;
 end;
 
+procedure TDBImage.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 procedure TDBImage.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);

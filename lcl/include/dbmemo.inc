@@ -56,6 +56,11 @@ begin
     AValue.FreeNotification(Self);
 end;
 
+procedure TDBMemo.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 procedure TDBMemo.SetReadOnly(AValue: Boolean);
 begin
   inherited;

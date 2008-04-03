@@ -134,7 +134,8 @@ Type
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
-    function  IsReadOnly: boolean;
+    function IsReadOnly: boolean;
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure SetReadOnly(Value: Boolean); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -220,6 +221,7 @@ Type
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -273,6 +275,7 @@ Type
 
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
@@ -353,6 +356,7 @@ Type
     procedure SetReadOnly(const AValue: Boolean);
     procedure SetValue(const AValue: string);
     procedure SetValues(const AValue: TStrings);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure Change; virtual;
     procedure Notification(AComponent: TComponent;
@@ -417,6 +421,7 @@ Type
     procedure SetValueCheck(const AValue: string);
     procedure SetValueUncheck(const AValue: string);
     function ValueEqualsField(const AValue, AFieldText: string): boolean;
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     function GetFieldCheckState: TCheckBoxState; virtual;
     procedure DataChange(Sender: TObject); virtual;
@@ -484,6 +489,7 @@ Type
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetReadOnly(const AValue: Boolean);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual;
     procedure ActiveChange(Sender: TObject); //virtual;
@@ -570,6 +576,7 @@ Type
     procedure SetAutoDisplay(const AValue: Boolean);
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure SetReadOnly(AValue: Boolean); override;
     function WordWrapIsStored: boolean; override;
@@ -632,6 +639,7 @@ Type
     function GetField: TField;
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure DataChange(Sender: TObject); virtual;
     procedure Loaded; override;
@@ -701,6 +709,7 @@ Type
     procedure SetDataField(const AValue: string);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetReadOnly(const AValue: Boolean);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -747,6 +756,8 @@ Type
 
   { TDBCalender }
 
+  { TDBCalendar }
+
   TDBCalendar = class(TCalendar)
     FDataLink: TFieldDataLink;
 
@@ -766,6 +777,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
     procedure UpdateDate(const AValue: string);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -857,6 +869,7 @@ type
     procedure SetHints(const AValue: TStrings);
     procedure SetShowButtonHints(const AValue: boolean);
     procedure SetVisibleButtons(const AValue: TDBNavButtonSet);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     Buttons: array[TDBNavButtonType] of TDBNavButton;
     procedure DataChanged; virtual;

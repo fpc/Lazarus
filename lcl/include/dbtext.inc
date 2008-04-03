@@ -64,6 +64,11 @@ begin
   FDataLink.DataSource := Value;
 end;
 
+procedure TDBText.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 { Protected Methods}
 procedure TDBText.Loaded;
 begin

@@ -109,6 +109,11 @@ begin
   FDataLink.DataSource := Value;
 end;
 
+procedure TDBListBox.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 { Protected Methods}
 procedure TDBListBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin

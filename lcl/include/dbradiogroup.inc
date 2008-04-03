@@ -87,6 +87,11 @@ begin
   DataChange(Self);
 end;
 
+procedure TDBRadioGroup.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 procedure TDBRadioGroup.Change;
 begin
   if Assigned(FOnChange) then FOnChange(Self);

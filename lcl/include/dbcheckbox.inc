@@ -163,6 +163,11 @@ begin
   Result:=AnsiCompareText(AValue,AFieldText)=0;
 end;
 
+procedure TDBCheckBox.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 constructor TDBCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

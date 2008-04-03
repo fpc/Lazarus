@@ -96,6 +96,11 @@ begin
     inherited date := AValue;
 end;
 
+procedure TDBCalendar.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 { Protected Methods}
 procedure TDBCalendar.Loaded;
 begin

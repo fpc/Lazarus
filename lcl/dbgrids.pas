@@ -354,6 +354,7 @@ type
     procedure ToggleSelectedRow;
     procedure SelectRecord(AValue: boolean);
     procedure GetScrollbarParams(out aRange, aPage, aPos: Integer);
+    procedure CMGetDataLink(var Message: TLMessage); message CM_GETDATALINK;
   protected
     procedure AdjustDefaultRowHeight; override;
     procedure AddAutomaticColumns;
@@ -2693,6 +2694,11 @@ begin
     aPage := 0;
     aPos := 0;
   end;
+end;
+
+procedure TCustomDBGrid.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
 end;
 
 procedure TCustomDBGrid.AdjustDefaultRowHeight;

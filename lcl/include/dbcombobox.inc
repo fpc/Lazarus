@@ -68,6 +68,11 @@ begin
   FDataLink.ReadOnly:=AValue;
 end;
 
+procedure TDBComboBox.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 
 procedure TDBComboBox.DataChange(Sender: TObject);
 begin

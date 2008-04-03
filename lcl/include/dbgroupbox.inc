@@ -41,6 +41,11 @@ begin
   FDataLink.DataSource:=AValue;
 end;
 
+procedure TDBGroupBox.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 procedure TDBGroupBox.DataChange(Sender: TObject);
 begin
   if FDataLink.Field<>nil then

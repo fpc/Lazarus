@@ -144,6 +144,11 @@ begin
     UpdateButtons;
 end;
 
+procedure TDBCustomNavigator.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 procedure TDBCustomNavigator.DataChanged;
 var
   PriorEnable, NextEnable: Boolean;

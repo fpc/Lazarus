@@ -130,6 +130,11 @@ begin
     result := (Field=nil) or Field.ReadOnly;
 end;
 
+procedure TDBEdit.CMGetDataLink(var Message: TLMessage);
+begin
+  Message.Result := PtrUInt(FDataLink);
+end;
+
 { Protected Methods}
 procedure TDBEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
