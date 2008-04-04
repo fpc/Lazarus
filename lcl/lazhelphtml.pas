@@ -411,6 +411,10 @@ begin
                              [sffDontSearchInBasePath]);
     FDefaultBrowserParams:='url.dll,FileProtocolHandler %s';
     {$ENDIF}
+    {$IFDEF DARWIN}
+    // open command launches url in the appropriate browser under Mac OS X
+    Find('open');
+    {$ENDIF}
   end;
   if FDefaultBrowser='' then begin
     // Then search in path. Prefer open source ;)
@@ -420,10 +424,6 @@ begin
     or Find('galeon')
     or Find('konqueror')
     or Find('safari')
-    {$IFDEF DARWIN}
-    { safari is not on path for MacOS }
-    or Find('/Applications/Safari.app/Contents/MacOS/Safari')
-    {$ENDIF}
     or Find('netscape')
     or Find('opera')
     or Find('iexplore') then ;
