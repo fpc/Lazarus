@@ -3954,6 +3954,12 @@ var
         ConflictDependency:=PackageGraph.FindConflictRecursively(
           FirstDependency,APackage);
         if ConflictDependency<>nil then exit;
+        if MainOwner is TLazPackage then begin
+          // check if package already uses MainOwner
+          ConflictDependency:=PackageGraph.FindDependencyRecursively(
+            APackage.FirstRequiredDependency,TLazPackage(MainOwner).Name);
+          if ConflictDependency<>nil then exit;
+        end;
       end else begin
         // AnUnitInfo does not belong to a Package => can not be used
         exit;

@@ -219,6 +219,8 @@ type
                  const Name: string): TLazPackage;
     function FindDependencyRecursively(FirstDependency: TPkgDependency;
                                        PkgID: TLazPackageID): TPkgDependency;
+    function FindDependencyRecursively(FirstDependency: TPkgDependency;
+                                       const PkgName: string): TPkgDependency;
     function FindConflictRecursively(FirstDependency: TPkgDependency;
                                      PkgID: TLazPackageID): TPkgDependency;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
@@ -850,6 +852,37 @@ function TLazPackageGraph.FindDependencyRecursively(
   begin
     while CurDependency<>nil do begin
       if CurDependency.IsCompatible(PkgID) then begin
+        Result:=CurDependency;
+        exit;
+      end;
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          Result:=Find(RequiredPackage.FirstRequiredDependency);
+          if Result<>nil then exit;
+        end;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  MarkAllPackagesAsNotVisited;
+  Result:=Find(FirstDependency);
+end;
+
+function TLazPackageGraph.FindDependencyRecursively(
+  FirstDependency: TPkgDependency; const PkgName: string): TPkgDependency;
+// returns one compatible dependency for PkgName
+
+  function Find(CurDependency: TPkgDependency): TPkgDependency;
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while CurDependency<>nil do begin
+      if SysUtils.CompareText(CurDependency.PackageName,PkgName)=0 then begin
         Result:=CurDependency;
         exit;
       end;
@@ -1729,8 +1762,8 @@ end;
 
 function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TFPList;
-// returns the first broken dependency
-// the first irems are TLazPackage, the last item is a TPkgDependency
+// returns the first broken dependency (broken = not loaded)
+// the first items are TLazPackage, the last item is a TPkgDependency
   
   procedure FindBroken(Dependency: TPkgDependency; var PathList: TFPList);
   var
