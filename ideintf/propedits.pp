@@ -4999,7 +4999,7 @@ end;
 constructor TPersistentSelectionList.Create;
 begin
   inherited Create;
-  FPersistentList:=TFPList.Create;
+  FPersistentList := TFPList.Create;
 end;
 
 destructor TPersistentSelectionList.Destroy;
@@ -5254,68 +5254,88 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetComponent(const Name:Shortstring):TComponent;
+function TPropertyEditorHook.GetComponent(const Name: Shortstring): TComponent;
 var
   i: Integer;
 begin
-  Result:=nil;
-  if not Assigned(LookupRoot) then exit;
-  i:=GetHandlerCount(htGetComponent);
-  while GetNextHandlerIndex(htGetComponent,i) and (Result=nil) do
-    Result:=TPropHookGetComponent(FHandlers[htGetComponent][i])(Name);
-  if (Result=nil) and (LookupRoot is TComponent) then
-    Result:=TComponent(LookupRoot).FindComponent(Name);
+  Result := nil;
+  if not Assigned(LookupRoot) then
+    Exit;
+  i := GetHandlerCount(htGetComponent);
+  while GetNextHandlerIndex(htGetComponent, i) and (Result = nil) do
+    Result := TPropHookGetComponent(FHandlers[htGetComponent][i])(Name);
+  if (Result = nil) and (LookupRoot is TComponent) then
+    Result := TComponent(LookupRoot).FindComponent(Name);
 end;
 
 function TPropertyEditorHook.GetComponentName(
-  AComponent:TComponent):Shortstring;
+  AComponent: TComponent): Shortstring;
 var
   i: Integer;
   Handler: TPropHookGetComponentName;
 begin
-  Result:='';
-  if AComponent=nil then exit;
-  i:=GetHandlerCount(htGetComponentName);
-  while GetNextHandlerIndex(htGetComponentName,i) and (Result='') do begin
-    Handler:=TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
-    Result:=Handler(AComponent);
+  Result := '';
+  if AComponent = nil then
+    Exit;
+  i := GetHandlerCount(htGetComponentName);
+  while GetNextHandlerIndex(htGetComponentName, i) and (Result = '') do
+  begin
+    Handler := TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
+    Result := Handler(AComponent);
   end;
-  if Result='' then
-    Result:=AComponent.Name;
+  if Result = '' then
+    Result := AComponent.Name;
 end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
   const Proc:TGetStringProc);
-var i: integer;
+  
+  procedure TraverseComponents(Root: TComponent);
+  var
+    i: integer;
+  begin
+    for i := 0 to Root.ComponentCount - 1 do
+      if (Root.Components[i] is TypeData^.ClassType) then
+        Proc(Root.Components[i].Name);
+  end;
+  
+var
+  i: integer;
   Handler: TPropHookGetComponentNames;
 begin
-  if not Assigned(LookupRoot) then exit;
-  i:=GetHandlerCount(htGetComponentNames);
-  if i>0 then begin
-    while GetNextHandlerIndex(htGetComponentNames,i) do begin
-      Handler:=TPropHookGetComponentNames(FHandlers[htGetComponentNames][i]);
-      Handler(TypeData,Proc);
+  if not Assigned(LookupRoot) then
+    Exit;
+  i := GetHandlerCount(htGetComponentNames);
+  if i > 0 then
+  begin
+    while GetNextHandlerIndex(htGetComponentNames, i) do
+    begin
+      Handler := TPropHookGetComponentNames(FHandlers[htGetComponentNames][i]);
+      Handler(TypeData, Proc);
     end;
-  end else if LookupRoot is TComponent then begin
-    for i:=0 to TComponent(LookupRoot).ComponentCount-1 do
-      if (TComponent(LookupRoot).Components[i] is TypeData^.ClassType) then
-        Proc(TComponent(LookupRoot).Components[i].Name);
+  end
+  else
+  if LookupRoot is TComponent then
+  begin
+    // only traverse local form/datamodule components
+    TraverseComponents(TComponent(LookupRoot));
   end;
 end;
 
-function TPropertyEditorHook.GetRootClassName:Shortstring;
+function TPropertyEditorHook.GetRootClassName: Shortstring;
 var
   i: Integer;
   Handler: TPropHookGetRootClassName;
 begin
-  Result:='';
-  i:=GetHandlerCount(htGetRootClassName);
-  while GetNextHandlerIndex(htGetRootClassName,i) and (Result='') do begin
-    Handler:=TPropHookGetRootClassName(FHandlers[htGetRootClassName][i]);
-    Result:=Handler();
+  Result := '';
+  i := GetHandlerCount(htGetRootClassName);
+  while GetNextHandlerIndex(htGetRootClassName, i) and (Result = '') do
+  begin
+    Handler := TPropHookGetRootClassName(FHandlers[htGetRootClassName][i]);
+    Result := Handler();
   end;
   if (Result='') and Assigned(LookupRoot) then
-    Result:=LookupRoot.ClassName;
+    Result := LookupRoot.ClassName;
 end;
 
 function TPropertyEditorHook.BeforeAddPersistent(Sender: TObject;
@@ -5324,21 +5344,22 @@ var
   i: Integer;
   Handler: TPropHookBeforeAddPersistent;
 begin
-  i:=GetHandlerCount(htBeforeAddPersistent);
-  while GetNextHandlerIndex(htBeforeAddPersistent,i) do begin
-    Handler:=TPropHookBeforeAddPersistent(FHandlers[htBeforeAddPersistent][i]);
-    Result:=Handler(Sender,APersistentClass,Parent);
+  i := GetHandlerCount(htBeforeAddPersistent);
+  while GetNextHandlerIndex(htBeforeAddPersistent, i) do
+  begin
+    Handler := TPropHookBeforeAddPersistent(FHandlers[htBeforeAddPersistent][i]);
+    Result := Handler(Sender,APersistentClass,Parent);
     if not Result then exit;
   end;
-  Result:=true;
+  Result := True;
 end;
 
 procedure TPropertyEditorHook.ComponentRenamed(AComponent: TComponent);
 var
   i: Integer;
 begin
-  i:=GetHandlerCount(htComponentRenamed);
-  while GetNextHandlerIndex(htComponentRenamed,i) do
+  i := GetHandlerCount(htComponentRenamed);
+  while GetNextHandlerIndex(htComponentRenamed, i) do
     TPropHookComponentRenamed(FHandlers[htComponentRenamed][i])(AComponent);
 end;
 
@@ -5347,9 +5368,9 @@ procedure TPropertyEditorHook.PersistentAdded(APersistent: TPersistent;
 var
   i: Integer;
 begin
-  i:=GetHandlerCount(htPersistentAdded);
-  while GetNextHandlerIndex(htPersistentAdded,i) do
-    TPropHookPersistentAdded(FHandlers[htPersistentAdded][i])(APersistent,Select);
+  i := GetHandlerCount(htPersistentAdded);
+  while GetNextHandlerIndex(htPersistentAdded, i) do
+    TPropHookPersistentAdded(FHandlers[htPersistentAdded][i])(APersistent, Select);
 end;
 
 procedure TPropertyEditorHook.PersistentDeleting(APersistent: TPersistent);
@@ -5433,7 +5454,7 @@ procedure TPropertyEditorHook.Unselect(const APersistent: TPersistent);
 var
   Selection: TPersistentSelectionList;
 begin
-  Selection:=TPersistentSelectionList.Create;
+  Selection := TPersistentSelectionList.Create;
   try
     GetSelection(Selection);
     if Selection.IndexOf(APersistent)>=0 then begin
@@ -5449,7 +5470,7 @@ procedure TPropertyEditorHook.SelectOnlyThis(const APersistent: TPersistent);
 var
   NewSelection: TPersistentSelectionList;
 begin
-  NewSelection:=TPersistentSelectionList.Create;
+  NewSelection := TPersistentSelectionList.Create;
   try
     if APersistent<>nil then
       NewSelection.Add(APersistent);
@@ -5957,8 +5978,8 @@ end;
 
 constructor TBackupComponentList.Create;
 begin
-  FSelection:=TPersistentSelectionList.Create;
-  FComponentList:=TList.Create;
+  FSelection := TPersistentSelectionList.Create;
+  FComponentList := TList.Create;
 end;
 
 destructor TBackupComponentList.Destroy;
@@ -6082,10 +6103,10 @@ begin
   MethodPropEditor:=nil;
   PersistentList:=nil;
   try
-    PersistentList:=TPersistentSelectionList.Create;
+    PersistentList := TPersistentSelectionList.Create;
     PersistentList.Add(AComponent);
     Hook:=GlobalDesignHook;
-    MethodPropEditor:=TMethodPropertyEditor.Create(Hook,1);
+    MethodPropEditor := TMethodPropertyEditor.Create(Hook,1);
     MethodPropEditor.SetPropEntry(0, AComponent, PropInfo);
     MethodPropEditor.Initialize;
     MethodPropEditor.Edit;
