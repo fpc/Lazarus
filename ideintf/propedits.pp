@@ -5287,8 +5287,11 @@ begin
     Handler := TPropHookGetComponentName(FHandlers[htGetComponentName][i]);
     Result := Handler(AComponent);
   end;
-  if Result = '' then
+  if Result = '' then begin
     Result := AComponent.Name;
+    if (AComponent.Owner<>LookupRoot) and (AComponent.Owner<>nil) then
+      Result:=AComponent.Owner.Name+'.'+Result;
+  end;
 end;
 
 procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
