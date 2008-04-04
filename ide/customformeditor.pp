@@ -302,7 +302,7 @@ each control that's dropped onto the form
 const
   StandardDesignerBaseClasses: array[1..2] of TComponentClass = (
     Forms.TForm,
-    {$IFNDEF UseFCLDataModule}Forms.{$ENDIF}TDataModule
+    TDataModule
     );
   
   
