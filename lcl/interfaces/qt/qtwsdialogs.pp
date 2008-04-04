@@ -510,7 +510,11 @@ begin
     QFont_family(ReturnFont, @Str);
     TFontDialog(ACommonDialog).Font.Name := UTF8Encode(Str);
    
-    TFontDialog(ACommonDialog).Font.Height := QFont_pointSize(ReturnFont);
+    if QFont_pixelSize(ReturnFont) = -1 then
+      TFontDialog(ACommonDialog).Font.Size := QFont_pointSize(ReturnFont)
+    else
+      TFontDialog(ACommonDialog).Font.Height := QFont_pixelSize(ReturnFont);
+      
     TFontDialog(ACommonDialog).Font.Style := [];
    
    if QFont_bold(ReturnFont) then
