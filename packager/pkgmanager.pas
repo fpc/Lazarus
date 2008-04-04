@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FCL, LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
+  TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   StringHashList, Translations,
   // codetools
   CodeToolManager, CodeCache, NonPascalCodeTools, BasicCodeTools,
@@ -300,6 +300,10 @@ type
                            ): string; override;
     function DoPublishPackage(APackage: TLazPackage; Flags: TPkgSaveFlags;
                               ShowDialog: boolean): TModalResult;
+                              
+    // components
+    procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
+                                    Proc: TGetStringProc); override;
   end;
 
 
@@ -2155,8 +2159,18 @@ function TPkgManager.AddProjectDependency(AProject: TProject;
 var
   NewDependency: TPkgDependency;
   ProvidingAPackage: TLazPackage;
+  ConflictDependency: TPkgDependency;
 begin
   Result:=mrCancel;
+
+  // check if there is dependency, that requires another version
+  ConflictDependency:=PackageGraph.FindConflictRecursively(
+    AProject.FirstRequiredDependency,APackage);
+  if ConflictDependency<>nil then begin
+    DebugLn(['TPkgManager.AddProjectDependency ',APackage.IDAsString,' conflicts with ',ConflictDependency.AsString]);
+    Result:=mrCancel;
+    exit;
+  end;
 
   // check if the dependency is already there
   if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
@@ -3849,6 +3863,140 @@ begin
   // publish package
   Result:=MainIDE.DoPublishModule(APackage.PublishOptions,APackage.Directory,
                                   GetPublishPackageDir(APackage));
+end;
+
+procedure TPkgManager.IterateComponentNames(CurRoot: TPersistent;
+  TypeData: PTypeData; Proc: TGetStringProc);
+var
+  FMainUnitInfo: TUnitInfo;
+  FMainUnitInfoValid: boolean;
+  FMainOwner: TObject;
+  FMainOwnerValid: boolean;
+
+  procedure TraverseComponents(aRoot: TComponent);
+  var
+    i: integer;
+    CurName: String;
+  begin
+    if aRoot=nil then exit;
+    for i := 0 to aRoot.ComponentCount - 1 do
+      if (aRoot.Components[i] is TypeData^.ClassType) then
+      begin
+        CurName:=aRoot.Components[i].Name;
+        if aRoot<>CurRoot then
+          CurName:=aRoot.Name+'.'+CurName;
+        Proc(CurName);
+      end;
+  end;
+
+  function MainUnitInfo: TUnitInfo;
+  begin
+    if not FMainUnitInfoValid then begin
+      if CurRoot is TComponent then
+        FMainUnitInfo:=Project1.UnitWithComponent(TComponent(CurRoot));
+      FMainUnitInfoValid:=true;
+    end;
+    Result:=FMainUnitInfo;
+  end;
+
+  function MainOwner: TObject;
+  var
+    Owners: TFPList;
+  begin
+    if not FMainOwnerValid then begin
+      if MainUnitInfo<>nil then begin
+        if MainUnitInfo.IsPartOfProject then
+          FMainOwner:=Project1
+        else begin
+          Owners:=GetOwnersOfUnit(MainUnitInfo.Filename);
+          if (Owners<>nil) and (Owners.Count>0) then
+            FMainOwner:=TObject(Owners[0]);
+          Owners.Free;
+        end;
+      end;
+      FMainOwnerValid:=true;
+    end;
+    Result:=FMainOwner;
+  end;
+
+  procedure TraverseOtherRootComponent(AnUnitInfo: TUnitInfo);
+  var
+    Owners: TFPList;
+    OtherOwner: TObject;
+    APackage: TLazPackage;
+    ConflictDependency: TPkgDependency;
+    FirstDependency: TPkgDependency;
+  begin
+    if (AnUnitInfo.Component=nil)
+    or (AnUnitInfo.Component=CurRoot)
+    or (MainOwner=nil) then
+      exit;
+    // check if the component can be used
+    // A unit can not be used, if it has no owner.
+    // And a unit can not be used, if it belongs to a higher level package.
+    // For example: Package A uses Package B.
+    // A can use units of B, but B can not use units of A.
+    if AnUnitInfo.IsPartOfProject and MainUnitInfo.IsPartOfProject then
+    begin
+      // both units belong to the project => ok
+    end else if AnUnitInfo.IsPartOfProject then
+    begin
+      // AnUnitInfo belongs to Project, but MainUnitInfo does not
+      // A project unit can only be used by the project => not allowed
+      exit;
+    end else
+    begin
+      Owners:=GetOwnersOfUnit(AnUnitInfo.Filename);
+      if (Owners=nil) or (Owners.Count=0) then begin
+        // AnUnitInfo does not belong to a project or package
+        // => this unit can not be used
+        Owners.Free;
+        exit;
+      end;
+      OtherOwner:=TObject(Owners[0]);
+      Owners.Free;
+      if OtherOwner=MainOwner then begin
+        // both units belong to the same owner => ok
+      end else if (OtherOwner is TLazPackage) then begin
+        // check if MainOwner can use the package
+        APackage:=TLazPackage(OtherOwner);
+        if MainOwner is TProject then
+          FirstDependency:=TProject(MainOwner).FirstRequiredDependency
+        else if MainOwner is TLazPackage then
+          FirstDependency:=TLazPackage(MainOwner).FirstRequiredDependency
+        else
+          exit;
+        ConflictDependency:=PackageGraph.FindConflictRecursively(
+          FirstDependency,APackage);
+        if ConflictDependency<>nil then exit;
+      end else begin
+        // AnUnitInfo does not belong to a Package => can not be used
+        exit;
+      end;
+    end;
+    // this unit can be used -> add components
+    TraverseComponents(AnUnitInfo.Component);
+  end;
+
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  CurRoot:=GlobalDesignHook.LookupRoot;
+  if not (CurRoot is TComponent) then exit;
+  {$IFNDEF EnableMultiFormProperties}
+  exit;
+  {$ENDIF}
+  FMainOwner:=nil;
+  FMainOwnerValid:=false;
+  FMainUnitInfo:=nil;
+  FMainUnitInfoValid:=false;
+  TraverseComponents(TComponent(CurRoot));
+  // search all open designer forms (can be hidden)
+  AnUnitInfo:=Project1.FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    TraverseOtherRootComponent(AnUnitInfo);
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
 end;
 
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;

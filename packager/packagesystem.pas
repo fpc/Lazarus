@@ -217,6 +217,10 @@ type
     function FindPackageWithIDMask(PkgIDMask: TLazPackageID): TLazPackage;
     function FindPackageProvidingName(FirstDependency: TPkgDependency;
                  const Name: string): TLazPackage;
+    function FindDependencyRecursively(FirstDependency: TPkgDependency;
+                                       PkgID: TLazPackageID): TPkgDependency;
+    function FindConflictRecursively(FirstDependency: TPkgDependency;
+                                     PkgID: TLazPackageID): TPkgDependency;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
@@ -834,6 +838,69 @@ function TLazPackageGraph.FindPackageProvidingName(
 begin
   MarkAllPackagesAsNotVisited;
   Search(FirstDependency,Result);
+end;
+
+function TLazPackageGraph.FindDependencyRecursively(
+  FirstDependency: TPkgDependency; PkgID: TLazPackageID): TPkgDependency;
+// returns one compatible dependency for PkgID
+
+  function Find(CurDependency: TPkgDependency): TPkgDependency;
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while CurDependency<>nil do begin
+      if CurDependency.IsCompatible(PkgID) then begin
+        Result:=CurDependency;
+        exit;
+      end;
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          Result:=Find(RequiredPackage.FirstRequiredDependency);
+          if Result<>nil then exit;
+        end;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  MarkAllPackagesAsNotVisited;
+  Result:=Find(FirstDependency);
+end;
+
+function TLazPackageGraph.FindConflictRecursively(
+  FirstDependency: TPkgDependency; PkgID: TLazPackageID): TPkgDependency;
+// returns one conflicting dependency for PkgID
+
+  function Find(CurDependency: TPkgDependency): TPkgDependency;
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while CurDependency<>nil do begin
+      if (SysUtils.CompareText(CurDependency.PackageName,PkgID.Name)=0)
+      and (not CurDependency.IsCompatible(PkgID)) then begin
+        Result:=CurDependency;
+        exit;
+      end;
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          Result:=Find(RequiredPackage.FirstRequiredDependency);
+          if Result<>nil then exit;
+        end;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+    Result:=nil;
+  end;
+
+begin
+  MarkAllPackagesAsNotVisited;
+  Result:=Find(FirstDependency);
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;

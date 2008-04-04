@@ -297,7 +297,7 @@ type
     procedure Edit; virtual;
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
-    function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility
+    function GetComponent(Index: Integer): TPersistent;// for Delphi compatibility it is called GetComponent instead of GetPersistent
     function GetUnitName(Index: Integer = 0): string;
     function GetPropTypeUnitName(Index: Integer = 0): string;
     function GetPropertyPath(Index: integer = 0): string;// e.g. 'TForm1.Color'
@@ -1118,9 +1118,9 @@ type
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
   TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
-  TPropHookGetComponentName = function(AComponent:TComponent):ShortString of object;
-  TPropHookGetComponentNames = procedure(TypeData:PTypeData;
-                                         Proc:TGetStringProc) of object;
+  TPropHookGetComponentName = function(AComponent: TComponent):ShortString of object;
+  TPropHookGetComponentNames = procedure(TypeData: PTypeData;
+                                         Proc: TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
   TPropHookBeforeAddPersistent = function(Sender: TObject;
                                          APersistentClass: TPersistentClass;
@@ -1220,7 +1220,7 @@ type
     // components
     function GetComponent(const Name: ShortString):TComponent;
     function GetComponentName(AComponent: TComponent): ShortString;
-    procedure GetComponentNames(TypeData:PTypeData; const Proc:TGetStringProc);
+    procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStringProc);
     function GetRootClassName: ShortString;
     function BeforeAddPersistent(Sender: TObject;
                                  APersistentClass: TPersistentClass;

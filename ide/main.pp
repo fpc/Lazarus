@@ -419,7 +419,9 @@ type
     procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
     procedure OnPropHookAddDependency(const AClass: TClass;
                                       const AnUnitName: shortstring);
-                                      
+    procedure OnPropHookGetComponentNames(TypeData: PTypeData;
+                                          Proc: TGetStringProc);
+
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
                                  var RegisteredComponent: TRegisteredComponent);
@@ -1642,6 +1644,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
+  GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
@@ -13518,6 +13521,12 @@ begin
   end;
 
   PkgBoss.AddDependencyToUnitOwners(AnUnitInfo.Filename,RequiredUnitName);
+end;
+
+procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData;
+  Proc: TGetStringProc);
+begin
+  PkgBoss.IterateComponentNames(GlobalDesignHook.LookupRoot,TypeData,Proc);
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);

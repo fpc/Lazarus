@@ -44,8 +44,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, FileUtil, LCLProc,
-  LazIDEIntf, PackageIntf, MenuIntf,
+  TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
+  PropEdits, LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
   PackageDefs, ComponentReg, CompilerOptions, Project;
 
@@ -137,6 +137,10 @@ type
     function DoGetIDEInstallPackageOptions(
                            var InheritedOptionStrings: TInheritedCompOptsStrings
                            ): string; virtual; abstract;
+                           
+    // components
+    procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
+                                    Proc: TGetStringProc); virtual; abstract;
   end;
 
 var
