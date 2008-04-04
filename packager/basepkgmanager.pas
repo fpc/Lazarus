@@ -139,8 +139,11 @@ type
                            ): string; virtual; abstract;
                            
     // components
+    function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; virtual; abstract; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStringProc); virtual; abstract;
+    function FindUsableComponent(CurRoot: TPersistent;
+                  const ComponentPath: string): TComponent; virtual; abstract;
   end;
 
 var

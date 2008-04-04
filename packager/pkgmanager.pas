@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                             pkgmanager.pas
@@ -302,8 +301,11 @@ type
                               ShowDialog: boolean): TModalResult;
                               
     // components
+    function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStringProc); override;
+    function FindUsableComponent(CurRoot: TPersistent;
+                        const ComponentPath: string): TComponent; override;
   end;
 
 
@@ -3865,29 +3867,12 @@ begin
                                   GetPublishPackageDir(APackage));
 end;
 
-procedure TPkgManager.IterateComponentNames(CurRoot: TPersistent;
-  TypeData: PTypeData; Proc: TGetStringProc);
+function TPkgManager.GetUsableComponentUnits(CurRoot: TPersistent): TFPList;
 var
   FMainUnitInfo: TUnitInfo;
   FMainUnitInfoValid: boolean;
   FMainOwner: TObject;
   FMainOwnerValid: boolean;
-
-  procedure TraverseComponents(aRoot: TComponent);
-  var
-    i: integer;
-    CurName: String;
-  begin
-    if aRoot=nil then exit;
-    for i := 0 to aRoot.ComponentCount - 1 do
-      if (aRoot.Components[i] is TypeData^.ClassType) then
-      begin
-        CurName:=aRoot.Components[i].Name;
-        if aRoot<>CurRoot then
-          CurName:=aRoot.Name+'.'+CurName;
-        Proc(CurName);
-      end;
-  end;
 
   function MainUnitInfo: TUnitInfo;
   begin
@@ -3919,7 +3904,7 @@ var
     Result:=FMainOwner;
   end;
 
-  procedure TraverseOtherRootComponent(AnUnitInfo: TUnitInfo);
+  procedure CheckUnit(AnUnitInfo: TUnitInfo);
   var
     Owners: TFPList;
     OtherOwner: TObject;
@@ -3975,13 +3960,15 @@ var
       end;
     end;
     // this unit can be used -> add components
-    TraverseComponents(AnUnitInfo.Component);
+    if Result=nil then
+      Result:=TFPList.Create;
+    Result.Add(AnUnitInfo);
   end;
 
 var
   AnUnitInfo: TUnitInfo;
 begin
-  CurRoot:=GlobalDesignHook.LookupRoot;
+  Result:=nil;
   if not (CurRoot is TComponent) then exit;
   {$IFNDEF EnableMultiFormProperties}
   exit;
@@ -3990,12 +3977,101 @@ begin
   FMainOwnerValid:=false;
   FMainUnitInfo:=nil;
   FMainUnitInfoValid:=false;
-  TraverseComponents(TComponent(CurRoot));
   // search all open designer forms (can be hidden)
   AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
-    TraverseOtherRootComponent(AnUnitInfo);
+    CheckUnit(AnUnitInfo);
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+end;
+
+procedure TPkgManager.IterateComponentNames(CurRoot: TPersistent;
+  TypeData: PTypeData; Proc: TGetStringProc);
+
+  procedure CheckComponent(aRoot: TComponent);
+  var
+    i: integer;
+    CurName: String;
+  begin
+    if aRoot=nil then exit;
+    for i := 0 to aRoot.ComponentCount - 1 do
+      if (aRoot.Components[i] is TypeData^.ClassType) then
+      begin
+        CurName:=aRoot.Components[i].Name;
+        if aRoot<>CurRoot then
+          CurName:=aRoot.Name+'.'+CurName;
+        Proc(CurName);
+      end;
+  end;
+
+var
+  UnitList: TFPList;
+  i: Integer;
+begin
+  if not (CurRoot is TComponent) then exit;
+  CheckComponent(TComponent(CurRoot));
+  {$IFNDEF EnableMultiFormProperties}
+  exit;
+  {$ENDIF}
+  UnitList:=GetUsableComponentUnits(CurRoot);
+  if UnitList=nil then exit;
+  try
+    for i:=0 to UnitList.Count-1 do
+      CheckComponent(TUnitInfo(UnitList[i]).Component);
+  finally
+    UnitList.Free;
+  end;
+end;
+
+function TPkgManager.FindUsableComponent(CurRoot: TPersistent;
+  const ComponentPath: string): TComponent;
+
+  procedure CheckComponent(const RootName, SubPath: string; aRoot: TComponent);
+  var
+    i: integer;
+  begin
+    if aRoot=nil then exit;
+    if (SysUtils.CompareText(RootName,aRoot.Name)<>0) then exit;
+    for i := 0 to aRoot.ComponentCount - 1 do
+      if SysUtils.CompareText(aRoot.Components[i].Name,SubPath)=0 then begin
+        Result:=aRoot.Components[i];
+        exit;
+      end;
+  end;
+
+var
+  UnitList: TFPList;
+  SubPath: String;
+  p: LongInt;
+  RootName: String;
+  i: Integer;
+begin
+  Result:=nil;
+  if not (CurRoot is TComponent) then exit;
+  SubPath:=ComponentPath;
+  p:=System.Pos('.',SubPath);
+  if p<1 then
+    RootName:=''
+  else begin
+    RootName:=copy(ComponentPath,1,p-1);
+    SubPath:=copy(SubPath,p+1,length(SubPath));
+  end;
+  if (RootName='') or (SysUtils.CompareText(RootName,TComponent(CurRoot).Name)=0)
+  then
+    CheckComponent(TComponent(CurRoot).Name,SubPath,TComponent(CurRoot));
+  {$IFNDEF EnableMultiFormProperties}
+  exit;
+  {$ENDIF}
+  if p<1 then exit;
+  UnitList:=GetUsableComponentUnits(CurRoot);
+  if UnitList=nil then exit;
+  try
+    for i:=0 to UnitList.Count-1 do begin
+      CheckComponent(RootName,SubPath,TUnitInfo(UnitList[i]).Component);
+      if Result<>nil then exit;
+    end;
+  finally
+    UnitList.Free;
   end;
 end;
 

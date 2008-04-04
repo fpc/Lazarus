@@ -421,6 +421,7 @@ type
                                       const AnUnitName: shortstring);
     procedure OnPropHookGetComponentNames(TypeData: PTypeData;
                                           Proc: TGetStringProc);
+    function OnPropHookGetComponent(const ComponentPath: String): TComponent;
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -1645,6 +1646,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
   GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
+  GlobalDesignHook.AddHandlerGetComponent(@OnPropHookGetComponent);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
@@ -13527,6 +13529,12 @@ procedure TMainIDE.OnPropHookGetComponentNames(TypeData: PTypeData;
   Proc: TGetStringProc);
 begin
   PkgBoss.IterateComponentNames(GlobalDesignHook.LookupRoot,TypeData,Proc);
+end;
+
+function TMainIDE.OnPropHookGetComponent(const ComponentPath: String
+  ): TComponent;
+begin
+  Result:=PkgBoss.FindUsableComponent(GlobalDesignHook.LookupRoot,ComponentPath);
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);

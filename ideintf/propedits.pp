@@ -1117,7 +1117,7 @@ type
   TPropHookChainCall = procedure(const AMethodName, InstanceName,
                       InstanceMethod:ShortString; TypeData:PTypeData) of object;
   // components
-  TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
+  TPropHookGetComponent = function(const ComponentPath: String):TComponent of object;
   TPropHookGetComponentName = function(AComponent: TComponent):ShortString of object;
   TPropHookGetComponentNames = procedure(TypeData: PTypeData;
                                          Proc: TGetStringProc) of object;
@@ -1218,7 +1218,7 @@ type
     procedure ChainCall(const AMethodName, InstanceName,
                         InstanceMethod: ShortString;  TypeData: PTypeData);
     // components
-    function GetComponent(const Name: ShortString):TComponent;
+    function GetComponent(const ComponentPath: string): TComponent;
     function GetComponentName(AComponent: TComponent): ShortString;
     procedure GetComponentNames(TypeData: PTypeData; const Proc: TGetStringProc);
     function GetRootClassName: ShortString;
@@ -5255,7 +5255,8 @@ begin
   end;
 end;
 
-function TPropertyEditorHook.GetComponent(const Name: Shortstring): TComponent;
+function TPropertyEditorHook.GetComponent(const ComponentPath: string
+  ): TComponent;
 var
   i: Integer;
 begin
@@ -5264,9 +5265,11 @@ begin
     Exit;
   i := GetHandlerCount(htGetComponent);
   while GetNextHandlerIndex(htGetComponent, i) and (Result = nil) do
-    Result := TPropHookGetComponent(FHandlers[htGetComponent][i])(Name);
+    Result := TPropHookGetComponent(FHandlers[htGetComponent][i])(ComponentPath);
+  // Note: TWriter only allows pascal identifiers for names, but in general
+  // there is no restriction.
   if (Result = nil) and (LookupRoot is TComponent) then
-    Result := TComponent(LookupRoot).FindComponent(Name);
+    Result := TComponent(LookupRoot).FindComponent(ComponentPath);
 end;
 
 function TPropertyEditorHook.GetComponentName(
