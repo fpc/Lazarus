@@ -4051,6 +4051,7 @@ begin
   if LPersistents <> nil then
   begin
     GetPersistentProperties(LPersistents, tkAny, PropertyHook, Proc, nil);
+    LPersistents.Free;
   end;
 end;
 
