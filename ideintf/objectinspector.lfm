@@ -32,6 +32,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
     ItemHeight = 13
     OnCloseUp = AvailComboBoxCloseUp
+    Style = csDropDownList
     TabOrder = 0
   end
   object MainPopupMenu: TPopupMenu
