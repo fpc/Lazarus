@@ -8,7 +8,7 @@
       <SearchPaths>
         <IncludeFiles Value="unix/;win32/;carbon/"/>
         <OtherUnitFiles Value="unix/;win32/;carbon/"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
         <LCLWidgetType Value="carbon"/>
       </SearchPaths>
       <CodeGeneration>
