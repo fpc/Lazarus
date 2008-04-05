@@ -704,6 +704,10 @@ msgstr "P&oster"
 msgid "Panel Descriptions"
 msgstr "Descriptions du panneau"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Coller"
@@ -791,6 +795,10 @@ msgstr "Enregistrer l'image"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Enregistrer..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

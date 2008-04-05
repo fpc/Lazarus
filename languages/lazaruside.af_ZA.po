@@ -203,9 +203,17 @@ msgstr "&Komponente"
 msgid "&Delete"
 msgstr "&Skrap"
 
+#: lazarusidestrconsts:lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Redigeer"
+
+#: lazarusidestrconsts:lisenableall
+msgid "&Enable All"
+msgstr ""
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -315,6 +323,10 @@ msgstr ""
 msgid "&Set Bookmark"
 msgstr ""
 
+#: lazarusidestrconsts:lissourcebreakpoint
+msgid "&Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
 msgstr "&Teks of te vind"
@@ -385,6 +397,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
+msgstr ""
+
+#: lazarusidestrconsts:lisoff
+msgid "? (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lison
+msgid "? (On)"
 msgstr ""
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
@@ -685,6 +705,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
+msgstr ""
+
+#: lazarusidestrconsts:lisallowfunctio
+msgid "Allow Function Calls"
 msgstr ""
 
 #: lazarusidestrconsts:dlglabelgoto
@@ -991,6 +1015,10 @@ msgstr ""
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr ""
 
+#: lazarusidestrconsts:lisbottom
+msgid "Bottom"
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
 msgstr ""
@@ -1009,6 +1037,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
+msgstr ""
+
+#: lazarusidestrconsts:lisbreak
+msgid "Break"
 msgstr ""
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
@@ -1289,6 +1321,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecchar
 msgid "Char"
+msgstr ""
+
+#: lazarusidestrconsts:lischaracter
+msgid "Character"
 msgstr ""
 
 #: lazarusidestrconsts:lischaractermap
@@ -1803,6 +1839,10 @@ msgstr ""
 msgid "Components"
 msgstr "Komponente"
 
+#: lazarusidestrconsts:liscondition
+msgid "Condition"
+msgstr ""
+
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -1990,6 +2030,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
 msgstr "Kopieer"
+
+#: lazarusidestrconsts:liscopyall
+msgid "Copy All"
+msgstr ""
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2183,6 +2227,10 @@ msgstr ""
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lazarusidestrconsts:liscurrent
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
 msgstr ""
@@ -2331,6 +2379,10 @@ msgstr ""
 msgid "Debugging:"
 msgstr ""
 
+#: lazarusidestrconsts:lisdecimal
+msgid "Decimal"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr ""
@@ -2367,6 +2419,10 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
 msgstr ""
@@ -2383,12 +2439,28 @@ msgstr ""
 msgid "Delete Old Package File?"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteallbreakpoints2
+msgid "Delete all breakpoints in file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr ""
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeletebreakpointatline
+msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletechar
@@ -2551,6 +2623,10 @@ msgstr ""
 msgid "Diff editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lisdigits
+msgid "Digits:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr ""
@@ -2577,6 +2653,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisablegroup
+msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisabled
+msgid "Disabled"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiscardchanges
@@ -2789,6 +2877,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablegroup
+msgid "Enable Group"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros
@@ -3099,6 +3195,10 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
+#: lazarusidestrconsts:lisexpression
+msgid "Expression:"
+msgstr ""
+
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr ""
@@ -3319,6 +3419,10 @@ msgstr ""
 msgid "Filename is used by project"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilenameaddress
+msgid "Filename/Address"
+msgstr ""
+
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
 msgstr ""
@@ -3471,6 +3575,10 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr ""
 
+#: lazarusidestrconsts:lisfloatingpoin
+msgid "Floating Point"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr ""
@@ -3545,6 +3653,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
+msgstr ""
+
+#: lazarusidestrconsts:lisfunction
+msgid "Function"
 msgstr ""
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
@@ -3795,8 +3907,16 @@ msgstr ""
 msgid "Grid size Y"
 msgstr ""
 
+#: lazarusidestrconsts:lisgroup
+msgid "Group"
+msgstr ""
+
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
+msgstr ""
+
+#: lazarusidestrconsts:lisgrowtolarges
+msgid "Grow to Largest"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
@@ -3889,6 +4009,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
+msgstr ""
+
+#: lazarusidestrconsts:lishexadecimal
+msgid "Hexadecimal"
 msgstr ""
 
 #: lazarusidestrconsts:dlghideideonrun
@@ -4161,6 +4285,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
+msgstr ""
+
+#: lazarusidestrconsts:lisindex
+msgid "Index"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguageindonesian
@@ -4477,6 +4605,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidoff
+msgid "Invalid (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidon
+msgid "Invalid (On)"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
@@ -5063,6 +5199,10 @@ msgstr ""
 msgid "Line selection mode"
 msgstr ""
 
+#: lazarusidestrconsts:lislinelength
+msgid "Line/Length"
+msgstr ""
+
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
 msgstr ""
@@ -5125,6 +5265,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lislocals
+msgid "Locals"
 msgstr ""
 
 #: lazarusidestrconsts:lislogo
@@ -5215,6 +5359,10 @@ msgstr ""
 msgid "Matches"
 msgstr ""
 
+#: lazarusidestrconsts:lismaxs
+msgid "Max %d"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr ""
@@ -5241,6 +5389,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
+msgstr ""
+
+#: lazarusidestrconsts:lismemorydump
+msgid "Memory Dump"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_menu
@@ -5329,6 +5481,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listodolfile
 msgid "Module"
+msgstr ""
+
+#: lazarusidestrconsts:lismore
+msgid "More"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
@@ -5745,6 +5901,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotimplementedyet2
+msgid "Not implemented yet."
 msgstr ""
 
 #: lazarusidestrconsts:lisnotimplementedyet
@@ -6311,6 +6471,10 @@ msgstr ""
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr ""
 
+#: lazarusidestrconsts:lispasscount
+msgid "Pass Count"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr ""
@@ -6417,6 +6581,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptspoint
 msgid "Point"
+msgstr ""
+
+#: lazarusidestrconsts:lispointer
+msgid "Pointer"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
@@ -6771,6 +6939,10 @@ msgstr ""
 msgid "Recompile clean"
 msgstr ""
 
+#: lazarusidestrconsts:lisrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "Herdoen"
@@ -6957,6 +7129,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:lisrepeatcount
+msgid "Repeat Count:"
 msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
@@ -7775,6 +7951,10 @@ msgstr ""
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
 msgstr ""
@@ -7961,6 +8141,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
+msgstr ""
+
+#: lazarusidestrconsts:lisshrinktosmal
+msgid "Shrink to smallest"
 msgstr ""
 
 #: lazarusidestrconsts:lissibling
@@ -8211,6 +8395,10 @@ msgstr ""
 msgid "Streaming error"
 msgstr ""
 
+#: lazarusidestrconsts:lisstring
+msgid "String"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr ""
@@ -8225,6 +8413,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
+msgstr ""
+
+#: lazarusidestrconsts:lisstyle
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts:lissubprocedure
@@ -9255,6 +9447,10 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts:listop
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
 msgstr ""
@@ -10229,6 +10425,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswatchpropert
+msgid "Watch Properties"
 msgstr ""
 
 #: lazarusidestrconsts:liswlwatchlist

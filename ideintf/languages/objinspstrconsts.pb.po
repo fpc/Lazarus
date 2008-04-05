@@ -696,6 +696,10 @@ msgstr "P&ostar"
 msgid "Panel Descriptions"
 msgstr "Painel de Descricoes"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Colar"
@@ -783,6 +787,10 @@ msgstr "Salvar Imagem"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Salvar..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

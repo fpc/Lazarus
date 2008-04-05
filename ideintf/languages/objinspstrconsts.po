@@ -444,6 +444,14 @@ msgstr ""
 msgid "Move Rows/Cols"
 msgstr ""
 
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
+
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:nbcesaddpage
 msgid "Add page"
 msgstr ""

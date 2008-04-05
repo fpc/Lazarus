@@ -696,6 +696,10 @@ msgstr "В&ідправити"
 msgid "Panel Descriptions"
 msgstr "Панель Описи"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Вставити"
@@ -782,6 +786,10 @@ msgstr "Зберегти зображення"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline

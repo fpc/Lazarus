@@ -701,6 +701,10 @@ msgstr "Po&slať"
 msgid "Panel Descriptions"
 msgstr "Popist panelov"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Prilepiť"
@@ -788,6 +792,10 @@ msgstr "Uložiť obrázok"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Uložiť..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

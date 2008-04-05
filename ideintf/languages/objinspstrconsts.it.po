@@ -701,6 +701,10 @@ msgstr "&Spedisci"
 msgid "Panel Descriptions"
 msgstr "Descrizioni pannello"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Incolla"
@@ -788,6 +792,10 @@ msgstr "Salva foto"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Salva..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

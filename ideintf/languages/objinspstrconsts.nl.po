@@ -696,6 +696,10 @@ msgstr "&Bewaren"
 msgid "Panel Descriptions"
 msgstr " Panel Beschrijvingen "
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Plakken"
@@ -783,6 +787,10 @@ msgstr "Sla plaatje op"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Opslaan..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

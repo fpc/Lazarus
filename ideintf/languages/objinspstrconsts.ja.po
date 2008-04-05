@@ -696,6 +696,10 @@ msgstr ""
 msgid "Panel Descriptions"
 msgstr ""
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr ""
@@ -782,6 +786,10 @@ msgstr ""
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
+msgstr ""
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
 msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline

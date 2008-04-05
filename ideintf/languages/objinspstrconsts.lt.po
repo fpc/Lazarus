@@ -705,6 +705,10 @@ msgstr "&Siųsti"
 msgid "Panel Descriptions"
 msgstr "Panelių aprašymai"
 
+#: objinspstrconsts:sccssbeditpanels
+msgid "Panels Editor ..."
+msgstr ""
+
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
 msgstr "Įdėti"
@@ -792,6 +796,10 @@ msgstr "Išsaugoti paveikslą"
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
 msgstr "Išsaugoti..."
+
+#: objinspstrconsts:sccshceditsections
+msgid "Sections Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

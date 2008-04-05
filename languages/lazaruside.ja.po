@@ -200,9 +200,17 @@ msgstr "コンポーネント(&C)"
 msgid "&Delete"
 msgstr "削除(&D)"
 
+#: lazarusidestrconsts:lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "編集(&E)"
+
+#: lazarusidestrconsts:lisenableall
+msgid "&Enable All"
+msgstr ""
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -312,6 +320,10 @@ msgstr ""
 msgid "&Set Bookmark"
 msgstr "ブックマークを入れる"
 
+#: lazarusidestrconsts:lissourcebreakpoint
+msgid "&Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
 msgstr "検索テキスト(&T)"
@@ -383,6 +395,14 @@ msgstr ""
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
 msgstr "<選択変数なし>"
+
+#: lazarusidestrconsts:lisoff
+msgid "? (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lison
+msgid "? (On)"
+msgstr ""
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
@@ -682,6 +702,10 @@ msgstr "すべてのプロジェクト"
 
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
+msgstr ""
+
+#: lazarusidestrconsts:lisallowfunctio
+msgid "Allow Function Calls"
 msgstr ""
 
 #: lazarusidestrconsts:dlglabelgoto
@@ -988,6 +1012,10 @@ msgstr "境界間隔"
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "コントロールの周辺の境界間隔。他の4つの境界スペースはこの値に加算されます。"
 
+#: lazarusidestrconsts:lisbottom
+msgid "Bottom"
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
 msgstr "下部のアンカー"
@@ -1007,6 +1035,10 @@ msgstr "下部"
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
 msgstr "括弧を強調表示"
+
+#: lazarusidestrconsts:lisbreak
+msgid "Break"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -1286,6 +1318,10 @@ msgstr "パッケージ名もしくはバージョンの変更は依存性を壊
 
 #: lazarusidestrconsts:srkmecchar
 msgid "Char"
+msgstr ""
+
+#: lazarusidestrconsts:lischaracter
+msgid "Character"
 msgstr ""
 
 #: lazarusidestrconsts:lischaractermap
@@ -1800,6 +1836,10 @@ msgstr "コンポーネント名 %s%s%s は無効な識別子です"
 msgid "Components"
 msgstr "コンポーネント"
 
+#: lazarusidestrconsts:liscondition
+msgid "Condition"
+msgstr ""
+
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -1987,6 +2027,10 @@ msgstr "選択した部分のTabをスペースへ変換"
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
 msgstr "コピー"
+
+#: lazarusidestrconsts:liscopyall
+msgid "Copy All"
+msgstr ""
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2180,6 +2224,10 @@ msgstr "作成"
 msgid "Ctrl"
 msgstr ""
 
+#: lazarusidestrconsts:liscurrent
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
 msgstr "現在のプロジェクト"
@@ -2328,6 +2376,10 @@ msgstr "デバッガの種類とパス"
 msgid "Debugging:"
 msgstr "デバッグ中"
 
+#: lazarusidestrconsts:lisdecimal
+msgid "Decimal"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "デフォルト"
@@ -2364,6 +2416,10 @@ msgstr "遅延"
 msgid "Delete"
 msgstr "削除"
 
+#: lazarusidestrconsts:lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
 msgstr "テンプレートから削除"
@@ -2380,6 +2436,18 @@ msgstr "末尾の文字を削除"
 msgid "Delete Old Package File?"
 msgstr "古いパッケージファイルを削除しますか？"
 
+#: lazarusidestrconsts:lisdeleteallbreakpoints2
+msgid "Delete all breakpoints in file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "これらすべてのファイルを削除しますか？"
@@ -2387,6 +2455,10 @@ msgstr "これらすべてのファイルを削除しますか？"
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "曖昧なファイルを削除しますか？"
+
+#: lazarusidestrconsts:lisdeletebreakpointatline
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletechar
 msgid "Delete char at cursor"
@@ -2548,6 +2620,10 @@ msgstr "差分"
 msgid "Diff editor files"
 msgstr "差分エディタファイル"
 
+#: lazarusidestrconsts:lisdigits
+msgid "Digits:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "方向"
@@ -2575,6 +2651,18 @@ msgstr "ディレクトリが見つかりません"
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "ディレクトリオプション"
+
+#: lazarusidestrconsts:lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisablegroup
+msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisabled
+msgid "Disabled"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
@@ -2786,6 +2874,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablegroup
+msgid "Enable Group"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros
@@ -3096,6 +3192,10 @@ msgstr "エクスポートリスト"
 msgid "Expression"
 msgstr "式"
 
+#: lazarusidestrconsts:lisexpression
+msgid "Expression:"
+msgstr ""
+
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr "ユニットのパスを拡張しますか？"
@@ -3316,6 +3416,10 @@ msgstr "ファイル名が他のパッケージで使われています"
 msgid "Filename is used by project"
 msgstr "ファイル名はプロジェクトによって使われています"
 
+#: lazarusidestrconsts:lisfilenameaddress
+msgid "Filename/Address"
+msgstr ""
+
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
 msgstr "ファイル名"
@@ -3468,6 +3572,10 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr "LFMファイルを修復"
 
+#: lazarusidestrconsts:lisfloatingpoin
+msgid "Floating Point"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "ソースエディターへフォーカスを移動"
@@ -3543,6 +3651,10 @@ msgstr "FreePascalソースディレクトリ"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "フランス語"
+
+#: lazarusidestrconsts:lisfunction
+msgid "Function"
+msgstr ""
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3792,9 +3904,17 @@ msgstr "グリッドサイズ X"
 msgid "Grid size Y"
 msgstr "グリッドサイズ X"
 
+#: lazarusidestrconsts:lisgroup
+msgid "Group"
+msgstr ""
+
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
 msgstr "グループをやり直し"
+
+#: lazarusidestrconsts:lisgrowtolarges
+msgid "Grow to Largest"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -3887,6 +4007,10 @@ msgstr "ヘルプメニューコマンド"
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
 msgstr "ヘルプ選択"
+
+#: lazarusidestrconsts:lishexadecimal
+msgid "Hexadecimal"
+msgstr ""
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4159,6 +4283,10 @@ msgstr "コードを次へインデント："
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
 msgstr "選択部分をインデント"
+
+#: lazarusidestrconsts:lisindex
+msgid "Index"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
@@ -4475,6 +4603,14 @@ msgstr "内部コンパイラエラーです！ (%d)"
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
 msgstr "インターバル(秒)"
+
+#: lazarusidestrconsts:lisinvalidoff
+msgid "Invalid (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidon
+msgid "Invalid (On)"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -5060,6 +5196,10 @@ msgstr "行分割"
 msgid "Line selection mode"
 msgstr "行選択モード"
 
+#: lazarusidestrconsts:lislinelength
+msgid "Line/Length"
+msgstr ""
+
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
 msgstr "行"
@@ -5123,6 +5263,10 @@ msgstr "ローカル"
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
 msgstr "ローカル変数"
+
+#: lazarusidestrconsts:lislocals
+msgid "Locals"
+msgstr ""
 
 #: lazarusidestrconsts:lislogo
 msgid "Logo"
@@ -5212,6 +5356,10 @@ msgstr "マーカーの色"
 msgid "Matches"
 msgstr "一致"
 
+#: lazarusidestrconsts:lismaxs
+msgid "Max %d"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "最大行長"
@@ -5239,6 +5387,10 @@ msgstr "バージョンの上限"
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
 msgstr "カウンターの上限"
+
+#: lazarusidestrconsts:lismemorydump
+msgid "Memory Dump"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -5327,6 +5479,10 @@ msgstr "修正済: %s"
 #: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "モジュール"
+
+#: lazarusidestrconsts:lismore
+msgid "More"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -5743,6 +5899,10 @@ msgstr ""
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "まだ実装されていません。"
+
+#: lazarusidestrconsts:lisnotimplementedyet2
+msgid "Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
@@ -6308,6 +6468,10 @@ msgstr "Pascalユニット"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascalユニットの拡張子は.ppもしくは.pasでなければなりません。"
 
+#: lazarusidestrconsts:lispasscount
+msgid "Pass Count"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr "リンカにオプションを渡して下さい（区切り記号はスペース）"
@@ -6415,6 +6579,10 @@ msgstr "新しい手続き/メソッドを抽出するためにコードの一�
 #: lazarusidestrconsts:liscodetoolsoptspoint
 msgid "Point"
 msgstr "ポイント"
+
+#: lazarusidestrconsts:lispointer
+msgid "Pointer"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
@@ -6768,6 +6936,10 @@ msgstr "すべての再コンパイルが求められています"
 msgid "Recompile clean"
 msgstr "?"
 
+#: lazarusidestrconsts:lisrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "やり直し"
@@ -6955,6 +7127,10 @@ msgstr "次の名前に変更"
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "小文字へ変更"
+
+#: lazarusidestrconsts:lisrepeatcount
+msgid "Repeat Count:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7772,6 +7948,10 @@ msgstr "ファイル名を短縮もしくは拡張"
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgstr "ファイルの名前を小文字の%s%s%s%sに変更していいですか？"
 
+#: lazarusidestrconsts:lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
 msgstr "すべて表示"
@@ -7958,6 +8138,10 @@ msgstr "用いられたファイルを表示"
 
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
+msgstr ""
+
+#: lazarusidestrconsts:lisshrinktosmal
+msgid "Shrink to smallest"
 msgstr ""
 
 #: lazarusidestrconsts:lissibling
@@ -8208,6 +8392,10 @@ msgstr ""
 msgid "Streaming error"
 msgstr "ストリーミングエラー"
 
+#: lazarusidestrconsts:lisstring
+msgid "String"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "文字列定数"
@@ -8223,6 +8411,10 @@ msgstr "同じ値の文字列"
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
 msgstr "実行ファイルからシンボルを除く"
+
+#: lazarusidestrconsts:lisstyle
+msgid "Style"
+msgstr ""
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
@@ -9252,6 +9444,10 @@ msgstr "ツールチップ式評価"
 msgid "Tooltip symbol Tools"
 msgstr "ツールチップ記号ツール"
 
+#: lazarusidestrconsts:listop
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
 msgstr "上端アンカー"
@@ -10227,6 +10423,10 @@ msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属して�
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgstr "警告：紛らわしいファイルが見つかりました。ソースファイルは%s%s%sです。"
+
+#: lazarusidestrconsts:liswatchpropert
+msgid "Watch Properties"
+msgstr ""
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"

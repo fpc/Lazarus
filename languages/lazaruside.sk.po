@@ -202,9 +202,17 @@ msgstr "&Komponenty"
 msgid "&Delete"
 msgstr "&Zmazať"
 
+#: lazarusidestrconsts:lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Upraviť"
+
+#: lazarusidestrconsts:lisenableall
+msgid "&Enable All"
+msgstr ""
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -314,6 +322,10 @@ msgstr "&Vybratý text"
 msgid "&Set Bookmark"
 msgstr "&Nastaviť záložku"
 
+#: lazarusidestrconsts:lissourcebreakpoint
+msgid "&Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
 msgstr "&Hľadaný text"
@@ -385,6 +397,14 @@ msgstr ""
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
 msgstr "<premenná nezvolená>"
+
+#: lazarusidestrconsts:lisoff
+msgid "? (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lison
+msgid "? (On)"
+msgstr ""
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
@@ -685,6 +705,10 @@ msgstr "Všetky projekty"
 #: lazarusidestrconsts:lisccotestssuccess
 msgid "All tests succeeded."
 msgstr "Všetky testy úspešné."
+
+#: lazarusidestrconsts:lisallowfunctio
+msgid "Allow Function Calls"
+msgstr ""
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -990,6 +1014,10 @@ msgstr "Medzera okraja"
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr "Okraj okolo prvku. Ostatné štyri okraje sú pridané k tejto hodnote."
 
+#: lazarusidestrconsts:lisbottom
+msgid "Bottom"
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
 msgstr "Spodné ukotvenie"
@@ -1009,6 +1037,10 @@ msgstr "Spodné okraje"
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
 msgstr "Zvýraznenie zátvoriek"
+
+#: lazarusidestrconsts:lisbreak
+msgid "Break"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -1289,6 +1321,10 @@ msgstr ""
 #: lazarusidestrconsts:srkmecchar
 msgid "Char"
 msgstr "Znak"
+
+#: lazarusidestrconsts:lischaracter
+msgid "Character"
+msgstr ""
 
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
@@ -1802,6 +1838,10 @@ msgstr "Názov komponentu %s%s%s nie je platný identifikátor"
 msgid "Components"
 msgstr "Komponenty"
 
+#: lazarusidestrconsts:liscondition
+msgid "Condition"
+msgstr ""
+
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -1989,6 +2029,10 @@ msgstr "Konvertuj tabulátory na medzery vo výbere"
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
 msgstr "Kopírovať"
+
+#: lazarusidestrconsts:liscopyall
+msgid "Copy All"
+msgstr ""
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2182,6 +2226,10 @@ msgstr "Vytváranie"
 msgid "Ctrl"
 msgstr "Ctrl"
 
+#: lazarusidestrconsts:liscurrent
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
 msgstr "Aktuálny projekt"
@@ -2330,6 +2378,10 @@ msgstr "Typ a cesta debugera"
 msgid "Debugging:"
 msgstr "Ladenie:"
 
+#: lazarusidestrconsts:lisdecimal
+msgid "Decimal"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr "Predvolené"
@@ -2366,6 +2418,10 @@ msgstr "Oneskorenie"
 msgid "Delete"
 msgstr "Delete"
 
+#: lazarusidestrconsts:lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
 msgstr "Zmazať zo šablóny ..."
@@ -2382,6 +2438,18 @@ msgstr "Zmazať posledná znak"
 msgid "Delete Old Package File?"
 msgstr "Zmazať súbor starého balíčka?"
 
+#: lazarusidestrconsts:lisdeleteallbreakpoints2
+msgid "Delete all breakpoints in file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Zmazať všetky tieto súbory?"
@@ -2389,6 +2457,10 @@ msgstr "Zmazať všetky tieto súbory?"
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Zmazať nejednoznačný súbor?"
+
+#: lazarusidestrconsts:lisdeletebreakpointatline
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletechar
 msgid "Delete char at cursor"
@@ -2550,6 +2622,10 @@ msgstr "Rozdiely"
 msgid "Diff editor files"
 msgstr "Rozdiely súborov editora"
 
+#: lazarusidestrconsts:lisdigits
+msgid "Digits:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "Smer"
@@ -2577,6 +2653,18 @@ msgstr "Adresár nenájdený"
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Voľby adresára"
+
+#: lazarusidestrconsts:lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisablegroup
+msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisabled
+msgid "Disabled"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
@@ -2788,6 +2876,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablegroup
+msgid "Enable Group"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros
@@ -3098,6 +3194,10 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
+#: lazarusidestrconsts:lisexpression
+msgid "Expression:"
+msgstr ""
+
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Rozšíriť cestu jednotky?"
@@ -3318,6 +3418,10 @@ msgstr "Meno súboru je použité iným balíčkom"
 msgid "Filename is used by project"
 msgstr "Meno súboru je použité projektom"
 
+#: lazarusidestrconsts:lisfilenameaddress
+msgid "Filename/Address"
+msgstr ""
+
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
 msgstr "Meno súboru:"
@@ -3470,6 +3574,10 @@ msgstr ""
 msgid "Fix LFM file"
 msgstr "Opraviť súbor LFM"
 
+#: lazarusidestrconsts:lisfloatingpoin
+msgid "Floating Point"
+msgstr ""
+
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
 msgstr "Prepnúť do editora zdrojových kódov"
@@ -3545,6 +3653,10 @@ msgstr "Adresár zdrojov FreePascal"
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "Francúzsky"
+
+#: lazarusidestrconsts:lisfunction
+msgid "Function"
+msgstr ""
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3794,9 +3906,17 @@ msgstr "Veľkosť mriežky X"
 msgid "Grid size Y"
 msgstr "Veľkosť mriežky Y"
 
+#: lazarusidestrconsts:lisgroup
+msgid "Group"
+msgstr ""
+
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
 msgstr "Skupinové späť"
+
+#: lazarusidestrconsts:lisgrowtolarges
+msgid "Grow to Largest"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -3888,6 +4008,10 @@ msgstr "Príkazu menu Help"
 
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
+msgstr ""
+
+#: lazarusidestrconsts:lishexadecimal
+msgid "Hexadecimal"
 msgstr ""
 
 #: lazarusidestrconsts:dlghideideonrun
@@ -4161,6 +4285,10 @@ msgstr "Odsadiť kód na"
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
 msgstr "Zväčšiť odsadenie"
+
+#: lazarusidestrconsts:lisindex
+msgid "Index"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
@@ -4477,6 +4605,14 @@ msgstr "Interná chyba prekladača! (%d)"
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
 msgstr "Interval v sekundách"
+
+#: lazarusidestrconsts:lisinvalidoff
+msgid "Invalid (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidon
+msgid "Invalid (On)"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -5062,6 +5198,10 @@ msgstr ""
 msgid "Line selection mode"
 msgstr "Riadkový režim výberu"
 
+#: lazarusidestrconsts:lislinelength
+msgid "Line/Length"
+msgstr ""
+
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
 msgstr "Riadky"
@@ -5125,6 +5265,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
 msgstr "Lokálne premenné"
+
+#: lazarusidestrconsts:lislocals
+msgid "Locals"
+msgstr ""
 
 #: lazarusidestrconsts:lislogo
 msgid "Logo"
@@ -5214,6 +5358,10 @@ msgstr "Farba markera"
 msgid "Matches"
 msgstr "Vhovujúce"
 
+#: lazarusidestrconsts:lismaxs
+msgid "Max %d"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Maximálna dĺžka riadku:"
@@ -5241,6 +5389,10 @@ msgstr "Maximálna verzia"
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Maximum počítadla"
+
+#: lazarusidestrconsts:lismemorydump
+msgid "Memory Dump"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -5329,6 +5481,10 @@ msgstr "Zmenené: %s"
 #: lazarusidestrconsts:listodolfile
 msgid "Module"
 msgstr "Modul"
+
+#: lazarusidestrconsts:lismore
+msgid "More"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -5745,6 +5901,10 @@ msgstr ""
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "Zatiaľ neimplementované"
+
+#: lazarusidestrconsts:lisnotimplementedyet2
+msgid "Not implemented yet."
+msgstr ""
 
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
@@ -6310,6 +6470,10 @@ msgstr "Jednotka pascalu"
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Jednotka pascalu musí mať príponu .pp alebo .pas"
 
+#: lazarusidestrconsts:lispasscount
+msgid "Pass Count"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr ""
@@ -6416,6 +6580,10 @@ msgstr "Prosím vyberte kód pre oddelenie procedúry/metódy"
 
 #: lazarusidestrconsts:liscodetoolsoptspoint
 msgid "Point"
+msgstr ""
+
+#: lazarusidestrconsts:lispointer
+msgid "Pointer"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
@@ -6770,6 +6938,10 @@ msgstr "Znova preložiť všetky vyžadované"
 msgid "Recompile clean"
 msgstr "Vyčistiť a znova preložiť"
 
+#: lazarusidestrconsts:lisrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "Znova"
@@ -6957,6 +7129,10 @@ msgstr "Premenovať na"
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Premenovať na malé písmená"
+
+#: lazarusidestrconsts:lisrepeatcount
+msgid "Repeat Count:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7774,6 +7950,10 @@ msgstr "Skrátené alebo úplné meno súboru"
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
 msgstr "Zobraziť všetko"
@@ -7961,6 +8141,10 @@ msgstr "Zobraziť použité jednotky"
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
 msgstr "Zobraziť používateľské odkazy"
+
+#: lazarusidestrconsts:lisshrinktosmal
+msgid "Shrink to smallest"
+msgstr ""
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8210,6 +8394,10 @@ msgstr ""
 msgid "Streaming error"
 msgstr "Chyba streamovania"
 
+#: lazarusidestrconsts:lisstring
+msgid "String"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr "Reťazcová konštanta"
@@ -8224,6 +8412,10 @@ msgstr "Reťazce s rovnakou hodnotou:"
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
+msgstr ""
+
+#: lazarusidestrconsts:lisstyle
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts:lissubprocedure
@@ -9254,6 +9446,10 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts:listop
+msgid "Top"
+msgstr ""
+
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
 msgstr "Horné zarovnanie"
@@ -10228,6 +10424,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswatchpropert
+msgid "Watch Properties"
 msgstr ""
 
 #: lazarusidestrconsts:liswlwatchlist

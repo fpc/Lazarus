@@ -196,9 +196,17 @@ msgstr "&Komponentit"
 msgid "&Delete"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
 msgstr "&Muokkaa"
+
+#: lazarusidestrconsts:lisenableall
+msgid "&Enable All"
+msgstr ""
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -308,6 +316,10 @@ msgstr "Valittu teksti"
 msgid "&Set Bookmark"
 msgstr "&Merkitse kirjainmerkiksi"
 
+#: lazarusidestrconsts:lissourcebreakpoint
+msgid "&Source breakpoint"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
 msgstr "Etsittävä"
@@ -378,6 +390,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
+msgstr ""
+
+#: lazarusidestrconsts:lisoff
+msgid "? (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lison
+msgid "? (On)"
 msgstr ""
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
@@ -680,6 +700,10 @@ msgstr ""
 msgid "All tests succeeded."
 msgstr ""
 
+#: lazarusidestrconsts:lisallowfunctio
+msgid "Allow Function Calls"
+msgstr ""
+
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
 msgstr ""
@@ -914,7 +938,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
-msgstr ""
+msgstr "Automaattisesti asennettavat komponenttipaketit"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
@@ -984,6 +1008,10 @@ msgstr ""
 msgid "Borderspace around the control. The other four borderspaces are added to this value."
 msgstr ""
 
+#: lazarusidestrconsts:lisbottom
+msgid "Bottom"
+msgstr ""
+
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
 msgstr ""
@@ -1003,6 +1031,10 @@ msgstr "Alareunat"
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket highlighting"
 msgstr "Sulkeiden korostaminen"
+
+#: lazarusidestrconsts:lisbreak
+msgid "Break"
+msgstr ""
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -1282,6 +1314,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecchar
 msgid "Char"
+msgstr ""
+
+#: lazarusidestrconsts:lischaracter
+msgid "Character"
 msgstr ""
 
 #: lazarusidestrconsts:lischaractermap
@@ -1796,6 +1832,10 @@ msgstr "Komponentin nimi (name) %s%s%s ei ole sallittu tunnus"
 msgid "Components"
 msgstr "Komponentit"
 
+#: lazarusidestrconsts:liscondition
+msgid "Condition"
+msgstr ""
+
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
 msgstr ""
@@ -1983,6 +2023,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
 msgstr "Kopioi"
+
+#: lazarusidestrconsts:liscopyall
+msgid "Copy All"
+msgstr ""
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2176,6 +2220,10 @@ msgstr "Luonti"
 msgid "Ctrl"
 msgstr ""
 
+#: lazarusidestrconsts:liscurrent
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
 msgstr ""
@@ -2324,6 +2372,10 @@ msgstr ""
 msgid "Debugging:"
 msgstr ""
 
+#: lazarusidestrconsts:lisdecimal
+msgid "Decimal"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
 msgstr ""
@@ -2360,6 +2412,10 @@ msgstr "Viive"
 msgid "Delete"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr ""
+
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
 msgstr ""
@@ -2376,12 +2432,28 @@ msgstr "Poista edellinen kirjain"
 msgid "Delete Old Package File?"
 msgstr ""
 
+#: lazarusidestrconsts:lisdeleteallbreakpoints2
+msgid "Delete all breakpoints in file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr ""
+
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr ""
 
 #: lazarusidestrconsts:lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeletebreakpointatline
+msgid "Delete breakpoint at%s\"%s\" line %d?"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecdeletechar
@@ -2544,6 +2616,10 @@ msgstr "Eroavuudet"
 msgid "Diff editor files"
 msgstr ""
 
+#: lazarusidestrconsts:lisdigits
+msgid "Digits:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
 msgstr "Suunta"
@@ -2571,6 +2647,18 @@ msgstr "Kansiota ei löytynyt"
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
 msgstr "Kansion lisäasetukset"
+
+#: lazarusidestrconsts:lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisablegroup
+msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisabled
+msgid "Disabled"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
@@ -2782,6 +2870,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablegroup
+msgid "Enable Group"
 msgstr ""
 
 #: lazarusidestrconsts:lisenablemacros
@@ -3092,6 +3188,10 @@ msgstr ""
 msgid "Expression"
 msgstr ""
 
+#: lazarusidestrconsts:lisexpression
+msgid "Expression:"
+msgstr ""
+
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Laajennetaanko käännösyksikön tiedostopolkua?"
@@ -3214,7 +3314,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilesettings
 msgid "File Settings ..."
-msgstr ""
+msgstr "Tiedoston asetukset ..."
 
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
@@ -3310,6 +3410,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangfilenameisusedbyproject
 msgid "Filename is used by project"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenameaddress
+msgid "Filename/Address"
 msgstr ""
 
 #: lazarusidestrconsts:lispefilename
@@ -3422,7 +3526,7 @@ msgstr "Etsi tai vaihda tunnisteiden nimiä"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
-msgstr ""
+msgstr "Mene koodilohkon toiseen päähän (begin <-> end)"
 
 #: lazarusidestrconsts:lisfpfindpalettecomponent
 msgid "Find palette component"
@@ -3463,6 +3567,10 @@ msgstr ""
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "LFM tiedoston korjaus"
+
+#: lazarusidestrconsts:lisfloatingpoin
+msgid "Floating Point"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -3539,6 +3647,10 @@ msgstr ""
 #: lazarusidestrconsts:rslanguagefrench
 msgid "French"
 msgstr "ranska"
+
+#: lazarusidestrconsts:lisfunction
+msgid "Function"
+msgstr ""
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3788,8 +3900,16 @@ msgstr "Apupisteiden väli X"
 msgid "Grid size Y"
 msgstr "Apupisteiden väli Y"
 
+#: lazarusidestrconsts:lisgroup
+msgid "Group"
+msgstr ""
+
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
+msgstr ""
+
+#: lazarusidestrconsts:lisgrowtolarges
+msgid "Grow to Largest"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
@@ -3883,6 +4003,10 @@ msgstr "Ohjevalikon komennot"
 #: lazarusidestrconsts:lishelpselectordialog
 msgid "Help selector"
 msgstr "Ohjeen valinta"
+
+#: lazarusidestrconsts:lishexadecimal
+msgid "Hexadecimal"
+msgstr ""
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4155,6 +4279,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
 msgstr "Sisennä valittu lohko"
+
+#: lazarusidestrconsts:lisindex
+msgid "Index"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
@@ -4458,7 +4586,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstallthepac2
 msgid "Installing the package %s will automatically install the packages:"
-msgstr ""
+msgstr "Asennettaessa komponettipaketti %s tullaan automaattisesti asentamaan paketit:"
 
 #: lazarusidestrconsts:lisdebugoptionsfrminterface
 msgid "Interface"
@@ -4470,6 +4598,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidoff
+msgid "Invalid (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidon
+msgid "Invalid (On)"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
@@ -5056,6 +5192,10 @@ msgstr "Rivin katkaisu"
 msgid "Line selection mode"
 msgstr ""
 
+#: lazarusidestrconsts:lislinelength
+msgid "Line/Length"
+msgstr ""
+
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
 msgstr "Rivit"
@@ -5118,6 +5258,10 @@ msgstr "Paikalliset"
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
+msgstr ""
+
+#: lazarusidestrconsts:lislocals
+msgid "Locals"
 msgstr ""
 
 #: lazarusidestrconsts:lislogo
@@ -5208,6 +5352,10 @@ msgstr "Valittujen komponenttien ilmaiseminen"
 msgid "Matches"
 msgstr "Löydetty"
 
+#: lazarusidestrconsts:lismaxs
+msgid "Max %d"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
 msgstr "Suurin rivinpituus:"
@@ -5235,6 +5383,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Suurin laskijanumero"
+
+#: lazarusidestrconsts:lismemorydump
+msgid "Memory Dump"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -5322,6 +5474,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listodolfile
 msgid "Module"
+msgstr ""
+
+#: lazarusidestrconsts:lismore
+msgid "More"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditmore
@@ -5740,6 +5896,10 @@ msgstr ""
 msgid "Not implemented yet"
 msgstr ""
 
+#: lazarusidestrconsts:lisnotimplementedyet2
+msgid "Not implemented yet."
+msgstr ""
+
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
 msgstr ""
@@ -5958,7 +6118,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk) ..."
-msgstr ""
+msgstr "Avataan komponenttipakettitiedosto (.lpk) ..."
 
 #: lazarusidestrconsts:lismenuopenpackageofcurunit
 msgid "Open package of current unit"
@@ -6304,6 +6464,10 @@ msgstr ""
 msgid "Pascal units must have the extension .pp or .pas"
 msgstr "Pascal:n käännösyksikön (unit) tiedostopääte on joko .pp tai .pas"
 
+#: lazarusidestrconsts:lispasscount
+msgid "Pass Count"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr ""
@@ -6411,6 +6575,10 @@ msgstr "Ole hyvä ja valitse ensin jokin koodin osa josta tehdään uusi aliohje
 #: lazarusidestrconsts:liscodetoolsoptspoint
 msgid "Point"
 msgstr "Piste (.)"
+
+#: lazarusidestrconsts:lispointer
+msgid "Pointer"
+msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
@@ -6764,6 +6932,10 @@ msgstr ""
 msgid "Recompile clean"
 msgstr ""
 
+#: lazarusidestrconsts:lisrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "Uudelleen"
@@ -6951,6 +7123,10 @@ msgstr "Uusi nimi on"
 #: lazarusidestrconsts:lisrenametolowercase
 msgid "Rename to lowercase"
 msgstr "Vaihda nimi pienillä kirjaimilla kirjoitetuksi"
+
+#: lazarusidestrconsts:lisrepeatcount
+msgid "Repeat Count:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7768,6 +7944,10 @@ msgstr ""
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgstr ""
 
+#: lazarusidestrconsts:lisshow
+msgid "Show"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
 msgstr ""
@@ -7954,6 +8134,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispldshowuserlinks
 msgid "Show user links"
+msgstr ""
+
+#: lazarusidestrconsts:lisshrinktosmal
+msgid "Shrink to smallest"
 msgstr ""
 
 #: lazarusidestrconsts:lissibling
@@ -8204,6 +8388,10 @@ msgstr ""
 msgid "Streaming error"
 msgstr ""
 
+#: lazarusidestrconsts:lisstring
+msgid "String"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
 msgstr ""
@@ -8218,6 +8406,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
+msgstr ""
+
+#: lazarusidestrconsts:lisstyle
+msgid "Style"
 msgstr ""
 
 #: lazarusidestrconsts:lissubprocedure
@@ -8842,7 +9034,7 @@ msgstr "Paketti  %s%s%s  on merkitty asennettavaksi.%sNykyinen lazarus tukee ain
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr ""
+msgstr "Komponenttipaketti %s%s%s oli merkitty.%sNykyinen Lazarus tukee ainoastaan staattisesti linkitettyjä komponenttipaketteja. komponenttipakettien poistaminen vatii Lazaruksen uudelleen rakentamisen ja käynnistämisen.%s%sTehdäänkö tämä nyt?"
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
 msgid "The package file name %s%s%s in%s%s%s%s is not a valid lazarus package name."
@@ -8982,7 +9174,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
 msgid "There are more functions in the popupmenu"
-msgstr ""
+msgstr "Lista lisätoiminnoista"
 
 #: lazarusidestrconsts:lissamtherearenoabstractmethodslefttooverride
 msgid "There are no abstract methods left to override."
@@ -9246,6 +9438,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
+msgstr ""
+
+#: lazarusidestrconsts:listop
+msgid "Top"
 msgstr ""
 
 #: lazarusidestrconsts:listopanchoring
@@ -9710,7 +9906,7 @@ msgstr "Poista lohkon sisennys"
 
 #: lazarusidestrconsts:lispckedituninstall
 msgid "Uninstall"
-msgstr ""
+msgstr "Poista asennuksesta"
 
 #: lazarusidestrconsts:lispckexpluninstallonnextstart
 msgid "Uninstall on next start"
@@ -10222,6 +10418,10 @@ msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
 #: lazarusidestrconsts:liswarningambiguousfilefoundsourcefileis
 msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:liswatchpropert
+msgid "Watch Properties"
 msgstr ""
 
 #: lazarusidestrconsts:liswlwatchlist

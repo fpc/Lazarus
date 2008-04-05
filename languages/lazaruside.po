@@ -11212,3 +11212,211 @@ msgstr ""
 msgid "File Settings ..."
 msgstr ""
 
+#: lazarusidestrconsts:lisshow
+msgid "Show"
+msgstr ""
+
+#: lazarusidestrconsts:liscurrent
+msgid "Current"
+msgstr ""
+
+#: lazarusidestrconsts:lismaxs
+msgid "Max %d"
+msgstr ""
+
+#: lazarusidestrconsts:lismore
+msgid "More"
+msgstr ""
+
+#: lazarusidestrconsts:listop
+msgid "Top"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottom
+msgid "Bottom"
+msgstr ""
+
+#: lazarusidestrconsts:liscopyall
+msgid "Copy All"
+msgstr ""
+
+#: lazarusidestrconsts:lisindex
+msgid "Index"
+msgstr ""
+
+#: lazarusidestrconsts:lisfunction
+msgid "Function"
+msgstr ""
+
+#: lazarusidestrconsts:lisfilenameaddress
+msgid "Filename/Address"
+msgstr ""
+
+#: lazarusidestrconsts:lislinelength
+msgid "Line/Length"
+msgstr ""
+
+#: lazarusidestrconsts:liscondition
+msgid "Condition"
+msgstr ""
+
+#: lazarusidestrconsts:lispasscount
+msgid "Pass Count"
+msgstr ""
+
+#: lazarusidestrconsts:lisgroup
+msgid "Group"
+msgstr ""
+
+#: lazarusidestrconsts:lissourcebreakpoint
+msgid "&Source breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableall
+msgid "&Enable All"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteall
+msgid "&Delete All"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr ""
+
+#: lazarusidestrconsts:lisnotimplementedyet2
+msgid "Not implemented yet."
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeletebreakpointatline
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr ""
+
+#: lazarusidestrconsts:lisdeleteallbreakpoints2
+msgid "Delete all breakpoints in file %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisbreak
+msgid "Break"
+msgstr ""
+
+#: lazarusidestrconsts:lisenablegroup
+msgid "Enable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisablegroup
+msgid "Disable Group"
+msgstr ""
+
+#: lazarusidestrconsts:lisdisabled
+msgid "Disabled"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidoff
+msgid "Invalid (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lisinvalidon
+msgid "Invalid (On)"
+msgstr ""
+
+#: lazarusidestrconsts:lisoff
+msgid "? (Off)"
+msgstr ""
+
+#: lazarusidestrconsts:lison
+msgid "? (On)"
+msgstr ""
+
+#: lazarusidestrconsts:lisshrinktosmal
+msgid "Shrink to smallest"
+msgstr ""
+
+#: lazarusidestrconsts:lisgrowtolarges
+msgid "Grow to Largest"
+msgstr ""
+
+#: lazarusidestrconsts:liswatchpropert
+msgid "Watch Properties"
+msgstr ""
+
+#: lazarusidestrconsts:lisexpression
+msgid "Expression:"
+msgstr ""
+
+#: lazarusidestrconsts:lisrepeatcount
+msgid "Repeat Count:"
+msgstr ""
+
+#: lazarusidestrconsts:lisdigits
+msgid "Digits:"
+msgstr ""
+
+#: lazarusidestrconsts:lisallowfunctio
+msgid "Allow Function Calls"
+msgstr ""
+
+#: lazarusidestrconsts:lisstyle
+msgid "Style"
+msgstr ""
+
+#: lazarusidestrconsts:lischaracter
+msgid "Character"
+msgstr ""
+
+#: lazarusidestrconsts:lisstring
+msgid "String"
+msgstr ""
+
+#: lazarusidestrconsts:lisdecimal
+msgid "Decimal"
+msgstr ""
+
+#: lazarusidestrconsts:lishexadecimal
+msgid "Hexadecimal"
+msgstr ""
+
+#: lazarusidestrconsts:lisfloatingpoin
+msgid "Floating Point"
+msgstr ""
+
+#: lazarusidestrconsts:lispointer
+msgid "Pointer"
+msgstr ""
+
+#: lazarusidestrconsts:lisrecordstruct
+msgid "Record/Structure"
+msgstr ""
+
+#: lazarusidestrconsts:lismemorydump
+msgid "Memory Dump"
+msgstr ""
+
+#: lazarusidestrconsts:lislocals
+msgid "Locals"
+msgstr ""
+
+#: lazarusidestrconsts:lislocalsdlgname
+msgid "Name"
+msgstr ""
+
+#: lazarusidestrconsts:lislocalsdlgvalue
+msgid "Value"
+msgstr ""
+
