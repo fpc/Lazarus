@@ -1,4 +1,8 @@
+#   File generated automatically by Lazarus Package Manager
+#
 #   Makefile.fpc for CGILazIDE 0.0
+#
+#   This file was generated on 31-3-2008
 
 [package]
 name=cgilazide
@@ -6,7 +10,7 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../lib/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+unitdir=../lib/$(CPU_TARGET)-$(OS_TARGET)/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 

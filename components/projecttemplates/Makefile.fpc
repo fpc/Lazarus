@@ -1,11 +1,15 @@
+#   File generated automatically by Lazarus Package Manager
+#
 #   Makefile.fpc for ProjTemplates 1.0
+#
+#   This file was generated on 5-4-2008
 
 [package]
 name=projtemplates
 version=1.0
 
 [compiler]
-unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 unitdir=../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
 includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
