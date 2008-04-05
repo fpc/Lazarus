@@ -65,10 +65,12 @@ type
     SaveAndExitButton: TButton;
     UninstallButton: TButton;
     procedure AddToInstallButtonClick(Sender: TObject);
+    procedure AvailableListBoxDblClick(Sender: TObject);
     procedure AvailableListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ExportButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
     procedure InstallButtonClick(Sender: TObject);
+    procedure InstallListBoxDblClick(Sender: TObject);
     procedure InstallListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
     procedure InstallPkgSetDialogDestroy(Sender: TObject);
@@ -97,6 +99,8 @@ type
     function IndexOfNewInstalledPkgByName(const APackageName: string): integer;
     procedure SavePackageListToFile(const AFilename: string);
     procedure LoadPackageListFromFile(const AFilename: string);
+    procedure AddToInstall;
+    procedure AddToUninstall;
   public
     function GetNewInstalledPackages: TFPList;
     property OldInstalledPackages: TPkgDependency read FOldInstalledPackages
@@ -164,6 +168,11 @@ begin
   ModalResult:=mrOk;
 end;
 
+procedure TInstallPkgSetDialog.InstallListBoxDblClick(Sender: TObject);
+begin
+  AddToUninstall;
+end;
+
 procedure TInstallPkgSetDialog.AvailableListBoxSelectionChange(Sender: TObject;
   User: boolean);
 begin
@@ -216,73 +225,13 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.AddToInstallButtonClick(Sender: TObject);
-var
-  i: Integer;
-  NewPackageID: TLazPackageID;
-  j: LongInt;
-  APackage: TLazPackage;
-  Additions: TFPList;
 begin
-  Additions:=TFPList.Create;
-  NewPackageID:=TLazPackageID.Create;
-  try
-    for i:=0 to AvailableListBox.Items.Count-1 do begin
-      if not AvailableListBox.Selected[i] then continue;
-      // check string
-      if not NewPackageID.StringToID(AvailableListBox.Items[i]) then begin
-        AvailableListBox.Selected[i]:=false;
-        debugln('TInstallPkgSetDialog.AddToInstallButtonClick invalid ID: ',
-                AvailableListBox.Items[i]);
-        continue;
-      end;
-      // check if already in list
-      if NewInstalledPackagesContains(NewPackageID) then begin
-        MessageDlg('Double',
-          'The package '+NewPackageID.Name+' is already in the list',mtError,
-          [mbCancel],0);
-        AvailableListBox.Selected[i]:=false;
-        exit;
-      end;
-      // check if a package with same name is already in the list
-      j:=IndexOfNewInstalledPkgByName(NewPackageID.Name);
-      if j>=0 then begin
-        MessageDlg('Conflict',
-          'There is already a package '+NewPackageID.Name+' in the list',
-          mtError,[mbCancel],0);
-        AvailableListBox.Selected[i]:=false;
-        exit;
-      end;
-      // check if package is loaded and has some attributes that prevents
-      // installation in the IDE
-      APackage:=PackageGraph.FindPackageWithID(NewPackageID);
-      if APackage<>nil then begin
-        if APackage.PackageType=lptRunTime then begin
-          MessageDlg('Not a designtime package',
-            'The package '+APackage.IDAsString+' is not a design time package.'
-            +' It can not be installed in the IDE',mtError,
-            [mbCancel],0);
-          AvailableListBox.Selected[i]:=false;
-          exit;
-        end;
-      end;
-      // ok => add to list
-      Additions.Add(NewPackageID);
-      NewPackageID:=TLazPackageID.Create;
-    end;
-    AvailableListBox.ItemIndex:=-1;
-    // all ok => add to list
-    for i:=0 to Additions.Count-1 do
-      FNewInstalledPackages.Add(Additions[i]);
-    Additions.Clear;
-    UpdateNewInstalledPackages;
-    UpdateButtonStates;
-  finally
-    // clean up
-    NewPackageID.Free;
-    for i:=0 to Additions.Count-1 do
-      TObject(Additions[i]).Free;
-    Additions.Free;
-  end;
+  AddToInstall;
+end;
+
+procedure TInstallPkgSetDialog.AvailableListBoxDblClick(Sender: TObject);
+begin
+  AddToInstall;
 end;
 
 procedure TInstallPkgSetDialog.InstallListBoxSelectionChange(Sender: TObject;
@@ -318,44 +267,8 @@ begin
 end;
 
 procedure TInstallPkgSetDialog.UninstallButtonClick(Sender: TObject);
-var
-  i: Integer;
-  OldPackageID: TLazPackageID;
-  APackage: TLazPackage;
-  Deletions: TFPList;
 begin
-  Deletions:=TFPList.Create;
-  try
-    for i:=0 to InstallListBox.Items.Count-1 do begin
-      if not InstallListBox.Selected[i] then continue;
-      OldPackageID:=TLazPackageID(FNewInstalledPackages[i]);
-      // get package
-      APackage:=PackageGraph.FindPackageWithID(OldPackageID);
-      if APackage<>nil then begin
-        // check if package is a base package
-        if APackage.AutoCreated then begin
-          InstallListBox.Selected[i]:=false;
-          MessageDlg('Uninstall impossible',
-            'The package '+APackage.Name+' can not be uninstalled, because it '
-            +'is needed by the IDE itself.',mtError,[mbCancel],0);
-          exit;
-        end;
-      end;
-      // ok => add to deletions
-      Deletions.Add(OldPackageID);
-    end;
-    // ok => remove from list
-    InstallListBox.ItemIndex:=-1;
-    for i:=0 to Deletions.Count-1 do begin
-      OldPackageID:=TLazPackageID(Deletions[i]);
-      FNewInstalledPackages.Remove(OldPackageID);
-      OldPackageID.Free;
-    end;
-    UpdateNewInstalledPackages;
-    UpdateButtonStates;
-  finally
-    Deletions.Free;
-  end;
+  AddToUninstall;
 end;
 
 procedure TInstallPkgSetDialog.SetOldInstalledPackages(
@@ -682,6 +595,117 @@ begin
         Format(lisErrorReadingPackageListFromFile, [#13, AFilename, #13,
           E.Message]), mtError, [mbCancel], 0);
     end;
+  end;
+end;
+
+procedure TInstallPkgSetDialog.AddToInstall;
+var
+  i: Integer;
+  NewPackageID: TLazPackageID;
+  j: LongInt;
+  APackage: TLazPackage;
+  Additions: TFPList;
+begin
+  Additions:=TFPList.Create;
+  NewPackageID:=TLazPackageID.Create;
+  try
+    for i:=0 to AvailableListBox.Items.Count-1 do begin
+      if not AvailableListBox.Selected[i] then continue;
+      // check string
+      if not NewPackageID.StringToID(AvailableListBox.Items[i]) then begin
+        AvailableListBox.Selected[i]:=false;
+        debugln('TInstallPkgSetDialog.AddToInstallButtonClick invalid ID: ',
+                AvailableListBox.Items[i]);
+        continue;
+      end;
+      // check if already in list
+      if NewInstalledPackagesContains(NewPackageID) then begin
+        MessageDlg('Double',
+          'The package '+NewPackageID.Name+' is already in the list',mtError,
+          [mbCancel],0);
+        AvailableListBox.Selected[i]:=false;
+        exit;
+      end;
+      // check if a package with same name is already in the list
+      j:=IndexOfNewInstalledPkgByName(NewPackageID.Name);
+      if j>=0 then begin
+        MessageDlg('Conflict',
+          'There is already a package '+NewPackageID.Name+' in the list',
+          mtError,[mbCancel],0);
+        AvailableListBox.Selected[i]:=false;
+        exit;
+      end;
+      // check if package is loaded and has some attributes that prevents
+      // installation in the IDE
+      APackage:=PackageGraph.FindPackageWithID(NewPackageID);
+      if APackage<>nil then begin
+        if APackage.PackageType=lptRunTime then begin
+          MessageDlg('Not a designtime package',
+            'The package '+APackage.IDAsString+' is not a design time package.'
+            +' It can not be installed in the IDE',mtError,
+            [mbCancel],0);
+          AvailableListBox.Selected[i]:=false;
+          exit;
+        end;
+      end;
+      // ok => add to list
+      Additions.Add(NewPackageID);
+      NewPackageID:=TLazPackageID.Create;
+    end;
+    AvailableListBox.ItemIndex:=-1;
+    // all ok => add to list
+    for i:=0 to Additions.Count-1 do
+      FNewInstalledPackages.Add(Additions[i]);
+    Additions.Clear;
+    UpdateNewInstalledPackages;
+    UpdateButtonStates;
+  finally
+    // clean up
+    NewPackageID.Free;
+    for i:=0 to Additions.Count-1 do
+      TObject(Additions[i]).Free;
+    Additions.Free;
+  end;
+end;
+
+procedure TInstallPkgSetDialog.AddToUninstall;
+var
+  i: Integer;
+  OldPackageID: TLazPackageID;
+  APackage: TLazPackage;
+  Deletions: TFPList;
+begin
+  Deletions:=TFPList.Create;
+  try
+    for i:=0 to InstallListBox.Items.Count-1 do begin
+      if not InstallListBox.Selected[i] then continue;
+      OldPackageID:=TLazPackageID(FNewInstalledPackages[i]);
+      // get package
+      APackage:=PackageGraph.FindPackageWithID(OldPackageID);
+      if APackage<>nil then begin
+        // check if package is a base package
+        if APackage.AutoCreated then begin
+          InstallListBox.Selected[i]:=false;
+          MessageDlg('Uninstall impossible',
+            'The package '+APackage.Name+' can not be uninstalled, because it '
+            +'is needed by the IDE itself.',mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+      // ok => add to deletions
+      Deletions.Add(OldPackageID);
+    end;
+    // ok => remove from list
+    InstallListBox.ItemIndex:=-1;
+    for i:=0 to Deletions.Count-1 do begin
+      OldPackageID:=TLazPackageID(Deletions[i]);
+      FNewInstalledPackages.Remove(OldPackageID);
+      OldPackageID.Free;
+    end;
+    UpdateNewInstalledPackages;
+    UpdateButtonStates;
+  finally
+    Deletions.Free;
   end;
 end;
 
