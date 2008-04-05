@@ -10,6 +10,7 @@ object MainForm: TMainForm
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = MainFormCreate
+  LCLVersion = '0.9.25'
   object IpHtmlPanel1: TIpHtmlPanel
     Height = 285
     Top = 42
@@ -17,6 +18,7 @@ object MainForm: TMainForm
     Align = alClient
     FixedTypeface = 'Courier New'
     DefaultTypeFace = 'default'
+    DefaultFontSize = 12
     PrintSettings.MarginLeft = 0.5
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
@@ -52,7 +54,6 @@ object MainForm: TMainForm
     end
   end
   object OpenDialog1: TOpenDialog
-    Title = 'Open existing file'
     Filter = 'Web Pages|*.html;*.htm'
     FilterIndex = 0
     left = 26

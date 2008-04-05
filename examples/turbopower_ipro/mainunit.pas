@@ -9,9 +9,6 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  {$ifdef UseJPEG}
-  LazJpeg,
-  {$endif}
   {$ifdef UsePreview}
   OsPrinters,
   {$endif}
