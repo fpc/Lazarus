@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, LMessages, Clipbrd, LCLType, Windows;
+  StdCtrls, LMessages, Clipbrd, LCLType;
 
 const
   { Mask Type }
@@ -83,12 +83,12 @@ type
 
     procedure SetMask(Value : String);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
-    procedure CMEnter(var Message: TMessage); message CM_ENTER;
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
+    procedure CMEnter(var Message: TLMessage); message CM_ENTER;
     procedure LMMButtonUp(var Message: TLMMButtonDown); message LM_MBUTTONUP;
-    procedure LMPasteFromClip(var Message: TMessage); message LM_PASTE;
-    procedure LMCutToClip(var Message: TMessage); message LM_CUT;
-    procedure LMClearSel(var Message : TMessage); message LM_CLEAR;
+    procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
+    procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
+    procedure LMClearSel(var Message : TLMessage); message LM_CLEAR;
     function  ClearChar(Position : Integer) : Char;
     procedure SetCursor;
     function  GetIsMasked : Boolean;
@@ -190,13 +190,13 @@ begin
 end;
 
 // Respond to Clear message
-procedure TCustomMaskEdit.LMClearSel(var Message: TMessage);
+procedure TCustomMaskEdit.LMClearSel(var Message: TLMessage);
 begin
   if Not SearchDeletedText then inherited;
 end;
 
 // Respond to Cut message
-procedure TCustomMaskEdit.LMCutToClip(var Message: TMessage);
+procedure TCustomMaskEdit.LMCutToClip(var Message: TLMessage);
 begin
   if Not SearchDeletedText then inherited;
 end;
@@ -259,7 +259,7 @@ begin
 end;
 
 // Respond to Paste message
-procedure TCustomMaskEdit.LMPasteFromClip(var Message: TMessage);
+procedure TCustomMaskEdit.LMPasteFromClip(var Message: TLMessage);
 Var
   NewText : String;
 begin
@@ -371,7 +371,7 @@ begin
 end;
 
 // Respond to Enter message
-procedure TCustomMaskEdit.CMEnter(var Message: TMessage);
+procedure TCustomMaskEdit.CMEnter(var Message: TLMessage);
 begin
   InHerited;
 
@@ -422,13 +422,13 @@ End;
 // Get the current selection
 procedure TCustomMaskEdit.GetSel(var _SelStart: Integer; var _SelStop: Integer);
 begin
-  SendMessage(Handle, EM_GETSEL, Integer(@_SelStart), Integer(@_SelStop));
+//  SendMessage(Handle, EM_GETSEL, Integer(@_SelStart), Integer(@_SelStop));
 end;
 
 // Set the current selection
 procedure TCustomMaskEdit.SetSel(_SelStart: Integer; _SelStop: Integer);
 begin
-  SendMessage(Handle, EM_SETSEL, _SelStart, _SelStop);
+//  SendMessage(Handle, EM_SETSEL, _SelStart, _SelStop);
 end;
 
 procedure TCustomMaskEdit.ValidateEdit;
@@ -437,7 +437,7 @@ begin
 end;
 
 // Respond to Text Changed message
-procedure TCustomMaskEdit.CMTextChanged(var Message: TMessage);
+procedure TCustomMaskEdit.CMTextChanged(var Message: TLMessage);
 begin
   InHerited;
 
