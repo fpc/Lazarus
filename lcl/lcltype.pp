@@ -2582,9 +2582,6 @@ type
 function CS_To_String(CompStyle: Integer): String;
 // key mapping
 
-type
-  TShortCut = Low(Word)..High(Word);   {should be moved to classes}
-
 function HiWord(i: integer): word;
 function LoWord(i: integer): word;
 function Char2VK(C : Char) : Word;

@@ -40,6 +40,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
+  Classes,
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
