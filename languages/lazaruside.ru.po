@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-14 01:32+0300\n"
+"PO-Revision-Date: 2008-04-06 02:35+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -203,7 +203,7 @@ msgstr "&Удалить"
 
 #: lazarusidestrconsts:lisdeleteall
 msgid "&Delete All"
-msgstr ""
+msgstr "&Удалить все"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
@@ -211,7 +211,7 @@ msgstr "&Правка"
 
 #: lazarusidestrconsts:lisenableall
 msgid "&Enable All"
-msgstr ""
+msgstr "&Включить все"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -323,7 +323,7 @@ msgstr "&Установить закладку"
 
 #: lazarusidestrconsts:lissourcebreakpoint
 msgid "&Source breakpoint"
-msgstr ""
+msgstr "&Точка останова в исходном коде"
 
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
@@ -399,11 +399,11 @@ msgstr "<Не выбрано переменных>"
 
 #: lazarusidestrconsts:lisoff
 msgid "? (Off)"
-msgstr ""
+msgstr "? (Выкл.)"
 
 #: lazarusidestrconsts:lison
 msgid "? (On)"
-msgstr ""
+msgstr "? (Вкл.)"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
@@ -707,7 +707,7 @@ msgstr "Все тесты прошли успешно."
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
-msgstr ""
+msgstr "Разрешить вызовы функций"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -963,7 +963,7 @@ msgstr "Назад"
 
 #: lazarusidestrconsts:fdmorderbackone
 msgid "Back one"
-msgstr "Один назад"
+msgstr "На один назад"
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background"
@@ -1015,7 +1015,7 @@ msgstr "Зазор вокруг компонента. Остальные чет�
 
 #: lazarusidestrconsts:lisbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Вниз"
 
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
@@ -1039,7 +1039,7 @@ msgstr "Подсветка скобок"
 
 #: lazarusidestrconsts:lisbreak
 msgid "Break"
-msgstr ""
+msgstr "Останов"
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -1323,7 +1323,7 @@ msgstr "Символ"
 
 #: lazarusidestrconsts:lischaracter
 msgid "Character"
-msgstr ""
+msgstr "Символ"
 
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
@@ -1839,7 +1839,7 @@ msgstr "Компоненты"
 
 #: lazarusidestrconsts:liscondition
 msgid "Condition"
-msgstr ""
+msgstr "Условие"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
@@ -2031,7 +2031,7 @@ msgstr "Копировать"
 
 #: lazarusidestrconsts:liscopyall
 msgid "Copy All"
-msgstr ""
+msgstr "Копировать все"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2227,7 +2227,7 @@ msgstr "Ctrl"
 
 #: lazarusidestrconsts:liscurrent
 msgid "Current"
-msgstr ""
+msgstr "Текущий"
 
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
@@ -2379,7 +2379,7 @@ msgstr "Отладка"
 
 #: lazarusidestrconsts:lisdecimal
 msgid "Decimal"
-msgstr ""
+msgstr "Десятичное"
 
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
@@ -2419,7 +2419,7 @@ msgstr "Удалить"
 
 #: lazarusidestrconsts:lisdeleteallinsamesource
 msgid "Delete All in same source"
-msgstr ""
+msgstr "Удалить все в том же файле исходного кода"
 
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
@@ -2439,15 +2439,15 @@ msgstr "Удалить старый файл пакета?"
 
 #: lazarusidestrconsts:lisdeleteallbreakpoints2
 msgid "Delete all breakpoints in file %s%s%s?"
-msgstr ""
+msgstr "Удалить все точки останова в файле %s%s%s?"
 
 #: lazarusidestrconsts:lisdeleteallbreakpoints
 msgid "Delete all breakpoints?"
-msgstr ""
+msgstr "Удалить все точки останова?"
 
 #: lazarusidestrconsts:lisdeleteallselectedbreakpoints
 msgid "Delete all selected breakpoints?"
-msgstr ""
+msgstr "Удалить все выбранные точки останова?"
 
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
@@ -2459,7 +2459,7 @@ msgstr "Удалить файл с подобным именем?"
 
 #: lazarusidestrconsts:lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr ""
+msgstr "Удалить точку останова в%s\"%s\" на строке %d?"
 
 #: lazarusidestrconsts:srkmecdeletechar
 msgid "Delete char at cursor"
@@ -2623,7 +2623,7 @@ msgstr "Сравнить открытые в редакторе файлы"
 
 #: lazarusidestrconsts:lisdigits
 msgid "Digits:"
-msgstr ""
+msgstr "Разряды:"
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2655,15 +2655,15 @@ msgstr "Параметры каталогов"
 
 #: lazarusidestrconsts:lisdisableallinsamesource
 msgid "Disable All in same source"
-msgstr ""
+msgstr "Отключить все в том же файле исходного кода"
 
 #: lazarusidestrconsts:lisdisablegroup
 msgid "Disable Group"
-msgstr ""
+msgstr "Отключить группу"
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
-msgstr ""
+msgstr "Отключено"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
@@ -2879,11 +2879,11 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
-msgstr ""
+msgstr "Включить все в том же файле исходного кода"
 
 #: lazarusidestrconsts:lisenablegroup
 msgid "Enable Group"
-msgstr ""
+msgstr "Включить группу"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
@@ -3195,7 +3195,7 @@ msgstr "Выражение"
 
 #: lazarusidestrconsts:lisexpression
 msgid "Expression:"
-msgstr ""
+msgstr "Выражение:"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -3419,7 +3419,7 @@ msgstr "Имя файла использовано проектом"
 
 #: lazarusidestrconsts:lisfilenameaddress
 msgid "Filename/Address"
-msgstr ""
+msgstr "Имя файла/Адрес"
 
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
@@ -3575,7 +3575,7 @@ msgstr "Исправить файл LFM"
 
 #: lazarusidestrconsts:lisfloatingpoin
 msgid "Floating Point"
-msgstr ""
+msgstr "С плавающей точкой"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -3631,7 +3631,7 @@ msgstr "Найти следующее"
 
 #: lazarusidestrconsts:fdmorderforwardone
 msgid "Forward one"
-msgstr "Один вперёд"
+msgstr "На один вперёд"
 
 #: lazarusidestrconsts:lisfreepascalcompilernotfound
 msgid "Free Pascal Compiler not found"
@@ -3655,7 +3655,7 @@ msgstr "Французский"
 
 #: lazarusidestrconsts:lisfunction
 msgid "Function"
-msgstr ""
+msgstr "Функция"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3731,7 +3731,7 @@ msgstr "Принять позицию"
 
 #: lazarusidestrconsts:lispldglobal
 msgid "Global"
-msgstr ""
+msgstr "Глобальные"
 
 #: lazarusidestrconsts:lisedtdefglobalsourcepathaddition
 msgid "Global Source Path addition"
@@ -3907,7 +3907,7 @@ msgstr "Размер Y сетки"
 
 #: lazarusidestrconsts:lisgroup
 msgid "Group"
-msgstr ""
+msgstr "Группа"
 
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
@@ -3915,7 +3915,7 @@ msgstr "Групповая отмена"
 
 #: lazarusidestrconsts:lisgrowtolarges
 msgid "Grow to Largest"
-msgstr ""
+msgstr "Увеличить до наибольшего"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -4011,7 +4011,7 @@ msgstr "Выбор справки..."
 
 #: lazarusidestrconsts:lishexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Шестнадцатеричное"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4287,7 +4287,7 @@ msgstr "Сдвинуть блок вправо"
 
 #: lazarusidestrconsts:lisindex
 msgid "Index"
-msgstr ""
+msgstr "Индекс"
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
@@ -4551,11 +4551,11 @@ msgstr "Вставить тег форматирования для var"
 
 #: lazarusidestrconsts:liskminspect
 msgid "Inspect"
-msgstr "Проверить"
+msgstr "Просмотреть"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
-msgstr "Следить за ..."
+msgstr "Просмотреть ..."
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -4607,11 +4607,11 @@ msgstr "Интервал в сек"
 
 #: lazarusidestrconsts:lisinvalidoff
 msgid "Invalid (Off)"
-msgstr ""
+msgstr "Неверная (Выкл.)"
 
 #: lazarusidestrconsts:lisinvalidon
 msgid "Invalid (On)"
-msgstr ""
+msgstr "Неверная (Вкл.)"
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -5199,7 +5199,7 @@ msgstr "Режим выбора строк"
 
 #: lazarusidestrconsts:lislinelength
 msgid "Line/Length"
-msgstr ""
+msgstr "Строка/Длина"
 
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
@@ -5267,7 +5267,7 @@ msgstr "Локальные переменные"
 
 #: lazarusidestrconsts:lislocals
 msgid "Locals"
-msgstr ""
+msgstr "Локальные"
 
 #: lazarusidestrconsts:lislogo
 msgid "Logo"
@@ -5359,7 +5359,7 @@ msgstr "Соответствия"
 
 #: lazarusidestrconsts:lismaxs
 msgid "Max %d"
-msgstr ""
+msgstr "Макс. %d"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
@@ -5391,7 +5391,7 @@ msgstr "Максимальный счетчик"
 
 #: lazarusidestrconsts:lismemorydump
 msgid "Memory Dump"
-msgstr ""
+msgstr "Дамп памяти"
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -5483,7 +5483,7 @@ msgstr "Модуль"
 
 #: lazarusidestrconsts:lismore
 msgid "More"
-msgstr ""
+msgstr "Больше"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -5903,7 +5903,7 @@ msgstr "Еще не реализовано"
 
 #: lazarusidestrconsts:lisnotimplementedyet2
 msgid "Not implemented yet."
-msgstr ""
+msgstr "Еще не реализовано."
 
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
@@ -6471,7 +6471,7 @@ msgstr "Модули Паскаля должны иметь расширение
 
 #: lazarusidestrconsts:lispasscount
 msgid "Pass Count"
-msgstr ""
+msgstr "Число проходов"
 
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
@@ -6583,7 +6583,7 @@ msgstr "Точка"
 
 #: lazarusidestrconsts:lispointer
 msgid "Pointer"
-msgstr ""
+msgstr "Указатель"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
@@ -6939,7 +6939,7 @@ msgstr "Чистая пересборка"
 
 #: lazarusidestrconsts:lisrecordstruct
 msgid "Record/Structure"
-msgstr ""
+msgstr "Запись/Структура"
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
@@ -7131,7 +7131,7 @@ msgstr "Преобразовать в нижний регистр"
 
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
-msgstr ""
+msgstr "Число повторов:"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7951,7 +7951,7 @@ msgstr "Должен ли файл быть переименован в нижн
 
 #: lazarusidestrconsts:lisshow
 msgid "Show"
-msgstr ""
+msgstr "Показать"
 
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
@@ -8143,7 +8143,7 @@ msgstr "Показывать пользовательские ссылки"
 
 #: lazarusidestrconsts:lisshrinktosmal
 msgid "Shrink to smallest"
-msgstr ""
+msgstr "Сжать до наименьшего"
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8395,7 +8395,7 @@ msgstr "Ошибка потоков"
 
 #: lazarusidestrconsts:lisstring
 msgid "String"
-msgstr ""
+msgstr "Строка"
 
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
@@ -8415,7 +8415,7 @@ msgstr "Вырезать символы из бинарника"
 
 #: lazarusidestrconsts:lisstyle
 msgid "Style"
-msgstr ""
+msgstr "Стиль"
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
@@ -9447,7 +9447,7 @@ msgstr "Всплывающие подсказки для идентификат�
 
 #: lazarusidestrconsts:listop
 msgid "Top"
-msgstr ""
+msgstr "Вверх"
 
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
@@ -10427,7 +10427,7 @@ msgstr "Предупреждение: найден двусмысленный ф
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"
-msgstr ""
+msgstr "Наблюдение за свойствами"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
@@ -10703,7 +10703,7 @@ msgstr "путь включаемых"
 
 #: lazarusidestrconsts:srkmecinspect
 msgid "inspect"
-msgstr "проверить"
+msgstr "просмотреть"
 
 #: lazarusidestrconsts:lisoipinstalleddynamic
 msgid "installed dynamic"

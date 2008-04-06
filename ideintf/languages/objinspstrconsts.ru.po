@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-10 00:45+0300\n"
+"PO-Revision-Date: 2008-04-06 01:53+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -703,7 +703,7 @@ msgstr "Названия панелей"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Редактор панелей..."
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -795,7 +795,7 @@ msgstr "Сохранить..."
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "Редактор секций..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
