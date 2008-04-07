@@ -386,7 +386,11 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.IntfSendsUTF8KeyPress: boolean;
 begin
-  Result := UnicodeEnabledOS;
+  {$ifdef WindowsUnicodeSupport}
+  Result := true;
+  {$else}
+  Result := false;
+  {$endif}
 end;
 
 function TWin32WidgetSet.LoadStockPixmap(StockID: longint; var Mask: HBitmap): HBitmap;

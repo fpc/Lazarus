@@ -1216,6 +1216,7 @@ begin
     end;
     WM_CHAR:
     begin
+      {$ifdef WindowsUnicodeSupport}
       // first send a IntfUTF8KeyPress to the LCL
       // if the key was not handled send a CN_CHAR for AnsiChar<=#127
       if not HandleUnicodeChar(Word(WParam)) and (WParam<=127) then
@@ -1229,9 +1230,25 @@ begin
           Result := 0;
           Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         end;
-      end;
+        WinProcess := false;
+      end
+      else
+        WinProcess := true;
 
+      {$else}
+      // first send a IntfUTF8KeyPress to the LCL
+      // if the key was not handled send a CN_CHAR for AnsiChar<=#127
+      PLMsg:=@LMChar;
+      with LMChar do
+      begin
+        Msg := CN_CHAR;
+        KeyData := LParam;
+        CharCode := Word(WParam);
+        Result := 0;
+        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+      end;
       WinProcess := false;
+      {$endif}
     end;
 
     WM_MENUCHAR:
