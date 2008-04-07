@@ -44,7 +44,7 @@ end;
 function GetHintControl(Control: TControl): TControl;
 begin
   Result := Control;
-  while (Result <> nil) and (not (Result.ShowHint and Result.Enabled)) do
+  while (Result <> nil) and (not Result.ShowHint) do
     Result := Result.Parent;
   if (Result <> nil)
   and ([csDesigning,csDestroying,csLoading]*Result.ComponentState<>[]) then
@@ -55,7 +55,7 @@ function GetHintInfoAtMouse: THintInfoAtMouse;
 begin
   if Mouse<>nil then begin
     Result.MousePos:=Mouse.CursorPos;
-    Result.Control:=GetHintControl(FindLCLControl(Result.MousePos));
+    Result.Control:=GetHintControl(FindControlAtPosition(Result.MousePos, True));
     Result.ControlHasHint:=
       (Result.Control<>nil)
       and (Application<>nil) and (Application.ShowHint)
