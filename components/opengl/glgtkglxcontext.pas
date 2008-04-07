@@ -338,7 +338,7 @@ end;
 
 function gdk_gl_query: boolean;
 begin
-  Result:=boolean(glXQueryExtension(GetDefaultXDisplay,nil,nil)=true);
+  Result:=boolean(glXQueryExtension(GetDefaultXDisplay,nil,nil){$IFDEF VER2_2}=true{$ENDIF});
 end;
 
 function gdk_gl_choose_visual(attrlist: Plongint): PGdkVisual;
@@ -420,9 +420,9 @@ begin
   PrivateShareList:=PGdkGLContextPrivate(sharelist);
   if (sharelist<>nil) then
     glxcontext := glXCreateContext(dpy, vi, PrivateShareList^.glxcontext,
-                                   direct=1)
+                                   direct{$ifdef ver2_2}=1{$endif})
   else
-    glxcontext := glXCreateContext(dpy, vi, nil, direct=1);
+    glxcontext := glXCreateContext(dpy, vi, nil, direct{$ifdef ver2_2}=1{$endif});
 
   XFree(vi);
   if (glxcontext = nil) then exit;
@@ -500,7 +500,8 @@ begin
                                  {$ELSE}
                                  GDK_WINDOW_XWINDOW(drawable),
                                  {$ENDIF}
-                                 PrivateContext^.glxcontext)=true);
+                                 PrivateContext^.glxcontext)
+                                 {$IFDEF VER2_2}=true{$ENDIF});
 end;
 
 procedure gdk_gl_swap_buffers(drawable: PGdkDrawable);
