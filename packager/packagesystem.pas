@@ -1452,6 +1452,7 @@ begin
 
     // add units
     AddFile('basiccodetools.pas','BasicCodeTools',pftUnit,[],cpBase);
+    AddFile('ccodeparsertool.pas','CCodeParserTool',pftUnit,[],cpBase);
     AddFile('codeatom.pas','CodeAtom',pftUnit,[],cpBase);
     AddFile('codebeautifier.pas','CodeBeautifier',pftUnit,[],cpBase);
     AddFile('codecache.pas','CodeCache',pftUnit,[],cpBase);
