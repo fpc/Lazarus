@@ -40,22 +40,25 @@ end;
 
 procedure TTestBug8432.Test_itu4_1;
 var
+  Key: Integer;
   AInt: Integer;
 begin
   FMap:=TMap.Create(itu4,SizeOf(Integer));
   with FMap do
   begin
-    AInt:=10;
-    Add(1,AInt);
-    AInt:=20;
-    Add(2,AInt);
-    AInt:=30;
-    Add(3,AInt);
-    GetData(1,AInt);
+    for Key := 1 to 3 do
+    begin
+      AInt:=Key* 10;
+      Add(Key,AInt);
+    end;
+    Key := 1;
+    GetData(Key,AInt);
     AssertEquals('Wrong entry for 1', 10, AInt);
-    GetData(2,AInt);
+    Key := 2;
+    GetData(Key,AInt);
     AssertEquals('Wrong entry for 2', 20, AInt);
-    GetData(3,AInt);
+    Key := 3;
+    GetData(Key,AInt);
     AssertEquals('Wrong entry for 3', 30, AInt);
   end;
 end;

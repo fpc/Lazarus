@@ -2,7 +2,7 @@
 <CONFIG>
   <ProjectOptions>
     <PathDelim Value="\"/>
-    <Version Value="5"/>
+    <Version Value="6"/>
     <General>
       <SessionStorage Value="InIDEConfig"/>
       <MainUnit Value="0"/>
@@ -23,13 +23,13 @@
     </RunParams>
     <RequiredPackages Count="3">
       <Item1>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item1>
       <Item2>
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
     <Units Count="4">
