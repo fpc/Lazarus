@@ -271,7 +271,7 @@ end;
 
 procedure TMRUManager.Add(const RecentName: string; UserData: Longint);
 begin
-  FList.AddObject(RecentName, TObject(UserData));
+  FList.AddObject(RecentName, TObject(PtrInt(UserData)));
 end;
 
 procedure TMRUManager.Clear;
@@ -359,7 +359,7 @@ begin
         AddMenuItem(NewLine);
       S := FList[I];
       ShortCut := scNone;
-      GetItemData(S, ShortCut, Longint(FList.Objects[I]));
+      GetItemData(S, ShortCut, Longint(PtrInt(FList.Objects[I])));
       Item := NewItem(GetShortHint(S), ShortCut, False, True,
         @MenuItemClick, 0, '');
       Item.Hint := GetLongHint(S);
@@ -495,7 +495,7 @@ var
 begin
   Ini.EraseSection(Section);
   for I := 0 to FList.Count - 1 do
-    DoWriteItem(Ini, Section, I, FList[I], Longint(FList.Objects[I]));
+    DoWriteItem(Ini, Section, I, FList[I], Longint(PtrInt(FList.Objects[I])));
 end;
 
 procedure TMRUManager.LoadFromIni(Ini: TCustomIniFile; const Section: string);
