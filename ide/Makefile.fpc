@@ -90,21 +90,21 @@ LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 #
 # Options to compile an IDE with a lot of packages
 BIG_IDE_OPTIONS=-dBigIDE $(LAZARUS_LIBPATHS) \
-  -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/printers/design/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/cgi/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/cgi/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/tdbf/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/jpeg/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/fpcunit/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/fpcunit/ide/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/projecttemplates/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/sqldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/sdf/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/memds/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/tachart/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 
