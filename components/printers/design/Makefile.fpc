@@ -1,4 +1,8 @@
+#   File generated automatically by Lazarus Package Manager
+#
 #   Makefile.fpc for printers4lazide 0.0
+#
+#   This file was generated on 7-4-2008
 
 [package]
 name=printers4lazide
@@ -6,7 +10,8 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../lib/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/
+unitdir=../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/ ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/ ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)/ ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET)/ ./
+includedir=./
 options=-dLCL -dLCL$(LCL_PLATFORM) -S2 -gl
 
 [target]
@@ -40,5 +45,3 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/printers4lazide$(PPUEXT)
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) printers4lazide$(PPUEXT)
-
-cleanall: clean
