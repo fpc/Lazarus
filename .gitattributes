@@ -3569,6 +3569,7 @@ test/bugs/8450/unit1.pas svneol=native#text/plain
 test/bugs/bug8432.pas svneol=native#text/plain
 test/bugs/testfileutil.pas svneol=native#text/plain
 test/bugtestcase.pas svneol=native#text/plain
+test/dbscripts/createdb.sql svneol=native#text/plain
 test/hello.ahk svneol=native#text/plain
 test/readme.txt svneol=native#text/plain
 test/runtests.lpi svneol=native#text/plain
