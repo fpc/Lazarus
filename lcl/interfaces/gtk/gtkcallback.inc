@@ -2666,10 +2666,11 @@ procedure GtkDragDataReceived(widget:PGtkWidget; context:PGdkDragContext;
 var
   S: TStringList;
   I: Integer;
-  FileName: String;
+  FileName, DecodedFileName: String;
   Files: Array of String;
   Form: TControl;
   Result: Boolean;
+  U: TURI;
 begin
   //DebugLn('GtkDragDataReceived ' + PChar(selection_data^.data));
   Result := False;
@@ -2686,18 +2687,13 @@ begin
         FileName := S[I];
 
         if FileName = '' then Continue;
-        // uri -> file name, maybe for GTK2: g_filename_from_uri
         // uri = protocol://hostname/file name
-        // convert uri of local files to file name
-        if Copy(FileName, 1, 17) = 'file://localhost/' then Delete(FileName, 1, 17)
-        else
-          if SameText(Copy(FileName, 1, 8), 'file:///') then
-          begin
-            Delete(FileName, 1, 8);
-            // do not remove UNIX root path
-            if (Pos(':', FileName) <> 2) and (Pos('/', FileName) <> 1) then
-              FileName := '/' + FileName;
-          end;
+        U := ParseURI(FileName);
+        if (SameText(U.Host, 'localhost') or (U.Host = '')) and SameText(U.Protocol, 'file')
+          and URIToFileName(FileName, DecodedFileName) then // convert uri of local files to file name
+        begin
+          FileName := DecodedFileName;
+        end;
         // otherwise: protocol and hostname are preserved!
 
         if FileName = '' then Continue;
