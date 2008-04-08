@@ -1,0 +1,601 @@
+object FormMessagesComposer: TFormMessagesComposer
+  Left = 206
+  Height = 586
+  Top = 47
+  Width = 728
+  HorzScrollBar.Page = 727
+  VertScrollBar.Page = 585
+  ActiveControl = CaptionEdit
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Messages Composer'
+  OnCreate = MessagesInitExecute
+  Position = poScreenCenter
+  object CaptionLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 8
+    Width = 37
+    Caption = 'Caption'
+    Color = clNone
+    ParentColor = False
+  end
+  object MsgLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 56
+    Width = 47
+    Caption = 'MsgLabel'
+    Color = clNone
+    ParentColor = False
+  end
+  object DlgTypeLabel: TLabel
+    Left = 108
+    Height = 14
+    Top = 8
+    Width = 41
+    Caption = 'DlgType'
+    Color = clNone
+    ParentColor = False
+  end
+  object HelpContextLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 278
+    Width = 62
+    Caption = 'Help Context'
+    Color = clNone
+    ParentColor = False
+  end
+  object HelpKeyWordLabel: TLabel
+    Left = 103
+    Height = 14
+    Top = 278
+    Width = 70
+    Caption = 'Help KeyWord'
+    Color = clNone
+    ParentColor = False
+  end
+  object XLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 242
+    Width = 8
+    Caption = 'X'
+    Color = clNone
+    ParentColor = False
+  end
+  object YLabel: TLabel
+    Left = 112
+    Height = 14
+    Top = 242
+    Width = 8
+    Caption = 'Y'
+    Color = clNone
+    ParentColor = False
+  end
+  object HelpFileNameLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 328
+    Width = 70
+    Caption = 'Help FileName'
+    Color = clNone
+    ParentColor = False
+  end
+  object PromptLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 112
+    Width = 60
+    Caption = 'PromptLabel'
+    Color = clNone
+    ParentColor = False
+  end
+  object ValueLabel: TLabel
+    Left = 8
+    Height = 14
+    Top = 181
+    Width = 52
+    Caption = 'Value (var)'
+    Color = clNone
+    ParentColor = False
+  end
+  object DefaultValue: TLabel
+    Left = 108
+    Height = 14
+    Top = 181
+    Width = 35
+    Caption = 'Default'
+    Color = clNone
+    ParentColor = False
+  end
+  object Bevel1: TBevel
+    Left = 10
+    Height = 9
+    Top = 103
+    Width = 205
+    Shape = bsTopLine
+  end
+  object Bevel2: TBevel
+    Left = 8
+    Height = 9
+    Top = 225
+    Width = 207
+    Shape = bsTopLine
+  end
+  object Bevel3: TBevel
+    Left = 8
+    Height = 9
+    Top = 269
+    Width = 207
+    Shape = bsTopLine
+  end
+  object CaptionEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 24
+    Width = 93
+    TabOrder = 0
+    Text = 'CaptionEdit'
+  end
+  object MsgEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 72
+    Width = 207
+    OnEditingDone = GetParamsFmtExecute
+    TabOrder = 1
+    Text = 'MsgEdit'
+  end
+  object KindMessageRadioGroup: TRadioGroup
+    Left = 224
+    Height = 360
+    Top = 7
+    Width = 497
+    AutoFill = True
+    Caption = 'KindMessageRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ItemIndex = 0
+    Items.Strings = (
+      'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
+      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
+      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpKeyword]'
+      'MessageDlgPos[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y]'
+      'MessageDlgPosHelp[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y, HelpFileName]'
+      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpCtx]'
+      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpKeyword]'
+      'ShowMessage[Msg: string];'
+      'ShowMessageFmt[Msg, Params(array of const)];'
+      'ShowMessagePos[Msg, X, Y];'
+      'InputQuery[Caption, Prompt, MaskInput(Boolean), Value(String)]'
+      'InputQuery[Caption, Prompt, Value(String)]'
+      'InputBox[Caption, Prompt, Default]'
+      'PasswordBox[Caption, Prompt]'
+    )
+    OnClick = MessageSetupExecute
+    TabOrder = 2
+  end
+  object DlgTypeComboBox: TComboBox
+    Left = 108
+    Height = 21
+    Top = 26
+    Width = 107
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemIndex = 0
+    Items.Strings = (
+      'mtWarning'
+      'mtError'
+      'mtInformation'
+      'mtConfirmation'
+      'mtCustom'
+    )
+    MaxLength = 0
+    Style = csDropDownList
+    TabOrder = 3
+    Text = 'mtWarning'
+  end
+  object ButtonsCheckGroup: TCheckGroup
+    Left = 527
+    Height = 177
+    Top = 369
+    Width = 194
+    AutoFill = True
+    Caption = 'BUTTONS (TMsgDlgButtons)'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    Items.Strings = (
+      'mbYes'
+      'mbNo'
+      'mbOK'
+      'mbCancel'
+      'mbAbort'
+      'mbRetry'
+      'mbIgnore'
+      'mbAll'
+      'mbNoToAll'
+      'mbYesToAll'
+      'mbHelp'
+      'mbClose'
+    )
+    OnItemClick = ButtonsCheckGroupItemClick
+    TabOrder = 4
+    Data = {
+      0C000000020203030202020202020202
+    }
+  end
+  object HelpContextSpinEdit: TSpinEdit
+    Left = 8
+    Height = 23
+    Top = 297
+    Width = 17
+    MaxValue = 9999
+    TabOrder = 5
+  end
+  object HelpKeyWordEdit: TEdit
+    Left = 103
+    Height = 23
+    Top = 297
+    Width = 112
+    TabOrder = 6
+    Text = 'HelpKeyWordEdit'
+  end
+  object ButtonsPanel: TPanel
+    Left = 297
+    Height = 170
+    Top = 376
+    Width = 221
+    TabOrder = 7
+    object ButtonsStringGrid: TStringGrid
+      Left = 1
+      Height = 138
+      Top = 1
+      Width = 219
+      Align = alTop
+      ColCount = 2
+      FixedColor = clBtnFace
+      FixedCols = 0
+      GridLineWidth = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+      RowCount = 4
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      TabStop = True
+      OnPickListSelect = UpdateQuestioDlgResultExecute
+      OnSelectEditor = ButtonsStringGridSelectEditor
+      ColWidths = (
+        138
+        77
+      )
+      Cells = (
+        8
+        0
+        0
+        'BUTTONS (array of const)'
+        0
+        1
+        'Yes'
+        0
+        2
+        'No'
+        0
+        3
+        'Cancel'
+        1
+        0
+        'Modal Result'
+        1
+        1
+        'mrYes'
+        1
+        2
+        'mrNo'
+        1
+        3
+        'mrCancel'
+      )
+    end
+    object Panel2: TPanel
+      Left = 1
+      Height = 30
+      Top = 139
+      Width = 219
+      Align = alClient
+      BevelInner = bvLowered
+      BevelOuter = bvSpace
+      TabOrder = 1
+      object BitBtn1: TBitBtn
+        Left = 2
+        Height = 26
+        Top = 2
+        Width = 101
+        Action = AddConst
+        Align = alLeft
+        NumGlyphs = 0
+        TabOrder = 0
+      end
+      object BitBtn2: TBitBtn
+        Left = 111
+        Height = 26
+        Top = 2
+        Width = 106
+        Action = DelConst
+        Align = alRight
+        NumGlyphs = 0
+        TabOrder = 1
+      end
+    end
+  end
+  object XSpinEdit: TSpinEdit
+    Left = 46
+    Height = 23
+    Top = 237
+    Width = 17
+    AutoSize = True
+    TabOrder = 8
+  end
+  object YSpinEdit: TSpinEdit
+    Left = 144
+    Height = 23
+    Top = 237
+    Width = 17
+    AutoSize = True
+    TabOrder = 9
+  end
+  object HelpFileNameEdit: TFileNameEdit
+    Left = 8
+    Height = 23
+    Top = 344
+    Width = 185
+    ButtonWidth = 23
+    NumGlyphs = 1
+    ParentColor = False
+    TabOrder = 10
+  end
+  object PromptEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 128
+    Width = 207
+    TabOrder = 11
+    Text = 'PromptEdit'
+  end
+  object MaskInputCheckBox: TCheckBox
+    Left = 8
+    Height = 13
+    Top = 156
+    Width = 70
+    Caption = 'MaskInput'
+    TabOrder = 12
+  end
+  object ValueEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 197
+    Width = 80
+    TabOrder = 13
+    Text = 'ValueEdit'
+  end
+  object DefaultEdit: TEdit
+    Left = 106
+    Height = 23
+    Top = 197
+    Width = 109
+    TabOrder = 14
+    Text = 'DefaultEdit'
+  end
+  object Button1: TButton
+    Left = 297
+    Height = 25
+    Top = 552
+    Width = 221
+    Action = Test
+    BorderSpacing.InnerBorder = 4
+    TabOrder = 15
+  end
+  object Button2: TBitBtn
+    Left = 527
+    Height = 25
+    Top = 552
+    Width = 97
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    NumGlyphs = 0
+    TabOrder = 16
+  end
+  object Button3: TBitBtn
+    Left = 628
+    Height = 25
+    Top = 552
+    Width = 93
+    Cancel = True
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    NumGlyphs = 0
+    TabOrder = 17
+  end
+  object SourceWrapperGroupBox: TGroupBox
+    Left = 8
+    Height = 208
+    Top = 369
+    Width = 280
+    Caption = 'SourceWrapperGroupBox'
+    TabOrder = 18
+    object Label1: TLabel
+      Left = 7
+      Height = 14
+      Top = 9
+      Width = 62
+      Caption = '"if" RESULT'
+      Color = clNone
+      ParentColor = False
+    end
+    object StringResultLabel: TLabel
+      Left = 7
+      Height = 14
+      Top = 59
+      Width = 74
+      Caption = 'String RESULT'
+      Color = clNone
+      ParentColor = False
+    end
+    object IfThenRadioButton: TRadioButton
+      Left = 7
+      Height = 13
+      Top = 111
+      Width = 64
+      Caption = 'if...then...'
+      OnClick = SetIfOrCaseExecute
+      TabOrder = 0
+    end
+    object IfThenElseRadioButton: TRadioButton
+      Left = 7
+      Height = 13
+      Top = 129
+      Width = 95
+      Caption = 'if...then...else ...'
+      OnClick = SetIfOrCaseExecute
+      TabOrder = 1
+    end
+    object CaseOfEndRadioButton: TRadioButton
+      Left = 142
+      Height = 13
+      Top = 151
+      Width = 103
+      Caption = 'case ... of ... end;'
+      OnClick = SetIfOrCaseExecute
+      TabOrder = 2
+    end
+    object CaseOfEndElseRadioButton: TRadioButton
+      Left = 142
+      Height = 13
+      Top = 169
+      Width = 113
+      Caption = 'case ... of ... else ...'
+      OnClick = SetIfOrCaseExecute
+      TabOrder = 3
+    end
+    object BeginEndCheckBox: TCheckBox
+      Left = 7
+      Height = 13
+      Top = 159
+      Width = 79
+      Caption = 'begin ... end'
+      TabOrder = 4
+    end
+    object IfResultComboBox: TComboBox
+      Left = 7
+      Height = 21
+      Top = 25
+      Width = 119
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      ItemIndex = 0
+      Items.Strings = (
+        'mbOK'
+        'mbCancel'
+      )
+      MaxLength = 0
+      Style = csDropDownList
+      TabOrder = 5
+      Text = 'mbOK'
+    end
+    object CaseResultCheckGroup: TCheckGroup
+      Left = 142
+      Height = 146
+      Top = -1
+      Width = 129
+      AutoFill = True
+      Caption = '"case" RESULT'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.TopBottomSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      Items.Strings = (
+        'mbOK'
+        'mbCancel'
+      )
+      TabOrder = 6
+      Data = {
+        020000000302
+      }
+    end
+    object StringResultEdit: TEdit
+      Left = 7
+      Height = 23
+      Top = 74
+      Width = 119
+      TabOrder = 7
+      Text = 'StringResultEdit'
+    end
+  end
+  object ActionList1: TActionList
+    left = 472
+    top = 480
+    object AddConst: TAction
+      Caption = 'AddConst'
+      DisableIfNoHandler = True
+      OnExecute = AddConstExecute
+    end
+    object DelConst: TAction
+      Caption = 'DelConst'
+      DisableIfNoHandler = True
+      OnExecute = DelConstExecute
+    end
+    object MessageSetup: TAction
+      Caption = 'MessageSetup'
+      DisableIfNoHandler = True
+      OnExecute = MessageSetupExecute
+    end
+    object MessagesInit: TAction
+      Caption = 'MessagesInit'
+      DisableIfNoHandler = True
+      OnExecute = MessagesInitExecute
+    end
+    object Test: TAction
+      Caption = 'Test'
+      DisableIfNoHandler = True
+      OnExecute = TestExecute
+    end
+    object GetMessageForSource: TAction
+      Caption = 'GetMessageForSource'
+      DisableIfNoHandler = True
+      OnExecute = GetMessageForSourceExecute
+    end
+    object GetParamsFmt: TAction
+      Caption = 'GetParamsFmt'
+      DisableIfNoHandler = True
+      OnExecute = GetParamsFmtExecute
+    end
+    object SetIfOrCase: TAction
+      Caption = 'SetIfOrCase'
+      DisableIfNoHandler = True
+      OnExecute = SetIfOrCaseExecute
+    end
+    object UpdateQuestioDlgResult: TAction
+      Caption = 'UpdateQuestioDlgResult'
+      DisableIfNoHandler = True
+      OnExecute = UpdateQuestioDlgResultExecute
+    end
+  end
+end
