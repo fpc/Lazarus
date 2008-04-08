@@ -26,11 +26,7 @@ interface
 uses
   custapp, Classes, SysUtils,
   fpcunit, testregistry, testutils,
-{$IFDEF VER2_0}
-  testreport, xmlreporter,
-{$ELSE}
   fpcunitreport, latextestreport, xmltestreport, plaintestreport,
-{$ENDIF}
   dom, xmlwrite;
 
 const
@@ -131,59 +127,6 @@ begin
   // do nothing
 end;
 
-{$IFDEF VER2_0}
-procedure TTestRunner.doTestRun(aTest: TTest);
-var
-  testResult: TTestResult;
-  progressWriter: TProgressWriter;
-
-  procedure doXMLTestRun(aTest: TTest);
-  var
-    XMLResultsWriter: TXMLResultsWriter;
-    stream: TStringStream;
-  begin
-    try
-      XMLResultsWriter := TXMLResultsWriter.Create;
-      testResult.AddListener(XMLResultsWriter);
-      aTest.Run(testResult);
-      XMLResultsWriter.WriteResult(testResult);
-      ExtendXmlDocument(XMLResultsWriter.Document);
-      if FileName<>'' then
-        WriteXMLFile(XMLResultsWriter.Document, FileName)
-      else
-      begin
-        // write to output, use stream, because WriteXMLFile(Doc, Output) is broken
-        stream := TStringStream.Create('');
-        WriteXMLFile(XMLResultsWriter.Document, stream);
-        writeln(stream.DataString);
-        stream.Free;
-      end;
-    finally
-      XMLResultsWriter.Free;
-    end;
-  end;
-
-begin
-  testResult := TTestResult.Create;
-  if ShowProgress then begin
-    progressWriter := TProgressWriter.Create;
-    testResult.AddListener(progressWriter);
-  end;
-  try
-    case FormatParam of
-      fLatex: doXMLTestRun(aTest); //no latex implemented yet
-      else
-        doXMLTestRun(aTest);
-    end;
-    if testResult.NumberOfErrors+testResult.NumberOfFailures>0 then
-      ExitCode := 1;
-  finally
-    if ShowProgress then
-      progressWriter.Free;
-    testResult.Free;
-  end;
-end;
-{$ELSE}
 procedure TTestRunner.doTestRun(aTest: TTest);
 
   procedure ExecuteTest(aTest: TTest; aResultsWriter: TCustomResultsWriter);
@@ -227,7 +170,6 @@ begin
     ResultsWriter.Free;
   end;
 end;
-{$ENDIF}
 
 function TTestRunner.GetShortOpts: string;
 begin
@@ -256,9 +198,7 @@ begin
     writeln;
     writeln('Usage: ');
     writeln('  --format=latex            output as latex source (only list implemented)');
-    {$IFNDEF VER2_0}
     writeln('  --format=plain            output as plain ASCII source');
-    {$ENDIF}
     writeln('  --format=xml              output as XML source (default)');
     writeln('  --stylesheet=<reference>   add stylesheet reference');
     writeln('  --file=<filename>         output results to file');
