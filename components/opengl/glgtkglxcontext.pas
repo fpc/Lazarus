@@ -284,6 +284,7 @@ begin
 
   // 'GLX uses VisualInfo records because they uniquely identify
   // a (VisualID,screen,depth) tuple.'
+  vinfo_template.bits_per_rgb:=0;
   FillChar(vinfo_template,SizeOf(vinfo_template),0);
   vinfo_template.visual   := GDK_VISUAL_XVISUAL({$IFDEF LCLGTK}
                                                 PGdkVisualPrivate(visual)
@@ -739,12 +740,14 @@ begin
     // => ignore
     exit;
   end;
+  if Size=nil then ;
   LCLControl:=TWinControl(Data);
   if LCLControl=nil then exit;
   //DebugLn(['gtkglarea_size_allocateCB ',DbgSName(LCLControl)]);
 
   gtk_widget_get_size_request(Widget, @GtkWidth, @GtkHeight);
 
+  SizeMsg.Msg:=0;
   FillChar(SizeMsg,SizeOf(SizeMsg),0);
   with SizeMsg do
   begin

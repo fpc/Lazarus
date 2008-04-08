@@ -2476,6 +2476,10 @@ begin
       else
         p^:=' ';
     end
+    else begin
+      p^:=' ';
+      inc(p);
+    end;
   end;
 end;
 
