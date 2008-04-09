@@ -1219,14 +1219,17 @@ begin
       {$ifdef WindowsUnicodeSupport}
       // first send a IntfUTF8KeyPress to the LCL
       // if the key was not handled send a CN_CHAR for AnsiChar<=#127
-      if not HandleUnicodeChar(Word(WParam)) and (WParam<=127) then
+      if not HandleUnicodeChar(Word(WParam)) then
       begin
         PLMsg:=@LMChar;
         with LMChar do
         begin
           Msg := CN_CHAR;
           KeyData := LParam;
-          CharCode := Word(WParam);
+          if UnicodeEnabledOS then
+            CharCode := Word(Char(WideChar(WParam)))
+          else
+            CharCode := Word(WParam);
           Result := 0;
           Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         end;
@@ -1234,10 +1237,7 @@ begin
       end
       else
         WinProcess := true;
-
       {$else}
-      // first send a IntfUTF8KeyPress to the LCL
-      // if the key was not handled send a CN_CHAR for AnsiChar<=#127
       PLMsg:=@LMChar;
       with LMChar do
       begin
@@ -2364,7 +2364,10 @@ begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
-      WParam := LMChar.CharCode;
+      if UnicodeEnabledOS then
+        WParam := Word(WideChar(Char(LMChar.CharCode)))
+      else
+        WParam := LMKey.CharCode;
     end;
 
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:

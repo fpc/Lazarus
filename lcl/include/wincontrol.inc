@@ -5197,7 +5197,7 @@ begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
   begin
-    C := char(CharCode);
+    C := Char(CharCode);
     KeyPress(C);
     CharCode := Ord(C);
     if Char(CharCode) = #0 then Exit;
