@@ -2364,10 +2364,12 @@ begin
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.Result = 0;
+      {$IFDEF WindowsUnicodeSupport}
       if UnicodeEnabledOS then
         WParam := Word(WideChar(Char(LMChar.CharCode)))
       else
-        WParam := LMKey.CharCode;
+      {$ENDIF}
+        WParam := LMChar.CharCode;
     end;
 
     CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
