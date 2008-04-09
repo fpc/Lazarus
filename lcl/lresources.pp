@@ -3523,7 +3523,7 @@ begin
         vaInt32:
           AChildPos := ReadInt32;
         else
-          raise EReadError.Create('Invalid Property Value');
+          PropValueError;
       end;
     end;
   end;
@@ -3661,7 +3661,7 @@ begin
         break;
       Value := GetEnumValue(PTypeInfo(EnumType), Name);
       if Value = -1 then
-        raise EReadError.Create('Invalid Property Value');
+        PropValueError;
       Result := Result or (1 shl Value);
     end;
   except
