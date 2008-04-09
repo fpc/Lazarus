@@ -3388,7 +3388,7 @@ var
 begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   if ShowProjectOptionsDialog(Project1)=mrOk then begin
-
+    UpdateCaption;
   end;
 end;
 
@@ -3400,7 +3400,7 @@ var
 begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   if projectopts_new.ShowProjectOptionsDialog(Project1)=mrOk then begin
-
+    UpdateCaption;
   end;
 end;
 {$endif}
