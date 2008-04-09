@@ -4654,7 +4654,8 @@ begin
 
   { This will move past any junk after the BFI header }
   TheStream.Position := TheStream.Position + TStreamSeekType(BFI.biSize-SizeOf(BFI));
-  TheImage.SetSize(BFI.biWidth, BFI.biHeight);
+  TheImage.SetSize(BFI.biWidth, Abs(BFI.biHeight));
+  // Note for Abs - height can be negative if bitmap data is not stored upside-down
   FBitsPerPixel := BFI.biBitCount;
 
   case BFI.biBitCount of
@@ -4765,13 +4766,21 @@ begin
     Row := TheImage.Height - 1;
     ReadScanLine(Row);
     SaveTransparentColor;
-    WriteScanLine(Row);
+    
+    if BFI.biHeight > 0 then
+      WriteScanLine(Row) // upside-down
+    else
+      WriteScanLine(TheImage.Height - 1 - Row);
 
     while Row > 0 do
     begin
       Dec(Row);
       ReadScanLine(Row); // Scanline in LineBuf with Size ReadSize.
-      WriteScanLine(Row);
+
+      if BFI.biHeight > 0 then
+        WriteScanLine(Row) // upside-down
+      else
+        WriteScanLine(TheImage.Height - 1 - Row);
     end;
   finally
     FreeBufs;
