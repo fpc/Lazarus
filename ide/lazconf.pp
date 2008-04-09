@@ -55,9 +55,10 @@ const
       'win32/win64',
       'wince (beta)',
       'carbon (alpha)',
-      'qt (alpha)',
+      'qt (beta)',
       'fpGUI (pre-alpha)',
-      'NoGUI (pre-alpha)'
+      'NoGUI (pre-alpha)',
+      'cocoa (pre-alpha)'
     );
 
 

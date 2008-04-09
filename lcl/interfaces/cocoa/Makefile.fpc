@@ -1,0 +1,35 @@
+#   $Id: Makefile.fpc 12495 2007-10-16 22:47:51Z mattias $
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+main=lcl
+
+[require]
+packages=rtl
+
+[target]
+units=interfaces
+implicitunits=cocoaint
+
+[compiler]
+options=-gl -dcocoa
+unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) . pascocoa/foundation pascocoa/appkit
+unittargetdir=../../units/$(CPU_TARGET)-$(OS_TARGET)/cocoa
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/interfaces$(PPUEXT) \
+                $(COMPILER_UNITTARGETDIR)/interfaces$(OEXT)
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) interfaces$(PPUEXT)

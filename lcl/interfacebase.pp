@@ -62,7 +62,8 @@ type
     lpCarbon,
     lpQT,
     lpfpGUI,
-    lpNoGUI
+    lpNoGUI,
+    lpCocoa
     );
     
   TLCLPlatforms = set of TLCLPlatform;
@@ -126,7 +127,8 @@ const
       'carbon',
       'qt',
       'fpgui',
-      'nogui'
+      'nogui',
+      'cocoa'
     );
     
 type
