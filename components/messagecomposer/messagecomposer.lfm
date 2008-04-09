@@ -1,86 +1,84 @@
 object FormMessagesComposer: TFormMessagesComposer
-  Left = 206
+  Left = 104
   Height = 586
-  Top = 47
-  Width = 728
-  HorzScrollBar.Page = 727
+  Top = 118
+  Width = 800
+  HorzScrollBar.Page = 799
   VertScrollBar.Page = 585
   ActiveControl = CaptionEdit
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Messages Composer'
+  ClientHeight = 586
+  ClientWidth = 800
   OnCreate = MessagesInitExecute
   Position = poScreenCenter
+  LCLVersion = '0.9.25'
   object CaptionLabel: TLabel
     Left = 8
     Height = 14
     Top = 8
-    Width = 37
+    Width = 38
     Caption = 'Caption'
-    Color = clNone
     ParentColor = False
   end
   object MsgLabel: TLabel
     Left = 8
     Height = 14
     Top = 56
-    Width = 47
+    Width = 45
     Caption = 'MsgLabel'
-    Color = clNone
     ParentColor = False
   end
   object DlgTypeLabel: TLabel
     Left = 108
     Height = 14
     Top = 8
-    Width = 41
+    Width = 40
     Caption = 'DlgType'
-    Color = clNone
     ParentColor = False
   end
   object HelpContextLabel: TLabel
     Left = 8
     Height = 14
     Top = 278
-    Width = 62
+    Width = 64
     Caption = 'Help Context'
-    Color = clNone
     ParentColor = False
   end
   object HelpKeyWordLabel: TLabel
     Left = 103
     Height = 14
     Top = 278
-    Width = 70
+    Width = 69
     Caption = 'Help KeyWord'
-    Color = clNone
     ParentColor = False
   end
   object XLabel: TLabel
     Left = 8
     Height = 14
     Top = 242
-    Width = 8
+    Width = 7
     Caption = 'X'
-    Color = clNone
     ParentColor = False
   end
   object YLabel: TLabel
-    Left = 112
+    AnchorSideLeft.Control = XSpinEdit
+    AnchorSideLeft.Side = asrBottom
+    Left = 66
     Height = 14
     Top = 242
-    Width = 8
+    Width = 7
+    BorderSpacing.Left = 8
     Caption = 'Y'
-    Color = clNone
     ParentColor = False
   end
   object HelpFileNameLabel: TLabel
     Left = 8
     Height = 14
     Top = 328
-    Width = 70
+    Width = 68
     Caption = 'Help FileName'
-    Color = clNone
     ParentColor = False
   end
   object PromptLabel: TLabel
@@ -89,32 +87,29 @@ object FormMessagesComposer: TFormMessagesComposer
     Top = 112
     Width = 60
     Caption = 'PromptLabel'
-    Color = clNone
     ParentColor = False
   end
   object ValueLabel: TLabel
     Left = 8
     Height = 14
     Top = 181
-    Width = 52
+    Width = 54
     Caption = 'Value (var)'
-    Color = clNone
     ParentColor = False
   end
   object DefaultValue: TLabel
     Left = 108
     Height = 14
     Top = 181
-    Width = 35
+    Width = 36
     Caption = 'Default'
-    Color = clNone
     ParentColor = False
   end
   object Bevel1: TBevel
     Left = 10
     Height = 9
     Top = 103
-    Width = 205
+    Width = 201
     Shape = bsTopLine
   end
   object Bevel2: TBevel
@@ -128,31 +123,14 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 9
     Top = 269
-    Width = 207
+    Width = 203
     Shape = bsTopLine
   end
-  object CaptionEdit: TEdit
-    Left = 8
-    Height = 23
-    Top = 24
-    Width = 93
-    TabOrder = 0
-    Text = 'CaptionEdit'
-  end
-  object MsgEdit: TEdit
-    Left = 8
-    Height = 23
-    Top = 72
-    Width = 207
-    OnEditingDone = GetParamsFmtExecute
-    TabOrder = 1
-    Text = 'MsgEdit'
-  end
   object KindMessageRadioGroup: TRadioGroup
-    Left = 224
-    Height = 360
+    Left = 215
+    Height = 359
     Top = 7
-    Width = 497
+    Width = 576
     AutoFill = True
     Caption = 'KindMessageRadioGroup'
     ChildSizing.LeftRightSpacing = 6
@@ -163,6 +141,8 @@ object FormMessagesComposer: TFormMessagesComposer
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
+    ClientHeight = 341
+    ClientWidth = 572
     ItemIndex = 0
     Items.Strings = (
       'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
@@ -183,12 +163,30 @@ object FormMessagesComposer: TFormMessagesComposer
     OnClick = MessageSetupExecute
     TabOrder = 2
   end
+  object CaptionEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 24
+    Width = 93
+    TabOrder = 0
+    Text = 'CaptionEdit'
+  end
+  object MsgEdit: TEdit
+    Left = 8
+    Height = 23
+    Top = 72
+    Width = 203
+    OnEditingDone = GetParamsFmtExecute
+    TabOrder = 1
+    Text = 'MsgEdit'
+  end
   object DlgTypeComboBox: TComboBox
     Left = 108
     Height = 21
     Top = 26
-    Width = 107
+    Width = 103
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 13
     ItemIndex = 0
     Items.Strings = (
       'mtWarning'
@@ -203,10 +201,10 @@ object FormMessagesComposer: TFormMessagesComposer
     Text = 'mtWarning'
   end
   object ButtonsCheckGroup: TCheckGroup
-    Left = 527
+    Left = 575
     Height = 177
     Top = 369
-    Width = 194
+    Width = 216
     AutoFill = True
     Caption = 'BUTTONS (TMsgDlgButtons)'
     ChildSizing.LeftRightSpacing = 6
@@ -242,7 +240,7 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 23
     Top = 297
-    Width = 17
+    Width = 61
     MaxValue = 9999
     TabOrder = 5
   end
@@ -250,36 +248,36 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 103
     Height = 23
     Top = 297
-    Width = 112
+    Width = 108
     TabOrder = 6
     Text = 'HelpKeyWordEdit'
   end
   object ButtonsPanel: TPanel
-    Left = 297
+    Left = 278
     Height = 170
     Top = 376
-    Width = 221
+    Width = 285
+    ClientHeight = 170
+    ClientWidth = 285
     TabOrder = 7
     object ButtonsStringGrid: TStringGrid
       Left = 1
       Height = 138
       Top = 1
-      Width = 219
+      Width = 283
       Align = alTop
       ColCount = 2
       FixedColor = clBtnFace
       FixedCols = 0
-      GridLineWidth = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       RowCount = 4
       ScrollBars = ssAutoBoth
       TabOrder = 0
-      TabStop = True
       OnPickListSelect = UpdateQuestioDlgResultExecute
       OnSelectEditor = ButtonsStringGridSelectEditor
       ColWidths = (
-        138
-        77
+        171
+        104
       )
       Cells = (
         8
@@ -313,26 +311,28 @@ object FormMessagesComposer: TFormMessagesComposer
       Left = 1
       Height = 30
       Top = 139
-      Width = 219
+      Width = 283
       Align = alClient
       BevelInner = bvLowered
       BevelOuter = bvSpace
+      ClientHeight = 30
+      ClientWidth = 283
       TabOrder = 1
       object BitBtn1: TBitBtn
         Left = 2
         Height = 26
         Top = 2
-        Width = 101
+        Width = 128
         Action = AddConst
         Align = alLeft
         NumGlyphs = 0
         TabOrder = 0
       end
       object BitBtn2: TBitBtn
-        Left = 111
+        Left = 153
         Height = 26
         Top = 2
-        Width = 106
+        Width = 128
         Action = DelConst
         Align = alRight
         NumGlyphs = 0
@@ -341,26 +341,32 @@ object FormMessagesComposer: TFormMessagesComposer
     end
   end
   object XSpinEdit: TSpinEdit
-    Left = 46
-    Height = 23
+    AnchorSideLeft.Control = XLabel
+    AnchorSideLeft.Side = asrBottom
+    Left = 19
+    Height = 22
     Top = 237
-    Width = 17
+    Width = 39
     AutoSize = True
+    BorderSpacing.Left = 4
     TabOrder = 8
   end
   object YSpinEdit: TSpinEdit
-    Left = 144
-    Height = 23
+    AnchorSideLeft.Control = YLabel
+    AnchorSideLeft.Side = asrBottom
+    Left = 77
+    Height = 22
     Top = 237
-    Width = 17
+    Width = 33
     AutoSize = True
+    BorderSpacing.Left = 4
     TabOrder = 9
   end
   object HelpFileNameEdit: TFileNameEdit
     Left = 8
     Height = 23
     Top = 344
-    Width = 185
+    Width = 181
     ButtonWidth = 23
     NumGlyphs = 1
     ParentColor = False
@@ -370,15 +376,15 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 8
     Height = 23
     Top = 128
-    Width = 207
+    Width = 203
     TabOrder = 11
     Text = 'PromptEdit'
   end
   object MaskInputCheckBox: TCheckBox
     Left = 8
-    Height = 13
+    Height = 19
     Top = 156
-    Width = 70
+    Width = 76
     Caption = 'MaskInput'
     TabOrder = 12
   end
@@ -394,24 +400,25 @@ object FormMessagesComposer: TFormMessagesComposer
     Left = 106
     Height = 23
     Top = 197
-    Width = 109
+    Width = 105
     TabOrder = 14
     Text = 'DefaultEdit'
   end
   object Button1: TButton
-    Left = 297
+    Left = 279
     Height = 25
     Top = 552
-    Width = 221
+    Width = 284
     Action = Test
     BorderSpacing.InnerBorder = 4
     TabOrder = 15
   end
   object Button2: TBitBtn
-    Left = 527
-    Height = 25
+    Left = 616
+    Height = 26
     Top = 552
-    Width = 97
+    Width = 60
+    AutoSize = True
     Caption = '&OK'
     Default = True
     Kind = bkOK
@@ -420,10 +427,14 @@ object FormMessagesComposer: TFormMessagesComposer
     TabOrder = 16
   end
   object Button3: TBitBtn
-    Left = 628
-    Height = 25
-    Top = 552
-    Width = 93
+    AnchorSideLeft.Control = Button2
+    AnchorSideLeft.Side = asrBottom
+    Left = 680
+    Height = 26
+    Top = 551
+    Width = 78
+    AutoSize = True
+    BorderSpacing.Left = 4
     Cancel = True
     Caption = 'Cancel'
     Kind = bkCancel
@@ -434,78 +445,87 @@ object FormMessagesComposer: TFormMessagesComposer
   object SourceWrapperGroupBox: TGroupBox
     Left = 8
     Height = 208
-    Top = 369
-    Width = 280
+    Top = 368
+    Width = 264
     Caption = 'SourceWrapperGroupBox'
+    ClientHeight = 190
+    ClientWidth = 260
     TabOrder = 18
     object Label1: TLabel
       Left = 7
       Height = 14
-      Top = 9
-      Width = 62
+      Top = 6
+      Width = 55
       Caption = '"if" RESULT'
-      Color = clNone
       ParentColor = False
     end
     object StringResultLabel: TLabel
+      AnchorSideTop.Control = IfResultComboBox
+      AnchorSideTop.Side = asrBottom
       Left = 7
       Height = 14
-      Top = 59
-      Width = 74
+      Top = 51
+      Width = 69
+      BorderSpacing.Top = 8
       Caption = 'String RESULT'
-      Color = clNone
       ParentColor = False
     end
     object IfThenRadioButton: TRadioButton
       Left = 7
-      Height = 13
+      Height = 19
       Top = 111
-      Width = 64
+      Width = 70
       Caption = 'if...then...'
+      Checked = True
       OnClick = SetIfOrCaseExecute
+      State = cbChecked
       TabOrder = 0
     end
     object IfThenElseRadioButton: TRadioButton
       Left = 7
-      Height = 13
+      Height = 19
       Top = 129
-      Width = 95
+      Width = 101
       Caption = 'if...then...else ...'
       OnClick = SetIfOrCaseExecute
       TabOrder = 1
     end
     object CaseOfEndRadioButton: TRadioButton
-      Left = 142
-      Height = 13
-      Top = 151
-      Width = 103
+      Left = 7
+      Height = 19
+      Top = 152
+      Width = 109
       Caption = 'case ... of ... end;'
       OnClick = SetIfOrCaseExecute
       TabOrder = 2
     end
     object CaseOfEndElseRadioButton: TRadioButton
-      Left = 142
-      Height = 13
-      Top = 169
-      Width = 113
+      Left = 7
+      Height = 19
+      Top = 170
+      Width = 119
       Caption = 'case ... of ... else ...'
       OnClick = SetIfOrCaseExecute
       TabOrder = 3
     end
     object BeginEndCheckBox: TCheckBox
-      Left = 7
-      Height = 13
-      Top = 159
-      Width = 79
+      Left = 150
+      Height = 19
+      Top = 121
+      Width = 85
       Caption = 'begin ... end'
       TabOrder = 4
     end
     object IfResultComboBox: TComboBox
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
       Left = 7
       Height = 21
-      Top = 25
+      Top = 22
       Width = 119
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      BorderSpacing.Top = 2
+      ItemHeight = 13
       ItemIndex = 0
       Items.Strings = (
         'mbOK'
@@ -517,11 +537,14 @@ object FormMessagesComposer: TFormMessagesComposer
       Text = 'mbOK'
     end
     object CaseResultCheckGroup: TCheckGroup
-      Left = 142
-      Height = 146
+      AnchorSideLeft.Control = IfResultComboBox
+      AnchorSideLeft.Side = asrBottom
+      Left = 134
+      Height = 118
       Top = -1
-      Width = 129
+      Width = 121
       AutoFill = True
+      BorderSpacing.Left = 8
       Caption = '"case" RESULT'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -541,17 +564,20 @@ object FormMessagesComposer: TFormMessagesComposer
       }
     end
     object StringResultEdit: TEdit
+      AnchorSideTop.Control = StringResultLabel
+      AnchorSideTop.Side = asrBottom
       Left = 7
       Height = 23
-      Top = 74
+      Top = 69
       Width = 119
+      BorderSpacing.Top = 4
       TabOrder = 7
       Text = 'StringResultEdit'
     end
   end
   object ActionList1: TActionList
-    left = 472
-    top = 480
+    left = 408
+    top = 448
     object AddConst: TAction
       Caption = 'AddConst'
       DisableIfNoHandler = True

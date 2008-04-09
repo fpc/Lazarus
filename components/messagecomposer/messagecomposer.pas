@@ -126,7 +126,7 @@ const
 resourcestring
   SMessageComposerCaption = 'Message Composer ...';
   SMsgCaption = 'The message to be shown';
-  SPromptCaption = 'The text asking the user for his input';
+  SPromptCaption = 'Text asking the user for input';
   SMaskInput = 'Mask Input';
   SSourceWrapper = 'SOURCE WRAPPER';
   SKindofMessage = 'KIND OF MESSAGE';
@@ -186,6 +186,7 @@ end;
 procedure TFormMessagesComposer.AddConstExecute(Sender: TObject);
 begin
   ButtonsStringGrid.RowCount := ButtonsStringGrid.RowCount+1;
+  ButtonsStringGrid.AutoAdjustColumns;
   UpdateQuestioDlgResult.Execute;
 end;
 
@@ -230,12 +231,14 @@ begin
 //X hexadecimal format. The next argument in the Args array must be an integer. The argument is converted to a hexadecimal string with just enough characters to contain the value of the integer. If Precision is specified then the resulting hexadecimal representation will have at least Precision characters in it (with a maximum value of 32).
     end;
   end;
+  ButtonsStringGrid.AutoAdjustColumns;
 end;
 
 procedure TFormMessagesComposer.DelConstExecute(Sender: TObject);
 begin
   if ButtonsStringGrid.RowCount = 1 then exit;
   ButtonsStringGrid.RowCount := ButtonsStringGrid.RowCount-1;
+  ButtonsStringGrid.AutoAdjustColumns;
   UpdateQuestioDlgResult.Execute;
 end;
 
@@ -436,6 +439,7 @@ begin
       ButtonsStringGrid.Cols[0] := ListParams;
   end;
   ListParams.Free;
+  ButtonsStringGrid.AutoAdjustColumns;
 end;
 
 procedure TFormMessagesComposer.MessageSetupExecute(Sender: TObject);
@@ -699,7 +703,7 @@ begin
       CaseResultCheckGroup.Checked[0] := true;
     end;
   end;
-
+  ButtonsStringGrid.AutoAdjustColumns;
 end;
 
 procedure TFormMessagesComposer.MessagesInitExecute(Sender: TObject);
