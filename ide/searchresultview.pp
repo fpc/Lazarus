@@ -799,13 +799,15 @@ var
   LastPart: string;
   TheText: string;
   TheTop: integer;
+  MatchObj: TObject;
   MatchPos: TLazSearchMatchPos;
   TextEnd: integer;
 begin
   With Control as TLazSearchResultLB do
   begin
     Canvas.FillRect(ARect);
-    if Items.Objects[Index] is TLazSearchMatchPos then
+    MatchObj := Items.Objects[Index];
+    if assigned(MatchObj) and (MatchObj is TLazSearchMatchPos) then
       MatchPos:= TLazSearchMatchPos(Items.Objects[Index])
     else
       MatchPos:= nil;
