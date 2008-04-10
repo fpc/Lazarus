@@ -93,6 +93,7 @@ type
     function ItemIsUsed(Item: TResourceCacheItem): boolean;
   public
     constructor Create;
+    procedure Clear;
     destructor Destroy; override;
     function CompareItems(Tree: TAvgLvlTree; Item1, Item2: Pointer): integer; virtual;
     function CompareDescriptors(Tree: TAvgLvlTree; Desc1, Desc2: Pointer): integer; virtual; abstract;
@@ -360,17 +361,22 @@ begin
   FResourceCacheDescriptorClass:=TResourceCacheDescriptor;
 end;
 
-destructor TResourceCache.Destroy;
+procedure TResourceCache.Clear;
 begin
-  FDestroying:=true;
   while FFirstUnusedItem<>nil do
     FFirstUnusedItem.RemoveFromList(FFirstUnusedItem,FLastUnusedItem);
   FItems.FreeAndClear;
-  FItems.Free;
-  FItems:=nil;
   FDescriptors.FreeAndClear;
+end;
+
+destructor TResourceCache.Destroy;
+begin
+  FDestroying := True;
+  Clear;
+  FItems.Free;
+  FItems := nil;
   FDescriptors.Free;
-  FDescriptors:=nil;
+  FDescriptors := nil;
   inherited Destroy;
 end;
 
