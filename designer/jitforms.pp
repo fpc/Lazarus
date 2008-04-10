@@ -48,7 +48,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, AvgLvlTree, TypInfo, LCLProc, LResources, Forms, Controls,
-  LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs;
+  LCLIntf, Dialogs, JITForm, ComponentReg, IDEProcs, BasePkgManager;
 
 type
   //----------------------------------------------------------------------------
@@ -808,7 +808,11 @@ end;
 function TJITComponentList.OnFindGlobalComponent(
   const AName: AnsiString): TComponent;
 begin
-  Result:=Application.FindComponent(AName);
+  // Paul: Do we need search by application?
+  Result := Application.FindComponent(AName);
+  if Result = nil then
+    Result := PkgBoss.FindReferencedRootComponent(CurReadJITComponent, AName);
+  // DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 
 procedure TJITComponentList.InitReading(BinStream: TStream;

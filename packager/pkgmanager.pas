@@ -306,6 +306,8 @@ type
                                     Proc: TGetStringProc); override;
     function FindUsableComponent(CurRoot: TPersistent;
                         const ComponentPath: string): TComponent; override;
+    function FindReferencedRootComponent(CurRoot: TPersistent; 
+         const ComponentName: string): TComponent; override;
   end;
 
 
@@ -3876,32 +3878,36 @@ var
 
   function MainUnitInfo: TUnitInfo;
   begin
-    if not FMainUnitInfoValid then begin
+    if not FMainUnitInfoValid then
+    begin
       if CurRoot is TComponent then
-        FMainUnitInfo:=Project1.UnitWithComponent(TComponent(CurRoot));
-      FMainUnitInfoValid:=true;
+        FMainUnitInfo := Project1.UnitWithComponentName(TComponent(CurRoot).Name);
+      FMainUnitInfoValid := True;
     end;
-    Result:=FMainUnitInfo;
+    Result := FMainUnitInfo;
   end;
 
   function MainOwner: TObject;
   var
     Owners: TFPList;
   begin
-    if not FMainOwnerValid then begin
-      if MainUnitInfo<>nil then begin
+    if not FMainOwnerValid then
+    begin
+      if MainUnitInfo <> nil then
+      begin
         if MainUnitInfo.IsPartOfProject then
-          FMainOwner:=Project1
-        else begin
-          Owners:=GetOwnersOfUnit(MainUnitInfo.Filename);
-          if (Owners<>nil) and (Owners.Count>0) then
-            FMainOwner:=TObject(Owners[0]);
+          FMainOwner := Project1
+        else
+        begin
+          Owners := GetOwnersOfUnit(MainUnitInfo.Filename);
+          if (Owners <> nil) and (Owners.Count > 0) then
+            FMainOwner := TObject(Owners[0]);
           Owners.Free;
         end;
       end;
-      FMainOwnerValid:=true;
+      FMainOwnerValid := True;
     end;
-    Result:=FMainOwner;
+    Result := FMainOwner;
   end;
 
   procedure CheckUnit(AnUnitInfo: TUnitInfo);
@@ -4027,6 +4033,34 @@ begin
   finally
     UnitList.Free;
   end;
+end;
+
+function TPkgManager.FindReferencedRootComponent(CurRoot: TPersistent; const ComponentName: string): TComponent;
+var
+  UnitList: TFPList;
+  ARoot: TComponent;
+  i: integer;
+begin
+  //DebugLn(['search ', ComponentName, ' CurRoot = ', dbgsName(CurRoot)]);
+  Result := nil;
+  UnitList := GetUsableComponentUnits(CurRoot);
+  if UnitList = nil then 
+    Exit;
+  try
+    for i := 0 to UnitList.Count - 1 do 
+    begin
+      ARoot := TUnitInfo(UnitList[i]).Component;
+      //DebugLn(dbgsName(ARoot));
+      if (ARoot <> nil) and (SysUtils.CompareText(ComponentName, ARoot.Name) = 0) then
+      begin
+        Result := ARoot;
+        break;
+      end;
+    end;
+  finally
+    UnitList.Free;
+  end;
+  //DebugLn('search end');
 end;
 
 function TPkgManager.FindUsableComponent(CurRoot: TPersistent;

@@ -144,6 +144,8 @@ type
                                     Proc: TGetStringProc); virtual; abstract;
     function FindUsableComponent(CurRoot: TPersistent;
                   const ComponentPath: string): TComponent; virtual; abstract;
+    function FindReferencedRootComponent(CurRoot: TPersistent; 
+         const ComponentName: string): TComponent; virtual; abstract;
   end;
 
 var

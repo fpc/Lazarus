@@ -641,6 +641,7 @@ type
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     function UnitWithComponent(AComponent: TComponent): TUnitInfo;
+    function UnitWithComponentName(AComponentName: String): TUnitInfo;
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
     function UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
@@ -3619,11 +3620,18 @@ begin
 
 end;
 
-Function TProject.UnitWithComponent(AComponent: TComponent) : TUnitInfo;
+function TProject.UnitWithComponent(AComponent: TComponent): TUnitInfo;
 begin
   Result:=fFirst[uilWithComponent];
   while (Result<>nil) and (Result.Component<>AComponent) do
     Result:=Result.fNext[uilWithComponent];
+end;
+
+function TProject.UnitWithComponentName(AComponentName: String): TUnitInfo;
+begin
+  Result := fFirst[uilPartOfProject];
+  while (Result<>nil) and (SysUtils.CompareText(Result.ComponentName, AComponentName) <> 0) do
+    Result := Result.fNext[uilPartOfProject];
 end;
 
 function TProject.UnitComponentInheritingFrom(AClass: TComponentClass;
