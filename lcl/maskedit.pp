@@ -90,7 +90,7 @@ type
     procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
     procedure LMClearSel(var Message : TLMessage); message LM_CLEAR;
     function  ClearChar(Position : Integer) : Char;
-    procedure SetCursor;
+    procedure SetCursorPos;
     function  GetIsMasked : Boolean;
     procedure InsertChar(Ch : Char);
     procedure DeleteSelected(AlsoOnePosition : Boolean);
@@ -231,7 +231,7 @@ begin
       CurrentText[I] := ClearChar(I);
     end;
     Inherited Text := CurrentText;
-    SetCursor;
+    SetCursorPos;
     Result := True;
   end
     else
@@ -353,7 +353,7 @@ begin
          Inherited Text := S;
          CurrentText := S;
          Inc(FPosition);
-         SetCursor;
+         SetCursorPos;
        end;
 end;
 
@@ -366,7 +366,7 @@ begin
   begin
     FPosition := 0;
     SetCharToPos;
-    SetCursor;
+    SetCursorPos;
   end;
 end;
 
@@ -379,7 +379,7 @@ begin
   begin
     FPosition := 0;
     SetCharToPos;
-    SetCursor;
+    SetCursorPos;
   end;
 end;
 
@@ -398,12 +398,11 @@ end;
 // Set the current Space Char
 procedure TCustomMaskEdit.SetSpaceChar(Value : Char);
 Var
-  S, Old : ShortString;
+  S      : ShortString;
   I      : Integer;
 Begin
   if (Value <> FSpaceChar) And (Not IsMaskChar(Value)) then
   begin
-    Old        := FSpaceChar;
     FSpaceChar := Value;
 
     if isMasked then
@@ -463,7 +462,7 @@ begin
       if Key = VK_LEFT then Dec(FPosition)
                        else Inc(FPosition);
       Key := 0;
-      SetCursor;
+      SetCursorPos;
     end;
 
     Exit;
@@ -474,7 +473,7 @@ begin
   begin
     if Key = VK_HOME then FPosition := 1
                      else FPosition := FMaxChars-1;
-    SetCursor;
+    SetCursorPos;
     Key := 0;
     Exit;
   end;
@@ -516,7 +515,7 @@ begin
   begin
     Dec(FPosition);
     SetSel(SelectionStart-1, SelectionStop-1);
-    SetCursor;
+    SetCursorPos;
   end;
 
   DeleteSelected(True);
@@ -529,7 +528,7 @@ begin
 end;
 
 // Set the cursor position
-procedure TCustomMaskEdit.SetCursor;
+procedure TCustomMaskEdit.SetCursorPos;
 Var
   Ok   : Boolean;
   I, C : Integer;
@@ -595,7 +594,7 @@ begin
     inherited Text := S;
     CurrentText := S;
     FPosition := 0;
-    SetCursor;
+    SetCursorPos;
   end;
 end;
 
@@ -765,7 +764,7 @@ begin
       if IsMaskChar(FMask[I]) then Inc(A);
 
   FPosition := A;
-  SetCursor;
+  SetCursorPos;
 end;
 
 // Delete selected chars
