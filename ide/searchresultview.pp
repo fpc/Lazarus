@@ -152,6 +152,8 @@ type
     procedure bnFilterClick (Sender: TObject );
   private
     FMaxItems: integer;
+    FOnSelectionChanged: TNotifyEvent; fListBoxFont: TFont;
+    FMouseOverIndex: integer;
     function BeautifyPageName(const APageName: string): string;
     function PageExists(const APageName: string): boolean;
     function GetPageIndex(const APageName: string): integer;
@@ -160,8 +162,6 @@ type
     procedure ListBoxDoubleClicked(Sender: TObject);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
-                      fOnSelectionChanged: TNotifyEvent; fListBoxFont: TFont;
-                      fMouseOverIndex: integer;
     procedure SetMaxItems(const AValue: integer);
   public
     function AddSearch(const ResultsName: string;

@@ -207,7 +207,7 @@ begin
     // list results
     SearchResultsView.BeginUpdate(SearchPageIndex);
     AddReferencesToResultView(DeclarationCode,DeclarationCaretXY,
-                   DeclarationCode,TreeOfPCodeXYPosition,false,SearchPageIndex);
+                   DeclarationCode,TreeOfPCodeXYPosition,true,SearchPageIndex);
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=-1;
     SearchResultsView.EndUpdate(OldSearchPageIndex);
