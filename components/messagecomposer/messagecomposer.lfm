@@ -1,192 +1,161 @@
 object FormMessagesComposer: TFormMessagesComposer
-  Left = 104
-  Height = 586
-  Top = 118
-  Width = 800
-  HorzScrollBar.Page = 799
-  VertScrollBar.Page = 585
+  Left = 356
+  Height = 553
+  Top = 202
+  Width = 822
+  HorzScrollBar.Page = 821
+  VertScrollBar.Page = 552
   ActiveControl = CaptionEdit
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Messages Composer'
-  ClientHeight = 586
-  ClientWidth = 800
+  ClientHeight = 553
+  ClientWidth = 822
   OnCreate = MessagesInitExecute
   Position = poScreenCenter
   LCLVersion = '0.9.25'
   object CaptionLabel: TLabel
-    Left = 8
-    Height = 14
-    Top = 8
-    Width = 38
+    Left = 6
+    Height = 20
+    Top = 70
+    Width = 50
     Caption = 'Caption'
     ParentColor = False
   end
   object MsgLabel: TLabel
-    Left = 8
-    Height = 14
-    Top = 56
-    Width = 45
+    Left = 6
+    Height = 20
+    Top = 133
+    Width = 61
     Caption = 'MsgLabel'
     ParentColor = False
   end
   object DlgTypeLabel: TLabel
-    Left = 108
-    Height = 14
-    Top = 8
-    Width = 40
+    Left = 154
+    Height = 20
+    Top = 70
+    Width = 50
     Caption = 'DlgType'
     ParentColor = False
   end
   object HelpContextLabel: TLabel
     Left = 8
-    Height = 14
-    Top = 278
-    Width = 64
+    Height = 20
+    Top = 314
+    Width = 84
     Caption = 'Help Context'
     ParentColor = False
   end
   object HelpKeyWordLabel: TLabel
     Left = 103
-    Height = 14
-    Top = 278
-    Width = 69
+    Height = 20
+    Top = 314
+    Width = 87
     Caption = 'Help KeyWord'
     ParentColor = False
   end
   object XLabel: TLabel
-    Left = 8
-    Height = 14
-    Top = 242
-    Width = 7
+    Left = 6
+    Height = 20
+    Top = 277
+    Width = 9
     Caption = 'X'
     ParentColor = False
   end
   object YLabel: TLabel
     AnchorSideLeft.Control = XSpinEdit
     AnchorSideLeft.Side = asrBottom
-    Left = 66
-    Height = 14
-    Top = 242
-    Width = 7
+    Left = 93
+    Height = 20
+    Top = 277
+    Width = 8
     BorderSpacing.Left = 8
     Caption = 'Y'
     ParentColor = False
   end
   object HelpFileNameLabel: TLabel
     Left = 8
-    Height = 14
-    Top = 328
-    Width = 68
+    Height = 20
+    Top = 364
+    Width = 93
     Caption = 'Help FileName'
     ParentColor = False
   end
   object PromptLabel: TLabel
-    Left = 8
-    Height = 14
-    Top = 112
-    Width = 60
+    Left = 16
+    Height = 20
+    Top = 425
+    Width = 82
     Caption = 'PromptLabel'
     ParentColor = False
   end
   object ValueLabel: TLabel
-    Left = 8
-    Height = 14
-    Top = 181
-    Width = 54
+    Left = 16
+    Height = 20
+    Top = 478
+    Width = 70
     Caption = 'Value (var)'
     ParentColor = False
   end
   object DefaultValue: TLabel
-    Left = 108
-    Height = 14
-    Top = 181
-    Width = 36
+    Left = 138
+    Height = 20
+    Top = 478
+    Width = 47
     Caption = 'Default'
     ParentColor = False
   end
   object Bevel1: TBevel
-    Left = 10
+    Left = 5
     Height = 9
-    Top = 103
-    Width = 201
+    Top = 260
+    Width = 269
     Shape = bsTopLine
   end
   object Bevel2: TBevel
     Left = 8
     Height = 9
-    Top = 225
-    Width = 207
+    Top = 417
+    Width = 266
     Shape = bsTopLine
   end
   object Bevel3: TBevel
     Left = 8
     Height = 9
-    Top = 269
-    Width = 203
+    Top = 305
+    Width = 266
     Shape = bsTopLine
   end
-  object KindMessageRadioGroup: TRadioGroup
-    Left = 215
-    Height = 359
-    Top = 7
-    Width = 576
-    AutoFill = True
-    Caption = 'KindMessageRadioGroup'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.TopBottomSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    ClientHeight = 341
-    ClientWidth = 572
-    ItemIndex = 0
-    Items.Strings = (
-      'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
-      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
-      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpKeyword]'
-      'MessageDlgPos[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y]'
-      'MessageDlgPosHelp[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y, HelpFileName]'
-      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpCtx]'
-      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpKeyword]'
-      'ShowMessage[Msg: string];'
-      'ShowMessageFmt[Msg, Params(array of const)];'
-      'ShowMessagePos[Msg, X, Y];'
-      'InputQuery[Caption, Prompt, MaskInput(Boolean), Value(String)]'
-      'InputQuery[Caption, Prompt, Value(String)]'
-      'InputBox[Caption, Prompt, Default]'
-      'PasswordBox[Caption, Prompt]'
-    )
-    OnClick = MessageSetupExecute
-    TabOrder = 2
+  object KindMessageLabel: TLabel
+    Left = 6
+    Height = 20
+    Top = 6
+    Width = 810
+    Align = alTop
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    Caption = 'KindMessageLabel'
+    ParentColor = False
   end
   object CaptionEdit: TEdit
-    Left = 8
+    Left = 6
     Height = 23
-    Top = 24
-    Width = 93
+    Top = 86
+    Width = 136
+    BorderSpacing.Top = 3
     TabOrder = 0
     Text = 'CaptionEdit'
   end
-  object MsgEdit: TEdit
-    Left = 8
-    Height = 23
-    Top = 72
-    Width = 203
-    OnEditingDone = GetParamsFmtExecute
-    TabOrder = 1
-    Text = 'MsgEdit'
-  end
   object DlgTypeComboBox: TComboBox
-    Left = 108
-    Height = 21
-    Top = 26
-    Width = 103
+    AnchorSideTop.Control = DlgTypeLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 154
+    Height = 31
+    Top = 93
+    Width = 120
     AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    ItemHeight = 13
+    BorderSpacing.Top = 3
     ItemIndex = 0
     Items.Strings = (
       'mtWarning'
@@ -197,13 +166,13 @@ object FormMessagesComposer: TFormMessagesComposer
     )
     MaxLength = 0
     Style = csDropDownList
-    TabOrder = 3
+    TabOrder = 1
     Text = 'mtWarning'
   end
   object ButtonsCheckGroup: TCheckGroup
-    Left = 575
+    Left = 285
     Height = 177
-    Top = 369
+    Top = 70
     Width = 216
     AutoFill = True
     Caption = 'BUTTONS (TMsgDlgButtons)'
@@ -231,35 +200,41 @@ object FormMessagesComposer: TFormMessagesComposer
       'mbClose'
     )
     OnItemClick = ButtonsCheckGroupItemClick
-    TabOrder = 4
+    TabOrder = 2
     Data = {
       0C000000020203030202020202020202
     }
   end
   object HelpContextSpinEdit: TSpinEdit
+    AnchorSideTop.Control = HelpContextLabel
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 23
-    Top = 297
+    Top = 337
     Width = 61
+    BorderSpacing.Top = 3
     MaxValue = 9999
-    TabOrder = 5
+    TabOrder = 3
   end
   object HelpKeyWordEdit: TEdit
+    AnchorSideTop.Control = HelpKeyWordLabel
+    AnchorSideTop.Side = asrBottom
     Left = 103
     Height = 23
-    Top = 297
-    Width = 108
-    TabOrder = 6
+    Top = 337
+    Width = 171
+    BorderSpacing.Top = 3
+    TabOrder = 4
     Text = 'HelpKeyWordEdit'
   end
   object ButtonsPanel: TPanel
-    Left = 278
-    Height = 170
-    Top = 376
+    Left = 509
+    Height = 177
+    Top = 70
     Width = 285
-    ClientHeight = 170
+    ClientHeight = 177
     ClientWidth = 285
-    TabOrder = 7
+    TabOrder = 5
     object ButtonsStringGrid: TStringGrid
       Left = 1
       Height = 138
@@ -271,7 +246,6 @@ object FormMessagesComposer: TFormMessagesComposer
       FixedCols = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
       RowCount = 4
-      ScrollBars = ssAutoBoth
       TabOrder = 0
       OnPickListSelect = UpdateQuestioDlgResultExecute
       OnSelectEditor = ButtonsStringGridSelectEditor
@@ -309,18 +283,18 @@ object FormMessagesComposer: TFormMessagesComposer
     end
     object Panel2: TPanel
       Left = 1
-      Height = 30
+      Height = 37
       Top = 139
       Width = 283
       Align = alClient
       BevelInner = bvLowered
       BevelOuter = bvSpace
-      ClientHeight = 30
+      ClientHeight = 37
       ClientWidth = 283
       TabOrder = 1
       object BitBtn1: TBitBtn
         Left = 2
-        Height = 26
+        Height = 33
         Top = 2
         Width = 128
         Action = AddConst
@@ -330,7 +304,7 @@ object FormMessagesComposer: TFormMessagesComposer
       end
       object BitBtn2: TBitBtn
         Left = 153
-        Height = 26
+        Height = 33
         Top = 2
         Width = 128
         Action = DelConst
@@ -344,137 +318,151 @@ object FormMessagesComposer: TFormMessagesComposer
     AnchorSideLeft.Control = XLabel
     AnchorSideLeft.Side = asrBottom
     Left = 19
-    Height = 22
-    Top = 237
-    Width = 39
+    Height = 27
+    Top = 272
+    Width = 66
     AutoSize = True
     BorderSpacing.Left = 4
-    TabOrder = 8
+    TabOrder = 6
   end
   object YSpinEdit: TSpinEdit
     AnchorSideLeft.Control = YLabel
     AnchorSideLeft.Side = asrBottom
-    Left = 77
-    Height = 22
-    Top = 237
-    Width = 33
+    Left = 105
+    Height = 27
+    Top = 272
+    Width = 66
     AutoSize = True
     BorderSpacing.Left = 4
-    TabOrder = 9
+    TabOrder = 7
   end
   object HelpFileNameEdit: TFileNameEdit
+    AnchorSideTop.Control = HelpFileNameLabel
+    AnchorSideTop.Side = asrBottom
     Left = 8
     Height = 23
-    Top = 344
-    Width = 181
+    Top = 387
+    Width = 244
     ButtonWidth = 23
     NumGlyphs = 1
+    BorderSpacing.Top = 3
     ParentColor = False
-    TabOrder = 10
+    TabOrder = 8
   end
   object PromptEdit: TEdit
-    Left = 8
+    AnchorSideTop.Control = PromptLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 16
     Height = 23
-    Top = 128
-    Width = 203
-    TabOrder = 11
+    Top = 448
+    Width = 164
+    BorderSpacing.Top = 3
+    TabOrder = 9
     Text = 'PromptEdit'
   end
   object MaskInputCheckBox: TCheckBox
-    Left = 8
-    Height = 19
-    Top = 156
-    Width = 76
+    Left = 191
+    Height = 22
+    Top = 441
+    Width = 89
     Caption = 'MaskInput'
-    TabOrder = 12
+    TabOrder = 10
   end
   object ValueEdit: TEdit
-    Left = 8
+    AnchorSideTop.Control = ValueLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 16
     Height = 23
-    Top = 197
-    Width = 80
-    TabOrder = 13
+    Top = 501
+    Width = 112
+    BorderSpacing.Top = 3
+    TabOrder = 11
     Text = 'ValueEdit'
   end
   object DefaultEdit: TEdit
-    Left = 106
+    AnchorSideTop.Control = DefaultValue
+    AnchorSideTop.Side = asrBottom
+    Left = 138
     Height = 23
-    Top = 197
-    Width = 105
-    TabOrder = 14
+    Top = 501
+    Width = 136
+    BorderSpacing.Top = 3
+    TabOrder = 12
     Text = 'DefaultEdit'
   end
   object Button1: TButton
-    Left = 279
-    Height = 25
-    Top = 552
-    Width = 284
+    Left = 307
+    Height = 37
+    Top = 501
+    Width = 256
     Action = Test
     BorderSpacing.InnerBorder = 4
-    TabOrder = 15
+    TabOrder = 13
   end
   object Button2: TBitBtn
-    Left = 616
-    Height = 26
-    Top = 552
-    Width = 60
+    Left = 605
+    Height = 37
+    Top = 501
+    Width = 100
     AutoSize = True
     Caption = '&OK'
+    Constraints.MinHeight = 37
+    Constraints.MinWidth = 100
     Default = True
     Kind = bkOK
     ModalResult = 1
     NumGlyphs = 0
-    TabOrder = 16
+    TabOrder = 14
   end
   object Button3: TBitBtn
     AnchorSideLeft.Control = Button2
     AnchorSideLeft.Side = asrBottom
-    Left = 680
-    Height = 26
-    Top = 551
-    Width = 78
-    AutoSize = True
+    Left = 709
+    Height = 37
+    Top = 501
+    Width = 100
     BorderSpacing.Left = 4
     Cancel = True
     Caption = 'Cancel'
+    Constraints.MinHeight = 37
+    Constraints.MinWidth = 100
     Kind = bkCancel
     ModalResult = 2
     NumGlyphs = 0
-    TabOrder = 17
+    TabOrder = 15
   end
   object SourceWrapperGroupBox: TGroupBox
-    Left = 8
-    Height = 208
-    Top = 368
-    Width = 264
+    Left = 307
+    Height = 221
+    Top = 264
+    Width = 509
     Caption = 'SourceWrapperGroupBox'
-    ClientHeight = 190
-    ClientWidth = 260
-    TabOrder = 18
+    ClientHeight = 202
+    ClientWidth = 505
+    TabOrder = 16
     object Label1: TLabel
       Left = 7
-      Height = 14
+      Height = 20
       Top = 6
-      Width = 55
+      Width = 69
       Caption = '"if" RESULT'
       ParentColor = False
     end
     object StringResultLabel: TLabel
-      AnchorSideTop.Control = IfResultComboBox
       AnchorSideTop.Side = asrBottom
-      Left = 7
-      Height = 14
-      Top = 51
-      Width = 69
+      Left = 9
+      Height = 20
+      Top = 145
+      Width = 90
       BorderSpacing.Top = 8
       Caption = 'String RESULT'
       ParentColor = False
     end
     object IfThenRadioButton: TRadioButton
       Left = 7
-      Height = 19
-      Top = 111
-      Width = 70
+      Height = 22
+      Top = 72
+      Width = 83
       Caption = 'if...then...'
       Checked = True
       OnClick = SetIfOrCaseExecute
@@ -483,36 +471,36 @@ object FormMessagesComposer: TFormMessagesComposer
     end
     object IfThenElseRadioButton: TRadioButton
       Left = 7
-      Height = 19
-      Top = 129
-      Width = 101
+      Height = 22
+      Top = 93
+      Width = 125
       Caption = 'if...then...else ...'
       OnClick = SetIfOrCaseExecute
       TabOrder = 1
     end
     object CaseOfEndRadioButton: TRadioButton
-      Left = 7
-      Height = 19
-      Top = 152
-      Width = 109
+      Left = 199
+      Height = 22
+      Top = 143
+      Width = 134
       Caption = 'case ... of ... end;'
       OnClick = SetIfOrCaseExecute
       TabOrder = 2
     end
     object CaseOfEndElseRadioButton: TRadioButton
-      Left = 7
-      Height = 19
-      Top = 170
-      Width = 119
+      Left = 199
+      Height = 22
+      Top = 164
+      Width = 148
       Caption = 'case ... of ... else ...'
       OnClick = SetIfOrCaseExecute
       TabOrder = 3
     end
     object BeginEndCheckBox: TCheckBox
-      Left = 150
-      Height = 19
-      Top = 121
-      Width = 85
+      Left = 385
+      Height = 22
+      Top = 152
+      Width = 103
       Caption = 'begin ... end'
       TabOrder = 4
     end
@@ -520,12 +508,11 @@ object FormMessagesComposer: TFormMessagesComposer
       AnchorSideTop.Control = Label1
       AnchorSideTop.Side = asrBottom
       Left = 7
-      Height = 21
-      Top = 22
-      Width = 119
+      Height = 31
+      Top = 29
+      Width = 175
       AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-      BorderSpacing.Top = 2
-      ItemHeight = 13
+      BorderSpacing.Top = 3
       ItemIndex = 0
       Items.Strings = (
         'mbOK'
@@ -539,12 +526,12 @@ object FormMessagesComposer: TFormMessagesComposer
     object CaseResultCheckGroup: TCheckGroup
       AnchorSideLeft.Control = IfResultComboBox
       AnchorSideLeft.Side = asrBottom
-      Left = 134
+      Left = 192
       Height = 118
       Top = -1
-      Width = 121
+      Width = 299
       AutoFill = True
-      BorderSpacing.Left = 8
+      BorderSpacing.Left = 10
       Caption = '"case" RESULT'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
@@ -553,7 +540,8 @@ object FormMessagesComposer: TFormMessagesComposer
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
-      ChildSizing.ControlsPerLine = 1
+      ChildSizing.ControlsPerLine = 3
+      Columns = 3
       Items.Strings = (
         'mbOK'
         'mbCancel'
@@ -566,18 +554,66 @@ object FormMessagesComposer: TFormMessagesComposer
     object StringResultEdit: TEdit
       AnchorSideTop.Control = StringResultLabel
       AnchorSideTop.Side = asrBottom
-      Left = 7
+      Left = 9
       Height = 23
-      Top = 69
-      Width = 119
-      BorderSpacing.Top = 4
+      Top = 168
+      Width = 173
+      BorderSpacing.Top = 3
       TabOrder = 7
       Text = 'StringResultEdit'
     end
   end
+  object KindMessageComboBox: TComboBox
+    Left = 6
+    Height = 31
+    Top = 30
+    Width = 810
+    Align = alTop
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 4
+    BorderSpacing.Right = 6
+    ItemIndex = 0
+    Items.Strings = (
+      'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
+      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
+      'MessageDlg[Caption, Msg, DlgType, Buttons(TMsgDlgButtons), HelpKeyword]'
+      'MessageDlgPos[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y]'
+      'MessageDlgPosHelp[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx, X, Y, HelpFileName]'
+      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpCtx]'
+      'QuestionDlg[Caption, Msg, DlgType, Buttons(array of const), HelpKeyword]'
+      'ShowMessage[Msg: string];'
+      'ShowMessageFmt[Msg, Params(array of const)];'
+      'ShowMessagePos[Msg, X, Y];'
+      'InputQuery[Caption, Prompt, MaskInput(Boolean), Value(String)]'
+      'InputQuery[Caption, Prompt, Value(String)]'
+      'InputBox[Caption, Prompt, Default]'
+      'PasswordBox[Caption, Prompt]'
+    )
+    OnChange = MessageSetupExecute
+    Style = csDropDownList
+    TabOrder = 17
+    Text = 'MessageDlg[Msg, DlgType, Buttons(TMsgDlgButtons), HelpCtx]'
+  end
+  object MsgMemo: TMemo
+    AnchorSideTop.Control = MsgLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 94
+    Top = 156
+    Width = 268
+    BorderSpacing.Top = 3
+    Lines.Strings = (
+      'MsgLabel'
+    )
+    OnEditingDone = GetParamsFmtExecute
+    ScrollBars = ssAutoVertical
+    TabOrder = 18
+    WordWrap = False
+  end
   object ActionList1: TActionList
-    left = 408
-    top = 448
+    left = 456
+    top = 368
     object AddConst: TAction
       Caption = 'AddConst'
       DisableIfNoHandler = True

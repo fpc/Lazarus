@@ -2,7 +2,7 @@
 This source is only used to compile and install the package.
  }
 
-unit messagescomposerpkg; 
+unit messagecomposerpkg; 
 
 interface
 
@@ -17,5 +17,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage('messagescomposerpkg', @Register); 
+  RegisterPackage('messagecomposerpkg', @Register); 
 end.

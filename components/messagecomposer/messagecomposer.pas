@@ -35,6 +35,9 @@ type
   { TFormMessagesComposer }
 
   TFormMessagesComposer = class(TForm)
+    KindMessageComboBox: TComboBox;
+    KindMessageLabel: TLabel;
+    MsgMemo: TMemo;
     UpdateQuestioDlgResult: TAction;
     SetIfOrCase: TAction;
     Bevel1: TBevel;
@@ -82,8 +85,6 @@ type
     HelpKeyWordEdit: TEdit;
     HelpContextLabel: TLabel;
     HelpKeyWordLabel: TLabel;
-    KindMessageRadioGroup: TRadioGroup;
-    MsgEdit: TEdit;
     CaptionLabel: TLabel;
     MsgLabel: TLabel;
     HelpContextSpinEdit: TSpinEdit;
@@ -200,7 +201,7 @@ procedure TFormMessagesComposer.ButtonsStringGridSelectEditor(Sender: TObject; a
   aRow: Integer; var Editor: TWinControl);
 begin
   if aCol<>1 then exit;
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     5, 6: begin
       Editor := TStringGrid(Sender).EditorByStyle(cbsPickList);
       TPickListCellEditor(Editor).Style := csDropDownList;
@@ -249,7 +250,17 @@ var Msg, MsgCaption, MsgHelpKeyword, HelpFileName, Prompt, MsgDefault,
     intParam: integer;
     floatParam: double;
 begin
-  Msg := QuotedStr(MsgEdit.Text);
+  Msg := QuotedStr(MsgMemo.Lines.Text);
+
+  if Copy(Msg,Length(Msg)-Length(LineEnding),Length(LineEnding))=LineEnding then
+    Delete(Msg,Length(Msg)-Length(LineEnding),Length(LineEnding));
+  i := pos(LineEnding,Msg);
+  while i>0 do begin
+    Delete(Msg,i,Length(LineEnding));
+    system.Insert(QuotedStr('+LineEnding+'),Msg,i);
+    i := pos(LineEnding,Msg)
+  end;
+
   DlgType := DlgTypeComboBox.Text;
   MsgButtons := EmptyStr;
   if ButtonsCheckGroup.Enabled then begin  //MessageDlg();
@@ -278,7 +289,7 @@ begin
     if ButtonsCheckGroup.Checked[11] then
       MsgButtons := MsgButtons+' mbClose,';
   end else begin //maybe QuestionDlg() or ShowMessageFmt();
-    if KindMessageRadioGroup.ItemIndex=8 then begin //ShowMessageFmt();
+    if KindMessageComboBox.ItemIndex=8 then begin //ShowMessageFmt();
       for i := 1 to ButtonsStringGrid.RowCount-1 do begin
       //'D', 'E', 'F', 'G', 'M', 'N', 'P', 'S', 'U', 'X' format
         strParam := #32;
@@ -324,7 +335,8 @@ begin
   if MsgButtons<>EmptyStr then begin
     MsgButtons[1] := '[';
     MsgButtons[Length(MsgButtons)] := ']';
-  end;
+  end else
+    MsgButtons:='[]';
   MsgCaption := QuotedStr(CaptionEdit.Text);
   HelpCtx := HelpContextSpinEdit.Text;
   MsgHelpKeyword := QuotedStr(HelpKeyWordEdit.Text);
@@ -334,7 +346,7 @@ begin
   Prompt := QuotedStr(PromptEdit.Text);
   MsgDefault := QuotedStr(DefaultEdit.Text);
   Value := ValueEdit.Text;//user must knows Value var in his source
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0: srcMessage := 'MessageDlg('+Msg+', '+DlgType+', '+MsgButtons+','+HelpCtx+')';
     1: srcMessage := 'MessageDlg('+MsgCaption+', '+Msg+', '+DlgType+', '+
                                    MsgButtons+', '+HelpCtx+')';
@@ -414,14 +426,14 @@ var strtmp: string;
     indx: integer;
     chrtmp: Char;
 begin
-  if KindMessageRadioGroup.ItemIndex<>8 then exit;
+  if KindMessageComboBox.ItemIndex<>8 then exit;
   ButtonsStringGrid.Cells[0, 0] := 'Params (array of const)';
   ButtonsStringGrid.Cells[1, 0] := 'Values';
   ButtonsStringGrid.FixedCols := 1;
   Panel2.Visible := false;
 
   ListParams := TStringList.Create;
-  strtmp := UpperCase(MsgEdit.Text);
+  strtmp := UpperCase(MsgMemo.Lines.Text);
 
   indx := pos('%', strtmp);
   while (indx>0)and(indx<Length(strtmp)) do begin
@@ -447,18 +459,18 @@ var indx: integer;
     ListResult: TStringList;
 begin
 //Msg
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0,1,2,3,4,5,6,7,8,9: begin
-      MsgEdit.Color := clWindow;
-      MsgEdit.Enabled := true;
+      MsgMemo.Color := clWindow;
+      MsgMemo.Enabled := true;
     end;
     else begin
-      MsgEdit.Color := clBtnFace;
-      MsgEdit.Enabled := false;
+      MsgMemo.Color := clBtnFace;
+      MsgMemo.Enabled := false;
     end;
   end;
 //Caption
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     1,2,5,6,10,11,12,13: begin
       CaptionEdit.Color := clWindow;
       CaptionEdit.Enabled := true;
@@ -469,7 +481,7 @@ begin
     end;
   end;
 //DlgType;
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0,1,2,3,4,5,6: begin
       DlgTypeComboBox.Color := clWindow;
       DlgTypeComboBox.Enabled := true;
@@ -480,7 +492,7 @@ begin
     end;
   end;
 //BUTTONS (TMsgDlgButtons)
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0,1,2,3,4: begin
       ButtonsCheckGroup.Enabled := true;
     end;
@@ -489,7 +501,7 @@ begin
     end;
   end;
 //HelpContext
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0,1,3,4,5: begin
       HelpContextSpinEdit.Color := clWindow;
       HelpContextSpinEdit.Enabled := true;
@@ -500,7 +512,7 @@ begin
     end;
   end;
 //HelpKeyword
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     2,6: begin
       HelpKeyWordEdit.Color := clWindow;
       HelpKeyWordEdit.Enabled := true;
@@ -511,7 +523,7 @@ begin
     end;
   end;
 //Position X Y
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     3,4,9: begin
       XSpinEdit.Color := clWindow;
       XSpinEdit.Enabled := true;
@@ -526,7 +538,7 @@ begin
     end;
   end;
 //HelpFileName
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     4: begin
       HelpFileNameEdit.Color := clWindow;
       HelpFileNameEdit.Enabled := true;
@@ -537,7 +549,7 @@ begin
     end;
   end;
 //Params BUTTONS (array of const)
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     5,6,8: begin
       ButtonsPanel.Enabled := true;
       ButtonsStringGrid.Color := clWindow;
@@ -548,7 +560,7 @@ begin
     end;
   end;
 //Params (array of const)
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     8: begin
       GetParamsFmt.Execute;
     end;
@@ -560,7 +572,7 @@ begin
     end;
   end;
 //Prompt
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     10,11,12,13: begin
       PromptEdit.Color := clWindow;
       PromptEdit.Enabled := true;
@@ -571,7 +583,7 @@ begin
     end;
   end;
 //MaskInput
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     10: begin
       MaskInputCheckBox.Enabled := true;
     end;
@@ -580,7 +592,7 @@ begin
     end;
   end;
 //Value
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     10,11: begin
       ValueEdit.Color := clWindow;
       ValueEdit.Enabled := true;
@@ -591,7 +603,7 @@ begin
     end;
   end;
 //Default
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     12: begin
       DefaultEdit.Color := clWindow;
       DefaultEdit.Enabled := true;
@@ -605,7 +617,7 @@ begin
 /////  Results and Source Wrapper for message //////
 
 //InputBox(); PasswordBox();
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     12,13: begin
       StringResultEdit.Enabled := true;
       StringResultEdit.Color := clWindow;
@@ -626,14 +638,14 @@ begin
   end;
 
 //ShowMessage(); ShowMessageFmt(); ShowMessagePos();
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     7,8,9: SourceWrapperGroupBox.Enabled := false;
     else
       SourceWrapperGroupBox.Enabled := true;
   end;
 
 //MessageDlg() Result
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0,1,2,3,4: begin
       ListResult := TStringList.Create;
       for indx := 0 to ButtonsCheckGroup.Items.Count-1 do
@@ -675,7 +687,7 @@ begin
   end;
 
 //QuestionDlg() Result
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     5,6: begin
       ListResult := TStringList.Create;
       ListResult.Assign(ButtonsStringGrid.Cols[1]);
@@ -693,7 +705,7 @@ begin
   end;
 
 //InputQuery() Result
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     10,11: if CaseResultCheckGroup.Items[0]<>'false' then begin
       CaseResultCheckGroup.Items.Clear;
       CaseResultCheckGroup.Items.Add('false');
@@ -721,15 +733,15 @@ begin
   PromptLabel.Caption := SPromptCaption;
   MaskInputCheckBox.Caption := SMaskInput;
   SourceWrapperGroupBox.Caption := SSourceWrapper;
-  KindMessageRadioGroup.Caption := SKindofMessage;
+  KindMessageLabel.Caption := SKindofMessage;
 
   MessageSetup.Execute;
 end;
 
 procedure TFormMessagesComposer.SetIfOrCaseExecute(Sender: TObject);
 begin
-  if (KindMessageRadioGroup.ItemIndex = 12)or
-     (KindMessageRadioGroup.ItemIndex = 13) then exit;
+  if (KindMessageComboBox.ItemIndex = 12)or
+     (KindMessageComboBox.ItemIndex = 13) then exit;
   if (Sender=IfThenRadioButton)or(Sender=IfThenElseRadioButton) then begin
     IfResultComboBox.Color := clWindow;
     IfResultComboBox.Enabled := true;
@@ -749,7 +761,7 @@ var Msg, MsgCaption, MsgHelpKeyword, HelpFileName, Prompt,
     HelpCtx: Longint;
     X, Y: integer;
 begin
-  Msg := MsgEdit.Text;
+  Msg := MsgMemo.Lines.Text;
   DlgType := TMsgDlgType(DlgTypeComboBox.ItemIndex);
   MsgButtons := [];
   if ButtonsCheckGroup.Checked[0] then
@@ -784,7 +796,7 @@ begin
   Prompt := PromptEdit.Text;
   MsgDefault := DefaultEdit.Text;
   Value := ValueEdit.Text;
-  case KindMessageRadioGroup.ItemIndex of
+  case KindMessageComboBox.ItemIndex of
     0: MessageDlg(Msg, DlgType, MsgButtons, HelpCtx);
     1: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, HelpCtx);
     2: MessageDlg(MsgCaption, Msg, DlgType, MsgButtons, MsgHelpKeyword);
