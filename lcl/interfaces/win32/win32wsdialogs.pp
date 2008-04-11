@@ -23,6 +23,7 @@
 unit Win32WSDialogs;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 interface
 

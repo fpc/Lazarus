@@ -1,3 +1,4 @@
+{%MainUnit win32wsstdctrls.pp}
 {$IFDEF MEMOHEADER}
 type
 

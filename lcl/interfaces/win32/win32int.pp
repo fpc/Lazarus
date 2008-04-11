@@ -25,16 +25,9 @@
 unit Win32Int;
 
 {$mode objfpc}{$H+}{$T-}{$message warning Fix implicit pointer conversions}
+{$I win32defines.inc}
 
 interface
-
-{$IFDEF Trace}
-{$ASSERTIONS ON}
-{$ENDIF}
-
-// defining the following will print all messages as they are being handled
-// valuable for investigation of message trees / interrelations
-{ $define MSG_DEBUG}
 
 {
   When editing this unit list, be sure to keep Windows listed first to ensure

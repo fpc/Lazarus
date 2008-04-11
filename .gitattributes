@@ -3244,6 +3244,7 @@ lcl/interfaces/win32/issues.xml svneol=native#text/xml
 lcl/interfaces/win32/win32callback.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32debug.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32def.pp svneol=native#text/pascal
+lcl/interfaces/win32/win32defines.inc svneol=native#text/plain
 lcl/interfaces/win32/win32extra.pas svneol=native#text/pascal
 lcl/interfaces/win32/win32int.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32lclintf.inc svneol=native#text/pascal

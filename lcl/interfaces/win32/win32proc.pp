@@ -23,6 +23,7 @@
 unit win32proc;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 interface
 

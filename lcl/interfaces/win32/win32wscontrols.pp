@@ -23,6 +23,7 @@
 unit Win32WSControls;
 
 {$mode objfpc}{$H+}
+{$I win32defines.inc}
 
 interface
 
