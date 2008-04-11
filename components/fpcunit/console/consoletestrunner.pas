@@ -27,7 +27,7 @@ uses
   custapp, Classes, SysUtils,
   fpcunit, testregistry, testutils,
   fpcunitreport, latextestreport, xmltestreport, plaintestreport,
-  dom, xmlwrite;
+  dom;
 
 const
   Version = '0.2';
@@ -272,13 +272,9 @@ begin
   if HasOption('l', 'list') then
     case FormatParam of
       fLatex: Write(GetSuiteAsLatex(GetTestRegistry));
-      {$IFNDEF VER2_0}
       fPlain: Write(GetSuiteAsPlain(GetTestRegistry));
-      {$ELSE}
-      fXML: Write(GetSuiteAsXML(GetTestRegistry));
-      {$ENDIF}
-      else
-        Write(GetSuiteAsLatex(GetTestRegistry));;
+    else
+      Write(GetSuiteAsLatex(GetTestRegistry));;
     end;
 
   //run the tests
