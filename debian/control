@@ -3,22 +3,20 @@ Section: devel
 Priority: optional
 Maintainer: Carlos Laviola <claviola@debian.org>
 Uploaders: Torsten Werner <twerner@debian.org>
-Build-Depends: debhelper (>= 5), fp-compiler (>= 2.2.0-3), fp-units-base,
- fp-units-db, fp-units-fcl, fp-units-gfx, fp-units-gtk, fp-units-misc,
- fp-units-net, fp-units-rtl, fp-utils, imagemagick, libgdk-pixbuf-dev
+Build-Depends: debhelper (>= 5), dpatch, fp-compiler (>= 2.2.0-3), fp-units-base,
+ fp-units-db, fp-units-fcl, fp-units-gfx, fp-units-gtk, fp-units-gtk2,
+ fp-units-i386 [i386], fp-units-misc, fp-units-net, fp-units-rtl, fp-utils,
+ imagemagick, libgdk-pixbuf-dev
 Standards-Version: 3.7.3
 Homepage: http://www.lazarus.freepascal.org
 Vcs-Svn: https://bollin.googlecode.com/svn/lazarus/trunk
 Vcs-Browser: http://bollin.googlecode.com/svn/lazarus/trunk
 
 Package: lazarus
-Architecture: i386 powerpc sparc amd64 arm
+Architecture: all
 Pre-Depends: dpkg (>= 1.10.24)
-Depends: ${shlibs:Depends}, fp-compiler, fp-units-base, fp-units-rtl,
- fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
- ${fpc-abi:Depends}
-Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
- fp-units-net, fpc-source
+Depends: lazarus-ide, lazarus-src, lazarus-doc
+Recommends: fpc, fpc-source
 Suggests: fp-utils
 Description: Rapid Application Development (RAD) tool for Free Pascal
  Lazarus are the class libraries for Free Pascal that emulate Delphi.
@@ -37,3 +35,52 @@ Description: Rapid Application Development (RAD) tool for Free Pascal
  Component Library (LCL).
  .
  This IDE will eventually reach Delphi's full functionality.
+
+Package: lazarus-ide
+Architecture: i386 powerpc sparc amd64 arm
+Pre-Depends: dpkg (>= 1.10.24)
+Depends: ${shlibs:Depends}, fp-compiler, fp-units-base, fp-units-rtl,
+ fp-units-fcl, fp-units-gtk, libgtk1.2-dev, libgdk-pixbuf-dev,
+ ${fpc-abi:Depends}, lazarus-src
+Recommends: fp-units-db, fp-units-gfx, fp-units-gnome1, fp-units-misc,
+ fp-units-net, fpc-source
+Suggests: fp-utils
+Description: Rapid Application Development (RAD) tool for Free Pascal
+ Lazarus are the class libraries for Free Pascal that emulate Delphi.
+ Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
+ and other OS's. Free Pascal is designed to be able to understand and
+ compile programs written with the Delphi syntax, which is object-oriented.
+ Lazarus is the part of the missing puzzle that will allow you to develop
+ Delphi-like programs in all of the above platforms.
+ .
+ This package contains the lazarus IDE, LCL and components.
+
+Package: lazarus-src
+Section: devel
+Architecture: all
+Description: Rapid Application Development (RAD) tool for Free Pascal
+ Lazarus are the class libraries for Free Pascal that emulate Delphi.
+ Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
+ and other OS's. Free Pascal is designed to be able to understand and
+ compile programs written with the Delphi syntax, which is object-oriented.
+ Lazarus is the part of the missing puzzle that will allow you to develop
+ Delphi-like programs in all of the above platforms.
+ .
+ This package contains lazarus source code necessary for the IDE code tool to
+ run (retrieving declarations and navigating in code).
+
+Package: lazarus-doc
+Section: doc
+Architecture: all
+Description: Rapid Application Development (RAD) tool for Free Pascal
+ Lazarus are the class libraries for Free Pascal that emulate Delphi.
+ Free Pascal is a GPL'd compiler that runs on Linux, Win32, OS/2, 68K
+ and other OS's. Free Pascal is designed to be able to understand and
+ compile programs written with the Delphi syntax, which is object-oriented.
+ Lazarus is the part of the missing puzzle that will allow you to develop
+ Delphi-like programs in all of the above platforms.
+ .
+ This package contain documentation of the lazarus IDE and components. It can
+ be viewed separately with any HTML browser or used by the IDE to as an
+ integrated help (pressing <F1> on any LCL identifier will browse the help of
+ that identifier).

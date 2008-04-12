@@ -1,18 +1,57 @@
-lazarus (0.9.25-0-0) unstable; urgency=low
+lazarus (0.9.25-0) unstable; urgency=low
 
   * Merged debian rules with official debian svn.
 
- -- Mazen Neifer <mazen@freepascal.org>  Fri, 28 Dec 2007 23:52:02 +0100
+ -- Mazen Neifer <mazen@freepascal.org>  Tue, 08 Apr 2008 22:35:37 +0200
+
+lazarus (0.9.24-0-6) unstable; urgency=low
+
+  [ Mazen Neifer ]
+  * Split lazarus package into sevaral packages
+    + lazarus-ide : for IDE and binary files
+    + lazarus-src : for source files
+    + lazarus-doc : for documentation
+    + lazarus : a meta package depending on previous packages
+
+  [ Torsten Werner ]
+  * Add Build-Depends: fp-units-gtk2, fp-units-i386 [i386].
+  * Several lintian cleanups.
+  * Make sure that uscan will clean up the tarball for the next upstream
+    version.
+
+ -- Torsten Werner <twerner@debian.org>  Sat, 08 Mar 2008 19:28:47 +0100
+
+lazarus (0.9.24-0-5) unstable; urgency=low
+
+  * Fixed 'make distclean' to ensure all generated files are deleted.
+
+ -- Mazen Neifer <mazen@freepascal.org>  Sat, 16 Feb 2008 10:47:12 +0100
+
+lazarus (0.9.24-0-4) unstable; urgency=low
+
+  * Ignore errors from fpcmake; we did not call this in older versions of the
+    package anyway. (Closes: #458590)
+  * Add FPC=fpc to 'make distclean', too.
+
+ -- Torsten Werner <twerner@debian.org>  Wed, 02 Jan 2008 17:22:26 +0100
 
 lazarus (0.9.24-0-3) unstable; urgency=low
 
+  [ Torsten Werner ]
   * Use fpc-depends to calculate dependencies more accurately.
   * Add Recommends: fpc-source. (Closes: #413806)
   * Use bzip2 for compressing the binary package and add
     Pre-Depends: dpkg (>= 1.10.24).
   * Change Standards-Version: 3.7.3.
+  * Refer to GPL-2 and LGPL-2 in debian/copyright.
 
- -- Torsten Werner <twerner@debian.org>  Tue, 18 Dec 2007 20:22:02 +0100
+  [ Mazen Neifer ]
+  * Include README.Debian file for docs
+  * Run fpcmake before building to ensure correct target dependencies
+  * Include Copyright file
+  * Set compat level to 5
+
+ -- Torsten Werner <twerner@debian.org>  Sat, 29 Dec 2007 23:05:42 +0100
 
 lazarus (0.9.24-0-2) unstable; urgency=low
 

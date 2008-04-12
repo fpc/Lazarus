@@ -3,7 +3,18 @@ Wed, 18 Aug 2004 14:45:08 -0300.
 
 It was downloaded from http://www.lazarus.freepascal.org.
 
-Upstream Authors: Andreas Hausladen, Andrew Haines, Andrew Johnson, Bob Wingard, Christian Iversen, Cliff Baeseman, Colin Western, Curtis White, Darek Mazur, Eric Chapman, GongYu, Hans-Joachim Ott, Jason King, Jeffrey A. Wormsley, Jeroen van Idekinge, Jesus Reyes, Karl Brandt, Keith Bowes, Ladislav Michl, Luis R. Hilario B., Marc Weustink, Martin Patik, Martin Smat, Martyn Ranyard, Mattias Gaertner, Michael A. Hess, Micha Nelissen, Michal Bukovjan, Olivier Guilbaud, Peter Dyson, Radek Cervinka, Raul Moratalla, Reimar Grabowski, Samuel Liddicott, Seppo Suutarla, Shane Miller, Stefan Hille, Tom Lisjac, Tony Maro, Vasily I. Volchenko, Vincent Snijders, Wojciech Malinowski
+Upstream Authors: Andreas Hausladen, Andrew Haines, Andrew Johnson, Bob
+  Wingard, Christian Iversen, Cliff Baeseman, Colin Western, Curtis White,
+  Darek Mazur, Eric Chapman, GongYu, Hans-Joachim Ott, Jason King, Jeffrey
+  A. Wormsley, Jeroen van Idekinge, Jesus Reyes, Karl Brandt, Keith Bowes,
+  Ladislav Michl, Luis R. Hilario B., Marc Weustink, Martin Patik, Martin
+  Smat, Martyn Ranyard, Mattias Gaertner, Michael A. Hess, Micha Nelissen,
+  Michal Bukovjan, Olivier Guilbaud, Peter Dyson, Radek Cervinka, Raul
+  Moratalla, Reimar Grabowski, Samuel Liddicott, Seppo Suutarla, Shane
+  Miller, Stefan Hille, Tom Lisjac, Tony Maro, Vasily I. Volchenko,
+  Vincent Snijders, Wojciech Malinowski
+
+Copyright: (C) 1999-2007 Lazarus development team
 
 The Lazarus sources consists of several parts and each part has its own
 license. Three licenses are in use: The GPL, version 2, a modified LGPL
@@ -33,8 +44,10 @@ The source directory tree and respective licenses:
     +- codetools    (GPL v2)
     |
     +- gtk
-       |
-       +- gtkglarea (modified LGPL)
+    |  |
+    |  +- gtkglarea (modified LGPL)
+    |
+    +- lazreport    (modified LPGL)
 
 
 The IDE files are the files in the <lazarus>, designer, packager and debugger
@@ -60,8 +73,8 @@ COPYING.modifiedLGPL below:
     you are not obligated to do so. If you do not wish to do so, delete this
     exception statement from your version.  "
 
-See: /usr/share/common-licenses/GPL
-     /usr/share/common-licenses/LGPL
+See: /usr/share/common-licenses/GPL-2
+     /usr/share/common-licenses/LGPL-2
 
      For full copies of the GPL and the LGPL.
 

@@ -1,16 +1,66 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-# GNU copyright 1997 to 1999 by Joey Hess.
 
-# Uncomment this to turn on verbose mode.
+# stolen from cdbs:
+DEB_DH_BUILDDEB_ARGS := -- -Z bzip2
+
+# Define FPC and FPCDIR if it was not set
+ifndef FPC
+export FPC=fpc
+endif
+ifndef FPCDIR
+export FPCDIR=/usr/lib/fpc/2.2.0
+endif
+# Get directories
+CURDIR:=$(shell pwd)
+BUILD_DIR=$(CURDIR)/debian/build
+INSTALL_DIR=$(CURDIR)/debian/tmp
+DOC_DIR=$(INSTALL_DIR)/usr/share/doc
+EXAMPLE_TEMP=$(DOC_DIR)/fpc-$(FPCVERSION)
+INSTALLOPTS=INSTALL_PREFIX=$(INSTALL_DIR)/usr
+
 #export DH_VERBOSE=1
 
-LAZDEBDIR = $(CURDIR)/debian/lazarus
+###################
+# Clean
+#
 
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
+clean: clean-patched unpatch
+clean-patched:
+	@echo "--- Cleaning"
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp install-arch-stamp arrange-arch-stamp configure-stamp lazbuild
+	rm -f build-doc-stamp install-doc-stamp
+	rm -f build-indep-stamp install-indep-stamp
+	rm -f debian-files-stamp
+	rm -f debian/*.files debian/*.docs debian/*.examples debian/*.postinst debian/*.postrm
+	$(MAKE) distclean
+	-(find . -name \*.a | xargs rm)
+	dh_clean 
+
+patch: patch-stamp
+
+patch-stamp:
+	dpatch apply-all
+	touch patch-stamp
+
+unpatch:
+	dpatch deapply-all
+	rm -rf patch-stamp debian/patched
+
+###################
+# Debian files
+#
+
+debian-files: debian-files-stamp
+debian-files-stamp: patch
+	@echo "--- Creating/fixing *.install files"
+	#/bin/bash debian/fixdeb debian $(FPCTARGET) $(PPNEW)
+	touch debian-files-stamp
+
+###################
+# Arch packages
+#
 
 configure: configure-stamp
 configure-stamp:
@@ -19,74 +69,149 @@ configure-stamp:
 	find -name 'Makefile.fpc' | xargs fpcmake
 	touch configure-stamp
 
-build: patch build-stamp
-
-build-stamp: configure-stamp 
+build-arch: build-arch-stamp
+build-arch-stamp: debian-files-stamp configure-stamp 
+	@echo "--- Building"
 	dh_testdir
-	$(MAKE) USESVN2REVISIONINC=0 FPC=fpc
-	touch build-stamp
+	$(MAKE) lcl packager/registration ideintf bigidecomponents examples
+	$(MAKE) lcl packager/registration ideintf bigidecomponents examples LCL_PLATFORM=gtk2
+	$(MAKE) bigide USESVN2REVISIONINC=0
+	$(MAKE) lazbuilder
+	$(MAKE) tools
+	touch build-arch-stamp
 
-clean: clean-patched unpatch
-
-clean-patched:
-	dh_testdir
-	dh_testroot
-	rm -f build-stamp configure-stamp lazbuild debian/*.ex debian/files
-	$(MAKE) distclean
-	dh_clean 
-
-patch: patch-stamp
-
-patch-stamp:
-	#dpatch apply-all
-	touch patch-stamp
-
-unpatch:
-	#dpatch deapply-all
-	rm -rf patch-stamp debian/patched
-
-install: build
+install-arch: install-arch-stamp
+install-arch-stamp: build-arch-stamp debian-files-stamp
+	@echo "--- Installing"
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs
-	# copy lazarus to /usr/share
-	install -d $(LAZDEBDIR)/usr/lib/lazarus
-	install -d $(LAZDEBDIR)/usr/bin
-	sh $(CURDIR)/debian/move-usr-lib.sh $(LAZDEBDIR)
+	# copy lazarus to /usr/lib
+	install -d $(INSTALL_DIR)/usr/bin
+	install -d $(INSTALL_DIR)/usr/lib/lazarus
+	cp -Rfpl -t $(INSTALL_DIR)/usr/lib/lazarus lazarus lazbuild startlazarus
+	find -name '*.ppu' -or -name '*.[oa]' -or -name '*.so*' | xargs cp -Rfpl --parents -t $(INSTALL_DIR)/usr/lib/lazarus
 	# copy icons and menu entries for the GNOME menu
-	install -d $(LAZDEBDIR)/usr/share/pixmaps
-	install -d $(LAZDEBDIR)/usr/share/applications
-	install -d $(LAZDEBDIR)/usr/bin
-	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
-	chmod 644 $(LAZDEBDIR)/usr/share/pixmaps/lazarus.xpm
-	install -m 644 $(CURDIR)/install/lazarus.desktop $(LAZDEBDIR)/usr/share/applications/lazarus.desktop
+	install -d $(INSTALL_DIR)/usr/share/pixmaps
+	install -d $(INSTALL_DIR)/usr/share/applications
+	convert -geometry 32x32 $(CURDIR)/images/ide_icon48x48.png $(INSTALL_DIR)/usr/share/pixmaps/lazarus.xpm
+	chmod 644 $(INSTALL_DIR)/usr/share/pixmaps/lazarus.xpm
+	install -m 644 $(CURDIR)/install/lazarus.desktop $(INSTALL_DIR)/usr/share/applications/lazarus.desktop
+	touch install-arch-stamp
 
-# Build architecture-independent files here.
-binary-indep: build install
+arrange-arch: arrange-arch-stamp
+arrange-arch-stamp: install-arch-stamp debian-files-stamp
+	dh_testdir
+	dh_testroot
+	dh_install -s --sourcedir=debian/tmp --list-missing
 
-# Build architecture-dependent files here.
-binary-arch: build install
+	touch arrange-arch-stamp
+
+build-indep: patch
+install-indep:
+	touch install-indep-stamp
+
+###################
+# Documentation
+#
+
+build-doc: patch build-doc-stamp
+build-doc-stamp: debian-files-stamp
+	@echo "--- Building Documentation"
+	dh_testdir
+	#$(MAKE) -C docs $(CONVERTER) $(BUILDOPTS) FPDOC=$(NEWFPDOC)
+	touch build-indep-stamp
+
+install-doc: install-doc-stamp
+install-doc-stamp: build-doc-stamp debian-files-stamp
+	@echo "--- Installing Documentation"
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	install -d $(INSTALL_DIR)/usr/share/doc/lazarus
+	cp -Rfpl -t $(INSTALL_DIR)/usr/share/doc/lazarus docs/*
+	touch install-doc-stamp
+
+###################
+# Source
+#
+
+install-source: install-source-stamp
+install-source-stamp: 
+	@echo "--- Cleaning the tree and copying the source code"
+	dh_testdir
+	dh_testroot
+	$(MAKE) distclean
+	install -d $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/components $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/debugger $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/examples $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/ide $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/ide $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/lcl $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/designer $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/packager $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/test $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/doceditor $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/ideintf $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/tools $(INSTALL_DIR)/usr/lib/lazarus/
+	cp -r $(CURDIR)/converter $(INSTALL_DIR)/usr/lib/lazarus/
+	find $(INSTALL_DIR) -name '*.bmp' -exec chmod 644 '{}' ';'
+	$(RM) $(INSTALL_DIR)/usr/lib/lazarus/components/lazreport/license*.txt
+	touch install-source-stamp
+
+###################
+# Generic
+#
+
+build: build-arch build-indep
+install: install-arch install-indep
+binary: binary-arch binary-indep
+
+
+###################
+# Deb building
+#
+
+binary-indep: build-doc install-doc install-source debian-files
+	@echo "--- Building: arch-indep packages"
+	dh_testdir
+	dh_testroot
+	dh_installdocs -i
+	dh_installchangelogs -i
+	dh_install -i --sourcedir=debian/tmp --list-missing
+	dh_compress -i -X.pdf
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i $(DEB_DH_BUILDDEB_ARGS)
+
+binary-arch: build-arch arrange-arch  debian-files
+	@echo "--- Building: arch packages"
 	dh_testdir
 	dh_testroot
 	dh_link
-	dh_installchangelogs 
-	dh_installdocs
-	dh_installexamples
+	dh_installdocs -a
+	dh_installchangelogs -a
+	dh_installexamples -a
 	dh_installmenu
-	dh_installman
 	fpc-depends
+	dh_installman -s
 	dh_strip
-	dh_compress
-	dh_fixperms
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb -- -Z bzip2
+	dh_compress -a
+	dh_fixperms -a
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s $(DEB_DH_BUILDDEB_ARGS)
+
+.PHONY: build clean binary binary-arch \
+	binary-indep debian-files build-arch \
+	install install-indep install-arch \
+	configure
 
 get-orig-source:
 	-uscan --upstream-version=0 --rename
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install configure
