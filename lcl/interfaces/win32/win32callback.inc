@@ -1907,7 +1907,7 @@ begin
               // since we are here after call of CallDefaultWindowProc
               
               // TODO: prevent getting more than one Up, Down message by LCL
-              PostMessage(Window, Msg, 0, MakeLParam(Pos.x, Pos.y));
+              PostMessage(PNMHdr(LParam)^.hwndFrom, Msg, 0, MakeLParam(Pos.x, Pos.y));
               Exit;
             end;
           end;
