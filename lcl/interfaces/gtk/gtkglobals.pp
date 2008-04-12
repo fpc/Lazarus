@@ -229,7 +229,7 @@ const
   );
   FormResizableMap : array[TFormBorderStyle] of gint = (
     0, // bsNone
-    1, // bsSingle
+    0, // bsSingle
     1, // bsSizeable
     1, // bsDialog
     0, // bsToolWindow

@@ -296,6 +296,7 @@ var
   ABorderStyle: TFormBorderStyle;
   WindowType: TGtkWindowType;
   ACustomForm: TCustomForm;
+  AResizable: gint;
 begin
   // Start of old CreateForm method
 
@@ -310,26 +311,32 @@ begin
   end
   else
     ABorderStyle:=bsNone;
-    
+
+  // Maps the border style
   WindowType := FormStyleMap[ABorderStyle];
-  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop)
-  and (not (csDesigning in ACustomForm.ComponentState)) then begin
-    WindowType:=GTK_WINDOW_POPUP;
-  end;
+  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop) then
+    WindowType := GTK_WINDOW_POPUP;
+  if (csDesigning in ACustomForm.ComponentState) then
+    WindowType := GTK_WINDOW_TOPLEVEL;
 
   if ACustomForm.Parent = nil then
   begin
     // create a floating form
     P := gtk_window_new(WindowType);
 
+    // Sets the window as resizable or not
+    // Depends on the WM supporting this
+    if (csDesigning in ACustomForm.ComponentState) then AResizable := 1
+    else AResizable := FormResizableMap[ABorderStyle];
+
     // gtk_window_set_policy is deprecated in Gtk2
     {$IFDEF Gtk2}
-      gtk_window_set_resizable(GTK_WINDOW(P), gboolean(FormResizableMap[ABorderStyle]));
+      gtk_window_set_resizable(GTK_WINDOW(P), gboolean(AResizable));
     {$ELSE}
-      gtk_window_set_policy(GTK_WINDOW(P), FormResizableMap[ABorderStyle],
-        FormResizableMap[ABorderStyle], 0);
+      gtk_window_set_policy(GTK_WINDOW(P), AResizable, AResizable, 0);
     {$ENDIF}
 
+    // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
 
     // the clipboard needs a widget
@@ -394,7 +401,9 @@ begin
   if not WSCheckHandleAllocated(AForm, 'SetFormBorderStyle')
   then Exit;
 
-  RecreateWnd(AForm);
+  // Avoids blinking the window under design unnecessarely
+  if not (csDesigning in AForm.ComponentState) then
+    RecreateWnd(AForm);
 end;
 
 class procedure TGtkWSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
@@ -494,8 +503,11 @@ begin
   gtk_widget_realize(p);
   AWindow := GetControlWindow(P);
   {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+
   gdk_window_set_decorations(AWindow, GetWindowDecorations(ACustomForm));
+    
   gdk_window_set_functions(AWindow, GetWindowFunction(ACustomForm));
+
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   gtk_widget_show_all(TempWidget);// Important: do not show the window yet, only make its content visible
 

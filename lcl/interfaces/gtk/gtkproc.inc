@@ -9483,15 +9483,50 @@ function GetWindowDecorations(AForm : TCustomForm) : Longint;
 var
   ABorderStyle: TFormBorderStyle;
 begin
+  Result := 0;
+
   if not (csDesigning in AForm.ComponentState) then
     ABorderStyle:=AForm.BorderStyle
   else
     ABorderStyle:=bsSizeable;
-    
+
+  {$IFDEF Gtk2}
+
+  case ABorderStyle of
+    bsNone: Result := 0;
+
+    bsSingle: Result := GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
+                 GDK_DECOR_MAXIMIZE;
+
+    bsSizeable: Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_MAXIMIZE
+                 or GDK_DECOR_RESIZEH;
+
+    bsDialog: Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+
+    bsToolWindow: Result := GDK_DECOR_TITLE or GDK_DECOR_MENU;
+
+    bsSizeToolWin: Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                   GDK_DECOR_MENU or GDK_DECOR_RESIZEH;
+  end;
+
+  if not (csDesigning in AForm.ComponentState) then
+  begin
+    if not (biMinimize in AForm.BorderIcons) then
+      Result := Result and not GDK_DECOR_MINIMIZE;
+    if not (biMaximize in AForm.BorderIcons) then
+      Result := Result and not GDK_DECOR_MAXIMIZE;
+    if not (biSystemMenu in AForm.BorderIcons) then
+      Result := Result and not GDK_DECOR_MENU;
+  end;
+
+  {$ELSE}
   case ABorderStyle of
     bsNone : Result := 0;
 
-    bsSingle : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+    bsSingle : Result := GDK_DECOR_TITLE or
                  GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
                  GDK_DECOR_MAXIMIZE;
 
@@ -9502,23 +9537,10 @@ begin
     bsDialog : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
                  GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
 
-    bsToolWindow : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                 GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+    bsToolWindow : Result := GDK_DECOR_TITLE or GDK_DECOR_MENU;
 
     bsSizeToolWin :Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                   GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or GDK_DECOR_RESIZEH;
-  else
-    Result :=  GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-               GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
-  end;
-  {$IFDEF Gtk2}
-  if (not (csDesigning in AForm.ComponentState)) then begin
-    if not (biMinimize in AForm.BorderIcons) then
-      Result:=Result and not GDK_DECOR_MINIMIZE;
-    if not (biMaximize in AForm.BorderIcons) then
-      Result:=Result and not GDK_DECOR_MAXIMIZE;
-    if not (biSystemMenu in AForm.BorderIcons) then
-      Result:=Result and not GDK_DECOR_MENU;
+                   GDK_DECOR_MENU or GDK_DECOR_RESIZEH;
   end;
   {$ENDIF}
   
@@ -9538,11 +9560,11 @@ begin
   else
     ABorderStyle:=bsSizeable;
 
+  {$IFDEF Gtk2}
   case ABorderStyle of
     bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE {$ifndef windows}or GDK_FUNC_MOVE{$endif};
 
-    bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+    bsSingle : Result := GDK_FUNC_MOVE or GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
 
     bsSizeable : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
                 GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE;
@@ -9550,11 +9572,9 @@ begin
     bsDialog : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
                 or GDK_FUNC_MOVE;
 
-    bsToolWindow : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+    bsToolWindow : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
 
-    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE;
+    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
   end;
 
   // X warns if marking a fixed size window resizeable:
@@ -9564,7 +9584,6 @@ begin
   and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
     Result:=Result-GDK_FUNC_RESIZE;
 
-  {$IFDEF Gtk2}
   if (not (csDesigning in AForm.ComponentState)) then
   begin
     if not (biMinimize in AForm.BorderIcons) then
@@ -9572,6 +9591,29 @@ begin
     if not (biMaximize in AForm.BorderIcons) then
       Result:=Result and not GDK_FUNC_MAXIMIZE;
   end;
+  {$ELSE}
+  case ABorderStyle of
+    bsNone : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE;
+
+    bsSingle : Result := GDK_FUNC_MOVE or GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+
+    bsSizeable : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or GDK_FUNC_MAXIMIZE;
+
+    bsDialog : Result := GDK_FUNC_RESIZE or GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE
+                or GDK_FUNC_MOVE;
+
+    bsToolWindow : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+
+    bsSizeToolWin : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
+  end;
+
+  // X warns if marking a fixed size window resizeable:
+  if ((AForm.Constraints.MinWidth>0)
+  and (AForm.Constraints.MinWidth=AForm.Constraints.MaxWidth))
+  or ((AForm.Constraints.MinHeight>0)
+  and (AForm.Constraints.MinHeight=AForm.Constraints.MaxHeight)) then
+    Result:=Result-GDK_FUNC_RESIZE;
   {$ENDIF}
 
   //DebugLn('GetWindowFunction ',DbgSName(AForm),' ',dbgs(ord(ABorderStyle)),' ',binStr(Result,8));
