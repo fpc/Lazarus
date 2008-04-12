@@ -75,6 +75,7 @@ type
     procedure CreateWidget(const AParams: TCreateParams); virtual; abstract;
     procedure DestroyWidget; virtual; abstract;
     function GetContent: ControlRef; virtual; abstract;
+    procedure UpdateLCLClientRect;
   public
     LCLObject: TWinControl;  // LCL control which created this widget
     Context: TCarbonContext; // Carbon content area context
@@ -428,6 +429,18 @@ begin
   begin
     FProperties.AddObject(AIndex, TObject(AValue));
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCarbonWidget.UpdateLCLClientRect
+
+  Updates client rect of LCL object
+ ------------------------------------------------------------------------------}
+procedure TCarbonWidget.UpdateLCLClientRect;
+begin
+  LCLObject.InvalidateClientRectCache(False);
+  LCLSendSizeMsg(LCLObject, LCLObject.Width,
+      LCLObject.Height, Size_SourceIsInterface);
 end;
 
 {------------------------------------------------------------------------------

@@ -197,7 +197,9 @@ type
     FScrollView: HIViewRef;
     FScrollOrigin: HIPoint;
     FScrollSize: TPoint;
+    FScrollMin: TPoint;
     FScrollPageSize: TPoint;
+    
     FMulX: Single; // multiply x coords to fit real page size
     FMulY: Single; // multiply y coords to fit real page size
     FTextFractional: Boolean;
@@ -662,6 +664,7 @@ begin
   
   FScrollView := EmbedInScrollView(AParams);
   FScrollSize := Classes.Point(0, 0);
+  FScrollMin := Classes.Point(0, 0);
   FScrollPageSize := Classes.Point(0, 0);
   FScrollOrigin := GetHIPoint(0, 0);
   FMulX := 1;
@@ -673,6 +676,8 @@ begin
     FTextFractional := True;
     
   inherited;
+  
+  UpdateLCLClientRect; // force update client rect
 end;
 
 {------------------------------------------------------------------------------
@@ -800,7 +805,7 @@ begin
   with ScrollMsg do
   begin
     Msg := LM_VSCROLL;
-    Pos := Round(FScrollOrigin.Y);
+    Pos := Round(FScrollOrigin.Y) + FScrollMin.Y;
     ScrollCode := SB_THUMBPOSITION;
   end;
   DeliverMessage(LCLObject, ScrollMsg);
@@ -810,7 +815,7 @@ begin
   with ScrollMsg do
   begin
     Msg := LM_HSCROLL;
-    Pos := Round(FScrollOrigin.X);
+    Pos := Round(FScrollOrigin.X) + FScrollMin.X;
     ScrollCode := SB_THUMBPOSITION;
   end;
   DeliverMessage(LCLObject, ScrollMsg);
@@ -869,17 +874,23 @@ begin
   if (SIF_RANGE and ScrollInfo.fMask) > 0 then
   begin
     if SBStyle = SB_HORZ then
-      FScrollSize.X := (ScrollInfo.nMax - ScrollInfo.nMin);
+    begin
+      FScrollSize.X := (ScrollInfo.nMax - ScrollInfo.nMin + 1);
+      FScrollMin.X := ScrollInfo.nMin;
+    end;
     if SBStyle = SB_VERT then
-      FScrollSize.Y := (ScrollInfo.nMax - ScrollInfo.nMin);
+    begin
+      FScrollSize.Y := (ScrollInfo.nMax - ScrollInfo.nMin + 1);
+      FScrollMin.Y := ScrollInfo.nMin;
+    end;
   end;
   
   if (SIF_POS and ScrollInfo.fMask) > 0 then
   begin
     if SBStyle = SB_HORZ then
-      FScrollOrigin.X := ScrollInfo.nPos;
+      FScrollOrigin.X := ScrollInfo.nPos - FScrollMin.X;
     if SBStyle = SB_VERT then
-      FScrollOrigin.Y := ScrollInfo.nPos;
+      FScrollOrigin.Y := ScrollInfo.nPos - FScrollMin.Y;
   end;
   
   if (SIF_PAGE and ScrollInfo.fMask) > 0 then
@@ -929,17 +940,17 @@ begin
     ScrollInfo.nMin := 0;
     
     if SBStyle = SB_HORZ then
-      ScrollInfo.nMax := FScrollSize.X;
+      ScrollInfo.nMax := FScrollSize.X - FScrollMin.X - 1;
     if SBStyle = SB_VERT then
-      ScrollInfo.nMax := FScrollSize.Y;
+      ScrollInfo.nMax := FScrollSize.Y - FScrollMin.Y - 1;
   end;
 
   if (SIF_POS and ScrollInfo.fMask) > 0 then
   begin
     if SBStyle = SB_HORZ then
-      ScrollInfo.nPos := Round(FScrollOrigin.X);
+      ScrollInfo.nPos := Trunc(FScrollOrigin.X) + FScrollMin.X;
     if SBStyle = SB_VERT then
-      ScrollInfo.nPos := Round(FScrollOrigin.Y);
+      ScrollInfo.nPos := Trunc(FScrollOrigin.Y) + FScrollMin.Y;
   end;
 
   if (SIF_PAGE and ScrollInfo.fMask) > 0 then
