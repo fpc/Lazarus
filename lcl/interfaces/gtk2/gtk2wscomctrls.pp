@@ -300,11 +300,15 @@ class function TGtk2WSProgressBar.CreateHandle(const AWinControl: TWinControl;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
+  AProgressBar: TCustomProgressBar;
 begin
+  AProgressBar := TCustomProgressBar(AWinControl);
   Widget := gtk_progress_bar_new;
   Result := TLCLIntfHandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
+
+  SetPosition(AProgressBar, AProgressBar.Position);
 
   TGtkWSWinControl.SetCallbacks(PGtkObject(Widget), TComponent(WidgetInfo^.LCLObject));
 end;
@@ -332,14 +336,23 @@ begin
 
     UpdateProgressBarText(AProgressBar);
   end;
+
+  // The posision also needs to be updated at ApplyChanges
+  SetPosition(AProgressBar, AProgressBar.Position);
 end;
 
 class procedure TGtk2WSProgressBar.SetPosition(
   const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
-  with AProgressBar do
-    gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(Pointer(Handle)),
-            (AProgressBar.Position+Abs(Min)) / (Max+Abs(Min)));
+  // Gtk2 wishes the position in a floating-point value between
+  // 0.0 and 1.0, and we calculate that with:
+  // (Pos - Min) / (Max - Min)
+  // regardless if any of them is negative the result is correct
+  gtk_progress_bar_set_fraction(
+    GTK_PROGRESS_BAR(Pointer(AProgressBar.Handle)),
+    (NewPosition - AProgressBar.Min) /
+    (AProgressBar.Max - AProgressBar.Min));
+
   if AProgressBar.BarShowText then
       UpdateProgressBarText(AProgressBar);
 end;
