@@ -304,24 +304,39 @@ end;
 procedure TListViewComponentEditor.ExecuteVerb(Index: Integer);
 var
   Hook: TPropertyEditorHook;
+  AListView: TListView;
 begin
-  if Index = 0 then
-  begin
-    GetHook(Hook);
-    if EditListView(GetComponent as TListView) then
+  AListView := GetComponent as TListView;
+  case Index of
+    0: 
+    begin
+      GetHook(Hook);
+      if EditListView(AListView) then
+        if Assigned(Hook) then Hook.Modified(Self);
+    end;
+    1:
+    begin
+      GetHook(Hook);
+      EditCollection(AListView, AListView.Columns, 'Columns');
       if Assigned(Hook) then Hook.Modified(Self);
+    end;
   end;
 end;
 
 function TListViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   Result := '';
-  if Index = 0 then Result := sccsLvEdt;
+  case Index of
+    0: Result := sccsLvEdt;
+    1: Result := sccsLvColEdt;
+    else
+      Result := '';
+  end;
 end;
 
 function TListViewComponentEditor.GetVerbCount: Integer;
 begin
-  Result := 1;
+  Result := 2;
 end;
 
 initialization

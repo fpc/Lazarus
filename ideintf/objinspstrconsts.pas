@@ -101,6 +101,7 @@ resourcestring
   // ListView Items Editor
   sccsLvEdtCaption         = 'ListView Items Editor';
   sccsLvEdt                = 'Edit ListView Items...';
+  sccsLvColEdt             = 'Edit Columns ...';
   sccsLvEdtGrpLCaption     = 'Items';
   sccsLvEdtGrpRCaption     = 'Item Properties';
   sccsLvEdtNewItem         = 'New Item';
