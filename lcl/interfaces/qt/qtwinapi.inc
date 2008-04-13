@@ -4558,9 +4558,9 @@ function TQtWidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 var
   SrcQDC: TQtDeviceContext absolute SrcDC;
   DstQDC: TQtDeviceContext absolute DestDC;
-  SrcRect, DstRect: TRect;
+  SrcRect, DstRect, MaskRect: TRect;
   SrcWidthOrig, SrcHeightOrig: Integer;
-  Image: QImageH;
+  Image, QMask: QImageH;
   SrcMatrix: QMatrixH;
   dx, dy: integer;
 begin
@@ -4623,9 +4623,15 @@ begin
   
   DstRect := Bounds(X, Y, Width, Height);
   SrcRect := Bounds(XSrc, YSrc, SrcWidth, SrcHeight);
+  MaskRect := Bounds(XMask, YMask, SrcWidth, SrcHeight);
   DstQDC.CorrectCoordinates(DstRect);
   DstQDC.CorrectCoordinates(SrcRect);
-  DstQDC.drawImage(@DstRect, Image, @SrcRect);
+  DstQDC.CorrectCoordinates(MaskRect);
+  if Mask <> 0 then
+    QMask := TQtImage(Mask).Handle
+  else
+    QMask := nil;
+  DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
 
   Result := True;
 end;

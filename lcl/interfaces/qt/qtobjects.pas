@@ -325,7 +325,8 @@ type
     procedure setClipping(const AValue: Boolean);
     procedure setClipRegion(ARegion: QRegionH; AOperation: QtClipOperation = QtReplaceClip);
     procedure setRegion(ARegion: TQtRegion);
-    procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+    procedure drawImage(targetRect: PRect; image: QImageH; sourceRect: PRect;
+      mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
     procedure rotate(a: Double);
     procedure save;
     procedure restore;
@@ -2281,15 +2282,39 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TQtDeviceContext.drawImage(targetRect: PRect;
-  image: QImageH; sourceRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
+     image: QImageH; sourceRect: PRect;
+      mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
 var
   LocalRect: TRect;
+  APixmap: QPixmapH;
+  AMask: QBitmapH;
 begin
   {$ifdef VerboseQt}
   Write('TQtDeviceContext.drawImage() ');
   {$endif}
   LocalRect := targetRect^;
-  QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
+  if mask <> nil then
+  begin
+    // TODO: check maskRect
+    APixmap := QPixmap_create();
+    try
+      QPixmap_fromImage(APixmap, image, flags);
+      AMask := QBitmap_create();
+      try
+        QImage_invertPixels(mask);
+        QBitmap_fromImage(AMask, mask, flags);
+        QImage_invertPixels(mask);
+        QPixmap_setMask(APixmap, AMask);
+        QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+      finally
+        QBitmap_destroy(AMask);
+      end;
+    finally
+      QPixmap_destroy(APixmap);
+    end;
+  end
+  else
+    QPainter_drawImage(Widget, PRect(@LocalRect), image, sourceRect, flags);
 end;
 
 {------------------------------------------------------------------------------
