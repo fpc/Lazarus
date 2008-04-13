@@ -51,12 +51,13 @@ type
     property StyleSheet: string read FStyleSheet write FStyleSheet;
     property FormatParam: TFormat read FFormatParam write FFormatParam;
     procedure DoRun; override;
-    procedure doTestRun(aTest: TTest); virtual;
+    procedure DoTestRun(ATest: TTest); virtual;
     function GetShortOpts: string; virtual;
     procedure AppendLongOpts; virtual;
     procedure WriteCustomHelp; virtual;
     procedure ParseOptions; virtual;
     procedure ExtendXmlDocument(Doc: TXMLDocument);
+    function GetResultsWriter: TCustomResultsWriter; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -127,47 +128,43 @@ begin
   // do nothing
 end;
 
-procedure TTestRunner.doTestRun(aTest: TTest);
-
-  procedure ExecuteTest(aTest: TTest; aResultsWriter: TCustomResultsWriter);
-  var
-    testResult: TTestResult;
-    progressWriter: TProgressWriter;
-  begin
-    testResult := TTestResult.Create;
-    try
-      if ShowProgress then
-      begin
-        progressWriter := TProgressWriter.Create;
-        testResult.AddListener(progressWriter);
-      end;
-      testResult.AddListener(aResultsWriter);
-      aTest.Run(testResult);
-      aResultsWriter.WriteResult(testResult);
-    finally
-      if ShowProgress then
-        progressWriter.Free;
-      testResult.Free;
-    end;
-  end;
-
-var
-  ResultsWriter: TCustomResultsWriter;
+function TTestRunner.GetResultsWriter: TCustomResultsWriter;
 begin
   case FormatParam of
-    fLatex: ResultsWriter := TLatexResultsWriter.Create(nil);
-    fPlain: ResultsWriter := TPlainResultsWriter.Create(nil);
+    fLatex: Result := TLatexResultsWriter.Create(nil);
+    fPlain: Result := TPlainResultsWriter.Create(nil);
   else
     begin
-      ResultsWriter := TXmlResultsWriter.Create(nil);
-      ExtendXmlDocument(TXMLResultsWriter(ResultsWriter).Document);
+      Result := TXmlResultsWriter.Create(nil);
+      ExtendXmlDocument(TXMLResultsWriter(Result).Document);
     end;
   end;
+end;
+
+procedure TTestRunner.DoTestRun(ATest: TTest);
+var
+  ResultsWriter: TCustomResultsWriter;
+  ProgressWriter: TProgressWriter;
+  TestResult: TTestResult;
+begin
+  ResultsWriter := GetResultsWriter;
+  ResultsWriter.Filename := FileName;
+  TestResult := TTestResult.Create;
   try
-    ResultsWriter.Filename := FileName;
-    ExecuteTest(aTest, ResultsWriter);
+    if ShowProgress then
+    begin
+      ProgressWriter := TProgressWriter.Create;
+      TestResult.AddListener(ProgressWriter);
+    end
+    else
+      ProgressWriter := nil;
+    TestResult.AddListener(ResultsWriter);
+    ATest.Run(TestResult);
+    ResultsWriter.WriteResult(TestResult);
   finally
+    TestResult.Free;
     ResultsWriter.Free;
+    ProgressWriter.Free;
   end;
 end;
 
@@ -279,7 +276,7 @@ begin
 
   //run the tests
   if HasOption('a', 'all') then
-    doTestRun(GetTestRegistry)
+    DoTestRun(GetTestRegistry)
   else
   if HasOption('suite') then
   begin
@@ -291,7 +288,7 @@ begin
     else
       for I := 0 to GetTestRegistry.Tests.Count - 1 do
         if GetTestRegistry[i].TestName = S then
-          doTestRun(GetTestRegistry[i]);
+          DoTestRun(GetTestRegistry[i]);
   end;
   Terminate;
 end;
