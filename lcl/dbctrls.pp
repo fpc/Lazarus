@@ -512,6 +512,7 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property AutoSize;
     property BorderSpacing;
     property Color;
     property Ctl3D;
