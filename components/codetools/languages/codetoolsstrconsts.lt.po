@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-09-29 13:38+0300\n"
+"PO-Revision-Date: 2008-04-10 00:09+0300\n"
 "Project-Id-Version: codetoolsstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
@@ -208,7 +208,7 @@ msgstr "IDEIntf katalogas"
 
 #: codetoolsstrconsts:ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
-msgstr "Apibrėžtis %s jau yra apibrėžta"
+msgstr "Apibrėžtis %s jau yra įgyvendinta"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"

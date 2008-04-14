@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2008-01-22 02:13+0200\n"
+"PO-Revision-Date: 2008-04-10 00:00+0300\n"
 "Project-Id-Version: lclstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
 
 #: lclstrconsts:rsmodified
 msgid "  modified "
@@ -676,7 +676,7 @@ msgstr "Right"
 
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
-msgstr "Išsaugoti failą kaip"
+msgstr "Įrašyti failą kaip"
 
 #: lclstrconsts:ifsvk_scroll
 msgid "Scroll"

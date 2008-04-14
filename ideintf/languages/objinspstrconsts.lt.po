@@ -3,12 +3,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Mime-Version: 1.0Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
-"PO-Revision-Date: 2007-10-30 11:38+0200\n"
+"PO-Revision-Date: 2008-04-10 00:05+0300\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: Lithuanian\n"
 "X-Generator: KBabel 1.11.4\n"
 "MIME-Version: 1.0\n"
-"Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"
+"Last-Translator: Valdas Jankunas <skroblas@erdves.lt>\n"
 
 #: objinspstrconsts:oisdlinesdchars
 msgid "%d lines, %d chars"
@@ -88,7 +88,7 @@ msgstr "Atnau&jinti"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr "&Išsaugoti"
+msgstr "Į&rašyti"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
@@ -272,7 +272,7 @@ msgstr "Komponentės vardas %s%s%s nėra teisingas identifikatorius"
 
 #: objinspstrconsts:oiscomponentrestrictions
 msgid "Component restrictions: "
-msgstr ""
+msgstr "Komponento apribojimai: "
 
 #: objinspstrconsts:oiscomponents
 msgid "Components"
@@ -480,7 +480,7 @@ msgstr "Išrinkti šriftą"
 
 #: objinspstrconsts:oiswidgetsetrestrictions
 msgid "General widget set restrictions: "
-msgstr ""
+msgstr "Pagrindinių valdiklių apribojimai: "
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
@@ -707,11 +707,11 @@ msgstr "&Siųsti"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr "Panelių aprašymai"
+msgstr "Panelės aprašymai"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Panelių redaktorius..."
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -759,7 +759,7 @@ msgstr "Išmesti iš mėgstamiausiųjų sąrašo"
 
 #: objinspstrconsts:oisrestricted
 msgid "Restricted"
-msgstr ""
+msgstr "Apribota"
 
 #: objinspstrconsts:rscdright
 msgid "Right"
@@ -771,7 +771,7 @@ msgstr "Kaukių pavyzdžiai:"
 
 #: objinspstrconsts:sccstredtsave
 msgid "Save"
-msgstr "Išsaugoti"
+msgstr "Įrašyti"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
@@ -779,31 +779,31 @@ msgstr "Įrašyti &kaip..."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
-msgstr "Išsaugoti kaip"
+msgstr "Įrašyti taip"
 
 #: objinspstrconsts:sccsiledtsavedialog
 msgid "Save Image"
-msgstr "Išsaugoti paveikslą"
+msgstr "Įrašyti paveikslą"
 
 #: objinspstrconsts:oissaveliteralcharacters
 msgid "Save Literal Characters"
-msgstr "Išsaugoti literalinius simbolius"
+msgstr "Įrašyti literalinius simbolius"
 
 #: objinspstrconsts:oispesaveimageas
 msgid "Save image as"
-msgstr "Išsaugoti paveikslą kaip"
+msgstr "Įrašyti paveikslą taip"
 
 #: objinspstrconsts:oissavepicture
 msgid "Save picture"
-msgstr "Išsaugoti paveikslą"
+msgstr "Įrašyti paveikslą"
 
 #: objinspstrconsts:sccsiledtsave
 msgid "Save..."
-msgstr "Išsaugoti..."
+msgstr "Įrašyti..."
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "Antraščių redaktorius..."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
@@ -947,7 +947,7 @@ msgstr "Įvairaus tipo"
 
 #: objinspstrconsts:oisviewrestrictedproperties
 msgid "View restricted properties"
-msgstr ""
+msgstr "Rodyti apribotas savybes"
 
 #: objinspstrconsts:rscdvisible
 msgid "Visible"

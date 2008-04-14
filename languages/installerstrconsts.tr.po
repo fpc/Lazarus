@@ -1,24 +1,19 @@
 msgid ""
 msgstr ""
 
-"Last-Translator: Hakan KIZILHAN <hakan486@yahoo.com>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-
+#: installerstrconsts:wiseditform
+msgid "&Edit form"
+msgstr "P&encereyi düzenle"
 
 #: installerstrconsts:wiseditsource
 msgid "&Edit source"
 msgstr "Kaynağı görüntül&e"
 
-#: installerstrconsts:wiseditform
-msgid "&Edit form"
-msgstr "P&encereyi düzenle"
+#: installerstrconsts:wisopenpackage
+msgid "&Open package"
+msgstr "Paket aç"
 
 #: installerstrconsts:wisopenproject
 msgid "&Open project"
 msgstr "Pr&oje aç"
-
-#: installerstrconsts:wisopenpackage
-msgid "&Open package"
-msgstr "Paket aç"
 

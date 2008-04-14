@@ -1,6 +1,3 @@
-# translation of h2passtrconsts.po to Lithuanian
-#: h2passtrconsts:bla
-# Valdas Jankūnas <skroblas@erdves.lt>, 2007.
 msgid ""
 msgstr ""
 "Last-Translator: Valdas Jankūnas <skroblas@erdves.lt>\n"

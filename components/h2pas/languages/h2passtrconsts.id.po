@@ -9,10 +9,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: h2passtrconsts:bla
-msgid ""
-msgstr ""
-
 #: h2passtrconsts:h2pcheaderfileconverter
 msgid "C header file converter"
 msgstr "Konvertern file header C"
