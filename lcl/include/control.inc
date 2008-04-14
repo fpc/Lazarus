@@ -3234,7 +3234,8 @@ procedure TControl.SetVisible(Value : Boolean);
 var
   AsWincontrol: TWinControl;
 begin
-  if FVisible <> Value then begin
+  if FVisible <> Value then
+  begin
     //DebugLn(['TControl.SetVisible ',DbgSName(Self),' NewVisible=',Value]);
     VisibleChanging;
     FVisible := Value;
@@ -3242,26 +3243,27 @@ begin
       Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
       Include(FControlFlags,cfRequestAlignNeeded);
       if (Self is TWinControl) then
-        AsWincontrol:=TWinControl(Self)
+        AsWincontrol := TWinControl(Self)
       else
-        AsWincontrol:=nil;
-      if FVisible then begin
-        if AsWincontrol<>nil then
-          Include(AsWincontrol.FWinControlFlags,wcfReAlignNeeded);
+        AsWincontrol := nil;
+      if FVisible then
+      begin
+        if AsWincontrol <> nil then
+          Include(AsWincontrol.FWinControlFlags, wcfReAlignNeeded);
         AdjustSize;
-        if (AsWincontrol<>nil) and (wcfReAlignNeeded in AsWincontrol.FWinControlFlags) then
+        if (AsWincontrol <> nil) and (wcfReAlignNeeded in AsWincontrol.FWinControlFlags) then
           AsWincontrol.ReAlign;
       end;
       if cfRequestAlignNeeded in FControlFlags then
         RequestAlign;
-      if AsWincontrol<>nil then
+      if AsWincontrol <> nil then
         AsWincontrol.ResizeDelayedAutoSizeChildren;
     finally
       VisibleChanged;
     end;
   end;
   if (csLoading in ComponentState) then
-    ControlState:=ControlState+[csVisibleSetInLoading];
+    ControlState := ControlState + [csVisibleSetInLoading];
 end;
 
 {------------------------------------------------------------------------------
