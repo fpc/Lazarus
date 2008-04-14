@@ -1141,6 +1141,8 @@ type
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
   TPropHookGetObjectNames = procedure(TypeData:PTypeData;
                                       Proc:TGetStringProc) of object;
+  TPropHookObjectPropertyChanged = procedure(Sender: TObject;
+                                             NewObject: TPersistent) of object;
   // modifing
   TPropHookModified = procedure(Sender: TObject) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
@@ -1175,6 +1177,7 @@ type
     htGetObject,
     htGetObjectName,
     htGetObjectNames,
+    htObjectPropertyChanged,
     // modifing
     htModified,
     htRevert,
@@ -1237,6 +1240,7 @@ type
     function GetObject(const Name: ShortString): TPersistent;
     function GetObjectName(Instance: TPersistent): ShortString;
     procedure GetObjectNames(TypeData: PTypeData; const Proc: TGetStringProc);
+    procedure ObjectReferenceChanged(Sender: TObject; NewObject: TPersistent);
     // modifing
     procedure Modified(Sender: TObject);
     procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
@@ -4088,20 +4092,24 @@ begin
 end;
 
 procedure TPersistentPropertyEditor.SetValue(const NewValue: ansistring);
-var Component: TComponent;
+var Persistent: TPersistent;
 begin
   if NewValue=GetValue then exit;
   if (NewValue = '') or (NewValue=oisNone) then
-    Component := nil
+    Persistent := nil
   else begin
     if Assigned(PropertyHook) then begin
-      Component := PropertyHook.GetComponent(NewValue);
-      if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
+      Persistent := PropertyHook.GetComponent(NewValue);
+      if not (Persistent is GetTypeData(GetPropType)^.ClassType) then begin
         raise EPropertyError.Create(oisInvalidPropertyValue);
       end;
     end;
   end;
-  SetPtrValue(Component);
+  if GetPersistentReference=Persistent then exit;
+  SetPtrValue(Persistent);
+  if Assigned(PropertyHook) then begin
+    PropertyHook.ObjectReferenceChanged(Self,Persistent);
+  end;
 end;
 
 { TComponentPropertyEditor }
@@ -5531,6 +5539,17 @@ begin
   i:=GetHandlerCount(htGetObjectNames);
   while GetNextHandlerIndex(htGetObjectNames,i) do
     TPropHookGetObjectNames(FHandlers[htGetObjectNames][i])(TypeData,Proc);
+end;
+
+procedure TPropertyEditorHook.ObjectReferenceChanged(Sender: TObject;
+  NewObject: TPersistent);
+var
+  i: Integer;
+begin
+  i:=GetHandlerCount(htObjectPropertyChanged);
+  while GetNextHandlerIndex(htObjectPropertyChanged,i) do
+    TPropHookObjectPropertyChanged(FHandlers[htObjectPropertyChanged][i])(
+                  Sender,NewObject);
 end;
 
 procedure TPropertyEditorHook.Modified(Sender: TObject);
