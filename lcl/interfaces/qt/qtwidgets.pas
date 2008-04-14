@@ -179,7 +179,7 @@ type
     procedure setAttribute(const Attr: QtWidgetAttribute; const TurnOn: Boolean = True);
     procedure setBackgroundRole(const ARole: QPaletteColorRole);
     procedure setColor(const Value: PQColor); virtual;
-    procedure setCursor(const ACursor: QCursorH);
+    procedure setCursor(const ACursor: QCursorH); virtual;
     procedure setEnabled(p1: Boolean);
     procedure setFocus;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); virtual;
@@ -313,6 +313,7 @@ type
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     procedure SetColor(const Value: PQColor); override;
     procedure setCornerWidget(AWidget: TQtWidget);
+    procedure setCursor(const ACursor: QCursorH); override;
     procedure setHorizontalScrollBar(AScrollBar: TQtScrollBar);
     procedure setScrollStyle(AScrollStyle: TScrollStyle);
     procedure setTextColor(const Value: PQColor); override;
@@ -7126,6 +7127,14 @@ begin
     QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), FCornerWidget.Widget)
   else
     QAbstractScrollArea_setCornerWidget(QAbstractScrollAreaH(Widget), NiL);
+end;
+
+procedure TQtAbstractScrollArea.setCursor(const ACursor: QCursorH);
+begin
+  if LCLObject is TCustomControl then
+    viewport.setCursor(ACursor)
+  else
+    inherited setCursor(ACursor);
 end;
 
 {------------------------------------------------------------------------------
