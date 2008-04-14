@@ -397,6 +397,10 @@ msgstr "В&ыход"
 msgid "Edit"
 msgstr "Редактировать"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr "Редактировать поля"

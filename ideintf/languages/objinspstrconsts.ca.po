@@ -397,6 +397,10 @@ msgstr "Su&rt"
 msgid "Edit"
 msgstr "Edita"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr ""

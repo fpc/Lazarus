@@ -397,6 +397,10 @@ msgstr "&Koniec"
 msgid "Edit"
 msgstr "Edit"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr "Upraviť polia"

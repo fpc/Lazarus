@@ -1,6 +1,3 @@
-# translation of lazaruside.po to Slovenský
-# slavko <slavino@slavino.sk>, 2008.
-# Slavko <slavino@slavino.sk>, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"

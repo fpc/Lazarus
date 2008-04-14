@@ -392,6 +392,10 @@ msgstr "退出(&X)"
 msgid "Edit"
 msgstr "编辑"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr ""

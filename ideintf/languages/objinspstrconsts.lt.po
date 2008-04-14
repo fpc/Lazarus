@@ -398,6 +398,10 @@ msgstr "&Baigti darbą"
 msgid "Edit"
 msgstr "Keitimas"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr "Keisti laukus"

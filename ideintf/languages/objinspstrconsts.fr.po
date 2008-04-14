@@ -400,6 +400,10 @@ msgstr "&Quitter"
 msgid "Edit"
 msgstr "Editer"
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr "Editer des champs"

@@ -280,6 +280,10 @@ msgstr ""
 msgid "Edit ListView Items..."
 msgstr ""
 
+#: objinspstrconsts:sccslvcoledt
+msgid "Edit Columns ..."
+msgstr ""
+
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid "Items"
 msgstr ""
