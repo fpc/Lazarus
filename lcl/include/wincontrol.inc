@@ -5630,11 +5630,14 @@ var
   AWinControl: TWinControl;
 begin
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(False));
-  if AControl is TWinControl then begin
-    AWinControl:=TWinControl(AControl);
+  if AControl is TWinControl then
+  begin
+    AWinControl := TWinControl(AControl);
     AWinControl.RemoveFocus(True);
-    if AWinControl.HandleAllocated then AWinControl.DestroyHandle;
-  end else
+    if AWinControl.HandleAllocated then
+      AWinControl.DestroyHandle;
+  end
+  else
     if HandleAllocated then
       AControl.InvalidateControl(AControl.IsVisible, False, True);
   Remove(AControl);
