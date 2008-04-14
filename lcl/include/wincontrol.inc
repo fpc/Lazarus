@@ -5642,7 +5642,14 @@ begin
       AControl.InvalidateControl(AControl.IsVisible, False, True);
   Remove(AControl);
   if not (csDestroying in ComponentState) then
+  begin
+    if AutoSize then
+    begin
+      InvalidatePreferredSize;
+      AdjustSize;
+    end;
     Realign;
+  end;
 end;
 
 {------------------------------------------------------------------------------

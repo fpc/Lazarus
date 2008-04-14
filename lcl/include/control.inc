@@ -3241,11 +3241,17 @@ begin
     FVisible := Value;
     try
       Perform(CM_VISIBLECHANGED, WParam(Ord(Value)), 0);
-      Include(FControlFlags,cfRequestAlignNeeded);
+      Include(FControlFlags, cfRequestAlignNeeded);
       if (Self is TWinControl) then
         AsWincontrol := TWinControl(Self)
       else
         AsWincontrol := nil;
+      // resize parent if it has autosize
+      if (Parent <> nil) and Parent.AutoSize then
+      begin
+        Parent.InvalidatePreferredSize;
+        Parent.AdjustSize;
+      end;
       if FVisible then
       begin
         if AsWincontrol <> nil then
