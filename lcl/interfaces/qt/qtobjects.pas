@@ -2286,7 +2286,7 @@ procedure TQtDeviceContext.drawImage(targetRect: PRect;
       mask: QImageH; maskRect: PRect; flags: QtImageConversionFlags = QtAutoColor);
 var
   LocalRect: TRect;
-  APixmap: QPixmapH;
+  APixmap, ATemp: QPixmapH;
   AMask: QBitmapH;
 begin
   {$ifdef VerboseQt}
@@ -2299,15 +2299,19 @@ begin
     APixmap := QPixmap_create();
     try
       QPixmap_fromImage(APixmap, image, flags);
-      AMask := QBitmap_create();
+      ATemp := QPixmap_create();
       try
-        QImage_invertPixels(mask);
-        QBitmap_fromImage(AMask, mask, flags);
-        QImage_invertPixels(mask);
-        QPixmap_setMask(APixmap, AMask);
-        QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+        // QBitmap_fromImage raises assertion in the qt library
+        QPixmap_fromImage(ATemp, mask, flags);
+        AMask := QBitmap_create(ATemp);
+        try
+          QPixmap_setMask(APixmap, AMask);
+          QPainter_drawPixmap(Widget, PRect(@LocalRect), APixmap, sourceRect);
+        finally
+          QBitmap_destroy(AMask);
+        end;
       finally
-        QBitmap_destroy(AMask);
+        QPixmap_destroy(ATemp);
       end;
     finally
       QPixmap_destroy(APixmap);
