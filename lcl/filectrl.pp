@@ -140,42 +140,50 @@ implementation
 { TCustomFileListBox }
 
 procedure TCustomFileListBox.UpdateFileList;
-Var
+var
   Info: TSearchRec;
-  Added: Boolean;
 
-  procedure AddFile(FileAttr: TFileAttr; SysAttr: integer);
+  function FileTypeToFileAttribute(FileType: TFileType): LongInt;
+  const
+    FileTypeToAttrMap: array[TFileAttr] of LongInt =
+    (
+ { ftReadOnly  } faReadOnly,
+ { ftHidden    } faHidden,
+ { ftSystem    } faSysFile,
+ { ftVolumeID  } faVolumeId,
+ { ftDirectory } faDirectory,
+ { ftArchive   } faArchive,
+ { ftNormal    } 0
+    );
+  var
+    Iter: TFileAttr;
   begin
-    if (not Added) and (FileAttr in FileType)
-    and ((Info.Attr and SysAttr)>0) then begin
-      if (Info.Attr and faDirectory)>0 then
-        Info.Name := '['+Info.Name+']';
-      Items.Add(Info.Name);
-      Added:=true;
-    end;
+    Result := 0;
+    for Iter := Low(TFileAttr) to High(TFileAttr) do
+      if Iter in FileType then
+        Result := Result or FileTypeToAttrMap[Iter];
   end;
 
 begin
-  if [csloading,csdestroying]*ComponentState<>[] then exit;
+  if [csloading, csdestroying] * ComponentState <> [] then
+    Exit;
   Clear;
-  If SysUtils.FindFirst(FDirectory+DirectorySeparator+AllDirectoryEntriesMask,
-    faAnyFile, Info)=0
-  then
-    Repeat
-      if MatchesMaskList(Info.Name,Mask) then begin
-        Added:=false;
-        AddFile(ftReadOnly,faReadOnly);
-        AddFile(ftHidden,faHidden);
-        AddFile(ftSystem,faSysFile);
-        AddFile(ftVolumeID,faVolumeId);
-        AddFile(ftDirectory,faDirectory);
-        AddFile(ftArchive,faArchive);
-        if not Added and (ftNormal in FileType) and
-          (faAnyFile and Info.Attr=0) then
-          Items.Add(Info.Name);
-      end;
-    Until SysUtils.FindNext(Info) <> 0;
-  SysUtils.FindClose(Info);
+  if FileType <> [] then
+  begin
+    if SysUtils.FindFirst(IncludeTrailingPathDelimiter(FDirectory)+AllDirectoryEntriesMask,
+      FileTypeToFileAttribute(FileType), Info) = 0
+    then
+      repeat
+        if MatchesMaskList(Info.Name,Mask) then
+        begin
+          if (Info.Attr and faDirectory) > 0 then
+            Items.Add('['+Info.Name+']')
+          else
+            Items.Add(Info.Name);
+        end;
+      until SysUtils.FindNext(Info) <> 0;
+    SysUtils.FindClose(Info);
+  end;
 
   UpdateSelectedFileName;
 end;
