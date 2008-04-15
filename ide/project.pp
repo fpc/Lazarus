@@ -3630,7 +3630,8 @@ end;
 function TProject.UnitWithComponentName(AComponentName: String): TUnitInfo;
 begin
   Result := fFirst[uilPartOfProject];
-  while (Result<>nil) and (SysUtils.CompareText(Result.ComponentName, AComponentName) <> 0) do
+  while (Result<>nil)
+  and (SysUtils.CompareText(Result.ComponentName, AComponentName) <> 0) do
     Result := Result.fNext[uilPartOfProject];
 end;
 

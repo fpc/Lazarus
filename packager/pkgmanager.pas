@@ -4073,7 +4073,8 @@ begin
   end;
 end;
 
-function TPkgManager.FindReferencedRootComponent(CurRoot: TPersistent; const ComponentName: string): TComponent;
+function TPkgManager.FindReferencedRootComponent(CurRoot: TPersistent;
+  const ComponentName: string): TComponent;
 var
   UnitList: TFPList;
   ARoot: TComponent;
@@ -4088,7 +4089,7 @@ begin
     for i := 0 to UnitList.Count - 1 do 
     begin
       ARoot := TUnitInfo(UnitList[i]).Component;
-      //DebugLn(dbgsName(ARoot));
+      DebugLn(['TPkgManager.FindReferencedRootComponent Root=',dbgsName(CurRoot),' Searched="',ComponentName,'" other root=',dbgsName(ARoot)]);
       if (ARoot <> nil) and (SysUtils.CompareText(ComponentName, ARoot.Name) = 0) then
       begin
         Result := ARoot;

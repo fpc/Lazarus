@@ -613,7 +613,8 @@ type
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
-    function DoFixupComponentReferences(AnUnitInfo: TUnitInfo): TModalResult;
+    function DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
+                                        OpenFlags: TOpenFlags): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
                            var AComponentClass: TComponentClass;
@@ -5458,7 +5459,7 @@ begin
         AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo);
       if NewComponent<>nil then begin
         // component loaded, now load the referenced units
-        Result:=DoFixupComponentReferences(AnUnitInfo);
+        Result:=DoFixupComponentReferences(AnUnitInfo,OpenFlags);
         if Result<>mrOk then exit;
       end else begin
         // error streaming component -> examine lfm file
@@ -5519,8 +5520,111 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoFixupComponentReferences(AnUnitInfo: TUnitInfo
-  ): TModalResult;
+function TMainIDE.DoFixupComponentReferences(AnUnitInfo: TUnitInfo;
+  OpenFlags: TOpenFlags): TModalResult;
+
+var
+  UsedUnitFilenames: TStrings;
+  ComponentNameToUnitFilename: TStringList;
+
+  function FindUnitFilename(const aComponentName: string): string;
+  var
+    RefUnitInfo: TUnitInfo;
+    i: Integer;
+    UnitFilename: string;
+    LFMFilename: String;
+    LFMCode: TCodeBuffer;
+    LFMType: String;
+    LFMComponentName: String;
+    LFMClassName: String;
+    ModalResult: TModalResult;
+    CTResult: Boolean;
+  begin
+    // search in the project
+    RefUnitInfo:=Project1.UnitWithComponentName(aComponentName);
+    if RefUnitInfo<>nil then begin
+      Result:=RefUnitInfo.Filename;
+      exit;
+    end;
+    
+    // search in the used units of the .lpr files
+    if (Project1.MainUnitInfo<>nil)
+    and (Project1.MainUnitInfo.Source<>nil)
+    and (pfMainUnitIsPascalSource in Project1.Flags) then begin
+      if (UsedUnitFilenames=nil) then begin
+        // parse once all available component names in all .lfm files
+        ComponentNameToUnitFilename:=TStringList.Create;
+        CTResult:=CodeToolBoss.FindUsedUnitFiles(Project1.MainUnitInfo.Source,
+          UsedUnitFilenames);
+        if UsedUnitFilenames=nil then
+          UsedUnitFilenames:=TStringList.Create;
+        if not CTResult then begin
+          DebugLn(['TMainIDE.DoFixupComponentReferences.FindLFMFilename failed parsing ',Project1.MainUnitInfo.Filename]);
+          // ignore the error. This was just a fallback search.
+        end;
+        for i:=0 to UsedUnitFilenames.Count-1 do begin
+          UnitFilename:=UsedUnitFilenames[i];
+          LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+          if FileExistsCached(LFMFilename) then begin
+            // load the lfm file
+            ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+            if ModalResult<>mrOk then begin
+              debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+            end else begin
+              // read the LFM component name
+              ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
+              if LFMComponentName<>'' then
+                ComponentNameToUnitFilename.Values[LFMComponentName]:=UnitFilename;
+            end;
+          end;
+        end;
+      end;
+      UnitFilename:=ComponentNameToUnitFilename.Values[aComponentName];
+      if UnitFilename<>'' then begin
+        Result:=UnitFilename;
+        exit;
+      end;
+    end;
+    
+    Result:='';
+  end;
+  
+  function LoadDependencyHidden(const RefRootName: string): TModalResult;
+  var
+    LFMFilename: String;
+    LFMCode: TCodeBuffer;
+    ModalResult: TModalResult;
+    UnitFilename: String;
+    RefUnitInfo: TUnitInfo;
+  begin
+    Result:=mrCancel;
+    
+    // load lfm
+    UnitFilename:=FindUnitFilename(RefRootName);
+    if UnitFilename='' then begin
+      DebugLn(['TMainIDE.DoFixupComponentReferences.LoadDependencyHidden failed to find lfm for "',RefRootName,'"']);
+      exit(mrCancel);
+    end;
+    LFMFilename:=ChangeFileExt(UnitFilename,'.lfm');
+    ModalResult:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText]);
+    if ModalResult<>mrOk then begin
+      debugln('TMainIDE.DoFixupComponentReferences Failed loading ',LFMFilename);
+      exit(mrCancel);
+    end;
+    
+    RefUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
+    // create unit info
+    if RefUnitInfo=nil then begin
+      RefUnitInfo:=TUnitInfo.Create(nil);
+      RefUnitInfo.Filename:=UnitFilename;
+      Project1.AddFile(RefUnitInfo,false);
+    end;
+
+    // load resource hidden
+    Result:=DoLoadLFM(RefUnitInfo,LFMCode,
+                      OpenFlags+[ofLoadHiddenResource],[]);
+  end;
+  
 var
   CurRoot: TComponent;
   ReferenceRootNames: TStringList;
@@ -5530,25 +5634,43 @@ var
 begin
   CurRoot:=AnUnitInfo.Component;
   if CurRoot=nil then exit(mrOk);
+  UsedUnitFilenames:=nil;
+  ComponentNameToUnitFilename:=nil;
   ReferenceRootNames:=TStringList.Create;
   ReferenceInstanceNames:=TStringList.Create;
   try
     GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+    Result:=mrOk;
     for i:=0 to ReferenceRootNames.Count-1 do begin
       RefRootName:=ReferenceRootNames[i];
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-      DebugLn(['TMainIDE.DoFixupComponentReferences ',i,' RefRoot=',RefRootName,' Refs="',ReferenceInstanceNames.Text,'"']);
+      //DebugLn(['TMainIDE.DoFixupComponentReferences ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+
+      {$IFDEF EnableMultiFormProperties}
+      // load the referenced component
+      Result:=LoadDependencyHidden(RefRootName);
+      {$ENDIF}
       
+      ReferenceInstanceNames.Clear;
+      GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
+      //DebugLn(['TMainIDE.DoFixupComponentReferences AAA2 ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+
       // forget the rest of the dangling references
       RemoveFixupReferences(CurRoot,RefRootName);
+      
+      if Result<>mrOk then begin
+        // ToDo: give a nice error message and give user the choice between
+        // a) ignore and loose the references
+        // b) undo the opening (close the designer forms)
+      end;
     end;
   finally
     ReferenceRootNames.Free;
     ReferenceInstanceNames.Free;
+    UsedUnitFilenames.Free;
+    ComponentNameToUnitFilename.Free;
   end;
-
-  Result:=mrOk;
 end;
 
 function TMainIDE.DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
@@ -5738,6 +5860,12 @@ begin
   CTErrorCode:=nil;
   CTErrorLine:=0;
   CTErrorCol:=0;
+  
+  if (AComponentClassName='') or (not IsValidIdent(AComponentClassName)) then
+  begin
+    DebugLn(['TMainIDE.DoLoadComponentDependencyHidden invalid component class name "',AComponentClassName,'"']);
+    exit(mrCancel);
+  end;
 
   // check for circles
   if AnUnitInfo.LoadingComponent then begin

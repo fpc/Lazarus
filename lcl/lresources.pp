@@ -338,8 +338,10 @@ function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;// true on succe
 function FindLFMClassName(LFMStream: TStream):AnsiString;
 procedure ReadLFMHeader(LFMStream: TStream;
                         out LFMType, LFMComponentName, LFMClassName: String);
-procedure ReadLFMHeader(const LFMSource: string; out LFMClassName: String;
-                        out LFMType: String);
+procedure ReadLFMHeader(const LFMSource: string;
+                        out LFMClassName: String; out LFMType: String);
+procedure ReadLFMHeader(const LFMSource: string;
+                        out LFMType, LFMComponentName, LFMClassName: String);
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
@@ -1742,36 +1744,51 @@ begin
   LFMStream.Position:=0;
 end;
 
-procedure ReadLFMHeader(const LFMSource: string; out LFMClassName: String;
-  out LFMType: String);
+procedure ReadLFMHeader(const LFMSource: string;
+  out LFMClassName: String; out LFMType: String);
+var
+  LFMComponentName: string;
+begin
+  ReadLFMHeader(LFMSource,LFMType,LFMComponentName,LFMClassName);
+end;
+
+procedure ReadLFMHeader(const LFMSource: string; out LFMType, LFMComponentName,
+  LFMClassName: String);
 var
   p: Integer;
-  LineEndPos: LongInt;
+  StartPos: LongInt;
 begin
   { examples:
     object Form1: TForm1
     inherited AboutBox2: TAboutBox2
 
-    - LFMClassName is the last word of the first line
     - LFMType is the first word on the line
+    - LFMComponentName is the second word
+    - LFMClassName is the fourth token
   }
-  LFMClassName := '';
-
+  
   // read first word => LFMType
   p:=1;
   while (p<=length(LFMSource))
   and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
     inc(p);
   LFMType:=copy(LFMSource,1,p-1);
+  
+  // read second word => LFMComponentName
+  while (p<=length(LFMSource)) and (LFMSource[p] in [' ',#9]) do inc(p);
+  StartPos:=p;
+  while (p<=length(LFMSource))
+  and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
+    inc(p);
+  LFMComponentName:=copy(LFMSource,StartPos,p-StartPos);
 
-  // find end of line
-  while (p<=length(LFMSource)) and (not (LFMSource[p] in [#10,#13])) do inc(p);
-  LineEndPos:=p;
-  // read last word => LFMClassName
-  while (p>1)
-  and (LFMSource[p-1] in ['a'..'z','A'..'Z','0'..'9','_']) do
-    dec(p);
-  LFMClassName:=copy(LFMSource,p,LineEndPos-p);
+  // read third word => LFMClassName
+  while (p<=length(LFMSource)) and (LFMSource[p] in [' ',#9,':']) do inc(p);
+  StartPos:=p;
+  while (p<=length(LFMSource))
+  and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
+    inc(p);
+  LFMClassName:=copy(LFMSource,StartPos,p-StartPos);
 end;
 
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;

@@ -808,11 +808,10 @@ end;
 function TJITComponentList.OnFindGlobalComponent(
   const AName: AnsiString): TComponent;
 begin
-  // Paul: Do we need search by application?
-  Result := Application.FindComponent(AName);
-  if Result = nil then
-    Result := PkgBoss.FindReferencedRootComponent(CurReadJITComponent, AName);
-  // DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
+  // Note: do not search in the 'Application' object
+  // this function should only find designer forms
+  Result := PkgBoss.FindReferencedRootComponent(CurReadJITComponent, AName);
+  //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 
 procedure TJITComponentList.InitReading(BinStream: TStream;
