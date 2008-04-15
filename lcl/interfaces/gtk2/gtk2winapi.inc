@@ -478,9 +478,13 @@ begin
   //inherited GetTextExtentPoint;
   Result := IsValidDC(DC);
   if not Result then Exit;
-  if COunt <= 0 then Exit;
+  if Count <= 0 then
+  begin
+    FillChar(Size, SizeOf(Size), 0);
+    Exit;
+  end;
 
-  UseFont:=GetGtkFont(TGtkDeviceContext(DC));
+  UseFont := GetGtkFont(TGtkDeviceContext(DC));
 
   UpdateDCTextMetric(TGtkDeviceContext(DC));
 
