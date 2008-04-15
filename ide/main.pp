@@ -613,6 +613,7 @@ type
     function DoLoadLFM(AnUnitInfo: TUnitInfo; LFMBuf: TCodeBuffer;
                        OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
+    function DoFixupComponentReferences(AnUnitInfo: TUnitInfo): TModalResult;
     function DoLoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
                            const AComponentClassName: string; Flags: TOpenFlags;
                            var AComponentClass: TComponentClass;
@@ -5414,9 +5415,7 @@ begin
         AncestorType:=TForm;
       //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
 
-      // check lfm
-      
-
+      // convert text to binary format
       BinStream:=TExtMemoryStream.Create;
       TxtLFMStream:=TExtMemoryStream.Create;
       try
@@ -5424,7 +5423,6 @@ begin
         AnUnitInfo.ComponentLastLFMStreamSize:=TxtLFMStream.Size;
         TxtLFMStream.Position:=0;
 
-        // convert text to binary format
         try
           if AnUnitInfo.ComponentLastBinStreamSize>0 then
             BinStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
@@ -5458,7 +5456,11 @@ begin
       AnUnitInfo.Component:=NewComponent;
       if (AncestorUnitInfo<>nil) then
         AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo);
-      if NewComponent=nil then begin
+      if NewComponent<>nil then begin
+        // component loaded, now load the referenced units
+        Result:=DoFixupComponentReferences(AnUnitInfo);
+        if Result<>mrOk then exit;
+      end else begin
         // error streaming component -> examine lfm file
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
         // open lfm file in editor
@@ -5514,6 +5516,38 @@ begin
   {$IFDEF IDE_DEBUG}
   debugln('[TMainIDE.DoLoadLFM] LFM end');
   {$ENDIF}
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoFixupComponentReferences(AnUnitInfo: TUnitInfo
+  ): TModalResult;
+var
+  CurRoot: TComponent;
+  ReferenceRootNames: TStringList;
+  ReferenceInstanceNames: TStringList;
+  i: Integer;
+  RefRootName: string;
+begin
+  CurRoot:=AnUnitInfo.Component;
+  if CurRoot=nil then exit(mrOk);
+  ReferenceRootNames:=TStringList.Create;
+  ReferenceInstanceNames:=TStringList.Create;
+  try
+    GetFixupReferenceNames(CurRoot,ReferenceRootNames);
+    for i:=0 to ReferenceRootNames.Count-1 do begin
+      RefRootName:=ReferenceRootNames[i];
+      ReferenceInstanceNames.Clear;
+      GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
+      DebugLn(['TMainIDE.DoFixupComponentReferences ',i,' RefRoot=',RefRootName,' Refs="',ReferenceInstanceNames.Text,'"']);
+      
+      // forget the rest of the dangling references
+      RemoveFixupReferences(CurRoot,RefRootName);
+    end;
+  finally
+    ReferenceRootNames.Free;
+    ReferenceInstanceNames.Free;
+  end;
+
   Result:=mrOk;
 end;
 
@@ -9481,7 +9515,7 @@ begin
 
   // parse the LFM file and the pascal unit
   if CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
-                        true,true)<>mrOk
+                    true,true)<>mrOk
   then begin
     DoJumpToCompilerMessage(-1,true);
   end;
@@ -13527,6 +13561,8 @@ begin
     if ReferenceUnitInfo<>AnUnitInfo then begin
       // another unit was referenced
       // ToDo: add CreateForm statement to main unit (.lpr)
+      // At the moment the OI+PkgBoss only allow to use valid components,
+      // so the CreateForm already exists.
     end;
   end;
 end;
