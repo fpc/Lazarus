@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
-"PO-Revision-Date: 2007-09-18 11:50+0100\n"
+"PO-Revision-Date: 2008-04-13 21:26+0100\n"
 "Project-Id-Version: lazreport\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -578,7 +578,7 @@ msgstr "Automatische Größe"
 
 #: lr_const:sdocautor
 msgid "Autor"
-msgstr ""
+msgstr "Autor"
 
 #: lr_const:sfilterparam
 msgid "Average font height:"
@@ -686,7 +686,7 @@ msgstr "Nach vorn bringen"
 
 #: lr_const:sdocbuild
 msgid "Build"
-msgstr ""
+msgstr "Build"
 
 #: lr_const:spaper24
 msgid "C Sheet, 17 x 22\""
@@ -794,7 +794,7 @@ msgstr "Spaltenkopf"
 
 #: lr_const:svar7
 msgid "Column#"
-msgstr ""
+msgstr "Spalte#"
 
 #: lr_const:spgoptformcolumn
 msgid "Columns"
@@ -1450,7 +1450,7 @@ msgstr ""
 
 #: lr_const:svar5
 msgid "Line#"
-msgstr ""
+msgstr "Zeile#"
 
 #: lr_const:sdescriptionmax
 msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
@@ -1482,7 +1482,7 @@ msgstr "MONTHOF(<Datum>)/Gibt den Monat (1..12) aus einem angegebenen <Datum> zu
 
 #: lr_const:sdocmajor
 msgid "Major"
-msgstr ""
+msgstr "Haupt"
 
 #: lr_const:spgoptformmargins
 msgid "Margins"
@@ -1506,7 +1506,7 @@ msgstr ""
 
 #: lr_const:sdocminor
 msgid "Minor"
-msgstr ""
+msgstr "Unter"
 
 #: lr_const:spaper37
 msgid "Monarch Envelope, 3 7/8 x 7 1/2\""
@@ -1734,7 +1734,7 @@ msgstr "Abgebrochene Action wiederaufnehmen"
 
 #: lr_const:sdocrelease
 msgid "Release"
-msgstr ""
+msgstr "Version"
 
 #: lr_const:sfrdesignerformremovepg
 msgid "Remove page"
@@ -1986,7 +1986,7 @@ msgstr "Obere Rahmenlinie"
 
 #: lr_const:svar9
 msgid "TotalPages"
-msgstr ""
+msgstr "GesamtSeiten"
 
 #: lr_const:stransparent
 msgid "Transparent"
@@ -2062,7 +2062,7 @@ msgstr "Variablenliste"
 
 #: lr_const:sdocversion
 msgid "Version"
-msgstr ""
+msgstr "Version"
 
 #: lr_const:sfrdesignerformvertcenter
 msgid "Vertical center"

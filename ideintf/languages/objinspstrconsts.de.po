@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-18 12:04+0100\n"
+"PO-Revision-Date: 2008-04-13 21:15+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -399,10 +399,6 @@ msgstr "&Beenden"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: objinspstrconsts:sccslvcoledt
-msgid "Edit Columns ..."
-msgstr ""
-
 #: objinspstrconsts:fesfetitle
 msgid "Edit Fields"
 msgstr "Felder bearbeiten"
@@ -709,7 +705,7 @@ msgstr "Panel-Beschreibungen"
 
 #: objinspstrconsts:sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr ""
+msgstr "Panel-Editor .."
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
@@ -801,7 +797,7 @@ msgstr "Sichern..."
 
 #: objinspstrconsts:sccshceditsections
 msgid "Sections Editor ..."
-msgstr ""
+msgstr "Sections-Editor .."
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-03-18 12:02+0100\n"
+"PO-Revision-Date: 2008-04-13 21:26+0100\n"
 "Last-Translator: Joerg Braun <jb@toolbox-mag.de>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -206,7 +206,7 @@ msgstr "&Löschen"
 
 #: lazarusidestrconsts:lisdeleteall
 msgid "&Delete All"
-msgstr ""
+msgstr "Alle &löschen"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
@@ -214,7 +214,7 @@ msgstr "B&earbeiten"
 
 #: lazarusidestrconsts:lisenableall
 msgid "&Enable All"
-msgstr ""
+msgstr "Alle &zulassen"
 
 #: lazarusidestrconsts:liswlenabled
 msgid "&Enabled"
@@ -326,7 +326,7 @@ msgstr "&Setze Lesezeichen"
 
 #: lazarusidestrconsts:lissourcebreakpoint
 msgid "&Source breakpoint"
-msgstr ""
+msgstr "&Quell-Breakpoint"
 
 #: lazarusidestrconsts:dlgtexttofing
 msgid "&Text to Find"
@@ -402,11 +402,11 @@ msgstr "<Keine Variable gewählt>"
 
 #: lazarusidestrconsts:lisoff
 msgid "? (Off)"
-msgstr ""
+msgstr "? (Aus)"
 
 #: lazarusidestrconsts:lison
 msgid "? (On)"
-msgstr ""
+msgstr "? (An)"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
@@ -710,7 +710,7 @@ msgstr "Alle Tests erfolgreich verlaufen."
 
 #: lazarusidestrconsts:lisallowfunctio
 msgid "Allow Function Calls"
-msgstr ""
+msgstr "Funktionsaufrufe zulassen"
 
 #: lazarusidestrconsts:dlglabelgoto
 msgid "Allow LABEL and GOTO"
@@ -1018,7 +1018,7 @@ msgstr "Randabstand um das Kontrollelement. Die anderen vier Randabstände werde
 
 #: lazarusidestrconsts:lisbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Unten"
 
 #: lazarusidestrconsts:lisbottomgroupboxcaption
 msgid "Bottom anchoring"
@@ -1042,7 +1042,7 @@ msgstr "Klammerhervorhebung"
 
 #: lazarusidestrconsts:lisbreak
 msgid "Break"
-msgstr ""
+msgstr "Halt"
 
 #: lazarusidestrconsts:lismenubeaklinesinselection
 msgid "Break Lines in selection"
@@ -1326,7 +1326,7 @@ msgstr "Zeichen"
 
 #: lazarusidestrconsts:lischaracter
 msgid "Character"
-msgstr ""
+msgstr "Zeichen"
 
 #: lazarusidestrconsts:lischaractermap
 msgid "Character Map"
@@ -1842,7 +1842,7 @@ msgstr "Komponenten"
 
 #: lazarusidestrconsts:liscondition
 msgid "Condition"
-msgstr ""
+msgstr "Bedingung"
 
 #: lazarusidestrconsts:rsconditionaldefines
 msgid "Conditional defines"
@@ -2034,7 +2034,7 @@ msgstr "Kopieren"
 
 #: lazarusidestrconsts:liscopyall
 msgid "Copy All"
-msgstr ""
+msgstr "Alle &kopieren"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -2230,7 +2230,7 @@ msgstr "Strg"
 
 #: lazarusidestrconsts:liscurrent
 msgid "Current"
-msgstr ""
+msgstr "Aktuell"
 
 #: lazarusidestrconsts:lisedtdefcurrentproject
 msgid "Current Project"
@@ -2382,7 +2382,7 @@ msgstr "Debugger:"
 
 #: lazarusidestrconsts:lisdecimal
 msgid "Decimal"
-msgstr ""
+msgstr "Dezimal"
 
 #: lazarusidestrconsts:dlgassemblerdefault
 msgid "Default"
@@ -2422,7 +2422,7 @@ msgstr "Löschen"
 
 #: lazarusidestrconsts:lisdeleteallinsamesource
 msgid "Delete All in same source"
-msgstr ""
+msgstr "Alle in der gleichen Quelle löschen"
 
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
@@ -2442,15 +2442,15 @@ msgstr "Alte Package-Datei löschen?"
 
 #: lazarusidestrconsts:lisdeleteallbreakpoints2
 msgid "Delete all breakpoints in file %s%s%s?"
-msgstr ""
+msgstr "Alle Breakpoints in der Datei %s%s%s löschen?"
 
 #: lazarusidestrconsts:lisdeleteallbreakpoints
 msgid "Delete all breakpoints?"
-msgstr ""
+msgstr "Alle Breakpoints löschen?"
 
 #: lazarusidestrconsts:lisdeleteallselectedbreakpoints
 msgid "Delete all selected breakpoints?"
-msgstr ""
+msgstr "Alle gewählten Breakpoints löschen?"
 
 #: lazarusidestrconsts:lisdeleteallthesefiles
 msgid "Delete all these files?"
@@ -2462,7 +2462,7 @@ msgstr "Mehrdeutige Datei löschen?"
 
 #: lazarusidestrconsts:lisdeletebreakpointatline
 msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr ""
+msgstr "Breakpoint bei %s\"%s\", Zeile %d löschen?"
 
 #: lazarusidestrconsts:srkmecdeletechar
 msgid "Delete char at cursor"
@@ -2626,7 +2626,7 @@ msgstr "Editordateien vergleichen"
 
 #: lazarusidestrconsts:lisdigits
 msgid "Digits:"
-msgstr ""
+msgstr "Ziffern:"
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -2658,15 +2658,15 @@ msgstr "Verzeichniseinstellungen"
 
 #: lazarusidestrconsts:lisdisableallinsamesource
 msgid "Disable All in same source"
-msgstr ""
+msgstr "Alle in der gleichen Quelle ausschalten"
 
 #: lazarusidestrconsts:lisdisablegroup
 msgid "Disable Group"
-msgstr ""
+msgstr "Gruppe ausschalten"
 
 #: lazarusidestrconsts:lisdisabled
 msgid "Disabled"
-msgstr ""
+msgstr "Ausgeschaltet"
 
 #: lazarusidestrconsts:lisdiscardchanges
 msgid "Discard changes"
@@ -2882,11 +2882,11 @@ msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenableallinsamesource
 msgid "Enable All in same source"
-msgstr ""
+msgstr "Alle in der gleichen Quelle zulassen"
 
 #: lazarusidestrconsts:lisenablegroup
 msgid "Enable Group"
-msgstr ""
+msgstr "Gruppe zulassen"
 
 #: lazarusidestrconsts:lisenablemacros
 msgid "Enable Macros"
@@ -3198,7 +3198,7 @@ msgstr "Ausdruck"
 
 #: lazarusidestrconsts:lisexpression
 msgid "Expression:"
-msgstr ""
+msgstr "Ausdruck:"
 
 #: lazarusidestrconsts:lisextendunitpath
 msgid "Extend unit path?"
@@ -3422,7 +3422,7 @@ msgstr "Dateiname ist vom Projekt verwendet"
 
 #: lazarusidestrconsts:lisfilenameaddress
 msgid "Filename/Address"
-msgstr ""
+msgstr "Dateiname/Adresse"
 
 #: lazarusidestrconsts:lispefilename
 msgid "Filename:"
@@ -3578,7 +3578,7 @@ msgstr ".LFM-Datei korrigieren"
 
 #: lazarusidestrconsts:lisfloatingpoin
 msgid "Floating Point"
-msgstr ""
+msgstr "Fließkomma"
 
 #: lazarusidestrconsts:srkmecjumptoeditor
 msgid "Focus to source editor"
@@ -3658,7 +3658,7 @@ msgstr "Französisch"
 
 #: lazarusidestrconsts:lisfunction
 msgid "Function"
-msgstr ""
+msgstr "Funktion"
 
 #: lazarusidestrconsts:listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
@@ -3910,7 +3910,7 @@ msgstr "Gittergröße Y"
 
 #: lazarusidestrconsts:lisgroup
 msgid "Group"
-msgstr ""
+msgstr "Gruppe"
 
 #: lazarusidestrconsts:dlggroupundo
 msgid "Group Undo"
@@ -3918,7 +3918,7 @@ msgstr "Gruppenrücknahme"
 
 #: lazarusidestrconsts:lisgrowtolarges
 msgid "Grow to Largest"
-msgstr ""
+msgstr "Zum größten hin wachsen"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
@@ -4014,7 +4014,7 @@ msgstr "Hilfe-Wähler"
 
 #: lazarusidestrconsts:lishexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Hexadezimal"
 
 #: lazarusidestrconsts:dlghideideonrun
 msgid "Hide IDE windows on run"
@@ -4290,7 +4290,7 @@ msgstr "Block einrücken"
 
 #: lazarusidestrconsts:lisindex
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: lazarusidestrconsts:rslanguageindonesian
 msgid "Indonesian"
@@ -4610,11 +4610,11 @@ msgstr "Intervall in Sekunden"
 
 #: lazarusidestrconsts:lisinvalidoff
 msgid "Invalid (Off)"
-msgstr ""
+msgstr "Ungültig (Aus)"
 
 #: lazarusidestrconsts:lisinvalidon
 msgid "Invalid (On)"
-msgstr ""
+msgstr "Ungültig (An)"
 
 #: lazarusidestrconsts:lisa2pinvalidancestortype
 msgid "Invalid Ancestor Type"
@@ -5202,7 +5202,7 @@ msgstr "Zeilenauswahlmodus"
 
 #: lazarusidestrconsts:lislinelength
 msgid "Line/Length"
-msgstr ""
+msgstr "Zeile/Länge"
 
 #: lazarusidestrconsts:lissortsellines
 msgid "Lines"
@@ -5362,7 +5362,7 @@ msgstr "Treffer"
 
 #: lazarusidestrconsts:lismaxs
 msgid "Max %d"
-msgstr ""
+msgstr "Max %d"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
@@ -5394,7 +5394,7 @@ msgstr "Maximaler Zähler"
 
 #: lazarusidestrconsts:lismemorydump
 msgid "Memory Dump"
-msgstr ""
+msgstr "Speicherauszug"
 
 #: lazarusidestrconsts:srvk_menu
 msgid "Menu"
@@ -5486,7 +5486,7 @@ msgstr "Modul"
 
 #: lazarusidestrconsts:lismore
 msgid "More"
-msgstr ""
+msgstr "Weiter"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
@@ -5906,7 +5906,7 @@ msgstr "Noch nicht implementiert"
 
 #: lazarusidestrconsts:lisnotimplementedyet2
 msgid "Not implemented yet."
-msgstr ""
+msgstr "Noch nicht implementiert."
 
 #: lazarusidestrconsts:lisnotimplementedyet
 msgid "Not implemented yet:%s%s"
@@ -6474,7 +6474,7 @@ msgstr "Pascal-Unit müssen die Endung .pp oder .pas besitzen"
 
 #: lazarusidestrconsts:lispasscount
 msgid "Pass Count"
-msgstr ""
+msgstr "Laufzähler"
 
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
@@ -6586,7 +6586,7 @@ msgstr "Punkt"
 
 #: lazarusidestrconsts:lispointer
 msgid "Pointer"
-msgstr ""
+msgstr "Zeiger"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
@@ -6942,7 +6942,7 @@ msgstr "Sauber rekompilieren"
 
 #: lazarusidestrconsts:lisrecordstruct
 msgid "Record/Structure"
-msgstr ""
+msgstr "Record/Struktur"
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
@@ -7134,7 +7134,7 @@ msgstr "In Kleinbuchstaben umbenennen"
 
 #: lazarusidestrconsts:lisrepeatcount
 msgid "Repeat Count:"
-msgstr ""
+msgstr "Zähler wiederholen:"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -7954,7 +7954,7 @@ msgstr "Soll die Datei in Kleinbuchstaben nach%s%s%s%sumbenannt werden?"
 
 #: lazarusidestrconsts:lisshow
 msgid "Show"
-msgstr ""
+msgstr "Zeigen"
 
 #: lazarusidestrconsts:lisaf2pshowall
 msgid "Show All"
@@ -8146,7 +8146,7 @@ msgstr "Zeige benutzerdefinierte Links"
 
 #: lazarusidestrconsts:lisshrinktosmal
 msgid "Shrink to smallest"
-msgstr ""
+msgstr "Zum kleinsten schrumpfen"
 
 #: lazarusidestrconsts:lissibling
 msgid "Sibling"
@@ -8398,7 +8398,7 @@ msgstr "Streaming-Fehler"
 
 #: lazarusidestrconsts:lisstring
 msgid "String"
-msgstr ""
+msgstr "String"
 
 #: lazarusidestrconsts:liscodetoolsoptsstringconst
 msgid "String constant"
@@ -8418,7 +8418,7 @@ msgstr "Debuggersymbole aus der ausführbaren Datei entfernen"
 
 #: lazarusidestrconsts:lisstyle
 msgid "Style"
-msgstr ""
+msgstr "Stil"
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
@@ -9450,7 +9450,7 @@ msgstr "Tooltip-Symbol-Werkzeuge"
 
 #: lazarusidestrconsts:listop
 msgid "Top"
-msgstr ""
+msgstr "Oben"
 
 #: lazarusidestrconsts:listopanchoring
 msgid "Top anchoring"
@@ -10430,7 +10430,7 @@ msgstr "Warnung: Unklarer Dateiname gefunden: %s%s%s. Quelldatei ist: %s%s%s"
 
 #: lazarusidestrconsts:liswatchpropert
 msgid "Watch Properties"
-msgstr ""
+msgstr "Properties überwachen"
 
 #: lazarusidestrconsts:liswlwatchlist
 msgid "Watch list"
