@@ -1429,7 +1429,7 @@ var
 {$ENDIF}
 begin
   {$IFNDEF DisableFakeMethods}
-  debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' ',PropInfo^.Name,':=',TheMethodName);
+  //debugln('TJITComponentList.ReaderSetMethodProperty ',DbgSName(Instance),' ',PropInfo^.Name,':=',TheMethodName);
   Method.Code:=FCurReadJITComponent.MethodAddress(TheMethodName);
   if Method.Code<>nil then begin
     // there is a real method with this name
