@@ -38,7 +38,7 @@ uses
   Classes,
   Gtk2, Gdk2, Glib2, GtkGlobals, GtkDef,
   GtkWsControls,
-  gtkProc, LCLType,
+  gtkProc, LCLType, LCLProc,
   WSControls, WSLCLClasses, WSProc;
   
 
@@ -67,6 +67,8 @@ type
   protected
   public
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -230,6 +232,23 @@ begin
   g_signal_connect(GTK_SCROLLED_WINDOW(Widget)^.vscrollbar, 'change-value', TGCallback(@Gtk2RangeScrollCB), WidgetInfo);
 
   g_signal_connect(Widget, 'scroll-event', TGCallback(@Gtk2ScrolledWindowScrollCB), WidgetInfo);
+end;
+
+class procedure TGtk2WSWinControl.SetBiDiMode(const AWinControl : TWinControl;
+  const ABiDiMode : TBiDiMode);
+begin
+  case ABiDiMode of
+     bdLeftToRight            : begin
+                                  DebugLn('Setting Left to Right control', []);
+                                  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), GTK_TEXT_DIR_LTR);
+                                end;
+     bdRightToLeft            : begin
+                                  DebugLn('Setting Right to left control', []);
+                                  gtk_widget_set_direction(PGtkWidget(AWinControl.Handle), GTK_TEXT_DIR_RTL);
+                                end;
+     bdRightToLeftNoAlign     : ; // I don't know how to do it for now (if possible)
+     bdRightToLeftReadingOnly : ; // By default GTK2 support bidi regardless of the layout
+  end;
 end;
 
 class function TGtk2WSWinControl.GetText(const AWinControl: TWinControl;
