@@ -82,13 +82,6 @@ type
     CurrentText : String;       // Current text
 
     procedure SetMask(Value : String);
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
-    procedure CMEnter(var Message: TLMessage); message CM_ENTER;
-    procedure LMMButtonUp(var Message: TLMMButtonDown); message LM_MBUTTONUP;
-    procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
-    procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
-    procedure LMClearSel(var Message : TLMessage); message LM_CLEAR;
     function  ClearChar(Position : Integer) : Char;
     procedure SetCursorPos;
     function  GetIsMasked : Boolean;
@@ -106,7 +99,15 @@ type
     Function  SearchDeletedText : Boolean;
     procedure SetEditText(const AValue: string);
   protected
-    { Required methods }
+    // messages
+    procedure CMTextChanged(var Message: TLMessage); message CM_TEXTCHANGED;
+    procedure CMEnter(var Message: TLMessage); message CM_ENTER;
+    procedure LMMButtonUp(var Message: TLMMButtonDown); message LM_MBUTTONUP;
+    procedure LMPasteFromClip(var Message: TLMessage); message LM_PASTE;
+    procedure LMCutToClip(var Message: TLMessage); message LM_CUT;
+    procedure LMClearSel(var Message : TLMessage); message LM_CLEAR;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+
     function EditCanModify: Boolean; virtual;
     function GetEditText: string; virtual;
     procedure Reset; virtual;
