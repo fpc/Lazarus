@@ -29,7 +29,7 @@ unit WSProc;
 interface
 
 uses
-  LCLClasses, LCLProc, Controls;
+  LCLClasses, LCLProc, Controls, Menus;
 
 
 function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
@@ -37,7 +37,10 @@ function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
 
 function WSCheckHandleAllocated(const AWincontrol: TWinControl;
                                 const AProcName: String): Boolean;
-                                
+
+function WSCheckHandleAllocated(const AMenu: TMenu;
+                                const AProcName: String): Boolean;
+
 implementation
 
 function WSCheckReferenceAllocated(const AComponent: TLCLReferenceComponent;
@@ -65,6 +68,19 @@ begin
   if Result then Exit;
   Warn;
 end;
+
+function WSCheckHandleAllocated(const AMenu: TMenu;
+                                const AProcName: String): Boolean;
+  procedure Warn;
+  begin
+    DebugLn('[WARNING] %s called without handle for %s(%s)', [AProcName, AMenu.Name, AMenu.ClassName]);
+  end;
+begin
+  Result := AMenu.HandleAllocated;
+  if Result then Exit;
+  Warn;
+end;
+
 
 
 end.

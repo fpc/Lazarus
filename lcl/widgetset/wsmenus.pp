@@ -72,7 +72,8 @@ type
   TWSMenuClass = class of TWSMenu;
   TWSMenu = class(TWSLCLComponent)
     class function CreateHandle(const AMenu: TMenu): HMENU; virtual;
-    class procedure BiDiModeChanged(const AMenu: TMenu); virtual;
+    
+    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); virtual;
   end;
 
   { TWSMainMenu }
@@ -157,7 +158,7 @@ begin
   Result := 0;
 end;
 
-class procedure TWSMenu.BiDiModeChanged(const AMenu: TMenu);
+class procedure TWSMenu.SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode);
 begin
 end;
 

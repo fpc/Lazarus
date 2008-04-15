@@ -36,7 +36,7 @@ uses
 ////////////////////////////////////////////////////
   Graphics, GraphType, ImgList, Menus, Forms,
 ////////////////////////////////////////////////////
-  WSMenus, WSLCLClasses,
+  WSMenus, WSLCLClasses, WSProc,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, Win32WSImgList,
   InterfaceBase, LCLProc;
 
@@ -66,7 +66,7 @@ type
   protected
   public
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
-    class procedure BiDiModeChanged(const AMenu: TMenu); override;
+    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); override;
   end;
 
   { TWin32WSMainMenu }
@@ -782,18 +782,19 @@ begin
   Result := CreateMenu;
 end;
 
-class procedure TWin32WSMenu.BiDiModeChanged(const AMenu: TMenu);
+class procedure TWin32WSMenu.SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode);
 begin
-  if AMenu.HandleAllocated then
-  begin
-    SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
-    //TriggerFormUpdate not take TMenu, we repeate the code
-    if (AMenu<>nil) and (AMenu.Parent<>nil)
-    and (AMenu.Parent is TCustomForm)
-    and TCustomForm(AMenu.Parent).HandleAllocated
-    and not (csDestroying in AMenu.Parent.ComponentState) then
-    AddToChangedMenus(TCustomForm(AMenu.Parent).Handle);
-  end;
+  if not WSCheckHandleAllocated(AMenu, 'SetBiDiMode')
+  then Exit;
+
+  SetMenuFlag(AMenu.Handle, MFT_RIGHTORDER or MFT_RIGHTJUSTIFY, AMenu.IsRightToLeft);
+
+  //TriggerFormUpdate not take TMenu, we repeate the code
+  if not (AMenu.Parent is TCustomForm) then Exit;
+  if not TCustomForm(AMenu.Parent).HandleAllocated then Exit;
+  if csDestroying in AMenu.Parent.ComponentState then Exit;
+  
+  AddToChangedMenus(TCustomForm(AMenu.Parent).Handle);
 end;
 
 { TWin32WSPopupMenu }
