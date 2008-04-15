@@ -808,12 +808,12 @@ end;
 function TJITComponentList.OnFindGlobalComponent(
   const AName: AnsiString): TComponent;
 begin
-  // Note: do not search in the 'Application' object
-  // this function should only find designer forms
+  // This event is triggered everytime TReader searches a Component.
+  // It is triggered for every sub component and every reference.
+  // The sub comonent are found by TReader itself.
+  // The other components are done at the end via GlobalFixupReferences.
+  // So, there is nothing left to do here.
   Result := nil;
-  {$IFDEF EnableMultiFormProperties}
-  Result := PkgBoss.FindReferencedRootComponent(CurReadJITComponent, AName);
-  {$ENDIF}
   //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 
