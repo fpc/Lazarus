@@ -3875,6 +3875,34 @@ var
   FMainUnitInfoValid: boolean;
   FMainOwner: TObject;
   FMainOwnerValid: boolean;
+  FForms: TStrings; // list of VarName:ClassName
+  
+  function ComponentIsAutoCreated(AComponent: TComponent): boolean;
+  var
+    i: Integer;
+    ID: String;
+  begin
+    Result:=false;
+    if AComponent=nil then exit;
+    ID:=AComponent.Name+':'+AComponent.ClassName;
+    for i:=0 to FForms.Count-1 do
+      if SysUtils.CompareText(ID,FForms[i])=0 then exit(true);
+  end;
+
+  function GatherCreateFormStatements: boolean;
+  // returns true if CurRoot is listed in the projects CreateForm statements
+  begin
+    Result:=false;
+    if (Project1=nil)
+    or (not (pfMainUnitHasCreateFormStatements in Project1.Flags))
+    or (Project1.MainUnitInfo=nil) or (Project1.MainUnitInfo.Source=nil)
+    then
+      exit;
+    FForms:=CodeToolBoss.ListAllCreateFormStatements(
+                                               Project1.MainUnitInfo.Source);
+    if (FForms=nil) or (FForms.Count=0) then exit;
+    Result:=true;
+  end;
 
   function MainUnitInfo: TUnitInfo;
   begin
@@ -3920,10 +3948,12 @@ var
   begin
     if (AnUnitInfo.Component=nil)
     or (AnUnitInfo.Component=CurRoot)
-    or (MainOwner=nil) then
+    or (MainOwner=nil)
+    or (not ComponentIsAutoCreated(AnUnitInfo.Component)) then
       exit;
     // check if the component can be used
-    // A unit can not be used, if it has no owner.
+    // A component can only be used, if it has a CreateForm statement in the lpr
+    // A unit can not be used, if it has no owner (project/package).
     // And a unit can not be used, if it belongs to a higher level package.
     // For example: Package A uses Package B.
     // A can use units of B, but B can not use units of A.
@@ -3976,7 +4006,7 @@ var
       Result:=TFPList.Create;
     Result.Add(AnUnitInfo);
   end;
-
+  
 var
   AnUnitInfo: TUnitInfo;
 begin
@@ -3989,11 +4019,19 @@ begin
   FMainOwnerValid:=false;
   FMainUnitInfo:=nil;
   FMainUnitInfoValid:=false;
-  // search all open designer forms (can be hidden)
-  AnUnitInfo:=Project1.FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
-    CheckUnit(AnUnitInfo);
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  FForms:=nil;
+  try
+    // check CreateForm statements in lpr file
+    if not GatherCreateFormStatements then exit;
+
+    // search all open designer forms (can be hidden)
+    AnUnitInfo:=Project1.FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      CheckUnit(AnUnitInfo);
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
+  finally
+    FForms.Free;
   end;
 end;
 
