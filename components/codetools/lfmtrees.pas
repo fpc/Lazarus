@@ -247,6 +247,7 @@ type
     Root: TLFMTreeNode;
     CurNode: TLFMTreeNode;
     LFMBuffer: TCodeBuffer;
+    LFMBufferChangeStep: integer;
     FirstError: TLFMError;
     LastError: TLFMError;
     Trees: TLFMTrees;
@@ -256,9 +257,11 @@ type
     procedure Clear;
     procedure ClearErrors;
     function Parse(LFMBuf: TCodeBuffer = nil): boolean;
+    function ParseIfNeeded: boolean;
+    function UpdateNeeded: boolean;
     function PositionToCaret(p: integer): TPoint;
     procedure AddError(ErrorType: TLFMErrorType; LFMNode: TLFMTreeNode;
-      const ErrorMessage: string; ErrorPosition: integer);
+                       const ErrorMessage: string; ErrorPosition: integer);
     function FindErrorAtLine(Line: integer): TLFMError;
     function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
     function FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
@@ -369,6 +372,7 @@ begin
       raise Exception.Create('TLFMTree.Parse: changing LFMBuffer in Tree is not allowed');
     LFMBuffer:=LFMBuf;
   end;
+  LFMBufferChangeStep:=LFMBuffer.ChangeStep;
   
   LFMStream:=TMemoryStream.Create;
   Src:=LFMBuffer.Source;
@@ -394,6 +398,18 @@ begin
     Parser:=nil;
     LFMStream.Free;
   end;
+end;
+
+function TLFMTree.ParseIfNeeded: boolean;
+begin
+  if not UpdateNeeded then exit;
+  Result:=Parse(LFMBuffer);
+end;
+
+function TLFMTree.UpdateNeeded: boolean;
+begin
+  Result:=(LFMBuffer=nil) or (LFMBuffer.ChangeStep<>LFMBufferChangeStep)
+       or (FirstError<>nil);
 end;
 
 function TLFMTree.PositionToCaret(p: integer): TPoint;
@@ -697,6 +713,11 @@ begin
   Trees:=TheTrees;
   Trees.FItems.Add(Self);
   LFMBuffer:=aLFMBuf;
+  LFMBufferChangeStep:=LFMBuffer.ChangeStep;
+  if LFMBufferChangeStep=Low(LFMBufferChangeStep) then
+    LFMBufferChangeStep:=High(LFMBufferChangeStep)
+  else
+    dec(LFMBufferChangeStep);
 end;
 
 { TLFMTreeNode }
@@ -1069,11 +1090,9 @@ begin
   AVLNode:=FItems.FindKey(LFMBuffer,@CompareLFMBufWithTree);
   if AVLNode<>nil then
     Result:=TLFMTree(AVLNode.Data)
-  else if CreateIfNotExists then begin
-    Result:=TLFMTree.Create;
-    Result.LFMBuffer:=LFMBuffer;
-    FItems.Add(Result);
-  end else
+  else if CreateIfNotExists then
+    Result:=TLFMTree.Create(Self,LFMBuffer)
+  else
     Result:=nil;
 end;
 

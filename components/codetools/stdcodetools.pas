@@ -2079,7 +2079,7 @@ begin
   ActivateGlobalWriteLock;
   try
     //DebugLn('TStandardCodeTool.CheckLFM parsing LFM ...');
-    if not LFMTree.Parse(LFMBuf) then exit;
+    if not LFMTree.ParseIfNeeded then exit;
     // parse unit and find LookupRoot
     //DebugLn('TStandardCodeTool.CheckLFM parsing unit ...');
     BuildTree(true);
