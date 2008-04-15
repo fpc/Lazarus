@@ -810,7 +810,10 @@ function TJITComponentList.OnFindGlobalComponent(
 begin
   // Note: do not search in the 'Application' object
   // this function should only find designer forms
+  Result := nil;
+  {$IFDEF EnableMultiFormProperties}
   Result := PkgBoss.FindReferencedRootComponent(CurReadJITComponent, AName);
+  {$ENDIF}
   //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 
