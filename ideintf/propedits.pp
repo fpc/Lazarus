@@ -1341,6 +1341,10 @@ type
                                const OnGetObjectNames: TPropHookGetObjectNames);
     procedure RemoveHandlerGetObjectNames(
                                const OnGetObjectNames: TPropHookGetObjectNames);
+    procedure AddHandlerObjectPropertyChanged(
+                 const OnObjectPropertyChanged: TPropHookObjectPropertyChanged);
+    procedure RemoveHandlerObjectPropertyChanged(
+                 const OnObjectPropertyChanged: TPropHookObjectPropertyChanged);
     // modifing events
     procedure AddHandlerModified(const OnModified: TPropHookModified);
     procedure RemoveHandlerModified(const OnModified: TPropHookModified);
@@ -5870,6 +5874,18 @@ procedure TPropertyEditorHook.RemoveHandlerGetObjectNames(
   const OnGetObjectNames: TPropHookGetObjectNames);
 begin
   RemoveHandler(htGetObjectNames,TMethod(OnGetObjectNames));
+end;
+
+procedure TPropertyEditorHook.AddHandlerObjectPropertyChanged(
+  const OnObjectPropertyChanged: TPropHookObjectPropertyChanged);
+begin
+  AddHandler(htObjectPropertyChanged,TMethod(OnObjectPropertyChanged));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerObjectPropertyChanged(
+  const OnObjectPropertyChanged: TPropHookObjectPropertyChanged);
+begin
+  RemoveHandler(htObjectPropertyChanged,TMethod(OnObjectPropertyChanged));
 end;
 
 procedure TPropertyEditorHook.AddHandlerModified(

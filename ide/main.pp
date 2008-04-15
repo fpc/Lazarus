@@ -417,6 +417,8 @@ type
                                         Select: boolean);
     procedure OnPropHookPersistentDeleting(APersistent: TPersistent);
     procedure OnPropHookDeletePersistent(var APersistent: TPersistent);
+    procedure OnPropHookObjectPropertyChanged(Sender: TObject;
+                                              NewObject: TPersistent);
     procedure OnPropHookAddDependency(const AClass: TClass;
                                       const AnUnitName: shortstring);
     procedure OnPropHookGetComponentNames(TypeData: PTypeData;
@@ -1645,6 +1647,7 @@ begin
   GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
   GlobalDesignHook.AddHandlerPersistentDeleting(@OnPropHookPersistentDeleting);
   GlobalDesignHook.AddHandlerDeletePersistent(@OnPropHookDeletePersistent);
+  GlobalDesignHook.AddHandlerObjectPropertyChanged(@OnPropHookObjectPropertyChanged);
   GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
   GlobalDesignHook.AddHandlerGetComponent(@OnPropHookGetComponent);
 
@@ -13489,6 +13492,40 @@ begin
     APersistent.Free;
   end;
   APersistent:=nil;
+end;
+
+procedure TMainIDE.OnPropHookObjectPropertyChanged(Sender: TObject;
+  NewObject: TPersistent);
+var
+  AnUnitInfo: TUnitInfo;
+  NewComponent: TComponent;
+  ReferenceDesigner: TDesigner;
+  ReferenceUnitInfo: TUnitInfo;
+begin
+  // check if a TPersistentPropertyEditor was changed
+  if not (Sender is TPersistentPropertyEditor) then exit;
+  if not (GlobalDesignHook.LookupRoot is TComponent) then exit;
+  // find the current unit
+  AnUnitInfo:=Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot));
+  if AnUnitInfo=nil then begin
+    DebugLn(['TMainIDE.OnPropHookObjectPropertyChanged LookupRoot not found']);
+    exit;
+  end;
+  // find the reference unit
+  if (NewObject is TComponent) then begin
+    NewComponent:=TComponent(NewObject);
+    ReferenceDesigner:=TDesigner(FindRootDesigner(NewComponent));
+    if ReferenceDesigner=nil then exit;
+    ReferenceUnitInfo:=Project1.UnitWithComponent(ReferenceDesigner.LookupRoot);
+    if ReferenceUnitInfo=nil then begin
+      DebugLn(['TMainIDE.OnPropHookObjectPropertyChanged reference LookupRoot not found']);
+      exit;
+    end;
+    if ReferenceUnitInfo<>AnUnitInfo then begin
+      // another unit was referenced
+      // ToDo: add CreateForm statement to main unit (.lpr)
+    end;
+  end;
 end;
 
 procedure TMainIDE.OnPropHookAddDependency(const AClass: TClass;
