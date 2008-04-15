@@ -140,6 +140,13 @@ implementation
 { TCustomFileListBox }
 
 procedure TCustomFileListBox.UpdateFileList;
+const
+  AttrNotNormal = faReadOnly or
+                  faHidden or
+                  faSysFile or
+                  faVolumeID or
+                  faDirectory or
+                  faArchive;
 var
   Info: TSearchRec;
 
@@ -176,10 +183,13 @@ begin
       repeat
         if MatchesMaskList(Info.Name,Mask) then
         begin
-          if (Info.Attr and faDirectory) > 0 then
-            Items.Add('['+Info.Name+']')
-          else
-            Items.Add(Info.Name);
+          if (ftNormal in FileType) or ((Info.Attr and AttrNotNormal) > 0) then
+          begin
+            if (Info.Attr and faDirectory) > 0 then
+              Items.Add('['+Info.Name+']')
+            else
+              Items.Add(Info.Name);
+          end;
         end;
       until SysUtils.FindNext(Info) <> 0;
     SysUtils.FindClose(Info);
