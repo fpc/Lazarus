@@ -814,6 +814,9 @@ begin
   // The other components are done at the end via GlobalFixupReferences.
   // So, there is nothing left to do here.
   Result := nil;
+  {$IFDEF EnableMultiFormProperties}
+  //DebugLn('TJITComponentList.OnFindGlobalComponent Root=',dbgsName(CurReadJITComponent), ' Name=', AName, ' Result=', dbgsName(Result));
+  {$ENDIF}
   //DebugLn(dbgsName(CurReadJITComponent), ' FIND global component ', AName, ' ', dbgsName(Result));
 end;
 

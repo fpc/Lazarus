@@ -4124,9 +4124,14 @@ begin
 end;
 
 function TComponentPropertyEditor.AllEqual: Boolean;
+var
+  AComponent: TComponent;
 begin
-  Result:=(inherited AllEqual)
-          and (FindRootDesigner(GetComponentReference)<>nil);
+  Result:=false;
+  if not (inherited AllEqual) then exit;
+  AComponent:=GetComponentReference;
+  if AComponent=nil then exit;
+  Result:=csDesigning in AComponent.ComponentState;
 end;
 
 

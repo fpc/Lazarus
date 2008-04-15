@@ -5645,16 +5645,18 @@ begin
       RefRootName:=ReferenceRootNames[i];
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-      //DebugLn(['TMainIDE.DoFixupComponentReferences ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       {$IFDEF EnableMultiFormProperties}
+      DebugLn(['TMainIDE.DoFixupComponentReferences BEFORE loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+
       // load the referenced component
       Result:=LoadDependencyHidden(RefRootName);
       {$ENDIF}
       
+      GlobalFixupReferences;
       ReferenceInstanceNames.Clear;
       GetFixupInstanceNames(CurRoot,RefRootName,ReferenceInstanceNames);
-      //DebugLn(['TMainIDE.DoFixupComponentReferences AAA2 ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
+      DebugLn(['TMainIDE.DoFixupComponentReferences AFTER loading ',i,' ',dbgsName(CurRoot),' RefRoot=',RefRootName,' Refs="',Trim(ReferenceInstanceNames.Text),'"']);
 
       // forget the rest of the dangling references
       RemoveFixupReferences(CurRoot,RefRootName);
@@ -5665,6 +5667,8 @@ begin
         // b) undo the opening (close the designer forms)
       end;
     end;
+    
+    
   finally
     ReferenceRootNames.Free;
     ReferenceInstanceNames.Free;
