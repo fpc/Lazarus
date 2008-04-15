@@ -543,7 +543,7 @@ type
                                            write FOnFindDefineProperty;
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-          var LFMTree: TLFMTree;
+          out LFMTree: TLFMTree;
           RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
@@ -779,6 +779,7 @@ begin
   IdentifierList:=TIdentifierList.Create;
   IdentifierHistory:=TIdentifierHistoryList.Create;
   IdentifierList.History:=IdentifierHistory;
+  DefaultLFMTrees:=TLFMTrees.Create;
 end;
 
 destructor TCodeToolManager.Destroy;
@@ -790,6 +791,7 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.Destroy] B');
   {$ENDIF}
+  FreeAndNil(DefaultLFMTrees);
   FreeAndNil(Positions);
   FreeAndNil(IdentifierHistory);
   FreeAndNil(IdentifierList);
@@ -3778,7 +3780,7 @@ begin
 end;
 
 function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-  var LFMTree: TLFMTree; RootMustBeClassInIntf, ObjectsMustExists: boolean
+  out LFMTree: TLFMTree; RootMustBeClassInIntf, ObjectsMustExists: boolean
   ): boolean;
 begin
   Result:=false;

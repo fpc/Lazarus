@@ -198,10 +198,8 @@ var
       end;
 
       // check LFM again
-      LFMTree.Free;
-      LFMTree:=nil;
       if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                    RootMustBeClassInIntf,ObjectsMustExists)
+                               RootMustBeClassInIntf,ObjectsMustExists)
       then begin
         DebugLn(['FixMissingComponentClasses Success: All found errors fixed']);
         Result:=mrOk;
@@ -260,25 +258,20 @@ begin
     exit;
   end;
 
-  LFMTree:=nil;
-  try
-    if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                             RootMustBeClassInIntf,ObjectsMustExists)
-    then begin
-      DebugLn(['CheckLFMBuffer no errors found']);
-      Result:=mrOk;
-      exit;
-    end;
-    Result:=FixMissingComponentClasses;
-    if Result in [mrAbort,mrOk] then begin
-      DebugLn(['CheckLFMBuffer all errors fixed']);
-      exit;
-    end;
-    WriteLFMErrors;
-    Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
-  finally
-    LFMTree.Free;
+  if CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
+                           RootMustBeClassInIntf,ObjectsMustExists)
+  then begin
+    DebugLn(['CheckLFMBuffer no errors found']);
+    Result:=mrOk;
+    exit;
   end;
+  Result:=FixMissingComponentClasses;
+  if Result in [mrAbort,mrOk] then begin
+    DebugLn(['CheckLFMBuffer all errors fixed']);
+    exit;
+  end;
+  WriteLFMErrors;
+  Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
 end;
 
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;

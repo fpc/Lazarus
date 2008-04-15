@@ -287,8 +287,8 @@ begin
     if not InsertStreamedSelection then exit;
   finally
     ComponentStream.Free;
-    LFMTree.Free;
     OldParents.Free;
+    // Note: do not free LFMTree, it is cached by the codetools
   end;
   Result:=mrOk;
 end;

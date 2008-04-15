@@ -135,7 +135,7 @@ type
     function RenameInclude(LinkIndex: integer; const NewFilename: string;
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
+    function CheckLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
                   const OnFindDefineProperty: TOnFindDefinePropertyForContext;
                   RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 
@@ -1542,7 +1542,7 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
+function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; out LFMTree: TLFMTree;
   const OnFindDefineProperty: TOnFindDefinePropertyForContext;
   RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
@@ -2075,7 +2075,7 @@ begin
   Result:=false;
   //DebugLn('TStandardCodeTool.CheckLFM A');
   // create tree from LFM file
-  LFMTree:=TLFMTree.Create;
+  LFMTree:=DefaultLFMTrees.GetLFMTree(LFMBuf,true);
   ActivateGlobalWriteLock;
   try
     //DebugLn('TStandardCodeTool.CheckLFM parsing LFM ...');

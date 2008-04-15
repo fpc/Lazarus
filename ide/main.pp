@@ -5307,7 +5307,7 @@ begin
   // close old designer form
   Result:=CloseUnitComponent(AnUnitInfo,CloseFlags);
   if Result<>mrOk then exit;
-
+  
   // check installed packages
   if (AnUnitInfo.Component=nil) and AnUnitInfo.IsPartOfProject
   and (not (ofProjectLoading in OpenFlags)) then begin
@@ -5413,6 +5413,9 @@ begin
       if AncestorType=nil then
         AncestorType:=TForm;
       //DebugLn('TMainIDE.DoLoadLFM Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorType=',AncestorType.ClassName);
+
+      // check lfm
+      
 
       BinStream:=TExtMemoryStream.Create;
       TxtLFMStream:=TExtMemoryStream.Create;

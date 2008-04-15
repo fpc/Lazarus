@@ -30,7 +30,7 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, CodeCache, CodeAtom, TypInfo;
+  Classes, SysUtils, AVL_Tree, FileProcs, CodeCache, CodeAtom, TypInfo;
   
 type
   { TLFMTreeNode }
@@ -231,6 +231,8 @@ type
     function GetNodePath: string;
   end;
   
+  TLFMTrees = class;
+  
   { TLFMTree }
 
   TLFMTree = class
@@ -247,10 +249,13 @@ type
     LFMBuffer: TCodeBuffer;
     FirstError: TLFMError;
     LastError: TLFMError;
+    Trees: TLFMTrees;
+    constructor Create(TheTrees: TLFMTrees; aLFMBuf: TCodeBuffer);
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function Parse(LFMBuf: TCodeBuffer): boolean;
+    procedure ClearErrors;
+    function Parse(LFMBuf: TCodeBuffer = nil): boolean;
     function PositionToCaret(p: integer): TPoint;
     procedure AddError(ErrorType: TLFMErrorType; LFMNode: TLFMTreeNode;
       const ErrorMessage: string; ErrorPosition: integer);
@@ -258,6 +263,19 @@ type
     function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
     function FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
     function FirstErrorAsString: string;
+  end;
+  
+  { TLFMTrees }
+
+  TLFMTrees = class
+  private
+    FItems: TAVLTree;// tree of TLFMTree sorted for LFMBuffer
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function GetLFMTree(LFMBuffer: TCodeBuffer;
+                        CreateIfNotExists: boolean): TLFMTree;
   end;
   
   TInstancePropInfo = record
@@ -281,8 +299,14 @@ const
     );
     
 procedure FreeListOfPInstancePropInfo(List: TFPList);
+function CompareLFMTreesByLFMBuffer(Data1, Data2: Pointer): integer;
+function CompareLFMBufWithTree(Buf, Tree: Pointer): integer;
+
+var
+  DefaultLFMTrees: TLFMTrees = nil;
 
 implementation
+
 
 procedure FreeListOfPInstancePropInfo(List: TFPList);
 var
@@ -297,6 +321,16 @@ begin
   List.Free;
 end;
 
+function CompareLFMTreesByLFMBuffer(Data1, Data2: Pointer): integer;
+begin
+  Result:=ComparePointers(TLFMTree(Data1).LFMBuffer,TLFMTree(Data2).LFMBuffer);
+end;
+
+function CompareLFMBufWithTree(Buf, Tree: Pointer): integer;
+begin
+  Result:=ComparePointers(Buf,TLFMTree(Tree).LFMBuffer);
+end;
+
 { TLFMTree }
 
 constructor TLFMTree.Create;
@@ -306,6 +340,7 @@ end;
 destructor TLFMTree.Destroy;
 begin
   Clear;
+  if Trees<>nil then Trees.FItems.Remove(Self);
   inherited Destroy;
 end;
 
@@ -313,18 +348,28 @@ procedure TLFMTree.Clear;
 begin
   LFMBuffer:=nil;
   CurNode:=nil;
-  while FirstError<>nil do FirstError.Free;
+  ClearErrors;
   while Root<>nil do Root.Free;
 end;
 
-function TLFMTree.Parse(LFMBuf: TCodeBuffer): boolean;
+procedure TLFMTree.ClearErrors;
+begin
+  while FirstError<>nil do FirstError.Free;
+end;
+
+function TLFMTree.Parse(LFMBuf: TCodeBuffer = nil): boolean;
 var
   LFMStream: TMemoryStream;
   Src: String;
 begin
   Result:=false;
   Clear;
-  LFMBuffer:=LFMBuf;
+  if LFMBuf<>LFMBuffer then begin
+    if Trees<>nil then
+      raise Exception.Create('TLFMTree.Parse: changing LFMBuffer in Tree is not allowed');
+    LFMBuffer:=LFMBuf;
+  end;
+  
   LFMStream:=TMemoryStream.Create;
   Src:=LFMBuffer.Source;
   if Src<>'' then begin
@@ -642,6 +687,16 @@ procedure TLFMTree.CloseChildNode;
 begin
   CurNode.EndPos:=Parser.SourcePos+1;
   CurNode:=CurNode.Parent;
+end;
+
+constructor TLFMTree.Create(TheTrees: TLFMTrees; aLFMBuf: TCodeBuffer);
+begin
+  if (TheTrees=nil)
+  or (aLFMBuf=nil) then
+    raise Exception.Create('TLFMTree.Create need tree and buffer');
+  Trees:=TheTrees;
+  Trees.FItems.Add(Self);
+  LFMBuffer:=aLFMBuf;
 end;
 
 { TLFMTreeNode }
@@ -986,6 +1041,44 @@ begin
   p[FCount-1]:=nil;
   FNames[FCount-1]:=Name;
 end;
+
+{ TLFMTrees }
+
+constructor TLFMTrees.Create;
+begin
+  FItems:=TAVLTree.Create(@CompareLFMTreesByLFMBuffer);
+end;
+
+destructor TLFMTrees.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TLFMTrees.Clear;
+begin
+  FItems.FreeAndClear;
+end;
+
+function TLFMTrees.GetLFMTree(LFMBuffer: TCodeBuffer; CreateIfNotExists: boolean
+  ): TLFMTree;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FItems.FindKey(LFMBuffer,@CompareLFMBufWithTree);
+  if AVLNode<>nil then
+    Result:=TLFMTree(AVLNode.Data)
+  else if CreateIfNotExists then begin
+    Result:=TLFMTree.Create;
+    Result.LFMBuffer:=LFMBuffer;
+    FItems.Add(Result);
+  end else
+    Result:=nil;
+end;
+
+finalization
+  FreeAndNil(DefaultLFMTrees);
 
 end.
 
