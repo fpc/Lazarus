@@ -160,7 +160,7 @@ uses
 // Gtk2WSGrids,
 // Gtk2WSImgList,
 // Gtk2WSMaskEdit,
-// Gtk2WSMenus,
+ Gtk2WSMenus,
 // Gtk2WSPairSplitter,
 // Gtk2WSSpin,
  Gtk2WSStdCtrls,

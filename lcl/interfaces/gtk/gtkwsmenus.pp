@@ -43,6 +43,7 @@ type
   private
   protected
   public
+    {$IFDEF GTK1}
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class function CreateHandle(const AMenuItem: TMenuItem): HMENU; override;
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
@@ -54,6 +55,7 @@ type
     class function SetRadioItem(const AMenuItem: TMenuItem; const RadioItem: boolean): boolean; override;
     class function SetRightJustify(const AMenuItem: TMenuItem; const Justified: boolean): boolean; override;
     class procedure UpdateMenuIcon(const AMenuItem: TMenuItem; const HasIcon: Boolean; const AIcon: TBitmap); override;
+    {$ENDIF}
   end;
 
   { TGtkWSMenu }
@@ -91,6 +93,7 @@ uses Controls;
 
 { TGtkWSMenuItem }
 
+{$IFDEF GTK1}
 class procedure TGtkWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
   //AccelKey: Integer;
@@ -183,16 +186,10 @@ begin
     // set 'Checked'
     gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
       AMenuItem.Checked);
-    {$ifdef GTK2}
-    if (OldCheckMenuItemToggleSize=0) then
-    begin
-      gtk_menu_item_toggle_size_request(GTK_MENU_ITEM(Widget), @OldCheckMenuItemToggleSize);
-      OldCheckMenuItemToggleSize := GTK_MENU_ITEM(Widget)^.toggle_size;
-    end;
-    {$else}
+
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize := MENU_ITEM_CLASS(Widget)^.toggle_size;
-    {$endif}
+
     g_signal_connect_after(PGTKObject(Widget), 'toggled',
       TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(AMenuItem));
   end;
@@ -329,6 +326,7 @@ begin
     Exit;
   // TODO
 end;
+{$ENDIF}
 
 { TGtkWSMenu }
 
@@ -457,7 +455,9 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
+{$IFDEF GTK1}
   RegisterWSComponent(TMenuItem, TGtkWSMenuItem);
+{$ENDIF}
   RegisterWSComponent(TMenu, TGtkWSMenu);
 //  RegisterWSComponent(TMainMenu, TGtkWSMainMenu);
   RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
