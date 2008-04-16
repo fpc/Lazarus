@@ -4636,8 +4636,10 @@ begin
         ANode:=ClassSectionNode.FirstChild;
 
         // skip the class GUID
-        if (ANode<>nil) and (ANode.Desc=ctnClassGUID) then
+        if (ANode<>nil) and (ANode.Desc=ctnClassGUID) then begin
+          InsertNode:=ANode;
           ANode:=ANode.NextBrother;
+        end;
 
         // insert methods behind variables
         if not IsVariable then begin
