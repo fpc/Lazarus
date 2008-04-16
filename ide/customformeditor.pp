@@ -49,7 +49,8 @@ uses
   ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
   DesignerProcs;
 
-Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
+const
+  OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
 
 type
 {
@@ -287,7 +288,7 @@ each control that's dropped onto the form
   
   
   { TDefinePropertiesPersistent
-    Wrapper class, to call the protected method 'DefineProperties' }
+    Wrapper/Friend class, to call the protected method 'DefineProperties' }
   
   TDefinePropertiesPersistent = class(TPersistent)
   private

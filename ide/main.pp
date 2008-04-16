@@ -627,6 +627,7 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
+    procedure UpdateUnitComponentDependencies;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -6077,6 +6078,11 @@ begin
   // check if another component uses this component
   if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
     exit(true);
+end;
+
+procedure TMainIDE.UpdateUnitComponentDependencies;
+begin
+  Project1.UpdateUnitComponentDependencies;
 end;
 
 function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;

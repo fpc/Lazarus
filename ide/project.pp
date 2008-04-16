@@ -84,12 +84,18 @@ type
     ucdlRequires,
     ucdlUsedBy
     );
+  TUnitCompDependencyType = (
+    ucdtAncestor, // RequiresUnit is ancestor
+    ucdtProperty  // a property references RequiresUnit's component or sub component
+    );
+  TUnitCompDependencyTypes = set of TUnitCompDependencyType;
     
   { TUnitComponentDependency }
 
   TUnitComponentDependency = class
   private
     FRequiresUnit: TUnitInfo;
+    FTypes: TUnitCompDependencyTypes;
     FUsedByUnit: TUnitInfo;
     procedure SetRequiresUnit(const AValue: TUnitInfo);
     procedure SetUsedByUnit(const AValue: TUnitInfo);
@@ -109,6 +115,7 @@ type
                              ListType: TUnitCompDependencyList);
     property RequiresUnit: TUnitInfo read FRequiresUnit write SetRequiresUnit;
     property UsedByUnit: TUnitInfo read FUsedByUnit write SetUsedByUnit;
+    property Types: TUnitCompDependencyTypes read FTypes write FTypes;
   end;
 
   //---------------------------------------------------------------------------
@@ -235,6 +242,7 @@ type
     // component dependencies
     procedure AddRequiresComponentDependency(RequiredUnit: TUnitInfo);
     procedure RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
+    function FindComponentDependency(RequiredUnit: TUnitInfo): TUnitComponentDependency;
     function FindAncestorUnit: TUnitInfo;
   public
     { Properties }
@@ -699,6 +707,9 @@ type
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TFPList);
     procedure AddPackageDependency(const PackageName: string); override;
+    
+    // unit dependencies
+    procedure UpdateUnitComponentDependencies;
 
     // paths
     procedure AddSrcPath(const SrcPathAddition: string); override;
@@ -1336,8 +1347,22 @@ begin
 end;
 
 procedure TUnitInfo.RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
+var
+  Dependency: TUnitComponentDependency;
 begin
-  RequiredUnit.Free;
+  Dependency:=FindComponentDependency(RequiredUnit);
+  if Dependency<>nil then
+    Dependency.Free;
+end;
+
+function TUnitInfo.FindComponentDependency(RequiredUnit: TUnitInfo
+  ): TUnitComponentDependency;
+begin
+  Result:=FirstRequiredComponent;
+  while Result<>nil do begin
+    if Result.RequiresUnit=RequiredUnit then exit;
+    Result:=Result.NextRequiresDependency;
+  end;
 end;
 
 function TUnitInfo.FindAncestorUnit: TUnitInfo;
@@ -3344,6 +3369,11 @@ begin
   PkgDependency:=TPkgDependency.Create;
   PkgDependency.PackageName:=PackageName;
   AddRequiredDependency(PkgDependency);
+end;
+
+procedure TProject.UpdateUnitComponentDependencies;
+begin
+
 end;
 
 procedure TProject.AddSrcPath(const SrcPathAddition: string);
