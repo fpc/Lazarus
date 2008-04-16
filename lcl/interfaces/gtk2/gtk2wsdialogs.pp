@@ -27,18 +27,16 @@ unit Gtk2WSDialogs;
 interface
 
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  Gtk2, Glib2, gdk2, pango,
+  // Bindings
+  Gtk2, Glib2, gdk2, pango, gtkextra,
+  // RTL and FCL
   SysUtils, Classes,
-  Controls, Dialogs, ExtDlgs,
+  // Widgetset
   GtkWSDialogs, GtkInt, GtkGlobals, GtkDef, GtkProc,
-////////////////////////////////////////////////////
+  // LCL
+  Controls, Dialogs, ExtDlgs,
   LCLType, WSDialogs, WSLCLClasses, FileUtil;
+  
 type
   { TGtk2WSCommonDialog }
 
@@ -340,6 +338,12 @@ begin
     'selection-changed', gtk_signal_func(@gtkFileChooserSelectionChangedCB),
     OpenDialog);
 
+  // Sets the dialog options
+
+  // ofForceShowHidden
+  if (ofForceShowHidden in OpenDialog.Options) then
+    gtk_file_chooser_set_show_hidden(FileSelWidget, True);
+
   (*  TODO
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
@@ -405,6 +409,7 @@ var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
+  // Defines an action for the dialog and creates it
   Action := GTK_FILE_CHOOSER_ACTION_OPEN;
   Button1 := GTK_STOCK_OPEN;
 

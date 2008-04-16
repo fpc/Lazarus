@@ -122,6 +122,7 @@ procedure gtk_event_box_set_above_child(event_box: PGtkEventBox; visible_window:
 
 // gtk 2.6
 function gtk_cell_view_get_displayed_row(cell_view: Pointer): PGtkTreePath; cdecl; external gtklib name 'gtk_cell_view_get_displayed_row';
+procedure gtk_file_chooser_set_show_hidden(chooser: PGtkFileChooser; show_hidden: gboolean); cdecl; external gtklib name 'gtk_file_chooser_set_show_hidden';
 
 // - - - - - - - - - gdk extras - - - - - - - - -
 
