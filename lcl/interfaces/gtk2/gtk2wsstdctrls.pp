@@ -151,7 +151,9 @@ type
   TGtk2WSCustomListBox = class(TGtkWSCustomListBox)
   private
   protected
+    class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetIndexAtY(const ACustomListBox: TCustomListBox; y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -168,7 +170,6 @@ type
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont : TFont); override;
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSListBox }
@@ -618,7 +619,14 @@ begin
 
   WidgetInfo := GetWidgetInfo(p, False);
   
-  TGtkPrivateListClass(WSPrivate).SetCallbacks(p, WidgetInfo);
+  // Sets the callbacks
+  SetCallbacks(TVWidget, WidgetInfo);
+end;
+
+class procedure TGtk2WSCustomListBox.SetCallbacks(const AGtkWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AGtkWidget), TComponent(AWidgetInfo^.LCLObject));
 end;
 
 class function TGtk2WSCustomListBox.GetIndexAtY(
