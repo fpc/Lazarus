@@ -78,6 +78,8 @@ type
     class procedure AddControl(const AControl: TControl); override;
     class function  GetClientBounds(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
     class function  GetClientRect(const AWincontrol: TWinControl; var ARect: TRect): Boolean; override;
+
+    class procedure SetBiDiMode(const AWinControl: TWinControl; const ABiDiMode: TBiDiMode); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -129,14 +131,20 @@ type
   public
   end;
 
-
-implementation
 const
   TBorderStyleToQtFrameShapeMap: array[TBorderStyle] of QFrameShape =
   (
- {bsNone}   QFrameNoFrame,
- {bsSingle} QFrameStyledPanel
+ { bsNone   } QFrameNoFrame,
+ { bsSingle } QFrameStyledPanel
   );
+  TBidiModeToDirectionMap: array[TBiDiMode] of QtLayoutDirection =
+  (
+ { bdLeftToRight            } QtLeftToRight,
+ { bdRightToLeft            } QtRightToLeft,
+ { bdRightToLeftNoAlign     } QtRightToLeft, // ?
+ { bdRightToLeftReadingOnly } QtRightToLeft  // ?
+  );
+implementation
 
 {------------------------------------------------------------------------------
   Method: TQtWSCustomControl.CreateHandle
@@ -309,6 +317,14 @@ begin
   ARect := TQtWidget(AWinControl.Handle).getClientBounds;
   OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
+end;
+
+class procedure TQtWSWinControl.SetBiDiMode(const AWinControl: TWinControl;
+  const ABiDiMode: TBiDiMode);
+begin
+  if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
+    Exit;
+  TQtWidget(AWinControl.Handle).setLayoutDirection(TBidiModeToDirectionMap[ABiDiMode]);
 end;
 
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;

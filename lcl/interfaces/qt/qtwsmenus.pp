@@ -31,7 +31,7 @@ interface
 uses
   // Bindings
   qt4,
-  qtwidgets, qtobjects, qtproc,
+  qtwidgets, qtobjects, qtproc, QtWsControls,
   // LCL
   SysUtils, Classes, LCLType, LCLProc, Graphics, Controls, Forms, Menus,
   // Widgetset
@@ -66,6 +66,7 @@ type
   protected
   public
     class function  CreateHandle(const AMenu: TMenu): HMENU; override;
+    class procedure SetBiDiMode(const AMenu: TMenu; const ABiDiMode: TBiDiMode); override;
   end;
 
   { TQtWSMainMenu }
@@ -384,6 +385,12 @@ begin
 
     WriteLn(' Handle: ', dbghex(Result), ' Name: ', AMenu.Name);
   {$endif}
+end;
+
+class procedure TQtWSMenu.SetBiDiMode(const AMenu: TMenu;
+  const ABiDiMode: TBiDiMode);
+begin
+  TQtWidget(AMenu.Handle).setLayoutDirection(TBidiModeToDirectionMap[ABidiMode]);
 end;
 
 { TQtWSPopupMenu }

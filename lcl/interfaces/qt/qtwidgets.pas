@@ -186,6 +186,7 @@ type
     procedure setFocusProxy(const AWidget: QWidgetH);
     procedure setFont(AFont: QFontH);
     procedure setGeometry(ARect: TRect); overload;
+    procedure setLayoutDirection(ADirection: QtLayoutDirection);
     procedure setMaximumSize(AWidth, AHeight: Integer);
     procedure setMask(AMask: QBitmapH);
     procedure setMinimumSize(AWidth, AHeight: Integer);
@@ -2622,6 +2623,11 @@ end;
 procedure TQtWidget.setGeometry(ARect: TRect);
 begin
   QWidget_setGeometry(Widget, @ARect);
+end;
+
+procedure TQtWidget.setLayoutDirection(ADirection: QtLayoutDirection);
+begin
+  QWidget_setLayoutDirection(Widget, ADirection);
 end;
 
 procedure TQtWidget.setMaximumSize(AWidth, AHeight: Integer);
