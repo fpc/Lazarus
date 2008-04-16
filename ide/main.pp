@@ -5592,7 +5592,7 @@ var
   function LoadDependencyHidden(const RefRootName: string): TModalResult;
   var
     LFMFilename: String;
-    LFMCode: TCodeBuffer;
+    UnitCode, LFMCode: TCodeBuffer;
     ModalResult: TModalResult;
     UnitFilename: String;
     RefUnitInfo: TUnitInfo;
@@ -5618,6 +5618,16 @@ var
       RefUnitInfo:=TUnitInfo.Create(nil);
       RefUnitInfo.Filename:=UnitFilename;
       Project1.AddFile(RefUnitInfo,false);
+    end;
+
+    if RefUnitInfo.Source = nil then
+    begin
+      ModalResult := LoadCodeBuffer(UnitCode, UnitFileName, [lbfCheckIfText]);
+      if ModalResult<>mrOk then begin
+        debugln('TMainIDE.DoFixupComponentReferences Failed loading ',UnitFilename);
+        exit(mrCancel);
+      end;
+      RefUnitInfo.Source := UnitCode;
     end;
 
     // load resource hidden

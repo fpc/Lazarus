@@ -1454,6 +1454,8 @@ begin
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
     fErrorMsg:='TCodeToolManager.InitCurCodeTool MainCode=nil';
+    if Code = nil then
+      fErrorMsg := fErrorMsg + ' Code=nil';
     exit;
   end;
   if MainCode.Scanner=nil then begin
