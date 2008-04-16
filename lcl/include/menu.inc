@@ -74,7 +74,7 @@ end;
 procedure TMenu.BidiModeChanged;
 begin
   if HandleAllocated then
-    TWSMenuClass(WidgetSetClass).BiDiModeChanged(Self);
+    TWSMenuClass(WidgetSetClass).SetBiDiMode(Self, BidiMode);
 end;
 
 procedure TMenu.ParentBidiModeChanged(AOwner: TComponent);
