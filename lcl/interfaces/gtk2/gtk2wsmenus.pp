@@ -234,7 +234,10 @@ begin
   
   //DebugLn(['TGtkWSMenuItem.SetShortCut ',dbgsName(AMenuItem),' ',ShortCutToText(NewShortCut)]);
 
-  // Gets the inner widgets. They should already be created by now
+  // Temporary: At least it writes the names of the shortcuts
+  UpdateInnerMenuItem(AMenuItem, PGTKWidget(AMenuItem.Handle), NewShortCut);
+
+{  // Gets the inner widgets. They should already be created by now
 
   MenuWidget := PGtkMenuItem(AMenuItem.Handle);
 
@@ -242,7 +245,7 @@ begin
 
   // Converts the shortcut to a gtk friendly format and sets it
 
-{  ShortCutToKey(NewShortCut, CurKey, CurShift);
+  ShortCutToKey(NewShortCut, CurKey, CurShift);
 
   accel_path := 'LCLApp/Menu/' + GetAcceleratorString(CurKey, CurShift);
 
