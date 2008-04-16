@@ -207,7 +207,7 @@ class procedure TWSWinControl.SetBiDiMode(const AWinControl: TWinControl;
   const ABiDiMode: TBiDiMode);
 begin
 end;
-  
+
 class procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 begin

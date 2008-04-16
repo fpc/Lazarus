@@ -137,12 +137,10 @@ const
  { bsNone   } QFrameNoFrame,
  { bsSingle } QFrameStyledPanel
   );
-  TBidiModeToDirectionMap: array[TBiDiMode] of QtLayoutDirection =
+  TLayoutDirectionMap: array[Boolean] of QtLayoutDirection =
   (
- { bdLeftToRight            } QtLeftToRight,
- { bdRightToLeft            } QtRightToLeft,
- { bdRightToLeftNoAlign     } QtRightToLeft, // ?
- { bdRightToLeftReadingOnly } QtRightToLeft  // ?
+ { False } QtLeftToRight,
+ { True  } QtRightToLeft
   );
 implementation
 
@@ -324,7 +322,7 @@ class procedure TQtWSWinControl.SetBiDiMode(const AWinControl: TWinControl;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBiDiMode') then
     Exit;
-  TQtWidget(AWinControl.Handle).setLayoutDirection(TBidiModeToDirectionMap[ABiDiMode]);
+  TQtWidget(AWinControl.Handle).setLayoutDirection(TLayoutDirectionMap[AWinControl.UseRightToLeftReading]);
 end;
 
 class procedure TQtWSWinControl.GetPreferredSize(const AWinControl: TWinControl;

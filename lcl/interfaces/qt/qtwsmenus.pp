@@ -390,7 +390,7 @@ end;
 class procedure TQtWSMenu.SetBiDiMode(const AMenu: TMenu;
   const ABiDiMode: TBiDiMode);
 begin
-  TQtWidget(AMenu.Handle).setLayoutDirection(TBidiModeToDirectionMap[ABidiMode]);
+  TQtWidget(AMenu.Handle).setLayoutDirection(TLayoutDirectionMap[AMenu.IsRightToLeft]);
 end;
 
 { TQtWSPopupMenu }
