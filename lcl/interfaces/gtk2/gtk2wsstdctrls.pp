@@ -24,19 +24,16 @@ unit Gtk2WSStdCtrls;
 
 {$mode objfpc}{$H+}
 {$PACKRECORDS c}
+
 interface
 
 uses
-  Classes, SysUtils, Math, Controls, Graphics,
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
-  StdCtrls, LMessages, LCLType, LCLProc,
-////////////////////////////////////////////////////
+  // Bindings
   glib2,  gdk2, gtk2, Pango,
+  // RTL, FCL, LCL
+  Classes, SysUtils, Math, Controls, Graphics,
+  StdCtrls, LMessages, LCLType, LCLProc,
+  // Widgetset
   WSControls, WSProc, WSStdCtrls, WSLCLClasses, GtkWSStdCtrls, Gtk2Int, GtkDef,
   Gtk2CellRenderer, GTKWinApiWindow, GtkGlobals, GtkProc, InterfaceBase,
   GtkWSPrivate, Gtk2WSPrivate, GtkExtra;
@@ -197,23 +194,33 @@ type
 
   { TGtk2WSCustomMemo }
 
-  TGtk2WSCustomMemo = class(TGtkWSCustomMemo)
+  TGtk2WSCustomMemo = class(TWSCustomMemo)
   private
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
+
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;
-    class procedure SetColor(const AWinControl: TWinControl);override;
-    class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont);override;
+    class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl;const AFont : TFont); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
     class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
   end;
 
   { TGtk2WSEdit }

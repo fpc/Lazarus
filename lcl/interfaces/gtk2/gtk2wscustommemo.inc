@@ -246,6 +246,40 @@ begin
   // not supported
 end;
 
+class procedure TGtk2WSCustomMemo.SetCharCase(const ACustomEdit: TCustomEdit;
+  NewCase: TEditCharCase);
+begin
+  // TODO: implement me!
+end;
+
+class procedure TGtk2WSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit;
+  NewLength: integer);
+var
+  Widget: PGtkWidget;
+begin
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
+    gtk_entry_set_max_length(GTK_ENTRY(Widget), guint16(NewLength));
+end;
+
+class procedure TGtk2WSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit;
+  NewReadOnly: boolean);
+var
+  Widget: PGtkWidget;
+begin
+  Widget:=PGtkWidget(ACustomEdit.Handle);
+  if GtkWidgetIsA(Widget, GTK_TYPE_ENTRY) then
+    gtk_entry_set_editable(GTK_ENTRY(Widget), not ACustomEdit.ReadOnly);
+end;
+
+class procedure TGtk2WSCustomMemo.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight,
+                          WithThemeSpace);
+end;
+
 class function TGtk2WSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var

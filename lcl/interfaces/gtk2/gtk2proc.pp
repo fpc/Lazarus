@@ -58,6 +58,8 @@ uses
 
   gtk2callback.inc headers
 }
+const
+  gtkevent_window_state_event = 'window-state-event';
 
 function GTKWindowStateEventCB(widget: PGtkWidget;
                                state: PGdkEventWindowState;

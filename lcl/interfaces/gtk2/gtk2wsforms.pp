@@ -139,7 +139,7 @@ begin
       SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
     end;
 
-  g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'window-state-event',
+  g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), gtkevent_window_state_event,
     gtk_signal_func(@GTKWindowStateEventCB), AWidgetInfo^.LCLObject);
 end;
 
@@ -186,11 +186,7 @@ begin
     else AResizable := FormResizableMap[ABorderStyle];
 
     // gtk_window_set_policy is deprecated in Gtk2
-    {$IFDEF Gtk2}
-      gtk_window_set_resizable(GTK_WINDOW(P), gboolean(AResizable));
-    {$ELSE}
-      gtk_window_set_policy(GTK_WINDOW(P), AResizable, AResizable, 0);
-    {$ENDIF}
+    gtk_window_set_resizable(GTK_WINDOW(P), gboolean(AResizable));
 
     // Sets the title
     gtk_window_set_title(PGtkWindow(P), AParams.Caption);
@@ -210,10 +206,8 @@ begin
   Box := CreateFormContents(ACustomForm, P);
   gtk_container_add(PGtkContainer(P), Box);
 
-  {$IfDef GTK2}
-    //so we can double buffer ourselves, eg, the Form Designer
-    gtk_widget_set_double_buffered(Box, False);
-  {$EndIf}
+  //so we can double buffer ourselves, eg, the Form Designer
+  gtk_widget_set_double_buffered(Box, False);
 
   gtk_widget_show(Box);
 
