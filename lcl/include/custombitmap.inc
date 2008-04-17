@@ -1,7 +1,7 @@
 {%MainUnit ../graphics.pp}
 
 {******************************************************************************
-                                     TBitMap
+                                     TCustomBitmap
  ******************************************************************************
 
  *****************************************************************************
@@ -47,18 +47,18 @@ begin
   AStream.Position:=OldPosition;
 end;
 
-procedure TBitMap.Assign(Source: TPersistent);
+procedure TCustomBitmap.Assign(Source: TPersistent);
 var
-  SrcBitmap: TBitmap absolute Source;
+  SrcBitmap: TCustomBitmap absolute Source;
   SrcFPImage: TFPCustomImage absolute Source;
   IntfImage: TLazIntfImage;
   ImgHandle,ImgMaskHandle: HBitmap;
 begin
   if Source = Self then exit;
 
-  if Source is TBitmap
+  if Source is TCustomBitmap
   then begin
-    // TBitmap can share image data
+    // TCustomBitmap can share image data
     
     // -> check if already shared
     if SrcBitmap.FImage=FImage then exit;// already sharing
@@ -67,10 +67,10 @@ begin
     // which we will replace anyway.
     // ChangingAll(Self);
 
-    //DebugLn(['TBitMap.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
+    //DebugLn(['TCustomBitmap.Assign Self=',ClassName,' Source=',Source.ClassName,' HandleAllocated=',HandleAllocated,' Canvas=',DbgSName(FCanvas)]);
     FTransparent := SrcBitmap.Transparent;
 
-    //DebugLn('TBitMap.Assign A  RefCount=',FImage.RefCount);
+    //DebugLn('TCustomBitmap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
     // -> free canvas (interface handles)
     FreeCanvasContext;
@@ -88,7 +88,7 @@ begin
       FreeSaveStream;
     end;
 
-    //DebugLn(['TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
+    //DebugLn(['TCustomBitmap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount]);
     Changed(Self);
 
     Exit;
@@ -127,7 +127,7 @@ begin
   inherited Assign(Source);
 end;
 
-procedure TBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
+procedure TCustomBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
 var
   UseMaskHandle: HBitmap;
   SrcDC: hDC;
@@ -154,17 +154,17 @@ begin
   end;
 end;
 
-constructor TBitmap.Create;
+constructor TCustomBitmap.Create;
 begin
   inherited Create;
   FPixelFormat := pfDevice;
-  FImage := TBitmapImage.Create;
+  FImage := TCustomBitmapImage.Create;
   FImage.Reference;
   FTransparentColor := clDefault; // for Delphi compatibility. clDefault means:
                                   // use Left,Bottom pixel as transparent pixel
 end;
 
-destructor TBitMap.Destroy;
+destructor TCustomBitmap.Destroy;
 begin
   FreeCanvasContext;
   FImage.Release;
@@ -173,19 +173,19 @@ begin
   inherited Destroy;
 end;
 
-procedure TBitMap.FreeCanvasContext;
+procedure TCustomBitmap.FreeCanvasContext;
 begin
   if (FCanvas <> nil) then TBitmapCanvas(FCanvas).FreeDC;
 end;
 
-function TBitmap.GetCanvas: TCanvas;
+function TCustomBitmap.GetCanvas: TCanvas;
 begin
   if FCanvas = nil then
     CreateCanvas;
   Result := FCanvas;
 end;
 
-procedure TBitmap.CreateCanvas;
+procedure TCustomBitmap.CreateCanvas;
 begin
   if (FCanvas <> nil) or (bmisCreatingCanvas in FInternalState) then exit;
   Include(FInternalState,bmisCreatingCanvas);
@@ -198,40 +198,40 @@ begin
   end;
 end;
 
-procedure TBitMap.FreeImage;
+procedure TCustomBitmap.FreeImage;
 begin
   Handle := 0;
 end;
 
-function TBitmap.HandleAllocated: boolean;
+function TCustomBitmap.HandleAllocated: boolean;
 begin
   Result := (FImage <> nil) and (FImage.FHandle <> 0);
 end;
 
-function TBitmap.MaskHandleAllocated: boolean;
+function TCustomBitmap.MaskHandleAllocated: boolean;
 begin
   Result := (FImage <> nil) and (FImage.FMaskHandle <> 0);
 end;
 
-function TBitmap.PaletteAllocated: boolean;
+function TCustomBitmap.PaletteAllocated: boolean;
 begin
   Result := (FImage <> nil) and (FImage.FPalette <> 0);
 end;
 
-procedure TBitmap.CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
+procedure TCustomBitmap.CreateFromBitmapHandles(ABitmap, AMask: HBitmap; const ARect: TRect);
 var
   RawImage: TRawImage;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  //DebugLn('TBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
+  //DebugLn('TCustomBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
   if not RawImage_FromBitmap(RawImage, ABitmap, AMask, ARect) then
-    raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Get RawImage');
+    raise EInvalidGraphicOperation.Create('TCustomBitmap.CreateFromBitmapHandles Get RawImage');
   ImgHandle:=0;
   ImgMaskHandle:=0;
   try
-    //DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
+    //DebugLn('TCustomBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
     if not RawImage_CreateBitmaps(RawImage, ImgHandle, ImgMaskHandle) then
-      raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
+      raise EInvalidGraphicOperation.Create('TCustomBitmap.CreateFromBitmapHandles Create bitmaps');
     SetHandles(ImgHandle, ImgMaskHandle);
     ImgHandle:=0;
     ImgMaskHandle:=0;
@@ -242,7 +242,7 @@ begin
   end;
 end;
 
-procedure TBitmap.LoadFromDevice(DC: HDC);
+procedure TCustomBitmap.LoadFromDevice(DC: HDC);
 var
   IntfImg: TLazIntfImage;
   ImgHandle, ImgMaskHandle: HBitmap;
@@ -257,7 +257,7 @@ begin
     IntfImg.LoadFromDevice(DC);
     // create HBitmap
     IntfImg.CreateBitmaps(ImgHandle, ImgMaskHandle);
-    // feed HBitmap into a TBitmap
+    // feed HBitmap into a TCustomBitmap
     SetHandles(ImgHandle, ImgMaskHandle);
     ImgHandle:=0;
     ImgMaskHandle:=0;
@@ -268,7 +268,7 @@ begin
   end;
 end;
 
-function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
+function TCustomBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 var
   ResType: String;
 begin
@@ -287,36 +287,36 @@ begin
   end;
 end;
 
-procedure TBitMap.Mask(ATransparentColor: TColor);
+procedure TCustomBitmap.Mask(ATransparentColor: TColor);
 begin
   CreateMask(ATransparentColor);
 end;
 
-function TBitmap.GetHandle: HBITMAP;
+function TCustomBitmap.GetHandle: HBITMAP;
 begin
   if not FImage.HandleAllocated then
     HandleNeeded;
   Result := FImage.FHandle;
 end;
 
-function TBitmap.GetHandleType: TBitmapHandleType;
+function TCustomBitmap.GetHandleType: TBitmapHandleType;
 begin
   Result:=FImage.GetHandleType;
 end;
 
-function TBitmap.GetMaskHandle: HBITMAP;
+function TCustomBitmap.GetMaskHandle: HBITMAP;
 begin
   MaskHandleNeeded;
   Result := FImage.FMaskHandle;
 end;
 
-procedure TBitmap.SetHandleType(Value: TBitmapHandleType);
+procedure TCustomBitmap.SetHandleType(Value: TBitmapHandleType);
 begin
   if HandleType=Value then exit;
-  DebugLn('TBitmap.SetHandleType TBitmap.SetHandleType not implemented');
+  DebugLn('TCustomBitmap.SetHandleType TCustomBitmap.SetHandleType not implemented');
 end;
 
-procedure TBitmap.SetMonochrome(const AValue: Boolean);
+procedure TCustomBitmap.SetMonochrome(const AValue: Boolean);
 begin
   if Monochrome=AValue then exit;
   if AValue then begin
@@ -327,14 +327,14 @@ begin
   end;
 end;
 
-procedure TBitmap.SetPixelFormat(const AValue: TPixelFormat);
+procedure TCustomBitmap.SetPixelFormat(const AValue: TPixelFormat);
 begin
   if AValue=PixelFormat then exit;
   FreeImage;
   FPixelFormat:=AValue;
 end;
 
-procedure TBitmap.SetTransparentColor(const AValue: TColor);
+procedure TCustomBitmap.SetTransparentColor(const AValue: TColor);
 begin
   if FTransparentColor = AValue then exit;
   FTransparentColor := AValue;
@@ -343,18 +343,18 @@ begin
   CreateMask;
 end;
 
-procedure TBitmap.UpdatePixelFormat;
+procedure TCustomBitmap.UpdatePixelFormat;
 begin
   FPixelFormat := FImage.GetPixelFormat;
 end;
 
-procedure TBitmap.Changed(Sender: TObject);
+procedure TCustomBitmap.Changed(Sender: TObject);
 begin
   //FMaskBitsValid := False;
   inherited Changed(Sender);
 end;
 
-procedure TBitmap.Changing(Sender: TObject);
+procedure TCustomBitmap.Changing(Sender: TObject);
 // called before the bitmap is modified
 // -> make sure the handle is unshared (otherwise the modifications will also
 //    modify all copies)
@@ -365,13 +365,13 @@ begin
   FreeSaveStream;
 end;
 
-procedure TBitmap.ChangingAll(Sender: TObject);
+procedure TCustomBitmap.ChangingAll(Sender: TObject);
 begin
   UnshareImage(false);
   Changing(Sender);
 end;
 
-procedure TBitMap.HandleNeeded;
+procedure TCustomBitmap.HandleNeeded;
 const
   BITCOUNT_MAP: array[TPixelFormat] of Byte = (
 //  pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit, pf32bit, pfCustom
@@ -441,12 +441,12 @@ begin
     then FImage.FHandle := CreateBitmap(UseWidth, UseHeight, 1, BitCount, nil);
   end;
 
-  //DebugLn('TBitMap.HandleNeeded Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle),' n=',n);
+  //DebugLn('TCustomBitmap.HandleNeeded Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle),' n=',n);
   FImage.FDIB.dsbm.bmWidth := Width;
   FImage.FDIB.dsbm.bmHeight := Height;
 end;
 
-procedure TBitMap.MaskHandleNeeded;
+procedure TCustomBitmap.MaskHandleNeeded;
 begin
   if (FImage.FMaskHandle <> 0) then exit;
   // not now, breaks alpha images, since they report themselves as transparent
@@ -454,12 +454,12 @@ begin
   // CreateMask;
 end;
 
-procedure TBitMap.LoadFromStream(Stream: TStream);
+procedure TCustomBitmap.LoadFromStream(Stream: TStream);
 begin
   ReadStream(Stream, true, Stream.Size - Stream.Position);
 end;
 
-procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
+procedure TCustomBitmap.GetSupportedSourceMimeTypes(List: TStrings);
 begin
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then
   begin
@@ -471,7 +471,7 @@ begin
     inherited GetSupportedSourceMimeTypes(List);
 end;
 
-function TBitmap.GetTransparent: Boolean;
+function TCustomBitmap.GetTransparent: Boolean;
 begin
   {$note add better check for transparency }
   // MWE: now tharansparency is set when a maskhandle is assigned, the user can
@@ -484,7 +484,7 @@ begin
   Result := FTransparent or (FPixelFormat = pf32bit);
 end;
 
-function TBitmap.GetDefaultMimeType: string;
+function TCustomBitmap.GetDefaultMimeType: string;
 begin
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then begin
     if FImage.SaveStream<>nil then begin
@@ -499,17 +499,17 @@ begin
     Result:=inherited GetDefaultMimeType;
 end;
 
-class function TBitmap.GetFileExtensions: string;
+class function TCustomBitmap.GetFileExtensions: string;
 begin
   Result:='bmp;xpm';
 end;
 
-procedure TBitmap.LoadFromXPMFile(const Filename: String);
+procedure TCustomBitmap.LoadFromXPMFile(const Filename: String);
 Begin
   LoadFromFile(Filename);
 end;
 
-procedure TBitmap.LoadFromIntfImage(IntfImage: TLazIntfImage);
+procedure TCustomBitmap.LoadFromIntfImage(IntfImage: TLazIntfImage);
 var
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
@@ -517,13 +517,13 @@ begin
   SetHandles(ImgHandle, ImgMaskHandle);
 end;
 
-function TBitmap.GetMonochrome: Boolean;
+function TCustomBitmap.GetMonochrome: Boolean;
 begin
   with FImage.FDIB.dsbm do
     Result := (bmPlanes = 1) and (bmBitsPixel = 1);
 end;
 
-procedure TBitMap.PaletteNeeded;
+procedure TCustomBitmap.PaletteNeeded;
 begin
   if (FImage.FPalette <> 0) then exit;
   
@@ -531,16 +531,16 @@ begin
   //CreatePalette;
 end;
 
-procedure TBitmap.UnshareImage(CopyContent: boolean);
+procedure TCustomBitmap.UnshareImage(CopyContent: boolean);
 var
-  NewImage: TBitmapImage;
-  OldImage: TBitmapImage;
+  NewImage: TCustomBitmapImage;
+  OldImage: TCustomBitmapImage;
   IntfImage: TLazIntfImage;
 begin
   if (FImage.RefCount>1) then begin
-    //DebugLn('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
+    //DebugLn('TCustomBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
     // release old FImage and create a new one
-    NewImage:=TBitmapImage.Create;
+    NewImage:=TCustomBitmapImage.Create;
     try
       NewImage.Reference;
       if CopyContent and FImage.HandleAllocated
@@ -560,49 +560,49 @@ begin
       FreeCanvasContext;
       OldImage:=FImage;
       FImage:=NewImage;
-      //DebugLn('TBitMap.UnshareImage Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
+      //DebugLn('TCustomBitmap.UnshareImage Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
       NewImage:=nil; // transaction sucessful
       OldImage.Release;
     finally
       // in case something goes wrong, keep old and free new
       NewImage.Free;
     end;
-    //DebugLn('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
+    //DebugLn('TCustomBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',DbgS(Self));
   end;
 end;
 
-procedure TBitmap.FreeSaveStream;
+procedure TCustomBitmap.FreeSaveStream;
 begin
   if FImage.FSaveStream=nil then exit;
-  //DebugLn(['TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size]);
+  //DebugLn(['TCustomBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size]);
   UnshareImage(false);
   FreeAndNil(FImage.FSaveStream);
   FImage.SaveStreamType:=bnNone;
   FImage.SaveStreamClass:=nil;
 end;
 
-function TBitmap.GetBitmapNativeType: TBitmapNativeType;
+function TCustomBitmap.GetBitmapNativeType: TBitmapNativeType;
 begin
   Result := bnWinBitmap;
 end;
 
-procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
+procedure TCustomBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
 
   procedure RaiseInvalidBitmapHeader;
   begin
-    debugln('TBitmap.ReadStream.RaiseInvalidBitmapHeader ',
+    debugln('TCustomBitmap.ReadStream.RaiseInvalidBitmapHeader ',
       '"',dbgMemStream(TCustomMemoryStream(Stream),30),'"');
     raise EInOutError.Create(
-      'TBitmap.ReadStream: Invalid bitmap format (bmp,xpm,ico)');
+      'TCustomBitmap.ReadStream: Invalid bitmap format (bmp,xpm,ico)');
   end;
   
   procedure RaiseInvalidSize;
   begin
-    debugln('TBitmap.ReadStream.RaiseInvalidSize ',
+    debugln('TCustomBitmap.ReadStream.RaiseInvalidSize ',
      ' Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),
      ' Stream.Size=',dbgs(Stream.Size));
     raise EInOutError.Create(
-      'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico,cur)');
+      'TCustomBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico,cur)');
   end;
 
 var
@@ -613,7 +613,7 @@ var
   GetSize: Int64;
   OldPosition: Int64;
 begin
-  //debugln('TBitmap.ReadStream Stream=',DbgSName(Stream),' Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
+  //debugln('TCustomBitmap.ReadStream Stream=',DbgSName(Stream),' Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
   WorkStream:=nil;
   try
     // create mem stream if not already done (to read the image type)
@@ -648,7 +648,7 @@ begin
       StreamType := TestStreamBitmapNativeType(MemStream);
     end else
       StreamType := bnWinBitmap;
-    //debugln('TBitmap.ReadStream ',dbgs(ord(StreamType)),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size),' Stream=',DbgSName(Stream));
+    //debugln('TCustomBitmap.ReadStream ',dbgs(ord(StreamType)),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size),' Stream=',DbgSName(Stream));
     ReaderClass := nil;
     case StreamType of
       bnDIB:        ReaderClass := TLazReaderDIB;
@@ -666,7 +666,7 @@ begin
   end;
 end;
 
-procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
+procedure TCustomBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
 begin
   if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then begin
     if (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfBitmap])=0)
@@ -680,7 +680,7 @@ begin
   inherited LoadFromMimeStream(Stream, MimeType);
 end;
 
-procedure TBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
+procedure TCustomBitmap.SetWidthHeight(NewWidth, NewHeight: integer);
 begin
   if (FImage.FDIB.dsbm.bmHeight <> NewHeight)
   or (FImage.FDIB.dsbm.bmWidth <> NewWidth) then
@@ -692,18 +692,18 @@ begin
   end;
 end;
 
-procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
+procedure TCustomBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
 begin
   WriteStreamWithFPImage(Stream,WriteSize,nil);
 end;
 
-procedure TBitmap.StoreOriginalStream(Stream: TStream; Size: integer);
+procedure TCustomBitmap.StoreOriginalStream(Stream: TStream; Size: integer);
 var
   MemStream: TMemoryStream;
 begin
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
-    //debugln('TBitmap.StoreOriginalStream Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),' Stream.Size=',dbgs(Stream.Size));
+    //debugln('TCustomBitmap.StoreOriginalStream Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),' Stream.Size=',dbgs(Stream.Size));
     MemStream.SetSize(Size);
     MemStream.CopyFrom(Stream,Size);
     FreeSaveStream;
@@ -714,7 +714,7 @@ begin
   FImage.SaveStream.Position:=0;
 end;
 
-function TBitmap.CanReadGraphicStreams(AClass: TFPCustomImageWriterClass
+function TCustomBitmap.CanReadGraphicStreams(AClass: TFPCustomImageWriterClass
   ): boolean;
 begin
   Result:=(AClass=GetDefaultFPWriter)
@@ -722,7 +722,7 @@ begin
         and ((AClass=TFPWriterBMP) or (AClass=TLazWriterXPM)));
 end;
 
-procedure TBitmap.SetHandles(ABitmap, AMask: HBITMAP);
+procedure TCustomBitmap.SetHandles(ABitmap, AMask: HBITMAP);
 var
   IsChanged: Boolean;
 begin
@@ -737,7 +737,7 @@ begin
     FImage.FreeHandle;
     // get the properties from new bitmap
     FImage.FHandle := ABitmap;
-    //DebugLn('TBitMap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
+    //DebugLn('TCustomBitmap.SetHandle Self=',DbgS(Self),' FImage.FHandle=',DbgS(FImage.FHandle));
     FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
     if FImage.FHandle <> 0 then
       GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
@@ -768,7 +768,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+  procedure TCustomBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
     Size: Longint; ReaderClass: TFPCustomImageReaderClass);
     
   Clear old bitmap and read new bitmap form stream.
@@ -777,7 +777,7 @@ end;
            automatically.
   Size: Only used when UseSize=True. This amount of bytes is read.
 ------------------------------------------------------------------------------}
-procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
+procedure TCustomBitmap.ReadStreamWithFPImage(Stream: TStream; UseSize: boolean;
   Size: Longint; ReaderClass: TFPCustomImageReaderClass);
 var
   IntfImg: TLazIntfImage;
@@ -798,7 +798,7 @@ var
   end;
   
 begin
-  //debugln('TBitmap.ReadStreamWithFPImage Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
+  //debugln('TCustomBitmap.ReadStreamWithFPImage Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
 
   UnshareImage(false);
   if UseSize and (Size = 0) then begin
@@ -843,7 +843,7 @@ begin
     end
     else begin
       // now the size is known -> store stream
-      //DebugLn('TBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
+      //DebugLn('TCustomBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
       SrcStream.Position:=OldStreamPosition;
       StoreOriginal(SrcStream,integer(ImgSize));
     end;
@@ -865,14 +865,14 @@ begin
       FImage.SaveStreamType:=bnXPixmap;
       FImage.SaveStreamClass:=TLazWriterXPM;
     end;
-    //DebugLn('TBitmap.ReadStreamWithFPImage ',DbgSName(FImage.SaveStreamClass),' ',DbgSName(ReaderClass));
+    //DebugLn('TCustomBitmap.ReadStreamWithFPImage ',DbgSName(FImage.SaveStreamClass),' ',DbgSName(ReaderClass));
     // clean up
     IntfImg.Free;
     ImgReader.Free;
   end;
 end;
 
-procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
+procedure TCustomBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
   WriterClass: TFPCustomImageWriterClass);
 
   procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
@@ -925,7 +925,7 @@ begin
     if WriterClass=nil
     then begin
       {$note todo choose the correct writer}
-      // Bitmaps support alpha. TBitmaps supports more than these 2 formats anyway.
+      // Bitmaps support alpha. TCustomBitmaps supports more than these 2 formats anyway.
       // So setting the writer based on a mask is nonsense imo (MWE)
 
       // automatically use a TFPCustomImageWriterClass
@@ -933,7 +933,7 @@ begin
       // Delphi uses a trick and stores the transparent color in the bottom, left
       // pixel. This changes the bitmap and requires to know the transparency
       // on load.
-      // The LCL TBitmap is able to load .xpm and .bmp images. .xpm supports
+      // The LCL TCustomBitmap is able to load .xpm and .bmp images. .xpm supports
       // transparency. So, if the images has transparency use .xpm.
       IntfImg.GetRawImage(RawImage);
       if RawImage.IsMasked(true)
@@ -972,7 +972,7 @@ begin
   end;
 end;
 
-procedure TBitmap.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
+procedure TCustomBitmap.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
 var
   LazReader: TLazReaderBMP absolute ImgReader;
 begin
@@ -1005,7 +1005,7 @@ begin
   end;
 end;
 
-procedure TBitmap.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
+procedure TCustomBitmap.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
 (*const
   PixelFormatToBppMap: array[TPixelFormat] of integer =
   (
@@ -1032,48 +1032,48 @@ begin
   end;
 end;
 
-procedure TBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TCustomBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
 begin
 
 end;
 
-procedure TBitmap.FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TCustomBitmap.FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter);
 begin
 
 end;
 
-procedure TBitMap.SaveToStream(Stream: TStream);
+procedure TCustomBitmap.SaveToStream(Stream: TStream);
 begin
   WriteStream(Stream, False);
 end;
 
-procedure TBitmap.SetHandle(Value: HBITMAP);
+procedure TCustomBitmap.SetHandle(Value: HBITMAP);
 begin
   SetHandles(Value, FImage.FMaskHandle);
 end;
 
-procedure TBitmap.SetMaskHandle(NewMaskHandle: HBITMAP);
+procedure TCustomBitmap.SetMaskHandle(NewMaskHandle: HBITMAP);
 begin
   SetHandles(FImage.FHandle, NewMaskHandle);
 end;
 
 // release handles without freeing them
 // useful for creating a HBitmap
-function TBitmap.ReleaseHandle: HBITMAP;
+function TCustomBitmap.ReleaseHandle: HBITMAP;
 begin
   HandleNeeded;
   FreeCanvasContext;
   Result := FImage.ReleaseHandle;
 end;
 
-function TBitmap.ReleaseMaskHandle: HBITMAP;
+function TCustomBitmap.ReleaseMaskHandle: HBITMAP;
 begin
   MaskHandleNeeded;
   FreeCanvasContext;
   Result := FImage.ReleaseMaskHandle;
 end;
 
-function TBitmap.ReleasePalette: HPALETTE;
+function TCustomBitmap.ReleasePalette: HPALETTE;
 begin
   // ToDo
   {
@@ -1084,7 +1084,7 @@ begin
   Result := 0;
 end;
 
-class function TBitmap.GetFPReaderForFileExt(const FileExtension: string
+class function TCustomBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
   Result:=nil;
@@ -1099,7 +1099,7 @@ begin
   end;
 end;
 
-class function TBitmap.GetFPWriterForFileExt(const FileExtension: string
+class function TCustomBitmap.GetFPWriterForFileExt(const FileExtension: string
   ): TFPCustomImageWriterClass;
 begin
   Result:=nil;
@@ -1114,7 +1114,7 @@ begin
   end;
 end;
 
-class function TBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
+class function TCustomBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   if (AnsiCompareText(ClassName,'TBitmap')=0) then
     Result:=TLazReaderBMP
@@ -1122,7 +1122,7 @@ begin
     Result:=nil;
 end;
 
-class function TBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
+class function TCustomBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   if ClassType=TBitmap then
     Result:=TFPWriterBMP
@@ -1130,7 +1130,7 @@ begin
     Result:=nil;
 end;
 
-procedure TBitmap.WriteNativeStream(Stream: TStream; WriteSize: Boolean;
+procedure TCustomBitmap.WriteNativeStream(Stream: TStream; WriteSize: Boolean;
   SaveStreamType: TBitmapNativeType);
 var
   Writer: TFPCustomImageWriterClass;
@@ -1148,27 +1148,27 @@ begin
   end;
 end;
 
-procedure TBitmap.CreateIntfImage(var IntfImage: TLazIntfImage);
+procedure TCustomBitmap.CreateIntfImage(var IntfImage: TLazIntfImage);
 begin
   IntfImage:=nil;
   IntfImage:=TLazIntfImage.Create(0,0);
   IntfImage.LoadFromBitmap(Handle,MaskHandle);
 end;
 
-function TBitmap.CreateIntfImage: TLazIntfImage;
+function TCustomBitmap.CreateIntfImage: TLazIntfImage;
 begin
   Result:=nil;
   CreateIntfImage(Result);
 end;
 
-procedure TBitmap.CreateMask(AColor: TColor);
+procedure TCustomBitmap.CreateMask(AColor: TColor);
 var
   IntfImage: TLazIntfImage;
   x, y, stopx, stopy: Integer;
   ImgHandle, MskHandle: HBitmap;
   TransColor: TColor;
 begin
-  //DebugLn(['TBitmap.CreateMask ',Width,'x',Height,' ',Transparent,' ',dbgs(ord(TransparentMode)),' ',dbgs(TransparentColor)]);
+  //DebugLn(['TCustomBitmap.CreateMask ',Width,'x',Height,' ',Transparent,' ',dbgs(ord(TransparentMode)),' ',dbgs(TransparentColor)]);
   if (Width = 0)
   or (Height = 0)
   or (AColor = clNone)
@@ -1216,33 +1216,33 @@ begin
   end;
 end;
 
-function TBitmap.GetEmpty: boolean;
+function TCustomBitmap.GetEmpty: boolean;
 begin
   Result:=FImage.IsEmpty;
 end;
 
-function TBitmap.GetHeight: Integer;
+function TCustomBitmap.GetHeight: Integer;
 begin
   Result := FImage.FDIB.dsbm.bmHeight;
 end;
 
-function TBitmap.GetPalette: HPALETTE;
+function TCustomBitmap.GetPalette: HPALETTE;
 begin
   PaletteNeeded;
   Result := FImage.FPalette;
 end;
 
-function TBitmap.GetResourceType: TResourceType;
+function TCustomBitmap.GetResourceType: TResourceType;
 begin
   Result := RT_BITMAP;
 end;
 
-function TBitmap.GetWidth: Integer;
+function TCustomBitmap.GetWidth: Integer;
 begin
   Result := FImage.FDIB.dsbm.bmWidth;
 end;
 
-procedure TBitmap.ReadData(Stream: TStream);
+procedure TCustomBitmap.ReadData(Stream: TStream);
 var
   Size: Longint;
 begin
@@ -1251,27 +1251,27 @@ begin
   ReadStream(Stream, true, Size);
 end;
 
-procedure TBitmap.WriteData(Stream: TStream);
+procedure TCustomBitmap.WriteData(Stream: TStream);
 begin
   WriteStream(Stream, True);
 end;
 
-procedure TBitmap.SetWidth(NewWidth: Integer);
+procedure TCustomBitmap.SetWidth(NewWidth: Integer);
 begin
   SetWidthHeight(NewWidth,Height);
 end;
 
-procedure TBitmap.SetHeight(NewHeight: Integer);
+procedure TCustomBitmap.SetHeight(NewHeight: Integer);
 begin
   SetWidthHeight(Width,NewHeight);
 end;
 
-procedure TBitmap.SetPalette(Value: HPALETTE);
+procedure TCustomBitmap.SetPalette(Value: HPALETTE);
 begin
   inherited SetPalette(Value);
 end;
 
-procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
+procedure TCustomBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
   if Value = TransparentMode then exit;
   FTransparentMode := Value;

@@ -1,6 +1,6 @@
 {%MainUnit ../graphics.pp}
 
-{ TBitmapImage
+{ TCustomBitmapImage
 
  *****************************************************************************
  *                                                                           *
@@ -16,7 +16,7 @@
  *****************************************************************************
 }
 
-destructor TBitmapImage.Destroy;
+destructor TCustomBitmapImage.Destroy;
 begin
   FreeAndNil(FSaveStream);
   FSaveStreamType:=bnNone;
@@ -30,12 +30,12 @@ begin
   inherited Destroy;
 end;
 
-function TBitmapImage.HandleAllocated: boolean;
+function TCustomBitmapImage.HandleAllocated: boolean;
 begin
   Result := FHandle <> 0;
 end;
 
-function TBitmapImage.GetHandleType: TBitmapHandleType;
+function TCustomBitmapImage.GetHandleType: TBitmapHandleType;
 begin
   if (FHandle = 0) or (FHandle = FDIBHandle) then
     if FDIBHandle = 0 then
@@ -49,7 +49,7 @@ begin
     Result := bmDDB;
 end;
 
-procedure TBitmapImage.FreeHandle;
+procedure TCustomBitmapImage.FreeHandle;
 begin
   FreeMaskHandle;
   FreePalette;
@@ -60,7 +60,7 @@ begin
   FHandle := 0;
 end;
 
-procedure TBitmapImage.FreeMaskHandle;
+procedure TCustomBitmapImage.FreeMaskHandle;
 begin
   if FMaskHandle <> 0 then
   begin
@@ -69,7 +69,7 @@ begin
   end;
 end;
 
-procedure TBitmapImage.FreePalette;
+procedure TCustomBitmapImage.FreePalette;
 begin
   if FPalette <> 0 then
   begin
@@ -78,7 +78,7 @@ begin
   end;
 end;
 
-function TBitmapImage.ReleaseHandle: HBITMAP;
+function TCustomBitmapImage.ReleaseHandle: HBITMAP;
 // simply return the current handle and set to 0 without freeing handles
 begin
   Result := FHandle;
@@ -90,24 +90,24 @@ begin
   FHandle := 0;
 end;
 
-function TBitmapImage.ReleaseMaskHandle: HBITMAP;
+function TCustomBitmapImage.ReleaseMaskHandle: HBITMAP;
 begin
   Result := FMaskHandle;
   FMaskHandle := 0;
 end;
 
-function TBitmapImage.ReleasePalette: HPALETTE;
+function TCustomBitmapImage.ReleasePalette: HPALETTE;
 begin
   Result := FPalette;
   FPalette := 0;
 end;
 
-function TBitmapImage.IsEmpty: boolean;
+function TCustomBitmapImage.IsEmpty: boolean;
 begin
   Result := (FHandle = 0) and (FDIBHandle = 0) and (SaveStream=nil);
 end;
 
-function TBitmapImage.GetPixelFormat: TPixelFormat;
+function TCustomBitmapImage.GetPixelFormat: TPixelFormat;
 begin
   Result:=pfCustom;
   if GetHandleType = bmDDB then

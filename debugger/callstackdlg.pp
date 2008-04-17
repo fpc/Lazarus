@@ -334,35 +334,13 @@ begin
 end;
 
 procedure TCallStackDlg.InitImageList;
-
-  procedure AddResImg(ImgList: TImageList; const ResName: string);
-  var
-    Bitmap: TBitmap;
-    Resource: TLResource;
-  begin
-    Resource:=LazarusResources.Find(ResName);
-    if Resource=nil then
-      DebugLn('TCallStackDlg.InitImageList: ',
-        ' WARNING: icon not found: "',ResName,'"');
-    if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
-      Bitmap:=TPixmap.Create;
-    end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
-      Bitmap:=TPortableNetworkGraphic.Create;
-    end else
-      DebugLn('TCallStackDlg.InitImageList: ',
-        ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
-    Bitmap.LoadFromLazarusResource(ResName);
-    ImgList.Add(Bitmap, nil);
-    Bitmap.Free;
-  end;
-
 begin
-  AddResImg(Imagelist1,'callstack_show');
-  AddResImg(Imagelist1,'callstack_more');
-  AddResImg(Imagelist1,'callstack_top');
-  AddResImg(Imagelist1,'callstack_bottom');
-  AddResImg(Imagelist1,'callstack_goto');
-  AddResImg(Imagelist1,'copy');
+  Imagelist1.AddLazarusResource('callstack_show');
+  Imagelist1.AddLazarusResource('callstack_more');
+  Imagelist1.AddLazarusResource('callstack_top');
+  Imagelist1.AddLazarusResource('callstack_bottom');
+  Imagelist1.AddLazarusResource('callstack_goto');
+  Imagelist1.AddLazarusResource('copy');
 end;
 
 procedure TCallStackDlg.actViewBottomExecute(Sender: TObject);

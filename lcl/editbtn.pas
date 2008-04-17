@@ -60,6 +60,8 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
   protected
+    function GetDefaultGlyph: TBitmap; virtual;
+    function GetDefaultGlyphName: String; virtual;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetReadOnly(Value: Boolean); override;
     procedure DoPositionButton; virtual;
@@ -162,9 +164,10 @@ type
     function GetFileName: String;
     procedure SetFileName(const AValue: String);
   protected
+    function GetDefaultGlyph: TBitmap; override;
+    function GetDefaultGlyphName: String; override;
     function CreateDialog(AKind : TDialogKind) : TCommonDialog; virtual;
     procedure SaveDialogResult(AKind : TDialogKind; D : TCommonDialog); virtual;
-    function CreateFileOpenBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
   public
@@ -241,14 +244,13 @@ type
     function GetDirectory: String;
     procedure SetDirectory(const AValue: String);
   protected
+    function GetDefaultGlyph: TBitmap; override;
+    function GetDefaultGlyphName: String; override;
     function CreateDialog : TCommonDialog; virtual;
     function GetDialogResult(D : TCommonDialog) : String; virtual;
-    function CreateDirectoryBitmap : TBitmap; virtual;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     // TDirectory properties.
     property Directory : String read GetDirectory write SetDirectory;
@@ -328,11 +330,12 @@ type
     procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; Const ADate: TDateTime);
   protected
+    function GetDefaultGlyph: TBitmap; override;
+    function GetDefaultGlyphName: String; override;
     procedure DoButtonClick (Sender: TObject); override;
     procedure DblClick; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure DateFormatChanged; virtual;
     function GetDateFormat: string;
     property Date: TDateTime Read GetDate Write SetDate;
@@ -405,7 +408,8 @@ type
     function TitleStored: boolean;
   protected
     FCalcDialog : TForm;
-    function CreateCalcBitmap : TBitmap; virtual;
+    function GetDefaultGlyph: TBitmap; override;
+    function GetDefaultGlyphName: String; override;
     procedure DoButtonClick (Sender: TObject); override;
     procedure RunDialog; virtual;
   public
@@ -481,42 +485,12 @@ procedure Register;
 
 implementation
 
-function GlyphFromBitmapOrResource(B: TBitmap;
-  const ResourceName: String): TBitmap;
-begin
-  if Assigned(B) then
-  begin
-    Result := TBitmap.Create;
-    Result.Assign(B);
-  end
-  else
-    Result := LoadBitmapFromLazarusResource(ResourceName);
-end;
-
-function CreateFileOpenGlyph : TBitmap;
-begin
-  Result := GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnFileOpen);
-end;
-
-function CreateDirectoryGlyph : TBitmap;
-begin
-  Result := GlyphFromBitmapOrResource(FileOpenGlyph,ResBtnSelDir);
-end;
-
-function CreateDateGlyph : TBitmap;
-begin
-  Result := GlyphFromBitmapOrResource(DateGlyph,ResBtnCalendar);
-end;
-
-function CreateCalcGlyph : TBitmap;
-begin
-  Result := GlyphFromBitmapOrResource(CalcGlyph,ResBtnCalculator);
-end;
-
 
 { TEditBtn }
 
 constructor TCustomEditButton.Create(AOwner: TComponent);
+var
+  B: TBitmap;
 begin
   inherited Create(AOwner);
   FButton := TSpeedButton.Create(Self);
@@ -527,6 +501,10 @@ begin
   FButton.OnClick := @DoButtonClick;
   FButton.Cursor := crArrow;
   FButton.ControlStyle := FButton.ControlStyle + [csNoDesignSelectable];
+  B := GetDefaultGlyph;
+  if B = nil
+  then FButton.LoadGlyphFromLazarusResource(GetDefaultGlyphName)
+  else FButton.Glyph := B;
   ControlStyle := ControlStyle - [csSetCaption];
 end;
 
@@ -544,6 +522,16 @@ end;
 function TCustomEditButton.GetButtonWidth: Integer;
 begin
   Result:=FButton.Width;
+end;
+
+function TCustomEditButton.GetDefaultGlyph: TBitmap;
+begin
+  Result := nil;
+end;
+
+function TCustomEditButton.GetDefaultGlyphName: String;
+begin
+  Result := '';
 end;
 
 function TCustomEditButton.GetButtonHint: TTranslateString;
@@ -699,19 +687,14 @@ end;
 { TFileNameEdit }
 
 constructor TFileNameEdit.Create(AOwner: TComponent);
-var
-  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
   FDialogFiles:=TStringList.Create;
-  ABitmap:=CreateFileOpenBitmap;
-  Glyph:=ABitmap;
-  ABitmap.Free;
 end;
 
 destructor TFileNameEdit.Destroy;
 begin
-  FDialogFiles.Free;
+  FreeAndNil(FDialogFiles);
   inherited Destroy;
 end;
 
@@ -781,15 +764,20 @@ begin
   end;
 end;
 
-function TFileNameEdit.CreateFileOpenBitmap: TBitmap;
-begin
-  Result:=CreateFileOpenGlyph;
-end;
-
 procedure TFileNameEdit.DoButtonClick(Sender: TObject);
 begin
   inherited DoButtonClick(Sender);
   RunDialog;
+end;
+
+function TFileNameEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := FileOpenGlyph;
+end;
+
+function TFileNameEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnFileOpen;
 end;
 
 procedure TFileNameEdit.RunDialog;
@@ -806,21 +794,6 @@ begin
 end;
 
 { TDirectoryEdit }
-
-constructor TDirectoryEdit.Create(AOwner: TComponent);
-var
-  ABitmap: TBitmap;
-begin
-  inherited Create(AOwner);
-  ABitmap:=CreateDirectoryBitmap;
-  Glyph:=ABitmap;
-  ABitmap.Free;
-end;
-
-destructor TDirectoryEdit.Destroy;
-begin
-  inherited Destroy;
-end;
 
 procedure TDirectoryEdit.SetDirectory(const AValue: String);
 begin
@@ -849,15 +822,20 @@ begin
 end;
 
 
-function TDirectoryEdit.CreateDirectoryBitmap: TBitmap;
-begin
-  Result:=CreateDirectoryGlyph;
-end;
-
 procedure TDirectoryEdit.DoButtonClick(Sender: TObject);
 begin
   inherited DoButtonClick(Sender);
   RunDialog;
+end;
+
+function TDirectoryEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := FileOpenGlyph;
+end;
+
+function TDirectoryEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnSelDir;
 end;
 
 procedure TDirectoryEdit.RunDialog;
@@ -904,8 +882,6 @@ begin
 end;
 
 constructor TDateEdit.Create(AOwner: TComponent);
-var
-  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
   FDisplaySettings:=[dsShowHeadings, dsShowDayNames];
@@ -913,16 +889,7 @@ begin
   DialogTitle:=rsPickDate;
   OKCaption:='OK';
   CancelCaption:='Cancel';
-  ABitmap:=CreateDateGlyph;
-  Button.Glyph:=ABitmap;
-  ABitmap.Free;
-  Button.OnClick:= @DoButtonClick;
   DateFormatChanged;
-end;
-
-destructor TDateEdit.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TDateEdit.DateFormatChanged;
@@ -933,6 +900,16 @@ end;
 function TDateEdit.GetDateFormat: string;
 begin
   Result := FDateFormat;
+end;
+
+function TDateEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := DateGlyph;
+end;
+
+function TDateEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnCalendar;
 end;
 
 procedure TDateEdit.DoButtonClick(Sender:TObject);//or onClick
@@ -1024,6 +1001,16 @@ begin
   Result:=StrToIntDef(Text,0);
 end;
 
+function TCalcEdit.GetDefaultGlyph: TBitmap;
+begin
+  Result := CalcGlyph;
+end;
+
+function TCalcEdit.GetDefaultGlyphName: String;
+begin
+  Result := ResBtnCalculator;
+end;
+
 procedure TCalcEdit.SetAsFloat(const AValue: Double);
 begin
   Text:=FloatToStr(AValue);
@@ -1037,11 +1024,6 @@ end;
 function TCalcEdit.TitleStored: boolean;
 begin
   Result:=FDialogTitle<>rsCalculator;
-end;
-
-function TCalcEdit.CreateCalcBitmap: TBitmap;
-begin
-  Result:=CreateCalcGlyph;
 end;
 
 procedure TCalcEdit.DoButtonClick(Sender: TObject);
@@ -1075,13 +1057,8 @@ begin
 end;
 
 constructor TCalcEdit.Create(AOwner: TComponent);
-var
-  ABitmap: TBitmap;
 begin
   inherited Create(AOwner);
-  ABitmap:=CreateCalcBitmap;
-  Glyph:=ABitmap;
-  ABitmap.Free;
   FdialogTitle:=rsCalculator;
 end;
 

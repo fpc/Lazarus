@@ -280,32 +280,6 @@ end;
 { TCodeExplorerView }
 
 procedure TCodeExplorerView.CodeExplorerViewCREATE(Sender: TObject);
-
-  procedure AddResImg(ImgList: TImageList; const ResName: string;
-    out ImgID: integer);
-  var
-    Bitmap: TBitmap;
-    Resource: TLResource;
-  begin
-    Resource:=LazarusResources.Find(ResName);
-    if Resource=nil then
-      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
-        ' WARNING: icon not found: "',ResName,'"');
-    if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
-      Bitmap:=TPixmap.Create;
-    end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
-      Bitmap:=TPortableNetworkGraphic.Create;
-    end else
-      DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
-        ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
-    Bitmap.LoadFromLazarusResource(ResName);
-    //DebugLn(['AddResImg ',ResName,' ',Bitmap.Width,' ',Bitmap.Height]);
-    ImgID:=ImgList.Add(Bitmap,nil);
-    Bitmap.Free;
-  end;
-
-var
-  B: TBitmap;
 begin
   LoadCodeExplorerOptions;
   
@@ -328,32 +302,28 @@ begin
   DirectivesFilterEdit.Text:=lisCEFilter;
   DirectivesPage.Caption:=lisDirectives;
   
-  B := LoadBitmapFromLazarusResource('refresh');
-  RefreshSpeedButton.Glyph := B;
-  B.Free;
-  
-  B := LoadBitmapFromLazarusResource('menu_editor_options');
-  OptionsSpeedButton.Glyph := B;
-  B.Free;
 
-  AddResImg(Imagelist1,'ce_default',ImgIDDefault);
-  AddResImg(Imagelist1,'ce_program',ImgIDProgram);
-  AddResImg(Imagelist1,'ce_unit',ImgIDUnit);
-  AddResImg(Imagelist1,'ce_interface',ImgIDInterfaceSection);
-  AddResImg(Imagelist1,'ce_implementation',ImgIDImplementation);
-  AddResImg(Imagelist1,'ce_initialization',ImgIDInitialization);
-  AddResImg(Imagelist1,'ce_finalization',ImgIDFinalization);
-  AddResImg(Imagelist1,'ce_type',ImgIDTypeSection);
-  AddResImg(Imagelist1,'ce_type',ImgIDType);
-  AddResImg(Imagelist1,'ce_variable',ImgIDVarSection);
-  AddResImg(Imagelist1,'ce_variable',ImgIDVariable);
-  AddResImg(Imagelist1,'ce_const',ImgIDConstSection);
-  AddResImg(Imagelist1,'ce_const',ImgIDConst);
-  AddResImg(Imagelist1,'ce_class',ImgIDClass);
-  AddResImg(Imagelist1,'ce_procedure',ImgIDProcedure);
-  AddResImg(Imagelist1,'ce_function',ImgIDFunction);
-  AddResImg(Imagelist1,'ce_property',ImgIDProperty);
-  
+  RefreshSpeedButton.LoadGlyphFromLazarusResource('refresh');
+  OptionsSpeedButton.LoadGlyphFromLazarusResource('menu_editor_options');
+
+  ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
+  ImgIDProgram := Imagelist1.AddLazarusResource('ce_program');
+  ImgIDUnit := Imagelist1.AddLazarusResource('ce_unit');
+  ImgIDInterfaceSection := Imagelist1.AddLazarusResource('ce_interface');
+  ImgIDImplementation := Imagelist1.AddLazarusResource('ce_implementation');
+  ImgIDInitialization := Imagelist1.AddLazarusResource('ce_initialization');
+  ImgIDFinalization := Imagelist1.AddLazarusResource('ce_finalization');
+  ImgIDTypeSection := Imagelist1.AddLazarusResource('ce_type');
+  ImgIDType := Imagelist1.AddLazarusResource('ce_type');
+  ImgIDVarSection := Imagelist1.AddLazarusResource('ce_variable');
+  ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
+  ImgIDConstSection := Imagelist1.AddLazarusResource('ce_const');
+  ImgIDConst := Imagelist1.AddLazarusResource('ce_const');
+  ImgIDClass := Imagelist1.AddLazarusResource('ce_class');
+  ImgIDProcedure := Imagelist1.AddLazarusResource('ce_procedure');
+  ImgIDFunction := Imagelist1.AddLazarusResource('ce_function');
+  ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
+
   // assign the root TMenuItem to the registered menu root.
   // This will automatically create all registered items
   CodeExplorerMenuRoot.MenuItem:=TreePopupMenu.Items;
@@ -792,22 +762,14 @@ begin
 end;
 
 procedure TCodeExplorerView.UpdateMode;
-var
-  B: TBitmap;
 begin
-  if FMode=cemCategory then
-  begin
-    B := LoadBitmapFromLazarusResource('show_category');
-    ModeSpeedButton.Glyph := B;
-    B.Free;
-    //ModeSpeedButton.Caption:='C'; // To-Do: Change it to use image instead of 'C'.
+  if FMode=cemCategory
+  then begin
+    ModeSpeedButton.LoadGlyphFromLazarusResource('show_category');
     ModeSpeedButton.Hint:=lisCEModeShowSourceNodes;
   end
   else begin
-    B := LoadBitmapFromLazarusResource('show_source');
-    ModeSpeedButton.Glyph := B;
-    B.Free;
-    //ModeSpeedButton.Caption:='S'; // To-Do: Change it to use image instead of 'S'.
+    ModeSpeedButton.LoadGlyphFromLazarusResource('show_source');
     ModeSpeedButton.Hint:=lisCEModeShowCategories;
   end;
   Refresh(true);

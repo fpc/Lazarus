@@ -68,8 +68,8 @@ type
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     FSelected: TRegisteredComponent;
-    fUnregisteredIcon: TBitmap;
-    fSelectButtonIcon: TBitmap;
+    fUnregisteredIcon: TCustomBitmap;
+    fSelectButtonIcon: TCustomBitmap;
     fUpdatingNotebook: boolean;
     procedure SetNoteBook(const AValue: TNotebook);
     procedure SelectionToolClick(Sender: TObject);
@@ -88,14 +88,14 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function GetUnregisteredIcon: TBitmap;
-    function GetSelectButtonIcon: TBitmap;
+    function GetUnregisteredIcon: TCustomBitmap;
+    function GetSelectButtonIcon: TCustomBitmap;
     procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
     procedure ReAlignButtons(Page: TPage);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
-                                     AComponent: TComponent; var Icon: TBitmap);
+                                     AComponent: TComponent; var Icon: TCustomBitmap);
     function FindComponent(const CompClassName: string
                            ): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
@@ -380,21 +380,21 @@ begin
   inherited Destroy;
 end;
 
-function TComponentPalette.GetUnregisteredIcon: TBitMap;
+function TComponentPalette.GetUnregisteredIcon: TCustomBitMap;
 begin
   if fUnregisteredIcon = nil then 
   begin
-    fUnregisteredIcon := LoadBitmapFromLazarusResource('unregisteredcomponent');
+    fUnregisteredIcon := CreateBitmapFromLazarusResource('unregisteredcomponent');
     if fUnregisteredIcon = nil then
-      fUnregisteredIcon := LoadBitmapFromLazarusResource('default');
+      fUnregisteredIcon := CreateBitmapFromLazarusResource('default');
   end;
   Result := fUnregisteredIcon;
 end;
 
-function TComponentPalette.GetSelectButtonIcon: TBitmap;
+function TComponentPalette.GetSelectButtonIcon: TCustomBitmap;
 begin
   if fSelectButtonIcon=nil then 
-    fSelectButtonIcon := LoadBitmapFromLazarusResource('tmouse');
+    fSelectButtonIcon := CreateBitmapFromLazarusResource('tmouse');
   Result:=fSelectButtonIcon;
 end;
 
@@ -470,7 +470,6 @@ var
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
-  Bitmap: TBitmap;
 begin
   if fUpdatingNotebook then exit;
   if IsUpdateLocked then begin
@@ -521,15 +520,15 @@ begin
       CurNoteBookPage.OnResize:=@OnPageResize;
 
       // create selection button
-      if CurPage.SelectButton=nil then begin
+      if CurPage.SelectButton=nil
+      then begin
         CurBtn:=TSpeedButton.Create(nil);
         CurPage.SelectButton:=CurBtn;
-        with CurBtn do begin
+        with CurBtn do
+        begin
           Name:='PaletteSelectBtn'+IntToStr(i);
           OnClick := @SelectionToolClick;
-          Bitmap := LoadBitmapFromLazarusResource('tmouse');
-          Glyph := Bitmap;
-          Bitmap.Free;
+          LoadGlyphFromLazarusResource('tmouse');
           Flat := True;
           GroupIndex:= 1;
           Down := True;
@@ -547,12 +546,14 @@ begin
             CurBtn:=TSpeedButton.Create(nil);
             CurComponent.Button:=CurBtn;
             CreatePopupMenu;
-            with CurBtn do begin
+            with CurBtn do
+            begin
               Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                     +'_'+CurComponent.ComponentClass.ClassName;
               // Left and Top will be set in ReAlignButtons.
               SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-              Glyph := CurComponent.Icon;
+              Glyph := TBitmap.Create;
+              Glyph.Assign(CurComponent.Icon);
               GroupIndex := 1;
               Flat := true;
               OnClick := @ComponentBtnClick;
@@ -589,7 +590,7 @@ begin
 end;
 
 procedure TComponentPalette.OnGetNonVisualCompIcon(Sender: TObject;
-  AComponent: TComponent; var Icon: TBitmap);
+  AComponent: TComponent; var Icon: TCustomBitmap);
 var
   ARegComp: TRegisteredComponent;
 begin

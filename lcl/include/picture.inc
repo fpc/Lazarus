@@ -482,29 +482,29 @@ end;
 procedure TPicture.LoadFromFile(const Filename: string);
 var
   Ext: string;
-  NewGraphic: TGraphic;
-  GraphicClass: TGraphicClass;
-  ok: boolean;
+  Stream: TStream;
 begin
   Ext := ExtractFileExt(Filename);
   System.Delete(Ext, 1, 1); // delete '.'
-  GraphicClass := FindGraphicClassWithFileExt(Ext);
-
-  NewGraphic := GraphicClass.Create;
-  ok:=false;
+  
+  Stream := TFileStream.Create(Filename, fmOpenRead{ or fmShareDenyWrite});
   try
-    NewGraphic.OnProgress := @Progress;
-    NewGraphic.LoadFromFile(Filename);
-    ok:=true;
+    LoadFromStreamWithFileExt(Stream, ext);
   finally
-    // this try..finally construction will in case of an exception
-    // not alter the error backtrace output
-    if not ok then NewGraphic.Free;
+    Stream.Free;
   end;
-  FGraphic.Free;
-  FGraphic := NewGraphic;
-  FGraphic.OnChange := @Changed;
-  Changed(Self);
+end;
+
+procedure TPicture.LoadFromLazarusResource(const AName: string);
+var
+  Stream: TLazarusResourceStream;
+begin
+  Stream := TLazarusResourceStream.Create(AName, nil);
+  try
+    LoadFromStreamWithFileExt(Stream, Stream.Res.ValueType);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TPicture.SaveToFile(const Filename: string);

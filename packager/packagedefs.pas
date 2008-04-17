@@ -77,7 +77,7 @@ type
   TPkgComponent = class(TRegisteredComponent)
   private
     FPkgFile: TPkgFile;
-    FIcon: TBitmap;
+    FIcon: TCustomBitmap;
     FIconLoaded: boolean;
     procedure SetPkgFile(const AValue: TPkgFile);
   public
@@ -87,8 +87,8 @@ type
     function GetUnitName: string; override;
     function GetPriority: TComponentPriority; override;
     procedure ConsistencyCheck; override;
-    function Icon: TBitmap;
-    function GetIconCopy: TBitmap;
+    function Icon: TCustomBitmap;
+    function GetIconCopy: TCustomBitmap;
     function HasIcon: boolean;
     function CanBeCreatedInDesigner: boolean; override;
   public
@@ -3472,28 +3472,29 @@ begin
     RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents.IndexOf(Self)<0');
 end;
 
-function TPkgComponent.Icon: TBitmap;
+function TPkgComponent.Icon: TCustomBitmap;
 begin
-  if not fIconLoaded then begin
+  if not fIconLoaded
+  then begin
     fIcon:=GetIconCopy;
     fIconLoaded:=true;
   end;
   Result:=FIcon;
 end;
 
-function TPkgComponent.GetIconCopy: TBitMap;
+function TPkgComponent.GetIconCopy: TCustomBitMap;
 var
   ResHandle: TLResource;
 begin
   // prevent raising exception and speedup a bit search/load
   ResHandle := LazarusResources.Find(ComponentClass.ClassName);
   if ResHandle <> nil then
-    Result := LoadBitmapFromLazarusResourceHandle(ResHandle)
+    Result := CreateBitmapFromLazarusResource(ResHandle)
   else
     Result := nil;
 
   if Result = nil then
-    Result := LoadBitmapFromLazarusResource('default');
+    Result := CreateBitmapFromLazarusResource('default');
 end;
 
 function TPkgComponent.HasIcon: boolean;

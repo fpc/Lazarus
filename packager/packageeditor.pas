@@ -784,7 +784,7 @@ var
   CurStr: string;
   CurObject: TObject;
   TxtH: Integer;
-  CurIcon: TBitmap;
+  CurIcon: TCustomBitmap;
   IconWidth: Integer;
   IconHeight: Integer;
   CurRect: TRect;

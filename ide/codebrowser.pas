@@ -717,9 +717,10 @@ procedure TCodeBrowserView.InitImageList;
   procedure AddResImg(ImgList: TImageList; const ResName: string;
     out ImgID: integer);
   var
-    Bitmap: TBitmap;
+    Bitmap: TCustomBitmap;
     Resource: TLResource;
   begin
+    //TODO: use ImgList.AddLazarusResource
     Resource:=LazarusResources.Find(ResName);
     if Resource=nil then
       DebugLn('TCodeExplorerView.CodeExplorerViewCREATE: ',
@@ -738,24 +739,24 @@ procedure TCodeBrowserView.InitImageList;
   end;
 
 begin
-  AddResImg(Imagelist1,'ce_default',ImgIDDefault);
-  AddResImg(Imagelist1,'ce_program',ImgIDProgramCode);
-  AddResImg(Imagelist1,'ce_unit',ImgIDUnitCode);
-  AddResImg(Imagelist1,'ce_interface',ImgIDInterfaceSection);
-  AddResImg(Imagelist1,'ce_implementation',ImgIDImplementation);
-  AddResImg(Imagelist1,'ce_initialization',ImgIDInitialization);
-  AddResImg(Imagelist1,'ce_finalization',ImgIDFinalization);
-  AddResImg(Imagelist1,'ce_type',ImgIDTypeSection);
-  AddResImg(Imagelist1,'ce_type',ImgIDType);
-  AddResImg(Imagelist1,'ce_variable',ImgIDVarSection);
-  AddResImg(Imagelist1,'ce_variable',ImgIDVariable);
-  AddResImg(Imagelist1,'ce_const',ImgIDConstSection);
-  AddResImg(Imagelist1,'ce_const',ImgIDConst);
-  AddResImg(Imagelist1,'ce_class',ImgIDClass);
-  AddResImg(Imagelist1,'ce_procedure',ImgIDProc);
-  AddResImg(Imagelist1,'ce_property',ImgIDProperty);
-  AddResImg(Imagelist1,'item_package',ImgIDPackage);
-  AddResImg(Imagelist1,'item_project',ImgIDProject);
+  ImgIDDefault := Imagelist1.AddLazarusResource('ce_default');
+  ImgIDProgramCode := Imagelist1.AddLazarusResource('ce_program');
+  ImgIDUnitCode := Imagelist1.AddLazarusResource('ce_unit');
+  ImgIDInterfaceSection := Imagelist1.AddLazarusResource('ce_interface');
+  ImgIDImplementation := Imagelist1.AddLazarusResource('ce_implementation');
+  ImgIDInitialization := Imagelist1.AddLazarusResource('ce_initialization');
+  ImgIDFinalization := Imagelist1.AddLazarusResource('ce_finalization');
+  ImgIDTypeSection := Imagelist1.AddLazarusResource('ce_type');
+  ImgIDType := Imagelist1.AddLazarusResource('ce_type');
+  ImgIDVarSection := Imagelist1.AddLazarusResource('ce_variable');
+  ImgIDVariable := Imagelist1.AddLazarusResource('ce_variable');
+  ImgIDConstSection := Imagelist1.AddLazarusResource('ce_const');
+  ImgIDConst := Imagelist1.AddLazarusResource('ce_const');
+  ImgIDClass := Imagelist1.AddLazarusResource('ce_class');
+  ImgIDProc := Imagelist1.AddLazarusResource('ce_procedure');
+  ImgIDProperty := Imagelist1.AddLazarusResource('ce_property');
+  ImgIDPackage := Imagelist1.AddLazarusResource('item_package');
+  ImgIDProject := Imagelist1.AddLazarusResource('item_project');
 end;
 
 procedure TCodeBrowserView.SetScannedBytes(const AValue: PtrInt);

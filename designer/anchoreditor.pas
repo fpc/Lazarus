@@ -180,16 +180,6 @@ implementation
 { TAnchorDesigner }
 
 procedure TAnchorDesigner.AnchorDesignerCreate(Sender: TObject);
-  
-  procedure LoadGlyph(ASpeedButton: TSpeedButton; AImageName: String);
-  var
-    ABitmap: TBitmap;
-  begin
-    ABitmap := LoadBitmapFromLazarusResource(AImageName);
-    ASpeedButton.Glyph := ABitmap;
-    ABitmap.Free;
-  end;
-  
 var
   AnchorEnabledHint: String;
 begin
@@ -244,18 +234,18 @@ begin
   TopSiblingComboBox.Hint:=lisTopSiblingComboBoxHint;
   TopSiblingLabel.Caption:=lisSibling;
 
-  LoadGlyph(LeftRefLeftSpeedButton, 'anchor_left');
-  LoadGlyph(LeftRefCenterSpeedButton, 'anchor_center_horizontal');
-  LoadGlyph(LeftRefRightSpeedButton, 'anchor_left_right');
-  LoadGlyph(RightRefLeftSpeedButton, 'anchor_left_right');
-  LoadGlyph(RightRefCenterSpeedButton, 'anchor_center_horizontal');
-  LoadGlyph(RightRefRightSpeedButton, 'anchor_right');
-  LoadGlyph(TopRefTopSpeedButton, 'anchor_top');
-  LoadGlyph(TopRefCenterSpeedButton, 'anchor_center_vertical');
-  LoadGlyph(TopRefBottomSpeedButton, 'anchor_top_bottom');
-  LoadGlyph(BottomRefTopSpeedButton, 'anchor_top_bottom');
-  LoadGlyph(BottomRefCenterSpeedButton, 'anchor_center_vertical');
-  LoadGlyph(BottomRefBottomSpeedButton, 'anchor_bottom');
+  LeftRefLeftSpeedButton.LoadGlyphFromLazarusResource('anchor_left');
+  LeftRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_horizontal');
+  LeftRefRightSpeedButton.LoadGlyphFromLazarusResource('anchor_left_right');
+  RightRefLeftSpeedButton.LoadGlyphFromLazarusResource('anchor_left_right');
+  RightRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_horizontal');
+  RightRefRightSpeedButton.LoadGlyphFromLazarusResource('anchor_right');
+  TopRefTopSpeedButton.LoadGlyphFromLazarusResource('anchor_top');
+  TopRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_vertical');
+  TopRefBottomSpeedButton.LoadGlyphFromLazarusResource('anchor_top_bottom');
+  BottomRefTopSpeedButton.LoadGlyphFromLazarusResource('anchor_top_bottom');
+  BottomRefCenterSpeedButton.LoadGlyphFromLazarusResource('anchor_center_vertical');
+  BottomRefBottomSpeedButton.LoadGlyphFromLazarusResource('anchor_bottom');
 
   // autosizing
   BottomSiblingLabel.AnchorToNeighbour(akLeft,10,BottomAnchoredCheckBox);

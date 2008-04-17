@@ -117,14 +117,10 @@ const
     Result := FormatDateTime('yyyy-mm-dd', Date);
   end;
 
-var
-  FBitmap: TBitmap;
 begin
   Notebook1.PageIndex:=0;
-  FBitmap := LoadBitmapFromLazarusResource('splash_logo');
-  Image1.Picture.Graphic:=FBitmap;
-  LogoImage.Picture.Graphic:=FBitmap;
-  FBitmap.Free;
+  Image1.Picture.LoadFromLazarusResource('splash_logo');
+  LogoImage.Picture := Image1.Picture;
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;

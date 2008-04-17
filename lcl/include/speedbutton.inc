@@ -863,10 +863,41 @@ begin
   if FDownLoaded then SetDown(FDownLoaded);
 end;
 
+procedure TCustomSpeedButton.LoadGlyphFromLazarusResource(const AName: String);
+var
+  C: TCustomBitmap;
+  B: TBitmap;
+begin
+  C := CreateBitmapFromLazarusResource(AName);
+  if C = nil
+  then begin
+    SetGlyph(nil);
+    Exit;
+  end;
+  
+  try
+    if FGlyph.Glyph <> nil
+    then begin
+      B := nil;
+      FGlyph.Glyph.Assign(C);
+      Exit;
+    end;
+    
+    // unfortunately a Glyph doesn't support a custom bitmap yet.
+    // So we need a Bitmap helper
+    B := TBitmap.Create;
+    B.Assign(C);
+    SetGlyph(B);
+  finally
+    B.Free;
+    C.Free;
+  end;
+end;
+
 function TCustomSpeedButton.GetGlyphSize(PaintRect: TRect): TSize;
 begin
-  Result.CX := TButtonGlyph(FGlyph).Glyph.Width;
-  Result.CY := TButtonGlyph(FGlyph).Glyph.Height;
+  Result.CX := FGlyph.Glyph.Width;
+  Result.CY := FGlyph.Glyph.Height;
 end;
 
 function TCustomSpeedButton.GetTextSize(PaintRect: TRect): TSize;

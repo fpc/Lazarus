@@ -293,6 +293,7 @@ type
     destructor Destroy; override;
     function FindDownButton: TCustomSpeedButton;
     procedure Click; override; // make Click public
+    procedure LoadGlyphFromLazarusResource(const AName: String);
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Down: Boolean read FDown write SetDown default false;
@@ -412,7 +413,7 @@ begin
   Result := nil;
   if BitBtnResNames[Kind] = '' then
     Exit;
-  Result := LoadBitmapFromLazarusResource(BitBtnResNames[Kind]);
+  Result := CreateBitmapFromLazarusResource(BitBtnResNames[Kind]);
 end;
 
 procedure Register;

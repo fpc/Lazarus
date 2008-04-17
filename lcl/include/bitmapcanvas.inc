@@ -24,7 +24,7 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TBitmapCanvas.Create(ABitmap : TBitMap);
+constructor TBitmapCanvas.Create(ABitmap : TCustomBitmap);
 begin
   inherited Create;
   FBitmap := ABitmap;

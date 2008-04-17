@@ -127,59 +127,27 @@ function TIDEImages.LoadImage(ImageSize: Integer; ImageName: String): Integer;
 var
   List: TCustomImageList;
   Names: TStringList;
-  Graphic: TGraphic;
-  GraphicClass: TGraphicClass;
-  Stream: TLazarusResourceStream;
 begin
   Result := GetImageIndex(ImageSize, ImageName);
-  if Result = -1 then
-  begin
-    List := nil;
-    Names := nil;
-    case ImageSize of
-      16:
-        begin
-          List := FImages_16;
-          Names := FImageNames_16;
-        end;
-      24:
-        begin
-          List := FImages_24;
-          Names := FImageNames_24;
-        end;
-    end;
-    
-    if List <> nil then
-    begin
-      try
-        Stream := TLazarusResourceStream.Create(ImageName, nil);
-        if (Stream.Res <> nil) then
-        begin
-          GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
-          if GraphicClass <> nil then
-          begin
-            Graphic := GraphicClass.Create;
-            if Graphic is TBitmap then
-            try
-              Graphic.LoadFromStream(Stream);
-              Result := List.Add(TBitmap(Graphic), nil);
-              Names.AddObject(ImageName, TObject(PtrInt(Result)));
-              //DebugLn(['TIDEImages.LoadImage ',ImageName,' ',Graphic.Transparent]);
-              //if Graphic is TBitmap then
-              //  DebugLn(['TIDEImages.LoadImage ',dbgs(TBitmap(Graphic).TransparentColor),' ',dbgs(ord(TBitmap(Graphic).TransparentMode))]);
-            finally
-              Graphic.Free;
-            end;
-          end;
-        end;
-        Stream.Free;
-      except
-        on E: Exception do begin
-          DebugLn(['TIDEImages.LoadImage Image="',ImageName,' Error=',E.Message]);
-        end;
+  if Result <> -1 then Exit;
+
+  case ImageSize of
+    16:
+      begin
+        List := Images_16; // make sure we have a list
+        Names := FImageNames_16;
       end;
-    end;
+    24:
+      begin
+        List := Images_24; // make sure we have a list
+        Names := FImageNames_24;
+      end;
+  else
+    Exit;
   end;
+    
+  Result := List.AddLazarusResource(ImageName);
+  Names.AddObject(ImageName, TObject(PtrInt(Result)));
 end;
 
 function IDEImages: TIDEImages;

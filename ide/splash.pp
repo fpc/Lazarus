@@ -63,9 +63,6 @@ var
 
 implementation
 
-{$define SplashDrawVersion}
-
-{$ifdef SplashDrawVersion}
 const
   VersionPos: TPoint = (X:397; Y:281);
   VersionStyle: TTextStyle =
@@ -83,17 +80,12 @@ const
     );
   VersionFontStyle: TFontStyles = [fsBold];
   VersionFontColor: TColor = clBlue;
-{$endif}
 
 constructor TSplashForm.Create(AOwner: TComponent);
-var
-  B: TBitmap;
 begin
   inherited Create(AOwner);
 
-  B := LoadBitmapFromLazarusResource('splash_logo');
-  Image.Picture.Graphic := B;
-  B.Free;
+  Image.Picture.LoadFromLazarusResource('splash_logo');
 
   Application.OnIdle := @ApplicationOnIdle;
 end;
@@ -114,23 +106,15 @@ begin
 end;
 
 procedure TSplashForm.ImagePaint(Sender: TObject);
-
-{$ifdef SplashDrawVersion}
 var
   ATextRect: TRect;
-{$endif}
-
 begin
-
-{$ifdef SplashDrawVersion}
   // GetLazarusVersionString is too long => use LazarusVersionStr
   ATextRect.TopLeft := VersionPos;
   ATextRect.BottomRight := Point(Image.Picture.Width, Image.Picture.Height);
   Image.Canvas.Font.Style := VersionFontStyle;
   Image.Canvas.Font.Color := VersionFontColor;
   Image.Canvas.TextRect(ATextRect, VersionPos.X, VersionPos.Y, LazarusVersionStr, VersionStyle);
-{$endif}
-
 end;
 
 initialization

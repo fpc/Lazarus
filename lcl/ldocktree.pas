@@ -68,7 +68,7 @@ type
     dhiClose
   );
   
-  TDockHeaderImages = array[TDockHeaderImageKind] of TBitmap;
+  TDockHeaderImages = array[TDockHeaderImageKind] of TCustomBitmap;
   
   { TLazDockTree }
 
@@ -334,7 +334,7 @@ var
   ImageKind: TDockHeaderImageKind;
 begin
   for ImageKind := Low(TDockHeaderImageKind) to High(TDockHeaderImageKind) do
-    Images[ImageKind] := LoadBitmapFromLazarusResource(DockHeaderImageNames[ImageKind]);
+    Images[ImageKind] := CreateBitmapFromLazarusResource(DockHeaderImageNames[ImageKind]);
 end;
 
 class procedure TDockHeader.DestroyDockHeaderImages(
@@ -410,7 +410,7 @@ end;
 
 class procedure TDockHeader.Draw(ACanvas: TCanvas; ACaption: String; DockBtnImages: TDockHeaderImages; AOrientation: TDockOrientation; const ARect: TRect; const MousePos: TPoint);
 
-  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; ABitmap: TBitmap); inline;
+  procedure DrawButton(ARect: TRect; IsMouseDown, IsMouseOver: Boolean; ABitmap: TCustomBitmap); inline;
   const
     // ------------- Pressed, Hot -----------------------
     BtnDetail: array[Boolean, Boolean] of TThemedToolBar =

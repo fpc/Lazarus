@@ -96,16 +96,6 @@ implementation
 { TLazDockControlEditorDlg }
 
 procedure TLazDockControlEditorDlg.FormCreate(Sender: TObject);
-
-  procedure AssignGlyph(AButton: TSpeedButton; ResName: String); inline;
-  var
-    B: TBitmap;
-  begin
-    B := LoadBitmapFromLazarusResource(ResName);
-    AButton.Glyph := B;
-    B.Free;
-  end;
-
 begin
   Caption := 'Docking';
   
@@ -118,11 +108,11 @@ begin
   DockRightButton.Hint := 'Dock to right';
   DockLeftButton.Hint := 'Dock to left';
 
-  AssignGlyph(DockPageButton, 'lcl_dock_to_page');
-  AssignGlyph(DockBottomButton, 'lcl_dock_to_bottom');
-  AssignGlyph(DockTopButton, 'lcl_dock_to_top');
-  AssignGlyph(DockRightButton, 'lcl_dock_to_right');
-  AssignGlyph(DockLeftButton, 'lcl_dock_to_left');
+  DockPageButton.LoadGlyphFromLazarusResource('lcl_dock_to_page');
+  DockBottomButton.LoadGlyphFromLazarusResource('lcl_dock_to_bottom');
+  DockTopButton.LoadGlyphFromLazarusResource('lcl_dock_to_top');
+  DockRightButton.LoadGlyphFromLazarusResource('lcl_dock_to_right');
+  DockLeftButton.LoadGlyphFromLazarusResource('lcl_dock_to_left');
 
   DockGroupBox.Caption := 'Dock to control';
   DockControlLabel.Caption := 'To control';

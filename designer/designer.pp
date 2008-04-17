@@ -61,7 +61,7 @@ type
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
   TOnGetNonVisualCompIcon = procedure(Sender: TObject;
-    AComponent: TComponent; var Icon: TBitmap) of object;
+    AComponent: TComponent; var Icon: TCustomBitmap) of object;
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
@@ -2408,7 +2408,8 @@ begin
         FillRect(Rect(IconRect.Left,IconRect.Top,
            IconRect.Right+1,IconRect.Bottom+1));
       end;
-      if Assigned(FOnGetNonVisualCompIcon) then begin
+      if Assigned(FOnGetNonVisualCompIcon)
+      then begin
         Icon:=nil;
         FOnGetNonVisualCompIcon(Self,AComponent,Icon);
         if Icon<>nil then begin

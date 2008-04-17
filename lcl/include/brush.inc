@@ -70,7 +70,7 @@ end;
 
   Sets the style of a brush
  ------------------------------------------------------------------------------}
-procedure TBrush.SetBitmap(Value : TBitmap);
+procedure TBrush.SetBitmap(Value: TCustomBitmap);
 begin
   if FBitmap <> Value then
   begin

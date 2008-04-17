@@ -1486,8 +1486,6 @@ procedure TMainIDE.SetupSpeedButtons;
   function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
     const AOnClick: TNotifyEvent; const AHint: String): TSpeedButton;
-  var
-    B: TBitmap;
   begin
     Result := TSpeedButton.Create(OwningComponent);
     with Result do
@@ -1498,9 +1496,7 @@ procedure TMainIDE.SetupSpeedButtons;
       Top := ATop;
       Left := ALeft;
       OnClick := AOnClick;
-      B := LoadBitmapFromLazarusResource(APixName);
-      Glyph := B;
-      B.Free;
+      LoadGlyphFromLazarusResource(APixName);
       NumGlyphs := ANumGlyphs;
       Flat := True;
       //Transparent:=true;

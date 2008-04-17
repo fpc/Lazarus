@@ -39,7 +39,7 @@ type
   public
     TheDefaultIndex : Longint;
 
-    FBitmap: TBitmap;
+    FBitmap: TCustomBitmap;
     MSG : AnsiString;
     NumButtons : Longint;
     Buttons : PLongint;
@@ -66,7 +66,7 @@ begin
   end;
 end;
 
-function GetDialogIcon(idDiag: Integer): TBitmap;
+function GetDialogIcon(idDiag: Integer): TCustomBitmap;
 var
   BitmapHandle, MaskHandle: HBitmap;
 begin
@@ -80,7 +80,7 @@ begin
   end
   else
   begin // load default icon from resource
-    Result := LoadBitmapFromLazarusResource(DialogResName[idDiag]);
+    Result := CreateBitmapFromLazarusResource(DialogResName[idDiag]);
   end;
 end;
 
@@ -406,7 +406,7 @@ type
       Shift: TShiftState);
   private
     FButtons: TList;
-    FBitmap: TBitmap;
+    FBitmap: TCustomBitmap;
     FBitmapX, FBitmapY: Integer;
   public
     TextBox : TRect;

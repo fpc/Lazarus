@@ -60,7 +60,7 @@ end;
   The image is copied. To add it directly use AddDirect.
  ------------------------------------------------------------------------------}
 
-function TCustomImageList.Add(Image, Mask: TBitmap): Integer;
+function TCustomImageList.Add(Image, Mask: TCustomBitmap): Integer;
 begin
   Result := Count;
   Insert(Result, Image, Mask);
@@ -151,9 +151,9 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomImageList.AddLazarusResource(const ResourceName: string; MaskColor: TColor): integer;
 var
-  Bmp: TBitmap;
+  Bmp: TCustomBitmap;
 begin
-  Bmp := LoadBitmapFromLazarusResource(ResourceName);
+  Bmp := CreateBitmapFromLazarusResource(ResourceName);
   if MaskColor <> clNone then
     Bmp.Mask(MaskColor);
   Result := Add(Bmp, nil);
@@ -651,7 +651,7 @@ end;
   Inserts one or more (bitmap width / imagelist width) bitmaps into the list 
   at the index'th position.  If Mask is nil, the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TBitmap);
+procedure TCustomImageList.Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
   msk: THandle;
 begin
@@ -678,7 +678,7 @@ end;
   Adds one or more (bitmap width / imagelist width) bitmaps to the list. 
   Every occurance of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TBitmap;
+procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
   MaskColor: TColor);
 var
   AMask: TBitmap;
@@ -1157,7 +1157,7 @@ end;
   Replaces the index'th image with the image given. If Mask is nil, 
   the image has no transparent parts.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TBitmap);
+procedure TCustomImageList.Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
 var
   msk: THandle;
 begin
@@ -1179,7 +1179,7 @@ end;
   Replaces the index'th image with the image given.
   Every occurance of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
-procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
+procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
 var
   AMask: TBitmap;
 begin

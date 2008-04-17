@@ -732,8 +732,6 @@ begin
 end;
 
 constructor TActionListEditor.Create(AOwner: TComponent);
-var
-  bmp: TBitMap;
 begin
   inherited Create(AOwner);
   Caption := oisActionListEditor;
@@ -755,21 +753,10 @@ begin
   mItemActListMoveUpAction.Caption := cActionListEditorMoveUpAction;
   mItemActListDelAction.Caption := cActionListEditorDeleteAction;
 
-  bmp := LoadBitmapFromLazarusResource('add');
-  btnAdd.Glyph.Assign(bmp);
-  bmp.Free;
-  
-  bmp := LoadBitmapFromLazarusResource('delete');
-  btnDelete.Glyph.Assign(bmp);
-  bmp.Free;
-
-  bmp := LoadBitmapFromLazarusResource('arrow_up');
-  btnUp.Glyph.Assign(bmp);
-  bmp.Free;
-
-  bmp := LoadBitmapFromLazarusResource('arrow_down');
-  btnDown.Glyph.Assign(bmp);
-  bmp.Free;
+  btnAdd.LoadGlyphFromLazarusResource('add');
+  btnDelete.LoadGlyphFromLazarusResource('delete');
+  btnUp.LoadGlyphFromLazarusResource('arrow_up');
+  btnDown.LoadGlyphFromLazarusResource('arrow_down');
 
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
   GlobalDesignHook.AddHandlerSetSelection(@OnComponentSelection);

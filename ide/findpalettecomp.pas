@@ -104,7 +104,7 @@ var
   CurComponent: TRegisteredComponent;
   CurStr: string;
   TxtH: Integer;
-  CurIcon: TBitmap;
+  CurIcon: TCustomBitmap;
   IconWidth: Integer;
   IconHeight: Integer;
 begin
@@ -120,7 +120,8 @@ begin
     CurIcon:=nil;
     if CurComponent is TPkgComponent then
       CurIcon:=TPkgComponent(CurComponent).Icon;
-    if CurIcon<>nil then begin
+    if CurIcon<>nil
+    then begin
       IconWidth:=CurIcon.Width;
       IconHeight:=CurIcon.Height;
       Draw(ARect.Left+(25-IconWidth) div 2,

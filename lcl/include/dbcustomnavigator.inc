@@ -219,23 +219,25 @@ var
   Y: Integer;
   W: Integer;
   H: Integer;
-  B: TBitmap;
 begin
-  if FUpdateButtonsLock>0 then begin
+  if FUpdateButtonsLock>0
+  then begin
     FUpdateButtonsNeeded:=true;
     exit;
   end;
+
   FUpdateButtonsNeeded:=false;
   ButtonCount:=VisibleButtonCount;
   if Direction=nbdHorizontal then
     ButtonSpace:=ClientWidth
   else
     ButtonSpace:=ClientHeight;
+
   ButtonNumber:=1;
   ButtonEndPos:=0;
   ButtonStartPos:=ButtonEndPos;
-  for CurButtonType:=Low(Buttons) to High(Buttons) do begin
-  
+  for CurButtonType:=Low(Buttons) to High(Buttons) do
+  begin
     // calculate button bounds
     if ButtonCount>0 then
       ButtonEndPos:=(ButtonSpace*ButtonNumber) div ButtonCount
@@ -254,15 +256,14 @@ begin
     end;
     
     // create/get button
-    if Buttons[CurButtonType]=nil then begin
+    if Buttons[CurButtonType]=nil
+    then begin
       CurButton:=TDBNavButton.Create(Self);
       CurButton.Name:=DBNavButtonResourceName[CurButtonType];
       Buttons[CurButtonType]:=CurButton;
       if CurButtonType in [nbPrior,nbNext] then
         CurButton.NavStyle:=CurButton.NavStyle+[nsAllowTimer];
-      B := LoadBitmapFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
-      CurButton.Glyph := B;
-      B.Free;
+      CurButton.LoadGlyphFromLazarusResource(DBNavButtonResourceName[CurButtonType]);
       CurButton.NumGlyphs:=1;
     end else
       CurButton:=Buttons[CurButtonType];

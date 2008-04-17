@@ -25,6 +25,8 @@ unit Graphics;
 
 {$mode objfpc}{$H+}
 
+{$define BITMAP_OLDSTYLE}
+
 interface
 
 {$ifdef Trace}
@@ -392,7 +394,13 @@ type
   TCanvas = class;
 
   // standard LCL graphic formats
+  TCustomBitmap = class;            // base class
+  TCustomBitmapClass = class of TCustomBitmap;
+  {$ifdef BITMAP_OLDSTYLE}
+  TBitmap = TCustomBitmap;
+  {$else}
   TBitmap = class;                  // bmp
+  {$endif}
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
@@ -571,7 +579,7 @@ type
   private
     FBrushHandleCached: boolean;
     FColor: TColor;
-    FBitmap: TBitmap;
+    FBitmap: TCustomBitmap;
     FReference: TWSBrushReference;
     FInternalUpdateIndex: Integer;
     procedure FreeReference;
@@ -586,14 +594,14 @@ type
     procedure DoCopyProps(From: TFPCanvasHelper); override;
     procedure SetColor(const NewColor: TColor; const NewFPColor: TFPColor); virtual;
     procedure SetFPColor(const AValue: TFPColor); override;
-    procedure SetBitmap(Value: TBitmap);
+    procedure SetBitmap(Value: TCustomBitmap);
     procedure SetColor(Value: TColor);
     procedure SetStyle(Value: TBrushStyle); override;
   public
     procedure Assign(Source: TPersistent); override;
     constructor Create; override;
     destructor Destroy; override;
-    property Bitmap: TBitmap read FBitmap write SetBitmap;
+    property Bitmap: TCustomBitmap read FBitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle; deprecated;
     property Reference: TWSBrushReference read GetReference;
   published
@@ -823,6 +831,7 @@ type
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
     procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
+    procedure LoadFromLazarusResource(const AName: string);
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat);
@@ -1055,11 +1064,11 @@ type
   end;
 
 
-  { TBitmapImage
+  { TCustomBitmapImage
 
-    Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
-    TBitmap, only the reference count will be increased and both will share the
-    same TBitmapImage }
+    Descendent of TSharedImage for TCustomBitmap. If a TCustomBitmap is assigned to another
+    TCustomBitmap, only the reference count will be increased and both will share the
+    same TCustomBitmapImage }
 
   TBitmapNativeType = (
     bnNone,      // not a TBitmap native type
@@ -1073,9 +1082,9 @@ type
 
   TBitmapHandleType = (bmDIB, bmDDB);
 
-  { TBitmapImage }
+  { TCustomBitmapImage }
 
-  TBitmapImage = class(TSharedImage)
+  TCustomBitmapImage = class(TSharedImage)
   private
     FHandle: HBITMAP;   // output device dependent handle
     FMaskHandle: HBITMAP;
@@ -1106,9 +1115,9 @@ type
   end;
 
 
-  { TBitmap }
+  { TCustomBitmap }
 
-  { TBitmap is the data of an image. The image can be loaded from a file,
+  { TCustomBitmap is the data of an image. The image can be loaded from a file,
     stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
     The loading routine automatically recognizes the format, so it is also used
     to load the imagess from Delphi form streams (e.g. .dfm files).
@@ -1122,12 +1131,12 @@ type
     );
   TBitmapInternalState = set of TBitmapInternalStateFlag;
 
-  { TBitmap }
+  { TCustomBitmap }
 
-  TBitmap = class(TGraphic)
+  TCustomBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
-    FImage: TBitmapImage;
+    FImage: TCustomBitmapImage;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
@@ -1234,11 +1243,20 @@ type
     DebugEnabled: boolean;
     {$ENDIF}
   end;
+  
+  { TBitmap }
+  {$ifndef BITMAP_OLDSTYLE}
+  TBitmap = class(TCustomBitmap)
+  private
+  protected
+  public
+  end;
+  {$endif}
 
 
   { TPixmap }
 
-  TPixmap = class(TBitmap)
+  TPixmap = class(TCustomBitmap)
   protected
     function GetBitmapNativeType: TBitmapNativeType; override;
   public
@@ -1250,10 +1268,10 @@ type
 
 
   { TFPImageBitmap }
-  { Use this class to easily create a TBitmap descendent for FPImage
+  { Use this class to easily create a TCustomBitmap descendent for FPImage
     reader and writer }
 
-  TFPImageBitmap = class(TBitmap)
+  TFPImageBitmap = class(TCustomBitmap)
   protected
     function GetBitmapNativeType: TBitmapNativeType; override;
   public
@@ -1298,7 +1316,7 @@ type
   {
     TIcon reads and writes .ICO file format.
     A .ico file typically contains several versions of the same image. When loading,
-    the largest/most colourful image is loaded as the TBitmap and so can be handled
+    the largest/most colourful image is loaded as the TCustomBitmap and so can be handled
     as any other bitmap. Any other versions of the images are available via the
     Bitmaps property
     Writing is not (yet) implemented.
@@ -1306,7 +1324,7 @@ type
   
   {.$define ICON_OLDSTYLE}     // Set to keep original functionality
  
-  TIcon = class(TBitmap)
+  TIcon = class(TCustomBitmap)
   private
     FBitmaps: TObjectList;
   protected
@@ -1442,11 +1460,18 @@ function TestStreamIsCursor(const AStream: TStream): boolean;
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
-function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
-                     ): boolean;
+function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer): boolean;
 function LoadCursorFromLazarusResource(ACursorName: String): HCursor;
-function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
-function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
+
+function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; deprecated;
+function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
+
+// technically a bitmap is created and not loaded
+function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
+function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
+function CreateBitmapFromLazarusResource(AHandle: TLResource): TCustomBitmap;
+function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
+
 
 var
   { Stores information about the current screen
@@ -1537,47 +1562,93 @@ begin
   CursorImage.Free;
 end;
 
-function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
+
+function CreateBitmapFromLazarusResource(AStream: TLazarusResourceStream; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 var
-  Stream: TLazarusResourceStream;
   GraphicClass: TGraphicClass;
 begin
   Result := nil;
-  Stream := nil;
+  if AStream = nil then Exit;
+
+  GraphicClass := GetGraphicClassForFileExtension(AStream.Res.ValueType);
+  if GraphicClass = nil then Exit;
+  if not GraphicClass.InheritsFrom(AMinimumClass) then Exit;
+  
+  Result := TCustomBitmap(GraphicClass.Create);
   try
-    Stream := TLazarusResourceStream.CreateFromHandle(Handle);
-    GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
-    if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
-    begin
-      Result := TBitmap(GraphicClass.Create);
-      Result.LoadFromStream(Stream);
-    end;
+    Result.LoadFromStream(AStream);
+  except
+    Result.Free;
+    Result := nil;
+    raise;
+  end;
+end;
+
+function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
+begin
+  Result := CreateBitmapFromLazarusResource(AName, TCustomBitmap);
+end;
+
+function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
+var
+  Stream: TLazarusResourceStream;
+begin
+  Stream := TLazarusResourceStream.Create(AName, nil);
+  try
+    Result := CreateBitmapFromLazarusResource(Stream, AMinimumClass);
   finally
     Stream.Free;
   end;
 end;
 
-function LoadBitmapFromLazarusResource(ResourceName: String): TBitmap;
+function CreateBitmapFromLazarusResource(AHandle: TLResource): TCustomBitmap;
+begin
+  Result := CreateBitmapFromLazarusResource(AHandle, TCustomBitmap);
+end;
+
+function CreateBitmapFromLazarusResource(AHandle: TLResource; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 var
   Stream: TLazarusResourceStream;
-  GraphicClass: TGraphicClass;
 begin
-  Result := nil;
-  Stream := nil;
+  Stream := TLazarusResourceStream.CreateFromHandle(AHandle);
   try
-    Stream := TLazarusResourceStream.Create(ResourceName, nil);
-    if (Stream.Res <> nil) then
-    begin
-      GraphicClass := GetGraphicClassForFileExtension(Stream.Res.ValueType);
-      if (GraphicClass <> nil) and (GraphicClass.InheritsFrom(TBitmap)) then
-      begin
-        Result := TBitmap(GraphicClass.Create);
-        Result.LoadFromStream(Stream);
-      end;
-    end;
+    Result := CreateBitmapFromLazarusResource(Stream, AMinimumClass);
   finally
     Stream.Free;
   end;
+end;
+
+function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap;
+var
+  CB: TCustomBitmap;
+begin
+  CB := CreateBitmapFromLazarusResource(Handle, TCustomBitmap);
+  if CB is TBitmap
+  then begin
+    Result := TBitmap(CB);
+    Exit;
+  end;
+  
+  Result := TBitmap.Create;
+  Result.Assign(CB);
+  CB.Free;
+end;
+
+function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap;
+var
+  CB: TCustomBitmap;
+begin
+  CB := CreateBitmapFromLazarusResource(ResourceName, TCustomBitmap);
+
+  if CB is TBitmap
+  then begin
+    Result := TBitmap(CB);
+    Exit;
+  end;
+
+  Result := TBitmap.Create;
+  Result.Assign(CB);
+  CB.Free;
 end;
 
 procedure Register;
@@ -1593,16 +1664,16 @@ const
 type
   TBitmapCanvas = class(TCanvas)
   private
-    FBitmap: TBitmap;
+    FBitmap: TCustomBitmap;
     FOldBitmapValid: boolean;
     FOldBitmap: HBitmap;
     FOldPaletteValid: boolean;
     FOldPalette: HPALETTE;
-    procedure FreeDC; // called by TBitmap.FreeCanvasContext
+    procedure FreeDC; // called by TCustomBitmap.FreeCanvasContext
   protected
     procedure CreateHandle; override;
   public
-    constructor Create(ABitmap: TBitmap);
+    constructor Create(ABitmap: TCustomBitmap);
     destructor Destroy; override;
   end;
 
@@ -1888,299 +1959,6 @@ begin
   Result.Alpha:=FPImage.alphaOpaque;
 end;
 
-{$I graphicsobject.inc}
-{$I graphic.inc}
-{$I picture.inc}
-{$I sharedimage.inc}
-{$I bitmapimage.inc}
-{$I bitmap.inc}
-{$I bitmapcanvas.inc}
-{$I pen.inc}
-{$I brush.inc}
-{$I region.inc}
-{$I font.inc}
-{$I canvas.inc}
-{$I pixmap.inc}
-{$I png.inc}
-{$I pnm.inc}
-
-
-{ TFPImageBitmap }
-
-class function TFPImageBitmap.GetFileExtensions: string;
-begin
-  Result:='';
-end;
-
-class function TFPImageBitmap.IsFileExtensionSupported(
-  const FileExtension: string): boolean;
-var
-  Extensions: String;
-  StartPos: Integer;
-  EndPos: Integer;
-  i: Integer;
-  Ext: String;
-begin
-  Result:=false;
-  if FileExtension='' then exit;
-  Extensions:=GetFileExtensions;
-  if Extensions='' then exit;
-  Ext:=FileExtension;
-  if Ext[1]='.'  then begin
-    Ext:=copy(Ext,2,length(Ext));
-    if Ext='' then exit;
-  end;
-  StartPos:=1;
-  while StartPos<=length(Extensions) do begin
-    if not (Extensions[StartPos] in [';',' ']) then begin
-      EndPos:=StartPos;
-      while (EndPos<=length(Extensions)) and (Extensions[EndPos]<>';') do
-        inc(EndPos);
-      if EndPos-StartPos=length(Ext) then begin
-        i:=1;
-        while (i<=length(Ext))
-        and (upcase(Extensions[StartPos+i-1])=upcase(Ext[i])) do
-          inc(i);
-        if i>length(Ext) then begin
-          Result:=true;
-          exit;
-        end;
-      end;
-      StartPos:=EndPos;
-    end else
-      inc(StartPos);
-  end;
-end;
-
-class function TFPImageBitmap.GetFPReaderForFileExt(const FileExtension: string
-  ): TFPCustomImageReaderClass;
-begin
-  if IsFileExtensionSupported(FileExtension) then
-    Result:=GetDefaultFPReader
-  else
-    Result:=nil;
-end;
-
-class function TFPImageBitmap.GetFPWriterForFileExt(const FileExtension: string
-  ): TFPCustomImageWriterClass;
-begin
-  if IsFileExtensionSupported(FileExtension) then
-    Result:=GetDefaultFPWriter
-  else
-    Result:=nil;
-end;
-
-function TFPImageBitmap.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnNone;
-end;
-
-class function TFPImageBitmap.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result:=nil;
-end;
-
-class function TFPImageBitmap.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result:=nil;
-end;
-
-function TFPImageBitmap.LazarusResourceTypeValid(const ResourceType: string
-  ): boolean;
-begin
-  Result:=IsFileExtensionSupported(ResourceType);
-end;
-
-procedure TFPImageBitmap.ReadStream(Stream: TStream; UseSize: boolean;
-  Size: Longint);
-begin
-  ReadStreamWithFPImage(Stream,UseSize,Size,GetDefaultFPReader);
-end;
-
-procedure TFPImageBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-begin
-  WriteStreamWithFPImage(Stream,WriteSize,GetDefaultFPWriter);
-end;
-
-function TFPImageBitmap.GetDefaultMimeType: string;
-var
-  DefaultFileExt: String;
-  i: Integer;
-begin
-  DefaultFileExt:=GetFileExtensions;
-  i:=1;
-  while (i<=length(DefaultFileExt)) and (DefaultFileExt[i]<>';') do
-    inc(i);
-  if i<=length(DefaultFileExt) then
-    DefaultFileExt:=copy(DefaultFileExt,1,i);
-  Result:='image/'+DefaultFileExt;
-end;
-
-{ TIcon }
-
-const
-  IconSignature: array [0..3] of char = #0#0#1#0;
-  CursorSignature: array [0..3] of char = #0#0#2#0;
-
-function TestStreamIsIcon(const AStream: TStream): boolean;
-var
-  Signature: array[0..3] of char;
-  ReadSize: Integer;
-  OldPosition: TStreamSeekType;
-begin
-  OldPosition:=AStream.Position;
-  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
-  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@IconSignature,4);
-  AStream.Position:=OldPosition;
-end;
-
-function TestStreamIsCursor(const AStream: TStream): boolean;
-var
-  Signature: array[0..3] of char;
-  ReadSize: Integer;
-  OldPosition: TStreamSeekType;
-begin
-  OldPosition:=AStream.Position;
-  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
-  Result:=(ReadSize=SizeOf(Signature)) and CompareMem(@Signature,@CursorSignature,4);
-  AStream.Position:=OldPosition;
-end;
-
-procedure TIcon.ReadData(Stream: TStream);
-var
-  Size: longint;
-  Position: TStreamSeekType;
-begin
-  Position := Stream.Position;
-  Stream.Read(Size, 4); // Beware BigEndian and LowEndian sytems
-  if CompareMem(@Size,@IconSignature,4) then begin
-    // Assume Icon - stream without explicit size
-    Stream.Position := Position;
-    ReadStream(Stream, false, Size);
-  end else begin
-    Size := LEtoN(Size);
-    ReadStream(Stream, true, Size);
-  end;
-end;
-
-procedure TIcon.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-begin
-  inherited InitFPImageReader(IntfImg, ImgReader);
-  if ImgReader is TLazReaderIcon then
-    TLazReaderIcon(ImgReader).Icon := self;
-end;
-
-function TIcon.LazarusResourceTypeValid(const ResourceType: string): boolean;
-var
-  ResType: String;
-begin
-  if Length(ResourceType) < 3 then Exit(False);
-
-  ResType := UpperCase(ResourceType);
-  case ResType[1] of
-    'I': begin
-      Result := (ResType = 'ICO') or (ResType = 'ICON');
-    end;
-  else
-    Result := inherited LazarusResourceTypeValid(ResType);
-  end;
-end;
-
-class function TIcon.GetFileExtensions: string;
-begin
-  Result:='ico';
-end;
-
-destructor TIcon.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FBitmaps);
-end;
-
-function TIcon.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnIcon;
-end;
-
-procedure TIcon.AddBitmap(Bitmap: TBitmap);
-begin
-  if not Assigned(FBitmaps) then
-    FBitmaps := TObjectList.create(True);
-  FBitmaps.Add(Bitmap);
-end;
-
-
-
-{ TCursorImage }
-
-class function TCursorImage.GetFileExtensions: string;
-begin
-  Result := 'cur';
-end;
-
-function TCursorImage.LazarusResourceTypeValid(const ResourceType: string): boolean;
-var
-  ResType: String;
-begin
-  if Length(ResourceType) < 3 then Exit(False);
-
-  ResType := UpperCase(ResourceType);
-  case ResType[1] of
-    'C': begin
-      Result := (ResType = 'CUR') or (ResType = 'CURSOR');
-    end;
-  else
-    Result := inherited LazarusResourceTypeValid(ResType);
-  end;
-end;
-
-function TCursorImage.ReleaseCursorHandle: HCURSOR;
-begin
-  Result := CursorHandle;
-  FCursorHandle := 0;
-end;
-
-function TCursorImage.GetCursorHandle: HCURSOR;
-begin
-  CursorHandleNeeded;
-  Result := FCursorHandle;
-end;
-
-procedure TCursorImage.CursorHandleNeeded;
-var
-  IconInfo: TIconInfo;
-begin
-  if FCursorHandle = 0 then
-  begin
-    IconInfo.fIcon := False;
-    IconInfo.xHotspot := HotSpot.X;
-    IconInfo.yHotSpot := HotSpot.Y;
-    IconInfo.hbmMask := MaskHandle;
-    IconInfo.hbmColor := Handle;
-    FCursorHandle := WidgetSet.CreateCursor(@IconInfo);
-  end;
-end;
-
-constructor TCursorImage.Create;
-begin
-  inherited Create;
-  FHotSpot := Point(0, 0);
-  FCursorHandle := 0;
-  FOwnHandle := True;
-end;
-
-destructor TCursorImage.Destroy;
-begin
-  if (FCursorHandle <> 0) then
-    WidgetSet.DestroyCursor(FCursorHandle);
-  inherited Destroy;
-end;
-
-function TCursorImage.GetBitmapNativeType: TBitmapNativeType;
-begin
-  Result := bnCursor;
-end;
-
 // ------------------------------------------------------------------
 // Decrease the component RGBs of a color of the quantity' passed
 //
@@ -2198,6 +1976,28 @@ begin
   Result := RGBToColor(R, G, B);
 end;
 
+
+{$I graphicsobject.inc}
+{$I graphic.inc}
+{$I picture.inc}
+{$I sharedimage.inc}
+{$I custombitmapimage.inc}
+{$I custombitmap.inc}
+{$I bitmapcanvas.inc}
+{$I pen.inc}
+{$I brush.inc}
+{$I region.inc}
+{$I font.inc}
+{$I canvas.inc}
+{$I pixmap.inc}
+{$I png.inc}
+{$I pnm.inc}
+{$I jpegimage.inc}
+{$I cursorimage.inc}
+{$I icon.inc}
+{$I fpimagebitmap.inc}
+
+
 procedure InterfaceInit;
 begin
   //debugln('Graphics.InterfaceInit');
@@ -2214,76 +2014,6 @@ begin
   FreeAndNil(BrushResourceCache);
 end;
 
-{ TJpegImage }
-
-{ TJPEGImage }
-
-procedure TJPEGImage.InitFPImageReader(IntfImg: TLazIntfImage; ImgReader: TFPCustomImageReader);
-var
-  JPEGReader: TFPReaderJPEG;
-begin
-  if ImgReader is TFPReaderJPEG then
-  begin
-    JPEGReader := TFPReaderJPEG(ImgReader);
-    JPEGReader.Performance := Performance;
-    JPEGReader.OnProgress := @Progress;
-  end;
-  inherited InitFPImageReader(IntfImg, ImgReader);
-end;
-
-procedure TJPEGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  JPEGReader: TFPReaderJPEG;
-begin
-  if ImgReader is TFPReaderJPEG then
-  begin
-    JPEGReader := TFPReaderJPEG(ImgReader);
-    FProgressiveEncoding := JPEGReader.ProgressiveEncoding;
-    FGrayScale := JPEGReader.GrayScale;
-  end;
-  inherited FinalizeFPImageReader(ImgReader);
-end;
-
-procedure TJPEGImage.InitFPImageWriter(IntfImg: TLazIntfImage; ImgWriter: TFPCustomImageWriter);
-var
-  JPEGWriter: TFPWriterJPEG;
-begin
-  if ImgWriter is TFPWriterJPEG then
-  begin
-    JPEGWriter := TFPWriterJPEG(ImgWriter);
-    if JPEGWriter <> nil then
-    begin
-      JPEGWriter.ProgressiveEncoding := ProgressiveEncoding;
-      JPEGWriter.CompressionQuality := CompressionQuality;
-      JPEGWriter.OnProgress := @Progress;
-    end;
-  end;
-  inherited InitFPImageWriter(IntfImg, ImgWriter);
-end;
-
-class function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
-begin
-  Result := TFPReaderJPEG;
-end;
-
-class function TJPEGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
-begin
-  Result := TFPWriterJPEG;
-end;
-
-constructor TJPEGImage.Create;
-begin
-  inherited Create;
-  FPerformance := jpBestQuality;
-  FProgressiveEncoding := False;
-  FGrayScale := False;
-  FQuality := 75;
-end;
-
-class function TJPEGImage.GetFileExtensions: string;
-begin
-  Result := 'jpg;jpeg';
-end;
 
 initialization
   UpdateLock := TCriticalSection.Create;

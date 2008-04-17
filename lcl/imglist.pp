@@ -160,7 +160,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
 
-    function Add(Image, Mask: TBitmap): Integer;
+    function Add(Image, Mask: TCustomBitmap): Integer;
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(AValue: TCustomImageList);
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
@@ -184,11 +184,11 @@ type
     {$endif}
     function GetHotSpot: TPoint; virtual;
 
-    procedure Insert(AIndex: Integer; AImage, AMask: TBitmap);
-    procedure InsertMasked(Index: Integer; AImage: TBitmap; MaskColor: TColor);
+    procedure Insert(AIndex: Integer; AImage, AMask: TCustomBitmap);
+    procedure InsertMasked(Index: Integer; AImage: TCustomBitmap; MaskColor: TColor);
     procedure Move(ACurIndex, ANewIndex: Integer);
-    procedure Replace(AIndex: Integer; AImage, AMask: TBitmap);
-    procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
+    procedure Replace(AIndex: Integer; AImage, AMask: TCustomBitmap);
+    procedure ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
     procedure RegisterChanges(Value: TChangeLink);
     procedure StretchDraw(Canvas: TCanvas; Index: Integer; ARect: TRect; Enabled: Boolean = True);
     procedure UnRegisterChanges(Value: TChangeLink);

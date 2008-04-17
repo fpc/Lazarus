@@ -678,24 +678,8 @@ begin
 end;
 
 function TSourceMarks.AddImage(const ResName: string): integer;
-var
-  Bitmap: TBitmap;
-  Resource: TLResource;
 begin
-  Resource:=LazarusResources.Find(ResName);
-  if Resource=nil then
-    DebugLn('TSourceMarks.AddImage: ',
-      ' WARNING: icon not found: "',ResName,'"');
-  if SysUtils.CompareText(Resource.ValueType,'xpm')=0 then begin
-    Bitmap:=TPixmap.Create;
-  end else if SysUtils.CompareText(Resource.ValueType,'png')=0 then begin
-    Bitmap:=TPortableNetworkGraphic.Create;
-  end else
-    DebugLn('TSourceMarks.AddImage: ',
-      ' WARNING: wrong icon format: "',ResName,'"="',Resource.ValueType,'"');
-  Bitmap.LoadFromLazarusResource(ResName);
-  Result:=ImgList.Add(Bitmap,nil);
-  Bitmap.Free;
+  Result := ImgList.AddLazarusResource(Resname);
 end;
 
 function TSourceMarks.GetSourceEditor(AMark: TSourceMark): TObject;
