@@ -327,12 +327,18 @@ var
   gObject, gFixed, gCore: PGTKObject;
 begin
   //debugln('gtk2object.inc TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-  if Direct then begin
+  if Direct then
+  begin
     gObject := AGTKObject;
     gFixed := AGTKObject;
     gCore := AGTKObject;
-  end else begin
-    gObject := AGTKObject;
+  end
+  else
+  begin
+    // gObject
+    if AGTKObject = nil then gObject := ObjectToGTKObject(ALCLObject)
+    else gObject := AGTKObject;
+
     if gObject = nil then Exit;
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
@@ -349,20 +355,23 @@ begin
       ConnectFocusEvents(gCore);
     end;
 
+    LM_GRABFOCUS:
+    begin
+      ConnectSenderSignal(gObject, 'grab_focus', @gtkActivateCB);
+    end;
+
     LM_CHAR,
     LM_KEYDOWN,
     LM_KEYUP,
-    
     LM_SYSCHAR,
     LM_SYSKEYDOWN,
     LM_SYSKEYUP:
     begin
-      if (ALCLObject is TCustomComboBox) then begin
-        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
-      end
-      else if (ALCLObject is TCustomForm) then begin
+      if (ALCLObject is TCustomComboBox) then
+        ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry))
+      else if (ALCLObject is TCustomForm) then
         ConnectKeyPressReleaseEvents(gObject);
-      end;
+
       ConnectKeyPressReleaseEvents(gCore);
     end;
 

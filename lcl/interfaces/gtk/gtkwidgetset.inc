@@ -2983,15 +2983,20 @@ var
   gMouse: PGtkObject;
 begin
   //debugln('TGtkWidgetSet.SetCallback A ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-  if Direct then begin
-    gMain:=AGTKObject;
-    gCore:=AGTKObject;
-    gFixed:=AGTKObject;
-    gMouse:=AGTKObject;
-  end else begin
-    if AGTKObject = nil
-    then gObject := ObjectToGTKObject(ALCLObject)
+  if Direct then
+  begin
+    gMain := AGTKObject;
+    gCore := AGTKObject;
+    gFixed := AGTKObject;
+    gMouse := AGTKObject;
+    gObject := AGTKObject;
+  end
+  else
+  begin
+    // gObject
+    if AGTKObject = nil then gObject := ObjectToGTKObject(ALCLObject)
     else gObject := AGTKObject;
+    
     if gObject = nil then Exit;
 
     // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
@@ -3122,14 +3127,13 @@ begin
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
+    {$IFDEF GTK1}
     LM_FOCUS :
     begin
-      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then begin
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
       end else
-      {$ENDIF}
       begin
         ConnectFocusEvents(gCore);
       end;
@@ -3148,17 +3152,16 @@ begin
     LM_SYSKEYUP:
     begin
       //debugln('TGtkWidgetSet.SetCallback A KEY ALCLObject=',DbgSName(ALCLObject),' AMsg=',dbgs(AMsg));
-      {$IFDEF GTK1}
       if (ALCLObject is TCustomComboBox) then begin
         ConnectKeyPressReleaseEvents(PgtkObject(PgtkCombo(gObject)^.entry));
       end
       else
-      {$ENDIF}
       if (ALCLObject is TCustomForm) then begin
         ConnectKeyPressReleaseEvents(gObject);
       end;
       ConnectKeyPressReleaseEvents(gCore);
     end;
+    {$ENDIF}
 
     LM_MONTHCHANGED:  //calendar
     Begin
