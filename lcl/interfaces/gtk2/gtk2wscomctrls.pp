@@ -35,7 +35,7 @@ uses
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSComCtrls, GtkWSControls, GtkDef, GtkProc,
+  GtkWSControls, GtkDef, GtkProc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
   
@@ -58,16 +58,26 @@ type
 
   { TGtk2WSStatusBar }
 
-  TGtk2WSStatusBar = class(TGtkWSStatusBar)
+  TGtk2WSStatusBar = class(TWSStatusBar)
   private
   protected
   public
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure Update(const AStatusBar: TStatusBar); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer;
+                        WithThemeSpace: Boolean); override;
+
     class procedure SetSizeGrip(const AStatusBar: TStatusBar; SizeGrip: Boolean); override;
   end;
 
   { TGtk2WSTabSheet }
 
-  TGtk2WSTabSheet = class(TGtkWSTabSheet)
+  TGtk2WSTabSheet = class(TWSTabSheet)
   private
   protected
   public
@@ -75,7 +85,7 @@ type
 
   { TGtk2WSPageControl }
 
-  TGtk2WSPageControl = class(TGtkWSPageControl)
+  TGtk2WSPageControl = class(TWSPageControl)
   private
   protected
   public
@@ -83,7 +93,7 @@ type
 
   { TGtk2WSCustomListView }
 
-  TGtk2WSCustomListView = class(TGtkWSCustomListView)
+  TGtk2WSCustomListView = class(TWSCustomListView)
   private
     class function IsIconView(const ALV: TCustomListView): Boolean; virtual;
     // needed when adding or removing columns to a list store
@@ -154,7 +164,7 @@ type
 
   { TGtk2WSListView }
 
-  TGtk2WSListView = class(TGtkWSListView)
+  TGtk2WSListView = class(TWSListView)
   private
   protected
   public
@@ -174,7 +184,7 @@ type
 
   { TGtk2WSCustomUpDown }
 
-  TGtk2WSCustomUpDown = class(TGtkWSCustomUpDown)
+  TGtk2WSCustomUpDown = class(TWSCustomUpDown)
   private
   protected
   public
@@ -182,7 +192,7 @@ type
 
   { TGtk2WSUpDown }
 
-  TGtk2WSUpDown = class(TGtkWSUpDown)
+  TGtk2WSUpDown = class(TWSUpDown)
   private
   protected
   public
@@ -190,7 +200,7 @@ type
 
   { TGtk2WSToolButton }
 
-  TGtk2WSToolButton = class(TGtkWSToolButton)
+  TGtk2WSToolButton = class(TWSToolButton)
   private
   protected
   public
@@ -198,10 +208,12 @@ type
 
   { TGtk2WSToolBar }
 
-  TGtk2WSToolBar = class(TGtkWSToolBar)
+  TGtk2WSToolBar = class(TWSToolBar)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
 
   { TGtk2WSTrackBar }
@@ -219,7 +231,7 @@ type
 
   { TGtk2WSCustomTreeView }
 
-  TGtk2WSCustomTreeView = class(TGtkWSCustomTreeView)
+  TGtk2WSCustomTreeView = class(TWSCustomTreeView)
   private
   protected
   public
@@ -227,7 +239,7 @@ type
 
   { TGtk2WSTreeView }
 
-  TGtk2WSTreeView = class(TGtkWSTreeView)
+  TGtk2WSTreeView = class(TWSTreeView)
   private
   protected
   public
@@ -427,6 +439,79 @@ end;
 
 { TGtk2WSStatusBar }
 
+class procedure TGtk2WSStatusBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtk2WSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  Widget := gtk_hbox_new(false,0);
+  UpdateStatusBarPanels(AWinControl, Widget);
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  HBox: PGtkWidget;
+  StatusPanelWidget: PGtkWidget;
+  BoxChild: PGtkBoxChild;
+begin
+  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',DbgS(AStatusBar),' PanelIndex=',dbgs(PanelIndex));
+  if PanelIndex>=0 then begin
+    // update one
+    HBox:=PGtkWidget(AStatusBar.Handle);
+    BoxChild:=PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children,PanelIndex));
+    if BoxChild=nil then
+      RaiseGDBException('TGtkWidgetSet.StatusBarPanelUpdate Index out of bounds');
+    StatusPanelWidget:=BoxChild^.Widget;
+    UpdateStatusBarPanel(AStatusBar,PanelIndex,StatusPanelWidget);
+  end else begin
+    // update all
+    UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+  end;
+end;
+
+class procedure TGtk2WSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+  PanelUpdate(AStatusBar,PanelIndex);
+end;
+
+class procedure TGtk2WSStatusBar.Update(const AStatusBar: TStatusBar);
+begin
+  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',DbgS(AStatusBar));
+  UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+end;
+
+class procedure TGtk2WSStatusBar.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  StatusBarWidget: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  StatusBarWidget:=GetStyleWidget(lgsStatusBar);
+  // set size to default
+  gtk_widget_set_usize(StatusBarWidget,-1,-1);
+  // ask default size
+  gtk_widget_size_request(StatusBarWidget,@Requisition);
+  PreferredHeight:=Requisition.height;
+  //debugln('TGtkWSStatusBar.GetPreferredSize END ',dbgs(PreferredHeight));
+end;
+
 class procedure TGtk2WSStatusBar.SetSizeGrip(const AStatusBar: TStatusBar;
   SizeGrip: Boolean);
 var
@@ -437,6 +522,41 @@ begin
   Widget := PGtkWidget(AStatusBar.Handle);
   LastWidget := PGtkBoxChild(g_list_last(PGtkBox(Widget)^.children)^.data)^.widget;
   gtk_statusbar_set_has_resize_grip(PGtkStatusBar(LastWidget), AStatusBar.SizeGrip and AStatusBar.SizeGripEnabled);
+end;
+
+{ TGtk2WSToolBar }
+
+class procedure TGtk2WSToolBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+end;
+
+class function TGtk2WSToolBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Widget, ClientWidget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  // Creates the widget
+  Widget:= gtk_hbox_new(false,0);
+  ClientWidget := CreateFixedClientWidget;
+  gtk_container_add(GTK_CONTAINER(Widget), ClientWidget);
+
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+
+  gtk_widget_show(ClientWidget);
+  SetFixedWidget(Widget, ClientWidget);
+  SetMainWidget(Widget, ClientWidget);
+  gtk_widget_show(Widget);
+
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
 end;
 
 initialization
@@ -456,9 +576,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TGtk2WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtk2WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TGtk2WSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TGtk2WSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TGtk2WSToolBar);
+  RegisterWSComponent(TToolBar, TGtk2WSToolBar);
   RegisterWSComponent(TCustomTrackBar, TGtk2WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtk2WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtk2WSTreeView);
