@@ -93,6 +93,7 @@ begin
   FBitmap := nil;
   FColor := clWhite;
   DelayAllocate := True;
+  FInternalUpdateIndex := -1;
   inherited SetStyle(bsSolid);
 end;
 
@@ -165,13 +166,17 @@ end;
  ------------------------------------------------------------------------------}
 
 procedure TBrush.FreeReference;
+var
+  CacheItem: TResourceCacheItem;
 begin
   if not FReference.Allocated then Exit;
 
   Changing;
   if FBrushHandleCached then
   begin
-    BrushResourceCache.FindItem(FReference.Handle).DecreaseRefCount;
+    CacheItem := BrushResourceCache.FindItem(FReference.Handle);
+    if CacheItem <> nil then
+      CacheItem.DecreaseRefCount;
     FBrushHandleCached := False;
   end else
     DeleteObject(FReference.Handle);
@@ -180,6 +185,8 @@ end;
 
 function TBrush.GetReference: TWSBrushReference;
 begin
+  if FInternalUpdateIndex <> GraphicsUpdateCount then
+    FreeReference;
   ReferenceNeeded;
   Result := FReference;
 end;
@@ -226,6 +233,7 @@ begin
     BrushResourceCache.AddResource(FReference.Handle, @LogBrush);
   end;
   FBrushHandleCached := True;
+  FInternalUpdateIndex := GraphicsUpdateCount;
 end;
 
 procedure TBrush.DoChange(var Msg);

@@ -2169,6 +2169,7 @@ begin
     begin
       // winxp theme changed, recheck whether themes are enabled
       ThemeServices.UpdateThemes;
+      Graphics.UpdateHandleObjects;
       ThemeServices.IntfDoOnThemeChange;
     end;
 

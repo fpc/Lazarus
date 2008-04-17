@@ -573,6 +573,7 @@ type
     FColor: TColor;
     FBitmap: TBitmap;
     FReference: TWSBrushReference;
+    FInternalUpdateIndex: Integer;
     procedure FreeReference;
     function GetHandle: HBRUSH;
     function GetReference: TWSBrushReference;
@@ -1485,10 +1486,29 @@ const
 
 function DbgS(const Style: TFontStyles): string; overload;
 
-
 procedure Register;
+procedure UpdateHandleObjects;
 
 implementation
+uses
+  SyncObjs;
+
+var
+  GraphicsUpdateCount: Integer = 0;
+  UpdateLock: TCriticalSection;
+
+procedure UpdateHandleObjects;
+begin
+  // renew all brushes, pens, fonts, ...
+  UpdateLock.Enter;
+  try
+    inc(GraphicsUpdateCount);
+    // at moment update only brushes, but later maybe we will need to update others
+    BrushResourceCache.Clear;
+  finally
+    UpdateLock.Leave;
+  end;
+end;
 
 function DbgS(const Style: TFontStyles): string;
 
@@ -2266,6 +2286,7 @@ begin
 end;
 
 initialization
+  UpdateLock := TCriticalSection.Create;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
   RegisterInterfaceInitializationHandler(@InterfaceInit);
@@ -2276,6 +2297,6 @@ finalization
   OnLoadSaveClipBrdGraphicValid:=false;
   FreeAndNil(PicClipboardFormats);
   FreeAndNil(PicFileFormats);
-
+  UpdateLock.Free;
 
 end.
