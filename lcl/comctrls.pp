@@ -116,6 +116,7 @@ type
 
   TStatusBar = class(TWinControl)
   private
+    FAutoHint: Boolean;
     FCanvas: TCanvas;
     FHandlePanelCount: integer; // realized panels in the Handle object
     FHandleObjectNeedsUpdate: boolean;
@@ -146,12 +147,16 @@ type
     function CreatePanel: TStatusPanel; virtual;
     function CreatePanels: TStatusPanels; virtual;
     function GetPanelClass: TStatusPanelClass; virtual;
+
+    function DoSetApplicationHint(AHintStr: String): Boolean; virtual;
+    function DoHint: Boolean; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function ExecuteAction(ExeAction: TBasicAction): Boolean; override;
     function SizeGripEnabled: Boolean;
     function UpdatingStatusBar: boolean;
     property Canvas: TCanvas read FCanvas;
@@ -159,6 +164,7 @@ type
     property Action;
     property Align default alBottom;
     property Anchors;
+    property AutoHint: Boolean read FAutoHint write FAutoHint default false;
     property AutoSize default true;
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
