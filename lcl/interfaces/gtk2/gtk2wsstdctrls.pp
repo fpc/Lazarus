@@ -89,6 +89,7 @@ type
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont : tFont); override;
   end;
 
   { TGtk2WSGroupBox }
@@ -1563,6 +1564,22 @@ begin
     Result:=true;
   end;
   //if Result then DebugLn(['TGtk2WSCustomGroupBox.GetDefaultClientRect END FrameBorders=',dbgs(FrameBorders),' aClientRect=',dbgs(aClientRect)]);
+end;
+
+class procedure TGtk2WSCustomGroupBox.SetFont(const AWinControl: TWinControl;
+  const AFont: tFont);
+var
+  Frame: PGtkFrame;
+  Lbl: PGtkWidget;
+begin
+  Frame:=PGtkFrame(Pointer(AWinControl.Handle));
+  Lbl := gtk_frame_get_label_widget(Frame);
+  if Lbl <> nil then begin
+    Gtk2WidgetSet.SetWidgetColor(Lbl, AWinControl.Font.Color, clNone,
+      [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED]);
+    Gtk2WidgetSet.SetWidgetFont(Lbl, AFont);
+  end;
+  inherited SetFont(AWinControl, AFont);
 end;
 
 function Gtk2WSButton_Clicked(AWidget: PGtkWidget; AInfo: PWidgetInfo): GBoolean; cdecl;

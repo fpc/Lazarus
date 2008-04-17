@@ -1818,13 +1818,23 @@ var
 {$endif}
   TempWidget: PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p         : pointer;          // ptr to the newly created GtkWidget
+  {$IFDEF Gtk2}
+  L          : PGTKWidget;
+  {$ENDIF}
   Allocation: TGTKAllocation;
   WidgetInfo: PWidgetInfo;
 begin
+  {$IFDEF Gtk1}
   if AParams.Caption <> '' then
     P := gtk_frame_new(AParams.Caption)
   else
     P := gtk_frame_new(nil);
+  {$ELSE}
+  L := gtk_label_new(AParams.Caption);
+  gtk_widget_show(L);
+  P := gtk_frame_new(nil);
+  gtk_frame_set_label_widget(GTK_FRAME(P), GTK_WIDGET(L));
+  {$ENDIF}
   WidgetInfo := CreateWidgetInfo(P, AWinControl, AParams);
   {$if defined(gtk1) or defined(GtkFixedWithWindow)}
   TempWidget := CreateFixedClientWidget;
