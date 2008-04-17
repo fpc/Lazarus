@@ -338,6 +338,7 @@ type
     FControl: TControl;
     FDragTarget: TControl;
     FDragTargetPos: TPoint;
+    FAutoCreated: Boolean;
   protected
     procedure EndDrag(Target: TObject; X, Y: Integer); virtual;
     function GetDragImages: TDragImageList; virtual;
@@ -349,6 +350,7 @@ type
     procedure ShowDragImage; virtual;
     
     property AlwaysShowDragImages: Boolean read FAlwaysShowDragImages write FAlwaysShowDragImages;
+    property AutoCreated: Boolean read FAutoCreated;
     property Control: TControl read FControl write FControl;
     property DragPos: TPoint read FDragPos write FDragPos;
     property DragTarget: TControl read FDragTarget write FDragTarget;

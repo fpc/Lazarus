@@ -144,6 +144,7 @@ begin
   begin
     FDragObjectAutoFree := true;
     FDragObject := TDragControlObject.Create(AControl);
+    FDragObject.FAutoCreated := True;
   end;
   
   GetCursorPos(p);
