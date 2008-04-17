@@ -56,7 +56,7 @@ uses
   InterfaceBase,
   // gtk
   {$IFDEF gtk2}
-    glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+    glib2, gdk2pixbuf, gdk2, gtk2, Pango, gtk2proc,
     {$ifdef HasGdk2X}
       gdk2x,
     {$endif}

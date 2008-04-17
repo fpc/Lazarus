@@ -105,12 +105,6 @@ function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdec
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
-{$IFDEF Gtk2}
-function GTKWindowStateEventCB(widget: PGtkWidget;
-                               state: PGdkEventWindowState;
-                               data: gpointer): gboolean; cdecl;
-{$ENDIF}
-
 {$Ifdef GTK1}
 function gtkDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;
@@ -164,10 +158,6 @@ function gtkMouseBtnPress(widget: PGtkWidget; event: pgdkEventButton;
                           data: gPointer): GBoolean; cdecl;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event: pgdkEventButton;
                                data: gPointer): GBoolean; cdecl;
-{$IFDEF Gtk2}
-function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
-                         data: gPointer): GBoolean; cdecl;
-{$ENDIF}
 function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 procedure DeliverMouseUpMessage(widget: PGtkWidget; event: pgdkEventButton;
                                 AWinControl: TWinControl);

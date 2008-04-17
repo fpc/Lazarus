@@ -76,6 +76,7 @@ type
   TGtk2WSCustomForm = class(TWSCustomForm)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); override;
   public
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
@@ -120,6 +121,24 @@ type
 implementation
 
 { TGtk2WSCustomForm }
+
+class procedure TGtk2WSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
+    with TGTKWidgetSet(Widgetset) do
+    begin
+      SetCallback(LM_CONFIGUREEVENT, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_CLOSEQUERY, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallBack(LM_Activate, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+      SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+    end;
+
+  g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'window-state-event',
+    gtk_signal_func(@GTKWindowStateEventCB), AWidgetInfo^.LCLObject);
+end;
 
 class function TGtk2WSCustomForm.GetDefaultClientRect(
   const AWinControl: TWinControl; const aLeft, aTop, aWidth, aHeight: integer;

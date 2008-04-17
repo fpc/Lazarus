@@ -266,6 +266,7 @@ end;
 class procedure TGtkWSCustomForm.SetCallbacks(const AWidget: PGtkWidget;
   const AWidgetInfo: PWidgetInfo);
 begin
+{$IFDEF Gtk1}
   TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
   if (TControl(AWidgetInfo^.LCLObject).Parent = nil) then
     with TGTKWidgetSet(Widgetset) do
@@ -276,15 +277,10 @@ begin
       SetCallback(LM_HSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
       SetCallback(LM_VSCROLL, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
     end;
-  {$IFDEF GTK1}
-    gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
-    gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
-  {$ENDIF}
-  {$IFDEF Gtk2}
-    g_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget), 'window-state-event',
-                     gtk_signal_func(@GTKWindowStateEventCB),
-                     AWidgetInfo^.LCLObject);
-  {$ENDIF}
+
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'map-event', TGtkSignalFunc(@GtkWSFormMapEvent), AWidgetInfo);
+  gtk_signal_connect(PGtkObject(AWidgetInfo^.CoreWidget),'unmap-event', TGtkSignalFunc(@GtkWSFormUnMapEvent), AWidgetInfo);
+{$ENDIF}
 end;
 
 class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
