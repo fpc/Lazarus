@@ -1546,9 +1546,7 @@ begin
       if CurPos.Flag=cafSemicolon then begin
         ReadNextAtom;
       end else begin
-        // Delphi allows procs without ending semicolon
-        if (Scanner.CompilerMode<>cmDelphi) then
-          RaiseCharExpectedButAtomFound(';');
+        // Delphi/FPC allow procs without ending semicolon
       end;
     end else begin
       // current atom does not belong to procedure/method declaration
@@ -3396,9 +3394,6 @@ begin
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then
         begin
           UndoReadNextAtom;
-          if (CurPos.Flag<>cafSemicolon)
-          and (Scanner.CompilerMode<>cmDelphi) then
-            RaiseCharExpectedButAtomFound(';');
           break;
         end else begin
           ReadNextAtom;
@@ -3406,17 +3401,13 @@ begin
             if (CurPos.Flag=cafEqual) then begin
               break;
             end;
-            if Scanner.CompilerMode<>cmDelphi then begin
+            // delphi/fpc allow proc modifiers without semicolons
+            if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+            begin
               RaiseCharExpectedButAtomFound(';');
-            end else begin
-              // delphi allows proc modifiers without semicolons
-              if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
-                CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-              begin
-                RaiseCharExpectedButAtomFound(';');
-              end;
-              UndoReadNextAtom;
             end;
+            UndoReadNextAtom;
           end;
         end;
         ReadNextAtom;
