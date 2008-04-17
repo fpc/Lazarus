@@ -7137,7 +7137,7 @@ end;
 
 procedure TQtAbstractScrollArea.setCursor(const ACursor: QCursorH);
 begin
-  if LCLObject is TCustomControl then
+  if (LCLObject is TCustomControl) and HasPaint then
     viewport.setCursor(ACursor)
   else
     inherited setCursor(ACursor);
