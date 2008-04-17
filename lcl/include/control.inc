@@ -1082,7 +1082,16 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoDragMsg
 ------------------------------------------------------------------------------}
-function TControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean):LRESULT;
+function TControl.DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT;
+
+  function GetDragObject: TObject; inline;
+  begin
+    if ADragObject.AutoCreated then
+      Result := ADragObject.Control
+    else
+      Result := ADragObject;
+  end;
+
 var
   AWinTarget: TWinControl;
   Accepts: Boolean;
@@ -1108,7 +1117,7 @@ Begin
           AWinTarget.DockOver(TDragDockObject(ADragObject), P.X, P.Y, TDragState(ADragMessage), Accepts);
         end
         else
-          DragOver(ADragObject, P.X, P.Y, TDragState(ADragMessage), Accepts);
+          DragOver(GetDragObject, P.X, P.Y, TDragState(ADragMessage), Accepts);
         Result := Ord(Accepts);
       end;
 
@@ -1121,7 +1130,7 @@ Begin
           AWinTarget.DockDrop(TDragDockObject(ADragObject), P.X, P.Y);
         end
         else
-          DragDrop(ADragObject, P.X, P.Y);
+          DragDrop(GetDragObject, P.X, P.Y);
       end;
   end;
 end;
