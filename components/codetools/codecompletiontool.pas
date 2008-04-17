@@ -930,7 +930,7 @@ var
 begin
   if GetIdentLen(AnUnitName)=0 then exit;
   if CompareIdentifiers(AnUnitName,'System')=0 then exit;
-  if (CompareIdentifiers(AnUnitName,'ObjFPC')=0)
+  if (CompareIdentifiers(AnUnitName,'ObjPas')=0)
   and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
   and (Scanner.PascalCompiler=pcFPC) then
     exit;
