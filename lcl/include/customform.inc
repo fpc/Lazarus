@@ -1031,38 +1031,42 @@ begin
 end;
 
 function TCustomForm.DoExecuteAction(ExeAction: TBasicAction): boolean;
-
-  function ProcessExecute(Control: TControl): Boolean;
-  begin
-    Result := (Control <> nil) and
-      Control.ExecuteAction(ExeAction);
-  end;
-
-  function TraverseClients(Container: TWinControl): Boolean;
+  function DoExecuteActionInChildControls(ParentControl: TWinControl;
+    AnAction: TBasicAction) : boolean;
   var
-    I: Integer;
-    Control: TControl;
+    i: integer;
+    ChildControl: TControl;
   begin
-    if Container.Showing then
-      for I := 0 to Container.ControlCount - 1 do
-      begin
-        Control := Container.Controls[I];
-        if Control.Visible and ProcessExecute(Control)
-        or (Control is TWinControl) and TraverseClients(TWinControl(Control))
-        then begin
-          Result := True;
-          exit;
-        end;
-      end;
-    Result := False;
-  end;
-
-begin
-  Result := false;
-  if (csDesigning in ComponentState) or (not Showing) then exit;
-  if ProcessExecute(ActiveControl) or ProcessExecute(Self)
-  or TraverseClients(Self) then
     Result := true;
+    for i := 0 to ParentControl.ControlCount-1 do
+    begin
+      ChildControl := ParentControl.Controls[i];
+      if ChildControl.Visible then
+      begin
+        if ChildControl.ExecuteAction(AnAction)
+          then exit;
+        if (ChildControl is TWinControl) and
+           DoExecuteActionInChildControls(TWinControl(ChildControl), AnAction)
+          then exit;
+      end;
+    end;
+    Result := false;
+  end;
+  
+begin
+  // assume it gets handled somewhere
+  Result := true;
+  if assigned(ActiveControl) and ActiveControl.ExecuteAction(ExeAction)
+    then exit;
+    
+  if ExecuteAction(ExeAction)
+    then exit;
+    
+  if DoExecuteActionInChildControls(Self, ExeAction)
+    then exit;
+
+  // not handled anywhere, return false
+  Result := false;
 end;
 
 function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
