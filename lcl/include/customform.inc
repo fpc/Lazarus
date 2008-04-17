@@ -1054,6 +1054,10 @@ function TCustomForm.DoExecuteAction(ExeAction: TBasicAction): boolean;
   end;
   
 begin
+  // don't execute action while designing or when form is not visible
+  if (csDesigning in ComponentState) or not Visible then
+    exit(false);
+
   // assume it gets handled somewhere
   Result := true;
   if assigned(ActiveControl) and ActiveControl.ExecuteAction(ExeAction)
