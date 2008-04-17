@@ -150,8 +150,7 @@ begin
   FreeThenNil(FIcon);
   FreeThenNil(FFormList);
 
-  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
-  do
+  for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType) do
     FreeThenNil(FApplicationHandlers[HandlerType]);
 
   UnregisterFindGlobalComponentProc(@FindApplicationComponent);
@@ -366,9 +365,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.MouseIdle(const CurrentControl: TControl);
 begin
-  if FMouseControl <> CurrentControl then begin
+  if FMouseControl <> CurrentControl then
     UpdateMouseControl(CurrentControl);
-  end;
 end;
 
 procedure TApplication.SetCaptureExceptions(const AValue: boolean);
@@ -473,15 +471,27 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
+var
+  HintControl: TControl;
 begin
   //debugln(['TApplication.UpdateMouseControl Old=',DbgSName(FMouseControl),' New=',DbgSName(NewMouseControl)]);
-  if FMouseControl=NewMouseControl then exit;
-  if (FMouseControl<>nil) then begin
+  if FMouseControl = NewMouseControl then
+    Exit;
+  if (FMouseControl <> nil) then
+  begin
     //DebugLn' MOUSELEAVE=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
   end;
   FMouseControl := NewMouseControl;
-  if (FMouseControl<>nil) then begin
+
+  HintControl := GetHintControl(FMouseControl);
+  if HintControl = nil then
+    Application.Hint := ''
+  else
+    Application.Hint := GetLongHint(HintControl.Hint);
+
+  if (FMouseControl <> nil) then
+  begin
     //DebugLn' MOUSEENTER=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
   end;
@@ -647,8 +657,6 @@ begin
     debugln('TApplication.ShowHintWindow A OldHint="',Hint,'" NewHint="',GetShortHint(Info.Control.Hint),'"');
   {$endif}
   
-  Hint := GetShortHint(Info.Control.Hint);
-
   CurHeight:=GetCursorHeightMargin;
   HintInfo.HintControl := FHintControl;
   HintInfo.HintPos := Info.MousePos;
@@ -669,7 +677,7 @@ begin
   OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
     ParentOrigin.Y - ClientOrigin.Y);
   HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
-  HintInfo.HintStr := Hint;
+  HintInfo.HintStr := GetShortHint(Info.Control.Hint);
   HintInfo.ReshowTimeout := 0;
   HintInfo.HideTimeout := FHintHidePause
                           +FHintHidePausePerChar*length(HintInfo.HintStr);
@@ -1043,12 +1051,7 @@ begin
   if FHintTimer<>nil then FHintTimer.Enabled:=false;
   HideHint;
   if FHintControl <> nil then
-  begin
     FHintControl := nil;
-    //FHintActive := False;
-    //UnhookHintHooks;
-    //StopHintTimer;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1122,23 +1125,20 @@ begin
   end;
 end;
 
-function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction
-  ): Boolean;
+function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction): Boolean;
 var
   Form: TCustomForm;
 begin
-  Result:=false;
+  Result := False;
   Form := Screen.ActiveForm;
-  if (Form<>nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1) then
-    Result:=true
-  else if (MainForm<>Form) and (MainForm<>nil)
-    and (MainForm.Perform(Msg, 0, PtrInt(Action)) = 1)
-  then
-    Result:=true;
+  if (Form <> nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1) then
+    Result := True
+  else
+  if (MainForm <> Form) and (MainForm <> nil) and (MainForm.Perform(Msg, 0, PtrInt(Action)) = 1) then
+    Result := True;
   // Disable action if no "user" handler is available
-  if (not Result) and (Action is TCustomAction)
-  and TCustomAction(Action).Enabled
-  and TCustomAction(Action).DisableIfNoHandler then
+  if (not Result) and (Action is TCustomAction) and
+     TCustomAction(Action).Enabled and TCustomAction(Action).DisableIfNoHandler then
     TCustomAction(Action).Enabled := Assigned(Action.OnExecute);
 end;
 
@@ -1164,14 +1164,18 @@ end;
 
 procedure TApplication.SetHint(const AValue: string);
 begin
-  if FHint=AValue then exit;
-  FHint:=AValue;
-  if Assigned(FOnHint) or (FApplicationHandlers[ahtHint].Count>0) then begin
+  if FHint = AValue then
+    Exit;
+  FHint := AValue;
+  if Assigned(FOnHint) or (FApplicationHandlers[ahtHint].Count > 0) then
+  begin
     FOnHint(Self);
     FApplicationHandlers[ahtHint].CallNotifyEvents(Self);
-  end else begin
+  end else
+  begin
     // Send THintAction
-    with TCustomHintAction.Create(Self) do begin
+    with TCustomHintAction.Create(Self) do
+    begin
       Hint := FHint;
       try
         Execute;
