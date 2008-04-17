@@ -156,7 +156,7 @@ uses
  Gtk2WSExtCtrls,
 // Gtk2WSExtDlgs,
 // Gtk2WSFileCtrl,
-// Gtk2WSForms,
+ Gtk2WSForms,
 // Gtk2WSGrids,
 // Gtk2WSImgList,
 // Gtk2WSMaskEdit,
