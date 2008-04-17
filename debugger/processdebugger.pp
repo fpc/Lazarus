@@ -125,7 +125,7 @@ begin
     GetDefaultProcessList.Add(FProcess);
   except
     on E: exception do begin
-      MessageDlg('Debugger', Format('Exceptoin while creating process: %s', [E.Message]), mtError, [mbOK], 0);
+      MessageDlg('Debugger', Format('Exception while creating process: %s', [E.Message]), mtError, [mbOK], 0);
       Result := False;
       Exit;
     end;
