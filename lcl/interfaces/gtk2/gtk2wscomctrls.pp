@@ -29,16 +29,15 @@ interface
 uses
   // libs
   GLib2, Gtk2, Gdk2, Gdk2pixbuf,
-  // LCL
+  // RTL, FCL, LCL
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics,
-  StdCtrls, LCLProc, ImgList, Math, Sysutils,
+  StdCtrls, LCLProc, ImgList, Math, Sysutils, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset
-  GtkWSComCtrls,
-  GtkWSControls,
-  // interface
-  GtkDef, GtkProc;
+  GtkWSComCtrls, GtkWSControls, GtkDef, GtkProc,
+  // Gtk2Widgetset
+  Gtk2WSControls, Gtk2Int;
   
 type
   // For simplified manipulation
@@ -207,10 +206,13 @@ type
 
   { TGtk2WSTrackBar }
 
-  TGtk2WSTrackBar = class(TGtkWSTrackBar)
+  TGtk2WSTrackBar = class(TWSTrackBar)
   private
   protected
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
   end;
@@ -256,6 +258,72 @@ end;
 {$I gtk2wscustomlistview.inc}
 
 { TGtk2WSTrackBar }
+
+class procedure TGtk2WSTrackBar.SetCallbacks(const AWidget: PGtkWidget;
+  const AWidgetInfo: PWidgetInfo);
+begin
+  TGtk2WSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+  TGtk2Widgetset(WidgetSet).SetCallback(LM_CHANGED, PGtkObject(AWidget), AWidgetInfo^.LCLObject);
+end;
+
+class function TGtk2WSTrackBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  Adjustment: PGtkAdjustment;
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+begin
+  with TCustomTrackBar(AWinControl) do
+  begin
+    Adjustment := PGtkAdjustment(gtk_adjustment_new (Position, Min, Max,
+                                                  linesize, pagesize, 1));
+    if (Orientation = trHorizontal) then
+      Widget := gtk_hscale_new(Adjustment)
+    else
+      Widget := gtk_vscale_new(Adjustment);
+//     gtk_scale_set_digits(PGtkScale(Widget), 0);
+  end;
+  Result := TLCLIntfHandle(PtrUInt(Widget));
+  {$IFDEF DebugLCLComponents}
+  DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
+  {$ENDIF}
+  WidgetInfo := CreateWidgetInfo(Pointer(Result), AWinControl, AParams);
+  Set_RC_Name(AWinControl, Widget);
+  SetCallbacks(Widget, WidgetInfo);
+end;
+
+class procedure TGtk2WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+var
+  wHandle: HWND;
+  Adjustment: PGtkAdjustment;
+begin
+  with ATrackBar do
+  begin
+    wHandle := Handle;
+    Adjustment := gtk_range_get_adjustment (GTK_RANGE(Pointer(wHandle)));
+    Adjustment^.lower := Min;
+    Adjustment^.Upper := Max;
+    Adjustment^.Value := Position;
+    Adjustment^.step_increment := LineSize;
+    Adjustment^.page_increment := PageSize;
+    { now do some of the more sophisticated features }
+    { Hint: For some unknown reason we have to disable the draw_value first,
+      otherwise it's set always to true }
+    gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), false);
+
+    if (TickStyle<>tsNone) then
+    begin
+       gtk_scale_set_draw_value (GTK_SCALE (Pointer(wHandle)), true);
+       case ScalePos of
+          trLeft  : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_LEFT);
+          trRight : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_RIGHT);
+          trTop   : gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_TOP);
+          trBottom: gtk_scale_set_value_pos (GTK_SCALE (Pointer(wHandle)), GTK_POS_BOTTOM);
+       end;
+    end;
+    //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Adjustment), 'value_changed');
+  end;
+end;
 
 class function TGtk2WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
   ): integer;
