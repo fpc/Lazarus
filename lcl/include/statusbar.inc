@@ -20,7 +20,8 @@
 constructor TStatusBar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  fCompStyle := csStatusBar;
+  FCompStyle := csStatusBar;
+  FAutoHint := False;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
@@ -63,6 +64,26 @@ begin
   FSizeGrip := AValue;
   if HandleAllocated then
     TWSStatusBarClass(WidgetSetClass).SetSizeGrip(Self, AValue);
+end;
+
+function TStatusBar.DoSetApplicationHint(AHintStr: String): Boolean;
+begin
+  Result := DoHint;
+  if Result then
+    Exit;
+  if SimplePanel then
+    SimpleText := AHintStr
+  else
+  if Panels.Count > 0 then
+    Panels[0].Text := AHintStr;
+  Result := True;
+end;
+
+function TStatusBar.DoHint: Boolean;
+begin
+  Result := Assigned(FOnHint);
+  if Result then
+    OnHint(Self);
 end;
 
 procedure TStatusBar.BoundsChanged;
@@ -182,6 +203,16 @@ begin
     if FHandleObjectNeedsUpdate then
       UpdateHandleObject(FHandleUpdatePanelIndex);
   end;
+end;
+
+function TStatusBar.ExecuteAction(ExeAction: TBasicAction): Boolean;
+var
+  HintAction: TCustomHintAction absolute ExeAction;
+begin
+  if AutoHint and (ExeAction is TCustomHintAction) then
+    Result := DoSetApplicationHint(HintAction.Hint)
+  else
+    Result := inherited ExecuteAction(ExeAction);
 end;
 
 function TStatusBar.SizeGripEnabled: Boolean;
