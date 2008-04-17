@@ -779,6 +779,7 @@ begin
     Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIMPLEMENTED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
