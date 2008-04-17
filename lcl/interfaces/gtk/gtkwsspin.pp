@@ -27,15 +27,17 @@ unit GtkWSSpin;
 interface
 
 uses
+  // Bindings
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  GtkInt,
-  LCLProc, Spin, StdCtrls, GtkProc, GtkExtra, GtkDef,
-  GtkWSControls, GtkWSStdCtrls,
-  WSLCLClasses, WSSpin, Controls, LCLType;
+  // RTL, FCL, LCL
+  Controls, LCLType, LCLProc, Spin, StdCtrls,
+  // Widgetset
+  GtkProc, GtkExtra, GtkDef, GtkInt, GtkWSControls, GtkWSStdCtrls,
+  WSLCLClasses, WSSpin;
 
 type
 

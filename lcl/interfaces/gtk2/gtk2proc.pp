@@ -68,11 +68,44 @@ function GTKWindowStateEventCB(widget: PGtkWidget;
 function gtkMouseWheelCB(widget: PGtkWidget; event: PGdkEventScroll;
                          data: gPointer): GBoolean; cdecl;
 
+{ Miscelaneus Widget functions }
+
+function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
+
 implementation
 
 uses gtkproc; // Remove when separation is complete
 
+{ Callbacks for events }
+
 {$include gtk2callback.inc}
+
+{ Miscelaneus Widget functions }
+
+function WidgetGetSelStart(const Widget: PGtkWidget): integer;
+begin
+  if Widget <> nil then
+  begin
+    if PGtkOldEditable(Widget)^.selection_start_pos
+       < PGtkOldEditable(Widget)^.selection_end_pos
+    then
+      Result:= PGtkOldEditable(Widget)^.selection_start_pos
+    else
+      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
+  end else
+    Result:= 0;
+end;
+
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
+begin
+  if Widget<>nil then
+  begin
+    gtk_editable_select_region(PGtkOldEditable(Widget),
+      gtk_editable_get_position(PGtkOldEditable(Widget)),
+      gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
+  end;
+end;
 
 end.
 

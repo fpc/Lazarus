@@ -162,7 +162,7 @@ uses
 // Gtk2WSMaskEdit,
  Gtk2WSMenus,
 // Gtk2WSPairSplitter,
-// Gtk2WSSpin,
+ Gtk2WSSpin,
  Gtk2WSStdCtrls,
 // Gtk2WSToolwin,
  Gtk2Themes,
