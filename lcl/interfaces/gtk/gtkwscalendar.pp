@@ -27,15 +27,18 @@ unit GtkWSCalendar;
 interface
 
 uses
-  SysUtils, Classes,
+  // Bindings
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, gdkpixbuf, GtkFontCache,
   {$ENDIF}
-  Controls, Calendar, LCLType, LMessages,
+  // RTL, FCL, LCL
+  SysUtils, Classes, Controls, Calendar, LCLType, LMessages,
+  InterfaceBase,
+  // Widgetset
   GtkProc, GtkDef, GtkInt, GtkWsControls,
-  InterfaceBase, WSCalendar, WSLCLClasses, WSProc;
+  WSCalendar, WSLCLClasses, WSProc;
 
 type
 

@@ -144,7 +144,7 @@ uses
 // Gtk2WSActnList,
 // Gtk2WSArrow,
 // Gtk2WSButtons,
-// Gtk2WSCalendar,
+ Gtk2WSCalendar,
  Gtk2WSCheckLst,
  Gtk2WSComCtrls,
  Gtk2WSControls,
