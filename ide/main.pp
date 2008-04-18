@@ -11064,6 +11064,10 @@ begin
     RaiseException('[TMainIDE.OnPropHookPersistentDeleting] Error: form without source');
   end;
   if APersistent is TComponent then begin
+    // mark references modified
+    if APersistent is TComponent then
+      MarkUnitsModifiedUsingSubComponent(TComponent(APersistent));
+    
     // remember cursor position
     SourceNotebook.AddJumpPointClicked(Self);
 
@@ -12846,6 +12850,8 @@ begin
 
     // rename inherited components
     RenameInheritedComponents(ActiveUnitInfo,false);
+    // mark references modified
+    MarkUnitsModifiedUsingSubComponent(AComponent);
 
     // rename methods
     RenameMethods;
@@ -13622,7 +13628,6 @@ begin
   if (AComponent.Owner=nil) then
     FormEditor1.UpdateDesignerFormName(AComponent);
   ObjectInspector1.FillPersistentComboBox;
-  MarkUnitsModifiedUsingSubComponent(AComponent);
 end;
 
 {-------------------------------------------------------------------------------
