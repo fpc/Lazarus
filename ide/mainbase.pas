@@ -645,6 +645,7 @@ begin
     CreateMenuSeparatorSection(mnuComponent,itmPkgOpening,'itmPkgOpening');
     ParentMI:=itmPkgOpening;
 
+    CreateMenuItem(ParentMI,itmPkgNewPackage,'itmPkgNewPackage',lisMenuNewPackage);
     CreateMenuItem(ParentMI,itmPkgOpenPackage,'itmPkgOpenPackage',lisMenuOpenPackage,'pkg_installed');
     CreateMenuItem(ParentMI,itmPkgOpenPackageFile,'itmPkgOpenPackageFile',lisMenuOpenPackageFile,'pkg_open');
     CreateMenuItem(ParentMI,itmPkgOpenPackageOfCurUnit,'itmPkgOpenPackageOfCurUnit',lisMenuOpenPackageOfCurUnit);
@@ -922,6 +923,7 @@ begin
     itmRunMenuConfigBuildFile.Command:=GetCommand(ecConfigBuildFile);
 
     // components menu
+    itmPkgNewPackage.Command:=GetCommand(ecNewPackage);
     itmPkgOpenPackage.Command:=GetCommand(ecOpenPackage);
     itmPkgOpenPackageFile.Command:=GetCommand(ecOpenPackageFile);
     itmPkgOpenPackageOfCurUnit.Command:=GetCommand(ecOpenPackageOfCurUnit);

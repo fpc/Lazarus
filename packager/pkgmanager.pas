@@ -131,6 +131,7 @@ type
     procedure MainIDEitmConfigCustomCompsClicked(Sender: TObject);
     procedure MainIDEitmOpenRecentPackageClicked(Sender: TObject);
     procedure MainIDEitmPkgOpenPackageClicked(Sender: TObject);
+    procedure MainIDEitmPkgNewPackageClick(Sender: TObject);
     procedure MainIDEViewPackageLinksClicked(Sender: TObject);
 
     // component palette
@@ -972,6 +973,11 @@ end;
 procedure TPkgManager.MainIDEitmConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
+end;
+
+procedure TPkgManager.MainIDEitmPkgNewPackageClick(Sender: TObject);
+begin
+  DoNewPackage;
 end;
 
 procedure TPkgManager.MainIDEitmPkgOpenPackageClicked(Sender: TObject);
@@ -1840,6 +1846,7 @@ end;
 procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
+    itmPkgNewPackage.OnClick :=@MainIDEitmPkgNewPackageClick;
     itmPkgOpenPackage.OnClick :=@MainIDEitmPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgOpenPackageOfCurUnit.OnClick :=@MainIDEitmPkgOpenPackageOfCurUnitClicked;

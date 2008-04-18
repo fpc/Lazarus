@@ -266,6 +266,7 @@ type
     // components menu
     //mnuComponents: TIDEMenuSection;
       //itmPkgOpening: TIDEMenuSection;
+        itmPkgNewPackage: TIDEMenuCommand;
         itmPkgOpenPackage: TIDEMenuCommand;
         itmPkgOpenPackageFile: TIDEMenuCommand;
         itmPkgOpenPackageOfCurUnit: TIDEMenuCommand;

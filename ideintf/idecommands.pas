@@ -247,6 +247,7 @@ const
   ecPackageGraph            = ecFirstLazarus + 604;
   ecEditInstallPkgs         = ecFirstLazarus + 605;
   ecConfigCustomComps       = ecFirstLazarus + 606;
+  ecNewPackage              = ecFirstLazarus + 607;
 
   // custom tools menu
   ecExtToolFirst            = ecFirstLazarus + 700;

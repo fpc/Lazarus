@@ -521,6 +521,7 @@ begin
   ecAddWatch: SetResult(VK_F5,[ssCtrl],VK_UNKNOWN,[]);
 
   // components menu
+  ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -844,6 +845,7 @@ begin
   ecAddWatch: SetResult(VK_F7,[ssCtrl],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
+  ecNewPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackage: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageFile: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOpenPackageOfCurUnit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1493,6 +1495,7 @@ begin
     ecAddWatch                : Result:= srkmecAddWatch;
 
     // components menu
+    ecNewPackage              : Result:= lisKMNewPackage;
     ecOpenPackage             : Result:= lisMenuOpenPackage;
     ecOpenPackageFile         : Result:= lisMenuOpenPackageFile;
     ecOpenPackageOfCurUnit    : Result:= lisMenuOpenPackageOfCurUnit;
@@ -2496,6 +2499,7 @@ begin
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatPackageMenu,nil)];
+  AddDefault(C, 'New package', lisKMNewPackage, ecNewPackage);
   AddDefault(C, 'Open package', lisCompPalOpenPackage, ecOpenPackage);
   AddDefault(C, 'Open package file', lisKMOpenPackageFile, ecOpenPackageFile);
   AddDefault(C, 'Open package of current unit', lisMenuOpenPackageOfCurUnit,

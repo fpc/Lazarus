@@ -340,7 +340,7 @@ resourcestring
   lisMenuAddBreakpoint = 'Add breakpoint';
   lisMenuAddBpSource = 'Source breakpoint';
 
-
+  lisMenuNewPackage = 'New package ...';
   lisMenuOpenPackage = 'Open loaded package ...';
   lisMenuOpenRecentPkg = 'Open recent package ...';
   lisMenuOpenPackageFile = 'Open package file (.lpk) ...';
@@ -2559,6 +2559,7 @@ resourcestring
   lisProjAddMaximumVersionOptional = 'Maximum Version (optional):';
   
   // component palette
+  lisKMNewPackage = 'New package';
   lisCompPalOpenPackage = 'Open package';
   lisKMOpenPackageFile = 'Open package file';
   lisCPOpenPackage = 'Open Package %s';
