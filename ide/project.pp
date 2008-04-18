@@ -748,6 +748,8 @@ type
     procedure InvalidateUnitComponentDesignerDependencies;
     procedure ClearUnitComponentDependencies(
                    ClearTypes: TUnitCompDependencyTypes);
+    procedure FindUnitsUsingSubComponent(SubComponent: TComponent;
+                     List: TFPList; IgnoreOwner: boolean);
 
     // paths
     procedure AddSrcPath(const SrcPathAddition: string); override;
@@ -3630,6 +3632,72 @@ var
 begin
   for i:=UnitCount-1 downto 0 do
     Units[i].ClearUnitComponentDependencies(ClearTypes);
+end;
+
+procedure TProject.FindUnitsUsingSubComponent(SubComponent: TComponent;
+  List: TFPList; IgnoreOwner: boolean);
+
+  procedure Search(AnUnitInfo: TUnitInfo; AComponent: TComponent);
+  // search the published properties of AComponent for references to other units
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+    CurCount: Word;
+    ReferenceComponent: TComponent;
+  begin
+    // read all properties and remove doubles
+    TypeInfo:=PTypeInfo(AComponent.ClassInfo);
+    repeat
+      // read all property infos of current class
+      TypeData:=GetTypeData(TypeInfo);
+      // skip unitname
+      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+      // read property count
+      CurCount:=PWord(PropInfo)^;
+      inc(PtrUInt(PropInfo),SizeOf(Word));
+
+      // read properties
+      while CurCount>0 do begin
+        // point PropInfo to next propinfo record.
+        // Located at Name[Length(Name)+1] !
+        if (PropInfo^.PropType=ClassTypeInfo(TComponent)) then begin
+          // property of kind TComponent
+          ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
+          //debugln('TProject.FindUnitsUsingSubComponent Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
+          if ReferenceComponent=SubComponent then begin
+            if List.IndexOf(AnUnitInfo)<0 then
+              List.Add(AnUnitInfo);
+          end;
+        end;
+        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+        dec(CurCount);
+      end;
+      TypeInfo:=TypeData^.ParentInfo;
+    until TypeInfo=nil;
+  end;
+
+var
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+  OwnerComponent: TComponent;
+begin
+  if SubComponent=nil then exit;
+  if IgnoreOwner then begin
+    OwnerComponent:=SubComponent;
+    while OwnerComponent<>nil do
+      OwnerComponent:=OwnerComponent.Owner;
+  end else
+    OwnerComponent:=nil;
+  AnUnitInfo:=FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.Component<>OwnerComponent then begin
+      Search(AnUnitInfo,AnUnitInfo.Component);
+      for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
+        Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
 end;
 
 procedure TProject.AddSrcPath(const SrcPathAddition: string);

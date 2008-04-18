@@ -702,6 +702,7 @@ type
     function CreateNewUniqueFilename(const Prefix, Ext: string;
        NewOwner: TObject; Flags: TSearchIDEFileFlags; TryWithoutNumber: boolean
        ): string; override;
+    procedure MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent);
 
     // project(s)
     function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult; override;
@@ -7566,6 +7567,30 @@ begin
   until FileIsUnique(Result);
 end;
 
+procedure TMainIDE.MarkUnitsModifiedUsingSubComponent(SubComponent: TComponent
+  );
+var
+  UnitList: TFPList;
+  i: Integer;
+  AnUnitInfo: TUnitInfo;
+  ADesigner: TDesigner;
+begin
+  UnitList:=TFPList.Create;
+  Project1.FindUnitsUsingSubComponent(SubComponent,UnitList,true);
+  for i:=0 to UnitList.Count-1 do begin
+    AnUnitInfo:=TUnitInfo(UnitList[i]);
+    if (AnUnitInfo.Component<>nil) then begin
+      ADesigner:=TDesigner(FindRootDesigner(AnUnitInfo.Component));
+      {$IFDEF VerboseIDEMultiForm}
+      DebugLn(['TMainIDE.MarkUnitsModifiedUsingSubComponent ',AnUnitInfo.Filename,' ',dbgsName(ADesigner)]);
+      {$ENDIF}
+      if ADesigner is TDesigner then
+        ADesigner.Modified;
+    end;
+  end;
+  UnitList.Free;
+end;
+
 function TMainIDE.LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
   const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
 begin
@@ -13597,6 +13622,7 @@ begin
   if (AComponent.Owner=nil) then
     FormEditor1.UpdateDesignerFormName(AComponent);
   ObjectInspector1.FillPersistentComboBox;
+  MarkUnitsModifiedUsingSubComponent(AComponent);
 end;
 
 {-------------------------------------------------------------------------------
