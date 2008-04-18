@@ -47,13 +47,17 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Forms, Controls,
-  Dialogs, Laz_XMLCfg, LazConf, FileUtil,
-  LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
-  EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs, MacroIntf,
-  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf,
+  Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
+  Controls, Dialogs, Laz_XMLCfg, LazConf, FileUtil,
+  // IDEIntf
+  PropEdits, ProjectIntf, MacroIntf, LazIDEIntf,
   // for .res files
-  W32VersionInfo, W32Manifest;
+  W32VersionInfo, W32Manifest,
+  // IDE
+  LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
+  EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
+  FileReferenceList, EditDefineTree, DefineTemplates, PackageDefs
+  ;
 
 type
   TUnitInfo = class;
@@ -89,6 +93,11 @@ type
     ucdtProperty  // a property references RequiresUnit's component or sub component
     );
   TUnitCompDependencyTypes = set of TUnitCompDependencyType;
+
+const
+  AllUnitCompDependencyTypes = [low(TUnitCompDependencyType)..high(TUnitCompDependencyType)];
+
+type
     
   { TUnitComponentDependency }
 
@@ -240,10 +249,16 @@ type
     function GetSourceText: string; override;
 
     // component dependencies
-    procedure AddRequiresComponentDependency(RequiredUnit: TUnitInfo);
-    procedure RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
-    function FindComponentDependency(RequiredUnit: TUnitInfo): TUnitComponentDependency;
+    function AddRequiresComponentDependency(RequiredUnit: TUnitInfo;
+                    Types: TUnitCompDependencyTypes
+                    ): TUnitComponentDependency;
+    procedure RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo;
+                    Types: TUnitCompDependencyTypes);
+    function FindComponentDependency(RequiredUnit: TUnitInfo
+                                     ): TUnitComponentDependency;
     function FindAncestorUnit: TUnitInfo;
+    procedure ClearUnitComponentDependencies(
+                     ClearTypes: TUnitCompDependencyTypes);
   public
     { Properties }
     // Unit lists
@@ -494,7 +509,8 @@ type
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
     
   TLazProjectStateFlag = (
-    lpsfStateFileLoaded
+    lpsfStateFileLoaded,
+    lpsfUnitCompDependenciesNeedUpdate
     );
   TLazProjectStateFlags = set of TLazProjectStateFlag;
     
@@ -521,6 +537,7 @@ type
     FLastCompilerParams: string;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
+    FLockUnitComponentDependencies: integer;
     FMainProject: boolean;
     fMainUnitID: Integer;
     FOnBeginUpdate: TNotifyEvent;
@@ -709,7 +726,11 @@ type
     procedure AddPackageDependency(const PackageName: string); override;
     
     // unit dependencies
+    procedure LockUnitComponentDependencies;
+    procedure UnlockUnitComponentDependencies;
     procedure UpdateUnitComponentDependencies;
+    procedure ClearUnitComponentDependencies(
+                   ClearTypes: TUnitCompDependencyTypes);
 
     // paths
     procedure AddSrcPath(const SrcPathAddition: string); override;
@@ -1336,23 +1357,40 @@ begin
   Result:=Source.Source;
 end;
 
-procedure TUnitInfo.AddRequiresComponentDependency(RequiredUnit: TUnitInfo);
-var
-  ADependency: TUnitComponentDependency;
+function TUnitInfo.AddRequiresComponentDependency(RequiredUnit: TUnitInfo;
+  Types: TUnitCompDependencyTypes): TUnitComponentDependency;
 begin
   if RequiredUnit=nil then RaiseGDBException('inconsistency');
-  ADependency:=TUnitComponentDependency.Create;
-  ADependency.RequiresUnit:=RequiredUnit;
-  ADependency.UsedByUnit:=Self;
+  // search a dependency to this RequiredUnit
+  Result:=FirstRequiredComponent;
+  while Result<>nil do begin
+    if Result.RequiresUnit=RequiredUnit then break;
+    Result:=Result.NextRequiresDependency;
+  end;
+  // if none exists, then create one
+  if Result=nil then
+    Result:=TUnitComponentDependency.Create;
+  Result.RequiresUnit:=RequiredUnit;
+  Result.UsedByUnit:=Self;
+  Result.Types:=Result.Types+Types;
 end;
 
-procedure TUnitInfo.RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo);
+procedure TUnitInfo.RemoveRequiresComponentDependency(RequiredUnit: TUnitInfo;
+  Types: TUnitCompDependencyTypes);
 var
   Dependency: TUnitComponentDependency;
+  NextDependency: TUnitComponentDependency;
 begin
-  Dependency:=FindComponentDependency(RequiredUnit);
-  if Dependency<>nil then
-    Dependency.Free;
+  Dependency:=FirstRequiredComponent;
+  while Dependency<>nil do begin
+    NextDependency:=Dependency.NextRequiresDependency;
+    if (Dependency.RequiresUnit=RequiredUnit) then begin
+      Dependency.Types:=Dependency.Types-Types;
+      if Dependency.Types=[] then
+        Dependency.Free;
+    end;
+    Dependency:=NextDependency;
+  end;
 end;
 
 function TUnitInfo.FindComponentDependency(RequiredUnit: TUnitInfo
@@ -1380,6 +1418,22 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+procedure TUnitInfo.ClearUnitComponentDependencies(
+  ClearTypes: TUnitCompDependencyTypes);
+var
+  Dep: TUnitComponentDependency;
+  NextDep: TUnitComponentDependency;
+begin
+  Dep:=FirstRequiredComponent;
+  while Dep<>nil do begin
+    NextDep:=Dep.NextRequiresDependency;
+    Dep.Types:=Dep.Types-ClearTypes;
+    if Dep.Types=[] then
+      Dep.Free;
+    Dep:=NextDep;
+  end;
 end;
 
 function TUnitInfo.ReadOnly: boolean;
@@ -3371,9 +3425,106 @@ begin
   AddRequiredDependency(PkgDependency);
 end;
 
-procedure TProject.UpdateUnitComponentDependencies;
+procedure TProject.LockUnitComponentDependencies;
 begin
+  inc(FLockUnitComponentDependencies);
+  if FLockUnitComponentDependencies=1 then begin
+    // update once
+    Include(FStateFlags,lpsfUnitCompDependenciesNeedUpdate);
+  end;
+end;
 
+procedure TProject.UnlockUnitComponentDependencies;
+begin
+  if FLockUnitComponentDependencies=0 then
+    raise Exception.Create('');
+  dec(FLockUnitComponentDependencies);
+end;
+
+procedure TProject.UpdateUnitComponentDependencies;
+
+  procedure Search(AnUnitInfo: TUnitInfo; AComponent: TComponent);
+  // search the published properties of AComponent for references to other units
+  var
+    TypeInfo: PTypeInfo;
+    TypeData: PTypeData;
+    PropInfo: PPropInfo;
+    CurCount: Word;
+    ReferenceComponent: TComponent;
+    OwnerComponent: TComponent;
+    ReferenceUnit: TUnitInfo;
+  begin
+    // read all properties and remove doubles
+    TypeInfo:=PTypeInfo(AComponent.ClassInfo);
+    repeat
+      // read all property infos of current class
+      TypeData:=GetTypeData(TypeInfo);
+      // skip unitname
+      PropInfo:=PPropInfo(PByte(@TypeData^.UnitName)+Length(TypeData^.UnitName)+1);
+      // read property count
+      CurCount:=PWord(PropInfo)^;
+      inc(PtrUInt(PropInfo),SizeOf(Word));
+      
+      // read properties
+      while CurCount>0 do begin
+        // point PropInfo to next propinfo record.
+        // Located at Name[Length(Name)+1] !
+        if (PropInfo^.PropType=ClassTypeInfo(TComponent)) then begin
+          // property of kind TComponent
+          ReferenceComponent:=TComponent(GetObjectProp(AComponent,PropInfo));
+          //debugln('TProject.UpdateUnitComponentDependencies Property ',dbgsName(AComponent),' Name=',PropInfo^.Name,' Type=',PropInfo^.PropType^.Name,' Value=',dbgsName(ReferenceComponent),' TypeInfo=',TypeInfo^.Name);
+          if ReferenceComponent<>nil then begin
+            OwnerComponent:=ReferenceComponent;
+            while OwnerComponent.Owner<>nil do
+              OwnerComponent:=OwnerComponent.Owner;
+            if OwnerComponent<>AnUnitInfo.Component then begin
+              // property references a component that is not owned
+              // by the current unit
+              ReferenceUnit:=UnitWithComponent(OwnerComponent);
+              if ReferenceUnit<>nil then begin
+                // property references another unit
+                DebugLn(['TProject.UpdateUnitComponentDependencies multi form reference found: ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
+                AnUnitInfo.AddRequiresComponentDependency(
+                                     ReferenceUnit,[ucdtProperty]);
+              end;
+            end;
+          end;
+        end;
+        PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+        dec(CurCount);
+      end;
+      TypeInfo:=TypeData^.ParentInfo;
+    until TypeInfo=nil;
+  end;
+
+var
+  AnUnitInfo: TUnitInfo;
+  i: Integer;
+begin
+  if (FLockUnitComponentDependencies>0)
+  and (not (lpsfUnitCompDependenciesNeedUpdate in FStateFlags)) then begin
+    // the dependencies are locked and up2date
+    exit;
+  end;
+  Exclude(FStateFlags,lpsfUnitCompDependenciesNeedUpdate);
+  ClearUnitComponentDependencies([ucdtProperty]);
+  DebugLn(['TProject.UpdateUnitComponentDependencies ']);
+  AnUnitInfo:=FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    Search(AnUnitInfo,AnUnitInfo.Component);
+    for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
+      Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+end;
+
+procedure TProject.ClearUnitComponentDependencies(
+  ClearTypes: TUnitCompDependencyTypes);
+var
+  i: Integer;
+begin
+  for i:=UnitCount-1 downto 0 do
+    Units[i].ClearUnitComponentDependencies(ClearTypes);
 end;
 
 procedure TProject.AddSrcPath(const SrcPathAddition: string);
@@ -3679,8 +3830,8 @@ function TProject.UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
 begin
   Result:=nil;
   if ComponentUnit.Component=nil then exit;
-  Result:=UnitComponentInheritingFrom(
-              TComponentClass(ComponentUnit.Component.ClassType),ComponentUnit);
+  if ComponentUnit.FirstUsedByComponent=nil then exit;
+  Result:=ComponentUnit.FirstUsedByComponent.UsedByUnit;
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;

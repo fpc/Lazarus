@@ -627,7 +627,6 @@ type
                                           Flags: TCloseFlags): TModalResult;
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
-    procedure UpdateUnitComponentDependencies;
 
     // methods for creating a project
     function CreateProjectObject(ProjectDesc,
@@ -5453,7 +5452,7 @@ begin
                    AncestorType,AncestorBinStream,copy(NewUnitName,1,255),true);
       AnUnitInfo.Component:=NewComponent;
       if (AncestorUnitInfo<>nil) then
-        AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo);
+        AnUnitInfo.AddRequiresComponentDependency(AncestorUnitInfo,[ucdtAncestor]);
       if NewComponent<>nil then begin
         // component loaded, now load the referenced units
         Result:=DoFixupComponentReferences(AnUnitInfo,OpenFlags);
@@ -5626,6 +5625,11 @@ var
       end;
       RefUnitInfo.Source := UnitCode;
     end;
+    
+    if RefUnitInfo.Component<>nil then begin
+      Result:=mrOk;
+      exit;
+    end;
 
     // load resource hidden
     Result:=DoLoadLFM(RefUnitInfo,LFMCode,
@@ -5674,8 +5678,6 @@ begin
         // b) undo the opening (close the designer forms)
       end;
     end;
-    
-    
   finally
     ReferenceRootNames.Free;
     ReferenceInstanceNames.Free;
@@ -5979,51 +5981,73 @@ var
 begin
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit(mrOk);
-  //DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
+  {$IFDEF VerboseIDEMultiForm}
+  DebugLn(['TMainIDE.CloseUnitComponent ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
+  {$ENDIF}
 
-  // save
-  if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
-    Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
-    if Result<>mrOk then exit;
-  end;
-
-  // close dependencies
-  if cfCloseDependencies in Flags then begin
-    DumpStack;
-    Result:=CloseDependingUnitComponents(AnUnitInfo,Flags);
-    if Result<>mrOk then exit;
-  end;
-
-  AForm:=FormEditor1.GetDesignerForm(LookupRoot);
-  OldDesigner:=nil;
-  if AForm<>nil then
-    OldDesigner:=TDesigner(AForm.Designer);
-  if FLastFormActivated=AForm then
-    FLastFormActivated:=nil;
-  if (OldDesigner=nil) then begin
-    // hidden component
-    //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
-    if UnitComponentIsUsed(AnUnitInfo,false) then begin
-      // hidden component is still used => keep it
-    end else begin
-      // hidden component is not used => free it
-      FormEditor1.DeleteComponent(LookupRoot,true);
-      AnUnitInfo.Component:=nil;
-      FreeUnusedComponents;
+  Project1.LockUnitComponentDependencies;
+  try
+    // save
+    if (cfSaveFirst in Flags) and (AnUnitInfo.EditorIndex>=0) then begin
+      Result:=DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbiguousFiles]);
+      if Result<>mrOk then exit;
     end;
-  end else begin
-    // component with designer
-    if UnitComponentIsUsed(AnUnitInfo,false) then begin
-      // free designer, keep component hidden
-      //DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
-      OldDesigner.FreeDesigner(false);
-    end else begin
-      // free designer and design form
-      //DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
-      OldDesigner.FreeDesigner(true);
-      AnUnitInfo.Component:=nil;
-      FreeUnusedComponents;
+
+    // close dependencies
+    if cfCloseDependencies in Flags then begin
+      {$IFDEF VerboseIDEMultiForm}
+      DebugLn(['TMainIDE.CloseUnitComponent cfCloseDependencies ',AnUnitInfo.Filename,' ',dbgsName(LookupRoot)]);
+      DumpStack;
+      {$ENDIF}
+      Result:=CloseDependingUnitComponents(AnUnitInfo,Flags);
+      if Result<>mrOk then exit;
     end;
+
+    AForm:=FormEditor1.GetDesignerForm(LookupRoot);
+    OldDesigner:=nil;
+    if AForm<>nil then
+      OldDesigner:=TDesigner(AForm.Designer);
+    if FLastFormActivated=AForm then
+      FLastFormActivated:=nil;
+    if (OldDesigner=nil) then begin
+      // hidden component
+      //DebugLn(['TMainIDE.CloseUnitComponent freeing hidden component without designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+      if UnitComponentIsUsed(AnUnitInfo,false) then begin
+        // hidden component is still used => keep it
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TMainIDE.CloseUnitComponent hidden component is still used => keep it ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+        {$ENDIF}
+      end else begin
+        // hidden component is not used => free it
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TMainIDE.CloseUnitComponent hidden component is not used => free it ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+        {$ENDIF}
+        FormEditor1.DeleteComponent(LookupRoot,true);
+        AnUnitInfo.Component:=nil;
+        AnUnitInfo.ClearComponentDependencies;
+        FreeUnusedComponents;
+      end;
+    end else begin
+      // component with designer
+      if UnitComponentIsUsed(AnUnitInfo,false) then begin
+        // free designer, keep component hidden
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TMainIDE.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+        {$ENDIF}
+        OldDesigner.FreeDesigner(false);
+      end else begin
+        // free designer and design form
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TMainIDE.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
+        {$ENDIF}
+        OldDesigner.FreeDesigner(true);
+        AnUnitInfo.Component:=nil;
+        AnUnitInfo.ClearComponentDependencies;
+        FreeUnusedComponents;
+      end;
+    end;
+  finally
+    Project1.UnlockUnitComponentDependencies;
   end;
 
   Result:=mrOk;
@@ -6038,23 +6062,28 @@ var
 begin
   Result:=mrCancel;
   UserAsked:=false;
-  repeat
-    DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo);
-    if DependingUnitInfo=nil then exit(mrOk);
-    if (not UserAsked) and (not (cfQuiet in Flags)) then begin
-      Result:=IDEQuestionDialog('Close component?',
-        'Close component '+dbgsName(DependingUnitInfo.Component)+'?',
-        mtConfirmation,[mrYes,mrAbort]);
-      if Result<>mrYes then exit;
-      UserAsked:=true;
-    end;
-    // close recursively
-    DependenciesFlags:=Flags+[cfCloseDependencies];
-    if cfSaveDependencies in Flags then
-      Include(DependenciesFlags,cfSaveFirst);
-    Result:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
-    if Result<>mrOk then exit;
-  until false;
+  Project1.LockUnitComponentDependencies;
+  try
+    repeat
+      DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo);
+      if DependingUnitInfo=nil then exit(mrOk);
+      if (not UserAsked) and (not (cfQuiet in Flags)) then begin
+        Result:=IDEQuestionDialog('Close component?',
+          'Close component '+dbgsName(DependingUnitInfo.Component)+'?',
+          mtConfirmation,[mrYes,mrAbort]);
+        if Result<>mrYes then exit;
+        UserAsked:=true;
+      end;
+      // close recursively
+      DependenciesFlags:=Flags+[cfCloseDependencies];
+      if cfSaveDependencies in Flags then
+        Include(DependenciesFlags,cfSaveFirst);
+      Result:=CloseUnitComponent(DependingUnitInfo,DependenciesFlags);
+      if Result<>mrOk then exit;
+    until false;
+  finally
+    Project1.UnlockUnitComponentDependencies;
+  end;
 end;
 
 function TMainIDE.UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
@@ -6072,13 +6101,9 @@ begin
     if (AForm<>nil) and (AForm.Designer<>nil) then exit(true);
   end;
   // check if another component uses this component
+  Project1.UpdateUnitComponentDependencies;
   if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
     exit(true);
-end;
-
-procedure TMainIDE.UpdateUnitComponentDependencies;
-begin
-  Project1.UpdateUnitComponentDependencies;
 end;
 
 function TMainIDE.GetAncestorUnit(AnUnitInfo: TUnitInfo): TUnitInfo;
@@ -8900,7 +8925,7 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams);
         if Result<>mrOk then exit;
 
-        // upate project .po file
+        // update project .po file
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then exit;
 

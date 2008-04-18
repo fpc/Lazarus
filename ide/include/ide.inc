@@ -34,5 +34,9 @@
 {$DEFINE DisableFakeMethods}
 {$ENDIF}
 
+{$IFDEF EnableMultiFormProperties}
+{$DEFINE VerboseIDEMultiForm}
+{$ENDIF}
+
 // end.
 
