@@ -1,4 +1,4 @@
-{%MainUnit gtk2int.pp}
+{%MainUnit gtk2int.pas}
 { $Id$ }
 {******************************************************************************
                          All GTK2 Winapi implementations.
@@ -518,8 +518,10 @@ begin
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is nil');
-  if not GtkWidgetIsA(PGtkWidget(GtkWindow),GTK_TYPE_WINDOW) then
+  if not GtkWidgetIsA(PGtkWidget(GtkWindow),GTK_TYPE_WINDOW) then begin
+    DebugLn(['TGtk2WidgetSet.ShowWindow ',GetWidgetDebugReport(PGTKWidget(GtkWindow))]);
     RaiseGDBException('TGtk2WidgetSet.ShowWindow  hWnd is not a gtkwindow');
+  end;
 
   //debugln('TGtk2WidgetSet.ShowWindow A ',GetWidgetDebugReport(PGtkWidget(GtkWindow)),' nCmdShow=',dbgs(nCmdShow),' SW_MINIMIZE=',dbgs(SW_MINIMIZE=nCmdShow));
 

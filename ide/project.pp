@@ -523,7 +523,8 @@ type
     
   TLazProjectStateFlag = (
     lpsfStateFileLoaded,
-    lpsfUnitCompDependenciesNeedUpdate
+    lpsfPropertyDependenciesChanged,
+    lpsfDesignerChanged
     );
   TLazProjectStateFlags = set of TLazProjectStateFlag;
     
@@ -744,6 +745,7 @@ type
     procedure LockUnitComponentDependencies;
     procedure UnlockUnitComponentDependencies;
     procedure UpdateUnitComponentDependencies;
+    procedure InvalidateUnitComponentDesignerDependencies;
     procedure ClearUnitComponentDependencies(
                    ClearTypes: TUnitCompDependencyTypes);
 
@@ -3465,7 +3467,8 @@ begin
   inc(FLockUnitComponentDependencies);
   if FLockUnitComponentDependencies=1 then begin
     // update once
-    Include(FStateFlags,lpsfUnitCompDependenciesNeedUpdate);
+    Include(FStateFlags,lpsfPropertyDependenciesChanged);
+    Include(FStateFlags,lpsfDesignerChanged);
   end;
 end;
 
@@ -3518,7 +3521,9 @@ procedure TProject.UpdateUnitComponentDependencies;
               ReferenceUnit:=UnitWithComponent(OwnerComponent);
               if ReferenceUnit<>nil then begin
                 // property references another unit
+                {$IFDEF VerboseIDEMultiForm}
                 DebugLn(['TProject.UpdateUnitComponentDependencies multi form reference found: ',AnUnitInfo.Filename,' -> ',ReferenceUnit.Filename]);
+                {$ENDIF}
                 AnUnitInfo.AddRequiresComponentDependency(
                                      ReferenceUnit,[ucdtProperty]);
               end;
@@ -3532,7 +3537,7 @@ procedure TProject.UpdateUnitComponentDependencies;
     until TypeInfo=nil;
   end;
   
-  procedure DFSUsedByDesigner(AnUnitInfo: TUnitInfo);
+  procedure DFSUsedByDesigner(AnUnitInfo, IgnoreUnitInfo: TUnitInfo);
   var
     Dependency: TUnitComponentDependency;
     UsedByUnitInfo: TUnitInfo;
@@ -3544,10 +3549,14 @@ procedure TProject.UpdateUnitComponentDependencies;
     Dependency:=AnUnitInfo.FirstUsedByComponent;
     while Dependency<>nil do begin
       UsedByUnitInfo:=Dependency.UsedByUnit;
-      if not (uifComponentIndirectlyUsedByDesigner in UsedByUnitInfo.FFlags)
+      if (UsedByUnitInfo<>IgnoreUnitInfo)
+      and (not (uifComponentIndirectlyUsedByDesigner in UsedByUnitInfo.FFlags))
       then begin
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['DFSUsedByDesigner used indirect by designer: ',UsedByUnitInfo.Filename]);
+        {$ENDIF}
         Include(UsedByUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
-        DFSUsedByDesigner(UsedByUnitInfo);
+        DFSUsedByDesigner(UsedByUnitInfo,IgnoreUnitInfo);
       end;
       Dependency:=Dependency.NextUsedByDependency;
     end;
@@ -3557,40 +3566,61 @@ var
   AnUnitInfo: TUnitInfo;
   i: Integer;
 begin
-  if (FLockUnitComponentDependencies>0)
-  and (not (lpsfUnitCompDependenciesNeedUpdate in FStateFlags)) then begin
-    // the dependencies are locked and up2date
-    exit;
+  if (FLockUnitComponentDependencies=0)
+  or (lpsfPropertyDependenciesChanged in FStateFlags) then begin
+    Exclude(FStateFlags,lpsfPropertyDependenciesChanged);
+    // clear dependencies
+    ClearUnitComponentDependencies([ucdtProperty]);
+    {$IFDEF VerboseIDEMultiForm}
+    DebugLn(['TProject.UpdateUnitComponentDependencies checking properties ...']);
+    {$ENDIF}
+    // find property dependencies
+    AnUnitInfo:=FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      Search(AnUnitInfo,AnUnitInfo.Component);
+      for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
+        Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
   end;
-  Exclude(FStateFlags,lpsfUnitCompDependenciesNeedUpdate);
-  // clear dependencies
-  ClearUnitComponentDependencies([ucdtProperty]);
-  DebugLn(['TProject.UpdateUnitComponentDependencies ']);
-  // find simple dependencies (unit to unit and unit to designer)
-  AnUnitInfo:=FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
-    // search unit to unit dependencies
-    Search(AnUnitInfo,AnUnitInfo.Component);
-    for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
-      Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
-    // search designer dependencies
-    Exclude(AnUnitInfo.FFlags,uifMarked);
-    Exclude(AnUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
-    if FindRootDesigner(AnUnitInfo.Component)<>nil then
-      Include(AnUnitInfo.FFlags,uifComponentUsedByDesigner)
-    else
-      Exclude(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
-    // next
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  
+  if (FLockUnitComponentDependencies=0)
+  or (lpsfDesignerChanged in FStateFlags) then begin
+    Exclude(FStateFlags,lpsfDesignerChanged);
+    {$IFDEF VerboseIDEMultiForm}
+    DebugLn(['TProject.UpdateUnitComponentDependencies checking designers ...']);
+    {$ENDIF}
+    // find designer dependencies
+    AnUnitInfo:=FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      Exclude(AnUnitInfo.FFlags,uifMarked);
+      Exclude(AnUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
+      if FindRootDesigner(AnUnitInfo.Component)<>nil then begin
+        {$IFDEF VerboseIDEMultiForm}
+        DebugLn(['TProject.UpdateUnitComponentDependencies used by designer: ',AnUnitInfo.Filename]);
+        {$ENDIF}
+        Include(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
+      end else
+        Exclude(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
+    // mark all units that are used indirectly by a designer
+    AnUnitInfo:=FirstUnitWithComponent;
+    while AnUnitInfo<>nil do begin
+      if (uifComponentUsedByDesigner in AnUnitInfo.FFlags) then
+      begin
+        // mark all that use indirectly this designer
+        Exclude(AnUnitInfo.FFlags,uifMarked);
+        DFSUsedByDesigner(AnUnitInfo,AnUnitInfo);
+      end;
+      AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+    end;
   end;
-  // mark all units that are used indirectly by a designer
-  AnUnitInfo:=FirstUnitWithComponent;
-  while AnUnitInfo<>nil do begin
-    if (uifComponentUsedByDesigner in AnUnitInfo.FFlags)
-    and (not (uifComponentIndirectlyUsedByDesigner in AnUnitInfo.FFlags)) then
-      DFSUsedByDesigner(AnUnitInfo);
-    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
-  end;
+end;
+
+procedure TProject.InvalidateUnitComponentDesignerDependencies;
+begin
+  Include(FStateFlags,lpsfDesignerChanged);
 end;
 
 procedure TProject.ClearUnitComponentDependencies(

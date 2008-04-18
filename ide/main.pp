@@ -6045,8 +6045,9 @@ begin
         {$ENDIF}
         OldDesigner.FreeDesigner(true);
         AnUnitInfo.Component:=nil;
-        FreeUnusedComponents;
       end;
+      Project1.InvalidateUnitComponentDesignerDependencies;
+      FreeUnusedComponents;
     end;
   finally
     Project1.UnlockUnitComponentDependencies;

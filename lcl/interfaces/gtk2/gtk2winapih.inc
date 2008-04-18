@@ -1,4 +1,4 @@
-{%MainUnit gtk2int.pp}
+{%MainUnit gtk2int.pas}
 { $Id$ }
 
 // included by gtk2int.pp
