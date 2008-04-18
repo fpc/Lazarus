@@ -129,6 +129,13 @@ type
 
   //---------------------------------------------------------------------------
 
+  TUnitInfoFlag = (
+    uifComponentUsedByDesigner,
+    uifComponentIndirectlyUsedByDesigner,
+    uifMarked
+    );
+  TUnitInfoFlags = set of TUnitInfoFlag;
+
   { TUnitInfo }
 
   TUnitInfo = class(TLazProjectFile)
@@ -154,6 +161,7 @@ type
     fFileReadOnly: Boolean;
     FFirstRequiredComponent: TUnitComponentDependency;
     FFirstUsedByComponent: TUnitComponentDependency;
+    FFlags: TUnitInfoFlags;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
@@ -256,6 +264,10 @@ type
                     Types: TUnitCompDependencyTypes);
     function FindComponentDependency(RequiredUnit: TUnitInfo
                                      ): TUnitComponentDependency;
+    function FindRequiredComponentDependency(MinTypes: TUnitCompDependencyTypes
+                                     ): TUnitComponentDependency;
+    function FindUsedByComponentDependency(MinTypes: TUnitCompDependencyTypes
+                                     ): TUnitComponentDependency;
     function FindAncestorUnit: TUnitInfo;
     procedure ClearUnitComponentDependencies(
                      ClearTypes: TUnitCompDependencyTypes);
@@ -295,6 +307,7 @@ type
                                                    read FFirstRequiredComponent;
     property FirstUsedByComponent: TUnitComponentDependency
                                                      read FFirstUsedByComponent;
+    property Flags: TUnitInfoFlags read FFlags write FFlags;
     property HasResources: boolean read GetHasResources write fHasResources;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
@@ -670,6 +683,8 @@ type
     function UnitComponentInheritingFrom(AClass: TComponentClass;
                                          Ignore: TUnitInfo): TUnitInfo;
     function UnitUsingComponentUnit(ComponentUnit: TUnitInfo): TUnitInfo;
+    function UnitComponentIsUsed(ComponentUnit: TUnitInfo;
+                                 CheckHasDesigner: boolean): boolean;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
@@ -1400,6 +1415,26 @@ begin
   while Result<>nil do begin
     if Result.RequiresUnit=RequiredUnit then exit;
     Result:=Result.NextRequiresDependency;
+  end;
+end;
+
+function TUnitInfo.FindRequiredComponentDependency(
+  MinTypes: TUnitCompDependencyTypes): TUnitComponentDependency;
+begin
+  Result:=FirstRequiredComponent;
+  while Result<>nil do begin
+    if Result.Types*MinTypes=MinTypes then exit;
+    Result:=Result.NextRequiresDependency;
+  end;
+end;
+
+function TUnitInfo.FindUsedByComponentDependency(
+  MinTypes: TUnitCompDependencyTypes): TUnitComponentDependency;
+begin
+  Result:=FirstUsedByComponent;
+  while Result<>nil do begin
+    if Result.Types*MinTypes=MinTypes then exit;
+    Result:=Result.NextUsedByDependency;
   end;
 end;
 
@@ -3496,6 +3531,27 @@ procedure TProject.UpdateUnitComponentDependencies;
       TypeInfo:=TypeData^.ParentInfo;
     until TypeInfo=nil;
   end;
+  
+  procedure DFSUsedByDesigner(AnUnitInfo: TUnitInfo);
+  var
+    Dependency: TUnitComponentDependency;
+    UsedByUnitInfo: TUnitInfo;
+  begin
+    if (AnUnitInfo=nil) or (AnUnitInfo.Component=nil)
+    or (uifMarked in AnUnitInfo.FFlags) then
+      exit;
+    Include(AnUnitInfo.FFlags,uifMarked);
+    Dependency:=AnUnitInfo.FirstUsedByComponent;
+    while Dependency<>nil do begin
+      UsedByUnitInfo:=Dependency.UsedByUnit;
+      if not (uifComponentIndirectlyUsedByDesigner in UsedByUnitInfo.FFlags)
+      then begin
+        Include(UsedByUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
+        DFSUsedByDesigner(UsedByUnitInfo);
+      end;
+      Dependency:=Dependency.NextUsedByDependency;
+    end;
+  end;
 
 var
   AnUnitInfo: TUnitInfo;
@@ -3507,13 +3563,32 @@ begin
     exit;
   end;
   Exclude(FStateFlags,lpsfUnitCompDependenciesNeedUpdate);
+  // clear dependencies
   ClearUnitComponentDependencies([ucdtProperty]);
   DebugLn(['TProject.UpdateUnitComponentDependencies ']);
+  // find simple dependencies (unit to unit and unit to designer)
   AnUnitInfo:=FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
+    // search unit to unit dependencies
     Search(AnUnitInfo,AnUnitInfo.Component);
     for i:=AnUnitInfo.Component.ComponentCount-1 downto 0 do
       Search(AnUnitInfo,AnUnitInfo.Component.Components[i]);
+    // search designer dependencies
+    Exclude(AnUnitInfo.FFlags,uifMarked);
+    Exclude(AnUnitInfo.FFlags,uifComponentIndirectlyUsedByDesigner);
+    if FindRootDesigner(AnUnitInfo.Component)<>nil then
+      Include(AnUnitInfo.FFlags,uifComponentUsedByDesigner)
+    else
+      Exclude(AnUnitInfo.FFlags,uifComponentUsedByDesigner);
+    // next
+    AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
+  end;
+  // mark all units that are used indirectly by a designer
+  AnUnitInfo:=FirstUnitWithComponent;
+  while AnUnitInfo<>nil do begin
+    if (uifComponentUsedByDesigner in AnUnitInfo.FFlags)
+    and (not (uifComponentIndirectlyUsedByDesigner in AnUnitInfo.FFlags)) then
+      DFSUsedByDesigner(AnUnitInfo);
     AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
   end;
 end;
@@ -3832,6 +3907,20 @@ begin
   if ComponentUnit.Component=nil then exit;
   if ComponentUnit.FirstUsedByComponent=nil then exit;
   Result:=ComponentUnit.FirstUsedByComponent.UsedByUnit;
+end;
+
+function TProject.UnitComponentIsUsed(ComponentUnit: TUnitInfo;
+  CheckHasDesigner: boolean): boolean;
+begin
+  if ComponentUnit.Component=nil then exit(false);
+  if CheckHasDesigner
+  and (uifComponentUsedByDesigner in ComponentUnit.Flags) then
+    exit(true);
+  if (uifComponentIndirectlyUsedByDesigner in ComponentUnit.Flags) then
+    exit(true);
+  if ComponentUnit.FindUsedByComponentDependency([ucdtAncestor])<>nil then
+    exit(true);
+  Result:=false;
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;

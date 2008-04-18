@@ -5955,6 +5955,7 @@ end;
   Result: TModalResult;
 
   Free the designer form of a unit.
+  And free all unused components.
 -------------------------------------------------------------------------------}
 function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
   ): TModalResult;
@@ -5964,10 +5965,13 @@ function TMainIDE.CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags
     CompUnitInfo: TUnitInfo;
   begin
     CompUnitInfo:=Project1.FirstUnitWithComponent;
+    Project1.UpdateUnitComponentDependencies;
     while CompUnitInfo<>nil do begin
       //DebugLn(['FreeUnusedComponents ',CompUnitInfo.Filename,' ',dbgsName(CompUnitInfo.Component),' UnitComponentIsUsed=',UnitComponentIsUsed(CompUnitInfo,true)]);
       if not UnitComponentIsUsed(CompUnitInfo,true) then begin
+        // close the unit component
         CloseUnitComponent(CompUnitInfo,Flags);
+        // this has recursively freed all components, so exit here
         exit;
       end;
       CompUnitInfo:=CompUnitInfo.NextUnitWithComponent;
@@ -6024,7 +6028,6 @@ begin
         {$ENDIF}
         FormEditor1.DeleteComponent(LookupRoot,true);
         AnUnitInfo.Component:=nil;
-        AnUnitInfo.ClearComponentDependencies;
         FreeUnusedComponents;
       end;
     end else begin
@@ -6042,7 +6045,6 @@ begin
         {$ENDIF}
         OldDesigner.FreeDesigner(true);
         AnUnitInfo.Component:=nil;
-        AnUnitInfo.ClearComponentDependencies;
         FreeUnusedComponents;
       end;
     end;
@@ -6088,21 +6090,17 @@ end;
 
 function TMainIDE.UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
   CheckHasDesigner: boolean): boolean;
+// if CheckHasDesigner=true and AnUnitInfo has a designer (visible) return true
+// otherwise check if another unit needs AnUnitInfo
 var
   LookupRoot: TComponent;
-  AForm: TCustomForm;
 begin
   Result:=false;
   LookupRoot:=AnUnitInfo.Component;
   if LookupRoot=nil then exit;
-  // check if a designer is open
-  if CheckHasDesigner then begin
-    AForm:=FormEditor1.GetDesignerForm(LookupRoot);
-    if (AForm<>nil) and (AForm.Designer<>nil) then exit(true);
-  end;
-  // check if another component uses this component
+  // check if a designer or another component uses this component
   Project1.UpdateUnitComponentDependencies;
-  if Project1.UnitUsingComponentUnit(AnUnitInfo)<>nil then
+  if Project1.UnitComponentIsUsed(AnUnitInfo,CheckHasDesigner) then
     exit(true);
 end;
 

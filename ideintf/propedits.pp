@@ -4032,7 +4032,8 @@ begin
   if Temp is TComponent then begin
     AComponent:=TComponent(Temp);
     Designer:=FindRootDesigner(AComponent);
-    if (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
+    if (Designer<>nil)
+    and (Designer.GetShiftState * [ssCtrl, ssLeft] = [ssCtrl, ssLeft]) then
       Designer.SelectOnlyThisComponent(AComponent)
     else
       inherited Edit;
@@ -4138,29 +4139,14 @@ end;
 { TInterfaceProperty }
 
 function TInterfaceProperty.AllEqual: Boolean;
-{var
-  I: Integer;
-  LInterface: IInterface;}
 begin
   Result := False;
-{  LInterface := GetIntfValue;
-  if PropCount > 1 then
-    for I := 1 to PropCount - 1 do
-      if GetIntfValueAt(I) <> LInterface then
-        Exit;
-  Result := Supports(FindRootDesigner(GetComponent(LInterface)), IDesigner);}
 end;
 
 function TInterfaceProperty.GetComponent(
   const AInterface: Pointer {IInterface}): TComponent;
-{var
-  ICR: IInterfaceComponentReference;}
 begin
-{  if (AInterface <> nil) and
-     Supports(AInterface, IInterfaceComponentReference, ICR) then
-    Result := ICR.GetComponent
-  else}
-    Result := nil;
+  Result := nil;
 end;
 
 function TInterfaceProperty.GetComponentReference: TComponent;
@@ -4169,57 +4155,24 @@ begin
 end;
 
 function TInterfaceProperty.GetSelections: TPersistentSelectionList{IDesignerSelections};
-{var
-  I: Integer;}
 begin
   Result := nil;
-{  if (GetIntfValue <> nil) and AllEqual then
-  begin
-    Result := TDesignerSelections.Create;
-    for I := 0 to PropCount - 1 do
-      Result.Add(GetComponent(GetIntfValueAt(I)));
-  end;}
 end;
 
 procedure TInterfaceProperty.ReceiveComponentNames(const S: string);
-{var
-  Temp: TComponent;
-  Intf: IInterface;}
 begin
-{  Temp := Designer.GetComponent(S);
-  if Assigned(FGetValuesStrProc) and
-     Assigned(Temp) and
-     Supports(TObject(Temp), GetTypeData(GetPropType)^.Guid, Intf) then
-    FGetValuesStrProc(S);}
+
 end;
 
 procedure TInterfaceProperty.GetValues(Proc: TGetStrProc);
 begin
-{  FGetValuesStrProc := Proc;
-  try
-    Designer.GetComponentNames(GetTypeData(TypeInfo(TComponent)), ReceiveComponentNames);
-  finally
-    FGetValuesStrProc := nil;
-  end;}
+
 end;
 
 procedure TInterfaceProperty.SetValue(const Value: string);
-{var
-  Intf: IInterface;
-  Component: TComponent;}
 begin
-{  if Value = '' then
-    Intf := nil
-  else
-  begin
-    Component := Designer.GetComponent(Value);
-    if (Component = nil) or
-      not Supports(TObject(Component), GetTypeData(GetPropType)^.Guid, Intf) then
-      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
-  end;
-  SetIntfValue(Intf);}
-end;
 
+end;
 
 { TComponentNamePropertyEditor }
 
