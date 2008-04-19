@@ -79,6 +79,8 @@ type
   protected
   public
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+
+    class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure SetBounds(const AWinControl: TWinControl;
       const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetBorderIcons(const AForm: TCustomForm;
@@ -339,6 +341,11 @@ begin
   {$ifdef VerboseWinCE}
   WriteLn('Window Handle = ' + IntToStr(Result));
   {$endif}
+end;
+
+class procedure TWinCEWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
+begin
+  EnableApplicationWindows(ACustomForm.Handle);
 end;
 
 class procedure TWinCEWSCustomForm.SetBorderIcons(const AForm: TCustomForm;

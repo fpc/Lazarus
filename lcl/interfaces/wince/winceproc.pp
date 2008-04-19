@@ -82,7 +82,7 @@ function GetFileVersion(FileName: string): dword;
 function AllocWindowInfo(Window: HWND): PWindowInfo;
 function DisposeWindowInfo(Window: HWND): boolean;
 function GetWindowInfo(Window: HWND): PWindowInfo;
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 procedure DisableApplicationWindows(Window: HWND);
 procedure EnableApplicationWindows(Window: HWND);
 procedure AddToChangedMenus(Window: HWnd);
@@ -102,6 +102,7 @@ type
   PDisableWindowsInfo = ^TDisableWindowsInfo;
   TDisableWindowsInfo = record
     NewModalWindow: HWND;
+    ProcessID: DWORD;
     DisabledWindowList: TList;
   end;
 
@@ -1182,14 +1183,19 @@ end;
   Used in LM_SHOWMODAL to disable the windows of application thread
   except the current form.
  -----------------------------------------------------------------------------}
-function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; {$ifdef Win32}stdcall;{$else}cdecl;{$endif}
 var
   Buffer: array[0..15] of Char;
+  DisableWindowsInfo: PDisableWindowsInfo absolute Data;
 begin
   Result:=true;
 
+  // Only disable windows from our application
+  if DisableWindowsInfo^.ProcessID <> GetWindowThreadProcessId(Window, nil) then
+    Exit;
+
   // Don't disable the current window form
-  if Window = PDisableWindowsInfo(Data)^.NewModalWindow then exit;
+  if Window = DisableWindowsInfo^.NewModalWindow then exit;
 
   // Don't disable any ComboBox listboxes
   if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
@@ -1197,8 +1203,8 @@ begin
 
   if not IsWindowVisible(Window) or not IsWindowEnabled(Window) then exit;
 
-  PDisableWindowsInfo(Data)^.DisabledWindowList.Add(Pointer(Window));
-  EnableWindow(Window,False);
+  DisableWindowsInfo^.DisabledWindowList.Add(Pointer(Window));
+  EnableWindow(Window, False);
 end;
 
 var
@@ -1211,15 +1217,19 @@ var
 begin
   // prevent recursive calling when the AppHandle window is disabled
   If InDisableApplicationWindows then exit;
+  
   InDisableApplicationWindows:=true;
   New(DisableWindowsInfo);
   DisableWindowsInfo^.NewModalWindow := Window;
   DisableWindowsInfo^.DisabledWindowList := TList.Create;
   WindowInfo := GetWindowInfo(DisableWindowsInfo^.NewModalWindow);
   WindowInfo^.DisabledWindowList := DisableWindowsInfo^.DisabledWindowList;
-// :)) well....
-//  EnumThreadWindows(GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil),
-//    @DisableWindowsProc, LPARAM(DisableWindowsInfo));
+
+  // EnumThreadWindows isn't available for WinCE, so we
+  // improvise with EnumWindows
+  DisableWindowsInfo^.ProcessID := GetWindowThreadProcessId(DisableWindowsInfo^.NewModalWindow, nil);
+  EnumWindows(@DisableWindowsProc, LPARAM(DisableWindowsInfo));
+  
   Dispose(DisableWindowsInfo);
   InDisableApplicationWindows := false;
 end;
