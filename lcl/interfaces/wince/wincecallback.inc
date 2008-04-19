@@ -93,7 +93,7 @@ begin
 end;
 
 type
-  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove);
+  TEraseBkgndCommand = (ecDefault, ecDiscard, ecDiscardNoRemove, ecDoubleBufferNoRemove);
 const
   EraseBkgndStackMask = $3;
   EraseBkgndStackShift = 2;
@@ -1299,14 +1299,15 @@ begin
       end;
       DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
 {$endif}
-  {    if eraseBkgndCommand = ecDoubleBufferNoRemove then
+      if eraseBkgndCommand = ecDoubleBufferNoRemove then
       begin
         if DoubleBufferDC <> 0 then
           WParam := DoubleBufferDC;
         if WindowInfo^.isTabPage then
           EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1)) 
             or dword(ecDiscardNoRemove);
-      end else }
+      end
+      else
       if eraseBkgndCommand <> ecDiscardNoRemove then
         EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
       if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
@@ -1314,25 +1315,19 @@ begin
         Result := 0;
         exit;
       end;
-      if not GetNeedParentPaint(WindowInfo, lWinControl) {or (eraseBkgndCommand = ecDoubleBufferNoRemove)} then
+      if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
       begin
-        if {TWinCEWidgetSet(WidgetSet).ThemesActive and} WindowInfo^.isGroupBox
-           {and (lWinControl <> nil)} then
-        begin
-          // Groupbox (which is a button) doesn't erase it's background properly; force repaint
-          lWinControl.EraseBackground(WParam);
-          LMessage.Result := 1;
-        end else begin
-          LMessage.Msg := LM_ERASEBKGND;
-          LMessage.WParam := WParam;
-          LMessage.LParam := LParam;
-        end;
-      end else begin
+        LMessage.Msg := LM_ERASEBKGND;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
+      end else
+      begin
         SendPaintMessage;
         LMessage.Result := 1;
       end;
-      WinProcess := false;
+      WinProcess := False;
     end;
+
     WM_EXITMENULOOP:
       // is it a popup menu
       if longbool(WPARAM) and assigned(WindowInfo^.PopupMenu) then
