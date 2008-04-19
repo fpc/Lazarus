@@ -24,6 +24,10 @@ program iconvtable;
 uses
   Classes, SysUtils, Unix, LCLProc;
 
+var
+  Table: array[0..255] of shortstring;
+  SortedTable: array[0..255] of shortstring;
+
 function ToStringConstant(const s: string): string;
 var
   i: Integer;
@@ -53,16 +57,64 @@ begin
     Result:=Result+'''';
 end;
 
+function CompareChars(s1, s2: shortstring): integer;
+var
+  k: Integer;
+begin
+  k:=1;
+  repeat
+    if k>length(s1) then begin
+      if k<=length(s2) then
+        Result:=1;
+      break;
+    end else begin
+      if k>length(s2) then begin
+        Result:=-1;
+        break;
+      end else begin
+        Result:=ord(s1[k])-ord(s2[k]);
+        if Result<>0 then break;
+      end;
+    end;
+    inc(k);
+  until false;
+end;
+
+function StrToTableIndex(const s: shortstring): integer;
+begin
+  for Result:=0 to 255 do
+    if Table[Result]=s then exit;
+  Result:=-1;
+end;
+
+procedure CreateSortedTable;
+var
+  i: Integer;
+  j: Integer;
+  s: shortstring;
+begin
+  for i:=0 to 255 do
+    SortedTable[i]:=Table[i];
+  for i:=0 to 254 do
+    for j:=i+1 to 255 do
+      if CompareChars(SortedTable[i],SortedTable[j])>0 then begin
+        s:=SortedTable[i];
+        SortedTable[i]:=SortedTable[j];
+        SortedTable[j]:=s;
+      end;
+end;
+
 var
   i: Integer;
   Filename1, Filename2: String;
   SL: TStringList;
   FromEncoding: String;
   ToEncoding: String;
-  Table: array[0..255] of shortstring;
   s: String;
-  UniCode: LongWord;
+  UniCode: integer;
   CharLen: integer;
+  j: Integer;
+  TableIndex: LongInt;
 begin
   // single byte to UTF-8
   if ParamCount=0 then
@@ -92,8 +144,9 @@ begin
     end;
   end;
   SL.Free;
-  
-  // write table char to shortstring
+  CreateSortedTable;
+
+  // write table: char to shortstring
   writeln('  EncodingToUTF8: array[char] of shortstring = (');
   for i:=0 to 255 do begin
     s:=ToStringConstant(Table[i]);
@@ -103,19 +156,50 @@ begin
   end;
   writeln('  );');
 
-  // write table unicode to character
+  // write table: unicode to char
   writeln('  case Unicode of');
   writeln('  0..127: Result:=chr(Unicode);');
-  for i:=0 to 255 do begin
-    s:=Table[i];
+  i:=0;
+  while i<256 do begin
+    s:=SortedTable[i];
     if (length(s)=1) and (ord(s[1])<=127) then begin
-      continue;
     end else if s<>'' then begin
       UniCode:=UTF8CharacterToUnicode(@s[1],CharLen);
-      writeln('  '+IntToStr(UniCode)+': Result:='+ToStringConstant(chr(i))+';');
+      TableIndex:=StrToTableIndex(s);
+      j:=1;
+      while (i+j<256) do begin
+        if SortedTable[i+j]='' then break;
+        {writeln('DEBUG i=',i,' j=',j,
+          ' SortedTable[i]=',ToStringConstant(s),
+          ' SortedTable[i+j]=',ToStringConstant(SortedTable[i+j]),
+          ' UniCode[i]=',UniCode,
+          ' UniCode[i+j]=',UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen),
+          ' TableIndex[i]=',TableIndex,
+          ' TableIndex[i+j]=',StrToTableIndex(SortedTable[i+j]),
+          '');}
+        if integer(UTF8CharacterToUnicode(@SortedTable[i+j][1],CharLen))<>UniCode+j then
+          break;
+        if StrToTableIndex(SortedTable[i+j])<>TableIndex+j then
+          break;
+        inc(j);
+      end;
+      dec(j);
+      if j=0 then
+        writeln('  '+IntToStr(UniCode)
+                +': Result:='+ToStringConstant(chr(StrToTableIndex(s)))+';')
+      else if UniCode=TableIndex then
+        writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
+                +': Result:=chr(Unicode);')
+      else
+        writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
+                +': Result:=chr(Unicode-'+IntToStr(UniCode-TableIndex)+');');
+      inc(i,j);
     end;
+    inc(i);
   end;
   writeln('  else Result:='''';');
   writeln('  end;');
+
+  // create SortedTable
 end.
 
