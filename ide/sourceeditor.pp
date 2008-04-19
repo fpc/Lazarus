@@ -44,7 +44,7 @@ uses
   Classes, SysUtils, Math, Controls, LCLProc, LCLType, LResources, LCLIntf,
   FileUtil, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Translations, ClipBrd, TypInfo, Extctrls, Menus, HelpIntfs, LazHelpIntf,
-  LDockCtrl,
+  LConvEncoding, LDockCtrl,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
   // synedit
@@ -434,6 +434,7 @@ type
     procedure BookmarkSetFreeClicked(Sender: TObject);
     procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
+    procedure EncodingClicked(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
     procedure FindDeclarationClicked(Sender: TObject);
     procedure ProcedureJumpClicked(Sender: TObject);
@@ -514,6 +515,7 @@ type
     // PopupMenu
     procedure BuildPopupMenu;
     procedure UpdateHighlightMenuItems;
+    procedure UpdateEncodingMenuItems;
     procedure RemoveUserDefinedMenuItems;
     function AddUserDefinedPopupMenuItem(const NewCaption: string;
                                      const NewEnabled: boolean;
@@ -1020,6 +1022,8 @@ begin
                                                     uemShowUnitInfo);
     SrcEditSubMenuHighlighter:=RegisterIDESubMenu(AParent,'Highlighter',
                                                     uemHighlighter);
+    SrcEditSubMenuEncoding:=RegisterIDESubMenu(AParent,'Encoding',
+                                                    'Encoding');
 
   SrcEditMenuEditorProperties:=RegisterIDEMenuCommand(SourceEditorMenuRoot,
            'EditorProperties',uemEditorProperties, nil, nil, nil, 'menu_editor_options');
@@ -1028,7 +1032,6 @@ begin
   {$IFNDEF EnableIDEDocking}
   SrcEditMenuDocking.Visible:=false;
   {$ENDIF}
-
 end;
 
 { TSourceEditor }
@@ -3836,6 +3839,31 @@ begin
     FOnEditorPropertiesClicked(Sender);
 end;
 
+procedure TSourceNotebook.EncodingClicked(Sender: TObject);
+var
+  IDEMenuItem: TIDEMenuItem;
+  SrcEdit: TSourceEditor;
+  NewEncoding: String;
+  OldEncoding: String;
+begin
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
+  if Sender is TIDEMenuItem then begin
+    IDEMenuItem:=TIDEMenuItem(Sender);
+    NewEncoding:=IDEMenuItem.Caption;
+    DebugLn(['TSourceNotebook.EncodingClicked ',NewEncoding]);
+    if SrcEdit.CodeBuffer<>nil then begin
+      OldEncoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
+      if OldEncoding='' then
+        OldEncoding:=GetSystemEncoding;
+      if NewEncoding<>SrcEdit.CodeBuffer.DiskEncoding then begin
+        DebugLn(['TSourceNotebook.EncodingClicked ToDo: change encoding']);
+        ShowMessage('Changing the encoding is not yet implemented. Please use tools like iconv or recode.');
+      end;
+    end;
+  end;
+end;
+
 procedure TSourceNotebook.HighlighterClicked(Sender: TObject);
 var
   IDEMenuItem: TIDEMenuItem;
@@ -3843,13 +3871,14 @@ var
   SrcEdit: TSourceEditor;
   h: TLazSyntaxHighlighter;
 begin
+  SrcEdit:=GetActiveSE;
+  if SrcEdit=nil then exit;
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
     i:=IDEMenuItem.SectionIndex;
     if (i>=ord(Low(TLazSyntaxHighlighter)))
     and (i<=ord(High(TLazSyntaxHighlighter))) then begin
       h:=TLazSyntaxHighlighter(i);
-      SrcEdit:=GetActiveSE;
       SrcEdit.SyntaxHighlighterType:=h;
     end;
   end;
@@ -3897,6 +3926,7 @@ begin
     SrcEditMenuReadOnly.MenuItem.Checked:=ASrcEdit.ReadOnly;
     SrcEditMenuShowLineNumbers.MenuItem.Checked:=EditorComp.Gutter.ShowLineNumbers;
     UpdateHighlightMenuItems;
+    UpdateEncodingMenuItems;
 
     // bookmarks
     for BookMarkID:=0 to 9 do begin
@@ -4153,6 +4183,49 @@ begin
                                           and (SrcEdit.SyntaxHighlighterType=h);
     inc(i);
   end;
+end;
+
+procedure TSourceNotebook.UpdateEncodingMenuItems;
+var
+  List: TStringList;
+  i: Integer;
+  SrcEdit: TSourceEditor;
+  Encoding: String;
+  CurEncoding: string;
+  CurName: String;
+  CurCaption: String;
+  IDEMenuItem: TIDEMenuItem;
+begin
+  SrcEditSubMenuEncoding.ChildsAsSubMenu:=true;
+  SrcEdit:=GetActiveSE;
+  Encoding:='';
+  if SrcEdit<>nil then begin
+    if SrcEdit.CodeBuffer<>nil then
+      Encoding:=NormalizeEncoding(SrcEdit.CodeBuffer.DiskEncoding);
+  end;
+  if Encoding='' then
+    Encoding:=GetSystemEncoding;
+  //DebugLn(['TSourceNotebook.UpdateEncodingMenuItems ',Encoding]);
+  List:=TStringList.Create;
+  GetSupportedEncodings(List);
+  for i:=0 to List.Count-1 do begin
+    CurName:='Encoding'+IntToStr(i);
+    CurEncoding:=List[i];
+    CurCaption:=CurEncoding;
+    if SrcEditSubMenuEncoding.Count=i then begin
+      // add new item
+      IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuEncoding,
+                             CurName,CurCaption,@EncodingClicked);
+    end else begin
+      IDEMenuItem:=SrcEditSubMenuEncoding[i];
+      IDEMenuItem.Caption:=CurCaption;
+      IDEMenuItem.OnClick:=@EncodingClicked;
+    end;
+    if IDEMenuItem is TIDEMenuCommand then
+      TIDEMenuCommand(IDEMenuItem).Checked:=
+        Encoding=NormalizeEncoding(CurEncoding);
+  end;
+  List.Free;
 end;
 
 procedure TSourceNotebook.RemoveUserDefinedMenuItems;

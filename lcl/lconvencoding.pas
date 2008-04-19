@@ -78,6 +78,7 @@ function UTF8ToCP874(const s: string): string;  // thai
 function UTF8ToSingleByte(const s: string;
                           const UTF8CharConvFunc: TUnicodeToCharID): string;
 
+procedure GetSupportedEncodings(List: TStrings);
 
 implementation
 
@@ -3719,6 +3720,23 @@ begin
     end;
   end;
   SetLength(Result,Dest-PChar(Result));
+end;
+
+procedure GetSupportedEncodings(List: TStrings);
+begin
+  List.Add('UTF-8');
+  List.Add('Ansi');
+  List.Add('CP1250');
+  List.Add('CP1251');
+  List.Add('CP1252');
+  List.Add('CP1253');
+  List.Add('CP1254');
+  List.Add('CP1255');
+  List.Add('CP1256');
+  List.Add('CP1257');
+  List.Add('CP1258');
+  List.Add('CP874');
+  List.Add('ISO-8859-1');
 end;
 
 function Utf2Cp1251(s:string):string;

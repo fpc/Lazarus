@@ -383,6 +383,7 @@ var
     SrcEditSubMenuRefactor: TIDEMenuSection;
     SrcEditSubMenuFlags: TIDEMenuSection;
       SrcEditSubMenuHighlighter: TIDEMenuSection;
+      SrcEditSubMenuEncoding: TIDEMenuSection;
 
   // Messages window popupmenu
   MessagesMenuRoot: TIDEMenuSection = nil;
