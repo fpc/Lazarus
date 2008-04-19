@@ -25,31 +25,13 @@ unit WinCEWSForms;
 {$mode objfpc}{$H+}
 
 interface
-////////////////////////////////////////////////////
-// I M P O R T A N T                                
-////////////////////////////////////////////////////
-// 1) Only class methods allowed
-// 2) Class methods have to be published and virtual
-// 3) To get as little as posible circles, the uses
-//    clause should contain only those LCL units 
-//    needed for registration. WSxxx units are OK
-// 4) To improve speed, register only classes in the 
-//    initialization section which actually 
-//    implement something
-// 5) To enable your XXX widgetset units, look at
-//    the uses clause of the XXXintf.pp
-////////////////////////////////////////////////////
+
 uses
-////////////////////////////////////////////////////
-// I M P O R T A N T
-////////////////////////////////////////////////////
-// To get as little as posible circles,
-// uncomment only when needed for registration
-////////////////////////////////////////////////////
+  // RTL, FCL, LCL
   Windows,
-  SysUtils, Controls, LCLType, Forms, winceproc,wincewscontrols ,
-  InterfaceBase,
-////////////////////////////////////////////////////
+  SysUtils, Controls, LCLType, Forms, InterfaceBase,
+  // Widgetset
+  winceproc, wincewscontrols,
   WSForms, WSLCLClasses;
 
 type
@@ -321,7 +303,7 @@ begin
          - GetSystemMetrics(SM_CXBORDER) * 2;
         Width := WR.Right - WR.Left;
       end
-      else
+      else if (BorderStyle = bsDialog) then
       { On normal dialogs we need to take into consideration the size of
         the window decoration.
 
@@ -333,6 +315,13 @@ begin
         Left := WR.Left;
         Height := Bounds.Bottom - Bounds.Top;
         Width := Bounds.Right - Bounds.Left;
+      end
+      else { BorderStyle = bsNone }
+      { On borderless Windows we allow the user full control of the
+        window position
+      }
+      begin
+        CalculateDialogPosition(Params, Bounds, lForm);
       end;
     end
     else
