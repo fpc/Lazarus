@@ -65,6 +65,8 @@ var
   CharLen: integer;
 begin
   // single byte to UTF-8
+  if ParamCount=0 then
+    raise Exception.Create('Usage: '+ParamStr(0)+' <encoding>');
 
   FromEncoding:=ParamStr(1);
   ToEncoding:='UTF-8';
