@@ -470,6 +470,7 @@ var
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
+  B: TBitmap;
 begin
   if fUpdatingNotebook then exit;
   if IsUpdateLocked then begin
@@ -552,7 +553,12 @@ begin
                     +'_'+CurComponent.ComponentClass.ClassName;
               // Left and Top will be set in ReAlignButtons.
               SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-              Glyph := CurComponent.Icon;
+              // we cannot assing a custombitmap directly, so force a glyph
+              B := TBitmap.Create;
+              Glyph := B;
+              B.Free;
+              // we now have a glyp so we can assign
+              Glyph.Assign(CurComponent.Icon);
               GroupIndex := 1;
               Flat := true;
               OnClick := @ComponentBtnClick;
