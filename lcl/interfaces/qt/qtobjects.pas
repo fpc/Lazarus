@@ -275,6 +275,7 @@ type
     constructor CreateFromPainter(APainter: QPainterH);
     destructor Destroy; override;
     procedure CreateObjects;
+    procedure DestroyObjects;
     function CreateDCData: PQtDCDATA;
     function RestoreDCData(var DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
@@ -1545,19 +1546,7 @@ begin
   if (vClipRect <> nil) then
     dispose(vClipRect);
 
-  if Parent <> nil then
-  begin  
-    vFont.Widget := nil;
-    vFont.Free;
-    vBrush.Widget := nil;
-    vBrush.Free;
-    vPen.Widget := nil;
-    vPen.Free;
-    vRegion.Widget := nil;
-    vRegion.Free;
-    vBackgroundBrush.Widget := nil;
-    vBackgroundBrush.Free;
-  end;
+  DestroyObjects;
   
   if (Widget <> nil) and FOwnPainter then
     QPainter_destroy(Widget);
@@ -1570,30 +1559,36 @@ end;
 
 procedure TQtDeviceContext.CreateObjects;
 begin
-  if Parent <> nil then
-  begin
-    vFont := TQtFont.Create(False);
-    vFont.Owner := Self;
+  vFont := TQtFont.Create(False);
+  vFont.Owner := Self;
 
-    vBrush := TQtBrush.Create(False);
-    vBrush.Owner := Self;
+  vBrush := TQtBrush.Create(False);
+  vBrush.Owner := Self;
 
-    vPen := TQtPen.Create(False);
-    vPen.Owner := Self;
+  vPen := TQtPen.Create(False);
+  vPen.Owner := Self;
 
-    vRegion := TQtRegion.Create(False);
-    vRegion.Owner := Self;
+  vRegion := TQtRegion.Create(False);
+  vRegion.Owner := Self;
 
-    vBackgroundBrush := TQtBrush.Create(False);
-    vBackgroundBrush.Owner := Self;
-  end else
-  begin
-    vBrush := TQtBrush(GetStockObject(WHITE_BRUSH));
-		vBackgroundBrush := vBrush;
-    vPen := TQtPen(GetStockObject(BLACK_PEN));
-  end;
+  vBackgroundBrush := TQtBrush.Create(False);
+  vBackgroundBrush.Owner := Self;
 
   vTextColor := ColorToRGB(clWindowText);
+end;
+
+procedure TQtDeviceContext.DestroyObjects;
+begin
+  vFont.Widget := nil;
+  vFont.Free;
+  vBrush.Widget := nil;
+  vBrush.Free;
+  vPen.Widget := nil;
+  vPen.Free;
+  vRegion.Widget := nil;
+  vRegion.Free;
+  vBackgroundBrush.Widget := nil;
+  vBackgroundBrush.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -2000,11 +1995,6 @@ begin
   Write('TQtDeviceContext.font()');
   {$endif}
 
-  {when Parent=nil we'll create vFont on demand, otherwise
-    we'll get 1 unfreed mem block}
-  if (Parent = nil) and (vFont = nil) then
-    vFont := TQtFont(GetStockObject(SYSTEM_FONT));
-
   if vFont <> nil then
     vFont.Widget := QPainter_font(Widget);
     
@@ -2025,15 +2015,9 @@ begin
   Write('TQtDeviceContext.setFont() ');
   {$endif}
   SelFont := F;
-  if (f.Widget <> nil) and (Widget <> nil) {and (Parent <> nil)} then
+  if (f.Widget <> nil) and (Widget <> nil) then
   begin
     QPainter_setFont(Widget, QFontH(f.Widget));
-    
-    {when Parent=nil we'll create vFont on demand, otherwise
-     we'll get 1 unfreed mem block}
-    if (Parent = nil) and (vFont = nil) then
-      vFont := TQtFont(GetStockObject(SYSTEM_FONT));
-      
     vFont.Angle := f.Angle;
   end;
 end;
