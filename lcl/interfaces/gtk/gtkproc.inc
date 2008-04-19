@@ -4527,12 +4527,16 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
       PageWidget:=gtk_notebook_get_nth_page(NBWidget,PageIndex)
     else
       PageWidget:=nil;
+      
     // get client widget of page
     if (PageWidget<>nil) then
       ClientWidget:=GetFixedWidget(PageWidget)
     else
       ClientWidget:=nil;
-    if ClientWidget^.window<>nil then begin
+      
+    // Be careful while using ClientWidget here, it may be nil
+    if (ClientWidget<>nil) and (ClientWidget^.window<>nil) then
+    begin
       // get the position of the current page
       gdk_window_get_origin(ClientWidget^.window,@Result.X,@Result.Y);
       if GTK_WIDGET_NO_WINDOW(ClientWidget)
@@ -4540,7 +4544,9 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
         Inc(Result.X, ClientWidget^.Allocation.X);
         Inc(Result.Y, ClientWidget^.Allocation.Y);
       end;
-    end else begin
+    end
+    else
+    begin
       // use defaults
       Result:=GetWidgetOrigin(TheWidget);
       FrameBorders:=GetStyleNotebookFrameBorders;
