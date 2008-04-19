@@ -470,7 +470,6 @@ var
   CurPageIndex: Integer;
   j: Integer;
   OldActivePage: String;
-  B: TBitmap;
 begin
   if fUpdatingNotebook then exit;
   if IsUpdateLocked then begin
