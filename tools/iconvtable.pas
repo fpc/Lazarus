@@ -47,6 +47,7 @@ begin
       Result:=Result+s[i];
       if s[i]='''' then
         Result:=Result+'''';
+      RangeIsString:=true;
     end else begin
       if RangeIsString then
         Result:=Result+'''';
@@ -158,7 +159,7 @@ begin
 
   // write table: unicode to char
   writeln('  case Unicode of');
-  writeln('  0..127: Result:=chr(Unicode);');
+  writeln('  0..127: Result:=Unicode;');
   i:=0;
   while i<256 do begin
     s:=SortedTable[i];
@@ -186,18 +187,18 @@ begin
       dec(j);
       if j=0 then
         writeln('  '+IntToStr(UniCode)
-                +': Result:='+ToStringConstant(chr(StrToTableIndex(s)))+';')
+                +': Result:='+IntToStr(StrToTableIndex(s))+';')
       else if UniCode=TableIndex then
         writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
-                +': Result:=chr(Unicode);')
+                +': Result:=Unicode;')
       else
         writeln('  '+IntToStr(UniCode)+'..'+IntToStr(UniCode+j)
-                +': Result:=chr(Unicode-'+IntToStr(UniCode-TableIndex)+');');
+                +': Result:=Unicode-'+IntToStr(UniCode-TableIndex)+';');
       inc(i,j);
     end;
     inc(i);
   end;
-  writeln('  else Result:='''';');
+  writeln('  else Result:=-1;');
   writeln('  end;');
 
   // create SortedTable
