@@ -115,6 +115,7 @@ implementation
 
 uses
   SysUtils, LCLStrConsts, Dialogs, StdCtrls, ExtCtrls,
+  WinCEInt,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {------------------------------------------------------------------------------
@@ -1093,8 +1094,10 @@ end;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 begin
   Result := 0;
+
   case Application.ApplicationType of
-  atDesktop,atHandheld:
+
+    atDesktop, atHandheld:
     begin
       case Style of
       bsDialog:
@@ -1103,16 +1106,17 @@ begin
         Result := WS_EX_TOOLWINDOW;
       end;
     end;
-  atPDA,atSmartphone,atDefault:
-    begin
-{     This code is comented because the OK button wasn't being handled
-      and it's hard to know if the dialog actually needs an OK button
 
-      case Style of
-      bsDialog:
-        Result := WS_EX_CAPTIONOKBTN;
-      end;}
+    atPDA, atSmartphone, atDefault:
+    begin
+      // Adds an "OK" close button to the title bar instead of the standard
+      // "X" minimize button, unless the developer overrides that decision
+      if WinCEWidgetset.WinCETitlePolicy = tpAlwaysUseOKButton then
+        Result := WS_EX_CAPTIONOKBTN
+      else
+        if Style = bsDialog then Result := WS_EX_CAPTIONOKBTN;
     end;
+
   end;
 end;
 

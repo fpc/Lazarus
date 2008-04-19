@@ -301,6 +301,8 @@ begin
     BorderStyle := TCustomForm(AWinControl).BorderStyle;
     AdjustFormBounds(lForm, Bounds);
 
+    Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
+
     if Application.ApplicationType in [atPDA, atSmartphone, atDefault] then
     begin
       { The position and size of common windows is ignored on PDA mode,
@@ -313,8 +315,6 @@ begin
         the Taskbar) and then the menu is subtracted from it }
       if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
       begin
-        Windows.SystemParametersInfo(SPI_GETWORKAREA, 0, @WR, 0);
-
         Left := WR.Left;
         Top := WR.Top;
         Height := WR.Bottom - WR.Top - GetSystemMetrics(SM_CYMENU)
@@ -323,10 +323,14 @@ begin
       end
       else
       { On normal dialogs we need to take into consideration the size of
-        the window decoration }
+        the window decoration.
+
+        For the Top and Left coordinates, using CM_USEDEFAULT produces
+        a wrong and bad result. Using the Workarea rectagle works fine.
+      }
       begin
-        Top := CW_USEDEFAULT;
-        Left := CW_USEDEFAULT;
+        Top := WR.Top;
+        Left := WR.Left;
         Height := Bounds.Bottom - Bounds.Top;
         Width := Bounds.Right - Bounds.Left;
       end;

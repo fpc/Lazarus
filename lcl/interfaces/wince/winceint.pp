@@ -101,6 +101,10 @@ const
 
 type
 
+  { Policy for using the "OK" close button in the title instead of
+    the default "X" minimize button }
+  TWinCETitlePolicy = (tpAlwaysUseOKButton, tpOKButtonOnlyOnDialogs);
+
   PPPipeEventInfo = ^PPipeEventInfo;
   PPipeEventInfo = ^TPipeEventInfo;
   TPipeEventInfo = record
@@ -202,6 +206,12 @@ type
     property AppHandle: HWND read FAppHandle;
     property MessageFont: HFONT read FMessageFont;
     property OnAsyncSocketMsg: TSocketEvent read FOnAsyncSocketMsg write FOnAsyncSocketMsg;
+
+  public
+  
+    { Variables to be set by the user }
+    WinCETitlePolicy: TWinCETitlePolicy;
+  
   end;
 
 {$I wincelistslh.inc}

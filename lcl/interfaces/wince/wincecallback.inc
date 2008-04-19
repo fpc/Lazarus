@@ -1039,8 +1039,29 @@ begin
       // default is to destroy window, inhibit
       WinProcess := false;
     end;
+    {
+      WM_COMMAND
+
+      Parameters:
+
+      wNotifyCode = HIWORD(wParam);
+      wID = LOWORD(wParam);
+      hwndCtl = (HWND) lParam;
+
+      If wID is IDOK, then we have received a close message from the
+      "OK" button in the title of dialog windows.
+    }
     WM_COMMAND:
     begin
+      { Handles the "OK" button in the title bar of dialogs }
+      if Lo(wParam) = IDOK then
+      begin
+        SendMessage(Window, WM_CLOSE, 0, 0);
+      end
+      else
+      begin
+
+      { Handles other reasons for WM_COMMAND }
       if Hi(WParam) < 2 then //1 for accelerator 0 for menu
         TargetObject := GetMenuItemObject else // menuitem or shortcut
         TargetObject := nil;
@@ -1101,6 +1122,8 @@ begin
       // no specific message found? try send a general msg
       if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
         lWinControl.Perform(CN_COMMAND, WParam, LParam);
+
+      end;
     end;
 {
   * Besides the fact that LCL does not respond to LM_CREATE, this code is
