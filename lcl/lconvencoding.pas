@@ -50,6 +50,7 @@ var
   ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
   ConvertUTF8ToAnsi: TConvertEncodingFunction = nil;
   
+function ISO_8859_1ToUTF8(const s: string): string; // central europe
 function CP1250ToUTF8(const s: string): string; // central europe
 function CP1251ToUTF8(const s: string): string; // cyrillic
 function CP1252ToUTF8(const s: string): string; // latin 1
@@ -63,6 +64,7 @@ function CP874ToUTF8(const s: string): string;  // thai
 function SingleByteToUTF8(const s: string;
                           const Table: TCharToUTF8Table): string;
 
+function UTF8ToISO_8859_1(const s: string): string; // central europe
 function UTF8ToCP1250(const s: string): string; // central europe
 function UTF8ToCP1251(const s: string): string; // cyrillic
 function UTF8ToCP1252(const s: string): string; // latin 1
@@ -130,6 +132,265 @@ begin
 end;
 
 const
+  ArrayISO_8859_1ToUTF8: TCharToUTF8Table = (
+    #0,                 // #0
+    #1,                 // #1
+    #2,                 // #2
+    #3,                 // #3
+    #4,                 // #4
+    #5,                 // #5
+    #6,                 // #6
+    #7,                 // #7
+    #8,                 // #8
+    #9,                 // #9
+    #10,                // #10
+    #11,                // #11
+    #12,                // #12
+    #13,                // #13
+    #14,                // #14
+    #15,                // #15
+    #16,                // #16
+    #17,                // #17
+    #18,                // #18
+    #19,                // #19
+    #20,                // #20
+    #21,                // #21
+    #22,                // #22
+    #23,                // #23
+    #24,                // #24
+    #25,                // #25
+    #26,                // #26
+    #27,                // #27
+    #28,                // #28
+    #29,                // #29
+    #30,                // #30
+    #31,                // #31
+    ' ',                // ' '
+    '!',                // '!'
+    '"',                // '"'
+    '#',                // '#'
+    '$',                // '$'
+    '%',                // '%'
+    '&',                // '&'
+    '''',               // ''''
+    '(',                // '('
+    ')',                // ')'
+    '*',                // '*'
+    '+',                // '+'
+    ',',                // ','
+    '-',                // '-'
+    '.',                // '.'
+    '/',                // '/'
+    '0',                // '0'
+    '1',                // '1'
+    '2',                // '2'
+    '3',                // '3'
+    '4',                // '4'
+    '5',                // '5'
+    '6',                // '6'
+    '7',                // '7'
+    '8',                // '8'
+    '9',                // '9'
+    ':',                // ':'
+    ';',                // ';'
+    '<',                // '<'
+    '=',                // '='
+    '>',                // '>'
+    '?',                // '?'
+    '@',                // '@'
+    'A',                // 'A'
+    'B',                // 'B'
+    'C',                // 'C'
+    'D',                // 'D'
+    'E',                // 'E'
+    'F',                // 'F'
+    'G',                // 'G'
+    'H',                // 'H'
+    'I',                // 'I'
+    'J',                // 'J'
+    'K',                // 'K'
+    'L',                // 'L'
+    'M',                // 'M'
+    'N',                // 'N'
+    'O',                // 'O'
+    'P',                // 'P'
+    'Q',                // 'Q'
+    'R',                // 'R'
+    'S',                // 'S'
+    'T',                // 'T'
+    'U',                // 'U'
+    'V',                // 'V'
+    'W',                // 'W'
+    'X',                // 'X'
+    'Y',                // 'Y'
+    'Z',                // 'Z'
+    '[',                // '['
+    '\',                // '\'
+    ']',                // ']'
+    '^',                // '^'
+    '_',                // '_'
+    '`',                // '`'
+    'a',                // 'a'
+    'b',                // 'b'
+    'c',                // 'c'
+    'd',                // 'd'
+    'e',                // 'e'
+    'f',                // 'f'
+    'g',                // 'g'
+    'h',                // 'h'
+    'i',                // 'i'
+    'j',                // 'j'
+    'k',                // 'k'
+    'l',                // 'l'
+    'm',                // 'm'
+    'n',                // 'n'
+    'o',                // 'o'
+    'p',                // 'p'
+    'q',                // 'q'
+    'r',                // 'r'
+    's',                // 's'
+    't',                // 't'
+    'u',                // 'u'
+    'v',                // 'v'
+    'w',                // 'w'
+    'x',                // 'x'
+    'y',                // 'y'
+    'z',                // 'z'
+    '{',                // '{'
+    '|',                // '|'
+    '}',                // '}'
+    '~',                // '~'
+    #127,               // #127
+    #194#128,           // #128
+    #194#129,           // #129
+    #194#130,           // #130
+    #194#131,           // #131
+    #194#132,           // #132
+    #194#133,           // #133
+    #194#134,           // #134
+    #194#135,           // #135
+    #194#136,           // #136
+    #194#137,           // #137
+    #194#138,           // #138
+    #194#139,           // #139
+    #194#140,           // #140
+    #194#141,           // #141
+    #194#142,           // #142
+    #194#143,           // #143
+    #194#144,           // #144
+    #194#145,           // #145
+    #194#146,           // #146
+    #194#147,           // #147
+    #194#148,           // #148
+    #194#149,           // #149
+    #194#150,           // #150
+    #194#151,           // #151
+    #194#152,           // #152
+    #194#153,           // #153
+    #194#154,           // #154
+    #194#155,           // #155
+    #194#156,           // #156
+    #194#157,           // #157
+    #194#158,           // #158
+    #194#159,           // #159
+    #194#160,           // #160
+    #194#161,           // #161
+    #194#162,           // #162
+    #194#163,           // #163
+    #194#164,           // #164
+    #194#165,           // #165
+    #194#166,           // #166
+    #194#167,           // #167
+    #194#168,           // #168
+    #194#169,           // #169
+    #194#170,           // #170
+    #194#171,           // #171
+    #194#172,           // #172
+    #194#173,           // #173
+    #194#174,           // #174
+    #194#175,           // #175
+    #194#176,           // #176
+    #194#177,           // #177
+    #194#178,           // #178
+    #194#179,           // #179
+    #194#180,           // #180
+    #194#181,           // #181
+    #194#182,           // #182
+    #194#183,           // #183
+    #194#184,           // #184
+    #194#185,           // #185
+    #194#186,           // #186
+    #194#187,           // #187
+    #194#188,           // #188
+    #194#189,           // #189
+    #194#190,           // #190
+    #194#191,           // #191
+    #195#128,           // #192
+    #195#129,           // #193
+    #195#130,           // #194
+    #195#131,           // #195
+    #195#132,           // #196
+    #195#133,           // #197
+    #195#134,           // #198
+    #195#135,           // #199
+    #195#136,           // #200
+    #195#137,           // #201
+    #195#138,           // #202
+    #195#139,           // #203
+    #195#140,           // #204
+    #195#141,           // #205
+    #195#142,           // #206
+    #195#143,           // #207
+    #195#144,           // #208
+    #195#145,           // #209
+    #195#146,           // #210
+    #195#147,           // #211
+    #195#148,           // #212
+    #195#149,           // #213
+    #195#150,           // #214
+    #195#151,           // #215
+    #195#152,           // #216
+    #195#153,           // #217
+    #195#154,           // #218
+    #195#155,           // #219
+    #195#156,           // #220
+    #195#157,           // #221
+    #195#158,           // #222
+    #195#159,           // #223
+    #195#160,           // #224
+    #195#161,           // #225
+    #195#162,           // #226
+    #195#163,           // #227
+    #195#164,           // #228
+    #195#165,           // #229
+    #195#166,           // #230
+    #195#167,           // #231
+    #195#168,           // #232
+    #195#169,           // #233
+    #195#170,           // #234
+    #195#171,           // #235
+    #195#172,           // #236
+    #195#173,           // #237
+    #195#174,           // #238
+    #195#175,           // #239
+    #195#176,           // #240
+    #195#177,           // #241
+    #195#178,           // #242
+    #195#179,           // #243
+    #195#180,           // #244
+    #195#181,           // #245
+    #195#182,           // #246
+    #195#183,           // #247
+    #195#184,           // #248
+    #195#185,           // #249
+    #195#186,           // #250
+    #195#187,           // #251
+    #195#188,           // #252
+    #195#189,           // #253
+    #195#190,           // #254
+    #195#191            // #255
+  );
+
   ArrayCP1250ToUTF8: TCharToUTF8Table = (
     #0,                 // #0
     #1,                 // #1
@@ -2720,6 +2981,10 @@ const
     ''                  // #255
   );
 
+function ISO_8859_1ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayISO_8859_1ToUTF8);
+end;
 
 function CP1250ToUTF8(const s: string): string;
 begin
@@ -3353,6 +3618,19 @@ begin
   end;
 end;
 
+function UnicodeToISO_8859_1(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..255: Result:=Unicode;
+  else Result:=-1;
+  end;
+end;
+
+function UTF8ToISO_8859_1(const s: string): string;
+begin
+  Result:=UTF8ToSingleByte(s,@UnicodeToISO_8859_1);
+end;
+
 function UTF8ToCP1250(const s: string): string;
 begin
   Result:=UTF8ToSingleByte(s,@UnicodeToCP1250);
@@ -3739,8 +4017,8 @@ begin
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
   
   if (AFrom=EncodingUTF8) then begin
-    // ToDo: ISO sets like iso88591
-    {if AFrom='cp1250' then begin Result:=UTF8ToCP1250(s); exit; end;
+    if AFrom='iso88591' then begin Result:=UTF8ToISO_8859_1(s); exit; end;
+    if AFrom='cp1250' then begin Result:=UTF8ToCP1250(s); exit; end;
     if AFrom='cp1251' then begin Result:=UTF8ToCP1251(s); exit; end;
     if AFrom='cp1252' then begin Result:=UTF8ToCP1252(s); exit; end;
     if AFrom='cp1253' then begin Result:=UTF8ToCP1253(s); exit; end;
@@ -3749,14 +4027,14 @@ begin
     if AFrom='cp1256' then begin Result:=UTF8ToCP1256(s); exit; end;
     if AFrom='cp1257' then begin Result:=UTF8ToCP1257(s); exit; end;
     if AFrom='cp1258' then begin Result:=UTF8ToCP1258(s); exit; end;
-    if AFrom='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;}
+    if AFrom='cp874' then begin  Result:=UTF8ToCP874(s);  exit; end;
 
     if (ATo=EncodingAnsi) and Assigned(ConvertUTF8ToAnsi) then begin
       Result:=ConvertUTF8ToAnsi(s);
       exit;
     end;
   end else if ATo=EncodingUTF8 then begin
-    // ToDo: ISO sets like iso88591
+    if AFrom='iso88591' then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
     if AFrom='cp1250' then begin Result:=CP1250ToUTF8(s); exit; end;
     if AFrom='cp1251' then begin Result:=CP1251ToUTF8(s); exit; end;
     if AFrom='cp1252' then begin Result:=CP1252ToUTF8(s); exit; end;
