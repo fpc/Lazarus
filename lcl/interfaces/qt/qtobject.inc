@@ -26,6 +26,7 @@ constructor TQtWidgetSet.Create;
 begin
   inherited Create;
 
+  App := QApplication_Create(@argc, argv);
   InitStockItems;
   QtWidgetSet := Self;
   FDockImage := nil;
@@ -99,7 +100,6 @@ var
   Method: TMethod;
   ScreenDC: HDC;
 begin
-  App := QApplication_Create(@argc, argv);
   WakeMainThread := @OnWakeMainThread;
 
   FOldFocusWidget := nil;
