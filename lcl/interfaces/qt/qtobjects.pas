@@ -262,7 +262,7 @@ type
     ParentPixmap: QPixmapH;
     vBrush: TQtBrush;
     vFont: TQtFont;
-    vImage: QImageH;
+    vImage: TQtImage;
     vPen: TQtPen;
     vRegion: TQtRegion;
     vBackgroundBrush: TQtBrush;
@@ -1631,11 +1631,11 @@ begin
   {$ifdef VerboseQt}
   writeln('TQtDeviceContext.setImage() ');
   {$endif}
-  vImage := AImage.Handle;
+  vImage := AImage;
   
   QPainter_destroy(Widget);
 
-  Widget := QPainter_Create(vImage);
+  Widget := QPainter_Create(vImage.Handle);
 end;
 
 {------------------------------------------------------------------------------

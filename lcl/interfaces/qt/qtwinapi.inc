@@ -4576,7 +4576,7 @@ begin
   {$endif}
 
   SrcMatrix := QPainter_Matrix(SrcQDC.Widget);
-  Image := SrcQDC.vImage;
+  Image := SrcQDC.vImage.Handle;
   SrcWidthOrig := QImage_width(Image);
   SrcHeightOrig := QImage_height(Image);
   QMatrix_map(SrcMatrix, XSrc, YSrc, @XSrc, @YSrc);

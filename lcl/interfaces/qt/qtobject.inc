@@ -365,7 +365,7 @@ begin
   
   if (TQtDeviceContext(CanvasHandle).vImage <> nil) then
   begin
-    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));
+    Result := TColor(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage.Handle, X, Y));
 
 
 {    Color := QColor_create(QImage_pixel(TQtDeviceContext(CanvasHandle).vImage, X, Y));

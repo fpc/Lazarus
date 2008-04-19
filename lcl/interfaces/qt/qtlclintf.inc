@@ -542,7 +542,7 @@ begin
   end else
   begin
     if Context.vImage <> nil then
-      RawImage_FromImage(Context.vImage)
+      RawImage_FromImage(Context.vImage.Handle)
     else
       Result := False;
   end;
