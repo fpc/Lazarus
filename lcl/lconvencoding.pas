@@ -31,19 +31,26 @@ uses
 
 const
   EncodingUTF8 = 'utf8';
+  EncodingAnsi = 'ansi';
 
 function GuessEncoding(const s: string): string;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
 
 function GetSystemEncoding: string;
+function NormalizeEncoding(const Encoding: string): string;
 
+type
+  TConvertEncodingFunction = function(const s: string): string;
+var
+  ConvertAnsiToUTF8: TConvertEncodingFunction = nil;
+  ConvertUTF8ToAnsi: TConvertEncodingFunction = nil;
 
 implementation
 
 
-var EncodingValid: boolean=false;
-    SystemEncoding: string='ANSI';
+var EncodingValid: boolean = false;
+    SystemEncoding: string = EncodingAnsi;
 
 function GetSystemEncoding: string;
 var Lang: string;
@@ -55,7 +62,7 @@ begin
     exit;
   end;
 
-  Result:='ANSI';
+  Result:=EncodingAnsi;
   lang := GetEnv('LC_ALL');
   if Length(lang) = 0 then
   begin
@@ -68,14 +75,27 @@ begin
   i:=pos('.',Lang);
   if (i>0) and (i<=length(Lang)) then
     Result:=copy(Lang,i+1,length(Lang)-i);
-  //Check parameters
+
+  // check parameters
   for i:=1 to ParamCount do
   begin
     s:=ParamStr(i);
     if s='--charset=' then Result:=copy(s,pos(#61,s),length(s));
   end;
+
+  Result:=NormalizeEncoding(Result);
+
   SystemEncoding:=Result;
   EncodingValid:=true;
+end;
+
+function NormalizeEncoding(const Encoding: string): string;
+var
+  i: Integer;
+begin
+  Result:=LowerCase(Encoding);
+  for i:=length(Result) downto 1 do
+    if Result[i]='-' then System.Delete(Result,i,1);
 end;
 
 function Utf2Cp1251(s:string):string;
@@ -329,7 +349,7 @@ begin
     while (p<=l) and (s[p] in [' ',#9]) do inc(p);
     EndPos:=p;
     while (EndPos<=l) and (not (s[EndPos] in ['}',' ',#9])) do inc(EndPos);
-    Result:=copy(s,p,EndPos-p);
+    Result:=NormalizeEncoding(copy(s,p,EndPos-p));
     exit;
   end;
   
@@ -355,6 +375,7 @@ begin
 end;
 
 function ConvertEncoding(const s, FromEncoding, ToEncoding: string): string;
+// FromEncoding and ToEncoding must be normalized
 var
   AFrom, ATo: String;
  {$ifdef Unix}
@@ -367,6 +388,21 @@ begin
   ATo:=LowerCase(ToEncoding);
   if AFrom=ATo then exit;
   
+  if (AFrom=EncodingUTF8) then begin
+    if ((ATo=EncodingAnsi) or (ATo=GetSystemEncoding))
+    and Assigned(ConvertUTF8ToAnsi) then begin
+      Result:=ConvertUTF8ToAnsi(s);
+      exit;
+    end;
+  end else if ATo=EncodingUTF8 then begin
+    // ToDo: windows code pages: 1250 1251 1252 1253 1254 1255 1256 1257 1258 874
+    if ((AFrom=EncodingAnsi) or (AFrom=GetSystemEncoding))
+    and Assigned(ConvertAnsiToUTF8) then begin
+      Result:=ConvertAnsiToUTF8(s);
+      exit;
+    end;
+  end;
+
   if ATo='koi8r' then ATo:='koi8-r';
   if AFrom='koi8r' then AFrom:='koi8-r';
   if (AFrom='utf8') or (AFrom='utf-8') then
