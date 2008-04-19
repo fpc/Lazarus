@@ -296,13 +296,17 @@ begin
 
         Simply using CM_USEDEFAULT produces a too large Height, which
         covers the menus. So the workarea size is detected (which ignores
-        the Taskbar) and then the menu is subtracted from it }
+        the Taskbar).
+
+        In some devices subtracting the menu size seams to work better, but
+        others, if no menu is present, it's a big problem.
+      }
       if (BorderStyle <> bsDialog) and (BorderStyle <> bsNone) then
       begin
         Left := WR.Left;
         Top := WR.Top;
-        Height := WR.Bottom - WR.Top - GetSystemMetrics(SM_CYMENU)
-         - GetSystemMetrics(SM_CXBORDER) * 2;
+        Height := WR.Bottom - WR.Top;// - GetSystemMetrics(SM_CYMENU)
+         //- GetSystemMetrics(SM_CXBORDER) * 2;
         Width := WR.Right - WR.Left;
       end
       else if (BorderStyle = bsDialog) then
