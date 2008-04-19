@@ -552,8 +552,7 @@ begin
                     +'_'+CurComponent.ComponentClass.ClassName;
               // Left and Top will be set in ReAlignButtons.
               SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-              Glyph := TBitmap.Create;
-              Glyph.Assign(CurComponent.Icon);
+              Glyph := CurComponent.Icon;
               GroupIndex := 1;
               Flat := true;
               OnClick := @ComponentBtnClick;
